@@ -142,6 +142,7 @@ th .bs { display: block; font-size: 10px; letter-spacing: 0; text-transform: non
 #logTable td { font-size: 12.5px; vertical-align: top; }
 .tp { font-size: 11px; color: #fff; border-radius: 4px; padding: 1px 6px; white-space: nowrap; }
 .note { color: var(--ink2); max-width: 46ch; text-align: left; }
+footer a { color: var(--accent); }
 footer { font-size: 12.5px; color: var(--muted); display: flex; flex-direction: column; gap: 6px; max-width: 92ch; }
 .empty { padding: 30px; text-align: center; color: var(--muted); }
 @media (prefers-reduced-motion: no-preference) { .bar i, .ltrack i { transition: width .2s ease; } }
@@ -231,6 +232,7 @@ footer { font-size: 12.5px; color: var(--muted); display: flex; flex-direction: 
   <footer>
     <p><b>Stage usefulness</b> is scored 0–3 per source (0 none, 1 small or indirect, 2 moderate, 3 large), shown as 0–100. <b>Overall</b> = weighted stage usefulness × trust in its evidence. Measured rows are scored from our runs; click a row for every result behind it.</p>
     <p><b>Tracks.</b> Zero-data uses only sources outside the benchmark. Pilot draws a random sample of the target population (8 draws per size), uses it for calibration or as evidence, and removes it from every cell before scoring. In-dataset numbers use the benchmark's own rows and are shown only for scale. Product Hunt data stays in the open benchmark and never enters proprietary data.</p>
+    <p>Plan built on this board: <a href="https://claude.ai/artifact/YRE6CmzYuuBzkkRSzTa5Dp" target="_blank" rel="noopener">UserSim Roadmap</a>. Which benchmarks measure what: <a href="https://claude.ai/artifact/LMKkv22QUcrCTR9bmRKAiw" target="_blank" rel="noopener">Benchmark Fit Board</a>.</p>
     <p>Source of truth: <span class="mono">docs/plans/eval/data_board.py</span>, which reads <span class="mono">results/humaine/*.json</span> and <span class="mono">results/popadapt/cards_twin.json</span>.</p>
   </footer>
 </div>

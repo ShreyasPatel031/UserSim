@@ -1,0 +1,904 @@
+<title>UserSim Roadmap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<style>
+/* Layout: one reading column (tables scroll inside their own frame). Family resemblance with the Data Lever Board and Benchmark Fit Board: same faces and track colors. Three stage columns read left to right as a sequence of spending gates. */
+:root {
+  --bg: #f4f6f5; --surface: #ffffff; --ink: #15191a; --ink2: #4a5356; --muted: #727b7e; --line: #dbe1df; --soft: #eef2f0;
+  --accent: #1f6fcf; --free: #1f6fcf; --exp: #c25a1f; --inc: #4a3aa7; --pilot: #17895f; --indata: #8a9396;
+  --font-d: "IBM Plex Sans Condensed", "IBM Plex Sans", system-ui, sans-serif;
+  --font-b: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif; --font-m: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #111414; --surface: #191d1d; --ink: #eef2f0; --ink2: #b8c1c0; --muted: #8e9898; --line: #2b3131; --soft: #202626;
+  --accent: #5a9ff0; --free: #5a9ff0; --exp: #e8803f; --inc: #9085e9; --pilot: #3cbf8a; --indata: #7d8789; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #111414; --surface: #191d1d; --ink: #eef2f0; --ink2: #b8c1c0; --muted: #8e9898; --line: #2b3131; --soft: #202626;
+  --accent: #5a9ff0; --free: #5a9ff0; --exp: #e8803f; --inc: #9085e9; --pilot: #3cbf8a; --indata: #7d8789; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-b); font-size: 15px; line-height: 1.6; padding-inline: 16px; padding-block: 32px 64px; }
+.page { max-width: 900px; margin-inline: auto; display: flex; flex-direction: column; gap: 14px; }
+.eyebrow { font-family: var(--font-m); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+h1 { font-family: var(--font-d); font-size: clamp(30px, 5vw, 46px); line-height: 1.05; margin: 0; letter-spacing: -0.01em; text-wrap: balance; }
+.lede p { font-size: 17px; color: var(--ink2); max-width: 66ch; margin: 0; }
+h2 { font-family: var(--font-d); font-size: 24px; margin: 28px 0 4px; letter-spacing: -0.005em; text-wrap: balance; display: flex; gap: 10px; align-items: baseline; }
+h2 .num { font-family: var(--font-m); font-size: 14px; color: var(--accent); border: 1px solid var(--line); border-radius: 4px; padding: 0 6px; }
+h3 { font-size: 16px; margin: 16px 0 0; }
+p, li { max-width: 72ch; }
+p { margin: 6px 0; }
+ul, ol { margin: 6px 0; padding-left: 22px; }
+li { margin: 3px 0; }
+a { color: var(--accent); text-underline-offset: 2px; }
+strong { font-weight: 600; }
+code { font-family: var(--font-m); font-size: 12.5px; background: var(--soft); padding: 1px 5px; border-radius: 4px; overflow-wrap: anywhere; }
+.tw { overflow-x: auto; margin: 10px 0 6px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+table.wide { min-width: 640px; }
+.tw:has(table.narrow) { max-width: 520px; }
+th { text-align: left; font-weight: 500; font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); padding: 8px 10px; border-bottom: 1px solid var(--line); background: var(--soft); }
+td { padding: 8px 10px; border-top: 1px solid var(--line); vertical-align: top; font-variant-numeric: tabular-nums; }
+tr:first-child td { border-top: 0; }
+
+/* stage timeline */
+.timeline { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 22px 0 6px; position: relative; }
+@media (max-width: 760px) { .timeline { grid-template-columns: minmax(0, 1fr); } }
+.stage { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 8px; min-width: 0; position: relative; }
+.stage header { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; border-bottom: 3px solid var(--c); padding-bottom: 8px; }
+.st-free { --c: var(--free); } .st-exp { --c: var(--exp); } .st-inc { --c: var(--inc); }
+.tier { font-family: var(--font-m); font-weight: 500; font-size: 13px; letter-spacing: 0.06em; color: var(--c); }
+.budget { font-family: var(--font-d); font-weight: 700; font-size: 20px; }
+.when { font-size: 12px; color: var(--muted); width: 100%; }
+.goal { font-weight: 500; margin: 0; font-size: 14.5px; }
+.stage ul { font-size: 13.5px; color: var(--ink2); padding-left: 18px; margin: 0; }
+.gate { margin: auto 0 0; font-size: 12.5px; background: var(--soft); border-radius: 6px; padding: 8px 10px; color: var(--ink2); }
+.gate b { display: block; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink); }
+
+/* ladder */
+.ladder { margin: 14px 0 4px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 6px; }
+.ladder figcaption { font-size: 12.5px; color: var(--muted); margin-bottom: 4px; }
+.lad-row { display: grid; grid-template-columns: 150px minmax(0, 1fr) 44px; gap: 10px; align-items: center; }
+.lad-name { font-size: 13px; }
+.lad-track { position: relative; height: 14px; background: var(--soft); border-radius: 3px; }
+.lad-track i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 3px; }
+.lad-zero { background: var(--free); } .lad-pilot { background: var(--pilot); }
+.lad-indata { background-image: repeating-linear-gradient(45deg, var(--indata) 0 3px, transparent 3px 6px); }
+.lad-ceil { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--ink); opacity: .6; }
+.lad-v { font-family: var(--font-m); font-size: 13px; text-align: right; }
+@media (max-width: 480px) { .lad-row { grid-template-columns: 110px minmax(0, 1fr) 40px; } }
+footer { margin-top: 30px; font-size: 12.5px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 12px; }
+</style>
+
+<article class="page">
+  <span class="eyebrow">predictability infrastructure (October 2026)</span>
+  <h1>UserSim roadmap</h1>
+  <div class="lede"><p>UserSim is infrastructure that makes a startup's users predictable, even before the startup has any user data. It combines our model, data priors, and a harness for selecting, curating and calibrating data. The benchmarks below are how we measure progress. This plan covers three spending stages: FREE (no paid data), Experimental (about $200 a month) and Incremental (about $2,000 a month).</p>
+</div>
+  <p>Companion pages:</p>
+<ul>
+<li><a href="https://claude.ai/artifact/JivwNQo6CWShstVeUpWCVr" target="_blank" rel="noopener">Data Lever Board</a>: which data moves which benchmark, measured.</li>
+<li><a href="https://claude.ai/artifact/LMKkv22QUcrCTR9bmRKAiw" target="_blank" rel="noopener">Benchmark Fit Board</a>: which benchmarks measure P1-P4.</li>
+<li><a href="https://claude.ai/artifact/BCDV1zvdmajxxuBe56goQc" target="_blank" rel="noopener">SimBench Strategy Map</a>.</li>
+</ul>
+<p>Source files:</p>
+<ul>
+<li><code>docs/plans/eval/data_board.py</code></li>
+<li><code>results/humaine/*.json</code></li>
+<li><code>docs/plans/usersim_direction_2026-10.md</code></li>
+</ul>
+<h2><span class="num">1</span> The answer in brief</h2>
+<ol>
+<li><strong>Real answers from real people carry the prediction.</strong> The model's job is to read that evidence and spread it to new cases, not to know the answer.
+<ul>
+<li>On SimBench, other populations' answers to the same question supply about 69% of our lift: 41.5 → 55.8 with no labels from the target dataset.</li>
+<li>On HUMAINE, a simulated pilot of 50 people from the target population adds +8.1 S on overall choice and +55 S on the four reasons, on top of the best zero-data model. A 400-person pilot adds +14.1 and +65.</li>
+</ul>
+</li>
+<li><strong>Public data about the same products from a different crowd is the best zero-data lever, and it hits a ceiling.</strong>
+<ul>
+<li>LMArena ratings lift Gemini 2.5 Flash on HUMAINE overall choice from 23.2 to 39.5.</li>
+<li>The share of pairs with a clear winner that Gemini calls right rises from 52.7% to 84.3%.</li>
+<li>What remains is a mismatch between the two populations. Arena voters and HUMAINE's UK/US panel rank models differently: Spearman 0.735, worst on reasoning-heavy models.</li>
+</ul>
+</li>
+<li><strong>The biggest single error is how often people say &quot;no difference&quot;, and no public dataset carries that number.</strong>
+<ul>
+<li>
+<p>HUMAINE tie rates by dimension:</p>
+<div class="tw"><table class="narrow">
+<thead>
+<tr>
+<th>Dimension</th>
+<th>Tie rate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Overall</td>
+<td>11%</td>
+</tr>
+<tr>
+<td>Communication style</td>
+<td>19%</td>
+</tr>
+<tr>
+<td>Fluidity</td>
+<td>32%</td>
+</tr>
+<tr>
+<td>Core task</td>
+<td>38%</td>
+</tr>
+<tr>
+<td>Trust</td>
+<td>66%</td>
+</tr>
+</tbody>
+</table></div>
+</li>
+<li>
+<p>Gemini predicts about 20% ties everywhere, so it scores below zero on reasons.</p>
+</li>
+<li>
+<p>Outside tie rates and SimBench-fitted calibration each help one dimension and hurt another.</p>
+</li>
+<li>
+<p>A 50-person pilot recovers almost all of what knowing the true tie rate is worth: 45.2 vs 45.4.</p>
+</li>
+</ul>
+</li>
+<li><strong>The literature points the same way:</strong>
+<ul>
+<li>Retrieved human evidence beats fine-tuning on new questions.</li>
+<li>Elicitation format and nonlinear calibration fix most of the distortion in simulated distributions.</li>
+<li>Small supervised heads beat frontier models only on a fixed instrument with new items. That is our P2 and P3 situation, not P1.</li>
+<li>Demographic personas add little.</li>
+<li>No open tool combines an evidence registry, calibrated distributions, honest intervals with or without customer data, abstention, a human-budget planner and a forecast ledger. That combination is the product.</li>
+</ul>
+</li>
+<li><strong>Therefore:</strong>
+<ul>
+<li><strong>FREE:</strong> build the harness and a pre-registered, reproducible result on four benchmarks.</li>
+<li><strong>Experimental ($200 a month):</strong> buy the cheapest real data that our measurements say pays most per dollar, starting with small pilots in the target population and first-impression panels.</li>
+<li><strong>Incremental ($2,000 a month):</strong> scale whichever arm proves out into a linked panel and a calibration bank that compounds with every study.</li>
+</ul>
+</li>
+</ol>
+<div class="timeline"><section class="stage st-free"><header><span class="tier">FREE</span><span class="budget">$0 on data</span><span class="when">Now</span></header><p class="goal">Consistent, pre-registered, publishable results on four benchmarks before paying for any data.</p><ul><li>Harness core: registry, leakage guard, licence gate, three tracks, ledger</li><li>HUMAINE zero-data re-run with four fixed changes (tie priors, arena blend, reasoning adjustment, segment offsets)</li><li>Pilot curve as a product feature: how many of your users you need</li><li>Zero-data intervals, reliability model, P2-Bench v0, Upworthy calibration, OPeRA audit, live Show HN ledger</li></ul><p class="gate"><b>Exit gate</b> Beats the plain model with CI above zero on 3+ benchmarks · pilot curves on 2 · interval coverage measured · one live round scored · one command per table</p></section><section class="stage st-exp"><header><span class="tier">EXPERIMENTAL</span><span class="budget">≈ $200 a month</span><span class="when">After the FREE gate</span></header><p class="goal">Find which paid data pays most per dollar, one pre-registered arm at a time.</p><ul><li>X1 pilot calibration on our own protocol (50-70 blind side-by-side sessions)</li><li>X2 first-impression panel: ≈ 1,750 ratings of post-cutoff startup pages</li><li>X3 task pair study every quarter (≈ 46 verified sessions)</li><li>X4 segment shift: can one cheap segment calibrate another?</li></ul><p class="gate"><b>Exit gate</b> After 3 months: ΔS per $100 with CIs for every arm; graduate the best one or two</p></section><section class="stage st-inc"><header><span class="tier">INCREMENTAL</span><span class="budget">≈ $2,000 a month</span><span class="when">Once a direction proves out</span></header><p class="goal">Compounding: every study makes the next customer cheaper to predict.</p><ul><li>Linked panel: the same people through P1 profile, P2 first impression, P3 tasks, P4 choice</li><li>P2 at scale (≈ 6,500 ratings a month) to train our own head; P3 benchmark of ≈ 5 pairs a month</li><li>Randomised budget-planner trial; customer calibration ladder</li></ul><p class="gate"><b>Exit gate</b> Labels needed to reach a target S fall month over month</p></section></div><figure class="ladder"><figcaption>HUMAINE overall choice, S (0 = uniform guess; line = ceiling 71.8). Gemini 2.5 Flash; pilots are simulated from the target population and removed before scoring.</figcaption><div class="lad-row"><span class="lad-name">Model alone</span><span class="lad-track"><i class="lad-zero" style="width:29.0%"></i><span class="lad-ceil" style="left:89.8%"></span></span><span class="lad-v">23.2</span></div><div class="lad-row"><span class="lad-name">+ public ratings</span><span class="lad-track"><i class="lad-zero" style="width:49.4%"></i><span class="lad-ceil" style="left:89.8%"></span></span><span class="lad-v">39.5</span></div><div class="lad-row"><span class="lad-name">+ 50-person pilot</span><span class="lad-track"><i class="lad-pilot" style="width:59.6%"></i><span class="lad-ceil" style="left:89.8%"></span></span><span class="lad-v">47.6</span></div><div class="lad-row"><span class="lad-name">+ 400-person pilot</span><span class="lad-track"><i class="lad-pilot" style="width:67.0%"></i><span class="lad-ceil" style="left:89.8%"></span></span><span class="lad-v">53.6</span></div><div class="lad-row"><span class="lad-name">In-dataset yardstick</span><span class="lad-track"><i class="lad-indata" style="width:83.7%"></i><span class="lad-ceil" style="left:89.8%"></span></span><span class="lad-v">66.9</span></div></figure><h2><span class="num">2</span> Where we stand (measured, no in-dataset tuning)</h2>
+<p><strong>SimBench (P1)</strong></p>
+<ul>
+<li>41.46 → 55.80 [55.08, 56.50] with no labels from the target dataset (leave one dataset out).</li>
+<li>59.68 [59.10, 60.25] with small cognitive models, cross-fitted on each dataset.</li>
+<li>62.49 after tuning on the benchmark itself. This number is optimistic and is never shown next to the first two.</li>
+<li>Calibration labels from the target population break even at about 25 labels and level off near +2 S at 100-200.</li>
+<li>Gemini 2.5 Flash zero-shot scores 33.2 on the evaluation sample.</li>
+</ul>
+<p><strong>Twin-2K-500 (P1, person level; 40 pricing items held out as a block)</strong></p>
+<ul>
+<li>
+<p>Reasons axes built from a person's other answers beat demographics:</p>
+<div class="tw"><table class="narrow">
+<thead>
+<tr>
+<th>Predictor</th>
+<th>TVD</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Anchor</td>
+<td>0.4905</td>
+</tr>
+<tr>
+<td>Best demographic attribute</td>
+<td>0.4895</td>
+</tr>
+<tr>
+<td>Reasons axes</td>
+<td>0.4802</td>
+</tr>
+</tbody>
+</table></div>
+</li>
+<li>
+<p>Axes predict group gaps far better than attributes: correlation 0.44 vs 0.10.</p>
+</li>
+<li>
+<p>Segments are not stable (ARI 0.39).</p>
+</li>
+<li>
+<p>Lesson: profiles explain who differs and why. They barely move population numbers.</p>
+</li>
+</ul>
+<p><strong>HUMAINE (P4 overall choice plus four reasons; 4,355 product-pair × segment cells; ceiling 71.8)</strong></p>
+<p>The ladder is published on the Data Lever Board.</p>
+<div class="tw"><table class="wide">
+<thead>
+<tr>
+<th>Step</th>
+<th>Track</th>
+<th>Overall S</th>
+<th>Reasons S</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Gemini 2.5 Flash, product names only</td>
+<td>zero-data</td>
+<td>23.2</td>
+<td>−23.2</td>
+</tr>
+<tr>
+<td>+ OpenRouter listing (description, date, price)</td>
+<td>zero-data</td>
+<td>22.6</td>
+<td>−24.7</td>
+</tr>
+<tr>
+<td>+ LMArena ratings in the prompt</td>
+<td>zero-data</td>
+<td>39.5</td>
+<td>−29.6</td>
+</tr>
+<tr>
+<td>+ arena tie share (pre-registered 27.5%)</td>
+<td>zero-data</td>
+<td>20.8</td>
+<td>−2.6</td>
+</tr>
+<tr>
+<td>+ arena &quot;tie&quot; share (15.9%) + SimBench temperature</td>
+<td>zero-data, post hoc</td>
+<td>44.4</td>
+<td>−29.9</td>
+</tr>
+<tr>
+<td>+ 50-person pilot: tie share and confidence</td>
+<td>pilot</td>
+<td>45.2</td>
+<td>23.5</td>
+</tr>
+<tr>
+<td>+ 50-person pilot as evidence (arena prior updated by pilot votes)</td>
+<td>pilot</td>
+<td>47.6</td>
+<td>25.7</td>
+</tr>
+<tr>
+<td>+ 400-person pilot as evidence</td>
+<td>pilot</td>
+<td>53.6</td>
+<td>35.4</td>
+</tr>
+<tr>
+<td>Yardstick: Bradley-Terry on all other HUMAINE pairs</td>
+<td>in-dataset</td>
+<td>66.9</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Diagnostics</strong> (these use HUMAINE answers, so they only show where the gap is):</p>
+<ul>
+<li>Knowing the true tie share takes Gemini + arena to 45.4 overall and 28.0 on reasons.</li>
+<li>Knowing who wins each cell takes it to 72.6 overall.</li>
+<li>So on overall choice, <em>who wins</em> is the remaining lever. On reasons, <em>how often people see no difference</em> is the lever.</li>
+</ul>
+<p><strong>HUMAINE goal-achievement score (P3)</strong></p>
+<ul>
+<li>Gemini scores 26.9 against a ceiling of 89.8.</li>
+<li>Arena ratings make it worse (14.6): the model is too pessimistic, with a mean predicted score of 3.4-3.6 against a real 4.3.</li>
+<li>Caveat: these labels come from a GPT-4.1 judge, not from users (HUMAINE paper, arXiv 2603.04409). We treat P3 on HUMAINE as a weak signal.</li>
+</ul>
+<p><strong>What the tests say about data, across benchmarks:</strong></p>
+<div class="tw"><table class="wide">
+<thead>
+<tr>
+<th>Data</th>
+<th>Lever</th>
+<th>Measured effect</th>
+<th>Verdict</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pilot from the target population</td>
+<td>calibration + evidence</td>
+<td>SimBench +2 (100-200 labels); HUMAINE +8.1 overall / +55 reasons (50 people), +14.1 / +65 (400)</td>
+<td>Strongest; most value by 50-100 people, evidence keeps paying beyond</td>
+</tr>
+<tr>
+<td>Same question, other populations</td>
+<td>evidence</td>
+<td>SimBench +14.3</td>
+<td>Core of P1</td>
+</tr>
+<tr>
+<td>Public ratings of the same products by another crowd</td>
+<td>context</td>
+<td>HUMAINE +16.3 overall, −6.4 reasons</td>
+<td>Best zero-data lever for P4; needs tie calibration</td>
+</tr>
+<tr>
+<td>Outside tie rates (arena votes)</td>
+<td>prior</td>
+<td>+3.1 or −18.8 overall depending on mapping</td>
+<td>Protocol-specific; one rate cannot serve all dimensions</td>
+</tr>
+<tr>
+<td>Calibration fitted on another benchmark</td>
+<td>calibration</td>
+<td>HUMAINE −1.9 overall, +10.8 reasons</td>
+<td>Transfers only between similar answer formats</td>
+</tr>
+<tr>
+<td>A person's earlier answers</td>
+<td>profiles</td>
+<td>Twin-2K TVD −0.0103 vs anchor; gap correlation 0.44</td>
+<td>Explains differences; small population effect</td>
+</tr>
+<tr>
+<td>Product listings and metadata</td>
+<td>context</td>
+<td>HUMAINE −0.6</td>
+<td>No help for known products</td>
+</tr>
+<tr>
+<td>Demographics alone</td>
+<td>profiles</td>
+<td>Twin-2K TVD −0.0010</td>
+<td>Weak</td>
+</tr>
+</tbody>
+</table></div>
+<h2><span class="num">3</span> What published work says (highest-lever findings)</h2>
+<p>Full notes, with every source and what was verified, are in three research reports. The main points:</p>
+<ul>
+<li>
+<p><strong>Evidence over weights.</strong></p>
+<ul>
+<li>Evi-DA (Findings ACL 2026): removing retrieved survey evidence nearly doubles error on new domains (JSD 0.23 → 0.44), and the untrained pipeline scores nearly as well as the trained one.</li>
+<li>Meister et al. (NAACL 2025, arXiv 2411.05403): written-out distributions beat log-probabilities, and showing the group's answers on similar questions helps every strong model.</li>
+<li>Park et al. (arXiv 2411.10109): agents built from a person's survey or interview answers reach 82-86% of test-retest accuracy, against 74% from demographics.</li>
+</ul>
+</li>
+<li>
+<p><strong>Elicitation and calibration fix the shape.</strong></p>
+<ul>
+<li>Pairwise questions lift directional A/B accuracy from 0.40 to 0.75 (Amazon, arXiv 2609.01038).</li>
+<li>Semantic-similarity rating raises the KS similarity of Likert distributions from 0.26 to 0.88 (arXiv 2510.08338).</li>
+<li>Raw LLM answers recover only 39% of the human A/B effect. Tree-based calibration brings it within sampling error, while linear calibration fails (Spotify, arXiv 2606.17165).</li>
+</ul>
+</li>
+<li>
+<p><strong>Honest uncertainty without customer data.</strong></p>
+<ul>
+<li>Task-exchangeability intervals widen the synthetic interval by the gaps seen on past tasks: 97% coverage on ANES against 3% for naive intervals (Tan &amp; Zrnic, arXiv 2606.13629).</li>
+<li>GPT-4o is worth about 58 human respondents on OpinionQA (Huang et al., arXiv 2502.17773).</li>
+</ul>
+</li>
+<li>
+<p><strong>Spend humans where the simulator is weakest.</strong> Allocating labels by predicted difficulty cuts error 10.5-11.4% at equal budget, against 1.5-3.6% for uniform PPI++ (Ye &amp; Yoganarasimhan, arXiv 2604.17267).</p>
+</li>
+<li>
+<p><strong>Pairing humans with simulated twins</strong> (PPI, AIPW) mainly buys validity: effective sample rises about 13-14% (Hullman et al., arXiv 2602.15785).</p>
+</li>
+<li>
+<p><strong>Fine-tuning wins on a fixed instrument with new items</strong> (P2 and P3), not on new questions:</p>
+<div class="tw"><table class="wide">
+<thead>
+<tr>
+<th>Model</th>
+<th>Task</th>
+<th>Fine-tuned</th>
+<th>Best frontier baseline</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>UIClip (arXiv 2404.12500)</td>
+<td>Designer pairwise quality</td>
+<td>75.1%</td>
+<td>GPT-4V 51.6%</td>
+</tr>
+<tr>
+<td>DesignSense (arXiv 2602.23438)</td>
+<td>Layout preference, 4-way</td>
+<td>0.519</td>
+<td>0.385</td>
+</tr>
+<tr>
+<td>LOLA (arXiv 2406.02611)</td>
+<td>Held-out Upworthy tests</td>
+<td>46.9%</td>
+<td>GPT-4 38-40% (random 33%)</td>
+</tr>
+</tbody>
+</table></div>
+</li>
+<li>
+<p><strong>Prompted agents over-cooperate, and human traces fix them.</strong></p>
+<ul>
+<li>Add-to-cart rate: 80% for prompted agents against 16% for real users.</li>
+<li>Training on OPeRA traces lifts next-action accuracy from 9.5% to 44.6% (arXiv 2510.19245).</li>
+<li>Session-level rewards bring the action mix close to humans (RecVerse, arXiv 2608.20707).</li>
+<li>UserLM-8b (MIT licence) ends conversations the way people do (arXiv 2510.06552).</li>
+</ul>
+</li>
+<li>
+<p><strong>Demographics add little per decision. Aggregates work; individuals do not.</strong></p>
+<ul>
+<li>PRISM-X (arXiv 2605.13307): aggregate r = 0.98-0.99; individual τ = 0.11-0.22, against human self-consistency of 0.57.</li>
+<li>On HUMAINE, an age-specific model does not beat a pooled one per vote.</li>
+<li>Generic personas match detailed ones (Kuric et al., arXiv 2605.18311).</li>
+</ul>
+</li>
+<li>
+<p><strong>Zero-shot prediction of A/B winners is near chance.</strong></p>
+<ul>
+<li>WiserUI-Bench consistent accuracy: 34.6% against 25% random.</li>
+<li>Squoosh: κ = 0.14 on 330 tests.</li>
+<li>So verdicts must depend on the size of the predicted gap, run in both presentation orders, and be allowed to abstain.</li>
+</ul>
+</li>
+<li>
+<p><strong>Positioning.</strong></p>
+<ul>
+<li>Simulators (EDSL, TinyTroupe) generate answers but do not correct them.</li>
+<li>Statistics libraries (ppi_py) correct them but do not retrieve evidence.</li>
+<li>Persona MCP servers (Althing, Minds) serve personas with no validation.</li>
+<li>The missing middle layer is ours.</li>
+<li>Note: a NeurIPS 2026 workshop is also called &quot;UserSim&quot; (12 Dec 2026). It could be a partner, and it creates a naming conflict.</li>
+</ul>
+</li>
+</ul>
+<h2><span class="num">4</span> The infrastructure we are building</h2>
+<p>One harness, exposed as an open-source library and an MCP server. Each component has a benchmark that measures it.</p>
+<div class="tw"><table class="wide">
+<thead>
+<tr>
+<th>#</th>
+<th>Component</th>
+<th>What it does</th>
+<th>Measured by</th>
+<th>Stage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>Data registry, leakage guard, licence gate</td>
+<td>Provenance, dates relative to model cutoffs, population-overlap rule, dedup, NC data blocked from commercial paths</td>
+<td>Every benchmark (prerequisite)</td>
+<td>FREE</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Evidence retrieval</td>
+<td>Same question from neighbouring segments; same segment on related questions; public ratings of the same products; the customer's past tests</td>
+<td>SimBench, HUMAINE, PRISM</td>
+<td>FREE</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Distribution reader</td>
+<td>Frontier model writes out distributions; pairwise in both orders; predicted gap and abstain</td>
+<td>All</td>
+<td>FREE</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Protocol priors and calibration bank</td>
+<td>Tie and neutral share, spread and scale use per answer format; learned from public pairwise and survey data, then updated by pilots</td>
+<td>HUMAINE reasons, SimBench</td>
+<td>FREE → Experimental</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Reliability model</td>
+<td>Predicts error from evidence support, disagreement between sources, entropy and embeddings; routes or abstains</td>
+<td>SimBench (leave one dataset out), HUMAINE</td>
+<td>FREE</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Small-data rectification</td>
+<td>A pilot used as calibration and as evidence; PPI++ or AIPW intervals; zero-data task-exchangeability intervals</td>
+<td>HUMAINE pilot track, Twin-2K</td>
+<td>FREE → Experimental</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Human-budget planner</td>
+<td>How many people, which questions, which segments; square-root allocation by predicted difficulty</td>
+<td>Simulated on Twin-2K and SimBench, then live</td>
+<td>Experimental</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Forecast ledger</td>
+<td>Every prediction pre-registered with a timestamp; outcomes imported; rolling coverage</td>
+<td>Show HN live, monthly polls</td>
+<td>FREE onward</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Fixed-instrument heads</td>
+<td>P2 appeal and trust head; P3 behaviour critic trained on human traces</td>
+<td>P2-Bench, OPeRA</td>
+<td>FREE (public data) → Incremental (own data)</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>The flywheel:</strong></p>
+<ol>
+<li>Every study a customer or we run lands in the ledger.</li>
+<li>Its outcomes feed the calibration bank (component 3) and the evidence index (component 1).</li>
+<li>Better priors mean fewer labels for the next customer.</li>
+</ol>
+<p>The metric for the flywheel is <strong>labels needed to reach a target S, falling month over month</strong>.</p>
+<h2><span class="num">5</span> Benchmarks as markers</h2>
+<div class="tw"><table class="wide">
+<thead>
+<tr>
+<th>Benchmark</th>
+<th>Stage</th>
+<th>Now</th>
+<th>FREE exit target</th>
+<th>Experimental target</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SimBench, zero target labels</td>
+<td>P1</td>
+<td>55.8</td>
+<td>≥ 57 with intervals covering within ±3 pt of nominal</td>
+<td>Monthly fresh polls tracked</td>
+</tr>
+<tr>
+<td>Twin-2K-500, held-out blocks</td>
+<td>P1</td>
+<td>axes −0.0103 TVD vs anchor</td>
+<td>Rectifier bake-off picks a default; segments stable (ARI ≥ 0.6) or dropped</td>
+<td>—</td>
+</tr>
+<tr>
+<td>HUMAINE overall, zero-data, pre-registered</td>
+<td>P4</td>
+<td>39.5</td>
+<td>≥ 45 with no post hoc choices</td>
+<td>—</td>
+</tr>
+<tr>
+<td>HUMAINE reasons, zero-data</td>
+<td>P4</td>
+<td>−29.6</td>
+<td>≥ 0</td>
+<td>—</td>
+</tr>
+<tr>
+<td>HUMAINE + 50-person pilot</td>
+<td>P4</td>
+<td>47.6 / 25.7</td>
+<td>≥ 50 / ≥ 30</td>
+<td>Replicated on our own protocol</td>
+</tr>
+<tr>
+<td>PRISM (first impression → choice)</td>
+<td>P2, P4</td>
+<td>not run</td>
+<td>Baseline and pilot curve</td>
+<td>—</td>
+</tr>
+<tr>
+<td>P2-Bench v0 (public rated screenshots, split by site)</td>
+<td>P2</td>
+<td>not built</td>
+<td>Head ≥ +0.10 ρ over frontier</td>
+<td>Own panel replaces public data</td>
+</tr>
+<tr>
+<td>Upworthy</td>
+<td>P2</td>
+<td>not run</td>
+<td>≥ 90% of the human effect recovered</td>
+<td>—</td>
+</tr>
+<tr>
+<td>OPeRA</td>
+<td>P3</td>
+<td>not run</td>
+<td>Action mix within ±25% of humans</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Live Show HN forecasts</td>
+<td>P2, P4</td>
+<td>not run</td>
+<td>One scored round, beats base rate</td>
+<td>Monthly rounds</td>
+</tr>
+</tbody>
+</table></div>
+<h2><span class="num">6</span> Stage 1: FREE (now, until results are consistent and publishable)</h2>
+<p><strong>Rule:</strong> no paid data. GCP, model calls, fine-tuning and training are free. Every number is pre-registered before it is scored and reproducible with one command.</p>
+<p>Work, in order of leverage:</p>
+<div class="tw"><table class="wide">
+<thead>
+<tr>
+<th>ID</th>
+<th>Work</th>
+<th>Why</th>
+<th>Done when</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>F1</td>
+<td>Harness core: registry, leakage guard, licence gate, three tracks (zero-data / pilot / in-dataset), ledger</td>
+<td>Every claim depends on it</td>
+<td>Every result file carries track, sources and timestamp; NC sources cannot reach commercial code paths</td>
+</tr>
+<tr>
+<td>F2</td>
+<td>HUMAINE zero-data, pre-registered</td>
+<td>Remove the post hoc tie choice; fix reasons</td>
+<td>Single re-score of four fixed changes, against the 39.5 / −29.6 baseline. Target: reasons ≥ 0, overall ≥ 45</td>
+</tr>
+<tr>
+<td>F3</td>
+<td>Pilot curve as a product feature (&quot;how many of your users do you need&quot;)</td>
+<td>The strongest lever we measured</td>
+<td>Curves for SimBench, Twin-2K and HUMAINE with the same code path; published</td>
+</tr>
+<tr>
+<td>F4</td>
+<td>Zero-data intervals (task exchangeability)</td>
+<td>Honest uncertainty before any customer data</td>
+<td>Coverage within ±3 pt of nominal 80/90% across held-out SimBench datasets</td>
+</tr>
+<tr>
+<td>F5</td>
+<td>Reliability model</td>
+<td>Abstain where we would be wrong; drives the planner</td>
+<td>AUROC ≥ 0.72 for &quot;error below threshold&quot;, leaving one dataset out</td>
+</tr>
+<tr>
+<td>F6</td>
+<td>P2-Bench v0 from public rated screenshots (Miniukovich &amp; Figl, UICrit, BetterApp, WiserUI), split by site</td>
+<td>P2 is weighted 2.5 and has no measured result yet</td>
+<td>Frontier zero-shot vs pairwise vs frozen-embedding head vs QLoRA 8B</td>
+</tr>
+<tr>
+<td>F7</td>
+<td>Upworthy calibration stack (Spotify replication)</td>
+<td>Calibration for A/B predictions</td>
+<td>≥ 90% effect recovery on held-out tests; interval coverage ≥ 93%</td>
+</tr>
+<tr>
+<td>F8</td>
+<td>P3 cooperativeness audit against OPeRA, then a small behaviour critic</td>
+<td>Our agents likely over-convert</td>
+<td>Action mix within ±25% of humans</td>
+</tr>
+<tr>
+<td>F9</td>
+<td>Live ledger: weekly Show HN forecasts (open); Product Hunt as an open benchmark only</td>
+<td>The only test that cannot be memorised</td>
+<td>Four scored weekly rounds</td>
+</tr>
+<tr>
+<td>F10</td>
+<td>Paper and release: &quot;Predicting users with little or no data: four benchmarks, three tracks&quot;, plus the open-source harness and MCP</td>
+<td>Publishable before paying</td>
+<td>arXiv draft; one command reproduces each table</td>
+</tr>
+</tbody>
+</table></div>
+<p>F2 makes four fixed changes:</p>
+<ol>
+<li>An arena prior blending raw and category ratings with weights set in advance.</li>
+<li>Per-dimension tie priors from outside pairwise data (HelpSteer equal-rating shares, MT-Bench, PRISM near-ties).</li>
+<li>A reasoning-model and latency adjustment derived from SEAL and arena data.</li>
+<li>Segment offsets from PRISM and Community Alignment.</li>
+</ol>
+<p><strong>Exit gate</strong> (all must hold before spending on data):</p>
+<ol>
+<li>The zero-data harness beats the plain model with CI above zero on at least 3 benchmarks, pre-registered.</li>
+<li>Pilot curves exist on at least 2 benchmarks.</li>
+<li>Zero-data intervals have measured coverage.</li>
+<li>One live forecasting round has been scored.</li>
+<li>Every table reproduces from the repository.</li>
+</ol>
+<h2><span class="num">7</span> Stage 2: Experimental (about $200 a month)</h2>
+<p><strong>Goal:</strong> find which paid data gives the largest gain per dollar. Each arm is pre-registered with a scale-or-kill rule.</p>
+<p><strong>Costs</strong> (Prolific, 2026):</p>
+<ul>
+<li>Participants are paid $12/hour (the recommended rate), and Prolific adds a 42.8% corporate fee.</li>
+<li>A 10-minute session costs about $2.86; a 15-minute session about $4.28.</li>
+<li>A HUMAINE-style comparison takes about 10-15 minutes, so 50 cost $140-215. That is one month of this stage.</li>
+</ul>
+<div class="tw"><table class="wide">
+<thead>
+<tr>
+<th>Arm</th>
+<th>What we buy</th>
+<th>Monthly cost</th>
+<th>Tests</th>
+<th>Scale if</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>X1 Pilot calibration on our own protocol</td>
+<td>50-70 blind side-by-side sessions on startup-like product pairs</td>
+<td>≈ $200</td>
+<td>Does the HUMAINE pilot curve replicate outside HUMAINE?</td>
+<td>≥ +5 S over zero-data at 50 people, CI above zero</td>
+</tr>
+<tr>
+<td>X2 First-impression panel</td>
+<td>≈ 70 ten-minute sessions: ≈ 1,750 ratings of post-cutoff startup pages (500 ms and 5 s exposure), 4 items, pairwise in both orders</td>
+<td>≈ $200</td>
+<td>Zero-data P2 vs a real panel; seeds the P2 head</td>
+<td>ρ ≥ 0.6 on appeal and trust after 3 months</td>
+</tr>
+<tr>
+<td>X3 Task pair study</td>
+<td>≈ 46 fifteen-minute within-subject sessions every third month: same task on the startup and a competitor, verified success, ease, preference</td>
+<td>≈ $200 per quarter</td>
+<td>P3 calibration by difficulty band</td>
+<td>Completion-rate error ≤ 15 pt</td>
+</tr>
+<tr>
+<td>X4 Segment shift</td>
+<td>Anchor in segment A, predict segment B, against a direct sample of 50</td>
+<td>≈ $200 once</td>
+<td>Can one cheap segment calibrate another?</td>
+<td>Shifted anchor matches the direct sample</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Order:</strong> X1 first, because it is the lever we measured. Then X2 and X1 alternate monthly, and X3 runs every quarter.</p>
+<p><strong>Decision after three months:</strong> compute ΔS per $100, with CIs, for every arm, and graduate the best one or two.</p>
+<p><strong>Quality control on every study:</strong></p>
+<ul>
+<li>10-15% duplicate items with a rate-rerate exclusion rule.</li>
+<li>A recognition test.</li>
+<li>Minimum time on task.</li>
+<li>Prolific authenticity checks. Plain attention checks are not enough, because LLM agents pass them.</li>
+</ul>
+<h2><span class="num">8</span> Stage 3: Incremental (about $2,000 a month)</h2>
+<p><strong>Goal:</strong> compounding. Spend only on directions that passed Stage 2.</p>
+<div class="tw"><table class="wide">
+<thead>
+<tr>
+<th>Item</th>
+<th>Monthly</th>
+<th>Produces</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>I1 Linked panel: the same people answer a profile survey (P1), see first impressions (P2), attempt tasks (P3) and then choose (P4)</td>
+<td>≈ $750-1,000</td>
+<td>The proprietary dataset no one else has; segment offsets with real stability tests</td>
+</tr>
+<tr>
+<td>I2 P2 at scale (≈ 260 sessions, ≈ 6,500 ratings)</td>
+<td>≈ $750</td>
+<td>Training data for our own P2 head (target +0.10 ρ over frontier by segment)</td>
+</tr>
+<tr>
+<td>I3 P3 benchmark (≈ 5 product pairs × ≈ 46 people)</td>
+<td>≈ $1,000 (alternates with I2)</td>
+<td>Calibration of predicted success and post-use preference</td>
+</tr>
+<tr>
+<td>I4 Budget-planner trial: uniform vs difficulty-based allocation, randomised</td>
+<td>inside I1-I3</td>
+<td>≥ 10% lower error at equal spend</td>
+</tr>
+<tr>
+<td>I5 Customer calibration ladder: consented A/B logs and outcomes, switched on after 25 outcomes and a half-split check</td>
+<td>free per customer</td>
+<td>The flywheel's main input</td>
+</tr>
+</tbody>
+</table></div>
+<h2><span class="num">9</span> Research directions, ranked by lever</h2>
+<div class="tw"><table class="wide">
+<thead>
+<tr>
+<th>Area</th>
+<th>Highest-lever next step</th>
+<th>Evidence</th>
+<th>Stage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Data</td>
+<td>Target-population pilots (calibration and evidence); then a linked panel</td>
+<td>Our HUMAINE pilot curve; SimBench calibration</td>
+<td>Experimental → Incremental</td>
+</tr>
+<tr>
+<td>Data (free)</td>
+<td>Public ratings of the same products by another crowd; per-format tie and neutral priors from public pairwise data; fresh post-cutoff polls</td>
+<td>+16.3 (arena); tie diagnostics; Tan &amp; Zrnic</td>
+<td>FREE</td>
+</tr>
+<tr>
+<td>Harness</td>
+<td>Evidence retrieval sweep; protocol priors; reliability model with abstention; zero-data intervals; planner</td>
+<td>Evi-DA; Meister; Simile confidence AUROC 0.69-0.74; Ye &amp; Yoganarasimhan</td>
+<td>FREE</td>
+</tr>
+<tr>
+<td>Elicitation</td>
+<td>Pairwise in both orders; semantic-similarity rating for Likert; gap-aware verdicts</td>
+<td>Amazon 0.40 → 0.75; SSR 0.26 → 0.88; WiserUI position bias</td>
+<td>FREE</td>
+</tr>
+<tr>
+<td>Fine-tuning</td>
+<td>Only for fixed instruments with new items: P2 head (frozen embedding, then QLoRA 8B with a distribution loss) and P3 behaviour critic (OPeRA SFT + session reward). Not for P1 new questions</td>
+<td>UIClip, DesignSense, PerceptUI, LOLA; See-Think-Act, RecVerse</td>
+<td>FREE (public data)</td>
+</tr>
+<tr>
+<td>Model research</td>
+<td>Learn the platform shift (style, length, latency, reasoning) between crowds so public ratings transfer to a target population</td>
+<td>Arena → HUMAINE ρ 0.735; reasoning models are the biggest misses</td>
+<td>FREE</td>
+</tr>
+<tr>
+<td>Usability studies</td>
+<td>Verified-success task studies with pre-use first impressions; think-aloud for reasons (Userbrain, about $249 a month for 10)</td>
+<td>NN/g sample sizes; Lost in Simulation</td>
+<td>Experimental → Incremental</td>
+</tr>
+</tbody>
+</table></div>
+<h2><span class="num">10</span> Risks and guards</h2>
+<ul>
+<li><strong>Leakage and memorisation.</strong>
+<ul>
+<li>Benchmark rows never tune a method.</li>
+<li>HUMAINE products are known to models. Claims about unknown startups need post-cutoff products: Show HN, our own panel.</li>
+</ul>
+</li>
+<li><strong>Post hoc choices.</strong> H4/H8 on the Data Lever Board include a choice made after scoring. F2 re-runs them pre-registered.</li>
+<li><strong>HUMAINE caveats.</strong>
+<ul>
+<li>Goal-achievement labels come from an LLM judge.</li>
+<li>Matchmaking ran separately in each stratum, so segments are compared only on shared pairs.</li>
+<li>Model identity can leak through style (&quot;blind-ish&quot;).</li>
+</ul>
+</li>
+<li><strong>Licences.</strong>
+<ul>
+<li>Non-commercial data (SimBench, PRISM model responses, WVS, Product Hunt) stays in the research track and the open benchmark.</li>
+<li>Twin-2K, Upworthy, OPeRA, LMArena and Community Alignment are CC BY.</li>
+</ul>
+</li>
+<li><strong>Panel fraud.</strong> Authenticity checks, duplicates and recognition tests on every paid study.</li>
+<li><strong>Naming.</strong> The NeurIPS 2026 &quot;UserSim&quot; workshop overlaps our name. Decide whether to partner or rename before release.</li>
+</ul>
+<h2>Sources</h2>
+<ul>
+<li><strong>Our results:</strong> <code>results/humaine/scores.json</code>, <code>results/humaine/transfer.json</code>, <code>results/popadapt/cards_twin.json</code>, <code>docs/plans/usersim_direction_2026-10.md</code>.</li>
+<li><strong>Research reports (2026-10-10):</strong> three literature sweeps, with sources opened and unverified items marked:
+<ul>
+<li><code>docs/research/2026-10-10_preference_prediction_by_segment.md</code></li>
+<li><code>docs/research/2026-10-10_data_curation_calibration.md</code></li>
+<li><code>docs/research/2026-10-10_models_finetuning_usability.md</code></li>
+</ul>
+</li>
+<li><strong>Key papers:</strong> HUMAINE 2603.04409; Evi-DA (Findings ACL 2026); Meister et al. 2411.05403; Park et al. 2411.10109; Tan &amp; Zrnic 2606.13629; Huang et al. 2502.17773; Ye &amp; Yoganarasimhan 2604.17267; Hullman et al. 2602.15785; Spotify 2606.17165; Amazon persona A/B 2609.01038; SSR 2510.08338; UIClip 2404.12500; DesignSense 2602.23438; LOLA 2406.02611; See-Think-Act 2510.19245; RecVerse 2608.20707; UserLM 2510.06552; PRISM 2404.16019; PRISM-X 2605.13307; Kuric et al. 2605.18311; WiserUI-Bench 2505.05026.</li>
+</ul>
+
+  <footer>Source of truth: <code>docs/plans/roadmap_2026-10.md</code>. Numbers come from <code>results/humaine/*.json</code>, <code>results/popadapt/cards_twin.json</code> and <code>docs/plans/usersim_direction_2026-10.md</code>; the ladder is read from results when the page is built.</footer>
+</article>

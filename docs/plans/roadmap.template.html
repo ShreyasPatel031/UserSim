@@ -1,0 +1,78 @@
+<title>UserSim Roadmap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<style>
+/* Layout: one reading column (tables scroll inside their own frame). Family resemblance with the Data Lever Board and Benchmark Fit Board: same faces and track colors. Three stage columns read left to right as a sequence of spending gates. */
+:root {
+  --bg: #f4f6f5; --surface: #ffffff; --ink: #15191a; --ink2: #4a5356; --muted: #727b7e; --line: #dbe1df; --soft: #eef2f0;
+  --accent: #1f6fcf; --free: #1f6fcf; --exp: #c25a1f; --inc: #4a3aa7; --pilot: #17895f; --indata: #8a9396;
+  --font-d: "IBM Plex Sans Condensed", "IBM Plex Sans", system-ui, sans-serif;
+  --font-b: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif; --font-m: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #111414; --surface: #191d1d; --ink: #eef2f0; --ink2: #b8c1c0; --muted: #8e9898; --line: #2b3131; --soft: #202626;
+  --accent: #5a9ff0; --free: #5a9ff0; --exp: #e8803f; --inc: #9085e9; --pilot: #3cbf8a; --indata: #7d8789; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #111414; --surface: #191d1d; --ink: #eef2f0; --ink2: #b8c1c0; --muted: #8e9898; --line: #2b3131; --soft: #202626;
+  --accent: #5a9ff0; --free: #5a9ff0; --exp: #e8803f; --inc: #9085e9; --pilot: #3cbf8a; --indata: #7d8789; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-b); font-size: 15px; line-height: 1.6; padding-inline: 16px; padding-block: 32px 64px; }
+.page { max-width: 900px; margin-inline: auto; display: flex; flex-direction: column; gap: 14px; }
+.eyebrow { font-family: var(--font-m); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+h1 { font-family: var(--font-d); font-size: clamp(30px, 5vw, 46px); line-height: 1.05; margin: 0; letter-spacing: -0.01em; text-wrap: balance; }
+.lede p { font-size: 17px; color: var(--ink2); max-width: 66ch; margin: 0; }
+h2 { font-family: var(--font-d); font-size: 24px; margin: 28px 0 4px; letter-spacing: -0.005em; text-wrap: balance; display: flex; gap: 10px; align-items: baseline; }
+h2 .num { font-family: var(--font-m); font-size: 14px; color: var(--accent); border: 1px solid var(--line); border-radius: 4px; padding: 0 6px; }
+h3 { font-size: 16px; margin: 16px 0 0; }
+p, li { max-width: 72ch; }
+p { margin: 6px 0; }
+ul, ol { margin: 6px 0; padding-left: 22px; }
+li { margin: 3px 0; }
+a { color: var(--accent); text-underline-offset: 2px; }
+strong { font-weight: 600; }
+code { font-family: var(--font-m); font-size: 12.5px; background: var(--soft); padding: 1px 5px; border-radius: 4px; overflow-wrap: anywhere; }
+.tw { overflow-x: auto; margin: 10px 0 6px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+table.wide { min-width: 640px; }
+.tw:has(table.narrow) { max-width: 520px; }
+th { text-align: left; font-weight: 500; font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); padding: 8px 10px; border-bottom: 1px solid var(--line); background: var(--soft); }
+td { padding: 8px 10px; border-top: 1px solid var(--line); vertical-align: top; font-variant-numeric: tabular-nums; }
+tr:first-child td { border-top: 0; }
+
+/* stage timeline */
+.timeline { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 22px 0 6px; position: relative; }
+@media (max-width: 760px) { .timeline { grid-template-columns: minmax(0, 1fr); } }
+.stage { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 8px; min-width: 0; position: relative; }
+.stage header { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; border-bottom: 3px solid var(--c); padding-bottom: 8px; }
+.st-free { --c: var(--free); } .st-exp { --c: var(--exp); } .st-inc { --c: var(--inc); }
+.tier { font-family: var(--font-m); font-weight: 500; font-size: 13px; letter-spacing: 0.06em; color: var(--c); }
+.budget { font-family: var(--font-d); font-weight: 700; font-size: 20px; }
+.when { font-size: 12px; color: var(--muted); width: 100%; }
+.goal { font-weight: 500; margin: 0; font-size: 14.5px; }
+.stage ul { font-size: 13.5px; color: var(--ink2); padding-left: 18px; margin: 0; }
+.gate { margin: auto 0 0; font-size: 12.5px; background: var(--soft); border-radius: 6px; padding: 8px 10px; color: var(--ink2); }
+.gate b { display: block; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink); }
+
+/* ladder */
+.ladder { margin: 14px 0 4px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 6px; }
+.ladder figcaption { font-size: 12.5px; color: var(--muted); margin-bottom: 4px; }
+.lad-row { display: grid; grid-template-columns: 150px minmax(0, 1fr) 44px; gap: 10px; align-items: center; }
+.lad-name { font-size: 13px; }
+.lad-track { position: relative; height: 14px; background: var(--soft); border-radius: 3px; }
+.lad-track i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 3px; }
+.lad-zero { background: var(--free); } .lad-pilot { background: var(--pilot); }
+.lad-indata { background-image: repeating-linear-gradient(45deg, var(--indata) 0 3px, transparent 3px 6px); }
+.lad-ceil { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--ink); opacity: .6; }
+.lad-v { font-family: var(--font-m); font-size: 13px; text-align: right; }
+@media (max-width: 480px) { .lad-row { grid-template-columns: 110px minmax(0, 1fr) 40px; } }
+footer { margin-top: 30px; font-size: 12.5px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 12px; }
+</style>
+
+<article class="page">
+  <span class="eyebrow">__SUB__</span>
+  <h1>__TITLE__</h1>
+  <div class="lede">__LEDE__</div>
+  __BODY__
+  <footer>Source of truth: <code>docs/plans/roadmap_2026-10.md</code>. Numbers come from <code>results/humaine/*.json</code>, <code>results/popadapt/cards_twin.json</code> and <code>docs/plans/usersim_direction_2026-10.md</code>; the ladder is read from results when the page is built.</footer>
+</article>

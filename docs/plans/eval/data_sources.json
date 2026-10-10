@@ -320,7 +320,7 @@
     },
     "P4": {
      "score": 2,
-     "why": "Tie share: +3.1 or -18.7 S depending on how 'both bad' maps; prompt-level strengths untested"
+     "why": "Tie share: +3.1 or -18.8 S depending on how 'both bad' maps; prompt-level strengths untested"
     }
    },
    "exp": {
@@ -377,7 +377,7 @@
     },
     "P4": {
      "score": 1,
-     "why": "HUMAINE: -1.8 overall, +10.8 on reasons; survey calibration does not carry to who-wins"
+     "why": "HUMAINE: -1.9 overall, +10.8 on reasons; survey calibration does not carry to who-wins"
     }
    },
    "exp": {},
