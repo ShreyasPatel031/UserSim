@@ -1,0 +1,1465 @@
+{
+ "twin_pricing": {
+  "dataset": "Twin-2K-500",
+  "level": "person",
+  "coverage": {
+   "units": 2058,
+   "items": 586,
+   "observed_cells": 1152345,
+   "density": 0.9555,
+   "median_units_per_item": 2058.0,
+   "median_items_per_unit": 558.0
+  },
+  "test_items": 40,
+  "axes_segments_supported": true,
+  "attribute_choice": {
+   "ideology": 0.5468,
+   "party": 0.548,
+   "age": 0.5481,
+   "race": 0.5484,
+   "religion": 0.5486,
+   "attendance": 0.5487
+  },
+  "rank_choice": {
+   "0": 0.5508,
+   "1": 0.5432,
+   "2": 0.5372,
+   "3": 0.5263,
+   "5": 0.5199,
+   "8": 0.5128,
+   "12": 0.5068
+  },
+  "k_choice": {
+   "2": 0.5451,
+   "3": 0.5417,
+   "4": 0.5379,
+   "6": 0.5384,
+   "8": 0.5351
+  },
+  "chosen": {
+   "rank": 12,
+   "segments": 8,
+   "attribute": "ideology"
+  },
+  "test_tvd": {
+   "0.05": {
+    "uniform": 0.5,
+    "anchor_mean": 0.4902,
+    "axes": 0.4797,
+    "segment": 0.4854,
+    "attribute": 0.4894,
+    "axes_gain_vs_anchor": 0.0106,
+    "axes_gain_ci": [
+     0.009,
+     0.0123
+    ],
+    "segment_gain_vs_anchor": 0.0048,
+    "segment_gain_ci": [
+     0.0039,
+     0.0057
+    ],
+    "attribute_gain_vs_anchor": 0.0008,
+    "attribute_gain_ci": [
+     0.0003,
+     0.0012
+    ],
+    "n_item_reps": 120,
+    "group_share_error": {
+     "anchor_mean": 0.0489,
+     "axes": 0.0494,
+     "segment": 0.0478,
+     "attribute": 0.0496
+    },
+    "group_gap_correlation": {
+     "anchor_mean": 0.0,
+     "axes": 0.37,
+     "segment": 0.325,
+     "attribute": 0.071
+    },
+    "group_share_gain_ci": {
+     "axes": [
+      -0.0028,
+      0.0019
+     ],
+     "segment": [
+      0.0003,
+      0.002
+     ],
+     "attribute": [
+      -0.0017,
+      0.0003
+     ]
+    }
+   },
+   "0.1": {
+    "uniform": 0.5,
+    "anchor_mean": 0.4905,
+    "axes": 0.4802,
+    "segment": 0.4857,
+    "attribute": 0.4895,
+    "axes_gain_vs_anchor": 0.0103,
+    "axes_gain_ci": [
+     0.0092,
+     0.0114
+    ],
+    "segment_gain_vs_anchor": 0.0048,
+    "segment_gain_ci": [
+     0.0042,
+     0.0054
+    ],
+    "attribute_gain_vs_anchor": 0.001,
+    "attribute_gain_ci": [
+     0.0006,
+     0.0013
+    ],
+    "n_item_reps": 120,
+    "group_share_error": {
+     "anchor_mean": 0.042,
+     "axes": 0.0405,
+     "segment": 0.0404,
+     "attribute": 0.0423
+    },
+    "group_gap_correlation": {
+     "anchor_mean": 0.0,
+     "axes": 0.436,
+     "segment": 0.419,
+     "attribute": 0.1
+    },
+    "group_share_gain_ci": {
+     "axes": [
+      0.0001,
+      0.0029
+     ],
+     "segment": [
+      0.0009,
+      0.0024
+     ],
+     "attribute": [
+      -0.0008,
+      0.0002
+     ]
+    }
+   },
+   "0.25": {
+    "uniform": 0.5,
+    "anchor_mean": 0.4901,
+    "axes": 0.4795,
+    "segment": 0.4846,
+    "attribute": 0.489,
+    "axes_gain_vs_anchor": 0.0106,
+    "axes_gain_ci": [
+     0.0098,
+     0.0114
+    ],
+    "segment_gain_vs_anchor": 0.0055,
+    "segment_gain_ci": [
+     0.0051,
+     0.006
+    ],
+    "attribute_gain_vs_anchor": 0.0011,
+    "attribute_gain_ci": [
+     0.0008,
+     0.0014
+    ],
+    "n_item_reps": 120,
+    "group_share_error": {
+     "anchor_mean": 0.0357,
+     "axes": 0.0321,
+     "segment": 0.0333,
+     "attribute": 0.0355
+    },
+    "group_gap_correlation": {
+     "anchor_mean": 0.0,
+     "axes": 0.558,
+     "segment": 0.495,
+     "attribute": 0.176
+    },
+    "group_share_gain_ci": {
+     "axes": [
+      0.003,
+      0.0042
+     ],
+     "segment": [
+      0.002,
+      0.0029
+     ],
+     "attribute": [
+      -0.0001,
+      0.0006
+     ]
+    }
+   }
+  },
+  "stability": {
+   "axis_congruence_mean": 0.735,
+   "segment_ARI_mean": 0.389
+  },
+  "faithfulness": [
+   {
+    "axis": 1,
+    "tvd_increase_when_dropped": 0.00583,
+    "ci": [
+     0.0047,
+     0.007
+    ]
+   },
+   {
+    "axis": 2,
+    "tvd_increase_when_dropped": 4e-05,
+    "ci": [
+     -0.0003,
+     0.0004
+    ]
+   },
+   {
+    "axis": 3,
+    "tvd_increase_when_dropped": 0.00025,
+    "ci": [
+     -0.0002,
+     0.0008
+    ]
+   },
+   {
+    "axis": 4,
+    "tvd_increase_when_dropped": 0.002,
+    "ci": [
+     0.0011,
+     0.0029
+    ]
+   },
+   {
+    "axis": 5,
+    "tvd_increase_when_dropped": -0.00031,
+    "ci": [
+     -0.0007,
+     0.0001
+    ]
+   },
+   {
+    "axis": 6,
+    "tvd_increase_when_dropped": -2e-05,
+    "ci": [
+     -0.0005,
+     0.0004
+    ]
+   },
+   {
+    "axis": 7,
+    "tvd_increase_when_dropped": -0.0001,
+    "ci": [
+     -0.0005,
+     0.0003
+    ]
+   },
+   {
+    "axis": 8,
+    "tvd_increase_when_dropped": 0.00036,
+    "ci": [
+     -0.0001,
+     0.0009
+    ]
+   },
+   {
+    "axis": 9,
+    "tvd_increase_when_dropped": -0.00016,
+    "ci": [
+     -0.0006,
+     0.0002
+    ]
+   },
+   {
+    "axis": 10,
+    "tvd_increase_when_dropped": 0.00058,
+    "ci": [
+     -0.0,
+     0.0012
+    ]
+   },
+   {
+    "axis": 11,
+    "tvd_increase_when_dropped": 0.00047,
+    "ci": [
+     0.0,
+     0.001
+    ]
+   },
+   {
+    "axis": 12,
+    "tvd_increase_when_dropped": 0.00023,
+    "ci": [
+     -0.0001,
+     0.0006
+    ]
+   }
+  ],
+  "axes": [
+   {
+    "axis": 1,
+    "variance_share": 0.0458,
+    "high_end": [
+     "If a glock is not a XAR, you can say: -> that it is certain that the glock is not",
+     "Premise 1: All flowers have petals. Premise 2: Roses have petals. Conclusion: Roses are flowers. Does the conclusion follow logically from t -> Yes",
+     "If a koy is a YOF, you can say: -> that it is certain that the koy is a XAR",
+     "Premise 1: All eastern countries are communist. Premise 2: China is not an eastern country. Conclusion: China is not communist. Does the con -> Yes"
+    ],
+    "low_end": [
+     "If a glock is not a XAR, you can say: -> that it is not certain whether the glock",
+     "Antonym: Select the word that is most nearly the opposite in meaning to VERBOSE -> taciturn",
+     "Antonym: Select the word that is most nearly the opposite in meaning to VACUOUS -> profound",
+     "Antonym: Select the word that is most nearly the opposite in meaning to ALOOF -> gregarious"
+    ]
+   },
+   {
+    "axis": 2,
+    "variance_share": 0.0244,
+    "high_end": [
+     "Imagine that highway safety experts have determined that a substantial number of people are at risk of dying in a type of automobile fire. A -> Agree strongly",
+     "You have recently graduated from university, obtained a good job, and are buying a new car. A newly designed seatbelt has just become availa -> very likely",
+     "Imagine that highway safety experts have determined that a substantial number of people are at risk of dying in a type of automobile fire. A -> Agree strongly",
+     "Imagine that highway safety experts have determined that a substantial number of people are at risk of dying in a type of automobile fire. A -> Agree strongly"
+    ],
+    "low_end": [
+     "Imagine that highway safety experts have determined that a substantial number of people are at risk of dying in a type of automobile fire. A -> Agree a little",
+     "Imagine that highway safety experts have determined that a substantial number of people are at risk of dying in a type of automobile fire. A -> Agree a little",
+     "I can understand my friend\u2019s happiness when she/he does well at something. || Please indicate your agreement with each of the following stat -> Agree a little",
+     "Imagine that highway safety experts have determined that a substantial number of people are at risk of dying in a type of automobile fire. A -> Agree a little"
+    ]
+   },
+   {
+    "axis": 3,
+    "variance_share": 0.0179,
+    "high_end": [
+     "$10.00 in 2 weeks:$9.25 now || Please choose between the following options. For each line in the list, you must choose between the option on -> 1",
+     "$10.00 in 2 weeks:$9.50 now || Please choose between the following options. For each line in the list, you must choose between the option on -> 1",
+     "$8.00 in 1 week:$7.50 now || Please choose between the following options. For each line in the list, you must choose between the option on t -> 1",
+     "$8.00 in 1 week:$7.75 now || Please choose between the following options. For each line in the list, you must choose between the option on t -> 1"
+    ],
+    "low_end": [
+     "If the person sends me $1 (which would become $3): -> I would keep $2 for myself and send $1 t",
+     "Synonym: Select the word that is most nearly the same in meaning as FURTIVE -> stealthy",
+     "$10.00 in 2 weeks:$9.25 now || Please choose between the following options. For each line in the list, you must choose between the option on -> 2",
+     "$10.00 in 2 weeks:$9.50 now || Please choose between the following options. For each line in the list, you must choose between the option on -> 2"
+    ]
+   },
+   {
+    "axis": 4,
+    "variance_share": 0.0165,
+    "high_end": [
+     "Choose between: -> 11% probability of one million dollars 8",
+     "$6.00 in 1 week:$5.75 now || Please choose between the following options. For each line in the list, you must choose between the option on t -> 1",
+     "$8.00 in 1 week:$7.25 now || Please choose between the following options. For each line in the list, you must choose between the option on t -> 1",
+     "$8.00 in 1 week:$7.50 now || Please choose between the following options. For each line in the list, you must choose between the option on t -> 1"
+    ],
+    "low_end": [
+     "Choose between: -> 10% probablity of five miillion dollars ",
+     "$6.00 in 1 week:$5.75 now || Please choose between the following options. For each line in the list, you must choose between the option on t -> 2",
+     "$8.00 in 1 week:$7.25 now || Please choose between the following options. For each line in the list, you must choose between the option on t -> 2",
+     "$8.00 in 1 week:$7.50 now || Please choose between the following options. For each line in the list, you must choose between the option on t -> 2"
+    ]
+   },
+   {
+    "axis": 5,
+    "variance_share": 0.0149,
+    "high_end": [
+     "If the person sends me $1 (which would become $3): -> I would keep $3 for myself and send $0 t",
+     "Premise 1: All eastern countries are communist. Premise 2: China is not an eastern country. Conclusion: China is not communist. Does the con -> No",
+     "Considering a long time period (for example 10 or 20 years), which asset described below normally gives the highest return? -> Stocks",
+     "Suppose you were given $5 and had to decide how much of this money to keep for yourself and how much to send to another (anonymous) person.  -> I would keep $5 for myself and send $0 t"
+    ],
+    "low_end": [
+     "If the person sends me $2 (which would become $6): -> I would keep $3 for myself and send $3 t",
+     "Premise 1: All eastern countries are communist. Premise 2: China is not an eastern country. Conclusion: China is not communist. Does the con -> Yes",
+     "If the person sends me $3 (which would become $9): -> I would keep $4 for myself and send $5 t",
+     "$10.00 in 2 weeks:$8.50 now || Please choose between the following options. For each line in the list, you must choose between the option on -> 1"
+    ]
+   },
+   {
+    "axis": 6,
+    "variance_share": 0.0138,
+    "high_end": [
+     "$6.00 in 1 week:$5.50 now || Please choose between the following options. For each line in the list, you must choose between the option on t -> 2",
+     "$8.00 in 1 week:$7.50 now || Please choose between the following options. For each line in the list, you must choose between the option on t -> 2",
+     "$8.00 in 1 week:$7.25 now || Please choose between the following options. For each line in the list, you must choose between the option on t -> 2",
+     "$10.00 in 2 weeks:$9.25 now || Please choose between the following options. For each line in the list, you must choose between the option on -> 2"
+    ],
+    "low_end": [
+     "If the person sends me $1 (which would become $3): -> I would keep $2 for myself and send $1 t",
+     "Suppose you were given $5 and had to split the money between yourself and another (anonymous) person. You and you only would decide how to s -> $3 for myself, $2 to the other person.",
+     "If the person sends me $3 (which would become $9): -> I would keep $5 for myself and send $4 t",
+     "$6.00 in 1 week:$5.50 now || Please choose between the following options. For each line in the list, you must choose between the option on t -> 1"
+    ]
+   },
+   {
+    "axis": 7,
+    "variance_share": 0.0134,
+    "high_end": [
+     "If a koy is not a YOF, you can say: -> that it is not certain whether the koy i",
+     "If the person offers to keep $5 for themselves and send me $0: -> I would reject the offer: $0 for both",
+     "If a koy is a YOF, you can say: -> that it is not certain whether the koy i",
+     "$10.00 in 2 weeks:$9.00 now || Please choose between the following options. For each line in the list, you must choose between the option on -> 2"
+    ],
+    "low_end": [
+     "If a koy is not a YOF, you can say: -> that it is certain that the koy is not a",
+     "If the person offers to keep $5 for themselves and send me $0: -> I would accept the offer: $5 for other, ",
+     "If a koy is a YOF, you can say: -> that it is certain that the koy is a XAR",
+     "$10.00 in 2 weeks:$9.00 now || Please choose between the following options. For each line in the list, you must choose between the option on -> 1"
+    ]
+   },
+   {
+    "axis": 8,
+    "variance_share": 0.0131,
+    "high_end": [
+     "Do you think that the following statement is true or false? \"After age 70 and a half, you have to withdraw at least some money from your 401 -> True",
+     "Considering a long time period (for example 10 or 20 years), which asset described below normally gives the highest return? -> Stocks",
+     "Imagine that you go to purchase a jacket for $250. The jacket salesperson informs you that the jacket you wish to buy is on sale for $240 at -> Yes",
+     "Person A received a letter from the IRS saying that they made a minor arithmetical mistake on their tax return and owed $100. They received  -> Person B"
+    ],
+    "low_end": [
+     "Do you think that the following statement is true or false? \"After age 70 and a half, you have to withdraw at least some money from your 401 -> False",
+     "Imagine that you go to purchase a jacket for $250. The jacket salesperson informs you that the jacket you wish to buy is on sale for $240 at -> No",
+     "Person A received a letter from the IRS saying that they made a minor arithmetical mistake on their tax return and owed $100. They received  -> Person A",
+     "Premise 1: All animals with four legs are dangerous. Premise 2: Poodles are not dangerous. Conclusion: Poodles do not have four legs. Does t -> No"
+    ]
+   },
+   {
+    "axis": 9,
+    "variance_share": 0.0129,
+    "high_end": [
+     "If the person offers to keep $5 for themselves and send me $0: -> I would reject the offer: $0 for both",
+     "If the person offers to keep $4 for themselves and send me $1: -> I would reject the offer: $0 for both",
+     "If a koy is not a YOF, you can say: -> that it is certain that the koy is not a",
+     "If the person sends me $1 (which would become $3): -> I would keep $3 for myself and send $0 t"
+    ],
+    "low_end": [
+     "If the person offers to keep $5 for themselves and send me $0: -> I would accept the offer: $5 for other, ",
+     "If the person offers to keep $4 for themselves and send me $1: -> I would accept the offer: $4 for other, ",
+     "If the person sends me $2 (which would become $6): -> I would keep $3 for myself and send $3 t",
+     "If a koy is not a YOF, you can say: -> that it is not certain whether the koy i"
+    ]
+   },
+   {
+    "axis": 10,
+    "variance_share": 0.0125,
+    "high_end": [
+     "If the person offers to keep $4 for themselves and send me $1: -> I would reject the offer: $0 for both",
+     "I am purposely trying to lose weight by eating less -> Yes",
+     "Is the tallest redwood tree in the world more or less than 1000 feet tall? -> more",
+     "Premise 1: All animals with four legs are dangerous. Premise 2: Poodles are not dangerous. Conclusion: Poodles do not have four legs. Does t -> No"
+    ],
+    "low_end": [
+     "If the person offers to keep $4 for themselves and send me $1: -> I would accept the offer: $4 for other, ",
+     "If a koy is not a YOF, you can say: -> that it is certain that the koy is not a",
+     "If the person sends me $3 (which would become $9): -> I would keep $5 for myself and send $4 t",
+     "Suppose you were given $5 and had to offer to another (anonymous) person a way to split the money. You would propose how much of this money  -> $3 for myself, $2 to the other person."
+    ]
+   },
+   {
+    "axis": 11,
+    "variance_share": 0.0112,
+    "high_end": [
+     "Premise 1: All animals with four legs are dangerous. Premise 2: Poodles are not dangerous. Conclusion: Poodles do not have four legs. Does t -> Yes",
+     "I am purposely trying to lose weight by eating less -> Yes",
+     "Do you think that the following statement is true or false? \"After age 70 and a half, you have to withdraw at least some money from your 401 -> True",
+     "Suppose you were given $5 and had to offer to another (anonymous) person a way to split the money. You would propose how much of this money  -> $3 for myself, $2 to the other person."
+    ],
+    "low_end": [
+     "Premise 1: All animals with four legs are dangerous. Premise 2: Poodles are not dangerous. Conclusion: Poodles do not have four legs. Does t -> No",
+     "I am purposely trying to lose weight by eating less -> No",
+     "Do you think that the following statement is true or false? \"After age 70 and a half, you have to withdraw at least some money from your 401 -> False",
+     "If a koy is not a YOF, you can say: -> that it is certain that the koy is not a"
+    ]
+   },
+   {
+    "axis": 12,
+    "variance_share": 0.0107,
+    "high_end": [
+     "Person A was given tickets to lotteries involving the World Series. They won $50 in one lottery and $25 in the other. Person B was given a t -> Person B",
+     "I am purposely trying to lose weight by eating less -> No",
+     "Do you think that the following statement is true or false? \"After age 70 and a half, you have to withdraw at least some money from your 401 -> False",
+     "Some people have trouble limiting their spending: they often spend money - for example on clothes, meals, vacations - when they would do bet -> Sometimes"
+    ],
+    "low_end": [
+     "Person A was given tickets to lotteries involving the World Series. They won $50 in one lottery and $25 in the other. Person B was given a t -> Person A",
+     "I am purposely trying to lose weight by eating less -> Yes",
+     "Some people have trouble limiting their spending: they often spend money - for example on clothes, meals, vacations - when they would do bet -> Rarely",
+     "Do you think that the following statement is true or false? \"After age 70 and a half, you have to withdraw at least some money from your 401 -> True"
+    ]
+   }
+  ],
+  "segments": [
+   {
+    "segment": 0,
+    "size_share": 0.111,
+    "over_represented": [
+     "age=65+: 31% vs 13% overall",
+     "marital=Divorced: 21% vs 11% overall",
+     "marital=Widowed: 7% vs 3% overall",
+     "employment=Retired: 22% vs 12% overall",
+     "ideology=Conservative: 30% vs 21% overall"
+    ],
+    "distinctive_answers": [
+     "Some people have trouble limiting their spending: they often spend money - for example on clothes, m -> Rarely (+27 pts)",
+     "Premise 1: All animals with four legs are dangerous. Premise 2: Poodles are not dangerous. Conclusio -> No (+27 pts)",
+     "$8.00 in 1 week:$7.25 now || Please choose between the following options. For each line in the list, -> 1 (+22 pts)",
+     "Imagine that highway safety experts have determined that a substantial number of people are at risk  -> Agree a little (+21 pts)",
+     "Choose between: -> One million dollars for sure (+21 pts)"
+    ]
+   },
+   {
+    "segment": 1,
+    "size_share": 0.134,
+    "over_represented": [
+     "employment=Student: 7% vs 4% overall",
+     "education=High school graduate: 25% vs 13% overall",
+     "ideology=Very conservative: 11% vs 7% overall",
+     "race=Black: 20% vs 12% overall",
+     "age=18-29: 30% vs 19% overall"
+    ],
+    "distinctive_answers": [
+     "Antonym: Select the word that is most nearly the opposite in meaning to VERBOSE -> magnificent (+25 pts)",
+     "Premise 1: All animals with four legs are dangerous. Premise 2: Poodles are not dangerous. Conclusio -> No (+23 pts)",
+     "shuffle #10 || Consider the following hypothetical situation: A deck with 10 cards is randomly shuff -> 2 (+23 pts)",
+     "You are now going to receive a series of eight problems. You must decide whether the stated conclusi -> No (+22 pts)",
+     "Imagine that highway safety experts have determined that a substantial number of people are at risk  -> Agree a little (+22 pts)"
+    ]
+   },
+   {
+    "segment": 2,
+    "size_share": 0.153,
+    "over_represented": [
+     "race=Asian: 12% vs 7% overall",
+     "employment=Self-employed: 21% vs 14% overall",
+     "education=Postgraduate: 23% vs 15% overall",
+     "religion=Agnostic: 23% vs 15% overall",
+     "religion=Atheist: 15% vs 10% overall"
+    ],
+    "distinctive_answers": [
+     "Premise 1: All flowers have petals. Premise 2: Roses have petals. Conclusion: Roses are flowers. Doe -> No (+47 pts)",
+     "If a glock is not a XAR, you can say: -> that it is not certain whether the glock (+42 pts)",
+     "Premise 1: All unemployed people are poor. Premise 2: Rockefeller is not unemployed. Conclusion: Roc -> No (+39 pts)",
+     "All the cubes below have a different image on each side. Select the choice that could represent a ro -> B (+36 pts)",
+     "If a koy is a YOF, you can say: -> that it is not certain whether the koy i (+34 pts)"
+    ]
+   },
+   {
+    "segment": 3,
+    "size_share": 0.124,
+    "over_represented": [
+     "race=Black: 18% vs 12% overall",
+     "attendance=Once a week: 21% vs 14% overall",
+     "religion=Nothing in particular: 23% vs 16% overall",
+     "employment=Unemployed: 16% vs 12% overall",
+     "income=$50,000-$75,000: 26% vs 20% overall"
+    ],
+    "distinctive_answers": [
+     "Premise 1: All eastern countries are communist. Premise 2: China is not an eastern country. Conclusi -> Yes (+41 pts)",
+     "If a koy is a YOF, you can say: -> that it is certain that the koy is a XAR (+41 pts)",
+     "If a glock is not a XAR, you can say: -> that it is certain that the glock is not (+40 pts)",
+     "Premise 1: All unemployed people are poor. Premise 2: Rockefeller is not unemployed. Conclusion: Roc -> Yes (+34 pts)",
+     "If a koy is not a YOF, you can say: -> that it is certain that the koy is not a (+31 pts)"
+    ]
+   },
+   {
+    "segment": 4,
+    "size_share": 0.117,
+    "over_represented": [
+     "race=Other: 9% vs 5% overall",
+     "attendance=A few times a year: 19% vs 12% overall",
+     "employment=Self-employed: 18% vs 14% overall",
+     "marital=Divorced: 14% vs 11% overall",
+     "household=1: 25% vs 20% overall"
+    ],
+    "distinctive_answers": [
+     "$8.00 in 1 week:$7.25 now || Please choose between the following options. For each line in the list, -> 2 (+45 pts)",
+     "$8.00 in 1 week:$7.50 now || Please choose between the following options. For each line in the list, -> 2 (+44 pts)",
+     "$6.00 in 1 week:$5.25 now || Please choose between the following options. For each line in the list, -> 2 (+43 pts)",
+     "$6.00 in 1 week:$5.50 now || Please choose between the following options. For each line in the list, -> 2 (+43 pts)",
+     "$6.00 in 1 week:$5.75 now || Please choose between the following options. For each line in the list, -> 2 (+42 pts)"
+    ]
+   },
+   {
+    "segment": 5,
+    "size_share": 0.129,
+    "over_represented": [
+     "race=Black: 25% vs 12% overall",
+     "ideology=Very conservative: 13% vs 7% overall",
+     "attendance=More than once a week: 7% vs 4% overall",
+     "employment=Home-maker: 5% vs 3% overall",
+     "religion=Other: 16% vs 10% overall"
+    ],
+    "distinctive_answers": [
+     "You have recently graduated from university, obtained a good job, and are buying a new car. A newly  -> very likely (+40 pts)",
+     "Imagine that highway safety experts have determined that a substantial number of people are at risk  -> Agree strongly (+35 pts)",
+     "Imagine that highway safety experts have determined that a substantial number of people are at risk  -> Agree strongly (+35 pts)",
+     "Sloppy || Following are a number of characteristics that may or may not apply to you. Please indicat -> Extremely inaccurate 1 (+34 pts)",
+     "If a co-worker gets a prize, I would feel proud || Following are a number of characteristics that ma -> Agree strongy (+32 pts)"
+    ]
+   },
+   {
+    "segment": 6,
+    "size_share": 0.119,
+    "over_represented": [
+     "religion=Atheist: 20% vs 10% overall",
+     "ideology=Very liberal: 32% vs 17% overall",
+     "attendance=Never: 59% vs 41% overall",
+     "region=West (WA, OR, ID, MT, WY, CA, NV, UT, CO, AZ, NM): 32% vs 24% overall",
+     "employment=Retired: 16% vs 12% overall"
+    ],
+    "distinctive_answers": [
+     "You have recently graduated from university, obtained a good job, and are buying a new car. A newly  -> very likely (+35 pts)",
+     "Imagine that highway safety experts have determined that a substantial number of people are at risk  -> Agree strongly (+35 pts)",
+     "Imagine that highway safety experts have determined that a substantial number of people are at risk  -> Agree strongly (+31 pts)",
+     "$6.00 in 1 week:$5.50 now || Please choose between the following options. For each line in the list, -> 1 (+31 pts)",
+     "$10.00 in 2 weeks:$9.25 now || Please choose between the following options. For each line in the lis -> 1 (+30 pts)"
+    ]
+   },
+   {
+    "segment": 7,
+    "size_share": 0.114,
+    "over_represented": [
+     "employment=Student: 9% vs 4% overall",
+     "age=18-29: 41% vs 19% overall",
+     "employment=Home-maker: 6% vs 3% overall",
+     "education=Some college, no degree: 34% vs 23% overall",
+     "marital=Never been married: 52% vs 35% overall"
+    ],
+    "distinctive_answers": [
+     "Synonym: Select the word that is most nearly the same in meaning as SOLICIT -> exert (+22 pts)",
+     "According to a comprehensive study by the U.S. Department of Transportation, a particular German car -> probably yes (+18 pts)",
+     "Antonym: Select the word that is most nearly the opposite in meaning to GERMANE -> healthful (+16 pts)",
+     "Antonym: Select the word that is most nearly the opposite in meaning to VACUOUS -> loose (+16 pts)",
+     "If a koy is a YOF, you can say: -> that it is not certain whether the koy i (+16 pts)"
+    ]
+   }
+  ],
+  "retest_ceiling": {
+   "items": 40,
+   "same_answer_rate": 0.8389
+  },
+  "who_would_buy_example": {
+   "item": "QID9_1",
+   "text": "Please consider the following product category: Dairy Products. Suppose you are in a grocery store, and you see the following product in that category: Land O Lakes Salted Stick Butter, 16 oz, 4 Sticks. The product is priced at: $7.39. Would you or would you not purchase this product?",
+   "anchor": "10% of people",
+   "by_group": [
+    {
+     "group": "sex=Female",
+     "n": 935,
+     "real_yes_%": 40.0,
+     "anchor_mean_%": 35.9,
+     "axes_%": 35.8,
+     "segment_%": 36.7,
+     "attribute_%": 35.3
+    },
+    {
+     "group": "sex=Male",
+     "n": 917,
+     "real_yes_%": 48.3,
+     "anchor_mean_%": 35.9,
+     "axes_%": 38.5,
+     "segment_%": 36.5,
+     "attribute_%": 35.5
+    },
+    {
+     "group": "age=18-29",
+     "n": 348,
+     "real_yes_%": 52.3,
+     "anchor_mean_%": 35.9,
+     "axes_%": 41.5,
+     "segment_%": 39.5,
+     "attribute_%": 34.8
+    },
+    {
+     "group": "age=30-49",
+     "n": 659,
+     "real_yes_%": 46.3,
+     "anchor_mean_%": 35.9,
+     "axes_%": 37.2,
+     "segment_%": 36.5,
+     "attribute_%": 35.4
+    },
+    {
+     "group": "age=50-64",
+     "n": 593,
+     "real_yes_%": 40.3,
+     "anchor_mean_%": 35.9,
+     "axes_%": 36.1,
+     "segment_%": 36.1,
+     "attribute_%": 35.6
+    },
+    {
+     "group": "age=65+",
+     "n": 252,
+     "real_yes_%": 36.1,
+     "anchor_mean_%": 35.9,
+     "axes_%": 33.3,
+     "segment_%": 34.1,
+     "attribute_%": 35.7
+    },
+    {
+     "group": "income=$100,000 or more",
+     "n": 488,
+     "real_yes_%": 43.0,
+     "anchor_mean_%": 35.9,
+     "axes_%": 35.8,
+     "segment_%": 35.9,
+     "attribute_%": 35.9
+    },
+    {
+     "group": "income=$30,000-$50,000",
+     "n": 378,
+     "real_yes_%": 42.9,
+     "anchor_mean_%": 35.9,
+     "axes_%": 36.8,
+     "segment_%": 36.5,
+     "attribute_%": 35.3
+    },
+    {
+     "group": "income=$50,000-$75,000",
+     "n": 362,
+     "real_yes_%": 46.4,
+     "anchor_mean_%": 35.9,
+     "axes_%": 39.2,
+     "segment_%": 37.9,
+     "attribute_%": 35.3
+    },
+    {
+     "group": "income=$75,000-$100,000",
+     "n": 294,
+     "real_yes_%": 49.3,
+     "anchor_mean_%": 35.9,
+     "axes_%": 37.8,
+     "segment_%": 36.0,
+     "attribute_%": 34.9
+    },
+    {
+     "group": "income=Less than $30,000",
+     "n": 330,
+     "real_yes_%": 40.0,
+     "anchor_mean_%": 35.9,
+     "axes_%": 36.7,
+     "segment_%": 36.8,
+     "attribute_%": 35.4
+    },
+    {
+     "group": "party=Democrat",
+     "n": 764,
+     "real_yes_%": 42.3,
+     "anchor_mean_%": 35.9,
+     "axes_%": 36.0,
+     "segment_%": 36.0,
+     "attribute_%": 33.2
+    },
+    {
+     "group": "party=Independent",
+     "n": 548,
+     "real_yes_%": 42.3,
+     "anchor_mean_%": 35.9,
+     "axes_%": 37.3,
+     "segment_%": 35.8,
+     "attribute_%": 36.6
+    },
+    {
+     "group": "party=Republican",
+     "n": 480,
+     "real_yes_%": 50.8,
+     "anchor_mean_%": 35.9,
+     "axes_%": 38.9,
+     "segment_%": 38.6,
+     "attribute_%": 37.7
+    },
+    {
+     "group": "party=Something else",
+     "n": 60,
+     "real_yes_%": 30.0,
+     "anchor_mean_%": 35.9,
+     "axes_%": 36.4,
+     "segment_%": 35.3,
+     "attribute_%": 35.0
+    },
+    {
+     "group": "education=Associate's degree",
+     "n": 229,
+     "real_yes_%": 47.2,
+     "anchor_mean_%": 35.9,
+     "axes_%": 37.8,
+     "segment_%": 37.7,
+     "attribute_%": 36.0
+    },
+    {
+     "group": "education=College graduate/some postgrad",
+     "n": 654,
+     "real_yes_%": 40.4,
+     "anchor_mean_%": 35.9,
+     "axes_%": 34.9,
+     "segment_%": 34.7,
+     "attribute_%": 35.4
+    },
+    {
+     "group": "education=High school graduate",
+     "n": 249,
+     "real_yes_%": 50.2,
+     "anchor_mean_%": 35.9,
+     "axes_%": 41.7,
+     "segment_%": 40.3,
+     "attribute_%": 35.2
+    },
+    {
+     "group": "education=Postgraduate",
+     "n": 288,
+     "real_yes_%": 44.4,
+     "anchor_mean_%": 35.9,
+     "axes_%": 34.7,
+     "segment_%": 34.7,
+     "attribute_%": 35.4
+    },
+    {
+     "group": "education=Some college, no degree",
+     "n": 417,
+     "real_yes_%": 43.9,
+     "anchor_mean_%": 35.9,
+     "axes_%": 39.0,
+     "segment_%": 37.9,
+     "attribute_%": 35.3
+    }
+   ]
+  }
+ },
+ "twin_other_blocks": {
+  "dataset": "Twin-2K-500",
+  "level": "person",
+  "coverage": {
+   "units": 2058,
+   "items": 586,
+   "observed_cells": 1152345,
+   "density": 0.9555,
+   "median_units_per_item": 2058.0,
+   "median_items_per_unit": 558.0
+  },
+  "test_items": 84,
+  "axes_segments_supported": true,
+  "attribute_choice": {
+   "ideology": 0.549,
+   "race": 0.5493,
+   "attendance": 0.5493,
+   "party": 0.5494,
+   "age": 0.5496,
+   "religion": 0.5501
+  },
+  "rank_choice": {
+   "0": 0.5517,
+   "1": 0.5429,
+   "2": 0.5401,
+   "3": 0.5362,
+   "5": 0.529,
+   "8": 0.5252,
+   "12": 0.5211
+  },
+  "k_choice": {
+   "2": 0.5443,
+   "3": 0.5443,
+   "4": 0.5426,
+   "6": 0.5395,
+   "8": 0.5386
+  },
+  "chosen": {
+   "rank": 12,
+   "segments": 8,
+   "attribute": "ideology"
+  },
+  "test_tvd": {
+   "0.05": {
+    "uniform": 0.6493,
+    "anchor_mean": 0.4823,
+    "axes": 0.4672,
+    "segment": 0.4748,
+    "attribute": 0.4811,
+    "axes_gain_vs_anchor": 0.015,
+    "axes_gain_ci": [
+     0.0109,
+     0.0192
+    ],
+    "segment_gain_vs_anchor": 0.0075,
+    "segment_gain_ci": [
+     0.0063,
+     0.0086
+    ],
+    "attribute_gain_vs_anchor": 0.0011,
+    "attribute_gain_ci": [
+     0.0006,
+     0.0016
+    ],
+    "n_item_reps": 252,
+    "group_share_error": {
+     "anchor_mean": 0.064,
+     "axes": 0.0645,
+     "segment": 0.0633,
+     "attribute": 0.0654
+    },
+    "group_gap_correlation": {
+     "anchor_mean": 0.0,
+     "axes": 0.399,
+     "segment": 0.257,
+     "attribute": 0.077
+    },
+    "group_share_gain_ci": {
+     "axes": [
+      -0.0027,
+      0.0014
+     ],
+     "segment": [
+      0.0,
+      0.0014
+     ],
+     "attribute": [
+      -0.002,
+      -0.0008
+     ]
+    }
+   },
+   "0.1": {
+    "uniform": 0.6493,
+    "anchor_mean": 0.4832,
+    "axes": 0.464,
+    "segment": 0.4749,
+    "attribute": 0.4816,
+    "axes_gain_vs_anchor": 0.0193,
+    "axes_gain_ci": [
+     0.0156,
+     0.0232
+    ],
+    "segment_gain_vs_anchor": 0.0083,
+    "segment_gain_ci": [
+     0.0072,
+     0.0095
+    ],
+    "attribute_gain_vs_anchor": 0.0016,
+    "attribute_gain_ci": [
+     0.0013,
+     0.002
+    ],
+    "n_item_reps": 252,
+    "group_share_error": {
+     "anchor_mean": 0.055,
+     "axes": 0.0532,
+     "segment": 0.0538,
+     "attribute": 0.0557
+    },
+    "group_gap_correlation": {
+     "anchor_mean": 0.0,
+     "axes": 0.433,
+     "segment": 0.262,
+     "attribute": 0.08
+    },
+    "group_share_gain_ci": {
+     "axes": [
+      0.0008,
+      0.003
+     ],
+     "segment": [
+      0.0007,
+      0.0018
+     ],
+     "attribute": [
+      -0.0012,
+      -0.0003
+     ]
+    }
+   },
+   "0.25": {
+    "uniform": 0.6493,
+    "anchor_mean": 0.4832,
+    "axes": 0.4605,
+    "segment": 0.4736,
+    "attribute": 0.4813,
+    "axes_gain_vs_anchor": 0.0227,
+    "axes_gain_ci": [
+     0.019,
+     0.0264
+    ],
+    "segment_gain_vs_anchor": 0.0096,
+    "segment_gain_ci": [
+     0.0084,
+     0.0108
+    ],
+    "attribute_gain_vs_anchor": 0.0019,
+    "attribute_gain_ci": [
+     0.0016,
+     0.0022
+    ],
+    "n_item_reps": 252,
+    "group_share_error": {
+     "anchor_mean": 0.0471,
+     "axes": 0.0431,
+     "segment": 0.0453,
+     "attribute": 0.047
+    },
+    "group_gap_correlation": {
+     "anchor_mean": 0.0,
+     "axes": 0.487,
+     "segment": 0.318,
+     "attribute": 0.127
+    },
+    "group_share_gain_ci": {
+     "axes": [
+      0.0033,
+      0.0047
+     ],
+     "segment": [
+      0.0014,
+      0.0023
+     ],
+     "attribute": [
+      -0.0002,
+      0.0004
+     ]
+    }
+   }
+  },
+  "stability": {
+   "axis_congruence_mean": 0.653,
+   "segment_ARI_mean": 0.386
+  },
+  "faithfulness": [
+   {
+    "axis": 1,
+    "tvd_increase_when_dropped": 0.00354,
+    "ci": [
+     0.002,
+     0.0052
+    ]
+   },
+   {
+    "axis": 2,
+    "tvd_increase_when_dropped": 0.00046,
+    "ci": [
+     -0.0003,
+     0.0012
+    ]
+   },
+   {
+    "axis": 3,
+    "tvd_increase_when_dropped": 0.00458,
+    "ci": [
+     0.0034,
+     0.0058
+    ]
+   },
+   {
+    "axis": 4,
+    "tvd_increase_when_dropped": 0.00147,
+    "ci": [
+     0.0007,
+     0.0024
+    ]
+   },
+   {
+    "axis": 5,
+    "tvd_increase_when_dropped": 0.00194,
+    "ci": [
+     0.0012,
+     0.0027
+    ]
+   },
+   {
+    "axis": 6,
+    "tvd_increase_when_dropped": 0.00121,
+    "ci": [
+     0.0003,
+     0.0023
+    ]
+   },
+   {
+    "axis": 7,
+    "tvd_increase_when_dropped": 0.0023,
+    "ci": [
+     0.0009,
+     0.004
+    ]
+   },
+   {
+    "axis": 8,
+    "tvd_increase_when_dropped": 0.00053,
+    "ci": [
+     0.0,
+     0.001
+    ]
+   },
+   {
+    "axis": 9,
+    "tvd_increase_when_dropped": 0.0012,
+    "ci": [
+     0.0005,
+     0.0021
+    ]
+   },
+   {
+    "axis": 10,
+    "tvd_increase_when_dropped": 6e-05,
+    "ci": [
+     -0.0004,
+     0.0005
+    ]
+   },
+   {
+    "axis": 11,
+    "tvd_increase_when_dropped": -0.0,
+    "ci": [
+     -0.0004,
+     0.0004
+    ]
+   },
+   {
+    "axis": 12,
+    "tvd_increase_when_dropped": -0.00027,
+    "ci": [
+     -0.0008,
+     0.0004
+    ]
+   }
+  ],
+  "axes": [
+   {
+    "axis": 1,
+    "variance_share": 0.0452,
+    "high_end": [
+     "If a glock is not a XAR, you can say: -> that it is certain that the glock is not",
+     "Please consider the following product category: Snacks - Tortilla Chips. Suppose you are in a grocery store, and you see the following produ -> Yes, I would purchase the product",
+     "Lottery with x=$8.00:$0 || In this question, the LOTTERY is a 50% chance of LOSING $8 (as indicated by the minus sign before $8) and a 50% c -> 1",
+     "Please consider the following product category: Ice Cream. Suppose you are in a grocery store, and you see the following product in that cat -> Yes, I would purchase the product"
+    ],
+    "low_end": [
+     "If a glock is not a XAR, you can say: -> that it is not certain whether the glock",
+     "If a koy is a YOF, you can say: -> that it is not certain whether the koy i",
+     "Antonym: Select the word that is most nearly the opposite in meaning to VERBOSE -> taciturn",
+     "Antonym: Select the word that is most nearly the opposite in meaning to ALOOF -> gregarious"
+    ]
+   },
+   {
+    "axis": 2,
+    "variance_share": 0.0247,
+    "high_end": [
+     "If a glock is not a XAR, you can say: -> that it is certain that the glock is not",
+     "Premise 1: All flowers have petals. Premise 2: Roses have petals. Conclusion: Roses are flowers. Does the conclusion follow logically from t -> Yes",
+     "If a koy is a YOF, you can say: -> that it is certain that the koy is a XAR",
+     "Please consider the following product category: Cleaning Supplies. Suppose you are in a grocery store, and you see the following product in  -> No, I would not purchase the product"
+    ],
+    "low_end": [
+     "Synonym: Select the word that is most nearly the same in meaning as ASTUTE -> sagacious",
+     "Antonym: Select the word that is most nearly the opposite in meaning to VACUOUS -> profound",
+     "Antonym: Select the word that is most nearly the opposite in meaning to VERBOSE -> taciturn",
+     "Antonym: Select the word that is most nearly the opposite in meaning to ALOOF -> gregarious"
+    ]
+   },
+   {
+    "axis": 3,
+    "variance_share": 0.0191,
+    "high_end": [
+     "Imagine that highway safety experts have determined that a substantial number of people are at risk of dying in a type of automobile fire. A -> Agree strongly",
+     "Imagine that highway safety experts have determined that a substantial number of people are at risk of dying in a type of automobile fire. A -> Agree strongly",
+     "You have recently graduated from university, obtained a good job, and are buying a new car. A newly designed seatbelt has just become availa -> very likely",
+     "Imagine that highway safety experts have determined that a substantial number of people are at risk of dying in a type of automobile fire. A -> Agree strongly"
+    ],
+    "low_end": [
+     "Imagine that highway safety experts have determined that a substantial number of people are at risk of dying in a type of automobile fire. A -> Agree a little",
+     "Imagine that highway safety experts have determined that a substantial number of people are at risk of dying in a type of automobile fire. A -> Agree a little",
+     "Imagine that highway safety experts have determined that a substantial number of people are at risk of dying in a type of automobile fire. A -> Agree a little",
+     "Choose between: -> 10% probablity of five miillion dollars "
+    ]
+   },
+   {
+    "axis": 4,
+    "variance_share": 0.0139,
+    "high_end": [
+     "Choose between: -> 89% probability of one million dollars 1",
+     "$10.00 in 7 weeks:$9.50 in 5 weeks || Please choose between the following options. For each line in the list, you must choose between the op -> 1",
+     "$10.00 in 2 weeks:$9.50 now || Please choose between the following options. For each line in the list, you must choose between the option on -> 1",
+     "$8.00 in 7 weeks:$7.75 in 6 weeks || Please choose between the following options. For each line in the list, you must choose between the opt -> 1"
+    ],
+    "low_end": [
+     "If the person sends me $1 (which would become $3): -> I would keep $2 for myself and send $1 t",
+     "Synonym: Select the word that is most nearly the same in meaning as FURTIVE -> stealthy",
+     "Choose between: -> One million dollars for sure",
+     "Antonym: Select the word that is most nearly the opposite in meaning to GERMANE -> irrelevant"
+    ]
+   },
+   {
+    "axis": 5,
+    "variance_share": 0.0118,
+    "high_end": [
+     "Do you think there are more or fewer than 12 African countries in the United Nations? -> more",
+     "Considering a long time period (for example 10 or 20 years), which asset described below normally gives the highest return? -> Stocks",
+     "Choose between: -> 89% probability of one million dollars 1",
+     "Imagine that you go to purchase a jacket for $250. The jacket salesperson informs you that the jacket you wish to buy is on sale for $240 at -> Yes"
+    ],
+    "low_end": [
+     "Do you think there are more or fewer than 12 African countries in the United Nations? -> fewer",
+     "Choose between: -> One million dollars for sure",
+     "If the person sends me $3 (which would become $9): -> I would keep $5 for myself and send $4 t",
+     "If the person sends me $1 (which would become $3): -> I would keep $2 for myself and send $1 t"
+    ]
+   },
+   {
+    "axis": 6,
+    "variance_share": 0.0113,
+    "high_end": [
+     "If the person offers to keep $5 for themselves and send me $0: -> I would accept the offer: $5 for other, ",
+     "If the person offers to keep $4 for themselves and send me $1: -> I would accept the offer: $4 for other, ",
+     "I am purposely trying to lose weight by eating less -> Yes",
+     "$8.00 in 1 week:$7.50 now || Please choose between the following options. For each line in the list, you must choose between the option on t -> 1"
+    ],
+    "low_end": [
+     "If the person offers to keep $5 for themselves and send me $0: -> I would reject the offer: $0 for both",
+     "If the person offers to keep $4 for themselves and send me $1: -> I would reject the offer: $0 for both",
+     "I am purposely trying to lose weight by eating less -> No",
+     "$8.00 in 1 week:$7.50 now || Please choose between the following options. For each line in the list, you must choose between the option on t -> 2"
+    ]
+   },
+   {
+    "axis": 7,
+    "variance_share": 0.0109,
+    "high_end": [
+     "$10.00 in 7 weeks:$9.25 in 5 weeks || Please choose between the following options. For each line in the list, you must choose between the op -> 1",
+     "$10.00 in 7 weeks:$9.00 in 5 weeks || Please choose between the following options. For each line in the list, you must choose between the op -> 1",
+     "$8.00 in 1 week:$7.50 now || Please choose between the following options. For each line in the list, you must choose between the option on t -> 1",
+     "If the person sends me $1 (which would become $3): -> I would keep $2 for myself and send $1 t"
+    ],
+    "low_end": [
+     "$10.00 in 7 weeks:$9.25 in 5 weeks || Please choose between the following options. For each line in the list, you must choose between the op -> 2",
+     "$10.00 in 7 weeks:$9.00 in 5 weeks || Please choose between the following options. For each line in the list, you must choose between the op -> 2",
+     "$8.00 in 1 week:$7.50 now || Please choose between the following options. For each line in the list, you must choose between the option on t -> 2",
+     "If the person offers to keep $5 for themselves and send me $0: -> I would accept the offer: $5 for other, "
+    ]
+   },
+   {
+    "axis": 8,
+    "variance_share": 0.0105,
+    "high_end": [
+     "If the person offers to keep $5 for themselves and send me $0: -> I would accept the offer: $5 for other, ",
+     "Is the tallest redwood tree in the world more or less than 1000 feet tall? -> less",
+     "Choose between: -> 11% probability of one million dollars 8",
+     "If the person offers to keep $4 for themselves and send me $1: -> I would accept the offer: $4 for other, "
+    ],
+    "low_end": [
+     "If the person offers to keep $5 for themselves and send me $0: -> I would reject the offer: $0 for both",
+     "Is the tallest redwood tree in the world more or less than 1000 feet tall? -> more",
+     "Choose between: -> 10% probablity of five miillion dollars ",
+     "If the person offers to keep $4 for themselves and send me $1: -> I would reject the offer: $0 for both"
+    ]
+   },
+   {
+    "axis": 9,
+    "variance_share": 0.0101,
+    "high_end": [
+     "If a koy is not a YOF, you can say: -> that it is not certain whether the koy i",
+     "If a koy is a YOF, you can say: -> that it is not certain whether the koy i",
+     "If a glock is not a XAR, you can say: -> that it is not certain whether the glock",
+     "Premise 1: All animals with four legs are dangerous. Premise 2: Poodles are not dangerous. Conclusion: Poodles do not have four legs. Does t -> No"
+    ],
+    "low_end": [
+     "If a koy is not a YOF, you can say: -> that it is certain that the koy is not a",
+     "If a koy is a YOF, you can say: -> that it is certain that the koy is a XAR",
+     "If a glock is not a XAR, you can say: -> that it is certain that the glock is not",
+     "Premise 1: All animals with four legs are dangerous. Premise 2: Poodles are not dangerous. Conclusion: Poodles do not have four legs. Does t -> Yes"
+    ]
+   },
+   {
+    "axis": 10,
+    "variance_share": 0.01,
+    "high_end": [
+     "Please consider the following product category: Soup. Suppose you are in a grocery store, and you see the following product in that category -> No, I would not purchase the product",
+     "Suppose you were given $5 and had to offer to another (anonymous) person a way to split the money. You would propose how much of this money  -> $3 for myself, $2 to the other person.",
+     "If the person sends me $1 (which would become $3): -> I would keep $2 for myself and send $1 t",
+     "Suppose you were given $5 and had to split the money between yourself and another (anonymous) person. You and you only would decide how to s -> $3 for myself, $2 to the other person."
+    ],
+    "low_end": [
+     "Please consider the following product category: Soup. Suppose you are in a grocery store, and you see the following product in that category -> Yes, I would purchase the product",
+     "Suppose you were given $5 and had to offer to another (anonymous) person a way to split the money. You would propose how much of this money  -> $2 for myself, $3 to the other person.",
+     "If the person offers to keep $4 for themselves and send me $1: -> I would reject the offer: $0 for both",
+     "Suppose you were given $5 and had to split the money between yourself and another (anonymous) person. You and you only would decide how to s -> $2 for myself, $3 to the other person."
+    ]
+   },
+   {
+    "axis": 11,
+    "variance_share": 0.0097,
+    "high_end": [
+     "If the person offers to keep $4 for themselves and send me $1: -> I would reject the offer: $0 for both",
+     "Please consider the following product category: Fresh Fruit. Suppose you are in a grocery store, and you see the following product in that c -> No, I would not purchase the product",
+     "Please consider the following product category: Frankfurters - Refrigerated. Suppose you are in a grocery store, and you see the following p -> Yes, I would purchase the product",
+     "Please consider the following product category: Frozen Italian Entrees. Suppose you are in a grocery store, and you see the following produc -> No, I would not purchase the product"
+    ],
+    "low_end": [
+     "If the person offers to keep $4 for themselves and send me $1: -> I would accept the offer: $4 for other, ",
+     "Please consider the following product category: Fresh Fruit. Suppose you are in a grocery store, and you see the following product in that c -> Yes, I would purchase the product",
+     "Please consider the following product category: Frankfurters - Refrigerated. Suppose you are in a grocery store, and you see the following p -> No, I would not purchase the product",
+     "Please consider the following product category: Frozen Italian Entrees. Suppose you are in a grocery store, and you see the following produc -> Yes, I would purchase the product"
+    ]
+   },
+   {
+    "axis": 12,
+    "variance_share": 0.0094,
+    "high_end": [
+     "Please consider the following product category: Frozen Italian Entrees. Suppose you are in a grocery store, and you see the following produc -> Yes, I would purchase the product",
+     "Please consider the following product category: Frankfurters - Refrigerated. Suppose you are in a grocery store, and you see the following p -> Yes, I would purchase the product",
+     "Please consider the following product category: Pain Remedies - Headache. Suppose you are in a grocery store, and you see the following prod -> No, I would not purchase the product",
+     "Please consider the following product category: Candy - Chocolate. Suppose you are in a grocery store, and you see the following product in  -> Yes, I would purchase the product"
+    ],
+    "low_end": [
+     "Please consider the following product category: Frozen Italian Entrees. Suppose you are in a grocery store, and you see the following produc -> No, I would not purchase the product",
+     "Please consider the following product category: Frankfurters - Refrigerated. Suppose you are in a grocery store, and you see the following p -> No, I would not purchase the product",
+     "Please consider the following product category: Pain Remedies - Headache. Suppose you are in a grocery store, and you see the following prod -> Yes, I would purchase the product",
+     "Please consider the following product category: Candy - Chocolate. Suppose you are in a grocery store, and you see the following product in  -> No, I would not purchase the product"
+    ]
+   }
+  ],
+  "segments": [
+   {
+    "segment": 0,
+    "size_share": 0.128,
+    "over_represented": [
+     "age=18-29: 34% vs 19% overall",
+     "employment=Home-maker: 6% vs 3% overall",
+     "employment=Student: 6% vs 4% overall",
+     "employment=Unemployed: 17% vs 12% overall",
+     "race=Hispanic: 13% vs 9% overall"
+    ],
+    "distinctive_answers": [
+     "Synonym: Select the word that is most nearly the same in meaning as SOLICIT -> exert (+24 pts)",
+     "Antonym: Select the word that is most nearly the opposite in meaning to ALOOF -> happy (+19 pts)",
+     "Imagine that highway safety experts have determined that a substantial number of people are at risk  -> Agree a little (+18 pts)",
+     "Please consider the following product category: Bakery - Fresh Cakes. Suppose you are in a grocery s -> No, I would not purchase the product (+17 pts)",
+     "Antonym: Select the word that is most nearly the opposite in meaning to CORPULENT -> affiliated (+16 pts)"
+    ]
+   },
+   {
+    "segment": 1,
+    "size_share": 0.105,
+    "over_represented": [
+     "employment=Home-maker: 6% vs 3% overall",
+     "race=Black: 20% vs 12% overall",
+     "religion=Other: 15% vs 10% overall",
+     "employment=Retired: 17% vs 12% overall",
+     "income=Less than $30,000: 25% vs 18% overall"
+    ],
+    "distinctive_answers": [
+     "You have recently graduated from university, obtained a good job, and are buying a new car. A newly  -> very likely (+40 pts)",
+     "Imagine that highway safety experts have determined that a substantial number of people are at risk  -> Agree strongly (+36 pts)",
+     "If a glock is not a XAR, you can say: -> that it is certain that the glock is not (+36 pts)",
+     "Imagine that highway safety experts have determined that a substantial number of people are at risk  -> Agree strongly (+34 pts)",
+     "If a koy is a YOF, you can say: -> that it is certain that the koy is a XAR (+32 pts)"
+    ]
+   },
+   {
+    "segment": 2,
+    "size_share": 0.172,
+    "over_represented": [
+     "religion=Agnostic: 26% vs 15% overall",
+     "employment=Self-employed: 23% vs 14% overall",
+     "religion=Atheist: 17% vs 10% overall",
+     "race=Other: 8% vs 5% overall",
+     "education=Postgraduate: 22% vs 15% overall"
+    ],
+    "distinctive_answers": [
+     "Premise 1: All flowers have petals. Premise 2: Roses have petals. Conclusion: Roses are flowers. Doe -> No (+40 pts)",
+     "If a glock is not a XAR, you can say: -> that it is not certain whether the glock (+39 pts)",
+     "All the cubes below have a different image on each side. Select the choice that could represent a ro -> B (+36 pts)",
+     "Premise 1: All unemployed people are poor. Premise 2: Rockefeller is not unemployed. Conclusion: Roc -> No (+33 pts)",
+     "If a koy is a YOF, you can say: -> that it is not certain whether the koy i (+33 pts)"
+    ]
+   },
+   {
+    "segment": 3,
+    "size_share": 0.079,
+    "over_represented": [
+     "attendance=Once a week: 35% vs 14% overall",
+     "attendance=More than once a week: 10% vs 4% overall",
+     "race=Black: 28% vs 12% overall",
+     "education=Postgraduate: 30% vs 15% overall",
+     "ideology=Very conservative: 13% vs 7% overall"
+    ],
+    "distinctive_answers": [
+     "Please consider the following product category: Soft Drinks - Carbonated. Suppose you are in a groce -> Yes, I would purchase the product (+37 pts)",
+     "Please consider the following product category: Refrigerated Bacon. Suppose you are in a grocery sto -> Yes, I would purchase the product (+35 pts)",
+     "Please consider the following product category: Beer. Suppose you are in a grocery store, and you se -> Yes, I would purchase the product (+35 pts)",
+     "Please consider the following product category: Frozen Novelties. Suppose you are in a grocery store -> Yes, I would purchase the product (+33 pts)",
+     "Please consider the following product category: Dairy Products. Suppose you are in a grocery store,  -> Yes, I would purchase the product (+32 pts)"
+    ]
+   },
+   {
+    "segment": 4,
+    "size_share": 0.126,
+    "over_represented": [
+     "religion=Nothing in particular: 21% vs 16% overall",
+     "attendance=Seldom: 29% vs 22% overall",
+     "age=65+: 17% vs 13% overall",
+     "marital=Widowed: 4% vs 3% overall",
+     "age=50-64: 39% vs 32% overall"
+    ],
+    "distinctive_answers": [
+     "Antonym: Select the word that is most nearly the opposite in meaning to VACUOUS -> profound (+21 pts)",
+     "$8.00 in 7 weeks:$7.75 in 6 weeks || Please choose between the following options. For each line in t -> 2 (+20 pts)",
+     "$10.00 in 7 weeks:$9.50 in 5 weeks || Please choose between the following options. For each line in  -> 2 (+19 pts)",
+     "Synonym: Select the word that is most nearly the same in meaning as FURTIVE -> stealthy (+19 pts)",
+     "Synonym: Select the word that is most nearly the same in meaning as INDOLENT -> slothful (+19 pts)"
+    ]
+   },
+   {
+    "segment": 5,
+    "size_share": 0.122,
+    "over_represented": [
+     "marital=Divorced: 21% vs 11% overall",
+     "party=Something else: 6% vs 3% overall",
+     "age=65+: 24% vs 13% overall",
+     "employment=Retired: 20% vs 12% overall",
+     "ideology=Very liberal: 27% vs 17% overall"
+    ],
+    "distinctive_answers": [
+     "Please rate your level of disagreement or agreement with the following statement: \"I would find a ga -> Disagree strongly (+31 pts)",
+     "Please rate your level of disagreement or agreement with the following statement: \"I would find a ga -> Disagree strongly (+30 pts)",
+     "My beliefs about myself seem to change very frequently. || Please indicate your agreement with each  -> Disagree strongly (+28 pts)",
+     "Sometimes I think I know other people better than I know myself. || Please indicate your agreement w -> Disagree strongly (+27 pts)",
+     "Please consider the following product category: Fresh Fruit. Suppose you are in a grocery store, and -> No, I would not purchase the product (+26 pts)"
+    ]
+   },
+   {
+    "segment": 6,
+    "size_share": 0.131,
+    "over_represented": [
+     "employment=Student: 8% vs 4% overall",
+     "education=High school graduate: 25% vs 13% overall",
+     "ideology=Very conservative: 12% vs 7% overall",
+     "age=18-29: 33% vs 19% overall",
+     "race=Black: 20% vs 12% overall"
+    ],
+    "distinctive_answers": [
+     "Please consider the following product category: Batteries. Suppose you are in a grocery store, and y -> Yes, I would purchase the product (+24 pts)",
+     "Please consider the following product category: Snacks - Tortilla Chips. Suppose you are in a grocer -> Yes, I would purchase the product (+24 pts)",
+     "Synonym: Select the word that is most nearly the same in meaning as SOLICIT -> exert (+21 pts)",
+     "Please consider the following product category: Frozen Foods. Suppose you are in a grocery store, an -> Yes, I would purchase the product (+21 pts)",
+     "Please consider the following product category: Ground and Whole Bean Coffee. Suppose you are in a g -> Yes, I would purchase the product (+21 pts)"
+    ]
+   },
+   {
+    "segment": 7,
+    "size_share": 0.137,
+    "over_represented": [
+     "religion=Atheist: 15% vs 10% overall",
+     "ideology=Very liberal: 21% vs 17% overall",
+     "education=College graduate/some postgrad: 44% vs 36% overall",
+     "religion=Roman Catholic: 21% vs 17% overall",
+     "household=3: 25% vs 21% overall"
+    ],
+    "distinctive_answers": [
+     "If a glock is not a XAR, you can say: -> that it is not certain whether the glock (+40 pts)",
+     "If a koy is a YOF, you can say: -> that it is not certain whether the koy i (+35 pts)",
+     "All the cubes below have a different image on each side. Select the choice that could represent a ro -> B (+24 pts)",
+     "Antonym: Select the word that is most nearly the opposite in meaning to ALOOF -> gregarious (+24 pts)",
+     "Premise 1: All flowers have petals. Premise 2: Roses have petals. Conclusion: Roses are flowers. Doe -> No (+24 pts)"
+    ]
+   }
+  ],
+  "retest_ceiling": {
+   "items": 3,
+   "same_answer_rate": 0.4561
+  }
+ }
+}
