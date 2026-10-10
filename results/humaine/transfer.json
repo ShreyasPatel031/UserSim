@@ -1,0 +1,1248 @@
+{
+ "cells": 4355,
+ "simbench_calibration": {
+  "questions": 981,
+  "S_raw": 33.15,
+  "T": 1.25,
+  "S_T": 34.71,
+  "mix": 0.1,
+  "S_mix": 34.24,
+  "indiff_questions": 168,
+  "indiff_human_mean": 0.195,
+  "indiff_gemini_mean": 0.1874,
+  "indiff_logit_shift": 0.1184
+ },
+ "zero_data": {
+  "uniform": {
+   "overall_winner": {
+    "S": 0.0,
+    "ci": [
+     -1.04,
+     1.0
+    ]
+   },
+   "core_task_performance_and_reasoning": {
+    "S": -0.0,
+    "ci": [
+     -1.24,
+     1.55
+    ]
+   },
+   "interaction_fluidity_and_adaptiveness": {
+    "S": 0.0,
+    "ci": [
+     -1.56,
+     1.49
+    ]
+   },
+   "communication_style_and_presentation": {
+    "S": -0.0,
+    "ci": [
+     -1.44,
+     1.33
+    ]
+   },
+   "trust_ethics_and_safety": {
+    "S": 0.0,
+    "ci": [
+     -0.63,
+     0.69
+    ]
+   }
+  },
+  "gemini_plain": {
+   "overall_winner": {
+    "S": 23.23,
+    "ci": [
+     22.03,
+     24.42
+    ]
+   },
+   "core_task_performance_and_reasoning": {
+    "S": -49.5,
+    "ci": [
+     -51.07,
+     -47.83
+    ]
+   },
+   "interaction_fluidity_and_adaptiveness": {
+    "S": -33.09,
+    "ci": [
+     -34.82,
+     -31.28
+    ]
+   },
+   "communication_style_and_presentation": {
+    "S": 16.3,
+    "ci": [
+     14.79,
+     17.65
+    ]
+   },
+   "trust_ethics_and_safety": {
+    "S": -26.41,
+    "ci": [
+     -27.22,
+     -25.62
+    ]
+   }
+  },
+  "gemini_plain+arena_tie_tie_bothbad": {
+   "overall_winner": {
+    "S": 11.46,
+    "ci": [
+     10.34,
+     12.6
+    ]
+   },
+   "core_task_performance_and_reasoning": {
+    "S": -24.87,
+    "ci": [
+     -26.36,
+     -23.21
+    ]
+   },
+   "interaction_fluidity_and_adaptiveness": {
+    "S": -14.1,
+    "ci": [
+     -15.76,
+     -12.3
+    ]
+   },
+   "communication_style_and_presentation": {
+    "S": 9.57,
+    "ci": [
+     8.02,
+     10.93
+    ]
+   },
+   "trust_ethics_and_safety": {
+    "S": -17.67,
+    "ci": [
+     -18.31,
+     -16.95
+    ]
+   }
+  },
+  "gemini_plain+arena_tie_tie": {
+   "overall_winner": {
+    "S": 32.15,
+    "ci": [
+     30.99,
+     33.4
+    ]
+   },
+   "core_task_performance_and_reasoning": {
+    "S": -72.43,
+    "ci": [
+     -73.87,
+     -70.76
+    ]
+   },
+   "interaction_fluidity_and_adaptiveness": {
+    "S": -56.34,
+    "ci": [
+     -58.09,
+     -54.41
+    ]
+   },
+   "communication_style_and_presentation": {
+    "S": 17.32,
+    "ci": [
+     15.96,
+     18.75
+    ]
+   },
+   "trust_ethics_and_safety": {
+    "S": -51.37,
+    "ci": [
+     -51.99,
+     -50.64
+    ]
+   }
+  },
+  "gemini_plain+simbench_T": {
+   "overall_winner": {
+    "S": 20.75,
+    "ci": [
+     19.56,
+     21.91
+    ]
+   },
+   "core_task_performance_and_reasoning": {
+    "S": -37.1,
+    "ci": [
+     -38.49,
+     -35.56
+    ]
+   },
+   "interaction_fluidity_and_adaptiveness": {
+    "S": -22.01,
+    "ci": [
+     -23.63,
+     -20.32
+    ]
+   },
+   "communication_style_and_presentation": {
+    "S": 16.64,
+    "ci": [
+     15.08,
+     17.96
+    ]
+   },
+   "trust_ethics_and_safety": {
+    "S": -21.48,
+    "ci": [
+     -22.24,
+     -20.76
+    ]
+   }
+  },
+  "gemini_plain+simbench_mix": {
+   "overall_winner": {
+    "S": 21.8,
+    "ci": [
+     20.62,
+     22.98
+    ]
+   },
+   "core_task_performance_and_reasoning": {
+    "S": -42.73,
+    "ci": [
+     -44.21,
+     -41.12
+    ]
+   },
+   "interaction_fluidity_and_adaptiveness": {
+    "S": -26.98,
+    "ci": [
+     -28.63,
+     -25.23
+    ]
+   },
+   "communication_style_and_presentation": {
+    "S": 16.52,
+    "ci": [
+     14.97,
+     17.89
+    ]
+   },
+   "trust_ethics_and_safety": {
+    "S": -23.69,
+    "ci": [
+     -24.47,
+     -22.94
+    ]
+   }
+  },
+  "gemini_plain+simbench_ind": {
+   "overall_winner": {
+    "S": 19.39,
+    "ci": [
+     18.21,
+     20.59
+    ]
+   },
+   "core_task_performance_and_reasoning": {
+    "S": -41.47,
+    "ci": [
+     -43.01,
+     -39.81
+    ]
+   },
+   "interaction_fluidity_and_adaptiveness": {
+    "S": -26.39,
+    "ci": [
+     -28.11,
+     -24.61
+    ]
+   },
+   "communication_style_and_presentation": {
+    "S": 14.21,
+    "ci": [
+     12.62,
+     15.63
+    ]
+   },
+   "trust_ethics_and_safety": {
+    "S": -20.04,
+    "ci": [
+     -20.86,
+     -19.24
+    ]
+   }
+  },
+  "gemini_plain+arena_tie_tie+simbench_T": {
+   "overall_winner": {
+    "S": 33.68,
+    "ci": [
+     32.52,
+     34.83
+    ]
+   },
+   "core_task_performance_and_reasoning": {
+    "S": -68.86,
+    "ci": [
+     -70.26,
+     -67.36
+    ]
+   },
+   "interaction_fluidity_and_adaptiveness": {
+    "S": -52.76,
+    "ci": [
+     -54.46,
+     -50.96
+    ]
+   },
+   "communication_style_and_presentation": {
+    "S": 19.44,
+    "ci": [
+     18.04,
+     20.75
+    ]
+   },
+   "trust_ethics_and_safety": {
+    "S": -51.15,
+    "ci": [
+     -51.78,
+     -50.41
+    ]
+   }
+  },
+  "gemini_meta": {
+   "overall_winner": {
+    "S": 22.62,
+    "ci": [
+     21.39,
+     23.75
+    ]
+   },
+   "core_task_performance_and_reasoning": {
+    "S": -57.53,
+    "ci": [
+     -59.28,
+     -55.71
+    ]
+   },
+   "interaction_fluidity_and_adaptiveness": {
+    "S": -29.83,
+    "ci": [
+     -31.69,
+     -28.01
+    ]
+   },
+   "communication_style_and_presentation": {
+    "S": 17.09,
+    "ci": [
+     15.7,
+     18.36
+    ]
+   },
+   "trust_ethics_and_safety": {
+    "S": -28.61,
+    "ci": [
+     -29.43,
+     -27.76
+    ]
+   }
+  },
+  "gemini_meta+arena_tie_tie_bothbad": {
+   "overall_winner": {
+    "S": 10.75,
+    "ci": [
+     9.49,
+     11.86
+    ]
+   },
+   "core_task_performance_and_reasoning": {
+    "S": -29.6,
+    "ci": [
+     -31.24,
+     -27.89
+    ]
+   },
+   "interaction_fluidity_and_adaptiveness": {
+    "S": -10.49,
+    "ci": [
+     -12.16,
+     -8.86
+    ]
+   },
+   "communication_style_and_presentation": {
+    "S": 10.62,
+    "ci": [
+     9.07,
+     11.83
+    ]
+   },
+   "trust_ethics_and_safety": {
+    "S": -17.57,
+    "ci": [
+     -18.19,
+     -16.86
+    ]
+   }
+  },
+  "gemini_meta+arena_tie_tie": {
+   "overall_winner": {
+    "S": 31.0,
+    "ci": [
+     29.75,
+     32.16
+    ]
+   },
+   "core_task_performance_and_reasoning": {
+    "S": -77.39,
+    "ci": [
+     -78.99,
+     -75.73
+    ]
+   },
+   "interaction_fluidity_and_adaptiveness": {
+    "S": -52.48,
+    "ci": [
+     -54.2,
+     -50.6
+    ]
+   },
+   "communication_style_and_presentation": {
+    "S": 18.44,
+    "ci": [
+     17.18,
+     19.68
+    ]
+   },
+   "trust_ethics_and_safety": {
+    "S": -51.3,
+    "ci": [
+     -51.97,
+     -50.55
+    ]
+   }
+  },
+  "gemini_meta+simbench_T": {
+   "overall_winner": {
+    "S": 20.57,
+    "ci": [
+     19.35,
+     21.67
+    ]
+   },
+   "core_task_performance_and_reasoning": {
+    "S": -43.22,
+    "ci": [
+     -44.76,
+     -41.42
+    ]
+   },
+   "interaction_fluidity_and_adaptiveness": {
+    "S": -19.42,
+    "ci": [
+     -21.08,
+     -17.72
+    ]
+   },
+   "communication_style_and_presentation": {
+    "S": 17.45,
+    "ci": [
+     15.98,
+     18.65
+    ]
+   },
+   "trust_ethics_and_safety": {
+    "S": -23.33,
+    "ci": [
+     -24.08,
+     -22.54
+    ]
+   }
+  },
+  "gemini_meta+simbench_mix": {
+   "overall_winner": {
+    "S": 21.42,
+    "ci": [
+     20.22,
+     22.54
+    ]
+   },
+   "core_task_performance_and_reasoning": {
+    "S": -49.72,
+    "ci": [
+     -51.38,
+     -47.91
+    ]
+   },
+   "interaction_fluidity_and_adaptiveness": {
+    "S": -23.97,
+    "ci": [
+     -25.7,
+     -22.2
+    ]
+   },
+   "communication_style_and_presentation": {
+    "S": 17.36,
+    "ci": [
+     15.92,
+     18.59
+    ]
+   },
+   "trust_ethics_and_safety": {
+    "S": -25.66,
+    "ci": [
+     -26.44,
+     -24.85
+    ]
+   }
+  },
+  "gemini_meta+simbench_ind": {
+   "overall_winner": {
+    "S": 18.96,
+    "ci": [
+     17.72,
+     20.11
+    ]
+   },
+   "core_task_performance_and_reasoning": {
+    "S": -49.64,
+    "ci": [
+     -51.39,
+     -47.79
+    ]
+   },
+   "interaction_fluidity_and_adaptiveness": {
+    "S": -23.34,
+    "ci": [
+     -25.18,
+     -21.56
+    ]
+   },
+   "communication_style_and_presentation": {
+    "S": 14.99,
+    "ci": [
+     13.51,
+     16.18
+    ]
+   },
+   "trust_ethics_and_safety": {
+    "S": -22.36,
+    "ci": [
+     -23.18,
+     -21.49
+    ]
+   }
+  },
+  "gemini_meta+arena_tie_tie+simbench_T": {
+   "overall_winner": {
+    "S": 32.91,
+    "ci": [
+     31.72,
+     34.0
+    ]
+   },
+   "core_task_performance_and_reasoning": {
+    "S": -72.58,
+    "ci": [
+     -74.06,
+     -71.05
+    ]
+   },
+   "interaction_fluidity_and_adaptiveness": {
+    "S": -49.53,
+    "ci": [
+     -51.23,
+     -47.78
+    ]
+   },
+   "communication_style_and_presentation": {
+    "S": 20.44,
+    "ci": [
+     19.25,
+     21.62
+    ]
+   },
+   "trust_ethics_and_safety": {
+    "S": -51.09,
+    "ci": [
+     -51.76,
+     -50.34
+    ]
+   }
+  },
+  "gemini_arena": {
+   "overall_winner": {
+    "S": 39.54,
+    "ci": [
+     38.45,
+     40.5
+    ]
+   },
+   "core_task_performance_and_reasoning": {
+    "S": -60.73,
+    "ci": [
+     -62.51,
+     -58.75
+    ]
+   },
+   "interaction_fluidity_and_adaptiveness": {
+    "S": -39.88,
+    "ci": [
+     -41.61,
+     -37.91
+    ]
+   },
+   "communication_style_and_presentation": {
+    "S": 25.84,
+    "ci": [
+     24.59,
+     26.98
+    ]
+   },
+   "trust_ethics_and_safety": {
+    "S": -43.58,
+    "ci": [
+     -44.42,
+     -42.68
+    ]
+   }
+  },
+  "gemini_arena+arena_tie_tie_bothbad": {
+   "overall_winner": {
+    "S": 20.75,
+    "ci": [
+     19.78,
+     21.62
+    ]
+   },
+   "core_task_performance_and_reasoning": {
+    "S": -12.81,
+    "ci": [
+     -14.22,
+     -10.96
+    ]
+   },
+   "interaction_fluidity_and_adaptiveness": {
+    "S": -0.1,
+    "ci": [
+     -1.71,
+     1.45
+    ]
+   },
+   "communication_style_and_presentation": {
+    "S": 19.37,
+    "ci": [
+     18.13,
+     20.54
+    ]
+   },
+   "trust_ethics_and_safety": {
+    "S": -16.78,
+    "ci": [
+     -17.45,
+     -16.03
+    ]
+   }
+  },
+  "gemini_arena+arena_tie_tie": {
+   "overall_winner": {
+    "S": 42.63,
+    "ci": [
+     41.58,
+     43.59
+    ]
+   },
+   "core_task_performance_and_reasoning": {
+    "S": -63.17,
+    "ci": [
+     -64.8,
+     -61.23
+    ]
+   },
+   "interaction_fluidity_and_adaptiveness": {
+    "S": -43.36,
+    "ci": [
+     -45.07,
+     -41.6
+    ]
+   },
+   "communication_style_and_presentation": {
+    "S": 27.9,
+    "ci": [
+     26.7,
+     28.99
+    ]
+   },
+   "trust_ethics_and_safety": {
+    "S": -50.86,
+    "ci": [
+     -51.55,
+     -50.09
+    ]
+   }
+  },
+  "gemini_arena+simbench_T": {
+   "overall_winner": {
+    "S": 37.68,
+    "ci": [
+     36.72,
+     38.6
+    ]
+   },
+   "core_task_performance_and_reasoning": {
+    "S": -42.61,
+    "ci": [
+     -44.19,
+     -40.86
+    ]
+   },
+   "interaction_fluidity_and_adaptiveness": {
+    "S": -24.1,
+    "ci": [
+     -25.81,
+     -22.36
+    ]
+   },
+   "communication_style_and_presentation": {
+    "S": 27.89,
+    "ci": [
+     26.67,
+     29.03
+    ]
+   },
+   "trust_ethics_and_safety": {
+    "S": -36.36,
+    "ci": [
+     -37.17,
+     -35.48
+    ]
+   }
+  },
+  "gemini_arena+simbench_mix": {
+   "overall_winner": {
+    "S": 38.71,
+    "ci": [
+     37.67,
+     39.67
+    ]
+   },
+   "core_task_performance_and_reasoning": {
+    "S": -49.89,
+    "ci": [
+     -51.61,
+     -48.05
+    ]
+   },
+   "interaction_fluidity_and_adaptiveness": {
+    "S": -30.21,
+    "ci": [
+     -31.95,
+     -28.37
+    ]
+   },
+   "communication_style_and_presentation": {
+    "S": 27.52,
+    "ci": [
+     26.26,
+     28.66
+    ]
+   },
+   "trust_ethics_and_safety": {
+    "S": -39.1,
+    "ci": [
+     -39.92,
+     -38.21
+    ]
+   }
+  },
+  "gemini_arena+simbench_ind": {
+   "overall_winner": {
+    "S": 37.17,
+    "ci": [
+     36.1,
+     38.14
+    ]
+   },
+   "core_task_performance_and_reasoning": {
+    "S": -53.01,
+    "ci": [
+     -54.81,
+     -51.02
+    ]
+   },
+   "interaction_fluidity_and_adaptiveness": {
+    "S": -32.58,
+    "ci": [
+     -34.33,
+     -30.65
+    ]
+   },
+   "communication_style_and_presentation": {
+    "S": 25.82,
+    "ci": [
+     24.56,
+     26.98
+    ]
+   },
+   "trust_ethics_and_safety": {
+    "S": -38.31,
+    "ci": [
+     -39.17,
+     -37.38
+    ]
+   }
+  },
+  "gemini_arena+arena_tie_tie+simbench_T": {
+   "overall_winner": {
+    "S": 44.39,
+    "ci": [
+     43.41,
+     45.32
+    ]
+   },
+   "core_task_performance_and_reasoning": {
+    "S": -58.21,
+    "ci": [
+     -59.72,
+     -56.44
+    ]
+   },
+   "interaction_fluidity_and_adaptiveness": {
+    "S": -39.67,
+    "ci": [
+     -41.32,
+     -37.87
+    ]
+   },
+   "communication_style_and_presentation": {
+    "S": 29.17,
+    "ci": [
+     28.05,
+     30.25
+    ]
+   },
+   "trust_ethics_and_safety": {
+    "S": -50.77,
+    "ci": [
+     -51.45,
+     -50.0
+    ]
+   }
+  },
+  "arena_dims_tie_bothbad": {
+   "overall_winner": {
+    "S": 18.76,
+    "ci": [
+     17.72,
+     19.68
+    ]
+   },
+   "core_task_performance_and_reasoning": {
+    "S": -6.76,
+    "ci": [
+     -7.97,
+     -5.19
+    ]
+   },
+   "interaction_fluidity_and_adaptiveness": {
+    "S": 3.61,
+    "ci": [
+     2.1,
+     5.13
+    ]
+   },
+   "communication_style_and_presentation": {
+    "S": 19.92,
+    "ci": [
+     18.62,
+     21.04
+    ]
+   },
+   "trust_ethics_and_safety": {
+    "S": -14.64,
+    "ci": [
+     -15.36,
+     -13.78
+    ]
+   }
+  },
+  "arena_dims_tie": {
+   "overall_winner": {
+    "S": 39.39,
+    "ci": [
+     38.28,
+     40.43
+    ]
+   },
+   "core_task_performance_and_reasoning": {
+    "S": -51.38,
+    "ci": [
+     -52.9,
+     -49.82
+    ]
+   },
+   "interaction_fluidity_and_adaptiveness": {
+    "S": -35.2,
+    "ci": [
+     -37.01,
+     -33.38
+    ]
+   },
+   "communication_style_and_presentation": {
+    "S": 28.04,
+    "ci": [
+     26.71,
+     29.19
+    ]
+   },
+   "trust_ethics_and_safety": {
+    "S": -44.77,
+    "ci": [
+     -45.68,
+     -43.78
+    ]
+   }
+  }
+ },
+ "diagnostic": {
+  "humaine_tie_rate": {
+   "overall_winner": 0.1118,
+   "core_task_performance_and_reasoning": 0.3786,
+   "interaction_fluidity_and_adaptiveness": 0.3161,
+   "communication_style_and_presentation": 0.189,
+   "trust_ethics_and_safety": 0.6629
+  },
+  "gemini_plain+known_tie_share": {
+   "overall_winner": {
+    "S": 34.91,
+    "ci": [
+     33.75,
+     36.12
+    ]
+   },
+   "core_task_performance_and_reasoning": {
+    "S": -4.63,
+    "ci": [
+     -6.33,
+     -2.95
+    ]
+   },
+   "interaction_fluidity_and_adaptiveness": {
+    "S": -9.29,
+    "ci": [
+     -10.96,
+     -7.43
+    ]
+   },
+   "communication_style_and_presentation": {
+    "S": 18.81,
+    "ci": [
+     17.38,
+     20.23
+    ]
+   },
+   "trust_ethics_and_safety": {
+    "S": 68.31,
+    "ci": [
+     67.73,
+     68.81
+    ]
+   }
+  },
+  "gemini_plain+known_split": {
+   "overall_winner": {
+    "S": 61.68,
+    "ci": [
+     61.11,
+     62.28
+    ]
+   },
+   "core_task_performance_and_reasoning": {
+    "S": -2.86,
+    "ci": [
+     -4.52,
+     -1.14
+    ]
+   },
+   "interaction_fluidity_and_adaptiveness": {
+    "S": 21.79,
+    "ci": [
+     20.23,
+     23.45
+    ]
+   },
+   "communication_style_and_presentation": {
+    "S": 68.27,
+    "ci": [
+     67.61,
+     68.89
+    ]
+   },
+   "trust_ethics_and_safety": {
+    "S": -25.0,
+    "ci": [
+     -25.79,
+     -24.19
+    ]
+   }
+  },
+  "gemini_meta+known_tie_share": {
+   "overall_winner": {
+    "S": 33.63,
+    "ci": [
+     32.35,
+     34.81
+    ]
+   },
+   "core_task_performance_and_reasoning": {
+    "S": -8.63,
+    "ci": [
+     -10.45,
+     -6.71
+    ]
+   },
+   "interaction_fluidity_and_adaptiveness": {
+    "S": -5.9,
+    "ci": [
+     -7.63,
+     -4.2
+    ]
+   },
+   "communication_style_and_presentation": {
+    "S": 19.95,
+    "ci": [
+     18.64,
+     21.21
+    ]
+   },
+   "trust_ethics_and_safety": {
+    "S": 68.33,
+    "ci": [
+     67.76,
+     68.79
+    ]
+   }
+  },
+  "gemini_meta+known_split": {
+   "overall_winner": {
+    "S": 62.38,
+    "ci": [
+     61.72,
+     62.98
+    ]
+   },
+   "core_task_performance_and_reasoning": {
+    "S": -7.16,
+    "ci": [
+     -8.87,
+     -5.55
+    ]
+   },
+   "interaction_fluidity_and_adaptiveness": {
+    "S": 20.72,
+    "ci": [
+     19.08,
+     22.37
+    ]
+   },
+   "communication_style_and_presentation": {
+    "S": 68.05,
+    "ci": [
+     67.35,
+     68.8
+    ]
+   },
+   "trust_ethics_and_safety": {
+    "S": -27.36,
+    "ci": [
+     -28.15,
+     -26.52
+    ]
+   }
+  },
+  "gemini_arena+known_tie_share": {
+   "overall_winner": {
+    "S": 45.38,
+    "ci": [
+     44.39,
+     46.35
+    ]
+   },
+   "core_task_performance_and_reasoning": {
+    "S": 7.76,
+    "ci": [
+     6.31,
+     9.36
+    ]
+   },
+   "interaction_fluidity_and_adaptiveness": {
+    "S": 4.33,
+    "ci": [
+     2.86,
+     5.77
+    ]
+   },
+   "communication_style_and_presentation": {
+    "S": 29.3,
+    "ci": [
+     28.09,
+     30.4
+    ]
+   },
+   "trust_ethics_and_safety": {
+    "S": 70.53,
+    "ci": [
+     69.99,
+     70.95
+    ]
+   }
+  },
+  "gemini_arena+known_split": {
+   "overall_winner": {
+    "S": 72.58,
+    "ci": [
+     71.97,
+     73.16
+    ]
+   },
+   "core_task_performance_and_reasoning": {
+    "S": -29.62,
+    "ci": [
+     -31.38,
+     -27.8
+    ]
+   },
+   "interaction_fluidity_and_adaptiveness": {
+    "S": -4.63,
+    "ci": [
+     -6.58,
+     -2.61
+    ]
+   },
+   "communication_style_and_presentation": {
+    "S": 68.3,
+    "ci": [
+     67.49,
+     69.01
+    ]
+   },
+   "trust_ethics_and_safety": {
+    "S": -43.13,
+    "ci": [
+     -43.98,
+     -42.24
+    ]
+   }
+  }
+ },
+ "pilot": {
+  "gemini_plain": {
+   "25": {
+    "overall_S": 31.75,
+    "overall_sd": 7.07,
+    "reasons_mean_S": 5.7,
+    "reasons_sd": 8.85
+   },
+   "50": {
+    "overall_S": 33.67,
+    "overall_sd": 4.63,
+    "reasons_mean_S": 13.79,
+    "reasons_sd": 6.42
+   },
+   "100": {
+    "overall_S": 37.12,
+    "overall_sd": 2.31,
+    "reasons_mean_S": 19.5,
+    "reasons_sd": 2.45
+   },
+   "200": {
+    "overall_S": 38.98,
+    "overall_sd": 0.77,
+    "reasons_mean_S": 21.97,
+    "reasons_sd": 1.43
+   },
+   "400": {
+    "overall_S": 39.57,
+    "overall_sd": 0.18,
+    "reasons_mean_S": 23.82,
+    "reasons_sd": 0.34
+   }
+  },
+  "gemini_arena": {
+   "25": {
+    "overall_S": 40.29,
+    "overall_sd": 6.84,
+    "reasons_mean_S": 15.42,
+    "reasons_sd": 7.41
+   },
+   "50": {
+    "overall_S": 45.21,
+    "overall_sd": 2.03,
+    "reasons_mean_S": 23.48,
+    "reasons_sd": 4.34
+   },
+   "100": {
+    "overall_S": 45.89,
+    "overall_sd": 3.19,
+    "reasons_mean_S": 26.32,
+    "reasons_sd": 1.98
+   },
+   "200": {
+    "overall_S": 46.32,
+    "overall_sd": 1.95,
+    "reasons_mean_S": 27.65,
+    "reasons_sd": 1.29
+   },
+   "400": {
+    "overall_S": 47.84,
+    "overall_sd": 0.55,
+    "reasons_mean_S": 29.32,
+    "reasons_sd": 0.62
+   }
+  }
+ },
+ "pilot_evidence": {
+  "prior_sd": 0.5,
+  "note": "arena-rating prior on Bradley-Terry log-strengths, updated with pilot votes per dimension; tie share from the pilot; pilot conversations removed from scored cells",
+  "results": {
+   "25": {
+    "evidence": 45.6,
+    "evidence_reasons": 19.0,
+    "calib_only": 43.74,
+    "calib_only_reasons": 16.57,
+    "prior_only": 44.53,
+    "evidence_sd": 4.62
+   },
+   "50": {
+    "evidence": 47.64,
+    "evidence_reasons": 25.68,
+    "calib_only": 45.8,
+    "calib_only_reasons": 23.07,
+    "prior_only": 45.92,
+    "evidence_sd": 1.84
+   },
+   "100": {
+    "evidence": 48.05,
+    "evidence_reasons": 28.25,
+    "calib_only": 46.04,
+    "calib_only_reasons": 25.58,
+    "prior_only": 45.51,
+    "evidence_sd": 2.98
+   },
+   "200": {
+    "evidence": 51.55,
+    "evidence_reasons": 32.41,
+    "calib_only": 47.0,
+    "calib_only_reasons": 27.52,
+    "prior_only": 46.69,
+    "evidence_sd": 2.28
+   },
+   "400": {
+    "evidence": 53.64,
+    "evidence_reasons": 35.43,
+    "calib_only": 47.42,
+    "calib_only_reasons": 28.82,
+    "prior_only": 46.53,
+    "evidence_sd": 2.51
+   }
+  }
+ }
+}

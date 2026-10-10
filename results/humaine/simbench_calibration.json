@@ -1,0 +1,12 @@
+{
+ "questions": 981,
+ "S_raw": 33.15,
+ "T": 1.25,
+ "S_T": 34.71,
+ "mix": 0.1,
+ "S_mix": 34.24,
+ "indiff_questions": 168,
+ "indiff_human_mean": 0.195,
+ "indiff_gemini_mean": 0.1874,
+ "indiff_logit_shift": 0.1184
+}

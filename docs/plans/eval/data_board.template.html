@@ -1,0 +1,441 @@
+<title>Data Lever Board</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: sibling of the Benchmark Fit Board. A progress ladder up top, then three views (leaderboard with controls, data x benchmark matrix, experiment log). Track colors: zero-data blue, pilot green, in-dataset grey. */
+:root {
+  --bg: #f4f6f5; --surface: #ffffff; --ink: #15191a; --ink2: #4f585b; --muted: #727b7e; --line: #dbe1df; --soft: #eef2f0;
+  --accent: #1f6fcf; --p1: #2a78d6; --p2: #e0602d; --p3: #17a170; --p4: #4a3aa7;
+  --zero: #1f6fcf; --pilot: #17895f; --indata: #8a9396; --pos: #17895f; --neg: #c2412d; --posbg: #dff1e8; --negbg: #f8e1dc;
+  --ok: #1d7a4c; --warn: #9a6400; --font-d: "IBM Plex Sans Condensed", "IBM Plex Sans", system-ui, sans-serif;
+  --font-b: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif; --font-m: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #111414; --surface: #191d1d; --ink: #eef2f0; --ink2: #b8c1c0; --muted: #8e9898; --line: #2b3131; --soft: #202626;
+  --accent: #5a9ff0; --p1: #3987e5; --p2: #e8763f; --p3: #2bb583; --p4: #9085e9;
+  --zero: #5a9ff0; --pilot: #3cbf8a; --indata: #7d8789; --pos: #4fcf97; --neg: #f07a64; --posbg: #183428; --negbg: #3a1f1a;
+  --ok: #5cc28d; --warn: #e0a940; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #111414; --surface: #191d1d; --ink: #eef2f0; --ink2: #b8c1c0; --muted: #8e9898; --line: #2b3131; --soft: #202626;
+  --accent: #5a9ff0; --p1: #3987e5; --p2: #e8763f; --p3: #2bb583; --p4: #9085e9;
+  --zero: #5a9ff0; --pilot: #3cbf8a; --indata: #7d8789; --pos: #4fcf97; --neg: #f07a64; --posbg: #183428; --negbg: #3a1f1a;
+  --ok: #5cc28d; --warn: #e0a940; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-b); font-size: 14px; line-height: 1.5; padding-inline: 16px; padding-block: 24px 48px; }
+.wrap { max-width: 1280px; margin-inline: auto; display: flex; flex-direction: column; gap: 20px; }
+h1 { font-family: var(--font-d); font-size: clamp(26px, 4vw, 38px); margin: 0; letter-spacing: -0.01em; text-wrap: balance; }
+h2 { font-family: var(--font-d); font-size: 15px; margin: 0; letter-spacing: 0.02em; text-transform: uppercase; color: var(--ink2); }
+p { margin: 0; }
+.lede { color: var(--ink2); max-width: 82ch; }
+.mono { font-family: var(--font-m); font-variant-numeric: tabular-nums; }
+.dot { width: 9px; height: 9px; border-radius: 2px; display: inline-block; flex: none; }
+.sw-P1 { background: var(--p1); } .sw-P2 { background: var(--p2); } .sw-P3 { background: var(--p3); } .sw-P4 { background: var(--p4); }
+.t-zero_data { background: var(--zero); } .t-pilot { background: var(--pilot); } .t-in_dataset { background: var(--indata); }
+
+/* ladder */
+.ladder { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.ladder-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 16px; align-items: baseline; }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12px; color: var(--ink2); }
+.legend span { display: inline-flex; gap: 6px; align-items: center; }
+.lrows { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr) minmax(0, 1fr); gap: 4px 14px; align-items: center; }
+.lrows .lh { font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+.lname { font-size: 13px; min-width: 0; }
+.lname small { color: var(--muted); font-family: var(--font-m); font-size: 11px; margin-left: 4px; }
+.ltrack { position: relative; height: 18px; background: var(--soft); border-radius: 3px; }
+.ltrack .zero { position: absolute; top: -2px; bottom: -2px; width: 1px; background: var(--ink2); opacity: .5; }
+.ltrack .ceil { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--ink); opacity: .7; }
+.ltrack i { position: absolute; top: 3px; height: 12px; border-radius: 2px; }
+.ltrack i.hatch { background-image: repeating-linear-gradient(45deg, var(--indata) 0 3px, transparent 3px 6px) !important; }
+.ltrack b { position: absolute; top: 0; font-family: var(--font-m); font-size: 11px; font-weight: 500; line-height: 18px; color: var(--ink); white-space: nowrap; }
+.lk { display: none; font-size: 11px; color: var(--muted); }
+@media (max-width: 720px) { .lrows { grid-template-columns: minmax(0, 1fr); } .lrows .lh { display: none; } .lname { margin-top: 8px; } .lk { display: block; } }
+
+/* tabs */
+.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+.tab { all: unset; cursor: pointer; padding: 8px 14px; font-size: 14px; font-weight: 500; color: var(--ink2); border-bottom: 2px solid transparent; margin-bottom: -1px; }
+.tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+.tab:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* board */
+.layout { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 18px; align-items: start; }
+@media (max-width: 900px) { .layout { grid-template-columns: minmax(0, 1fr); } }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 16px; position: sticky; top: env(safe-area-inset-top, 0px); }
+@media (max-width: 900px) { .panel { position: static; } }
+.group { display: flex; flex-direction: column; gap: 8px; }
+.slider { display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; align-items: center; }
+.slider label { font-size: 13px; display: flex; gap: 6px; align-items: center; }
+.slider output { font-family: var(--font-m); font-size: 12px; color: var(--ink2); min-width: 2.8em; text-align: right; }
+.slider input { grid-column: 1 / -1; width: 100%; accent-color: var(--accent); }
+.presets, .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+button, select { font: inherit; color: var(--ink); }
+.btn { background: var(--soft); border: 1px solid var(--line); border-radius: 6px; padding: 4px 9px; font-size: 12px; cursor: pointer; }
+.btn:hover { border-color: var(--accent); }
+.btn:focus-visible, .chip:focus-visible, th button:focus-visible, select:focus-visible, input:focus-visible, tr.row:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.chip { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 3px 10px; font-size: 12px; cursor: pointer; display: inline-flex; gap: 6px; align-items: center; }
+.chip[aria-pressed="false"] { opacity: 0.5; text-decoration: line-through; }
+.toggle { display: flex; gap: 8px; align-items: center; font-size: 13px; }
+.hint { font-size: 12px; color: var(--muted); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; min-width: 0; }
+.card-head { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; justify-content: space-between; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+.card-head select { background: var(--soft); border: 1px solid var(--line); border-radius: 6px; padding: 3px 6px; }
+.tw { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; }
+#boardTable { min-width: 820px; }
+#boardTable .bar { width: 32px; }
+#boardTable .overall .bar { width: 44px; }
+th { text-align: right; font-weight: 500; font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); padding: 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th.l, td.l { text-align: left; }
+th button { all: unset; cursor: pointer; display: inline-flex; gap: 4px; align-items: center; }
+th button[aria-sort] { color: var(--ink); }
+td { padding: 8px; border-top: 1px solid var(--line); vertical-align: middle; text-align: right; }
+tr.row { cursor: pointer; }
+tr.row:hover td { background: var(--soft); }
+.rank { font-family: var(--font-m); color: var(--muted); text-align: left; width: 34px; }
+.name { text-align: left; min-width: 190px; max-width: 240px; }
+.name b { font-weight: 600; }
+.name small { display: block; color: var(--muted); font-size: 12px; }
+.pill { font-size: 11px; padding: 1px 7px; border-radius: 999px; border: 1px solid var(--line); margin-left: 6px; white-space: nowrap; vertical-align: 1px; display: inline-block; }
+.pill.in_hand { color: var(--ok); border-color: var(--ok); }
+.pill.available { color: var(--accent); border-color: var(--accent); }
+.pill.restricted { color: var(--warn); border-color: var(--warn); }
+.pill.to_collect { color: var(--ink2); border-style: dashed; }
+.tier { font-family: var(--font-m); font-size: 10.5px; letter-spacing: 0.04em; padding: 1px 6px; border-radius: 4px; background: var(--soft); color: var(--ink2); margin-left: 6px; }
+.ev { font-size: 12px; color: var(--ink2); white-space: nowrap; }
+.ev.measured { color: var(--ok); font-weight: 500; }
+.cellv { display: flex; align-items: center; gap: 6px; justify-content: flex-end; }
+.bar { width: 40px; height: 8px; background: var(--soft); border-radius: 2px; overflow: hidden; flex: none; }
+.bar i { display: block; height: 100%; border-radius: 2px; }
+.num { font-family: var(--font-m); font-size: 12px; min-width: 2.2em; font-variant-numeric: tabular-nums; }
+.overall .num { font-size: 14px; font-weight: 500; }
+.overall .bar { width: 56px; height: 10px; }
+.sorted { background: color-mix(in srgb, var(--accent) 7%, transparent); }
+.best { font-family: var(--font-m); font-size: 12px; white-space: nowrap; }
+.best small { display: block; font-family: var(--font-b); color: var(--muted); font-size: 11px; }
+.pos { color: var(--pos); } .neg { color: var(--neg); }
+tr.detail td { background: var(--soft); text-align: left; padding: 14px 16px; }
+.dgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
+.dcard { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.dcard h3 { margin: 0; font-size: 13px; display: flex; gap: 6px; align-items: center; }
+.dcard p { font-size: 12.5px; color: var(--ink2); }
+.mlist { margin-top: 12px; display: flex; flex-direction: column; gap: 4px; font-size: 12.5px; }
+.mlist div { display: grid; grid-template-columns: 52px minmax(0, 1fr) auto; gap: 8px; border-bottom: 1px dashed var(--line); padding-block: 3px; align-items: baseline; }
+.meta { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 12.5px; color: var(--ink2); }
+.meta b { color: var(--ink); font-weight: 500; }
+
+/* matrix */
+#matrixTable { min-width: 940px; }
+#matrixTable td, #matrixTable th { text-align: center; }
+#matrixTable th { white-space: normal; letter-spacing: 0.02em; min-width: 76px; vertical-align: bottom; }
+#matrixTable td.l { min-width: 170px; max-width: 210px; }
+#matrixTable td.l, #matrixTable th.l { text-align: left; }
+.mx { font-family: var(--font-m); font-size: 12px; border-radius: 4px; padding: 3px 6px; display: inline-block; min-width: 54px; }
+.mx.m-pos { background: var(--posbg); color: var(--pos); font-weight: 500; }
+.mx.m-neg { background: var(--negbg); color: var(--neg); font-weight: 500; }
+.mx.m-zero { background: var(--soft); color: var(--ink2); }
+.mx.m-exp { border: 1px dashed var(--line); color: var(--muted); }
+.mx sup { font-size: 9px; margin-left: 2px; }
+th .bs { display: block; font-size: 10px; letter-spacing: 0; text-transform: none; color: var(--muted); }
+
+/* log */
+#logTable { min-width: 980px; }
+#logTable td { font-size: 12.5px; vertical-align: top; }
+.tp { font-size: 11px; color: #fff; border-radius: 4px; padding: 1px 6px; white-space: nowrap; }
+.note { color: var(--ink2); max-width: 46ch; text-align: left; }
+footer { font-size: 12.5px; color: var(--muted); display: flex; flex-direction: column; gap: 6px; max-width: 92ch; }
+.empty { padding: 30px; text-align: center; color: var(--muted); }
+@media (prefers-reduced-motion: no-preference) { .bar i, .ltrack i { transition: width .2s ease; } }
+</style>
+
+<div class="wrap">
+  <header style="display:flex;flex-direction:column;gap:10px">
+    <h1>Data Lever Board</h1>
+    <p class="lede">Which data makes which prediction better. Green numbers were measured by us on a benchmark; the rest are expectations from published work or our own hypotheses, marked as such. Benchmark rows are never used to tune a method: every gain is either zero-data (outside sources only) or a simulated pilot that is removed before scoring.</p>
+  </header>
+
+  <section class="ladder" aria-label="HUMAINE progress ladder">
+    <div class="ladder-head">
+      <h2>HUMAINE: from model alone to a small pilot</h2>
+      <div class="legend"><span><i class="dot t-zero_data"></i>Zero-data</span><span><i class="dot t-pilot"></i>Pilot from target population</span><span><i class="dot t-in_dataset"></i>In-dataset yardstick</span><span>│ ceiling from sampling noise</span></div>
+    </div>
+    <div class="lrows" id="ladder"></div>
+    <p class="hint">S = 100 × (1 − TVD / TVD of a uniform guess) over 4,355 product-pair × segment cells; 0 is a uniform guess. Reasons = mean S over core task, fluidity, style and trust. Model: Gemini 2.5 Flash, temperature 0.</p>
+  </section>
+
+  <nav class="tabs" role="tablist" aria-label="Views">
+    <button class="tab" role="tab" id="tabBoard" aria-controls="viewBoard" aria-selected="true" type="button">Leaderboard</button>
+    <button class="tab" role="tab" id="tabMatrix" aria-controls="viewMatrix" aria-selected="false" type="button">Data × benchmark</button>
+    <button class="tab" role="tab" id="tabLog" aria-controls="viewLog" aria-selected="false" type="button">Experiment log</button>
+  </nav>
+
+  <section id="viewBoard" role="tabpanel" aria-labelledby="tabBoard">
+    <div class="layout">
+      <aside class="panel" aria-label="Weights and filters">
+        <div class="group">
+          <h2>Stage weights</h2>
+          <div class="presets" id="presets"></div>
+          <div id="stageSliders"></div>
+        </div>
+        <div class="group">
+          <h2>Trust in evidence</h2>
+          <div id="evSliders"></div>
+          <p class="hint">How much a published result or an untested idea counts against a gain we measured ourselves.</p>
+        </div>
+        <div class="group">
+          <h2>Cost tier</h2>
+          <div class="chips" id="tierChips"></div>
+        </div>
+        <div class="group">
+          <h2>Status</h2>
+          <div class="chips" id="statusChips"></div>
+        </div>
+        <div class="group">
+          <h2>Lever</h2>
+          <div class="chips" id="leverChips"></div>
+        </div>
+        <label class="toggle" for="commercial"><input type="checkbox" id="commercial"> Commercial use allowed only</label>
+        <button class="btn" id="reset" type="button">Reset to defaults</button>
+      </aside>
+      <section class="card" aria-label="Leaderboard">
+        <div class="card-head">
+          <span id="summary" class="hint"></span>
+          <label class="hint" for="rankBy">Rank by <select id="rankBy"></select></label>
+        </div>
+        <div class="tw"><table id="boardTable"><thead><tr id="thead"></tr></thead><tbody id="tbody"></tbody></table></div>
+      </section>
+    </div>
+  </section>
+
+  <section id="viewMatrix" role="tabpanel" aria-labelledby="tabMatrix" hidden>
+    <section class="card">
+      <div class="card-head">
+        <span class="hint">Measured change in S on each benchmark (TVD points for Twin-2K, lower error is positive). Dashed cells are expectations, not results. Hover a cell for the experiment.</span>
+      </div>
+      <div class="tw"><table id="matrixTable"><thead><tr id="mhead"></tr></thead><tbody id="mbody"></tbody></table></div>
+    </section>
+  </section>
+
+  <section id="viewLog" role="tabpanel" aria-labelledby="tabLog" hidden>
+    <section class="card">
+      <div class="card-head">
+        <div class="chips" id="trackChips"></div>
+        <label class="hint" for="benchSel">Benchmark <select id="benchSel"></select></label>
+      </div>
+      <div class="tw"><table id="logTable"><thead><tr>
+        <th class="l" scope="col">ID</th><th class="l" scope="col">Benchmark</th><th class="l" scope="col">Data tested</th><th class="l" scope="col">Track</th>
+        <th scope="col">Base</th><th scope="col">Result</th><th scope="col">Change</th><th scope="col">95% CI</th><th class="l" scope="col">Notes</th>
+      </tr></thead><tbody id="lbody"></tbody></table></div>
+    </section>
+  </section>
+
+  <footer>
+    <p><b>Stage usefulness</b> is scored 0–3 per source (0 none, 1 small or indirect, 2 moderate, 3 large), shown as 0–100. <b>Overall</b> = weighted stage usefulness × trust in its evidence. Measured rows are scored from our runs; click a row for every result behind it.</p>
+    <p><b>Tracks.</b> Zero-data uses only sources outside the benchmark. Pilot draws a random sample of the target population (8 draws per size), uses it for calibration or as evidence, and removes it from every cell before scoring. In-dataset numbers use the benchmark's own rows and are shown only for scale. Product Hunt data stays in the open benchmark and never enters proprietary data.</p>
+    <p>Source of truth: <span class="mono">docs/plans/eval/data_board.py</span>, which reads <span class="mono">results/humaine/*.json</span> and <span class="mono">results/popadapt/cards_twin.json</span>.</p>
+  </footer>
+</div>
+
+<script>
+const D = __DATA__;
+const STAGES = Object.keys(D.stages);
+const EXP = Object.fromEntries(D.experiments.map((e) => [e.id, e]));
+const BENCH = Object.fromEntries(D.benches.map((b) => [b.id, b]));
+const STATUS_LABEL = { in_hand: "In hand", available: "Available", restricted: "Restricted", to_collect: "To collect" };
+const TRACK_LABEL = { zero_data: "Zero-data", pilot: "Pilot", in_dataset: "In-dataset" };
+const DEF = { wP: { P1: 1.5, P2: 2.5, P3: 1, P4: 3.5 }, ev: { measured: 100, literature: 75, hypothesis: 50 },
+  tier: { FREE: true, EXPERIMENTAL: true, INCREMENTAL: true }, status: { in_hand: true, available: true, restricted: true, to_collect: true },
+  lever: Object.fromEntries(Object.keys(D.levers).map((k) => [k, true])), commercial: false, sort: "overall", open: [], tab: "Board",
+  track: { zero_data: true, pilot: true, in_dataset: true }, bench: "all" };
+const PRESETS = [["Default", { P1: 1.5, P2: 2.5, P3: 1, P4: 3.5 }], ["Equal", { P1: 1, P2: 1, P3: 1, P4: 1 }],
+  ["P1 only", { P1: 1, P2: 0, P3: 0, P4: 0 }], ["P2 only", { P1: 0, P2: 1, P3: 0, P4: 0 }], ["P3 only", { P1: 0, P2: 0, P3: 1, P4: 0 }], ["P4 only", { P1: 0, P2: 0, P3: 0, P4: 1 }]];
+const KEY = "data-lever-board-v1";
+let S;
+try { S = JSON.parse(localStorage.getItem(KEY)) || null; } catch (e) { S = null; }
+if (!S || !S.wP || !S.ev || !S.track) S = JSON.parse(JSON.stringify(DEF));
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const fmt = (v, d = 1) => (v === null || v === undefined || Number.isNaN(v)) ? "–" : (+v).toFixed(d);
+const sgn = (v, d = 1) => (v > 0 ? "+" : v < 0 ? "−" : "±") + Math.abs(v).toFixed(d);
+
+// ---------------------------------------------------------------- ladder
+function ladder() {
+  const rows = [
+    ["Uniform guess", null, "zero_data"],
+    ["Gemini, product names only", "H0", "zero_data"],
+    ["+ LMArena ratings in the prompt", "H1", "zero_data"],
+    ["+ arena tie share + SimBench temperature", "H8", "zero_data"],
+    ["+ 50-person pilot: ties and confidence", "Pa50", "pilot"],
+    ["+ 50-person pilot as evidence", "PE50", "pilot"],
+    ["+ 400-person pilot as evidence", "PE400", "pilot"],
+    ["Yardstick: other HUMAINE pairs (overall), HUMAINE tie rates (reasons)", "Y1", "in_dataset"],
+  ];
+  const lo = -40, hi = 80, X = (v) => ((Math.max(lo, Math.min(hi, v)) - lo) / (hi - lo)) * 100;
+  const ceil = (EXP.H0 && /Ceiling ([\d.]+)/.exec(EXP.H0.note)) ? +/Ceiling ([\d.]+)/.exec(EXP.H0.note)[1] : null;
+  const bar = (v, track) => {
+    const z = `<span class="zero" style="left:${X(0)}%"></span>` + (ceil ? `<span class="ceil" style="left:${X(ceil)}%" title="Ceiling ${ceil}"></span>` : "");
+    if (v === null || v === undefined) return `<div class="ltrack">${z}<b style="left:calc(${X(0)}% + 4px)">–</b></div>`;
+    const a = X(Math.min(0, v)), b = X(Math.max(0, v));
+    const lbl = v >= 0 ? `left:calc(${b}% + 4px)` : `left:calc(${a}% - 4px);transform:translateX(-100%)`;
+    return `<div class="ltrack">${z}<i class="t-${track}${track === "in_dataset" ? " hatch" : ""}" style="left:${a}%;width:${Math.max(0.6, b - a)}%"></i><b style="${lbl}">${fmt(v)}</b></div>`;
+  };
+  let html = `<span class="lh">Step</span><span class="lh">Overall choice (S)</span><span class="lh">Reasons (S)</span>`;
+  for (const [name, id, track] of rows) {
+    const e = id ? EXP[id] : { value: 0, reasons: 0 };
+    if (!e) continue;
+    html += `<div class="lname">${esc(name)}${id ? `<small>${id}</small>` : ""}</div><div><span class="lk">Overall choice</span>${bar(e.value, track)}</div><div><span class="lk">Reasons</span>${bar(e.reasons, track)}</div>`;
+  }
+  $("ladder").innerHTML = html;
+}
+
+// ---------------------------------------------------------------- leaderboard
+function slider(id, label, value, min, max, step, dotClass, f) {
+  return `<div class="slider"><label for="${id}">${dotClass ? `<i class="dot ${dotClass}"></i>` : ""}${esc(label)}</label><output id="${id}Out">${f(value)}</output>
+    <input type="range" id="${id}" min="${min}" max="${max}" step="${step}" value="${value}"></div>`;
+}
+function chips(el, obj, labels, attr, title) {
+  $(el).innerHTML = Object.keys(labels).map((k) => `<button class="chip" type="button" data-${attr}="${k}" aria-pressed="${obj[k]}" title="${esc(title ? title[k] : "")}">${esc(labels[k])}</button>`).join("");
+}
+function buildControls() {
+  $("stageSliders").innerHTML = STAGES.map((k) => slider("w" + k, `${k} · ${D.stages[k]}`, S.wP[k], 0, 5, 0.5, "sw-" + k, (v) => (+v).toFixed(1))).join("");
+  $("evSliders").innerHTML = Object.keys(D.evidence).map((k) => slider("ev_" + k, D.evidence[k], S.ev[k], 0, 100, 5, "", (v) => v + "%")).join("");
+  $("presets").innerHTML = PRESETS.map(([n], i) => `<button class="btn" type="button" data-preset="${i}">${esc(n)}</button>`).join("");
+  chips("tierChips", S.tier, { FREE: "Free", EXPERIMENTAL: "$200 / mo", INCREMENTAL: "$2,000 / mo" }, "tier", D.tiers);
+  chips("statusChips", S.status, STATUS_LABEL, "status");
+  chips("leverChips", S.lever, Object.fromEntries(Object.keys(D.levers).map((k) => [k, k])), "lever", D.levers);
+  chips("trackChips", S.track, TRACK_LABEL, "track");
+  $("commercial").checked = S.commercial;
+  const opts = [["overall", "Overall"], ...STAGES.map((k) => [k, k]), ["best", "Best measured gain"]];
+  $("rankBy").innerHTML = opts.map(([v, n]) => `<option value="${v}">${n}</option>`).join("");
+  $("rankBy").value = S.sort;
+  $("benchSel").innerHTML = `<option value="all">All</option>` + D.benches.map((b) => `<option value="${b.id}">${esc(b.name)}</option>`).join("");
+  $("benchSel").value = S.bench;
+}
+function bestOf(s) {
+  let best = null;
+  for (const [k, c] of Object.entries(s.cells || {})) {
+    if (best === null || c.d > best.d) best = { ...c, bench: k };
+  }
+  return best;
+}
+function score(s) {
+  const st = Object.fromEntries(STAGES.map((k) => [k, (100 * s.P[k].score) / 3]));
+  const wp = STAGES.reduce((a, k) => a + S.wP[k], 0);
+  const fit = wp ? STAGES.reduce((a, k) => a + S.wP[k] * st[k], 0) / wp : 0;
+  const b = bestOf(s);
+  return { ...st, overall: fit * (S.ev[s.evidence] / 100), best: b ? b.d : -999 };
+}
+const COLOR = { P1: "var(--p1)", P2: "var(--p2)", P3: "var(--p3)", P4: "var(--p4)", overall: "var(--accent)" };
+const cell = (v, key, cls = "") => `<td class="${cls}${S.sort === key ? " sorted" : ""}"><div class="cellv"><span class="num">${Math.round(v)}</span><span class="bar"><i style="width:${Math.max(0, v).toFixed(1)}%;background:${COLOR[key]}"></i></span></div></td>`;
+function visible(s) {
+  if (!S.tier[s.tier] || !S.status[s.status]) return false;
+  if (!s.levers.some((l) => S.lever[l])) return false;
+  if (S.commercial && s.commercial !== "yes") return false;
+  return true;
+}
+function render() {
+  const cols = [["rank", "#"], ["name", "Data source"], ["overall", "Overall"], ...STAGES.map((k) => [k, k]), ["best", "Best measured"], ["ev", "Evidence"]];
+  $("thead").innerHTML = cols.map(([k, n]) => {
+    if (["rank", "name", "ev"].includes(k)) return `<th scope="col" class="${k === "ev" ? "" : "l"}">${n}</th>`;
+    const dot = STAGES.includes(k) ? `<i class="dot sw-${k}"></i>` : "";
+    return `<th scope="col"><button type="button" data-sort="${k}" ${S.sort === k ? 'aria-sort="descending"' : ""}>${dot}${n}${S.sort === k ? " ▾" : ""}</button></th>`;
+  }).join("");
+  const rows = D.sources.filter(visible).map((s) => ({ s, v: score(s) }));
+  rows.sort((x, y) => y.v[S.sort] - x.v[S.sort] || y.v.overall - x.v.overall);
+  $("summary").textContent = `${rows.length} of ${D.sources.length} sources · weights ${STAGES.map((k) => `${k} ${S.wP[k]}`).join(" · ")}`;
+  if (!rows.length) { $("tbody").innerHTML = `<tr><td colspan="${cols.length}" class="empty">No sources match. Turn a filter back on.</td></tr>`; return; }
+  $("tbody").innerHTML = rows.map(({ s, v }, i) => {
+    const open = S.open.includes(s.id);
+    const b = bestOf(s);
+    const bestTxt = b ? `<span class="${b.d > 0 ? "pos" : b.d < 0 ? "neg" : ""}">${sgn(b.d)}</span><small>${esc(BENCH[b.bench].name)} · ${b.exp}</small>` : `<span class="hint">not tested</span>`;
+    let html = `<tr class="row" tabindex="0" data-id="${s.id}" aria-expanded="${open}">
+      <td class="rank">${i + 1}</td>
+      <td class="name"><b>${esc(s.name)}</b><span class="pill ${s.status}">${STATUS_LABEL[s.status]}</span><span class="tier">${s.tier === "FREE" ? "FREE" : s.tier === "EXPERIMENTAL" ? "$200" : "$2K"}</span><small>${esc(s.org)}</small></td>
+      ${cell(v.overall, "overall", "overall")}${STAGES.map((k) => cell(v[k], k)).join("")}
+      <td class="best${S.sort === "best" ? " sorted" : ""}">${bestTxt}</td>
+      <td class="ev ${s.evidence}" title="${esc(D.evidence[s.evidence])}">${{ measured: "Measured", literature: "Published", hypothesis: "Untested" }[s.evidence]}</td></tr>`;
+    if (open) {
+      const pc = STAGES.map((k) => `<div class="dcard"><h3><i class="dot sw-${k}"></i>${k} · ${s.P[k].score}/3</h3><p>${esc(s.P[k].why || "No expected effect.")}</p></div>`).join("");
+      const ms = s.measured.map((id) => EXP[id]).filter(Boolean).map((e) => {
+        const d = e.metric === "dS" ? e.value : (e.metric.includes("TVD") ? (e.base - e.value) * 100 : e.value - e.base);
+        return `<div><span class="mono">${e.id}</span><span>${esc(BENCH[e.bench].name)}: ${esc(e.data)} <span class="hint">(${TRACK_LABEL[e.track]})</span></span><span class="mono ${d > 0 ? "pos" : d < 0 ? "neg" : ""}">${e.metric === "dS" ? sgn(e.value) : `${fmt(e.base, e.metric.includes("TVD") ? 4 : 1)} → ${fmt(e.value, e.metric.includes("TVD") ? 4 : 1)}`}</span></div>`;
+      }).join("");
+      const exps = Object.entries(s.exp || {}).map(([k, [sg, n]]) => `${esc(BENCH[k].name)} ${esc(sg)}${n ? ` (${esc(n)})` : ""}`).join("; ");
+      html += `<tr class="detail"><td colspan="${cols.length}"><div class="dgrid">${pc}</div>
+        ${ms ? `<div class="mlist">${ms}</div>` : ""}
+        <div class="meta"><span><b>Levers</b> ${esc(s.levers.join(", "))}</span><span><b>Licence</b> ${esc(s.license)} · commercial: ${esc(s.commercial)}</span><span><b>Cost</b> ${esc(s.cost)}</span></div>
+        <div class="meta"><span><b>Next test</b> ${esc(s.next)}</span>${exps ? `<span><b>Expected</b> ${exps}</span>` : ""}</div>
+        <div class="meta"><span>${esc(s.note)}</span></div></td></tr>`;
+    }
+    return html;
+  }).join("");
+}
+
+// ---------------------------------------------------------------- matrix
+function matrix() {
+  $("mhead").innerHTML = `<th class="l" scope="col">Data source</th>` + D.benches.map((b) => `<th scope="col"><i class="dot sw-${b.stage}"></i> ${esc(b.name)}<span class="bs">${b.stage}</span></th>`).join("");
+  const rows = D.sources.filter((s) => Object.keys(s.cells || {}).length || Object.keys(s.exp || {}).length);
+  rows.sort((a, b) => Object.keys(b.cells || {}).length - Object.keys(a.cells || {}).length);
+  $("mbody").innerHTML = rows.map((s) => `<tr><td class="l"><b>${esc(s.name)}</b></td>` + D.benches.map((b) => {
+    const c = (s.cells || {})[b.id];
+    if (c) {
+      const e = EXP[c.exp];
+      const cls = Math.abs(c.d) < 0.5 ? "m-zero" : c.d > 0 ? "m-pos" : "m-neg";
+      const tip = `${c.exp} · ${TRACK_LABEL[c.track]} · ${e.data}: ${e.note}`;
+      return `<td><span class="mx ${cls}" title="${esc(tip)}">${sgn(c.d)}${c.track === "pilot" ? "<sup>pilot</sup>" : ""}</span></td>`;
+    }
+    const x = (s.exp || {})[b.id];
+    if (x) return `<td><span class="mx m-exp" title="${esc("Expected, not measured: " + (x[1] || ""))}">${esc(x[0])}?</span></td>`;
+    return `<td></td>`;
+  }).join("") + `</tr>`).join("");
+}
+
+// ---------------------------------------------------------------- log
+function log() {
+  const rows = D.experiments.filter((e) => S.track[e.track] && (S.bench === "all" || e.bench === S.bench));
+  $("lbody").innerHTML = rows.length ? rows.map((e) => {
+    const tv = e.metric.includes("TVD");
+    const d = e.metric === "dS" ? e.value : (tv ? e.base - e.value : e.value - e.base);
+    const dd = tv ? 4 : 1;
+    return `<tr><td class="l mono">${e.id}</td><td class="l">${esc(BENCH[e.bench].name)}</td><td class="l">${esc(e.data)}</td>
+      <td class="l"><span class="tp t-${e.track}">${TRACK_LABEL[e.track]}</span></td>
+      <td class="mono">${e.metric === "dS" ? "–" : fmt(e.base, dd)}</td><td class="mono">${e.metric === "dS" ? "–" : fmt(e.value, dd)}</td>
+      <td class="mono ${d > 0 ? "pos" : d < 0 ? "neg" : ""}">${sgn(d, dd)}</td><td class="mono">${e.ci ? `${fmt(e.ci[0], dd)}–${fmt(e.ci[1], dd)}` : "–"}</td>
+      <td class="note">${esc(e.note)} <span class="hint">${esc(e.src)}</span></td></tr>`;
+  }).join("") : `<tr><td colspan="9" class="empty">No experiments match.</td></tr>`;
+}
+
+// ---------------------------------------------------------------- events
+function setTab(t) {
+  S.tab = t; save();
+  for (const n of ["Board", "Matrix", "Log"]) { $("tab" + n).setAttribute("aria-selected", n === t); $("view" + n).hidden = n !== t; }
+}
+document.addEventListener("input", (e) => {
+  const id = e.target.id;
+  if (id.startsWith("w") && STAGES.includes(id.slice(1))) { S.wP[id.slice(1)] = +e.target.value; $(id + "Out").textContent = (+e.target.value).toFixed(1); }
+  else if (id.startsWith("ev_")) { S.ev[id.slice(3)] = +e.target.value; $(id + "Out").textContent = e.target.value + "%"; }
+  else return;
+  save(); render();
+});
+document.addEventListener("click", (e) => {
+  const t = e.target.closest(".tab"); if (t) { setTab(t.id.slice(3)); return; }
+  const p = e.target.closest("[data-preset]"); if (p) { S.wP = { ...PRESETS[+p.dataset.preset][1] }; buildControls(); save(); render(); return; }
+  for (const [attr, obj] of [["tier", "tier"], ["status", "status"], ["lever", "lever"], ["track", "track"]]) {
+    const c = e.target.closest(`[data-${attr}]`);
+    if (c) { const k = c.dataset[attr]; S[obj][k] = !S[obj][k]; c.setAttribute("aria-pressed", S[obj][k]); save(); render(); log(); return; }
+  }
+  const h = e.target.closest("[data-sort]"); if (h) { S.sort = h.dataset.sort; $("rankBy").value = S.sort; save(); render(); return; }
+  const r = e.target.closest("tr.row"); if (r) toggle(r.dataset.id);
+});
+document.addEventListener("keydown", (e) => {
+  const r = e.target.closest && e.target.closest("tr.row");
+  if (r && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); toggle(r.dataset.id); }
+});
+$("rankBy").addEventListener("change", (e) => { S.sort = e.target.value; save(); render(); });
+$("benchSel").addEventListener("change", (e) => { S.bench = e.target.value; save(); log(); });
+$("commercial").addEventListener("change", (e) => { S.commercial = e.target.checked; save(); render(); });
+$("reset").addEventListener("click", () => { S = JSON.parse(JSON.stringify(DEF)); buildControls(); save(); render(); log(); setTab("Board"); });
+function toggle(id) { const i = S.open.indexOf(id); i >= 0 ? S.open.splice(i, 1) : S.open.push(id); save(); render(); }
+
+buildControls(); ladder(); render(); matrix(); log(); setTab(S.tab || "Board");
+</script>

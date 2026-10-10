@@ -40,3 +40,10 @@ data/hackathon/
 
 # Twin-2K-500 (CC BY 4.0) is downloaded locally, not committed: see src/human_sim/popadapt/adapters.py
 data/twin2k/
+
+# HUMAINE (MIT) downloaded locally: src/human_sim/humaine_bench.py
+data/humaine/
+
+# External public data for HUMAINE predictions (LMArena CC BY 4.0, OpenRouter listing): see src/human_sim/humaine_external.py
+data/lmarena/
+data/openrouter/

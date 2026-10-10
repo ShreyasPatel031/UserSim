@@ -1,0 +1,21 @@
+{
+ "comparisons": 51456,
+ "products": 45,
+ "p4_cells": 4355,
+ "p4_cells_by_segment": {
+  "country": 1028,
+  "age_band": 842,
+  "all": 671,
+  "eth": 644,
+  "edu": 607,
+  "leaning": 563
+ },
+ "p3_cells": 302,
+ "tie_rate_by_dimension": {
+  "overall_winner": 0.112,
+  "core_task_performance_and_reasoning": 0.379,
+  "interaction_fluidity_and_adaptiveness": 0.316,
+  "communication_style_and_presentation": 0.189,
+  "trust_ethics_and_safety": 0.663
+ }
+}

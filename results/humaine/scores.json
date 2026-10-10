@@ -1,0 +1,643 @@
+{
+ "cells": {
+  "p4": 4355,
+  "p3": 302
+ },
+ "p4": {
+  "gemini_plain": {
+   "overall_winner": {
+    "S": 23.23,
+    "ci": [
+     22.02,
+     24.44
+    ],
+    "ceiling": 71.81,
+    "by_segment_type": {
+     "age_band": 22.52,
+     "all": 23.98,
+     "country": 22.37,
+     "edu": 23.57,
+     "eth": 24.95,
+     "leaning": 22.6
+    }
+   },
+   "core_task_performance_and_reasoning": {
+    "S": -49.5,
+    "ci": [
+     -51.11,
+     -47.79
+    ],
+    "ceiling": 46.91
+   },
+   "interaction_fluidity_and_adaptiveness": {
+    "S": -33.09,
+    "ci": [
+     -34.87,
+     -31.27
+    ],
+    "ceiling": 38.85
+   },
+   "communication_style_and_presentation": {
+    "S": 16.3,
+    "ci": [
+     14.91,
+     17.69
+    ],
+    "ceiling": 61.53
+   },
+   "trust_ethics_and_safety": {
+    "S": -26.41,
+    "ci": [
+     -27.22,
+     -25.55
+    ],
+    "ceiling": 77.58
+   },
+   "extras": {
+    "winner_accuracy_clear_pairs": 0.527,
+    "n_clear_pairs": 370,
+    "spearman_net_preference": 0.0518,
+    "n_pairs": 671,
+    "segment_gap_correlation": {
+     "age_band:18-34_vs_55+": {
+      "pairs": 46,
+      "corr": 0.0094,
+      "real_gap_sd": 0.2302
+     },
+     "country:United Kingdom_vs_United States": {
+      "pairs": 439,
+      "corr": -0.04,
+      "real_gap_sd": 0.2051
+     },
+     "leaning:left_vs_right": {
+      "pairs": 92,
+      "corr": 0.1176,
+      "real_gap_sd": 0.2137
+     }
+    }
+   }
+  },
+  "gemini_meta": {
+   "overall_winner": {
+    "S": 22.62,
+    "ci": [
+     21.43,
+     23.75
+    ],
+    "ceiling": 71.81,
+    "by_segment_type": {
+     "age_band": 22.17,
+     "all": 22.94,
+     "country": 21.87,
+     "edu": 23.28,
+     "eth": 24.96,
+     "leaning": 20.87
+    }
+   },
+   "core_task_performance_and_reasoning": {
+    "S": -57.53,
+    "ci": [
+     -59.21,
+     -55.63
+    ],
+    "ceiling": 46.91
+   },
+   "interaction_fluidity_and_adaptiveness": {
+    "S": -29.83,
+    "ci": [
+     -31.57,
+     -28.08
+    ],
+    "ceiling": 38.85
+   },
+   "communication_style_and_presentation": {
+    "S": 17.09,
+    "ci": [
+     15.77,
+     18.41
+    ],
+    "ceiling": 61.53
+   },
+   "trust_ethics_and_safety": {
+    "S": -28.61,
+    "ci": [
+     -29.42,
+     -27.79
+    ],
+    "ceiling": 77.58
+   },
+   "extras": {
+    "winner_accuracy_clear_pairs": 0.4838,
+    "n_clear_pairs": 370,
+    "spearman_net_preference": 0.0294,
+    "n_pairs": 671,
+    "segment_gap_correlation": {
+     "age_band:18-34_vs_55+": {
+      "pairs": 46,
+      "corr": -0.0475,
+      "real_gap_sd": 0.2302
+     },
+     "country:United Kingdom_vs_United States": {
+      "pairs": 439,
+      "corr": -0.0078,
+      "real_gap_sd": 0.2051
+     },
+     "leaning:left_vs_right": {
+      "pairs": 92,
+      "corr": 0.1431,
+      "real_gap_sd": 0.2137
+     }
+    }
+   }
+  },
+  "gemini_arena": {
+   "overall_winner": {
+    "S": 39.54,
+    "ci": [
+     38.52,
+     40.52
+    ],
+    "ceiling": 71.81,
+    "by_segment_type": {
+     "age_band": 37.79,
+     "all": 43.55,
+     "country": 38.81,
+     "edu": 39.13,
+     "eth": 41.54,
+     "leaning": 36.85
+    }
+   },
+   "core_task_performance_and_reasoning": {
+    "S": -60.73,
+    "ci": [
+     -62.49,
+     -58.79
+    ],
+    "ceiling": 46.91
+   },
+   "interaction_fluidity_and_adaptiveness": {
+    "S": -39.88,
+    "ci": [
+     -41.74,
+     -37.91
+    ],
+    "ceiling": 38.85
+   },
+   "communication_style_and_presentation": {
+    "S": 25.84,
+    "ci": [
+     24.61,
+     27.01
+    ],
+    "ceiling": 61.53
+   },
+   "trust_ethics_and_safety": {
+    "S": -43.58,
+    "ci": [
+     -44.42,
+     -42.69
+    ],
+    "ceiling": 77.58
+   },
+   "extras": {
+    "winner_accuracy_clear_pairs": 0.8432,
+    "n_clear_pairs": 370,
+    "spearman_net_preference": 0.5771,
+    "n_pairs": 671,
+    "segment_gap_correlation": {
+     "age_band:18-34_vs_55+": {
+      "pairs": 46,
+      "corr": 0.4014,
+      "real_gap_sd": 0.2302
+     },
+     "country:United Kingdom_vs_United States": {
+      "pairs": 439,
+      "corr": 0.0263,
+      "real_gap_sd": 0.2051
+     },
+     "leaning:left_vs_right": {
+      "pairs": 92,
+      "corr": 0.1463,
+      "real_gap_sd": 0.2137
+     }
+    }
+   }
+  },
+  "arena_direct": {
+   "overall_winner": {
+    "S": 18.76,
+    "ci": [
+     17.78,
+     19.69
+    ],
+    "ceiling": 71.81,
+    "by_segment_type": {
+     "age_band": 17.46,
+     "all": 20.0,
+     "country": 18.18,
+     "edu": 19.41,
+     "eth": 20.29,
+     "leaning": 17.8
+    }
+   },
+   "core_task_performance_and_reasoning": {
+    "S": -4.95,
+    "ci": [
+     -6.29,
+     -3.51
+    ],
+    "ceiling": 46.91
+   },
+   "interaction_fluidity_and_adaptiveness": {
+    "S": 1.46,
+    "ci": [
+     -0.1,
+     3.02
+    ],
+    "ceiling": 38.85
+   },
+   "communication_style_and_presentation": {
+    "S": 18.8,
+    "ci": [
+     17.53,
+     20.07
+    ],
+    "ceiling": 61.53
+   },
+   "trust_ethics_and_safety": {
+    "S": -14.64,
+    "ci": [
+     -15.36,
+     -13.88
+    ],
+    "ceiling": 77.58
+   },
+   "extras": {
+    "winner_accuracy_clear_pairs": 0.7162,
+    "n_clear_pairs": 370,
+    "spearman_net_preference": 0.5301,
+    "n_pairs": 671,
+    "segment_gap_correlation": {
+     "age_band:18-34_vs_55+": {
+      "pairs": 46,
+      "corr": 0.0,
+      "real_gap_sd": 0.2302
+     },
+     "country:United Kingdom_vs_United States": {
+      "pairs": 439,
+      "corr": 0.0,
+      "real_gap_sd": 0.2051
+     },
+     "leaning:left_vs_right": {
+      "pairs": 92,
+      "corr": 0.0,
+      "real_gap_sd": 0.2137
+     }
+    }
+   }
+  },
+  "blend_plain_arena": {
+   "overall_winner": {
+    "S": 25.33,
+    "ci": [
+     24.33,
+     26.32
+    ],
+    "ceiling": 71.81,
+    "by_segment_type": {
+     "age_band": 24.23,
+     "all": 26.22,
+     "country": 24.61,
+     "edu": 26.03,
+     "eth": 27.04,
+     "leaning": 24.54
+    }
+   },
+   "core_task_performance_and_reasoning": {
+    "S": -24.28,
+    "ci": [
+     -25.65,
+     -22.8
+    ],
+    "ceiling": 46.91
+   },
+   "interaction_fluidity_and_adaptiveness": {
+    "S": -10.48,
+    "ci": [
+     -12.06,
+     -8.88
+    ],
+    "ceiling": 38.85
+   },
+   "communication_style_and_presentation": {
+    "S": 22.81,
+    "ci": [
+     21.56,
+     24.05
+    ],
+    "ceiling": 61.53
+   },
+   "trust_ethics_and_safety": {
+    "S": -21.68,
+    "ci": [
+     -22.4,
+     -20.94
+    ],
+    "ceiling": 77.58
+   },
+   "extras": {
+    "winner_accuracy_clear_pairs": 0.7568,
+    "n_clear_pairs": 370,
+    "spearman_net_preference": 0.3961,
+    "n_pairs": 671,
+    "segment_gap_correlation": {
+     "age_band:18-34_vs_55+": {
+      "pairs": 46,
+      "corr": -0.0014,
+      "real_gap_sd": 0.2302
+     },
+     "country:United Kingdom_vs_United States": {
+      "pairs": 439,
+      "corr": -0.0253,
+      "real_gap_sd": 0.2051
+     },
+     "leaning:left_vs_right": {
+      "pairs": 92,
+      "corr": 0.1206,
+      "real_gap_sd": 0.2137
+     }
+    }
+   }
+  },
+  "ref_bt_leave_pair_out": {
+   "overall_winner": {
+    "S": 66.93,
+    "ci": [
+     66.4,
+     67.48
+    ],
+    "ceiling": 71.81,
+    "by_segment_type": {
+     "age_band": 64.48,
+     "all": 72.64,
+     "country": 65.99,
+     "edu": 65.91,
+     "eth": 68.43,
+     "leaning": 64.92
+    }
+   },
+   "core_task_performance_and_reasoning": {
+    "S": 4.24,
+    "ci": [
+     2.63,
+     5.84
+    ],
+    "ceiling": 46.91
+   },
+   "interaction_fluidity_and_adaptiveness": {
+    "S": 0.4,
+    "ci": [
+     -1.23,
+     1.95
+    ],
+    "ceiling": 38.85
+   },
+   "communication_style_and_presentation": {
+    "S": 25.35,
+    "ci": [
+     24.06,
+     26.56
+    ],
+    "ceiling": 61.53
+   },
+   "trust_ethics_and_safety": {
+    "S": 69.78,
+    "ci": [
+     69.27,
+     70.26
+    ],
+    "ceiling": 77.58
+   },
+   "extras": {
+    "winner_accuracy_clear_pairs": 0.9838,
+    "n_clear_pairs": 370,
+    "spearman_net_preference": 0.9179,
+    "n_pairs": 671,
+    "segment_gap_correlation": {
+     "age_band:18-34_vs_55+": {
+      "pairs": 46,
+      "corr": 0.0,
+      "real_gap_sd": 0.2302
+     },
+     "country:United Kingdom_vs_United States": {
+      "pairs": 439,
+      "corr": 0.0,
+      "real_gap_sd": 0.2051
+     },
+     "leaning:left_vs_right": {
+      "pairs": 92,
+      "corr": 0.0,
+      "real_gap_sd": 0.2137
+     }
+    }
+   }
+  },
+  "ref_tie_prior": {
+   "overall_winner": {
+    "S": 39.98,
+    "ci": [
+     38.9,
+     41.03
+    ],
+    "ceiling": 71.81,
+    "by_segment_type": {
+     "age_band": 40.05,
+     "all": 41.52,
+     "country": 39.45,
+     "edu": 39.16,
+     "eth": 40.78,
+     "leaning": 38.99
+    }
+   },
+   "core_task_performance_and_reasoning": {
+    "S": 4.24,
+    "ci": [
+     2.63,
+     5.84
+    ],
+    "ceiling": 46.91
+   },
+   "interaction_fluidity_and_adaptiveness": {
+    "S": 0.4,
+    "ci": [
+     -1.23,
+     1.95
+    ],
+    "ceiling": 38.85
+   },
+   "communication_style_and_presentation": {
+    "S": 25.35,
+    "ci": [
+     24.06,
+     26.56
+    ],
+    "ceiling": 61.53
+   },
+   "trust_ethics_and_safety": {
+    "S": 69.78,
+    "ci": [
+     69.27,
+     70.26
+    ],
+    "ceiling": 77.58
+   },
+   "extras": {
+    "winner_accuracy_clear_pairs": 0.0,
+    "n_clear_pairs": 370,
+    "spearman_net_preference": NaN,
+    "n_pairs": 671,
+    "segment_gap_correlation": {
+     "age_band:18-34_vs_55+": {
+      "pairs": 46,
+      "corr": 0.0,
+      "real_gap_sd": 0.2302
+     },
+     "country:United Kingdom_vs_United States": {
+      "pairs": 439,
+      "corr": 0.0,
+      "real_gap_sd": 0.2051
+     },
+     "leaning:left_vs_right": {
+      "pairs": 92,
+      "corr": 0.0,
+      "real_gap_sd": 0.2137
+     }
+    }
+   }
+  },
+  "uniform": {
+   "overall_winner": {
+    "S": 0.0,
+    "ci": [
+     -0.98,
+     1.01
+    ],
+    "ceiling": 71.81,
+    "by_segment_type": {
+     "age_band": -0.85,
+     "all": -0.08,
+     "country": -0.56,
+     "edu": 0.86,
+     "eth": 1.37,
+     "leaning": -0.1
+    }
+   },
+   "core_task_performance_and_reasoning": {
+    "S": -0.0,
+    "ci": [
+     -1.43,
+     1.49
+    ],
+    "ceiling": 46.91
+   },
+   "interaction_fluidity_and_adaptiveness": {
+    "S": 0.0,
+    "ci": [
+     -1.64,
+     1.6
+    ],
+    "ceiling": 38.85
+   },
+   "communication_style_and_presentation": {
+    "S": -0.0,
+    "ci": [
+     -1.35,
+     1.26
+    ],
+    "ceiling": 61.53
+   },
+   "trust_ethics_and_safety": {
+    "S": 0.0,
+    "ci": [
+     -0.67,
+     0.68
+    ],
+    "ceiling": 77.58
+   },
+   "extras": {
+    "winner_accuracy_clear_pairs": 0.0,
+    "n_clear_pairs": 370,
+    "spearman_net_preference": NaN,
+    "n_pairs": 671,
+    "segment_gap_correlation": {
+     "age_band:18-34_vs_55+": {
+      "pairs": 46,
+      "corr": 0.0,
+      "real_gap_sd": 0.2302
+     },
+     "country:United Kingdom_vs_United States": {
+      "pairs": 439,
+      "corr": 0.0,
+      "real_gap_sd": 0.2051
+     },
+     "leaning:left_vs_right": {
+      "pairs": 92,
+      "corr": 0.0,
+      "real_gap_sd": 0.2137
+     }
+    }
+   }
+  }
+ },
+ "p3": {
+  "gemini_plain": {
+   "S": 26.9,
+   "ci": [
+    24.71,
+    29.18
+   ],
+   "ceiling": 89.77,
+   "corr_mean_score": 0.174
+  },
+  "gemini_meta": {
+   "S": 24.12,
+   "ci": [
+    21.39,
+    26.86
+   ],
+   "ceiling": 89.77,
+   "corr_mean_score": 0.1569
+  },
+  "gemini_arena": {
+   "S": 14.63,
+   "ci": [
+    11.84,
+    17.65
+   ],
+   "ceiling": 89.77,
+   "corr_mean_score": 0.2038
+  },
+  "uniform": {
+   "S": -0.0,
+   "ci": [
+    -1.65,
+    1.62
+   ],
+   "ceiling": 89.77,
+   "corr_mean_score": 0.0
+  },
+  "ref_pooled_humaine": {
+   "S": 60.65,
+   "ci": [
+    58.23,
+    63.14
+   ],
+   "ceiling": 89.77,
+   "corr_mean_score": 0.0
+  }
+ },
+ "notes": [
+  "ref_* arms use HUMAINE rows and are yardsticks only; P3 goal-achievement provenance is not documented on the dataset card."
+ ],
+ "p4_common_cells": 4355
+}
