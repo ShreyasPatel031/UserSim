@@ -325,7 +325,7 @@ function renderAnalytics() {
   });
 }
 
-function thoughtHtml(step) {
+function thoughtHtml(step, open) {
   const detail = step.thought_detail || {};
   const order = ["next_goal", "evaluation_previous_goal", "thinking", "memory"];
   const labels = {
@@ -334,9 +334,10 @@ function thoughtHtml(step) {
     thinking: "Reasoning",
     memory: "Memory",
   };
+  const opened = open ? " open" : "";
   const entries = order.filter((k) => detail[k]);
   if (!entries.length && step.thought) {
-    return `<details class="thought-details"><summary>Reasoning</summary><pre class="thought-text">${escapeHtml(step.thought)}</pre></details>`;
+    return `<details class="thought-details"${opened}><summary>Reasoning</summary><pre class="thought-text">${escapeHtml(step.thought)}</pre></details>`;
   }
   if (!entries.length) return "";
   const body = entries
@@ -344,10 +345,10 @@ function thoughtHtml(step) {
       (key) => `<div><strong>${escapeHtml(labels[key] || key)}</strong><pre class="thought-text">${escapeHtml(detail[key])}</pre></div>`
     )
     .join("");
-  return `<details class="thought-details"><summary>Reasoning</summary>${body}</details>`;
+  return `<details class="thought-details"${opened}><summary>Reasoning</summary>${body}</details>`;
 }
 
-function renderStepViewer(run) {
+function renderStepViewer(run, reasoningOpen) {
   const key = run.site_key || "product";
   const shots = shotsOf(run);
   if (!shots.length) {
@@ -384,7 +385,7 @@ function renderStepViewer(run) {
     <div class="step-detail">
       <p class="step-action"><strong>${escapeHtml(step.step)}.</strong> ${escapeHtml(humanAction(step.action) || "Action")}</p>
       ${step.url ? `<p class="step-meta"><span>URL</span> <a href="${escapeHtml(step.url)}" target="_blank" rel="noopener">${escapeHtml(step.url)}</a></p>` : ""}
-      ${thoughtHtml(step)}
+      ${thoughtHtml(step, reasoningOpen)}
     </div>
     <p class="step-caption">${idx + 1} / ${shots.length}${step.screenshot_url ? ` · <a href="${escapeHtml(step.screenshot_url)}" target="_blank" rel="noopener">open screenshot</a>` : ""}</p>
   </div>`;
@@ -496,9 +497,11 @@ function goStep(agentId, idx) {
   if (!shots.length) return;
   _activeIdx[agentId] = Math.max(0, Math.min(shots.length - 1, idx));
   // The same run can be open in the traces tab and in a Task comparison card.
-  document.querySelectorAll(`.step-viewer[data-agent="${CSS.escape(agentId)}"]`).forEach((viewer) => {
+  const viewers = [...document.querySelectorAll(`.step-viewer[data-agent="${CSS.escape(agentId)}"]`)];
+  const keepOpen = viewers.map((viewer) => Boolean(viewer.querySelector(".thought-details")?.open));
+  viewers.forEach((viewer, i) => {
     const tmp = document.createElement("div");
-    tmp.innerHTML = renderStepViewer(run);
+    tmp.innerHTML = renderStepViewer(run, keepOpen[i]);
     const next = tmp.firstElementChild;
     viewer.replaceWith(next);
     wireStepControls(next);

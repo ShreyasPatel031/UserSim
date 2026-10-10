@@ -273,6 +273,7 @@
     .wl-card { border: 1px solid var(--border); border-radius: 10px; padding: 0.75rem; margin-bottom: 0.65rem; background: #fff; }
     .wl-card.win { border-left: 4px solid var(--pick); }
     .wl-card.loss { border-left: 4px solid #b45309; }
+    .wl-card.tie { border-left: 4px solid var(--border-strong); }
     .wl-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.6rem; }
     .wl-tag { display: inline-flex; align-items: baseline; gap: 0.35rem; padding: 0.25rem 0.55rem; border-radius: 6px; background: var(--bg-muted); font-size: 0.86rem; }
     .wl-tag .muted { font-size: 0.76rem; }
@@ -287,6 +288,7 @@
     .wl-gap { align-self: center; font-weight: 700; font-size: 0.9rem; padding: 0.15rem 0.45rem; border-radius: 999px; }
     .wl-gap.win { background: #e6f5ee; color: var(--pick); }
     .wl-gap.loss { background: #fff4e5; color: #b45309; }
+    .wl-gap.tie { background: #f3f4f6; color: var(--text-muted); }
     .wl-reason { margin: 0 0 0.35rem; font-size: 0.86rem; }
     .wl-card blockquote { margin: 0 0 0.35rem; padding-left: 0.6rem; border-left: 2px solid var(--border-strong); font-size: 0.8rem; color: var(--text-muted); }
     .cmp-grid td.num, .cmp-grid th.num { text-align: center; font-variant-numeric: tabular-nums; }
@@ -377,7 +379,7 @@
     </section>
   </main>
 
-  <script src="/static/report_compare.js?v=12"></script>
-  <script src="/static/report.js?v=57"></script>
+  <script src="/static/report_compare.js?v=14"></script>
+  <script src="/static/report.js?v=58"></script>
 </body>
 </html>
