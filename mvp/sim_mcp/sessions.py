@@ -820,10 +820,17 @@ async def _execute(page: Any, action: dict[str, Any]) -> None:
             await page.locator('[data-usersim-select="1"]').first.select_option(index=int(res["index"]), timeout=5000)
         elif res.get("options") is not None:
             raise SessionError(f"no option matching {want!r}; options: {res['options'][:40]}")
-        else:  # custom dropdown: open it, then click the option text
+        else:  # custom dropdown: open it, then click the option (Oct 11 Smartlook: role/org-size pickers)
             await page.mouse.click(x, y)
-            await asyncio.sleep(0.4)
-            await page.get_by_text(want, exact=False).first.click(timeout=5000)
+            await asyncio.sleep(0.5)
+            picked = await page.evaluate(_CUSTOM_OPTION_JS, want)
+            if picked.get("ok"):
+                await page.mouse.click(picked["x"], picked["y"])
+            elif picked.get("options"):
+                # tell the model what the list offers instead of failing blind (it kept re-clicking the box)
+                raise SessionError(f"no option matching {want!r} in the open list; options: {picked['options'][:30]}")
+            else:
+                await page.get_by_text(want, exact=False).first.click(timeout=5000)
     elif kind == "reload":
         await page.reload(wait_until="domcontentloaded", timeout=20000)
     elif kind == "clear_cookies":  # log out the hard way: cookies + this origin's storage, then reload
@@ -879,6 +886,20 @@ async def _execute(page: Any, action: dict[str, Any]) -> None:
         await page.mouse.up()
     elif kind == "navigate":
         await page.goto(action["url"], wait_until="domcontentloaded", timeout=20000)
+
+
+_CUSTOM_OPTION_JS = """(want) => {
+  const norm = (t) => (t || '').replace(/\\s+/g, ' ').trim().toLowerCase();
+  const w = norm(want);
+  const vis = (e) => { const r = e.getBoundingClientRect(); const cs = getComputedStyle(e);
+    return r.width > 2 && r.height > 2 && r.bottom > 0 && r.top < innerHeight && cs.visibility !== 'hidden' && cs.display !== 'none'; };
+  const sel = '[role="option"], [role="menuitem"], [role="listbox"] li, ul[class*="option" i] li, [class*="option" i]:not(select):not(option), [class*="menu" i] li, [class*="dropdown" i] li';
+  const opts = [...document.querySelectorAll(sel)].filter(vis).filter(e => norm(e.innerText) && norm(e.innerText).length < 80);
+  const leaves = opts.filter(e => !opts.some(o => o !== e && e.contains(o)));
+  const hit = leaves.find(e => norm(e.innerText) === w) || leaves.find(e => norm(e.innerText).startsWith(w)) || leaves.find(e => norm(e.innerText).includes(w));
+  if (hit) { const r = hit.getBoundingClientRect(); return {ok: true, x: Math.round(r.left + r.width / 2), y: Math.round(r.top + r.height / 2)}; }
+  return {ok: false, options: [...new Set(leaves.map(e => (e.innerText || '').replace(/\\s+/g, ' ').trim()))]};
+}"""
 
 
 NAVIGATING_ACTIONS = {"click", "double_click", "key", "select"}

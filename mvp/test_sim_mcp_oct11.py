@@ -1,4 +1,4 @@
-"""Oct 11: verified signups are judged against the signup bar with 2-of-3 votes (Raygun, StatusCake onboarding)."""
+"""Oct 11: judge signup bar with 2-of-3 votes; plain-address hosts (Chatwoot); custom dropdown option picking (Smartlook)."""
 from __future__ import annotations
 
 import asyncio
@@ -83,3 +83,52 @@ class VoteTests(unittest.TestCase):
         self.assertEqual(len(calls), 1)
         self.assertNotIn("votes", v)
         self.assertFalse(v["goal_reached"])  # hard rule: a signup never passes unverified
+
+
+class PlainHostTests(unittest.TestCase):
+    def test_plain_host_gets_plain_address_others_keep_alias(self):
+        import os
+
+        from mvp.signup_inbox import fresh_gmail_address
+        from mvp.signup_tools import inbox_allowed
+
+        with mock.patch.dict(os.environ, {"MVP_SIGNUP_PLAIN_HOSTS": "chatwoot.com", "MVP_SIGNUP_EMAIL_DOTS": "0"}):
+            plain = fresh_gmail_address("usersim.signups@gmail.com", "www.chatwoot.com", "chatwoot")
+            other = fresh_gmail_address("usersim.signups@gmail.com", "smartlook.com", "smartlook")
+        self.assertEqual(plain, "usersim.signups@gmail.com")
+        self.assertTrue(other.startswith("usersim.signups+smartlook"))
+        self.assertTrue(inbox_allowed(plain))
+
+
+class CustomDropdownTests(unittest.TestCase):
+    def test_option_picked_and_options_listed_on_miss(self):
+        import shutil
+
+        chrome = shutil.which("google-chrome") or shutil.which("chromium")
+        if not chrome:
+            self.skipTest("no chrome")
+        from mvp.sim_mcp.sessions import _CUSTOM_OPTION_JS
+
+        body = ("<label>Your role*</label><div id=box>Your role*</div>"
+                "<ul class='dropdown-menu'><li>Developer</li><li>Product manager</li><li>Marketing</li></ul>"
+                "<script>document.querySelectorAll('li').forEach(li=>li.onclick=()=>{box.textContent=li.textContent})</script>")
+
+        async def run():
+            from playwright.async_api import async_playwright
+
+            async with async_playwright() as p:
+                b = await p.chromium.launch(headless=True, executable_path=chrome)
+                pg = await b.new_page()
+                await pg.set_content(body)
+                hit = await pg.evaluate(_CUSTOM_OPTION_JS, "product manager")
+                await pg.mouse.click(hit["x"], hit["y"])
+                chosen = await pg.inner_text("#box")
+                miss = await pg.evaluate(_CUSTOM_OPTION_JS, "CEO")
+                await b.close()
+                return hit, chosen, miss
+
+        hit, chosen, miss = asyncio.run(run())
+        self.assertTrue(hit["ok"])
+        self.assertEqual(chosen, "Product manager")
+        self.assertFalse(miss["ok"])
+        self.assertEqual(miss["options"], ["Developer", "Product manager", "Marketing"])
