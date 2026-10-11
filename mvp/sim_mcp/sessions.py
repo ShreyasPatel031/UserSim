@@ -834,54 +834,77 @@ async def _execute(page: Any, action: dict[str, Any]) -> None:
                 box = await fr.evaluate(_BOX_NEAR_JS, [lx, ly])
                 if box:
                     lx, ly = box["x"], box["y"]
-            before = await fr.evaluate(_LEAVES_JS)
-            await page.mouse.click(lx + ox, ly + oy)
-            await asyncio.sleep(0.6)
-            picked = await fr.evaluate(_CUSTOM_OPTION_JS, want)
-            new: list = []
-            typed = False
-            if not picked.get("ok"):
-                # Oct 11 Pingdom 'State' / Smartlook 'Your role': the open list matched none of the option selectors.
-                # Whatever short text became visible after the click is the list; pick from that, whatever its markup.
-                after = await fr.evaluate(_LEAVES_JS)
-                seen = {(b["t"], b["x"], b["y"]) for b in before}
-                new = [a for a in after if (a["t"], a["x"], a["y"]) not in seen]
-                w = want.strip().lower()
-                if len(new) < 2 and await fr.evaluate(_FOCUSED_INPUT_JS):
-                    # searchable combobox: typing filters the list
-                    await page.keyboard.type(want, delay=30)
-                    typed = True
-                    await asyncio.sleep(0.6)
+            # Oct 11 Pingdom retest: the page had scrolled and the model's State point hit Time Zone, whose list has
+            # nothing like the wanted option. Then close it and try the field-shaped boxes just above / below.
+            tried: list = []
+            cands = [(lx, ly)]
+            while cands:
+                lx, ly = cands.pop(0)
+                tried.append(ly)
+                before = await fr.evaluate(_LEAVES_JS)
+                await page.mouse.click(lx + ox, ly + oy)
+                await asyncio.sleep(0.6)
+                picked = await fr.evaluate(_CUSTOM_OPTION_JS, want)
+                new: list = []
+                typed = False
+                if not picked.get("ok"):
+                    # Oct 11 Pingdom 'State' / Smartlook 'Your role': the open list matched none of the option selectors.
+                    # Whatever short text became visible after the click is the list; pick from that, whatever its markup.
                     after = await fr.evaluate(_LEAVES_JS)
-                    new = [a for a in after if (a["t"], a["x"], a["y"]) not in seen and a["t"].lower() != w]
-                hit = _best_option(want, new)
-                if hit and not await fr.evaluate(_HIT_OK_JS, [hit["x"], hit["y"], hit["t"]]):
-                    # listed but clipped by the list's scroll box (the point hits something else): scroll it in first
-                    await fr.evaluate(_LIST_ALL_JS, [a["t"] for a in new][:60])
-                    hit = await fr.evaluate(_SCROLL_PICK_JS, hit["t"])
-                    await asyncio.sleep(0.3)
-                if not hit and len(new) >= 2:
-                    # Oct 11 Pingdom 'State': 'Texas' sat below the visible part of the scrolled list.
-                    # Read every item of the list's scroll container, pick, scroll it into view.
-                    texts = await fr.evaluate(_LIST_ALL_JS, [a["t"] for a in new][:60])
-                    best = _best_option(want, [{"t": t} for t in texts or []])
-                    if best:
-                        hit = await fr.evaluate(_SCROLL_PICK_JS, best["t"])
-                        await asyncio.sleep(0.3)
-                    elif not texts and not typed:
-                        # no scroll container (virtualised list): type-ahead, then look again
+                    seen = {b["t"] for b in before}  # by text: a layout shift moves every label (Smartlook)
+                    new = [a for a in after if a["t"] not in seen]
+                    w = want.strip().lower()
+                    if len(new) < 2 and await fr.evaluate(_FOCUSED_INPUT_JS):
+                        # searchable combobox: typing filters the list
                         await page.keyboard.type(want, delay=30)
                         typed = True
                         await asyncio.sleep(0.6)
                         after = await fr.evaluate(_LEAVES_JS)
-                        new = [a for a in after if (a["t"], a["x"], a["y"]) not in seen and a["t"].lower() != w] or new
-                        hit = _best_option(want, new)
-                    if texts and not hit:
-                        new = new + [{"t": t} for t in texts]
-                if hit:
-                    picked = {"ok": True, "x": hit["x"], "y": hit["y"]}
-                elif len(new) >= 2:
-                    picked = {"ok": False, "options": _nearest_first(want, [a["t"] for a in new])}
+                        new = [a for a in after if a["t"] not in seen]
+                    hit = _best_option(want, new)
+                    if hit and not await fr.evaluate(_HIT_OK_JS, [hit["x"], hit["y"], hit["t"]]):
+                        # listed but clipped by the list's scroll box (the point hits something else): scroll it in first
+                        await fr.evaluate(_LIST_ALL_JS, [a["t"] for a in new][:60])
+                        hit = await fr.evaluate(_SCROLL_PICK_JS, hit["t"])
+                        await asyncio.sleep(0.3)
+                    if not hit and len(new) >= 2:
+                        # Oct 11 Pingdom 'State': 'Texas' sat below the visible part of the scrolled list.
+                        # Read every item of the list's scroll container, pick, scroll it into view.
+                        texts = await fr.evaluate(_LIST_ALL_JS, [a["t"] for a in new][:60])
+                        best = _best_option(want, [{"t": t} for t in texts or []])
+                        if best:
+                            hit = await fr.evaluate(_SCROLL_PICK_JS, best["t"])
+                            await asyncio.sleep(0.3)
+                        elif not texts and not typed:
+                            # no scroll container (virtualised list): type-ahead, then look again
+                            await page.keyboard.type(want, delay=30)
+                            typed = True
+                            await asyncio.sleep(0.6)
+                            after = await fr.evaluate(_LEAVES_JS)
+                            new = [a for a in after if a["t"] not in seen] or new
+                            hit = _best_option(want, new)
+                        if texts and not hit:
+                            new = new + [{"t": t} for t in texts]
+                    if hit:
+                        picked = {"ok": True, "x": hit["x"], "y": hit["y"]}
+                    elif len(new) >= 2:
+                        picked = {"ok": False, "options": _nearest_first(want, [a["t"] for a in new])}
+                if picked.get("ok") or len(tried) >= 3:
+                    break
+                opts = [a["t"] for a in new] or list(picked.get("options") or [])
+                if opts and max(_option_score(want, t) for t in opts) >= 0.5:
+                    break  # the right list, just no close match: report it
+                if typed:
+                    await page.keyboard.press("Control+A")
+                    await page.keyboard.press("Backspace")
+                    typed = False
+                await page.keyboard.press("Escape")
+                await asyncio.sleep(0.3)
+                if len(tried) == 1:
+                    for dy in (-42, 42):
+                        nb = await fr.evaluate(_BOX_NEAR_JS, [lx, ly + dy])
+                        if nb and all(abs(nb["y"] - t) > 12 for t in tried) and all(abs(nb["y"] - c[1]) > 12 for c in cands):
+                            cands.append((nb["x"], nb["y"]))
             if picked.get("ok"):
                 await page.mouse.click(picked["x"] + ox, picked["y"] + oy)
             elif picked.get("options"):

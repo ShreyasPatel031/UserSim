@@ -335,6 +335,20 @@ class OptionMatchTests(unittest.TestCase):
         self.assertEqual(v, "Texas", err)
 
 
+    def test_aimed_one_field_off_tries_the_neighbour_box(self):
+        """Pingdom retest: the State point hit Time Zone (a list with nothing like 'Texas')."""
+        body = ("<style>.b{width:300px;height:30px;border:1px solid #888;margin:10px 40px}.l{display:none;position:absolute;left:420px;top:20px}</style>"
+                "<div id=st class=b>Select state</div><div id=tz class=b>GMT-5 Eastern</div>"
+                "<div id=sl class=l><div>Alabama</div><div>Texas</div></div>"
+                "<div id=tl class=l><div>GMT-8 Pacific</div><div>GMT-4:30 Caracas</div></div>"
+                "<script>st.onclick=()=>{sl.style.display='block'};tz.onclick=()=>{tl.style.display='block'};"
+                "document.onkeydown=e=>{if(e.key==='Escape'){sl.style.display='none';tl.style.display='none'}};"
+                "sl.querySelectorAll('div').forEach(d=>d.onclick=()=>{st.textContent=d.textContent;sl.style.display='none'});"
+                "tl.querySelectorAll('div').forEach(d=>d.onclick=()=>{tz.textContent=d.textContent;tl.style.display='none'})</script>")
+        v, err = self._run(body, {"type": "select", "x": 190, "y": 70, "option": "Texas"}, "#st")
+        self.assertEqual(v, "Texas", err)
+
+
 class NewsletterChromeLinkTests(unittest.TestCase):
     """Loggly: the welcome mail's "View Online" link (Marketo /v/ path) counted as verification."""
 
