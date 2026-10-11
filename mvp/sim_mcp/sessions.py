@@ -772,6 +772,10 @@ def validate_action(action: dict[str, Any], product_url: str) -> dict[str, Any]:
         action.setdefault("y", VIEWPORT["height"] // 2)
         _xy(action)
     elif kind == "select":
+        if str(action.get("field") or "").strip() and (action.get("x") is None or action.get("y") is None):
+            # Oct 11 Smartlook: the model named the dropdown but sent no point; find the box from its label.
+            action["x"], action["y"] = VIEWPORT["width"] // 2, VIEWPORT["height"] // 2
+            action["by_field"] = True
         _xy(action)
         if not str(action.get("option") or ""):
             raise SessionError("select needs x, y of the dropdown and 'option' (visible text); 'field' (its label) is optional")
@@ -815,6 +819,15 @@ async def _execute(page: Any, action: dict[str, Any]) -> None:
     elif kind == "select":
         x, y = _xy(action)
         want = str(action["option"]).strip()
+        fld = str(action.get("field") or "").strip()
+        if fld:
+            # Oct 11 Smartlook 19-21: custom dropdowns carry no combobox markup, so _DROPDOWNS_JS missed them and the
+            # model's point opened Country. Find the field-shaped box around the visible label text itself.
+            lb = await page.evaluate(_LABEL_BOX_JS, fld)
+            if lb:
+                x, y = lb["x"], lb["y"]
+            elif action.get("by_field"):
+                raise SessionError(f"no dropdown labelled {fld!r} is visible; scroll to it or pass its x, y")
         # Oct 11 Pingdom onboarding: the form may live in an iframe, where page-level lookups see no select at all.
         # Work inside the frame under the point (coordinates translated); mouse clicks stay page-level.
         fr, ox, oy = await _frame_at(page, x, y)
@@ -1134,6 +1147,30 @@ _SCROLL_PICK_JS = """(t) => {
     c.scrollIntoView({block: 'center'});
     const r = c.getBoundingClientRect();
     return {t, x: Math.round(r.left + Math.min(r.width / 2, 80)), y: Math.round(r.top + r.height / 2)};
+  }
+  return null;
+}"""
+
+
+_LABEL_BOX_JS = """(field) => {
+  const norm = (t) => (t || '').replace(/[*:]/g, '').replace(/\\s+/g, ' ').trim().toLowerCase();
+  const f = norm(field);
+  if (!f) return null;
+  const vis = (e) => { const r = e.getBoundingClientRect(); const cs = getComputedStyle(e);
+    return r.width > 2 && r.height > 2 && r.bottom > 0 && r.top < innerHeight && cs.visibility !== 'hidden' && cs.display !== 'none'; };
+  const leaves = [...document.querySelectorAll('body *')].filter(e => e.children.length === 0 && vis(e) &&
+    !['SCRIPT', 'STYLE', 'OPTION'].includes(e.tagName) && !e.closest('[role=listbox], [role=option], ul, ol'));
+  const hits = leaves.filter(e => norm(e.innerText) === f).concat(
+    leaves.filter(e => { const t = norm(e.innerText); return t !== f && t.startsWith(f) && t.length <= f.length + 3; }));
+  for (const h of hits) {
+    let el = h.parentElement;
+    while (el && el !== document.body) {
+      const r = el.getBoundingClientRect();
+      if (r.width >= 120 && r.width <= 760 && r.height >= 30 && r.height <= 96) {
+        return {x: Math.round(r.left + Math.min(r.width / 2, 120)), y: Math.round(r.top + r.height / 2)};
+      }
+      el = el.parentElement;
+    }
   }
   return null;
 }"""

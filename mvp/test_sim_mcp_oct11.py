@@ -392,6 +392,25 @@ class OptionMatchTests(unittest.TestCase):
         self.assertEqual(v, "1 - 10 employees", err)
 
 
+    def test_field_label_alone_finds_unmarked_box(self):
+        """Smartlook 19-21: plain-div dropdowns (no combobox markup); select by field label with no x, y."""
+        mk = lambda i, lab: (f"<div id=b{i} class=b><span class=lab>{lab}</span><div class=v id=v{i}></div></div>")
+        body = ("<style>.b{width:300px;height:48px;border:1px solid #888;margin:12px 40px;position:relative}"
+                ".lab{font-size:11px}.l{display:none;position:absolute;left:420px;top:20px}</style>"
+                + mk(1, "Country*") + mk(2, "Your role*") + mk(3, "Organization size*") +
+                "<div id=l1 class=l><div>Sudan</div><div>Sweden</div></div>"
+                "<div id=l2 class=l><div>Engineering</div><div>Product Management</div></div>"
+                "<div id=l3 class=l><div>Self-employed</div><div>1 - 10 employees</div></div>"
+                "<script>[1,2,3].forEach(i=>{const b=document.getElementById('b'+i),l=document.getElementById('l'+i);"
+                "b.onclick=()=>{document.querySelectorAll('.l').forEach(x=>x.style.display='none');l.style.display='block'};"
+                "l.querySelectorAll('div').forEach(d=>d.onclick=(e)=>{e.stopPropagation();document.getElementById('v'+i).textContent=d.textContent;l.style.display='none'})});"
+                "document.onkeydown=e=>{if(e.key==='Escape')document.querySelectorAll('.l').forEach(l=>l.style.display='none')}</script>")
+        from mvp.sim_mcp import sessions as S
+
+        act = S.validate_action({"type": "select", "option": "Product Management", "field": "Your role"}, "https://x.test/")
+        v, err = self._run(body, act, "#v2")
+        self.assertEqual(v, "Product Management", err)
+
 class IframeFieldsTests(unittest.TestCase):
     """Oct 11 Pingdom: controls inside the onboarding iframe were never listed, so the model guessed (off-frame)."""
 
