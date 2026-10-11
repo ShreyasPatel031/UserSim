@@ -47,3 +47,7 @@ data/humaine/
 # External public data for HUMAINE predictions (LMArena CC BY 4.0, OpenRouter listing): see src/human_sim/humaine_external.py
 data/lmarena/
 data/openrouter/
+data/twin2k_mega/
+data/repo_raw/
+data/people_repo/
+third_party/Twin-2K-500-Mega-Study/
