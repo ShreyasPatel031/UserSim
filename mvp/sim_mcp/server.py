@@ -874,7 +874,8 @@ _STACK: AsyncExitStack | None = None
 
 
 def _client_token() -> str:
-    """Bearer token clients must send on /mcp. MVP_MCP_TOKEN, or the file at MVP_MCP_TOKEN_FILE. Empty = open."""
+    """Bearer token clients must send on /mcp. MVP_MCP_TOKEN, or the file at MVP_MCP_TOKEN_FILE.
+    Empty = /mcp refuses every call (401) unless MVP_MCP_ALLOW_OPEN=1."""
     tok = (os.environ.get("MVP_MCP_TOKEN") or "").strip()
     path = (os.environ.get("MVP_MCP_TOKEN_FILE") or "").strip()
     if not tok and path:
@@ -886,7 +887,7 @@ def _client_token() -> str:
     return tok
 
 
-def _require_bearer(endpoint: Any, token: str) -> Any:
+def _require_bearer(endpoint: Any, token: str | None) -> Any:
     """ASGI wrapper: 401 unless 'Authorization: Bearer <token>' matches (constant-time)."""
     import hmac
 
@@ -900,7 +901,7 @@ def _require_bearer(endpoint: Any, token: str) -> Any:
         if scope.get("type") == "http":
             headers = {k.decode().lower(): v.decode() for k, v in scope.get("headers") or []}
             got = headers.get("authorization", "")
-            if not (got.startswith("Bearer ") and hmac.compare_digest(got[7:].strip(), token)):
+            if not token or not (got.startswith("Bearer ") and hmac.compare_digest(got[7:].strip(), token)):
                 await JSONResponse({"error": "missing or wrong bearer token"}, status_code=401,
                                    headers={"WWW-Authenticate": "Bearer"})(scope, receive, send)
                 return
@@ -919,6 +920,10 @@ def mount(app: Any) -> None:
     token = _client_token()
     if token:
         endpoint = _require_bearer(endpoint, token)
+    elif os.environ.get("MVP_MCP_ALLOW_OPEN") != "1":
+        # Fail closed: every /mcp call needs the bearer token. With no token configured nobody can call it
+        # (before Oct 11 an unset token meant an open endpoint). MVP_MCP_ALLOW_OPEN=1 is for local dev only.
+        endpoint = _require_bearer(endpoint, None)
     app.router.routes.insert(0, Route("/mcp", endpoint=endpoint, methods=["GET", "POST", "DELETE"]))
 
     @app.on_event("startup")
