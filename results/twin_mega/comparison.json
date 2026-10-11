@@ -1,0 +1,170 @@
+{
+ "summary": [
+  {
+   "arm": "A0_demographics",
+   "outcomes": 125,
+   "corr": 0.134,
+   "acc": 0.7301,
+   "bias_sd": 0.4322,
+   "sd_ratio_median": 0.6922,
+   "sd_log_err": 0.4182
+  },
+  {
+   "arm": "A3_naive_rag",
+   "outcomes": 125,
+   "corr": 0.1453,
+   "acc": 0.7346,
+   "bias_sd": 0.4154,
+   "sd_ratio_median": 0.6348,
+   "sd_log_err": 0.4559
+  },
+  {
+   "arm": "A4_harness",
+   "outcomes": 125,
+   "corr": 0.1446,
+   "acc": 0.7327,
+   "bias_sd": 0.3992,
+   "sd_ratio_median": 0.6532,
+   "sd_log_err": 0.4207
+  }
+ ],
+ "deltas": {
+  "A4_harness vs A0_demographics | correlation (higher=better)": [
+   0.0105,
+   0.002,
+   0.0192
+  ],
+  "A4_harness vs A0_demographics | bias_sd (higher=better)": [
+   0.033,
+   0.0029,
+   0.0632
+  ],
+  "A4_harness vs A0_demographics | sd_err (higher=better)": [
+   -0.0024,
+   -0.0194,
+   0.0153
+  ],
+  "A3_naive_rag vs A0_demographics | correlation (higher=better)": [
+   0.0112,
+   -0.0,
+   0.0218
+  ],
+  "A3_naive_rag vs A0_demographics | bias_sd (higher=better)": [
+   0.0168,
+   -0.0094,
+   0.0422
+  ],
+  "A3_naive_rag vs A0_demographics | sd_err (higher=better)": [
+   -0.0377,
+   -0.0552,
+   -0.0212
+  ],
+  "A4_harness vs A3_naive_rag | correlation (higher=better)": [
+   -0.0007,
+   -0.0115,
+   0.0102
+  ],
+  "A4_harness vs A3_naive_rag | bias_sd (higher=better)": [
+   0.0162,
+   -0.0024,
+   0.0372
+  ],
+  "A4_harness vs A3_naive_rag | sd_err (higher=better)": [
+   0.0353,
+   0.0203,
+   0.0505
+  ]
+ },
+ "corr_by_study": [
+  {
+   "study": "accuracy_nudges",
+   "A0_demographics": 0.025,
+   "A3_naive_rag": 0.027,
+   "A4_harness": 0.037
+  },
+  {
+   "study": "affective_priming",
+   "A0_demographics": 0.188,
+   "A3_naive_rag": 0.205,
+   "A4_harness": 0.26
+  },
+  {
+   "study": "consumer_minimalism",
+   "A0_demographics": -0.03,
+   "A3_naive_rag": -0.039,
+   "A4_harness": 0.008
+  },
+  {
+   "study": "context_effects",
+   "A0_demographics": 0.02,
+   "A3_naive_rag": 0.017,
+   "A4_harness": 0.043
+  },
+  {
+   "study": "default_eric",
+   "A0_demographics": 0.174,
+   "A3_naive_rag": 0.126,
+   "A4_harness": 0.124
+  },
+  {
+   "study": "digital_certification",
+   "A0_demographics": 0.082,
+   "A3_naive_rag": 0.098,
+   "A4_harness": 0.083
+  },
+  {
+   "study": "hiring_algorithms",
+   "A0_demographics": 0.087,
+   "A3_naive_rag": 0.118,
+   "A4_harness": 0.09
+  },
+  {
+   "study": "infotainment",
+   "A0_demographics": 0.033,
+   "A3_naive_rag": 0.04,
+   "A4_harness": 0.047
+  },
+  {
+   "study": "junk_fees",
+   "A0_demographics": 0.176,
+   "A3_naive_rag": 0.194,
+   "A4_harness": 0.174
+  },
+  {
+   "study": "obedient_twins",
+   "A0_demographics": 0.135,
+   "A3_naive_rag": 0.103,
+   "A4_harness": 0.12
+  },
+  {
+   "study": "preference_redistribution",
+   "A0_demographics": 0.337,
+   "A3_naive_rag": 0.313,
+   "A4_harness": 0.369
+  },
+  {
+   "study": "privacy",
+   "A0_demographics": 0.54,
+   "A3_naive_rag": 0.537,
+   "A4_harness": 0.56
+  },
+  {
+   "study": "promiscuous_donors",
+   "A0_demographics": 0.36,
+   "A3_naive_rag": 0.369,
+   "A4_harness": 0.353
+  },
+  {
+   "study": "story_beliefs",
+   "A0_demographics": 0.426,
+   "A3_naive_rag": 0.453,
+   "A4_harness": 0.455
+  },
+  {
+   "study": "targeting_fairness",
+   "A0_demographics": 0.038,
+   "A3_naive_rag": 0.093,
+   "A4_harness": 0.101
+  }
+ ]
+}
