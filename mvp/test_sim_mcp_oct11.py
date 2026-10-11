@@ -420,3 +420,17 @@ class NewsletterChromeLinkTests(unittest.TestCase):
         b = "https://www.loggly.com/welcome"
         ranked = rank_links([a, b], "loggly.com", {a: "View Online", b: "here"})
         self.assertEqual(ranked[0], b)
+
+
+class InPageJumpTests(unittest.TestCase):
+    """Oct 11 OpenReplay: an in-page 'Start 7-day trial' anchor (#dedicated) misled the model."""
+
+    def test_fragment_only_change_is_an_in_page_jump(self):
+        from mvp.sim_mcp import sessions as S
+
+        self.assertTrue(S._in_page_jump("https://openreplay.com/pricing/", "https://openreplay.com/pricing/#dedicated"))
+        self.assertTrue(S._in_page_jump("https://x.io/p#a", "https://x.io/p#b"))
+        self.assertFalse(S._in_page_jump("https://openreplay.com/pricing/", "https://app.openreplay.com/signup"))
+        self.assertFalse(S._in_page_jump("https://x.io/p#a", "https://x.io/p"))
+        self.assertFalse(S._in_page_jump("https://x.io/p", "https://x.io/p"))
+        self.assertIn("#dedicated", S.IN_PAGE_JUMP_NOTE.format(frag="dedicated"))

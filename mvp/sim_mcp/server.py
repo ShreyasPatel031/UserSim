@@ -111,6 +111,8 @@ def _obs_content(sim: S.SimSession, obs: dict[str, Any], extra: dict[str, Any] |
         meta["hidden_fields"] = obs["hidden_fields"]  # not clickable: invisible, covered, off-screen or a bot trap
     if obs.get("page_errors"):
         meta["page_errors"] = obs["page_errors"]
+    if obs.get("note"):
+        meta["note"] = obs["note"]  # e.g. a click that only jumped to an in-page #anchor (Oct 11 OpenReplay)
     if obs.get("alias_rejected"):
         current = sim.inbox.address if sim.inbox is not None else ""
         if current and "+" not in current:

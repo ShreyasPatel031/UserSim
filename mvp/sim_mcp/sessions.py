@@ -1380,7 +1380,7 @@ async def act(sim: SimSession, action: dict[str, Any], thought: str) -> dict[str
                 await sim.page.goto(sim.product_url, timeout=20000)
             await _settle(sim.page)
         shown = mask_secrets(sim, dict(action))
-        return await record_step(
+        obs = await record_step(
             sim,
             kind=action["type"],
             action_text=describe_action(shown),
@@ -1388,6 +1388,25 @@ async def act(sim: SimSession, action: dict[str, Any], thought: str) -> dict[str
             thought=thought,
             error=error,
         )
+        if action["type"] == "click" and not error and _in_page_jump(url_before, sim.page.url):
+            # Oct 11 OpenReplay: 'Start 7-day trial' on the pricing page only jumped to #dedicated; the model clicked it
+            # again and again until the driver gave up. Say so, and where signups usually start.
+            obs["note"] = IN_PAGE_JUMP_NOTE.format(frag=urlsplit(sim.page.url).fragment[:40])
+        return obs
+
+
+IN_PAGE_JUMP_NOTE = ("That click only jumped within the same page (#{frag}); it did not open a signup form. Clicking it again "
+                     "will do the same. Look for the header's 'Sign up' / 'Try cloud' / 'Get started' / 'Start free' button "
+                     "or link instead.")
+
+
+def _in_page_jump(before: str, after: str) -> bool:
+    """True when a click changed only the URL fragment (an in-page anchor), e.g. /pricing -> /pricing#dedicated."""
+    from urllib.parse import urldefrag
+
+    if not before or not after or before == after:
+        return False
+    return urldefrag(before)[0] == urldefrag(after)[0] and bool(urldefrag(after)[1])
 
 
 async def observe(sim: SimSession) -> dict[str, Any]:
