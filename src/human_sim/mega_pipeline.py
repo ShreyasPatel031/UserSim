@@ -595,3 +595,54 @@ def _a4(pid, study, survey_text):
                  "do not default to the most common or the most moderate answer; answer where someone with this profile "
                  "would typically land, including strong or negative answers when the data points that way.")
     return "\n".join(lines)
+
+
+# ================================================================ comparison across arms
+def compare(arms=("A0_demographics", "A3_naive_rag", "A4_harness")):
+    """Pool per-outcome results over studies where every arm finished; add the published GPT-4.1 arms as references."""
+    c = "correlation between the responses from humans vs. their twins"
+    a = "accuracy between humans vs. their twins"
+    rows = []
+    for sd in sorted(OUT.iterdir()):
+        if not sd.is_dir():
+            continue
+        metas = {}
+        for arm_name in arms:
+            f = sd / arm_name / "meta analysis.csv"
+            if f.exists():
+                metas[arm_name] = pd.read_csv(f)
+        if len(metas) < len(arms):
+            continue
+        for arm_name, m in metas.items():
+            m = m.assign(study=sd.name, arm=arm_name)
+            rows.append(m)
+    if not rows:
+        return None
+    d = pd.concat(rows)
+    d["bias_sd"] = (d.mean_twin - d.mean_human).abs() / d.std_human
+    d["sd_ratio"] = d.std_twin / d.std_human
+    d["sd_err"] = (np.log(d.sd_ratio.clip(1e-3))).abs()
+    key = ["study", "variable name"]
+    common = d.groupby(key).arm.nunique()
+    common = common[common == len(arms)].index
+    d = d.set_index(key).loc[common].reset_index()
+    out = d.groupby("arm").agg(outcomes=(c, "size"), corr=(c, "mean"), acc=(a, "mean"), bias_sd=("bias_sd", "mean"),
+                               sd_ratio_median=("sd_ratio", "median"), sd_log_err=("sd_err", "mean")).round(4)
+    # paired bootstrap of A4 - A0 and A4 - A3 over outcomes
+    piv = d.pivot_table(index=key, columns="arm", values=[c, "bias_sd", "sd_err"])
+    rng = np.random.default_rng(0)
+    deltas = {}
+    for x, y in (("A4_harness", "A0_demographics"), ("A3_naive_rag", "A0_demographics"), ("A4_harness", "A3_naive_rag")):
+        for metric, sign in ((c, 1), ("bias_sd", -1), ("sd_err", -1)):
+            diff = (piv[(metric, x)] - piv[(metric, y)]).to_numpy() * sign
+            bs = [diff[rng.integers(0, len(diff), len(diff))].mean() for _ in range(2000)]
+            deltas[f"{x} vs {y} | {metric[:11]} (higher=better)"] = [round(float(diff.mean()), 4), round(float(np.percentile(bs, 2.5)), 4), round(float(np.percentile(bs, 97.5)), 4)]
+    by_study = d.pivot_table(index="study", columns="arm", values=c, aggfunc="mean").round(3)
+    res = {"summary": out.reset_index().to_dict("records"), "deltas": deltas, "corr_by_study": by_study.reset_index().to_dict("records")}
+    (OUT / "comparison.json").write_text(json.dumps(res, indent=1))
+    print(out.to_string()); print(json.dumps(deltas, indent=1)); print(by_study.to_string())
+    return res
+
+
+if __name__ == "__main__" and sys.argv[1] == "compare":
+    compare()
