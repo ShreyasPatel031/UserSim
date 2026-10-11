@@ -197,3 +197,61 @@ class DropdownSnapTests(unittest.TestCase):
         out = asyncio.run(run())
         self.assertEqual([o["label"] for o in out], ["Your role", "Organization size*"])
         self.assertLess(out[0]["y"], out[1]["y"])
+
+
+class NewlyVisibleListTests(unittest.TestCase):
+    def test_unclassed_list_found_by_what_appeared(self):
+        """Pingdom/Smartlook-style list: plain divs with no option role or class, shown on click."""
+        import shutil
+
+        chrome = shutil.which("google-chrome") or shutil.which("chromium")
+        if not chrome:
+            self.skipTest("no chrome")
+        from mvp.sim_mcp import sessions as S
+
+        body = ("<div id=box style='width:300px;height:40px;border:1px solid #888;margin:40px'>Select state</div>"
+                "<div id=lst style='display:none'><div><div>Alabama</div></div><div><div>Texas</div></div><div><div>Utah</div></div></div>"
+                "<script>box.onclick=()=>{lst.style.display='block'};"
+                "lst.querySelectorAll('div div').forEach(d=>d.onclick=()=>{box.textContent=d.textContent;lst.style.display='none'})</script>")
+
+        async def run(want):
+            from playwright.async_api import async_playwright
+
+            async with async_playwright() as p:
+                b = await p.chromium.launch(headless=True, executable_path=chrome)
+                pg = await b.new_page()
+                await pg.set_content(body)
+                err = None
+                try:
+                    await S._execute(pg, {"type": "select", "x": 190, "y": 60, "option": want})
+                except Exception as exc:  # noqa: BLE001
+                    err = str(exc)
+                txt = await pg.inner_text("#box")
+                await b.close()
+                return txt, err
+
+        txt, err = asyncio.run(run("Texas"))
+        self.assertEqual(txt, "Texas", err)
+        txt, err = asyncio.run(run("Nevada"))
+        self.assertIn("Alabama", err or "")
+
+
+class NewsletterChromeLinkTests(unittest.TestCase):
+    """Loggly: the welcome mail's "View Online" link (Marketo /v/ path) counted as verification."""
+
+    def test_view_online_is_not_verification(self):
+        from mvp.signup_inbox import verification_link
+
+        url = "https://sw1.solarwinds.com/v/NTY0LVZGUi0wMDgAAAGkyhLCV7abaLkQ5rAeNpNmavdshD8rdWILrTv3G"
+        self.assertFalse(verification_link(url, "View Online"))
+        self.assertFalse(verification_link("https://x.example/confirm?u=1", "Unsubscribe"))
+        self.assertTrue(verification_link("https://app.example.com/verify?t=abc", "Verify my email"))
+        self.assertTrue(verification_link("https://click.example/abc", "Confirm my email"))
+
+    def test_view_online_ranked_last(self):
+        from mvp.signup_inbox import rank_links
+
+        a = "https://sw1.solarwinds.com/v/" + "x" * 60
+        b = "https://www.loggly.com/welcome"
+        ranked = rank_links([a, b], "loggly.com", {a: "View Online", b: "here"})
+        self.assertEqual(ranked[0], b)

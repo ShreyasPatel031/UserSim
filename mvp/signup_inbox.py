@@ -92,6 +92,8 @@ def rank_links(links: list[str], host: str, anchors: dict[str, str] | None = Non
             score += 3
         if anchors and re.search(r"verif|confirm|activat|validat|magic link", anchors.get(url, "") or anchors.get(clean, ""), re.I):
             score += 4  # "Confirm my email" button behind a click-tracking redirect
+        if anchors and _NOT_VERIFY_TEXT_RE.search(anchors.get(url, "") or anchors.get(clean, "")):
+            score -= 8  # "View online" / "Unsubscribe": newsletter chrome, never the account link
         if host_tok and host_tok in low:
             score += 2
         if len(clean) > 60:  # tokens are long
@@ -109,6 +111,11 @@ _VERIFY_SUBJECT_RE = re.compile(
 
 # Anchor text of the button in the mail ("Confirm my email", "Verify account", "Activate").
 _VERIFY_TEXT_RE = re.compile(r"verif|confirm|activat|validat|magic link", re.I)
+# Anchor text of newsletter chrome: never a verification link, whatever its URL looks like
+# (Loggly's welcome mail: "View Online" -> sw1.solarwinds.com/v/... matched the "/v/" URL rule).
+_NOT_VERIFY_TEXT_RE = re.compile(
+    r"view (it |this )?(email |message )?(online|in (your |a )?browser|as (a )?web ?page)|web ?version|"
+    r"unsubscribe|email preferences|manage (your )?(preferences|subscription)|privacy policy", re.I)
 # Click-tracking redirectors (Brevo/Sendinblue, SendGrid, Mailchimp, Mailgun, Mailjet, SES, Postmark,
 # Customer.io, HubSpot, Mandrill...). Their URLs say nothing about where they lead.
 _TRACKER_HOST_RE = re.compile(
@@ -195,6 +202,8 @@ def verification_link(url: str, text: str = "", *, chain: list[str] | None = Non
     confirm/verify/activate, or (for click-tracking redirects) when a hop of its redirect chain does.
     `chain` is the browser's observed redirect chain; `resolve=True` follows a tracker's Location headers.
     """
+    if text and _NOT_VERIFY_TEXT_RE.search(text):
+        return False
     if _VERIFY_LINK_RE.search(url or ""):
         return True
     if text and _VERIFY_TEXT_RE.search(text):
