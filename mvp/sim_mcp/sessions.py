@@ -813,39 +813,46 @@ async def _execute(page: Any, action: dict[str, Any]) -> None:
     elif kind == "select":
         x, y = _xy(action)
         want = str(action["option"]).strip()
+        # Oct 11 Pingdom onboarding: the form may live in an iframe, where page-level lookups see no select at all.
+        # Work inside the frame under the point (coordinates translated); mouse clicks stay page-level.
+        fr, ox, oy = await _frame_at(page, x, y)
+        lx, ly = x - ox, y - oy
         # the <select> at (x, y), or the nearest one within 80px (styled selects often sit under an overlay)
-        res = await page.evaluate(_SELECT_JS, [x, y, want])
+        res = await fr.evaluate(_SELECT_JS, [lx, ly, want])
         if res.get("ok"):
             # Playwright's select_option fires the events React/Vue-controlled selects listen for
-            await page.locator('[data-usersim-select="1"]').first.select_option(index=int(res["index"]), timeout=5000)
+            await fr.locator('[data-usersim-select="1"]').first.select_option(index=int(res["index"]), timeout=5000)
         elif res.get("options") is not None:
             raise SessionError(f"no option matching {want!r}; options: {res['options'][:40]}")
         else:  # custom dropdown: open it, then click the option (Oct 11 Smartlook: role/org-size pickers)
-            boxes = await page.evaluate(_DROPDOWNS_JS)
-            near = [b for b in boxes if abs(b["x"] - x) <= 260 and abs(b["y"] - y) <= 90]
+            boxes = await fr.evaluate(_DROPDOWNS_JS)
+            near = [b for b in boxes if abs(b["x"] - lx) <= 260 and abs(b["y"] - ly) <= 90]
             if near:  # the model's y is often one field off (Smartlook: it aimed at Full name / Company name)
-                tgt = min(near, key=lambda b: abs(b["y"] - y) * 3 + abs(b["x"] - x))
-                x, y = tgt["x"], tgt["y"]
+                tgt = min(near, key=lambda b: abs(b["y"] - ly) * 3 + abs(b["x"] - lx))
+                lx, ly = tgt["x"], tgt["y"]
             else:  # unrecognised box markup (Pingdom 'State': a plain styled div): snap to the field-shaped box nearby
-                box = await page.evaluate(_BOX_NEAR_JS, [x, y])
+                box = await fr.evaluate(_BOX_NEAR_JS, [lx, ly])
                 if box:
-                    x, y = box["x"], box["y"]
-            before = await page.evaluate(_LEAVES_JS)
-            await page.mouse.click(x, y)
+                    lx, ly = box["x"], box["y"]
+            before = await fr.evaluate(_LEAVES_JS)
+            await page.mouse.click(lx + ox, ly + oy)
             await asyncio.sleep(0.6)
-            picked = await page.evaluate(_CUSTOM_OPTION_JS, want)
+            picked = await fr.evaluate(_CUSTOM_OPTION_JS, want)
+            new: list = []
+            typed = False
             if not picked.get("ok"):
                 # Oct 11 Pingdom 'State' / Smartlook 'Your role': the open list matched none of the option selectors.
                 # Whatever short text became visible after the click is the list; pick from that, whatever its markup.
-                after = await page.evaluate(_LEAVES_JS)
+                after = await fr.evaluate(_LEAVES_JS)
                 seen = {(b["t"], b["x"], b["y"]) for b in before}
                 new = [a for a in after if (a["t"], a["x"], a["y"]) not in seen]
                 w = want.strip().lower()
-                if len(new) < 2 and await page.evaluate(_FOCUSED_INPUT_JS):
+                if len(new) < 2 and await fr.evaluate(_FOCUSED_INPUT_JS):
                     # searchable combobox: typing filters the list
                     await page.keyboard.type(want, delay=30)
+                    typed = True
                     await asyncio.sleep(0.6)
-                    after = await page.evaluate(_LEAVES_JS)
+                    after = await fr.evaluate(_LEAVES_JS)
                     new = [a for a in after if (a["t"], a["x"], a["y"]) not in seen and a["t"].lower() != w]
                 hit = (next((a for a in new if a["t"].lower() == w), None)
                        or next((a for a in new if a["t"].lower().startswith(w)), None)
@@ -855,15 +862,21 @@ async def _execute(page: Any, action: dict[str, Any]) -> None:
                 elif len(new) >= 2:
                     picked = {"ok": False, "options": list(dict.fromkeys(a["t"] for a in new))}
             if picked.get("ok"):
-                await page.mouse.click(picked["x"], picked["y"])
+                await page.mouse.click(picked["x"] + ox, picked["y"] + oy)
             elif picked.get("options"):
+                if typed:  # Smartlook retest: the leftover filter text made the next try show only 'No options'
+                    await page.keyboard.press("Control+A")
+                    await page.keyboard.press("Backspace")
+                    await page.keyboard.press("Escape")
                 # tell the model what the list offers instead of failing blind (it kept re-clicking the box)
                 raise SessionError(f"no option matching {want!r} in the open list; options: {picked['options'][:30]}")
             elif not near:
-                listed = [f"{b['label'][:40]!r} at ({b['x']},{b['y']})" for b in boxes[:12]]
-                raise SessionError(f"no dropdown at ({x},{y}); dropdowns on this page: {listed or 'none found'}")
+                listed = [f"{b['label'][:40]!r} at ({b['x'] + ox},{b['y'] + oy})" for b in boxes[:12]]
+                under = await fr.evaluate(_UNDER_JS, [lx, ly])
+                raise SessionError(f"no dropdown at ({x},{y}); clicked {under or 'nothing'} at ({lx + ox},{ly + oy}) "
+                                   f"and no list appeared ({len(new)} new texts); dropdowns on this page: {listed or 'none found'}")
             else:
-                await page.get_by_text(want, exact=False).first.click(timeout=5000)
+                await fr.get_by_text(want, exact=False).first.click(timeout=5000)
     elif kind == "reload":
         await page.reload(wait_until="domcontentloaded", timeout=20000)
     elif kind == "clear_cookies":  # log out the hard way: cookies + this origin's storage, then reload
@@ -919,6 +932,31 @@ async def _execute(page: Any, action: dict[str, Any]) -> None:
         await page.mouse.up()
     elif kind == "navigate":
         await page.goto(action["url"], wait_until="domcontentloaded", timeout=20000)
+
+
+async def _frame_at(page: Any, x: float, y: float) -> tuple[Any, float, float]:
+    """The iframe under page point (x, y) and its page offset; the page itself when not over an iframe."""
+    try:
+        tag = await page.evaluate("([x, y]) => { const e = document.elementFromPoint(x, y); return e ? e.tagName : ''; }", [x, y])
+    except Exception:  # noqa: BLE001
+        return page, 0, 0
+    if tag not in ("IFRAME", "FRAME"):
+        return page, 0, 0
+    for fr in page.frames[1:]:
+        try:
+            if fr.parent_frame is not page.main_frame:
+                continue
+            bb = await (await fr.frame_element()).bounding_box()
+        except Exception:  # noqa: BLE001
+            continue
+        if bb and bb["x"] <= x <= bb["x"] + bb["width"] and bb["y"] <= y <= bb["y"] + bb["height"]:
+            return fr, bb["x"], bb["y"]
+    return page, 0, 0
+
+
+_UNDER_JS = """([x, y]) => { const e = document.elementFromPoint(x, y); if (!e) return '';
+  const c = (typeof e.className === 'string' ? e.className : '').trim().split(/\\s+/).slice(0, 2).join('.');
+  return '<' + e.tagName.toLowerCase() + (c ? '.' + c : '') + '>'; }"""
 
 
 _BOX_NEAR_JS = """([x, y]) => {

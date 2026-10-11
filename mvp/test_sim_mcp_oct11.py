@@ -283,6 +283,18 @@ class UnrecognisedBoxTests(unittest.TestCase):
         self.assertEqual(v, "Texas", err)
 
 
+    def test_box_inside_iframe(self):
+        inner = ("<div id=box style='width:300px;height:30px;border:1px solid #888;margin:20px'>Select state</div>"
+                 "<div id=lst style='display:none'><div>Alabama</div><div>Texas</div></div>"
+                 "<script>box.onclick=()=>{lst.style.display='block'};"
+                 "lst.querySelectorAll('div').forEach(d=>d.onclick=()=>{box.textContent=d.textContent;"
+                 "parent.document.getElementById('out').textContent=d.textContent;lst.style.display='none'})</script>")
+        body = ("<div style='height:100px'>header</div><iframe id=f style='width:600px;height:300px;border:0' srcdoc=\"" + inner.replace('"', '&quot;') + "\"></iframe>"
+                "<div id=out>Select state</div>")
+        v, err = self._run(body, {"type": "select", "x": 170, "y": 136, "option": "Texas"}, "#out")
+        self.assertEqual(v, "Texas", err)
+
+
 class NewsletterChromeLinkTests(unittest.TestCase):
     """Loggly: the welcome mail's "View Online" link (Marketo /v/ path) counted as verification."""
 
