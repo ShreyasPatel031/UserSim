@@ -826,9 +826,24 @@ async def _execute(page: Any, action: dict[str, Any]) -> None:
             if near:  # the model's y is often one field off (Smartlook: it aimed at Full name / Company name)
                 tgt = min(near, key=lambda b: abs(b["y"] - y) * 3 + abs(b["x"] - x))
                 x, y = tgt["x"], tgt["y"]
+            before = await page.evaluate(_LEAVES_JS)
             await page.mouse.click(x, y)
-            await asyncio.sleep(0.5)
+            await asyncio.sleep(0.6)
             picked = await page.evaluate(_CUSTOM_OPTION_JS, want)
+            if not picked.get("ok"):
+                # Oct 11 Pingdom 'State' / Smartlook 'Your role': the open list matched none of the option selectors.
+                # Whatever short text became visible after the click is the list; pick from that, whatever its markup.
+                after = await page.evaluate(_LEAVES_JS)
+                seen = {(b["t"], b["x"], b["y"]) for b in before}
+                new = [a for a in after if (a["t"], a["x"], a["y"]) not in seen]
+                w = want.strip().lower()
+                hit = (next((a for a in new if a["t"].lower() == w), None)
+                       or next((a for a in new if a["t"].lower().startswith(w)), None)
+                       or next((a for a in new if w in a["t"].lower()), None))
+                if hit:
+                    picked = {"ok": True, "x": hit["x"], "y": hit["y"]}
+                elif len(new) >= 2:
+                    picked = {"ok": False, "options": list(dict.fromkeys(a["t"] for a in new))}
             if picked.get("ok"):
                 await page.mouse.click(picked["x"], picked["y"])
             elif picked.get("options"):
@@ -894,6 +909,23 @@ async def _execute(page: Any, action: dict[str, Any]) -> None:
         await page.mouse.up()
     elif kind == "navigate":
         await page.goto(action["url"], wait_until="domcontentloaded", timeout=20000)
+
+
+_LEAVES_JS = """() => {
+  const out = [];
+  for (const e of document.querySelectorAll('body *')) {
+    if (e.children.length > 1 || ['SCRIPT','STYLE','svg','path','INPUT','TEXTAREA','SELECT','OPTION'].includes(e.tagName)) continue;
+    const t = (e.innerText || '').replace(/\\s+/g, ' ').trim();
+    if (!t || t.length > 60) continue;
+    const r = e.getBoundingClientRect();
+    if (r.width < 4 || r.height < 6 || r.bottom < 0 || r.top > innerHeight) continue;
+    const cs = getComputedStyle(e);
+    if (cs.visibility === 'hidden' || cs.display === 'none' || +cs.opacity === 0) continue;
+    out.push({t, x: Math.round(r.left + r.width / 2), y: Math.round(r.top + r.height / 2)});
+    if (out.length > 1500) break;
+  }
+  return out;
+}"""
 
 
 _DROPDOWNS_JS = """() => {
