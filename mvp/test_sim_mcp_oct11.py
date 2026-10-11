@@ -132,3 +132,37 @@ class CustomDropdownTests(unittest.TestCase):
         self.assertEqual(chosen, "Product manager")
         self.assertFalse(miss["ok"])
         self.assertEqual(miss["options"], ["Developer", "Product manager", "Marketing"])
+
+
+class HCaptchaTests(unittest.TestCase):
+    def test_uuid_sitekey_or_hcaptcha_frame_is_hcaptcha(self):
+        from mvp.sim_mcp.server import _is_hcaptcha
+
+        class P:
+            def __init__(self, v):
+                self.v = v
+
+            async def evaluate(self, js, *a):
+                return self.v
+
+        self.assertTrue(asyncio.run(_is_hcaptcha(P(False), {"sitekey": "d0934688-a249-4b30-8047-3abedbca7d3f"})))
+        self.assertTrue(asyncio.run(_is_hcaptcha(P(True), {})))
+        self.assertFalse(asyncio.run(_is_hcaptcha(P(False), {"sitekey": "6LabcdefghijklmnopqrstuvwxyzABCDEFGHIJKL"})))
+
+    def test_paid_token_refuses_hcaptcha_without_an_attempt(self):
+        from mvp import captcha_spend as cs
+        from mvp.sim_mcp import server as SV
+
+        class P:
+            async def evaluate(self, js, *a):
+                return True
+
+        class Sim:
+            page = P()
+            product_url = "https://www.chatwoot.com/"
+            row: dict = {}
+
+        with mock.patch.object(cs, "begin_inrun_attempt", side_effect=AssertionError("attempt counted")):
+            out = asyncio.run(SV._paid_token(Sim(), "recaptcha_v2", {}))
+        self.assertFalse(out["ok"])
+        self.assertEqual(out["type"], "hcaptcha")

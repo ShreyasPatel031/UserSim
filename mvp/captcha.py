@@ -650,7 +650,8 @@ def _capsolver_solve(
             cost=0.0,
             balance_before=balance_before,
             balance_after=balance_after,
-            note="no_task_id",
+            # Oct 11 Chatwoot: three refusals with no reason logged. Keep CapSolver's errorCode (no secrets in it).
+            note=f"no_task_id:{create.get('errorCode') or ''}:{str(create.get('errorDescription') or '')[:120]}",
         )
         return None
 

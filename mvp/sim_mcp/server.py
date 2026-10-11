@@ -810,6 +810,20 @@ async def _maybe_paid_presolve(sim: S.SimSession) -> dict | None:
         return {"ok": False, "detail": repr(exc)[:200]}
 
 
+_UUID_RE = __import__("re").compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", __import__("re").I)
+_HCAPTCHA_JS = """() => !!(window.hcaptcha || document.querySelector('iframe[src*="hcaptcha.com"], script[src*="hcaptcha.com"], [data-hcaptcha-widget-id]'))"""
+
+
+async def _is_hcaptcha(page, info: dict) -> bool:
+    """hCaptcha, including recaptchacompat mode: a UUID sitekey or hcaptcha.com frames/scripts on the page."""
+    if _UUID_RE.match(str((info or {}).get("sitekey") or "").strip()):
+        return True
+    try:
+        return bool(await page.evaluate(_HCAPTCHA_JS))
+    except Exception:  # noqa: BLE001
+        return False
+
+
 async def _paid_token(sim: S.SimSession, kind: str, info: dict) -> dict:
     """Approved paid path (MVP_MCP_PAID_CAPTCHA=1): one CapSolver token through the metered ledger, injected
     the way the site's own widget would deliver it. Spend caps live in mvp.captcha_spend."""
@@ -820,6 +834,13 @@ async def _paid_token(sim: S.SimSession, kind: str, info: dict) -> dict:
     from mvp import captcha_spend as cs
 
     host = (urlsplit(sim.product_url).hostname or "").removeprefix("www.")
+    if "turnstile" not in kind and await _is_hcaptcha(sim.page, info):
+        # Oct 11 Chatwoot: invisible hCaptcha in recaptchacompat mode exposes grecaptcha + g-recaptcha-response, so it
+        # looked like reCAPTCHA v2; its UUID sitekey sent as a ReCaptchaV2 task was refused 3 times (no task id).
+        # CapSolver has no hCaptcha task: do not pay, do not count an attempt.
+        sim.row["hcaptcha_seen"] = True
+        return {"ok": False, "type": "hcaptcha",
+                "detail": "hCaptcha (reCAPTCHA-compat mode); the paid solver has no hCaptcha task, not paying"}
     if not sim.row.get("capsolver_attempt"):
         sim.row["capsolver_attempt"] = cs.begin_inrun_attempt(host)
     cs.bind_signup(host, sim.row["capsolver_attempt"])
