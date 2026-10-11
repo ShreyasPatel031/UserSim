@@ -1,0 +1,52 @@
+{
+ "model": "claude-haiku-4-5@20251001",
+ "image_set": "bench/wiserui_clean (300 pairs)",
+ "arms": {
+  "zero_shot": {
+   "n_pairs": 300,
+   "CA": 27.3,
+   "AA": 57.0,
+   "FA": 29.3,
+   "SA": 84.7,
+   "pick_first_pct": 22.3,
+   "unparsed": 0,
+   "CA_95ci": [
+    22.3,
+    32.3
+   ],
+   "errors": 0,
+   "by_source": {
+    "abtest.design": {
+     "n_pairs": 29,
+     "CA": 34.5,
+     "AA": 63.8,
+     "FA": 34.5,
+     "SA": 93.1,
+     "pick_first_pct": 20.7,
+     "unparsed": 0
+    },
+    "goodui.org": {
+     "n_pairs": 103,
+     "CA": 21.4,
+     "AA": 51.9,
+     "FA": 23.3,
+     "SA": 80.6,
+     "pick_first_pct": 21.4,
+     "unparsed": 0
+    },
+    "vwo.com": {
+     "n_pairs": 168,
+     "CA": 29.8,
+     "AA": 58.9,
+     "FA": 32.1,
+     "SA": 85.7,
+     "pick_first_pct": 23.2,
+     "unparsed": 0
+    }
+   },
+   "cost_usd": 2.469,
+   "calls": 600
+  }
+ },
+ "new_spend_usd": 2.438
+}
