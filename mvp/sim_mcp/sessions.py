@@ -854,13 +854,34 @@ async def _execute(page: Any, action: dict[str, Any]) -> None:
                     await asyncio.sleep(0.6)
                     after = await fr.evaluate(_LEAVES_JS)
                     new = [a for a in after if (a["t"], a["x"], a["y"]) not in seen and a["t"].lower() != w]
-                hit = (next((a for a in new if a["t"].lower() == w), None)
-                       or next((a for a in new if a["t"].lower().startswith(w)), None)
-                       or next((a for a in new if w in a["t"].lower()), None))
+                hit = _best_option(want, new)
+                if hit and not await fr.evaluate(_HIT_OK_JS, [hit["x"], hit["y"], hit["t"]]):
+                    # listed but clipped by the list's scroll box (the point hits something else): scroll it in first
+                    await fr.evaluate(_LIST_ALL_JS, [a["t"] for a in new][:60])
+                    hit = await fr.evaluate(_SCROLL_PICK_JS, hit["t"])
+                    await asyncio.sleep(0.3)
+                if not hit and len(new) >= 2:
+                    # Oct 11 Pingdom 'State': 'Texas' sat below the visible part of the scrolled list.
+                    # Read every item of the list's scroll container, pick, scroll it into view.
+                    texts = await fr.evaluate(_LIST_ALL_JS, [a["t"] for a in new][:60])
+                    best = _best_option(want, [{"t": t} for t in texts or []])
+                    if best:
+                        hit = await fr.evaluate(_SCROLL_PICK_JS, best["t"])
+                        await asyncio.sleep(0.3)
+                    elif not texts and not typed:
+                        # no scroll container (virtualised list): type-ahead, then look again
+                        await page.keyboard.type(want, delay=30)
+                        typed = True
+                        await asyncio.sleep(0.6)
+                        after = await fr.evaluate(_LEAVES_JS)
+                        new = [a for a in after if (a["t"], a["x"], a["y"]) not in seen and a["t"].lower() != w] or new
+                        hit = _best_option(want, new)
+                    if texts and not hit:
+                        new = new + [{"t": t} for t in texts]
                 if hit:
                     picked = {"ok": True, "x": hit["x"], "y": hit["y"]}
                 elif len(new) >= 2:
-                    picked = {"ok": False, "options": list(dict.fromkeys(a["t"] for a in new))}
+                    picked = {"ok": False, "options": _nearest_first(want, [a["t"] for a in new])}
             if picked.get("ok"):
                 await page.mouse.click(picked["x"] + ox, picked["y"] + oy)
             elif picked.get("options"):
@@ -869,7 +890,7 @@ async def _execute(page: Any, action: dict[str, Any]) -> None:
                     await page.keyboard.press("Backspace")
                     await page.keyboard.press("Escape")
                 # tell the model what the list offers instead of failing blind (it kept re-clicking the box)
-                raise SessionError(f"no option matching {want!r} in the open list; options: {picked['options'][:30]}")
+                raise SessionError(f"no option matching {want!r} in the open list; nearest first: {picked['options'][:30]}")
             elif not near:
                 listed = [f"{b['label'][:40]!r} at ({b['x'] + ox},{b['y'] + oy})" for b in boxes[:12]]
                 under = await fr.evaluate(_UNDER_JS, [lx, ly])
@@ -957,6 +978,107 @@ async def _frame_at(page: Any, x: float, y: float) -> tuple[Any, float, float]:
 _UNDER_JS = """([x, y]) => { const e = document.elementFromPoint(x, y); if (!e) return '';
   const c = (typeof e.className === 'string' ? e.className : '').trim().split(/\\s+/).slice(0, 2).join('.');
   return '<' + e.tagName.toLowerCase() + (c ? '.' + c : '') + '>'; }"""
+
+
+def _norm_opt(t: str) -> str:
+    return " ".join(str(t or "").lower().split())
+
+
+def _stem_eq(a: str, b: str) -> bool:
+    if a == b:
+        return True
+    n = len(os.path.commonprefix([a, b]))
+    return n >= 4 and n >= 0.75 * min(len(a), len(b))
+
+
+OPTION_MATCH_MIN = 0.8  # below this an option is not taken; the error lists the nearest instead
+
+
+def _option_score(want: str, opt: str) -> float:
+    """1.0 exact, .95 prefix, .9 substring, .85 every wanted word stem-matches ('Product Manager' ~
+    'Product Management'), else the difflib ratio (typos)."""
+    import difflib
+    import re as _re
+
+    w, o = _norm_opt(want), _norm_opt(opt)
+    if not w or not o:
+        return 0.0
+    if w == o:
+        return 1.0
+    if o.startswith(w) or (w.startswith(o) and len(o) >= 0.6 * len(w)):
+        return 0.95
+    if w in o:
+        return 0.9
+    ww, ow = _re.findall(r"[a-z0-9]+", w), _re.findall(r"[a-z0-9]+", o)
+    if ww and all(any(_stem_eq(a, b) for b in ow) for a in ww):
+        return 0.85
+    return difflib.SequenceMatcher(None, w, o).ratio()
+
+
+def _best_option(want: str, items: list[dict[str, Any]]) -> dict[str, Any] | None:
+    """The best option at or above OPTION_MATCH_MIN; None when nothing clears it or the best is a tie below .95."""
+    scored = sorted(((_option_score(want, it.get("t", "")), i, it) for i, it in enumerate(items)), key=lambda r: (-r[0], r[1]))
+    if not scored or scored[0][0] < OPTION_MATCH_MIN:
+        return None
+    top = scored[0]
+    if top[0] < 0.95 and len(scored) > 1 and scored[1][0] == top[0] and _norm_opt(scored[1][2]["t"]) != _norm_opt(top[2]["t"]):
+        return None  # ambiguous fuzzy match: let the model choose from the list
+    return top[2]
+
+
+def _nearest_first(want: str, texts: list[str]) -> list[str]:
+    uniq = list(dict.fromkeys(t for t in texts if t))
+    return sorted(uniq, key=lambda t: -_option_score(want, t))
+
+
+_HIT_OK_JS = """([x, y, t]) => {
+  const h = document.elementFromPoint(x, y);
+  return !!h && (h.textContent || '').replace(/\\s+/g, ' ').trim() === t;
+}"""
+
+
+_LIST_ALL_JS = """(shown) => {
+  // the scroll container holding the newly shown items; return all its item texts (also those scrolled out of view)
+  const set = new Set(shown);
+  document.querySelectorAll('[data-usersim-list]').forEach(o => o.removeAttribute('data-usersim-list'));
+  const leaves = [...document.querySelectorAll('body *')].filter(e => e.children.length <= 1 && set.has((e.innerText || '').replace(/\\s+/g, ' ').trim()));
+  for (const e of leaves) {
+    let p = e.parentElement;
+    while (p && p !== document.body) {
+      const cs = getComputedStyle(p);
+      if (/(auto|scroll)/.test(cs.overflowY) && p.scrollHeight > p.clientHeight + 4) {
+        document.querySelectorAll('[data-usersim-list]').forEach(o => o.removeAttribute('data-usersim-list'));
+        p.setAttribute('data-usersim-list', '1');
+        const out = [];
+        for (const c of p.querySelectorAll('*')) {
+          if (c.children.length > 1) continue;
+          const t = (c.textContent || '').replace(/\\s+/g, ' ').trim();
+          if (!t || t.length > 60) continue;
+          if (c.children.length === 1 && (c.children[0].textContent || '').replace(/\\s+/g, ' ').trim() === t) continue;
+          out.push(t);
+          if (out.length > 600) break;
+        }
+        return out;
+      }
+      p = p.parentElement;
+    }
+  }
+  return [];
+}"""
+
+
+_SCROLL_PICK_JS = """(t) => {
+  const box = document.querySelector('[data-usersim-list]') || document.body;
+  for (const c of box.querySelectorAll('*')) {
+    if (c.children.length > 1) continue;
+    if ((c.textContent || '').replace(/\\s+/g, ' ').trim() !== t) continue;
+    if (c.children.length === 1 && (c.children[0].textContent || '').replace(/\\s+/g, ' ').trim() === t) continue;
+    c.scrollIntoView({block: 'center'});
+    const r = c.getBoundingClientRect();
+    return {t, x: Math.round(r.left + Math.min(r.width / 2, 80)), y: Math.round(r.top + r.height / 2)};
+  }
+  return null;
+}"""
 
 
 _BOX_NEAR_JS = """([x, y]) => {

@@ -295,6 +295,46 @@ class UnrecognisedBoxTests(unittest.TestCase):
         self.assertEqual(v, "Texas", err)
 
 
+class OptionMatchTests(unittest.TestCase):
+    """Oct 11 stretch 3: fuzzy option match (Smartlook) and scrolled-out options (Pingdom)."""
+
+    def test_scores_and_threshold(self):
+        from mvp.sim_mcp import sessions as S
+
+        self.assertGreaterEqual(S._option_score("Product Manager", "Product Management"), S.OPTION_MATCH_MIN)
+        self.assertLess(S._option_score("Product Manager", "Project Management"), S.OPTION_MATCH_MIN)
+        self.assertLess(S._option_score("Alaska", "Alabama"), S.OPTION_MATCH_MIN)
+        best = S._best_option("Product Manager", [{"t": "UX & Design"}, {"t": "Product Management"}, {"t": "Engineering"}])
+        self.assertEqual(best["t"], "Product Management")
+        self.assertIsNone(S._best_option("Nevada", [{"t": "Alabama"}, {"t": "Texas"}]))
+        self.assertEqual(S._nearest_first("Product Manager", ["Engineering", "Project Management", "UX"])[0], "Project Management")
+
+    def _run(self, body, action, sel):
+        return UnrecognisedBoxTests._run(self, body, action, sel)
+
+    def test_fuzzy_pick_in_open_list(self):
+        body = ("<div id=box style='width:300px;height:30px;border:1px solid #888;margin:40px'>Your role</div>"
+                "<div id=lst style='display:none'><div>UX &amp; Design</div><div>Product Management</div><div>Engineering</div></div>"
+                "<script>box.onclick=()=>{lst.style.display='block'};"
+                "lst.querySelectorAll('div').forEach(d=>d.onclick=()=>{box.textContent=d.textContent;lst.style.display='none'})</script>")
+        v, err = self._run(body, {"type": "select", "x": 190, "y": 56, "option": "Product Manager"}, "#box")
+        self.assertEqual(v, "Product Management", err)
+        v, err = self._run(body, {"type": "select", "x": 190, "y": 56, "option": "Sales Lead"}, "#box")
+        self.assertIn("nearest first", err or "")
+
+    def test_option_below_visible_part_of_scrolled_list(self):
+        states = ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware",
+                  "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky",
+                  "Louisiana", "Maine", "Maryland", "Texas", "Utah", "Vermont", "Virginia", "Washington"]
+        items = "".join(f"<div class=it style='height:24px'>{s}</div>" for s in states)
+        body = ("<div id=box style='width:300px;height:30px;border:1px solid #888;margin:40px'>Select state</div>"
+                f"<div id=lst style='display:none;height:120px;overflow-y:auto;width:300px'>{items}</div>"
+                "<script>box.onclick=()=>{lst.style.display='block'};"
+                "lst.querySelectorAll('.it').forEach(d=>d.onclick=()=>{box.textContent=d.textContent;lst.style.display='none'})</script>")
+        v, err = self._run(body, {"type": "select", "x": 190, "y": 56, "option": "Texas"}, "#box")
+        self.assertEqual(v, "Texas", err)
+
+
 class NewsletterChromeLinkTests(unittest.TestCase):
     """Loggly: the welcome mail's "View Online" link (Marketo /v/ path) counted as verification."""
 
