@@ -94,8 +94,10 @@ class PlainHostTests(unittest.TestCase):
 
         with mock.patch.dict(os.environ, {"MVP_SIGNUP_PLAIN_HOSTS": "chatwoot.com", "MVP_SIGNUP_EMAIL_DOTS": "0"}):
             plain = fresh_gmail_address("usersim.signups@gmail.com", "www.chatwoot.com", "chatwoot")
+            sub = fresh_gmail_address("usersim.signups@gmail.com", "app.chatwoot.com", "app")
             other = fresh_gmail_address("usersim.signups@gmail.com", "smartlook.com", "smartlook")
         self.assertEqual(plain, "usersim.signups@gmail.com")
+        self.assertEqual(sub, "usersim.signups@gmail.com")
         self.assertTrue(other.startswith("usersim.signups+smartlook"))
         self.assertTrue(inbox_allowed(plain))
 

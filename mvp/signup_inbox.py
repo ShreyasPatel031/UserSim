@@ -319,7 +319,8 @@ def fresh_gmail_address(username: str, host: str, tag: str, *, dotted: bool = Fa
     local, domain = username.rsplit("@", 1)
     local = local.split("+", 1)[0]
     site = (host or "").lower().removeprefix("www.")
-    if site and site in _host_list("MVP_SIGNUP_PLAIN_HOSTS"):
+    plain = _host_list("MVP_SIGNUP_PLAIN_HOSTS")
+    if site and any(site == h or site.endswith("." + h) for h in plain):  # app.chatwoot.com matches chatwoot.com
         # Oct 11 Chatwoot: "email address is invalid" for usersim.signups+tag@gmail.com. Hosts listed here (explicit
         # opt-in) get the plain inbox address, no tag and no dots; the mail is still matched by To + sender host.
         return f"{local}@{domain}"
