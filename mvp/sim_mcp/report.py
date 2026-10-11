@@ -118,6 +118,47 @@ def signup_verified(row: dict[str, Any]) -> bool:
     return bool(row.get("signup_email")) and mail and (opened or typed_code)
 
 
+# The signup bar (Oct 11): an email-verified signup on the product that ends signed in. The judge kept reading
+# "reach the signed-in dashboard" literally and failed onboarding pages (Raygun /onboarding/setup-raygun,
+# StatusCake /monitoring/uptime/create) after a verified signup. Judge verified signups against the bar instead.
+SIGNUP_BAR_TASK = ("Create an account with email and verify it, then end on ANY signed-in page of the product's app. "
+                   "A dashboard, workspace, onboarding or setup step inside the app, or a 'create your first ...' page "
+                   "all count; the page does not need to be titled dashboard and no further setup is required.")
+
+
+def judge_votes() -> int:
+    try:
+        return max(1, min(5, int(os.environ.get("MVP_JUDGE_VOTES", "3"))))
+    except ValueError:
+        return 3
+
+
+async def _goal_votes(png: bytes, row: dict[str, Any], task: str, n: int) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+    """Up to n independent goal-judge calls; stop once a majority is settled. Returns (majority verdict, votes)."""
+    from mvp.e2e2_gates import judge_goal_screenshot
+
+    need = n // 2 + 1
+    votes: list[dict[str, Any]] = []
+    for _ in range(n):
+        v = await asyncio.wait_for(
+            asyncio.to_thread(judge_goal_screenshot, png, task=task, start_url=str(row.get("site_url") or ""),
+                              final_url=str(row.get("final_url") or ""), dom=str(row.get("final_dom") or ""),
+                              evidence=signup_evidence(row)),
+            timeout=float(os.environ.get("MVP_PAGE_VERDICT_TIMEOUT_S", "45")),
+        )
+        votes.append(v if isinstance(v, dict) else {})
+        yes = sum(bool(x.get("goal_reached")) for x in votes)
+        if yes >= need or len(votes) - yes >= need:
+            break
+    yes = sum(bool(x.get("goal_reached")) for x in votes)
+    passed = yes >= need
+    pick = next((x for x in votes if bool(x.get("goal_reached")) == passed), votes[-1])
+    out = dict(pick)
+    out["goal_reached"] = passed
+    out["signed_in_app_page"] = sum(bool(x.get("signed_in_app_page")) for x in votes) >= (len(votes) // 2 + 1)
+    return out, votes
+
+
 async def judge_run(study_id: str, row: dict[str, Any]) -> tuple[dict[str, Any], str]:
     """(verdict, status). status is 'ok', 'no_screenshot', or 'error: …' — never a silent pass."""
     from mvp.e2e2_gates import coerce_verdict, judge_goal_screenshot, judge_signed_in
@@ -125,19 +166,23 @@ async def judge_run(study_id: str, row: dict[str, Any]) -> tuple[dict[str, Any],
     path = MVP_RUNS_DIR / study_id / str(row.get("agent_id") or AGENT_ID) / "screenshots" / "final.png"
     if not path.is_file():
         return coerce_verdict({"goal_reached": False, "reason": "no final screenshot"}), "no_screenshot"
+    votes: list[dict[str, Any]] = []
     try:
-        raw = await asyncio.wait_for(
-            asyncio.to_thread(
-                judge_goal_screenshot,
-                path.read_bytes(),
-                task=str(row.get("task_prompt") or ""),
-                start_url=str(row.get("site_url") or ""),
-                final_url=str(row.get("final_url") or ""),
-                dom=str(row.get("final_dom") or ""),
-                evidence=signup_evidence(row),
-            ),
-            timeout=float(os.environ.get("MVP_PAGE_VERDICT_TIMEOUT_S", "45")),
-        )
+        if is_signup_goal(row) and signup_verified(row):
+            raw, votes = await _goal_votes(path.read_bytes(), row, SIGNUP_BAR_TASK, judge_votes())
+        else:
+            raw = await asyncio.wait_for(
+                asyncio.to_thread(
+                    judge_goal_screenshot,
+                    path.read_bytes(),
+                    task=str(row.get("task_prompt") or ""),
+                    start_url=str(row.get("site_url") or ""),
+                    final_url=str(row.get("final_url") or ""),
+                    dom=str(row.get("final_dom") or ""),
+                    evidence=signup_evidence(row),
+                ),
+                timeout=float(os.environ.get("MVP_PAGE_VERDICT_TIMEOUT_S", "45")),
+            )
     except Exception as exc:  # noqa: BLE001
         reason = f"judge failed: {exc!r}"[:200]
         verdict = coerce_verdict({"goal_reached": False, "reason": reason})
@@ -161,6 +206,10 @@ async def judge_run(study_id: str, row: dict[str, Any]) -> tuple[dict[str, Any],
     verdict = apply_hard_rules(row, coerce_verdict(raw), raw, png)
     if isinstance(raw, dict) and raw.get("signed_in_check"):
         verdict["signed_in_check"] = raw["signed_in_check"]
+    if votes:
+        verdict["votes"] = [{"goal_reached": bool(v.get("goal_reached")), "signed_in_app_page": bool(v.get("signed_in_app_page")),
+                             "reason": str(v.get("reason") or "")[:200]} for v in votes]
+        verdict["votes_yes"] = sum(x["goal_reached"] for x in verdict["votes"])
     verdict["checked_at_ts"] = time.time()
     return verdict, "ok"
 
