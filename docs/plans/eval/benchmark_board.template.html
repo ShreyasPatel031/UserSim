@@ -95,7 +95,7 @@ footer { font-size: 12.5px; color: var(--muted); display: flex; flex-direction: 
 <div class="wrap">
   <header style="display:flex;flex-direction:column;gap:10px">
     <h1>Benchmark Fit Board</h1>
-    <p class="lede">How well each public dataset measures what UserSim predicts. Scores are fit to our problem, not model results. Adjust the weights to change the ranking, rank by any stage, and include or exclude benchmarks that still need data collection.</p>
+    <p class="lede">How well each public dataset measures what UserSim predicts. Scores are fit to the problem statement: an unknown startup product against competitors, predicted for a target population, and whether a harness plus public data can beat the bare model on it. Adjust the weights to change the ranking, rank by any stage, and include or exclude benchmarks that still need data collection.</p>
     <div class="stages" id="stages"></div>
   </header>
 
@@ -137,7 +137,7 @@ footer { font-size: 12.5px; color: var(--muted); display: flex; flex-direction: 
   </div>
 
   <footer>
-    <p><b>Stage fit</b> is scored 0–3 per benchmark: 0 none, 1 weak proxy, 2 partial, 3 a direct measurement of that stage, shown here as 0–100. <b>Quality</b> criteria are scored 0–2. <b>Overall</b> = (1 − quality share) × weighted stage fit + quality share × weighted quality.</p>
+    <p><b>Stage fit</b> is scored 0–3 per benchmark: 0 absent, 1 present but predictable from product reputation alone, 2 depends on people in aggregate, 3 depends on people by segment or person with held-out outcomes; shown here as 0–100. <b>Quality</b> criteria are scored 0–2. <b>Overall</b> = (1 − quality share) × weighted stage fit + quality share × weighted quality.</p>
     <p>A <span class="flag">?</span> marks scores taken from papers or summaries that have not yet been checked against the data itself. Click a row for the reasoning behind every score. Source of truth: <span class="mono">docs/plans/eval/benchmark_board.py</span>.</p>
   </footer>
 </div>
@@ -146,12 +146,12 @@ footer { font-size: 12.5px; color: var(--muted); display: flex; flex-direction: 
 const D = __DATA__;
 const STAGES = Object.keys(D.stages);
 const QK = Object.keys(D.quality);
-const DEF = { wP: { P1: 1, P2: 1, P3: 1, P4: 2 }, alpha: 35, wQ: Object.fromEntries(QK.map((k) => [k, D.quality[k].weight])),
+const DEF = { wP: { P1: 1.5, P2: 2.5, P3: 1, P4: 3.5 }, alpha: 60, wQ: Object.fromEntries(QK.map((k) => [k, D.quality[k].weight])),
   status: { available: true, restricted: true, proposed: true }, sort: "overall", open: [] };
-const PRESETS = [["Overall choice first", { P1: 1, P2: 1, P3: 1, P4: 3 }], ["Balanced", { P1: 1, P2: 1, P3: 1, P4: 1 }],
+const PRESETS = [["Default", { P1: 1.5, P2: 2.5, P3: 1, P4: 3.5 }], ["Overall choice first", { P1: 1, P2: 1, P3: 1, P4: 3 }], ["Balanced", { P1: 1, P2: 1, P3: 1, P4: 1 }],
   ["P1 only", { P1: 1, P2: 0, P3: 0, P4: 0 }], ["P2 only", { P1: 0, P2: 1, P3: 0, P4: 0 }], ["P3 only", { P1: 0, P2: 0, P3: 1, P4: 0 }], ["P4 only", { P1: 0, P2: 0, P3: 0, P4: 1 }]];
 const STATUS_LABEL = { available: "Available", restricted: "Restricted", proposed: "Proposed" };
-const KEY = "benchmark-fit-board-v1";
+const KEY = "benchmark-fit-board-v2";
 let S;
 try { S = JSON.parse(localStorage.getItem(KEY)) || null; } catch (e) { S = null; }
 if (!S || !S.wP || !S.wQ) S = JSON.parse(JSON.stringify(DEF));
@@ -169,7 +169,7 @@ function slider(id, label, value, min, max, step, dotClass, fmt) {
 function buildControls() {
   $("stageSliders").innerHTML = STAGES.map((k) => slider("w" + k, k, S.wP[k], 0, 5, 0.5, "sw-" + k, (v) => (+v).toFixed(1))).join("");
   $("qualitySliders").innerHTML = QK.map((k) => slider("q_" + k, D.quality[k].label, S.wQ[k], 0, 3, 0.5, "", (v) => (+v).toFixed(1))).join("") +
-    `<p class="hint">The gate criterion (outcomes come from real people) is not weighted: every benchmark here passes it.</p>`;
+    `<p class="hint">Weights follow the problem statement: unknown products, competitors, harness headroom and a fair public-data arm count most.</p>`;
   $("presets").innerHTML = PRESETS.map(([n], i) => `<button class="btn" type="button" data-preset="${i}">${esc(n)}</button>`).join("");
   $("statusChips").innerHTML = Object.keys(STATUS_LABEL).map((k) => `<button class="chip" type="button" data-status="${k}" aria-pressed="${S.status[k]}" title="${esc(D.status[k])}"><span class="status ${k}" style="margin:0">${STATUS_LABEL[k]}</span></button>`).join("");
   $("alpha").value = S.alpha; $("alphaOut").textContent = S.alpha + "%";
