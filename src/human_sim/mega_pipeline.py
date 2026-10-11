@@ -420,12 +420,6 @@ def run(arm_name, study, limit=None, workers=24):
     return s
 
 
-if __name__ == "__main__":
-    cmd = sys.argv[1]
-    if cmd == "check":
-        check(sys.argv[2])
-    elif cmd == "run":
-        run(sys.argv[2], sys.argv[3], int(sys.argv[4]) if len(sys.argv) > 4 else None)
 
 
 # ================================================================ population-knowledge arms (A3 naive RAG, A4 harness)
@@ -644,5 +638,11 @@ def compare(arms=("A0_demographics", "A3_naive_rag", "A4_harness")):
     return res
 
 
-if __name__ == "__main__" and sys.argv[1] == "compare":
-    compare()
+if __name__ == "__main__":
+    cmd = sys.argv[1]
+    if cmd == "check":
+        check(sys.argv[2])
+    elif cmd == "run":
+        run(sys.argv[2], sys.argv[3], int(sys.argv[4]) if len(sys.argv) > 4 else None)
+    elif cmd == "compare":
+        compare()
