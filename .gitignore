@@ -51,3 +51,8 @@ data/twin2k_mega/
 data/repo_raw/
 data/people_repo/
 third_party/Twin-2K-500-Mega-Study/
+
+# Mega-Study run outputs: keep summaries only (copies of human data and raw LLM files stay local)
+results/twin_mega/**
+!results/twin_mega/**/
+!results/twin_mega/**/summary.json
