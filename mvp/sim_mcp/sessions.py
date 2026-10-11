@@ -826,6 +826,10 @@ async def _execute(page: Any, action: dict[str, Any]) -> None:
             if near:  # the model's y is often one field off (Smartlook: it aimed at Full name / Company name)
                 tgt = min(near, key=lambda b: abs(b["y"] - y) * 3 + abs(b["x"] - x))
                 x, y = tgt["x"], tgt["y"]
+            else:  # unrecognised box markup (Pingdom 'State': a plain styled div): snap to the field-shaped box nearby
+                box = await page.evaluate(_BOX_NEAR_JS, [x, y])
+                if box:
+                    x, y = box["x"], box["y"]
             before = await page.evaluate(_LEAVES_JS)
             await page.mouse.click(x, y)
             await asyncio.sleep(0.6)
@@ -837,6 +841,12 @@ async def _execute(page: Any, action: dict[str, Any]) -> None:
                 seen = {(b["t"], b["x"], b["y"]) for b in before}
                 new = [a for a in after if (a["t"], a["x"], a["y"]) not in seen]
                 w = want.strip().lower()
+                if len(new) < 2 and await page.evaluate(_FOCUSED_INPUT_JS):
+                    # searchable combobox: typing filters the list
+                    await page.keyboard.type(want, delay=30)
+                    await asyncio.sleep(0.6)
+                    after = await page.evaluate(_LEAVES_JS)
+                    new = [a for a in after if (a["t"], a["x"], a["y"]) not in seen and a["t"].lower() != w]
                 hit = (next((a for a in new if a["t"].lower() == w), None)
                        or next((a for a in new if a["t"].lower().startswith(w)), None)
                        or next((a for a in new if w in a["t"].lower()), None))
@@ -911,12 +921,33 @@ async def _execute(page: Any, action: dict[str, Any]) -> None:
         await page.goto(action["url"], wait_until="domcontentloaded", timeout=20000)
 
 
+_BOX_NEAR_JS = """([x, y]) => {
+  for (const dy of [0, -8, 8, -16, 16, -24, 24, -32, 32]) {
+    let el = document.elementFromPoint(x, y + dy);
+    while (el && el !== document.body) {
+      const r = el.getBoundingClientRect();
+      if (r.width >= 80 && r.width <= 760 && r.height >= 22 && r.height <= 64) {
+        return {x: Math.round(r.left + Math.min(r.width / 2, 120)), y: Math.round(r.top + r.height / 2)};
+      }
+      el = el.parentElement;
+    }
+  }
+  return null;
+}"""
+
+_FOCUSED_INPUT_JS = """() => {
+  const a = document.activeElement;
+  return !!a && (a.tagName === "INPUT" || a.isContentEditable) && !a.readOnly && !a.disabled;
+}"""
+
 _LEAVES_JS = """() => {
   const out = [];
   for (const e of document.querySelectorAll('body *')) {
     if (e.children.length > 1 || ['SCRIPT','STYLE','svg','path','INPUT','TEXTAREA','SELECT','OPTION'].includes(e.tagName)) continue;
     const t = (e.innerText || '').replace(/\\s+/g, ' ').trim();
     if (!t || t.length > 60) continue;
+    // a row whose only child carries the same text: keep the inner element (its centre is on the text)
+    if (e.children.length === 1 && (e.children[0].innerText || '').replace(/\\s+/g, ' ').trim() === t) continue;
     const r = e.getBoundingClientRect();
     if (r.width < 4 || r.height < 6 || r.bottom < 0 || r.top > innerHeight) continue;
     const cs = getComputedStyle(e);

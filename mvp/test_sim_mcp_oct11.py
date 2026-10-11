@@ -236,6 +236,53 @@ class NewlyVisibleListTests(unittest.TestCase):
         self.assertIn("Alabama", err or "")
 
 
+class UnrecognisedBoxTests(unittest.TestCase):
+    """Oct 11 Pingdom 'State': a plain styled div box; the model aimed at its bottom edge (just outside)."""
+
+    def _run(self, body, action, sel):
+        import shutil
+
+        chrome = shutil.which("google-chrome") or shutil.which("chromium")
+        if not chrome:
+            self.skipTest("no chrome")
+        from mvp.sim_mcp import sessions as S
+
+        async def go():
+            from playwright.async_api import async_playwright
+
+            async with async_playwright() as p:
+                b = await p.chromium.launch(headless=True, executable_path=chrome)
+                pg = await b.new_page()
+                await pg.set_content(body)
+                err = None
+                try:
+                    await S._execute(pg, action)
+                except Exception as exc:  # noqa: BLE001
+                    err = str(exc)
+                v = await pg.evaluate(f"() => {{ const e = document.querySelector({sel!r}); return e.value ?? e.textContent; }}")
+                await b.close()
+                return v, err
+
+        return asyncio.run(go())
+
+    def test_click_just_below_box_snaps_to_it(self):
+        body = ("<div id=box style='width:300px;height:30px;border:1px solid #888;margin:40px'>Select state</div>"
+                "<div id=lst style='display:none'><div><span>Alabama</span></div><div><span>Texas</span></div></div>"
+                "<script>box.onclick=()=>{lst.style.display='block'};"
+                "lst.querySelectorAll('span').forEach(d=>d.onclick=()=>{box.textContent=d.textContent;lst.style.display='none'})</script>")
+        v, err = self._run(body, {"type": "select", "x": 190, "y": 84, "option": "Texas"}, "#box")
+        self.assertEqual(v, "Texas", err)
+
+    def test_searchable_box_typed_to_filter(self):
+        states = ["Alabama", "Alaska", "Texas", "Utah"]
+        body = ("<input id=q placeholder='Select state' style='width:300px;height:30px;margin:40px'>"
+                "<div id=lst></div><script>q.oninput=()=>{lst.innerHTML='';"
+                f"{states!r}.filter(s=>s.toLowerCase().startsWith(q.value.toLowerCase())).forEach(s=>{{"
+                "const d=document.createElement('div');d.textContent=s;d.onclick=()=>{q.value=s;lst.innerHTML=''};lst.appendChild(d)})}</script>")
+        v, err = self._run(body, {"type": "select", "x": 190, "y": 60, "option": "Texas"}, "#q")
+        self.assertEqual(v, "Texas", err)
+
+
 class NewsletterChromeLinkTests(unittest.TestCase):
     """Loggly: the welcome mail's "View Online" link (Marketo /v/ path) counted as verification."""
 
