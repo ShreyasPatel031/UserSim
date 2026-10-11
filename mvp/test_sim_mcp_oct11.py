@@ -349,6 +349,44 @@ class OptionMatchTests(unittest.TestCase):
         self.assertEqual(v, "Texas", err)
 
 
+class IframeFieldsTests(unittest.TestCase):
+    """Oct 11 Pingdom: controls inside the onboarding iframe were never listed, so the model guessed (off-frame)."""
+
+    def test_iframe_controls_listed_in_page_coordinates(self):
+        import shutil
+
+        chrome = shutil.which("google-chrome") or shutil.which("chromium")
+        if not chrome:
+            self.skipTest("no chrome")
+        from mvp.sim_mcp import sessions as S
+
+        inner = "<div style='height:900px'>form</div><button id=go style='width:200px;height:40px'>Start using Pingdom</button>"
+        body = ("<div style='height:60px'>top bar</div><iframe style='width:800px;height:1000px;border:0' srcdoc=\""
+                + inner + "\"></iframe>")
+
+        async def go():
+            from playwright.async_api import async_playwright
+
+            async with async_playwright() as p:
+                b = await p.chromium.launch(headless=True, executable_path=chrome)
+                pg = await b.new_page(viewport={"width": 1280, "height": 800})
+                await pg.set_content(body)
+                await asyncio.sleep(0.3)
+                await pg.mouse.wheel(0, 400)
+                await asyncio.sleep(0.3)
+                rows = await S._fields(pg)
+                btn = next((r for r in rows if r.get("label") == "Start using Pingdom"), None)
+                hit = await pg.evaluate("([x, y]) => { const e = document.elementFromPoint(x, y); return e && e.tagName; }",
+                                        [btn["x"], btn["y"]]) if btn else None
+                await b.close()
+                return btn, hit
+
+        btn, hit = asyncio.run(go())
+        self.assertIsNotNone(btn)
+        self.assertTrue(0 <= btn["y"] < 800, btn)
+        self.assertEqual(hit, "IFRAME")
+
+
 class NewsletterChromeLinkTests(unittest.TestCase):
     """Loggly: the welcome mail's "View Online" link (Marketo /v/ path) counted as verification."""
 

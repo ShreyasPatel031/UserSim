@@ -889,7 +889,7 @@ async def _execute(page: Any, action: dict[str, Any]) -> None:
                         picked = {"ok": True, "x": hit["x"], "y": hit["y"]}
                     elif len(new) >= 2:
                         picked = {"ok": False, "options": _nearest_first(want, [a["t"] for a in new])}
-                if picked.get("ok") or len(tried) >= 3:
+                if picked.get("ok") or len(tried) >= 4:
                     break
                 opts = [a["t"] for a in new] or list(picked.get("options") or [])
                 if opts and max(_option_score(want, t) for t in opts) >= 0.5:
@@ -901,6 +901,10 @@ async def _execute(page: Any, action: dict[str, Any]) -> None:
                 await page.keyboard.press("Escape")
                 await asyncio.sleep(0.3)
                 if len(tried) == 1:
+                    # Smartlook retest: the role box was not one row away; also try the nearest known dropdowns
+                    for b in sorted(boxes, key=lambda b: abs(b["y"] - ly) * 3 + abs(b["x"] - lx))[:3]:
+                        if all(abs(b["y"] - t) > 12 or abs(b["x"] - lx) > 40 for t in tried):
+                            cands.append((b["x"], b["y"]))
                     for dy in (-42, 42):
                         nb = await fr.evaluate(_BOX_NEAR_JS, [lx, ly + dy])
                         if nb and all(abs(nb["y"] - t) > 12 for t in tried) and all(abs(nb["y"] - c[1]) > 12 for c in cands):
@@ -1684,11 +1688,32 @@ async def captcha_state(page: Any) -> dict[str, Any] | None:
 
 
 async def _fields(page: Any) -> list[dict[str, Any]]:
-    """Visible controls with their exact centre (the website driver's element list, for the MCP client)."""
+    """Visible controls with their exact centre (the website driver's element list, for the MCP client).
+
+    Oct 11 Pingdom: the onboarding form sits in an iframe, so its controls (State, 'Start using Pingdom')
+    were never listed and the model guessed coordinates outside the frame 27 times. Child iframes' controls
+    are listed too, translated to page coordinates, if their centre is inside the 1280x800 frame."""
     try:
-        return await asyncio.wait_for(page.evaluate(_FIELDS_JS), timeout=4)
+        rows = await asyncio.wait_for(page.evaluate(_FIELDS_JS), timeout=4)
     except Exception:  # noqa: BLE001
-        return []
+        rows = []
+    for fr in list(getattr(page, "frames", []) or [])[1:8]:
+        try:
+            if fr.parent_frame is not page.main_frame:
+                continue
+            bb = await asyncio.wait_for((await fr.frame_element()).bounding_box(), timeout=2)
+            if not bb or bb["width"] < 200 or bb["height"] < 100:
+                continue  # captcha widgets, trackers
+            sub = await asyncio.wait_for(fr.evaluate(_FIELDS_JS), timeout=4)
+        except Exception:  # noqa: BLE001
+            continue
+        for r in sub or []:
+            if r.get("hidden") or "x" not in r or "y" not in r:
+                continue
+            x, y = int(r["x"] + bb["x"]), int(r["y"] + bb["y"])
+            if 0 <= x < VIEWPORT["width"] and 0 <= y < VIEWPORT["height"] and bb["y"] <= y <= bb["y"] + bb["height"]:
+                rows.append({**r, "x": x, "y": y, "in_iframe": True})
+    return rows
 
 
 def _split_fields(rows: list[dict[str, Any]]) -> dict[str, Any]:
