@@ -87,6 +87,21 @@ def anchors_from_html(html: str) -> dict[str, str]:
     return out
 
 
+def _wrapped_target(url: str) -> str:
+    """The destination of a redirect wrapper that carries it in a url=/redirect=/target= query parameter."""
+    from urllib.parse import parse_qs, urlsplit
+
+    try:
+        q = parse_qs(urlsplit(url).query)
+    except ValueError:
+        return ""
+    for key in ("url", "redirect", "redirect_url", "target", "u", "dest", "destination"):
+        for v in q.get(key, []):
+            if v.lower().startswith(("http://", "https://")):
+                return v
+    return ""
+
+
 def rank_links(links: list[str], host: str, anchors: dict[str, str] | None = None) -> list[str]:
     """Verification-looking links first, product-domain links next, junk dropped."""
     host_tok = (host or "").lower().removeprefix("www.").split(".")[0]
@@ -99,6 +114,17 @@ def rank_links(links: list[str], host: str, anchors: dict[str, str] | None = Non
             continue
         seen.add(clean)
         score = 0
+        target = _wrapped_target(clean)
+        if target:
+            # Oct 11 Better Stack: its own click tracker (/ahoy/messages/<id>/click?signature=..&url=..) wraps every
+            # link; the logo's wrapper (url=https://betterstack.com, utm_medium=email) outranked the magic-link
+            # button. Score where the wrapper leads, not the wrapper's own query words.
+            from urllib.parse import urlsplit as _us
+
+            tp = _us(target)
+            low = (tp.netloc + tp.path).lower()  # its utm_medium=email query says nothing about the page
+            if tp.path in ("", "/"):
+                score -= 3  # a wrapped bare homepage: the logo / footer link
         if any(k in low for k in _GOOD_LINK):
             score += 3
         if anchors and re.search(r"verif|confirm|activat|validat|magic link", anchors.get(url, "") or anchors.get(clean, ""), re.I):

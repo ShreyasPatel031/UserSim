@@ -476,3 +476,19 @@ class HtmlOnlyCodeMailTests(unittest.TestCase):
         self.assertEqual(find_code("Checkly Verification Code", text), "482913")
         long_text = "Hello! Your code is 123456. " + "x" * 100
         self.assertEqual(_text_or_html(long_text, html), long_text)
+
+
+class WrappedLinkRankTests(unittest.TestCase):
+    """Oct 11 Better Stack: an in-house click tracker wraps every link; rank by where each wrapper leads."""
+
+    def test_logo_wrapper_does_not_outrank_magic_link_button(self):
+        from mvp.signup_inbox import rank_links
+
+        logo = ("https://betterstack.com/ahoy/messages/abc/click?signature=f00&url=https%3A%2F%2Fbetterstack.com"
+                "%2F%3Futm_medium%3Demail%26utm_source%3Dwelcome")
+        magic = "https://betterstack.com/users/magic-link/dXNlcg%3D%3D?tz=UTC"
+        button = ("https://betterstack.com/ahoy/messages/abc/click?signature=b4r&url=https%3A%2F%2Fbetterstack.com"
+                  "%2Fusers%2Fmagic-link%2FdXNlcg%253D%253D")
+        ranked = rank_links([logo, magic, button], "betterstack.com", {logo: "", magic: "", button: "Set up my account"})
+        self.assertNotEqual(ranked[0], logo)
+        self.assertEqual(ranked[-1], logo)
