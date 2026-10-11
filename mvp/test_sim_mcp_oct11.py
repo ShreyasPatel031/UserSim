@@ -377,6 +377,20 @@ class OptionMatchTests(unittest.TestCase):
         v, err = self._run(body, {"type": "select", "x": 190, "y": 130, "option": "1 - 10 employees", "field": "Organization size"}, "#b2")
         self.assertEqual(v, "1 - 10 employees", err)
 
+    def test_already_open_list_is_not_toggled_closed(self):
+        """Smartlook retest: the org-size list was already open; clicking its box closed it, then role opened."""
+        mk = lambda i, lab: (f"<div id=b{i} role=combobox aria-label='{lab}' class=b>{lab}</div>")
+        body = ("<style>.b{width:300px;height:30px;border:1px solid #888;margin:10px 40px}.l{display:none;position:absolute;left:420px;top:20px}</style>"
+                + mk(1, "Your role*") + mk(2, "Organization size*") +
+                "<div id=l1 class=l><div>Engineering</div><div>Product Management</div></div>"
+                "<div id=l2 class=l><div>Self-employed</div><div>1 - 10 employees</div></div>"
+                "<script>[1,2].forEach(i=>{const b=document.getElementById('b'+i),l=document.getElementById('l'+i);"
+                "b.onclick=()=>{const o=l.style.display==='block';document.querySelectorAll('.l').forEach(x=>x.style.display='none');l.style.display=o?'none':'block'};"
+                "l.querySelectorAll('div').forEach(d=>d.onclick=()=>{b.textContent=d.textContent;l.style.display='none'})});"
+                "document.getElementById('l2').style.display='block'</script>")
+        v, err = self._run(body, {"type": "select", "x": 190, "y": 80, "option": "1 - 10 employees", "field": "Organization size"}, "#b2")
+        self.assertEqual(v, "1 - 10 employees", err)
+
 
 class IframeFieldsTests(unittest.TestCase):
     """Oct 11 Pingdom: controls inside the onboarding iframe were never listed, so the model guessed (off-frame)."""

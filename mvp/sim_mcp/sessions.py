@@ -847,6 +847,16 @@ async def _execute(page: Any, action: dict[str, Any]) -> None:
             # nothing like the wanted option. Then close it and try the field-shaped boxes just above / below.
             tried: list = []
             cands = [(lx, ly)]
+            # Oct 11 Smartlook retest: the model clicked 'Organization size' open, then sent select; clicking the
+            # box again closed the open list, and the retries opened 'Your role'. When the wanted option already
+            # shows (a near-exact match that is really on top at its point), pick it without touching the box.
+            pre = _best_option(want, await fr.evaluate(_LEAVES_JS))
+            if (pre and _option_score(want, pre["t"]) >= 0.95
+                    and await fr.evaluate(_HIT_OK_JS, [pre["x"], pre["y"], pre["t"]])):
+                cands = []
+                picked = {"ok": True, "x": pre["x"], "y": pre["y"]}
+                new = []
+                typed = False
             while cands:
                 lx, ly = cands.pop(0)
                 tried.append(ly)
