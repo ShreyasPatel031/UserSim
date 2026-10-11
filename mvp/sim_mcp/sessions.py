@@ -774,7 +774,9 @@ def validate_action(action: dict[str, Any], product_url: str) -> dict[str, Any]:
     elif kind == "select":
         _xy(action)
         if not str(action.get("option") or ""):
-            raise SessionError("select needs x, y of the dropdown and 'option' (visible text)")
+            raise SessionError("select needs x, y of the dropdown and 'option' (visible text); 'field' (its label) is optional")
+        if action.get("field") is not None:
+            action["field"] = str(action["field"])[:80]
     elif kind == "press_and_hold":
         _xy(action)
         action["ms"] = max(500, min(int(action.get("ms") or 4000), 15000))
@@ -826,8 +828,15 @@ async def _execute(page: Any, action: dict[str, Any]) -> None:
             raise SessionError(f"no option matching {want!r}; options: {res['options'][:40]}")
         else:  # custom dropdown: open it, then click the option (Oct 11 Smartlook: role/org-size pickers)
             boxes = await fr.evaluate(_DROPDOWNS_JS)
+            field = str(action.get("field") or "").strip()
+            named = _box_for_field(field, boxes) if field else None
             near = [b for b in boxes if abs(b["x"] - lx) <= 260 and abs(b["y"] - ly) <= 90]
-            if near:  # the model's y is often one field off (Smartlook: it aimed at Full name / Company name)
+            if named:
+                # Oct 11 Smartlook: the model's point kept opening Country / role instead of the field it meant.
+                # A named field wins over the point.
+                lx, ly = named["x"], named["y"]
+                near = [named]
+            elif near:  # the model's y is often one field off (Smartlook: it aimed at Full name / Company name)
                 tgt = min(near, key=lambda b: abs(b["y"] - ly) * 3 + abs(b["x"] - lx))
                 lx, ly = tgt["x"], tgt["y"]
             else:  # unrecognised box markup (Pingdom 'State': a plain styled div): snap to the field-shaped box nearby
@@ -1052,6 +1061,17 @@ def _best_option(want: str, items: list[dict[str, Any]]) -> dict[str, Any] | Non
     if top[0] < 0.95 and len(scored) > 1 and scored[1][0] == top[0] and _norm_opt(scored[1][2]["t"]) != _norm_opt(top[2]["t"]):
         return None  # ambiguous fuzzy match: let the model choose from the list
     return top[2]
+
+
+def _box_for_field(field: str, boxes: list[dict[str, Any]]) -> dict[str, Any] | None:
+    """The dropdown whose label starts like / matches the named field ('Organization size' ~ 'Organization size* ...')."""
+    best, best_s = None, 0.0
+    for b in boxes or []:
+        lab = _norm_opt(b.get("label", "")).replace("*", "")
+        sc = max(_option_score(field, lab), _option_score(field, lab[: len(field) + 2]))
+        if sc > best_s:
+            best, best_s = b, sc
+    return best if best_s >= OPTION_MATCH_MIN else None
 
 
 def _nearest_first(want: str, texts: list[str]) -> list[str]:

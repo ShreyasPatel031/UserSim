@@ -363,6 +363,21 @@ class OptionMatchTests(unittest.TestCase):
         self.assertEqual(v, "Product Management", err)
 
 
+    def test_named_field_wins_over_the_point(self):
+        """Smartlook: the model's point opened Country/role; select(field='Organization size') must open that box."""
+        mk = lambda i, lab: (f"<div id=b{i} role=combobox aria-label='{lab}' class=b>{lab}</div>")
+        body = ("<style>.b{width:300px;height:30px;border:1px solid #888;margin:10px 40px}.l{display:none;position:absolute;left:420px;top:20px}</style>"
+                + mk(1, "Your role*") + mk(2, "Organization size*") + mk(3, "Country*") +
+                "<div id=l1 class=l><div>Engineering</div><div>Product Management</div></div>"
+                "<div id=l2 class=l><div>Self-employed</div><div>1 - 10 employees</div></div>"
+                "<div id=l3 class=l><div>Romania</div><div>Panama</div></div>"
+                "<script>[1,2,3].forEach(i=>{const b=document.getElementById('b'+i),l=document.getElementById('l'+i);"
+                "b.onclick=()=>{l.style.display='block'};l.querySelectorAll('div').forEach(d=>d.onclick=()=>{b.textContent=d.textContent;l.style.display='none'})});"
+                "document.onkeydown=e=>{if(e.key==='Escape')document.querySelectorAll('.l').forEach(l=>l.style.display='none')}</script>")
+        v, err = self._run(body, {"type": "select", "x": 190, "y": 130, "option": "1 - 10 employees", "field": "Organization size"}, "#b2")
+        self.assertEqual(v, "1 - 10 employees", err)
+
+
 class IframeFieldsTests(unittest.TestCase):
     """Oct 11 Pingdom: controls inside the onboarding iframe were never listed, so the model guessed (off-frame)."""
 

@@ -264,7 +264,7 @@ async def usersim_act(session_id: str, action: dict[str, Any], thought: str) -> 
     Each observation lists visible `fields` (kind, label, exact x,y, filled/checked) and `page_errors` (inline form errors, JS errors): use those coordinates for form fields and read the errors before retrying.
       {"type":"key","keys":"Enter"|"Tab"|"Escape"|"Control+A"} · {"type":"scroll","dy":600,"x":..,"y":..} (dy>0 = down)
       {"type":"back"} · {"type":"reload"} · {"type":"clear_cookies"} (log out: clears cookies + site storage, reloads) · {"type":"wait","ms":1000} · {"type":"navigate","url":"..."} (same site only)
-      {"type":"select","x":..,"y":..,"option":"visible option text"} (dropdowns, native or custom; native popups never appear in screenshots, so pick from the `options` listed for that field in `fields`)
+      {"type":"select","x":..,"y":..,"option":"visible option text","field":"the dropdown's label"} (dropdowns, native or custom; native popups never appear in screenshots, so pick from the `options` listed for that field in `fields`; `field`, e.g. "Organization size", picks the dropdown by its label when several sit close together)
       {"type":"press_and_hold","x":..,"y":..,"ms":4000} (press-and-hold human checks)
       {"type":"drag","x":..,"y":..,"to_x":..,"to_y":..} (slider / puzzle captchas)
     Google / GitHub sign-in is blocked: always use the email signup.
