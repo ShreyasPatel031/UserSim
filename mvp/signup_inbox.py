@@ -66,6 +66,17 @@ def _links_from_html(html: str) -> list[str]:
     return [unescape(h) for h in hrefs if h.lower().startswith("http")]
 
 
+def _text_or_html(text: str, html: str) -> str:
+    """The mail's text, or its stripped HTML when the text part is a stub.
+
+    Oct 11 Checkly: the 'Checkly Verification Code' mail is HTML-only; its text part says only "This email has no
+    text version", so find_code never saw the code and wait_code came back empty twice."""
+    t = (text or "").strip()
+    if html and (len(t) < 80 or re.search(r"no (plain[- ]?)?text version|view (this|it) in (a|your) browser", t, re.I)):
+        return _strip_html(html)
+    return text or ""
+
+
 def anchors_from_html(html: str) -> dict[str, str]:
     """href -> visible anchor text (for picking the right button in an email)."""
     out: dict[str, str] = {}
@@ -379,7 +390,7 @@ class GmailAliasInbox(Inbox):
             for part in msg.walk() if msg.is_multipart() else [msg]:
                 if part.get_content_type() == "text/html":
                     html_parts.append((part.get_payload(decode=True) or b"").decode("utf-8", "replace"))
-            text = _body_text(msg)
+            text = _text_or_html(_body_text(msg), "\n".join(html_parts))
             out.append(
                 {
                     "id": msg.get("Message-ID") or _decode(msg.get("Subject")),

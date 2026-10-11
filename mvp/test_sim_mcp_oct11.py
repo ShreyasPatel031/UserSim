@@ -449,3 +449,16 @@ class InPageJumpTests(unittest.TestCase):
         self.assertFalse(S._in_page_jump("https://x.io/p#a", "https://x.io/p"))
         self.assertFalse(S._in_page_jump("https://x.io/p", "https://x.io/p"))
         self.assertIn("#dedicated", S.IN_PAGE_JUMP_NOTE.format(frag="dedicated"))
+
+
+class HtmlOnlyCodeMailTests(unittest.TestCase):
+    """Oct 11 Checkly: an HTML-only verification-code mail ('This email has no text version')."""
+
+    def test_code_read_from_html_when_text_is_a_stub(self):
+        from mvp.signup_inbox import _text_or_html, find_code
+
+        html = "<html><body><p>Your Checkly verification code is</p><h1>482913</h1><p>It expires in 10 minutes.</p></body></html>"
+        text = _text_or_html("This email has no text version", html)
+        self.assertEqual(find_code("Checkly Verification Code", text), "482913")
+        long_text = "Hello! Your code is 123456. " + "x" * 100
+        self.assertEqual(_text_or_html(long_text, html), long_text)
