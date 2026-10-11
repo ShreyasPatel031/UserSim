@@ -526,3 +526,13 @@ class ResentMailTests(unittest.TestCase):
 
         got = Fake().wait("healthchecks.io", 0, 1)
         self.assertTrue(got["links"][0].endswith("tok2/"), got["links"])
+
+
+class TokenPathLinkTests(unittest.TestCase):
+    """Oct 11 Healthchecks 33b9c7cf: the magic login link carries its token in the path."""
+
+    def test_check_token_path_is_a_verification_link(self):
+        from mvp.signup_inbox import verification_link
+
+        self.assertTrue(verification_link("https://healthchecks.io/accounts/check_token/u1/AbCdEf/", "Log In"))
+        self.assertFalse(verification_link("https://healthchecks.io/docs/", "help documentation"))

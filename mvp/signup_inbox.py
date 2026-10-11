@@ -141,7 +141,9 @@ def rank_links(links: list[str], host: str, anchors: dict[str, str] | None = Non
 
 
 _VERIFY_LINK_RE = re.compile(
-    r"verif|confirm|activat|magic|oobcode|/auth|token=|sign-?in|log-?in|validate|callback|/v/|otp", re.I)
+    r"verif|confirm|activat|magic|oobcode|/auth|token=|check_?token|/tokens?/|sign-?in|log-?in|validate|callback|/v/|otp", re.I)
+# Oct 11 Healthchecks: its magic login link is /accounts/check_token/<user>/<token>/ (anchor "Log In"); the signed-in
+# run was failed by the proof gate because no rule matched the path form of a token.
 _VERIFY_SUBJECT_RE = re.compile(
     r"verif|confirm|activat|one click away|magic|sign.?in|log.?in|code|validate|complete your", re.I)
 
