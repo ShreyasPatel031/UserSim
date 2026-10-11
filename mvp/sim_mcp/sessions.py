@@ -854,7 +854,7 @@ async def _execute(page: Any, action: dict[str, Any]) -> None:
                     seen = {b["t"] for b in before}  # by text: a layout shift moves every label (Smartlook)
                     new = [a for a in after if a["t"] not in seen]
                     w = want.strip().lower()
-                    if len(new) < 2 and await fr.evaluate(_FOCUSED_INPUT_JS):
+                    if len(new) < 2 and await fr.evaluate(_FOCUSED_INPUT_JS, [lx, ly]):
                         # searchable combobox: typing filters the list
                         await page.keyboard.type(want, delay=30)
                         typed = True
@@ -875,7 +875,7 @@ async def _execute(page: Any, action: dict[str, Any]) -> None:
                         if best:
                             hit = await fr.evaluate(_SCROLL_PICK_JS, best["t"])
                             await asyncio.sleep(0.3)
-                        elif not texts and not typed:
+                        elif not texts and not typed and not await fr.evaluate(_FOREIGN_FOCUS_JS, [lx, ly]):
                             # no scroll container (virtualised list): type-ahead, then look again
                             await page.keyboard.type(want, delay=30)
                             typed = True
@@ -907,7 +907,8 @@ async def _execute(page: Any, action: dict[str, Any]) -> None:
                             cands.append((b["x"], b["y"]))
                     for dy in (-42, 42):
                         nb = await fr.evaluate(_BOX_NEAR_JS, [lx, ly + dy])
-                        if nb and all(abs(nb["y"] - t) > 12 for t in tried) and all(abs(nb["y"] - c[1]) > 12 for c in cands):
+                        if (nb and all(abs(nb["y"] - t) > 12 for t in tried) and all(abs(nb["y"] - c[1]) > 12 for c in cands)
+                                and not await fr.evaluate(_TEXT_FIELD_AT_JS, [nb["x"], nb["y"]])):
                             cands.append((nb["x"], nb["y"]))
             if picked.get("ok"):
                 await page.mouse.click(picked["x"] + ox, picked["y"] + oy)
@@ -1122,9 +1123,31 @@ _BOX_NEAR_JS = """([x, y]) => {
   return null;
 }"""
 
-_FOCUSED_INPUT_JS = """() => {
+_FOCUSED_INPUT_JS = """([x, y]) => {
+  // Oct 11 Smartlook: a dropdown's mousedown kept focus in 'Full name', and the filter text was typed there.
+  // Only an input at the clicked box counts (the clicked point is on it), never some other field.
   const a = document.activeElement;
-  return !!a && (a.tagName === "INPUT" || a.isContentEditable) && !a.readOnly && !a.disabled;
+  if (!a || !(a.tagName === "INPUT" || a.isContentEditable) || a.readOnly || a.disabled) return false;
+  const r = a.getBoundingClientRect();
+  return x >= r.left - 6 && x <= r.right + 6 && y >= r.top - 6 && y <= r.bottom + 6;
+}"""
+
+_TEXT_FIELD_AT_JS = """([x, y]) => {
+  // a plain text field (not a combobox): never a dropdown to retry on (it would get typed into / cleared)
+  const e = document.elementFromPoint(x, y);
+  const f = e && e.closest && e.closest('input, textarea');
+  if (!f) return false;
+  if (f.tagName === 'TEXTAREA') return true;
+  const role = (f.getAttribute('role') || '') + ' ' + (f.getAttribute('aria-autocomplete') || '') + ' ' + (f.getAttribute('aria-haspopup') || '');
+  return !f.readOnly && !/combobox|list|true/.test(role) && ['text', 'email', 'password', 'tel', 'url', 'number', ''].includes((f.type || '').toLowerCase());
+}"""
+
+_FOREIGN_FOCUS_JS = """([x, y]) => {
+  // a text field elsewhere has focus: type-ahead would type into it
+  const a = document.activeElement;
+  if (!a || !(a.tagName === "INPUT" || a.tagName === "TEXTAREA" || a.isContentEditable)) return false;
+  const r = a.getBoundingClientRect();
+  return !(x >= r.left - 6 && x <= r.right + 6 && y >= r.top - 6 && y <= r.bottom + 6);
 }"""
 
 _LEAVES_JS = """() => {

@@ -349,6 +349,20 @@ class OptionMatchTests(unittest.TestCase):
         self.assertEqual(v, "Texas", err)
 
 
+    def test_no_typing_into_another_focused_field(self):
+        """Smartlook: the box's mousedown kept focus in Full name; the option text was typed into it."""
+        body = ("<input id=nm value='Sam Rivera' style='width:300px;height:30px;margin:10px 40px'>"
+                "<div id=box style='width:300px;height:30px;border:1px solid #888;margin:10px 40px'>Your role</div>"
+                "<div id=lst style='display:none'><div>UX &amp; Design</div><div>Product Management</div></div>"
+                "<script>box.onmousedown=e=>e.preventDefault();box.onclick=()=>{lst.style.display='block'};"
+                "lst.querySelectorAll('div').forEach(d=>{d.onmousedown=e=>e.preventDefault();d.onclick=()=>{box.textContent=d.textContent;lst.style.display='none'}});"
+                "nm.focus()</script>")
+        v, err = self._run(body, {"type": "select", "x": 190, "y": 75, "option": "Sales"}, "#nm")
+        self.assertEqual(v, "Sam Rivera", err)
+        v, err = self._run(body, {"type": "select", "x": 190, "y": 75, "option": "Product Manager"}, "#box")
+        self.assertEqual(v, "Product Management", err)
+
+
 class IframeFieldsTests(unittest.TestCase):
     """Oct 11 Pingdom: controls inside the onboarding iframe were never listed, so the model guessed (off-frame)."""
 
