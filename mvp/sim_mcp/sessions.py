@@ -821,6 +821,11 @@ async def _execute(page: Any, action: dict[str, Any]) -> None:
         elif res.get("options") is not None:
             raise SessionError(f"no option matching {want!r}; options: {res['options'][:40]}")
         else:  # custom dropdown: open it, then click the option (Oct 11 Smartlook: role/org-size pickers)
+            boxes = await page.evaluate(_DROPDOWNS_JS)
+            near = [b for b in boxes if abs(b["x"] - x) <= 260 and abs(b["y"] - y) <= 90]
+            if near:  # the model's y is often one field off (Smartlook: it aimed at Full name / Company name)
+                tgt = min(near, key=lambda b: abs(b["y"] - y) * 3 + abs(b["x"] - x))
+                x, y = tgt["x"], tgt["y"]
             await page.mouse.click(x, y)
             await asyncio.sleep(0.5)
             picked = await page.evaluate(_CUSTOM_OPTION_JS, want)
@@ -829,6 +834,9 @@ async def _execute(page: Any, action: dict[str, Any]) -> None:
             elif picked.get("options"):
                 # tell the model what the list offers instead of failing blind (it kept re-clicking the box)
                 raise SessionError(f"no option matching {want!r} in the open list; options: {picked['options'][:30]}")
+            elif not near:
+                listed = [f"{b['label'][:40]!r} at ({b['x']},{b['y']})" for b in boxes[:12]]
+                raise SessionError(f"no dropdown at ({x},{y}); dropdowns on this page: {listed or 'none found'}")
             else:
                 await page.get_by_text(want, exact=False).first.click(timeout=5000)
     elif kind == "reload":
@@ -886,6 +894,18 @@ async def _execute(page: Any, action: dict[str, Any]) -> None:
         await page.mouse.up()
     elif kind == "navigate":
         await page.goto(action["url"], wait_until="domcontentloaded", timeout=20000)
+
+
+_DROPDOWNS_JS = """() => {
+  const vis = (e) => { const r = e.getBoundingClientRect(); const cs = getComputedStyle(e);
+    return r.width > 20 && r.height > 12 && r.bottom > 0 && r.top < innerHeight && cs.visibility !== 'hidden' && cs.display !== 'none'; };
+  const sel = '[role="combobox"], [aria-haspopup="listbox"], [aria-haspopup="true"]:not(a), [class*="select__control" i], [class*="Select-control"], [class*="dropdown-toggle" i], [class*="select" i][class*="trigger" i], [class*="MuiSelect" i]';
+  const els = [...document.querySelectorAll(sel)].filter(vis).filter(e => e.tagName !== 'SELECT');
+  const top = els.filter(e => !els.some(o => o !== e && o.contains(e)));
+  return top.slice(0, 20).map(e => { const r = e.getBoundingClientRect();
+    const lab = e.getAttribute('aria-label') || (e.labels && e.labels[0] && e.labels[0].innerText) || e.getAttribute('placeholder') || e.innerText || '';
+    return {x: Math.round(r.left + r.width / 2), y: Math.round(r.top + r.height / 2), label: lab.replace(/\\s+/g, ' ').trim()}; });
+}"""
 
 
 _CUSTOM_OPTION_JS = """(want) => {

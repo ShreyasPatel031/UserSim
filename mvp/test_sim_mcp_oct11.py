@@ -166,3 +166,32 @@ class HCaptchaTests(unittest.TestCase):
             out = asyncio.run(SV._paid_token(Sim(), "recaptcha_v2", {}))
         self.assertFalse(out["ok"])
         self.assertEqual(out["type"], "hcaptcha")
+
+
+class DropdownSnapTests(unittest.TestCase):
+    def test_dropdowns_listed_with_coordinates(self):
+        import shutil
+
+        chrome = shutil.which("google-chrome") or shutil.which("chromium")
+        if not chrome:
+            self.skipTest("no chrome")
+        from mvp.sim_mcp.sessions import _DROPDOWNS_JS
+
+        body = ("<input placeholder='Full name' style='display:block;width:300px;height:40px'>"
+                "<div role='combobox' aria-label='Your role' style='width:300px;height:40px;margin-top:20px'>Your role*</div>"
+                "<div aria-haspopup='listbox' style='width:300px;height:40px;margin-top:20px'>Organization size*</div>")
+
+        async def run():
+            from playwright.async_api import async_playwright
+
+            async with async_playwright() as p:
+                b = await p.chromium.launch(headless=True, executable_path=chrome)
+                pg = await b.new_page()
+                await pg.set_content(body)
+                out = await pg.evaluate(_DROPDOWNS_JS)
+                await b.close()
+                return out
+
+        out = asyncio.run(run())
+        self.assertEqual([o["label"] for o in out], ["Your role", "Organization size*"])
+        self.assertLess(out[0]["y"], out[1]["y"])
