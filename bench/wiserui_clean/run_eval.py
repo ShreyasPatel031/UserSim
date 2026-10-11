@@ -7,7 +7,9 @@ Arms (prompts verbatim from the paper / grokbot/pairwise-judge mvp/pairwise.py):
              First wins / Second wins -> Evaluator. One neutral judge, per order (strict), temperature 0 (the
              repeatable setting, NOISE_REPORT.md on grokbot/pairwise-judge). Evaluator re-asked up to 2x on a bad format.
 
-Model: gemini-2.5-flash on Vertex, thinking off. Every call is cached in $WISERUI_CLEAN/eval/calls.jsonl with its
+Models: gemini-2.5-flash on Vertex (thinking off), or a Claude model on Vertex (``--model claude-haiku-4-5@20251001``,
+AnthropicVertex, no extended thinking, regions from CLAUDE_VERTEX_LOCATIONS; images downscaled to Claude's native
+1568 px long edge). Same prompts, temperatures and parsing for every model. Every call is cached in $WISERUI_CLEAN/eval/calls.jsonl with its
 token usage, so a rerun is free and costs are measured, not estimated.
 
     python bench/wiserui_clean/run_eval.py --arms zero_shot,gfocus [--indices 0,1,2] [--max-cost 10]
@@ -28,7 +30,8 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ROOT = Path(os.environ.get("WISERUI_CLEAN", "/workspace/bench/wiserui_clean"))
-PRICE = {"gemini-2.5-flash": (0.30, 2.50)}
+PRICE = {"gemini-2.5-flash": (0.30, 2.50), "claude-haiku-4-5@20251001": (1.00, 5.00)}
+CLAUDE_LOCS = os.environ.get("CLAUDE_VERTEX_LOCATIONS", "global,us-east5,europe-west1").split(",")
 LOCS = [os.environ.get("VERTEX_LOCATION", "us-central1"), "us-east4", "us-west1", "europe-west4", "us-east1", "global"]
 
 ZERO_SHOT = """You are an expert in designing UI/UX for web/apps.
@@ -182,6 +185,43 @@ class Ledger:
 
 
 _clients: dict = {}
+_claude: dict = {}
+
+
+def claude_client(loc: str):
+    if loc not in _claude:
+        from anthropic import AnthropicVertex
+
+        _claude[loc] = AnthropicVertex(project_id=os.environ["GOOGLE_CLOUD_PROJECT"], region=loc, max_retries=0)
+    return _claude[loc]
+
+
+def gen_claude(model: str, parts: list, temperature: float, max_tokens: int, seed_key: str):
+    import base64
+
+    import anthropic
+
+    content = [{"type": "image", "source": {"type": "base64", "media_type": "image/jpeg",
+                                            "data": base64.standard_b64encode(p).decode()}}
+               if isinstance(p, bytes) else {"type": "text", "text": p} for p in parts]
+    start = int(hashlib.md5(seed_key.encode()).hexdigest(), 16) % len(CLAUDE_LOCS)
+    last = None
+    for attempt in range(14):
+        loc = CLAUDE_LOCS[(start + attempt) % len(CLAUDE_LOCS)]
+        try:
+            r = claude_client(loc).messages.create(
+                model=model, max_tokens=max_tokens, messages=[{"role": "user", "content": content}],
+                extra_body={"temperature": temperature})  # SDK 1.x has no typed temperature; Haiku 4.5 accepts it
+            text = "".join(b.text for b in r.content if b.type == "text")
+            return text, int(r.usage.input_tokens), int(r.usage.output_tokens)
+        except (anthropic.RateLimitError, anthropic.InternalServerError, anthropic.APIConnectionError) as exc:
+            last = exc
+        except anthropic.APIStatusError as exc:
+            last = exc
+            if exc.status_code < 500 and exc.status_code not in (408, 409, 429):
+                break
+        time.sleep(min(30, 1.5 * 2 ** (attempt // len(CLAUDE_LOCS))) + random.random())
+    raise RuntimeError(repr(last)[:300])
 
 
 def client(loc: str):
@@ -193,6 +233,8 @@ def client(loc: str):
 
 
 def gen(model: str, parts: list, temperature: float, max_tokens: int, seed_key: str):
+    if model.startswith("claude"):
+        return gen_claude(model, parts, temperature, max_tokens, seed_key)
     from google.genai import types
 
     contents = [types.Part.from_bytes(data=p, mime_type="image/jpeg") if isinstance(p, bytes)
@@ -334,7 +376,8 @@ async def main() -> None:
     out = ROOT / "eval"
     ledger = Ledger(out / "calls.jsonl")
     r = Runner(args.model, ledger, asyncio.Semaphore(args.concurrency), args.max_cost)
-    imgs = {i: {lab: load_image(ROOT / "final" / str(i) / f"{lab}.png") for lab in ("win", "lose")} for i in idxs}
+    side = 1568 if args.model.startswith("claude") else 3072
+    imgs = {i: {lab: load_image(ROOT / "final" / str(i) / f"{lab}.png", side) for lab in ("win", "lose")} for i in idxs}
     summary = {"model": args.model, "image_set": "bench/wiserui_clean (300 pairs)", "arms": {}}
     t0 = time.time()
     for arm in args.arms.split(","):
@@ -358,15 +401,15 @@ async def main() -> None:
         m["errors"] = sum(1 for x in rows if x.get("error"))
         m["by_source"] = {s: metrics([x for x in rows if x["source"] == s])
                           for s in sorted({x["source"] for x in rows})}
-        keys = [k for k in ledger.cache if f"|{'zs' if arm == 'zero_shot' else 'gf'}|" in k
-                and int(k.split("|")[1]) in set(idxs)]
+        keys = [k for k in ledger.cache if k.startswith(args.model + "|")
+                and f"|{'zs' if arm == 'zero_shot' else 'gf'}|" in k and int(k.split("|")[1]) in set(idxs)]
         m["cost_usd"] = round(sum(ledger.cache[k]["cost_usd"] for k in keys), 3)
         m["calls"] = len(keys)
         summary["arms"][arm] = m
         print(arm, json.dumps({k: v for k, v in m.items() if k != "by_source"}), f"{time.time() - t0:.0f}s", flush=True)
     summary["new_spend_usd"] = round(ledger.new_cost, 3)
     if len(idxs) == len(data):
-        (HERE / f"results_{args.model}.json").write_text(json.dumps(summary, indent=1) + "\n")
+        (HERE / f"results_{args.model.split('@')[0]}.json").write_text(json.dumps(summary, indent=1) + "\n")
     print(json.dumps(summary, indent=1))
 
 
