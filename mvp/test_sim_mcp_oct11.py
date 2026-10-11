@@ -492,3 +492,18 @@ class WrappedLinkRankTests(unittest.TestCase):
         ranked = rank_links([logo, magic, button], "betterstack.com", {logo: "", magic: "", button: "Set up my account"})
         self.assertNotEqual(ranked[0], logo)
         self.assertEqual(ranked[-1], logo)
+
+
+class ResentMailTests(unittest.TestCase):
+    """Oct 11 Healthchecks: of three resent login mails only the newest token works."""
+
+    def test_newest_of_same_subject_is_returned(self):
+        from mvp.signup_inbox import Inbox
+
+        class Fake(Inbox):
+            def messages(self, newer_than):
+                return [{"id": str(i), "subject": "Log in to Healthchecks.io", "ts": 100 + i, "text": "",
+                         "links": [f"https://healthchecks.io/accounts/check_token/u/tok{i}/"]} for i in range(3)]
+
+        got = Fake().wait("healthchecks.io", 0, 1)
+        self.assertTrue(got["links"][0].endswith("tok2/"), got["links"])

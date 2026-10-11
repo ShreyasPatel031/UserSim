@@ -293,6 +293,18 @@ class Inbox:
                 print(f"[signup_inbox] {self.backend} read failed: {exc!r}", flush=True)
                 msgs = []
             fresh = [m for m in msgs if str(m.get("id") or m.get("subject")) not in seen]
+            # Oct 11 Healthchecks: three submits sent three "Log in to Healthchecks.io" mails; each new one voids the
+            # older token, and the oldest was opened (back to /accounts/login/). Of resends with one subject, keep
+            # the newest and mark the older ones seen.
+            newest: dict[str, dict[str, Any]] = {}
+            for m in fresh:
+                key = (m.get("subject") or "").strip().lower()
+                if key not in newest or (m.get("ts") or 0) > (newest[key].get("ts") or 0):
+                    newest[key] = m
+            for m in fresh:
+                if m is not newest[(m.get("subject") or "").strip().lower()]:
+                    seen.add(str(m.get("id") or m.get("subject")))
+            fresh = list(newest.values())
             if fresh:
                 # the verification mail first (a welcome mail often lands right after it), then the oldest
                 fresh.sort(key=lambda m: (-_verify_score(m, host), m.get("ts") or 0))
