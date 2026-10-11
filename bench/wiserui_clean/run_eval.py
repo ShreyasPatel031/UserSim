@@ -13,7 +13,7 @@ AnthropicVertex, no extended thinking, regions from CLAUDE_VERTEX_LOCATIONS; ima
 token usage, so a rerun is free and costs are measured, not estimated.
 
     python bench/wiserui_clean/run_eval.py --arms zero_shot,gfocus [--indices 0,1,2] [--max-cost 10]
-    -> $WISERUI_CLEAN/eval/{arm}.jsonl, summary printed and written to bench/wiserui_clean/results_<model>.json
+    -> $WISERUI_CLEAN/eval/{model}_{arm}.jsonl, summary printed and written to bench/wiserui_clean/results_<model>.json
 """
 from __future__ import annotations
 
@@ -393,7 +393,7 @@ async def main() -> None:
                     "web_mobile": data[i]["web_mobile"], **res}
 
         rows = await asyncio.gather(*(one(i, o) for i in idxs for o in ("ab", "ba")))
-        with (out / f"{arm}.jsonl").open("w") as f:
+        with (out / f"{args.model.split('@')[0]}_{arm}.jsonl").open("w") as f:
             for x in rows:
                 f.write(json.dumps(x, ensure_ascii=False) + "\n")
         m = metrics(rows)

@@ -46,7 +46,52 @@
    },
    "cost_usd": 2.469,
    "calls": 600
+  },
+  "gfocus": {
+   "n_pairs": 300,
+   "CA": 33.7,
+   "AA": 61.8,
+   "FA": 35.3,
+   "SA": 88.3,
+   "pick_first_pct": 23.3,
+   "unparsed": 1,
+   "CA_95ci": [
+    28.3,
+    39.0
+   ],
+   "errors": 0,
+   "by_source": {
+    "abtest.design": {
+     "n_pairs": 29,
+     "CA": 51.7,
+     "AA": 74.1,
+     "FA": 51.7,
+     "SA": 96.6,
+     "pick_first_pct": 27.6,
+     "unparsed": 0
+    },
+    "goodui.org": {
+     "n_pairs": 103,
+     "CA": 25.2,
+     "AA": 54.9,
+     "FA": 26.2,
+     "SA": 83.5,
+     "pick_first_pct": 21.4,
+     "unparsed": 0
+    },
+    "vwo.com": {
+     "n_pairs": 168,
+     "CA": 35.7,
+     "AA": 64.0,
+     "FA": 38.1,
+     "SA": 89.9,
+     "pick_first_pct": 23.8,
+     "unparsed": 1
+    }
+   },
+   "cost_usd": 14.751,
+   "calls": 3002
   }
  },
- "new_spend_usd": 2.438
+ "new_spend_usd": 16.999
 }
