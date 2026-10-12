@@ -425,15 +425,20 @@ async def finalize(sim: SimSession, *, outcome: str, notes: str) -> dict[str, An
     study.agent_results = [result]
     payload = study_to_dict(study)
     proof = proof_checks(payload, row, judge_status)
-    study.summary = {
-        "headline": _headline(verdict, outcome, proof),
-        "driver": DRIVER,
-        "proof": proof,
-        "judge_status": judge_status,
-    }
+    mcp = {"mcp_headline": _headline(verdict, outcome, proof), "driver": DRIVER, "proof": proof, "judge_status": judge_status}
+    log_activity(study, "complete", f"MCP run finished ({outcome}); judge: {judge_status}; proof pass={proof['pass']}")
+    try:
+        # The website's own report pipeline (executive summary, insights, verdict summary), keeping the MCP's verdicts.
+        from mvp.study import finish_study
+
+        await finish_study(study, keep_verdicts=True)
+        study.summary = {**(study.summary or {}), **mcp}
+        study.summary.setdefault("headline", mcp["mcp_headline"])
+    except Exception as exc:  # noqa: BLE001
+        print(f"[mcp] website finish_study failed for {study.id}: {exc!r}; writing the MCP summary only", flush=True)
+        study.summary = {**(study.summary or {}), **mcp, "headline": mcp["mcp_headline"], "report_error": repr(exc)[:300]}
     study.status = "complete"
     study.phase = "Complete"
-    log_activity(study, "complete", f"MCP run finished ({outcome}); judge: {judge_status}; proof pass={proof['pass']}")
     finish_clocks(study)
     await asyncio.to_thread(persist_study, study)
     return study_to_dict(study)
@@ -576,7 +581,7 @@ async def _finish_matrix(study: Any) -> None:
     from mvp.study import finish_study, log_activity, persist_study
 
     try:
-        await finish_study(study)
+        await finish_study(study, keep_verdicts=True)
         proofs = [r.get("mcp_proof") or {} for r in study.agent_results]
         study.summary = {
             **(study.summary or {}),
