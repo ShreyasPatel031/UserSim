@@ -606,3 +606,27 @@ How the VM was updated: no scp. On the VM, dulwich (no git binary) fetched 6e8dd
 Server-side fix (patch only, not deployed): a6d0481 `select` finds a custom dropdown from its label alone (x, y optional), for Smartlook. Red/green test.
 CapSolver: 3 paid recaptcha_v2 attempts at $0.0008 (betterstack.com, sentry.io x2) = $0.0024. Ledger has 17 lines; balance is about $0.7426.
 Patches: oct11f-patches/ (a6d0481, 93e8568 on 6e8dd0e; tree after ef2b82401add698ac65bcbf8d00d796668ce4d53; 124 passed, 8 skipped).
+
+## Oct 12 (PT), test copy at a88f429, studies written to the report-page location
+
+VM test copy refreshed to a88f429 (tree 097489d8) with dulwich from GitHub (no scp). `start.sh` now sets
+`MVP_GCS_PREFIX=gs://usersim-bakeoff-347838016394` (backup `start.sh.bak-oct12`), the same default prefix the website
+reads (`mvp/gcs_store.py` default; neither Vercel's `vercel.json` nor the live service env overrides it). End-to-end check:
+Healthchecks 65ab825b wrote `mvp_studies/65ab825b-.../study.json` and `https://usersim.vercel.app/api/studies/65ab825b-aedc-4b7a-902c-97eacc0ebdcc` returned 200 with the study (votes 2/2, signup_verified true).
+Paid captcha hosts now include amplitude.com; ledger capsolver-oct12.jsonl.
+
+| site | alias tag | study_id | result | root cause | fix |
+|---|---|---|---|---|---|
+| Healthchecks.io (retest) | healthchecks14 | 65ab825b-aedc-4b7a-902c-97eacc0ebdcc | **PASS 2/2**, proof pass | — (check_token proof, 93e8568) | — |
+| Smartlook (retest) | smartlook22 | 584e11fc-4b18-4fbb-b561-c391ccaa364f | fail, judge 0/2 | "Your role" custom dropdown: label-only select did not commit; zip typed into country | open (server select on this widget) |
+| Amplitude (retest, paid captcha) | amplitude12 | 888b9d01-2532-4770-a02d-511ec363817d | fail (blocked) | reCAPTCHA v2 solved 3× ($0.0024) but rejected by the site | site-side; parked |
+| AppSignal (new) | appsignal1 | 6c416889-6a1a-4d98-8857-0ba085b5c5a4 | **PASS 2/2**, proof pass | — | — |
+| GlitchTip (new) | glitchtip1 | a4322904-74f3-4054-affa-616d533732b5 | **PASS 2/2**, proof pass | — | — |
+| Atatus (new) | atatus1 | 7f79275c-aa20-46a2-b74d-28da49eb0880 | fail (signup_verified false) | link ranker opened a Calendly demo link from the welcome mail | 7ee3cc7: demo-booking hosts are never verify links; retest pending |
+| TrackJS (new) | trackjs1 | 806c1bef-fa65-4b5f-8f11-17da7bf4a82d | **PASS 2/2**, proof pass | — | — |
+
+Code (box branch loop18 on a88f429): a240945 billing/payment wall never counts as signed in; c1ff154 every MCP study
+is finished with the website `finish_study(keep_verdicts=True)` (single-session and matrix paths); 7ee3cc7 demo-booking
+links are never verification links. Tests: mvp/test_sim_mcp_oct12.py. These are not on the VM yet (VM code only moves
+via GitHub), so the Oct 12 runs above used a88f429 and have the old thin summary.
+

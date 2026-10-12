@@ -33,6 +33,8 @@ _SKIP_LINK = (
 _SKIP_HOSTS = (
     "facebook.com", "twitter.com", "x.com", "linkedin.com", "instagram.com", "youtube.com",
     "apps.apple.com", "play.google.com", "tiktok.com",
+    # Demo-booking links in welcome mails are never the verification link (Atatus: calendly.com/j-atatus).
+    "calendly.com", "cal.com", "meetings.hubspot.com", "savvycal.com", "chilipiper.com",
 )
 _SKIP_HOST_PREFIX = ("cdn.", "status.")
 

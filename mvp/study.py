@@ -4114,7 +4114,7 @@ def note_first_value(study: StudyState, sess: dict[str, Any] | None = None) -> N
 
 
 
-async def finish_study(study: StudyState, *, site_summary: str = "", touch: Any = None) -> None:
+async def finish_study(study: StudyState, *, site_summary: str = "", touch: Any = None, keep_verdicts: bool = False) -> None:
     """Everything after the agents stop: judge each final page, head-to-head scores,
     run issues, executive summary, insights, buyer picks, then mark complete and persist.
 
@@ -4151,9 +4151,9 @@ async def finish_study(study: StudyState, *, site_summary: str = "", touch: Any 
 
         touch("Scoring each run against the rivals")
         # Task completion (debug) and the head-to-head scores are judged in parallel.
-        outcomes = await asyncio.gather(
-            apply_page_verdicts(study), apply_comparison_scores(study), return_exceptions=True
-        )
+        # keep_verdicts: the caller (the MCP) already judged each run (2-of-3 votes + signup_verified); don't overwrite it.
+        jobs = [apply_comparison_scores(study)] if keep_verdicts else [apply_page_verdicts(study), apply_comparison_scores(study)]
+        outcomes = await asyncio.gather(*jobs, return_exceptions=True)
         for item in outcomes:
             if isinstance(item, Exception):
                 print(f"final-page judging failed: {item!r}", flush=True)

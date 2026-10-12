@@ -1,6 +1,6 @@
 # MCP signup passes counted for PR #65
 
-**Total counted passes: 35** (one per product).
+**Total counted passes: 39** (one per product; 35 through Oct 11 plus 4 on Oct 12).
 
 Bar used (the current one): a product the test account had never seen before, email verified through a mail the server
 observed, the run ends signed in, at least 2 judge votes yes (2-of-3 rule; with 2 agreeing votes the third is not
@@ -19,9 +19,14 @@ Code: `mvp/gcs_store.py` reads `MVP_GCS_PREFIX` (default `gs://usersim-bakeoff-3
 - Oct 9 onward (side server on the test VM, `start.sh` sets `MVP_GCS_PREFIX=gs://usersim-bakeoff-347838016394/mcp-test-vm`):
   `gs://usersim-bakeoff-347838016394/mcp-test-vm/mvp_studies/<study_id>/study.json`
 
-All 35 counted studies were downloaded from GCS on Oct 11, 2026 (PT). **No counted pass exists only in local or VM logs.**
+All 35 Oct 7–11 counted studies were downloaded from GCS on Oct 11, 2026 (PT). **No counted pass exists only in local or VM logs.**
 The Oct 11 offline re-judge outputs (`rejudge-oct11.json` for Raygun/StatusCake and `rejudge-oct11b.json` here, in this
 folder) were produced on the VM from the same studies; the re-judge results themselves are not uploaded to GCS.
+
+- Oct 12 onward (test server with `MVP_GCS_PREFIX=gs://usersim-bakeoff-347838016394`, the same location the website
+  report page reads): `gs://usersim-bakeoff-347838016394/mvp_studies/<study_id>/study.json`, viewable at
+  `https://usersim.vercel.app/?study=<study_id>` and `/api/studies/<study_id>`. The 35 earlier studies were also copied
+  there on Oct 12 (originals untouched), so every counted pass opens on the report page.
 
 ## Notes on earlier rules
 
@@ -75,6 +80,10 @@ folder) were produced on the VM from the same studies; the re-judge results them
 | 33 | oneuptime.com | 2026-10-11 08:04 | Gemini 2.5 Flash | `8263dec0-af68-41fa-b8ef-4c2f748d4801` | 2/2 (live, stored in study.json) | True | `mcp-test-vm` |  |
 | 34 | mixpanel.com | 2026-10-11 08:21 | Gemini 2.5 Flash | `4df4cb04-66b1-4d4d-a7cb-8bc88cec9e22` | 2/2 (live, stored in study.json) | True | `mcp-test-vm` |  |
 | 35 | sentry.io | 2026-10-11 08:32 | Gemini 2.5 Flash | `23764476-bdcc-4f96-8c08-21f2ec1ae195` | 2/2 (live, stored in study.json) | True | `mcp-test-vm` |  |
+| 36 | healthchecks.io | 2026-10-12 12:40 | Gemini 2.5 Flash | `65ab825b-aedc-4b7a-902c-97eacc0ebdcc` | 2/2 (live, stored in study.json) | True | root `mvp_studies/` | Retest; earlier runs (e.g. 33b9c7cf) failed the proof gate and were never counted. Passes with the check_token path-token proof (93e8568). |
+| 37 | appsignal.com | 2026-10-12 12:44 | Gemini 2.5 Flash | `6c416889-6a1a-4d98-8857-0ba085b5c5a4` | 2/2 (live, stored in study.json) | True | root `mvp_studies/` | New product. Ended on the in-app "goals" setup page. |
+| 38 | app.glitchtip.com | 2026-10-12 12:45 | Gemini 2.5 Flash | `a4322904-74f3-4054-affa-616d533732b5` | 2/2 (live, stored in study.json) | True | root `mvp_studies/` | New product. |
+| 39 | my.trackjs.com | 2026-10-12 12:48 | Gemini 2.5 Flash | `806c1bef-fa65-4b5f-8f11-17da7bf4a82d` | 2/2 (live, stored in study.json) | True | root `mvp_studies/` | New product. |
 
 ## Not counted
 
@@ -92,3 +101,7 @@ folder) were produced on the VM from the same studies; the re-judge results them
 | Healthchecks `33b9c7cf` | Failed the proof gate. |
 | Fabform, FormBold | FabForm sends no verify mail; FormBold's /dashboard never paints. Loop 5 passes were false positives. |
 | litlyx Grok Bot client run `5f319520` | Also 3/3, but litlyx is counted once (`9f7715a3`). |
+| Smartlook `584e11fc` (Oct 12 retest) | Verified, but stuck on the "Your role" custom dropdown of the account form: label-only select did not commit the value, then the model typed the zip into the country field until the step cap. Judge 0/2. Open (server select on this widget). |
+| Amplitude `888b9d01` (Oct 12, paid captcha on) | reCAPTCHA v2 token solved and injected 3× (CapSolver, $0.0024) but Amplitude still rejected the submit. Site-side; parked. |
+| Atatus `7f79275c` (Oct 12) | Reached the dashboard, but the link ranker opened a Calendly demo link from the welcome mail instead of the verify link, so signup_verified=false. Fixed in 7ee3cc7 (demo-booking hosts are never verify links); retest pending. |
+| Showcase matrix study (approved Oct 12) | Not a never-seen pass; never counted here. |

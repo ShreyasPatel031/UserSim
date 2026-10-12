@@ -1,0 +1,267 @@
+# UserSim MCP server: guide for agents
+
+Source of truth: `mvp/sim_mcp/server.py`, `mvp/sim_mcp/sessions.py`, `mvp/sim_mcp/report.py` on branch `mcp-signup-parity` (PR #65). If this guide and the code disagree, the code wins. A live server also describes itself: call `list_tools` and read the server `instructions`.
+
+## What it does
+
+UserSim lets an AI agent act as a **simulated user** of a real, public web product, inside a real cloud browser (Browserbase) that UserSim runs and records. The calling model *is* the simulated user: it looks at screenshots and sends one action at a time (`usersim_act`). UserSim records every step, screenshot and first-person `thought`. When the session ends, UserSim runs its own independent judge and proof checks and writes a report. The report is the same one the UserSim website produces. A multi-product **study** mode runs every persona × task × site (your product plus up to 4 competitors) and writes one combined study report. Signup tools give the simulated user a real email inbox, so it can complete email-verified signups.
+
+## Deployment status (read this first)
+
+- **Not on production yet.** `https://usersim.vercel.app/mcp` currently returns **404**. Nothing is deployed until Shreyas approves.
+- A **test copy** runs on the prod VM (`usersim-grokbot-web`, zone `us-central1-a`, project `project-amer-scs-sandbox`). It is **private**, with no public IP route to `/mcp`. You reach it through an IAP tunnel with a GCP identity that has IAP access. Run `source /workspace/gcp-auth.sh` on the box first, then forward the port:
+
+  ```bash
+  gcloud compute ssh usersim-grokbot-web --zone us-central1-a --tunnel-through-iap -- -N -L 8788:127.0.0.1:8788
+  # MCP endpoint is now http://127.0.0.1:8788/mcp on your machine
+  ```
+  (The VM test server listens on 127.0.0.1:8788, separate from the live site on port 80. `/workspace/mcp-client/_conn.py` defaults to 8787, the old box-local port, so pass the 8788 URL or set `USERSIM_MCP`.)
+- Once it is deployed, the endpoint will be `https://usersim.vercel.app/mcp` (the same server as the website, behind the Vercel proxy).
+
+## Connecting
+
+| | |
+|---|---|
+| Transport | MCP **streamable HTTP**, stateless, JSON responses |
+| Path | `/mcp` (methods GET, POST, DELETE) |
+| Auth | Header `Authorization: Bearer <token>`. If the token is missing or wrong, you get **401** `{"error":"missing or wrong bearer token"}` |
+| Server-side token | `MVP_MCP_TOKEN` (or a file at `MVP_MCP_TOKEN_FILE`). If no token is configured, **every call gets 401** (fail closed) unless `MVP_MCP_ALLOW_OPEN=1`, which is for local development only |
+| Client-side env var (convention used below) | `MCP_CLIENT_TOKEN` |
+
+Never paste the token into docs, chats or commits. Ask the owner for it, and keep it in an env var.
+
+### Claude Code
+```bash
+claude mcp add --transport http usersim http://127.0.0.1:8788/mcp \
+  --header "Authorization: Bearer $MCP_CLIENT_TOKEN"
+```
+
+### Claude Desktop (`claude_desktop_config.json`, via the `mcp-remote` bridge)
+```json
+{
+  "mcpServers": {
+    "usersim": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "http://127.0.0.1:8788/mcp",
+               "--header", "Authorization: Bearer ${MCP_CLIENT_TOKEN}"],
+      "env": { "MCP_CLIENT_TOKEN": "<set locally, never commit>" }
+    }
+  }
+}
+```
+`mcp-remote` refuses plain `http://` to non-localhost hosts. 127.0.0.1 through the tunnel is fine.
+
+### Cursor (`~/.cursor/mcp.json` or `.cursor/mcp.json`)
+```json
+{
+  "mcpServers": {
+    "usersim": {
+      "url": "http://127.0.0.1:8788/mcp",
+      "headers": { "Authorization": "Bearer ${env:MCP_CLIENT_TOKEN}" }
+    }
+  }
+}
+```
+
+### Python (official `mcp` SDK; this matches `/workspace/mcp-client/`)
+```python
+import asyncio, os
+from mcp import ClientSession
+from mcp.client.streamable_http import streamable_http_client
+from mcp.shared._httpx_utils import create_mcp_http_client
+
+URL = os.environ.get("USERSIM_MCP", "http://127.0.0.1:8788/mcp")
+
+async def main():
+    hc = create_mcp_http_client(headers={"Authorization": f"Bearer {os.environ['MCP_CLIENT_TOKEN']}"})
+    async with hc, streamable_http_client(URL, http_client=hc) as (r, w):
+        async with ClientSession(r, w) as s:
+            await s.initialize()
+            print([t.name for t in (await s.list_tools()).tools])
+            res = await s.call_tool("usersim_start_session", {
+                "product_url": "https://example.com",
+                "persona": "Priya, a freelance designer who has never used this tool.",
+                "task": "Sign up for a free account."})
+            for c in res.content:          # text = JSON metadata, image = JPEG screenshot (base64)
+                print(c.type, c.text[:400] if c.type == "text" else len(c.data))
+
+asyncio.run(main())
+```
+On the box you can use the ready-made CLI: `python /workspace/mcp-client/list_tools.py [url]` and `python /workspace/mcp-client/call.py <tool> '<json args>'`. `call.py` saves images under `/workspace/mcp-client/shots/` and reads `USERSIM_MCP` and `MCP_CLIENT_TOKEN`.
+
+## Response conventions
+
+- Every tool returns either a **JSON string** or **[JSON string, JPEG image]** (observation tools).
+- Errors are **not** MCP protocol errors. They come back as a normal result `{"error": "<message>"}`, so always check for an `error` key.
+- **Coordinates** are pixels in the **1280×800** screenshot (`sessions.VIEWPORT`). x,y outside it are rejected.
+
+### Observation object (start_session, observe, act, open_verification_link, solve_captcha)
+JSON fields: `session_id`, `step`, `url`, `title`, `steps_left`, `seconds_left`, and, when present:
+- `fields`: visible form fields (kind, label, exact x,y, filled/checked, options for dropdowns). Use these coordinates.
+- `unfilled_fields`: empty text-like fields in a half-filled form (up to 6)
+- `hidden_fields`: fields that can't be clicked (invisible, covered, off-screen or a bot trap)
+- `page_errors`: inline form errors and JS/console errors
+- `note`: for example, a click that only jumped to an in-page anchor
+- `email_hint`: the site rejected a `+` alias, so follow the hint
+- `captcha`: captcha state plus a `hint` that tells you what to do next
+- `action_error`: your last action failed, and this says why
+- `captcha_presolve`: only when the server's paid solver ran before a click
+
+The image that follows is the JPEG screenshot.
+
+## Tools
+
+### Core session tools
+
+#### `usersim_start_session`
+| param | type | default | notes |
+|---|---|---|---|
+| `product_url` | string | "" | Public http(s) URL. localhost, `.local`/`.internal` and private IPs are rejected. Scheme defaults to https |
+| `task` | string | "" | One goal, in the persona's words. Required when you're not in a study |
+| `persona` | string | "" | One or two sentences: who they are, what they know, why they're here. Required when you're not in a study |
+| `study_id` | string | "" | Study mode: pass only `study_id` and `cell_id` |
+| `cell_id` | string | "" | Comes from `usersim_start_study` |
+
+Returns an observation plus `study_id`, `cell_id`, `persona`, `task`, `site`, `watch_url` (live view, `https://usersim.vercel.app/?study=<id>`), `rules` (`max_steps`, budget, `idle_timeout_s`, …), `engine_version` and `next`. A standalone session is saved as a one-run study, so `study_id` is what you pass to `get_report`.
+```json
+{"product_url":"https://example.com","persona":"Sam, an ops lead evaluating uptime tools.","task":"Create an account and add one monitor."}
+```
+
+#### `usersim_observe`
+`session_id: string`. Returns an observation without acting.
+
+#### `usersim_act`
+| param | type | notes |
+|---|---|---|
+| `session_id` | string | |
+| `action` | object | Exactly one action, see below |
+| `thought` | string | Required. A short first-person note on what you see, expect, or find confusing. This is recorded as research data |
+
+Action types (`sessions.ACTION_TYPES`):
+- `{"type":"click","x":..,"y":..}`, `double_click`, `triple_click` (selects the field's text), `right_click`, `hover`
+- `{"type":"type","text":"...","x":..,"y":..,"submit":false}` clicks the field at x,y, clears it and types. Leave out x,y to type into the focused field. Text is capped at 2000 characters.
+- `{"type":"key","keys":"Enter"}` (also `Tab`, `Escape`, `Control+A`, …)
+- `{"type":"scroll","dy":600,"x":..,"y":..}` (dy>0 scrolls down; dy must be an integer)
+- `{"type":"back"}`, `{"type":"reload"}`, `{"type":"clear_cookies"}` (logs out: clears cookies and site storage, then reloads), `{"type":"wait","ms":1000}`
+- `{"type":"navigate","url":"..."}` works on the **product's own site only**
+- `{"type":"select","x":..,"y":..,"option":"visible text","field":"dropdown label"}` works with native or custom dropdowns. Native popups never show in screenshots, so pick from the `options` listed under `fields`. `field` is optional.
+- `{"type":"press_and_hold","x":..,"y":..,"ms":4000}` (press-and-hold checks)
+- `{"type":"drag","x":..,"y":..,"to_x":..,"to_y":..}` (sliders and puzzle captchas)
+
+Returns the new observation. Google/GitHub sign-in hosts are blocked. If the page wanders onto a mail provider or a third-party account site, UserSim returns to the product and reports an `action_error`.
+```json
+{"session_id":"…","action":{"type":"click","x":640,"y":412},"thought":"The big 'Start free' button looks like the way in."}
+```
+
+#### `usersim_finish`
+`session_id: string`, `outcome: string` (`completed` | `gave_up` | `blocked`), `notes: string` (what was easy or hard, and why you stopped). This closes the browser and runs the judge and proof checks.
+Returns `{study_id, headline, proof_pass, next}` for a standalone session, or `{study_id, cell_id, goal_reached, proof_pass, study_phase, next}` for a study cell.
+
+#### `usersim_get_report`
+`study_id: string`, `format: string = "markdown"` (or `"json"`). The report covers the independent judge verdict, proof checks, friction, and every step with screenshot links. It works for live studies and for saved ones (loaded from local storage or GCS). If the study isn't finished yet, the report includes a `note`. For studies, call again in about 30 s.
+
+### Study tools
+
+#### `usersim_start_study`
+| param | type | notes |
+|---|---|---|
+| `product_url` | string | Public URL |
+| `personas` | list[object] | `[{"name":"Maya Ortiz","bio":"…","favors":"<site URL or name, optional>"}]`. `bio` is required |
+| `tasks` | list[object] | `[{"prompt":"one goal in the user's words","favors":"<optional>"}]`. `prompt` is required |
+| `competitors` | list[string] \| null | Up to **4** public URLs. A competitor can't be the same site as the product |
+
+Limits: at least 1 persona and 1 task, and **at most 60 cells** (personas × tasks × sites).
+Returns `{study_id, watch_url, report_url, runs, cells:[…], rules:{max_steps, budget_s, idle_timeout_s, max_parallel}, next}`.
+
+#### `usersim_finish_study`
+`study_id: string`. This writes the report now from the cells that ran, and marks cells that never started as skipped. Finish any running cells first. Returns `{study_id, started, status, phase, next}`.
+
+### Signup and inbox tools
+
+| tool | params | returns |
+|---|---|---|
+| `usersim_signup_identity` | `session_id`, `no_plus: bool = false` | A fresh email alias plus password, name and username. It's the same identity for the whole session. If you call it again, you get the same one with a `next` warning, and after 3 repeats an `error`. `no_plus=true` returns a fresh **dot-variant** of the same Gmail inbox (for sites that reject `+`) and replaces the alias |
+| `usersim_wait_for_verification_code` | `session_id`, `timeout_s: int = 120` (clamped to 10–240) | `{found, subject, sender, code, links, link_texts}` or `{found:false, note}` |
+| `usersim_wait_for_verification_link` | `session_id`, `timeout_s: int = 120` (10–240) | Same shape, with links ordered best first. Links from earlier mails stay openable |
+| `usersim_open_verification_link` | `session_id`, `url`, `thought` (default "I click the link in the email.") | Opens the link in the session browser and returns an observation. Only URLs returned by the wait tool are accepted, and each one opens only once. The redirect chain is recorded, so click-tracking redirects are fine |
+| `usersim_signup_phone` | `session_id` | `{phone}`. Use it only if a site insists on SMS |
+| `usersim_wait_for_sms_code` | `session_id`, `timeout_s: int = 90` (15–180) | `{found, code}` |
+| `usersim_solve_captcha` | `session_id` | Observation plus a `captcha` object (detected type, turnstile/audio/challenge results, `note`, `paid` if used) |
+
+Rules:
+- **Email only.** Never use Google or GitHub sign-in. Those hosts are blocked in `navigate`/`act`.
+- Aliases are always on the dedicated signup inbox `usersim.signups+<tag>@gmail.com`, where `<tag>` is derived from the site host plus a random part. A dot-variant of that inbox is used when you pass `no_plus`. The server refuses to sign up if `GMAIL_USER` isn't the dedicated signup inbox. Never type any other address.
+- Mail is read server-side from that Gmail inbox, filtered to this session's alias, site, and mail received since the identity was issued. Mail can take minutes, so call the wait tool again or use the site's "resend" before you give up.
+- If verifying lands on a login page, sign in with the **same** email and password. If the app still says "verify your email", reload or sign in again.
+- After you submit, wait for the spinner to finish instead of clicking again, because double submits cause errors.
+- **CAPTCHAs:** first solve them like a person would (checkbox click, `drag`, `press_and_hold`). Then call `usersim_solve_captcha`. It waits out Cloudflare interstitials, clicks Turnstile, tries the free reCAPTCHA audio route, and waits for Browserbase's built-in solver. On reCAPTCHA v3 pages, a fresh token is minted for free before each click/key. A **paid** solver (CapSolver) only runs when the server sets `MVP_MCP_PAID_CAPTCHA=1`. Its presolve only applies to approved hosts, with at most 2 tries per session, and hCaptcha is never paid for. `usersim_solve_captcha` refuses after **3 calls on the same page**.
+
+### Prompt: `usersim_simulate_user`
+Arguments: `session_id`, `persona`, `task`. This returns the instructions for the subagent that plays the user: stay in persona, one action per call, give an honest `thought`, don't guess URLs, follow the signup and captcha rules above, stop when done, stuck, or when a real person would give up, and finish with `usersim_finish`. Step and time limits are filled in from the server config.
+
+## Workflows
+
+### A. One simulated user on one product
+1. Get a **public** product URL from the human. Draft a persona and **one** task, then get the human's approval.
+2. `usersim_start_session(product_url, persona, task)`. Open `watch_url` for the human.
+3. Hand the subagent `session_id`, persona, task and the `usersim_simulate_user` prompt.
+4. Loop: read the screenshot and `fields`, then call `usersim_act` with one action and a thought. Use `usersim_observe` if you need a fresh look. Sign up with the signup tools if needed.
+5. `usersim_finish(session_id, outcome, notes)`.
+6. `usersim_get_report(study_id)` and summarise it. The verdict comes from UserSim's judge, not from the simulated user.
+
+### B. Multi-product study (matrix mode)
+1. Draft personas (each may `favors` a site), tasks and competitor URLs, then get approval.
+2. `usersim_start_study(product_url, personas, tasks, competitors)` gives you `study_id` and `cells`.
+3. For each cell, run one subagent in parallel: `usersim_start_session(study_id=…, cell_id=…)`, then play it with `usersim_act`, then `usersim_finish`. If a start says UserSim is at its limit, wait for running cells to finish.
+4. When the last cell finishes, the study report is written automatically. Call `usersim_get_report(study_id)`, and retry in about 30 s if it says the report is still being written.
+5. If some cells will never run, call `usersim_finish_study(study_id)`, then `usersim_get_report`.
+
+## Where reports appear
+- Report page: `https://usersim.vercel.app/report?study=<study_id>` (`report_url`). Live view: `https://usersim.vercel.app/?study=<study_id>` (`watch_url`). The base URL is `MVP_PUBLIC_BASE_URL`.
+- The website reads studies from `gs://usersim-bakeoff-347838016394/mvp_studies/` (the default `MVP_GCS_PREFIX` in `mvp/gcs_store.py`). Since Oct 12 the VM test copy writes there too (start.sh `MVP_GCS_PREFIX=gs://usersim-bakeoff-347838016394`), so a new study opens at `https://usersim.vercel.app/?study=<id>` and `/api/studies/<id>`. Studies from Oct 9–11 were first saved under `mcp-test-vm/` and were copied over on Oct 12.
+
+## Limits (server defaults, env-overridable)
+| limit | default | env |
+|---|---|---|
+| steps per session | 40 | `MVP_MCP_MAX_STEPS` |
+| time per session | 900 s | `MVP_MCP_BUDGET_S` |
+| idle timeout | 300 s | `MVP_MCP_IDLE_S` |
+| concurrent sessions (server) | 5 | `MVP_MCP_MAX_SESSIONS` |
+| concurrent sessions per client IP | 2 | `MVP_MCP_MAX_PER_CLIENT` |
+| competitors per study | 4 | fixed |
+| cells per study | 60 | fixed |
+| judge votes | 3 (1–5) | `MVP_JUDGE_VOTES` |
+
+## Costs
+- Calling the MCP costs the client nothing beyond its own model tokens. Screenshots are the main token cost.
+- The server pays for Browserbase browser time (residential proxies plus built-in captcha solving, `MVP_MCP_BB_PROXIES`) and for judge/report model calls. The paid captcha solver is off by default. When it's on, every token is metered (`cost_usd` in the result) and capped server-side in `mvp/captcha_spend.py`. Paid solving needs `MVP_MCP_PAID_CAPTCHA=1` and a host allowlist; the code has no built-in list. `mvp/captcha_spend.py::paid_hosts()` reads the comma-separated `MVP_CAPTCHA_PAID_HOSTS` env var, plus the study's own sites unless `MVP_CAPTCHA_PAY_STUDY_SITES=0`. The VM test copy runs with `MVP_CAPTCHA_PAY_STUDY_SITES=0` and `MVP_CAPTCHA_PAID_HOSTS=typefully.com,app.upvoty.com,auth.featurebase.app,amplitude.com,app.amplitude.com` (amplitude.com and app.amplitude.com added Oct 12), with a `MVP_CAPTCHA_TOTAL_CAP_USD` cap and a `MVP_CAPTCHA_MIN_BALANCE_USD` floor.
+- Every study costs real money and needs the owner's approval.
+
+## Common errors
+| error text | meaning / fix |
+|---|---|
+| `missing or wrong bearer token` (HTTP 401) | Send `Authorization: Bearer $MCP_CLIENT_TOKEN`. A server with no token configured refuses everyone |
+| HTTP 404 on `usersim.vercel.app/mcp` | Not deployed yet. Use the IAP tunnel to the test copy |
+| `product_url must be a public URL …` | localhost, private IP or `.local`: use a public preview/staging URL |
+| `UserSim is at its simulated-user limit right now…` | 5 sessions are already open server-wide, so retry in a few minutes |
+| `this client already has the maximum number of open sessions…` | Finish one of your 2 open sessions first |
+| `unknown session_id` / `unknown study_id` / `unknown cell_id` | Wrong ID, or the server restarted (sessions live in memory) |
+| `cell … was already run` | Each cell runs once |
+| `step limit reached` / `time budget used up; call usersim_finish` | Call `usersim_finish` |
+| `session is closed (…); call usersim_get_report` | It ended (finished, idle timeout or error) |
+| `x,y must be inside the 1280x800 screenshot` | Use screenshot pixel coordinates |
+| `Google/GitHub sign-in is not allowed…` | Use the email signup |
+| `navigate is limited to the product's own site…` | Click through instead |
+| `call usersim_signup_identity and submit the signup form first` | The wait tools need an identity first |
+| `only links returned by usersim_wait_for_verification_link can be opened` | Open the exact URL from the wait result |
+| `could not open the browser: …` | Browserbase or the first screenshot failed. Retry once |
+| `at most 4 competitors`, `… over the 60-run limit` | Shrink the study |
+
+## Troubleshooting
+- **Tunnel up but 401:** the token doesn't match the server's `MVP_MCP_TOKEN`. Check that the env var is exported in the process that runs your client.
+- **Connection refused on 127.0.0.1:8788:** the tunnel isn't running, or the test server is down. Check `gcloud compute ssh … --tunnel-through-iap` and the server logs on the VM.
+- **Clicks land in the wrong place:** coordinates must come from the 1280×800 screenshot you were given. Prefer the exact x,y in `fields`.
+- **Form "does nothing" on submit:** read `unfilled_fields`, `page_errors` and `captcha.hint`. Usually there's an empty required field or a captcha with no token.
+- **No verification mail:** confirm that the form really submitted, call the wait tool again (up to 240 s per call), or click "resend". If the site rejected `+`, call `usersim_signup_identity(no_plus=true)` and retype the email.
+- **Report link 404 on the site for test-server studies:** see the `mcp-test-vm/` note above.
+- **Long calls time out through a proxy:** `start_session` takes about 5–20 s and the wait tools up to 240 s, so raise your client's HTTP timeout.
