@@ -45,7 +45,10 @@ def load(arm):
     return pd.concat(out)
 
 
-def run():
+def run(arms=None, tag=""):
+    global ARMS
+    if arms:
+        ARMS = list(arms)
     seg = segments_table()
     per = {}
     for arm in ARMS:
@@ -86,7 +89,8 @@ def run():
         return {k: g.loc[[k]] for k in outs if k in g.index}
     B = {a: by_out(a) for a in ARMS}
     deltas = {}
-    for x, y in (("A4_harness", "A0_demographics"), ("A3_naive_rag", "A0_demographics"), ("A4_harness", "A3_naive_rag")):
+    pairs = [(x, ARMS[0]) for x in ARMS[1:]] + [(x, ARMS[1]) for x in ARMS[2:]]
+    for x, y in pairs:
         common = [k for k in outs if k in B[x] and k in B[y]]
         e = np.array([B[y][k].err.mean() - B[x][k].err.mean() for k in common])  # positive = x better
         bs_e, bs_c = [], []
@@ -99,9 +103,12 @@ def run():
                                  "gap_corr_gain": [round(float(np.mean(bs_c)), 4), round(float(np.percentile(bs_c, 2.5)), 4), round(float(np.percentile(bs_c, 97.5)), 4)]}
     by_attr = R.groupby(["attr", "arm"]).apply(lambda g: round(float(np.corrcoef(g.gap_h, g.gap_t)[0, 1]), 3)).unstack().to_dict("index")
     res = {"outcomes": len(keys), "summary": summ, "deltas": deltas, "gap_corr_by_attr": by_attr}
-    (M.OUT / "segments.json").write_text(json.dumps(res, indent=1))
+    (M.OUT / f"segments{tag}.json").write_text(json.dumps(res, indent=1))
     print(json.dumps(res, indent=1))
 
 
 if __name__ == "__main__":
-    run()
+    if len(sys.argv) > 1:
+        run(sys.argv[1:], tag="_" + sys.argv[-1].split("@")[-1])
+    else:
+        run()

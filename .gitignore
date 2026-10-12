@@ -58,3 +58,5 @@ results/twin_mega/**
 !results/twin_mega/**/summary.json
 !results/twin_mega/comparison.json
 !results/twin_mega/segments.json
+!results/twin_mega/comparison_*.json
+!results/twin_mega/segments_*.json

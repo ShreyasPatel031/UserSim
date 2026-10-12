@@ -379,11 +379,27 @@ def _a0(pid, study, survey_text):
     return ""
 
 
-def run(arm_name, study, limit=None, workers=24):
+def representative(study, n=100, base=300):
+    """n people per study, stratified by party x age, drawn from the same 300 used by the full runs (so earlier arms
+    can be re-scored on exactly these people without new calls)."""
     rows = study_rows(study)
-    if limit:
+    rows = rows.sample(min(base, len(rows)), random_state=0)
+    lab = pd.read_csv(TWIN / "wave1_3_response_label.csv", usecols=["pid", "QID13", "QID20"]).set_index("pid")
+    key = rows.PID.map(lambda p: f"{lab.loc[int(pid_key(p)), 'QID20']}|{lab.loc[int(pid_key(p)), 'QID13']}")
+    frac = min(1.0, n / len(rows))
+    pick = rows.groupby(key, group_keys=False).apply(lambda g: g.sample(max(1, round(len(g) * frac)), random_state=0))
+    return pick.head(n) if len(pick) > n else pick
+
+
+def run(arm_name, study, limit=None, workers=24, sample=False):
+    rows = study_rows(study)
+    if sample:
+        rows = representative(study)
+        arm_dir = arm_name + "@rep100"
+    elif limit:
         rows = rows.sample(min(limit, len(rows)), random_state=0)
-    cache = OUT / study / arm_name / "raw.jsonl"
+    arm_dir = locals().get("arm_dir", arm_name)
+    cache = OUT / study / arm_name / "raw.jsonl"  # one cache per arm; the subset reuses calls already made
     cache.parent.mkdir(parents=True, exist_ok=True)
     done = {}
     if cache.exists():
@@ -413,7 +429,7 @@ def run(arm_name, study, limit=None, workers=24):
     answers = {pid: parse_llm(rec["raw"], qs[pid]) for pid, rec in done.items() if pid in keep}
     fails = sum(1 for a in answers.values() if not a)
     mapping, _ = learn_map(study)
-    rd = write_twin_file(study, arm_name, answers, mapping)
+    rd = write_twin_file(study, arm_dir, answers, mapping)
     s = summarize(score(study, rd)) | {"people": len(answers), "parse_failures": fails}
     (rd / "summary.json").write_text(json.dumps(s, indent=1))
     print(study, arm_name, s, flush=True)
@@ -563,6 +579,47 @@ def sketch(prof, k=8):
     return out
 
 
+def _a4_parts(pid, study, conditional=True, add_sketch=False, instruct=False):
+    from human_sim import people_repo as PR
+    if study not in _retr:
+        _retr[study] = retrieve(study)
+    prof = profile(pid)
+    lines = ["## Public survey data that may be relevant (US adults; GSS and Pew panels):"]
+    for it, s_ in _retr[study]:
+        base = fmt_dist(it["options"], it["overall"]) if it.get("overall") else None
+        if conditional:
+            p, used = PR.conditional(it, prof)
+            if p is None:
+                continue
+            lines.append(f"- \"{it['text']}\"\n    everyone: {base or 'n/a'}\n    people with this person's profile: {fmt_dist(it['options'], p)}")
+        elif base:
+            lines.append(f"- [{it['source']}] \"{it['text']}\": {base}")
+    if add_sketch:
+        sk = sketch(prof)
+        if sk:
+            lines.append("How people with this profile differ from the average adult:")
+            lines += sk
+    if instruct:
+        lines.append("Real people differ a lot from one another: do not default to the most common or the most moderate answer; "
+                     "answer where someone with this profile would typically land, including strong answers when the data points that way.")
+    return "\n".join(lines)
+
+
+@arm("A4a_conditional")
+def _a4a(pid, study, survey_text):
+    return _a4_parts(pid, study)
+
+
+@arm("A4b_conditional_sketch")
+def _a4b(pid, study, survey_text):
+    return _a4_parts(pid, study, add_sketch=True)
+
+
+@arm("A4c_conditional_instruct")
+def _a4c(pid, study, survey_text):
+    return _a4_parts(pid, study, instruct=True)
+
+
 @arm("A4_harness")
 def _a4(pid, study, survey_text):
     """UserSim harness: retrieved items conditioned on this person's demographic profile, a data-based sketch of how
@@ -592,7 +649,7 @@ def _a4(pid, study, survey_text):
 
 
 # ================================================================ comparison across arms
-def compare(arms=("A0_demographics", "A3_naive_rag", "A4_harness")):
+def compare(arms=("A0_demographics", "A3_naive_rag", "A4_harness"), tag=""):
     """Pool per-outcome results over studies where every arm finished; add the published GPT-4.1 arms as references."""
     c = "correlation between the responses from humans vs. their twins"
     a = "accuracy between humans vs. their twins"
@@ -626,14 +683,15 @@ def compare(arms=("A0_demographics", "A3_naive_rag", "A4_harness")):
     piv = d.pivot_table(index=key, columns="arm", values=[c, "bias_sd", "sd_err"])
     rng = np.random.default_rng(0)
     deltas = {}
-    for x, y in (("A4_harness", "A0_demographics"), ("A3_naive_rag", "A0_demographics"), ("A4_harness", "A3_naive_rag")):
+    pairs = [(x, arms[0]) for x in arms[1:]] + ([(x, arms[1]) for x in arms[2:]] if len(arms) > 2 else [])
+    for x, y in pairs:
         for metric, sign in ((c, 1), ("bias_sd", -1), ("sd_err", -1)):
             diff = (piv[(metric, x)] - piv[(metric, y)]).to_numpy() * sign
             bs = [diff[rng.integers(0, len(diff), len(diff))].mean() for _ in range(2000)]
             deltas[f"{x} vs {y} | {metric[:11]} (higher=better)"] = [round(float(diff.mean()), 4), round(float(np.percentile(bs, 2.5)), 4), round(float(np.percentile(bs, 97.5)), 4)]
     by_study = d.pivot_table(index="study", columns="arm", values=c, aggfunc="mean").round(3)
     res = {"summary": out.reset_index().to_dict("records"), "deltas": deltas, "corr_by_study": by_study.reset_index().to_dict("records")}
-    (OUT / "comparison.json").write_text(json.dumps(res, indent=1))
+    (OUT / f"comparison{tag}.json").write_text(json.dumps(res, indent=1))
     print(out.to_string()); print(json.dumps(deltas, indent=1)); print(by_study.to_string())
     return res
 
@@ -643,6 +701,12 @@ if __name__ == "__main__":
     if cmd == "check":
         check(sys.argv[2])
     elif cmd == "run":
-        run(sys.argv[2], sys.argv[3], int(sys.argv[4]) if len(sys.argv) > 4 else None)
+        if len(sys.argv) > 4 and sys.argv[4] == "rep":
+            run(sys.argv[2], sys.argv[3], sample=True)
+        else:
+            run(sys.argv[2], sys.argv[3], int(sys.argv[4]) if len(sys.argv) > 4 else None)
     elif cmd == "compare":
-        compare()
+        if len(sys.argv) > 2:
+            compare(tuple(sys.argv[2:]), tag="_" + sys.argv[-1].split("@")[-1])
+        else:
+            compare()
