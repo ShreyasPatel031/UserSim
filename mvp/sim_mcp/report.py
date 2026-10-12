@@ -8,6 +8,7 @@ the verdict, never used as the verdict.
 from __future__ import annotations
 
 import asyncio
+import re
 import os
 import time
 from typing import Any
@@ -214,6 +215,25 @@ async def judge_run(study_id: str, row: dict[str, Any]) -> tuple[dict[str, Any],
     return verdict, "ok"
 
 
+_BILLING_HOSTS = ("checkout.stripe.com", "billing.stripe.com", "buy.stripe.com", "checkout.paddle.com",
+                  "buy.paddle.com", "checkout.chargebee.com", "app.lemonsqueezy.com", "pay.lemonsqueezy.com")
+_BILLING_PATH = re.compile(r"(?:^|/)(?:billing|checkout|payment|payments|subscribe|subscription|upgrade|"
+                           r"choose[-_]?plan|select[-_]?plan|plans?|pricing|paywall|trial[-_]?expired)(?:/|$|[?#])", re.I)
+
+
+def billing_wall(url: str) -> bool:
+    """True when the final URL is a billing, payment or plan-picker page (a paywall, not the signed-in product)."""
+    from urllib.parse import urlsplit
+
+    if not url:
+        return False
+    parts = urlsplit(url)
+    host = (parts.hostname or "").lower()
+    if host in _BILLING_HOSTS or host.endswith(".chargebee.com") or host.startswith("billing."):
+        return True
+    return bool(_BILLING_PATH.search(parts.path or "/"))
+
+
 def apply_hard_rules(row: dict[str, Any], verdict: dict[str, Any], raw: Any, png: bytes) -> dict[str, Any]:
     """Server-side rules the vision judge cannot overrule.
 
@@ -243,6 +263,14 @@ def apply_hard_rules(row: dict[str, Any], verdict: dict[str, Any], raw: Any, png
         return verdict
     if signup:
         verdict["signup_verified"] = True
+    if billing_wall(str(row.get("final_url") or "")):
+        # A billing / payment / plan-picker page is a paywall, never a signed-in product page.
+        verdict["signed_in_app_page"] = False
+        verdict["billing_wall"] = True
+        if verdict.get("goal_reached"):
+            verdict["goal_reached"] = False
+            verdict["reason"] = "Final page is a billing/payment wall, which never counts as signed in. Judge note: " + str(verdict.get("reason") or "")
+        return verdict
     if not verdict.get("goal_reached") and signed_in and verified:
         verdict["goal_reached"] = True
         verdict["reason"] = "Signed-in app page after server-observed email verification. Judge note: " + str(verdict.get("reason") or "")
