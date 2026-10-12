@@ -1,0 +1,323 @@
+{
+ "summary": [
+  {
+   "arm": "A0_demographics@rep100",
+   "outcomes": 142,
+   "corr": 0.137,
+   "acc": 0.7318,
+   "bias_sd": 0.4131,
+   "sd_ratio_median": 0.6499,
+   "sd_log_err": 0.4577
+  },
+  {
+   "arm": "A3_naive_rag@rep100",
+   "outcomes": 142,
+   "corr": 0.1595,
+   "acc": 0.7374,
+   "bias_sd": 0.4023,
+   "sd_ratio_median": 0.6237,
+   "sd_log_err": 0.4746
+  },
+  {
+   "arm": "A4_harness@rep100",
+   "outcomes": 142,
+   "corr": 0.1562,
+   "acc": 0.7355,
+   "bias_sd": 0.3887,
+   "sd_ratio_median": 0.6301,
+   "sd_log_err": 0.4562
+  },
+  {
+   "arm": "A4a_conditional@rep100",
+   "outcomes": 142,
+   "corr": 0.1541,
+   "acc": 0.7383,
+   "bias_sd": 0.3844,
+   "sd_ratio_median": 0.5941,
+   "sd_log_err": 0.5016
+  },
+  {
+   "arm": "A4b_conditional_sketch@rep100",
+   "outcomes": 142,
+   "corr": 0.1564,
+   "acc": 0.7378,
+   "bias_sd": 0.383,
+   "sd_ratio_median": 0.6193,
+   "sd_log_err": 0.4734
+  },
+  {
+   "arm": "A4c_conditional_instruct@rep100",
+   "outcomes": 142,
+   "corr": 0.1569,
+   "acc": 0.7349,
+   "bias_sd": 0.3922,
+   "sd_ratio_median": 0.6251,
+   "sd_log_err": 0.4647
+  }
+ ],
+ "deltas": {
+  "A3_naive_rag@rep100 vs A0_demographics@rep100 | correlation (higher=better)": [
+   0.0225,
+   0.0046,
+   0.0408
+  ],
+  "A3_naive_rag@rep100 vs A0_demographics@rep100 | bias_sd (higher=better)": [
+   0.0109,
+   -0.011,
+   0.0334
+  ],
+  "A3_naive_rag@rep100 vs A0_demographics@rep100 | sd_err (higher=better)": [
+   -0.0168,
+   -0.0364,
+   0.0023
+  ],
+  "A4a_conditional@rep100 vs A0_demographics@rep100 | correlation (higher=better)": [
+   0.0171,
+   0.0001,
+   0.0345
+  ],
+  "A4a_conditional@rep100 vs A0_demographics@rep100 | bias_sd (higher=better)": [
+   0.0287,
+   0.0005,
+   0.0569
+  ],
+  "A4a_conditional@rep100 vs A0_demographics@rep100 | sd_err (higher=better)": [
+   -0.0438,
+   -0.0669,
+   -0.0203
+  ],
+  "A4b_conditional_sketch@rep100 vs A0_demographics@rep100 | correlation (higher=better)": [
+   0.0194,
+   0.0037,
+   0.0351
+  ],
+  "A4b_conditional_sketch@rep100 vs A0_demographics@rep100 | bias_sd (higher=better)": [
+   0.0302,
+   -0.0002,
+   0.0586
+  ],
+  "A4b_conditional_sketch@rep100 vs A0_demographics@rep100 | sd_err (higher=better)": [
+   -0.0157,
+   -0.0387,
+   0.0072
+  ],
+  "A4c_conditional_instruct@rep100 vs A0_demographics@rep100 | correlation (higher=better)": [
+   0.0199,
+   0.0033,
+   0.0375
+  ],
+  "A4c_conditional_instruct@rep100 vs A0_demographics@rep100 | bias_sd (higher=better)": [
+   0.0209,
+   -0.0096,
+   0.0495
+  ],
+  "A4c_conditional_instruct@rep100 vs A0_demographics@rep100 | sd_err (higher=better)": [
+   -0.007,
+   -0.0308,
+   0.0169
+  ],
+  "A4_harness@rep100 vs A0_demographics@rep100 | correlation (higher=better)": [
+   0.0192,
+   0.0052,
+   0.0351
+  ],
+  "A4_harness@rep100 vs A0_demographics@rep100 | bias_sd (higher=better)": [
+   0.0245,
+   -0.0056,
+   0.0538
+  ],
+  "A4_harness@rep100 vs A0_demographics@rep100 | sd_err (higher=better)": [
+   0.0015,
+   -0.0202,
+   0.0228
+  ],
+  "A4a_conditional@rep100 vs A3_naive_rag@rep100 | correlation (higher=better)": [
+   -0.0054,
+   -0.0215,
+   0.0113
+  ],
+  "A4a_conditional@rep100 vs A3_naive_rag@rep100 | bias_sd (higher=better)": [
+   0.0178,
+   0.0001,
+   0.0343
+  ],
+  "A4a_conditional@rep100 vs A3_naive_rag@rep100 | sd_err (higher=better)": [
+   -0.027,
+   -0.044,
+   -0.009
+  ],
+  "A4b_conditional_sketch@rep100 vs A3_naive_rag@rep100 | correlation (higher=better)": [
+   -0.0032,
+   -0.0213,
+   0.0128
+  ],
+  "A4b_conditional_sketch@rep100 vs A3_naive_rag@rep100 | bias_sd (higher=better)": [
+   0.0193,
+   0.0033,
+   0.0362
+  ],
+  "A4b_conditional_sketch@rep100 vs A3_naive_rag@rep100 | sd_err (higher=better)": [
+   0.0011,
+   -0.0131,
+   0.0154
+  ],
+  "A4c_conditional_instruct@rep100 vs A3_naive_rag@rep100 | correlation (higher=better)": [
+   -0.0026,
+   -0.0182,
+   0.0131
+  ],
+  "A4c_conditional_instruct@rep100 vs A3_naive_rag@rep100 | bias_sd (higher=better)": [
+   0.01,
+   -0.0083,
+   0.0294
+  ],
+  "A4c_conditional_instruct@rep100 vs A3_naive_rag@rep100 | sd_err (higher=better)": [
+   0.0099,
+   -0.0063,
+   0.0258
+  ],
+  "A4_harness@rep100 vs A3_naive_rag@rep100 | correlation (higher=better)": [
+   -0.0034,
+   -0.0204,
+   0.0129
+  ],
+  "A4_harness@rep100 vs A3_naive_rag@rep100 | bias_sd (higher=better)": [
+   0.0136,
+   -0.0069,
+   0.0344
+  ],
+  "A4_harness@rep100 vs A3_naive_rag@rep100 | sd_err (higher=better)": [
+   0.0183,
+   0.0013,
+   0.0349
+  ]
+ },
+ "corr_by_study": [
+  {
+   "study": "accuracy_nudges",
+   "A0_demographics@rep100": 0.002,
+   "A3_naive_rag@rep100": 0.071,
+   "A4_harness@rep100": 0.046,
+   "A4a_conditional@rep100": 0.047,
+   "A4b_conditional_sketch@rep100": -0.002,
+   "A4c_conditional_instruct@rep100": 0.014
+  },
+  {
+   "study": "affective_priming",
+   "A0_demographics@rep100": 0.204,
+   "A3_naive_rag@rep100": 0.166,
+   "A4_harness@rep100": 0.287,
+   "A4a_conditional@rep100": 0.233,
+   "A4b_conditional_sketch@rep100": 0.168,
+   "A4c_conditional_instruct@rep100": 0.15
+  },
+  {
+   "study": "consumer_minimalism",
+   "A0_demographics@rep100": -0.044,
+   "A3_naive_rag@rep100": -0.019,
+   "A4_harness@rep100": 0.03,
+   "A4a_conditional@rep100": -0.01,
+   "A4b_conditional_sketch@rep100": 0.003,
+   "A4c_conditional_instruct@rep100": 0.052
+  },
+  {
+   "study": "context_effects",
+   "A0_demographics@rep100": 0.025,
+   "A3_naive_rag@rep100": 0.01,
+   "A4_harness@rep100": 0.005,
+   "A4a_conditional@rep100": 0.064,
+   "A4b_conditional_sketch@rep100": 0.042,
+   "A4c_conditional_instruct@rep100": 0.013
+  },
+  {
+   "study": "digital_certification",
+   "A0_demographics@rep100": 0.095,
+   "A3_naive_rag@rep100": 0.108,
+   "A4_harness@rep100": 0.084,
+   "A4a_conditional@rep100": 0.125,
+   "A4b_conditional_sketch@rep100": 0.099,
+   "A4c_conditional_instruct@rep100": 0.115
+  },
+  {
+   "study": "hiring_algorithms",
+   "A0_demographics@rep100": 0.073,
+   "A3_naive_rag@rep100": 0.114,
+   "A4_harness@rep100": 0.107,
+   "A4a_conditional@rep100": 0.097,
+   "A4b_conditional_sketch@rep100": 0.119,
+   "A4c_conditional_instruct@rep100": 0.114
+  },
+  {
+   "study": "idea_evaluation",
+   "A0_demographics@rep100": 0.19,
+   "A3_naive_rag@rep100": 0.218,
+   "A4_harness@rep100": 0.167,
+   "A4a_conditional@rep100": 0.179,
+   "A4b_conditional_sketch@rep100": 0.193,
+   "A4c_conditional_instruct@rep100": 0.18
+  },
+  {
+   "study": "infotainment",
+   "A0_demographics@rep100": 0.017,
+   "A3_naive_rag@rep100": 0.008,
+   "A4_harness@rep100": 0.018,
+   "A4a_conditional@rep100": 0.017,
+   "A4b_conditional_sketch@rep100": 0.034,
+   "A4c_conditional_instruct@rep100": 0.052
+  },
+  {
+   "study": "junk_fees",
+   "A0_demographics@rep100": 0.191,
+   "A3_naive_rag@rep100": 0.25,
+   "A4_harness@rep100": 0.218,
+   "A4a_conditional@rep100": 0.23,
+   "A4b_conditional_sketch@rep100": 0.251,
+   "A4c_conditional_instruct@rep100": 0.186
+  },
+  {
+   "study": "obedient_twins",
+   "A0_demographics@rep100": 0.131,
+   "A3_naive_rag@rep100": 0.129,
+   "A4_harness@rep100": 0.117,
+   "A4a_conditional@rep100": 0.119,
+   "A4b_conditional_sketch@rep100": 0.136,
+   "A4c_conditional_instruct@rep100": 0.152
+  },
+  {
+   "study": "preference_redistribution",
+   "A0_demographics@rep100": 0.4,
+   "A3_naive_rag@rep100": 0.397,
+   "A4_harness@rep100": 0.456,
+   "A4a_conditional@rep100": 0.464,
+   "A4b_conditional_sketch@rep100": 0.456,
+   "A4c_conditional_instruct@rep100": 0.454
+  },
+  {
+   "study": "promiscuous_donors",
+   "A0_demographics@rep100": 0.408,
+   "A3_naive_rag@rep100": 0.392,
+   "A4_harness@rep100": 0.405,
+   "A4a_conditional@rep100": 0.389,
+   "A4b_conditional_sketch@rep100": 0.391,
+   "A4c_conditional_instruct@rep100": 0.396
+  },
+  {
+   "study": "story_beliefs",
+   "A0_demographics@rep100": 0.419,
+   "A3_naive_rag@rep100": 0.456,
+   "A4_harness@rep100": 0.448,
+   "A4a_conditional@rep100": 0.456,
+   "A4b_conditional_sketch@rep100": 0.443,
+   "A4c_conditional_instruct@rep100": 0.437
+  },
+  {
+   "study": "targeting_fairness",
+   "A0_demographics@rep100": 0.155,
+   "A3_naive_rag@rep100": 0.027,
+   "A4_harness@rep100": 0.206,
+   "A4a_conditional@rep100": 0.174,
+   "A4b_conditional_sketch@rep100": 0.104,
+   "A4c_conditional_instruct@rep100": 0.064
+  }
+ ]
+}

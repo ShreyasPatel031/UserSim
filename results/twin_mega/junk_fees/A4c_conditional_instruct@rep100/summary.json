@@ -1,0 +1,9 @@
+{
+ "outcomes": 3,
+ "corr": 0.1864,
+ "acc": 0.7494,
+ "bias_sd_median": 0.844,
+ "sd_ratio_median": 0.588,
+ "people": 100,
+ "parse_failures": 0
+}
