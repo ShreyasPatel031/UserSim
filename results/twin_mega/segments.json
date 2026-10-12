@@ -1,0 +1,98 @@
+{
+ "outcomes": 145,
+ "summary": {
+  "A0_demographics": {
+   "segment_cells": 3149,
+   "segment_mean_error_sd": 0.4287,
+   "segment_gap_corr": 0.3671,
+   "gap_slope": 0.463
+  },
+  "A3_naive_rag": {
+   "segment_cells": 3149,
+   "segment_mean_error_sd": 0.412,
+   "segment_gap_corr": 0.4061,
+   "gap_slope": 0.491
+  },
+  "A4_harness": {
+   "segment_cells": 3148,
+   "segment_mean_error_sd": 0.4059,
+   "segment_gap_corr": 0.3899,
+   "gap_slope": 0.526
+  }
+ },
+ "deltas": {
+  "A4_harness vs A0_demographics": {
+   "segment_error_reduction_sd": [
+    0.0218,
+    -0.0003,
+    0.0444
+   ],
+   "gap_corr_gain": [
+    0.0226,
+    -0.0118,
+    0.0616
+   ]
+  },
+  "A3_naive_rag vs A0_demographics": {
+   "segment_error_reduction_sd": [
+    0.0161,
+    -0.002,
+    0.0351
+   ],
+   "gap_corr_gain": [
+    0.039,
+    0.0167,
+    0.064
+   ]
+  },
+  "A4_harness vs A3_naive_rag": {
+   "segment_error_reduction_sd": [
+    0.0057,
+    -0.0064,
+    0.0185
+   ],
+   "gap_corr_gain": [
+    -0.0164,
+    -0.0506,
+    0.0252
+   ]
+  }
+ },
+ "gap_corr_by_attr": {
+  "AGE": {
+   "A0_demographics": 0.268,
+   "A3_naive_rag": 0.387,
+   "A4_harness": 0.397
+  },
+  "EDUCATION": {
+   "A0_demographics": 0.352,
+   "A3_naive_rag": 0.409,
+   "A4_harness": 0.372
+  },
+  "IDEOLOGY": {
+   "A0_demographics": 0.521,
+   "A3_naive_rag": 0.537,
+   "A4_harness": 0.531
+  },
+  "INCOME": {
+   "A0_demographics": 0.384,
+   "A3_naive_rag": 0.407,
+   "A4_harness": 0.306
+  },
+  "PARTY": {
+   "A0_demographics": 0.528,
+   "A3_naive_rag": 0.545,
+   "A4_harness": 0.528
+  },
+  "RACE": {
+   "A0_demographics": 0.267,
+   "A3_naive_rag": 0.307,
+   "A4_harness": 0.289
+  },
+  "SEX": {
+   "A0_demographics": 0.439,
+   "A3_naive_rag": 0.411,
+   "A4_harness": 0.425
+  }
+ }
+}
