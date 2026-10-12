@@ -150,3 +150,11 @@ def test_finish_matrix_keeps_verdicts(monkeypatch):
     st.agent_results = [{"agent_id": "a1", "mcp_proof": {"pass": True}, "page_verdict": _verdict()}]
     asyncio.run(R._finish_matrix(st))
     assert seen.get("keep_verdicts") is True and st.summary["mcp_proof"]["passed"] == 1
+
+
+def test_demo_booking_links_are_never_verify_links():
+    from mvp.signup_inbox import _skip_link
+
+    for u in ["https://calendly.com/j-atatus", "https://cal.com/team/demo", "https://meetings.hubspot.com/x"]:
+        assert _skip_link(u), u
+    assert not _skip_link("https://www.atatus.com/verify?id=abc")
