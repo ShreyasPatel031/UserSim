@@ -54,6 +54,11 @@ def max_per_client() -> int:
     return _env_int("MVP_MCP_MAX_PER_CLIENT", 2)
 
 
+def max_cells() -> int:
+    """Runs per study. 108 = the website's usual 6 personas x 6 tasks x 3 sites."""
+    return _env_int("MVP_MCP_MAX_CELLS", 108)
+
+
 class SessionError(Exception):
     """A request the client can fix (bad URL, unknown session, cap reached)."""
 
@@ -300,9 +305,6 @@ def _new_study(product_url: str, task: str, persona: str) -> Any:
 
 # ---------------------------------------------------------------- multi-run studies
 
-MAX_CELLS = 60
-
-
 def _site_name(url: str) -> str:
     host = registrable_domain(urlsplit(url).hostname or "") or url
     return host.split(".")[0].capitalize()
@@ -361,8 +363,8 @@ def create_matrix_study(
     if not people or not jobs:
         raise SessionError("a study needs at least one persona and one task")
     n = len(people) * len(jobs) * len(sites)
-    if n > MAX_CELLS:
-        raise SessionError(f"{n} runs is over the {MAX_CELLS}-run limit for one study")
+    if n > max_cells():
+        raise SessionError(f"{n} runs is over the {max_cells()}-run limit for one study")
 
     study = create_study(url, people[0]["bio"])
     study.driver = DRIVER

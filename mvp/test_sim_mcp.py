@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 import io
+import os
 import random
 import unittest
+from unittest import mock
 
 from mvp.e2e2_gates import is_click_type_scroll
 from mvp.sim_mcp import sessions as S
@@ -213,6 +215,15 @@ class MatrixStudyTests(unittest.TestCase):
         self.assertEqual(study.backend, "mcp")
         self.assertEqual(study.competitor_names, {"https://coda.io": "Coda", "https://clickup.com": "Clickup"})
 
+    def test_usual_website_study_fits_and_the_limit_is_configurable(self):
+        people = [{"name": f"P{i}", "bio": f"Persona {i}"} for i in range(6)]
+        jobs = [{"prompt": f"Task {i}"} for i in range(6)]
+        args = dict(product_url="notion.com", competitors=["https://coda.io", "clickup.com"], personas=people, tasks=jobs)
+        self.assertEqual(len(S.create_matrix_study(**args).tasks), 108)  # 6 x 6 x 3
+        with mock.patch.dict(os.environ, {"MVP_MCP_MAX_CELLS": "60"}):
+            with self.assertRaises(S.SessionError):
+                S.create_matrix_study(**args)
+
     def test_favors_resolve_to_a_site_url(self):
         study = self._study()
         self.assertEqual([p["favors"] for p in study.personas], ["https://notion.com", "https://coda.io"])
@@ -245,7 +256,7 @@ class MatrixStudyTests(unittest.TestCase):
             S.create_matrix_study(product_url="https://notion.com", competitors=[], personas=[], tasks=["y"])
         many = [{"bio": f"p{i}"} for i in range(8)]
         with self.assertRaises(S.SessionError):
-            S.create_matrix_study(product_url="https://a.com", competitors=["https://b.com", "https://c.com"], personas=many, tasks=["1", "2", "3"])
+            S.create_matrix_study(product_url="https://a.com", competitors=["https://b.com", "https://c.com"], personas=many, tasks=["1", "2", "3", "4", "5"])  # 120 runs
 
     def test_study_report_lists_every_cell(self):
         from mvp.sim_mcp.report import build_study_report, is_matrix, study_report_markdown
