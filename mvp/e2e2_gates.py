@@ -1379,6 +1379,7 @@ def judge_goal_screenshot(
     final_url: str = "",
     dom: str = "",
     evidence: str = "",
+    dom_limit: int = 1500,
 ) -> dict[str, Any]:
     """Independent vision judge.
 
@@ -1388,8 +1389,8 @@ def judge_goal_screenshot(
     from mvp.e2e_ui_run import gemini_vision_json
 
     dom_text = (dom or "").strip()
-    if len(dom_text) > 1500:
-        dom_text = dom_text[:1500]
+    if len(dom_text) > dom_limit:
+        dom_text = dom_text[:dom_limit]
     prompt = f"""You are an independent QA vision judge. You do not work for the agent that browsed this page. Judge only the final screenshot, the final URL, and the DOM text below, against the task goal.
 
 Task goal: {task or "unknown"}

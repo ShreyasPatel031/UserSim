@@ -23,6 +23,14 @@ def test_billing_wall_blocks_override(monkeypatch):
     assert v["goal_reached"] is True
 
 
+def test_pricing_page_is_the_answer_for_a_pricing_question(monkeypatch):
+    monkeypatch.setattr(R, "frame_unrendered", lambda png: False)
+    row = {"final_url": "https://tally.so/pricing", "task_prompt": "Find out what the free plan includes and what you "
+           "would pay to remove the product's branding."}
+    v = R.apply_hard_rules(row, {"goal_reached": True, "reason": "pricing shown"}, {"signed_in_app_page": False}, b"")
+    assert v["goal_reached"] is True and not v.get("billing_wall")
+
+
 # ---- report format: MCP studies go through the website's finish_study, keeping the MCP verdicts
 import asyncio
 
@@ -158,3 +166,14 @@ def test_demo_booking_links_are_never_verify_links():
     for u in ["https://calendly.com/j-atatus", "https://cal.com/team/demo", "https://meetings.hubspot.com/x"]:
         assert _skip_link(u), u
     assert not _skip_link("https://www.atatus.com/verify?id=abc")
+
+
+def test_company_email_only_is_detected_from_inline_errors():
+    from mvp.sim_mcp.sessions import work_email_required
+
+    assert work_email_required(["Please sign up with your company email address."])
+    assert work_email_required(["Free email providers are not allowed"])
+    assert work_email_required(["Gmail addresses are not accepted"])
+    assert not work_email_required(["Email is required", "work@email.com"])
+    assert not work_email_required(["Password must contain a number"])
+    assert not work_email_required(None)

@@ -122,6 +122,11 @@ def _obs_content(sim: S.SimSession, obs: dict[str, Any], extra: dict[str, Any] |
                                   "address, and submit again (the old rejection message may still be showing)")
         else:
             meta["email_hint"] = "this site rejects '+' email aliases: call usersim_signup_identity with no_plus=true and use that address"
+    if obs.get("work_email_required"):
+        # Overrides the no_plus hint: no Gmail alias can pass a company-domain check, so retrying only burns steps.
+        meta["email_hint"] = ("this site only accepts company email domains. UserSim's signup inbox is a Gmail address, so no "
+                              "alias will be accepted (no_plus does not help). Stop trying to sign up: finish with outcome "
+                              "'blocked' and say the site requires a work email, unless the task can be done without an account")
     if obs.get("captcha"):
         c = obs["captcha"]
         meta["captcha"] = {**c, "hint": "captcha token ready; submit" if c.get("token_ready") else

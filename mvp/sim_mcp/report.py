@@ -14,7 +14,7 @@ import time
 from typing import Any
 
 from mvp.paths import MVP_RUNS_DIR
-from mvp.sim_mcp.sessions import AGENT_ID, DRIVER, SimSession, close
+from mvp.sim_mcp.sessions import AGENT_ID, DRIVER, FINAL_DOM_CHARS, SimSession, close
 
 OUTCOMES = ("completed", "gave_up", "blocked", "abandoned")
 
@@ -143,7 +143,7 @@ async def _goal_votes(png: bytes, row: dict[str, Any], task: str, n: int) -> tup
     for _ in range(n):
         v = await asyncio.wait_for(
             asyncio.to_thread(judge_goal_screenshot, png, task=task, start_url=str(row.get("site_url") or ""),
-                              final_url=str(row.get("final_url") or ""), dom=str(row.get("final_dom") or ""),
+                              final_url=str(row.get("final_url") or ""), dom=str(row.get("final_dom") or ""), dom_limit=FINAL_DOM_CHARS,
                               evidence=signup_evidence(row)),
             timeout=float(os.environ.get("MVP_PAGE_VERDICT_TIMEOUT_S", "45")),
         )
@@ -179,7 +179,7 @@ async def judge_run(study_id: str, row: dict[str, Any]) -> tuple[dict[str, Any],
                     task=str(row.get("task_prompt") or ""),
                     start_url=str(row.get("site_url") or ""),
                     final_url=str(row.get("final_url") or ""),
-                    dom=str(row.get("final_dom") or ""),
+                    dom=str(row.get("final_dom") or ""), dom_limit=FINAL_DOM_CHARS,
                     evidence=signup_evidence(row),
                 ),
                 timeout=float(os.environ.get("MVP_PAGE_VERDICT_TIMEOUT_S", "45")),
@@ -239,7 +239,8 @@ def apply_hard_rules(row: dict[str, Any], verdict: dict[str, Any], raw: Any, png
 
     1. A final page that is blank, loading or only a spinner never reaches a goal.
     2. A signup goal never passes unless signup_verified (the verify mail's link/code was really used).
-    3. Otherwise a signed-in app page after a verified signup counts (the judge is often too literal).
+    3. A signup that ends on a billing / plan-picker page is not signed in.
+    4. Otherwise a signed-in app page after a verified signup counts (the judge is often too literal).
     """
     signed_in = isinstance(raw, dict) and bool(raw.get("signed_in_app_page"))
     loading = isinstance(raw, dict) and bool(raw.get("page_loading"))
@@ -263,8 +264,9 @@ def apply_hard_rules(row: dict[str, Any], verdict: dict[str, Any], raw: Any, png
         return verdict
     if signup:
         verdict["signup_verified"] = True
-    if billing_wall(str(row.get("final_url") or "")):
-        # A billing / payment / plan-picker page is a paywall, never a signed-in product page.
+    if signup and billing_wall(str(row.get("final_url") or "")):
+        # A billing / payment / plan-picker page is a paywall, never a signed-in product page. Only for signup
+        # goals: on "find out what the plan costs" the pricing page is the answer (Tally, study f80f043a).
         verdict["signed_in_app_page"] = False
         verdict["billing_wall"] = True
         if verdict.get("goal_reached"):

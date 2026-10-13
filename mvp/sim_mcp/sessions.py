@@ -54,6 +54,11 @@ def max_per_client() -> int:
     return _env_int("MVP_MCP_MAX_PER_CLIENT", 2)
 
 
+# Final-page text kept for the judge. 1500 cut Tally's GDPR page just before "based in Belgium (EU)" (study
+# f80f043a): on "find out X" tasks the answer is usually below the fold.
+FINAL_DOM_CHARS = 8000
+
+
 def max_cells() -> int:
     """Runs per study. 108 = the website's usual 6 personas x 6 tasks x 3 sites."""
     return _env_int("MVP_MCP_MAX_CELLS", 108)
@@ -1536,7 +1541,7 @@ async def _screenshot(page: Any, *, timeout_ms: int) -> bytes:
 async def _page_text(page: Any) -> str:
     try:
         return str(
-            await page.evaluate("() => (document.body && document.body.innerText || '').slice(0, 4000)")
+            await page.evaluate("() => (document.body && document.body.innerText || '').slice(0, 8000)")
         )
     except Exception:  # noqa: BLE001
         return ""
@@ -1783,6 +1788,17 @@ _ALIAS_RE = __import__("re").compile(r"(?i)(alias|\+|plus)[^.]{0,60}(not allowed
                                      r"|(e-?mail|address)[^.]{0,60}canonical|canonical (form|e-?mail|address)")
 
 
+# The site refuses free-mail domains (Formbricks, study f80f043a: "Please sign up with your company email address.").
+# Matched on inline form errors only: placeholders like "work@email.com" must not trigger it.
+_WORK_EMAIL_RE = __import__("re").compile(
+    r"(?i)(company|work|business|corporate|professional) e-?mail|free e-?mail|personal e-?mail|"
+    r"(gmail|public|consumer) (e-?mail )?(addresses|domains?|providers?)[^.]{0,40}(not|aren.t)")
+
+
+def work_email_required(inline_errors: list[str] | None) -> bool:
+    return any(_WORK_EMAIL_RE.search(str(e)) for e in inline_errors or [])
+
+
 async def _alias_rejected(page: Any) -> bool:
     try:
         text = await asyncio.wait_for(page.inner_text("body"), timeout=3)
@@ -1852,6 +1868,7 @@ async def _observation(sim: SimSession, png: bytes, error: str = "") -> dict[str
         **_split_fields(await _fields(sim.page)),
         "captcha": await captcha_state(sim.page),
         "alias_rejected": await _alias_rejected(sim.page),
+        "work_email_required": work_email_required(errors["inline"]),
         "png": png,
         "url": sim.page.url,
         "title": await _title(sim.page),
@@ -1927,7 +1944,7 @@ async def record_step(
     row["num_steps"] = len(row["trace"])
     row["last_action"] = action_text
     row["final_url"] = url
-    row["final_dom"] = text[:1500]
+    row["final_dom"] = text[:FINAL_DOM_CHARS]
     row["final_screenshot_url"] = f"/api/studies/{study.id}/agents/{sim.agent_id}/screenshots/final.png"
     row["final_screenshot"] = row["final_screenshot_url"]
     row["page_url"] = row.get("page_url") or url
@@ -1981,7 +1998,7 @@ async def settle_final(sim: SimSession, max_s: float = 12.0) -> bool:
     (shots / "final.png").write_bytes(png)
     asyncio.get_running_loop().create_task(upload_screenshot(sim.study.id, sim.agent_id, shots / "final.png"))
     sim.row["final_url"] = sim.page.url
-    sim.row["final_dom"] = (await _page_text(sim.page))[:1500]
+    sim.row["final_dom"] = (await _page_text(sim.page))[:FINAL_DOM_CHARS]
     sim.row["final_settle"] = "final frame re-taken after the page finished loading"
     return True
 
