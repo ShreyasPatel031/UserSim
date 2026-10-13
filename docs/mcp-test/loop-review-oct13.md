@@ -18,12 +18,19 @@ harness, deployed, and ran the next study on new sites.
 |---|---|---|---|---|---|---|
 | 1 | [f80f043a](https://atelier-sim.com/report?study=f80f043a-b884-4856-bb74-50c4a04f9aff) | tally.so · youform.com · formbricks.com | 2ed920b | 45/108 | 74/108 | $4.25 |
 | 2 | [e7c5d942](https://atelier-sim.com/report?study=e7c5d942-9b0f-4870-b05b-e2d8847c831f) | baserow.io · nocodb.com · teable.io | 77929a5 | 103/108 | 69/108 | $6.67 |
+| 3 | [008b395c](https://atelier-sim.com/report?study=008b395c-d66f-40d4-904c-fd371be95b42) | koalendar.com · zcal.co · harmonizely.com | 68c8b0c | 37/108 | 38/108 | $1.32 |
 
 Per site, study 1: Tally 23/36, Youform 19/36, Formbricks 3/36. Study 2: Baserow 33/36, NocoDB 35/36, Teable 35/36.
 
 How to read study 1: almost every Tally and Youform failure was a harness bug, fixed before study 2 (below).
 Formbricks is a real product finding: it refuses every gmail.com address ("Please sign up with your company
 email address."), so with one shared Gmail inbox no agent can sign up there.
+
+How to read study 3: harmonizely.com serves an HTTPS certificate for another host, so none of its 36 runs
+could open (now refused when the study is created). Every Koalendar signup failed on our side: Koalendar
+mails its code as "935-413" and the code finder did not read grouped codes, so agents waited 10 minutes for a
+mail that had arrived (fixed, checked against the real mail on the VM). Zcal refused several signups with
+"too many accounts were created": it likely treats every alias of the one Gmail inbox as the same person.
 
 How to read study 2's proof column: 18 of the 39 proof failures are teable.io redirecting to teable.ai on
 first load (fixed after the study, so they stay failed in this report).
@@ -41,9 +48,12 @@ first load (fixed after the study, so they stay failed in this report).
 | 77929a5 | study 1 | 2 of 108 agents never got the usersim tools (MCP connect failed at client start) | Driver reruns a cell whose agent never called start_session |
 | 0586dc6 | study 2 | teable.io redirects to teable.ai; proof said "not the product" on 18 good runs | Server records the opening redirect before any action; proof accepts it |
 | 0586dc6 | study 2 | Claude Code gives a tool 60 s; agents asked the mail wait for 180 s and the client timed out | Each wait returns within 50 s (`MVP_MCP_WAIT_MAX_S`) and says call again |
+| a871229 | study 3 | A cell whose browser failed to open stayed "error"; every retry said "already run" | Back to the queue (3 tries) with a "call again" message |
+| a871229 | study 3 | harmonizely.com has a bad certificate; all its cells failed | `usersim_start_study` refuses a site with a TLS or DNS failure |
+| 52e9b7a | study 3 | Koalendar's code "935-413" was never read | Grouped codes (3-4 + 3-4 digits) are read, as digits only |
 | 657ff0f | study 2 | Haiku garbled Baserow's long verify token when copying it; every open refused | `link_number=1` opens the first link; a near-exact copy of exactly one link opens it |
 
-Deploys: 2ed920b (Oct 13 00:47), 77929a5 (07:13), 68c8b0c (07:50). Each via `deploy_vm.sh`, only between studies.
+Deploys: 2ed920b (Oct 13 00:47), 77929a5 (07:13), 68c8b0c (07:50), 52e9b7a (08:45). Each via `deploy_vm.sh`, only between studies.
 
 ## Open questions for you
 
@@ -60,3 +70,6 @@ Deploys: 2ed920b (Oct 13 00:47), 77929a5 (07:13), 68c8b0c (07:50). Each via `dep
   database list). Agents recovered by scrolling, but it wastes steps.
 - One `usersim_act` call took over 60 s and the client timed out (1 of 108 in study 2).
 - Haiku sometimes calls `usersim_signup_identity` with no `session_id`; it recovers after the error.
+- Zcal: the first-name field sometimes did not keep typed text; agents retyped it.
+- The loop's own MCP calls from this cloud sandbox hit intermittent connection errors (sandbox egress);
+  the driver retries, and reruns a cell whose agent never connected.
