@@ -62,6 +62,7 @@ Rules:
 - Stop when the task is done, when you're stuck, or when a real person in this persona would give up. Then call usersim_finish with outcome completed / gave_up / blocked and notes on what was hard or easy.
 - Need an account? Call usersim_signup_identity for a fresh email alias + password and sign up with EMAIL only (never Google/GitHub).
   Then usersim_wait_for_verification_code or usersim_wait_for_verification_link (+ usersim_open_verification_link with link_number=1 for the first link). Captcha in the way: solve it like a person (click the checkbox, drag the slider, press_and_hold), or call usersim_solve_captcha.
+  If the site asks for a username, workspace, team or subdomain name, use the username / workspace from usersim_signup_identity (they are unique; names you invent are often already taken by other simulated users).
   After signing up, always check for the verification email and open its link, even if the site already let you in: an unverified signup does not count.
   If verifying sends you to a login page, sign in with the SAME email and password from usersim_signup_identity; that is still your new account.
   If the app still says "verify your email" after you opened the link, reload the page (or sign out and sign in again) so it picks up the verified state.
@@ -420,7 +421,7 @@ async def usersim_signup_identity(session_id: str, no_plus: bool = False) -> str
             return json.dumps({**ident, "next": "Same identity as before (already issued). Type it into the form now; "
                                                 "do not call usersim_signup_identity again."})
         sim.row["identity_repeat_calls"] = 0
-        return json.dumps({**ident, "next": "Type these into the signup form, submit, then wait for the verification mail."})
+        return json.dumps({**ident, "next": "Type these into the signup form (use username / workspace for any username, team or subdomain field), submit, then wait for the verification mail."})
     except Exception as exc:  # noqa: BLE001
         return _fail(exc)
 

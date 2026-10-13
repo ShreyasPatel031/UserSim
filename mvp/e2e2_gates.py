@@ -1402,6 +1402,8 @@ Final DOM text (may be truncated):
 
 For signup / create-account tasks: if the server facts show the verification email was received and its link or code was used, and the final page is ANY signed-in page of the product's app (an empty dashboard, a workspace, onboarding, a "create your first ..." or new-item page such as /app/forms/new, a settings page; logged-in app chrome or account menu visible), then goal_reached=true. Do not require the page to be literally titled "dashboard", and do not require further setup the task did not ask for. A post-signup welcome / onboarding form inside the signed-in app (e.g. "set your username / newsletter name", "create new website") also counts: the user is signed in. Still FAIL if the final page is a login form, a pre-account signup form, a "check your inbox" screen, an error, or an "account under review / suspended" block.
 
+For research tasks that ask the user to FIND OUT something (whether a feature exists, what a plan costs, how many users the free plan allows, where something is explained): goal_reached=true when the final screenshot or DOM text clearly states the answer, whether the answer is yes or no (a pricing table with the asked prices, a features, help or docs page that says the tool does or does not do it). The task does not ask the user to use or demonstrate the feature. FAIL if the final page does not contain the answer.
+
 PASS goal_reached=true only when the screenshot and the final URL/DOM together show the goal was actually reached (for example the requested issue form or created issue, a drawing on the canvas, an export/share dialog, or the specific destination the task asked for).
 
 FAIL goal_reached=false when:
