@@ -65,7 +65,7 @@ first load (fixed after the study, so they stay failed in this report).
 | 83c1f14 | study 4 | Parallel agents invented the same subdomain on Hund | Prompt and identity reply: use the identity's unique username / workspace |
 | 657ff0f | study 2 | Haiku garbled Baserow's long verify token when copying it; every open refused | `link_number=1` opens the first link; a near-exact copy of exactly one link opens it |
 
-Deploys: 2ed920b (Oct 13 00:47), 77929a5 (07:13), 68c8b0c (07:50), 52e9b7a (08:45), 83c1f14 (09:45). Each via `deploy_vm.sh`, only between studies.
+Deploys: 2ed920b (Oct 13 00:47), 77929a5 (07:13), 68c8b0c (07:50), 52e9b7a (08:45), 83c1f14 (09:25). Each via `deploy_vm.sh`, only between studies.
 
 ## Open questions for you
 

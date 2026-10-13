@@ -343,3 +343,15 @@ def test_grouped_codes_are_found():
     assert _find_code("Confirm your Koalendar email address", body) == "935413"
     assert _find_code("Sign in", "Your login code is 482 917. It expires in 10 minutes.") == "482917"
     assert _find_code("Welcome", "Questions? Call us at 555-1234 or write to us.") is None
+
+
+def test_scroll_and_coordinate_aliases_are_normalised():
+    from mvp.sim_mcp.sessions import validate_action
+
+    u = "https://x.io"
+    assert validate_action({"type": "scroll", "x": 640, "y": 400, "deltaY": 700}, u)["dy"] == 700
+    assert validate_action({"type": "scroll", "x": 640, "y": 500, "delta_y": 500}, u)["dy"] == 500
+    assert validate_action({"type": "scroll", "x": 640, "y": 500, "direction": "down", "amount": 400}, u)["dy"] == 400
+    assert validate_action({"type": "scroll", "x": 640, "y": 500, "direction": "up", "amount": 400}, u)["dy"] == -400
+    a = validate_action({"type": "click", "x": "640", "y": "400.0"}, u)
+    assert (a["x"], a["y"]) == (640, 400)

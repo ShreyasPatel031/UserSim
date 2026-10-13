@@ -803,9 +803,36 @@ def describe_action(action: dict[str, Any]) -> str:
     return kind
 
 
+def _normalize_action(action: dict[str, Any]) -> dict[str, Any]:
+    """Field names and value types models send instead of the schema (Haiku: deltaY, delta_y, direction+amount,
+    "x": "640"; studies 2e8d7db5 / 5638b2a8)."""
+    a = dict(action)
+    if a.get("type") == "scroll" and a.get("dy") is None:
+        amount = next((a.get(k) for k in ("deltaY", "delta_y", "amount", "pixels", "distance") if a.get(k) is not None), None)
+        if amount is None and a.get("direction"):
+            amount = 600
+        if amount is not None:
+            try:
+                n = abs(int(float(amount)))
+            except (TypeError, ValueError):
+                n = 600
+            a["dy"] = -n if str(a.get("direction") or "").lower() == "up" else (int(float(amount)) if not a.get("direction") else n)
+    for k in ("x", "y", "dy", "to_x", "to_y", "ms"):
+        v = a.get(k)
+        if isinstance(v, str):
+            try:
+                a[k] = int(float(v.strip()))
+            except ValueError:
+                pass
+        elif isinstance(v, float):
+            a[k] = int(v)
+    return a
+
+
 def validate_action(action: dict[str, Any], product_url: str) -> dict[str, Any]:
     if not isinstance(action, dict):
         raise SessionError("action must be an object with a 'type'")
+    action = _normalize_action(action)
     kind = str(action.get("type") or "")
     if kind not in ACTION_TYPES:
         raise SessionError(f"action.type must be one of {', '.join(ACTION_TYPES)}")
