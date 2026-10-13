@@ -59,6 +59,10 @@ def max_per_client() -> int:
 FINAL_DOM_CHARS = 8000
 
 
+# A study cell whose browser failed to open (before any agent action) can be started this many times.
+START_TRIES = 3
+
+
 def max_cells() -> int:
     """Runs per study. 108 = the website's usual 6 personas x 6 tasks x 3 sites."""
     return _env_int("MVP_MCP_MAX_CELLS", 108)
@@ -150,6 +154,27 @@ def normalize_public_url(raw: str) -> str:
     if ip is not None and (ip.is_private or ip.is_loopback or ip.is_link_local or ip.is_reserved):
         raise SessionError("product_url must be a public URL, not a private IP")
     return url
+
+
+def probe_reachable(url: str) -> None:
+    """Refuse a site whose HTTPS certificate is invalid or whose host does not resolve.
+
+    harmonizely.com serves a certificate for another name (study 008b395c); all 36 of its cells failed to open.
+    Only TLS and DNS failures count: an HTTP error code from this server's network says little about a browser.
+    """
+    import httpx
+
+    if os.environ.get("MVP_MCP_PROBE_SITES", "1").lower() in {"0", "false", "no"}:
+        return
+    try:
+        httpx.get(url, timeout=10, follow_redirects=True, headers={"User-Agent": "Mozilla/5.0 UserSim"})
+    except httpx.ConnectError as exc:
+        text = str(exc)
+        if any(k in text for k in ("CERTIFICATE_VERIFY_FAILED", "certificate", "Name or service not known",
+                                   "nodename nor servname", "getaddrinfo failed", "No address associated")):
+            raise SessionError(f"{url} cannot be opened: {text.splitlines()[0][:160]}") from exc
+    except Exception:  # noqa: BLE001  (timeouts, 4xx/5xx, odd servers: let the browser try)
+        return
 
 
 def same_site(url: str, product_url: str) -> bool:
@@ -351,6 +376,8 @@ def create_matrix_study(
         if c not in rivals:
             rivals.append(c)
     sites = [url, *rivals]
+    for site in sites:
+        probe_reachable(site)
     people: list[dict[str, Any]] = []
     for i, p in enumerate(personas or [], start=1):
         p = p if isinstance(p, dict) else {"bio": str(p)}
@@ -532,6 +559,18 @@ async def start_session(
         await _wait_rendered(sim.page)
         await record_step(sim, kind="open", action_text=f"Opened {url}", args={"url": url}, thought="")
     except Exception as exc:
+        if sim.matrix:
+            row = sim.row
+            fails = int(row.get("start_failures") or 0) + 1
+            row["start_failures"] = fails
+            row["last_start_error"] = f"{exc!r}"[:300]
+            if fails < START_TRIES:
+                # Nothing ran yet: free the browser and put the cell back in the queue so it can be retried
+                # (it used to stay 'error' and every retry said "already run"; study 008b395c).
+                await close(sim, reason=f"Browser failed to open: {exc!r}"[:300])
+                row.update(status="queued", live_active=False, trace=[], num_steps=0, error="")
+                raise SessionError(f"could not open {url}: {str(exc).splitlines()[0][:160]}. The cell is still queued: "
+                                   f"call usersim_start_session again in ~30 s (attempt {fails} of {START_TRIES})") from exc
         await close(sim, reason=f"Browser failed to open: {exc!r}"[:300], status="error")
         raise
     asyncio.get_running_loop().create_task(_reaper(sim))

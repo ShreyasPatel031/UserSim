@@ -274,3 +274,58 @@ def test_mail_link_by_number_or_near_exact_copy():
         resolve_mail_link(links, "", 9)
     with pytest.raises(SessionError):
         resolve_mail_link([], good, 0)
+
+
+def test_probe_refuses_bad_certificates_and_unknown_hosts(monkeypatch):
+    import httpx
+    import pytest
+
+    from mvp.sim_mcp import sessions as SS
+
+    monkeypatch.setenv("MVP_MCP_PROBE_SITES", "1")
+
+    def boom(msg):
+        def get(*a, **k):
+            raise httpx.ConnectError(msg)
+        return get
+
+    monkeypatch.setattr(httpx, "get", boom("[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch"))
+    with pytest.raises(SS.SessionError):
+        SS.probe_reachable("https://harmonizely.com")
+    monkeypatch.setattr(httpx, "get", boom("[Errno -2] Name or service not known"))
+    with pytest.raises(SS.SessionError):
+        SS.probe_reachable("https://nope.invalid")
+    monkeypatch.setattr(httpx, "get", boom("Connection refused"))
+    SS.probe_reachable("https://flaky.example")  # not a TLS/DNS failure: let the browser try
+
+    def timeout(*a, **k):
+        raise httpx.ReadTimeout("slow")
+    monkeypatch.setattr(httpx, "get", timeout)
+    SS.probe_reachable("https://slow.example")
+
+
+def test_cell_whose_browser_failed_goes_back_to_the_queue(monkeypatch):
+    import pytest
+
+    from mvp.sim_mcp import sessions as SS
+
+    study = SS.create_matrix_study(product_url="https://a.com", competitors=[], personas=[{"bio": "x"}], tasks=["y"])
+    cell = next(iter(study.live_sessions))
+
+    async def bad_open(sim):
+        raise RuntimeError("net::ERR_CERT_COMMON_NAME_INVALID")
+
+    async def noop(*a, **k):
+        return None
+
+    monkeypatch.setattr(SS, "_open_browser", bad_open)
+    monkeypatch.setattr(SS, "maybe_finish_study", noop, raising=False)
+    for attempt in range(1, SS.START_TRIES):
+        with pytest.raises(SS.SessionError, match="still queued"):
+            asyncio.run(SS.start_session(study_id=study.id, cell_id=cell))
+        assert study.live_sessions[cell]["status"] == "queued"
+    with pytest.raises(RuntimeError):
+        import mvp.sim_mcp.report as RR
+        monkeypatch.setattr(RR, "maybe_finish_study", noop)
+        asyncio.run(SS.start_session(study_id=study.id, cell_id=cell))
+    assert study.live_sessions[cell]["status"] == "error"
