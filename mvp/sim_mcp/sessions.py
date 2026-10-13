@@ -593,6 +593,10 @@ async def _open_browser(sim: SimSession) -> None:
     opened = time.time()
     row = sim.row
     row["status"] = "running"
+    if registrable_domain(urlsplit(sim.page.url or "").hostname or "") != registrable_domain(urlsplit(sim.product_url).hostname or ""):
+        # The site itself redirected the server's first load before any agent action (teable.io -> teable.ai,
+        # study e7c5d942). Proof treats that landing page as the product.
+        row["opening_redirect"] = sim.page.url
     apply_gate_fields(
         row,
         session_ready_at_ts=ready,

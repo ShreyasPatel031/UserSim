@@ -229,3 +229,29 @@ def test_key_names_are_normalised():
     assert norm_keys("Cmd+Shift+K") == "Meta+Shift+K"
     assert norm_keys("Return") == "Enter"
     assert norm_keys("F5") == "F5" and norm_keys("a") == "a" and norm_keys("Enter") == "Enter"
+
+
+def test_site_redirect_on_first_load_counts_as_the_product():
+    row = {"site_url": "https://teable.io", "page_url": "https://teable.ai/", "opening_redirect": "https://teable.ai/"}
+    assert R._opening_redirect(row)
+    assert not R._opening_redirect({"site_url": "https://teable.io", "page_url": "https://teable.ai/"})
+    assert not R._opening_redirect({"site_url": "https://teable.io", "page_url": "https://evil.com/",
+                                    "opening_redirect": "https://teable.ai/"})
+
+
+def test_mail_wait_is_capped_below_common_client_timeouts(monkeypatch):
+    import json as _json
+
+    import mvp.signup_tools as T
+    from mvp.sim_mcp import server as SV
+    from mvp.sim_mcp import sessions as SS
+
+    st = S.StudyState(id="t-wait", url="https://x.io", segment="dev")
+    sim = SS.SimSession(id="w1", study=st, product_url="https://x.io", task="sign up", persona="p")
+    sim.inbox = object()
+    st.live_sessions = {sim.agent_id: {"agent_id": sim.agent_id, "trace": []}}
+    monkeypatch.setattr(SS, "get_session", lambda sid: sim)
+    seen = []
+    monkeypatch.setattr(T, "wait_mail", lambda *a, **k: seen.append(k["timeout_s"]))
+    out = _json.loads(asyncio.run(SV.usersim_wait_for_verification_link("w1", 180)))
+    assert seen == [50] and out["found"] is False and "call this tool again" in out["note"]

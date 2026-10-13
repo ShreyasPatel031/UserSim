@@ -296,6 +296,18 @@ def _shot_ok(study_id: str, agent_id: str, step: dict[str, Any]) -> bool:
     return png_bytes_ok(raw) and not frame_unrendered(raw)
 
 
+def _opening_redirect(row: dict[str, Any]) -> bool:
+    """The page opened where the product URL itself redirected the server's first load (teable.io -> teable.ai)."""
+    from urllib.parse import urlsplit
+
+    from mvp.e2e2_gates import opened_url_of
+    from mvp.sim_mcp.sessions import registrable_domain
+
+    landed = urlsplit(str(row.get("opening_redirect") or "")).hostname or ""
+    opened = urlsplit(str(opened_url_of(row) or "")).hostname or ""
+    return bool(landed and opened) and registrable_domain(landed) == registrable_domain(opened)
+
+
 def _same_registrable(row: dict[str, Any]) -> bool:
     """talk.example.com redirecting to example.com is still the assigned product."""
     from urllib.parse import urlsplit
@@ -343,7 +355,8 @@ def proof_checks(study: dict[str, Any], row: dict[str, Any], judge_status: str) 
     bad_shots = [s["step"] for s in steps if not _shot_ok(str(study.get("id")), aid, s)]
     site = row.get("site_url")
     checks = [
-        ("opened_on_product", opened_on_assigned_site(row) or _same_registrable(row) or _parent_auth_opened(row),
+        ("opened_on_product", opened_on_assigned_site(row) or _same_registrable(row) or _parent_auth_opened(row)
+         or _opening_redirect(row),
          f"opened {row.get('page_url') or '?'} for {site}", f"opened {row.get('page_url') or '?'}, which is NOT the product {site}"),
         ("real_action", has_click_type_scroll(row), "at least one click, type, or scroll ran on the page",
          "no click, type, or scroll ever ran on the page"),

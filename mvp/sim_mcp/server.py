@@ -424,11 +424,15 @@ async def _wait(session_id: str, timeout_s: int, want: str) -> str:
         sim = S.get_session(session_id)
         if sim.inbox is None:
             raise S.SessionError("call usersim_signup_identity and submit the signup form first")
-        t = max(10, min(int(timeout_s or 120), 240))
+        # Many MCP clients give a tool call 60 s (Claude Code's default MCP_TOOL_TIMEOUT); Haiku asked for 180 s and the
+        # client gave up first (study e7c5d942). Each call waits at most MVP_MCP_WAIT_MAX_S; the agent calls again.
+        t = max(10, min(int(timeout_s or 45), S._env_int("MVP_MCP_WAIT_MAX_S", 50)))
         msg = await asyncio.to_thread(wait_mail, sim.inbox, _host(sim), since=sim.mail_since, timeout_s=t, seen=sim.mail_seen, want=want)
         sim.last_used = __import__("time").time()
         if not msg:
-            return json.dumps({"found": False, "note": f"no verification mail with a {want} in {t}s; check the form was submitted, or resend"})
+            return json.dumps({"found": False, "note": f"no verification mail with a {want} yet (waited {t}s). Mail often takes "
+                               "1-3 minutes: call this tool again. If several calls find nothing, check the form was "
+                               "really submitted, or use the site's resend link"})
         # keep links from earlier mails openable too (the verify mail and a welcome mail can arrive together)
         sim.mail_links = list(msg.get("links") or []) + [u for u in sim.mail_links if u not in (msg.get("links") or [])]
         for u, t in zip(msg.get("links") or [], msg.get("link_texts") or []):
@@ -444,14 +448,20 @@ async def _wait(session_id: str, timeout_s: int, want: str) -> str:
 
 
 @mcp.tool(structured_output=False)
-async def usersim_wait_for_verification_code(session_id: str, timeout_s: int = 120) -> str:
-    """Wait for the signup email for this session's alias and return the verification code in it."""
+async def usersim_wait_for_verification_code(session_id: str, timeout_s: int = 45) -> str:
+    """Wait for the signup email for this session's alias and return the verification code in it.
+
+    Each call waits at most ~50 s (MCP clients often time out at 60 s). If found is false, call it again.
+    """
     return await _wait(session_id, timeout_s, "code")
 
 
 @mcp.tool(structured_output=False)
-async def usersim_wait_for_verification_link(session_id: str, timeout_s: int = 120) -> str:
-    """Wait for the signup email for this session's alias and return its verification links (best first)."""
+async def usersim_wait_for_verification_link(session_id: str, timeout_s: int = 45) -> str:
+    """Wait for the signup email for this session's alias and return its verification links (best first).
+
+    Each call waits at most ~50 s (MCP clients often time out at 60 s). If found is false, call it again.
+    """
     return await _wait(session_id, timeout_s, "link")
 
 
