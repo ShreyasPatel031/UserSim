@@ -1,0 +1,20 @@
+{
+  "product_url": "https://bio.link",
+  "competitors": ["https://lnk.bio", "https://taplink.at"],
+  "personas": [
+    {"name": "Chloe Martin", "bio": "Food blogger with 20k Instagram followers who wants one free link page for her recipes and shop; uses her phone for everything.", "favors": "https://bio.link"},
+    {"name": "Dev Patel", "bio": "Indie musician who wants a clean page linking his Spotify, YouTube and tour dates; zero budget.", "favors": "https://bio.link"},
+    {"name": "Isabella Costa", "bio": "Small Etsy seller who wants her link page to look on-brand and track clicks.", "favors": "https://lnk.bio"},
+    {"name": "Tom Wright", "bio": "Podcast host who wants unlimited links without paying monthly; skeptical of subscriptions.", "favors": "https://lnk.bio"},
+    {"name": "Ana Silva", "bio": "Beauty consultant who wants clients to book and pay from her bio page; ok paying a little.", "favors": "https://taplink.at"},
+    {"name": "Leo Novak", "bio": "Fitness coach who wants a page that collects leads (email or phone) from his profile.", "favors": "https://taplink.at"}
+  ],
+  "tasks": [
+    {"prompt": "Sign up with your email and add your first link to your page.", "favors": "https://bio.link"},
+    {"prompt": "Find out whether the free plan lets you use unlimited links and what the paid plan adds.", "favors": "https://bio.link"},
+    {"prompt": "Sign up with your email and get to the page where you edit your links.", "favors": "https://lnk.bio"},
+    {"prompt": "Find out whether there is a one-time payment option instead of a monthly subscription.", "favors": "https://lnk.bio"},
+    {"prompt": "Sign up with your email and start building your page.", "favors": "https://taplink.at"},
+    {"prompt": "Find out whether you can accept payments or bookings on your page, and on which plan.", "favors": "https://taplink.at"}
+  ]
+}
