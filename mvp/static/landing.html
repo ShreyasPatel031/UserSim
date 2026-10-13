@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Atelier</title>
+<meta name="description" content="Open-source infrastructure to turn your customer data into user simulations.">
+<link rel="icon" href="/atelier/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baskervville:ital@0;1&family=Nunito+Sans:opsz,wght@6..12,300;6..12,400;6..12,600&display=swap">
+<style>
+/* Atelier landing: Baskervville headline, Avenir body (Nunito Sans where Avenir is not installed).
+   Text left, dithered film right, centred vertically. */
+:root {
+  --paper: #FBF4E4; --ink: #0a0808;
+  --soft: color-mix(in srgb, var(--ink) 65%, var(--paper));
+  --rule: color-mix(in srgb, var(--ink) 20%, var(--paper));
+  --serif: "Baskervville", Georgia, serif;
+  --sans: Avenir, "Avenir Next", "Avenir Next LT Pro", "Nunito Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--paper); color: var(--ink); font: 400 16px/1.55 var(--sans); -webkit-font-smoothing: antialiased; }
+a { color: inherit; }
+.wrap { max-width: 1280px; margin: 0 auto; padding-inline: clamp(16px, 3vw, 40px); }
+.label { font: 400 11px/1.4 var(--sans); letter-spacing: 0.1em; text-transform: uppercase; color: var(--soft); }
+nav { display: flex; align-items: center; justify-content: space-between; padding-block: 18px; border-bottom: 1px solid var(--rule); }
+.mark { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font: 400 21px/1 var(--serif); }
+.mark img { width: 30px; height: 30px; display: block; }
+.menu { display: flex; gap: 28px; }
+.menu a { text-decoration: none; }
+.hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); border-bottom: 1px solid var(--rule); min-height: calc(100vh - 150px); }
+.copy { padding: clamp(32px, 6vh, 72px) clamp(0px, 4vw, 56px) clamp(32px, 6vh, 72px) 0; border-right: 1px solid var(--rule); display: flex; flex-direction: column; gap: 28px; }
+h1 { font: 400 clamp(28px, 3vw, 46px)/1.12 var(--serif); letter-spacing: -0.01em; margin: 0; text-wrap: balance; }
+.lede { font-size: 17px; margin: 0; color: var(--soft); }
+form { display: flex; max-width: 30rem; border: 1px solid var(--ink); }
+input { flex: 1; min-width: 0; border: 0; background: transparent; font: 400 15px var(--sans); color: var(--ink); padding: 13px 14px; }
+input::placeholder { color: var(--soft); }
+form button { border: 0; background: var(--ink); color: var(--paper); font: 600 14px var(--sans); padding: 0 20px; cursor: pointer; }
+button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.specs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--rule); margin-top: auto; }
+.specs div { padding: 14px 12px 0 0; }
+.specs b { display: block; font: 300 30px/1 var(--sans); letter-spacing: -0.02em; margin-top: 6px; }
+.film { padding: clamp(24px, 4vh, 40px) 0 clamp(24px, 4vh, 40px) clamp(0px, 3vw, 40px); display: flex; flex-direction: column; justify-content: center; }
+/* multiply blends the film's paper into the page colour in every browser; blacks stay black */
+video { display: block; width: 100%; aspect-ratio: 4 / 3; height: auto; background: var(--paper); mix-blend-mode: multiply; }
+.note { padding-block: 18px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+@media (max-width: 860px) {
+  .hero { grid-template-columns: minmax(0, 1fr); min-height: 0; }
+  .copy { border-right: 0; padding-right: 0; }
+  .film { padding-left: 0; border-top: 1px solid var(--rule); }
+  .menu a:not(:last-child) { display: none; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav aria-label="Main">
+    <a class="mark" href="https://atelier-inc.net/" aria-label="Atelier home"><img src="/atelier/logo.png" alt="" width="30" height="30">Atelier</a>
+    <div class="menu label"><a href="https://github.com/ShreyasPatel031/UserSim">Docs</a><a href="/app">Open app</a></div>
+  </nav>
+  <main class="hero">
+    <div class="copy">
+      <p class="label">Customer simulation</p>
+      <h1>Open-source infrastructure to turn your customer data into user simulations</h1>
+      <p class="lede">Run a simulation on your product</p>
+      <form action="/app" method="get">
+        <input name="url" type="url" required placeholder="https://yourproduct.com" aria-label="Product URL" autocomplete="url">
+        <button type="submit">Simulate</button>
+      </form>
+      <div class="specs">
+        <div><span class="label">Simulated users</span><b>5</b></div>
+        <div><span class="label">Competitors</span><b>2</b></div>
+        <div><span class="label">Browsers</span><b>Live</b></div>
+      </div>
+    </div>
+    <div class="film">
+      <video id="film" poster="/atelier/poster.jpg" muted autoplay loop playsinline preload="auto" aria-label="Dithered montage of crowds and rocket launches with tracked person boxes">
+        <source src="/atelier/atelier-hero.mp4" type="video/mp4">
+        <source src="/atelier/atelier-hero.webm" type="video/webm">
+      </video>
+    </div>
+  </main>
+  <div class="note label"><span>Footage: dithered, person class only</span><span>Atelier</span></div>
+</div>
+<script>
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) { const v = document.getElementById('film'); v.removeAttribute('autoplay'); v.pause(); }
+</script>
+</body>
+</html>
