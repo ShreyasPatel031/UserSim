@@ -708,6 +708,21 @@ def fit_frame(png: bytes) -> bytes:
 
 # ---------------------------------------------------------------- actions
 
+# Key names models send that Playwright does not know (Haiku sent "BackSpace", study f80f043a).
+_KEY_ALIASES = {"backspace": "Backspace", "back_space": "Backspace", "return": "Enter", "enter": "Enter", "esc": "Escape",
+                "escape": "Escape", "del": "Delete", "delete": "Delete", "ctrl": "Control", "control": "Control",
+                "cmd": "Meta", "command": "Meta", "meta": "Meta", "option": "Alt", "alt": "Alt", "shift": "Shift",
+                "tab": "Tab", "space": "Space", "spacebar": "Space", "up": "ArrowUp", "down": "ArrowDown",
+                "left": "ArrowLeft", "right": "ArrowRight", "pgup": "PageUp", "pageup": "PageUp", "pgdn": "PageDown",
+                "pagedown": "PageDown", "home": "Home", "end": "End"}
+
+
+def norm_keys(keys: str) -> str:
+    """'ctrl+a' -> 'Control+a', 'BackSpace' -> 'Backspace'; unknown parts pass through unchanged."""
+    parts = [p.strip() for p in str(keys).split("+")]
+    return "+".join(_KEY_ALIASES.get(p.lower().replace(" ", ""), p) if len(p) > 1 else p for p in parts if p) or keys
+
+
 ACTION_TYPES = ("click", "double_click", "right_click", "hover", "type", "key", "scroll", "back", "wait", "navigate",
                 "press_and_hold", "drag", "triple_click", "select", "reload", "clear_cookies")
 
@@ -988,7 +1003,7 @@ async def _execute(page: Any, action: dict[str, Any]) -> None:
         if action.get("submit"):
             await page.keyboard.press("Enter")
     elif kind == "key":
-        await page.keyboard.press(str(action["keys"]))
+        await page.keyboard.press(norm_keys(str(action["keys"])))
     elif kind == "scroll":
         await page.mouse.move(*_xy(action))
         await page.mouse.wheel(0, int(action["dy"]))

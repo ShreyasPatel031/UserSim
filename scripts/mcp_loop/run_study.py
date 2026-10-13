@@ -68,22 +68,30 @@ async def run_cell(cell: dict, study_id: str, sim_prompt: str, out: Path, model:
                    mcp_config: str, timeout_s: int) -> dict:
     cid = cell["cell_id"]
     log = out / "cells" / f"{cid}.jsonl"
+    cmd = ["claude", "-p", agent_prompt(sim_prompt, study_id, cid), "--model", model,
+           "--mcp-config", mcp_config, "--strict-mcp-config", "--allowedTools", "mcp__usersim__*",
+           "--output-format", "stream-json", "--verbose", "--max-turns", "200"]
     async with sem:
-        t0 = time.time()
-        cmd = ["claude", "-p", agent_prompt(sim_prompt, study_id, cid), "--model", model,
-               "--mcp-config", mcp_config, "--strict-mcp-config", "--allowedTools", "mcp__usersim__*",
-               "--output-format", "stream-json", "--verbose", "--max-turns", "200"]
-        with open(log, "w") as fh:
-            proc = await asyncio.create_subprocess_exec(*cmd, stdin=asyncio.subprocess.DEVNULL, stdout=fh,
-                                                        stderr=asyncio.subprocess.STDOUT)
-            try:
-                rc = await asyncio.wait_for(proc.wait(), timeout_s)
-            except asyncio.TimeoutError:
-                proc.kill()
-                rc = "timeout"
-        dt = round(time.time() - t0)
-        print(f"[{time.strftime('%H:%M:%S')}] {cid} rc={rc} {dt}s", flush=True)
-        return {"cell_id": cid, "rc": rc, "seconds": dt}
+        for attempt in range(1, 4):
+            t0 = time.time()
+            with open(log, "w") as fh:
+                proc = await asyncio.create_subprocess_exec(*cmd, stdin=asyncio.subprocess.DEVNULL, stdout=fh,
+                                                            stderr=asyncio.subprocess.STDOUT)
+                try:
+                    rc = await asyncio.wait_for(proc.wait(), timeout_s)
+                except asyncio.TimeoutError:
+                    proc.kill()
+                    rc = "timeout"
+            dt = round(time.time() - t0)
+            print(f"[{time.strftime('%H:%M:%S')}] {cid} rc={rc} {dt}s", flush=True)
+            if '"name":"mcp__usersim__usersim_start_session"' in log.read_text(errors="replace").replace(" ", ""):
+                return {"cell_id": cid, "rc": rc, "seconds": dt, "attempts": attempt}
+            # The agent never reached usersim_start_session: its MCP connection failed at startup (2 of 108 in
+            # study f80f043a). The cell is still queued on the server, so run it again.
+            log.rename(out / "cells" / f"{cid}.noconnect{attempt}.log")
+            print(f"[{time.strftime('%H:%M:%S')}] {cid} never started a session; retrying", flush=True)
+            await asyncio.sleep(10)
+    return {"cell_id": cid, "rc": "no_mcp", "seconds": 0, "attempts": 3}
 
 
 async def main() -> None:

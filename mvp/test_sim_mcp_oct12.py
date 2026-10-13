@@ -219,3 +219,13 @@ def test_act_flattened_action_gets_a_clear_error(monkeypatch):
     assert "ONE object" in out["error"]
     out = _json.loads(asyncio.run(SV.usersim_act("nope", '{"type":"click","x":1,"y":2}', "I click")))
     assert "unknown session" in out["error"]  # parsed, then the bad session id is reported
+
+
+def test_key_names_are_normalised():
+    from mvp.sim_mcp.sessions import norm_keys
+
+    assert norm_keys("BackSpace") == "Backspace"
+    assert norm_keys("ctrl+a") == "Control+a"
+    assert norm_keys("Cmd+Shift+K") == "Meta+Shift+K"
+    assert norm_keys("Return") == "Enter"
+    assert norm_keys("F5") == "F5" and norm_keys("a") == "a" and norm_keys("Enter") == "Enter"
