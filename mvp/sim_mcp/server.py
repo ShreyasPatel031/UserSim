@@ -81,6 +81,19 @@ mcp = FastMCP(
 )
 
 
+def _owner(ctx: Context | None) -> str:
+    """Fingerprint of the caller's bearer token (already checked by _require_bearer). Sessions and studies belong
+    to the token that created them; with one shared token every caller is the same owner."""
+    import hashlib
+
+    try:
+        got = ctx.request_context.request.headers.get("authorization") or ""  # type: ignore[union-attr]
+    except Exception:  # noqa: BLE001
+        got = ""
+    tok = got[7:].strip() if got.startswith("Bearer ") else ""
+    return hashlib.sha256(tok.encode()).hexdigest()[:16] if tok else ""
+
+
 def _client_id(ctx: Context | None) -> str:
     try:
         req = ctx.request_context.request  # type: ignore[union-attr]
@@ -143,6 +156,7 @@ def _fail(exc: Exception) -> str:
 
 @mcp.tool(structured_output=False)
 async def usersim_start_study(
+    ctx: Context,
     product_url: str,
     personas: list[dict[str, Any]],
     tasks: list[dict[str, Any]],
@@ -161,7 +175,8 @@ async def usersim_start_study(
     if len(comps) > 4:
         return _fail(S.SessionError("at most 4 competitors"))
     try:
-        study = S.create_matrix_study(product_url=product_url, competitors=comps, personas=personas, tasks=tasks)
+        study = S.create_matrix_study(product_url=product_url, competitors=comps, personas=personas, tasks=tasks,
+                                      owner=_owner(ctx))
     except S.SessionError as exc:
         return _fail(exc)
     return json.dumps(
@@ -179,7 +194,7 @@ async def usersim_start_study(
 
 
 @mcp.tool(structured_output=False)
-async def usersim_finish_study(study_id: str) -> str:
+async def usersim_finish_study(ctx: Context, study_id: str) -> str:
     """Write the study report now from the cells that ran; cells never started are marked skipped.
 
     Only needed if some cells will not be run. Running cells must be finished first.
@@ -187,7 +202,7 @@ async def usersim_finish_study(study_id: str) -> str:
     from mvp.study import STUDIES
 
     study = STUDIES.get(study_id)
-    if study is None or getattr(study, "backend", "") != "mcp":
+    if study is None or not S.owns_study(study, _owner(ctx)):
         return _fail(S.SessionError(f"unknown study_id {study_id!r}"))
     try:
         started = await maybe_finish_study(study, force=True)
@@ -215,7 +230,8 @@ async def usersim_start_session(
     """
     try:
         sim = await S.start_session(
-            product_url=product_url, task=task, persona=persona, client=_client_id(ctx), study_id=study_id, cell_id=cell_id
+            product_url=product_url, task=task, persona=persona, client=_client_id(ctx), study_id=study_id, cell_id=cell_id,
+            owner=_owner(ctx),
         )
     except S.SessionError as exc:
         return _fail(exc)
@@ -245,17 +261,17 @@ async def usersim_start_session(
 
 
 @mcp.tool(structured_output=False)
-async def usersim_observe(session_id: str) -> list[Any] | str:
+async def usersim_observe(ctx: Context, session_id: str) -> list[Any] | str:
     """Current screenshot, URL and title of the simulated user's browser, without acting."""
     try:
-        sim = S.get_session(session_id)
+        sim = S.get_session(session_id, _owner(ctx))
         return _obs_content(sim, await S.observe(sim))
     except S.SessionError as exc:
         return _fail(exc)
 
 
 @mcp.tool(structured_output=False)
-async def usersim_act(session_id: str, action: dict[str, Any], thought: str) -> list[Any] | str:
+async def usersim_act(ctx: Context, session_id: str, action: dict[str, Any], thought: str) -> list[Any] | str:
     """Do ONE thing on the page, the way the persona would, and get the new screenshot.
 
     action (pixel coordinates in the screenshot):
@@ -271,7 +287,7 @@ async def usersim_act(session_id: str, action: dict[str, Any], thought: str) -> 
     thought: first-person, what you see / expect / find confusing. Recorded as research data.
     """
     try:
-        sim = S.get_session(session_id)
+        sim = S.get_session(session_id, _owner(ctx))
         extra = None
         if str((action or {}).get("type")) in {"click", "key"}:
             await _refresh_v3_token(sim)
@@ -283,14 +299,14 @@ async def usersim_act(session_id: str, action: dict[str, Any], thought: str) -> 
 
 
 @mcp.tool(structured_output=False)
-async def usersim_finish(session_id: str, outcome: str, notes: str) -> str:
+async def usersim_finish(ctx: Context, session_id: str, outcome: str, notes: str) -> str:
     """End the simulated user's session. outcome: completed | gave_up | blocked.
 
     notes: what was easy, what was hard, where the persona got confused, why they stopped.
     UserSim then closes the browser, runs its own judge and proof checks. Call usersim_get_report next.
     """
     try:
-        sim = S.get_session(session_id)
+        sim = S.get_session(session_id, _owner(ctx))
     except S.SessionError as exc:
         return _fail(exc)
     async with sim.lock:
@@ -314,7 +330,7 @@ async def usersim_finish(session_id: str, outcome: str, notes: str) -> str:
 
 
 @mcp.tool(structured_output=False)
-async def usersim_get_report(study_id: str, format: str = "markdown") -> str:
+async def usersim_get_report(ctx: Context, study_id: str, format: str = "markdown") -> str:
     """The study report: independent judge verdict, proof checks, friction, every step with screenshot links.
 
     format: "markdown" (default) or "json".
@@ -323,7 +339,7 @@ async def usersim_get_report(study_id: str, format: str = "markdown") -> str:
 
     live = STUDIES.get(study_id)
     data = study_to_dict(live) if live is not None else (load_local_study(study_id) or load_study_from_gcs(study_id))
-    if not data:
+    if not data or not S.owns_study(data, _owner(ctx)):
         return _fail(S.SessionError(f"unknown study_id {study_id!r}"))
     if is_matrix(data):
         srep = build_study_report(data)
@@ -346,7 +362,7 @@ def _host(sim: S.SimSession) -> str:
 
 
 @mcp.tool(structured_output=False)
-async def usersim_signup_identity(session_id: str, no_plus: bool = False) -> str:
+async def usersim_signup_identity(ctx: Context, session_id: str, no_plus: bool = False) -> str:
     """Fresh, never-used email alias (a real inbox UserSim reads) plus password, name and username for signing up.
 
     Same alias for the whole session. Sign up with this email only; never Google or GitHub sign-in.
@@ -360,7 +376,7 @@ async def usersim_signup_identity(session_id: str, no_plus: bool = False) -> str
     from mvp.signup_tools import new_signup
 
     try:
-        sim = S.get_session(session_id)
+        sim = S.get_session(session_id, _owner(ctx))
         if no_plus and sim.inbox is not None and "+" in sim.inbox.address:
             sim.inbox = None
         issued_now = sim.inbox is None
@@ -385,13 +401,13 @@ async def usersim_signup_identity(session_id: str, no_plus: bool = False) -> str
         return _fail(exc)
 
 
-async def _wait(session_id: str, timeout_s: int, want: str) -> str:
+async def _wait(ctx: Context, session_id: str, timeout_s: int, want: str) -> str:
     import asyncio
 
     from mvp.signup_tools import wait_mail
 
     try:
-        sim = S.get_session(session_id)
+        sim = S.get_session(session_id, _owner(ctx))
         if sim.inbox is None:
             raise S.SessionError("call usersim_signup_identity and submit the signup form first")
         t = max(10, min(int(timeout_s or 120), 240))
@@ -405,7 +421,10 @@ async def _wait(session_id: str, timeout_s: int, want: str) -> str:
             if t:
                 sim.mail_link_texts[u] = t
         if msg.get("code"):
-            sim.row["signup_code_used"] = True
+            # Received is not used: signup_code_used is set only once the code is typed (sessions.note_code_typed).
+            sim.row["signup_code_received"] = True
+            if msg["code"] not in sim.signup_codes:
+                sim.signup_codes.append(msg["code"])
         sim.row.setdefault("signup_mail", []).append({"subject": msg.get("subject"), "sender": msg.get("sender")})
         return json.dumps({"found": True, "subject": msg.get("subject"), "sender": msg.get("sender"),
                            "code": msg.get("code"), "links": sim.mail_links[:5], "link_texts": (msg.get("link_texts") or [])[:5]})
@@ -414,22 +433,22 @@ async def _wait(session_id: str, timeout_s: int, want: str) -> str:
 
 
 @mcp.tool(structured_output=False)
-async def usersim_wait_for_verification_code(session_id: str, timeout_s: int = 120) -> str:
+async def usersim_wait_for_verification_code(ctx: Context, session_id: str, timeout_s: int = 120) -> str:
     """Wait for the signup email for this session's alias and return the verification code in it."""
-    return await _wait(session_id, timeout_s, "code")
+    return await _wait(ctx, session_id, timeout_s, "code")
 
 
 @mcp.tool(structured_output=False)
-async def usersim_wait_for_verification_link(session_id: str, timeout_s: int = 120) -> str:
+async def usersim_wait_for_verification_link(ctx: Context, session_id: str, timeout_s: int = 120) -> str:
     """Wait for the signup email for this session's alias and return its verification links (best first)."""
-    return await _wait(session_id, timeout_s, "link")
+    return await _wait(ctx, session_id, timeout_s, "link")
 
 
 @mcp.tool(structured_output=False)
-async def usersim_open_verification_link(session_id: str, url: str, thought: str = "I click the link in the email.") -> list[Any] | str:
+async def usersim_open_verification_link(ctx: Context, session_id: str, url: str, thought: str = "I click the link in the email.") -> list[Any] | str:
     """Open a link returned by usersim_wait_for_verification_link in the browser (like clicking it in the email)."""
     try:
-        sim = S.get_session(session_id)
+        sim = S.get_session(session_id, _owner(ctx))
         if url not in sim.mail_links:
             raise S.SessionError("only links returned by usersim_wait_for_verification_link can be opened")
         opened = sim.row.setdefault("opened_links", [])
@@ -465,13 +484,13 @@ async def usersim_open_verification_link(session_id: str, url: str, thought: str
 
 
 @mcp.tool(structured_output=False)
-async def usersim_signup_phone(session_id: str) -> str:
+async def usersim_signup_phone(ctx: Context, session_id: str) -> str:
     """Phone number for an SMS step (only if the site insists on one). Then call usersim_wait_for_sms_code."""
     import asyncio
     import time
 
     try:
-        sim = S.get_session(session_id)
+        sim = S.get_session(session_id, _owner(ctx))
         from mvp.sms_provider import lease_number
 
         sim.sms_number = await asyncio.to_thread(lease_number, _host(sim))
@@ -482,12 +501,12 @@ async def usersim_signup_phone(session_id: str) -> str:
 
 
 @mcp.tool(structured_output=False)
-async def usersim_wait_for_sms_code(session_id: str, timeout_s: int = 90) -> str:
+async def usersim_wait_for_sms_code(ctx: Context, session_id: str, timeout_s: int = 90) -> str:
     """Wait for the SMS verification code sent to the number from usersim_signup_phone."""
     import asyncio
 
     try:
-        sim = S.get_session(session_id)
+        sim = S.get_session(session_id, _owner(ctx))
         if sim.sms_number is None:
             raise S.SessionError("call usersim_signup_phone first")
         from mvp.sms_provider import wait_for_sms
@@ -500,7 +519,7 @@ async def usersim_wait_for_sms_code(session_id: str, timeout_s: int = 90) -> str
 
 
 @mcp.tool(structured_output=False)
-async def usersim_solve_captcha(session_id: str) -> list[Any] | str:
+async def usersim_solve_captcha(ctx: Context, session_id: str) -> list[Any] | str:
     """Try to get past a captcha on the current page (the same solver path the website driver uses).
 
     Prefer solving it yourself first like a person (checkbox click, drag, press_and_hold). This tries the free
@@ -509,7 +528,7 @@ async def usersim_solve_captcha(session_id: str) -> list[Any] | str:
     import os
 
     try:
-        sim = S.get_session(session_id)
+        sim = S.get_session(session_id, _owner(ctx))
         from mvp import captcha as cap
 
         async with sim.lock:
@@ -897,7 +916,8 @@ _STACK: AsyncExitStack | None = None
 
 
 def _client_token() -> str:
-    """Bearer token clients must send on /mcp. MVP_MCP_TOKEN, or the file at MVP_MCP_TOKEN_FILE.
+    """Bearer token(s) clients must send on /mcp. MVP_MCP_TOKEN, or the file at MVP_MCP_TOKEN_FILE.
+    Several tokens (comma / whitespace separated) = separate callers; each sees only its own sessions and studies.
     Empty = /mcp refuses every call (401) unless MVP_MCP_ALLOW_OPEN=1."""
     tok = (os.environ.get("MVP_MCP_TOKEN") or "").strip()
     path = (os.environ.get("MVP_MCP_TOKEN_FILE") or "").strip()
@@ -911,8 +931,11 @@ def _client_token() -> str:
 
 
 def _require_bearer(endpoint: Any, token: str | None) -> Any:
-    """ASGI wrapper: 401 unless 'Authorization: Bearer <token>' matches (constant-time)."""
+    """ASGI wrapper: 401 unless 'Authorization: Bearer <token>' matches one of the tokens (constant-time)."""
     import hmac
+    import re
+
+    tokens = [t for t in re.split(r"[\s,]+", token or "") if t]
 
     from starlette.responses import JSONResponse
 
@@ -924,7 +947,9 @@ def _require_bearer(endpoint: Any, token: str | None) -> Any:
         if scope.get("type") == "http":
             headers = {k.decode().lower(): v.decode() for k, v in scope.get("headers") or []}
             got = headers.get("authorization", "")
-            if not token or not (got.startswith("Bearer ") and hmac.compare_digest(got[7:].strip(), token)):
+            sent = got[7:].strip() if got.startswith("Bearer ") else ""
+            ok = bool(sent) and any(hmac.compare_digest(sent, t) for t in tokens)
+            if not ok:
                 await JSONResponse({"error": "missing or wrong bearer token"}, status_code=401,
                                    headers={"WWW-Authenticate": "Bearer"})(scope, receive, send)
                 return

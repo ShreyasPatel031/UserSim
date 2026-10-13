@@ -297,21 +297,24 @@ class Inbox:
                 print(f"[signup_inbox] {self.backend} read failed: {exc!r}", flush=True)
                 msgs = []
             fresh = [m for m in msgs if str(m.get("id") or m.get("subject")) not in seen]
+            score = {id(m): _verify_score(m, host) for m in fresh}
             # Oct 11 Healthchecks: three submits sent three "Log in to Healthchecks.io" mails; each new one voids the
             # older token, and the oldest was opened (back to /accounts/login/). Of resends with one subject, keep
-            # the newest and mark the older ones seen.
-            newest: dict[str, dict[str, Any]] = {}
+            # the newest of the best-scoring ones and retire only older mails; a newer welcome mail with the same
+            # subject but no code/link never retires the verification mail (it stays unseen for a later wait).
+            best: dict[str, dict[str, Any]] = {}
             for m in fresh:
                 key = (m.get("subject") or "").strip().lower()
-                if key not in newest or (m.get("ts") or 0) > (newest[key].get("ts") or 0):
-                    newest[key] = m
+                if key not in best or (score[id(m)], m.get("ts") or 0) > (score[id(best[key])], best[key].get("ts") or 0):
+                    best[key] = m
             for m in fresh:
-                if m is not newest[(m.get("subject") or "").strip().lower()]:
+                pick = best[(m.get("subject") or "").strip().lower()]
+                if m is not pick and (m.get("ts") or 0) <= (pick.get("ts") or 0):
                     seen.add(str(m.get("id") or m.get("subject")))
-            fresh = list(newest.values())
+            fresh = list(best.values())
             if fresh:
                 # the verification mail first (a welcome mail often lands right after it), then the oldest
-                fresh.sort(key=lambda m: (-_verify_score(m, host), m.get("ts") or 0))
+                fresh.sort(key=lambda m: (-score[id(m)], m.get("ts") or 0))
                 msg = fresh[0]
                 seen.add(str(msg.get("id") or msg.get("subject")))
                 code = find_code(msg.get("subject", ""), msg.get("text", ""))

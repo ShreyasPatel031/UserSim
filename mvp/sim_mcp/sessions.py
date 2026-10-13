@@ -137,9 +137,36 @@ def normalize_public_url(raw: str) -> str:
         ip = ipaddress.ip_address(host)
     except ValueError:
         ip = None
-    if ip is not None and (ip.is_private or ip.is_loopback or ip.is_link_local or ip.is_reserved):
+    if ip is not None and _non_public_ip(ip):
         raise SessionError("product_url must be a public URL, not a private IP")
+    if ip is None and resolves_non_public(host):
+        raise SessionError("product_url must be a public URL; its hostname resolves to a private address")
     return url
+
+
+def _non_public_ip(ip: Any) -> bool:
+    mapped = getattr(ip, "ipv4_mapped", None)
+    if mapped is not None:
+        ip = mapped
+    return bool(ip.is_private or ip.is_loopback or ip.is_link_local or ip.is_reserved
+                or ip.is_multicast or ip.is_unspecified)
+
+
+def resolves_non_public(host: str) -> bool:
+    """True when the hostname resolves to any private / loopback / link-local address (unresolvable = False)."""
+    import socket
+
+    try:
+        infos = socket.getaddrinfo(host, None)
+    except (OSError, UnicodeError):
+        return False
+    for info in infos:
+        try:
+            if _non_public_ip(ipaddress.ip_address(str(info[4][0]).split("%")[0])):
+                return True
+        except ValueError:
+            continue
+    return False
 
 
 def same_site(url: str, product_url: str) -> bool:
@@ -162,6 +189,8 @@ class SimSession:
     task: str
     persona: str
     client: str = ""
+    # Fingerprint of the bearer token that started the session; only that caller may drive it.
+    owner: str = ""
     bb: Any = None
     browser: Any = None
     context: Any = None
@@ -182,6 +211,8 @@ class SimSession:
     mail_seen: set = field(default_factory=set)
     mail_links: list = field(default_factory=list)
     mail_link_texts: dict = field(default_factory=dict)  # link -> anchor text in the mail
+    signup_codes: list = field(default_factory=list)  # codes handed to the client; "used" once typed on the page
+    typed_chars: str = ""  # alphanumerics typed since the first code arrived (split one-character boxes)
     sms_number: Any = None
     page_errors: list = field(default_factory=list)  # uncaught JS errors / console errors, newest last
     watched_pages: set = field(default_factory=set)
@@ -229,11 +260,26 @@ async def _playwright() -> Any:
         return _PW
 
 
-def get_session(session_id: str) -> SimSession:
+def get_session(session_id: str, owner: str | None = None) -> SimSession:
+    """owner: the caller's token fingerprint. Another caller's session looks unknown."""
     sim = SESSIONS.get(session_id or "")
-    if sim is None:
+    if sim is None or (owner is not None and sim.owner != owner):
         raise SessionError(f"unknown session_id {session_id!r}")
     return sim
+
+
+def study_owner(study: Any) -> str | None:
+    """Token fingerprint of the caller that created an MCP study (StudyState or its dict); None if not recorded."""
+    rows = study.get("live_sessions") if isinstance(study, dict) else getattr(study, "live_sessions", None)
+    for row in (rows or {}).values():
+        if isinstance(row, dict) and "mcp_owner" in row:
+            return str(row["mcp_owner"])
+    return None
+
+
+def owns_study(study: Any, owner: str) -> bool:
+    backend = study.get("backend") if isinstance(study, dict) else getattr(study, "backend", "")
+    return backend == "mcp" and study_owner(study) == owner
 
 
 def _active() -> list[SimSession]:
@@ -326,6 +372,7 @@ def create_matrix_study(
     competitors: list[str],
     personas: list[dict[str, Any]],
     tasks: list[dict[str, Any]],
+    owner: str = "",
 ) -> Any:
     """One website-shaped study: every persona x every task on the product and each competitor.
 
@@ -404,6 +451,7 @@ def create_matrix_study(
             "live_thoughts": [],
             "last_action": "Waiting for a simulated user",
             "driver": DRIVER,
+            "mcp_owner": owner,
         }
     log_activity(
         study,
@@ -465,11 +513,11 @@ def _check_capacity(client: str) -> None:
         raise SessionError("this client already has the maximum number of open sessions; finish one first")
 
 
-def _cell_session(study_id: str, cell_id: str, client: str) -> SimSession:
+def _cell_session(study_id: str, cell_id: str, client: str, owner: str = "") -> SimSession:
     from mvp.study import STUDIES
 
     study = STUDIES.get(study_id or "")
-    if study is None or getattr(study, "backend", "") != "mcp":
+    if study is None or not owns_study(study, owner):
         raise SessionError(f"unknown study_id {study_id!r}")
     row = study.live_sessions.get(cell_id or "")
     if row is None:
@@ -489,6 +537,7 @@ def _cell_session(study_id: str, cell_id: str, client: str) -> SimSession:
         task=row["task_prompt"],
         persona=persona,
         client=client,
+        owner=owner,
         cell_id=cell_id,
     )
 
@@ -501,11 +550,12 @@ async def start_session(
     client: str = "",
     study_id: str = "",
     cell_id: str = "",
+    owner: str = "",
 ) -> SimSession:
     """One simulated user. With study_id + cell_id it runs that cell of a multi-run study;
     otherwise it creates a one-run study from product_url, task and persona."""
     if study_id or cell_id:
-        sim = _cell_session(study_id, cell_id, client)
+        sim = _cell_session(study_id, cell_id, client, owner)
         url = sim.product_url
     else:
         url = normalize_public_url(product_url)
@@ -517,7 +567,9 @@ async def start_session(
             raise SessionError("persona is required")
         _check_capacity(client)
         study = _new_study(url, task[:2000], persona[:2000])
-        sim = SimSession(id=uuid.uuid4().hex, study=study, product_url=url, task=task, persona=persona, client=client)
+        study.live_sessions[AGENT_ID]["mcp_owner"] = owner
+        sim = SimSession(id=uuid.uuid4().hex, study=study, product_url=url, task=task, persona=persona, client=client,
+                         owner=owner)
     SESSIONS[sim.id] = sim
     try:
         await _open_browser(sim)
@@ -797,6 +849,8 @@ def validate_action(action: dict[str, Any], product_url: str) -> dict[str, Any]:
             raise SessionError("Google/GitHub sign-in is not allowed; use the email signup")
         if not target.startswith(("http://", "https://")) or not same_site(target, product_url):
             raise SessionError("navigate is limited to the product's own site (and sign-in providers)")
+        if resolves_non_public(urlsplit(target).hostname or ""):
+            raise SessionError("navigate target resolves to a private address")
     elif kind == "wait":
         try:
             ms = int(action.get("ms") or 1000)
@@ -1374,6 +1428,25 @@ def scrub(sim: SimSession, value: Any) -> Any:
     return value
 
 
+def _alnum(text: str) -> str:
+    return re.sub(r"[^0-9a-z]", "", (text or "").lower())
+
+
+def note_code_typed(sim: SimSession, action: dict[str, Any]) -> None:
+    """signup_code_used only once a received code was really typed on the page (whole, or box by box)."""
+    if not sim.signup_codes or sim.row.get("signup_code_used"):
+        return
+    if action.get("type") == "type":
+        piece = str(action.get("text") or "")
+    elif action.get("type") == "key" and len(str(action.get("keys") or "")) == 1:
+        piece = str(action["keys"])
+    else:
+        return
+    sim.typed_chars = (sim.typed_chars + _alnum(piece))[-200:]
+    if any(_alnum(c) and _alnum(c) in sim.typed_chars for c in sim.signup_codes):
+        sim.row["signup_code_used"] = True
+
+
 def _check_open(sim: SimSession) -> None:
     if sim.closed:
         raise SessionError(f"session is closed ({sim.close_reason or 'finished'}); call usersim_get_report")
@@ -1418,6 +1491,8 @@ async def act(sim: SimSession, action: dict[str, Any], thought: str) -> dict[str
             # The page refused the action (element gone, navigation failed).
             # Record it: a failed click is part of what the user experienced.
             error = str(exc).splitlines()[0][:200]
+        if not error:
+            note_code_typed(sim, action)
         _follow_new_tab(sim)
         await _settle(sim.page)
         if action["type"] in NAVIGATING_ACTIONS or action.get("submit"):
@@ -1905,7 +1980,7 @@ async def record_step(
         "action": action_text,
         "action_kind": kind,
         "action_args": args,
-        "thought": (thought or "").strip()[:1000],
+        "thought": scrub(sim, (thought or "").strip())[:1000],
         "thought_detail": {},
         "observation": title,
         "url": url,
@@ -1913,7 +1988,7 @@ async def record_step(
         "final_screenshot_url": shot_url,
         "boxes": [],
         "outcome": "error" if error else "neutral",
-        "error": error,
+        "error": scrub(sim, error),
         "state_sig": {"text": text[:1500], "canvas": "", "shapes": 0},
     }
     if n == 0:
@@ -1938,7 +2013,7 @@ async def record_step(
     study.phase = matrix_phase(study) if sim.matrix else f"Simulated user is working — step {n}"
     study.updated_at = _now()
     schedule_persist(study)
-    return await _observation(sim, png, error)
+    return await _observation(sim, png, scrub(sim, error))
 
 
 # ---------------------------------------------------------------- end

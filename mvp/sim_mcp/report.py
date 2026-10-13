@@ -50,8 +50,10 @@ def signup_evidence(row: dict[str, Any]) -> str:
             lines.append(f"- A NON-verification link (help / welcome / tracking) from that email was opened: {u.split('?')[0][:80]}")
     if row.get("opened_links") is None and any("verification link" in str(t.get("action") or t.get("action_text") or "") for t in trace):
         lines.append("- The verification link from that email was opened in the browser")
-    if row.get("signup_code_used"):
+    if row.get("signup_code_received"):
         lines.append("- The verification code from that email was handed to the agent to enter")
+    if row.get("signup_code_used"):
+        lines.append("- That verification code was typed into the page")
     urls = []
     for t in trace:
         u = str(t.get("url") or "")
@@ -62,8 +64,8 @@ def signup_evidence(row: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
-_SIGNUP_TASK_RE = __import__("re").compile(
-    r"sign ?up|create (?:a |an |your |a new )?(?:new )?account|register|registration|verify your email", __import__("re").I)
+_SIGNUP_TASK_RE = re.compile(
+    r"sign ?up|create (?:a |an |your |a new )?(?:new )?account|register|registration|verify your email", re.I)
 
 
 def is_signup_goal(row: dict[str, Any]) -> bool:
@@ -71,9 +73,43 @@ def is_signup_goal(row: dict[str, Any]) -> bool:
     if row.get("signup_email"):
         return True
     task = str(row.get("task_prompt") or "")
-    if __import__("re").search(r"without (?:creating|signing|making|registering|an account|a signup|sign)", task, __import__("re").I):
+    if re.search(r"without (?:creating|signing|making|registering|an account|a signup|sign)", task, re.I):
         return False
     return bool(_SIGNUP_TASK_RE.search(task))
+
+
+_CLAUSE_SPLIT_RE = re.compile(r"\s*(?:[,;:.!]|\.\.\.|\band then\b|\bthen\b|\band\b|&)\s*", re.I)
+_SIGNUP_STEP_RE = re.compile(
+    r"\b(?:verify|confirm|activate|validate)\b.*\b(?:email|e-mail|account|address|it)\b|\b(?:sign|log) ?(?:in|on)\b|"
+    r"\b(?:get|create|open|make|start)\b.*\b(?:free )?(?:account|trial)\b", re.I)
+_REACH_STEP_RE = re.compile(
+    r"^(?:(?:to|finally|then|so|until)\s+)*(?:i\s+)?(?:reach|get(?: to| into| in)?|go(?: to)?|land(?: on| in)?|end(?: up)?(?: on| in)?|"
+    r"arrive(?: at| on)?|see|access|open|enter|be|navigate(?: to)?|continue(?: to)?|proceed(?: to)?|make it(?: to)?)\b.*"
+    r"\b(?:dashboard|workspace|app|application|account|home ?page|home|onboarding|signed[- ]in|logged[- ]in|portal|console)\b",
+    re.I)
+_EXTRA_GOAL_WORDS_RE = re.compile(
+    r"\b(?:publish|send|invite|upload|import|export|install|connect|integrate|add|build|write|post|embed|share|deploy|"
+    r"submit|schedule|configure|set ?up|buy|pay|purchase|subscribe|upgrade|download|find|compare|run|track)\b", re.I)
+
+
+def signup_only_goal(row: dict[str, Any]) -> bool:
+    """The task asks for nothing beyond creating/verifying an account and reaching the signed-in app.
+
+    Tasks with more (\"sign up and publish a contact form\") are judged against their own wording, and the
+    signed-in-page override never applies to them.
+    """
+    task = str(row.get("task_prompt") or "").strip()
+    if not task:
+        return False
+    for clause in _CLAUSE_SPLIT_RE.split(task):
+        clause = clause.strip()
+        if not clause or not re.search(r"[a-z]", clause, re.I):
+            continue
+        if _EXTRA_GOAL_WORDS_RE.search(clause):
+            return False
+        if not (_SIGNUP_TASK_RE.search(clause) or _SIGNUP_STEP_RE.search(clause) or _REACH_STEP_RE.search(clause)):
+            return False
+    return True
 
 
 def frame_unrendered(png: bytes) -> bool:
@@ -169,7 +205,7 @@ async def judge_run(study_id: str, row: dict[str, Any]) -> tuple[dict[str, Any],
         return coerce_verdict({"goal_reached": False, "reason": "no final screenshot"}), "no_screenshot"
     votes: list[dict[str, Any]] = []
     try:
-        if is_signup_goal(row) and signup_verified(row):
+        if is_signup_goal(row) and signup_only_goal(row) and signup_verified(row):
             raw, votes = await _goal_votes(path.read_bytes(), row, SIGNUP_BAR_TASK, judge_votes())
         else:
             raw = await asyncio.wait_for(
@@ -192,7 +228,7 @@ async def judge_run(study_id: str, row: dict[str, Any]) -> tuple[dict[str, Any],
     png = path.read_bytes()
     if (isinstance(raw, dict) and not raw.get("goal_reached") and not raw.get("signed_in_app_page")
             and not raw.get("page_loading") and not frame_unrendered(png)
-            and is_signup_goal(row) and signup_verified(row)):
+            and is_signup_goal(row) and signup_only_goal(row) and signup_verified(row)):
         # The goal judge ties signed_in_app_page to the task wording; ask the signed-in question on its own.
         try:
             second = await asyncio.wait_for(
@@ -239,7 +275,8 @@ def apply_hard_rules(row: dict[str, Any], verdict: dict[str, Any], raw: Any, png
 
     1. A final page that is blank, loading or only a spinner never reaches a goal.
     2. A signup goal never passes unless signup_verified (the verify mail's link/code was really used).
-    3. Otherwise a signed-in app page after a verified signup counts (the judge is often too literal).
+    3. Otherwise a signed-in app page after a verified signup counts (the judge is often too literal), but only
+       when signup is the whole task; tasks with further goals keep the judge's verdict on their own wording.
     """
     signed_in = isinstance(raw, dict) and bool(raw.get("signed_in_app_page"))
     loading = isinstance(raw, dict) and bool(raw.get("page_loading"))
@@ -271,7 +308,7 @@ def apply_hard_rules(row: dict[str, Any], verdict: dict[str, Any], raw: Any, png
             verdict["goal_reached"] = False
             verdict["reason"] = "Final page is a billing/payment wall, which never counts as signed in. Judge note: " + str(verdict.get("reason") or "")
         return verdict
-    if not verdict.get("goal_reached") and signed_in and verified:
+    if not verdict.get("goal_reached") and signed_in and verified and signup_only_goal(row):
         verdict["goal_reached"] = True
         verdict["reason"] = "Signed-in app page after server-observed email verification. Judge note: " + str(verdict.get("reason") or "")
     return verdict
@@ -385,7 +422,9 @@ async def finalize(sim: SimSession, *, outcome: str, notes: str) -> dict[str, An
     row = sim.row
     row["status"] = "complete"
     row["driver_outcome"] = outcome
-    row["driver_notes"] = (notes or "").strip()[:4000]
+    from mvp.sim_mcp.sessions import scrub
+
+    row["driver_notes"] = scrub(sim, (notes or "").strip())[:4000]
     verdict, judge_status = await judge_run(study.id, row)
     row["page_verdict"] = verdict
     result = {

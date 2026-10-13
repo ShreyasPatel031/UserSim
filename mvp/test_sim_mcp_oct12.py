@@ -18,7 +18,7 @@ def test_billing_wall_blocks_override(monkeypatch):
     row = {"final_url": "https://app.x.com/billing/plans"}
     v = R.apply_hard_rules(row, {"goal_reached": True, "reason": "ok"}, {"signed_in_app_page": True}, b"")
     assert v["goal_reached"] is False and v["signed_in_app_page"] is False and v["billing_wall"] is True
-    row = {"final_url": "https://app.x.com/dashboard"}
+    row = {"final_url": "https://app.x.com/dashboard", "task_prompt": "Sign up and reach the dashboard"}
     v = R.apply_hard_rules(row, {"goal_reached": False, "reason": "x"}, {"signed_in_app_page": True}, b"")
     assert v["goal_reached"] is True
 

@@ -215,8 +215,8 @@ class IdentityLoopTests(unittest.TestCase):
         from mvp.sim_mcp import server
 
         sim = self._sim("testin.box@gmail.com")
-        with mock.patch.object(server.S, "get_session", lambda sid: sim):
-            outs = [json.loads(asyncio.run(server.usersim_signup_identity("s1", no_plus=True))) for _ in range(3)]
+        with mock.patch.object(server.S, "get_session", lambda sid, owner=None: sim):
+            outs = [json.loads(asyncio.run(server.usersim_signup_identity(None, "s1", no_plus=True))) for _ in range(3)]
         self.assertIn("do not call", outs[0]["next"])
         self.assertIn("error", outs[2])
         self.assertEqual(outs[2]["email"], "testin.box@gmail.com")
