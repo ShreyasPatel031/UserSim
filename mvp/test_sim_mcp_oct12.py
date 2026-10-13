@@ -215,8 +215,12 @@ def test_act_flattened_action_gets_a_clear_error(monkeypatch):
 
     from mvp.sim_mcp import server as SV
 
-    out = _json.loads(asyncio.run(SV.usersim_act("nope", "click", "I click")))
+    out = _json.loads(asyncio.run(SV.usersim_act("nope", "hop", "I click")))
     assert "ONE object" in out["error"]
+    seen = []
+    monkeypatch.setattr(SV.S, "get_session", lambda sid: (_ for _ in ()).throw(SV.S.SessionError("unknown session")))
+    out = _json.loads(asyncio.run(SV.usersim_act("nope", "click", "I click", x="888", y="31")))
+    assert "unknown session" in out["error"]  # rebuilt into an object, so it got as far as the session lookup
     out = _json.loads(asyncio.run(SV.usersim_act("nope", '{"type":"click","x":1,"y":2}', "I click")))
     assert "unknown session" in out["error"]  # parsed, then the bad session id is reported
 

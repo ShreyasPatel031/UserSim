@@ -261,7 +261,9 @@ async def usersim_observe(session_id: str) -> list[Any] | str:
 
 
 @mcp.tool(structured_output=False)
-async def usersim_act(session_id: str, action: dict[str, Any] | str, thought: str) -> list[Any] | str:
+async def usersim_act(session_id: str, action: dict[str, Any] | str, thought: str,
+                      x: int | str | None = None, y: int | str | None = None, text: str | None = None,
+                      keys: str | None = None, dy: int | str | None = None, url: str | None = None) -> list[Any] | str:
     """Do ONE thing on the page, the way the persona would, and get the new screenshot.
 
     action (pixel coordinates in the screenshot):
@@ -277,11 +279,19 @@ async def usersim_act(session_id: str, action: dict[str, Any] | str, thought: st
     thought: first-person, what you see / expect / find confusing. Recorded as research data.
     """
     if isinstance(action, str):
-        # Haiku sometimes sends the action as a JSON string, or flattens it ("action": "click", "x": ...; study f80f043a).
-        try:
-            action = json.loads(action)
-        except ValueError:
-            action = None
+        # Haiku sometimes sends the action as a JSON string, or flattened: {"action": "click", "x": "888", "y": "31"}
+        # (16 of 3,992 calls in studies f80f043a-2e8d7db5). Rebuild the object from the flat fields.
+        flat = {"x": x, "y": y, "text": text, "keys": keys, "dy": dy, "url": url}
+        if action.strip() in S.ACTION_TYPES:
+            action = {"type": action.strip(), **{k: v for k, v in flat.items() if v is not None}}
+            for k in ("x", "y", "dy"):
+                if isinstance(action.get(k), str) and action[k].strip().lstrip("-").isdigit():
+                    action[k] = int(action[k])
+        else:
+            try:
+                action = json.loads(action)
+            except ValueError:
+                action = None
         if not isinstance(action, dict):
             return _fail(S.SessionError('action must be ONE object, e.g. {"type":"click","x":640,"y":400} or '
                                         '{"type":"type","text":"hello","x":640,"y":300}; put x, y, text inside it'))
