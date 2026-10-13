@@ -61,7 +61,7 @@ Rules:
 - Don't navigate by guessing URLs; use the page like a person would. `navigate` exists for typing an address a person would actually know.
 - Stop when the task is done, when you're stuck, or when a real person in this persona would give up. Then call usersim_finish with outcome completed / gave_up / blocked and notes on what was hard or easy.
 - Need an account? Call usersim_signup_identity for a fresh email alias + password and sign up with EMAIL only (never Google/GitHub).
-  Then usersim_wait_for_verification_code or usersim_wait_for_verification_link (+ usersim_open_verification_link). Captcha in the way: solve it like a person (click the checkbox, drag the slider, press_and_hold), or call usersim_solve_captcha.
+  Then usersim_wait_for_verification_code or usersim_wait_for_verification_link (+ usersim_open_verification_link with link_number=1 for the first link). Captcha in the way: solve it like a person (click the checkbox, drag the slider, press_and_hold), or call usersim_solve_captcha.
   After signing up, always check for the verification email and open its link, even if the site already let you in: an unverified signup does not count.
   If verifying sends you to a login page, sign in with the SAME email and password from usersim_signup_identity; that is still your new account.
   If the app still says "verify your email" after you opened the link, reload the page (or sign out and sign in again) so it picks up the verified state.
@@ -442,7 +442,9 @@ async def _wait(session_id: str, timeout_s: int, want: str) -> str:
             sim.row["signup_code_used"] = True
         sim.row.setdefault("signup_mail", []).append({"subject": msg.get("subject"), "sender": msg.get("sender")})
         return json.dumps({"found": True, "subject": msg.get("subject"), "sender": msg.get("sender"),
-                           "code": msg.get("code"), "links": sim.mail_links[:5], "link_texts": (msg.get("link_texts") or [])[:5]})
+                           "code": msg.get("code"), "links": sim.mail_links[:5], "link_texts": (msg.get("link_texts") or [])[:5],
+                           "next": "to open a link call usersim_open_verification_link with link_number=1 (first link) "
+                                   "rather than copying its URL"})
     except Exception as exc:  # noqa: BLE001
         return _fail(exc)
 
@@ -465,13 +467,42 @@ async def usersim_wait_for_verification_link(session_id: str, timeout_s: int = 4
     return await _wait(session_id, timeout_s, "link")
 
 
+def resolve_mail_link(links: list[str], url: str, number: int) -> str:
+    """The mail link the agent means: by 1-based number, exactly, or a near-exact copy of exactly one link.
+
+    Haiku garbles long tokens when copying them (repeated base64 chunks; Baserow, study e7c5d942), so a URL that
+    differs only inside the token still opens the one link it clearly came from.
+    """
+    import difflib
+
+    if number:
+        if 1 <= int(number) <= len(links):
+            return links[int(number) - 1]
+        raise S.SessionError(f"link_number must be 1..{len(links)} (call usersim_wait_for_verification_link first)")
+    if url in links:
+        return url
+    if not links:
+        raise S.SessionError("no verification mail yet: call usersim_wait_for_verification_link first")
+    scored = sorted(((difflib.SequenceMatcher(None, url, u).ratio(), u) for u in links), reverse=True)
+    best, runner = scored[0], (scored[1] if len(scored) > 1 else (0.0, ""))
+    same_prefix = url[:40] == best[1][:40]
+    if same_prefix and best[0] >= 0.85 and best[0] - runner[0] >= 0.1:
+        return best[1]
+    raise S.SessionError("only links returned by usersim_wait_for_verification_link can be opened. "
+                         "Pass link_number=1 (the first link) instead of copying the URL")
+
+
 @mcp.tool(structured_output=False)
-async def usersim_open_verification_link(session_id: str, url: str, thought: str = "I click the link in the email.") -> list[Any] | str:
-    """Open a link returned by usersim_wait_for_verification_link in the browser (like clicking it in the email)."""
+async def usersim_open_verification_link(session_id: str, url: str = "", thought: str = "I click the link in the email.",
+                                        link_number: int = 0) -> list[Any] | str:
+    """Open a link from the verification email in the browser (like clicking it in the email).
+
+    Prefer link_number: 1 = the first link usersim_wait_for_verification_link returned (the best one), 2 = the second.
+    Long tokens are easy to mistype; with link_number you never copy the URL.
+    """
     try:
         sim = S.get_session(session_id)
-        if url not in sim.mail_links:
-            raise S.SessionError("only links returned by usersim_wait_for_verification_link can be opened")
+        url = resolve_mail_link(sim.mail_links, url, link_number)
         opened = sim.row.setdefault("opened_links", [])
         if url in opened:
             raise S.SessionError("this link was already opened; continue on the page (it is the current page)")

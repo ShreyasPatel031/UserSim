@@ -255,3 +255,22 @@ def test_mail_wait_is_capped_below_common_client_timeouts(monkeypatch):
     monkeypatch.setattr(T, "wait_mail", lambda *a, **k: seen.append(k["timeout_s"]))
     out = _json.loads(asyncio.run(SV.usersim_wait_for_verification_link("w1", 180)))
     assert seen == [50] and out["found"] is False and "call this tool again" in out["note"]
+
+
+def test_mail_link_by_number_or_near_exact_copy():
+    import pytest
+
+    from mvp.sim_mcp.server import resolve_mail_link
+    from mvp.sim_mcp.sessions import SessionError
+
+    good = "https://baserow.io/verify-email-address/.eJwdi80OgjAMgN-lV2TpuiHQkw_BnYy5kCZOCIVIYnx3p9fv5w2Hpm2UOzA5T62_QMpBHsB_oZJV5qc5Vq2mUMDysjF2U3ebf5WJS4ZynKtsScewl42QrrXF2veBf5WJS4ZynKtsScewl42QrrXF2venstc.CMvBOvDlNB8so1Ao62JiVNt76Ts"
+    links = [good, "https://baserow.io", "https://baserow.io/privacy"]
+    assert resolve_mail_link(links, "", 1) == good and resolve_mail_link(links, "", 3).endswith("privacy")
+    garbled = good.replace("XF2venstc", "XF2veBf5WJS4ZynKtsScewl42QrrXF2venstc")
+    assert resolve_mail_link(links, garbled, 0) == good
+    with pytest.raises(SessionError):
+        resolve_mail_link(links, "https://evil.com/verify-email-address/abc", 0)
+    with pytest.raises(SessionError):
+        resolve_mail_link(links, "", 9)
+    with pytest.raises(SessionError):
+        resolve_mail_link([], good, 0)
