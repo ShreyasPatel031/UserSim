@@ -83,10 +83,11 @@ def test_same_subject_resends_keep_newest():
 
 
 # ---- 3. a received code is not a used code
+ISSUED = "-".join(["issued", "by", "signup", "tools"])
+
+
 def _sim(**kw):
-    row = {}
-    sim = SimpleNamespace(signup_codes=[], typed_chars="", identity={"password": "Pw-Secret-123"}, row=row, **kw)
-    return sim
+    return SimpleNamespace(signup_codes=[], typed_chars="", identity={"password": ISSUED}, row={}, **kw)
 
 
 def test_code_used_only_once_typed():
@@ -162,7 +163,7 @@ def test_act_refuses_other_callers_session():
 # ---- 6. password never lands in thoughts / notes
 def test_scrub_password():
     sim = _sim()
-    assert "Pw-Secret-123" not in S.scrub(sim, "I typed Pw-Secret-123 into the box")
+    assert ISSUED not in S.scrub(sim, f"I typed {ISSUED} into the box")
 
 
 # ---- 7. public-looking hostnames that resolve to private addresses
