@@ -329,3 +329,13 @@ def test_cell_whose_browser_failed_goes_back_to_the_queue(monkeypatch):
         monkeypatch.setattr(RR, "maybe_finish_study", noop)
         asyncio.run(SS.start_session(study_id=study.id, cell_id=cell))
     assert study.live_sessions[cell]["status"] == "error"
+
+
+def test_grouped_codes_are_found():
+    from mvp.email_codes import _find_code
+
+    body = ("Confirm your email address\n\nYour confirmation code is below. Enter it in your open browser window "
+            "to finish signing in.\n\n935-413\n\nIf you didn't request this email, you can safely ignore it.")
+    assert _find_code("Confirm your Koalendar email address", body) == "935413"
+    assert _find_code("Sign in", "Your login code is 482 917. It expires in 10 minutes.") == "482917"
+    assert _find_code("Welcome", "Questions? Call us at 555-1234 or write to us.") is None
