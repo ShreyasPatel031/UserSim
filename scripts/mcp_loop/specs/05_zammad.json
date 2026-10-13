@@ -1,0 +1,20 @@
+{
+  "product_url": "https://zammad.com",
+  "competitors": ["https://www.helpscout.com", "https://www.freshdesk.com"],
+  "personas": [
+    {"name": "Stefan Braun", "bio": "IT manager at a German manufacturer who needs an open-source helpdesk his team can host; data must stay in the EU.", "favors": "https://zammad.com"},
+    {"name": "Olivia Grant", "bio": "Office manager at a 30-person law firm replacing a shared support inbox; not technical, budget-conscious.", "favors": "https://zammad.com"},
+    {"name": "Jake Morrison", "bio": "Founder of a 5-person e-commerce brand who wants customer emails to feel personal, not like tickets.", "favors": "https://www.helpscout.com"},
+    {"name": "Priya Shah", "bio": "Support lead at a SaaS startup who needs a shared inbox plus a help center for FAQs.", "favors": "https://www.helpscout.com"},
+    {"name": "Diego Alvarez", "bio": "Customer service manager at a 200-person retailer who wants automation rules and SLAs.", "favors": "https://www.freshdesk.com"},
+    {"name": "Hana Kobayashi", "bio": "Solo freelancer who wants the cheapest way to track customer requests; will only use a free plan.", "favors": "https://www.freshdesk.com"}
+  ],
+  "tasks": [
+    {"prompt": "Start a free trial with your email and get into the helpdesk.", "favors": "https://zammad.com"},
+    {"prompt": "Find out whether you can host this helpdesk yourself for free and where that is explained.", "favors": "https://zammad.com"},
+    {"prompt": "Sign up with your email for a free trial and reach the shared inbox.", "favors": "https://www.helpscout.com"},
+    {"prompt": "Find out what the cheapest plan costs per user each month.", "favors": "https://www.helpscout.com"},
+    {"prompt": "Sign up with your email for the free plan and get into the helpdesk.", "favors": "https://www.freshdesk.com"},
+    {"prompt": "Find out whether there is a free plan and how many agents it allows.", "favors": "https://www.freshdesk.com"}
+  ]
+}
