@@ -8,15 +8,16 @@ UserSim lets an AI agent act as a **simulated user** of a real, public web produ
 
 ## Deployment status (read this first)
 
-- **Not on production yet.** `https://usersim.vercel.app/mcp` currently returns **404**. Nothing is deployed until Shreyas approves.
-- A **test copy** runs on the prod VM (`usersim-grokbot-web`, zone `us-central1-a`, project `project-amer-scs-sandbox`). It is **private**, with no public IP route to `/mcp`. You reach it through an IAP tunnel with a GCP identity that has IAP access. Run `source /workspace/gcp-auth.sh` on the box first, then forward the port:
+- **Live on production.** The endpoint is `https://usersim.vercel.app/mcp`, the same server as the website, behind the Vercel proxy. It went live on Oct 13, 2026 (PT). `https://usersim.vercel.app/health` shows the running `engine_version`.
+- Every call needs `Authorization: Bearer <token>`. Without it the server answers **401** `{"error":"missing or wrong bearer token"}`. Ask the owner for the token.
+- Production studies save under `mvp_studies/`, so the `report_url` the MCP returns (`https://usersim.vercel.app/report?study=<id>`) opens on the website.
+- A private **test copy** still runs on the prod VM (`usersim-grokbot-web`, zone `us-central1-a`, project `project-amer-scs-sandbox`) for trying unmerged changes. Reach it only through an IAP tunnel: run `source /workspace/gcp-auth.sh` on the box, then
 
   ```bash
   gcloud compute ssh usersim-grokbot-web --zone us-central1-a --tunnel-through-iap -- -N -L 8788:127.0.0.1:8788
-  # MCP endpoint is now http://127.0.0.1:8788/mcp on your machine
+  # test endpoint is now http://127.0.0.1:8788/mcp on your machine
   ```
-  (The VM test server listens on 127.0.0.1:8788, separate from the live site on port 80. `/workspace/mcp-client/_conn.py` defaults to 8787, the old box-local port, so pass the 8788 URL or set `USERSIM_MCP`.)
-- Once it is deployed, the endpoint will be `https://usersim.vercel.app/mcp` (the same server as the website, behind the Vercel proxy).
+  Since Oct 12 the test copy also saves to `mvp_studies/`, so its report links open on the website too.
 
 ## Connecting
 
@@ -32,7 +33,7 @@ Never paste the token into docs, chats or commits. Ask the owner for it, and kee
 
 ### Claude Code
 ```bash
-claude mcp add --transport http usersim http://127.0.0.1:8788/mcp \
+claude mcp add --transport http usersim https://usersim.vercel.app/mcp \
   --header "Authorization: Bearer $MCP_CLIENT_TOKEN"
 ```
 
@@ -42,7 +43,7 @@ claude mcp add --transport http usersim http://127.0.0.1:8788/mcp \
   "mcpServers": {
     "usersim": {
       "command": "npx",
-      "args": ["-y", "mcp-remote", "http://127.0.0.1:8788/mcp",
+      "args": ["-y", "mcp-remote", "https://usersim.vercel.app/mcp",
                "--header", "Authorization: Bearer ${MCP_CLIENT_TOKEN}"],
       "env": { "MCP_CLIENT_TOKEN": "<set locally, never commit>" }
     }
@@ -56,7 +57,7 @@ claude mcp add --transport http usersim http://127.0.0.1:8788/mcp \
 {
   "mcpServers": {
     "usersim": {
-      "url": "http://127.0.0.1:8788/mcp",
+      "url": "https://usersim.vercel.app/mcp",
       "headers": { "Authorization": "Bearer ${env:MCP_CLIENT_TOKEN}" }
     }
   }
@@ -70,7 +71,7 @@ from mcp import ClientSession
 from mcp.client.streamable_http import streamable_http_client
 from mcp.shared._httpx_utils import create_mcp_http_client
 
-URL = os.environ.get("USERSIM_MCP", "http://127.0.0.1:8788/mcp")
+URL = os.environ.get("USERSIM_MCP", "https://usersim.vercel.app/mcp")
 
 async def main():
     hc = create_mcp_http_client(headers={"Authorization": f"Bearer {os.environ['MCP_CLIENT_TOKEN']}"})
@@ -241,7 +242,7 @@ Arguments: `session_id`, `persona`, `task`. This returns the instructions for th
 | error text | meaning / fix |
 |---|---|
 | `missing or wrong bearer token` (HTTP 401) | Send `Authorization: Bearer $MCP_CLIENT_TOKEN`. A server with no token configured refuses everyone |
-| HTTP 404 on `usersim.vercel.app/mcp` | Not deployed yet. Use the IAP tunnel to the test copy |
+| HTTP 404 on `usersim.vercel.app/mcp` | Wrong path, or the server is on an old build. Check `https://usersim.vercel.app/health` for `engine_version` |
 | `product_url must be a public URL …` | localhost, private IP or `.local`: use a public preview/staging URL |
 | `UserSim is at its simulated-user limit right now…` | 5 sessions are already open server-wide, so retry in a few minutes |
 | `this client already has the maximum number of open sessions…` | Finish one of your 2 open sessions first |
