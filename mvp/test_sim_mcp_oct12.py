@@ -177,3 +177,45 @@ def test_company_email_only_is_detected_from_inline_errors():
     assert not work_email_required(["Email is required", "work@email.com"])
     assert not work_email_required(["Password must contain a number"])
     assert not work_email_required(None)
+
+
+def test_finish_asks_once_to_open_the_verification_mail(monkeypatch):
+    import json as _json
+
+    from mvp.sim_mcp import server as SV
+    from mvp.sim_mcp import sessions as SS
+
+    st = S.StudyState(id="t-nudge", url="https://x.io", segment="dev")
+    sim = SS.SimSession(id="n1", study=st, product_url="https://x.io", task="sign up", persona="p")
+    sim.inbox = object()
+    sim.study.live_sessions = {sim.agent_id: {"agent_id": sim.agent_id, "signup_email": "a+b@gmail.com", "trace": []}}
+    monkeypatch.setattr(SS, "get_session", lambda sid: sim)
+    finals = []
+
+    async def fin(s, **kw):
+        finals.append(kw)
+        return st
+
+    monkeypatch.setattr(SV, "finalize", fin)
+    monkeypatch.setattr(SV, "build_report", lambda study: {"study_id": "t-nudge", "headline": "h", "proof": {}})
+    first = _json.loads(asyncio.run(SV.usersim_finish("n1", "completed", "done")))
+    assert first["finished"] is False and "verification" in first["next"] and not finals
+    asyncio.run(SV.usersim_finish("n1", "completed", "done"))
+    assert len(finals) == 1
+    # gave_up / blocked never get the nudge
+    sim2 = SS.SimSession(id="n2", study=st, product_url="https://x.io", task="sign up", persona="p")
+    sim2.inbox = object()
+    monkeypatch.setattr(SS, "get_session", lambda sid: sim2)
+    asyncio.run(SV.usersim_finish("n2", "blocked", "work email only"))
+    assert len(finals) == 2
+
+
+def test_act_flattened_action_gets_a_clear_error(monkeypatch):
+    import json as _json
+
+    from mvp.sim_mcp import server as SV
+
+    out = _json.loads(asyncio.run(SV.usersim_act("nope", "click", "I click")))
+    assert "ONE object" in out["error"]
+    out = _json.loads(asyncio.run(SV.usersim_act("nope", '{"type":"click","x":1,"y":2}', "I click")))
+    assert "unknown session" in out["error"]  # parsed, then the bad session id is reported

@@ -193,6 +193,7 @@ class SimSession:
     mail_links: list = field(default_factory=list)
     mail_link_texts: dict = field(default_factory=dict)  # link -> anchor text in the mail
     sms_number: Any = None
+    verify_nudged: bool = False  # usersim_finish already asked once to open the verification mail
     page_errors: list = field(default_factory=list)  # uncaught JS errors / console errors, newest last
     watched_pages: set = field(default_factory=set)
 

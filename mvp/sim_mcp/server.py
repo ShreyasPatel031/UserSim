@@ -62,6 +62,7 @@ Rules:
 - Stop when the task is done, when you're stuck, or when a real person in this persona would give up. Then call usersim_finish with outcome completed / gave_up / blocked and notes on what was hard or easy.
 - Need an account? Call usersim_signup_identity for a fresh email alias + password and sign up with EMAIL only (never Google/GitHub).
   Then usersim_wait_for_verification_code or usersim_wait_for_verification_link (+ usersim_open_verification_link). Captcha in the way: solve it like a person (click the checkbox, drag the slider, press_and_hold), or call usersim_solve_captcha.
+  After signing up, always check for the verification email and open its link, even if the site already let you in: an unverified signup does not count.
   If verifying sends you to a login page, sign in with the SAME email and password from usersim_signup_identity; that is still your new account.
   If the app still says "verify your email" after you opened the link, reload the page (or sign out and sign in again) so it picks up the verified state.
   After clicking a submit button, wait for it to finish (a spinner / disabled button in `fields`) instead of clicking again; double submits cause errors.
@@ -260,7 +261,7 @@ async def usersim_observe(session_id: str) -> list[Any] | str:
 
 
 @mcp.tool(structured_output=False)
-async def usersim_act(session_id: str, action: dict[str, Any], thought: str) -> list[Any] | str:
+async def usersim_act(session_id: str, action: dict[str, Any] | str, thought: str) -> list[Any] | str:
     """Do ONE thing on the page, the way the persona would, and get the new screenshot.
 
     action (pixel coordinates in the screenshot):
@@ -275,6 +276,15 @@ async def usersim_act(session_id: str, action: dict[str, Any], thought: str) -> 
     Google / GitHub sign-in is blocked: always use the email signup.
     thought: first-person, what you see / expect / find confusing. Recorded as research data.
     """
+    if isinstance(action, str):
+        # Haiku sometimes sends the action as a JSON string, or flattens it ("action": "click", "x": ...; study f80f043a).
+        try:
+            action = json.loads(action)
+        except ValueError:
+            action = None
+        if not isinstance(action, dict):
+            return _fail(S.SessionError('action must be ONE object, e.g. {"type":"click","x":640,"y":400} or '
+                                        '{"type":"type","text":"hello","x":640,"y":300}; put x, y, text inside it'))
     try:
         sim = S.get_session(session_id)
         extra = None
@@ -294,10 +304,25 @@ async def usersim_finish(session_id: str, outcome: str, notes: str) -> str:
     notes: what was easy, what was hard, where the persona got confused, why they stopped.
     UserSim then closes the browser, runs its own judge and proof checks. Call usersim_get_report next.
     """
+    from mvp.sim_mcp.report import signup_verified
+
     try:
         sim = S.get_session(session_id)
     except S.SessionError as exc:
         return _fail(exc)
+    if (str(outcome).strip().lower() == "completed" and sim.inbox is not None and not sim.verify_nudged
+            and not signup_verified(sim.row) and sim.seconds_left() > 60):
+        # Study f80f043a: Youform let agents into the builder before verifying, they finished without opening the
+        # mail, and the signup bar (email-verified) failed real accounts. Ask once; a second call finishes anyway.
+        sim.verify_nudged = True
+        return json.dumps({
+            "session_id": sim.id,
+            "finished": False,
+            "next": ("Not finished yet: you signed up but never opened the verification email, and an unverified signup "
+                     "does not count. Call usersim_wait_for_verification_link (or usersim_wait_for_verification_code), "
+                     "open the link with usersim_open_verification_link, check you are still signed in, then call "
+                     "usersim_finish again. If no mail arrives, call usersim_finish again with the same arguments."),
+        })
     async with sim.lock:
         study = await finalize(sim, outcome=outcome, notes=notes)
     if sim.matrix:
