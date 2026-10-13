@@ -1,4 +1,10 @@
 const form = document.getElementById("study-form");
+{
+  // arriving from the Atelier landing page: /app?url=https://...
+  const incoming = new URLSearchParams(location.search).get("url");
+  const urlInput = form && form.querySelector('input[name="url"]');
+  if (incoming && urlInput) urlInput.value = incoming;
+}
 const submitBtn = document.getElementById("submit-btn");
 const btnLabel = submitBtn.querySelector(".btn-label");
 const btnSpinner = submitBtn.querySelector(".btn-spinner");

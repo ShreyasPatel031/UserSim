@@ -98,6 +98,9 @@ async def _warm_study_list() -> None:
 
 if STATIC.is_dir():
     app.mount("/static", StaticFiles(directory=STATIC), name="static")
+_ATELIER_PUBLIC = ROOT / "public" / "atelier"
+if _ATELIER_PUBLIC.is_dir() and not IS_VERCEL:  # on Vercel, public/ is served by the CDN
+    app.mount("/atelier", StaticFiles(directory=_ATELIER_PUBLIC), name="atelier")
 _TRACE_PUBLIC = ROOT / "public" / "bakeoff-traces"
 if _TRACE_PUBLIC.is_dir() and not IS_VERCEL:
     app.mount(
@@ -217,6 +220,17 @@ def _dedupe_studies_one_per_url(rows: list[dict]) -> list[dict]:
 
 
 @app.get("/")
+async def landing() -> FileResponse:
+    # Atelier landing page; the simulator itself lives at /app
+    page = STATIC / "landing.html"
+    if not page.is_file():
+        page = STATIC / "index.html"
+    if not page.is_file():
+        raise HTTPException(status_code=503, detail="Frontend not bundled")
+    return FileResponse(page)
+
+
+@app.get("/app")
 async def index() -> FileResponse:
     if not (STATIC / "index.html").is_file():
         raise HTTPException(status_code=503, detail="Frontend not bundled")
