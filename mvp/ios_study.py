@@ -55,15 +55,32 @@ def make_personas(app: str, description: str, n: int) -> list[dict]:
     return list(data)[:n]
 
 
-def persona_goal(p: dict, app: str) -> str:
+def persona_email(i: int, app: str) -> str | None:
+    from mvp.email_codes import _imap_creds
+
+    creds = _imap_creds()
+    if not creds:
+        return None
+    local, domain = creds[0].split("@", 1)
+    tag = re.sub(r"[^a-z0-9]", "", app.lower())[:10]
+    return f"{local.split('+')[0]}+{tag}{time.strftime('%m%d%H%M')}p{i}@{domain}"
+
+
+def persona_goal(p: dict, app: str, email: str | None = None) -> str:
+    account = (
+        f"If the app asks you to create an account, sign up with email {email} (a real inbox you can read) "
+        "and a password like Usersim!2026x; when it emails a code, use request_email_code. "
+        if email else
+        "If the app asks you to create an account, prefer 'Sign in with Apple'. "
+    )
     return (
         f"You ARE this person, using the iPhone app \"{app}\" for the first time:\n"
         f"{p.get('name')}, {p.get('age')}. {p.get('bio')} Motivation: {p.get('motivation')}. "
         f"Patience: {p.get('patience')}.\n"
         f"TASK: {p.get('task')}\nSUCCESS LOOKS LIKE: {p.get('success')}\n"
         "Behave like this real person: read what is on screen, answer onboarding questions truthfully as "
-        "this persona, skip what you would skip. If the app asks you to create an account, prefer "
-        "'Sign in with Apple' (the phone's Apple ID); if Apple asks for its password use {{APPLE_PASSWORD}}. "
+        "this persona, skip what you would skip. " + account +
+        "If Apple asks for its password use {{APPLE_PASSWORD}}. "
         "When you hit a paywall, note the price/trial, then look for a way to continue without paying "
         "(close X, 'not now', 'maybe later'); if there is none, that is the end: reply give_up with the "
         "reason. Never purchase or start a subscription. Reply done once the task is accomplished, or "
@@ -177,7 +194,8 @@ def main() -> int:
             dev.launch(args.bundle)
             time.sleep(4)
             pdir = out / f"p{i}"
-            res = run_goal(dev, persona_goal(p, args.app), out_dir=pdir,
+            email = persona_email(i, args.app)
+            res = run_goal(dev, persona_goal(p, args.app, email), out_dir=pdir, email_alias=email,
                            max_steps=args.max_steps, budget_s=args.persona_budget)
             try:
                 summary = summarize(args.app, p, res)

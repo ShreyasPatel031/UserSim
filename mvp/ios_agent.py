@@ -240,7 +240,7 @@ def _client():
 
 ACTION_SPEC = """Reply with ONE JSON object:
 {"thought": "<what you see and why this step, 1-2 sentences, in the persona's voice when acting as a persona>",
- "action": "tap" | "type" | "swipe" | "wait" | "launch" | "home" | "request_code" | "done" | "give_up",
+ "action": "tap" | "type" | "swipe" | "wait" | "launch" | "home" | "request_code" | "request_email_code" | "done" | "give_up",
  "index": <element number for tap/type>,
  "x": <optional screen x in points if the target has no element>, "y": <optional y>,
  "text": "<text for type; use {{APPLE_ID}} / {{APPLE_PASSWORD}} for Apple credentials>",
@@ -250,6 +250,8 @@ ACTION_SPEC = """Reply with ONE JSON object:
  "note": "<for done/give_up: outcome, what worked, what blocked you>"}
 Rules:
 - type taps the field at index first, then types. Use it for text fields and search bars.
+- request_email_code: use when the app emailed a verification code to your sign-up email; the system
+  reads the inbox and types the code into the field at index (or the first text field).
 - request_code: use when Apple asks for a verification code sent by text; the system fills it in.
   If Apple shows a code prompt for your devices, tap "Didn't get a code?" then "Can't Get to Devices" /
   "Text the Code" to have it texted, then use request_code right away (don't tap resend repeatedly).
@@ -337,10 +339,24 @@ def _wait_sms(since: float, timeout_s: float = 240.0) -> str | None:
     return wait_for_sms(Number(phone="", backend="ntfy"), timeout_s=timeout_s, newer_than=since)
 
 
+def _wait_email(alias: str, since: float, timeout_s: float = 180.0) -> str | None:
+    """Code emailed to ``alias``, read over IMAP (needs imap.gmail.com:993 reachable)."""
+    from mvp.email_codes import latest_signup_code
+
+    started = time.time()
+    while time.time() - started < timeout_s:
+        code = latest_signup_code(alias, newer_than=since)
+        if code:
+            return code
+        time.sleep(5)
+    return None
+
+
 def run_goal(
     dev: Device,
     goal: str,
     *,
+    email_alias: str | None = None,
     out_dir: Path,
     max_steps: int = 40,
     budget_s: float = 900.0,
@@ -355,6 +371,7 @@ def run_goal(
     steps: list[dict] = []
     paywall: list[str] = []
     started = time.monotonic()
+    started_wall = time.time()
     last_submit_t = time.time()
     last_code_t = 0.0
     stuck = 0
@@ -479,6 +496,21 @@ def run_goal(
                     dev.type_text(code)
                     record["text"] = "<sms code>"
                     last_code_t = last_submit_t = time.time()
+            elif action == "request_email_code":
+                if not email_alias:
+                    record["error"] = "no email alias for this run"
+                else:
+                    log(f"    waiting for email code to {email_alias}…")
+                    code = _wait_email(email_alias, started_wall - 60)
+                    if not code:
+                        record["error"] = "no email code"
+                    else:
+                        target = el or next((e for e in elements if e.kind in {"TextField", "SecureTextField"}), None)
+                        if target:
+                            dev.tap_xy(*target.center)
+                            time.sleep(0.5)
+                        dev.type_text(code)
+                        record["text"] = "<email code>"
             elif action in {"done", "give_up"}:
                 record["note"] = str(act.get("note") or "")
                 steps.append(record)
