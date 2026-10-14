@@ -34,6 +34,7 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
 
+from mvp.apple_signin import apple_credentials, handle_apple_round, is_apple_auth_url
 from mvp.credentials import credentials_for_url, totp_code, vault_status
 from mvp.email_codes import wait_for_email_code
 from mvp.notify import push
@@ -492,7 +493,7 @@ async def sign_in(
 ) -> dict[str, Any]:
     from playwright.async_api import async_playwright
 
-    creds = credentials_for_url(url)
+    creds = credentials_for_url(url) or (apple_credentials() if is_apple_auth_url(url) else None)
     if not creds or not creds.get("username") or not creds.get("password"):
         return {
             "ok": False,
@@ -576,7 +577,13 @@ async def sign_in(
                         "actions": actions,
                     }
 
-            action = await _handle_google_round(page, creds, state)
+            if is_apple_auth_url(page.url):
+                apple_creds = apple_credentials()
+                if not apple_creds:
+                    return {"ok": False, "reason": "no_apple_credentials", "actions": actions}
+                action = await handle_apple_round(page, apple_creds, state)
+            else:
+                action = await _handle_google_round(page, creds, state)
             actions.append(action)
             await _shot(page, f"{round_no:02d}_{action}")
             print(f"  [{round_no:02d}] {action}  url={(page.url or '')[:80]}", flush=True)
@@ -584,6 +591,7 @@ async def sign_in(
             if action in {
                 "need_totp_secret",
                 "need_sms_manual",
+                "no_sms_option",
                 "sms_timeout",
                 "need_app_password",
                 "email_code_timeout",
