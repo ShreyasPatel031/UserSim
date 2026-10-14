@@ -2,6 +2,14 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
     {
+      "source": "/mcp",
+      "destination": "https://35-202-98-224.sslip.io/mcp"
+    },
+    {
+      "source": "/mcp/:path*",
+      "destination": "https://35-202-98-224.sslip.io/mcp/:path*"
+    },
+    {
       "source": "/atelier/(.*)",
       "destination": "/atelier/$1"
     },
@@ -48,5 +56,16 @@
     "MVP_LLM_MODEL": "gemini-2.5-flash-lite",
     "MVP_SIGNUP_MODEL": "gemini-2.5-flash-lite",
     "GEMINI_MODEL": "gemini-2.5-flash-lite"
-  }
+  },
+  "headers": [
+    {
+      "source": "/mcp(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        }
+      ]
+    }
+  ]
 }
