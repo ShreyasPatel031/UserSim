@@ -1,0 +1,20 @@
+{
+  "product_url": "https://baserow.io",
+  "competitors": ["https://nocodb.com", "https://teable.io"],
+  "personas": [
+    {"name": "Hannah Brooks", "bio": "Operations manager at a 15-person nonprofit moving volunteer lists out of spreadsheets; comfortable with Excel, never used a database.", "favors": "https://baserow.io"},
+    {"name": "Felix Wagner", "bio": "IT lead at a German school who must keep data in the EU and prefers open-source tools he can host himself.", "favors": "https://baserow.io"},
+    {"name": "Arjun Rao", "bio": "Backend developer who wants a spreadsheet UI on top of an existing Postgres database for his support team.", "favors": "https://nocodb.com"},
+    {"name": "Sofia Ricci", "bio": "Freelance developer building internal tools for clients; wants an API and automations out of the box.", "favors": "https://nocodb.com"},
+    {"name": "Mei Lin", "bio": "Growth analyst who lives in Airtable and keeps hitting its row limits; wants something fast with big tables.", "favors": "https://teable.io"},
+    {"name": "James Okafor", "bio": "Startup founder tracking investors and hires; wants a polished, modern grid with no setup.", "favors": "https://teable.io"}
+  ],
+  "tasks": [
+    {"prompt": "Sign up with your email and create a table to track volunteers with a name, email and phone column.", "favors": "https://baserow.io"},
+    {"prompt": "Find out whether you can self-host this tool for free and where the instructions are.", "favors": "https://baserow.io"},
+    {"prompt": "Sign up with your email and create a new base or table with at least two columns of your own.", "favors": "https://nocodb.com"},
+    {"prompt": "Find out whether this tool gives you a REST API for your tables and where it is documented.", "favors": "https://nocodb.com"},
+    {"prompt": "Sign up with your email and add three rows of data to a table.", "favors": "https://teable.io"},
+    {"prompt": "Find out how many rows the free plan allows and what the first paid plan costs.", "favors": "https://teable.io"}
+  ]
+}

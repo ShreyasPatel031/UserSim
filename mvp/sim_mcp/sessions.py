@@ -54,6 +54,20 @@ def max_per_client() -> int:
     return _env_int("MVP_MCP_MAX_PER_CLIENT", 2)
 
 
+# Final-page text kept for the judge. 1500 cut Tally's GDPR page just before "based in Belgium (EU)" (study
+# f80f043a): on "find out X" tasks the answer is usually below the fold.
+FINAL_DOM_CHARS = 8000
+
+
+# A study cell whose browser failed to open (before any agent action) can be started this many times.
+START_TRIES = 3
+
+
+def max_cells() -> int:
+    """Runs per study. 108 = the website's usual 6 personas x 6 tasks x 3 sites."""
+    return _env_int("MVP_MCP_MAX_CELLS", 108)
+
+
 class SessionError(Exception):
     """A request the client can fix (bad URL, unknown session, cap reached)."""
 
@@ -169,6 +183,27 @@ def resolves_non_public(host: str) -> bool:
     return False
 
 
+def probe_reachable(url: str) -> None:
+    """Refuse a site whose HTTPS certificate is invalid or whose host does not resolve.
+
+    harmonizely.com serves a certificate for another name (study 008b395c); all 36 of its cells failed to open.
+    Only TLS and DNS failures count: an HTTP error code from this server's network says little about a browser.
+    """
+    import httpx
+
+    if os.environ.get("MVP_MCP_PROBE_SITES", "1").lower() in {"0", "false", "no"}:
+        return
+    try:
+        httpx.get(url, timeout=10, follow_redirects=True, headers={"User-Agent": "Mozilla/5.0 UserSim"})
+    except httpx.ConnectError as exc:
+        text = str(exc)
+        if any(k in text for k in ("CERTIFICATE_VERIFY_FAILED", "certificate", "Name or service not known",
+                                   "nodename nor servname", "getaddrinfo failed", "No address associated")):
+            raise SessionError(f"{url} cannot be opened: {text.splitlines()[0][:160]}") from exc
+    except Exception:  # noqa: BLE001  (timeouts, 4xx/5xx, odd servers: let the browser try)
+        return
+
+
 def same_site(url: str, product_url: str) -> bool:
     host = (urlsplit(url).hostname or "").lower()
     if not host:
@@ -214,6 +249,7 @@ class SimSession:
     signup_codes: list = field(default_factory=list)  # codes handed to the client; "used" once typed on the page
     typed_chars: str = ""  # alphanumerics typed since the first code arrived (split one-character boxes)
     sms_number: Any = None
+    verify_nudged: bool = False  # usersim_finish already asked once to open the verification mail
     page_errors: list = field(default_factory=list)  # uncaught JS errors / console errors, newest last
     watched_pages: set = field(default_factory=set)
 
@@ -346,9 +382,6 @@ def _new_study(product_url: str, task: str, persona: str) -> Any:
 
 # ---------------------------------------------------------------- multi-run studies
 
-MAX_CELLS = 60
-
-
 def _site_name(url: str) -> str:
     host = registrable_domain(urlsplit(url).hostname or "") or url
     return host.split(".")[0].capitalize()
@@ -390,6 +423,8 @@ def create_matrix_study(
         if c not in rivals:
             rivals.append(c)
     sites = [url, *rivals]
+    for site in sites:
+        probe_reachable(site)
     people: list[dict[str, Any]] = []
     for i, p in enumerate(personas or [], start=1):
         p = p if isinstance(p, dict) else {"bio": str(p)}
@@ -408,8 +443,8 @@ def create_matrix_study(
     if not people or not jobs:
         raise SessionError("a study needs at least one persona and one task")
     n = len(people) * len(jobs) * len(sites)
-    if n > MAX_CELLS:
-        raise SessionError(f"{n} runs is over the {MAX_CELLS}-run limit for one study")
+    if n > max_cells():
+        raise SessionError(f"{n} runs is over the {max_cells()}-run limit for one study")
 
     study = create_study(url, people[0]["bio"])
     study.driver = DRIVER
@@ -576,6 +611,18 @@ async def start_session(
         await _wait_rendered(sim.page)
         await record_step(sim, kind="open", action_text=f"Opened {url}", args={"url": url}, thought="")
     except Exception as exc:
+        if sim.matrix:
+            row = sim.row
+            fails = int(row.get("start_failures") or 0) + 1
+            row["start_failures"] = fails
+            row["last_start_error"] = f"{exc!r}"[:300]
+            if fails < START_TRIES:
+                # Nothing ran yet: free the browser and put the cell back in the queue so it can be retried
+                # (it used to stay 'error' and every retry said "already run"; study 008b395c).
+                await close(sim, reason=f"Browser failed to open: {exc!r}"[:300])
+                row.update(status="queued", live_active=False, trace=[], num_steps=0, error="")
+                raise SessionError(f"could not open {url}: {str(exc).splitlines()[0][:160]}. The cell is still queued: "
+                                   f"call usersim_start_session again in ~30 s (attempt {fails} of {START_TRIES})") from exc
         await close(sim, reason=f"Browser failed to open: {exc!r}"[:300], status="error")
         raise
     asyncio.get_running_loop().create_task(_reaper(sim))
@@ -637,6 +684,10 @@ async def _open_browser(sim: SimSession) -> None:
     opened = time.time()
     row = sim.row
     row["status"] = "running"
+    if registrable_domain(urlsplit(sim.page.url or "").hostname or "") != registrable_domain(urlsplit(sim.product_url).hostname or ""):
+        # The site itself redirected the server's first load before any agent action (teable.io -> teable.ai,
+        # study e7c5d942). Proof treats that landing page as the product.
+        row["opening_redirect"] = sim.page.url
     apply_gate_fields(
         row,
         session_ready_at_ts=ready,
@@ -752,6 +803,21 @@ def fit_frame(png: bytes) -> bytes:
 
 # ---------------------------------------------------------------- actions
 
+# Key names models send that Playwright does not know (Haiku sent "BackSpace", study f80f043a).
+_KEY_ALIASES = {"backspace": "Backspace", "back_space": "Backspace", "return": "Enter", "enter": "Enter", "esc": "Escape",
+                "escape": "Escape", "del": "Delete", "delete": "Delete", "ctrl": "Control", "control": "Control",
+                "cmd": "Meta", "command": "Meta", "meta": "Meta", "option": "Alt", "alt": "Alt", "shift": "Shift",
+                "tab": "Tab", "space": "Space", "spacebar": "Space", "up": "ArrowUp", "down": "ArrowDown",
+                "left": "ArrowLeft", "right": "ArrowRight", "pgup": "PageUp", "pageup": "PageUp", "pgdn": "PageDown",
+                "pagedown": "PageDown", "home": "Home", "end": "End"}
+
+
+def norm_keys(keys: str) -> str:
+    """'ctrl+a' -> 'Control+a', 'BackSpace' -> 'Backspace'; unknown parts pass through unchanged."""
+    parts = [p.strip() for p in str(keys).split("+")]
+    return "+".join(_KEY_ALIASES.get(p.lower().replace(" ", ""), p) if len(p) > 1 else p for p in parts if p) or keys
+
+
 ACTION_TYPES = ("click", "double_click", "right_click", "hover", "type", "key", "scroll", "back", "wait", "navigate",
                 "press_and_hold", "drag", "triple_click", "select", "reload", "clear_cookies")
 
@@ -789,9 +855,36 @@ def describe_action(action: dict[str, Any]) -> str:
     return kind
 
 
+def _normalize_action(action: dict[str, Any]) -> dict[str, Any]:
+    """Field names and value types models send instead of the schema (Haiku: deltaY, delta_y, direction+amount,
+    "x": "640"; studies 2e8d7db5 / 5638b2a8)."""
+    a = dict(action)
+    if a.get("type") == "scroll" and a.get("dy") is None:
+        amount = next((a.get(k) for k in ("deltaY", "delta_y", "amount", "pixels", "distance") if a.get(k) is not None), None)
+        if amount is None and a.get("direction"):
+            amount = 600
+        if amount is not None:
+            try:
+                n = abs(int(float(amount)))
+            except (TypeError, ValueError):
+                n = 600
+            a["dy"] = -n if str(a.get("direction") or "").lower() == "up" else (int(float(amount)) if not a.get("direction") else n)
+    for k in ("x", "y", "dy", "to_x", "to_y", "ms"):
+        v = a.get(k)
+        if isinstance(v, str):
+            try:
+                a[k] = int(float(v.strip()))
+            except ValueError:
+                pass
+        elif isinstance(v, float):
+            a[k] = int(v)
+    return a
+
+
 def validate_action(action: dict[str, Any], product_url: str) -> dict[str, Any]:
     if not isinstance(action, dict):
         raise SessionError("action must be an object with a 'type'")
+    action = _normalize_action(action)
     kind = str(action.get("type") or "")
     if kind not in ACTION_TYPES:
         raise SessionError(f"action.type must be one of {', '.join(ACTION_TYPES)}")
@@ -1034,7 +1127,7 @@ async def _execute(page: Any, action: dict[str, Any]) -> None:
         if action.get("submit"):
             await page.keyboard.press("Enter")
     elif kind == "key":
-        await page.keyboard.press(str(action["keys"]))
+        await page.keyboard.press(norm_keys(str(action["keys"])))
     elif kind == "scroll":
         await page.mouse.move(*_xy(action))
         await page.mouse.wheel(0, int(action["dy"]))
@@ -1609,7 +1702,7 @@ async def _screenshot(page: Any, *, timeout_ms: int) -> bytes:
 async def _page_text(page: Any) -> str:
     try:
         return str(
-            await page.evaluate("() => (document.body && document.body.innerText || '').slice(0, 4000)")
+            await page.evaluate("() => (document.body && document.body.innerText || '').slice(0, 8000)")
         )
     except Exception:  # noqa: BLE001
         return ""
@@ -1856,6 +1949,17 @@ _ALIAS_RE = __import__("re").compile(r"(?i)(alias|\+|plus)[^.]{0,60}(not allowed
                                      r"|(e-?mail|address)[^.]{0,60}canonical|canonical (form|e-?mail|address)")
 
 
+# The site refuses free-mail domains (Formbricks, study f80f043a: "Please sign up with your company email address.").
+# Matched on inline form errors only: placeholders like "work@email.com" must not trigger it.
+_WORK_EMAIL_RE = __import__("re").compile(
+    r"(?i)(company|work|business|corporate|professional) e-?mail|free e-?mail|personal e-?mail|"
+    r"(gmail|public|consumer) (e-?mail )?(addresses|domains?|providers?)[^.]{0,40}(not|aren.t)")
+
+
+def work_email_required(inline_errors: list[str] | None) -> bool:
+    return any(_WORK_EMAIL_RE.search(str(e)) for e in inline_errors or [])
+
+
 async def _alias_rejected(page: Any) -> bool:
     try:
         text = await asyncio.wait_for(page.inner_text("body"), timeout=3)
@@ -1925,6 +2029,7 @@ async def _observation(sim: SimSession, png: bytes, error: str = "") -> dict[str
         **_split_fields(await _fields(sim.page)),
         "captcha": await captcha_state(sim.page),
         "alias_rejected": await _alias_rejected(sim.page),
+        "work_email_required": work_email_required(errors["inline"]),
         "png": png,
         "url": sim.page.url,
         "title": await _title(sim.page),
@@ -2000,7 +2105,7 @@ async def record_step(
     row["num_steps"] = len(row["trace"])
     row["last_action"] = action_text
     row["final_url"] = url
-    row["final_dom"] = text[:1500]
+    row["final_dom"] = text[:FINAL_DOM_CHARS]
     row["final_screenshot_url"] = f"/api/studies/{study.id}/agents/{sim.agent_id}/screenshots/final.png"
     row["final_screenshot"] = row["final_screenshot_url"]
     row["page_url"] = row.get("page_url") or url
@@ -2054,7 +2159,7 @@ async def settle_final(sim: SimSession, max_s: float = 12.0) -> bool:
     (shots / "final.png").write_bytes(png)
     asyncio.get_running_loop().create_task(upload_screenshot(sim.study.id, sim.agent_id, shots / "final.png"))
     sim.row["final_url"] = sim.page.url
-    sim.row["final_dom"] = (await _page_text(sim.page))[:1500]
+    sim.row["final_dom"] = (await _page_text(sim.page))[:FINAL_DOM_CHARS]
     sim.row["final_settle"] = "final frame re-taken after the page finished loading"
     return True
 

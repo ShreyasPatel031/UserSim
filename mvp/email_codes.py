@@ -166,6 +166,16 @@ def _find_code(subject: str, body: str) -> str | None:
     if m and m.group(1).lower() not in _LETTER_CODE_STOP:
         return m.group(1)
 
+    # 2c) A grouped code, "935-413" or "935 413" (Koalendar, study 008b395c): next to code wording, or alone on a
+    # line. Returned as digits only, which is what the code boxes take.
+    for line in [subject, *body.splitlines()]:
+        grouped = re.fullmatch(r"(\d{3,4})[- ](\d{3,4})", line.strip())
+        if grouped and _ok("".join(grouped.groups())):
+            return "".join(grouped.groups())
+    near = re.search(r"(?i)\bcode\b[^\n]{0,60}?\b(\d{3,4})[- ](\d{3,4})\b", f"{subject}\n{body}")
+    if near and _ok("".join(near.groups())):
+        return "".join(near.groups())
+
     # 3) A line that is nothing but the code.
     for line in body.splitlines():
         stripped = line.strip()

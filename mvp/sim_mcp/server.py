@@ -61,7 +61,9 @@ Rules:
 - Don't navigate by guessing URLs; use the page like a person would. `navigate` exists for typing an address a person would actually know.
 - Stop when the task is done, when you're stuck, or when a real person in this persona would give up. Then call usersim_finish with outcome completed / gave_up / blocked and notes on what was hard or easy.
 - Need an account? Call usersim_signup_identity for a fresh email alias + password and sign up with EMAIL only (never Google/GitHub).
-  Then usersim_wait_for_verification_code or usersim_wait_for_verification_link (+ usersim_open_verification_link). Captcha in the way: solve it like a person (click the checkbox, drag the slider, press_and_hold), or call usersim_solve_captcha.
+  Then usersim_wait_for_verification_code or usersim_wait_for_verification_link (+ usersim_open_verification_link with link_number=1 for the first link). Captcha in the way: solve it like a person (click the checkbox, drag the slider, press_and_hold), or call usersim_solve_captcha.
+  If the site asks for a username, workspace, team or subdomain name, use the username / workspace from usersim_signup_identity (they are unique; names you invent are often already taken by other simulated users).
+  After signing up, always check for the verification email and open its link, even if the site already let you in: an unverified signup does not count.
   If verifying sends you to a login page, sign in with the SAME email and password from usersim_signup_identity; that is still your new account.
   If the app still says "verify your email" after you opened the link, reload the page (or sign out and sign in again) so it picks up the verified state.
   After clicking a submit button, wait for it to finish (a spinner / disabled button in `fields`) instead of clicking again; double submits cause errors.
@@ -135,6 +137,11 @@ def _obs_content(sim: S.SimSession, obs: dict[str, Any], extra: dict[str, Any] |
                                   "address, and submit again (the old rejection message may still be showing)")
         else:
             meta["email_hint"] = "this site rejects '+' email aliases: call usersim_signup_identity with no_plus=true and use that address"
+    if obs.get("work_email_required"):
+        # Overrides the no_plus hint: no Gmail alias can pass a company-domain check, so retrying only burns steps.
+        meta["email_hint"] = ("this site only accepts company email domains. UserSim's signup inbox is a Gmail address, so no "
+                              "alias will be accepted (no_plus does not help). Stop trying to sign up: finish with outcome "
+                              "'blocked' and say the site requires a work email, unless the task can be done without an account")
     if obs.get("captcha"):
         c = obs["captcha"]
         meta["captcha"] = {**c, "hint": "captcha token ready; submit" if c.get("token_ready") else
@@ -271,7 +278,9 @@ async def usersim_observe(ctx: Context, session_id: str) -> list[Any] | str:
 
 
 @mcp.tool(structured_output=False)
-async def usersim_act(ctx: Context, session_id: str, action: dict[str, Any], thought: str) -> list[Any] | str:
+async def usersim_act(ctx: Context, session_id: str, action: dict[str, Any] | str, thought: str,
+                      x: int | str | None = None, y: int | str | None = None, text: str | None = None,
+                      keys: str | None = None, dy: int | str | None = None, url: str | None = None) -> list[Any] | str:
     """Do ONE thing on the page, the way the persona would, and get the new screenshot.
 
     action (pixel coordinates in the screenshot):
@@ -286,6 +295,23 @@ async def usersim_act(ctx: Context, session_id: str, action: dict[str, Any], tho
     Google / GitHub sign-in is blocked: always use the email signup.
     thought: first-person, what you see / expect / find confusing. Recorded as research data.
     """
+    if isinstance(action, str):
+        # Haiku sometimes sends the action as a JSON string, or flattened: {"action": "click", "x": "888", "y": "31"}
+        # (16 of 3,992 calls in studies f80f043a-2e8d7db5). Rebuild the object from the flat fields.
+        flat = {"x": x, "y": y, "text": text, "keys": keys, "dy": dy, "url": url}
+        if action.strip() in S.ACTION_TYPES:
+            action = {"type": action.strip(), **{k: v for k, v in flat.items() if v is not None}}
+            for k in ("x", "y", "dy"):
+                if isinstance(action.get(k), str) and action[k].strip().lstrip("-").isdigit():
+                    action[k] = int(action[k])
+        else:
+            try:
+                action = json.loads(action)
+            except ValueError:
+                action = None
+        if not isinstance(action, dict):
+            return _fail(S.SessionError('action must be ONE object, e.g. {"type":"click","x":640,"y":400} or '
+                                        '{"type":"type","text":"hello","x":640,"y":300}; put x, y, text inside it'))
     try:
         sim = S.get_session(session_id, _owner(ctx))
         extra = None
@@ -305,10 +331,25 @@ async def usersim_finish(ctx: Context, session_id: str, outcome: str, notes: str
     notes: what was easy, what was hard, where the persona got confused, why they stopped.
     UserSim then closes the browser, runs its own judge and proof checks. Call usersim_get_report next.
     """
+    from mvp.sim_mcp.report import signup_verified
+
     try:
         sim = S.get_session(session_id, _owner(ctx))
     except S.SessionError as exc:
         return _fail(exc)
+    if (str(outcome).strip().lower() == "completed" and sim.inbox is not None and not sim.verify_nudged
+            and not signup_verified(sim.row) and sim.seconds_left() > 60):
+        # Study f80f043a: Youform let agents into the builder before verifying, they finished without opening the
+        # mail, and the signup bar (email-verified) failed real accounts. Ask once; a second call finishes anyway.
+        sim.verify_nudged = True
+        return json.dumps({
+            "session_id": sim.id,
+            "finished": False,
+            "next": ("Not finished yet: you signed up but never opened the verification email, and an unverified signup "
+                     "does not count. Call usersim_wait_for_verification_link (or usersim_wait_for_verification_code), "
+                     "open the link with usersim_open_verification_link, check you are still signed in, then call "
+                     "usersim_finish again. If no mail arrives, call usersim_finish again with the same arguments."),
+        })
     async with sim.lock:
         study = await finalize(sim, outcome=outcome, notes=notes)
     if sim.matrix:
@@ -396,7 +437,7 @@ async def usersim_signup_identity(ctx: Context, session_id: str, no_plus: bool =
             return json.dumps({**ident, "next": "Same identity as before (already issued). Type it into the form now; "
                                                 "do not call usersim_signup_identity again."})
         sim.row["identity_repeat_calls"] = 0
-        return json.dumps({**ident, "next": "Type these into the signup form, submit, then wait for the verification mail."})
+        return json.dumps({**ident, "next": "Type these into the signup form (use username / workspace for any username, team or subdomain field), submit, then wait for the verification mail."})
     except Exception as exc:  # noqa: BLE001
         return _fail(exc)
 
@@ -410,11 +451,15 @@ async def _wait(ctx: Context, session_id: str, timeout_s: int, want: str) -> str
         sim = S.get_session(session_id, _owner(ctx))
         if sim.inbox is None:
             raise S.SessionError("call usersim_signup_identity and submit the signup form first")
-        t = max(10, min(int(timeout_s or 120), 240))
+        # Many MCP clients give a tool call 60 s (Claude Code's default MCP_TOOL_TIMEOUT); Haiku asked for 180 s and the
+        # client gave up first (study e7c5d942). Each call waits at most MVP_MCP_WAIT_MAX_S; the agent calls again.
+        t = max(10, min(int(timeout_s or 45), S._env_int("MVP_MCP_WAIT_MAX_S", 50)))
         msg = await asyncio.to_thread(wait_mail, sim.inbox, _host(sim), since=sim.mail_since, timeout_s=t, seen=sim.mail_seen, want=want)
         sim.last_used = __import__("time").time()
         if not msg:
-            return json.dumps({"found": False, "note": f"no verification mail with a {want} in {t}s; check the form was submitted, or resend"})
+            return json.dumps({"found": False, "note": f"no verification mail with a {want} yet (waited {t}s). Mail often takes "
+                               "1-3 minutes: call this tool again. If several calls find nothing, check the form was "
+                               "really submitted, or use the site's resend link"})
         # keep links from earlier mails openable too (the verify mail and a welcome mail can arrive together)
         sim.mail_links = list(msg.get("links") or []) + [u for u in sim.mail_links if u not in (msg.get("links") or [])]
         for u, t in zip(msg.get("links") or [], msg.get("link_texts") or []):
@@ -427,30 +472,67 @@ async def _wait(ctx: Context, session_id: str, timeout_s: int, want: str) -> str
                 sim.signup_codes.append(msg["code"])
         sim.row.setdefault("signup_mail", []).append({"subject": msg.get("subject"), "sender": msg.get("sender")})
         return json.dumps({"found": True, "subject": msg.get("subject"), "sender": msg.get("sender"),
-                           "code": msg.get("code"), "links": sim.mail_links[:5], "link_texts": (msg.get("link_texts") or [])[:5]})
+                           "code": msg.get("code"), "links": sim.mail_links[:5], "link_texts": (msg.get("link_texts") or [])[:5],
+                           "next": "to open a link call usersim_open_verification_link with link_number=1 (first link) "
+                                   "rather than copying its URL"})
     except Exception as exc:  # noqa: BLE001
         return _fail(exc)
 
 
 @mcp.tool(structured_output=False)
-async def usersim_wait_for_verification_code(ctx: Context, session_id: str, timeout_s: int = 120) -> str:
-    """Wait for the signup email for this session's alias and return the verification code in it."""
+async def usersim_wait_for_verification_code(ctx: Context, session_id: str, timeout_s: int = 45) -> str:
+    """Wait for the signup email for this session's alias and return the verification code in it.
+
+    Each call waits at most ~50 s (MCP clients often time out at 60 s). If found is false, call it again.
+    """
     return await _wait(ctx, session_id, timeout_s, "code")
 
 
 @mcp.tool(structured_output=False)
-async def usersim_wait_for_verification_link(ctx: Context, session_id: str, timeout_s: int = 120) -> str:
-    """Wait for the signup email for this session's alias and return its verification links (best first)."""
+async def usersim_wait_for_verification_link(ctx: Context, session_id: str, timeout_s: int = 45) -> str:
+    """Wait for the signup email for this session's alias and return its verification links (best first).
+
+    Each call waits at most ~50 s (MCP clients often time out at 60 s). If found is false, call it again.
+    """
     return await _wait(ctx, session_id, timeout_s, "link")
 
 
+def resolve_mail_link(links: list[str], url: str, number: int) -> str:
+    """The mail link the agent means: by 1-based number, exactly, or a near-exact copy of exactly one link.
+
+    Haiku garbles long tokens when copying them (repeated base64 chunks; Baserow, study e7c5d942), so a URL that
+    differs only inside the token still opens the one link it clearly came from.
+    """
+    import difflib
+
+    if number:
+        if 1 <= int(number) <= len(links):
+            return links[int(number) - 1]
+        raise S.SessionError(f"link_number must be 1..{len(links)} (call usersim_wait_for_verification_link first)")
+    if url in links:
+        return url
+    if not links:
+        raise S.SessionError("no verification mail yet: call usersim_wait_for_verification_link first")
+    scored = sorted(((difflib.SequenceMatcher(None, url, u).ratio(), u) for u in links), reverse=True)
+    best, runner = scored[0], (scored[1] if len(scored) > 1 else (0.0, ""))
+    same_prefix = url[:40] == best[1][:40]
+    if same_prefix and best[0] >= 0.85 and best[0] - runner[0] >= 0.1:
+        return best[1]
+    raise S.SessionError("only links returned by usersim_wait_for_verification_link can be opened. "
+                         "Pass link_number=1 (the first link) instead of copying the URL")
+
+
 @mcp.tool(structured_output=False)
-async def usersim_open_verification_link(ctx: Context, session_id: str, url: str, thought: str = "I click the link in the email.") -> list[Any] | str:
-    """Open a link returned by usersim_wait_for_verification_link in the browser (like clicking it in the email)."""
+async def usersim_open_verification_link(ctx: Context, session_id: str, url: str = "", thought: str = "I click the link in the email.",
+                                        link_number: int = 0) -> list[Any] | str:
+    """Open a link from the verification email in the browser (like clicking it in the email).
+
+    Prefer link_number: 1 = the first link usersim_wait_for_verification_link returned (the best one), 2 = the second.
+    Long tokens are easy to mistype; with link_number you never copy the URL.
+    """
     try:
         sim = S.get_session(session_id, _owner(ctx))
-        if url not in sim.mail_links:
-            raise S.SessionError("only links returned by usersim_wait_for_verification_link can be opened")
+        url = resolve_mail_link(sim.mail_links, url, link_number)
         opened = sim.row.setdefault("opened_links", [])
         if url in opened:
             raise S.SessionError("this link was already opened; continue on the page (it is the current page)")

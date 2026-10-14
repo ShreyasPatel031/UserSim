@@ -14,7 +14,7 @@ import time
 from typing import Any
 
 from mvp.paths import MVP_RUNS_DIR
-from mvp.sim_mcp.sessions import AGENT_ID, DRIVER, SimSession, close
+from mvp.sim_mcp.sessions import AGENT_ID, DRIVER, FINAL_DOM_CHARS, SimSession, close
 
 OUTCOMES = ("completed", "gave_up", "blocked", "abandoned")
 
@@ -179,7 +179,7 @@ async def _goal_votes(png: bytes, row: dict[str, Any], task: str, n: int) -> tup
     for _ in range(n):
         v = await asyncio.wait_for(
             asyncio.to_thread(judge_goal_screenshot, png, task=task, start_url=str(row.get("site_url") or ""),
-                              final_url=str(row.get("final_url") or ""), dom=str(row.get("final_dom") or ""),
+                              final_url=str(row.get("final_url") or ""), dom=str(row.get("final_dom") or ""), dom_limit=FINAL_DOM_CHARS,
                               evidence=signup_evidence(row)),
             timeout=float(os.environ.get("MVP_PAGE_VERDICT_TIMEOUT_S", "45")),
         )
@@ -215,7 +215,7 @@ async def judge_run(study_id: str, row: dict[str, Any]) -> tuple[dict[str, Any],
                     task=str(row.get("task_prompt") or ""),
                     start_url=str(row.get("site_url") or ""),
                     final_url=str(row.get("final_url") or ""),
-                    dom=str(row.get("final_dom") or ""),
+                    dom=str(row.get("final_dom") or ""), dom_limit=FINAL_DOM_CHARS,
                     evidence=signup_evidence(row),
                 ),
                 timeout=float(os.environ.get("MVP_PAGE_VERDICT_TIMEOUT_S", "45")),
@@ -275,7 +275,8 @@ def apply_hard_rules(row: dict[str, Any], verdict: dict[str, Any], raw: Any, png
 
     1. A final page that is blank, loading or only a spinner never reaches a goal.
     2. A signup goal never passes unless signup_verified (the verify mail's link/code was really used).
-    3. Otherwise a signed-in app page after a verified signup counts (the judge is often too literal), but only
+    3. A signup that ends on a billing / plan-picker page is not signed in.
+    4. Otherwise a signed-in app page after a verified signup counts (the judge is often too literal), but only
        when signup is the whole task; tasks with further goals keep the judge's verdict on their own wording.
     """
     signed_in = isinstance(raw, dict) and bool(raw.get("signed_in_app_page"))
@@ -300,8 +301,9 @@ def apply_hard_rules(row: dict[str, Any], verdict: dict[str, Any], raw: Any, png
         return verdict
     if signup:
         verdict["signup_verified"] = True
-    if billing_wall(str(row.get("final_url") or "")):
-        # A billing / payment / plan-picker page is a paywall, never a signed-in product page.
+    if signup and billing_wall(str(row.get("final_url") or "")):
+        # A billing / payment / plan-picker page is a paywall, never a signed-in product page. Only for signup
+        # goals: on "find out what the plan costs" the pricing page is the answer (Tally, study f80f043a).
         verdict["signed_in_app_page"] = False
         verdict["billing_wall"] = True
         if verdict.get("goal_reached"):
@@ -329,6 +331,18 @@ def _shot_ok(study_id: str, agent_id: str, step: dict[str, Any]) -> bool:
     except OSError:
         return False
     return png_bytes_ok(raw) and not frame_unrendered(raw)
+
+
+def _opening_redirect(row: dict[str, Any]) -> bool:
+    """The page opened where the product URL itself redirected the server's first load (teable.io -> teable.ai)."""
+    from urllib.parse import urlsplit
+
+    from mvp.e2e2_gates import opened_url_of
+    from mvp.sim_mcp.sessions import registrable_domain
+
+    landed = urlsplit(str(row.get("opening_redirect") or "")).hostname or ""
+    opened = urlsplit(str(opened_url_of(row) or "")).hostname or ""
+    return bool(landed and opened) and registrable_domain(landed) == registrable_domain(opened)
 
 
 def _same_registrable(row: dict[str, Any]) -> bool:
@@ -378,7 +392,8 @@ def proof_checks(study: dict[str, Any], row: dict[str, Any], judge_status: str) 
     bad_shots = [s["step"] for s in steps if not _shot_ok(str(study.get("id")), aid, s)]
     site = row.get("site_url")
     checks = [
-        ("opened_on_product", opened_on_assigned_site(row) or _same_registrable(row) or _parent_auth_opened(row),
+        ("opened_on_product", opened_on_assigned_site(row) or _same_registrable(row) or _parent_auth_opened(row)
+         or _opening_redirect(row),
          f"opened {row.get('page_url') or '?'} for {site}", f"opened {row.get('page_url') or '?'}, which is NOT the product {site}"),
         ("real_action", has_click_type_scroll(row), "at least one click, type, or scroll ran on the page",
          "no click, type, or scroll ever ran on the page"),

@@ -1,0 +1,20 @@
+{
+  "product_url": "https://tally.so",
+  "competitors": ["https://youform.com", "https://formbricks.com"],
+  "personas": [
+    {"name": "Maya Ortiz", "bio": "Freelance wedding photographer who needs a simple client inquiry form for her website; not technical, wants something free that looks nice.", "favors": "https://tally.so"},
+    {"name": "Daniel Kim", "bio": "Solo founder of a small newsletter collecting waitlist sign-ups; comfortable with no-code tools, hates paywalls on basic features.", "favors": "https://tally.so"},
+    {"name": "Priya Nair", "bio": "Marketing coordinator at a 20-person agency building lead-capture forms that should feel modern and conversational; judges tools by how fast she can ship one.", "favors": "https://youform.com"},
+    {"name": "Tom Becker", "bio": "Bootcamp instructor making a short quiz-style feedback form for students each week; wants one question per screen and minimal setup.", "favors": "https://youform.com"},
+    {"name": "Lena Fischer", "bio": "Product manager at a SaaS startup who wants in-product surveys and NPS from users; cares about targeting and privacy, ok with some setup.", "favors": "https://formbricks.com"},
+    {"name": "Carlos Mendes", "bio": "Customer success lead who needs a churn-feedback survey and wants to see responses analysed; moderately technical.", "favors": "https://formbricks.com"}
+  ],
+  "tasks": [
+    {"prompt": "Sign up with your email and create a contact form with name, email and a message field.", "favors": "https://tally.so"},
+    {"prompt": "Sign up with your email, build a short waitlist form, and get a link you could share with people.", "favors": "https://tally.so"},
+    {"prompt": "Sign up with your email and create a one-question-per-screen feedback form with a rating question.", "favors": "https://youform.com"},
+    {"prompt": "Find out what the free plan includes and what you would pay to remove the product's branding.", "favors": "https://youform.com"},
+    {"prompt": "Sign up with your email and start creating a customer satisfaction (NPS) survey.", "favors": "https://formbricks.com"},
+    {"prompt": "Find out whether you can self-host this tool or keep response data in the EU, and where that is explained.", "favors": "https://formbricks.com"}
+  ]
+}

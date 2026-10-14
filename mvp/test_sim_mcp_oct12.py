@@ -23,6 +23,14 @@ def test_billing_wall_blocks_override(monkeypatch):
     assert v["goal_reached"] is True
 
 
+def test_pricing_page_is_the_answer_for_a_pricing_question(monkeypatch):
+    monkeypatch.setattr(R, "frame_unrendered", lambda png: False)
+    row = {"final_url": "https://tally.so/pricing", "task_prompt": "Find out what the free plan includes and what you "
+           "would pay to remove the product's branding."}
+    v = R.apply_hard_rules(row, {"goal_reached": True, "reason": "pricing shown"}, {"signed_in_app_page": False}, b"")
+    assert v["goal_reached"] is True and not v.get("billing_wall")
+
+
 # ---- report format: MCP studies go through the website's finish_study, keeping the MCP verdicts
 import asyncio
 
@@ -158,3 +166,192 @@ def test_demo_booking_links_are_never_verify_links():
     for u in ["https://calendly.com/j-atatus", "https://cal.com/team/demo", "https://meetings.hubspot.com/x"]:
         assert _skip_link(u), u
     assert not _skip_link("https://www.atatus.com/verify?id=abc")
+
+
+def test_company_email_only_is_detected_from_inline_errors():
+    from mvp.sim_mcp.sessions import work_email_required
+
+    assert work_email_required(["Please sign up with your company email address."])
+    assert work_email_required(["Free email providers are not allowed"])
+    assert work_email_required(["Gmail addresses are not accepted"])
+    assert not work_email_required(["Email is required", "work@email.com"])
+    assert not work_email_required(["Password must contain a number"])
+    assert not work_email_required(None)
+
+
+def test_finish_asks_once_to_open_the_verification_mail(monkeypatch):
+    import json as _json
+
+    from mvp.sim_mcp import server as SV
+    from mvp.sim_mcp import sessions as SS
+
+    st = S.StudyState(id="t-nudge", url="https://x.io", segment="dev")
+    sim = SS.SimSession(id="n1", study=st, product_url="https://x.io", task="sign up", persona="p")
+    sim.inbox = object()
+    sim.study.live_sessions = {sim.agent_id: {"agent_id": sim.agent_id, "signup_email": "a+b@gmail.com", "trace": []}}
+    monkeypatch.setattr(SS, "get_session", lambda sid: sim)
+    finals = []
+
+    async def fin(s, **kw):
+        finals.append(kw)
+        return st
+
+    monkeypatch.setattr(SV, "finalize", fin)
+    monkeypatch.setattr(SV, "build_report", lambda study: {"study_id": "t-nudge", "headline": "h", "proof": {}})
+    first = _json.loads(asyncio.run(SV.usersim_finish("n1", "completed", "done")))
+    assert first["finished"] is False and "verification" in first["next"] and not finals
+    asyncio.run(SV.usersim_finish("n1", "completed", "done"))
+    assert len(finals) == 1
+    # gave_up / blocked never get the nudge
+    sim2 = SS.SimSession(id="n2", study=st, product_url="https://x.io", task="sign up", persona="p")
+    sim2.inbox = object()
+    monkeypatch.setattr(SS, "get_session", lambda sid: sim2)
+    asyncio.run(SV.usersim_finish("n2", "blocked", "work email only"))
+    assert len(finals) == 2
+
+
+def test_act_flattened_action_gets_a_clear_error(monkeypatch):
+    import json as _json
+
+    from mvp.sim_mcp import server as SV
+
+    out = _json.loads(asyncio.run(SV.usersim_act("nope", "hop", "I click")))
+    assert "ONE object" in out["error"]
+    seen = []
+    monkeypatch.setattr(SV.S, "get_session", lambda sid: (_ for _ in ()).throw(SV.S.SessionError("unknown session")))
+    out = _json.loads(asyncio.run(SV.usersim_act("nope", "click", "I click", x="888", y="31")))
+    assert "unknown session" in out["error"]  # rebuilt into an object, so it got as far as the session lookup
+    out = _json.loads(asyncio.run(SV.usersim_act("nope", '{"type":"click","x":1,"y":2}', "I click")))
+    assert "unknown session" in out["error"]  # parsed, then the bad session id is reported
+
+
+def test_key_names_are_normalised():
+    from mvp.sim_mcp.sessions import norm_keys
+
+    assert norm_keys("BackSpace") == "Backspace"
+    assert norm_keys("ctrl+a") == "Control+a"
+    assert norm_keys("Cmd+Shift+K") == "Meta+Shift+K"
+    assert norm_keys("Return") == "Enter"
+    assert norm_keys("F5") == "F5" and norm_keys("a") == "a" and norm_keys("Enter") == "Enter"
+
+
+def test_site_redirect_on_first_load_counts_as_the_product():
+    row = {"site_url": "https://teable.io", "page_url": "https://teable.ai/", "opening_redirect": "https://teable.ai/"}
+    assert R._opening_redirect(row)
+    assert not R._opening_redirect({"site_url": "https://teable.io", "page_url": "https://teable.ai/"})
+    assert not R._opening_redirect({"site_url": "https://teable.io", "page_url": "https://evil.com/",
+                                    "opening_redirect": "https://teable.ai/"})
+
+
+def test_mail_wait_is_capped_below_common_client_timeouts(monkeypatch):
+    import json as _json
+
+    import mvp.signup_tools as T
+    from mvp.sim_mcp import server as SV
+    from mvp.sim_mcp import sessions as SS
+
+    st = S.StudyState(id="t-wait", url="https://x.io", segment="dev")
+    sim = SS.SimSession(id="w1", study=st, product_url="https://x.io", task="sign up", persona="p")
+    sim.inbox = object()
+    st.live_sessions = {sim.agent_id: {"agent_id": sim.agent_id, "trace": []}}
+    monkeypatch.setattr(SS, "get_session", lambda sid: sim)
+    seen = []
+    monkeypatch.setattr(T, "wait_mail", lambda *a, **k: seen.append(k["timeout_s"]))
+    out = _json.loads(asyncio.run(SV.usersim_wait_for_verification_link("w1", 180)))
+    assert seen == [50] and out["found"] is False and "call this tool again" in out["note"]
+
+
+def test_mail_link_by_number_or_near_exact_copy():
+    import pytest
+
+    from mvp.sim_mcp.server import resolve_mail_link
+    from mvp.sim_mcp.sessions import SessionError
+
+    good = "https://baserow.io/verify-email-address/.eJwdi80OgjAMgN-lV2TpuiHQkw_BnYy5kCZOCIVIYnx3p9fv5w2Hpm2UOzA5T62_QMpBHsB_oZJV5qc5Vq2mUMDysjF2U3ebf5WJS4ZynKtsScewl42QrrXF2veBf5WJS4ZynKtsScewl42QrrXF2venstc.CMvBOvDlNB8so1Ao62JiVNt76Ts"
+    links = [good, "https://baserow.io", "https://baserow.io/privacy"]
+    assert resolve_mail_link(links, "", 1) == good and resolve_mail_link(links, "", 3).endswith("privacy")
+    garbled = good.replace("XF2venstc", "XF2veBf5WJS4ZynKtsScewl42QrrXF2venstc")
+    assert resolve_mail_link(links, garbled, 0) == good
+    with pytest.raises(SessionError):
+        resolve_mail_link(links, "https://evil.com/verify-email-address/abc", 0)
+    with pytest.raises(SessionError):
+        resolve_mail_link(links, "", 9)
+    with pytest.raises(SessionError):
+        resolve_mail_link([], good, 0)
+
+
+def test_probe_refuses_bad_certificates_and_unknown_hosts(monkeypatch):
+    import httpx
+    import pytest
+
+    from mvp.sim_mcp import sessions as SS
+
+    monkeypatch.setenv("MVP_MCP_PROBE_SITES", "1")
+
+    def boom(msg):
+        def get(*a, **k):
+            raise httpx.ConnectError(msg)
+        return get
+
+    monkeypatch.setattr(httpx, "get", boom("[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch"))
+    with pytest.raises(SS.SessionError):
+        SS.probe_reachable("https://harmonizely.com")
+    monkeypatch.setattr(httpx, "get", boom("[Errno -2] Name or service not known"))
+    with pytest.raises(SS.SessionError):
+        SS.probe_reachable("https://nope.invalid")
+    monkeypatch.setattr(httpx, "get", boom("Connection refused"))
+    SS.probe_reachable("https://flaky.example")  # not a TLS/DNS failure: let the browser try
+
+    def timeout(*a, **k):
+        raise httpx.ReadTimeout("slow")
+    monkeypatch.setattr(httpx, "get", timeout)
+    SS.probe_reachable("https://slow.example")
+
+
+def test_cell_whose_browser_failed_goes_back_to_the_queue(monkeypatch):
+    import pytest
+
+    from mvp.sim_mcp import sessions as SS
+
+    study = SS.create_matrix_study(product_url="https://a.com", competitors=[], personas=[{"bio": "x"}], tasks=["y"])
+    cell = next(iter(study.live_sessions))
+
+    async def bad_open(sim):
+        raise RuntimeError("net::ERR_CERT_COMMON_NAME_INVALID")
+
+    async def noop(*a, **k):
+        return None
+
+    monkeypatch.setattr(SS, "_open_browser", bad_open)
+    monkeypatch.setattr(SS, "maybe_finish_study", noop, raising=False)
+    for attempt in range(1, SS.START_TRIES):
+        with pytest.raises(SS.SessionError, match="still queued"):
+            asyncio.run(SS.start_session(study_id=study.id, cell_id=cell))
+        assert study.live_sessions[cell]["status"] == "queued"
+    with pytest.raises(RuntimeError):
+        import mvp.sim_mcp.report as RR
+        monkeypatch.setattr(RR, "maybe_finish_study", noop)
+        asyncio.run(SS.start_session(study_id=study.id, cell_id=cell))
+    assert study.live_sessions[cell]["status"] == "error"
+
+
+def test_grouped_codes_are_found():
+    from mvp.email_codes import _find_code
+
+    body = ("Confirm your email address\n\nYour confirmation code is below. Enter it in your open browser window "
+            "to finish signing in.\n\n935-413\n\nIf you didn't request this email, you can safely ignore it.")
+    assert _find_code("Confirm your Koalendar email address", body) == "935413"
+    assert _find_code("Sign in", "Your login code is 482 917. It expires in 10 minutes.") == "482917"
+    assert _find_code("Welcome", "Questions? Call us at 555-1234 or write to us.") is None
+
+
+def test_scroll_and_coordinate_aliases_are_normalised():
+    from mvp.sim_mcp.sessions import validate_action
+
+    u = "https://x.io"
+    assert validate_action({"type": "scroll", "x": 640, "y": 400, "deltaY": 700}, u)["dy"] == 700
+    assert validate_action({"type": "scroll", "x": 640, "y": 500, "delta_y": 500}, u)["dy"] == 500
+    assert validate_action({"type": "scroll", "x": 640, "y": 500, "direction": "down", "amount": 400}, u)["dy"] == 400
+    assert validate_action({"type": "scroll", "x": 640, "y": 500, "direction": "up", "amount": 400}, u)["dy"] == -400
+    a = validate_action({"type": "click", "x": "640", "y": "400.0"}, u)
+    assert (a["x"], a["y"]) == (640, 400)
