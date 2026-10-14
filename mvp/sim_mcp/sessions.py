@@ -888,7 +888,14 @@ def validate_action(action: dict[str, Any], product_url: str) -> dict[str, Any]:
     kind = str(action.get("type") or "")
     if kind not in ACTION_TYPES:
         raise SessionError(f"action.type must be one of {', '.join(ACTION_TYPES)}")
-    if kind in {"click", "double_click", "right_click", "hover", "triple_click"}:
+    if (kind == "click" and str(action.get("text") or "").strip()
+            and (action.get("x") is None or action.get("y") is None)):
+        # Oct 14 Reframe: the quiz's Continue button sat below the fold and outside the field list, so the model never
+        # had a point for it. {"type":"click","text":"Continue"} finds a visible button/link by its text instead.
+        if len(str(action["text"])) > 80:
+            raise SessionError("click text is limited to 80 characters")
+        action["by_text"] = True
+    elif kind in {"click", "double_click", "right_click", "hover", "triple_click"}:
         _xy(action)
     elif kind == "type":
         if not isinstance(action.get("text"), str) or not action["text"]:
@@ -953,8 +960,36 @@ def validate_action(action: dict[str, Any], product_url: str) -> dict[str, Any]:
     return action
 
 
+async def click_by_text(page: Any, text: str) -> None:
+    """Click the first visible button / link / submit whose accessible name or text is `text` (case-insensitive)."""
+    want = text.strip()
+    exact = re.compile(rf"^\s*{re.escape(want)}\s*$", re.I)
+    candidates = [page.get_by_role("button", name=exact), page.get_by_role("link", name=exact),
+                  page.locator("input[type=submit], input[type=button]").filter(has_text=exact),
+                  page.get_by_text(exact)]
+    for loc in candidates:
+        try:
+            n = await loc.count()
+        except Exception:  # noqa: BLE001
+            continue
+        for i in range(min(n, 5)):
+            el = loc.nth(i)
+            try:
+                if not await el.is_visible():
+                    continue
+                await el.scroll_into_view_if_needed(timeout=3000)
+                await el.click(timeout=5000)
+                return
+            except Exception:  # noqa: BLE001
+                continue
+    raise SessionError(f"no visible button or link with the text {want!r}; use x,y from the screenshot")
+
+
 async def _execute(page: Any, action: dict[str, Any]) -> None:
     kind = action["type"]
+    if kind == "click" and action.get("by_text"):
+        await click_by_text(page, str(action["text"]))
+        return
     if kind in {"click", "double_click", "right_click"}:
         x, y = _xy(action)
         await page.mouse.click(

@@ -284,7 +284,7 @@ async def usersim_act(ctx: Context, session_id: str, action: dict[str, Any] | st
     """Do ONE thing on the page, the way the persona would, and get the new screenshot.
 
     action (pixel coordinates in the screenshot):
-      {"type":"click","x":..,"y":..} · {"type":"double_click","x":..,"y":..} · {"type":"triple_click","x":..,"y":..} (select a field's text) · {"type":"right_click","x":..,"y":..}
+      {"type":"click","x":..,"y":..} · {"type":"click","text":"Continue"} (a visible button/link by its text, scrolled into view) · {"type":"double_click","x":..,"y":..} · {"type":"triple_click","x":..,"y":..} (select a field's text) · {"type":"right_click","x":..,"y":..}
       {"type":"hover","x":..,"y":..} · {"type":"type","text":"...","x":..,"y":..,"submit":false} (clicks the field at x,y, clears it, types; omit x,y to type into the focused field)
     Each observation lists visible `fields` (kind, label, exact x,y, filled/checked) and `page_errors` (inline form errors, JS errors): use those coordinates for form fields and read the errors before retrying.
       {"type":"key","keys":"Enter"|"Tab"|"Escape"|"Control+A"} · {"type":"scroll","dy":600,"x":..,"y":..} (dy>0 = down)
