@@ -37,3 +37,7 @@ data/models/
 data/hackathon/
 .vercel
 .env*.local
+
+# iOS run artifacts (screenshots include account details)
+results/ios/
+reports/ios-*/
