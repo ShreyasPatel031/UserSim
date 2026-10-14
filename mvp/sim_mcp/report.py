@@ -68,6 +68,16 @@ _SIGNUP_TASK_RE = re.compile(
     r"sign ?up|create (?:a |an |your |a new )?(?:new )?account|register|registration|verify your email", re.I)
 
 
+def is_research_task(row: dict[str, Any]) -> bool:
+    """The task itself asks for no account (find a price, compare plans, ...), whatever tools the client called."""
+    task = str(row.get("task_prompt") or "")
+    if not task:
+        return False
+    if re.search(r"without (?:creating|signing|making|registering|an account|a signup|sign)", task, re.I):
+        return True
+    return not _SIGNUP_TASK_RE.search(task)
+
+
 def is_signup_goal(row: dict[str, Any]) -> bool:
     """The run was a signup: the server issued a signup alias, or the task asks for an account."""
     if row.get("signup_email"):
@@ -399,20 +409,33 @@ def proof_checks(study: dict[str, Any], row: dict[str, Any], judge_status: str) 
          "no click, type, or scroll ever ran on the page"),
         ("screenshots_real", bool(steps) and not bad_shots, f"{len(steps)} steps, every screenshot shows a rendered page",
          f"{len(steps)} steps; blank, spinner-only or missing screenshots at steps {bad_shots or 'all (no steps)'}"),
-        ("beyond_first_screen", beyond_first_screen(row, str(site or "")), "URL or page content changed from the opening page",
-         "URL and page content never changed from the opening page"),
+        _first_screen_check(row, site),
         ("live_view_offered", bool(row.get("live_view_url")), "Browserbase live view was available to watch",
          "no Browserbase live view URL was recorded"),
         ("judge_ran", judge_status == "ok", "independent judge ran: ok", f"independent judge did not run cleanly: {judge_status}"),
         ("not_degraded", not study.get("test_mode") and study.get("driver") == DRIVER, "real browser run, not snapshot / test mode",
          f"degraded run (test_mode={bool(study.get('test_mode'))}, driver={study.get('driver')!r})"),
     ]
-    if row.get("signup_email") or is_signup_goal(row):
+    if is_signup_goal(row) and not is_research_task(row):
+        # Oct 14 (74b7210f): a research cell must not need signup proof just because the client asked for an alias.
         checks.append(("signup_verified", signup_verified(row),
                        "server saw the verification email for the fresh alias and its verify link/code was used",
                        "NOT verified: no verification email was seen, or no verify link/code from it was used"))
     out = [{"name": n, "pass": bool(ok), "detail": dp if ok else df} for n, ok, dp, df in checks]
-    return {"pass": all(c["pass"] for c in out), "checks": out}
+    failed = [f"{c['name']}: {c['detail']}" for c in out if not c["pass"]]
+    return {"pass": not failed, "checks": out, "reason": "; ".join(failed) if failed else "all proof checks passed"}
+
+
+def _first_screen_check(row: dict[str, Any], site: Any) -> tuple[str, bool, str, str]:
+    """beyond_first_screen, except a research answer may sit on the opening page (Oct 14 74b7210f, Plausible pricing)."""
+    from mvp.e2e2_gates import beyond_first_screen
+
+    moved = beyond_first_screen(row, str(site or ""))
+    verdict = row.get("page_verdict") if isinstance(row.get("page_verdict"), dict) else {}
+    if not moved and is_research_task(row) and verdict.get("goal_reached"):
+        return ("beyond_first_screen", True, "research task: the judge found the answer on the opening page (moving on is not required)", "")
+    return ("beyond_first_screen", moved, "URL or page content changed from the opening page",
+            "URL and page content never changed from the opening page")
 
 
 # ---------------------------------------------------------------- finalize
@@ -622,13 +645,30 @@ async def maybe_finish_study(study: Any, *, force: bool = False) -> bool:
     if force and any(s.study is study and not s.closed for s in SESSIONS.values()):
         raise RuntimeError("some simulated users are still running; finish them first")
     _FINISHING.add(study.id)
+    done_ids = {a.get("agent_id") for a in study.agent_results}
     for r in rows:
         if r.get("status") not in _TERMINAL_ROWS:
             r["status"] = "skipped"
             r["live_active"] = False
+        if r.get("status") == "skipped" and r.get("agent_id") not in done_ids:
+            # Oct 14 (74b7210f): an unstarted cell had no agent_results row, so the report showed "—" instead of "skipped".
+            study.agent_results.append(skipped_result(r))
     study.phase = "Writing the report"
     asyncio.get_running_loop().create_task(_finish_matrix(study))
     return True
+
+
+def skipped_result(row: dict[str, Any]) -> dict[str, Any]:
+    """agent_results row for a cell that never started, so the report says "skipped" instead of a blank."""
+    keep = ("agent_id", "cell_id", "persona_id", "persona_name", "persona_bio", "task_id", "task_title", "task_prompt",
+            "site_key", "site_url", "site_label")
+    out = {k: row.get(k) for k in keep if row.get(k) is not None}
+    reason = "Cell never started (skipped)."
+    out.update({"mode": "mcp", "driver": DRIVER, "status": "skipped", "driver_outcome": "skipped", "completed": False,
+                "skipped": True, "num_steps": 0, "trace": [], "feedback": reason,
+                "page_verdict": {"goal_reached": False, "skipped": True, "reason": reason},
+                "mcp_proof": {"pass": False, "skipped": True, "checks": [], "reason": "skipped: the cell never started"}})
+    return out
 
 
 async def _finish_matrix(study: Any) -> None:
@@ -641,9 +681,11 @@ async def _finish_matrix(study: Any) -> None:
             **(study.summary or {}),
             "driver": DRIVER,
             "mcp_proof": {
-                "runs": len(proofs),
+                "runs": sum(1 for r in study.agent_results if r.get("status") != "skipped"),
                 "passed": sum(1 for p in proofs if p.get("pass")),
-                "failed_runs": [r.get("agent_id") for r in study.agent_results if not (r.get("mcp_proof") or {}).get("pass")],
+                "failed_runs": [r.get("agent_id") for r in study.agent_results
+                                if r.get("status") != "skipped" and not (r.get("mcp_proof") or {}).get("pass")],
+                "skipped_runs": [r.get("agent_id") for r in study.agent_results if r.get("status") == "skipped"],
             },
         }
         await asyncio.to_thread(persist_study, study)
