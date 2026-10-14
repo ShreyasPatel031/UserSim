@@ -189,7 +189,7 @@ def test_finish_asks_once_to_open_the_verification_mail(monkeypatch):
     sim = SS.SimSession(id="n1", study=st, product_url="https://x.io", task="sign up", persona="p")
     sim.inbox = object()
     sim.study.live_sessions = {sim.agent_id: {"agent_id": sim.agent_id, "signup_email": "a+b@gmail.com", "trace": []}}
-    monkeypatch.setattr(SS, "get_session", lambda sid: sim)
+    monkeypatch.setattr(SS, "get_session", lambda sid, owner=None: sim)
     finals = []
 
     async def fin(s, **kw):
@@ -198,15 +198,15 @@ def test_finish_asks_once_to_open_the_verification_mail(monkeypatch):
 
     monkeypatch.setattr(SV, "finalize", fin)
     monkeypatch.setattr(SV, "build_report", lambda study: {"study_id": "t-nudge", "headline": "h", "proof": {}})
-    first = _json.loads(asyncio.run(SV.usersim_finish("n1", "completed", "done")))
+    first = _json.loads(asyncio.run(SV.usersim_finish(None, "n1", "completed", "done")))
     assert first["finished"] is False and "verification" in first["next"] and not finals
-    asyncio.run(SV.usersim_finish("n1", "completed", "done"))
+    asyncio.run(SV.usersim_finish(None, "n1", "completed", "done"))
     assert len(finals) == 1
     # gave_up / blocked never get the nudge
     sim2 = SS.SimSession(id="n2", study=st, product_url="https://x.io", task="sign up", persona="p")
     sim2.inbox = object()
-    monkeypatch.setattr(SS, "get_session", lambda sid: sim2)
-    asyncio.run(SV.usersim_finish("n2", "blocked", "work email only"))
+    monkeypatch.setattr(SS, "get_session", lambda sid, owner=None: sim2)
+    asyncio.run(SV.usersim_finish(None, "n2", "blocked", "work email only"))
     assert len(finals) == 2
 
 
@@ -215,13 +215,13 @@ def test_act_flattened_action_gets_a_clear_error(monkeypatch):
 
     from mvp.sim_mcp import server as SV
 
-    out = _json.loads(asyncio.run(SV.usersim_act("nope", "hop", "I click")))
+    out = _json.loads(asyncio.run(SV.usersim_act(None, "nope", "hop", "I click")))
     assert "ONE object" in out["error"]
     seen = []
-    monkeypatch.setattr(SV.S, "get_session", lambda sid: (_ for _ in ()).throw(SV.S.SessionError("unknown session")))
-    out = _json.loads(asyncio.run(SV.usersim_act("nope", "click", "I click", x="888", y="31")))
+    monkeypatch.setattr(SV.S, "get_session", lambda sid, owner=None: (_ for _ in ()).throw(SV.S.SessionError("unknown session")))
+    out = _json.loads(asyncio.run(SV.usersim_act(None, "nope", "click", "I click", x="888", y="31")))
     assert "unknown session" in out["error"]  # rebuilt into an object, so it got as far as the session lookup
-    out = _json.loads(asyncio.run(SV.usersim_act("nope", '{"type":"click","x":1,"y":2}', "I click")))
+    out = _json.loads(asyncio.run(SV.usersim_act(None, "nope", '{"type":"click","x":1,"y":2}', "I click")))
     assert "unknown session" in out["error"]  # parsed, then the bad session id is reported
 
 
@@ -254,10 +254,10 @@ def test_mail_wait_is_capped_below_common_client_timeouts(monkeypatch):
     sim = SS.SimSession(id="w1", study=st, product_url="https://x.io", task="sign up", persona="p")
     sim.inbox = object()
     st.live_sessions = {sim.agent_id: {"agent_id": sim.agent_id, "trace": []}}
-    monkeypatch.setattr(SS, "get_session", lambda sid: sim)
+    monkeypatch.setattr(SS, "get_session", lambda sid, owner=None: sim)
     seen = []
     monkeypatch.setattr(T, "wait_mail", lambda *a, **k: seen.append(k["timeout_s"]))
-    out = _json.loads(asyncio.run(SV.usersim_wait_for_verification_link("w1", 180)))
+    out = _json.loads(asyncio.run(SV.usersim_wait_for_verification_link(None, "w1", 180)))
     assert seen == [50] and out["found"] is False and "call this tool again" in out["note"]
 
 

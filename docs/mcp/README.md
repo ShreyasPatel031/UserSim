@@ -8,10 +8,11 @@ UserSim lets an AI agent act as a **simulated user** of a real, public web produ
 
 ## Deployment status (read this first)
 
-- **Live on production.** The endpoint is `https://usersim.vercel.app/mcp`, the same server as the website, behind the Vercel proxy. It went live on Oct 13, 2026 (PT). `https://usersim.vercel.app/health` shows the running `engine_version`.
-- Every call needs `Authorization: Bearer <token>`. Without it the server answers **401** `{"error":"missing or wrong bearer token"}`. Ask the owner for the token.
-- Production studies save under `mvp_studies/`, so the `report_url` the MCP returns (`https://usersim.vercel.app/report?study=<id>`) opens on the website.
-- A private **test copy** still runs on the prod VM (`usersim-grokbot-web`, zone `us-central1-a`, project `project-amer-scs-sandbox`) for trying unmerged changes. Reach it only through an IAP tunnel: run `source /workspace/gcp-auth.sh` on the box, then
+- **Public hostnames are not wired up yet.** As of Oct 2026, `https://usersim.vercel.app/mcp` and `https://atelier-sim.com/mcp` both return **404**. Do not point a client at those URLs until the owner says they are live.
+- **The working endpoint today** is the private copy on the prod VM (`usersim-grokbot-web`, zone `[REDACTED]-a`, project `[REDACTED]`). Reach it only through an IAP tunnel: run `source /workspace/gcp-auth.sh` on the box, then
+- Every call needs `Authorization: Bearer <token>`. Without it the server answers **401** `{"error":"missing or wrong bearer token"}`. Ask the owner for the token; never commit it.
+- Studies from that VM copy save under `mvp_studies/`, so `report_url` links (`https://usersim.vercel.app/report?study=<id>`) open on the website when the study id exists there.
+- When public `/mcp` is enabled on Vercel or atelier-sim.com, the owner will update this section.
 
   ```bash
   gcloud compute ssh usersim-grokbot-web --zone us-central1-a --tunnel-through-iap -- -N -L 8788:127.0.0.1:8788
@@ -32,8 +33,9 @@ UserSim lets an AI agent act as a **simulated user** of a real, public web produ
 Never paste the token into docs, chats or commits. Ask the owner for it, and keep it in an env var.
 
 ### Claude Code
+Use `http://127.0.0.1:8788/mcp` after the IAP tunnel below (or whatever public URL the owner enables).
 ```bash
-claude mcp add --transport http usersim https://usersim.vercel.app/mcp \
+claude mcp add --transport http usersim http://127.0.0.1:8788/mcp \
   --header "Authorization: Bearer $MCP_CLIENT_TOKEN"
 ```
 
@@ -43,7 +45,7 @@ claude mcp add --transport http usersim https://usersim.vercel.app/mcp \
   "mcpServers": {
     "usersim": {
       "command": "npx",
-      "args": ["-y", "mcp-remote", "https://usersim.vercel.app/mcp",
+      "args": ["-y", "mcp-remote", "http://127.0.0.1:8788/mcp",
                "--header", "Authorization: Bearer ${MCP_CLIENT_TOKEN}"],
       "env": { "MCP_CLIENT_TOKEN": "<set locally, never commit>" }
     }
@@ -57,7 +59,7 @@ claude mcp add --transport http usersim https://usersim.vercel.app/mcp \
 {
   "mcpServers": {
     "usersim": {
-      "url": "https://usersim.vercel.app/mcp",
+      "url": "http://127.0.0.1:8788/mcp",
       "headers": { "Authorization": "Bearer ${env:MCP_CLIENT_TOKEN}" }
     }
   }
@@ -71,7 +73,7 @@ from mcp import ClientSession
 from mcp.client.streamable_http import streamable_http_client
 from mcp.shared._httpx_utils import create_mcp_http_client
 
-URL = os.environ.get("USERSIM_MCP", "https://usersim.vercel.app/mcp")
+URL = os.environ.get("USERSIM_MCP", "http://127.0.0.1:8788/mcp")
 
 async def main():
     hc = create_mcp_http_client(headers={"Authorization": f"Bearer {os.environ['MCP_CLIENT_TOKEN']}"})
