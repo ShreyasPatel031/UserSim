@@ -630,3 +630,30 @@ is finished with the website `finish_study(keep_verdicts=True)` (single-session 
 links are never verification links. Tests: mvp/test_sim_mcp_oct12.py. These are not on the VM yet (VM code only moves
 via GitHub), so the Oct 12 runs above used a88f429 and have the old thin summary.
 
+
+## Oct 14 (PT): Reframe web onboarding (reframeapp.com), test copy at 40415e8
+
+Checks first: reframeapp.com and joinreframeapp.com are not in Outreach's leads.md, and the signup inbox had no earlier
+Reframe mail (IMAP search FROM/TO/SUBJECT "reframe", TEXT "joinreframeapp": 0 hits), so this was a never-seen product.
+Approved scope: the 7-day free trial could be started only if it needed no card; a card/payment screen means stop and enter nothing.
+Start URL https://onboarding.joinreframeapp.com/ (a long quiz funnel: goals, habits, typical week, triggers, ...).
+Studies are in the production `mvp_studies/` location.
+
+| run | alias tag | study_id | steps | where it stopped | result |
+|---|---|---|---|---|---|
+| reframe1 | onboarding | 99094e2f-6d08-44d2-8cf6-60b415f764a8 | 56 (server cap 60) | quiz page "other goals" (multi-select) | fail: the model toggled options for ~40 steps and never pressed Continue |
+| reframe2 | onboarding | 863a9c30-0b09-43c4-bf6f-c27d5de0366b | 60 (server cap) | quiz page "triggers" (multi-select) | fail: same toggle loop, now on a later page |
+| reframe3 | onboarding | 13bf42d6-c781-4a49-98e4-e682018d726e | ~63 (cap raised to 120 for this test) | quiz page "alcohol types" | abandoned: the IAP tunnel dropped mid-run (client disconnected) |
+| reframe4 | onboarding | 027f0b36-de3d-40f4-ae59-a1150785eb23 | ~76 | quiz page "triggers" | stopped at the 30-minute budget. Reframe did send "Your Reframe Verification Code" to the alias at 3:27 AM PT, but the code was never entered |
+
+Outcome: **no pass, no account reached, no payment screen reached.** The runs never got past the quiz's
+"select all that apply" pages, so the trial/paywall screen was never seen (no card fields, provider, price or trial terms
+to report). signup_verified false and proof failed on every run; no judge votes were taken because there was no verified signup.
+
+Root cause: on multi-select quiz pages the model keeps clicking options (a second click deselects) and does not press
+Continue. Driver-side mitigations tried (box driver only, not in the repo): a "same page for N steps, press Continue"
+hint and an auto-click on a visible Continue control. They moved reframe3/4 past two such pages, but on "triggers"
+the Continue control was not in the observation's clickable fields, so the auto-click could not fire. Next step:
+scroll to the bottom and click Continue by its text, or add a server-side `click_text` action.
+Also: the IAP tunnel dropped twice; an auto-restarting tunnel loop helps, but a drop still kills the live client stream.
+Cost: driver model about $0.25 (about 255 steps); no captcha spend.
