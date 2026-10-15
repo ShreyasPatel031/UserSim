@@ -253,7 +253,7 @@ def _client():
 
 ACTION_SPEC = """Reply with ONE JSON object:
 {"thought": "<what you see and why this step, 1-2 sentences, in the persona's voice when acting as a persona>",
- "action": "tap" | "type" | "swipe" | "wait" | "launch" | "home" | "request_code" | "request_email_code" | "done" | "give_up",
+ "action": "tap" | "type" | "swipe" | "wait" | "reload" | "launch" | "home" | "request_code" | "request_email_code" | "done" | "give_up",
  "index": <element number for tap/type>,
  "point": [y, x]  (optional, for targets with no element: the tap point in the screenshot, normalized 0-1000
            with y first, the same convention as your bounding boxes),
@@ -562,6 +562,9 @@ def run_goal(
                 dev.launch(str(act.get("bundle_id") or ""))
             elif action == "home":
                 dev.home()
+            elif action == "reload":
+                if hasattr(dev, "reload"):
+                    dev.reload()
             elif action == "request_code":
                 log("    waiting for Apple SMS code via ntfy…")
                 code = _wait_sms(max(last_submit_t - 30, last_code_t), timeout_s=90)

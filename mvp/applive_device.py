@@ -48,8 +48,14 @@ _DOM_ELEMENTS_JS = """
 class AppLiveDevice:
     """Duck-types ``mvp.ios_agent.Device`` over the App Live web UI."""
 
-    def __init__(self, *, session_name: str = "", build: str = "", headless: bool = True) -> None:
+    def __init__(self, *, session_name: str = "", build: str = "", headless: bool | None = None) -> None:
+        import os
+
         from playwright.sync_api import sync_playwright
+
+        if headless is None:
+            # Headed Chrome (under Xvfb on servers) attaches the WebRTC stream more reliably.
+            headless = not os.environ.get("DISPLAY") or os.environ.get("MVP_APPLIVE_HEADLESS") == "1"
 
         self._pw = sync_playwright().start()
         PROFILE.mkdir(parents=True, exist_ok=True)
@@ -147,16 +153,24 @@ class AppLiveDevice:
         pass
 
     def _stream_box(self) -> dict | None:
-        for sel in ("canvas", "video"):
-            loc = self.page.locator(sel)
-            best = None
-            for i in range(loc.count()):
-                box = loc.nth(i).bounding_box()
-                if box and (best is None or box["width"] * box["height"] > best["width"] * best["height"]):
-                    best = box
-            if best and best["height"] > 200:
-                return best
-        return None
+        """Visible box of the phone stream: the tall video/canvas with the most on-screen area."""
+        try:
+            return self.page.evaluate(
+                """() => {
+                  let best = null, bestArea = 0;
+                  for (const e of document.querySelectorAll('video,canvas')) {
+                    const r = e.getBoundingClientRect();
+                    const x0 = Math.max(r.left, 0), y0 = Math.max(r.top, 0);
+                    const x1 = Math.min(r.right, innerWidth), y1 = Math.min(r.bottom, innerHeight);
+                    const w = x1 - x0, h = y1 - y0;
+                    if (w < 150 || h < 300 || h < w) continue;
+                    if (w * h > bestArea) { bestArea = w * h; best = {x: x0, y: y0, width: w, height: h}; }
+                  }
+                  return best;
+                }"""
+            )
+        except Exception:
+            return None
 
     def swipe(self, direction: str) -> None:
         box = self._stream_box() or {"x": self.w * 0.35, "y": self.h * 0.1, "width": self.w * 0.3, "height": self.h * 0.8}
@@ -198,6 +212,43 @@ class AppLiveDevice:
 
     def screenshot(self) -> bytes:
         return self.page.screenshot()
+
+    def start_session(self, device: str = "iPhone 15", timeout_s: float = 300.0) -> bool:
+        """Start an iOS session via 'Install via App Store' (boots straight into the App Store).
+
+        Deterministic clicks, then wait until the phone video is actually playing.
+        """
+        page = self.page
+        page.goto(DASHBOARD, wait_until="domcontentloaded", timeout=90000)
+        page.wait_for_timeout(5000)
+        for text in ("Got it", "Close promotional notification"):
+            try:
+                page.get_by_text(text, exact=True).first.click(timeout=2000)
+            except Exception:
+                pass
+        page.get_by_text("Install via App Store", exact=False).first.click(timeout=15000)
+        page.wait_for_timeout(2000)
+        try:
+            page.get_by_text("REAL DEVICES").nth(1).click(timeout=5000)  # iOS tab
+        except Exception:
+            pass
+        page.wait_for_timeout(1500)
+        page.get_by_text(device, exact=True).first.click(timeout=15000)
+        deadline = time.time() + timeout_s
+        while time.time() < deadline:
+            page.wait_for_timeout(5000)
+            playing = page.evaluate(
+                "() => Array.from(document.querySelectorAll('video')).some(v => v.readyState >= 3 && v.videoWidth > 100 && !v.paused)"
+            )
+            if playing:
+                page.wait_for_timeout(8000)
+                return True
+        return False
+
+    def reload(self) -> None:
+        """Reload the App Live page; re-attaches a stream stuck on the boot screen."""
+        self.page.reload(wait_until="domcontentloaded", timeout=90000)
+        self.page.wait_for_timeout(8000)
 
     def end_session(self) -> None:
         """Leave the live session so the device is released and wiped."""

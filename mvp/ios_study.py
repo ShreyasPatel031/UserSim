@@ -161,22 +161,16 @@ blockquote{{color:var(--mut);border-left:3px solid var(--line);margin:8px 0;padd
 
 
 APPLIVE_SETUP = (
-    "You are on the BrowserStack App Live web dashboard in a browser. Clicks are page coordinates.\n"
-    "1. If a live device session is not already showing, start one: close promos/tips, click "
-    "'Test with a Sample app' (an app must be selected to start; we only need the phone), then under iOS Real "
-    "Devices click the 'iPhone 15' / '17' entry to launch it. Wait for the phone screen to stream.\n"
-    "2. Once the phone screen is streaming, operate the PHONE by clicking inside the phone image. "
-    "To type, click the field on the phone then type. 'Show Home Screen' in the left sidebar goes home. The App Store "
-    "icon is NOT on the home screen: tap the 'Search' pill above the dock (or swipe down on the home screen), "
-    "type App Store, and open it.\n"
+    "You are operating a real iPhone streamed into a BrowserStack App Live page. The screenshot shows the phone; "
+    "tap by point on the phone. To type, tap the field on the phone, then type. The App Store is already open.\n"
 )
 
 
 def applive_install_goal(app_name: str) -> str:
     from mvp.ios_install import install_goal
 
-    return APPLIVE_SETUP + "3. Then on the phone:\n" + install_goal(app_name) + (
-        "\n5. Open the app once it is installed (tap Open), then reply done."
+    return APPLIVE_SETUP + install_goal(app_name) + (
+        "\n5. Then tap Open to launch the app and reply done once the app's first screen shows."
     )
 
 
@@ -195,8 +189,11 @@ def main_applive(args) -> int:
         for i, p in enumerate(personas, 1):
             # Each App Live session gets a wiped device: start fresh, sign in, install.
             dev.end_session()
+            if not dev.start_session():
+                print(f"session {i}: phone stream never started", flush=True)
+                break
             inst = run_goal(dev, applive_install_goal(args.app), out_dir=out / f"install-{i}",
-                            max_steps=70, budget_s=1500)
+                            max_steps=60, budget_s=1500)
             print(f"install {i}: {inst.outcome} {inst.note[:120]}", flush=True)
             if not inst.ok:
                 break
