@@ -74,9 +74,15 @@ class AppLiveDevice:
         page = self.page
         if "sign_in" not in page.url and not page.locator('input[name="user[login]"]').count():
             return
-        creds = credentials_for_url("https://www.browserstack.com") or {}
+        import os
+
+        creds = credentials_for_url("https://www.browserstack.com") or {
+            "username": os.environ.get("BROWSERSTACK_WEB_EMAIL", ""),
+            "password": os.environ.get("BROWSERSTACK_WEB_PASSWORD", ""),
+        }
         if not creds.get("username") or not creds.get("password"):
-            raise RuntimeError("BrowserStack web login missing: add a vault site matching browserstack.com")
+            raise RuntimeError("BrowserStack web login missing: set BROWSERSTACK_WEB_EMAIL / BROWSERSTACK_WEB_PASSWORD "
+                               "or a vault site matching browserstack.com")
         page.fill('input[name="user[login]"]', creds["username"])
         page.fill('input[name="user[password]"]', creds["password"])
         page.click('input[name="commit"]')
