@@ -162,8 +162,9 @@ blockquote{{color:var(--mut);border-left:3px solid var(--line);margin:8px 0;padd
 
 APPLIVE_SETUP = (
     "You are on the BrowserStack App Live web dashboard in a browser. Clicks are page coordinates.\n"
-    "1. If a live device session is not already showing, start one: choose iOS, pick an iPhone (any recent "
-    "iPhone, e.g. iPhone 15 / iOS 17) and start it. Dismiss BrowserStack tips/tours/popups.\n"
+    "1. If a live device session is not already showing, start one: close promos/tips, click "
+    "'Test with a Sample app' (an app must be selected to start; we only need the phone), then under iOS Real "
+    "Devices click the 'iPhone 15' / '17' entry to launch it. Wait for the phone screen to stream.\n"
     "2. Once the phone screen is streaming, operate the PHONE by clicking inside the phone image. "
     "To type, click the field on the phone then type. Use the dashboard toolbar's Home button if you need the home screen.\n"
 )

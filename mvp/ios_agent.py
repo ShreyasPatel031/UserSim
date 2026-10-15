@@ -346,7 +346,10 @@ class RunResult:
 
 
 def _secret_values() -> list[str]:
-    return [v for k, v in _apple_creds().items() if k == "{{APPLE_PASSWORD}}" and v]
+    """Every vault password, so none can reach the model through screen text."""
+    from mvp.credentials import _load_vault
+
+    return [str(site.get("password")) for site in _load_vault().get("sites") or [] if site.get("password")]
 
 
 def _apple_creds() -> dict[str, str]:

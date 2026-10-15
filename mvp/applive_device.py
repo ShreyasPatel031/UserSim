@@ -33,7 +33,8 @@ _DOM_ELEMENTS_JS = """
     if (r.width < 4 || r.height < 4 || r.bottom < 0 || r.top > innerHeight || r.right < 0 || r.left > innerWidth) continue;
     const st = getComputedStyle(e);
     if (st.visibility === 'hidden' || st.display === 'none' || +st.opacity === 0) continue;
-    let label = (e.getAttribute('aria-label') || e.innerText || e.value || e.placeholder || e.title || e.alt || '').trim().replace(/\\s+/g, ' ');
+    const val = (e.type === 'password') ? '' : (e.value || '');
+    let label = (e.getAttribute('aria-label') || e.innerText || val || e.placeholder || e.title || e.alt || '').trim().replace(/\\s+/g, ' ');
     if (!label) continue;
     out.push({kind: e.tagName === 'INPUT' ? (e.type === 'password' ? 'SecureTextField' : 'TextField') : 'Button',
               label: label.slice(0, 80), x: Math.round(r.left), y: Math.round(r.top),
@@ -86,7 +87,11 @@ class AppLiveDevice:
         page.fill('input[name="user[login]"]', creds["username"])
         page.fill('input[name="user[password]"]', creds["password"])
         page.click('input[name="commit"]')
-        page.wait_for_timeout(6000)
+        try:
+            page.wait_for_url(lambda u: "sign_in" not in u, timeout=45000)
+        except Exception:
+            pass
+        page.wait_for_timeout(3000)
         if "sign_in" not in page.url and "app-live" not in page.url:
             page.goto(DASHBOARD, wait_until="domcontentloaded", timeout=90000)
             page.wait_for_timeout(4000)
