@@ -189,7 +189,16 @@ def main_applive(args) -> int:
         for i, p in enumerate(personas, 1):
             # Each App Live session gets a wiped device: start fresh, sign in, install.
             dev.end_session()
-            if not dev.start_session():
+            started = False
+            for attempt in range(4):
+                if dev.start_session(timeout_s=180):
+                    started = True
+                    break
+                # Usually a previous session still holds the single parallel slot; stop and retry.
+                print(f"session {i}: stream not up (attempt {attempt + 1}); stopping and retrying", flush=True)
+                dev.end_session()
+                time.sleep(90)
+            if not started:
                 print(f"session {i}: phone stream never started", flush=True)
                 break
             inst = run_goal(dev, applive_install_goal(args.app), out_dir=out / f"install-{i}",

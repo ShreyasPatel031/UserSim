@@ -251,14 +251,39 @@ class AppLiveDevice:
         self.page.wait_for_timeout(8000)
 
     def end_session(self) -> None:
-        """Leave the live session so the device is released and wiped."""
+        """Stop the live session (frees the plan's single parallel slot), then go to the dashboard.
+
+        Closing the tab without 'Stop Session' leaves the device held until the idle
+        timeout, and the next session's stream never attaches.
+        """
+        page = self.page
         try:
-            self.page.goto(DASHBOARD, wait_until="domcontentloaded", timeout=60000)
-            self.page.wait_for_timeout(3000)
+            stop = page.get_by_text("Stop Session", exact=True)
+            if stop.count():
+                stop.first.click(timeout=5000)
+                page.wait_for_timeout(2000)
+                for label in ("Stop", "Yes", "Stop Session", "End Session", "Confirm"):
+                    btn = page.get_by_role("button", name=label)
+                    if btn.count():
+                        try:
+                            btn.last.click(timeout=3000)
+                            break
+                        except Exception:
+                            continue
+                page.wait_for_timeout(4000)
+        except Exception:
+            pass
+        try:
+            page.goto(DASHBOARD, wait_until="domcontentloaded", timeout=60000)
+            page.wait_for_timeout(3000)
         except Exception:
             pass
 
     def quit(self) -> None:
+        try:
+            self.end_session()
+        except Exception:
+            pass
         try:
             self.ctx.close()
         finally:
