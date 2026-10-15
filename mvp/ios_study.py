@@ -166,6 +166,18 @@ APPLIVE_SETUP = (
 )
 
 
+APPLIVE_REINSTALL = (
+    "You are operating a real iPhone streamed into a BrowserStack App Live page. Tap by point on the phone, or "
+    "by element index for the App Live sidebar controls.\n"
+    "Give the next tester a fresh first launch of \"{app}\":\n"
+    "1. Uninstall it: use the App Live sidebar 'Kill/Uninstall' control and choose the app (or on the phone: "
+    "go Home, long-press the app icon, Remove App, Delete App, Delete).\n"
+    "2. Reinstall it from the App Store (already signed in; it shows a cloud download icon): open App Store, "
+    "Search, find \"{app}\", tap the download icon, wait for Open.\n"
+    "3. Tap Open and reply done once the app's first screen shows."
+)
+
+
 def applive_install_goal(app_name: str) -> str:
     from mvp.ios_install import install_goal
 
@@ -193,23 +205,26 @@ def main_applive(args) -> int:
     dev = AppLiveDevice()
     rows: list[dict] = []
     try:
-        for i, p in enumerate(personas, 1):
-            # Each App Live session gets a wiped device: start fresh, sign in, install.
-            dev.end_session()
-            started = False
-            for attempt in range(4):
-                if dev.start_session(timeout_s=180):
-                    started = True
-                    break
-                # Usually a previous session still holds the single parallel slot; stop and retry.
-                print(f"session {i}: stream not up (attempt {attempt + 1}); stopping and retrying", flush=True)
-                dev.end_session()
-                time.sleep(90)
-            if not started:
-                print(f"session {i}: phone stream never started", flush=True)
+        # One live session for the whole study (the plan has a single parallel slot and
+        # session starts are flaky); the app is uninstalled and reinstalled between personas.
+        started = False
+        for attempt in range(6):
+            if dev.start_session(timeout_s=180):
+                started = True
                 break
-            inst = run_goal(dev, applive_install_goal(args.app), out_dir=out / f"install-{i}",
-                            max_steps=60, budget_s=1500)
+            print(f"stream not up (attempt {attempt + 1}); reloading to drop the hung session", flush=True)
+            dev.reload()
+            dev.end_session()
+            time.sleep(60)
+        if not started:
+            print("phone stream never started", flush=True)
+            return _finish(out, args.app, rows)
+        for i, p in enumerate(personas, 1):
+            if i == 1:
+                goal_i = applive_install_goal(args.app)
+            else:
+                goal_i = APPLIVE_REINSTALL.format(app=args.app)
+            inst = run_goal(dev, goal_i, out_dir=out / f"install-{i}", max_steps=60, budget_s=1500)
             print(f"install {i}: {inst.outcome} {inst.note[:120]}", flush=True)
             if not inst.ok:
                 break
