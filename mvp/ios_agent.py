@@ -339,17 +339,39 @@ def _wait_sms(since: float, timeout_s: float = 240.0) -> str | None:
     return wait_for_sms(Number(phone="", backend="ntfy"), timeout_s=timeout_s, newer_than=since)
 
 
-def _wait_email(alias: str, since: float, timeout_s: float = 180.0) -> str | None:
-    """Code emailed to ``alias``, read over IMAP (needs imap.gmail.com:993 reachable)."""
-    from mvp.email_codes import latest_signup_code
+CODE_DROP = ROOT / "secrets" / "email_codes"
 
+
+def _wait_email(alias: str, since: float, timeout_s: float | None = None) -> str | None:
+    """Code emailed to ``alias``.
+
+    Read over IMAP where imap.gmail.com:993 is reachable. Where it is not
+    (sandboxed cloud sessions), the run writes ``<alias>.wanted`` under
+    secrets/email_codes/ and waits for an operator — e.g. a Gmail connector
+    on the controlling session — to drop the code in ``<alias>.txt``.
+    """
+    use_imap = os.environ.get("MVP_EMAIL_DROP", "0") != "1"
+    timeout_s = timeout_s or float(os.environ.get("MVP_EMAIL_WAIT_S", "180"))
+    CODE_DROP.mkdir(parents=True, exist_ok=True)
+    wanted, drop = CODE_DROP / f"{alias}.wanted", CODE_DROP / f"{alias}.txt"
+    wanted.write_text(str(int(since)))
     started = time.time()
-    while time.time() - started < timeout_s:
-        code = latest_signup_code(alias, newer_than=since)
-        if code:
-            return code
-        time.sleep(5)
-    return None
+    try:
+        while time.time() - started < timeout_s:
+            if drop.is_file() and drop.stat().st_mtime >= since:
+                code = re.sub(r"\D", "", drop.read_text())
+                if code:
+                    return code
+            if use_imap:
+                from mvp.email_codes import latest_signup_code
+
+                code = latest_signup_code(alias, newer_than=since)
+                if code:
+                    return code
+            time.sleep(3)
+        return None
+    finally:
+        wanted.unlink(missing_ok=True)
 
 
 def run_goal(
