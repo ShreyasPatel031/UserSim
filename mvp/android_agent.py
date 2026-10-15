@@ -188,7 +188,8 @@ def _model_client() -> Any:
     )
 
 
-def decide(client: Any, model: str, task: str, png: bytes, elements: list[Element], history: list[dict]) -> dict:
+def decide(client: Any, model: str, task: str, png: bytes, elements: list[Element], history: list[dict],
+           prompt: str = PROMPT) -> dict:
     from google.genai import types
 
     els = "\n".join(
@@ -200,7 +201,7 @@ def decide(client: Any, model: str, task: str, png: bytes, elements: list[Elemen
         model=model,
         contents=[
             types.Part.from_bytes(data=png, mime_type="image/png"),
-            PROMPT.format(task=task, history=hist, elements=els or "(none)"),
+            prompt.format(task=task, history=hist, elements=els or "(none)"),
         ],
         config=types.GenerateContentConfig(response_mime_type="application/json", temperature=0.2),
     )
