@@ -208,14 +208,15 @@ def main_applive(args) -> int:
         # One live session for the whole study (the plan has a single parallel slot and
         # session starts are flaky); the app is uninstalled and reinstalled between personas.
         started = False
-        for attempt in range(6):
-            if dev.start_session(timeout_s=180):
+        for attempt in range(4):
+            if dev.start_session(timeout_s=360):
                 started = True
                 break
-            print(f"stream not up (attempt {attempt + 1}); reloading to drop the hung session", flush=True)
-            dev.reload()
+            # A hung start keeps the plan's single slot until the 10-minute idle timeout, and every
+            # new start made meanwhile hangs too (and holds the slot again). Go idle past the timeout.
+            print(f"stream not up (attempt {attempt + 1}); idling 11 min for the slot to free", flush=True)
             dev.end_session()
-            time.sleep(60)
+            time.sleep(660)
         if not started:
             print("phone stream never started", flush=True)
             return _finish(out, args.app, rows)
