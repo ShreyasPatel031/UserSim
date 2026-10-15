@@ -372,8 +372,13 @@ def _secret_values() -> list[str]:
 
 
 def _apple_creds() -> dict[str, str]:
-    creds = credentials_for_url("https://account.apple.com") or {}
-    return {"{{APPLE_ID}}": creds.get("username", ""), "{{APPLE_PASSWORD}}": creds.get("password", "")}
+    """Placeholder -> secret map; the model only ever sees the placeholders."""
+    apple = credentials_for_url("https://account.apple.com") or {}
+    google = credentials_for_url("https://accounts.google.com") or {}
+    return {
+        "{{APPLE_ID}}": apple.get("username", ""), "{{APPLE_PASSWORD}}": apple.get("password", ""),
+        "{{GOOGLE_ID}}": google.get("username", ""), "{{GOOGLE_PASSWORD}}": google.get("password", ""),
+    }
 
 
 def _wait_sms(since: float, timeout_s: float = 240.0) -> str | None:
@@ -521,7 +526,7 @@ def run_goal(
                     record["target"] = f"({x},{y})"
             elif action == "type":
                 text = str(act.get("text") or "")
-                uses_password = "{{APPLE_PASSWORD}}" in text
+                uses_password = "{{APPLE_PASSWORD}}" in text or "{{GOOGLE_PASSWORD}}" in text
                 prev_pw = bool(steps) and steps[-1].get("action") == "type" and steps[-1].get("password")
                 if uses_password and (purchase_sheet or not allow_password):
                     record["blocked"] = "password refused on purchase sheet"

@@ -252,6 +252,60 @@ def main_applive(args) -> int:
     return _finish(out, args.app, rows)
 
 
+ANDROID_INSTALL = (
+    "Install the free Android app \"{app}\" (package {pkg}) from Google Play on this phone.\n"
+    "1. Open the Play Store (launch com.android.vending if needed). If it asks you to sign in, use "
+    "{{{{GOOGLE_ID}}}} and password {{{{GOOGLE_PASSWORD}}}}; if Google texts a code, use request_code.\n"
+    "2. Search for the app, open the listing by Glucobit, tap Install, wait until it shows Open, then reply done."
+)
+
+
+def main_android(args) -> int:
+    """Android emulator / phone over local Appium: install once from Play, clear data between personas."""
+    from mvp.android_device import AndroidDevice
+
+    pkg = args.bundle if "." in args.bundle and "cravingBuster" not in args.bundle else "com.glucobit.reframe"
+    stamp = time.strftime("%Y%m%d-%H%M%S")
+    out = ROOT / "reports" / f"android-{re.sub(r'[^a-z0-9]+', '-', args.app.lower())[:20].strip('-')}-{stamp}"
+    out.mkdir(parents=True, exist_ok=True)
+    personas = make_personas(args.app, args.desc, args.personas)
+    (out / "personas.json").write_text(json.dumps(personas, indent=2))
+    print(f"{len(personas)} personas -> {out} (Android)", flush=True)
+    dev = AndroidDevice()
+    rows: list[dict] = []
+    try:
+        if not dev.installed(pkg):
+            dev.launch("com.android.vending")
+            time.sleep(4)
+            inst = run_goal(dev, ANDROID_INSTALL.format(app=args.app, pkg=pkg), out_dir=out / "install",
+                            max_steps=50, budget_s=1200, stop_when=lambda d, *_: d.installed(pkg))
+            print("install", inst.outcome, inst.note[:120], flush=True)
+            if not dev.installed(pkg):
+                return _finish(out, args.app, rows)
+        for i, p in enumerate(personas, 1):
+            dev.terminate(pkg)
+            dev.remove(pkg)  # clear app data: fresh first launch for every persona
+            dev.launch(pkg)
+            time.sleep(4)
+            print(f"\n== persona {i}: {p.get('name')} — {p.get('task')}", flush=True)
+            pdir = out / f"p{i}"
+            email = persona_email(i, args.app)
+            res = run_goal(dev, persona_goal(p, args.app, email), out_dir=pdir, email_alias=email,
+                           allow_password=False, min_steps=15,
+                           max_steps=args.max_steps, budget_s=args.persona_budget)
+            try:
+                summary = summarize(args.app, p, res)
+            except Exception as exc:
+                summary = {"completed": res.ok, "reached": "?", "friction": [f"summary failed: {exc}"]}
+            rows.append({"persona": p, "summary": summary, "outcome": res.outcome,
+                         "steps": len(res.steps), "dir": str(pdir), "note": res.note})
+            (out / "results.json").write_text(json.dumps(rows, indent=2))
+            print(f"   -> {res.outcome}: {res.note[:200]}", flush=True)
+    finally:
+        dev.quit()
+    return _finish(out, args.app, rows)
+
+
 def _finish(out: Path, app: str, rows: list[dict]) -> int:
     overall: dict = {}
     if rows:
@@ -277,11 +331,13 @@ def main() -> int:
     ap.add_argument("--personas", type=int, default=3)
     ap.add_argument("--max-steps", type=int, default=35)
     ap.add_argument("--persona-budget", type=float, default=720.0)
-    ap.add_argument("--backend", choices=["automate", "applive"], default="automate",
+    ap.add_argument("--backend", choices=["automate", "applive", "android"], default="automate",
                     help="automate = App Automate API; applive = drive the App Live web UI")
     args = ap.parse_args()
     if args.backend == "applive":
         return main_applive(args)
+    if args.backend == "android":
+        return main_android(args)
 
     stamp = time.strftime("%Y%m%d-%H%M%S")
     out = ROOT / "reports" / f"ios-{re.sub(r'[^a-z0-9]+', '-', args.app.lower())[:20].strip('-')}-{stamp}"
