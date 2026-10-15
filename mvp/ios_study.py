@@ -166,7 +166,9 @@ APPLIVE_SETUP = (
     "'Test with a Sample app' (an app must be selected to start; we only need the phone), then under iOS Real "
     "Devices click the 'iPhone 15' / '17' entry to launch it. Wait for the phone screen to stream.\n"
     "2. Once the phone screen is streaming, operate the PHONE by clicking inside the phone image. "
-    "To type, click the field on the phone then type. Use the dashboard toolbar's Home button if you need the home screen.\n"
+    "To type, click the field on the phone then type. 'Show Home Screen' in the left sidebar goes home. The App Store "
+    "icon is NOT on the home screen: tap the 'Search' pill above the dock (or swipe down on the home screen), "
+    "type App Store, and open it.\n"
 )
 
 

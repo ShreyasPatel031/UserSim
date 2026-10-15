@@ -58,9 +58,12 @@ class AppLiveDevice:
             "viewport": {"width": VIEW_W, "height": VIEW_H},
             "args": ["--no-sandbox", "--use-fake-ui-for-media-stream"],
         }
-        exe = Path("/opt/pw-browsers/chromium")
-        if exe.exists():
-            launch["executable_path"] = str(exe)
+        # The device stream is H.264, which Playwright's bundled Chromium cannot decode
+        # (the phone sits on a boot screen forever). Prefer real Google Chrome.
+        for exe in ("/usr/bin/google-chrome", "/opt/google/chrome/chrome", "/opt/pw-browsers/chromium"):
+            if Path(exe).exists():
+                launch["executable_path"] = exe
+                break
         self.ctx = self._pw.chromium.launch_persistent_context(str(PROFILE), **launch)
         self.page = self.ctx.pages[0] if self.ctx.pages else self.ctx.new_page()
         self.w, self.h = VIEW_W, VIEW_H
@@ -98,19 +101,39 @@ class AppLiveDevice:
 
     # -- Device interface ----------------------------------------------------
     def observe(self) -> tuple[bytes, list[Element], str]:
-        png = self.page.screenshot()
+        """Screenshot + dashboard controls.
+
+        Once the phone is streaming, the image is cropped to the phone (pointing is far
+        more accurate on a phone-sized image) and all coordinates, element boxes
+        included, are relative to that crop; ``tap_xy`` adds the offset back.
+        """
+        box = self._stream_box()
+        if box and box["height"] > 300:
+            pad = 6
+            self._off = (max(int(box["x"]) - pad, 0), max(int(box["y"]) - pad, 0))
+            clip = {"x": self._off[0], "y": self._off[1],
+                    "width": min(int(box["width"]) + 2 * pad, VIEW_W - self._off[0]),
+                    "height": min(int(box["height"]) + 2 * pad, VIEW_H - self._off[1])}
+            png = self.page.screenshot(clip=clip)
+            self.w, self.h = clip["width"], clip["height"]
+        else:
+            self._off = (0, 0)
+            png = self.page.screenshot()
+            self.w, self.h = VIEW_W, VIEW_H
         try:
             raw = self.page.evaluate(_DOM_ELEMENTS_JS)
         except Exception:
             raw = []
-        els = [Element(0, r["kind"], r["label"], r["x"], r["y"], r["w"], r["h"], r["enabled"]) for r in raw]
+        ox, oy = self._off
+        els = [Element(0, r["kind"], r["label"], r["x"] - ox, r["y"] - oy, r["w"], r["h"], r["enabled"]) for r in raw]
         els.sort(key=lambda e: (e.y, e.x))
         for i, el in enumerate(els, 1):
             el.idx = i
         return png, els, ""
 
     def tap_xy(self, x: int, y: int) -> None:
-        self.page.mouse.click(x, y)
+        ox, oy = getattr(self, "_off", (0, 0))
+        self.page.mouse.click(x + ox, y + oy)
 
     def type_text(self, text: str, submit: bool = False) -> None:
         self.page.keyboard.type(text, delay=70)

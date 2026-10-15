@@ -255,7 +255,8 @@ ACTION_SPEC = """Reply with ONE JSON object:
 {"thought": "<what you see and why this step, 1-2 sentences, in the persona's voice when acting as a persona>",
  "action": "tap" | "type" | "swipe" | "wait" | "launch" | "home" | "request_code" | "request_email_code" | "done" | "give_up",
  "index": <element number for tap/type>,
- "x": <optional screen x in points if the target has no element>, "y": <optional y>,
+ "point": [y, x]  (optional, for targets with no element: the tap point in the screenshot, normalized 0-1000
+           with y first, the same convention as your bounding boxes),
  "text": "<text for type; use {{APPLE_ID}} / {{APPLE_PASSWORD}} for Apple credentials>",
  "submit": <true to press return after typing>,
  "direction": "down" | "up" | "left" | "right"  (swipe = scroll the content in that direction),
@@ -300,6 +301,7 @@ def decide(goal: str, png: bytes, elements: list[Element], history: list[str], *
     from google.genai import types
 
     png = _to_points(png, size)
+    model_id = model or os.environ.get("MVP_IOS_MODEL", "gemini-2.5-flash")
 
     listing = "\n".join(e.describe() for e in elements) or "(no labelled elements)"
     for secret in _secret_values():
@@ -307,17 +309,17 @@ def decide(goal: str, png: bytes, elements: list[Element], history: list[str], *
     recent = "\n".join(history[-12:]) or "(first step)"
     prompt = (
         f"You are operating a real iPhone. The screenshot is {size[0] if size else '?'}x{size[1] if size else '?'} "
-        "and matches tap coordinates exactly. Prefer tapping by element index; use x/y only for things "
-        "missing from the element list.\n"
+        "Prefer tapping by element index; use point [y, x] (0-1000) only for things missing from the element list.\n"
         f"GOAL:\n{goal}\n\nSTEPS SO FAR:\n{recent}\n\nON-SCREEN ELEMENTS:\n{listing}\n\n{ACTION_SPEC}"
     )
     resp = _client().models.generate_content(
-        model=model or os.environ.get("MVP_IOS_MODEL", "gemini-2.5-flash"),
+        model=model_id,
         contents=[types.Part.from_text(text=prompt), types.Part.from_bytes(data=png, mime_type="image/png")],
         config=types.GenerateContentConfig(
             temperature=0.2,
             max_output_tokens=1024,
-            thinking_config=types.ThinkingConfig(thinking_budget=0),
+            # Pro models reject a zero thinking budget.
+            thinking_config=types.ThinkingConfig(thinking_budget=128 if "pro" in model_id else 0),
             response_mime_type="application/json",
         ),
     )
@@ -343,6 +345,22 @@ class RunResult:
     steps: list[dict] = field(default_factory=list)
     paywall: list[str] = field(default_factory=list)
     out_dir: str = ""
+
+
+def _point(act: dict, dev: Any) -> tuple[int, int] | None:
+    """Tap point from the model: ``point`` [y, x] normalized 0-1000, else legacy pixel x/y."""
+    pt = act.get("point")
+    try:
+        if isinstance(pt, (list, tuple)) and len(pt) >= 2:
+            y, x = float(pt[0]), float(pt[1])
+            x, y = int(x / 1000 * dev.w), int(y / 1000 * dev.h)
+        elif act.get("x") is not None and act.get("y") is not None:
+            x, y = int(act["x"]), int(act["y"])
+        else:
+            return None
+    except (TypeError, ValueError):
+        return None
+    return min(max(x, 1), dev.w - 1), min(max(y, 1), dev.h - 1)
 
 
 def _secret_values() -> list[str]:
@@ -495,11 +513,10 @@ def run_goal(
                     dev.tap_xy(*el.center)
                     if re.search(r"(?i)sign in|continue|next|get|install|send|verify|text|code|call", el.label):
                         last_submit_t = time.time()
-                elif act.get("x") is not None and act.get("y") is not None:
-                    x = min(max(int(act["x"]), 1), dev.w - 1)
-                    y = min(max(int(act["y"]), 1), dev.h - 1)
+                elif _point(act, dev) is not None:
+                    x, y = _point(act, dev)
                     dev.tap_xy(x, y)
-                    record["target"] = f"({act['x']},{act['y']})"
+                    record["target"] = f"({x},{y})"
             elif action == "type":
                 text = str(act.get("text") or "")
                 uses_password = "{{APPLE_PASSWORD}}" in text
