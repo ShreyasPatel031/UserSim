@@ -170,6 +170,19 @@ class Device:
             except Exception:
                 pass
 
+    def fill_secure(self, text: str) -> None:
+        """Clear and fill the visible password field directly (avoids appending on retries)."""
+        from appium.webdriver.common.appiumby import AppiumBy
+
+        fields = [f for f in self.driver.find_elements(AppiumBy.CLASS_NAME, "XCUIElementTypeSecureTextField")
+                  if f.is_displayed()]
+        if not fields:
+            self.type_text(text)
+            return
+        fields[0].click()
+        fields[0].clear()
+        fields[0].send_keys(text)
+
     def clear_focused(self) -> None:
         try:
             self.driver.switch_to.active_element.clear()
@@ -287,6 +300,8 @@ def decide(goal: str, png: bytes, elements: list[Element], history: list[str], *
     png = _to_points(png, size)
 
     listing = "\n".join(e.describe() for e in elements) or "(no labelled elements)"
+    for secret in _secret_values():
+        listing = listing.replace(secret, "<redacted>")
     recent = "\n".join(history[-12:]) or "(first step)"
     prompt = (
         f"You are operating a real iPhone. The screenshot is {size[0] if size else '?'}x{size[1] if size else '?'} "
@@ -326,6 +341,10 @@ class RunResult:
     steps: list[dict] = field(default_factory=list)
     paywall: list[str] = field(default_factory=list)
     out_dir: str = ""
+
+
+def _secret_values() -> list[str]:
+    return [v for k, v in _apple_creds().items() if k == "{{APPLE_PASSWORD}}" and v]
 
 
 def _apple_creds() -> dict[str, str]:
@@ -479,22 +498,39 @@ def run_goal(
             elif action == "type":
                 text = str(act.get("text") or "")
                 uses_password = "{{APPLE_PASSWORD}}" in text
+                prev_pw = bool(steps) and steps[-1].get("action") == "type" and steps[-1].get("password")
                 if uses_password and (purchase_sheet or not allow_password):
                     record["blocked"] = "password refused on purchase sheet"
                     history.append(f"{n}. BLOCKED password entry (purchase guard).")
+                elif uses_password and el and el.kind != "SecureTextField":
+                    record["blocked"] = "password only goes in a password field"
+                    history.append(f"{n}. BLOCKED: the password goes only into a SecureTextField (password field).")
+                elif uses_password and prev_pw:
+                    # Secure fields render empty, so the model tends to retype; submit instead.
+                    button = next((e for e in elements if e.kind == "Button" and re.fullmatch(
+                        r"(?i)sign in|continue|next|log ?in|done", e.label.strip())), None)
+                    if button:
+                        dev.tap_xy(*button.center)
+                        last_submit_t = time.time()
+                        record["action"], record["target"] = "tap", f"Button \"{button.label}\" (auto-submit)"
+                    history.append(f"{n}. password was already typed; tapped submit instead of retyping")
                 else:
-                    if el:
-                        dev.tap_xy(*el.center)
-                        time.sleep(0.6)
-                        dev.clear_focused()
                     real = text
                     for key, value in secrets.items():
                         real = real.replace(key, value)
-                    dev.type_text(real, submit=bool(act.get("submit")))
+                    if el and el.kind == "SecureTextField":
+                        dev.fill_secure(real)
+                    else:
+                        if el:
+                            dev.tap_xy(*el.center)
+                            time.sleep(0.6)
+                            dev.clear_focused()
+                        dev.type_text(real, submit=bool(act.get("submit")))
                     if act.get("submit"):
                         last_submit_t = time.time()
                     record["text"] = "<secret>" if real != text else text
                     if uses_password:
+                        record["password"] = True
                         record["note"] = ("password typed (secure fields look empty in screenshots); "
                                           "next tap Sign In / Continue, do not retype")
             elif action == "swipe":

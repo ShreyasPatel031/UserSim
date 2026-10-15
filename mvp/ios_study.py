@@ -13,6 +13,7 @@ from __future__ import annotations
 import argparse
 import html
 import json
+import os
 import re
 import time
 from pathlib import Path
@@ -58,10 +59,13 @@ def make_personas(app: str, description: str, n: int) -> list[dict]:
 def persona_email(i: int, app: str) -> str | None:
     from mvp.email_codes import _imap_creds
 
-    creds = _imap_creds()
-    if not creds:
-        return None
-    local, domain = creds[0].split("@", 1)
+    base = os.environ.get("MVP_PERSONA_EMAIL_BASE")
+    if not base:
+        creds = _imap_creds()
+        if not creds:
+            return None
+        base = creds[0]
+    local, domain = base.split("@", 1)
     tag = re.sub(r"[^a-z0-9]", "", app.lower())[:10]
     return f"{local.split('+')[0]}+{tag}{time.strftime('%m%d%H%M')}p{i}@{domain}"
 
