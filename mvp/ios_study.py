@@ -175,7 +175,14 @@ def applive_install_goal(app_name: str) -> str:
 
 
 def main_applive(args) -> int:
+    import signal
+
     from mvp.applive_device import AppLiveDevice
+
+    def _stop(signum, frame):  # SIGTERM -> unwind through finally, which stops the live session
+        raise KeyboardInterrupt
+
+    signal.signal(signal.SIGTERM, _stop)
 
     stamp = time.strftime("%Y%m%d-%H%M%S")
     out = ROOT / "reports" / f"ios-{re.sub(r'[^a-z0-9]+', '-', args.app.lower())[:20].strip('-')}-{stamp}"

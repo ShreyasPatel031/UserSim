@@ -263,7 +263,8 @@ ACTION_SPEC = """Reply with ONE JSON object:
  "bundle_id": "<for launch>",
  "note": "<for done/give_up: outcome, what worked, what blocked you>"}
 Rules:
-- type taps the field at index first, then types. Use it for text fields and search bars.
+- type taps the field first (by index, or by point [y, x] when the field has no element; always give one
+  on a streamed phone), then types. Use it for text fields and search bars.
 - request_email_code: use when the app emailed a verification code to your sign-up email; the system
   reads the inbox and types the code into the field at index (or the first text field).
 - On a streamed phone (App Live), click the code field on the phone first, then use request_code /
@@ -547,6 +548,10 @@ def run_goal(
                             dev.tap_xy(*el.center)
                             time.sleep(0.6)
                             dev.clear_focused()
+                        elif _point(act, dev) is not None:
+                            # Streamed phone: focus the field by tapping where it is.
+                            dev.tap_xy(*_point(act, dev))
+                            time.sleep(0.8)
                         dev.type_text(real, submit=bool(act.get("submit")))
                     if act.get("submit"):
                         last_submit_t = time.time()
