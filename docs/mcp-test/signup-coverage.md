@@ -707,3 +707,37 @@ toggles options on and off). Click by text worked on goals/other-goals, habits/t
 Next: finish the habits quiz from a verified alias (one long run without tunnel drops, e.g. the driver running on the VM),
 then record the paywall.
 Cost: Gemini driver ≈ $0.07, Browserbase ≈ 25 min, CapSolver $0. Test server step cap set back to 60.
+
+## Oct 15, 12:14–12:34 AM PT: Reframe on the VM (580747b, driver on the VM, no IAP tunnel in the loop)
+
+The box-local Gemini 2.5 Flash driver was copied to ~/mcp-test/drv over SSH stdin (sha256 checked) and run under
+setsid/nohup against the test server on 127.0.0.1:8788 (MVP_MCP_MAX_STEPS=90 for these runs, back to 60 after).
+New driver rule: on a multi-choice quiz page pick ONE option, and a second option click on the same page becomes
+`{"type":"click","text":"Continue"}` (it fired 4 times per run). No more multi-select loops; each run took about 7 minutes.
+
+| Run | Study | Alias | Steps | Result |
+|---|---|---|---|---|
+| reframe-oct15a | 4df4f364-734f-4954-8908-b97a7c03b1cf | fresh usersim.signups+onboarding… | 71 | code found (first wait_code), typed, Confirm; quiz finished; stopped at /sections/checkout/information |
+| reframe-oct15b | c9c69708-b42f-44e9-829b-4dca1b550b6c | fresh usersim.signups+onboarding… | 71 | same path; scrolled the checkout page (scroll only, nothing clicked or typed) before stopping; judge proof pass |
+
+Path: goals quiz → habits quiz (typical week, triggers, negative effects, alcohol types, amount, yearly impact) →
+signup/email → signup/email/confirm (6-digit code from noreply@reframeapp.com, accepted) → more habits screens →
+about (sex, age, location, source) → plan (schools, tasks, meeting, community, unique, ready, loading) →
+checkout/information.
+
+Email verified: yes (both runs). Real account: yes, an account exists at Reframe for each alias (code accepted). No signed-in
+app page, because Reframe's web funnel ends in a checkout and the app itself is mobile.
+
+Where it stopped: https://onboarding.joinreframeapp.com/sections/checkout/information, "Maya's Custom Plan". It lists the
+plan goals, a "Satisfaction Guarantee — see results or 200% of your money back" card, plan highlights, ratings (Apple App of
+the Day, 4.8 from 23K ratings, 3M+ downloads), press logos, a testimonial and one **Continue** button. That page asks for
+nothing: no card fields, no price, no trial length, no payment provider, and no skip or no-card link. The actual plan and
+card screen is behind that Continue, which we did not press (stop rule: any checkout screen).
+
+Read-only hints from the page's public JS bundle (not shown on screen): the checkout reports a "StartTrial" conversion with
+Stripe-style product ids (prod_…), all flagged is_trial, valued $59.99, $79.99, $119.99, $139.99 and $599.99 (USD). The
+guarantee text caps the refund at "$202.98". So the next screen is very likely a Stripe card form for a free trial that
+converts to a paid plan, but its trial length and exact price were not observed.
+
+Cost: Gemini ≈ $0.14 (0.071 logged for oct15b; oct15a about the same, its log write failed), Browserbase ≈ 14 min,
+CapSolver $0. Screenshots: box /workspace/product/mcp-test/oct15-reframe/ (paywall.jpg, s1.jpg, s2.jpg).
