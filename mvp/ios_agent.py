@@ -426,6 +426,7 @@ def run_goal(
     max_steps: int = 40,
     budget_s: float = 900.0,
     allow_password: bool = True,
+    min_steps: int = 0,
     stop_when: Any = None,
     log: Any = print,
 ) -> RunResult:
@@ -564,7 +565,10 @@ def run_goal(
                 dev.swipe(str(act.get("direction") or "down"))
                 record["direction"] = act.get("direction")
             elif action == "launch":
-                dev.launch(str(act.get("bundle_id") or ""))
+                if getattr(dev, "stream_only", False):
+                    history.append(f"{n}. launch is not available on this phone; use the phone's own UI.")
+                else:
+                    dev.launch(str(act.get("bundle_id") or ""))
             elif action == "home":
                 dev.home()
             elif action == "reload":
@@ -599,6 +603,11 @@ def run_goal(
                             time.sleep(0.5)
                         dev.type_text(code)
                         record["text"] = "<email code>"
+            elif action == "give_up" and n < min_steps:
+                # Too early to quit: usually a misread screen (streamed taps lag), not a real dead end.
+                record["blocked"] = "give_up refused (too early)"
+                history.append(f"{n}. give_up refused: only {n} steps in. Look again at the current screen — "
+                               "taps can take a moment to show — and keep going.")
             elif action in {"done", "give_up"}:
                 record["note"] = str(act.get("note") or "")
                 steps.append(record)
@@ -618,6 +627,6 @@ def run_goal(
         history.append(line)
         log(f"  {line}")
         (out_dir / "trace.json").write_text(json.dumps(steps, indent=2))
-        time.sleep(1.2)
+        time.sleep(getattr(dev, "settle_s", 1.2))
 
     return RunResult(False, "max_steps", "step limit reached", steps, paywall, str(out_dir))

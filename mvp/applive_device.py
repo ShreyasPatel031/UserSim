@@ -74,6 +74,7 @@ class AppLiveDevice:
         self.page = self.ctx.pages[0] if self.ctx.pages else self.ctx.new_page()
         self.w, self.h = VIEW_W, VIEW_H
         self.stream_only = True  # phone UI is pixels only; no accessibility tree
+        self.settle_s = 3.0  # the video stream lags the device by a second or two
         self.session_id = f"applive-{int(time.time())}"
         self.page.goto(DASHBOARD, wait_until="domcontentloaded", timeout=90000)
         self.page.wait_for_timeout(4000)

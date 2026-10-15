@@ -217,9 +217,10 @@ def main_applive(args) -> int:
             pdir = out / f"p{i}"
             email = persona_email(i, args.app)
             goal = ("The phone is streamed in a BrowserStack App Live page; operate the phone by clicking inside "
-                    "the phone image. The app is open.\n" + persona_goal(p, args.app, email))
+                    "the phone image. The app is open. The stream lags a second or two behind each tap: compare the screen "
+                    "carefully with the previous step before deciding a tap did nothing.\n" + persona_goal(p, args.app, email))
             # allow_password=False: no Apple password during persona runs, so nothing can be bought.
-            res = run_goal(dev, goal, out_dir=pdir, email_alias=email, allow_password=False,
+            res = run_goal(dev, goal, out_dir=pdir, email_alias=email, allow_password=False, min_steps=15,
                            max_steps=args.max_steps, budget_s=args.persona_budget)
             try:
                 summary = summarize(args.app, p, res)
