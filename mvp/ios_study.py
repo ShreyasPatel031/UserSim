@@ -254,9 +254,11 @@ def main_applive(args) -> int:
 
 ANDROID_INSTALL = (
     "Install the free Android app \"{app}\" (package {pkg}) from Google Play on this phone.\n"
-    "1. Open the Play Store (launch com.android.vending if needed). If it asks you to sign in, use "
-    "{{{{GOOGLE_ID}}}} and password {{{{GOOGLE_PASSWORD}}}}; if Google texts a code, use request_code.\n"
-    "2. Search for the app, open the listing by Glucobit, tap Install, wait until it shows Open, then reply done."
+    "1. Open the Play Store. If it asks you to sign in, sign in with {{{{GOOGLE_ID}}}} and password "
+    "{{{{GOOGLE_PASSWORD}}}}. For 2-step verification choose the Google Authenticator option and use "
+    "request_totp. Skip optional extras (backup, payment method: 'Skip'), accept Google's terms.\n"
+    "2. Search for the app, open the listing by Glucobit, tap Install, wait until it shows Open, then reply done.\n"
+    "Never add a payment method."
 )
 
 

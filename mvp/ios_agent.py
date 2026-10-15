@@ -253,7 +253,7 @@ def _client():
 
 ACTION_SPEC = """Reply with ONE JSON object:
 {"thought": "<what you see and why this step, 1-2 sentences, in the persona's voice when acting as a persona>",
- "action": "tap" | "type" | "swipe" | "wait" | "reload" | "launch" | "home" | "request_code" | "request_email_code" | "done" | "give_up",
+ "action": "tap" | "type" | "swipe" | "wait" | "reload" | "launch" | "home" | "request_code" | "request_email_code" | "request_totp" | "done" | "give_up",
  "index": <element number for tap/type>,
  "point": [y, x]  (optional, for targets with no element: the tap point in the screenshot, normalized 0-1000
            with y first, the same convention as your bounding boxes),
@@ -269,6 +269,8 @@ Rules:
   reads the inbox and types the code into the field at index (or the first text field).
 - On a streamed phone (App Live), click the code field on the phone first, then use request_code /
   request_email_code; the code is typed into whatever is focused.
+- request_totp: use when Google asks for a code from the Google Authenticator app; the system types it into
+  the field at index (or the focused field). Prefer this over text-message codes for Google.
 - request_code: use when Apple asks for a verification code sent by text; the system fills it in.
   If Apple shows a code prompt for your devices, tap "Didn't get a code?" then "Can't Get to Devices" /
   "Text the Code" to have it texted, then use request_code right away (don't tap resend repeatedly).
@@ -593,6 +595,18 @@ def run_goal(
                     dev.type_text(code)
                     record["text"] = "<sms code>"
                     last_code_t = last_submit_t = time.time()
+            elif action == "request_totp":
+                from mvp.credentials import totp_code
+
+                code = totp_code((credentials_for_url("https://accounts.google.com") or {}).get("totp_secret"))
+                if not code:
+                    record["error"] = "no totp secret"
+                else:
+                    if el:
+                        dev.tap_xy(*el.center)
+                        time.sleep(0.5)
+                    dev.type_text(code, submit=True)
+                    record["text"] = "<totp code>"
             elif action == "request_email_code":
                 if not email_alias:
                     record["error"] = "no email alias for this run"
