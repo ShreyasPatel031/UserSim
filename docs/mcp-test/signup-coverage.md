@@ -741,3 +741,53 @@ converts to a paid plan, but its trial length and exact price were not observed.
 
 Cost: Gemini ≈ $0.14 (0.071 logged for oct15b; oct15a about the same, its log write failed), Browserbase ≈ 14 min,
 CapSolver $0. Screenshots: box /workspace/product/mcp-test/oct15-reframe/ (paywall.jpg, s1.jpg, s2.jpg).
+
+## Oct 15, 5:42–5:51 AM PT: Reframe on the VM (ad181e5), goal: press Continue once on Custom Plan and record the plan/card screen
+
+| Run | Study | Steps | Result |
+|---|---|---|---|
+| reframe-oct15c | dcb044bd-1f5f-4ac3-8443-d400ee1c2be0 | 90 (cap) | stuck on habits/questions/drinking for 57 steps; never reached signup/email, so no code; no plan/card screen |
+
+Reframe showed a quiz branch that the overnight runs never saw: habits/questions/alcohol-interfere, then
+habits/questions/drinking. On "drinking" the driver's multi-select rule ("a second option click on the same page becomes
+click text=Continue") fired every step. Click text=Continue and Next did not move the page, so the run spent the rest
+of its step cap there. No mail reached the alias, because the email step comes later in this branch.
+
+Not recorded (the screen was not reached): plan prices and billing periods, trial length, price after the trial, payment
+provider and fields, no-card or skip option, fine print. The only evidence is still the public-bundle hint from the previous run
+($59.99–$599.99 trial products, Stripe-style ids).
+
+Driver fix for next time (box-local driver, not in the repo): convert a repeat option click into Continue at most twice per page,
+then let the model act again (and save a screenshot of the stuck page). The new "Continue once on checkout/information,
+then stop and scroll" step is ready in the driver but was not exercised.
+Cost: Gemini $0.081 (run log), Browserbase ≈ 6 min, CapSolver $0. A second run would have gone past the $0.10 cap, so no retry.
+
+## Oct 15, 5:53–6:02 AM PT: Reframe on the VM (ad181e5): plan screen reached and recorded
+
+Driver change (box-local): a repeat option click becomes Continue-by-text at most twice per page, and the same limit applies
+to the stuck auto-continue. After that the model gets control back with a hint ("Continue did not advance; pick a different
+option or scroll"). Any page stuck for 5+ steps is screenshotted. The driver ran on the VM under setsid/nohup, sha256 checked
+after the stdin copy.
+
+| Run | Study | Alias | Steps | Result |
+|---|---|---|---|---|
+| reframe-oct15d | 343871c3-6fe5-4abd-a476-110f9ef3ed88 | fresh usersim.signups+onboarding… | 71 | code found and entered, quiz finished (including the alcohol-interfere / drinking branch), Continue pressed once on Custom Plan, stopped on the plan screen |
+
+Plan screen: https://onboarding.joinreframeapp.com/sections/checkout/information/plan?trial=free
+- Headline "Build better habits or 200% of your money back"; "We've helped over 2 million people take control of their
+  relationship with alcohol!"; logos Forbes, TC, Fortune, TED.
+- "Choose your trial plan":
+  - **7-Day Trial — Free** (selected by default)
+  - **30-Day Paid Trial — $4.99**
+- Fine print under the plans: "Then **$4.99/month**, billed anually [sic] as **$59.99**. See our 2x money-back guarantee.
+  Cancel anytime."
+- One button: **Redeem 7 Days Free**. There are no input fields on this screen and no Apple Pay / Google Pay / card fields
+  visible. The page is a single screen; scrolling did not move it.
+- No-card option: none shown. Both choices are trials that convert to the $59.99/year plan; there is no skip or free-tier link.
+- Payment provider and card fields: not shown on this screen. They sit behind "Redeem 7 Days Free", which was not clicked
+  (stop rule). The public JS reports Stripe-style product ids (prod_…), so Stripe is likely but not observed.
+
+Nothing was typed or clicked on the plan screen. Email verified: yes. A Reframe account exists for the alias (code accepted).
+Cost: Gemini $0.071, Browserbase ≈ 8 min, CapSolver $0.
+Screenshots (box): /workspace/product/mcp-test/oct15d-reframe/paywall_reframe-oct15d_1792069254.jpg (plan screen),
+checkout_info_reframe-oct15d_1792069245.jpg (Custom Plan page).
