@@ -686,3 +686,24 @@ Outcome: no account was verified and no real account was reached. No card, payme
 no payment-screen details to record. The quiz branches: the email step came right after the goals section in reframe5–6, and
 after habits/triggers (40+ steps) in later runs. With the 60-step server cap, a run may need MVP_MCP_MAX_STEPS ~90.
 Cost: Gemini driver ≈ $0.07, Browserbase about 30 minutes in total, CapSolver $0. Total well under $1.
+
+## Oct 14, 7:10–7:38 PM PT: Reframe rerun on 7411185 (wait_mail fix landed, step cap 90 on the test server)
+
+| Run | Study | Alias mail | Steps | Stopped at | Result |
+|---|---|---|---|---|---|
+| reframe10 | 9a927101-a14b-4187-aca0-e5ffcec1e642 | none (the email step had not come yet) | 48 | habits/questions/alcohol-types | the IAP tunnel dropped and the driver connection died |
+| reframe11 (retry) | 55201811-b081-43d9-a0d5-721f02354eaa | "Your Reframe Verification Code" 7:25 PM PT | 50 | habits/questions/alcohol-types | code found and entered, Reframe moved on; stopped at the 25-minute limit |
+
+reframe11: quiz goals section, then signup/email (step 24–26), then signup/email/confirm. `usersim_wait_for_verification_code`
+returned found=true on its first call, and the 6-digit code was typed and Confirm clicked (steps 28–30). Reframe accepted it:
+after one Continue the flow left /signup/email/confirm for /sections/habits/... The 7411185 fix works on the real site, since the
+Oct 14 evening runs had the code in the inbox and found=false.
+
+Outcome: email verified (code accepted). An account exists at Reframe for the alias, but no signed-in app page was reached,
+because the onboarding quiz continues after verification (habits: typical week, triggers, negative effects, alcohol types, ...).
+No card, payment or trial screen was reached, so there are no payment details to record. Both runs stalled on
+habits/questions/alcohol-types (a multi-select page where Continue stays disabled until an option is on, and the model
+toggles options on and off). Click by text worked on goals/other-goals, habits/triggers and email/confirm.
+Next: finish the habits quiz from a verified alias (one long run without tunnel drops, e.g. the driver running on the VM),
+then record the paywall.
+Cost: Gemini driver ≈ $0.07, Browserbase ≈ 25 min, CapSolver $0. Test server step cap set back to 60.
