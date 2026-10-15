@@ -52,3 +52,15 @@ def test_execute_sms_code(monkeypatch):
     monkeypatch.setattr(aa, "_wait_sms", lambda since: "482913")
     assert aa.execute(adb, {"action": "sms_code"}, [], (1080, 2400), {}) == "ok"
     assert adb.calls == [("type", "482913")]
+
+
+def test_execute_totp_code(monkeypatch):
+    import pyotp
+
+    adb = FakeAdb()
+    secret = pyotp.random_base32()
+    monkeypatch.setenv(aa.TOTP_ENV, secret)
+    assert aa.execute(adb, {"action": "totp_code"}, [], (1080, 2400), {}) == "ok"
+    assert pyotp.TOTP(secret).verify(adb.calls[0][1], valid_window=1)
+    monkeypatch.delenv(aa.TOTP_ENV)
+    assert aa.execute(adb, {"action": "totp_code"}, [], (1080, 2400), {}) == "missing_secret"

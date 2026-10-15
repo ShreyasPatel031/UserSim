@@ -32,7 +32,10 @@ RUNS = ROOT / "results" / "android"
 SECRET_FIELDS = {
     "apple_email": "APPLE_ID_EMAIL",
     "apple_password": "APPLE_ID_PASSWORD",
+    "google_email": "SIGNUP_GMAIL_USER",
+    "google_password": "SIGNUP_GMAIL_PASSWORD",
 }
+TOTP_ENV = "SIGNUP_GMAIL_TOTP_SECRET"
 
 _BOUNDS = re.compile(r"\[(\d+),(\d+)\]\[(\d+),(\d+)\]")
 
@@ -160,8 +163,9 @@ Reply with ONE JSON object:
   {{"action": "tap", "element": <index>}}                      tap a listed element
   {{"action": "tap_point", "point": [x, y]}}                   tap; x,y normalized 0-1000
   {{"action": "type", "text": "..."}}                          type into the focused field
-  {{"action": "type_secret", "field": "apple_email"|"apple_password"}}
+  {{"action": "type_secret", "field": "apple_email"|"apple_password"|"google_email"|"google_password"}}
   {{"action": "sms_code"}}         a verification code was texted; fetch and type it
+  {{"action": "totp_code"}}        Google asks for an authenticator-app code; type it
   {{"action": "swipe", "direction": "up"|"down"}}
   {{"action": "back"}} | {{"action": "enter"}} | {{"action": "wait"}}
   {{"action": "done", "summary": "..."}}   task finished
@@ -251,6 +255,14 @@ def execute(adb: Adb, step: dict, elements: list[Element], size: tuple[int, int]
             return "sms_timeout"
         state["sms_since"] = time.time()
         adb.type_text(code)
+        return "ok"
+    if action == "totp_code":
+        secret = os.environ.get(TOTP_ENV)
+        if not secret:
+            return "missing_secret"
+        import pyotp
+
+        adb.type_text(pyotp.TOTP(secret.replace(" ", "")).now())
         return "ok"
     if action == "swipe":
         adb.swipe(str(step.get("direction") or "up"))
