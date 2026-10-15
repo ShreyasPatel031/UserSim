@@ -21,6 +21,7 @@ create)
   gcloud compute instances create "$VM" --project "$PROJECT" --zone "$ZONE" \
     --machine-type n2-standard-4 --enable-nested-virtualization --min-cpu-platform "Intel Cascade Lake" \
     --image-family ubuntu-2204-lts --image-project ubuntu-os-cloud --boot-disk-size 60GB \
+    --subnet "${GCP_SUBNET:-usersim-seed-subnet}" --scopes cloud-platform \
     --labels usersim-role=android-emulator
   ;;
 setup)
