@@ -104,16 +104,23 @@ def wait_mail(inbox: Any, host: str, *, since: float, timeout_s: float, seen: se
               want: str = "any") -> dict[str, Any] | None:
     """Next verification mail for this alias: {subject, sender, code, links}.
 
-    want="code" / "link" keeps waiting past mails that lack that part.
+    want="code" / "link" keeps waiting past mails that lack that part, without using them up: Reframe (Oct 14)
+    mails a code and no link, the agent called wait_for_verification_link first, that call marked the code mail
+    seen, and every later wait_for_verification_code found nothing while the code sat in the inbox.
     """
     deadline = time.time() + max(5.0, timeout_s)
-    while time.time() < deadline:
-        msg = inbox.wait(host, since, max(1.0, deadline - time.time()), seen)
-        if not msg:
-            return None
-        if want == "code" and not msg.get("code"):
-            continue
-        if want == "link" and not msg.get("links"):
-            continue
-        return msg
-    return None
+    local = set(seen)
+    skipped: set[str] = set()
+    try:
+        while time.time() < deadline:
+            msg = inbox.wait(host, since, max(1.0, deadline - time.time()), local)
+            if not msg:
+                return None
+            mid = str(msg.get("id") or msg.get("subject"))
+            if (want == "code" and not msg.get("code")) or (want == "link" and not msg.get("links")):
+                skipped.add(mid)
+                continue
+            return msg
+        return None
+    finally:
+        seen |= local - skipped

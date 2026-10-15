@@ -321,6 +321,7 @@ class Inbox:
                 anchors = msg.get("anchors") or {}
                 ranked = rank_links(msg.get("links") or [], host, anchors)[:8]
                 return {
+                    "id": str(msg.get("id") or msg.get("subject")),
                     "subject": msg.get("subject", ""),
                     "sender": msg.get("sender", ""),
                     "code": code,

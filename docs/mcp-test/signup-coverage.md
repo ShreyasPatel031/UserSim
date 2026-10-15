@@ -657,3 +657,32 @@ the Continue control was not in the observation's clickable fields, so the auto-
 scroll to the bottom and click Continue by its text, or add a server-side `click_text` action.
 Also: the IAP tunnel dropped twice; an auto-restarting tunnel loop helps, but a drop still kills the live client stream.
 Cost: driver model about $0.25 (about 255 steps); no captcha spend.
+
+## Oct 14 evening (PT): Reframe rerun, test copy at f7211fb (click by text)
+
+Test server on the VM (127.0.0.1:8788, prod mvp_studies prefix) refreshed to f7211fb with dulwich; the live service was not touched.
+The box-local Gemini 2.5 Flash driver now falls back to `{"type":"click","text":"Continue"}` (then "Next") after 4 steps on one
+quiz page, and stops by rule at any card / payment / trial screen. Every alias was a fresh usersim.signups+onboarding… address.
+
+| Run | Study | Steps | Stopped at | Result |
+|---|---|---|---|---|
+| reframe5 | d4ada66f-ad56-4142-bfe3-0ce86349c213 | 26 | signup/email, waiting for the code | the IAP tunnel dropped mid-call; the code mail had arrived (01:07 UTC) |
+| reframe6 | 0ccf43c6-4e98-4ad2-ab38-cd1d978d31cf | 33 | signup/email, waiting for the code | blocked: code mail arrived 01:24 UTC but every wait_for_verification_code said found=false (bug below) |
+| reframe7 | 3217a414-61c2-420e-90b5-5eb54febe27f | 36 | habits/questions/negative-effects | driver stop was a false positive ("1-2 times per month" read as a price); no payment screen |
+| reframe8 | b363782a-7be0-45f2-b52c-76c1bb7dcaed | 1 | landing page | driver stop was a false positive (it matched the task text echoed in the observation) |
+| reframe9 | b6e807bb-d351-4199-ae94-9fe7032bae9b | 39 | habits/questions/triggers | the driver call hung (tunnel); stopped at the 25-minute limit |
+
+Click by text works: on goals/other-goals, the "select all that apply" page where Oct 14 morning runs looped for 40 steps,
+`click text=Continue` moved on in reframe6 and reframe7. reframe9 needed a second try on that page.
+
+Root cause of the missing code (fixed in this commit, mvp/signup_tools.py `wait_mail`): Reframe mails a 6-digit code and no
+link ("Your Reframe Verification Code", noreply@reframeapp.com). The agent called usersim_wait_for_verification_link first;
+with want="link" that call skipped the code-only mail but still marked it seen, so every later wait_for_verification_code
+found nothing while the code sat in the inbox. The code was readable: find_code returned 6 digits for both runs' mails. A wait
+now leaves mails that lack the wanted part unseen. Test: mvp/test_wait_mail_want.py. It was applied to the VM test copy only
+for reframe7–9, which did not reach the email step again.
+
+Outcome: no account was verified and no real account was reached. No card, payment or trial screen was reached, so there are
+no payment-screen details to record. The quiz branches: the email step came right after the goals section in reframe5–6, and
+after habits/triggers (40+ steps) in later runs. With the 60-step server cap, a run may need MVP_MCP_MAX_STEPS ~90.
+Cost: Gemini driver ≈ $0.07, Browserbase about 30 minutes in total, CapSolver $0. Total well under $1.
