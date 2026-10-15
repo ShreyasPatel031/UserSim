@@ -160,6 +160,82 @@ blockquote{{color:var(--mut);border-left:3px solid var(--line);margin:8px 0;padd
     return path
 
 
+APPLIVE_SETUP = (
+    "You are on the BrowserStack App Live web dashboard in a browser. Clicks are page coordinates.\n"
+    "1. If a live device session is not already showing, start one: choose iOS, pick an iPhone (any recent "
+    "iPhone, e.g. iPhone 15 / iOS 17) and start it. Dismiss BrowserStack tips/tours/popups.\n"
+    "2. Once the phone screen is streaming, operate the PHONE by clicking inside the phone image. "
+    "To type, click the field on the phone then type. Use the dashboard toolbar's Home button if you need the home screen.\n"
+)
+
+
+def applive_install_goal(app_name: str) -> str:
+    from mvp.ios_install import install_goal
+
+    return APPLIVE_SETUP + "3. Then on the phone:\n" + install_goal(app_name) + (
+        "\n5. Open the app once it is installed (tap Open), then reply done."
+    )
+
+
+def main_applive(args) -> int:
+    from mvp.applive_device import AppLiveDevice
+
+    stamp = time.strftime("%Y%m%d-%H%M%S")
+    out = ROOT / "reports" / f"ios-{re.sub(r'[^a-z0-9]+', '-', args.app.lower())[:20].strip('-')}-{stamp}"
+    out.mkdir(parents=True, exist_ok=True)
+    personas = make_personas(args.app, args.desc, args.personas)
+    (out / "personas.json").write_text(json.dumps(personas, indent=2))
+    print(f"{len(personas)} personas -> {out} (App Live)", flush=True)
+    dev = AppLiveDevice()
+    rows: list[dict] = []
+    try:
+        for i, p in enumerate(personas, 1):
+            # Each App Live session gets a wiped device: start fresh, sign in, install.
+            dev.end_session()
+            inst = run_goal(dev, applive_install_goal(args.app), out_dir=out / f"install-{i}",
+                            max_steps=70, budget_s=1500)
+            print(f"install {i}: {inst.outcome} {inst.note[:120]}", flush=True)
+            if not inst.ok:
+                break
+            print(f"\n== persona {i}: {p.get('name')} — {p.get('task')}", flush=True)
+            pdir = out / f"p{i}"
+            email = persona_email(i, args.app)
+            goal = ("The phone is streamed in a BrowserStack App Live page; operate the phone by clicking inside "
+                    "the phone image. The app is open.\n" + persona_goal(p, args.app, email))
+            # allow_password=False: no Apple password during persona runs, so nothing can be bought.
+            res = run_goal(dev, goal, out_dir=pdir, email_alias=email, allow_password=False,
+                           max_steps=args.max_steps, budget_s=args.persona_budget)
+            try:
+                summary = summarize(args.app, p, res)
+            except Exception as exc:
+                summary = {"completed": res.ok, "reached": "?", "friction": [f"summary failed: {exc}"]}
+            rows.append({"persona": p, "summary": summary, "outcome": res.outcome,
+                         "steps": len(res.steps), "dir": str(pdir), "note": res.note})
+            (out / "results.json").write_text(json.dumps(rows, indent=2))
+            print(f"   -> {res.outcome}: {res.note[:200]}", flush=True)
+    finally:
+        dev.end_session()
+        dev.quit()
+    return _finish(out, args.app, rows)
+
+
+def _finish(out: Path, app: str, rows: list[dict]) -> int:
+    overall: dict = {}
+    if rows:
+        try:
+            overall = _gemini_json(
+                f"Synthesize a UX study of the iPhone app \"{app}\" from these persona results:\n"
+                f"{json.dumps([{'persona': r['persona'].get('name'), **r['summary']} for r in rows])}\n"
+                "Return JSON {\"findings\": [3-5 specific findings], \"recommendations\": [3 concrete fixes]}",
+                max_tokens=1500,
+            )
+        except Exception:
+            overall = {}
+    report = write_report(out, app, rows, overall)
+    print("report", report, flush=True)
+    return 0
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--app", default="Reframe: Drink Less & Thrive")
@@ -168,7 +244,11 @@ def main() -> int:
     ap.add_argument("--personas", type=int, default=3)
     ap.add_argument("--max-steps", type=int, default=35)
     ap.add_argument("--persona-budget", type=float, default=720.0)
+    ap.add_argument("--backend", choices=["automate", "applive"], default="automate",
+                    help="automate = App Automate API; applive = drive the App Live web UI")
     args = ap.parse_args()
+    if args.backend == "applive":
+        return main_applive(args)
 
     stamp = time.strftime("%Y%m%d-%H%M%S")
     out = ROOT / "reports" / f"ios-{re.sub(r'[^a-z0-9]+', '-', args.app.lower())[:20].strip('-')}-{stamp}"

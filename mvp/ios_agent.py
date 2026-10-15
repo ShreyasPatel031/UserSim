@@ -265,6 +265,8 @@ Rules:
 - type taps the field at index first, then types. Use it for text fields and search bars.
 - request_email_code: use when the app emailed a verification code to your sign-up email; the system
   reads the inbox and types the code into the field at index (or the first text field).
+- On a streamed phone (App Live), click the code field on the phone first, then use request_code /
+  request_email_code; the code is typed into whatever is focused.
 - request_code: use when Apple asks for a verification code sent by text; the system fills it in.
   If Apple shows a code prompt for your devices, tap "Didn't get a code?" then "Can't Get to Devices" /
   "Text the Code" to have it texted, then use request_code right away (don't tap resend repeatedly).
@@ -547,7 +549,7 @@ def run_goal(
                     record["error"] = "no sms code"
                     history.append(f"{n}. request_code: NO CODE ARRIVED")
                 else:
-                    target = el or next((e for e in elements if e.kind in {"TextField", "SecureTextField"}), None)
+                    target = el or (None if getattr(dev, "stream_only", False) else next((e for e in elements if e.kind in {"TextField", "SecureTextField"}), None))
                     if target:
                         dev.tap_xy(*target.center)
                         time.sleep(0.5)
@@ -563,7 +565,7 @@ def run_goal(
                     if not code:
                         record["error"] = "no email code"
                     else:
-                        target = el or next((e for e in elements if e.kind in {"TextField", "SecureTextField"}), None)
+                        target = el or (None if getattr(dev, "stream_only", False) else next((e for e in elements if e.kind in {"TextField", "SecureTextField"}), None))
                         if target:
                             dev.tap_xy(*target.center)
                             time.sleep(0.5)
