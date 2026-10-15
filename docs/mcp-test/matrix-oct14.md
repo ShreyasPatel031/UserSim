@@ -7,6 +7,7 @@ Report links use the deployed report host; usersim.vercel.app / atelier-sim.com 
 | e2e smoke | `python -m mvp.e2e_mcp --base https://35-202-98-224.sslip.io --no-watch` | built-in checks | c9a831a6-b421-4fcc-8f4d-6b3e52d2d903 | pass, fails [] | https://usersim.vercel.app/report?study=c9a831a6-b421-4fcc-8f4d-6b3e52d2d903 |
 | t1__p1__product | Gemini 2.5 Flash (research mode) | deadmanssnitch.com — monthly price of cheapest paid plan, no account | d6fcb7ea-0da0-46f7-aabf-0c2b6da8cb14 | judge reached, proof pass, 2 steps, 20 s | https://usersim.vercel.app/report?study=d6fcb7ea-0da0-46f7-aabf-0c2b6da8cb14 |
 | t1__p1__competitor_1 | Gemini 2.5 Flash (research mode) | site24x7.com — same task | d6fcb7ea-0da0-46f7-aabf-0c2b6da8cb14 | judge reached, proof pass, 23 steps, 135 s | same |
+| Vercel preview /mcp (Oct 15) | `python -m mvp.e2e_mcp --base https://usersim-kkmlo1lyf-shreyaspatel031s-projects.vercel.app --no-watch`, with the Vercel automation protection-bypass header added to every MCP request (wrapper script, secret read from the Vercel API into env, never printed) | built-in checks (books.toscrape.com, no signup) | b6cead30-d4df-48dc-a008-df42cd5d53fd | pass, fails [], proof 7/7, judge reached, 5 steps, engine 5f789ed (rewritten to the VM). Preview branch atelier-landing-mcp-rewrite @ 9ef2873. Without bypass: /health and /mcp 302 (Vercel SSO). With bypass: /health 200 (`{"ok":true}`, the atelier app's own), /mcp 401 without bearer token, 200 on initialize with it; 14 tools, 1 prompt | https://usersim.vercel.app/report?study=b6cead30-d4df-48dc-a008-df42cd5d53fd |
 | Composer driver | Cursor cloud agent, composer-2.5 | — | — | not run (Oct 15): see "Composer" below | — |
 | Grok Bot cell | Grok Bot (this assistant) as MCP client | plausible.io vs usefathom.com — research task | 74b7210f-279e-4bd3-a279-f6d8867f8848 | Plausible: judge reached, proof FAIL (only `beyond_first_screen`, answered on the opening page); Fathom: never started, shown "—" | https://usersim.vercel.app/report?study=74b7210f-279e-4bd3-a279-f6d8867f8848 |
 | Haiku cell (Oct 15) | Claude Haiku 4.5 (Vertex, `claude-haiku-4-5@20251001`), native tool use over MCP; system prompt = server prompt `usersim_simulate_user`, tools observe/act/finish | tidycal.com — "Without creating an account, find the price of TidyCal's paid plan and whether it is a one-time payment or a subscription." | e0bfc0c5-59a2-447b-b816-9c75f415cac9 | judge reached, proof pass, 5 steps; found Individual Lifetime $29 one-time, Agency Lifetime $79 one-time, Pro $12/month; Haiku $0.048 | https://usersim.vercel.app/report?study=e0bfc0c5-59a2-447b-b816-9c75f415cac9 |
@@ -44,8 +45,8 @@ The rewrite patch (a517d60 on atelier-landing a305a1e) is packaged for the cloud
 `atelier-landing-mcp-rewrite`. The Vercel project `usersim` (prj_3440zMYOyQjdHkSIdYADPcr3vG1v) is linked to
 ShreyasPatel031/UserSim with production branch `main`, so a push of that branch builds a preview only.
 Deployment protection is `ssoProtection: all_except_custom_domains`, so the preview URL answers 401 to an anonymous MCP client.
-e2e_mcp against `<preview>/mcp` needs the project's protection-bypass secret (one exists) sent as the
-`x-vercel-protection-bypass` header. That is the user's call; protection was not disabled.
+e2e_mcp against `<preview>/mcp` needs the project's protection-bypass secret sent as the `x-vercel-protection-bypass` header.
+With that approved (Oct 15 12:38 PT), the preview passed e2e (row above). Protection settings were not changed, and nothing was promoted or aliased.
 
 Haiku client: `docs/mcp-test/clients/haiku_vertex_client.py` (needs `anthropic[vertex]` and `mcp==1.30.0`; args: MCP URL, site,
 task, persona, max turns; reads MCP_CLIENT_TOKEN from the environment, never prints it).
