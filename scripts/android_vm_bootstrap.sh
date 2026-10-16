@@ -15,7 +15,7 @@ BUCKET=$(md usersim-bucket); RUN=$(md usersim-run); ARGS=$(md usersim-args || tr
 G="gs://$BUCKET/android_runs/$RUN"
 HOME=/root; export HOME
 SDK=/opt/android-sdk; export ANDROID_HOME=$SDK
-export PATH="$SDK/cmdline-tools/latest/bin:$SDK/platform-tools:$SDK/emulator:/opt/node/bin:$PATH"
+export PATH="$SDK/cmdline-tools/latest/bin:$SDK/platform-tools:$SDK/emulator:/opt/node22/bin:$PATH"
 LOG=/var/log/usersim-boot.log
 status() { echo "$(date -u +%T) $*" | tee -a $LOG; echo "$*" | gsutil -q cp - "$G/status"; gsutil -q cp $LOG "$G/boot.log"; }
 
@@ -23,8 +23,9 @@ status "setup: packages"
 apt-get update -qq && apt-get install -y -qq openjdk-17-jdk-headless unzip python3-pip qemu-kvm \
   libpulse0 libgl1 libnss3 libxcomposite1 libxcursor1 libxi6 libxtst6 libasound2 libxdamage1 libxrandr2 \
   libxkbfile1 libdrm2 libgbm1 libbz2-1.0 libx11-xcb1 libxkbcommon0 libdbus-1-3 libfontconfig1 >/dev/null
-if [ ! -x /opt/node/bin/node ]; then
-  curl -sSL https://nodejs.org/dist/v20.18.0/node-v20.18.0-linux-x64.tar.xz | tar -xJ -C /opt && mv /opt/node-v20.18.0-linux-x64 /opt/node
+# Appium 3 (required by the current UiAutomator2 driver) needs Node >= 20.19.
+if [ ! -x /opt/node22/bin/node ]; then
+  curl -sSL https://nodejs.org/dist/v22.12.0/node-v22.12.0-linux-x64.tar.xz | tar -xJ -C /opt && mv /opt/node-v22.12.0-linux-x64 /opt/node22
 fi
 status "setup: android sdk"
 if [ ! -x "$SDK/cmdline-tools/latest/bin/sdkmanager" ]; then
@@ -39,7 +40,8 @@ sdkmanager "platform-tools" "emulator" "$IMAGE" >/dev/null 2>&1
 
 status "setup: appium"
 export APPIUM_HOME=/root/.appium
-command -v appium >/dev/null || npm i -g appium >>$LOG 2>&1
+[ -x /opt/node22/bin/appium ] || npm i -g appium@3 >>$LOG 2>&1
+appium --version >>$LOG 2>&1
 for i in 1 2 3; do
   appium driver list --installed 2>&1 | grep -qi uiautomator2 && break
   appium driver install uiautomator2 >>$LOG 2>&1
