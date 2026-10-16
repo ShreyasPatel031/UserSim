@@ -214,11 +214,16 @@ Elements:
 
 def _model_client() -> Any:
     from google import genai
+    from google.genai import types
 
     return genai.Client(
         vertexai=True,
         project=os.environ.get("GOOGLE_CLOUD_PROJECT") or os.environ.get("GCP_PROJECT"),
         location=os.environ.get("VERTEX_LOCATION", "us-central1"),
+        http_options=types.HttpOptions(
+            timeout=int(os.environ.get("MVP_MODEL_TIMEOUT_MS", "90000")),
+            retry_options=types.HttpRetryOptions(attempts=3),
+        ),
     )
 
 
