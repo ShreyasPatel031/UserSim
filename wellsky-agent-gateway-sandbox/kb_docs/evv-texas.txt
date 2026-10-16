@@ -1,0 +1,2 @@
+WellSky Internal Knowledge - EVV Rules (Texas). Content tier: internal.
+Texas HHSC requires Electronic Visit Verification for personal attendant services. Visits must be clocked in and out using an approved method (mobile app, small alternative device, or home phone landline). Visit maintenance must be completed within 95 days of the visit date. Reason codes are mandatory for any manual edit.

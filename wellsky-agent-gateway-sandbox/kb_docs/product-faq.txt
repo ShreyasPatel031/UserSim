@@ -1,0 +1,3 @@
+WellSky Personal Care - Customer FAQ. Content tier: customer.
+Q: How do I reset a caregiver's mobile app PIN? A: Go to Administration > Caregivers > select the caregiver > Reset PIN. The caregiver receives a text with a temporary PIN.
+Q: Where do I see missed visits? A: Scheduling > Visit Exceptions shows missed, late and unverified visits for the last 30 days.

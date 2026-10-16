@@ -1,0 +1,2 @@
+WellSky Internal Knowledge - EVV Rules (Ohio). Content tier: internal.
+Ohio Department of Medicaid uses an aggregator model. Providers using an alternate EVV system must submit visit data to the state aggregator daily. Late visits beyond 60 days require an exception request.
