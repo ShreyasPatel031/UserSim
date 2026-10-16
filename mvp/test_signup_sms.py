@@ -178,7 +178,7 @@ def _run_loop(decisions: list[dict[str, Any]], *, lease: Any, sms: Any, typed: l
         pass
 
     inbox = SimpleNamespace(address="me+x@gmail.com", backend="gmail", wait=lambda *a: None)
-    with mock.patch("mvp.signup_inbox.create_inbox", return_value=inbox), \
+    with mock.patch("mvp.signup_tools.new_signup", return_value=(inbox, {"email": inbox.address})), \
             mock.patch.object(sis, "_snapshot", fake_snapshot), \
             mock.patch.object(sis, "_decide", fake_decide), \
             mock.patch.object(sis, "_do", fake_do), \

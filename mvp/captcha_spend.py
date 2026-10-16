@@ -35,7 +35,7 @@ PRICED_TASKS_USD: dict[str, float] = {
     "AntiTurnstileTaskProxyLess": 1.20 / 1000,
 }
 
-TOTAL_CAP_USD = 15.0
+TOTAL_CAP_USD = float(os.environ.get("MVP_CAPTCHA_TOTAL_CAP_USD") or 15.0)  # per ledger file
 PER_SITE_CAP_USD = 1.50
 MAX_SOLVES_PER_ATTEMPT = 3
 MAX_SIGNUP_ATTEMPTS = 2

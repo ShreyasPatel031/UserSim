@@ -4,7 +4,7 @@ Each signup gets a never-reused address and a way to read the verification
 code or magic link sent to it.
 
 The only backend is ``gmail``: a Gmail plus-alias of GMAIL_USER with a random
-suffix per signup (``shreyashfs+notion3fa9c1@gmail.com``), read over IMAP with
+suffix per signup (``usersim.signups+notion<6 hex>@gmail.com``), read over IMAP with
 GMAIL_APP_PASSWORD (same scheme as ``mvp.identity`` / ``mvp.email_codes``).
 
 Throwaway inboxes (mail.tm, mail.gw, Guerrilla Mail) are not used: most
@@ -25,11 +25,31 @@ from typing import Any
 
 _URL_RE = re.compile(r"https?://[^\s<>\"')\]]+", re.I)
 _SKIP_LINK = (
-    "unsubscribe", "privacy", "terms", "help", "support", "facebook.com", "twitter.com",
-    "x.com/", "linkedin.com", "instagram.com", "youtube.com", "apps.apple.com",
-    "play.google.com", "/legal", "preferences", "cdn.", ".png", ".jpg", ".gif", "mailto:",
-    "tiktok.com", "status.", "/blog", "careers",
+    "unsubscribe", "privacy", "terms", "help", "support",
+    "/legal", "preferences", ".png", ".jpg", ".gif", "mailto:", "/blog", "careers",
 )
+# Matched against the link's host only: as substrings they also hit real product links
+# ("x.com/" is inside "sendfox.com/...", which dropped SendFox's verify link).
+_SKIP_HOSTS = (
+    "facebook.com", "twitter.com", "x.com", "linkedin.com", "instagram.com", "youtube.com",
+    "apps.apple.com", "play.google.com", "tiktok.com",
+    # Demo-booking links in welcome mails are never the verification link (Atatus: calendly.com/j-atatus).
+    "calendly.com", "cal.com", "meetings.hubspot.com", "savvycal.com", "chilipiper.com",
+)
+_SKIP_HOST_PREFIX = ("cdn.", "status.")
+
+
+def _skip_link(url: str) -> bool:
+    from urllib.parse import urlsplit
+
+    low = url.lower()
+    try:
+        host = (urlsplit(low).hostname or "").removeprefix("www.")
+    except ValueError:
+        return True
+    if any(host == d or host.endswith("." + d) for d in _SKIP_HOSTS) or host.startswith(_SKIP_HOST_PREFIX):
+        return True
+    return any(s in low for s in _SKIP_LINK)
 _GOOD_LINK = ("verify", "confirm", "activate", "magic", "token", "login", "signin", "sign-in",
               "auth", "invite", "validate", "email", "onboard", "code", "welcome", "callback")
 
@@ -48,6 +68,17 @@ def _links_from_html(html: str) -> list[str]:
     return [unescape(h) for h in hrefs if h.lower().startswith("http")]
 
 
+def _text_or_html(text: str, html: str) -> str:
+    """The mail's text, or its stripped HTML when the text part is a stub.
+
+    Oct 11 Checkly: the 'Checkly Verification Code' mail is HTML-only; its text part says only "This email has no
+    text version", so find_code never saw the code and wait_code came back empty twice."""
+    t = (text or "").strip()
+    if html and (len(t) < 80 or re.search(r"no (plain[- ]?)?text version|view (this|it) in (a|your) browser", t, re.I)):
+        return _strip_html(html)
+    return text or ""
+
+
 def anchors_from_html(html: str) -> dict[str, str]:
     """href -> visible anchor text (for picking the right button in an email)."""
     out: dict[str, str] = {}
@@ -58,7 +89,22 @@ def anchors_from_html(html: str) -> dict[str, str]:
     return out
 
 
-def rank_links(links: list[str], host: str) -> list[str]:
+def _wrapped_target(url: str) -> str:
+    """The destination of a redirect wrapper that carries it in a url=/redirect=/target= query parameter."""
+    from urllib.parse import parse_qs, urlsplit
+
+    try:
+        q = parse_qs(urlsplit(url).query)
+    except ValueError:
+        return ""
+    for key in ("url", "redirect", "redirect_url", "target", "u", "dest", "destination"):
+        for v in q.get(key, []):
+            if v.lower().startswith(("http://", "https://")):
+                return v
+    return ""
+
+
+def rank_links(links: list[str], host: str, anchors: dict[str, str] | None = None) -> list[str]:
     """Verification-looking links first, product-domain links next, junk dropped."""
     host_tok = (host or "").lower().removeprefix("www.").split(".")[0]
     seen: set[str] = set()
@@ -66,12 +112,27 @@ def rank_links(links: list[str], host: str) -> list[str]:
     for idx, url in enumerate(links):
         clean = url.rstrip(").,;\"'>]")
         low = clean.lower()
-        if clean in seen or any(s in low for s in _SKIP_LINK):
+        if clean in seen or _skip_link(clean):
             continue
         seen.add(clean)
         score = 0
+        target = _wrapped_target(clean)
+        if target:
+            # Oct 11 Better Stack: its own click tracker (/ahoy/messages/<id>/click?signature=..&url=..) wraps every
+            # link; the logo's wrapper (url=https://betterstack.com, utm_medium=email) outranked the magic-link
+            # button. Score where the wrapper leads, not the wrapper's own query words.
+            from urllib.parse import urlsplit as _us
+
+            tp = _us(target)
+            low = (tp.netloc + tp.path).lower()  # its utm_medium=email query says nothing about the page
+            if tp.path in ("", "/"):
+                score -= 3  # a wrapped bare homepage: the logo / footer link
         if any(k in low for k in _GOOD_LINK):
             score += 3
+        if anchors and re.search(r"verif|confirm|activat|validat|magic link", anchors.get(url, "") or anchors.get(clean, ""), re.I):
+            score += 4  # "Confirm my email" button behind a click-tracking redirect
+        if anchors and _NOT_VERIFY_TEXT_RE.search(anchors.get(url, "") or anchors.get(clean, "")):
+            score -= 8  # "View online" / "Unsubscribe": newsletter chrome, never the account link
         if host_tok and host_tok in low:
             score += 2
         if len(clean) > 60:  # tokens are long
@@ -79,6 +140,132 @@ def rank_links(links: list[str], host: str) -> list[str]:
         scored.append((-score, idx, clean))
     scored.sort()
     return [u for _, _, u in scored]
+
+
+_VERIFY_LINK_RE = re.compile(
+    r"verif|confirm|activat|magic|oobcode|/auth|token=|check_?token|/tokens?/|sign-?in|log-?in|validate|callback|/v/|otp", re.I)
+# Oct 11 Healthchecks: its magic login link is /accounts/check_token/<user>/<token>/ (anchor "Log In"); the signed-in
+# run was failed by the proof gate because no rule matched the path form of a token.
+_VERIFY_SUBJECT_RE = re.compile(
+    r"verif|confirm|activat|one click away|magic|sign.?in|log.?in|code|validate|complete your", re.I)
+
+
+# Anchor text of the button in the mail ("Confirm my email", "Verify account", "Activate").
+_VERIFY_TEXT_RE = re.compile(r"verif|confirm|activat|validat|magic link", re.I)
+# Anchor text of newsletter chrome: never a verification link, whatever its URL looks like
+# (Loggly's welcome mail: "View Online" -> sw1.solarwinds.com/v/... matched the "/v/" URL rule).
+_NOT_VERIFY_TEXT_RE = re.compile(
+    r"view (it |this )?(email |message )?(online|in (your |a )?browser|as (a )?web ?page)|web ?version|"
+    r"unsubscribe|email preferences|manage (your )?(preferences|subscription)|privacy policy", re.I)
+# Click-tracking redirectors (Brevo/Sendinblue, SendGrid, Mailchimp, Mailgun, Mailjet, SES, Postmark,
+# Customer.io, HubSpot, Mandrill...). Their URLs say nothing about where they lead.
+_TRACKER_HOST_RE = re.compile(
+    r"(^|\.)(sendibt\d*\.com|sendibm\d*\.com|sendinblue\.com|brevo\.com|r\.mail\.|sendgrid\.net|list-manage\.com|"
+    r"mailchi\.mp|mandrillapp\.com|mailgun\.org|mjt\.lu|awstrack\.me|pstmrk\.it|customeriomail\.com|"
+    r"hubspotlinks\.com|hs-sites\.com|mailerlite\.com|mlsend\.com|convertkit-mail\d*\.com|ck\.page|"
+    r"rs6\.net|klclick\d*\.com|emltrk\.com|links\.[a-z0-9-]+\.[a-z]+|click\.[a-z0-9-]+\.[a-z]+|"
+    r"email\.[a-z0-9-]+\.[a-z]+|track\.[a-z0-9-]+\.[a-z]+)$", re.I)
+_TRACKER_PATH_RE = re.compile(r"/tr/cl/|/ls/click|/track/click|/wf/click|/CL0/|/c/[A-Za-z0-9_-]{12,}|/e/c/|/ss/c/", re.I)
+
+
+def is_tracking_link(url: str) -> bool:
+    from urllib.parse import urlsplit
+
+    try:
+        parts = urlsplit(url or "")
+    except ValueError:
+        return False
+    return bool(_TRACKER_HOST_RE.search(parts.hostname or "") or _TRACKER_PATH_RE.search(parts.path or ""))
+
+
+def _public_host(host: str) -> bool:
+    """Only follow redirects to hosts that resolve to public addresses (no SSRF into the box/VPC)."""
+    import ipaddress
+    import socket
+
+    try:
+        infos = socket.getaddrinfo(host, None)
+    except OSError:
+        return False
+    for info in infos:
+        try:
+            if not ipaddress.ip_address(info[4][0]).is_global:
+                return False
+        except ValueError:
+            return False
+    return bool(infos)
+
+
+def resolve_redirects(url: str, *, max_hops: int = 5, timeout_s: float = 5.0) -> list[str]:
+    """Redirect chain of a click-tracking link, read from Location headers only.
+
+    Safe by construction: http(s) only, public hosts only, no cookies, bodies never read, and we stop
+    BEFORE requesting a hop that already looks like the verify link (so checking never verifies).
+    """
+    import urllib.error
+    import urllib.request
+    from urllib.parse import urljoin, urlsplit
+
+    class _NoRedirect(urllib.request.HTTPRedirectHandler):
+        def redirect_request(self, *a, **k):  # noqa: ANN002, ANN003
+            return None
+
+    opener = urllib.request.build_opener(_NoRedirect)
+    chain = [url]
+    cur = url
+    for _ in range(max_hops):
+        if cur != url and _VERIFY_LINK_RE.search(cur):
+            break
+        parts = urlsplit(cur)
+        if parts.scheme not in ("http", "https") or not parts.hostname or not _public_host(parts.hostname):
+            break
+        req = urllib.request.Request(cur, method="GET", headers={"User-Agent": "Mozilla/5.0 (UserSim link check)"})
+        loc = ""
+        try:
+            resp = opener.open(req, timeout=timeout_s)
+            loc = resp.headers.get("Location") or ""
+            resp.close()
+        except urllib.error.HTTPError as exc:
+            loc = exc.headers.get("Location") or "" if 300 <= exc.code < 400 else ""
+        except Exception:  # noqa: BLE001
+            break
+        if not loc:
+            break
+        cur = urljoin(cur, loc)
+        chain.append(cur)
+    return chain
+
+
+def verification_link(url: str, text: str = "", *, chain: list[str] | None = None, resolve: bool = False) -> bool:
+    """A link that plausibly verifies the account (not a help / welcome link).
+
+    Accepted when the URL looks like verify/confirm/sign-in, when the mail's anchor text says
+    confirm/verify/activate, or (for click-tracking redirects) when a hop of its redirect chain does.
+    `chain` is the browser's observed redirect chain; `resolve=True` follows a tracker's Location headers.
+    """
+    if text and _NOT_VERIFY_TEXT_RE.search(text):
+        return False
+    if _VERIFY_LINK_RE.search(url or ""):
+        return True
+    if text and _VERIFY_TEXT_RE.search(text):
+        return True
+    if chain and any(_VERIFY_LINK_RE.search(u or "") for u in chain[1:]):
+        return True
+    if resolve and is_tracking_link(url):
+        return any(_VERIFY_LINK_RE.search(u) for u in resolve_redirects(url)[1:])
+    return False
+
+
+def _verify_score(msg: dict[str, Any], host: str) -> int:
+    score = 0
+    if find_code(msg.get("subject", ""), msg.get("text", "")):
+        score += 2
+    anchors = msg.get("anchors") or {}
+    if any(verification_link(u, anchors.get(u, "")) for u in rank_links(msg.get("links") or [], host, anchors)[:8]):
+        score += 2
+    if _VERIFY_SUBJECT_RE.search(msg.get("subject") or ""):
+        score += 1
+    return score
 
 
 def find_code(subject: str, body: str) -> str | None:
@@ -109,15 +296,32 @@ class Inbox:
             except Exception as exc:  # noqa: BLE001
                 print(f"[signup_inbox] {self.backend} read failed: {exc!r}", flush=True)
                 msgs = []
-            for msg in msgs:
-                key = str(msg.get("id") or msg.get("subject"))
-                if key in seen:
-                    continue
-                seen.add(key)
+            fresh = [m for m in msgs if str(m.get("id") or m.get("subject")) not in seen]
+            score = {id(m): _verify_score(m, host) for m in fresh}
+            # Oct 11 Healthchecks: three submits sent three "Log in to Healthchecks.io" mails; each new one voids the
+            # older token, and the oldest was opened (back to /accounts/login/). Of resends with one subject, keep
+            # the newest of the best-scoring ones and retire only older mails; a newer welcome mail with the same
+            # subject but no code/link never retires the verification mail (it stays unseen for a later wait).
+            best: dict[str, dict[str, Any]] = {}
+            for m in fresh:
+                key = (m.get("subject") or "").strip().lower()
+                if key not in best or (score[id(m)], m.get("ts") or 0) > (score[id(best[key])], best[key].get("ts") or 0):
+                    best[key] = m
+            for m in fresh:
+                pick = best[(m.get("subject") or "").strip().lower()]
+                if m is not pick and (m.get("ts") or 0) <= (pick.get("ts") or 0):
+                    seen.add(str(m.get("id") or m.get("subject")))
+            fresh = list(best.values())
+            if fresh:
+                # the verification mail first (a welcome mail often lands right after it), then the oldest
+                fresh.sort(key=lambda m: (-score[id(m)], m.get("ts") or 0))
+                msg = fresh[0]
+                seen.add(str(msg.get("id") or msg.get("subject")))
                 code = find_code(msg.get("subject", ""), msg.get("text", ""))
                 anchors = msg.get("anchors") or {}
-                ranked = rank_links(msg.get("links") or [], host)[:8]
+                ranked = rank_links(msg.get("links") or [], host, anchors)[:8]
                 return {
+                    "id": str(msg.get("id") or msg.get("subject")),
                     "subject": msg.get("subject", ""),
                     "sender": msg.get("sender", ""),
                     "code": code,
@@ -167,7 +371,7 @@ def _host_list(name: str) -> set[str]:
 def fresh_gmail_address(username: str, host: str, tag: str, *, dotted: bool = False) -> str:
     """A never-reused address that still lands in ``username``'s Gmail inbox.
 
-    ``shreyashfs+zo3fa9c1@gmail.com`` alone was not enough: zo.computer treats
+    ``usersim.signups+zo<6 hex>@gmail.com`` alone was not enough: zo.computer treats
     every plus-alias as one address and throttled its mails (study 390909cf got
     2 mails for 18 signups). Each signup now also gets its own dot placement
     (``shr.eya.shfs+zo3fa9c1@gmail.com``) that this host has not seen before,
@@ -181,6 +385,11 @@ def fresh_gmail_address(username: str, host: str, tag: str, *, dotted: bool = Fa
     local, domain = username.rsplit("@", 1)
     local = local.split("+", 1)[0]
     site = (host or "").lower().removeprefix("www.")
+    plain = _host_list("MVP_SIGNUP_PLAIN_HOSTS")
+    if site and any(site == h or site.endswith("." + h) for h in plain):  # app.chatwoot.com matches chatwoot.com
+        # Oct 11 Chatwoot: "email address is invalid" for usersim.signups+tag@gmail.com. Hosts listed here (explicit
+        # opt-in) get the plain inbox address, no tag and no dots; the mail is still matched by To + sender host.
+        return f"{local}@{domain}"
     base_tag = re.sub(r"[^a-z0-9]", "", (tag or site.split(".")[0]).lower())[:12] or "signup"
     fresh = base_tag + secrets.token_hex(3)
     dots = os.environ.get("MVP_SIGNUP_EMAIL_DOTS", "1").lower() not in {"0", "false", "no"}
@@ -227,7 +436,7 @@ class GmailAliasInbox(Inbox):
             for part in msg.walk() if msg.is_multipart() else [msg]:
                 if part.get_content_type() == "text/html":
                     html_parts.append((part.get_payload(decode=True) or b"").decode("utf-8", "replace"))
-            text = _body_text(msg)
+            text = _text_or_html(_body_text(msg), "\n".join(html_parts))
             out.append(
                 {
                     "id": msg.get("Message-ID") or _decode(msg.get("Subject")),

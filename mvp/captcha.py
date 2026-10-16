@@ -192,8 +192,11 @@ def _solver_task(
     sitekey: str,
     page_url: str,
     action: str | None,
+    invisible: bool = False,
 ) -> dict[str, Any]:
     task: dict[str, Any] = {"type": task_type, "websiteURL": page_url}
+    if invisible and "V2" in task_type:
+        task["isInvisible"] = True
     if "FunCaptcha" in task_type:
         # CapSolver and Anti-Captcha both want the Arkose public key here.
         task["websitePublicKey"] = sitekey
@@ -507,6 +510,7 @@ def solve_sitekey(
     action: str | None = None,
     timeout_s: float = 180.0,
     blocking: bool = False,
+    invisible: bool = False,
 ) -> str | None:
     """Return a solver token for the given sitekey, or None on failure.
 
@@ -524,6 +528,7 @@ def solve_sitekey(
             action=action,
             timeout_s=timeout_s,
             blocking=blocking,
+            invisible=invisible,
         )
     key = _api_key()
     if not key:
@@ -558,6 +563,7 @@ def _capsolver_solve(
     action: str | None,
     timeout_s: float,
     blocking: bool = False,
+    invisible: bool = False,
 ) -> str | None:
     """One createTask, then poll that task. No retry loop.
 
@@ -606,7 +612,7 @@ def _capsolver_solve(
             reason="low_balance",
         )
         return None
-    task = _solver_task(task_type, sitekey=sitekey, page_url=page_url, action=action)
+    task = _solver_task(task_type, sitekey=sitekey, page_url=page_url, action=action, invisible=invisible)
     task_id = None
     solved = False
     solution: str | None = None
@@ -644,7 +650,8 @@ def _capsolver_solve(
             cost=0.0,
             balance_before=balance_before,
             balance_after=balance_after,
-            note="no_task_id",
+            # Oct 11 Chatwoot: three refusals with no reason logged. Keep CapSolver's errorCode (no secrets in it).
+            note=f"no_task_id:{create.get('errorCode') or ''}:{str(create.get('errorDescription') or '')[:120]}",
         )
         return None
 

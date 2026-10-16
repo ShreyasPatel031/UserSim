@@ -25,6 +25,12 @@ IS_VERCEL = bool(os.environ.get("VERCEL") or os.environ.get("VERCEL_ENV"))
 
 app = FastAPI(title="UserSim MVP", version="0.1.0")
 
+# MCP endpoint (/mcp): a coding agent drives one simulated user on our Browserbase.
+if os.environ.get("MVP_MCP", "1").lower() not in {"0", "false", "no"}:
+    from mvp.sim_mcp.server import mount as _mount_mcp
+
+    _mount_mcp(app)
+
 
 @app.on_event("startup")
 async def _prime_browser_sessions() -> None:
@@ -952,26 +958,41 @@ async def set_report_email(study_id: str, body: ReportEmailRequest):
     The waiting screen captured an address but only kept it in the browser, so
     the promised mail was never sent.
     """
-    from mvp.report_email import email_configured
-    from mvp.study import STUDIES, persist_study
+    from types import SimpleNamespace
+
+    from mvp.report_email import email_configured, send_report_email
+    from mvp.study import STUDIES, load_local_study, load_study_from_gcs, persist_study
 
     email = (body.email or "").strip()
     if "@" not in email:
         raise HTTPException(status_code=400, detail="A valid email is required")
     study = STUDIES.get(study_id)
-    if study is None:
-        raise HTTPException(status_code=404, detail="Study not found")
-    study.email = email
-    try:
-        persist_study(study)
-    except Exception:
-        pass
-    # A finished study has nothing left to wait for: send it now.
-    sent = False
-    if str(getattr(study, "status", "")) == "complete":
-        from mvp.report_email import send_report_email
+    if study is not None:
+        study.email = email
+        try:
+            persist_study(study)
+        except Exception:
+            pass
+        # A finished study has nothing left to wait for: send it now.
+        sent = False
+        if str(getattr(study, "status", "")) == "complete":
+            sent = await asyncio.to_thread(send_report_email, study)
+        return {"ok": True, "email": email, "sent": sent, "configured": email_configured()}
 
-        sent = await asyncio.to_thread(send_report_email, study)
+    # After a restart the study may only live in GCS / local snapshots.
+    saved = load_local_study(study_id) or await asyncio.to_thread(load_study_from_gcs, study_id)
+    if not isinstance(saved, dict):
+        raise HTTPException(status_code=404, detail="Study not found")
+    status = str(saved.get("status") or "")
+    sent = False
+    if status == "complete":
+        proxy = SimpleNamespace(
+            id=saved.get("id") or study_id,
+            url=saved.get("url") or "",
+            summary=saved.get("summary"),
+            email=email,
+        )
+        sent = await asyncio.to_thread(send_report_email, proxy, email)
     return {"ok": True, "email": email, "sent": sent, "configured": email_configured()}
 
 
@@ -1204,7 +1225,9 @@ async def post_live_frame(request: Request):
 
 @app.get("/health")
 async def health():
-    return {"ok": True}
+    from mvp.version import stamp
+
+    return {"ok": True, **stamp()}
 
 
 @app.get("/recurse-study")
