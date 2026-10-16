@@ -50,6 +50,7 @@ class Element:
     center: tuple[int, int]
     clickable: bool
     editable: bool
+    filled: bool = False
 
 
 def adb_text_arg(text: str) -> str:
@@ -75,10 +76,14 @@ def parse_ui(xml_text: str, limit: int = 60) -> list[Element]:
         clickable = node.get("clickable") == "true"
         cls = (node.get("class") or "").rsplit(".", 1)[-1]
         editable = cls == "EditText"
+        text = node.get("text") or ""
+        filled = editable and bool(text) and text != (node.get("hint") or "")
+        if node.get("password") == "true":
+            label = f"password field (filled, {len(text)} chars)" if filled else "password field (empty)"
         if not label and not (clickable or editable):
             continue
         out.append(
-            Element(len(out), label[:80], cls, ((x0 + x1) // 2, (y0 + y1) // 2), clickable, editable)
+            Element(len(out), label[:80], cls, ((x0 + x1) // 2, (y0 + y1) // 2), clickable, editable, filled)
         )
         if len(out) >= limit:
             break
@@ -193,6 +198,7 @@ Reply with ONE JSON object:
 Always add "reason": a short first-person note on what you see and why.
 For Apple ID prompts, prefer "Text code"/"use phone number" over device approval.
 Never type passwords with "type"; use "type_secret".
+Secure screens (payment, password prompts) screenshot as solid black: rely on the element list. A "password field (filled, N chars)" is already typed: do not type it again, tap the confirm button.
 The unlabelled Button at the top-left is the back arrow: only tap it to deliberately go back.
 A screen with no forward button (e.g. a fact/chart with a progress bar) auto-advances: use "wait".
 For type, type_secret, sms_code, totp_code and email_code include "element": <id of the input field> so it is focused first.
@@ -276,6 +282,8 @@ def execute(adb: Adb, step: dict, elements: list[Element], size: tuple[int, int]
         if field:
             adb.tap(*field.center)
             time.sleep(0.5)
+            if field.filled:
+                adb.shell("input keycombination 113 29; input keyevent 67; input keyevent 123 " + " ".join(["67"] * 60))
     if action == "tap":
         idx = _as_index(step.get("element"))
         if idx is not None and 0 <= idx < len(elements):

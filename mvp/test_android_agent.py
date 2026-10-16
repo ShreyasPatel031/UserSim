@@ -34,6 +34,10 @@ class FakeAdb:
     def type_text(self, text):
         self.calls.append(("type", text))
 
+    def shell(self, cmd, timeout=60.0):
+        self.calls.append(("shell", cmd))
+        return ""
+
 
 def test_execute_tap_and_secret(monkeypatch):
     adb = FakeAdb()
@@ -89,7 +93,7 @@ def test_typing_actions_focus_element_first(monkeypatch):
     adb = FakeAdb()
     monkeypatch.setenv("APP_SIGNUP_EMAIL", "a+b@gmail.com")
     monkeypatch.setattr(aa.time, "sleep", lambda s: None)
-    el = aa.parse_ui('''<hierarchy><node class="android.widget.EditText" text="Email" clickable="true" bounds="[0,0][100,50]"/></hierarchy>''')
+    el = aa.parse_ui('''<hierarchy><node class="android.widget.EditText" text="" content-desc="Email" clickable="true" bounds="[0,0][100,50]"/></hierarchy>''')
     assert aa.execute(adb, {"action": "type_secret", "field": "app_email", "element": 0}, el, (1080, 2400), {}) == "ok"
     assert adb.calls == [("tap", 50, 25), ("type", "a+b@gmail.com")]
 
@@ -130,3 +134,13 @@ def test_tap_hides_keyboard_first(monkeypatch):
     els = aa.parse_ui(UI)
     assert aa.execute(adb, {"action": "tap", "element": 0}, els, (1080, 2400), {}) == "ok"
     assert adb.calls == [("shell", "input keyevent 4"), ("tap", 540, 1850)]
+
+
+def test_filled_field_is_cleared_and_password_text_hidden(monkeypatch):
+    adb = FakeAdb()
+    monkeypatch.setenv("SIGNUP_GMAIL_PASSWORD", "pw")
+    monkeypatch.setattr(aa.time, "sleep", lambda s: None)
+    el = aa.parse_ui('''<hierarchy><node class="android.widget.EditText" text="hunter2" password="true" clickable="true" bounds="[0,0][100,50]"/></hierarchy>''')
+    assert el[0].label == "password field (filled, 7 chars)" and "hunter2" not in el[0].label
+    assert aa.execute(adb, {"action": "type_secret", "field": "google_password", "element": 0}, el, (1080, 2400), {}) == "ok"
+    assert adb.calls[0] == ("tap", 50, 25) and adb.calls[1][0] == "shell" and adb.calls[-1] == ("type", "pw")
