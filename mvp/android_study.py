@@ -131,7 +131,8 @@ td,th{{border:1px solid #ddd;padding:6px 8px;text-align:left;vertical-align:top}
 <h2>All runs</h2><table><tr><th>App</th><th>Persona</th><th>Task</th><th>Score</th><th>Level</th><th>Friction</th><th>Why</th><th>Steps</th></tr>{detail}</table>"""
 
 
-def run_study(cfg: dict[str, Any], *, out_dir: Path, max_steps: int, serial: str | None) -> dict[str, Any]:
+def run_study(cfg: dict[str, Any], *, out_dir: Path, max_steps: int, serial: str | None,
+              only_apps: set[str] | None = None) -> dict[str, Any]:
     out_dir.mkdir(parents=True, exist_ok=True)
     adb = aa.Adb(serial)
     client = aa._model_client()
@@ -141,7 +142,7 @@ def run_study(cfg: dict[str, Any], *, out_dir: Path, max_steps: int, serial: str
     done = {(r["persona"], r["task"], r["app"]) for r in rows}
     for p, t, a in cells(cfg):
         persona, task, app = cfg["personas"][p], cfg["tasks"][t], cfg["apps"][a]
-        if (persona["name"], task, app["name"]) in done:
+        if (persona["name"], task, app["name"]) in done or (only_apps and app["name"] not in only_apps):
             continue
         adb.shell(f"am force-stop {app['package']}")
         run_dir = out_dir / "runs" / f"{a}-{p}-{t}"
@@ -176,12 +177,16 @@ def main() -> int:
     ap.add_argument("--out", type=Path)
     ap.add_argument("--max-steps", type=int, default=15)
     ap.add_argument("--serial")
+    ap.add_argument("--apps", help="comma-separated app names to run (default: all); resume with the same --out")
     args = ap.parse_args()
     cfg = json.loads(args.config.read_text())
     out = args.out or OUT / time.strftime("%Y%m%d-%H%M%S")
     out.mkdir(parents=True, exist_ok=True)
-    shutil.copy(args.config, out / "config.json")
-    print(json.dumps(run_study(cfg, out_dir=out, max_steps=args.max_steps, serial=args.serial), indent=2))
+    if args.config.resolve() != (out / "config.json").resolve():
+        shutil.copy(args.config, out / "config.json")
+    only = {a.strip() for a in args.apps.split(",") if a.strip()} if args.apps else None
+    print(json.dumps(run_study(cfg, out_dir=out, max_steps=args.max_steps, serial=args.serial, only_apps=only),
+                     indent=2))
     return 0
 
 
