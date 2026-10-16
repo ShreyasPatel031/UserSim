@@ -152,3 +152,15 @@ def test_long_press_holds_on_element_center():
     assert aa.execute(adb, {"action": "long_press", "element": "0"}, els, (1080, 2400), {}) == "ok"
     assert ("shell", "input swipe 540 1930 540 1931 3500") in adb.calls
     assert aa.execute(adb, {"action": "long_press", "element": 5}, els, (1080, 2400), {}) == "bad_element"
+
+
+def test_password_hint_text_is_not_filled():
+    xml = (
+        '<hierarchy><node class="android.widget.EditText" text="Password, someone@gmail.com" '
+        'password="true" clickable="true" bounds="[0,0][100,50]"/>'
+        '<node class="android.widget.EditText" text="\u2022\u2022\u2022" password="true" '
+        'clickable="true" bounds="[0,60][100,110]"/></hierarchy>'
+    )
+    els = aa.parse_ui(xml)
+    assert els[0].label == "password field (empty)" and not els[0].filled
+    assert els[1].label == "password field (filled, 3 chars)" and els[1].filled

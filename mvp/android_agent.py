@@ -79,6 +79,8 @@ def parse_ui(xml_text: str, limit: int = 60) -> list[Element]:
         text = node.get("text") or ""
         filled = editable and bool(text) and text != (node.get("hint") or "")
         if node.get("password") == "true":
+            # Text with spaces (e.g. "Password, user@gmail.com") is an accessibility hint, not input.
+            filled = filled and " " not in text
             label = f"password field (filled, {len(text)} chars)" if filled else "password field (empty)"
         if not label and not (clickable or editable):
             continue
