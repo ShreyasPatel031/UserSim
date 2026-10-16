@@ -64,3 +64,16 @@ def test_execute_totp_code(monkeypatch):
     assert pyotp.TOTP(secret).verify(adb.calls[0][1], valid_window=1)
     monkeypatch.delenv(aa.TOTP_ENV)
     assert aa.execute(adb, {"action": "totp_code"}, [], (1080, 2400), {}) == "missing_secret"
+
+
+def test_execute_email_code_and_link(monkeypatch):
+    adb = FakeAdb()
+    adb.shell = lambda cmd, timeout=60.0: adb.calls.append(("shell", cmd))
+    monkeypatch.setenv("APP_SIGNUP_EMAIL", "a+b@gmail.com")
+    monkeypatch.setattr(aa, "_wait_email", lambda alias, since, link: "https://x.test/v?a=1" if link else "123456")
+    assert aa.execute(adb, {"action": "email_code"}, [], (1080, 2400), {}) == "ok"
+    assert aa.execute(adb, {"action": "email_link"}, [], (1080, 2400), {}) == "ok"
+    assert adb.calls[0][1] == "123456"
+    assert "'https://x.test/v?a=1'" in adb.calls[1][1]
+    monkeypatch.setattr(aa, "_wait_email", lambda alias, since, link: None)
+    assert aa.execute(adb, {"action": "email_code"}, [], (1080, 2400), {}) == "email_timeout"

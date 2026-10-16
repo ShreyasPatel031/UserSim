@@ -34,6 +34,8 @@ SECRET_FIELDS = {
     "apple_password": "APPLE_ID_PASSWORD",
     "google_email": "SIGNUP_GMAIL_USER",
     "google_password": "SIGNUP_GMAIL_PASSWORD",
+    "app_email": "APP_SIGNUP_EMAIL",
+    "app_password": "APP_SIGNUP_PASSWORD",
 }
 TOTP_ENV = "SIGNUP_GMAIL_TOTP_SECRET"
 
@@ -163,7 +165,9 @@ Reply with ONE JSON object:
   {{"action": "tap", "element": <index>}}                      tap a listed element
   {{"action": "tap_point", "point": [x, y]}}                   tap; x,y normalized 0-1000
   {{"action": "type", "text": "..."}}                          type into the focused field
-  {{"action": "type_secret", "field": "apple_email"|"apple_password"|"google_email"|"google_password"}}
+  {{"action": "type_secret", "field": "apple_email"|"apple_password"|"google_email"|"google_password"|"app_email"|"app_password"}}
+  {{"action": "email_code"}}       a code was emailed to app_email; fetch and type it
+  {{"action": "email_link"}}       a verification link was emailed to app_email; open it
   {{"action": "sms_code"}}         a verification code was texted; fetch and type it
   {{"action": "totp_code"}}        Google asks for an authenticator-app code; type it
   {{"action": "swipe", "direction": "up"|"down"}}
@@ -218,6 +222,13 @@ def decide(client: Any, model: str, task: str, png: bytes, elements: list[Elemen
     return data if isinstance(data, dict) else {"action": "wait"}
 
 
+def _wait_email(alias: str, since: float, link: bool) -> str | None:
+    from mvp import email_codes
+
+    wait = email_codes.wait_for_signup_link if link else email_codes.wait_for_signup_code
+    return wait(alias, newer_than=since, timeout_s=float(os.environ.get("MVP_EMAIL_WAIT_S", "240")))
+
+
 def _wait_sms(since: float) -> str | None:
     from mvp.apple_signin import _wait_sms_code
 
@@ -255,6 +266,20 @@ def execute(adb: Adb, step: dict, elements: list[Element], size: tuple[int, int]
             return "sms_timeout"
         state["sms_since"] = time.time()
         adb.type_text(code)
+        return "ok"
+    if action in ("email_code", "email_link"):
+        alias = os.environ.get(SECRET_FIELDS["app_email"])
+        if not alias:
+            return "missing_secret"
+        since = state.setdefault("email_since", time.time() - 120)
+        found = _wait_email(alias, since, action == "email_link")
+        if not found:
+            return "email_timeout"
+        state["email_since"] = time.time()
+        if action == "email_code":
+            adb.type_text(found)
+        else:
+            adb.shell(f"am start -a android.intent.action.VIEW -d {shlex.quote(found)}")
         return "ok"
     if action == "totp_code":
         secret = os.environ.get(TOTP_ENV)
