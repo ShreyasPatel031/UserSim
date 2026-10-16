@@ -43,12 +43,14 @@ appium driver list --installed 2>&1 | grep -q uiautomator2 || appium driver inst
 
 status "boot: emulator"
 ls -la /dev/kvm >>$LOG 2>&1
-nohup emulator -avd usersim -no-window -no-audio -no-boot-anim -no-snapshot-save -gpu swiftshader_indirect -memory 4096 >/var/log/emulator.log 2>&1 &
+nohup emulator -avd usersim -no-window -no-audio -no-boot-anim -no-snapshot -gpu swiftshader_indirect \
+  -feature -Vulkan -camera-back none -camera-front none -memory 4096 -cores 4 -verbose >/var/log/emulator.log 2>&1 &
 ( while true; do gsutil -q cp /var/log/emulator.log "$G/emulator.log" 2>/dev/null; gsutil -q cp /var/log/appium.log "$G/appium.log" 2>/dev/null; sleep 30; done ) &
 booted=0
 for i in $(seq 1 120); do
   [ "$(timeout 10 adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" = "1" ] && { booted=1; break; }
-  pgrep -f qemu-system >/dev/null || { status "boot: emulator process died"; tail -30 /var/log/emulator.log >>$LOG; break; }
+  [ $i -gt 12 ] && ! pgrep -f "qemu-system|emulator -avd" >/dev/null && { status "boot: emulator process died"; tail -30 /var/log/emulator.log >>$LOG; break; }
+  [ $((i % 12)) = 0 ] && echo "boot wait $i: $(timeout 5 adb devices | tail -n +2 | tr '\n' ' ')" >>$LOG
   sleep 5
 done
 gsutil -q cp /var/log/emulator.log "$G/emulator.log"
