@@ -20,7 +20,9 @@ LOG=/var/log/usersim-boot.log
 status() { echo "$(date -u +%T) $*" | tee -a $LOG; echo "$*" | gsutil -q cp - "$G/status"; gsutil -q cp $LOG "$G/boot.log"; }
 
 status "setup: packages"
-apt-get update -qq && apt-get install -y -qq openjdk-17-jdk-headless unzip python3-pip qemu-kvm >/dev/null
+apt-get update -qq && apt-get install -y -qq openjdk-17-jdk-headless unzip python3-pip qemu-kvm \
+  libpulse0 libgl1 libnss3 libxcomposite1 libxcursor1 libxi6 libxtst6 libasound2 libxdamage1 libxrandr2 \
+  libxkbfile1 libdrm2 libgbm1 libbz2-1.0 libx11-xcb1 libxkbcommon0 libdbus-1-3 libfontconfig1 >/dev/null
 if [ ! -x /opt/node/bin/node ]; then
   curl -sSL https://nodejs.org/dist/v20.18.0/node-v20.18.0-linux-x64.tar.xz | tar -xJ -C /opt && mv /opt/node-v20.18.0-linux-x64 /opt/node
 fi
@@ -42,8 +44,16 @@ appium driver list --installed 2>&1 | grep -q uiautomator2 || appium driver inst
 status "boot: emulator"
 ls -la /dev/kvm >>$LOG 2>&1
 nohup emulator -avd usersim -no-window -no-audio -no-boot-anim -no-snapshot-save -gpu swiftshader_indirect -memory 4096 >/var/log/emulator.log 2>&1 &
-adb wait-for-device
-for i in $(seq 1 120); do [ "$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" = "1" ] && break; sleep 5; done
+( while true; do gsutil -q cp /var/log/emulator.log "$G/emulator.log" 2>/dev/null; gsutil -q cp /var/log/appium.log "$G/appium.log" 2>/dev/null; sleep 30; done ) &
+booted=0
+for i in $(seq 1 120); do
+  [ "$(timeout 10 adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" = "1" ] && { booted=1; break; }
+  pgrep -f qemu-system >/dev/null || { status "boot: emulator process died"; tail -30 /var/log/emulator.log >>$LOG; break; }
+  sleep 5
+done
+gsutil -q cp /var/log/emulator.log "$G/emulator.log"
+[ $booted = 1 ] || { status "boot: FAILED (see emulator.log)"; exit 1; }
+status "boot: android ready"
 adb shell settings put global window_animation_scale 0; adb shell settings put global transition_animation_scale 0; adb shell settings put global animator_duration_scale 0
 nohup appium --address 127.0.0.1 --port 4723 >/var/log/appium.log 2>&1 &
 sleep 8
