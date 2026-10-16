@@ -106,3 +106,17 @@ def test_input_target_snaps_label_to_nearest_field_and_defaults_to_empty():
     assert aa._input_target(els, 0) is els[0]
     els[0] = E(0, "a@b.c", "EditText", (540, 1247), True, True)
     assert aa._input_target(els, None) is els[2]
+
+
+def test_parse_ui_labels_unlabelled_button_from_overlapping_text_and_string_ids():
+    xml = """<hierarchy>
+<node text="" class="android.view.View" bounds="[52,2086][1028,2186]" clickable="true"/>
+<node text="Sign Up" class="android.widget.TextView" bounds="[480,2116][600,2156]" clickable="false"/>
+<node text="" class="android.widget.Button" bounds="[0,150][128,276]" clickable="true"/>
+</hierarchy>"""
+    els = aa.parse_ui(xml)
+    assert els[0].label == "Sign Up"
+    assert els[2].label == ""
+    adb = FakeAdb()
+    assert aa.execute(adb, {"action": "tap", "element": "0"}, els, (1080, 2400), {}) == "ok"
+    assert adb.calls == [("tap", 540, 2136)]

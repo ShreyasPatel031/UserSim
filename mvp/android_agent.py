@@ -82,7 +82,20 @@ def parse_ui(xml_text: str, limit: int = 60) -> list[Element]:
         )
         if len(out) >= limit:
             break
+    for e in out:
+        if e.clickable and not e.label:
+            near = [o for o in out if o.label and not o.clickable and o is not e
+                    and abs(o.center[0] - e.center[0]) < 40 and abs(o.center[1] - e.center[1]) < 40]
+            if near:
+                e.label = near[0].label
     return out
+
+
+def _as_index(value: Any) -> int | None:
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return None
 
 
 class Adb:
@@ -254,13 +267,13 @@ TYPING_ACTIONS = ("type", "type_secret", "sms_code", "totp_code", "email_code")
 def execute(adb: Adb, step: dict, elements: list[Element], size: tuple[int, int], state: dict) -> str:
     action = str(step.get("action") or "wait")
     if action in TYPING_ACTIONS:
-        field = _input_target(elements, step.get("element", step.get("id")))
+        field = _input_target(elements, _as_index(step.get("element", step.get("id"))))
         if field:
             adb.tap(*field.center)
             time.sleep(0.5)
     if action == "tap":
-        idx = step.get("element")
-        if isinstance(idx, int) and 0 <= idx < len(elements):
+        idx = _as_index(step.get("element"))
+        if idx is not None and 0 <= idx < len(elements):
             adb.tap(*elements[idx].center)
             return "ok"
         return "bad_element"
