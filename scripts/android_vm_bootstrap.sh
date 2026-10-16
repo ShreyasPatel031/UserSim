@@ -38,8 +38,13 @@ sdkmanager "platform-tools" "emulator" "$IMAGE" >/dev/null 2>&1
 [ -d /root/.android/avd/usersim.avd ] || (echo no | avdmanager create avd -n usersim -k "$IMAGE" -d pixel_7 --force >/dev/null)
 
 status "setup: appium"
-command -v appium >/dev/null || npm i -g appium >/dev/null 2>&1
-appium driver list --installed 2>&1 | grep -q uiautomator2 || appium driver install uiautomator2 >/dev/null 2>&1
+export APPIUM_HOME=/root/.appium
+command -v appium >/dev/null || npm i -g appium >>$LOG 2>&1
+for i in 1 2 3; do
+  appium driver list --installed 2>&1 | grep -qi uiautomator2 && break
+  appium driver install uiautomator2 >>$LOG 2>&1
+done
+appium driver list --installed >>$LOG 2>&1
 
 status "boot: emulator"
 ls -la /dev/kvm >>$LOG 2>&1
@@ -57,7 +62,7 @@ gsutil -q cp /var/log/emulator.log "$G/emulator.log"
 [ $booted = 1 ] || { status "boot: FAILED (see emulator.log)"; exit 1; }
 status "boot: android ready"
 adb shell settings put global window_animation_scale 0; adb shell settings put global transition_animation_scale 0; adb shell settings put global animator_duration_scale 0
-nohup appium --address 127.0.0.1 --port 4723 >/var/log/appium.log 2>&1 &
+APPIUM_HOME=/root/.appium nohup appium --address 127.0.0.1 --port 4723 >/var/log/appium.log 2>&1 &
 sleep 8
 
 status "code: fetch"
