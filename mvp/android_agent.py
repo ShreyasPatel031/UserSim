@@ -151,6 +151,7 @@ class Adb:
         return self.run(*args, *map(str, apk_paths), timeout=300).decode(errors="replace")
 
     def launch(self, package: str) -> None:
+        self.shell("am force-stop com.android.vending; input keyevent 3")
         self.shell(f"monkey -p {shlex.quote(package)} -c android.intent.category.LAUNCHER 1")
 
     def has_package(self, package: str) -> bool:
