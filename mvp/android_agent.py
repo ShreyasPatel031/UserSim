@@ -322,7 +322,7 @@ def execute(adb: Adb, step: dict, elements: list[Element], size: tuple[int, int]
         alias = os.environ.get(SECRET_FIELDS["app_email"])
         if not alias:
             return "missing_secret"
-        since = state.setdefault("email_since", time.time() - 120)
+        since = state.setdefault("email_since", time.time() - 900)
         found = _wait_email(alias, since, action == "email_link")
         if not found:
             return "email_timeout"
