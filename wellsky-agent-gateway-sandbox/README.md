@@ -4,13 +4,35 @@ A replica of WellSky's planned AgentOps control plane in `project-amer-scs-sandb
 
 It exists to test what the SOW promises against what the product actually does, before Andrew's call and the PSO/Searce SOW.
 
+## Demo (working end to end)
+
+`./15_demo.sh` runs eight scenarios against the live agents. The last recorded run is in `demo_output.txt`.
+
+| # | Scenario | Result |
+|---|---|---|
+| 1 | Governed agent calls the allowed Onspring MCP tool through Agent Gateway | ✅ Records returned |
+| 2 | Same MCP server, a tool the policy blocks (`get_governance_record`) | ✅ 403 from the gateway (per-tool IAP rule) |
+| 3 | Registered Google API (Discovery Engine over mTLS) | ✅ 200, EVV documents returned |
+| 4 | Unregistered destination (`example.com`) | ✅ 403 "Only registered endpoints are allowed" |
+| 5 | Prompt injection | ✅ 403 "Dangerous content not allowed" (Model Armor at the gateway) |
+| 6 | PHI in a request (MRN, DOB, diagnosis) | ✅ 403 "sensitive data not allowed" (healthcare inspection template) |
+| 7 | WellSky's in-house agent pattern: plain REST under Agent Identity | ✅ Reproduces the 401 "permission error" |
+| 8 | Same agent, mTLS endpoint + agent principal granted `discoveryengine.viewer` | ✅ 200, the fix |
+
+The gateway runs in **ENFORCED** mode (`wsky-iap-enforced`, fail-closed). To show what each call was allowed or denied, run `./13_gateway_decisions.sh 6349433634679685120 <RFC3339 start time>`.
+
+Cost guard: both agents run with `min_instances=0`, `max_instances=1`, 1 vCPU / 2 GiB, so they cost nothing while idle. Everything else is pay-per-use or free tier. Run `./99_teardown.sh` when you're done.
+
 ## What is deployed
 
 | Piece | Resource | Mirrors at WellSky |
 |---|---|---|
 | Egress gateway | `agentGateways/wsky-egress-gw` (Google-managed, `AGENT_TO_ANYWHERE`) | Agent Gateway for governed agents |
-| Gateway policies | `authzPolicies/wsky-gw-iap` (REQUEST_AUTHZ → IAP, currently **dry-run**), `authzPolicies/wsky-gw-model-armor` (CONTENT_AUTHZ) | Up to 10 gateway policies |
-| Model Armor | `templates/wsky-request`, `templates/wsky-response` | Up to 3 templates (PHI, PII, internal-only) |
+| Gateway policies | `authzPolicies/wsky-gw-iap` (REQUEST_AUTHZ → IAP, **enforced**), `authzPolicies/wsky-gw-model-armor` (CONTENT_AUTHZ) | Up to 10 gateway policies |
+| Per-agent egress | `roles/iap.egressor` for the governed agent's principal, CEL condition denying `get_governance_record` | Agent-to-tool access matrix |
+| Registered endpoints | 13 Google API hosts as Agent Registry Endpoints (`wsky-ep-*`) | Required for enforcement |
+| Model Armor | `templates/wsky-request`, `templates/wsky-response`, with DLP inspect template `wsky-phi-pii` (healthcare infoTypes) | Up to 3 templates (PHI, PII, internal-only) |
+| MCP invoker | SA `wsky-mcp-invoker` (run.invoker); only the governed agent's principal may mint its ID tokens | Agent → Cloud Run MCP auth |
 | MCP tool | Cloud Run `wsky-mcp-onspring` (IAM-only), registered as `services/wsky-mcp-onspring` | Onspring MCP |
 | Knowledge base | Discovery Engine `us` data store `wsky-kb` + engine `wsky-kb-search` | Data store behind the in-house agent |
 | Baseline agent | `reasoningEngines/1985445595757674496`, Agent Identity, no gateway | The Discovery Engine API agent as it runs today |
@@ -43,7 +65,7 @@ It exists to test what the SOW promises against what the product actually does, 
 - `registries` only accepts the project-scoped registry. A second gateway in the same project and region (ours, next to `a2a-crosscloud-gateway`) governs the same inventory.
 - WellSky's dev/stage/prod split therefore has to be done with separate projects, not separate gateways.
 
-**6. Model Armor out of the box does not cover healthcare data.**
+**6. Model Armor out of the box does not cover healthcare data. Fixed in the replica with a healthcare inspection template.**
 
 | Synthetic prompt | Result |
 |---|---|
@@ -56,21 +78,31 @@ It exists to test what the SOW promises against what the product actually does, 
 - PHI and PII need an advanced Sensitive Data Protection config: DLP inspect and de-identify templates with healthcare infoTypes, with the Model Armor service agent granted `roles/dlp.user` and `roles/dlp.reader`.
 - Rules for internal-only and EVV content have to be enforced through data access (IAM, data store ACLs, separate stores per tier). Model Armor can't do it.
 - Rerun with `09_model_armor_test.sh`.
+- **After `14_phi_template.sh`** (a DLP inspect template with MEDICAL_RECORD_NUMBER, DATE_OF_BIRTH, MEDICAL_TERM, US_SOCIAL_SECURITY_NUMBER, NPI, MBI and a custom MRN regex): MRN, DOB and diagnosis are caught, both by direct calls and at the gateway (demo #6). Note: the test SSN `123-45-6789` is a known-invalid number, so DLP doesn't flag it as an SSN; use realistic synthetic values in UAT.
+- Model Armor at the gateway screens the agent's **model calls** as well as tool calls. The injection in demo #5 was stopped on the Gemini request, before any tool ran.
 
-**7. Calls to Cloud Run MCP servers need a separate invoker identity.**
-- Cloud Run requires an ID token. Google's sample deploys agents with a separate `--mcp-invoker-sa` instead of using the agent identity directly.
-- Not yet verified here, because finding 2 blocks it. It's next once token sharing is approved.
+**7. Calls to Cloud Run MCP servers need a separate invoker identity. Verified.**
+- Agent Identity can't mint an ID token for Cloud Run itself. The metadata server hands back a tenant-project `appspot` identity.
+- Working pattern (`10_mcp_invoker.sh`): a dedicated invoker SA has `run.invoker`, and only the agent's principal has `roles/iam.serviceAccountOpenIdTokenCreator` on it. The agent calls `generateIdToken` for each MCP session.
+- A `resource.name` IAM condition on `run.invoker` did not take effect in testing. The sandbox grants it project-wide to the dedicated SA. In production, bind it on the service.
+- When an MCP server can't be reached, ADK silently drops its tools. The agent just reports that it has no such tool, so a gateway or auth failure looks like a missing feature. Check the agent logs for `Failed to create MCP session`.
+
+**9. Registry and gateway details the SOW should account for.**
+- The gateway matches registry entries on the exact URL. Our MCP server was first registered with the legacy `*-uc.a.run.app` URL that Cloud Run reports, so all its traffic showed as `unregisteredEndpoint` until it was re-registered with the URL the agent calls.
+- Creating an authz policy while its extension is still provisioning returns success, but the operation fails silently and the policy never exists. The Model Armor policy was missing for an hour before we noticed.
+- Switching the IAP policy from dry-run to enforced took about 3.5 minutes to apply.
+- Under enforcement, the agent's Gemini, telemetry, IAM credentials and resource manager calls all need registered endpoints and an `iap.egressor` grant. The list came from the gateway's own dry-run logs (`13_gateway_decisions.sh`), which is the practical way to build it.
+- Agent Engine defaults keep a warm instance per agent. Set `min_instances=0` for non-prod fleets.
 
 **8. Other gotchas.**
 - The shared sandbox is out of `global` Discovery Engine data store quota, so the replica uses `us`.
 - `mcp` 2.x renamed `FastMCP` (we pinned `mcp<2`).
 - The `vertexai` SDK's `stream_query` fails to parse some concatenated stream chunks (`07_ask.py` uses REST instead).
 
-## Not done yet (waiting on a decision)
+## Not done yet
 
-- Redeploy the governed agent with token sharing allowed. Then test the Onspring MCP path through the gateway, `iap.egressor` with a CEL condition per tool, the switch to ENFORCED, and Model Armor on the gateway's CONTENT_AUTHZ path.
-- Advanced Sensitive Data Protection (healthcare infoTypes) template and retest.
-- Attaching the agents to a Gemini Enterprise app (the "GE tool traffic through the gateway" claim in the SOW).
+- Attaching the agents to a Gemini Enterprise app, to test the SOW's "GE tool traffic routes through Agent Gateway" claim.
+- Internal-only and EVV content rules. Model Armor can't do these; they need separate data stores or ACLs per content tier.
 
 ## Run order
 
@@ -80,6 +112,10 @@ export WSKY_KEY_FILE=<path for decoded SA key>; source env.sh
 python 05_deploy_agents.py baseline; python 05_deploy_agents.py governed
 ./06_model_armor_and_policies.sh            # ./06_model_armor_and_policies.sh enforce|dryrun to switch IAP mode
 ./08_grant_de_access.sh <reasoningEngine id>
+./10_mcp_invoker.sh <governed id>; ./11_register_endpoints.sh; ./12_grant_egress.sh <governed id>
+./14_phi_template.sh
+./06_model_armor_and_policies.sh enforce
+PY=<venv python> ./15_demo.sh
 python 07_ask.py <reasoningEngine name> "Call search_kb_mtls with query 'Texas EVV'"
 ./09_model_armor_test.sh
 ./99_teardown.sh                             # removes only wsky-* resources

@@ -1,0 +1,42 @@
+
+=== 1. Allowed MCP tool through the gateway (Onspring list)
+    expect: records returned
+    CALL   "onspring_list_governance_records" {"status": "Approved"}
+    RESULT {"content": [{"type": "text", "text": "{\n  \"id\": \"GOV-101\",\n  \"title\": \"EVV rules - Texas\",\n  \"owner\": \"Support Ops\",\n  \"status\": \"Approved\",\n  \"tier\": \"internal\"\n}"}, {"type": "text", "text": "{\n  \"id\": \"GOV-201\",\n  \"ti
+    ERROR  MODEL_RETURNED_NO_CONTENT The model returned no actionable content (finish_reason=STOP with thought-only or whitespace-only parts).
+
+=== 2. Same MCP server, blocked tool (per-tool IAP policy)
+    expect: 403 from the gateway
+    CALL   "onspring_get_governance_record" {"record_id": "GOV-101"}
+    RESULT {"error": "Unexpected error during MCP tool execution: MCP session connection lost: Client error '403 Forbidden' for url 'https://wsky-mcp-onspring-347838016394.us-central1.run.app/mcp'\nFor more information check: https://developer.mozilla.org/en-US/do
+
+=== 3. Registered Google API (Discovery Engine over mTLS)
+    expect: 200 with EVV documents
+    CALL   "search_kb_mtls" {"query": "Texas EVV"}
+    RESULT {"host": "us-discoveryengine.mtls.googleapis.com", "status": 200, "results": ["gs://wsky-replica-347838016394/kb/evv-texas.txt", "gs://wsky-replica-347838016394/kb/evv-ohio.txt"]}
+
+=== 4. Unregistered destination
+    expect: 403 'Only registered endpoints are allowed'
+    CALL   "probe_url" {"url": "https://example.com"}
+    RESULT {"status": 403, "body": "Egress request is not authorized. The endpoint is either incorrect or unregistered in the Agent Registry. Only registered endpoints are allowed."}
+
+=== 5. Prompt injection
+    expect: 403 'Dangerous content not allowed' (Model Armor at the gateway)
+    ERROR  Forbidden 403 Forbidden. {'message': '{"error":{"code":403,"message":"Error: Dangerous content not allowed; Security Policy Violation","status":"PERMISSION_DENIED"}}', 'status': 'Forbidden'}
+    ERROR  403 403 Forbidden. {'message': '{"error":{"code":403,"message":"Error: Dangerous content not allowed; Security Policy Violation","status":"PERMISSION_DENIED"}}', 'status': 'Forbidden'}
+
+=== 6. PHI in a request (MRN, DOB, diagnosis)
+    expect: 403 'sensitive data not allowed' (healthcare SDP template)
+    ERROR  Forbidden 403 Forbidden. {'message': '{"error":{"code":403,"message":"Error: sensitive data not allowed","status":"PERMISSION_DENIED"}}', 'status': 'Forbidden'}
+    ERROR  403 403 Forbidden. {'message': '{"error":{"code":403,"message":"Error: sensitive data not allowed","status":"PERMISSION_DENIED"}}', 'status': 'Forbidden'}
+
+=== 7. WellSky's in-house DE agent pattern: plain REST under Agent Identity (no gateway)
+    expect: 401: the 'permission error'
+    CALL   "search_kb" {"query": "Texas EVV"}
+    RESULT {"status": 401, "error": "{\n  \"error\": {\n    \"code\": 401,\n    \"message\": \"Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/i
+    ERROR  MODEL_RETURNED_NO_CONTENT The model returned no actionable content (finish_reason=STOP with thought-only or whitespace-only parts).
+
+=== 8. Same agent, mTLS endpoint + agent principal granted discoveryengine.viewer
+    expect: 200: the fix
+    CALL   "search_kb_mtls" {"query": "Texas EVV"}
+    RESULT {"host": "us-discoveryengine.mtls.googleapis.com", "status": 200, "results": ["gs://wsky-replica-347838016394/kb/evv-texas.txt", "gs://wsky-replica-347838016394/kb/evv-ohio.txt"]}

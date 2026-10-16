@@ -32,14 +32,23 @@ config = {
     "requirements": "requirements.txt",
     "extra_packages": ["wsky_agent.py"],
     "identity_type": types.IdentityType.AGENT_IDENTITY,
+    # Cost guard for the sandbox: scale to zero when idle, one small instance at most.
+    "min_instances": 0,
+    "max_instances": 1,
+    "resource_limits": {"cpu": "1", "memory": "2Gi"},
     "labels": {"owner": "searce-sc", "purpose": "wellsky-replica"},
-    "env_vars": {"WSKY_MCP_URL": MCP_URL, "WSKY_DE_LOC": "us", "WSKY_ENGINE": "wsky-kb-search",
+    "env_vars": {"WSKY_MCP_URL": MCP_URL, "WSKY_MCP_INVOKER_SA": f"wsky-mcp-invoker@{PROJECT}.iam.gserviceaccount.com", "WSKY_DE_LOC": "us", "WSKY_ENGINE": "wsky-kb-search",
                  "OTEL_SEMCONV_STABILITY_OPT_IN": "gen_ai_latest_experimental",
                  "OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT": "EVENT_ONLY",
                  "GOOGLE_CLOUD_AGENT_ENGINE_ENABLE_TELEMETRY": "true"},
 }
 if mode == "governed":
     config["agent_gateway_config"] = {"agent_to_anywhere_config": {"agent_gateway": GATEWAY}}
+    # Without this, every Google API call through the gateway (including Gemini) fails with 401:
+    # Agent Identity tokens are bound to the agent's mTLS cert by default, and the gateway re-originates TLS.
+    # Google's own Agent Gateway codelabs set the same flag (--allow-token-sharing). It disables token binding.
+    if os.environ.get("WSKY_ALLOW_TOKEN_SHARING", "true") == "true":
+        config["env_vars"]["GOOGLE_API_PREVENT_AGENT_TOKEN_SHARING_FOR_GCP_SERVICES"] = "false"
 
 existing = os.environ.get("WSKY_UPDATE")  # reasoningEngine name to update in place
 if existing:

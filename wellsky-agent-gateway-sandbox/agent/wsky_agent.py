@@ -108,17 +108,37 @@ def probe_url(url: str) -> dict:
         return {"error": f"{type(e).__name__}: {e}"[:500]}
 
 
+MCP_INVOKER_SA = os.environ.get("WSKY_MCP_INVOKER_SA", "")
+
+
 def _mcp_headers(_ctx) -> dict:
-    """Cloud Run needs an ID token; try to mint one from the runtime identity."""
-    import google.oauth2.id_token
+    """Cloud Run needs an ID token. Agent Identity can't mint one for itself, so the agent's principal
+    asks IAM Credentials for an ID token of a dedicated invoker SA (roles/iam.serviceAccountOpenIdTokenCreator)."""
+    audience = MCP_URL.rsplit("/mcp", 1)[0]
     try:
-        tok = google.oauth2.id_token.fetch_id_token(google.auth.transport.requests.Request(), MCP_URL.rsplit("/mcp", 1)[0])
-        return {"Authorization": f"Bearer {tok}"}
+        creds = _session()
+        r = requests.post(
+            f"https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/{MCP_INVOKER_SA}:generateIdToken",
+            headers={"Authorization": f"Bearer {creds.token}"},
+            json={"audience": audience, "includeEmail": True}, timeout=15)
+        r.raise_for_status()
+        return {"Authorization": f"Bearer {r.json()['token']}"}
     except Exception as e:
-        return {"X-Wsky-IdToken-Error": f"{type(e).__name__}"[:100]}
+        return {"X-Wsky-IdToken-Error": f"{type(e).__name__}: {e}"[:200]}
 
 
-tools = [whoami, runtime_env, search_kb, search_kb_client_lib, search_kb_mtls, probe_url]
+def mcp_auth_debug() -> dict:
+    """Show whether the agent could mint an ID token for the Onspring MCP server (token value masked)."""
+    h = _mcp_headers(None)
+    if "Authorization" in h:
+        import base64, json as _j
+        payload = h["Authorization"].split(".")[1]
+        claims = _j.loads(base64.urlsafe_b64decode(payload + "=" * (-len(payload) % 4)))
+        return {"minted": True, "claims": {k: claims.get(k) for k in ("aud", "email", "iss")}}
+    return {"minted": False, **h}
+
+
+tools = [mcp_auth_debug, whoami, runtime_env, search_kb, search_kb_client_lib, search_kb_mtls, probe_url]
 if MCP_URL:
     tools.append(McpToolset(connection_params=StreamableHTTPConnectionParams(url=MCP_URL, timeout=30),
                             header_provider=_mcp_headers, tool_name_prefix="onspring"))

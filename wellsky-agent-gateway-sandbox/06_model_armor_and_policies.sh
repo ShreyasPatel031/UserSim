@@ -35,7 +35,10 @@ mkext ${PREFIX}-iap-dryrun   '{"service":"iap.googleapis.com","failOpen":true,"t
 mkext ${PREFIX}-iap-enforced '{"service":"iap.googleapis.com","failOpen":false,"timeout":"1s","metadata":{"iapPolicyVersion":"V1"}}'
 mkext ${PREFIX}-model-armor "{\"service\":\"modelarmor.$REGION.rep.googleapis.com\",\"failOpen\":false,\"timeout\":\"1s\",
   \"metadata\":{\"model_armor_settings\":\"[{\\\"request_template_id\\\":\\\"projects/$PROJECT_ID/locations/$REGION/templates/${PREFIX}-request\\\",\\\"response_template_id\\\":\\\"projects/$PROJECT_ID/locations/$REGION/templates/${PREFIX}-response\\\"}]\"}}"
-sleep 30
+# Wait for the extensions: a policy created against an extension that is still provisioning is accepted
+# (200 + operation) but the operation fails silently and the policy never appears.
+for e in ${PREFIX}-iap-dryrun ${PREFIX}-iap-enforced ${PREFIX}-model-armor; do
+  until curl -sf -o /dev/null -H "Authorization: Bearer $(tok)" "$NS/authzExtensions/$e"; do sleep 10; done; done
 mkpol(){ curl -sS -X POST "${H[@]}" "$NSEC/authzPolicies?authzPolicyId=$1" -d "{
   \"policyProfile\":\"$2\",\"action\":\"CUSTOM\",\"target\":{\"resources\":[\"$GW\"]},
   \"labels\":{\"owner\":\"searce-sc\"},
