@@ -291,7 +291,16 @@ def main_android(args) -> int:
     from mvp.android_device import AndroidDevice
 
     os.environ.setdefault("MVP_PLATFORM", "Android")
-    plan_path = os.environ.get("MVP_ANDROID_PLAN")
+    plan_env = os.environ.get("MVP_ANDROID_PLAN", "")
+    if "," in plan_env:
+        # Several apps on one emulator: run each app's slice in turn.
+        rc = 0
+        for one in [x.strip() for x in plan_env.split(",") if x.strip()]:
+            os.environ["MVP_ANDROID_PLAN"] = one
+            rc |= main_android(args)
+        os.environ["MVP_ANDROID_PLAN"] = plan_env
+        return rc
+    plan_path = plan_env
     if plan_path and Path(plan_path).is_file():
         slice_ = json.loads(Path(plan_path).read_text())
         app, pkg, desc = slice_["app"], slice_["pkg"], slice_.get("desc", args.desc)

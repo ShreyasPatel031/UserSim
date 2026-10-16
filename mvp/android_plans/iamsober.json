@@ -1,0 +1,34 @@
+{
+  "app": "I Am Sober",
+  "pkg": "com.thehungrywasp.iamsober",
+  "role": "competitor",
+  "desc": "Apps that help people drink less alcohol or quit drinking.",
+  "personas": [
+    {
+      "name": "Emily",
+      "age": "22",
+      "bio": "Emily is a college student who has realized her weekend binge drinking is spiraling out of control. She feels ashamed and is desperate to stop completely, but is unsure where to start.",
+      "motivation": "Very High - wants to quit entirely and needs immediate support and a clear path.",
+      "patience": "Low"
+    },
+    {
+      "name": "Robert",
+      "age": "60",
+      "bio": "Robert is a recently retired teacher who has been drinking daily for decades but now wants to quit for his grandchildren. He's not very tech-savvy and needs a straightforward, encouraging interface.",
+      "motivation": "High - driven by family and health, seeking a simple and supportive tool to quit.",
+      "patience": "Medium"
+    }
+  ],
+  "tasks": [
+    {
+      "title": "Set the sobriety date and pledge",
+      "task": "Upon first launch, enter the 'sober date' and make a daily pledge to commit to sobriety.",
+      "success": "The user has successfully entered their sobriety start date and confirmed their daily pledge within the app."
+    },
+    {
+      "title": "Explore the 'Milestones' section",
+      "task": "Find and view the initial milestones (e.g., 1 day, 1 week sober) to understand the app's progress tracking.",
+      "success": "The user has navigated to the 'Milestones' or 'Progress' section and seen the upcoming sobriety milestones."
+    }
+  ]
+}

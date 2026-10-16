@@ -1,0 +1,34 @@
+{
+  "app": "Reframe: Drink Less & Thrive",
+  "pkg": "com.glucobit.reframe",
+  "role": "product",
+  "desc": "Apps that help people drink less alcohol or quit drinking.",
+  "personas": [
+    {
+      "name": "Sarah",
+      "age": "34",
+      "bio": "Sarah is a busy marketing professional who finds herself relying on a glass or two of wine each evening to unwind. She's noticed it's impacting her sleep and energy, and wants to cut back without feeling deprived.",
+      "motivation": "Moderate - wants to reduce consumption and improve well-being, but not necessarily quit entirely.",
+      "patience": "Medium"
+    },
+    {
+      "name": "Mark",
+      "age": "52",
+      "bio": "Mark is a small business owner who has been drinking heavily for years, particularly on weekends. His doctor recently advised him to cut down for health reasons, and he's feeling overwhelmed by the prospect.",
+      "motivation": "High - health concerns are a strong driver, but he's skeptical about his ability to change.",
+      "patience": "Low"
+    }
+  ],
+  "tasks": [
+    {
+      "title": "Set a personalized reduction goal",
+      "task": "After onboarding, set a specific goal for how much alcohol to reduce consumption by per week.",
+      "success": "The user has successfully navigated to the goal-setting section and entered a target reduction amount (e.g., 'reduce by 3 drinks per week')."
+    },
+    {
+      "title": "Explore the 'Learn' section for initial insights",
+      "task": "Find and browse through at least two articles or modules in the app's educational content to understand the science behind reducing alcohol.",
+      "success": "The user has accessed the 'Learn' or 'Insights' section and viewed the content of two different educational pieces."
+    }
+  ]
+}
