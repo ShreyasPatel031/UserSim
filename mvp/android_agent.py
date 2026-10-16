@@ -186,6 +186,7 @@ You see a screenshot and a list of on-screen elements (index, class, label).
 Reply with ONE JSON object:
   {{"action": "tap", "element": <index>}}                      tap a listed element
   {{"action": "tap_point", "point": [x, y]}}                   tap; x,y normalized 0-1000
+  {{"action": "long_press", "element": <index>}}               press and hold ~3s (e.g. "press and hold" buttons)
   {{"action": "type", "text": "..."}}                          type into the focused field
   {{"action": "type_secret", "field": "apple_email"|"apple_password"|"google_email"|"google_password"|"app_email"|"app_password"}}
   {{"action": "email_code"}}       a code was emailed to app_email; fetch and type it
@@ -297,6 +298,13 @@ def execute(adb: Adb, step: dict, elements: list[Element], size: tuple[int, int]
                 adb.shell("input keyevent 4")
                 time.sleep(0.7)
             adb.tap(*elements[idx].center)
+            return "ok"
+        return "bad_element"
+    if action == "long_press":
+        idx = _as_index(step.get("element"))
+        if idx is not None and 0 <= idx < len(elements):
+            x, y = elements[idx].center
+            adb.shell(f"input swipe {x} {y} {x} {y + 1} 3500", timeout=30)
             return "ok"
         return "bad_element"
     if action == "tap_point":

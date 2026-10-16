@@ -144,3 +144,11 @@ def test_filled_field_is_cleared_and_password_text_hidden(monkeypatch):
     assert el[0].label == "password field (filled, 7 chars)" and "hunter2" not in el[0].label
     assert aa.execute(adb, {"action": "type_secret", "field": "google_password", "element": 0}, el, (1080, 2400), {}) == "ok"
     assert adb.calls[0] == ("tap", 50, 25) and adb.calls[1][0] == "shell" and adb.calls[-1] == ("type", "pw")
+
+
+def test_long_press_holds_on_element_center():
+    adb = FakeAdb()
+    els = [aa.Element(0, "Press and hold to pledge", "ViewGroup", (540, 1930), True, False)]
+    assert aa.execute(adb, {"action": "long_press", "element": "0"}, els, (1080, 2400), {}) == "ok"
+    assert ("shell", "input swipe 540 1930 540 1931 3500") in adb.calls
+    assert aa.execute(adb, {"action": "long_press", "element": 5}, els, (1080, 2400), {}) == "bad_element"
