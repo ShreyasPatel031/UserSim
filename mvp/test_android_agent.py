@@ -86,3 +86,17 @@ def test_typing_actions_focus_element_first(monkeypatch):
     el = aa.parse_ui('''<hierarchy><node class="android.widget.EditText" text="Email" clickable="true" bounds="[0,0][100,50]"/></hierarchy>''')
     assert aa.execute(adb, {"action": "type_secret", "field": "app_email", "element": 0}, el, (1080, 2400), {}) == "ok"
     assert adb.calls == [("tap", 50, 25), ("type", "a+b@gmail.com")]
+
+
+def test_input_target_snaps_label_to_nearest_field_and_defaults_to_empty():
+    E = aa.Element
+    els = [
+        E(0, "", "EditText", (540, 1247), True, True),
+        E(1, "Email*", "TextView", (179, 1248), False, False),
+        E(2, "", "EditText", (540, 1433), True, True),
+        E(3, "Password*", "TextView", (221, 1434), False, False),
+    ]
+    assert aa._input_target(els, 3) is els[2]
+    assert aa._input_target(els, 0) is els[0]
+    els[0] = E(0, "a@b.c", "EditText", (540, 1247), True, True)
+    assert aa._input_target(els, None) is els[2]

@@ -236,15 +236,28 @@ def _wait_sms(since: float) -> str | None:
     return _wait_sms_code(since, float(os.environ.get("MVP_SMS_WAIT_S", "300")))
 
 
+def _input_target(elements: list[Element], idx: Any) -> Element | None:
+    """The editable field the model meant; snaps label hits to the nearest input."""
+    edits = [e for e in elements if e.editable]
+    if isinstance(idx, int) and 0 <= idx < len(elements):
+        hit = elements[idx]
+        if hit.editable or not edits:
+            return hit
+        return min(edits, key=lambda e: abs(e.center[1] - hit.center[1]))
+    empty = [e for e in edits if not e.label]
+    return (empty or edits or [None])[0]
+
+
 TYPING_ACTIONS = ("type", "type_secret", "sms_code", "totp_code", "email_code")
 
 
 def execute(adb: Adb, step: dict, elements: list[Element], size: tuple[int, int], state: dict) -> str:
     action = str(step.get("action") or "wait")
-    idx = step.get("element")
-    if action in TYPING_ACTIONS and isinstance(idx, int) and 0 <= idx < len(elements):
-        adb.tap(*elements[idx].center)
-        time.sleep(0.5)
+    if action in TYPING_ACTIONS:
+        field = _input_target(elements, step.get("element", step.get("id")))
+        if field:
+            adb.tap(*field.center)
+            time.sleep(0.5)
     if action == "tap":
         idx = step.get("element")
         if isinstance(idx, int) and 0 <= idx < len(elements):
@@ -342,6 +355,7 @@ def run(task: str, package: str, *, apk_dir: Path | None = None, max_steps: int 
         step.update(step=n, result=result, t=time.time())
         history.append(step)
         print(f"[{n:02d}] {step.get('action')} -> {result}: {step.get('reason', '')[:100]}", flush=True)
+        (run_dir / "trace.json").write_text(json.dumps({"task": task, "package": package, "history": history}, indent=2))
         if result == "terminal":
             outcome = {"ok": step["action"] == "done", "reason": step["action"], "summary": step.get("summary")}
             break
