@@ -177,6 +177,7 @@ Reply with ONE JSON object:
 Always add "reason": a short first-person note on what you see and why.
 For Apple ID prompts, prefer "Text code"/"use phone number" over device approval.
 Never type passwords with "type"; use "type_secret".
+For type, type_secret, sms_code, totp_code and email_code include "element": <id of the input field> so it is focused first.
 
 Recent steps:
 {history}
@@ -235,8 +236,15 @@ def _wait_sms(since: float) -> str | None:
     return _wait_sms_code(since, float(os.environ.get("MVP_SMS_WAIT_S", "300")))
 
 
+TYPING_ACTIONS = ("type", "type_secret", "sms_code", "totp_code", "email_code")
+
+
 def execute(adb: Adb, step: dict, elements: list[Element], size: tuple[int, int], state: dict) -> str:
     action = str(step.get("action") or "wait")
+    idx = step.get("element")
+    if action in TYPING_ACTIONS and isinstance(idx, int) and 0 <= idx < len(elements):
+        adb.tap(*elements[idx].center)
+        time.sleep(0.5)
     if action == "tap":
         idx = step.get("element")
         if isinstance(idx, int) and 0 <= idx < len(elements):

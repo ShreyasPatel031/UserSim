@@ -77,3 +77,12 @@ def test_execute_email_code_and_link(monkeypatch):
     assert "'https://x.test/v?a=1'" in adb.calls[1][1]
     monkeypatch.setattr(aa, "_wait_email", lambda alias, since, link: None)
     assert aa.execute(adb, {"action": "email_code"}, [], (1080, 2400), {}) == "email_timeout"
+
+
+def test_typing_actions_focus_element_first(monkeypatch):
+    adb = FakeAdb()
+    monkeypatch.setenv("APP_SIGNUP_EMAIL", "a+b@gmail.com")
+    monkeypatch.setattr(aa.time, "sleep", lambda s: None)
+    el = aa.parse_ui('''<hierarchy><node class="android.widget.EditText" text="Email" clickable="true" bounds="[0,0][100,50]"/></hierarchy>''')
+    assert aa.execute(adb, {"action": "type_secret", "field": "app_email", "element": 0}, el, (1080, 2400), {}) == "ok"
+    assert adb.calls == [("tap", 50, 25), ("type", "a+b@gmail.com")]
