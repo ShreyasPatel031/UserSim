@@ -193,6 +193,8 @@ Reply with ONE JSON object:
 Always add "reason": a short first-person note on what you see and why.
 For Apple ID prompts, prefer "Text code"/"use phone number" over device approval.
 Never type passwords with "type"; use "type_secret".
+The unlabelled Button at the top-left is the back arrow: only tap it to deliberately go back.
+A screen with no forward button (e.g. a fact/chart with a progress bar) auto-advances: use "wait".
 For type, type_secret, sms_code, totp_code and email_code include "element": <id of the input field> so it is focused first.
 
 Recent steps:
