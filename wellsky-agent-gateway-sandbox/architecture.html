@@ -1,0 +1,241 @@
+<title>WellSky Gateway Replica</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  /* Layout: one engineering sheet. Header, the wide diagram (scrolls on phones), then two compact reference tables. */
+  :root {
+    --bg: #f6f7f9; --panel: #ffffff; --fg: #18202b; --muted: #5b6676; --line: #c9d0da;
+    --accent: #2b59c3; --accent-soft: #e6ecfa;
+    --ok: #1f7a4d; --deny: #c0362c; --warn-soft: #fbeceb; --ok-soft: #e5f3ec;
+    --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+    --bg: #11151b; --panel: #181e26; --fg: #e3e8ef; --muted: #95a1b2; --line: #36404d;
+    --accent: #7ea2f0; --accent-soft: #1d2840;
+    --ok: #5cc493; --deny: #f07a6f; --warn-soft: #3a1f1d; --ok-soft: #17301f; color-scheme: dark } }
+  :root[data-theme="dark"] {
+    --bg: #11151b; --panel: #181e26; --fg: #e3e8ef; --muted: #95a1b2; --line: #36404d;
+    --accent: #7ea2f0; --accent-soft: #1d2840;
+    --ok: #5cc493; --deny: #f07a6f; --warn-soft: #3a1f1d; --ok-soft: #17301f; color-scheme: dark }
+
+  body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 15px; line-height: 1.55; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding-block: 32px 56px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+    display: grid; gap: 28px; }
+  header { display: grid; gap: 6px; }
+  .eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+  h1 { margin: 0; font-size: 28px; font-weight: 600; text-wrap: balance; }
+  h2 { margin: 0 0 10px; font-size: 17px; font-weight: 600; }
+  header p { margin: 0; color: var(--muted); max-width: 70ch; }
+  code, .mono { font-family: var(--mono); font-size: .92em; }
+
+  figure { margin: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; }
+  .scroll { overflow-x: auto; padding: 12px; }
+  svg { display: block; width: 100%; min-width: 980px; height: auto; color: var(--fg); font-family: var(--sans); }
+  figcaption { border-top: 1px solid var(--line); padding: 12px 16px; color: var(--muted); font-size: 14px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 6px; font-size: 13px; }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .sw { width: 22px; height: 0; border-top: 2px solid; display: inline-block; }
+
+  /* SVG classes */
+  .box { fill: var(--panel); stroke: var(--line); stroke-width: 1.2; }
+  .group { fill: none; stroke: var(--line); stroke-dasharray: 5 4; stroke-width: 1.2; }
+  .gw { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.6; }
+  .check { fill: var(--panel); stroke: var(--accent); stroke-width: 1; }
+  .okbox { fill: var(--ok-soft); stroke: var(--ok); stroke-width: 1.2; }
+  .denybox { fill: var(--warn-soft); stroke: var(--deny); stroke-width: 1.2; }
+  .t { fill: var(--fg); font-size: 12.5px; }
+  .tb { fill: var(--fg); font-size: 13px; font-weight: 600; }
+  .tm { fill: var(--muted); font-size: 11.5px; }
+  .code { fill: var(--muted); font-family: var(--mono); font-size: 11px; }
+  .ta { fill: var(--accent); font-size: 13px; font-weight: 600; }
+  .tok { fill: var(--ok); font-size: 12px; font-weight: 500; }
+  .tdeny { fill: var(--deny); font-size: 12px; font-weight: 500; }
+  .e { fill: none; stroke: var(--fg); stroke-width: 1.4; }
+  .eok { fill: none; stroke: var(--ok); stroke-width: 1.6; }
+  .edeny { fill: none; stroke: var(--deny); stroke-width: 1.6; stroke-dasharray: 5 4; }
+  .elook { fill: none; stroke: var(--accent); stroke-width: 1.3; stroke-dasharray: 3 3; }
+  .hfg { fill: var(--fg); } .hok { fill: var(--ok); } .hdeny { fill: var(--deny); } .hacc { fill: var(--accent); }
+
+  .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
+  .cols > section { min-width: 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { text-align: left; padding: 7px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); font-weight: 500; }
+  td.n { font-variant-numeric: tabular-nums; color: var(--muted); width: 1.5em; }
+  .pill { font-family: var(--mono); font-size: 12px; padding: 1px 7px; border-radius: 10px; white-space: nowrap; }
+  .pill.ok { color: var(--ok); background: var(--ok-soft); }
+  .pill.deny { color: var(--deny); background: var(--warn-soft); }
+  ul { margin: 0; padding-left: 1.1em; display: grid; gap: 6px; }
+  .tablewrap { overflow-x: auto; }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">project-amer-scs-sandbox · us-central1 · gateway enforced</div>
+    <h1>WellSky Agent Gateway replica</h1>
+    <p>What is deployed in the SC sandbox and how a request moves through it. Every resource is prefixed <code>wsky-</code>, and all data is synthetic.</p>
+  </header>
+
+  <figure>
+    <div class="scroll">
+    <svg viewBox="0 0 1120 560" role="img" aria-label="The governed agent sends all outbound traffic through Agent Gateway, which checks each call against IAP per-agent policy and Agent Registry, then screens content with Model Armor before allowing Gemini, Discovery Engine, IAM Credentials and the Onspring MCP server, and denying one MCP tool and unregistered sites. The baseline agent bypasses the gateway and calls Discovery Engine directly.">
+      <defs>
+        <marker id="a-fg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="hfg"/></marker>
+        <marker id="a-ok" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="hok"/></marker>
+        <marker id="a-deny" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="hdeny"/></marker>
+        <marker id="a-acc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="hacc"/></marker>
+      </defs>
+
+      <!-- Client -->
+      <rect class="box" x="16" y="232" width="124" height="74" rx="6"/>
+      <text class="tb" x="78" y="256" text-anchor="middle">Test client</text>
+      <text class="code" x="78" y="276" text-anchor="middle">15_demo.sh</text>
+      <text class="code" x="78" y="292" text-anchor="middle">07_ask.py</text>
+
+      <!-- Agent Runtime group -->
+      <rect class="group" x="176" y="40" width="214" height="490" rx="8"/>
+      <text class="tm" x="190" y="60">Agent Runtime (Agent Engine)</text>
+
+      <rect class="box" x="192" y="84" width="182" height="132" rx="6"/>
+      <text class="tb" x="206" y="108">wsky-governed-agent</text>
+      <text class="t" x="206" y="130">ADK · Gemini 2.5 Flash</text>
+      <text class="t" x="206" y="150">Agent Identity principal</text>
+      <text class="t" x="206" y="170">token sharing on</text>
+      <text class="t" x="206" y="190">all egress → gateway</text>
+      <text class="code" x="206" y="207">scale 0–1 · 1 vCPU</text>
+
+      <rect class="box" x="192" y="380" width="182" height="118" rx="6"/>
+      <text class="tb" x="206" y="404">wsky-baseline-agent</text>
+      <text class="t" x="206" y="426">copy of WellSky's DE agent</text>
+      <text class="t" x="206" y="446">Agent Identity principal</text>
+      <text class="t" x="206" y="466">no gateway</text>
+      <text class="code" x="206" y="486">scale 0–1 · 1 vCPU</text>
+
+      <!-- client -> agents -->
+      <path class="e" d="M140 256 H160 V150 H190" marker-end="url(#a-fg)"/>
+      <path class="e" d="M140 284 H160 V438 H190" marker-end="url(#a-fg)"/>
+      <text class="tm" x="146" y="226">streamQuery</text>
+
+      <!-- Gateway -->
+      <rect class="gw" x="430" y="40" width="250" height="300" rx="8"/>
+      <text class="ta" x="446" y="64">Agent Gateway</text>
+      <text class="code" x="446" y="82">wsky-egress-gw · AGENT_TO_ANYWHERE</text>
+
+      <rect class="check" x="446" y="98" width="218" height="104" rx="5"/>
+      <text class="tb" x="458" y="120">Request check · IAP</text>
+      <text class="t" x="458" y="140">iap.egressor on agent principal</text>
+      <text class="t" x="458" y="158">CEL: deny get_governance_record</text>
+      <text class="t" x="458" y="176">unregistered host → deny</text>
+      <text class="code" x="458" y="193">wsky-iap-enforced · fail-closed</text>
+
+      <rect class="check" x="446" y="214" width="218" height="110" rx="5"/>
+      <text class="tb" x="458" y="236">Content check · Model Armor</text>
+      <text class="t" x="458" y="256">injection, jailbreak, RAI, URLs</text>
+      <text class="t" x="458" y="274">DLP wsky-phi-pii: MRN, DOB,</text>
+      <text class="t" x="458" y="292">diagnosis, SSN, card, NPI</text>
+      <text class="code" x="458" y="311">screens model + tool calls</text>
+
+      <!-- governed -> gateway -->
+      <path class="e" d="M374 150 H428" marker-end="url(#a-fg)"/>
+      <text class="tm" x="380" y="142">egress</text>
+
+      <!-- Registry -->
+      <rect class="box" x="430" y="390" width="250" height="108" rx="6"/>
+      <text class="tb" x="446" y="414">Agent Registry · us-central1</text>
+      <text class="t" x="446" y="436">MCP server: Onspring (mock)</text>
+      <text class="t" x="446" y="456">13 Google API endpoints</text>
+      <text class="code" x="446" y="476">wsky-ep-* · exact-URL match</text>
+      <path class="elook" d="M555 340 V388" marker-end="url(#a-acc)"/>
+      <text class="tm" x="563" y="368">looks up destination</text>
+
+      <!-- Destinations -->
+      <text class="tm" x="760" y="30">Destinations</text>
+
+      <rect class="okbox" x="760" y="40" width="340" height="46" rx="6"/>
+      <text class="tb" x="774" y="60">Gemini 2.5 Flash</text>
+      <text class="code" x="774" y="77">us-central1-aiplatform.mtls</text>
+      <text class="tok" x="1086" y="60" text-anchor="end">allowed</text>
+
+      <rect class="okbox" x="760" y="98" width="340" height="56" rx="6"/>
+      <text class="tb" x="774" y="118">Discovery Engine · wsky-kb-search</text>
+      <text class="code" x="774" y="136">us · synthetic KB (EVV, FAQ)</text>
+      <text class="tok" x="1086" y="118" text-anchor="end">allowed</text>
+
+      <rect class="okbox" x="760" y="166" width="340" height="46" rx="6"/>
+      <text class="tb" x="774" y="186">IAM Credentials</text>
+      <text class="code" x="774" y="203">ID token for wsky-mcp-invoker</text>
+      <text class="tok" x="1086" y="186" text-anchor="end">allowed</text>
+
+      <rect class="box" x="760" y="224" width="340" height="82" rx="6"/>
+      <text class="tb" x="774" y="244">Cloud Run · Onspring MCP (mock)</text>
+      <text class="code" x="774" y="261">wsky-mcp-onspring · IAM-only</text>
+      <text class="tok" x="774" y="282">list_governance_records ✓</text>
+      <text class="tdeny" x="774" y="299">get_governance_record ✗ 403</text>
+
+      <rect class="denybox" x="760" y="318" width="340" height="46" rx="6"/>
+      <text class="tb" x="774" y="338">example.com</text>
+      <text class="code" x="774" y="355">not in Agent Registry</text>
+      <text class="tdeny" x="1086" y="338" text-anchor="end">403</text>
+
+      <!-- gateway -> destinations -->
+      <path class="eok" d="M680 120 H710 V63 H758" marker-end="url(#a-ok)"/>
+      <path class="eok" d="M680 120 H710 V118 H758" marker-end="url(#a-ok)"/>
+      <path class="eok" d="M680 120 H710 V189 H758" marker-end="url(#a-ok)"/>
+      <path class="eok" d="M680 120 H710 V265 H758" marker-end="url(#a-ok)"/>
+      <path class="edeny" d="M680 300 H726 V341 H758" marker-end="url(#a-deny)"/>
+      <text class="tm" x="688" y="112">allowed</text>
+      <text class="tm" x="686" y="292">denied</text>
+
+      <!-- baseline -> Discovery Engine, bypassing the gateway -->
+      <path class="e" d="M374 470 H400 V520 H740 V140 H758" marker-end="url(#a-fg)"/>
+      <text class="tm" x="430" y="514">direct, no gateway</text>
+      <rect class="box" x="760" y="420" width="340" height="80" rx="6"/>
+      <text class="tb" x="774" y="442">Baseline agent → Discovery Engine</text>
+      <text class="tdeny" x="774" y="464">plain REST → 401 (WellSky's error)</text>
+      <text class="tok" x="774" y="484">mTLS + discoveryengine.viewer → 200</text>
+      <path class="e" d="M740 460 H758" marker-end="url(#a-fg)"/>
+    </svg>
+    </div>
+    <figcaption>
+      The governed agent sends every outbound call through Agent Gateway. The gateway checks the agent's own identity against IAP policy and Agent Registry, then has Model Armor screen the content, so even the Gemini call passes both checks. The baseline agent stands in for WellSky's in-house agent and skips the gateway: it calls Discovery Engine directly, where a plain REST call fails and an mTLS call succeeds.
+      <div class="legend">
+        <span><i class="sw" style="border-color: var(--ok)"></i>allowed by the gateway</span>
+        <span><i class="sw" style="border-color: var(--deny); border-top-style: dashed"></i>denied with 403</span>
+        <span><i class="sw" style="border-color: var(--accent); border-top-style: dotted"></i>registry lookup</span>
+      </div>
+    </figcaption>
+  </figure>
+
+  <div class="cols">
+    <section>
+      <h2>Demo results</h2>
+      <div class="tablewrap">
+      <table>
+        <thead><tr><th></th><th>Scenario</th><th>Result</th></tr></thead>
+        <tbody>
+          <tr><td class="n">1</td><td>Allowed Onspring tool via gateway</td><td><span class="pill ok">records</span></td></tr>
+          <tr><td class="n">2</td><td>Blocked Onspring tool, same server</td><td><span class="pill deny">403</span></td></tr>
+          <tr><td class="n">3</td><td>Discovery Engine via gateway</td><td><span class="pill ok">200</span></td></tr>
+          <tr><td class="n">4</td><td>Unregistered site</td><td><span class="pill deny">403</span></td></tr>
+          <tr><td class="n">5</td><td>Prompt injection</td><td><span class="pill deny">403 Model Armor</span></td></tr>
+          <tr><td class="n">6</td><td>PHI: MRN, DOB, diagnosis</td><td><span class="pill deny">403 DLP</span></td></tr>
+          <tr><td class="n">7</td><td>Baseline agent, plain REST</td><td><span class="pill deny">401</span></td></tr>
+          <tr><td class="n">8</td><td>Baseline agent, mTLS + role</td><td><span class="pill ok">200</span></td></tr>
+        </tbody>
+      </table>
+      </div>
+    </section>
+    <section>
+      <h2>What it took beyond the docs</h2>
+      <ul>
+        <li>Token sharing turned on, which disables Agent Identity's token binding. Without it, every model call through the gateway fails with 401.</li>
+        <li>A separate invoker service account, because Agent Identity can't mint a Cloud Run ID token by itself.</li>
+        <li>13 Google API endpoints registered before enforcement would let the agent's own model and telemetry calls through.</li>
+        <li>A healthcare DLP template. Model Armor's basic setup missed MRN, DOB and diagnosis.</li>
+        <li>MCP registry entries that use the exact URL the agent calls. Cloud Run's legacy URL showed up as unregistered.</li>
+      </ul>
+    </section>
+  </div>
+</div>
