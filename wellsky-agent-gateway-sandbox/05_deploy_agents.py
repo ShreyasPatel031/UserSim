@@ -18,15 +18,18 @@ os.chdir(os.path.join(HERE, "agent"))
 PROJECT, REGION = "project-amer-scs-sandbox", "us-central1"
 PROJECT_NUMBER = "347838016394"
 MCP_URL = "https://wsky-mcp-onspring-347838016394.us-central1.run.app/mcp"
+MCP_PRIVATE_URL = "https://wsky-mcp-private-347838016394.us-central1.run.app/mcp"
 GATEWAY = f"projects/{PROJECT}/locations/{REGION}/agentGateways/wsky-egress-gw"
 
 mode = sys.argv[1]
 os.environ["WSKY_MCP_URL"] = MCP_URL
+if mode.startswith("governed"):
+    os.environ["WSKY_MCP_PRIVATE_URL"] = MCP_PRIVATE_URL
 from wsky_agent import root_agent  # noqa: E402  (needs WSKY_MCP_URL set first)
 
 client = vertexai.Client(project=PROJECT, location=REGION)
 config = {
-    "display_name": f"wsky-{mode}-agent",
+    "display_name": f"wsky-{mode}-agent",  # mode: baseline | governed | governed-v2 (redeploy test)
     "description": f"WellSky replica ({mode}). Synthetic data only.",
     "staging_bucket": f"gs://wsky-replica-{PROJECT_NUMBER}",
     "requirements": "requirements.txt",
@@ -42,7 +45,8 @@ config = {
                  "OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT": "EVENT_ONLY",
                  "GOOGLE_CLOUD_AGENT_ENGINE_ENABLE_TELEMETRY": "true"},
 }
-if mode == "governed":
+if mode.startswith("governed"):
+    config["env_vars"]["WSKY_MCP_PRIVATE_URL"] = MCP_PRIVATE_URL
     config["agent_gateway_config"] = {"agent_to_anywhere_config": {"agent_gateway": GATEWAY}}
     # Without this, every Google API call through the gateway (including Gemini) fails with 401:
     # Agent Identity tokens are bound to the agent's mTLS cert by default, and the gateway re-originates TLS.

@@ -36,7 +36,11 @@ Cost guard: both agents run with `min_instances=0`, `max_instances=1`, 1 vCPU / 
 | MCP tool | Cloud Run `wsky-mcp-onspring` (IAM-only), registered as `services/wsky-mcp-onspring` | Onspring MCP |
 | Knowledge base | Discovery Engine `us` data store `wsky-kb` + engine `wsky-kb-search` | Data store behind the in-house agent |
 | Baseline agent | `reasoningEngines/1985445595757674496`, Agent Identity, no gateway | The Discovery Engine API agent as it runs today |
-| Governed agent | `reasoningEngines/6349433634679685120`, Agent Identity + `wsky-egress-gw` | A governed agent after the SOW |
+| Governed agent | `reasoningEngines/6114344854521643008` (v2, after the redeploy test), Agent Identity + `wsky-egress-gw` | A governed agent after the SOW |
+| Non-ADK agent | `reasoningEngines/2960160179879936`, plain Python + google-genai, bound to the gateway | Agents built without ADK |
+| Off-runtime agent | Cloud Run `wsky-ext-agent`, A2A card in Agent Registry | Salesforce First Responder and other agents the gateway can't govern |
+| Private MCP | Cloud Run `wsky-mcp-private` (ingress internal), VPC `wsky-vnet`, PSC attachment and endpoint, private zone `wsky-priv-run` | Onspring MCP on a private network |
+| GE app | `wsky-ge-app` (us), bound to `wsky-egress-gw` | WellSky's Gemini Enterprise app |
 
 ## Findings: what we were told vs. what is there
 
@@ -99,9 +103,23 @@ Cost guard: both agents run with `min_instances=0`, `max_instances=1`, 1 vCPU / 
 - `mcp` 2.x renamed `FastMCP` (we pinned `mcp<2`).
 - The `vertexai` SDK's `stream_query` fails to parse some concatenated stream chunks (`07_ask.py` uses REST instead).
 
+
+## Contingency tests (Oct 16)
+
+Each likely gap from the [Gaps & Contingencies sheet](https://docs.google.com/spreadsheets/d/1X3gNR_xPDIGrJp4oxoPZVrEsu5UZv5obL8bplkEMZDU/edit), tested in this sandbox.
+
+| # | Gap | Contingency | Result |
+|---|---|---|---|
+| 1a | Agents not built with ADK | Plain-Python agent (`agent/plain_agent.py`, `22_deploy_plain_agent.py`) on Agent Runtime, bound to the gateway | ✅ Works. Removing its `iap.egressor` grant gives `403 Egress request is not authorized`, so the gateway enforces. Its allowed calls don't show in IAP audit logs (observability gap) |
+| 1b | Agents hosted outside Agent Runtime | Mock First Responder on Cloud Run (`external_agent/`, `23_external_agent.sh`): A2A card registered in Agent Registry; Model Armor screening and audit log lines in its own code | ✅ Listed in the registry inventory alongside runtime agents. Benign prompt 200, PHI 403 (sdp), injection 403 (pi_and_jailbreak). Registry rejects `interfaces` on A2A entries; the URL goes inside the card |
+| 2 | Agents created before Apr 29, 2026 can't be bound | Redeploy as a new agent (`governed-v2`), re-run grants (`08`, `10`, `12`), retire the old one | ✅ About 11 minutes end to end: ~7 min deploy and grants, ~4 min until the new principal's `iap.egressor` grant propagated (every call 403 until then). New ID means every IAM grant must be redone; the agent auto-registers in Agent Registry |
+| 3 | Agents break once bound | Token sharing opt-out, dry-run, register endpoints, enforce | ✅ Verified earlier (demos 1 to 4) |
+| 4 | Binding the GE app breaks it | Our own GE app (`16`, `17`, `18`) bound to the enforced gateway | ✅ Nothing broke. But binding does **not** govern GE's own model calls or search: PHI and injection prompts were not blocked and the gateway logged nothing. Google's codelab confirms GE uses the gateway only for outbound tool and agent calls. ⚠️ GE → custom MCP through the gateway is blocked here by two org policies enforced at the org level (`discoveryengine.managed.disableCustomMcpServerConnector`, `iam.managed.disableAccessPolicyBinding`). It needs an org admin's project-level override; untested until then |
+| 5 | Private Onspring MCP won't connect | VPC + PSC network attachment + PSC endpoint for Google APIs + private `run.app` zone (`19`), internal-only MCP (`20`), gateway `networkConfig` with DNS peering (`21`) | ✅ Internal-only MCP (public URL returns 404) reached through the gateway. Per-tool deny still applies on it. `networkConfig` can be updated in place, and the public MCP kept working through the private path |
+
 ## Not done yet
 
-- Attaching the agents to a Gemini Enterprise app, to test the SOW's "GE tool traffic routes through Agent Gateway" claim.
+- GE app calling a custom MCP through the gateway (`:setUpDataConnector` with `REGISTRY_MCP`). Blocked until an org admin overrides `discoveryengine.managed.disableCustomMcpServerConnector` and `iam.managed.disableAccessPolicyBinding` for this project.
 - Internal-only and EVV content rules. Model Armor can't do these; they need separate data stores or ACLs per content tier.
 
 ## Run order

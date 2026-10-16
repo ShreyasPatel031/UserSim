@@ -15,6 +15,7 @@ PROJECT = os.environ.get("WSKY_PROJECT", "project-amer-scs-sandbox")
 DE_LOC = os.environ.get("WSKY_DE_LOC", "us")
 ENGINE = os.environ.get("WSKY_ENGINE", "wsky-kb-search")
 MCP_URL = os.environ.get("WSKY_MCP_URL", "")
+MCP_PRIVATE_URL = os.environ.get("WSKY_MCP_PRIVATE_URL", "")  # internal-only Cloud Run, reached via gateway PSC
 
 
 def _session():
@@ -111,10 +112,10 @@ def probe_url(url: str) -> dict:
 MCP_INVOKER_SA = os.environ.get("WSKY_MCP_INVOKER_SA", "")
 
 
-def _mcp_headers(_ctx) -> dict:
+def _mcp_headers(_ctx, url: str = "") -> dict:
     """Cloud Run needs an ID token. Agent Identity can't mint one for itself, so the agent's principal
     asks IAM Credentials for an ID token of a dedicated invoker SA (roles/iam.serviceAccountOpenIdTokenCreator)."""
-    audience = MCP_URL.rsplit("/mcp", 1)[0]
+    audience = (url or MCP_URL).rsplit("/mcp", 1)[0]
     try:
         creds = _session()
         r = requests.post(
@@ -142,6 +143,10 @@ tools = [mcp_auth_debug, whoami, runtime_env, search_kb, search_kb_client_lib, s
 if MCP_URL:
     tools.append(McpToolset(connection_params=StreamableHTTPConnectionParams(url=MCP_URL, timeout=30),
                             header_provider=_mcp_headers, tool_name_prefix="onspring"))
+if MCP_PRIVATE_URL:
+    tools.append(McpToolset(connection_params=StreamableHTTPConnectionParams(url=MCP_PRIVATE_URL, timeout=30),
+                            header_provider=lambda ctx: _mcp_headers(ctx, MCP_PRIVATE_URL),
+                            tool_name_prefix="onspring_private"))
 
 root_agent = Agent(
     name="wsky_agent",

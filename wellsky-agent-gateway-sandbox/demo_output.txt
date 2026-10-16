@@ -34,7 +34,6 @@
     expect: 401: the 'permission error'
     CALL   "search_kb" {"query": "Texas EVV"}
     RESULT {"status": 401, "error": "{\n  \"error\": {\n    \"code\": 401,\n    \"message\": \"Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/i
-    ERROR  MODEL_RETURNED_NO_CONTENT The model returned no actionable content (finish_reason=STOP with thought-only or whitespace-only parts).
 
 === 8. Same agent, mTLS endpoint + agent principal granted discoveryengine.viewer
     expect: 200: the fix

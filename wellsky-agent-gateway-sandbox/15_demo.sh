@@ -4,7 +4,7 @@
 # Each scenario prints what WellSky should expect and what actually happened.
 set -uo pipefail; source "$(dirname "$0")/env.sh"
 PY=${PY:-python3}
-GOV=projects/$PROJECT_NUMBER/locations/$REGION/reasoningEngines/6349433634679685120
+GOV=projects/$PROJECT_NUMBER/locations/$REGION/reasoningEngines/6114344854521643008
 BASE=projects/$PROJECT_NUMBER/locations/$REGION/reasoningEngines/1985445595757674496
 run(){ echo; echo "=== $1"; echo "    expect: $2"; $PY -I "$(dirname "$0")/07_ask.py" "$3" "$4" 2>&1 | grep -E "^(CALL|RESULT|ERROR)" | cut -c1-260 | sed 's/^/    /'; }
 
