@@ -44,7 +44,13 @@ def test_execute_tap_and_secret(monkeypatch):
     assert aa.execute(adb, {"action": "type_secret", "field": "apple_email"}, els, (1080, 2400), {}) == "ok"
     monkeypatch.delenv("APPLE_ID_PASSWORD", raising=False)
     assert aa.execute(adb, {"action": "type_secret", "field": "apple_password"}, els, (1080, 2400), {}) == "missing_secret"
-    assert adb.calls == [("tap", 540, 1850), ("tap", 540, 1200), ("type", "agent@example.com")]
+    assert adb.calls == [
+        ("tap", 540, 1850),
+        ("tap", 540, 1200),
+        ("tap", 540, 650),
+        ("type", "agent@example.com"),
+        ("tap", 540, 650),
+    ]
 
 
 def test_execute_sms_code(monkeypatch):
