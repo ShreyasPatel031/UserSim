@@ -78,7 +78,7 @@ def persona_goal(p: dict, app: str, email: str | None = None) -> str:
         "If the app asks you to create an account, prefer 'Sign in with Apple'. "
     )
     return (
-        f"You ARE this person, using the iPhone app \"{app}\" for the first time:\n"
+        f"You ARE this person, using the {os.environ.get('MVP_PLATFORM', 'iPhone')} app \"{app}\" for the first time:\n"
         f"{p.get('name')}, {p.get('age')}. {p.get('bio')} Motivation: {p.get('motivation')}. "
         f"Patience: {p.get('patience')}.\n"
         f"TASK: {p.get('task')}\nSUCCESS LOOKS LIKE: {p.get('success')}\n"
@@ -262,50 +262,91 @@ ANDROID_INSTALL = (
 )
 
 
+def make_matrix_plan(products: list[dict], desc: str) -> dict:
+    """6 personas + 6 tasks for a product + rivals study: 2 personas and 2 tasks per app."""
+    names = ", ".join(p["app"] for p in products)
+    data = _gemini_json(
+        f"We are running a mobile usability study comparing these Android apps: {names}. Category: {desc}\n"
+        f"For EACH app, write 2 distinct realistic target users and 2 concrete first-session tasks a real person "
+        "would try in that app on day one (starting from first launch, onboarding included, ~10 minutes, achievable "
+        "without paying). Vary age, motivation, tech comfort, patience and price sensitivity across all 6 people.\n"
+        "Return JSON {\"apps\": [{\"app\": <exact app name>, \"personas\": [{\"name\", \"age\", \"bio\" (2 sentences), "
+        "\"motivation\", \"patience\" (low|medium|high)} x2], \"tasks\": [{\"title\", \"task\" (one sentence), "
+        "\"success\" (what done looks like)} x2]}]} with one entry per app in the given order.",
+        max_tokens=6000,
+    )
+    apps = data.get("apps") if isinstance(data, dict) else data
+    plan = {"apps": []}
+    for prod, entry in zip(products, apps or []):
+        plan["apps"].append({**prod, "personas": entry.get("personas", [])[:2], "tasks": entry.get("tasks", [])[:2]})
+    return plan
+
+
 def main_android(args) -> int:
-    """Android emulator / phone over local Appium: install once from Play, clear data between personas."""
+    """Android emulator over local Appium.
+
+    With MVP_ANDROID_PLAN (a JSON slice: app, pkg, desc, personas x2, tasks x2) every persona x task cell
+    runs from a fresh first launch (app data cleared). Without it, ``--personas`` are generated for --app.
+    """
     from mvp.android_device import AndroidDevice
 
-    pkg = args.bundle if "." in args.bundle and "cravingBuster" not in args.bundle else "com.glucobit.reframe"
+    os.environ.setdefault("MVP_PLATFORM", "Android")
+    plan_path = os.environ.get("MVP_ANDROID_PLAN")
+    if plan_path and Path(plan_path).is_file():
+        slice_ = json.loads(Path(plan_path).read_text())
+        app, pkg, desc = slice_["app"], slice_["pkg"], slice_.get("desc", args.desc)
+        cells = [(p, t) for p in slice_["personas"] for t in slice_["tasks"]]
+    else:
+        app, desc = args.app, args.desc
+        pkg = args.bundle if "." in args.bundle and "cravingBuster" not in args.bundle else "com.glucobit.reframe"
+        cells = [(p, {"title": p.get("task", ""), "task": p.get("task"), "success": p.get("success")})
+                 for p in make_personas(app, desc, args.personas)]
     stamp = time.strftime("%Y%m%d-%H%M%S")
-    out = ROOT / "reports" / f"android-{re.sub(r'[^a-z0-9]+', '-', args.app.lower())[:20].strip('-')}-{stamp}"
+    out = ROOT / "reports" / f"android-{re.sub(r'[^a-z0-9]+', '-', app.lower())[:20].strip('-')}-{stamp}"
     out.mkdir(parents=True, exist_ok=True)
-    personas = make_personas(args.app, args.desc, args.personas)
-    (out / "personas.json").write_text(json.dumps(personas, indent=2))
-    print(f"{len(personas)} personas -> {out} (Android)", flush=True)
+    (out / "cells.json").write_text(json.dumps([{"persona": p, "task": t} for p, t in cells], indent=2))
+    print(f"{len(cells)} runs for {app} ({pkg}) -> {out}", flush=True)
     dev = AndroidDevice()
     rows: list[dict] = []
     try:
-        if not dev.installed(pkg):
+        for attempt in range(2):
+            if dev.installed(pkg):
+                break
             dev.launch("com.android.vending")
             time.sleep(4)
-            inst = run_goal(dev, ANDROID_INSTALL.format(app=args.app, pkg=pkg), out_dir=out / "install",
-                            max_steps=50, budget_s=1200, stop_when=lambda d, *_: d.installed(pkg))
+            inst = run_goal(dev, ANDROID_INSTALL.format(app=app, pkg=pkg), out_dir=out / f"install{attempt}",
+                            max_steps=60, budget_s=1500, stop_when=lambda d, *_: d.installed(pkg))
             print("install", inst.outcome, inst.note[:120], flush=True)
-            if not dev.installed(pkg):
-                return _finish(out, args.app, rows)
-        for i, p in enumerate(personas, 1):
+        if not dev.installed(pkg):
+            print("INSTALL FAILED", flush=True)
+            return _finish(out, app, rows)
+        for i, (p, t) in enumerate(cells, 1):
             dev.terminate(pkg)
-            dev.remove(pkg)  # clear app data: fresh first launch for every persona
+            dev.remove(pkg)  # clear app data: fresh first launch for every run
             dev.launch(pkg)
             time.sleep(4)
-            print(f"\n== persona {i}: {p.get('name')} — {p.get('task')}", flush=True)
+            persona = {**p, "task": t.get("task"), "success": t.get("success")}
+            print(f"\n== run {i}/{len(cells)}: {p.get('name')} — {t.get('title')}", flush=True)
             pdir = out / f"p{i}"
-            email = persona_email(i, args.app)
-            res = run_goal(dev, persona_goal(p, args.app, email), out_dir=pdir, email_alias=email,
-                           allow_password=False, min_steps=15,
-                           max_steps=args.max_steps, budget_s=args.persona_budget)
+            email = persona_email(i, app)
             try:
-                summary = summarize(args.app, p, res)
+                res = run_goal(dev, persona_goal(persona, app, email), out_dir=pdir, email_alias=email,
+                               allow_password=False, min_steps=15,
+                               max_steps=args.max_steps, budget_s=args.persona_budget)
+            except Exception as exc:  # keep going: one broken run must not end the study
+                print(f"   run error {type(exc).__name__}: {exc}", flush=True)
+                continue
+            try:
+                summary = summarize(app, persona, res)
             except Exception as exc:
                 summary = {"completed": res.ok, "reached": "?", "friction": [f"summary failed: {exc}"]}
-            rows.append({"persona": p, "summary": summary, "outcome": res.outcome,
+            rows.append({"app": app, "persona": persona, "task": t, "summary": summary, "outcome": res.outcome,
                          "steps": len(res.steps), "dir": str(pdir), "note": res.note})
             (out / "results.json").write_text(json.dumps(rows, indent=2))
             print(f"   -> {res.outcome}: {res.note[:200]}", flush=True)
     finally:
         dev.quit()
-    return _finish(out, args.app, rows)
+    return _finish(out, app, rows)
 
 
 def _finish(out: Path, app: str, rows: list[dict]) -> int:
