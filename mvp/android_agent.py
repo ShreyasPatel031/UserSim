@@ -129,6 +129,9 @@ class Adb:
     def type_text(self, text: str) -> None:
         self.shell(f"input text {adb_text_arg(text)}")
 
+    def keyboard_shown(self) -> bool:
+        return "mInputShown=true" in self.shell("dumpsys input_method", timeout=15)
+
     def key(self, name: str) -> None:
         self.shell(f"input keyevent {shlex.quote(name)}")
 
@@ -274,6 +277,9 @@ def execute(adb: Adb, step: dict, elements: list[Element], size: tuple[int, int]
     if action == "tap":
         idx = _as_index(step.get("element"))
         if idx is not None and 0 <= idx < len(elements):
+            if not elements[idx].editable and getattr(adb, "keyboard_shown", lambda: False)():
+                adb.shell("input keyevent 4")
+                time.sleep(0.7)
             adb.tap(*elements[idx].center)
             return "ok"
         return "bad_element"

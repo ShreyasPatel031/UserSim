@@ -120,3 +120,13 @@ def test_parse_ui_labels_unlabelled_button_from_overlapping_text_and_string_ids(
     adb = FakeAdb()
     assert aa.execute(adb, {"action": "tap", "element": "0"}, els, (1080, 2400), {}) == "ok"
     assert adb.calls == [("tap", 540, 2136)]
+
+
+def test_tap_hides_keyboard_first(monkeypatch):
+    adb = FakeAdb()
+    adb.keyboard_shown = lambda: True
+    adb.shell = lambda cmd, timeout=60.0: adb.calls.append(("shell", cmd))
+    monkeypatch.setattr(aa.time, "sleep", lambda s: None)
+    els = aa.parse_ui(UI)
+    assert aa.execute(adb, {"action": "tap", "element": 0}, els, (1080, 2400), {}) == "ok"
+    assert adb.calls == [("shell", "input keyevent 4"), ("tap", 540, 1850)]
