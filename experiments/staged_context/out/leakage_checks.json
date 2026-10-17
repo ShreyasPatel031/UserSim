@@ -1,0 +1,7 @@
+{
+  "review_ids_disjoint": true,
+  "clusters_disjoint": true,
+  "packs_only_from_pool": true,
+  "no_target_reviews_or_mentions_in_C": true,
+  "no_hidden_8gram_in_packs": true
+}

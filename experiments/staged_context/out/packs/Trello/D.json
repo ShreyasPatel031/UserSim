@@ -1,0 +1,183 @@
+{
+  "items": [
+    {
+      "id": "D:Trello:landing:1",
+      "text": "Every to-do, idea, or responsibility—no matter how small—finds its place, keeping you at the top of your game. EMAIL MAGIC MESSAGE APP SORCERY WORK SMARTER Customize the way you organize with easy integrations, automation, and mirroring of your to-dos across multiple locations.",
+      "product": "Trello",
+      "role": "target",
+      "url": "https://trello.com/"
+    },
+    {
+      "id": "D:Trello:features:1",
+      "text": "What is Trello: Learn Features, Uses & More Skip to main content Your productivity powerhouse Welcome to Trello, the ultimate tool for getting things done. Whether you're managing daily to-dos, setting personal goals, or organizing your life, Trello helps you focus on what matters most and always stay on top of your game. Your to-dos, organized Stay organized and efficient with Inbox, Boards, and Planner.",
+      "product": "Trello",
+      "role": "target",
+      "url": "https://trello.com/tour"
+    },
+    {
+      "id": "D:Trello:features:2",
+      "text": "Every to-do, idea, or responsibility—no matter how small—finds its place, keeping you at the top of your game. Simplify your to-do list Trello cards keep all of your important information organized and accessible in one place. Add due dates, attach files, and mark to-do’s as “Done” when completed.",
+      "product": "Trello",
+      "role": "target",
+      "url": "https://trello.com/tour"
+    },
+    {
+      "id": "D:Trello:features:3",
+      "text": "Plus, AI helps you refine your text for a polished finish! Due dates Due dates go hand-in-hand with staying organized. In Trello, they’re easy to set, hard to miss (with reminders!), and oh-so-satisfying to mark as “done.” Attachments No more digging through endless email chains to find attachments.",
+      "product": "Trello",
+      "role": "target",
+      "url": "https://trello.com/tour"
+    },
+    {
+      "id": "D:Trello:features:4",
+      "text": "Just drag and drop them onto a card so the right files stay with the right tasks. Checklists Your best tool to overpower overwhelming asks. Powered by AI Harness the power of AI.",
+      "product": "Trello",
+      "role": "target",
+      "url": "https://trello.com/tour"
+    },
+    {
+      "id": "D:Trello:features:5",
+      "text": "Brainstorm new ideas, organize action items, and condense lengthy texts instantly with AI INTEGRATIONS Simplify your workflow and stay on top of your to-dos effortlessly! Integrate seamlessly with the apps and services your team relies on like Slack, Microsoft Teams, Outlook, Gmail, Confluence, and hundreds more. And if you use Jira, you can seamlessly sync and manage your tasks right within Trello using Jira Lists.",
+      "product": "Trello",
+      "role": "target",
+      "url": "https://trello.com/tour"
+    },
+    {
+      "id": "D:Trello:features:6",
+      "text": "Your work, your way Need to structure information on Trello cards specific to the task at hand? Custom Fields lets you do all that and more— providing process and formality to your workflow to meet your unique needs. Automate your workflow Create a foolproof process for moving work forward with Trello’s built-in automation system.",
+      "product": "Trello",
+      "role": "target",
+      "url": "https://trello.com/tour"
+    },
+    {
+      "id": "D:Trello:features:7",
+      "text": "Run commands and set automated rules for almost any action in Trello so that you can focus on what matters most.",
+      "product": "Trello",
+      "role": "target",
+      "url": "https://trello.com/tour"
+    },
+    {
+      "id": "D:Asana:landing:1",
+      "text": "Every workflow, app, and agent runs in a shared space where humans and agents act on the same plan, see the same context, and get smarter with every interaction. Multiple humans can train, guide, and improve any agent. Shared memory means AI Teammates learn from the work itself.",
+      "product": "Asana",
+      "role": "competitor",
+      "url": "https://asana.com/"
+    },
+    {
+      "id": "D:Asana:landing:2",
+      "text": "Every completed task, every piece of feedback, every preference gets carried forward, so no one repeats context they've already given and every workflow starts smarter than the last. Every agent has an identity, scoped permissions, an audit trail, and cost constraints, with data access, approved actions, and spend all managed from the same console that governs human users. AI Teammates Your team just got bigger Pre-built AI agents that work alongside your team inside real workflows, with shared memory, governance, and context from the Work Graph, so they are ready to go on day one.",
+      "product": "Asana",
+      "role": "competitor",
+      "url": "https://asana.com/"
+    },
+    {
+      "id": "D:Asana:landing:3",
+      "text": "On a launch, marketing, design, and ops each track their piece differently. Without a shared project management tool, seeing the full plan means asking around. No shared view of progress and deadlines Status that only exists in people's heads can't warn anyone.",
+      "product": "Asana",
+      "role": "competitor",
+      "url": "https://asana.com/"
+    },
+    {
+      "id": "D:Asana:landing:4",
+      "text": "Without a live view of the whole project, small delays turn into missed dates. Status updates eat the week Every Friday, you chase updates and paste them into a deck. Then Monday's check-in runs on Friday's information, because that's the last time anyone pulled it all together.",
+      "product": "Asana",
+      "role": "competitor",
+      "url": "https://asana.com/"
+    },
+    {
+      "id": "D:Asana:landing:5",
+      "text": "It's stale before anyone reads it. Across every project you run, manual reporting turns into a second job. This is exactly what we built Asana to fix.",
+      "product": "Asana",
+      "role": "competitor",
+      "url": "https://asana.com/"
+    },
+    {
+      "id": "D:ClickUp:landing:1",
+      "text": "ClickUp™ | Maximize productivity • Software, AI, and humans converge The Best AI is Software to replace all software Save money. All Apps, AI, Projects, Chat + 20 more. All humans working together with perfect context.",
+      "product": "ClickUp",
+      "role": "competitor",
+      "url": "https://clickup.com/"
+    },
+    {
+      "id": "D:ClickUp:landing:2",
+      "text": "AI Agents & Workflows. New ClickUp 4.0 New Agents Projects Brain (AI) Time Tracking Chat Calendar Docs Whiteboards Sprints Automations and more... The Best AI is Software to replace all software Save money.",
+      "product": "ClickUp",
+      "role": "competitor",
+      "url": "https://clickup.com/"
+    },
+    {
+      "id": "D:ClickUp:landing:3",
+      "text": "All apps, AI Agents, and humans in ClickUp 100+ products to replace fragmented software & maximize human productivity. It doesn't need a brief because it knows what's happening in real-time. Intelligence Brain² picks the best AI model for each job.",
+      "product": "ClickUp",
+      "role": "competitor",
+      "url": "https://clickup.com/"
+    },
+    {
+      "id": "D:ClickUp:landing:4",
+      "text": "Every frontier model running with full context. Best models Brain GPT Claude Opus Gemini Personality Brain² learns how you and your team talk: your tone, your shorthand, your preferences. tone \"direct, no fluff, like a sharp coworker\" sprint_methods \"story points, fibonacci\" reports_to \"VP Engineering, weekly on Mondays\" prefers \"tables over bullet points\" projects \"Brain 2.0, Platform Migration, Q2\" timezone \"PST, don't schedule before 10am\" tools \"GitHub, Figma, Linear, Notion\" Memory & Preferences Brain² keeps track of how you like to work, and gets smarter every time you use ClickUp.",
+      "product": "ClickUp",
+      "role": "competitor",
+      "url": "https://clickup.com/"
+    },
+    {
+      "id": "D:ClickUp:landing:5",
+      "text": "Memory Updated User Preference: Values clarity Every AI, Unlimited GPT, Claude Opus, Gemini, and more. Every model runs with full knowledge of your work. Gemini Claude ChatGPT Multiplayer AI The more your team uses Brain², the more it knows, the more useful it gets for everyone.",
+      "product": "ClickUp",
+      "role": "competitor",
+      "url": "https://clickup.com/"
+    },
+    {
+      "id": "D:ClickUp:landing:6",
+      "text": "Strategist Developer Visual Designer Connected Apps & Any MCP Brain² taps Google Drive, GitHub, Salesforce, and more to get you answers and insights. MCP Online Ambient Intelligence Brain² surfaces relevant context, related tasks, and smart suggestions before you even ask.",
+      "product": "ClickUp",
+      "role": "competitor",
+      "url": "https://clickup.com/"
+    }
+  ],
+  "sources": [
+    {
+      "product": "Trello",
+      "role": "target",
+      "page": "landing",
+      "url": "https://trello.com/",
+      "captured": "2026-10-17",
+      "html_sha256": "1299fb3174027da167d038525111121c3baebf34e9cf436a25073d3beb198f12",
+      "tokens": 70,
+      "truncated": false,
+      "sentences_dropped_by_filter": 5
+    },
+    {
+      "product": "Trello",
+      "role": "target",
+      "page": "features",
+      "url": "https://trello.com/tour",
+      "captured": "2026-10-17",
+      "html_sha256": "f3eac07804e11b96ba524c99e2839b1f295192a3baff07eb2ef443505f60067b",
+      "tokens": 513,
+      "truncated": false,
+      "sentences_dropped_by_filter": 6
+    },
+    {
+      "product": "Asana",
+      "role": "competitor",
+      "page": "landing",
+      "url": "https://asana.com/",
+      "captured": "2026-10-17",
+      "html_sha256": "2546a18b6c99755244f4ec0cad169af076a82d1a7d9f9520a70e2dbbca20add1",
+      "tokens": 391,
+      "truncated": false,
+      "sentences_dropped_by_filter": 13
+    },
+    {
+      "product": "ClickUp",
+      "role": "competitor",
+      "page": "landing",
+      "url": "https://clickup.com/",
+      "captured": "2026-10-17",
+      "html_sha256": "0af1c017e6c60ae93c8357137cabffab3e8d8d8a372a0933cce417fdb5ece4f5",
+      "tokens": 457,
+      "truncated": true,
+      "sentences_dropped_by_filter": 12
+    }
+  ]
+}

@@ -1,0 +1,365 @@
+{
+  "created": "2026-10-17",
+  "seed": 42,
+  "token_counting": "approx ceil(chars/4)",
+  "caps": {
+    "D_target": 1500,
+    "D_peer": 500,
+    "O": 1000,
+    "review": 250
+  },
+  "page_filter": "sentences matching testimonial/statistic/customer-count/rating/CTA regex removed",
+  "targets": {
+    "Asana": {
+      "M": {
+        "items": 1,
+        "tokens_approx": 25,
+        "sha256": "2e2ce8169e80ac40473c7463bee899936ee595c57ed2148cca8eb1678f97d1cd"
+      },
+      "D": {
+        "items": 30,
+        "tokens_approx": 2950,
+        "sha256": "ccff1b71fd8b545d4ef593e264bac1eede0a27f4a1349767ac9323a68f221404",
+        "sources": [
+          {
+            "product": "Asana",
+            "role": "target",
+            "page": "landing",
+            "url": "https://asana.com/",
+            "captured": "2026-10-17",
+            "html_sha256": "2546a18b6c99755244f4ec0cad169af076a82d1a7d9f9520a70e2dbbca20add1",
+            "tokens": 391,
+            "truncated": false,
+            "sentences_dropped_by_filter": 13
+          },
+          {
+            "product": "Asana",
+            "role": "target",
+            "page": "features",
+            "url": "https://asana.com/features",
+            "captured": "2026-10-17",
+            "html_sha256": "efa6b46737b4bab200eb2dac813ef885a218af8d5cf5b117cc726395696b0082",
+            "tokens": 1108,
+            "truncated": true,
+            "sentences_dropped_by_filter": 12
+          },
+          {
+            "product": "Trello",
+            "role": "competitor",
+            "page": "features",
+            "url": "https://trello.com/tour",
+            "captured": "2026-10-17",
+            "html_sha256": "f3eac07804e11b96ba524c99e2839b1f295192a3baff07eb2ef443505f60067b",
+            "tokens": 485,
+            "truncated": true,
+            "sentences_dropped_by_filter": 6
+          },
+          {
+            "product": "ClickUp",
+            "role": "competitor",
+            "page": "landing",
+            "url": "https://clickup.com/",
+            "captured": "2026-10-17",
+            "html_sha256": "0af1c017e6c60ae93c8357137cabffab3e8d8d8a372a0933cce417fdb5ece4f5",
+            "tokens": 457,
+            "truncated": true,
+            "sentences_dropped_by_filter": 12
+          }
+        ]
+      },
+      "C": {
+        "items": 20,
+        "tokens_approx": 3181,
+        "sha256": "9fd6484be04eb7467c557aab3c081a73c5c19c9075826b18f9cec45ad87a13a4",
+        "review_ids": [
+          "Capterra___6807901",
+          "Capterra___6012169",
+          "Capterra___6854368",
+          "Capterra___6630970",
+          "Capterra___6684432",
+          "Capterra___6549075",
+          "Capterra___6678877",
+          "Capterra___6624483",
+          "Capterra___6283923",
+          "Capterra___6306574",
+          "Capterra___5037970",
+          "Capterra___6661564",
+          "Capterra___4994264",
+          "Capterra___6096596",
+          "Capterra___7014175",
+          "Capterra___6135857",
+          "Capterra___6630955",
+          "Capterra___6602951",
+          "Capterra___6406200",
+          "Capterra___5087851"
+        ],
+        "products": [
+          "ClickUp",
+          "Trello"
+        ],
+        "truncated_reviews": 3,
+        "masked_passages": 3
+      },
+      "T": {
+        "items": 10,
+        "tokens_approx": 1677,
+        "sha256": "7c58d67b1bff9cf1bb8ef1f41a18290c37c8abd8540fa46dd446d29dd8bff28b",
+        "review_ids": [
+          "Capterra___6859873",
+          "Capterra___7086070",
+          "Capterra___6575085",
+          "Capterra___6825978",
+          "Capterra___6827851",
+          "Capterra___3332315",
+          "Capterra___6603012",
+          "Capterra___7147752",
+          "Capterra___7054138",
+          "Capterra___6812592"
+        ],
+        "products": [
+          "Asana"
+        ],
+        "truncated_reviews": 1,
+        "masked_passages": 0
+      },
+      "O": {
+        "status": "blocked: needs model call",
+        "resume": "python experiments/staged_context/experiment.py onet"
+      }
+    },
+    "Trello": {
+      "M": {
+        "items": 1,
+        "tokens_approx": 27,
+        "sha256": "ef82117915907bd7e6a1f4331320f7d4ae69888baa81e228f687b5aad279173d"
+      },
+      "D": {
+        "items": 19,
+        "tokens_approx": 1750,
+        "sha256": "b450c95e93c726d24b3675ad85c8abb31f89009cb9738cb102c7d8be638fefc2",
+        "sources": [
+          {
+            "product": "Trello",
+            "role": "target",
+            "page": "landing",
+            "url": "https://trello.com/",
+            "captured": "2026-10-17",
+            "html_sha256": "1299fb3174027da167d038525111121c3baebf34e9cf436a25073d3beb198f12",
+            "tokens": 70,
+            "truncated": false,
+            "sentences_dropped_by_filter": 5
+          },
+          {
+            "product": "Trello",
+            "role": "target",
+            "page": "features",
+            "url": "https://trello.com/tour",
+            "captured": "2026-10-17",
+            "html_sha256": "f3eac07804e11b96ba524c99e2839b1f295192a3baff07eb2ef443505f60067b",
+            "tokens": 513,
+            "truncated": false,
+            "sentences_dropped_by_filter": 6
+          },
+          {
+            "product": "Asana",
+            "role": "competitor",
+            "page": "landing",
+            "url": "https://asana.com/",
+            "captured": "2026-10-17",
+            "html_sha256": "2546a18b6c99755244f4ec0cad169af076a82d1a7d9f9520a70e2dbbca20add1",
+            "tokens": 391,
+            "truncated": false,
+            "sentences_dropped_by_filter": 13
+          },
+          {
+            "product": "ClickUp",
+            "role": "competitor",
+            "page": "landing",
+            "url": "https://clickup.com/",
+            "captured": "2026-10-17",
+            "html_sha256": "0af1c017e6c60ae93c8357137cabffab3e8d8d8a372a0933cce417fdb5ece4f5",
+            "tokens": 457,
+            "truncated": true,
+            "sentences_dropped_by_filter": 12
+          }
+        ]
+      },
+      "C": {
+        "items": 20,
+        "tokens_approx": 3485,
+        "sha256": "bcf3223d150ad279baf21f5370fab8068d4b1bb46104b0440cb2cf6cf13a1fe0",
+        "review_ids": [
+          "Capterra___6576999",
+          "Capterra___6562122",
+          "Capterra___6638462",
+          "Capterra___7029276",
+          "Capterra___6478441",
+          "Capterra___7044110",
+          "Capterra___6466047",
+          "Capterra___6773046",
+          "Capterra___6570428",
+          "Capterra___7071213",
+          "Capterra___5037970",
+          "Capterra___6661564",
+          "Capterra___4994264",
+          "Capterra___6096596",
+          "Capterra___7014175",
+          "Capterra___6135857",
+          "Capterra___6630955",
+          "Capterra___6602951",
+          "Capterra___6406200",
+          "Capterra___5087851"
+        ],
+        "products": [
+          "Asana",
+          "ClickUp"
+        ],
+        "truncated_reviews": 4,
+        "masked_passages": 1
+      },
+      "T": {
+        "items": 10,
+        "tokens_approx": 1612,
+        "sha256": "e14eb491f41e5a3300a4b353f3e61b23c4ca9ca1b928e94d9a48c91d16fc3c31",
+        "review_ids": [
+          "Capterra___6701128",
+          "Capterra___6142032",
+          "Capterra___6572904",
+          "Capterra___6856796",
+          "Capterra___6016441",
+          "Capterra___6663269",
+          "Capterra___7074203",
+          "Capterra___6789657",
+          "Capterra___6807901",
+          "Capterra___6676153"
+        ],
+        "products": [
+          "Trello"
+        ],
+        "truncated_reviews": 1,
+        "masked_passages": 0
+      },
+      "O": {
+        "status": "blocked: needs model call",
+        "resume": "python experiments/staged_context/experiment.py onet"
+      }
+    },
+    "ClickUp": {
+      "M": {
+        "items": 1,
+        "tokens_approx": 24,
+        "sha256": "5d9950fea4a7ff62b8b64ace5092b64bb677f0dfcce9a8711608b3943b6d7b27"
+      },
+      "D": {
+        "items": 32,
+        "tokens_approx": 2929,
+        "sha256": "14b32123a1ddcec846e53a620c401f068105053f2ef5206460849d9d90c4d1d0",
+        "sources": [
+          {
+            "product": "ClickUp",
+            "role": "target",
+            "page": "landing",
+            "url": "https://clickup.com/",
+            "captured": "2026-10-17",
+            "html_sha256": "0af1c017e6c60ae93c8357137cabffab3e8d8d8a372a0933cce417fdb5ece4f5",
+            "tokens": 746,
+            "truncated": true,
+            "sentences_dropped_by_filter": 12
+          },
+          {
+            "product": "ClickUp",
+            "role": "target",
+            "page": "features",
+            "url": "https://clickup.com/features",
+            "captured": "2026-10-17",
+            "html_sha256": "c8a702341f1dd7b86859f712125e9df6944bbf69b0f231ca4fa02f31c1fe6c20",
+            "tokens": 747,
+            "truncated": true,
+            "sentences_dropped_by_filter": 10
+          },
+          {
+            "product": "Asana",
+            "role": "competitor",
+            "page": "landing",
+            "url": "https://asana.com/",
+            "captured": "2026-10-17",
+            "html_sha256": "2546a18b6c99755244f4ec0cad169af076a82d1a7d9f9520a70e2dbbca20add1",
+            "tokens": 391,
+            "truncated": false,
+            "sentences_dropped_by_filter": 13
+          },
+          {
+            "product": "Trello",
+            "role": "competitor",
+            "page": "features",
+            "url": "https://trello.com/tour",
+            "captured": "2026-10-17",
+            "html_sha256": "f3eac07804e11b96ba524c99e2839b1f295192a3baff07eb2ef443505f60067b",
+            "tokens": 485,
+            "truncated": true,
+            "sentences_dropped_by_filter": 6
+          }
+        ]
+      },
+      "C": {
+        "items": 20,
+        "tokens_approx": 3246,
+        "sha256": "419106a69d0dc7dfe34545100524f20eb66bcd4c1048ad274bf6ef8d898e7935",
+        "review_ids": [
+          "Capterra___6576999",
+          "Capterra___6562122",
+          "Capterra___6638462",
+          "Capterra___7029276",
+          "Capterra___6478441",
+          "Capterra___7044110",
+          "Capterra___6466047",
+          "Capterra___6773046",
+          "Capterra___6570428",
+          "Capterra___7071213",
+          "Capterra___6807901",
+          "Capterra___6012169",
+          "Capterra___6854368",
+          "Capterra___6630970",
+          "Capterra___6684432",
+          "Capterra___6549075",
+          "Capterra___6678877",
+          "Capterra___6624483",
+          "Capterra___6283923",
+          "Capterra___6306574"
+        ],
+        "products": [
+          "Asana",
+          "Trello"
+        ],
+        "truncated_reviews": 3,
+        "masked_passages": 1
+      },
+      "T": {
+        "items": 10,
+        "tokens_approx": 1645,
+        "sha256": "98089b155447c2660c9873a7d0a91990ac0f9e79154fb74ba97f76afec044e1b",
+        "review_ids": [
+          "Capterra___7182572",
+          "Capterra___7047157",
+          "Capterra___6306066",
+          "Capterra___6627952",
+          "Capterra___6136453",
+          "Capterra___5004831",
+          "Capterra___6012412",
+          "Capterra___6321398",
+          "Capterra___6016955",
+          "Capterra___6221708"
+        ],
+        "products": [
+          "ClickUp"
+        ],
+        "truncated_reviews": 1,
+        "masked_passages": 0
+      },
+      "O": {
+        "status": "blocked: needs model call",
+        "resume": "python experiments/staged_context/experiment.py onet"
+      }
+    }
+  }
+}
