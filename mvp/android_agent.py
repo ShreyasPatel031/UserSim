@@ -370,6 +370,13 @@ def execute(adb: Adb, step: dict, elements: list[Element], size: tuple[int, int]
     return "terminal" if action in {"done", "fail"} else "unknown_action"
 
 
+MIN_STEPS_BEFORE_FAIL = 3
+
+
+def premature_fail(step: dict, n: int) -> bool:
+    return step.get("action") == "fail" and n <= MIN_STEPS_BEFORE_FAIL
+
+
 def run(task: str, package: str, *, apk_dir: Path | None = None, max_steps: int = 40,
         model: str | None = None, serial: str | None = None, run_dir: Path | None = None) -> dict:
     adb = Adb(serial)
@@ -396,6 +403,8 @@ def run(task: str, package: str, *, apk_dir: Path | None = None, max_steps: int 
         (run_dir / f"{n:02d}.png").write_bytes(png)
         elements = parse_ui(adb.ui_xml())
         step = decide(client, model, task, png, elements, history)
+        if premature_fail(step, n):
+            step = {**step, "action": "wait", "reason": "(fail ignored: app may still be loading) " + str(step.get("reason", ""))}
         result = execute(adb, step, elements, size, state)
         step.update(step=n, result=result, t=time.time())
         history.append(step)

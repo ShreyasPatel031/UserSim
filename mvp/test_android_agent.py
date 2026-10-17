@@ -164,3 +164,10 @@ def test_password_hint_text_is_not_filled():
     els = aa.parse_ui(xml)
     assert els[0].label == "password field (empty)" and not els[0].filled
     assert els[1].label == "password field (filled, 3 chars)" and els[1].filled
+
+
+def test_fail_in_first_steps_is_premature():
+    assert aa.premature_fail({"action": "fail"}, 1)
+    assert aa.premature_fail({"action": "fail"}, 3)
+    assert not aa.premature_fail({"action": "fail"}, 4)
+    assert not aa.premature_fail({"action": "done"}, 1)
