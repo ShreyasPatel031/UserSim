@@ -597,7 +597,7 @@ def latest_signup_code(
         low = f"{subject}\n{body}\n{sender}".lower()
         if host_aliases and not any(tok in low for tok in host_aliases):
             continue
-        if not any(h in low for h in _SIGNUP_HINTS) and not _CODE_NEAR.search(low):
+        if not any(h in low for h in _SIGNUP_HINTS) and not _CODE_NEAR.search(low) and "code" not in subject.lower():
             # Still allow alphanumeric subject codes without numeric _CODE_RE.
             if not _ALPHA_SUBJECT_CODE.search(subject):
                 continue
