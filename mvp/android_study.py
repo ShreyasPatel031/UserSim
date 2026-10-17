@@ -109,10 +109,12 @@ def report_html(cfg: dict[str, Any], rows: list[dict[str, Any]], summary: dict[s
     e = html.escape
     apps = [a["name"] for a in cfg["apps"]]
     head = "".join(f"<th>{e(a)}</th>" for a in apps)
-    lines = [f"<tr><td>Mean score (0-10)</td>{''.join(f'<td>{summary[a]['mean_score']}</td>' for a in apps)}</tr>",
-             f"<tr><td>Done in app</td>{''.join(f'<td>{summary[a]['done_in_app']}/{summary[a]['cells']}</td>' for a in apps)}</tr>",
-             f"<tr><td>Mean friction (0-3)</td>{''.join(f'<td>{summary[a]['mean_friction']}</td>' for a in apps)}</tr>"]
-    lines += [f"<tr><td>{e(t)}</td>{''.join(f'<td>{summary[a]['by_task'][t]}</td>' for a in apps)}</tr>" for t in cfg["tasks"]]
+    def row(label: str, cell) -> str:
+        return "<tr><td>%s</td>%s</tr>" % (label, "".join("<td>%s</td>" % cell(summary[a]) for a in apps))
+    lines = [row("Mean score (0-10)", lambda s: s["mean_score"]),
+             row("Done in app", lambda s: "%s/%s" % (s["done_in_app"], s["cells"])),
+             row("Mean friction (0-3)", lambda s: s["mean_friction"])]
+    lines += [row(e(t), lambda s, t=t: s["by_task"][t]) for t in cfg["tasks"]]
     detail = "".join(
         f"<tr><td>{e(r['app'])}</td><td>{e(r['persona'])}</td><td>{e(r['task'])}</td>"
         f"<td>{(r.get('score') or {}).get('score', '')}</td><td>{e((r.get('score') or {}).get('level', ''))}</td>"
