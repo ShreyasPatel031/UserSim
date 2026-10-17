@@ -132,7 +132,7 @@ td,th{{border:1px solid #ddd;padding:6px 8px;text-align:left;vertical-align:top}
 
 
 def run_study(cfg: dict[str, Any], *, out_dir: Path, max_steps: int, serial: str | None,
-              only_apps: set[str] | None = None) -> dict[str, Any]:
+              only_apps: set[str] | None = None, only_cells: set[str] | None = None) -> dict[str, Any]:
     out_dir.mkdir(parents=True, exist_ok=True)
     adb = aa.Adb(serial)
     client = aa._model_client()
@@ -143,6 +143,8 @@ def run_study(cfg: dict[str, Any], *, out_dir: Path, max_steps: int, serial: str
     for p, t, a in cells(cfg):
         persona, task, app = cfg["personas"][p], cfg["tasks"][t], cfg["apps"][a]
         if (persona["name"], task, app["name"]) in done or (only_apps and app["name"] not in only_apps):
+            continue
+        if only_cells is not None and f"{a}-{p}-{t}" not in only_cells:
             continue
         adb.shell(f"am force-stop {app['package']}")
         run_dir = out_dir / "runs" / f"{a}-{p}-{t}"
@@ -178,6 +180,7 @@ def main() -> int:
     ap.add_argument("--max-steps", type=int, default=15)
     ap.add_argument("--serial")
     ap.add_argument("--apps", help="comma-separated app names to run (default: all); resume with the same --out")
+    ap.add_argument("--cells", help="comma-separated <app>-<persona>-<task> index keys to run (for sharding)")
     args = ap.parse_args()
     cfg = json.loads(args.config.read_text())
     out = args.out or OUT / time.strftime("%Y%m%d-%H%M%S")
@@ -185,8 +188,9 @@ def main() -> int:
     if args.config.resolve() != (out / "config.json").resolve():
         shutil.copy(args.config, out / "config.json")
     only = {a.strip() for a in args.apps.split(",") if a.strip()} if args.apps else None
-    print(json.dumps(run_study(cfg, out_dir=out, max_steps=args.max_steps, serial=args.serial, only_apps=only),
-                     indent=2))
+    cells_only = {c.strip() for c in args.cells.split(",") if c.strip()} if args.cells else None
+    print(json.dumps(run_study(cfg, out_dir=out, max_steps=args.max_steps, serial=args.serial, only_apps=only,
+                               only_cells=cells_only), indent=2))
     return 0
 
 
