@@ -105,28 +105,86 @@ _FRESH: dict[tuple[str, str], int] = {}
 def shared_account_hosts() -> set[str]:
     """Sites where every agent of a study uses ONE test account.
 
-    MVP_SIGNUP_SHARED_ACCOUNT_HOSTS, comma separated, default "zo.computer".
-    Zo treats every alias of the test Gmail inbox (plus tags, dots,
-    googlemail.com) as the same account and sends about 10 sign-in mails before
-    going quiet, so 18 parallel signups cannot each get an account. Set it to
-    "" once separate inboxes exist (e.g. a catch-all domain) to give each agent
-    its own account again.
+    MVP_SIGNUP_SHARED_ACCOUNT_HOSTS, comma separated, default "*" (every site).
+    It used to be "zo.computer" only, so every other site got one fresh account
+    per agent: kolanut.ai received ~150 test signups over a few studies and its
+    Supabase backend went down. One account per study and site is enough for
+    the agents to see the signed-in product. Set it to a host list to share
+    only there, or "" to give each agent its own account again.
     """
     raw = os.environ.get("MVP_SIGNUP_SHARED_ACCOUNT_HOSTS")
     if raw is None:
-        raw = "zo.computer"
+        raw = "*"
     return {h.strip().lower().removeprefix("www.") for h in raw.split(",") if h.strip()}
 
 
 def shares_account(site: str) -> bool:
-    return enabled() and (site or "").lower().removeprefix("www.") in shared_account_hosts()
+    hosts = shared_account_hosts()
+    return enabled() and ("*" in hosts or (site or "").lower().removeprefix("www.") in hosts)
 
 
 def _max_fresh() -> int:
     try:
-        return max(1, int(os.environ.get("MVP_SIGNUP_SHARED_MAX_FRESH") or 3))
+        return max(1, int(os.environ.get("MVP_SIGNUP_SHARED_MAX_FRESH") or 2))
     except ValueError:
-        return 3
+        return 2
+
+
+# ---------------------------------------------------------------- per-site ledger
+
+_LEDGER_FILE = os.path.expanduser(os.environ.get("MVP_SIGNUP_LEDGER_FILE") or "~/.cache/usersim/signups.jsonl")
+
+
+def site_daily_cap() -> int:
+    """Most fresh signups one site may get per UTC day, across studies (MVP_SIGNUP_SITE_DAILY_CAP, default 6, 0 = no cap)."""
+    try:
+        return max(0, int(os.environ.get("MVP_SIGNUP_SITE_DAILY_CAP") or 6))
+    except ValueError:
+        return 6
+
+
+def _today() -> str:
+    return time.strftime("%Y-%m-%d", time.gmtime())
+
+
+def ledger_rows(site: str = "") -> list[dict[str, Any]]:
+    """Every fresh signup attempt this machine made (site, email, ok, study, ts): the list to hand a site for cleanup."""
+    import json
+
+    rows: list[dict[str, Any]] = []
+    try:
+        with open(_LEDGER_FILE, encoding="utf-8") as fh:
+            for line in fh:
+                try:
+                    row = json.loads(line)
+                except ValueError:
+                    continue
+                if not site or row.get("site") == site:
+                    rows.append(row)
+    except OSError:
+        pass
+    return rows
+
+
+def signups_today(site: str) -> int:
+    day = _today()
+    return sum(1 for r in ledger_rows(site) if r.get("day") == day)
+
+
+def record_signup(site: str, key: str, result: dict[str, Any]) -> None:
+    import json
+
+    row = {
+        "day": _today(), "ts": round(time.time()), "site": site, "study": key,
+        "ok": bool(result.get("ok")), "email": str(result.get("email") or ""),
+        "reason": str(result.get("reason") or "")[:120],
+    }
+    try:
+        os.makedirs(os.path.dirname(_LEDGER_FILE), exist_ok=True)
+        with open(_LEDGER_FILE, "a", encoding="utf-8") as fh:
+            fh.write(json.dumps(row) + "\n")
+    except OSError:
+        pass
 
 
 async def signup_or_share(
@@ -142,7 +200,8 @@ async def signup_or_share(
 
     ``run_signup`` is an async callable returning a signup result dict. If the
     leading signup fails, the next waiting agent tries its own, up to
-    MVP_SIGNUP_SHARED_MAX_FRESH fresh signups per study and site. Results that
+    MVP_SIGNUP_SHARED_MAX_FRESH fresh signups per study and site, and no more
+    than site_daily_cap() per site per day across studies. Results that
     came from the shared session carry ``shared_account=True``.
     """
     import asyncio
@@ -159,6 +218,10 @@ async def signup_or_share(
         if not _LEADING.get(k):
             if _FRESH.get(k, 0) >= _max_fresh():
                 return {"ok": False, "reason": f"shared account signup failed after {_FRESH[k]} tries"}
+            cap = site_daily_cap()
+            if cap and signups_today(site) >= cap:
+                log(f"[signup] {site}: {cap} test signups already today, not creating another account")
+                return {"ok": False, "reason": f"site signup cap reached ({cap}/day)"}
             _LEADING[k] = True
             _FRESH[k] = _FRESH.get(k, 0) + 1
             event = _DONE_EVENTS[k] = asyncio.Event()
@@ -166,6 +229,7 @@ async def signup_or_share(
             result: dict[str, Any] = {"ok": False, "reason": "signup crashed"}
             try:
                 result = dict(await run_signup() or {})
+                record_signup(site, key, result)
                 if result.get("ok"):
                     saved = await save_from_page(page, key, site, str(result.get("email") or ""))
                     log(f"[signup] {site}: shared test account {'saved' if saved else 'NOT saved'}")

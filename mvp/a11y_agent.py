@@ -3788,9 +3788,9 @@ async def _signup_then_resume(
             gap_site = ""
         from mvp import signup_share as _share
 
-        # One shared account (zo.computer): only the leading signup sends mail,
-        # so the per-site spacing would just queue the waiting agents.
-        shared_host = bool(share_key) and not competitor and _share.shares_account(gap_site)
+        # One shared account per study and site (rivals too): only the leading
+        # signup creates an account, so per-site spacing would just queue the rest.
+        shared_host = bool(share_key) and _share.shares_account(gap_site)
         waited = await _stagger_signup("" if shared_host else gap_site)
         if waited >= 1:
             print(f"[{agent_id}] signup spacing on {gap_site}: waited {waited:.1f}s", flush=True)

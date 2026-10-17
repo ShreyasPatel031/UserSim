@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 import unittest
 
 from mvp.a11y_agent import (
@@ -348,8 +349,13 @@ class SharedAccount(unittest.TestCase):
             await asyncio.sleep(0.05)
             return {"ok": True, "reason": "signed_up", "email": "a@b"}
 
+        import tempfile
+
+        ledger = os.path.join(tempfile.mkdtemp(), "signups.jsonl")
+
         async def main():
-            with mock.patch.object(ss, "save_from_page", fake_save), mock.patch.object(ss, "reuse", fake_reuse):
+            with mock.patch.object(ss, "save_from_page", fake_save), mock.patch.object(ss, "reuse", fake_reuse), \
+                    mock.patch.object(ss, "_LEDGER_FILE", ledger):
                 return await asyncio.gather(*[
                     ss.signup_or_share(None, "study-x", "zo.computer", signup, wait_s=5, log=lambda m: None)
                     for _ in range(5)
@@ -360,6 +366,34 @@ class SharedAccount(unittest.TestCase):
         self.assertTrue(all(r["ok"] for r in res))
         self.assertEqual(sum(1 for r in res if r.get("shared_account")), 4)
         self.assertEqual(sum(1 for r in res if r.get("shared_account_leader")), 1)
+        with mock.patch.object(ss, "_LEDGER_FILE", ledger):
+            self.assertEqual([r["email"] for r in ss.ledger_rows("zo.computer")], ["a@b"])
+
+    def test_site_daily_cap_stops_new_accounts(self) -> None:
+        import asyncio
+        import tempfile
+        from unittest import mock
+
+        from mvp import signup_share as ss
+
+        ledger = os.path.join(tempfile.mkdtemp(), "signups.jsonl")
+        calls = {"n": 0}
+
+        async def signup():
+            calls["n"] += 1
+            return {"ok": False, "reason": "site_error"}
+
+        async def main():
+            out = []
+            for i in range(4):
+                out.append(await ss.signup_or_share(None, f"study-{i}", "kolanut.ai", signup, wait_s=5, log=lambda m: None))
+            return out
+
+        with mock.patch.object(ss, "_LEDGER_FILE", ledger), mock.patch.dict(os.environ, {"MVP_SIGNUP_SITE_DAILY_CAP": "3"}):
+            res = asyncio.run(main())
+            self.assertEqual(ss.signups_today("kolanut.ai"), 3)
+        self.assertEqual(calls["n"], 3)
+        self.assertIn("cap reached", res[-1]["reason"])
 
     def test_hosts_setting_and_note(self) -> None:
         import os
@@ -369,6 +403,9 @@ class SharedAccount(unittest.TestCase):
         from mvp.signup_share import shares_account
 
         self.assertTrue(shares_account("www.zo.computer"))
+        self.assertTrue(shares_account("kolanut.ai"))
+        with mock.patch.dict(os.environ, {"MVP_SIGNUP_SHARED_ACCOUNT_HOSTS": "zo.computer"}):
+            self.assertFalse(shares_account("kolanut.ai"))
         with mock.patch.dict(os.environ, {"MVP_SIGNUP_SHARED_ACCOUNT_HOSTS": ""}):
             self.assertFalse(shares_account("zo.computer"))
         study = {"product_name": "Zo Computer", "agent_results": [
