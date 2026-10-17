@@ -138,6 +138,88 @@ class RecoverTest(unittest.TestCase):
         self.assertTrue(written["old1"]["interrupted"])
 
 
+class ResumeTest(unittest.TestCase):
+    def _saved(self, **extra):
+        import time
+
+        data = {
+            "id": "res1",
+            "url": "https://byteask.ai",
+            "segment": "C++ developers",
+            "status": "running",
+            "email": "buyer@example.com",
+            "competitors": ["https://aider.chat/", "https://cursor.com/"],
+            "tasks_override": ["Automate C++ code changes"],
+            "plan_personas": [{"name": "Alex Chen", "role": "C++ developer"}],
+            "task_specs": [{"prompt": "Automate C++ code changes", "favors": "product"}],
+            "max_agents": 0,
+            "created_at_ts": time.time() - 120,
+            "agent_results": [{"agent_id": "t1__p1__product"}],
+            "activity_log": [
+                {"kind": "plan", "message": "Competitors: aider, cursor"},
+                {"kind": "agent_step", "message": "Alex Chen: step 1"},
+            ],
+        }
+        data.update(extra)
+        return data
+
+    def test_only_planned_recent_unkilled_studies_resume(self):
+        import time
+
+        from mvp.study import resumable
+
+        self.assertTrue(resumable(self._saved()))
+        self.assertFalse(resumable(self._saved(kill_requested=True)))
+        self.assertFalse(resumable(self._saved(tasks_override=[])))
+        self.assertFalse(resumable(self._saved(resume_count=2)))
+        self.assertFalse(resumable(self._saved(created_at_ts=time.time() - 7 * 3600)))
+
+    def test_restart_reruns_the_saved_plan_with_its_email(self):
+        from mvp import study as st
+
+        ran = []
+
+        async def fake_run(sid, on_update=None):
+            ran.append(sid)
+            st.STUDIES[sid].status = "complete"
+
+        async def go():
+            with mock.patch.object(st, "run_study", fake_run), mock.patch.object(
+                st, "schedule_persist", lambda s: None
+            ), mock.patch("mvp.browser_slots.release_study_sessions", return_value=0):
+                study = st.resume_study(self._saved())
+                await st.STUDY_TASKS["res1"]
+                return study
+
+        try:
+            study = asyncio.run(go())
+        finally:
+            st.STUDIES.pop("res1", None)
+        self.assertEqual(ran, ["res1"])
+        self.assertEqual(study.email, "buyer@example.com")
+        self.assertEqual(study.tasks_override, ["Automate C++ code changes"])
+        self.assertEqual(study.competitors, ["https://aider.chat/", "https://cursor.com/"])
+        self.assertEqual(study.resume_count, 1)
+        self.assertEqual(study.agent_results, [])
+        self.assertNotIn("res1", st.STUDY_TASKS)
+        kinds = [row["kind"] for row in study.activity_log]
+        self.assertNotIn("agent_step", kinds)
+        self.assertIn("restarted mid-study", study.activity_log[-1]["message"])
+
+    def test_saved_study_carries_what_resume_needs(self):
+        from mvp import study as st
+
+        s = st.StudyState(id="x", url="https://byteask.ai", segment="")
+        s.tasks_override = ["Automate C++ code changes"]
+        s.plan_personas = [{"name": "Alex Chen"}]
+        s.max_agents = 12
+        out = st.study_to_dict(s)
+        self.assertEqual(out["tasks_override"], ["Automate C++ code changes"])
+        self.assertEqual(out["plan_personas"], [{"name": "Alex Chen"}])
+        self.assertEqual(out["max_agents"], 12)
+        self.assertEqual(out["resume_count"], 0)
+
+
 class EtaTest(unittest.TestCase):
     def setUp(self):
         bs._ACTIVE.clear()

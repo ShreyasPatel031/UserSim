@@ -82,9 +82,11 @@ Rules:
   that a buyer would compare side by side for the same job. Never a parent company, multi-product suite
   homepage, marketplace or discontinued product. Rivals may be sales-led (demo only); that is fine. Each
   rival must still be sold under its own name at that domain today: never one that was acquired, merged or
-  rebranded (its site redirects elsewhere). Never a general-purpose AI chatbot or assistant (ChatGPT, Claude,
-  Gemini, Copilot, Perplexity, Grok and the like) unless the product itself is a general-purpose chatbot: a
-  site calling itself a "ChatGPT alternative" in its keywords is not enough.
+  rebranded (its site redirects elsewhere). Never a general-purpose chat app (ChatGPT, Claude.ai, Gemini,
+  Perplexity, Grok and the like) unless the product itself is a general-purpose chatbot: a site calling itself
+  a "ChatGPT alternative" in its keywords is not enough. A big vendor's dedicated product in this category is a
+  real rival (for an AI coding agent: Cursor, GitHub Copilot, Claude Code); use that product's own page.
+  The page may live on a code host when that is the product's home (an open-source tool's repository).
 - personas: exactly six realistic target customers of this category: exactly two natural fits for the
   product and exactly two natural fits for each competitor (for example an enterprise CS leader fits an
   enterprise suite, a two-person startup fits a self-serve tool). favors must be "product" or one of the
@@ -94,8 +96,10 @@ Rules:
   "Compare plan prices for 20 seats"). Choose the first six so exactly two favor the product and exactly two favor
   each competitor; the seventh is a spare. Each task must make sense on all three sites: done in the product where a trial account
   allows, or judged from the website (feature pages, docs, pricing, proof) where the product is demo-only.
-  Never a task that needs the customer's own outside credentials or data (connect or sync a data source,
-  API keys, payment). At most one pricing task.
+  Every task is a job this product's buyer has, in this product's language, platform or domain (C++ work for a
+  C++ tool): a task favors a rival because that rival does the buyer's job better, never because it is outside
+  this product's scope. Never a task that needs the customer's own outside credentials or data (connect or
+  sync a data source, API keys, payment). At most one pricing task.
 - No quotes inside strings. No explanations."""
 
 # Split plan (default): a tiny competitor call first, then tasks and personas
@@ -110,7 +114,8 @@ Return {{"product": "short product name", "segment": "one short phrase naming wh
 Rules: standalone products in the same category a buyer would compare side by side, best known first, homepage
 URLs of real public sites. Sales-led (demo only) rivals are fine. Never a parent company, multi-product suite
 homepage, marketplace or discontinued product, and never one that was acquired, merged or rebranded (its site
-redirects elsewhere). Never a general-purpose AI chatbot (ChatGPT, Claude, Gemini, Copilot) unless the product is one."""
+redirects elsewhere). Never a general-purpose chat app (ChatGPT, Claude.ai, Gemini) unless the product is one; a big
+vendor's dedicated product in this category (GitHub Copilot or Claude Code for a coding agent) is a real rival."""
 
 _CMP_TASKS = """Pick six tasks for a head-to-head comparison of {product} ({url}) against {rivals}. Reply with JSON only.
 {product} page text: {text}
@@ -154,15 +159,22 @@ Page title: {title}
 Page text (the whole page): {text}
 Drafted segment: {segment}
 Drafted competitors: {rivals}
+Web search results for this category (titles and snippets; name the products they discuss, not the articles):
+{search}
 
 Return {{"category": "2-6 word category of this product, judged from what it does (customer showcases are examples, not the category)",
   "segment": "one short phrase naming who evaluates products in this category",
   "fits": [{{"url": "drafted competitor url", "same_job": true, "why": "at most 10 words"}}],
   "replacements": [{{"url": "https://rival.com/", "name": "Rival"}}]}}
-Rules: same_job is true only if a buyer of this product would try that competitor side by side for the same job.
-If any same_job is false, replacements lists exactly two best-known direct competitors in the category, best first,
-homepage URLs of real public standalone products operating today (never a parent company, suite homepage or
-marketplace). If all fit, replacements is empty. No quotes inside strings."""
+Rules: same_job is true only if a buyer of this product would try that competitor side by side for the same job
+(a code review bot is not the same job as a coding agent that writes the change). Judge the job, not the niche:
+a broader product that does this job for this buyer is the same job (a general AI coding agent for a C++ coding
+agent, a general scheduler for a scheduler for clinics). Reject only a rival that does a different job, is not a
+standalone product, or is not this buyer's product at all. If any same_job is false,
+replacements lists exactly two best-known direct competitors in the category, best first, each the product's own
+page on a real public site, operating today (never a parent company, suite homepage, marketplace or general chat
+app; a vendor's dedicated product page in this category is fine). If all fit, replacements is empty.
+No quotes inside strings."""
 
 
 _PRICING_TASK = "Look for pricing or how to get started"
@@ -327,7 +339,9 @@ def framing_modes() -> set[str]:
     return {m.strip().lower() for m in raw.split(",") if m.strip() and m.strip().lower() not in {"off", "none", "0"}}
 
 
-_DEFAULT_FRAMING = "read"  # the recommended fix; position and verify stay opt-in
+# Position and verify are on: without them one call names rivals from memory, and nothing checked
+# they do the same job (byteask.ai, a C++ coding agent, got a pull-request review bot).
+_DEFAULT_FRAMING = "read,position,verify"
 
 _READ_RULE = (
     "\nThe About line is the site's own description, category and keywords: judge the product category from it"
@@ -764,9 +778,11 @@ async def plan_from_url(
 ) -> dict[str, Any] | None:
     """{"segment", "competitors", "tasks"} for a bare URL, or None on any failure."""
     if compare_mode():
+        # 45s: the rival check (position, search, verify) can take ~35s, and running out of time falls
+        # back to the classic plan, which has no rivals check at all. The first agent starts meanwhile.
         plan = await compare_plan_from_url(
             url,
-            timeout=timeout or float(os.environ.get("MVP_COMPARE_PLAN_TIMEOUT_S", "25")),
+            timeout=timeout or float(os.environ.get("MVP_COMPARE_PLAN_TIMEOUT_S", "45")),
             on_competitors=on_competitors,
             on_personas=on_personas,
         )
@@ -897,23 +913,84 @@ def _positioning_note(pos: dict[str, Any]) -> str:
     )
 
 
+async def _category_search(query: str, timeout: float = 8.0) -> str:
+    """Titles of a web search for the category, so the rival check names real products, not ones recalled."""
+    if not query.strip():
+        return "(none)"
+    from mvp.study import _duckduckgo_search
+
+    try:
+        hits = await asyncio.wait_for(_duckduckgo_search(query, limit=8), timeout=timeout)
+    except Exception as exc:  # noqa: BLE001
+        print(f"[fast_plan] category search skipped: {exc!r}", flush=True)
+        return "(none)"
+    lines = [f"- {h.get('title') or ''} ({h.get('url') or ''})" for h in hits if isinstance(h, dict)]
+    return "\n".join(lines) or "(none)"
+
+
 async def _verify_plan(
-    url: str, title: str, full: str, data: dict[str, Any], prompt: str, ask: Any
+    url: str,
+    title: str,
+    full: str,
+    data: dict[str, Any],
+    prompt: str,
+    ask: Any,
+    category: str = "",
+    search: Any = None,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
-    """Self-check: do the drafted rivals do the same job? If not, redo the plan with the corrected rivals."""
+    """Self-check: do the drafted rivals do the same job? If not, redo the plan with the corrected rivals.
+
+    ``search`` is a search already started for this product (an awaitable of result lines), so it does
+    not add its own wait after the draft.
+    """
     items = [i for i in (data.get("competitors") or []) if isinstance(i, dict)]
     rivals = "; ".join(f"{i.get('name') or ''} ({i.get('url') or ''})" for i in items)
-    check = await ask(_VERIFY.format(url=url, title=title, text=full, segment=data.get("segment") or "", rivals=rivals))
-    if not isinstance(check, dict):
+    if search is None:
+        topic = category or str(data.get("product") or "") or title
+        search = _category_search(f"best {topic} alternatives" if topic else "")
+    search = await search
+    check_prompt = _VERIFY.format(
+        url=url, title=title, text=full, segment=data.get("segment") or "", rivals=rivals, search=search
+    )
+    # Two independent checks; a rival is swapped only when both reject it. One check alone
+    # sometimes over-narrows the category ("C++ only") and throws out the right rivals.
+    checks = [c for c in await asyncio.gather(ask(check_prompt), ask(check_prompt)) if isinstance(c, dict)]
+    if not checks:
         return data, {}
+    check = next((c for c in checks if c.get("replacements")), checks[0])
+
+    def _rejected(c: dict[str, Any]) -> set[str]:
+        return {
+            _clean_url(str(f.get("url") or ""))
+            for f in (c.get("fits") or [])
+            if isinstance(f, dict) and (f.get("same_job") is False or str(f.get("same_job")).lower() == "false")
+        }
+
+    agreed = set.intersection(*(_rejected(c) for c in checks))
     fits = [f for f in (check.get("fits") or []) if isinstance(f, dict)]
-    bad = [f for f in fits if f.get("same_job") is False or str(f.get("same_job")).lower() == "false"]
-    repl = [r for r in (check.get("replacements") or []) if isinstance(r, dict) and r.get("url")]
+    bad = [f for f in fits if _clean_url(str(f.get("url") or "")) in agreed]
+    from mvp.competitor_urls import looks_like_product_page
+
+    # A replacement must be the product's own page; the check has named a launch blog post (cognition.com/blog/...).
+    repl = [
+        r
+        for r in (check.get("replacements") or [])
+        if isinstance(r, dict) and r.get("url") and looks_like_product_page(str(r.get("url")))
+    ]
     verdict = {"category": check.get("category"), "rejected": [f.get("url") for f in bad], "replacements": repl[:2]}
-    if not bad or len(repl) < 2:
+    # Keep the drafted rivals that passed, then fill from the replacements: one bad rival
+    # with one replacement offered used to keep the bad one.
+    bad_urls = {_clean_url(str(f.get("url") or "")) for f in bad}
+    kept = [i for i in items if _clean_url(str(i.get("url") or "")) not in bad_urls]
+    chosen: list[dict[str, Any]] = []
+    for row in kept + repl:
+        clean = _clean_url(str(row.get("url") or ""))
+        if clean and clean not in {_clean_url(str(c.get("url") or "")) for c in chosen}:
+            chosen.append(row)
+    if not bad or len(chosen) < 2:
         verdict["redo"] = False
         return data, verdict
-    fixed = ", ".join(f"{r.get('name') or ''} ({r.get('url')})" for r in repl[:2])
+    fixed = ", ".join(f"{r.get('name') or ''} ({r.get('url')})" for r in chosen[:2])
     redo = await ask(
         prompt
         + f"\nA check of the whole page found this product's category is: {check.get('category')}. "
@@ -946,6 +1023,11 @@ async def _single_compare_plan(url: str, *, timeout: float = 25.0) -> dict[str, 
         full = f"{read.get('text') or ''} {read.get('full_text') or ''}"[:3800]
         base_prompt = _COMPARE_PROMPT.format(url=url, title=title, text=prompt_text(read), links=_links_for_prompt(read))
         base_prompt += read_rule()
+        search_task = None
+        if "verify" in modes:
+            # Search while the page is positioned and the plan drafted; verify reads it.
+            topic = (title.split("|")[0].split(" - ")[0].split(" — ")[0] or url).strip()
+            search_task = asyncio.create_task(_category_search(f"{topic} alternatives competitors"))
         positioning: dict[str, Any] = {}
         if "position" in modes:
             try:
@@ -960,7 +1042,16 @@ async def _single_compare_plan(url: str, *, timeout: float = 25.0) -> dict[str, 
         verified: dict[str, Any] = {}
         if "verify" in modes:
             try:
-                data, verified = await _verify_plan(url, title, full, data, prompt, ask)
+                data, verified = await _verify_plan(
+                    url,
+                    title,
+                    full,
+                    data,
+                    prompt,
+                    ask,
+                    category=str(positioning.get("category") or ""),
+                    search=search_task,
+                )
             except Exception as exc:  # noqa: BLE001
                 print(f"[fast_plan] verify skipped: {exc!r}", flush=True)
         own = (urlsplit(url).hostname or "").removeprefix("www.")

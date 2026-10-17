@@ -348,7 +348,15 @@ async def _maybe_finish_study(job: dict[str, Any], shard_results: list[dict[str,
     except Exception:
         email = (job.get("study_snapshot") or {}).get("email")
     if email:
-        print(f"NOTE: email delivery deferred for {email} (hook TBD)", flush=True)
+        try:
+            from types import SimpleNamespace
+
+            from mvp.report_email import send_report_email
+
+            url = str((job.get("study_snapshot") or {}).get("url") or job.get("url") or "")
+            send_report_email(SimpleNamespace(id=study_id, url=url, summary=summary, email=email))
+        except Exception as exc:  # noqa: BLE001
+            print(f"report email for {study_id[:8]} failed: {exc!r}", flush=True)
 
     _write_status(gcs_root, "Complete", done=True, agents=len(all_results))
 

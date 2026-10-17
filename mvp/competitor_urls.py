@@ -162,10 +162,31 @@ def _brand(host: str) -> str:
     return label if len(label) >= 4 else ""
 
 
+_CODE_HOSTS = frozenset({"github.com", "gitlab.com"})
+# First path segments on a code host that are listings or search, not one product.
+_CODE_HOST_LISTINGS = frozenset(
+    {"search", "topics", "trending", "collections", "explore", "marketplace", "orgs", "users", "login", "signup"}
+)
+
+
+def is_code_host_product(url: str) -> bool:
+    """An open-source tool's repository (github.com/owner/repo) or a code host's own product page.
+
+    Their home is the code host, so it is a real rival page, unlike a search or listing there.
+    """
+    raw = unwrap_search_url(url)
+    if registrable_host(raw) not in _CODE_HOSTS:
+        return False
+    parts = [p for p in (urlparse(raw).path or "/").split("/") if p]
+    return len(parts) >= 2 and parts[0].lower() not in _CODE_HOST_LISTINGS
+
+
 def is_non_product_host(url: str) -> bool:
     host = registrable_host(url)
     if not host:
         return True
+    if is_code_host_product(url):
+        return False
     return any(host == blocked or host.endswith("." + blocked) for blocked in _NON_PRODUCT_HOSTS)
 
 

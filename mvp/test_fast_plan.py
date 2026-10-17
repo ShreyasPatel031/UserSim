@@ -212,3 +212,114 @@ def test_named_rivals_skip_pronouns_and_lowercase_mentions():
 
     got = _site_named_rivals("", "Better than the rest. Unlike Notion or Coda. something I could never do on webflow or wordpress")
     assert got == ["Notion", "Coda"]
+
+
+def test_position_and_verify_run_by_default():
+    import os
+
+    from mvp.fast_plan import framing_modes
+
+    old = os.environ.pop("MVP_PLAN_FRAMING", None)
+    try:
+        assert {"read", "position", "verify"} <= framing_modes()
+    finally:
+        if old is not None:
+            os.environ["MVP_PLAN_FRAMING"] = old
+
+
+def test_verify_swaps_a_wrong_job_rival_and_keeps_the_good_one():
+    """byteask.ai (a C++ coding agent) got a pull-request review bot as a rival."""
+    import asyncio
+    from unittest import mock
+
+    from mvp import fast_plan
+
+    draft = {
+        "product": "ByteAsk",
+        "segment": "C++ developers",
+        "competitors": [
+            {"name": "Aider", "url": "https://aider.chat/"},
+            {"name": "PR-Agent", "url": "https://github.com/Codium-ai/pr-agent"},
+        ],
+    }
+    prompts: list[str] = []
+
+    async def ask(prompt: str):
+        prompts.append(prompt)
+        if prompt.startswith("Check a drafted"):
+            return {
+                "category": "AI coding agent",
+                "fits": [
+                    {"url": "https://aider.chat/", "same_job": True},
+                    {"url": "https://github.com/Codium-ai/pr-agent", "same_job": False},
+                ],
+                "replacements": [{"name": "Cursor", "url": "https://cursor.com/"}],
+            }
+        return {"competitors": [{"name": "Aider", "url": "https://aider.chat/"}, {"name": "Cursor", "url": "https://cursor.com/"}]}
+
+    async def search(query: str, timeout: float = 8.0) -> str:
+        assert "AI coding agent" in query
+        return "- Best Cursor alternatives (https://example.com/cursor-alternatives)"
+
+    with mock.patch.object(fast_plan, "_category_search", search):
+        data, verdict = asyncio.run(
+            fast_plan._verify_plan("https://byteask.ai", "ByteAsk", "page", draft, "PLAN", ask, category="AI coding agent")
+        )
+    assert "Best Cursor alternatives" in prompts[0]
+    assert verdict["rejected"] == ["https://github.com/Codium-ai/pr-agent"]
+    assert verdict["redo"] is True
+    assert "Aider (https://aider.chat/), Cursor (https://cursor.com/)" in prompts[2]
+    assert [c["name"] for c in data["competitors"]] == ["Aider", "Cursor"]
+
+
+def test_verify_keeps_the_draft_when_every_rival_fits():
+    import asyncio
+    from unittest import mock
+
+    from mvp import fast_plan
+
+    draft = {"competitors": [{"name": "Cursor", "url": "https://cursor.com/"}, {"name": "Aider", "url": "https://aider.chat/"}]}
+
+    async def ask(prompt: str):
+        return {"fits": [{"url": "https://cursor.com/", "same_job": True}, {"url": "https://aider.chat/", "same_job": True}]}
+
+    async def search(query: str, timeout: float = 8.0) -> str:
+        return "(none)"
+
+    with mock.patch.object(fast_plan, "_category_search", search):
+        data, verdict = asyncio.run(fast_plan._verify_plan("https://byteask.ai", "", "", draft, "PLAN", ask))
+    assert data is draft
+    assert verdict["redo"] is False
+
+
+def test_one_check_alone_cannot_swap_out_the_rivals():
+    """One check over-narrowed byteask.ai to C++-only and swapped Cursor and Copilot for an IDE and an editor."""
+    import asyncio
+    from unittest import mock
+
+    from mvp import fast_plan
+
+    draft = {"competitors": [{"name": "Cursor", "url": "https://cursor.com/"}, {"name": "Copilot", "url": "https://github.com/features/copilot"}]}
+    replies = [
+        {
+            "category": "AI coding agent for C/C++",
+            "fits": [{"url": "https://cursor.com/", "same_job": False}, {"url": "https://github.com/features/copilot", "same_job": False}],
+            "replacements": [{"name": "CLion", "url": "https://www.jetbrains.com/clion/"}, {"name": "VS Code", "url": "https://code.visualstudio.com/"}],
+        },
+        {
+            "category": "AI coding agent",
+            "fits": [{"url": "https://cursor.com/", "same_job": True}, {"url": "https://github.com/features/copilot", "same_job": True}],
+        },
+    ]
+
+    async def ask(prompt: str):
+        return replies.pop(0)
+
+    async def search(query: str, timeout: float = 8.0) -> str:
+        return "(none)"
+
+    with mock.patch.object(fast_plan, "_category_search", search):
+        data, verdict = asyncio.run(fast_plan._verify_plan("https://byteask.ai", "", "", draft, "PLAN", ask))
+    assert data is draft
+    assert verdict["rejected"] == []
+    assert verdict["redo"] is False

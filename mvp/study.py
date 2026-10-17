@@ -256,6 +256,8 @@ class StudyState:
     plan_personas: list[dict[str, Any]] = field(default_factory=list)
     # Compare mode: per rival (in competitor order) the persona/task indexes it runs; [] = full matrix.
     competitor_cells: list[dict[str, Any]] = field(default_factory=list)
+    # Times a server restart re-ran this study from its saved plan (see resume_study).
+    resume_count: int = 0
 
 
 def log_activity(study: StudyState, kind: str, message: str, **extra: Any) -> None:
@@ -4198,6 +4200,12 @@ def study_to_dict(study: StudyState) -> dict[str, Any]:
             "queue_eta_s": study.queue_eta_s,
             "queue_position": study.queue_position,
             "queued_s": study.queued_s,
+            # What resume_study needs to re-run the same plan after a server restart.
+            "tasks_override": study.tasks_override,
+            "plan_personas": getattr(study, "plan_personas", None) or [],
+            "customers": study.customers,
+            "max_agents": study.max_agents,
+            "resume_count": study.resume_count,
         }
     )
 
@@ -4388,8 +4396,8 @@ def mark_interrupted(payload: dict[str, Any], when: str = "") -> dict[str, Any]:
     return out
 
 
-def recover_interrupted_studies(max_files: int = 200, max_age_s: float = 86400.0, quiet_s: float = 90.0) -> list[str]:
-    """On server start: studies saved as running by a previous process are marked interrupted and their sessions released.
+def interrupted_snapshots(max_files: int = 200, max_age_s: float = 86400.0, quiet_s: float = 90.0) -> list[dict[str, Any]]:
+    """Studies saved as running by a previous process on this disk.
 
     Another live server on the same disk (a second port) rewrites its running
     study every few seconds, so only snapshots quiet for ``quiet_s`` count.
@@ -4404,8 +4412,7 @@ def recover_interrupted_studies(max_files: int = 200, max_age_s: float = 86400.0
         files = sorted(folder.glob("*.json"), key=lambda p: p.stat().st_mtime, reverse=True)[:max_files]
     except Exception:
         return []
-    when = datetime.now().astimezone().strftime("%H:%M %Z")
-    fixed: list[str] = []
+    found: list[dict[str, Any]] = []
     for path in files:
         try:
             age = now - path.stat().st_mtime
@@ -4418,18 +4425,104 @@ def recover_interrupted_studies(max_files: int = 200, max_age_s: float = 86400.0
             continue
         if not isinstance(data, dict) or str(data.get("status") or "") not in _UNFINISHED:
             continue
-        sid = str(data.get("id") or path.stem)
-        if sid in STUDIES:
+        data.setdefault("id", path.stem)
+        if str(data["id"]) in STUDIES:
             continue
-        _write_payload(sid, mark_interrupted(data, when))
-        fixed.append(sid)
-        try:
-            from mvp.browser_slots import release_study_sessions
+        found.append(data)
+    return found
 
-            release_study_sessions(sid)
-        except Exception:
-            pass
-    return fixed
+
+def mark_snapshot_interrupted(data: dict[str, Any], when: str = "") -> str:
+    """Save a dead study as interrupted and release its browsers."""
+    sid = str(data.get("id") or "")
+    when = when or datetime.now().astimezone().strftime("%H:%M %Z")
+    _write_payload(sid, mark_interrupted(data, when))
+    try:
+        from mvp.browser_slots import release_study_sessions
+
+        release_study_sessions(sid)
+    except Exception:
+        pass
+    return sid
+
+
+def recover_interrupted_studies(max_files: int = 200, max_age_s: float = 86400.0, quiet_s: float = 90.0) -> list[str]:
+    """On server start: studies saved as running by a previous process are marked interrupted and their sessions released."""
+    when = datetime.now().astimezone().strftime("%H:%M %Z")
+    return [
+        mark_snapshot_interrupted(data, when)
+        for data in interrupted_snapshots(max_files=max_files, max_age_s=max_age_s, quiet_s=quiet_s)
+    ]
+
+
+def resumable(data: dict[str, Any]) -> bool:
+    """A study killed by a server restart that can re-run: its plan was saved, nobody stopped it, and it is recent."""
+    if data.get("kill_requested") or not data.get("url") or not data.get("tasks_override"):
+        return False
+    if int(data.get("resume_count") or 0) >= int(os.environ.get("MVP_RESUME_MAX", "2") or "2"):
+        return False
+    created = data.get("created_at_ts")
+    max_age = float(os.environ.get("MVP_RESUME_MAX_AGE_S", "21600") or "21600")
+    if isinstance(created, (int, float)) and time.time() - float(created) > max_age:
+        return False
+    return True
+
+
+_RESUME_FIELDS = (
+    "created_at", "created_at_ts", "email", "customers", "competitors", "skip_competitors", "tasks_override",
+    "test_mode", "backend", "max_agents", "study_mode", "product_name", "competitor_names", "task_specs",
+    "plan_personas", "competitor_cells",
+)
+
+
+def resume_study(data: dict[str, Any]) -> StudyState | None:
+    """Re-run a study a server restart killed, from its saved plan, on this process's loop.
+
+    The agents' browsers died with the old process, so every agent runs again;
+    rivals, buyers and tasks are the ones the study already showed.
+    """
+    sid = str(data.get("id") or "")
+    if not sid or sid in STUDIES:
+        return None
+    study = StudyState(id=sid, url=str(data["url"]), segment=str(data.get("segment") or ""))
+    for key in _RESUME_FIELDS:
+        if data.get(key) is not None:
+            setattr(study, key, data[key])
+    study.resume_count = int(data.get("resume_count") or 0) + 1
+    study.activity_log = [
+        row for row in (data.get("activity_log") or []) if isinstance(row, dict) and row.get("kind") == "plan"
+    ][-40:]
+    STUDIES[sid] = study
+    log_activity(
+        study,
+        "phase",
+        f"The server restarted mid-study, so every agent is running again (restart {study.resume_count})",
+    )
+    study.status = "queued"
+    study.phase = "Restarting after a server restart"
+    schedule_persist(study)
+
+    async def _run() -> None:
+        try:
+            try:
+                from mvp.browser_slots import release_study_sessions
+
+                # The dead process's browsers still count against the session cap.
+                await asyncio.to_thread(release_study_sessions, sid)
+            except Exception:
+                pass
+            await run_study(sid)
+        except Exception as exc:  # noqa: BLE001
+            if str(study.status or "") not in _TERMINAL:
+                study.status = "error"
+                study.error = (str(exc) or repr(exc))[:500]
+                study.phase = "Failed"
+                persist_study(study)
+        finally:
+            STUDY_TASKS.pop(sid, None)
+
+    STUDY_TASKS[sid] = asyncio.get_running_loop().create_task(_run(), name=f"study-{sid}")
+    return study
 
 
 def looks_interrupted(data: dict[str, Any], stale_s: float = 120.0) -> bool:

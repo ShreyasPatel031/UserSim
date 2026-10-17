@@ -54,19 +54,41 @@ async def _check_signup_inbox() -> None:
 
 @app.on_event("startup")
 async def _recover_interrupted() -> None:
-    """Studies a previous process left running are marked interrupted, and their browsers released."""
-    from mvp.study import recover_interrupted_studies
+    """Studies a previous process left running re-run from their saved plan; the rest are marked interrupted.
+
+    Studies run inside this process, so a restart (deploy, crash, --reload)
+    used to kill every one in flight and leave it at "running" for good.
+    """
+    from mvp.study import interrupted_snapshots, mark_snapshot_interrupted, resumable, resume_study
 
     async def _run() -> None:
         # Wait past the quiet window so a study still live in another process
         # on this disk has rewritten its snapshot and is left alone.
         await asyncio.sleep(float(os.environ.get("MVP_RECOVER_DELAY_S") or "100"))
         try:
-            fixed = await asyncio.to_thread(recover_interrupted_studies)
-            if fixed:
-                print(f"marked {len(fixed)} interrupted studies: {', '.join(f[:8] for f in fixed)}", flush=True)
+            found = await asyncio.to_thread(interrupted_snapshots)
         except Exception as exc:  # noqa: BLE001
             print(f"interrupted-study recovery failed: {exc!r}", flush=True)
+            return
+        resume_on = os.environ.get("MVP_RESUME_STUDIES", "1").lower() not in {"0", "false", "no"}
+        resumed: list[str] = []
+        marked: list[str] = []
+        for data in found:
+            sid = str(data.get("id") or "")
+            try:
+                if resume_on and resumable(data) and resume_study(data) is not None:
+                    resumed.append(sid)
+                    continue
+            except Exception as exc:  # noqa: BLE001
+                print(f"resume failed for {sid[:8]}: {exc!r}", flush=True)
+            try:
+                marked.append(await asyncio.to_thread(mark_snapshot_interrupted, data))
+            except Exception as exc:  # noqa: BLE001
+                print(f"marking {sid[:8]} interrupted failed: {exc!r}", flush=True)
+        if resumed:
+            print(f"resumed {len(resumed)} interrupted studies: {', '.join(f[:8] for f in resumed)}", flush=True)
+        if marked:
+            print(f"marked {len(marked)} interrupted studies: {', '.join(f[:8] for f in marked)}", flush=True)
 
     asyncio.get_running_loop().create_task(_run())
 

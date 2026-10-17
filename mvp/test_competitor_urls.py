@@ -85,6 +85,13 @@ class CompetitorUrlTests(unittest.IsolatedAsyncioTestCase):
         )
         self.assertFalse(looks_like_product_page("https://www.g2.com/products/linear"))
 
+    def test_open_source_repo_is_a_product_page_but_code_host_search_is_not(self) -> None:
+        self.assertTrue(looks_like_product_page("https://github.com/Aider-AI/aider"))
+        self.assertTrue(looks_like_product_page("https://github.com/features/copilot"))
+        self.assertFalse(looks_like_product_page("https://github.com/"))
+        self.assertFalse(looks_like_product_page("https://github.com/topics/ai-coding"))
+        self.assertFalse(looks_like_product_page("https://github.com/search?q=cursor"))
+
 
 class TaskRetargetTests(unittest.TestCase):
     def test_swap_rewrites_prompt_and_title(self) -> None:
