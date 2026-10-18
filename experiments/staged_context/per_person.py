@@ -253,7 +253,7 @@ def predict() -> None:
 def attribute_baseline(df: pd.DataFrame, cards: list[dict]) -> dict:
     """No-LLM per-person model fitted on the other 63 products: global mean + shrunk per-attribute deviations."""
     train = df[~df.product_name.isin(PRODUCTS)].dropna(subset=["ease_of_use_rating"]).copy()
-    train["role_family"] = train.reviewer_job_title.map(E.role_family)
+    train["role_family"] = train.reviewer_job_title.fillna("").map(E.role_family)
     feats = {"role_family": "role_family", "company_size_band": "reviewer_company_size",
              "tenure_band": "reviewer_time_used_product", "industry": "reviewer_industry"}
     mu, k = train.ease_of_use_rating.mean(), 20.0
@@ -298,7 +298,7 @@ def metrics(name: str, rows: list[dict]) -> dict:
     """rows: {'y', 'probs'}. Per-person scores."""
     y = [r["y"] for r in rows]
     exp = [sum((k + 1) * p for k, p in enumerate(r["probs"])) for r in rows]
-    low_score = [sum(r["probs"][:3]) for r in rows]  # P(rating <= 3)
+    low_score = [-e for e in exp]  # lower expected rating = more likely an unhappy (<=3) reviewer
     em = [E.ease_metrics(r["probs"], [r["y"]]) for r in rows]
     return {"setup": name, "n": len(rows), "mae": float(np.mean([m["ease_mae"] for m in em])),
             "rps": float(np.mean([m["ease_rps"] for m in em])), "spearman": spearman(exp, y),

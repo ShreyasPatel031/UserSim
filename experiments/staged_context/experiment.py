@@ -102,7 +102,7 @@ PREDICT_MODEL = os.environ.get("EXP_PREDICT_MODEL", "gemini-2.5-flash")
 JUDGE_MODEL = os.environ.get("EXP_JUDGE_MODEL", "gemini-2.5-pro")
 SPEND_CAP = float(os.environ.get("EXP_SPEND_CAP_USD", "10"))
 PREDICT_TEMPERATURE = 0.7
-WORKERS = 8  # parallel extraction/judging calls
+WORKERS = int(os.environ.get("EXP_WORKERS", "8"))  # parallel model calls
 JUDGE_TEMPERATURE = 0.0
 # Gemini 2.5 Pro thinking counts toward max_output_tokens; v1 judging (8192, dynamic thinking) truncated 24/48 sets.
 JUDGE_MAX_TOKENS = 16384

@@ -1,0 +1,32 @@
+{
+  "stage": "pp_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0c8b382d831ce8180e1ad6bc0e9ffde237928fa4bdaaf8ebfe58bedd704fbd81",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2936,
+  "output_tokens": 953,
+  "cost_usd": 0.0032633000000000002,
+  "elapsed_s": 17.78,
+  "error": null,
+  "text": "{\n  \"ease_of_use_probabilities_1_to_5\": [\n    0.05,\n    0.15,\n    0.40,\n    0.30,\n    0.10\n  ],\n  \"likely_frictions\": [\n    \"Sales-centric terminology not intuitive for HR role\",\n    \"Limited need for deep sales features, leading to feature overload\",\n    \"Potential for custom setup to be complex if not managed by sales/IT\"\n  ],\n  \"rationale\": \"The reviewer's role as a People & Culture Director for a Medical Practice, while monitoring sales pipeline progress, suggests an atypical use case for a sales CRM like Pipedrive. While Pipedrive is marketed as easy to use and customizable, the reviewer's background is not sales-focused. They might find the sales-specific terminology and workflows less intuitive, potentially leading to a neutral or slightly above-average ease-of-use experience rather than a glowing one. They are likely interacting with the reporting and overview features, which Pipedrive highlights as strong, but may not fully leverage or appreciate the deeper sales functionalities. The 6-12 month usage indicates they've had time to get accustomed to it, but the initial cognitive load due to role mismatch could persist, placing the rating most likely in the 3-4 range.\"\n}",
+  "json": {
+    "ease_of_use_probabilities_1_to_5": [
+      0.05,
+      0.15,
+      0.4,
+      0.3,
+      0.1
+    ],
+    "likely_frictions": [
+      "Sales-centric terminology not intuitive for HR role",
+      "Limited need for deep sales features, leading to feature overload",
+      "Potential for custom setup to be complex if not managed by sales/IT"
+    ],
+    "rationale": "The reviewer's role as a People & Culture Director for a Medical Practice, while monitoring sales pipeline progress, suggests an atypical use case for a sales CRM like Pipedrive. While Pipedrive is marketed as easy to use and customizable, the reviewer's background is not sales-focused. They might find the sales-specific terminology and workflows less intuitive, potentially leading to a neutral or slightly above-average ease-of-use experience rather than a glowing one. They are likely interacting with the reporting and overview features, which Pipedrive highlights as strong, but may not fully leverage or appreciate the deeper sales functionalities. The 6-12 month usage indicates they've had time to get accustomed to it, but the initial cognitive load due to role mismatch could persist, placing the rating most likely in the 3-4 range."
+  },
+  "ts": "2026-10-18T01:33:04.593692+00:00"
+}
