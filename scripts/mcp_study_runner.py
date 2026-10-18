@@ -54,14 +54,6 @@ def _blocks(res) -> list[dict]:
     return out or [{"type": "text", "text": "(empty)"}]
 
 
-async def call(tool: str, args: dict) -> object:
-    """One MCP call on a fresh connection (the server is stateless; sessions are keyed by session_id)."""
-    async with streamablehttp_client(URL, headers=_headers(), timeout=120, sse_read_timeout=900) as (r, w, _):
-        async with ClientSession(r, w) as s:
-            await s.initialize()
-            return await s.call_tool(tool, args)
-
-
 def _leaf(exc: BaseException) -> str:
     """The real error inside anyio's ExceptionGroup wrappers."""
     while isinstance(exc, BaseExceptionGroup) and exc.exceptions:
@@ -69,7 +61,7 @@ def _leaf(exc: BaseException) -> str:
     return f"{type(exc).__name__}: {str(exc)[:300]}"
 
 
-async def tool(name: str, args: dict, retries: int = 3):
+async def tool(name: str, args: dict, retries: int = 6):
     """One MCP call on its own connection (the server keeps no state per connection; a session is its session_id), so a
     dropped connection costs one retry instead of the whole cell. Calls that act on the page use retries=1."""
     for k in range(retries):
@@ -81,7 +73,7 @@ async def tool(name: str, args: dict, retries: int = 3):
         except Exception as exc:  # noqa: BLE001 - includes ExceptionGroup; CancelledError is not caught
             if k == retries - 1:
                 raise RuntimeError(f"{name}: {_leaf(exc)}") from None
-            await asyncio.sleep(2 ** (k + 1))
+            await asyncio.sleep(min(60, 5 * 2 ** k))  # 5, 10, 20, 40, 60 s: rides out a server restart
 
 
 async def listing(what: str, *args):
@@ -155,10 +147,17 @@ async def run_cell(study_id: str, cell: dict, max_turns: int, out: Path, llm) ->
             a = args.get("action")
             log["steps"].append({"turn": turn, "tool": u.name, "action": a if isinstance(a, (str, type(None))) else a.get("type")})
             try:
-                res = await tool(u.name, args, retries=3 if u.name == "usersim_observe" else 1)
-                rejected = _text(res).startswith("Error executing tool")
+                res = await tool(u.name, args, retries=5 if u.name == "usersim_observe" else 1)
+                txt = _text(res)
+                rejected = txt.startswith("Error executing tool")
+                nudged = False  # the server asks once to verify the signup email first: {"finished": false, "next": ...}
+                if u.name == "usersim_finish" and not rejected:
+                    try:
+                        nudged = json.loads(txt).get("finished") is False
+                    except (ValueError, AttributeError):
+                        pass
                 results.append({"type": "tool_result", "tool_use_id": u.id, "content": _blocks(res), **({"is_error": True} if rejected else {})})
-                if u.name == "usersim_finish" and not rejected:  # a rejected finish leaves the session open: do not count it
+                if u.name == "usersim_finish" and not (rejected or nudged):  # a rejected or nudged finish leaves the session open
                     finished = True
                     log["finish"] = _text(res)[:1500]
             except Exception as exc:  # noqa: BLE001 - tell the model; it observes again instead of the cell dying
@@ -171,7 +170,7 @@ async def run_cell(study_id: str, cell: dict, max_turns: int, out: Path, llm) ->
     if not finished:
         res = await tool("usersim_finish", {"session_id": sid, "outcome": "gave_up", "notes": f"Runner hit its {max_turns}-turn cap."})
         log["finish"] = _text(res)[:1500]
-    if log.get("finish", "").startswith("Error executing tool"):
+    if log.get("finish", "").startswith("Error executing tool") or '"finished": false' in log.get("finish", ""):
         log["error"] = "finish rejected: " + log["finish"][:300]
     log["seconds"] = round(time.time() - log["started"])
     (out / f"{cell['cell_id']}.json").write_text(json.dumps(log, indent=1))
@@ -179,7 +178,7 @@ async def run_cell(study_id: str, cell: dict, max_turns: int, out: Path, llm) ->
 
 
 async def run_study(product_url: str, parallel: int, max_turns: int, root: Path, llm) -> dict:
-    st = await call("usersim_start_study", {"product_url": product_url, "personas": [], "tasks": [], "competitors": []})
+    st = await tool("usersim_start_study", {"product_url": product_url, "personas": [], "tasks": [], "competitors": []})
     txt = _text(st)
     try:
         study = json.loads(txt)
@@ -208,7 +207,7 @@ async def run_study(product_url: str, parallel: int, max_turns: int, root: Path,
     logs = await asyncio.gather(*(one(c) for c in study["cells"]))
     report = ""
     for _ in range(20):  # the server writes the report after the last cell
-        report = _text(await call("usersim_get_report", {"study_id": study["study_id"]}))
+        report = _text(await tool("usersim_get_report", {"study_id": study["study_id"]}))
         if "still being written" not in report.lower():
             break
         await asyncio.sleep(30)
