@@ -1,0 +1,217 @@
+{
+ "cell": {
+  "cell_id": "t5__p4__competitor_1",
+  "site": "https://www.monday.com/",
+  "site_name": "Monday",
+  "persona_name": "James Wilson",
+  "persona": "James manages IT projects and needs to integrate with existing systems. He requires a platform with strong security and customization.",
+  "task": "Compare enterprise plan features\n\nYou are evaluating the site https://www.monday.com/ only. Stay on that site; opening it is correct.",
+  "status": "queued"
+ },
+ "steps": [
+  {
+   "turn": 0,
+   "tool": "usersim_observe",
+   "action": null
+  },
+  {
+   "turn": 1,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 2,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 3,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 4,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 5,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 6,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 7,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 8,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 9,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 10,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 11,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 12,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 13,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 14,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 15,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 16,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 17,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 18,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 19,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 20,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 21,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 22,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 23,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 24,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 25,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 26,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 27,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 28,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 29,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 30,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 31,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 32,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 33,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 34,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 35,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 36,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 37,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 38,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 39,
+   "tool": "usersim_finish",
+   "action": null
+  }
+ ],
+ "started": 1792364980.290838,
+ "session_id": "a5df33a5724647e2856febf9e6355773",
+ "finish": "{\"study_id\": \"75183a40-5bd9-4a57-b31e-1833c53e1893\", \"cell_id\": \"t5__p4__competitor_1\", \"goal_reached\": false, \"proof_pass\": true, \"study_phase\": \"63/108 runs done \\u00b7 9 simulated users working\", \"next\": \"Done with this cell. The study report is written when the last cell finishes.\"}",
+ "seconds": 362
+}

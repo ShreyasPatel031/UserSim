@@ -1,0 +1,187 @@
+{
+ "cell": {
+  "cell_id": "t5__p4__product",
+  "site": "https://www.smartsheet.com",
+  "site_name": "Product",
+  "persona_name": "James Wilson",
+  "persona": "James manages IT projects and needs to integrate with existing systems. He requires a platform with strong security and customization.",
+  "task": "Compare enterprise plan features",
+  "status": "queued"
+ },
+ "steps": [
+  {
+   "turn": 0,
+   "tool": "usersim_observe",
+   "action": null
+  },
+  {
+   "turn": 1,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 2,
+   "tool": "usersim_observe",
+   "action": null
+  },
+  {
+   "turn": 3,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 4,
+   "tool": "usersim_observe",
+   "action": null
+  },
+  {
+   "turn": 5,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 6,
+   "tool": "usersim_observe",
+   "action": null
+  },
+  {
+   "turn": 7,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 8,
+   "tool": "usersim_act",
+   "action": "navigate"
+  },
+  {
+   "turn": 9,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 10,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 11,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 12,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 13,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 14,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 15,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 16,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 17,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 18,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 19,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 20,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 21,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 22,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 23,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 24,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 25,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 26,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 27,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 28,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 29,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 30,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 31,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 32,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 33,
+   "tool": "usersim_finish",
+   "action": null
+  }
+ ],
+ "started": 1792364940.0187194,
+ "session_id": "f2e2b95bcf124e35bd43e22c1c0a3cd4",
+ "finish": "{\"study_id\": \"75183a40-5bd9-4a57-b31e-1833c53e1893\", \"cell_id\": \"t5__p4__product\", \"goal_reached\": true, \"proof_pass\": true, \"study_phase\": \"66/108 runs done \\u00b7 9 simulated users working\", \"next\": \"Done with this cell. The study report is written when the last cell finishes.\"}",
+ "seconds": 477
+}
