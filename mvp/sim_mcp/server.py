@@ -36,7 +36,7 @@ The simulated user is whatever model is calling these tools. UserSim does not na
 Two modes:
 - HUMAN MODE (the flow below): a simulated user really uses the product in a cloud browser; UserSim records and judges it.
 - AGENT MODE (usersim_predict_experience): no browser. Predicts how a kind of user will experience a product from live
-  Capterra/G2 reviews of the product and its named rivals: expected ratings, pros, cons, likely frictions. Takes 1-2 min
+  G2/Capterra/TrustRadius/Gartner reviews of the product and its named rivals: expected ratings, pros, cons, likely frictions. Takes 1-2 min
   on the first call (status "pending" means call again). Use it to set expectations before, or instead of, human mode.
 
 Human mode flow:
@@ -505,7 +505,7 @@ async def usersim_predict_experience(
 ) -> str:
     """AGENT MODE: predict how this kind of user will experience the product from live review data. No browser.
 
-    Returns expected ratings (overall, ease of use, recommend 0-10) set from the product's own recent Capterra/G2
+    Returns expected ratings (overall, ease of use, recommend 0-10) set from the product's own recent G2/Capterra/TrustRadius/Gartner
     reviews shrunk toward its rivals', plus pros, cons, overall experience and likely frictions written from the
     most similar reviewers. The first call starts the scrapes (1-2 min) and may return status "pending": call
     again with the same arguments. For first-hand evidence use HUMAN MODE (usersim_start_session).
