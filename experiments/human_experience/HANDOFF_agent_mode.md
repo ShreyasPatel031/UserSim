@@ -40,7 +40,22 @@ Findings:
 ### 3. Words (pros, cons, overall experience)
 
 `own_reviews_bench.py` (Capterra, 420 people) and `own_reviews_bench_g2.py` (G2, 200 people) add the product's own
-earlier reviews to the context package. Results are in `results/own_reviews_bench*/summary.csv`; see the update below.
+earlier reviews to the context package: a rating line plus 8 earlier reviewers, either the most similar (`own_similar`)
+or the most recent (`own_recent`). Paired differences vs agent_full, with product-cluster bootstrap 95% intervals:
+
+| | Capterra own_similar | Capterra own_recent | Capterra own_only (no rivals) | G2 own_similar |
+| --- | --- | --- | --- | --- |
+| overall experience (same sentiment + main point) | **+0.081 [+0.041, +0.119]** (0.19 → 0.27) | +0.067 [+0.024, +0.107] | +0.057 | +0.035 [−0.035, +0.120] |
+| cons matched | +0.022 [−0.017, +0.064] | +0.019 | −0.013 | +0.027 [−0.027, +0.090] |
+| pros matched | +0.009 | +0.013 | +0.017 | −0.018 |
+
+- **Words: own similar reviews plus the rival package is best.**
+  - Overall experience improves significantly on Capterra and in the same direction on G2.
+  - Cons improve slightly on both.
+  - Removing the rival sections hurts cons.
+- **Ratings: the model does not use the own-rating line well.** Its stated ratings didn't improve, so agent mode
+  computes ratings from the data (result 2) instead of asking the model.
+- Spend: about $8 for both benches. The ledger now stands at $36.
 
 ## Agent mode (shipped in PR #86)
 
