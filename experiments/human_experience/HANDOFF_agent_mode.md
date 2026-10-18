@@ -1,5 +1,30 @@
 # Handoff: agent mode + what adds accuracy on top of the review-context agent
 
+## Net-new products (no reviews of their own): what agent mode gives, held out
+
+Most products UserSim gets are new, so own reviews (the biggest rating lever) won't exist. `agent_mode_eval.py` with
+`AM_VARIANT=no_own` runs the shipped code with competitors only:
+
+| | pros | cons | overall exp. | overall MAE | ease MAE | recommend MAE |
+| --- | --- | --- | --- | --- | --- | --- |
+| Capterra 420, model alone (handoff) | 0.32 | 0.22 | 0.10 | 0.96 | 0.86 | 1.92 |
+| Capterra 420, plain context agent | 0.426 | 0.262 | 0.190 | 0.631 | 0.662 | 1.349 |
+| Capterra 420, **new-product agent mode** | 0.430 | 0.267 | **0.214** | 0.593 (**0.44** most_likely) | 0.620 (**0.526**) | 1.273 (**1.207**) |
+| G2 200, plain context agent | 0.505 | 0.233 | 0.265 | **0.760** | – | – |
+| G2 200, **new-product agent mode** | 0.491 | **0.262** | **0.340** | 0.843 (1.048 most_likely) | – | – |
+
+- On G2, competitors-only ratings are worse than the plain agent's. G2 categories are model-assigned and noisy, and
+  people-like-them priors beat category priors there (heldout_bench).
+- `most_likely`'s round-up rule suits whole-star sites (Capterra), not G2's half stars.
+- **`product_profile.likely_users`** (`mix_bench.py`; every product treated as new, its real reviewers as the truth):
+  competitors' reviewer mix vs the all-products average, as TVD (lower is better).
+  - Roles: 0.173 vs 0.220 on Capterra (closer for 70% of products); 0.266 vs 0.309 on G2.
+  - Size: 0.190 vs 0.212.
+  - Industry: no better.
+- **Competitor discovery**: the planner plus up to 6 rivals named by the model under their review-site names, then the
+  identity gate. On YC Fall 2026 B2B (`yc_fall20.py plan`), all 20 startups get 6–8 candidates, against 2 from the
+  planner alone. The live scrape and full run for those 20 is with session usersim-9c, which has the Apify token.
+
 ## Morning summary
 
 Agent mode is in main as the MCP tool `usersim_predict_experience` (PRs #86–#95; #95 adds the identity gate). Not deployed yet: the live server
