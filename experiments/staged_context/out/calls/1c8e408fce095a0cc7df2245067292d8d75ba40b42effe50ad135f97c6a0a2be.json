@@ -1,0 +1,48 @@
+{
+  "stage": "extract",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "1c8e408fce095a0cc7df2245067292d8d75ba40b42effe50ad135f97c6a0a2be",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 484,
+  "output_tokens": 1707,
+  "cost_usd": 0.017675,
+  "elapsed_s": 12.6,
+  "error": null,
+  "text": "{\n  \"tasks\": [],\n  \"benefits\": [\n    {\n      \"aspect\": \"ease_of_use\",\n      \"claim\": \"It is easy to use.\",\n      \"span\": \"Easy to use\"\n    },\n    {\n      \"aspect\": \"features\",\n      \"claim\": \"It seems sufficient at the moment.\",\n      \"span\": \"ClikcUp seems sufficient at the moment.\"\n    }\n  ],\n  \"frictions\": [\n    {\n      \"aspect\": \"ease_of_use\",\n      \"claim\": \"It is very complicated.\",\n      \"span\": \"it is very complicated.\"\n    },\n    {\n      \"aspect\": \"interface\",\n      \"claim\": \"It has a very complex structure.\",\n      \"span\": \"Having a very complex structure.\"\n    },\n    {\n      \"aspect\": \"onboarding\",\n      \"claim\": \"It needs a training start.\",\n      \"span\": \"It would be nice if there was a training start.\"\n    }\n  ]\n}",
+  "json": {
+    "tasks": [],
+    "benefits": [
+      {
+        "aspect": "ease_of_use",
+        "claim": "It is easy to use.",
+        "span": "Easy to use"
+      },
+      {
+        "aspect": "features",
+        "claim": "It seems sufficient at the moment.",
+        "span": "ClikcUp seems sufficient at the moment."
+      }
+    ],
+    "frictions": [
+      {
+        "aspect": "ease_of_use",
+        "claim": "It is very complicated.",
+        "span": "it is very complicated."
+      },
+      {
+        "aspect": "interface",
+        "claim": "It has a very complex structure.",
+        "span": "Having a very complex structure."
+      },
+      {
+        "aspect": "onboarding",
+        "claim": "It needs a training start.",
+        "span": "It would be nice if there was a training start."
+      }
+    ]
+  },
+  "ts": "2026-10-17T23:33:57.932873+00:00"
+}

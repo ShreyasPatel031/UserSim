@@ -1,0 +1,59 @@
+{
+  "stage": "extract",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "da28fda87c0207846fa420ddc70015e463b45c3326797c893c7650dc50b6cadc",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 497,
+  "output_tokens": 1874,
+  "cost_usd": 0.01936125,
+  "elapsed_s": 15.63,
+  "error": null,
+  "text": "{\n  \"tasks\": [\n    {\n      \"action\": \"assign\",\n      \"object\": \"tasks to any member of the team\",\n      \"context\": \"my team\",\n      \"purpose\": null,\n      \"span\": \"assign tasks to any member of the team\"\n    },\n    {\n      \"action\": \"update\",\n      \"object\": \"you with the progress or any issues encountered\",\n      \"context\": \"team\",\n      \"purpose\": null,\n      \"span\": \"update you via ClickUp with the progress or any issues encountered\"\n    },\n    {\n      \"action\": \"check\",\n      \"object\": \"clickup\",\n      \"context\": \"Everyone\",\n      \"purpose\": \"to know the tasks he needs to do\",\n      \"span\": \"Everyone check clickup in the morning and he know the tasks he needs to do\"\n    }\n  ],\n  \"benefits\": [\n    {\n      \"aspect\": \"collaboration\",\n      \"claim\": \"The team's workflow changed drastically.\",\n      \"span\": \"the workflow changed drastically\"\n    },\n    {\n      \"aspect\": \"flexibility\",\n      \"claim\": \"There are many customization options for every task.\",\n      \"span\": \"Many customization for every task\"\n    },\n    {\n      \"aspect\": \"features\",\n      \"claim\": \"Progress tracking is great.\",\n      \"span\": \"progress tracking is great\"\n    }\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "tasks": [
+      {
+        "action": "assign",
+        "object": "tasks to any member of the team",
+        "context": "my team",
+        "purpose": null,
+        "span": "assign tasks to any member of the team"
+      },
+      {
+        "action": "update",
+        "object": "you with the progress or any issues encountered",
+        "context": "team",
+        "purpose": null,
+        "span": "update you via ClickUp with the progress or any issues encountered"
+      },
+      {
+        "action": "check",
+        "object": "clickup",
+        "context": "Everyone",
+        "purpose": "to know the tasks he needs to do",
+        "span": "Everyone check clickup in the morning and he know the tasks he needs to do"
+      }
+    ],
+    "benefits": [
+      {
+        "aspect": "collaboration",
+        "claim": "The team's workflow changed drastically.",
+        "span": "the workflow changed drastically"
+      },
+      {
+        "aspect": "flexibility",
+        "claim": "There are many customization options for every task.",
+        "span": "Many customization for every task"
+      },
+      {
+        "aspect": "features",
+        "claim": "Progress tracking is great.",
+        "span": "progress tracking is great"
+      }
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-17T23:34:13.926356+00:00"
+}

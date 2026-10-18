@@ -1,0 +1,32 @@
+{
+  "stage": "extract",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "993f81a1170e261d1c740a1c06ea79939e9949e84a2a5f1a6a4a169f374256c3",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 451,
+  "output_tokens": 509,
+  "cost_usd": 0.00565375,
+  "elapsed_s": 5.43,
+  "error": null,
+  "text": "{\n  \"tasks\": [],\n  \"benefits\": [\n    {\n      \"aspect\": \"support\",\n      \"claim\": \"always responds in time\",\n      \"span\": \"the customer support always respond in time\"\n    },\n    {\n      \"aspect\": \"pricing\",\n      \"claim\": \"It is affordable.\",\n      \"span\": \"It is also affordable.\"\n    }\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "tasks": [],
+    "benefits": [
+      {
+        "aspect": "support",
+        "claim": "always responds in time",
+        "span": "the customer support always respond in time"
+      },
+      {
+        "aspect": "pricing",
+        "claim": "It is affordable.",
+        "span": "It is also affordable."
+      }
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-17T23:33:45.326766+00:00"
+}

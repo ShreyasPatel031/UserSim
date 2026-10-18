@@ -1,0 +1,51 @@
+{
+  "stage": "extract",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "da2197cbae5f1eac2cb768e0c64e8eaedaf35b2db909d506266d1ecc6616a619",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 430,
+  "output_tokens": 988,
+  "cost_usd": 0.0104175,
+  "elapsed_s": 17.49,
+  "error": null,
+  "text": "{\n  \"tasks\": [\n    {\n      \"action\": \"management\",\n      \"object\": \"task\",\n      \"context\": \"in small teams\",\n      \"purpose\": null,\n      \"span\": \"task management in small teams\"\n    }\n  ],\n  \"benefits\": [\n    {\n      \"aspect\": \"ease_of_use\",\n      \"claim\": \"It is a simple, effective tool.\",\n      \"span\": \"Simple, effective tool\"\n    },\n    {\n      \"aspect\": \"flexibility\",\n      \"claim\": \"It can grow to meet your needs.\",\n      \"span\": \"can grow to meet your needs\"\n    }\n  ],\n  \"frictions\": [\n    {\n      \"aspect\": \"features\",\n      \"claim\": \"Functionality is somewhat limited compared to alternatives.\",\n      \"span\": \"Functionality is somewhat limited compared to similar alternatives.\"\n    },\n    {\n      \"aspect\": \"features\",\n      \"claim\": \"There is no list view of tasks.\",\n      \"span\": \"no list view of tasks\"\n    }\n  ]\n}",
+  "json": {
+    "tasks": [
+      {
+        "action": "management",
+        "object": "task",
+        "context": "in small teams",
+        "purpose": null,
+        "span": "task management in small teams"
+      }
+    ],
+    "benefits": [
+      {
+        "aspect": "ease_of_use",
+        "claim": "It is a simple, effective tool.",
+        "span": "Simple, effective tool"
+      },
+      {
+        "aspect": "flexibility",
+        "claim": "It can grow to meet your needs.",
+        "span": "can grow to meet your needs"
+      }
+    ],
+    "frictions": [
+      {
+        "aspect": "features",
+        "claim": "Functionality is somewhat limited compared to alternatives.",
+        "span": "Functionality is somewhat limited compared to similar alternatives."
+      },
+      {
+        "aspect": "features",
+        "claim": "There is no list view of tasks.",
+        "span": "no list view of tasks"
+      }
+    ]
+  },
+  "ts": "2026-10-17T23:33:24.341638+00:00"
+}

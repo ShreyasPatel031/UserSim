@@ -1,0 +1,45 @@
+{
+  "stage": "extract",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "3836cc08364ae1b4c5a0ef47f11798770a087b7613b04094a75352843367ceae",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 462,
+  "output_tokens": 1639,
+  "cost_usd": 0.016967500000000003,
+  "elapsed_s": 13.72,
+  "error": null,
+  "text": "{\n  \"tasks\": [\n    {\n      \"action\": \"ad\",\n      \"object\": \"a viewer for your documents\",\n      \"context\": null,\n      \"purpose\": null,\n      \"span\": \"ad a viewer for your documents\"\n    }\n  ],\n  \"benefits\": [],\n  \"frictions\": [\n    {\n      \"aspect\": \"support\",\n      \"claim\": \"The company is unwilling to help with wrongful billing.\",\n      \"span\": \"unwilling to help after wrongful billing\"\n    },\n    {\n      \"aspect\": \"pricing\",\n      \"claim\": \"Charges for extra members even if they were added by accident.\",\n      \"span\": \"Click-up will charge you easily up to 400USD a year for extra members. Even though adding them was an accident.\"\n    },\n    {\n      \"aspect\": \"interface\",\n      \"claim\": \"The system is designed to generate revenue from extra users who do not use the program.\",\n      \"span\": \"The system is made this way in order to earn a lot from extra user that do not even use the program.\"\n    }\n  ]\n}",
+  "json": {
+    "tasks": [
+      {
+        "action": "ad",
+        "object": "a viewer for your documents",
+        "context": null,
+        "purpose": null,
+        "span": "ad a viewer for your documents"
+      }
+    ],
+    "benefits": [],
+    "frictions": [
+      {
+        "aspect": "support",
+        "claim": "The company is unwilling to help with wrongful billing.",
+        "span": "unwilling to help after wrongful billing"
+      },
+      {
+        "aspect": "pricing",
+        "claim": "Charges for extra members even if they were added by accident.",
+        "span": "Click-up will charge you easily up to 400USD a year for extra members. Even though adding them was an accident."
+      },
+      {
+        "aspect": "interface",
+        "claim": "The system is designed to generate revenue from extra users who do not use the program.",
+        "span": "The system is made this way in order to earn a lot from extra user that do not even use the program."
+      }
+    ]
+  },
+  "ts": "2026-10-17T23:48:08.302795+00:00"
+}

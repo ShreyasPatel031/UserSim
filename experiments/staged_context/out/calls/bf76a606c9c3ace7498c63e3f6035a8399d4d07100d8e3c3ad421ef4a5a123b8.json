@@ -1,0 +1,28 @@
+{
+  "stage": "matched_screen",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "bf76a606c9c3ace7498c63e3f6035a8399d4d07100d8e3c3ad421ef4a5a123b8",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 688,
+  "output_tokens": 1525,
+  "cost_usd": 0.016110000000000003,
+  "elapsed_s": 16.57,
+  "error": null,
+  "text": "{\n  \"eligible\": true,\n  \"reason\": \"The review describes a specific, recurring workflow for running weekly team meetings. It details how agenda items are treated as tasks and how new action items are generated, which is a concrete activity that could be attempted in a new workspace.\",\n  \"task\": {\n    \"action\": \"use Asana for\",\n    \"object\": \"weekly team meetings\",\n    \"context\": \"where tasks are used as agenda items\",\n    \"purpose\": \"to check off items and create new tasks from the discussion\"\n  },\n  \"neutral_task\": \"Use a project to manage a weekly team meeting, treating agenda items as tasks to be checked off, and create new tasks with due dates based on meeting discussions.\",\n  \"span\": \"Our team also uses Asana for weekly team meetings, where we check off each task as an agenda item, and will sometimes turn an agenda item into a task on someone's to-do list, adding a due date and moving the task to a relevant project.\"\n}",
+  "json": {
+    "eligible": true,
+    "reason": "The review describes a specific, recurring workflow for running weekly team meetings. It details how agenda items are treated as tasks and how new action items are generated, which is a concrete activity that could be attempted in a new workspace.",
+    "task": {
+      "action": "use Asana for",
+      "object": "weekly team meetings",
+      "context": "where tasks are used as agenda items",
+      "purpose": "to check off items and create new tasks from the discussion"
+    },
+    "neutral_task": "Use a project to manage a weekly team meeting, treating agenda items as tasks to be checked off, and create new tasks with due dates based on meeting discussions.",
+    "span": "Our team also uses Asana for weekly team meetings, where we check off each task as an agenda item, and will sometimes turn an agenda item into a task on someone's to-do list, adding a due date and moving the task to a relevant project."
+  },
+  "ts": "2026-10-17T23:39:37.639970+00:00"
+}

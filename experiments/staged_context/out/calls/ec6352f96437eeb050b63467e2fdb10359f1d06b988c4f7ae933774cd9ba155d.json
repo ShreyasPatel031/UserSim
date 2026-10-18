@@ -1,0 +1,23 @@
+{
+  "stage": "matched_screen",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "ec6352f96437eeb050b63467e2fdb10359f1d06b988c4f7ae933774cd9ba155d",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 443,
+  "output_tokens": 1453,
+  "cost_usd": 0.015083750000000002,
+  "elapsed_s": 13.86,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review describes general capabilities of a project management tool (creating projects, adding tasks, assigning people) rather than a single, specific, dominant task or workflow the user is trying to accomplish. The descriptions are too generic and fall under the example of \\\"manage projects\\\" without further specifics.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": \"have multiple projects with their tasks and assign people to them\"\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review describes general capabilities of a project management tool (creating projects, adding tasks, assigning people) rather than a single, specific, dominant task or workflow the user is trying to accomplish. The descriptions are too generic and fall under the example of \"manage projects\" without further specifics.",
+    "task": null,
+    "neutral_task": null,
+    "span": "have multiple projects with their tasks and assign people to them"
+  },
+  "ts": "2026-10-17T23:51:32.894716+00:00"
+}

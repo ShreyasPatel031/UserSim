@@ -1,0 +1,28 @@
+{
+  "stage": "matched_screen",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "27028a61499d575b5160c7ad6db42909b78ac69d9a635584d56515aa60cbf108",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 344,
+  "output_tokens": 1771,
+  "cost_usd": 0.01814,
+  "elapsed_s": 18.4,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review mentions a general organizational structure ('organize by client and project type') but does not state a concrete task with a specific object being acted upon. It is a description of a capability, not a specific activity.\",\n  \"task\": {\n    \"action\": null,\n    \"object\": null,\n    \"context\": null,\n    \"purpose\": null\n  },\n  \"neutral_task\": null,\n  \"span\": \"organize by client and project type\"\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review mentions a general organizational structure ('organize by client and project type') but does not state a concrete task with a specific object being acted upon. It is a description of a capability, not a specific activity.",
+    "task": {
+      "action": null,
+      "object": null,
+      "context": null,
+      "purpose": null
+    },
+    "neutral_task": null,
+    "span": "organize by client and project type"
+  },
+  "ts": "2026-10-17T23:48:46.364011+00:00"
+}

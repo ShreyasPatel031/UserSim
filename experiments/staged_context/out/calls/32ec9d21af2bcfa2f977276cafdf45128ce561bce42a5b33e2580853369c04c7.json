@@ -1,0 +1,48 @@
+{
+  "stage": "extract",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "32ec9d21af2bcfa2f977276cafdf45128ce561bce42a5b33e2580853369c04c7",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 434,
+  "output_tokens": 968,
+  "cost_usd": 0.010222499999999999,
+  "elapsed_s": 8.73,
+  "error": null,
+  "text": "{\n  \"tasks\": [],\n  \"benefits\": [\n    {\n      \"aspect\": \"onboarding\",\n      \"claim\": \"It is easy to implement.\",\n      \"span\": \"Easy to implement\"\n    },\n    {\n      \"aspect\": \"ease_of_use\",\n      \"claim\": \"Teams could easily self-update.\",\n      \"span\": \"teams could easily self-update\"\n    }\n  ],\n  \"frictions\": [\n    {\n      \"aspect\": \"collaboration\",\n      \"claim\": \"It is not great for cross-functional team work.\",\n      \"span\": \"Not great for cross-functional team work.\"\n    },\n    {\n      \"aspect\": \"interface\",\n      \"claim\": \"It easily becomes a very cluttered system.\",\n      \"span\": \"Easily becomes a very cluttered system\"\n    },\n    {\n      \"aspect\": \"flexibility\",\n      \"claim\": \"It is not very scalable.\",\n      \"span\": \"Not very scalable.\"\n    }\n  ]\n}",
+  "json": {
+    "tasks": [],
+    "benefits": [
+      {
+        "aspect": "onboarding",
+        "claim": "It is easy to implement.",
+        "span": "Easy to implement"
+      },
+      {
+        "aspect": "ease_of_use",
+        "claim": "Teams could easily self-update.",
+        "span": "teams could easily self-update"
+      }
+    ],
+    "frictions": [
+      {
+        "aspect": "collaboration",
+        "claim": "It is not great for cross-functional team work.",
+        "span": "Not great for cross-functional team work."
+      },
+      {
+        "aspect": "interface",
+        "claim": "It easily becomes a very cluttered system.",
+        "span": "Easily becomes a very cluttered system"
+      },
+      {
+        "aspect": "flexibility",
+        "claim": "It is not very scalable.",
+        "span": "Not very scalable."
+      }
+    ]
+  },
+  "ts": "2026-10-17T23:33:58.289224+00:00"
+}

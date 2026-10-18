@@ -1,0 +1,28 @@
+{
+  "stage": "matched_screen",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "45e1ccedfcde3437914171676e1e64159ecb7e7f8f427ee4976da0c482856ef4",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 398,
+  "output_tokens": 1756,
+  "cost_usd": 0.0180575,
+  "elapsed_s": 16.64,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review praises several features (sharing files, adding priority, tagging users) but does not connect them to a single, concrete task or workflow. It describes capabilities, not a specific activity with a clear goal.\",\n  \"task\": {\n    \"action\": null,\n    \"object\": null,\n    \"context\": null,\n    \"purpose\": null\n  },\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review praises several features (sharing files, adding priority, tagging users) but does not connect them to a single, concrete task or workflow. It describes capabilities, not a specific activity with a clear goal.",
+    "task": {
+      "action": null,
+      "object": null,
+      "context": null,
+      "purpose": null
+    },
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-17T23:34:52.339675+00:00"
+}

@@ -1,0 +1,28 @@
+{
+  "stage": "matched_screen",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "b3705bc6e4e613c971b9b4e7c6b6aa9912c1d56bec679809b2e0b8b709c32f54",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 436,
+  "output_tokens": 1100,
+  "cost_usd": 0.011545000000000001,
+  "elapsed_s": 12.43,
+  "error": null,
+  "text": "{\n  \"eligible\": true,\n  \"reason\": \"The review explicitly states a concrete task of creating wikis for clients, which is a specific activity that can be attempted in a short amount of time, unlike the other general praise in the review.\",\n  \"task\": {\n    \"action\": \"set up\",\n    \"object\": \"wikis\",\n    \"context\": \"for each client\",\n    \"purpose\": null\n  },\n  \"neutral_task\": \"Set up a wiki for each client.\",\n  \"span\": \"have wikis for each client\"\n}",
+  "json": {
+    "eligible": true,
+    "reason": "The review explicitly states a concrete task of creating wikis for clients, which is a specific activity that can be attempted in a short amount of time, unlike the other general praise in the review.",
+    "task": {
+      "action": "set up",
+      "object": "wikis",
+      "context": "for each client",
+      "purpose": null
+    },
+    "neutral_task": "Set up a wiki for each client.",
+    "span": "have wikis for each client"
+  },
+  "ts": "2026-10-17T23:50:47.278789+00:00"
+}

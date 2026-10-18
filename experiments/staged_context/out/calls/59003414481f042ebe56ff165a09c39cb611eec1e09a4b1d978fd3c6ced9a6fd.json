@@ -1,0 +1,56 @@
+{
+  "stage": "extract",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "59003414481f042ebe56ff165a09c39cb611eec1e09a4b1d978fd3c6ced9a6fd",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 486,
+  "output_tokens": 1883,
+  "cost_usd": 0.0194375,
+  "elapsed_s": 19.62,
+  "error": null,
+  "text": "{\n  \"tasks\": [\n    {\n      \"action\": \"create\",\n      \"object\": \"tickets\",\n      \"context\": null,\n      \"purpose\": null,\n      \"span\": \"create tickets\"\n    }\n  ],\n  \"benefits\": [\n    {\n      \"aspect\": \"ease_of_use\",\n      \"claim\": \"The product is easy to use.\",\n      \"span\": \"Easy to use\"\n    },\n    {\n      \"aspect\": \"features\",\n      \"claim\": \"It is a good ticketing system.\",\n      \"span\": \"Good ticketing system\"\n    },\n    {\n      \"aspect\": \"integrations\",\n      \"claim\": \"Many apps can be linked.\",\n      \"span\": \"So many apps that can be linked\"\n    }\n  ],\n  \"frictions\": [\n    {\n      \"aspect\": \"features\",\n      \"claim\": \"It lacks an integrated forms system for others to use to assign tasks.\",\n      \"span\": \"It doesn’t have integrated forms system that other people can fill in to assign tasks\"\n    },\n    {\n      \"aspect\": \"features\",\n      \"claim\": \"There is no way to delete tickets after they are created.\",\n      \"span\": \"No way to delete the tickets once created\"\n    }\n  ]\n}",
+  "json": {
+    "tasks": [
+      {
+        "action": "create",
+        "object": "tickets",
+        "context": null,
+        "purpose": null,
+        "span": "create tickets"
+      }
+    ],
+    "benefits": [
+      {
+        "aspect": "ease_of_use",
+        "claim": "The product is easy to use.",
+        "span": "Easy to use"
+      },
+      {
+        "aspect": "features",
+        "claim": "It is a good ticketing system.",
+        "span": "Good ticketing system"
+      },
+      {
+        "aspect": "integrations",
+        "claim": "Many apps can be linked.",
+        "span": "So many apps that can be linked"
+      }
+    ],
+    "frictions": [
+      {
+        "aspect": "features",
+        "claim": "It lacks an integrated forms system for others to use to assign tasks.",
+        "span": "It doesn’t have integrated forms system that other people can fill in to assign tasks"
+      },
+      {
+        "aspect": "features",
+        "claim": "There is no way to delete tickets after they are created.",
+        "span": "No way to delete the tickets once created"
+      }
+    ]
+  },
+  "ts": "2026-10-17T23:33:26.465079+00:00"
+}

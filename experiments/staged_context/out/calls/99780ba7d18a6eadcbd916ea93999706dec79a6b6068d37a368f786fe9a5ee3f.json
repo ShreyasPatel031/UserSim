@@ -1,0 +1,38 @@
+{
+  "stage": "extract",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "99780ba7d18a6eadcbd916ea93999706dec79a6b6068d37a368f786fe9a5ee3f",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 426,
+  "output_tokens": 703,
+  "cost_usd": 0.0075625,
+  "elapsed_s": 9.66,
+  "error": null,
+  "text": "{\n  \"tasks\": [],\n  \"benefits\": [\n    {\n      \"aspect\": \"ease_of_use\",\n      \"claim\": \"It is easy to use and user-friendly.\",\n      \"span\": \"Ease of use and user friendliness\"\n    },\n    {\n      \"aspect\": \"mobile\",\n      \"claim\": \"It has cross-platform accessibility.\",\n      \"span\": \"cross-platform accessibility\"\n    }\n  ],\n  \"frictions\": [\n    {\n      \"aspect\": \"features\",\n      \"claim\": \"It lacks features like Gantt Charts and resource planning.\",\n      \"span\": \"Lack of features like Gantt Charts and resource planning\"\n    }\n  ]\n}",
+  "json": {
+    "tasks": [],
+    "benefits": [
+      {
+        "aspect": "ease_of_use",
+        "claim": "It is easy to use and user-friendly.",
+        "span": "Ease of use and user friendliness"
+      },
+      {
+        "aspect": "mobile",
+        "claim": "It has cross-platform accessibility.",
+        "span": "cross-platform accessibility"
+      }
+    ],
+    "frictions": [
+      {
+        "aspect": "features",
+        "claim": "It lacks features like Gantt Charts and resource planning.",
+        "span": "Lack of features like Gantt Charts and resource planning"
+      }
+    ]
+  },
+  "ts": "2026-10-17T23:33:16.515668+00:00"
+}

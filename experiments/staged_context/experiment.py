@@ -102,7 +102,11 @@ PREDICT_MODEL = os.environ.get("EXP_PREDICT_MODEL", "gemini-2.5-flash")
 JUDGE_MODEL = os.environ.get("EXP_JUDGE_MODEL", "gemini-2.5-pro")
 SPEND_CAP = float(os.environ.get("EXP_SPEND_CAP_USD", "10"))
 PREDICT_TEMPERATURE = 0.7
+WORKERS = 8  # parallel extraction/judging calls
 JUDGE_TEMPERATURE = 0.0
+# Gemini 2.5 Pro thinking counts toward max_output_tokens; v1 judging (8192, dynamic thinking) truncated 24/48 sets.
+JUDGE_MAX_TOKENS = 16384
+JUDGE_THINKING_BUDGET = 2048
 
 
 # ----------------------------------------------------------------------------- utils
@@ -182,7 +186,7 @@ def cost_of(model: str, inp: int, out: int) -> float:
     return inp / 1e6 * pin + out / 1e6 * pout
 
 
-def _vertex_generate(model, system, user, temperature, seed, max_tokens):
+def _vertex_generate(model, system, user, temperature, seed, max_tokens, thinking_budget=None):
     # Reuse the repo's existing Vertex client (src/model.py); credentials stay inside it.
     sys.path.insert(0, str(ROOT / "src"))
     from google.genai import types  # noqa: E402
@@ -196,6 +200,7 @@ def _vertex_generate(model, system, user, temperature, seed, max_tokens):
         seed=seed,
         max_output_tokens=max_tokens,
         response_mime_type="application/json",
+        thinking_config=types.ThinkingConfig(thinking_budget=thinking_budget) if thinking_budget else None,
     )
     resp = client.models.generate_content(model=model, contents=user, config=cfg)
     um = resp.usage_metadata
@@ -204,7 +209,7 @@ def _vertex_generate(model, system, user, temperature, seed, max_tokens):
     return resp.text or "", inp, out
 
 
-def _anthropic_generate(model, system, user, temperature, seed, max_tokens):
+def _anthropic_generate(model, system, user, temperature, seed, max_tokens, thinking_budget=None):
     import anthropic
 
     client = anthropic.Anthropic()
@@ -220,9 +225,12 @@ def _anthropic_generate(model, system, user, temperature, seed, max_tokens):
 
 
 def call_model(stage: str, model: str, system: str, user: str, *, temperature: float, seed: int,
-               max_tokens: int = 8192, key_extra: str = "") -> dict:
+               max_tokens: int = 8192, key_extra: str = "", thinking_budget: int | None = None) -> dict:
     """Cached, logged JSON call. Returns {'json', 'text', 'request_hash', ...}."""
-    req_hash = sha(json.dumps([model, system, user, temperature, seed, max_tokens, key_extra]))
+    key = [model, system, user, temperature, seed, max_tokens, key_extra]
+    if thinking_budget:
+        key.append(thinking_budget)
+    req_hash = sha(json.dumps(key))
     cache_path = CALLS / f"{req_hash}.json"
     if cache_path.exists():
         rec = read_json(cache_path)
@@ -237,7 +245,7 @@ def call_model(stage: str, model: str, system: str, user: str, *, temperature: f
     err, text, inp, out = None, "", 0, 0
     for attempt in range(3):
         try:
-            text, inp, out = gen(model, system, user, temperature, seed, max_tokens)
+            text, inp, out = gen(model, system, user, temperature, seed, max_tokens, thinking_budget)
             err = None
             break
         except Exception as exc:  # noqa: BLE001
@@ -250,7 +258,7 @@ def call_model(stage: str, model: str, system: str, user: str, *, temperature: f
             err = "unparseable JSON"
     rec = {
         "stage": stage, "model": model, "provider": provider, "request_hash": req_hash,
-        "temperature": temperature, "seed": seed, "max_tokens": max_tokens,
+        "temperature": temperature, "seed": seed, "max_tokens": max_tokens, "thinking_budget": thinking_budget,
         "input_tokens": inp, "output_tokens": out, "cost_usd": cost_of(model, inp, out),
         "elapsed_s": round(time.time() - t0, 2), "error": err, "text": text, "json": parsed,
         "ts": datetime.now(timezone.utc).isoformat(),
@@ -891,35 +899,42 @@ def span_ok(span: str, text: str) -> bool:
 
 
 def extract_references(part: str, products: list[str]) -> list[dict]:
-    out = []
-    for p in products:
-        for r in read_jsonl(HIDDEN / f"{part}_{p}.jsonl"):
-            text = review_for_extraction(r)
-            ref = {"review_id": r["review_id"], "product": p, "split": part, "rubric_version": RUBRIC_VERSION,
-                   "extraction": "machine-extracted", "extract_model": JUDGE_MODEL, "tasks": [], "benefits": [],
-                   "frictions": [], "invalid_span_items": 0, "error": None}
-            ease = r.get("ease_of_use_rating")
-            ref["ease_of_use_rating"] = int(ease) if isinstance(ease, (int, float)) and ease in (1, 2, 3, 4, 5) else None
-            for f in ("reviewer_job_title", "reviewer_industry", "reviewer_company_size"):
-                ref[f] = r.get(f)
-            if text:
-                rec = call_model("extract", JUDGE_MODEL, EXTRACT_SYSTEM,
-                                 EXTRACT_RUBRIC.format(version=RUBRIC_VERSION, product=p, review=text),
-                                 temperature=JUDGE_TEMPERATURE, seed=42, max_tokens=4096)
-                if rec.get("error"):
-                    ref["error"] = rec["error"]
-                else:
-                    j = rec["json"] or {}
-                    for k in ("tasks", "benefits", "frictions"):
-                        items = [x for x in (j.get(k) or []) if isinstance(x, dict)][:3]
-                        for x in items:
-                            x["span_valid"] = span_ok(x.get("span", ""), text)
-                        ref["invalid_span_items"] += sum(not x["span_valid"] for x in items)
-                        ref[k] = [x for x in items if x["span_valid"]]
-                        ref[f"{k}_dropped_invalid_span"] = [x for x in items if not x["span_valid"]]
-            ref["taskless"] = not ref["tasks"]
-            out.append(ref)
-    return out
+    return [ref for p in products for ref in extract_references_rows(read_jsonl(HIDDEN / f"{part}_{p}.jsonl"), p, part)]
+
+
+def extract_references_rows(rows: list[dict], p: str, part: str = "matched") -> list[dict]:
+    from concurrent.futures import ThreadPoolExecutor
+
+    with ThreadPoolExecutor(WORKERS) as pool:
+        return list(pool.map(lambda r: _extract_one(r, p, part), rows))
+
+
+def _extract_one(r: dict, p: str, part: str) -> dict:
+    text = review_for_extraction(r)
+    ref = {"review_id": r["review_id"], "product": p, "split": part, "rubric_version": RUBRIC_VERSION,
+           "extraction": "machine-extracted", "extract_model": JUDGE_MODEL, "tasks": [], "benefits": [],
+           "frictions": [], "invalid_span_items": 0, "error": None}
+    ease = r.get("ease_of_use_rating")
+    ref["ease_of_use_rating"] = int(ease) if isinstance(ease, (int, float)) and ease in (1, 2, 3, 4, 5) else None
+    for f in ("reviewer_job_title", "reviewer_industry", "reviewer_company_size"):
+        ref[f] = r.get(f)
+    if text:
+        rec = call_model("extract", JUDGE_MODEL, EXTRACT_SYSTEM,
+                         EXTRACT_RUBRIC.format(version=RUBRIC_VERSION, product=p, review=text),
+                         temperature=JUDGE_TEMPERATURE, seed=42, max_tokens=4096)
+        if rec.get("error"):
+            ref["error"] = rec["error"]
+        else:
+            j = rec["json"] or {}
+            for k in ("tasks", "benefits", "frictions"):
+                items = [x for x in (j.get(k) or []) if isinstance(x, dict)][:3]
+                for x in items:
+                    x["span_valid"] = span_ok(x.get("span", ""), text)
+                ref["invalid_span_items"] += sum(not x["span_valid"] for x in items)
+                ref[k] = [x for x in items if x["span_valid"]]
+                ref[f"{k}_dropped_invalid_span"] = [x for x in items if not x["span_valid"]]
+    ref["taskless"] = not ref["tasks"]
+    return ref
 
 
 # ----------------------------------------------------------------------------- role-family codebook
@@ -1028,8 +1043,14 @@ def judge_prediction(pred: dict, refs: list[dict]) -> dict:
         ref_claims="\n".join(f"{k}: {pol}, {clean(refs[ri][pol + 's'][ci].get('aspect'))}, "
                              f"{clean(refs[ri][pol + 's'][ci].get('claim'))}" for k, (ri, pol, ci) in r_claim.items()) or "(none)",
     )
-    rec = call_model("judge", JUDGE_MODEL, JUDGE_SYSTEM, prompt, temperature=JUDGE_TEMPERATURE, seed=42, max_tokens=8192)
-    j = rec.get("json") or {}
+    for seed in (42, 43):  # one retry on a malformed (non-object) reply
+        rec = call_model("judge", JUDGE_MODEL, JUDGE_SYSTEM, prompt, temperature=JUDGE_TEMPERATURE, seed=seed,
+                         max_tokens=JUDGE_MAX_TOKENS, thinking_budget=JUDGE_THINKING_BUDGET)
+        if not rec.get("error") and not isinstance(rec.get("json"), dict):
+            rec = {**rec, "error": "judge reply was not a JSON object"}
+        if not rec.get("error"):
+            break
+    j = rec.get("json") if isinstance(rec.get("json"), dict) else {}
     tm, cm = [], []
     for m in j.get("task_matches") or []:
         if m.get("pred") in p_task and m.get("ref") in r_task and m.get("score") in (1, 2):
@@ -1169,6 +1190,8 @@ def numeric_baselines(product: str, refs: list[dict]) -> list[dict]:
     return rows
 
 
+JUDGE_METRICS = {"task_recall_strict", "task_recall_partial", "sample_confirmed_task_fraction", "bf_recall_strict",
+                 "benefit_recall_strict", "friction_recall_strict", "contradiction_rate", "unconfirmed_claim_rate"}
 METRIC_COLS = ["task_recall_strict", "task_recall_partial", "sample_confirmed_task_fraction", "ease_mae", "ease_rps",
                "bf_recall_strict", "benefit_recall_strict", "friction_recall_strict", "contradiction_rate",
                "unconfirmed_claim_rate", "audience_top3_coverage"]
@@ -1189,15 +1212,20 @@ def score(products: list[str]) -> None:
     judged = {(j["product"], j["condition"], j["replicate"]): j for j in read_jsonl(OUT / "judgments.jsonl")}
     order = list(preds)
     random.Random(7).shuffle(order)  # randomized judging order
-    for pr in order:
-        key = (pr["product"], pr["condition"], pr["replicate"])
-        if key not in judged or judged[key].get("error"):
-            judged[key] = judge_prediction(pr, refs[pr["product"]])
+    todo = [pr for pr in order if (pr["product"], pr["condition"], pr["replicate"]) not in judged
+            or judged[(pr["product"], pr["condition"], pr["replicate"])].get("error")]
+    from concurrent.futures import ThreadPoolExecutor
+
+    with ThreadPoolExecutor(WORKERS) as pool:
+        for j in pool.map(lambda pr: judge_prediction(pr, refs[pr["product"]]), todo):
+            judged[(j["product"], j["condition"], j["replicate"])] = j
     write_jsonl(OUT / "judgments.jsonl", list(judged.values()))
     rows = []
     for pr in preds:
         j = judged[(pr["product"], pr["condition"], pr["replicate"])]
         m = product_metrics(pr, j, refs[pr["product"]])
+        if j.get("error"):
+            m = {k: (None if k in JUDGE_METRICS else v) for k, v in m.items()}
         rows.append({"product": pr["product"], "condition": pr["condition"], "replicate": pr["replicate"],
                      **m, "predict_input_tokens": pr["input_tokens"], "predict_output_tokens": pr["output_tokens"],
                      "predict_cost_usd": pr["cost_usd"], "judge_cost_usd": j["cost_usd"],
@@ -1221,7 +1249,8 @@ def bootstrap(preds, judged, refs, n=1000) -> dict:
     out = {}
     for a, b, _ in COMPARISONS:
         for prod in PRODUCTS:
-            if (prod, a, 1) not in by or (prod, b, 1) not in by:
+            if (prod, a, 1) not in by or (prod, b, 1) not in by \
+                    or judged[(prod, a, 1)].get("error") or judged[(prod, b, 1)].get("error"):
                 continue
             res = {k: [] for k in ("task_recall_strict", "ease_mae", "ease_rps", "bf_recall_strict")}
             nrev = len(refs[prod])
@@ -1323,10 +1352,73 @@ def report() -> None:
     L += ["", "## Cost and errors", "", f"- Total uncached model spend: ${total_cost:.4f} "
           f"({', '.join(f'{k} ${v:.4f}' for k, v in stage_cost.items())})",
           f"- Prediction model: {PREDICT_MODEL} (temperature {PREDICT_TEMPERATURE}); judge/extractor: {JUDGE_MODEL}",
-          f"- Valid predictions: {sum(p['valid'] for p in preds)}/{len(preds)}; call errors logged: {len(errors)}"]
+          f"- Valid predictions: {sum(p['valid'] for p in preds)}/{len(preds)}; call errors logged: {len(errors)} "
+          f"(by stage: {dict(pd.Series([r['stage'] for r in errors]).value_counts()) if errors else {}}); "
+          f"judge sets still failed after rerun: {sum(bool(j.get('error')) for j in read_jsonl(OUT / 'judgments.jsonl'))}"]
     L += ["", "## Leakage checks", "", "```", json.dumps(read_json(OUT / "leakage_checks.json"), indent=2), "```"]
     (OUT / "report_tables.md").write_text("\n".join(L) + "\n")
+    audit_sheet()
+    task_brief()
     print((OUT / "report_tables.md").read_text())
+
+
+def audit_sheet() -> None:
+    """Side-by-side excerpts for human inspection: every judged contradiction and every strict task win."""
+    preds = {(p["product"], p["condition"], p["replicate"]): p for p in read_jsonl(OUT / "predictions.jsonl") if p["valid"]}
+    refs = {p: [r for r in read_jsonl(OUT / "reference_audit.jsonl") if r["product"] == p] for p in PRODUCTS}
+    L = ["# Audit sheet (machine-judged; verify each row)", "", "## Contradictions", "",
+         "| Product | Cond | Rep | Predicted claim | Hidden reference claim | Hidden span |", "| --- | --- | --- | --- | --- | --- |"]
+    wins = []
+    for j in read_jsonl(OUT / "judgments.jsonl"):
+        k = (j["product"], j["condition"], j["replicate"])
+        if j.get("error") or k not in preds:
+            continue
+        pr, rf = preds[k], refs[j["product"]]
+        for c in j["claim_matches"]:
+            if c["contradiction"]:
+                pc = pr[c["pred_polarity"] + "s"][c["pred_claim"]]
+                rc = rf[c["review"]][c["ref_polarity"] + "s"][c["ref_claim"]]
+                L.append(f"| {k[0]} | {k[1]} | {k[2]} | {clean(pc.get('claim'))} | {clean(rc.get('claim'))} | "
+                         f"{clean(rc.get('span'))[:160]} |")
+        for m in j["task_matches"]:
+            if m["score"] == 2:
+                wins.append((k, fmt_task(pr["tasks"][m["pred_task"]]), fmt_task(rf[m["review"]]["tasks"][m["ref_task"]]),
+                             clean(rf[m["review"]]["tasks"][m["ref_task"]].get("span"))[:160]))
+    L += ["", "## Strict (score-2) task matches", "", "| Product | Cond | Rep | Predicted task | Reference task | Hidden span |",
+          "| --- | --- | --- | --- | --- | --- |"]
+    L += [f"| {k[0]} | {k[1]} | {k[2]} | {pt} | {rt} | {sp} |" for k, pt, rt, sp in sorted(wins)]
+    (OUT / "audit_side_by_side.md").write_text("\n".join(L) + "\n")
+
+
+def task_brief() -> None:
+    """Export the best-supported task hypotheses: tasks strictly confirmed by >=2 hidden test reviews, any condition."""
+    preds = {(p["product"], p["condition"], p["replicate"]): p for p in read_jsonl(OUT / "predictions.jsonl") if p["valid"]}
+    brief = {"format": "generic task brief (no Atelier schema exists in this repo)", "source": "staged-context pilot",
+             "evidence_note": "tasks confirmed by machine-judged strict matches against hidden 2024-era Capterra reviews",
+             "products": {}}
+    for p in PRODUCTS:
+        hits = {}
+        for j in read_jsonl(OUT / "judgments.jsonl"):
+            k = (j["product"], j["condition"], j["replicate"])
+            if j["product"] != p or j.get("error") or k not in preds:
+                continue
+            per_task = {}
+            for m in j["task_matches"]:
+                if m["score"] == 2:
+                    per_task.setdefault(m["pred_task"], set()).add(m["review"])
+            for ti, revs in per_task.items():
+                t = preds[k]["tasks"][ti]
+                key = fmt_task(t)
+                h = hits.setdefault(key, {"task": t, "confirming_reviews": set(), "conditions": set()})
+                h["confirming_reviews"] |= revs
+                h["conditions"].add(k[1])
+        ranked = sorted(hits.values(), key=lambda h: -len(h["confirming_reviews"]))
+        brief["products"][p] = [{"action": h["task"].get("action"), "object": h["task"].get("object"),
+                                 "context": h["task"].get("context"), "purpose": h["task"].get("purpose"),
+                                 "confirming_test_reviews": len(h["confirming_reviews"]),
+                                 "conditions": sorted(h["conditions"])}
+                                for h in ranked if len(h["confirming_reviews"]) >= 2][:6]
+    write_json(OUT / "task_brief.json", brief)
 
 
 def examples() -> list[str]:
@@ -1339,7 +1431,7 @@ def examples() -> list[str]:
         added = sorted(set(CONDITIONS[a]) ^ set(CONDITIONS[b]))
         for prod in PRODUCTS:
             ka, kb = (prod, a, 1), (prod, b, 1)
-            if ka not in judged or kb not in judged:
+            if ka not in judged or kb not in judged or judged[ka].get("error") or judged[kb].get("error"):
                 continue
 
             def hits(k):

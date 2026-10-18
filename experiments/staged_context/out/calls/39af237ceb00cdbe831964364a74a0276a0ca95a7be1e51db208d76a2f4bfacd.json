@@ -1,0 +1,53 @@
+{
+  "stage": "extract",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "39af237ceb00cdbe831964364a74a0276a0ca95a7be1e51db208d76a2f4bfacd",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 438,
+  "output_tokens": 909,
+  "cost_usd": 0.009637499999999998,
+  "elapsed_s": 6.9,
+  "error": null,
+  "text": "{\n  \"tasks\": [\n    {\n      \"action\": \"organize\",\n      \"object\": \"my tasks\",\n      \"context\": null,\n      \"purpose\": null,\n      \"span\": \"organize my tasks\"\n    },\n    {\n      \"action\": \"delegate\",\n      \"object\": \"tasks\",\n      \"context\": \"to my colleagues\",\n      \"purpose\": null,\n      \"span\": \"delegate tasks to my colleagues with a deadline\"\n    }\n  ],\n  \"benefits\": [\n    {\n      \"aspect\": \"ease_of_use\",\n      \"claim\": \"It is easy to organize tasks.\",\n      \"span\": \"I can easily organize my tasks\"\n    },\n    {\n      \"aspect\": \"collaboration\",\n      \"claim\": \"You can delegate tasks to colleagues with a deadline.\",\n      \"span\": \"I can delegate tasks to my colleagues with a deadline as well\"\n    }\n  ],\n  \"frictions\": [\n    {\n      \"aspect\": \"ease_of_use\",\n      \"claim\": \"The system could be easier to use.\",\n      \"span\": \"the system could be easier to use\"\n    }\n  ]\n}",
+  "json": {
+    "tasks": [
+      {
+        "action": "organize",
+        "object": "my tasks",
+        "context": null,
+        "purpose": null,
+        "span": "organize my tasks"
+      },
+      {
+        "action": "delegate",
+        "object": "tasks",
+        "context": "to my colleagues",
+        "purpose": null,
+        "span": "delegate tasks to my colleagues with a deadline"
+      }
+    ],
+    "benefits": [
+      {
+        "aspect": "ease_of_use",
+        "claim": "It is easy to organize tasks.",
+        "span": "I can easily organize my tasks"
+      },
+      {
+        "aspect": "collaboration",
+        "claim": "You can delegate tasks to colleagues with a deadline.",
+        "span": "I can delegate tasks to my colleagues with a deadline as well"
+      }
+    ],
+    "frictions": [
+      {
+        "aspect": "ease_of_use",
+        "claim": "The system could be easier to use.",
+        "span": "the system could be easier to use"
+      }
+    ]
+  },
+  "ts": "2026-10-17T23:47:43.447637+00:00"
+}

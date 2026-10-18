@@ -1,0 +1,28 @@
+{
+  "stage": "matched_screen",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "dc71b8472d95dd89ae5a1f9bd55c4c07a3c60950953dcf4af4970861102c86fa",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 448,
+  "output_tokens": 2025,
+  "cost_usd": 0.02081,
+  "elapsed_s": 20.9,
+  "error": null,
+  "text": "{\n  \"eligible\": true,\n  \"reason\": \"The reviewer explicitly describes the core activity of creating separate projects for different teams, and then assigning and monitoring tasks across all of them simultaneously. This is a concrete task that can be attempted in a short trial.\",\n  \"task\": {\n    \"action\": \"create, assign, and monitor\",\n    \"object\": \"projects and task progress\",\n    \"context\": \"for different companies/teams, across all projects at the same time\",\n    \"purpose\": null\n  },\n  \"neutral_task\": \"Create separate projects for different teams, assign tasks within them, and monitor the progress across all projects simultaneously.\",\n  \"span\": \"create different projects with different teams. Having to assign task and monitor the progress across all my projects at the same time\"\n}",
+  "json": {
+    "eligible": true,
+    "reason": "The reviewer explicitly describes the core activity of creating separate projects for different teams, and then assigning and monitoring tasks across all of them simultaneously. This is a concrete task that can be attempted in a short trial.",
+    "task": {
+      "action": "create, assign, and monitor",
+      "object": "projects and task progress",
+      "context": "for different companies/teams, across all projects at the same time",
+      "purpose": null
+    },
+    "neutral_task": "Create separate projects for different teams, assign tasks within them, and monitor the progress across all projects simultaneously.",
+    "span": "create different projects with different teams. Having to assign task and monitor the progress across all my projects at the same time"
+  },
+  "ts": "2026-10-17T23:37:46.227850+00:00"
+}

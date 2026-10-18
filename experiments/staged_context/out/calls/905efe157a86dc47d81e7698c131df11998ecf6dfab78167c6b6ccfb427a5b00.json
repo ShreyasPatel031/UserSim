@@ -1,0 +1,23 @@
+{
+  "stage": "matched_screen",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "905efe157a86dc47d81e7698c131df11998ecf6dfab78167c6b6ccfb427a5b00",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 347,
+  "output_tokens": 1124,
+  "cost_usd": 0.01167375,
+  "elapsed_s": 11.53,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review describes the general, ongoing process of 'managing projects' and 'managing module tickets', which is too broad and not a concrete, completable task that can be attempted in a short trial period.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": \"manage any module tickets wise on board view & list view\"\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review describes the general, ongoing process of 'managing projects' and 'managing module tickets', which is too broad and not a concrete, completable task that can be attempted in a short trial period.",
+    "task": null,
+    "neutral_task": null,
+    "span": "manage any module tickets wise on board view & list view"
+  },
+  "ts": "2026-10-17T23:50:28.318095+00:00"
+}

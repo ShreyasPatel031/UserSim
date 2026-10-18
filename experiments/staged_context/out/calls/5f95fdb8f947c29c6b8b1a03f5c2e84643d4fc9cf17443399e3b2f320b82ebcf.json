@@ -1,0 +1,59 @@
+{
+  "stage": "extract",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "5f95fdb8f947c29c6b8b1a03f5c2e84643d4fc9cf17443399e3b2f320b82ebcf",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 572,
+  "output_tokens": 3410,
+  "cost_usd": 0.034815,
+  "elapsed_s": 27.49,
+  "error": null,
+  "text": "{\n  \"tasks\": [\n    {\n      \"action\": \"create, assign tasks, set deadlines, track progress\",\n      \"object\": \"across multiple projects\",\n      \"context\": \"for team communication\",\n      \"purpose\": null,\n      \"span\": \"create, assign tasks, set deadlines, track progress across multiple projects for team communication\"\n    },\n    {\n      \"action\": \"communicate with members ,mention, and share files\",\n      \"object\": null,\n      \"context\": null,\n      \"purpose\": null,\n      \"span\": \"communicate with members ,mention, and share files\"\n    },\n    {\n      \"action\": \"communicate\",\n      \"object\": \"with my clients\",\n      \"context\": null,\n      \"purpose\": \"for task submission\",\n      \"span\": \"communicate with my clients for task submission\"\n    }\n  ],\n  \"benefits\": [\n    {\n      \"aspect\": \"interface\",\n      \"claim\": \"It has the most user-friendly interface.\",\n      \"span\": \"Asana has the most user friendly interface.\"\n    },\n    {\n      \"aspect\": \"ease_of_use\",\n      \"claim\": \"It took less than 5 minutes to get used to the interface.\",\n      \"span\": \"it didn't take me unto 5 minuets to get use to the interface.\"\n    },\n    {\n      \"aspect\": \"interface\",\n      \"claim\": \"The interface gives the user a feeling to do more work.\",\n      \"span\": \"the Asana interface gives me that feeling to do more work\"\n    }\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "tasks": [
+      {
+        "action": "create, assign tasks, set deadlines, track progress",
+        "object": "across multiple projects",
+        "context": "for team communication",
+        "purpose": null,
+        "span": "create, assign tasks, set deadlines, track progress across multiple projects for team communication"
+      },
+      {
+        "action": "communicate with members ,mention, and share files",
+        "object": null,
+        "context": null,
+        "purpose": null,
+        "span": "communicate with members ,mention, and share files"
+      },
+      {
+        "action": "communicate",
+        "object": "with my clients",
+        "context": null,
+        "purpose": "for task submission",
+        "span": "communicate with my clients for task submission"
+      }
+    ],
+    "benefits": [
+      {
+        "aspect": "interface",
+        "claim": "It has the most user-friendly interface.",
+        "span": "Asana has the most user friendly interface."
+      },
+      {
+        "aspect": "ease_of_use",
+        "claim": "It took less than 5 minutes to get used to the interface.",
+        "span": "it didn't take me unto 5 minuets to get use to the interface."
+      },
+      {
+        "aspect": "interface",
+        "claim": "The interface gives the user a feeling to do more work.",
+        "span": "the Asana interface gives me that feeling to do more work"
+      }
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-17T23:30:52.507881+00:00"
+}

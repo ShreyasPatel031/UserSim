@@ -1,0 +1,65 @@
+{
+  "stage": "extract",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "c39786492061f1e7efc6597140e912e8c3823bccf980d688fb8bebba4619a0c2",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 485,
+  "output_tokens": 1837,
+  "cost_usd": 0.01897625,
+  "elapsed_s": 12.86,
+  "error": null,
+  "text": "{\n  \"tasks\": [\n    {\n      \"action\": \"plan\",\n      \"object\": \"my days\",\n      \"context\": null,\n      \"purpose\": \"better\",\n      \"span\": \"plan my days better\"\n    },\n    {\n      \"action\": \"seeing\",\n      \"object\": \"what new starters I have and when\",\n      \"context\": null,\n      \"purpose\": null,\n      \"span\": \"seeing what new starters I have and when\"\n    },\n    {\n      \"action\": \"make\",\n      \"object\": \"any notes I need\",\n      \"context\": null,\n      \"purpose\": \"so I can always check back on things I have done\",\n      \"span\": \"make any notes I need too so I can always check back on things I have done\"\n    }\n  ],\n  \"benefits\": [\n    {\n      \"aspect\": \"flexibility\",\n      \"claim\": \"You can configure it to how you need it to look.\",\n      \"span\": \"you can configure it to how you need it to look\"\n    },\n    {\n      \"aspect\": \"ease_of_use\",\n      \"claim\": \"It allows for ease of seeing new starters and their start dates.\",\n      \"span\": \"allowing me the ease of seeing what new starters I have and when\"\n    },\n    {\n      \"aspect\": \"other\",\n      \"claim\": \"It helps with minimizing errors.\",\n      \"span\": \"helps with minimising any errors\"\n    }\n  ],\n  \"frictions\": [\n    {\n      \"aspect\": \"onboarding\",\n      \"claim\": \"A quick how-to guide is not available.\",\n      \"span\": \"There isn't a quick how to guide available\"\n    }\n  ]\n}",
+  "json": {
+    "tasks": [
+      {
+        "action": "plan",
+        "object": "my days",
+        "context": null,
+        "purpose": "better",
+        "span": "plan my days better"
+      },
+      {
+        "action": "seeing",
+        "object": "what new starters I have and when",
+        "context": null,
+        "purpose": null,
+        "span": "seeing what new starters I have and when"
+      },
+      {
+        "action": "make",
+        "object": "any notes I need",
+        "context": null,
+        "purpose": "so I can always check back on things I have done",
+        "span": "make any notes I need too so I can always check back on things I have done"
+      }
+    ],
+    "benefits": [
+      {
+        "aspect": "flexibility",
+        "claim": "You can configure it to how you need it to look.",
+        "span": "you can configure it to how you need it to look"
+      },
+      {
+        "aspect": "ease_of_use",
+        "claim": "It allows for ease of seeing new starters and their start dates.",
+        "span": "allowing me the ease of seeing what new starters I have and when"
+      },
+      {
+        "aspect": "other",
+        "claim": "It helps with minimizing errors.",
+        "span": "helps with minimising any errors"
+      }
+    ],
+    "frictions": [
+      {
+        "aspect": "onboarding",
+        "claim": "A quick how-to guide is not available.",
+        "span": "There isn't a quick how to guide available"
+      }
+    ]
+  },
+  "ts": "2026-10-17T23:42:13.723892+00:00"
+}

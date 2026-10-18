@@ -1,0 +1,65 @@
+{
+  "stage": "extract",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "92d8b5931e9d91aa92e095ebd544685657a6453e5ae6fb6ec9b0588fe221ac72",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 715,
+  "output_tokens": 2487,
+  "cost_usd": 0.02576375,
+  "elapsed_s": 17.58,
+  "error": null,
+  "text": "{\n  \"tasks\": [\n    {\n      \"action\": \"keep track of\",\n      \"object\": \"their tasks\",\n      \"context\": \"a single user\",\n      \"purpose\": null,\n      \"span\": \"to keep track of their tasks\"\n    },\n    {\n      \"action\": \"automate\",\n      \"object\": \"reminders for recurring tasks\",\n      \"context\": null,\n      \"purpose\": null,\n      \"span\": \"automate reminders for recurring tasks\"\n    },\n    {\n      \"action\": \"coordinate\",\n      \"object\": \"wedding planning\",\n      \"context\": \"personal life\",\n      \"purpose\": \"to keep links to all relevant documents, to-do lists, decisions, etc. all in one place where all involved parties could view and keep track of progress\",\n      \"span\": \"to coordinate wedding planning for my wedding across myself, my spouse, and our respective parents\"\n    }\n  ],\n  \"benefits\": [\n    {\n      \"aspect\": \"features\",\n      \"claim\": \"It is the absolute best task management / to-do list tracker software.\",\n      \"span\": \"Trello is the absolute best task management / to-do list tracker software.\"\n    },\n    {\n      \"aspect\": \"collaboration\",\n      \"claim\": \"It shines for group collaboration with features like shared boards, task assignment, and user tagging.\",\n      \"span\": \"where it truly shines is for group collaboration with the ability to all view the same board, assign tasks to different users, tag users in comments, etc.\"\n    },\n    {\n      \"aspect\": \"pricing\",\n      \"claim\": \"The free version is entirely worthwhile to use.\",\n      \"span\": \"I still find the free version entirely worthwhile to use\"\n    }\n  ],\n  \"frictions\": [\n    {\n      \"aspect\": \"pricing\",\n      \"claim\": \"Many useful tools and views (like calendar and timeline) are not available in the free version.\",\n      \"span\": \"many of the useful tools and views (calendar view, timeline view) are not available in the free version\"\n    }\n  ]\n}",
+  "json": {
+    "tasks": [
+      {
+        "action": "keep track of",
+        "object": "their tasks",
+        "context": "a single user",
+        "purpose": null,
+        "span": "to keep track of their tasks"
+      },
+      {
+        "action": "automate",
+        "object": "reminders for recurring tasks",
+        "context": null,
+        "purpose": null,
+        "span": "automate reminders for recurring tasks"
+      },
+      {
+        "action": "coordinate",
+        "object": "wedding planning",
+        "context": "personal life",
+        "purpose": "to keep links to all relevant documents, to-do lists, decisions, etc. all in one place where all involved parties could view and keep track of progress",
+        "span": "to coordinate wedding planning for my wedding across myself, my spouse, and our respective parents"
+      }
+    ],
+    "benefits": [
+      {
+        "aspect": "features",
+        "claim": "It is the absolute best task management / to-do list tracker software.",
+        "span": "Trello is the absolute best task management / to-do list tracker software."
+      },
+      {
+        "aspect": "collaboration",
+        "claim": "It shines for group collaboration with features like shared boards, task assignment, and user tagging.",
+        "span": "where it truly shines is for group collaboration with the ability to all view the same board, assign tasks to different users, tag users in comments, etc."
+      },
+      {
+        "aspect": "pricing",
+        "claim": "The free version is entirely worthwhile to use.",
+        "span": "I still find the free version entirely worthwhile to use"
+      }
+    ],
+    "frictions": [
+      {
+        "aspect": "pricing",
+        "claim": "Many useful tools and views (like calendar and timeline) are not available in the free version.",
+        "span": "many of the useful tools and views (calendar view, timeline view) are not available in the free version"
+      }
+    ]
+  },
+  "ts": "2026-10-17T23:44:18.281796+00:00"
+}

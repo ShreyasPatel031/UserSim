@@ -1,0 +1,51 @@
+{
+  "stage": "extract",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "3c0938929f7c4472f4ea00b12b1cd65194d1789ff8cc5709458622c344545889",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 584,
+  "output_tokens": 1750,
+  "cost_usd": 0.018230000000000003,
+  "elapsed_s": 14.27,
+  "error": null,
+  "text": "{\n  \"tasks\": [\n    {\n      \"action\": \"set up\",\n      \"object\": \"dashboards\",\n      \"context\": null,\n      \"purpose\": \"to see everything you need for a specific project\",\n      \"span\": \"easy to set up with all options to see everything you need for a specific project\"\n    }\n  ],\n  \"benefits\": [\n    {\n      \"aspect\": \"ease_of_use\",\n      \"claim\": \"Dashboards are easy to set up.\",\n      \"span\": \"easy to set up\"\n    },\n    {\n      \"aspect\": \"flexibility\",\n      \"claim\": \"Dashboards are shareable, customizable, and transferable.\",\n      \"span\": \"Shareable, customizable and transferable!\"\n    },\n    {\n      \"aspect\": \"support\",\n      \"claim\": \"Customer support is awesome.\",\n      \"span\": \"AWESOME customer support!\"\n    }\n  ],\n  \"frictions\": [\n    {\n      \"aspect\": \"integrations\",\n      \"claim\": \"Editing comments does not automatically update them in Slack.\",\n      \"span\": \"Would love to be able to edit comments and have them updated in slack automatically\"\n    }\n  ]\n}",
+  "json": {
+    "tasks": [
+      {
+        "action": "set up",
+        "object": "dashboards",
+        "context": null,
+        "purpose": "to see everything you need for a specific project",
+        "span": "easy to set up with all options to see everything you need for a specific project"
+      }
+    ],
+    "benefits": [
+      {
+        "aspect": "ease_of_use",
+        "claim": "Dashboards are easy to set up.",
+        "span": "easy to set up"
+      },
+      {
+        "aspect": "flexibility",
+        "claim": "Dashboards are shareable, customizable, and transferable.",
+        "span": "Shareable, customizable and transferable!"
+      },
+      {
+        "aspect": "support",
+        "claim": "Customer support is awesome.",
+        "span": "AWESOME customer support!"
+      }
+    ],
+    "frictions": [
+      {
+        "aspect": "integrations",
+        "claim": "Editing comments does not automatically update them in Slack.",
+        "span": "Would love to be able to edit comments and have them updated in slack automatically"
+      }
+    ]
+  },
+  "ts": "2026-10-17T23:34:07.733941+00:00"
+}

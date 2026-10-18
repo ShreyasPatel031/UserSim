@@ -1,0 +1,28 @@
+{
+  "stage": "matched_screen",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "432603e7a5400c6afa63a4cc5ee452ed4dccc4947a11f7952e69ee8e0b5819f8",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 472,
+  "output_tokens": 1582,
+  "cost_usd": 0.01641,
+  "elapsed_s": 13.24,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review describes general benefits like \\\"staying organized\\\" and \\\"tracking work,\\\" and lists features like assigning members to cards and moving cards based on status. However, it does not state a concrete, dominant task with a specific object or purpose. The activities mentioned are too generic to be considered a specific use case.\",\n  \"task\": {\n    \"action\": null,\n    \"object\": null,\n    \"context\": null,\n    \"purpose\": null\n  },\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review describes general benefits like \"staying organized\" and \"tracking work,\" and lists features like assigning members to cards and moving cards based on status. However, it does not state a concrete, dominant task with a specific object or purpose. The activities mentioned are too generic to be considered a specific use case.",
+    "task": {
+      "action": null,
+      "object": null,
+      "context": null,
+      "purpose": null
+    },
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-17T23:44:31.528401+00:00"
+}

@@ -1,0 +1,23 @@
+{
+  "stage": "matched_screen",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "3c51885589583dde410fe11d4c5521a8fd5ef1252968e169a8996c8c9a15663d",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 364,
+  "output_tokens": 1397,
+  "cost_usd": 0.014425,
+  "elapsed_s": 13.41,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review describes the product's general capabilities (e.g., 'create, manage, share and view tasks') rather than a specific, concrete task the reviewer performs. The phrases used are too generic and lack a specific user goal or context.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review describes the product's general capabilities (e.g., 'create, manage, share and view tasks') rather than a specific, concrete task the reviewer performs. The phrases used are too generic and lack a specific user goal or context.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-17T23:38:53.149580+00:00"
+}

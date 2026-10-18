@@ -1,0 +1,28 @@
+{
+  "stage": "matched_screen",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "526b034f6b8b44e88eda18630838b2947cedd336e11b66f564250b1214f9f46e",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 396,
+  "output_tokens": 1389,
+  "cost_usd": 0.014385,
+  "elapsed_s": 13.2,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review describes a general capability of the software ('account for all tasks related to any project') rather than a specific, concrete task. This is too generic and equivalent to 'manage projects'.\",\n  \"task\": {\n    \"action\": null,\n    \"object\": null,\n    \"context\": null,\n    \"purpose\": null\n  },\n  \"neutral_task\": null,\n  \"span\": \"account for all tasks related to any project we are working on within our team across multiple departments and locations\"\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review describes a general capability of the software ('account for all tasks related to any project') rather than a specific, concrete task. This is too generic and equivalent to 'manage projects'.",
+    "task": {
+      "action": null,
+      "object": null,
+      "context": null,
+      "purpose": null
+    },
+    "neutral_task": null,
+    "span": "account for all tasks related to any project we are working on within our team across multiple departments and locations"
+  },
+  "ts": "2026-10-17T23:33:42.636763+00:00"
+}

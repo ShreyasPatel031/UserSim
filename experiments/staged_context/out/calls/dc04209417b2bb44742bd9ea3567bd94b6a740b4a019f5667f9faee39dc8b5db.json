@@ -1,0 +1,51 @@
+{
+  "stage": "extract",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "dc04209417b2bb44742bd9ea3567bd94b6a740b4a019f5667f9faee39dc8b5db",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 482,
+  "output_tokens": 1221,
+  "cost_usd": 0.012812500000000001,
+  "elapsed_s": 12.36,
+  "error": null,
+  "text": "{\n  \"tasks\": [\n    {\n      \"action\": \"collaboration\",\n      \"object\": \"on various projects\",\n      \"context\": \"large teams\",\n      \"purpose\": \"with high efficiency\",\n      \"span\": \"large teams collaboration on various projects with high efficiency\"\n    }\n  ],\n  \"benefits\": [\n    {\n      \"aspect\": \"flexibility\",\n      \"claim\": \"It offers great versatility for any organization having troubles with workflow.\",\n      \"span\": \"Its offers great versatility for any organization having troubles with workflow.\"\n    },\n    {\n      \"aspect\": \"collaboration\",\n      \"claim\": \"It is a great help for large teams collaborating on various projects with high efficiency.\",\n      \"span\": \"Great help while it comes to large teams collaboration on various projects with high efficiency.\"\n    },\n    {\n      \"aspect\": \"features\",\n      \"claim\": \"It has extensive features that are more task oriented.\",\n      \"span\": \"extensive features that are more task oriented\"\n    }\n  ],\n  \"frictions\": [\n    {\n      \"aspect\": \"onboarding\",\n      \"claim\": \"Users need to be well onboarded to avoid delays while using it.\",\n      \"span\": \"users need to be well onboarded to avoid delays while using it\"\n    }\n  ]\n}",
+  "json": {
+    "tasks": [
+      {
+        "action": "collaboration",
+        "object": "on various projects",
+        "context": "large teams",
+        "purpose": "with high efficiency",
+        "span": "large teams collaboration on various projects with high efficiency"
+      }
+    ],
+    "benefits": [
+      {
+        "aspect": "flexibility",
+        "claim": "It offers great versatility for any organization having troubles with workflow.",
+        "span": "Its offers great versatility for any organization having troubles with workflow."
+      },
+      {
+        "aspect": "collaboration",
+        "claim": "It is a great help for large teams collaborating on various projects with high efficiency.",
+        "span": "Great help while it comes to large teams collaboration on various projects with high efficiency."
+      },
+      {
+        "aspect": "features",
+        "claim": "It has extensive features that are more task oriented.",
+        "span": "extensive features that are more task oriented"
+      }
+    ],
+    "frictions": [
+      {
+        "aspect": "onboarding",
+        "claim": "Users need to be well onboarded to avoid delays while using it.",
+        "span": "users need to be well onboarded to avoid delays while using it"
+      }
+    ]
+  },
+  "ts": "2026-10-17T23:33:52.252757+00:00"
+}

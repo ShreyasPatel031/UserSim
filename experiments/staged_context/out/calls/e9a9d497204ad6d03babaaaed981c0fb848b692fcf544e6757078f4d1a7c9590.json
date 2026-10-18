@@ -1,0 +1,52 @@
+{
+  "stage": "extract",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "e9a9d497204ad6d03babaaaed981c0fb848b692fcf544e6757078f4d1a7c9590",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 430,
+  "output_tokens": 983,
+  "cost_usd": 0.010367499999999998,
+  "elapsed_s": 7.32,
+  "error": null,
+  "text": "{\n  \"tasks\": [\n    {\n      \"action\": \"scheduling\",\n      \"object\": \"tasks\",\n      \"context\": null,\n      \"purpose\": null,\n      \"span\": \"scheduling tasks\"\n    },\n    {\n      \"action\": \"management\",\n      \"object\": \"project\",\n      \"context\": null,\n      \"purpose\": null,\n      \"span\": \"project management\"\n    }\n  ],\n  \"benefits\": [\n    {\n      \"aspect\": \"features\",\n      \"claim\": \"Offers amazing features.\",\n      \"span\": \"ClickUp offers amazing features\"\n    },\n    {\n      \"aspect\": \"flexibility\",\n      \"claim\": \"It is customizable.\",\n      \"span\": \"It is customizable\"\n    },\n    {\n      \"aspect\": \"other\",\n      \"claim\": \"It boosts productivity.\",\n      \"span\": \"boosts productivity\"\n    }\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "tasks": [
+      {
+        "action": "scheduling",
+        "object": "tasks",
+        "context": null,
+        "purpose": null,
+        "span": "scheduling tasks"
+      },
+      {
+        "action": "management",
+        "object": "project",
+        "context": null,
+        "purpose": null,
+        "span": "project management"
+      }
+    ],
+    "benefits": [
+      {
+        "aspect": "features",
+        "claim": "Offers amazing features.",
+        "span": "ClickUp offers amazing features"
+      },
+      {
+        "aspect": "flexibility",
+        "claim": "It is customizable.",
+        "span": "It is customizable"
+      },
+      {
+        "aspect": "other",
+        "claim": "It boosts productivity.",
+        "span": "boosts productivity"
+      }
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-17T23:34:02.079896+00:00"
+}

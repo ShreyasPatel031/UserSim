@@ -1,0 +1,28 @@
+{
+  "stage": "matched_screen",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "95a5d1d7f68d4b565c0b7dc270e879afe5f0b0cad16aab1335bc60daad657dc9",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 372,
+  "output_tokens": 1275,
+  "cost_usd": 0.013215000000000001,
+  "elapsed_s": 11.37,
+  "error": null,
+  "text": "{\n  \"eligible\": true,\n  \"reason\": \"The review explicitly mentions creating task lists and assigning times, which is a concrete, non-generic task that can be attempted in a new workspace within a few minutes.\",\n  \"task\": {\n    \"action\": \"Crear\",\n    \"object\": \"listas de tareas\",\n    \"context\": \"al asignar tiempos\",\n    \"purpose\": null\n  },\n  \"neutral_task\": \"Create a list of tasks and assign times to them.\",\n  \"span\": \"Crear listas de tareas es ágil al asignar tiempos\"\n}",
+  "json": {
+    "eligible": true,
+    "reason": "The review explicitly mentions creating task lists and assigning times, which is a concrete, non-generic task that can be attempted in a new workspace within a few minutes.",
+    "task": {
+      "action": "Crear",
+      "object": "listas de tareas",
+      "context": "al asignar tiempos",
+      "purpose": null
+    },
+    "neutral_task": "Create a list of tasks and assign times to them.",
+    "span": "Crear listas de tareas es ágil al asignar tiempos"
+  },
+  "ts": "2026-10-17T23:49:38.955522+00:00"
+}

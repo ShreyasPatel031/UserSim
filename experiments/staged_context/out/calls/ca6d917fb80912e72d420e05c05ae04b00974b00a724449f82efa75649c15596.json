@@ -1,0 +1,23 @@
+{
+  "stage": "matched_screen",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "ca6d917fb80912e72d420e05c05ae04b00974b00a724449f82efa75649c15596",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 435,
+  "output_tokens": 633,
+  "cost_usd": 0.00687375,
+  "elapsed_s": 7.67,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review praises the general capability to 'itemize and track tasks' but does not describe a specific, concrete task with a clear object or purpose. This is too generic to be a testable user goal.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": \"itemize and track tasks\"\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review praises the general capability to 'itemize and track tasks' but does not describe a specific, concrete task with a clear object or purpose. This is too generic to be a testable user goal.",
+    "task": null,
+    "neutral_task": null,
+    "span": "itemize and track tasks"
+  },
+  "ts": "2026-10-17T23:39:21.070499+00:00"
+}

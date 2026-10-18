@@ -1,0 +1,169 @@
+{
+  "stage": "predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f771f75ee02010f0fe335526be660504a1e6d4e2874df9887753782bdb3bc3cc",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "input_tokens": 3841,
+  "output_tokens": 5504,
+  "cost_usd": 0.014912300000000002,
+  "elapsed_s": 23.12,
+  "error": null,
+  "text": "{\n  \"product\": \"ClickUp\",\n  \"segments\": [\n    {\n      \"role_family\": \"Project Managers / Team Leads\",\n      \"motivation\": \"Deliver projects on time, coordinate teams, and manage workflows efficiently.\",\n      \"basis_ids\": [\n        \"D:ClickUp:landing:9\",\n        \"D:ClickUp:features:7\",\n        \"D:ClickUp:features:8\",\n        \"D:ClickUp:features:9\",\n        \"D:ClickUp:features:10\",\n        \"O:13-1082.00\"\n      ]\n    },\n    {\n      \"role_family\": \"Software Development Teams\",\n      \"motivation\": \"Streamline agile processes, track bugs, and collaborate on code-related tasks.\",\n      \"basis_ids\": [\n        \"D:ClickUp:features:7\",\n        \"D:ClickUp:features:9\",\n        \"D:ClickUp:features:12\",\n        \"D:ClickUp:landing:6\",\n        \"O:15-1252.00\"\n      ]\n    },\n    {\n      \"role_family\": \"Marketing & Growth Teams\",\n      \"motivation\": \"Analyze campaign performance, manage marketing activities, and leverage AI for insights.\",\n      \"basis_ids\": [\n        \"D:ClickUp:landing:7\",\n        \"D:ClickUp:landing:8\",\n        \"O:11-2021.00\"\n      ]\n    }\n  ],\n  \"tasks\": [\n    {\n      \"action\": \"Track work items\",\n      \"object\": \"project progress\",\n      \"context\": \"with assignees and due dates\",\n      \"purpose\": \"to manage project progress\",\n      \"basis_ids\": [\n        \"D:ClickUp:features:7\",\n        \"D:ClickUp:landing:9\"\n      ]\n    },\n    {\n      \"action\": \"Automate workflows\",\n      \"object\": \"repetitive tasks and states\",\n      \"context\": \"by setting rules\",\n      \"purpose\": \"to eliminate busywork and update states\",\n      \"basis_ids\": [\n        \"D:ClickUp:features:6\"\n      ]\n    },\n    {\n      \"action\": \"Transcribe meetings\",\n      \"object\": \"summaries\",\n      \"context\": null,\n      \"purpose\": \"to capture action items and decisions\",\n      \"basis_ids\": [\n        \"D:ClickUp:features:4\"\n      ]\n    },\n    {\n      \"action\": \"Search for information\",\n      \"object\": \"answers and insights\",\n      \"context\": \"across connected apps and documents\",\n      \"purpose\": \"to get answers and insights\",\n      \"basis_ids\": [\n        \"D:ClickUp:features:5\",\n        \"D:ClickUp:landing:6\"\n      ]\n    },\n    {\n      \"action\": \"Manage agile sprints\",\n      \"object\": \"iterative delivery\",\n      \"context\": \"with time-boxed periods\",\n      \"purpose\": \"for focused work and iterative delivery\",\n      \"basis_ids\": [\n        \"D:ClickUp:features:7\"\n      ]\n    }\n  ],\n  \"benefits\": [\n    {\n      \"aspect\": \"Consolidated platform\",\n      \"claim\": \"Replaces fragmented software by offering all apps, AI, and humans in one place to maximize productivity.\",\n      \"basis_ids\": [\n        \"D:ClickUp:landing:1\",\n        \"D:ClickUp:landing:3\"\n      ]\n    },\n    {\n      \"aspect\": \"Project delivery\",\n      \"claim\": \"Enables teams to deliver projects on time, every time through comprehensive project management features.\",\n      \"basis_ids\": [\n        \"D:ClickUp:landing:9\",\n        \"D:ClickUp:features:7\"\n      ]\n    },\n    {\n      \"aspect\": \"Efficiency with AI\",\n      \"claim\": \"AI agents automate workflows, provide real-time updates, and generate content, reducing busywork and offering insights.\",\n      \"basis_ids\": [\n        \"D:ClickUp:features:3\",\n        \"D:ClickUp:features:4\",\n        \"D:ClickUp:features:6\"\n      ]\n    }\n  ],\n  \"frictions\": [\n    {\n      \"aspect\": \"Learning curve\",\n      \"claim\": \"The extensive feature set and '100+ products' integrated might overwhelm new users or require significant time to master.\",\n      \"basis_ids\": [\n        \"D:ClickUp:features:1\",\n        \"D:ClickUp:landing:3\",\n        \"general knowledge\"\n      ]\n    },\n    {\n      \"aspect\": \"AI setup complexity\",\n      \"claim\": \"Configuring and optimizing 'AI Agents & Workflows' might be challenging or time-consuming for some teams.\",\n      \"basis_ids\": [\n        \"D:ClickUp:landing:2\",\n        \"D:ClickUp:features:3\",\n        \"general knowledge\"\n      ]\n    },\n    {\n      \"aspect\": \"Integration challenges\",\n      \"claim\": \"Connecting and syncing external applications and data sources for 'full context' might present technical difficulties or require ongoing maintenance.\",\n      \"basis_ids\": [\n        \"D:ClickUp:landing:6\",\n        \"general knowledge\"\n      ]\n    }\n  ],\n  \"ease_of_use_probabilities_1_to_5\": [\n    0.05,\n    0.15,\n    0.30,\n    0.30,\n    0.20\n  ],\n  \"unknowns\": [\n    \"MCP Online Ambient Intelligence\",\n    \"Brain²\",\n    \"AI StandUps\"\n  ]\n}",
+  "json": {
+    "product": "ClickUp",
+    "segments": [
+      {
+        "role_family": "Project Managers / Team Leads",
+        "motivation": "Deliver projects on time, coordinate teams, and manage workflows efficiently.",
+        "basis_ids": [
+          "D:ClickUp:landing:9",
+          "D:ClickUp:features:7",
+          "D:ClickUp:features:8",
+          "D:ClickUp:features:9",
+          "D:ClickUp:features:10",
+          "O:13-1082.00"
+        ]
+      },
+      {
+        "role_family": "Software Development Teams",
+        "motivation": "Streamline agile processes, track bugs, and collaborate on code-related tasks.",
+        "basis_ids": [
+          "D:ClickUp:features:7",
+          "D:ClickUp:features:9",
+          "D:ClickUp:features:12",
+          "D:ClickUp:landing:6",
+          "O:15-1252.00"
+        ]
+      },
+      {
+        "role_family": "Marketing & Growth Teams",
+        "motivation": "Analyze campaign performance, manage marketing activities, and leverage AI for insights.",
+        "basis_ids": [
+          "D:ClickUp:landing:7",
+          "D:ClickUp:landing:8",
+          "O:11-2021.00"
+        ]
+      }
+    ],
+    "tasks": [
+      {
+        "action": "Track work items",
+        "object": "project progress",
+        "context": "with assignees and due dates",
+        "purpose": "to manage project progress",
+        "basis_ids": [
+          "D:ClickUp:features:7",
+          "D:ClickUp:landing:9"
+        ]
+      },
+      {
+        "action": "Automate workflows",
+        "object": "repetitive tasks and states",
+        "context": "by setting rules",
+        "purpose": "to eliminate busywork and update states",
+        "basis_ids": [
+          "D:ClickUp:features:6"
+        ]
+      },
+      {
+        "action": "Transcribe meetings",
+        "object": "summaries",
+        "context": null,
+        "purpose": "to capture action items and decisions",
+        "basis_ids": [
+          "D:ClickUp:features:4"
+        ]
+      },
+      {
+        "action": "Search for information",
+        "object": "answers and insights",
+        "context": "across connected apps and documents",
+        "purpose": "to get answers and insights",
+        "basis_ids": [
+          "D:ClickUp:features:5",
+          "D:ClickUp:landing:6"
+        ]
+      },
+      {
+        "action": "Manage agile sprints",
+        "object": "iterative delivery",
+        "context": "with time-boxed periods",
+        "purpose": "for focused work and iterative delivery",
+        "basis_ids": [
+          "D:ClickUp:features:7"
+        ]
+      }
+    ],
+    "benefits": [
+      {
+        "aspect": "Consolidated platform",
+        "claim": "Replaces fragmented software by offering all apps, AI, and humans in one place to maximize productivity.",
+        "basis_ids": [
+          "D:ClickUp:landing:1",
+          "D:ClickUp:landing:3"
+        ]
+      },
+      {
+        "aspect": "Project delivery",
+        "claim": "Enables teams to deliver projects on time, every time through comprehensive project management features.",
+        "basis_ids": [
+          "D:ClickUp:landing:9",
+          "D:ClickUp:features:7"
+        ]
+      },
+      {
+        "aspect": "Efficiency with AI",
+        "claim": "AI agents automate workflows, provide real-time updates, and generate content, reducing busywork and offering insights.",
+        "basis_ids": [
+          "D:ClickUp:features:3",
+          "D:ClickUp:features:4",
+          "D:ClickUp:features:6"
+        ]
+      }
+    ],
+    "frictions": [
+      {
+        "aspect": "Learning curve",
+        "claim": "The extensive feature set and '100+ products' integrated might overwhelm new users or require significant time to master.",
+        "basis_ids": [
+          "D:ClickUp:features:1",
+          "D:ClickUp:landing:3",
+          "general knowledge"
+        ]
+      },
+      {
+        "aspect": "AI setup complexity",
+        "claim": "Configuring and optimizing 'AI Agents & Workflows' might be challenging or time-consuming for some teams.",
+        "basis_ids": [
+          "D:ClickUp:landing:2",
+          "D:ClickUp:features:3",
+          "general knowledge"
+        ]
+      },
+      {
+        "aspect": "Integration challenges",
+        "claim": "Connecting and syncing external applications and data sources for 'full context' might present technical difficulties or require ongoing maintenance.",
+        "basis_ids": [
+          "D:ClickUp:landing:6",
+          "general knowledge"
+        ]
+      }
+    ],
+    "ease_of_use_probabilities_1_to_5": [
+      0.05,
+      0.15,
+      0.3,
+      0.3,
+      0.2
+    ],
+    "unknowns": [
+      "MCP Online Ambient Intelligence",
+      "Brain²",
+      "AI StandUps"
+    ]
+  },
+  "ts": "2026-10-17T23:16:35.492413+00:00"
+}

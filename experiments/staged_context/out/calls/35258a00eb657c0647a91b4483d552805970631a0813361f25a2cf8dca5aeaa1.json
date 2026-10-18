@@ -1,0 +1,75 @@
+{
+  "stage": "extract",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "35258a00eb657c0647a91b4483d552805970631a0813361f25a2cf8dca5aeaa1",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 549,
+  "output_tokens": 2089,
+  "cost_usd": 0.02157625,
+  "elapsed_s": 16.17,
+  "error": null,
+  "text": "{\n  \"tasks\": [\n    {\n      \"action\": \"plan and organise\",\n      \"object\": \"task\",\n      \"context\": null,\n      \"purpose\": null,\n      \"span\": \"plan and organise task\"\n    },\n    {\n      \"action\": \"see\",\n      \"object\": \"the progress of projects\",\n      \"context\": null,\n      \"purpose\": null,\n      \"span\": \"see the progress of projects\"\n    },\n    {\n      \"action\": \"manage and modify\",\n      \"object\": \"tasks and boards\",\n      \"context\": \"collaborative environments\",\n      \"purpose\": null,\n      \"span\": \"manage and modify tasks and boards\"\n    }\n  ],\n  \"benefits\": [\n    {\n      \"aspect\": \"ease_of_use\",\n      \"claim\": \"It is an easy to use and agile tool.\",\n      \"span\": \"easy to use and agile tool\"\n    },\n    {\n      \"aspect\": \"interface\",\n      \"claim\": \"It has an attractive interface.\",\n      \"span\": \"attractive interface\"\n    },\n    {\n      \"aspect\": \"pricing\",\n      \"claim\": \"Its free version is ample for most individual users and some small businesses.\",\n      \"span\": \"free version is ample for most individual users (and some small businesses)\"\n    }\n  ],\n  \"frictions\": [\n    {\n      \"aspect\": \"features\",\n      \"claim\": \"It lacks admin privileges, user restrictions, and board management options.\",\n      \"span\": \"lacks any kind of admin priveleges, user restrictions or any kind of board management options\"\n    },\n    {\n      \"aspect\": \"collaboration\",\n      \"claim\": \"The lack of controls can lead to accidental deletion and data loss in collaborative environments.\",\n      \"span\": \"can lead to accidental deletion and data loss in collaborative environments\"\n    },\n    {\n      \"aspect\": \"collaboration\",\n      \"claim\": \"There is no control over who can manage and modify tasks and boards.\",\n      \"span\": \"Having no control over who can manage and modify tasks and boards\"\n    }\n  ]\n}",
+  "json": {
+    "tasks": [
+      {
+        "action": "plan and organise",
+        "object": "task",
+        "context": null,
+        "purpose": null,
+        "span": "plan and organise task"
+      },
+      {
+        "action": "see",
+        "object": "the progress of projects",
+        "context": null,
+        "purpose": null,
+        "span": "see the progress of projects"
+      },
+      {
+        "action": "manage and modify",
+        "object": "tasks and boards",
+        "context": "collaborative environments",
+        "purpose": null,
+        "span": "manage and modify tasks and boards"
+      }
+    ],
+    "benefits": [
+      {
+        "aspect": "ease_of_use",
+        "claim": "It is an easy to use and agile tool.",
+        "span": "easy to use and agile tool"
+      },
+      {
+        "aspect": "interface",
+        "claim": "It has an attractive interface.",
+        "span": "attractive interface"
+      },
+      {
+        "aspect": "pricing",
+        "claim": "Its free version is ample for most individual users and some small businesses.",
+        "span": "free version is ample for most individual users (and some small businesses)"
+      }
+    ],
+    "frictions": [
+      {
+        "aspect": "features",
+        "claim": "It lacks admin privileges, user restrictions, and board management options.",
+        "span": "lacks any kind of admin priveleges, user restrictions or any kind of board management options"
+      },
+      {
+        "aspect": "collaboration",
+        "claim": "The lack of controls can lead to accidental deletion and data loss in collaborative environments.",
+        "span": "can lead to accidental deletion and data loss in collaborative environments"
+      },
+      {
+        "aspect": "collaboration",
+        "claim": "There is no control over who can manage and modify tasks and boards.",
+        "span": "Having no control over who can manage and modify tasks and boards"
+      }
+    ]
+  },
+  "ts": "2026-10-17T23:32:12.447012+00:00"
+}

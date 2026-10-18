@@ -1,0 +1,68 @@
+{
+  "stage": "extract",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "b1e6e5f33ce946316b1d5de6d67a073752c40a920b503044e6f092115b6195ac",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 539,
+  "output_tokens": 2051,
+  "cost_usd": 0.02118375,
+  "elapsed_s": 14.22,
+  "error": null,
+  "text": "{\n  \"tasks\": [\n    {\n      \"action\": \"have\",\n      \"object\": \"wikis for each client\",\n      \"context\": null,\n      \"purpose\": null,\n      \"span\": \"have wikis for each client\"\n    },\n    {\n      \"action\": \"combine\",\n      \"object\": \"the features of a typical project management system with notion-like features\",\n      \"context\": null,\n      \"purpose\": null,\n      \"span\": \"combine the features of a typical project management system with notion-like features\"\n    }\n  ],\n  \"benefits\": [\n    {\n      \"aspect\": \"flexibility\",\n      \"claim\": \"It can be customized a lot.\",\n      \"span\": \"I can customise it so much\"\n    },\n    {\n      \"aspect\": \"features\",\n      \"claim\": \"You can have wikis for each client.\",\n      \"span\": \"have wikis for each client\"\n    },\n    {\n      \"aspect\": \"interface\",\n      \"claim\": \"It has a nice display.\",\n      \"span\": \"nice display\"\n    }\n  ],\n  \"frictions\": [\n    {\n      \"aspect\": \"performance\",\n      \"claim\": \"It takes up a lot of resources on a laptop.\",\n      \"span\": \"Takes up a lot of resources on my laptop\"\n    },\n    {\n      \"aspect\": \"performance\",\n      \"claim\": \"It can sometimes slow down the rest of the PC.\",\n      \"span\": \"Can sometimes slow down the rest of my PC\"\n    },\n    {\n      \"aspect\": \"ease_of_use\",\n      \"claim\": \"It required too much technical knowledge.\",\n      \"span\": \"Needed too much technical knowledge\"\n    }\n  ]\n}",
+  "json": {
+    "tasks": [
+      {
+        "action": "have",
+        "object": "wikis for each client",
+        "context": null,
+        "purpose": null,
+        "span": "have wikis for each client"
+      },
+      {
+        "action": "combine",
+        "object": "the features of a typical project management system with notion-like features",
+        "context": null,
+        "purpose": null,
+        "span": "combine the features of a typical project management system with notion-like features"
+      }
+    ],
+    "benefits": [
+      {
+        "aspect": "flexibility",
+        "claim": "It can be customized a lot.",
+        "span": "I can customise it so much"
+      },
+      {
+        "aspect": "features",
+        "claim": "You can have wikis for each client.",
+        "span": "have wikis for each client"
+      },
+      {
+        "aspect": "interface",
+        "claim": "It has a nice display.",
+        "span": "nice display"
+      }
+    ],
+    "frictions": [
+      {
+        "aspect": "performance",
+        "claim": "It takes up a lot of resources on a laptop.",
+        "span": "Takes up a lot of resources on my laptop"
+      },
+      {
+        "aspect": "performance",
+        "claim": "It can sometimes slow down the rest of the PC.",
+        "span": "Can sometimes slow down the rest of my PC"
+      },
+      {
+        "aspect": "ease_of_use",
+        "claim": "It required too much technical knowledge.",
+        "span": "Needed too much technical knowledge"
+      }
+    ]
+  },
+  "ts": "2026-10-17T23:51:01.501830+00:00"
+}

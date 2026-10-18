@@ -1,0 +1,178 @@
+{
+  "stage": "predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "576c10bba13d4fe33b81c01662a80093ef50d671124470c3becd52772140b480",
+  "temperature": 0.7,
+  "seed": 2000,
+  "max_tokens": 8192,
+  "input_tokens": 7370,
+  "output_tokens": 5053,
+  "cost_usd": 0.0148435,
+  "elapsed_s": 20.76,
+  "error": null,
+  "text": "{\n  \"product\": \"Trello\",\n  \"segments\": [\n    {\n      \"role_family\": \"Small Business Owner/Manager\",\n      \"motivation\": \"To organize personal and business tasks, manage small teams, and keep track of projects efficiently.\",\n      \"basis_ids\": [\n        \"T:Capterra___6701128\",\n        \"T:Capterra___6142032\",\n        \"T:Capterra___6856796\",\n        \"T:Capterra___6016441\",\n        \"T:Capterra___6663269\",\n        \"D:Trello:features:1\"\n      ]\n    },\n    {\n      \"role_family\": \"Project/Marketing Manager\",\n      \"motivation\": \"To manage project workflows, track progress, coordinate team tasks, and organize resources visually.\",\n      \"basis_ids\": [\n        \"T:Capterra___6572904\",\n        \"T:Capterra___6807901\",\n        \"T:Capterra___6663269\"\n      ]\n    },\n    {\n      \"role_family\": \"Individual Contributor\",\n      \"motivation\": \"To organize personal to-dos, manage daily tasks, and keep track of responsibilities.\",\n      \"basis_ids\": [\n        \"T:Capterra___6701128\",\n        \"T:Capterra___6142032\",\n        \"D:Trello:features:1\"\n      ]\n    }\n  ],\n  \"tasks\": [\n    {\n      \"action\": \"organize\",\n      \"object\": \"daily to-dos and personal goals\",\n      \"context\": null,\n      \"purpose\": \"stay on top of individual responsibilities\",\n      \"basis_ids\": [\n        \"D:Trello:features:1\",\n        \"D:Trello:features:2\",\n        \"T:Capterra___6142032\",\n        \"T:Capterra___6016441\"\n      ]\n    },\n    {\n      \"action\": \"manage\",\n      \"object\": \"project workflows\",\n      \"context\": \"visually using Kanban boards\",\n      \"purpose\": \"track progress and coordinate team tasks\",\n      \"basis_ids\": [\n        \"M:Trello\",\n        \"T:Capterra___6572904\",\n        \"T:Capterra___6807901\",\n        \"T:Capterra___7074203\",\n        \"T:Capterra___6663269\"\n      ]\n    },\n    {\n      \"action\": \"collaborate\",\n      \"object\": \"on shared projects\",\n      \"context\": \"with team members or external parties\",\n      \"purpose\": \"ensure everyone is on the same page and assign responsibilities\",\n      \"basis_ids\": [\n        \"T:Capterra___6701128\",\n        \"T:Capterra___6789657\",\n        \"T:Capterra___6807901\"\n      ]\n    },\n    {\n      \"action\": \"automate\",\n      \"object\": \"repetitive processes\",\n      \"context\": \"using built-in automation\",\n      \"purpose\": \"streamline workflows and save time\",\n      \"basis_ids\": [\n        \"D:Trello:features:7\",\n        \"T:Capterra___6807901\"\n      ]\n    },\n    {\n      \"action\": \"leverage\",\n      \"object\": \"AI capabilities\",\n      \"context\": \"to generate ideas or refine text\",\n      \"purpose\": \"enhance content and organization\",\n      \"basis_ids\": [\n        \"D:Trello:features:3\",\n        \"D:Trello:features:5\"\n      ]\n    }\n  ],\n  \"benefits\": [\n    {\n      \"aspect\": \"Visual Organization & Clarity\",\n      \"claim\": \"The visual Kanban boards provide an intuitive way to organize tasks, track progress, and gain a clear overview of projects.\",\n      \"basis_ids\": [\n        \"M:Trello\",\n        \"T:Capterra___6572904\",\n        \"T:Capterra___6789657\",\n        \"T:Capterra___7074203\"\n      ]\n    },\n    {\n      \"aspect\": \"Ease of Use & Simplicity\",\n      \"claim\": \"The interface is user-friendly and simple, making it easy to get started and manage tasks without a steep learning curve.\",\n      \"basis_ids\": [\n        \"T:Capterra___6701128\",\n        \"T:Capterra___6856796\",\n        \"T:Capterra___6663269\",\n        \"T:Capterra___7074203\",\n        \"D:Trello:landing:1\"\n      ]\n    },\n    {\n      \"aspect\": \"Customization & Flexibility\",\n      \"claim\": \"Trello offers extensive customization options for boards and cards, allowing users to adapt it to various project needs and workflows.\",\n      \"basis_ids\": [\n        \"D:Trello:landing:1\",\n        \"D:Trello:features:6\",\n        \"T:Capterra___6572904\",\n        \"T:Capterra___6856796\",\n        \"T:Capterra___6663269\"\n      ]\n    }\n  ],\n  \"frictions\": [\n    {\n      \"aspect\": \"Scalability for Complex Projects\",\n      \"claim\": \"Boards can become crowded and overwhelming when managing very large or complex projects with numerous team members.\",\n      \"basis_ids\": [\n        \"T:Capterra___6572904\",\n        \"T:Capterra___7074203\"\n      ]\n    },\n    {\n      \"aspect\": \"Limited Advanced Functionality\",\n      \"claim\": \"Some users desire more advanced features for time tracking, statistics, or data manipulation that Trello may not provide natively.\",\n      \"basis_ids\": [\n        \"T:Capterra___6142032\",\n        \"T:Capterra___6663269\",\n        \"T:Capterra___6807901\"\n      ]\n    },\n    {\n      \"aspect\": \"Payment for Advanced Customization\",\n      \"claim\": \"Accessing certain advanced customization options or integrations may require payment.\",\n      \"basis_ids\": [\n        \"T:Capterra___6856796\",\n        \"D:Trello:landing:1\"\n      ]\n    }\n  ],\n  \"ease_of_use_probabilities_1_to_5\": [\n    0.0,\n    0.0,\n    0.0,\n    0.2,\n    0.8\n  ],\n  \"unknowns\": []\n}",
+  "json": {
+    "product": "Trello",
+    "segments": [
+      {
+        "role_family": "Small Business Owner/Manager",
+        "motivation": "To organize personal and business tasks, manage small teams, and keep track of projects efficiently.",
+        "basis_ids": [
+          "T:Capterra___6701128",
+          "T:Capterra___6142032",
+          "T:Capterra___6856796",
+          "T:Capterra___6016441",
+          "T:Capterra___6663269",
+          "D:Trello:features:1"
+        ]
+      },
+      {
+        "role_family": "Project/Marketing Manager",
+        "motivation": "To manage project workflows, track progress, coordinate team tasks, and organize resources visually.",
+        "basis_ids": [
+          "T:Capterra___6572904",
+          "T:Capterra___6807901",
+          "T:Capterra___6663269"
+        ]
+      },
+      {
+        "role_family": "Individual Contributor",
+        "motivation": "To organize personal to-dos, manage daily tasks, and keep track of responsibilities.",
+        "basis_ids": [
+          "T:Capterra___6701128",
+          "T:Capterra___6142032",
+          "D:Trello:features:1"
+        ]
+      }
+    ],
+    "tasks": [
+      {
+        "action": "organize",
+        "object": "daily to-dos and personal goals",
+        "context": null,
+        "purpose": "stay on top of individual responsibilities",
+        "basis_ids": [
+          "D:Trello:features:1",
+          "D:Trello:features:2",
+          "T:Capterra___6142032",
+          "T:Capterra___6016441"
+        ]
+      },
+      {
+        "action": "manage",
+        "object": "project workflows",
+        "context": "visually using Kanban boards",
+        "purpose": "track progress and coordinate team tasks",
+        "basis_ids": [
+          "M:Trello",
+          "T:Capterra___6572904",
+          "T:Capterra___6807901",
+          "T:Capterra___7074203",
+          "T:Capterra___6663269"
+        ]
+      },
+      {
+        "action": "collaborate",
+        "object": "on shared projects",
+        "context": "with team members or external parties",
+        "purpose": "ensure everyone is on the same page and assign responsibilities",
+        "basis_ids": [
+          "T:Capterra___6701128",
+          "T:Capterra___6789657",
+          "T:Capterra___6807901"
+        ]
+      },
+      {
+        "action": "automate",
+        "object": "repetitive processes",
+        "context": "using built-in automation",
+        "purpose": "streamline workflows and save time",
+        "basis_ids": [
+          "D:Trello:features:7",
+          "T:Capterra___6807901"
+        ]
+      },
+      {
+        "action": "leverage",
+        "object": "AI capabilities",
+        "context": "to generate ideas or refine text",
+        "purpose": "enhance content and organization",
+        "basis_ids": [
+          "D:Trello:features:3",
+          "D:Trello:features:5"
+        ]
+      }
+    ],
+    "benefits": [
+      {
+        "aspect": "Visual Organization & Clarity",
+        "claim": "The visual Kanban boards provide an intuitive way to organize tasks, track progress, and gain a clear overview of projects.",
+        "basis_ids": [
+          "M:Trello",
+          "T:Capterra___6572904",
+          "T:Capterra___6789657",
+          "T:Capterra___7074203"
+        ]
+      },
+      {
+        "aspect": "Ease of Use & Simplicity",
+        "claim": "The interface is user-friendly and simple, making it easy to get started and manage tasks without a steep learning curve.",
+        "basis_ids": [
+          "T:Capterra___6701128",
+          "T:Capterra___6856796",
+          "T:Capterra___6663269",
+          "T:Capterra___7074203",
+          "D:Trello:landing:1"
+        ]
+      },
+      {
+        "aspect": "Customization & Flexibility",
+        "claim": "Trello offers extensive customization options for boards and cards, allowing users to adapt it to various project needs and workflows.",
+        "basis_ids": [
+          "D:Trello:landing:1",
+          "D:Trello:features:6",
+          "T:Capterra___6572904",
+          "T:Capterra___6856796",
+          "T:Capterra___6663269"
+        ]
+      }
+    ],
+    "frictions": [
+      {
+        "aspect": "Scalability for Complex Projects",
+        "claim": "Boards can become crowded and overwhelming when managing very large or complex projects with numerous team members.",
+        "basis_ids": [
+          "T:Capterra___6572904",
+          "T:Capterra___7074203"
+        ]
+      },
+      {
+        "aspect": "Limited Advanced Functionality",
+        "claim": "Some users desire more advanced features for time tracking, statistics, or data manipulation that Trello may not provide natively.",
+        "basis_ids": [
+          "T:Capterra___6142032",
+          "T:Capterra___6663269",
+          "T:Capterra___6807901"
+        ]
+      },
+      {
+        "aspect": "Payment for Advanced Customization",
+        "claim": "Accessing certain advanced customization options or integrations may require payment.",
+        "basis_ids": [
+          "T:Capterra___6856796",
+          "D:Trello:landing:1"
+        ]
+      }
+    ],
+    "ease_of_use_probabilities_1_to_5": [
+      0.0,
+      0.0,
+      0.0,
+      0.2,
+      0.8
+    ],
+    "unknowns": []
+  },
+  "ts": "2026-10-17T23:23:24.245294+00:00"
+}

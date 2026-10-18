@@ -1,0 +1,28 @@
+{
+  "stage": "matched_screen",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "bc3b2c540cbe6409d19a50d0d80091233142eab6ab596254cf08c1db514bf687",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 381,
+  "output_tokens": 565,
+  "cost_usd": 0.00612625,
+  "elapsed_s": 6.21,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review offers only generic praise about ease of use and overall functionality. It does not mention any specific task or activity the reviewer performs with the software.\",\n  \"task\": {\n    \"action\": null,\n    \"object\": null,\n    \"context\": null,\n    \"purpose\": null\n  },\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review offers only generic praise about ease of use and overall functionality. It does not mention any specific task or activity the reviewer performs with the software.",
+    "task": {
+      "action": null,
+      "object": null,
+      "context": null,
+      "purpose": null
+    },
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-17T23:46:23.234799+00:00"
+}

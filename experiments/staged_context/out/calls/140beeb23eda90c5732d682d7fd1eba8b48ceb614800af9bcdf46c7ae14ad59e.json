@@ -1,0 +1,23 @@
+{
+  "stage": "matched_screen",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "140beeb23eda90c5732d682d7fd1eba8b48ceb614800af9bcdf46c7ae14ad59e",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 408,
+  "output_tokens": 1080,
+  "cost_usd": 0.01131,
+  "elapsed_s": 9.76,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review states the user's main activities are using ClickUp \\\"as a CRM database\\\" and \\\"to keep track of projects.\\\" These are high-level applications of the software, not a specific, concrete task with a clear action and object that could be attempted in a short time frame, as required by the criteria (e.g., 'manage projects' is cited as too generic).\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": \"I use it mainly as a CRM database and to keep track of projects.\"\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review states the user's main activities are using ClickUp \"as a CRM database\" and \"to keep track of projects.\" These are high-level applications of the software, not a specific, concrete task with a clear action and object that could be attempted in a short time frame, as required by the criteria (e.g., 'manage projects' is cited as too generic).",
+    "task": null,
+    "neutral_task": null,
+    "span": "I use it mainly as a CRM database and to keep track of projects."
+  },
+  "ts": "2026-10-17T23:51:58.142973+00:00"
+}

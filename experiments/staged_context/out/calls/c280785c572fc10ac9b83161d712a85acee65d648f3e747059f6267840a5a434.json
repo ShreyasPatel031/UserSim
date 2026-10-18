@@ -1,0 +1,28 @@
+{
+  "stage": "matched_screen",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "c280785c572fc10ac9b83161d712a85acee65d648f3e747059f6267840a5a434",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 384,
+  "output_tokens": 726,
+  "cost_usd": 0.00774,
+  "elapsed_s": 8.32,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review is very high-level, praising general benefits like 'easy collaboration' and 'customizable communication' without describing a specific, concrete task or workflow. The actions mentioned, like setting up notifications, are configuration steps rather than a dominant use case.\",\n  \"task\": {\n    \"action\": null,\n    \"object\": null,\n    \"context\": null,\n    \"purpose\": null\n  },\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review is very high-level, praising general benefits like 'easy collaboration' and 'customizable communication' without describing a specific, concrete task or workflow. The actions mentioned, like setting up notifications, are configuration steps rather than a dominant use case.",
+    "task": {
+      "action": null,
+      "object": null,
+      "context": null,
+      "purpose": null
+    },
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-17T23:41:14.362459+00:00"
+}

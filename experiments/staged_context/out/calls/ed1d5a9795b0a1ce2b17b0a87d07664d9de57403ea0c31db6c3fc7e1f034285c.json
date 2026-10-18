@@ -1,0 +1,65 @@
+{
+  "stage": "extract",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "ed1d5a9795b0a1ce2b17b0a87d07664d9de57403ea0c31db6c3fc7e1f034285c",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 472,
+  "output_tokens": 1592,
+  "cost_usd": 0.01651,
+  "elapsed_s": 14.31,
+  "error": null,
+  "text": "{\n  \"tasks\": [\n    {\n      \"action\": \"managing\",\n      \"object\": \"in progress work\",\n      \"context\": null,\n      \"purpose\": null,\n      \"span\": \"managing in progress work\"\n    },\n    {\n      \"action\": \"tracking\",\n      \"object\": \"work in your backlog\",\n      \"context\": null,\n      \"purpose\": null,\n      \"span\": \"tracking work in your backlog\"\n    },\n    {\n      \"action\": \"customize\",\n      \"object\": \"the columns on your boards\",\n      \"context\": null,\n      \"purpose\": null,\n      \"span\": \"customize the columns on your boards and add new columns\"\n    }\n  ],\n  \"benefits\": [\n    {\n      \"aspect\": \"interface\",\n      \"claim\": \"The default board layout is good.\",\n      \"span\": \"I like the default board layout\"\n    },\n    {\n      \"aspect\": \"flexibility\",\n      \"claim\": \"You can customize and add new columns to boards.\",\n      \"span\": \"customize the columns on your boards and add new columns\"\n    },\n    {\n      \"aspect\": \"collaboration\",\n      \"claim\": \"It is a great collaboration tool.\",\n      \"span\": \"A great collaboration tool\"\n    }\n  ],\n  \"frictions\": [\n    {\n      \"aspect\": \"pricing\",\n      \"claim\": \"The 10-user limit for the free version is too restrictive for a non-profit group.\",\n      \"span\": \"I use Trello for a not for Profit group and the limit of 10 users for the free version is too restrictive.\"\n    }\n  ]\n}",
+  "json": {
+    "tasks": [
+      {
+        "action": "managing",
+        "object": "in progress work",
+        "context": null,
+        "purpose": null,
+        "span": "managing in progress work"
+      },
+      {
+        "action": "tracking",
+        "object": "work in your backlog",
+        "context": null,
+        "purpose": null,
+        "span": "tracking work in your backlog"
+      },
+      {
+        "action": "customize",
+        "object": "the columns on your boards",
+        "context": null,
+        "purpose": null,
+        "span": "customize the columns on your boards and add new columns"
+      }
+    ],
+    "benefits": [
+      {
+        "aspect": "interface",
+        "claim": "The default board layout is good.",
+        "span": "I like the default board layout"
+      },
+      {
+        "aspect": "flexibility",
+        "claim": "You can customize and add new columns to boards.",
+        "span": "customize the columns on your boards and add new columns"
+      },
+      {
+        "aspect": "collaboration",
+        "claim": "It is a great collaboration tool.",
+        "span": "A great collaboration tool"
+      }
+    ],
+    "frictions": [
+      {
+        "aspect": "pricing",
+        "claim": "The 10-user limit for the free version is too restrictive for a non-profit group.",
+        "span": "I use Trello for a not for Profit group and the limit of 10 users for the free version is too restrictive."
+      }
+    ]
+  },
+  "ts": "2026-10-17T23:33:36.760353+00:00"
+}

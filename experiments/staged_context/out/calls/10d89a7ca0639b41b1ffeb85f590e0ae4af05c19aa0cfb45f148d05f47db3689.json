@@ -1,0 +1,184 @@
+{
+  "stage": "predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "10d89a7ca0639b41b1ffeb85f590e0ae4af05c19aa0cfb45f148d05f47db3689",
+  "temperature": 0.7,
+  "seed": 2000,
+  "max_tokens": 8192,
+  "input_tokens": 8178,
+  "output_tokens": 4471,
+  "cost_usd": 0.0136309,
+  "elapsed_s": 18.63,
+  "error": null,
+  "text": "{\n  \"product\": \"Asana\",\n  \"segments\": [\n    {\n      \"role_family\": \"Project Managers/Team Leads\",\n      \"motivation\": \"Overseeing project progress, coordinating team efforts, and ensuring task completion.\",\n      \"basis_ids\": [\"M:Asana\", \"D:Asana:features:1\", \"D:Asana:features:2\", \"D:Asana:features:6\", \"D:Asana:features:8\", \"T:Capterra___6859873\", \"T:Capterra___6575085\", \"T:Capterra___7054138\", \"T:Capterra___7147752\"]\n    },\n    {\n      \"role_family\": \"Individual Contributors/Team Members\",\n      \"motivation\": \"Managing personal tasks, understanding priorities, and collaborating efficiently within a team.\",\n      \"basis_ids\": [\"D:Asana:features:4\", \"T:Capterra___6827851\", \"T:Capterra___3332315\", \"T:Capterra___6575085\"]\n    },\n    {\n      \"role_family\": \"Small Business Owners/Entrepreneurs\",\n      \"motivation\": \"Organizing overall business operations, managing small teams, and maximizing productivity with an intuitive tool.\",\n      \"basis_ids\": [\"T:Capterra___6827851\", \"T:Capterra___7086070\"]\n    }\n  ],\n  \"tasks\": [\n    {\n      \"action\": \"Organize and break down work\",\n      \"object\": \"manageable tasks\",\n      \"context\": null,\n      \"purpose\": \"to define responsibilities and set clear deadlines\",\n      \"basis_ids\": [\"D:Asana:features:2\", \"T:Capterra___7147752\"]\n    },\n    {\n      \"action\": \"Track\",\n      \"object\": \"project progress and task completion\",\n      \"context\": null,\n      \"purpose\": \"to ensure accountability and monitor advancement\",\n      \"basis_ids\": [\"D:Asana:features:1\", \"D:Asana:features:2\", \"T:Capterra___6859873\", \"T:Capterra___7086070\", \"T:Capterra___6827851\", \"T:Capterra___7054138\"]\n    },\n    {\n      \"action\": \"Facilitate\",\n      \"object\": \"team collaboration and communication\",\n      \"context\": null,\n      \"purpose\": \"to share updates, feedback, and files efficiently\",\n      \"basis_ids\": [\"D:Asana:landing:1\", \"D:Asana:landing:3\", \"T:Capterra___6859873\", \"T:Capterra___7086070\", \"T:Capterra___6827851\", \"T:Capterra___7147752\"]\n    },\n    {\n      \"action\": \"Manage\",\n      \"object\": \"personal workload and prioritize assignments\",\n      \"context\": null,\n      \"purpose\": \"to avoid being over-scheduled and overwhelmed\",\n      \"basis_ids\": [\"D:Asana:features:4\", \"T:Capterra___3332315\", \"T:Capterra___6575085\"]\n    },\n    {\n      \"action\": \"Streamline and automate\",\n      \"object\": \"workflows\",\n      \"context\": null,\n      \"purpose\": \"to create efficient processes and automate routine tasks\",\n      \"basis_ids\": [\"D:Asana:features:6\", \"D:Asana:features:7\", \"T:Capterra___6603012\", \"T:Capterra___7147752\"]\n    }\n  ],\n  \"benefits\": [\n    {\n      \"aspect\": \"Project Visibility & Tracking\",\n      \"claim\": \"The tool provides clear insights into project status, task advancement, and overall performance.\",\n      \"basis_ids\": [\"T:Capterra___6859873\", \"T:Capterra___7147752\"]\n    },\n    {\n      \"aspect\": \"Team Collaboration & Communication\",\n      \"claim\": \"It centralizes discussions, updates, and files, fostering efficient teamwork and shared understanding.\",\n      \"basis_ids\": [\"T:Capterra___6859873\", \"T:Capterra___7086070\", \"T:Capterra___6827851\", \"T:Capterra___7147752\"]\n    },\n    {\n      \"aspect\": \"Productivity & Workflow Efficiency\",\n      \"claim\": \"Users find it helps organize daily tasks and larger projects, leading to streamlined operations and increased output.\",\n      \"basis_ids\": [\"T:Capterra___6575085\", \"T:Capterra___6603012\", \"T:Capterra___7147752\"]\n    }\n  ],\n  \"frictions\": [\n    {\n      \"aspect\": \"Interface Complexity\",\n      \"claim\": \"The extensive number of features and options can sometimes make the interface feel overwhelming or cumbersome to navigate.\",\n      \"basis_ids\": [\"T:Capterra___7086070\", \"T:Capterra___6827851\"]\n    },\n    {\n      \"aspect\": \"Notification Management\",\n      \"claim\": \"Reviewers report issues with the volume of email notifications or difficulty tracking discussions within long comment threads.\",\n      \"basis_ids\": [\"T:Capterra___7054138\", \"T:Capterra___6812592\"]\n    },\n    {\n      \"aspect\": \"Feature Access by Tier\",\n      \"claim\": \"Some advanced and useful features, such as comprehensive timelines and reporting, are restricted to higher-tier pricing plans.\",\n      \"basis_ids\": [\"T:Capterra___7147752\"]\n    }\n  ],\n  \"ease_of_use_probabilities_1_to_5\": [0.0, 0.0, 0.2, 0.2, 0.6],\n  \"unknowns\": [\n    \"The widespread adoption and perceived impact of Asana's 'AI Teammates' or 'Agentic Work Management' features beyond a single mention.\",\n    \"Specific details regarding the usage and value derived from advanced features like capacity planning, workload management, timesheets, and budgeting tools.\",\n    \"The extent to which reviewers utilize and benefit from Asana's broad range of integrations with other software tools.\",\n    \"User experience with the administrative, security, and audit features designed for organizational control and compliance.\"\n  ]\n}",
+  "json": {
+    "product": "Asana",
+    "segments": [
+      {
+        "role_family": "Project Managers/Team Leads",
+        "motivation": "Overseeing project progress, coordinating team efforts, and ensuring task completion.",
+        "basis_ids": [
+          "M:Asana",
+          "D:Asana:features:1",
+          "D:Asana:features:2",
+          "D:Asana:features:6",
+          "D:Asana:features:8",
+          "T:Capterra___6859873",
+          "T:Capterra___6575085",
+          "T:Capterra___7054138",
+          "T:Capterra___7147752"
+        ]
+      },
+      {
+        "role_family": "Individual Contributors/Team Members",
+        "motivation": "Managing personal tasks, understanding priorities, and collaborating efficiently within a team.",
+        "basis_ids": [
+          "D:Asana:features:4",
+          "T:Capterra___6827851",
+          "T:Capterra___3332315",
+          "T:Capterra___6575085"
+        ]
+      },
+      {
+        "role_family": "Small Business Owners/Entrepreneurs",
+        "motivation": "Organizing overall business operations, managing small teams, and maximizing productivity with an intuitive tool.",
+        "basis_ids": [
+          "T:Capterra___6827851",
+          "T:Capterra___7086070"
+        ]
+      }
+    ],
+    "tasks": [
+      {
+        "action": "Organize and break down work",
+        "object": "manageable tasks",
+        "context": null,
+        "purpose": "to define responsibilities and set clear deadlines",
+        "basis_ids": [
+          "D:Asana:features:2",
+          "T:Capterra___7147752"
+        ]
+      },
+      {
+        "action": "Track",
+        "object": "project progress and task completion",
+        "context": null,
+        "purpose": "to ensure accountability and monitor advancement",
+        "basis_ids": [
+          "D:Asana:features:1",
+          "D:Asana:features:2",
+          "T:Capterra___6859873",
+          "T:Capterra___7086070",
+          "T:Capterra___6827851",
+          "T:Capterra___7054138"
+        ]
+      },
+      {
+        "action": "Facilitate",
+        "object": "team collaboration and communication",
+        "context": null,
+        "purpose": "to share updates, feedback, and files efficiently",
+        "basis_ids": [
+          "D:Asana:landing:1",
+          "D:Asana:landing:3",
+          "T:Capterra___6859873",
+          "T:Capterra___7086070",
+          "T:Capterra___6827851",
+          "T:Capterra___7147752"
+        ]
+      },
+      {
+        "action": "Manage",
+        "object": "personal workload and prioritize assignments",
+        "context": null,
+        "purpose": "to avoid being over-scheduled and overwhelmed",
+        "basis_ids": [
+          "D:Asana:features:4",
+          "T:Capterra___3332315",
+          "T:Capterra___6575085"
+        ]
+      },
+      {
+        "action": "Streamline and automate",
+        "object": "workflows",
+        "context": null,
+        "purpose": "to create efficient processes and automate routine tasks",
+        "basis_ids": [
+          "D:Asana:features:6",
+          "D:Asana:features:7",
+          "T:Capterra___6603012",
+          "T:Capterra___7147752"
+        ]
+      }
+    ],
+    "benefits": [
+      {
+        "aspect": "Project Visibility & Tracking",
+        "claim": "The tool provides clear insights into project status, task advancement, and overall performance.",
+        "basis_ids": [
+          "T:Capterra___6859873",
+          "T:Capterra___7147752"
+        ]
+      },
+      {
+        "aspect": "Team Collaboration & Communication",
+        "claim": "It centralizes discussions, updates, and files, fostering efficient teamwork and shared understanding.",
+        "basis_ids": [
+          "T:Capterra___6859873",
+          "T:Capterra___7086070",
+          "T:Capterra___6827851",
+          "T:Capterra___7147752"
+        ]
+      },
+      {
+        "aspect": "Productivity & Workflow Efficiency",
+        "claim": "Users find it helps organize daily tasks and larger projects, leading to streamlined operations and increased output.",
+        "basis_ids": [
+          "T:Capterra___6575085",
+          "T:Capterra___6603012",
+          "T:Capterra___7147752"
+        ]
+      }
+    ],
+    "frictions": [
+      {
+        "aspect": "Interface Complexity",
+        "claim": "The extensive number of features and options can sometimes make the interface feel overwhelming or cumbersome to navigate.",
+        "basis_ids": [
+          "T:Capterra___7086070",
+          "T:Capterra___6827851"
+        ]
+      },
+      {
+        "aspect": "Notification Management",
+        "claim": "Reviewers report issues with the volume of email notifications or difficulty tracking discussions within long comment threads.",
+        "basis_ids": [
+          "T:Capterra___7054138",
+          "T:Capterra___6812592"
+        ]
+      },
+      {
+        "aspect": "Feature Access by Tier",
+        "claim": "Some advanced and useful features, such as comprehensive timelines and reporting, are restricted to higher-tier pricing plans.",
+        "basis_ids": [
+          "T:Capterra___7147752"
+        ]
+      }
+    ],
+    "ease_of_use_probabilities_1_to_5": [
+      0.0,
+      0.0,
+      0.2,
+      0.2,
+      0.6
+    ],
+    "unknowns": [
+      "The widespread adoption and perceived impact of Asana's 'AI Teammates' or 'Agentic Work Management' features beyond a single mention.",
+      "Specific details regarding the usage and value derived from advanced features like capacity planning, workload management, timesheets, and budgeting tools.",
+      "The extent to which reviewers utilize and benefit from Asana's broad range of integrations with other software tools.",
+      "User experience with the administrative, security, and audit features designed for organizational control and compliance."
+    ]
+  },
+  "ts": "2026-10-17T23:20:49.327403+00:00"
+}

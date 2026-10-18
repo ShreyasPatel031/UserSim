@@ -1,0 +1,51 @@
+{
+  "stage": "extract",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "65e9c67d1dc9ddc155db59dc1c42b358cb841ec8ff1ef18a9b8833241e9aba07",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 489,
+  "output_tokens": 1633,
+  "cost_usd": 0.016941249999999998,
+  "elapsed_s": 14.31,
+  "error": null,
+  "text": "{\n  \"tasks\": [\n    {\n      \"action\": \"percebe\",\n      \"object\": \"o estado em que as tarefas estão\",\n      \"context\": null,\n      \"purpose\": null,\n      \"span\": \"rapidamente se percebe o estado em que as tarefas estão\"\n    }\n  ],\n  \"benefits\": [\n    {\n      \"aspect\": \"ease_of_use\",\n      \"claim\": \"The product is intuitive and very practical to use.\",\n      \"span\": \"É de uso intuitivo e muito prático.\"\n    },\n    {\n      \"aspect\": \"interface\",\n      \"claim\": \"You can quickly understand the status of tasks.\",\n      \"span\": \"rapidamente se percebe o estado em que as tarefas estão\"\n    },\n    {\n      \"aspect\": \"collaboration\",\n      \"claim\": \"The ability to divide by teams is very useful.\",\n      \"span\": \"A possibilidade de divisão por equipas também é muito útil.\"\n    }\n  ],\n  \"frictions\": [\n    {\n      \"aspect\": \"interface\",\n      \"claim\": \"The appearance could be more visually pleasing and cleaner.\",\n      \"span\": \"podia ser mais agradável à vista, mais clean\"\n    }\n  ]\n}",
+  "json": {
+    "tasks": [
+      {
+        "action": "percebe",
+        "object": "o estado em que as tarefas estão",
+        "context": null,
+        "purpose": null,
+        "span": "rapidamente se percebe o estado em que as tarefas estão"
+      }
+    ],
+    "benefits": [
+      {
+        "aspect": "ease_of_use",
+        "claim": "The product is intuitive and very practical to use.",
+        "span": "É de uso intuitivo e muito prático."
+      },
+      {
+        "aspect": "interface",
+        "claim": "You can quickly understand the status of tasks.",
+        "span": "rapidamente se percebe o estado em que as tarefas estão"
+      },
+      {
+        "aspect": "collaboration",
+        "claim": "The ability to divide by teams is very useful.",
+        "span": "A possibilidade de divisão por equipas também é muito útil."
+      }
+    ],
+    "frictions": [
+      {
+        "aspect": "interface",
+        "claim": "The appearance could be more visually pleasing and cleaner.",
+        "span": "podia ser mais agradável à vista, mais clean"
+      }
+    ]
+  },
+  "ts": "2026-10-17T23:08:15.494611+00:00"
+}

@@ -1,0 +1,58 @@
+{
+  "stage": "extract",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "34561dbc0eb2633101fa4ce6f72cf7c0d34c96093be34f330a561fe68471be3b",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 449,
+  "output_tokens": 2022,
+  "cost_usd": 0.020781249999999998,
+  "elapsed_s": 19.17,
+  "error": null,
+  "text": "{\n  \"tasks\": [\n    {\n      \"action\": \"manage\",\n      \"object\": \"team\",\n      \"context\": null,\n      \"purpose\": null,\n      \"span\": \"team management\"\n    },\n    {\n      \"action\": \"manage\",\n      \"object\": \"client\",\n      \"context\": null,\n      \"purpose\": null,\n      \"span\": \"client management\"\n    }\n  ],\n  \"benefits\": [\n    {\n      \"aspect\": \"features\",\n      \"claim\": \"The software has teaching capabilities.\",\n      \"span\": \"Teaching capabilities\"\n    }\n  ],\n  \"frictions\": [\n    {\n      \"aspect\": \"features\",\n      \"claim\": \"Client management could be improved.\",\n      \"span\": \"client management could get better\"\n    },\n    {\n      \"aspect\": \"features\",\n      \"claim\": \"A client intake form would be a nice addition.\",\n      \"span\": \"Client intake form would be nice\"\n    },\n    {\n      \"aspect\": \"interface\",\n      \"claim\": \"The interface needs a smoother look.\",\n      \"span\": \"needs a more smoother look\"\n    }\n  ]\n}",
+  "json": {
+    "tasks": [
+      {
+        "action": "manage",
+        "object": "team",
+        "context": null,
+        "purpose": null,
+        "span": "team management"
+      },
+      {
+        "action": "manage",
+        "object": "client",
+        "context": null,
+        "purpose": null,
+        "span": "client management"
+      }
+    ],
+    "benefits": [
+      {
+        "aspect": "features",
+        "claim": "The software has teaching capabilities.",
+        "span": "Teaching capabilities"
+      }
+    ],
+    "frictions": [
+      {
+        "aspect": "features",
+        "claim": "Client management could be improved.",
+        "span": "client management could get better"
+      },
+      {
+        "aspect": "features",
+        "claim": "A client intake form would be a nice addition.",
+        "span": "Client intake form would be nice"
+      },
+      {
+        "aspect": "interface",
+        "claim": "The interface needs a smoother look.",
+        "span": "needs a more smoother look"
+      }
+    ]
+  },
+  "ts": "2026-10-17T23:33:59.043549+00:00"
+}

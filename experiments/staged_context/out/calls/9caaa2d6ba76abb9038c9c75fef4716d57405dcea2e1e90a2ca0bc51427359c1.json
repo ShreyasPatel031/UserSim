@@ -1,0 +1,63 @@
+{
+  "stage": "extract",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "9caaa2d6ba76abb9038c9c75fef4716d57405dcea2e1e90a2ca0bc51427359c1",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 493,
+  "output_tokens": 1740,
+  "cost_usd": 0.018016249999999998,
+  "elapsed_s": 15.6,
+  "error": null,
+  "text": "{\n  \"tasks\": [\n    {\n      \"action\": \"gérer\",\n      \"object\": \"des tâches dans des listes par thématique\",\n      \"context\": null,\n      \"purpose\": null,\n      \"span\": \"gérer des tâches dans des listes par thématique\"\n    },\n    {\n      \"action\": \"gestion\",\n      \"object\": \"des tâches au quotidien, triées par client/thématique/projet\",\n      \"context\": null,\n      \"purpose\": null,\n      \"span\": \"gestion des tâches au quotidien, triées par client/thématique/projet\"\n    }\n  ],\n  \"benefits\": [\n    {\n      \"aspect\": \"features\",\n      \"claim\": \"Can manage tasks in lists by theme.\",\n      \"span\": \"La possibilité de gérer des tâches dans des listes par thématique.\"\n    },\n    {\n      \"aspect\": \"features\",\n      \"claim\": \"It is like an improved to-do list.\",\n      \"span\": \"Un genre de to-do list améliorée.\"\n    },\n    {\n      \"aspect\": \"ease_of_use\",\n      \"claim\": \"Easy to use.\",\n      \"span\": \"Facile d'utilisation\"\n    }\n  ],\n  \"frictions\": [\n    {\n      \"aspect\": \"notifications\",\n      \"claim\": \"Never received notifications for task due dates.\",\n      \"span\": \"Je n'ai jamais reçu les notifications à la date d'échéance d'une tâche\"\n    },\n    {\n      \"aspect\": \"features\",\n      \"claim\": \"It is not possible to add a line break in the text of a task.\",\n      \"span\": \"Pas de possibilité de passer à la ligne dans le texte d'une tâche.\"\n    }\n  ]\n}",
+  "json": {
+    "tasks": [
+      {
+        "action": "gérer",
+        "object": "des tâches dans des listes par thématique",
+        "context": null,
+        "purpose": null,
+        "span": "gérer des tâches dans des listes par thématique"
+      },
+      {
+        "action": "gestion",
+        "object": "des tâches au quotidien, triées par client/thématique/projet",
+        "context": null,
+        "purpose": null,
+        "span": "gestion des tâches au quotidien, triées par client/thématique/projet"
+      }
+    ],
+    "benefits": [
+      {
+        "aspect": "features",
+        "claim": "Can manage tasks in lists by theme.",
+        "span": "La possibilité de gérer des tâches dans des listes par thématique."
+      },
+      {
+        "aspect": "features",
+        "claim": "It is like an improved to-do list.",
+        "span": "Un genre de to-do list améliorée."
+      },
+      {
+        "aspect": "ease_of_use",
+        "claim": "Easy to use.",
+        "span": "Facile d'utilisation"
+      }
+    ],
+    "frictions": [
+      {
+        "aspect": "notifications",
+        "claim": "Never received notifications for task due dates.",
+        "span": "Je n'ai jamais reçu les notifications à la date d'échéance d'une tâche"
+      },
+      {
+        "aspect": "features",
+        "claim": "It is not possible to add a line break in the text of a task.",
+        "span": "Pas de possibilité de passer à la ligne dans le texte d'une tâche."
+      }
+    ]
+  },
+  "ts": "2026-10-17T23:33:22.450547+00:00"
+}

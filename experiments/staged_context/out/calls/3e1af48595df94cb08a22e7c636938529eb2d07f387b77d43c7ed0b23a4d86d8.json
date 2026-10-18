@@ -1,0 +1,75 @@
+{
+  "stage": "extract",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "3e1af48595df94cb08a22e7c636938529eb2d07f387b77d43c7ed0b23a4d86d8",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 791,
+  "output_tokens": 2369,
+  "cost_usd": 0.02467875,
+  "elapsed_s": 17.95,
+  "error": null,
+  "text": "{\n  \"tasks\": [\n    {\n      \"action\": \"tracking\",\n      \"object\": \"shared tasks\",\n      \"context\": \"on a team-level, such as a team that is planning an annual event with multiple tasks, deadlines, and departments\",\n      \"purpose\": null,\n      \"span\": \"tracking shared tasks on a team-level, such as a team that is planning an annual event with multiple tasks, deadlines, and departments (marketing and sponsorships, event logistics, registration management, etc.)\"\n    },\n    {\n      \"action\": \"check off\",\n      \"object\": \"each task as an agenda item\",\n      \"context\": \"for weekly team meetings\",\n      \"purpose\": null,\n      \"span\": \"check off each task as an agenda item\"\n    },\n    {\n      \"action\": \"turn\",\n      \"object\": \"an agenda item into a task on someone's to-do list\",\n      \"context\": \"during weekly team meetings\",\n      \"purpose\": null,\n      \"span\": \"turn an agenda item into a task on someone's to-do list, adding a due date and moving the task to a relevant project\"\n    }\n  ],\n  \"benefits\": [\n    {\n      \"aspect\": \"collaboration\",\n      \"claim\": \"It can work wonders for your team if you know how to use all its features.\",\n      \"span\": \"If you know how to use Asana and all of its features, then it can work wonders for your team.\"\n    },\n    {\n      \"aspect\": \"flexibility\",\n      \"claim\": \"Tasks can be assigned to as few or as many teammates as preferred.\",\n      \"span\": \"Tasks can be assigned to as few or as many teammates as you'd prefer\"\n    },\n    {\n      \"aspect\": \"flexibility\",\n      \"claim\": \"Tasks can be moved between sub-categories and projects.\",\n      \"span\": \"Tasks can move between sub-categories and between projects.\"\n    }\n  ],\n  \"frictions\": [\n    {\n      \"aspect\": \"ease_of_use\",\n      \"claim\": \"The functionality and innerworkings can be rather complex for a team's comprehension.\",\n      \"span\": \"the functionality and innerworkings of Asana can be rather complex for a team's comprehension.\"\n    },\n    {\n      \"aspect\": \"other\",\n      \"claim\": \"It can be challenging if you have already created an Asana account with one email while representing multiple organizations.\",\n      \"span\": \"it can also be challenging if you have already created an Asana account with one email.\"\n    },\n    {\n      \"aspect\": \"other\",\n      \"claim\": \"It is difficult to merge all Asana 'teams' into one log-in if you have already created a log-in.\",\n      \"span\": \"it is difficult to do so if you have already created an Asana log-in.\"\n    }\n  ]\n}",
+  "json": {
+    "tasks": [
+      {
+        "action": "tracking",
+        "object": "shared tasks",
+        "context": "on a team-level, such as a team that is planning an annual event with multiple tasks, deadlines, and departments",
+        "purpose": null,
+        "span": "tracking shared tasks on a team-level, such as a team that is planning an annual event with multiple tasks, deadlines, and departments (marketing and sponsorships, event logistics, registration management, etc.)"
+      },
+      {
+        "action": "check off",
+        "object": "each task as an agenda item",
+        "context": "for weekly team meetings",
+        "purpose": null,
+        "span": "check off each task as an agenda item"
+      },
+      {
+        "action": "turn",
+        "object": "an agenda item into a task on someone's to-do list",
+        "context": "during weekly team meetings",
+        "purpose": null,
+        "span": "turn an agenda item into a task on someone's to-do list, adding a due date and moving the task to a relevant project"
+      }
+    ],
+    "benefits": [
+      {
+        "aspect": "collaboration",
+        "claim": "It can work wonders for your team if you know how to use all its features.",
+        "span": "If you know how to use Asana and all of its features, then it can work wonders for your team."
+      },
+      {
+        "aspect": "flexibility",
+        "claim": "Tasks can be assigned to as few or as many teammates as preferred.",
+        "span": "Tasks can be assigned to as few or as many teammates as you'd prefer"
+      },
+      {
+        "aspect": "flexibility",
+        "claim": "Tasks can be moved between sub-categories and projects.",
+        "span": "Tasks can move between sub-categories and between projects."
+      }
+    ],
+    "frictions": [
+      {
+        "aspect": "ease_of_use",
+        "claim": "The functionality and innerworkings can be rather complex for a team's comprehension.",
+        "span": "the functionality and innerworkings of Asana can be rather complex for a team's comprehension."
+      },
+      {
+        "aspect": "other",
+        "claim": "It can be challenging if you have already created an Asana account with one email while representing multiple organizations.",
+        "span": "it can also be challenging if you have already created an Asana account with one email."
+      },
+      {
+        "aspect": "other",
+        "claim": "It is difficult to merge all Asana 'teams' into one log-in if you have already created a log-in.",
+        "span": "it is difficult to do so if you have already created an Asana log-in."
+      }
+    ]
+  },
+  "ts": "2026-10-17T23:39:55.595637+00:00"
+}

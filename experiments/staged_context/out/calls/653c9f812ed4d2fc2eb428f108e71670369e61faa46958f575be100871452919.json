@@ -1,0 +1,65 @@
+{
+  "stage": "extract",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "653c9f812ed4d2fc2eb428f108e71670369e61faa46958f575be100871452919",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 503,
+  "output_tokens": 1612,
+  "cost_usd": 0.01674875,
+  "elapsed_s": 14.02,
+  "error": null,
+  "text": "{\n  \"tasks\": [\n    {\n      \"action\": \"get\",\n      \"object\": \"a good overview of the project\",\n      \"context\": null,\n      \"purpose\": null,\n      \"span\": \"get a good overview of the project you're working on\"\n    },\n    {\n      \"action\": \"manage\",\n      \"object\": \"tasks\",\n      \"context\": null,\n      \"purpose\": null,\n      \"span\": \"task management\"\n    },\n    {\n      \"action\": \"automates\",\n      \"object\": \"repetitive tasks\",\n      \"context\": null,\n      \"purpose\": \"saving team time\",\n      \"span\": \"Trello automates repetitive tasks with no need for code, saving team time\"\n    }\n  ],\n  \"benefits\": [\n    {\n      \"aspect\": \"ease_of_use\",\n      \"claim\": \"The interface is easy to understand for new users.\",\n      \"span\": \"Its interface is easy to understand even if you're a newbie.\"\n    },\n    {\n      \"aspect\": \"automation\",\n      \"claim\": \"Automates repetitive tasks without code, saving team time.\",\n      \"span\": \"Trello automates repetitive tasks with no need for code, saving team time\"\n    },\n    {\n      \"aspect\": \"integrations\",\n      \"claim\": \"Integrates well with Google Drive, Jira, and Slack.\",\n      \"span\": \"Integrates quite well with Google Drive Jira and Slack for example.\"\n    }\n  ],\n  \"frictions\": [\n    {\n      \"aspect\": \"flexibility\",\n      \"claim\": \"Boards can become difficult to manage for larger, more complex projects.\",\n      \"span\": \"When working on larger projects which are a bit more complex, the boards can become a bit difficult to manage.\"\n    }\n  ]\n}",
+  "json": {
+    "tasks": [
+      {
+        "action": "get",
+        "object": "a good overview of the project",
+        "context": null,
+        "purpose": null,
+        "span": "get a good overview of the project you're working on"
+      },
+      {
+        "action": "manage",
+        "object": "tasks",
+        "context": null,
+        "purpose": null,
+        "span": "task management"
+      },
+      {
+        "action": "automates",
+        "object": "repetitive tasks",
+        "context": null,
+        "purpose": "saving team time",
+        "span": "Trello automates repetitive tasks with no need for code, saving team time"
+      }
+    ],
+    "benefits": [
+      {
+        "aspect": "ease_of_use",
+        "claim": "The interface is easy to understand for new users.",
+        "span": "Its interface is easy to understand even if you're a newbie."
+      },
+      {
+        "aspect": "automation",
+        "claim": "Automates repetitive tasks without code, saving team time.",
+        "span": "Trello automates repetitive tasks with no need for code, saving team time"
+      },
+      {
+        "aspect": "integrations",
+        "claim": "Integrates well with Google Drive, Jira, and Slack.",
+        "span": "Integrates quite well with Google Drive Jira and Slack for example."
+      }
+    ],
+    "frictions": [
+      {
+        "aspect": "flexibility",
+        "claim": "Boards can become difficult to manage for larger, more complex projects.",
+        "span": "When working on larger projects which are a bit more complex, the boards can become a bit difficult to manage."
+      }
+    ]
+  },
+  "ts": "2026-10-17T23:32:46.402838+00:00"
+}

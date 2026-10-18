@@ -1,0 +1,28 @@
+{
+  "stage": "matched_screen",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "3888d2acfe4059b839014c614c46faefa212ac7d4850ae7339975f4c08be3371",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 331,
+  "output_tokens": 527,
+  "cost_usd": 0.0056837500000000004,
+  "elapsed_s": 6.15,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review only mentions generic collaboration and UI actions ('find pages', 'search for items') without describing a specific, concrete task the user is trying to accomplish.\",\n  \"task\": {\n    \"action\": null,\n    \"object\": null,\n    \"context\": null,\n    \"purpose\": null\n  },\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review only mentions generic collaboration and UI actions ('find pages', 'search for items') without describing a specific, concrete task the user is trying to accomplish.",
+    "task": {
+      "action": null,
+      "object": null,
+      "context": null,
+      "purpose": null
+    },
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-17T23:49:56.802610+00:00"
+}

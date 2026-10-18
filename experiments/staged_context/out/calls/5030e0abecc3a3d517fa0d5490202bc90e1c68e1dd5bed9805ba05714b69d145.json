@@ -1,0 +1,176 @@
+{
+  "stage": "predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "5030e0abecc3a3d517fa0d5490202bc90e1c68e1dd5bed9805ba05714b69d145",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "input_tokens": 3872,
+  "output_tokens": 4439,
+  "cost_usd": 0.0122591,
+  "elapsed_s": 18.64,
+  "error": null,
+  "text": "{\n  \"product\": \"Asana\",\n  \"segments\": [\n    {\n      \"role_family\": \"Project Managers\",\n      \"motivation\": \"To ensure projects are delivered on time and within scope, with clear visibility and efficient coordination across teams.\",\n      \"basis_ids\": [\n        \"M:Asana\",\n        \"D:Asana:landing:3\",\n        \"D:Asana:landing:4\",\n        \"D:Asana:landing:5\",\n        \"D:Asana:features:1\",\n        \"O:13-1082.00\"\n      ]\n    },\n    {\n      \"role_family\": \"Team Leads/Operations Managers\",\n      \"motivation\": \"To improve team productivity, streamline workflows, and gain real-time insights into work progress and resource allocation.\",\n      \"basis_ids\": [\n        \"M:Asana\",\n        \"D:Asana:landing:3\",\n        \"D:Asana:features:1\",\n        \"D:Asana:features:6\",\n        \"D:Asana:features:8\",\n        \"O:11-1021.00\"\n      ]\n    },\n    {\n      \"role_family\": \"Cross-functional Team Members\",\n      \"motivation\": \"To collaborate effectively, track individual contributions, and understand how their tasks fit into larger project goals.\",\n      \"basis_ids\": [\n        \"D:Asana:landing:3\",\n        \"D:Asana:features:4\",\n        \"D:Asana:features:5\"\n      ]\n    }\n  ],\n  \"tasks\": [\n    {\n      \"action\": \"Organize and manage\",\n      \"object\": \"project tasks\",\n      \"context\": null,\n      \"purpose\": \"by breaking work into bite-size pieces with clear owners and due dates\",\n      \"basis_ids\": [\n        \"D:Asana:features:2\"\n      ]\n    },\n    {\n      \"action\": \"Track\",\n      \"object\": \"project progress and deadlines\",\n      \"context\": \"within a shared hub\",\n      \"purpose\": \"to ensure visibility and meet commitments\",\n      \"basis_ids\": [\n        \"D:Asana:features:2\",\n        \"D:Asana:landing:3\",\n        \"O:13-1082.00:21478\"\n      ]\n    },\n    {\n      \"action\": \"Automate\",\n      \"object\": \"routine workflows and tasks\",\n      \"context\": null,\n      \"purpose\": \"to get more done faster and allow teams to focus on strategic work\",\n      \"basis_ids\": [\n        \"D:Asana:features:6\",\n        \"D:Asana:features:7\"\n      ]\n    },\n    {\n      \"action\": \"Monitor\",\n      \"object\": \"team workload and capacity\",\n      \"context\": null,\n      \"purpose\": \"to rebalance work quickly and plan accurate timelines\",\n      \"basis_ids\": [\n        \"D:Asana:features:8\",\n        \"D:Asana:features:9\"\n      ]\n    },\n    {\n      \"action\": \"Generate\",\n      \"object\": \"real-time reports\",\n      \"context\": \"on project status and company objectives\",\n      \"purpose\": \"to visualize work, track progress, and provide insights\",\n      \"basis_ids\": [\n        \"D:Asana:features:5\",\n        \"D:Asana:features:6\",\n        \"O:13-1082.00:21474\"\n      ]\n    }\n  ],\n  \"benefits\": [\n    {\n      \"aspect\": \"Project Visibility\",\n      \"claim\": \"The product provides a clear, shared view of who is doing what and by when, reducing the need for manual updates and inquiries.\",\n      \"basis_ids\": [\n        \"D:Asana:features:1\",\n        \"D:Asana:landing:1\",\n        \"D:Asana:landing:3\"\n      ]\n    },\n    {\n      \"aspect\": \"Efficiency and Productivity\",\n      \"claim\": \"Teams can increase efficiency by automating routine tasks and streamlining workflows, freeing up time for more impactful work.\",\n      \"basis_ids\": [\n        \"D:Asana:features:6\",\n        \"D:Asana:features:7\"\n      ]\n    },\n    {\n      \"aspect\": \"Data-driven Decision Making\",\n      \"claim\": \"Real-time data, reporting dashboards, and goal tracking enable better strategic decisions and progress monitoring.\",\n      \"basis_ids\": [\n        \"D:Asana:features:5\",\n        \"D:Asana:features:6\"\n      ]\n    }\n  ],\n  \"frictions\": [\n    {\n      \"aspect\": \"Learning Curve\",\n      \"claim\": \"Reviewers may report a steep learning curve for new users or for those attempting to utilize the full breadth of advanced features.\",\n      \"basis_ids\": [\n        \"D:Asana:features:2\",\n        \"D:Asana:features:3\",\n        \"D:Asana:features:6\",\n        \"D:Asana:features:8\",\n        \"[]\"\n      ]\n    },\n    {\n      \"aspect\": \"Setup Overhead\",\n      \"claim\": \"Initial setup and configuration of complex workflows, custom fields, and automations can be time-consuming.\",\n      \"basis_ids\": [\n        \"D:Asana:features:3\",\n        \"D:Asana:features:7\",\n        \"[]\"\n      ]\n    },\n    {\n      \"aspect\": \"Cost\",\n      \"claim\": \"The full suite of features might be expensive for some teams, potentially requiring higher-tier plans with associated cost implications.\",\n      \"basis_ids\": [\n        \"D:Asana:features:13\",\n        \"[]\"\n      ]\n    }\n  ],\n  \"ease_of_use_probabilities_1_to_5\": [\n    0.05,\n    0.10,\n    0.20,\n    0.35,\n    0.30\n  ],\n  \"unknowns\": [\n    \"Specific details about the effectiveness or limitations of Asana's AI features in practical team use.\",\n    \"The typical pricing structure for different team sizes or feature tiers.\",\n    \"The specific distribution of users across various industries or company sizes.\"\n  ]\n}",
+  "json": {
+    "product": "Asana",
+    "segments": [
+      {
+        "role_family": "Project Managers",
+        "motivation": "To ensure projects are delivered on time and within scope, with clear visibility and efficient coordination across teams.",
+        "basis_ids": [
+          "M:Asana",
+          "D:Asana:landing:3",
+          "D:Asana:landing:4",
+          "D:Asana:landing:5",
+          "D:Asana:features:1",
+          "O:13-1082.00"
+        ]
+      },
+      {
+        "role_family": "Team Leads/Operations Managers",
+        "motivation": "To improve team productivity, streamline workflows, and gain real-time insights into work progress and resource allocation.",
+        "basis_ids": [
+          "M:Asana",
+          "D:Asana:landing:3",
+          "D:Asana:features:1",
+          "D:Asana:features:6",
+          "D:Asana:features:8",
+          "O:11-1021.00"
+        ]
+      },
+      {
+        "role_family": "Cross-functional Team Members",
+        "motivation": "To collaborate effectively, track individual contributions, and understand how their tasks fit into larger project goals.",
+        "basis_ids": [
+          "D:Asana:landing:3",
+          "D:Asana:features:4",
+          "D:Asana:features:5"
+        ]
+      }
+    ],
+    "tasks": [
+      {
+        "action": "Organize and manage",
+        "object": "project tasks",
+        "context": null,
+        "purpose": "by breaking work into bite-size pieces with clear owners and due dates",
+        "basis_ids": [
+          "D:Asana:features:2"
+        ]
+      },
+      {
+        "action": "Track",
+        "object": "project progress and deadlines",
+        "context": "within a shared hub",
+        "purpose": "to ensure visibility and meet commitments",
+        "basis_ids": [
+          "D:Asana:features:2",
+          "D:Asana:landing:3",
+          "O:13-1082.00:21478"
+        ]
+      },
+      {
+        "action": "Automate",
+        "object": "routine workflows and tasks",
+        "context": null,
+        "purpose": "to get more done faster and allow teams to focus on strategic work",
+        "basis_ids": [
+          "D:Asana:features:6",
+          "D:Asana:features:7"
+        ]
+      },
+      {
+        "action": "Monitor",
+        "object": "team workload and capacity",
+        "context": null,
+        "purpose": "to rebalance work quickly and plan accurate timelines",
+        "basis_ids": [
+          "D:Asana:features:8",
+          "D:Asana:features:9"
+        ]
+      },
+      {
+        "action": "Generate",
+        "object": "real-time reports",
+        "context": "on project status and company objectives",
+        "purpose": "to visualize work, track progress, and provide insights",
+        "basis_ids": [
+          "D:Asana:features:5",
+          "D:Asana:features:6",
+          "O:13-1082.00:21474"
+        ]
+      }
+    ],
+    "benefits": [
+      {
+        "aspect": "Project Visibility",
+        "claim": "The product provides a clear, shared view of who is doing what and by when, reducing the need for manual updates and inquiries.",
+        "basis_ids": [
+          "D:Asana:features:1",
+          "D:Asana:landing:1",
+          "D:Asana:landing:3"
+        ]
+      },
+      {
+        "aspect": "Efficiency and Productivity",
+        "claim": "Teams can increase efficiency by automating routine tasks and streamlining workflows, freeing up time for more impactful work.",
+        "basis_ids": [
+          "D:Asana:features:6",
+          "D:Asana:features:7"
+        ]
+      },
+      {
+        "aspect": "Data-driven Decision Making",
+        "claim": "Real-time data, reporting dashboards, and goal tracking enable better strategic decisions and progress monitoring.",
+        "basis_ids": [
+          "D:Asana:features:5",
+          "D:Asana:features:6"
+        ]
+      }
+    ],
+    "frictions": [
+      {
+        "aspect": "Learning Curve",
+        "claim": "Reviewers may report a steep learning curve for new users or for those attempting to utilize the full breadth of advanced features.",
+        "basis_ids": [
+          "D:Asana:features:2",
+          "D:Asana:features:3",
+          "D:Asana:features:6",
+          "D:Asana:features:8",
+          "[]"
+        ]
+      },
+      {
+        "aspect": "Setup Overhead",
+        "claim": "Initial setup and configuration of complex workflows, custom fields, and automations can be time-consuming.",
+        "basis_ids": [
+          "D:Asana:features:3",
+          "D:Asana:features:7",
+          "[]"
+        ]
+      },
+      {
+        "aspect": "Cost",
+        "claim": "The full suite of features might be expensive for some teams, potentially requiring higher-tier plans with associated cost implications.",
+        "basis_ids": [
+          "D:Asana:features:13",
+          "[]"
+        ]
+      }
+    ],
+    "ease_of_use_probabilities_1_to_5": [
+      0.05,
+      0.1,
+      0.2,
+      0.35,
+      0.3
+    ],
+    "unknowns": [
+      "Specific details about the effectiveness or limitations of Asana's AI features in practical team use.",
+      "The typical pricing structure for different team sizes or feature tiers.",
+      "The specific distribution of users across various industries or company sizes."
+    ]
+  },
+  "ts": "2026-10-17T23:11:33.329852+00:00"
+}

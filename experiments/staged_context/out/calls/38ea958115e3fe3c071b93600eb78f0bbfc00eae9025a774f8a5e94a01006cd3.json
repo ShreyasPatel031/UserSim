@@ -1,0 +1,38 @@
+{
+  "stage": "extract",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "38ea958115e3fe3c071b93600eb78f0bbfc00eae9025a774f8a5e94a01006cd3",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 421,
+  "output_tokens": 723,
+  "cost_usd": 0.00775625,
+  "elapsed_s": 7.36,
+  "error": null,
+  "text": "{\n  \"tasks\": [],\n  \"benefits\": [\n    {\n      \"aspect\": \"collaboration\",\n      \"claim\": \"It is an awesome tool for cross functional teams.\",\n      \"span\": \"It's an awesome tool for cross functional teams\"\n    }\n  ],\n  \"frictions\": [\n    {\n      \"aspect\": \"ease_of_use\",\n      \"claim\": \"It is a bit technical to use.\",\n      \"span\": \"It is a bit technical to use\"\n    },\n    {\n      \"aspect\": \"onboarding\",\n      \"claim\": \"It might not be a good idea for newbies.\",\n      \"span\": \"might not be a good idea for newbies\"\n    }\n  ]\n}",
+  "json": {
+    "tasks": [],
+    "benefits": [
+      {
+        "aspect": "collaboration",
+        "claim": "It is an awesome tool for cross functional teams.",
+        "span": "It's an awesome tool for cross functional teams"
+      }
+    ],
+    "frictions": [
+      {
+        "aspect": "ease_of_use",
+        "claim": "It is a bit technical to use.",
+        "span": "It is a bit technical to use"
+      },
+      {
+        "aspect": "onboarding",
+        "claim": "It might not be a good idea for newbies.",
+        "span": "might not be a good idea for newbies"
+      }
+    ]
+  },
+  "ts": "2026-10-17T23:32:32.380471+00:00"
+}

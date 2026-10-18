@@ -1,0 +1,28 @@
+{
+  "stage": "matched_screen",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "b5467799c76b596bc8fba15c86047df613cc5b0a187dd2f48e4064ccfc027d49",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 335,
+  "output_tokens": 1495,
+  "cost_usd": 0.01536875,
+  "elapsed_s": 13.02,
+  "error": null,
+  "text": "{\n  \"eligible\": true,\n  \"reason\": \"The review states a clear, concrete task of delegating tasks to colleagues with a deadline. This is a specific action that can be attempted in a new workspace, unlike the more generic 'organize my tasks' also mentioned.\",\n  \"task\": {\n    \"action\": \"delegate\",\n    \"object\": \"tasks\",\n    \"context\": \"to my colleagues with a deadline\",\n    \"purpose\": null\n  },\n  \"neutral_task\": \"Assign a task to a colleague and set a deadline.\",\n  \"span\": \"delegate tasks to my colleagues with a deadline\"\n}",
+  "json": {
+    "eligible": true,
+    "reason": "The review states a clear, concrete task of delegating tasks to colleagues with a deadline. This is a specific action that can be attempted in a new workspace, unlike the more generic 'organize my tasks' also mentioned.",
+    "task": {
+      "action": "delegate",
+      "object": "tasks",
+      "context": "to my colleagues with a deadline",
+      "purpose": null
+    },
+    "neutral_task": "Assign a task to a colleague and set a deadline.",
+    "span": "delegate tasks to my colleagues with a deadline"
+  },
+  "ts": "2026-10-17T23:47:36.544926+00:00"
+}

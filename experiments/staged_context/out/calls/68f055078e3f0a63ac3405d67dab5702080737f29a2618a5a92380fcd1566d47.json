@@ -1,0 +1,70 @@
+{
+  "stage": "extract",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "68f055078e3f0a63ac3405d67dab5702080737f29a2618a5a92380fcd1566d47",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 729,
+  "output_tokens": 1961,
+  "cost_usd": 0.02052125,
+  "elapsed_s": 14.88,
+  "error": null,
+  "text": "{\n  \"tasks\": [\n    {\n      \"action\": \"remain on top of\",\n      \"object\": \"all pending tasks\",\n      \"context\": \"your team\",\n      \"purpose\": \"hold each other accountable for all areas of the job\",\n      \"span\": \"remain on top of all pending tasks and hold each other accountable for all areas of the job\"\n    },\n    {\n      \"action\": \"handle\",\n      \"object\": \"our yearly financial report process\",\n      \"context\": null,\n      \"purpose\": null,\n      \"span\": \"handle our yearly financial report process\"\n    },\n    {\n      \"action\": \"appoint\",\n      \"object\": \"a preparer, reviewer, and so on\",\n      \"context\": null,\n      \"purpose\": \"using the custom fields\",\n      \"span\": \"appoint a preparer, reviewer, and so on using the custom fields\"\n    }\n  ],\n  \"benefits\": [\n    {\n      \"aspect\": \"collaboration\",\n      \"claim\": \"Reduced the need for external communication like email.\",\n      \"span\": \"We reduced the need to communicate outside of ClikcUp (for example, via email)\"\n    },\n    {\n      \"aspect\": \"interface\",\n      \"claim\": \"Gained more visibility into operations and projects.\",\n      \"span\": \"Our team has gained more visibility into our operations and projects\"\n    },\n    {\n      \"aspect\": \"support\",\n      \"claim\": \"The support team has been very helpful in resolving issues.\",\n      \"span\": \"ClickUp back group have been exceptionally supportive in settling these issues\"\n    }\n  ],\n  \"frictions\": [\n    {\n      \"aspect\": \"onboarding\",\n      \"claim\": \"It takes a lot of time to learn best practices and how to set up the framework.\",\n      \"span\": \"it takes a parcel to memorize best hones, how to set up the framework, and how to adjust your business and work fashion to the ClickUp framework\"\n    },\n    {\n      \"aspect\": \"features\",\n      \"claim\": \"There are bugs related to automations and repeating tasks.\",\n      \"span\": \"There are a couple of bugs related to automations and repeating errands that we have experienced\"\n    }\n  ]\n}",
+  "json": {
+    "tasks": [
+      {
+        "action": "remain on top of",
+        "object": "all pending tasks",
+        "context": "your team",
+        "purpose": "hold each other accountable for all areas of the job",
+        "span": "remain on top of all pending tasks and hold each other accountable for all areas of the job"
+      },
+      {
+        "action": "handle",
+        "object": "our yearly financial report process",
+        "context": null,
+        "purpose": null,
+        "span": "handle our yearly financial report process"
+      },
+      {
+        "action": "appoint",
+        "object": "a preparer, reviewer, and so on",
+        "context": null,
+        "purpose": "using the custom fields",
+        "span": "appoint a preparer, reviewer, and so on using the custom fields"
+      }
+    ],
+    "benefits": [
+      {
+        "aspect": "collaboration",
+        "claim": "Reduced the need for external communication like email.",
+        "span": "We reduced the need to communicate outside of ClikcUp (for example, via email)"
+      },
+      {
+        "aspect": "interface",
+        "claim": "Gained more visibility into operations and projects.",
+        "span": "Our team has gained more visibility into our operations and projects"
+      },
+      {
+        "aspect": "support",
+        "claim": "The support team has been very helpful in resolving issues.",
+        "span": "ClickUp back group have been exceptionally supportive in settling these issues"
+      }
+    ],
+    "frictions": [
+      {
+        "aspect": "onboarding",
+        "claim": "It takes a lot of time to learn best practices and how to set up the framework.",
+        "span": "it takes a parcel to memorize best hones, how to set up the framework, and how to adjust your business and work fashion to the ClickUp framework"
+      },
+      {
+        "aspect": "features",
+        "claim": "There are bugs related to automations and repeating tasks.",
+        "span": "There are a couple of bugs related to automations and repeating errands that we have experienced"
+      }
+    ]
+  },
+  "ts": "2026-10-17T23:33:54.761380+00:00"
+}

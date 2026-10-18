@@ -1,0 +1,23 @@
+{
+  "stage": "matched_screen",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "11ca598726313d62642d33dd674bef0aa9994c6a3315a47f31789853a7f21527",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 389,
+  "output_tokens": 1338,
+  "cost_usd": 0.01386625,
+  "elapsed_s": 14.3,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review provides only general praise for Asana's capabilities, such as 'organizes projects well' and 'simplifies project management.' It does not describe a specific, concrete task the reviewer is using the software to accomplish.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review provides only general praise for Asana's capabilities, such as 'organizes projects well' and 'simplifies project management.' It does not describe a specific, concrete task the reviewer is using the software to accomplish.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-17T23:32:42.201812+00:00"
+}

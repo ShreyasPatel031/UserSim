@@ -1,0 +1,28 @@
+{
+  "stage": "matched_screen",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "f4ca4d1b337796c83058fb1330bd64aa7e2392af2809a2f8bf2645f2f9e69e55",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 382,
+  "output_tokens": 1442,
+  "cost_usd": 0.0148975,
+  "elapsed_s": 14.53,
+  "error": null,
+  "text": "{\n  \"eligible\": true,\n  \"reason\": \"The review states a specific, concrete task of tracking new employees and their start dates, which is an activity that could be set up in a new Trello workspace within 15 minutes.\",\n  \"task\": {\n    \"action\": \"seeing\",\n    \"object\": \"new starters\",\n    \"context\": \"when they are starting and making notes\",\n    \"purpose\": \"to check back on things done and minimize errors\"\n  },\n  \"neutral_task\": \"Set up a system to see which new starters are coming and when, and to add notes about actions taken for them.\",\n  \"span\": \"seeing what new starters I have and when whilst allowing me to make any notes I need too\"\n}",
+  "json": {
+    "eligible": true,
+    "reason": "The review states a specific, concrete task of tracking new employees and their start dates, which is an activity that could be set up in a new Trello workspace within 15 minutes.",
+    "task": {
+      "action": "seeing",
+      "object": "new starters",
+      "context": "when they are starting and making notes",
+      "purpose": "to check back on things done and minimize errors"
+    },
+    "neutral_task": "Set up a system to see which new starters are coming and when, and to add notes about actions taken for them.",
+    "span": "seeing what new starters I have and when whilst allowing me to make any notes I need too"
+  },
+  "ts": "2026-10-17T23:42:00.861979+00:00"
+}

@@ -1,0 +1,159 @@
+{
+  "stage": "predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "5c467bb48278ee3a1f0105befc5d79732ec9b3544cc1d50d13fc8a17af2ff379",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "input_tokens": 2804,
+  "output_tokens": 4575,
+  "cost_usd": 0.0122787,
+  "elapsed_s": 22.66,
+  "error": null,
+  "text": "{\n  \"product\": \"Trello\",\n  \"segments\": [\n    {\n      \"role_family\": \"Small Team Managers/Leads\",\n      \"motivation\": \"To organize team tasks, track progress, and facilitate collaboration on projects.\",\n      \"basis_ids\": [\n        \"M:Trello\",\n        \"D:Trello:features:1\",\n        \"D:Trello:features:5\",\n        \"D:Trello:features:6\"\n      ]\n    },\n    {\n      \"role_family\": \"Individual Professionals\",\n      \"motivation\": \"To manage personal to-dos, set goals, and organize their own workload efficiently.\",\n      \"basis_ids\": [\n        \"D:Trello:features:1\",\n        \"D:Trello:features:2\"\n      ]\n    },\n    {\n      \"role_family\": \"Project Coordinators/Specialists\",\n      \"motivation\": \"To plan, track, and report on project progress, ensuring tasks are completed on time.\",\n      \"basis_ids\": [\n        \"M:Trello\",\n        \"D:Trello:features:1\",\n        \"O:13-1082.00\"\n      ]\n    }\n  ],\n  \"tasks\": [\n    {\n      \"action\": \"Organize\",\n      \"object\": \"daily to-dos\",\n      \"context\": null,\n      \"purpose\": \"for personal or team accountability\",\n      \"basis_ids\": [\n        \"D:Trello:features:1\",\n        \"D:Trello:features:2\"\n      ]\n    },\n    {\n      \"action\": \"Visually track\",\n      \"object\": \"project tasks\",\n      \"context\": \"on boards\",\n      \"purpose\": \"to monitor progress\",\n      \"basis_ids\": [\n        \"M:Trello\",\n        \"D:Trello:features:1\"\n      ]\n    },\n    {\n      \"action\": \"Set and monitor\",\n      \"object\": \"due dates\",\n      \"context\": \"on cards\",\n      \"purpose\": \"to ensure timely completion of responsibilities\",\n      \"basis_ids\": [\n        \"D:Trello:features:2\",\n        \"D:Trello:features:3\"\n      ]\n    },\n    {\n      \"action\": \"Attach\",\n      \"object\": \"relevant files\",\n      \"context\": \"to task cards\",\n      \"purpose\": \"to centralize information and avoid email chains\",\n      \"basis_ids\": [\n        \"D:Trello:features:2\",\n        \"D:Trello:features:4\"\n      ]\n    },\n    {\n      \"action\": \"Automate\",\n      \"object\": \"routine workflow steps\",\n      \"context\": \"within boards\",\n      \"purpose\": \"to improve efficiency\",\n      \"basis_ids\": [\n        \"D:Trello:features:7\"\n      ]\n    }\n  ],\n  \"benefits\": [\n    {\n      \"aspect\": \"Visibility\",\n      \"claim\": \"Provides a clear, visual overview of tasks and project progress.\",\n      \"basis_ids\": [\n        \"M:Trello\",\n        \"D:Trello:features:1\",\n        \"D:Trello:features:2\"\n      ]\n    },\n    {\n      \"aspect\": \"Information Centralization\",\n      \"claim\": \"Centralizes task information and communication, reducing clutter from emails.\",\n      \"basis_ids\": [\n        \"D:Trello:features:2\",\n        \"D:Trello:features:3\",\n        \"D:Trello:features:4\"\n      ]\n    },\n    {\n      \"aspect\": \"Efficiency\",\n      \"claim\": \"Improves efficiency by simplifying workflows and automating repetitive actions.\",\n      \"basis_ids\": [\n        \"D:Trello:features:5\",\n        \"D:Trello:features:7\"\n      ]\n    }\n  ],\n  \"frictions\": [\n    {\n      \"aspect\": \"Reporting and Analytics\",\n      \"claim\": \"Difficulty in generating comprehensive, high-level reports or cross-board analytics for complex projects.\",\n      \"basis_ids\": [\n        \"D:Asana:landing:3\",\n        \"D:Asana:landing:4\"\n      ]\n    },\n    {\n      \"aspect\": \"Dependency Management\",\n      \"claim\": \"Challenges in managing intricate dependencies across many boards or large-scale, interconnected projects.\",\n      \"basis_ids\": [\n        \"M:Trello\",\n        \"D:Asana:landing:1\",\n        \"D:ClickUp:landing:1\"\n      ]\n    },\n    {\n      \"aspect\": \"Advanced PM Features\",\n      \"claim\": \"Limited native features for advanced project management functions like detailed resource allocation or budgeting.\",\n      \"basis_ids\": []\n    }\n  ],\n  \"ease_of_use_probabilities_1_to_5\": [\n    0.01,\n    0.02,\n    0.07,\n    0.4,\n    0.5\n  ],\n  \"unknowns\": []\n}",
+  "json": {
+    "product": "Trello",
+    "segments": [
+      {
+        "role_family": "Small Team Managers/Leads",
+        "motivation": "To organize team tasks, track progress, and facilitate collaboration on projects.",
+        "basis_ids": [
+          "M:Trello",
+          "D:Trello:features:1",
+          "D:Trello:features:5",
+          "D:Trello:features:6"
+        ]
+      },
+      {
+        "role_family": "Individual Professionals",
+        "motivation": "To manage personal to-dos, set goals, and organize their own workload efficiently.",
+        "basis_ids": [
+          "D:Trello:features:1",
+          "D:Trello:features:2"
+        ]
+      },
+      {
+        "role_family": "Project Coordinators/Specialists",
+        "motivation": "To plan, track, and report on project progress, ensuring tasks are completed on time.",
+        "basis_ids": [
+          "M:Trello",
+          "D:Trello:features:1",
+          "O:13-1082.00"
+        ]
+      }
+    ],
+    "tasks": [
+      {
+        "action": "Organize",
+        "object": "daily to-dos",
+        "context": null,
+        "purpose": "for personal or team accountability",
+        "basis_ids": [
+          "D:Trello:features:1",
+          "D:Trello:features:2"
+        ]
+      },
+      {
+        "action": "Visually track",
+        "object": "project tasks",
+        "context": "on boards",
+        "purpose": "to monitor progress",
+        "basis_ids": [
+          "M:Trello",
+          "D:Trello:features:1"
+        ]
+      },
+      {
+        "action": "Set and monitor",
+        "object": "due dates",
+        "context": "on cards",
+        "purpose": "to ensure timely completion of responsibilities",
+        "basis_ids": [
+          "D:Trello:features:2",
+          "D:Trello:features:3"
+        ]
+      },
+      {
+        "action": "Attach",
+        "object": "relevant files",
+        "context": "to task cards",
+        "purpose": "to centralize information and avoid email chains",
+        "basis_ids": [
+          "D:Trello:features:2",
+          "D:Trello:features:4"
+        ]
+      },
+      {
+        "action": "Automate",
+        "object": "routine workflow steps",
+        "context": "within boards",
+        "purpose": "to improve efficiency",
+        "basis_ids": [
+          "D:Trello:features:7"
+        ]
+      }
+    ],
+    "benefits": [
+      {
+        "aspect": "Visibility",
+        "claim": "Provides a clear, visual overview of tasks and project progress.",
+        "basis_ids": [
+          "M:Trello",
+          "D:Trello:features:1",
+          "D:Trello:features:2"
+        ]
+      },
+      {
+        "aspect": "Information Centralization",
+        "claim": "Centralizes task information and communication, reducing clutter from emails.",
+        "basis_ids": [
+          "D:Trello:features:2",
+          "D:Trello:features:3",
+          "D:Trello:features:4"
+        ]
+      },
+      {
+        "aspect": "Efficiency",
+        "claim": "Improves efficiency by simplifying workflows and automating repetitive actions.",
+        "basis_ids": [
+          "D:Trello:features:5",
+          "D:Trello:features:7"
+        ]
+      }
+    ],
+    "frictions": [
+      {
+        "aspect": "Reporting and Analytics",
+        "claim": "Difficulty in generating comprehensive, high-level reports or cross-board analytics for complex projects.",
+        "basis_ids": [
+          "D:Asana:landing:3",
+          "D:Asana:landing:4"
+        ]
+      },
+      {
+        "aspect": "Dependency Management",
+        "claim": "Challenges in managing intricate dependencies across many boards or large-scale, interconnected projects.",
+        "basis_ids": [
+          "M:Trello",
+          "D:Asana:landing:1",
+          "D:ClickUp:landing:1"
+        ]
+      },
+      {
+        "aspect": "Advanced PM Features",
+        "claim": "Limited native features for advanced project management functions like detailed resource allocation or budgeting.",
+        "basis_ids": []
+      }
+    ],
+    "ease_of_use_probabilities_1_to_5": [
+      0.01,
+      0.02,
+      0.07,
+      0.4,
+      0.5
+    ],
+    "unknowns": []
+  },
+  "ts": "2026-10-17T23:14:05.959673+00:00"
+}

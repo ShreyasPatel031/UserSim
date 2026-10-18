@@ -1,0 +1,28 @@
+{
+  "stage": "matched_screen",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "4b5521d9668d45893d8dac3c2cb73c518dccf5d31c0acb65ec2e31b7522e9623",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 395,
+  "output_tokens": 1393,
+  "cost_usd": 0.014423749999999999,
+  "elapsed_s": 12.91,
+  "error": null,
+  "text": "{\n  \"eligible\": true,\n  \"reason\": \"The review's title explicitly states the product is used as a \\\"bug tracking tool,\\\" and the body reinforces this by mentioning its use for \\\"QA projects.\\\" This is a specific, concrete task that can be attempted in a short trial.\",\n  \"task\": {\n    \"action\": \"tracking\",\n    \"object\": \"bugs\",\n    \"context\": \"for QA projects for different clients\",\n    \"purpose\": null\n  },\n  \"neutral_task\": \"Track bugs for multiple QA projects across different clients.\",\n  \"span\": \"bug tracking tool\"\n}",
+  "json": {
+    "eligible": true,
+    "reason": "The review's title explicitly states the product is used as a \"bug tracking tool,\" and the body reinforces this by mentioning its use for \"QA projects.\" This is a specific, concrete task that can be attempted in a short trial.",
+    "task": {
+      "action": "tracking",
+      "object": "bugs",
+      "context": "for QA projects for different clients",
+      "purpose": null
+    },
+    "neutral_task": "Track bugs for multiple QA projects across different clients.",
+    "span": "bug tracking tool"
+  },
+  "ts": "2026-10-17T23:37:25.322916+00:00"
+}

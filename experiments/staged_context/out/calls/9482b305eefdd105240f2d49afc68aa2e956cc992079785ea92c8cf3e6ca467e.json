@@ -1,0 +1,23 @@
+{
+  "stage": "matched_screen",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "9482b305eefdd105240f2d49afc68aa2e956cc992079785ea92c8cf3e6ca467e",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 428,
+  "output_tokens": 1212,
+  "cost_usd": 0.012655,
+  "elapsed_s": 10.52,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review praises Trello's general capabilities like \\\"task tracking\\\" and \\\"organising work\\\" and lists features such as task lists, due dates, and automation. However, it does not describe a specific, concrete task the reviewer uses the product for. The language is too generic and focuses on features rather than a user-defined goal.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review praises Trello's general capabilities like \"task tracking\" and \"organising work\" and lists features such as task lists, due dates, and automation. However, it does not describe a specific, concrete task the reviewer uses the product for. The language is too generic and focuses on features rather than a user-defined goal.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-17T23:41:46.330822+00:00"
+}

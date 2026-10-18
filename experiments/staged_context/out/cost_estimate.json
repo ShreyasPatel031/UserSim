@@ -1,12 +1,12 @@
 {
-  "predict_model": "claude-sonnet-5-5",
-  "judge_model": "claude-sonnet-5-5",
-  "prediction_input_tokens_1rep": 67464,
-  "per_rep_prediction_usd": 1.282,
-  "extraction_usd": 1.89,
-  "judging_usd_per_rep": 1.332,
-  "onet_mapping_usd": 0.234,
-  "total_1rep_usd": 4.738,
-  "total_2rep_usd": 7.353,
+  "predict_model": "gemini-2.5-flash",
+  "judge_model": "gemini-2.5-pro",
+  "prediction_input_tokens_1rep": 124151,
+  "per_rep_prediction_usd": 0.217,
+  "extraction_usd": 1.209,
+  "judging_usd_per_rep": 0.825,
+  "onet_mapping_usd": 0.12,
+  "total_1rep_usd": 2.372,
+  "total_2rep_usd": 3.414,
   "cap_usd": 10.0
 }

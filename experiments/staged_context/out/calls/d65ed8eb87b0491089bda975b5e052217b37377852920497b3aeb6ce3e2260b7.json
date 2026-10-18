@@ -1,0 +1,56 @@
+{
+  "stage": "extract",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "d65ed8eb87b0491089bda975b5e052217b37377852920497b3aeb6ce3e2260b7",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 470,
+  "output_tokens": 1211,
+  "cost_usd": 0.0126975,
+  "elapsed_s": 9.93,
+  "error": null,
+  "text": "{\n  \"tasks\": [\n    {\n      \"action\": \"tracking\",\n      \"object\": \"task\",\n      \"context\": null,\n      \"purpose\": null,\n      \"span\": \"task tracking\"\n    }\n  ],\n  \"benefits\": [\n    {\n      \"aspect\": \"interface\",\n      \"claim\": \"The interface is intuitive.\",\n      \"span\": \"intuitive interface\"\n    },\n    {\n      \"aspect\": \"features\",\n      \"claim\": \"The project management features are powerful.\",\n      \"span\": \"powerful project management features\"\n    },\n    {\n      \"aspect\": \"collaboration\",\n      \"claim\": \"Team collaboration is seamless.\",\n      \"span\": \"team collaboration seamless\"\n    }\n  ],\n  \"frictions\": [\n    {\n      \"aspect\": \"pricing\",\n      \"claim\": \"The pricing model can be steep for smaller teams.\",\n      \"span\": \"pricing model can be a bit steep for smaller teams\"\n    },\n    {\n      \"aspect\": \"features\",\n      \"claim\": \"Some features are limited in the free version.\",\n      \"span\": \"some features feel limited in the free version\"\n    }\n  ]\n}",
+  "json": {
+    "tasks": [
+      {
+        "action": "tracking",
+        "object": "task",
+        "context": null,
+        "purpose": null,
+        "span": "task tracking"
+      }
+    ],
+    "benefits": [
+      {
+        "aspect": "interface",
+        "claim": "The interface is intuitive.",
+        "span": "intuitive interface"
+      },
+      {
+        "aspect": "features",
+        "claim": "The project management features are powerful.",
+        "span": "powerful project management features"
+      },
+      {
+        "aspect": "collaboration",
+        "claim": "Team collaboration is seamless.",
+        "span": "team collaboration seamless"
+      }
+    ],
+    "frictions": [
+      {
+        "aspect": "pricing",
+        "claim": "The pricing model can be steep for smaller teams.",
+        "span": "pricing model can be a bit steep for smaller teams"
+      },
+      {
+        "aspect": "features",
+        "claim": "Some features are limited in the free version.",
+        "span": "some features feel limited in the free version"
+      }
+    ]
+  },
+  "ts": "2026-10-17T23:09:22.166388+00:00"
+}

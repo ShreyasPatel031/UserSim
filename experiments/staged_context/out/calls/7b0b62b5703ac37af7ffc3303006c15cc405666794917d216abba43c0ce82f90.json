@@ -1,0 +1,163 @@
+{
+  "stage": "predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7b0b62b5703ac37af7ffc3303006c15cc405666794917d216abba43c0ce82f90",
+  "temperature": 0.7,
+  "seed": 2000,
+  "max_tokens": 8192,
+  "input_tokens": 6528,
+  "output_tokens": 3527,
+  "cost_usd": 0.010775900000000001,
+  "elapsed_s": 15.92,
+  "error": null,
+  "text": "{\n  \"product\": \"Asana\",\n  \"segments\": [\n    {\n      \"role_family\": \"Project Managers/Team Leads\",\n      \"motivation\": \"To gain clear visibility into project progress, team workloads, and resource allocation to ensure projects stay on track and meet deadlines.\",\n      \"basis_ids\": [\n        \"D:Asana:landing:3\",\n        \"D:Asana:landing:4\",\n        \"D:Asana:landing:5\",\n        \"D:Asana:features:1\",\n        \"D:Asana:features:6\",\n        \"D:Asana:features:8\",\n        \"D:Asana:features:9\"\n      ]\n    },\n    {\n      \"role_family\": \"Individual Contributors/Team Members\",\n      \"motivation\": \"To clearly understand their assigned tasks, priorities, and deadlines, and to collaborate effectively with teammates without constant manual updates.\",\n      \"basis_ids\": [\n        \"D:Asana:features:2\",\n        \"D:Asana:features:4\"\n      ]\n    },\n    {\n      \"role_family\": \"Operations/Business Leaders\",\n      \"motivation\": \"To achieve strategic oversight, connect daily work to overarching company objectives, and automate workflows to drive organizational efficiency.\",\n      \"basis_ids\": [\n        \"D:Asana:features:5\",\n        \"D:Asana:features:6\",\n        \"D:Asana:features:7\"\n      ]\n    }\n  ],\n  \"tasks\": [\n    {\n      \"action\": \"Break down\",\n      \"object\": \"work\",\n      \"context\": null,\n      \"purpose\": \"into bite-size pieces with clear owners and due dates\",\n      \"basis_ids\": [\n        \"D:Asana:features:2\"\n      ]\n    },\n    {\n      \"action\": \"Visualize\",\n      \"object\": \"project progress\",\n      \"context\": \"using different views\",\n      \"purpose\": \"such as lists, calendars, timelines, Gantt charts, or Kanban boards\",\n      \"basis_ids\": [\n        \"D:Asana:features:2\"\n      ]\n    },\n    {\n      \"action\": \"Automate\",\n      \"object\": \"routine tasks and workflows\",\n      \"context\": null,\n      \"purpose\": \"to improve efficiency and focus on higher-value work\",\n      \"basis_ids\": [\n        \"D:Asana:features:6\",\n        \"D:Asana:features:7\"\n      ]\n    },\n    {\n      \"action\": \"Track\",\n      \"object\": \"time spent on work\",\n      \"context\": null,\n      \"purpose\": \"to measure productivity and inform resource planning\",\n      \"basis_ids\": [\n        \"D:Asana:features:3\",\n        \"D:Asana:features:9\"\n      ]\n    },\n    {\n      \"action\": \"Monitor\",\n      \"object\": \"company-wide objectives\",\n      \"context\": null,\n      \"purpose\": \"and report on project status and team performance with real-time data\",\n      \"basis_ids\": [\n        \"D:Asana:features:5\",\n        \"D:Asana:features:6\"\n      ]\n    }\n  ],\n  \"benefits\": [\n    {\n      \"aspect\": \"Collaboration & Visibility\",\n      \"claim\": \"It improves team collaboration and provides comprehensive visibility into all work and project statuses.\",\n      \"basis_ids\": [\n        \"D:Asana:landing:3\",\n        \"D:Asana:features:1\"\n      ]\n    },\n    {\n      \"aspect\": \"Efficiency & Reporting\",\n      \"claim\": \"It significantly reduces time spent on manual status updates and reporting through automation and real-time insights.\",\n      \"basis_ids\": [\n        \"D:Asana:landing:4\",\n        \"D:Asana:landing:5\",\n        \"D:Asana:features:3\",\n        \"D:Asana:features:6\"\n      ]\n    },\n    {\n      \"aspect\": \"Strategic Alignment\",\n      \"claim\": \"It helps connect daily tasks and team efforts directly to broader company goals and objectives.\",\n      \"basis_ids\": [\n        \"D:Asana:features:5\"\n      ]\n    }\n  ],\n  \"frictions\": [\n    {\n      \"aspect\": \"Complexity\",\n      \"claim\": \"The extensive feature set can be overwhelming for new users or smaller teams trying to get started.\",\n      \"basis_ids\": [\n        \"C:Capterra___6602951\",\n        \"C:Capterra___5087851\"\n      ]\n    },\n    {\n      \"aspect\": \"Cost of Features\",\n      \"claim\": \"Advanced functionalities, integrations, or specific views might be restricted to higher-tier paid plans.\",\n      \"basis_ids\": [\n        \"C:Capterra___6630970\",\n        \"C:Capterra___6678877\"\n      ]\n    },\n    {\n      \"aspect\": \"Setup Time\",\n      \"claim\": \"Initial setup and customization for complex workflows or larger organizations can be time-consuming.\",\n      \"basis_ids\": []\n    }\n  ],\n  \"ease_of_use_probabilities_1_to_5\": [\n    0.05,\n    0.05,\n    0.1,\n    0.4,\n    0.4\n  ],\n  \"unknowns\": [\n    \"The practical utility and performance of the AI Teammates and AI agents in real-world team workflows.\",\n    \"The user experience and effectiveness of the 'Work Graph' technology in providing shared context and memory.\",\n    \"The balance between core features available in free/lower tiers versus premium plans and how this affects user satisfaction.\"\n  ]\n}",
+  "json": {
+    "product": "Asana",
+    "segments": [
+      {
+        "role_family": "Project Managers/Team Leads",
+        "motivation": "To gain clear visibility into project progress, team workloads, and resource allocation to ensure projects stay on track and meet deadlines.",
+        "basis_ids": [
+          "D:Asana:landing:3",
+          "D:Asana:landing:4",
+          "D:Asana:landing:5",
+          "D:Asana:features:1",
+          "D:Asana:features:6",
+          "D:Asana:features:8",
+          "D:Asana:features:9"
+        ]
+      },
+      {
+        "role_family": "Individual Contributors/Team Members",
+        "motivation": "To clearly understand their assigned tasks, priorities, and deadlines, and to collaborate effectively with teammates without constant manual updates.",
+        "basis_ids": [
+          "D:Asana:features:2",
+          "D:Asana:features:4"
+        ]
+      },
+      {
+        "role_family": "Operations/Business Leaders",
+        "motivation": "To achieve strategic oversight, connect daily work to overarching company objectives, and automate workflows to drive organizational efficiency.",
+        "basis_ids": [
+          "D:Asana:features:5",
+          "D:Asana:features:6",
+          "D:Asana:features:7"
+        ]
+      }
+    ],
+    "tasks": [
+      {
+        "action": "Break down",
+        "object": "work",
+        "context": null,
+        "purpose": "into bite-size pieces with clear owners and due dates",
+        "basis_ids": [
+          "D:Asana:features:2"
+        ]
+      },
+      {
+        "action": "Visualize",
+        "object": "project progress",
+        "context": "using different views",
+        "purpose": "such as lists, calendars, timelines, Gantt charts, or Kanban boards",
+        "basis_ids": [
+          "D:Asana:features:2"
+        ]
+      },
+      {
+        "action": "Automate",
+        "object": "routine tasks and workflows",
+        "context": null,
+        "purpose": "to improve efficiency and focus on higher-value work",
+        "basis_ids": [
+          "D:Asana:features:6",
+          "D:Asana:features:7"
+        ]
+      },
+      {
+        "action": "Track",
+        "object": "time spent on work",
+        "context": null,
+        "purpose": "to measure productivity and inform resource planning",
+        "basis_ids": [
+          "D:Asana:features:3",
+          "D:Asana:features:9"
+        ]
+      },
+      {
+        "action": "Monitor",
+        "object": "company-wide objectives",
+        "context": null,
+        "purpose": "and report on project status and team performance with real-time data",
+        "basis_ids": [
+          "D:Asana:features:5",
+          "D:Asana:features:6"
+        ]
+      }
+    ],
+    "benefits": [
+      {
+        "aspect": "Collaboration & Visibility",
+        "claim": "It improves team collaboration and provides comprehensive visibility into all work and project statuses.",
+        "basis_ids": [
+          "D:Asana:landing:3",
+          "D:Asana:features:1"
+        ]
+      },
+      {
+        "aspect": "Efficiency & Reporting",
+        "claim": "It significantly reduces time spent on manual status updates and reporting through automation and real-time insights.",
+        "basis_ids": [
+          "D:Asana:landing:4",
+          "D:Asana:landing:5",
+          "D:Asana:features:3",
+          "D:Asana:features:6"
+        ]
+      },
+      {
+        "aspect": "Strategic Alignment",
+        "claim": "It helps connect daily tasks and team efforts directly to broader company goals and objectives.",
+        "basis_ids": [
+          "D:Asana:features:5"
+        ]
+      }
+    ],
+    "frictions": [
+      {
+        "aspect": "Complexity",
+        "claim": "The extensive feature set can be overwhelming for new users or smaller teams trying to get started.",
+        "basis_ids": [
+          "C:Capterra___6602951",
+          "C:Capterra___5087851"
+        ]
+      },
+      {
+        "aspect": "Cost of Features",
+        "claim": "Advanced functionalities, integrations, or specific views might be restricted to higher-tier paid plans.",
+        "basis_ids": [
+          "C:Capterra___6630970",
+          "C:Capterra___6678877"
+        ]
+      },
+      {
+        "aspect": "Setup Time",
+        "claim": "Initial setup and customization for complex workflows or larger organizations can be time-consuming.",
+        "basis_ids": []
+      }
+    ],
+    "ease_of_use_probabilities_1_to_5": [
+      0.05,
+      0.05,
+      0.1,
+      0.4,
+      0.4
+    ],
+    "unknowns": [
+      "The practical utility and performance of the AI Teammates and AI agents in real-world team workflows.",
+      "The user experience and effectiveness of the 'Work Graph' technology in providing shared context and memory.",
+      "The balance between core features available in free/lower tiers versus premium plans and how this affects user satisfaction."
+    ]
+  },
+  "ts": "2026-10-17T23:20:30.689630+00:00"
+}

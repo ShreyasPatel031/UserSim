@@ -1,0 +1,28 @@
+{
+  "stage": "matched_screen",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "eb20f4be4e0e84df8167c485f9195be7045ae0e913e1708c47630d38b268dd44",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 377,
+  "output_tokens": 1072,
+  "cost_usd": 0.01119125,
+  "elapsed_s": 9.51,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review mentions tracking in general terms ('easy to track', 'gives you update on every stages') but does not state a specific, concrete task with an object. It is too generic to be actionable.\",\n  \"task\": {\n    \"action\": null,\n    \"object\": null,\n    \"context\": null,\n    \"purpose\": null\n  },\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review mentions tracking in general terms ('easy to track', 'gives you update on every stages') but does not state a specific, concrete task with an object. It is too generic to be actionable.",
+    "task": {
+      "action": null,
+      "object": null,
+      "context": null,
+      "purpose": null
+    },
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-17T23:41:06.035903+00:00"
+}

@@ -1,0 +1,48 @@
+{
+  "stage": "extract",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "6c3f16770c9958c598c4d15d6ed9a2fa30908ddcea877983e6251c7774ed01a5",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 473,
+  "output_tokens": 978,
+  "cost_usd": 0.010371249999999999,
+  "elapsed_s": 7.56,
+  "error": null,
+  "text": "{\n  \"tasks\": [\n    {\n      \"action\": \"assign\",\n      \"object\": \"tasks\",\n      \"context\": \"my team\",\n      \"purpose\": \"to get a project moving through the stages to completion\",\n      \"span\": \"assign tasks\"\n    },\n    {\n      \"action\": \"keep on top of\",\n      \"object\": \"assignments\",\n      \"context\": \"my team\",\n      \"purpose\": null,\n      \"span\": \"keep on top of assignments\"\n    }\n  ],\n  \"benefits\": [\n    {\n      \"aspect\": \"collaboration\",\n      \"claim\": \"The ability to assign tasks is super helpful.\",\n      \"span\": \"The ability to assign tasks is super helpful\"\n    }\n  ],\n  \"frictions\": [\n    {\n      \"aspect\": \"features\",\n      \"claim\": \"Unaware of a feature that allows prioritization of all tasks.\",\n      \"span\": \"I am still unaware of a feature that allows you to prioritize all of your tasks\"\n    }\n  ]\n}",
+  "json": {
+    "tasks": [
+      {
+        "action": "assign",
+        "object": "tasks",
+        "context": "my team",
+        "purpose": "to get a project moving through the stages to completion",
+        "span": "assign tasks"
+      },
+      {
+        "action": "keep on top of",
+        "object": "assignments",
+        "context": "my team",
+        "purpose": null,
+        "span": "keep on top of assignments"
+      }
+    ],
+    "benefits": [
+      {
+        "aspect": "collaboration",
+        "claim": "The ability to assign tasks is super helpful.",
+        "span": "The ability to assign tasks is super helpful"
+      }
+    ],
+    "frictions": [
+      {
+        "aspect": "features",
+        "claim": "Unaware of a feature that allows prioritization of all tasks.",
+        "span": "I am still unaware of a feature that allows you to prioritize all of your tasks"
+      }
+    ]
+  },
+  "ts": "2026-10-17T23:29:29.582464+00:00"
+}

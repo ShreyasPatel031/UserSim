@@ -1,0 +1,28 @@
+{
+  "stage": "matched_screen",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "222f5e1b3c1888cbeda517ddf0ddb954338ede8ea21ac464628b0225103efdeb",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 369,
+  "output_tokens": 1240,
+  "cost_usd": 0.01286125,
+  "elapsed_s": 11.73,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review mentions generic use cases like \\\"organizing and project management\\\" but does not describe a specific, concrete task with a clear object. It is high-level praise of the product's capabilities.\",\n  \"task\": {\n    \"action\": null,\n    \"object\": null,\n    \"context\": null,\n    \"purpose\": null\n  },\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review mentions generic use cases like \"organizing and project management\" but does not describe a specific, concrete task with a clear object. It is high-level praise of the product's capabilities.",
+    "task": {
+      "action": null,
+      "object": null,
+      "context": null,
+      "purpose": null
+    },
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-17T23:38:25.572737+00:00"
+}

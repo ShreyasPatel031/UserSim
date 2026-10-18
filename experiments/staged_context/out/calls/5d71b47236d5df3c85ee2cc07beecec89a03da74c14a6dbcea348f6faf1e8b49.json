@@ -1,0 +1,28 @@
+{
+  "stage": "matched_screen",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "5d71b47236d5df3c85ee2cc07beecec89a03da74c14a6dbcea348f6faf1e8b49",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 412,
+  "output_tokens": 1356,
+  "cost_usd": 0.014074999999999999,
+  "elapsed_s": 11.89,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review mentions 'project and task tracking' and 'Client Management', but these are generic use cases, not a specific, concrete task with a clear object. The review does not describe what is being tracked or managed.\",\n  \"task\": {\n    \"action\": null,\n    \"object\": null,\n    \"context\": null,\n    \"purpose\": null\n  },\n  \"neutral_task\": null,\n  \"span\": \"making project and task tracking to be simple to carry out\"\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review mentions 'project and task tracking' and 'Client Management', but these are generic use cases, not a specific, concrete task with a clear object. The review does not describe what is being tracked or managed.",
+    "task": {
+      "action": null,
+      "object": null,
+      "context": null,
+      "purpose": null
+    },
+    "neutral_task": null,
+    "span": "making project and task tracking to be simple to carry out"
+  },
+  "ts": "2026-10-17T23:32:00.539959+00:00"
+}

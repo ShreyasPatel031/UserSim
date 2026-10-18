@@ -1,0 +1,65 @@
+{
+  "stage": "extract",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "5c428a832ae3ac905e4d27048c274307bce75b54f243f6c0076726571066ee54",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 447,
+  "output_tokens": 2464,
+  "cost_usd": 0.025198750000000002,
+  "elapsed_s": 20.89,
+  "error": null,
+  "text": "{\n  \"tasks\": [\n    {\n      \"action\": \"assign\",\n      \"object\": \"tasks\",\n      \"context\": null,\n      \"purpose\": null,\n      \"span\": \"assign tasks\"\n    },\n    {\n      \"action\": \"set\",\n      \"object\": \"deadlines\",\n      \"context\": null,\n      \"purpose\": null,\n      \"span\": \"set deadlines\"\n    },\n    {\n      \"action\": \"divide\",\n      \"object\": \"big projects into small steps\",\n      \"context\": null,\n      \"purpose\": null,\n      \"span\": \"divide big projects into small steps\"\n    }\n  ],\n  \"benefits\": [\n    {\n      \"aspect\": \"collaboration\",\n      \"claim\": \"is very helpful\",\n      \"span\": \"The collaboration is very helpful\"\n    },\n    {\n      \"aspect\": \"collaboration\",\n      \"claim\": \"anyone can comment on tasks directly\",\n      \"span\": \"anyone can comment on tasks directly\"\n    }\n  ],\n  \"frictions\": [\n    {\n      \"aspect\": \"onboarding\",\n      \"claim\": \"can feel overwhelming at start\",\n      \"span\": \"It can feel overwhelming at start\"\n    },\n    {\n      \"aspect\": \"mobile\",\n      \"claim\": \"is not very smooth\",\n      \"span\": \"The mobile app is not very smooth\"\n    }\n  ]\n}",
+  "json": {
+    "tasks": [
+      {
+        "action": "assign",
+        "object": "tasks",
+        "context": null,
+        "purpose": null,
+        "span": "assign tasks"
+      },
+      {
+        "action": "set",
+        "object": "deadlines",
+        "context": null,
+        "purpose": null,
+        "span": "set deadlines"
+      },
+      {
+        "action": "divide",
+        "object": "big projects into small steps",
+        "context": null,
+        "purpose": null,
+        "span": "divide big projects into small steps"
+      }
+    ],
+    "benefits": [
+      {
+        "aspect": "collaboration",
+        "claim": "is very helpful",
+        "span": "The collaboration is very helpful"
+      },
+      {
+        "aspect": "collaboration",
+        "claim": "anyone can comment on tasks directly",
+        "span": "anyone can comment on tasks directly"
+      }
+    ],
+    "frictions": [
+      {
+        "aspect": "onboarding",
+        "claim": "can feel overwhelming at start",
+        "span": "It can feel overwhelming at start"
+      },
+      {
+        "aspect": "mobile",
+        "claim": "is not very smooth",
+        "span": "The mobile app is not very smooth"
+      }
+    ]
+  },
+  "ts": "2026-10-17T23:09:12.237478+00:00"
+}

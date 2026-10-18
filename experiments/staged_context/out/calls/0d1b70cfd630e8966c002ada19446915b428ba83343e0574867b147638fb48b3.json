@@ -1,0 +1,60 @@
+{
+  "stage": "extract",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "0d1b70cfd630e8966c002ada19446915b428ba83343e0574867b147638fb48b3",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 460,
+  "output_tokens": 1147,
+  "cost_usd": 0.012045,
+  "elapsed_s": 10.01,
+  "error": null,
+  "text": "{\n  \"tasks\": [\n    {\n      \"action\": \"commenting\",\n      \"object\": \"directly on tasks\",\n      \"context\": \"for teams and organizations\",\n      \"purpose\": \"to facilitate seamless communication\",\n      \"span\": \"commenting directly on tasks\"\n    },\n    {\n      \"action\": \"using\",\n      \"object\": \"the built-in chat feature\",\n      \"context\": \"for teams and organizations\",\n      \"purpose\": \"to facilitate seamless communication\",\n      \"span\": \"using the built-in chat feature\"\n    },\n    {\n      \"action\": \"collaborating\",\n      \"object\": \"on documents\",\n      \"context\": \"for teams and organizations\",\n      \"purpose\": \"to facilitate seamless communication\",\n      \"span\": \"collaborating on documents\"\n    }\n  ],\n  \"benefits\": [\n    {\n      \"aspect\": \"collaboration\",\n      \"claim\": \"The collaboration tools are impressive.\",\n      \"span\": \"ClickUp's collaboration tools are impressive.\"\n    },\n    {\n      \"aspect\": \"collaboration\",\n      \"claim\": \"The platform facilitates seamless communication.\",\n      \"span\": \"the platform facilitates seamless communication\"\n    }\n  ],\n  \"frictions\": [\n    {\n      \"aspect\": \"ease_of_use\",\n      \"claim\": \"It is a little difficult to learn and navigate until you understand the platform.\",\n      \"span\": \"It's a little difficult to learn and navigate until you really understand the platform\"\n    }\n  ]\n}",
+  "json": {
+    "tasks": [
+      {
+        "action": "commenting",
+        "object": "directly on tasks",
+        "context": "for teams and organizations",
+        "purpose": "to facilitate seamless communication",
+        "span": "commenting directly on tasks"
+      },
+      {
+        "action": "using",
+        "object": "the built-in chat feature",
+        "context": "for teams and organizations",
+        "purpose": "to facilitate seamless communication",
+        "span": "using the built-in chat feature"
+      },
+      {
+        "action": "collaborating",
+        "object": "on documents",
+        "context": "for teams and organizations",
+        "purpose": "to facilitate seamless communication",
+        "span": "collaborating on documents"
+      }
+    ],
+    "benefits": [
+      {
+        "aspect": "collaboration",
+        "claim": "The collaboration tools are impressive.",
+        "span": "ClickUp's collaboration tools are impressive."
+      },
+      {
+        "aspect": "collaboration",
+        "claim": "The platform facilitates seamless communication.",
+        "span": "the platform facilitates seamless communication"
+      }
+    ],
+    "frictions": [
+      {
+        "aspect": "ease_of_use",
+        "claim": "It is a little difficult to learn and navigate until you understand the platform.",
+        "span": "It's a little difficult to learn and navigate until you really understand the platform"
+      }
+    ]
+  },
+  "ts": "2026-10-17T23:34:09.054114+00:00"
+}

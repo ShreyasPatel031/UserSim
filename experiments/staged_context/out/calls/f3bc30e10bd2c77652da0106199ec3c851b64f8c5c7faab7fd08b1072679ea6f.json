@@ -1,0 +1,28 @@
+{
+  "stage": "matched_screen",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "f3bc30e10bd2c77652da0106199ec3c851b64f8c5c7faab7fd08b1072679ea6f",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 324,
+  "output_tokens": 1072,
+  "cost_usd": 0.011125000000000001,
+  "elapsed_s": 9.75,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review gives a general opinion on the product's suitability for 'simple' vs 'complex' projects but does not state a specific, concrete task the reviewer used it for.\",\n  \"task\": {\n    \"action\": null,\n    \"object\": null,\n    \"context\": null,\n    \"purpose\": null\n  },\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review gives a general opinion on the product's suitability for 'simple' vs 'complex' projects but does not state a specific, concrete task the reviewer used it for.",
+    "task": {
+      "action": null,
+      "object": null,
+      "context": null,
+      "purpose": null
+    },
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-17T23:52:28.489954+00:00"
+}

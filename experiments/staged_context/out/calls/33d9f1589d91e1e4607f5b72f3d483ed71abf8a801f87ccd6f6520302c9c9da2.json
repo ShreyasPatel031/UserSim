@@ -1,0 +1,35 @@
+{
+  "stage": "onet_map",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "33d9f1589d91e1e4607f5b72f3d483ed71abf8a801f87ccd6f6520302c9c9da2",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 19943,
+  "output_tokens": 1616,
+  "cost_usd": 0.04108875,
+  "elapsed_s": 15.16,
+  "error": null,
+  "text": "{\n  \"occupations\": [\n    {\n      \"code\": \"13-1082.00\",\n      \"title\": \"Project Management Specialists\",\n      \"rationale\": \"The product is explicitly described as a \\\"project management application\\\" and a competitor excerpt mentions the need for a \\\"shared project management tool\\\" to track project plans and progress [D:Asana:landing:3].\"\n    },\n    {\n      \"code\": \"15-1252.00\",\n      \"title\": \"Software Developers\",\n      \"rationale\": \"Trello's ability to integrate with Jira and a competitor's mention of integrations with tools like GitHub and managing work in \\\"sprints\\\" directly relates to the project management needs of software developers [D:Trello:features:5, D:ClickUp:landing:4].\"\n    },\n    {\n      \"code\": \"11-2021.00\",\n      \"title\": \"Marketing Managers\",\n      \"rationale\": \"A competitor excerpt explicitly names \\\"marketing\\\" as a team that tracks its work on a project launch, a process that involves managing the various tasks, deadlines, and workflows that Trello is designed to handle [D:Asana:landing:3].\"\n    }\n  ]\n}",
+  "json": {
+    "occupations": [
+      {
+        "code": "13-1082.00",
+        "title": "Project Management Specialists",
+        "rationale": "The product is explicitly described as a \"project management application\" and a competitor excerpt mentions the need for a \"shared project management tool\" to track project plans and progress [D:Asana:landing:3]."
+      },
+      {
+        "code": "15-1252.00",
+        "title": "Software Developers",
+        "rationale": "Trello's ability to integrate with Jira and a competitor's mention of integrations with tools like GitHub and managing work in \"sprints\" directly relates to the project management needs of software developers [D:Trello:features:5, D:ClickUp:landing:4]."
+      },
+      {
+        "code": "11-2021.00",
+        "title": "Marketing Managers",
+        "rationale": "A competitor excerpt explicitly names \"marketing\" as a team that tracks its work on a project launch, a process that involves managing the various tasks, deadlines, and workflows that Trello is designed to handle [D:Asana:landing:3]."
+      }
+    ]
+  },
+  "ts": "2026-10-17T23:07:04.190610+00:00"
+}

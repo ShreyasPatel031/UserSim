@@ -1,0 +1,53 @@
+{
+  "stage": "extract",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "569cfa9d80f80990f5984b3645ddd0114a928dbab92afa4af85cc5d5f447c1f4",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 490,
+  "output_tokens": 1440,
+  "cost_usd": 0.015012500000000002,
+  "elapsed_s": 20.39,
+  "error": null,
+  "text": "{\n  \"tasks\": [],\n  \"benefits\": [\n    {\n      \"aspect\": \"pricing\",\n      \"claim\": \"You get your value for your money.\",\n      \"span\": \"you get your value for your money\"\n    },\n    {\n      \"aspect\": \"ease_of_use\",\n      \"claim\": \"The ease of use is great.\",\n      \"span\": \"the ease of use is great\"\n    },\n    {\n      \"aspect\": \"support\",\n      \"claim\": \"Customer service was available and helpful when needed.\",\n      \"span\": \"If I needed customer service they were there and helpful\"\n    }\n  ],\n  \"frictions\": [\n    {\n      \"aspect\": \"automation\",\n      \"claim\": \"The process automation is not liked.\",\n      \"span\": \"I don't like the process automation\"\n    },\n    {\n      \"aspect\": \"interface\",\n      \"claim\": \"The setup can be confusing.\",\n      \"span\": \"the way things are set up. You can get easily confused.\"\n    },\n    {\n      \"aspect\": \"features\",\n      \"claim\": \"Client management is a downside.\",\n      \"span\": \"Client management is a down side as well\"\n    }\n  ]\n}",
+  "json": {
+    "tasks": [],
+    "benefits": [
+      {
+        "aspect": "pricing",
+        "claim": "You get your value for your money.",
+        "span": "you get your value for your money"
+      },
+      {
+        "aspect": "ease_of_use",
+        "claim": "The ease of use is great.",
+        "span": "the ease of use is great"
+      },
+      {
+        "aspect": "support",
+        "claim": "Customer service was available and helpful when needed.",
+        "span": "If I needed customer service they were there and helpful"
+      }
+    ],
+    "frictions": [
+      {
+        "aspect": "automation",
+        "claim": "The process automation is not liked.",
+        "span": "I don't like the process automation"
+      },
+      {
+        "aspect": "interface",
+        "claim": "The setup can be confusing.",
+        "span": "the way things are set up. You can get easily confused."
+      },
+      {
+        "aspect": "features",
+        "claim": "Client management is a downside.",
+        "span": "Client management is a down side as well"
+      }
+    ]
+  },
+  "ts": "2026-10-17T23:34:00.275403+00:00"
+}

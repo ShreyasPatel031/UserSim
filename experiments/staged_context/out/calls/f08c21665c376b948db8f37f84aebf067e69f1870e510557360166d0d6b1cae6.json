@@ -1,0 +1,75 @@
+{
+  "stage": "extract",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "f08c21665c376b948db8f37f84aebf067e69f1870e510557360166d0d6b1cae6",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 545,
+  "output_tokens": 1617,
+  "cost_usd": 0.01685125,
+  "elapsed_s": 12.69,
+  "error": null,
+  "text": "{\n  \"tasks\": [\n    {\n      \"action\": \"Managing\",\n      \"object\": \"dependencies between tasks\",\n      \"context\": \"My Team\",\n      \"purpose\": null,\n      \"span\": \"Managing dependencies between tasks\"\n    },\n    {\n      \"action\": \"know\",\n      \"object\": \"precisely who is doing what, and by when\",\n      \"context\": null,\n      \"purpose\": null,\n      \"span\": \"know precisely who is doing what, and by when\"\n    },\n    {\n      \"action\": \"tracking\",\n      \"object\": \"status\",\n      \"context\": \"my team meetings\",\n      \"purpose\": \"my team meetings have become twice as short\",\n      \"span\": \"status tracking happens in real time\"\n    }\n  ],\n  \"benefits\": [\n    {\n      \"aspect\": \"ease_of_use\",\n      \"claim\": \"The user experience is an absolute gold standard.\",\n      \"span\": \"The user experience is an absolute gold standard.\"\n    },\n    {\n      \"aspect\": \"features\",\n      \"claim\": \"Managing dependencies between tasks is ultra-fluid.\",\n      \"span\": \"Managing dependencies between tasks is ultra-fluid\"\n    },\n    {\n      \"aspect\": \"collaboration\",\n      \"claim\": \"The collaboration features keep everyone from scattering.\",\n      \"span\": \"the collaboration features (comments, likes, clear assignments) keep everyone from scattering\"\n    }\n  ],\n  \"frictions\": [\n    {\n      \"aspect\": \"flexibility\",\n      \"claim\": \"Limited when trying to customize dashboards or add advanced mathematical formulas.\",\n      \"span\": \"The moment I want to customize dashboards or add advanced mathematical formulas, I quickly feel limited.\"\n    },\n    {\n      \"aspect\": \"pricing\",\n      \"claim\": \"The free version has become quite restrictive over time.\",\n      \"span\": \"the free version has become quite restrictive over time\"\n    },\n    {\n      \"aspect\": \"pricing\",\n      \"claim\": \"Transitioning to paid plans is a real financial stretch for smaller structures.\",\n      \"span\": \"transitioning to paid plans is a real financial stretch for smaller structures\"\n    }\n  ]\n}",
+  "json": {
+    "tasks": [
+      {
+        "action": "Managing",
+        "object": "dependencies between tasks",
+        "context": "My Team",
+        "purpose": null,
+        "span": "Managing dependencies between tasks"
+      },
+      {
+        "action": "know",
+        "object": "precisely who is doing what, and by when",
+        "context": null,
+        "purpose": null,
+        "span": "know precisely who is doing what, and by when"
+      },
+      {
+        "action": "tracking",
+        "object": "status",
+        "context": "my team meetings",
+        "purpose": "my team meetings have become twice as short",
+        "span": "status tracking happens in real time"
+      }
+    ],
+    "benefits": [
+      {
+        "aspect": "ease_of_use",
+        "claim": "The user experience is an absolute gold standard.",
+        "span": "The user experience is an absolute gold standard."
+      },
+      {
+        "aspect": "features",
+        "claim": "Managing dependencies between tasks is ultra-fluid.",
+        "span": "Managing dependencies between tasks is ultra-fluid"
+      },
+      {
+        "aspect": "collaboration",
+        "claim": "The collaboration features keep everyone from scattering.",
+        "span": "the collaboration features (comments, likes, clear assignments) keep everyone from scattering"
+      }
+    ],
+    "frictions": [
+      {
+        "aspect": "flexibility",
+        "claim": "Limited when trying to customize dashboards or add advanced mathematical formulas.",
+        "span": "The moment I want to customize dashboards or add advanced mathematical formulas, I quickly feel limited."
+      },
+      {
+        "aspect": "pricing",
+        "claim": "The free version has become quite restrictive over time.",
+        "span": "the free version has become quite restrictive over time"
+      },
+      {
+        "aspect": "pricing",
+        "claim": "Transitioning to paid plans is a real financial stretch for smaller structures.",
+        "span": "transitioning to paid plans is a real financial stretch for smaller structures"
+      }
+    ]
+  },
+  "ts": "2026-10-17T23:27:02.187821+00:00"
+}

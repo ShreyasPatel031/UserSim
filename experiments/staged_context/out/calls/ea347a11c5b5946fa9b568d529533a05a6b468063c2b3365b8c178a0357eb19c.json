@@ -1,0 +1,47 @@
+{
+  "stage": "extract",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "ea347a11c5b5946fa9b568d529533a05a6b468063c2b3365b8c178a0357eb19c",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 462,
+  "output_tokens": 1270,
+  "cost_usd": 0.013277500000000001,
+  "elapsed_s": 10.38,
+  "error": null,
+  "text": "{\n  \"tasks\": [\n    {\n      \"action\": \"train\",\n      \"object\": \"our employees\",\n      \"context\": null,\n      \"purpose\": null,\n      \"span\": \"train our employees on it\"\n    },\n    {\n      \"action\": \"Mangement of\",\n      \"object\": \"scheduling and task for the day\",\n      \"context\": null,\n      \"purpose\": \"to understand and organize\",\n      \"span\": \"Mangement of scheduling and task for the day easier to understand and organize\"\n    }\n  ],\n  \"benefits\": [\n    {\n      \"aspect\": \"ease_of_use\",\n      \"claim\": \"It is easy to use.\",\n      \"span\": \"How easy it is to use.\"\n    },\n    {\n      \"aspect\": \"onboarding\",\n      \"claim\": \"It is easy to train employees on it.\",\n      \"span\": \"It is easy to train our employees on it\"\n    }\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "tasks": [
+      {
+        "action": "train",
+        "object": "our employees",
+        "context": null,
+        "purpose": null,
+        "span": "train our employees on it"
+      },
+      {
+        "action": "Mangement of",
+        "object": "scheduling and task for the day",
+        "context": null,
+        "purpose": "to understand and organize",
+        "span": "Mangement of scheduling and task for the day easier to understand and organize"
+      }
+    ],
+    "benefits": [
+      {
+        "aspect": "ease_of_use",
+        "claim": "It is easy to use.",
+        "span": "How easy it is to use."
+      },
+      {
+        "aspect": "onboarding",
+        "claim": "It is easy to train employees on it.",
+        "span": "It is easy to train our employees on it"
+      }
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-17T23:33:34.719096+00:00"
+}

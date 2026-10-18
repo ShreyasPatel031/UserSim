@@ -1,0 +1,23 @@
+{
+  "stage": "matched_screen",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "a7429a21ed9264718195ae287c41ebeef63f03334c65e13bd4b496cebfe68657",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 366,
+  "output_tokens": 1363,
+  "cost_usd": 0.0140875,
+  "elapsed_s": 14.17,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review mentions \\\"simple project Management tasks\\\" but does not provide any specific examples or details about what those tasks are. This is a generic category of use, not a concrete, actionable task with a clear object.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review mentions \"simple project Management tasks\" but does not provide any specific examples or details about what those tasks are. This is a generic category of use, not a concrete, actionable task with a clear object.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-17T23:38:39.740112+00:00"
+}

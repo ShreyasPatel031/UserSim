@@ -1,0 +1,75 @@
+{
+  "stage": "extract",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "c7a225db68200f3c6f427b1e4c399da34373ba52055eb8d2932d8a6eff9b72b3",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 591,
+  "output_tokens": 1994,
+  "cost_usd": 0.02067875,
+  "elapsed_s": 15.12,
+  "error": null,
+  "text": "{\n  \"tasks\": [\n    {\n      \"action\": \"create\",\n      \"object\": \"various agents\",\n      \"context\": null,\n      \"purpose\": null,\n      \"span\": \"create various agents\"\n    },\n    {\n      \"action\": \"allocate\",\n      \"object\": \"tasks\",\n      \"context\": null,\n      \"purpose\": null,\n      \"span\": \"allocate tasks\"\n    },\n    {\n      \"action\": \"integrate\",\n      \"object\": \"with my outlook email and other platforms\",\n      \"context\": null,\n      \"purpose\": null,\n      \"span\": \"integrate with my outlook email and other platforms\"\n    }\n  ],\n  \"benefits\": [\n    {\n      \"aspect\": \"features\",\n      \"claim\": \"The AI agents system is a liked feature.\",\n      \"span\": \"I like the AI agents system\"\n    },\n    {\n      \"aspect\": \"integrations\",\n      \"claim\": \"It has the ability to integrate with Outlook email and other platforms.\",\n      \"span\": \"the ability to integrate with my outlook email and other platforms\"\n    },\n    {\n      \"aspect\": \"automation\",\n      \"claim\": \"The AI can help organize and automate work.\",\n      \"span\": \"an AI that cares and can help me organize and automate my work\"\n    }\n  ],\n  \"frictions\": [\n    {\n      \"aspect\": \"interface\",\n      \"claim\": \"The options, menus, and items could be better organized.\",\n      \"span\": \"the options, menus, and items could be better organized\"\n    },\n    {\n      \"aspect\": \"ease_of_use\",\n      \"claim\": \"It takes a while to get used to the product.\",\n      \"span\": \"it takes a while to get used to it\"\n    },\n    {\n      \"aspect\": \"interface\",\n      \"claim\": \"The screen has a lot happening and can be confusing for a first-time user.\",\n      \"span\": \"There are usually a lot of things happening on the screen when you sign up, which can be confusing for a first-time user.\"\n    }\n  ]\n}",
+  "json": {
+    "tasks": [
+      {
+        "action": "create",
+        "object": "various agents",
+        "context": null,
+        "purpose": null,
+        "span": "create various agents"
+      },
+      {
+        "action": "allocate",
+        "object": "tasks",
+        "context": null,
+        "purpose": null,
+        "span": "allocate tasks"
+      },
+      {
+        "action": "integrate",
+        "object": "with my outlook email and other platforms",
+        "context": null,
+        "purpose": null,
+        "span": "integrate with my outlook email and other platforms"
+      }
+    ],
+    "benefits": [
+      {
+        "aspect": "features",
+        "claim": "The AI agents system is a liked feature.",
+        "span": "I like the AI agents system"
+      },
+      {
+        "aspect": "integrations",
+        "claim": "It has the ability to integrate with Outlook email and other platforms.",
+        "span": "the ability to integrate with my outlook email and other platforms"
+      },
+      {
+        "aspect": "automation",
+        "claim": "The AI can help organize and automate work.",
+        "span": "an AI that cares and can help me organize and automate my work"
+      }
+    ],
+    "frictions": [
+      {
+        "aspect": "interface",
+        "claim": "The options, menus, and items could be better organized.",
+        "span": "the options, menus, and items could be better organized"
+      },
+      {
+        "aspect": "ease_of_use",
+        "claim": "It takes a while to get used to the product.",
+        "span": "it takes a while to get used to it"
+      },
+      {
+        "aspect": "interface",
+        "claim": "The screen has a lot happening and can be confusing for a first-time user.",
+        "span": "There are usually a lot of things happening on the screen when you sign up, which can be confusing for a first-time user."
+      }
+    ]
+  },
+  "ts": "2026-10-17T23:52:57.337742+00:00"
+}

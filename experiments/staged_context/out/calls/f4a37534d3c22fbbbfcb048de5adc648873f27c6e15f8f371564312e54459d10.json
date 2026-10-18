@@ -1,0 +1,188 @@
+{
+  "stage": "predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f4a37534d3c22fbbbfcb048de5adc648873f27c6e15f8f371564312e54459d10",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "input_tokens": 7173,
+  "output_tokens": 3629,
+  "cost_usd": 0.011224399999999999,
+  "elapsed_s": 15.41,
+  "error": null,
+  "text": "{\n  \"product\": \"Asana\",\n  \"segments\": [\n    {\n      \"role_family\": \"Project Managers / Team Leads\",\n      \"motivation\": \"To track project progress, manage tasks, and ensure timely completion across teams.\",\n      \"basis_ids\": [\n        \"M:Asana\",\n        \"D:Asana:landing:3\",\n        \"D:Asana:landing:4\",\n        \"D:Asana:landing:5\",\n        \"D:Asana:features:1\",\n        \"D:Asana:features:2\",\n        \"O:13-1082.00\"\n      ]\n    },\n    {\n      \"role_family\": \"Operations Managers / Business Owners\",\n      \"motivation\": \"To gain oversight of organizational workflows, improve team efficiency, and align work with strategic goals.\",\n      \"basis_ids\": [\n        \"M:Asana\",\n        \"D:Asana:features:5\",\n        \"D:Asana:features:6\",\n        \"D:Asana:features:8\",\n        \"O:11-1021.00\"\n      ]\n    },\n    {\n      \"role_family\": \"Marketing / Creative Professionals\",\n      \"motivation\": \"To organize campaigns, content, and design projects, and facilitate collaboration with diverse internal and external teams.\",\n      \"basis_ids\": [\n        \"D:Asana:landing:3\",\n        \"D:Asana:features:12\",\n        \"O:11-2021.00\",\n        \"C:Capterra___6807901\",\n        \"C:Capterra___6549075\",\n        \"C:Capterra___6624483\"\n      ]\n    }\n  ],\n  \"tasks\": [\n    {\n      \"action\": \"Break down and assign\",\n      \"object\": \"tasks\",\n      \"context\": \"within projects\",\n      \"purpose\": \"to clarify ownership and deadlines\",\n      \"basis_ids\": [\n        \"D:Asana:features:2\"\n      ]\n    },\n    {\n      \"action\": \"Organize and view\",\n      \"object\": \"project work\",\n      \"context\": null,\n      \"purpose\": \"using various layouts like lists, calendars, timelines, or Kanban boards\",\n      \"basis_ids\": [\n        \"D:Asana:features:2\"\n      ]\n    },\n    {\n      \"action\": \"Track\",\n      \"object\": \"project progress and deadlines\",\n      \"context\": \"across multiple teams\",\n      \"purpose\": \"to ensure projects stay on schedule\",\n      \"basis_ids\": [\n        \"D:Asana:landing:3\",\n        \"D:Asana:features:1\",\n        \"D:Asana:features:5\",\n        \"O:13-1082.00:21479\"\n      ]\n    },\n    {\n      \"action\": \"Automate\",\n      \"object\": \"routine tasks and workflows\",\n      \"context\": null,\n      \"purpose\": \"to increase efficiency and reduce manual effort\",\n      \"basis_ids\": [\n        \"D:Asana:features:6\",\n        \"D:Asana:features:7\"\n      ]\n    },\n    {\n      \"action\": \"Manage\",\n      \"object\": \"team workloads and resources\",\n      \"context\": null,\n      \"purpose\": \"to plan accurate timelines and balance capacity\",\n      \"basis_ids\": [\n        \"D:Asana:features:8\",\n        \"D:Asana:features:9\"\n      ]\n    }\n  ],\n  \"benefits\": [\n    {\n      \"aspect\": \"Visibility\",\n      \"claim\": \"Provides clear insight into who is doing what and by when, improving transparency.\",\n      \"basis_ids\": [\n        \"D:Asana:features:1\",\n        \"D:Asana:landing:3\"\n      ]\n    },\n    {\n      \"aspect\": \"Efficiency\",\n      \"claim\": \"Reduces time spent on manual reporting and status updates through automation and real-time data.\",\n      \"basis_ids\": [\n        \"D:Asana:landing:4\",\n        \"D:Asana:landing:5\",\n        \"D:Asana:features:3\",\n        \"D:Asana:features:6\"\n      ]\n    },\n    {\n      \"aspect\": \"Collaboration\",\n      \"claim\": \"Facilitates shared understanding and collaboration on project plans across different teams.\",\n      \"basis_ids\": [\n        \"D:Asana:landing:1\",\n        \"D:Asana:landing:3\",\n        \"D:Asana:features:2\"\n      ]\n    }\n  ],\n  \"frictions\": [\n    {\n      \"aspect\": \"Complexity\",\n      \"claim\": \"The extensive features and functionalities may lead to a learning curve or feel overwhelming for new users.\",\n      \"basis_ids\": [\n        \"D:Asana:features:1\",\n        \"D:Asana:features:2\",\n        \"D:Asana:features:3\",\n        \"D:Asana:features:4\",\n        \"D:Asana:features:5\",\n        \"D:Asana:features:6\",\n        \"D:Asana:features:7\",\n        \"D:Asana:features:8\",\n        \"D:Asana:features:9\",\n        \"D:Asana:features:10\",\n        \"D:Asana:features:11\",\n        \"D:Asana:features:12\",\n        \"C:Capterra___6602951\",\n        \"C:Capterra___5087851\"\n      ]\n    },\n    {\n      \"aspect\": \"Cost\",\n      \"claim\": \"Some useful or advanced features may be locked behind paid plans, limiting functionality for free or basic users.\",\n      \"basis_ids\": [\n        \"C:Capterra___6630970\",\n        \"C:Capterra___6678877\",\n        \"C:Capterra___6135857\",\n        \"C:Capterra___5087851\"\n      ]\n    },\n    {\n      \"aspect\": \"User Interface\",\n      \"claim\": \"While functional, the user interface might not always be perceived as the most intuitive or cleanest by all users.\",\n      \"basis_ids\": [\n        \"C:Capterra___5037970\",\n        \"C:Capterra___6854368\"\n      ]\n    }\n  ],\n  \"ease_of_use_probabilities_1_to_5\": [\n    0.05,\n    0.10,\n    0.20,\n    0.35,\n    0.30\n  ],\n  \"unknowns\": [\n    \"The specific impact and adoption rate of Asana's AI Teammates and agentic work management features among reviewers.\"\n  ]\n}",
+  "json": {
+    "product": "Asana",
+    "segments": [
+      {
+        "role_family": "Project Managers / Team Leads",
+        "motivation": "To track project progress, manage tasks, and ensure timely completion across teams.",
+        "basis_ids": [
+          "M:Asana",
+          "D:Asana:landing:3",
+          "D:Asana:landing:4",
+          "D:Asana:landing:5",
+          "D:Asana:features:1",
+          "D:Asana:features:2",
+          "O:13-1082.00"
+        ]
+      },
+      {
+        "role_family": "Operations Managers / Business Owners",
+        "motivation": "To gain oversight of organizational workflows, improve team efficiency, and align work with strategic goals.",
+        "basis_ids": [
+          "M:Asana",
+          "D:Asana:features:5",
+          "D:Asana:features:6",
+          "D:Asana:features:8",
+          "O:11-1021.00"
+        ]
+      },
+      {
+        "role_family": "Marketing / Creative Professionals",
+        "motivation": "To organize campaigns, content, and design projects, and facilitate collaboration with diverse internal and external teams.",
+        "basis_ids": [
+          "D:Asana:landing:3",
+          "D:Asana:features:12",
+          "O:11-2021.00",
+          "C:Capterra___6807901",
+          "C:Capterra___6549075",
+          "C:Capterra___6624483"
+        ]
+      }
+    ],
+    "tasks": [
+      {
+        "action": "Break down and assign",
+        "object": "tasks",
+        "context": "within projects",
+        "purpose": "to clarify ownership and deadlines",
+        "basis_ids": [
+          "D:Asana:features:2"
+        ]
+      },
+      {
+        "action": "Organize and view",
+        "object": "project work",
+        "context": null,
+        "purpose": "using various layouts like lists, calendars, timelines, or Kanban boards",
+        "basis_ids": [
+          "D:Asana:features:2"
+        ]
+      },
+      {
+        "action": "Track",
+        "object": "project progress and deadlines",
+        "context": "across multiple teams",
+        "purpose": "to ensure projects stay on schedule",
+        "basis_ids": [
+          "D:Asana:landing:3",
+          "D:Asana:features:1",
+          "D:Asana:features:5",
+          "O:13-1082.00:21479"
+        ]
+      },
+      {
+        "action": "Automate",
+        "object": "routine tasks and workflows",
+        "context": null,
+        "purpose": "to increase efficiency and reduce manual effort",
+        "basis_ids": [
+          "D:Asana:features:6",
+          "D:Asana:features:7"
+        ]
+      },
+      {
+        "action": "Manage",
+        "object": "team workloads and resources",
+        "context": null,
+        "purpose": "to plan accurate timelines and balance capacity",
+        "basis_ids": [
+          "D:Asana:features:8",
+          "D:Asana:features:9"
+        ]
+      }
+    ],
+    "benefits": [
+      {
+        "aspect": "Visibility",
+        "claim": "Provides clear insight into who is doing what and by when, improving transparency.",
+        "basis_ids": [
+          "D:Asana:features:1",
+          "D:Asana:landing:3"
+        ]
+      },
+      {
+        "aspect": "Efficiency",
+        "claim": "Reduces time spent on manual reporting and status updates through automation and real-time data.",
+        "basis_ids": [
+          "D:Asana:landing:4",
+          "D:Asana:landing:5",
+          "D:Asana:features:3",
+          "D:Asana:features:6"
+        ]
+      },
+      {
+        "aspect": "Collaboration",
+        "claim": "Facilitates shared understanding and collaboration on project plans across different teams.",
+        "basis_ids": [
+          "D:Asana:landing:1",
+          "D:Asana:landing:3",
+          "D:Asana:features:2"
+        ]
+      }
+    ],
+    "frictions": [
+      {
+        "aspect": "Complexity",
+        "claim": "The extensive features and functionalities may lead to a learning curve or feel overwhelming for new users.",
+        "basis_ids": [
+          "D:Asana:features:1",
+          "D:Asana:features:2",
+          "D:Asana:features:3",
+          "D:Asana:features:4",
+          "D:Asana:features:5",
+          "D:Asana:features:6",
+          "D:Asana:features:7",
+          "D:Asana:features:8",
+          "D:Asana:features:9",
+          "D:Asana:features:10",
+          "D:Asana:features:11",
+          "D:Asana:features:12",
+          "C:Capterra___6602951",
+          "C:Capterra___5087851"
+        ]
+      },
+      {
+        "aspect": "Cost",
+        "claim": "Some useful or advanced features may be locked behind paid plans, limiting functionality for free or basic users.",
+        "basis_ids": [
+          "C:Capterra___6630970",
+          "C:Capterra___6678877",
+          "C:Capterra___6135857",
+          "C:Capterra___5087851"
+        ]
+      },
+      {
+        "aspect": "User Interface",
+        "claim": "While functional, the user interface might not always be perceived as the most intuitive or cleanest by all users.",
+        "basis_ids": [
+          "C:Capterra___5037970",
+          "C:Capterra___6854368"
+        ]
+      }
+    ],
+    "ease_of_use_probabilities_1_to_5": [
+      0.05,
+      0.1,
+      0.2,
+      0.35,
+      0.3
+    ],
+    "unknowns": [
+      "The specific impact and adoption rate of Asana's AI Teammates and agentic work management features among reviewers."
+    ]
+  },
+  "ts": "2026-10-17T23:11:48.747087+00:00"
+}

@@ -1,0 +1,65 @@
+{
+  "stage": "extract",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "54a162bd684b780a2df672b0a3ead218ed1c649fd929a6027723431688f30679",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 520,
+  "output_tokens": 2413,
+  "cost_usd": 0.024780000000000003,
+  "elapsed_s": 18.71,
+  "error": null,
+  "text": "{\n  \"tasks\": [\n    {\n      \"action\": \"make\",\n      \"object\": \"task tracking\",\n      \"context\": null,\n      \"purpose\": \"since projects have different needs\",\n      \"span\": \"make task tracking as simple or unique as I want\"\n    },\n    {\n      \"action\": \"collaborate\",\n      \"object\": \"on those tasks\",\n      \"context\": \"with my team and other business units\",\n      \"purpose\": null,\n      \"span\": \"collaborate with my team and other business units on those tasks\"\n    },\n    {\n      \"action\": \"keep\",\n      \"object\": \"things all in one place\",\n      \"context\": null,\n      \"purpose\": null,\n      \"span\": \"keep things all in one place\"\n    }\n  ],\n  \"benefits\": [\n    {\n      \"aspect\": \"flexibility\",\n      \"claim\": \"It is highly customizable to your needs.\",\n      \"span\": \"Asana is so customizable to your needs\"\n    },\n    {\n      \"aspect\": \"ease_of_use\",\n      \"claim\": \"It is easy to tag, comment, and link.\",\n      \"span\": \"I can easily tag, comment, and link\"\n    },\n    {\n      \"aspect\": \"features\",\n      \"claim\": \"The project overview page is an awesome feature that allows for a quick glance.\",\n      \"span\": \"The project overview page is a super awesome feature that allows a quick glance\"\n    }\n  ],\n  \"frictions\": [\n    {\n      \"aspect\": \"ease_of_use\",\n      \"claim\": \"It can be overwhelming to determine which setup or functionality to use for a project.\",\n      \"span\": \"it can feel overwhelming at times to know which setup/functionality will work for the project/task at hand\"\n    }\n  ]\n}",
+  "json": {
+    "tasks": [
+      {
+        "action": "make",
+        "object": "task tracking",
+        "context": null,
+        "purpose": "since projects have different needs",
+        "span": "make task tracking as simple or unique as I want"
+      },
+      {
+        "action": "collaborate",
+        "object": "on those tasks",
+        "context": "with my team and other business units",
+        "purpose": null,
+        "span": "collaborate with my team and other business units on those tasks"
+      },
+      {
+        "action": "keep",
+        "object": "things all in one place",
+        "context": null,
+        "purpose": null,
+        "span": "keep things all in one place"
+      }
+    ],
+    "benefits": [
+      {
+        "aspect": "flexibility",
+        "claim": "It is highly customizable to your needs.",
+        "span": "Asana is so customizable to your needs"
+      },
+      {
+        "aspect": "ease_of_use",
+        "claim": "It is easy to tag, comment, and link.",
+        "span": "I can easily tag, comment, and link"
+      },
+      {
+        "aspect": "features",
+        "claim": "The project overview page is an awesome feature that allows for a quick glance.",
+        "span": "The project overview page is a super awesome feature that allows a quick glance"
+      }
+    ],
+    "frictions": [
+      {
+        "aspect": "ease_of_use",
+        "claim": "It can be overwhelming to determine which setup or functionality to use for a project.",
+        "span": "it can feel overwhelming at times to know which setup/functionality will work for the project/task at hand"
+      }
+    ]
+  },
+  "ts": "2026-10-17T23:08:51.350343+00:00"
+}

@@ -1,0 +1,35 @@
+{
+  "stage": "onet_map",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "3bac7b3328339fc667de4f845a82d9ee72e4050ac07a87277f9acbccca9fc1df",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 20983,
+  "output_tokens": 1732,
+  "cost_usd": 0.043548750000000004,
+  "elapsed_s": 16.04,
+  "error": null,
+  "text": "{\n  \"occupations\": [\n    {\n      \"code\": \"13-1082.00\",\n      \"title\": \"Project Management Specialists\",\n      \"rationale\": \"ClickUp is explicitly described as the \\\"industry's best project management solution\\\" used to \\\"Deliver projects on time, every time\\\" with features like tasks, sprints, goals, and milestones [D:ClickUp:landing:9, D:ClickUp:features:7].\"\n    },\n    {\n      \"code\": \"15-1252.00\",\n      \"title\": \"Software Developers\",\n      \"rationale\": \"The platform supports agile software development by offering features to manage \\\"Sprints,\\\" \\\"sprint points,\\\" and custom task types like \\\"Bugs,\\\" and it integrates with developer tools such as GitHub [D:ClickUp:features:7, D:ClickUp:features:9, D:ClickUp:features:12, D:ClickUp:landing:4].\"\n    },\n    {\n      \"code\": \"11-2021.00\",\n      \"title\": \"Marketing Managers\",\n      \"rationale\": \"The excerpts show the product is used to track key marketing metrics such as \\\"Growth & Acquisition\\\" and \\\"Paid Return on Ad Spend (ROAS),\\\" which are core responsibilities for marketing managers [D:ClickUp:landing:7].\"\n    }\n  ]\n}",
+  "json": {
+    "occupations": [
+      {
+        "code": "13-1082.00",
+        "title": "Project Management Specialists",
+        "rationale": "ClickUp is explicitly described as the \"industry's best project management solution\" used to \"Deliver projects on time, every time\" with features like tasks, sprints, goals, and milestones [D:ClickUp:landing:9, D:ClickUp:features:7]."
+      },
+      {
+        "code": "15-1252.00",
+        "title": "Software Developers",
+        "rationale": "The platform supports agile software development by offering features to manage \"Sprints,\" \"sprint points,\" and custom task types like \"Bugs,\" and it integrates with developer tools such as GitHub [D:ClickUp:features:7, D:ClickUp:features:9, D:ClickUp:features:12, D:ClickUp:landing:4]."
+      },
+      {
+        "code": "11-2021.00",
+        "title": "Marketing Managers",
+        "rationale": "The excerpts show the product is used to track key marketing metrics such as \"Growth & Acquisition\" and \"Paid Return on Ad Spend (ROAS),\" which are core responsibilities for marketing managers [D:ClickUp:landing:7]."
+      }
+    ]
+  },
+  "ts": "2026-10-17T23:07:20.240996+00:00"
+}

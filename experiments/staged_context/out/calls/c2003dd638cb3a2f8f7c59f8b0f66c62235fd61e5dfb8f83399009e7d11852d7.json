@@ -1,0 +1,65 @@
+{
+  "stage": "extract",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "c2003dd638cb3a2f8f7c59f8b0f66c62235fd61e5dfb8f83399009e7d11852d7",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 684,
+  "output_tokens": 2046,
+  "cost_usd": 0.021315,
+  "elapsed_s": 16.52,
+  "error": null,
+  "text": "{\n  \"tasks\": [\n    {\n      \"action\": \"probe, manage and track\",\n      \"object\": \"individual tasks and team projects\",\n      \"context\": \"at a small nonprofit\",\n      \"purpose\": null,\n      \"span\": \"probe, manage and track individual tasks and team projects\"\n    },\n    {\n      \"action\": \"measure and track\",\n      \"object\": \"employee KPI's\",\n      \"context\": null,\n      \"purpose\": null,\n      \"span\": \"measure and track these\"\n    },\n    {\n      \"action\": \"manage\",\n      \"object\": \"employees work loads\",\n      \"context\": null,\n      \"purpose\": \"oversee productivity\",\n      \"span\": \"manage employees work loads and oversee productivity\"\n    }\n  ],\n  \"benefits\": [\n    {\n      \"aspect\": \"collaboration\",\n      \"claim\": \"It's a dream tool for project management across teams.\",\n      \"span\": \"It’s been a dream tool in project management across teams\"\n    },\n    {\n      \"aspect\": \"features\",\n      \"claim\": \"The Goals function helps measure and track KPIs.\",\n      \"span\": \"the Goals function helps us measure and track these\"\n    },\n    {\n      \"aspect\": \"reporting\",\n      \"claim\": \"It allows for management without micromanaging.\",\n      \"span\": \"lets us manage without micro managing\"\n    }\n  ],\n  \"frictions\": [\n    {\n      \"aspect\": \"ease_of_use\",\n      \"claim\": \"It has more complexity and capability than can be used without dedicated training.\",\n      \"span\": \"it has more complexity and capability than we can use without taking the time to really offer trainings in it\"\n    }\n  ]\n}",
+  "json": {
+    "tasks": [
+      {
+        "action": "probe, manage and track",
+        "object": "individual tasks and team projects",
+        "context": "at a small nonprofit",
+        "purpose": null,
+        "span": "probe, manage and track individual tasks and team projects"
+      },
+      {
+        "action": "measure and track",
+        "object": "employee KPI's",
+        "context": null,
+        "purpose": null,
+        "span": "measure and track these"
+      },
+      {
+        "action": "manage",
+        "object": "employees work loads",
+        "context": null,
+        "purpose": "oversee productivity",
+        "span": "manage employees work loads and oversee productivity"
+      }
+    ],
+    "benefits": [
+      {
+        "aspect": "collaboration",
+        "claim": "It's a dream tool for project management across teams.",
+        "span": "It’s been a dream tool in project management across teams"
+      },
+      {
+        "aspect": "features",
+        "claim": "The Goals function helps measure and track KPIs.",
+        "span": "the Goals function helps us measure and track these"
+      },
+      {
+        "aspect": "reporting",
+        "claim": "It allows for management without micromanaging.",
+        "span": "lets us manage without micro managing"
+      }
+    ],
+    "frictions": [
+      {
+        "aspect": "ease_of_use",
+        "claim": "It has more complexity and capability than can be used without dedicated training.",
+        "span": "it has more complexity and capability than we can use without taking the time to really offer trainings in it"
+      }
+    ]
+  },
+  "ts": "2026-10-17T23:32:27.897108+00:00"
+}

@@ -1,0 +1,59 @@
+{
+  "stage": "extract",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "5d4e422f715c67d0a2b385d6335ff56a0bae537d9739242fd8b818b2e6047bc8",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 551,
+  "output_tokens": 1830,
+  "cost_usd": 0.01898875,
+  "elapsed_s": 14.66,
+  "error": null,
+  "text": "{\n  \"tasks\": [\n    {\n      \"action\": \"monitor and assign\",\n      \"object\": \"task\",\n      \"context\": null,\n      \"purpose\": null,\n      \"span\": \"monitor and assign task easily\"\n    },\n    {\n      \"action\": \"create\",\n      \"object\": \"different projects\",\n      \"context\": \"with different teams\",\n      \"purpose\": null,\n      \"span\": \"create different projects with different teams\"\n    },\n    {\n      \"action\": \"share and protect\",\n      \"object\": \"documents\",\n      \"context\": null,\n      \"purpose\": null,\n      \"span\": \"share and protect documents\"\n    }\n  ],\n  \"benefits\": [\n    {\n      \"aspect\": \"ease_of_use\",\n      \"claim\": \"It is easy to monitor and assign tasks.\",\n      \"span\": \"monitor and assign task easily\"\n    },\n    {\n      \"aspect\": \"integrations\",\n      \"claim\": \"It can be integrated with other apps, especially Google Workspace.\",\n      \"span\": \"I can integrate other apps especially my google workspace\"\n    },\n    {\n      \"aspect\": \"interface\",\n      \"claim\": \"You can use colors to make task status and dashboards look nice and easy to identify.\",\n      \"span\": \"you can use colours and make your task status and dashboard look very nice and easy to identify each project\"\n    }\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "tasks": [
+      {
+        "action": "monitor and assign",
+        "object": "task",
+        "context": null,
+        "purpose": null,
+        "span": "monitor and assign task easily"
+      },
+      {
+        "action": "create",
+        "object": "different projects",
+        "context": "with different teams",
+        "purpose": null,
+        "span": "create different projects with different teams"
+      },
+      {
+        "action": "share and protect",
+        "object": "documents",
+        "context": null,
+        "purpose": null,
+        "span": "share and protect documents"
+      }
+    ],
+    "benefits": [
+      {
+        "aspect": "ease_of_use",
+        "claim": "It is easy to monitor and assign tasks.",
+        "span": "monitor and assign task easily"
+      },
+      {
+        "aspect": "integrations",
+        "claim": "It can be integrated with other apps, especially Google Workspace.",
+        "span": "I can integrate other apps especially my google workspace"
+      },
+      {
+        "aspect": "interface",
+        "claim": "You can use colors to make task status and dashboards look nice and easy to identify.",
+        "span": "you can use colours and make your task status and dashboard look very nice and easy to identify each project"
+      }
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-17T23:38:00.884708+00:00"
+}

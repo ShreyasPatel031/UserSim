@@ -1,0 +1,193 @@
+{
+  "format": "generic task brief (no Atelier schema exists in this repo)",
+  "source": "staged-context pilot",
+  "evidence_note": "tasks confirmed by machine-judged strict matches against hidden 2024-era Capterra reviews",
+  "products": {
+    "Asana": [
+      {
+        "action": "Track",
+        "object": "the progress of projects",
+        "context": "across various stages",
+        "purpose": "to ensure timely completion and identify bottlenecks",
+        "confirming_test_reviews": 11,
+        "conditions": [
+          "S0"
+        ]
+      },
+      {
+        "action": "Track",
+        "object": "the progress of tasks and projects",
+        "context": null,
+        "purpose": "to maintain oversight and accountability",
+        "confirming_test_reviews": 10,
+        "conditions": [
+          "A3"
+        ]
+      },
+      {
+        "action": "Track",
+        "object": "project progress and deadlines",
+        "context": "across multiple teams",
+        "purpose": "to ensure projects stay on schedule",
+        "confirming_test_reviews": 10,
+        "conditions": [
+          "S3"
+        ]
+      },
+      {
+        "action": "Track",
+        "object": "progress of tasks and projects",
+        "context": null,
+        "purpose": "across different views like lists, boards, and timelines",
+        "confirming_test_reviews": 9,
+        "conditions": [
+          "S1"
+        ]
+      },
+      {
+        "action": "Plan and organize",
+        "object": "projects and daily tasks",
+        "context": null,
+        "purpose": "to maximize productivity",
+        "confirming_test_reviews": 8,
+        "conditions": [
+          "A3"
+        ]
+      },
+      {
+        "action": "Track and report on",
+        "object": "project status and team performance",
+        "context": null,
+        "purpose": "to gain insights into progress, identify issues, and ensure accountability.",
+        "confirming_test_reviews": 8,
+        "conditions": [
+          "S4"
+        ]
+      }
+    ],
+    "Trello": [
+      {
+        "action": "Manage and organize",
+        "object": "information with cards",
+        "context": null,
+        "purpose": "by adding due dates, attachments, and custom fields",
+        "confirming_test_reviews": 10,
+        "conditions": [
+          "A3"
+        ]
+      },
+      {
+        "action": "Manage tasks",
+        "object": "individual and team responsibilities",
+        "context": null,
+        "purpose": "assigning due dates and tracking completion",
+        "confirming_test_reviews": 10,
+        "conditions": [
+          "S3"
+        ]
+      },
+      {
+        "action": "Organize and track",
+        "object": "personal and team to-dos and ideas",
+        "context": "on visual boards",
+        "purpose": "to stay on top of responsibilities and goals",
+        "confirming_test_reviews": 10,
+        "conditions": [
+          "S3"
+        ]
+      },
+      {
+        "action": "track",
+        "object": "progress of tasks and projects",
+        "context": "across a team",
+        "purpose": null,
+        "confirming_test_reviews": 9,
+        "conditions": [
+          "A2"
+        ]
+      },
+      {
+        "action": "Track",
+        "object": "project progress",
+        "context": "with due dates and status updates",
+        "purpose": "to keep teams on point and informed",
+        "confirming_test_reviews": 8,
+        "conditions": [
+          "A3"
+        ]
+      },
+      {
+        "action": "Track",
+        "object": "project progress",
+        "context": "using cards",
+        "purpose": "by adding due dates, attachments, and marking completion",
+        "confirming_test_reviews": 8,
+        "conditions": [
+          "S1"
+        ]
+      }
+    ],
+    "ClickUp": [
+      {
+        "action": "Manage",
+        "object": "projects and tasks",
+        "context": "with custom workflows, due dates, and priority levels",
+        "purpose": "to ensure timely completion and focus on critical work",
+        "confirming_test_reviews": 8,
+        "conditions": [
+          "S1"
+        ]
+      },
+      {
+        "action": "Manage projects",
+        "object": "project activities",
+        "context": null,
+        "purpose": "plan, schedule, and track progress to ensure timely delivery",
+        "confirming_test_reviews": 6,
+        "conditions": [
+          "S3"
+        ]
+      },
+      {
+        "action": "Manage",
+        "object": "projects and tasks",
+        "context": null,
+        "purpose": "to track work with assignees and due dates",
+        "confirming_test_reviews": 6,
+        "conditions": [
+          "A1"
+        ]
+      },
+      {
+        "action": "Track and assign",
+        "object": "individual tasks",
+        "context": null,
+        "purpose": "distribute work items, set due dates, and monitor completion",
+        "confirming_test_reviews": 5,
+        "conditions": [
+          "S3"
+        ]
+      },
+      {
+        "action": "Manage and track",
+        "object": "projects",
+        "context": null,
+        "purpose": "with tasks, goals, sprints, and milestones",
+        "confirming_test_reviews": 5,
+        "conditions": [
+          "A1"
+        ]
+      },
+      {
+        "action": "Plan and manage",
+        "object": "projects",
+        "context": "with various views and tracking tools",
+        "purpose": "to deliver them on time",
+        "confirming_test_reviews": 5,
+        "conditions": [
+          "S3"
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "stage": "extract",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "9618bea2191feb5b71782f265306828336786b41845d96f33423a4b620c5de1b",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 447,
+  "output_tokens": 1767,
+  "cost_usd": 0.01822875,
+  "elapsed_s": 15.01,
+  "error": null,
+  "text": "{\n  \"tasks\": [\n    {\n      \"action\": \"collaborate\",\n      \"object\": \"with colleagues\",\n      \"context\": null,\n      \"purpose\": \"get on the same page about what tasks need to be completed\",\n      \"span\": \"collaborate with colleagues and get on the same page about what tasks need to be completed\"\n    },\n    {\n      \"action\": \"set up\",\n      \"object\": \"email reminders\",\n      \"context\": null,\n      \"purpose\": null,\n      \"span\": \"email reminders you can set up\"\n    }\n  ],\n  \"benefits\": [\n    {\n      \"aspect\": \"collaboration\",\n      \"claim\": \"Makes it easy to collaborate with colleagues.\",\n      \"span\": \"makes it easy to collaborate with colleagues\"\n    },\n    {\n      \"aspect\": \"notifications\",\n      \"claim\": \"The ability to set up email reminders is a liked feature.\",\n      \"span\": \"I really like the email reminders you can set up.\"\n    }\n  ],\n  \"frictions\": [\n    {\n      \"aspect\": \"ease_of_use\",\n      \"claim\": \"It is hard to understand if tagging someone will add them to a project.\",\n      \"span\": \"it’s hard to understand if tagging someone will actually add them to a project or not\"\n    }\n  ]\n}",
+  "json": {
+    "tasks": [
+      {
+        "action": "collaborate",
+        "object": "with colleagues",
+        "context": null,
+        "purpose": "get on the same page about what tasks need to be completed",
+        "span": "collaborate with colleagues and get on the same page about what tasks need to be completed"
+      },
+      {
+        "action": "set up",
+        "object": "email reminders",
+        "context": null,
+        "purpose": null,
+        "span": "email reminders you can set up"
+      }
+    ],
+    "benefits": [
+      {
+        "aspect": "collaboration",
+        "claim": "Makes it easy to collaborate with colleagues.",
+        "span": "makes it easy to collaborate with colleagues"
+      },
+      {
+        "aspect": "notifications",
+        "claim": "The ability to set up email reminders is a liked feature.",
+        "span": "I really like the email reminders you can set up."
+      }
+    ],
+    "frictions": [
+      {
+        "aspect": "ease_of_use",
+        "claim": "It is hard to understand if tagging someone will add them to a project.",
+        "span": "it’s hard to understand if tagging someone will actually add them to a project or not"
+      }
+    ]
+  },
+  "ts": "2026-10-17T23:29:44.591100+00:00"
+}

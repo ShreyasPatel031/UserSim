@@ -1,0 +1,75 @@
+{
+  "stage": "extract",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "ad51d61e256d525e70ab04d843f411c9c0a3dcdead7909562cfc6a2f6be1266e",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 605,
+  "output_tokens": 2502,
+  "cost_usd": 0.02577625,
+  "elapsed_s": 19.63,
+  "error": null,
+  "text": "{\n  \"tasks\": [\n    {\n      \"action\": \"customize\",\n      \"object\": \"your workplace\",\n      \"context\": \"your team\",\n      \"purpose\": \"to meet the unique needs of your team\",\n      \"span\": \"customize your workplace to meet the unique needs of your team\"\n    },\n    {\n      \"action\": \"goal-setting\",\n      \"object\": \"goals\",\n      \"context\": null,\n      \"purpose\": null,\n      \"span\": \"goal-setting\"\n    },\n    {\n      \"action\": \"job management\",\n      \"object\": \"job\",\n      \"context\": null,\n      \"purpose\": null,\n      \"span\": \"job management\"\n    }\n  ],\n  \"benefits\": [\n    {\n      \"aspect\": \"flexibility\",\n      \"claim\": \"It can be customized and is quite adaptable.\",\n      \"span\": \"can be customized and is quite adaptable\"\n    },\n    {\n      \"aspect\": \"integrations\",\n      \"claim\": \"It has smooth interactions with other programs like Zoom, Google Drive, and Slack.\",\n      \"span\": \"smooth interactions with other programs like Zoom, Google Drive, and Slack\"\n    },\n    {\n      \"aspect\": \"mobile\",\n      \"claim\": \"The mobile app is beautifully designed and successfully replicates the desktop experience.\",\n      \"span\": \"beautifully designed, the mobile app successfully replicates the desktop experience\"\n    }\n  ],\n  \"frictions\": [\n    {\n      \"aspect\": \"ease_of_use\",\n      \"claim\": \"The wide range of features can be overwhelming.\",\n      \"span\": \"wide range of features overwhelming\"\n    },\n    {\n      \"aspect\": \"interface\",\n      \"claim\": \"The interface can look cluttered at times.\",\n      \"span\": \"it can look cluttered at times\"\n    },\n    {\n      \"aspect\": \"performance\",\n      \"claim\": \"You might run into slowdowns or loading issues.\",\n      \"span\": \"you might run into slowdowns or loading issues\"\n    }\n  ]\n}",
+  "json": {
+    "tasks": [
+      {
+        "action": "customize",
+        "object": "your workplace",
+        "context": "your team",
+        "purpose": "to meet the unique needs of your team",
+        "span": "customize your workplace to meet the unique needs of your team"
+      },
+      {
+        "action": "goal-setting",
+        "object": "goals",
+        "context": null,
+        "purpose": null,
+        "span": "goal-setting"
+      },
+      {
+        "action": "job management",
+        "object": "job",
+        "context": null,
+        "purpose": null,
+        "span": "job management"
+      }
+    ],
+    "benefits": [
+      {
+        "aspect": "flexibility",
+        "claim": "It can be customized and is quite adaptable.",
+        "span": "can be customized and is quite adaptable"
+      },
+      {
+        "aspect": "integrations",
+        "claim": "It has smooth interactions with other programs like Zoom, Google Drive, and Slack.",
+        "span": "smooth interactions with other programs like Zoom, Google Drive, and Slack"
+      },
+      {
+        "aspect": "mobile",
+        "claim": "The mobile app is beautifully designed and successfully replicates the desktop experience.",
+        "span": "beautifully designed, the mobile app successfully replicates the desktop experience"
+      }
+    ],
+    "frictions": [
+      {
+        "aspect": "ease_of_use",
+        "claim": "The wide range of features can be overwhelming.",
+        "span": "wide range of features overwhelming"
+      },
+      {
+        "aspect": "interface",
+        "claim": "The interface can look cluttered at times.",
+        "span": "it can look cluttered at times"
+      },
+      {
+        "aspect": "performance",
+        "claim": "You might run into slowdowns or loading issues.",
+        "span": "you might run into slowdowns or loading issues"
+      }
+    ]
+  },
+  "ts": "2026-10-17T23:34:11.882057+00:00"
+}

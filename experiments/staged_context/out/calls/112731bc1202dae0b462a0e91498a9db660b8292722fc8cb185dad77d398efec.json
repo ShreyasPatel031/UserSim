@@ -1,0 +1,28 @@
+{
+  "stage": "matched_screen",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "112731bc1202dae0b462a0e91498a9db660b8292722fc8cb185dad77d398efec",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 488,
+  "output_tokens": 1481,
+  "cost_usd": 0.015419999999999998,
+  "elapsed_s": 13.73,
+  "error": null,
+  "text": "{\n  \"eligible\": true,\n  \"reason\": \"The review explicitly states the task of creating AI agents and allocating tasks to them, which is a concrete activity that can be attempted in a short time.\",\n  \"task\": {\n    \"action\": \"create and allocate\",\n    \"object\": \"tasks to various agents\",\n    \"context\": null,\n    \"purpose\": \"to organize and automate work\"\n  },\n  \"neutral_task\": \"Create various AI agents and allocate tasks to them.\",\n  \"span\": \"create various agents and allocate tasks\"\n}",
+  "json": {
+    "eligible": true,
+    "reason": "The review explicitly states the task of creating AI agents and allocating tasks to them, which is a concrete activity that can be attempted in a short time.",
+    "task": {
+      "action": "create and allocate",
+      "object": "tasks to various agents",
+      "context": null,
+      "purpose": "to organize and automate work"
+    },
+    "neutral_task": "Create various AI agents and allocate tasks to them.",
+    "span": "create various agents and allocate tasks"
+  },
+  "ts": "2026-10-17T23:52:42.218710+00:00"
+}

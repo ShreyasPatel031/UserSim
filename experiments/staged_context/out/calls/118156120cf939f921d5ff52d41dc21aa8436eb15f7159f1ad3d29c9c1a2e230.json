@@ -1,0 +1,28 @@
+{
+  "stage": "matched_screen",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "118156120cf939f921d5ff52d41dc21aa8436eb15f7159f1ad3d29c9c1a2e230",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 434,
+  "output_tokens": 1933,
+  "cost_usd": 0.0198725,
+  "elapsed_s": 20.8,
+  "error": null,
+  "text": "{\n  \"eligible\": true,\n  \"reason\": \"The reviewer explicitly states a personal task: using a project to organize their Support team meetings. This is a concrete activity with a specific object and context, distinguishing it from generic praise like 'stay organized'.\",\n  \"task\": {\n    \"action\": \"use a project for\",\n    \"object\": \"our Support team meetings\",\n    \"context\": null,\n    \"purpose\": \"to keep them organized\"\n  },\n  \"neutral_task\": \"Set up a project to organize and manage recurring Support team meetings.\",\n  \"span\": \"I use a project for our Support team meetings\"\n}",
+  "json": {
+    "eligible": true,
+    "reason": "The reviewer explicitly states a personal task: using a project to organize their Support team meetings. This is a concrete activity with a specific object and context, distinguishing it from generic praise like 'stay organized'.",
+    "task": {
+      "action": "use a project for",
+      "object": "our Support team meetings",
+      "context": null,
+      "purpose": "to keep them organized"
+    },
+    "neutral_task": "Set up a project to organize and manage recurring Support team meetings.",
+    "span": "I use a project for our Support team meetings"
+  },
+  "ts": "2026-10-17T23:34:13.220807+00:00"
+}

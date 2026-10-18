@@ -1,0 +1,70 @@
+{
+  "stage": "extract",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "e9b6d6de2e9315206f4d5550536e6ef1bb87cd1df8b0e821459ad8925c3f3d62",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 691,
+  "output_tokens": 2598,
+  "cost_usd": 0.02684375,
+  "elapsed_s": 20.89,
+  "error": null,
+  "text": "{\n  \"tasks\": [\n    {\n      \"action\": \"creating\",\n      \"object\": \"a project\",\n      \"context\": null,\n      \"purpose\": null,\n      \"span\": \"creating a project\"\n    },\n    {\n      \"action\": \"adding\",\n      \"object\": \"tasks\",\n      \"context\": null,\n      \"purpose\": null,\n      \"span\": \"adding tasks\"\n    },\n    {\n      \"action\": \"creating\",\n      \"object\": \"an online course\",\n      \"context\": \"Running an online business\",\n      \"purpose\": \"because there are a lot of dependencies\",\n      \"span\": \"creating an online course\"\n    }\n  ],\n  \"benefits\": [\n    {\n      \"aspect\": \"interface\",\n      \"claim\": \"The interface is simple.\",\n      \"span\": \"simple interface\"\n    },\n    {\n      \"aspect\": \"ease_of_use\",\n      \"claim\": \"It is not hard to get started and do the basics.\",\n      \"span\": \"It is not hard to get started and do the basics\"\n    },\n    {\n      \"aspect\": \"mobile\",\n      \"claim\": \"The app is very intuitive and allows quick access to tasks.\",\n      \"span\": \"The app is also very intuitive and you can get to your tasks quite quickly.\"\n    }\n  ],\n  \"frictions\": [\n    {\n      \"aspect\": \"interface\",\n      \"claim\": \"It was hard to visualize things.\",\n      \"span\": \"Found it hard to visualize\"\n    },\n    {\n      \"aspect\": \"performance\",\n      \"claim\": \"Opening boards and workspaces takes too much time.\",\n      \"span\": \"opening boards and workspaces takes too much time\"\n    }\n  ]\n}",
+  "json": {
+    "tasks": [
+      {
+        "action": "creating",
+        "object": "a project",
+        "context": null,
+        "purpose": null,
+        "span": "creating a project"
+      },
+      {
+        "action": "adding",
+        "object": "tasks",
+        "context": null,
+        "purpose": null,
+        "span": "adding tasks"
+      },
+      {
+        "action": "creating",
+        "object": "an online course",
+        "context": "Running an online business",
+        "purpose": "because there are a lot of dependencies",
+        "span": "creating an online course"
+      }
+    ],
+    "benefits": [
+      {
+        "aspect": "interface",
+        "claim": "The interface is simple.",
+        "span": "simple interface"
+      },
+      {
+        "aspect": "ease_of_use",
+        "claim": "It is not hard to get started and do the basics.",
+        "span": "It is not hard to get started and do the basics"
+      },
+      {
+        "aspect": "mobile",
+        "claim": "The app is very intuitive and allows quick access to tasks.",
+        "span": "The app is also very intuitive and you can get to your tasks quite quickly."
+      }
+    ],
+    "frictions": [
+      {
+        "aspect": "interface",
+        "claim": "It was hard to visualize things.",
+        "span": "Found it hard to visualize"
+      },
+      {
+        "aspect": "performance",
+        "claim": "Opening boards and workspaces takes too much time.",
+        "span": "opening boards and workspaces takes too much time"
+      }
+    ]
+  },
+  "ts": "2026-10-17T23:40:56.523976+00:00"
+}

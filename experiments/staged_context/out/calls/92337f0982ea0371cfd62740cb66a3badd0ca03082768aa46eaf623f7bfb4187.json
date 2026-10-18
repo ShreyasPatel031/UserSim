@@ -1,0 +1,47 @@
+{
+  "stage": "extract",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "92337f0982ea0371cfd62740cb66a3badd0ca03082768aa46eaf623f7bfb4187",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 462,
+  "output_tokens": 1956,
+  "cost_usd": 0.0201375,
+  "elapsed_s": 16.34,
+  "error": null,
+  "text": "{\n  \"tasks\": [\n    {\n      \"action\": \"created\",\n      \"object\": \"visual idea cards\",\n      \"context\": \"for the entire group\",\n      \"purpose\": \"to see and learn from\",\n      \"span\": \"created visual idea cards for the entire group to see and learn from\"\n    },\n    {\n      \"action\": \"share\",\n      \"object\": \"their new ideas\",\n      \"context\": \"group members\",\n      \"purpose\": null,\n      \"span\": \"share their new ideas\"\n    }\n  ],\n  \"benefits\": [\n    {\n      \"aspect\": \"collaboration\",\n      \"claim\": \"had a revolutionary impact on creating visual idea cards for the entire group to see and learn from\",\n      \"span\": \"this application has revolutionary impact on how I created visual idea cards for the entire group to see and learn from\"\n    },\n    {\n      \"aspect\": \"collaboration\",\n      \"claim\": \"keeps the idea incubator open for group members to share their new ideas\",\n      \"span\": \"This keeps the idea incubator open for group members to share their new ideas\"\n    }\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "tasks": [
+      {
+        "action": "created",
+        "object": "visual idea cards",
+        "context": "for the entire group",
+        "purpose": "to see and learn from",
+        "span": "created visual idea cards for the entire group to see and learn from"
+      },
+      {
+        "action": "share",
+        "object": "their new ideas",
+        "context": "group members",
+        "purpose": null,
+        "span": "share their new ideas"
+      }
+    ],
+    "benefits": [
+      {
+        "aspect": "collaboration",
+        "claim": "had a revolutionary impact on creating visual idea cards for the entire group to see and learn from",
+        "span": "this application has revolutionary impact on how I created visual idea cards for the entire group to see and learn from"
+      },
+      {
+        "aspect": "collaboration",
+        "claim": "keeps the idea incubator open for group members to share their new ideas",
+        "span": "This keeps the idea incubator open for group members to share their new ideas"
+      }
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-17T23:47:23.519632+00:00"
+}

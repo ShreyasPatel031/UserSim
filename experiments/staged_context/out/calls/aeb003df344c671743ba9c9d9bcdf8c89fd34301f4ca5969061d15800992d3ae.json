@@ -1,0 +1,70 @@
+{
+  "stage": "extract",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "aeb003df344c671743ba9c9d9bcdf8c89fd34301f4ca5969061d15800992d3ae",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 588,
+  "output_tokens": 3698,
+  "cost_usd": 0.037715,
+  "elapsed_s": 26.9,
+  "error": null,
+  "text": "{\n  \"tasks\": [\n    {\n      \"action\": \"organize\",\n      \"object\": \"the entire design process from idea generation to final delivery\",\n      \"context\": \"product design\",\n      \"purpose\": null,\n      \"span\": \"organize the entire design process from idea generation to final delivery\"\n    },\n    {\n      \"action\": \"managing\",\n      \"object\": \"product design workflows\",\n      \"context\": \"As a product designer\",\n      \"purpose\": \"keeping projects moving forward\",\n      \"span\": \"managing product design workflows and keeping projects moving forward\"\n    },\n    {\n      \"action\": \"collaborate\",\n      \"object\": \"with team members\",\n      \"context\": null,\n      \"purpose\": \"to maintain a smooth workflow\",\n      \"span\": \"collaborate with team members\"\n    }\n  ],\n  \"benefits\": [\n    {\n      \"aspect\": \"interface\",\n      \"claim\": \"Provides a clear view of design tasks, research activities, user feedback, revisions, and priorities.\",\n      \"span\": \"It provides a clear view of design tasks, research activities, user feedback, revisions, and priorities.\"\n    },\n    {\n      \"aspect\": \"ease_of_use\",\n      \"claim\": \"Makes it easier to maintain a smooth workflow.\",\n      \"span\": \"makes it easier to maintain a smooth workflow across different stages of product design\"\n    },\n    {\n      \"aspect\": \"flexibility\",\n      \"claim\": \"Trello is an efficient and flexible tool for managing product design workflows.\",\n      \"span\": \"Trello remains an efficient and flexible tool for managing product design workflows\"\n    }\n  ],\n  \"frictions\": [\n    {\n      \"aspect\": \"features\",\n      \"claim\": \"Can feel limited for complex projects needing detailed documentation, advanced analytics, or deep reporting.\",\n      \"span\": \"Trello can feel limited when managing complex projects that require detailed documentation, advanced design analytics, or deeper project reporting.\"\n    },\n    {\n      \"aspect\": \"integrations\",\n      \"claim\": \"Requires additional integrations for specialized design workflows and advanced collaboration.\",\n      \"span\": \"It also requires additional integrations for some specialized design workflows and advanced collaboration needs.\"\n    }\n  ]\n}",
+  "json": {
+    "tasks": [
+      {
+        "action": "organize",
+        "object": "the entire design process from idea generation to final delivery",
+        "context": "product design",
+        "purpose": null,
+        "span": "organize the entire design process from idea generation to final delivery"
+      },
+      {
+        "action": "managing",
+        "object": "product design workflows",
+        "context": "As a product designer",
+        "purpose": "keeping projects moving forward",
+        "span": "managing product design workflows and keeping projects moving forward"
+      },
+      {
+        "action": "collaborate",
+        "object": "with team members",
+        "context": null,
+        "purpose": "to maintain a smooth workflow",
+        "span": "collaborate with team members"
+      }
+    ],
+    "benefits": [
+      {
+        "aspect": "interface",
+        "claim": "Provides a clear view of design tasks, research activities, user feedback, revisions, and priorities.",
+        "span": "It provides a clear view of design tasks, research activities, user feedback, revisions, and priorities."
+      },
+      {
+        "aspect": "ease_of_use",
+        "claim": "Makes it easier to maintain a smooth workflow.",
+        "span": "makes it easier to maintain a smooth workflow across different stages of product design"
+      },
+      {
+        "aspect": "flexibility",
+        "claim": "Trello is an efficient and flexible tool for managing product design workflows.",
+        "span": "Trello remains an efficient and flexible tool for managing product design workflows"
+      }
+    ],
+    "frictions": [
+      {
+        "aspect": "features",
+        "claim": "Can feel limited for complex projects needing detailed documentation, advanced analytics, or deep reporting.",
+        "span": "Trello can feel limited when managing complex projects that require detailed documentation, advanced design analytics, or deeper project reporting."
+      },
+      {
+        "aspect": "integrations",
+        "claim": "Requires additional integrations for specialized design workflows and advanced collaboration.",
+        "span": "It also requires additional integrations for some specialized design workflows and advanced collaboration needs."
+      }
+    ]
+  },
+  "ts": "2026-10-17T23:45:45.423330+00:00"
+}

@@ -1,0 +1,65 @@
+{
+  "stage": "extract",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "bb5d177a72e8b2c0f8d7e4cc8cfb96f668d10627051f529189ae45ea69b3ccd9",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 513,
+  "output_tokens": 2460,
+  "cost_usd": 0.02524125,
+  "elapsed_s": 16.24,
+  "error": null,
+  "text": "{\n  \"tasks\": [\n    {\n      \"action\": \"set up\",\n      \"object\": \"tasks\",\n      \"context\": null,\n      \"purpose\": null,\n      \"span\": \"set up tasks\"\n    },\n    {\n      \"action\": \"collaborate on\",\n      \"object\": \"a project\",\n      \"context\": null,\n      \"purpose\": null,\n      \"span\": \"collaborate on a project\"\n    },\n    {\n      \"action\": \"assign\",\n      \"object\": \"work to colleagues with deadlines\",\n      \"context\": null,\n      \"purpose\": \"to keep a project moving along\",\n      \"span\": \"assign work to colleagues with deadlines to keep a project moving along\"\n    }\n  ],\n  \"benefits\": [\n    {\n      \"aspect\": \"ease_of_use\",\n      \"claim\": \"It is easy to set up tasks.\",\n      \"span\": \"it is easy to set up tasks\"\n    },\n    {\n      \"aspect\": \"collaboration\",\n      \"claim\": \"It is easy to collaborate on a project.\",\n      \"span\": \"easy to ... collaborate on a project\"\n    },\n    {\n      \"aspect\": \"collaboration\",\n      \"claim\": \"It can be shared with outside vendors.\",\n      \"span\": \"shared with outside vendors, which is great\"\n    }\n  ],\n  \"frictions\": [\n    {\n      \"aspect\": \"notifications\",\n      \"claim\": \"There is duplication of update emails.\",\n      \"span\": \"duplication of update emails\"\n    }\n  ]\n}",
+  "json": {
+    "tasks": [
+      {
+        "action": "set up",
+        "object": "tasks",
+        "context": null,
+        "purpose": null,
+        "span": "set up tasks"
+      },
+      {
+        "action": "collaborate on",
+        "object": "a project",
+        "context": null,
+        "purpose": null,
+        "span": "collaborate on a project"
+      },
+      {
+        "action": "assign",
+        "object": "work to colleagues with deadlines",
+        "context": null,
+        "purpose": "to keep a project moving along",
+        "span": "assign work to colleagues with deadlines to keep a project moving along"
+      }
+    ],
+    "benefits": [
+      {
+        "aspect": "ease_of_use",
+        "claim": "It is easy to set up tasks.",
+        "span": "it is easy to set up tasks"
+      },
+      {
+        "aspect": "collaboration",
+        "claim": "It is easy to collaborate on a project.",
+        "span": "easy to ... collaborate on a project"
+      },
+      {
+        "aspect": "collaboration",
+        "claim": "It can be shared with outside vendors.",
+        "span": "shared with outside vendors, which is great"
+      }
+    ],
+    "frictions": [
+      {
+        "aspect": "notifications",
+        "claim": "There is duplication of update emails.",
+        "span": "duplication of update emails"
+      }
+    ]
+  },
+  "ts": "2026-10-17T23:27:18.431635+00:00"
+}

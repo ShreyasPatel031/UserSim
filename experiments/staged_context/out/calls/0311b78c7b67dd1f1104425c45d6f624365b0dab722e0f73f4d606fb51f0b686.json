@@ -1,0 +1,159 @@
+{
+  "stage": "predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0311b78c7b67dd1f1104425c45d6f624365b0dab722e0f73f4d606fb51f0b686",
+  "temperature": 0.7,
+  "seed": 2000,
+  "max_tokens": 8192,
+  "input_tokens": 2804,
+  "output_tokens": 4597,
+  "cost_usd": 0.012333700000000001,
+  "elapsed_s": 18.87,
+  "error": null,
+  "text": "{\n  \"product\": \"Trello\",\n  \"segments\": [\n    {\n      \"role_family\": \"Project Managers/Team Leads\",\n      \"motivation\": \"To organize team tasks, track project progress, manage workflows, and coordinate team efforts efficiently.\",\n      \"basis_ids\": [\n        \"M:Trello\",\n        \"D:Trello:features:1\",\n        \"D:Trello:features:6\",\n        \"O:13-1082.00\"\n      ]\n    },\n    {\n      \"role_family\": \"Individual Contributors\",\n      \"motivation\": \"To manage personal to-do lists, organize ideas, and improve individual productivity and task completion.\",\n      \"basis_ids\": [\n        \"D:Trello:features:1\",\n        \"D:Trello:features:2\"\n      ]\n    },\n    {\n      \"role_family\": \"Small Business Owners/Startups\",\n      \"motivation\": \"To implement a simple, visual project management solution that integrates with existing tools without requiring extensive overhead.\",\n      \"basis_ids\": [\n        \"D:Trello:landing:1\",\n        \"D:Trello:features:5\"\n      ]\n    }\n  ],\n  \"tasks\": [\n    {\n      \"action\": \"Organize\",\n      \"object\": \"daily to-dos and ideas\",\n      \"context\": null,\n      \"purpose\": \"to ensure every responsibility finds its place\",\n      \"basis_ids\": [\n        \"D:Trello:landing:1\"\n      ]\n    },\n    {\n      \"action\": \"Manage\",\n      \"object\": \"project tasks\",\n      \"context\": \"on cards\",\n      \"purpose\": \"by adding due dates, attachments, and marking them as done\",\n      \"basis_ids\": [\n        \"D:Trello:features:2\"\n      ]\n    },\n    {\n      \"action\": \"Automate\",\n      \"object\": \"workflow processes\",\n      \"context\": null,\n      \"purpose\": \"to create foolproof systems for moving work forward\",\n      \"basis_ids\": [\n        \"D:Trello:features:7\"\n      ]\n    },\n    {\n      \"action\": \"Structure\",\n      \"object\": \"information on cards\",\n      \"context\": null,\n      \"purpose\": \"using custom fields to meet unique workflow needs\",\n      \"basis_ids\": [\n        \"D:Trello:features:6\"\n      ]\n    },\n    {\n      \"action\": \"Integrate\",\n      \"object\": \"with other team applications\",\n      \"context\": null,\n      \"purpose\": \"for seamless task management and workflow simplification\",\n      \"basis_ids\": [\n        \"D:Trello:features:5\"\n      ]\n    }\n  ],\n  \"benefits\": [\n    {\n      \"aspect\": \"Organization & Efficiency\",\n      \"claim\": \"The product helps users stay organized and efficient by keeping all important information accessible in one place.\",\n      \"basis_ids\": [\n        \"D:Trello:features:1\",\n        \"D:Trello:features:2\"\n      ]\n    },\n    {\n      \"aspect\": \"Task Tracking\",\n      \"claim\": \"Due dates are easy to set, hard to miss with reminders, and attachments are readily available, eliminating the need to search through emails.\",\n      \"basis_ids\": [\n        \"D:Trello:features:3\"\n      ]\n    },\n    {\n      \"aspect\": \"Workflow Customization\",\n      \"claim\": \"Users can customize how they organize tasks with integrations, automation, and custom fields to fit their unique workflow requirements.\",\n      \"basis_ids\": [\n        \"D:Trello:landing:1\",\n        \"D:Trello:features:6\"\n      ]\n    }\n  ],\n  \"frictions\": [\n    {\n      \"aspect\": \"Reporting & Analytics\",\n      \"claim\": \"The product may lack advanced reporting or comprehensive analytics features, making it difficult to get a real-time, shared view of overall project progress or detailed insights.\",\n      \"basis_ids\": [\n        \"D:Asana:landing:3\",\n        \"D:Asana:landing:5\"\n      ]\n    },\n    {\n      \"aspect\": \"AI Capabilities\",\n      \"claim\": \"The AI features are primarily focused on text refinement and brainstorming, potentially being less sophisticated or integrated for broader project management decision-making compared to competitor offerings.\",\n      \"basis_ids\": [\n        \"D:Trello:features:3\",\n        \"D:Trello:features:5\",\n        \"D:Asana:landing:2\",\n        \"D:ClickUp:landing:2\",\n        \"D:ClickUp:landing:5\"\n      ]\n    },\n    {\n      \"aspect\": \"Scalability for Complex Projects\",\n      \"claim\": \"For very large or highly complex projects, the board-and-card based visual structure might become cluttered or overwhelming, potentially lacking the hierarchical depth needed for extensive project management.\",\n      \"basis_ids\": [\n        \"M:Trello\"\n      ]\n    }\n  ],\n  \"ease_of_use_probabilities_1_to_5\": [\n    0.05,\n    0.05,\n    0.1,\n    0.4,\n    0.4\n  ],\n  \"unknowns\": [\n    \"Specific pricing models or tiers.\",\n    \"Details on customer support experience.\",\n    \"Comprehensive security features or compliance standards.\"\n  ]\n}",
+  "json": {
+    "product": "Trello",
+    "segments": [
+      {
+        "role_family": "Project Managers/Team Leads",
+        "motivation": "To organize team tasks, track project progress, manage workflows, and coordinate team efforts efficiently.",
+        "basis_ids": [
+          "M:Trello",
+          "D:Trello:features:1",
+          "D:Trello:features:6",
+          "O:13-1082.00"
+        ]
+      },
+      {
+        "role_family": "Individual Contributors",
+        "motivation": "To manage personal to-do lists, organize ideas, and improve individual productivity and task completion.",
+        "basis_ids": [
+          "D:Trello:features:1",
+          "D:Trello:features:2"
+        ]
+      },
+      {
+        "role_family": "Small Business Owners/Startups",
+        "motivation": "To implement a simple, visual project management solution that integrates with existing tools without requiring extensive overhead.",
+        "basis_ids": [
+          "D:Trello:landing:1",
+          "D:Trello:features:5"
+        ]
+      }
+    ],
+    "tasks": [
+      {
+        "action": "Organize",
+        "object": "daily to-dos and ideas",
+        "context": null,
+        "purpose": "to ensure every responsibility finds its place",
+        "basis_ids": [
+          "D:Trello:landing:1"
+        ]
+      },
+      {
+        "action": "Manage",
+        "object": "project tasks",
+        "context": "on cards",
+        "purpose": "by adding due dates, attachments, and marking them as done",
+        "basis_ids": [
+          "D:Trello:features:2"
+        ]
+      },
+      {
+        "action": "Automate",
+        "object": "workflow processes",
+        "context": null,
+        "purpose": "to create foolproof systems for moving work forward",
+        "basis_ids": [
+          "D:Trello:features:7"
+        ]
+      },
+      {
+        "action": "Structure",
+        "object": "information on cards",
+        "context": null,
+        "purpose": "using custom fields to meet unique workflow needs",
+        "basis_ids": [
+          "D:Trello:features:6"
+        ]
+      },
+      {
+        "action": "Integrate",
+        "object": "with other team applications",
+        "context": null,
+        "purpose": "for seamless task management and workflow simplification",
+        "basis_ids": [
+          "D:Trello:features:5"
+        ]
+      }
+    ],
+    "benefits": [
+      {
+        "aspect": "Organization & Efficiency",
+        "claim": "The product helps users stay organized and efficient by keeping all important information accessible in one place.",
+        "basis_ids": [
+          "D:Trello:features:1",
+          "D:Trello:features:2"
+        ]
+      },
+      {
+        "aspect": "Task Tracking",
+        "claim": "Due dates are easy to set, hard to miss with reminders, and attachments are readily available, eliminating the need to search through emails.",
+        "basis_ids": [
+          "D:Trello:features:3"
+        ]
+      },
+      {
+        "aspect": "Workflow Customization",
+        "claim": "Users can customize how they organize tasks with integrations, automation, and custom fields to fit their unique workflow requirements.",
+        "basis_ids": [
+          "D:Trello:landing:1",
+          "D:Trello:features:6"
+        ]
+      }
+    ],
+    "frictions": [
+      {
+        "aspect": "Reporting & Analytics",
+        "claim": "The product may lack advanced reporting or comprehensive analytics features, making it difficult to get a real-time, shared view of overall project progress or detailed insights.",
+        "basis_ids": [
+          "D:Asana:landing:3",
+          "D:Asana:landing:5"
+        ]
+      },
+      {
+        "aspect": "AI Capabilities",
+        "claim": "The AI features are primarily focused on text refinement and brainstorming, potentially being less sophisticated or integrated for broader project management decision-making compared to competitor offerings.",
+        "basis_ids": [
+          "D:Trello:features:3",
+          "D:Trello:features:5",
+          "D:Asana:landing:2",
+          "D:ClickUp:landing:2",
+          "D:ClickUp:landing:5"
+        ]
+      },
+      {
+        "aspect": "Scalability for Complex Projects",
+        "claim": "For very large or highly complex projects, the board-and-card based visual structure might become cluttered or overwhelming, potentially lacking the hierarchical depth needed for extensive project management.",
+        "basis_ids": [
+          "M:Trello"
+        ]
+      }
+    ],
+    "ease_of_use_probabilities_1_to_5": [
+      0.05,
+      0.05,
+      0.1,
+      0.4,
+      0.4
+    ],
+    "unknowns": [
+      "Specific pricing models or tiers.",
+      "Details on customer support experience.",
+      "Comprehensive security features or compliance standards."
+    ]
+  },
+  "ts": "2026-10-17T23:21:58.054023+00:00"
+}

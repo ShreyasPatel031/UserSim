@@ -1,0 +1,28 @@
+{
+  "stage": "matched_screen",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "ff153811568ecb2a49d12e9f700ba47367fc5cafc18982f4277e61f76282baf1",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 485,
+  "output_tokens": 1770,
+  "cost_usd": 0.01830625,
+  "elapsed_s": 16.54,
+  "error": null,
+  "text": "{\n  \"eligible\": true,\n  \"reason\": \"The review explicitly states the task of organizing a product design process, including specific stages and components. This is a concrete activity that can be set up in a trial workspace within a short time.\",\n  \"task\": {\n    \"action\": \"organize\",\n    \"object\": \"the entire design process\",\n    \"context\": \"from idea generation to final delivery\",\n    \"purpose\": \"to bring structure to creative processes by making tasks, feedback, and project progress more visible\"\n  },\n  \"neutral_task\": \"Organize a product design process with stages from idea generation to final delivery to make tasks, feedback, and project progress visible.\",\n  \"span\": \"organize the entire design process from idea generation to final delivery\"\n}",
+  "json": {
+    "eligible": true,
+    "reason": "The review explicitly states the task of organizing a product design process, including specific stages and components. This is a concrete activity that can be set up in a trial workspace within a short time.",
+    "task": {
+      "action": "organize",
+      "object": "the entire design process",
+      "context": "from idea generation to final delivery",
+      "purpose": "to bring structure to creative processes by making tasks, feedback, and project progress more visible"
+    },
+    "neutral_task": "Organize a product design process with stages from idea generation to final delivery to make tasks, feedback, and project progress visible.",
+    "span": "organize the entire design process from idea generation to final delivery"
+  },
+  "ts": "2026-10-17T23:45:18.523322+00:00"
+}

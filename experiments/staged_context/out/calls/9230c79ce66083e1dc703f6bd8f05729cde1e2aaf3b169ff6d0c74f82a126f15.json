@@ -1,0 +1,54 @@
+{
+  "stage": "extract",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "9230c79ce66083e1dc703f6bd8f05729cde1e2aaf3b169ff6d0c74f82a126f15",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 483,
+  "output_tokens": 2247,
+  "cost_usd": 0.023073749999999997,
+  "elapsed_s": 18.24,
+  "error": null,
+  "text": "{\n  \"tasks\": [\n    {\n      \"action\": \"manage\",\n      \"object\": \"all my clients\",\n      \"context\": null,\n      \"purpose\": null,\n      \"span\": \"manage all my clients\"\n    },\n    {\n      \"action\": \"keep track of\",\n      \"object\": \"the work that I do each day\",\n      \"context\": null,\n      \"purpose\": null,\n      \"span\": \"keep track of the work that I do each day\"\n    },\n    {\n      \"action\": \"keeping track of\",\n      \"object\": \"things I need to focus on\",\n      \"context\": null,\n      \"purpose\": \"to run my business\",\n      \"span\": \"keeping track of client work and things I need to focus on to run my business\"\n    }\n  ],\n  \"benefits\": [\n    {\n      \"aspect\": \"features\",\n      \"claim\": \"Enables managing clients and tracking daily work.\",\n      \"span\": \"being able to manage all my clients and keep track of the work that I do each day\"\n    },\n    {\n      \"aspect\": \"interface\",\n      \"claim\": \"Has different board layouts.\",\n      \"span\": \"the different board layouts\"\n    }\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "tasks": [
+      {
+        "action": "manage",
+        "object": "all my clients",
+        "context": null,
+        "purpose": null,
+        "span": "manage all my clients"
+      },
+      {
+        "action": "keep track of",
+        "object": "the work that I do each day",
+        "context": null,
+        "purpose": null,
+        "span": "keep track of the work that I do each day"
+      },
+      {
+        "action": "keeping track of",
+        "object": "things I need to focus on",
+        "context": null,
+        "purpose": "to run my business",
+        "span": "keeping track of client work and things I need to focus on to run my business"
+      }
+    ],
+    "benefits": [
+      {
+        "aspect": "features",
+        "claim": "Enables managing clients and tracking daily work.",
+        "span": "being able to manage all my clients and keep track of the work that I do each day"
+      },
+      {
+        "aspect": "interface",
+        "claim": "Has different board layouts.",
+        "span": "the different board layouts"
+      }
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-17T23:28:24.088166+00:00"
+}

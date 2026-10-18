@@ -1,0 +1,28 @@
+{
+  "stage": "matched_screen",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "a56ade1f0adc7ad257fc082e6aadcdcfc7bc46e1c3fd74c42232ceb634a72e06",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 387,
+  "output_tokens": 776,
+  "cost_usd": 0.00824375,
+  "elapsed_s": 7.57,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review is too generic. It mentions high-level concepts like \\\"project management\\\", \\\"pending tasks\\\", and \\\"client requirements\\\" but does not describe a specific, concrete activity the user performs.\",\n  \"task\": {\n    \"action\": null,\n    \"object\": null,\n    \"context\": null,\n    \"purpose\": null\n  },\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review is too generic. It mentions high-level concepts like \"project management\", \"pending tasks\", and \"client requirements\" but does not describe a specific, concrete activity the user performs.",
+    "task": {
+      "action": null,
+      "object": null,
+      "context": null,
+      "purpose": null
+    },
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-17T23:34:35.693587+00:00"
+}

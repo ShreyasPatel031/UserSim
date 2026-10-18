@@ -1,0 +1,65 @@
+{
+  "stage": "extract",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "8012a05e4e8a008ea89f4a0f38d16e478ecf4d4a0f46207b572c2f97697e8a1a",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 493,
+  "output_tokens": 1330,
+  "cost_usd": 0.01391625,
+  "elapsed_s": 12.4,
+  "error": null,
+  "text": "{\n  \"tasks\": [\n    {\n      \"action\": \"manage\",\n      \"object\": \"tasks, team members and dead lines\",\n      \"context\": null,\n      \"purpose\": null,\n      \"span\": \"manage tasks, team members and dead lines\"\n    },\n    {\n      \"action\": \"track\",\n      \"object\": \"your projects\",\n      \"context\": null,\n      \"purpose\": null,\n      \"span\": \"track your projects\"\n    },\n    {\n      \"action\": \"assign\",\n      \"object\": \"tasks to team members\",\n      \"context\": null,\n      \"purpose\": \"to keep track of workloads\",\n      \"span\": \"assign tasks to team members to keep track of workloads\"\n    }\n  ],\n  \"benefits\": [\n    {\n      \"aspect\": \"features\",\n      \"claim\": \"It is a good project management tool.\",\n      \"span\": \"This is a good project management tool\"\n    },\n    {\n      \"aspect\": \"ease_of_use\",\n      \"claim\": \"It is a simple tool.\",\n      \"span\": \"It is a simple tool\"\n    },\n    {\n      \"aspect\": \"features\",\n      \"claim\": \"It is a good tool for tracking and using Kanban.\",\n      \"span\": \"Trello is a good tool if you are using to track and use Kanban within\"\n    }\n  ],\n  \"frictions\": [\n    {\n      \"aspect\": \"flexibility\",\n      \"claim\": \"It is not set up for large projects.\",\n      \"span\": \"Trello does not seem to be set up for using for large projects\"\n    }\n  ]\n}",
+  "json": {
+    "tasks": [
+      {
+        "action": "manage",
+        "object": "tasks, team members and dead lines",
+        "context": null,
+        "purpose": null,
+        "span": "manage tasks, team members and dead lines"
+      },
+      {
+        "action": "track",
+        "object": "your projects",
+        "context": null,
+        "purpose": null,
+        "span": "track your projects"
+      },
+      {
+        "action": "assign",
+        "object": "tasks to team members",
+        "context": null,
+        "purpose": "to keep track of workloads",
+        "span": "assign tasks to team members to keep track of workloads"
+      }
+    ],
+    "benefits": [
+      {
+        "aspect": "features",
+        "claim": "It is a good project management tool.",
+        "span": "This is a good project management tool"
+      },
+      {
+        "aspect": "ease_of_use",
+        "claim": "It is a simple tool.",
+        "span": "It is a simple tool"
+      },
+      {
+        "aspect": "features",
+        "claim": "It is a good tool for tracking and using Kanban.",
+        "span": "Trello is a good tool if you are using to track and use Kanban within"
+      }
+    ],
+    "frictions": [
+      {
+        "aspect": "flexibility",
+        "claim": "It is not set up for large projects.",
+        "span": "Trello does not seem to be set up for using for large projects"
+      }
+    ]
+  },
+  "ts": "2026-10-17T23:33:19.251145+00:00"
+}

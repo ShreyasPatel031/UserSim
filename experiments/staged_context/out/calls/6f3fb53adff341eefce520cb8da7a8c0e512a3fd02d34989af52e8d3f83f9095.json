@@ -1,0 +1,234 @@
+{
+  "stage": "judge",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "6f3fb53adff341eefce520cb8da7a8c0e512a3fd02d34989af52e8d3f83f9095",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 16384,
+  "thinking_budget": 2048,
+  "input_tokens": 2984,
+  "output_tokens": 3445,
+  "cost_usd": 0.03818,
+  "elapsed_s": 27.93,
+  "error": null,
+  "text": "{\n  \"task_matches\": [\n    {\n      \"pred\": \"P1\",\n      \"ref\": \"R32\",\n      \"score\": 1\n    },\n    {\n      \"pred\": \"P2\",\n      \"ref\": \"R2\",\n      \"score\": 1\n    },\n    {\n      \"pred\": \"P2\",\n      \"ref\": \"R10\",\n      \"score\": 1\n    },\n    {\n      \"pred\": \"P2\",\n      \"ref\": \"R34\",\n      \"score\": 2\n    },\n    {\n      \"pred\": \"P3\",\n      \"ref\": \"R9\",\n      \"score\": 1\n    },\n    {\n      \"pred\": \"P3\",\n      \"ref\": \"R11\",\n      \"score\": 1\n    },\n    {\n      \"pred\": \"P3\",\n      \"ref\": \"R13\",\n      \"score\": 1\n    },\n    {\n      \"pred\": \"P3\",\n      \"ref\": \"R26\",\n      \"score\": 2\n    },\n    {\n      \"pred\": \"P3\",\n      \"ref\": \"R29\",\n      \"score\": 1\n    },\n    {\n      \"pred\": \"P3\",\n      \"ref\": \"R39\",\n      \"score\": 1\n    },\n    {\n      \"pred\": \"P4\",\n      \"ref\": \"R5\",\n      \"score\": 1\n    },\n    {\n      \"pred\": \"P4\",\n      \"ref\": \"R6\",\n      \"score\": 1\n    },\n    {\n      \"pred\": \"P4\",\n      \"ref\": \"R14\",\n      \"score\": 2\n    },\n    {\n      \"pred\": \"P4\",\n      \"ref\": \"R19\",\n      \"score\": 2\n    },\n    {\n      \"pred\": \"P4\",\n      \"ref\": \"R20\",\n      \"score\": 2\n    },\n    {\n      \"pred\": \"P4\",\n      \"ref\": \"R23\",\n      \"score\": 2\n    },\n    {\n      \"pred\": \"P4\",\n      \"ref\": \"R30\",\n      \"score\": 2\n    },\n    {\n      \"pred\": \"P4\",\n      \"ref\": \"R35\",\n      \"score\": 2\n    },\n    {\n      \"pred\": \"P4\",\n      \"ref\": \"R39\",\n      \"score\": 2\n    },\n    {\n      \"pred\": \"P4\",\n      \"ref\": \"R42\",\n      \"score\": 2\n    },\n    {\n      \"pred\": \"P4\",\n      \"ref\": \"R43\",\n      \"score\": 2\n    },\n    {\n      \"pred\": \"P4\",\n      \"ref\": \"R47\",\n      \"score\": 2\n    },\n    {\n      \"pred\": \"P5\",\n      \"ref\": \"R6\",\n      \"score\": 1\n    }\n  ],\n  \"claim_matches\": [\n    {\n      \"pred\": \"Q1\",\n      \"ref\": \"E41\",\n      \"score\": 2,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q2\",\n      \"ref\": \"E8\",\n      \"score\": 1,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q2\",\n      \"ref\": \"E13\",\n      \"score\": 1,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q2\",\n      \"ref\": \"E14\",\n      \"score\": 2,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q2\",\n      \"ref\": \"E68\",\n      \"score\": 2,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q3\",\n      \"ref\": \"E21\",\n      \"score\": 1,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q3\",\n      \"ref\": \"E42\",\n      \"score\": 2,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q4\",\n      \"ref\": \"E35\",\n      \"score\": 2,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q5\",\n      \"ref\": \"E21\",\n      \"score\": 1,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q5\",\n      \"ref\": \"E33\",\n      \"score\": 1,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q5\",\n      \"ref\": \"E38\",\n      \"score\": 1,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q5\",\n      \"ref\": \"E40\",\n      \"score\": 1,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q5\",\n      \"ref\": \"E42\",\n      \"score\": 1,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q6\",\n      \"ref\": \"E23\",\n      \"score\": 2,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q6\",\n      \"ref\": \"E57\",\n      \"score\": 1,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q6\",\n      \"ref\": \"E66\",\n      \"score\": 2,\n      \"contradiction\": false\n    }\n  ]\n}",
+  "json": {
+    "task_matches": [
+      {
+        "pred": "P1",
+        "ref": "R32",
+        "score": 1
+      },
+      {
+        "pred": "P2",
+        "ref": "R2",
+        "score": 1
+      },
+      {
+        "pred": "P2",
+        "ref": "R10",
+        "score": 1
+      },
+      {
+        "pred": "P2",
+        "ref": "R34",
+        "score": 2
+      },
+      {
+        "pred": "P3",
+        "ref": "R9",
+        "score": 1
+      },
+      {
+        "pred": "P3",
+        "ref": "R11",
+        "score": 1
+      },
+      {
+        "pred": "P3",
+        "ref": "R13",
+        "score": 1
+      },
+      {
+        "pred": "P3",
+        "ref": "R26",
+        "score": 2
+      },
+      {
+        "pred": "P3",
+        "ref": "R29",
+        "score": 1
+      },
+      {
+        "pred": "P3",
+        "ref": "R39",
+        "score": 1
+      },
+      {
+        "pred": "P4",
+        "ref": "R5",
+        "score": 1
+      },
+      {
+        "pred": "P4",
+        "ref": "R6",
+        "score": 1
+      },
+      {
+        "pred": "P4",
+        "ref": "R14",
+        "score": 2
+      },
+      {
+        "pred": "P4",
+        "ref": "R19",
+        "score": 2
+      },
+      {
+        "pred": "P4",
+        "ref": "R20",
+        "score": 2
+      },
+      {
+        "pred": "P4",
+        "ref": "R23",
+        "score": 2
+      },
+      {
+        "pred": "P4",
+        "ref": "R30",
+        "score": 2
+      },
+      {
+        "pred": "P4",
+        "ref": "R35",
+        "score": 2
+      },
+      {
+        "pred": "P4",
+        "ref": "R39",
+        "score": 2
+      },
+      {
+        "pred": "P4",
+        "ref": "R42",
+        "score": 2
+      },
+      {
+        "pred": "P4",
+        "ref": "R43",
+        "score": 2
+      },
+      {
+        "pred": "P4",
+        "ref": "R47",
+        "score": 2
+      },
+      {
+        "pred": "P5",
+        "ref": "R6",
+        "score": 1
+      }
+    ],
+    "claim_matches": [
+      {
+        "pred": "Q1",
+        "ref": "E41",
+        "score": 2,
+        "contradiction": false
+      },
+      {
+        "pred": "Q2",
+        "ref": "E8",
+        "score": 1,
+        "contradiction": false
+      },
+      {
+        "pred": "Q2",
+        "ref": "E13",
+        "score": 1,
+        "contradiction": false
+      },
+      {
+        "pred": "Q2",
+        "ref": "E14",
+        "score": 2,
+        "contradiction": false
+      },
+      {
+        "pred": "Q2",
+        "ref": "E68",
+        "score": 2,
+        "contradiction": false
+      },
+      {
+        "pred": "Q3",
+        "ref": "E21",
+        "score": 1,
+        "contradiction": false
+      },
+      {
+        "pred": "Q3",
+        "ref": "E42",
+        "score": 2,
+        "contradiction": false
+      },
+      {
+        "pred": "Q4",
+        "ref": "E35",
+        "score": 2,
+        "contradiction": false
+      },
+      {
+        "pred": "Q5",
+        "ref": "E21",
+        "score": 1,
+        "contradiction": false
+      },
+      {
+        "pred": "Q5",
+        "ref": "E33",
+        "score": 1,
+        "contradiction": false
+      },
+      {
+        "pred": "Q5",
+        "ref": "E38",
+        "score": 1,
+        "contradiction": false
+      },
+      {
+        "pred": "Q5",
+        "ref": "E40",
+        "score": 1,
+        "contradiction": false
+      },
+      {
+        "pred": "Q5",
+        "ref": "E42",
+        "score": 1,
+        "contradiction": false
+      },
+      {
+        "pred": "Q6",
+        "ref": "E23",
+        "score": 2,
+        "contradiction": false
+      },
+      {
+        "pred": "Q6",
+        "ref": "E57",
+        "score": 1,
+        "contradiction": false
+      },
+      {
+        "pred": "Q6",
+        "ref": "E66",
+        "score": 2,
+        "contradiction": false
+      }
+    ]
+  },
+  "ts": "2026-10-17T23:48:31.548368+00:00"
+}

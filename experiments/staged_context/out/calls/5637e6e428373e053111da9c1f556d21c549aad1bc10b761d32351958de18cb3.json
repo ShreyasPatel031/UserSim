@@ -1,0 +1,23 @@
+{
+  "stage": "matched_screen",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "5637e6e428373e053111da9c1f556d21c549aad1bc10b761d32351958de18cb3",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 405,
+  "output_tokens": 1441,
+  "cost_usd": 0.014916249999999999,
+  "elapsed_s": 14.43,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review describes general usage patterns like \\\"communicate with many team members and clients\\\" and a low-level action \\\"creating a new task,\\\" but it does not specify a concrete, overarching task or project being managed. The descriptions are too broad to be considered a specific, dominant use case.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review describes general usage patterns like \"communicate with many team members and clients\" and a low-level action \"creating a new task,\" but it does not specify a concrete, overarching task or project being managed. The descriptions are too broad to be considered a specific, dominant use case.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-17T23:36:16.949103+00:00"
+}

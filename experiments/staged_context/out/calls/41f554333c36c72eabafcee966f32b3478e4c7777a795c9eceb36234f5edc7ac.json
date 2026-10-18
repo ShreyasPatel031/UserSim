@@ -1,0 +1,402 @@
+{
+  "stage": "judge",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "41f554333c36c72eabafcee966f32b3478e4c7777a795c9eceb36234f5edc7ac",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 16384,
+  "thinking_budget": 2048,
+  "input_tokens": 2793,
+  "output_tokens": 4542,
+  "cost_usd": 0.04891125,
+  "elapsed_s": 33.91,
+  "error": null,
+  "text": "{\n  \"task_matches\": [\n    {\n      \"pred\": \"P1\",\n      \"ref\": \"R3\",\n      \"score\": 2\n    },\n    {\n      \"pred\": \"P1\",\n      \"ref\": \"R15\",\n      \"score\": 1\n    },\n    {\n      \"pred\": \"P2\",\n      \"ref\": \"R14\",\n      \"score\": 2\n    },\n    {\n      \"pred\": \"P3\",\n      \"ref\": \"R1\",\n      \"score\": 1\n    },\n    {\n      \"pred\": \"P3\",\n      \"ref\": \"R2\",\n      \"score\": 2\n    },\n    {\n      \"pred\": \"P3\",\n      \"ref\": \"R4\",\n      \"score\": 2\n    },\n    {\n      \"pred\": \"P3\",\n      \"ref\": \"R5\",\n      \"score\": 1\n    },\n    {\n      \"pred\": \"P3\",\n      \"ref\": \"R9\",\n      \"score\": 1\n    },\n    {\n      \"pred\": \"P3\",\n      \"ref\": \"R10\",\n      \"score\": 1\n    },\n    {\n      \"pred\": \"P3\",\n      \"ref\": \"R15\",\n      \"score\": 2\n    },\n    {\n      \"pred\": \"P3\",\n      \"ref\": \"R17\",\n      \"score\": 1\n    },\n    {\n      \"pred\": \"P3\",\n      \"ref\": \"R18\",\n      \"score\": 1\n    },\n    {\n      \"pred\": \"P3\",\n      \"ref\": \"R19\",\n      \"score\": 1\n    },\n    {\n      \"pred\": \"P3\",\n      \"ref\": \"R31\",\n      \"score\": 2\n    },\n    {\n      \"pred\": \"P3\",\n      \"ref\": \"R35\",\n      \"score\": 1\n    },\n    {\n      \"pred\": \"P4\",\n      \"ref\": \"R4\",\n      \"score\": 1\n    },\n    {\n      \"pred\": \"P4\",\n      \"ref\": \"R16\",\n      \"score\": 1\n    },\n    {\n      \"pred\": \"P4\",\n      \"ref\": \"R23\",\n      \"score\": 2\n    },\n    {\n      \"pred\": \"P5\",\n      \"ref\": \"R5\",\n      \"score\": 1\n    },\n    {\n      \"pred\": \"P5\",\n      \"ref\": \"R7\",\n      \"score\": 1\n    },\n    {\n      \"pred\": \"P5\",\n      \"ref\": \"R8\",\n      \"score\": 1\n    },\n    {\n      \"pred\": \"P5\",\n      \"ref\": \"R13\",\n      \"score\": 2\n    },\n    {\n      \"pred\": \"P5\",\n      \"ref\": \"R20\",\n      \"score\": 1\n    },\n    {\n      \"pred\": \"P5\",\n      \"ref\": \"R21\",\n      \"score\": 2\n    },\n    {\n      \"pred\": \"P5\",\n      \"ref\": \"R22\",\n      \"score\": 1\n    },\n    {\n      \"pred\": \"P5\",\n      \"ref\": \"R25\",\n      \"score\": 2\n    },\n    {\n      \"pred\": \"P5\",\n      \"ref\": \"R28\",\n      \"score\": 1\n    },\n    {\n      \"pred\": \"P5\",\n      \"ref\": \"R33\",\n      \"score\": 2\n    },\n    {\n      \"pred\": \"P5\",\n      \"ref\": \"R36\",\n      \"score\": 2\n    }\n  ],\n  \"claim_matches\": [\n    {\n      \"pred\": \"Q1\",\n      \"ref\": \"E1\",\n      \"score\": 1,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q1\",\n      \"ref\": \"E7\",\n      \"score\": 1,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q1\",\n      \"ref\": \"E13\",\n      \"score\": 1,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q1\",\n      \"ref\": \"E18\",\n      \"score\": 0,\n      \"contradiction\": true\n    },\n    {\n      \"pred\": \"Q1\",\n      \"ref\": \"E20\",\n      \"score\": 1,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q1\",\n      \"ref\": \"E25\",\n      \"score\": 1,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q1\",\n      \"ref\": \"E30\",\n      \"score\": 1,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q1\",\n      \"ref\": \"E36\",\n      \"score\": 1,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q1\",\n      \"ref\": \"E42\",\n      \"score\": 1,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q1\",\n      \"ref\": \"E46\",\n      \"score\": 2,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q1\",\n      \"ref\": \"E51\",\n      \"score\": 1,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q1\",\n      \"ref\": \"E59\",\n      \"score\": 1,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q1\",\n      \"ref\": \"E68\",\n      \"score\": 1,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q1\",\n      \"ref\": \"E72\",\n      \"score\": 1,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q1\",\n      \"ref\": \"E74\",\n      \"score\": 1,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q1\",\n      \"ref\": \"E76\",\n      \"score\": 1,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q2\",\n      \"ref\": \"E48\",\n      \"score\": 2,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q2\",\n      \"ref\": \"E63\",\n      \"score\": 2,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q3\",\n      \"ref\": \"E3\",\n      \"score\": 1,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q3\",\n      \"ref\": \"E17\",\n      \"score\": 1,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q3\",\n      \"ref\": \"E28\",\n      \"score\": 1,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q3\",\n      \"ref\": \"E60\",\n      \"score\": 2,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q3\",\n      \"ref\": \"E66\",\n      \"score\": 1,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q3\",\n      \"ref\": \"E70\",\n      \"score\": 1,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q4\",\n      \"ref\": \"E4\",\n      \"score\": 1,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q4\",\n      \"ref\": \"E6\",\n      \"score\": 1,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q4\",\n      \"ref\": \"E32\",\n      \"score\": 1,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q4\",\n      \"ref\": \"E41\",\n      \"score\": 1,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q4\",\n      \"ref\": \"E44\",\n      \"score\": 2,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q4\",\n      \"ref\": \"E50\",\n      \"score\": 1,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q5\",\n      \"ref\": \"E2\",\n      \"score\": 2,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q5\",\n      \"ref\": \"E58\",\n      \"score\": 2,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q6\",\n      \"ref\": \"E5\",\n      \"score\": 1,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q6\",\n      \"ref\": \"E23\",\n      \"score\": 2,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q6\",\n      \"ref\": \"E27\",\n      \"score\": 1,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q6\",\n      \"ref\": \"E40\",\n      \"score\": 1,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q6\",\n      \"ref\": \"E48\",\n      \"score\": 1,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q6\",\n      \"ref\": \"E49\",\n      \"score\": 1,\n      \"contradiction\": false\n    },\n    {\n      \"pred\": \"Q6\",\n      \"ref\": \"E61\",\n      \"score\": 2,\n      \"contradiction\": false\n    }\n  ]\n}",
+  "json": {
+    "task_matches": [
+      {
+        "pred": "P1",
+        "ref": "R3",
+        "score": 2
+      },
+      {
+        "pred": "P1",
+        "ref": "R15",
+        "score": 1
+      },
+      {
+        "pred": "P2",
+        "ref": "R14",
+        "score": 2
+      },
+      {
+        "pred": "P3",
+        "ref": "R1",
+        "score": 1
+      },
+      {
+        "pred": "P3",
+        "ref": "R2",
+        "score": 2
+      },
+      {
+        "pred": "P3",
+        "ref": "R4",
+        "score": 2
+      },
+      {
+        "pred": "P3",
+        "ref": "R5",
+        "score": 1
+      },
+      {
+        "pred": "P3",
+        "ref": "R9",
+        "score": 1
+      },
+      {
+        "pred": "P3",
+        "ref": "R10",
+        "score": 1
+      },
+      {
+        "pred": "P3",
+        "ref": "R15",
+        "score": 2
+      },
+      {
+        "pred": "P3",
+        "ref": "R17",
+        "score": 1
+      },
+      {
+        "pred": "P3",
+        "ref": "R18",
+        "score": 1
+      },
+      {
+        "pred": "P3",
+        "ref": "R19",
+        "score": 1
+      },
+      {
+        "pred": "P3",
+        "ref": "R31",
+        "score": 2
+      },
+      {
+        "pred": "P3",
+        "ref": "R35",
+        "score": 1
+      },
+      {
+        "pred": "P4",
+        "ref": "R4",
+        "score": 1
+      },
+      {
+        "pred": "P4",
+        "ref": "R16",
+        "score": 1
+      },
+      {
+        "pred": "P4",
+        "ref": "R23",
+        "score": 2
+      },
+      {
+        "pred": "P5",
+        "ref": "R5",
+        "score": 1
+      },
+      {
+        "pred": "P5",
+        "ref": "R7",
+        "score": 1
+      },
+      {
+        "pred": "P5",
+        "ref": "R8",
+        "score": 1
+      },
+      {
+        "pred": "P5",
+        "ref": "R13",
+        "score": 2
+      },
+      {
+        "pred": "P5",
+        "ref": "R20",
+        "score": 1
+      },
+      {
+        "pred": "P5",
+        "ref": "R21",
+        "score": 2
+      },
+      {
+        "pred": "P5",
+        "ref": "R22",
+        "score": 1
+      },
+      {
+        "pred": "P5",
+        "ref": "R25",
+        "score": 2
+      },
+      {
+        "pred": "P5",
+        "ref": "R28",
+        "score": 1
+      },
+      {
+        "pred": "P5",
+        "ref": "R33",
+        "score": 2
+      },
+      {
+        "pred": "P5",
+        "ref": "R36",
+        "score": 2
+      }
+    ],
+    "claim_matches": [
+      {
+        "pred": "Q1",
+        "ref": "E1",
+        "score": 1,
+        "contradiction": false
+      },
+      {
+        "pred": "Q1",
+        "ref": "E7",
+        "score": 1,
+        "contradiction": false
+      },
+      {
+        "pred": "Q1",
+        "ref": "E13",
+        "score": 1,
+        "contradiction": false
+      },
+      {
+        "pred": "Q1",
+        "ref": "E18",
+        "score": 0,
+        "contradiction": true
+      },
+      {
+        "pred": "Q1",
+        "ref": "E20",
+        "score": 1,
+        "contradiction": false
+      },
+      {
+        "pred": "Q1",
+        "ref": "E25",
+        "score": 1,
+        "contradiction": false
+      },
+      {
+        "pred": "Q1",
+        "ref": "E30",
+        "score": 1,
+        "contradiction": false
+      },
+      {
+        "pred": "Q1",
+        "ref": "E36",
+        "score": 1,
+        "contradiction": false
+      },
+      {
+        "pred": "Q1",
+        "ref": "E42",
+        "score": 1,
+        "contradiction": false
+      },
+      {
+        "pred": "Q1",
+        "ref": "E46",
+        "score": 2,
+        "contradiction": false
+      },
+      {
+        "pred": "Q1",
+        "ref": "E51",
+        "score": 1,
+        "contradiction": false
+      },
+      {
+        "pred": "Q1",
+        "ref": "E59",
+        "score": 1,
+        "contradiction": false
+      },
+      {
+        "pred": "Q1",
+        "ref": "E68",
+        "score": 1,
+        "contradiction": false
+      },
+      {
+        "pred": "Q1",
+        "ref": "E72",
+        "score": 1,
+        "contradiction": false
+      },
+      {
+        "pred": "Q1",
+        "ref": "E74",
+        "score": 1,
+        "contradiction": false
+      },
+      {
+        "pred": "Q1",
+        "ref": "E76",
+        "score": 1,
+        "contradiction": false
+      },
+      {
+        "pred": "Q2",
+        "ref": "E48",
+        "score": 2,
+        "contradiction": false
+      },
+      {
+        "pred": "Q2",
+        "ref": "E63",
+        "score": 2,
+        "contradiction": false
+      },
+      {
+        "pred": "Q3",
+        "ref": "E3",
+        "score": 1,
+        "contradiction": false
+      },
+      {
+        "pred": "Q3",
+        "ref": "E17",
+        "score": 1,
+        "contradiction": false
+      },
+      {
+        "pred": "Q3",
+        "ref": "E28",
+        "score": 1,
+        "contradiction": false
+      },
+      {
+        "pred": "Q3",
+        "ref": "E60",
+        "score": 2,
+        "contradiction": false
+      },
+      {
+        "pred": "Q3",
+        "ref": "E66",
+        "score": 1,
+        "contradiction": false
+      },
+      {
+        "pred": "Q3",
+        "ref": "E70",
+        "score": 1,
+        "contradiction": false
+      },
+      {
+        "pred": "Q4",
+        "ref": "E4",
+        "score": 1,
+        "contradiction": false
+      },
+      {
+        "pred": "Q4",
+        "ref": "E6",
+        "score": 1,
+        "contradiction": false
+      },
+      {
+        "pred": "Q4",
+        "ref": "E32",
+        "score": 1,
+        "contradiction": false
+      },
+      {
+        "pred": "Q4",
+        "ref": "E41",
+        "score": 1,
+        "contradiction": false
+      },
+      {
+        "pred": "Q4",
+        "ref": "E44",
+        "score": 2,
+        "contradiction": false
+      },
+      {
+        "pred": "Q4",
+        "ref": "E50",
+        "score": 1,
+        "contradiction": false
+      },
+      {
+        "pred": "Q5",
+        "ref": "E2",
+        "score": 2,
+        "contradiction": false
+      },
+      {
+        "pred": "Q5",
+        "ref": "E58",
+        "score": 2,
+        "contradiction": false
+      },
+      {
+        "pred": "Q6",
+        "ref": "E5",
+        "score": 1,
+        "contradiction": false
+      },
+      {
+        "pred": "Q6",
+        "ref": "E23",
+        "score": 2,
+        "contradiction": false
+      },
+      {
+        "pred": "Q6",
+        "ref": "E27",
+        "score": 1,
+        "contradiction": false
+      },
+      {
+        "pred": "Q6",
+        "ref": "E40",
+        "score": 1,
+        "contradiction": false
+      },
+      {
+        "pred": "Q6",
+        "ref": "E48",
+        "score": 1,
+        "contradiction": false
+      },
+      {
+        "pred": "Q6",
+        "ref": "E49",
+        "score": 1,
+        "contradiction": false
+      },
+      {
+        "pred": "Q6",
+        "ref": "E61",
+        "score": 2,
+        "contradiction": false
+      }
+    ]
+  },
+  "ts": "2026-10-17T23:49:35.862580+00:00"
+}

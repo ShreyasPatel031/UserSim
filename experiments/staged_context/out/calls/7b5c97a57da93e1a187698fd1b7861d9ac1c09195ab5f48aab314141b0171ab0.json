@@ -1,0 +1,28 @@
+{
+  "stage": "matched_screen",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "7b5c97a57da93e1a187698fd1b7861d9ac1c09195ab5f48aab314141b0171ab0",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 378,
+  "output_tokens": 1349,
+  "cost_usd": 0.0139625,
+  "elapsed_s": 11.73,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review states that Asana is used for 'design+marketing tasks'. This is a broad category of work, not a specific, concrete task with a clear object that could be attempted in a short trial.\",\n  \"task\": {\n    \"action\": null,\n    \"object\": null,\n    \"context\": null,\n    \"purpose\": null\n  },\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review states that Asana is used for 'design+marketing tasks'. This is a broad category of work, not a specific, concrete task with a clear object that could be attempted in a short trial.",
+    "task": {
+      "action": null,
+      "object": null,
+      "context": null,
+      "purpose": null
+    },
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-17T23:36:52.632779+00:00"
+}

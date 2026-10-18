@@ -1,0 +1,58 @@
+{
+  "stage": "extract",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "19d49bb7d231a8593aa3427521e6931a05f684b72bae15aea5923921e9e483b5",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 599,
+  "output_tokens": 1459,
+  "cost_usd": 0.01533875,
+  "elapsed_s": 12.57,
+  "error": null,
+  "text": "{\n  \"tasks\": [\n    {\n      \"action\": \"keep track of\",\n      \"object\": \"candidates in the hiring process\",\n      \"context\": null,\n      \"purpose\": null,\n      \"span\": \"keep track of candidates in the hiring process\"\n    },\n    {\n      \"action\": \"keep track of\",\n      \"object\": \"storage units we rent\",\n      \"context\": null,\n      \"purpose\": null,\n      \"span\": \"keep track of storage units we rent\"\n    }\n  ],\n  \"benefits\": [\n    {\n      \"aspect\": \"ease_of_use\",\n      \"claim\": \"It is a very user-friendly platform.\",\n      \"span\": \"Trello is a very user-friendly platform\"\n    },\n    {\n      \"aspect\": \"performance\",\n      \"claim\": \"It is the only platform the user has tried without having any issues.\",\n      \"span\": \"Trello is the only one that I haven't had any issues with\"\n    },\n    {\n      \"aspect\": \"features\",\n      \"claim\": \"New features are continuously rolled out.\",\n      \"span\": \"they've continued to roll out new features\"\n    }\n  ],\n  \"frictions\": [\n    {\n      \"aspect\": \"interface\",\n      \"claim\": \"It is not easy to switch between different Trello boards/dashboards.\",\n      \"span\": \"it's not easy to go from Trello to Trello\"\n    }\n  ]\n}",
+  "json": {
+    "tasks": [
+      {
+        "action": "keep track of",
+        "object": "candidates in the hiring process",
+        "context": null,
+        "purpose": null,
+        "span": "keep track of candidates in the hiring process"
+      },
+      {
+        "action": "keep track of",
+        "object": "storage units we rent",
+        "context": null,
+        "purpose": null,
+        "span": "keep track of storage units we rent"
+      }
+    ],
+    "benefits": [
+      {
+        "aspect": "ease_of_use",
+        "claim": "It is a very user-friendly platform.",
+        "span": "Trello is a very user-friendly platform"
+      },
+      {
+        "aspect": "performance",
+        "claim": "It is the only platform the user has tried without having any issues.",
+        "span": "Trello is the only one that I haven't had any issues with"
+      },
+      {
+        "aspect": "features",
+        "claim": "New features are continuously rolled out.",
+        "span": "they've continued to roll out new features"
+      }
+    ],
+    "frictions": [
+      {
+        "aspect": "interface",
+        "claim": "It is not easy to switch between different Trello boards/dashboards.",
+        "span": "it's not easy to go from Trello to Trello"
+      }
+    ]
+  },
+  "ts": "2026-10-17T23:32:25.017899+00:00"
+}

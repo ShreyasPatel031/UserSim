@@ -1,0 +1,46 @@
+{
+  "stage": "extract",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "7058b59dcffd7ffcf27027fe845368a9f4c96950e6d1a298bf8301292a353ef9",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "input_tokens": 453,
+  "output_tokens": 1404,
+  "cost_usd": 0.014606250000000001,
+  "elapsed_s": 16.06,
+  "error": null,
+  "text": "{\n  \"tasks\": [\n    {\n      \"action\": \"keeping track\",\n      \"object\": \"everything\",\n      \"context\": null,\n      \"purpose\": null,\n      \"span\": \"keeping track of everything\"\n    }\n  ],\n  \"benefits\": [\n    {\n      \"aspect\": \"integrations\",\n      \"claim\": \"It integrates very well with other tools like Google Drive.\",\n      \"span\": \"it integrates so well with other tools like Google Drive\"\n    }\n  ],\n  \"frictions\": [\n    {\n      \"aspect\": \"flexibility\",\n      \"claim\": \"It is limited when working on larger projects.\",\n      \"span\": \"it’s a bit limited when you’re working on larger projects\"\n    },\n    {\n      \"aspect\": \"flexibility\",\n      \"claim\": \"It lacks customization options unless you upgrade to a paid version.\",\n      \"span\": \"lacks some customization options unless you upgrade to a paid version\"\n    }\n  ]\n}",
+  "json": {
+    "tasks": [
+      {
+        "action": "keeping track",
+        "object": "everything",
+        "context": null,
+        "purpose": null,
+        "span": "keeping track of everything"
+      }
+    ],
+    "benefits": [
+      {
+        "aspect": "integrations",
+        "claim": "It integrates very well with other tools like Google Drive.",
+        "span": "it integrates so well with other tools like Google Drive"
+      }
+    ],
+    "frictions": [
+      {
+        "aspect": "flexibility",
+        "claim": "It is limited when working on larger projects.",
+        "span": "it’s a bit limited when you’re working on larger projects"
+      },
+      {
+        "aspect": "flexibility",
+        "claim": "It lacks customization options unless you upgrade to a paid version.",
+        "span": "lacks some customization options unless you upgrade to a paid version"
+      }
+    ]
+  },
+  "ts": "2026-10-17T23:33:22.910815+00:00"
+}
