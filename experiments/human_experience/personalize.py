@@ -101,7 +101,7 @@ def main() -> None:
     print(T.reindex(T["mean"].abs().sort_values(ascending=False).index).head(25).round(3).to_string(index=False))
 
 
-if __name__ == "__main__" and "--export" not in sys.argv:
+if __name__ == "__main__" and not any(a.startswith("--export") for a in sys.argv):
     main()
 
 
@@ -127,5 +127,34 @@ def export(path: Path) -> None:
     path.write_text(json.dumps(out, indent=1) + "\n")
 
 
-if __name__ == "__main__" and "--export" in sys.argv:
+if __name__ == "__main__" and "--export" in sys.argv[1:2]:
     export(Path(sys.argv[sys.argv.index("--export") + 1]))
+
+
+def export_segments(path: Path) -> None:
+    """Aggregate people-like-them stats (all Capterra reviews): mean rating per factor level and the unhappy share
+    (overall <= 3 or recommend <= 6), for agent mode's "People like this person" section. Calibration constants only."""
+    import json
+
+    df = U.data()
+    df = df.assign(role_family=df.reviewer_job_title.fillna("").map(lambda t: C.E.role_family(t)))
+    unhappy = (df.overall_rating <= 3) | (df.recommendation_score <= 6)
+    cols = {"role_family": "role_family", "company_size": "reviewer_company_size", "time_used": "reviewer_time_used_product",
+            "industry": "reviewer_industry"}
+    out = {"about": f"Mean ratings and unhappy share per persona factor level over {len(df)} Capterra reviews of "
+                    f"{df.product_name.nunique()} products (experiments/human_experience/personalize.py export_segments).",
+           "all": {r: round(float(df[r].mean()), 3) for r in U.RATINGS}, "unhappy_all": round(float(unhappy.mean()), 4),
+           "factors": {}}
+    for key, col in cols.items():
+        lv = {}
+        for v, g in df.groupby(col):
+            if len(g) < 30 or v in ("unknown", ""):
+                continue
+            lv[str(v)] = {**{r: [round(float(g[r].mean()), 3), int(g[r].notna().sum())] for r in U.RATINGS if g[r].notna().any()},
+                          "unhappy": round(float(unhappy[g.index].mean()), 4)}
+        out["factors"][key] = lv
+    path.write_text(json.dumps(out) + "\n")
+
+
+if __name__ == "__main__" and "--export-segments" in sys.argv:
+    export_segments(Path(sys.argv[sys.argv.index("--export-segments") + 1]))

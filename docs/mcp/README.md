@@ -22,7 +22,7 @@ Source of truth: `mvp/sim_mcp/server.py`, `mvp/sim_mcp/sessions.py`, `mvp/sim_mc
 - **Human mode** (everything below except `usersim_predict_experience`): a simulated user really uses the product in
   a recorded cloud browser, and UserSim judges it.
 - **Agent mode** (`usersim_predict_experience`): no browser. Predicts how a kind of user will experience a product from
-  live G2, Capterra, TrustRadius and Gartner reviews of the product and its named rivals. Returns expected ratings, pros, cons and likely frictions.
+  live G2, Capterra, TrustRadius and Gartner reviews of the product and its named rivals. Returns expected ratings, pros, cons and the overall experience.
   Use it to set expectations before human mode, or when a browser run isn't possible.
 
 ## What it does
@@ -209,7 +209,8 @@ What you get on `ok`:
   - On held-out reviewers the offsets raised per-person ranking within a product (recommend Spearman 0.00 → 0.13) and
     cut error on 6 of 7 test sets.
   - Evidence: `experiments/human_experience/heldout_bench.py` and `personalize.py`.
-- **`pros`**, **`cons`**, **`overall_experience`** and **`likely_frictions`**: written for this persona from the most
+- **`pros`**, **`cons`** and **`overall_experience`**: written by the held-out-validated predictor prompt. Its evidence:
+  people-like-this-persona averages (`mvp/agent_mode_segments.json`), the rivals' ratings and complaint topics, and the most
   similar reviewers of the product and its rivals.
 - **`evidence`**: how many reviews were used, which rivals had none, and scraper errors.
 

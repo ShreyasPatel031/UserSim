@@ -125,8 +125,11 @@ async def gemini_chat(
     temperature: float = 0.4,
     json_mode: bool = True,
     max_retries: int = 5,
+    thinking_budget: int = 0,
 ) -> str:
-    """Call Gemini on Vertex. Returns the raw text of the first candidate."""
+    """Call Gemini on Vertex. Returns the raw text of the first candidate.
+
+    thinking_budget: tokens 2.5 Flash may think before answering (0 = off, the default for signup/study prompts)."""
     model = model or gemini_model()
     contents, system = _to_vertex(messages)
 
@@ -135,7 +138,7 @@ async def gemini_chat(
         generation["responseMimeType"] = "application/json"
     # 2.5 Flash thinks by default; signup/study prompts do not need it and it
     # doubles latency and cost.
-    generation["thinkingConfig"] = {"thinkingBudget": 0}
+    generation["thinkingConfig"] = {"thinkingBudget": int(thinking_budget)}
 
     payload: dict[str, Any] = {"contents": contents, "generationConfig": generation}
     if system:

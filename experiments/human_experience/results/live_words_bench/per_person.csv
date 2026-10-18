@@ -1,0 +1,337 @@
+rid,cond,site,product,pros,cons,overall_experience
+L:capterra:Capterra___7176902,rivals_only,capterra,Zoho CRM,0.0,0.0,0.0
+L:capterra:Capterra___7176902,agent_mode,capterra,Zoho CRM,0.0,0.25,0.0
+L:g2:13132964,rivals_only,g2,Zoho CRM,0.3333333333333333,,0.0
+L:g2:13132964,agent_mode,g2,Zoho CRM,0.3333333333333333,,0.0
+L:gartner:6818860,rivals_only,gartner,Zoho CRM,0.5,0.0,1.0
+L:gartner:6818860,agent_mode,gartner,Zoho CRM,0.5,0.3333333333333333,1.0
+L:trustradius:zoho-crm-2023-09-01-08-37-02,rivals_only,trustradius,Zoho CRM,0.25,0.3333333333333333,1.0
+L:trustradius:zoho-crm-2023-09-01-08-37-02,agent_mode,trustradius,Zoho CRM,0.5,0.3333333333333333,1.0
+L:capterra:Capterra___7216726,rivals_only,capterra,Zoho CRM,0.5,0.3333333333333333,1.0
+L:capterra:Capterra___7216726,agent_mode,capterra,Zoho CRM,0.0,0.0,0.0
+L:g2:8738876,rivals_only,g2,Zoho CRM,0.25,0.75,0.0
+L:g2:8738876,agent_mode,g2,Zoho CRM,0.75,0.25,1.0
+L:trustradius:zoho-crm-2025-11-28-03-54-30,rivals_only,trustradius,Zoho CRM,0.25,0.0,0.0
+L:trustradius:zoho-crm-2025-11-28-03-54-30,agent_mode,trustradius,Zoho CRM,0.25,0.0,0.0
+L:capterra:Capterra___7161378,rivals_only,capterra,Zoho CRM,1.0,0.0,0.0
+L:capterra:Capterra___7161378,agent_mode,capterra,Zoho CRM,1.0,0.0,1.0
+L:g2:12123102,rivals_only,g2,Zoho CRM,0.75,0.25,1.0
+L:g2:12123102,agent_mode,g2,Zoho CRM,0.75,0.25,1.0
+L:trustradius:zoho-crm-2021-10-11-14-13-13,rivals_only,trustradius,Zoho CRM,0.5,0.0,0.0
+L:trustradius:zoho-crm-2021-10-11-14-13-13,agent_mode,trustradius,Zoho CRM,0.5,0.6666666666666666,1.0
+L:capterra:Capterra___7120268,rivals_only,capterra,Zoho CRM,0.25,0.0,0.0
+L:capterra:Capterra___7120268,agent_mode,capterra,Zoho CRM,0.25,0.0,1.0
+L:g2:13177673,rivals_only,g2,Zoho CRM,0.5,0.0,0.0
+L:g2:13177673,agent_mode,g2,Zoho CRM,0.75,0.0,0.0
+L:capterra:Capterra___7178601,rivals_only,capterra,Freshdesk,0.75,0.5,1.0
+L:capterra:Capterra___7178601,agent_mode,capterra,Freshdesk,0.75,0.0,0.0
+L:g2:13746704,rivals_only,g2,Freshdesk,0.25,1.0,0.0
+L:g2:13746704,agent_mode,g2,Freshdesk,0.25,0.0,1.0
+L:trustradius:freshdesk-2026-08-20-07-05-33,rivals_only,trustradius,Freshdesk,0.5,1.0,1.0
+L:trustradius:freshdesk-2026-08-20-07-05-33,agent_mode,trustradius,Freshdesk,0.5,1.0,1.0
+L:capterra:Capterra___7178252,rivals_only,capterra,Freshdesk,0.3333333333333333,0.3333333333333333,1.0
+L:capterra:Capterra___7178252,agent_mode,capterra,Freshdesk,0.3333333333333333,0.3333333333333333,1.0
+L:g2:13740618,rivals_only,g2,Freshdesk,1.0,0.6666666666666666,0.0
+L:g2:13740618,agent_mode,g2,Freshdesk,0.0,0.0,0.0
+L:trustradius:freshdesk-2026-07-28-07-43-57,rivals_only,trustradius,Freshdesk,0.5,0.0,0.0
+L:trustradius:freshdesk-2026-07-28-07-43-57,agent_mode,trustradius,Freshdesk,0.5,0.0,1.0
+L:capterra:Capterra___7217380,rivals_only,capterra,Freshdesk,0.25,0.0,0.0
+L:capterra:Capterra___7217380,agent_mode,capterra,Freshdesk,0.25,0.0,0.0
+L:g2:13735494,rivals_only,g2,Freshdesk,0.25,,0.0
+L:g2:13735494,agent_mode,g2,Freshdesk,0.5,,0.0
+L:trustradius:freshdesk-2026-08-13-21-50-30,rivals_only,trustradius,Freshdesk,0.25,0.0,0.0
+L:trustradius:freshdesk-2026-08-13-21-50-30,agent_mode,trustradius,Freshdesk,0.5,0.0,0.0
+L:capterra:Capterra___7200313,rivals_only,capterra,Freshdesk,0.25,0.0,0.0
+L:capterra:Capterra___7200313,agent_mode,capterra,Freshdesk,0.25,0.0,0.0
+L:g2:13774301,rivals_only,g2,Freshdesk,0.0,0.0,1.0
+L:g2:13774301,agent_mode,g2,Freshdesk,0.0,0.5,0.0
+L:trustradius:freshdesk-2026-08-14-09-20-39,rivals_only,trustradius,Freshdesk,0.25,,0.0
+L:trustradius:freshdesk-2026-08-14-09-20-39,agent_mode,trustradius,Freshdesk,0.0,,0.0
+L:capterra:Capterra___7224168,rivals_only,capterra,Paylocity,0.0,0.5,0.0
+L:capterra:Capterra___7224168,agent_mode,capterra,Paylocity,0.25,1.0,0.0
+L:g2:13688659,rivals_only,g2,Paylocity,0.25,0.0,1.0
+L:g2:13688659,agent_mode,g2,Paylocity,0.5,1.0,0.0
+L:gartner:6978836,rivals_only,gartner,Paylocity,0.25,0.25,0.0
+L:gartner:6978836,agent_mode,gartner,Paylocity,0.25,0.25,1.0
+L:trustradius:paylocity-2026-08-19-12-32-54,rivals_only,trustradius,Paylocity,0.6666666666666666,1.0,1.0
+L:trustradius:paylocity-2026-08-19-12-32-54,agent_mode,trustradius,Paylocity,0.6666666666666666,0.6666666666666666,1.0
+L:capterra:Capterra___7223569,rivals_only,capterra,Paylocity,0.3333333333333333,0.5,0.0
+L:capterra:Capterra___7223569,agent_mode,capterra,Paylocity,0.6666666666666666,0.5,0.0
+L:g2:13786480,rivals_only,g2,Paylocity,0.0,0.0,0.0
+L:g2:13786480,agent_mode,g2,Paylocity,0.3333333333333333,0.0,0.0
+L:trustradius:paylocity-2026-08-19-10-23-23,rivals_only,trustradius,Paylocity,1.0,0.0,0.0
+L:trustradius:paylocity-2026-08-19-10-23-23,agent_mode,trustradius,Paylocity,1.0,0.25,0.0
+L:capterra:Capterra___7223599,rivals_only,capterra,Paylocity,0.6666666666666666,0.0,0.0
+L:capterra:Capterra___7223599,agent_mode,capterra,Paylocity,0.6666666666666666,0.0,0.0
+L:g2:13785879,rivals_only,g2,Paylocity,0.6666666666666666,,0.0
+L:g2:13785879,agent_mode,g2,Paylocity,0.3333333333333333,,0.0
+L:trustradius:paylocity-2026-08-19-10-34-50,rivals_only,trustradius,Paylocity,0.0,0.3333333333333333,0.0
+L:trustradius:paylocity-2026-08-19-10-34-50,agent_mode,trustradius,Paylocity,0.5,0.0,0.0
+L:capterra:Capterra___7224154,rivals_only,capterra,Paylocity,0.3333333333333333,1.0,0.0
+L:capterra:Capterra___7224154,agent_mode,capterra,Paylocity,0.3333333333333333,0.3333333333333333,0.0
+L:g2:13546268,rivals_only,g2,Paylocity,0.3333333333333333,0.0,0.0
+L:g2:13546268,agent_mode,g2,Paylocity,0.3333333333333333,0.0,0.0
+L:capterra:Capterra___7213168,rivals_only,capterra,Microsoft Teams,0.75,0.5,1.0
+L:capterra:Capterra___7213168,agent_mode,capterra,Microsoft Teams,0.75,0.75,1.0
+L:g2:13793161,rivals_only,g2,Microsoft Teams,0.5,0.0,0.0
+L:g2:13793161,agent_mode,g2,Microsoft Teams,0.5,0.0,0.0
+L:trustradius:microsoft-teams-2026-02-18-07-41-24,rivals_only,trustradius,Microsoft Teams,0.75,0.25,0.0
+L:trustradius:microsoft-teams-2026-02-18-07-41-24,agent_mode,trustradius,Microsoft Teams,0.75,0.75,0.0
+L:capterra:Capterra___7213427,rivals_only,capterra,Microsoft Teams,0.5,,0.0
+L:capterra:Capterra___7213427,agent_mode,capterra,Microsoft Teams,0.5,,0.0
+L:g2:13734709,rivals_only,g2,Microsoft Teams,0.5,0.6666666666666666,1.0
+L:g2:13734709,agent_mode,g2,Microsoft Teams,0.25,0.3333333333333333,1.0
+L:trustradius:microsoft-teams-2025-12-22-14-00-20,rivals_only,trustradius,Microsoft Teams,0.25,0.0,0.0
+L:trustradius:microsoft-teams-2025-12-22-14-00-20,agent_mode,trustradius,Microsoft Teams,0.25,0.0,0.0
+L:capterra:Capterra___7215588,rivals_only,capterra,Microsoft Teams,0.5,0.3333333333333333,1.0
+L:capterra:Capterra___7215588,agent_mode,capterra,Microsoft Teams,0.5,0.3333333333333333,1.0
+L:g2:13703819,rivals_only,g2,Microsoft Teams,0.25,0.5,1.0
+L:g2:13703819,agent_mode,g2,Microsoft Teams,0.75,0.0,0.0
+L:trustradius:microsoft-teams-2026-01-30-10-19-00,rivals_only,trustradius,Microsoft Teams,0.3333333333333333,0.25,1.0
+L:trustradius:microsoft-teams-2026-01-30-10-19-00,agent_mode,trustradius,Microsoft Teams,0.6666666666666666,0.0,1.0
+L:capterra:Capterra___4878557,rivals_only,capterra,Microsoft Teams,0.0,0.3333333333333333,0.0
+L:capterra:Capterra___4878557,agent_mode,capterra,Microsoft Teams,0.25,0.3333333333333333,1.0
+L:g2:13162444,rivals_only,g2,Microsoft Teams,1.0,0.0,0.0
+L:g2:13162444,agent_mode,g2,Microsoft Teams,0.75,1.0,0.0
+L:trustradius:microsoft-teams-2025-12-18-08-27-59,rivals_only,trustradius,Microsoft Teams,0.5,0.3333333333333333,1.0
+L:trustradius:microsoft-teams-2025-12-18-08-27-59,agent_mode,trustradius,Microsoft Teams,0.75,0.3333333333333333,1.0
+L:capterra:Capterra___7221976,rivals_only,capterra,BambooHR,0.75,,0.0
+L:capterra:Capterra___7221976,agent_mode,capterra,BambooHR,0.25,,1.0
+L:g2:13794424,rivals_only,g2,BambooHR,0.5,0.0,0.0
+L:g2:13794424,agent_mode,g2,BambooHR,0.75,0.0,0.0
+L:gartner:6842484,rivals_only,gartner,BambooHR,0.5,1.0,1.0
+L:gartner:6842484,agent_mode,gartner,BambooHR,1.25,1.0,1.0
+L:trustradius:bamboohr-2026-09-29-10-12-14-292,rivals_only,trustradius,BambooHR,0.75,0.0,1.0
+L:trustradius:bamboohr-2026-09-29-10-12-14-292,agent_mode,trustradius,BambooHR,1.0,0.0,1.0
+L:capterra:Capterra___7222000,rivals_only,capterra,BambooHR,0.75,0.0,0.0
+L:capterra:Capterra___7222000,agent_mode,capterra,BambooHR,0.5,0.0,0.0
+L:g2:13793920,rivals_only,g2,BambooHR,0.5,0.0,0.0
+L:g2:13793920,agent_mode,g2,BambooHR,0.5,0.0,0.0
+L:trustradius:bamboohr-2026-09-29-10-06-37-507,rivals_only,trustradius,BambooHR,0.5,0.0,1.0
+L:trustradius:bamboohr-2026-09-29-10-06-37-507,agent_mode,trustradius,BambooHR,0.5,0.5,0.0
+L:capterra:Capterra___7222783,rivals_only,capterra,BambooHR,0.25,0.0,0.0
+L:capterra:Capterra___7222783,agent_mode,capterra,BambooHR,0.25,0.0,0.0
+L:g2:13791107,rivals_only,g2,BambooHR,0.25,0.5,1.0
+L:g2:13791107,agent_mode,g2,BambooHR,0.5,0.5,0.0
+L:trustradius:bamboohr-2026-09-25-08-10-06-007,rivals_only,trustradius,BambooHR,0.75,0.0,0.0
+L:trustradius:bamboohr-2026-09-25-08-10-06-007,agent_mode,trustradius,BambooHR,0.75,0.0,1.0
+L:capterra:Capterra___7226187,rivals_only,capterra,BambooHR,0.5,0.0,0.0
+L:capterra:Capterra___7226187,agent_mode,capterra,BambooHR,0.75,1.0,1.0
+L:g2:13792829,rivals_only,g2,BambooHR,0.5,,0.0
+L:g2:13792829,agent_mode,g2,BambooHR,0.75,,0.0
+L:capterra:Capterra___6691240,rivals_only,capterra,Copper,0.75,,0.0
+L:capterra:Capterra___6691240,agent_mode,capterra,Copper,0.5,,1.0
+L:g2:4972662,rivals_only,g2,Copper,0.0,0.0,1.0
+L:g2:4972662,agent_mode,g2,Copper,0.0,0.0,0.0
+L:trustradius:copper-2025-11-24-03-00-04,rivals_only,trustradius,Copper,0.25,0.5,1.0
+L:trustradius:copper-2025-11-24-03-00-04,agent_mode,trustradius,Copper,0.25,0.25,0.0
+L:capterra:Capterra___6649742,rivals_only,capterra,Copper,1.0,0.5,0.0
+L:capterra:Capterra___6649742,agent_mode,capterra,Copper,0.5,0.5,0.0
+L:g2:9924449,rivals_only,g2,Copper,1.0,0.0,0.0
+L:g2:9924449,agent_mode,g2,Copper,1.0,0.0,0.0
+L:trustradius:copper-crm-2026-06-09-06-29-04,rivals_only,trustradius,Copper,0.5,0.0,1.0
+L:trustradius:copper-crm-2026-06-09-06-29-04,agent_mode,trustradius,Copper,0.5,0.0,1.0
+L:capterra:Capterra___6712114,rivals_only,capterra,Copper,0.6666666666666666,0.0,0.0
+L:capterra:Capterra___6712114,agent_mode,capterra,Copper,0.6666666666666666,0.0,0.0
+L:g2:8094719,rivals_only,g2,Copper,0.75,0.0,1.0
+L:g2:8094719,agent_mode,g2,Copper,0.0,0.0,0.0
+L:trustradius:copper-2026-02-22-15-49-21,rivals_only,trustradius,Copper,0.5,0.0,1.0
+L:trustradius:copper-2026-02-22-15-49-21,agent_mode,trustradius,Copper,0.5,0.0,1.0
+L:capterra:Capterra___6848661,rivals_only,capterra,Copper,0.5,,0.0
+L:capterra:Capterra___6848661,agent_mode,capterra,Copper,0.75,,0.0
+L:g2:8086538,rivals_only,g2,Copper,0.5,0.0,0.0
+L:g2:8086538,agent_mode,g2,Copper,0.25,0.0,0.0
+L:trustradius:copper-crm-2026-08-14-15-53-05,rivals_only,trustradius,Copper,0.75,0.0,1.0
+L:trustradius:copper-crm-2026-08-14-15-53-05,agent_mode,trustradius,Copper,0.5,0.0,1.0
+L:capterra:Capterra___6768004,rivals_only,capterra,Gorgias,0.25,0.0,0.0
+L:capterra:Capterra___6768004,agent_mode,capterra,Gorgias,0.25,0.0,0.0
+L:g2:9884368,rivals_only,g2,Gorgias,0.6666666666666666,0.0,0.0
+L:g2:9884368,agent_mode,g2,Gorgias,0.6666666666666666,0.0,0.0
+L:trustradius:gorgias-2022-04-26-10-08-24,rivals_only,trustradius,Gorgias,0.25,0.6666666666666666,1.0
+L:trustradius:gorgias-2022-04-26-10-08-24,agent_mode,trustradius,Gorgias,0.25,0.3333333333333333,1.0
+L:capterra:Capterra___6739547,rivals_only,capterra,Gorgias,0.0,0.0,0.0
+L:capterra:Capterra___6739547,agent_mode,capterra,Gorgias,0.0,0.0,0.0
+L:g2:9240857,rivals_only,g2,Gorgias,0.0,0.0,0.0
+L:g2:9240857,agent_mode,g2,Gorgias,0.0,0.0,0.0
+L:trustradius:gorgias-2025-04-28-02-09-34,rivals_only,trustradius,Gorgias,0.5,0.0,1.0
+L:trustradius:gorgias-2025-04-28-02-09-34,agent_mode,trustradius,Gorgias,0.25,0.0,0.0
+L:capterra:Capterra___6784580,rivals_only,capterra,Gorgias,0.25,0.0,0.0
+L:capterra:Capterra___6784580,agent_mode,capterra,Gorgias,0.0,0.5,0.0
+L:g2:11496733,rivals_only,g2,Gorgias,0.3333333333333333,0.0,0.0
+L:g2:11496733,agent_mode,g2,Gorgias,0.0,0.0,0.0
+L:trustradius:gorgias-2024-12-22-21-38-53,rivals_only,trustradius,Gorgias,0.0,0.0,0.0
+L:trustradius:gorgias-2024-12-22-21-38-53,agent_mode,trustradius,Gorgias,0.75,0.0,0.0
+L:capterra:Capterra___6750634,rivals_only,capterra,Gorgias,0.5,0.0,0.0
+L:capterra:Capterra___6750634,agent_mode,capterra,Gorgias,0.5,0.0,0.0
+L:g2:9424734,rivals_only,g2,Gorgias,0.5,,0.0
+L:g2:9424734,agent_mode,g2,Gorgias,0.75,,1.0
+L:trustradius:gorgias-2025-04-02-16-25-27,rivals_only,trustradius,Gorgias,0.75,0.3333333333333333,1.0
+L:trustradius:gorgias-2025-04-02-16-25-27,agent_mode,trustradius,Gorgias,0.75,0.6666666666666666,1.0
+L:capterra:Capterra___6806137,rivals_only,capterra,Teamwork.com,0.5,0.0,0.0
+L:capterra:Capterra___6806137,agent_mode,capterra,Teamwork.com,0.5,1.0,1.0
+L:g2:12669358,rivals_only,g2,Teamwork.com,0.25,0.5,1.0
+L:g2:12669358,agent_mode,g2,Teamwork.com,0.75,0.5,0.0
+L:gartner:6477050,rivals_only,gartner,Teamwork.com,0.25,0.3333333333333333,1.0
+L:gartner:6477050,agent_mode,gartner,Teamwork.com,0.25,0.3333333333333333,0.0
+L:trustradius:teamwork-2022-01-12-07-36-36,rivals_only,trustradius,Teamwork.com,2.0,,0.0
+L:trustradius:teamwork-2022-01-12-07-36-36,agent_mode,trustradius,Teamwork.com,1.25,,0.0
+L:capterra:Capterra___7027036,rivals_only,capterra,Teamwork.com,0.25,0.0,1.0
+L:capterra:Capterra___7027036,agent_mode,capterra,Teamwork.com,0.5,0.0,0.0
+L:g2:11747757,rivals_only,g2,Teamwork.com,0.5,,0.0
+L:g2:11747757,agent_mode,g2,Teamwork.com,0.5,,0.0
+L:trustradius:teamwork-projects-2021-06-17-06-15-54,rivals_only,trustradius,Teamwork.com,0.5,,0.0
+L:trustradius:teamwork-projects-2021-06-17-06-15-54,agent_mode,trustradius,Teamwork.com,0.25,,0.0
+L:capterra:Capterra___7147083,rivals_only,capterra,Teamwork.com,0.25,0.5,1.0
+L:capterra:Capterra___7147083,agent_mode,capterra,Teamwork.com,0.5,0.5,1.0
+L:g2:12057283,rivals_only,g2,Teamwork.com,0.25,0.25,1.0
+L:g2:12057283,agent_mode,g2,Teamwork.com,0.5,0.25,1.0
+L:trustradius:teamwork-2023-02-09-11-00-14,rivals_only,trustradius,Teamwork.com,0.0,0.0,0.0
+L:trustradius:teamwork-2023-02-09-11-00-14,agent_mode,trustradius,Teamwork.com,0.0,0.0,0.0
+L:capterra:Capterra___7160152,rivals_only,capterra,Teamwork.com,0.75,1.0,1.0
+L:capterra:Capterra___7160152,agent_mode,capterra,Teamwork.com,0.25,0.0,1.0
+L:g2:10354659,rivals_only,g2,Teamwork.com,0.5,0.0,1.0
+L:g2:10354659,agent_mode,g2,Teamwork.com,0.5,0.0,1.0
+L:capterra:Capterra___7210255,rivals_only,capterra,Personio,0.75,0.6666666666666666,1.0
+L:capterra:Capterra___7210255,agent_mode,capterra,Personio,0.5,1.0,1.0
+L:g2:13791108,rivals_only,g2,Personio,0.25,0.5,1.0
+L:g2:13791108,agent_mode,g2,Personio,0.25,0.0,0.0
+L:trustradius:personio-2025-05-21-02-28-52,rivals_only,trustradius,Personio,0.5,0.0,0.0
+L:trustradius:personio-2025-05-21-02-28-52,agent_mode,trustradius,Personio,0.75,0.0,0.0
+L:capterra:Capterra___7081024,rivals_only,capterra,Personio,0.25,0.0,0.0
+L:capterra:Capterra___7081024,agent_mode,capterra,Personio,0.25,0.0,0.0
+L:g2:13791603,rivals_only,g2,Personio,0.6666666666666666,0.0,0.0
+L:g2:13791603,agent_mode,g2,Personio,0.6666666666666666,0.0,0.0
+L:capterra:Capterra___7205080,rivals_only,capterra,Personio,0.5,0.0,0.0
+L:capterra:Capterra___7205080,agent_mode,capterra,Personio,0.5,0.0,0.0
+L:g2:13609531,rivals_only,g2,Personio,1.0,0.0,1.0
+L:g2:13609531,agent_mode,g2,Personio,0.75,0.0,0.0
+L:capterra:Capterra___6669431,rivals_only,capterra,Personio,0.3333333333333333,0.25,1.0
+L:capterra:Capterra___6669431,agent_mode,capterra,Personio,0.3333333333333333,0.0,0.0
+L:g2:13629666,rivals_only,g2,Personio,1.0,,1.0
+L:g2:13629666,agent_mode,g2,Personio,0.5,,0.0
+L:capterra:Capterra___7130675,rivals_only,capterra,Personio,0.25,0.0,1.0
+L:capterra:Capterra___7130675,agent_mode,capterra,Personio,0.5,0.3333333333333333,0.0
+L:g2:13727378,rivals_only,g2,Personio,0.25,0.0,1.0
+L:g2:13727378,agent_mode,g2,Personio,0.25,1.0,0.0
+L:capterra:Capterra___7163892,rivals_only,capterra,Personio,0.5,0.25,0.0
+L:capterra:Capterra___7163892,agent_mode,capterra,Personio,0.0,0.25,0.0
+L:capterra:Capterra___6825967,rivals_only,capterra,Zoho Books,0.5,0.5,1.0
+L:capterra:Capterra___6825967,agent_mode,capterra,Zoho Books,0.5,1.0,1.0
+L:g2:12701585,rivals_only,g2,Zoho Books,0.3333333333333333,0.0,0.0
+L:g2:12701585,agent_mode,g2,Zoho Books,0.0,0.0,0.0
+L:trustradius:zoho-books-2020-02-13-10-13-58,rivals_only,trustradius,Zoho Books,0.5,0.5,1.0
+L:trustradius:zoho-books-2020-02-13-10-13-58,agent_mode,trustradius,Zoho Books,0.25,0.5,1.0
+L:capterra:SoftwareAdvice___7076078,rivals_only,capterra,Zoho Books,0.0,0.25,0.0
+L:capterra:SoftwareAdvice___7076078,agent_mode,capterra,Zoho Books,0.0,0.25,0.0
+L:g2:12738952,rivals_only,g2,Zoho Books,0.75,0.25,1.0
+L:g2:12738952,agent_mode,g2,Zoho Books,0.5,0.5,1.0
+L:trustradius:zoho-books-2024-08-07-12-13-07,rivals_only,trustradius,Zoho Books,0.25,0.0,0.0
+L:trustradius:zoho-books-2024-08-07-12-13-07,agent_mode,trustradius,Zoho Books,0.25,0.0,0.0
+L:capterra:Capterra___7218589,rivals_only,capterra,Zoho Books,1.0,0.6666666666666666,0.0
+L:capterra:Capterra___7218589,agent_mode,capterra,Zoho Books,1.0,0.0,0.0
+L:g2:12583626,rivals_only,g2,Zoho Books,1.0,0.0,1.0
+L:g2:12583626,agent_mode,g2,Zoho Books,0.0,0.0,0.0
+L:trustradius:zoho-books-2025-02-20-10-54-49,rivals_only,trustradius,Zoho Books,0.0,0.0,0.0
+L:trustradius:zoho-books-2025-02-20-10-54-49,agent_mode,trustradius,Zoho Books,0.0,0.0,0.0
+L:capterra:Capterra___6685125,rivals_only,capterra,Zoho Books,0.25,0.5,1.0
+L:capterra:Capterra___6685125,agent_mode,capterra,Zoho Books,0.25,0.0,0.0
+L:g2:12704011,rivals_only,g2,Zoho Books,1.0,0.0,0.0
+L:g2:12704011,agent_mode,g2,Zoho Books,1.0,0.0,1.0
+L:trustradius:zoho-books-2020-05-01-14-46-30,rivals_only,trustradius,Zoho Books,0.0,0.0,0.0
+L:trustradius:zoho-books-2020-05-01-14-46-30,agent_mode,trustradius,Zoho Books,0.25,0.0,1.0
+L:capterra:Capterra___4595945,rivals_only,capterra,Sisense,0.25,,0.0
+L:capterra:Capterra___4595945,agent_mode,capterra,Sisense,1.0,,0.0
+L:g2:12245728,rivals_only,g2,Sisense,0.75,0.6666666666666666,1.0
+L:g2:12245728,agent_mode,g2,Sisense,1.0,0.6666666666666666,0.0
+L:trustradius:sisense-2024-12-06-06-45-54,rivals_only,trustradius,Sisense,0.5,0.5,1.0
+L:trustradius:sisense-2024-12-06-06-45-54,agent_mode,trustradius,Sisense,0.25,0.5,1.0
+L:capterra:Capterra___4916172,rivals_only,capterra,Sisense,0.25,,0.0
+L:capterra:Capterra___4916172,agent_mode,capterra,Sisense,0.25,,0.0
+L:g2:12874365,rivals_only,g2,Sisense,0.25,0.0,0.0
+L:g2:12874365,agent_mode,g2,Sisense,0.75,0.0,0.0
+L:trustradius:sisense-2021-05-21-08-42-57,rivals_only,trustradius,Sisense,0.5,0.0,0.0
+L:trustradius:sisense-2021-05-21-08-42-57,agent_mode,trustradius,Sisense,0.25,0.0,0.0
+L:capterra:Capterra___6589557,rivals_only,capterra,Sisense,0.75,0.5,1.0
+L:capterra:Capterra___6589557,agent_mode,capterra,Sisense,1.25,0.5,1.0
+L:g2:8338679,rivals_only,g2,Sisense,0.6666666666666666,0.0,0.0
+L:g2:8338679,agent_mode,g2,Sisense,0.6666666666666666,0.0,0.0
+L:trustradius:sisense-2019-10-24-05-36-10,rivals_only,trustradius,Sisense,0.0,0.0,0.0
+L:trustradius:sisense-2019-10-24-05-36-10,agent_mode,trustradius,Sisense,0.25,0.25,0.0
+L:capterra:Capterra___6635578,rivals_only,capterra,Sisense,0.5,0.25,0.0
+L:capterra:Capterra___6635578,agent_mode,capterra,Sisense,0.25,0.0,0.0
+L:g2:12844989,rivals_only,g2,Sisense,0.0,0.0,0.0
+L:g2:12844989,agent_mode,g2,Sisense,0.0,0.0,0.0
+L:trustradius:sisense-2020-01-23-10-55-00,rivals_only,trustradius,Sisense,0.5,0.0,0.0
+L:trustradius:sisense-2020-01-23-10-55-00,agent_mode,trustradius,Sisense,0.0,0.0,0.0
+L:capterra:Capterra___6487820,rivals_only,capterra,Mattermost,0.5,,0.0
+L:capterra:Capterra___6487820,agent_mode,capterra,Mattermost,0.5,,1.0
+L:g2:11415815,rivals_only,g2,Mattermost,0.3333333333333333,0.0,0.0
+L:g2:11415815,agent_mode,g2,Mattermost,0.6666666666666666,0.0,0.0
+L:gartner:6065240,rivals_only,gartner,Mattermost,0.6666666666666666,0.0,0.0
+L:gartner:6065240,agent_mode,gartner,Mattermost,0.3333333333333333,0.0,0.0
+L:trustradius:mattermost-2024-07-15-15-32-02,rivals_only,trustradius,Mattermost,0.25,0.0,0.0
+L:trustradius:mattermost-2024-07-15-15-32-02,agent_mode,trustradius,Mattermost,0.75,0.0,0.0
+L:capterra:Capterra___6527568,rivals_only,capterra,Mattermost,0.5,,0.0
+L:capterra:Capterra___6527568,agent_mode,capterra,Mattermost,0.5,,0.0
+L:g2:9086222,rivals_only,g2,Mattermost,0.25,,0.0
+L:g2:9086222,agent_mode,g2,Mattermost,0.5,,0.0
+L:trustradius:mattermost-2024-08-01-17-15-34,rivals_only,trustradius,Mattermost,0.5,0.0,0.0
+L:trustradius:mattermost-2024-08-01-17-15-34,agent_mode,trustradius,Mattermost,0.5,0.3333333333333333,0.0
+L:capterra:Capterra___6714798,rivals_only,capterra,Mattermost,1.0,0.0,1.0
+L:capterra:Capterra___6714798,agent_mode,capterra,Mattermost,1.0,1.0,1.0
+L:g2:9399311,rivals_only,g2,Mattermost,0.5,0.0,0.0
+L:g2:9399311,agent_mode,g2,Mattermost,1.0,0.0,0.0
+L:trustradius:mattermost-2024-07-15-21-25-51,rivals_only,trustradius,Mattermost,0.75,0.0,1.0
+L:trustradius:mattermost-2024-07-15-21-25-51,agent_mode,trustradius,Mattermost,0.5,0.0,1.0
+L:capterra:Capterra___6623368,rivals_only,capterra,Mattermost,0.3333333333333333,0.0,0.0
+L:capterra:Capterra___6623368,agent_mode,capterra,Mattermost,0.3333333333333333,0.0,0.0
+L:g2:11390157,rivals_only,g2,Mattermost,1.0,0.0,0.0
+L:g2:11390157,agent_mode,g2,Mattermost,1.0,0.0,0.0
+L:capterra:Capterra___7155322,rivals_only,capterra,Bitwarden,0.25,0.5,0.0
+L:capterra:Capterra___7155322,agent_mode,capterra,Bitwarden,0.5,0.5,1.0
+L:g2:13364286,rivals_only,g2,Bitwarden,0.3333333333333333,1.0,0.0
+L:g2:13364286,agent_mode,g2,Bitwarden,0.6666666666666666,1.0,0.0
+L:trustradius:bitwarden-2025-04-24-17-29-55,rivals_only,trustradius,Bitwarden,0.25,1.0,1.0
+L:trustradius:bitwarden-2025-04-24-17-29-55,agent_mode,trustradius,Bitwarden,0.25,0.0,1.0
+L:capterra:Capterra___7131397,rivals_only,capterra,Bitwarden,0.75,0.75,1.0
+L:capterra:Capterra___7131397,agent_mode,capterra,Bitwarden,1.0,0.0,1.0
+L:g2:13371278,rivals_only,g2,Bitwarden,0.5,0.0,0.0
+L:g2:13371278,agent_mode,g2,Bitwarden,0.5,0.0,0.0
+L:trustradius:bitwarden-2024-12-24-14-27-44,rivals_only,trustradius,Bitwarden,0.25,0.0,1.0
+L:trustradius:bitwarden-2024-12-24-14-27-44,agent_mode,trustradius,Bitwarden,0.5,0.0,1.0
+L:capterra:Capterra___7110048,rivals_only,capterra,Bitwarden,0.5,0.0,0.0
+L:capterra:Capterra___7110048,agent_mode,capterra,Bitwarden,0.0,0.0,0.0
+L:g2:13386424,rivals_only,g2,Bitwarden,0.5,0.0,1.0
+L:g2:13386424,agent_mode,g2,Bitwarden,0.75,0.0,0.0
+L:trustradius:bitwarden-2023-06-13-10-36-50,rivals_only,trustradius,Bitwarden,0.25,0.0,0.0
+L:trustradius:bitwarden-2023-06-13-10-36-50,agent_mode,trustradius,Bitwarden,0.25,0.0,0.0
+L:capterra:Capterra___7036589,rivals_only,capterra,Bitwarden,0.0,0.25,0.0
+L:capterra:Capterra___7036589,agent_mode,capterra,Bitwarden,0.25,0.25,1.0
+L:g2:13606901,rivals_only,g2,Bitwarden,1.0,0.0,0.0
+L:g2:13606901,agent_mode,g2,Bitwarden,0.5,0.0,0.0
+L:trustradius:bitwarden-2024-12-16-15-01-25,rivals_only,trustradius,Bitwarden,0.75,,1.0
+L:trustradius:bitwarden-2024-12-16-15-01-25,agent_mode,trustradius,Bitwarden,0.5,,0.0
+L:capterra:Capterra___5089572,rivals_only,capterra,Ecwid,0.5,,0.0
+L:capterra:Capterra___5089572,agent_mode,capterra,Ecwid,0.5,,1.0
+L:g2:9057854,rivals_only,g2,Ecwid,0.5,0.0,1.0
+L:g2:9057854,agent_mode,g2,Ecwid,0.5,0.3333333333333333,1.0
+L:trustradius:ecwid-2021-06-01-18-53-34,rivals_only,trustradius,Ecwid,0.25,0.0,0.0
+L:trustradius:ecwid-2021-06-01-18-53-34,agent_mode,trustradius,Ecwid,0.25,0.0,0.0
+L:capterra:Capterra___6716679,rivals_only,capterra,Ecwid,0.0,1.0,0.0
+L:capterra:Capterra___6716679,agent_mode,capterra,Ecwid,0.25,0.6666666666666666,1.0
+L:g2:12778819,rivals_only,g2,Ecwid,0.5,0.0,1.0
+L:g2:12778819,agent_mode,g2,Ecwid,0.25,0.0,0.0
+L:trustradius:ecwid-by-lightspeed-2025-04-24-13-46-45,rivals_only,trustradius,Ecwid,0.5,0.0,0.0
+L:trustradius:ecwid-by-lightspeed-2025-04-24-13-46-45,agent_mode,trustradius,Ecwid,0.5,0.0,0.0
+L:capterra:Capterra___6825445,rivals_only,capterra,Ecwid,0.6666666666666666,1.0,1.0
+L:capterra:Capterra___6825445,agent_mode,capterra,Ecwid,0.6666666666666666,0.0,0.0
+L:g2:9148891,rivals_only,g2,Ecwid,0.5,0.0,0.0
+L:g2:9148891,agent_mode,g2,Ecwid,0.5,0.0,0.0
+L:capterra:Capterra___6862147,rivals_only,capterra,Ecwid,0.0,0.3333333333333333,0.0
+L:capterra:Capterra___6862147,agent_mode,capterra,Ecwid,0.0,0.0,0.0
+L:g2:9468946,rivals_only,g2,Ecwid,0.75,0.25,1.0
+L:g2:9468946,agent_mode,g2,Ecwid,0.5,0.25,1.0
+L:capterra:Capterra___4372982,rivals_only,capterra,Ecwid,0.25,,0.0
+L:capterra:Capterra___4372982,agent_mode,capterra,Ecwid,0.5,,0.0
+L:g2:2615207,rivals_only,g2,Ecwid,0.5,,0.0
+L:g2:2615207,agent_mode,g2,Ecwid,0.5,,0.0

@@ -63,7 +63,9 @@ class AgentModeTest(unittest.TestCase):
         self.assertEqual(out["status"], "ok")
         self.assertEqual(out["evidence"]["own_reviews"], 20)
         self.assertEqual(out["cons"], ["Weak reporting"])
-        self.assertIn("Reviews of Basecamp by the most similar people", prompt)
+        self.assertIn("This product's own earlier reviews", prompt)
+        self.assertIn("Time using Basecamp", prompt)
+        self.assertIn("People like this person", prompt)
         self.assertIn("Too many notifications", prompt)
 
     def test_rivals_discovered_from_url_when_none_given(self):
