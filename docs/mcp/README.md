@@ -22,7 +22,7 @@ Source of truth: `mvp/sim_mcp/server.py`, `mvp/sim_mcp/sessions.py`, `mvp/sim_mc
 - **Human mode** (everything below except `usersim_predict_experience`): a simulated user really uses the product in
   a recorded cloud browser, and UserSim judges it.
 - **Agent mode** (`usersim_predict_experience`): no browser. Predicts how a kind of user will experience a product from
-  live Capterra/G2 reviews of the product and its named rivals. Returns expected ratings, pros, cons and likely frictions.
+  live G2, Capterra, TrustRadius and Gartner reviews of the product and its named rivals. Returns expected ratings, pros, cons and likely frictions.
   Use it to set expectations before human mode, or when a browser run isn't possible.
 
 ## What it does
