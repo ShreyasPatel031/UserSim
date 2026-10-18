@@ -269,6 +269,12 @@ class SmsLeaseTests(unittest.TestCase):
             out = self._phone(self._sim("203.0.113.5"), "203.0.113.5")
         self.assertEqual(out["limit"], "anon_daily_sms_leases_per_ip")
 
+    def test_phone_from_env(self):
+        from mvp import sms_provider as P
+
+        with mock.patch.dict(os.environ, {"MVP_SMS_PHONE": "+15550001111"}):
+            self.assertEqual(P.vault_phone(), "+15550001111")
+
     def test_denylist_matches_apple_and_2fa_not_ordinary_codes(self):
         self.assertTrue(L.sms_denied("", "Your Apple Account Code is: 426078. Don't share it with anyone."))
         self.assertTrue(L.sms_denied("Apple", "426078"))
