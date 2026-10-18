@@ -98,9 +98,19 @@ Words were iterated four times; v4 is shipped:
 | G2 200, plain context agent | 0.505 | 0.233 | 0.265 | 0.760 | – | – |
 | G2 200, **agent mode v4** | **0.512** | **0.281** | **0.320** | **0.744** | – | – |
 
-- The research `own_similar` condition still gets Capterra overall experience to 0.27; agent mode v4 is at 0.205.
-  - Remaining differences: research drew similar rival reviews from the whole category, and its own reviews carried
-    reasons-for-choosing/switching fields.
+- The research `own_similar` condition got Capterra overall experience to 0.27; agent mode v4 is at 0.205–0.224.
+  Ablations (`AM_VARIANT=... python agent_mode_eval.py`, Capterra 420):
+
+| variant | pros | cons | overall exp. |
+| --- | --- | --- | --- |
+| v4 (shipped) | 0.455 | 0.284 | 0.205 |
+| v4 resampled (noise) | 0.461 | 0.272 | 0.224 |
+| rival reviews from the whole category | 0.460 | 0.237 | 0.238 |
+| own reviews with reasons for choosing/switching | 0.469 | 0.249 | 0.214 |
+| both | 0.457 | 0.271 | 0.236 |
+
+  - The resample moves each metric by about ±0.02, so none of the variants is a clear win.
+  - Whole-category rivals may cost cons. v4 stays.
 - **Live set** (`live_bench.py`, 14 new products, 1,394 reviewers, G2 / Capterra / TrustRadius / Gartner; nothing fit):
   - Rating RMSE: global 0.779 → agent mode 0.772, or 0.770 with same-site own reviews.
   - Words on 168 people: agent mode with own reviews ≈ rivals only (pros +0.006, cons +0.002, overall −0.036, all
