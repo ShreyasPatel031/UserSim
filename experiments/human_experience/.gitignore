@@ -18,3 +18,4 @@ v2/packets/case_*.json
 v2/packets/v2_*.json
 v2/accounts/
 v2/runs/*/pre.json.tmp
+v2/results/prompts/
