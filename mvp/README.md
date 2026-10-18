@@ -1,5 +1,7 @@
 # UserSim MVP
 
+**E2e test definition:** [docs/E2E_TEST.md](../docs/E2E_TEST.md) (3 products, 6 personas, 6 tasks, full matrix, comparison report).
+
 Local web UI for synthetic user research: URL + segment → generated tasks → parallel persona agents → executive summary.
 
 ## Public demo

@@ -41,15 +41,7 @@
             <span class="btn-label">Run</span>
             <span class="btn-spinner" hidden></span>
           </button>
-          <button type="button" id="smoke-btn" class="smoke-btn" hidden title="1 user × 1 task × product only">
-            Smoke
-          </button>
         </div>
-
-        <label class="test-mode-row" id="local-smoke-row" hidden>
-          <input type="checkbox" name="test_mode" id="test-mode-input" value="1" />
-          <span>Smoke — 1 user × 1 task × product only (local testing)</span>
-        </label>
 
         <details class="optional-block url-more">
           <summary>Add competitors, tasks, or audience</summary>
@@ -60,7 +52,7 @@
             </label>
             <label>
               <span>Competitors <em>(one per line)</em></span>
-              <textarea name="competitors" rows="2" placeholder="Optional — paste competitors to include; leave blank for your product only"></textarea>
+              <textarea name="competitors" rows="2" placeholder="Optional — paste exactly two competitor URLs; leave blank to auto-discover"></textarea>
             </label>
             <label class="setup-full">
               <span>Tasks <em>(one goal per line)</em></span>

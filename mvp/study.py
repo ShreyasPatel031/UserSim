@@ -393,7 +393,9 @@ async def generate_personas(
     if QUICK_MODE or test_mode:
         persona_count = 1
     else:
-        persona_count = int(os.environ.get("MVP_PERSONA_COUNT", "4"))
+        from mvp.fast_plan import PERSONA_COUNT, compare_mode
+
+        persona_count = PERSONA_COUNT if compare_mode() else int(os.environ.get("MVP_PERSONA_COUNT", "6"))
     rival_line = ""
     if competitors:
         rival_line = "Known competitors: " + ", ".join(competitors[:4]) + "\n"
@@ -459,7 +461,9 @@ async def generate_tasks(
     else:
         # Exact task count — full matrix already crosses every persona × task × site.
         # Do NOT inflate to len(personas) (that blew 4 users → 4 tasks → 48 agents).
-        task_count = max(1, int(os.environ.get("MVP_TASK_COUNT", "2") or "2"))
+        from mvp.fast_plan import TASK_COUNT, compare_mode
+
+        task_count = TASK_COUNT if compare_mode() else max(1, int(os.environ.get("MVP_TASK_COUNT", "6") or "6"))
     persona_blob = json.dumps(
         [
             {
@@ -1843,7 +1847,9 @@ async def _run_study_body(
         study.personas = users_plan.get("personas") or []
         # Guarantee exact persona count — LLM under-delivery must not shrink the matrix.
         if not study.test_mode:
-            want_p = max(1, int(os.environ.get("MVP_PERSONA_COUNT", "4") or "4"))
+            from mvp.fast_plan import PERSONA_COUNT
+
+            want_p = max(PERSONA_COUNT, int(os.environ.get("MVP_PERSONA_COUNT", str(PERSONA_COUNT)) or PERSONA_COUNT))
             # A comparison plan names its own buyers (6). Cutting to MVP_PERSONA_COUNT (4)
             # dropped p5 in study 7b5f0af9: its 20 runs fell back to p1 and ran as Alex Chen.
             want_p = max(want_p, len(getattr(study, "plan_personas", None) or []))
@@ -2058,6 +2064,11 @@ async def _run_study_body(
             study.personas = [p for p in study.personas if p.get("id") in used] or study.personas[:1]
 
         _size_budget_for_queue(study)
+
+        if getattr(study, "backend", "") != "mcp":
+            from mvp.e2e_study import assert_study_state
+
+            assert_study_state(study)
 
         for persona in study.personas:
             demos = ", ".join(

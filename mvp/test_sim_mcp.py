@@ -191,14 +191,19 @@ class MatrixStudyTests(unittest.TestCase):
     """A study built over MCP has the same shape the website report reads."""
 
     def _study(self):
+        personas = [
+            {"name": "Maya", "bio": "Freelance writer", "favors": "notion"},
+            {"name": "Raj", "bio": "Ops analyst", "favors": "https://coda.io"},
+        ]
+        personas += [{"name": f"P{i}", "bio": f"Buyer {i}"} for i in range(3, 7)]
+        tasks = [{"prompt": f"Task {i}"} for i in range(1, 7)]
+        tasks[0] = {"prompt": "Find the free plan limits"}
+        tasks[1] = {"prompt": "Price a team of 8", "favors": "clickup.com"}
         return S.create_matrix_study(
             product_url="notion.com",
             competitors=["https://coda.io", "clickup.com"],
-            personas=[
-                {"name": "Maya", "bio": "Freelance writer", "favors": "notion"},
-                {"name": "Raj", "bio": "Ops analyst", "favors": "https://coda.io"},
-            ],
-            tasks=[{"prompt": "Find the free plan limits"}, {"prompt": "Price a team of 8", "favors": "clickup.com"}],
+            personas=personas,
+            tasks=tasks,
         )
 
     def test_every_persona_task_site_is_a_queued_cell(self):
@@ -206,7 +211,7 @@ class MatrixStudyTests(unittest.TestCase):
 
         study = self._study()
         self.assertIs(STUDIES[study.id], study)
-        self.assertEqual(len(study.tasks), 2 * 2 * 3)
+        self.assertEqual(len(study.tasks), 6 * 6 * 3)
         self.assertEqual(set(study.live_sessions), {t["id"] for t in study.tasks})
         self.assertIn("t1__p1__product", study.live_sessions)
         self.assertIn("t2__p2__competitor_2", study.live_sessions)
@@ -226,8 +231,9 @@ class MatrixStudyTests(unittest.TestCase):
 
     def test_favors_resolve_to_a_site_url(self):
         study = self._study()
-        self.assertEqual([p["favors"] for p in study.personas], ["https://notion.com", "https://coda.io"])
-        self.assertEqual([t["favors"] for t in study.task_specs], ["", "https://clickup.com"])
+        self.assertEqual(study.personas[0]["favors"], "https://notion.com")
+        self.assertEqual(study.personas[1]["favors"], "https://coda.io")
+        self.assertEqual(study.task_specs[1]["favors"], "https://clickup.com")
 
     def test_competitor_cells_run_on_the_competitor(self):
         study = self._study()
@@ -250,13 +256,25 @@ class MatrixStudyTests(unittest.TestCase):
             S._cell_session("nope", "t1__p1__product", "")
 
     def test_bad_inputs(self):
+        full_p = [{"bio": f"p{i}"} for i in range(6)]
+        full_t = [{"prompt": f"t{i}"} for i in range(6)]
         with self.assertRaises(S.SessionError):
-            S.create_matrix_study(product_url="https://notion.com", competitors=["notion.com/pricing"], personas=[{"bio": "x"}], tasks=["y"])
+            S.create_matrix_study(
+                product_url="https://notion.com",
+                competitors=["notion.com/pricing", "https://coda.io"],
+                personas=full_p,
+                tasks=full_t,
+            )
         with self.assertRaises(S.SessionError):
-            S.create_matrix_study(product_url="https://notion.com", competitors=[], personas=[], tasks=["y"])
+            S.create_matrix_study(product_url="https://notion.com", competitors=[], personas=[{"bio": "x"}], tasks=[{"prompt": "y"}])
         many = [{"bio": f"p{i}"} for i in range(8)]
         with self.assertRaises(S.SessionError):
-            S.create_matrix_study(product_url="https://a.com", competitors=["https://b.com", "https://c.com"], personas=many, tasks=["1", "2", "3", "4", "5"])  # 120 runs
+            S.create_matrix_study(
+                product_url="https://a.com",
+                competitors=["https://b.com", "https://c.com"],
+                personas=many,
+                tasks=[{"prompt": str(i)} for i in range(6)],
+            )
 
     def test_study_report_lists_every_cell(self):
         from mvp.sim_mcp.report import build_study_report, is_matrix, study_report_markdown
@@ -266,7 +284,7 @@ class MatrixStudyTests(unittest.TestCase):
         data = study_to_dict(study)
         self.assertTrue(is_matrix(data))
         rep = build_study_report(data)
-        self.assertEqual(len(rep["cells"]), 12)
+        self.assertEqual(len(rep["cells"]), 108)
         self.assertIn("/report?study=", study_report_markdown(rep))
 
 

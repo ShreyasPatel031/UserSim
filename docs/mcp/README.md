@@ -1,10 +1,25 @@
 # UserSim MCP server: guide for agents
 
+## For client agents
+
+Connect to **`https://35-202-98-224.sslip.io/mcp`** with **no token** and **no env vars**.
+
+Do **not** set `MVP_OWNER_PHONE`, `MVP_NTFY_SMS_TOPIC`, `GMAIL_USER`, `MVP_CAPTCHA_API_KEY`, `APIFY_TOKEN`, or `credentials.json`, and do **not** run the UserSim engine locally. The server owns:
+
+- **SMS** — `usersim_signup_phone` / `usersim_wait_for_sms_code` (shared lease on the host phone)
+- **Signup inbox** — `usersim_signup_identity` / `usersim_wait_for_verification_code` / `usersim_wait_for_verification_link`
+- **Competitor finding** — when you omit rival URLs on `usersim_start_study`
+- **Captcha** — the run stops and reports; no paid solver unless the founder approves it
+
+Accounts are always **fresh signups** on `usersim.signups+<tag>@gmail.com` aliases. To log in on a later cell or after a redirect, reuse a prior MCP-created account with `same_account_as`. Never use personal logins.
+
+**E2e test definition (full study only):** [docs/E2E_TEST.md](../E2E_TEST.md) — target + 2 competitors, 6 personas, 6 tasks, 108 cells, comparison report. Reduced studies are rejected.
+
 Source of truth: `mvp/sim_mcp/server.py`, `mvp/sim_mcp/sessions.py`, `mvp/sim_mcp/report.py`, `mvp/sim_mcp/limits.py` / `limits.json` on `main`. If this guide and the code disagree, the code wins. A live server also describes itself: call `list_tools` and read the server `instructions`.
 
 ## What it does
 
-UserSim lets an AI agent act as a **simulated user** of a real, public web product, inside a real cloud browser (Browserbase) that UserSim runs and records. The calling model *is* the simulated user: it looks at screenshots and sends one action at a time (`usersim_act`). UserSim records every step, screenshot and first-person `thought`. When the session ends, UserSim runs its own independent judge and proof checks and writes a report. The report is the same one the UserSim website produces. A multi-product **study** mode runs every persona × task × site (your product plus up to 4 competitors) and writes one combined study report. Signup tools give the simulated user a real email inbox, so it can complete email-verified signups.
+UserSim lets an AI agent act as a **simulated user** of a real, public web product, inside a real cloud browser (Browserbase) that UserSim runs and records. The calling model *is* the simulated user: it looks at screenshots and sends one action at a time (`usersim_act`). UserSim records every step, screenshot and first-person `thought`. When the session ends, UserSim runs its own independent judge and proof checks and writes a report. The report is the same one the UserSim website produces. A **study** is always the full e2e matrix ([docs/E2E_TEST.md](../E2E_TEST.md)): your product plus **2** competitors, **6** personas, **6** tasks, **108** scored cells, and the comparison report. Signup tools give the simulated user a real email inbox, so it can complete email-verified signups.
 
 ## Connecting (no token needed)
 
@@ -152,9 +167,9 @@ Returns `{study_id, headline, proof_pass, next}` for a standalone session, or `{
 | `product_url` | string | Public URL |
 | `personas` | list[object] | `[{"name":"Maya Ortiz","bio":"…","favors":"<site URL or name, optional>"}]`. `bio` is required |
 | `tasks` | list[object] | `[{"prompt":"one goal in the user's words","favors":"<optional>"}]`. `prompt` is required |
-| `competitors` | list[string] \| null | Up to **4** public URLs. A competitor can't be the same site as the product |
+| `competitors` | list[string] \| null | Exactly **2** public URLs, or omit/`[]` to auto-discover. A competitor can't be the same site as the product |
 
-Limits: at least 1 persona and 1 task, and **at most 60 cells** (personas × tasks × sites).
+Required shape: **6** personas, **6** tasks, **2** competitors (108 cells). Wrong partial counts are rejected with a pointer to `docs/E2E_TEST.md`. Anonymous callers are still capped by `anon_max_cells_per_study` in `limits.json` (default 12 without a token — use a bearer token for a full 108-cell study).
 Returns `{study_id, watch_url, report_url, runs, cells:[…], rules:{max_steps, budget_s, idle_timeout_s, max_parallel}, next}`.
 
 #### `usersim_finish_study`
@@ -193,9 +208,9 @@ Arguments: `session_id`, `persona`, `task`. This returns the instructions for th
 5. `usersim_finish(session_id, outcome, notes)`.
 6. `usersim_get_report(study_id)` and summarise it. The verdict comes from UserSim's judge, not from the simulated user.
 
-### B. Multi-product study (matrix mode)
-1. Draft personas (each may `favors` a site), tasks and competitor URLs, then get approval.
-2. `usersim_start_study(product_url, personas, tasks, competitors)` gives you `study_id` and `cells`.
+### B. Full e2e study (only study mode)
+1. Draft **six** personas, **six** tasks (include signup + verification), and **two** competitor URLs — or leave lists empty for auto-fill. Get approval.
+2. `usersim_start_study(product_url, personas, tasks, competitors)` gives you `study_id` and **108** `cells`.
 3. For each cell, run one subagent in parallel: `usersim_start_session(study_id=…, cell_id=…)`, then play it with `usersim_act`, then `usersim_finish`. If a start says UserSim is at its limit, wait for running cells to finish.
 4. When the last cell finishes, the study report is written automatically. Call `usersim_get_report(study_id)`, and retry in about 30 s if it says the report is still being written.
 5. If some cells will never run, call `usersim_finish_study(study_id)`, then `usersim_get_report`.
