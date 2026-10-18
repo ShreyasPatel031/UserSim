@@ -1,0 +1,135 @@
+{
+ "run_id": "case_4164789dd7__full__usersim",
+ "case_id": "case_4164789dd7",
+ "engine": "usersim",
+ "context": "full",
+ "status": "partial",
+ "success_criteria_results": [
+  {
+   "criterion": "Three tasks can be located in the intended sprint",
+   "result": "met",
+   "step": 8
+  },
+  {
+   "criterion": "The selected task has the requested status",
+   "result": "not_met",
+   "step": 20
+  }
+ ],
+ "observations": [
+  {
+   "step": 2,
+   "text": "The agent clicked a button labeled \"Add Task\"."
+  },
+  {
+   "step": 3,
+   "text": "The agent typed 'Demo Alpha' into a field, but the field's value became 'Demo AlphaAdd subtaskEdit tagsRename'."
+  },
+  {
+   "step": 4,
+   "text": "The agent clicked a div with role 'button'."
+  },
+  {
+   "step": 5,
+   "text": "The agent typed 'Demo Beta' into a field, but the field's value became 'Expand'."
+  },
+  {
+   "step": 6,
+   "text": "The agent clicked a button labeled \"Add Task\"."
+  },
+  {
+   "step": 7,
+   "text": "The agent typed 'Demo Gamma' into a field."
+  },
+  {
+   "step": 8,
+   "text": "The agent clicked a button labeled \"Save\" with aria-label \"Save\"."
+  },
+  {
+   "step": 9,
+   "text": "The agent clicked an anchor element labeled \"Workflow Board\" with id \"cu-data-view-item__l\"."
+  },
+  {
+   "step": 10,
+   "text": "The agent clicked a button with role 'button' labeled \"Grouping by: Status Group: ...\" with aria-label \"Group\"."
+  },
+  {
+   "step": 11,
+   "text": "The agent clicked a button with role 'button' labeled \"Grouping by: Status Group: ...\" with aria-label \"Group\"."
+  },
+  {
+   "step": 12,
+   "text": "The agent clicked a div with role 'button' labeled \"Status\" with id \"cu-group-by-menu__to\"."
+  },
+  {
+   "step": 13,
+   "text": "The agent clicked a button labeled \"Status\"."
+  },
+  {
+   "step": 14,
+   "text": "The agent clicked a div labeled \"Grouping by: Status\"."
+  },
+  {
+   "step": 15,
+   "text": "The agent clicked a div with role 'button' labeled \"Status\" with id \"cu-group-by-menu__to\"."
+  },
+  {
+   "step": 16,
+   "text": "The agent clicked a button labeled \"Status\"."
+  },
+  {
+   "step": 17,
+   "text": "The agent clicked a div with role 'button' labeled \"Status\" with id \"cu-group-by-menu__to\"."
+  },
+  {
+   "step": 18,
+   "text": "The agent clicked a button labeled \"Status\"."
+  },
+  {
+   "step": 19,
+   "text": "The agent clicked a div with role 'button' labeled \"Status\" with id \"cu-group-by-menu__to\"."
+  },
+  {
+   "step": 20,
+   "text": "The agent reported getting stuck in a loop while trying to configure workflow statuses, repeatedly selecting 'Status' from a dropdown."
+  }
+ ],
+ "errors": [
+  {
+   "kind": "runner_failure",
+   "text": "The agent got stuck in a loop trying to configure workflow statuses, repeatedly clicking the 'Status' option in a dropdown."
+  }
+ ],
+ "actions": 20,
+ "elapsed_seconds": 257.9,
+ "plan": "free plan of a fresh test account (unknown seen in run)",
+ "product_version_or_capture_date": "2026-10-18",
+ "environment_mismatches": [
+  "fresh test account with synthetic data; reviewer's historical version, plan, team and data unknown",
+  "short single-session run cannot recreate long tenure or team adoption"
+ ],
+ "trace_path": "results/execution/traces/case_4164789dd7__full__usersim.json",
+ "runner": {
+  "action_model": "gemini-2.5-flash-lite",
+  "max_steps": 20,
+  "max_actions_per_step": 2,
+  "wall_seconds": 300,
+  "backend": "browserbase",
+  "usage": {
+   "input_tokens": 462431,
+   "output_tokens": 4803,
+   "cost_usd": 0.046419739999999994
+  }
+ },
+ "judge": {
+  "model": "gemini-2.5-flash",
+  "model_version": "gemini-2.5-flash",
+  "usage": {
+   "input_tokens": 4252,
+   "output_tokens": 910,
+   "cost_usd": 0.003551,
+   "latency_seconds": 4.69
+  },
+  "status": "automated_provisional"
+ }
+}
