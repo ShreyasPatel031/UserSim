@@ -47,8 +47,8 @@ class LimitsFileTests(unittest.TestCase):
 
     def test_defaults(self):
         self.assertEqual(L.get("anon_max_concurrent_sessions_per_ip"), 3)
-        self.assertEqual(L.get("anon_daily_usd_per_ip"), 2.0)
-        self.assertEqual(L.get("anon_daily_usd_global"), 10.0)
+        self.assertEqual(L.get("anon_daily_usd_per_ip"), 6.0)
+        self.assertEqual(L.get("anon_daily_usd_global"), 20.0)
         self.assertIs(L.get("anon_allow_sms"), True)
         self.assertEqual(L.get("sms_lease_s"), 600)
         self.assertEqual(L.get("anon_daily_sms_leases_per_ip"), 10)
@@ -151,7 +151,7 @@ class ServerCapTests(unittest.TestCase):
     def test_act_refused_when_budget_used_up(self):
         owner = SV._owner(_ctx())
         sim = self._sim(owner)
-        L.charge(owner, 2.0, "x")
+        L.charge(owner, float(L.get("anon_daily_usd_per_ip")), "x")
         out = json.loads(asyncio.run(SV.usersim_act(_ctx(), sim.id, {"type": "wait", "ms": 10}, "hm")))
         self.assertEqual(out["limit"], "anon_daily_usd_per_ip")
 

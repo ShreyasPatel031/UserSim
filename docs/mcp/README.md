@@ -223,8 +223,8 @@ If the file on main is broken (bad JSON, wrong types), the server keeps the last
 | `max_sessions` | 10 | Browser sessions open at once on the whole server, all callers |
 | `max_per_client` | 8 | Open sessions per client IP for callers **with** a token |
 | `anon_max_concurrent_sessions_per_ip` | 3 | Open sessions per client IP **without** a token |
-| `anon_daily_usd_per_ip` | 2.0 | Estimated $ per client IP per day without a token (day = America/Los_Angeles) |
-| `anon_daily_usd_global` | 10.0 | Estimated $ per day for **all** callers without a token, together |
+| `anon_daily_usd_per_ip` | 6.0 | Estimated $ per client IP per day without a token (day = America/Los_Angeles) |
+| `anon_daily_usd_global` | 20.0 | Estimated $ per day for **all** callers without a token, together |
 | `est_usd_per_session` | 0.10 | Charged against those budgets when a browser session starts |
 | `est_usd_per_step` | 0.01 | Charged per `usersim_act`, `usersim_open_verification_link` and `usersim_solve_captcha` call (a full 40-step session = $0.50) |
 | `anon_max_cells_per_study` | 12 | Most runs (persona × task × site) one study may have without a token |
