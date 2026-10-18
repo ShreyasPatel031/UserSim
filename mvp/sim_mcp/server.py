@@ -703,6 +703,7 @@ async def _wait(ctx: Context, session_id: str, timeout_s: int, want: str) -> str
     import asyncio
 
     from mvp.signup_tools import wait_mail
+    from mvp.sim_mcp import limits as L
 
     try:
         sim = S.get_session(session_id, _owner(ctx))

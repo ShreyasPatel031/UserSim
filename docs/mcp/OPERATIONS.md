@@ -1,6 +1,6 @@
 # UserSim MCP operations (deploy, settings, secrets)
 
-Anyone with **repo access** or **GCP access** to project `amer-scs-sandbox` can operate the public MCP server. **No approval from Grok Bot or the founder is required.**
+Anyone with **repo access** or **GCP access** to project `project-amer-scs-sandbox` can operate the public MCP server. **No approval from Grok Bot or the founder is required.**
 
 | What | How | Typical time |
 |------|-----|----------------|
@@ -28,7 +28,7 @@ Scripts in repo:
 
 ### One-time VM bootstrap
 
-On the VM (sudo + `gcloud` auth to `amer-scs-sandbox`):
+On the VM (sudo + `gcloud` auth to `project-amer-scs-sandbox`):
 
 ```bash
 sudo bash mvp/deploy/bootstrap_vm.sh
@@ -56,13 +56,13 @@ Optional per-host override: `MVP_MCP_<KEY>` env (avoid unless debugging).
 
 **Never** put secrets in `limits.json` or git. The server loads them at startup and **re-reads every ~5 minutes** (`mvp/secrets_store.py`), with fallback to **`/etc/usersim/env`**.
 
-- **Project:** `amer-scs-sandbox` (override: `USERSIM_GCP_PROJECT`)
+- **Project:** `project-amer-scs-sandbox` (override: `USERSIM_GCP_PROJECT`)
 - **Name:** `usersim-<ENV_VAR>` (exact env var name)
 
 ### Rotate or add a secret
 
 ```bash
-gcloud config set project amer-scs-sandbox
+gcloud config set project project-amer-scs-sandbox
 printf '%s' 'NEW_VALUE_HERE' | gcloud secrets versions add usersim-MVP_CAPTCHA_API_KEY --data-file=-
 ```
 
@@ -113,4 +113,4 @@ curl -s https://35-202-98-224.sslip.io/api/mcp/limits | jq .
 
 ## Who may do this
 
-Any collaborator on **ShreyasPatel031/UserSim** or anyone with **GCP Secret Manager + VM SSH** access to `amer-scs-sandbox` / `usersim-grokbot-web`. No single “bot operator” gate.
+Any collaborator on **ShreyasPatel031/UserSim** or anyone with **GCP Secret Manager + VM SSH** access to `project-amer-scs-sandbox` / `usersim-grokbot-web`. No single “bot operator” gate.
