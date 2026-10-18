@@ -1,0 +1,10 @@
+{"rid": "Capterra___4328554", "session_id": "30c86031c2654ba3ad7461115b5f3e4a", "signed_in": false, "reached_product": false,
+ "outcome": "blocked", "steps_used": 13,
+ "observations": [
+  {"kind": "signup_friction", "what": "After entering the work email on smartsheet.com/try-it and clicking Continue, the app.smartsheet.com/b/signup page bounced back to the same email form with the email field emptied."},
+  {"kind": "signup_friction", "what": "Retrying the same email led to a generic 'Sorry - an error has occurred' page on app.smartsheet.com/b/signup with only a contact-support link."},
+  {"kind": "signup_friction", "what": "A second attempt from a fresh try-it page produced the identical error page, so no account could be created."},
+  {"kind": "signup_friction", "what": "No verification email arrived after waiting about 45 seconds following the first submit."},
+  {"kind": "signup_friction", "what": "The entry form asks for a work email and is paired with Google, Microsoft and Apple sign-in buttons, with a data region selector, and no visible plain free-signup path beyond the email."},
+  {"kind": "agent_failure", "what": "I used an invalid action type 'goto' once before using 'navigate'; this cost no step."}
+ ]}
