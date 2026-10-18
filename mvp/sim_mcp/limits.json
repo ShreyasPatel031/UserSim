@@ -10,23 +10,23 @@
       "about": "true = anyone with the URL can call /mcp without a token. false = only callers with a bearer token (kill switch)."
     },
     "max_sessions": {
-      "value": 10,
+      "value": 60,
       "about": "Browser sessions open at once across the whole server, all callers. Higher = more Browserbase cost and RAM."
     },
     "max_per_client": {
-      "value": 8,
+      "value": 60,
       "about": "Browser sessions open at once per client IP for callers that send a bearer token (a study client runs cells in parallel)."
     },
     "anon_max_concurrent_sessions_per_ip": {
-      "value": 6,
+      "value": 60,
       "about": "Browser sessions open at once per client IP for callers without a token."
     },
     "max_steps": {
-      "value": 90,
+      "value": 200,
       "about": "Browser actions (usersim_act, open_verification_link, solve_captcha) allowed per session before usersim_finish is required. Higher = longer runs and more Browserbase + model cost (each step is charged est_usd_per_step against anonymous budgets)."
     },
     "budget_s": {
-      "value": 900,
+      "value": 1800,
       "about": "Wall-clock seconds per browser session (15 minutes). Higher = longer Browserbase sessions and higher spend."
     },
     "idle_s": {
@@ -42,7 +42,7 @@
       "about": "Upper bound (seconds) on usersim_wait_for_verification_code/link and usersim_wait_for_sms_code per call. Agents should call again; higher = longer tool calls and more server wait time."
     },
     "paid_captcha": {
-      "value": false,
+      "value": true,
       "about": "Master switch for the paid CapSolver path on this server. When true, approved hosts may buy tokens (metered in captcha_spend.py; typically ~$0.002-0.01 per solve). Callers without a token still need anon_allow_paid_captcha true. Requires MVP_CAPTCHA_API_KEY in server env (not in this file)."
     },
     "probe_sites": {
@@ -54,11 +54,11 @@
       "about": "When true, Browserbase sessions use residential proxies (higher success on signup flows; higher Browserbase cost). false uses cheaper datacenter routing."
     },
     "anon_daily_usd_per_ip": {
-      "value": 15.0,
+      "value": 10000.0,
       "about": "Estimated spend allowed per client IP per day (America/Los_Angeles day) for callers without a token. Estimated with the est_usd_* rates below; real cost is not metered per call. 15 ≈ one 108-cell study per IP per day (docs/E2E_TEST.md needs 108 cells per study; a typical study ≈ 13.5 units)."
     },
     "anon_daily_usd_global": {
-      "value": 40.0,
+      "value": 10000.0,
       "about": "Estimated spend allowed per day across ALL callers without a token, together."
     },
     "est_usd_per_session": {
@@ -86,7 +86,7 @@
       "about": "Seconds one session holds the phone number after usersim_signup_phone (or until that session closes). Another session asking meanwhile gets 'number busy, retry in N s'. Applies to every caller, token or not."
     },
     "anon_daily_sms_leases_per_ip": {
-      "value": 10,
+      "value": 1000,
       "about": "SMS-number leases per client IP per day (America/Los_Angeles) for callers without a token."
     },
     "sms_sender_denylist": {
@@ -140,11 +140,11 @@
       "about": "Texts whose sender (ntfy title) or body contains any of these words (case-insensitive, whole word) are never returned by usersim_wait_for_sms_code, to any caller. Protects the owner's personal codes: Apple ID ('Your Apple Account Code is ...'), banks, Google and other 2FA. Add a word with a PR."
     },
     "anon_allow_paid_captcha": {
-      "value": false,
+      "value": true,
       "about": "When paid_captcha is true: let callers WITHOUT a bearer token trigger CapSolver (~$0.002-0.01 per solve, metered). false = only token callers may use paid solving. Free Browserbase/audio/v3 refresh paths are unaffected."
     },
     "anon_allow_shared_aliases": {
-      "value": false,
+      "value": true,
       "about": "Let callers without a token use no_plus (Gmail dot-variant) or plain shared signup addresses. Those addresses can repeat across sessions, so another anonymous caller could read the same inbox and steal verification codes. false = anonymous callers only get unique usersim.signups+<tag>@gmail.com aliases (safe default)."
     }
   }
