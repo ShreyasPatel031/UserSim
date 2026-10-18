@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import math
 import re
 import time
 from functools import lru_cache
@@ -186,6 +187,9 @@ def persona_levels(persona: dict[str, Any]) -> dict[str, str]:
     return out
 
 
+MOST_LIKELY_T = 0.25  # heldout_bench median rule, chosen on DEV (Capterra); MAE 0.55 on TEST
+
+
 def personalize(ratings: dict[str, dict[str, Any]], persona: dict[str, Any]) -> None:
     """Adds for_this_persona = estimate + weight * sum of the persona's within-product offsets (in place)."""
     levels = persona_levels(persona)
@@ -202,6 +206,8 @@ def personalize(ratings: dict[str, dict[str, Any]], persona: dict[str, Any]) -> 
         lo, hi = OUT_SCALE[name]
         rec["for_this_persona"] = round(min(hi, max(lo, rec["estimate"] + cfg["weight"] * sum(used.values()))), 2)
         rec["persona_offsets"] = used
+        # ratings are whole numbers skewed to the top, so the single most likely score sits above the mean
+        rec["most_likely"] = int(min(hi, max(lo, math.ceil(rec["for_this_persona"] - MOST_LIKELY_T))))
 
 
 def _similar(reviews: list[dict], persona: dict, k: int = SIMILAR) -> list[dict]:
