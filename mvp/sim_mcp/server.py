@@ -409,6 +409,7 @@ async def usersim_finish(ctx: Context, session_id: str, outcome: str, notes: str
     except S.SessionError as exc:
         return _fail(exc)
     if (str(outcome).strip().lower() == "completed" and sim.inbox is not None and not sim.verify_nudged
+            and not sim.row.get("login_email")
             and not signup_verified(sim.row) and sim.seconds_left() > 60):
         # Study f80f043a: Youform let agents into the builder before verifying, they finished without opening the
         # mail, and the signup bar (email-verified) failed real accounts. Ask once; a second call finishes anyway.
@@ -474,12 +475,15 @@ def _host(sim: S.SimSession) -> str:
 
 
 @mcp.tool(structured_output=False)
-async def usersim_signup_identity(ctx: Context, session_id: str, no_plus: bool = False) -> str:
+async def usersim_signup_identity(ctx: Context, session_id: str, no_plus: bool = False, same_account_as: str = "") -> str:
     """Fresh, never-used email alias (a real inbox UserSim reads) plus password, name and username for signing up.
 
     Same alias for the whole session. Sign up with this email only; never Google or GitHub sign-in.
     no_plus=true: the site rejected a "+" address; returns a fresh dot-variant address of the same inbox instead
     (replaces the earlier alias for this session).
+    same_account_as=<session_id of your earlier session on the same site>: log in to the account that session
+    created instead of signing up again (later study cells after a signup cell). Returns that email and password;
+    login codes or magic links the site mails to it can be read with the wait tools in this session.
     """
     import asyncio
     import re
@@ -492,6 +496,8 @@ async def usersim_signup_identity(ctx: Context, session_id: str, no_plus: bool =
     try:
         owner = _owner(ctx)
         sim = S.get_session(session_id, owner)
+        if same_account_as:
+            return _reuse_account(sim, same_account_as, owner)
         shared_ok = not S.is_anon(owner) or bool(L.get("anon_allow_shared_aliases"))
         if no_plus and not shared_ok:
             # A dot-variant (or plain) address can be issued again to another session, which could then read this
@@ -525,6 +531,34 @@ async def usersim_signup_identity(ctx: Context, session_id: str, no_plus: bool =
         return json.dumps({**ident, "next": "Type these into the signup form (use username / workspace for any username, team or subdomain field), submit, then wait for the verification mail."})
     except Exception as exc:  # noqa: BLE001
         return _fail(exc)
+
+
+def _reuse_account(sim: S.SimSession, prev_id: str, owner: str) -> str:
+    """Give this session the account (alias + password) an earlier session of the same caller created on the same
+    site. The earlier session_id is the credential (random, returned only to its creator). Mail read here is only mail
+    that arrives after this call, so earlier verification mail is not replayed."""
+    import time
+
+    from mvp.sim_mcp.sessions import registrable_domain
+
+    prev = S.get_session(prev_id, owner)
+    if prev.id == sim.id:
+        raise S.SessionError("same_account_as must be an EARLIER session's id, not this one")
+    if prev.inbox is None or not prev.identity:
+        raise S.SessionError("that session never got a signup identity, so there is no account to log in to")
+    if registrable_domain(_host(prev)) != registrable_domain(_host(sim)):
+        raise S.SessionError(f"that account is for {_host(prev)}, not {_host(sim)}")
+    if sim.inbox is not None and sim.inbox.address != prev.inbox.address:
+        raise S.SessionError("this session already has its own signup alias; start a new session to log in instead")
+    sim.inbox, sim.identity = prev.inbox, dict(prev.identity)
+    sim.mail_since = time.time() - 30
+    # Not a signup: the report and proof must not ask this run for a verified fresh signup.
+    sim.row["login_email"] = prev.inbox.address
+    sim.row["reused_account_from"] = prev.agent_id or prev.id[:8]
+    ident = {k: v for k, v in sim.identity.items() if k != "code"}
+    return json.dumps({**ident, "reused_account": True,
+                       "next": "Log in with this email and password (not a new signup). If the site emails a login code "
+                               "or magic link, read it with usersim_wait_for_verification_code / _link in this session."})
 
 
 async def _wait(ctx: Context, session_id: str, timeout_s: int, want: str) -> str:

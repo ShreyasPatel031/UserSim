@@ -37,6 +37,8 @@ def report_url(study_id: str) -> str:
 def signup_evidence(row: dict[str, Any]) -> str:
     """Server-observed signup facts for the judge and proof (inbox reads, links opened, URL path)."""
     lines = []
+    if row.get("login_email") and not row.get("signup_email"):
+        lines.append(f"- This run logs in to the account an earlier run created ({row['login_email']}); it is not a new signup")
     if row.get("signup_email"):
         lines.append(f"- Fresh signup alias issued by the server: {row['signup_email']}")
     for m in row.get("signup_mail") or []:

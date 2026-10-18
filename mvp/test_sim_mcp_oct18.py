@@ -65,3 +65,57 @@ class Oct18Tests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class Oct18FixesTests(unittest.TestCase):
+    def test_redact_url_hides_tokens_keeps_host_path(self):
+        u = ("https://app.clockify.me/memberships?cakeExchangeToken=eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJjbG9ja2lmeSJ9.sig"
+             "&email=us.ersim.signups%2Bx@gmail.com&tab=1")
+        r = S.redact_url(u)
+        self.assertTrue(r.startswith("https://app.clockify.me/memberships?"))
+        self.assertNotIn("eyJ", r)
+        self.assertIn("tab=1", r)
+        self.assertIn("email=us.ersim.signups%2Bx@gmail.com", r)
+        self.assertEqual(S.redact_url("https://x.test/a/b"), "https://x.test/a/b")
+        self.assertNotIn("abc123", S.redact_url("https://x.test/cb?code=abc123"))
+        self.assertNotIn("zzz", S.redact_url("https://x.test/#access_token=zzz&type=bearer"))
+
+    def test_font_links_are_not_verification_links(self):
+        from mvp.signup_inbox import _skip_link
+        self.assertTrue(_skip_link("https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap"))
+        self.assertTrue(_skip_link("https://x.test/static/mail.css"))
+        self.assertFalse(_skip_link("https://app.clockify.me/verify?token=abc"))
+
+    def test_same_account_as_reuses_alias_and_password(self):
+        from types import SimpleNamespace
+        from unittest import mock
+
+        def sim(sid, url, inbox=None, identity=None):
+            return SimpleNamespace(id=sid, owner="anon:a", product_url=url, inbox=inbox, identity=identity or {},
+                                   row={}, agent_id="t1__p1__product", mail_since=0.0, closed=False)
+
+        inbox = SimpleNamespace(address="usersim.signups+clk1@gmail.com")
+        first = sim("s1" * 16, "https://clockify.me", inbox, {"email": inbox.address, "password": "pw"})
+        second = sim("s2" * 16, "https://app.clockify.me/en/login")
+        other = sim("s3" * 16, "https://kanbanflow.com")
+        for x in (first, second, other):
+            S.SESSIONS[x.id] = x
+        try:
+            ctx = None
+            with mock.patch.object(srv, "_owner", return_value="anon:b"):
+                out = json.loads(asyncio.run(srv.usersim_signup_identity(ctx, second.id, same_account_as=first.id)))
+                self.assertTrue(out["reused_account"])
+                self.assertEqual(out["email"], inbox.address)
+                self.assertIs(second.inbox, inbox)
+                self.assertEqual(second.row["login_email"], inbox.address)
+                self.assertNotIn("signup_email", second.row)
+                bad = json.loads(asyncio.run(srv.usersim_signup_identity(ctx, other.id, same_account_as=first.id)))
+                self.assertIn("not kanbanflow.com", bad["error"])
+                bad = json.loads(asyncio.run(srv.usersim_signup_identity(ctx, other.id, same_account_as="nope")))
+                self.assertIn("unknown session_id", bad["error"])
+            with mock.patch.object(srv, "_owner", return_value="tokenfp"):
+                bad = json.loads(asyncio.run(srv.usersim_signup_identity(ctx, second.id, same_account_as=first.id)))
+                self.assertIn("unknown session_id", bad["error"])
+        finally:
+            for x in (first, second, other):
+                S.SESSIONS.pop(x.id, None)

@@ -1581,6 +1581,35 @@ def mask_secrets(sim: SimSession, action: dict[str, Any]) -> dict[str, Any]:
     return action
 
 
+_SECRET_PARAM_RE = re.compile(r"token|code|key|secret|otp|auth|session|jwt|exchange|sig|hash|ticket|nonce|password|pwd", re.I)
+_JWT_RE = re.compile(r"^eyJ[\w-]{8,}\.[\w-]{8,}\.")
+
+
+def redact_url(url: str) -> str:
+    """The URL with secret-looking query values replaced, for traces and reports that the public website shows.
+    Oct 18 Clockify: right after the email code the app sits on /memberships?cakeExchangeToken=<signed login JWT>,
+    and that URL went into the public report. Host and path stay, so proof and judge checks still work."""
+    from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
+
+    try:
+        parts = urlsplit(str(url or ""))
+    except ValueError:
+        return str(url or "")
+    if not parts.query and not parts.fragment:
+        return str(url or "")
+
+    def clean(q: str) -> str:
+        pairs = parse_qsl(q, keep_blank_values=True)
+        if not pairs:
+            return q
+        out = [(k, "REDACTED" if v and (_SECRET_PARAM_RE.search(k) or _JWT_RE.match(v) or (len(v) >= 32 and re.fullmatch(r"[\w.~-]+", v))) else v)
+               for k, v in pairs]
+        return urlencode(out, safe="@:/")
+
+    frag = clean(parts.fragment) if "=" in parts.fragment else parts.fragment
+    return urlunsplit((parts.scheme, parts.netloc, parts.path, clean(parts.query), frag))
+
+
 def scrub(sim: SimSession, value: Any) -> Any:
     pw = str((sim.identity or {}).get("password") or "")
     if not pw:
@@ -2161,7 +2190,7 @@ async def record_step(
         "thought": scrub(sim, (thought or "").strip())[:1000],
         "thought_detail": {},
         "observation": title,
-        "url": url,
+        "url": redact_url(url),
         "screenshot_url": shot_url,
         "final_screenshot_url": shot_url,
         "boxes": [],
@@ -2177,11 +2206,11 @@ async def record_step(
     row["trace"] = [*row.get("trace", []), step]
     row["num_steps"] = len(row["trace"])
     row["last_action"] = action_text
-    row["final_url"] = url
+    row["final_url"] = redact_url(url)
     row["final_dom"] = text[:FINAL_DOM_CHARS]
     row["final_screenshot_url"] = f"/api/studies/{study.id}/agents/{sim.agent_id}/screenshots/final.png"
     row["final_screenshot"] = row["final_screenshot_url"]
-    row["page_url"] = row.get("page_url") or url
+    row["page_url"] = row.get("page_url") or redact_url(url)
     if step["thought"]:
         thoughts = [*row.get("live_thoughts", []), {"at": _now(), "text": step["thought"][:400], "kind": "thinking"}]
         row["live_thoughts"] = thoughts[-24:]
@@ -2231,7 +2260,7 @@ async def settle_final(sim: SimSession, max_s: float = 12.0) -> bool:
         return False
     (shots / "final.png").write_bytes(png)
     asyncio.get_running_loop().create_task(upload_screenshot(sim.study.id, sim.agent_id, shots / "final.png"))
-    sim.row["final_url"] = sim.page.url
+    sim.row["final_url"] = redact_url(sim.page.url)
     sim.row["final_dom"] = (await _page_text(sim.page))[:FINAL_DOM_CHARS]
     sim.row["final_settle"] = "final frame re-taken after the page finished loading"
     return True
