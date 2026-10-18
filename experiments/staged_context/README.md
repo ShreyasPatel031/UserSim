@@ -75,3 +75,13 @@ held-out products (`router_eval.py`, choices in `out/router/router.json`):
 python experiments/staged_context/router_eval.py      # re-pick strategies on dev products, report on test products
 claude mcp add ux-experience -- python experiments/staged_context/ux_mcp_server.py
 ```
+
+## In UserSim studies (`mvp/review_context.py`)
+
+Every study's session-feedback step (`mvp/study.py::summarize_agent_feedback`) now receives Capterra + G2 evidence
+about similar competitors for the persona: people-like-them rating averages, competitor complaint-topic rates and
+reviews from the most similar people. Rivals the local snapshots do not cover are scraped live from Capterra
+(`trakk/capterra-reviews-scraper`) and G2 (`automation-lab/g2-scraper`) on Apify, started in the background when
+the study starts and cached in `cache/apify/`. Needs `APIFY_TOKEN` (or `~/.config/apify/token`); without it only the
+local snapshots are used. The feedback adds `likely_frictions_from_similar_users`; observed `friction_points` stay
+grounded in the recorded steps. Disable with `MVP_REVIEW_CONTEXT=0`.
