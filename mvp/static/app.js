@@ -2245,3 +2245,40 @@ if (typeof IS_LOCAL_HOST !== "undefined" && IS_LOCAL_HOST) {
     });
   }
 }
+
+// /?study=<id>: watch an existing study on the same live stage a Run shows.
+// MCP runs (a coding agent driving the simulated user) open this link.
+async function watchExistingStudy(studyId) {
+  hideError();
+  resetLiveUI();
+  if (resultsSection) resultsSection.hidden = true;
+  livePanel.hidden = false;
+  progressPanel.hidden = false;
+  const startedAt = Date.now();
+  try {
+    let data = await pollStudy(studyId);
+    updateProgressUI(data, startedAt);
+    renderLiveStudy(data);
+    while (studyStillRunning(data)) {
+      await new Promise((r) => setTimeout(r, livePollDelay(startedAt)));
+      data = await pollLive(studyId);
+      renderIfChanged(data, startedAt);
+    }
+    if (data.status === "complete") {
+      progressFill.style.width = "100%";
+      phaseLabel.textContent = "Complete";
+      renderLiveStudy(data);
+      saveReportAndOfferLink(data);
+    } else {
+      renderLiveStudy(data);
+      showError(data.error || data.phase || "Study did not complete");
+    }
+  } catch (err) {
+    showError(err.message || String(err));
+  }
+}
+
+{
+  const watchId = new URLSearchParams(location.search).get("study");
+  if (watchId) watchExistingStudy(watchId);
+}

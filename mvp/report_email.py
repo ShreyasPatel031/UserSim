@@ -32,13 +32,27 @@ def email_configured() -> bool:
     return bool(user and password)
 
 
+# Public site recipients open in email (never localhost — mail clients can't reach it).
+_DEFAULT_PUBLIC_BASE_URL = "https://usersim.vercel.app"
+
+
 def report_base_url() -> str:
-    """Where the recipient can open the report (MVP_PUBLIC_BASE_URL, else local)."""
-    return (
-        os.environ.get("MVP_PUBLIC_BASE_URL")
-        or os.environ.get("MVP_REPORT_BASE_URL")
-        or "http://127.0.0.1:3000"
-    ).rstrip("/")
+    """Where the recipient can open the report.
+
+    Prefer MVP_PUBLIC_BASE_URL / MVP_REPORT_BASE_URL. Otherwise use the production
+    site — localhost links in email are useless to anyone reading mail elsewhere.
+    """
+    for key in ("MVP_PUBLIC_BASE_URL", "MVP_REPORT_BASE_URL"):
+        value = (os.environ.get(key) or "").strip().rstrip("/")
+        if value:
+            return value
+    # Vercel preview / production sets VERCEL_URL without a scheme.
+    vercel = (os.environ.get("VERCEL_URL") or "").strip().rstrip("/")
+    if vercel:
+        if vercel.startswith("http://") or vercel.startswith("https://"):
+            return vercel
+        return f"https://{vercel}"
+    return _DEFAULT_PUBLIC_BASE_URL
 
 
 def _product_name(url: str) -> str:

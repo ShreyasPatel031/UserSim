@@ -1,0 +1,20 @@
+{
+  "product_url": "https://koalendar.com",
+  "competitors": ["https://zcal.co", "https://harmonizely.com"],
+  "personas": [
+    {"name": "Grace Turner", "bio": "Independent yoga teacher who takes private-class bookings by text today and wants a free booking page; not technical.", "favors": "https://koalendar.com"},
+    {"name": "Omar Haddad", "bio": "Freelance UX consultant who wants clients to book a paid 30-minute call without back-and-forth emails.", "favors": "https://koalendar.com"},
+    {"name": "Nina Petrova", "bio": "Recruiter booking 20 candidate screens a week; wants something free and fast, dislikes Calendly's limits.", "favors": "https://zcal.co"},
+    {"name": "Ben Carter", "bio": "Startup sales rep who needs a personal booking link he can paste into cold emails today.", "favors": "https://zcal.co"},
+    {"name": "Yuki Tanaka", "bio": "Agency project manager scheduling meetings across time zones for a 6-person team.", "favors": "https://harmonizely.com"},
+    {"name": "Laura Sanchez", "bio": "Therapist in private practice who cares about privacy and needs clients to pick slots from her availability.", "favors": "https://harmonizely.com"}
+  ],
+  "tasks": [
+    {"prompt": "Sign up with your email and create a 30-minute meeting type that people can book.", "favors": "https://koalendar.com"},
+    {"prompt": "Find out whether the free plan lets you take paid bookings and what the paid plan costs.", "favors": "https://koalendar.com"},
+    {"prompt": "Sign up with your email and get to the page where you set your weekly availability.", "favors": "https://zcal.co"},
+    {"prompt": "Find out whether this tool is free and what, if anything, you would need to pay for.", "favors": "https://zcal.co"},
+    {"prompt": "Sign up with your email and find your personal booking link to share.", "favors": "https://harmonizely.com"},
+    {"prompt": "Find out whether this tool works with Zoom or other video-call apps and where that is set up.", "favors": "https://harmonizely.com"}
+  ]
+}
