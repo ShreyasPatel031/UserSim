@@ -1,0 +1,20 @@
+G2 router: {'overall_rating': 'agent_full', 'pros': 'agent_full', 'cons': 'agent_alone', 'overall_experience': 'agent_averages', 'unhappy_risk': 'agent_full'}
+G2 dev: ['Reply', 'HubSpot Sales Hub', 'ServiceNow IT Service Management', 'monday AI Work Platform', 'Canva', 'Fin by Intercom', 'Instantly', 'Jasper', 'Rippling', 'KnowBe4 Security Awareness Training', 'Freshdesk', '1Password'] 
+G2 test: ['Wellable', 'Xactly', 'Paylocity', 'PayPal Payments', 'SAP Concur', 'HubSpot Marketing Hub', 'Microsoft Teams', 'BambooHR']
+  people                  output       strategy  agent_alone  capterra    g2  both   n
+Capterra      ease_of_use_rating agent_averages        0.858     0.675 0.742 0.583 120
+Capterra    functionality_rating       averages        0.717     0.589 0.575 0.589 120
+Capterra          overall_rating agent_averages        0.958     0.550 0.767 0.550 120
+Capterra  value_for_money_rating       averages        0.957     0.687 0.860 0.687 120
+Capterra customer_support_rating       averages        1.215     0.776 1.065 0.776 120
+Capterra    recommendation_score       averages        1.924     1.344 1.588 1.344 120
+Capterra                    pros     agent_full        0.323     0.382 0.382 0.392 120
+Capterra                    cons     agent_full        0.219     0.257 0.276 0.220 120
+Capterra      overall_experience agent_averages        0.100     0.225 0.183 0.183 120
+Capterra            unhappy_risk          blend        0.511     0.531 0.485 0.483 120
+      G2          overall_rating     agent_full        1.006     0.981 0.831 0.888  80
+      G2                    pros     agent_full        0.479     0.522 0.471 0.469  80
+      G2                    cons    agent_alone        0.238     0.238 0.238 0.238  80
+      G2      overall_experience agent_averages        0.338     0.325 0.362 0.338  80
+      G2            unhappy_risk     agent_full        0.482     0.438 0.498 0.505  80
+spend $28.499

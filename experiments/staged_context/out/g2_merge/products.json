@@ -1,0 +1,38 @@
+{
+  "g2_dev": [
+    "Reply",
+    "HubSpot Sales Hub",
+    "ServiceNow IT Service Management",
+    "monday AI Work Platform",
+    "Canva",
+    "Fin by Intercom",
+    "Instantly",
+    "Jasper",
+    "Rippling",
+    "KnowBe4 Security Awareness Training",
+    "Freshdesk",
+    "1Password"
+  ],
+  "g2_test": [
+    "Wellable",
+    "Xactly",
+    "Paylocity",
+    "PayPal Payments",
+    "SAP Concur",
+    "HubSpot Marketing Hub",
+    "Microsoft Teams",
+    "BambooHR"
+  ],
+  "capterra_test": [
+    "Freshsales",
+    "Zoho CRM",
+    "Looker",
+    "Basecamp",
+    "LiveAgent",
+    "Zoho Desk",
+    "Klaviyo",
+    "BigCommerce",
+    "Smartsheet",
+    "Freshdesk"
+  ]
+}

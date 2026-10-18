@@ -1,0 +1,260 @@
+{
+  "items": [
+    {
+      "id": "D:Asana:landing:1",
+      "text": "Every workflow, app, and agent runs in a shared space where humans and agents act on the same plan, see the same context, and get smarter with every interaction. Multiple humans can train, guide, and improve any agent. Shared memory means AI Teammates learn from the work itself.",
+      "product": "Asana",
+      "role": "target",
+      "url": "https://asana.com/"
+    },
+    {
+      "id": "D:Asana:landing:2",
+      "text": "Every completed task, every piece of feedback, every preference gets carried forward, so no one repeats context they've already given and every workflow starts smarter than the last. Every agent has an identity, scoped permissions, an audit trail, and cost constraints, with data access, approved actions, and spend all managed from the same console that governs human users. AI Teammates Your team just got bigger Pre-built AI agents that work alongside your team inside real workflows, with shared memory, governance, and context from the Work Graph, so they are ready to go on day one.",
+      "product": "Asana",
+      "role": "target",
+      "url": "https://asana.com/"
+    },
+    {
+      "id": "D:Asana:landing:3",
+      "text": "On a launch, marketing, design, and ops each track their piece differently. Without a shared project management tool, seeing the full plan means asking around. No shared view of progress and deadlines Status that only exists in people's heads can't warn anyone.",
+      "product": "Asana",
+      "role": "target",
+      "url": "https://asana.com/"
+    },
+    {
+      "id": "D:Asana:landing:4",
+      "text": "Without a live view of the whole project, small delays turn into missed dates. Status updates eat the week Every Friday, you chase updates and paste them into a deck. Then Monday's check-in runs on Friday's information, because that's the last time anyone pulled it all together.",
+      "product": "Asana",
+      "role": "target",
+      "url": "https://asana.com/"
+    },
+    {
+      "id": "D:Asana:landing:5",
+      "text": "It's stale before anyone reads it. Across every project you run, manual reporting turns into a second job. This is exactly what we built Asana to fix.",
+      "product": "Asana",
+      "role": "target",
+      "url": "https://asana.com/"
+    },
+    {
+      "id": "D:Asana:features:1",
+      "text": "Asana's Work Tracking & Project Management Features • Asana Understand Asana's core features Asana is the operating system for human-agent teams — the place where humans and agents run an organization’s critical workflows together, on the same plan, toward the same goals. Agentic Work Management One place to manage, track, and execute all work. With all of your projects in Asana, you’ll always know who’s doing what, by when.",
+      "product": "Asana",
+      "role": "target",
+      "url": "https://asana.com/features"
+    },
+    {
+      "id": "D:Asana:features:2",
+      "text": "See project management Tasks Break work into bite-size pieces with clear owners and due dates. See tasks Projects Organize tasks and tackle work together in a shared hub. See projects Project views Organize your work as a list, calendar, timeline, Gantt chart, or Kanban board.",
+      "product": "Asana",
+      "role": "target",
+      "url": "https://asana.com/features"
+    },
+    {
+      "id": "D:Asana:features:3",
+      "text": "See project views Custom fields Add labels to tasks so you can sort, filter, and automatically report on work. See custom fields Status updates Craft project updates in minutes with time-saving automations. See status updates Time tracking Measure how much time you’re spending on work, so you can correctly budget the time you need.",
+      "product": "Asana",
+      "role": "target",
+      "url": "https://asana.com/features"
+    },
+    {
+      "id": "D:Asana:features:4",
+      "text": "See time tracking My tasks See all your assignments in one place, so you can prioritize what’s next. See my tasks Inbox Get automatic updates about work that matters to you, and filter out the rest. See inbox Mobile and desktop apps Get to inbox zero, whether you’re at the office or on the go.",
+      "product": "Asana",
+      "role": "target",
+      "url": "https://asana.com/features"
+    },
+    {
+      "id": "D:Asana:features:5",
+      "text": "See Asana apps Home Jump right in with an overview of your tasks, goals, projects, and more. See home Goals and reporting Connect every team’s work to company objectives, then track progress with real-time data. See goals and reporting Goals Connect every team’s work to company-wide objectives.",
+      "product": "Asana",
+      "role": "target",
+      "url": "https://asana.com/features"
+    },
+    {
+      "id": "D:Asana:features:6",
+      "text": "See goals Portfolios Your mission control center to monitor connected projects and collaborate across teams. See portfolios Reporting dashboards Visualize the state of your team’s work with real-time charts and insights. See reporting dashboards Workflows and automation Create processes that run themselves, so teams can focus on the next big thing.",
+      "product": "Asana",
+      "role": "target",
+      "url": "https://asana.com/features"
+    },
+    {
+      "id": "D:Asana:features:7",
+      "text": "See workflows and automation Forms Standardize work requests so your team has the information they need from the start. See forms Rules Automate routine tasks to get more done, faster. See rules Bundles Easily create, apply, and update processes across projects in one place.",
+      "product": "Asana",
+      "role": "target",
+      "url": "https://asana.com/features"
+    },
+    {
+      "id": "D:Asana:features:8",
+      "text": "See bundles Templates Standardize your team’s best practices with ready-made guides for projects and tasks. See templates Resource management Get the visibility you need. Plan accurate timelines, adjust workloads, and stay on track to achieve your strategy.",
+      "product": "Asana",
+      "role": "target",
+      "url": "https://asana.com/features"
+    },
+    {
+      "id": "D:Asana:features:9",
+      "text": "See resource management Capacity planning Create long-term staffing plans that align your resourcing decisions to goals and maximize impact. See capacity planning Workload See how busy your team is, so you can rebalance work quickly. See workload Time tracking Measure how much time you’re spending on work, so you can correctly budget the time you need.",
+      "product": "Asana",
+      "role": "target",
+      "url": "https://asana.com/features"
+    },
+    {
+      "id": "D:Asana:features:10",
+      "text": "See time tracking Timesheets and budgets Track time, budgets, and resources to drive efficiency and improve project outcomes. See timesheets and budgets Admin and security Create and manage teams and team settings to ensure that everyone has access to the right information. See admin and security Admin console Manage settings for your entire organization, in one place.",
+      "product": "Asana",
+      "role": "target",
+      "url": "https://asana.com/features"
+    },
+    {
+      "id": "D:Asana:features:11",
+      "text": "See permissions and access controls Audit suite Access APIs that support integrations to help keep your organization secure and compliant. See audit suite Trust at Asana Protect your organization's data with a secure platform that scales for the largest enterprises. See trust at Asana Team management Designate admins to manage member settings and enforce password complexity.",
+      "product": "Asana",
+      "role": "target",
+      "url": "https://asana.com/features"
+    },
+    {
+      "id": "D:Asana:features:12",
+      "text": "See team management Guest management Collaborate with external vendors, contractors, and partners in Asana, all in a secure environment. See guest management Integrations Connect Asana to the hundreds of tools your teams use the most so everyone works seamlessly in one place. See integrations Google Microsoft Salesforce Slack Zoom Jira Tableau PowerBI Success and support Help Center Visit our Help Center for tips and support articles that help you get the most out of Asana.",
+      "product": "Asana",
+      "role": "target",
+      "url": "https://asana.com/features"
+    },
+    {
+      "id": "D:Asana:features:13",
+      "text": "Asana Academy Learn Asana at your own pace with self-guided courses, trainings and video tutorials. Certification program Learn critical skills to help your business reach its goals while you achieve your own. Frequently asked questions about task management tools All paid Asana plans include unlimited custom fields.",
+      "product": "Asana",
+      "role": "target",
+      "url": "https://asana.com/features"
+    },
+    {
+      "id": "D:Trello:features:1",
+      "text": "What is Trello: Learn Features, Uses & More Skip to main content Your productivity powerhouse Welcome to Trello, the ultimate tool for getting things done. Whether you're managing daily to-dos, setting personal goals, or organizing your life, Trello helps you focus on what matters most and always stay on top of your game. Your to-dos, organized Stay organized and efficient with Inbox, Boards, and Planner.",
+      "product": "Trello",
+      "role": "competitor",
+      "url": "https://trello.com/tour"
+    },
+    {
+      "id": "D:Trello:features:2",
+      "text": "Every to-do, idea, or responsibility—no matter how small—finds its place, keeping you at the top of your game. Simplify your to-do list Trello cards keep all of your important information organized and accessible in one place. Add due dates, attach files, and mark to-do’s as “Done” when completed.",
+      "product": "Trello",
+      "role": "competitor",
+      "url": "https://trello.com/tour"
+    },
+    {
+      "id": "D:Trello:features:3",
+      "text": "Plus, AI helps you refine your text for a polished finish! Due dates Due dates go hand-in-hand with staying organized. In Trello, they’re easy to set, hard to miss (with reminders!), and oh-so-satisfying to mark as “done.” Attachments No more digging through endless email chains to find attachments.",
+      "product": "Trello",
+      "role": "competitor",
+      "url": "https://trello.com/tour"
+    },
+    {
+      "id": "D:Trello:features:4",
+      "text": "Just drag and drop them onto a card so the right files stay with the right tasks. Checklists Your best tool to overpower overwhelming asks. Powered by AI Harness the power of AI.",
+      "product": "Trello",
+      "role": "competitor",
+      "url": "https://trello.com/tour"
+    },
+    {
+      "id": "D:Trello:features:5",
+      "text": "Brainstorm new ideas, organize action items, and condense lengthy texts instantly with AI INTEGRATIONS Simplify your workflow and stay on top of your to-dos effortlessly! Integrate seamlessly with the apps and services your team relies on like Slack, Microsoft Teams, Outlook, Gmail, Confluence, and hundreds more. And if you use Jira, you can seamlessly sync and manage your tasks right within Trello using Jira Lists.",
+      "product": "Trello",
+      "role": "competitor",
+      "url": "https://trello.com/tour"
+    },
+    {
+      "id": "D:Trello:features:6",
+      "text": "Your work, your way Need to structure information on Trello cards specific to the task at hand? Custom Fields lets you do all that and more— providing process and formality to your workflow to meet your unique needs. Automate your workflow Create a foolproof process for moving work forward with Trello’s built-in automation system.",
+      "product": "Trello",
+      "role": "competitor",
+      "url": "https://trello.com/tour"
+    },
+    {
+      "id": "D:ClickUp:landing:1",
+      "text": "ClickUp™ | Maximize productivity • Software, AI, and humans converge The Best AI is Software to replace all software Save money. All Apps, AI, Projects, Chat + 20 more. All humans working together with perfect context.",
+      "product": "ClickUp",
+      "role": "competitor",
+      "url": "https://clickup.com/"
+    },
+    {
+      "id": "D:ClickUp:landing:2",
+      "text": "AI Agents & Workflows. New ClickUp 4.0 New Agents Projects Brain (AI) Time Tracking Chat Calendar Docs Whiteboards Sprints Automations and more... The Best AI is Software to replace all software Save money.",
+      "product": "ClickUp",
+      "role": "competitor",
+      "url": "https://clickup.com/"
+    },
+    {
+      "id": "D:ClickUp:landing:3",
+      "text": "All apps, AI Agents, and humans in ClickUp 100+ products to replace fragmented software & maximize human productivity. It doesn't need a brief because it knows what's happening in real-time. Intelligence Brain² picks the best AI model for each job.",
+      "product": "ClickUp",
+      "role": "competitor",
+      "url": "https://clickup.com/"
+    },
+    {
+      "id": "D:ClickUp:landing:4",
+      "text": "Every frontier model running with full context. Best models Brain GPT Claude Opus Gemini Personality Brain² learns how you and your team talk: your tone, your shorthand, your preferences. tone \"direct, no fluff, like a sharp coworker\" sprint_methods \"story points, fibonacci\" reports_to \"VP Engineering, weekly on Mondays\" prefers \"tables over bullet points\" projects \"Brain 2.0, Platform Migration, Q2\" timezone \"PST, don't schedule before 10am\" tools \"GitHub, Figma, Linear, Notion\" Memory & Preferences Brain² keeps track of how you like to work, and gets smarter every time you use ClickUp.",
+      "product": "ClickUp",
+      "role": "competitor",
+      "url": "https://clickup.com/"
+    },
+    {
+      "id": "D:ClickUp:landing:5",
+      "text": "Memory Updated User Preference: Values clarity Every AI, Unlimited GPT, Claude Opus, Gemini, and more. Every model runs with full knowledge of your work. Gemini Claude ChatGPT Multiplayer AI The more your team uses Brain², the more it knows, the more useful it gets for everyone.",
+      "product": "ClickUp",
+      "role": "competitor",
+      "url": "https://clickup.com/"
+    },
+    {
+      "id": "D:ClickUp:landing:6",
+      "text": "Strategist Developer Visual Designer Connected Apps & Any MCP Brain² taps Google Drive, GitHub, Salesforce, and more to get you answers and insights. MCP Online Ambient Intelligence Brain² surfaces relevant context, related tasks, and smart suggestions before you even ask.",
+      "product": "ClickUp",
+      "role": "competitor",
+      "url": "https://clickup.com/"
+    }
+  ],
+  "sources": [
+    {
+      "product": "Asana",
+      "role": "target",
+      "page": "landing",
+      "url": "https://asana.com/",
+      "captured": "2026-10-17",
+      "html_sha256": "2546a18b6c99755244f4ec0cad169af076a82d1a7d9f9520a70e2dbbca20add1",
+      "tokens": 391,
+      "truncated": false,
+      "sentences_dropped_by_filter": 13
+    },
+    {
+      "product": "Asana",
+      "role": "target",
+      "page": "features",
+      "url": "https://asana.com/features",
+      "captured": "2026-10-17",
+      "html_sha256": "efa6b46737b4bab200eb2dac813ef885a218af8d5cf5b117cc726395696b0082",
+      "tokens": 1108,
+      "truncated": true,
+      "sentences_dropped_by_filter": 12
+    },
+    {
+      "product": "Trello",
+      "role": "competitor",
+      "page": "features",
+      "url": "https://trello.com/tour",
+      "captured": "2026-10-17",
+      "html_sha256": "f3eac07804e11b96ba524c99e2839b1f295192a3baff07eb2ef443505f60067b",
+      "tokens": 485,
+      "truncated": true,
+      "sentences_dropped_by_filter": 6
+    },
+    {
+      "product": "ClickUp",
+      "role": "competitor",
+      "page": "landing",
+      "url": "https://clickup.com/",
+      "captured": "2026-10-17",
+      "html_sha256": "0af1c017e6c60ae93c8357137cabffab3e8d8d8a372a0933cce417fdb5ece4f5",
+      "tokens": 457,
+      "truncated": true,
+      "sentences_dropped_by_filter": 12
+    }
+  ]
+}

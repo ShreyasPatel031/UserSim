@@ -1,0 +1,1433 @@
+[
+  {
+    "name": "TryNearby",
+    "website": "https://trynearby.com",
+    "one_liner": "Local creators for local businesses",
+    "batch": "Summer 2026",
+    "own_reviews": 0,
+    "competitors": [
+      {
+        "name": "Reef",
+        "url": "https://www.getreef.com/",
+        "verified_live": true,
+        "reviews": 2,
+        "by_site": {
+          "g2": 2
+        },
+        "found_as": [
+          "Reef.ai"
+        ],
+        "reviews_match": true,
+        "direct": "no",
+        "why": "Reef.ai is a customer success and revenue management platform for B2B companies, which is entirely different from TryNearby's focus on local content creation and social media marketing for restaurants."
+      },
+      {
+        "name": "Influencer Marketing Hub",
+        "url": "https://www.influencermarketinghub.com/platform-reviews/",
+        "verified_live": true,
+        "reviews": null,
+        "by_site": {},
+        "found_as": [],
+        "reviews_match": true,
+        "direct": "no",
+        "why": "Influencer Marketing Hub is primarily a resource and data platform for influencer marketing, not a service that directly connects local businesses with creators for content creation like TryNearby."
+      }
+    ],
+    "usable_competitors": [],
+    "customers": {
+      "n_reviewers": 0,
+      "roles": {},
+      "company_size": {},
+      "industries": {}
+    },
+    "planner_tasks": [
+      "Find local food creators for restaurant",
+      "Track content performance of campaigns",
+      "Discover high-end culinary influencers",
+      "Manage multiple influencer campaigns",
+      "Compare different influencer platforms",
+      "Learn about influencer marketing strategies"
+    ],
+    "competitor_use_cases": [],
+    "human_run_task": null,
+    "flags": [
+      "no competitor is both a real direct competitor and has 20+ reviews of the right product",
+      "Reef: judged not a direct competitor (Reef.ai is a customer success and revenue management platform for B2B companies, which is entirely different from TryNearby's focus on local content creation and social media marketing for restaurants.)",
+      "Influencer Marketing Hub: judged not a direct competitor (Influencer Marketing Hub is primarily a resource and data platform for influencer marketing, not a service that directly connects local businesses with creators for content creation like TryNearby.)",
+      "Influencer Marketing Hub: no reviews found"
+    ]
+  },
+  {
+    "name": "transload",
+    "website": "https://www.transload.ai",
+    "one_liner": "Measure freight with security cameras",
+    "batch": "Spring 2026",
+    "own_reviews": 0,
+    "competitors": [
+      {
+        "name": "Cubiscan",
+        "url": "https://cubiscan.com/",
+        "verified_live": true,
+        "reviews": 0,
+        "by_site": {},
+        "found_as": [],
+        "reviews_match": false,
+        "direct": "yes",
+        "why": "Cubiscan provides dedicated hardware for dimensioning and weighing freight, directly addressing the same core problem of accurate shipment measurement and revenue recovery that transload solves with existing security cameras."
+      },
+      {
+        "name": "FreightSnap",
+        "url": "https://freightsnap.com/",
+        "verified_live": true,
+        "reviews": null,
+        "by_site": {},
+        "found_as": [],
+        "reviews_match": false,
+        "direct": "partly",
+        "why": "Without product details for 'FreightSnap', its description as a 'planner' suggests it might address freight optimization or logistics planning, which could overlap with Transload's value proposition of improved trailer utilization, but not necessarily its core camera-based dimensioning."
+      }
+    ],
+    "usable_competitors": [],
+    "customers": {
+      "n_reviewers": 0,
+      "roles": {},
+      "company_size": {},
+      "industries": {}
+    },
+    "planner_tasks": [
+      "Understand implementation timeline and effort",
+      "Compare accuracy of pallet dimensioning",
+      "Assess system for high-volume parcel measurement",
+      "Review data capture and reporting capabilities",
+      "Determine impact on existing loading dock workflows",
+      "Find solutions for irregular freight dimensioning"
+    ],
+    "competitor_use_cases": [],
+    "human_run_task": null,
+    "flags": [
+      "no competitor is both a real direct competitor and has 20+ reviews of the right product",
+      "Cubiscan: no reviews found",
+      "FreightSnap: no reviews found"
+    ]
+  },
+  {
+    "name": "Miso Labs",
+    "website": "https://misolabs.ai",
+    "one_liner": "Emotive foundation voice models",
+    "batch": "Spring 2026",
+    "own_reviews": 0,
+    "competitors": [
+      {
+        "name": "Eleven Labs",
+        "url": "https://www.elevenlabs.io/",
+        "verified_live": true,
+        "reviews": 100,
+        "by_site": {
+          "capterra": 2,
+          "trustradius": 1,
+          "gartner": 1,
+          "g2": 96
+        },
+        "found_as": [
+          "ElevenLabs",
+          "ElevenLabs Prime Voice AI"
+        ],
+        "reviews_match": true,
+        "direct": "yes",
+        "why": "Both Miso Labs and Eleven Labs focus on generating highly natural and emotive AI voices, with Eleven Labs reviews explicitly praising its ability to capture human emotions and avoid robotic sounds, directly aligning with Miso Labs' goal of emotive foundation voice models and passing the voice Turing test."
+      },
+      {
+        "name": "Play.ht",
+        "url": "https://www.play.ht/",
+        "verified_live": true,
+        "reviews": 100,
+        "by_site": {
+          "capterra": 2,
+          "g2": 98
+        },
+        "found_as": [
+          "PLAY",
+          "Play Digital Signage"
+        ],
+        "reviews_match": true,
+        "direct": "no",
+        "why": "Miso Labs provides emotive foundation voice models, while the reviews for Play.ht describe a digital signage management platform, addressing completely different business needs."
+      }
+    ],
+    "usable_competitors": [
+      "Eleven Labs"
+    ],
+    "customers": {
+      "n_reviewers": 100,
+      "roles": {
+        "software_it_engineering": 0.22,
+        "marketing_creative_content": 0.22,
+        "unknown": 0.2,
+        "education_research_analysis": 0.09,
+        "executive_owner": 0.08
+      },
+      "company_size": {
+        "Small-Business (50 or fewer emp.)": 0.74,
+        "Mid-Market (51-1000 emp.)": 0.14,
+        "Enterprise (> 1000 emp.)": 0.08,
+        "1-10 employees": 0.02
+      },
+      "industries": {
+        "computer software": 0.24,
+        "it services": 0.21,
+        "marketing and advertising": 0.12,
+        "financial services": 0.06
+      }
+    },
+    "planner_tasks": [
+      "Achieve ultra-low latency for conversational AI",
+      "Clone a voice from a 10-second audio clip",
+      "Generate long-form audio content from text",
+      "Convert text to speech with various accents",
+      "Estimate pricing for 5 million characters monthly",
+      "Create custom voice from audio input"
+    ],
+    "competitor_use_cases": [
+      "Generate voiceovers for videos and content.",
+      "Convert text into natural-sounding speech.",
+      "Create audio for educational and training materials.",
+      "Produce voiceovers for technical explainers.",
+      "Clone your voice for custom audio."
+    ],
+    "human_run_task": "I need to quickly generate some marketing content for a new product launch. I'll create a social media post, a blog post outline, and a few ad headlines. Then, I want to organize these into a project and refine some of the generated text to better fit our brand voice, making sure I can easily find and reuse them later.",
+    "flags": [
+      "Play.ht: judged not a direct competitor (Miso Labs provides emotive foundation voice models, while the reviews for Play.ht describe a digital signage management platform, addressing completely different business needs.)"
+    ]
+  },
+  {
+    "name": "Luca IQ",
+    "website": "https://lucaiq.com/",
+    "one_liner": "API-first tax engine for CPA firms and developers",
+    "batch": "Summer 2026",
+    "own_reviews": 1,
+    "competitors": [
+      {
+        "name": "UltraTax CS",
+        "url": "https://www.ultrataxsoftware.com/",
+        "verified_live": true,
+        "reviews": 86,
+        "by_site": {
+          "capterra": 25,
+          "g2": 61
+        },
+        "found_as": [
+          "UltraTax CS"
+        ],
+        "reviews_match": true,
+        "direct": "no",
+        "why": "Luca IQ is an API-first tax engine for developers and firms to build upon, whereas UltraTax CS is a complete, end-user tax preparation software used directly by tax professionals."
+      },
+      {
+        "name": "Intuit ProConnect Tax",
+        "url": "https://accountants.intuit.com/tax-software/",
+        "verified_live": true,
+        "reviews": 100,
+        "by_site": {
+          "capterra": 7,
+          "g2": 91,
+          "gartner": 2
+        },
+        "found_as": [
+          "Intuit ProConnect Tax",
+          "ProConnect Tax"
+        ],
+        "reviews_match": true,
+        "direct": "partly",
+        "why": "While both serve tax professionals, Luca IQ is an API-first engine for building tax solutions, whereas Intuit ProConnect Tax is a complete, user-facing tax preparation software, making them different layers of the tax tech stack."
+      }
+    ],
+    "usable_competitors": [
+      "Intuit ProConnect Tax"
+    ],
+    "customers": {
+      "n_reviewers": 100,
+      "roles": {
+        "executive_owner": 0.38,
+        "unknown": 0.22,
+        "finance_hr_legal": 0.19,
+        "software_it_engineering": 0.06,
+        "general_team_mgmt": 0.04
+      },
+      "company_size": {
+        "Small-Business (50 or fewer emp.)": 0.79,
+        "Mid-Market (51-1000 emp.)": 0.09,
+        "Self-employed": 0.03,
+        "Enterprise (> 1000 emp.)": 0.03
+      },
+      "industries": {
+        "accounting": 0.78,
+        "insurance": 0.04,
+        "utilities": 0.02,
+        "medical practice": 0.02
+      }
+    },
+    "planner_tasks": [
+      "Automate client intake and document collection",
+      "Generate auto-drafted tax workpapers",
+      "Prepare and e-file complex 1040 returns",
+      "Access comprehensive tax research tools",
+      "Utilize extensive tax form library",
+      "Leverage QuickBooks data directly"
+    ],
+    "competitor_use_cases": [
+      "Prepare and file individual and business tax returns",
+      "Import client data, including QuickBooks integration",
+      "Collect client documents and information",
+      "Review and finalize tax returns",
+      "Manage and track client tax records"
+    ],
+    "human_run_task": "I need to set up Luca IQ to manage my accounting clients. I'll add three new clients, create a standard tax preparation engagement for each, and assign some initial tasks. Then, I want to customize a client intake form template to gather specific financial details and create a custom view to track clients by their service type. Finally, I'll update one client's engagement status and filter my client list to see only those needing tax review.",
+    "flags": [
+      "UltraTax CS: judged not a direct competitor (Luca IQ is an API-first tax engine for developers and firms to build upon, whereas UltraTax CS is a complete, end-user tax preparation software used directly by tax professionals.)"
+    ]
+  },
+  {
+    "name": "Parasma",
+    "website": "https://parasma.com",
+    "one_liner": "Replacing GPUs with human brain cells",
+    "batch": "Summer 2026",
+    "own_reviews": 0,
+    "competitors": [
+      {
+        "name": "FinalSpark",
+        "url": "https://www.finalspark.com/",
+        "verified_live": true,
+        "reviews": null,
+        "by_site": {},
+        "found_as": [],
+        "reviews_match": false,
+        "direct": "no",
+        "why": "Without any information on 'FinalSpark's' product or service, it is impossible to determine if it competes with Parasma's highly specialized bio-compute offering."
+      },
+      {
+        "name": "Innoskel",
+        "url": "https://innoskel.com/",
+        "verified_live": true,
+        "reviews": null,
+        "by_site": {},
+        "found_as": [],
+        "reviews_match": false,
+        "direct": "no",
+        "why": "Parasma offers bio-compute infrastructure to replace GPUs, while Innoskel is described as a planner, serving entirely different functions and markets."
+      }
+    ],
+    "usable_competitors": [],
+    "customers": {
+      "n_reviewers": 0,
+      "roles": {},
+      "company_size": {},
+      "industries": {}
+    },
+    "planner_tasks": [
+      "Understand token prediction capabilities",
+      "Evaluate biological neuron compute efficiency",
+      "Compare biocomputing platform specifications",
+      "Review biological model development tools",
+      "Examine research on neural network applications",
+      "Identify potential for custom biological circuits"
+    ],
+    "competitor_use_cases": [],
+    "human_run_task": null,
+    "flags": [
+      "no competitor is both a real direct competitor and has 20+ reviews of the right product",
+      "FinalSpark: judged not a direct competitor (Without any information on 'FinalSpark's' product or service, it is impossible to determine if it competes with Parasma's highly specialized bio-compute offering.)",
+      "Innoskel: judged not a direct competitor (Parasma offers bio-compute infrastructure to replace GPUs, while Innoskel is described as a planner, serving entirely different functions and markets.)",
+      "FinalSpark: no reviews found",
+      "Innoskel: no reviews found"
+    ]
+  },
+  {
+    "name": "Amorphic Labs",
+    "website": "https://www.agentmuxer.com",
+    "one_liner": "OpenRouter for Agent Tools",
+    "batch": "Summer 2026",
+    "own_reviews": 0,
+    "competitors": [
+      {
+        "name": "Superagent",
+        "url": "https://www.superagent.ai/",
+        "verified_live": true,
+        "reviews": 0,
+        "by_site": {},
+        "found_as": [],
+        "reviews_match": false,
+        "direct": "no",
+        "why": "No information or product details were found for 'Superagent', making a competitive assessment impossible; Amorphic Labs addresses a specific, emerging need for AI agent tool orchestration."
+      },
+      {
+        "name": "ToolJet",
+        "url": "https://www.tooljet.com/",
+        "verified_live": true,
+        "reviews": 54,
+        "by_site": {
+          "gartner": 1,
+          "g2": 53
+        },
+        "found_as": [
+          "ToolJet"
+        ],
+        "reviews_match": true,
+        "direct": "no",
+        "why": "Amorphic Labs provides a marketplace and routing layer for AI agents to discover and use external tools and APIs, while ToolJet is a low-code platform for humans to build internal tools and dashboards."
+      }
+    ],
+    "usable_competitors": [],
+    "customers": {
+      "n_reviewers": 0,
+      "roles": {},
+      "company_size": {},
+      "industries": {}
+    },
+    "planner_tasks": [
+      "Build a custom tool for an AI agent",
+      "Deploy an agent with complex conditional logic",
+      "Create a custom UI for agent-tool interaction",
+      "Monitor agent tool usage and costs",
+      "Develop a multi-agent workflow",
+      "Build internal tools quickly"
+    ],
+    "competitor_use_cases": [],
+    "human_run_task": null,
+    "flags": [
+      "no competitor is both a real direct competitor and has 20+ reviews of the right product",
+      "Superagent: judged not a direct competitor (No information or product details were found for 'Superagent', making a competitive assessment impossible; Amorphic Labs addresses a specific, emerging need for AI agent tool orchestration.)",
+      "ToolJet: judged not a direct competitor (Amorphic Labs provides a marketplace and routing layer for AI agents to discover and use external tools and APIs, while ToolJet is a low-code platform for humans to build internal tools and dashboards.)",
+      "Superagent: no reviews found"
+    ]
+  },
+  {
+    "name": "Alkera AI",
+    "website": "https://alkera.ai",
+    "one_liner": "Reliable and safe data engineering and data science agents",
+    "batch": "Summer 2026",
+    "own_reviews": 0,
+    "competitors": [
+      {
+        "name": "Atlan",
+        "url": "https://www.atlan.com/",
+        "verified_live": true,
+        "reviews": 99,
+        "by_site": {
+          "capterra": 1,
+          "trustradius": 3,
+          "g2": 55,
+          "gartner": 40
+        },
+        "found_as": [
+          "Atlan"
+        ],
+        "reviews_match": true,
+        "direct": "partly",
+        "why": "While Alkera AI focuses on AI agents for performing data engineering and science tasks, Atlan is primarily a data catalog and governance platform that helps users find, understand, and trust data, with some overlap in data lineage and knowledge management."
+      },
+      {
+        "name": "Collibra",
+        "url": "https://www.collibra.com/",
+        "verified_live": true,
+        "reviews": 96,
+        "by_site": {
+          "capterra": 2,
+          "trustradius": 1,
+          "g2": 32,
+          "gartner": 61
+        },
+        "found_as": [
+          "Collibra",
+          "Collibra Platform"
+        ],
+        "reviews_match": true,
+        "direct": "partly",
+        "why": "While Collibra focuses on data governance, cataloging, and quality for human-driven data management, Alkera AI provides agentic data engineering and science capabilities, leveraging lineage and knowledge to automate trusted data work, making them complementary rather than direct competitors for the same primary job."
+      }
+    ],
+    "usable_competitors": [
+      "Atlan",
+      "Collibra"
+    ],
+    "customers": {
+      "n_reviewers": 195,
+      "roles": {
+        "software_it_engineering": 0.78,
+        "general_team_mgmt": 0.05,
+        "executive_owner": 0.05,
+        "unknown": 0.03,
+        "product_mgmt": 0.03
+      },
+      "company_size": {
+        "Enterprise (> 1000 emp.)": 0.25,
+        "50M-1B USD": 0.21,
+        "Mid-Market (51-1000 emp.)": 0.16,
+        "10B+ USD": 0.13
+      },
+      "industries": {
+        "banking": 0.16,
+        "it services": 0.1,
+        "software": 0.07,
+        "manufacturing": 0.05
+      }
+    },
+    "planner_tasks": [
+      "Set up a new data pipeline",
+      "Analyze data in a collaborative notebook",
+      "Trace data lineage for a specific column",
+      "Define data quality rules for a dataset",
+      "Establish a new data governance policy",
+      "Browse the data catalog for available assets"
+    ],
+    "competitor_use_cases": [
+      "Discover and understand data assets",
+      "Track data lineage and dependencies",
+      "Improve data quality and trust",
+      "Automate data governance processes",
+      "Standardize business definitions"
+    ],
+    "human_run_task": "I need to catalog three key data assets: our 'Customer Orders' database table, the 'Monthly Sales Performance' report, and the 'Product Inventory API'. After adding them, I want to define custom fields for data ownership and compliance status, then apply a 'Critical Data Element' template to ensure consistent metadata. Finally, I'll filter these assets by ownership and generate a quick report.",
+    "flags": []
+  },
+  {
+    "name": "MusicArena",
+    "website": "https://musicarena.io/",
+    "one_liner": "The crowdsourced benchmark for AI-generated music and music production",
+    "batch": "Summer 2026",
+    "own_reviews": 0,
+    "competitors": [
+      {
+        "name": "Splice",
+        "url": "https://splice.com/",
+        "verified_live": true,
+        "reviews": 5,
+        "by_site": {
+          "g2": 4,
+          "gartner": 1
+        },
+        "found_as": [
+          "Splice Machine",
+          "SpliceMachine"
+        ],
+        "reviews_match": true,
+        "direct": "no",
+        "why": "The reviews for 'Splice Machine' describe a data management and AI/ML platform for enterprise data, often in healthcare, which is completely unrelated to MusicArena's focus on crowdsourced benchmarking for AI-generated music and music production."
+      },
+      {
+        "name": "Loopcloud",
+        "url": "https://loopcloud.com/",
+        "verified_live": true,
+        "reviews": null,
+        "by_site": {},
+        "found_as": [],
+        "reviews_match": false,
+        "direct": "no",
+        "why": "MusicArena is a benchmarking platform for AI-generated music and production, while Loopcloud is a sample library and loop management service for music creation, serving fundamentally different user needs."
+      }
+    ],
+    "usable_competitors": [],
+    "customers": {
+      "n_reviewers": 0,
+      "roles": {},
+      "company_size": {},
+      "industries": {}
+    },
+    "planner_tasks": [
+      "Find unique drum loops",
+      "Browse new synth presets",
+      "Download royalty-free vocal samples",
+      "Explore genre-specific sound packs",
+      "Audition loops in my DAW",
+      "Filter samples by key and BPM"
+    ],
+    "competitor_use_cases": [],
+    "human_run_task": null,
+    "flags": [
+      "no competitor is both a real direct competitor and has 20+ reviews of the right product",
+      "Splice: judged not a direct competitor (The reviews for 'Splice Machine' describe a data management and AI/ML platform for enterprise data, often in healthcare, which is completely unrelated to MusicArena's focus on crowdsourced benchmarking for AI-generated music and music production.)",
+      "Loopcloud: judged not a direct competitor (MusicArena is a benchmarking platform for AI-generated music and production, while Loopcloud is a sample library and loop management service for music creation, serving fundamentally different user needs.)",
+      "Loopcloud: no reviews found"
+    ]
+  },
+  {
+    "name": "Speko",
+    "website": "https://speko.ai/?utm_source=ycombinator&utm_medium=profile",
+    "one_liner": "OpenRouter for Voice AI: one API, every call on the best speech model",
+    "batch": "Summer 2026",
+    "own_reviews": 0,
+    "competitors": [
+      {
+        "name": "Deepgram",
+        "url": "https://www.deepgram.com/",
+        "verified_live": true,
+        "reviews": null,
+        "by_site": {},
+        "found_as": [],
+        "reviews_match": false,
+        "direct": "partly",
+        "why": "Deepgram is a direct provider of speech-to-text and text-to-speech models, which Speko aims to abstract and optimize access to, making them complementary but also potentially competitive as Speko might route away from or to Deepgram's offerings."
+      },
+      {
+        "name": "AssemblyAI",
+        "url": "https://www.assemblyai.com/",
+        "verified_live": true,
+        "reviews": 39,
+        "by_site": {
+          "g2": 39
+        },
+        "found_as": [
+          "AssemblyAI"
+        ],
+        "reviews_match": true,
+        "direct": "partly",
+        "why": "AssemblyAI provides core speech-to-text and voice agent capabilities that Speko routes, making them a component Speko might integrate or a direct alternative for those not needing dynamic model switching."
+      }
+    ],
+    "usable_competitors": [
+      "AssemblyAI"
+    ],
+    "customers": {
+      "n_reviewers": 39,
+      "roles": {
+        "software_it_engineering": 0.52,
+        "education_research_analysis": 0.12,
+        "sales_customer": 0.09,
+        "unknown": 0.06,
+        "project_program_mgmt": 0.06
+      },
+      "company_size": {
+        "Small-Business (50 or fewer emp.)": 0.36,
+        "Enterprise (> 1000 emp.)": 0.33,
+        "Mid-Market (51-1000 emp.)": 0.31
+      },
+      "industries": {
+        "computer software": 0.32,
+        "it services": 0.16,
+        "marketing and advertising": 0.11,
+        "insurance": 0.05
+      }
+    },
+    "planner_tasks": [
+      "Benchmark speech models across languages",
+      "Route voice sessions to best model",
+      "Transcribe audio in real-time",
+      "Compare pricing for 100 hours audio",
+      "Access various language models",
+      "Detect sensitive data in transcripts"
+    ],
+    "competitor_use_cases": [
+      "Transcribe audio to text accurately.",
+      "Build and test voice agents.",
+      "Transcribe meetings and calls for notes.",
+      "Integrate speech-to-text into applications.",
+      "Extract insights from audio data."
+    ],
+    "human_run_task": "I need to sign up for Speko on a free trial and use it to manage my team's meeting notes. I'll create three meeting summaries, assign action items, and then use a custom view to filter by assignee. Finally, I'll edit one of the summaries to add a new decision and re-categorize an action item.",
+    "flags": [
+      "Deepgram: no reviews found"
+    ]
+  },
+  {
+    "name": "AgentPhone",
+    "website": "https://agentphone.ai/",
+    "one_liner": "Phone Numbers for AI Agents",
+    "batch": "Spring 2026",
+    "own_reviews": 0,
+    "competitors": [
+      {
+        "name": "Twilio",
+        "url": "https://www.twilio.com/",
+        "verified_live": true,
+        "reviews": 100,
+        "by_site": {
+          "trustradius": 18,
+          "capterra": 37,
+          "g2": 32,
+          "gartner": 13
+        },
+        "found_as": [
+          "Twilio",
+          "Twilio Customer Engagement Platform"
+        ],
+        "reviews_match": true,
+        "direct": "partly",
+        "why": "While Twilio provides the underlying telecom infrastructure and APIs for programmatic communication, AgentPhone specifically targets giving phone numbers and identity to AI agents, which is a more specialized use case built on top of or adjacent to what Twilio offers."
+      },
+      {
+        "name": "Vonage",
+        "url": "https://www.vonage.com/",
+        "verified_live": true,
+        "reviews": 100,
+        "by_site": {
+          "capterra": 24,
+          "trustradius": 7,
+          "g2": 37,
+          "gartner": 32
+        },
+        "found_as": [
+          "Vonage Business Communications",
+          "Vonage Business Communications (VBC)"
+        ],
+        "reviews_match": true,
+        "direct": "no",
+        "why": "Vonage provides traditional VoIP business communication services for human employees, while AgentPhone offers phone numbers specifically for AI agents to interact with the real world, serving entirely different user bases and purposes."
+      }
+    ],
+    "usable_competitors": [
+      "Twilio"
+    ],
+    "customers": {
+      "n_reviewers": 100,
+      "roles": {
+        "executive_owner": 0.26,
+        "software_it_engineering": 0.23,
+        "general_team_mgmt": 0.13,
+        "sales_customer": 0.08,
+        "operations_admin": 0.08
+      },
+      "company_size": {
+        "Small-Business (50 or fewer emp.)": 0.23,
+        "1-10 employees": 0.15,
+        "11-50 employees": 0.15,
+        "Mid-Market (51-1000 emp.)": 0.08
+      },
+      "industries": {
+        "it services": 0.15,
+        "computer software": 0.1,
+        "retail": 0.05,
+        "software": 0.05
+      }
+    },
+    "planner_tasks": [
+      "Provision a new phone number",
+      "Configure a unified webhook for AI",
+      "Implement advanced call routing logic",
+      "Set up international SMS campaigns",
+      "Manage multiple communication channels",
+      "Develop custom IVR flows"
+    ],
+    "competitor_use_cases": [
+      "Send SMS messages to customers and users",
+      "Make and receive voice calls",
+      "Manage phone numbers for various regions",
+      "Integrate communication features into applications",
+      "Set up OTP verification via SMS"
+    ],
+    "human_run_task": "I need to set up AgentPhone to handle calls for three different client campaigns, making sure each has its own unique call flow and greetings. After setting them up, I want to quickly review the call logs for one specific campaign, filtering by call duration, and then update the greeting message for another campaign to reflect a new promotion.",
+    "flags": [
+      "Vonage: judged not a direct competitor (Vonage provides traditional VoIP business communication services for human employees, while AgentPhone offers phone numbers specifically for AI agents to interact with the real world, serving entirely different user bases and purposes.)"
+    ]
+  },
+  {
+    "name": "Ooak Data",
+    "website": "https://ooakdata.com/",
+    "one_liner": "We turn company data into training data",
+    "batch": "Summer 2026",
+    "own_reviews": 0,
+    "competitors": [
+      {
+        "name": "Scale AI",
+        "url": "https://scale.com/",
+        "verified_live": true,
+        "reviews": 13,
+        "by_site": {
+          "g2": 10,
+          "gartner": 3
+        },
+        "found_as": [
+          "Scale GenAI Platform"
+        ],
+        "reviews_match": true,
+        "direct": "yes",
+        "why": "Both Ooak Data and Scale GenAI Platform focus on preparing and curating data for AI model training and evaluation, with Scale AI offering a broader suite of tools for fine-tuning, alignment, and human-in-the-loop processes that directly compete with Ooak Data's 'training ground' concept."
+      },
+      {
+        "name": "Labelbox",
+        "url": "https://labelbox.com/",
+        "verified_live": true,
+        "reviews": 48,
+        "by_site": {
+          "g2": 48
+        },
+        "found_as": [
+          "Labelbox"
+        ],
+        "reviews_match": true,
+        "direct": "partly",
+        "why": "While Labelbox focuses on data labeling and annotation to create training data, Ooak Data's broader offering of turning internal company data into a 'training ground' for AI agents suggests a more comprehensive data preparation and simulation platform, making Labelbox a tool that could be used within Ooak Data's workflow or a more specialized competitor."
+      }
+    ],
+    "usable_competitors": [
+      "Labelbox"
+    ],
+    "customers": {
+      "n_reviewers": 48,
+      "roles": {
+        "software_it_engineering": 0.49,
+        "unknown": 0.2,
+        "education_research_analysis": 0.09,
+        "project_program_mgmt": 0.06,
+        "consultant_freelance": 0.03
+      },
+      "company_size": {
+        "Small-Business (50 or fewer emp.)": 0.46,
+        "Mid-Market (51-1000 emp.)": 0.38,
+        "Enterprise (> 1000 emp.)": 0.17
+      },
+      "industries": {
+        "it services": 0.3,
+        "computer software": 0.3,
+        "electrical electronic manufacturing": 0.1,
+        "research": 0.1
+      }
+    },
+    "planner_tasks": [
+      "Explore real-world RL environment examples",
+      "Understand data anonymization pipeline details",
+      "Request a custom data annotation project quote",
+      "Review available data labeling workforce options",
+      "Compare pricing for enterprise data labeling solutions",
+      "Explore pre-built annotation tools"
+    ],
+    "competitor_use_cases": [
+      "Label data for AI/ML models.",
+      "Annotate images and datasets.",
+      "Manage and organize large datasets.",
+      "Assign labeling tasks to team members.",
+      "Track project progress and time spent."
+    ],
+    "human_run_task": "I need to set up a new project to manage our image annotation tasks. I'll create a few sample tasks, assign them, and then customize the view to track progress. After that, I want to filter these tasks by status and generate a quick report to see what's pending. I'm looking for a smooth workflow and easy customization.",
+    "flags": []
+  },
+  {
+    "name": "Conifer",
+    "website": "https://www.conifer.build",
+    "one_liner": "Least cost routing system to reduce 70%+ token spend",
+    "batch": "Summer 2026",
+    "own_reviews": 1,
+    "competitors": [
+      {
+        "name": "Anyscale",
+        "url": "https://www.anyscale.com/",
+        "verified_live": true,
+        "reviews": 27,
+        "by_site": {
+          "g2": 27
+        },
+        "found_as": [
+          "Anyscale"
+        ],
+        "reviews_match": true,
+        "direct": "partly",
+        "why": "Conifer focuses specifically on optimizing LLM inference costs through intelligent routing, while Anyscale is a broader platform for distributed machine learning workloads, including training and general inference, with some overlap in managing compute costs for inference."
+      },
+      {
+        "name": "vLLM",
+        "url": "https://www.vllm.ai/",
+        "verified_live": true,
+        "reviews": 0,
+        "by_site": {},
+        "found_as": [],
+        "reviews_match": false,
+        "direct": "no",
+        "why": "Conifer optimizes model selection, provider routing, and caching across multiple models and providers, while vLLM focuses on high-throughput, low-latency serving of a single LLM on a GPU."
+      }
+    ],
+    "usable_competitors": [
+      "Anyscale"
+    ],
+    "customers": {
+      "n_reviewers": 27,
+      "roles": {
+        "software_it_engineering": 0.45,
+        "unknown": 0.18,
+        "finance_hr_legal": 0.09,
+        "project_program_mgmt": 0.09,
+        "consultant_freelance": 0.05
+      },
+      "company_size": {
+        "Mid-Market (51-1000 emp.)": 0.41,
+        "Enterprise (> 1000 emp.)": 0.3,
+        "Small-Business (50 or fewer emp.)": 0.3
+      },
+      "industries": {
+        "it services": 0.29,
+        "computer networking": 0.07,
+        "information services": 0.07,
+        "banking": 0.07
+      }
+    },
+    "planner_tasks": [
+      "Route requests to optimal models",
+      "Deploy open-source LLMs locally",
+      "Manage a fleet of diverse models",
+      "Scale inference for large-scale deployments",
+      "Achieve high-throughput LLM serving",
+      "Optimize GPU utilization"
+    ],
+    "competitor_use_cases": [
+      "Scale AI/ML workloads efficiently",
+      "Optimize distributed computing costs",
+      "Deploy machine learning models",
+      "Manage AI/ML infrastructure",
+      "Accelerate model development"
+    ],
+    "human_run_task": "I need to set up a new project for developing three AI agents, defining their core functions and dependencies. After creating them, I want to organize them into a logical structure using custom tags and then filter the view to see only agents related to a specific client, making sure I can easily edit their details.",
+    "flags": [
+      "vLLM: judged not a direct competitor (Conifer optimizes model selection, provider routing, and caching across multiple models and providers, while vLLM focuses on high-throughput, low-latency serving of a single LLM on a GPU.)",
+      "vLLM: no reviews found"
+    ]
+  },
+  {
+    "name": "RASPIRE",
+    "website": "https://raspire.com/",
+    "one_liner": "Autonomous Runtime Security",
+    "batch": "Spring 2026",
+    "own_reviews": 0,
+    "competitors": [
+      {
+        "name": "Guardsquare",
+        "url": "https://www.guardsquare.com/",
+        "verified_live": true,
+        "reviews": 0,
+        "by_site": {},
+        "found_as": [],
+        "reviews_match": false,
+        "direct": "partly",
+        "why": "Guardsquare primarily focuses on mobile application protection (obfuscation, anti-tampering, RASP for mobile), while RASPIRE targets broader application runtime security, API abuse, and AI-powered fraud, making them adjacent but not direct competitors for the exact same use case."
+      },
+      {
+        "name": "Appdome",
+        "url": "https://www.appdome.com/",
+        "verified_live": true,
+        "reviews": 99,
+        "by_site": {
+          "gartner": 14,
+          "g2": 85
+        },
+        "found_as": [
+          "Appdome",
+          "Appdome Platform"
+        ],
+        "reviews_match": true,
+        "direct": "partly",
+        "why": "While both offer no-code runtime application security, Appdome focuses on mobile app hardening and protection, whereas RASPIRE emphasizes broader application runtime security against AI-powered fraud and API abuse, suggesting an overlapping but not identical scope."
+      }
+    ],
+    "usable_competitors": [
+      "Appdome"
+    ],
+    "customers": {
+      "n_reviewers": 99,
+      "roles": {
+        "software_it_engineering": 0.34,
+        "unknown": 0.18,
+        "general_team_mgmt": 0.14,
+        "executive_owner": 0.11,
+        "education_research_analysis": 0.09
+      },
+      "company_size": {
+        "Enterprise (> 1000 emp.)": 0.4,
+        "Mid-Market (51-1000 emp.)": 0.32,
+        "Small-Business (50 or fewer emp.)": 0.13,
+        "<50M USD": 0.07
+      },
+      "industries": {
+        "banking": 0.22,
+        "financial services": 0.18,
+        "finance non banking": 0.1,
+        "it services": 0.06
+      }
+    },
+    "planner_tasks": [
+      "Protect an Android app from tampering",
+      "Block reverse engineering on iOS app",
+      "Implement code obfuscation for Java/Kotlin",
+      "Add security features without source code access",
+      "Ensure app compliance with data regulations",
+      "Detect advanced runtime application threats"
+    ],
+    "competitor_use_cases": [
+      "Secure mobile applications",
+      "Implement security without code changes",
+      "Protect against fraud and attacks",
+      "Integrate security into development processes",
+      "Obfuscate code and encrypt data"
+    ],
+    "human_run_task": "I need to sign up for RASPIRE and quickly get a handle on the attack surface for three of our key applications. I'll define these assets, initiate their scans, and review the initial findings. Then, I want to set up a custom dashboard to track critical vulnerabilities across these apps and apply a filter to focus on high-severity issues. Finally, I'll update the status of a few identified vulnerabilities and generate a report for my team.",
+    "flags": [
+      "Guardsquare: no reviews found"
+    ]
+  },
+  {
+    "name": "Enjamb Labs",
+    "website": "https://www.enjamb.ai",
+    "one_liner": "The AI Workforce for Biopharma",
+    "batch": "Spring 2026",
+    "own_reviews": 0,
+    "competitors": [
+      {
+        "name": "Benchling",
+        "url": "https://www.benchling.com/",
+        "verified_live": true,
+        "reviews": 83,
+        "by_site": {
+          "capterra": 20,
+          "trustradius": 1,
+          "g2": 62
+        },
+        "found_as": [
+          "Benchling"
+        ],
+        "reviews_match": true,
+        "direct": "no",
+        "why": "Benchling is a foundational software system (ELN, LIMS, sequence analysis) that Enjamb Labs aims to integrate with and automate, rather than a direct competitor offering the same AI-driven workforce solution."
+      },
+      {
+        "name": "LabVantage",
+        "url": "https://www.labvantage.com/",
+        "verified_live": true,
+        "reviews": 22,
+        "by_site": {
+          "capterra": 2,
+          "trustradius": 3,
+          "g2": 17
+        },
+        "found_as": [
+          "LabVantage"
+        ],
+        "reviews_match": true,
+        "direct": "no",
+        "why": "LabVantage is a LIMS (Laboratory Information Management System) that manages lab data and workflows, whereas Enjamb Labs provides an AI layer to automate tasks and integrate with existing, closed biopharma software systems like LIMS."
+      }
+    ],
+    "usable_competitors": [],
+    "customers": {
+      "n_reviewers": 0,
+      "roles": {},
+      "company_size": {},
+      "industries": {}
+    },
+    "planner_tasks": [
+      "Automate routine lab procedures",
+      "Manage experimental data and samples",
+      "Collaborate on scientific projects",
+      "Track sample lifecycle and testing",
+      "Ensure regulatory compliance for lab data",
+      "Review security and compliance standards"
+    ],
+    "competitor_use_cases": [],
+    "human_run_task": null,
+    "flags": [
+      "no competitor is both a real direct competitor and has 20+ reviews of the right product",
+      "Benchling: judged not a direct competitor (Benchling is a foundational software system (ELN, LIMS, sequence analysis) that Enjamb Labs aims to integrate with and automate, rather than a direct competitor offering the same AI-driven workforce solution.)",
+      "LabVantage: judged not a direct competitor (LabVantage is a LIMS (Laboratory Information Management System) that manages lab data and workflows, whereas Enjamb Labs provides an AI layer to automate tasks and integrate with existing, closed biopharma software systems like LIMS.)"
+    ]
+  },
+  {
+    "name": "Netter",
+    "website": "https://netter.ai",
+    "one_liner": "AI agents for data science (enterprise)",
+    "batch": "Spring 2026",
+    "own_reviews": 0,
+    "competitors": [
+      {
+        "name": "DataRobot",
+        "url": "https://www.datarobot.com/",
+        "verified_live": true,
+        "reviews": 100,
+        "by_site": {
+          "capterra": 1,
+          "trustradius": 9,
+          "g2": 5,
+          "gartner": 85
+        },
+        "found_as": [
+          "DataRobot",
+          "DataRobot Agent Workforce Platform"
+        ],
+        "reviews_match": true,
+        "direct": "partly",
+        "why": "While both companies leverage AI/ML for data, DataRobot focuses on automated machine learning model development and deployment, whereas Netter emphasizes operationalizing data insights through AI agents to automate business processes and integrate disparate data sources, addressing a broader data management and workflow automation challenge."
+      },
+      {
+        "name": "H2O.ai",
+        "url": "https://www.h2o.ai/",
+        "verified_live": true,
+        "reviews": 35,
+        "by_site": {
+          "capterra": 10,
+          "trustradius": 3,
+          "g2": 22
+        },
+        "found_as": [
+          "H2O",
+          "H2O.ai"
+        ],
+        "reviews_match": true,
+        "direct": "partly",
+        "why": "H2O.ai provides core machine learning capabilities and AutoML for data scientists, while Netter focuses on end-to-end AI agents that integrate disparate data sources and automate business processes for operational impact, which might leverage tools like H2O.ai but goes beyond it."
+      }
+    ],
+    "usable_competitors": [
+      "DataRobot",
+      "H2O.ai"
+    ],
+    "customers": {
+      "n_reviewers": 135,
+      "roles": {
+        "software_it_engineering": 0.51,
+        "general_team_mgmt": 0.09,
+        "education_research_analysis": 0.09,
+        "unknown": 0.06,
+        "finance_hr_legal": 0.06
+      },
+      "company_size": {
+        "50M-1B USD": 0.34,
+        "1B-10B USD": 0.21,
+        "10B+ USD": 0.15,
+        "<50M USD": 0.06
+      },
+      "industries": {
+        "banking": 0.13,
+        "role user": 0.1,
+        "it services": 0.08,
+        "healthcare and biotech": 0.08
+      }
+    },
+    "planner_tasks": [
+      "Understand healthcare AI system capabilities",
+      "Evaluate digital twin foundation for AI",
+      "Compare automated machine learning features",
+      "Assess enterprise AI platform scalability",
+      "Review open-source AI framework options",
+      "Examine advanced deep learning model support"
+    ],
+    "competitor_use_cases": [
+      "Build predictive models automatically",
+      "Perform exploratory data analysis",
+      "Deploy and monitor machine learning models",
+      "Forecast future trends and demand",
+      "Develop credit risk models"
+    ],
+    "human_run_task": "I need to quickly extract specific data points from at least three different types of invoices and purchase orders into a structured format. Then, I want to set up a custom view to track key metrics like vendor and total amount, and apply a filter to see only invoices above a certain value. Finally, I'll need to bulk edit some extracted fields for consistency and generate a simple report on the extracted data.",
+    "flags": []
+  },
+  {
+    "name": "Executor",
+    "website": "https://executor.sh",
+    "one_liner": "The open source tool gateway",
+    "batch": "Summer 2026",
+    "own_reviews": 0,
+    "competitors": [
+      {
+        "name": "Composio",
+        "url": "https://composio.dev/",
+        "verified_live": true,
+        "reviews": 23,
+        "by_site": {
+          "capterra": 15,
+          "g2": 8
+        },
+        "found_as": [
+          "Composio"
+        ],
+        "reviews_match": true,
+        "direct": "yes",
+        "why": "Both Executor and Composio aim to connect AI agents to various tools and services, providing a unified layer for integration and automation, which directly addresses the same core problem for a similar buyer."
+      },
+      {
+        "name": "Superagent",
+        "url": "https://www.superagent.ai/",
+        "verified_live": true,
+        "reviews": 0,
+        "by_site": {},
+        "found_as": [],
+        "reviews_match": false,
+        "direct": "partly",
+        "why": "While both aim to facilitate agent connectivity, Executor focuses on being a unified gateway for agents to access diverse services, whereas Superagent appears to be more focused on building and deploying AI agents themselves."
+      }
+    ],
+    "usable_competitors": [
+      "Composio"
+    ],
+    "customers": {
+      "n_reviewers": 23,
+      "roles": {
+        "executive_owner": 0.47,
+        "software_it_engineering": 0.4,
+        "general_team_mgmt": 0.07,
+        "operations_admin": 0.07
+      },
+      "company_size": {
+        "11-50 employees": 0.2,
+        "10,001+ employees": 0.2,
+        "201-500 employees": 0.13,
+        "1-10 employees": 0.13
+      },
+      "industries": {
+        "role user": 0.3,
+        "logistics and supply chain": 0.09,
+        "computer software": 0.09,
+        "marketing and advertising": 0.09
+      }
+    },
+    "planner_tasks": [
+      "Build a custom automation for an agent",
+      "Orchestrate complex AI agent workflows",
+      "Deploy an AI agent quickly via API",
+      "Monitor AI agent performance and logs",
+      "Compare pricing for self-hosting options",
+      "Discover new AI agent tools"
+    ],
+    "competitor_use_cases": [
+      "Automate repetitive tasks and workflows",
+      "Integrate various applications and tools",
+      "Connect AI agents to real-world apps",
+      "Automate Shopify order processing",
+      "Build SQL agents for database queries"
+    ],
+    "human_run_task": "I need to set up a few automated workflows. First, I'll create an executor to pull new support tickets from Zendesk, summarize them with AI, and post to a Slack channel. Then, I'll build another to monitor a GitHub repo for new PRs, extract details, and update a Notion database. Finally, I'll set up a scheduled task to generate a weekly sales report from Stripe and email it. After that, I want to organize these by adding custom tags and then filter them to see only my 'critical' automations.",
+    "flags": [
+      "Superagent: no reviews found"
+    ]
+  },
+  {
+    "name": "Mentlio",
+    "website": "https://mentlio.com",
+    "one_liner": "Engineering Intelligence and Token Optimization for the AI-Coding Era",
+    "batch": "Summer 2026",
+    "own_reviews": 0,
+    "competitors": [
+      {
+        "name": "Glean",
+        "url": "https://www.glean.com/",
+        "verified_live": true,
+        "reviews": 100,
+        "by_site": {
+          "capterra": 1,
+          "trustradius": 4,
+          "g2": 65,
+          "gartner": 30
+        },
+        "found_as": [
+          "Glean"
+        ],
+        "reviews_match": true,
+        "direct": "no",
+        "why": "Mentlio focuses on optimizing AI spend and performance for engineering teams using AI models, while Glean is an enterprise search and knowledge management tool that helps employees find internal information across various data sources."
+      },
+      {
+        "name": "Turing",
+        "url": "https://www.turing.com/",
+        "verified_live": true,
+        "reviews": 22,
+        "by_site": {
+          "trustradius": 2,
+          "g2": 20
+        },
+        "found_as": [
+          "Turing.com"
+        ],
+        "reviews_match": true,
+        "direct": "no",
+        "why": "Mentlio provides AI spend optimization and engineering intelligence for enterprises, while Turing.com is a platform for hiring remote developers."
+      }
+    ],
+    "usable_competitors": [],
+    "customers": {
+      "n_reviewers": 0,
+      "roles": {},
+      "company_size": {},
+      "industries": {}
+    },
+    "planner_tasks": [
+      "Monitor AI token usage and costs",
+      "Analyze AI's impact on developer productivity",
+      "Find internal documents using AI search",
+      "Hire a remote AI software engineer",
+      "Manage a distributed team of AI specialists",
+      "Search for company policies"
+    ],
+    "competitor_use_cases": [],
+    "human_run_task": null,
+    "flags": [
+      "no competitor is both a real direct competitor and has 20+ reviews of the right product",
+      "Glean: judged not a direct competitor (Mentlio focuses on optimizing AI spend and performance for engineering teams using AI models, while Glean is an enterprise search and knowledge management tool that helps employees find internal information across various data sources.)",
+      "Turing: judged not a direct competitor (Mentlio provides AI spend optimization and engineering intelligence for enterprises, while Turing.com is a platform for hiring remote developers.)"
+    ]
+  },
+  {
+    "name": "Fuchsia",
+    "website": "https://getfuchsia.ai/",
+    "one_liner": "Vanta for hardware",
+    "batch": "Spring 2026",
+    "own_reviews": 0,
+    "competitors": [
+      {
+        "name": "ComplianceGate",
+        "url": "https://www.compliancegate.com/",
+        "verified_live": true,
+        "reviews": null,
+        "by_site": {},
+        "found_as": [],
+        "reviews_match": false,
+        "direct": "partly",
+        "why": "While 'ComplianceGate' suggests a compliance focus, without product details or reviews, it's impossible to confirm if it specifically addresses hardware certification and testing like Fuchsia, making it an adjacent or overlapping solution rather than a direct, like-for-like competitor."
+      },
+      {
+        "name": "CE-Check",
+        "url": "https://www.ce-check.eu/",
+        "verified_live": true,
+        "reviews": null,
+        "by_site": {},
+        "found_as": [],
+        "reviews_match": false,
+        "direct": "no",
+        "why": "Without any product information or a web presence for 'CE-Check', it cannot be assessed as a competitor to Fuchsia, which clearly defines its offering in hardware certification and testing."
+      }
+    ],
+    "usable_competitors": [],
+    "customers": {
+      "n_reviewers": 0,
+      "roles": {},
+      "company_size": {},
+      "industries": {}
+    },
+    "planner_tasks": [
+      "Identify applicable hardware compliance standards",
+      "Draft lab-ready technical documentation",
+      "Access general compliance guides and articles",
+      "Download compliance templates",
+      "Understand CE marking requirements",
+      "Get a quote for compliance services"
+    ],
+    "competitor_use_cases": [],
+    "human_run_task": null,
+    "flags": [
+      "no competitor is both a real direct competitor and has 20+ reviews of the right product",
+      "CE-Check: judged not a direct competitor (Without any product information or a web presence for 'CE-Check', it cannot be assessed as a competitor to Fuchsia, which clearly defines its offering in hardware certification and testing.)",
+      "ComplianceGate: no reviews found",
+      "CE-Check: no reviews found"
+    ]
+  },
+  {
+    "name": "Dock",
+    "website": "https://trydock.ai",
+    "one_liner": "Hire AI agents to start and run your business",
+    "batch": "Summer 2026",
+    "own_reviews": 99,
+    "competitors": [
+      {
+        "name": "Adept",
+        "url": "https://www.adept.ai/",
+        "verified_live": true,
+        "reviews": 99,
+        "by_site": {
+          "capterra": 6,
+          "g2": 93
+        },
+        "found_as": [
+          "Adept",
+          "Synergis Adept"
+        ],
+        "reviews_match": true,
+        "direct": "no",
+        "why": "Dock focuses on AI agents to automate and run an entire business, while Adept is a document management system primarily used for engineering and design files."
+      },
+      {
+        "name": "Cognition Labs",
+        "url": "https://cognition.com/",
+        "verified_live": true,
+        "reviews": 2,
+        "by_site": {
+          "gartner": 2
+        },
+        "found_as": [
+          "Devin AI"
+        ],
+        "reviews_match": true,
+        "direct": "no",
+        "why": "Dock aims to run an entire business with AI agents, including customer acquisition and operations, whereas Devin AI is a specialized AI coding agent focused on software engineering tasks."
+      }
+    ],
+    "usable_competitors": [],
+    "customers": {
+      "n_reviewers": 0,
+      "roles": {},
+      "company_size": {},
+      "industries": {}
+    },
+    "planner_tasks": [
+      "Hire a new SEO Auditor agent",
+      "Review available marketing agent skills",
+      "Understand AI agent development roadmap",
+      "Explore enterprise automation use cases",
+      "Learn about AI agent research breakthroughs",
+      "Identify advanced AI agent capabilities"
+    ],
+    "competitor_use_cases": [],
+    "human_run_task": null,
+    "flags": [
+      "no competitor is both a real direct competitor and has 20+ reviews of the right product",
+      "Adept: judged not a direct competitor (Dock focuses on AI agents to automate and run an entire business, while Adept is a document management system primarily used for engineering and design files.)",
+      "Cognition Labs: judged not a direct competitor (Dock aims to run an entire business with AI agents, including customer acquisition and operations, whereas Devin AI is a specialized AI coding agent focused on software engineering tasks.)"
+    ]
+  },
+  {
+    "name": "HyperProbe",
+    "website": "https://hyperprobe.co",
+    "one_liner": "AI engineer that debugs and fixes production incidents in realtime",
+    "batch": "Summer 2026",
+    "own_reviews": 0,
+    "competitors": [
+      {
+        "name": "Shoreline.io",
+        "url": "https://www.nvidia.com/en-us/",
+        "verified_live": true,
+        "reviews": 0,
+        "by_site": {},
+        "found_as": [],
+        "reviews_match": false,
+        "direct": "yes",
+        "why": "Both HyperProbe and Shoreline.io aim to automate the detection, diagnosis, and resolution of production incidents in real-time, directly competing for the same operational pain points and buyer."
+      },
+      {
+        "name": "Blameless",
+        "url": "https://firehydrant.com/",
+        "verified_live": true,
+        "reviews": 1,
+        "by_site": {
+          "capterra": 1
+        },
+        "found_as": [
+          "Blameless"
+        ],
+        "reviews_match": true,
+        "direct": "partly",
+        "why": "Blameless focuses on incident response workflow and management for human teams, while HyperProbe provides an AI engineer for automated, real-time, deep technical debugging and fixing of production incidents by gathering granular data from memory."
+      }
+    ],
+    "usable_competitors": [],
+    "customers": {
+      "n_reviewers": 0,
+      "roles": {},
+      "company_size": {},
+      "industries": {}
+    },
+    "planner_tasks": [
+      "Debug production incident without redeploying",
+      "Automate incident root cause analysis",
+      "Automate common operational tasks",
+      "Define and track service level objectives",
+      "Create and manage incident runbooks",
+      "Generate post-incident reports and retrospectives"
+    ],
+    "competitor_use_cases": [],
+    "human_run_task": null,
+    "flags": [
+      "no competitor is both a real direct competitor and has 20+ reviews of the right product",
+      "Shoreline.io: no reviews found"
+    ]
+  }
+]

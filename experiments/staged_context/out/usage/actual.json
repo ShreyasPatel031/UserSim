@@ -1,0 +1,1022 @@
+{
+  "Freshsales": {
+    "actual": {
+      "role_family": {
+        "executive_owner": 0.30185185185185187,
+        "project_program_mgmt": 0.022222222222222223,
+        "product_mgmt": 0.005555555555555556,
+        "healthcare_wellness": 0.009259259259259259,
+        "software_it_engineering": 0.05740740740740741,
+        "marketing_creative_content": 0.12962962962962962,
+        "sales_customer": 0.2833333333333333,
+        "operations_admin": 0.044444444444444446,
+        "finance_hr_legal": 0.014814814814814815,
+        "education_research_analysis": 0.009259259259259259,
+        "consultant_freelance": 0.016666666666666666,
+        "general_team_mgmt": 0.10555555555555556
+      },
+      "company_size": {
+        "Self-employed": 0.05154639175257732,
+        "1-10 employees": 0.31443298969072164,
+        "11-50 employees": 0.35223367697594504,
+        "51-200 employees": 0.13058419243986255,
+        "201-500 employees": 0.061855670103092786,
+        "501-1,000 employees": 0.03436426116838488,
+        "1,001-5,000 employees": 0.027491408934707903,
+        "5,001-10,000 employees": 0.006872852233676976,
+        "10,001+ employees": 0.020618556701030927
+      },
+      "industry": {
+        "Information Technology and Services": 0.15409309791332262,
+        "Computer Software": 0.08828250401284109,
+        "Marketing and Advertising": 0.0738362760834671,
+        "Education Management": 0.016051364365971106,
+        "Retail": 0.014446227929373997,
+        "Health, Wellness and Fitness": 0.012841091492776886,
+        "Financial Services": 0.03691813804173355,
+        "Construction": 0.006420545746388443,
+        "Hospital & Health Care": 0.016051364365971106,
+        "Accounting": 0.009630818619582664,
+        "Non-Profit Organization Management": 0.0032102728731942215,
+        "Design": 0.008025682182985553,
+        "Internet": 0.028892455858747994,
+        "Real Estate": 0.03531300160513644,
+        "E-Learning": 0.012841091492776886,
+        "Other": 0.48314606741573035
+      },
+      "time_used": {
+        "I used a free trial": 0.07026143790849673,
+        "Less than 6 months": 0.4477124183006536,
+        "6-12 months": 0.2565359477124183,
+        "1-2 years": 0.1388888888888889,
+        "2+ years": 0.08660130718954248
+      },
+      "switched_share": 0.07865168539325842,
+      "top_prior_tools": [
+        "HubSpot CRM",
+        "Pipedrive",
+        "Salesforce Sales Cloud",
+        "Zoho CRM",
+        "LeadSquared"
+      ]
+    },
+    "category": "CRM",
+    "competitor_pack_from": [
+      "HubSpot CRM",
+      "Pipedrive"
+    ],
+    "reviews": 623
+  },
+  "Zoho CRM": {
+    "actual": {
+      "role_family": {
+        "executive_owner": 0.20388349514563106,
+        "project_program_mgmt": 0.02669902912621359,
+        "product_mgmt": 0.009708737864077669,
+        "healthcare_wellness": 0.009708737864077669,
+        "software_it_engineering": 0.14805825242718446,
+        "marketing_creative_content": 0.12378640776699029,
+        "sales_customer": 0.13349514563106796,
+        "operations_admin": 0.10315533980582524,
+        "finance_hr_legal": 0.04854368932038835,
+        "education_research_analysis": 0.027912621359223302,
+        "consultant_freelance": 0.025485436893203883,
+        "general_team_mgmt": 0.1395631067961165
+      },
+      "company_size": {
+        "Self-employed": 0.1,
+        "1-10 employees": 0.286,
+        "11-50 employees": 0.278,
+        "51-200 employees": 0.155,
+        "201-500 employees": 0.061,
+        "501-1,000 employees": 0.041,
+        "1,001-5,000 employees": 0.038,
+        "5,001-10,000 employees": 0.011,
+        "10,001+ employees": 0.03
+      },
+      "industry": {
+        "Information Technology and Services": 0.12,
+        "Computer Software": 0.05,
+        "Marketing and Advertising": 0.063,
+        "Education Management": 0.03,
+        "Retail": 0.028,
+        "Health, Wellness and Fitness": 0.02,
+        "Financial Services": 0.035,
+        "Construction": 0.024,
+        "Hospital & Health Care": 0.025,
+        "Accounting": 0.028,
+        "Non-Profit Organization Management": 0.005,
+        "Design": 0.011,
+        "Internet": 0.015,
+        "Real Estate": 0.026,
+        "E-Learning": 0.026,
+        "Other": 0.494
+      },
+      "time_used": {
+        "I used a free trial": 0.185,
+        "Less than 6 months": 0.183,
+        "6-12 months": 0.204,
+        "1-2 years": 0.213,
+        "2+ years": 0.215
+      },
+      "switched_share": 0.152,
+      "top_prior_tools": [
+        "HubSpot CRM",
+        "Salesforce Sales Cloud",
+        "Microsoft Excel",
+        "Pipedrive",
+        "Freshsales"
+      ]
+    },
+    "category": "CRM",
+    "competitor_pack_from": [
+      "HubSpot CRM",
+      "Pipedrive"
+    ],
+    "reviews": 1000
+  },
+  "Pipedrive": {
+    "actual": {
+      "role_family": {
+        "executive_owner": 0.26054590570719605,
+        "project_program_mgmt": 0.033498759305210915,
+        "product_mgmt": 0.009925558312655087,
+        "healthcare_wellness": 0.00620347394540943,
+        "software_it_engineering": 0.08188585607940446,
+        "marketing_creative_content": 0.16501240694789082,
+        "sales_customer": 0.18114143920595532,
+        "operations_admin": 0.05707196029776675,
+        "finance_hr_legal": 0.034739454094292806,
+        "education_research_analysis": 0.028535980148883373,
+        "consultant_freelance": 0.028535980148883373,
+        "general_team_mgmt": 0.11290322580645161
+      },
+      "company_size": {
+        "Self-employed": 0.098,
+        "1-10 employees": 0.29,
+        "11-50 employees": 0.307,
+        "51-200 employees": 0.147,
+        "201-500 employees": 0.047,
+        "501-1,000 employees": 0.031,
+        "1,001-5,000 employees": 0.03,
+        "5,001-10,000 employees": 0.017,
+        "10,001+ employees": 0.033
+      },
+      "industry": {
+        "Information Technology and Services": 0.101,
+        "Computer Software": 0.112,
+        "Marketing and Advertising": 0.131,
+        "Education Management": 0.017,
+        "Retail": 0.016,
+        "Health, Wellness and Fitness": 0.019,
+        "Financial Services": 0.04,
+        "Construction": 0.024,
+        "Hospital & Health Care": 0.014,
+        "Accounting": 0.014,
+        "Non-Profit Organization Management": 0.002,
+        "Design": 0.011,
+        "Internet": 0.042,
+        "Real Estate": 0.025,
+        "E-Learning": 0.014,
+        "Other": 0.418
+      },
+      "time_used": {
+        "I used a free trial": 0.087,
+        "Less than 6 months": 0.197,
+        "6-12 months": 0.236,
+        "1-2 years": 0.263,
+        "2+ years": 0.217
+      },
+      "switched_share": 0.185,
+      "top_prior_tools": [
+        "HubSpot CRM",
+        "Salesforce Sales Cloud",
+        "Zoho CRM",
+        "Dynamics 365",
+        "ActiveCampaign"
+      ]
+    },
+    "category": "CRM",
+    "competitor_pack_from": [
+      "HubSpot CRM",
+      "Salesforce Sales Cloud"
+    ],
+    "reviews": 1000
+  },
+  "Namely": {
+    "actual": {
+      "role_family": {
+        "executive_owner": 0.09866666666666667,
+        "project_program_mgmt": 0.021333333333333333,
+        "product_mgmt": 0.0,
+        "healthcare_wellness": 0.010666666666666666,
+        "software_it_engineering": 0.056,
+        "marketing_creative_content": 0.06933333333333333,
+        "sales_customer": 0.10933333333333334,
+        "operations_admin": 0.184,
+        "finance_hr_legal": 0.32,
+        "education_research_analysis": 0.032,
+        "consultant_freelance": 0.013333333333333334,
+        "general_team_mgmt": 0.08533333333333333
+      },
+      "company_size": {
+        "Self-employed": 0.005797101449275362,
+        "1-10 employees": 0.028985507246376812,
+        "11-50 employees": 0.15942028985507245,
+        "51-200 employees": 0.45217391304347826,
+        "201-500 employees": 0.20579710144927535,
+        "501-1,000 employees": 0.09565217391304348,
+        "1,001-5,000 employees": 0.03768115942028986,
+        "5,001-10,000 employees": 0.0,
+        "10,001+ employees": 0.014492753623188406
+      },
+      "industry": {
+        "Information Technology and Services": 0.08200455580865604,
+        "Computer Software": 0.20045558086560364,
+        "Marketing and Advertising": 0.0387243735763098,
+        "Education Management": 0.009111617312072893,
+        "Retail": 0.011389521640091117,
+        "Health, Wellness and Fitness": 0.00683371298405467,
+        "Financial Services": 0.015945330296127564,
+        "Construction": 0.011389521640091117,
+        "Hospital & Health Care": 0.02733485193621868,
+        "Accounting": 0.011389521640091117,
+        "Non-Profit Organization Management": 0.022779043280182234,
+        "Design": 0.002277904328018223,
+        "Internet": 0.03189066059225513,
+        "Real Estate": 0.011389521640091117,
+        "E-Learning": 0.01366742596810934,
+        "Other": 0.5034168564920274
+      },
+      "time_used": {
+        "I used a free trial": 0.0225,
+        "Less than 6 months": 0.25,
+        "6-12 months": 0.2775,
+        "1-2 years": 0.2875,
+        "2+ years": 0.1625
+      },
+      "switched_share": 0.06378132118451026,
+      "top_prior_tools": [
+        "Paychex Flex",
+        "TriNet HR Plus",
+        "ADP Workforce Now",
+        "UKG Pro",
+        "Rippling"
+      ]
+    },
+    "category": "HR",
+    "competitor_pack_from": [
+      "BambooHR",
+      "Deel"
+    ],
+    "reviews": 439
+  },
+  "Looker": {
+    "actual": {
+      "role_family": {
+        "executive_owner": 0.0846774193548387,
+        "project_program_mgmt": 0.03225806451612903,
+        "product_mgmt": 0.024193548387096774,
+        "healthcare_wellness": 0.0,
+        "software_it_engineering": 0.23387096774193547,
+        "marketing_creative_content": 0.17338709677419356,
+        "sales_customer": 0.0846774193548387,
+        "operations_admin": 0.056451612903225805,
+        "finance_hr_legal": 0.04032258064516129,
+        "education_research_analysis": 0.12903225806451613,
+        "consultant_freelance": 0.016129032258064516,
+        "general_team_mgmt": 0.125
+      },
+      "company_size": {
+        "Self-employed": 0.01532567049808429,
+        "1-10 employees": 0.06896551724137931,
+        "11-50 employees": 0.13026819923371646,
+        "51-200 employees": 0.3065134099616858,
+        "201-500 employees": 0.20306513409961685,
+        "501-1,000 employees": 0.1111111111111111,
+        "1,001-5,000 employees": 0.08812260536398467,
+        "5,001-10,000 employees": 0.022988505747126436,
+        "10,001+ employees": 0.05363984674329502
+      },
+      "industry": {
+        "Information Technology and Services": 0.10526315789473684,
+        "Computer Software": 0.11929824561403508,
+        "Marketing and Advertising": 0.12982456140350876,
+        "Education Management": 0.03508771929824561,
+        "Retail": 0.017543859649122806,
+        "Health, Wellness and Fitness": 0.028070175438596492,
+        "Financial Services": 0.06666666666666667,
+        "Construction": 0.031578947368421054,
+        "Hospital & Health Care": 0.0,
+        "Accounting": 0.0035087719298245615,
+        "Non-Profit Organization Management": 0.0035087719298245615,
+        "Design": 0.0035087719298245615,
+        "Internet": 0.04912280701754386,
+        "Real Estate": 0.014035087719298246,
+        "E-Learning": 0.010526315789473684,
+        "Other": 0.3824561403508772
+      },
+      "time_used": {
+        "I used a free trial": 0.01444043321299639,
+        "Less than 6 months": 0.16967509025270758,
+        "6-12 months": 0.26714801444043323,
+        "1-2 years": 0.2743682310469314,
+        "2+ years": 0.2743682310469314
+      },
+      "switched_share": 0.12982456140350876,
+      "top_prior_tools": [
+        "Tableau",
+        "Microsoft Power BI",
+        "Google Sheets",
+        "Microsoft Excel",
+        "Metabase"
+      ]
+    },
+    "category": "Analytics & BI",
+    "competitor_pack_from": [
+      "Google Analytics 360",
+      "Microsoft Power BI"
+    ],
+    "reviews": 285
+  },
+  "Wrike": {
+    "actual": {
+      "role_family": {
+        "executive_owner": 0.10082063305978899,
+        "project_program_mgmt": 0.14419695193434937,
+        "product_mgmt": 0.008206330597889801,
+        "healthcare_wellness": 0.008206330597889801,
+        "software_it_engineering": 0.16295427901524032,
+        "marketing_creative_content": 0.2321219226260258,
+        "sales_customer": 0.038686987104337635,
+        "operations_admin": 0.08675263774912075,
+        "finance_hr_legal": 0.05041031652989449,
+        "education_research_analysis": 0.03399765533411489,
+        "consultant_freelance": 0.015240328253223915,
+        "general_team_mgmt": 0.11840562719812427
+      },
+      "company_size": {
+        "Self-employed": 0.052,
+        "1-10 employees": 0.14,
+        "11-50 employees": 0.18,
+        "51-200 employees": 0.179,
+        "201-500 employees": 0.118,
+        "501-1,000 employees": 0.078,
+        "1,001-5,000 employees": 0.122,
+        "5,001-10,000 employees": 0.04,
+        "10,001+ employees": 0.091
+      },
+      "industry": {
+        "Information Technology and Services": 0.096,
+        "Computer Software": 0.056,
+        "Marketing and Advertising": 0.101,
+        "Education Management": 0.036,
+        "Retail": 0.021,
+        "Health, Wellness and Fitness": 0.023,
+        "Financial Services": 0.036,
+        "Construction": 0.023,
+        "Hospital & Health Care": 0.034,
+        "Accounting": 0.014,
+        "Non-Profit Organization Management": 0.031,
+        "Design": 0.022,
+        "Internet": 0.009,
+        "Real Estate": 0.014,
+        "E-Learning": 0.01,
+        "Other": 0.474
+      },
+      "time_used": {
+        "I used a free trial": 0.067,
+        "Less than 6 months": 0.1,
+        "6-12 months": 0.158,
+        "1-2 years": 0.295,
+        "2+ years": 0.38
+      },
+      "switched_share": 0.209,
+      "top_prior_tools": [
+        "Asana",
+        "monday.com AI Work Platform",
+        "ClickUp",
+        "Smartsheet",
+        "Trello"
+      ]
+    },
+    "category": "Project Management",
+    "competitor_pack_from": [
+      "Asana",
+      "Basecamp"
+    ],
+    "reviews": 1000
+  },
+  "Basecamp": {
+    "actual": {
+      "role_family": {
+        "executive_owner": 0.16516129032258065,
+        "project_program_mgmt": 0.05290322580645161,
+        "product_mgmt": 0.0064516129032258064,
+        "healthcare_wellness": 0.023225806451612905,
+        "software_it_engineering": 0.15483870967741936,
+        "marketing_creative_content": 0.17290322580645162,
+        "sales_customer": 0.05806451612903226,
+        "operations_admin": 0.08903225806451613,
+        "finance_hr_legal": 0.04903225806451613,
+        "education_research_analysis": 0.04645161290322581,
+        "consultant_freelance": 0.03225806451612903,
+        "general_team_mgmt": 0.14967741935483872
+      },
+      "company_size": {
+        "Self-employed": 0.158,
+        "1-10 employees": 0.23,
+        "11-50 employees": 0.199,
+        "51-200 employees": 0.151,
+        "201-500 employees": 0.083,
+        "501-1,000 employees": 0.059,
+        "1,001-5,000 employees": 0.053,
+        "5,001-10,000 employees": 0.021,
+        "10,001+ employees": 0.046
+      },
+      "industry": {
+        "Information Technology and Services": 0.097,
+        "Computer Software": 0.069,
+        "Marketing and Advertising": 0.072,
+        "Education Management": 0.039,
+        "Retail": 0.023,
+        "Health, Wellness and Fitness": 0.02,
+        "Financial Services": 0.015,
+        "Construction": 0.026,
+        "Hospital & Health Care": 0.02,
+        "Accounting": 0.028,
+        "Non-Profit Organization Management": 0.031,
+        "Design": 0.023,
+        "Internet": 0.011,
+        "Real Estate": 0.018,
+        "E-Learning": 0.017,
+        "Other": 0.491
+      },
+      "time_used": {
+        "I used a free trial": 0.114,
+        "Less than 6 months": 0.197,
+        "6-12 months": 0.219,
+        "1-2 years": 0.202,
+        "2+ years": 0.268
+      },
+      "switched_share": 0.102,
+      "top_prior_tools": [
+        "Trello",
+        "Asana",
+        "monday.com AI Work Platform",
+        "Jira",
+        "ClickUp"
+      ]
+    },
+    "category": "Project Management",
+    "competitor_pack_from": [
+      "Asana",
+      "ClickUp"
+    ],
+    "reviews": 1000
+  },
+  "LiveAgent": {
+    "actual": {
+      "role_family": {
+        "executive_owner": 0.23058823529411765,
+        "project_program_mgmt": 0.023529411764705882,
+        "product_mgmt": 0.004705882352941176,
+        "healthcare_wellness": 0.00823529411764706,
+        "software_it_engineering": 0.14705882352941177,
+        "marketing_creative_content": 0.10705882352941176,
+        "sales_customer": 0.17058823529411765,
+        "operations_admin": 0.08470588235294117,
+        "finance_hr_legal": 0.04588235294117647,
+        "education_research_analysis": 0.023529411764705882,
+        "consultant_freelance": 0.02235294117647059,
+        "general_team_mgmt": 0.13176470588235295
+      },
+      "company_size": {
+        "Self-employed": 0.085,
+        "1-10 employees": 0.274,
+        "11-50 employees": 0.247,
+        "51-200 employees": 0.16,
+        "201-500 employees": 0.052,
+        "501-1,000 employees": 0.043,
+        "1,001-5,000 employees": 0.041,
+        "5,001-10,000 employees": 0.027,
+        "10,001+ employees": 0.071
+      },
+      "industry": {
+        "Information Technology and Services": 0.127,
+        "Computer Software": 0.052,
+        "Marketing and Advertising": 0.064,
+        "Education Management": 0.027,
+        "Retail": 0.053,
+        "Health, Wellness and Fitness": 0.018,
+        "Financial Services": 0.023,
+        "Construction": 0.019,
+        "Hospital & Health Care": 0.022,
+        "Accounting": 0.02,
+        "Non-Profit Organization Management": 0.009,
+        "Design": 0.007,
+        "Internet": 0.021,
+        "Real Estate": 0.024,
+        "E-Learning": 0.015,
+        "Other": 0.499
+      },
+      "time_used": {
+        "I used a free trial": 0.198,
+        "Less than 6 months": 0.214,
+        "6-12 months": 0.184,
+        "1-2 years": 0.204,
+        "2+ years": 0.2
+      },
+      "switched_share": 0.172,
+      "top_prior_tools": [
+        "Zendesk Suite",
+        "Freshdesk",
+        "Zoho Desk",
+        "LiveChat",
+        "tawk.to"
+      ]
+    },
+    "category": "Help Desk",
+    "competitor_pack_from": [
+      "Freshdesk",
+      "Intercom"
+    ],
+    "reviews": 1000
+  },
+  "Zoho Desk": {
+    "actual": {
+      "role_family": {
+        "executive_owner": 0.23391089108910892,
+        "project_program_mgmt": 0.034653465346534656,
+        "product_mgmt": 0.006188118811881188,
+        "healthcare_wellness": 0.006188118811881188,
+        "software_it_engineering": 0.23514851485148514,
+        "marketing_creative_content": 0.08292079207920793,
+        "sales_customer": 0.09653465346534654,
+        "operations_admin": 0.0655940594059406,
+        "finance_hr_legal": 0.039603960396039604,
+        "education_research_analysis": 0.028465346534653466,
+        "consultant_freelance": 0.03094059405940594,
+        "general_team_mgmt": 0.13985148514851486
+      },
+      "company_size": {
+        "Self-employed": 0.06801275239107332,
+        "1-10 employees": 0.2720510095642933,
+        "11-50 employees": 0.255047821466525,
+        "51-200 employees": 0.18172157279489903,
+        "201-500 employees": 0.0669500531349628,
+        "501-1,000 employees": 0.04144527098831031,
+        "1,001-5,000 employees": 0.04782146652497343,
+        "5,001-10,000 employees": 0.01700318809776833,
+        "10,001+ employees": 0.04994686503719448
+      },
+      "industry": {
+        "Information Technology and Services": 0.148,
+        "Computer Software": 0.09,
+        "Marketing and Advertising": 0.053,
+        "Education Management": 0.033,
+        "Retail": 0.026,
+        "Health, Wellness and Fitness": 0.01,
+        "Financial Services": 0.018,
+        "Construction": 0.012,
+        "Hospital & Health Care": 0.019,
+        "Accounting": 0.024,
+        "Non-Profit Organization Management": 0.014,
+        "Design": 0.009,
+        "Internet": 0.017,
+        "Real Estate": 0.009,
+        "E-Learning": 0.01,
+        "Other": 0.508
+      },
+      "time_used": {
+        "I used a free trial": 0.1985670419651996,
+        "Less than 6 months": 0.22006141248720573,
+        "6-12 months": 0.20573183213920163,
+        "1-2 years": 0.2016376663254862,
+        "2+ years": 0.17400204708290687
+      },
+      "switched_share": 0.111,
+      "top_prior_tools": [
+        "Zendesk Suite",
+        "Freshdesk",
+        "LiveAgent",
+        "JIRA Service Management",
+        "Salesforce Sales Cloud"
+      ]
+    },
+    "category": "Help Desk",
+    "competitor_pack_from": [
+      "Freshdesk",
+      "Intercom"
+    ],
+    "reviews": 1000
+  },
+  "Help Scout": {
+    "actual": {
+      "role_family": {
+        "executive_owner": 0.18285714285714286,
+        "project_program_mgmt": 0.02857142857142857,
+        "product_mgmt": 0.005714285714285714,
+        "healthcare_wellness": 0.011428571428571429,
+        "software_it_engineering": 0.1657142857142857,
+        "marketing_creative_content": 0.10857142857142857,
+        "sales_customer": 0.26857142857142857,
+        "operations_admin": 0.08,
+        "finance_hr_legal": 0.03428571428571429,
+        "education_research_analysis": 0.017142857142857144,
+        "consultant_freelance": 0.02857142857142857,
+        "general_team_mgmt": 0.06857142857142857
+      },
+      "company_size": {
+        "Self-employed": 0.044585987261146494,
+        "1-10 employees": 0.31210191082802546,
+        "11-50 employees": 0.2802547770700637,
+        "51-200 employees": 0.14012738853503184,
+        "201-500 employees": 0.10191082802547771,
+        "501-1,000 employees": 0.025477707006369428,
+        "1,001-5,000 employees": 0.07006369426751592,
+        "5,001-10,000 employees": 0.0,
+        "10,001+ employees": 0.025477707006369428
+      },
+      "industry": {
+        "Information Technology and Services": 0.05309734513274336,
+        "Computer Software": 0.14601769911504425,
+        "Marketing and Advertising": 0.05752212389380531,
+        "Education Management": 0.017699115044247787,
+        "Retail": 0.030973451327433628,
+        "Health, Wellness and Fitness": 0.01327433628318584,
+        "Financial Services": 0.022123893805309734,
+        "Construction": 0.004424778761061947,
+        "Hospital & Health Care": 0.017699115044247787,
+        "Accounting": 0.008849557522123894,
+        "Non-Profit Organization Management": 0.01327433628318584,
+        "Design": 0.01327433628318584,
+        "Internet": 0.05309734513274336,
+        "Real Estate": 0.017699115044247787,
+        "E-Learning": 0.01327433628318584,
+        "Other": 0.5176991150442478
+      },
+      "time_used": {
+        "I used a free trial": 0.06451612903225806,
+        "Less than 6 months": 0.17204301075268819,
+        "6-12 months": 0.17204301075268819,
+        "1-2 years": 0.3118279569892473,
+        "2+ years": 0.27956989247311825
+      },
+      "switched_share": 0.10619469026548672,
+      "top_prior_tools": [
+        "Intercom",
+        "Freshdesk",
+        "Front",
+        "Zendesk Suite",
+        "Gmail"
+      ]
+    },
+    "category": "Help Desk",
+    "competitor_pack_from": [
+      "Freshdesk",
+      "Intercom"
+    ],
+    "reviews": 226
+  },
+  "Brevo": {
+    "actual": {
+      "role_family": {
+        "executive_owner": 0.40651387213510254,
+        "project_program_mgmt": 0.010856453558504222,
+        "product_mgmt": 0.0024125452352231603,
+        "healthcare_wellness": 0.010856453558504222,
+        "software_it_engineering": 0.06634499396863691,
+        "marketing_creative_content": 0.21712907117008443,
+        "sales_customer": 0.06272617611580217,
+        "operations_admin": 0.05307599517490953,
+        "finance_hr_legal": 0.0048250904704463205,
+        "education_research_analysis": 0.012062726176115802,
+        "consultant_freelance": 0.014475271411338963,
+        "general_team_mgmt": 0.13872135102533173
+      },
+      "company_size": {
+        "Self-employed": 0.249,
+        "1-10 employees": 0.464,
+        "11-50 employees": 0.19,
+        "51-200 employees": 0.058,
+        "201-500 employees": 0.014,
+        "501-1,000 employees": 0.006,
+        "1,001-5,000 employees": 0.013,
+        "5,001-10,000 employees": 0.003,
+        "10,001+ employees": 0.003
+      },
+      "industry": {
+        "Information Technology and Services": 0.069,
+        "Computer Software": 0.055,
+        "Marketing and Advertising": 0.068,
+        "Education Management": 0.052,
+        "Retail": 0.033,
+        "Health, Wellness and Fitness": 0.034,
+        "Financial Services": 0.023,
+        "Construction": 0.015,
+        "Hospital & Health Care": 0.015,
+        "Accounting": 0.008,
+        "Non-Profit Organization Management": 0.024,
+        "Design": 0.019,
+        "Internet": 0.016,
+        "Real Estate": 0.031,
+        "E-Learning": 0.024,
+        "Other": 0.514
+      },
+      "time_used": {
+        "I used a free trial": 0.119,
+        "Less than 6 months": 0.431,
+        "6-12 months": 0.131,
+        "1-2 years": 0.175,
+        "2+ years": 0.144
+      },
+      "switched_share": 0.442,
+      "top_prior_tools": [
+        "Mailchimp",
+        "MailerLite",
+        "Constant Contact",
+        "SendGrid",
+        "HubSpot Marketing Hub"
+      ]
+    },
+    "category": "Marketing",
+    "competitor_pack_from": [
+      "ActiveCampaign",
+      "Constant Contact"
+    ],
+    "reviews": 1000
+  },
+  "Klaviyo": {
+    "actual": {
+      "role_family": {
+        "executive_owner": 0.3389473684210526,
+        "project_program_mgmt": 0.018947368421052633,
+        "product_mgmt": 0.008421052631578947,
+        "healthcare_wellness": 0.002105263157894737,
+        "software_it_engineering": 0.061052631578947365,
+        "marketing_creative_content": 0.2926315789473684,
+        "sales_customer": 0.06526315789473684,
+        "operations_admin": 0.037894736842105266,
+        "finance_hr_legal": 0.00631578947368421,
+        "education_research_analysis": 0.01263157894736842,
+        "consultant_freelance": 0.02526315789473684,
+        "general_team_mgmt": 0.13052631578947368
+      },
+      "company_size": {
+        "Self-employed": 0.146,
+        "1-10 employees": 0.396,
+        "11-50 employees": 0.27,
+        "51-200 employees": 0.108,
+        "201-500 employees": 0.024,
+        "501-1,000 employees": 0.022,
+        "1,001-5,000 employees": 0.018,
+        "5,001-10,000 employees": 0.004,
+        "10,001+ employees": 0.012
+      },
+      "industry": {
+        "Information Technology and Services": 0.024253731343283583,
+        "Computer Software": 0.022388059701492536,
+        "Marketing and Advertising": 0.1455223880597015,
+        "Education Management": 0.0,
+        "Retail": 0.1865671641791045,
+        "Health, Wellness and Fitness": 0.061567164179104475,
+        "Financial Services": 0.014925373134328358,
+        "Construction": 0.0,
+        "Hospital & Health Care": 0.0018656716417910447,
+        "Accounting": 0.005597014925373134,
+        "Non-Profit Organization Management": 0.0037313432835820895,
+        "Design": 0.014925373134328358,
+        "Internet": 0.018656716417910446,
+        "Real Estate": 0.0,
+        "E-Learning": 0.007462686567164179,
+        "Other": 0.4925373134328358
+      },
+      "time_used": {
+        "I used a free trial": 0.023346303501945526,
+        "Less than 6 months": 0.2198443579766537,
+        "6-12 months": 0.2529182879377432,
+        "1-2 years": 0.2490272373540856,
+        "2+ years": 0.25486381322957197
+      },
+      "switched_share": 0.27425373134328357,
+      "top_prior_tools": [
+        "Mailchimp",
+        "Omnisend",
+        "MailerLite",
+        "Drip",
+        "ActiveCampaign"
+      ]
+    },
+    "category": "Marketing",
+    "competitor_pack_from": [
+      "ActiveCampaign",
+      "Brevo"
+    ],
+    "reviews": 536
+  },
+  "BigCommerce": {
+    "actual": {
+      "role_family": {
+        "executive_owner": 0.3102189781021898,
+        "project_program_mgmt": 0.0072992700729927005,
+        "product_mgmt": 0.0,
+        "healthcare_wellness": 0.0036496350364963502,
+        "software_it_engineering": 0.13138686131386862,
+        "marketing_creative_content": 0.19708029197080293,
+        "sales_customer": 0.06569343065693431,
+        "operations_admin": 0.058394160583941604,
+        "finance_hr_legal": 0.01824817518248175,
+        "education_research_analysis": 0.021897810218978103,
+        "consultant_freelance": 0.029197080291970802,
+        "general_team_mgmt": 0.15693430656934307
+      },
+      "company_size": {
+        "Self-employed": 0.06143344709897611,
+        "1-10 employees": 0.43686006825938567,
+        "11-50 employees": 0.2627986348122867,
+        "51-200 employees": 0.10238907849829351,
+        "201-500 employees": 0.04436860068259386,
+        "501-1,000 employees": 0.034129692832764506,
+        "1,001-5,000 employees": 0.017064846416382253,
+        "5,001-10,000 employees": 0.0034129692832764505,
+        "10,001+ employees": 0.03754266211604096
+      },
+      "industry": {
+        "Information Technology and Services": 0.06470588235294118,
+        "Computer Software": 0.03235294117647059,
+        "Marketing and Advertising": 0.08529411764705883,
+        "Education Management": 0.0,
+        "Retail": 0.1411764705882353,
+        "Health, Wellness and Fitness": 0.01764705882352941,
+        "Financial Services": 0.0058823529411764705,
+        "Construction": 0.0058823529411764705,
+        "Hospital & Health Care": 0.008823529411764706,
+        "Accounting": 0.020588235294117647,
+        "Non-Profit Organization Management": 0.0029411764705882353,
+        "Design": 0.026470588235294117,
+        "Internet": 0.07058823529411765,
+        "Real Estate": 0.0,
+        "E-Learning": 0.008823529411764706,
+        "Other": 0.5088235294117647
+      },
+      "time_used": {
+        "I used a free trial": 0.06191950464396285,
+        "Less than 6 months": 0.15789473684210525,
+        "6-12 months": 0.15479876160990713,
+        "1-2 years": 0.2476780185758514,
+        "2+ years": 0.37770897832817335
+      },
+      "switched_share": 0.14411764705882352,
+      "top_prior_tools": [
+        "Shopify",
+        "Wix",
+        "WooCommerce",
+        "Volusion",
+        "OpenCart"
+      ]
+    },
+    "category": "eCommerce",
+    "competitor_pack_from": [
+      "Shopify",
+      "Squarespace"
+    ],
+    "reviews": 340
+  },
+  "Smartsheet": {
+    "actual": {
+      "role_family": {
+        "executive_owner": 0.09322033898305085,
+        "project_program_mgmt": 0.1053268765133172,
+        "product_mgmt": 0.00847457627118644,
+        "healthcare_wellness": 0.020581113801452784,
+        "software_it_engineering": 0.17433414043583534,
+        "marketing_creative_content": 0.10653753026634383,
+        "sales_customer": 0.06053268765133172,
+        "operations_admin": 0.12106537530266344,
+        "finance_hr_legal": 0.07990314769975787,
+        "education_research_analysis": 0.06537530266343826,
+        "consultant_freelance": 0.02784503631961259,
+        "general_team_mgmt": 0.1368038740920097
+      },
+      "company_size": {
+        "Self-employed": 0.089,
+        "1-10 employees": 0.148,
+        "11-50 employees": 0.165,
+        "51-200 employees": 0.167,
+        "201-500 employees": 0.104,
+        "501-1,000 employees": 0.077,
+        "1,001-5,000 employees": 0.098,
+        "5,001-10,000 employees": 0.047,
+        "10,001+ employees": 0.105
+      },
+      "industry": {
+        "Information Technology and Services": 0.088,
+        "Computer Software": 0.054,
+        "Marketing and Advertising": 0.042,
+        "Education Management": 0.052,
+        "Retail": 0.032,
+        "Health, Wellness and Fitness": 0.024,
+        "Financial Services": 0.036,
+        "Construction": 0.055,
+        "Hospital & Health Care": 0.058,
+        "Accounting": 0.029,
+        "Non-Profit Organization Management": 0.02,
+        "Design": 0.017,
+        "Internet": 0.006,
+        "Real Estate": 0.01,
+        "E-Learning": 0.018,
+        "Other": 0.459
+      },
+      "time_used": {
+        "I used a free trial": 0.076,
+        "Less than 6 months": 0.151,
+        "6-12 months": 0.202,
+        "1-2 years": 0.28,
+        "2+ years": 0.291
+      },
+      "switched_share": 0.186,
+      "top_prior_tools": [
+        "Microsoft Excel",
+        "Wrike",
+        "Asana",
+        "ClickUp",
+        "monday.com AI Work Platform"
+      ]
+    },
+    "category": "Project Management",
+    "competitor_pack_from": [
+      "Asana",
+      "Basecamp"
+    ],
+    "reviews": 1000
+  },
+  "Freshdesk": {
+    "actual": {
+      "role_family": {
+        "executive_owner": 0.13421052631578947,
+        "project_program_mgmt": 0.03289473684210526,
+        "product_mgmt": 0.006578947368421052,
+        "healthcare_wellness": 0.009210526315789473,
+        "software_it_engineering": 0.275,
+        "marketing_creative_content": 0.09605263157894736,
+        "sales_customer": 0.125,
+        "operations_admin": 0.075,
+        "finance_hr_legal": 0.02894736842105263,
+        "education_research_analysis": 0.05526315789473684,
+        "consultant_freelance": 0.035526315789473684,
+        "general_team_mgmt": 0.12631578947368421
+      },
+      "company_size": {
+        "Self-employed": 0.122,
+        "1-10 employees": 0.156,
+        "11-50 employees": 0.194,
+        "51-200 employees": 0.164,
+        "201-500 employees": 0.104,
+        "501-1,000 employees": 0.094,
+        "1,001-5,000 employees": 0.08,
+        "5,001-10,000 employees": 0.029,
+        "10,001+ employees": 0.057
+      },
+      "industry": {
+        "Information Technology and Services": 0.134,
+        "Computer Software": 0.088,
+        "Marketing and Advertising": 0.042,
+        "Education Management": 0.041,
+        "Retail": 0.045,
+        "Health, Wellness and Fitness": 0.023,
+        "Financial Services": 0.029,
+        "Construction": 0.012,
+        "Hospital & Health Care": 0.016,
+        "Accounting": 0.022,
+        "Non-Profit Organization Management": 0.005,
+        "Design": 0.015,
+        "Internet": 0.016,
+        "Real Estate": 0.017,
+        "E-Learning": 0.019,
+        "Other": 0.476
+      },
+      "time_used": {
+        "I used a free trial": 0.104,
+        "Less than 6 months": 0.176,
+        "6-12 months": 0.225,
+        "1-2 years": 0.26,
+        "2+ years": 0.235
+      },
+      "switched_share": 0.13,
+      "top_prior_tools": [
+        "Zendesk Suite",
+        "Zoho Desk",
+        "LiveAgent",
+        "Jira",
+        "HubSpot CRM"
+      ]
+    },
+    "category": "Help Desk",
+    "competitor_pack_from": [
+      "Intercom",
+      "LiveAgent"
+    ],
+    "reviews": 1000
+  }
+}

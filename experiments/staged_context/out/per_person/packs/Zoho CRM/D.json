@@ -1,0 +1,197 @@
+{
+  "items": [
+    {
+      "id": "D:Zoho CRM:landing:1",
+      "text": "Join them, start free. Read more → 02/03 Build better pipelines Intelligent sales automation for follow-ups, approvals, and contextual suggestions, so your team always know what to do next. Read more → 03/03 Close more deals From queries to quotes, engage each critical touchpoint with thoughtful automation — just ask Zia!",
+      "product": "Zoho CRM",
+      "role": "target",
+      "url": "https://www.zoho.com/crm/"
+    },
+    {
+      "id": "D:Zoho CRM:landing:2",
+      "text": "Discover, hire, and deploy in minutes. Custom agents Build custom agents in Zia Agent Studio. Also works via CLI with Cursor, VS Code, Claude Code, and more.",
+      "product": "Zoho CRM",
+      "role": "target",
+      "url": "https://www.zoho.com/crm/"
+    },
+    {
+      "id": "D:Zoho CRM:landing:3",
+      "text": "Connect via MCP Access Zoho CRM with Claude, ChatGPT, etc for your bespoke sales operations. IT Services We selected Zoho because our main focus was to find a provider with a suite of advanced product offerings. Read more Ryan King Senior Director of Global Strategy Healthcare Nikolai Hammer Head of Marketing, Doctors Implants Zoho gives us clarity, confidence, and more time for our patients.",
+      "product": "Zoho CRM",
+      "role": "target",
+      "url": "https://www.zoho.com/crm/"
+    },
+    {
+      "id": "D:Zoho CRM:landing:4",
+      "text": "Insurance Salesforce does a nice job of making people think all other CRMs lack functionality. Read more Alex Tolbert CEO, Bernard Health Telecommunications Sean Rivers Platform Evangelist, Relay Our systems used to operate in silos, but now they're more integrated than ever. Internet One of the pillars behind the productivity that we've been able to achieve today is definitely our usage of Zoho.",
+      "product": "Zoho CRM",
+      "role": "target",
+      "url": "https://www.zoho.com/crm/"
+    },
+    {
+      "id": "D:Zoho CRM:landing:5",
+      "text": "We’ll make it effortless with free migration assistance, and if you’re locked mid-contract, Zoho CRM is on us for 6 months.",
+      "product": "Zoho CRM",
+      "role": "target",
+      "url": "https://www.zoho.com/crm/"
+    },
+    {
+      "id": "D:Zoho CRM:features:1",
+      "text": "Zoho CRM's full feature suite - built for scale, built for sales Features that make selling easier Zoho CRM offers everything you need to increase leads, accelerate sales, and measure sales performance. START FREE TRIAL artificial intelligence AI that listens, learns, and assists Intelligent Assistance, now at your beck and call. Simply converse with your CRM and watch as your commands get distilled into streamlined action.",
+      "product": "Zoho CRM",
+      "role": "target",
+      "url": "https://www.zoho.com/crm/features.html"
+    },
+    {
+      "id": "D:Zoho CRM:features:2",
+      "text": "Dynamic recommendations made, follow-ups automated, anomalies flagged, outcomes predicted, and emails deciphered. It's more than just automation—it's your steadfast strategic partner, empowered for success. Zoho CRM frees up time by automating tedious, mundane tasks like contact tracking, follow-ups, and updates.",
+      "product": "Zoho CRM",
+      "role": "target",
+      "url": "https://www.zoho.com/crm/features.html"
+    },
+    {
+      "id": "D:Zoho CRM:features:3",
+      "text": "Sales made smoother, simpler, and impactful—just as they should be. With Zoho CRM, every lead goes through a journey of earnest engagement, meticulous enrichment, and nurturing to pave the way for the momentum required to propel your business forward. From the first hello to the final handshake, Zoho CRM helps you automate activities across the sales funnel while guiding sales reps contextually to ensure process uniformity.",
+      "product": "Zoho CRM",
+      "role": "target",
+      "url": "https://www.zoho.com/crm/features.html"
+    },
+    {
+      "id": "D:Zoho CRM:features:4",
+      "text": "Transform fragmented steps into fluid, structured practice. Zoho CRM isn't just software—it's a canvas for your vision, a sandbox for testing, and a flexible framework for capturing data and grouping information. It equips you to design an environment that adapts to your unique workflows.",
+      "product": "Zoho CRM",
+      "role": "target",
+      "url": "https://www.zoho.com/crm/features.html"
+    },
+    {
+      "id": "D:Zoho CRM:features:5",
+      "text": "It's the capable foundation your system rests upon—a system that was built entirely by you. CRM4E breaks these barriers, bringing everyone on to your CRM platform so that collaboration is seamless. With Canvas, customize layouts, structure pages, arrange fields, and create a visually intuitive interface, no code required.",
+      "product": "Zoho CRM",
+      "role": "target",
+      "url": "https://www.zoho.com/crm/features.html"
+    },
+    {
+      "id": "D:Zoho CRM:features:6",
+      "text": "Customize fields, layouts, and modules to match your sales processes, down to the last detail. Simplified access and streamlined collaboration. START FREE TRIAL See plans and pricing",
+      "product": "Zoho CRM",
+      "role": "target",
+      "url": "https://www.zoho.com/crm/features.html"
+    },
+    {
+      "id": "D:Freshsales:landing:1",
+      "text": "Freshsales: Streamlined Sales CRM Solution | Freshworks Skip to main content AI-POWERED SALES CRM Sell smarter and close deals faster Grow your pipeline, boost conversions, and power productivity with our AI-powered, easy-to-use sales CRM. Smarter campaigns, superior leads Freshsales helps you run smart sales campaigns to generate more leads, then capture, qualify, route, and track them with the power of Freddy AI. Try it Free Efficient organizing, expert prospecting Declutter your sales view and have the key details you need to dive into your day with no wasted time.",
+      "product": "Freshsales",
+      "role": "competitor",
+      "url": "https://www.freshworks.com/crm/sales/"
+    },
+    {
+      "id": "D:Freshsales:landing:2",
+      "text": "Plan your entire sales process with kanban views, and configure and control with drag-and-drop cards. Focus on valuable leads with intent scores from Freddy AI. Try it Free Stronger sales, faster growth Streamline processes, sew up deals, and score that quarterly bonus with timely insights.",
+      "product": "Freshsales",
+      "role": "competitor",
+      "url": "https://www.freshworks.com/crm/sales/"
+    },
+    {
+      "id": "D:Freshsales:landing:3",
+      "text": "Avoid bottlenecks and plan accurately with deal recommendations by Freddy AI. Improve productivity, increase adoption, and raise team morale. Try it Free AI-powered assistance and insights Freddy AI makes work smarter and easier, helping you around the clock: highlighting the best leads and deals, offering insights, and even writing emails.",
+      "product": "Freshsales",
+      "role": "competitor",
+      "url": "https://www.freshworks.com/crm/sales/"
+    },
+    {
+      "id": "D:Freshsales:landing:4",
+      "text": "Stay a step ahead with Freddy AI. Share context, customize communications, and drive revenue together. Alexandra CRM Operations Manager, Humn Read Story We were able to gather intent data from email engagement and profile our audience and market to niches better.",
+      "product": "Freshsales",
+      "role": "competitor",
+      "url": "https://www.freshworks.com/crm/sales/"
+    },
+    {
+      "id": "D:Freshsales:landing:5",
+      "text": "In a nutshell, the CRM became integral to our organization, rather than a supporting force.",
+      "product": "Freshsales",
+      "role": "competitor",
+      "url": "https://www.freshworks.com/crm/sales/"
+    },
+    {
+      "id": "D:Pipedrive:landing:1",
+      "text": "Sales CRM & Pipeline Management Software | Pipedrive Skip to main content The easy and effective CRM for closing deals Pipedrive lets you track your sales pipeline, optimize leads, manage deals with AI and automate your entire sales process so you can focus on selling. Pipedrive is the best tool I’ve ever found! From email tracking to workflow automations and game-changing integrations, Pipedrive has plenty of features that help us go beyond our sales targets.",
+      "product": "Pipedrive",
+      "role": "competitor",
+      "url": "https://www.pipedrive.com/en"
+    },
+    {
+      "id": "D:Pipedrive:landing:2",
+      "text": "Nirmal Gyanwali Managing Director, Nirmal Web Studio Harness sales insights to drive your strategy Dive into real-time sales reports and grasp the ins and outs of your sales funnel with AI suggestions. Pipedrive’s forecasting, goal-setting, team monitoring and advanced sales metrics tools help you to make swift, informed decisions. Pipedrive has enabled us to have instant access to that data, so it’s not just quadrupling our revenue but ensuring that we have predictable revenue.",
+      "product": "Pipedrive",
+      "role": "competitor",
+      "url": "https://www.pipedrive.com/en"
+    },
+    {
+      "id": "D:Pipedrive:landing:3",
+      "text": "Suds Singh Founder and MD, Interesting Content The CRM tailored to your business Seamlessly switch to a sales tool that matches every step of your buyer’s journey. Pipedrive is more than just a pipeline. Pipedrive adapts well to what we need, and I like that.",
+      "product": "Pipedrive",
+      "role": "competitor",
+      "url": "https://www.pipedrive.com/en"
+    },
+    {
+      "id": "D:Pipedrive:landing:4",
+      "text": "Unlike other CRM solutions, it fits our needs and doesn’t force us to simply conform to what it can provide. Franziska Palumbo-Seidel CEO and Founder, Key Search See all features Compare CRMs Unlock sales success Simplify your workflow and unite your sales tasks in one workspace. Get AI-powered, personalized tips to help you focus on winning deals.",
+      "product": "Pipedrive",
+      "role": "competitor",
+      "url": "https://www.pipedrive.com/en"
+    },
+    {
+      "id": "D:Pipedrive:landing:5",
+      "text": "Pipedrive has made me a salesperson with good habits. And without a doubt I am much more organized than before. Luis Carlos Rojas Sales Manager, Saleslatam México Refine your strategy with real-time performance insights Leverage real-time, visual data to easily make tough decisions and identify what works.",
+      "product": "Pipedrive",
+      "role": "competitor",
+      "url": "https://www.pipedrive.com/en"
+    }
+  ],
+  "sources": [
+    {
+      "product": "Zoho CRM",
+      "role": "target",
+      "page": "landing",
+      "url": "https://www.zoho.com/crm/",
+      "captured": "2026-10-18",
+      "html_sha256": "6c037a3ea038b9fff9d851e85ab5f90012e7b3d069d3279b5ebbe145a87b02d7",
+      "tokens": 351,
+      "truncated": false,
+      "sentences_dropped_by_filter": 9
+    },
+    {
+      "product": "Zoho CRM",
+      "role": "target",
+      "page": "features",
+      "url": "https://www.zoho.com/crm/features.html",
+      "captured": "2026-10-18",
+      "html_sha256": "a5241b0b088ab84d46ba0bcd95eea3b0b59f7b2e3845c307d60438fe35c9e570",
+      "tokens": 493,
+      "truncated": false,
+      "sentences_dropped_by_filter": 17
+    },
+    {
+      "product": "Freshsales",
+      "role": "competitor",
+      "page": "landing",
+      "url": "https://www.freshworks.com/crm/sales/",
+      "captured": "2026-10-18",
+      "html_sha256": "9dbb9ec5003537d3e24465cc9d6fd5af360bb54bcabcf6cc5b765aee7aff8873",
+      "tokens": 392,
+      "truncated": false,
+      "sentences_dropped_by_filter": 12
+    },
+    {
+      "product": "Pipedrive",
+      "role": "competitor",
+      "page": "landing",
+      "url": "https://www.pipedrive.com/en",
+      "captured": "2026-10-18",
+      "html_sha256": "dec73708dc9c381d6809fb2b2a3ac8b8634714ad7878d3234f8609f5a251f124",
+      "tokens": 467,
+      "truncated": true,
+      "sentences_dropped_by_filter": 23
+    }
+  ]
+}

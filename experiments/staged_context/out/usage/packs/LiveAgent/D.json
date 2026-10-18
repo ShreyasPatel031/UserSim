@@ -1,0 +1,74 @@
+{
+  "items": [
+    {
+      "id": "D:LiveAgent:landing:1",
+      "text": "Email, live chat, phone, social media, WhatsApp, Viber, knowledge base — all unified in a single dashboard with 175+ features and 200+ integrations. Manage email, chat, calls and social messages in one inbox. Losing track of support requests?",
+      "product": "LiveAgent",
+      "role": "target",
+      "url": "https://www.liveagent.com/"
+    },
+    {
+      "id": "D:LiveAgent:landing:2",
+      "text": "Automatically turn messages into tickets. Track and resolve every request easily. Visitors expect instant answers?",
+      "product": "LiveAgent",
+      "role": "target",
+      "url": "https://www.liveagent.com/"
+    },
+    {
+      "id": "D:LiveAgent:landing:3",
+      "text": "The fastest live chat Increase conversions by up to 3× with live chat. Chat with visitors in real time and resolve questions faster. Managing phone support separately?",
+      "product": "LiveAgent",
+      "role": "target",
+      "url": "https://www.liveagent.com/"
+    },
+    {
+      "id": "D:LiveAgent:landing:4",
+      "text": "Handle calls directly from the helpdesk and track every conversation. Would you like to take a tour? Take a tour of LiveAgent and explore every feature, functionality, and use case of our multi-channel help desk solution.",
+      "product": "LiveAgent",
+      "role": "target",
+      "url": "https://www.liveagent.com/"
+    },
+    {
+      "id": "D:LiveAgent:landing:5",
+      "text": "Take a tour Looking to improve your startup? If you’re looking for the right help desk software for your startup, you’re at the right place. Check the deal for startups See what’s new in LiveAgent Find out about the latest updates of LiveAgent help desk software and explore how we continually improve our solution.",
+      "product": "LiveAgent",
+      "role": "target",
+      "url": "https://www.liveagent.com/"
+    },
+    {
+      "id": "D:LiveAgent:landing:6",
+      "text": "Discover LiveAgent updates Our latest blogs Zendesk Pricing 2026: Plans, Add-Ons and Real Costs Zendesk pricing in 2026: every plan from $19 to $149 per agent, add-ons, AI resolution fees and extra costs to plan for, checked on Zendesk's own page. LiveAgent’s AI chatbot operates 24/7 in 100+ languages, using your knowledge base, website content, and documents to answer common questions instantly. When issues are more complex, it hands the conversation off to your human agents with full context.",
+      "product": "LiveAgent",
+      "role": "target",
+      "url": "https://www.liveagent.com/"
+    },
+    {
+      "id": "D:LiveAgent:landing:7",
+      "text": "Does LiveAgent offer a free trial? How much does LiveAgent cost? LiveAgent pricing starts at $15 per agent/month (billed annually) with multiple tiers available including Small, Medium, Large, and Enterprise plans — each adding more advanced features like call center, social channel integration, SLA, and dedicated support.",
+      "product": "LiveAgent",
+      "role": "target",
+      "url": "https://www.liveagent.com/"
+    },
+    {
+      "id": "D:LiveAgent:landing:8",
+      "text": "What communication channels are supported? LiveAgent supports email, live chat, phone (via built‑in call center), Facebook, X, Instagram, WhatsApp, Viber, Telegram contact forms, knowledge base, and more — all unified into one inbox so you never miss a conversation. Can I cancel or change my plan anytime?",
+      "product": "LiveAgent",
+      "role": "target",
+      "url": "https://www.liveagent.com/"
+    },
+    {
+      "id": "D:LiveAgent:landing:9",
+      "text": "Absolutely — you can upgrade, downgrade, or cancel your plan anytime with no contracts, no setup fees, and flexible billing options.",
+      "product": "LiveAgent",
+      "role": "target",
+      "url": "https://www.liveagent.com/"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.liveagent.com/",
+      "html_sha256": "80eb800e4b3f8f14b56db6d675e4cc6ce0e87c23d47ffc9daae05113625f0000",
+      "sentences_dropped_by_filter": 29
+    }
+  ]
+}

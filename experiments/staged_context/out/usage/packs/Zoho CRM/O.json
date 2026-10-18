@@ -1,0 +1,119 @@
+{
+  "status": "ok",
+  "onet_version": "db_31_0_csv",
+  "mapping_model": "gemini-2.5-pro",
+  "task_selection": "Core first, then lexical overlap with target D text, then Task ID",
+  "occupations": [
+    {
+      "id": "O:11-2022.00",
+      "code": "11-2022.00",
+      "title": "Sales Managers",
+      "mapping": "model-inferred from pack D (no review data)",
+      "rationale": "The product offers \"intelligent sales automation\" to help teams \"build better pipelines\" and \"close more deals\" [D:Zoho CRM:landing:1].",
+      "tasks": [
+        {
+          "id": "O:11-2022.00:3",
+          "task_id": "3",
+          "text": "Direct and coordinate activities involving sales of manufactured products, services, commodities, real estate, or other subjects of sale.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 3
+        },
+        {
+          "id": "O:11-2022.00:2",
+          "task_id": "2",
+          "text": "Monitor customer preferences to determine focus of sales efforts.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 2
+        },
+        {
+          "id": "O:11-2022.00:1",
+          "task_id": "1",
+          "text": "Resolve customer complaints regarding sales and service.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 1
+        },
+        {
+          "id": "O:11-2022.00:11",
+          "task_id": "11",
+          "text": "Plan and direct staffing, training, and performance evaluations to develop and control sales and service programs.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 1
+        }
+      ]
+    },
+    {
+      "id": "O:11-2021.00",
+      "code": "11-2021.00",
+      "title": "Marketing Managers",
+      "mapping": "model-inferred from pack D (no review data)",
+      "rationale": "A testimonial from a \"Head of Marketing\" indicates the product is used to gain \"clarity, confidence, and more time\" [D:Zoho CRM:landing:3].",
+      "tasks": [
+        {
+          "id": "O:11-2021.00:20709",
+          "task_id": "20709",
+          "text": "Formulate, direct, or coordinate marketing activities or policies to promote products or services, working with advertising or promotion managers.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 2
+        },
+        {
+          "id": "O:11-2021.00:951",
+          "task_id": "951",
+          "text": "Identify, develop, or evaluate marketing strategy, based on knowledge of establishment objectives, market characteristics, and cost and markup factors.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 2
+        },
+        {
+          "id": "O:11-2021.00:954",
+          "task_id": "954",
+          "text": "Direct the hiring, training, or performance evaluations of marketing or sales staff and oversee their daily activities.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 2
+        },
+        {
+          "id": "O:11-2021.00:957",
+          "task_id": "957",
+          "text": "Compile lists describing product or service offerings.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 2
+        }
+      ]
+    },
+    {
+      "id": "O:11-1011.00",
+      "code": "11-1011.00",
+      "title": "Chief Executives",
+      "mapping": "model-inferred from pack D (no review data)",
+      "rationale": "A CEO is quoted as a user, highlighting the CRM's functionality and its role in achieving productivity [D:Zoho CRM:landing:4].",
+      "tasks": [
+        {
+          "id": "O:11-1011.00:8826",
+          "task_id": "8826",
+          "text": "Direct, plan, or implement policies, objectives, or activities of organizations or businesses to ensure continuing operations, to maximize returns on investments, or to increase productivity.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 2
+        },
+        {
+          "id": "O:11-1011.00:8834",
+          "task_id": "8834",
+          "text": "Prepare or present reports concerning activities, expenses, budgets, government statutes or rulings, or other items affecting businesses or program services.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 2
+        },
+        {
+          "id": "O:11-1011.00:8837",
+          "task_id": "8837",
+          "text": "Coordinate the development or implementation of budgetary control systems, recordkeeping systems, or other administrative control processes.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 2
+        },
+        {
+          "id": "O:11-1011.00:8823",
+          "task_id": "8823",
+          "text": "Direct or coordinate an organization's financial or budget activities to fund operations, maximize investments, or increase efficiency.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 1
+        }
+      ]
+    }
+  ]
+}

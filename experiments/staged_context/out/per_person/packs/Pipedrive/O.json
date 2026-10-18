@@ -1,0 +1,119 @@
+{
+  "status": "ok",
+  "onet_version": "db_31_0_csv",
+  "mapping_model": "gemini-2.5-pro",
+  "task_selection": "Core first, then lexical overlap with target D text, then Task ID",
+  "occupations": [
+    {
+      "id": "O:11-2022.00",
+      "code": "11-2022.00",
+      "title": "Sales Managers",
+      "mapping": "model-inferred from pack D (no review data)",
+      "rationale": "Pipedrive is a sales CRM that provides tools for team monitoring, goal-setting, and refining strategy with real-time performance insights, and a \"Sales Manager\" is quoted as a user [D:Pipedrive:landing:2, D:Pipedrive:landing:5].",
+      "tasks": [
+        {
+          "id": "O:11-2022.00:3",
+          "task_id": "3",
+          "text": "Direct and coordinate activities involving sales of manufactured products, services, commodities, real estate, or other subjects of sale.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 5
+        },
+        {
+          "id": "O:11-2022.00:11",
+          "task_id": "11",
+          "text": "Plan and direct staffing, training, and performance evaluations to develop and control sales and service programs.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 4
+        },
+        {
+          "id": "O:11-2022.00:13",
+          "task_id": "13",
+          "text": "Confer with potential customers regarding equipment needs, and advise customers on types of equipment to purchase.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 3
+        },
+        {
+          "id": "O:11-2022.00:2",
+          "task_id": "2",
+          "text": "Monitor customer preferences to determine focus of sales efforts.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 3
+        }
+      ]
+    },
+    {
+      "id": "O:41-3091.00",
+      "code": "41-3091.00",
+      "title": "Sales Representatives of Services, Except Advertising, Insurance, Financial Services, and Travel",
+      "mapping": "model-inferred from pack D (no review data)",
+      "rationale": "The product is described as a tool for salespeople to track their sales pipeline, manage deals, automate their sales process, and ultimately \"focus on selling\" and \"closing deals\" [D:Pipedrive:landing:1, D:Pipedrive:landing:6].",
+      "tasks": [
+        {
+          "id": "O:41-3091.00:23225",
+          "task_id": "23225",
+          "text": "Consult with clients after sales or contract signings to resolve problems and provide ongoing support.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 3
+        },
+        {
+          "id": "O:41-3091.00:23226",
+          "task_id": "23226",
+          "text": "Contact prospective or existing customers to discuss how services can meet their needs.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 3
+        },
+        {
+          "id": "O:41-3091.00:23230",
+          "task_id": "23230",
+          "text": "Emphasize or recommend service features based on knowledge of customers' needs and vendor capabilities and limitations.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 3
+        },
+        {
+          "id": "O:41-3091.00:23231",
+          "task_id": "23231",
+          "text": "Identify prospective customers using business directories, leads from clients, or information from conferences or trade shows.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 3
+        }
+      ]
+    },
+    {
+      "id": "O:11-1011.00",
+      "code": "11-1011.00",
+      "title": "Chief Executives",
+      "mapping": "model-inferred from pack D (no review data)",
+      "rationale": "A \"CEO and Founder\" is quoted as a user, and the software provides high-level business insights such as real-time sales reports and predictable revenue forecasting [D:Pipedrive:landing:2, D:Pipedrive:landing:4].",
+      "tasks": [
+        {
+          "id": "O:11-1011.00:8825",
+          "task_id": "8825",
+          "text": "Analyze operations to evaluate performance of a company or its staff in meeting objectives or to determine areas of potential cost reduction, program improvement, or policy change.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 5
+        },
+        {
+          "id": "O:11-1011.00:8828",
+          "task_id": "8828",
+          "text": "Direct or coordinate activities of businesses or departments concerned with production, pricing, sales, or distribution of products.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 4
+        },
+        {
+          "id": "O:11-1011.00:8832",
+          "task_id": "8832",
+          "text": "Direct human resources activities, including the approval of human resource plans or activities, the selection of directors or other high-level staff, or establishment or organization of major departments.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 4
+        },
+        {
+          "id": "O:11-1011.00:8833",
+          "task_id": "8833",
+          "text": "Preside over, or serve on, boards of directors, management committees, or other governing boards.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 3
+        }
+      ]
+    }
+  ]
+}

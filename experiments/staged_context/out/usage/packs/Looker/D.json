@@ -1,0 +1,88 @@
+{
+  "items": [
+    {
+      "id": "D:Looker:landing:1",
+      "text": "Looker The agentic BI platform built on a trusted semantic layer Move from static dashboards to governed, AI-driven action. Powered by Gemini, Looker pairs an industry-leading universal semantic layer with conversational analytics, MCP integration, and extensible APIs—so every user and AI agent works from a single source of truth. Try it free Request demo Product highlights: Conversational Analytics Agents Composable, Agentic BI platform for data innovation Open and trusted semantic model Self-Service BI Unleash Data's Full Potential: The Looker Story 1:43 video Features Conversational Analytics: move beyond static answers to trigger business actions Conversational Analytics in Looker transforms static dashboards into active workspaces where governed agents interpret data and act on it.",
+      "product": "Looker",
+      "role": "target",
+      "url": "https://cloud.google.com/looker"
+    },
+    {
+      "id": "D:Looker:landing:2",
+      "text": "Powered by Gemini, any business user can move from a natural-language question to an automated decision in seconds—without waiting for a technical analyst. Deploy specialized Dashboard Agents directly within your BI canvases for instant AI-powered summaries and deep dives grounded in a single source of truth. Explore what’s new in Conversational Analytics and see how ALLO Fiber democratizes real-time insights across its workforce.",
+      "product": "Looker",
+      "role": "target",
+      "url": "https://cloud.google.com/looker"
+    },
+    {
+      "id": "D:Looker:landing:3",
+      "text": "Looker Conversational Analytics 5:16 The universal semantic layer: a trusted foundation for agentic BI Looker semantic layer sits directly above your cloud data warehouse, translating complex SQL into governed business metrics once in LookML. This single source of truth grounds both human analysts and AI agents—eliminating LLM hallucinations and ensuring metric consistency across dashboards, Model Context Protocol (MCP) workflows, and custom applications. See how PayPal connects agents such as, Looker MCP Server and how Intel unified enterprise KPIs with LookML.",
+      "product": "Looker",
+      "role": "target",
+      "url": "https://cloud.google.com/looker"
+    },
+    {
+      "id": "D:Looker:landing:4",
+      "text": "With Looker APIs and LookML, you can move rapidly from governed models to production-ready embedded data products. Integrate conversational AI within any application using low-code iframe embedding or extensible SDKs, and use the Looker Conversational Analytics API to build custom, multi-turn agentic workflows. See how Overdose Digital and Wego power interactive client and partner analytics with Looker.",
+      "product": "Looker",
+      "role": "target",
+      "url": "https://cloud.google.com/looker"
+    },
+    {
+      "id": "D:Looker:landing:5",
+      "text": "Looker Embedded Analytics 2:28 Simplify and secure your analytics with Looker on Google Cloud Looker on Google Cloud combines Looker enterprise analytics platform with the security, scale, and management of the Google Cloud Console. See how Thomson Reuters modernized enterprise reporting at scale with Looker on Google Cloud. Looker Core on Google Cloud 2:29 Empower every user with AI-driven self-service Looker reimagines self-service BI for the agentic era, making complex data exploration intuitive across your organization.",
+      "product": "Looker",
+      "role": "target",
+      "url": "https://cloud.google.com/looker"
+    },
+    {
+      "id": "D:Looker:landing:6",
+      "text": "With Gemini-powered capabilities , users can use natural language to build visualizations, craft custom calculations, and launch deep dives with AI Quick Starts. Blend ad hoc CSVs and local files alongside governed LookML models in seconds, and explore the latest Google Data Cloud innovations to move from question to decision in your flow of work. How It Works Looker is the experience layer for the Agentic Data Cloud.",
+      "product": "Looker",
+      "role": "target",
+      "url": "https://cloud.google.com/looker"
+    },
+    {
+      "id": "D:Looker:landing:7",
+      "text": "Define business logic once in LookML to give Conversational Analytics, Dashboard Agents, and MCP-connected tools the governed context they need to turn raw data into trusted action. By leveraging the Looker API, you can create multi-turn conversational workflows that offer AI-powered recommendations while providing the underlying SQL query and explanation for complete verifiability. Because it utilizes the existing user authentication and management of the Looker SDK, you can integrate agentic conversations anywhere in your app with minimal friction.",
+      "product": "Looker",
+      "role": "target",
+      "url": "https://cloud.google.com/looker"
+    },
+    {
+      "id": "D:Looker:landing:8",
+      "text": "Looker APIs on GitHub Building a fully custom UI with Looker’s Conversational Analytics API endpoints. A dynamic data analytics powerhouse Looker for BigQuery Looker and BigQuery together form a dynamic data analytics powerhouse, transforming raw information into actionable insights that drive business growth. BigQuery's unparalleled ability to store and process massive datasets seamlessly integrates with Looker's intuitive, Google-friendly platform.",
+      "product": "Looker",
+      "role": "target",
+      "url": "https://cloud.google.com/looker"
+    },
+    {
+      "id": "D:Looker:landing:9",
+      "text": "With Looker's semantic modeling layer, complex data relationships are simplified, ensuring a single source of truth and fostering collaboration across your organization. From interactive dashboards and custom applications to real-time insights and AI-powered analytics, Looker and BigQuery empower you to make smarter decisions, faster, and stay ahead of the competition. Unlock BigQuery's full potential with Looker Looker for BigQuery Tutorials, quickstarts, & labs Looker for BigQuery Looker and BigQuery together form a dynamic data analytics powerhouse, transforming raw information into actionable insights that drive business growth.",
+      "product": "Looker",
+      "role": "target",
+      "url": "https://cloud.google.com/looker"
+    },
+    {
+      "id": "D:Looker:landing:10",
+      "text": "Unlock BigQuery's full potential with Looker Looker for BigQuery Monetize your business data Looker for data monetization Data monetization is the process of leveraging the data your organization already collects to create new revenue streams or business value. Looker is ideal for data monetization because it allows you to create tailored data products, embed analytics seamlessly, scale with your business, and maintain data security. Monetize data with embedded analytics Data Monetization GIF Tutorials, quickstarts, & labs Looker for data monetization Data monetization is the process of leveraging the data your organization already collects to create new revenue streams or business value.",
+      "product": "Looker",
+      "role": "target",
+      "url": "https://cloud.google.com/looker"
+    },
+    {
+      "id": "D:Looker:landing:11",
+      "text": "Monetize data with embedded analytics Data Monetization GIF Reduce cross-cloud spending Looker for cloud cost management Unify billing data across Google Cloud, AWS, and Azure into a single FinOps view. Looker prebuilt cloud cost management models give finance and engineering teams real-time visibility into multicloud spend—helping you catch high-cost anomalies early, eliminate slow-burn inefficiencies, and optimize commitment utilization.",
+      "product": "Looker",
+      "role": "target",
+      "url": "https://cloud.google.com/looker"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://cloud.google.com/looker",
+      "html_sha256": "3e81e035bff935ad6c4045958d229eea84dc0e67a6a7f87eb9c99fc24853f200",
+      "sentences_dropped_by_filter": 11
+    }
+  ]
+}

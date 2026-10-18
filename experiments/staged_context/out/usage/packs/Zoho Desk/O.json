@@ -1,0 +1,119 @@
+{
+  "status": "ok",
+  "onet_version": "db_31_0_csv",
+  "mapping_model": "gemini-2.5-pro",
+  "task_selection": "Core first, then lexical overlap with target D text, then Task ID",
+  "occupations": [
+    {
+      "id": "O:43-4051.00",
+      "code": "43-4051.00",
+      "title": "Customer Service Representatives",
+      "mapping": "model-inferred from pack D (no review data)",
+      "rationale": "The product is a help desk software used for managing \"Client Experience\" [D:Zoho Desk:landing:3] by routing tickets, collaborating on issues, and tracking service level agreements [D:Zoho Desk:landing:2, D:Zoho Desk:landing:3].",
+      "tasks": [
+        {
+          "id": "O:43-4051.00:18565",
+          "task_id": "18565",
+          "text": "Confer with customers by telephone or in person to provide information about products or services, take or enter orders, cancel accounts, or obtain details of complaints.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 1
+        },
+        {
+          "id": "O:43-4051.00:2578",
+          "task_id": "2578",
+          "text": "Keep records of customer interactions or transactions, recording details of inquiries, complaints, or comments, as well as actions taken.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 1
+        },
+        {
+          "id": "O:43-4051.00:2584",
+          "task_id": "2584",
+          "text": "Complete contract forms, prepare change of address records, or issue service discontinuance orders, using computers.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 1
+        },
+        {
+          "id": "O:43-4051.00:2580",
+          "task_id": "2580",
+          "text": "Check to ensure that appropriate changes were made to resolve customers' problems.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 0
+        }
+      ]
+    },
+    {
+      "id": "O:15-1232.00",
+      "code": "15-1232.00",
+      "title": "Computer User Support Specialists",
+      "mapping": "model-inferred from pack D (no review data)",
+      "rationale": "These specialists provide help desk support and would use the software to handle routine issues, route tickets to the right person, and collaborate across teams for resolution [D:Zoho Desk:landing:1, D:Zoho Desk:landing:2].",
+      "tasks": [
+        {
+          "id": "O:15-1232.00:1282",
+          "task_id": "1282",
+          "text": "Answer user inquiries regarding computer software or hardware operation to resolve problems.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 1
+        },
+        {
+          "id": "O:15-1232.00:1286",
+          "task_id": "1286",
+          "text": "Set up equipment for employee use, performing or ensuring proper installation of cables, operating systems, or appropriate software.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 1
+        },
+        {
+          "id": "O:15-1232.00:1287",
+          "task_id": "1287",
+          "text": "Maintain records of daily data communication transactions, problems and remedial actions taken, or installation activities.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 1
+        },
+        {
+          "id": "O:15-1232.00:1291",
+          "task_id": "1291",
+          "text": "Refer major hardware or software problems or defective products to vendors or technicians for service.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 1
+        }
+      ]
+    },
+    {
+      "id": "O:11-3021.00",
+      "code": "11-3021.00",
+      "title": "Computer and Information Systems Managers",
+      "mapping": "model-inferred from pack D (no review data)",
+      "rationale": "Managers of support teams would use the software to assign and route tickets based on agent skills and workload, and to set and monitor service level agreements with automated escalations [D:Zoho Desk:landing:2, D:Zoho Desk:landing:3].",
+      "tasks": [
+        {
+          "id": "O:11-3021.00:969",
+          "task_id": "969",
+          "text": "Assign and review the work of systems analysts, programmers, and other computer-related workers.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 1
+        },
+        {
+          "id": "O:11-3021.00:978",
+          "task_id": "978",
+          "text": "Review project plans to plan and coordinate project activity.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 1
+        },
+        {
+          "id": "O:11-3021.00:15198",
+          "task_id": "15198",
+          "text": "Provide users with technical support for computer problems.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 0
+        },
+        {
+          "id": "O:11-3021.00:967",
+          "task_id": "967",
+          "text": "Consult with users, management, vendors, and technicians to assess computing needs and system requirements.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 0
+        }
+      ]
+    }
+  ]
+}

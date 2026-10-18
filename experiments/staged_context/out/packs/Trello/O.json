@@ -1,0 +1,119 @@
+{
+  "status": "ok",
+  "onet_version": "db_31_0_csv",
+  "mapping_model": "gemini-2.5-pro",
+  "task_selection": "Core first, then lexical overlap with target D text, then Task ID",
+  "occupations": [
+    {
+      "id": "O:13-1082.00",
+      "code": "13-1082.00",
+      "title": "Project Management Specialists",
+      "mapping": "model-inferred from pack D (no review data)",
+      "rationale": "The product is explicitly described as a \"project management application\" and a competitor excerpt mentions the need for a \"shared project management tool\" to track project plans and progress [D:Asana:landing:3].",
+      "tasks": [
+        {
+          "id": "O:13-1082.00:21468",
+          "task_id": "21468",
+          "text": "Identify, review, or select vendors or consultants to meet project needs.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 2
+        },
+        {
+          "id": "O:13-1082.00:21465",
+          "task_id": "21465",
+          "text": "Create project status presentations for delivery to customers or project personnel.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 1
+        },
+        {
+          "id": "O:13-1082.00:21466",
+          "task_id": "21466",
+          "text": "Develop or update project plans including information such as objectives, technologies, schedules, funding, and staffing.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 1
+        },
+        {
+          "id": "O:13-1082.00:21467",
+          "task_id": "21467",
+          "text": "Identify project needs such as resources, staff, or finances by reviewing project objectives and schedules.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 1
+        }
+      ]
+    },
+    {
+      "id": "O:15-1252.00",
+      "code": "15-1252.00",
+      "title": "Software Developers",
+      "mapping": "model-inferred from pack D (no review data)",
+      "rationale": "Trello's ability to integrate with Jira and a competitor's mention of integrations with tools like GitHub and managing work in \"sprints\" directly relates to the project management needs of software developers [D:Trello:features:5, D:ClickUp:landing:4].",
+      "tasks": [
+        {
+          "id": "O:15-1252.00:21661",
+          "task_id": "21661",
+          "text": "Analyze information to determine, recommend, and plan installation of a new system or modification of an existing system.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 3
+        },
+        {
+          "id": "O:15-1252.00:21662",
+          "task_id": "21662",
+          "text": "Analyze user needs and software requirements to determine feasibility of design within time and cost constraints.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 2
+        },
+        {
+          "id": "O:15-1252.00:21663",
+          "task_id": "21663",
+          "text": "Confer with data processing or project managers to obtain information on limitations or capabilities for data processing projects.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 1
+        },
+        {
+          "id": "O:15-1252.00:21664",
+          "task_id": "21664",
+          "text": "Confer with systems analysts, engineers, programmers and others to design systems and to obtain information on project limitations and capabilities, performance requirements and interfaces.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 1
+        }
+      ]
+    },
+    {
+      "id": "O:11-2021.00",
+      "code": "11-2021.00",
+      "title": "Marketing Managers",
+      "mapping": "model-inferred from pack D (no review data)",
+      "rationale": "A competitor excerpt explicitly names \"marketing\" as a team that tracks its work on a project launch, a process that involves managing the various tasks, deadlines, and workflows that Trello is designed to handle [D:Asana:landing:3].",
+      "tasks": [
+        {
+          "id": "O:11-2021.00:958",
+          "task_id": "958",
+          "text": "Use sales forecasting or strategic planning to ensure the sale and profitability of products, lines, or services, analyzing business developments and monitoring market trends.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 2
+        },
+        {
+          "id": "O:11-2021.00:20709",
+          "task_id": "20709",
+          "text": "Formulate, direct, or coordinate marketing activities or policies to promote products or services, working with advertising or promotion managers.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 1
+        },
+        {
+          "id": "O:11-2021.00:954",
+          "task_id": "954",
+          "text": "Direct the hiring, training, or performance evaluations of marketing or sales staff and oversee their daily activities.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 1
+        },
+        {
+          "id": "O:11-2021.00:957",
+          "task_id": "957",
+          "text": "Compile lists describing product or service offerings.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 1
+        }
+      ]
+    }
+  ]
+}

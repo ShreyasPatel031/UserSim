@@ -1,0 +1,15 @@
+{"product": "Brevo", "run_id": "brevo_deep_1", "session_id": "e5caa08087ee41d58b4371d7afdd7c65", "study_id": "5ca2a4af-3039-4450-9ee9-de0bdd8e584a",
+ "task": "I need to set up Brevo to manage our email campaigns. I'll create a contact list and add a few contacts by hand, then build email campaigns for different segments: a welcome email, a feature update and a promotional offer (drafts or scheduled, never sent). Then I'll segment the contacts by engagement or product interest, set up a simple automation for new sign-ups, and review the campaign reports area.",
+ "signed_in": true, "reached_product": true, "outcome": "gave_up", "steps_used": 35,
+ "observations": [
+  {"kind": "signup_friction", "feature": "sign-up profile", "what": "After email verification Brevo requires a full organization postal address (address, postal code, city, country, then a State dropdown that only appears after choosing the country), which took about 8 steps."},
+  {"kind": "signup_friction", "feature": "plan selection", "what": "The plan page shows four paid cards (Starter $9, Standard $18, Professional, Enterprise) and the 'Select Free' button only appears after scrolling well below them."},
+  {"kind": "signup_friction", "feature": "sign-up form", "what": "The cookie consent banner covered the 'Continue' button on the profile step until cookies were rejected."},
+  {"kind": "product_friction", "feature": "Lists > Create a list", "what": "Creating a list fails silently until a Folder is chosen, even though the only option is the auto-created 'Your First Folder', adding two extra clicks to a basic action."},
+  {"kind": "product_benefit", "feature": "Lists", "what": "Once the folder was picked, the 'Demo Alpha Newsletter' list was created from a side panel and appeared immediately in the lists table with its ID and folder."},
+  {"kind": "product_friction", "feature": "Marketing > Campaigns", "what": "The Campaigns listing page showed only a spinner for 15+ seconds across three observations and never rendered, so I could not start the welcome, feature-update or promo drafts."},
+  {"kind": "product_friction", "feature": "account status", "what": "A fresh free account shows a persistent red 'Your account is under review' banner across every page, pointing to a Deliverability center."},
+  {"kind": "product_friction", "feature": "Marketing navigation", "what": "In the Marketing menu, Forms carries a lock icon and Landing pages a paid-plan crown on the new free account, so a sign-up form to feed a new-subscriber automation is not immediately available."},
+  {"kind": "product_benefit", "feature": "navigation", "what": "The sidebar clearly groups CRM (Contacts, Lists, Segments) and Marketing (Campaigns, Statistics, Templates) plus Automations, so the areas the task needs were easy to locate."},
+  {"kind": "agent_failure", "feature": "budget", "what": "I spent about 24 of 39 steps on sign-up and two steps on a dropdown I mishandled, leaving no budget for contacts, campaigns, segments, automation or reports."}
+ ]}

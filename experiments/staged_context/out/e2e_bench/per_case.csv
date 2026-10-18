@@ -1,0 +1,161 @@
+rid,product,condition,run_completed,run_error,ease_of_use_rating_abs_err,functionality_rating_abs_err,overall_rating_abs_err,value_for_money_rating_abs_err,customer_support_rating_abs_err,recommendation_score_abs_err,pros,cons,overall_experience
+Capterra___2868417,Freshsales,C1_agent_alone,True,False,0.0,1.0,0.0,1.0,1.0,2.0,0.0,0.0,0.0
+Capterra___2868417,Freshsales,C2_reviews_only,True,False,0.0,1.0,0.0,1.0,1.0,2.0,0.0,0.0,0.0
+Capterra___2868417,Freshsales,C3_run_only,True,False,0.0,1.0,0.0,1.0,2.0,2.0,0.0,0.0,0.0
+Capterra___2868417,Freshsales,C4_run_plus_reviews,True,False,0.0,1.0,0.0,1.0,1.0,2.0,0.3333333333333333,0.0,0.0
+Capterra___1298771,Freshsales,C1_agent_alone,True,False,0.0,0.0,2.0,2.0,2.0,4.0,0.25,0.0,0.0
+Capterra___1298771,Freshsales,C2_reviews_only,True,False,0.0,1.0,1.0,1.0,1.0,2.0,0.25,0.0,0.0
+Capterra___1298771,Freshsales,C3_run_only,True,False,0.0,0.0,2.0,2.0,2.0,4.0,0.5,0.0,0.0
+Capterra___1298771,Freshsales,C4_run_plus_reviews,True,False,0.0,1.0,1.0,1.0,1.0,2.0,0.25,0.0,0.0
+Capterra___3875603,Freshsales,C1_agent_alone,True,False,1.0,1.0,0.0,1.0,1.0,1.0,0.5,0.25,0.0
+Capterra___3875603,Freshsales,C2_reviews_only,True,False,1.0,1.0,0.0,1.0,1.0,1.0,0.5,0.25,0.0
+Capterra___3875603,Freshsales,C3_run_only,True,False,1.0,0.0,2.0,1.0,2.0,4.0,0.0,0.0,0.0
+Capterra___3875603,Freshsales,C4_run_plus_reviews,True,False,1.0,1.0,2.0,1.0,2.0,4.0,0.0,0.0,0.0
+Capterra___1379542,Freshsales,C1_agent_alone,True,False,1.0,1.0,1.0,1.0,1.0,2.0,0.5,0.0,1.0
+Capterra___1379542,Freshsales,C2_reviews_only,True,False,1.0,0.0,0.0,1.0,1.0,1.0,0.75,0.0,1.0
+Capterra___1379542,Freshsales,C3_run_only,True,False,4.0,3.0,4.0,3.0,2.0,10.0,0.0,0.0,0.0
+Capterra___1379542,Freshsales,C4_run_plus_reviews,True,False,3.0,2.0,3.0,2.0,2.0,7.0,0.25,0.0,0.0
+Capterra___4177313,Zoho CRM,C1_agent_alone,True,False,2.0,0.0,0.0,0.0,1.0,0.0,0.5,,0.0
+Capterra___4177313,Zoho CRM,C2_reviews_only,True,False,0.0,1.0,1.0,0.0,0.0,1.0,0.5,,0.0
+Capterra___4177313,Zoho CRM,C3_run_only,True,False,2.0,0.0,1.0,0.0,1.0,2.0,0.25,,0.0
+Capterra___4177313,Zoho CRM,C4_run_plus_reviews,True,False,1.0,0.0,0.0,0.0,1.0,1.0,0.5,,0.0
+Capterra___5021665,Zoho CRM,C1_agent_alone,True,False,1.0,1.0,1.0,0.0,2.0,2.0,0.0,,0.0
+Capterra___5021665,Zoho CRM,C2_reviews_only,True,False,0.0,1.0,0.0,1.0,1.0,1.0,0.5,,1.0
+Capterra___5021665,Zoho CRM,C3_run_only,True,False,2.0,2.0,2.0,1.0,2.0,4.0,1.0,,0.0
+Capterra___5021665,Zoho CRM,C4_run_plus_reviews,True,False,2.0,2.0,2.0,2.0,2.0,4.0,0.5,,0.0
+Capterra___5087270,Zoho CRM,C1_agent_alone,True,False,0.0,0.0,0.0,,,2.0,0.5,0.0,0.0
+Capterra___5087270,Zoho CRM,C2_reviews_only,True,False,1.0,0.0,1.0,,,0.0,0.0,0.0,0.0
+Capterra___5087270,Zoho CRM,C3_run_only,True,False,1.0,0.0,1.0,,,0.0,0.5,0.0,0.0
+Capterra___5087270,Zoho CRM,C4_run_plus_reviews,True,False,1.0,0.0,1.0,,,0.0,0.5,0.0,0.0
+Capterra___6235245,Zoho CRM,C1_agent_alone,True,False,1.0,0.0,1.0,0.0,1.0,2.0,0.3333333333333333,0.0,0.0
+Capterra___6235245,Zoho CRM,C2_reviews_only,True,False,0.0,0.0,0.0,0.0,1.0,1.0,0.3333333333333333,1.0,0.0
+Capterra___6235245,Zoho CRM,C3_run_only,True,False,2.0,1.0,2.0,1.0,1.0,4.0,0.0,0.0,0.0
+Capterra___6235245,Zoho CRM,C4_run_plus_reviews,True,False,1.0,1.0,1.0,1.0,1.0,2.0,0.3333333333333333,0.0,0.0
+Capterra___2562103,Looker,C1_agent_alone,True,False,1.0,0.0,1.0,,,1.0,0.75,,0.0
+Capterra___2562103,Looker,C2_reviews_only,True,False,1.0,0.0,2.0,,,3.0,0.5,,0.0
+Capterra___2562103,Looker,C3_run_only,True,False,2.0,1.0,3.0,,,6.0,0.0,,0.0
+Capterra___2562103,Looker,C4_run_plus_reviews,True,False,1.0,0.0,2.0,,,3.0,0.0,,0.0
+Capterra___4710832,Looker,C1_agent_alone,True,False,2.0,1.0,1.0,,,1.0,0.0,0.5,0.0
+Capterra___4710832,Looker,C2_reviews_only,True,False,0.0,0.0,0.0,,,1.0,0.0,0.25,0.0
+Capterra___4710832,Looker,C3_run_only,True,False,2.0,1.0,2.0,,,2.0,0.0,0.0,0.0
+Capterra___4710832,Looker,C4_run_plus_reviews,True,False,2.0,2.0,2.0,,,2.0,0.5,0.0,0.0
+Capterra___4969969,Looker,C1_agent_alone,True,False,2.0,0.0,2.0,2.0,2.0,4.0,0.3333333333333333,,0.0
+Capterra___4969969,Looker,C2_reviews_only,True,False,2.0,0.0,1.0,2.0,1.0,3.0,0.6666666666666666,,0.0
+Capterra___4969969,Looker,C3_run_only,True,False,2.0,0.0,1.0,1.0,2.0,2.0,0.6666666666666666,,0.0
+Capterra___4969969,Looker,C4_run_plus_reviews,True,False,2.0,0.0,2.0,2.0,2.0,4.0,0.6666666666666666,,0.0
+Capterra___6622237,Looker,C1_agent_alone,True,False,1.0,1.0,1.0,2.0,1.0,1.0,0.5,0.5,1.0
+Capterra___6622237,Looker,C2_reviews_only,True,False,1.0,0.0,0.0,1.0,1.0,0.0,1.0,0.5,1.0
+Capterra___6622237,Looker,C3_run_only,True,False,0.0,0.0,1.0,1.0,1.0,1.0,0.75,0.5,1.0
+Capterra___6622237,Looker,C4_run_plus_reviews,True,False,0.0,1.0,1.0,2.0,1.0,2.0,0.25,0.0,0.0
+Capterra___4340159,Basecamp,C1_agent_alone,True,False,0.0,0.0,1.0,1.0,1.0,1.0,0.3333333333333333,0.0,0.0
+Capterra___4340159,Basecamp,C2_reviews_only,True,False,0.0,0.0,1.0,1.0,0.0,1.0,0.3333333333333333,0.0,0.0
+Capterra___4340159,Basecamp,C3_run_only,True,False,3.0,3.0,2.0,2.0,1.0,7.0,0.0,0.0,0.0
+Capterra___4340159,Basecamp,C4_run_plus_reviews,True,False,3.0,3.0,2.0,2.0,1.0,7.0,0.0,0.0,0.0
+Capterra___6049570,Basecamp,C1_agent_alone,True,False,0.0,1.0,2.0,,,0.0,0.75,0.0,0.0
+Capterra___6049570,Basecamp,C2_reviews_only,True,False,0.0,0.0,1.0,,,2.0,0.75,0.0,0.0
+Capterra___6049570,Basecamp,C3_run_only,True,False,1.0,0.0,2.0,,,0.0,0.25,0.0,0.0
+Capterra___6049570,Basecamp,C4_run_plus_reviews,True,False,2.0,1.0,3.0,,,3.0,0.0,0.0,0.0
+Capterra___6843507,Basecamp,C1_agent_alone,True,False,0.0,1.0,1.0,,,1.0,0.6666666666666666,0.0,0.0
+Capterra___6843507,Basecamp,C2_reviews_only,True,False,0.0,0.0,1.0,,,1.0,0.6666666666666666,0.0,0.0
+Capterra___6843507,Basecamp,C3_run_only,True,False,1.0,1.0,1.0,,,2.0,0.0,0.0,0.0
+Capterra___6843507,Basecamp,C4_run_plus_reviews,True,False,1.0,1.0,1.0,,,1.0,0.0,0.0,0.0
+Capterra___6077561,Basecamp,C1_agent_alone,True,False,0.0,1.0,1.0,1.0,1.0,2.0,0.3333333333333333,,0.0
+Capterra___6077561,Basecamp,C2_reviews_only,True,False,0.0,1.0,1.0,1.0,1.0,2.0,1.0,,0.0
+Capterra___6077561,Basecamp,C3_run_only,True,False,1.0,1.0,1.0,1.0,2.0,2.0,0.6666666666666666,,0.0
+Capterra___6077561,Basecamp,C4_run_plus_reviews,True,False,1.0,1.0,1.0,1.0,1.0,2.0,0.3333333333333333,,0.0
+Capterra___2175203,LiveAgent,C1_agent_alone,True,False,0.0,1.0,0.0,1.0,,1.0,0.25,0.0,1.0
+Capterra___2175203,LiveAgent,C2_reviews_only,True,False,0.0,0.0,0.0,1.0,,1.0,0.25,0.0,1.0
+Capterra___2175203,LiveAgent,C3_run_only,True,False,2.0,1.0,1.0,2.0,,4.0,0.0,0.0,0.0
+Capterra___2175203,LiveAgent,C4_run_plus_reviews,True,False,2.0,1.0,1.0,2.0,,3.0,0.0,0.0,0.0
+Capterra___3807524,LiveAgent,C1_agent_alone,True,False,2.0,0.0,2.0,2.0,1.0,2.0,0.0,0.0,0.0
+Capterra___3807524,LiveAgent,C2_reviews_only,True,False,1.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,0.0
+Capterra___3807524,LiveAgent,C3_run_only,True,False,2.0,1.0,2.0,2.0,1.0,2.0,0.0,0.0,0.0
+Capterra___3807524,LiveAgent,C4_run_plus_reviews,True,False,1.0,1.0,2.0,2.0,0.0,2.0,0.5,0.0,0.0
+Capterra___4572303,LiveAgent,C1_agent_alone,True,False,1.0,0.0,1.0,1.0,1.0,0.0,0.25,0.0,0.0
+Capterra___4572303,LiveAgent,C2_reviews_only,True,False,1.0,1.0,1.0,1.0,2.0,0.0,0.25,0.0,0.0
+Capterra___4572303,LiveAgent,C3_run_only,True,False,2.0,1.0,1.0,1.0,2.0,1.0,0.25,0.0,1.0
+Capterra___4572303,LiveAgent,C4_run_plus_reviews,True,False,2.0,1.0,2.0,2.0,1.0,2.0,0.25,0.0,0.0
+Capterra___4461779,LiveAgent,C1_agent_alone,True,False,0.0,0.0,0.0,0.0,1.0,0.0,0.25,0.0,0.0
+Capterra___4461779,LiveAgent,C2_reviews_only,True,False,1.0,1.0,1.0,1.0,1.0,1.0,0.25,0.0,0.0
+Capterra___4461779,LiveAgent,C3_run_only,True,False,1.0,0.0,0.0,0.0,2.0,0.0,0.25,0.0,0.0
+Capterra___4461779,LiveAgent,C4_run_plus_reviews,True,False,1.0,1.0,1.0,1.0,2.0,2.0,0.25,0.0,0.0
+Capterra___4612825,Zoho Desk,C1_agent_alone,True,False,1.0,1.0,1.0,0.0,2.0,1.0,0.5,0.0,0.0
+Capterra___4612825,Zoho Desk,C2_reviews_only,True,False,0.0,0.0,0.0,0.0,1.0,0.0,0.75,0.0,0.0
+Capterra___4612825,Zoho Desk,C3_run_only,True,False,2.0,1.0,1.0,1.0,2.0,2.0,0.5,0.0,0.0
+Capterra___4612825,Zoho Desk,C4_run_plus_reviews,True,False,3.0,2.0,3.0,2.0,2.0,5.0,0.5,0.0,0.0
+Capterra___3778492,Zoho Desk,C1_agent_alone,True,False,2.0,1.0,2.0,0.0,2.0,3.0,0.0,0.0,0.0
+Capterra___3778492,Zoho Desk,C2_reviews_only,True,False,1.0,1.0,1.0,1.0,1.0,2.0,0.3333333333333333,0.0,0.0
+Capterra___3778492,Zoho Desk,C3_run_only,True,False,2.0,1.0,2.0,1.0,2.0,4.0,0.0,0.0,0.0
+Capterra___3778492,Zoho Desk,C4_run_plus_reviews,True,False,1.0,1.0,1.0,1.0,1.0,2.0,0.0,0.0,0.0
+Capterra___428734,Zoho Desk,C1_agent_alone,True,False,2.0,1.0,2.0,1.0,2.0,4.0,0.5,0.0,0.0
+Capterra___428734,Zoho Desk,C2_reviews_only,True,False,1.0,1.0,1.0,1.0,1.0,2.0,0.25,0.0,1.0
+Capterra___428734,Zoho Desk,C3_run_only,True,False,3.0,3.0,3.0,3.0,2.0,7.0,0.0,0.0,0.0
+Capterra___428734,Zoho Desk,C4_run_plus_reviews,True,False,3.0,3.0,3.0,3.0,2.0,7.0,0.0,0.0,0.0
+Capterra___1102944,Zoho Desk,C1_agent_alone,True,False,1.0,0.0,1.0,,,1.0,0.0,0.0,0.0
+Capterra___1102944,Zoho Desk,C2_reviews_only,True,False,1.0,0.0,1.0,,,1.0,0.5,0.0,1.0
+Capterra___1102944,Zoho Desk,C3_run_only,True,False,1.0,0.0,1.0,,,1.0,0.25,0.0,0.0
+Capterra___1102944,Zoho Desk,C4_run_plus_reviews,True,False,1.0,0.0,1.0,,,2.0,0.75,0.0,0.0
+Capterra___2733249,Klaviyo,C1_agent_alone,True,False,0.0,0.0,1.0,1.0,0.0,1.0,0.0,0.0,0.0
+Capterra___2733249,Klaviyo,C2_reviews_only,True,False,0.0,0.0,1.0,1.0,0.0,1.0,0.0,0.0,0.0
+Capterra___2733249,Klaviyo,C3_run_only,True,False,0.0,0.0,1.0,1.0,0.0,1.0,0.0,0.0,0.0
+Capterra___2733249,Klaviyo,C4_run_plus_reviews,True,False,0.0,0.0,1.0,0.0,0.0,1.0,0.25,0.0,0.0
+Capterra___3090142,Klaviyo,C1_agent_alone,True,False,1.0,0.0,1.0,1.0,1.0,1.0,0.5,0.0,0.0
+Capterra___3090142,Klaviyo,C2_reviews_only,True,False,0.0,0.0,0.0,1.0,1.0,1.0,0.5,0.0,0.0
+Capterra___3090142,Klaviyo,C3_run_only,True,False,1.0,0.0,1.0,1.0,2.0,2.0,1.0,0.0,0.0
+Capterra___3090142,Klaviyo,C4_run_plus_reviews,True,False,1.0,1.0,1.0,2.0,1.0,3.0,1.0,0.0,0.0
+Capterra___3268470,Klaviyo,C1_agent_alone,True,False,2.0,1.0,1.0,2.0,1.0,2.0,0.0,0.0,0.0
+Capterra___3268470,Klaviyo,C2_reviews_only,True,False,2.0,1.0,1.0,2.0,1.0,2.0,0.0,0.0,0.0
+Capterra___3268470,Klaviyo,C3_run_only,True,False,1.0,0.0,1.0,2.0,1.0,1.0,0.0,0.0,0.0
+Capterra___3268470,Klaviyo,C4_run_plus_reviews,True,False,1.0,1.0,1.0,2.0,1.0,2.0,0.0,0.0,0.0
+Capterra___6746071,Klaviyo,C1_agent_alone,True,False,1.0,0.0,0.0,1.0,1.0,0.0,1.0,0.5,0.0
+Capterra___6746071,Klaviyo,C2_reviews_only,True,False,1.0,0.0,0.0,1.0,2.0,0.0,0.5,0.0,0.0
+Capterra___6746071,Klaviyo,C3_run_only,True,False,2.0,1.0,1.0,0.0,2.0,2.0,0.0,0.0,0.0
+Capterra___6746071,Klaviyo,C4_run_plus_reviews,True,False,2.0,1.0,1.0,0.0,2.0,2.0,0.0,0.0,0.0
+Capterra___1881956,BigCommerce,C1_agent_alone,True,False,2.0,1.0,1.0,,,2.0,0.0,1.0,0.0
+Capterra___1881956,BigCommerce,C2_reviews_only,True,False,1.0,0.0,0.0,,,1.0,0.0,1.0,1.0
+Capterra___1881956,BigCommerce,C3_run_only,True,False,2.0,1.0,2.0,,,4.0,0.75,0.0,1.0
+Capterra___1881956,BigCommerce,C4_run_plus_reviews,True,False,1.0,1.0,1.0,,,2.0,0.25,0.0,0.0
+Capterra___4869746,BigCommerce,C1_agent_alone,True,False,1.0,1.0,1.0,3.0,3.0,7.0,0.0,0.0,0.0
+Capterra___4869746,BigCommerce,C2_reviews_only,True,False,1.0,2.0,1.0,2.0,3.0,6.0,0.0,0.75,0.0
+Capterra___4869746,BigCommerce,C3_run_only,True,False,1.0,2.0,1.0,2.0,2.0,6.0,0.0,0.5,0.0
+Capterra___4869746,BigCommerce,C4_run_plus_reviews,True,False,1.0,1.0,1.0,2.0,2.0,6.0,0.0,0.5,0.0
+Capterra___1178331,BigCommerce,C1_agent_alone,True,False,1.0,3.0,1.0,,1.0,6.0,0.25,0.0,0.0
+Capterra___1178331,BigCommerce,C2_reviews_only,True,False,1.0,4.0,1.0,,0.0,6.0,0.25,0.5,0.0
+Capterra___1178331,BigCommerce,C3_run_only,True,False,1.0,3.0,1.0,,1.0,5.0,0.75,0.5,0.0
+Capterra___1178331,BigCommerce,C4_run_plus_reviews,True,False,1.0,3.0,1.0,,0.0,6.0,1.0,0.0,0.0
+Capterra___4273939,BigCommerce,C1_agent_alone,True,False,1.0,0.0,1.0,0.0,0.0,2.0,0.25,,0.0
+Capterra___4273939,BigCommerce,C2_reviews_only,True,False,0.0,0.0,1.0,0.0,1.0,2.0,0.0,,0.0
+Capterra___4273939,BigCommerce,C3_run_only,True,False,0.0,0.0,1.0,0.0,0.0,2.0,0.5,,0.0
+Capterra___4273939,BigCommerce,C4_run_plus_reviews,True,False,0.0,0.0,1.0,1.0,1.0,2.0,0.0,,0.0
+Capterra___4864409,Smartsheet,C1_agent_alone,True,False,0.0,0.0,0.0,1.0,1.0,1.0,0.5,1.0,0.0
+Capterra___4864409,Smartsheet,C2_reviews_only,True,False,0.0,1.0,0.0,0.0,0.0,0.0,0.5,1.0,1.0
+Capterra___4864409,Smartsheet,C3_run_only,True,False,1.0,1.0,1.0,1.0,0.0,2.0,0.0,1.0,0.0
+Capterra___4864409,Smartsheet,C4_run_plus_reviews,True,False,0.0,0.0,0.0,0.0,0.0,0.0,0.25,1.0,0.0
+Capterra___4938518,Smartsheet,C1_agent_alone,True,False,1.0,0.0,1.0,1.0,0.0,1.0,0.0,0.0,0.0
+Capterra___4938518,Smartsheet,C2_reviews_only,True,False,0.0,1.0,0.0,0.0,1.0,2.0,0.5,0.0,0.0
+Capterra___4938518,Smartsheet,C3_run_only,True,False,2.0,0.0,2.0,1.0,0.0,1.0,0.0,0.0,0.0
+Capterra___4938518,Smartsheet,C4_run_plus_reviews,True,False,1.0,0.0,1.0,1.0,1.0,1.0,0.0,0.0,0.0
+Capterra___6164409,Smartsheet,C1_agent_alone,True,False,1.0,1.0,0.0,,,2.0,0.25,0.0,1.0
+Capterra___6164409,Smartsheet,C2_reviews_only,True,False,1.0,1.0,0.0,,,2.0,0.25,0.0,0.0
+Capterra___6164409,Smartsheet,C3_run_only,True,False,2.0,1.0,1.0,,,4.0,0.5,0.0,0.0
+Capterra___6164409,Smartsheet,C4_run_plus_reviews,True,False,2.0,1.0,1.0,,,4.0,0.0,0.0,0.0
+Capterra___4328554,Smartsheet,C1_agent_alone,True,False,1.0,1.0,1.0,2.0,1.0,0.0,0.25,0.0,0.0
+Capterra___4328554,Smartsheet,C2_reviews_only,True,False,1.0,0.0,0.0,1.0,1.0,1.0,0.25,0.0,0.0
+Capterra___4328554,Smartsheet,C3_run_only,True,False,2.0,1.0,2.0,2.0,2.0,2.0,0.0,0.0,0.0
+Capterra___4328554,Smartsheet,C4_run_plus_reviews,True,False,3.0,2.0,3.0,3.0,2.0,5.0,0.0,0.0,0.0
+Capterra___4807753,Freshdesk,C1_agent_alone,True,False,1.0,1.0,2.0,2.0,2.0,1.0,0.3333333333333333,0.0,0.0
+Capterra___4807753,Freshdesk,C2_reviews_only,True,False,1.0,0.0,1.0,1.0,1.0,0.0,0.3333333333333333,0.0,0.0
+Capterra___4807753,Freshdesk,C3_run_only,True,False,3.0,2.0,3.0,3.0,2.0,5.0,0.3333333333333333,0.0,0.0
+Capterra___4807753,Freshdesk,C4_run_plus_reviews,True,False,3.0,2.0,3.0,3.0,2.0,4.0,0.0,0.0,0.0
+Capterra___6505501,Freshdesk,C1_agent_alone,True,False,1.0,1.0,1.0,0.0,2.0,1.0,0.75,,0.0
+Capterra___6505501,Freshdesk,C2_reviews_only,True,False,1.0,1.0,1.0,0.0,1.0,1.0,0.25,,0.0
+Capterra___6505501,Freshdesk,C3_run_only,True,False,3.0,3.0,3.0,2.0,2.0,6.0,0.25,,0.0
+Capterra___6505501,Freshdesk,C4_run_plus_reviews,True,False,3.0,3.0,3.0,2.0,2.0,6.0,0.25,,0.0
+Capterra___4986750,Freshdesk,C1_agent_alone,True,False,0.0,0.0,1.0,1.0,0.0,1.0,0.75,0.5,1.0
+Capterra___4986750,Freshdesk,C2_reviews_only,True,False,1.0,1.0,0.0,1.0,0.0,0.0,0.0,0.5,0.0
+Capterra___4986750,Freshdesk,C3_run_only,True,False,0.0,0.0,1.0,2.0,0.0,1.0,0.0,0.0,0.0
+Capterra___4986750,Freshdesk,C4_run_plus_reviews,True,False,0.0,0.0,1.0,1.0,0.0,1.0,0.0,0.5,1.0
+Capterra___5016866,Freshdesk,C1_agent_alone,True,False,1.0,1.0,1.0,,,2.0,0.5,0.0,0.0
+Capterra___5016866,Freshdesk,C2_reviews_only,True,False,0.0,1.0,1.0,,,2.0,0.5,0.0,0.0
+Capterra___5016866,Freshdesk,C3_run_only,True,False,2.0,2.0,2.0,,,4.0,0.5,0.0,0.0
+Capterra___5016866,Freshdesk,C4_run_plus_reviews,True,False,4.0,3.0,4.0,,,10.0,0.5,0.0,0.0

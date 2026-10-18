@@ -1,0 +1,39 @@
+{
+  "items": [
+    {
+      "id": "D:Brevo:landing:1",
+      "text": "From email marketing, SMS, WhatsApp, and beyond, drive business growth and lasting loyalty. Skip the learning curve with ready-made templates, guided automation and intuitive tools anyone can master. Optimize every campaign with personalized product recommendations, ideal send times, and clear insights into what drives results.",
+      "product": "Brevo",
+      "role": "target",
+      "url": "https://www.brevo.com/"
+    },
+    {
+      "id": "D:Brevo:landing:2",
+      "text": "Aura Agents eliminate the busywork so you can focus on strategy. Marketing Agent Create high‑converting campaigns effortlessly—generate copy, auto‑segment audiences, optimize send times, and deliver dynamic product recommendations. Discover Aura AI Sales Assistant Instantly enrich contacts and accounts, automate deal creation, and send sales emails in seconds—keeping your pipeline moving.",
+      "product": "Brevo",
+      "role": "target",
+      "url": "https://www.brevo.com/"
+    },
+    {
+      "id": "D:Brevo:landing:3",
+      "text": "Discover Aura AI Data Analyst New Ask questions in plain language and get instant answers. Transform your data into visual insights that drive faster, better decisions. Discover Aura AI Built for every business — from the first send to enterprise Small Business FOR ENTREPRENEURS & SMALL BUSINESSES Powerful tools, simple setup Start fast.",
+      "product": "Brevo",
+      "role": "target",
+      "url": "https://www.brevo.com/"
+    },
+    {
+      "id": "D:Brevo:landing:4",
+      "text": "Launch polished campaigns without complexity. Ready to grow with Brevo? Brevo connects to the tools you already use Brevo runs alongside more than 150 leading digital tools, from CRM to CMS, ecommerce, and more.",
+      "product": "Brevo",
+      "role": "target",
+      "url": "https://www.brevo.com/"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.brevo.com/",
+      "html_sha256": "e6efd05a6abde63eb0d21752e463d07ea9b9e396f03fb5bfe965c466f4ad1fba",
+      "sentences_dropped_by_filter": 12
+    }
+  ]
+}

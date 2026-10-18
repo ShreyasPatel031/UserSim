@@ -1,0 +1,1342 @@
+{
+  "trynearby": {
+    "product": "TryNearby",
+    "segment": "restaurant owners and marketing managers",
+    "competitors": [
+      "https://www.getreef.com/",
+      "https://www.influencermarketinghub.com/platform-reviews/"
+    ],
+    "competitor_names": {
+      "https://www.getreef.com/": "Reef",
+      "https://www.influencermarketinghub.com/platform-reviews/": "Influencer Marketing Hub"
+    },
+    "personas": [
+      {
+        "name": "Maria Rodriguez",
+        "role": "Owner, Local Cafe",
+        "bio": "Maria needs to boost local foot traffic and online buzz for her cafe on a tight budget. She values authenticity.",
+        "favors": "product",
+        "favors_why": "Authentic local creator focus"
+      },
+      {
+        "name": "David Chen",
+        "role": "Marketing Manager, Regional Restaurant Chain",
+        "bio": "David manages marketing for multiple restaurant locations. He needs scalable, trackable word-of-mouth campaigns.",
+        "favors": "product",
+        "favors_why": "Scalable, trackable, vetted creators"
+      },
+      {
+        "name": "Sarah Miller",
+        "role": "Owner, Upscale Dining Establishment",
+        "bio": "Sarah seeks to maintain her restaurant's exclusive image while expanding reach. She values high-quality, curated partnerships.",
+        "favors": "https://www.getreef.com/",
+        "favors_why": "Curated, high-end influencer focus"
+      },
+      {
+        "name": "James Thompson",
+        "role": "Brand Manager, National Food Franchise",
+        "bio": "James needs to execute large-scale influencer campaigns across many markets. He requires robust analytics and broad reach.",
+        "favors": "https://www.getreef.com/",
+        "favors_why": "Large-scale campaign management"
+      },
+      {
+        "name": "Emily White",
+        "role": "Social Media Coordinator, Small Eatery",
+        "bio": "Emily is new to influencer marketing and needs guidance on finding and managing creators. She seeks educational resources.",
+        "favors": "https://www.influencermarketinghub.com/platform-reviews/",
+        "favors_why": "Educational resources, platform reviews"
+      },
+      {
+        "name": "Michael Brown",
+        "role": "Digital Marketing Consultant, Hospitality Sector",
+        "bio": "Michael advises various restaurant clients on marketing strategies. He needs a comprehensive overview of available tools.",
+        "favors": "https://www.influencermarketinghub.com/platform-reviews/",
+        "favors_why": "Comprehensive tool comparison"
+      }
+    ],
+    "tasks": [
+      "Find local food creators for restaurant",
+      "Track content performance of campaigns",
+      "Discover high-end culinary influencers",
+      "Manage multiple influencer campaigns",
+      "Compare different influencer platforms",
+      "Learn about influencer marketing strategies"
+    ],
+    "verified": null,
+    "positioning": null,
+    "error": null
+  },
+  "transload": {
+    "product": "transload",
+    "segment": "Logistics and warehouse managers evaluating dimensioning solutions",
+    "competitors": [
+      "https://cubiscan.com/",
+      "https://freightsnap.com/"
+    ],
+    "competitor_names": {
+      "https://cubiscan.com/": "Cubiscan",
+      "https://freightsnap.com/": "FreightSnap"
+    },
+    "personas": [
+      {
+        "name": "Sarah Chen",
+        "role": "Warehouse Operations Manager at a 3PL",
+        "bio": "Manages a large warehouse, needs efficient dimensioning without new hardware. Values quick implementation and cost savings.",
+        "favors": "product",
+        "favors_why": "Leverages existing cameras, fast setup"
+      },
+      {
+        "name": "David Lee",
+        "role": "Logistics Director at a Retail Distributor",
+        "bio": "Oversees multiple distribution centers, seeks scalable, non-disruptive solutions. Prioritizes seamless integration and accuracy.",
+        "favors": "product",
+        "favors_why": "No process changes, uses existing infrastructure"
+      },
+      {
+        "name": "Emily White",
+        "role": "Operations VP at a Global Freight Forwarder",
+        "bio": "Manages complex logistics, requires robust, high-precision dimensioning systems. Prefers established, dedicated hardware solutions.",
+        "favors": "https://cubiscan.com/",
+        "favors_why": "Dedicated hardware offers perceived higher accuracy"
+      },
+      {
+        "name": "Michael Brown",
+        "role": "Supply Chain Manager at a Manufacturing Company",
+        "bio": "Focuses on optimizing shipping costs and compliance. Seeks reliable, industrial-grade measurement equipment.",
+        "favors": "https://cubiscan.com/",
+        "favors_why": "Known for industrial-grade, precise measurement"
+      },
+      {
+        "name": "Jessica Green",
+        "role": "Terminal Manager at a Regional Carrier",
+        "bio": "Needs to quickly measure diverse freight types for billing. Values speed and ease of use for operators.",
+        "favors": "https://freightsnap.com/",
+        "favors_why": "Designed for rapid freight dimensioning"
+      },
+      {
+        "name": "Robert King",
+        "role": "Dock Supervisor at a Cross-Dock Facility",
+        "bio": "Manages high-volume inbound/outbound freight flow. Requires fast, accurate, and durable dimensioning.",
+        "favors": "https://freightsnap.com/",
+        "favors_why": "Specialized for fast-paced loading dock environments"
+      }
+    ],
+    "tasks": [
+      "Understand implementation timeline and effort",
+      "Compare accuracy of pallet dimensioning",
+      "Assess system for high-volume parcel measurement",
+      "Review data capture and reporting capabilities",
+      "Determine impact on existing loading dock workflows",
+      "Find solutions for irregular freight dimensioning"
+    ],
+    "verified": null,
+    "positioning": null,
+    "error": null
+  },
+  "miso-labs": {
+    "product": "Miso Labs",
+    "segment": "AI voice agent developers",
+    "competitors": [
+      "https://www.elevenlabs.io/",
+      "https://www.play.ht/"
+    ],
+    "competitor_names": {
+      "https://www.elevenlabs.io/": "Eleven Labs",
+      "https://www.play.ht/": "Play.ht"
+    },
+    "personas": [
+      {
+        "name": "Alex Chen",
+        "role": "Lead AI Engineer at a SaaS startup",
+        "bio": "Needs to integrate a low-latency, emotive voice into their product quickly and efficiently.",
+        "favors": "product",
+        "favors_why": "Real-time latency, easy integration"
+      },
+      {
+        "name": "Sarah Miller",
+        "role": "Head of Product at a gaming company",
+        "bio": "Wants to create unique, consistent character voices with minimal effort for immersive experiences.",
+        "favors": "product",
+        "favors_why": "One-shot voice cloning, emotive"
+      },
+      {
+        "name": "David Lee",
+        "role": "CTO of a large enterprise",
+        "bio": "Requires a scalable, high-quality voice solution with robust API and enterprise support.",
+        "favors": "https://www.elevenlabs.io/",
+        "favors_why": "Scalability, enterprise features"
+      },
+      {
+        "name": "Emily White",
+        "role": "Content Creator for educational videos",
+        "bio": "Seeks diverse, natural-sounding voices for engaging content without hiring voice actors.",
+        "favors": "https://www.elevenlabs.io/",
+        "favors_why": "Voice variety, natural sound"
+      },
+      {
+        "name": "Michael Brown",
+        "role": "Developer at an indie game studio",
+        "bio": "Needs an affordable text-to-speech solution with good voice quality for game dialogue.",
+        "favors": "https://www.play.ht/",
+        "favors_why": "Cost-effective, good quality"
+      },
+      {
+        "name": "Jessica Green",
+        "role": "Marketing Manager for a small business",
+        "bio": "Wants to produce promotional audio content quickly with a range of voice styles.",
+        "favors": "https://www.play.ht/",
+        "favors_why": "Quick audio generation, styles"
+      }
+    ],
+    "tasks": [
+      "Achieve ultra-low latency for conversational AI",
+      "Clone a voice from a 10-second audio clip",
+      "Generate long-form audio content from text",
+      "Convert text to speech with various accents",
+      "Estimate pricing for 5 million characters monthly",
+      "Create custom voice from audio input"
+    ],
+    "verified": null,
+    "positioning": null,
+    "error": null
+  },
+  "luca-iq": {
+    "product": "Luca IQ",
+    "segment": "CPA firms and tax professionals",
+    "competitors": [
+      "https://www.ultrataxsoftware.com/",
+      "https://accountants.intuit.com/tax-software/"
+    ],
+    "competitor_names": {
+      "https://www.ultrataxsoftware.com/": "UltraTax CS",
+      "https://accountants.intuit.com/tax-software/": "Intuit ProConnect Tax"
+    },
+    "personas": [
+      {
+        "name": "Sarah Chen",
+        "role": "Founding Partner, Boutique Tax Firm",
+        "bio": "Growing firm needs modern, integrated software to streamline workflow and reduce manual errors. Values efficiency and client experience.",
+        "favors": "product",
+        "favors_why": "Modern, unified platform"
+      },
+      {
+        "name": "David Miller",
+        "role": "Senior Tax Manager, Mid-sized CPA Firm",
+        "bio": "Manages a team and seeks a system with strong review capabilities and firm-wide analytics. Prioritizes accuracy and oversight.",
+        "favors": "product",
+        "favors_why": "Analytics and workflow"
+      },
+      {
+        "name": "Emily White",
+        "role": "Sole Practitioner, Established Tax Practice",
+        "bio": "Experienced professional comfortable with traditional software, prioritizing comprehensive features and robust support. Prefers familiar tools.",
+        "favors": "https://www.ultrataxsoftware.com/",
+        "favors_why": "Comprehensive, established features"
+      },
+      {
+        "name": "John Davis",
+        "role": "Tax Partner, Regional Accounting Firm",
+        "bio": "Oversees a large tax department and requires a powerful, customizable system for complex returns. Values deep functionality.",
+        "favors": "https://www.ultrataxsoftware.com/",
+        "favors_why": "Powerful, customizable"
+      },
+      {
+        "name": "Maria Rodriguez",
+        "role": "Owner, Small Business Accounting Firm",
+        "bio": "Serves small businesses and individuals, needs user-friendly software with good integration for basic tax preparation. Values ease of use.",
+        "favors": "https://accountants.intuit.com/tax-software/",
+        "favors_why": "User-friendly interface"
+      },
+      {
+        "name": "Robert Green",
+        "role": "New CPA, Independent Tax Preparer",
+        "bio": "Starting out, needs affordable, accessible software with good support for common tax forms. Values cost-effectiveness and guidance.",
+        "favors": "https://accountants.intuit.com/tax-software/",
+        "favors_why": "Accessible, good support"
+      }
+    ],
+    "tasks": [
+      "Automate client intake and document collection",
+      "Generate auto-drafted tax workpapers",
+      "Prepare and e-file complex 1040 returns",
+      "Access comprehensive tax research tools",
+      "Utilize extensive tax form library",
+      "Leverage QuickBooks data directly"
+    ],
+    "verified": null,
+    "positioning": null,
+    "error": null
+  },
+  "parasma": {
+    "product": "Parasma",
+    "segment": "AI researchers and neuroscientists",
+    "competitors": [
+      "https://www.finalspark.com/",
+      "https://innoskel.com/"
+    ],
+    "competitor_names": {
+      "https://www.finalspark.com/": "FinalSpark",
+      "https://innoskel.com/": "Innoskel"
+    },
+    "personas": [
+      {
+        "name": "Dr. Aris Thorne",
+        "role": "Lead AI Scientist at DeepMind",
+        "bio": "Needs to explore novel computing paradigms beyond silicon. Judges by computational efficiency and biological integration.",
+        "favors": "product",
+        "favors_why": "Cutting-edge biological compute."
+      },
+      {
+        "name": "Ravi Osei",
+        "role": "Neuroscience Researcher at MIT",
+        "bio": "Seeks to understand neural computation for advanced AI. Judges by research potential and data accessibility.",
+        "favors": "product",
+        "favors_why": "Direct access to living neurons."
+      },
+      {
+        "name": "Kenji Petrov",
+        "role": "Biocomputing Engineer at IBM",
+        "bio": "Focuses on developing hybrid biological-digital systems. Judges by scalability and integration with existing infrastructure.",
+        "favors": "https://www.finalspark.com/",
+        "favors_why": "Focus on biocomputing infrastructure."
+      },
+      {
+        "name": "Fatima Okafor",
+        "role": "Head of AI Research at Google",
+        "bio": "Explores new computational substrates for AI models. Judges by performance benchmarks and innovation.",
+        "favors": "https://www.finalspark.com/",
+        "favors_why": "Offers a biocomputing platform."
+      },
+      {
+        "name": "Bruno Quinn",
+        "role": "Biotech Innovator at Genentech",
+        "bio": "Investigates biological systems for novel drug discovery. Judges by biological accuracy and experimental control.",
+        "favors": "https://innoskel.com/",
+        "favors_why": "Specializes in biological models."
+      },
+      {
+        "name": "Henrik Sato",
+        "role": "Computational Biologist at Novartis",
+        "bio": "Aims to model complex biological processes with new tools. Judges by precision and biological relevance.",
+        "favors": "https://innoskel.com/",
+        "favors_why": "Strong biological research focus."
+      }
+    ],
+    "tasks": [
+      "Understand token prediction capabilities",
+      "Evaluate biological neuron compute efficiency",
+      "Compare biocomputing platform specifications",
+      "Review biological model development tools",
+      "Examine research on neural network applications",
+      "Identify potential for custom biological circuits"
+    ],
+    "verified": null,
+    "positioning": null,
+    "error": null
+  },
+  "amorphic-labs": {
+    "product": "AgentMuxer",
+    "segment": "AI agent developers and researchers",
+    "competitors": [
+      "https://www.superagent.ai/",
+      "https://www.tooljet.com/"
+    ],
+    "competitor_names": {
+      "https://www.superagent.ai/": "Superagent",
+      "https://www.tooljet.com/": "ToolJet"
+    },
+    "personas": [
+      {
+        "name": "Alex Chen",
+        "role": "AI Engineer at a startup",
+        "bio": "Needs to quickly integrate diverse tools for agent prototypes. Values ease of setup and broad tool access.",
+        "favors": "product",
+        "favors_why": "Rapid integration of many tools"
+      },
+      {
+        "name": "Sarah Miller",
+        "role": "Lead AI Researcher at a university",
+        "bio": "Manages multiple research agents requiring various data sources. Seeks a unified, cost-effective solution.",
+        "favors": "product",
+        "favors_why": "Unified access to diverse tools"
+      },
+      {
+        "name": "David Lee",
+        "role": "Senior Developer at a mid-sized tech company",
+        "bio": "Building production-grade AI applications. Requires robust, scalable tool integration with custom logic.",
+        "favors": "https://www.superagent.ai/",
+        "favors_why": "Customizable, scalable agent tooling"
+      },
+      {
+        "name": "Jessica Brown",
+        "role": "AI Product Manager at an enterprise",
+        "bio": "Oversees agent development for internal operations. Needs secure, auditable tool orchestration.",
+        "favors": "https://www.superagent.ai/",
+        "favors_why": "Enterprise-grade security and control"
+      },
+      {
+        "name": "Mark Johnson",
+        "role": "Freelance AI Developer",
+        "bio": "Builds custom AI solutions for clients. Needs a flexible platform for integrating various APIs.",
+        "favors": "https://www.tooljet.com/",
+        "favors_why": "Flexible, open-source API integration"
+      },
+      {
+        "name": "Emily White",
+        "role": "Startup Founder building an AI app",
+        "bio": "Needs to connect AI agents to internal and external services. Values rapid development and customization.",
+        "favors": "https://www.tooljet.com/",
+        "favors_why": "Quickly connect agents to services"
+      }
+    ],
+    "tasks": [
+      "Build a custom tool for an AI agent",
+      "Deploy an agent with complex conditional logic",
+      "Create a custom UI for agent-tool interaction",
+      "Monitor agent tool usage and costs",
+      "Develop a multi-agent workflow",
+      "Build internal tools quickly"
+    ],
+    "verified": null,
+    "positioning": null,
+    "error": null
+  },
+  "alkera-ai": {
+    "product": "Alkera",
+    "segment": "data professionals",
+    "competitors": [
+      "https://www.atlan.com/",
+      "https://www.collibra.com/"
+    ],
+    "competitor_names": {
+      "https://www.atlan.com/": "Atlan",
+      "https://www.collibra.com/": "Collibra"
+    },
+    "personas": [
+      {
+        "name": "Dr. Evelyn Reed",
+        "role": "Lead Data Scientist at a Biotech Startup",
+        "bio": "Needs to rapidly iterate on data models and share insights with a small, agile team.",
+        "favors": "product",
+        "favors_why": "Collaborative notebooks and agentic features."
+      },
+      {
+        "name": "Marcus Chen",
+        "role": "Data Engineer at a Mid-sized Tech Company",
+        "bio": "Manages data pipelines and ensures data quality for various stakeholders.",
+        "favors": "product",
+        "favors_why": "Automated maintenance and integration with existing tools."
+      },
+      {
+        "name": "Sarah Jenkins",
+        "role": "Chief Data Officer at a Large Enterprise",
+        "bio": "Oversees data governance, compliance, and data democratization across departments.",
+        "favors": "https://www.atlan.com/",
+        "favors_why": "Robust data governance and lineage capabilities."
+      },
+      {
+        "name": "David Lee",
+        "role": "Data Steward at a Financial Institution",
+        "bio": "Responsible for data quality, metadata management, and regulatory compliance.",
+        "favors": "https://www.atlan.com/",
+        "favors_why": "Strong metadata management and data quality features."
+      },
+      {
+        "name": "Maria Rodriguez",
+        "role": "Head of Data Governance at a Global Corporation",
+        "bio": "Establishes and enforces data policies, ensuring data trust and accessibility.",
+        "favors": "https://www.collibra.com/",
+        "favors_why": "Comprehensive data governance and policy enforcement."
+      },
+      {
+        "name": "John Smith",
+        "role": "Enterprise Architect at a Healthcare Provider",
+        "bio": "Designs and implements data strategies, focusing on scalability and security.",
+        "favors": "https://www.collibra.com/",
+        "favors_why": "Enterprise-grade data management and security."
+      }
+    ],
+    "tasks": [
+      "Set up a new data pipeline",
+      "Analyze data in a collaborative notebook",
+      "Trace data lineage for a specific column",
+      "Define data quality rules for a dataset",
+      "Establish a new data governance policy",
+      "Browse the data catalog for available assets"
+    ],
+    "verified": null,
+    "positioning": null,
+    "error": null
+  },
+  "musicarena": {
+    "product": "Producer Arena",
+    "segment": "music producers",
+    "competitors": [
+      "https://splice.com/",
+      "https://loopcloud.com/"
+    ],
+    "competitor_names": {
+      "https://splice.com/": "Splice",
+      "https://loopcloud.com/": "Loopcloud"
+    },
+    "personas": [
+      {
+        "name": "Alex Chen",
+        "role": "Independent Music Producer",
+        "bio": "Needs fresh sounds for new tracks. Judges by sound quality and ease of integration.",
+        "favors": "product",
+        "favors_why": "Focus on unique sounds"
+      },
+      {
+        "name": "Maria Rodriguez",
+        "role": "Bedroom Beatmaker",
+        "bio": "Looking for diverse samples to experiment with. Judges by variety and affordability.",
+        "favors": "product",
+        "favors_why": "Affordable and diverse"
+      },
+      {
+        "name": "David Lee",
+        "role": "Professional Sound Designer",
+        "bio": "Requires high-quality, royalty-free samples for commercial projects. Judges by license clarity and depth.",
+        "favors": "https://splice.com/",
+        "favors_why": "Extensive library, clear licensing"
+      },
+      {
+        "name": "Sarah Kim",
+        "role": "Music Production Instructor",
+        "bio": "Seeks a platform with educational resources and a wide range of genres. Judges by learning tools and breadth.",
+        "favors": "https://splice.com/",
+        "favors_why": "Educational content, broad appeal"
+      },
+      {
+        "name": "James Wilson",
+        "role": "Film Composer",
+        "bio": "Needs specific orchestral and cinematic loops quickly. Judges by search filters and unique sounds.",
+        "favors": "https://loopcloud.com/",
+        "favors_why": "Advanced search, unique loops"
+      },
+      {
+        "name": "Emily White",
+        "role": "DJ and Remixer",
+        "bio": "Wants to find new loops and one-shots for live sets. Judges by real-time auditioning and integration.",
+        "favors": "https://loopcloud.com/",
+        "favors_why": "DAW integration, auditioning"
+      }
+    ],
+    "tasks": [
+      "Find unique drum loops",
+      "Browse new synth presets",
+      "Download royalty-free vocal samples",
+      "Explore genre-specific sound packs",
+      "Audition loops in my DAW",
+      "Filter samples by key and BPM"
+    ],
+    "verified": null,
+    "positioning": null,
+    "error": null
+  },
+  "speko": {
+    "product": "Speko",
+    "segment": "Voice AI developers and product managers evaluating speech and language models",
+    "competitors": [
+      "https://www.deepgram.com/",
+      "https://www.assemblyai.com/"
+    ],
+    "competitor_names": {
+      "https://www.deepgram.com/": "Deepgram",
+      "https://www.assemblyai.com/": "AssemblyAI"
+    },
+    "personas": [
+      {
+        "name": "Alex Chen",
+        "role": "Lead AI Engineer at a global tech company",
+        "bio": "Needs to optimize voice model performance across many languages. Values data-driven routing and benchmark transparency.",
+        "favors": "product",
+        "favors_why": "Routes to best model per language"
+      },
+      {
+        "name": "Maria Rodriguez",
+        "role": "Product Manager at a multilingual call center",
+        "bio": "Requires reliable, high-accuracy speech-to-text for diverse customer interactions. Prioritizes managed solutions.",
+        "favors": "product",
+        "favors_why": "Managed, provider-neutral routing"
+      },
+      {
+        "name": "David Lee",
+        "role": "Startup Founder building a voice assistant",
+        "bio": "Seeks a powerful, flexible speech-to-text API for rapid prototyping. Prefers direct model access.",
+        "favors": "https://www.deepgram.com/",
+        "favors_why": "Direct access to advanced models"
+      },
+      {
+        "name": "Sarah Kim",
+        "role": "Head of AI Research at a large enterprise",
+        "bio": "Needs cutting-edge speech recognition for internal applications. Values customizability and fine-tuning options.",
+        "favors": "https://www.deepgram.com/",
+        "favors_why": "Customizable, state-of-the-art models"
+      },
+      {
+        "name": "James Wilson",
+        "role": "Developer at a media transcription service",
+        "bio": "Requires accurate, scalable transcription for audio and video content. Values comprehensive API documentation.",
+        "favors": "https://www.assemblyai.com/",
+        "favors_why": "Robust API for transcription"
+      },
+      {
+        "name": "Emily White",
+        "role": "CTO of an educational platform",
+        "bio": "Needs reliable speech-to-text for student interactions and content creation. Values ease of integration.",
+        "favors": "https://www.assemblyai.com/",
+        "favors_why": "Easy integration, comprehensive features"
+      }
+    ],
+    "tasks": [
+      "Benchmark speech models across languages",
+      "Route voice sessions to best model",
+      "Transcribe audio in real-time",
+      "Compare pricing for 100 hours audio",
+      "Access various language models",
+      "Detect sensitive data in transcripts"
+    ],
+    "verified": null,
+    "positioning": null,
+    "error": null
+  },
+  "agentphone": {
+    "product": "AgentPhone",
+    "segment": "AI developers and startups building voice/SMS agents",
+    "competitors": [
+      "https://www.twilio.com/",
+      "https://www.vonage.com/"
+    ],
+    "competitor_names": {
+      "https://www.twilio.com/": "Twilio",
+      "https://www.vonage.com/": "Vonage"
+    },
+    "personas": [
+      {
+        "name": "Alex Chen",
+        "role": "AI Engineer at a startup",
+        "bio": "Needs to quickly integrate phone capabilities into new AI agents. Values ease of use and unified APIs.",
+        "favors": "product",
+        "favors_why": "Simplified webhook integration"
+      },
+      {
+        "name": "Sarah Miller",
+        "role": "Product Manager at an AI agency",
+        "bio": "Manages multiple AI agent projects for clients. Requires flexible and scalable phone number provisioning.",
+        "favors": "product",
+        "favors_why": "Quick number provisioning"
+      },
+      {
+        "name": "David Lee",
+        "role": "Senior Developer at a large enterprise",
+        "bio": "Works on complex communication systems. Needs robust, highly customizable APIs and extensive documentation.",
+        "favors": "https://www.twilio.com/",
+        "favors_why": "Extensive API capabilities"
+      },
+      {
+        "name": "Maria Garcia",
+        "role": "CTO of a growing tech company",
+        "bio": "Oversees infrastructure and strategic partnerships. Seeks a proven, enterprise-grade communication platform.",
+        "favors": "https://www.twilio.com/",
+        "favors_why": "Established market leader"
+      },
+      {
+        "name": "John Smith",
+        "role": "Small Business Owner",
+        "bio": "Wants to add basic voice and messaging to an existing application. Prefers straightforward, bundled solutions.",
+        "favors": "https://www.vonage.com/",
+        "favors_why": "Integrated communication suite"
+      },
+      {
+        "name": "Emily White",
+        "role": "Developer at a mid-sized SaaS company",
+        "bio": "Building customer support automation. Needs reliable voice and SMS with good support.",
+        "favors": "https://www.vonage.com/",
+        "favors_why": "Reliable global coverage"
+      }
+    ],
+    "tasks": [
+      "Provision a new phone number",
+      "Configure a unified webhook for AI",
+      "Implement advanced call routing logic",
+      "Set up international SMS campaigns",
+      "Manage multiple communication channels",
+      "Develop custom IVR flows"
+    ],
+    "verified": null,
+    "positioning": null,
+    "error": null
+  },
+  "ooak-data": {
+    "product": "AI Agent Data Infrastructure",
+    "segment": "AI research labs and enterprise AI teams",
+    "competitors": [
+      "https://scale.com/",
+      "https://labelbox.com/"
+    ],
+    "competitor_names": {
+      "https://scale.com/": "Scale AI",
+      "https://labelbox.com/": "Labelbox"
+    },
+    "personas": [
+      {
+        "name": "Dr. Evelyn Reed",
+        "role": "Head of AI Research at a large tech company",
+        "bio": "Needs high-fidelity, anonymized real-world data to train complex AI agents. Judges by data quality and environment realism.",
+        "favors": "product",
+        "favors_why": "Specialized real-world RL environments"
+      },
+      {
+        "name": "Mark Chen",
+        "role": "Lead ML Engineer at an autonomous vehicle startup",
+        "bio": "Requires diverse, multimodal datasets and robust evaluation environments for agent development. Values scalability and customizability.",
+        "favors": "product",
+        "favors_why": "Customizable RL environments from real data"
+      },
+      {
+        "name": "Sarah Miller",
+        "role": "VP of Data Science at a global e-commerce firm",
+        "bio": "Seeks efficient data labeling and annotation for large-scale computer vision projects. Prioritizes speed and accuracy.",
+        "favors": "https://scale.com/",
+        "favors_why": "Comprehensive data annotation services"
+      },
+      {
+        "name": "David Lee",
+        "role": "Director of AI Operations at a robotics company",
+        "bio": "Needs managed data annotation services for continuous model improvement. Values human-in-the-loop and quality control.",
+        "favors": "https://scale.com/",
+        "favors_why": "Managed data annotation at scale"
+      },
+      {
+        "name": "Jessica Kim",
+        "role": "ML Platform Manager at a healthcare AI startup",
+        "bio": "Requires a flexible platform for data labeling, management, and model debugging. Values integration and workflow automation.",
+        "favors": "https://labelbox.com/",
+        "favors_why": "Integrated data labeling and management"
+      },
+      {
+        "name": "Michael Brown",
+        "role": "Senior Data Scientist at a financial services firm",
+        "bio": "Needs a collaborative platform for data annotation and dataset versioning. Judges by ease of use and team efficiency.",
+        "favors": "https://labelbox.com/",
+        "favors_why": "Collaborative data labeling platform"
+      }
+    ],
+    "tasks": [
+      "Explore real-world RL environment examples",
+      "Understand data anonymization pipeline details",
+      "Request a custom data annotation project quote",
+      "Review available data labeling workforce options",
+      "Compare pricing for enterprise data labeling solutions",
+      "Explore pre-built annotation tools"
+    ],
+    "verified": null,
+    "positioning": null,
+    "error": null
+  },
+  "conifer": {
+    "product": "Conifer",
+    "segment": "AI model routing and inference gateway",
+    "competitors": [
+      "https://www.anyscale.com/",
+      "https://www.vllm.ai/"
+    ],
+    "competitor_names": {
+      "https://www.anyscale.com/": "Anyscale",
+      "https://www.vllm.ai/": "vLLM"
+    },
+    "personas": [
+      {
+        "name": "Alex Chen",
+        "role": "ML Engineer at a SaaS startup",
+        "bio": "Alex needs to deploy LLMs efficiently and cost-effectively. They value open-source and flexible infrastructure.",
+        "favors": "product",
+        "favors_why": "Free runtime, local inference"
+      },
+      {
+        "name": "Maria Rodriguez",
+        "role": "Head of AI Infrastructure at a mid-sized tech company",
+        "bio": "Maria manages a diverse fleet of models and needs dynamic routing to optimize performance and cost.",
+        "favors": "product",
+        "favors_why": "Dynamic query-based routing"
+      },
+      {
+        "name": "David Lee",
+        "role": "CTO of an enterprise AI solution provider",
+        "bio": "David requires scalable, managed infrastructure for complex AI deployments with strong support and reliability.",
+        "favors": "https://www.anyscale.com/",
+        "favors_why": "Enterprise-grade managed service"
+      },
+      {
+        "name": "Sarah Kim",
+        "role": "Data Scientist at a large research institution",
+        "bio": "Sarah needs to experiment with and deploy various models, seeking robust and well-supported platforms.",
+        "favors": "https://www.anyscale.com/",
+        "favors_why": "Comprehensive model serving"
+      },
+      {
+        "name": "John Smith",
+        "role": "AI Developer at a small AI agency",
+        "bio": "John focuses on maximizing inference throughput for specific models and needs high-performance serving.",
+        "favors": "https://www.vllm.ai/",
+        "favors_why": "Optimized for LLM serving"
+      },
+      {
+        "name": "Emily White",
+        "role": "Researcher in LLM optimization",
+        "bio": "Emily explores cutting-edge LLM serving techniques and requires low-latency, high-throughput solutions.",
+        "favors": "https://www.vllm.ai/",
+        "favors_why": "Focus on inference performance"
+      }
+    ],
+    "tasks": [
+      "Route requests to optimal models",
+      "Deploy open-source LLMs locally",
+      "Manage a fleet of diverse models",
+      "Scale inference for large-scale deployments",
+      "Achieve high-throughput LLM serving",
+      "Optimize GPU utilization"
+    ],
+    "verified": null,
+    "positioning": null,
+    "error": null
+  },
+  "raspire": {
+    "product": "RASPIRE",
+    "segment": "Mobile app developers and security teams",
+    "competitors": [
+      "https://www.guardsquare.com/",
+      "https://www.appdome.com/"
+    ],
+    "competitor_names": {
+      "https://www.guardsquare.com/": "Guardsquare",
+      "https://www.appdome.com/": "Appdome"
+    },
+    "personas": [
+      {
+        "name": "Sarah Chen",
+        "role": "Head of Mobile Development at a FinTech startup",
+        "bio": "Needs fast, effective mobile app security without dev overhead. Judges by ease of integration and protection scope.",
+        "favors": "product",
+        "favors_why": "No-code, AI-powered, quick deployment."
+      },
+      {
+        "name": "David Lee",
+        "role": "Security Engineer at a mid-sized gaming company",
+        "bio": "Requires robust runtime protection for Android/iOS apps. Judges by threat detection capabilities and minimal performance impact.",
+        "favors": "product",
+        "favors_why": "Comprehensive threat blocking, AI-tuned."
+      },
+      {
+        "name": "Maria Rodriguez",
+        "role": "CTO at an Enterprise Banking Group",
+        "bio": "Seeks enterprise-grade mobile app security with extensive customization. Judges by compliance features and deep control.",
+        "favors": "https://www.guardsquare.com/",
+        "favors_why": "Offers granular control and advanced obfuscation."
+      },
+      {
+        "name": "James Wilson",
+        "role": "DevOps Lead at a large e-commerce platform",
+        "bio": "Needs integrated security solutions for CI/CD pipelines. Judges by automation capabilities and platform support.",
+        "favors": "https://www.guardsquare.com/",
+        "favors_why": "Strong focus on integration and build-time protection."
+      },
+      {
+        "name": "Emily White",
+        "role": "Product Manager at a Healthcare app company",
+        "bio": "Must ensure app compliance and data privacy. Judges by ease of use and regulatory adherence.",
+        "favors": "https://www.appdome.com/",
+        "favors_why": "Known for no-code mobile app security and compliance."
+      },
+      {
+        "name": "Michael Brown",
+        "role": "Mobile Architect at a large retail chain",
+        "bio": "Requires quick deployment of security features without code changes. Judges by speed and breadth of protection.",
+        "favors": "https://www.appdome.com/",
+        "favors_why": "Focus on no-code, rapid app-shielding."
+      }
+    ],
+    "tasks": [
+      "Protect an Android app from tampering",
+      "Block reverse engineering on iOS app",
+      "Implement code obfuscation for Java/Kotlin",
+      "Add security features without source code access",
+      "Ensure app compliance with data regulations",
+      "Detect advanced runtime application threats"
+    ],
+    "verified": null,
+    "positioning": null,
+    "error": null
+  },
+  "enjamb-labs": {
+    "product": "Enjamb",
+    "segment": "biopharma R&D teams",
+    "competitors": [
+      "https://www.benchling.com/",
+      "https://www.labvantage.com/"
+    ],
+    "competitor_names": {
+      "https://www.benchling.com/": "Benchling",
+      "https://www.labvantage.com/": "LabVantage"
+    },
+    "personas": [
+      {
+        "name": "Dr. Anya Sharma",
+        "role": "Head of R&D at a mid-sized biotech",
+        "bio": "Needs to accelerate drug discovery and development. Judges tools on integration and scientific accuracy.",
+        "favors": "product",
+        "favors_why": "AI workforce for biopharma"
+      },
+      {
+        "name": "Mark Johnson",
+        "role": "Lab Operations Manager at a large pharma",
+        "bio": "Manages complex lab workflows and data. Judges tools on compliance and system integration.",
+        "favors": "product",
+        "favors_why": "Integrates with existing lab systems"
+      },
+      {
+        "name": "Sarah Chen",
+        "role": "Research Scientist at a startup",
+        "bio": "Focuses on experimental design and data analysis. Judges tools on ease of use and scientific features.",
+        "favors": "https://www.benchling.com/",
+        "favors_why": "Comprehensive R&D platform"
+      },
+      {
+        "name": "David Lee",
+        "role": "Bioinformatics Lead at a research institute",
+        "bio": "Analyzes large biological datasets. Judges tools on data management and collaboration features.",
+        "favors": "https://www.benchling.com/",
+        "favors_why": "Strong data management"
+      },
+      {
+        "name": "Emily White",
+        "role": "Quality Control Director at a manufacturing plant",
+        "bio": "Ensures product quality and regulatory adherence. Judges tools on LIMS capabilities and compliance.",
+        "favors": "https://www.labvantage.com/",
+        "favors_why": "Specialized LIMS solution"
+      },
+      {
+        "name": "Aisha Petrov",
+        "role": "IT Director at a global pharmaceutical company",
+        "bio": "Oversees lab system infrastructure. Judges tools on scalability, security, and integration with enterprise systems.",
+        "favors": "https://www.labvantage.com/",
+        "favors_why": "Enterprise-grade LIMS"
+      }
+    ],
+    "tasks": [
+      "Automate routine lab procedures",
+      "Manage experimental data and samples",
+      "Collaborate on scientific projects",
+      "Track sample lifecycle and testing",
+      "Ensure regulatory compliance for lab data",
+      "Review security and compliance standards"
+    ],
+    "verified": null,
+    "positioning": null,
+    "error": null
+  },
+  "netter": {
+    "product": "Netter AI",
+    "segment": "AI system evaluators for enterprise intelligence",
+    "competitors": [
+      "https://www.datarobot.com/",
+      "https://www.h2o.ai/"
+    ],
+    "competitor_names": {
+      "https://www.datarobot.com/": "DataRobot",
+      "https://www.h2o.ai/": "H2O.ai"
+    },
+    "personas": [
+      {
+        "name": "Dr. Evelyn Reed",
+        "role": "Head of Clinical Operations, Large Hospital System",
+        "bio": "Needs to optimize patient flow and resource allocation. Values robust, reliable AI for critical healthcare decisions.",
+        "favors": "product",
+        "favors_why": "Focus on healthcare AI and forward-deployed engineers."
+      },
+      {
+        "name": "Marcus Chen",
+        "role": "VP of Supply Chain, Global Retailer",
+        "bio": "Seeks to predict demand and manage inventory efficiently. Requires an AI system with strong operational integration.",
+        "favors": "product",
+        "favors_why": "Retail focus, digital twin, and operational data connection."
+      },
+      {
+        "name": "Sarah Jenkins",
+        "role": "Chief Data Officer, Manufacturing Conglomerate",
+        "bio": "Manages diverse data sources and needs scalable AI solutions. Prioritizes platform flexibility and model deployment.",
+        "favors": "https://www.datarobot.com/",
+        "favors_why": "Broad platform capabilities and automated machine learning."
+      },
+      {
+        "name": "David Lee",
+        "role": "Director of Analytics, Financial Services",
+        "bio": "Develops predictive models for risk assessment. Needs a powerful, enterprise-grade AI platform for complex data.",
+        "favors": "https://www.datarobot.com/",
+        "favors_why": "Strong reputation for enterprise AI and MLOps."
+      },
+      {
+        "name": "Aisha Khan",
+        "role": "Lead Data Scientist, Tech Startup",
+        "bio": "Builds custom AI models and needs open-source flexibility. Values powerful algorithms and community support.",
+        "favors": "https://www.h2o.ai/",
+        "favors_why": "Open-source roots and focus on AI innovation."
+      },
+      {
+        "name": "Robert Green",
+        "role": "Head of R&D, Automotive Manufacturer",
+        "bio": "Explores new AI applications for product development. Seeks cutting-edge AI tools and scalable infrastructure.",
+        "favors": "https://www.h2o.ai/",
+        "favors_why": "Focus on advanced AI and machine learning capabilities."
+      }
+    ],
+    "tasks": [
+      "Understand healthcare AI system capabilities",
+      "Evaluate digital twin foundation for AI",
+      "Compare automated machine learning features",
+      "Assess enterprise AI platform scalability",
+      "Review open-source AI framework options",
+      "Examine advanced deep learning model support"
+    ],
+    "verified": null,
+    "positioning": null,
+    "error": null
+  },
+  "executor": {
+    "product": "Executor",
+    "segment": "AI agent developers and automation builders",
+    "competitors": [
+      "https://composio.dev/",
+      "https://www.superagent.ai/"
+    ],
+    "competitor_names": {
+      "https://composio.dev/": "Composio",
+      "https://www.superagent.ai/": "Superagent"
+    },
+    "personas": [
+      {
+        "name": "Ravi Osei",
+        "role": "Founder of a startup",
+        "bio": "Needs a flexible platform to connect AI agents and build custom automations. Values open-source and community support.",
+        "favors": "product",
+        "favors_why": "Open-source, flexible, and community-driven."
+      },
+      {
+        "name": "Kenji Petrov",
+        "role": "Individual AI developer",
+        "bio": "Seeks a powerful yet easy-to-use tool for integrating various services with their AI agents.",
+        "favors": "product",
+        "favors_why": "Praises the software's effectiveness and ease of use."
+      },
+      {
+        "name": "Sarah Chen",
+        "role": "AI Solutions Architect at a mid-sized company",
+        "bio": "Requires a robust platform for integrating AI agents with enterprise systems and building complex workflows.",
+        "favors": "https://composio.dev/",
+        "favors_why": "Focus on enterprise-grade integrations and workflow orchestration."
+      },
+      {
+        "name": "David Lee",
+        "role": "Lead AI Engineer at a large corporation",
+        "bio": "Manages a team building custom AI applications and needs a scalable, secure, and feature-rich integration layer.",
+        "favors": "https://composio.dev/",
+        "favors_why": "Designed for complex enterprise integrations and scalability."
+      },
+      {
+        "name": "Emily White",
+        "role": "Freelance AI developer",
+        "bio": "Looks for a quick way to deploy and manage AI agents with minimal setup and good API support.",
+        "favors": "https://www.superagent.ai/",
+        "favors_why": "Emphasizes rapid deployment and API-first approach."
+      },
+      {
+        "name": "Mark Johnson",
+        "role": "Startup CTO",
+        "bio": "Needs to quickly prototype and deploy AI agent-powered features without extensive infrastructure management.",
+        "favors": "https://www.superagent.ai/",
+        "favors_why": "Focus on quick deployment and agent management."
+      }
+    ],
+    "tasks": [
+      "Build a custom automation for an agent",
+      "Orchestrate complex AI agent workflows",
+      "Deploy an AI agent quickly via API",
+      "Monitor AI agent performance and logs",
+      "Compare pricing for self-hosting options",
+      "Discover new AI agent tools"
+    ],
+    "verified": null,
+    "positioning": null,
+    "error": null
+  },
+  "mentlio": {
+    "product": "Mentlio",
+    "segment": "engineering leaders optimizing AI spend",
+    "competitors": [
+      "https://www.glean.com/",
+      "https://www.turing.com/"
+    ],
+    "competitor_names": {
+      "https://www.glean.com/": "Glean",
+      "https://www.turing.com/": "Turing"
+    },
+    "personas": [
+      {
+        "name": "Sarah Chen",
+        "role": "VP of Engineering at a SaaS startup",
+        "bio": "Needs to control AI costs and prove ROI to leadership. Values data-driven insights and efficiency.",
+        "favors": "product",
+        "favors_why": "Focuses on AI spend optimization and ROI."
+      },
+      {
+        "name": "David Lee",
+        "role": "CTO at a mid-sized tech company",
+        "bio": "Concerned about data privacy with AI tools. Seeks on-device processing and token efficiency.",
+        "favors": "product",
+        "favors_why": "Prioritizes on-device processing and security."
+      },
+      {
+        "name": "Emily White",
+        "role": "Head of Product at a large enterprise",
+        "bio": "Requires comprehensive knowledge management and search across internal tools for AI.",
+        "favors": "https://www.glean.com/",
+        "favors_why": "Needs broad knowledge discovery and AI integration."
+      },
+      {
+        "name": "Michael Brown",
+        "role": "Engineering Manager at a growing scale-up",
+        "bio": "Wants to empower developers with AI while maintaining oversight and productivity metrics.",
+        "favors": "https://www.glean.com/",
+        "favors_why": "Seeks AI for developer productivity and insights."
+      },
+      {
+        "name": "Jessica Kim",
+        "role": "Director of AI/ML at a consulting firm",
+        "bio": "Manages a distributed team of AI engineers. Needs to hire and manage remote AI talent.",
+        "favors": "https://www.turing.com/",
+        "favors_why": "Focuses on sourcing and managing AI talent."
+      },
+      {
+        "name": "Robert Green",
+        "role": "VP of R&D at a global corporation",
+        "bio": "Seeks to rapidly scale AI initiatives with vetted, high-quality remote engineering teams.",
+        "favors": "https://www.turing.com/",
+        "favors_why": "Needs to quickly scale AI engineering capacity."
+      }
+    ],
+    "tasks": [
+      "Monitor AI token usage and costs",
+      "Analyze AI's impact on developer productivity",
+      "Find internal documents using AI search",
+      "Hire a remote AI software engineer",
+      "Manage a distributed team of AI specialists",
+      "Search for company policies"
+    ],
+    "verified": null,
+    "positioning": null,
+    "error": null
+  },
+  "fuchsia": {
+    "product": "Fuchsia",
+    "segment": "hardware compliance managers",
+    "competitors": [
+      "https://www.compliancegate.com/",
+      "https://www.ce-check.eu/"
+    ],
+    "competitor_names": {
+      "https://www.compliancegate.com/": "ComplianceGate",
+      "https://www.ce-check.eu/": "CE-Check"
+    },
+    "personas": [
+      {
+        "name": "Sarah Chen",
+        "role": "Hardware Engineer at a Startup",
+        "bio": "Needs fast, clear compliance guidance for new product launches to avoid delays and costly mistakes.",
+        "favors": "product",
+        "favors_why": "AI-powered speed"
+      },
+      {
+        "name": "David Lee",
+        "role": "Product Manager at a Mid-size Company",
+        "bio": "Manages multiple hardware projects, needs streamlined compliance documentation and testing partner connections.",
+        "favors": "product",
+        "favors_why": "Comprehensive solution"
+      },
+      {
+        "name": "Maria Rodriguez",
+        "role": "Compliance Officer at a Small Business",
+        "bio": "Seeks affordable, straightforward compliance information and templates for basic product certifications.",
+        "favors": "https://www.compliancegate.com/",
+        "favors_why": "Cost-effective resources"
+      },
+      {
+        "name": "John Smith",
+        "role": "Consultant for Electronics Manufacturers",
+        "bio": "Provides compliance advice to clients, needs a reliable source for regulatory updates and templates.",
+        "favors": "https://www.compliancegate.com/",
+        "favors_why": "Extensive knowledge base"
+      },
+      {
+        "name": "Emily White",
+        "role": "Operations Manager at an EU Importer",
+        "bio": "Requires clear guidance on CE marking for imported goods to ensure market access and avoid fines.",
+        "favors": "https://www.ce-check.eu/",
+        "favors_why": "EU-specific focus"
+      },
+      {
+        "name": "Michael Brown",
+        "role": "Quality Assurance Lead at an SME",
+        "bio": "Needs to verify product compliance with European directives and find accredited testing labs.",
+        "favors": "https://www.ce-check.eu/",
+        "favors_why": "Specialized CE services"
+      }
+    ],
+    "tasks": [
+      "Identify applicable hardware compliance standards",
+      "Draft lab-ready technical documentation",
+      "Access general compliance guides and articles",
+      "Download compliance templates",
+      "Understand CE marking requirements",
+      "Get a quote for compliance services"
+    ],
+    "verified": null,
+    "positioning": null,
+    "error": null
+  },
+  "dock": {
+    "product": "Dock",
+    "segment": "business leaders evaluating AI agent platforms",
+    "competitors": [
+      "https://www.adept.ai/",
+      "https://cognition.com/"
+    ],
+    "competitor_names": {
+      "https://www.adept.ai/": "Adept",
+      "https://cognition.com/": "Cognition Labs"
+    },
+    "personas": [
+      {
+        "name": "Sarah Chen",
+        "role": "Head of Marketing at a Series A startup",
+        "bio": "Needs to scale marketing efforts without hiring more full-time staff. Values efficiency and clear ROI. Judges by task completion.",
+        "favors": "product",
+        "favors_why": "Automated agents for marketing tasks"
+      },
+      {
+        "name": "David Lee",
+        "role": "Small Business Owner in e-commerce",
+        "bio": "Overwhelmed by operational tasks and customer support. Seeks an affordable, easy-to-implement solution. Judges by ease of use.",
+        "favors": "product",
+        "favors_why": "Simple agent deployment for operations"
+      },
+      {
+        "name": "Maria Rodriguez",
+        "role": "VP of Operations at a large enterprise",
+        "bio": "Manages complex workflows and seeks advanced AI for strategic automation. Values robust, customizable solutions. Judges by scalability.",
+        "favors": "https://www.adept.ai/",
+        "favors_why": "Enterprise-grade AI for complex automation"
+      },
+      {
+        "name": "James Wilson",
+        "role": "Chief Technology Officer at a tech firm",
+        "bio": "Explores cutting-edge AI for competitive advantage and R&D. Values innovative, powerful AI models. Judges by technical capability.",
+        "favors": "https://www.adept.ai/",
+        "favors_why": "Advanced AI for strategic development"
+      },
+      {
+        "name": "Emily White",
+        "role": "Founder of an AI research lab",
+        "bio": "Focused on developing and integrating advanced AI agents. Values groundbreaking research and development. Judges by innovation.",
+        "favors": "https://cognition.com/",
+        "favors_why": "Pioneering AI agent development"
+      },
+      {
+        "name": "Michael Brown",
+        "role": "Lead AI Engineer at a software company",
+        "bio": "Seeks to leverage state-of-the-art AI for product enhancement. Values sophisticated agent capabilities. Judges by performance metrics.",
+        "favors": "https://cognition.com/",
+        "favors_why": "Sophisticated AI for product integration"
+      }
+    ],
+    "tasks": [
+      "Hire a new SEO Auditor agent",
+      "Review available marketing agent skills",
+      "Understand AI agent development roadmap",
+      "Explore enterprise automation use cases",
+      "Learn about AI agent research breakthroughs",
+      "Identify advanced AI agent capabilities"
+    ],
+    "verified": null,
+    "positioning": null,
+    "error": null
+  },
+  "hyperprobe": {
+    "product": "HyperProbe",
+    "segment": "DevOps teams evaluating AI-powered incident response and debugging tools",
+    "competitors": [
+      "https://www.nvidia.com/en-us/",
+      "https://firehydrant.com/"
+    ],
+    "competitor_names": {
+      "https://www.nvidia.com/en-us/": "Shoreline.io",
+      "https://firehydrant.com/": "Blameless"
+    },
+    "personas": [
+      {
+        "name": "Priya Sharma",
+        "role": "Staff Software Engineer at a mid-sized SaaS company",
+        "bio": "Tired of constant on-call pages, needs a tool to automate incident resolution and reduce manual debugging effort.",
+        "favors": "product",
+        "favors_why": "Automates root cause analysis"
+      },
+      {
+        "name": "David Chen",
+        "role": "VP of Engineering at an e-commerce startup",
+        "bio": "Wants to improve developer productivity and reduce incident-related roadmap delays, values AI assistance.",
+        "favors": "product",
+        "favors_why": "Reduces on-call burden, boosts productivity"
+      },
+      {
+        "name": "Sarah Miller",
+        "role": "Site Reliability Engineer at a large enterprise",
+        "bio": "Manages complex distributed systems, needs robust automation for incident remediation and operational tasks.",
+        "favors": "https://www.nvidia.com/en-us/",
+        "favors_why": "Focus on real-time ops and remediation"
+      },
+      {
+        "name": "Mark Johnson",
+        "role": "Head of Platform Engineering at a fintech company",
+        "bio": "Seeks to standardize incident response, automate runbooks, and ensure system reliability at scale.",
+        "favors": "https://www.nvidia.com/en-us/",
+        "favors_why": "Comprehensive runbook automation"
+      },
+      {
+        "name": "Emily White",
+        "role": "DevOps Lead at a growing tech company",
+        "bio": "Aims to improve incident management processes, foster a blameless culture, and gain insights from incidents.",
+        "favors": "https://firehydrant.com/",
+        "favors_why": "SRI, post-mortems, incident retrospectives"
+      },
+      {
+        "name": "Chris Lee",
+        "role": "Engineering Manager at a healthcare software provider",
+        "bio": "Needs to streamline incident communication, track SLOs, and reduce MTTR for critical applications.",
+        "favors": "https://firehydrant.com/",
+        "favors_why": "SLO tracking, incident communication"
+      }
+    ],
+    "tasks": [
+      "Debug production incident without redeploying",
+      "Automate incident root cause analysis",
+      "Automate common operational tasks",
+      "Define and track service level objectives",
+      "Create and manage incident runbooks",
+      "Generate post-incident reports and retrospectives"
+    ],
+    "verified": null,
+    "positioning": null,
+    "error": null
+  }
+}

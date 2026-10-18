@@ -1,0 +1,119 @@
+{
+  "status": "ok",
+  "onet_version": "db_31_0_csv",
+  "mapping_model": "gemini-2.5-pro",
+  "task_selection": "Core first, then lexical overlap with target D text, then Task ID",
+  "occupations": [
+    {
+      "id": "O:43-4051.00",
+      "code": "43-4051.00",
+      "title": "Customer Service Representatives",
+      "mapping": "model-inferred from pack D (no review data)",
+      "rationale": "These workers are the primary users, or \"agents,\" who use the software to manage customer communications across email, live chat, phone, and social media from a single inbox to track and resolve support requests ([D:LiveAgent:landing:1], [D:LiveAgent:landing:2]).",
+      "tasks": [
+        {
+          "id": "O:43-4051.00:18565",
+          "task_id": "18565",
+          "text": "Confer with customers by telephone or in person to provide information about products or services, take or enter orders, cancel accounts, or obtain details of complaints.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 3
+        },
+        {
+          "id": "O:43-4051.00:2584",
+          "task_id": "2584",
+          "text": "Complete contract forms, prepare change of address records, or issue service discontinuance orders, using computers.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 3
+        },
+        {
+          "id": "O:43-4051.00:2580",
+          "task_id": "2580",
+          "text": "Check to ensure that appropriate changes were made to resolve customers' problems.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 2
+        },
+        {
+          "id": "O:43-4051.00:2581",
+          "task_id": "2581",
+          "text": "Contact customers to respond to inquiries or to notify them of claim investigation results or any planned adjustments.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 1
+        }
+      ]
+    },
+    {
+      "id": "O:15-1232.00",
+      "code": "15-1232.00",
+      "title": "Computer User Support Specialists",
+      "mapping": "model-inferred from pack D (no review data)",
+      "rationale": "As these specialists provide technical help, they would use LiveAgent's help desk features to automatically turn user messages into tickets and track and resolve every request ([D:LiveAgent:landing:2]).",
+      "tasks": [
+        {
+          "id": "O:15-1232.00:1282",
+          "task_id": "1282",
+          "text": "Answer user inquiries regarding computer software or hardware operation to resolve problems.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 3
+        },
+        {
+          "id": "O:15-1232.00:1286",
+          "task_id": "1286",
+          "text": "Set up equipment for employee use, performing or ensuring proper installation of cables, operating systems, or appropriate software.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 3
+        },
+        {
+          "id": "O:15-1232.00:1288",
+          "task_id": "1288",
+          "text": "Read technical manuals, confer with users, or conduct computer diagnostics to investigate and resolve problems or to provide technical assistance and support.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 2
+        },
+        {
+          "id": "O:15-1232.00:1290",
+          "task_id": "1290",
+          "text": "Develop training materials and procedures, or train users in the proper use of hardware or software.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 2
+        }
+      ]
+    },
+    {
+      "id": "O:43-1011.00",
+      "code": "43-1011.00",
+      "title": "First-Line Supervisors of Office and Administrative Support Workers",
+      "mapping": "model-inferred from pack D (no review data)",
+      "rationale": "These supervisors would oversee teams of customer service agents, using LiveAgent's features to handle calls, track conversations, and manage agent performance, with pricing structured on a per-agent basis ([D:LiveAgent:landing:4], [D:LiveAgent:landing:7]).",
+      "tasks": [
+        {
+          "id": "O:43-1011.00:9703",
+          "task_id": "9703",
+          "text": "Resolve customer complaints or answer customers' questions regarding policies and procedures.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 3
+        },
+        {
+          "id": "O:43-1011.00:9705",
+          "task_id": "9705",
+          "text": "Provide employees with guidance in handling difficult or complex problems or in resolving escalated complaints or disputes.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 1
+        },
+        {
+          "id": "O:43-1011.00:9707",
+          "task_id": "9707",
+          "text": "Discuss job performance problems with employees to identify causes and issues and to work on resolving problems.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 1
+        },
+        {
+          "id": "O:43-1011.00:9720",
+          "task_id": "9720",
+          "text": "Make recommendations to management concerning such issues as staffing decisions or procedural changes.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 1
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,119 @@
+{
+  "status": "ok",
+  "onet_version": "db_31_0_csv",
+  "mapping_model": "gemini-2.5-pro",
+  "task_selection": "Core first, then lexical overlap with target D text, then Task ID",
+  "occupations": [
+    {
+      "id": "O:13-1082.00",
+      "code": "13-1082.00",
+      "title": "Project Management Specialists",
+      "mapping": "model-inferred from pack D (no review data)",
+      "rationale": "Wrike is a project management tool with features like \"Gantt chart,\" \"Resource management,\" and \"Task management\" [D:Wrike:landing:7] used to \"kick-start projects\" and \"Plan & resource\" [D:Wrike:landing:6].",
+      "tasks": [
+        {
+          "id": "O:13-1082.00:21478",
+          "task_id": "21478",
+          "text": "Report project status, such as budget, resources, technical issues, or customer satisfaction, to managers.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 4
+        },
+        {
+          "id": "O:13-1082.00:21465",
+          "task_id": "21465",
+          "text": "Create project status presentations for delivery to customers or project personnel.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 3
+        },
+        {
+          "id": "O:13-1082.00:21467",
+          "task_id": "21467",
+          "text": "Identify project needs such as resources, staff, or finances by reviewing project objectives and schedules.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 3
+        },
+        {
+          "id": "O:13-1082.00:21479",
+          "task_id": "21479",
+          "text": "Request and review project updates to ensure deadlines are met.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 3
+        }
+      ]
+    },
+    {
+      "id": "O:11-1021.00",
+      "code": "11-1021.00",
+      "title": "General and Operations Managers",
+      "mapping": "model-inferred from pack D (no review data)",
+      "rationale": "These managers use Wrike to gain \"Optimal visibility across projects and departments,\" \"Connect cross-functional teams,\" and \"easily allocate resources\" [D:Wrike:landing:6] to oversee business operations.",
+      "tasks": [
+        {
+          "id": "O:11-1021.00:20699",
+          "task_id": "20699",
+          "text": "Review financial statements, sales or activity reports, or other performance data to measure productivity or goal achievement or to identify areas needing cost reduction or program improvement.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 3
+        },
+        {
+          "id": "O:11-1021.00:20702",
+          "task_id": "20702",
+          "text": "Monitor suppliers to ensure that they efficiently and effectively provide needed goods or services within budgetary limits.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 2
+        },
+        {
+          "id": "O:11-1021.00:20700",
+          "task_id": "20700",
+          "text": "Direct administrative activities directly related to making products or providing services.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 1
+        },
+        {
+          "id": "O:11-1021.00:20701",
+          "task_id": "20701",
+          "text": "Prepare staff work schedules and assign specific duties.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 1
+        }
+      ]
+    },
+    {
+      "id": "O:13-1111.00",
+      "code": "13-1111.00",
+      "title": "Management Analysts",
+      "mapping": "model-inferred from pack D (no review data)",
+      "rationale": "Management Analysts use Wrike's features for \"Workflow automation\" [D:Wrike:landing:6] and turning \"raw work data into clear, actionable intelligence\" [D:Wrike:landing:3] to analyze and improve business processes.",
+      "tasks": [
+        {
+          "id": "O:13-1111.00:7283",
+          "task_id": "7283",
+          "text": "Prepare manuals and train workers in use of new forms, reports, procedures or equipment, according to organizational policy.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 4
+        },
+        {
+          "id": "O:13-1111.00:7280",
+          "task_id": "7280",
+          "text": "Review forms and reports and confer with management and users about format, distribution, and purpose, identifying problems and improvements.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 3
+        },
+        {
+          "id": "O:13-1111.00:7285",
+          "task_id": "7285",
+          "text": "Plan study of work problems and procedures, such as organizational change, communications, information flow, integrated production methods, inventory control, or cost analysis.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 3
+        },
+        {
+          "id": "O:13-1111.00:7277",
+          "task_id": "7277",
+          "text": "Analyze data gathered and develop solutions or alternative methods of proceeding.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 2
+        }
+      ]
+    }
+  ]
+}

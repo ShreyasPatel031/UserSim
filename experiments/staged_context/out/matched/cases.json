@@ -1,0 +1,332 @@
+{
+  "seed": 42,
+  "quota": {
+    "Asana": 7,
+    "Trello": 7,
+    "ClickUp": 6
+  },
+  "source": "evidence pool minus C/T pack rows",
+  "screen_model": "gemini-2.5-pro",
+  "cases": [
+    {
+      "case_id": "case-ed9580d0",
+      "product": "Asana",
+      "role_title": "Director of Development",
+      "role_family": "general_team_mgmt",
+      "industry": "Individual & Family Services",
+      "company_size_band": "1-10 employees",
+      "tenure_band": "1-2 years",
+      "task": {
+        "action": "establish, measure and track",
+        "object": "employee KPI's",
+        "context": "at the beginning of the year",
+        "purpose": "to measure and track employee performance"
+      },
+      "neutral_task": "Set up annual employee KPIs using the Goals function and configure them for monthly updates."
+    },
+    {
+      "case_id": "case-9a222729",
+      "product": "Asana",
+      "role_title": "Director of Customer Support and Success",
+      "role_family": "sales_customer",
+      "industry": "Marketing and Advertising",
+      "company_size_band": "11-50 employees",
+      "tenure_band": "1-2 years",
+      "task": {
+        "action": "use a project for",
+        "object": "our Support team meetings",
+        "context": null,
+        "purpose": "to keep them organized"
+      },
+      "neutral_task": "Set up a project to organize and manage recurring Support team meetings."
+    },
+    {
+      "case_id": "case-ee000791",
+      "product": "Asana",
+      "role_title": "Fullstack developer",
+      "role_family": "software_it_engineering",
+      "industry": "Computer Software",
+      "company_size_band": "11-50 employees",
+      "tenure_band": "6-12 months",
+      "task": {
+        "action": "Assigning",
+        "object": "tasks",
+        "context": "to appropriate team member",
+        "purpose": "with appropriate follow up"
+      },
+      "neutral_task": "Assign tasks to team members and follow up on them."
+    },
+    {
+      "case_id": "case-087c4105",
+      "product": "Asana",
+      "role_title": "Social Media freelancer",
+      "role_family": "marketing_creative_content",
+      "industry": "Internet",
+      "company_size_band": "Self-employed",
+      "tenure_band": "2+ years",
+      "task": {
+        "action": "manage",
+        "object": "multiple social media tasks and clients",
+        "context": null,
+        "purpose": null
+      },
+      "neutral_task": "Set up a system to manage social media tasks for multiple clients."
+    },
+    {
+      "case_id": "case-42213740",
+      "product": "Asana",
+      "role_title": "Vp Chief Publishing officer",
+      "role_family": "executive_owner",
+      "industry": "Media Production",
+      "company_size_band": "11-50 employees",
+      "tenure_band": "1-2 years",
+      "task": {
+        "action": "create, assign, and monitor",
+        "object": "projects and task progress",
+        "context": "for different companies/teams, across all projects at the same time",
+        "purpose": null
+      },
+      "neutral_task": "Create separate projects for different teams, assign tasks within them, and monitor the progress across all projects simultaneously."
+    },
+    {
+      "case_id": "case-263fb2fc",
+      "product": "Asana",
+      "role_title": "Membership and Meetings Manager",
+      "role_family": "general_team_mgmt",
+      "industry": "Non-Profit Organization Management",
+      "company_size_band": "11-50 employees",
+      "tenure_band": "2+ years",
+      "task": {
+        "action": "use Asana for",
+        "object": "weekly team meetings",
+        "context": "where tasks are used as agenda items",
+        "purpose": "to check off items and create new tasks from the discussion"
+      },
+      "neutral_task": "Use a project to manage a weekly team meeting, treating agenda items as tasks to be checked off, and create new tasks with due dates based on meeting discussions."
+    },
+    {
+      "case_id": "case-4a336594",
+      "product": "Asana",
+      "role_title": "Marketing Consultant",
+      "role_family": "marketing_creative_content",
+      "industry": "Marketing and Advertising",
+      "company_size_band": "Self-employed",
+      "tenure_band": "1-2 years",
+      "task": {
+        "action": "manage",
+        "object": "a complicated project like creating an online course",
+        "context": null,
+        "purpose": "to handle dependencies between tasks"
+      },
+      "neutral_task": "Set up a project to manage the creation of a complicated online course, including the dependencies between its tasks."
+    },
+    {
+      "case_id": "case-ef5b20c2",
+      "product": "Trello",
+      "role_title": "People Coordinator",
+      "role_family": "operations_admin",
+      "industry": "Building Materials",
+      "company_size_band": "51-200 employees",
+      "tenure_band": "6-12 months",
+      "task": {
+        "action": "seeing",
+        "object": "new starters",
+        "context": "when they are starting and making notes",
+        "purpose": "to check back on things done and minimize errors"
+      },
+      "neutral_task": "Set up a system to see which new starters are coming and when, and to add notes about actions taken for them."
+    },
+    {
+      "case_id": "case-f960602b",
+      "product": "Trello",
+      "role_title": "CEO",
+      "role_family": "executive_owner",
+      "industry": "Health, Wellness and Fitness",
+      "company_size_band": "Self-employed",
+      "tenure_band": "1-2 years",
+      "task": {
+        "action": "save",
+        "object": "ideas, and future posts",
+        "context": "on my social media and platform",
+        "purpose": null
+      },
+      "neutral_task": "Save ideas and future posts for social media and a platform."
+    },
+    {
+      "case_id": "case-6fecd7b3",
+      "product": "Trello",
+      "role_title": "Freelancer",
+      "role_family": "consultant_freelance",
+      "industry": "Information Technology and Services",
+      "company_size_band": "Self-employed",
+      "tenure_band": "6-12 months",
+      "task": {
+        "action": "tracking",
+        "object": "the lifecycle of each linguistic task",
+        "context": "for managing multiple translation projects",
+        "purpose": "to ensure all project deadlines are met efficiently"
+      },
+      "neutral_task": "Use a board to track the lifecycle of individual linguistic tasks for multiple translation projects."
+    },
+    {
+      "case_id": "case-060f818d",
+      "product": "Trello",
+      "role_title": "Academic Tutor",
+      "role_family": "education_research_analysis",
+      "industry": "E-Learning",
+      "company_size_band": "201-500 employees",
+      "tenure_band": "2+ years",
+      "task": {
+        "action": "coordinate",
+        "object": "wedding planning",
+        "context": "across myself, my spouse, and our respective parents",
+        "purpose": "to keep links to all relevant documents, to-do lists, decisions, etc. all in one place where all involved parties could view and keep track of progress"
+      },
+      "neutral_task": "Set up a board to coordinate wedding planning with a spouse and parents, centralizing links to documents, to-do lists, and decisions for all parties to view and track progress."
+    },
+    {
+      "case_id": "case-40ca0fe7",
+      "product": "Trello",
+      "role_title": "Senior Product Designer",
+      "role_family": "marketing_creative_content",
+      "industry": "Design",
+      "company_size_band": "51-200 employees",
+      "tenure_band": "6-12 months",
+      "task": {
+        "action": "organize",
+        "object": "the entire design process",
+        "context": "from idea generation to final delivery",
+        "purpose": "to bring structure to creative processes by making tasks, feedback, and project progress more visible"
+      },
+      "neutral_task": "Organize a product design process with stages from idea generation to final delivery to make tasks, feedback, and project progress visible."
+    },
+    {
+      "case_id": "case-c580bd34",
+      "product": "Trello",
+      "role_title": "Branch manager",
+      "role_family": "general_team_mgmt",
+      "industry": "Retail",
+      "company_size_band": "5,001-10,000 employees",
+      "tenure_band": "1-2 years",
+      "task": {
+        "action": "allocating",
+        "object": "tasks",
+        "context": "to colleagues in retail",
+        "purpose": "for when the store got busy and some colleagues had extra hands to spare"
+      },
+      "neutral_task": "Allocate tasks to colleagues in a retail store for when the store gets busy and some staff have spare capacity."
+    },
+    {
+      "case_id": "case-b093bc56",
+      "product": "Trello",
+      "role_title": "CEO",
+      "role_family": "executive_owner",
+      "industry": "Music",
+      "company_size_band": "1-10 employees",
+      "tenure_band": "I used a free trial",
+      "task": {
+        "action": "create",
+        "object": "visual idea cards",
+        "context": "for the entire group to see and learn from",
+        "purpose": "to keep the idea incubator open for group members to share their new ideas"
+      },
+      "neutral_task": "Create visual idea cards for a group to see, learn from, and share new ideas."
+    },
+    {
+      "case_id": "case-5cc7e4a2",
+      "product": "ClickUp",
+      "role_title": "Coordinator of VSE Career Center",
+      "role_family": "operations_admin",
+      "industry": "Marketing and Advertising",
+      "company_size_band": "11-50 employees",
+      "tenure_band": "6-12 months",
+      "task": {
+        "action": "delegate",
+        "object": "tasks",
+        "context": "to my colleagues with a deadline",
+        "purpose": null
+      },
+      "neutral_task": "Assign a task to a colleague and set a deadline."
+    },
+    {
+      "case_id": "case-23a3a503",
+      "product": "ClickUp",
+      "role_title": "Recruiter",
+      "role_family": "finance_hr_legal",
+      "industry": "Staffing and Recruiting",
+      "company_size_band": "Self-employed",
+      "tenure_band": "Less than 6 months",
+      "task": {
+        "action": "add",
+        "object": "a viewer",
+        "context": "for your documents",
+        "purpose": null
+      },
+      "neutral_task": "Add a viewer to your documents."
+    },
+    {
+      "case_id": "case-206a036d",
+      "product": "ClickUp",
+      "role_title": "Creative Graphic raphic Designer",
+      "role_family": "marketing_creative_content",
+      "industry": "Printing",
+      "company_size_band": "201-500 employees",
+      "tenure_band": "2+ years",
+      "task": {
+        "action": "manage",
+        "object": "all my design batch",
+        "context": "allocated to me at the office and also do those of my personal clients",
+        "purpose": null
+      },
+      "neutral_task": "Set up a system to manage design batches for both work allocated from the office and for personal clients."
+    },
+    {
+      "case_id": "case-429c13d5",
+      "product": "ClickUp",
+      "role_title": "Content Creator",
+      "role_family": "marketing_creative_content",
+      "industry": "Retail",
+      "company_size_band": "11-50 employees",
+      "tenure_band": "I used a free trial",
+      "task": {
+        "action": "Crear",
+        "object": "listas de tareas",
+        "context": "al asignar tiempos",
+        "purpose": null
+      },
+      "neutral_task": "Create a list of tasks and assign times to them."
+    },
+    {
+      "case_id": "case-32e8d8b1",
+      "product": "ClickUp",
+      "role_title": "Founder",
+      "role_family": "executive_owner",
+      "industry": "Marketing and Advertising",
+      "company_size_band": "1-10 employees",
+      "tenure_band": "6-12 months",
+      "task": {
+        "action": "set up",
+        "object": "wikis",
+        "context": "for each client",
+        "purpose": null
+      },
+      "neutral_task": "Set up a wiki for each client."
+    },
+    {
+      "case_id": "case-5db24ca9",
+      "product": "ClickUp",
+      "role_title": "Digital Transformation and Compliance Lead",
+      "role_family": "finance_hr_legal",
+      "industry": "Real Estate",
+      "company_size_band": "51-200 employees",
+      "tenure_band": "I used a free trial",
+      "task": {
+        "action": "create and allocate",
+        "object": "tasks to various agents",
+        "context": null,
+        "purpose": "to organize and automate work"
+      },
+      "neutral_task": "Create various AI agents and allocate tasks to them."
+    }
+  ]
+}

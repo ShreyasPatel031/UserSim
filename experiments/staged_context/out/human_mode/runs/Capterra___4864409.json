@@ -1,0 +1,9 @@
+{"rid": "Capterra___4864409", "session_id": "23ffa22eaf944b9db8f5a59d34098c37", "signed_in": false, "reached_product": false,
+ "outcome": "blocked", "steps_used": 8,
+ "observations": [
+  {"kind": "signup_friction", "what": "After entering the work email on the first try-it form and clicking Continue, the flow went to app.smartsheet.com/b/signup with the email prefilled, then bounced back to the empty try-it form after a second Continue."},
+  {"kind": "signup_friction", "what": "On the second attempt the form reached a 'Welcome!' confirmation page saying to check email, but no verification email or code arrived in roughly 8 minutes of polling."},
+  {"kind": "signup_friction", "what": "The 'Click here if you don't see the email' link on the Welcome page opens a generic help-center article rather than resending the email."},
+  {"kind": "signup_friction", "what": "The signup page offers only work-email, Google, Microsoft and Apple options and a data-region selector, with no password step before email verification."},
+  {"kind": "agent_failure", "what": "I clicked Continue on the prefilled second form without noticing it would reset the form, costing a step to retype the email."}
+ ]}

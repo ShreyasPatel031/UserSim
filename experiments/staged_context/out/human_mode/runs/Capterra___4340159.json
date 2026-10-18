@@ -1,0 +1,11 @@
+{"rid": "Capterra___4340159", "session_id": "bd3ced7f0a2b4cfc9034e32f292f720e", "signed_in": true, "reached_product": true,
+ "outcome": "partial", "steps_used": 25,
+ "observations": [
+  {"kind": "signup_friction", "what": "Sign-up was a short two-step form (name, email, organization, terms, then password) behind an hCaptcha, and landing on the pricing page required picking the Free radio before a Sign up free link appeared."},
+  {"kind": "signup_friction", "what": "The welcome screen needs a click on a blue button before the 'Skip the tour' link shows, so skipping onboarding takes two clicks."},
+  {"kind": "product_benefit", "what": "The project's Add a tool menu lists a Calendar tool described as 'Add events, milestones, deadlines, etc.', which maps directly onto a deadlines calendar."},
+  {"kind": "product_benefit", "what": "The new Calendar's empty state offers an 'Add your first event' link, and the event form has name, dates, times, repeat, notes and people, so posting an event took three actions."},
+  {"kind": "product_friction", "what": "A fresh free account has a single empty 'My Project' with no tools, so a calendar had to be added manually before any deadline could be entered."},
+  {"kind": "product_friction", "what": "The posted event defaulted to today at 5:30am-6:00am, so a deadline needs its date and time changed by hand instead of being an all-day date."},
+  {"kind": "agent_failure", "what": "I posted only one deadline event with the default date and did not add Beta/Gamma deadlines or recurring dates, so the calendar is only partly prepared."}
+ ]}

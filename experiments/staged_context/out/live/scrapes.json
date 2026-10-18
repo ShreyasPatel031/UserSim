@@ -1,0 +1,1163 @@
+{
+ "1Password": {
+  "reviews": 100,
+  "by_site": {
+   "capterra": 50,
+   "g2": 42,
+   "trustradius": 7,
+   "gartner": 1
+  },
+  "run_id": "8ua5BXFCFImPM8CqC",
+  "usd": 0.5449999999999999,
+  "ts": "2026-10-18T10:09:50Z",
+  "found_as": [
+   "1Password"
+  ]
+ },
+ "Adobe Marketo Engage": {
+  "reviews": 100,
+  "by_site": {
+   "g2": 48,
+   "trustradius": 43,
+   "gartner": 9
+  },
+  "run_id": "3XFWZdKSjJ5VsQicW",
+  "usd": 0.5499999999999999,
+  "ts": "2026-10-18T10:02:33Z",
+  "found_as": [
+   "Adobe Marketo Engage"
+  ]
+ },
+ "ADP Workforce Now": {
+  "reviews": 100,
+  "by_site": {
+   "capterra": 51,
+   "g2": 31,
+   "trustradius": 15,
+   "gartner": 3
+  },
+  "run_id": "2v4dGd2jHYxRLWiDw",
+  "usd": 0.5349999999999999,
+  "ts": "2026-10-18T09:59:25Z",
+  "found_as": [
+   "ADP Workforce Now"
+  ]
+ },
+ "Adyen": {
+  "reviews": 79,
+  "by_site": {
+   "g2": 33,
+   "capterra": 25,
+   "trustradius": 16,
+   "gartner": 5
+  },
+  "run_id": "LKWwGM6V3tFcqaYsr",
+  "usd": 0.44499999999999995,
+  "ts": "2026-10-18T10:01:01Z",
+  "found_as": [
+   "Adyen",
+   "Adyen Payments",
+   "Adyen Payments Platform"
+  ]
+ },
+ "Airtable": {
+  "reviews": 100,
+  "by_site": {
+   "g2": 49,
+   "capterra": 35,
+   "trustradius": 12,
+   "gartner": 4
+  },
+  "run_id": "J8ekpU5aZXmPiO6rq",
+  "usd": 0.53,
+  "ts": "2026-10-18T09:56:59Z",
+  "found_as": [
+   "Airtable"
+  ]
+ },
+ "Asana": {
+  "reviews": 100,
+  "by_site": {
+   "capterra": 44,
+   "g2": 43,
+   "trustradius": 10,
+   "gartner": 3
+  },
+  "run_id": "Uhxwo8qqZdw9m1qyh",
+  "usd": 0.31999999999999995,
+  "ts": "2026-10-18T09:52:47Z",
+  "found_as": [
+   "Asana"
+  ]
+ },
+ "BambooHR": {
+  "reviews": 100,
+  "by_site": {
+   "g2": 58,
+   "capterra": 31,
+   "trustradius": 9,
+   "gartner": 2
+  },
+  "run_id": "UtVvxwqjSMR6duQE7",
+  "usd": 0.26,
+  "ts": "2026-10-18T10:08:02Z",
+  "found_as": [
+   "BambooHR"
+  ]
+ },
+ "Bitwarden": {
+  "reviews": 100,
+  "by_site": {
+   "g2": 80,
+   "capterra": 11,
+   "trustradius": 5,
+   "gartner": 4
+  },
+  "run_id": "v4UcGvmqCuVfyVrmt",
+  "usd": 0.53004,
+  "ts": "2026-10-18T09:49:59Z",
+  "found_as": [
+   "Bitwarden"
+  ]
+ },
+ "Bravo Wellness": {
+  "reviews": 59,
+  "by_site": {
+   "capterra": 59
+  },
+  "run_id": "zIVWAaqmJuxHyd8dt",
+  "usd": 0.34500000000000003,
+  "ts": "2026-10-18T09:58:15Z",
+  "found_as": [
+   "Bravo"
+  ]
+ },
+ "Braze": {
+  "reviews": 100,
+  "by_site": {
+   "g2": 71,
+   "trustradius": 13,
+   "gartner": 10,
+   "capterra": 6
+  },
+  "run_id": "IBwhg8zkHGonN7FgV",
+  "usd": 0.54929,
+  "ts": "2026-10-18T09:55:18Z",
+  "found_as": [
+   "Braze",
+   "Braze Customer Engagement Platform"
+  ]
+ },
+ "Brevo": {
+  "reviews": 100,
+  "by_site": {
+   "capterra": 54,
+   "g2": 40,
+   "trustradius": 5,
+   "gartner": 1
+  },
+  "run_id": "dIXhrHOZTdNp56fyX",
+  "usd": 0.5495899999999999,
+  "ts": "2026-10-18T10:07:04Z",
+  "found_as": [
+   "Brevo",
+   "Brevo Marketing Platform"
+  ]
+ },
+ "ClickUp": {
+  "reviews": 100,
+  "by_site": {
+   "g2": 68,
+   "capterra": 23,
+   "trustradius": 8,
+   "gartner": 1
+  },
+  "run_id": "7mA0IctsBXm611hOh",
+  "usd": 0.5493199999999999,
+  "ts": "2026-10-18T09:53:45Z",
+  "found_as": [
+   "ClickUp"
+  ]
+ },
+ "ConnectWise PSA": {
+  "reviews": 100,
+  "by_site": {
+   "g2": 45,
+   "trustradius": 32,
+   "capterra": 22,
+   "gartner": 1
+  },
+  "run_id": "z1qMOhF0NgUziAS54",
+  "usd": 0.5449999999999999,
+  "ts": "2026-10-18T10:06:33Z",
+  "found_as": [
+   "ConnectWise PSA"
+  ]
+ },
+ "Copper": {
+  "reviews": 100,
+  "by_site": {
+   "g2": 59,
+   "capterra": 33,
+   "trustradius": 6,
+   "gartner": 2
+  },
+  "run_id": "SkqpO6iUL9UPT3ysn",
+  "usd": 0.5399999999999999,
+  "ts": "2026-10-18T09:46:54Z",
+  "found_as": [
+   "Copper",
+   "Copper CRM"
+  ]
+ },
+ "Coupa": {
+  "reviews": 100,
+  "by_site": {
+   "gartner": 45,
+   "g2": 36,
+   "trustradius": 11,
+   "capterra": 8
+  },
+  "run_id": "FiEifpCchI1J0YC0P",
+  "usd": 0.32499999999999996,
+  "ts": "2026-10-18T10:01:11Z",
+  "found_as": [
+   "Coupa"
+  ]
+ },
+ "Ecwid": {
+  "reviews": 100,
+  "by_site": {
+   "capterra": 59,
+   "g2": 39,
+   "trustradius": 2
+  },
+  "run_id": "2RRmQMxfw6kpcaGbE",
+  "usd": 0.5496099999999999,
+  "ts": "2026-10-18T09:50:22Z",
+  "found_as": [
+   "Ecwid",
+   "Ecwid by Lightspeed"
+  ]
+ },
+ "Element (Matrix)": {
+  "reviews": 10,
+  "by_site": {
+   "capterra": 10
+  },
+  "run_id": "NAWFA1s3haAaUHTGM",
+  "usd": 0.05,
+  "ts": "2026-10-18T10:08:52Z",
+  "found_as": [
+   "Element"
+  ]
+ },
+ "Expensify": {
+  "reviews": 100,
+  "by_site": {
+   "g2": 73,
+   "capterra": 18,
+   "trustradius": 8,
+   "gartner": 1
+  },
+  "run_id": "Ef7rnjsjh94QrPqSE",
+  "usd": 0.5499999999999999,
+  "ts": "2026-10-18T10:02:39Z",
+  "found_as": [
+   "Expensify"
+  ]
+ },
+ "Factorial": {
+  "reviews": 100,
+  "by_site": {
+   "capterra": 75,
+   "g2": 23,
+   "trustradius": 1,
+   "gartner": 1
+  },
+  "run_id": "PidAgYI5U6eoyoZ0j",
+  "usd": 0.54402,
+  "ts": "2026-10-18T10:07:16Z",
+  "found_as": [
+   "Factorial"
+  ]
+ },
+ "FreshBooks": {
+  "reviews": 100,
+  "by_site": {
+   "capterra": 80,
+   "g2": 17,
+   "trustradius": 3
+  },
+  "run_id": "migqV9xaa3Z6dyuq2",
+  "usd": 0.5499999999999999,
+  "ts": "2026-10-18T10:07:50Z",
+  "found_as": [
+   "FreshBooks"
+  ]
+ },
+ "Freshdesk": {
+  "reviews": 100,
+  "by_site": {
+   "g2": 48,
+   "capterra": 44,
+   "trustradius": 8
+  },
+  "run_id": "z9SLAZWSn0FDagw1H",
+  "usd": 0.31,
+  "ts": "2026-10-18T09:53:59Z",
+  "found_as": [
+   "Freshdesk"
+  ]
+ },
+ "Gladly": {
+  "reviews": 100,
+  "by_site": {
+   "g2": 87,
+   "capterra": 11,
+   "trustradius": 1,
+   "gartner": 1
+  },
+  "run_id": "GpvhBnNWqck2942rU",
+  "usd": 0.5449999999999999,
+  "ts": "2026-10-18T10:06:15Z",
+  "found_as": [
+   "Gladly",
+   "Gladly CX Platform"
+  ]
+ },
+ "Google Workspace": {
+  "reviews": 100,
+  "by_site": {
+   "g2": 69,
+   "capterra": 27,
+   "trustradius": 2,
+   "gartner": 2
+  },
+  "run_id": "mfH4UdRCggKFd6aKp",
+  "usd": 0.205,
+  "ts": "2026-10-18T10:04:05Z",
+  "found_as": [
+   "Google Workspace"
+  ]
+ },
+ "Gorgias": {
+  "reviews": 100,
+  "by_site": {
+   "g2": 77,
+   "capterra": 18,
+   "trustradius": 4,
+   "gartner": 1
+  },
+  "run_id": "xRsOvgeaLiUn2dzeb",
+  "usd": 0.54923,
+  "ts": "2026-10-18T09:46:43Z",
+  "found_as": [
+   "Gorgias"
+  ]
+ },
+ "Gusto": {
+  "reviews": 100,
+  "by_site": {
+   "g2": 70,
+   "capterra": 22,
+   "trustradius": 7,
+   "gartner": 1
+  },
+  "run_id": "MboXIs4oLbJH3wC85",
+  "usd": 0.5492999999999999,
+  "ts": "2026-10-18T10:04:53Z",
+  "found_as": [
+   "Gusto",
+   "Gusto Driver Payroll Systems"
+  ]
+ },
+ "Help Scout": {
+  "reviews": 100,
+  "by_site": {
+   "g2": 60,
+   "capterra": 31,
+   "trustradius": 8,
+   "gartner": 1
+  },
+  "run_id": "NRflTpYpeTwc2oVUY",
+  "usd": 0.5449999999999999,
+  "ts": "2026-10-18T09:54:11Z",
+  "found_as": [
+   "Help Scout"
+  ]
+ },
+ "HubSpot Sales Hub": {
+  "reviews": 100,
+  "by_site": {
+   "g2": 90,
+   "trustradius": 4,
+   "capterra": 3,
+   "gartner": 3
+  },
+  "run_id": "ekSa9nJao25CCo1oO",
+  "usd": 0.1,
+  "ts": "2026-10-18T09:50:20Z",
+  "found_as": [
+   "HubSpot Sales Hub",
+   "Sales Hub"
+  ]
+ },
+ "HubSpot Service Hub": {
+  "reviews": 100,
+  "by_site": {
+   "g2": 92,
+   "capterra": 6,
+   "trustradius": 1,
+   "gartner": 1
+  },
+  "run_id": "OZRLnwO2rjKI0Ww68",
+  "usd": 0.5490799999999999,
+  "ts": "2026-10-18T09:55:04Z",
+  "found_as": [
+   "HubSpot Service Hub"
+  ]
+ },
+ "Intercom": {
+  "reviews": 100,
+  "by_site": {
+   "gartner": 60,
+   "trustradius": 39,
+   "g2": 1
+  },
+  "run_id": "0G7kr26npaxhwsVbB",
+  "usd": 0.5493999999999999,
+  "ts": "2026-10-18T09:57:48Z",
+  "found_as": [
+   "Intercom",
+   "Intercom Enterprises"
+  ]
+ },
+ "Iterable": {
+  "reviews": 100,
+  "by_site": {
+   "g2": 61,
+   "trustradius": 18,
+   "gartner": 17,
+   "capterra": 4
+  },
+  "run_id": "qONNbQNTNJtsTbzrJ",
+  "usd": 0.245,
+  "ts": "2026-10-18T09:55:22Z",
+  "found_as": [
+   "Iterable"
+  ]
+ },
+ "Keeper Security": {
+  "reviews": 100,
+  "by_site": {
+   "g2": 61,
+   "capterra": 25,
+   "gartner": 14
+  },
+  "run_id": "qCcqqzHzytBU0oiOe",
+  "usd": 0.5498599999999999,
+  "ts": "2026-10-18T10:10:20Z",
+  "found_as": [
+   "Keeper Enterprise Password Manager",
+   "Keeper Password Manager",
+   "Keeper Security"
+  ]
+ },
+ "Kustomer": {
+  "reviews": 100,
+  "by_site": {
+   "g2": 77,
+   "capterra": 12,
+   "trustradius": 9,
+   "gartner": 2
+  },
+  "run_id": "G7JfnPNXtqwMXhbc1",
+  "usd": 0.5499799999999999,
+  "ts": "2026-10-18T10:06:48Z",
+  "found_as": [
+   "Kustomer"
+  ]
+ },
+ "LastPass": {
+  "reviews": 100,
+  "by_site": {
+   "capterra": 51,
+   "g2": 37,
+   "trustradius": 7,
+   "gartner": 5
+  },
+  "run_id": "0lTqmmHobuafawxSa",
+  "usd": 0.5499499999999999,
+  "ts": "2026-10-18T10:10:20Z",
+  "found_as": [
+   "LastPass",
+   "LastPass for Business"
+  ]
+ },
+ "Limeade": {
+  "reviews": 5,
+  "by_site": {
+   "gartner": 3,
+   "trustradius": 2
+  },
+  "run_id": "qZg5JufkJZ60FhVLc",
+  "usd": 0.07500000000000001,
+  "ts": "2026-10-18T09:57:35Z",
+  "found_as": [
+   "Limeade ONE",
+   "Limeade Well-Being"
+  ]
+ },
+ "Looker (Google Cloud Looker)": {
+  "reviews": 100,
+  "by_site": {
+   "capterra": 100
+  },
+  "run_id": "cJ4XbJWXkSC6FswQ2",
+  "usd": 0.05,
+  "ts": "2026-10-18T10:08:12Z",
+  "found_as": [
+   "Looker"
+  ]
+ },
+ "Magento Open Source": {
+  "reviews": 94,
+  "by_site": {
+   "g2": 64,
+   "trustradius": 30
+  },
+  "run_id": "iwPDR9DNiRJWOQSSv",
+  "usd": 0.52,
+  "ts": "2026-10-18T09:56:42Z",
+  "found_as": [
+   "Magento Open Source"
+  ]
+ },
+ "MailerLite": {
+  "reviews": 100,
+  "by_site": {
+   "capterra": 65,
+   "g2": 30,
+   "trustradius": 4,
+   "gartner": 1
+  },
+  "run_id": "subIAMfJ99NufKfRu",
+  "usd": 0.5497,
+  "ts": "2026-10-18T10:07:18Z",
+  "found_as": [
+   "MailerLite"
+  ]
+ },
+ "Mattermost": {
+  "reviews": 100,
+  "by_site": {
+   "g2": 53,
+   "capterra": 25,
+   "trustradius": 17,
+   "gartner": 5
+  },
+  "run_id": "hV7S5HtXlGUjaeIkl",
+  "usd": 0.525,
+  "ts": "2026-10-18T09:48:38Z",
+  "found_as": [
+   "Mattermost"
+  ]
+ },
+ "Microsoft Dynamics 365 Sales": {
+  "reviews": 100,
+  "by_site": {
+   "g2": 70,
+   "gartner": 29,
+   "capterra": 1
+  },
+  "run_id": "VLSUvmjEw87f0WcuW",
+  "usd": 0.5497099999999999,
+  "ts": "2026-10-18T09:52:01Z",
+  "found_as": [
+   "Dynamics 365 Sales",
+   "Microsoft Dynamics 365 Sales"
+  ]
+ },
+ "Microsoft Power BI Embedded": {
+  "reviews": 100,
+  "by_site": {
+   "capterra": 93,
+   "g2": 5,
+   "trustradius": 1,
+   "gartner": 1
+  },
+  "run_id": "NqMDbiT08SZWX3e9s",
+  "usd": 0.54994,
+  "ts": "2026-10-18T10:08:56Z",
+  "found_as": [
+   "Microsoft Power BI",
+   "Microsoft Power BI Embedded",
+   "Power BI Embedded"
+  ]
+ },
+ "Microsoft Power BI": {
+  "reviews": 100,
+  "by_site": {
+   "gartner": 38,
+   "trustradius": 25,
+   "capterra": 20,
+   "g2": 17
+  },
+  "run_id": "yaSvT6OAcjcuB4mLW",
+  "usd": 0.54962,
+  "ts": "2026-10-18T09:51:45Z",
+  "found_as": [
+   "Microsoft Power BI"
+  ]
+ },
+ "Microsoft Teams": {
+  "reviews": 100,
+  "by_site": {
+   "g2": 44,
+   "capterra": 27,
+   "trustradius": 19,
+   "gartner": 10
+  },
+  "run_id": "CwJTT8QL6YjDWB7we",
+  "usd": 0.5498999999999999,
+  "ts": "2026-10-18T10:10:07Z",
+  "found_as": [
+   "Microsoft Teams"
+  ]
+ },
+ "Monday.com": {
+  "reviews": 100,
+  "by_site": {
+   "g2": 59,
+   "capterra": 22,
+   "trustradius": 17,
+   "gartner": 2
+  },
+  "run_id": "FEWLwThITpPka5chM",
+  "usd": 0.5499999999999999,
+  "ts": "2026-10-18T09:52:55Z",
+  "found_as": [
+   "monday AI Work Platform",
+   "monday.com"
+  ]
+ },
+ "Paychex Flex": {
+  "reviews": 100,
+  "by_site": {
+   "capterra": 74,
+   "trustradius": 25,
+   "gartner": 1
+  },
+  "run_id": "nGXt6eMhdXE9HqgYg",
+  "usd": 0.54999,
+  "ts": "2026-10-18T09:59:28Z",
+  "found_as": [
+   "Paychex",
+   "Paychex Flex"
+  ]
+ },
+ "Paylocity": {
+  "reviews": 100,
+  "by_site": {
+   "g2": 55,
+   "trustradius": 25,
+   "capterra": 18,
+   "gartner": 2
+  },
+  "run_id": "rhmAt7eY0gczgIEka",
+  "usd": 0.54943,
+  "ts": "2026-10-18T10:04:51Z",
+  "found_as": [
+   "Paylocity"
+  ]
+ },
+ "Performio": {
+  "reviews": 100,
+  "by_site": {
+   "g2": 72,
+   "capterra": 22,
+   "gartner": 5,
+   "trustradius": 1
+  },
+  "run_id": "rSHb0mEyXoTUXl1SY",
+  "usd": 0.54928,
+  "ts": "2026-10-18T09:59:12Z",
+  "found_as": [
+   "Performio"
+  ]
+ },
+ "Personio": {
+  "reviews": 100,
+  "by_site": {
+   "g2": 75,
+   "capterra": 23,
+   "trustradius": 1,
+   "gartner": 1
+  },
+  "run_id": "XrLS3dcjNfuSGPpXn",
+  "usd": 0.175,
+  "ts": "2026-10-18T09:48:57Z",
+  "found_as": [
+   "Personio"
+  ]
+ },
+ "Pipedrive": {
+  "reviews": 100,
+  "by_site": {
+   "g2": 56,
+   "capterra": 35,
+   "trustradius": 5,
+   "gartner": 4
+  },
+  "run_id": "uPWOiM0hmiU01nygD",
+  "usd": 0.5494399999999999,
+  "ts": "2026-10-18T10:05:40Z",
+  "found_as": [
+   "Pipedrive"
+  ]
+ },
+ "Qlik Sense": {
+  "reviews": 100,
+  "by_site": {
+   "trustradius": 50,
+   "g2": 38,
+   "capterra": 12
+  },
+  "run_id": "RJMd6b9zrFk0bbUO2",
+  "usd": 0.36,
+  "ts": "2026-10-18T09:52:57Z",
+  "found_as": [
+   "Qlik Cloud Analytics (Qlik Sense)",
+   "Qlik Sense"
+  ]
+ },
+ "QuickBooks Online": {
+  "reviews": 100,
+  "by_site": {
+   "capterra": 59,
+   "g2": 26,
+   "trustradius": 15
+  },
+  "run_id": "FUeMl9syQbfqmiYF9",
+  "usd": 0.42,
+  "ts": "2026-10-18T10:08:07Z",
+  "found_as": [
+   "QuickBooks Online"
+  ]
+ },
+ "Richpanel": {
+  "reviews": 99,
+  "by_site": {
+   "g2": 89,
+   "capterra": 9,
+   "gartner": 1
+  },
+  "run_id": "NiPILanddYGI7AdvJ",
+  "usd": 0.5449999999999999,
+  "ts": "2026-10-18T10:06:11Z",
+  "found_as": [
+   "Richpanel",
+   "Richpanel Customer Service CRM"
+  ]
+ },
+ "Rippling": {
+  "reviews": 100,
+  "by_site": {
+   "g2": 60,
+   "capterra": 23,
+   "trustradius": 12,
+   "gartner": 5
+  },
+  "run_id": "1Fyn2Pj97lovdU37p",
+  "usd": 0.525,
+  "ts": "2026-10-18T10:05:16Z",
+  "found_as": [
+   "Rippling",
+   "Rippling HCM"
+  ]
+ },
+ "Rocket.Chat": {
+  "reviews": 100,
+  "by_site": {
+   "g2": 100
+  },
+  "run_id": "5X1crGjRCUkGCa5r8",
+  "usd": 0.05,
+  "ts": "2026-10-18T10:09:06Z",
+  "found_as": [
+   "Rocket.Chat"
+  ]
+ },
+ "Rydoo": {
+  "reviews": 100,
+  "by_site": {
+   "g2": 68,
+   "capterra": 19,
+   "gartner": 12,
+   "trustradius": 1
+  },
+  "run_id": "Ba6fHHMVhQyNhn5nI",
+  "usd": 0.15,
+  "ts": "2026-10-18T10:01:26Z",
+  "found_as": [
+   "Rydoo"
+  ]
+ },
+ "Salesforce Commerce Cloud": {
+  "reviews": 100,
+  "by_site": {
+   "g2": 51,
+   "trustradius": 42,
+   "capterra": 7
+  },
+  "run_id": "UeW0xph8bDLwVD9Zd",
+  "usd": 0.5494899999999999,
+  "ts": "2026-10-18T09:56:15Z",
+  "found_as": [
+   "Salesforce Agentforce Commerce",
+   "Salesforce B2C Commerce",
+   "Salesforce Commerce Cloud"
+  ]
+ },
+ "Salesforce Marketing Cloud Account Engagement (Pardot)": {
+  "reviews": 100,
+  "by_site": {
+   "capterra": 99,
+   "g2": 1
+  },
+  "run_id": "kdKNoyh1wcUvJs316",
+  "usd": 0.05,
+  "ts": "2026-10-18T10:01:34Z",
+  "found_as": [
+   "Pardot (by Salesforce)",
+   "Salesforce Marketing Cloud Account Engagement"
+  ]
+ },
+ "Salesforce Marketing Cloud": {
+  "reviews": 100,
+  "by_site": {
+   "g2": 65,
+   "trustradius": 21,
+   "capterra": 7,
+   "gartner": 7
+  },
+  "run_id": "fSVPyRgpnrUhjfJQk",
+  "usd": 0.54935,
+  "ts": "2026-10-18T09:55:44Z",
+  "found_as": [
+   "Marketing Cloud",
+   "Salesforce Agentforce Marketing",
+   "Salesforce Marketing Cloud"
+  ]
+ },
+ "Salesforce Sales Cloud": {
+  "reviews": 100,
+  "by_site": {
+   "g2": 54,
+   "capterra": 39,
+   "trustradius": 7
+  },
+  "run_id": "3Nt1Z5WuZHwXgBRB5",
+  "usd": 0.54946,
+  "ts": "2026-10-18T09:50:17Z",
+  "found_as": [
+   "Salesforce Agentforce Sales",
+   "Salesforce Sales Cloud"
+  ]
+ },
+ "SAP Commissions": {
+  "reviews": 100,
+  "by_site": {
+   "g2": 60,
+   "trustradius": 37,
+   "capterra": 3
+  },
+  "run_id": "8JUXIMK9wcMldOGxs",
+  "usd": 0.25,
+  "ts": "2026-10-18T09:58:55Z",
+  "found_as": [
+   "SAP Commissions",
+   "SAP Sales Performance Management",
+   "SAP SuccessFactors Incentive Management (formerly SAP Commissions)"
+  ]
+ },
+ "Shopify Plus": {
+  "reviews": 100,
+  "by_site": {
+   "g2": 72,
+   "trustradius": 18,
+   "capterra": 10
+  },
+  "run_id": "ZThF2EkHvma7q4rVg",
+  "usd": 0.5499999999999999,
+  "ts": "2026-10-18T09:56:08Z",
+  "found_as": [
+   "Shopify Plus"
+  ]
+ },
+ "Shopify": {
+  "reviews": 100,
+  "by_site": {
+   "capterra": 52,
+   "g2": 39,
+   "trustradius": 5,
+   "gartner": 4
+  },
+  "run_id": "LOTJcsXXexD9ECWCR",
+  "usd": 0.54996,
+  "ts": "2026-10-18T10:11:06Z",
+  "found_as": [
+   "Shopify"
+  ]
+ },
+ "Sisense": {
+  "reviews": 100,
+  "by_site": {
+   "g2": 41,
+   "gartner": 39,
+   "capterra": 15,
+   "trustradius": 5
+  },
+  "run_id": "OcpsbLhjWcc1v45Wn",
+  "usd": 0.34500000000000003,
+  "ts": "2026-10-18T09:48:28Z",
+  "found_as": [
+   "Sisense",
+   "Sisense AI Analytics Platform"
+  ]
+ },
+ "Slack": {
+  "reviews": 100,
+  "by_site": {
+   "g2": 48,
+   "capterra": 31,
+   "trustradius": 13,
+   "gartner": 8
+  },
+  "run_id": "8kteocb9JEqqbM0um",
+  "usd": 0.54992,
+  "ts": "2026-10-18T10:03:08Z",
+  "found_as": [
+   "Slack"
+  ]
+ },
+ "Square": {
+  "reviews": 100,
+  "by_site": {
+   "capterra": 71,
+   "g2": 27,
+   "trustradius": 2
+  },
+  "run_id": "cYFhyynIqs3RVgTGX",
+  "usd": 0.415,
+  "ts": "2026-10-18T10:00:39Z",
+  "found_as": [
+   "Square POS",
+   "Square Point of Sale"
+  ]
+ },
+ "Squarespace": {
+  "reviews": 100,
+  "by_site": {
+   "capterra": 70,
+   "g2": 23,
+   "trustradius": 6,
+   "gartner": 1
+  },
+  "run_id": "dmrLi3Am5zaqEPmdc",
+  "usd": 0.54999,
+  "ts": "2026-10-18T10:11:25Z",
+  "found_as": [
+   "Squarespace"
+  ]
+ },
+ "Stripe": {
+  "reviews": 100,
+  "by_site": {
+   "capterra": 79,
+   "g2": 11,
+   "trustradius": 9,
+   "gartner": 1
+  },
+  "run_id": "ophldoGmKWrqAjZpJ",
+  "usd": 0.48999999999999994,
+  "ts": "2026-10-18T09:59:55Z",
+  "found_as": [
+   "Stripe",
+   "Stripe Payments"
+  ]
+ },
+ "Tableau Embedded": {
+  "reviews": 100,
+  "by_site": {
+   "capterra": 100
+  },
+  "run_id": "qsQXEtl7hshk6UTB2",
+  "usd": 0.5489999999999999,
+  "ts": "2026-10-18T10:09:07Z",
+  "found_as": [
+   "Tableau"
+  ]
+ },
+ "Tableau": {
+  "reviews": 100,
+  "by_site": {
+   "g2": 32,
+   "gartner": 32,
+   "capterra": 18,
+   "trustradius": 18
+  },
+  "run_id": "GQBydxTpGrhcS4XMw",
+  "usd": 0.54968,
+  "ts": "2026-10-18T09:51:43Z",
+  "found_as": [
+   "Tableau",
+   "Tableau Desktop"
+  ]
+ },
+ "Teamwork.com": {
+  "reviews": 100,
+  "by_site": {
+   "g2": 46,
+   "capterra": 37,
+   "trustradius": 10,
+   "gartner": 7
+  },
+  "run_id": "elPrneaPVHhElceds",
+  "usd": 0.515,
+  "ts": "2026-10-18T09:46:52Z",
+  "found_as": [
+   "Teamwork.com"
+  ]
+ },
+ "UKG Ready": {
+  "reviews": 100,
+  "by_site": {
+   "g2": 57,
+   "capterra": 28,
+   "trustradius": 12,
+   "gartner": 3
+  },
+  "run_id": "ASBNJJRLhZzGsshbj",
+  "usd": 0.5499999999999999,
+  "ts": "2026-10-18T10:00:10Z",
+  "found_as": [
+   "UKG Ready"
+  ]
+ },
+ "Varicent": {
+  "reviews": 100,
+  "by_site": {
+   "g2": 73,
+   "trustradius": 14,
+   "gartner": 12,
+   "capterra": 1
+  },
+  "run_id": "gT4jfsXcZQlm7tzaU",
+  "usd": 0.5491499999999999,
+  "ts": "2026-10-18T09:58:12Z",
+  "found_as": [
+   "Varicent"
+  ]
+ },
+ "Virgin Pulse": {
+  "reviews": 5,
+  "by_site": {
+   "trustradius": 5
+  },
+  "run_id": "FEh7HGtHwOyp2S8lv",
+  "usd": 0.07500000000000001,
+  "ts": "2026-10-18T09:56:59Z",
+  "found_as": [
+   "Virgin Pulse"
+  ]
+ },
+ "Wix eCommerce": {
+  "reviews": 100,
+  "by_site": {
+   "capterra": 99,
+   "gartner": 1
+  },
+  "run_id": "TAGVv39pEUssPB5yl",
+  "usd": 0.5449999999999999,
+  "ts": "2026-10-18T10:11:08Z",
+  "found_as": [
+   "Wix",
+   "Wix Ecommerce"
+  ]
+ },
+ "Xero": {
+  "reviews": 100,
+  "by_site": {
+   "capterra": 55,
+   "g2": 30,
+   "trustradius": 14,
+   "gartner": 1
+  },
+  "run_id": "5ssJGeapUx8cqnYAD",
+  "usd": 0.5449999999999999,
+  "ts": "2026-10-18T10:08:20Z",
+  "found_as": [
+   "Xero"
+  ]
+ },
+ "Zendesk Support Suite": {
+  "reviews": 100,
+  "by_site": {
+   "capterra": 79,
+   "trustradius": 21
+  },
+  "run_id": "cdmHG5kRdikaUSTqx",
+  "usd": 0.155,
+  "ts": "2026-10-18T09:53:19Z",
+  "found_as": [
+   "Zendesk Suite"
+  ]
+ },
+ "Zoho Books": {
+  "reviews": 100,
+  "by_site": {
+   "capterra": 56,
+   "g2": 27,
+   "trustradius": 16,
+   "gartner": 1
+  },
+  "run_id": "fgKdFgkW7ae0pk6sR",
+  "usd": 0.5449999999999999,
+  "ts": "2026-10-18T09:49:07Z",
+  "found_as": [
+   "Zoho Books"
+  ]
+ },
+ "Zoho CRM": {
+  "reviews": 100,
+  "by_site": {
+   "capterra": 60,
+   "g2": 25,
+   "trustradius": 8,
+   "gartner": 7
+  },
+  "run_id": "Tii1Q1etzA7VnLeMW",
+  "usd": 0.5499999999999999,
+  "ts": "2026-10-18T09:51:34Z",
+  "found_as": [
+   "Zoho CRM"
+  ]
+ },
+ "Zoom Workplace": {
+  "reviews": 100,
+  "by_site": {
+   "g2": 72,
+   "capterra": 19,
+   "trustradius": 8,
+   "gartner": 1
+  },
+  "run_id": "mzyfWiQnYp0wlSwLk",
+  "usd": 0.5499999999999999,
+  "ts": "2026-10-18T10:03:53Z",
+  "found_as": [
+   "Zoom Workplace"
+  ]
+ }
+}

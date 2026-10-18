@@ -1,0 +1,39 @@
+{
+  "items": [
+    {
+      "id": "D:Freshdesk:landing:1",
+      "text": "We'll get you there. Freshdesk brings ready-to-use AI, people, and workflows together, with a guided path to AI adoption, so service improves from day one and becomes increasingly AI-powered over time. From setup to success, made simple Use guided tours, quick-start walkthroughs, and onboarding flows to configure AI around your business.",
+      "product": "Freshdesk",
+      "role": "target",
+      "url": "https://www.freshdesk.com/"
+    },
+    {
+      "id": "D:Freshdesk:landing:2",
+      "text": "Free AI onboarding included Get hands-on guidance to set up and optimize AI, so it resolves accurately from the start. Turn support metrics into strategy See how your team stacks up against global standards. Get personalized, data-backed recommendations to close performance gaps and adopt AI capabilities right when you need them.",
+      "product": "Freshdesk",
+      "role": "target",
+      "url": "https://www.freshdesk.com/"
+    },
+    {
+      "id": "D:Freshdesk:landing:3",
+      "text": "AI-powered service, at your pace Start with one use case or scale across teams and channels. Freshdesk helps you grow into AI-powered service on your timeline. Connect the tools your team relies on Connect Freshdesk with the AI tools and apps your support team already uses.",
+      "product": "Freshdesk",
+      "role": "target",
+      "url": "https://www.freshdesk.com/"
+    },
+    {
+      "id": "D:Freshdesk:landing:4",
+      "text": "Explore Freshdesk MCP Connect your business apps Integrate with the tools your team relies on, seamlessly connected with Freshdesk. * Logos are trademarks of their respective owners. Mention does not imply endorsement or partnership.",
+      "product": "Freshdesk",
+      "role": "target",
+      "url": "https://www.freshdesk.com/"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.freshdesk.com/",
+      "html_sha256": "3d72db95e53a679b869d7f2e6b67c0fa52c5c7cf470a9867674c63faafc838f5",
+      "sentences_dropped_by_filter": 15
+    }
+  ]
+}

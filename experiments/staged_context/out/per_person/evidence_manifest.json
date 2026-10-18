@@ -1,0 +1,634 @@
+{
+  "products": {
+    "Freshsales": {
+      "M": {
+        "items": 1,
+        "tokens_approx": 33,
+        "sha256": "d7c4ed2264feea7240f84f3c1554f482c702a684395431ba8c077c0911debbb3"
+      },
+      "D": {
+        "items": 32,
+        "tokens_approx": 3010,
+        "sha256": "f079741d1bbbb9b4eb970fa5cfb8fcff1778cd815be51a4a8ffe06d1a18ae861",
+        "sources": [
+          {
+            "product": "Freshsales",
+            "role": "target",
+            "page": "landing",
+            "url": "https://www.freshworks.com/crm/sales/",
+            "captured": "2026-10-18",
+            "html_sha256": "9dbb9ec5003537d3e24465cc9d6fd5af360bb54bcabcf6cc5b765aee7aff8873",
+            "tokens": 392,
+            "truncated": false,
+            "sentences_dropped_by_filter": 12
+          },
+          {
+            "product": "Freshsales",
+            "role": "target",
+            "page": "features",
+            "url": "https://www.freshworks.com/crm/features/",
+            "captured": "2026-10-18",
+            "html_sha256": "3d86a470d7971c9e8b21d9454eb51df639fa354ddff4252bbecc21a495e6d02a",
+            "tokens": 1099,
+            "truncated": true,
+            "sentences_dropped_by_filter": 26
+          },
+          {
+            "product": "Zoho CRM",
+            "role": "competitor",
+            "page": "landing",
+            "url": "https://www.zoho.com/crm/",
+            "captured": "2026-10-18",
+            "html_sha256": "6c037a3ea038b9fff9d851e85ab5f90012e7b3d069d3279b5ebbe145a87b02d7",
+            "tokens": 351,
+            "truncated": false,
+            "sentences_dropped_by_filter": 9
+          },
+          {
+            "product": "Pipedrive",
+            "role": "competitor",
+            "page": "landing",
+            "url": "https://www.pipedrive.com/en",
+            "captured": "2026-10-18",
+            "html_sha256": "dec73708dc9c381d6809fb2b2a3ac8b8634714ad7878d3234f8609f5a251f124",
+            "tokens": 467,
+            "truncated": true,
+            "sentences_dropped_by_filter": 23
+          }
+        ]
+      },
+      "C": {
+        "items": 20,
+        "tokens_approx": 2835,
+        "sha256": "7b237b815a35cfc6dff68604095e36aaca283ab82dc1deb987fba7dba8d0183e",
+        "review_ids": [
+          "Capterra___7118584",
+          "Capterra___6339596",
+          "Capterra___6563316",
+          "Capterra___6140095",
+          "Capterra___6040351",
+          "Capterra___6002746",
+          "Capterra___5006541",
+          "Capterra___6222984",
+          "Capterra___6300200",
+          "Capterra___6034454",
+          "Capterra___4954320",
+          "Capterra___3775261",
+          "Capterra___4995330",
+          "Capterra___4537158",
+          "Capterra___6800653",
+          "Capterra___2669040",
+          "Capterra___4501826",
+          "Capterra___6450031",
+          "Capterra___2419335",
+          "Capterra___4577907"
+        ],
+        "products": [
+          "Pipedrive",
+          "Zoho CRM"
+        ],
+        "truncated_reviews": 1,
+        "masked_passages": 1
+      },
+      "O": {
+        "items": 0,
+        "tokens_approx": 497,
+        "sha256": "9aa9f6d00a733cfaaa3d7070807fb7bedb49bbeeda7d43a5da33988c11095a05",
+        "status": "ok",
+        "occupations": [
+          {
+            "id": "O:11-2022.00",
+            "code": "11-2022.00",
+            "title": "Sales Managers",
+            "mapping": "model-inferred from pack D (no review data)",
+            "rationale": "The product is explicitly described as an \"AI-POWERED SALES CRM\" and includes features for managers to plan the sales process, set sales goals, create sales forecasts, and analyze team performance [D:Freshsales:landing:1, D:Freshsales:features:14, D:Freshsales:features:15].",
+            "tasks": [
+              {
+                "id": "O:11-2022.00:3",
+                "task_id": "3",
+                "text": "Direct and coordinate activities involving sales of manufactured products, services, commodities, real estate, or other subjects of sale.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 5
+              },
+              {
+                "id": "O:11-2022.00:11",
+                "task_id": "11",
+                "text": "Plan and direct staffing, training, and performance evaluations to develop and control sales and service programs.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 4
+              },
+              {
+                "id": "O:11-2022.00:2",
+                "task_id": "2",
+                "text": "Monitor customer preferences to determine focus of sales efforts.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 3
+              },
+              {
+                "id": "O:11-2022.00:10",
+                "task_id": "10",
+                "text": "Represent company at trade association meetings to promote products.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 2
+              }
+            ]
+          },
+          {
+            "id": "O:41-4012.00",
+            "code": "41-4012.00",
+            "title": "Sales Representatives, Wholesale and Manufacturing, Except Technical and Scientific Products",
+            "mapping": "model-inferred from pack D (no review data)",
+            "rationale": "The software is designed for salespeople to \"Sell smarter and close deals faster,\" grow their pipeline, automate sales sequences of emails and calls, and manage leads and deals [D:Freshsales:landing:1, D:Freshsales:features:4].",
+            "tasks": [
+              {
+                "id": "O:41-4012.00:8120",
+                "task_id": "8120",
+                "text": "Identify prospective customers by using business directories, following leads from existing clients, participating in organizations and clubs, and attending trade shows and conferences.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 5
+              },
+              {
+                "id": "O:41-4012.00:8122",
+                "task_id": "8122",
+                "text": "Monitor market conditions, product innovations, and competitors' products, prices, and sales.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 3
+              },
+              {
+                "id": "O:41-4012.00:8124",
+                "task_id": "8124",
+                "text": "Perform administrative duties, such as preparing sales budgets and reports, keeping sales records, and filing expense account reports.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 3
+              },
+              {
+                "id": "O:41-4012.00:20267",
+                "task_id": "20267",
+                "text": "Prepare sales contracts and order forms.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 2
+              }
+            ]
+          },
+          {
+            "id": "O:11-2021.00",
+            "code": "11-2021.00",
+            "title": "Marketing Managers",
+            "mapping": "model-inferred from pack D (no review data)",
+            "rationale": "Freshsales includes a \"MARKETING AUTOMATION\" suite to \"run smart sales campaigns to generate more leads,\" segment audiences, and analyze visitor behavior for conversion rate optimization [D:Freshsales:landing:1, D:Freshsales:features:9, D:Freshsales:features:10].",
+            "tasks": [
+              {
+                "id": "O:11-2021.00:958",
+                "task_id": "958",
+                "text": "Use sales forecasting or strategic planning to ensure the sale and profitability of products, lines, or services, analyzing business developments and monitoring market trends.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 6
+              },
+              {
+                "id": "O:11-2021.00:19505",
+                "task_id": "19505",
+                "text": "Recommend modifications to products, packaging, production processes, or other characteristics to improve the environmental soundness or sustainability of products.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 4
+              },
+              {
+                "id": "O:11-2021.00:951",
+                "task_id": "951",
+                "text": "Identify, develop, or evaluate marketing strategy, based on knowledge of establishment objectives, market characteristics, and cost and markup factors.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 4
+              },
+              {
+                "id": "O:11-2021.00:954",
+                "task_id": "954",
+                "text": "Direct the hiring, training, or performance evaluations of marketing or sales staff and oversee their daily activities.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 4
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "Zoho CRM": {
+      "M": {
+        "items": 1,
+        "tokens_approx": 27,
+        "sha256": "b66b7ffb5e498a3e6a0320f40976a63d3f3333b7d1a2e0942e7d875aba0b75d2"
+      },
+      "D": {
+        "items": 21,
+        "tokens_approx": 2142,
+        "sha256": "47db1ac097f3d8f306f665fedae6961cf8265f8262c713cdc0cb2cf7c54f681a",
+        "sources": [
+          {
+            "product": "Zoho CRM",
+            "role": "target",
+            "page": "landing",
+            "url": "https://www.zoho.com/crm/",
+            "captured": "2026-10-18",
+            "html_sha256": "6c037a3ea038b9fff9d851e85ab5f90012e7b3d069d3279b5ebbe145a87b02d7",
+            "tokens": 351,
+            "truncated": false,
+            "sentences_dropped_by_filter": 9
+          },
+          {
+            "product": "Zoho CRM",
+            "role": "target",
+            "page": "features",
+            "url": "https://www.zoho.com/crm/features.html",
+            "captured": "2026-10-18",
+            "html_sha256": "a5241b0b088ab84d46ba0bcd95eea3b0b59f7b2e3845c307d60438fe35c9e570",
+            "tokens": 493,
+            "truncated": false,
+            "sentences_dropped_by_filter": 17
+          },
+          {
+            "product": "Freshsales",
+            "role": "competitor",
+            "page": "landing",
+            "url": "https://www.freshworks.com/crm/sales/",
+            "captured": "2026-10-18",
+            "html_sha256": "9dbb9ec5003537d3e24465cc9d6fd5af360bb54bcabcf6cc5b765aee7aff8873",
+            "tokens": 392,
+            "truncated": false,
+            "sentences_dropped_by_filter": 12
+          },
+          {
+            "product": "Pipedrive",
+            "role": "competitor",
+            "page": "landing",
+            "url": "https://www.pipedrive.com/en",
+            "captured": "2026-10-18",
+            "html_sha256": "dec73708dc9c381d6809fb2b2a3ac8b8634714ad7878d3234f8609f5a251f124",
+            "tokens": 467,
+            "truncated": true,
+            "sentences_dropped_by_filter": 23
+          }
+        ]
+      },
+      "C": {
+        "items": 20,
+        "tokens_approx": 2890,
+        "sha256": "f6170c340fa4750d8a93e9a616ca2ea94d6d9019e4dcc6a4f16f3264f0da1b3f",
+        "review_ids": [
+          "Capterra___4505841",
+          "Capterra___6147703",
+          "Capterra___1097845",
+          "Capterra___4969829",
+          "Capterra___1374889",
+          "Capterra___7043570",
+          "Capterra___1283560",
+          "Capterra___1223528",
+          "Capterra___1267057",
+          "Capterra___1237015",
+          "Capterra___4954320",
+          "Capterra___3775261",
+          "Capterra___4995330",
+          "Capterra___4537158",
+          "Capterra___6800653",
+          "Capterra___2669040",
+          "Capterra___4501826",
+          "Capterra___6450031",
+          "Capterra___2419335",
+          "Capterra___4577907"
+        ],
+        "products": [
+          "Freshsales",
+          "Pipedrive"
+        ],
+        "truncated_reviews": 0,
+        "masked_passages": 0
+      },
+      "O": {
+        "items": 0,
+        "tokens_approx": 523,
+        "sha256": "428b3c4e8fdb24c4ba6377f2919aa64f5651cde552e82644c4920d92f373ae77",
+        "status": "ok",
+        "occupations": [
+          {
+            "id": "O:11-2022.00",
+            "code": "11-2022.00",
+            "title": "Sales Managers",
+            "mapping": "model-inferred from pack D (no review data)",
+            "rationale": "The software is explicitly designed to \"build better pipelines,\" \"accelerate sales, and measure sales performance,\" and a \"Sales Manager\" is quoted as a user [D:Zoho CRM:landing:1, D:Zoho CRM:features:1, D:Pipedrive:landing:5].",
+            "tasks": [
+              {
+                "id": "O:11-2022.00:3",
+                "task_id": "3",
+                "text": "Direct and coordinate activities involving sales of manufactured products, services, commodities, real estate, or other subjects of sale.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 4
+              },
+              {
+                "id": "O:11-2022.00:11",
+                "task_id": "11",
+                "text": "Plan and direct staffing, training, and performance evaluations to develop and control sales and service programs.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 2
+              },
+              {
+                "id": "O:11-2022.00:2",
+                "task_id": "2",
+                "text": "Monitor customer preferences to determine focus of sales efforts.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 2
+              },
+              {
+                "id": "O:11-2022.00:7",
+                "task_id": "7",
+                "text": "Confer or consult with department heads to plan advertising services and to secure information on equipment and customer specifications.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 2
+              }
+            ]
+          },
+          {
+            "id": "O:41-4012.00",
+            "code": "41-4012.00",
+            "title": "Sales Representatives, Wholesale and Manufacturing, Except Technical and Scientific Products",
+            "mapping": "model-inferred from pack D (no review data)",
+            "rationale": "The product is designed to help sales teams by automating activities across the sales funnel and \"guiding sales reps contextually to ensure process uniformity\" [D:Zoho CRM:features:3].",
+            "tasks": [
+              {
+                "id": "O:41-4012.00:8115",
+                "task_id": "8115",
+                "text": "Contact regular and prospective customers to demonstrate products, explain product features, and solicit orders.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 3
+              },
+              {
+                "id": "O:41-4012.00:8117",
+                "task_id": "8117",
+                "text": "Consult with clients after sales or contract signings to resolve problems and to provide ongoing support.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 2
+              },
+              {
+                "id": "O:41-4012.00:8120",
+                "task_id": "8120",
+                "text": "Identify prospective customers by using business directories, following leads from existing clients, participating in organizations and clubs, and attending trade shows and conferences.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 2
+              },
+              {
+                "id": "O:41-4012.00:8122",
+                "task_id": "8122",
+                "text": "Monitor market conditions, product innovations, and competitors' products, prices, and sales.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 2
+              }
+            ]
+          },
+          {
+            "id": "O:11-2021.00",
+            "code": "11-2021.00",
+            "title": "Marketing Managers",
+            "mapping": "model-inferred from pack D (no review data)",
+            "rationale": "The CRM helps to \"increase leads\" and run \"smart sales campaigns to generate more leads,\" and a \"Head of Marketing\" is quoted as a user [D:Zoho CRM:features:1, D:Freshsales:landing:1, D:Zoho CRM:landing:3].",
+            "tasks": [
+              {
+                "id": "O:11-2021.00:958",
+                "task_id": "958",
+                "text": "Use sales forecasting or strategic planning to ensure the sale and profitability of products, lines, or services, analyzing business developments and monitoring market trends.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 5
+              },
+              {
+                "id": "O:11-2021.00:954",
+                "task_id": "954",
+                "text": "Direct the hiring, training, or performance evaluations of marketing or sales staff and oversee their daily activities.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 4
+              },
+              {
+                "id": "O:11-2021.00:20709",
+                "task_id": "20709",
+                "text": "Formulate, direct, or coordinate marketing activities or policies to promote products or services, working with advertising or promotion managers.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 3
+              },
+              {
+                "id": "O:11-2021.00:19505",
+                "task_id": "19505",
+                "text": "Recommend modifications to products, packaging, production processes, or other characteristics to improve the environmental soundness or sustainability of products.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 2
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "Pipedrive": {
+      "M": {
+        "items": 1,
+        "tokens_approx": 29,
+        "sha256": "ad1a1da2052d5dd116853dc9fa0c42ecd658ddf665e8a55c38a7309feedf2f67"
+      },
+      "D": {
+        "items": 27,
+        "tokens_approx": 2775,
+        "sha256": "df38d6da5f049f4e74b5528482b861feb894768468fec2105a001679809f7032",
+        "sources": [
+          {
+            "product": "Pipedrive",
+            "role": "target",
+            "page": "landing",
+            "url": "https://www.pipedrive.com/en",
+            "captured": "2026-10-18",
+            "html_sha256": "dec73708dc9c381d6809fb2b2a3ac8b8634714ad7878d3234f8609f5a251f124",
+            "tokens": 747,
+            "truncated": true,
+            "sentences_dropped_by_filter": 23
+          },
+          {
+            "product": "Pipedrive",
+            "role": "target",
+            "page": "features",
+            "url": "https://www.pipedrive.com/en/features",
+            "captured": "2026-10-18",
+            "html_sha256": "c691171824619e641f65df3674f06b024b98c92ce901638b4b7296e6cd032aff",
+            "tokens": 723,
+            "truncated": true,
+            "sentences_dropped_by_filter": 15
+          },
+          {
+            "product": "Freshsales",
+            "role": "competitor",
+            "page": "landing",
+            "url": "https://www.freshworks.com/crm/sales/",
+            "captured": "2026-10-18",
+            "html_sha256": "9dbb9ec5003537d3e24465cc9d6fd5af360bb54bcabcf6cc5b765aee7aff8873",
+            "tokens": 392,
+            "truncated": false,
+            "sentences_dropped_by_filter": 12
+          },
+          {
+            "product": "Zoho CRM",
+            "role": "competitor",
+            "page": "landing",
+            "url": "https://www.zoho.com/crm/",
+            "captured": "2026-10-18",
+            "html_sha256": "6c037a3ea038b9fff9d851e85ab5f90012e7b3d069d3279b5ebbe145a87b02d7",
+            "tokens": 351,
+            "truncated": false,
+            "sentences_dropped_by_filter": 9
+          }
+        ]
+      },
+      "C": {
+        "items": 20,
+        "tokens_approx": 2996,
+        "sha256": "b5893ed325578706530a19d40e07100bc38a876ad0c08a39616361cba5c010ab",
+        "review_ids": [
+          "Capterra___4505841",
+          "Capterra___6147703",
+          "Capterra___1097845",
+          "Capterra___4969829",
+          "Capterra___1374889",
+          "Capterra___7043570",
+          "Capterra___1283560",
+          "Capterra___1223528",
+          "Capterra___1267057",
+          "Capterra___1237015",
+          "Capterra___7118584",
+          "Capterra___6339596",
+          "Capterra___6563316",
+          "Capterra___6140095",
+          "Capterra___6040351",
+          "Capterra___6002746",
+          "Capterra___5006541",
+          "Capterra___6222984",
+          "Capterra___6300200",
+          "Capterra___6034454"
+        ],
+        "products": [
+          "Freshsales",
+          "Zoho CRM"
+        ],
+        "truncated_reviews": 1,
+        "masked_passages": 2
+      },
+      "O": {
+        "items": 0,
+        "tokens_approx": 507,
+        "sha256": "3db8351212229ab982f593921856c42c0cd251890fb3fd7f7ac0efcbf17c936a",
+        "status": "ok",
+        "occupations": [
+          {
+            "id": "O:11-2022.00",
+            "code": "11-2022.00",
+            "title": "Sales Managers",
+            "mapping": "model-inferred from pack D (no review data)",
+            "rationale": "Pipedrive is a sales CRM that provides tools for team monitoring, goal-setting, and refining strategy with real-time performance insights, and a \"Sales Manager\" is quoted as a user [D:Pipedrive:landing:2, D:Pipedrive:landing:5].",
+            "tasks": [
+              {
+                "id": "O:11-2022.00:3",
+                "task_id": "3",
+                "text": "Direct and coordinate activities involving sales of manufactured products, services, commodities, real estate, or other subjects of sale.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 5
+              },
+              {
+                "id": "O:11-2022.00:11",
+                "task_id": "11",
+                "text": "Plan and direct staffing, training, and performance evaluations to develop and control sales and service programs.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 4
+              },
+              {
+                "id": "O:11-2022.00:13",
+                "task_id": "13",
+                "text": "Confer with potential customers regarding equipment needs, and advise customers on types of equipment to purchase.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 3
+              },
+              {
+                "id": "O:11-2022.00:2",
+                "task_id": "2",
+                "text": "Monitor customer preferences to determine focus of sales efforts.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 3
+              }
+            ]
+          },
+          {
+            "id": "O:41-3091.00",
+            "code": "41-3091.00",
+            "title": "Sales Representatives of Services, Except Advertising, Insurance, Financial Services, and Travel",
+            "mapping": "model-inferred from pack D (no review data)",
+            "rationale": "The product is described as a tool for salespeople to track their sales pipeline, manage deals, automate their sales process, and ultimately \"focus on selling\" and \"closing deals\" [D:Pipedrive:landing:1, D:Pipedrive:landing:6].",
+            "tasks": [
+              {
+                "id": "O:41-3091.00:23225",
+                "task_id": "23225",
+                "text": "Consult with clients after sales or contract signings to resolve problems and provide ongoing support.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 3
+              },
+              {
+                "id": "O:41-3091.00:23226",
+                "task_id": "23226",
+                "text": "Contact prospective or existing customers to discuss how services can meet their needs.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 3
+              },
+              {
+                "id": "O:41-3091.00:23230",
+                "task_id": "23230",
+                "text": "Emphasize or recommend service features based on knowledge of customers' needs and vendor capabilities and limitations.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 3
+              },
+              {
+                "id": "O:41-3091.00:23231",
+                "task_id": "23231",
+                "text": "Identify prospective customers using business directories, leads from clients, or information from conferences or trade shows.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 3
+              }
+            ]
+          },
+          {
+            "id": "O:11-1011.00",
+            "code": "11-1011.00",
+            "title": "Chief Executives",
+            "mapping": "model-inferred from pack D (no review data)",
+            "rationale": "A \"CEO and Founder\" is quoted as a user, and the software provides high-level business insights such as real-time sales reports and predictable revenue forecasting [D:Pipedrive:landing:2, D:Pipedrive:landing:4].",
+            "tasks": [
+              {
+                "id": "O:11-1011.00:8825",
+                "task_id": "8825",
+                "text": "Analyze operations to evaluate performance of a company or its staff in meeting objectives or to determine areas of potential cost reduction, program improvement, or policy change.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 5
+              },
+              {
+                "id": "O:11-1011.00:8828",
+                "task_id": "8828",
+                "text": "Direct or coordinate activities of businesses or departments concerned with production, pricing, sales, or distribution of products.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 4
+              },
+              {
+                "id": "O:11-1011.00:8832",
+                "task_id": "8832",
+                "text": "Direct human resources activities, including the approval of human resource plans or activities, the selection of directors or other high-level staff, or establishment or organization of major departments.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 4
+              },
+              {
+                "id": "O:11-1011.00:8833",
+                "task_id": "8833",
+                "text": "Preside over, or serve on, boards of directors, management committees, or other governing boards.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 3
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

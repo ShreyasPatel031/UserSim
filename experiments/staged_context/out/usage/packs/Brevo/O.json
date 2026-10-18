@@ -1,0 +1,119 @@
+{
+  "status": "ok",
+  "onet_version": "db_31_0_csv",
+  "mapping_model": "gemini-2.5-pro",
+  "task_selection": "Core first, then lexical overlap with target D text, then Task ID",
+  "occupations": [
+    {
+      "id": "O:11-2021.00",
+      "code": "11-2021.00",
+      "title": "Marketing Managers",
+      "mapping": "model-inferred from pack D (no review data)",
+      "rationale": "The product is described as a marketing platform for creating and optimizing campaigns via email, SMS, and WhatsApp to \"drive business growth and lasting loyalty\" [D:Brevo:landing:1].",
+      "tasks": [
+        {
+          "id": "O:11-2021.00:958",
+          "task_id": "958",
+          "text": "Use sales forecasting or strategic planning to ensure the sale and profitability of products, lines, or services, analyzing business developments and monitoring market trends.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 3
+        },
+        {
+          "id": "O:11-2021.00:951",
+          "task_id": "951",
+          "text": "Identify, develop, or evaluate marketing strategy, based on knowledge of establishment objectives, market characteristics, and cost and markup factors.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 2
+        },
+        {
+          "id": "O:11-2021.00:954",
+          "task_id": "954",
+          "text": "Direct the hiring, training, or performance evaluations of marketing or sales staff and oversee their daily activities.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 2
+        },
+        {
+          "id": "O:11-2021.00:20709",
+          "task_id": "20709",
+          "text": "Formulate, direct, or coordinate marketing activities or policies to promote products or services, working with advertising or promotion managers.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 1
+        }
+      ]
+    },
+    {
+      "id": "O:13-1161.00",
+      "code": "13-1161.00",
+      "title": "Market Research Analysts and Marketing Specialists",
+      "mapping": "model-inferred from pack D (no review data)",
+      "rationale": "These specialists would use the software to \"Create high‑converting campaigns effortlessly—generate copy, auto‑segment audiences, optimize send times, and deliver dynamic product recommendations\" [D:Brevo:landing:2].",
+      "tasks": [
+        {
+          "id": "O:13-1161.00:5436",
+          "task_id": "5436",
+          "text": "Forecast and track marketing and sales trends, analyzing collected data.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 3
+        },
+        {
+          "id": "O:13-1161.00:5441",
+          "task_id": "5441",
+          "text": "Gather data on competitors and analyze their prices, sales, and method of marketing and distribution.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 3
+        },
+        {
+          "id": "O:13-1161.00:5433",
+          "task_id": "5433",
+          "text": "Collect and analyze data on customer demographics, preferences, needs, and buying habits to identify potential markets and factors affecting product demand.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 2
+        },
+        {
+          "id": "O:13-1161.00:5434",
+          "task_id": "5434",
+          "text": "Prepare reports of findings, illustrating data graphically and translating complex findings into written text.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 1
+        }
+      ]
+    },
+    {
+      "id": "O:11-1021.00",
+      "code": "11-1021.00",
+      "title": "General and Operations Managers",
+      "mapping": "model-inferred from pack D (no review data)",
+      "rationale": "The product is explicitly marketed as being \"Built for every business...FOR ENTREPRENEURS & SMALL BUSINESSES,\" roles often held by General and Operations Managers who need simple, powerful tools to start fast [D:Brevo:landing:3].",
+      "tasks": [
+        {
+          "id": "O:11-1021.00:20699",
+          "task_id": "20699",
+          "text": "Review financial statements, sales or activity reports, or other performance data to measure productivity or goal achievement or to identify areas needing cost reduction or program improvement.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 2
+        },
+        {
+          "id": "O:11-1021.00:933",
+          "task_id": "933",
+          "text": "Direct and coordinate activities of businesses or departments concerned with the production, pricing, sales, or distribution of products.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 2
+        },
+        {
+          "id": "O:11-1021.00:20706",
+          "task_id": "20706",
+          "text": "Plan or direct activities, such as sales promotions, that require coordination with other department managers.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 1
+        },
+        {
+          "id": "O:11-1021.00:20700",
+          "task_id": "20700",
+          "text": "Direct administrative activities directly related to making products or providing services.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 0
+        }
+      ]
+    }
+  ]
+}

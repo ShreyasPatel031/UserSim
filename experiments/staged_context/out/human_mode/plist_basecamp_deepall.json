@@ -1,0 +1,586 @@
+{
+  "lists": {
+    "0": {
+      "none": {
+        "pros": [
+          "Extremely simple and easy to use",
+          "Fixed, predictable pricing (no per-user fees)",
+          "Excellent for centralized team communication",
+          "Effective and easy client collaboration",
+          "\"Hill Charts\" for clear project progress",
+          "Useful automated daily/weekly check-ins"
+        ],
+        "cons": [
+          "Lacks advanced project management features",
+          "Limited customization and workflow flexibility",
+          "Basic reporting and analytics capabilities",
+          "No native time tracking functionality",
+          "Can be restrictive for large, complex projects",
+          "Notification management can be overwhelming"
+        ],
+        "overall_rating": 4
+      },
+      "ctx": {
+        "pros": [
+          "Extremely easy to learn and use, with a low learning curve",
+          "Simple, uncluttered interface focused on core project management",
+          "Clear communication tools (messages, pings) for team collaboration",
+          "Transparent project overview and progress tracking",
+          "Predictable and straightforward pricing model",
+          "Reliable performance and stability"
+        ],
+        "cons": [
+          "Limited customization options compared to more flexible tools",
+          "Fewer advanced features or complex automations",
+          "Integrations with other software can be limited",
+          "Reporting and analytics capabilities are basic",
+          "May feel too simplistic for very large or complex projects",
+          "Mobile app functionality might lack some desktop features"
+        ],
+        "overall_rating": "4.3"
+      },
+      "run": {
+        "pros": [
+          "Efficient and quick task creation with inline forms and rapid entry.",
+          "Clear task visibility with compact assignee and due date chips.",
+          "Intuitive drag-and-drop reordering of to-dos.",
+          "Streamlined communication features (e.g., 'when done notify').",
+          "Minimalist interface that avoids feature bloat for focused work.",
+          "Easy inline editing for task details like due dates."
+        ],
+        "cons": [
+          "Significant friction and manual effort required for initial project setup (adding tools one by one).",
+          "Lack of advanced workflow features like dedicated approval statuses for tasks.",
+          "Limited calendar integration; to-dos don't automatically appear in a central view.",
+          "Basic features like a project calendar or document storage must be manually added to each project.",
+          "UI quirks, such as title clicks leading to rename instead of opening, or buttons shifting on form expansion.",
+          "Free plan limitations (single project, upgrade prompts) can be a barrier to initial adoption."
+        ],
+        "overall_rating": 3.5
+      },
+      "ctx+run": {
+        "pros": [
+          "Straightforward and easy to use for core project management tasks.",
+          "Efficient task creation and assignment with quick inline forms and autocomplete.",
+          "Clear and compact display of task details like assignees and due dates.",
+          "Simple drag-and-drop reordering of tasks for easy prioritization.",
+          "Focus on essential tools keeps the interface uncluttered and less overwhelming.",
+          "Quick entry of multiple to-dos, streamlining initial project setup."
+        ],
+        "cons": [
+          "Lacks advanced features like approval workflows or robust reporting capabilities.",
+          "Limited customization options for tasks and project views compared to competitors.",
+          "The free plan is very restrictive, forcing upgrades for basic multi-project use.",
+          "Basic filtering and search functionality can make it hard to track specific items.",
+          "Calendar integration with tasks is not seamless, making it difficult to see deadlines at a glance.",
+          "Initial project setup requires manually adding each tool, which can feel tedious."
+        ],
+        "overall_rating": 4.3
+      },
+      "ctx+runF": {
+        "pros": [
+          "Streamlined and efficient task creation and entry",
+          "Intuitive task reordering with drag-and-drop functionality",
+          "Clear task assignment and notification options",
+          "Quick and easy inline editing for task details",
+          "Simple and focused interface, avoiding unnecessary complexity",
+          "Good for small to medium teams needing basic project organization"
+        ],
+        "cons": [
+          "Limited reporting and calendar views for project progress tracking",
+          "Lack of advanced workflow customization and approval features",
+          "Some UI quirks and inconsistent form behavior can be frustrating",
+          "May feel too basic for complex projects requiring extensive features",
+          "Pricing can be a concern for very small teams or individual users",
+          "Integrations with other tools are not as extensive as competitors"
+        ],
+        "overall_rating": 4.0
+      },
+      "prosRunF_consCtx": {
+        "pros": [
+          "Streamlined and efficient task creation and entry",
+          "Intuitive task reordering with drag-and-drop functionality",
+          "Clear task assignment and notification options",
+          "Quick and easy inline editing for task details",
+          "Simple and focused interface, avoiding unnecessary complexity",
+          "Good for small to medium teams needing basic project organization"
+        ],
+        "cons": [
+          "Limited customization options compared to more flexible tools",
+          "Fewer advanced features or complex automations",
+          "Integrations with other software can be limited",
+          "Reporting and analytics capabilities are basic",
+          "May feel too simplistic for very large or complex projects",
+          "Mobile app functionality might lack some desktop features"
+        ],
+        "overall_rating": "4.3"
+      },
+      "edit1": {
+        "pros": [
+          "Extremely easy to learn and use, with a low learning curve",
+          "Efficient and intuitive task creation and management",
+          "Clear communication tools (messages, pings) for team collaboration",
+          "Transparent project overview and progress tracking",
+          "Predictable and straightforward pricing model",
+          "Reliable performance and stability"
+        ],
+        "cons": [
+          "Limited customization options compared to more flexible tools",
+          "Fewer advanced features or complex automations",
+          "Integrations with other software can be limited",
+          "Reporting and analytics capabilities are basic",
+          "May feel too simplistic for very large or complex projects",
+          "Lack of integrated approval workflows for tasks"
+        ],
+        "overall_rating": "4.3",
+        "changed": [
+          "Pro 2: 'Simple, uncluttered interface focused on core project management' changed to 'Efficient and intuitive task creation and management' because multiple notes highlighted the streamlined process for creating and managing to-dos (inline forms, quick entry, autocomplete, drag-and-drop reordering).",
+          "Con 6: 'Mobile app functionality might lack some desktop features' changed to 'Lack of integrated approval workflows for tasks' because the note explicitly stated 'There is no approval status or approval field on to-dos' and that only a keyword search could approximate it, indicating a missing core feature for many project types."
+        ]
+      },
+      "edit2": {
+        "pros": [
+          "Extremely easy to learn and use, with a low learning curve",
+          "Simple, uncluttered interface focused on core project management",
+          "Clear communication tools (messages, pings) for team collaboration",
+          "Efficient task management and creation workflows",
+          "Predictable and straightforward pricing model",
+          "Reliable performance and stability"
+        ],
+        "cons": [
+          "Limited customization options compared to more flexible tools",
+          "Fewer advanced features or complex automations",
+          "Integrations with other software can be limited",
+          "Reporting and analytics capabilities are basic",
+          "May feel too simplistic for very large or complex projects",
+          "Lack of comprehensive progress tracking and approval workflows"
+        ],
+        "overall_rating": "4.3",
+        "changed": [
+          "Pros item 4: 'Transparent project overview and progress tracking' changed to 'Efficient task management and creation workflows' because multiple notes highlighted the ease of creating and managing to-dos ('after saving one to-do it immediately opens a blank one', 'Typing 'Sam' in Assigned to gave an autocomplete chip', 'Drag and drop reordering').",
+          "Cons item 6: 'Mobile app functionality might lack some desktop features' changed to 'Lack of comprehensive progress tracking and approval workflows' because notes indicated that to-dos were not listed in 'My Events' and there was no built-in approval status/field for tasks, directly impacting progress visibility and workflow management."
+        ]
+      },
+      "edit1F": {
+        "pros": [
+          "Efficient and intuitive task creation and management workflows",
+          "Simple, uncluttered interface focused on core project management",
+          "Clear communication tools (messages, pings) for team collaboration",
+          "Transparent project overview and progress tracking",
+          "Predictable and straightforward pricing model",
+          "Reliable performance and stability"
+        ],
+        "cons": [
+          "Limited customization options compared to more flexible tools",
+          "Fewer advanced features or complex automations",
+          "Integrations with other software can be limited",
+          "Basic reporting and analytics, lacking a comprehensive project calendar or approval tracking",
+          "May feel too simplistic for very large or complex projects",
+          "Mobile app functionality might lack some desktop features"
+        ],
+        "overall_rating": "4.3",
+        "changed": [
+          "Replaced 'Extremely easy to learn and use, with a low learning curve' with 'Efficient and intuitive task creation and management workflows' because multiple benefit notes highlighted the streamlined process for adding and managing tasks (inline forms, quick entry, drag-and-drop reordering).",
+          "Replaced 'Reporting and analytics capabilities are basic' with 'Basic reporting and analytics, lacking a comprehensive project calendar or approval tracking' because the friction notes specifically pointed out the absence of to-dos in 'My Events' and the lack of an approval field/status, making it more specific to Basecamp's limitations."
+        ]
+      }
+    },
+    "1": {
+      "none": {
+        "pros": [
+          "Extremely simple and easy to learn/use",
+          "Centralizes all project communication and files",
+          "Flat, predictable pricing model",
+          "Significantly reduces internal email clutter",
+          "Excellent for asynchronous team communication",
+          "Clear separation of projects and teams"
+        ],
+        "cons": [
+          "Lacks advanced project management features (e.g., Gantt charts)",
+          "Too opinionated, forcing specific workflows",
+          "Limited customization options",
+          "Basic task management; no subtasks or complex dependencies",
+          "No native time tracking functionality",
+          "Can feel restrictive for larger, more complex projects"
+        ],
+        "overall_rating": 4.0
+      },
+      "ctx": {
+        "pros": [
+          "Extremely easy to use with a low learning curve, even for new users.",
+          "Simple, predictable flat-rate pricing that is excellent value for money.",
+          "Great for clear team communication and project organization with a focused toolset.",
+          "Straightforward interface that avoids feature bloat and complexity.",
+          "Efficient for managing small to medium-sized projects and teams.",
+          "Reliable and stable performance due to its focused feature set."
+        ],
+        "cons": [
+          "Limited customization options compared to highly flexible competitors.",
+          "Lacks advanced features, reporting, and complex automations for larger, intricate projects.",
+          "Fewer third-party integrations than other platforms, which can be restrictive.",
+          "Scalability challenges for very large organizations or complex workflows.",
+          "Reporting and analytics capabilities are basic, not suitable for deep insights.",
+          "Can feel restrictive for users who prefer highly tailored environments."
+        ],
+        "overall_rating": 4.2
+      },
+      "run": {
+        "pros": [
+          "Streamlined task creation with inline forms and quick entry.",
+          "Clear visibility of task assignees and due dates at a glance.",
+          "Intuitive drag-and-drop for reordering tasks.",
+          "All essential task details (assignee, due date, notes, subtasks) available in one form.",
+          "Focus on simplicity and ease of use for core project communication.",
+          "Efficient for quick task assignment and tracking."
+        ],
+        "cons": [
+          "Lack of project templates, requiring manual setup of tools for each new project.",
+          "Limited calendar integration and overview, making it hard to track deadlines across projects.",
+          "Absence of built-in approval workflows or status fields for tasks.",
+          "Inconsistent UI behaviors and unexpected layout shifts can disrupt workflow.",
+          "Basic feature set may lack advanced functionalities needed for complex projects.",
+          "Navigation can be confusing, with some elements not behaving as expected."
+        ],
+        "overall_rating": 3.5
+      },
+      "ctx+run": {
+        "pros": [
+          "Simple and intuitive interface for core project management tasks.",
+          "Efficient task creation and assignment with inline editing.",
+          "Clear visibility of assignees and due dates on task lists.",
+          "Easy drag-and-drop reordering of tasks.",
+          "Focuses on essential features without overwhelming complexity.",
+          "Streamlined communication within projects."
+        ],
+        "cons": [
+          "The free plan is very limited, pushing users to upgrade quickly.",
+          "Initial project setup requires manual addition of all tools.",
+          "Lack of advanced reporting or approval workflows.",
+          "Limited customization options compared to competitors.",
+          "Calendar functionality is basic and not well-integrated with all tasks.",
+          "Can feel restrictive for complex projects requiring specific integrations."
+        ],
+        "overall_rating": 4.0
+      },
+      "ctx+runF": {
+        "pros": [
+          "Streamlined task creation and management, allowing for quick entry and assignment of to-dos.",
+          "Intuitive user interface that simplifies core project management workflows.",
+          "Efficient assignment and due date handling with inline editing and compact display.",
+          "Easy reordering of tasks through simple drag-and-drop functionality.",
+          "Focus on essential project tools without overwhelming users with excessive features.",
+          "Effective communication and notification features for task completion."
+        ],
+        "cons": [
+          "Limited reporting and overview capabilities, lacking a comprehensive project calendar.",
+          "Lack of advanced customization options for workflows and task types.",
+          "Basic functionality for approvals and complex task statuses.",
+          "Some UI interactions can be clunky, like buttons shifting or renaming instead of opening tools.",
+          "May lack direct integrations with specialized tools compared to more feature-rich competitors.",
+          "Can feel restrictive for users needing highly detailed or complex project structures."
+        ],
+        "overall_rating": 4.0
+      },
+      "prosRunF_consCtx": {
+        "pros": [
+          "Streamlined task creation and management, allowing for quick entry and assignment of to-dos.",
+          "Intuitive user interface that simplifies core project management workflows.",
+          "Efficient assignment and due date handling with inline editing and compact display.",
+          "Easy reordering of tasks through simple drag-and-drop functionality.",
+          "Focus on essential project tools without overwhelming users with excessive features.",
+          "Effective communication and notification features for task completion."
+        ],
+        "cons": [
+          "Limited customization options compared to highly flexible competitors.",
+          "Lacks advanced features, reporting, and complex automations for larger, intricate projects.",
+          "Fewer third-party integrations than other platforms, which can be restrictive.",
+          "Scalability challenges for very large organizations or complex workflows.",
+          "Reporting and analytics capabilities are basic, not suitable for deep insights.",
+          "Can feel restrictive for users who prefer highly tailored environments."
+        ],
+        "overall_rating": 4.2
+      },
+      "edit1": {
+        "pros": [
+          "Extremely easy to use with a low learning curve, even for new users.",
+          "Simple, predictable flat-rate pricing that is excellent value for money.",
+          "Great for clear team communication and project organization with a focused toolset.",
+          "Straightforward interface that avoids feature bloat and complexity.",
+          "Efficient for managing small to medium-sized projects and teams.",
+          "Reliable and stable performance due to its focused feature set."
+        ],
+        "cons": [
+          "Limited customization options compared to highly flexible competitors.",
+          "Lacks advanced features, reporting, and complex automations for larger, intricate projects.",
+          "Fewer third-party integrations than other platforms, which can be restrictive.",
+          "Scalability challenges for very large organizations or complex workflows.",
+          "Project-level reporting and analytics capabilities are basic, and global overviews are not suitable for deep insights.",
+          "Can feel restrictive for users who prefer highly tailored environments."
+        ],
+        "overall_rating": 4.2,
+        "changed": [
+          "Project-level reporting and analytics capabilities are basic, and global overviews are not suitable for deep insights. (Justified by: [friction] My Events showed only 'No events today' for October and did not list the to-do due Oct 28, so it was not usable to check project progress by date without a project Calendar tool.)"
+        ]
+      },
+      "edit2": {
+        "pros": [
+          "Extremely easy to use with a low learning curve, even for new users.",
+          "Simple, predictable flat-rate pricing that is excellent value for money.",
+          "Great for clear team communication and project organization with a focused toolset.",
+          "Straightforward interface that avoids feature bloat and complexity.",
+          "Efficient for managing small to medium-sized projects and teams.",
+          "Reliable and stable performance due to its focused feature set."
+        ],
+        "cons": [
+          "Limited customization options compared to highly flexible competitors.",
+          "Lacks advanced features and complex automations for larger, intricate projects.",
+          "Fewer third-party integrations than other platforms, which can be restrictive.",
+          "Scalability challenges for very large organizations or complex workflows.",
+          "Reporting and analytics capabilities are basic, not suitable for deep insights or tracking approval statuses.",
+          "Can feel restrictive for users who prefer highly tailored environments."
+        ],
+        "overall_rating": 4.2,
+        "changed": [
+          "Cons item 2: The note 'There is no approval status or approval field on to-dos' clarifies the nature of lacking advanced features.",
+          "Cons item 5: The notes 'My Events showed only 'No events today' for October and did not list the to-do due Oct 28' and 'There is no approval status or approval field on to-dos' specifically highlight limitations in reporting/tracking project progress and status."
+        ]
+      },
+      "edit1F": {
+        "pros": [
+          "Extremely easy to use with a low learning curve, even for new users.",
+          "Simple, predictable flat-rate pricing that is excellent value for money.",
+          "Great for clear team communication and project organization with a focused toolset.",
+          "Straightforward interface that avoids feature bloat and complexity.",
+          "Efficient for managing small to medium-sized projects and teams.",
+          "Reliable and stable performance due to its focused feature set."
+        ],
+        "cons": [
+          "Limited customization options compared to highly flexible competitors.",
+          "Lacks advanced features, reporting, and complex automations for larger, intricate projects.",
+          "Fewer third-party integrations than other platforms, which can be restrictive.",
+          "Scalability challenges for very large organizations or complex workflows.",
+          "Project progress tracking is basic, lacking a comprehensive calendar view or advanced reporting.",
+          "Can feel restrictive for users who prefer highly tailored environments."
+        ],
+        "overall_rating": 4.2,
+        "changed": [
+          "cons[5] changed to 'Project progress tracking is basic, lacking a comprehensive calendar view or advanced reporting.' based on '[friction] My Events showed only 'No events today' for October and did not list the to-do due Oct 28, so it was not usable to check project progress by date without a project Calendar tool.'"
+        ]
+      }
+    },
+    "2": {
+      "none": {
+        "pros": [
+          "Extreme simplicity and ease of use",
+          "Predictable flat-fee pricing model",
+          "Excellent communication and collaboration tools",
+          "Centralized hub for all project assets",
+          "Focus on clear project progress and discussions",
+          "Minimal learning curve for new users"
+        ],
+        "cons": [
+          "Lacks advanced features (e.g., Gantt charts, dependencies)",
+          "Basic task management, not for complex workflows",
+          "No built-in time tracking functionality",
+          "Limited customization options for specific needs",
+          "Can be too simplistic for large, complex projects",
+          "Notification management can be tricky"
+        ],
+        "overall_rating": 4.0
+      },
+      "ctx": {
+        "pros": [
+          "Simple, intuitive, and easy to get started with for all team members.",
+          "Excellent for organizing project communication and reducing internal meetings.",
+          "Flat-rate pricing offers great value for larger teams and predictable costs.",
+          "Provides a clear, structured way to manage projects with distinct tools.",
+          "Reliable performance and a clutter-free interface.",
+          "Strong focus on asynchronous communication and keeping conversations in context."
+        ],
+        "cons": [
+          "Limited customization options compared to more flexible competitors.",
+          "Fewer integrations with other business tools than many alternatives.",
+          "May lack advanced features or reporting capabilities needed by some teams.",
+          "Can feel restrictive for users accustomed to highly configurable platforms.",
+          "Flat pricing might be less cost-effective for very small teams.",
+          "Users might need to adapt to Basecamp's specific workflow."
+        ],
+        "overall_rating": 4.3
+      },
+      "run": {
+        "pros": [
+          "Efficient and quick to-do creation with inline fields and rapid entry of multiple items.",
+          "Smart autocomplete for assigning tasks and clear display of assignees and due dates.",
+          "Easy drag-and-drop reordering of to-do list items without confirmation steps.",
+          "Convenient inline editing of due dates directly from the task list.",
+          "Centralized place for all project communication and documents.",
+          "Simple, clean interface that minimizes distractions."
+        ],
+        "cons": [
+          "Free plan is very limited, forcing upgrades for basic functionality like new projects.",
+          "New projects start completely blank, requiring manual addition of every tool one by one.",
+          "Counter-intuitive UI elements, like clicking a tool title to rename instead of open.",
+          "UI shifts when setting due dates (e.g., 'Repeat' row appearing) can lead to misclicks.",
+          "Lack of dedicated approval workflows or fields for tasks, relying on keyword searches.",
+          "To-do due dates don't automatically appear in 'My Events' without a separate Calendar tool."
+        ],
+        "overall_rating": "3.5"
+      },
+      "ctx+run": {
+        "pros": [
+          "Simple and intuitive interface, easy to get started with core features.",
+          "Efficient task management with quick adding, assigning, and due dates.",
+          "Streamlined communication and file sharing within projects.",
+          "Clear project organization with dedicated tools for different aspects.",
+          "Focus on essential project management without overwhelming complexity.",
+          "Good for teams who prefer a less feature-heavy, distraction-free environment."
+        ],
+        "cons": [
+          "Limited functionality compared to competitors, lacking advanced features like approvals or detailed reporting.",
+          "The free plan is very restrictive, limiting users to a single project.",
+          "Initial project setup requires manually adding tools one by one, which can be tedious.",
+          "Lack of integrated overview for tasks and events across all projects or a central calendar.",
+          "Some UI quirks like unexpected renaming behavior or dynamic form element shifts.",
+          "May not be suitable for complex workflows requiring extensive customization or integrations."
+        ],
+        "overall_rating": 4.0
+      },
+      "ctx+runF": {
+        "pros": [
+          "Extremely easy to use with a clean, intuitive interface that avoids feature bloat.",
+          "Streamlined task management, allowing quick creation and assignment of to-dos.",
+          "Efficient workflow for adding multiple items and managing due dates.",
+          "Excellent for basic project communication and centralizing discussions.",
+          "Simple and straightforward design, ideal for teams who don't need complex features.",
+          "Good value for money if core project management and communication are the primary needs."
+        ],
+        "cons": [
+          "Limited reporting and overview capabilities, lacking a comprehensive project calendar.",
+          "Lack of advanced customization options, especially for workflow automation and approval processes.",
+          "Basic functionality compared to competitors, which might be insufficient for complex projects.",
+          "Integrations with other tools are not as extensive as some alternatives.",
+          "Mobile app experience can be less fluid than the desktop version.",
+          "Finding specific information or older items can sometimes be challenging due to basic search/filtering."
+        ],
+        "overall_rating": 4.0
+      },
+      "prosRunF_consCtx": {
+        "pros": [
+          "Extremely easy to use with a clean, intuitive interface that avoids feature bloat.",
+          "Streamlined task management, allowing quick creation and assignment of to-dos.",
+          "Efficient workflow for adding multiple items and managing due dates.",
+          "Excellent for basic project communication and centralizing discussions.",
+          "Simple and straightforward design, ideal for teams who don't need complex features.",
+          "Good value for money if core project management and communication are the primary needs."
+        ],
+        "cons": [
+          "Limited customization options compared to more flexible competitors.",
+          "Fewer integrations with other business tools than many alternatives.",
+          "May lack advanced features or reporting capabilities needed by some teams.",
+          "Can feel restrictive for users accustomed to highly configurable platforms.",
+          "Flat pricing might be less cost-effective for very small teams.",
+          "Users might need to adapt to Basecamp's specific workflow."
+        ],
+        "overall_rating": 4.3
+      },
+      "edit1": {
+        "pros": [
+          "Simple, intuitive, and easy to get started with for all team members.",
+          "Excellent for organizing project communication and reducing internal meetings.",
+          "Flat-rate pricing offers great value for larger teams and predictable costs.",
+          "Provides a clear, structured way to manage projects with distinct tools.",
+          "Reliable performance and a clutter-free interface.",
+          "Strong focus on asynchronous communication and keeping conversations in context."
+        ],
+        "cons": [
+          "Limited customization options compared to more flexible competitors.",
+          "Fewer integrations with other business tools than many alternatives.",
+          "May lack advanced features or reporting capabilities needed by some teams.",
+          "Can feel restrictive for users accustomed to highly configurable platforms.",
+          "Flat pricing might be less cost-effective for very small teams.",
+          "Reporting and overview capabilities for project progress can be basic."
+        ],
+        "overall_rating": 4.3,
+        "changed": [
+          "Cons item 6: 'Users might need to adapt to Basecamp's specific workflow' replaced with 'Reporting and overview capabilities for project progress can be basic' based on the note '[friction] My Events showed only 'No events today' for October and did not list the to-do due Oct 28, so it was not usable to check project progress by date without a project Calendar tool.' and '[friction] There is no approval status or approval field on to-dos; the only way I found to see 'pending approval' was the to-do Filter box, a plain keyword match that showed 'Material Selection Approval' but not 'Final Blueprint Sign-off'.'"
+        ]
+      },
+      "edit2": {
+        "pros": [
+          "Generally simple, intuitive, and easy to get started with for all team members, especially once past initial setup.",
+          "Excellent for organizing project communication and reducing internal meetings.",
+          "Flat-rate pricing offers great value for larger teams and predictable costs.",
+          "Provides a clear, structured way to manage projects with distinct tools.",
+          "Reliable performance and a clutter-free interface.",
+          "Strong focus on asynchronous communication and keeping conversations in context."
+        ],
+        "cons": [
+          "Initial project setup requires manual addition of core tools, which can feel less intuitive.",
+          "Fewer integrations with other business tools than many alternatives.",
+          "May lack advanced features or reporting capabilities needed by some teams, such as approval workflows or comprehensive calendar views.",
+          "Can feel restrictive for users accustomed to highly configurable platforms.",
+          "Flat pricing might be less cost-effective for very small teams.",
+          "Users might need to adapt to Basecamp's specific workflow."
+        ],
+        "overall_rating": 4.3,
+        "changed": [
+          "Pros item 1: The 'easy to get started' part was challenged by the initial blank project setup and tool addition, so it was qualified as 'generally simple...especially once past initial setup' to acknowledge both the setup friction and the eventual ease of use. Justified by '[friction] A new project is completely blank and every tool...must be added one by one' and '[friction] The free plan's single pre-made 'My Project' starts with no tools'.",
+          "Cons item 1: Changed from 'Limited customization options...' to 'Initial project setup requires manual addition of core tools, which can feel less intuitive.' This directly addresses the specific friction of having to add tools one by one, which is a more direct and concrete con observed during the initial experience. Justified by '[friction] A new project is completely blank and every tool...must be added one by one'.",
+          "Cons item 3: Expanded 'May lack advanced features or reporting capabilities needed by some teams' to include specific examples of observed missing features like 'approval workflows or comprehensive calendar views'. Justified by '[friction] There is no approval status or approval field on to-dos;' and '[friction] My Events showed only 'No events today' for October and did not list the to-do due Oct 28, so it was not usable to check project progress by date without a project Calendar tool.'"
+        ]
+      },
+      "edit1F": {
+        "pros": [
+          "Simple, intuitive, and easy to get started with for all team members.",
+          "Excellent for organizing project communication and reducing internal meetings.",
+          "Flat-rate pricing offers great value for larger teams and predictable costs.",
+          "Provides a clear, structured way to manage projects with distinct tools.",
+          "Reliable performance and a clutter-free interface.",
+          "Strong focus on asynchronous communication and keeping conversations in context."
+        ],
+        "cons": [
+          "Limited customization options compared to more flexible competitors.",
+          "Fewer integrations with other business tools than many alternatives.",
+          "Lacks advanced features like dedicated approval workflows or comprehensive calendar views for project deadlines.",
+          "Can feel restrictive for users accustomed to highly configurable platforms.",
+          "Flat pricing might be less cost-effective for very small teams.",
+          "Users might need to adapt to Basecamp's specific workflow."
+        ],
+        "overall_rating": 4.3,
+        "changed": [
+          "Con 3: replaced 'May lack advanced features or reporting capabilities needed by some teams.' with 'Lacks advanced features like dedicated approval workflows or comprehensive calendar views for project deadlines.' based on notes about no approval status/field and My Events not listing to-do due dates."
+        ]
+      }
+    }
+  },
+  "obs": [
+    "- [friction] The Free plan allows 1 project and a blank 'My Project' is pre-created, so visiting New project redirected straight to the upgrade/plans page; I had to reuse 'My Project' as the client project.",
+    "- [friction] A new project is completely blank and every tool (To-dos, Docs & Files, Calendar) must be added one by one from the plus menu; my clicks on Docs & Files and Calendar while the menu stayed open after adding To-dos did not add those tools.",
+    "- [friction] Clicking the 'To-dos' title on the project card put it into rename mode (Save / Never Mind) instead of opening the tool.",
+    "- [benefit] The to-do form shows Assigned to, When done notify, Due on, Notes and Subtasks inline, and after saving one to-do it immediately opens a blank one so pressing Enter after typing a name added Beta and Gamma in one action each.",
+    "- [benefit] Typing 'Sam' in Assigned to gave an autocomplete chip in one click, and the saved to-do shows the assignee and due date as compact chips beside the name.",
+    "- [friction] Picking a due date inserted a new Repeat row that pushed the 'Add this to-do' button down, so a click aimed at its old position missed.",
+    "- [benefit] Dragging the handle on the left of Demo Gamma moved it from third to first in a single drag with no confirmation.",
+    "- [benefit] Clicking the date chip on a to-do opened an inline editor with a date picker, and changing Oct 21 to Oct 28 took two clicks (date, Save).",
+    "- [friction] My Events showed only 'No events today' for October and did not list the to-do due Oct 28, so it was not usable to check project progress by date without a project Calendar tool.",
+    "- [friction] The free plan's single pre-made 'My Project' starts with no tools, so To-dos, Message Board and Docs each have to be added one by one from an 'Add a tool' menu before any work can start.",
+    "- [benefit] One inline form held name, assignee (type-ahead 'Sam' -> Sam Rivera on Enter), 'when done' notify, due date picker, notes and subtasks, and the deliverable showed its assignee and 'Fri, Oct 30' chips on the list right after saving.",
+    "- [benefit] After saving, the form reopened for the next item, so typing a name and pressing Enter added each further deliverable in a single step.",
+    "- [friction] Setting a due date took two extra clicks (open field, pick day in calendar), and picking a date expanded the form with a Repeat row that pushed the 'Add this to-do' button down.",
+    "- [friction] There is no approval status or approval field on to-dos; the only way I found to see 'pending approval' was the to-do Filter box, a plain keyword match that showed 'Material Selection Approval' but not 'Final Blueprint Sign-off'."
+  ],
+  "obs_filtered": [
+    "- [friction] Clicking the 'To-dos' title on the project card put it into rename mode (Save / Never Mind) instead of opening the tool.",
+    "- [benefit] The to-do form shows Assigned to, When done notify, Due on, Notes and Subtasks inline, and after saving one to-do it immediately opens a blank one so pressing Enter after typing a name added Beta and Gamma in one action each.",
+    "- [benefit] Typing 'Sam' in Assigned to gave an autocomplete chip in one click, and the saved to-do shows the assignee and due date as compact chips beside the name.",
+    "- [friction] Picking a due date inserted a new Repeat row that pushed the 'Add this to-do' button down, so a click aimed at its old position missed.",
+    "- [benefit] Dragging the handle on the left of Demo Gamma moved it from third to first in a single drag with no confirmation.",
+    "- [benefit] Clicking the date chip on a to-do opened an inline editor with a date picker, and changing Oct 21 to Oct 28 took two clicks (date, Save).",
+    "- [friction] My Events showed only 'No events today' for October and did not list the to-do due Oct 28, so it was not usable to check project progress by date without a project Calendar tool.",
+    "- [benefit] One inline form held name, assignee (type-ahead 'Sam' -> Sam Rivera on Enter), 'when done' notify, due date picker, notes and subtasks, and the deliverable showed its assignee and 'Fri, Oct 30' chips on the list right after saving.",
+    "- [benefit] After saving, the form reopened for the next item, so typing a name and pressing Enter added each further deliverable in a single step.",
+    "- [friction] Setting a due date took two extra clicks (open field, pick day in calendar), and picking a date expanded the form with a Repeat row that pushed the 'Add this to-do' button down.",
+    "- [friction] There is no approval status or approval field on to-dos; the only way I found to see 'pending approval' was the to-do Filter box, a plain keyword match that showed 'Material Selection Approval' but not 'Final Blueprint Sign-off'."
+  ],
+  "true_mean_overall": 4.55
+}

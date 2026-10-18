@@ -1,0 +1,119 @@
+{
+  "status": "ok",
+  "onet_version": "db_31_0_csv",
+  "mapping_model": "gemini-2.5-pro",
+  "task_selection": "Core first, then lexical overlap with target D text, then Task ID",
+  "occupations": [
+    {
+      "id": "O:11-3121.00",
+      "code": "11-3121.00",
+      "title": "Human Resources Managers",
+      "mapping": "model-inferred from pack D (no review data)",
+      "rationale": "The product is an all-in-one HCM platform designed to simplify HR, is marketed to \"HR pros,\" and is explicitly used by HR Directors and People Managers [D:Namely:landing:1, D:Namely:landing:4, D:Namely:landing:12, D:Namely:landing:13].",
+      "tasks": [
+        {
+          "id": "O:11-3121.00:985",
+          "task_id": "985",
+          "text": "Provide current and prospective employees with information about policies, job duties, working conditions, wages, opportunities for promotion, and employee benefits.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 5
+        },
+        {
+          "id": "O:11-3121.00:982",
+          "task_id": "982",
+          "text": "Administer compensation, benefits, and performance management systems, and safety and recreation programs.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 3
+        },
+        {
+          "id": "O:11-3121.00:988",
+          "task_id": "988",
+          "text": "Analyze and modify compensation and benefits policies to establish competitive programs and ensure compliance with legal requirements.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 3
+        },
+        {
+          "id": "O:11-3121.00:989",
+          "task_id": "989",
+          "text": "Plan and conduct new employee orientation to foster positive attitude toward organizational objectives.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 3
+        }
+      ]
+    },
+    {
+      "id": "O:43-3051.00",
+      "code": "43-3051.00",
+      "title": "Payroll and Timekeeping Clerks",
+      "mapping": "model-inferred from pack D (no review data)",
+      "rationale": "The software provides core features for \"Payroll & Time,\" \"Time-Tracking,\" and \"Managed Payroll\" to speed processing, ensure accuracy, and eliminate the burden of daily payroll administration [D:Namely:landing:2, D:Namely:landing:4, D:Namely:landing:6, D:Namely:landing:8].",
+      "tasks": [
+        {
+          "id": "O:43-3051.00:18562",
+          "task_id": "18562",
+          "text": "Process paperwork for new employees and enter employee information into the payroll system.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 7
+        },
+        {
+          "id": "O:43-3051.00:18563",
+          "task_id": "18563",
+          "text": "Keep track of leave time, such as vacation, personal, and sick leave, for employees.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 6
+        },
+        {
+          "id": "O:43-3051.00:2522",
+          "task_id": "2522",
+          "text": "Keep informed about changes in tax and deduction laws that apply to the payroll process.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 6
+        },
+        {
+          "id": "O:43-3051.00:2517",
+          "task_id": "2517",
+          "text": "Compile employee time, production, and payroll data from time sheets and other records.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 5
+        }
+      ]
+    },
+    {
+      "id": "O:11-3111.00",
+      "code": "11-3111.00",
+      "title": "Compensation and Benefits Managers",
+      "mapping": "model-inferred from pack D (no review data)",
+      "rationale": "The platform offers enhanced modules and managed services for \"Benefits\" and \"Benefits Administration,\" and is praised by users for enabling better decision-making around benefits [D:Namely:landing:3, D:Namely:landing:7, D:Namely:landing:9, D:Namely:landing:12].",
+      "tasks": [
+        {
+          "id": "O:11-3111.00:3285",
+          "task_id": "3285",
+          "text": "Manage the design and development of tools to assist employees in benefits selection, and to guide managers through compensation decisions.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 5
+        },
+        {
+          "id": "O:11-3111.00:3271",
+          "task_id": "3271",
+          "text": "Identify and implement benefits to increase the quality of life for employees by working with brokers and researching benefits issues.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 4
+        },
+        {
+          "id": "O:11-3111.00:3279",
+          "task_id": "3279",
+          "text": "Develop methods to improve employment policies, processes, and practices, and recommend changes to management.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 4
+        },
+        {
+          "id": "O:11-3111.00:3267",
+          "task_id": "3267",
+          "text": "Direct preparation and distribution of written and verbal information to inform employees of benefits, compensation, and personnel policies.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 3
+        }
+      ]
+    }
+  ]
+}

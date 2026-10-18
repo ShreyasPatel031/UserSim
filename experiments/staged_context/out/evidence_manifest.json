@@ -1,0 +1,710 @@
+{
+  "created": "2026-10-17",
+  "seed": 42,
+  "token_counting": "approx ceil(chars/4)",
+  "caps": {
+    "D_target": 1500,
+    "D_peer": 500,
+    "O": 1000,
+    "review": 250
+  },
+  "page_filter": "sentences matching testimonial/statistic/customer-count/rating/CTA regex removed",
+  "targets": {
+    "Asana": {
+      "M": {
+        "items": 1,
+        "tokens_approx": 25,
+        "sha256": "2e2ce8169e80ac40473c7463bee899936ee595c57ed2148cca8eb1678f97d1cd"
+      },
+      "D": {
+        "items": 30,
+        "tokens_approx": 2950,
+        "sha256": "ccff1b71fd8b545d4ef593e264bac1eede0a27f4a1349767ac9323a68f221404",
+        "sources": [
+          {
+            "product": "Asana",
+            "role": "target",
+            "page": "landing",
+            "url": "https://asana.com/",
+            "captured": "2026-10-17",
+            "html_sha256": "2546a18b6c99755244f4ec0cad169af076a82d1a7d9f9520a70e2dbbca20add1",
+            "tokens": 391,
+            "truncated": false,
+            "sentences_dropped_by_filter": 13
+          },
+          {
+            "product": "Asana",
+            "role": "target",
+            "page": "features",
+            "url": "https://asana.com/features",
+            "captured": "2026-10-17",
+            "html_sha256": "efa6b46737b4bab200eb2dac813ef885a218af8d5cf5b117cc726395696b0082",
+            "tokens": 1108,
+            "truncated": true,
+            "sentences_dropped_by_filter": 12
+          },
+          {
+            "product": "Trello",
+            "role": "competitor",
+            "page": "features",
+            "url": "https://trello.com/tour",
+            "captured": "2026-10-17",
+            "html_sha256": "f3eac07804e11b96ba524c99e2839b1f295192a3baff07eb2ef443505f60067b",
+            "tokens": 485,
+            "truncated": true,
+            "sentences_dropped_by_filter": 6
+          },
+          {
+            "product": "ClickUp",
+            "role": "competitor",
+            "page": "landing",
+            "url": "https://clickup.com/",
+            "captured": "2026-10-17",
+            "html_sha256": "0af1c017e6c60ae93c8357137cabffab3e8d8d8a372a0933cce417fdb5ece4f5",
+            "tokens": 457,
+            "truncated": true,
+            "sentences_dropped_by_filter": 12
+          }
+        ]
+      },
+      "C": {
+        "items": 20,
+        "tokens_approx": 3181,
+        "sha256": "9fd6484be04eb7467c557aab3c081a73c5c19c9075826b18f9cec45ad87a13a4",
+        "review_ids": [
+          "Capterra___6807901",
+          "Capterra___6012169",
+          "Capterra___6854368",
+          "Capterra___6630970",
+          "Capterra___6684432",
+          "Capterra___6549075",
+          "Capterra___6678877",
+          "Capterra___6624483",
+          "Capterra___6283923",
+          "Capterra___6306574",
+          "Capterra___5037970",
+          "Capterra___6661564",
+          "Capterra___4994264",
+          "Capterra___6096596",
+          "Capterra___7014175",
+          "Capterra___6135857",
+          "Capterra___6630955",
+          "Capterra___6602951",
+          "Capterra___6406200",
+          "Capterra___5087851"
+        ],
+        "products": [
+          "ClickUp",
+          "Trello"
+        ],
+        "truncated_reviews": 3,
+        "masked_passages": 3
+      },
+      "T": {
+        "items": 10,
+        "tokens_approx": 1677,
+        "sha256": "7c58d67b1bff9cf1bb8ef1f41a18290c37c8abd8540fa46dd446d29dd8bff28b",
+        "review_ids": [
+          "Capterra___6859873",
+          "Capterra___7086070",
+          "Capterra___6575085",
+          "Capterra___6825978",
+          "Capterra___6827851",
+          "Capterra___3332315",
+          "Capterra___6603012",
+          "Capterra___7147752",
+          "Capterra___7054138",
+          "Capterra___6812592"
+        ],
+        "products": [
+          "Asana"
+        ],
+        "truncated_reviews": 1,
+        "masked_passages": 0
+      },
+      "O": {
+        "items": 0,
+        "tokens_approx": 528,
+        "sha256": "b0ee867ed28ddccef75f618dd75d48aa896073abaf9652c96fb9cbdfee32b131",
+        "status": "ok",
+        "occupations": [
+          {
+            "id": "O:13-1082.00",
+            "code": "13-1082.00",
+            "title": "Project Management Specialists",
+            "mapping": "model-inferred from pack D (no review data)",
+            "rationale": "The product is explicitly described as a \"work and project management application\" with features for organizing projects, tracking tasks, and managing deadlines to provide a \"live view of the whole project\" ([D:Asana:landing:4], [D:Asana:features:2]).",
+            "tasks": [
+              {
+                "id": "O:13-1082.00:21466",
+                "task_id": "21466",
+                "text": "Develop or update project plans including information such as objectives, technologies, schedules, funding, and staffing.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 6
+              },
+              {
+                "id": "O:13-1082.00:21478",
+                "task_id": "21478",
+                "text": "Report project status, such as budget, resources, technical issues, or customer satisfaction, to managers.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 5
+              },
+              {
+                "id": "O:13-1082.00:21474",
+                "task_id": "21474",
+                "text": "Prepare and submit budget estimates, progress reports, or cost tracking reports.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 4
+              },
+              {
+                "id": "O:13-1082.00:21479",
+                "task_id": "21479",
+                "text": "Request and review project updates to ensure deadlines are met.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 4
+              }
+            ]
+          },
+          {
+            "id": "O:11-2021.00",
+            "code": "11-2021.00",
+            "title": "Marketing Managers",
+            "mapping": "model-inferred from pack D (no review data)",
+            "rationale": "The excerpts explicitly mention marketing teams as users who track their part of a project, such as a product launch, within the application ([D:Asana:landing:3]).",
+            "tasks": [
+              {
+                "id": "O:11-2021.00:951",
+                "task_id": "951",
+                "text": "Identify, develop, or evaluate marketing strategy, based on knowledge of establishment objectives, market characteristics, and cost and markup factors.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 4
+              },
+              {
+                "id": "O:11-2021.00:958",
+                "task_id": "958",
+                "text": "Use sales forecasting or strategic planning to ensure the sale and profitability of products, lines, or services, analyzing business developments and monitoring market trends.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 4
+              },
+              {
+                "id": "O:11-2021.00:19505",
+                "task_id": "19505",
+                "text": "Recommend modifications to products, packaging, production processes, or other characteristics to improve the environmental soundness or sustainability of products.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 2
+              },
+              {
+                "id": "O:11-2021.00:20709",
+                "task_id": "20709",
+                "text": "Formulate, direct, or coordinate marketing activities or policies to promote products or services, working with advertising or promotion managers.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 1
+              }
+            ]
+          },
+          {
+            "id": "O:11-1021.00",
+            "code": "11-1021.00",
+            "title": "General and Operations Managers",
+            "mapping": "model-inferred from pack D (no review data)",
+            "rationale": "The product is positioned as an \"operating system\" for running an organization's critical workflows and is used by \"ops\" teams to track their work, which aligns with the responsibilities of operations managers ([D:Asana:features:1], [D:Asana:landing:3]).",
+            "tasks": [
+              {
+                "id": "O:11-1021.00:20699",
+                "task_id": "20699",
+                "text": "Review financial statements, sales or activity reports, or other performance data to measure productivity or goal achievement or to identify areas needing cost reduction or program improvement.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 4
+              },
+              {
+                "id": "O:11-1021.00:20704",
+                "task_id": "20704",
+                "text": "Establish or implement departmental policies, goals, objectives, or procedures in conjunction with board members, organization officials, or staff members.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 4
+              },
+              {
+                "id": "O:11-1021.00:20703",
+                "task_id": "20703",
+                "text": "Direct or coordinate financial or budget activities to fund operations, maximize investments, or increase efficiency.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 3
+              },
+              {
+                "id": "O:11-1021.00:20702",
+                "task_id": "20702",
+                "text": "Monitor suppliers to ensure that they efficiently and effectively provide needed goods or services within budgetary limits.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 2
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "Trello": {
+      "M": {
+        "items": 1,
+        "tokens_approx": 27,
+        "sha256": "ef82117915907bd7e6a1f4331320f7d4ae69888baa81e228f687b5aad279173d"
+      },
+      "D": {
+        "items": 19,
+        "tokens_approx": 1750,
+        "sha256": "b450c95e93c726d24b3675ad85c8abb31f89009cb9738cb102c7d8be638fefc2",
+        "sources": [
+          {
+            "product": "Trello",
+            "role": "target",
+            "page": "landing",
+            "url": "https://trello.com/",
+            "captured": "2026-10-17",
+            "html_sha256": "1299fb3174027da167d038525111121c3baebf34e9cf436a25073d3beb198f12",
+            "tokens": 70,
+            "truncated": false,
+            "sentences_dropped_by_filter": 5
+          },
+          {
+            "product": "Trello",
+            "role": "target",
+            "page": "features",
+            "url": "https://trello.com/tour",
+            "captured": "2026-10-17",
+            "html_sha256": "f3eac07804e11b96ba524c99e2839b1f295192a3baff07eb2ef443505f60067b",
+            "tokens": 513,
+            "truncated": false,
+            "sentences_dropped_by_filter": 6
+          },
+          {
+            "product": "Asana",
+            "role": "competitor",
+            "page": "landing",
+            "url": "https://asana.com/",
+            "captured": "2026-10-17",
+            "html_sha256": "2546a18b6c99755244f4ec0cad169af076a82d1a7d9f9520a70e2dbbca20add1",
+            "tokens": 391,
+            "truncated": false,
+            "sentences_dropped_by_filter": 13
+          },
+          {
+            "product": "ClickUp",
+            "role": "competitor",
+            "page": "landing",
+            "url": "https://clickup.com/",
+            "captured": "2026-10-17",
+            "html_sha256": "0af1c017e6c60ae93c8357137cabffab3e8d8d8a372a0933cce417fdb5ece4f5",
+            "tokens": 457,
+            "truncated": true,
+            "sentences_dropped_by_filter": 12
+          }
+        ]
+      },
+      "C": {
+        "items": 20,
+        "tokens_approx": 3485,
+        "sha256": "bcf3223d150ad279baf21f5370fab8068d4b1bb46104b0440cb2cf6cf13a1fe0",
+        "review_ids": [
+          "Capterra___6576999",
+          "Capterra___6562122",
+          "Capterra___6638462",
+          "Capterra___7029276",
+          "Capterra___6478441",
+          "Capterra___7044110",
+          "Capterra___6466047",
+          "Capterra___6773046",
+          "Capterra___6570428",
+          "Capterra___7071213",
+          "Capterra___5037970",
+          "Capterra___6661564",
+          "Capterra___4994264",
+          "Capterra___6096596",
+          "Capterra___7014175",
+          "Capterra___6135857",
+          "Capterra___6630955",
+          "Capterra___6602951",
+          "Capterra___6406200",
+          "Capterra___5087851"
+        ],
+        "products": [
+          "Asana",
+          "ClickUp"
+        ],
+        "truncated_reviews": 4,
+        "masked_passages": 1
+      },
+      "T": {
+        "items": 10,
+        "tokens_approx": 1612,
+        "sha256": "e14eb491f41e5a3300a4b353f3e61b23c4ca9ca1b928e94d9a48c91d16fc3c31",
+        "review_ids": [
+          "Capterra___6701128",
+          "Capterra___6142032",
+          "Capterra___6572904",
+          "Capterra___6856796",
+          "Capterra___6016441",
+          "Capterra___6663269",
+          "Capterra___7074203",
+          "Capterra___6789657",
+          "Capterra___6807901",
+          "Capterra___6676153"
+        ],
+        "products": [
+          "Trello"
+        ],
+        "truncated_reviews": 1,
+        "masked_passages": 0
+      },
+      "O": {
+        "items": 0,
+        "tokens_approx": 483,
+        "sha256": "b7facbdceea9df8f1ea8201c765b4f7a2795cc89a45bf29eafddf7b64106c153",
+        "status": "ok",
+        "occupations": [
+          {
+            "id": "O:13-1082.00",
+            "code": "13-1082.00",
+            "title": "Project Management Specialists",
+            "mapping": "model-inferred from pack D (no review data)",
+            "rationale": "The product is explicitly described as a \"project management application\" and a competitor excerpt mentions the need for a \"shared project management tool\" to track project plans and progress [D:Asana:landing:3].",
+            "tasks": [
+              {
+                "id": "O:13-1082.00:21468",
+                "task_id": "21468",
+                "text": "Identify, review, or select vendors or consultants to meet project needs.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 2
+              },
+              {
+                "id": "O:13-1082.00:21465",
+                "task_id": "21465",
+                "text": "Create project status presentations for delivery to customers or project personnel.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 1
+              },
+              {
+                "id": "O:13-1082.00:21466",
+                "task_id": "21466",
+                "text": "Develop or update project plans including information such as objectives, technologies, schedules, funding, and staffing.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 1
+              },
+              {
+                "id": "O:13-1082.00:21467",
+                "task_id": "21467",
+                "text": "Identify project needs such as resources, staff, or finances by reviewing project objectives and schedules.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 1
+              }
+            ]
+          },
+          {
+            "id": "O:15-1252.00",
+            "code": "15-1252.00",
+            "title": "Software Developers",
+            "mapping": "model-inferred from pack D (no review data)",
+            "rationale": "Trello's ability to integrate with Jira and a competitor's mention of integrations with tools like GitHub and managing work in \"sprints\" directly relates to the project management needs of software developers [D:Trello:features:5, D:ClickUp:landing:4].",
+            "tasks": [
+              {
+                "id": "O:15-1252.00:21661",
+                "task_id": "21661",
+                "text": "Analyze information to determine, recommend, and plan installation of a new system or modification of an existing system.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 3
+              },
+              {
+                "id": "O:15-1252.00:21662",
+                "task_id": "21662",
+                "text": "Analyze user needs and software requirements to determine feasibility of design within time and cost constraints.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 2
+              },
+              {
+                "id": "O:15-1252.00:21663",
+                "task_id": "21663",
+                "text": "Confer with data processing or project managers to obtain information on limitations or capabilities for data processing projects.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 1
+              },
+              {
+                "id": "O:15-1252.00:21664",
+                "task_id": "21664",
+                "text": "Confer with systems analysts, engineers, programmers and others to design systems and to obtain information on project limitations and capabilities, performance requirements and interfaces.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 1
+              }
+            ]
+          },
+          {
+            "id": "O:11-2021.00",
+            "code": "11-2021.00",
+            "title": "Marketing Managers",
+            "mapping": "model-inferred from pack D (no review data)",
+            "rationale": "A competitor excerpt explicitly names \"marketing\" as a team that tracks its work on a project launch, a process that involves managing the various tasks, deadlines, and workflows that Trello is designed to handle [D:Asana:landing:3].",
+            "tasks": [
+              {
+                "id": "O:11-2021.00:958",
+                "task_id": "958",
+                "text": "Use sales forecasting or strategic planning to ensure the sale and profitability of products, lines, or services, analyzing business developments and monitoring market trends.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 2
+              },
+              {
+                "id": "O:11-2021.00:20709",
+                "task_id": "20709",
+                "text": "Formulate, direct, or coordinate marketing activities or policies to promote products or services, working with advertising or promotion managers.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 1
+              },
+              {
+                "id": "O:11-2021.00:954",
+                "task_id": "954",
+                "text": "Direct the hiring, training, or performance evaluations of marketing or sales staff and oversee their daily activities.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 1
+              },
+              {
+                "id": "O:11-2021.00:957",
+                "task_id": "957",
+                "text": "Compile lists describing product or service offerings.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 1
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "ClickUp": {
+      "M": {
+        "items": 1,
+        "tokens_approx": 24,
+        "sha256": "5d9950fea4a7ff62b8b64ace5092b64bb677f0dfcce9a8711608b3943b6d7b27"
+      },
+      "D": {
+        "items": 32,
+        "tokens_approx": 2929,
+        "sha256": "14b32123a1ddcec846e53a620c401f068105053f2ef5206460849d9d90c4d1d0",
+        "sources": [
+          {
+            "product": "ClickUp",
+            "role": "target",
+            "page": "landing",
+            "url": "https://clickup.com/",
+            "captured": "2026-10-17",
+            "html_sha256": "0af1c017e6c60ae93c8357137cabffab3e8d8d8a372a0933cce417fdb5ece4f5",
+            "tokens": 746,
+            "truncated": true,
+            "sentences_dropped_by_filter": 12
+          },
+          {
+            "product": "ClickUp",
+            "role": "target",
+            "page": "features",
+            "url": "https://clickup.com/features",
+            "captured": "2026-10-17",
+            "html_sha256": "c8a702341f1dd7b86859f712125e9df6944bbf69b0f231ca4fa02f31c1fe6c20",
+            "tokens": 747,
+            "truncated": true,
+            "sentences_dropped_by_filter": 10
+          },
+          {
+            "product": "Asana",
+            "role": "competitor",
+            "page": "landing",
+            "url": "https://asana.com/",
+            "captured": "2026-10-17",
+            "html_sha256": "2546a18b6c99755244f4ec0cad169af076a82d1a7d9f9520a70e2dbbca20add1",
+            "tokens": 391,
+            "truncated": false,
+            "sentences_dropped_by_filter": 13
+          },
+          {
+            "product": "Trello",
+            "role": "competitor",
+            "page": "features",
+            "url": "https://trello.com/tour",
+            "captured": "2026-10-17",
+            "html_sha256": "f3eac07804e11b96ba524c99e2839b1f295192a3baff07eb2ef443505f60067b",
+            "tokens": 485,
+            "truncated": true,
+            "sentences_dropped_by_filter": 6
+          }
+        ]
+      },
+      "C": {
+        "items": 20,
+        "tokens_approx": 3246,
+        "sha256": "419106a69d0dc7dfe34545100524f20eb66bcd4c1048ad274bf6ef8d898e7935",
+        "review_ids": [
+          "Capterra___6576999",
+          "Capterra___6562122",
+          "Capterra___6638462",
+          "Capterra___7029276",
+          "Capterra___6478441",
+          "Capterra___7044110",
+          "Capterra___6466047",
+          "Capterra___6773046",
+          "Capterra___6570428",
+          "Capterra___7071213",
+          "Capterra___6807901",
+          "Capterra___6012169",
+          "Capterra___6854368",
+          "Capterra___6630970",
+          "Capterra___6684432",
+          "Capterra___6549075",
+          "Capterra___6678877",
+          "Capterra___6624483",
+          "Capterra___6283923",
+          "Capterra___6306574"
+        ],
+        "products": [
+          "Asana",
+          "Trello"
+        ],
+        "truncated_reviews": 3,
+        "masked_passages": 1
+      },
+      "T": {
+        "items": 10,
+        "tokens_approx": 1645,
+        "sha256": "98089b155447c2660c9873a7d0a91990ac0f9e79154fb74ba97f76afec044e1b",
+        "review_ids": [
+          "Capterra___7182572",
+          "Capterra___7047157",
+          "Capterra___6306066",
+          "Capterra___6627952",
+          "Capterra___6136453",
+          "Capterra___5004831",
+          "Capterra___6012412",
+          "Capterra___6321398",
+          "Capterra___6016955",
+          "Capterra___6221708"
+        ],
+        "products": [
+          "ClickUp"
+        ],
+        "truncated_reviews": 1,
+        "masked_passages": 0
+      },
+      "O": {
+        "items": 0,
+        "tokens_approx": 476,
+        "sha256": "1e6acd6b296451e00d0fb4b5d6b96acd8c3137169e30c079264f0557dfd53203",
+        "status": "ok",
+        "occupations": [
+          {
+            "id": "O:13-1082.00",
+            "code": "13-1082.00",
+            "title": "Project Management Specialists",
+            "mapping": "model-inferred from pack D (no review data)",
+            "rationale": "ClickUp is explicitly described as the \"industry's best project management solution\" used to \"Deliver projects on time, every time\" with features like tasks, sprints, goals, and milestones [D:ClickUp:landing:9, D:ClickUp:features:7].",
+            "tasks": [
+              {
+                "id": "O:13-1082.00:21466",
+                "task_id": "21466",
+                "text": "Develop or update project plans including information such as objectives, technologies, schedules, funding, and staffing.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 3
+              },
+              {
+                "id": "O:13-1082.00:21473",
+                "task_id": "21473",
+                "text": "Plan, schedule, or coordinate project activities to meet deadlines.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 3
+              },
+              {
+                "id": "O:13-1082.00:21474",
+                "task_id": "21474",
+                "text": "Prepare and submit budget estimates, progress reports, or cost tracking reports.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 3
+              },
+              {
+                "id": "O:13-1082.00:21479",
+                "task_id": "21479",
+                "text": "Request and review project updates to ensure deadlines are met.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 3
+              }
+            ]
+          },
+          {
+            "id": "O:15-1252.00",
+            "code": "15-1252.00",
+            "title": "Software Developers",
+            "mapping": "model-inferred from pack D (no review data)",
+            "rationale": "The platform supports agile software development by offering features to manage \"Sprints,\" \"sprint points,\" and custom task types like \"Bugs,\" and it integrates with developer tools such as GitHub [D:ClickUp:features:7, D:ClickUp:features:9, D:ClickUp:features:12, D:ClickUp:landing:4].",
+            "tasks": [
+              {
+                "id": "O:15-1252.00:21662",
+                "task_id": "21662",
+                "text": "Analyze user needs and software requirements to determine feasibility of design within time and cost constraints.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 5
+              },
+              {
+                "id": "O:15-1252.00:21661",
+                "task_id": "21661",
+                "text": "Analyze information to determine, recommend, and plan installation of a new system or modification of an existing system.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 3
+              },
+              {
+                "id": "O:15-1252.00:21663",
+                "task_id": "21663",
+                "text": "Confer with data processing or project managers to obtain information on limitations or capabilities for data processing projects.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 3
+              },
+              {
+                "id": "O:15-1252.00:21665",
+                "task_id": "21665",
+                "text": "Consult with customers or other departments on project status, proposals, or technical issues, such as software system design or maintenance.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 3
+              }
+            ]
+          },
+          {
+            "id": "O:11-2021.00",
+            "code": "11-2021.00",
+            "title": "Marketing Managers",
+            "mapping": "model-inferred from pack D (no review data)",
+            "rationale": "The excerpts show the product is used to track key marketing metrics such as \"Growth & Acquisition\" and \"Paid Return on Ad Spend (ROAS),\" which are core responsibilities for marketing managers [D:ClickUp:landing:7].",
+            "tasks": [
+              {
+                "id": "O:11-2021.00:20709",
+                "task_id": "20709",
+                "text": "Formulate, direct, or coordinate marketing activities or policies to promote products or services, working with advertising or promotion managers.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 4
+              },
+              {
+                "id": "O:11-2021.00:19505",
+                "task_id": "19505",
+                "text": "Recommend modifications to products, packaging, production processes, or other characteristics to improve the environmental soundness or sustainability of products.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 3
+              },
+              {
+                "id": "O:11-2021.00:958",
+                "task_id": "958",
+                "text": "Use sales forecasting or strategic planning to ensure the sale and profitability of products, lines, or services, analyzing business developments and monitoring market trends.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 3
+              },
+              {
+                "id": "O:11-2021.00:950",
+                "task_id": "950",
+                "text": "Develop pricing strategies, balancing firm objectives and customer satisfaction.",
+                "task_type": "Core",
+                "lexical_overlap_with_D": 2
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

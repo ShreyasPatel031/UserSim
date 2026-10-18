@@ -1,0 +1,16 @@
+{
+  "benefit": {
+    "points": 1379,
+    "context_hit": 0.41334300217548947,
+    "observable_yes": 0.6598984771573604,
+    "observable_any": 0.8651196519216824,
+    "missed_but_observable": 0.47715736040609136
+  },
+  "friction": {
+    "points": 642,
+    "context_hit": 0.2570093457943925,
+    "observable_yes": 0.573208722741433,
+    "observable_any": 0.8021806853582555,
+    "missed_but_observable": 0.5841121495327103
+  }
+}

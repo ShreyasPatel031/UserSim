@@ -1,0 +1,12 @@
+{"rid": "Capterra___6843507", "session_id": "976a3e5705b44ff2a753cced5dbeec3d", "signed_in": true, "reached_product": true,
+ "outcome": "completed", "steps_used": 27,
+ "observations": [
+  {"kind": "signup_friction", "what": "Free sign-up was a three-field form (name, email, organization) plus terms checkbox, then a separate password page, with an hCaptcha on each page."},
+  {"kind": "product_benefit", "what": "No email verification was required; the account landed directly on a welcome/onboarding page after creating the password."},
+  {"kind": "signup_friction", "what": "The onboarding offered a sample-project tour with a clear 'Skip the tour' link, which let me reach Home immediately."},
+  {"kind": "product_friction", "what": "The free plan allows only 1 project, so the 'Making a Podcast' sample project plus My Project leaves no room for separate projects per stakeholder group."},
+  {"kind": "product_benefit", "what": "A new project opens with a plain explanation and a '+' menu listing Message Board, To-dos, Docs, Calendar, Chat, Card Table, making it easy to pick tools."},
+  {"kind": "product_friction", "what": "Adding a To-dos tool first shows a rename-the-tool title form and a separate step to open it and add a first to-do, which took several clicks before I could create a task."},
+  {"kind": "product_friction", "what": "Inviting stakeholders, the core of collaboration, requires adding real people by email, which I could not do in a demo."},
+  {"kind": "agent_failure", "what": "I tried to finish before checking for verification mail; the server asked me to check mail, and the only email found was an onboarding notification, not a verification."}
+ ]}

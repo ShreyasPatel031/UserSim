@@ -1,0 +1,9 @@
+{"product": "Trello", "run_id": "trello_deep_1", "session_id": "cae4b430b40547218bdd2b8ce2ceae29",
+ "task": "I need to set up a Trello board to manage our upcoming 'Community Outreach Drive'. I'll create lists for 'To Do', 'In Progress', and 'Completed', then add three tasks: 'Recruit 10 volunteers', 'Design flyer', and 'Secure event venue'. After setting these up, I'll add custom fields for 'Volunteer Lead' and 'Deadline', assign deadlines, and then filter the board to see only tasks due next week. Finally, I'll move 'Design flyer' to 'In Progress' and update its deadline.",
+ "signed_in": false, "reached_product": false, "outcome": "blocked", "steps_used": 33,
+ "observations": [
+  {"kind": "signup_friction", "feature": "Atlassian email sign-up", "what": "After the email was submitted, sign-up went into a 4-stage interactive intro tour (add a card, drag it to a list, mark it complete) before any account existed, which cost about 12 steps per attempt."},
+  {"kind": "signup_friction", "feature": "Atlassian email sign-up", "what": "The tour's final 'One last thing!' button spun indefinitely on two separate attempts, and no verification code or link email arrived, so the account was never created; the email address contained a '+', which may have been silently rejected."},
+  {"kind": "signup_friction", "feature": "Sign-up tour close button", "what": "The X (Close) button on the tour did not exit it; it advanced the tour or left me on the logged-out homepage, so there was no way to skip straight to finishing the account."},
+  {"kind": "agent_failure", "feature": "Sign-up tour", "what": "I wrongly assumed I was already signed in when the tour appeared and navigated to the homepage, which restarted the flow and wasted steps."}
+ ]}

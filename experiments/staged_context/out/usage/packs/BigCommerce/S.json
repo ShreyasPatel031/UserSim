@@ -1,0 +1,8 @@
+{
+  "items": [
+    {
+      "id": "S:category",
+      "text": "4000 reviews of Shopify, Squarespace, Wix, WooCommerce: {\"role_family\": {\"executive_owner\": 0.375, \"project_program_mgmt\": 0.014, \"product_mgmt\": 0.002, \"healthcare_wellness\": 0.017, \"software_it_engineering\": 0.126, \"marketing_creative_content\": 0.19, \"sales_customer\": 0.043, \"operations_admin\": 0.055, \"finance_hr_legal\": 0.016, \"education_research_analysis\": 0.027, \"consultant_freelance\": 0.031, \"general_team_mgmt\": 0.104}, \"company_size\": {\"Self-employed\": 0.294, \"1-10 employees\": 0.385, \"11-50 employees\": 0.153, \"51-200 employees\": 0.074, \"201-500 employees\": 0.027, \"501-1,000 employees\": 0.019, \"1,001-5,000 employees\": 0.02, \"5,001-10,000 employees\": 0.007, \"10,001+ employees\": 0.02}, \"industry\": {\"Information Technology and Services\": 0.065, \"Computer Software\": 0.038, \"Marketing and Advertising\": 0.107, \"Education Management\": 0.022, \"Retail\": 0.07, \"Health, Wellness and Fitness\": 0.045, \"Financial Services\": 0.011, \"Construction\": 0.016, \"Hospital & Health Care\": 0.007, \"Accounting\": 0.015, \"Non-Profit Organization Management\": 0.021, \"Design\": 0.042, \"Internet\": 0.025, \"Real Estate\": 0.009, \"E-Learning\": 0.022, \"Other\": 0.482}, \"time_used\": {\"I used a free trial\": 0.065, \"Less than 6 months\": 0.143, \"6-12 months\": 0.174, \"1-2 years\": 0.231, \"2+ years\": 0.387}, \"switched_share\": 0.185, \"top_prior_tools\": [\"WordPress\", \"Wix\", \"Shopify\", \"GoDaddy Website Builder\", \"Squarespace\"]}"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "items": [
+    {
+      "id": "S:category",
+      "text": "4226 reviews of Help Scout, Intercom, LiveAgent, Zendesk Suite, Zoho Desk: {\"role_family\": {\"executive_owner\": 0.195, \"project_program_mgmt\": 0.025, \"product_mgmt\": 0.009, \"healthcare_wellness\": 0.008, \"software_it_engineering\": 0.175, \"marketing_creative_content\": 0.118, \"sales_customer\": 0.188, \"operations_admin\": 0.067, \"finance_hr_legal\": 0.036, \"education_research_analysis\": 0.028, \"consultant_freelance\": 0.025, \"general_team_mgmt\": 0.125}, \"company_size\": {\"Self-employed\": 0.073, \"1-10 employees\": 0.235, \"11-50 employees\": 0.262, \"51-200 employees\": 0.184, \"201-500 employees\": 0.069, \"501-1,000 employees\": 0.05, \"1,001-5,000 employees\": 0.055, \"5,001-10,000 employees\": 0.02, \"10,001+ employees\": 0.051}, \"industry\": {\"Information Technology and Services\": 0.122, \"Computer Software\": 0.117, \"Marketing and Advertising\": 0.057, \"Education Management\": 0.027, \"Retail\": 0.039, \"Health, Wellness and Fitness\": 0.016, \"Financial Services\": 0.025, \"Construction\": 0.015, \"Hospital & Health Care\": 0.018, \"Accounting\": 0.019, \"Non-Profit Organization Management\": 0.01, \"Design\": 0.009, \"Internet\": 0.035, \"Real Estate\": 0.018, \"E-Learning\": 0.016, \"Other\": 0.457}, \"time_used\": {\"I used a free trial\": 0.131, \"Less than 6 months\": 0.197, \"6-12 months\": 0.203, \"1-2 years\": 0.232, \"2+ years\": 0.237}, \"switched_share\": 0.118, \"top_prior_tools\": [\"Zendesk Suite\", \"Freshdesk\", \"Zoho Desk\", \"LiveChat\", \"Intercom\"]}"
+    }
+  ]
+}

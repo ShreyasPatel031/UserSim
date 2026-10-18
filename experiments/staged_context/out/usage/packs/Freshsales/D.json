@@ -1,0 +1,46 @@
+{
+  "items": [
+    {
+      "id": "D:Freshsales:landing:1",
+      "text": "Freshsales: Streamlined Sales CRM Solution | Freshworks Skip to main content AI-POWERED SALES CRM Sell smarter and close deals faster Grow your pipeline, boost conversions, and power productivity with our AI-powered, easy-to-use sales CRM. Smarter campaigns, superior leads Freshsales helps you run smart sales campaigns to generate more leads, then capture, qualify, route, and track them with the power of Freddy AI. Try it Free Efficient organizing, expert prospecting Declutter your sales view and have the key details you need to dive into your day with no wasted time.",
+      "product": "Freshsales",
+      "role": "target",
+      "url": "https://www.freshworks.com/crm/sales/"
+    },
+    {
+      "id": "D:Freshsales:landing:2",
+      "text": "Plan your entire sales process with kanban views, and configure and control with drag-and-drop cards. Focus on valuable leads with intent scores from Freddy AI. Try it Free Stronger sales, faster growth Streamline processes, sew up deals, and score that quarterly bonus with timely insights.",
+      "product": "Freshsales",
+      "role": "target",
+      "url": "https://www.freshworks.com/crm/sales/"
+    },
+    {
+      "id": "D:Freshsales:landing:3",
+      "text": "Avoid bottlenecks and plan accurately with deal recommendations by Freddy AI. Improve productivity, increase adoption, and raise team morale. Try it Free AI-powered assistance and insights Freddy AI makes work smarter and easier, helping you around the clock: highlighting the best leads and deals, offering insights, and even writing emails.",
+      "product": "Freshsales",
+      "role": "target",
+      "url": "https://www.freshworks.com/crm/sales/"
+    },
+    {
+      "id": "D:Freshsales:landing:4",
+      "text": "Stay a step ahead with Freddy AI. Share context, customize communications, and drive revenue together. Alexandra CRM Operations Manager, Humn Read Story We were able to gather intent data from email engagement and profile our audience and market to niches better.",
+      "product": "Freshsales",
+      "role": "target",
+      "url": "https://www.freshworks.com/crm/sales/"
+    },
+    {
+      "id": "D:Freshsales:landing:5",
+      "text": "In a nutshell, the CRM became integral to our organization, rather than a supporting force.",
+      "product": "Freshsales",
+      "role": "target",
+      "url": "https://www.freshworks.com/crm/sales/"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.freshworks.com/crm/sales/",
+      "html_sha256": "f66fdf413f3d296ffcbb1834dd54f9f43e7ad303721cfd5f67788cf27386b315",
+      "sentences_dropped_by_filter": 12
+    }
+  ]
+}

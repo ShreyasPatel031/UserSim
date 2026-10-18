@@ -1,0 +1,74 @@
+{
+  "items": [
+    {
+      "id": "D:Help Scout:landing:1",
+      "text": "In Help Scout, teams work alongside AI to not only resolve conversations faster, but understand the larger story they’re telling. With Help Scout, even the highest standards scale. Inbox never loses the thread Working across teams and channels doesn’t have to be messy.",
+      "product": "Help Scout",
+      "role": "target",
+      "url": "https://www.helpscout.com/"
+    },
+    {
+      "id": "D:Help Scout:landing:2",
+      "text": "Inbox brings email, SMS, social, chat, and voice into one clean space. Context carries through every handoff. And workflows keep it all organized.",
+      "product": "Help Scout",
+      "role": "target",
+      "url": "https://www.helpscout.com/"
+    },
+    {
+      "id": "D:Help Scout:landing:3",
+      "text": "Explore Inbox We're on pace to double [revenue] this year because of how efficient we've gotten with Help Scout. Your own powerful AI agent, Scout, that delivers accurate answers, smooth escalations, and judgment that reflects your own. Generate drafts instead of checking past replies.",
+      "product": "Help Scout",
+      "role": "target",
+      "url": "https://www.helpscout.com/"
+    },
+    {
+      "id": "D:Help Scout:landing:4",
+      "text": "Ask questions instead of searching your knowledge base. It’s the assistant that makes everything easier. Explore Copilot AI Drafts helped us cut email response times by about a third, saving us the equivalent of roughly 2.5 FTEs annually.",
+      "product": "Help Scout",
+      "role": "target",
+      "url": "https://www.helpscout.com/"
+    },
+    {
+      "id": "D:Help Scout:landing:5",
+      "text": "It helps our team move faster while keeping a human in the loop. King Arthur Flour Catch friction before it becomes a fire Closing out conversations is just the beginning. Signal shows you the story behind them, so you can get ahead of emerging issues, save drifting accounts, and see what basic reporting misses.",
+      "product": "Help Scout",
+      "role": "target",
+      "url": "https://www.helpscout.com/"
+    },
+    {
+      "id": "D:Help Scout:landing:6",
+      "text": "Explore Signal We solved both staffing and scheduling challenges using the productivity report. help desks → Switching from Gmail or Outlook Teams relying on basic email are constantly guessing who has what, digging for context in old threads, and losing hours to manual organizing. All that goes away in Help Scout.",
+      "product": "Help Scout",
+      "role": "target",
+      "url": "https://www.helpscout.com/"
+    },
+    {
+      "id": "D:Help Scout:landing:7",
+      "text": "Ecommerce Manufacturing & Logistics Insurance SaaS Financial Services Real Estate Professional Services Property Management Healthcare Education Stay sharp with the latest on CX Every day, we’re writing, teaching, and building for service-minded teams. Grab a guide, join a training, or listen to our podcast. 3+ billion conversations later, that belief is more important than it’s ever been.",
+      "product": "Help Scout",
+      "role": "target",
+      "url": "https://www.helpscout.com/"
+    },
+    {
+      "id": "D:Help Scout:landing:8",
+      "text": "But now it takes something different. And insights have to show you what’s coming next, not just what already happened. Getting those right adds up to results the whole business can feel.",
+      "product": "Help Scout",
+      "role": "target",
+      "url": "https://www.helpscout.com/"
+    },
+    {
+      "id": "D:Help Scout:landing:9",
+      "text": "If that’s how you're looking to grow, try Help Scout free. We’d love to see where it takes you. Learn the platform in less than an hour and become a power user in less than a day.",
+      "product": "Help Scout",
+      "role": "target",
+      "url": "https://www.helpscout.com/"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.helpscout.com/",
+      "html_sha256": "1f1712baeba6700d93b5198b5f2babb646d47f40008a72142afcd658aa062649",
+      "sentences_dropped_by_filter": 17
+    }
+  ]
+}
