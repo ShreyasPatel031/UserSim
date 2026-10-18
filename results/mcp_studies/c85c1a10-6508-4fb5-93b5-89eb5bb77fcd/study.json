@@ -1,0 +1,987 @@
+{
+ "study_id": "c85c1a10-6508-4fb5-93b5-89eb5bb77fcd",
+ "watch_url": "https://atelier-sim.com/?study=c85c1a10-6508-4fb5-93b5-89eb5bb77fcd",
+ "report_url": "https://atelier-sim.com/report?study=c85c1a10-6508-4fb5-93b5-89eb5bb77fcd",
+ "runs": 108,
+ "cells": [
+  {
+   "cell_id": "t1__p1__product",
+   "site": "https://www.smartsheet.com",
+   "site_name": "Product",
+   "persona_name": "Sarah Chen",
+   "persona": "Sarah needs to oversee complex portfolios across departments. She values robust reporting and integration with existing enterprise systems.",
+   "task": "Create a new project dashboard",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t1__p1__competitor_1",
+   "site": "https://www.monday.com/",
+   "site_name": "Monday",
+   "persona_name": "Sarah Chen",
+   "persona": "Sarah needs to oversee complex portfolios across departments. She values robust reporting and integration with existing enterprise systems.",
+   "task": "Create a new project dashboard\n\nYou are evaluating the site https://www.monday.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t1__p1__competitor_2",
+   "site": "https://asana.com/",
+   "site_name": "Asana",
+   "persona_name": "Sarah Chen",
+   "persona": "Sarah needs to oversee complex portfolios across departments. She values robust reporting and integration with existing enterprise systems.",
+   "task": "Create a new project dashboard\n\nYou are evaluating the site https://asana.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t2__p1__product",
+   "site": "https://www.smartsheet.com",
+   "site_name": "Product",
+   "persona_name": "Sarah Chen",
+   "persona": "Sarah needs to oversee complex portfolios across departments. She values robust reporting and integration with existing enterprise systems.",
+   "task": "Automate a recurring workflow",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t2__p1__competitor_1",
+   "site": "https://www.monday.com/",
+   "site_name": "Monday",
+   "persona_name": "Sarah Chen",
+   "persona": "Sarah needs to oversee complex portfolios across departments. She values robust reporting and integration with existing enterprise systems.",
+   "task": "Automate a recurring workflow\n\nYou are evaluating the site https://www.monday.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t2__p1__competitor_2",
+   "site": "https://asana.com/",
+   "site_name": "Asana",
+   "persona_name": "Sarah Chen",
+   "persona": "Sarah needs to oversee complex portfolios across departments. She values robust reporting and integration with existing enterprise systems.",
+   "task": "Automate a recurring workflow\n\nYou are evaluating the site https://asana.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t3__p1__product",
+   "site": "https://www.smartsheet.com",
+   "site_name": "Product",
+   "persona_name": "Sarah Chen",
+   "persona": "Sarah needs to oversee complex portfolios across departments. She values robust reporting and integration with existing enterprise systems.",
+   "task": "Manage cross-team dependencies",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t3__p1__competitor_1",
+   "site": "https://www.monday.com/",
+   "site_name": "Monday",
+   "persona_name": "Sarah Chen",
+   "persona": "Sarah needs to oversee complex portfolios across departments. She values robust reporting and integration with existing enterprise systems.",
+   "task": "Manage cross-team dependencies\n\nYou are evaluating the site https://www.monday.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t3__p1__competitor_2",
+   "site": "https://asana.com/",
+   "site_name": "Asana",
+   "persona_name": "Sarah Chen",
+   "persona": "Sarah needs to oversee complex portfolios across departments. She values robust reporting and integration with existing enterprise systems.",
+   "task": "Manage cross-team dependencies\n\nYou are evaluating the site https://asana.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t4__p1__product",
+   "site": "https://www.smartsheet.com",
+   "site_name": "Product",
+   "persona_name": "Sarah Chen",
+   "persona": "Sarah needs to oversee complex portfolios across departments. She values robust reporting and integration with existing enterprise systems.",
+   "task": "Set up a portfolio view",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t4__p1__competitor_1",
+   "site": "https://www.monday.com/",
+   "site_name": "Monday",
+   "persona_name": "Sarah Chen",
+   "persona": "Sarah needs to oversee complex portfolios across departments. She values robust reporting and integration with existing enterprise systems.",
+   "task": "Set up a portfolio view\n\nYou are evaluating the site https://www.monday.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t4__p1__competitor_2",
+   "site": "https://asana.com/",
+   "site_name": "Asana",
+   "persona_name": "Sarah Chen",
+   "persona": "Sarah needs to oversee complex portfolios across departments. She values robust reporting and integration with existing enterprise systems.",
+   "task": "Set up a portfolio view\n\nYou are evaluating the site https://asana.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t5__p1__product",
+   "site": "https://www.smartsheet.com",
+   "site_name": "Product",
+   "persona_name": "Sarah Chen",
+   "persona": "Sarah needs to oversee complex portfolios across departments. She values robust reporting and integration with existing enterprise systems.",
+   "task": "Assign tasks to team members",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t5__p1__competitor_1",
+   "site": "https://www.monday.com/",
+   "site_name": "Monday",
+   "persona_name": "Sarah Chen",
+   "persona": "Sarah needs to oversee complex portfolios across departments. She values robust reporting and integration with existing enterprise systems.",
+   "task": "Assign tasks to team members\n\nYou are evaluating the site https://www.monday.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t5__p1__competitor_2",
+   "site": "https://asana.com/",
+   "site_name": "Asana",
+   "persona_name": "Sarah Chen",
+   "persona": "Sarah needs to oversee complex portfolios across departments. She values robust reporting and integration with existing enterprise systems.",
+   "task": "Assign tasks to team members\n\nYou are evaluating the site https://asana.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t6__p1__product",
+   "site": "https://www.smartsheet.com",
+   "site_name": "Product",
+   "persona_name": "Sarah Chen",
+   "persona": "Sarah needs to oversee complex portfolios across departments. She values robust reporting and integration with existing enterprise systems.",
+   "task": "Build a custom sales CRM",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t6__p1__competitor_1",
+   "site": "https://www.monday.com/",
+   "site_name": "Monday",
+   "persona_name": "Sarah Chen",
+   "persona": "Sarah needs to oversee complex portfolios across departments. She values robust reporting and integration with existing enterprise systems.",
+   "task": "Build a custom sales CRM\n\nYou are evaluating the site https://www.monday.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t6__p1__competitor_2",
+   "site": "https://asana.com/",
+   "site_name": "Asana",
+   "persona_name": "Sarah Chen",
+   "persona": "Sarah needs to oversee complex portfolios across departments. She values robust reporting and integration with existing enterprise systems.",
+   "task": "Build a custom sales CRM\n\nYou are evaluating the site https://asana.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t1__p2__product",
+   "site": "https://www.smartsheet.com",
+   "site_name": "Product",
+   "persona_name": "David Miller",
+   "persona": "David manages operational workflows and needs a platform that can automate processes and provide real-time visibility.",
+   "task": "Create a new project dashboard",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t1__p2__competitor_1",
+   "site": "https://www.monday.com/",
+   "site_name": "Monday",
+   "persona_name": "David Miller",
+   "persona": "David manages operational workflows and needs a platform that can automate processes and provide real-time visibility.",
+   "task": "Create a new project dashboard\n\nYou are evaluating the site https://www.monday.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t1__p2__competitor_2",
+   "site": "https://asana.com/",
+   "site_name": "Asana",
+   "persona_name": "David Miller",
+   "persona": "David manages operational workflows and needs a platform that can automate processes and provide real-time visibility.",
+   "task": "Create a new project dashboard\n\nYou are evaluating the site https://asana.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t2__p2__product",
+   "site": "https://www.smartsheet.com",
+   "site_name": "Product",
+   "persona_name": "David Miller",
+   "persona": "David manages operational workflows and needs a platform that can automate processes and provide real-time visibility.",
+   "task": "Automate a recurring workflow",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t2__p2__competitor_1",
+   "site": "https://www.monday.com/",
+   "site_name": "Monday",
+   "persona_name": "David Miller",
+   "persona": "David manages operational workflows and needs a platform that can automate processes and provide real-time visibility.",
+   "task": "Automate a recurring workflow\n\nYou are evaluating the site https://www.monday.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t2__p2__competitor_2",
+   "site": "https://asana.com/",
+   "site_name": "Asana",
+   "persona_name": "David Miller",
+   "persona": "David manages operational workflows and needs a platform that can automate processes and provide real-time visibility.",
+   "task": "Automate a recurring workflow\n\nYou are evaluating the site https://asana.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t3__p2__product",
+   "site": "https://www.smartsheet.com",
+   "site_name": "Product",
+   "persona_name": "David Miller",
+   "persona": "David manages operational workflows and needs a platform that can automate processes and provide real-time visibility.",
+   "task": "Manage cross-team dependencies",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t3__p2__competitor_1",
+   "site": "https://www.monday.com/",
+   "site_name": "Monday",
+   "persona_name": "David Miller",
+   "persona": "David manages operational workflows and needs a platform that can automate processes and provide real-time visibility.",
+   "task": "Manage cross-team dependencies\n\nYou are evaluating the site https://www.monday.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t3__p2__competitor_2",
+   "site": "https://asana.com/",
+   "site_name": "Asana",
+   "persona_name": "David Miller",
+   "persona": "David manages operational workflows and needs a platform that can automate processes and provide real-time visibility.",
+   "task": "Manage cross-team dependencies\n\nYou are evaluating the site https://asana.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t4__p2__product",
+   "site": "https://www.smartsheet.com",
+   "site_name": "Product",
+   "persona_name": "David Miller",
+   "persona": "David manages operational workflows and needs a platform that can automate processes and provide real-time visibility.",
+   "task": "Set up a portfolio view",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t4__p2__competitor_1",
+   "site": "https://www.monday.com/",
+   "site_name": "Monday",
+   "persona_name": "David Miller",
+   "persona": "David manages operational workflows and needs a platform that can automate processes and provide real-time visibility.",
+   "task": "Set up a portfolio view\n\nYou are evaluating the site https://www.monday.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t4__p2__competitor_2",
+   "site": "https://asana.com/",
+   "site_name": "Asana",
+   "persona_name": "David Miller",
+   "persona": "David manages operational workflows and needs a platform that can automate processes and provide real-time visibility.",
+   "task": "Set up a portfolio view\n\nYou are evaluating the site https://asana.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t5__p2__product",
+   "site": "https://www.smartsheet.com",
+   "site_name": "Product",
+   "persona_name": "David Miller",
+   "persona": "David manages operational workflows and needs a platform that can automate processes and provide real-time visibility.",
+   "task": "Assign tasks to team members",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t5__p2__competitor_1",
+   "site": "https://www.monday.com/",
+   "site_name": "Monday",
+   "persona_name": "David Miller",
+   "persona": "David manages operational workflows and needs a platform that can automate processes and provide real-time visibility.",
+   "task": "Assign tasks to team members\n\nYou are evaluating the site https://www.monday.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t5__p2__competitor_2",
+   "site": "https://asana.com/",
+   "site_name": "Asana",
+   "persona_name": "David Miller",
+   "persona": "David manages operational workflows and needs a platform that can automate processes and provide real-time visibility.",
+   "task": "Assign tasks to team members\n\nYou are evaluating the site https://asana.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t6__p2__product",
+   "site": "https://www.smartsheet.com",
+   "site_name": "Product",
+   "persona_name": "David Miller",
+   "persona": "David manages operational workflows and needs a platform that can automate processes and provide real-time visibility.",
+   "task": "Build a custom sales CRM",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t6__p2__competitor_1",
+   "site": "https://www.monday.com/",
+   "site_name": "Monday",
+   "persona_name": "David Miller",
+   "persona": "David manages operational workflows and needs a platform that can automate processes and provide real-time visibility.",
+   "task": "Build a custom sales CRM\n\nYou are evaluating the site https://www.monday.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t6__p2__competitor_2",
+   "site": "https://asana.com/",
+   "site_name": "Asana",
+   "persona_name": "David Miller",
+   "persona": "David manages operational workflows and needs a platform that can automate processes and provide real-time visibility.",
+   "task": "Build a custom sales CRM\n\nYou are evaluating the site https://asana.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t1__p3__product",
+   "site": "https://www.smartsheet.com",
+   "site_name": "Product",
+   "persona_name": "Emily White",
+   "persona": "Emily needs to track multiple campaigns and collaborate with her team efficiently. She values intuitive design and quick setup.",
+   "task": "Create a new project dashboard",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t1__p3__competitor_1",
+   "site": "https://www.monday.com/",
+   "site_name": "Monday",
+   "persona_name": "Emily White",
+   "persona": "Emily needs to track multiple campaigns and collaborate with her team efficiently. She values intuitive design and quick setup.",
+   "task": "Create a new project dashboard\n\nYou are evaluating the site https://www.monday.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t1__p3__competitor_2",
+   "site": "https://asana.com/",
+   "site_name": "Asana",
+   "persona_name": "Emily White",
+   "persona": "Emily needs to track multiple campaigns and collaborate with her team efficiently. She values intuitive design and quick setup.",
+   "task": "Create a new project dashboard\n\nYou are evaluating the site https://asana.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t2__p3__product",
+   "site": "https://www.smartsheet.com",
+   "site_name": "Product",
+   "persona_name": "Emily White",
+   "persona": "Emily needs to track multiple campaigns and collaborate with her team efficiently. She values intuitive design and quick setup.",
+   "task": "Automate a recurring workflow",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t2__p3__competitor_1",
+   "site": "https://www.monday.com/",
+   "site_name": "Monday",
+   "persona_name": "Emily White",
+   "persona": "Emily needs to track multiple campaigns and collaborate with her team efficiently. She values intuitive design and quick setup.",
+   "task": "Automate a recurring workflow\n\nYou are evaluating the site https://www.monday.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t2__p3__competitor_2",
+   "site": "https://asana.com/",
+   "site_name": "Asana",
+   "persona_name": "Emily White",
+   "persona": "Emily needs to track multiple campaigns and collaborate with her team efficiently. She values intuitive design and quick setup.",
+   "task": "Automate a recurring workflow\n\nYou are evaluating the site https://asana.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t3__p3__product",
+   "site": "https://www.smartsheet.com",
+   "site_name": "Product",
+   "persona_name": "Emily White",
+   "persona": "Emily needs to track multiple campaigns and collaborate with her team efficiently. She values intuitive design and quick setup.",
+   "task": "Manage cross-team dependencies",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t3__p3__competitor_1",
+   "site": "https://www.monday.com/",
+   "site_name": "Monday",
+   "persona_name": "Emily White",
+   "persona": "Emily needs to track multiple campaigns and collaborate with her team efficiently. She values intuitive design and quick setup.",
+   "task": "Manage cross-team dependencies\n\nYou are evaluating the site https://www.monday.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t3__p3__competitor_2",
+   "site": "https://asana.com/",
+   "site_name": "Asana",
+   "persona_name": "Emily White",
+   "persona": "Emily needs to track multiple campaigns and collaborate with her team efficiently. She values intuitive design and quick setup.",
+   "task": "Manage cross-team dependencies\n\nYou are evaluating the site https://asana.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t4__p3__product",
+   "site": "https://www.smartsheet.com",
+   "site_name": "Product",
+   "persona_name": "Emily White",
+   "persona": "Emily needs to track multiple campaigns and collaborate with her team efficiently. She values intuitive design and quick setup.",
+   "task": "Set up a portfolio view",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t4__p3__competitor_1",
+   "site": "https://www.monday.com/",
+   "site_name": "Monday",
+   "persona_name": "Emily White",
+   "persona": "Emily needs to track multiple campaigns and collaborate with her team efficiently. She values intuitive design and quick setup.",
+   "task": "Set up a portfolio view\n\nYou are evaluating the site https://www.monday.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t4__p3__competitor_2",
+   "site": "https://asana.com/",
+   "site_name": "Asana",
+   "persona_name": "Emily White",
+   "persona": "Emily needs to track multiple campaigns and collaborate with her team efficiently. She values intuitive design and quick setup.",
+   "task": "Set up a portfolio view\n\nYou are evaluating the site https://asana.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t5__p3__product",
+   "site": "https://www.smartsheet.com",
+   "site_name": "Product",
+   "persona_name": "Emily White",
+   "persona": "Emily needs to track multiple campaigns and collaborate with her team efficiently. She values intuitive design and quick setup.",
+   "task": "Assign tasks to team members",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t5__p3__competitor_1",
+   "site": "https://www.monday.com/",
+   "site_name": "Monday",
+   "persona_name": "Emily White",
+   "persona": "Emily needs to track multiple campaigns and collaborate with her team efficiently. She values intuitive design and quick setup.",
+   "task": "Assign tasks to team members\n\nYou are evaluating the site https://www.monday.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t5__p3__competitor_2",
+   "site": "https://asana.com/",
+   "site_name": "Asana",
+   "persona_name": "Emily White",
+   "persona": "Emily needs to track multiple campaigns and collaborate with her team efficiently. She values intuitive design and quick setup.",
+   "task": "Assign tasks to team members\n\nYou are evaluating the site https://asana.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t6__p3__product",
+   "site": "https://www.smartsheet.com",
+   "site_name": "Product",
+   "persona_name": "Emily White",
+   "persona": "Emily needs to track multiple campaigns and collaborate with her team efficiently. She values intuitive design and quick setup.",
+   "task": "Build a custom sales CRM",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t6__p3__competitor_1",
+   "site": "https://www.monday.com/",
+   "site_name": "Monday",
+   "persona_name": "Emily White",
+   "persona": "Emily needs to track multiple campaigns and collaborate with her team efficiently. She values intuitive design and quick setup.",
+   "task": "Build a custom sales CRM\n\nYou are evaluating the site https://www.monday.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t6__p3__competitor_2",
+   "site": "https://asana.com/",
+   "site_name": "Asana",
+   "persona_name": "Emily White",
+   "persona": "Emily needs to track multiple campaigns and collaborate with her team efficiently. She values intuitive design and quick setup.",
+   "task": "Build a custom sales CRM\n\nYou are evaluating the site https://asana.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t1__p4__product",
+   "site": "https://www.smartsheet.com",
+   "site_name": "Product",
+   "persona_name": "Michael Brown",
+   "persona": "Michael manages IT projects and needs a tool that supports agile methodologies and integrates with development tools.",
+   "task": "Create a new project dashboard",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t1__p4__competitor_1",
+   "site": "https://www.monday.com/",
+   "site_name": "Monday",
+   "persona_name": "Michael Brown",
+   "persona": "Michael manages IT projects and needs a tool that supports agile methodologies and integrates with development tools.",
+   "task": "Create a new project dashboard\n\nYou are evaluating the site https://www.monday.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t1__p4__competitor_2",
+   "site": "https://asana.com/",
+   "site_name": "Asana",
+   "persona_name": "Michael Brown",
+   "persona": "Michael manages IT projects and needs a tool that supports agile methodologies and integrates with development tools.",
+   "task": "Create a new project dashboard\n\nYou are evaluating the site https://asana.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t2__p4__product",
+   "site": "https://www.smartsheet.com",
+   "site_name": "Product",
+   "persona_name": "Michael Brown",
+   "persona": "Michael manages IT projects and needs a tool that supports agile methodologies and integrates with development tools.",
+   "task": "Automate a recurring workflow",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t2__p4__competitor_1",
+   "site": "https://www.monday.com/",
+   "site_name": "Monday",
+   "persona_name": "Michael Brown",
+   "persona": "Michael manages IT projects and needs a tool that supports agile methodologies and integrates with development tools.",
+   "task": "Automate a recurring workflow\n\nYou are evaluating the site https://www.monday.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t2__p4__competitor_2",
+   "site": "https://asana.com/",
+   "site_name": "Asana",
+   "persona_name": "Michael Brown",
+   "persona": "Michael manages IT projects and needs a tool that supports agile methodologies and integrates with development tools.",
+   "task": "Automate a recurring workflow\n\nYou are evaluating the site https://asana.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t3__p4__product",
+   "site": "https://www.smartsheet.com",
+   "site_name": "Product",
+   "persona_name": "Michael Brown",
+   "persona": "Michael manages IT projects and needs a tool that supports agile methodologies and integrates with development tools.",
+   "task": "Manage cross-team dependencies",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t3__p4__competitor_1",
+   "site": "https://www.monday.com/",
+   "site_name": "Monday",
+   "persona_name": "Michael Brown",
+   "persona": "Michael manages IT projects and needs a tool that supports agile methodologies and integrates with development tools.",
+   "task": "Manage cross-team dependencies\n\nYou are evaluating the site https://www.monday.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t3__p4__competitor_2",
+   "site": "https://asana.com/",
+   "site_name": "Asana",
+   "persona_name": "Michael Brown",
+   "persona": "Michael manages IT projects and needs a tool that supports agile methodologies and integrates with development tools.",
+   "task": "Manage cross-team dependencies\n\nYou are evaluating the site https://asana.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t4__p4__product",
+   "site": "https://www.smartsheet.com",
+   "site_name": "Product",
+   "persona_name": "Michael Brown",
+   "persona": "Michael manages IT projects and needs a tool that supports agile methodologies and integrates with development tools.",
+   "task": "Set up a portfolio view",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t4__p4__competitor_1",
+   "site": "https://www.monday.com/",
+   "site_name": "Monday",
+   "persona_name": "Michael Brown",
+   "persona": "Michael manages IT projects and needs a tool that supports agile methodologies and integrates with development tools.",
+   "task": "Set up a portfolio view\n\nYou are evaluating the site https://www.monday.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t4__p4__competitor_2",
+   "site": "https://asana.com/",
+   "site_name": "Asana",
+   "persona_name": "Michael Brown",
+   "persona": "Michael manages IT projects and needs a tool that supports agile methodologies and integrates with development tools.",
+   "task": "Set up a portfolio view\n\nYou are evaluating the site https://asana.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t5__p4__product",
+   "site": "https://www.smartsheet.com",
+   "site_name": "Product",
+   "persona_name": "Michael Brown",
+   "persona": "Michael manages IT projects and needs a tool that supports agile methodologies and integrates with development tools.",
+   "task": "Assign tasks to team members",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t5__p4__competitor_1",
+   "site": "https://www.monday.com/",
+   "site_name": "Monday",
+   "persona_name": "Michael Brown",
+   "persona": "Michael manages IT projects and needs a tool that supports agile methodologies and integrates with development tools.",
+   "task": "Assign tasks to team members\n\nYou are evaluating the site https://www.monday.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t5__p4__competitor_2",
+   "site": "https://asana.com/",
+   "site_name": "Asana",
+   "persona_name": "Michael Brown",
+   "persona": "Michael manages IT projects and needs a tool that supports agile methodologies and integrates with development tools.",
+   "task": "Assign tasks to team members\n\nYou are evaluating the site https://asana.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t6__p4__product",
+   "site": "https://www.smartsheet.com",
+   "site_name": "Product",
+   "persona_name": "Michael Brown",
+   "persona": "Michael manages IT projects and needs a tool that supports agile methodologies and integrates with development tools.",
+   "task": "Build a custom sales CRM",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t6__p4__competitor_1",
+   "site": "https://www.monday.com/",
+   "site_name": "Monday",
+   "persona_name": "Michael Brown",
+   "persona": "Michael manages IT projects and needs a tool that supports agile methodologies and integrates with development tools.",
+   "task": "Build a custom sales CRM\n\nYou are evaluating the site https://www.monday.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t6__p4__competitor_2",
+   "site": "https://asana.com/",
+   "site_name": "Asana",
+   "persona_name": "Michael Brown",
+   "persona": "Michael manages IT projects and needs a tool that supports agile methodologies and integrates with development tools.",
+   "task": "Build a custom sales CRM\n\nYou are evaluating the site https://asana.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t1__p5__product",
+   "site": "https://www.smartsheet.com",
+   "site_name": "Product",
+   "persona_name": "Jessica Lee",
+   "persona": "Jessica oversees creative projects and needs a visual platform to manage tasks, feedback, and deadlines effectively.",
+   "task": "Create a new project dashboard",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t1__p5__competitor_1",
+   "site": "https://www.monday.com/",
+   "site_name": "Monday",
+   "persona_name": "Jessica Lee",
+   "persona": "Jessica oversees creative projects and needs a visual platform to manage tasks, feedback, and deadlines effectively.",
+   "task": "Create a new project dashboard\n\nYou are evaluating the site https://www.monday.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t1__p5__competitor_2",
+   "site": "https://asana.com/",
+   "site_name": "Asana",
+   "persona_name": "Jessica Lee",
+   "persona": "Jessica oversees creative projects and needs a visual platform to manage tasks, feedback, and deadlines effectively.",
+   "task": "Create a new project dashboard\n\nYou are evaluating the site https://asana.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t2__p5__product",
+   "site": "https://www.smartsheet.com",
+   "site_name": "Product",
+   "persona_name": "Jessica Lee",
+   "persona": "Jessica oversees creative projects and needs a visual platform to manage tasks, feedback, and deadlines effectively.",
+   "task": "Automate a recurring workflow",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t2__p5__competitor_1",
+   "site": "https://www.monday.com/",
+   "site_name": "Monday",
+   "persona_name": "Jessica Lee",
+   "persona": "Jessica oversees creative projects and needs a visual platform to manage tasks, feedback, and deadlines effectively.",
+   "task": "Automate a recurring workflow\n\nYou are evaluating the site https://www.monday.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t2__p5__competitor_2",
+   "site": "https://asana.com/",
+   "site_name": "Asana",
+   "persona_name": "Jessica Lee",
+   "persona": "Jessica oversees creative projects and needs a visual platform to manage tasks, feedback, and deadlines effectively.",
+   "task": "Automate a recurring workflow\n\nYou are evaluating the site https://asana.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t3__p5__product",
+   "site": "https://www.smartsheet.com",
+   "site_name": "Product",
+   "persona_name": "Jessica Lee",
+   "persona": "Jessica oversees creative projects and needs a visual platform to manage tasks, feedback, and deadlines effectively.",
+   "task": "Manage cross-team dependencies",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t3__p5__competitor_1",
+   "site": "https://www.monday.com/",
+   "site_name": "Monday",
+   "persona_name": "Jessica Lee",
+   "persona": "Jessica oversees creative projects and needs a visual platform to manage tasks, feedback, and deadlines effectively.",
+   "task": "Manage cross-team dependencies\n\nYou are evaluating the site https://www.monday.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t3__p5__competitor_2",
+   "site": "https://asana.com/",
+   "site_name": "Asana",
+   "persona_name": "Jessica Lee",
+   "persona": "Jessica oversees creative projects and needs a visual platform to manage tasks, feedback, and deadlines effectively.",
+   "task": "Manage cross-team dependencies\n\nYou are evaluating the site https://asana.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t4__p5__product",
+   "site": "https://www.smartsheet.com",
+   "site_name": "Product",
+   "persona_name": "Jessica Lee",
+   "persona": "Jessica oversees creative projects and needs a visual platform to manage tasks, feedback, and deadlines effectively.",
+   "task": "Set up a portfolio view",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t4__p5__competitor_1",
+   "site": "https://www.monday.com/",
+   "site_name": "Monday",
+   "persona_name": "Jessica Lee",
+   "persona": "Jessica oversees creative projects and needs a visual platform to manage tasks, feedback, and deadlines effectively.",
+   "task": "Set up a portfolio view\n\nYou are evaluating the site https://www.monday.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t4__p5__competitor_2",
+   "site": "https://asana.com/",
+   "site_name": "Asana",
+   "persona_name": "Jessica Lee",
+   "persona": "Jessica oversees creative projects and needs a visual platform to manage tasks, feedback, and deadlines effectively.",
+   "task": "Set up a portfolio view\n\nYou are evaluating the site https://asana.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t5__p5__product",
+   "site": "https://www.smartsheet.com",
+   "site_name": "Product",
+   "persona_name": "Jessica Lee",
+   "persona": "Jessica oversees creative projects and needs a visual platform to manage tasks, feedback, and deadlines effectively.",
+   "task": "Assign tasks to team members",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t5__p5__competitor_1",
+   "site": "https://www.monday.com/",
+   "site_name": "Monday",
+   "persona_name": "Jessica Lee",
+   "persona": "Jessica oversees creative projects and needs a visual platform to manage tasks, feedback, and deadlines effectively.",
+   "task": "Assign tasks to team members\n\nYou are evaluating the site https://www.monday.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t5__p5__competitor_2",
+   "site": "https://asana.com/",
+   "site_name": "Asana",
+   "persona_name": "Jessica Lee",
+   "persona": "Jessica oversees creative projects and needs a visual platform to manage tasks, feedback, and deadlines effectively.",
+   "task": "Assign tasks to team members\n\nYou are evaluating the site https://asana.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t6__p5__product",
+   "site": "https://www.smartsheet.com",
+   "site_name": "Product",
+   "persona_name": "Jessica Lee",
+   "persona": "Jessica oversees creative projects and needs a visual platform to manage tasks, feedback, and deadlines effectively.",
+   "task": "Build a custom sales CRM",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t6__p5__competitor_1",
+   "site": "https://www.monday.com/",
+   "site_name": "Monday",
+   "persona_name": "Jessica Lee",
+   "persona": "Jessica oversees creative projects and needs a visual platform to manage tasks, feedback, and deadlines effectively.",
+   "task": "Build a custom sales CRM\n\nYou are evaluating the site https://www.monday.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t6__p5__competitor_2",
+   "site": "https://asana.com/",
+   "site_name": "Asana",
+   "persona_name": "Jessica Lee",
+   "persona": "Jessica oversees creative projects and needs a visual platform to manage tasks, feedback, and deadlines effectively.",
+   "task": "Build a custom sales CRM\n\nYou are evaluating the site https://asana.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t1__p6__product",
+   "site": "https://www.smartsheet.com",
+   "site_name": "Product",
+   "persona_name": "Robert Green",
+   "persona": "Robert manages various community programs and needs a simple tool to track progress, assign tasks, and communicate with volunteers.",
+   "task": "Create a new project dashboard",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t1__p6__competitor_1",
+   "site": "https://www.monday.com/",
+   "site_name": "Monday",
+   "persona_name": "Robert Green",
+   "persona": "Robert manages various community programs and needs a simple tool to track progress, assign tasks, and communicate with volunteers.",
+   "task": "Create a new project dashboard\n\nYou are evaluating the site https://www.monday.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t1__p6__competitor_2",
+   "site": "https://asana.com/",
+   "site_name": "Asana",
+   "persona_name": "Robert Green",
+   "persona": "Robert manages various community programs and needs a simple tool to track progress, assign tasks, and communicate with volunteers.",
+   "task": "Create a new project dashboard\n\nYou are evaluating the site https://asana.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t2__p6__product",
+   "site": "https://www.smartsheet.com",
+   "site_name": "Product",
+   "persona_name": "Robert Green",
+   "persona": "Robert manages various community programs and needs a simple tool to track progress, assign tasks, and communicate with volunteers.",
+   "task": "Automate a recurring workflow",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t2__p6__competitor_1",
+   "site": "https://www.monday.com/",
+   "site_name": "Monday",
+   "persona_name": "Robert Green",
+   "persona": "Robert manages various community programs and needs a simple tool to track progress, assign tasks, and communicate with volunteers.",
+   "task": "Automate a recurring workflow\n\nYou are evaluating the site https://www.monday.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t2__p6__competitor_2",
+   "site": "https://asana.com/",
+   "site_name": "Asana",
+   "persona_name": "Robert Green",
+   "persona": "Robert manages various community programs and needs a simple tool to track progress, assign tasks, and communicate with volunteers.",
+   "task": "Automate a recurring workflow\n\nYou are evaluating the site https://asana.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t3__p6__product",
+   "site": "https://www.smartsheet.com",
+   "site_name": "Product",
+   "persona_name": "Robert Green",
+   "persona": "Robert manages various community programs and needs a simple tool to track progress, assign tasks, and communicate with volunteers.",
+   "task": "Manage cross-team dependencies",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t3__p6__competitor_1",
+   "site": "https://www.monday.com/",
+   "site_name": "Monday",
+   "persona_name": "Robert Green",
+   "persona": "Robert manages various community programs and needs a simple tool to track progress, assign tasks, and communicate with volunteers.",
+   "task": "Manage cross-team dependencies\n\nYou are evaluating the site https://www.monday.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t3__p6__competitor_2",
+   "site": "https://asana.com/",
+   "site_name": "Asana",
+   "persona_name": "Robert Green",
+   "persona": "Robert manages various community programs and needs a simple tool to track progress, assign tasks, and communicate with volunteers.",
+   "task": "Manage cross-team dependencies\n\nYou are evaluating the site https://asana.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t4__p6__product",
+   "site": "https://www.smartsheet.com",
+   "site_name": "Product",
+   "persona_name": "Robert Green",
+   "persona": "Robert manages various community programs and needs a simple tool to track progress, assign tasks, and communicate with volunteers.",
+   "task": "Set up a portfolio view",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t4__p6__competitor_1",
+   "site": "https://www.monday.com/",
+   "site_name": "Monday",
+   "persona_name": "Robert Green",
+   "persona": "Robert manages various community programs and needs a simple tool to track progress, assign tasks, and communicate with volunteers.",
+   "task": "Set up a portfolio view\n\nYou are evaluating the site https://www.monday.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t4__p6__competitor_2",
+   "site": "https://asana.com/",
+   "site_name": "Asana",
+   "persona_name": "Robert Green",
+   "persona": "Robert manages various community programs and needs a simple tool to track progress, assign tasks, and communicate with volunteers.",
+   "task": "Set up a portfolio view\n\nYou are evaluating the site https://asana.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t5__p6__product",
+   "site": "https://www.smartsheet.com",
+   "site_name": "Product",
+   "persona_name": "Robert Green",
+   "persona": "Robert manages various community programs and needs a simple tool to track progress, assign tasks, and communicate with volunteers.",
+   "task": "Assign tasks to team members",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t5__p6__competitor_1",
+   "site": "https://www.monday.com/",
+   "site_name": "Monday",
+   "persona_name": "Robert Green",
+   "persona": "Robert manages various community programs and needs a simple tool to track progress, assign tasks, and communicate with volunteers.",
+   "task": "Assign tasks to team members\n\nYou are evaluating the site https://www.monday.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t5__p6__competitor_2",
+   "site": "https://asana.com/",
+   "site_name": "Asana",
+   "persona_name": "Robert Green",
+   "persona": "Robert manages various community programs and needs a simple tool to track progress, assign tasks, and communicate with volunteers.",
+   "task": "Assign tasks to team members\n\nYou are evaluating the site https://asana.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t6__p6__product",
+   "site": "https://www.smartsheet.com",
+   "site_name": "Product",
+   "persona_name": "Robert Green",
+   "persona": "Robert manages various community programs and needs a simple tool to track progress, assign tasks, and communicate with volunteers.",
+   "task": "Build a custom sales CRM",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t6__p6__competitor_1",
+   "site": "https://www.monday.com/",
+   "site_name": "Monday",
+   "persona_name": "Robert Green",
+   "persona": "Robert manages various community programs and needs a simple tool to track progress, assign tasks, and communicate with volunteers.",
+   "task": "Build a custom sales CRM\n\nYou are evaluating the site https://www.monday.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  },
+  {
+   "cell_id": "t6__p6__competitor_2",
+   "site": "https://asana.com/",
+   "site_name": "Asana",
+   "persona_name": "Robert Green",
+   "persona": "Robert manages various community programs and needs a simple tool to track progress, assign tasks, and communicate with volunteers.",
+   "task": "Build a custom sales CRM\n\nYou are evaluating the site https://asana.com/ only. Stay on that site; opening it is correct.",
+   "status": "queued"
+  }
+ ],
+ "rules": {
+  "max_steps": 200,
+  "budget_s": 1800,
+  "idle_timeout_s": 300,
+  "max_parallel": 60
+ },
+ "next": "Open watch_url for the human, then start one simulated-user subagent per cell (usersim_start_session with study_id + cell_id)."
+}

@@ -149,12 +149,16 @@ async def run_cell(study_id: str, cell: dict, max_turns: int, out: Path, llm) ->
         for u in uses:
             args = dict(u.input)
             args.setdefault("session_id", sid)
+            if u.name == "usersim_finish":  # the model often leaves out the required notes; the server then rejects the finish
+                args.setdefault("notes", "Finished by the simulated user.")
+                args.setdefault("outcome", "completed")
             a = args.get("action")
             log["steps"].append({"turn": turn, "tool": u.name, "action": a if isinstance(a, (str, type(None))) else a.get("type")})
             try:
                 res = await tool(u.name, args, retries=3 if u.name == "usersim_observe" else 1)
-                results.append({"type": "tool_result", "tool_use_id": u.id, "content": _blocks(res)})
-                if u.name == "usersim_finish":
+                rejected = _text(res).startswith("Error executing tool")
+                results.append({"type": "tool_result", "tool_use_id": u.id, "content": _blocks(res), **({"is_error": True} if rejected else {})})
+                if u.name == "usersim_finish" and not rejected:  # a rejected finish leaves the session open: do not count it
                     finished = True
                     log["finish"] = _text(res)[:1500]
             except Exception as exc:  # noqa: BLE001 - tell the model; it observes again instead of the cell dying
@@ -167,6 +171,8 @@ async def run_cell(study_id: str, cell: dict, max_turns: int, out: Path, llm) ->
     if not finished:
         res = await tool("usersim_finish", {"session_id": sid, "outcome": "gave_up", "notes": f"Runner hit its {max_turns}-turn cap."})
         log["finish"] = _text(res)[:1500]
+    if log.get("finish", "").startswith("Error executing tool"):
+        log["error"] = "finish rejected: " + log["finish"][:300]
     log["seconds"] = round(time.time() - log["started"])
     (out / f"{cell['cell_id']}.json").write_text(json.dumps(log, indent=1))
     return log
