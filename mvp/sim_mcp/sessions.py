@@ -1889,11 +1889,21 @@ _MARKS_JS = """() => {
   const vis = el => { const r = el.getBoundingClientRect(); return r.width > 0 && r.height > 0 && r.bottom > 0 && r.top < innerHeight; };
   const add = (kind, t) => { t = (t || '').replace(/\\s+/g, ' ').trim().slice(0, 60); const k = kind + t;
     if (t && !seen.has(k) && out.length < 25) { seen.add(k); out.push(kind + ': ' + JSON.stringify(t)); } };
+  // text-decoration is not inherited in computed style: the struck element is often a wrapper whose text sits in
+  // children (Dynalist rerun 6782d34e saw no mark for "Research"), so take the wrapper's innerText.
+  const done = /(^|[-_\\s])(checked|completed?|is-?done|done|finished|strike)([-_\\s]|$)/i;
+  const taken = [];
   for (const el of document.querySelectorAll('body *')) {
     if (out.length >= 25) break;
-    if (!el.childNodes.length || !vis(el)) continue;
-    const own = [...el.childNodes].filter(n => n.nodeType === 3).map(n => n.textContent).join(' ').trim();
-    if (own && own.length <= 120 && (getComputedStyle(el).textDecorationLine || '').includes('line-through')) add('struck through', own);
+    if (!vis(el) || taken.some(t => t.contains(el))) continue;
+    const txt = (el.innerText || '').trim();
+    if (!txt || txt.length > 120) continue;
+    const cs = getComputedStyle(el);
+    if ((cs.textDecorationLine || '').includes('line-through')) { add('struck through', txt); taken.push(el); continue; }
+    const cls = typeof el.className === 'string' ? el.className : '';
+    if (cls && done.test(cls) && !el.matches('input, button, a, label') && el.children.length <= 8) {
+      add('marked done by its class (' + cls.slice(0, 40) + ')', txt); taken.push(el);
+    }
   }
   for (const el of document.querySelectorAll('input[type=checkbox]:checked, [role=checkbox][aria-checked=true]')) {
     if (!vis(el)) continue;

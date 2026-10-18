@@ -223,3 +223,8 @@ def test_final_marks_reach_the_judge_and_prompt_reads_strikethrough(monkeypatch)
     monkeypatch.setattr(ui, "gemini_vision_json", lambda prompt, png: seen.setdefault("p", prompt) and {"goal_reached": True})
     e2e2_gates.judge_goal_screenshot(b"x" * 5000, task="check off Research", start_url="https://dynalist.io")
     assert "struck-through or greyed-out text instead of a ticked checkbox" in seen["p"]
+
+
+def test_marks_js_reads_wrapper_strike_and_done_classes():
+    js = S._MARKS_JS
+    assert "innerText" in js and "marked done by its class" in js and "taken.some" in js
