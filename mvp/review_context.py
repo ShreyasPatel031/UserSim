@@ -31,6 +31,9 @@ _IN_FLIGHT: set[str] = set()
 G2_ACTOR = "automation-lab~g2-scraper"
 CAPTERRA_ACTOR = "trakk~capterra-reviews-scraper"
 PER_SITE = 50
+# Apify account caps: 16 GB actor memory, 5 concurrent runs. Exceeding either returns HTTP 402 ("Payment Required").
+_RUN_SLOTS = threading.BoundedSemaphore(int(os.environ.get("MVP_APIFY_MAX_RUNS", "3")))
+_RUN_MEMORY_MB = {"trakk~capterra-reviews-scraper": 2048, "automation-lab~g2-scraper": 256}
 
 
 def enabled() -> bool:
@@ -56,14 +59,20 @@ def apify_token() -> str | None:
 
 
 def _apify_run(actor: str, payload: dict[str, Any], token: str, wait_s: float = 300.0) -> list[dict[str, Any]]:
-    """Start a run, poll it, return its dataset items (sync endpoints are dropped by long-lived proxies)."""
-    run = requests.post(f"https://api.apify.com/v2/acts/{actor}/runs", params={"token": token}, json=payload, timeout=60)
-    run.raise_for_status()
-    data = run.json()["data"]
-    deadline = time.monotonic() + wait_s
-    while data["status"] in {"READY", "RUNNING"} and time.monotonic() < deadline:
-        time.sleep(5)
-        data = requests.get(f"https://api.apify.com/v2/actor-runs/{data['id']}", params={"token": token}, timeout=30).json()["data"]
+    """Start a run, poll it, return its dataset items (sync endpoints are dropped by long-lived proxies).
+
+    Runs are capped (_RUN_SLOTS) and given explicit memory so parallel scrapes stay under the account limits."""
+    with _RUN_SLOTS:
+        params = {"token": token}
+        if actor in _RUN_MEMORY_MB:
+            params["memory"] = _RUN_MEMORY_MB[actor]
+        run = requests.post(f"https://api.apify.com/v2/acts/{actor}/runs", params=params, json=payload, timeout=60)
+        run.raise_for_status()
+        data = run.json()["data"]
+        deadline = time.monotonic() + wait_s
+        while data["status"] in {"READY", "RUNNING"} and time.monotonic() < deadline:
+            time.sleep(5)
+            data = requests.get(f"https://api.apify.com/v2/actor-runs/{data['id']}", params={"token": token}, timeout=30).json()["data"]
     if data["status"] != "SUCCEEDED":
         raise RuntimeError(f"{actor} run {data['id']} ended {data['status']}")
     items = requests.get(f"https://api.apify.com/v2/datasets/{data['defaultDatasetId']}/items",
@@ -141,12 +150,15 @@ def live_reviews(product_name: str, *, per_site: int = PER_SITE) -> dict[str, An
         errors.append(_redact(f"capterra: {exc!r}", token))
     try:
         for r in _apify_run(G2_ACTOR, {"mode": "product_reviews", "productUrls": [_slug(product_name)], "maxReviews": per_site}, token):
-            # G2 scraper fields: no job title; loveTheme/hateTheme carry likes/dislikes, reviewText the full body
+            # G2 scraper fields (checked Oct 2026): no job title; companySegment/industry are numeric ids; loveTheme/
+            # hateTheme are one-word tags, not text; easeOfUse is 1-7; switchedFromOtherProduct is yes/no. The full
+            # review lives in reviewText, so that is the evidence; there is no separate dislikes text to count.
             reviews.append({"source": "g2", "product": r.get("productName") or "", "role": None,
                             "size": _text(r.get("companySegment")), "industry": _text(r.get("industry")),
-                            "rating": r.get("starRating"), "ease": r.get("easeOfUse"), "nps": r.get("nps"),
-                            "pros": r.get("loveTheme") or r.get("reviewText"), "cons": r.get("hateTheme"),
-                            "switched_from": r.get("switchedFromOtherProduct"), "switched_reason": r.get("switchedReason")})
+                            "rating": r.get("starRating"), "ease_1_7": r.get("easeOfUse"), "nps": r.get("nps"),
+                            "text": r.get("reviewText"), "pros": None, "cons": None,
+                            "love_theme": r.get("loveTheme"), "hate_theme": r.get("hateTheme"),
+                            "switched": r.get("switchedFromOtherProduct"), "switched_reason": r.get("switchedReason")})
     except (requests.RequestException, KeyError, ValueError, RuntimeError) as exc:
         errors.append(_redact(f"g2: {exc!r}", token))
     failed = list(errors)  # fetch failures (credit, network): not cached, so the next study retries
@@ -196,7 +208,8 @@ def review_context(site_url: str, persona: dict[str, Any], *, rivals: list[str] 
         v = [n for n in (_num(x.get(key)) for x in rows) if n]  # 0 means "not rated" in the Capterra scrape
         return (sum(v) / len(v), len(v)) if v else (None, 0)
     lines = []
-    for key, label in (("rating", "overall"), ("ease", "ease of use"), ("nps", "likelihood to recommend (0-10)")):
+    for key, label in (("rating", "overall (1-5)"), ("ease", "ease of use (Capterra, 1-5)"),
+                       ("ease_1_7", "ease of use (G2, 1-7)"), ("nps", "likelihood to recommend (0-10)")):
         a, n = avg(reviews, key)
         b, m = avg(same, key)
         if a is not None:
@@ -206,7 +219,8 @@ def review_context(site_url: str, persona: dict[str, Any], *, rivals: list[str] 
               for k, p in PR.TOPICS.items()] if cons else []
     sim = (same + [x for x in reviews if x not in same])[:8]
     revs = [f"[{x['product']} | {x['source']}] role: {x.get('role') or '-'}; size: {x.get('size') or '-'}; rating: {x.get('rating') or '-'}\n"
-            f"Liked: {E.clean(x.get('pros'))[:400]}\nDisliked: {E.clean(x.get('cons'))[:400]}" for x in sim]
+            + (f"Review: {E.clean(x.get('text'))[:700]}" if x.get("text") else
+               f"Liked: {E.clean(x.get('pros'))[:400]}\nDisliked: {E.clean(x.get('cons'))[:400]}") for x in sim]
     used = sorted({x["product"] for x in reviews})
     text = (f"## Ratings from live Capterra/G2 reviews of the rivals ({', '.join(used)}; {len(reviews)} reviews)\n" + "\n".join(lines)
             + ("\n\n## Complaint topics in those reviews\n" + "\n".join(topics) if topics else "")
