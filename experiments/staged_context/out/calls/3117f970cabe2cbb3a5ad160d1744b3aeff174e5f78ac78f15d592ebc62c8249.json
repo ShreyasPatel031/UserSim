@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3117f970cabe2cbb3a5ad160d1744b3aeff174e5f78ac78f15d592ebc62c8249",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 350,
+  "output_tokens": 1063,
+  "cost_usd": 0.0027624999999999998,
+  "elapsed_s": 6.9,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Centralized tracking for marketing-related job information.\",\n    \"Robust reporting capabilities for project status overviews.\",\n    \"Good for collaboration on marketing campaigns and client projects.\"\n  ],\n  \"cons\": [\n    \"Lacked dedicated project management features for complex task dependencies.\",\n    \"Required workarounds to track non-marketing specific project budgets.\",\n    \"Integration with other enterprise PM tools was not seamless for all needs.\"\n  ],\n  \"overall_experience\": \"As an Executive Producer, this individual found HubSpot Marketing Hub useful for overseeing marketing-centric projects and tracking client job information. While its reporting and centralization were beneficial, the platform was not a perfect fit for comprehensive project management beyond marketing tasks, requiring some adaptation. They likely valued its capabilities within its core marketing strengths but noted limitations for broader project oversight.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 3,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 7,
+    "pros": [
+      "Centralized tracking for marketing-related job information.",
+      "Robust reporting capabilities for project status overviews.",
+      "Good for collaboration on marketing campaigns and client projects."
+    ],
+    "cons": [
+      "Lacked dedicated project management features for complex task dependencies.",
+      "Required workarounds to track non-marketing specific project budgets.",
+      "Integration with other enterprise PM tools was not seamless for all needs."
+    ],
+    "overall_experience": "As an Executive Producer, this individual found HubSpot Marketing Hub useful for overseeing marketing-centric projects and tracking client job information. While its reporting and centralization were beneficial, the platform was not a perfect fit for comprehensive project management beyond marketing tasks, requiring some adaptation. They likely valued its capabilities within its core marketing strengths but noted limitations for broader project oversight."
+  },
+  "ts": "2026-10-18T05:25:36.011282+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b580faf3c12397f0f379a6e4a9267e6de50e39e8d6d0e39c10d5e8795f7dbbf1",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 836,
+  "output_tokens": 1033,
+  "cost_usd": 0.0028333000000000004,
+  "elapsed_s": 6.09,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Efficient and accurate sales commission calculations.\",\n    \"Robust reporting features for performance analysis.\",\n    \"Streamlined management of complex compensation plans.\"\n  ],\n  \"cons\": [\n    \"Initial setup and configuration can be complex.\",\n    \"Steep learning curve for some advanced functionalities.\",\n    \"Perceived high cost relative to value for mid-market companies.\"\n  ],\n  \"overall_experience\": \"This Senior Manager Sales Compensation likely found Xactly to be a highly functional and effective tool for managing complex sales compensation plans and generating detailed reports. While the system excelled in core capabilities and ease of use, they may have encountered challenges with the initial setup or found the cost-to-value ratio for a mid-market company to be a slight concern. Overall, the experience was positive, leading to a strong recommendation.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Efficient and accurate sales commission calculations.",
+      "Robust reporting features for performance analysis.",
+      "Streamlined management of complex compensation plans."
+    ],
+    "cons": [
+      "Initial setup and configuration can be complex.",
+      "Steep learning curve for some advanced functionalities.",
+      "Perceived high cost relative to value for mid-market companies."
+    ],
+    "overall_experience": "This Senior Manager Sales Compensation likely found Xactly to be a highly functional and effective tool for managing complex sales compensation plans and generating detailed reports. While the system excelled in core capabilities and ease of use, they may have encountered challenges with the initial setup or found the cost-to-value ratio for a mid-market company to be a slight concern. Overall, the experience was positive, leading to a strong recommendation."
+  },
+  "ts": "2026-10-18T05:25:44.663113+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "780174ad11a95c3a40221c8242ea6dbf87634dab665c8860a30028c5f34e7b0a",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 255,
+  "output_tokens": 1030,
+  "cost_usd": 0.0026515,
+  "elapsed_s": 6.13,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Comprehensive payroll and HR features\",\n    \"Streamlined benefits administration\",\n    \"Robust reporting capabilities\"\n  ],\n  \"cons\": [\n    \"Initial setup and learning curve can be steep\",\n    \"User interface can feel clunky at times\",\n    \"Customer support response times vary\"\n  ],\n  \"overall_experience\": \"The Business Administrator likely found Paylocity to be a functional and comprehensive platform, particularly for managing payroll, HR, and benefits for a mid-market company. While appreciating its broad feature set and reporting, they may have encountered challenges with the initial learning curve and the platform's overall user-friendliness. Customer support experiences might have been inconsistent, leading to a generally positive but not outstanding overall impression of the product.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Comprehensive payroll and HR features",
+      "Streamlined benefits administration",
+      "Robust reporting capabilities"
+    ],
+    "cons": [
+      "Initial setup and learning curve can be steep",
+      "User interface can feel clunky at times",
+      "Customer support response times vary"
+    ],
+    "overall_experience": "The Business Administrator likely found Paylocity to be a functional and comprehensive platform, particularly for managing payroll, HR, and benefits for a mid-market company. While appreciating its broad feature set and reporting, they may have encountered challenges with the initial learning curve and the platform's overall user-friendliness. Customer support experiences might have been inconsistent, leading to a generally positive but not outstanding overall impression of the product."
+  },
+  "ts": "2026-10-18T05:24:57.640373+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f0b0fabb63f6643bee8e32e195e7dce6e7bac57998be183412e22f6b2eda88eb",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 775,
+  "output_tokens": 1021,
+  "cost_usd": 0.002785,
+  "elapsed_s": 5.93,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8.72,\n  \"pros\": [\n    \"Successfully consolidates communication, meetings, and document storage\",\n    \"Seamless integration with other Microsoft 365 services\",\n    \"Robust video conferencing and screen sharing capabilities\"\n  ],\n  \"cons\": [\n    \"Can be resource-intensive, impacting system performance\",\n    \"Notification management can be overwhelming\",\n    \"User interface might feel cluttered at times for specific workflows\"\n  ],\n  \"overall_experience\": \"This Engineer II likely found Microsoft Teams to be a highly effective tool for centralizing their team's collaboration needs. The platform's comprehensive features for communication, meetings, and file management directly addressed their primary task, leading to a largely positive experience. While generally satisfied, they might have noted minor frustrations with performance or user interface complexities.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8.72,
+    "pros": [
+      "Successfully consolidates communication, meetings, and document storage",
+      "Seamless integration with other Microsoft 365 services",
+      "Robust video conferencing and screen sharing capabilities"
+    ],
+    "cons": [
+      "Can be resource-intensive, impacting system performance",
+      "Notification management can be overwhelming",
+      "User interface might feel cluttered at times for specific workflows"
+    ],
+    "overall_experience": "This Engineer II likely found Microsoft Teams to be a highly effective tool for centralizing their team's collaboration needs. The platform's comprehensive features for communication, meetings, and file management directly addressed their primary task, leading to a largely positive experience. While generally satisfied, they might have noted minor frustrations with performance or user interface complexities."
+  },
+  "ts": "2026-10-18T05:26:01.867023+00:00"
+}

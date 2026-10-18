@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1e0ba6b99315e83f01607c0746e0ed4e8f511be648fb7a9316c137f34503cbd8",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1432,
+  "output_tokens": 1007,
+  "cost_usd": 0.0029471000000000002,
+  "elapsed_s": 8.04,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Ability to view daily commissions and profit breakdowns clearly\",\n    \"Access to historical data for performance tracking\",\n    \"Real-time updates on sales performance\"\n  ],\n  \"cons\": [\n    \"Initial setup or configuration might be complex\",\n    \"Interface could feel clunky or slow at times\",\n    \"Difficulty in customizing dashboards for specific daily metrics\"\n  ],\n  \"overall_experience\": \"This Business Development Manager likely found Xactly generally effective for tracking daily commissions and accessing historical performance data, appreciating the transparency it offered. However, they may have experienced some frustration with the system's ease of use, potentially due to a steep learning curve or occasional performance sluggishness. Customization options for their specific daily reporting needs might also have been a point of improvement.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Ability to view daily commissions and profit breakdowns clearly",
+      "Access to historical data for performance tracking",
+      "Real-time updates on sales performance"
+    ],
+    "cons": [
+      "Initial setup or configuration might be complex",
+      "Interface could feel clunky or slow at times",
+      "Difficulty in customizing dashboards for specific daily metrics"
+    ],
+    "overall_experience": "This Business Development Manager likely found Xactly generally effective for tracking daily commissions and accessing historical performance data, appreciating the transparency it offered. However, they may have experienced some frustration with the system's ease of use, potentially due to a steep learning curve or occasional performance sluggishness. Customization options for their specific daily reporting needs might also have been a point of improvement."
+  },
+  "ts": "2026-10-18T05:25:29.129386+00:00"
+}

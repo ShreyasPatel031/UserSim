@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "05c2777c8fb33e8276236a324ad885f9b51f635b91feb7f5ebd55a0a7da93ddf",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 353,
+  "output_tokens": 1013,
+  "cost_usd": 0.0026384,
+  "elapsed_s": 6.04,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Efficient centralized ticket management\",\n    \"Useful automation features for workflow optimization\",\n    \"Comprehensive reporting and analytics for team oversight\"\n  ],\n  \"cons\": [\n    \"Steeper learning curve for advanced customization\",\n    \"Occasional limitations with third-party integrations\",\n    \"Specific advanced features locked in higher pricing tiers\"\n  ],\n  \"overall_experience\": \"This Deputy Lead likely found Freshdesk to be a reliable and effective tool for managing customer support interactions and data within their mid-market company. They appreciated its core functionalities for streamlining operations and gaining insights, though they may have encountered minor frustrations with advanced configurations or integration nuances. Overall, the experience was positive, contributing significantly to their team's efficiency.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Efficient centralized ticket management",
+      "Useful automation features for workflow optimization",
+      "Comprehensive reporting and analytics for team oversight"
+    ],
+    "cons": [
+      "Steeper learning curve for advanced customization",
+      "Occasional limitations with third-party integrations",
+      "Specific advanced features locked in higher pricing tiers"
+    ],
+    "overall_experience": "This Deputy Lead likely found Freshdesk to be a reliable and effective tool for managing customer support interactions and data within their mid-market company. They appreciated its core functionalities for streamlining operations and gaining insights, though they may have encountered minor frustrations with advanced configurations or integration nuances. Overall, the experience was positive, contributing significantly to their team's efficiency."
+  },
+  "ts": "2026-10-18T05:25:21.310910+00:00"
+}

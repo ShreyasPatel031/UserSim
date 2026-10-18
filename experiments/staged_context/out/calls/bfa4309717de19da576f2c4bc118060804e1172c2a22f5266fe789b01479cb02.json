@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "bfa4309717de19da576f2c4bc118060804e1172c2a22f5266fe789b01479cb02",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 754,
+  "output_tokens": 957,
+  "cost_usd": 0.0026187,
+  "elapsed_s": 6.13,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effective tools for tracking sales leads\",\n    \"Streamlined email composition capabilities\",\n    \"Comprehensive monitoring of client engagement\"\n  ],\n  \"cons\": [\n    \"Potential complexity for a non-marketing primary role\",\n    \"Cost may be a consideration for a small business\",\n    \"Some features might be irrelevant to a VP of Payroll's core tasks\"\n  ],\n  \"overall_experience\": \"The VP of Payroll likely found HubSpot Marketing Hub to be a generally effective platform for their specific tasks of lead tracking, email management, and client engagement monitoring. While the platform offered robust functionality for these needs, they might have encountered a slight learning curve or found some features less relevant to their primary role. Overall, the experience was positive, reflecting good ease of use and solid support.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Effective tools for tracking sales leads",
+      "Streamlined email composition capabilities",
+      "Comprehensive monitoring of client engagement"
+    ],
+    "cons": [
+      "Potential complexity for a non-marketing primary role",
+      "Cost may be a consideration for a small business",
+      "Some features might be irrelevant to a VP of Payroll's core tasks"
+    ],
+    "overall_experience": "The VP of Payroll likely found HubSpot Marketing Hub to be a generally effective platform for their specific tasks of lead tracking, email management, and client engagement monitoring. While the platform offered robust functionality for these needs, they might have encountered a slight learning curve or found some features less relevant to their primary role. Overall, the experience was positive, reflecting good ease of use and solid support."
+  },
+  "ts": "2026-10-18T05:25:57.911281+00:00"
+}

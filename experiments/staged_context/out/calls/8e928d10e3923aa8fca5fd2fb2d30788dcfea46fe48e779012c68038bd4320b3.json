@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8e928d10e3923aa8fca5fd2fb2d30788dcfea46fe48e779012c68038bd4320b3",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1494,
+  "output_tokens": 1070,
+  "cost_usd": 0.0031232,
+  "elapsed_s": 6.2,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"More powerful segmentation and automation than previous tools.\",\n    \"Effective for managing email marketing campaigns.\",\n    \"Advanced features for e-commerce specific needs.\"\n  ],\n  \"cons\": [\n    \"Steeper learning curve compared to Mailchimp.\",\n    \"Pricing felt high for a small business.\",\n    \"Initial setup and integration required significant effort.\"\n  ],\n  \"overall_experience\": \"The owner likely found Klaviyo to be a powerful email marketing platform, offering more advanced segmentation and automation capabilities than their previous Mailchimp experience. However, the transition involved a notable learning curve and a potentially higher cost, which might have tempered their initial enthusiasm. Despite these challenges, the platform's functionality was generally effective for their campaign management needs.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "More powerful segmentation and automation than previous tools.",
+      "Effective for managing email marketing campaigns.",
+      "Advanced features for e-commerce specific needs."
+    ],
+    "cons": [
+      "Steeper learning curve compared to Mailchimp.",
+      "Pricing felt high for a small business.",
+      "Initial setup and integration required significant effort."
+    ],
+    "overall_experience": "The owner likely found Klaviyo to be a powerful email marketing platform, offering more advanced segmentation and automation capabilities than their previous Mailchimp experience. However, the transition involved a notable learning curve and a potentially higher cost, which might have tempered their initial enthusiasm. Despite these challenges, the platform's functionality was generally effective for their campaign management needs."
+  },
+  "ts": "2026-10-18T05:26:36.835295+00:00"
+}

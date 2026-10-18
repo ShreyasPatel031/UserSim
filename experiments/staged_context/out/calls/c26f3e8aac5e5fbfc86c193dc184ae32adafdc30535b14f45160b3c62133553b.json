@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c26f3e8aac5e5fbfc86c193dc184ae32adafdc30535b14f45160b3c62133553b",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1617,
+  "output_tokens": 1034,
+  "cost_usd": 0.0030701,
+  "elapsed_s": 5.6,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Efficiently manages customer tickets and interactions.\",\n    \"Provides a unified platform for various customer service tasks.\",\n    \"Offers good workflow automation and integration capabilities.\"\n  ],\n  \"cons\": [\n    \"Advanced features might come with higher costs.\",\n    \"Can have a learning curve for complex configurations or new agents.\",\n    \"User interface might feel somewhat dated or require customization for better aesthetics.\"\n  ],\n  \"overall_experience\": \"This Customer Service Representative likely found Freshdesk to be an effective tool for managing customer interactions and streamlining their daily tasks within a large enterprise environment. They appreciated its ability to centralize support requests and improve workflow productivity. However, they might have encountered challenges with the pricing structure for advanced functionalities, the initial complexity of setup, or a less modern user interface.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Efficiently manages customer tickets and interactions.",
+      "Provides a unified platform for various customer service tasks.",
+      "Offers good workflow automation and integration capabilities."
+    ],
+    "cons": [
+      "Advanced features might come with higher costs.",
+      "Can have a learning curve for complex configurations or new agents.",
+      "User interface might feel somewhat dated or require customization for better aesthetics."
+    ],
+    "overall_experience": "This Customer Service Representative likely found Freshdesk to be an effective tool for managing customer interactions and streamlining their daily tasks within a large enterprise environment. They appreciated its ability to centralize support requests and improve workflow productivity. However, they might have encountered challenges with the pricing structure for advanced functionalities, the initial complexity of setup, or a less modern user interface."
+  },
+  "ts": "2026-10-18T05:25:22.260727+00:00"
+}

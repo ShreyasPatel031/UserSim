@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b74acea59b7578962d223983eeecb03d052d16fca9e2fca0c8cd3f0cecc04b87",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 370,
+  "output_tokens": 1021,
+  "cost_usd": 0.0026635,
+  "elapsed_s": 6.05,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Flexible for managing diverse e-learning projects and content\",\n    \"Easier to use than Jira for non-technical project tracking\",\n    \"Strong visual project tracking capabilities\"\n  ],\n  \"cons\": [\n    \"Initial learning curve for advanced features compared to Airtable's intuitiveness\",\n    \"Pricing might feel high for a small, 1-10 person team\",\n    \"Limited native integrations specifically for e-learning platforms\"\n  ],\n  \"overall_experience\": \"This career coach found Smartsheet to be a robust tool for managing various projects within their e-learning business. They appreciated its flexibility and visual nature for tracking tasks and progress, especially when compared to the complexity of Jira. While it offered significant functionality, the initial setup and navigating its depth could be less intuitive than Airtable, and the cost might be a consideration for a small team.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Flexible for managing diverse e-learning projects and content",
+      "Easier to use than Jira for non-technical project tracking",
+      "Strong visual project tracking capabilities"
+    ],
+    "cons": [
+      "Initial learning curve for advanced features compared to Airtable's intuitiveness",
+      "Pricing might feel high for a small, 1-10 person team",
+      "Limited native integrations specifically for e-learning platforms"
+    ],
+    "overall_experience": "This career coach found Smartsheet to be a robust tool for managing various projects within their e-learning business. They appreciated its flexibility and visual nature for tracking tasks and progress, especially when compared to the complexity of Jira. While it offered significant functionality, the initial setup and navigating its depth could be less intuitive than Airtable, and the cost might be a consideration for a small team."
+  },
+  "ts": "2026-10-18T05:26:46.221773+00:00"
+}

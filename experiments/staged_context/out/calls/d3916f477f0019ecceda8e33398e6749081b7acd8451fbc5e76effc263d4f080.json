@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d3916f477f0019ecceda8e33398e6749081b7acd8451fbc5e76effc263d4f080",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 372,
+  "output_tokens": 995,
+  "cost_usd": 0.0025991,
+  "elapsed_s": 5.78,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Comprehensive feature set for CRM\",\n    \"Good value for the price point\",\n    \"Customizable for specific research workflows\"\n  ],\n  \"cons\": [\n    \"Steep learning curve for advanced features\",\n    \"Integrations with niche research tools can be complex\",\n    \"Reporting capabilities could be more intuitive\"\n  ],\n  \"overall_experience\": \"The Sr. Analyst likely found Zoho CRM to be a capable tool for managing customer relationships within their market research firm. While appreciating its extensive features and value, they may have encountered some challenges with its complexity and integration needs. The platform generally met their requirements for a mid-sized company over their 1-2 years of use.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Comprehensive feature set for CRM",
+      "Good value for the price point",
+      "Customizable for specific research workflows"
+    ],
+    "cons": [
+      "Steep learning curve for advanced features",
+      "Integrations with niche research tools can be complex",
+      "Reporting capabilities could be more intuitive"
+    ],
+    "overall_experience": "The Sr. Analyst likely found Zoho CRM to be a capable tool for managing customer relationships within their market research firm. While appreciating its extensive features and value, they may have encountered some challenges with its complexity and integration needs. The platform generally met their requirements for a mid-sized company over their 1-2 years of use."
+  },
+  "ts": "2026-10-18T05:26:16.598890+00:00"
+}

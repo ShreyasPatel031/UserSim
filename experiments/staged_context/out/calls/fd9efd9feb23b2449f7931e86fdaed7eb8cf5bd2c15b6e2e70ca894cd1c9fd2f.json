@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "fd9efd9feb23b2449f7931e86fdaed7eb8cf5bd2c15b6e2e70ca894cd1c9fd2f",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 877,
+  "output_tokens": 923,
+  "cost_usd": 0.0025706,
+  "elapsed_s": 8.67,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Integrated platform for various HR functions\",\n    \"Generally intuitive interface for common tasks\",\n    \"Mobile accessibility for on-the-go management\"\n  ],\n  \"cons\": [\n    \"Complexity in configuring global reimbursement policies\",\n    \"Potential for manual workarounds for specific international expense types\",\n    \"Customer support response times can vary for complex issues\"\n  ],\n  \"overall_experience\": \"This Software Design Engineer likely found Paylocity's core HR functionalities and user interface generally satisfactory. However, managing global employee reimbursements specifically might have presented some challenges due to the platform's depth in this niche area, potentially requiring workarounds or more significant configuration. While it served the purpose, the global aspect of the task may have highlighted some limitations compared to dedicated expense management solutions.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Integrated platform for various HR functions",
+      "Generally intuitive interface for common tasks",
+      "Mobile accessibility for on-the-go management"
+    ],
+    "cons": [
+      "Complexity in configuring global reimbursement policies",
+      "Potential for manual workarounds for specific international expense types",
+      "Customer support response times can vary for complex issues"
+    ],
+    "overall_experience": "This Software Design Engineer likely found Paylocity's core HR functionalities and user interface generally satisfactory. However, managing global employee reimbursements specifically might have presented some challenges due to the platform's depth in this niche area, potentially requiring workarounds or more significant configuration. While it served the purpose, the global aspect of the task may have highlighted some limitations compared to dedicated expense management solutions."
+  },
+  "ts": "2026-10-18T05:25:50.290359+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8a1216403f5c2b8842d322245b34d11925c378ec1233e307c2a37e37aa9576f1",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1376,
+  "output_tokens": 986,
+  "cost_usd": 0.0028778,
+  "elapsed_s": 5.91,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effectively enables sales reps to view compensation.\",\n    \"Provides a centralized platform for commission tracking.\",\n    \"Streamlines the process of communicating pay to the sales team.\"\n  ],\n  \"cons\": [\n    \"The learning curve can be steep for new users or complex setups.\",\n    \"Integration with other systems, especially Salesforce, could be smoother.\",\n    \"Performance issues or slow data updates can hinder real-time visibility.\"\n  ],\n  \"overall_experience\": \"This Team Lead likely found Xactly to be a generally effective tool for its primary purpose of enabling sales reps to view their compensation. The core functionality was appreciated, aligning with the positive experiences seen with competitors for similar tasks. However, they probably encountered some challenges with its ease of use or integration, leading to a slightly mixed but overall positive experience.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Effectively enables sales reps to view compensation.",
+      "Provides a centralized platform for commission tracking.",
+      "Streamlines the process of communicating pay to the sales team."
+    ],
+    "cons": [
+      "The learning curve can be steep for new users or complex setups.",
+      "Integration with other systems, especially Salesforce, could be smoother.",
+      "Performance issues or slow data updates can hinder real-time visibility."
+    ],
+    "overall_experience": "This Team Lead likely found Xactly to be a generally effective tool for its primary purpose of enabling sales reps to view their compensation. The core functionality was appreciated, aligning with the positive experiences seen with competitors for similar tasks. However, they probably encountered some challenges with its ease of use or integration, leading to a slightly mixed but overall positive experience."
+  },
+  "ts": "2026-10-18T05:25:28.077766+00:00"
+}

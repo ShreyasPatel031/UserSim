@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "cbc2215ff55496e921a46fab3d62ff61c86ca6845a58b83033c8dba40e5ae12a",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2320,
+  "output_tokens": 1071,
+  "cost_usd": 0.0033734999999999998,
+  "elapsed_s": 6.03,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Efficiently manages multiple complex construction projects.\",\n    \"Streamlines collaboration on workflow charts and project plans.\",\n    \"Automates reporting, saving significant time and effort.\"\n  ],\n  \"cons\": [\n    \"Initial setup and advanced customization can be time-consuming.\",\n    \"Can become cluttered with many projects and tasks if not managed well.\",\n    \"Pricing might be a consideration for scaling across the organization.\"\n  ],\n  \"overall_experience\": \"This planning and project control engineer likely finds Smartsheet to be an indispensable tool for managing the complexities of construction projects. Its robust features for project tracking, collaboration, and automated reporting significantly enhance their operational efficiency. While appreciating its power, they may occasionally find its extensive customization options and potential for clutter challenging, and keep an eye on its cost-effectiveness for a large organization.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Efficiently manages multiple complex construction projects.",
+      "Streamlines collaboration on workflow charts and project plans.",
+      "Automates reporting, saving significant time and effort."
+    ],
+    "cons": [
+      "Initial setup and advanced customization can be time-consuming.",
+      "Can become cluttered with many projects and tasks if not managed well.",
+      "Pricing might be a consideration for scaling across the organization."
+    ],
+    "overall_experience": "This planning and project control engineer likely finds Smartsheet to be an indispensable tool for managing the complexities of construction projects. Its robust features for project tracking, collaboration, and automated reporting significantly enhance their operational efficiency. While appreciating its power, they may occasionally find its extensive customization options and potential for clutter challenging, and keep an eye on its cost-effectiveness for a large organization."
+  },
+  "ts": "2026-10-18T05:26:49.285178+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4fc98506420b039eb76b4a015363b1466c0c0ec2e5c85365b355d494a2fbca9d",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2102,
+  "output_tokens": 1018,
+  "cost_usd": 0.0031755999999999998,
+  "elapsed_s": 8.43,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Ability to manage complex commission plans effectively\",\n    \"Reliable and accurate calculation of commissions\",\n    \"Provides detailed reporting capabilities for analysis\"\n  ],\n  \"cons\": [\n    \"Steep learning curve for new users or complex plans\",\n    \"Reporting features can be challenging to customize for specific needs\",\n    \"Might require significant setup and ongoing administration\"\n  ],\n  \"overall_experience\": \"The SIP Analyst likely found Xactly to be a powerful tool for its core task of managing and calculating commissions, appreciating its ability to handle complex plans. However, they probably faced a significant learning curve, particularly when dealing with the intricacies of the system and its reporting functionalities. While effective, the user might have wished for a more intuitive interface or better resources to navigate its advanced features, impacting the perceived ease of use and value.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Ability to manage complex commission plans effectively",
+      "Reliable and accurate calculation of commissions",
+      "Provides detailed reporting capabilities for analysis"
+    ],
+    "cons": [
+      "Steep learning curve for new users or complex plans",
+      "Reporting features can be challenging to customize for specific needs",
+      "Might require significant setup and ongoing administration"
+    ],
+    "overall_experience": "The SIP Analyst likely found Xactly to be a powerful tool for its core task of managing and calculating commissions, appreciating its ability to handle complex plans. However, they probably faced a significant learning curve, particularly when dealing with the intricacies of the system and its reporting functionalities. While effective, the user might have wished for a more intuitive interface or better resources to navigate its advanced features, impacting the perceived ease of use and value."
+  },
+  "ts": "2026-10-18T05:25:48.346820+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0270e1260aa791f161d6f23a7e9d90ddaa2a0f6135add2e8135fe7e619877682",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2039,
+  "output_tokens": 1067,
+  "cost_usd": 0.0032792000000000003,
+  "elapsed_s": 6.4,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Likely offers a user-friendly interface for employees to engage with wellness activities.\",\n    \"Centralizes various aspects of holistic wellness, simplifying management.\",\n    \"Provides tools for encouraging employee participation and tracking progress.\"\n  ],\n  \"cons\": [\n    \"Integration capabilities with existing HR or benefits systems might be limited.\",\n    \"Advanced customization for specific company wellness initiatives could be lacking.\",\n    \"Reporting features might not offer deep analytical insights for executives.\"\n  ],\n  \"overall_experience\": \"This Associate Vice President likely found Wellable to be a generally positive tool for promoting holistic wellness, appreciating its ease of use for employees. However, they might have encountered some limitations regarding deeper integration with existing corporate systems or advanced customization options for specific organizational needs. They likely viewed it as a valuable, albeit not perfectly comprehensive, solution for their company's wellness goals.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Likely offers a user-friendly interface for employees to engage with wellness activities.",
+      "Centralizes various aspects of holistic wellness, simplifying management.",
+      "Provides tools for encouraging employee participation and tracking progress."
+    ],
+    "cons": [
+      "Integration capabilities with existing HR or benefits systems might be limited.",
+      "Advanced customization for specific company wellness initiatives could be lacking.",
+      "Reporting features might not offer deep analytical insights for executives."
+    ],
+    "overall_experience": "This Associate Vice President likely found Wellable to be a generally positive tool for promoting holistic wellness, appreciating its ease of use for employees. However, they might have encountered some limitations regarding deeper integration with existing corporate systems or advanced customization options for specific organizational needs. They likely viewed it as a valuable, albeit not perfectly comprehensive, solution for their company's wellness goals."
+  },
+  "ts": "2026-10-18T05:25:41.123060+00:00"
+}

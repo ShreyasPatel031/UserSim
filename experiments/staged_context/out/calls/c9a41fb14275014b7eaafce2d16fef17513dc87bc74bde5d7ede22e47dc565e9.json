@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c9a41fb14275014b7eaafce2d16fef17513dc87bc74bde5d7ede22e47dc565e9",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 367,
+  "output_tokens": 991,
+  "cost_usd": 0.0025876,
+  "elapsed_s": 6.71,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Centralized customer data for better oversight\",\n    \"Streamlined some sales-related workflows\",\n    \"Intuitive interface for common tasks\"\n  ],\n  \"cons\": [\n    \"Initial setup and customization for specific printing industry needs was challenging\",\n    \"Reporting capabilities required some effort to get desired operational insights\",\n    \"Integration with existing operational tools was not seamless\"\n  ],\n  \"overall_experience\": \"The Operations Head found Freshsales to be a generally capable tool for managing customer relationships, appreciating its ability to centralize data and streamline basic sales processes. However, adapting the CRM to the unique requirements of the printing industry and integrating it with existing operational systems presented some initial hurdles. The product showed promise for improving overall efficiency once fully configured and adopted.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Centralized customer data for better oversight",
+      "Streamlined some sales-related workflows",
+      "Intuitive interface for common tasks"
+    ],
+    "cons": [
+      "Initial setup and customization for specific printing industry needs was challenging",
+      "Reporting capabilities required some effort to get desired operational insights",
+      "Integration with existing operational tools was not seamless"
+    ],
+    "overall_experience": "The Operations Head found Freshsales to be a generally capable tool for managing customer relationships, appreciating its ability to centralize data and streamline basic sales processes. However, adapting the CRM to the unique requirements of the printing industry and integrating it with existing operational systems presented some initial hurdles. The product showed promise for improving overall efficiency once fully configured and adopted."
+  },
+  "ts": "2026-10-18T05:26:10.904449+00:00"
+}

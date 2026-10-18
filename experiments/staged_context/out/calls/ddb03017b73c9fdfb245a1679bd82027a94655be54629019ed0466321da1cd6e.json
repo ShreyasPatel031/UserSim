@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ddb03017b73c9fdfb245a1679bd82027a94655be54629019ed0466321da1cd6e",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 360,
+  "output_tokens": 973,
+  "cost_usd": 0.0025405000000000002,
+  "elapsed_s": 5.22,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Intuitive interface for managing client inquiries.\",\n    \"Good range of features available in the free trial.\",\n    \"Helpful for organizing customer service interactions.\"\n  ],\n  \"cons\": [\n    \"Advanced features might be overwhelming for a solo user.\",\n    \"Potential cost of paid plans after the trial period.\",\n    \"Limited need for extensive customer support tools as a self-employed student.\"\n  ],\n  \"overall_experience\": \"This user likely found Freshdesk to be a competent tool for managing customer service interactions during their free trial. The platform's ease of use and basic functionality for organizing client communications would have been appreciated by a self-employed student in accounting. While the free trial offered good value, they might have considered the full suite of features and potential costs beyond the trial to be more than what was immediately necessary for their scale of operation.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Intuitive interface for managing client inquiries.",
+      "Good range of features available in the free trial.",
+      "Helpful for organizing customer service interactions."
+    ],
+    "cons": [
+      "Advanced features might be overwhelming for a solo user.",
+      "Potential cost of paid plans after the trial period.",
+      "Limited need for extensive customer support tools as a self-employed student."
+    ],
+    "overall_experience": "This user likely found Freshdesk to be a competent tool for managing customer service interactions during their free trial. The platform's ease of use and basic functionality for organizing client communications would have been appreciated by a self-employed student in accounting. While the free trial offered good value, they might have considered the full suite of features and potential costs beyond the trial to be more than what was immediately necessary for their scale of operation."
+  },
+  "ts": "2026-10-18T05:26:50.984304+00:00"
+}

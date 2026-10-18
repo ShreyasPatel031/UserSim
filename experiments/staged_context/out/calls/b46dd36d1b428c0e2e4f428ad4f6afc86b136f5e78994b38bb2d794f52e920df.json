@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b46dd36d1b428c0e2e4f428ad4f6afc86b136f5e78994b38bb2d794f52e920df",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2110,
+  "output_tokens": 996,
+  "cost_usd": 0.003123,
+  "elapsed_s": 5.61,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effective for tracking activities and earning rewards.\",\n    \"User-friendly mobile interface for on-the-go access.\",\n    \"Provides a centralized platform for wellness initiatives.\"\n  ],\n  \"cons\": [\n    \"Occasional bugs or performance issues that hinder tracking.\",\n    \"Web interface might be less intuitive than the mobile app.\",\n    \"Limited customization options for program rules or reporting.\"\n  ],\n  \"overall_experience\": \"The QA Manager likely found Wellable to be a generally effective tool for its primary purpose of activity tracking and rewards. They appreciated its core functionality and the convenience of the mobile experience. However, as a QA professional, they would have noted occasional bugs, performance inconsistencies, or areas where the web interface was less polished, suggesting room for improvement in overall system robustness and flexibility.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Effective for tracking activities and earning rewards.",
+      "User-friendly mobile interface for on-the-go access.",
+      "Provides a centralized platform for wellness initiatives."
+    ],
+    "cons": [
+      "Occasional bugs or performance issues that hinder tracking.",
+      "Web interface might be less intuitive than the mobile app.",
+      "Limited customization options for program rules or reporting."
+    ],
+    "overall_experience": "The QA Manager likely found Wellable to be a generally effective tool for its primary purpose of activity tracking and rewards. They appreciated its core functionality and the convenience of the mobile experience. However, as a QA professional, they would have noted occasional bugs, performance inconsistencies, or areas where the web interface was less polished, suggesting room for improvement in overall system robustness and flexibility."
+  },
+  "ts": "2026-10-18T05:25:39.559146+00:00"
+}

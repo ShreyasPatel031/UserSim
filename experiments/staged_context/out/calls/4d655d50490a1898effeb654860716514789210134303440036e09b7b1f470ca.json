@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4d655d50490a1898effeb654860716514789210134303440036e09b7b1f470ca",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1339,
+  "output_tokens": 1046,
+  "cost_usd": 0.0030167,
+  "elapsed_s": 6.08,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Intuitive interface makes design accessible for non-designers\",\n    \"Wide variety of templates for quick creation of professional materials\",\n    \"Ability to create designs for various office needs efficiently\"\n  ],\n  \"cons\": [\n    \"Limited advanced customization options for specific branding needs\",\n    \"Performance issues when working with many elements or large files\",\n    \"Subscription costs can add up for full feature access\"\n  ],\n  \"overall_experience\": \"This Office Manager likely found Canva to be an incredibly helpful tool for quickly generating professional-looking designs without needing extensive graphic design skills. The ease of use and template variety were probably significant advantages for their day-to-day tasks. However, they may have encountered limitations in advanced customization or experienced occasional performance lags with complex projects, and noted the cost of accessing premium features.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Intuitive interface makes design accessible for non-designers",
+      "Wide variety of templates for quick creation of professional materials",
+      "Ability to create designs for various office needs efficiently"
+    ],
+    "cons": [
+      "Limited advanced customization options for specific branding needs",
+      "Performance issues when working with many elements or large files",
+      "Subscription costs can add up for full feature access"
+    ],
+    "overall_experience": "This Office Manager likely found Canva to be an incredibly helpful tool for quickly generating professional-looking designs without needing extensive graphic design skills. The ease of use and template variety were probably significant advantages for their day-to-day tasks. However, they may have encountered limitations in advanced customization or experienced occasional performance lags with complex projects, and noted the cost of accessing premium features."
+  },
+  "ts": "2026-10-18T05:25:10.762249+00:00"
+}

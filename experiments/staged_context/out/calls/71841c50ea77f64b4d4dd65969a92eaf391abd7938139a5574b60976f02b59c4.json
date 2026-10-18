@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "71841c50ea77f64b4d4dd65969a92eaf391abd7938139a5574b60976f02b59c4",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2234,
+  "output_tokens": 1051,
+  "cost_usd": 0.0032976999999999998,
+  "elapsed_s": 6.4,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Found it intuitive for managing sales leads and interactions.\",\n    \"Appreciated the core CRM features for a small team.\",\n    \"The initial setup process was straightforward.\"\n  ],\n  \"cons\": [\n    \"Experienced a learning curve with some advanced features.\",\n    \"Felt the pricing could become a concern as the business scales.\",\n    \"Desired more personalized or immediate customer support.\"\n  ],\n  \"overall_experience\": \"The owner likely found Freshsales to be a generally useful tool for managing their sales processes and customer interactions within a small hospitality business. They appreciated its ease of use for fundamental tasks but encountered some complexity with more advanced functionalities. While providing good core value, concerns around pricing scalability and the responsiveness of customer support tempered their overall satisfaction during the initial six months of use.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Found it intuitive for managing sales leads and interactions.",
+      "Appreciated the core CRM features for a small team.",
+      "The initial setup process was straightforward."
+    ],
+    "cons": [
+      "Experienced a learning curve with some advanced features.",
+      "Felt the pricing could become a concern as the business scales.",
+      "Desired more personalized or immediate customer support."
+    ],
+    "overall_experience": "The owner likely found Freshsales to be a generally useful tool for managing their sales processes and customer interactions within a small hospitality business. They appreciated its ease of use for fundamental tasks but encountered some complexity with more advanced functionalities. While providing good core value, concerns around pricing scalability and the responsiveness of customer support tempered their overall satisfaction during the initial six months of use."
+  },
+  "ts": "2026-10-18T05:26:10.104188+00:00"
+}

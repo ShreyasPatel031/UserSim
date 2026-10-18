@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "273cf6564d587b05f23e57d7c94b230eed8041c6ad2c2dcc6e8da6663b398677",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 346,
+  "output_tokens": 1030,
+  "cost_usd": 0.0026788,
+  "elapsed_s": 6.63,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Centralized CRM for managing customer interactions effectively\",\n    \"Streamlined sales pipeline and deal tracking capabilities\",\n    \"Helpful sales tools like email templates and meeting scheduling\"\n  ],\n  \"cons\": [\n    \"Pricing can become a concern when scaling or needing advanced features\",\n    \"Initial learning curve to fully utilize all available features\",\n    \"Some reporting customizations might be limited in lower-tier plans\"\n  ],\n  \"overall_experience\": \"This Business Development professional likely found HubSpot Sales Hub to be a highly effective solution for managing their customer relationships and sales processes. Its user-friendly interface and robust feature set for a small business environment contributed to a positive experience, streamlining their daily sales tasks. While generally satisfied, they might have noted some limitations in advanced features or potential cost considerations for future growth.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Centralized CRM for managing customer interactions effectively",
+      "Streamlined sales pipeline and deal tracking capabilities",
+      "Helpful sales tools like email templates and meeting scheduling"
+    ],
+    "cons": [
+      "Pricing can become a concern when scaling or needing advanced features",
+      "Initial learning curve to fully utilize all available features",
+      "Some reporting customizations might be limited in lower-tier plans"
+    ],
+    "overall_experience": "This Business Development professional likely found HubSpot Sales Hub to be a highly effective solution for managing their customer relationships and sales processes. Its user-friendly interface and robust feature set for a small business environment contributed to a positive experience, streamlining their daily sales tasks. While generally satisfied, they might have noted some limitations in advanced features or potential cost considerations for future growth."
+  },
+  "ts": "2026-10-18T05:25:06.378609+00:00"
+}

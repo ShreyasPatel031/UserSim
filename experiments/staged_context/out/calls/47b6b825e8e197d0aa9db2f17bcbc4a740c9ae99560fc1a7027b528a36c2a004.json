@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "47b6b825e8e197d0aa9db2f17bcbc4a740c9ae99560fc1a7027b528a36c2a004",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1629,
+  "output_tokens": 1000,
+  "cost_usd": 0.0029887,
+  "elapsed_s": 6.08,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Centralized platform for managing invoices and expenses\",\n    \"Robust approval workflows and reporting capabilities\",\n    \"Streamlines expense and invoice processing for the company\"\n  ],\n  \"cons\": [\n    \"Steeper learning curve for new users, requiring significant training\",\n    \"Interface can feel less intuitive or modern compared to some alternatives\",\n    \"Occasional delays in processing or lack of clear communication on status\"\n  ],\n  \"overall_experience\": \"The Training Coordinator likely found SAP Concur to be a powerful and comprehensive tool for managing company invoices and expenses, appreciating its robust functionality and centralized approach. However, they may have encountered challenges with the initial setup and ongoing usability for employees, requiring significant training efforts due to a less intuitive interface. The system effectively supports complex financial tasks but might not always offer the smoothest user experience.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Centralized platform for managing invoices and expenses",
+      "Robust approval workflows and reporting capabilities",
+      "Streamlines expense and invoice processing for the company"
+    ],
+    "cons": [
+      "Steeper learning curve for new users, requiring significant training",
+      "Interface can feel less intuitive or modern compared to some alternatives",
+      "Occasional delays in processing or lack of clear communication on status"
+    ],
+    "overall_experience": "The Training Coordinator likely found SAP Concur to be a powerful and comprehensive tool for managing company invoices and expenses, appreciating its robust functionality and centralized approach. However, they may have encountered challenges with the initial setup and ongoing usability for employees, requiring significant training efforts due to a less intuitive interface. The system effectively supports complex financial tasks but might not always offer the smoothest user experience."
+  },
+  "ts": "2026-10-18T05:25:33.481018+00:00"
+}

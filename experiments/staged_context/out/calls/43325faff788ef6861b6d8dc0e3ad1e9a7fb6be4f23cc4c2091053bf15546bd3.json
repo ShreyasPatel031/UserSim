@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "43325faff788ef6861b6d8dc0e3ad1e9a7fb6be4f23cc4c2091053bf15546bd3",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 352,
+  "output_tokens": 966,
+  "cost_usd": 0.0025206,
+  "elapsed_s": 5.24,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Comprehensive payroll and tax management capabilities\",\n    \"Integration of HR and benefits modules\",\n    \"Intuitive reporting and analytics features\"\n  ],\n  \"cons\": [\n    \"Occasional complexity in custom report generation\",\n    \"Steep learning curve for some advanced functionalities\",\n    \"Customer support response times can vary\"\n  ],\n  \"overall_experience\": \"This Payroll Manager likely experienced Paylocity as a robust and highly functional platform, particularly valuing its comprehensive payroll processing and integrated HR features. While generally finding it easy to use for core tasks, they may have encountered minor frustrations with advanced reporting or occasional support delays. Overall, their experience was very positive, appreciating its value for a mid-market company.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Comprehensive payroll and tax management capabilities",
+      "Integration of HR and benefits modules",
+      "Intuitive reporting and analytics features"
+    ],
+    "cons": [
+      "Occasional complexity in custom report generation",
+      "Steep learning curve for some advanced functionalities",
+      "Customer support response times can vary"
+    ],
+    "overall_experience": "This Payroll Manager likely experienced Paylocity as a robust and highly functional platform, particularly valuing its comprehensive payroll processing and integrated HR features. While generally finding it easy to use for core tasks, they may have encountered minor frustrations with advanced reporting or occasional support delays. Overall, their experience was very positive, appreciating its value for a mid-market company."
+  },
+  "ts": "2026-10-18T05:25:28.499146+00:00"
+}

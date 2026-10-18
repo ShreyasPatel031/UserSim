@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "11e6199b45dd2d80a389e9b49a5fc05ea2b00ee42206d9d931b1a75126386860",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 369,
+  "output_tokens": 1036,
+  "cost_usd": 0.0027007000000000003,
+  "elapsed_s": 6.4,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Robust reporting and analytics for support trends\",\n    \"Efficient ticket management and automation features\",\n    \"Scalability suitable for large organizations\"\n  ],\n  \"cons\": [\n    \"Potential for complexity in enterprise-level configuration\",\n    \"Integration challenges with non-Zoho systems\",\n    \"Customer support response times could be improved for critical issues\"\n  ],\n  \"overall_experience\": \"This analyst likely found Zoho Desk to be a capable tool for managing customer support tickets within their large organization. They probably appreciated its analytical features and scalability, which are beneficial for their role and company size. While generally positive, they may have encountered some complexities in setup or wished for more seamless integrations outside the Zoho ecosystem.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Robust reporting and analytics for support trends",
+      "Efficient ticket management and automation features",
+      "Scalability suitable for large organizations"
+    ],
+    "cons": [
+      "Potential for complexity in enterprise-level configuration",
+      "Integration challenges with non-Zoho systems",
+      "Customer support response times could be improved for critical issues"
+    ],
+    "overall_experience": "This analyst likely found Zoho Desk to be a capable tool for managing customer support tickets within their large organization. They probably appreciated its analytical features and scalability, which are beneficial for their role and company size. While generally positive, they may have encountered some complexities in setup or wished for more seamless integrations outside the Zoho ecosystem."
+  },
+  "ts": "2026-10-18T05:26:34.726664+00:00"
+}

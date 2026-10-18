@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e055936864b3041591b2dd57e431c8de7c5a9938b094fb9eb0887971bc5dbe1a",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1526,
+  "output_tokens": 914,
+  "cost_usd": 0.0027428,
+  "elapsed_s": 4.87,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Comprehensive features for marketing tasks\",\n    \"Good value for the price compared to alternatives\",\n    \"Integration capabilities with other tools\"\n  ],\n  \"cons\": [\n    \"Steep learning curve for a new user\",\n    \"Some difficulty with initial setup and customization\",\n    \"Interface can feel complex or overwhelming at times\"\n  ],\n  \"overall_experience\": \"This digital marketing strategist likely found Zoho CRM to be a powerful tool with extensive features for their role, especially considering its value for money. However, as a new user in a small business, they probably experienced a significant learning curve and some initial frustrations with the system's complexity and setup. Despite these challenges, the overall functionality and potential for streamlining marketing efforts were likely appreciated.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Comprehensive features for marketing tasks",
+      "Good value for the price compared to alternatives",
+      "Integration capabilities with other tools"
+    ],
+    "cons": [
+      "Steep learning curve for a new user",
+      "Some difficulty with initial setup and customization",
+      "Interface can feel complex or overwhelming at times"
+    ],
+    "overall_experience": "This digital marketing strategist likely found Zoho CRM to be a powerful tool with extensive features for their role, especially considering its value for money. However, as a new user in a small business, they probably experienced a significant learning curve and some initial frustrations with the system's complexity and setup. Despite these challenges, the overall functionality and potential for streamlining marketing efforts were likely appreciated."
+  },
+  "ts": "2026-10-18T05:26:14.563812+00:00"
+}

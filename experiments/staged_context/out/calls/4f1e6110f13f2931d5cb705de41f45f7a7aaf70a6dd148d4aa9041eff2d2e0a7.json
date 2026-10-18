@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4f1e6110f13f2931d5cb705de41f45f7a7aaf70a6dd148d4aa9041eff2d2e0a7",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1070,
+  "output_tokens": 988,
+  "cost_usd": 0.002791,
+  "elapsed_s": 9.28,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Comprehensive built-in SEO tools for better visibility\",\n    \"Scalable platform handling growing product catalogs\",\n    \"Good range of marketing integrations available\"\n  ],\n  \"cons\": [\n    \"Backend interface can feel less intuitive compared to Shopify\",\n    \"Customization options sometimes require developer knowledge\",\n    \"Pricing tiers can become expensive for advanced features\"\n  ],\n  \"overall_experience\": \"This person likely found BigCommerce to be a robust platform, offering strong features for managing an online retail store and supporting digital marketing efforts. They appreciated its scalability and built-in SEO capabilities. However, they may have experienced a steeper learning curve or less intuitive interface compared to alternatives, occasionally requiring technical assistance for deeper customizations.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Comprehensive built-in SEO tools for better visibility",
+      "Scalable platform handling growing product catalogs",
+      "Good range of marketing integrations available"
+    ],
+    "cons": [
+      "Backend interface can feel less intuitive compared to Shopify",
+      "Customization options sometimes require developer knowledge",
+      "Pricing tiers can become expensive for advanced features"
+    ],
+    "overall_experience": "This person likely found BigCommerce to be a robust platform, offering strong features for managing an online retail store and supporting digital marketing efforts. They appreciated its scalability and built-in SEO capabilities. However, they may have experienced a steeper learning curve or less intuitive interface compared to alternatives, occasionally requiring technical assistance for deeper customizations."
+  },
+  "ts": "2026-10-18T05:26:45.682182+00:00"
+}

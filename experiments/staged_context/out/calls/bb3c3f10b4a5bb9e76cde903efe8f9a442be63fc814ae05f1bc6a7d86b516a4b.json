@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "bb3c3f10b4a5bb9e76cde903efe8f9a442be63fc814ae05f1bc6a7d86b516a4b",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 263,
+  "output_tokens": 1005,
+  "cost_usd": 0.0025913999999999998,
+  "elapsed_s": 10.73,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Integrated with existing HR/payroll system\",\n    \"Standard reimbursement workflows are straightforward\",\n    \"User interface is generally clean for basic tasks\"\n  ],\n  \"cons\": [\n    \"Limited flexibility for global reimbursement policies and currencies\",\n    \"Manual workarounds often required for international expenses\",\n    \"Reporting capabilities for global reimbursements were not robust\"\n  ],\n  \"overall_experience\": \"The reviewer, a Software Design Engineer, likely found Paylocity adequate for standard domestic reimbursement processes but encountered significant limitations when managing global employee reimbursements. The system's lack of advanced multi-currency support and configurable international policies likely led to manual workarounds. While integrated, its specific functionality for complex global scenarios did not fully meet the technical user's expectations for efficiency and automation.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 3,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 6,
+    "pros": [
+      "Integrated with existing HR/payroll system",
+      "Standard reimbursement workflows are straightforward",
+      "User interface is generally clean for basic tasks"
+    ],
+    "cons": [
+      "Limited flexibility for global reimbursement policies and currencies",
+      "Manual workarounds often required for international expenses",
+      "Reporting capabilities for global reimbursements were not robust"
+    ],
+    "overall_experience": "The reviewer, a Software Design Engineer, likely found Paylocity adequate for standard domestic reimbursement processes but encountered significant limitations when managing global employee reimbursements. The system's lack of advanced multi-currency support and configurable international policies likely led to manual workarounds. While integrated, its specific functionality for complex global scenarios did not fully meet the technical user's expectations for efficiency and automation."
+  },
+  "ts": "2026-10-18T05:25:00.500420+00:00"
+}

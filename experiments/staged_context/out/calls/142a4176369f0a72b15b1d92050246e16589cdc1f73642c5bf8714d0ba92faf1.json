@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "142a4176369f0a72b15b1d92050246e16589cdc1f73642c5bf8714d0ba92faf1",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1221,
+  "output_tokens": 1075,
+  "cost_usd": 0.0030537999999999997,
+  "elapsed_s": 6.21,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"User-friendly interface for daily tasks\",\n    \"Effective payroll processing capabilities\",\n    \"Good timekeeping and tracking features\"\n  ],\n  \"cons\": [\n    \"Steep learning curve for advanced features\",\n    \"Challenges with pulling customized reports\",\n    \"Occasional slowness or performance issues\"\n  ],\n  \"overall_experience\": \"This Business Administrator likely found Paylocity to be a generally effective tool for managing HR and payroll functions, appreciating its ease of use for common tasks and core functionalities like timekeeping. However, they probably faced some frustrations with the initial learning curve, difficulties in generating specific reports, and occasional system performance lags. Despite these drawbacks, the product likely met their primary needs well enough to warrant a positive overall assessment.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "User-friendly interface for daily tasks",
+      "Effective payroll processing capabilities",
+      "Good timekeeping and tracking features"
+    ],
+    "cons": [
+      "Steep learning curve for advanced features",
+      "Challenges with pulling customized reports",
+      "Occasional slowness or performance issues"
+    ],
+    "overall_experience": "This Business Administrator likely found Paylocity to be a generally effective tool for managing HR and payroll functions, appreciating its ease of use for common tasks and core functionalities like timekeeping. However, they probably faced some frustrations with the initial learning curve, difficulties in generating specific reports, and occasional system performance lags. Despite these drawbacks, the product likely met their primary needs well enough to warrant a positive overall assessment."
+  },
+  "ts": "2026-10-18T05:25:30.076186+00:00"
+}

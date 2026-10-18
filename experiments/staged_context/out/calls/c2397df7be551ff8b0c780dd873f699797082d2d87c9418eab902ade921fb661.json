@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c2397df7be551ff8b0c780dd873f699797082d2d87c9418eab902ade921fb661",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 346,
+  "output_tokens": 1077,
+  "cost_usd": 0.0027963,
+  "elapsed_s": 7.16,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Accessible and varied quick wellness activities\",\n    \"Positive impact on personal well-being and engagement\",\n    \"User-friendly interface for daily tasks\"\n  ],\n  \"cons\": [\n    \"Potential for limited administrative oversight for an enterprise program\",\n    \"May require more robust integration options for larger organizations\",\n    \"Engagement features could be enhanced to sustain long-term participation\"\n  ],\n  \"overall_experience\": \"As a Manager of Risk Operations, Financial Controls & Quality, this individual likely found Wellable to be a generally positive tool for personal wellness. They appreciated its ease of use for performing quick activities and its contribution to their well-being. However, their professional background might lead them to identify potential areas for improvement in enterprise-level administrative features or integration capabilities.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Accessible and varied quick wellness activities",
+      "Positive impact on personal well-being and engagement",
+      "User-friendly interface for daily tasks"
+    ],
+    "cons": [
+      "Potential for limited administrative oversight for an enterprise program",
+      "May require more robust integration options for larger organizations",
+      "Engagement features could be enhanced to sustain long-term participation"
+    ],
+    "overall_experience": "As a Manager of Risk Operations, Financial Controls & Quality, this individual likely found Wellable to be a generally positive tool for personal wellness. They appreciated its ease of use for performing quick activities and its contribution to their well-being. However, their professional background might lead them to identify potential areas for improvement in enterprise-level administrative features or integration capabilities."
+  },
+  "ts": "2026-10-18T05:25:26.898376+00:00"
+}

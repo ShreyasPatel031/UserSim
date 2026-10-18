@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "63221dd4a9933be5be7859d8fdb5644206c100cf7c25b9cbbcbbb24c50df69d0",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 353,
+  "output_tokens": 953,
+  "cost_usd": 0.0024884,
+  "elapsed_s": 5.49,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Comprehensive incident and request management features\",\n    \"Streamlined workflows for efficient ticket resolution\",\n    \"Centralized knowledge base for quick problem-solving\"\n  ],\n  \"cons\": [\n    \"Initial learning curve for new users\",\n    \"Can feel overly complex for very simple tasks\",\n    \"Customization and advanced features may require specialized training\"\n  ],\n  \"overall_experience\": \"This End User Support Specialist likely found ServiceNow IT Service Management to be a powerful and highly functional platform for managing their daily support tasks. They appreciated its robust capabilities for incident tracking, request fulfillment, and leveraging a centralized knowledge base. While recognizing its extensive features, they may have occasionally found the platform to have a steeper learning curve or to be somewhat intricate for straightforward operations.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Comprehensive incident and request management features",
+      "Streamlined workflows for efficient ticket resolution",
+      "Centralized knowledge base for quick problem-solving"
+    ],
+    "cons": [
+      "Initial learning curve for new users",
+      "Can feel overly complex for very simple tasks",
+      "Customization and advanced features may require specialized training"
+    ],
+    "overall_experience": "This End User Support Specialist likely found ServiceNow IT Service Management to be a powerful and highly functional platform for managing their daily support tasks. They appreciated its robust capabilities for incident tracking, request fulfillment, and leveraging a centralized knowledge base. While recognizing its extensive features, they may have occasionally found the platform to have a steeper learning curve or to be somewhat intricate for straightforward operations."
+  },
+  "ts": "2026-10-18T05:25:06.722238+00:00"
+}

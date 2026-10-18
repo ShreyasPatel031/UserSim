@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "84ce23326ed62633b467599dfa5f49906967ab55d920ae016b56c28e3c0d9c47",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 828,
+  "output_tokens": 929,
+  "cost_usd": 0.0025709,
+  "elapsed_s": 7.81,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Reliable platform for international transactions and multiple currencies.\",\n    \"Widespread customer recognition and acceptance simplifies payment collection.\",\n    \"Integrated security features provide peace of mind for processing payments.\"\n  ],\n  \"cons\": [\n    \"Transaction fees can accumulate, impacting profitability for a small business.\",\n    \"Occasional holds on funds or account limitations can disrupt cash flow.\",\n    \"Customer support resolution times might not always meet immediate needs.\"\n  ],\n  \"overall_experience\": \"The reviewer likely found PayPal Payments to be a robust and generally effective solution for managing multi-currency customer payments, appreciating its broad acceptance and security protocols. While the platform's core functionality met their business needs, concerns about transaction costs and potential issues with fund accessibility or support responsiveness may have tempered an otherwise positive experience. Overall, it provided a valuable service for their small business operations.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Reliable platform for international transactions and multiple currencies.",
+      "Widespread customer recognition and acceptance simplifies payment collection.",
+      "Integrated security features provide peace of mind for processing payments."
+    ],
+    "cons": [
+      "Transaction fees can accumulate, impacting profitability for a small business.",
+      "Occasional holds on funds or account limitations can disrupt cash flow.",
+      "Customer support resolution times might not always meet immediate needs."
+    ],
+    "overall_experience": "The reviewer likely found PayPal Payments to be a robust and generally effective solution for managing multi-currency customer payments, appreciating its broad acceptance and security protocols. While the platform's core functionality met their business needs, concerns about transaction costs and potential issues with fund accessibility or support responsiveness may have tempered an otherwise positive experience. Overall, it provided a valuable service for their small business operations."
+  },
+  "ts": "2026-10-18T05:25:52.950900+00:00"
+}

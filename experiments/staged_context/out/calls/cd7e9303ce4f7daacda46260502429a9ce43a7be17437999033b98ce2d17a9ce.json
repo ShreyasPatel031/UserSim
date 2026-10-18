@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "cd7e9303ce4f7daacda46260502429a9ce43a7be17437999033b98ce2d17a9ce",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1334,
+  "output_tokens": 1009,
+  "cost_usd": 0.0029226999999999994,
+  "elapsed_s": 8.1,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Simple interface for clocking in/out\",\n    \"Easy to track weekly hours\",\n    \"Generally user-friendly for basic tasks\"\n  ],\n  \"cons\": [\n    \"Might be clunky for editing time entries\",\n    \"Could have a slight learning curve for advanced features\",\n    \"Reporting on time might not be immediately intuitive\"\n  ],\n  \"overall_experience\": \"This user likely found BambooHR to be a generally positive tool for their primary task of tracking weekly hours. The interface for basic time entry was probably straightforward, aligning with common feedback about ease of use. However, they might have encountered some minor frustrations if they needed to edit entries or found the reporting features slightly less intuitive for detailed time analysis.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Simple interface for clocking in/out",
+      "Easy to track weekly hours",
+      "Generally user-friendly for basic tasks"
+    ],
+    "cons": [
+      "Might be clunky for editing time entries",
+      "Could have a slight learning curve for advanced features",
+      "Reporting on time might not be immediately intuitive"
+    ],
+    "overall_experience": "This user likely found BambooHR to be a generally positive tool for their primary task of tracking weekly hours. The interface for basic time entry was probably straightforward, aligning with common feedback about ease of use. However, they might have encountered some minor frustrations if they needed to edit entries or found the reporting features slightly less intuitive for detailed time analysis."
+  },
+  "ts": "2026-10-18T05:25:40.625526+00:00"
+}

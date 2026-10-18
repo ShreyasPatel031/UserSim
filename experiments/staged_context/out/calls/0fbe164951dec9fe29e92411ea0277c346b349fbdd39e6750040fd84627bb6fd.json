@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0fbe164951dec9fe29e92411ea0277c346b349fbdd39e6750040fd84627bb6fd",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2061,
+  "output_tokens": 1146,
+  "cost_usd": 0.0034833000000000004,
+  "elapsed_s": 6.17,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Helps engage employees in wellness activities.\",\n    \"User-friendly interface for employees to participate.\",\n    \"Centralized platform for wellness program management.\"\n  ],\n  \"cons\": [\n    \"May lack advanced customization options for specific company needs.\",\n    \"Reporting features could be more robust for tracking ROI.\",\n    \"Potential for a learning curve for administrators managing the platform.\"\n  ],\n  \"overall_experience\": \"This Finance Manager likely found Wellable to be a generally effective tool for engaging employees in wellness activities, appreciating its ease of use for the workforce. However, they might have encountered some limitations regarding the depth of its administrative features or the flexibility of its reporting capabilities. The platform likely served its primary purpose, but left room for improvement in advanced customization and detailed financial tracking.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Helps engage employees in wellness activities.",
+      "User-friendly interface for employees to participate.",
+      "Centralized platform for wellness program management."
+    ],
+    "cons": [
+      "May lack advanced customization options for specific company needs.",
+      "Reporting features could be more robust for tracking ROI.",
+      "Potential for a learning curve for administrators managing the platform."
+    ],
+    "overall_experience": "This Finance Manager likely found Wellable to be a generally effective tool for engaging employees in wellness activities, appreciating its ease of use for the workforce. However, they might have encountered some limitations regarding the depth of its administrative features or the flexibility of its reporting capabilities. The platform likely served its primary purpose, but left room for improvement in advanced customization and detailed financial tracking."
+  },
+  "ts": "2026-10-18T05:25:41.229370+00:00"
+}

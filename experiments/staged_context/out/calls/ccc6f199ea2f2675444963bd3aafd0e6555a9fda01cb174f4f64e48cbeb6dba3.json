@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ccc6f199ea2f2675444963bd3aafd0e6555a9fda01cb174f4f64e48cbeb6dba3",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1657,
+  "output_tokens": 1065,
+  "cost_usd": 0.0031596,
+  "elapsed_s": 5.91,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Effective for project collaboration and tracking\",\n    \"Familiar spreadsheet-like interface for data management\",\n    \"Good for organizing clinical project information\"\n  ],\n  \"cons\": [\n    \"Steep learning curve for advanced features\",\n    \"Limited customization options for specific biotech workflows\",\n    \"Can be costly compared to alternatives\"\n  ],\n  \"overall_experience\": \"This reviewer likely found Smartsheet to be a functional tool for collaborating on projects within their biotechnology role, appreciating its ability to organize complex clinical data. However, they may have encountered challenges with a significant learning curve or felt that its customization options were not fully adequate for the specialized needs of the biotechnology industry, leading to some frustration with its value for money.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Effective for project collaboration and tracking",
+      "Familiar spreadsheet-like interface for data management",
+      "Good for organizing clinical project information"
+    ],
+    "cons": [
+      "Steep learning curve for advanced features",
+      "Limited customization options for specific biotech workflows",
+      "Can be costly compared to alternatives"
+    ],
+    "overall_experience": "This reviewer likely found Smartsheet to be a functional tool for collaborating on projects within their biotechnology role, appreciating its ability to organize complex clinical data. However, they may have encountered challenges with a significant learning curve or felt that its customization options were not fully adequate for the specialized needs of the biotechnology industry, leading to some frustration with its value for money."
+  },
+  "ts": "2026-10-18T05:26:47.143620+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ceb0c4b74a2d56f0f6bd787b999d9c7d2fa269ce0898f6b26ca4b45cff384a6d",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2011,
+  "output_tokens": 1094,
+  "cost_usd": 0.0033382999999999998,
+  "elapsed_s": 5.85,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Intuitive interface for managing customer relationships.\",\n    \"Good organizational capabilities for tracking data.\",\n    \"Streamlined processes for sales tasks.\"\n  ],\n  \"cons\": [\n    \"Initial setup and customization required some effort.\",\n    \"Reporting features could be more robust for detailed analysis.\",\n    \"Potential for minor performance issues with larger data sets.\"\n  ],\n  \"overall_experience\": \"The Operations Head likely found Freshsales to be a generally positive tool for managing customer relationships within their mid-sized printing company. While the initial learning curve and setup required some attention, the intuitive interface and core functionalities were appreciated. They probably viewed it as a solid solution, though with some areas for improvement regarding advanced reporting or performance under heavy load.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Intuitive interface for managing customer relationships.",
+      "Good organizational capabilities for tracking data.",
+      "Streamlined processes for sales tasks."
+    ],
+    "cons": [
+      "Initial setup and customization required some effort.",
+      "Reporting features could be more robust for detailed analysis.",
+      "Potential for minor performance issues with larger data sets."
+    ],
+    "overall_experience": "The Operations Head likely found Freshsales to be a generally positive tool for managing customer relationships within their mid-sized printing company. While the initial learning curve and setup required some attention, the intuitive interface and core functionalities were appreciated. They probably viewed it as a solid solution, though with some areas for improvement regarding advanced reporting or performance under heavy load."
+  },
+  "ts": "2026-10-18T05:26:10.277998+00:00"
+}

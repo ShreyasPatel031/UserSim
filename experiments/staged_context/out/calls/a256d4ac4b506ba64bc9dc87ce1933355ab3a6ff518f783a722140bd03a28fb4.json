@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a256d4ac4b506ba64bc9dc87ce1933355ab3a6ff518f783a722140bd03a28fb4",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2250,
+  "output_tokens": 997,
+  "cost_usd": 0.0031674999999999997,
+  "elapsed_s": 5.83,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Robust automation and segmentation capabilities for targeted marketing.\",\n    \"Strong integration options with other platforms.\",\n    \"Effective for tracking website activity and lead submissions.\"\n  ],\n  \"cons\": [\n    \"Pricing can become a concern as usage scales, especially for wholesale operations.\",\n    \"Initial setup or advanced configuration might require significant effort.\",\n    \"Reporting and analytics could be more intuitive or customizable for specific needs.\"\n  ],\n  \"overall_experience\": \"As a System Engineer, this user likely found Klaviyo's robust marketing automation and segmentation features highly functional for their company's marketing activities over two years. While the platform offered powerful tools and integrations, they may have faced challenges with the initial setup and found the pricing structure less optimal for a wholesale business of their size. Overall, the platform served its purpose for marketing tasks, but specific aspects like cost and support might have limited a fully enthusiastic endorsement.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Robust automation and segmentation capabilities for targeted marketing.",
+      "Strong integration options with other platforms.",
+      "Effective for tracking website activity and lead submissions."
+    ],
+    "cons": [
+      "Pricing can become a concern as usage scales, especially for wholesale operations.",
+      "Initial setup or advanced configuration might require significant effort.",
+      "Reporting and analytics could be more intuitive or customizable for specific needs."
+    ],
+    "overall_experience": "As a System Engineer, this user likely found Klaviyo's robust marketing automation and segmentation features highly functional for their company's marketing activities over two years. While the platform offered powerful tools and integrations, they may have faced challenges with the initial setup and found the pricing structure less optimal for a wholesale business of their size. Overall, the platform served its purpose for marketing tasks, but specific aspects like cost and support might have limited a fully enthusiastic endorsement."
+  },
+  "ts": "2026-10-18T05:26:39.209260+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "825287eb843c29d2dc9a1323e308d10c525da0c70d4c08abcd32a65aa28b5bde",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1429,
+  "output_tokens": 1050,
+  "cost_usd": 0.0030536999999999995,
+  "elapsed_s": 5.9,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Successfully centralized various support communications.\",\n    \"Effective in tracking and assigning HR-related tickets.\",\n    \"Provides a clear historical record of interactions.\"\n  ],\n  \"cons\": [\n    \"Search functionality can be clunky for historical data.\",\n    \"Requires careful testing for process changes or updates.\",\n    \"Integration with other enterprise HR systems could be challenging.\"\n  ],\n  \"overall_experience\": \"This HR Generalist likely found LiveAgent to be a solid solution for centralizing support communications within their large healthcare organization. While it effectively streamlines ticket management and collaboration, they may have experienced some frustrations with complex search functions or the effort required to maintain customized workflows. Overall, it served its primary purpose well for over two years.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Successfully centralized various support communications.",
+      "Effective in tracking and assigning HR-related tickets.",
+      "Provides a clear historical record of interactions."
+    ],
+    "cons": [
+      "Search functionality can be clunky for historical data.",
+      "Requires careful testing for process changes or updates.",
+      "Integration with other enterprise HR systems could be challenging."
+    ],
+    "overall_experience": "This HR Generalist likely found LiveAgent to be a solid solution for centralizing support communications within their large healthcare organization. While it effectively streamlines ticket management and collaboration, they may have experienced some frustrations with complex search functions or the effort required to maintain customized workflows. Overall, it served its primary purpose well for over two years."
+  },
+  "ts": "2026-10-18T05:26:27.566352+00:00"
+}

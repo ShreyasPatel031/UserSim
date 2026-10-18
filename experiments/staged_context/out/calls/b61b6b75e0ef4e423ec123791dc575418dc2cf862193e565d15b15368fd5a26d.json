@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b61b6b75e0ef4e423ec123791dc575418dc2cf862193e565d15b15368fd5a26d",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1581,
+  "output_tokens": 1094,
+  "cost_usd": 0.0032092999999999996,
+  "elapsed_s": 6.29,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Centralized access to all critical employee information like payroll and benefits\",\n    \"Streamlined process for managing tax forms and health insurance selections\",\n    \"Intuitive interface for accessing FSA details and requesting time off\"\n  ],\n  \"cons\": [\n    \"Occasional performance issues when navigating between different sections\",\n    \"Mobile app experience could be more robust for quick checks\",\n    \"Initial setup or understanding of specific features might have a slight learning curve\"\n  ],\n  \"overall_experience\": \"The Product Manager likely found Rippling to be a highly functional and generally user-friendly platform for managing essential employee tasks. They appreciated the consolidated access to payroll, tax forms, benefits, and time off, which streamlined their administrative duties. While the overall experience was positive, there might have been minor frustrations related to occasional performance lags or a desire for a more polished mobile interface.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Centralized access to all critical employee information like payroll and benefits",
+      "Streamlined process for managing tax forms and health insurance selections",
+      "Intuitive interface for accessing FSA details and requesting time off"
+    ],
+    "cons": [
+      "Occasional performance issues when navigating between different sections",
+      "Mobile app experience could be more robust for quick checks",
+      "Initial setup or understanding of specific features might have a slight learning curve"
+    ],
+    "overall_experience": "The Product Manager likely found Rippling to be a highly functional and generally user-friendly platform for managing essential employee tasks. They appreciated the consolidated access to payroll, tax forms, benefits, and time off, which streamlined their administrative duties. While the overall experience was positive, there might have been minor frustrations related to occasional performance lags or a desire for a more polished mobile interface."
+  },
+  "ts": "2026-10-18T05:25:17.767727+00:00"
+}

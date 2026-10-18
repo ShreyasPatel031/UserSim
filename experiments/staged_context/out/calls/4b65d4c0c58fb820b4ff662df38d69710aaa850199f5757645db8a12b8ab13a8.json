@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4b65d4c0c58fb820b4ff662df38d69710aaa850199f5757645db8a12b8ab13a8",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2162,
+  "output_tokens": 945,
+  "cost_usd": 0.0030111,
+  "elapsed_s": 5.45,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Intuitive interface makes managing sales workflows easy.\",\n    \"Strong integration capabilities with other business tools.\",\n    \"Customization options to tailor the system to specific legal services needs.\"\n  ],\n  \"cons\": [\n    \"Pricing might feel slightly high for some features compared to alternatives.\",\n    \"Advanced reporting could be more robust for detailed analysis.\",\n    \"Initial setup and pipeline configuration may require some dedicated effort.\"\n  ],\n  \"overall_experience\": \"This Project Lead likely found Freshsales to be a highly effective and user-friendly tool for managing their sales workflow within the legal services firm. The system's intuitive design and customization options were probably significant advantages, streamlining daily operations. While generally satisfied, they might have noted that certain advanced functionalities or the pricing structure could be areas for improvement.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Intuitive interface makes managing sales workflows easy.",
+      "Strong integration capabilities with other business tools.",
+      "Customization options to tailor the system to specific legal services needs."
+    ],
+    "cons": [
+      "Pricing might feel slightly high for some features compared to alternatives.",
+      "Advanced reporting could be more robust for detailed analysis.",
+      "Initial setup and pipeline configuration may require some dedicated effort."
+    ],
+    "overall_experience": "This Project Lead likely found Freshsales to be a highly effective and user-friendly tool for managing their sales workflow within the legal services firm. The system's intuitive design and customization options were probably significant advantages, streamlining daily operations. While generally satisfied, they might have noted that certain advanced functionalities or the pricing structure could be areas for improvement."
+  },
+  "ts": "2026-10-18T05:26:11.272338+00:00"
+}

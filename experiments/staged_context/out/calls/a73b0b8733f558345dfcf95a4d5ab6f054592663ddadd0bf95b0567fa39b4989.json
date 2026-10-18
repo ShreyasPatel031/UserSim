@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a73b0b8733f558345dfcf95a4d5ab6f054592663ddadd0bf95b0567fa39b4989",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 265,
+  "output_tokens": 944,
+  "cost_usd": 0.0024395000000000003,
+  "elapsed_s": 6.55,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Effective centralization of travel and expense processes for large organizations\",\n    \"Comprehensive features for enterprise-level T&E management and reporting\",\n    \"Supports complex approval workflows and compliance requirements\"\n  ],\n  \"cons\": [\n    \"Can be complex and time-consuming to implement and configure for specific needs\",\n    \"User interface can be less intuitive, leading to a steep learning curve for employees\",\n    \"Integration with other systems outside the SAP ecosystem can be challenging\"\n  ],\n  \"overall_experience\": \"The Transformation Lead found SAP Concur to be a powerful tool for centralizing travel and expense management across their large enterprise. While it offered robust functionality and strong reporting capabilities essential for oversight, the complexity of implementation and the user experience for general employees presented significant hurdles to achieving seamless transformation.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 6,
+    "pros": [
+      "Effective centralization of travel and expense processes for large organizations",
+      "Comprehensive features for enterprise-level T&E management and reporting",
+      "Supports complex approval workflows and compliance requirements"
+    ],
+    "cons": [
+      "Can be complex and time-consuming to implement and configure for specific needs",
+      "User interface can be less intuitive, leading to a steep learning curve for employees",
+      "Integration with other systems outside the SAP ecosystem can be challenging"
+    ],
+    "overall_experience": "The Transformation Lead found SAP Concur to be a powerful tool for centralizing travel and expense management across their large enterprise. While it offered robust functionality and strong reporting capabilities essential for oversight, the complexity of implementation and the user experience for general employees presented significant hurdles to achieving seamless transformation."
+  },
+  "ts": "2026-10-18T05:24:59.979261+00:00"
+}

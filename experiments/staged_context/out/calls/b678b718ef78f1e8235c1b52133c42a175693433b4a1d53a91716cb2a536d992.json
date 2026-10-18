@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b678b718ef78f1e8235c1b52133c42a175693433b4a1d53a91716cb2a536d992",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 763,
+  "output_tokens": 920,
+  "cost_usd": 0.0025288999999999997,
+  "elapsed_s": 5.82,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Streamlined payroll processing and tax filing features.\",\n    \"Comprehensive reporting tools for compliance and analysis.\",\n    \"Intuitive employee self-service portal for paystubs and time-off requests.\"\n  ],\n  \"cons\": [\n    \"Initial setup and customization can be complex and time-consuming.\",\n    \"Occasional challenges with integrating with other HR or accounting systems.\",\n    \"Customer support response times and consistency can sometimes vary.\"\n  ],\n  \"overall_experience\": \"This Payroll Manager likely found Paylocity to be a highly effective tool for managing payroll operations within their mid-market company. They appreciated its robust functionality and ease of use for daily tasks, contributing to a positive overall experience. However, they may have encountered some difficulties during the initial implementation phase and with the consistency of customer support.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Streamlined payroll processing and tax filing features.",
+      "Comprehensive reporting tools for compliance and analysis.",
+      "Intuitive employee self-service portal for paystubs and time-off requests."
+    ],
+    "cons": [
+      "Initial setup and customization can be complex and time-consuming.",
+      "Occasional challenges with integrating with other HR or accounting systems.",
+      "Customer support response times and consistency can sometimes vary."
+    ],
+    "overall_experience": "This Payroll Manager likely found Paylocity to be a highly effective tool for managing payroll operations within their mid-market company. They appreciated its robust functionality and ease of use for daily tasks, contributing to a positive overall experience. However, they may have encountered some difficulties during the initial implementation phase and with the consistency of customer support."
+  },
+  "ts": "2026-10-18T05:25:47.764412+00:00"
+}

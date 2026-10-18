@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9d1c29e545fb86410daf474fba5d2455a5b943815195ee37842bf1ce6afaf7bf",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1963,
+  "output_tokens": 1017,
+  "cost_usd": 0.0031313999999999995,
+  "elapsed_s": 9.02,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Intuitive and easy to navigate for program participation\",\n    \"Effective at tracking personal activities and progress\",\n    \"Accessible for daily use without a steep learning curve\"\n  ],\n  \"cons\": [\n    \"Might encounter occasional difficulty finding specific information\",\n    \"Potential for limited customization options for personal preferences\",\n    \"Customer support could be slow to resolve specific user issues\"\n  ],\n  \"overall_experience\": \"This Sales Support Specialist likely found Wellable to be a user-friendly platform for engaging with wellbeing programs and tracking their activities. The ease of navigation and straightforward interface would have been appreciated for daily use. While generally positive, they may have experienced minor frustrations with finding specific details or the responsiveness of support for individual queries.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Intuitive and easy to navigate for program participation",
+      "Effective at tracking personal activities and progress",
+      "Accessible for daily use without a steep learning curve"
+    ],
+    "cons": [
+      "Might encounter occasional difficulty finding specific information",
+      "Potential for limited customization options for personal preferences",
+      "Customer support could be slow to resolve specific user issues"
+    ],
+    "overall_experience": "This Sales Support Specialist likely found Wellable to be a user-friendly platform for engaging with wellbeing programs and tracking their activities. The ease of navigation and straightforward interface would have been appreciated for daily use. While generally positive, they may have experienced minor frustrations with finding specific details or the responsiveness of support for individual queries."
+  },
+  "ts": "2026-10-18T05:25:43.357077+00:00"
+}

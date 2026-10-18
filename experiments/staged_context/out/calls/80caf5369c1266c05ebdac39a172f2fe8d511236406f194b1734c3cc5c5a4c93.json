@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "80caf5369c1266c05ebdac39a172f2fe8d511236406f194b1734c3cc5c5a4c93",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 849,
+  "output_tokens": 951,
+  "cost_usd": 0.0026322000000000003,
+  "elapsed_s": 5.6,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Diverse challenge options to boost employee participation\",\n    \"Streamlined setup process for new engagement initiatives\",\n    \"Positive impact on company culture and well-being\"\n  ],\n  \"cons\": [\n    \"Limited customization options for branding challenges\",\n    \"Integration with other HR platforms could be smoother\",\n    \"Analytics dashboard might lack depth for detailed reporting\"\n  ],\n  \"overall_experience\": \"This Culture and Brand Coordinator likely found Wellable to be a valuable tool for initiating and managing employee engagement challenges. They appreciated its user-friendly interface and the variety of activities available, which positively impacted company morale. However, they may have desired more flexibility in branding and deeper analytical insights to better measure challenge success.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Diverse challenge options to boost employee participation",
+      "Streamlined setup process for new engagement initiatives",
+      "Positive impact on company culture and well-being"
+    ],
+    "cons": [
+      "Limited customization options for branding challenges",
+      "Integration with other HR platforms could be smoother",
+      "Analytics dashboard might lack depth for detailed reporting"
+    ],
+    "overall_experience": "This Culture and Brand Coordinator likely found Wellable to be a valuable tool for initiating and managing employee engagement challenges. They appreciated its user-friendly interface and the variety of activities available, which positively impacted company morale. However, they may have desired more flexibility in branding and deeper analytical insights to better measure challenge success."
+  },
+  "ts": "2026-10-18T05:25:41.982041+00:00"
+}

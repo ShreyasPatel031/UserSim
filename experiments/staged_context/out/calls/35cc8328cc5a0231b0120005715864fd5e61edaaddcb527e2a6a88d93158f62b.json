@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "35cc8328cc5a0231b0120005715864fd5e61edaaddcb527e2a6a88d93158f62b",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 934,
+  "output_tokens": 985,
+  "cost_usd": 0.0027427,
+  "elapsed_s": 6.65,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Centralized platform for team communication and collaboration\",\n    \"Seamless integration with other Microsoft 365 applications\",\n    \"Robust video conferencing and screen sharing capabilities\"\n  ],\n  \"cons\": [\n    \"Can be resource-intensive, leading to performance issues\",\n    \"Navigation and organization of multiple teams/channels can be complex\",\n    \"Occasional issues with notifications or sync across devices\"\n  ],\n  \"overall_experience\": \"This Associate Consultant likely found Microsoft Teams to be a highly functional and essential tool for their daily tasks, especially within an enterprise setting. They appreciated its comprehensive features for communication and collaboration, benefiting from its integration with the wider Microsoft ecosystem. However, they may have encountered frustrations with its resource demands and the complexity of managing numerous projects or teams.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Centralized platform for team communication and collaboration",
+      "Seamless integration with other Microsoft 365 applications",
+      "Robust video conferencing and screen sharing capabilities"
+    ],
+    "cons": [
+      "Can be resource-intensive, leading to performance issues",
+      "Navigation and organization of multiple teams/channels can be complex",
+      "Occasional issues with notifications or sync across devices"
+    ],
+    "overall_experience": "This Associate Consultant likely found Microsoft Teams to be a highly functional and essential tool for their daily tasks, especially within an enterprise setting. They appreciated its comprehensive features for communication and collaboration, benefiting from its integration with the wider Microsoft ecosystem. However, they may have encountered frustrations with its resource demands and the complexity of managing numerous projects or teams."
+  },
+  "ts": "2026-10-18T05:26:04.622953+00:00"
+}

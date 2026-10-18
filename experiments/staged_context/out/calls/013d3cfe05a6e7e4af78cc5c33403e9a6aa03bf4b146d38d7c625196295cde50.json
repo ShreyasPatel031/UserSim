@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "013d3cfe05a6e7e4af78cc5c33403e9a6aa03bf4b146d38d7c625196295cde50",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 262,
+  "output_tokens": 990,
+  "cost_usd": 0.0025535999999999996,
+  "elapsed_s": 6.42,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Robust payroll processing and tax filing features\",\n    \"Comprehensive HR and payroll reporting capabilities\",\n    \"Streamlined employee data management\"\n  ],\n  \"cons\": [\n    \"Project financial reporting requires significant manual effort or data export\",\n    \"Initial setup and complex customizations can be challenging\",\n    \"Customer support responsiveness can be inconsistent\"\n  ],\n  \"overall_experience\": \"The Finance Manager found Paylocity effective for managing core payroll operations and associated reporting, appreciating its comprehensive features for employee data. However, they experienced limitations when attempting to integrate project-specific financial reporting, often requiring manual data manipulation. While generally satisfied with the system's core functionality for a mid-market company, the manager occasionally struggled with advanced configurations and found customer support to be hit-or-miss.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 3,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Robust payroll processing and tax filing features",
+      "Comprehensive HR and payroll reporting capabilities",
+      "Streamlined employee data management"
+    ],
+    "cons": [
+      "Project financial reporting requires significant manual effort or data export",
+      "Initial setup and complex customizations can be challenging",
+      "Customer support responsiveness can be inconsistent"
+    ],
+    "overall_experience": "The Finance Manager found Paylocity effective for managing core payroll operations and associated reporting, appreciating its comprehensive features for employee data. However, they experienced limitations when attempting to integrate project-specific financial reporting, often requiring manual data manipulation. While generally satisfied with the system's core functionality for a mid-market company, the manager occasionally struggled with advanced configurations and found customer support to be hit-or-miss."
+  },
+  "ts": "2026-10-18T05:24:57.478322+00:00"
+}

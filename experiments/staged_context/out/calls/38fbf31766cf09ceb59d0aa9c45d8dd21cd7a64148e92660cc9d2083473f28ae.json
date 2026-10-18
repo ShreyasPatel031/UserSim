@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "38fbf31766cf09ceb59d0aa9c45d8dd21cd7a64148e92660cc9d2083473f28ae",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2134,
+  "output_tokens": 1057,
+  "cost_usd": 0.0032827,
+  "elapsed_s": 5.58,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Receiving timely reminders for healthy habits\",\n    \"Ease of use for tracking daily self-care activities\",\n    \"Integration with other tools for a holistic view of wellness\"\n  ],\n  \"cons\": [\n    \"Occasional glitches or login issues\",\n    \"Limited customization options for personal wellness plans\",\n    \"User interface could be more modern or intuitive\"\n  ],\n  \"overall_experience\": \"This Territory Account Manager likely found Wellable to be a generally helpful tool for promoting personal wellness, appreciating its ability to deliver reminders for healthy choices and daily self-care. While the platform was largely user-friendly and functional, they may have encountered minor frustrations with occasional technical issues or a lack of advanced customization features. Despite these small drawbacks, the product served its core purpose effectively.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Receiving timely reminders for healthy habits",
+      "Ease of use for tracking daily self-care activities",
+      "Integration with other tools for a holistic view of wellness"
+    ],
+    "cons": [
+      "Occasional glitches or login issues",
+      "Limited customization options for personal wellness plans",
+      "User interface could be more modern or intuitive"
+    ],
+    "overall_experience": "This Territory Account Manager likely found Wellable to be a generally helpful tool for promoting personal wellness, appreciating its ability to deliver reminders for healthy choices and daily self-care. While the platform was largely user-friendly and functional, they may have encountered minor frustrations with occasional technical issues or a lack of advanced customization features. Despite these small drawbacks, the product served its core purpose effectively."
+  },
+  "ts": "2026-10-18T05:25:39.677419+00:00"
+}

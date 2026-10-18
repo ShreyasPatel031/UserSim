@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3ee191640192cb22b54d80d8f01799962db52bc05db37956456e28e9cd933962",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1594,
+  "output_tokens": 1015,
+  "cost_usd": 0.0030157,
+  "elapsed_s": 5.47,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Streamlined project and task organization\",\n    \"Intuitive interface for quick adoption\",\n    \"Helps keep track of sales-related tasks\"\n  ],\n  \"cons\": [\n    \"Limited customization options for specific sales workflows\",\n    \"The pricing model might not be ideal for a self-employed individual\",\n    \"Felt that some advanced features were missing\"\n  ],\n  \"overall_experience\": \"This self-employed sales associate likely found Basecamp to be a straightforward tool for managing their tasks during the free trial, appreciating its ease of use and ability to organize projects. However, they may have found its functionality to be somewhat basic for their specific sales needs, desiring more customization or advanced features. The value for money might have been a concern, especially considering the transition from a free trial to a paid plan for a solo operation.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Streamlined project and task organization",
+      "Intuitive interface for quick adoption",
+      "Helps keep track of sales-related tasks"
+    ],
+    "cons": [
+      "Limited customization options for specific sales workflows",
+      "The pricing model might not be ideal for a self-employed individual",
+      "Felt that some advanced features were missing"
+    ],
+    "overall_experience": "This self-employed sales associate likely found Basecamp to be a straightforward tool for managing their tasks during the free trial, appreciating its ease of use and ability to organize projects. However, they may have found its functionality to be somewhat basic for their specific sales needs, desiring more customization or advanced features. The value for money might have been a concern, especially considering the transition from a free trial to a paid plan for a solo operation."
+  },
+  "ts": "2026-10-18T05:26:24.311033+00:00"
+}

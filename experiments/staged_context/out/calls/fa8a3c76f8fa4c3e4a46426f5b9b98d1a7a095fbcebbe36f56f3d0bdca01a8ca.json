@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "fa8a3c76f8fa4c3e4a46426f5b9b98d1a7a095fbcebbe36f56f3d0bdca01a8ca",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 848,
+  "output_tokens": 1033,
+  "cost_usd": 0.0028369000000000003,
+  "elapsed_s": 6.47,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Simple and intuitive interface for logging health activities\",\n    \"Effective system for tracking points and progress\",\n    \"Motivating challenges helped encourage participation\"\n  ],\n  \"cons\": [\n    \"Occasional syncing issues with external fitness devices\",\n    \"Limited options for logging very specific or niche activities\",\n    \"Repetitive manual data entry for certain activities\"\n  ],\n  \"overall_experience\": \"This Content Specialist likely found Wellable to be a highly effective tool for its core purpose of logging health activities and points. They would have appreciated its user-friendly interface and the motivational aspects it offered. While generally positive, some minor frustrations with data syncing or activity logging specificity might have been encountered.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Simple and intuitive interface for logging health activities",
+      "Effective system for tracking points and progress",
+      "Motivating challenges helped encourage participation"
+    ],
+    "cons": [
+      "Occasional syncing issues with external fitness devices",
+      "Limited options for logging very specific or niche activities",
+      "Repetitive manual data entry for certain activities"
+    ],
+    "overall_experience": "This Content Specialist likely found Wellable to be a highly effective tool for its core purpose of logging health activities and points. They would have appreciated its user-friendly interface and the motivational aspects it offered. While generally positive, some minor frustrations with data syncing or activity logging specificity might have been encountered."
+  },
+  "ts": "2026-10-18T05:25:43.299144+00:00"
+}

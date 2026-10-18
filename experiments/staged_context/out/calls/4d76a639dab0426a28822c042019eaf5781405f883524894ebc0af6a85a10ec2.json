@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4d76a639dab0426a28822c042019eaf5781405f883524894ebc0af6a85a10ec2",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 260,
+  "output_tokens": 943,
+  "cost_usd": 0.0024355,
+  "elapsed_s": 23.13,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Handles complex sales compensation plans effectively\",\n    \"Automates commission calculations accurately for large teams\",\n    \"Provides robust reporting and analytics capabilities\"\n  ],\n  \"cons\": [\n    \"Initial setup and configuration can be complex and time-consuming\",\n    \"User interface might feel clunky for some advanced tasks\",\n    \"Cost can be a significant investment for the organization\"\n  ],\n  \"overall_experience\": \"This Senior Manager likely found Xactly to be a powerful and essential tool for managing the intricate sales compensation plans and tracking commissions within an enterprise environment. While appreciating its robust functionality and accuracy, they may have encountered challenges with the platform's initial complexity and potentially high cost. Overall, the system proved effective in addressing the core needs of a large sales organization.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Handles complex sales compensation plans effectively",
+      "Automates commission calculations accurately for large teams",
+      "Provides robust reporting and analytics capabilities"
+    ],
+    "cons": [
+      "Initial setup and configuration can be complex and time-consuming",
+      "User interface might feel clunky for some advanced tasks",
+      "Cost can be a significant investment for the organization"
+    ],
+    "overall_experience": "This Senior Manager likely found Xactly to be a powerful and essential tool for managing the intricate sales compensation plans and tracking commissions within an enterprise environment. While appreciating its robust functionality and accuracy, they may have encountered challenges with the platform's initial complexity and potentially high cost. Overall, the system proved effective in addressing the core needs of a large sales organization."
+  },
+  "ts": "2026-10-18T05:24:54.360986+00:00"
+}

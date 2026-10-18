@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "68e6ed750cd833c0d70d203f6ba4a70894f686c9ea801ef7385c5907c3f92475",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 373,
+  "output_tokens": 956,
+  "cost_usd": 0.0025019,
+  "elapsed_s": 8.83,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Core ticketing system is straightforward for basic support.\",\n    \"Web interface is generally intuitive for new users.\",\n    \"Scalability potential for growing customer interactions.\"\n  ],\n  \"cons\": [\n    \"Limited integration capabilities with existing CMS platforms.\",\n    \"Community management features felt somewhat basic for their needs.\",\n    \"Customization for broadcast media workflows was challenging.\"\n  ],\n  \"overall_experience\": \"The CMS Advisor found Freshdesk to be an adequate tool for basic customer support, appreciating its user-friendly interface for managing initial queries. However, they encountered difficulties integrating it deeply with their existing CMS systems and found its community management features to be less robust than desired for their specific industry needs. The platform's out-of-the-box functionality required significant adaptation to fit broadcast media workflows, leading to a somewhat neutral overall impression during their initial months of use.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 3,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 6,
+    "pros": [
+      "Core ticketing system is straightforward for basic support.",
+      "Web interface is generally intuitive for new users.",
+      "Scalability potential for growing customer interactions."
+    ],
+    "cons": [
+      "Limited integration capabilities with existing CMS platforms.",
+      "Community management features felt somewhat basic for their needs.",
+      "Customization for broadcast media workflows was challenging."
+    ],
+    "overall_experience": "The CMS Advisor found Freshdesk to be an adequate tool for basic customer support, appreciating its user-friendly interface for managing initial queries. However, they encountered difficulties integrating it deeply with their existing CMS systems and found its community management features to be less robust than desired for their specific industry needs. The platform's out-of-the-box functionality required significant adaptation to fit broadcast media workflows, leading to a somewhat neutral overall impression during their initial months of use."
+  },
+  "ts": "2026-10-18T05:26:52.560295+00:00"
+}

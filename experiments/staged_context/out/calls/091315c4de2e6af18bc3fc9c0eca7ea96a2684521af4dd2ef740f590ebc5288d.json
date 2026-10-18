@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "091315c4de2e6af18bc3fc9c0eca7ea96a2684521af4dd2ef740f590ebc5288d",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 348,
+  "output_tokens": 995,
+  "cost_usd": 0.0025919000000000003,
+  "elapsed_s": 6.1,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Rapid prototyping for presentations and internal materials\",\n    \"Extensive template library for quick starts\",\n    \"Intuitive interface for non-designers\"\n  ],\n  \"cons\": [\n    \"Limitations for highly complex or custom design requirements\",\n    \"May not fully integrate with existing enterprise design systems\",\n    \"Advanced features might require a higher subscription tier\"\n  ],\n  \"overall_experience\": \"This engineering manager likely found Canva to be a highly efficient tool for their primary task of quickly prototyping presentations and design materials. Its ease of use and rich template library significantly reduced the time spent on design tasks. However, they may have occasionally encountered limitations when needing more granular control or integration with advanced enterprise-level design workflows.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Rapid prototyping for presentations and internal materials",
+      "Extensive template library for quick starts",
+      "Intuitive interface for non-designers"
+    ],
+    "cons": [
+      "Limitations for highly complex or custom design requirements",
+      "May not fully integrate with existing enterprise design systems",
+      "Advanced features might require a higher subscription tier"
+    ],
+    "overall_experience": "This engineering manager likely found Canva to be a highly efficient tool for their primary task of quickly prototyping presentations and design materials. Its ease of use and rich template library significantly reduced the time spent on design tasks. However, they may have occasionally encountered limitations when needing more granular control or integration with advanced enterprise-level design workflows."
+  },
+  "ts": "2026-10-18T05:25:09.785826+00:00"
+}

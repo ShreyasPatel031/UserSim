@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0a9168d95169cdb7c700dd22cb885dd28992d3b48198c5beeb6865518197af95",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 345,
+  "output_tokens": 974,
+  "cost_usd": 0.0025385,
+  "elapsed_s": 6.35,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Efficiently manages customer communication and support tickets.\",\n    \"User-friendly interface for streamlined operations.\",\n    \"Robust automation features for ticket routing and assignments.\"\n  ],\n  \"cons\": [\n    \"Potential for complex integrations with existing enterprise systems.\",\n    \"Reporting capabilities might require deeper customization for specific supply chain metrics.\",\n    \"Scalability could present challenges with a very high volume of unique ticket types.\"\n  ],\n  \"overall_experience\": \"The Supply Chain Sr. Executive likely found Freshdesk to be a reliable tool for managing customer communication and support tickets within their enterprise environment. Its intuitive interface and automation features would have contributed to operational efficiency. While generally positive, the executive might have encountered some limitations regarding deep integrations or highly specialized reporting needs inherent to large-scale supply chain operations.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Efficiently manages customer communication and support tickets.",
+      "User-friendly interface for streamlined operations.",
+      "Robust automation features for ticket routing and assignments."
+    ],
+    "cons": [
+      "Potential for complex integrations with existing enterprise systems.",
+      "Reporting capabilities might require deeper customization for specific supply chain metrics.",
+      "Scalability could present challenges with a very high volume of unique ticket types."
+    ],
+    "overall_experience": "The Supply Chain Sr. Executive likely found Freshdesk to be a reliable tool for managing customer communication and support tickets within their enterprise environment. Its intuitive interface and automation features would have contributed to operational efficiency. While generally positive, the executive might have encountered some limitations regarding deep integrations or highly specialized reporting needs inherent to large-scale supply chain operations."
+  },
+  "ts": "2026-10-18T05:25:21.262988+00:00"
+}

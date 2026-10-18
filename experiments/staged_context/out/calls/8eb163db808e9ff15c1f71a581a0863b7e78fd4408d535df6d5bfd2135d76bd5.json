@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8eb163db808e9ff15c1f71a581a0863b7e78fd4408d535df6d5bfd2135d76bd5",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 368,
+  "output_tokens": 931,
+  "cost_usd": 0.0024379,
+  "elapsed_s": 6.07,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Powerful segmentation and automation flows\",\n    \"Excellent e-commerce specific features\",\n    \"Seamless integration with other platforms\"\n  ],\n  \"cons\": [\n    \"Steeper learning curve compared to previous tools\",\n    \"Pricing can be a significant jump for small businesses\",\n    \"Interface can feel overwhelming at times\"\n  ],\n  \"overall_experience\": \"This business admin likely found Klaviyo to be a significant upgrade in terms of marketing automation power and e-commerce-specific functionality, especially when compared to Mailchimp. While the learning curve and cost might have been initial hurdles for their small business, the robust features and ability to create sophisticated campaigns likely justified the investment. The platform's capabilities enabled them to enhance customer engagement and operational efficiency within the health and wellness industry.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Powerful segmentation and automation flows",
+      "Excellent e-commerce specific features",
+      "Seamless integration with other platforms"
+    ],
+    "cons": [
+      "Steeper learning curve compared to previous tools",
+      "Pricing can be a significant jump for small businesses",
+      "Interface can feel overwhelming at times"
+    ],
+    "overall_experience": "This business admin likely found Klaviyo to be a significant upgrade in terms of marketing automation power and e-commerce-specific functionality, especially when compared to Mailchimp. While the learning curve and cost might have been initial hurdles for their small business, the robust features and ability to create sophisticated campaigns likely justified the investment. The platform's capabilities enabled them to enhance customer engagement and operational efficiency within the health and wellness industry."
+  },
+  "ts": "2026-10-18T05:26:40.435636+00:00"
+}

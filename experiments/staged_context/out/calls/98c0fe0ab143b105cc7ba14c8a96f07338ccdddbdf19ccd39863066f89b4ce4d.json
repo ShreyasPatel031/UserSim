@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "98c0fe0ab143b105cc7ba14c8a96f07338ccdddbdf19ccd39863066f89b4ce4d",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 384,
+  "output_tokens": 946,
+  "cost_usd": 0.0024802,
+  "elapsed_s": 5.94,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Robust features for large-scale product catalogs\",\n    \"Strong native Google Shopping integration capabilities\",\n    \"Scalable platform suitable for enterprise needs\"\n  ],\n  \"cons\": [\n    \"Admin interface can feel less intuitive than alternatives\",\n    \"Initial setup complexity compared to simpler platforms\",\n    \"Cost can be a factor for advanced features\"\n  ],\n  \"overall_experience\": \"This strategic designer likely found BigCommerce to be a robust platform capable of handling enterprise-level product management and essential integrations like Google Shopping. While the platform offered the necessary functionality and scalability for their large company, the ease of use might have been a slight step down from previous experiences with more consumer-friendly platforms like Wix or Shopify. Overall, the platform met their strategic needs for a complex marketing and advertising environment.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Robust features for large-scale product catalogs",
+      "Strong native Google Shopping integration capabilities",
+      "Scalable platform suitable for enterprise needs"
+    ],
+    "cons": [
+      "Admin interface can feel less intuitive than alternatives",
+      "Initial setup complexity compared to simpler platforms",
+      "Cost can be a factor for advanced features"
+    ],
+    "overall_experience": "This strategic designer likely found BigCommerce to be a robust platform capable of handling enterprise-level product management and essential integrations like Google Shopping. While the platform offered the necessary functionality and scalability for their large company, the ease of use might have been a slight step down from previous experiences with more consumer-friendly platforms like Wix or Shopify. Overall, the platform met their strategic needs for a complex marketing and advertising environment."
+  },
+  "ts": "2026-10-18T05:26:44.118087+00:00"
+}

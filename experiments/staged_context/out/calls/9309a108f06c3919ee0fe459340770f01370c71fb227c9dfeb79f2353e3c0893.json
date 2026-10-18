@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9309a108f06c3919ee0fe459340770f01370c71fb227c9dfeb79f2353e3c0893",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1760,
+  "output_tokens": 1103,
+  "cost_usd": 0.0032855000000000002,
+  "elapsed_s": 6.53,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Streamlined ticket management and automation features.\",\n    \"Helpful integrations with other tools for a connected workflow.\",\n    \"Customizable reporting to track key customer service metrics.\"\n  ],\n  \"cons\": [\n    \"Some limitations in advanced customization options.\",\n    \"The learning curve for specific advanced features can be steep.\",\n    \"Occasional frustrations with customer support responsiveness or depth of knowledge.\"\n  ],\n  \"overall_experience\": \"This Product Manager likely found Freshdesk to be a generally effective tool for managing customer service operations within their small business. They appreciated its ease of use for core tasks and the value of its integrations and reporting capabilities. However, they may have encountered challenges with certain customization limitations and wished for more consistent or in-depth customer support.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Streamlined ticket management and automation features.",
+      "Helpful integrations with other tools for a connected workflow.",
+      "Customizable reporting to track key customer service metrics."
+    ],
+    "cons": [
+      "Some limitations in advanced customization options.",
+      "The learning curve for specific advanced features can be steep.",
+      "Occasional frustrations with customer support responsiveness or depth of knowledge."
+    ],
+    "overall_experience": "This Product Manager likely found Freshdesk to be a generally effective tool for managing customer service operations within their small business. They appreciated its ease of use for core tasks and the value of its integrations and reporting capabilities. However, they may have encountered challenges with certain customization limitations and wished for more consistent or in-depth customer support."
+  },
+  "ts": "2026-10-18T05:25:22.377716+00:00"
+}

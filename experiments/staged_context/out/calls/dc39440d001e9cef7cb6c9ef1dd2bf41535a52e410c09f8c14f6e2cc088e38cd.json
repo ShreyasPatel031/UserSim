@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "dc39440d001e9cef7cb6c9ef1dd2bf41535a52e410c09f8c14f6e2cc088e38cd",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1590,
+  "output_tokens": 1023,
+  "cost_usd": 0.0030345,
+  "elapsed_s": 6.47,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Significantly improved customer support automation and self-service capabilities.\",\n    \"Efficiently deflects common queries, freeing up human agents for complex issues.\",\n    \"User-friendly interface for managing automated responses and knowledge base content.\"\n  ],\n  \"cons\": [\n    \"Pricing structure felt restrictive or lacked flexibility for a small business.\",\n    \"Required a noticeable learning curve for optimizing advanced AI features and integrations.\",\n    \"Reporting and analytics could be more robust for deeper insights into automation performance.\"\n  ],\n  \"overall_experience\": \"The Head of Product found Fin to be a powerful tool for achieving their goal of automating customer support and guiding users to self-serve solutions, directly impacting team efficiency. While the core AI functionality was highly effective, they noted that the pricing model and the time investment required to fully leverage its advanced capabilities presented challenges for a small business. Despite these points, the product delivered substantial value in its primary function of customer support automation.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Significantly improved customer support automation and self-service capabilities.",
+      "Efficiently deflects common queries, freeing up human agents for complex issues.",
+      "User-friendly interface for managing automated responses and knowledge base content."
+    ],
+    "cons": [
+      "Pricing structure felt restrictive or lacked flexibility for a small business.",
+      "Required a noticeable learning curve for optimizing advanced AI features and integrations.",
+      "Reporting and analytics could be more robust for deeper insights into automation performance."
+    ],
+    "overall_experience": "The Head of Product found Fin to be a powerful tool for achieving their goal of automating customer support and guiding users to self-serve solutions, directly impacting team efficiency. While the core AI functionality was highly effective, they noted that the pricing model and the time investment required to fully leverage its advanced capabilities presented challenges for a small business. Despite these points, the product delivered substantial value in its primary function of customer support automation."
+  },
+  "ts": "2026-10-18T05:25:12.272481+00:00"
+}

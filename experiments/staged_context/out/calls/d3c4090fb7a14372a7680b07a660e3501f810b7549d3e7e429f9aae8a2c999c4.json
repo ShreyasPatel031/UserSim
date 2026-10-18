@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d3c4090fb7a14372a7680b07a660e3501f810b7549d3e7e429f9aae8a2c999c4",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 266,
+  "output_tokens": 1043,
+  "cost_usd": 0.0026873000000000005,
+  "elapsed_s": 7.25,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Effective for tracking sales leads and client engagement\",\n    \"Streamlined email composition and campaign management\",\n    \"Comprehensive platform for basic marketing tasks\"\n  ],\n  \"cons\": [\n    \"Perceived as potentially expensive for a small business's needs\",\n    \"Initial learning curve for a user not primarily in marketing\",\n    \"Might offer more features than a small business VP of Payroll requires\"\n  ],\n  \"overall_experience\": \"The VP of Payroll, operating within a small business, likely found HubSpot Marketing Hub highly functional for their specific tasks of tracking sales leads, managing email, and monitoring client engagement. While the platform excelled in these areas and was generally user-friendly for the relevant modules, they may have found the overall cost a significant consideration for a small company, especially given that their role is not marketing-centric. Despite this, the tool's effectiveness for their assigned marketing duties would have been a clear benefit.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 7,
+    "pros": [
+      "Effective for tracking sales leads and client engagement",
+      "Streamlined email composition and campaign management",
+      "Comprehensive platform for basic marketing tasks"
+    ],
+    "cons": [
+      "Perceived as potentially expensive for a small business's needs",
+      "Initial learning curve for a user not primarily in marketing",
+      "Might offer more features than a small business VP of Payroll requires"
+    ],
+    "overall_experience": "The VP of Payroll, operating within a small business, likely found HubSpot Marketing Hub highly functional for their specific tasks of tracking sales leads, managing email, and monitoring client engagement. While the platform excelled in these areas and was generally user-friendly for the relevant modules, they may have found the overall cost a significant consideration for a small company, especially given that their role is not marketing-centric. Despite this, the tool's effectiveness for their assigned marketing duties would have been a clear benefit."
+  },
+  "ts": "2026-10-18T05:25:01.005113+00:00"
+}

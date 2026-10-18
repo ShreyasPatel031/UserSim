@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7153da3d631d28585cab7560aadf2c3b3d321fc7b3a31de479f3821f575f9d0b",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 255,
+  "output_tokens": 989,
+  "cost_usd": 0.0025490000000000005,
+  "elapsed_s": 6.22,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Streamlined employee data management.\",\n    \"Intuitive interface for HR tasks.\",\n    \"Effective for payroll processing.\"\n  ],\n  \"cons\": [\n    \"Initial setup and integration challenges.\",\n    \"Reporting features could be more customizable.\",\n    \"Cost might be a consideration for very small budgets.\"\n  ],\n  \"overall_experience\": \"This Strategy Director likely found BambooHR to be a highly effective solution for managing payroll and employee information within their small business. The system's user-friendliness and core functionalities probably streamlined their HR processes, freeing up time for strategic initiatives. While generally positive, some advanced reporting needs or initial setup complexities might have presented minor frustrations.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Streamlined employee data management.",
+      "Intuitive interface for HR tasks.",
+      "Effective for payroll processing."
+    ],
+    "cons": [
+      "Initial setup and integration challenges.",
+      "Reporting features could be more customizable.",
+      "Cost might be a consideration for very small budgets."
+    ],
+    "overall_experience": "This Strategy Director likely found BambooHR to be a highly effective solution for managing payroll and employee information within their small business. The system's user-friendliness and core functionalities probably streamlined their HR processes, freeing up time for strategic initiatives. While generally positive, some advanced reporting needs or initial setup complexities might have presented minor frustrations."
+  },
+  "ts": "2026-10-18T05:25:02.039499+00:00"
+}

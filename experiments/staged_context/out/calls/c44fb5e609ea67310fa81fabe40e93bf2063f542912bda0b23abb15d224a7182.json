@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c44fb5e609ea67310fa81fabe40e93bf2063f542912bda0b23abb15d224a7182",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2535,
+  "output_tokens": 1026,
+  "cost_usd": 0.0033255,
+  "elapsed_s": 5.76,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Robust automation for e-commerce campaigns like abandoned carts and welcome series.\",\n    \"Strong integration capabilities with e-commerce platforms.\",\n    \"Detailed segmentation options for targeted marketing efforts.\"\n  ],\n  \"cons\": [\n    \"Pricing can become a concern as contact lists grow.\",\n    \"The learning curve for advanced features might be steep initially.\",\n    \"Reporting dashboards could be more intuitive and customizable for deeper insights.\"\n  ],\n  \"overall_experience\": \"This Responsable Marketing professional, with over two years of experience using Klaviyo for an apparel e-commerce store, likely values its powerful automation and segmentation features crucial for targeted campaigns. While appreciating its core marketing functionalities, they may find the pricing model less favorable over time and could desire more streamlined reporting or a gentler learning curve for complex setups. Overall, they see Klaviyo as an effective, albeit sometimes challenging, tool for their e-commerce marketing needs.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Robust automation for e-commerce campaigns like abandoned carts and welcome series.",
+      "Strong integration capabilities with e-commerce platforms.",
+      "Detailed segmentation options for targeted marketing efforts."
+    ],
+    "cons": [
+      "Pricing can become a concern as contact lists grow.",
+      "The learning curve for advanced features might be steep initially.",
+      "Reporting dashboards could be more intuitive and customizable for deeper insights."
+    ],
+    "overall_experience": "This Responsable Marketing professional, with over two years of experience using Klaviyo for an apparel e-commerce store, likely values its powerful automation and segmentation features crucial for targeted campaigns. While appreciating its core marketing functionalities, they may find the pricing model less favorable over time and could desire more streamlined reporting or a gentler learning curve for complex setups. Overall, they see Klaviyo as an effective, albeit sometimes challenging, tool for their e-commerce marketing needs."
+  },
+  "ts": "2026-10-18T05:26:39.964000+00:00"
+}

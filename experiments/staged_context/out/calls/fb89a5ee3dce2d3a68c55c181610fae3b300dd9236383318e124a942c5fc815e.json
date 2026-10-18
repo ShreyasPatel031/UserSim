@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "fb89a5ee3dce2d3a68c55c181610fae3b300dd9236383318e124a942c5fc815e",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 261,
+  "output_tokens": 1015,
+  "cost_usd": 0.0026158,
+  "elapsed_s": 24.02,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Robust security features and strong encryption\",\n    \"Excellent cross-platform synchronization and reliable autofill\",\n    \"Comprehensive suite of features including secure notes and Watchtower\"\n  ],\n  \"cons\": [\n    \"Occasional minor glitches with browser extension autofill on complex forms\",\n    \"Initial learning curve for advanced features or team administration\",\n    \"Subscription cost might be a consideration for individual use\"\n  ],\n  \"overall_experience\": \"The Senior QA Analyst likely found 1Password to be a highly secure and functional solution for managing digital credentials, appreciating its robust features and reliable performance across devices. While generally user-friendly, they may have noted minor inconsistencies or a slight learning curve for more advanced or team-oriented functionalities. Overall, their experience was positive, with the product meeting high standards for security and utility.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Robust security features and strong encryption",
+      "Excellent cross-platform synchronization and reliable autofill",
+      "Comprehensive suite of features including secure notes and Watchtower"
+    ],
+    "cons": [
+      "Occasional minor glitches with browser extension autofill on complex forms",
+      "Initial learning curve for advanced features or team administration",
+      "Subscription cost might be a consideration for individual use"
+    ],
+    "overall_experience": "The Senior QA Analyst likely found 1Password to be a highly secure and functional solution for managing digital credentials, appreciating its robust features and reliable performance across devices. While generally user-friendly, they may have noted minor inconsistencies or a slight learning curve for more advanced or team-oriented functionalities. Overall, their experience was positive, with the product meeting high standards for security and utility."
+  },
+  "ts": "2026-10-18T05:24:54.705509+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "efb6d76da66a74d4e1ee2236e52181001d36132e5e59c69f53e583efbce332e2",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1384,
+  "output_tokens": 1008,
+  "cost_usd": 0.0029352000000000002,
+  "elapsed_s": 8.8,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Reliable video and audio quality for team meetings\",\n    \"Integrated file sharing and screen sharing capabilities\",\n    \"Centralized communication for project discussions\"\n  ],\n  \"cons\": [\n    \"Can be resource-intensive, impacting system performance\",\n    \"Notification overload can disrupt focus during work\",\n    \"Search functionality sometimes struggles to find older messages\"\n  ],\n  \"overall_experience\": \"The Senior Software Engineer likely found Microsoft Teams to be a generally effective tool for conducting team meetings and facilitating communication. While appreciating its core meeting functionalities and integration with other Microsoft services, they probably experienced some frustration with its performance overhead and the challenge of managing notifications. The platform served its primary purpose but had areas for improvement in user experience and efficiency.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Reliable video and audio quality for team meetings",
+      "Integrated file sharing and screen sharing capabilities",
+      "Centralized communication for project discussions"
+    ],
+    "cons": [
+      "Can be resource-intensive, impacting system performance",
+      "Notification overload can disrupt focus during work",
+      "Search functionality sometimes struggles to find older messages"
+    ],
+    "overall_experience": "The Senior Software Engineer likely found Microsoft Teams to be a generally effective tool for conducting team meetings and facilitating communication. While appreciating its core meeting functionalities and integration with other Microsoft services, they probably experienced some frustration with its performance overhead and the challenge of managing notifications. The platform served its primary purpose but had areas for improvement in user experience and efficiency."
+  },
+  "ts": "2026-10-18T05:25:39.130184+00:00"
+}

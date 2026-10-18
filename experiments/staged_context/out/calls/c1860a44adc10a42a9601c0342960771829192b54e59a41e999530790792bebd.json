@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c1860a44adc10a42a9601c0342960771829192b54e59a41e999530790792bebd",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1947,
+  "output_tokens": 898,
+  "cost_usd": 0.0028291,
+  "elapsed_s": 5.31,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effective centralization of customer data and interactions\",\n    \"Robust automation features for sales workflows\",\n    \"Strong integration capabilities with other business tools\"\n  ],\n  \"cons\": [\n    \"Potential for higher pricing, especially for advanced features\",\n    \"Steeper learning curve for full utilization of all functionalities\",\n    \"Occasional performance issues with large data sets or complex reports\"\n  ],\n  \"overall_experience\": \"The Lead IT Administrator likely found HubSpot Sales Hub to be a powerful tool for centralizing sales data and automating key processes, appreciating its strong integration capabilities. While the platform offers extensive functionality and a generally positive user experience for their role, they may have noted a learning curve for advanced features and potential cost concerns for premium functionalities. Performance could be a minor issue with large data volumes.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Effective centralization of customer data and interactions",
+      "Robust automation features for sales workflows",
+      "Strong integration capabilities with other business tools"
+    ],
+    "cons": [
+      "Potential for higher pricing, especially for advanced features",
+      "Steeper learning curve for full utilization of all functionalities",
+      "Occasional performance issues with large data sets or complex reports"
+    ],
+    "overall_experience": "The Lead IT Administrator likely found HubSpot Sales Hub to be a powerful tool for centralizing sales data and automating key processes, appreciating its strong integration capabilities. While the platform offers extensive functionality and a generally positive user experience for their role, they may have noted a learning curve for advanced features and potential cost concerns for premium functionalities. Performance could be a minor issue with large data volumes."
+  },
+  "ts": "2026-10-18T05:25:04.049951+00:00"
+}

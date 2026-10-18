@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d08feaea19b76efd15755fbfda8ec464b2940a5cadff599834315c11f2c25026",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 968,
+  "output_tokens": 980,
+  "cost_usd": 0.0027404,
+  "elapsed_s": 6.0,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Reliable for collecting cross-border payments\",\n    \"Widely accepted, simplifying customer transactions\",\n    \"Efficient for transferring funds internationally\"\n  ],\n  \"cons\": [\n    \"Transaction fees, especially for international payments, can be high\",\n    \"Occasional holds on funds or account limitations\",\n    \"Customer support response times can be inconsistent\"\n  ],\n  \"overall_experience\": \"As a mobile app developer in a small IT business, this individual likely found PayPal Payments to be a highly functional and easy-to-use solution for their cross-border payment and fund transfer needs. While generally pleased with its capabilities, they probably experienced some frustration with the fee structure and occasional customer support issues, impacting the value for money slightly. Overall, the platform met their core requirements effectively.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Reliable for collecting cross-border payments",
+      "Widely accepted, simplifying customer transactions",
+      "Efficient for transferring funds internationally"
+    ],
+    "cons": [
+      "Transaction fees, especially for international payments, can be high",
+      "Occasional holds on funds or account limitations",
+      "Customer support response times can be inconsistent"
+    ],
+    "overall_experience": "As a mobile app developer in a small IT business, this individual likely found PayPal Payments to be a highly functional and easy-to-use solution for their cross-border payment and fund transfer needs. While generally pleased with its capabilities, they probably experienced some frustration with the fee structure and occasional customer support issues, impacting the value for money slightly. Overall, the platform met their core requirements effectively."
+  },
+  "ts": "2026-10-18T05:25:50.800565+00:00"
+}

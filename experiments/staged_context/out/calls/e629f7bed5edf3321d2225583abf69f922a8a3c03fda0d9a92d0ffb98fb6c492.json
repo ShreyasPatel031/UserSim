@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e629f7bed5edf3321d2225583abf69f922a8a3c03fda0d9a92d0ffb98fb6c492",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1078,
+  "output_tokens": 1057,
+  "cost_usd": 0.0029659,
+  "elapsed_s": 6.1,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Comprehensive features for lead tracking and campaign management.\",\n    \"Potential for integration with other Zoho applications.\",\n    \"Cost-effectiveness for a small to medium-sized marketing agency.\"\n  ],\n  \"cons\": [\n    \"Steep learning curve during initial setup and customization.\",\n    \"Interface can sometimes feel cluttered or less intuitive.\",\n    \"Occasional performance issues or minor bugs encountered.\"\n  ],\n  \"overall_experience\": \"This digital marketing strategist, new to Zoho CRM, likely found it to be a reasonably capable platform for managing leads and campaigns within their 11-50 person agency. While appreciating its feature set and value, they probably experienced some initial friction with its complexity and user interface. Their overall sentiment suggests a generally positive experience, albeit with some common challenges for new users.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Comprehensive features for lead tracking and campaign management.",
+      "Potential for integration with other Zoho applications.",
+      "Cost-effectiveness for a small to medium-sized marketing agency."
+    ],
+    "cons": [
+      "Steep learning curve during initial setup and customization.",
+      "Interface can sometimes feel cluttered or less intuitive.",
+      "Occasional performance issues or minor bugs encountered."
+    ],
+    "overall_experience": "This digital marketing strategist, new to Zoho CRM, likely found it to be a reasonably capable platform for managing leads and campaigns within their 11-50 person agency. While appreciating its feature set and value, they probably experienced some initial friction with its complexity and user interface. Their overall sentiment suggests a generally positive experience, albeit with some common challenges for new users."
+  },
+  "ts": "2026-10-18T05:26:16.009109+00:00"
+}

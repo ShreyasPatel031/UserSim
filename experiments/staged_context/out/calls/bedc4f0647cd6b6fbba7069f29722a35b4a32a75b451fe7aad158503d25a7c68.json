@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "bedc4f0647cd6b6fbba7069f29722a35b4a32a75b451fe7aad158503d25a7c68",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 385,
+  "output_tokens": 1005,
+  "cost_usd": 0.002628,
+  "elapsed_s": 5.73,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Highly effective in reducing human cybersecurity risk across the organization.\",\n    \"Comprehensive library of training modules and realistic phishing simulations.\",\n    \"Robust administrative tools and reporting for managing campaigns and tracking user progress.\"\n  ],\n  \"cons\": [\n    \"Some users found the training content repetitive over time.\",\n    \"Initial setup and customization of campaigns could be time-consuming for the administrator.\",\n    \"The cost might be a significant consideration for budgeting in a mid-market company.\"\n  ],\n  \"overall_experience\": \"The System Administrator likely had a very positive experience with KnowBe4, finding it highly effective in addressing the human element of cybersecurity. They appreciated its comprehensive features and robust capabilities for reducing risk. While the initial administrative effort and potential content repetition for end-users were minor drawbacks, the overall value and functionality made it a strong solution for their mid-market company.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Highly effective in reducing human cybersecurity risk across the organization.",
+      "Comprehensive library of training modules and realistic phishing simulations.",
+      "Robust administrative tools and reporting for managing campaigns and tracking user progress."
+    ],
+    "cons": [
+      "Some users found the training content repetitive over time.",
+      "Initial setup and customization of campaigns could be time-consuming for the administrator.",
+      "The cost might be a significant consideration for budgeting in a mid-market company."
+    ],
+    "overall_experience": "The System Administrator likely had a very positive experience with KnowBe4, finding it highly effective in addressing the human element of cybersecurity. They appreciated its comprehensive features and robust capabilities for reducing risk. While the initial administrative effort and potential content repetition for end-users were minor drawbacks, the overall value and functionality made it a strong solution for their mid-market company."
+  },
+  "ts": "2026-10-18T05:25:20.131466+00:00"
+}

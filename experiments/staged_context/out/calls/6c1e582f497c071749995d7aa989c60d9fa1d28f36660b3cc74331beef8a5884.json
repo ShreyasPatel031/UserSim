@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "6c1e582f497c071749995d7aa989c60d9fa1d28f36660b3cc74331beef8a5884",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 261,
+  "output_tokens": 1000,
+  "cost_usd": 0.0025783,
+  "elapsed_s": 6.49,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 2,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Broad acceptance for international payments\",\n    \"Relatively straightforward API for integration\",\n    \"Reliable platform for fund transfers\"\n  ],\n  \"cons\": [\n    \"High fees for cross-border transactions and currency conversion\",\n    \"Occasional holds on funds or account limitations\",\n    \"Customer support can be slow or unhelpful for specific technical issues\"\n  ],\n  \"overall_experience\": \"This mobile app developer likely found PayPal Payments effective for its primary task of collecting cross-border payments, appreciating its widespread adoption and decent API for integration. However, the high transaction fees and potential issues with fund availability for a small business likely impacted the perceived value for money. Customer support responsiveness for developer-specific or complex payment issues may also have been a point of frustration.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 3,
+    "value_for_money_rating": 2,
+    "customer_support_rating": 3,
+    "recommendation_score": 6,
+    "pros": [
+      "Broad acceptance for international payments",
+      "Relatively straightforward API for integration",
+      "Reliable platform for fund transfers"
+    ],
+    "cons": [
+      "High fees for cross-border transactions and currency conversion",
+      "Occasional holds on funds or account limitations",
+      "Customer support can be slow or unhelpful for specific technical issues"
+    ],
+    "overall_experience": "This mobile app developer likely found PayPal Payments effective for its primary task of collecting cross-border payments, appreciating its widespread adoption and decent API for integration. However, the high transaction fees and potential issues with fund availability for a small business likely impacted the perceived value for money. Customer support responsiveness for developer-specific or complex payment issues may also have been a point of frustration."
+  },
+  "ts": "2026-10-18T05:24:58.508106+00:00"
+}

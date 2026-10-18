@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7a4d513cad16e0f85ccef4ab421c82182ab5dd3bac40b46277dad7bc14082313",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 268,
+  "output_tokens": 1027,
+  "cost_usd": 0.0026479,
+  "elapsed_s": 7.15,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effective workflows for process automation\",\n    \"Integrated analytics and reporting for business insights\",\n    \"Comprehensive platform for small business marketing needs\"\n  ],\n  \"cons\": [\n    \"Pricing could be a concern for a small business\",\n    \"Advanced analytics customization might have limitations\",\n    \"Initial setup and integration of processes required significant effort\"\n  ],\n  \"overall_experience\": \"The Director of Analytics and Business Development likely found HubSpot Marketing Hub valuable for streamlining marketing processes and supporting data-driven decisions within their small business. The platform's integrated workflows, analytics, and reporting capabilities were crucial for their role. While the comprehensive feature set was beneficial, concerns may have arisen regarding the cost-effectiveness and depth of customization for advanced analytical needs.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Effective workflows for process automation",
+      "Integrated analytics and reporting for business insights",
+      "Comprehensive platform for small business marketing needs"
+    ],
+    "cons": [
+      "Pricing could be a concern for a small business",
+      "Advanced analytics customization might have limitations",
+      "Initial setup and integration of processes required significant effort"
+    ],
+    "overall_experience": "The Director of Analytics and Business Development likely found HubSpot Marketing Hub valuable for streamlining marketing processes and supporting data-driven decisions within their small business. The platform's integrated workflows, analytics, and reporting capabilities were crucial for their role. While the comprehensive feature set was beneficial, concerns may have arisen regarding the cost-effectiveness and depth of customization for advanced analytical needs."
+  },
+  "ts": "2026-10-18T05:25:01.032875+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1155551453baaba1749707bacfc32877585dbfba08dec6ed0dfd9c48688f01ae",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1551,
+  "output_tokens": 1093,
+  "cost_usd": 0.0031978,
+  "elapsed_s": 6.56,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effective for cold email outreach and lead nurturing\",\n    \"Intuitive interface and easy to get started\",\n    \"Helps manage and categorize prospects efficiently\"\n  ],\n  \"cons\": [\n    \"Customer support can be difficult to reach or resolve issues\",\n    \"Potential for a learning curve with advanced features or sequences\",\n    \"Pricing structure or lead limits might be restrictive over time\"\n  ],\n  \"overall_experience\": \"This Co-Founder & CEO likely found Instantly to be a highly effective tool for their small business's cold email and lead nurturing needs. The product's ease of use and intuitive design were probably key advantages, allowing them to quickly implement and manage outreach campaigns. While generally positive, some frustrations may have arisen concerning customer support responsiveness or potential limitations in scaling lead generation without incurring higher costs.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Effective for cold email outreach and lead nurturing",
+      "Intuitive interface and easy to get started",
+      "Helps manage and categorize prospects efficiently"
+    ],
+    "cons": [
+      "Customer support can be difficult to reach or resolve issues",
+      "Potential for a learning curve with advanced features or sequences",
+      "Pricing structure or lead limits might be restrictive over time"
+    ],
+    "overall_experience": "This Co-Founder & CEO likely found Instantly to be a highly effective tool for their small business's cold email and lead nurturing needs. The product's ease of use and intuitive design were probably key advantages, allowing them to quickly implement and manage outreach campaigns. While generally positive, some frustrations may have arisen concerning customer support responsiveness or potential limitations in scaling lead generation without incurring higher costs."
+  },
+  "ts": "2026-10-18T05:25:15.452261+00:00"
+}

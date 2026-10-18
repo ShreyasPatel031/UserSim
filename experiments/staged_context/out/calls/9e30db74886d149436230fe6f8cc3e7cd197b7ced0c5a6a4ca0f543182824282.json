@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9e30db74886d149436230fe6f8cc3e7cd197b7ced0c5a6a4ca0f543182824282",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1533,
+  "output_tokens": 992,
+  "cost_usd": 0.0029399,
+  "elapsed_s": 7.38,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Centralized information management\",\n    \"Intuitive user interface\",\n    \"Streamlined HR processes\"\n  ],\n  \"cons\": [\n    \"Limited customization options\",\n    \"Occasional performance slowdowns\",\n    \"Integrations could be more robust\"\n  ],\n  \"overall_experience\": \"This Engineer in Training likely found BambooHR to be a generally positive tool for organizing information, appreciating its ease of use and ability to centralize HR data. While it effectively streamlined many tasks, they may have encountered minor frustrations with customization limitations or occasional system performance. Overall, the product likely met their core needs for managing employee information efficiently within their mid-market company.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Centralized information management",
+      "Intuitive user interface",
+      "Streamlined HR processes"
+    ],
+    "cons": [
+      "Limited customization options",
+      "Occasional performance slowdowns",
+      "Integrations could be more robust"
+    ],
+    "overall_experience": "This Engineer in Training likely found BambooHR to be a generally positive tool for organizing information, appreciating its ease of use and ability to centralize HR data. While it effectively streamlined many tasks, they may have encountered minor frustrations with customization limitations or occasional system performance. Overall, the product likely met their core needs for managing employee information efficiently within their mid-market company."
+  },
+  "ts": "2026-10-18T05:25:40.628322+00:00"
+}

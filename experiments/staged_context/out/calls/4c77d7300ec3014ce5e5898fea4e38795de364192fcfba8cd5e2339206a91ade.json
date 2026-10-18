@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4c77d7300ec3014ce5e5898fea4e38795de364192fcfba8cd5e2339206a91ade",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2092,
+  "output_tokens": 1053,
+  "cost_usd": 0.0032600999999999997,
+  "elapsed_s": 6.03,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 5,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Comprehensive features for managing complex sales compensation plans.\",\n    \"Customizable dashboards and reports for insightful data analysis.\",\n    \"Improved efficiency in commission calculations and payout accuracy.\"\n  ],\n  \"cons\": [\n    \"Initial setup and implementation can be time-consuming.\",\n    \"Occasional performance issues or slow updates for certain tools.\",\n    \"The reporting functionality could be more intuitive for specific needs.\"\n  ],\n  \"overall_experience\": \"The Senior Manager, Sales Compensation likely experienced Xactly as a robust and highly functional solution for managing complex sales compensation plans within an enterprise environment. They appreciated its ability to streamline commission processes and provide detailed reporting, leading to increased accuracy and productivity. While the initial setup might have presented a learning curve, the overall benefits in terms of data accuracy and customizable insights outweighed these challenges.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 5,
+    "recommendation_score": 9,
+    "pros": [
+      "Comprehensive features for managing complex sales compensation plans.",
+      "Customizable dashboards and reports for insightful data analysis.",
+      "Improved efficiency in commission calculations and payout accuracy."
+    ],
+    "cons": [
+      "Initial setup and implementation can be time-consuming.",
+      "Occasional performance issues or slow updates for certain tools.",
+      "The reporting functionality could be more intuitive for specific needs."
+    ],
+    "overall_experience": "The Senior Manager, Sales Compensation likely experienced Xactly as a robust and highly functional solution for managing complex sales compensation plans within an enterprise environment. They appreciated its ability to streamline commission processes and provide detailed reporting, leading to increased accuracy and productivity. While the initial setup might have presented a learning curve, the overall benefits in terms of data accuracy and customizable insights outweighed these challenges."
+  },
+  "ts": "2026-10-18T05:25:43.407786+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a61ac5dd381220805199cbbca77c42757af745d205712198e6028214253715c8",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 343,
+  "output_tokens": 991,
+  "cost_usd": 0.0025803999999999996,
+  "elapsed_s": 6.0,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Significantly boosted content generation speed and volume.\",\n    \"Helped overcome writer's block and provided fresh ideas.\",\n    \"Offered various templates suitable for different marketing needs.\"\n  ],\n  \"cons\": [\n    \"Required substantial editing and fact-checking for accuracy and brand voice.\",\n    \"Output could sometimes be generic or repetitive without careful prompting.\",\n    \"Cost might be a consideration for a small business if not fully utilized.\"\n  ],\n  \"overall_experience\": \"As a Director of Marketing in a small business, this person likely found Jasper to be a valuable tool for accelerating content creation. While it greatly improved efficiency and helped generate a higher volume of written content, they probably noted the necessity of human oversight for quality, accuracy, and maintaining a consistent brand voice. Overall, the software likely served as a strong assistant for their content marketing efforts.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Significantly boosted content generation speed and volume.",
+      "Helped overcome writer's block and provided fresh ideas.",
+      "Offered various templates suitable for different marketing needs."
+    ],
+    "cons": [
+      "Required substantial editing and fact-checking for accuracy and brand voice.",
+      "Output could sometimes be generic or repetitive without careful prompting.",
+      "Cost might be a consideration for a small business if not fully utilized."
+    ],
+    "overall_experience": "As a Director of Marketing in a small business, this person likely found Jasper to be a valuable tool for accelerating content creation. While it greatly improved efficiency and helped generate a higher volume of written content, they probably noted the necessity of human oversight for quality, accuracy, and maintaining a consistent brand voice. Overall, the software likely served as a strong assistant for their content marketing efforts."
+  },
+  "ts": "2026-10-18T05:25:16.218167+00:00"
+}

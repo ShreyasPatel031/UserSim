@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d6c741c97e25e6cfb2fa19be34161ce12918b64fa0215ed878c0c4fdffae8912",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 257,
+  "output_tokens": 980,
+  "cost_usd": 0.0025271,
+  "elapsed_s": 23.78,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Receiving timely prompts for healthy habits\",\n    \"Encouragement for daily self-care activities\",\n    \"User-friendly interface for checking reminders\"\n  ],\n  \"cons\": [\n    \"Reminders could sometimes feel generic or repetitive\",\n    \"Limited personalization options for self-care content\",\n    \"Integration into a busy sales schedule was occasionally challenging\"\n  ],\n  \"overall_experience\": \"This Territory Account Manager likely found Wellable to be a moderately helpful tool for prompting healthy choices and self-care. While the reminders were generally appreciated for their intent, a lack of deeper personalization and occasional repetition may have limited its overall impact. The platform's ease of use for quick check-ins was a positive, but fitting consistent engagement into a demanding sales role proved to be a minor hurdle.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 3,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 6,
+    "pros": [
+      "Receiving timely prompts for healthy habits",
+      "Encouragement for daily self-care activities",
+      "User-friendly interface for checking reminders"
+    ],
+    "cons": [
+      "Reminders could sometimes feel generic or repetitive",
+      "Limited personalization options for self-care content",
+      "Integration into a busy sales schedule was occasionally challenging"
+    ],
+    "overall_experience": "This Territory Account Manager likely found Wellable to be a moderately helpful tool for prompting healthy choices and self-care. While the reminders were generally appreciated for their intent, a lack of deeper personalization and occasional repetition may have limited its overall impact. The platform's ease of use for quick check-ins was a positive, but fitting consistent engagement into a demanding sales role proved to be a minor hurdle."
+  },
+  "ts": "2026-10-18T05:24:54.512720+00:00"
+}

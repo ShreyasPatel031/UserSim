@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b2fa7ebe3e3d6d3083fe57b4958a3654616ef08ae2a2de0fced6c5ec7c743757",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1583,
+  "output_tokens": 993,
+  "cost_usd": 0.0029574,
+  "elapsed_s": 5.38,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4.5,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Robust integration capabilities for connecting to other systems\",\n    \"Extensive customization options for template implementation\",\n    \"Centralized platform for managing IT services efficiently\"\n  ],\n  \"cons\": [\n    \"Potential high cost, especially for advanced features or licenses\",\n    \"Steep learning curve for complex configurations and integrations\",\n    \"Initial setup and complex template implementation can be time-consuming\"\n  ],\n  \"overall_experience\": \"This IT Helpdesk Advisor likely found ServiceNow highly functional for their task of implementing templates and connecting to other system platforms, appreciating its strong integration and customization capabilities. However, they probably encountered challenges with the platform's cost and the initial complexity involved in setting up advanced features or integrations. Despite these hurdles, the robust nature of ServiceNow likely enabled them to achieve their objectives effectively.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4.5,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Robust integration capabilities for connecting to other systems",
+      "Extensive customization options for template implementation",
+      "Centralized platform for managing IT services efficiently"
+    ],
+    "cons": [
+      "Potential high cost, especially for advanced features or licenses",
+      "Steep learning curve for complex configurations and integrations",
+      "Initial setup and complex template implementation can be time-consuming"
+    ],
+    "overall_experience": "This IT Helpdesk Advisor likely found ServiceNow highly functional for their task of implementing templates and connecting to other system platforms, appreciating its strong integration and customization capabilities. However, they probably encountered challenges with the platform's cost and the initial complexity involved in setting up advanced features or integrations. Despite these hurdles, the robust nature of ServiceNow likely enabled them to achieve their objectives effectively."
+  },
+  "ts": "2026-10-18T05:25:06.503445+00:00"
+}

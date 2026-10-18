@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "67773f8f5bfca498e928ad3c440a9f4f5ae00baa1c49c2d133fd8d6e9fdb6165",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 258,
+  "output_tokens": 1031,
+  "cost_usd": 0.0026549,
+  "elapsed_s": 26.31,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Visual dashboards helped track sales priorities effectively.\",\n    \"Customizable workflows adapted well to business development needs.\",\n    \"Automation features saved time on routine follow-ups.\"\n  ],\n  \"cons\": [\n    \"Initial setup of AI features felt complex for a small team.\",\n    \"Cost for AI-specific functionalities might be high for a small business budget.\",\n    \"AI suggestions for prioritization were not always perfectly aligned with their specific sales strategy.\"\n  ],\n  \"overall_experience\": \"The Business Development Manager found the platform generally effective for organizing work priorities, appreciating its visual nature and customizable workflows. While the core functionalities were strong for task management and lead tracking, the AI features required a notable learning curve and did not consistently deliver the expected level of intelligent prioritization. The value for money for the AI-specific features was a point of consideration given the small business context.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Visual dashboards helped track sales priorities effectively.",
+      "Customizable workflows adapted well to business development needs.",
+      "Automation features saved time on routine follow-ups."
+    ],
+    "cons": [
+      "Initial setup of AI features felt complex for a small team.",
+      "Cost for AI-specific functionalities might be high for a small business budget.",
+      "AI suggestions for prioritization were not always perfectly aligned with their specific sales strategy."
+    ],
+    "overall_experience": "The Business Development Manager found the platform generally effective for organizing work priorities, appreciating its visual nature and customizable workflows. While the core functionalities were strong for task management and lead tracking, the AI features required a notable learning curve and did not consistently deliver the expected level of intelligent prioritization. The value for money for the AI-specific features was a point of consideration given the small business context."
+  },
+  "ts": "2026-10-18T05:24:52.186879+00:00"
+}

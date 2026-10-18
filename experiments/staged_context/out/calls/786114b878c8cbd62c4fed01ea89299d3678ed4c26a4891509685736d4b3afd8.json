@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "786114b878c8cbd62c4fed01ea89299d3678ed4c26a4891509685736d4b3afd8",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 375,
+  "output_tokens": 950,
+  "cost_usd": 0.0024875,
+  "elapsed_s": 5.75,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Comprehensive and realistic phishing simulations that challenge technical users.\",\n    \"Customizable training content that can be tailored to specific threat landscapes.\",\n    \"Detailed reporting and analytics for tracking user performance and identifying vulnerabilities.\"\n  ],\n  \"cons\": [\n    \"Some training modules can feel repetitive or too basic for an experienced software engineer.\",\n    \"Integration with existing internal systems might require some manual effort.\",\n    \"The sheer volume of content can sometimes be overwhelming to navigate efficiently.\"\n  ],\n  \"overall_experience\": \"This software engineer likely found KnowBe4 effective for enhancing their ability to identify and report sophisticated phishing attempts, appreciating the depth of the simulations and customizable content. While generally positive, they may have occasionally found some training modules less engaging or too simplistic for their technical background, and might have desired more seamless integration options.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Comprehensive and realistic phishing simulations that challenge technical users.",
+      "Customizable training content that can be tailored to specific threat landscapes.",
+      "Detailed reporting and analytics for tracking user performance and identifying vulnerabilities."
+    ],
+    "cons": [
+      "Some training modules can feel repetitive or too basic for an experienced software engineer.",
+      "Integration with existing internal systems might require some manual effort.",
+      "The sheer volume of content can sometimes be overwhelming to navigate efficiently."
+    ],
+    "overall_experience": "This software engineer likely found KnowBe4 effective for enhancing their ability to identify and report sophisticated phishing attempts, appreciating the depth of the simulations and customizable content. While generally positive, they may have occasionally found some training modules less engaging or too simplistic for their technical background, and might have desired more seamless integration options."
+  },
+  "ts": "2026-10-18T05:25:20.043461+00:00"
+}

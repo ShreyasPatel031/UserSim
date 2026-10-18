@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ab1df7f8a4f40f962e1baca1cc7c82ca35507e47e4a22ff33e45539c895250d7",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1069,
+  "output_tokens": 1062,
+  "cost_usd": 0.0029757000000000004,
+  "elapsed_s": 5.97,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Efficient ticket management and automation rules\",\n    \"User-friendly interface for IT team and end-users\",\n    \"Reliable performance for consistent support operations\"\n  ],\n  \"cons\": [\n    \"Pricing tiers can become complex for smaller teams\",\n    \"Occasional slowness in the UI during peak usage\",\n    \"Limited advanced customization without higher plans\"\n  ],\n  \"overall_experience\": \"This IT Technician likely found Freshdesk to be a highly effective and reliable tool for managing help desk support over several years. They appreciated its intuitive nature and robust ticketing features, which streamlined their daily tasks. While generally positive, the reviewer might have noted some frustrations with pricing structures or occasional performance hiccups.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Efficient ticket management and automation rules",
+      "User-friendly interface for IT team and end-users",
+      "Reliable performance for consistent support operations"
+    ],
+    "cons": [
+      "Pricing tiers can become complex for smaller teams",
+      "Occasional slowness in the UI during peak usage",
+      "Limited advanced customization without higher plans"
+    ],
+    "overall_experience": "This IT Technician likely found Freshdesk to be a highly effective and reliable tool for managing help desk support over several years. They appreciated its intuitive nature and robust ticketing features, which streamlined their daily tasks. While generally positive, the reviewer might have noted some frustrations with pricing structures or occasional performance hiccups."
+  },
+  "ts": "2026-10-18T05:26:50.294132+00:00"
+}

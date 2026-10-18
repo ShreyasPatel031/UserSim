@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "81037c03e1738a0200df12ffcaa9ab11b6492a8cddb6b961095d1bffd82ffad0",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1837,
+  "output_tokens": 1140,
+  "cost_usd": 0.0034011,
+  "elapsed_s": 6.11,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Provides a robust, centralized platform for travel and expense management.\",\n    \"Streamlines processes for organization-wide bookings and reporting.\",\n    \"Offers comprehensive functionality suitable for large enterprises.\"\n  ],\n  \"cons\": [\n    \"The user interface can sometimes feel outdated or less intuitive.\",\n    \"Initial setup and configuration can be complex and time-consuming.\",\n    \"Value for money might be perceived as high, typical for enterprise solutions.\"\n  ],\n  \"overall_experience\": \"The Transformation Lead likely found SAP Concur to be a highly functional and effective solution for managing organization-wide travel and expenses. They appreciated its robust capabilities and the ability to centralize these critical business processes. While the system's ease of use and support were generally good, there might have been minor frustrations with the interface or the initial implementation effort, common for complex enterprise software.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Provides a robust, centralized platform for travel and expense management.",
+      "Streamlines processes for organization-wide bookings and reporting.",
+      "Offers comprehensive functionality suitable for large enterprises."
+    ],
+    "cons": [
+      "The user interface can sometimes feel outdated or less intuitive.",
+      "Initial setup and configuration can be complex and time-consuming.",
+      "Value for money might be perceived as high, typical for enterprise solutions."
+    ],
+    "overall_experience": "The Transformation Lead likely found SAP Concur to be a highly functional and effective solution for managing organization-wide travel and expenses. They appreciated its robust capabilities and the ability to centralize these critical business processes. While the system's ease of use and support were generally good, there might have been minor frustrations with the interface or the initial implementation effort, common for complex enterprise software."
+  },
+  "ts": "2026-10-18T05:25:56.877264+00:00"
+}

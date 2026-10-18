@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9c7261a230745ad293f04f3c73e61b2ee151bed32c7304090c2db6c7c9e93285",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2200,
+  "output_tokens": 1082,
+  "cost_usd": 0.003365,
+  "elapsed_s": 5.95,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Efficient ticket management and tracking features for help desk support.\",\n    \"Good customization options to tailor workflows and rules.\",\n    \"Intuitive interface, making it easy to manage support requests.\"\n  ],\n  \"cons\": [\n    \"Reporting capabilities might be robust but could benefit from more user-friendly customization.\",\n    \"Potential for occasional performance lags, especially with complex tasks.\",\n    \"Customer support, while generally helpful, may not always meet immediate needs.\"\n  ],\n  \"overall_experience\": \"This IT Technician likely found Freshdesk to be a highly effective tool for managing help desk support over their 2+ years of use. They appreciated its robust functionality and customization options, which are crucial for their role. While generally satisfied, the reviewer may have noted some minor areas for improvement, such as reporting flexibility or occasional performance hiccups.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Efficient ticket management and tracking features for help desk support.",
+      "Good customization options to tailor workflows and rules.",
+      "Intuitive interface, making it easy to manage support requests."
+    ],
+    "cons": [
+      "Reporting capabilities might be robust but could benefit from more user-friendly customization.",
+      "Potential for occasional performance lags, especially with complex tasks.",
+      "Customer support, while generally helpful, may not always meet immediate needs."
+    ],
+    "overall_experience": "This IT Technician likely found Freshdesk to be a highly effective tool for managing help desk support over their 2+ years of use. They appreciated its robust functionality and customization options, which are crucial for their role. While generally satisfied, the reviewer may have noted some minor areas for improvement, such as reporting flexibility or occasional performance hiccups."
+  },
+  "ts": "2026-10-18T05:26:50.159460+00:00"
+}

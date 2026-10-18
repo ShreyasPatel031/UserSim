@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1bf2f70e6d35e2d384a5dc209c9eedfaac6b6898bc11af2ab8c5dea3a1f8da68",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 342,
+  "output_tokens": 931,
+  "cost_usd": 0.0024300999999999997,
+  "elapsed_s": 8.1,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Quickly generates diverse content ideas\",\n    \"Helps overcome writer's block efficiently\",\n    \"Useful for creating various marketing copy\"\n  ],\n  \"cons\": [\n    \"Output sometimes requires heavy editing\",\n    \"Can occasionally produce repetitive phrases\",\n    \"Cost might be a consideration for very small budgets\"\n  ],\n  \"overall_experience\": \"This affiliate marketer likely found Jasper to be a valuable tool for accelerating content creation, appreciating its ability to quickly generate ideas and drafts. While the AI output often required refinement, the time saved in overcoming writer's block and producing initial content made it a worthwhile investment. The tool generally enhanced their content workflow for various marketing needs.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Quickly generates diverse content ideas",
+      "Helps overcome writer's block efficiently",
+      "Useful for creating various marketing copy"
+    ],
+    "cons": [
+      "Output sometimes requires heavy editing",
+      "Can occasionally produce repetitive phrases",
+      "Cost might be a consideration for very small budgets"
+    ],
+    "overall_experience": "This affiliate marketer likely found Jasper to be a valuable tool for accelerating content creation, appreciating its ability to quickly generate ideas and drafts. While the AI output often required refinement, the time saved in overcoming writer's block and producing initial content made it a worthwhile investment. The tool generally enhanced their content workflow for various marketing needs."
+  },
+  "ts": "2026-10-18T05:25:18.056096+00:00"
+}

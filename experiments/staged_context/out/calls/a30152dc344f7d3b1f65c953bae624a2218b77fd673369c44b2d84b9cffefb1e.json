@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a30152dc344f7d3b1f65c953bae624a2218b77fd673369c44b2d84b9cffefb1e",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1413,
+  "output_tokens": 1025,
+  "cost_usd": 0.0029864,
+  "elapsed_s": 5.86,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Efficiently manages the sales pipeline and workflow.\",\n    \"Provides good lead management capabilities.\",\n    \"Offers a user-friendly interface for daily tasks.\"\n  ],\n  \"cons\": [\n    \"Customization options might be limited for complex needs.\",\n    \"Reporting features could be more robust.\",\n    \"Occasional performance issues or minor bugs.\"\n  ],\n  \"overall_experience\": \"As an IT Project Lead, this user likely found Freshsales to be a competent tool for managing sales workflows, appreciating its pipeline management and ease of use. While it effectively handled core CRM tasks for their small legal services company, they may have encountered limitations in advanced customization or reporting. The experience was generally positive, but not without minor frustrations.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Efficiently manages the sales pipeline and workflow.",
+      "Provides good lead management capabilities.",
+      "Offers a user-friendly interface for daily tasks."
+    ],
+    "cons": [
+      "Customization options might be limited for complex needs.",
+      "Reporting features could be more robust.",
+      "Occasional performance issues or minor bugs."
+    ],
+    "overall_experience": "As an IT Project Lead, this user likely found Freshsales to be a competent tool for managing sales workflows, appreciating its pipeline management and ease of use. While it effectively handled core CRM tasks for their small legal services company, they may have encountered limitations in advanced customization or reporting. The experience was generally positive, but not without minor frustrations."
+  },
+  "ts": "2026-10-18T05:26:11.525566+00:00"
+}

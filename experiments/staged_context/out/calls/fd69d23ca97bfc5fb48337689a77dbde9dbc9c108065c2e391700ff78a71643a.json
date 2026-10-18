@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "fd69d23ca97bfc5fb48337689a77dbde9dbc9c108065c2e391700ff78a71643a",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2102,
+  "output_tokens": 1168,
+  "cost_usd": 0.0035506,
+  "elapsed_s": 6.23,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Streamlined management of employee timesheets and payroll processes.\",\n    \"Centralized access to HR and payroll information for efficient management.\",\n    \"Employee self-service capabilities likely save HR time on routine tasks.\"\n  ],\n  \"cons\": [\n    \"Initial setup or learning curve for advanced features might be challenging.\",\n    \"Reporting capabilities could be less flexible or require multiple steps.\",\n    \"Customer support might occasionally be slow to respond or resolve complex issues.\"\n  ],\n  \"overall_experience\": \"The Human Resources Manager likely found Paylocity to be a competent system for managing timesheets and payroll, appreciating its ability to centralize core HR functions. However, they may have encountered occasional frustrations with its ease of use for more complex tasks or with the responsiveness of customer support. The system generally met their needs for accurate payroll processing, but some aspects of its functionality or user interface could have been improved.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Streamlined management of employee timesheets and payroll processes.",
+      "Centralized access to HR and payroll information for efficient management.",
+      "Employee self-service capabilities likely save HR time on routine tasks."
+    ],
+    "cons": [
+      "Initial setup or learning curve for advanced features might be challenging.",
+      "Reporting capabilities could be less flexible or require multiple steps.",
+      "Customer support might occasionally be slow to respond or resolve complex issues."
+    ],
+    "overall_experience": "The Human Resources Manager likely found Paylocity to be a competent system for managing timesheets and payroll, appreciating its ability to centralize core HR functions. However, they may have encountered occasional frustrations with its ease of use for more complex tasks or with the responsiveness of customer support. The system generally met their needs for accurate payroll processing, but some aspects of its functionality or user interface could have been improved."
+  },
+  "ts": "2026-10-18T05:25:48.914658+00:00"
+}

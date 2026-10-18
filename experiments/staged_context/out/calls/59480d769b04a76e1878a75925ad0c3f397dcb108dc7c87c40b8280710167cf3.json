@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "59480d769b04a76e1878a75925ad0c3f397dcb108dc7c87c40b8280710167cf3",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1404,
+  "output_tokens": 1047,
+  "cost_usd": 0.0030387,
+  "elapsed_s": 6.78,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Comprehensive tools for lead tracking and pipeline management\",\n    \"Streamlined email automation capabilities\",\n    \"Intuitive interface and ease of adoption compared to alternatives\"\n  ],\n  \"cons\": [\n    \"Pricing can be a concern for small businesses as features scale\",\n    \"Steep learning curve for advanced features or full customization\",\n    \"Reporting capabilities might have limitations for highly specific needs\"\n  ],\n  \"overall_experience\": \"The Sr Digital Business Consultant likely found HubSpot Sales Hub to be a highly effective and generally intuitive platform for managing the entire sales process, from lead tracking to pipeline visibility and email automation. They appreciated its comprehensive feature set and ease of use, which allowed them to efficiently manage client sales. However, the cost for desired features and the initial learning curve to maximize its potential might have been points of frustration, especially coming from complex, less user-friendly systems.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Comprehensive tools for lead tracking and pipeline management",
+      "Streamlined email automation capabilities",
+      "Intuitive interface and ease of adoption compared to alternatives"
+    ],
+    "cons": [
+      "Pricing can be a concern for small businesses as features scale",
+      "Steep learning curve for advanced features or full customization",
+      "Reporting capabilities might have limitations for highly specific needs"
+    ],
+    "overall_experience": "The Sr Digital Business Consultant likely found HubSpot Sales Hub to be a highly effective and generally intuitive platform for managing the entire sales process, from lead tracking to pipeline visibility and email automation. They appreciated its comprehensive feature set and ease of use, which allowed them to efficiently manage client sales. However, the cost for desired features and the initial learning curve to maximize its potential might have been points of frustration, especially coming from complex, less user-friendly systems."
+  },
+  "ts": "2026-10-18T05:25:06.117764+00:00"
+}

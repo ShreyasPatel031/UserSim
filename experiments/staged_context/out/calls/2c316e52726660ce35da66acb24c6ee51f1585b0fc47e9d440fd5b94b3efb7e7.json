@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2c316e52726660ce35da66acb24c6ee51f1585b0fc47e9d440fd5b94b3efb7e7",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 366,
+  "output_tokens": 980,
+  "cost_usd": 0.0025598,
+  "elapsed_s": 6.06,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Broad acceptance and trusted brand for end-users\",\n    \"Relatively straightforward API documentation for integration\",\n    \"Comprehensive suite of payment processing features\"\n  ],\n  \"cons\": [\n    \"Transaction fees can be high for enterprise-level volumes\",\n    \"Limited customization options for advanced enterprise needs\",\n    \"Technical support for complex integration issues could be slow\"\n  ],\n  \"overall_experience\": \"This developer likely found PayPal Payments to be a robust and generally easy-to-integrate solution for managing financial transactions within their enterprise environment, appreciating its widespread adoption. However, they probably encountered frustrations with the cost structure for high-volume transactions and potential limitations in customization for very specific enterprise requirements. Technical support for complex issues might have also been a point of concern.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Broad acceptance and trusted brand for end-users",
+      "Relatively straightforward API documentation for integration",
+      "Comprehensive suite of payment processing features"
+    ],
+    "cons": [
+      "Transaction fees can be high for enterprise-level volumes",
+      "Limited customization options for advanced enterprise needs",
+      "Technical support for complex integration issues could be slow"
+    ],
+    "overall_experience": "This developer likely found PayPal Payments to be a robust and generally easy-to-integrate solution for managing financial transactions within their enterprise environment, appreciating its widespread adoption. However, they probably encountered frustrations with the cost structure for high-volume transactions and potential limitations in customization for very specific enterprise requirements. Technical support for complex issues might have also been a point of concern."
+  },
+  "ts": "2026-10-18T05:25:32.172505+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "14140e8e2395c396f9d798f8810fc640343ec0903c66fff712a0d16774b58d9b",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1899,
+  "output_tokens": 1057,
+  "cost_usd": 0.0032122,
+  "elapsed_s": 5.78,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Simplified project organization and collaboration\",\n    \"Intuitive for basic task management\",\n    \"Good for quick communication among stakeholders\"\n  ],\n  \"cons\": [\n    \"Limited customization options for specific engineering workflows\",\n    \"Potential for a learning curve with advanced features\",\n    \"Integrations might not be as robust as other tools\"\n  ],\n  \"overall_experience\": \"This software engineer likely found Basecamp to be a straightforward tool for managing projects and facilitating collaboration, appreciating its simplicity for day-to-day tasks. However, they may have encountered limitations regarding deep customization or advanced integrations crucial for complex engineering workflows within their less than six months of use. The overall experience was generally positive, but with some frustrations around its more basic feature set compared to specialized tools.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 3,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Simplified project organization and collaboration",
+      "Intuitive for basic task management",
+      "Good for quick communication among stakeholders"
+    ],
+    "cons": [
+      "Limited customization options for specific engineering workflows",
+      "Potential for a learning curve with advanced features",
+      "Integrations might not be as robust as other tools"
+    ],
+    "overall_experience": "This software engineer likely found Basecamp to be a straightforward tool for managing projects and facilitating collaboration, appreciating its simplicity for day-to-day tasks. However, they may have encountered limitations regarding deep customization or advanced integrations crucial for complex engineering workflows within their less than six months of use. The overall experience was generally positive, but with some frustrations around its more basic feature set compared to specialized tools."
+  },
+  "ts": "2026-10-18T05:26:22.716576+00:00"
+}

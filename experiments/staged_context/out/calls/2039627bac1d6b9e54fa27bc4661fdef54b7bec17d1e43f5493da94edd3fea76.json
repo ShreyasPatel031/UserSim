@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2039627bac1d6b9e54fa27bc4661fdef54b7bec17d1e43f5493da94edd3fea76",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 253,
+  "output_tokens": 1157,
+  "cost_usd": 0.0029684,
+  "elapsed_s": 25.97,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Significantly sped up the drafting of sales emails and outreach messages.\",\n    \"Helped the SDR team overcome writer's block for initial communications.\",\n    \"Improved consistency in messaging across different SDRs.\"\n  ],\n  \"cons\": [\n    \"Required substantial human editing to add personalization and avoid a generic tone.\",\n    \"The AI output sometimes lacked the specific nuance needed for complex sales scenarios.\",\n    \"There was a learning curve to master effective prompting for high-quality sales-specific content.\"\n  ],\n  \"overall_experience\": \"The SDR Manager found Jasper to be a useful tool for augmenting their team's writing efforts, particularly for initial drafts of sales outreach. It helped improve efficiency and message consistency, which are crucial for a small sales operation. However, the need for extensive human refinement to achieve true personalization and address complex sales situations meant it wasn't a complete 'set-it-and-forget-it' solution, impacting its overall efficiency gains.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 3,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Significantly sped up the drafting of sales emails and outreach messages.",
+      "Helped the SDR team overcome writer's block for initial communications.",
+      "Improved consistency in messaging across different SDRs."
+    ],
+    "cons": [
+      "Required substantial human editing to add personalization and avoid a generic tone.",
+      "The AI output sometimes lacked the specific nuance needed for complex sales scenarios.",
+      "There was a learning curve to master effective prompting for high-quality sales-specific content."
+    ],
+    "overall_experience": "The SDR Manager found Jasper to be a useful tool for augmenting their team's writing efforts, particularly for initial drafts of sales outreach. It helped improve efficiency and message consistency, which are crucial for a small sales operation. However, the need for extensive human refinement to achieve true personalization and address complex sales situations meant it wasn't a complete 'set-it-and-forget-it' solution, impacting its overall efficiency gains."
+  },
+  "ts": "2026-10-18T05:24:54.507190+00:00"
+}

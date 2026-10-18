@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "6c25d0527f89b2fc1e021a581ec983fb16406afc5ac32f984d46f7f4a2b4c576",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 379,
+  "output_tokens": 974,
+  "cost_usd": 0.0025487,
+  "elapsed_s": 5.57,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Robust automation and reporting capabilities\",\n    \"Scalable for large enterprise project tracking\",\n    \"Strong integration options for various tools\"\n  ],\n  \"cons\": [\n    \"Learning curve for advanced features can be steep\",\n    \"Interface can feel less intuitive compared to modern alternatives\",\n    \"Cost can be a factor for extensive usage across the organization\"\n  ],\n  \"overall_experience\": \"This System Administrator likely found Smartsheet to be a powerful tool for managing projects and tracking ad sales within a large enterprise, appreciating its robust automation and reporting. While its structured, spreadsheet-like nature offered stability and scalability, it may have presented a steeper learning curve or felt less modern than previous tools. The platform's extensive functionality and integration capabilities were valuable for their role, but the overall cost and initial complexity could be minor drawbacks.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Robust automation and reporting capabilities",
+      "Scalable for large enterprise project tracking",
+      "Strong integration options for various tools"
+    ],
+    "cons": [
+      "Learning curve for advanced features can be steep",
+      "Interface can feel less intuitive compared to modern alternatives",
+      "Cost can be a factor for extensive usage across the organization"
+    ],
+    "overall_experience": "This System Administrator likely found Smartsheet to be a powerful tool for managing projects and tracking ad sales within a large enterprise, appreciating its robust automation and reporting. While its structured, spreadsheet-like nature offered stability and scalability, it may have presented a steeper learning curve or felt less modern than previous tools. The platform's extensive functionality and integration capabilities were valuable for their role, but the overall cost and initial complexity could be minor drawbacks."
+  },
+  "ts": "2026-10-18T05:26:44.764762+00:00"
+}

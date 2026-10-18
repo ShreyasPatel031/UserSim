@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9fa8b967e2c5d84b731de109990d3c529dfa6b7b206877f48e45500fa9f55fbd",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1581,
+  "output_tokens": 1002,
+  "cost_usd": 0.0029793000000000003,
+  "elapsed_s": 8.21,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Streamlined contact management and tracking\",\n    \"Intuitive interface for daily tasks\",\n    \"Effective for remote client communication\"\n  ],\n  \"cons\": [\n    \"Pricing can become a concern for small businesses\",\n    \"Some advanced features might have a slight learning curve\",\n    \"Reporting capabilities could be more robust\"\n  ],\n  \"overall_experience\": \"This consultant likely found HubSpot Sales Hub to be a generally positive tool for managing client contacts remotely. Its ease of use and intuitive design would have been beneficial for tracking leads and communications. While effective for core tasks, the cost structure and certain reporting limitations might have been minor points of frustration.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Streamlined contact management and tracking",
+      "Intuitive interface for daily tasks",
+      "Effective for remote client communication"
+    ],
+    "cons": [
+      "Pricing can become a concern for small businesses",
+      "Some advanced features might have a slight learning curve",
+      "Reporting capabilities could be more robust"
+    ],
+    "overall_experience": "This consultant likely found HubSpot Sales Hub to be a generally positive tool for managing client contacts remotely. Its ease of use and intuitive design would have been beneficial for tracking leads and communications. While effective for core tasks, the cost structure and certain reporting limitations might have been minor points of frustration."
+  },
+  "ts": "2026-10-18T05:25:07.030185+00:00"
+}

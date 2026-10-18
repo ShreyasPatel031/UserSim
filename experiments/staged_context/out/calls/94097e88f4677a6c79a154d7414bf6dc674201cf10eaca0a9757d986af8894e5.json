@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "94097e88f4677a6c79a154d7414bf6dc674201cf10eaca0a9757d986af8894e5",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2197,
+  "output_tokens": 967,
+  "cost_usd": 0.0030766,
+  "elapsed_s": 8.06,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Streamlined global reimbursement process\",\n    \"Intuitive interface for common tasks\",\n    \"Good integration with existing HR systems\"\n  ],\n  \"cons\": [\n    \"Occasional performance slowdowns\",\n    \"Limited customization options for complex reporting\",\n    \"Customer support response times can be inconsistent\"\n  ],\n  \"overall_experience\": \"This Software Design Engineer likely found Paylocity to be a generally effective tool for managing global employee reimbursements, appreciating its ease of use for standard workflows. While the core functionality met most needs, they may have encountered some frustrations with performance or the depth of customization. Support experiences could have been a mixed bag, leading to a solid but not outstanding overall impression.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Streamlined global reimbursement process",
+      "Intuitive interface for common tasks",
+      "Good integration with existing HR systems"
+    ],
+    "cons": [
+      "Occasional performance slowdowns",
+      "Limited customization options for complex reporting",
+      "Customer support response times can be inconsistent"
+    ],
+    "overall_experience": "This Software Design Engineer likely found Paylocity to be a generally effective tool for managing global employee reimbursements, appreciating its ease of use for standard workflows. While the core functionality met most needs, they may have encountered some frustrations with performance or the depth of customization. Support experiences could have been a mixed bag, leading to a solid but not outstanding overall impression."
+  },
+  "ts": "2026-10-18T05:25:49.768398+00:00"
+}

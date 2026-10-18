@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7296324cb471e1bff722d87e4dfa172d4d9d34debc9bd94f866c78de15b65ddd",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 371,
+  "output_tokens": 1017,
+  "cost_usd": 0.0026537999999999996,
+  "elapsed_s": 6.29,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Efficient ticket management system\",\n    \"Intuitive interface for administrators\",\n    \"Good range of core customer support features\"\n  ],\n  \"cons\": [\n    \"Potential for minor learning curve during initial setup\",\n    \"Advanced features might require further exploration\",\n    \"Integration with existing logistics tools was not fully assessed\"\n  ],\n  \"overall_experience\": \"The administrator support professional found LiveAgent's ticket system to be generally effective for managing customer support during their free trial. They likely appreciated the intuitive design and core functionalities, which met their basic needs for a small logistics company. While the trial offered a positive glimpse, they probably noted areas for deeper exploration regarding advanced features or specific integrations relevant to their industry.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Efficient ticket management system",
+      "Intuitive interface for administrators",
+      "Good range of core customer support features"
+    ],
+    "cons": [
+      "Potential for minor learning curve during initial setup",
+      "Advanced features might require further exploration",
+      "Integration with existing logistics tools was not fully assessed"
+    ],
+    "overall_experience": "The administrator support professional found LiveAgent's ticket system to be generally effective for managing customer support during their free trial. They likely appreciated the intuitive design and core functionalities, which met their basic needs for a small logistics company. While the trial offered a positive glimpse, they probably noted areas for deeper exploration regarding advanced features or specific integrations relevant to their industry."
+  },
+  "ts": "2026-10-18T05:26:28.816351+00:00"
+}

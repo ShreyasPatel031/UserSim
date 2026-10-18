@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e67dcdbb6e42b3195103448615300813befdefa53838a1cb6f1832caf59abbc2",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2025,
+  "output_tokens": 1091,
+  "cost_usd": 0.003335,
+  "elapsed_s": 6.33,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 5,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Provides accurate and transparent commission tracking\",\n    \"Streamlines the sales payout process efficiently\",\n    \"Offers clear visibility into sales performance and earnings\"\n  ],\n  \"cons\": [\n    \"Initial setup or customization can be complex\",\n    \"Reporting features may require a learning curve for advanced use\",\n    \"Performance can sometimes be slow when processing large data sets\"\n  ],\n  \"overall_experience\": \"This Commercial Account Executive likely found Xactly highly effective for managing sales commissions and payouts. The platform's ability to provide clear, accurate tracking and streamline processes would have been a significant benefit. While robust, they may have experienced some initial challenges with advanced customization or reporting, or occasional performance slowdowns typical of enterprise-level systems.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 5,
+    "recommendation_score": 9,
+    "pros": [
+      "Provides accurate and transparent commission tracking",
+      "Streamlines the sales payout process efficiently",
+      "Offers clear visibility into sales performance and earnings"
+    ],
+    "cons": [
+      "Initial setup or customization can be complex",
+      "Reporting features may require a learning curve for advanced use",
+      "Performance can sometimes be slow when processing large data sets"
+    ],
+    "overall_experience": "This Commercial Account Executive likely found Xactly highly effective for managing sales commissions and payouts. The platform's ability to provide clear, accurate tracking and streamline processes would have been a significant benefit. While robust, they may have experienced some initial challenges with advanced customization or reporting, or occasional performance slowdowns typical of enterprise-level systems."
+  },
+  "ts": "2026-10-18T05:25:45.353137+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "777922c0cebe28fae88708910a0b800985a1d97894f27d463b2b036c35e2f24e",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 768,
+  "output_tokens": 1021,
+  "cost_usd": 0.0027829,
+  "elapsed_s": 9.17,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Intuitive and easy-to-navigate interface for all HR tasks.\",\n    \"Efficient document management and secure storage of personal files.\",\n    \"Streamlined performance review tracking with clear workflows.\"\n  ],\n  \"cons\": [\n    \"Could have more advanced customization options for specific HR processes.\",\n    \"Reporting features might lack depth for complex data analysis.\",\n    \"Initial setup for integrating with existing systems could be more straightforward.\"\n  ],\n  \"overall_experience\": \"This Network Engineer likely found BambooHR to be a highly effective and user-friendly solution for managing essential HR functions. The platform's ease of use and robust capabilities for document storage and performance tracking would have been particularly appreciated. While generally very positive, they might have noted minor limitations in customization or advanced reporting features.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Intuitive and easy-to-navigate interface for all HR tasks.",
+      "Efficient document management and secure storage of personal files.",
+      "Streamlined performance review tracking with clear workflows."
+    ],
+    "cons": [
+      "Could have more advanced customization options for specific HR processes.",
+      "Reporting features might lack depth for complex data analysis.",
+      "Initial setup for integrating with existing systems could be more straightforward."
+    ],
+    "overall_experience": "This Network Engineer likely found BambooHR to be a highly effective and user-friendly solution for managing essential HR functions. The platform's ease of use and robust capabilities for document storage and performance tracking would have been particularly appreciated. While generally very positive, they might have noted minor limitations in customization or advanced reporting features."
+  },
+  "ts": "2026-10-18T05:26:08.359523+00:00"
+}

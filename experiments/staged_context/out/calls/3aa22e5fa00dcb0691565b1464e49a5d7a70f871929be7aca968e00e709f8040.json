@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3aa22e5fa00dcb0691565b1464e49a5d7a70f871929be7aca968e00e709f8040",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1057,
+  "output_tokens": 1010,
+  "cost_usd": 0.0028421,
+  "elapsed_s": 6.02,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Comprehensive features for managing customer relationships and sales pipelines.\",\n    \"Excellent value for money compared to alternatives like HubSpot.\",\n    \"High degree of customization to fit specific education management workflows.\"\n  ],\n  \"cons\": [\n    \"Initial setup and customization can be complex and time-consuming.\",\n    \"Interface may feel less intuitive or polished compared to HubSpot CRM.\",\n    \"Learning curve for new team members can be steep due to feature richness.\"\n  ],\n  \"overall_experience\": \"This Customer Success Manager likely found Zoho CRM to be a powerful and cost-effective solution for their education management company. While the transition from HubSpot may have presented some challenges regarding ease of use and initial setup complexity, the extensive functionality and customization options proved beneficial for managing their specific customer relationships. They appreciated the strong value for money and comprehensive features, despite a potential learning curve.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Comprehensive features for managing customer relationships and sales pipelines.",
+      "Excellent value for money compared to alternatives like HubSpot.",
+      "High degree of customization to fit specific education management workflows."
+    ],
+    "cons": [
+      "Initial setup and customization can be complex and time-consuming.",
+      "Interface may feel less intuitive or polished compared to HubSpot CRM.",
+      "Learning curve for new team members can be steep due to feature richness."
+    ],
+    "overall_experience": "This Customer Success Manager likely found Zoho CRM to be a powerful and cost-effective solution for their education management company. While the transition from HubSpot may have presented some challenges regarding ease of use and initial setup complexity, the extensive functionality and customization options proved beneficial for managing their specific customer relationships. They appreciated the strong value for money and comprehensive features, despite a potential learning curve."
+  },
+  "ts": "2026-10-18T05:26:16.308289+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "00f8711c17d1760223cc2d3a9c855471f779d1ec7112b348c517b94b32bdc1c3",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1067,
+  "output_tokens": 1043,
+  "cost_usd": 0.0029276000000000003,
+  "elapsed_s": 6.04,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8.4,\n  \"pros\": [\n    \"Effective for tracking and managing sales pipeline to conclude purchases\",\n    \"Good value for money for a small to medium-sized team\",\n    \"Customization options to adapt to specific business needs\"\n  ],\n  \"cons\": [\n    \"Initial setup or learning curve can be steep for some features\",\n    \"Interface can sometimes feel cluttered when navigating complex modules\",\n    \"Occasional difficulties with advanced integrations or specific workflows\"\n  ],\n  \"overall_experience\": \"This assistant likely found Zoho CRM to be a highly functional and valuable tool for managing purchase conclusions within their computer and network security company. While the initial learning curve presented some challenges, the overall benefits in terms of lead and deal tracking, coupled with its affordability for their team size, contributed to a positive experience. The system's customization capabilities were probably appreciated, helping them tailor it to their operational needs.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8.4,
+    "pros": [
+      "Effective for tracking and managing sales pipeline to conclude purchases",
+      "Good value for money for a small to medium-sized team",
+      "Customization options to adapt to specific business needs"
+    ],
+    "cons": [
+      "Initial setup or learning curve can be steep for some features",
+      "Interface can sometimes feel cluttered when navigating complex modules",
+      "Occasional difficulties with advanced integrations or specific workflows"
+    ],
+    "overall_experience": "This assistant likely found Zoho CRM to be a highly functional and valuable tool for managing purchase conclusions within their computer and network security company. While the initial learning curve presented some challenges, the overall benefits in terms of lead and deal tracking, coupled with its affordability for their team size, contributed to a positive experience. The system's customization capabilities were probably appreciated, helping them tailor it to their operational needs."
+  },
+  "ts": "2026-10-18T05:26:14.113379+00:00"
+}

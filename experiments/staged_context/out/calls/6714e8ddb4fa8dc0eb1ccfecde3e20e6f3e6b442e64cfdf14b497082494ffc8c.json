@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "6714e8ddb4fa8dc0eb1ccfecde3e20e6f3e6b442e64cfdf14b497082494ffc8c",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 380,
+  "output_tokens": 974,
+  "cost_usd": 0.002549,
+  "elapsed_s": 5.39,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Advanced segmentation and automation capabilities\",\n    \"Robust integrations with other systems\",\n    \"Scalable for growing marketing needs\"\n  ],\n  \"cons\": [\n    \"Steeper learning curve compared to simpler tools\",\n    \"Can be costly, especially for larger contact lists\",\n    \"Complex interface for everyday marketing tasks\"\n  ],\n  \"overall_experience\": \"This System Engineer likely appreciates Klaviyo's powerful marketing automation and segmentation features, a significant upgrade from previous platforms. However, they might find the platform's complexity and cost challenging for their wholesale business's specific needs. Despite a potentially steep learning curve, the long-term use suggests they have leveraged its capabilities effectively.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Advanced segmentation and automation capabilities",
+      "Robust integrations with other systems",
+      "Scalable for growing marketing needs"
+    ],
+    "cons": [
+      "Steeper learning curve compared to simpler tools",
+      "Can be costly, especially for larger contact lists",
+      "Complex interface for everyday marketing tasks"
+    ],
+    "overall_experience": "This System Engineer likely appreciates Klaviyo's powerful marketing automation and segmentation features, a significant upgrade from previous platforms. However, they might find the platform's complexity and cost challenging for their wholesale business's specific needs. Despite a potentially steep learning curve, the long-term use suggests they have leveraged its capabilities effectively."
+  },
+  "ts": "2026-10-18T05:26:38.574623+00:00"
+}

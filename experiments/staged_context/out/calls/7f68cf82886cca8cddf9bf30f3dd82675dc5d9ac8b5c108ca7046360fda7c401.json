@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7f68cf82886cca8cddf9bf30f3dd82675dc5d9ac8b5c108ca7046360fda7c401",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1053,
+  "output_tokens": 1004,
+  "cost_usd": 0.0028258999999999997,
+  "elapsed_s": 6.14,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Powerful e-commerce automation and segmentation\",\n    \"Effective for setting up user action-based email flows\",\n    \"Robust analytics for campaign optimization\"\n  ],\n  \"cons\": [\n    \"Steeper learning curve compared to previous tools\",\n    \"Pricing can be a significant investment for small businesses\",\n    \"Interface could sometimes be more intuitive for complex tasks\"\n  ],\n  \"overall_experience\": \"This Marketing Director likely found Klaviyo to be a significant upgrade from Mailchimp, especially for its powerful e-commerce automation and segmentation capabilities crucial for the retail industry. While the initial learning curve and pricing might have been considerations for a small business, the platform's functionality for setting up automated user-action emails proved highly effective over two years of use. They probably appreciate the depth of features despite some challenges with ease of use or customer support.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Powerful e-commerce automation and segmentation",
+      "Effective for setting up user action-based email flows",
+      "Robust analytics for campaign optimization"
+    ],
+    "cons": [
+      "Steeper learning curve compared to previous tools",
+      "Pricing can be a significant investment for small businesses",
+      "Interface could sometimes be more intuitive for complex tasks"
+    ],
+    "overall_experience": "This Marketing Director likely found Klaviyo to be a significant upgrade from Mailchimp, especially for its powerful e-commerce automation and segmentation capabilities crucial for the retail industry. While the initial learning curve and pricing might have been considerations for a small business, the platform's functionality for setting up automated user-action emails proved highly effective over two years of use. They probably appreciate the depth of features despite some challenges with ease of use or customer support."
+  },
+  "ts": "2026-10-18T05:26:39.181181+00:00"
+}

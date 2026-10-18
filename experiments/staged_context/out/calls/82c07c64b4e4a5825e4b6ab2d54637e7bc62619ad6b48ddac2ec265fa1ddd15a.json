@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "82c07c64b4e4a5825e4b6ab2d54637e7bc62619ad6b48ddac2ec265fa1ddd15a",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 352,
+  "output_tokens": 1013,
+  "cost_usd": 0.0026381,
+  "elapsed_s": 6.42,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effective tracking of activities for wellness challenges\",\n    \"Motivating reward system that encourages participation\",\n    \"Generally user-friendly interface for daily use\"\n  ],\n  \"cons\": [\n    \"Identified minor UI inconsistencies or occasional glitches\",\n    \"Limited integration options with certain fitness devices or apps\",\n    \"Reward redemption process could be more streamlined\"\n  ],\n  \"overall_experience\": \"The QA Manager likely found Wellable to be a competent platform for tracking activities and earning rewards, appreciating its core functionality and motivational aspects. However, their professional background may have led them to notice minor technical imperfections or areas where the user experience could be refined. Despite these observations, the platform served its intended purpose well as a company wellness benefit.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Effective tracking of activities for wellness challenges",
+      "Motivating reward system that encourages participation",
+      "Generally user-friendly interface for daily use"
+    ],
+    "cons": [
+      "Identified minor UI inconsistencies or occasional glitches",
+      "Limited integration options with certain fitness devices or apps",
+      "Reward redemption process could be more streamlined"
+    ],
+    "overall_experience": "The QA Manager likely found Wellable to be a competent platform for tracking activities and earning rewards, appreciating its core functionality and motivational aspects. However, their professional background may have led them to notice minor technical imperfections or areas where the user experience could be refined. Despite these observations, the platform served its intended purpose well as a company wellness benefit."
+  },
+  "ts": "2026-10-18T05:25:25.187826+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "eccba97de02fd95e9804fd8fe43308be5c6bf899ba5caa4f84ad634dc9bbe809",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 342,
+  "output_tokens": 981,
+  "cost_usd": 0.0025551000000000003,
+  "elapsed_s": 5.33,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Significantly sped up content creation workflows\",\n    \"Helped overcome writer's block and generate new ideas\",\n    \"Offered diverse templates for various content needs\"\n  ],\n  \"cons\": [\n    \"Content sometimes required heavy editing for accuracy and tone\",\n    \"Occasional repetitive or generic output\",\n    \"Cost could be a concern for a small business\"\n  ],\n  \"overall_experience\": \"This content writer likely found Jasper to be a valuable tool for automating daily tasks and boosting productivity within their small business. While it effectively accelerated content creation and idea generation, they probably noted that the AI-generated output often needed refinement to meet specific quality and accuracy standards. Despite minor imperfections, the benefits of increased efficiency likely led to a positive overall experience.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Significantly sped up content creation workflows",
+      "Helped overcome writer's block and generate new ideas",
+      "Offered diverse templates for various content needs"
+    ],
+    "cons": [
+      "Content sometimes required heavy editing for accuracy and tone",
+      "Occasional repetitive or generic output",
+      "Cost could be a concern for a small business"
+    ],
+    "overall_experience": "This content writer likely found Jasper to be a valuable tool for automating daily tasks and boosting productivity within their small business. While it effectively accelerated content creation and idea generation, they probably noted that the AI-generated output often needed refinement to meet specific quality and accuracy standards. Despite minor imperfections, the benefits of increased efficiency likely led to a positive overall experience."
+  },
+  "ts": "2026-10-18T05:25:14.501523+00:00"
+}

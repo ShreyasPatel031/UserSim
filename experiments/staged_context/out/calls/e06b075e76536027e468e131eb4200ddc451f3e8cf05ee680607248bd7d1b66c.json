@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e06b075e76536027e468e131eb4200ddc451f3e8cf05ee680607248bd7d1b66c",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1103,
+  "output_tokens": 1040,
+  "cost_usd": 0.0029308999999999997,
+  "elapsed_s": 9.2,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Cost-effectiveness compared to previous solutions like Zendesk\",\n    \"Robust ticketing system with good automation capabilities\",\n    \"Streamlined communication channels for fraud operations\"\n  ],\n  \"cons\": [\n    \"Some advanced customization options might be less flexible than Zendesk\",\n    \"Reporting features could be more granular for specific fraud metrics\",\n    \"Initial learning curve for specific team workflows\"\n  ],\n  \"overall_experience\": \"The team leader likely found Freshdesk to be a highly effective and valuable tool for managing customer service tickets within their CX Fraud Operations. The platform offered strong functionality and a significant improvement in value for money compared to their previous system. While generally easy to use, they may have noted some minor limitations in advanced customization or reporting when compared to their prior experience with Zendesk.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Cost-effectiveness compared to previous solutions like Zendesk",
+      "Robust ticketing system with good automation capabilities",
+      "Streamlined communication channels for fraud operations"
+    ],
+    "cons": [
+      "Some advanced customization options might be less flexible than Zendesk",
+      "Reporting features could be more granular for specific fraud metrics",
+      "Initial learning curve for specific team workflows"
+    ],
+    "overall_experience": "The team leader likely found Freshdesk to be a highly effective and valuable tool for managing customer service tickets within their CX Fraud Operations. The platform offered strong functionality and a significant improvement in value for money compared to their previous system. While generally easy to use, they may have noted some minor limitations in advanced customization or reporting when compared to their prior experience with Zendesk."
+  },
+  "ts": "2026-10-18T05:26:55.757574+00:00"
+}

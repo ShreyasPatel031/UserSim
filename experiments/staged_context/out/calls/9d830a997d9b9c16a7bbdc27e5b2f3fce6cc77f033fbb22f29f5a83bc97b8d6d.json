@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9d830a997d9b9c16a7bbdc27e5b2f3fce6cc77f033fbb22f29f5a83bc97b8d6d",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1445,
+  "output_tokens": 1033,
+  "cost_usd": 0.003016,
+  "elapsed_s": 5.56,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Intuitive interface for managing deals and campaigns.\",\n    \"Good for a small team needing core CRM functions.\",\n    \"Streamlines lead and deal processes effectively.\"\n  ],\n  \"cons\": [\n    \"Limited advanced features might be behind higher-tier plans.\",\n    \"Initial learning curve for setting up specific workflows.\",\n    \"Customer support response times could be inconsistent.\"\n  ],\n  \"overall_experience\": \"This sales manager likely found Freshsales to be a generally positive tool for their small IT services company, especially for managing sales campaigns and deals. They appreciated its ease of use and core functionalities, which helped streamline their sales process. However, they may have encountered some limitations with advanced features or customization options given their early stage of use and the common complaints for CRMs in this segment.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Intuitive interface for managing deals and campaigns.",
+      "Good for a small team needing core CRM functions.",
+      "Streamlines lead and deal processes effectively."
+    ],
+    "cons": [
+      "Limited advanced features might be behind higher-tier plans.",
+      "Initial learning curve for setting up specific workflows.",
+      "Customer support response times could be inconsistent."
+    ],
+    "overall_experience": "This sales manager likely found Freshsales to be a generally positive tool for their small IT services company, especially for managing sales campaigns and deals. They appreciated its ease of use and core functionalities, which helped streamline their sales process. However, they may have encountered some limitations with advanced features or customization options given their early stage of use and the common complaints for CRMs in this segment."
+  },
+  "ts": "2026-10-18T05:26:11.056353+00:00"
+}

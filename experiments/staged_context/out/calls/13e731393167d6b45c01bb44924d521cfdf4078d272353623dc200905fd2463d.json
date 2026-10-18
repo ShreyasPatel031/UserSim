@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "13e731393167d6b45c01bb44924d521cfdf4078d272353623dc200905fd2463d",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 354,
+  "output_tokens": 952,
+  "cost_usd": 0.0024862,
+  "elapsed_s": 6.04,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Seamlessly tracks contact activity across the sales funnel.\",\n    \"Provides a unified view of lead interactions for better follow-up.\",\n    \"Intuitive interface makes it easy to monitor lead progression.\"\n  ],\n  \"cons\": [\n    \"Initial setup and customization for specific sales processes can be time-consuming.\",\n    \"Some advanced reporting features might require a higher-tier plan.\",\n    \"Integration with non-HubSpot marketing tools could be smoother.\"\n  ],\n  \"overall_experience\": \"The Marketing Coordinator likely found HubSpot Sales Hub to be a highly effective tool for tracking leads from initial contact through to deal closure. The platform's ability to centralize contact activity and provide a clear overview of the sales pipeline was beneficial for understanding marketing ROI. While generally positive, some initial configuration effort and potential cost considerations for advanced features may have been noted.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Seamlessly tracks contact activity across the sales funnel.",
+      "Provides a unified view of lead interactions for better follow-up.",
+      "Intuitive interface makes it easy to monitor lead progression."
+    ],
+    "cons": [
+      "Initial setup and customization for specific sales processes can be time-consuming.",
+      "Some advanced reporting features might require a higher-tier plan.",
+      "Integration with non-HubSpot marketing tools could be smoother."
+    ],
+    "overall_experience": "The Marketing Coordinator likely found HubSpot Sales Hub to be a highly effective tool for tracking leads from initial contact through to deal closure. The platform's ability to centralize contact activity and provide a clear overview of the sales pipeline was beneficial for understanding marketing ROI. While generally positive, some initial configuration effort and potential cost considerations for advanced features may have been noted."
+  },
+  "ts": "2026-10-18T05:25:06.356657+00:00"
+}

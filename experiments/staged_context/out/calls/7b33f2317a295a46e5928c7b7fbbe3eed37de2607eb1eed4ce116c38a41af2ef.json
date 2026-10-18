@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7b33f2317a295a46e5928c7b7fbbe3eed37de2607eb1eed4ce116c38a41af2ef",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 371,
+  "output_tokens": 1078,
+  "cost_usd": 0.0028063,
+  "elapsed_s": 6.43,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Efficient ticket management and tracking features\",\n    \"Intuitive interface for support analysts\",\n    \"Good value for the features offered to a mid-sized organization\"\n  ],\n  \"cons\": [\n    \"Limited customization options for specific higher education workflows\",\n    \"Reporting can be basic for detailed analytical needs\",\n    \"Integrations with existing university systems might be challenging or require workarounds\"\n  ],\n  \"overall_experience\": \"This Support Services Analyst likely found Freshdesk to be a generally effective tool for daily customer support tasks, appreciating its ease of use for managing interactions. However, they probably encountered frustrations with its adaptability to the unique demands of higher education, such as specific reporting needs or integration with legacy university systems. While providing good value, the product's out-of-the-box functionality might not have perfectly aligned with all their industry-specific requirements.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 3,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Efficient ticket management and tracking features",
+      "Intuitive interface for support analysts",
+      "Good value for the features offered to a mid-sized organization"
+    ],
+    "cons": [
+      "Limited customization options for specific higher education workflows",
+      "Reporting can be basic for detailed analytical needs",
+      "Integrations with existing university systems might be challenging or require workarounds"
+    ],
+    "overall_experience": "This Support Services Analyst likely found Freshdesk to be a generally effective tool for daily customer support tasks, appreciating its ease of use for managing interactions. However, they probably encountered frustrations with its adaptability to the unique demands of higher education, such as specific reporting needs or integration with legacy university systems. While providing good value, the product's out-of-the-box functionality might not have perfectly aligned with all their industry-specific requirements."
+  },
+  "ts": "2026-10-18T05:26:51.398455+00:00"
+}

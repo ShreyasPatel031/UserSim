@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d564e5ad896dbc34ec8869c0af49d43e0808cbae9e97d50378325740dad06a8e",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1051,
+  "output_tokens": 1050,
+  "cost_usd": 0.0029403,
+  "elapsed_s": 6.25,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 5,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Simplified task tracking and project organization\",\n    \"Centralized communication for research team updates\",\n    \"Easy for all team members to adopt and use\"\n  ],\n  \"cons\": [\n    \"Lacked advanced reporting for complex research metrics\",\n    \"Limited customization options for specific clinical workflows\",\n    \"Could feel too basic for very large, intricate projects\"\n  ],\n  \"overall_experience\": \"This Clinical Research Coordinator likely found Basecamp to be a highly effective tool for managing and tracking tasks within their research projects. Its straightforward design and centralized communication capabilities were significant advantages, contributing to efficient team collaboration. While generally very positive, they might have noted its limitations in providing highly specialized reporting or deep customization often desired in clinical research settings.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 5,
+    "recommendation_score": 9,
+    "pros": [
+      "Simplified task tracking and project organization",
+      "Centralized communication for research team updates",
+      "Easy for all team members to adopt and use"
+    ],
+    "cons": [
+      "Lacked advanced reporting for complex research metrics",
+      "Limited customization options for specific clinical workflows",
+      "Could feel too basic for very large, intricate projects"
+    ],
+    "overall_experience": "This Clinical Research Coordinator likely found Basecamp to be a highly effective tool for managing and tracking tasks within their research projects. Its straightforward design and centralized communication capabilities were significant advantages, contributing to efficient team collaboration. While generally very positive, they might have noted its limitations in providing highly specialized reporting or deep customization often desired in clinical research settings."
+  },
+  "ts": "2026-10-18T05:26:24.075003+00:00"
+}

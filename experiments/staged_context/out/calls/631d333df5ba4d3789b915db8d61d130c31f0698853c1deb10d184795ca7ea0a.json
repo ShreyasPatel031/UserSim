@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "631d333df5ba4d3789b915db8d61d130c31f0698853c1deb10d184795ca7ea0a",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1069,
+  "output_tokens": 1071,
+  "cost_usd": 0.0029982,
+  "elapsed_s": 6.84,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Comprehensive features for managing client relationships and research projects.\",\n    \"Good value for the extensive functionality offered.\",\n    \"Customization options to adapt to specific market research workflows.\"\n  ],\n  \"cons\": [\n    \"Steep learning curve due to the breadth of features.\",\n    \"Occasional complexity in setting up advanced reports or integrations.\",\n    \"Customer support response times could sometimes be inconsistent.\"\n  ],\n  \"overall_experience\": \"The Sr. Analyst likely found Zoho CRM to be a highly functional and cost-effective solution for managing customer relationships within their market research firm. While the platform's extensive features provided robust capabilities for tracking projects and client interactions, it also presented a noticeable learning curve. Despite some challenges with complexity and support, the overall value and customizability made it a beneficial tool for their team.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Comprehensive features for managing client relationships and research projects.",
+      "Good value for the extensive functionality offered.",
+      "Customization options to adapt to specific market research workflows."
+    ],
+    "cons": [
+      "Steep learning curve due to the breadth of features.",
+      "Occasional complexity in setting up advanced reports or integrations.",
+      "Customer support response times could sometimes be inconsistent."
+    ],
+    "overall_experience": "The Sr. Analyst likely found Zoho CRM to be a highly functional and cost-effective solution for managing customer relationships within their market research firm. While the platform's extensive features provided robust capabilities for tracking projects and client interactions, it also presented a noticeable learning curve. Despite some challenges with complexity and support, the overall value and customizability made it a beneficial tool for their team."
+  },
+  "ts": "2026-10-18T05:26:17.850916+00:00"
+}

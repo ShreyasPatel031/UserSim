@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "92c6467c1a26460cd2e68668adcde78b1d3f0cb9c321a52ff90158ab818938b8",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 378,
+  "output_tokens": 991,
+  "cost_usd": 0.0025908999999999997,
+  "elapsed_s": 5.92,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Robust email and SMS automation capabilities\",\n    \"Advanced segmentation for targeted campaigns\",\n    \"Effective analytics for campaign optimization\"\n  ],\n  \"cons\": [\n    \"Pricing can become costly as contact lists grow\",\n    \"Initial learning curve for maximizing advanced features\",\n    \"Occasional UI complexity for less frequent tasks\"\n  ],\n  \"overall_experience\": \"This online digital marketer likely found Klaviyo to be a highly effective tool for automating their email and SMS marketing campaigns over their 1-2 years of use. They appreciate its powerful segmentation and automation features, which are crucial for an IT services company. While generally positive, they may have noted the platform's cost scalability or initial complexity as minor drawbacks.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Robust email and SMS automation capabilities",
+      "Advanced segmentation for targeted campaigns",
+      "Effective analytics for campaign optimization"
+    ],
+    "cons": [
+      "Pricing can become costly as contact lists grow",
+      "Initial learning curve for maximizing advanced features",
+      "Occasional UI complexity for less frequent tasks"
+    ],
+    "overall_experience": "This online digital marketer likely found Klaviyo to be a highly effective tool for automating their email and SMS marketing campaigns over their 1-2 years of use. They appreciate its powerful segmentation and automation features, which are crucial for an IT services company. While generally positive, they may have noted the platform's cost scalability or initial complexity as minor drawbacks."
+  },
+  "ts": "2026-10-18T05:26:37.370857+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "58ee7ed05d75ed9d27f264fe81a2eb25ea0a5dfc5586c5c334add8214d0c485b",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2071,
+  "output_tokens": 1038,
+  "cost_usd": 0.0032163,
+  "elapsed_s": 6.27,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Comprehensive platform for email automation and campaign management.\",\n    \"Ability to integrate with other marketing tools and applications.\",\n    \"Robust features for segmenting audiences and personalizing campaigns.\"\n  ],\n  \"cons\": [\n    \"Learning curve for new users, potentially overwhelming with many functions.\",\n    \"The cost structure for advanced features and add-ons can be a concern.\",\n    \"Reporting capabilities could be more extensive and customizable.\"\n  ],\n  \"overall_experience\": \"This Team Lead Manager likely found HubSpot Marketing Hub to be a powerful and comprehensive solution for automating marketing emails and managing campaigns. They appreciated its robust features and integrations, which streamlined their marketing efforts. However, they may have faced a learning curve due to the platform's extensive functionalities and found the pricing for additional features to be a drawback, while also desiring more in-depth reporting.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Comprehensive platform for email automation and campaign management.",
+      "Ability to integrate with other marketing tools and applications.",
+      "Robust features for segmenting audiences and personalizing campaigns."
+    ],
+    "cons": [
+      "Learning curve for new users, potentially overwhelming with many functions.",
+      "The cost structure for advanced features and add-ons can be a concern.",
+      "Reporting capabilities could be more extensive and customizable."
+    ],
+    "overall_experience": "This Team Lead Manager likely found HubSpot Marketing Hub to be a powerful and comprehensive solution for automating marketing emails and managing campaigns. They appreciated its robust features and integrations, which streamlined their marketing efforts. However, they may have faced a learning curve due to the platform's extensive functionalities and found the pricing for additional features to be a drawback, while also desiring more in-depth reporting."
+  },
+  "ts": "2026-10-18T05:25:59.128924+00:00"
+}

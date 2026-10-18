@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "fd451c784051604bd61534108249a53fb3cf29bdee19eb1445d2a2c395d0f2c0",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1714,
+  "output_tokens": 952,
+  "cost_usd": 0.0028942000000000004,
+  "elapsed_s": 5.16,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effectively trains users on phishing and scam awareness\",\n    \"Provides a user-friendly platform for security education\",\n    \"Offers robust reporting capabilities for tracking progress\"\n  ],\n  \"cons\": [\n    \"Initial setup and integration can be complex for custom needs\",\n    \"Pricing might be perceived as high compared to alternatives\",\n    \"Some features may lack the depth of customization IT specialists desire\"\n  ],\n  \"overall_experience\": \"The IT Specialist likely found KnowBe4 effective for its primary task of training users on security awareness, appreciating its ease of use and reporting. However, they may have encountered challenges with custom integrations or setup complexity, and potentially found the cost a bit high. Despite these minor frustrations, the product generally met their needs for improving organizational security posture.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Effectively trains users on phishing and scam awareness",
+      "Provides a user-friendly platform for security education",
+      "Offers robust reporting capabilities for tracking progress"
+    ],
+    "cons": [
+      "Initial setup and integration can be complex for custom needs",
+      "Pricing might be perceived as high compared to alternatives",
+      "Some features may lack the depth of customization IT specialists desire"
+    ],
+    "overall_experience": "The IT Specialist likely found KnowBe4 effective for its primary task of training users on security awareness, appreciating its ease of use and reporting. However, they may have encountered challenges with custom integrations or setup complexity, and potentially found the cost a bit high. Despite these minor frustrations, the product generally met their needs for improving organizational security posture."
+  },
+  "ts": "2026-10-18T05:25:18.480517+00:00"
+}

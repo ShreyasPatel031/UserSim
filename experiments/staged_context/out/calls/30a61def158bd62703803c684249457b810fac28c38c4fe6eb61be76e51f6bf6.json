@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "30a61def158bd62703803c684249457b810fac28c38c4fe6eb61be76e51f6bf6",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 357,
+  "output_tokens": 1013,
+  "cost_usd": 0.0026396,
+  "elapsed_s": 5.98,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Robust security for critical access credentials\",\n    \"Seamless password synchronization across multiple devices\",\n    \"Efficient team-sharing and access management features\"\n  ],\n  \"cons\": [\n    \"Initial setup for team features might have a learning curve\",\n    \"Subscription cost could be a consideration for a small business\",\n    \"Occasional minor integration quirks with specific niche applications\"\n  ],\n  \"overall_experience\": \"This SAP Basis Consultant likely found 1Password to be a highly effective and secure solution for managing complex access credentials across various devices and for team collaboration. The robust functionality, particularly for secure sharing and multi-device synchronization, would have been a significant benefit in their consulting work. While generally positive, they may have noted a slight learning curve for advanced team features or potential minor integration challenges with highly specialized tools.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Robust security for critical access credentials",
+      "Seamless password synchronization across multiple devices",
+      "Efficient team-sharing and access management features"
+    ],
+    "cons": [
+      "Initial setup for team features might have a learning curve",
+      "Subscription cost could be a consideration for a small business",
+      "Occasional minor integration quirks with specific niche applications"
+    ],
+    "overall_experience": "This SAP Basis Consultant likely found 1Password to be a highly effective and secure solution for managing complex access credentials across various devices and for team collaboration. The robust functionality, particularly for secure sharing and multi-device synchronization, would have been a significant benefit in their consulting work. While generally positive, they may have noted a slight learning curve for advanced team features or potential minor integration challenges with highly specialized tools."
+  },
+  "ts": "2026-10-18T05:25:23.957433+00:00"
+}

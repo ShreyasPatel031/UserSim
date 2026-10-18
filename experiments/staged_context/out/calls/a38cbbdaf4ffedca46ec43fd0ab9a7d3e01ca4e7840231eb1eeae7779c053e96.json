@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a38cbbdaf4ffedca46ec43fd0ab9a7d3e01ca4e7840231eb1eeae7779c053e96",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1589,
+  "output_tokens": 1067,
+  "cost_usd": 0.0031442,
+  "elapsed_s": 6.26,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Robust automation capabilities for IT operations and workflows\",\n    \"Extensive customization options to fit specific enterprise needs\",\n    \"Strong integration potential with other systems via API\"\n  ],\n  \"cons\": [\n    \"High cost, especially for advanced features and larger deployments\",\n    \"Significant learning curve for developers to master the platform\",\n    \"Initial setup and advanced customization can be time-consuming\"\n  ],\n  \"overall_experience\": \"This Lead Developer likely found ServiceNow ITSM to be a powerful and highly functional platform for managing IT operations and automating complex workflows within an enterprise environment. They appreciated its deep customization and integration capabilities, which are crucial for their role. However, they probably faced challenges with the platform's steep learning curve and its high overall cost, particularly when trying to leverage its full potential.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Robust automation capabilities for IT operations and workflows",
+      "Extensive customization options to fit specific enterprise needs",
+      "Strong integration potential with other systems via API"
+    ],
+    "cons": [
+      "High cost, especially for advanced features and larger deployments",
+      "Significant learning curve for developers to master the platform",
+      "Initial setup and advanced customization can be time-consuming"
+    ],
+    "overall_experience": "This Lead Developer likely found ServiceNow ITSM to be a powerful and highly functional platform for managing IT operations and automating complex workflows within an enterprise environment. They appreciated its deep customization and integration capabilities, which are crucial for their role. However, they probably faced challenges with the platform's steep learning curve and its high overall cost, particularly when trying to leverage its full potential."
+  },
+  "ts": "2026-10-18T05:25:07.610007+00:00"
+}

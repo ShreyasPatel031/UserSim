@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "cb581a9f0164c802d08453090a83996587c323c174a39439386c0ade99a08706",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 345,
+  "output_tokens": 1019,
+  "cost_usd": 0.0026509999999999997,
+  "elapsed_s": 6.3,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Intuitive self-service portal for personal data\",\n    \"Streamlined access to pay stubs and tax documents\",\n    \"Easy benefits enrollment and management\"\n  ],\n  \"cons\": [\n    \"Initial setup for new personal information could be smoother\",\n    \"Occasional minor glitches in the mobile app\",\n    \"Limited visibility into broader HR processes as a non-admin user\"\n  ],\n  \"overall_experience\": \"As a Customer Success Manager in a small business, this individual likely found Rippling to be a highly effective tool for managing their personal employment and tax information. The platform's user-friendly interface and comprehensive self-service options were probably appreciated, making tasks like accessing pay stubs and updating personal details straightforward. While generally positive, there might have been minor frustrations with initial data entry or occasional app performance, but these would not significantly detract from an otherwise smooth experience.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Intuitive self-service portal for personal data",
+      "Streamlined access to pay stubs and tax documents",
+      "Easy benefits enrollment and management"
+    ],
+    "cons": [
+      "Initial setup for new personal information could be smoother",
+      "Occasional minor glitches in the mobile app",
+      "Limited visibility into broader HR processes as a non-admin user"
+    ],
+    "overall_experience": "As a Customer Success Manager in a small business, this individual likely found Rippling to be a highly effective tool for managing their personal employment and tax information. The platform's user-friendly interface and comprehensive self-service options were probably appreciated, making tasks like accessing pay stubs and updating personal details straightforward. While generally positive, there might have been minor frustrations with initial data entry or occasional app performance, but these would not significantly detract from an otherwise smooth experience."
+  },
+  "ts": "2026-10-18T05:25:18.334513+00:00"
+}

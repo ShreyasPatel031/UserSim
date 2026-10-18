@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "eae04de4e1817a1483c8857ce4036ee44538f8dae6a000a072a9175b7c2a64e1",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 272,
+  "output_tokens": 969,
+  "cost_usd": 0.0025041,
+  "elapsed_s": 6.38,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Efficient and accurate payroll processing\",\n    \"Streamlined tax filing capabilities\",\n    \"Intuitive interface for core HR tasks\"\n  ],\n  \"cons\": [\n    \"Complexity in managing international employee data\",\n    \"Customer support response times can be inconsistent\",\n    \"Steep learning curve for advanced reporting features\"\n  ],\n  \"overall_experience\": \"The HR Generalist likely found Paylocity effective for domestic payroll and tax filing, appreciating its accuracy and user-friendly interface for standard HR tasks. However, managing the complexities of international employees within the system probably presented challenges, potentially requiring workarounds or additional manual effort. While generally satisfied with core functionality, the occasional inconsistencies in customer support and the system's limitations for global HR management likely impacted their overall experience.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Efficient and accurate payroll processing",
+      "Streamlined tax filing capabilities",
+      "Intuitive interface for core HR tasks"
+    ],
+    "cons": [
+      "Complexity in managing international employee data",
+      "Customer support response times can be inconsistent",
+      "Steep learning curve for advanced reporting features"
+    ],
+    "overall_experience": "The HR Generalist likely found Paylocity effective for domestic payroll and tax filing, appreciating its accuracy and user-friendly interface for standard HR tasks. However, managing the complexities of international employees within the system probably presented challenges, potentially requiring workarounds or additional manual effort. While generally satisfied with core functionality, the occasional inconsistencies in customer support and the system's limitations for global HR management likely impacted their overall experience."
+  },
+  "ts": "2026-10-18T05:24:56.723358+00:00"
+}

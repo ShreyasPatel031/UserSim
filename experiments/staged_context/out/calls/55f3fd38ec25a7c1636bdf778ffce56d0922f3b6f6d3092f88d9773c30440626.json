@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "55f3fd38ec25a7c1636bdf778ffce56d0922f3b6f6d3092f88d9773c30440626",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 821,
+  "output_tokens": 981,
+  "cost_usd": 0.0026988000000000003,
+  "elapsed_s": 5.77,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8.5,\n  \"pros\": [\n    \"Robust workflows for process automation\",\n    \"Comprehensive analytics and reporting tools\",\n    \"Centralized platform for marketing data\"\n  ],\n  \"cons\": [\n    \"Potential cost concerns for a small business\",\n    \"Learning curve for advanced customization and reporting\",\n    \"Some limitations in deep, bespoke analytics\"\n  ],\n  \"overall_experience\": \"The Director of Analytics and Business Development likely found HubSpot Marketing Hub highly effective for streamlining processes and leveraging its robust analytics capabilities. The platform's integrated nature helped in supporting business decisions. However, they may have encountered challenges related to its cost structure for a small business or wished for more advanced customization options in reporting.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8.5,
+    "pros": [
+      "Robust workflows for process automation",
+      "Comprehensive analytics and reporting tools",
+      "Centralized platform for marketing data"
+    ],
+    "cons": [
+      "Potential cost concerns for a small business",
+      "Learning curve for advanced customization and reporting",
+      "Some limitations in deep, bespoke analytics"
+    ],
+    "overall_experience": "The Director of Analytics and Business Development likely found HubSpot Marketing Hub highly effective for streamlining processes and leveraging its robust analytics capabilities. The platform's integrated nature helped in supporting business decisions. However, they may have encountered challenges related to its cost structure for a small business or wished for more advanced customization options in reporting."
+  },
+  "ts": "2026-10-18T05:25:58.609043+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ac4e2ace9de527c18e4dae3421ea4c69df745fb0edabf1ae50603d765028bee9",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1772,
+  "output_tokens": 1059,
+  "cost_usd": 0.0031791,
+  "elapsed_s": 5.6,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Centralized communication and collaboration\",\n    \"Integration with other Microsoft 365 apps\",\n    \"Supports various communication formats (chat, calls, video)\"\n  ],\n  \"cons\": [\n    \"Can become overwhelming with too many notifications and channels\",\n    \"Performance issues or resource heavy for small businesses\",\n    \"The cost might be a concern for small businesses\"\n  ],\n  \"overall_experience\": \"This social media manager likely found Microsoft Teams to be a highly functional tool for centralizing team communication and collaboration, especially appreciating its integration with the Microsoft ecosystem. However, they probably experienced some frustrations with notification management and potential performance demands, which could make the platform feel overwhelming at times. The value for money might be questioned, given the perception of high costs for small businesses when full functionality isn't utilized.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Centralized communication and collaboration",
+      "Integration with other Microsoft 365 apps",
+      "Supports various communication formats (chat, calls, video)"
+    ],
+    "cons": [
+      "Can become overwhelming with too many notifications and channels",
+      "Performance issues or resource heavy for small businesses",
+      "The cost might be a concern for small businesses"
+    ],
+    "overall_experience": "This social media manager likely found Microsoft Teams to be a highly functional tool for centralizing team communication and collaboration, especially appreciating its integration with the Microsoft ecosystem. However, they probably experienced some frustrations with notification management and potential performance demands, which could make the platform feel overwhelming at times. The value for money might be questioned, given the perception of high costs for small businesses when full functionality isn't utilized."
+  },
+  "ts": "2026-10-18T05:25:36.169113+00:00"
+}

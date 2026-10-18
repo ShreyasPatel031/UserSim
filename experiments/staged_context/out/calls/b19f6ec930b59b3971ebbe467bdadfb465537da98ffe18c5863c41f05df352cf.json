@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b19f6ec930b59b3971ebbe467bdadfb465537da98ffe18c5863c41f05df352cf",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 266,
+  "output_tokens": 1012,
+  "cost_usd": 0.0026098000000000002,
+  "elapsed_s": 28.43,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Efficiently automates routine customer support for app users\",\n    \"Offers customization to align with specific app projects and brands\",\n    \"Improves user satisfaction through instant, 24/7 assistance\"\n  ],\n  \"cons\": [\n    \"Requires significant initial training and ongoing refinement for nuanced app-specific queries\",\n    \"May struggle with highly complex or novel user issues requiring human intervention\",\n    \"Integration across vastly different projects/locales could still present management overhead\"\n  ],\n  \"overall_experience\": \"The Chief Product Officer found Fin by Intercom to be a valuable tool for enhancing the automated support aspect of their smartphone app's customer experience. Its ability to customize responses for different projects and locations was particularly beneficial for their diverse user base. While requiring some initial setup and ongoing refinement, the CPO appreciated its efficiency in handling routine inquiries and improving overall user satisfaction.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Efficiently automates routine customer support for app users",
+      "Offers customization to align with specific app projects and brands",
+      "Improves user satisfaction through instant, 24/7 assistance"
+    ],
+    "cons": [
+      "Requires significant initial training and ongoing refinement for nuanced app-specific queries",
+      "May struggle with highly complex or novel user issues requiring human intervention",
+      "Integration across vastly different projects/locales could still present management overhead"
+    ],
+    "overall_experience": "The Chief Product Officer found Fin by Intercom to be a valuable tool for enhancing the automated support aspect of their smartphone app's customer experience. Its ability to customize responses for different projects and locations was particularly beneficial for their diverse user base. While requiring some initial setup and ongoing refinement, the CPO appreciated its efficiency in handling routine inquiries and improving overall user satisfaction."
+  },
+  "ts": "2026-10-18T05:24:55.493796+00:00"
+}

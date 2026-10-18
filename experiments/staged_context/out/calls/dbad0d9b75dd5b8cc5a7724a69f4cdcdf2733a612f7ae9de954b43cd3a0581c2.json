@@ -1,0 +1,22 @@
+{
+  "stage": "g2_judge",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "dbad0d9b75dd5b8cc5a7724a69f4cdcdf2733a612f7ae9de954b43cd3a0581c2",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 440,
+  "output_tokens": 391,
+  "cost_usd": 0.0011095,
+  "elapsed_s": 3.12,
+  "error": null,
+  "text": "{\n  \"pros\": [],\n  \"cons\": [],\n  \"overall\": 0\n}",
+  "json": {
+    "pros": [],
+    "cons": [],
+    "overall": 0
+  },
+  "ts": "2026-10-18T05:27:15.623419+00:00"
+}

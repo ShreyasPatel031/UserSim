@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "cc6214af1ea36825719bd978a8adaec771402b7a7261f43ce5c58e35bd11c087",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1082,
+  "output_tokens": 1032,
+  "cost_usd": 0.0029046,
+  "elapsed_s": 6.17,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8.2,\n  \"pros\": [\n    \"Improved project tracking and collaboration over Google Sheets.\",\n    \"Provides a structured approach for complex marketing campaigns.\",\n    \"Automation features streamline routine tasks.\"\n  ],\n  \"cons\": [\n    \"Steeper learning curve for a small team.\",\n    \"Interface may feel less intuitive than monday.com for creative workflows.\",\n    \"Perceived higher cost for a small company.\"\n  ],\n  \"overall_experience\": \"This reviewer likely found Smartsheet to be a significant upgrade from Google Sheets for managing complex collaborative marketing projects, appreciating its structured features and automation. However, they may have experienced a learning curve and found the interface less visually engaging compared to alternatives like monday.com, with the cost potentially being a consideration for a small agency.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8.2,
+    "pros": [
+      "Improved project tracking and collaboration over Google Sheets.",
+      "Provides a structured approach for complex marketing campaigns.",
+      "Automation features streamline routine tasks."
+    ],
+    "cons": [
+      "Steeper learning curve for a small team.",
+      "Interface may feel less intuitive than monday.com for creative workflows.",
+      "Perceived higher cost for a small company."
+    ],
+    "overall_experience": "This reviewer likely found Smartsheet to be a significant upgrade from Google Sheets for managing complex collaborative marketing projects, appreciating its structured features and automation. However, they may have experienced a learning curve and found the interface less visually engaging compared to alternatives like monday.com, with the cost potentially being a consideration for a small agency."
+  },
+  "ts": "2026-10-18T05:26:48.086596+00:00"
+}

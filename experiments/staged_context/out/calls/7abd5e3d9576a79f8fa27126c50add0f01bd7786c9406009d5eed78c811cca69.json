@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7abd5e3d9576a79f8fa27126c50add0f01bd7786c9406009d5eed78c811cca69",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 843,
+  "output_tokens": 1075,
+  "cost_usd": 0.0029403999999999997,
+  "elapsed_s": 6.06,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Comprehensive suite for payroll, timecards, and compliance.\",\n    \"Effective in managing HR services across multiple business entities.\",\n    \"Reliable for executive-level oversight of critical HR functions.\"\n  ],\n  \"cons\": [\n    \"Initial setup and integration across multiple businesses can be complex.\",\n    \"Customer support response times or resolution efficiency might occasionally fall short.\",\n    \"Perceived value for money could be slightly improved given the overall cost.\"\n  ],\n  \"overall_experience\": \"This CEO likely found Paylocity to be a robust and generally effective solution for managing HR, payroll, timekeeping, and compliance across their various businesses. While appreciating its comprehensive functionality and overall reliability for strategic oversight, they may have encountered occasional frustrations with customer support or the initial complexity of multi-entity setup. The platform provided good value, though there might have been a desire for slightly better cost-effectiveness.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Comprehensive suite for payroll, timecards, and compliance.",
+      "Effective in managing HR services across multiple business entities.",
+      "Reliable for executive-level oversight of critical HR functions."
+    ],
+    "cons": [
+      "Initial setup and integration across multiple businesses can be complex.",
+      "Customer support response times or resolution efficiency might occasionally fall short.",
+      "Perceived value for money could be slightly improved given the overall cost."
+    ],
+    "overall_experience": "This CEO likely found Paylocity to be a robust and generally effective solution for managing HR, payroll, timekeeping, and compliance across their various businesses. While appreciating its comprehensive functionality and overall reliability for strategic oversight, they may have encountered occasional frustrations with customer support or the initial complexity of multi-entity setup. The platform provided good value, though there might have been a desire for slightly better cost-effectiveness."
+  },
+  "ts": "2026-10-18T05:25:50.087315+00:00"
+}

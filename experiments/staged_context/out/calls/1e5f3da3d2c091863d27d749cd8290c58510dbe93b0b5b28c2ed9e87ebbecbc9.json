@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1e5f3da3d2c091863d27d749cd8290c58510dbe93b0b5b28c2ed9e87ebbecbc9",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 486,
+  "output_tokens": 932,
+  "cost_usd": 0.0024758000000000002,
+  "elapsed_s": 9.45,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Ability to consolidate legal operational data for better insights\",\n    \"Clear data visualization helped in presenting complex information\",\n    \"Improved accuracy and consistency of reporting for compliance\"\n  ],\n  \"cons\": [\n    \"Initial setup and learning curve for non-technical users was steep\",\n    \"Required significant internal data engineering support to get started\",\n    \"Cost felt a bit high for a mid-sized legal services firm\"\n  ],\n  \"overall_experience\": \"The Legal Head found Looker to be a powerful tool for analyzing and visualizing data within their legal services firm. While the platform provided valuable insights and improved reporting accuracy, the initial implementation and learning curve presented some challenges. They appreciated the potential for data-driven decision-making but noted the investment in time and resources required to fully leverage its capabilities.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 7,
+    "pros": [
+      "Ability to consolidate legal operational data for better insights",
+      "Clear data visualization helped in presenting complex information",
+      "Improved accuracy and consistency of reporting for compliance"
+    ],
+    "cons": [
+      "Initial setup and learning curve for non-technical users was steep",
+      "Required significant internal data engineering support to get started",
+      "Cost felt a bit high for a mid-sized legal services firm"
+    ],
+    "overall_experience": "The Legal Head found Looker to be a powerful tool for analyzing and visualizing data within their legal services firm. While the platform provided valuable insights and improved reporting accuracy, the initial implementation and learning curve presented some challenges. They appreciated the potential for data-driven decision-making but noted the investment in time and resources required to fully leverage its capabilities."
+  },
+  "ts": "2026-10-18T05:26:21.995595+00:00"
+}

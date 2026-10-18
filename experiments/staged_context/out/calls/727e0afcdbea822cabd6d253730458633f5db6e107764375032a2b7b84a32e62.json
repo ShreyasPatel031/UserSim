@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "727e0afcdbea822cabd6d253730458633f5db6e107764375032a2b7b84a32e62",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 356,
+  "output_tokens": 1000,
+  "cost_usd": 0.0026068000000000003,
+  "elapsed_s": 6.19,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Robust security features and strong encryption\",\n    \"Seamless integration with browsers and applications for autofill\",\n    \"Effective team sharing and administrative controls for a mid-market company\"\n  ],\n  \"cons\": [\n    \"Initial setup and migration of existing passwords could be time-consuming\",\n    \"Occasional minor autofill issues on complex or custom web forms\",\n    \"Interface might feel slightly overwhelming for new users due to feature depth\"\n  ],\n  \"overall_experience\": \"As a QA Engineer, the user likely found 1Password to be a highly reliable and secure solution for managing numerous passwords across their team. They appreciated its comprehensive feature set, including robust security, secure sharing, and smooth integration, which met the needs of a mid-market company. While they might have encountered minor UI quirks or occasional autofill inconsistencies typical of complex software, the overall stability and critical functionality would have been highly valued.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Robust security features and strong encryption",
+      "Seamless integration with browsers and applications for autofill",
+      "Effective team sharing and administrative controls for a mid-market company"
+    ],
+    "cons": [
+      "Initial setup and migration of existing passwords could be time-consuming",
+      "Occasional minor autofill issues on complex or custom web forms",
+      "Interface might feel slightly overwhelming for new users due to feature depth"
+    ],
+    "overall_experience": "As a QA Engineer, the user likely found 1Password to be a highly reliable and secure solution for managing numerous passwords across their team. They appreciated its comprehensive feature set, including robust security, secure sharing, and smooth integration, which met the needs of a mid-market company. While they might have encountered minor UI quirks or occasional autofill inconsistencies typical of complex software, the overall stability and critical functionality would have been highly valued."
+  },
+  "ts": "2026-10-18T05:25:23.725297+00:00"
+}

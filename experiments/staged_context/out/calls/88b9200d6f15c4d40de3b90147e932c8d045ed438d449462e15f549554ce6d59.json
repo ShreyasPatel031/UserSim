@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "88b9200d6f15c4d40de3b90147e932c8d045ed438d449462e15f549554ce6d59",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 357,
+  "output_tokens": 924,
+  "cost_usd": 0.0024171,
+  "elapsed_s": 5.86,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Robust payroll processing capabilities.\",\n    \"Comprehensive financial reporting tools.\",\n    \"Scalable features suitable for mid-market companies.\"\n  ],\n  \"cons\": [\n    \"Initial setup and implementation can be complex.\",\n    \"Learning curve for advanced reporting features.\",\n    \"Inconsistent customer support response times.\"\n  ],\n  \"overall_experience\": \"This Finance Manager likely found Paylocity to be a highly functional solution for their core tasks of payroll and project financial reporting, appreciating its robust capabilities. While the initial setup may have presented some challenges, the system's ability to handle complex financial data and generate detailed reports was a significant benefit. However, the experience might have been slightly tempered by occasional difficulties with customer support or the learning curve associated with maximizing the platform's advanced features.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Robust payroll processing capabilities.",
+      "Comprehensive financial reporting tools.",
+      "Scalable features suitable for mid-market companies."
+    ],
+    "cons": [
+      "Initial setup and implementation can be complex.",
+      "Learning curve for advanced reporting features.",
+      "Inconsistent customer support response times."
+    ],
+    "overall_experience": "This Finance Manager likely found Paylocity to be a highly functional solution for their core tasks of payroll and project financial reporting, appreciating its robust capabilities. While the initial setup may have presented some challenges, the system's ability to handle complex financial data and generate detailed reports was a significant benefit. However, the experience might have been slightly tempered by occasional difficulties with customer support or the learning curve associated with maximizing the platform's advanced features."
+  },
+  "ts": "2026-10-18T05:25:29.563125+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e7918a3a43f416d671cced7ecce97f989045f7ba6ff5b1615edf62c7bb8bdee0",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1826,
+  "output_tokens": 972,
+  "cost_usd": 0.0029778,
+  "elapsed_s": 6.32,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Streamlined process for reviewing expense line items\",\n    \"Robust functionality suitable for enterprise needs\",\n    \"Centralized platform for expense management\"\n  ],\n  \"cons\": [\n    \"User interface can feel dated or less intuitive at times\",\n    \"Initial setup or complex configurations may require significant effort\",\n    \"Occasional performance issues with large datasets\"\n  ],\n  \"overall_experience\": \"The Director likely found SAP Concur to be a powerful and comprehensive tool for managing and reviewing expense line items within their large organization. While the functionality met their enterprise-level requirements for efficiency and control, they may have encountered some challenges with the user interface's modernity or the system's overall ease of use for less frequent tasks. Despite these minor frustrations, the platform generally facilitated their oversight responsibilities effectively.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Streamlined process for reviewing expense line items",
+      "Robust functionality suitable for enterprise needs",
+      "Centralized platform for expense management"
+    ],
+    "cons": [
+      "User interface can feel dated or less intuitive at times",
+      "Initial setup or complex configurations may require significant effort",
+      "Occasional performance issues with large datasets"
+    ],
+    "overall_experience": "The Director likely found SAP Concur to be a powerful and comprehensive tool for managing and reviewing expense line items within their large organization. While the functionality met their enterprise-level requirements for efficiency and control, they may have encountered some challenges with the user interface's modernity or the system's overall ease of use for less frequent tasks. Despite these minor frustrations, the platform generally facilitated their oversight responsibilities effectively."
+  },
+  "ts": "2026-10-18T05:25:54.931707+00:00"
+}

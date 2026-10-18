@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9ed8eb42685117fe2df67e530b2fa0e9836390d367337a69acc16232a87d809c",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 263,
+  "output_tokens": 1025,
+  "cost_usd": 0.0026414,
+  "elapsed_s": 6.76,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Robust capabilities for travel and expense data management\",\n    \"Potential for extensive data synchronization across systems\",\n    \"Centralized platform for enterprise financial workflows\"\n  ],\n  \"cons\": [\n    \"Integration for custom enterprise needs can be complex\",\n    \"Developer experience with APIs and documentation might be challenging\",\n    \"Requires significant effort to fully automate and synchronize data\"\n  ],\n  \"overall_experience\": \"As a developer, their experience likely centered on the technical challenges and successes of integrating SAP Concur into existing enterprise systems. While the platform offers powerful functionality for automating and synchronizing travel, expense, and invoice data, the complexity of its APIs and integration points may have presented a steep learning curve. The core functionality was appreciated, but the implementation effort for a large organization was a significant factor.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Robust capabilities for travel and expense data management",
+      "Potential for extensive data synchronization across systems",
+      "Centralized platform for enterprise financial workflows"
+    ],
+    "cons": [
+      "Integration for custom enterprise needs can be complex",
+      "Developer experience with APIs and documentation might be challenging",
+      "Requires significant effort to fully automate and synchronize data"
+    ],
+    "overall_experience": "As a developer, their experience likely centered on the technical challenges and successes of integrating SAP Concur into existing enterprise systems. While the platform offers powerful functionality for automating and synchronizing travel, expense, and invoice data, the complexity of its APIs and integration points may have presented a steep learning curve. The core functionality was appreciated, but the implementation effort for a large organization was a significant factor."
+  },
+  "ts": "2026-10-18T05:24:59.637818+00:00"
+}

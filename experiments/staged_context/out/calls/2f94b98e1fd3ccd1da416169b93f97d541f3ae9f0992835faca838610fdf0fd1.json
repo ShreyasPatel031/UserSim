@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2f94b98e1fd3ccd1da416169b93f97d541f3ae9f0992835faca838610fdf0fd1",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1747,
+  "output_tokens": 1079,
+  "cost_usd": 0.0032216000000000002,
+  "elapsed_s": 6.61,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Quickly create professional-looking designs without design expertise\",\n    \"Extensive library of templates and assets for diverse needs\",\n    \"Intuitive drag-and-drop interface\"\n  ],\n  \"cons\": [\n    \"Limited advanced customization options for precise technical design\",\n    \"Potential for performance issues with complex or large projects\",\n    \"Integration with developer tools or design systems might be lacking compared to alternatives\"\n  ],\n  \"overall_experience\": \"This DX Engineer likely found Canva to be an incredibly useful tool for quickly generating various designs, appreciating its ease of use and vast template library. While it excels in accessibility and speed for general design tasks, they might have encountered limitations when needing more granular control, advanced functionality, or seamless integration with their development workflows. The value for money would be good for general purpose design, though they might note areas where it falls short for highly specialized technical design needs.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Quickly create professional-looking designs without design expertise",
+      "Extensive library of templates and assets for diverse needs",
+      "Intuitive drag-and-drop interface"
+    ],
+    "cons": [
+      "Limited advanced customization options for precise technical design",
+      "Potential for performance issues with complex or large projects",
+      "Integration with developer tools or design systems might be lacking compared to alternatives"
+    ],
+    "overall_experience": "This DX Engineer likely found Canva to be an incredibly useful tool for quickly generating various designs, appreciating its ease of use and vast template library. While it excels in accessibility and speed for general design tasks, they might have encountered limitations when needing more granular control, advanced functionality, or seamless integration with their development workflows. The value for money would be good for general purpose design, though they might note areas where it falls short for highly specialized technical design needs."
+  },
+  "ts": "2026-10-18T05:25:11.928378+00:00"
+}

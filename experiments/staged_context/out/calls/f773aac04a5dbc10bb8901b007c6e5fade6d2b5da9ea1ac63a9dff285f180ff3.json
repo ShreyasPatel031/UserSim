@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f773aac04a5dbc10bb8901b007c6e5fade6d2b5da9ea1ac63a9dff285f180ff3",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1599,
+  "output_tokens": 1089,
+  "cost_usd": 0.0032021999999999997,
+  "elapsed_s": 6.04,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Efficiently handles large-scale outreach campaigns.\",\n    \"Provides tools for managing multiple inboxes and ensuring deliverability.\",\n    \"Intuitive interface for setting up and segmenting campaigns.\"\n  ],\n  \"cons\": [\n    \"Could have limitations on lead export or email volumes that impact scalability.\",\n    \"Support responsiveness or issue resolution might not always meet expectations.\",\n    \"Reporting and analytics might lack depth for advanced performance insights.\"\n  ],\n  \"overall_experience\": \"This CEO likely found Reply to be a solid tool for their primary need of orchestrating large-scale user outreach, appreciating its ability to manage campaigns and ensure deliverability. However, they may have encountered frustrations with limitations on lead volumes or email sends, impacting their ability to scale further. Support and advanced reporting might also have been areas where the product fell short of their executive expectations.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Efficiently handles large-scale outreach campaigns.",
+      "Provides tools for managing multiple inboxes and ensuring deliverability.",
+      "Intuitive interface for setting up and segmenting campaigns."
+    ],
+    "cons": [
+      "Could have limitations on lead export or email volumes that impact scalability.",
+      "Support responsiveness or issue resolution might not always meet expectations.",
+      "Reporting and analytics might lack depth for advanced performance insights."
+    ],
+    "overall_experience": "This CEO likely found Reply to be a solid tool for their primary need of orchestrating large-scale user outreach, appreciating its ability to manage campaigns and ensure deliverability. However, they may have encountered frustrations with limitations on lead volumes or email sends, impacting their ability to scale further. Support and advanced reporting might also have been areas where the product fell short of their executive expectations."
+  },
+  "ts": "2026-10-18T05:25:03.769166+00:00"
+}

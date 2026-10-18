@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "dacc0e6f13f247a5da79521bea5a71eb8a61674d9ad0c0ee3849a5d7a7312258",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 272,
+  "output_tokens": 1003,
+  "cost_usd": 0.0025891,
+  "elapsed_s": 25.02,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effective in mitigating human-related security risks.\",\n    \"Comprehensive phishing simulation and reporting features.\",\n    \"User-friendly platform for managing training campaigns.\"\n  ],\n  \"cons\": [\n    \"Training content can become repetitive for long-term users.\",\n    \"Initial setup and customization require dedicated time.\",\n    \"Cost may be a consideration for ongoing budget allocation.\"\n  ],\n  \"overall_experience\": \"The Owner/Operator found KnowBe4 Security Awareness Training to be an effective tool for evaluating and mitigating the risk of security breaches from their users. They appreciated the comprehensive features and ease of managing campaigns, which directly supported their task. While the content could sometimes feel repetitive, the overall value in reducing organizational risk was clear.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Effective in mitigating human-related security risks.",
+      "Comprehensive phishing simulation and reporting features.",
+      "User-friendly platform for managing training campaigns."
+    ],
+    "cons": [
+      "Training content can become repetitive for long-term users.",
+      "Initial setup and customization require dedicated time.",
+      "Cost may be a consideration for ongoing budget allocation."
+    ],
+    "overall_experience": "The Owner/Operator found KnowBe4 Security Awareness Training to be an effective tool for evaluating and mitigating the risk of security breaches from their users. They appreciated the comprehensive features and ease of managing campaigns, which directly supported their task. While the content could sometimes feel repetitive, the overall value in reducing organizational risk was clear."
+  },
+  "ts": "2026-10-18T05:24:54.380727+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b28e5651fd502dd841d44bd33729eadcc44d5389ed9ffe3b6be13a643bae1577",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1069,
+  "output_tokens": 1039,
+  "cost_usd": 0.0029182,
+  "elapsed_s": 6.65,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Ability to quickly access and analyze company data\",\n    \"Consistent and reliable data for decision-making\",\n    \"Customizable dashboards for tracking case metrics\"\n  ],\n  \"cons\": [\n    \"Initial learning curve for new users without prior BI experience\",\n    \"Difficulty in building complex reports without technical assistance\",\n    \"Perceived high cost relative to other solutions\"\n  ],\n  \"overall_experience\": \"This Case Manager likely found Looker to be a powerful tool for tracking and analyzing company data, appreciating its ability to provide consistent insights. While the initial learning curve and complexity for advanced reporting might have been a minor frustration, the clear data presentation and robust functionality generally met their needs. The value for money might be a concern given they are a new user and potentially not leveraging its full capabilities yet.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 7,
+    "pros": [
+      "Ability to quickly access and analyze company data",
+      "Consistent and reliable data for decision-making",
+      "Customizable dashboards for tracking case metrics"
+    ],
+    "cons": [
+      "Initial learning curve for new users without prior BI experience",
+      "Difficulty in building complex reports without technical assistance",
+      "Perceived high cost relative to other solutions"
+    ],
+    "overall_experience": "This Case Manager likely found Looker to be a powerful tool for tracking and analyzing company data, appreciating its ability to provide consistent insights. While the initial learning curve and complexity for advanced reporting might have been a minor frustration, the clear data presentation and robust functionality generally met their needs. The value for money might be a concern given they are a new user and potentially not leveraging its full capabilities yet."
+  },
+  "ts": "2026-10-18T05:26:20.451758+00:00"
+}

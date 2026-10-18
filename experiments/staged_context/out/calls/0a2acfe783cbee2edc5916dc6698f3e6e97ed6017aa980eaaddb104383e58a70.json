@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0a2acfe783cbee2edc5916dc6698f3e6e97ed6017aa980eaaddb104383e58a70",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 259,
+  "output_tokens": 930,
+  "cost_usd": 0.0024027000000000002,
+  "elapsed_s": 6.83,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Comprehensive suite for payroll, HR, and benefits\",\n    \"Intuitive employee self-service portal and mobile app\",\n    \"Robust reporting features for HR analytics\"\n  ],\n  \"cons\": [\n    \"Initial setup and configuration can be complex\",\n    \"Customer support response times could be inconsistent\",\n    \"Occasional minor bugs or glitches in specific modules\"\n  ],\n  \"overall_experience\": \"The Director of Human Resources found Paylocity to be a largely effective solution for managing their mid-market company's HR and payroll needs. The integrated platform and self-service options were particularly beneficial for streamlining operations. While generally satisfied, they noted some areas for improvement regarding implementation complexity and customer support consistency.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Comprehensive suite for payroll, HR, and benefits",
+      "Intuitive employee self-service portal and mobile app",
+      "Robust reporting features for HR analytics"
+    ],
+    "cons": [
+      "Initial setup and configuration can be complex",
+      "Customer support response times could be inconsistent",
+      "Occasional minor bugs or glitches in specific modules"
+    ],
+    "overall_experience": "The Director of Human Resources found Paylocity to be a largely effective solution for managing their mid-market company's HR and payroll needs. The integrated platform and self-service options were particularly beneficial for streamlining operations. While generally satisfied, they noted some areas for improvement regarding implementation complexity and customer support consistency."
+  },
+  "ts": "2026-10-18T05:24:58.461926+00:00"
+}

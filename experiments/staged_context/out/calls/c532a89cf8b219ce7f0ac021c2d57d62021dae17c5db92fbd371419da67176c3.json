@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c532a89cf8b219ce7f0ac021c2d57d62021dae17c5db92fbd371419da67176c3",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1579,
+  "output_tokens": 969,
+  "cost_usd": 0.0028962000000000002,
+  "elapsed_s": 6.04,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Streamlined cold email campaign setup\",\n    \"Effective lead sourcing capabilities\",\n    \"Automated replies save significant time\"\n  ],\n  \"cons\": [\n    \"Occasional issues with lead data accuracy\",\n    \"Initial learning curve for advanced features\",\n    \"Integrations could be more extensive\"\n  ],\n  \"overall_experience\": \"The Comercial Director likely found Instantly to be a highly effective tool for managing cold email campaigns, appreciating its ability to automate outreach and source leads efficiently. While generally positive, some frustrations might arise from occasional inaccuracies in lead data and a slight learning curve for maximizing all features. Overall, the product would be seen as a valuable asset for a small business focused on sales growth.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Streamlined cold email campaign setup",
+      "Effective lead sourcing capabilities",
+      "Automated replies save significant time"
+    ],
+    "cons": [
+      "Occasional issues with lead data accuracy",
+      "Initial learning curve for advanced features",
+      "Integrations could be more extensive"
+    ],
+    "overall_experience": "The Comercial Director likely found Instantly to be a highly effective tool for managing cold email campaigns, appreciating its ability to automate outreach and source leads efficiently. While generally positive, some frustrations might arise from occasional inaccuracies in lead data and a slight learning curve for maximizing all features. Overall, the product would be seen as a valuable asset for a small business focused on sales growth."
+  },
+  "ts": "2026-10-18T05:25:14.672274+00:00"
+}

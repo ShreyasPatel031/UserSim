@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f589f914bcbc767d5ae2f8ef84f67d16f725ed2e330de2b72a6c79e822ffb84a",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1389,
+  "output_tokens": 1105,
+  "cost_usd": 0.0031792,
+  "elapsed_s": 6.45,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effective for organizing sales priorities and client tasks\",\n    \"Intuitive interface for quick adoption by a small team\",\n    \"AI features assist with task management and insights\"\n  ],\n  \"cons\": [\n    \"Some advanced features may require a learning investment\",\n    \"Pricing structure can be a concern for small businesses\",\n    \"Occasional performance lags with heavier data usage\"\n  ],\n  \"overall_experience\": \"The Business Development Manager likely found monday AI Work Platform to be a highly effective tool for organizing their work priorities and managing sales-related tasks within a small business context. The platform's ease of use and AI-driven features likely enhanced their productivity by streamlining task management and providing useful insights. While generally positive, the reviewer may have noted a learning curve for more advanced functionalities and expressed some concerns regarding the overall cost for a small operation.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Effective for organizing sales priorities and client tasks",
+      "Intuitive interface for quick adoption by a small team",
+      "AI features assist with task management and insights"
+    ],
+    "cons": [
+      "Some advanced features may require a learning investment",
+      "Pricing structure can be a concern for small businesses",
+      "Occasional performance lags with heavier data usage"
+    ],
+    "overall_experience": "The Business Development Manager likely found monday AI Work Platform to be a highly effective tool for organizing their work priorities and managing sales-related tasks within a small business context. The platform's ease of use and AI-driven features likely enhanced their productivity by streamlining task management and providing useful insights. While generally positive, the reviewer may have noted a learning curve for more advanced functionalities and expressed some concerns regarding the overall cost for a small operation."
+  },
+  "ts": "2026-10-18T05:25:08.783214+00:00"
+}

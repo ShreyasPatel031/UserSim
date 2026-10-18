@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "996992262bc950cc73c9adb64bfea3214951505880d8cb0c44230a2ade5ee69f",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 376,
+  "output_tokens": 1008,
+  "cost_usd": 0.0026328000000000002,
+  "elapsed_s": 6.57,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Robust automation and segmentation capabilities for targeted campaigns\",\n    \"Effective integrations, potentially reducing reliance on tools like Zapier for email workflows\",\n    \"Strong analytics and reporting to measure campaign performance\"\n  ],\n  \"cons\": [\n    \"Steep learning curve for advanced features and setup, especially during platform transitions\",\n    \"Pricing can become a significant concern as contact lists grow\",\n    \"Limited suitability for unique content management needs specific to the publishing industry\"\n  ],\n  \"overall_experience\": \"This Director of Ecommerce likely found Klaviyo to be a powerful tool for managing email marketing campaigns, appreciating its robust automation and segmentation features after navigating the initial setup. While the platform offered significant functional improvements for driving sales, the complexity of migrating between ESPs and the cost implications for a mid-sized publishing company likely tempered their overall satisfaction. They probably valued its ability to provide detailed insights but may have sought more tailored solutions for content-rich email strategies.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Robust automation and segmentation capabilities for targeted campaigns",
+      "Effective integrations, potentially reducing reliance on tools like Zapier for email workflows",
+      "Strong analytics and reporting to measure campaign performance"
+    ],
+    "cons": [
+      "Steep learning curve for advanced features and setup, especially during platform transitions",
+      "Pricing can become a significant concern as contact lists grow",
+      "Limited suitability for unique content management needs specific to the publishing industry"
+    ],
+    "overall_experience": "This Director of Ecommerce likely found Klaviyo to be a powerful tool for managing email marketing campaigns, appreciating its robust automation and segmentation features after navigating the initial setup. While the platform offered significant functional improvements for driving sales, the complexity of migrating between ESPs and the cost implications for a mid-sized publishing company likely tempered their overall satisfaction. They probably valued its ability to provide detailed insights but may have sought more tailored solutions for content-rich email strategies."
+  },
+  "ts": "2026-10-18T05:26:36.340294+00:00"
+}

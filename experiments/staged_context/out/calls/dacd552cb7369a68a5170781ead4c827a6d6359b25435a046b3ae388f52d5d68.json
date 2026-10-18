@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "dacd552cb7369a68a5170781ead4c827a6d6359b25435a046b3ae388f52d5d68",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 254,
+  "output_tokens": 1001,
+  "cost_usd": 0.0025786999999999997,
+  "elapsed_s": 6.9,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Simple and quick interface for logging weekly hours.\",\n    \"Accessible from anywhere to submit time.\",\n    \"Streamlined process for basic time tracking needs.\"\n  ],\n  \"cons\": [\n    \"Might feel like an extra administrative step for a sales role.\",\n    \"Limited advanced features for project-specific time allocation.\",\n    \"Could lack direct integration with sales performance metrics.\"\n  ],\n  \"overall_experience\": \"This sales professional likely found BambooHR adequate for their specific task of tracking total weekly hours. The system's user-friendly interface made the process straightforward and easy to complete. While it fulfilled the basic requirement, they might not have perceived significant personal value from the broader HR functionalities of the platform beyond this administrative duty.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Simple and quick interface for logging weekly hours.",
+      "Accessible from anywhere to submit time.",
+      "Streamlined process for basic time tracking needs."
+    ],
+    "cons": [
+      "Might feel like an extra administrative step for a sales role.",
+      "Limited advanced features for project-specific time allocation.",
+      "Could lack direct integration with sales performance metrics."
+    ],
+    "overall_experience": "This sales professional likely found BambooHR adequate for their specific task of tracking total weekly hours. The system's user-friendly interface made the process straightforward and easy to complete. While it fulfilled the basic requirement, they might not have perceived significant personal value from the broader HR functionalities of the platform beyond this administrative duty."
+  },
+  "ts": "2026-10-18T05:25:02.915116+00:00"
+}

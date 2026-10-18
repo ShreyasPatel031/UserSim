@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d6ca919f9bfe86f2dd2bb4ab16e3d6f85f4c9db3c31d1dbba181712264d83803",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 355,
+  "output_tokens": 1010,
+  "cost_usd": 0.0026315,
+  "elapsed_s": 9.24,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Straightforward logging of health activities\",\n    \"Engaging interface for tracking progress\",\n    \"Encourages participation in wellness challenges\"\n  ],\n  \"cons\": [\n    \"Limited variety in activity tracking options\",\n    \"Occasional minor issues with data synchronization\",\n    \"Could benefit from more customizable goal settings\"\n  ],\n  \"overall_experience\": \"This Content Specialist likely found Wellable to be a generally positive tool for tracking personal health activities and points within their mid-market company. The platform's ease of use for its core function was appreciated, contributing to a good overall experience. However, they may have noted some areas for improvement, such as broader activity selection or enhanced customization features.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Straightforward logging of health activities",
+      "Engaging interface for tracking progress",
+      "Encourages participation in wellness challenges"
+    ],
+    "cons": [
+      "Limited variety in activity tracking options",
+      "Occasional minor issues with data synchronization",
+      "Could benefit from more customizable goal settings"
+    ],
+    "overall_experience": "This Content Specialist likely found Wellable to be a generally positive tool for tracking personal health activities and points within their mid-market company. The platform's ease of use for its core function was appreciated, contributing to a good overall experience. However, they may have noted some areas for improvement, such as broader activity selection or enhanced customization features."
+  },
+  "ts": "2026-10-18T05:25:29.666402+00:00"
+}

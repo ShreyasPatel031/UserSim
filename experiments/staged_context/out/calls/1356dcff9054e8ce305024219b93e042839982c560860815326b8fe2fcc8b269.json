@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1356dcff9054e8ce305024219b93e042839982c560860815326b8fe2fcc8b269",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1082,
+  "output_tokens": 1084,
+  "cost_usd": 0.0030345999999999997,
+  "elapsed_s": 6.91,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Intuitive interface made adoption straightforward\",\n    \"Effective at centralizing client communication and sales data\",\n    \"Good value for money, especially for a small team\"\n  ],\n  \"cons\": [\n    \"Some advanced features felt geared more towards sales than help desk management\",\n    \"Initial setup for specific workflows required a learning curve\",\n    \"Occasional minor issues with custom report generation\"\n  ],\n  \"overall_experience\": \"This Help Desk Manager likely found Freshsales to be a highly effective tool for managing customer interactions and sales processes within their small IT company. The platform's ease of use and robust functionality were significant advantages, contributing to a positive overall experience. While some features were less relevant to a help desk role and minor frustrations arose with advanced customization or reporting, the overall value and support were considered good.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Intuitive interface made adoption straightforward",
+      "Effective at centralizing client communication and sales data",
+      "Good value for money, especially for a small team"
+    ],
+    "cons": [
+      "Some advanced features felt geared more towards sales than help desk management",
+      "Initial setup for specific workflows required a learning curve",
+      "Occasional minor issues with custom report generation"
+    ],
+    "overall_experience": "This Help Desk Manager likely found Freshsales to be a highly effective tool for managing customer interactions and sales processes within their small IT company. The platform's ease of use and robust functionality were significant advantages, contributing to a positive overall experience. While some features were less relevant to a help desk role and minor frustrations arose with advanced customization or reporting, the overall value and support were considered good."
+  },
+  "ts": "2026-10-18T05:26:13.086617+00:00"
+}

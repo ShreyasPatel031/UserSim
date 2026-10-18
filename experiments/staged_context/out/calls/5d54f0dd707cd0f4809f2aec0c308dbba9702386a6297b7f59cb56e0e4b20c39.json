@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "5d54f0dd707cd0f4809f2aec0c308dbba9702386a6297b7f59cb56e0e4b20c39",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 753,
+  "output_tokens": 945,
+  "cost_usd": 0.0025884,
+  "elapsed_s": 5.57,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Diverse range of holistic wellness activities.\",\n    \"User-friendly interface for easy engagement.\",\n    \"Effective in promoting overall well-being.\"\n  ],\n  \"cons\": [\n    \"Integration with existing corporate systems could be smoother.\",\n    \"Personalized content recommendations were sometimes off.\",\n    \"Reporting features could offer deeper insights.\"\n  ],\n  \"overall_experience\": \"This Associate Vice President likely found Wellable to be a highly effective platform for engaging in holistic wellness activities. The diverse offerings and ease of use contributed significantly to a positive experience, aligning with their professional need for efficient and impactful tools. While generally satisfied, they may have noted minor areas for improvement in integration or data reporting, common for executives seeking comprehensive solutions.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Diverse range of holistic wellness activities.",
+      "User-friendly interface for easy engagement.",
+      "Effective in promoting overall well-being."
+    ],
+    "cons": [
+      "Integration with existing corporate systems could be smoother.",
+      "Personalized content recommendations were sometimes off.",
+      "Reporting features could offer deeper insights."
+    ],
+    "overall_experience": "This Associate Vice President likely found Wellable to be a highly effective platform for engaging in holistic wellness activities. The diverse offerings and ease of use contributed significantly to a positive experience, aligning with their professional need for efficient and impactful tools. While generally satisfied, they may have noted minor areas for improvement in integration or data reporting, common for executives seeking comprehensive solutions."
+  },
+  "ts": "2026-10-18T05:25:40.414642+00:00"
+}

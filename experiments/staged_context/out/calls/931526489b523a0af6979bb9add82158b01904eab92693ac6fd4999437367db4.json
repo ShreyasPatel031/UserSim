@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "931526489b523a0af6979bb9add82158b01904eab92693ac6fd4999437367db4",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1053,
+  "output_tokens": 954,
+  "cost_usd": 0.0027009,
+  "elapsed_s": 5.65,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8.5,\n  \"pros\": [\n    \"Cost-effective solution with good features for the price.\",\n    \"Effective for managing customer interactions across channels.\",\n    \"Customization options to fit specific retail support workflows.\"\n  ],\n  \"cons\": [\n    \"Interface may feel less intuitive compared to previous platforms like Gladly.\",\n    \"Initial setup or advanced configurations can be complex.\",\n    \"Reporting capabilities might require a learning curve to fully utilize.\"\n  ],\n  \"overall_experience\": \"This Customer Support Analyst found Zoho Desk to be a solid, cost-effective solution for managing customer interactions in their retail environment. While it offered robust functionality and good value, they likely experienced a slight adjustment period, particularly with the user interface, coming from a potentially more streamlined platform like Gladly. Overall, the product met their core needs effectively for over a year of use.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8.5,
+    "pros": [
+      "Cost-effective solution with good features for the price.",
+      "Effective for managing customer interactions across channels.",
+      "Customization options to fit specific retail support workflows."
+    ],
+    "cons": [
+      "Interface may feel less intuitive compared to previous platforms like Gladly.",
+      "Initial setup or advanced configurations can be complex.",
+      "Reporting capabilities might require a learning curve to fully utilize."
+    ],
+    "overall_experience": "This Customer Support Analyst found Zoho Desk to be a solid, cost-effective solution for managing customer interactions in their retail environment. While it offered robust functionality and good value, they likely experienced a slight adjustment period, particularly with the user interface, coming from a potentially more streamlined platform like Gladly. Overall, the product met their core needs effectively for over a year of use."
+  },
+  "ts": "2026-10-18T05:26:31.196748+00:00"
+}

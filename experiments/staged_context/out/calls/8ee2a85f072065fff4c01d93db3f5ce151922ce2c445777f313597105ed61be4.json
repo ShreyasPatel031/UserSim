@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8ee2a85f072065fff4c01d93db3f5ce151922ce2c445777f313597105ed61be4",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1708,
+  "output_tokens": 1047,
+  "cost_usd": 0.0031299,
+  "elapsed_s": 5.79,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Efficiently generates content outlines and rough drafts\",\n    \"Intuitive interface for quick content creation\",\n    \"Helps scale marketing content efforts\"\n  ],\n  \"cons\": [\n    \"Output quality can be inconsistent, requiring editing\",\n    \"Potential for a learning curve to optimize AI prompts\",\n    \"Concern over pricing as usage scales\"\n  ],\n  \"overall_experience\": \"The Co-Founder and CMO likely found Jasper to be a valuable tool for quickly generating content outlines and rough drafts, streamlining their marketing efforts. While appreciating its ease of use and ability to accelerate content creation, they may have encountered occasional inconsistencies in AI-generated quality, necessitating human oversight. The executive likely views it as a strong asset for a small business, though they might monitor its cost-effectiveness with increased usage.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Efficiently generates content outlines and rough drafts",
+      "Intuitive interface for quick content creation",
+      "Helps scale marketing content efforts"
+    ],
+    "cons": [
+      "Output quality can be inconsistent, requiring editing",
+      "Potential for a learning curve to optimize AI prompts",
+      "Concern over pricing as usage scales"
+    ],
+    "overall_experience": "The Co-Founder and CMO likely found Jasper to be a valuable tool for quickly generating content outlines and rough drafts, streamlining their marketing efforts. While appreciating its ease of use and ability to accelerate content creation, they may have encountered occasional inconsistencies in AI-generated quality, necessitating human oversight. The executive likely views it as a strong asset for a small business, though they might monitor its cost-effectiveness with increased usage."
+  },
+  "ts": "2026-10-18T05:25:16.152633+00:00"
+}

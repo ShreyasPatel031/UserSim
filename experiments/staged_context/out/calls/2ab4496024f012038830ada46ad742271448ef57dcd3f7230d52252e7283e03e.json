@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2ab4496024f012038830ada46ad742271448ef57dcd3f7230d52252e7283e03e",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 347,
+  "output_tokens": 1056,
+  "cost_usd": 0.0027441,
+  "elapsed_s": 6.92,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Simple interface for basic tasks like time entry\",\n    \"Easy to access and complete required weekly hours\",\n    \"Integrates well with other HR functions\"\n  ],\n  \"cons\": [\n    \"Time tracking functionality is somewhat basic\",\n    \"Might require multiple clicks for a quick entry\",\n    \"Less intuitive for sales roles with variable schedules\"\n  ],\n  \"overall_experience\": \"This sales professional found BambooHR generally easy to use for their primary task of tracking weekly hours, appreciating its straightforward interface for basic entries. However, they likely felt the time tracking features were not as robust or streamlined as they could be for a sales role with varying schedules. Despite minor frustrations with the time tracking module's depth, the overall experience was positive enough to recommend it, likely due to its broader HR integration and ease of use for other administrative tasks.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 3,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 7,
+    "pros": [
+      "Simple interface for basic tasks like time entry",
+      "Easy to access and complete required weekly hours",
+      "Integrates well with other HR functions"
+    ],
+    "cons": [
+      "Time tracking functionality is somewhat basic",
+      "Might require multiple clicks for a quick entry",
+      "Less intuitive for sales roles with variable schedules"
+    ],
+    "overall_experience": "This sales professional found BambooHR generally easy to use for their primary task of tracking weekly hours, appreciating its straightforward interface for basic entries. However, they likely felt the time tracking features were not as robust or streamlined as they could be for a sales role with varying schedules. Despite minor frustrations with the time tracking module's depth, the overall experience was positive enough to recommend it, likely due to its broader HR integration and ease of use for other administrative tasks."
+  },
+  "ts": "2026-10-18T05:25:39.732640+00:00"
+}

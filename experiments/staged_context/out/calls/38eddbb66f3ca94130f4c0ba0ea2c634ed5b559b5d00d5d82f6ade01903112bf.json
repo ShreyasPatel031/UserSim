@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "38eddbb66f3ca94130f4c0ba0ea2c634ed5b559b5d00d5d82f6ade01903112bf",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 266,
+  "output_tokens": 1007,
+  "cost_usd": 0.0025973000000000003,
+  "elapsed_s": 24.26,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Simplified the open enrollment process significantly\",\n    \"Employee portal was intuitive for benefits elections\",\n    \"Consolidated HR and benefits management\"\n  ],\n  \"cons\": [\n    \"Initial setup complexity for custom benefit plans\",\n    \"Occasional delays in customer support responses\",\n    \"Pricing could be a stretch for very small budgets\"\n  ],\n  \"overall_experience\": \"This Account Executive, wearing multiple hats in a small business, found Rippling to be a generally effective solution for managing open enrollment. The platform successfully streamlined the complex task of benefits administration and provided a user-friendly portal for employees. While the initial setup presented some challenges, the overall simplification of a critical HR function was a significant advantage.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Simplified the open enrollment process significantly",
+      "Employee portal was intuitive for benefits elections",
+      "Consolidated HR and benefits management"
+    ],
+    "cons": [
+      "Initial setup complexity for custom benefit plans",
+      "Occasional delays in customer support responses",
+      "Pricing could be a stretch for very small budgets"
+    ],
+    "overall_experience": "This Account Executive, wearing multiple hats in a small business, found Rippling to be a generally effective solution for managing open enrollment. The platform successfully streamlined the complex task of benefits administration and provided a user-friendly portal for employees. While the initial setup presented some challenges, the overall simplification of a critical HR function was a significant advantage."
+  },
+  "ts": "2026-10-18T05:24:53.206069+00:00"
+}

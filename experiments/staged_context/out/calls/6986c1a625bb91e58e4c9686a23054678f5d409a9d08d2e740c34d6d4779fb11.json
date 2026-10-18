@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "6986c1a625bb91e58e4c9686a23054678f5d409a9d08d2e740c34d6d4779fb11",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 260,
+  "output_tokens": 1036,
+  "cost_usd": 0.0026680000000000002,
+  "elapsed_s": 25.29,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Streamlined benefits enrollment process\",\n    \"Intuitive interface for common HR tasks\",\n    \"Efficient employee referral system\"\n  ],\n  \"cons\": [\n    \"Initial setup or navigation could be overwhelming\",\n    \"Specific features might require a learning curve\",\n    \"Reliance on customer support for advanced issues\"\n  ],\n  \"overall_experience\": \"The SMB Account Executive likely found Rippling to be a generally positive and efficient tool for managing their personal benefits and referring new employees. They appreciated the platform's ability to simplify these common HR tasks, allowing them to complete them with relative ease. While the comprehensive nature of the platform might have presented a slight learning curve initially, the core functionalities they used were effective and user-friendly.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Streamlined benefits enrollment process",
+      "Intuitive interface for common HR tasks",
+      "Efficient employee referral system"
+    ],
+    "cons": [
+      "Initial setup or navigation could be overwhelming",
+      "Specific features might require a learning curve",
+      "Reliance on customer support for advanced issues"
+    ],
+    "overall_experience": "The SMB Account Executive likely found Rippling to be a generally positive and efficient tool for managing their personal benefits and referring new employees. They appreciated the platform's ability to simplify these common HR tasks, allowing them to complete them with relative ease. While the comprehensive nature of the platform might have presented a slight learning curve initially, the core functionalities they used were effective and user-friendly."
+  },
+  "ts": "2026-10-18T05:24:54.331868+00:00"
+}

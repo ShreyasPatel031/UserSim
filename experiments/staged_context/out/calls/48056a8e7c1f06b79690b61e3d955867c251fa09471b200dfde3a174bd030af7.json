@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "48056a8e7c1f06b79690b61e3d955867c251fa09471b200dfde3a174bd030af7",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 262,
+  "output_tokens": 991,
+  "cost_usd": 0.0025560999999999995,
+  "elapsed_s": 28.5,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Streamlined payroll processing and reporting\",\n    \"Centralized platform for HR and IT tasks\",\n    \"Intuitive employee self-service for forms and PTO\"\n  ],\n  \"cons\": [\n    \"Initial setup can be complex due to many features\",\n    \"Cost may be higher than single-solution providers\",\n    \"Customer support response times could sometimes be slow\"\n  ],\n  \"overall_experience\": \"The Development Operations Officer likely found Rippling to be a highly effective tool for managing essential HR functions like payroll, forms, and PTO requests. They appreciated its integrated approach, which streamlined operations and improved efficiency across the company. While the comprehensive features were powerful, the initial implementation and overall cost might have presented minor challenges.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Streamlined payroll processing and reporting",
+      "Centralized platform for HR and IT tasks",
+      "Intuitive employee self-service for forms and PTO"
+    ],
+    "cons": [
+      "Initial setup can be complex due to many features",
+      "Cost may be higher than single-solution providers",
+      "Customer support response times could sometimes be slow"
+    ],
+    "overall_experience": "The Development Operations Officer likely found Rippling to be a highly effective tool for managing essential HR functions like payroll, forms, and PTO requests. They appreciated its integrated approach, which streamlined operations and improved efficiency across the company. While the comprehensive features were powerful, the initial implementation and overall cost might have presented minor challenges."
+  },
+  "ts": "2026-10-18T05:24:57.511050+00:00"
+}

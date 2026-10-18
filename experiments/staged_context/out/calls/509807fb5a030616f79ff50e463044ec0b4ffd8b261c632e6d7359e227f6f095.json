@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "509807fb5a030616f79ff50e463044ec0b4ffd8b261c632e6d7359e227f6f095",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 363,
+  "output_tokens": 911,
+  "cost_usd": 0.0023864,
+  "elapsed_s": 5.44,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effective for tracking daily fitness activities\",\n    \"Engaging wellness challenges\",\n    \"Supports a healthy lifestyle\"\n  ],\n  \"cons\": [\n    \"Limited customization options for personal goals\",\n    \"Occasional syncing issues with other devices\",\n    \"Interface could be more modern\"\n  ],\n  \"overall_experience\": \"The Senior Analyst likely found Wellable to be a competent tool for tracking fitness and participating in wellness challenges. Its core functionalities effectively supported their goal of maintaining a healthy lifestyle, contributing to a generally positive experience. While robust, they might have noted minor areas for improvement in customization or device integration.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Effective for tracking daily fitness activities",
+      "Engaging wellness challenges",
+      "Supports a healthy lifestyle"
+    ],
+    "cons": [
+      "Limited customization options for personal goals",
+      "Occasional syncing issues with other devices",
+      "Interface could be more modern"
+    ],
+    "overall_experience": "The Senior Analyst likely found Wellable to be a competent tool for tracking fitness and participating in wellness challenges. Its core functionalities effectively supported their goal of maintaining a healthy lifestyle, contributing to a generally positive experience. While robust, they might have noted minor areas for improvement in customization or device integration."
+  },
+  "ts": "2026-10-18T05:25:25.991606+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "aea4132806470f2e6cb6e3b8cb73cb11c676ad336aaea8c86a4f08f191eed7ce",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 852,
+  "output_tokens": 967,
+  "cost_usd": 0.0026731,
+  "elapsed_s": 5.5,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Streamlined marketing email automation\",\n    \"Centralized campaign management features\",\n    \"Intuitive interface for team use\"\n  ],\n  \"cons\": [\n    \"Potential for higher cost as features scale\",\n    \"Learning curve for advanced functionalities\",\n    \"Limited customization options for specific workflows\"\n  ],\n  \"overall_experience\": \"This Team Lead Manager likely found HubSpot Marketing Hub to be a highly effective tool for automating marketing emails and managing campaigns. They appreciated its ease of use and robust functionality, contributing to a positive overall experience and high recommendation. While generally satisfied, the reviewer might have noted concerns regarding its value for money, possibly due to pricing for advanced features, and some limitations in customer support or customization.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Streamlined marketing email automation",
+      "Centralized campaign management features",
+      "Intuitive interface for team use"
+    ],
+    "cons": [
+      "Potential for higher cost as features scale",
+      "Learning curve for advanced functionalities",
+      "Limited customization options for specific workflows"
+    ],
+    "overall_experience": "This Team Lead Manager likely found HubSpot Marketing Hub to be a highly effective tool for automating marketing emails and managing campaigns. They appreciated its ease of use and robust functionality, contributing to a positive overall experience and high recommendation. While generally satisfied, the reviewer might have noted concerns regarding its value for money, possibly due to pricing for advanced features, and some limitations in customer support or customization."
+  },
+  "ts": "2026-10-18T05:25:58.794634+00:00"
+}

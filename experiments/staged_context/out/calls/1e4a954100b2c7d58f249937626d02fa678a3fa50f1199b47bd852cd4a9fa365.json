@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1e4a954100b2c7d58f249937626d02fa678a3fa50f1199b47bd852cd4a9fa365",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2266,
+  "output_tokens": 970,
+  "cost_usd": 0.0031048,
+  "elapsed_s": 5.73,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effective for sales forecasting and generating performance statistics.\",\n    \"Good for managing contacts and tracking sales opportunities.\",\n    \"User-friendly interface that helps streamline sales processes.\"\n  ],\n  \"cons\": [\n    \"Some advanced features might have a learning curve.\",\n    \"Potential for pricing concerns or unexpected billing issues.\",\n    \"Could lack some specific integrations or customization options.\"\n  ],\n  \"overall_experience\": \"This manager likely found Freshsales to be a generally positive tool for their sales analysis needs, appreciating its ability to track performance and manage sales pipelines. While the software offered good functionality for their role, they may have encountered minor frustrations with its learning curve or specific customization limitations. Overall, it served as a valuable asset for their marketing and advertising team.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Effective for sales forecasting and generating performance statistics.",
+      "Good for managing contacts and tracking sales opportunities.",
+      "User-friendly interface that helps streamline sales processes."
+    ],
+    "cons": [
+      "Some advanced features might have a learning curve.",
+      "Potential for pricing concerns or unexpected billing issues.",
+      "Could lack some specific integrations or customization options."
+    ],
+    "overall_experience": "This manager likely found Freshsales to be a generally positive tool for their sales analysis needs, appreciating its ability to track performance and manage sales pipelines. While the software offered good functionality for their role, they may have encountered minor frustrations with its learning curve or specific customization limitations. Overall, it served as a valuable asset for their marketing and advertising team."
+  },
+  "ts": "2026-10-18T05:26:10.890096+00:00"
+}

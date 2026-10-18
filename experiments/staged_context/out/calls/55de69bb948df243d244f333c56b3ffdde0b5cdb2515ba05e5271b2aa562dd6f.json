@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "55de69bb948df243d244f333c56b3ffdde0b5cdb2515ba05e5271b2aa562dd6f",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2117,
+  "output_tokens": 1013,
+  "cost_usd": 0.0031676,
+  "elapsed_s": 5.97,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Robust out-of-the-box features for scalability\",\n    \"Flexible product catalog management for furniture\",\n    \"Lower transaction fees compared to previous platform\"\n  ],\n  \"cons\": [\n    \"Steeper learning curve than Shopify\",\n    \"Customization options can be complex\",\n    \"Reliance on apps for some specific needs\"\n  ],\n  \"overall_experience\": \"This CEO likely found BigCommerce to be a powerful platform offering strong functionality and scalability for their furniture business, especially after using Shopify. While the initial setup and customization may have presented a learning curve, the robust features and value for money likely justified the transition. They may have experienced some frustration with the complexity of certain aspects or the need for specific apps, and support could be inconsistent.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Robust out-of-the-box features for scalability",
+      "Flexible product catalog management for furniture",
+      "Lower transaction fees compared to previous platform"
+    ],
+    "cons": [
+      "Steeper learning curve than Shopify",
+      "Customization options can be complex",
+      "Reliance on apps for some specific needs"
+    ],
+    "overall_experience": "This CEO likely found BigCommerce to be a powerful platform offering strong functionality and scalability for their furniture business, especially after using Shopify. While the initial setup and customization may have presented a learning curve, the robust features and value for money likely justified the transition. They may have experienced some frustration with the complexity of certain aspects or the need for specific apps, and support could be inconsistent."
+  },
+  "ts": "2026-10-18T05:26:41.237006+00:00"
+}

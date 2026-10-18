@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4ba82483cb39211f19e5f36002554d7fd786986fbf95b91f6d5b82df78202d8f",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1910,
+  "output_tokens": 1049,
+  "cost_usd": 0.0031954999999999996,
+  "elapsed_s": 5.76,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Ability to easily add new leads and contacts\",\n    \"Availability of core sales functionalities for a small team\",\n    \"Potentially good for keeping contacts organized\"\n  ],\n  \"cons\": [\n    \"Concerns about pricing clarity after the free trial\",\n    \"Potential for a learning curve or non-intuitive aspects for a busy executive\",\n    \"Lack of advanced customization for specific investment management needs\"\n  ],\n  \"overall_experience\": \"This Partner, operating a small investment management firm, likely found Freshsales adequate for their primary task of adding new leads and contacts during the free trial. They would have valued straightforward core sales functionalities, but may have been wary of the pricing structure post-trial and the potential for a steep learning curve. While the basic features for organization were probably appreciated, deeper industry-specific needs or complex workflows might have been a concern.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 6,
+    "pros": [
+      "Ability to easily add new leads and contacts",
+      "Availability of core sales functionalities for a small team",
+      "Potentially good for keeping contacts organized"
+    ],
+    "cons": [
+      "Concerns about pricing clarity after the free trial",
+      "Potential for a learning curve or non-intuitive aspects for a busy executive",
+      "Lack of advanced customization for specific investment management needs"
+    ],
+    "overall_experience": "This Partner, operating a small investment management firm, likely found Freshsales adequate for their primary task of adding new leads and contacts during the free trial. They would have valued straightforward core sales functionalities, but may have been wary of the pricing structure post-trial and the potential for a steep learning curve. While the basic features for organization were probably appreciated, deeper industry-specific needs or complex workflows might have been a concern."
+  },
+  "ts": "2026-10-18T05:26:09.138768+00:00"
+}

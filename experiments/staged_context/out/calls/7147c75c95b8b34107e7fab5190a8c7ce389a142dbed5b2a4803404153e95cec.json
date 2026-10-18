@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7147c75c95b8b34107e7fab5190a8c7ce389a142dbed5b2a4803404153e95cec",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 258,
+  "output_tokens": 976,
+  "cost_usd": 0.0025174,
+  "elapsed_s": 23.08,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Significantly simplified managing numerous client and internal system passwords.\",\n    \"Enhanced security by enabling unique, complex passwords without memorization.\",\n    \"Streamlined access to various accounts, improving daily workflow efficiency.\"\n  ],\n  \"cons\": [\n    \"Initial setup and integration within an enterprise environment could be complex.\",\n    \"Reliance on the single master password presented a potential single point of failure.\",\n    \"Occasional minor issues with auto-filling on specific older web applications.\"\n  ],\n  \"overall_experience\": \"The Account Specialist likely found 1Password to be a highly effective tool for their role, greatly simplifying the management of numerous passwords required for client and internal systems. It provided a robust solution to a common pain point, enhancing both security and personal efficiency. Despite potential initial deployment challenges in an enterprise setting, the benefits of streamlined access and improved security were significant.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Significantly simplified managing numerous client and internal system passwords.",
+      "Enhanced security by enabling unique, complex passwords without memorization.",
+      "Streamlined access to various accounts, improving daily workflow efficiency."
+    ],
+    "cons": [
+      "Initial setup and integration within an enterprise environment could be complex.",
+      "Reliance on the single master password presented a potential single point of failure.",
+      "Occasional minor issues with auto-filling on specific older web applications."
+    ],
+    "overall_experience": "The Account Specialist likely found 1Password to be a highly effective tool for their role, greatly simplifying the management of numerous passwords required for client and internal systems. It provided a robust solution to a common pain point, enhancing both security and personal efficiency. Despite potential initial deployment challenges in an enterprise setting, the benefits of streamlined access and improved security were significant."
+  },
+  "ts": "2026-10-18T05:24:53.355524+00:00"
+}

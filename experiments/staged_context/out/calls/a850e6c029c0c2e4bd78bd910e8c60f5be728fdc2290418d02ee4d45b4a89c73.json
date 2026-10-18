@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a850e6c029c0c2e4bd78bd910e8c60f5be728fdc2290418d02ee4d45b4a89c73",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2387,
+  "output_tokens": 1056,
+  "cost_usd": 0.0033561,
+  "elapsed_s": 7.16,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Powerful and accurate data analysis for inventory management\",\n    \"Intuitive interface for exploring data and generating reports\",\n    \"Reliable platform for tracking operational metrics\"\n  ],\n  \"cons\": [\n    \"Initial setup and complex customizations can be challenging\",\n    \"Potential performance slowdowns with very large datasets\",\n    \"Cost can be a significant factor for ongoing use\"\n  ],\n  \"overall_experience\": \"This Stock Manager likely finds Looker to be an essential and highly effective tool for their daily tasks of analyzing inventory data and creating reports. They appreciate its robust functionality and user-friendly interface for data exploration. While the initial learning curve or advanced configurations might have presented some challenges, the overall benefits in operational insights and data accuracy make it a valuable asset.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Powerful and accurate data analysis for inventory management",
+      "Intuitive interface for exploring data and generating reports",
+      "Reliable platform for tracking operational metrics"
+    ],
+    "cons": [
+      "Initial setup and complex customizations can be challenging",
+      "Potential performance slowdowns with very large datasets",
+      "Cost can be a significant factor for ongoing use"
+    ],
+    "overall_experience": "This Stock Manager likely finds Looker to be an essential and highly effective tool for their daily tasks of analyzing inventory data and creating reports. They appreciate its robust functionality and user-friendly interface for data exploration. While the initial learning curve or advanced configurations might have presented some challenges, the overall benefits in operational insights and data accuracy make it a valuable asset."
+  },
+  "ts": "2026-10-18T05:26:20.622678+00:00"
+}

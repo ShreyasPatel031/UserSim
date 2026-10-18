@@ -1,0 +1,23 @@
+{
+  "strategy": {
+    "overall_rating": "agent_full",
+    "pros": "agent_full",
+    "cons": "agent_alone",
+    "overall_experience": "agent_averages",
+    "unhappy_risk": "agent_full"
+  },
+  "chosen_on": [
+    "Reply",
+    "HubSpot Sales Hub",
+    "ServiceNow IT Service Management",
+    "monday AI Work Platform",
+    "Canva",
+    "Fin by Intercom",
+    "Instantly",
+    "Jasper",
+    "Rippling",
+    "KnowBe4 Security Awareness Training",
+    "Freshdesk",
+    "1Password"
+  ]
+}

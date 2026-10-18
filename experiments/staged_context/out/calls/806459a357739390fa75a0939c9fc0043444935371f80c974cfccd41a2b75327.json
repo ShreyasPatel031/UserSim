@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "806459a357739390fa75a0939c9fc0043444935371f80c974cfccd41a2b75327",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 355,
+  "output_tokens": 1054,
+  "cost_usd": 0.0027415,
+  "elapsed_s": 5.76,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Accurate and reliable commission calculations\",\n    \"Robust reporting capabilities for sales performance\",\n    \"Handles complex compensation plans effectively\"\n  ],\n  \"cons\": [\n    \"Steep learning curve for new users\",\n    \"Initial setup and configuration can be time-consuming\",\n    \"Customer support response times can be inconsistent\"\n  ],\n  \"overall_experience\": \"The Senior Manager Sales Compensation likely found Xactly to be a highly functional and essential tool for managing complex sales commission structures and generating detailed reports. While the system effectively met their core task requirements, they may have encountered challenges with its initial implementation and overall ease of use. Customer support quality might have been a point of frustration, but the product's core capabilities provided significant value to their role within a mid-market company.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Accurate and reliable commission calculations",
+      "Robust reporting capabilities for sales performance",
+      "Handles complex compensation plans effectively"
+    ],
+    "cons": [
+      "Steep learning curve for new users",
+      "Initial setup and configuration can be time-consuming",
+      "Customer support response times can be inconsistent"
+    ],
+    "overall_experience": "The Senior Manager Sales Compensation likely found Xactly to be a highly functional and essential tool for managing complex sales commission structures and generating detailed reports. While the system effectively met their core task requirements, they may have encountered challenges with its initial implementation and overall ease of use. Customer support quality might have been a point of frustration, but the product's core capabilities provided significant value to their role within a mid-market company."
+  },
+  "ts": "2026-10-18T05:25:27.006978+00:00"
+}

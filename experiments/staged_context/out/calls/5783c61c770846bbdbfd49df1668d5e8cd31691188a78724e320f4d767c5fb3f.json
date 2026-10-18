@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "5783c61c770846bbdbfd49df1668d5e8cd31691188a78724e320f4d767c5fb3f",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 355,
+  "output_tokens": 999,
+  "cost_usd": 0.002604,
+  "elapsed_s": 6.07,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Robust and scalable platform for complex enterprise ITSM needs.\",\n    \"Comprehensive incident and request management capabilities with strong workflow automation.\",\n    \"Excellent reporting and analytics for IT and business management.\"\n  ],\n  \"cons\": [\n    \"Steep learning curve for advanced configuration and customization.\",\n    \"High licensing costs, especially for larger enterprises.\",\n    \"Implementation and ongoing maintenance can be resource-intensive.\"\n  ],\n  \"overall_experience\": \"This Senior IT & Business Management professional found ServiceNow IT Service Management to be a powerful and highly functional platform, essential for managing IT service incidents and requests across their large enterprise. They appreciated its robust capabilities and ability to scale with complex organizational demands. While acknowledging the significant investment in terms of cost and implementation effort, they recognized the strong value it delivered through automation and comprehensive reporting for strategic decision-making.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Robust and scalable platform for complex enterprise ITSM needs.",
+      "Comprehensive incident and request management capabilities with strong workflow automation.",
+      "Excellent reporting and analytics for IT and business management."
+    ],
+    "cons": [
+      "Steep learning curve for advanced configuration and customization.",
+      "High licensing costs, especially for larger enterprises.",
+      "Implementation and ongoing maintenance can be resource-intensive."
+    ],
+    "overall_experience": "This Senior IT & Business Management professional found ServiceNow IT Service Management to be a powerful and highly functional platform, essential for managing IT service incidents and requests across their large enterprise. They appreciated its robust capabilities and ability to scale with complex organizational demands. While acknowledging the significant investment in terms of cost and implementation effort, they recognized the strong value it delivered through automation and comprehensive reporting for strategic decision-making."
+  },
+  "ts": "2026-10-18T05:25:06.467259+00:00"
+}

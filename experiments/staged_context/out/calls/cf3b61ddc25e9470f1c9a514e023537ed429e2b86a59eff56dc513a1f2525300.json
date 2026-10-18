@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "cf3b61ddc25e9470f1c9a514e023537ed429e2b86a59eff56dc513a1f2525300",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 767,
+  "output_tokens": 988,
+  "cost_usd": 0.0027001,
+  "elapsed_s": 6.36,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8.5,\n  \"pros\": [\n    \"Streamlined process for making and receiving payments.\",\n    \"Broad acceptance for online purchases.\",\n    \"Good security measures for financial transactions.\"\n  ],\n  \"cons\": [\n    \"Transaction fees can impact profitability for received funds.\",\n    \"Occasional delays or holds on funds.\",\n    \"Customer support can be slow for complex financial inquiries.\"\n  ],\n  \"overall_experience\": \"The Sr. Finance & Accounts Executive likely found PayPal Payments to be a highly effective and easy-to-use solution for managing purchases and receiving funds. While appreciating its core functionality and security, they probably noted that transaction fees could be a concern for financial management and encountered some frustrations with fund availability or customer support response times for intricate issues.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8.5,
+    "pros": [
+      "Streamlined process for making and receiving payments.",
+      "Broad acceptance for online purchases.",
+      "Good security measures for financial transactions."
+    ],
+    "cons": [
+      "Transaction fees can impact profitability for received funds.",
+      "Occasional delays or holds on funds.",
+      "Customer support can be slow for complex financial inquiries."
+    ],
+    "overall_experience": "The Sr. Finance & Accounts Executive likely found PayPal Payments to be a highly effective and easy-to-use solution for managing purchases and receiving funds. While appreciating its core functionality and security, they probably noted that transaction fees could be a concern for financial management and encountered some frustrations with fund availability or customer support response times for intricate issues."
+  },
+  "ts": "2026-10-18T05:25:52.834309+00:00"
+}

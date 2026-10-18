@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "920e082cfa16a251442debee8f272f47512ded997d525d375cfc86bc59eafcd9",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1041,
+  "output_tokens": 1073,
+  "cost_usd": 0.0029948,
+  "elapsed_s": 9.73,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Robust features for managing multiple B2B e-commerce sites\",\n    \"Scalability to handle wholesale account needs\",\n    \"Reliable platform for long-term operations\"\n  ],\n  \"cons\": [\n    \"Complexity in setting up advanced B2B specific functionalities\",\n    \"Pricing structure might become less competitive for growing wholesale operations\",\n    \"Occasional need for developer assistance for deeper customizations\"\n  ],\n  \"overall_experience\": \"This National Account Manager likely found BigCommerce to be a capable and reliable platform for managing their wholesale e-commerce operations over several years. While appreciating its robust features and scalability for B2B needs, they may have encountered some complexities or limitations when trying to implement highly specific wholesale functionalities. The platform generally met their requirements, leading to a positive but not overwhelmingly enthusiastic recommendation.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Robust features for managing multiple B2B e-commerce sites",
+      "Scalability to handle wholesale account needs",
+      "Reliable platform for long-term operations"
+    ],
+    "cons": [
+      "Complexity in setting up advanced B2B specific functionalities",
+      "Pricing structure might become less competitive for growing wholesale operations",
+      "Occasional need for developer assistance for deeper customizations"
+    ],
+    "overall_experience": "This National Account Manager likely found BigCommerce to be a capable and reliable platform for managing their wholesale e-commerce operations over several years. While appreciating its robust features and scalability for B2B needs, they may have encountered some complexities or limitations when trying to implement highly specific wholesale functionalities. The platform generally met their requirements, leading to a positive but not overwhelmingly enthusiastic recommendation."
+  },
+  "ts": "2026-10-18T05:26:47.598593+00:00"
+}

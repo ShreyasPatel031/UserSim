@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "6154c7dffbe0070f2d2a59e01ff75af331fdda62d6ec1ff94c90e050ddfc2841",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1974,
+  "output_tokens": 1077,
+  "cost_usd": 0.0032846999999999998,
+  "elapsed_s": 6.27,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Efficiently manages and stores personal documents.\",\n    \"Streamlines the process of tracking performance reviews.\",\n    \"Intuitive interface for common HR tasks.\"\n  ],\n  \"cons\": [\n    \"Some advanced reporting or customization options could be limited.\",\n    \"Interface might be less intuitive for complex administrative tasks.\",\n    \"Pricing structure could be a concern for specific feature needs.\"\n  ],\n  \"overall_experience\": \"This network engineer likely found BambooHR to be a highly effective tool for their specific tasks of managing personal documents and tracking performance reviews. They appreciated its user-friendly nature and the efficiency it brought to core HR functions. While generally satisfied, they might have noted some minor limitations in advanced features or occasional inconsistencies in the user experience.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Efficiently manages and stores personal documents.",
+      "Streamlines the process of tracking performance reviews.",
+      "Intuitive interface for common HR tasks."
+    ],
+    "cons": [
+      "Some advanced reporting or customization options could be limited.",
+      "Interface might be less intuitive for complex administrative tasks.",
+      "Pricing structure could be a concern for specific feature needs."
+    ],
+    "overall_experience": "This network engineer likely found BambooHR to be a highly effective tool for their specific tasks of managing personal documents and tracking performance reviews. They appreciated its user-friendly nature and the efficiency it brought to core HR functions. While generally satisfied, they might have noted some minor limitations in advanced features or occasional inconsistencies in the user experience."
+  },
+  "ts": "2026-10-18T05:26:05.413462+00:00"
+}

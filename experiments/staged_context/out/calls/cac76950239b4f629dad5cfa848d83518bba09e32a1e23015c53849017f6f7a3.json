@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "cac76950239b4f629dad5cfa848d83518bba09e32a1e23015c53849017f6f7a3",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2079,
+  "output_tokens": 1027,
+  "cost_usd": 0.0031912,
+  "elapsed_s": 8.62,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Integrated communication and conferencing features\",\n    \"Good for team collaboration and file sharing\",\n    \"Seamless integration with Microsoft 365 ecosystem\"\n  ],\n  \"cons\": [\n    \"Can be resource-intensive and slow down systems\",\n    \"Notifications can be overwhelming or inconsistent\",\n    \"Interface can feel cluttered or complex for some users\"\n  ],\n  \"overall_experience\": \"The System Analyst likely found Microsoft Teams to be a robust solution for establishing company-wide communication and conferencing, appreciating its comprehensive feature set and integration with the Microsoft ecosystem. However, they may have experienced some frustration with its performance impact on their system and the management of notifications. Overall, it served its purpose effectively for collaboration within a mid-market software company.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Integrated communication and conferencing features",
+      "Good for team collaboration and file sharing",
+      "Seamless integration with Microsoft 365 ecosystem"
+    ],
+    "cons": [
+      "Can be resource-intensive and slow down systems",
+      "Notifications can be overwhelming or inconsistent",
+      "Interface can feel cluttered or complex for some users"
+    ],
+    "overall_experience": "The System Analyst likely found Microsoft Teams to be a robust solution for establishing company-wide communication and conferencing, appreciating its comprehensive feature set and integration with the Microsoft ecosystem. However, they may have experienced some frustration with its performance impact on their system and the management of notifications. Overall, it served its purpose effectively for collaboration within a mid-market software company."
+  },
+  "ts": "2026-10-18T05:26:04.182702+00:00"
+}

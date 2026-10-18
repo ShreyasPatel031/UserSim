@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "6d341dd1217e15b7cbb214b780a444cf9ee23eefebbc2b3bdec5b74cd6f26bb0",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 763,
+  "output_tokens": 1071,
+  "cost_usd": 0.0029064,
+  "elapsed_s": 7.25,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Simplified administration of wellness programs\",\n    \"Effective in boosting employee participation\",\n    \"Good reporting on engagement metrics\"\n  ],\n  \"cons\": [\n    \"Potential for higher costs for advanced features\",\n    \"Limited customization for financial incentives\",\n    \"Customer support could be more responsive for finance-specific queries\"\n  ],\n  \"overall_experience\": \"The Finance Manager likely found Wellable to be an effective and relatively easy-to-use platform for engaging employees in wellness activities. While the value for money was good, there might have been a desire for more granular control over program costs and financial reporting. Overall, the product successfully met the goal of employee engagement with reasonable administrative effort.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Simplified administration of wellness programs",
+      "Effective in boosting employee participation",
+      "Good reporting on engagement metrics"
+    ],
+    "cons": [
+      "Potential for higher costs for advanced features",
+      "Limited customization for financial incentives",
+      "Customer support could be more responsive for finance-specific queries"
+    ],
+    "overall_experience": "The Finance Manager likely found Wellable to be an effective and relatively easy-to-use platform for engaging employees in wellness activities. While the value for money was good, there might have been a desire for more granular control over program costs and financial reporting. Overall, the product successfully met the goal of employee engagement with reasonable administrative effort."
+  },
+  "ts": "2026-10-18T05:25:42.380823+00:00"
+}

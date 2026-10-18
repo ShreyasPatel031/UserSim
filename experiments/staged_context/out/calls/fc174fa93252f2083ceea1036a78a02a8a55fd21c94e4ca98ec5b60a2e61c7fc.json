@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "fc174fa93252f2083ceea1036a78a02a8a55fd21c94e4ca98ec5b60a2e61c7fc",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1545,
+  "output_tokens": 1069,
+  "cost_usd": 0.0031360000000000003,
+  "elapsed_s": 6.58,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Simplified project communication and collaboration.\",\n    \"Easy for team members to adopt and use.\",\n    \"Clear overview of project progress and tasks.\"\n  ],\n  \"cons\": [\n    \"Limited advanced reporting capabilities.\",\n    \"Less customization compared to other tools.\",\n    \"Fewer integrations with specialized software.\"\n  ],\n  \"overall_experience\": \"This Software Analyst likely found Basecamp to be a straightforward and effective tool for managing team projects within their large organization. They appreciated its ease of use and ability to keep everyone on the same page, contrasting with more complex alternatives. However, they may have desired more robust reporting, customization options, and deeper integrations to fully support specific software development workflows.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 3,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Simplified project communication and collaboration.",
+      "Easy for team members to adopt and use.",
+      "Clear overview of project progress and tasks."
+    ],
+    "cons": [
+      "Limited advanced reporting capabilities.",
+      "Less customization compared to other tools.",
+      "Fewer integrations with specialized software."
+    ],
+    "overall_experience": "This Software Analyst likely found Basecamp to be a straightforward and effective tool for managing team projects within their large organization. They appreciated its ease of use and ability to keep everyone on the same page, contrasting with more complex alternatives. However, they may have desired more robust reporting, customization options, and deeper integrations to fully support specific software development workflows."
+  },
+  "ts": "2026-10-18T05:26:26.340949+00:00"
+}

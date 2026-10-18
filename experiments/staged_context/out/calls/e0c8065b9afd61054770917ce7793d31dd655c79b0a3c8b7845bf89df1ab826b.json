@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e0c8065b9afd61054770917ce7793d31dd655c79b0a3c8b7845bf89df1ab826b",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 936,
+  "output_tokens": 1027,
+  "cost_usd": 0.0028483,
+  "elapsed_s": 6.01,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Efficient team communication and chat features\",\n    \"Centralized platform for file sharing and collaboration\",\n    \"Integration with other Microsoft 365 services\"\n  ],\n  \"cons\": [\n    \"Can be resource-intensive, potentially slowing down older systems\",\n    \"Managing notifications effectively can be challenging\",\n    \"Initial setup and customization might require some effort\"\n  ],\n  \"overall_experience\": \"This reviewer likely found Microsoft Teams to be a highly effective tool for managing team communication and collaboration within their small financial services business. The integrated features for chat, file sharing, and video calls were probably instrumental in streamlining their payout support operations. While generally positive, they may have encountered occasional performance issues or struggled with notification overload.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Efficient team communication and chat features",
+      "Centralized platform for file sharing and collaboration",
+      "Integration with other Microsoft 365 services"
+    ],
+    "cons": [
+      "Can be resource-intensive, potentially slowing down older systems",
+      "Managing notifications effectively can be challenging",
+      "Initial setup and customization might require some effort"
+    ],
+    "overall_experience": "This reviewer likely found Microsoft Teams to be a highly effective tool for managing team communication and collaboration within their small financial services business. The integrated features for chat, file sharing, and video calls were probably instrumental in streamlining their payout support operations. While generally positive, they may have encountered occasional performance issues or struggled with notification overload."
+  },
+  "ts": "2026-10-18T05:26:04.982062+00:00"
+}

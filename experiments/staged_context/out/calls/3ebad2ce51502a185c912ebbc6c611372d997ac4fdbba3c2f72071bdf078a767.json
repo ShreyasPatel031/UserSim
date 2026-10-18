@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3ebad2ce51502a185c912ebbc6c611372d997ac4fdbba3c2f72071bdf078a767",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 352,
+  "output_tokens": 953,
+  "cost_usd": 0.0024881,
+  "elapsed_s": 5.1,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Securely stores and auto-fills complex passwords across many accounts.\",\n    \"Centralized password management simplifies access for enterprise users.\",\n    \"Browser extensions and mobile apps offer convenient access.\"\n  ],\n  \"cons\": [\n    \"Initial setup and integration within an enterprise environment can be complex.\",\n    \"Occasional issues with specific website auto-fill functionality.\",\n    \"Managing shared vaults and permissions might require some training.\"\n  ],\n  \"overall_experience\": \"This Deliverability Analyst likely found 1Password to be a highly effective tool for managing the numerous software and account passwords required for their role. The product's core functionality for saving and accessing credentials was likely excellent, significantly improving their workflow. While generally positive, they may have encountered minor frustrations with enterprise-level deployment or occasional auto-fill quirks.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Securely stores and auto-fills complex passwords across many accounts.",
+      "Centralized password management simplifies access for enterprise users.",
+      "Browser extensions and mobile apps offer convenient access."
+    ],
+    "cons": [
+      "Initial setup and integration within an enterprise environment can be complex.",
+      "Occasional issues with specific website auto-fill functionality.",
+      "Managing shared vaults and permissions might require some training."
+    ],
+    "overall_experience": "This Deliverability Analyst likely found 1Password to be a highly effective tool for managing the numerous software and account passwords required for their role. The product's core functionality for saving and accessing credentials was likely excellent, significantly improving their workflow. While generally positive, they may have encountered minor frustrations with enterprise-level deployment or occasional auto-fill quirks."
+  },
+  "ts": "2026-10-18T05:25:22.856991+00:00"
+}

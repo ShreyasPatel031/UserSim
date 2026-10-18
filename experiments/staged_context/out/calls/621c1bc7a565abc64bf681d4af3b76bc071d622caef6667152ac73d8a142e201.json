@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "621c1bc7a565abc64bf681d4af3b76bc071d622caef6667152ac73d8a142e201",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 774,
+  "output_tokens": 1028,
+  "cost_usd": 0.0028022000000000004,
+  "elapsed_s": 6.25,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Effective for tracking daily fitness activities\",\n    \"Engaging and motivating wellness challenges\",\n    \"Supports overall healthy lifestyle initiatives\"\n  ],\n  \"cons\": [\n    \"Occasional minor data syncing issues with external devices\",\n    \"Could offer more advanced reporting for analytical insights\",\n    \"Some UI elements could be more intuitive\"\n  ],\n  \"overall_experience\": \"The Senior Analyst likely found Wellable to be a highly effective tool for managing their fitness and participating in company wellness challenges. They appreciated its core functionality and ease of use, which directly supported their goal of maintaining a healthy lifestyle. While generally positive, there might have been minor frustrations concerning data integration or a desire for more detailed analytical features, given their role.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Effective for tracking daily fitness activities",
+      "Engaging and motivating wellness challenges",
+      "Supports overall healthy lifestyle initiatives"
+    ],
+    "cons": [
+      "Occasional minor data syncing issues with external devices",
+      "Could offer more advanced reporting for analytical insights",
+      "Some UI elements could be more intuitive"
+    ],
+    "overall_experience": "The Senior Analyst likely found Wellable to be a highly effective tool for managing their fitness and participating in company wellness challenges. They appreciated its core functionality and ease of use, which directly supported their goal of maintaining a healthy lifestyle. While generally positive, there might have been minor frustrations concerning data integration or a desire for more detailed analytical features, given their role."
+  },
+  "ts": "2026-10-18T05:25:43.179373+00:00"
+}

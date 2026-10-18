@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "cb0edbe7d0e700c56e64efdf326033e50fa96ba2ead441b0d2c3d24ca2288b65",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 845,
+  "output_tokens": 1035,
+  "cost_usd": 0.0028409999999999993,
+  "elapsed_s": 5.33,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Effective activity tracking and data synchronization\",\n    \"Motivating reward program for participation\",\n    \"Intuitive and user-friendly interface\"\n  ],\n  \"cons\": [\n    \"Occasional minor technical glitches or bugs\",\n    \"Potential for limited integration with specific niche devices\",\n    \"Reward redemption process could be more streamlined\"\n  ],\n  \"overall_experience\": \"As a QA Manager, this individual likely found Wellable to be a highly functional and engaging platform for tracking activities and earning rewards. They would appreciate the smooth user experience and the motivating aspects of the program, despite potentially encountering minor technical imperfections. The platform's overall reliability and ease of use would contribute to a positive experience, aligning with their expectations for well-engineered software.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Effective activity tracking and data synchronization",
+      "Motivating reward program for participation",
+      "Intuitive and user-friendly interface"
+    ],
+    "cons": [
+      "Occasional minor technical glitches or bugs",
+      "Potential for limited integration with specific niche devices",
+      "Reward redemption process could be more streamlined"
+    ],
+    "overall_experience": "As a QA Manager, this individual likely found Wellable to be a highly functional and engaging platform for tracking activities and earning rewards. They would appreciate the smooth user experience and the motivating aspects of the program, despite potentially encountering minor technical imperfections. The platform's overall reliability and ease of use would contribute to a positive experience, aligning with their expectations for well-engineered software."
+  },
+  "ts": "2026-10-18T05:25:39.342528+00:00"
+}

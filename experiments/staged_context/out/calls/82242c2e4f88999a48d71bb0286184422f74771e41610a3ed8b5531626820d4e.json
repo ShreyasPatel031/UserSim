@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "82242c2e4f88999a48d71bb0286184422f74771e41610a3ed8b5531626820d4e",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1464,
+  "output_tokens": 1055,
+  "cost_usd": 0.0030767,
+  "elapsed_s": 5.54,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Powerful automation and segmentation capabilities\",\n    \"Effective for email and SMS campaign management\",\n    \"Good integrations with other marketing tools\"\n  ],\n  \"cons\": [\n    \"Can have a learning curve for advanced features\",\n    \"Pricing may become a concern as usage scales\",\n    \"Reporting features could be more intuitive\"\n  ],\n  \"overall_experience\": \"This Online Digital Marketer likely found Klaviyo to be a powerful and effective tool for automating their email and SMS marketing campaigns, appreciating its robust functionality. While generally positive, they may have encountered a learning curve with some advanced features and found the pricing to be a notable consideration for their small business. The platform's overall capabilities made it a valuable asset for their marketing efforts, despite minor frustrations with reporting or support response times.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Powerful automation and segmentation capabilities",
+      "Effective for email and SMS campaign management",
+      "Good integrations with other marketing tools"
+    ],
+    "cons": [
+      "Can have a learning curve for advanced features",
+      "Pricing may become a concern as usage scales",
+      "Reporting features could be more intuitive"
+    ],
+    "overall_experience": "This Online Digital Marketer likely found Klaviyo to be a powerful and effective tool for automating their email and SMS marketing campaigns, appreciating its robust functionality. While generally positive, they may have encountered a learning curve with some advanced features and found the pricing to be a notable consideration for their small business. The platform's overall capabilities made it a valuable asset for their marketing efforts, despite minor frustrations with reporting or support response times."
+  },
+  "ts": "2026-10-18T05:26:36.900731+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "aad8343e82719f8e72e63b569335e7d1abfdbbca7ec981edda3294cc712e8b9c",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 358,
+  "output_tokens": 902,
+  "cost_usd": 0.0023624,
+  "elapsed_s": 5.95,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Broad international reach for client payments\",\n    \"Relatively easy for clients to use\",\n    \"Reliable for core payment processing\"\n  ],\n  \"cons\": [\n    \"High transaction fees for international payments\",\n    \"Currency conversion rates could be unfavorable\",\n    \"Customer support response times could be slow\"\n  ],\n  \"overall_experience\": \"As a CTO, this reviewer likely found PayPal Payments to be a functional and widely accepted solution for processing international payments from clients. While appreciating its global reach and ease of use for their customers, they likely expressed concerns about the associated transaction fees and currency exchange rates impacting their company's bottom line. The overall experience was probably positive for its utility, but tempered by cost considerations and potential support frustrations.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Broad international reach for client payments",
+      "Relatively easy for clients to use",
+      "Reliable for core payment processing"
+    ],
+    "cons": [
+      "High transaction fees for international payments",
+      "Currency conversion rates could be unfavorable",
+      "Customer support response times could be slow"
+    ],
+    "overall_experience": "As a CTO, this reviewer likely found PayPal Payments to be a functional and widely accepted solution for processing international payments from clients. While appreciating its global reach and ease of use for their customers, they likely expressed concerns about the associated transaction fees and currency exchange rates impacting their company's bottom line. The overall experience was probably positive for its utility, but tempered by cost considerations and potential support frustrations."
+  },
+  "ts": "2026-10-18T05:25:30.488862+00:00"
+}

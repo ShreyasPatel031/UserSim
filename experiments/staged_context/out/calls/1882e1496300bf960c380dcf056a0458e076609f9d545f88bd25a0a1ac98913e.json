@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1882e1496300bf960c380dcf056a0458e076609f9d545f88bd25a0a1ac98913e",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 257,
+  "output_tokens": 1080,
+  "cost_usd": 0.0027771000000000002,
+  "elapsed_s": 24.79,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Motivating reward system for activity tracking\",\n    \"Clear interface for viewing progress and challenges\",\n    \"Encourages employee engagement in wellness\"\n  ],\n  \"cons\": [\n    \"Occasional inaccuracies in activity synchronization\",\n    \"Minor UI inconsistencies that could be improved\",\n    \"Lack of detailed error reporting for tracking issues\"\n  ],\n  \"overall_experience\": \"As a QA Manager, their experience with Wellable for tracking activities and earning rewards would likely focus on the reliability and precision of the platform. While appreciating the motivating aspects and clear interface, they would probably note any glitches in activity synchronization or minor UI imperfections. The system generally served its purpose, but the critical eye of a QA professional would identify areas for functional and user experience refinement.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 3,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 6,
+    "pros": [
+      "Motivating reward system for activity tracking",
+      "Clear interface for viewing progress and challenges",
+      "Encourages employee engagement in wellness"
+    ],
+    "cons": [
+      "Occasional inaccuracies in activity synchronization",
+      "Minor UI inconsistencies that could be improved",
+      "Lack of detailed error reporting for tracking issues"
+    ],
+    "overall_experience": "As a QA Manager, their experience with Wellable for tracking activities and earning rewards would likely focus on the reliability and precision of the platform. While appreciating the motivating aspects and clear interface, they would probably note any glitches in activity synchronization or minor UI imperfections. The system generally served its purpose, but the critical eye of a QA professional would identify areas for functional and user experience refinement."
+  },
+  "ts": "2026-10-18T05:24:55.426614+00:00"
+}

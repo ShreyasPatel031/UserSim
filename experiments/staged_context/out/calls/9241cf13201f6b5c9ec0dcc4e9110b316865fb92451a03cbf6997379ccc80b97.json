@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9241cf13201f6b5c9ec0dcc4e9110b316865fb92451a03cbf6997379ccc80b97",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 857,
+  "output_tokens": 1008,
+  "cost_usd": 0.0027771000000000002,
+  "elapsed_s": 9.8,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Seamless integration with the Microsoft 365 ecosystem.\",\n    \"Centralized platform for chat, calls, and meetings.\",\n    \"Robust features for enterprise-level video conferencing.\"\n  ],\n  \"cons\": [\n    \"Occasional performance issues or high resource consumption.\",\n    \"Complexity in managing advanced settings for large deployments.\",\n    \"Notifications can sometimes be overwhelming or inconsistent.\"\n  ],\n  \"overall_experience\": \"This IT Systems Administrator likely found Microsoft Teams to be a highly functional and well-integrated communication platform, especially within an enterprise environment already utilizing Microsoft 365. They appreciated its comprehensive features for managing calls and meetings, contributing to efficient team collaboration. While generally positive, they may have encountered minor frustrations with performance or the intricacies of managing the platform at scale.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Seamless integration with the Microsoft 365 ecosystem.",
+      "Centralized platform for chat, calls, and meetings.",
+      "Robust features for enterprise-level video conferencing."
+    ],
+    "cons": [
+      "Occasional performance issues or high resource consumption.",
+      "Complexity in managing advanced settings for large deployments.",
+      "Notifications can sometimes be overwhelming or inconsistent."
+    ],
+    "overall_experience": "This IT Systems Administrator likely found Microsoft Teams to be a highly functional and well-integrated communication platform, especially within an enterprise environment already utilizing Microsoft 365. They appreciated its comprehensive features for managing calls and meetings, contributing to efficient team collaboration. While generally positive, they may have encountered minor frustrations with performance or the intricacies of managing the platform at scale."
+  },
+  "ts": "2026-10-18T05:26:08.007655+00:00"
+}

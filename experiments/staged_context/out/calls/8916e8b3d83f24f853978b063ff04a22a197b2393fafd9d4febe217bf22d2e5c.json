@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8916e8b3d83f24f853978b063ff04a22a197b2393fafd9d4febe217bf22d2e5c",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2108,
+  "output_tokens": 1055,
+  "cost_usd": 0.0032699,
+  "elapsed_s": 6.04,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Simple and intuitive interface for task management\",\n    \"Effective for centralizing communication and project elements\",\n    \"Good for basic project planning without overwhelming features\"\n  ],\n  \"cons\": [\n    \"Limited advanced features or customization compared to alternatives\",\n    \"May feel too simple for growing needs after a trial period\",\n    \"Perceived value for money might be low for a self-employed user after the free trial\"\n  ],\n  \"overall_experience\": \"As a self-employed Sales Associate, this person likely found Basecamp to be a straightforward and easy-to-use tool for basic project and task management during their free trial. However, the limited customization and potentially higher cost for a single user or small operation might have made them question its long-term value, leading to a moderate overall rating and recommendation score.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 7,
+    "pros": [
+      "Simple and intuitive interface for task management",
+      "Effective for centralizing communication and project elements",
+      "Good for basic project planning without overwhelming features"
+    ],
+    "cons": [
+      "Limited advanced features or customization compared to alternatives",
+      "May feel too simple for growing needs after a trial period",
+      "Perceived value for money might be low for a self-employed user after the free trial"
+    ],
+    "overall_experience": "As a self-employed Sales Associate, this person likely found Basecamp to be a straightforward and easy-to-use tool for basic project and task management during their free trial. However, the limited customization and potentially higher cost for a single user or small operation might have made them question its long-term value, leading to a moderate overall rating and recommendation score."
+  },
+  "ts": "2026-10-18T05:26:24.909427+00:00"
+}

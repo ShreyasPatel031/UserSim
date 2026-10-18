@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "678507e854e47caf525d8de992bfa17ac64cf58c98ece3bd302f4ba4aeeacdcf",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1727,
+  "output_tokens": 1028,
+  "cost_usd": 0.0030881000000000003,
+  "elapsed_s": 5.7,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Efficiently manages and assigns support tickets.\",\n    \"Provides good reporting capabilities for performance tracking.\",\n    \"Centralized platform for customer communication.\"\n  ],\n  \"cons\": [\n    \"Could be more flexible with customization for specific workflows.\",\n    \"Initial setup and training for a large team can be time-consuming.\",\n    \"Pricing might feel high for the desired level of features in an enterprise setting.\"\n  ],\n  \"overall_experience\": \"The Supply Chain Sr. Executive likely found Freshdesk to be a generally effective tool for managing customer communication and support tickets within their large organization. They appreciated its core functionality for ticket management and reporting, which aided in tracking team performance. However, the executive may have encountered some challenges with customization options and the initial learning curve for a large enterprise team, and felt the cost could be a concern relative to the specific features offered.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 7,
+    "pros": [
+      "Efficiently manages and assigns support tickets.",
+      "Provides good reporting capabilities for performance tracking.",
+      "Centralized platform for customer communication."
+    ],
+    "cons": [
+      "Could be more flexible with customization for specific workflows.",
+      "Initial setup and training for a large team can be time-consuming.",
+      "Pricing might feel high for the desired level of features in an enterprise setting."
+    ],
+    "overall_experience": "The Supply Chain Sr. Executive likely found Freshdesk to be a generally effective tool for managing customer communication and support tickets within their large organization. They appreciated its core functionality for ticket management and reporting, which aided in tracking team performance. However, the executive may have encountered some challenges with customization options and the initial learning curve for a large enterprise team, and felt the cost could be a concern relative to the specific features offered."
+  },
+  "ts": "2026-10-18T05:25:20.629464+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "cfe7ae3a5727d8808609d907db92e9afd145f38e966f1ce84a914b8a506dcb4c",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 255,
+  "output_tokens": 920,
+  "cost_usd": 0.0023765,
+  "elapsed_s": 24.59,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Efficiently reworded and improved existing content.\",\n    \"Saved significant time on content revision for multiple websites.\",\n    \"User-friendly interface for quick content enhancements.\"\n  ],\n  \"cons\": [\n    \"Required careful guidance to avoid generic output.\",\n    \"Occasional need for extensive human editing to match brand voice.\",\n    \"Potential cost consideration for a small business with high usage.\"\n  ],\n  \"overall_experience\": \"The Web Manager likely found Jasper to be an effective tool for improving and rephrasing content across their various websites, appreciating its efficiency for a small business. They valued its ability to streamline content updates and save time, leading to a generally positive experience. However, they probably noted the necessity of human oversight to ensure output quality and brand consistency.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Efficiently reworded and improved existing content.",
+      "Saved significant time on content revision for multiple websites.",
+      "User-friendly interface for quick content enhancements."
+    ],
+    "cons": [
+      "Required careful guidance to avoid generic output.",
+      "Occasional need for extensive human editing to match brand voice.",
+      "Potential cost consideration for a small business with high usage."
+    ],
+    "overall_experience": "The Web Manager likely found Jasper to be an effective tool for improving and rephrasing content across their various websites, appreciating its efficiency for a small business. They valued its ability to streamline content updates and save time, leading to a generally positive experience. However, they probably noted the necessity of human oversight to ensure output quality and brand consistency."
+  },
+  "ts": "2026-10-18T05:24:52.633969+00:00"
+}

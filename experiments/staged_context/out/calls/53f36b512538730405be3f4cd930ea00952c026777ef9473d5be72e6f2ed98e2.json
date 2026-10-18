@@ -1,0 +1,35 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "53f36b512538730405be3f4cd930ea00952c026777ef9473d5be72e6f2ed98e2",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 268,
+  "output_tokens": 1000,
+  "cost_usd": 0.0025804,
+  "elapsed_s": 22.91,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 2,\n  \"overall_rating\": 2,\n  \"value_for_money_rating\": 2,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 3,\n  \"pros\": [\n    \"Seamless integration with existing Intercom workflows\",\n    \"Potential for automated feedback collection within conversations\"\n  ],\n  \"cons\": [\n    \"Lack of dedicated features for structured NPS campaign management\",\n    \"Difficulty in segmenting audiences and distributing surveys effectively\",\n    \"Limited analytical capabilities for NPS data\"\n  ],\n  \"overall_experience\": \"The Customer Success Operations Project Manager Officer likely found Fin by Intercom to be insufficient for their primary task of running comprehensive NPS campaigns. While the product integrated well with other Intercom tools and offered some basic conversational feedback, it lacked the specialized functionality for survey distribution, detailed segmentation, and robust NPS reporting. This led to a frustrating experience as the platform did not align with their operational needs for managing customer satisfaction metrics effectively.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 2,
+    "overall_rating": 2,
+    "value_for_money_rating": 2,
+    "customer_support_rating": 3,
+    "recommendation_score": 3,
+    "pros": [
+      "Seamless integration with existing Intercom workflows",
+      "Potential for automated feedback collection within conversations"
+    ],
+    "cons": [
+      "Lack of dedicated features for structured NPS campaign management",
+      "Difficulty in segmenting audiences and distributing surveys effectively",
+      "Limited analytical capabilities for NPS data"
+    ],
+    "overall_experience": "The Customer Success Operations Project Manager Officer likely found Fin by Intercom to be insufficient for their primary task of running comprehensive NPS campaigns. While the product integrated well with other Intercom tools and offered some basic conversational feedback, it lacked the specialized functionality for survey distribution, detailed segmentation, and robust NPS reporting. This led to a frustrating experience as the platform did not align with their operational needs for managing customer satisfaction metrics effectively."
+  },
+  "ts": "2026-10-18T05:24:50.300855+00:00"
+}

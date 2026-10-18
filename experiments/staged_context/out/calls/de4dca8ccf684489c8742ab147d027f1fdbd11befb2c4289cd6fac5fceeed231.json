@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "de4dca8ccf684489c8742ab147d027f1fdbd11befb2c4289cd6fac5fceeed231",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1577,
+  "output_tokens": 996,
+  "cost_usd": 0.0029631,
+  "elapsed_s": 6.23,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Comprehensive and up-to-date training content\",\n    \"Effective in improving employee security awareness\",\n    \"Good reporting features for compliance audits\"\n  ],\n  \"cons\": [\n    \"Some advanced features might require additional cost\",\n    \"Initial setup and customization can be time-consuming\",\n    \"User experience for some employees could be smoother\"\n  ],\n  \"overall_experience\": \"The Compliance Officer likely found KnowBe4 effective for fulfilling security awareness training requirements, appreciating its comprehensive content and robust reporting for audit purposes. While generally satisfied with its core functionality and ease of use for most employees, they may have noted that some advanced features come at an extra cost or that initial setup required a significant time investment. Overall, the product successfully met their need to provide mandatory security training and track completion effectively.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Comprehensive and up-to-date training content",
+      "Effective in improving employee security awareness",
+      "Good reporting features for compliance audits"
+    ],
+    "cons": [
+      "Some advanced features might require additional cost",
+      "Initial setup and customization can be time-consuming",
+      "User experience for some employees could be smoother"
+    ],
+    "overall_experience": "The Compliance Officer likely found KnowBe4 effective for fulfilling security awareness training requirements, appreciating its comprehensive content and robust reporting for audit purposes. While generally satisfied with its core functionality and ease of use for most employees, they may have noted that some advanced features come at an extra cost or that initial setup required a significant time investment. Overall, the product successfully met their need to provide mandatory security training and track completion effectively."
+  },
+  "ts": "2026-10-18T05:25:19.944309+00:00"
+}

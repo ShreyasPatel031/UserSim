@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "53ccee5e93d65345594997c0506852942f549d402af4014d9d1fe3c1af95b132",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1413,
+  "output_tokens": 1035,
+  "cost_usd": 0.0030113999999999996,
+  "elapsed_s": 5.9,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Centralized project information effectively\",\n    \"Streamlined task management and tracking\",\n    \"Intuitive interface for quick adoption\"\n  ],\n  \"cons\": [\n    \"Initial setup can feel overwhelming\",\n    \"Pricing might be a concern for a small business\",\n    \"Some advanced features require a learning investment\"\n  ],\n  \"overall_experience\": \"This Project Coordinator likely found monday AI Work Platform to be a highly effective solution for centralizing project information and managing tasks. While the platform offers robust functionality that greatly aids their role, they might have experienced a slight learning curve or found the pricing a bit steep for a small business. Overall, the benefits of having everything in one organized place likely outweighed these minor frustrations.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Centralized project information effectively",
+      "Streamlined task management and tracking",
+      "Intuitive interface for quick adoption"
+    ],
+    "cons": [
+      "Initial setup can feel overwhelming",
+      "Pricing might be a concern for a small business",
+      "Some advanced features require a learning investment"
+    ],
+    "overall_experience": "This Project Coordinator likely found monday AI Work Platform to be a highly effective solution for centralizing project information and managing tasks. While the platform offers robust functionality that greatly aids their role, they might have experienced a slight learning curve or found the pricing a bit steep for a small business. Overall, the benefits of having everything in one organized place likely outweighed these minor frustrations."
+  },
+  "ts": "2026-10-18T05:25:07.791752+00:00"
+}

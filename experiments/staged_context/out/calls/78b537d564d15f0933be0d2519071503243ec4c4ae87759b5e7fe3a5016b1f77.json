@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "78b537d564d15f0933be0d2519071503243ec4c4ae87759b5e7fe3a5016b1f77",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 359,
+  "output_tokens": 979,
+  "cost_usd": 0.0025552,
+  "elapsed_s": 9.85,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Seamless integration of HR, payroll, and IT functions\",\n    \"Automated onboarding and offboarding workflows\",\n    \"Robust app provisioning and access management\"\n  ],\n  \"cons\": [\n    \"Occasional UI inconsistencies or minor bugs\",\n    \"Initial setup can be complex due to extensive features\",\n    \"Reporting customization could be more intuitive\"\n  ],\n  \"overall_experience\": \"This QA Engineer found Rippling to be a powerful and comprehensive platform for managing critical employee lifecycle tasks. The system's ability to automate onboarding, payroll, benefits, and app access across a mid-market company was highly valued. While generally positive, some minor user interface quirks and the initial configuration complexity were noted as areas for potential refinement.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Seamless integration of HR, payroll, and IT functions",
+      "Automated onboarding and offboarding workflows",
+      "Robust app provisioning and access management"
+    ],
+    "cons": [
+      "Occasional UI inconsistencies or minor bugs",
+      "Initial setup can be complex due to extensive features",
+      "Reporting customization could be more intuitive"
+    ],
+    "overall_experience": "This QA Engineer found Rippling to be a powerful and comprehensive platform for managing critical employee lifecycle tasks. The system's ability to automate onboarding, payroll, benefits, and app access across a mid-market company was highly valued. While generally positive, some minor user interface quirks and the initial configuration complexity were noted as areas for potential refinement."
+  },
+  "ts": "2026-10-18T05:25:21.613880+00:00"
+}

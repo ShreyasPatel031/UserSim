@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "164c3a7f812dc6f264f603b3bbab7882f772aefb62609f8c5701f2896d9478d8",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2129,
+  "output_tokens": 1094,
+  "cost_usd": 0.0033736999999999994,
+  "elapsed_s": 5.68,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Efficiently manages and stores personal HR documents.\",\n    \"Streamlines the tracking of performance reviews.\",\n    \"User-friendly interface that is generally easy to navigate.\"\n  ],\n  \"cons\": [\n    \"Might find some functionalities less intuitive on the web compared to mobile.\",\n    \"Potential for minor bugs or occasional server issues.\",\n    \"Pricing structure or unexpected charges could be a point of frustration.\"\n  ],\n  \"overall_experience\": \"A Network Engineer using BambooHR likely found it to be a highly effective platform for managing personal HR documents and tracking performance reviews. The system's ease of use and comprehensive functionality were generally appreciated, making HR tasks more streamlined. While generally positive, there might have been minor frustrations with the web interface or unexpected costs.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Efficiently manages and stores personal HR documents.",
+      "Streamlines the tracking of performance reviews.",
+      "User-friendly interface that is generally easy to navigate."
+    ],
+    "cons": [
+      "Might find some functionalities less intuitive on the web compared to mobile.",
+      "Potential for minor bugs or occasional server issues.",
+      "Pricing structure or unexpected charges could be a point of frustration."
+    ],
+    "overall_experience": "A Network Engineer using BambooHR likely found it to be a highly effective platform for managing personal HR documents and tracking performance reviews. The system's ease of use and comprehensive functionality were generally appreciated, making HR tasks more streamlined. While generally positive, there might have been minor frustrations with the web interface or unexpected costs."
+  },
+  "ts": "2026-10-18T05:26:05.115193+00:00"
+}

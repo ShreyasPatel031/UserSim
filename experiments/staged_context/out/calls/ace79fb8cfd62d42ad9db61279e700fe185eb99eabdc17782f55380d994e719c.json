@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ace79fb8cfd62d42ad9db61279e700fe185eb99eabdc17782f55380d994e719c",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 257,
+  "output_tokens": 1040,
+  "cost_usd": 0.0026771,
+  "elapsed_s": 6.35,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 2,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Comprehensive payroll processing features.\",\n    \"Integrated HR and timekeeping modules.\",\n    \"Helpful employee self-service portal.\"\n  ],\n  \"cons\": [\n    \"Steep learning curve for complex functionalities.\",\n    \"Inconsistent and slow customer support response times.\",\n    \"Custom reporting can be challenging to set up.\"\n  ],\n  \"overall_experience\": \"The Payroll Manager likely found Paylocity to be a robust platform, appreciating its integrated HR functionalities and comprehensive payroll features that streamlined many processes. However, they probably encountered frustrations with its complexity, especially when trying to utilize advanced features or customize reports. The quality and responsiveness of customer support were likely a significant pain point, impacting their overall satisfaction with the product.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 2,
+    "recommendation_score": 6,
+    "pros": [
+      "Comprehensive payroll processing features.",
+      "Integrated HR and timekeeping modules.",
+      "Helpful employee self-service portal."
+    ],
+    "cons": [
+      "Steep learning curve for complex functionalities.",
+      "Inconsistent and slow customer support response times.",
+      "Custom reporting can be challenging to set up."
+    ],
+    "overall_experience": "The Payroll Manager likely found Paylocity to be a robust platform, appreciating its integrated HR functionalities and comprehensive payroll features that streamlined many processes. However, they probably encountered frustrations with its complexity, especially when trying to utilize advanced features or customize reports. The quality and responsiveness of customer support were likely a significant pain point, impacting their overall satisfaction with the product."
+  },
+  "ts": "2026-10-18T05:24:56.601489+00:00"
+}

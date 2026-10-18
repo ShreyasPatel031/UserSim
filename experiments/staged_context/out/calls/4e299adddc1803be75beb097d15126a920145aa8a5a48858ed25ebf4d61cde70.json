@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4e299adddc1803be75beb097d15126a920145aa8a5a48858ed25ebf4d61cde70",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1046,
+  "output_tokens": 1050,
+  "cost_usd": 0.0029387999999999997,
+  "elapsed_s": 5.99,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Good range of built-in e-commerce features for a small business.\",\n    \"Professional templates helped in quickly launching the store.\",\n    \"Scalable platform for future growth.\"\n  ],\n  \"cons\": [\n    \"Initial setup had a steeper learning curve than anticipated.\",\n    \"Some advanced customizations required developer assistance or more time.\",\n    \"Pricing tiers could become a concern with increased sales volume.\"\n  ],\n  \"overall_experience\": \"This owner/operator found BigCommerce to be a solid platform for launching their retail e-commerce store, appreciating its robust features and professional templates. While the initial setup presented some challenges and a learning curve, they managed to get their business online. The platform offered good functionality for their needs, though more complex customizations were sometimes difficult to implement without additional help.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Good range of built-in e-commerce features for a small business.",
+      "Professional templates helped in quickly launching the store.",
+      "Scalable platform for future growth."
+    ],
+    "cons": [
+      "Initial setup had a steeper learning curve than anticipated.",
+      "Some advanced customizations required developer assistance or more time.",
+      "Pricing tiers could become a concern with increased sales volume."
+    ],
+    "overall_experience": "This owner/operator found BigCommerce to be a solid platform for launching their retail e-commerce store, appreciating its robust features and professional templates. While the initial setup presented some challenges and a learning curve, they managed to get their business online. The platform offered good functionality for their needs, though more complex customizations were sometimes difficult to implement without additional help."
+  },
+  "ts": "2026-10-18T05:26:42.801007+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "04371b7627834c2250dbd639da7a39290cf86349b1e2a822420b566c5701ccb2",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1496,
+  "output_tokens": 1040,
+  "cost_usd": 0.0030488,
+  "elapsed_s": 6.02,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Securely stores and manages all passwords in one central location.\",\n    \"User-friendly interface makes it easy to save and access credentials.\",\n    \"Improves overall security posture for the organization.\"\n  ],\n  \"cons\": [\n    \"Initial configuration for specific organizational needs can be tricky.\",\n    \"Mobile app experience could be smoother and more integrated.\",\n    \"Some advanced features might require a learning curve or better documentation.\"\n  ],\n  \"overall_experience\": \"This Application Development Analyst likely found 1Password to be a reliable and secure solution for managing passwords across their mid-market company. The product's core functionality for secure storage and ease of access was appreciated, significantly improving their daily workflow. While generally satisfied, they may have encountered minor frustrations with initial setup complexities or desired more seamless mobile integration, and found support to be occasionally slow.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Securely stores and manages all passwords in one central location.",
+      "User-friendly interface makes it easy to save and access credentials.",
+      "Improves overall security posture for the organization."
+    ],
+    "cons": [
+      "Initial configuration for specific organizational needs can be tricky.",
+      "Mobile app experience could be smoother and more integrated.",
+      "Some advanced features might require a learning curve or better documentation."
+    ],
+    "overall_experience": "This Application Development Analyst likely found 1Password to be a reliable and secure solution for managing passwords across their mid-market company. The product's core functionality for secure storage and ease of access was appreciated, significantly improving their daily workflow. While generally satisfied, they may have encountered minor frustrations with initial setup complexities or desired more seamless mobile integration, and found support to be occasionally slow."
+  },
+  "ts": "2026-10-18T05:25:23.059276+00:00"
+}

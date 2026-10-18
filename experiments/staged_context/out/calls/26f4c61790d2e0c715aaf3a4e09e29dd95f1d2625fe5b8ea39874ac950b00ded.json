@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "26f4c61790d2e0c715aaf3a4e09e29dd95f1d2625fe5b8ea39874ac950b00ded",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 273,
+  "output_tokens": 987,
+  "cost_usd": 0.0025494000000000003,
+  "elapsed_s": 28.47,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effective phishing simulations that genuinely test employees.\",\n    \"Wide variety of engaging training modules for different threat types.\",\n    \"Relatively easy to deploy and manage for a small IT team.\"\n  ],\n  \"cons\": [\n    \"Initial setup can be a bit time-consuming to tailor to specific needs.\",\n    \"Some training content might feel repetitive after a while.\",\n    \"The cost can be a significant investment for a small business.\"\n  ],\n  \"overall_experience\": \"The System Engineer likely found KnowBe4 to be a robust and effective solution for improving cybersecurity awareness within their small business. The platform's comprehensive training and realistic phishing simulations directly addressed their goal of reducing incidents. While the initial investment and setup required some effort, the overall ease of management and positive impact on employee behavior made it a valuable tool.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Effective phishing simulations that genuinely test employees.",
+      "Wide variety of engaging training modules for different threat types.",
+      "Relatively easy to deploy and manage for a small IT team."
+    ],
+    "cons": [
+      "Initial setup can be a bit time-consuming to tailor to specific needs.",
+      "Some training content might feel repetitive after a while.",
+      "The cost can be a significant investment for a small business."
+    ],
+    "overall_experience": "The System Engineer likely found KnowBe4 to be a robust and effective solution for improving cybersecurity awareness within their small business. The platform's comprehensive training and realistic phishing simulations directly addressed their goal of reducing incidents. While the initial investment and setup required some effort, the overall ease of management and positive impact on employee behavior made it a valuable tool."
+  },
+  "ts": "2026-10-18T05:24:57.715829+00:00"
+}

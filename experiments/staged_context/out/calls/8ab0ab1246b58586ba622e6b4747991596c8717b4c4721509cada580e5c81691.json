@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8ab0ab1246b58586ba622e6b4747991596c8717b4c4721509cada580e5c81691",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2105,
+  "output_tokens": 959,
+  "cost_usd": 0.003029,
+  "elapsed_s": 5.84,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Efficiently schedule and publish social media posts across platforms.\",\n    \"Centralized platform for managing marketing activities.\",\n    \"Integrated analytics for social media performance.\"\n  ],\n  \"cons\": [\n    \"Learning curve for maximizing all features.\",\n    \"The cost can be a significant factor for a small business.\",\n    \"Interface can sometimes feel cluttered with many options.\"\n  ],\n  \"overall_experience\": \"This Web & Digital Marketing Specialist likely found HubSpot Marketing Hub to be a generally effective tool for their social media scheduling needs. They appreciated its integrated functionalities and ability to streamline content distribution. However, the initial learning curve and the platform's cost for a small business were probable points of frustration for them.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Efficiently schedule and publish social media posts across platforms.",
+      "Centralized platform for managing marketing activities.",
+      "Integrated analytics for social media performance."
+    ],
+    "cons": [
+      "Learning curve for maximizing all features.",
+      "The cost can be a significant factor for a small business.",
+      "Interface can sometimes feel cluttered with many options."
+    ],
+    "overall_experience": "This Web & Digital Marketing Specialist likely found HubSpot Marketing Hub to be a generally effective tool for their social media scheduling needs. They appreciated its integrated functionalities and ability to streamline content distribution. However, the initial learning curve and the platform's cost for a small business were probable points of frustration for them."
+  },
+  "ts": "2026-10-18T05:25:57.285313+00:00"
+}

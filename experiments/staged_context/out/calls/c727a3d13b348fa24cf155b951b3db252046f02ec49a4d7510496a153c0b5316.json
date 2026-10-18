@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c727a3d13b348fa24cf155b951b3db252046f02ec49a4d7510496a153c0b5316",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 360,
+  "output_tokens": 996,
+  "cost_usd": 0.002598,
+  "elapsed_s": 6.02,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Efficiently generates alternative sentence structures and word choices.\",\n    \"Helpful for overcoming writer's block and refining existing drafts.\",\n    \"User-friendly interface makes the core task straightforward.\"\n  ],\n  \"cons\": [\n    \"Output quality can sometimes be generic, requiring manual edits.\",\n    \"May occasionally struggle to maintain specific brand voice or nuance.\",\n    \"Integration with other marketing tools could be improved for seamless workflow.\"\n  ],\n  \"overall_experience\": \"The Senior Marketing Specialist likely found Jasper to be a valuable tool for refining text and generating alternative versions, significantly aiding their content polishing process. While generally positive, they probably encountered instances where the AI's output needed manual adjustments to align perfectly with specific brand voice or complex messaging. Overall, it served as a solid assistant for improving sentence structure and word choice, streamlining their editing tasks.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Efficiently generates alternative sentence structures and word choices.",
+      "Helpful for overcoming writer's block and refining existing drafts.",
+      "User-friendly interface makes the core task straightforward."
+    ],
+    "cons": [
+      "Output quality can sometimes be generic, requiring manual edits.",
+      "May occasionally struggle to maintain specific brand voice or nuance.",
+      "Integration with other marketing tools could be improved for seamless workflow."
+    ],
+    "overall_experience": "The Senior Marketing Specialist likely found Jasper to be a valuable tool for refining text and generating alternative versions, significantly aiding their content polishing process. While generally positive, they probably encountered instances where the AI's output needed manual adjustments to align perfectly with specific brand voice or complex messaging. Overall, it served as a solid assistant for improving sentence structure and word choice, streamlining their editing tasks."
+  },
+  "ts": "2026-10-18T05:25:15.980121+00:00"
+}

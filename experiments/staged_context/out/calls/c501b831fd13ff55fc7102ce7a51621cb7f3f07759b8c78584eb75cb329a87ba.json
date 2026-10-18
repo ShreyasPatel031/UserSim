@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c501b831fd13ff55fc7102ce7a51621cb7f3f07759b8c78584eb75cb329a87ba",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 374,
+  "output_tokens": 994,
+  "cost_usd": 0.0025972,
+  "elapsed_s": 5.48,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Extensive and engaging content library for diverse training needs\",\n    \"Robust phishing simulation capabilities to test and educate users\",\n    \"Detailed reporting and analytics for tracking awareness and compliance\"\n  ],\n  \"cons\": [\n    \"Initial setup and customization of campaigns can be time-consuming\",\n    \"Some administrative features might have a steeper learning curve\",\n    \"Cost could be a consideration for organizations with tighter budgets\"\n  ],\n  \"overall_experience\": \"This Senior Security Analyst likely found KnowBe4 to be a highly effective platform for achieving their goal of building and maintaining security awareness. The comprehensive content and powerful phishing simulations were instrumental in engaging their organization. While the administrative aspects and initial setup required some effort, the overall functionality and reporting capabilities provided significant value for their role.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Extensive and engaging content library for diverse training needs",
+      "Robust phishing simulation capabilities to test and educate users",
+      "Detailed reporting and analytics for tracking awareness and compliance"
+    ],
+    "cons": [
+      "Initial setup and customization of campaigns can be time-consuming",
+      "Some administrative features might have a steeper learning curve",
+      "Cost could be a consideration for organizations with tighter budgets"
+    ],
+    "overall_experience": "This Senior Security Analyst likely found KnowBe4 to be a highly effective platform for achieving their goal of building and maintaining security awareness. The comprehensive content and powerful phishing simulations were instrumental in engaging their organization. While the administrative aspects and initial setup required some effort, the overall functionality and reporting capabilities provided significant value for their role."
+  },
+  "ts": "2026-10-18T05:25:19.702207+00:00"
+}

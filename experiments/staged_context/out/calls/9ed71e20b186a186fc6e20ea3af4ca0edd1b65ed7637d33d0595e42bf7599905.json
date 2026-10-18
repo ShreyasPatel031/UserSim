@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9ed71e20b186a186fc6e20ea3af4ca0edd1b65ed7637d33d0595e42bf7599905",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1423,
+  "output_tokens": 967,
+  "cost_usd": 0.0028444,
+  "elapsed_s": 6.15,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Clear visibility into commission payouts and earnings\",\n    \"Real-time updates on sales performance and deal impact\",\n    \"Automates complex calculations, reducing manual effort\"\n  ],\n  \"cons\": [\n    \"Reports or dashboards may lack personalized customization options\",\n    \"Occasional delays in data updates or corrections for specific transactions\",\n    \"The user interface might feel less intuitive or clunky at times\"\n  ],\n  \"overall_experience\": \"This Commercial Account Executive likely found Xactly to be a solid tool for tracking their commissions and payouts, appreciating the clarity and automation it provided for their earnings. While generally effective in its core function, they may have encountered frustrations with the platform's flexibility for personal reporting and occasional delays in data accuracy or updates. The overall experience was positive, but with room for improvement in user interface and customization.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Clear visibility into commission payouts and earnings",
+      "Real-time updates on sales performance and deal impact",
+      "Automates complex calculations, reducing manual effort"
+    ],
+    "cons": [
+      "Reports or dashboards may lack personalized customization options",
+      "Occasional delays in data updates or corrections for specific transactions",
+      "The user interface might feel less intuitive or clunky at times"
+    ],
+    "overall_experience": "This Commercial Account Executive likely found Xactly to be a solid tool for tracking their commissions and payouts, appreciating the clarity and automation it provided for their earnings. While generally effective in its core function, they may have encountered frustrations with the platform's flexibility for personal reporting and occasional delays in data accuracy or updates. The overall experience was positive, but with room for improvement in user interface and customization."
+  },
+  "ts": "2026-10-18T05:25:27.651591+00:00"
+}

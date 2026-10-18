@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "bbea980172770325d88384af7bb8f1dfc417eb2aeb2abbd86240bb619c78f5b1",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 347,
+  "output_tokens": 1050,
+  "cost_usd": 0.0027291,
+  "elapsed_s": 6.67,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Robust security features for sensitive data\",\n    \"Seamless cross-device synchronization\",\n    \"Intuitive interface for managing credentials\"\n  ],\n  \"cons\": [\n    \"Initial deployment or integration within an enterprise environment could be complex\",\n    \"Occasional minor issues with browser extension auto-fill\",\n    \"Cost might be a consideration for large-scale enterprise adoption\"\n  ],\n  \"overall_experience\": \"This PV Analyst likely found 1Password to be a highly secure and functional tool for managing sensitive passwords across multiple devices within their large organization. While the core features like strong encryption and reliable sync were greatly appreciated, they may have encountered some minor challenges related to enterprise-level deployment or occasional browser extension quirks. Despite these small frustrations, the product's overall reliability and robust security made it a valuable asset for their role.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Robust security features for sensitive data",
+      "Seamless cross-device synchronization",
+      "Intuitive interface for managing credentials"
+    ],
+    "cons": [
+      "Initial deployment or integration within an enterprise environment could be complex",
+      "Occasional minor issues with browser extension auto-fill",
+      "Cost might be a consideration for large-scale enterprise adoption"
+    ],
+    "overall_experience": "This PV Analyst likely found 1Password to be a highly secure and functional tool for managing sensitive passwords across multiple devices within their large organization. While the core features like strong encryption and reliable sync were greatly appreciated, they may have encountered some minor challenges related to enterprise-level deployment or occasional browser extension quirks. Despite these small frustrations, the product's overall reliability and robust security made it a valuable asset for their role."
+  },
+  "ts": "2026-10-18T05:25:23.693345+00:00"
+}

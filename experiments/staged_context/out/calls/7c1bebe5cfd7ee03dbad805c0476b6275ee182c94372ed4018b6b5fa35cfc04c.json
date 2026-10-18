@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7c1bebe5cfd7ee03dbad805c0476b6275ee182c94372ed4018b6b5fa35cfc04c",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2093,
+  "output_tokens": 1066,
+  "cost_usd": 0.0032929,
+  "elapsed_s": 5.85,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Effective ticket system for managing customer inquiries\",\n    \"Good range of features for customer support operations\",\n    \"Potential for customization to fit specific workflows\"\n  ],\n  \"cons\": [\n    \"Learning curve might be present for new administrators\",\n    \"Integration challenges with existing logistics systems\",\n    \"Pricing could be a concern after the free trial\"\n  ],\n  \"overall_experience\": \"The administrator support user found LiveAgent to be a capable ticket system for managing customer support during their free trial. They likely appreciated its core functionality and potential for customization. However, the user may have encountered a learning curve or concerns regarding integration and pricing, leading to a good but not outstanding overall impression.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 7,
+    "pros": [
+      "Effective ticket system for managing customer inquiries",
+      "Good range of features for customer support operations",
+      "Potential for customization to fit specific workflows"
+    ],
+    "cons": [
+      "Learning curve might be present for new administrators",
+      "Integration challenges with existing logistics systems",
+      "Pricing could be a concern after the free trial"
+    ],
+    "overall_experience": "The administrator support user found LiveAgent to be a capable ticket system for managing customer support during their free trial. They likely appreciated its core functionality and potential for customization. However, the user may have encountered a learning curve or concerns regarding integration and pricing, leading to a good but not outstanding overall impression."
+  },
+  "ts": "2026-10-18T05:26:28.404533+00:00"
+}

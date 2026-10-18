@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f54cd29a3ec91ae8041a7624f3765224e869bfb1d1a3882ecd281b45c3ab7afa",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 770,
+  "output_tokens": 994,
+  "cost_usd": 0.002716,
+  "elapsed_s": 6.03,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Robust payroll processing capabilities.\",\n    \"Detailed custom reporting for financial analysis.\",\n    \"Efficient integration of timecard data for payroll.\"\n  ],\n  \"cons\": [\n    \"Steep learning curve for advanced custom report setup.\",\n    \"Interface can be clunky when navigating complex reporting features.\",\n    \"Inconsistent response times from customer support for technical issues.\"\n  ],\n  \"overall_experience\": \"The Club Accountant likely found Paylocity to be a powerful tool for managing payroll and timecards, appreciating its robust functionality for a mid-market company. While custom reporting offered crucial insights for financial oversight, setting up and navigating these complex features may have presented a learning challenge. Customer support quality could have varied, impacting resolution efficiency for specific accounting queries.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Robust payroll processing capabilities.",
+      "Detailed custom reporting for financial analysis.",
+      "Efficient integration of timecard data for payroll."
+    ],
+    "cons": [
+      "Steep learning curve for advanced custom report setup.",
+      "Interface can be clunky when navigating complex reporting features.",
+      "Inconsistent response times from customer support for technical issues."
+    ],
+    "overall_experience": "The Club Accountant likely found Paylocity to be a powerful tool for managing payroll and timecards, appreciating its robust functionality for a mid-market company. While custom reporting offered crucial insights for financial oversight, setting up and navigating these complex features may have presented a learning challenge. Customer support quality could have varied, impacting resolution efficiency for specific accounting queries."
+  },
+  "ts": "2026-10-18T05:25:46.901936+00:00"
+}

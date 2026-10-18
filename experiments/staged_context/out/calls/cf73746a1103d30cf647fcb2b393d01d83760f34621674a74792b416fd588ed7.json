@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "cf73746a1103d30cf647fcb2b393d01d83760f34621674a74792b416fd588ed7",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 359,
+  "output_tokens": 920,
+  "cost_usd": 0.0024077,
+  "elapsed_s": 8.87,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Widely accepted for receiving payments from US companies\",\n    \"Relatively straightforward API for integration\",\n    \"Reliable payment processing\"\n  ],\n  \"cons\": [\n    \"Currency conversion rates are often unfavorable\",\n    \"Transaction fees can accumulate for mid-market volumes\",\n    \"Customer support can be slow to resolve developer-specific issues\"\n  ],\n  \"overall_experience\": \"The junior dot net developer likely found PayPal Payments effective for its primary purpose of receiving payments from US-based companies, appreciating its widespread acceptance and relatively easy integration. However, the experience was tempered by less competitive currency conversion rates and potentially high transaction fees, which impacted the overall value. While generally functional, specific technical support needs were occasionally met with frustration.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Widely accepted for receiving payments from US companies",
+      "Relatively straightforward API for integration",
+      "Reliable payment processing"
+    ],
+    "cons": [
+      "Currency conversion rates are often unfavorable",
+      "Transaction fees can accumulate for mid-market volumes",
+      "Customer support can be slow to resolve developer-specific issues"
+    ],
+    "overall_experience": "The junior dot net developer likely found PayPal Payments effective for its primary purpose of receiving payments from US-based companies, appreciating its widespread acceptance and relatively easy integration. However, the experience was tempered by less competitive currency conversion rates and potentially high transaction fees, which impacted the overall value. While generally functional, specific technical support needs were occasionally met with frustration."
+  },
+  "ts": "2026-10-18T05:25:34.289756+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f9f1bb440015499f55cb4bd6a4d46be9a0e1b95ab38482051d791262f96d5684",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 343,
+  "output_tokens": 1083,
+  "cost_usd": 0.0028104,
+  "elapsed_s": 6.39,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Significantly speeds up drafting sales emails and outreach sequences.\",\n    \"Helps overcome writer's block for various sales-related content.\",\n    \"Maintains a consistent tone and quality across communications.\"\n  ],\n  \"cons\": [\n    \"Requires careful editing to ensure personalization and brand voice.\",\n    \"Generated content can sometimes be too generic, needing substantial refinement.\",\n    \"Integration with existing sales tech stack might not be seamless.\"\n  ],\n  \"overall_experience\": \"This SDR Manager & Head of Sales Operations likely found Jasper to be a valuable tool for augmenting their writing tasks, particularly for sales outreach and internal communications. It effectively boosted their team's efficiency in content creation, though some manual refinement was always necessary to ensure accuracy and a personal touch. Overall, the product proved beneficial for their small business's sales operations.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Significantly speeds up drafting sales emails and outreach sequences.",
+      "Helps overcome writer's block for various sales-related content.",
+      "Maintains a consistent tone and quality across communications."
+    ],
+    "cons": [
+      "Requires careful editing to ensure personalization and brand voice.",
+      "Generated content can sometimes be too generic, needing substantial refinement.",
+      "Integration with existing sales tech stack might not be seamless."
+    ],
+    "overall_experience": "This SDR Manager & Head of Sales Operations likely found Jasper to be a valuable tool for augmenting their writing tasks, particularly for sales outreach and internal communications. It effectively boosted their team's efficiency in content creation, though some manual refinement was always necessary to ensure accuracy and a personal touch. Overall, the product proved beneficial for their small business's sales operations."
+  },
+  "ts": "2026-10-18T05:25:17.251815+00:00"
+}

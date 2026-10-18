@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "53d2400a3e3db83e9c823d464a56402db711b0a91a085766875395c88fcbd492",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 364,
+  "output_tokens": 952,
+  "cost_usd": 0.0024892,
+  "elapsed_s": 5.66,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Robust B2B features for wholesale operations\",\n    \"Scalability to handle growing accounts and orders\",\n    \"Streamlined customer account management and pricing\"\n  ],\n  \"cons\": [\n    \"Initial setup for complex wholesale catalogs can be time-consuming\",\n    \"Customization for highly specific B2B workflows might require developer input\",\n    \"Reporting could be more tailored for sales account performance\"\n  ],\n  \"overall_experience\": \"As a National Account Manager, this individual found BigCommerce to be a solid platform for managing their wholesale e-commerce needs over two years. The platform's B2B functionalities and scalability were particularly beneficial for handling diverse client accounts. While some advanced wholesale-specific customizations and reporting could be improved, it generally met their requirements for sales and customer management.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Robust B2B features for wholesale operations",
+      "Scalability to handle growing accounts and orders",
+      "Streamlined customer account management and pricing"
+    ],
+    "cons": [
+      "Initial setup for complex wholesale catalogs can be time-consuming",
+      "Customization for highly specific B2B workflows might require developer input",
+      "Reporting could be more tailored for sales account performance"
+    ],
+    "overall_experience": "As a National Account Manager, this individual found BigCommerce to be a solid platform for managing their wholesale e-commerce needs over two years. The platform's B2B functionalities and scalability were particularly beneficial for handling diverse client accounts. While some advanced wholesale-specific customizations and reporting could be improved, it generally met their requirements for sales and customer management."
+  },
+  "ts": "2026-10-18T05:26:43.366320+00:00"
+}

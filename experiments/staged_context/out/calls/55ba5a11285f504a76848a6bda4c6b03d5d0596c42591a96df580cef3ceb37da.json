@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "55ba5a11285f504a76848a6bda4c6b03d5d0596c42591a96df580cef3ceb37da",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1300,
+  "output_tokens": 985,
+  "cost_usd": 0.0028525,
+  "elapsed_s": 6.21,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Centralized expense and receipt management\",\n    \"Comprehensive features for detailed reporting\",\n    \"Streamlined approval workflows\"\n  ],\n  \"cons\": [\n    \"User interface can feel clunky or outdated\",\n    \"Steep learning curve for new users\",\n    \"Performance issues with slow loading times\"\n  ],\n  \"overall_experience\": \"This contractor likely found SAP Concur to be a powerful and comprehensive tool for managing travel expenses and approvals, appreciating its ability to centralize various financial tasks. However, they probably experienced some frustration with its ease of use, potentially finding the interface cumbersome or the system slow at times. Despite these usability challenges, the core functionality met their needs for efficient expense tracking and reporting within a mid-market company.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Centralized expense and receipt management",
+      "Comprehensive features for detailed reporting",
+      "Streamlined approval workflows"
+    ],
+    "cons": [
+      "User interface can feel clunky or outdated",
+      "Steep learning curve for new users",
+      "Performance issues with slow loading times"
+    ],
+    "overall_experience": "This contractor likely found SAP Concur to be a powerful and comprehensive tool for managing travel expenses and approvals, appreciating its ability to centralize various financial tasks. However, they probably experienced some frustration with its ease of use, potentially finding the interface cumbersome or the system slow at times. Despite these usability challenges, the core functionality met their needs for efficient expense tracking and reporting within a mid-market company."
+  },
+  "ts": "2026-10-18T05:25:33.512921+00:00"
+}

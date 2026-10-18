@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d951bec048c47bc5ace2289b50f773a58a96b8ec0f2ba5cf60ff72847e08dd9d",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1102,
+  "output_tokens": 1037,
+  "cost_usd": 0.0029230999999999997,
+  "elapsed_s": 7.0,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Cost-effective alternative to Salesforce for core support functions.\",\n    \"Good integration within the broader Zoho ecosystem.\",\n    \"Customizable for specific help desk workflows.\"\n  ],\n  \"cons\": [\n    \"Limited native functionality for comprehensive lead and project management.\",\n    \"Steep learning curve for advanced configurations and integrations.\",\n    \"Might require additional Zoho products to fully replace Salesforce Sales Cloud's scope.\"\n  ],\n  \"overall_experience\": \"The Tech Director found Zoho Desk to be a highly valuable solution for its core help desk capabilities, especially given its competitive pricing compared to Salesforce. While it excelled at managing customer support interactions, they likely encountered limitations when attempting to directly manage leads, projects, and legal details within Zoho Desk itself, requiring reliance on other Zoho applications or workarounds. Despite this, its overall configurability and integration potential within the Zoho suite provided a solid foundation for their operational needs.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Cost-effective alternative to Salesforce for core support functions.",
+      "Good integration within the broader Zoho ecosystem.",
+      "Customizable for specific help desk workflows."
+    ],
+    "cons": [
+      "Limited native functionality for comprehensive lead and project management.",
+      "Steep learning curve for advanced configurations and integrations.",
+      "Might require additional Zoho products to fully replace Salesforce Sales Cloud's scope."
+    ],
+    "overall_experience": "The Tech Director found Zoho Desk to be a highly valuable solution for its core help desk capabilities, especially given its competitive pricing compared to Salesforce. While it excelled at managing customer support interactions, they likely encountered limitations when attempting to directly manage leads, projects, and legal details within Zoho Desk itself, requiring reliance on other Zoho applications or workarounds. Despite this, its overall configurability and integration potential within the Zoho suite provided a solid foundation for their operational needs."
+  },
+  "ts": "2026-10-18T05:26:34.065089+00:00"
+}

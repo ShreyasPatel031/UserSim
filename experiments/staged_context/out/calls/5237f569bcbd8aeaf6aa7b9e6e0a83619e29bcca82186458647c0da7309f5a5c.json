@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "5237f569bcbd8aeaf6aa7b9e6e0a83619e29bcca82186458647c0da7309f5a5c",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 340,
+  "output_tokens": 923,
+  "cost_usd": 0.0024095,
+  "elapsed_s": 5.43,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Significantly improved email campaign scalability\",\n    \"High deliverability and response rates for outreach\",\n    \"Streamlined campaign management workflow\"\n  ],\n  \"cons\": [\n    \"Initial setup can be time-consuming\",\n    \"Reporting features could offer deeper insights\",\n    \"Occasional minor bugs in the user interface\"\n  ],\n  \"overall_experience\": \"The founder likely found Instantly to be a highly effective tool for their primary goal of scaling email marketing campaigns. They appreciated its robust functionality and the positive impact on outreach results. While generally positive, some areas like initial configuration and advanced reporting presented minor frustrations.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Significantly improved email campaign scalability",
+      "High deliverability and response rates for outreach",
+      "Streamlined campaign management workflow"
+    ],
+    "cons": [
+      "Initial setup can be time-consuming",
+      "Reporting features could offer deeper insights",
+      "Occasional minor bugs in the user interface"
+    ],
+    "overall_experience": "The founder likely found Instantly to be a highly effective tool for their primary goal of scaling email marketing campaigns. They appreciated its robust functionality and the positive impact on outreach results. While generally positive, some areas like initial configuration and advanced reporting presented minor frustrations."
+  },
+  "ts": "2026-10-18T05:25:14.393793+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c0d742db6e75701253dde31e3633c8a1617e20901057f12e79d9b8cafbe513b6",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 366,
+  "output_tokens": 949,
+  "cost_usd": 0.0024823000000000002,
+  "elapsed_s": 9.13,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Comprehensive contact management for employee data\",\n    \"Affordable solution for a small business\",\n    \"Good customisation potential for various tracking needs\"\n  ],\n  \"cons\": [\n    \"Steep learning curve for non-sales focused users\",\n    \"Initial setup and customisation can be complex\",\n    \"Some features feel geared strictly towards sales, not HR\"\n  ],\n  \"overall_experience\": \"This Human Resource Executive found Zoho CRM to be a capable tool for managing employee contact information and tracking various HR-related interactions within their small hospitality business. While the initial setup required some effort to adapt to HR workflows, the platform offered good value for money and sufficient functionality. They noted that some aspects felt less intuitive for HR use cases compared to sales, but overall, it served its purpose reasonably well for their needs.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Comprehensive contact management for employee data",
+      "Affordable solution for a small business",
+      "Good customisation potential for various tracking needs"
+    ],
+    "cons": [
+      "Steep learning curve for non-sales focused users",
+      "Initial setup and customisation can be complex",
+      "Some features feel geared strictly towards sales, not HR"
+    ],
+    "overall_experience": "This Human Resource Executive found Zoho CRM to be a capable tool for managing employee contact information and tracking various HR-related interactions within their small hospitality business. While the initial setup required some effort to adapt to HR workflows, the platform offered good value for money and sufficient functionality. They noted that some aspects felt less intuitive for HR use cases compared to sales, but overall, it served its purpose reasonably well for their needs."
+  },
+  "ts": "2026-10-18T05:26:18.264404+00:00"
+}

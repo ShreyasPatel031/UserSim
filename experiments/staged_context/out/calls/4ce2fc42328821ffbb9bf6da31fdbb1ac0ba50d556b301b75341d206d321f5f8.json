@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4ce2fc42328821ffbb9bf6da31fdbb1ac0ba50d556b301b75341d206d321f5f8",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 255,
+  "output_tokens": 986,
+  "cost_usd": 0.0025415,
+  "elapsed_s": 23.71,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Provides a centralized platform for tracking commissions.\",\n    \"Offers detailed visibility into current and projected earnings.\",\n    \"Helps ensure accurate payouts for complex sales plans.\"\n  ],\n  \"cons\": [\n    \"Interface can be complex and less intuitive for daily use.\",\n    \"Requires significant setup and ongoing maintenance by administrators.\",\n    \"Occasional discrepancies or delays in data synchronization.\"\n  ],\n  \"overall_experience\": \"This Commercial Account Executive likely found Xactly to be a functional tool for tracking their commissions and providing transparency into their earnings. While it successfully handled complex payout structures typical of an enterprise environment, the user interface may have been somewhat cumbersome or difficult to navigate at times. Despite these usability challenges, the core functionality of accurate commission calculation was generally appreciated.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 6,
+    "pros": [
+      "Provides a centralized platform for tracking commissions.",
+      "Offers detailed visibility into current and projected earnings.",
+      "Helps ensure accurate payouts for complex sales plans."
+    ],
+    "cons": [
+      "Interface can be complex and less intuitive for daily use.",
+      "Requires significant setup and ongoing maintenance by administrators.",
+      "Occasional discrepancies or delays in data synchronization."
+    ],
+    "overall_experience": "This Commercial Account Executive likely found Xactly to be a functional tool for tracking their commissions and providing transparency into their earnings. While it successfully handled complex payout structures typical of an enterprise environment, the user interface may have been somewhat cumbersome or difficult to navigate at times. Despite these usability challenges, the core functionality of accurate commission calculation was generally appreciated."
+  },
+  "ts": "2026-10-18T05:24:55.154821+00:00"
+}

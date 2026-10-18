@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "54efb20d45d77eba2c364fc3a9c335973cb5e498b13468ef76829a0cd8265943",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1519,
+  "output_tokens": 1043,
+  "cost_usd": 0.0030632000000000003,
+  "elapsed_s": 6.54,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Simple and intuitive for time entry\",\n    \"Convenient access via a mobile app\",\n    \"Provides reminders for adding hours\"\n  ],\n  \"cons\": [\n    \"Potential for lack of clarity in app navigation\",\n    \"Notifications for time submission or payment might be lacking\",\n    \"Limited need for advanced features for a coach role\"\n  ],\n  \"overall_experience\": \"This user likely found BambooHR to be a straightforward tool for their primary task of adding and entering hours, appreciating its ease of use and mobile accessibility. The app's ability to provide reminders for time entry was probably a significant positive. However, they may have encountered minor frustrations with the app's overall intuitiveness beyond basic functions or potential gaps in notifications regarding submitted timesheets or payment status.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Simple and intuitive for time entry",
+      "Convenient access via a mobile app",
+      "Provides reminders for adding hours"
+    ],
+    "cons": [
+      "Potential for lack of clarity in app navigation",
+      "Notifications for time submission or payment might be lacking",
+      "Limited need for advanced features for a coach role"
+    ],
+    "overall_experience": "This user likely found BambooHR to be a straightforward tool for their primary task of adding and entering hours, appreciating its ease of use and mobile accessibility. The app's ability to provide reminders for time entry was probably a significant positive. However, they may have encountered minor frustrations with the app's overall intuitiveness beyond basic functions or potential gaps in notifications regarding submitted timesheets or payment status."
+  },
+  "ts": "2026-10-18T05:25:38.576793+00:00"
+}

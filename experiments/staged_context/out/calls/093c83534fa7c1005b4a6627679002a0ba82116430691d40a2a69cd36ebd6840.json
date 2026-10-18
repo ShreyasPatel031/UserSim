@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "093c83534fa7c1005b4a6627679002a0ba82116430691d40a2a69cd36ebd6840",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 378,
+  "output_tokens": 1006,
+  "cost_usd": 0.0026284,
+  "elapsed_s": 5.53,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Intuitive interface for ticket management\",\n    \"Effective automation for routine fraud operations\",\n    \"Good reporting features for team oversight\"\n  ],\n  \"cons\": [\n    \"Lacked some advanced features compared to Zendesk for enterprise needs\",\n    \"Integration with specific financial compliance tools could be improved\",\n    \"Customer support response times occasionally felt slow for critical issues\"\n  ],\n  \"overall_experience\": \"This team leader found Freshdesk to be a solid and user-friendly platform for managing customer service tickets within their fraud operations, especially appreciating its automation capabilities and reporting. While it offered good value and an intuitive experience, they noted that some advanced features present in alternatives like Zendesk were missed, and occasional customer support delays were a point of frustration for their enterprise-level requirements in financial services.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Intuitive interface for ticket management",
+      "Effective automation for routine fraud operations",
+      "Good reporting features for team oversight"
+    ],
+    "cons": [
+      "Lacked some advanced features compared to Zendesk for enterprise needs",
+      "Integration with specific financial compliance tools could be improved",
+      "Customer support response times occasionally felt slow for critical issues"
+    ],
+    "overall_experience": "This team leader found Freshdesk to be a solid and user-friendly platform for managing customer service tickets within their fraud operations, especially appreciating its automation capabilities and reporting. While it offered good value and an intuitive experience, they noted that some advanced features present in alternatives like Zendesk were missed, and occasional customer support delays were a point of frustration for their enterprise-level requirements in financial services."
+  },
+  "ts": "2026-10-18T05:26:51.904891+00:00"
+}

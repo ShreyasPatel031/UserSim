@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "72b2391a1a28f1e2ba564917807d49a8c1b9c2bd1ddbb9ca8112ae1484cb6559",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 808,
+  "output_tokens": 927,
+  "cost_usd": 0.0025599,
+  "elapsed_s": 6.04,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Streamlined expense review and approval processes\",\n    \"Comprehensive visibility into spending for better oversight\",\n    \"Robust features suitable for enterprise-level operations\"\n  ],\n  \"cons\": [\n    \"Occasional complexity in configuration or handling exceptions\",\n    \"Perceived high cost relative to the specific features used\",\n    \"Customer support response times can vary for complex issues\"\n  ],\n  \"overall_experience\": \"As a Director, this user likely found SAP Concur highly effective for managing and reviewing expense line items, appreciating its robust functionality and ease of use for their primary task. The system's capabilities for large enterprises likely facilitated efficient oversight of spending. While generally positive, they may have noted areas for improvement in value for money or customer support responsiveness.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Streamlined expense review and approval processes",
+      "Comprehensive visibility into spending for better oversight",
+      "Robust features suitable for enterprise-level operations"
+    ],
+    "cons": [
+      "Occasional complexity in configuration or handling exceptions",
+      "Perceived high cost relative to the specific features used",
+      "Customer support response times can vary for complex issues"
+    ],
+    "overall_experience": "As a Director, this user likely found SAP Concur highly effective for managing and reviewing expense line items, appreciating its robust functionality and ease of use for their primary task. The system's capabilities for large enterprises likely facilitated efficient oversight of spending. While generally positive, they may have noted areas for improvement in value for money or customer support responsiveness."
+  },
+  "ts": "2026-10-18T05:25:54.849719+00:00"
+}

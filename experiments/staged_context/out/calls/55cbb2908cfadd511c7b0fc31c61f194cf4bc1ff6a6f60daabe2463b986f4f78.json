@@ -1,0 +1,35 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "55cbb2908cfadd511c7b0fc31c61f194cf4bc1ff6a6f60daabe2463b986f4f78",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 363,
+  "output_tokens": 1000,
+  "cost_usd": 0.0026089,
+  "elapsed_s": 6.76,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 2,\n  \"overall_rating\": 2,\n  \"value_for_money_rating\": 2,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 3,\n  \"pros\": [\n    \"Seamless integration with existing Intercom platform\",\n    \"Potential for automating simple customer interactions\"\n  ],\n  \"cons\": [\n    \"Lacks core functionality for running comprehensive NPS campaigns\",\n    \"Steep learning curve for advanced automation or workarounds\",\n    \"Limited reporting and analytics specific to survey management\"\n  ],\n  \"overall_experience\": \"This Project Manager likely found Fin by Intercom to be ill-suited for their primary task of running NPS campaigns. While Fin excels at automating support conversations, it does not offer the robust survey creation, distribution, and analytical tools required for effective NPS management. Their experience was likely frustrating due to the product's functional limitations in this specific use case, despite Intercom's overall platform quality.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 2,
+    "overall_rating": 2,
+    "value_for_money_rating": 2,
+    "customer_support_rating": 3,
+    "recommendation_score": 3,
+    "pros": [
+      "Seamless integration with existing Intercom platform",
+      "Potential for automating simple customer interactions"
+    ],
+    "cons": [
+      "Lacks core functionality for running comprehensive NPS campaigns",
+      "Steep learning curve for advanced automation or workarounds",
+      "Limited reporting and analytics specific to survey management"
+    ],
+    "overall_experience": "This Project Manager likely found Fin by Intercom to be ill-suited for their primary task of running NPS campaigns. While Fin excels at automating support conversations, it does not offer the robust survey creation, distribution, and analytical tools required for effective NPS management. Their experience was likely frustrating due to the product's functional limitations in this specific use case, despite Intercom's overall platform quality."
+  },
+  "ts": "2026-10-18T05:25:13.861565+00:00"
+}

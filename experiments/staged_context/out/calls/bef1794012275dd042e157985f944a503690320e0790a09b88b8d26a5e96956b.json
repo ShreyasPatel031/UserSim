@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "bef1794012275dd042e157985f944a503690320e0790a09b88b8d26a5e96956b",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1360,
+  "output_tokens": 1039,
+  "cost_usd": 0.0030055,
+  "elapsed_s": 6.12,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Extremely easy and intuitive drag-and-drop interface for quick content creation.\",\n    \"Vast library of templates and assets perfect for social media and ad campaigns.\",\n    \"Empowers non-designers to create professional-looking visuals without a steep learning curve.\"\n  ],\n  \"cons\": [\n    \"Advanced customization options can sometimes feel limited compared to professional design software.\",\n    \"Pricing for premium features or team access might add up for a small business.\",\n    \"Occasional performance slowdowns when dealing with very complex designs or high-resolution exports.\"\n  ],\n  \"overall_experience\": \"This Co-Owner likely found Canva to be an indispensable tool for their small business, enabling them to efficiently produce engaging social media content and ad campaign visuals without needing design expertise. Its user-friendly nature and extensive template library were significant advantages. While generally satisfied, they may have occasionally desired more advanced customization or found the cost of certain premium features to be a consideration.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Extremely easy and intuitive drag-and-drop interface for quick content creation.",
+      "Vast library of templates and assets perfect for social media and ad campaigns.",
+      "Empowers non-designers to create professional-looking visuals without a steep learning curve."
+    ],
+    "cons": [
+      "Advanced customization options can sometimes feel limited compared to professional design software.",
+      "Pricing for premium features or team access might add up for a small business.",
+      "Occasional performance slowdowns when dealing with very complex designs or high-resolution exports."
+    ],
+    "overall_experience": "This Co-Owner likely found Canva to be an indispensable tool for their small business, enabling them to efficiently produce engaging social media content and ad campaign visuals without needing design expertise. Its user-friendly nature and extensive template library were significant advantages. While generally satisfied, they may have occasionally desired more advanced customization or found the cost of certain premium features to be a consideration."
+  },
+  "ts": "2026-10-18T05:25:11.286823+00:00"
+}

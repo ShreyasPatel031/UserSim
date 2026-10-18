@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c7fc2c6927be5fef949403e545473dfa0823d2f42cb85ff966c8c5c5625b44fd",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 258,
+  "output_tokens": 1012,
+  "cost_usd": 0.0026074,
+  "elapsed_s": 22.37,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Automated responses to common customer queries\",\n    \"Improved efficiency for the customer success team\",\n    \"Faster resolution times for customers\"\n  ],\n  \"cons\": [\n    \"Initial setup and training of the AI knowledge base can be time-consuming\",\n    \"May lack the nuanced human touch needed for complex customer issues\",\n    \"Potential for incorrect AI responses requiring manual correction\"\n  ],\n  \"overall_experience\": \"The Customer Success Analyst likely found Fin by Intercom to be a valuable tool for automating routine customer interactions, significantly boosting the small business's efficiency. While appreciating the faster response times for customers and the ability to scale support, they probably noted the initial effort required for setup and the limitations of AI in handling more intricate or sensitive customer success scenarios. Overall, it was a positive experience, but with room for improvement in AI accuracy and seamless human handoff.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Automated responses to common customer queries",
+      "Improved efficiency for the customer success team",
+      "Faster resolution times for customers"
+    ],
+    "cons": [
+      "Initial setup and training of the AI knowledge base can be time-consuming",
+      "May lack the nuanced human touch needed for complex customer issues",
+      "Potential for incorrect AI responses requiring manual correction"
+    ],
+    "overall_experience": "The Customer Success Analyst likely found Fin by Intercom to be a valuable tool for automating routine customer interactions, significantly boosting the small business's efficiency. While appreciating the faster response times for customers and the ability to scale support, they probably noted the initial effort required for setup and the limitations of AI in handling more intricate or sensitive customer success scenarios. Overall, it was a positive experience, but with room for improvement in AI accuracy and seamless human handoff."
+  },
+  "ts": "2026-10-18T05:24:49.577380+00:00"
+}

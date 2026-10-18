@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a92bec8abef6ce279bcf5049fb0ded908f18144d1ab327615c74453605145939",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 360,
+  "output_tokens": 1007,
+  "cost_usd": 0.0026255000000000002,
+  "elapsed_s": 5.98,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Securely stores and encrypts sensitive login information.\",\n    \"Streamlines access to multiple accounts through autofill and strong password generation.\",\n    \"Facilitates secure sharing of credentials within teams.\"\n  ],\n  \"cons\": [\n    \"Initial setup and migration for a team can be time-consuming.\",\n    \"Occasional minor issues with browser extension autofill on complex sites.\",\n    \"Management of licenses and user groups requires some administrative effort.\"\n  ],\n  \"overall_experience\": \"This Application Development Analyst likely found 1Password to be an essential tool for maintaining robust security across their organization. They appreciated its strong functionality in securing and managing passwords, significantly improving efficiency and reducing security risks. While the initial deployment and ongoing administration might have presented minor challenges, the benefits of centralized, secure credential management were highly valued.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Securely stores and encrypts sensitive login information.",
+      "Streamlines access to multiple accounts through autofill and strong password generation.",
+      "Facilitates secure sharing of credentials within teams."
+    ],
+    "cons": [
+      "Initial setup and migration for a team can be time-consuming.",
+      "Occasional minor issues with browser extension autofill on complex sites.",
+      "Management of licenses and user groups requires some administrative effort."
+    ],
+    "overall_experience": "This Application Development Analyst likely found 1Password to be an essential tool for maintaining robust security across their organization. They appreciated its strong functionality in securing and managing passwords, significantly improving efficiency and reducing security risks. While the initial deployment and ongoing administration might have presented minor challenges, the benefits of centralized, secure credential management were highly valued."
+  },
+  "ts": "2026-10-18T05:25:23.253440+00:00"
+}

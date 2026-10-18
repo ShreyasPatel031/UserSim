@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9c592221b63c5cf53926e0504762a39c5c0328483877acaf8480fba8758956cb",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2074,
+  "output_tokens": 1069,
+  "cost_usd": 0.0032947000000000002,
+  "elapsed_s": 5.72,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Comprehensive tools for email campaign management\",\n    \"Intuitive interface for organizing marketing activities\",\n    \"Strong analytics and reporting capabilities\"\n  ],\n  \"cons\": [\n    \"Potential high cost for enterprise features\",\n    \"Steep learning curve for advanced functionalities\",\n    \"Occasional slow loading or performance issues\"\n  ],\n  \"overall_experience\": \"The Digital Marketing Manager likely found HubSpot Marketing Hub to be a robust and highly functional platform for managing email communications and organizing various marketing activities. They appreciated its comprehensive feature set and intuitive interface, which facilitated efficient campaign execution and performance tracking. While the platform's power was a significant advantage, they may have encountered challenges with its pricing structure for enterprise needs and a notable learning curve for maximizing all its advanced capabilities.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Comprehensive tools for email campaign management",
+      "Intuitive interface for organizing marketing activities",
+      "Strong analytics and reporting capabilities"
+    ],
+    "cons": [
+      "Potential high cost for enterprise features",
+      "Steep learning curve for advanced functionalities",
+      "Occasional slow loading or performance issues"
+    ],
+    "overall_experience": "The Digital Marketing Manager likely found HubSpot Marketing Hub to be a robust and highly functional platform for managing email communications and organizing various marketing activities. They appreciated its comprehensive feature set and intuitive interface, which facilitated efficient campaign execution and performance tracking. While the platform's power was a significant advantage, they may have encountered challenges with its pricing structure for enterprise needs and a notable learning curve for maximizing all its advanced capabilities."
+  },
+  "ts": "2026-10-18T05:26:00.143180+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d217a240526fb3fe56fadae11e15e7bb3fc440c2854ca17db8c1e72ea3c6a66d",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 258,
+  "output_tokens": 960,
+  "cost_usd": 0.0024774000000000003,
+  "elapsed_s": 24.42,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Effective for tracking sales results and reporting.\",\n    \"User-friendly interface for managing contacts and deals.\",\n    \"Centralized platform for sales-related team activities.\"\n  ],\n  \"cons\": [\n    \"Some features felt overly sales-specific for general team organization.\",\n    \"Initial setup and customization required a learning curve.\",\n    \"Cost could be a consideration for a small business.\"\n  ],\n  \"overall_experience\": \"The executive assistant found HubSpot Sales Hub generally easy to use for managing sales-related tasks and tracking results, appreciating its centralized nature. While strong for sales analytics, its functionality for broader 'team activities' sometimes felt too specialized. The platform offered good support, but its value for money was average given some features were not fully utilized for their operational role.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 3,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 6,
+    "pros": [
+      "Effective for tracking sales results and reporting.",
+      "User-friendly interface for managing contacts and deals.",
+      "Centralized platform for sales-related team activities."
+    ],
+    "cons": [
+      "Some features felt overly sales-specific for general team organization.",
+      "Initial setup and customization required a learning curve.",
+      "Cost could be a consideration for a small business."
+    ],
+    "overall_experience": "The executive assistant found HubSpot Sales Hub generally easy to use for managing sales-related tasks and tracking results, appreciating its centralized nature. While strong for sales analytics, its functionality for broader 'team activities' sometimes felt too specialized. The platform offered good support, but its value for money was average given some features were not fully utilized for their operational role."
+  },
+  "ts": "2026-10-18T05:24:49.505692+00:00"
+}

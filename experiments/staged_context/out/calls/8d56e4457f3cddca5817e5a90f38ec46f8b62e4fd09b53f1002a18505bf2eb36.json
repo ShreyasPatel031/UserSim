@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8d56e4457f3cddca5817e5a90f38ec46f8b62e4fd09b53f1002a18505bf2eb36",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 264,
+  "output_tokens": 971,
+  "cost_usd": 0.0025067,
+  "elapsed_s": 23.68,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Robust security features for critical credentials\",\n    \"Effective secure sharing and team management\",\n    \"Seamless cross-device synchronization\"\n  ],\n  \"cons\": [\n    \"Initial setup for team vaults required careful planning\",\n    \"Potential cost consideration for a small business\",\n    \"Browser extension occasionally required re-authentication\"\n  ],\n  \"overall_experience\": \"The SAP Basis Consultant likely found 1Password to be an excellent solution for managing sensitive credentials across various systems and for their small team. Its strong security protocols and comprehensive team features were highly valued, aligning perfectly with their professional demands. While the initial configuration for team sharing involved some effort, the overall reliability and cross-device functionality made it a worthwhile investment, significantly enhancing their operational security.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Robust security features for critical credentials",
+      "Effective secure sharing and team management",
+      "Seamless cross-device synchronization"
+    ],
+    "cons": [
+      "Initial setup for team vaults required careful planning",
+      "Potential cost consideration for a small business",
+      "Browser extension occasionally required re-authentication"
+    ],
+    "overall_experience": "The SAP Basis Consultant likely found 1Password to be an excellent solution for managing sensitive credentials across various systems and for their small team. Its strong security protocols and comprehensive team features were highly valued, aligning perfectly with their professional demands. While the initial configuration for team sharing involved some effort, the overall reliability and cross-device functionality made it a worthwhile investment, significantly enhancing their operational security."
+  },
+  "ts": "2026-10-18T05:24:54.184777+00:00"
+}

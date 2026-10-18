@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2d5843d0331796a7ef48c2010e5d394d0a2aa65bcd05b876065c43d840222c0c",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 374,
+  "output_tokens": 1010,
+  "cost_usd": 0.0026372,
+  "elapsed_s": 6.16,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effective for organizing and tracking project data in a familiar spreadsheet-like interface\",\n    \"Automation capabilities helped streamline repetitive tasks\",\n    \"Good for collaborative work management within a team\"\n  ],\n  \"cons\": [\n    \"Advanced features could sometimes be complex to implement without deep dive documentation\",\n    \"May lack the specific developer-centric tools or integrations found in pure project management software\",\n    \"Performance could occasionally lag with very large datasets or complex sheets\"\n  ],\n  \"overall_experience\": \"This software development engineer likely found Smartsheet to be a highly effective tool for managing spreadsheets and related project tasks. Its robust features for data organization, automation, and collaboration were probably appreciated, aligning well with the needs of a technical role in program development. While generally positive, they may have occasionally encountered limitations or complexities when trying to implement highly specialized or developer-specific workflows.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Effective for organizing and tracking project data in a familiar spreadsheet-like interface",
+      "Automation capabilities helped streamline repetitive tasks",
+      "Good for collaborative work management within a team"
+    ],
+    "cons": [
+      "Advanced features could sometimes be complex to implement without deep dive documentation",
+      "May lack the specific developer-centric tools or integrations found in pure project management software",
+      "Performance could occasionally lag with very large datasets or complex sheets"
+    ],
+    "overall_experience": "This software development engineer likely found Smartsheet to be a highly effective tool for managing spreadsheets and related project tasks. Its robust features for data organization, automation, and collaboration were probably appreciated, aligning well with the needs of a technical role in program development. While generally positive, they may have occasionally encountered limitations or complexities when trying to implement highly specialized or developer-specific workflows."
+  },
+  "ts": "2026-10-18T05:26:45.665582+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "db5c5c24832d074974b1c71a08cd1db4075789549b527c36358dd9e89d7e1458",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1628,
+  "output_tokens": 948,
+  "cost_usd": 0.0028583999999999997,
+  "elapsed_s": 5.38,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Ability to consolidate recruiting, onboarding, and talent bench tasks.\",\n    \"User-friendly interface for managing HR workflows.\",\n    \"Automation capabilities for repetitive HR processes.\"\n  ],\n  \"cons\": [\n    \"Potential for a steep learning curve during initial setup.\",\n    \"Higher cost compared to some alternatives for a small business.\",\n    \"Limited customization options for very specific HR requirements.\"\n  ],\n  \"overall_experience\": \"The HR Manager likely found monday AI Work Platform effective for centralizing various HR tasks like recruiting and onboarding, appreciating its ability to keep everything organized. While the platform's features and potential for automation were beneficial, the initial setup might have presented a learning curve. The cost could be a point of consideration for a small business, and some very specific HR customization needs might not be fully met.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Ability to consolidate recruiting, onboarding, and talent bench tasks.",
+      "User-friendly interface for managing HR workflows.",
+      "Automation capabilities for repetitive HR processes."
+    ],
+    "cons": [
+      "Potential for a steep learning curve during initial setup.",
+      "Higher cost compared to some alternatives for a small business.",
+      "Limited customization options for very specific HR requirements."
+    ],
+    "overall_experience": "The HR Manager likely found monday AI Work Platform effective for centralizing various HR tasks like recruiting and onboarding, appreciating its ability to keep everything organized. While the platform's features and potential for automation were beneficial, the initial setup might have presented a learning curve. The cost could be a point of consideration for a small business, and some very specific HR customization needs might not be fully met."
+  },
+  "ts": "2026-10-18T05:25:07.903926+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "add355129e63fc5e51062523b139a0f0462d5cf0ec3684f155dbd0af57fa1136",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2248,
+  "output_tokens": 977,
+  "cost_usd": 0.0031169,
+  "elapsed_s": 5.85,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effective for keeping track of sales and progress.\",\n    \"Offers good value for money for a self-employed user.\",\n    \"Provides essential CRM functionalities for managing client interactions.\"\n  ],\n  \"cons\": [\n    \"Experienced a learning curve due to the breadth of features.\",\n    \"Found some advanced customization options to be complex.\",\n    \"Customer support response times could be inconsistent.\"\n  ],\n  \"overall_experience\": \"This individual likely found Zoho CRM to be a capable tool for managing sales and progress, appreciating its comprehensive features and strong value for money. However, as a new user, they might have encountered some initial challenges with its learning curve and complex customization options. While generally positive, the customer support experience was likely average.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Effective for keeping track of sales and progress.",
+      "Offers good value for money for a self-employed user.",
+      "Provides essential CRM functionalities for managing client interactions."
+    ],
+    "cons": [
+      "Experienced a learning curve due to the breadth of features.",
+      "Found some advanced customization options to be complex.",
+      "Customer support response times could be inconsistent."
+    ],
+    "overall_experience": "This individual likely found Zoho CRM to be a capable tool for managing sales and progress, appreciating its comprehensive features and strong value for money. However, as a new user, they might have encountered some initial challenges with its learning curve and complex customization options. While generally positive, the customer support experience was likely average."
+  },
+  "ts": "2026-10-18T05:26:14.316942+00:00"
+}

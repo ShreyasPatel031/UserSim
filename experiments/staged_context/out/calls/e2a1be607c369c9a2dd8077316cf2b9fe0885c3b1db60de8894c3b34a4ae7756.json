@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e2a1be607c369c9a2dd8077316cf2b9fe0885c3b1db60de8894c3b34a4ae7756",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 358,
+  "output_tokens": 982,
+  "cost_usd": 0.0025624000000000003,
+  "elapsed_s": 6.17,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Comprehensive suite for managing all marketing activities in one place.\",\n    \"Effective email marketing and automation tools for customer reach and promotions.\",\n    \"Seamless CRM integration for better customer understanding and growth tracking.\"\n  ],\n  \"cons\": [\n    \"Pricing can become steep as the business scales or more advanced features are needed.\",\n    \"Initial learning curve to fully utilize all the platform's capabilities.\",\n    \"Some advanced customization options might require technical expertise or workarounds.\"\n  ],\n  \"overall_experience\": \"The E-Commerce Director likely found HubSpot Marketing Hub to be a powerful and comprehensive solution for managing marketing and growth within their small business. They appreciated having an all-in-one platform that streamlined various activities from customer outreach to promotions. While the extensive feature set was highly beneficial, they may have noted the potential cost implications for future growth and a moderate learning curve to master the system.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Comprehensive suite for managing all marketing activities in one place.",
+      "Effective email marketing and automation tools for customer reach and promotions.",
+      "Seamless CRM integration for better customer understanding and growth tracking."
+    ],
+    "cons": [
+      "Pricing can become steep as the business scales or more advanced features are needed.",
+      "Initial learning curve to fully utilize all the platform's capabilities.",
+      "Some advanced customization options might require technical expertise or workarounds."
+    ],
+    "overall_experience": "The E-Commerce Director likely found HubSpot Marketing Hub to be a powerful and comprehensive solution for managing marketing and growth within their small business. They appreciated having an all-in-one platform that streamlined various activities from customer outreach to promotions. While the extensive feature set was highly beneficial, they may have noted the potential cost implications for future growth and a moderate learning curve to master the system."
+  },
+  "ts": "2026-10-18T05:25:35.531757+00:00"
+}

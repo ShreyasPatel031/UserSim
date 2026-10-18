@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "751f0943ba3f844857f4c3e7d8ce8c898cc2c2183fa73bbf4276142553ca14ec",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 357,
+  "output_tokens": 945,
+  "cost_usd": 0.0024696,
+  "elapsed_s": 5.53,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Reliable for standard team meetings and communication\",\n    \"Good integration with other Microsoft 365 services\",\n    \"Screen sharing and presentation features work well\"\n  ],\n  \"cons\": [\n    \"Resource-intensive application, impacting system performance\",\n    \"Occasional audio/video quality issues during calls\",\n    \"User interface can feel cluttered and less intuitive than alternatives\"\n  ],\n  \"overall_experience\": \"The senior software engineer found Microsoft Teams to be a generally effective tool for conducting team meetings, appreciating its reliability and integration within the Microsoft ecosystem. However, they likely experienced some frustration with its performance demands and occasional interface clunkiness, which are common points of feedback for technical users.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Reliable for standard team meetings and communication",
+      "Good integration with other Microsoft 365 services",
+      "Screen sharing and presentation features work well"
+    ],
+    "cons": [
+      "Resource-intensive application, impacting system performance",
+      "Occasional audio/video quality issues during calls",
+      "User interface can feel cluttered and less intuitive than alternatives"
+    ],
+    "overall_experience": "The senior software engineer found Microsoft Teams to be a generally effective tool for conducting team meetings, appreciating its reliability and integration within the Microsoft ecosystem. However, they likely experienced some frustration with its performance demands and occasional interface clunkiness, which are common points of feedback for technical users."
+  },
+  "ts": "2026-10-18T05:25:35.991842+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8de76961c6c9e6a324fb5ca383bfbf1af97e4aac2ddb0286e50fa45b31f9e163",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 256,
+  "output_tokens": 1129,
+  "cost_usd": 0.0028993,
+  "elapsed_s": 26.52,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Quickly drafts HR document outlines\",\n    \"Reduces time on repetitive writing tasks\",\n    \"Assists in overcoming writer's block\"\n  ],\n  \"cons\": [\n    \"Requires significant human review for accuracy\",\n    \"Lacks nuance for sensitive HR communications\",\n    \"Output can be too generic without specific prompts\"\n  ],\n  \"overall_experience\": \"The Human Resources Specialist found Jasper to be a helpful tool for quickly generating drafts of various HR-related documents, significantly reducing the initial writing time. However, they noted that all AI-generated content required thorough human review and editing to ensure accuracy, compliance, and appropriate tone for sensitive HR matters. While efficient, the tool's output sometimes lacked the specific nuance required for internal communications within a small business.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Quickly drafts HR document outlines",
+      "Reduces time on repetitive writing tasks",
+      "Assists in overcoming writer's block"
+    ],
+    "cons": [
+      "Requires significant human review for accuracy",
+      "Lacks nuance for sensitive HR communications",
+      "Output can be too generic without specific prompts"
+    ],
+    "overall_experience": "The Human Resources Specialist found Jasper to be a helpful tool for quickly generating drafts of various HR-related documents, significantly reducing the initial writing time. However, they noted that all AI-generated content required thorough human review and editing to ensure accuracy, compliance, and appropriate tone for sensitive HR matters. While efficient, the tool's output sometimes lacked the specific nuance required for internal communications within a small business."
+  },
+  "ts": "2026-10-18T05:24:54.969434+00:00"
+}

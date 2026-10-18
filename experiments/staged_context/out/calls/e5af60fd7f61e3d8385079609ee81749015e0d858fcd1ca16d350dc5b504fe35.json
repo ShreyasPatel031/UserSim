@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e5af60fd7f61e3d8385079609ee81749015e0d858fcd1ca16d350dc5b504fe35",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 373,
+  "output_tokens": 994,
+  "cost_usd": 0.0025969,
+  "elapsed_s": 6.27,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Efficiently unifies diverse data sources (sales, operations, finance).\",\n    \"Simplifies complex data queries into easily digestible responses.\",\n    \"Streamlines BI workflows, saving time on data preparation and analysis.\"\n  ],\n  \"cons\": [\n    \"Potential limitations in handling highly complex or specific analytical models.\",\n    \"Initial setup and integration with existing BI infrastructure could be challenging.\",\n    \"Concerns regarding data privacy and security for sensitive financial information.\"\n  ],\n  \"overall_experience\": \"This Senior Business Intelligence Analyst likely found monday AI Work Platform effective for its core promise of unifying data and simplifying query responses. They appreciated its ability to streamline data access across departments and provide quick insights. However, they might have encountered some limitations when tackling highly complex analytical tasks or integrating with intricate existing BI systems, and likely considered data security implications for sensitive information.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Efficiently unifies diverse data sources (sales, operations, finance).",
+      "Simplifies complex data queries into easily digestible responses.",
+      "Streamlines BI workflows, saving time on data preparation and analysis."
+    ],
+    "cons": [
+      "Potential limitations in handling highly complex or specific analytical models.",
+      "Initial setup and integration with existing BI infrastructure could be challenging.",
+      "Concerns regarding data privacy and security for sensitive financial information."
+    ],
+    "overall_experience": "This Senior Business Intelligence Analyst likely found monday AI Work Platform effective for its core promise of unifying data and simplifying query responses. They appreciated its ability to streamline data access across departments and provide quick insights. However, they might have encountered some limitations when tackling highly complex analytical tasks or integrating with intricate existing BI systems, and likely considered data security implications for sensitive information."
+  },
+  "ts": "2026-10-18T05:25:09.349420+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "072412d68b26068c9ccd06ec5c70ca4ea8047d51c18cf8e4319562433b4d9fa4",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1553,
+  "output_tokens": 873,
+  "cost_usd": 0.0026484,
+  "elapsed_s": 6.03,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effective for lead generation and managing outreach campaigns\",\n    \"Intuitive UI makes complex tasks manageable\",\n    \"AI features enhance campaign performance\"\n  ],\n  \"cons\": [\n    \"Potential learning curve for advanced features\",\n    \"Support responsiveness might be inconsistent\",\n    \"Pricing structure could be perceived as less flexible for growing needs\"\n  ],\n  \"overall_experience\": \"This CEO and Founder likely found Instantly to be a highly functional and generally easy-to-use tool for their core task of email outreach and lead generation. The platform's AI capabilities and campaign management features would have been a significant asset for their small business. While the overall experience was positive, they may have encountered some challenges with support or a slight learning curve for more sophisticated functionalities.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Effective for lead generation and managing outreach campaigns",
+      "Intuitive UI makes complex tasks manageable",
+      "AI features enhance campaign performance"
+    ],
+    "cons": [
+      "Potential learning curve for advanced features",
+      "Support responsiveness might be inconsistent",
+      "Pricing structure could be perceived as less flexible for growing needs"
+    ],
+    "overall_experience": "This CEO and Founder likely found Instantly to be a highly functional and generally easy-to-use tool for their core task of email outreach and lead generation. The platform's AI capabilities and campaign management features would have been a significant asset for their small business. While the overall experience was positive, they may have encountered some challenges with support or a slight learning curve for more sophisticated functionalities."
+  },
+  "ts": "2026-10-18T05:25:13.654770+00:00"
+}

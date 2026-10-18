@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8791cd3c6d522fecb62251c23b7b0d6286bb5622b9d7be095b0d3390b89cd3df",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1430,
+  "output_tokens": 978,
+  "cost_usd": 0.002874,
+  "elapsed_s": 4.91,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Comprehensive platform for HR tasks\",\n    \"Easy for employees to access benefits information\",\n    \"Streamlined Open Enrollment process\"\n  ],\n  \"cons\": [\n    \"Potential for a learning curve for first-time users\",\n    \"Occasional slowness in the system\",\n    \"Customer support can sometimes be difficult to reach\"\n  ],\n  \"overall_experience\": \"This Account Executive likely found Rippling to be a highly functional solution for managing Open Enrollment and providing an employee benefits portal. They appreciated its comprehensive nature and ease of access for employees, despite potentially encountering some initial setup complexities or occasional performance issues. The overall experience was positive, making it a valuable tool for their small business.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Comprehensive platform for HR tasks",
+      "Easy for employees to access benefits information",
+      "Streamlined Open Enrollment process"
+    ],
+    "cons": [
+      "Potential for a learning curve for first-time users",
+      "Occasional slowness in the system",
+      "Customer support can sometimes be difficult to reach"
+    ],
+    "overall_experience": "This Account Executive likely found Rippling to be a highly functional solution for managing Open Enrollment and providing an employee benefits portal. They appreciated its comprehensive nature and ease of access for employees, despite potentially encountering some initial setup complexities or occasional performance issues. The overall experience was positive, making it a valuable tool for their small business."
+  },
+  "ts": "2026-10-18T05:25:17.060534+00:00"
+}

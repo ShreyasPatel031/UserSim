@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8ac6480d95542e0d988015e1c01c2c1d4b48451d1a0f4cb7fc073a0a9ed83a3b",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2068,
+  "output_tokens": 1169,
+  "cost_usd": 0.0035429,
+  "elapsed_s": 6.94,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Custom reporting tools are flexible for monitoring payroll and timecards.\",\n    \"Integrated platform helps manage employee data efficiently.\",\n    \"User interface is generally intuitive for core HR functions.\"\n  ],\n  \"cons\": [\n    \"Steep learning curve for advanced customization and reporting features.\",\n    \"Customer support responsiveness can be inconsistent.\",\n    \"Some limitations or multi-step processes for specific payroll tasks.\"\n  ],\n  \"overall_experience\": \"This Club Accountant likely found Paylocity generally effective for their core tasks of monitoring timecards and payroll through custom reporting. While the integrated nature and reporting flexibility were appreciated, they probably encountered some frustrations with the learning curve for advanced features and occasional inconsistencies in customer support. The system likely streamlined some processes but presented challenges in areas requiring deep customization or complex workflows.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Custom reporting tools are flexible for monitoring payroll and timecards.",
+      "Integrated platform helps manage employee data efficiently.",
+      "User interface is generally intuitive for core HR functions."
+    ],
+    "cons": [
+      "Steep learning curve for advanced customization and reporting features.",
+      "Customer support responsiveness can be inconsistent.",
+      "Some limitations or multi-step processes for specific payroll tasks."
+    ],
+    "overall_experience": "This Club Accountant likely found Paylocity generally effective for their core tasks of monitoring timecards and payroll through custom reporting. While the integrated nature and reporting flexibility were appreciated, they probably encountered some frustrations with the learning curve for advanced features and occasional inconsistencies in customer support. The system likely streamlined some processes but presented challenges in areas requiring deep customization or complex workflows."
+  },
+  "ts": "2026-10-18T05:25:47.694753+00:00"
+}

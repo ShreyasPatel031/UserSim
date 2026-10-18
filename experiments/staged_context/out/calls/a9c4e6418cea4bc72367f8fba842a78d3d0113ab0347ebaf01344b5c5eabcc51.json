@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a9c4e6418cea4bc72367f8fba842a78d3d0113ab0347ebaf01344b5c5eabcc51",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1466,
+  "output_tokens": 1013,
+  "cost_usd": 0.0029723,
+  "elapsed_s": 5.51,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Robust e-commerce features for scaling\",\n    \"Good analytics and reporting capabilities\",\n    \"Flexibility for custom store development\"\n  ],\n  \"cons\": [\n    \"Steeper learning curve for advanced features\",\n    \"Pricing can become high with added apps or higher tiers\",\n    \"Some customization requires technical knowledge\"\n  ],\n  \"overall_experience\": \"This e-commerce analyst likely found BigCommerce to be a powerful platform offering strong functionality and scalability for their mid-market company. They appreciated the robust features and analytical capabilities, but also encountered a learning curve and found that advanced customization often required technical effort. While generally satisfied, they likely felt the value for money could be improved, particularly concerning pricing for specific features or add-ons.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 7,
+    "pros": [
+      "Robust e-commerce features for scaling",
+      "Good analytics and reporting capabilities",
+      "Flexibility for custom store development"
+    ],
+    "cons": [
+      "Steeper learning curve for advanced features",
+      "Pricing can become high with added apps or higher tiers",
+      "Some customization requires technical knowledge"
+    ],
+    "overall_experience": "This e-commerce analyst likely found BigCommerce to be a powerful platform offering strong functionality and scalability for their mid-market company. They appreciated the robust features and analytical capabilities, but also encountered a learning curve and found that advanced customization often required technical effort. While generally satisfied, they likely felt the value for money could be improved, particularly concerning pricing for specific features or add-ons."
+  },
+  "ts": "2026-10-18T05:26:40.200266+00:00"
+}

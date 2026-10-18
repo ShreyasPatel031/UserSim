@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "90ea5b7c9368bce51e6cb1b118ac2a16a04ae48ed2db1318ee161d2b009ce630",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 357,
+  "output_tokens": 857,
+  "cost_usd": 0.0022496,
+  "elapsed_s": 8.44,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Significantly reduced agent workload for common inquiries\",\n    \"Improved instant response times for customers\",\n    \"Seamless integration with existing Intercom setup\"\n  ],\n  \"cons\": [\n    \"Requires careful training and ongoing refinement of AI responses\",\n    \"Struggles with highly nuanced or complex customer questions\",\n    \"Initial setup can be time-consuming to achieve desired accuracy\"\n  ],\n  \"overall_experience\": \"The Head of Support likely found Fin to be a valuable addition for automating routine customer queries and enhancing overall support efficiency. They appreciated its ability to provide instant answers, freeing up their team for more complex issues. However, they probably noted the ongoing effort required to train and maintain the AI's accuracy, particularly for intricate product details.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Significantly reduced agent workload for common inquiries",
+      "Improved instant response times for customers",
+      "Seamless integration with existing Intercom setup"
+    ],
+    "cons": [
+      "Requires careful training and ongoing refinement of AI responses",
+      "Struggles with highly nuanced or complex customer questions",
+      "Initial setup can be time-consuming to achieve desired accuracy"
+    ],
+    "overall_experience": "The Head of Support likely found Fin to be a valuable addition for automating routine customer queries and enhancing overall support efficiency. They appreciated its ability to provide instant answers, freeing up their team for more complex issues. However, they probably noted the ongoing effort required to train and maintain the AI's accuracy, particularly for intricate product details."
+  },
+  "ts": "2026-10-18T05:25:15.142053+00:00"
+}

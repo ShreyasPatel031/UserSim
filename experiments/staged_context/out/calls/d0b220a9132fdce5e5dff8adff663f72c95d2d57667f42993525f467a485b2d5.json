@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d0b220a9132fdce5e5dff8adff663f72c95d2d57667f42993525f467a485b2d5",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1699,
+  "output_tokens": 1119,
+  "cost_usd": 0.0033072,
+  "elapsed_s": 6.27,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Comprehensive platform for managing core HR and payroll tasks.\",\n    \"User-friendly interface for both administrators and employees.\",\n    \"Robust reporting capabilities for various HR data needs.\"\n  ],\n  \"cons\": [\n    \"Initial learning curve for new features or complex configurations.\",\n    \"Customer support response times can sometimes be inconsistent.\",\n    \"Customization options for specific workflows might be limited.\"\n  ],\n  \"overall_experience\": \"This HR Generalist likely found Paylocity to be a robust and generally user-friendly platform, effectively centralizing most HR and payroll functions. While appreciating its comprehensive features and ease of navigation for day-to-day tasks, they may have encountered occasional frustrations with the learning curve for advanced features or inconsistent customer support. Overall, the system proved valuable for managing employee information and HR processes within their mid-market company.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Comprehensive platform for managing core HR and payroll tasks.",
+      "User-friendly interface for both administrators and employees.",
+      "Robust reporting capabilities for various HR data needs."
+    ],
+    "cons": [
+      "Initial learning curve for new features or complex configurations.",
+      "Customer support response times can sometimes be inconsistent.",
+      "Customization options for specific workflows might be limited."
+    ],
+    "overall_experience": "This HR Generalist likely found Paylocity to be a robust and generally user-friendly platform, effectively centralizing most HR and payroll functions. While appreciating its comprehensive features and ease of navigation for day-to-day tasks, they may have encountered occasional frustrations with the learning curve for advanced features or inconsistent customer support. Overall, the system proved valuable for managing employee information and HR processes within their mid-market company."
+  },
+  "ts": "2026-10-18T05:25:29.058844+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "179075aee1aaa8f9eec4b3f38b4c78758f58626854439ee522f28418af8609d1",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1564,
+  "output_tokens": 922,
+  "cost_usd": 0.0027741999999999997,
+  "elapsed_s": 7.65,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effective email warm-up for campaigns\",\n    \"Streamlines outreach efforts\",\n    \"Intuitive interface for setting up campaigns\"\n  ],\n  \"cons\": [\n    \"Potential for occasional deliverability issues\",\n    \"Initial learning curve for advanced features\",\n    \"Pricing might be a consideration for some small businesses\"\n  ],\n  \"overall_experience\": \"This Director likely found Instantly to be a valuable tool for their email warm-up task, appreciating its core functionality in ensuring campaign deliverability. The product probably offered a straightforward way to manage this crucial aspect of their outreach, saving time and improving results. While generally positive, some minor frustrations with deliverability consistency or the initial setup might have been noted.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Effective email warm-up for campaigns",
+      "Streamlines outreach efforts",
+      "Intuitive interface for setting up campaigns"
+    ],
+    "cons": [
+      "Potential for occasional deliverability issues",
+      "Initial learning curve for advanced features",
+      "Pricing might be a consideration for some small businesses"
+    ],
+    "overall_experience": "This Director likely found Instantly to be a valuable tool for their email warm-up task, appreciating its core functionality in ensuring campaign deliverability. The product probably offered a straightforward way to manage this crucial aspect of their outreach, saving time and improving results. While generally positive, some minor frustrations with deliverability consistency or the initial setup might have been noted."
+  },
+  "ts": "2026-10-18T05:25:15.267570+00:00"
+}

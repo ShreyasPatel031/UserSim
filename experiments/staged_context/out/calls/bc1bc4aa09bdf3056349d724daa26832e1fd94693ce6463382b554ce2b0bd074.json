@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "bc1bc4aa09bdf3056349d724daa26832e1fd94693ce6463382b554ce2b0bd074",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2090,
+  "output_tokens": 970,
+  "cost_usd": 0.003052,
+  "elapsed_s": 5.64,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Reliable for receiving payments from US companies.\",\n    \"Straightforward currency conversion process.\",\n    \"Widely accepted and familiar for many users.\"\n  ],\n  \"cons\": [\n    \"Transaction fees could impact profitability for mid-market operations.\",\n    \"Integration with existing .NET applications might require custom development.\",\n    \"Customer support can be slow or unhelpful for technical issues.\"\n  ],\n  \"overall_experience\": \"This user likely found PayPal Payments to be a functional tool for their primary task of receiving payments and converting currency. While generally easy to use for basic operations, the developer might have encountered challenges with technical integrations or felt that the transaction fees were a significant drawback for a mid-market company. Support for specific technical inquiries was probably a point of frustration.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Reliable for receiving payments from US companies.",
+      "Straightforward currency conversion process.",
+      "Widely accepted and familiar for many users."
+    ],
+    "cons": [
+      "Transaction fees could impact profitability for mid-market operations.",
+      "Integration with existing .NET applications might require custom development.",
+      "Customer support can be slow or unhelpful for technical issues."
+    ],
+    "overall_experience": "This user likely found PayPal Payments to be a functional tool for their primary task of receiving payments and converting currency. While generally easy to use for basic operations, the developer might have encountered challenges with technical integrations or felt that the transaction fees were a significant drawback for a mid-market company. Support for specific technical inquiries was probably a point of frustration."
+  },
+  "ts": "2026-10-18T05:25:51.744837+00:00"
+}

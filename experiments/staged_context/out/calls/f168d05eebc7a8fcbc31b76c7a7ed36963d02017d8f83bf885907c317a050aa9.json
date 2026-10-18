@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f168d05eebc7a8fcbc31b76c7a7ed36963d02017d8f83bf885907c317a050aa9",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 375,
+  "output_tokens": 1062,
+  "cost_usd": 0.0027675000000000004,
+  "elapsed_s": 6.19,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Provided a centralized repository for resumes and candidate data.\",\n    \"Streamlined the hiring workflow with customizable stages.\",\n    \"User-friendly interface made it easy to track applicant progress.\"\n  ],\n  \"cons\": [\n    \"Advanced resume parsing or search capabilities might have been limited.\",\n    \"Reporting features for talent acquisition could feel basic for a senior role.\",\n    \"Integration with other specialized recruiting tools might have been cumbersome.\"\n  ],\n  \"overall_experience\": \"This Sr. Talent Acquisition Manager likely found BambooHR to be a solid solution for centralizing resume storage and managing basic hiring workflows. While the system offered good ease of use and helped organize their recruitment efforts, they may have encountered limitations with more advanced talent acquisition functionalities that a dedicated ATS might provide. Overall, it served its purpose well for a mid-market consumer goods company, though perhaps not perfectly tailored for all senior TA needs.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Provided a centralized repository for resumes and candidate data.",
+      "Streamlined the hiring workflow with customizable stages.",
+      "User-friendly interface made it easy to track applicant progress."
+    ],
+    "cons": [
+      "Advanced resume parsing or search capabilities might have been limited.",
+      "Reporting features for talent acquisition could feel basic for a senior role.",
+      "Integration with other specialized recruiting tools might have been cumbersome."
+    ],
+    "overall_experience": "This Sr. Talent Acquisition Manager likely found BambooHR to be a solid solution for centralizing resume storage and managing basic hiring workflows. While the system offered good ease of use and helped organize their recruitment efforts, they may have encountered limitations with more advanced talent acquisition functionalities that a dedicated ATS might provide. Overall, it served its purpose well for a mid-market consumer goods company, though perhaps not perfectly tailored for all senior TA needs."
+  },
+  "ts": "2026-10-18T05:25:39.561557+00:00"
+}

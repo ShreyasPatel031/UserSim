@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "208c4ec09a6cac4bfcb72cce2d797742d3ebe2626131186701f936a6bea330af",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1556,
+  "output_tokens": 975,
+  "cost_usd": 0.0029043,
+  "elapsed_s": 5.93,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Quickly generates alternative text versions.\",\n    \"Helpful suggestions for sentence structure and words.\",\n    \"Intuitive interface for content creation tasks.\"\n  ],\n  \"cons\": [\n    \"Output quality can sometimes be inconsistent.\",\n    \"Advanced customization options might be limited.\",\n    \"Perceived as expensive for certain features.\"\n  ],\n  \"overall_experience\": \"This Senior Marketing Specialist likely found Jasper to be an intuitive and functional tool for their content creation tasks, particularly for generating alternative text and improving sentence structure. While the core functionality was a significant time-saver, they might have noticed occasional inconsistencies in output or felt the pricing was a bit high for the value received. Overall, it was a positive experience that streamlined their workflow.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Quickly generates alternative text versions.",
+      "Helpful suggestions for sentence structure and words.",
+      "Intuitive interface for content creation tasks."
+    ],
+    "cons": [
+      "Output quality can sometimes be inconsistent.",
+      "Advanced customization options might be limited.",
+      "Perceived as expensive for certain features."
+    ],
+    "overall_experience": "This Senior Marketing Specialist likely found Jasper to be an intuitive and functional tool for their content creation tasks, particularly for generating alternative text and improving sentence structure. While the core functionality was a significant time-saver, they might have noticed occasional inconsistencies in output or felt the pricing was a bit high for the value received. Overall, it was a positive experience that streamlined their workflow."
+  },
+  "ts": "2026-10-18T05:25:15.578724+00:00"
+}

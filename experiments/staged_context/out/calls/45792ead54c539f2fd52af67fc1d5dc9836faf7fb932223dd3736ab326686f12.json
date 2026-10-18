@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "45792ead54c539f2fd52af67fc1d5dc9836faf7fb932223dd3736ab326686f12",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1561,
+  "output_tokens": 1092,
+  "cost_usd": 0.0031983000000000003,
+  "elapsed_s": 10.24,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Streamlined health insurance enrollment process\",\n    \"Intuitive employee self-service portal\",\n    \"Good overall administrative workflow\"\n  ],\n  \"cons\": [\n    \"Occasional complexity in benefit plan configuration\",\n    \"Reporting features could be more robust for tracking enrollment progress\",\n    \"Customer support response times can vary\"\n  ],\n  \"overall_experience\": \"The Technical Program Manager likely found Rippling to be an effective tool for managing the annual health insurance enrollment, appreciating its streamlined process and ease of use for employees. While the core task was handled well, they may have encountered minor frustrations with specific configuration details or desired more advanced reporting capabilities. Overall, the system proved beneficial but had areas for improvement regarding deeper administrative control and support responsiveness.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Streamlined health insurance enrollment process",
+      "Intuitive employee self-service portal",
+      "Good overall administrative workflow"
+    ],
+    "cons": [
+      "Occasional complexity in benefit plan configuration",
+      "Reporting features could be more robust for tracking enrollment progress",
+      "Customer support response times can vary"
+    ],
+    "overall_experience": "The Technical Program Manager likely found Rippling to be an effective tool for managing the annual health insurance enrollment, appreciating its streamlined process and ease of use for employees. While the core task was handled well, they may have encountered minor frustrations with specific configuration details or desired more advanced reporting capabilities. Overall, the system proved beneficial but had areas for improvement regarding deeper administrative control and support responsiveness."
+  },
+  "ts": "2026-10-18T05:25:21.546158+00:00"
+}

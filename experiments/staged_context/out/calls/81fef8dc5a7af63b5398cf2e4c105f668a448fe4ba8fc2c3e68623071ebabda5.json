@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "81fef8dc5a7af63b5398cf2e4c105f668a448fe4ba8fc2c3e68623071ebabda5",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 250,
+  "output_tokens": 1121,
+  "cost_usd": 0.0028775000000000003,
+  "elapsed_s": 25.7,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Rapidly generated diverse content types for affiliate campaigns\",\n    \"Greatly increased content output and overall marketing efficiency\",\n    \"Helpful for overcoming writer's block and getting started quickly\"\n  ],\n  \"cons\": [\n    \"Required significant editing and fact-checking for accuracy and tone\",\n    \"Content could sometimes be generic or repetitive without careful prompting\",\n    \"The subscription cost was a notable expense for a small business\"\n  ],\n  \"overall_experience\": \"This affiliate marketer found Jasper to be a highly effective tool for their primary task of content generation. It significantly boosted their productivity and enabled them to produce a high volume of diverse marketing content quickly. While the tool required human oversight for quality and accuracy, its core functionality was invaluable for their small business operations.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Rapidly generated diverse content types for affiliate campaigns",
+      "Greatly increased content output and overall marketing efficiency",
+      "Helpful for overcoming writer's block and getting started quickly"
+    ],
+    "cons": [
+      "Required significant editing and fact-checking for accuracy and tone",
+      "Content could sometimes be generic or repetitive without careful prompting",
+      "The subscription cost was a notable expense for a small business"
+    ],
+    "overall_experience": "This affiliate marketer found Jasper to be a highly effective tool for their primary task of content generation. It significantly boosted their productivity and enabled them to produce a high volume of diverse marketing content quickly. While the tool required human oversight for quality and accuracy, its core functionality was invaluable for their small business operations."
+  },
+  "ts": "2026-10-18T05:24:53.984181+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "bddf880cdff573816e94ac956cacc0e77dac37ea65359e4ced0b4aec41bda1e3",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1531,
+  "output_tokens": 1058,
+  "cost_usd": 0.0031043,
+  "elapsed_s": 5.69,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Comprehensive tools for managing marketing campaigns.\",\n    \"Centralized platform for tracking project statuses.\",\n    \"Ability to customize reporting and dashboards.\"\n  ],\n  \"cons\": [\n    \"Potential learning curve for advanced features and workflows.\",\n    \"Pricing may be a concern for the breadth of features.\",\n    \"Interface might not always feel intuitive for specific tasks.\"\n  ],\n  \"overall_experience\": \"This Executive Producer likely found HubSpot Marketing Hub to be a robust platform capable of centralizing marketing efforts and tracking project information across their large organization. While appreciating its comprehensive features and reporting capabilities, they may have encountered a learning curve with certain workflows. The overall value was likely good, though pricing might have been a point of consideration given the extensive feature set.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 7,
+    "pros": [
+      "Comprehensive tools for managing marketing campaigns.",
+      "Centralized platform for tracking project statuses.",
+      "Ability to customize reporting and dashboards."
+    ],
+    "cons": [
+      "Potential learning curve for advanced features and workflows.",
+      "Pricing may be a concern for the breadth of features.",
+      "Interface might not always feel intuitive for specific tasks."
+    ],
+    "overall_experience": "This Executive Producer likely found HubSpot Marketing Hub to be a robust platform capable of centralizing marketing efforts and tracking project information across their large organization. While appreciating its comprehensive features and reporting capabilities, they may have encountered a learning curve with certain workflows. The overall value was likely good, though pricing might have been a point of consideration given the extensive feature set."
+  },
+  "ts": "2026-10-18T05:25:34.607586+00:00"
+}

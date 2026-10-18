@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9269e5e17c399e58f3417a8c0a69cde5a433d0bad3197bb8a17817b02a1397a6",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1537,
+  "output_tokens": 1017,
+  "cost_usd": 0.0030035999999999995,
+  "elapsed_s": 9.07,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Intuitive interface for managing documents\",\n    \"Streamlined performance review tracking\",\n    \"Easy accessibility for employees\"\n  ],\n  \"cons\": [\n    \"Reporting features could be more robust\",\n    \"Limited customization options for specific workflows\",\n    \"Integrations with other internal systems could be improved\"\n  ],\n  \"overall_experience\": \"The Network Engineer found BambooHR to be a user-friendly platform that effectively handled personal document storage and performance review tracking. The system's ease of use was a significant positive, simplifying routine HR tasks. While generally satisfied, they noted areas for improvement in advanced reporting, customization capabilities, and integration breadth for a more tailored experience.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Intuitive interface for managing documents",
+      "Streamlined performance review tracking",
+      "Easy accessibility for employees"
+    ],
+    "cons": [
+      "Reporting features could be more robust",
+      "Limited customization options for specific workflows",
+      "Integrations with other internal systems could be improved"
+    ],
+    "overall_experience": "The Network Engineer found BambooHR to be a user-friendly platform that effectively handled personal document storage and performance review tracking. The system's ease of use was a significant positive, simplifying routine HR tasks. While generally satisfied, they noted areas for improvement in advanced reporting, customization capabilities, and integration breadth for a more tailored experience."
+  },
+  "ts": "2026-10-18T05:25:40.492437+00:00"
+}

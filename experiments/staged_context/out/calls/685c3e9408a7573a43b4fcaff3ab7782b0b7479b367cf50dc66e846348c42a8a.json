@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "685c3e9408a7573a43b4fcaff3ab7782b0b7479b367cf50dc66e846348c42a8a",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1751,
+  "output_tokens": 1066,
+  "cost_usd": 0.0031903,
+  "elapsed_s": 6.8,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Intuitive interface makes content creation quick and easy.\",\n    \"Access to a vast library of templates, stock photos, and design elements.\",\n    \"Enables team members without extensive design experience to create professional visuals.\"\n  ],\n  \"cons\": [\n    \"Limitations in advanced customization options compared to more specialized design software.\",\n    \"Can become expensive for premium features or team access as needs grow.\",\n    \"Performance might occasionally lag with very complex designs or large projects.\"\n  ],\n  \"overall_experience\": \"The marketing director likely finds Canva to be an incredibly valuable tool for their small business, appreciating its ease of use for quickly generating a wide range of visual content. While it excels at accessibility and template-driven design, they might occasionally encounter limitations when requiring highly specific or complex customization. The platform's overall efficiency and broad utility for marketing tasks would lead to a positive, albeit not perfect, experience.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Intuitive interface makes content creation quick and easy.",
+      "Access to a vast library of templates, stock photos, and design elements.",
+      "Enables team members without extensive design experience to create professional visuals."
+    ],
+    "cons": [
+      "Limitations in advanced customization options compared to more specialized design software.",
+      "Can become expensive for premium features or team access as needs grow.",
+      "Performance might occasionally lag with very complex designs or large projects."
+    ],
+    "overall_experience": "The marketing director likely finds Canva to be an incredibly valuable tool for their small business, appreciating its ease of use for quickly generating a wide range of visual content. While it excels at accessibility and template-driven design, they might occasionally encounter limitations when requiring highly specific or complex customization. The platform's overall efficiency and broad utility for marketing tasks would lead to a positive, albeit not perfect, experience."
+  },
+  "ts": "2026-10-18T05:25:11.001849+00:00"
+}

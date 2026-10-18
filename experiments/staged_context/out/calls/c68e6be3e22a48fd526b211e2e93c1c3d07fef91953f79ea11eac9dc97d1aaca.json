@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c68e6be3e22a48fd526b211e2e93c1c3d07fef91953f79ea11eac9dc97d1aaca",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1970,
+  "output_tokens": 1120,
+  "cost_usd": 0.0033909999999999995,
+  "elapsed_s": 5.74,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Efficiently centralizes HR information and documents\",\n    \"Intuitive and easy-to-navigate interface for quick access\",\n    \"Streamlines common HR tasks like onboarding and time-off requests\"\n  ],\n  \"cons\": [\n    \"Some advanced features or customizations may be limited\",\n    \"Customer support response times could occasionally be slow\",\n    \"Pricing structure might feel less transparent compared to other options\"\n  ],\n  \"overall_experience\": \"This Engineer in Training likely found BambooHR to be a highly effective tool for centralizing and organizing HR-related information. The platform's ease of use and comprehensive functionality were significant benefits, making it simple to manage various HR tasks. While generally positive, they may have noted minor frustrations with customization options or occasional delays in customer support.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Efficiently centralizes HR information and documents",
+      "Intuitive and easy-to-navigate interface for quick access",
+      "Streamlines common HR tasks like onboarding and time-off requests"
+    ],
+    "cons": [
+      "Some advanced features or customizations may be limited",
+      "Customer support response times could occasionally be slow",
+      "Pricing structure might feel less transparent compared to other options"
+    ],
+    "overall_experience": "This Engineer in Training likely found BambooHR to be a highly effective tool for centralizing and organizing HR-related information. The platform's ease of use and comprehensive functionality were significant benefits, making it simple to manage various HR tasks. While generally positive, they may have noted minor frustrations with customization options or occasional delays in customer support."
+  },
+  "ts": "2026-10-18T05:26:07.619258+00:00"
+}

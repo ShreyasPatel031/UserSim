@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a6aac276a202de5e4899523bade0c7b0e1eeb69ba88bfe8a846ec5b080cfdde9",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2051,
+  "output_tokens": 1035,
+  "cost_usd": 0.0032027999999999996,
+  "elapsed_s": 5.87,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"User-friendly interface for managing customer interactions.\",\n    \"Effective pipeline and deal tracking features.\",\n    \"Good value for money for a small team.\"\n  ],\n  \"cons\": [\n    \"Initial learning curve for some advanced features.\",\n    \"Limited customization options for specific workflows.\",\n    \"Reporting capabilities could be more intuitive or robust.\"\n  ],\n  \"overall_experience\": \"This account manager likely found Freshsales to be a generally positive tool for their small HR company, appreciating its ease of use for core sales tasks and its overall value. While the platform helped them manage customer data effectively, they may have encountered some minor frustrations with the initial setup, customization limitations, or the depth of reporting available during their first few months of use.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "User-friendly interface for managing customer interactions.",
+      "Effective pipeline and deal tracking features.",
+      "Good value for money for a small team."
+    ],
+    "cons": [
+      "Initial learning curve for some advanced features.",
+      "Limited customization options for specific workflows.",
+      "Reporting capabilities could be more intuitive or robust."
+    ],
+    "overall_experience": "This account manager likely found Freshsales to be a generally positive tool for their small HR company, appreciating its ease of use for core sales tasks and its overall value. While the platform helped them manage customer data effectively, they may have encountered some minor frustrations with the initial setup, customization limitations, or the depth of reporting available during their first few months of use."
+  },
+  "ts": "2026-10-18T05:26:12.355105+00:00"
+}

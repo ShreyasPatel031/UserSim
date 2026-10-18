@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1e10e71a0f8ec64e9459e78a11eb20219bae3b67036aca7cbeee88b5267fb1de",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 833,
+  "output_tokens": 1006,
+  "cost_usd": 0.0027649,
+  "elapsed_s": 5.2,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Comprehensive range of wellness activities\",\n    \"Positive impact on employee engagement and health\",\n    \"Streamlined administration for wellness programs\"\n  ],\n  \"cons\": [\n    \"Customization options might be limited for specific needs\",\n    \"Integration with other HR systems could be improved\",\n    \"Difficulty in quantifying precise ROI for wellness initiatives\"\n  ],\n  \"overall_experience\": \"This Associate Vice President likely found Wellable to be a valuable tool for promoting holistic wellness within their mid-market company. They appreciated the platform's overall functionality and ease of use, contributing positively to employee well-being. While generally satisfied, they may have desired more tailored customization or clearer metrics for demonstrating the program's return on investment.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Comprehensive range of wellness activities",
+      "Positive impact on employee engagement and health",
+      "Streamlined administration for wellness programs"
+    ],
+    "cons": [
+      "Customization options might be limited for specific needs",
+      "Integration with other HR systems could be improved",
+      "Difficulty in quantifying precise ROI for wellness initiatives"
+    ],
+    "overall_experience": "This Associate Vice President likely found Wellable to be a valuable tool for promoting holistic wellness within their mid-market company. They appreciated the platform's overall functionality and ease of use, contributing positively to employee well-being. While generally satisfied, they may have desired more tailored customization or clearer metrics for demonstrating the program's return on investment."
+  },
+  "ts": "2026-10-18T05:25:40.314591+00:00"
+}

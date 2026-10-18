@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "aa594aa10ca303f3a98bda45e78e25cea259da835115fdb3230a010a5fa23170",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1911,
+  "output_tokens": 1040,
+  "cost_usd": 0.0031733,
+  "elapsed_s": 6.69,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effective for tracking sales leads and managing client engagement.\",\n    \"Streamlined tools for email composition.\",\n    \"Generally user-friendly for core marketing tasks.\"\n  ],\n  \"cons\": [\n    \"The pricing structure might be a concern for a small business.\",\n    \"Some advanced features could have a learning curve.\",\n    \"Specific reporting needs might not be fully met.\"\n  ],\n  \"overall_experience\": \"This VP of Payroll likely found HubSpot Marketing Hub to be a functional tool for their core tasks of lead tracking, email management, and client engagement. While generally easy to use, they might have found the cost to be a significant consideration for a small business. The overall experience was positive, supported by good customer support, though some advanced features or specific reporting could have presented minor challenges.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Effective for tracking sales leads and managing client engagement.",
+      "Streamlined tools for email composition.",
+      "Generally user-friendly for core marketing tasks."
+    ],
+    "cons": [
+      "The pricing structure might be a concern for a small business.",
+      "Some advanced features could have a learning curve.",
+      "Specific reporting needs might not be fully met."
+    ],
+    "overall_experience": "This VP of Payroll likely found HubSpot Marketing Hub to be a functional tool for their core tasks of lead tracking, email management, and client engagement. While generally easy to use, they might have found the cost to be a significant consideration for a small business. The overall experience was positive, supported by good customer support, though some advanced features or specific reporting could have presented minor challenges."
+  },
+  "ts": "2026-10-18T05:25:58.767431+00:00"
+}

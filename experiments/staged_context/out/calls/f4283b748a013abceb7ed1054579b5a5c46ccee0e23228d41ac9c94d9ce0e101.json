@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f4283b748a013abceb7ed1054579b5a5c46ccee0e23228d41ac9c94d9ce0e101",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 365,
+  "output_tokens": 968,
+  "cost_usd": 0.0025294999999999996,
+  "elapsed_s": 6.12,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Seamless integration with other Microsoft 365 applications\",\n    \"Centralized platform for chat, calls, and meetings\",\n    \"Robust file sharing and co-editing capabilities\"\n  ],\n  \"cons\": [\n    \"Can be resource-intensive, impacting device performance\",\n    \"Notifications can be overwhelming and difficult to manage\",\n    \"Occasional glitches or connectivity issues during calls\"\n  ],\n  \"overall_experience\": \"The Associate Consultant likely found Microsoft Teams to be a highly functional and integrated solution for their communication and collaboration needs within an enterprise environment. They appreciated its comprehensive feature set for facilitating team work, especially its synergy with the Microsoft ecosystem. However, they may have encountered performance demands and occasional technical frustrations that slightly detracted from an otherwise positive experience.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Seamless integration with other Microsoft 365 applications",
+      "Centralized platform for chat, calls, and meetings",
+      "Robust file sharing and co-editing capabilities"
+    ],
+    "cons": [
+      "Can be resource-intensive, impacting device performance",
+      "Notifications can be overwhelming and difficult to manage",
+      "Occasional glitches or connectivity issues during calls"
+    ],
+    "overall_experience": "The Associate Consultant likely found Microsoft Teams to be a highly functional and integrated solution for their communication and collaboration needs within an enterprise environment. They appreciated its comprehensive feature set for facilitating team work, especially its synergy with the Microsoft ecosystem. However, they may have encountered performance demands and occasional technical frustrations that slightly detracted from an otherwise positive experience."
+  },
+  "ts": "2026-10-18T05:25:37.076320+00:00"
+}

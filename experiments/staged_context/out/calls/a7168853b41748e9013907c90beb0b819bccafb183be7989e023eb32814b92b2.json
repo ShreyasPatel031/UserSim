@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a7168853b41748e9013907c90beb0b819bccafb183be7989e023eb32814b92b2",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 353,
+  "output_tokens": 981,
+  "cost_usd": 0.0025584,
+  "elapsed_s": 5.87,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Robust capabilities for managing complex compensation plans\",\n    \"Seamless integration with Salesforce for data visibility\",\n    \"Empowers sales reps with clear, real-time compensation data\"\n  ],\n  \"cons\": [\n    \"Initial setup and configuration can be complex for administrators\",\n    \"Potential for a steep learning curve for advanced features\",\n    \"Reporting customization might require significant technical effort\"\n  ],\n  \"overall_experience\": \"As a Team Lead in Salesforce Administration at an enterprise company, this reviewer likely found Xactly to be a powerful tool for enabling sales reps to view their compensation. The robust functionality and integration with Salesforce were probably highly valued, ensuring accurate and accessible data. While the initial administrative setup presented challenges, the system's ability to handle complex compensation structures and provide clear visibility for sales teams ultimately contributed to a positive experience.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Robust capabilities for managing complex compensation plans",
+      "Seamless integration with Salesforce for data visibility",
+      "Empowers sales reps with clear, real-time compensation data"
+    ],
+    "cons": [
+      "Initial setup and configuration can be complex for administrators",
+      "Potential for a steep learning curve for advanced features",
+      "Reporting customization might require significant technical effort"
+    ],
+    "overall_experience": "As a Team Lead in Salesforce Administration at an enterprise company, this reviewer likely found Xactly to be a powerful tool for enabling sales reps to view their compensation. The robust functionality and integration with Salesforce were probably highly valued, ensuring accurate and accessible data. While the initial administrative setup presented challenges, the system's ability to handle complex compensation structures and provide clear visibility for sales teams ultimately contributed to a positive experience."
+  },
+  "ts": "2026-10-18T05:25:28.204023+00:00"
+}

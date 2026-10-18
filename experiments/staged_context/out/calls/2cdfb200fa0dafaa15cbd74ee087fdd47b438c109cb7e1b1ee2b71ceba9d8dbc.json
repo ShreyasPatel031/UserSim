@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2cdfb200fa0dafaa15cbd74ee087fdd47b438c109cb7e1b1ee2b71ceba9d8dbc",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1984,
+  "output_tokens": 1055,
+  "cost_usd": 0.0032327000000000002,
+  "elapsed_s": 8.14,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Reliable and widely accepted platform for processing transactions\",\n    \"Good integration capabilities for a developer to leverage\",\n    \"Streamlined process for standard money transfers\"\n  ],\n  \"cons\": [\n    \"Transaction fees can impact overall value for money\",\n    \"Reporting features might be basic for detailed financial analysis\",\n    \"Complexities can arise with specific customization or advanced integration needs\"\n  ],\n  \"overall_experience\": \"The SAP BODS Developer found PayPal Payments to be a generally reliable and functional tool for processing money transactions, appreciating its widespread acceptance and core capabilities. While the platform offered robust integration options, they noted that the transaction fees could be a drawback. The developer likely sought more advanced reporting or customization options that were not readily available or required additional effort to implement.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Reliable and widely accepted platform for processing transactions",
+      "Good integration capabilities for a developer to leverage",
+      "Streamlined process for standard money transfers"
+    ],
+    "cons": [
+      "Transaction fees can impact overall value for money",
+      "Reporting features might be basic for detailed financial analysis",
+      "Complexities can arise with specific customization or advanced integration needs"
+    ],
+    "overall_experience": "The SAP BODS Developer found PayPal Payments to be a generally reliable and functional tool for processing money transactions, appreciating its widespread acceptance and core capabilities. While the platform offered robust integration options, they noted that the transaction fees could be a drawback. The developer likely sought more advanced reporting or customization options that were not readily available or required additional effort to implement."
+  },
+  "ts": "2026-10-18T05:25:55.224426+00:00"
+}

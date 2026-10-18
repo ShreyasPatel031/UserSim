@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "76ceedfcc6c0bf283c880aa1a2b125276da07b27535a5142844ff371a8dcaebc",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 263,
+  "output_tokens": 985,
+  "cost_usd": 0.0025413999999999996,
+  "elapsed_s": 24.22,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Efficient ticket routing and assignment to agents\",\n    \"Intuitive dashboard for managing agent workloads\",\n    \"Good reporting capabilities for team performance\"\n  ],\n  \"cons\": [\n    \"Steeper learning curve for advanced automation rules\",\n    \"Occasional delays in support response times\",\n    \"Limited customization options for specific e-commerce workflows\"\n  ],\n  \"overall_experience\": \"As an E-commerce Manager, their experience with Freshdesk was largely positive, finding it effective for managing and distributing customer support tickets. The platform's core functionalities for agent assignment and performance tracking were particularly beneficial for overseeing a mid-market team. While generally user-friendly, they noted some challenges with advanced configurations and desired more tailored e-commerce integrations.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Efficient ticket routing and assignment to agents",
+      "Intuitive dashboard for managing agent workloads",
+      "Good reporting capabilities for team performance"
+    ],
+    "cons": [
+      "Steeper learning curve for advanced automation rules",
+      "Occasional delays in support response times",
+      "Limited customization options for specific e-commerce workflows"
+    ],
+    "overall_experience": "As an E-commerce Manager, their experience with Freshdesk was largely positive, finding it effective for managing and distributing customer support tickets. The platform's core functionalities for agent assignment and performance tracking were particularly beneficial for overseeing a mid-market team. While generally user-friendly, they noted some challenges with advanced configurations and desired more tailored e-commerce integrations."
+  },
+  "ts": "2026-10-18T05:24:54.043322+00:00"
+}

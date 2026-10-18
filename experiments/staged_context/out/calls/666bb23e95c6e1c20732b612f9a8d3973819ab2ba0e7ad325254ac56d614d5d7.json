@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "666bb23e95c6e1c20732b612f9a8d3973819ab2ba0e7ad325254ac56d614d5d7",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 268,
+  "output_tokens": 1091,
+  "cost_usd": 0.0028079,
+  "elapsed_s": 24.67,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Robust automation for cold email campaigns\",\n    \"Effective email warm-up for high deliverability\",\n    \"Cost-effective solution for small businesses\"\n  ],\n  \"cons\": [\n    \"Initial setup for optimal deliverability can be complex\",\n    \"Lead sourcing features might require external integrations\",\n    \"Analytics could be more customizable\"\n  ],\n  \"overall_experience\": \"The Commercial Director likely found Instantly to be a highly effective tool for managing cold email campaigns, appreciating its robust automation and value for money for a small business. While the initial setup for deliverability presented some complexity, the platform's core functionality for outreach and automated replies met their strategic needs. They would likely recommend it for its strong performance in generating new leads.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Robust automation for cold email campaigns",
+      "Effective email warm-up for high deliverability",
+      "Cost-effective solution for small businesses"
+    ],
+    "cons": [
+      "Initial setup for optimal deliverability can be complex",
+      "Lead sourcing features might require external integrations",
+      "Analytics could be more customizable"
+    ],
+    "overall_experience": "The Commercial Director likely found Instantly to be a highly effective tool for managing cold email campaigns, appreciating its robust automation and value for money for a small business. While the initial setup for deliverability presented some complexity, the platform's core functionality for outreach and automated replies met their strategic needs. They would likely recommend it for its strong performance in generating new leads."
+  },
+  "ts": "2026-10-18T05:24:52.417521+00:00"
+}

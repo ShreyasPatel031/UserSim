@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7b78fafdd6c893f839738630bbf2a86c8bae45e6cf46d7a7672cfdaa40ef8b99",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2089,
+  "output_tokens": 1048,
+  "cost_usd": 0.0032467000000000004,
+  "elapsed_s": 5.52,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Streamlined payroll processing and general HR tasks\",\n    \"Intuitive interface for common administrative functions\",\n    \"Effective for managing employee data and onboarding\"\n  ],\n  \"cons\": [\n    \"Customer support can be inconsistent or slow to respond\",\n    \"Reporting features may lack depth or customization options\",\n    \"Initial learning curve due to the breadth of features\"\n  ],\n  \"overall_experience\": \"This Business Administrator likely found Paylocity to be a generally effective tool for managing HR and payroll, appreciating its ability to streamline core administrative tasks. While the platform offered a user-friendly interface for routine operations, they may have experienced some frustration with the depth of reporting functionalities or the responsiveness of customer support. The initial setup or navigation might have presented a slight learning curve, but overall, it served its purpose well for their mid-market company.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Streamlined payroll processing and general HR tasks",
+      "Intuitive interface for common administrative functions",
+      "Effective for managing employee data and onboarding"
+    ],
+    "cons": [
+      "Customer support can be inconsistent or slow to respond",
+      "Reporting features may lack depth or customization options",
+      "Initial learning curve due to the breadth of features"
+    ],
+    "overall_experience": "This Business Administrator likely found Paylocity to be a generally effective tool for managing HR and payroll, appreciating its ability to streamline core administrative tasks. While the platform offered a user-friendly interface for routine operations, they may have experienced some frustration with the depth of reporting functionalities or the responsiveness of customer support. The initial setup or navigation might have presented a slight learning curve, but overall, it served its purpose well for their mid-market company."
+  },
+  "ts": "2026-10-18T05:25:48.822123+00:00"
+}

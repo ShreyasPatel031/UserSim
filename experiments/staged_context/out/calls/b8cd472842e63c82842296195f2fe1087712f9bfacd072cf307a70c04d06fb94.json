@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b8cd472842e63c82842296195f2fe1087712f9bfacd072cf307a70c04d06fb94",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1739,
+  "output_tokens": 1009,
+  "cost_usd": 0.0030441999999999995,
+  "elapsed_s": 5.81,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Intuitive interface for managing customer interactions.\",\n    \"Effective in centralizing support requests and tracking tickets.\",\n    \"Scalable features that adapt to a mid-sized higher education environment.\"\n  ],\n  \"cons\": [\n    \"Reporting features can be rigid, making it difficult to extract specific metrics.\",\n    \"Customization options might be limited for unique higher education workflows.\",\n    \"Occasional performance slowdowns or minor glitches during peak usage.\"\n  ],\n  \"overall_experience\": \"This Support Services Analyst found Freshdesk to be a generally capable tool for managing customer support interactions within a higher education setting. While it provided good ease of use and core functionality for daily tasks, they likely encountered some frustrations with advanced reporting and customization specific to their industry needs. The overall experience was positive, but with room for improvement in specific areas like customer support and system flexibility.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Intuitive interface for managing customer interactions.",
+      "Effective in centralizing support requests and tracking tickets.",
+      "Scalable features that adapt to a mid-sized higher education environment."
+    ],
+    "cons": [
+      "Reporting features can be rigid, making it difficult to extract specific metrics.",
+      "Customization options might be limited for unique higher education workflows.",
+      "Occasional performance slowdowns or minor glitches during peak usage."
+    ],
+    "overall_experience": "This Support Services Analyst found Freshdesk to be a generally capable tool for managing customer support interactions within a higher education setting. While it provided good ease of use and core functionality for daily tasks, they likely encountered some frustrations with advanced reporting and customization specific to their industry needs. The overall experience was positive, but with room for improvement in specific areas like customer support and system flexibility."
+  },
+  "ts": "2026-10-18T05:26:50.804419+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "cb6473cc1e3d8d33c483a514ff41adf4841cc101421a8841c0e04e8aa7bf92f5",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1922,
+  "output_tokens": 958,
+  "cost_usd": 0.0029716,
+  "elapsed_s": 8.2,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Familiar spreadsheet-like interface for project tracking\",\n    \"Good for managing diverse e-learning content and client projects\",\n    \"Robust reporting and dashboard capabilities\"\n  ],\n  \"cons\": [\n    \"Can be overwhelming with advanced features and initial setup\",\n    \"Pricing might feel high for a small business\",\n    \"Less intuitive for quick, simple task management compared to alternatives\"\n  ],\n  \"overall_experience\": \"This career coach found Smartsheet to be a powerful tool for managing various e-learning projects and client engagements, appreciating its familiar spreadsheet interface combined with robust project management features. While the initial learning curve for advanced functionalities was present, the ability to create detailed reports and dashboards was highly beneficial. However, the cost for a small team and the occasional complexity for simpler tasks were noted as minor drawbacks.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Familiar spreadsheet-like interface for project tracking",
+      "Good for managing diverse e-learning content and client projects",
+      "Robust reporting and dashboard capabilities"
+    ],
+    "cons": [
+      "Can be overwhelming with advanced features and initial setup",
+      "Pricing might feel high for a small business",
+      "Less intuitive for quick, simple task management compared to alternatives"
+    ],
+    "overall_experience": "This career coach found Smartsheet to be a powerful tool for managing various e-learning projects and client engagements, appreciating its familiar spreadsheet interface combined with robust project management features. While the initial learning curve for advanced functionalities was present, the ability to create detailed reports and dashboards was highly beneficial. However, the cost for a small team and the occasional complexity for simpler tasks were noted as minor drawbacks."
+  },
+  "ts": "2026-10-18T05:26:48.378391+00:00"
+}

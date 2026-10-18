@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "35b7dc60a3a1a3eb42156fe4333b3d5d997d8018bed9f5ed8b2c6831fdfc6c3e",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 396,
+  "output_tokens": 908,
+  "cost_usd": 0.0023888,
+  "elapsed_s": 6.01,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Comprehensive library of training modules and phishing simulations\",\n    \"Effective in educating staff on evolving cyber threats\",\n    \"Robust reporting and administrative features for managing campaigns\"\n  ],\n  \"cons\": [\n    \"Initial setup and customization can be time-consuming for specific organizational needs\",\n    \"Some training content might feel repetitive for highly technical users\",\n    \"Pricing structure could be complex for mid-market budgets\"\n  ],\n  \"overall_experience\": \"As a Technical Lead, this individual likely found KnowBe4 to be a highly effective tool for bolstering the organization's cybersecurity posture. They appreciated its extensive feature set, particularly the wide range of training content and realistic phishing simulations, which helped educate users on protective measures. While acknowledging a potential learning curve for advanced customization, the overall value in mitigating risk and improving staff awareness was evident.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Comprehensive library of training modules and phishing simulations",
+      "Effective in educating staff on evolving cyber threats",
+      "Robust reporting and administrative features for managing campaigns"
+    ],
+    "cons": [
+      "Initial setup and customization can be time-consuming for specific organizational needs",
+      "Some training content might feel repetitive for highly technical users",
+      "Pricing structure could be complex for mid-market budgets"
+    ],
+    "overall_experience": "As a Technical Lead, this individual likely found KnowBe4 to be a highly effective tool for bolstering the organization's cybersecurity posture. They appreciated its extensive feature set, particularly the wide range of training content and realistic phishing simulations, which helped educate users on protective measures. While acknowledging a potential learning curve for advanced customization, the overall value in mitigating risk and improving staff awareness was evident."
+  },
+  "ts": "2026-10-18T05:25:20.836188+00:00"
+}

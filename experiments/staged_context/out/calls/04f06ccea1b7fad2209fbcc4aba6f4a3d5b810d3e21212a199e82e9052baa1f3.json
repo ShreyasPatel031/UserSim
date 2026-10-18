@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "04f06ccea1b7fad2209fbcc4aba6f4a3d5b810d3e21212a199e82e9052baa1f3",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1575,
+  "output_tokens": 1108,
+  "cost_usd": 0.0032424999999999997,
+  "elapsed_s": 6.38,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Advanced segmentation and automation flows\",\n    \"Effective email deliverability for campaigns\",\n    \"Robust analytics and reporting features\"\n  ],\n  \"cons\": [\n    \"Can be more expensive than alternatives for small businesses\",\n    \"Steeper learning curve for advanced features initially\",\n    \"Interface can feel dense or complex at times\"\n  ],\n  \"overall_experience\": \"The founder, coming from Mailchimp, likely found Klaviyo to be a powerful upgrade, particularly appreciating its deep segmentation and automation capabilities essential for a consumer goods business. While they value the robust features and effective email marketing, they might have found the platform's cost to be higher and the initial learning curve for its advanced functionalities a bit challenging. Despite these minor frustrations, the platform's ability to drive customer engagement and sales over two years would lead to a generally positive experience.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Advanced segmentation and automation flows",
+      "Effective email deliverability for campaigns",
+      "Robust analytics and reporting features"
+    ],
+    "cons": [
+      "Can be more expensive than alternatives for small businesses",
+      "Steeper learning curve for advanced features initially",
+      "Interface can feel dense or complex at times"
+    ],
+    "overall_experience": "The founder, coming from Mailchimp, likely found Klaviyo to be a powerful upgrade, particularly appreciating its deep segmentation and automation capabilities essential for a consumer goods business. While they value the robust features and effective email marketing, they might have found the platform's cost to be higher and the initial learning curve for its advanced functionalities a bit challenging. Despite these minor frustrations, the platform's ability to drive customer engagement and sales over two years would lead to a generally positive experience."
+  },
+  "ts": "2026-10-18T05:26:38.672070+00:00"
+}

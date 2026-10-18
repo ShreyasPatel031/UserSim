@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "78ce32fec3bb082ad4ab97ab81197108987694a1cde84606773a2b8eddf7122a",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 395,
+  "output_tokens": 977,
+  "cost_usd": 0.0025610000000000003,
+  "elapsed_s": 9.77,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Ability to manage tickets effectively for internal teams\",\n    \"Private notes feature for internal vendor communication\",\n    \"Good value for a small business solution\"\n  ],\n  \"cons\": [\n    \"Setting up granular permissions for external vendors was complex\",\n    \"Initial learning curve for advanced collaboration features\",\n    \"Interface could be more intuitive for specific vendor access control\"\n  ],\n  \"overall_experience\": \"The user found Zoho Desk to be a solid solution for basic ticket management within their small transportation company. While the core ticketing functions were straightforward, configuring the system for external vendor collaboration without granting full access presented some initial challenges. They appreciated the ability to keep vendor communications private but felt the setup for this specific use case required more effort than anticipated.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Ability to manage tickets effectively for internal teams",
+      "Private notes feature for internal vendor communication",
+      "Good value for a small business solution"
+    ],
+    "cons": [
+      "Setting up granular permissions for external vendors was complex",
+      "Initial learning curve for advanced collaboration features",
+      "Interface could be more intuitive for specific vendor access control"
+    ],
+    "overall_experience": "The user found Zoho Desk to be a solid solution for basic ticket management within their small transportation company. While the core ticketing functions were straightforward, configuring the system for external vendor collaboration without granting full access presented some initial challenges. They appreciated the ability to keep vendor communications private but felt the setup for this specific use case required more effort than anticipated."
+  },
+  "ts": "2026-10-18T05:26:35.709284+00:00"
+}

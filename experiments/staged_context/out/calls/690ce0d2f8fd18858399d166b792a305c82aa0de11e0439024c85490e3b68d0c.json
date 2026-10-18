@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "690ce0d2f8fd18858399d166b792a305c82aa0de11e0439024c85490e3b68d0c",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 860,
+  "output_tokens": 1016,
+  "cost_usd": 0.0027979999999999997,
+  "elapsed_s": 5.7,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Integrated platform for payroll and HR tasks\",\n    \"Streamlined tax filing processes\",\n    \"Support for workforce planning needs\"\n  ],\n  \"cons\": [\n    \"Occasional complexity in managing international employee data\",\n    \"Interface could be more intuitive for specific advanced features\",\n    \"Customer support response times could be inconsistent\"\n  ],\n  \"overall_experience\": \"The Human Resources Generalist likely found Paylocity to be a robust and generally effective solution for managing core HR and payroll functions, including tax filing and workforce planning. While the comprehensive features were beneficial for their diverse tasks, they might have encountered some challenges with the platform's ease of use for more complex or international employee management scenarios. Overall, the experience was positive, making it a valuable tool despite potential minor frustrations with support or specific system intricacies.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Integrated platform for payroll and HR tasks",
+      "Streamlined tax filing processes",
+      "Support for workforce planning needs"
+    ],
+    "cons": [
+      "Occasional complexity in managing international employee data",
+      "Interface could be more intuitive for specific advanced features",
+      "Customer support response times could be inconsistent"
+    ],
+    "overall_experience": "The Human Resources Generalist likely found Paylocity to be a robust and generally effective solution for managing core HR and payroll functions, including tax filing and workforce planning. While the comprehensive features were beneficial for their diverse tasks, they might have encountered some challenges with the platform's ease of use for more complex or international employee management scenarios. Overall, the experience was positive, making it a valuable tool despite potential minor frustrations with support or specific system intricacies."
+  },
+  "ts": "2026-10-18T05:25:48.116508+00:00"
+}

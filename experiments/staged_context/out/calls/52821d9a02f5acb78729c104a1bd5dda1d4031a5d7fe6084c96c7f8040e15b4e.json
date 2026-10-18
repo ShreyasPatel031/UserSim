@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "52821d9a02f5acb78729c104a1bd5dda1d4031a5d7fe6084c96c7f8040e15b4e",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 356,
+  "output_tokens": 1051,
+  "cost_usd": 0.0027343000000000003,
+  "elapsed_s": 6.84,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Powerful platform for workflow automation and custom applications\",\n    \"Comprehensive suite for IT Service Management at enterprise scale\",\n    \"Extensive integration capabilities with other systems\"\n  ],\n  \"cons\": [\n    \"Steep learning curve for advanced development and customization\",\n    \"High total cost of ownership, including licensing and specialized talent\",\n    \"Performance issues possible with poorly optimized custom code or large data sets\"\n  ],\n  \"overall_experience\": \"The Lead Developer likely found ServiceNow IT Service Management to be a robust and highly capable platform for managing IT operations and automating complex workflows within their large enterprise. They appreciated its extensive customization options and integration potential, enabling them to build tailored solutions. However, the developer probably faced challenges with the platform's complexity, the significant investment required for advanced development, and the potential for performance bottlenecks with intricate custom implementations.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Powerful platform for workflow automation and custom applications",
+      "Comprehensive suite for IT Service Management at enterprise scale",
+      "Extensive integration capabilities with other systems"
+    ],
+    "cons": [
+      "Steep learning curve for advanced development and customization",
+      "High total cost of ownership, including licensing and specialized talent",
+      "Performance issues possible with poorly optimized custom code or large data sets"
+    ],
+    "overall_experience": "The Lead Developer likely found ServiceNow IT Service Management to be a robust and highly capable platform for managing IT operations and automating complex workflows within their large enterprise. They appreciated its extensive customization options and integration potential, enabling them to build tailored solutions. However, the developer probably faced challenges with the platform's complexity, the significant investment required for advanced development, and the potential for performance bottlenecks with intricate custom implementations."
+  },
+  "ts": "2026-10-18T05:25:08.300439+00:00"
+}

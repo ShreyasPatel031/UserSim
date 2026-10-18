@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "17f3b36dd883118b217a2d5f4db848fcef9e66e497011e74dfd62b5bb7a81b75",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1906,
+  "output_tokens": 1083,
+  "cost_usd": 0.0032792999999999997,
+  "elapsed_s": 5.7,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Provides accurate and automated sales commission calculations.\",\n    \"Offers clear visibility into payout structures and individual performance.\",\n    \"Delivers strong reporting capabilities for detailed analysis.\"\n  ],\n  \"cons\": [\n    \"Can have a steep learning curve to fully understand complex commission structures.\",\n    \"Integration with other systems, like CRM, might sometimes be incomplete or lag.\",\n    \"Reporting customization options could be improved for specific needs.\"\n  ],\n  \"overall_experience\": \"This Senior Manager Sales Compensation likely found Xactly to be a highly functional tool that streamlined their commission calculations and reporting tasks effectively. While the platform offered excellent overall visibility and automation, they may have experienced some challenges with its initial complexity and integration nuances. Despite minor frustrations, the product generally delivered strong value for their needs.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Provides accurate and automated sales commission calculations.",
+      "Offers clear visibility into payout structures and individual performance.",
+      "Delivers strong reporting capabilities for detailed analysis."
+    ],
+    "cons": [
+      "Can have a steep learning curve to fully understand complex commission structures.",
+      "Integration with other systems, like CRM, might sometimes be incomplete or lag.",
+      "Reporting customization options could be improved for specific needs."
+    ],
+    "overall_experience": "This Senior Manager Sales Compensation likely found Xactly to be a highly functional tool that streamlined their commission calculations and reporting tasks effectively. While the platform offered excellent overall visibility and automation, they may have experienced some challenges with its initial complexity and integration nuances. Despite minor frustrations, the product generally delivered strong value for their needs."
+  },
+  "ts": "2026-10-18T05:25:44.141876+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a2fbda659835deda2e494f8fb0367a1bcf4e1c3cdd41b9612e0d662fdc890746",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 360,
+  "output_tokens": 1004,
+  "cost_usd": 0.0026179999999999997,
+  "elapsed_s": 6.52,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Streamlined cold email outreach and campaign management\",\n    \"Effective lead sourcing capabilities\",\n    \"Robust automation for replies and follow-up sequences\"\n  ],\n  \"cons\": [\n    \"Initial learning curve for maximizing advanced features\",\n    \"Potential for minor deliverability issues if not configured carefully\",\n    \"Reporting and analytics could offer deeper insights\"\n  ],\n  \"overall_experience\": \"The Comercial Director experienced Instantly as a highly effective tool for managing cold email campaigns. Its core functionalities, including outreach, lead sourcing, and automated replies, significantly streamlined their sales processes. While they found the platform largely intuitive, mastering all advanced features required some initial effort, but the overall value and impact on their small business's lead generation were substantial.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Streamlined cold email outreach and campaign management",
+      "Effective lead sourcing capabilities",
+      "Robust automation for replies and follow-up sequences"
+    ],
+    "cons": [
+      "Initial learning curve for maximizing advanced features",
+      "Potential for minor deliverability issues if not configured carefully",
+      "Reporting and analytics could offer deeper insights"
+    ],
+    "overall_experience": "The Comercial Director experienced Instantly as a highly effective tool for managing cold email campaigns. Its core functionalities, including outreach, lead sourcing, and automated replies, significantly streamlined their sales processes. While they found the platform largely intuitive, mastering all advanced features required some initial effort, but the overall value and impact on their small business's lead generation were substantial."
+  },
+  "ts": "2026-10-18T05:25:15.014846+00:00"
+}

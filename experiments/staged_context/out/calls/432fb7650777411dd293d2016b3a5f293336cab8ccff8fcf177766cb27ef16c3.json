@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "432fb7650777411dd293d2016b3a5f293336cab8ccff8fcf177766cb27ef16c3",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 828,
+  "output_tokens": 1010,
+  "cost_usd": 0.0027734000000000005,
+  "elapsed_s": 9.48,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Robust engine for complex incentive plan calculations\",\n    \"Streamlined automation of compensation payout workflows\",\n    \"Effective integration capabilities with existing enterprise systems\"\n  ],\n  \"cons\": [\n    \"Initial configuration and ongoing administration can be complex\",\n    \"Data synchronization and validation processes may require significant effort\",\n    \"Customization for highly specific business rules might be challenging\"\n  ],\n  \"overall_experience\": \"This Staff Systems Engineer likely found Xactly to be a powerful tool for managing complex incentive compensation payouts, appreciating its robust calculation engine and automation features. While the system effectively handled data synchronization, calculation, and payroll integration, the initial setup and ongoing maintenance likely presented a steep learning curve. The overall experience was positive due to its core functionality, despite potential complexities in administration.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Robust engine for complex incentive plan calculations",
+      "Streamlined automation of compensation payout workflows",
+      "Effective integration capabilities with existing enterprise systems"
+    ],
+    "cons": [
+      "Initial configuration and ongoing administration can be complex",
+      "Data synchronization and validation processes may require significant effort",
+      "Customization for highly specific business rules might be challenging"
+    ],
+    "overall_experience": "This Staff Systems Engineer likely found Xactly to be a powerful tool for managing complex incentive compensation payouts, appreciating its robust calculation engine and automation features. While the system effectively handled data synchronization, calculation, and payroll integration, the initial setup and ongoing maintenance likely presented a steep learning curve. The overall experience was positive due to its core functionality, despite potential complexities in administration."
+  },
+  "ts": "2026-10-18T05:25:49.192605+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9b5f155a649d9f3ea7ce897fedb58cc08b42c0f30262d6477028655828b799e5",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1958,
+  "output_tokens": 1079,
+  "cost_usd": 0.0032849000000000003,
+  "elapsed_s": 6.44,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Streamlined expense reporting and approval workflows.\",\n    \"Improved visibility into company spending and budgeting.\",\n    \"Robust features for compliance and policy enforcement.\"\n  ],\n  \"cons\": [\n    \"Steep learning curve for administrative setup and advanced features.\",\n    \"Integration with existing accounting systems can be complex or costly.\",\n    \"User interface might feel clunky or less intuitive for some tasks.\"\n  ],\n  \"overall_experience\": \"This Accounting Manager likely found SAP Concur to be a powerful tool for managing expenses, appreciating its robust functionality for streamlining approvals and gaining visibility into spending. However, they probably encountered challenges with its administrative complexity, potentially struggling with the learning curve for setup and advanced reporting. The value for money might have been a concern due to its cost and potential integration hurdles with other systems.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Streamlined expense reporting and approval workflows.",
+      "Improved visibility into company spending and budgeting.",
+      "Robust features for compliance and policy enforcement."
+    ],
+    "cons": [
+      "Steep learning curve for administrative setup and advanced features.",
+      "Integration with existing accounting systems can be complex or costly.",
+      "User interface might feel clunky or less intuitive for some tasks."
+    ],
+    "overall_experience": "This Accounting Manager likely found SAP Concur to be a powerful tool for managing expenses, appreciating its robust functionality for streamlining approvals and gaining visibility into spending. However, they probably encountered challenges with its administrative complexity, potentially struggling with the learning curve for setup and advanced reporting. The value for money might have been a concern due to its cost and potential integration hurdles with other systems."
+  },
+  "ts": "2026-10-18T05:25:55.647428+00:00"
+}

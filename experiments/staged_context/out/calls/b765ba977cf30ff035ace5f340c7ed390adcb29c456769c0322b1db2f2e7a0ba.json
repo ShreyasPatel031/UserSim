@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b765ba977cf30ff035ace5f340c7ed390adcb29c456769c0322b1db2f2e7a0ba",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2101,
+  "output_tokens": 1070,
+  "cost_usd": 0.0033052999999999997,
+  "elapsed_s": 8.82,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Consolidates employee information and HR tasks in one platform\",\n    \"Offers convenient employee self-service features\",\n    \"Streamlines onboarding and offboarding processes\"\n  ],\n  \"cons\": [\n    \"Some features may require multiple clicks or be less intuitive\",\n    \"Customer support responsiveness can be inconsistent\",\n    \"Potential for limitations in advanced customization or reporting\"\n  ],\n  \"overall_experience\": \"This HR Generalist likely found Paylocity to be a generally capable system for managing employee information and core HR processes, appreciating its ability to centralize data and offer self-service options. However, they may have encountered occasional frustrations with the user interface requiring extra steps or a learning curve for certain functions. Support experiences might have been a mixed bag, and they might have wished for more advanced features or seamless integrations in some areas.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Consolidates employee information and HR tasks in one platform",
+      "Offers convenient employee self-service features",
+      "Streamlines onboarding and offboarding processes"
+    ],
+    "cons": [
+      "Some features may require multiple clicks or be less intuitive",
+      "Customer support responsiveness can be inconsistent",
+      "Potential for limitations in advanced customization or reporting"
+    ],
+    "overall_experience": "This HR Generalist likely found Paylocity to be a generally capable system for managing employee information and core HR processes, appreciating its ability to centralize data and offer self-service options. However, they may have encountered occasional frustrations with the user interface requiring extra steps or a learning curve for certain functions. Support experiences might have been a mixed bag, and they might have wished for more advanced features or seamless integrations in some areas."
+  },
+  "ts": "2026-10-18T05:25:50.236940+00:00"
+}

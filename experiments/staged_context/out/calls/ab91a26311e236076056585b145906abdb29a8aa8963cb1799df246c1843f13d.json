@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ab91a26311e236076056585b145906abdb29a8aa8963cb1799df246c1843f13d",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1940,
+  "output_tokens": 959,
+  "cost_usd": 0.0029795,
+  "elapsed_s": 9.09,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Effective in encouraging activity tracking for rewards.\",\n    \"Mobile app is generally user-friendly for daily logging.\",\n    \"Provides a clear way to see progress towards goals.\"\n  ],\n  \"cons\": [\n    \"Occasional bugs or performance glitches in the interface.\",\n    \"Web version can be less intuitive than the mobile app.\",\n    \"Limited customization options for specific company challenges.\"\n  ],\n  \"overall_experience\": \"The QA Manager found Wellable to be a functional tool for its primary purpose of tracking activities and earning rewards. While the mobile experience was largely positive for daily use, they encountered some interface bugs and inconsistencies, particularly on the web platform. The system effectively motivated participation but could benefit from improved stability and more flexible customization options for different wellness initiatives.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Effective in encouraging activity tracking for rewards.",
+      "Mobile app is generally user-friendly for daily logging.",
+      "Provides a clear way to see progress towards goals."
+    ],
+    "cons": [
+      "Occasional bugs or performance glitches in the interface.",
+      "Web version can be less intuitive than the mobile app.",
+      "Limited customization options for specific company challenges."
+    ],
+    "overall_experience": "The QA Manager found Wellable to be a functional tool for its primary purpose of tracking activities and earning rewards. While the mobile experience was largely positive for daily use, they encountered some interface bugs and inconsistencies, particularly on the web platform. The system effectively motivated participation but could benefit from improved stability and more flexible customization options for different wellness initiatives."
+  },
+  "ts": "2026-10-18T05:25:42.827850+00:00"
+}

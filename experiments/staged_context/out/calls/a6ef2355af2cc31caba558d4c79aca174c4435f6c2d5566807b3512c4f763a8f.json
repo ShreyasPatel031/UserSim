@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a6ef2355af2cc31caba558d4c79aca174c4435f6c2d5566807b3512c4f763a8f",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 363,
+  "output_tokens": 1035,
+  "cost_usd": 0.0026963999999999994,
+  "elapsed_s": 6.1,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Streamlined contact and deal management for small teams\",\n    \"Intuitive interface making it easy to get started quickly\",\n    \"Affordable pricing suitable for a small business\"\n  ],\n  \"cons\": [\n    \"Limited advanced customization options for specific HR processes\",\n    \"Initial learning curve for setting up reporting dashboards\",\n    \"Occasional minor glitches or slow loading times\"\n  ],\n  \"overall_experience\": \"This account manager likely had a positive initial experience with Freshsales, finding it a user-friendly and valuable tool for managing client relationships within their small HR company. The system provided essential CRM functionalities without being overly complex or expensive. While generally satisfied, they may have noted some minor limitations in customization or performance that prevented a perfect score.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Streamlined contact and deal management for small teams",
+      "Intuitive interface making it easy to get started quickly",
+      "Affordable pricing suitable for a small business"
+    ],
+    "cons": [
+      "Limited advanced customization options for specific HR processes",
+      "Initial learning curve for setting up reporting dashboards",
+      "Occasional minor glitches or slow loading times"
+    ],
+    "overall_experience": "This account manager likely had a positive initial experience with Freshsales, finding it a user-friendly and valuable tool for managing client relationships within their small HR company. The system provided essential CRM functionalities without being overly complex or expensive. While generally satisfied, they may have noted some minor limitations in customization or performance that prevented a perfect score."
+  },
+  "ts": "2026-10-18T05:26:12.578433+00:00"
+}

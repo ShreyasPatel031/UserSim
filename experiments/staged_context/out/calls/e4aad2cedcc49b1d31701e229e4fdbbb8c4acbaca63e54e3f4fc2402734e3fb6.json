@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e4aad2cedcc49b1d31701e229e4fdbbb8c4acbaca63e54e3f4fc2402734e3fb6",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 273,
+  "output_tokens": 971,
+  "cost_usd": 0.0025094,
+  "elapsed_s": 24.44,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Extensive library of training modules and phishing templates\",\n    \"Robust phishing simulation capabilities and campaign management\",\n    \"Comprehensive reporting on user susceptibility and training progress\"\n  ],\n  \"cons\": [\n    \"Initial setup and customization of campaigns can be time-consuming\",\n    \"Some administrative features may have a learning curve due to depth\",\n    \"Content can occasionally feel repetitive if not carefully curated\"\n  ],\n  \"overall_experience\": \"The Information Security Analyst likely found KnowBe4 to be a highly effective platform for delivering security awareness training across their mid-market organization. They appreciated its comprehensive feature set, particularly the strong phishing simulation capabilities and the wide variety of training content. While the initial configuration and the breadth of administrative options required some investment in learning, the platform ultimately provided the tools necessary to significantly improve their organization's security posture and track progress effectively.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Extensive library of training modules and phishing templates",
+      "Robust phishing simulation capabilities and campaign management",
+      "Comprehensive reporting on user susceptibility and training progress"
+    ],
+    "cons": [
+      "Initial setup and customization of campaigns can be time-consuming",
+      "Some administrative features may have a learning curve due to depth",
+      "Content can occasionally feel repetitive if not carefully curated"
+    ],
+    "overall_experience": "The Information Security Analyst likely found KnowBe4 to be a highly effective platform for delivering security awareness training across their mid-market organization. They appreciated its comprehensive feature set, particularly the strong phishing simulation capabilities and the wide variety of training content. While the initial configuration and the breadth of administrative options required some investment in learning, the platform ultimately provided the tools necessary to significantly improve their organization's security posture and track progress effectively."
+  },
+  "ts": "2026-10-18T05:24:53.961213+00:00"
+}

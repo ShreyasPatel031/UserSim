@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "fed1e7413073a306387de3a226e4e6d6610b2ee207234720e6486440a1c616a1",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 345,
+  "output_tokens": 1017,
+  "cost_usd": 0.0026459999999999995,
+  "elapsed_s": 6.53,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Streamlined expense submission process\",\n    \"Easy categorization of various expenses\",\n    \"Integration with company approval workflows\"\n  ],\n  \"cons\": [\n    \"Initial setup and learning curve for new users\",\n    \"Occasional issues with mobile receipt capture\",\n    \"Detailed reporting can sometimes feel cumbersome\"\n  ],\n  \"overall_experience\": \"This Sales Executive likely found SAP Concur to be a generally effective tool for managing and categorizing their expense reports. While the system offered good functionality for their core task and helped streamline the approval process, they may have encountered minor frustrations with its ease of use for more complex features or occasional technical glitches. Overall, the product was a valuable asset in their administrative duties, allowing them to focus more on sales activities.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Streamlined expense submission process",
+      "Easy categorization of various expenses",
+      "Integration with company approval workflows"
+    ],
+    "cons": [
+      "Initial setup and learning curve for new users",
+      "Occasional issues with mobile receipt capture",
+      "Detailed reporting can sometimes feel cumbersome"
+    ],
+    "overall_experience": "This Sales Executive likely found SAP Concur to be a generally effective tool for managing and categorizing their expense reports. While the system offered good functionality for their core task and helped streamline the approval process, they may have encountered minor frustrations with its ease of use for more complex features or occasional technical glitches. Overall, the product was a valuable asset in their administrative duties, allowing them to focus more on sales activities."
+  },
+  "ts": "2026-10-18T05:25:33.316159+00:00"
+}

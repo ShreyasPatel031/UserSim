@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "12b15a01935a2ddd76dfc76e7024b61d84331679a76826e81b17e72fb7120ee3",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 359,
+  "output_tokens": 1059,
+  "cost_usd": 0.0027552,
+  "elapsed_s": 6.0,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Effective email automation capabilities\",\n    \"Streamlined campaign management from a central hub\",\n    \"Intuitive interface making it easy for the team to adopt\"\n  ],\n  \"cons\": [\n    \"Potential for higher pricing as features scale\",\n    \"Steep learning curve for advanced features\",\n    \"Some reporting dashboards could be more customizable\"\n  ],\n  \"overall_experience\": \"The Team Lead Manager likely found HubSpot Marketing Hub to be a highly effective solution for their primary tasks of automating marketing emails and managing campaigns. They appreciated its robust functionality and user-friendly interface, which contributed to a smooth workflow for their mid-market team. While acknowledging the investment, the value provided by its integrated features and strong performance in core marketing activities was seen as beneficial.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Effective email automation capabilities",
+      "Streamlined campaign management from a central hub",
+      "Intuitive interface making it easy for the team to adopt"
+    ],
+    "cons": [
+      "Potential for higher pricing as features scale",
+      "Steep learning curve for advanced features",
+      "Some reporting dashboards could be more customizable"
+    ],
+    "overall_experience": "The Team Lead Manager likely found HubSpot Marketing Hub to be a highly effective solution for their primary tasks of automating marketing emails and managing campaigns. They appreciated its robust functionality and user-friendly interface, which contributed to a smooth workflow for their mid-market team. While acknowledging the investment, the value provided by its integrated features and strong performance in core marketing activities was seen as beneficial."
+  },
+  "ts": "2026-10-18T05:25:34.510413+00:00"
+}

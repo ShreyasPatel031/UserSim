@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e8b7e80595d5350e6000472311ac3ae71a3c89676a32e1c3220319ca64639ac5",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 251,
+  "output_tokens": 929,
+  "cost_usd": 0.0023978,
+  "elapsed_s": 27.53,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Quickly generates initial content drafts\",\n    \"Helps overcome writer's block for various marketing materials\",\n    \"Offers a variety of templates for different content needs\"\n  ],\n  \"cons\": [\n    \"Generated content often requires significant editing and fact-checking\",\n    \"Output can sometimes be generic or repetitive\",\n    \"Pricing might be a concern for a small business if not fully utilized\"\n  ],\n  \"overall_experience\": \"The Assistant Manager Digital Marketing found Jasper to be a valuable tool for rapidly generating content ideas and first drafts, significantly speeding up their workflow. While the AI-generated text often required refinement to align with brand voice and accuracy, its ability to combat writer's block and produce diverse marketing copy was highly appreciated. The cost was a consideration for their small business, but the efficiency gains generally justified the investment.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Quickly generates initial content drafts",
+      "Helps overcome writer's block for various marketing materials",
+      "Offers a variety of templates for different content needs"
+    ],
+    "cons": [
+      "Generated content often requires significant editing and fact-checking",
+      "Output can sometimes be generic or repetitive",
+      "Pricing might be a concern for a small business if not fully utilized"
+    ],
+    "overall_experience": "The Assistant Manager Digital Marketing found Jasper to be a valuable tool for rapidly generating content ideas and first drafts, significantly speeding up their workflow. While the AI-generated text often required refinement to align with brand voice and accuracy, its ability to combat writer's block and produce diverse marketing copy was highly appreciated. The cost was a consideration for their small business, but the efficiency gains generally justified the investment."
+  },
+  "ts": "2026-10-18T05:24:56.088926+00:00"
+}

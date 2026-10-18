@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "04da8b37f05289d645db48698f583278cea89763b0ba5fd7bd982ae458b999bc",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 253,
+  "output_tokens": 1040,
+  "cost_usd": 0.0026758999999999997,
+  "elapsed_s": 26.5,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Efficiently managed mass email variations across multiple domains\",\n    \"Streamlined cold outreach campaigns\",\n    \"Enabled effective scaling of email efforts\"\n  ],\n  \"cons\": [\n    \"Initial learning curve for advanced features\",\n    \"Occasional complexities in managing deliverability\",\n    \"Reporting might lack some desired depth\"\n  ],\n  \"overall_experience\": \"The owner likely found Instantly to be a highly effective tool for their primary task of mass producing email variations across multiple domains, which significantly streamlined their outreach efforts. They probably appreciated its core functionality and ability to scale their campaigns, seeing good value for their small business. While generally satisfied, they might have encountered some minor frustrations with the learning curve for more advanced features or the intricacies of maintaining email deliverability.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Efficiently managed mass email variations across multiple domains",
+      "Streamlined cold outreach campaigns",
+      "Enabled effective scaling of email efforts"
+    ],
+    "cons": [
+      "Initial learning curve for advanced features",
+      "Occasional complexities in managing deliverability",
+      "Reporting might lack some desired depth"
+    ],
+    "overall_experience": "The owner likely found Instantly to be a highly effective tool for their primary task of mass producing email variations across multiple domains, which significantly streamlined their outreach efforts. They probably appreciated its core functionality and ability to scale their campaigns, seeing good value for their small business. While generally satisfied, they might have encountered some minor frustrations with the learning curve for more advanced features or the intricacies of maintaining email deliverability."
+  },
+  "ts": "2026-10-18T05:24:54.373476+00:00"
+}

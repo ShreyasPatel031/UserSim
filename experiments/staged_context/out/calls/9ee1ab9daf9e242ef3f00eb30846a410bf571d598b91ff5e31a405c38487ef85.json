@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9ee1ab9daf9e242ef3f00eb30846a410bf571d598b91ff5e31a405c38487ef85",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 264,
+  "output_tokens": 1000,
+  "cost_usd": 0.0025792000000000002,
+  "elapsed_s": 26.78,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Clear visibility into daily commissions and profit\",\n    \"Ability to track performance with source breakdowns\",\n    \"Access to historical earnings data for trend analysis\"\n  ],\n  \"cons\": [\n    \"Interface can be less intuitive for quick daily checks\",\n    \"Initial learning curve to navigate all features\",\n    \"Potential for data discrepancies if not configured perfectly\"\n  ],\n  \"overall_experience\": \"This Business Development Manager likely found Xactly to be a powerful tool for tracking their daily commissions, profit, and understanding performance drivers. The ability to access historical data was valuable for strategic planning. While the system provided essential functionality, they may have experienced some minor frustrations with its ease of use for routine tasks.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Clear visibility into daily commissions and profit",
+      "Ability to track performance with source breakdowns",
+      "Access to historical earnings data for trend analysis"
+    ],
+    "cons": [
+      "Interface can be less intuitive for quick daily checks",
+      "Initial learning curve to navigate all features",
+      "Potential for data discrepancies if not configured perfectly"
+    ],
+    "overall_experience": "This Business Development Manager likely found Xactly to be a powerful tool for tracking their daily commissions, profit, and understanding performance drivers. The ability to access historical data was valuable for strategic planning. While the system provided essential functionality, they may have experienced some minor frustrations with its ease of use for routine tasks."
+  },
+  "ts": "2026-10-18T05:24:58.221044+00:00"
+}

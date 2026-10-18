@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f4f536f6fbe63b749a1c1aebfa5661b2281b17d2b5a5ba622eb63664fea9fec3",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2136,
+  "output_tokens": 1057,
+  "cost_usd": 0.0032833,
+  "elapsed_s": 5.78,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Found it intuitive and easy to use for managing customer queries.\",\n    \"Appreciated the affordability for a self-employed business owner.\",\n    \"Provided essential features to organize customer support services effectively.\"\n  ],\n  \"cons\": [\n    \"May have experienced a slight learning curve with some advanced features.\",\n    \"Potentially found some customization options less straightforward for specific apparel industry needs.\",\n    \"Could have encountered minor issues with integrations or specific reporting capabilities.\"\n  ],\n  \"overall_experience\": \"This self-employed owner likely found Zoho Desk to be a solid and affordable solution for organizing customer support within their apparel business. The initial setup and core functionalities were probably intuitive enough for a new user, providing good value for money. While generally positive, some aspects like deeper customization or specific integrations might have presented minor challenges during their first few months of use.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Found it intuitive and easy to use for managing customer queries.",
+      "Appreciated the affordability for a self-employed business owner.",
+      "Provided essential features to organize customer support services effectively."
+    ],
+    "cons": [
+      "May have experienced a slight learning curve with some advanced features.",
+      "Potentially found some customization options less straightforward for specific apparel industry needs.",
+      "Could have encountered minor issues with integrations or specific reporting capabilities."
+    ],
+    "overall_experience": "This self-employed owner likely found Zoho Desk to be a solid and affordable solution for organizing customer support within their apparel business. The initial setup and core functionalities were probably intuitive enough for a new user, providing good value for money. While generally positive, some aspects like deeper customization or specific integrations might have presented minor challenges during their first few months of use."
+  },
+  "ts": "2026-10-18T05:26:33.735856+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "62ccbd4c701206fe29a49acb14ffc7161e21125c9b72d5bb78fadb0fc1654e11",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 356,
+  "output_tokens": 1078,
+  "cost_usd": 0.0028018,
+  "elapsed_s": 6.53,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Simplified the process of setting up and launching employee challenges\",\n    \"Engaging activities that successfully boosted participation\",\n    \"Intuitive interface for managing programs and communications\"\n  ],\n  \"cons\": [\n    \"Some limitations in customizing challenge types or branding\",\n    \"Reporting features could offer deeper insights\",\n    \"Potential for better integration with existing HR or communication tools\"\n  ],\n  \"overall_experience\": \"The Culture and Brand Coordinator likely found Wellable to be an effective tool for fulfilling their task of setting up and running employee engagement challenges. The platform's ease of use and ability to drive participation were probably key benefits. While generally positive, they may have desired more advanced customization or reporting capabilities.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Simplified the process of setting up and launching employee challenges",
+      "Engaging activities that successfully boosted participation",
+      "Intuitive interface for managing programs and communications"
+    ],
+    "cons": [
+      "Some limitations in customizing challenge types or branding",
+      "Reporting features could offer deeper insights",
+      "Potential for better integration with existing HR or communication tools"
+    ],
+    "overall_experience": "The Culture and Brand Coordinator likely found Wellable to be an effective tool for fulfilling their task of setting up and running employee engagement challenges. The platform's ease of use and ability to drive participation were probably key benefits. While generally positive, they may have desired more advanced customization or reporting capabilities."
+  },
+  "ts": "2026-10-18T05:25:26.609142+00:00"
+}

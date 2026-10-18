@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "48679bf9c6c7a266b2cd156392249db1aa3dad2226add76c7f4eec1f7678d2f9",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1077,
+  "output_tokens": 1051,
+  "cost_usd": 0.0029506000000000003,
+  "elapsed_s": 6.09,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Powerful segmentation and personalization capabilities\",\n    \"Advanced automation and flow builder for sales\",\n    \"Strong analytics to track email campaign performance\"\n  ],\n  \"cons\": [\n    \"Steeper learning curve compared to previous solutions like Mailchimp\",\n    \"Initial setup and integration can be time-consuming\",\n    \"Pricing model can become costly as subscriber lists grow\"\n  ],\n  \"overall_experience\": \"The E-Commerce Manager found Klaviyo to be a significant upgrade from Mailchimp, appreciating its advanced segmentation and automation features crucial for driving sales in the sporting goods industry. While the platform offered powerful tools for personalized email campaigns, the initial learning curve and setup time presented some challenges. Despite this, the robust functionality and analytics made it a valuable asset for their marketing efforts within the first six months of use.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Powerful segmentation and personalization capabilities",
+      "Advanced automation and flow builder for sales",
+      "Strong analytics to track email campaign performance"
+    ],
+    "cons": [
+      "Steeper learning curve compared to previous solutions like Mailchimp",
+      "Initial setup and integration can be time-consuming",
+      "Pricing model can become costly as subscriber lists grow"
+    ],
+    "overall_experience": "The E-Commerce Manager found Klaviyo to be a significant upgrade from Mailchimp, appreciating its advanced segmentation and automation features crucial for driving sales in the sporting goods industry. While the platform offered powerful tools for personalized email campaigns, the initial learning curve and setup time presented some challenges. Despite this, the robust functionality and analytics made it a valuable asset for their marketing efforts within the first six months of use."
+  },
+  "ts": "2026-10-18T05:26:37.287138+00:00"
+}

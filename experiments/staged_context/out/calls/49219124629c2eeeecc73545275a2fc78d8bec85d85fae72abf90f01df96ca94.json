@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "49219124629c2eeeecc73545275a2fc78d8bec85d85fae72abf90f01df96ca94",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 485,
+  "output_tokens": 1126,
+  "cost_usd": 0.0029605000000000005,
+  "elapsed_s": 7.05,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Powerful custom dashboards for tracking inventory and sales trends\",\n    \"Provides a reliable, single source of truth for stock data\",\n    \"Excellent drill-down capabilities for detailed analysis\"\n  ],\n  \"cons\": [\n    \"Initial setup and data modeling required significant effort\",\n    \"Can be complex for new users to build advanced reports\",\n    \"Performance sometimes slows with very large datasets\"\n  ],\n  \"overall_experience\": \"The Stock Manager has utilized Looker for over two years, finding it an indispensable tool for tracking inventory, analyzing sales trends, and generating critical reports. While the initial learning curve was steep for setting up data models, the platform's robust functionality and ability to provide a unified view of stock data have been highly beneficial. They appreciate the customizability and drill-down capabilities that empower informed decision-making.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Powerful custom dashboards for tracking inventory and sales trends",
+      "Provides a reliable, single source of truth for stock data",
+      "Excellent drill-down capabilities for detailed analysis"
+    ],
+    "cons": [
+      "Initial setup and data modeling required significant effort",
+      "Can be complex for new users to build advanced reports",
+      "Performance sometimes slows with very large datasets"
+    ],
+    "overall_experience": "The Stock Manager has utilized Looker for over two years, finding it an indispensable tool for tracking inventory, analyzing sales trends, and generating critical reports. While the initial learning curve was steep for setting up data models, the platform's robust functionality and ability to provide a unified view of stock data have been highly beneficial. They appreciate the customizability and drill-down capabilities that empower informed decision-making."
+  },
+  "ts": "2026-10-18T05:26:20.320446+00:00"
+}

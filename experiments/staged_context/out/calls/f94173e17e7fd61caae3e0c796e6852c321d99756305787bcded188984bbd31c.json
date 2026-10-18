@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f94173e17e7fd61caae3e0c796e6852c321d99756305787bcded188984bbd31c",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 262,
+  "output_tokens": 1018,
+  "cost_usd": 0.0026236,
+  "elapsed_s": 5.86,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Comprehensive suite for payroll, HRIS, and benefits\",\n    \"Robust reporting capabilities for compliance and analytics\",\n    \"Employee self-service features reduce administrative load\"\n  ],\n  \"cons\": [\n    \"Initial setup and learning curve can be steep\",\n    \"Customer support responsiveness can be inconsistent\",\n    \"Interface can sometimes feel cluttered with many features\"\n  ],\n  \"overall_experience\": \"This HR Generalist likely found Paylocity to be a powerful and comprehensive HRIS solution, effectively managing employee information and various HR processes within their mid-market company. They appreciated the integrated platform for payroll, benefits, and HR, which streamlined many of their daily tasks. While the system offered extensive functionality and reporting, they may have experienced some challenges with its initial complexity and occasional inconsistencies in customer support.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Comprehensive suite for payroll, HRIS, and benefits",
+      "Robust reporting capabilities for compliance and analytics",
+      "Employee self-service features reduce administrative load"
+    ],
+    "cons": [
+      "Initial setup and learning curve can be steep",
+      "Customer support responsiveness can be inconsistent",
+      "Interface can sometimes feel cluttered with many features"
+    ],
+    "overall_experience": "This HR Generalist likely found Paylocity to be a powerful and comprehensive HRIS solution, effectively managing employee information and various HR processes within their mid-market company. They appreciated the integrated platform for payroll, benefits, and HR, which streamlined many of their daily tasks. While the system offered extensive functionality and reporting, they may have experienced some challenges with its initial complexity and occasional inconsistencies in customer support."
+  },
+  "ts": "2026-10-18T05:24:55.510707+00:00"
+}

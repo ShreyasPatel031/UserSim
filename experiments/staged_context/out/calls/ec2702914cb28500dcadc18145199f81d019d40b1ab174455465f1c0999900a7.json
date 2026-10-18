@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ec2702914cb28500dcadc18145199f81d019d40b1ab174455465f1c0999900a7",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 365,
+  "output_tokens": 959,
+  "cost_usd": 0.0025069999999999997,
+  "elapsed_s": 6.19,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effective centralization of customer data\",\n    \"Streamlined communication for sales and support\",\n    \"Intuitive interface for end-users\"\n  ],\n  \"cons\": [\n    \"Occasional complexity in advanced configurations\",\n    \"Potential for cost escalation with added features or users\",\n    \"Learning curve for full administrative control\"\n  ],\n  \"overall_experience\": \"The Lead IT Administrator likely found HubSpot Sales Hub highly effective for centralizing customer details, emails, and notes, which was their primary task. Its robust functionality and user-friendly interface were appreciated by their sales and support teams. While generally positive, the administrator may have noted some challenges with advanced setup or the scaling cost structure.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Effective centralization of customer data",
+      "Streamlined communication for sales and support",
+      "Intuitive interface for end-users"
+    ],
+    "cons": [
+      "Occasional complexity in advanced configurations",
+      "Potential for cost escalation with added features or users",
+      "Learning curve for full administrative control"
+    ],
+    "overall_experience": "The Lead IT Administrator likely found HubSpot Sales Hub highly effective for centralizing customer details, emails, and notes, which was their primary task. Its robust functionality and user-friendly interface were appreciated by their sales and support teams. While generally positive, the administrator may have noted some challenges with advanced setup or the scaling cost structure."
+  },
+  "ts": "2026-10-18T05:25:05.007232+00:00"
+}

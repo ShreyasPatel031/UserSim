@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3772f3d43ee752796eaba261e85c163c0055963a4db12ad00208f752526f647b",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 358,
+  "output_tokens": 945,
+  "cost_usd": 0.0024699,
+  "elapsed_s": 5.78,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effective for tracking sales leads and client engagement\",\n    \"Streamlined email composition features\",\n    \"Comprehensive functionality for small business needs\"\n  ],\n  \"cons\": [\n    \"Initial learning curve for non-marketing professionals\",\n    \"Some features may be overkill for their specific role\",\n    \"Integration with payroll/finance systems might be limited\"\n  ],\n  \"overall_experience\": \"This VP of Payroll likely found HubSpot Marketing Hub to be a generally effective tool for their expanded responsibilities in tracking sales leads, managing email communications, and monitoring client engagement within a small business. While the product provided strong core functionality, they may have encountered a slight learning curve given their primary role is not marketing-centric. The platform's comprehensive nature likely offered good value, though some advanced marketing features might have been underutilized.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Effective for tracking sales leads and client engagement",
+      "Streamlined email composition features",
+      "Comprehensive functionality for small business needs"
+    ],
+    "cons": [
+      "Initial learning curve for non-marketing professionals",
+      "Some features may be overkill for their specific role",
+      "Integration with payroll/finance systems might be limited"
+    ],
+    "overall_experience": "This VP of Payroll likely found HubSpot Marketing Hub to be a generally effective tool for their expanded responsibilities in tracking sales leads, managing email communications, and monitoring client engagement within a small business. While the product provided strong core functionality, they may have encountered a slight learning curve given their primary role is not marketing-centric. The platform's comprehensive nature likely offered good value, though some advanced marketing features might have been underutilized."
+  },
+  "ts": "2026-10-18T05:25:34.012325+00:00"
+}

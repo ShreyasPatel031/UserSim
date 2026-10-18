@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "df1e9f4a6494e847d6e6cd06664c354db5707e45c2e0b5964699681fe088a8e4",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 801,
+  "output_tokens": 998,
+  "cost_usd": 0.0027353,
+  "elapsed_s": 5.7,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Widely recognized and trusted by customers\",\n    \"Easy to set up and integrate for online payments\",\n    \"Offers various payment options and security features\"\n  ],\n  \"cons\": [\n    \"Transaction fees can impact small business margins\",\n    \"Potential for account holds or freezes\",\n    \"Customer support can sometimes be slow for urgent issues\"\n  ],\n  \"overall_experience\": \"As a founder of a small business, this person likely found PayPal Payments to be a generally reliable and accessible solution for handling transactions. The platform's widespread acceptance and ease of integration were probably beneficial for their operations. However, they may have experienced frustration with the associated transaction fees and potential issues with customer support or account holds.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Widely recognized and trusted by customers",
+      "Easy to set up and integrate for online payments",
+      "Offers various payment options and security features"
+    ],
+    "cons": [
+      "Transaction fees can impact small business margins",
+      "Potential for account holds or freezes",
+      "Customer support can sometimes be slow for urgent issues"
+    ],
+    "overall_experience": "As a founder of a small business, this person likely found PayPal Payments to be a generally reliable and accessible solution for handling transactions. The platform's widespread acceptance and ease of integration were probably beneficial for their operations. However, they may have experienced frustration with the associated transaction fees and potential issues with customer support or account holds."
+  },
+  "ts": "2026-10-18T05:25:51.484581+00:00"
+}

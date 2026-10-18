@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a89856f158e6e9c349302352d9de3c8fed584018f4f80fe5b8dc764f2e752cf4",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2170,
+  "output_tokens": 1028,
+  "cost_usd": 0.0032210000000000003,
+  "elapsed_s": 5.96,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Robust e-commerce features for marketing and sales campaigns.\",\n    \"Scalability to support a growing retail business.\",\n    \"Strong SEO tools and integrations for marketing efforts.\"\n  ],\n  \"cons\": [\n    \"Steep learning curve for advanced customization.\",\n    \"Pricing structure can become costly with added features or integrations.\",\n    \"Occasional performance issues or slow loading times.\"\n  ],\n  \"overall_experience\": \"This Marketing Director has likely had a very positive experience with BigCommerce over their 2+ years of use, appreciating its comprehensive feature set for managing and growing an online retail presence. While the platform offers powerful tools for marketing and scalability, they may have faced challenges with its initial complexity or cost implications for advanced customizations. Overall, BigCommerce effectively serves their e-commerce operational needs.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Robust e-commerce features for marketing and sales campaigns.",
+      "Scalability to support a growing retail business.",
+      "Strong SEO tools and integrations for marketing efforts."
+    ],
+    "cons": [
+      "Steep learning curve for advanced customization.",
+      "Pricing structure can become costly with added features or integrations.",
+      "Occasional performance issues or slow loading times."
+    ],
+    "overall_experience": "This Marketing Director has likely had a very positive experience with BigCommerce over their 2+ years of use, appreciating its comprehensive feature set for managing and growing an online retail presence. While the platform offers powerful tools for marketing and scalability, they may have faced challenges with its initial complexity or cost implications for advanced customizations. Overall, BigCommerce effectively serves their e-commerce operational needs."
+  },
+  "ts": "2026-10-18T05:26:44.603116+00:00"
+}

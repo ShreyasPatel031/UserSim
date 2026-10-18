@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "68ea8ae6a57e12a09370fc4c8683027e9611ce73439059a2b47d24a42af8d469",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 347,
+  "output_tokens": 1027,
+  "cost_usd": 0.0026716,
+  "elapsed_s": 6.71,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Accurate and reliable commission calculations.\",\n    \"Detailed visibility into earnings and performance.\",\n    \"Streamlined approval process for commission data.\"\n  ],\n  \"cons\": [\n    \"Initial learning curve for navigating complex data.\",\n    \"Occasional delays in data processing or updates.\",\n    \"Interface could be more intuitive for specific reports.\"\n  ],\n  \"overall_experience\": \"The Senior Strategic Account Manager likely found Xactly highly functional for managing their detailed commission data, appreciating its accuracy and the ability to approve their earnings effectively. While the system provided robust capabilities, they may have encountered some complexity in its interface and occasional processing delays that slightly impacted their overall satisfaction.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Accurate and reliable commission calculations.",
+      "Detailed visibility into earnings and performance.",
+      "Streamlined approval process for commission data."
+    ],
+    "cons": [
+      "Initial learning curve for navigating complex data.",
+      "Occasional delays in data processing or updates.",
+      "Interface could be more intuitive for specific reports."
+    ],
+    "overall_experience": "The Senior Strategic Account Manager likely found Xactly highly functional for managing their detailed commission data, appreciating its accuracy and the ability to approve their earnings effectively. While the system provided robust capabilities, they may have encountered some complexity in its interface and occasional processing delays that slightly impacted their overall satisfaction."
+  },
+  "ts": "2026-10-18T05:25:27.855504+00:00"
+}

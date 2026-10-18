@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "83dc966d9bcc9831c797fe2d5979c4062b1306654e9d804da3dc8ca5fa27414d",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 771,
+  "output_tokens": 989,
+  "cost_usd": 0.0027038,
+  "elapsed_s": 6.38,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Reliable and accurate commission calculation.\",\n    \"Streamlined management of complex commission plans.\",\n    \"Enhanced transparency for sales teams and finance.\"\n  ],\n  \"cons\": [\n    \"Steep learning curve due to comprehensive features.\",\n    \"Potential for high implementation and ongoing costs.\",\n    \"Custom reporting might require specialized knowledge.\"\n  ],\n  \"overall_experience\": \"The SIP Analyst likely found Xactly to be a highly functional and reliable solution for creating, managing, and calculating company commissions. Its robust capabilities were crucial for ensuring accuracy and efficiency in this complex task, making it a valuable asset for their mid-market company. While acknowledging a potential learning curve, the system's core performance and support for commission processes were significant benefits.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Reliable and accurate commission calculation.",
+      "Streamlined management of complex commission plans.",
+      "Enhanced transparency for sales teams and finance."
+    ],
+    "cons": [
+      "Steep learning curve due to comprehensive features.",
+      "Potential for high implementation and ongoing costs.",
+      "Custom reporting might require specialized knowledge."
+    ],
+    "overall_experience": "The SIP Analyst likely found Xactly to be a highly functional and reliable solution for creating, managing, and calculating company commissions. Its robust capabilities were crucial for ensuring accuracy and efficiency in this complex task, making it a valuable asset for their mid-market company. While acknowledging a potential learning curve, the system's core performance and support for commission processes were significant benefits."
+  },
+  "ts": "2026-10-18T05:25:46.225879+00:00"
+}

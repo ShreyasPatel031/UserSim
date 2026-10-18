@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "06e001c6a5c8c1e91f7f3fb2fda178808d5b78e20ed83a3f7830d5b607677a64",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1708,
+  "output_tokens": 987,
+  "cost_usd": 0.0029799,
+  "elapsed_s": 9.56,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Intuitive interface makes managing HR tasks straightforward.\",\n    \"Centralizes employee data, simplifying record-keeping and access.\",\n    \"Helps streamline onboarding and time-off requests efficiently.\"\n  ],\n  \"cons\": [\n    \"Reporting features could be more robust and customizable for specific needs.\",\n    \"Pricing might feel a bit high for very small businesses as they scale.\",\n    \"Integrations with some niche tools could be improved.\"\n  ],\n  \"overall_experience\": \"The owner likely found BambooHR to be a significant improvement for managing their small business's HR needs, appreciating its user-friendly design and ability to centralize employee information. While generally positive, they might have noted some limitations in advanced reporting or felt the cost was a consideration, but ultimately found it effective for streamlining core HR processes.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Intuitive interface makes managing HR tasks straightforward.",
+      "Centralizes employee data, simplifying record-keeping and access.",
+      "Helps streamline onboarding and time-off requests efficiently."
+    ],
+    "cons": [
+      "Reporting features could be more robust and customizable for specific needs.",
+      "Pricing might feel a bit high for very small businesses as they scale.",
+      "Integrations with some niche tools could be improved."
+    ],
+    "overall_experience": "The owner likely found BambooHR to be a significant improvement for managing their small business's HR needs, appreciating its user-friendly design and ability to centralize employee information. While generally positive, they might have noted some limitations in advanced reporting or felt the cost was a consideration, but ultimately found it effective for streamlining core HR processes."
+  },
+  "ts": "2026-10-18T05:25:41.903179+00:00"
+}

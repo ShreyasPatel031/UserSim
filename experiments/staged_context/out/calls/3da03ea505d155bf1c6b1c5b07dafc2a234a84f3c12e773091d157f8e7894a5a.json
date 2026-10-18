@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3da03ea505d155bf1c6b1c5b07dafc2a234a84f3c12e773091d157f8e7894a5a",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2570,
+  "output_tokens": 1038,
+  "cost_usd": 0.003366,
+  "elapsed_s": 8.98,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Successfully centralized all communication channels into a single platform.\",\n    \"Intuitive interface made daily operations efficient for the HR team.\",\n    \"Robust feature set supported varied communication needs effectively.\"\n  ],\n  \"cons\": [\n    \"Customization options could be more flexible for specific HR workflows.\",\n    \"Reporting features were somewhat basic for detailed analytics.\",\n    \"Occasional minor performance lags during peak usage.\"\n  ],\n  \"overall_experience\": \"This HR Generalist likely found LiveAgent to be a highly effective solution for centralizing support communications across a large organization. The platform's ease of use and comprehensive functionality were significant benefits, making daily tasks more streamlined. While generally very satisfied, they might have noted some limitations in advanced customization or reporting capabilities compared to ideal scenarios for a large enterprise.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Successfully centralized all communication channels into a single platform.",
+      "Intuitive interface made daily operations efficient for the HR team.",
+      "Robust feature set supported varied communication needs effectively."
+    ],
+    "cons": [
+      "Customization options could be more flexible for specific HR workflows.",
+      "Reporting features were somewhat basic for detailed analytics.",
+      "Occasional minor performance lags during peak usage."
+    ],
+    "overall_experience": "This HR Generalist likely found LiveAgent to be a highly effective solution for centralizing support communications across a large organization. The platform's ease of use and comprehensive functionality were significant benefits, making daily tasks more streamlined. While generally very satisfied, they might have noted some limitations in advanced customization or reporting capabilities compared to ideal scenarios for a large enterprise."
+  },
+  "ts": "2026-10-18T05:26:30.745499+00:00"
+}

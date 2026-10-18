@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4dbf01f52d382a1c3a47094167effa71d8a09c7a0771652f7a25e01d7c120362",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1637,
+  "output_tokens": 1070,
+  "cost_usd": 0.0031661,
+  "elapsed_s": 6.05,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Streamlined processing for employee reimbursements.\",\n    \"User-friendly interface for managing financial tasks.\",\n    \"Robust reporting capabilities for tracking expenses.\"\n  ],\n  \"cons\": [\n    \"Potential limitations or complexities with global reimbursement features.\",\n    \"Integrations could be more comprehensive or flexible for specific needs.\",\n    \"Customer support response times or resolution might be inconsistent.\"\n  ],\n  \"overall_experience\": \"This Software Design Engineer 2 likely found Paylocity generally effective for managing employee reimbursements, appreciating its ease of use and reporting tools. However, they probably encountered some frustrations with its global capabilities or integration depth, given their technical background and the specific task. While the platform served its core purpose well, they may have desired more advanced functionality or more responsive support, leading to a good but not outstanding overall impression.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Streamlined processing for employee reimbursements.",
+      "User-friendly interface for managing financial tasks.",
+      "Robust reporting capabilities for tracking expenses."
+    ],
+    "cons": [
+      "Potential limitations or complexities with global reimbursement features.",
+      "Integrations could be more comprehensive or flexible for specific needs.",
+      "Customer support response times or resolution might be inconsistent."
+    ],
+    "overall_experience": "This Software Design Engineer 2 likely found Paylocity generally effective for managing employee reimbursements, appreciating its ease of use and reporting tools. However, they probably encountered some frustrations with its global capabilities or integration depth, given their technical background and the specific task. While the platform served its core purpose well, they may have desired more advanced functionality or more responsive support, leading to a good but not outstanding overall impression."
+  },
+  "ts": "2026-10-18T05:25:29.092721+00:00"
+}

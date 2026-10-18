@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1aaafddde37da91de3e3929391b5f057c4090929fee9610c0113e5791415c285",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 356,
+  "output_tokens": 1034,
+  "cost_usd": 0.0026918000000000003,
+  "elapsed_s": 5.74,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Comprehensive library of training content and phishing templates.\",\n    \"Effective phishing simulations for assessing and improving employee vigilance.\",\n    \"Robust reporting and analytics for tracking progress and identifying risks.\"\n  ],\n  \"cons\": [\n    \"Initial setup and ongoing administration for a large enterprise can be time-consuming.\",\n    \"Customization options for specific organizational branding or unique training needs might be limited.\",\n    \"Ensuring consistent employee engagement across a large workforce can be challenging.\"\n  ],\n  \"overall_experience\": \"This Security Analyst likely found KnowBe4 to be a highly effective platform for managing security awareness across their large enterprise. The extensive content and simulation capabilities were valuable for training a diverse employee base and reducing human risk. While the administrative effort for a large organization required attention, the overall functionality and impact on security posture were positive.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Comprehensive library of training content and phishing templates.",
+      "Effective phishing simulations for assessing and improving employee vigilance.",
+      "Robust reporting and analytics for tracking progress and identifying risks."
+    ],
+    "cons": [
+      "Initial setup and ongoing administration for a large enterprise can be time-consuming.",
+      "Customization options for specific organizational branding or unique training needs might be limited.",
+      "Ensuring consistent employee engagement across a large workforce can be challenging."
+    ],
+    "overall_experience": "This Security Analyst likely found KnowBe4 to be a highly effective platform for managing security awareness across their large enterprise. The extensive content and simulation capabilities were valuable for training a diverse employee base and reducing human risk. While the administrative effort for a large organization required attention, the overall functionality and impact on security posture were positive."
+  },
+  "ts": "2026-10-18T05:25:19.063085+00:00"
+}

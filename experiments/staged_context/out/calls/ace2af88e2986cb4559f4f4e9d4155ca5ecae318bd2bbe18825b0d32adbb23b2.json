@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ace2af88e2986cb4559f4f4e9d4155ca5ecae318bd2bbe18825b0d32adbb23b2",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 748,
+  "output_tokens": 851,
+  "cost_usd": 0.0023519,
+  "elapsed_s": 5.24,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Successfully consolidates marketing data in one location.\",\n    \"Streamlined various marketing functions into a single platform.\",\n    \"User-friendly interface for day-to-day operations.\"\n  ],\n  \"cons\": [\n    \"Initial setup and filtering customization required significant effort.\",\n    \"Pricing model may become a concern as the business scales.\",\n    \"Some advanced reporting needs were not immediately intuitive.\"\n  ],\n  \"overall_experience\": \"As a Director at a small business, this individual likely found HubSpot Marketing Hub effective for centralizing and filtering marketing data. The platform's integrated nature helped consolidate operations, though they may have experienced a learning curve when setting up specific data filters or customizing advanced reports. Despite potential cost considerations for a small business, the overall value and functionality were generally positive.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Successfully consolidates marketing data in one location.",
+      "Streamlined various marketing functions into a single platform.",
+      "User-friendly interface for day-to-day operations."
+    ],
+    "cons": [
+      "Initial setup and filtering customization required significant effort.",
+      "Pricing model may become a concern as the business scales.",
+      "Some advanced reporting needs were not immediately intuitive."
+    ],
+    "overall_experience": "As a Director at a small business, this individual likely found HubSpot Marketing Hub effective for centralizing and filtering marketing data. The platform's integrated nature helped consolidate operations, though they may have experienced a learning curve when setting up specific data filters or customizing advanced reports. Despite potential cost considerations for a small business, the overall value and functionality were generally positive."
+  },
+  "ts": "2026-10-18T05:25:58.736226+00:00"
+}

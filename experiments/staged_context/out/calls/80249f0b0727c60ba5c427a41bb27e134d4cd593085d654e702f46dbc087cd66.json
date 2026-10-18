@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "80249f0b0727c60ba5c427a41bb27e134d4cd593085d654e702f46dbc087cd66",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1921,
+  "output_tokens": 996,
+  "cost_usd": 0.0030663,
+  "elapsed_s": 5.57,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Facilitates quick and accessible wellness activities for employees.\",\n    \"Centralized platform for managing and tracking participation.\",\n    \"User-friendly interface for streamlined engagement.\"\n  ],\n  \"cons\": [\n    \"Potential for a steep learning curve for new users.\",\n    \"Limited customization options for specific departmental needs.\",\n    \"Reporting features may not be as robust as desired for detailed analysis.\"\n  ],\n  \"overall_experience\": \"This manager likely found Wellable to be a highly functional tool for enabling quick wellness activities within their enterprise. They appreciated its ease of use for general tasks and the ability to manage employee engagement effectively. However, they might have experienced some initial challenges with a learning curve or wished for more advanced customization and reporting capabilities to suit their specific operational requirements.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Facilitates quick and accessible wellness activities for employees.",
+      "Centralized platform for managing and tracking participation.",
+      "User-friendly interface for streamlined engagement."
+    ],
+    "cons": [
+      "Potential for a steep learning curve for new users.",
+      "Limited customization options for specific departmental needs.",
+      "Reporting features may not be as robust as desired for detailed analysis."
+    ],
+    "overall_experience": "This manager likely found Wellable to be a highly functional tool for enabling quick wellness activities within their enterprise. They appreciated its ease of use for general tasks and the ability to manage employee engagement effectively. However, they might have experienced some initial challenges with a learning curve or wished for more advanced customization and reporting capabilities to suit their specific operational requirements."
+  },
+  "ts": "2026-10-18T05:25:41.312149+00:00"
+}

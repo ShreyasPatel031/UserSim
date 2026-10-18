@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "5a665587355211b863d28318e779bade2083f6dfaa25ee747655905146e32653",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2113,
+  "output_tokens": 997,
+  "cost_usd": 0.0031263999999999997,
+  "elapsed_s": 5.55,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effective multi-channel support for customer inquiries.\",\n    \"Good automation capabilities for streamlining workflows.\",\n    \"Generally user-friendly interface for daily tasks.\"\n  ],\n  \"cons\": [\n    \"Some limitations in advanced customization for specific retail needs.\",\n    \"Reporting features may require improvement for deeper insights.\",\n    \"Occasional performance issues or minor bugs.\"\n  ],\n  \"overall_experience\": \"This customer care manager likely found LiveAgent to be a solid tool for managing customer interactions within their retail business. They appreciated its ease of use and automation capabilities, which helped their team handle various support channels effectively. While generally positive, the manager likely encountered some minor frustrations with customization options or reporting limitations that could be improved.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Effective multi-channel support for customer inquiries.",
+      "Good automation capabilities for streamlining workflows.",
+      "Generally user-friendly interface for daily tasks."
+    ],
+    "cons": [
+      "Some limitations in advanced customization for specific retail needs.",
+      "Reporting features may require improvement for deeper insights.",
+      "Occasional performance issues or minor bugs."
+    ],
+    "overall_experience": "This customer care manager likely found LiveAgent to be a solid tool for managing customer interactions within their retail business. They appreciated its ease of use and automation capabilities, which helped their team handle various support channels effectively. While generally positive, the manager likely encountered some minor frustrations with customization options or reporting limitations that could be improved."
+  },
+  "ts": "2026-10-18T05:26:27.812195+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7ba44e48efcf3ae71f7358c54146df55ad2e383ec5443863ca48515a0f0a2ed7",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1063,
+  "output_tokens": 983,
+  "cost_usd": 0.0027763999999999996,
+  "elapsed_s": 5.6,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Robust automation and flow builder for campaigns\",\n    \"Advanced segmentation for targeted retail marketing\",\n    \"Flexible email template design options\"\n  ],\n  \"cons\": [\n    \"Pricing can become costly as subscriber lists grow\",\n    \"Steep learning curve for maximizing advanced features\",\n    \"Customer support response times could be inconsistent\"\n  ],\n  \"overall_experience\": \"This designer/marketing specialist likely found Klaviyo to be a powerful, albeit sometimes complex, platform for managing their retail email marketing. They appreciated its strong automation and segmentation capabilities for targeted campaigns, which were crucial for their small business. However, the cost scaling with list growth and the initial learning curve for advanced features presented some challenges during their first year of use.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Robust automation and flow builder for campaigns",
+      "Advanced segmentation for targeted retail marketing",
+      "Flexible email template design options"
+    ],
+    "cons": [
+      "Pricing can become costly as subscriber lists grow",
+      "Steep learning curve for maximizing advanced features",
+      "Customer support response times could be inconsistent"
+    ],
+    "overall_experience": "This designer/marketing specialist likely found Klaviyo to be a powerful, albeit sometimes complex, platform for managing their retail email marketing. They appreciated its strong automation and segmentation capabilities for targeted campaigns, which were crucial for their small business. However, the cost scaling with list growth and the initial learning curve for advanced features presented some challenges during their first year of use."
+  },
+  "ts": "2026-10-18T05:26:37.698408+00:00"
+}

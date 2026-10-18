@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "03acb21b0258ad89a748e5aaf0dead96c7668771673ae45715d5a607bdbc3a5c",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 360,
+  "output_tokens": 971,
+  "cost_usd": 0.0025355,
+  "elapsed_s": 6.2,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Effective for lead management\",\n    \"Comprehensive feature set for sales\",\n    \"Intuitive interface for core tasks\"\n  ],\n  \"cons\": [\n    \"Learning curve for advanced features\",\n    \"Limited experience with customer support during trial\",\n    \"May require time investment for full customization\"\n  ],\n  \"overall_experience\": \"This CEO likely found Zoho CRM to be a solid option for managing leads, appreciating its comprehensive features and general ease of use for their primary task. However, their experience was limited to a free trial, suggesting they may not have fully explored its deeper functionalities or needed direct customer support. While impressed by its capabilities, they might have noted a potential learning curve or the need for dedicated time to fully customize it for their small internet company.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Effective for lead management",
+      "Comprehensive feature set for sales",
+      "Intuitive interface for core tasks"
+    ],
+    "cons": [
+      "Learning curve for advanced features",
+      "Limited experience with customer support during trial",
+      "May require time investment for full customization"
+    ],
+    "overall_experience": "This CEO likely found Zoho CRM to be a solid option for managing leads, appreciating its comprehensive features and general ease of use for their primary task. However, their experience was limited to a free trial, suggesting they may not have fully explored its deeper functionalities or needed direct customer support. While impressed by its capabilities, they might have noted a potential learning curve or the need for dedicated time to fully customize it for their small internet company."
+  },
+  "ts": "2026-10-18T05:26:17.426641+00:00"
+}

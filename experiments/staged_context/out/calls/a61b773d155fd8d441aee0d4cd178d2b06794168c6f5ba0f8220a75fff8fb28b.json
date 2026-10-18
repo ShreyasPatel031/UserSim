@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a61b773d155fd8d441aee0d4cd178d2b06794168c6f5ba0f8220a75fff8fb28b",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2100,
+  "output_tokens": 1033,
+  "cost_usd": 0.0032125,
+  "elapsed_s": 9.39,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Consolidated HR, payroll, and compliance across multiple business entities\",\n    \"Comprehensive feature set for managing diverse employee needs\",\n    \"Scalable system that adapts to company growth\"\n  ],\n  \"cons\": [\n    \"Initial learning curve for administrators due to extensive features\",\n    \"Customer support responsiveness can be inconsistent\",\n    \"Reporting capabilities may require customization for specific needs\"\n  ],\n  \"overall_experience\": \"The CEO likely found Paylocity to be a robust solution for managing complex HR, payroll, and compliance needs across their multiple businesses. The platform's comprehensive functionality was a significant advantage, allowing for centralized oversight. While the extensive features offered great depth, there was likely an initial learning curve and occasional frustrations with customer support response times.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Consolidated HR, payroll, and compliance across multiple business entities",
+      "Comprehensive feature set for managing diverse employee needs",
+      "Scalable system that adapts to company growth"
+    ],
+    "cons": [
+      "Initial learning curve for administrators due to extensive features",
+      "Customer support responsiveness can be inconsistent",
+      "Reporting capabilities may require customization for specific needs"
+    ],
+    "overall_experience": "The CEO likely found Paylocity to be a robust solution for managing complex HR, payroll, and compliance needs across their multiple businesses. The platform's comprehensive functionality was a significant advantage, allowing for centralized oversight. While the extensive features offered great depth, there was likely an initial learning curve and occasional frustrations with customer support response times."
+  },
+  "ts": "2026-10-18T05:25:53.465152+00:00"
+}

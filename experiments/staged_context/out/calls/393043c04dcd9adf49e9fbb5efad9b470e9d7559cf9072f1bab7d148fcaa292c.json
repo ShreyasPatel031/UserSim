@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "393043c04dcd9adf49e9fbb5efad9b470e9d7559cf9072f1bab7d148fcaa292c",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 374,
+  "output_tokens": 986,
+  "cost_usd": 0.0025771999999999995,
+  "elapsed_s": 6.28,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Effective for managing client relationships and accounts\",\n    \"Streamlined sales pipeline visibility for the team\",\n    \"Intuitive interface for daily sales tasks\"\n  ],\n  \"cons\": [\n    \"Initial setup might have required some effort\",\n    \"Integrations with specific niche tools could be improved\",\n    \"Reporting features might lack advanced customization options\"\n  ],\n  \"overall_experience\": \"This sales professional, operating within a small IT services company, likely found Freshsales to be a highly effective tool for managing their client base and account teams. They probably appreciated its core functionality and ease of use for daily tasks, contributing to a very positive overall impression. While generally satisfied, they may have encountered minor limitations in advanced reporting or specific third-party integrations.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Effective for managing client relationships and accounts",
+      "Streamlined sales pipeline visibility for the team",
+      "Intuitive interface for daily sales tasks"
+    ],
+    "cons": [
+      "Initial setup might have required some effort",
+      "Integrations with specific niche tools could be improved",
+      "Reporting features might lack advanced customization options"
+    ],
+    "overall_experience": "This sales professional, operating within a small IT services company, likely found Freshsales to be a highly effective tool for managing their client base and account teams. They probably appreciated its core functionality and ease of use for daily tasks, contributing to a very positive overall impression. While generally satisfied, they may have encountered minor limitations in advanced reporting or specific third-party integrations."
+  },
+  "ts": "2026-10-18T05:26:10.914564+00:00"
+}

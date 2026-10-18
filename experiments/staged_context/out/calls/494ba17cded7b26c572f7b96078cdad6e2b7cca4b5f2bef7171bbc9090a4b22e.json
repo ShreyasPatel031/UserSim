@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "494ba17cded7b26c572f7b96078cdad6e2b7cca4b5f2bef7171bbc9090a4b22e",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1953,
+  "output_tokens": 1043,
+  "cost_usd": 0.0031934000000000003,
+  "elapsed_s": 8.77,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Streamlined expense submission and tracking for sales activities.\",\n    \"Centralized system for managing reports across the enterprise.\",\n    \"Helped with categorizing expenses accurately.\"\n  ],\n  \"cons\": [\n    \"The user interface felt somewhat outdated and clunky.\",\n    \"Initial setup and understanding specific company policies within the system could be time-consuming.\",\n    \"Reporting features were not as intuitive or flexible as desired.\"\n  ],\n  \"overall_experience\": \"This Sales Executive likely found SAP Concur to be a functional tool for managing and categorizing expense reports, appreciating its ability to centralize and streamline a necessary business process. While it met the core requirements for expense management, they probably encountered some frustrations with its user interface and the complexity of its reporting capabilities. The overall sentiment would be that it gets the job done, but with room for improvement in user experience.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Streamlined expense submission and tracking for sales activities.",
+      "Centralized system for managing reports across the enterprise.",
+      "Helped with categorizing expenses accurately."
+    ],
+    "cons": [
+      "The user interface felt somewhat outdated and clunky.",
+      "Initial setup and understanding specific company policies within the system could be time-consuming.",
+      "Reporting features were not as intuitive or flexible as desired."
+    ],
+    "overall_experience": "This Sales Executive likely found SAP Concur to be a functional tool for managing and categorizing expense reports, appreciating its ability to centralize and streamline a necessary business process. While it met the core requirements for expense management, they probably encountered some frustrations with its user interface and the complexity of its reporting capabilities. The overall sentiment would be that it gets the job done, but with room for improvement in user experience."
+  },
+  "ts": "2026-10-18T05:25:57.846815+00:00"
+}

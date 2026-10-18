@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f01f6b854a99aedb253f35fb615664da94817d7c642cc9c710413f5faecb458f",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1805,
+  "output_tokens": 1074,
+  "cost_usd": 0.0032265,
+  "elapsed_s": 6.64,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Easy to set up and launch cold email campaigns quickly\",\n    \"Effective for running email sequences at scale\",\n    \"Reliable delivery and good tracking of campaign performance\"\n  ],\n  \"cons\": [\n    \"Pricing might be a concern for a small business user scaling up\",\n    \"Occasional UI glitches or slow loading speeds can be frustrating\",\n    \"Some difficulty in getting timely or helpful customer support for complex issues\"\n  ],\n  \"overall_experience\": \"This BDR likely found Reply to be a highly effective tool for their primary task of running cold email campaigns at scale. They appreciated its ease of use for setting up and launching sequences, along with its reliability in execution. However, they may have found the pricing to be a bit steep for a small business, and experienced occasional performance issues or slow customer support responses.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 7,
+    "pros": [
+      "Easy to set up and launch cold email campaigns quickly",
+      "Effective for running email sequences at scale",
+      "Reliable delivery and good tracking of campaign performance"
+    ],
+    "cons": [
+      "Pricing might be a concern for a small business user scaling up",
+      "Occasional UI glitches or slow loading speeds can be frustrating",
+      "Some difficulty in getting timely or helpful customer support for complex issues"
+    ],
+    "overall_experience": "This BDR likely found Reply to be a highly effective tool for their primary task of running cold email campaigns at scale. They appreciated its ease of use for setting up and launching sequences, along with its reliability in execution. However, they may have found the pricing to be a bit steep for a small business, and experienced occasional performance issues or slow customer support responses."
+  },
+  "ts": "2026-10-18T05:25:03.007068+00:00"
+}

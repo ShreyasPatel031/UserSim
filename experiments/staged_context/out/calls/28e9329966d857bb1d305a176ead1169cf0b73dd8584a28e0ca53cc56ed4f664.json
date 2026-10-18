@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "28e9329966d857bb1d305a176ead1169cf0b73dd8584a28e0ca53cc56ed4f664",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2251,
+  "output_tokens": 986,
+  "cost_usd": 0.0031402999999999995,
+  "elapsed_s": 7.66,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effective for tracking goods arrival times with clear visibility.\",\n    \"Customizable to set up specific workflows for deliveries.\",\n    \"Good for collaboration and keeping team members updated.\"\n  ],\n  \"cons\": [\n    \"Initial setup can have a learning curve for new users.\",\n    \"Interface might feel less intuitive compared to simpler tools.\",\n    \"Advanced reporting features could be more robust.\"\n  ],\n  \"overall_experience\": \"The account manager found Smartsheet to be a capable tool for tracking goods arrival times, appreciating its ability to organize and visualize delivery schedules. While effective for the core task, the initial configuration required some effort. Overall, it provided a solid platform for managing logistics within their role.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Effective for tracking goods arrival times with clear visibility.",
+      "Customizable to set up specific workflows for deliveries.",
+      "Good for collaboration and keeping team members updated."
+    ],
+    "cons": [
+      "Initial setup can have a learning curve for new users.",
+      "Interface might feel less intuitive compared to simpler tools.",
+      "Advanced reporting features could be more robust."
+    ],
+    "overall_experience": "The account manager found Smartsheet to be a capable tool for tracking goods arrival times, appreciating its ability to organize and visualize delivery schedules. While effective for the core task, the initial configuration required some effort. Overall, it provided a solid platform for managing logistics within their role."
+  },
+  "ts": "2026-10-18T05:26:47.645350+00:00"
+}

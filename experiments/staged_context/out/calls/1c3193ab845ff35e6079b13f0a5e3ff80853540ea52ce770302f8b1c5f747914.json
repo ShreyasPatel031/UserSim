@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1c3193ab845ff35e6079b13f0a5e3ff80853540ea52ce770302f8b1c5f747914",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1591,
+  "output_tokens": 1063,
+  "cost_usd": 0.0031347999999999997,
+  "elapsed_s": 6.73,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Robust security and encryption for sensitive credentials\",\n    \"Seamless integration with enterprise tools and workflows\",\n    \"Efficient team management of shared logins\"\n  ],\n  \"cons\": [\n    \"Initial setup and integration might require significant effort\",\n    \"Advanced features or customization could have a learning curve for administrators\",\n    \"Value for money might be questioned if not fully utilizing all enterprise features\"\n  ],\n  \"overall_experience\": \"This manager likely found 1Password to be a secure and functional solution for managing login credentials across their enterprise, appreciating its integration capabilities and ease of use for their team. However, they may have faced some challenges during the initial deployment and configuration, or felt that the cost was high relative to their specific usage of advanced features, similar to their experiences with other enterprise-level tools.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Robust security and encryption for sensitive credentials",
+      "Seamless integration with enterprise tools and workflows",
+      "Efficient team management of shared logins"
+    ],
+    "cons": [
+      "Initial setup and integration might require significant effort",
+      "Advanced features or customization could have a learning curve for administrators",
+      "Value for money might be questioned if not fully utilizing all enterprise features"
+    ],
+    "overall_experience": "This manager likely found 1Password to be a secure and functional solution for managing login credentials across their enterprise, appreciating its integration capabilities and ease of use for their team. However, they may have faced some challenges during the initial deployment and configuration, or felt that the cost was high relative to their specific usage of advanced features, similar to their experiences with other enterprise-level tools."
+  },
+  "ts": "2026-10-18T05:25:24.784394+00:00"
+}

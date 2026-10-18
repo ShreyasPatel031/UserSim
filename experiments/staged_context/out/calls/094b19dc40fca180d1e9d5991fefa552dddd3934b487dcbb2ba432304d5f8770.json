@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "094b19dc40fca180d1e9d5991fefa552dddd3934b487dcbb2ba432304d5f8770",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 266,
+  "output_tokens": 993,
+  "cost_usd": 0.0025623,
+  "elapsed_s": 24.23,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Secure storage for various item types\",\n    \"Efficient autofill and password generation\",\n    \"Cross-platform sync for developer workflow\"\n  ],\n  \"cons\": [\n    \"Occasional browser extension glitches\",\n    \"Might desire deeper CLI or API integrations\",\n    \"Initial setup and migration could be time-consuming\"\n  ],\n  \"overall_experience\": \"This developer likely found 1Password to be a highly effective tool for managing sensitive information, appreciating its robust security and core features. The seamless autofill and secure note-keeping would have been particularly valuable for their technical workflow. While generally pleased, they might have noted minor frustrations with browser extension inconsistencies or wished for more advanced developer-centric integrations.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Secure storage for various item types",
+      "Efficient autofill and password generation",
+      "Cross-platform sync for developer workflow"
+    ],
+    "cons": [
+      "Occasional browser extension glitches",
+      "Might desire deeper CLI or API integrations",
+      "Initial setup and migration could be time-consuming"
+    ],
+    "overall_experience": "This developer likely found 1Password to be a highly effective tool for managing sensitive information, appreciating its robust security and core features. The seamless autofill and secure note-keeping would have been particularly valuable for their technical workflow. While generally pleased, they might have noted minor frustrations with browser extension inconsistencies or wished for more advanced developer-centric integrations."
+  },
+  "ts": "2026-10-18T05:24:54.900172+00:00"
+}

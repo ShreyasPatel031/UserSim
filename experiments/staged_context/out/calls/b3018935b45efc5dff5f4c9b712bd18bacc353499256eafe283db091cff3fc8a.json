@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b3018935b45efc5dff5f4c9b712bd18bacc353499256eafe283db091cff3fc8a",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2030,
+  "output_tokens": 999,
+  "cost_usd": 0.0031065000000000003,
+  "elapsed_s": 5.09,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Intuitive and easy-to-use interface for tracking hours.\",\n    \"Reliable system for recording weekly work time.\",\n    \"Straightforward navigation to find essential information.\"\n  ],\n  \"cons\": [\n    \"Support could be more responsive for specific issues.\",\n    \"Potentially limited customization options for time tracking details.\",\n    \"Might find the cost slightly high compared to basic needs.\"\n  ],\n  \"overall_experience\": \"This reviewer likely experienced BambooHR as a highly user-friendly and effective tool for their primary task of tracking weekly hours. The platform's intuitive design made it easy to navigate and complete their responsibilities. While generally satisfied, they might have encountered minor frustrations with customer support responsiveness or perceived value for money.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Intuitive and easy-to-use interface for tracking hours.",
+      "Reliable system for recording weekly work time.",
+      "Straightforward navigation to find essential information."
+    ],
+    "cons": [
+      "Support could be more responsive for specific issues.",
+      "Potentially limited customization options for time tracking details.",
+      "Might find the cost slightly high compared to basic needs."
+    ],
+    "overall_experience": "This reviewer likely experienced BambooHR as a highly user-friendly and effective tool for their primary task of tracking weekly hours. The platform's intuitive design made it easy to navigate and complete their responsibilities. While generally satisfied, they might have encountered minor frustrations with customer support responsiveness or perceived value for money."
+  },
+  "ts": "2026-10-18T05:26:06.619938+00:00"
+}

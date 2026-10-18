@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ac6fac4103d2042e2911bc6b495d1ba8499c95c5805b3701aeac476fab14fdaa",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2013,
+  "output_tokens": 966,
+  "cost_usd": 0.0030189,
+  "elapsed_s": 5.75,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 5,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Seamless integration with the Microsoft 365 ecosystem.\",\n    \"Centralized platform for chat, video calls, and file sharing.\",\n    \"Effective for large-scale team collaboration and project management.\"\n  ],\n  \"cons\": [\n    \"Can be resource-intensive, impacting device performance.\",\n    \"Notification overload from multiple channels and conversations.\",\n    \"Occasional complexity in managing external guest access or permissions.\"\n  ],\n  \"overall_experience\": \"This Associate Consultant likely found Microsoft Teams to be a highly effective and integrated solution for enterprise-level communication and collaboration. The platform's comprehensive features and deep integration with other Microsoft products were significant advantages. However, they may have experienced some frustrations related to performance demands and managing the flow of information.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 5,
+    "recommendation_score": 9,
+    "pros": [
+      "Seamless integration with the Microsoft 365 ecosystem.",
+      "Centralized platform for chat, video calls, and file sharing.",
+      "Effective for large-scale team collaboration and project management."
+    ],
+    "cons": [
+      "Can be resource-intensive, impacting device performance.",
+      "Notification overload from multiple channels and conversations.",
+      "Occasional complexity in managing external guest access or permissions."
+    ],
+    "overall_experience": "This Associate Consultant likely found Microsoft Teams to be a highly effective and integrated solution for enterprise-level communication and collaboration. The platform's comprehensive features and deep integration with other Microsoft products were significant advantages. However, they may have experienced some frustrations related to performance demands and managing the flow of information."
+  },
+  "ts": "2026-10-18T05:26:03.494413+00:00"
+}

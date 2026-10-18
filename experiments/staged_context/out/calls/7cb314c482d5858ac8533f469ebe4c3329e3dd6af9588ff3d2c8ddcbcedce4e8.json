@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7cb314c482d5858ac8533f469ebe4c3329e3dd6af9588ff3d2c8ddcbcedce4e8",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 833,
+  "output_tokens": 1009,
+  "cost_usd": 0.0027723999999999995,
+  "elapsed_s": 6.72,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Comprehensive lead tracking and management\",\n    \"Streamlined email composition tools\",\n    \"Effective client engagement monitoring\"\n  ],\n  \"cons\": [\n    \"Perceived high cost for a small business\",\n    \"Learning curve for some advanced features\",\n    \"Customer support could be more responsive\"\n  ],\n  \"overall_experience\": \"This VP of Payroll likely found HubSpot Marketing Hub highly effective for managing core marketing tasks like lead tracking, email composition, and client engagement within their small business. While they appreciated its robust functionality and ease of use, they may have found the pricing to be a significant consideration and wished for more readily available customer support.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Comprehensive lead tracking and management",
+      "Streamlined email composition tools",
+      "Effective client engagement monitoring"
+    ],
+    "cons": [
+      "Perceived high cost for a small business",
+      "Learning curve for some advanced features",
+      "Customer support could be more responsive"
+    ],
+    "overall_experience": "This VP of Payroll likely found HubSpot Marketing Hub highly effective for managing core marketing tasks like lead tracking, email composition, and client engagement within their small business. While they appreciated its robust functionality and ease of use, they may have found the pricing to be a significant consideration and wished for more readily available customer support."
+  },
+  "ts": "2026-10-18T05:25:58.799788+00:00"
+}

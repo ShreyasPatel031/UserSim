@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ed9bb286beceb93db1fe4f0546de651cdf27cd86731da6a0159cb94417ae86f4",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 255,
+  "output_tokens": 997,
+  "cost_usd": 0.002569,
+  "elapsed_s": 6.45,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 2,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Broad customer acceptance and market reach\",\n    \"Established and reliable payment processing infrastructure\",\n    \"Comprehensive features for managing financial transactions\"\n  ],\n  \"cons\": [\n    \"API documentation and integration process could be more streamlined for developers\",\n    \"Transaction fees might be less competitive for enterprise-level volumes\",\n    \"Technical customer support for complex issues could be more responsive\"\n  ],\n  \"overall_experience\": \"This developer likely found PayPal Payments to be a functional and widely accepted solution for processing payments and managing financial transactions within their enterprise. However, they may have encountered some friction with the developer experience, particularly regarding API integration and the responsiveness of technical support. The cost-effectiveness for high-volume enterprise use could also be a point of consideration.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 2,
+    "recommendation_score": 6,
+    "pros": [
+      "Broad customer acceptance and market reach",
+      "Established and reliable payment processing infrastructure",
+      "Comprehensive features for managing financial transactions"
+    ],
+    "cons": [
+      "API documentation and integration process could be more streamlined for developers",
+      "Transaction fees might be less competitive for enterprise-level volumes",
+      "Technical customer support for complex issues could be more responsive"
+    ],
+    "overall_experience": "This developer likely found PayPal Payments to be a functional and widely accepted solution for processing payments and managing financial transactions within their enterprise. However, they may have encountered some friction with the developer experience, particularly regarding API integration and the responsiveness of technical support. The cost-effectiveness for high-volume enterprise use could also be a point of consideration."
+  },
+  "ts": "2026-10-18T05:24:59.276591+00:00"
+}

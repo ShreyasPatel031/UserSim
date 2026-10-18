@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4076b41077cbad2cc1fa32ad70f3e113e7755fe47015004f4dd43dac4cdafa12",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 375,
+  "output_tokens": 1023,
+  "cost_usd": 0.00267,
+  "elapsed_s": 5.92,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Integrated communication and collaboration features\",\n    \"Seamless conferencing capabilities\",\n    \"Strong integration with Microsoft 365 ecosystem\"\n  ],\n  \"cons\": [\n    \"Can be resource-intensive on older hardware\",\n    \"Occasional notification overload for users\",\n    \"Initial learning curve for some advanced features\"\n  ],\n  \"overall_experience\": \"This system analyst likely found Microsoft Teams to be a highly effective platform for establishing company-wide communication and enabling conferencing. Its robust feature set and integration with other Microsoft products would have been particularly valuable. While generally positive, they may have noted minor performance or user adoption challenges.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Integrated communication and collaboration features",
+      "Seamless conferencing capabilities",
+      "Strong integration with Microsoft 365 ecosystem"
+    ],
+    "cons": [
+      "Can be resource-intensive on older hardware",
+      "Occasional notification overload for users",
+      "Initial learning curve for some advanced features"
+    ],
+    "overall_experience": "This system analyst likely found Microsoft Teams to be a highly effective platform for establishing company-wide communication and enabling conferencing. Its robust feature set and integration with other Microsoft products would have been particularly valuable. While generally positive, they may have noted minor performance or user adoption challenges."
+  },
+  "ts": "2026-10-18T05:25:35.711012+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e00248df5ae76091835fd99bf750c623641e486c44fe648aca69ced6965b9473",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1461,
+  "output_tokens": 953,
+  "cost_usd": 0.0028208,
+  "elapsed_s": 4.87,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Efficient automation of travel and expense workflows\",\n    \"Centralized data management for financial processes\",\n    \"Seamless synchronization capabilities for various data types\"\n  ],\n  \"cons\": [\n    \"Potential for a steep learning curve during initial setup\",\n    \"Challenges with reporting flexibility and customization\",\n    \"Integration complexities with existing enterprise systems\"\n  ],\n  \"overall_experience\": \"This developer likely found SAP Concur to be a robust solution for automating and synchronizing travel, expense, and invoice data within their enterprise environment. The core functionality for streamlining financial processes was appreciated, helping to centralize data and reduce manual effort. However, the reviewer probably encountered difficulties with the platform's learning curve, limited reporting options, and the complexity of integrating it with other critical business systems.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Efficient automation of travel and expense workflows",
+      "Centralized data management for financial processes",
+      "Seamless synchronization capabilities for various data types"
+    ],
+    "cons": [
+      "Potential for a steep learning curve during initial setup",
+      "Challenges with reporting flexibility and customization",
+      "Integration complexities with existing enterprise systems"
+    ],
+    "overall_experience": "This developer likely found SAP Concur to be a robust solution for automating and synchronizing travel, expense, and invoice data within their enterprise environment. The core functionality for streamlining financial processes was appreciated, helping to centralize data and reduce manual effort. However, the reviewer probably encountered difficulties with the platform's learning curve, limited reporting options, and the complexity of integrating it with other critical business systems."
+  },
+  "ts": "2026-10-18T05:25:31.174281+00:00"
+}

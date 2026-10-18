@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2eabcd32654252889001a931d6593552b0f8a12c95680d4fa5b6b67eb5547a17",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 363,
+  "output_tokens": 1032,
+  "cost_usd": 0.0026888999999999997,
+  "elapsed_s": 6.35,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Comprehensive content library for diverse compliance topics\",\n    \"Effective phishing simulations to assess employee risk\",\n    \"Robust reporting capabilities for audit and tracking\"\n  ],\n  \"cons\": [\n    \"Initial setup and customization can be time-consuming\",\n    \"Pricing structure might be perceived as high for smaller mid-market budgets\",\n    \"Some training modules could be more engaging for all employee demographics\"\n  ],\n  \"overall_experience\": \"This Compliance Officer likely found KnowBe4 to be a highly effective tool for meeting their security awareness training obligations. They appreciated its extensive content and strong reporting features, which are crucial for demonstrating compliance. While the initial configuration might have presented a slight challenge, the overall functionality and impact on employee awareness were generally positive.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Comprehensive content library for diverse compliance topics",
+      "Effective phishing simulations to assess employee risk",
+      "Robust reporting capabilities for audit and tracking"
+    ],
+    "cons": [
+      "Initial setup and customization can be time-consuming",
+      "Pricing structure might be perceived as high for smaller mid-market budgets",
+      "Some training modules could be more engaging for all employee demographics"
+    ],
+    "overall_experience": "This Compliance Officer likely found KnowBe4 to be a highly effective tool for meeting their security awareness training obligations. They appreciated its extensive content and strong reporting features, which are crucial for demonstrating compliance. While the initial configuration might have presented a slight challenge, the overall functionality and impact on employee awareness were generally positive."
+  },
+  "ts": "2026-10-18T05:25:20.146276+00:00"
+}

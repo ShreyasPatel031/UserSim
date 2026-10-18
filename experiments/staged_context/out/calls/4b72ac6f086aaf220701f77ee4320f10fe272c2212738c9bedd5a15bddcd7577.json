@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4b72ac6f086aaf220701f77ee4320f10fe272c2212738c9bedd5a15bddcd7577",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1715,
+  "output_tokens": 1079,
+  "cost_usd": 0.0032120000000000004,
+  "elapsed_s": 6.43,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Robust automation capabilities and advanced segmentation for targeted marketing.\",\n    \"Strong integration options, allowing for a connected marketing ecosystem.\",\n    \"Improved efficiency by consolidating various marketing tasks into one platform.\"\n  ],\n  \"cons\": [\n    \"The pricing model can become expensive as usage scales, impacting value for money.\",\n    \"Steep learning curve for fully leveraging all advanced features and configurations.\",\n    \"Occasional performance issues or a desire for more granular customization options.\"\n  ],\n  \"overall_experience\": \"This System Engineer likely found Klaviyo to be a powerful and feature-rich platform, appreciating its robust automation and integration capabilities for managing complex marketing activities. While the platform significantly improved efficiency by centralizing tasks, the cost at scale and the initial learning curve to master its advanced functionalities were notable drawbacks. Despite these challenges, its overall functionality and ability to meet technical marketing needs led to a generally positive experience.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Robust automation capabilities and advanced segmentation for targeted marketing.",
+      "Strong integration options, allowing for a connected marketing ecosystem.",
+      "Improved efficiency by consolidating various marketing tasks into one platform."
+    ],
+    "cons": [
+      "The pricing model can become expensive as usage scales, impacting value for money.",
+      "Steep learning curve for fully leveraging all advanced features and configurations.",
+      "Occasional performance issues or a desire for more granular customization options."
+    ],
+    "overall_experience": "This System Engineer likely found Klaviyo to be a powerful and feature-rich platform, appreciating its robust automation and integration capabilities for managing complex marketing activities. While the platform significantly improved efficiency by centralizing tasks, the cost at scale and the initial learning curve to master its advanced functionalities were notable drawbacks. Despite these challenges, its overall functionality and ability to meet technical marketing needs led to a generally positive experience."
+  },
+  "ts": "2026-10-18T05:26:39.556253+00:00"
+}

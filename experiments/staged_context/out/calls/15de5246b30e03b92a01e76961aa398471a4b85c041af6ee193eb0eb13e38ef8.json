@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "15de5246b30e03b92a01e76961aa398471a4b85c041af6ee193eb0eb13e38ef8",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 828,
+  "output_tokens": 1027,
+  "cost_usd": 0.0028158999999999997,
+  "elapsed_s": 5.78,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Simple and intuitive interface for tracking weekly hours\",\n    \"Easy access to personal time data through self-service features\",\n    \"Mobile accessibility for logging hours on the go\"\n  ],\n  \"cons\": [\n    \"Reporting features for personal hours might be somewhat basic\",\n    \"Occasional minor glitches or loading delays when accessing timecards\",\n    \"Lack of advanced customization for time tracking rules or categories\"\n  ],\n  \"overall_experience\": \"This sales professional likely found BambooHR to be a highly user-friendly and functional tool for their primary task of tracking weekly hours. The self-service capabilities and ease of logging time were probably significant advantages. While generally positive, they may have desired more robust reporting or customization options for time tracking, and found the value for money and customer support to be good but not exceptional.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Simple and intuitive interface for tracking weekly hours",
+      "Easy access to personal time data through self-service features",
+      "Mobile accessibility for logging hours on the go"
+    ],
+    "cons": [
+      "Reporting features for personal hours might be somewhat basic",
+      "Occasional minor glitches or loading delays when accessing timecards",
+      "Lack of advanced customization for time tracking rules or categories"
+    ],
+    "overall_experience": "This sales professional likely found BambooHR to be a highly user-friendly and functional tool for their primary task of tracking weekly hours. The self-service capabilities and ease of logging time were probably significant advantages. While generally positive, they may have desired more robust reporting or customization options for time tracking, and found the value for money and customer support to be good but not exceptional."
+  },
+  "ts": "2026-10-18T05:26:07.371558+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "54a8672fc55271da233757e45b66b14343bf9240671f9d9d6a374d0af6f076b1",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 351,
+  "output_tokens": 983,
+  "cost_usd": 0.0025627999999999996,
+  "elapsed_s": 5.98,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Comprehensive tools for email marketing campaigns\",\n    \"Centralized platform for organizing marketing activities\",\n    \"User-friendly interface for day-to-day tasks\"\n  ],\n  \"cons\": [\n    \"Advanced features and customization can be complex for enterprise needs\",\n    \"Pricing can become substantial with scale and additional features\",\n    \"Integration with some existing enterprise systems might require effort\"\n  ],\n  \"overall_experience\": \"This Digital Marketing Manager likely found HubSpot Marketing Hub to be a robust and generally effective solution for managing email communications and organizing various marketing activities within their enterprise. The platform's integrated nature and user-friendly interface for core tasks were probably appreciated, streamlining their daily workflow. However, they might have encountered limitations or complexities when dealing with highly specific enterprise requirements or found the cost to scale with advanced features to be a significant consideration.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Comprehensive tools for email marketing campaigns",
+      "Centralized platform for organizing marketing activities",
+      "User-friendly interface for day-to-day tasks"
+    ],
+    "cons": [
+      "Advanced features and customization can be complex for enterprise needs",
+      "Pricing can become substantial with scale and additional features",
+      "Integration with some existing enterprise systems might require effort"
+    ],
+    "overall_experience": "This Digital Marketing Manager likely found HubSpot Marketing Hub to be a robust and generally effective solution for managing email communications and organizing various marketing activities within their enterprise. The platform's integrated nature and user-friendly interface for core tasks were probably appreciated, streamlining their daily workflow. However, they might have encountered limitations or complexities when dealing with highly specific enterprise requirements or found the cost to scale with advanced features to be a significant consideration."
+  },
+  "ts": "2026-10-18T05:25:35.130946+00:00"
+}

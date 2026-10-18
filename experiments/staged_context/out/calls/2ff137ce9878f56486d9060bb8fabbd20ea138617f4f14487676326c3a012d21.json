@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2ff137ce9878f56486d9060bb8fabbd20ea138617f4f14487676326c3a012d21",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1293,
+  "output_tokens": 1026,
+  "cost_usd": 0.0029529,
+  "elapsed_s": 8.15,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effective for managing sales pipeline and concluding purchases\",\n    \"Good reporting features for tracking progress\",\n    \"Integrates well with other Zoho products\"\n  ],\n  \"cons\": [\n    \"Initial learning curve for an assistant role\",\n    \"Customization can sometimes require technical assistance\",\n    \"User interface can feel cluttered at times\"\n  ],\n  \"overall_experience\": \"This assistant in a computer security firm found Zoho CRM to be a capable tool for managing purchases and sales operations. They appreciated its core CRM functionalities and reporting, which aided in tracking their tasks effectively. While generally positive, the initial complexity and occasional need for support with customization presented some minor frustrations.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Effective for managing sales pipeline and concluding purchases",
+      "Good reporting features for tracking progress",
+      "Integrates well with other Zoho products"
+    ],
+    "cons": [
+      "Initial learning curve for an assistant role",
+      "Customization can sometimes require technical assistance",
+      "User interface can feel cluttered at times"
+    ],
+    "overall_experience": "This assistant in a computer security firm found Zoho CRM to be a capable tool for managing purchases and sales operations. They appreciated its core CRM functionalities and reporting, which aided in tracking their tasks effectively. While generally positive, the initial complexity and occasional need for support with customization presented some minor frustrations."
+  },
+  "ts": "2026-10-18T05:26:16.005459+00:00"
+}

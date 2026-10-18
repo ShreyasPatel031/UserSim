@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "94fbb1a9c47c9149581cf1e95c4e2e86d5be5cc3c5087453510be3b67fd1bd27",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 738,
+  "output_tokens": 1076,
+  "cost_usd": 0.0029113999999999998,
+  "elapsed_s": 5.45,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Efficiently identifies and tracks lead sources.\",\n    \"Streamlines lead segmentation for targeted outreach.\",\n    \"Integrates well with sales processes for team collaboration.\"\n  ],\n  \"cons\": [\n    \"Could be more expensive for small businesses.\",\n    \"Initial setup for complex lead sorting might require a learning curve.\",\n    \"Some advanced features might be overkill for basic lead management needs.\"\n  ],\n  \"overall_experience\": \"As a Director of Sales at a small business, this individual likely found HubSpot Marketing Hub highly effective for their core task of isolating and sorting lead sources. The platform's robust functionality and ease of use would have significantly streamlined their lead management and team outreach efforts, contributing to a positive overall experience despite potential cost considerations.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Efficiently identifies and tracks lead sources.",
+      "Streamlines lead segmentation for targeted outreach.",
+      "Integrates well with sales processes for team collaboration."
+    ],
+    "cons": [
+      "Could be more expensive for small businesses.",
+      "Initial setup for complex lead sorting might require a learning curve.",
+      "Some advanced features might be overkill for basic lead management needs."
+    ],
+    "overall_experience": "As a Director of Sales at a small business, this individual likely found HubSpot Marketing Hub highly effective for their core task of isolating and sorting lead sources. The platform's robust functionality and ease of use would have significantly streamlined their lead management and team outreach efforts, contributing to a positive overall experience despite potential cost considerations."
+  },
+  "ts": "2026-10-18T05:26:00.667427+00:00"
+}

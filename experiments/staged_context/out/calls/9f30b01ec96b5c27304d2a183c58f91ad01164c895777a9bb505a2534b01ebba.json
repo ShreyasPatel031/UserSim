@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9f30b01ec96b5c27304d2a183c58f91ad01164c895777a9bb505a2534b01ebba",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 267,
+  "output_tokens": 976,
+  "cost_usd": 0.0025201,
+  "elapsed_s": 6.5,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 2,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Centralizes all travel expenses and receipts effectively.\",\n    \"Streamlines the approval process for reimbursements.\",\n    \"Integrates travel bookings with expense reporting.\"\n  ],\n  \"cons\": [\n    \"User interface can be clunky and unintuitive, requiring a learning curve.\",\n    \"Receipt scanning and categorization often require manual adjustments.\",\n    \"The system can feel overly complex for managing individual contractor expenses.\"\n  ],\n  \"overall_experience\": \"The contractor likely found SAP Concur to be a powerful tool for centralizing travel expenses, receipts, and bookings as required by their client. While its robust functionality helped streamline the approval process, the reviewer probably experienced frustration with the system's ease of use, citing a clunky interface and a steep learning curve. Despite these usability challenges, the product ultimately helped them manage their task efficiently.\"\n}",
+  "json": {
+    "ease_of_use_rating": 2,
+    "functionality_rating": 4,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 6,
+    "pros": [
+      "Centralizes all travel expenses and receipts effectively.",
+      "Streamlines the approval process for reimbursements.",
+      "Integrates travel bookings with expense reporting."
+    ],
+    "cons": [
+      "User interface can be clunky and unintuitive, requiring a learning curve.",
+      "Receipt scanning and categorization often require manual adjustments.",
+      "The system can feel overly complex for managing individual contractor expenses."
+    ],
+    "overall_experience": "The contractor likely found SAP Concur to be a powerful tool for centralizing travel expenses, receipts, and bookings as required by their client. While its robust functionality helped streamline the approval process, the reviewer probably experienced frustration with the system's ease of use, citing a clunky interface and a steep learning curve. Despite these usability challenges, the product ultimately helped them manage their task efficiently."
+  },
+  "ts": "2026-10-18T05:24:59.761866+00:00"
+}

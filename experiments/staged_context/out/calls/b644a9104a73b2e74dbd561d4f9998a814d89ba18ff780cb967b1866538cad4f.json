@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b644a9104a73b2e74dbd561d4f9998a814d89ba18ff780cb967b1866538cad4f",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2080,
+  "output_tokens": 1149,
+  "cost_usd": 0.0034965,
+  "elapsed_s": 8.51,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Intuitive interface and ease of navigation\",\n    \"Comprehensive set of features for customer service\",\n    \"Efficient for managing tickets and customer interactions\"\n  ],\n  \"cons\": [\n    \"Potential for a learning curve with advanced features\",\n    \"May find pricing to be a concern for self-employed users\",\n    \"Could experience occasional performance slowdowns\"\n  ],\n  \"overall_experience\": \"The web developer likely found Freshdesk to be a capable tool for providing customer service, appreciating its core functionalities and ease of use. However, as a self-employed user on a free trial, they might have encountered some complexity in setup or considered the potential cost for advanced features. Overall, the experience was positive enough to recommend it, despite minor frustrations.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Intuitive interface and ease of navigation",
+      "Comprehensive set of features for customer service",
+      "Efficient for managing tickets and customer interactions"
+    ],
+    "cons": [
+      "Potential for a learning curve with advanced features",
+      "May find pricing to be a concern for self-employed users",
+      "Could experience occasional performance slowdowns"
+    ],
+    "overall_experience": "The web developer likely found Freshdesk to be a capable tool for providing customer service, appreciating its core functionalities and ease of use. However, as a self-employed user on a free trial, they might have encountered some complexity in setup or considered the potential cost for advanced features. Overall, the experience was positive enough to recommend it, despite minor frustrations."
+  },
+  "ts": "2026-10-18T05:26:55.384476+00:00"
+}

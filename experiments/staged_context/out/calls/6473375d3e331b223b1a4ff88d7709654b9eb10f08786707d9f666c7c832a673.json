@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "6473375d3e331b223b1a4ff88d7709654b9eb10f08786707d9f666c7c832a673",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 352,
+  "output_tokens": 1012,
+  "cost_usd": 0.0026356,
+  "elapsed_s": 6.66,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effective in driving employee wellness engagement\",\n    \"Offers valuable reporting to track program participation\",\n    \"Provides good value for the investment in employee benefits\"\n  ],\n  \"cons\": [\n    \"Initial setup or integration with existing systems could be complex\",\n    \"Detailed ROI metrics for health cost savings might be difficult to quantify\",\n    \"Potential for some employees to not fully adopt the platform\"\n  ],\n  \"overall_experience\": \"The Finance Manager likely found Wellable to be a valuable tool for promoting employee wellness within their mid-market company. They appreciated its ability to engage employees and provide useful data, justifying the investment. While generally positive, some administrative aspects or the precise quantification of ROI may have presented minor challenges.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Effective in driving employee wellness engagement",
+      "Offers valuable reporting to track program participation",
+      "Provides good value for the investment in employee benefits"
+    ],
+    "cons": [
+      "Initial setup or integration with existing systems could be complex",
+      "Detailed ROI metrics for health cost savings might be difficult to quantify",
+      "Potential for some employees to not fully adopt the platform"
+    ],
+    "overall_experience": "The Finance Manager likely found Wellable to be a valuable tool for promoting employee wellness within their mid-market company. They appreciated its ability to engage employees and provide useful data, justifying the investment. While generally positive, some administrative aspects or the precise quantification of ROI may have presented minor challenges."
+  },
+  "ts": "2026-10-18T05:25:26.142478+00:00"
+}

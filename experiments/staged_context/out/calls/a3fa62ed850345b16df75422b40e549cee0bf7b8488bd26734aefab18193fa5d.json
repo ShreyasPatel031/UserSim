@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a3fa62ed850345b16df75422b40e549cee0bf7b8488bd26734aefab18193fa5d",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1707,
+  "output_tokens": 1026,
+  "cost_usd": 0.0030771,
+  "elapsed_s": 5.15,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Intuitive UI and easy setup for sales processes\",\n    \"Good feature set for managing sales activities\",\n    \"Effective for tracking interactions and pipeline\"\n  ],\n  \"cons\": [\n    \"Limited customization options compared to alternatives\",\n    \"Potential for a learning curve with advanced features\",\n    \"Customer support might require premium access for quick help\"\n  ],\n  \"overall_experience\": \"This Help Desk Manager likely had a positive experience with Freshsales, finding its interface intuitive and its core sales functionalities effective for a small team. They probably appreciated the ease of initial setup and the ability to manage sales operations efficiently. However, the reviewer may have encountered some frustrations with the depth of customization available and could have experienced slower customer support without a premium plan.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Intuitive UI and easy setup for sales processes",
+      "Good feature set for managing sales activities",
+      "Effective for tracking interactions and pipeline"
+    ],
+    "cons": [
+      "Limited customization options compared to alternatives",
+      "Potential for a learning curve with advanced features",
+      "Customer support might require premium access for quick help"
+    ],
+    "overall_experience": "This Help Desk Manager likely had a positive experience with Freshsales, finding its interface intuitive and its core sales functionalities effective for a small team. They probably appreciated the ease of initial setup and the ability to manage sales operations efficiently. However, the reviewer may have encountered some frustrations with the depth of customization available and could have experienced slower customer support without a premium plan."
+  },
+  "ts": "2026-10-18T05:26:11.070923+00:00"
+}

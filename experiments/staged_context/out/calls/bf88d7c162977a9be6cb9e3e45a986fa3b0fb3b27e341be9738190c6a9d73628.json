@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "bf88d7c162977a9be6cb9e3e45a986fa3b0fb3b27e341be9738190c6a9d73628",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 374,
+  "output_tokens": 1020,
+  "cost_usd": 0.0026622,
+  "elapsed_s": 6.03,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Ability to quickly filter and analyze sales-related data\",\n    \"Interactive dashboards for tracking pipeline and prospect engagement\",\n    \"Consistent and reliable data for sales performance insights\"\n  ],\n  \"cons\": [\n    \"Initial learning curve for navigating complex reports\",\n    \"Reliance on data team for new report creation or significant modifications\",\n    \"Occasional slowness when loading large datasets\"\n  ],\n  \"overall_experience\": \"This Business Development Representative likely found Looker to be a valuable tool for analyzing sales data, appreciating its ability to provide quick and reliable insights into their pipeline and prospect interactions. While they may have faced a slight learning curve initially and relied on their data team for more complex requests, the consistent data and interactive dashboards significantly aided their daily tasks. Their experience was generally positive, aligning with a high overall satisfaction for similar roles and industries.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Ability to quickly filter and analyze sales-related data",
+      "Interactive dashboards for tracking pipeline and prospect engagement",
+      "Consistent and reliable data for sales performance insights"
+    ],
+    "cons": [
+      "Initial learning curve for navigating complex reports",
+      "Reliance on data team for new report creation or significant modifications",
+      "Occasional slowness when loading large datasets"
+    ],
+    "overall_experience": "This Business Development Representative likely found Looker to be a valuable tool for analyzing sales data, appreciating its ability to provide quick and reliable insights into their pipeline and prospect interactions. While they may have faced a slight learning curve initially and relied on their data team for more complex requests, the consistent data and interactive dashboards significantly aided their daily tasks. Their experience was generally positive, aligning with a high overall satisfaction for similar roles and industries."
+  },
+  "ts": "2026-10-18T05:26:18.243070+00:00"
+}

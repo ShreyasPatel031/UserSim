@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "5b819134f0da76970f4aff633e2446d8cc5407448a7aebdabd177dfb18b13a26",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1696,
+  "output_tokens": 1009,
+  "cost_usd": 0.0030313,
+  "elapsed_s": 5.88,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Centralized platform for HR and payroll functions\",\n    \"Streamlined payroll processing and tax compliance\",\n    \"Comprehensive reporting capabilities for HR data\"\n  ],\n  \"cons\": [\n    \"Customer support response times can be inconsistent\",\n    \"Initial setup and customization can be complex\",\n    \"Reporting features may require a learning curve to fully utilize\"\n  ],\n  \"overall_experience\": \"As a Director of Human Resources in a mid-market company, this person likely found Paylocity to be a robust and centralized solution for managing core HR and payroll functions. The platform generally offered good functionality for their needs, although they may have encountered some challenges with customer support responsiveness or the complexity of advanced customization and reporting. Despite these minor frustrations, the system provided a valuable tool for streamlining their HR operations.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Centralized platform for HR and payroll functions",
+      "Streamlined payroll processing and tax compliance",
+      "Comprehensive reporting capabilities for HR data"
+    ],
+    "cons": [
+      "Customer support response times can be inconsistent",
+      "Initial setup and customization can be complex",
+      "Reporting features may require a learning curve to fully utilize"
+    ],
+    "overall_experience": "As a Director of Human Resources in a mid-market company, this person likely found Paylocity to be a robust and centralized solution for managing core HR and payroll functions. The platform generally offered good functionality for their needs, although they may have encountered some challenges with customer support responsiveness or the complexity of advanced customization and reporting. Despite these minor frustrations, the system provided a valuable tool for streamlining their HR operations."
+  },
+  "ts": "2026-10-18T05:25:30.005008+00:00"
+}

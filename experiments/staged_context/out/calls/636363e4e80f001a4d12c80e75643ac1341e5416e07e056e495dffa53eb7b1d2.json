@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "636363e4e80f001a4d12c80e75643ac1341e5416e07e056e495dffa53eb7b1d2",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1955,
+  "output_tokens": 1038,
+  "cost_usd": 0.0031815000000000003,
+  "elapsed_s": 5.37,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Streamlined automation of payroll and tax filings\",\n    \"Unified platform for HR and financial tasks\",\n    \"Comprehensive reporting capabilities for financial oversight\"\n  ],\n  \"cons\": [\n    \"Potential for a steep learning curve due to extensive features\",\n    \"Occasional frustrations with customer support responsiveness\",\n    \"Customization limitations for specific financial workflows\"\n  ],\n  \"overall_experience\": \"As a Chief Financial Officer in a mid-market company, this reviewer likely appreciated Rippling's robust functionality in automating critical financial and HR tasks like payroll, contractor payments, and tax filings. The integrated nature of the platform would have been a significant benefit for efficiency and data consolidation. However, the complexity and potential learning curve for a comprehensive system might have presented initial challenges, and occasional issues with customer support or customization could have been points of frustration for precise financial management.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Streamlined automation of payroll and tax filings",
+      "Unified platform for HR and financial tasks",
+      "Comprehensive reporting capabilities for financial oversight"
+    ],
+    "cons": [
+      "Potential for a steep learning curve due to extensive features",
+      "Occasional frustrations with customer support responsiveness",
+      "Customization limitations for specific financial workflows"
+    ],
+    "overall_experience": "As a Chief Financial Officer in a mid-market company, this reviewer likely appreciated Rippling's robust functionality in automating critical financial and HR tasks like payroll, contractor payments, and tax filings. The integrated nature of the platform would have been a significant benefit for efficiency and data consolidation. However, the complexity and potential learning curve for a comprehensive system might have presented initial challenges, and occasional issues with customer support or customization could have been points of frustration for precise financial management."
+  },
+  "ts": "2026-10-18T05:25:18.373143+00:00"
+}

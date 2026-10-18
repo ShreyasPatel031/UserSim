@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "218d4307841f054771f74b89cadfccf51a2c1013d5b8d2312e0c9d657b9ef36f",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 351,
+  "output_tokens": 1022,
+  "cost_usd": 0.0026603,
+  "elapsed_s": 6.53,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Significantly enhances security for critical login credentials.\",\n    \"Streamlines access to numerous systems, improving efficiency.\",\n    \"Facilitates secure sharing of passwords within the team.\"\n  ],\n  \"cons\": [\n    \"Initial deployment and integration within an enterprise environment can be complex.\",\n    \"Some advanced administrative features might require a learning curve.\",\n    \"Occasional browser extension inconsistencies were noted.\"\n  ],\n  \"overall_experience\": \"The Manager Dashboards and Business Intelligence likely found 1Password to be a highly valuable tool for securing and managing sensitive login credentials across their enterprise. Its robust functionality for individual and team use, particularly secure sharing, significantly improved operational efficiency. While appreciating the core security benefits, they may have encountered some setup complexities inherent in large-scale deployments.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Significantly enhances security for critical login credentials.",
+      "Streamlines access to numerous systems, improving efficiency.",
+      "Facilitates secure sharing of passwords within the team."
+    ],
+    "cons": [
+      "Initial deployment and integration within an enterprise environment can be complex.",
+      "Some advanced administrative features might require a learning curve.",
+      "Occasional browser extension inconsistencies were noted."
+    ],
+    "overall_experience": "The Manager Dashboards and Business Intelligence likely found 1Password to be a highly valuable tool for securing and managing sensitive login credentials across their enterprise. Its robust functionality for individual and team use, particularly secure sharing, significantly improved operational efficiency. While appreciating the core security benefits, they may have encountered some setup complexities inherent in large-scale deployments."
+  },
+  "ts": "2026-10-18T05:25:24.655701+00:00"
+}

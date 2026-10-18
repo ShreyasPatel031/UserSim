@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3961c64b56d8d9c5c7dd286158134ebd6f3e5c5d075bf50f17a914bc8a246789",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 257,
+  "output_tokens": 1027,
+  "cost_usd": 0.0026446,
+  "elapsed_s": 5.58,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Intuitive interface for common HR tasks\",\n    \"Easy self-service for time off and personal data\",\n    \"Streamlined digital onboarding processes\"\n  ],\n  \"cons\": [\n    \"Limited depth in analytics for non-HR roles\",\n    \"Occasional slowness when navigating between sections\",\n    \"Customization options for personal dashboards could be improved\"\n  ],\n  \"overall_experience\": \"This marketing analyst likely found BambooHR to be a highly user-friendly and efficient platform for managing their personal HR-related tasks. The self-service capabilities and clear interface would have been particularly appreciated for handling time off requests or accessing pay stubs. While the core functionality met their needs, they might have desired more advanced reporting or customization options for their specific role.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Intuitive interface for common HR tasks",
+      "Easy self-service for time off and personal data",
+      "Streamlined digital onboarding processes"
+    ],
+    "cons": [
+      "Limited depth in analytics for non-HR roles",
+      "Occasional slowness when navigating between sections",
+      "Customization options for personal dashboards could be improved"
+    ],
+    "overall_experience": "This marketing analyst likely found BambooHR to be a highly user-friendly and efficient platform for managing their personal HR-related tasks. The self-service capabilities and clear interface would have been particularly appreciated for handling time off requests or accessing pay stubs. While the core functionality met their needs, they might have desired more advanced reporting or customization options for their specific role."
+  },
+  "ts": "2026-10-18T05:25:01.290566+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "fb12a98637c270cb2eab9a89d6e22666feed83a92c882fd64ac98aa3f59ec053",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2018,
+  "output_tokens": 1036,
+  "cost_usd": 0.0031954,
+  "elapsed_s": 6.04,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Streamlined payroll and HR administration processes.\",\n    \"Intuitive interface simplifies daily operational tasks.\",\n    \"Consolidated various HR functions into a single platform.\"\n  ],\n  \"cons\": [\n    \"Initial learning curve due to comprehensive features.\",\n    \"Reporting capabilities could be more robust for detailed analysis.\",\n    \"Integration between certain modules occasionally requires manual intervention.\"\n  ],\n  \"overall_experience\": \"This Business Administrator likely found Paylocity to be a highly effective and user-friendly platform for managing HR and payroll within their mid-market company. They appreciated its ability to streamline operations and consolidate various functions, making their administrative tasks more efficient. While generally positive, some frustrations might have arisen from a learning curve and minor limitations in reporting or module integration.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Streamlined payroll and HR administration processes.",
+      "Intuitive interface simplifies daily operational tasks.",
+      "Consolidated various HR functions into a single platform."
+    ],
+    "cons": [
+      "Initial learning curve due to comprehensive features.",
+      "Reporting capabilities could be more robust for detailed analysis.",
+      "Integration between certain modules occasionally requires manual intervention."
+    ],
+    "overall_experience": "This Business Administrator likely found Paylocity to be a highly effective and user-friendly platform for managing HR and payroll within their mid-market company. They appreciated its ability to streamline operations and consolidate various functions, making their administrative tasks more efficient. While generally positive, some frustrations might have arisen from a learning curve and minor limitations in reporting or module integration."
+  },
+  "ts": "2026-10-18T05:25:49.164213+00:00"
+}

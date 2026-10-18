@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8bf8395b3644a79ce653898b334d6b2edfc37ff567f3ce0e4f58f728f101e4a0",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 344,
+  "output_tokens": 953,
+  "cost_usd": 0.0024857,
+  "elapsed_s": 9.15,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Provides clear visibility into commission earnings and progress\",\n    \"Helps track performance against sales quotas effectively\",\n    \"Integrates well with existing sales processes for payout calculations\"\n  ],\n  \"cons\": [\n    \"Interface can be complex and require a learning curve for some features\",\n    \"Occasional discrepancies in data may require manual verification\",\n    \"Reliance on administrators for specific payout rule clarifications can be a bottleneck\"\n  ],\n  \"overall_experience\": \"This Commercial Account Executive likely found Xactly to be a generally effective tool for managing their sales commissions and tracking performance. While the system offered good transparency into earnings and goal progression, they may have encountered some complexities in its interface or occasional data inconsistencies. Overall, it served its primary purpose well for an enterprise sales role.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Provides clear visibility into commission earnings and progress",
+      "Helps track performance against sales quotas effectively",
+      "Integrates well with existing sales processes for payout calculations"
+    ],
+    "cons": [
+      "Interface can be complex and require a learning curve for some features",
+      "Occasional discrepancies in data may require manual verification",
+      "Reliance on administrators for specific payout rule clarifications can be a bottleneck"
+    ],
+    "overall_experience": "This Commercial Account Executive likely found Xactly to be a generally effective tool for managing their sales commissions and tracking performance. While the system offered good transparency into earnings and goal progression, they may have encountered some complexities in its interface or occasional data inconsistencies. Overall, it served its primary purpose well for an enterprise sales role."
+  },
+  "ts": "2026-10-18T05:25:30.840117+00:00"
+}

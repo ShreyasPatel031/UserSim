@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "29820e9e881b0af49668986e19a5d5bc5b000838bc7f1298bad711b0f205a631",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 813,
+  "output_tokens": 1000,
+  "cost_usd": 0.0027439,
+  "elapsed_s": 6.19,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Robust and comprehensive features for expense and travel management\",\n    \"Strong integration capabilities within the SAP ecosystem\",\n    \"Scalability suitable for large enterprise environments\"\n  ],\n  \"cons\": [\n    \"User interface can be complex and less intuitive for general users\",\n    \"Configuration and setup require significant technical expertise\",\n    \"Mobile app functionality is good but desktop experience can feel dated\"\n  ],\n  \"overall_experience\": \"The Solution Architect likely found SAP Concur to be a powerful and feature-rich platform, well-suited for managing complex expense and travel processes within an enterprise. While appreciating its robust functionality and integration potential, they may have noted challenges with its user interface complexity and the demanding nature of its configuration. The overall experience was probably positive due to its comprehensive capabilities, despite some usability hurdles.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Robust and comprehensive features for expense and travel management",
+      "Strong integration capabilities within the SAP ecosystem",
+      "Scalability suitable for large enterprise environments"
+    ],
+    "cons": [
+      "User interface can be complex and less intuitive for general users",
+      "Configuration and setup require significant technical expertise",
+      "Mobile app functionality is good but desktop experience can feel dated"
+    ],
+    "overall_experience": "The Solution Architect likely found SAP Concur to be a powerful and feature-rich platform, well-suited for managing complex expense and travel processes within an enterprise. While appreciating its robust functionality and integration potential, they may have noted challenges with its user interface complexity and the demanding nature of its configuration. The overall experience was probably positive due to its comprehensive capabilities, despite some usability hurdles."
+  },
+  "ts": "2026-10-18T05:25:54.283163+00:00"
+}

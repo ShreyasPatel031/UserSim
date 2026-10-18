@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "657e215512855d5452e7678c38503f4aabfa656eefd487a5db6a5bbd52114f9d",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1614,
+  "output_tokens": 1045,
+  "cost_usd": 0.0030967,
+  "elapsed_s": 9.17,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Highly customizable to fit specific project workflows\",\n    \"Visual dashboards and clear project tracking\",\n    \"AI features assist with task automation and process building\"\n  ],\n  \"cons\": [\n    \"Initial setup and learning curve can be steep for advanced features\",\n    \"Pricing might feel high for a small business as needs grow\",\n    \"Overwhelming number of features can lead to complexity\"\n  ],\n  \"overall_experience\": \"This Design Director likely found monday AI Work Platform to be a powerful and flexible tool for managing diverse projects, timelines, and budgets. The ability to build custom tools and processes would have been highly valued, leveraging its extensive customization options and AI capabilities. While the platform offered robust functionality for their needs, the initial complexity and potential cost for advanced features might have presented some challenges for a small business owner.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Highly customizable to fit specific project workflows",
+      "Visual dashboards and clear project tracking",
+      "AI features assist with task automation and process building"
+    ],
+    "cons": [
+      "Initial setup and learning curve can be steep for advanced features",
+      "Pricing might feel high for a small business as needs grow",
+      "Overwhelming number of features can lead to complexity"
+    ],
+    "overall_experience": "This Design Director likely found monday AI Work Platform to be a powerful and flexible tool for managing diverse projects, timelines, and budgets. The ability to build custom tools and processes would have been highly valued, leveraging its extensive customization options and AI capabilities. While the platform offered robust functionality for their needs, the initial complexity and potential cost for advanced features might have presented some challenges for a small business owner."
+  },
+  "ts": "2026-10-18T05:25:11.919664+00:00"
+}

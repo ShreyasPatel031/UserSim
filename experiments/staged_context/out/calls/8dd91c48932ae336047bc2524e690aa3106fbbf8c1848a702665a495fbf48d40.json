@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8dd91c48932ae336047bc2524e690aa3106fbbf8c1848a702665a495fbf48d40",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 345,
+  "output_tokens": 1071,
+  "cost_usd": 0.0027809999999999996,
+  "elapsed_s": 6.71,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Extremely easy to use, even for non-designers\",\n    \"Abundance of templates and assets for quick design creation\",\n    \"Versatile for various tasks like logos, cards, and basic web page visuals\"\n  ],\n  \"cons\": [\n    \"Limitations in advanced design features compared to professional software\",\n    \"Export options might not always meet specific print or web development needs\",\n    \"Can feel less unique if relying heavily on popular templates\"\n  ],\n  \"overall_experience\": \"This operations manager likely found Canva to be an incredibly valuable tool for their small business, enabling them to efficiently create necessary marketing and branding materials without needing specialized design skills. They appreciated its user-friendly interface and vast template library, which streamlined tasks like designing logos and various cards. While generally very satisfied, they might have noted some functional limitations when trying to achieve highly custom designs or specific web page layouts.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Extremely easy to use, even for non-designers",
+      "Abundance of templates and assets for quick design creation",
+      "Versatile for various tasks like logos, cards, and basic web page visuals"
+    ],
+    "cons": [
+      "Limitations in advanced design features compared to professional software",
+      "Export options might not always meet specific print or web development needs",
+      "Can feel less unique if relying heavily on popular templates"
+    ],
+    "overall_experience": "This operations manager likely found Canva to be an incredibly valuable tool for their small business, enabling them to efficiently create necessary marketing and branding materials without needing specialized design skills. They appreciated its user-friendly interface and vast template library, which streamlined tasks like designing logos and various cards. While generally very satisfied, they might have noted some functional limitations when trying to achieve highly custom designs or specific web page layouts."
+  },
+  "ts": "2026-10-18T05:25:10.956750+00:00"
+}

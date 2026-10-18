@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "99ada4c3654629e965539ff59bbda236f63b1d895659bd5ebd4e1d4397ce814b",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1418,
+  "output_tokens": 1119,
+  "cost_usd": 0.0032229,
+  "elapsed_s": 6.18,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Efficiently manages customer communications from multiple channels in one place.\",\n    \"The core ticketing and communication features are reliable and easy for agents to use.\",\n    \"Good integration capabilities, allowing for a unified customer service platform.\"\n  ],\n  \"cons\": [\n    \"Reporting features may lack depth or customizability for advanced needs.\",\n    \"Automation rule management can become complex as the system scales.\",\n    \"Customer support response times or clarity on complex issues could be improved.\"\n  ],\n  \"overall_experience\": \"This manager has likely found LiveAgent to be a solid solution for their small design company's customer communication needs over the past two years. The platform effectively centralizes multi-channel support, making it generally easy for their team to manage inquiries. While core functionalities are strong, they may have encountered limitations with advanced reporting, complex automation setup, or occasional frustrations with support responsiveness.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Efficiently manages customer communications from multiple channels in one place.",
+      "The core ticketing and communication features are reliable and easy for agents to use.",
+      "Good integration capabilities, allowing for a unified customer service platform."
+    ],
+    "cons": [
+      "Reporting features may lack depth or customizability for advanced needs.",
+      "Automation rule management can become complex as the system scales.",
+      "Customer support response times or clarity on complex issues could be improved."
+    ],
+    "overall_experience": "This manager has likely found LiveAgent to be a solid solution for their small design company's customer communication needs over the past two years. The platform effectively centralizes multi-channel support, making it generally easy for their team to manage inquiries. While core functionalities are strong, they may have encountered limitations with advanced reporting, complex automation setup, or occasional frustrations with support responsiveness."
+  },
+  "ts": "2026-10-18T05:26:27.443240+00:00"
+}

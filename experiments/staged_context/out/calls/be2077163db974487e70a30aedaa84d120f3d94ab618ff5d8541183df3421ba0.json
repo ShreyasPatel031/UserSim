@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "be2077163db974487e70a30aedaa84d120f3d94ab618ff5d8541183df3421ba0",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2103,
+  "output_tokens": 1060,
+  "cost_usd": 0.0032809,
+  "elapsed_s": 8.68,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Consolidated platform for HR and payroll data\",\n    \"Employee self-service features for timecards\",\n    \"Generally intuitive interface for routine tasks\"\n  ],\n  \"cons\": [\n    \"Custom reporting can be complex to set up and extract specific data\",\n    \"Some limitations in advanced customization for payroll monitoring\",\n    \"Occasional slowness or multiple clicks required for certain functions\"\n  ],\n  \"overall_experience\": \"The Club Accountant found Paylocity to be a generally capable system for managing timecards and payroll within a mid-market company. While the platform offered a good overview and employee self-service features, the custom reporting capabilities, crucial for their role, proved to be less straightforward and sometimes limited. This led to a slightly less efficient workflow for detailed monitoring, despite the overall positive aspects of the system's ease of use for standard operations.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Consolidated platform for HR and payroll data",
+      "Employee self-service features for timecards",
+      "Generally intuitive interface for routine tasks"
+    ],
+    "cons": [
+      "Custom reporting can be complex to set up and extract specific data",
+      "Some limitations in advanced customization for payroll monitoring",
+      "Occasional slowness or multiple clicks required for certain functions"
+    ],
+    "overall_experience": "The Club Accountant found Paylocity to be a generally capable system for managing timecards and payroll within a mid-market company. While the platform offered a good overview and employee self-service features, the custom reporting capabilities, crucial for their role, proved to be less straightforward and sometimes limited. This led to a slightly less efficient workflow for detailed monitoring, despite the overall positive aspects of the system's ease of use for standard operations."
+  },
+  "ts": "2026-10-18T05:25:49.789311+00:00"
+}

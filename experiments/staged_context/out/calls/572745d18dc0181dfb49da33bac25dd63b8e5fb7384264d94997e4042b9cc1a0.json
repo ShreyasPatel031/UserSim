@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "572745d18dc0181dfb49da33bac25dd63b8e5fb7384264d94997e4042b9cc1a0",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 373,
+  "output_tokens": 928,
+  "cost_usd": 0.0024319,
+  "elapsed_s": 5.95,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Robust security for sensitive data.\",\n    \"Seamless browser integration for auto-filling.\",\n    \"Centralized management of various credential types.\"\n  ],\n  \"cons\": [\n    \"Potential for minor friction with specific browser extensions.\",\n    \"Learning curve for advanced organizational features.\",\n    \"Subscription cost might be a consideration for a small business.\"\n  ],\n  \"overall_experience\": \"This developer likely found 1Password to be a highly effective tool for managing their various credentials and sensitive information. The strong security features and comprehensive functionality, especially for a technical user, would have been a significant benefit. While generally positive, they may have encountered minor usability quirks or considered the subscription cost for their small business.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Robust security for sensitive data.",
+      "Seamless browser integration for auto-filling.",
+      "Centralized management of various credential types."
+    ],
+    "cons": [
+      "Potential for minor friction with specific browser extensions.",
+      "Learning curve for advanced organizational features.",
+      "Subscription cost might be a consideration for a small business."
+    ],
+    "overall_experience": "This developer likely found 1Password to be a highly effective tool for managing their various credentials and sensitive information. The strong security features and comprehensive functionality, especially for a technical user, would have been a significant benefit. While generally positive, they may have encountered minor usability quirks or considered the subscription cost for their small business."
+  },
+  "ts": "2026-10-18T05:25:24.400024+00:00"
+}

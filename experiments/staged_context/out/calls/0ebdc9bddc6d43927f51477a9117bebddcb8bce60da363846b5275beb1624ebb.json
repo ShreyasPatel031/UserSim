@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0ebdc9bddc6d43927f51477a9117bebddcb8bce60da363846b5275beb1624ebb",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2111,
+  "output_tokens": 1027,
+  "cost_usd": 0.0032007999999999997,
+  "elapsed_s": 5.84,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Comprehensive platform for payroll and HR tasks\",\n    \"Employee self-service features are generally helpful\",\n    \"Streamlines tax filing and workforce planning\"\n  ],\n  \"cons\": [\n    \"Some features may be less intuitive or require multiple clicks\",\n    \"Customer support response times or clarity can be inconsistent\",\n    \"Challenges with system limitations or customization for specific needs\"\n  ],\n  \"overall_experience\": \"This HR Generalist likely found Paylocity to be a capable, all-in-one solution for managing payroll, workforce planning, and international employees, appreciating its comprehensive nature. However, they probably encountered some frustrations with the user interface, reporting, or specific limitations that required workarounds. While the core functionality met their needs, the support experience or complexity for certain tasks might have detracted from a seamless experience.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Comprehensive platform for payroll and HR tasks",
+      "Employee self-service features are generally helpful",
+      "Streamlines tax filing and workforce planning"
+    ],
+    "cons": [
+      "Some features may be less intuitive or require multiple clicks",
+      "Customer support response times or clarity can be inconsistent",
+      "Challenges with system limitations or customization for specific needs"
+    ],
+    "overall_experience": "This HR Generalist likely found Paylocity to be a capable, all-in-one solution for managing payroll, workforce planning, and international employees, appreciating its comprehensive nature. However, they probably encountered some frustrations with the user interface, reporting, or specific limitations that required workarounds. While the core functionality met their needs, the support experience or complexity for certain tasks might have detracted from a seamless experience."
+  },
+  "ts": "2026-10-18T05:25:48.124771+00:00"
+}

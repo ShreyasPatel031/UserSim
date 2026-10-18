@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2b87c5ca719390322bda4a6ef7f4756e181bee84a36f51319fe563838f19a718",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1966,
+  "output_tokens": 1140,
+  "cost_usd": 0.0034398,
+  "elapsed_s": 6.17,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Comprehensive platform for managing marketing and sales data.\",\n    \"Robust tracking of user activity provides valuable insights.\",\n    \"Good API capabilities for integrating with custom internal tools.\"\n  ],\n  \"cons\": [\n    \"Pricing model can be high for a small business.\",\n    \"Initial learning curve for advanced features and integrations.\",\n    \"Customization options for complex internal workflows could be limited.\"\n  ],\n  \"overall_experience\": \"The Creative Technologist likely found HubSpot Marketing Hub to be a powerful tool for managing data and tracking user activity, appreciating its broad feature set. However, the cost for a small business and the potential complexities of fully integrating with custom internal systems may have presented challenges. While generally effective, the investment might have felt significant for their specific needs.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Comprehensive platform for managing marketing and sales data.",
+      "Robust tracking of user activity provides valuable insights.",
+      "Good API capabilities for integrating with custom internal tools."
+    ],
+    "cons": [
+      "Pricing model can be high for a small business.",
+      "Initial learning curve for advanced features and integrations.",
+      "Customization options for complex internal workflows could be limited."
+    ],
+    "overall_experience": "The Creative Technologist likely found HubSpot Marketing Hub to be a powerful tool for managing data and tracking user activity, appreciating its broad feature set. However, the cost for a small business and the potential complexities of fully integrating with custom internal systems may have presented challenges. While generally effective, the investment might have felt significant for their specific needs."
+  },
+  "ts": "2026-10-18T05:25:59.912554+00:00"
+}

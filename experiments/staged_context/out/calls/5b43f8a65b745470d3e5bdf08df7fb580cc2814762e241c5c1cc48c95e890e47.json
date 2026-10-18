@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "5b43f8a65b745470d3e5bdf08df7fb580cc2814762e241c5c1cc48c95e890e47",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 255,
+  "output_tokens": 1078,
+  "cost_usd": 0.0027715,
+  "elapsed_s": 25.47,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Centralized access to pay stubs and tax documents\",\n    \"Streamlined process for updating personal information\",\n    \"Intuitive employee self-service portal\"\n  ],\n  \"cons\": [\n    \"Platform might feel feature-rich for basic employee self-service needs\",\n    \"Initial navigation could be overwhelming with many options\",\n    \"Reliance on company configuration for optimal experience\"\n  ],\n  \"overall_experience\": \"The Customer Success Manager likely found Rippling to be a highly functional tool for managing their personal employment and tax information. They appreciated the ease of accessing pay stubs and W2s, along with the ability to update personal details. While the platform is comprehensive, its core self-service features for employees were efficient and user-friendly for their specific tasks.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Centralized access to pay stubs and tax documents",
+      "Streamlined process for updating personal information",
+      "Intuitive employee self-service portal"
+    ],
+    "cons": [
+      "Platform might feel feature-rich for basic employee self-service needs",
+      "Initial navigation could be overwhelming with many options",
+      "Reliance on company configuration for optimal experience"
+    ],
+    "overall_experience": "The Customer Success Manager likely found Rippling to be a highly functional tool for managing their personal employment and tax information. They appreciated the ease of accessing pay stubs and W2s, along with the ability to update personal details. While the platform is comprehensive, its core self-service features for employees were efficient and user-friendly for their specific tasks."
+  },
+  "ts": "2026-10-18T05:24:54.358640+00:00"
+}

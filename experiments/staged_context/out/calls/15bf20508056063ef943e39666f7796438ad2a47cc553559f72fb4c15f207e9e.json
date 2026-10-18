@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "15bf20508056063ef943e39666f7796438ad2a47cc553559f72fb4c15f207e9e",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1612,
+  "output_tokens": 1012,
+  "cost_usd": 0.0030136,
+  "elapsed_s": 5.48,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Streamlined communication and project organization in one place\",\n    \"Effective for daily check-ins and managing team availability\",\n    \"Simple and intuitive interface for core tasks\"\n  ],\n  \"cons\": [\n    \"Limited advanced features for complex project management needs\",\n    \"Fewer integrations compared to other development-focused tools\",\n    \"Could benefit from more customization options for specific workflows\"\n  ],\n  \"overall_experience\": \"This web developer found Basecamp to be a straightforward and effective tool for managing team communication, daily check-ins, and leave requests within their small IT company. While appreciating its simplicity for core tasks, they likely felt it lacked some of the advanced functionality and integration options expected by a technical role. Overall, it served its purpose well for basic team coordination but might have felt somewhat limited for more intricate project management.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Streamlined communication and project organization in one place",
+      "Effective for daily check-ins and managing team availability",
+      "Simple and intuitive interface for core tasks"
+    ],
+    "cons": [
+      "Limited advanced features for complex project management needs",
+      "Fewer integrations compared to other development-focused tools",
+      "Could benefit from more customization options for specific workflows"
+    ],
+    "overall_experience": "This web developer found Basecamp to be a straightforward and effective tool for managing team communication, daily check-ins, and leave requests within their small IT company. While appreciating its simplicity for core tasks, they likely felt it lacked some of the advanced functionality and integration options expected by a technical role. Overall, it served its purpose well for basic team coordination but might have felt somewhat limited for more intricate project management."
+  },
+  "ts": "2026-10-18T05:26:24.540257+00:00"
+}

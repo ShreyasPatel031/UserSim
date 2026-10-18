@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0f9d2bd5966e83b192a625fceeda3138ff9793854ca9de0e9883c690a7596981",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 353,
+  "output_tokens": 970,
+  "cost_usd": 0.0025309,
+  "elapsed_s": 6.69,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Intuitive interface for managing daily tasks\",\n    \"Consolidated communication and file sharing\",\n    \"Helpful for organizing client follow-ups\"\n  ],\n  \"cons\": [\n    \"Might be too robust for a single user's needs\",\n    \"Pricing model may not align with self-employed budgets\",\n    \"Limited time on free trial meant not fully exploring all features\"\n  ],\n  \"overall_experience\": \"The self-employed Sales Associate likely found Basecamp's ease of use and all-in-one approach beneficial for organizing their retail operations, client communications, and personal task management. However, as a solo user on a free trial, they may have felt some features were overkill or that the value proposition for a single person did not fully justify a paid subscription after the trial concluded.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 7,
+    "pros": [
+      "Intuitive interface for managing daily tasks",
+      "Consolidated communication and file sharing",
+      "Helpful for organizing client follow-ups"
+    ],
+    "cons": [
+      "Might be too robust for a single user's needs",
+      "Pricing model may not align with self-employed budgets",
+      "Limited time on free trial meant not fully exploring all features"
+    ],
+    "overall_experience": "The self-employed Sales Associate likely found Basecamp's ease of use and all-in-one approach beneficial for organizing their retail operations, client communications, and personal task management. However, as a solo user on a free trial, they may have felt some features were overkill or that the value proposition for a single person did not fully justify a paid subscription after the trial concluded."
+  },
+  "ts": "2026-10-18T05:26:25.441134+00:00"
+}

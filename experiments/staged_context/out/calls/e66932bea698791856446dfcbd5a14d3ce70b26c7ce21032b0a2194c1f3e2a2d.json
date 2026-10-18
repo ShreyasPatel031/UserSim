@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e66932bea698791856446dfcbd5a14d3ce70b26c7ce21032b0a2194c1f3e2a2d",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1036,
+  "output_tokens": 1039,
+  "cost_usd": 0.0029083,
+  "elapsed_s": 6.04,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Powerful segmentation for targeted campaigns\",\n    \"Robust automation and flow builder\",\n    \"Strong e-commerce integrations\"\n  ],\n  \"cons\": [\n    \"Steeper learning curve than previous tools\",\n    \"Can become costly as subscriber list grows\",\n    \"Occasional delays in customer support response\"\n  ],\n  \"overall_experience\": \"This founder likely found Klaviyo to be a significant upgrade from Mailchimp, especially for its advanced e-commerce specific features and segmentation capabilities. While the initial learning curve and pricing might have been a concern for a small business, the platform's robust functionality for managing email marketing flows and customer segmentation proved highly effective, leading to a generally positive long-term experience.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Powerful segmentation for targeted campaigns",
+      "Robust automation and flow builder",
+      "Strong e-commerce integrations"
+    ],
+    "cons": [
+      "Steeper learning curve than previous tools",
+      "Can become costly as subscriber list grows",
+      "Occasional delays in customer support response"
+    ],
+    "overall_experience": "This founder likely found Klaviyo to be a significant upgrade from Mailchimp, especially for its advanced e-commerce specific features and segmentation capabilities. While the initial learning curve and pricing might have been a concern for a small business, the platform's robust functionality for managing email marketing flows and customer segmentation proved highly effective, leading to a generally positive long-term experience."
+  },
+  "ts": "2026-10-18T05:26:38.418367+00:00"
+}

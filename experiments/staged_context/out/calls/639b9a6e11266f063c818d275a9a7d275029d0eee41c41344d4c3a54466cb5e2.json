@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "639b9a6e11266f063c818d275a9a7d275029d0eee41c41344d4c3a54466cb5e2",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 355,
+  "output_tokens": 992,
+  "cost_usd": 0.0025865,
+  "elapsed_s": 6.88,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Efficiently manages employee demographics for annual reviews.\",\n    \"Streamlines the client and new employee onboarding process.\",\n    \"Provides a centralized system for bonus tracking and compensation data.\"\n  ],\n  \"cons\": [\n    \"Reporting features for specific payroll nuances could be more robust.\",\n    \"Integration with external payroll systems might require workarounds.\",\n    \"Initial setup for complex compensation structures took some effort.\"\n  ],\n  \"overall_experience\": \"The VP of Payroll likely found BambooHR to be a highly effective tool for managing core HR tasks within their small business. Its ability to centralize employee data, from onboarding to demographics for performance and bonuses, significantly streamlined their workflows. While generally positive, they may have encountered minor limitations in advanced payroll-specific functionalities or integrations.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Efficiently manages employee demographics for annual reviews.",
+      "Streamlines the client and new employee onboarding process.",
+      "Provides a centralized system for bonus tracking and compensation data."
+    ],
+    "cons": [
+      "Reporting features for specific payroll nuances could be more robust.",
+      "Integration with external payroll systems might require workarounds.",
+      "Initial setup for complex compensation structures took some effort."
+    ],
+    "overall_experience": "The VP of Payroll likely found BambooHR to be a highly effective tool for managing core HR tasks within their small business. Its ability to centralize employee data, from onboarding to demographics for performance and bonuses, significantly streamlined their workflows. While generally positive, they may have encountered minor limitations in advanced payroll-specific functionalities or integrations."
+  },
+  "ts": "2026-10-18T05:25:38.868443+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7488685ef4662fe107563492034d114e0b313349ef2bc80611170c90b2e7b7cd",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1242,
+  "output_tokens": 1039,
+  "cost_usd": 0.0029701,
+  "elapsed_s": 8.89,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Robust features for managing a wholesale product catalog\",\n    \"Reliable platform for processing B2B orders\",\n    \"Ability to scale e-commerce operations over time\"\n  ],\n  \"cons\": [\n    \"Pricing structure can become expensive with increased features or apps\",\n    \"Customization for specific wholesale workflows can be complex\",\n    \"Customer support response times can be inconsistent\"\n  ],\n  \"overall_experience\": \"The National Account Manager found BigCommerce to be a generally capable platform for managing their company's wholesale e-commerce needs over two years. They appreciated its robust features and reliability for order processing. However, they likely experienced some frustration with the cost of advanced features or necessary integrations, and found specific customizations for their wholesale business challenging at times.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Robust features for managing a wholesale product catalog",
+      "Reliable platform for processing B2B orders",
+      "Ability to scale e-commerce operations over time"
+    ],
+    "cons": [
+      "Pricing structure can become expensive with increased features or apps",
+      "Customization for specific wholesale workflows can be complex",
+      "Customer support response times can be inconsistent"
+    ],
+    "overall_experience": "The National Account Manager found BigCommerce to be a generally capable platform for managing their company's wholesale e-commerce needs over two years. They appreciated its robust features and reliability for order processing. However, they likely experienced some frustration with the cost of advanced features or necessary integrations, and found specific customizations for their wholesale business challenging at times."
+  },
+  "ts": "2026-10-18T05:26:46.559100+00:00"
+}

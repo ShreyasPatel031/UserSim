@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "27a1404bc1d122c315b9dfe4d5fab4fe7eeaba87576a404f015bd91ce991f690",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 799,
+  "output_tokens": 1043,
+  "cost_usd": 0.0028472000000000003,
+  "elapsed_s": 6.11,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Simple and quick process for entering hours.\",\n    \"Intuitive interface for time tracking.\",\n    \"Streamlined reporting of work times.\"\n  ],\n  \"cons\": [\n    \"Might feel like overkill for a single, simple task.\",\n    \"Could find advanced features unnecessary for their role.\",\n    \"Potential for minor frustration if time entry isn't perfectly tailored to their unique coaching schedule.\"\n  ],\n  \"overall_experience\": \"This user likely found BambooHR to be a highly user-friendly and functional tool for their specific need of adding and entering hours. The process was probably straightforward and efficient, making it easy to complete their time-tracking tasks. However, as their usage was limited to a very specific function, they may not have fully appreciated the broader value or extensive features of the system, perceiving it as potentially robust for just time entry.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Simple and quick process for entering hours.",
+      "Intuitive interface for time tracking.",
+      "Streamlined reporting of work times."
+    ],
+    "cons": [
+      "Might feel like overkill for a single, simple task.",
+      "Could find advanced features unnecessary for their role.",
+      "Potential for minor frustration if time entry isn't perfectly tailored to their unique coaching schedule."
+    ],
+    "overall_experience": "This user likely found BambooHR to be a highly user-friendly and functional tool for their specific need of adding and entering hours. The process was probably straightforward and efficient, making it easy to complete their time-tracking tasks. However, as their usage was limited to a very specific function, they may not have fully appreciated the broader value or extensive features of the system, perceiving it as potentially robust for just time entry."
+  },
+  "ts": "2026-10-18T05:26:07.141476+00:00"
+}

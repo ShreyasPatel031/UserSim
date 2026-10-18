@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "660820b198193326502b4bef7e70f561f0d0c5352084a36168ac8ae051d10597",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1894,
+  "output_tokens": 1089,
+  "cost_usd": 0.0032906999999999997,
+  "elapsed_s": 9.34,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Streamlined payment processing for business operations\",\n    \"Good integration capabilities with existing systems\",\n    \"Generally reliable for handling transactions\"\n  ],\n  \"cons\": [\n    \"Transaction fees can become costly for small businesses\",\n    \"Customer support response times can be slow\",\n    \"Interface sometimes feels less modern than competitors\"\n  ],\n  \"overall_experience\": \"The founder likely found PayPal Payments to be a functional tool for managing business payments, appreciating its ease of integration and general reliability. However, concerns regarding transaction costs and occasional frustrations with customer support or the user interface probably impacted their overall satisfaction. While it served its core purpose, there were areas where improvements could enhance the value for a small business owner.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Streamlined payment processing for business operations",
+      "Good integration capabilities with existing systems",
+      "Generally reliable for handling transactions"
+    ],
+    "cons": [
+      "Transaction fees can become costly for small businesses",
+      "Customer support response times can be slow",
+      "Interface sometimes feels less modern than competitors"
+    ],
+    "overall_experience": "The founder likely found PayPal Payments to be a functional tool for managing business payments, appreciating its ease of integration and general reliability. However, concerns regarding transaction costs and occasional frustrations with customer support or the user interface probably impacted their overall satisfaction. While it served its core purpose, there were areas where improvements could enhance the value for a small business owner."
+  },
+  "ts": "2026-10-18T05:25:55.016828+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "aedaf2efbd963de65258d8901da5078bc5911b81441e1d8f290ca35848b922a2",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 872,
+  "output_tokens": 984,
+  "cost_usd": 0.0027216000000000002,
+  "elapsed_s": 5.53,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effective centralization of candidate resumes and profiles.\",\n    \"Simplified workflow for basic applicant tracking.\",\n    \"Intuitive interface for managing candidate data.\"\n  ],\n  \"cons\": [\n    \"Lacked advanced ATS features for complex recruitment pipelines.\",\n    \"Limited customization options for candidate stages.\",\n    \"Reporting on talent acquisition metrics was not robust enough.\"\n  ],\n  \"overall_experience\": \"This Sr. Talent Acquisition Manager likely found BambooHR to be a generally positive tool for managing resumes and centralizing their workflow, appreciating its ease of use for core HR functions. While it provided good value and an intuitive experience, they probably identified some limitations in its advanced applicant tracking system capabilities and reporting features, which might not fully meet the needs of a specialized recruiting role.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Effective centralization of candidate resumes and profiles.",
+      "Simplified workflow for basic applicant tracking.",
+      "Intuitive interface for managing candidate data."
+    ],
+    "cons": [
+      "Lacked advanced ATS features for complex recruitment pipelines.",
+      "Limited customization options for candidate stages.",
+      "Reporting on talent acquisition metrics was not robust enough."
+    ],
+    "overall_experience": "This Sr. Talent Acquisition Manager likely found BambooHR to be a generally positive tool for managing resumes and centralizing their workflow, appreciating its ease of use for core HR functions. While it provided good value and an intuitive experience, they probably identified some limitations in its advanced applicant tracking system capabilities and reporting features, which might not fully meet the needs of a specialized recruiting role."
+  },
+  "ts": "2026-10-18T05:26:07.755241+00:00"
+}

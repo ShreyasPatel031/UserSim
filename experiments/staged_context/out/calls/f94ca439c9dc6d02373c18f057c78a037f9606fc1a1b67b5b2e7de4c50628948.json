@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f94ca439c9dc6d02373c18f057c78a037f9606fc1a1b67b5b2e7de4c50628948",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2153,
+  "output_tokens": 1025,
+  "cost_usd": 0.0032084,
+  "elapsed_s": 6.46,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Intuitive and easy-to-navigate interface\",\n    \"Effective lead and sales tracking features\",\n    \"Good integration capabilities with other tools\"\n  ],\n  \"cons\": [\n    \"Occasional performance issues or slowness\",\n    \"Some limitations in advanced customization\",\n    \"Reporting features could be more robust\"\n  ],\n  \"overall_experience\": \"This Help Desk Manager likely found Freshsales to be a highly effective and user-friendly CRM solution for their small IT and Services company. They appreciated its core functionalities and ease of use, contributing to a positive overall experience. While generally satisfied, they may have encountered minor frustrations with performance or specific reporting needs.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Intuitive and easy-to-navigate interface",
+      "Effective lead and sales tracking features",
+      "Good integration capabilities with other tools"
+    ],
+    "cons": [
+      "Occasional performance issues or slowness",
+      "Some limitations in advanced customization",
+      "Reporting features could be more robust"
+    ],
+    "overall_experience": "This Help Desk Manager likely found Freshsales to be a highly effective and user-friendly CRM solution for their small IT and Services company. They appreciated its core functionalities and ease of use, contributing to a positive overall experience. While generally satisfied, they may have encountered minor frustrations with performance or specific reporting needs."
+  },
+  "ts": "2026-10-18T05:26:12.642655+00:00"
+}

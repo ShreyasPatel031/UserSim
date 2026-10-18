@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "fb88e50cf54d66d0e412b0f90f853a9d6b38f9c594a093f954d64eeb66bc6c20",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1937,
+  "output_tokens": 968,
+  "cost_usd": 0.0030010999999999996,
+  "elapsed_s": 8.79,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 5,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Streamlined expense submission process.\",\n    \"Reliable integration with company financial systems.\",\n    \"User-friendly interface for tracking reimbursements.\"\n  ],\n  \"cons\": [\n    \"Occasional issues with mobile receipt scanning.\",\n    \"Steep learning curve for advanced features.\",\n    \"Limited customization options for specific reporting needs.\"\n  ],\n  \"overall_experience\": \"The medical reviewer likely found SAP Concur to be a highly effective tool for managing expense reimbursements within their enterprise organization. They appreciated its ease of use for core tasks and robust functionality, particularly for integrating with existing financial systems. While generally positive, the reviewer might have encountered minor frustrations with mobile app functionality or the complexity of certain features, common challenges in comprehensive expense platforms.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 5,
+    "recommendation_score": 9,
+    "pros": [
+      "Streamlined expense submission process.",
+      "Reliable integration with company financial systems.",
+      "User-friendly interface for tracking reimbursements."
+    ],
+    "cons": [
+      "Occasional issues with mobile receipt scanning.",
+      "Steep learning curve for advanced features.",
+      "Limited customization options for specific reporting needs."
+    ],
+    "overall_experience": "The medical reviewer likely found SAP Concur to be a highly effective tool for managing expense reimbursements within their enterprise organization. They appreciated its ease of use for core tasks and robust functionality, particularly for integrating with existing financial systems. While generally positive, the reviewer might have encountered minor frustrations with mobile app functionality or the complexity of certain features, common challenges in comprehensive expense platforms."
+  },
+  "ts": "2026-10-18T05:25:58.416068+00:00"
+}

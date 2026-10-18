@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "eaf96f99e40127788048cebfb740fe90839f9cafa30588f0d152000eaa8daf83",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 344,
+  "output_tokens": 1005,
+  "cost_usd": 0.0026157,
+  "elapsed_s": 6.0,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Centralized communication for small teams\",\n    \"Effective for video calls and screen sharing\",\n    \"Good for collaborative document editing\"\n  ],\n  \"cons\": [\n    \"Can be resource-intensive, impacting performance\",\n    \"Interface can feel cluttered for simple tasks\",\n    \"Integration with specialized social media tools is limited\"\n  ],\n  \"overall_experience\": \"This social media manager likely found Microsoft Teams to be a generally useful tool for team collaboration and communication within their small business. They appreciated its ability to centralize discussions and facilitate content reviews, but likely encountered frustrations with its performance overhead or perceived complexity for daily tasks. The platform served its core communication purpose, yet its corporate feel and lack of deep social media integrations might have limited a fully seamless workflow.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Centralized communication for small teams",
+      "Effective for video calls and screen sharing",
+      "Good for collaborative document editing"
+    ],
+    "cons": [
+      "Can be resource-intensive, impacting performance",
+      "Interface can feel cluttered for simple tasks",
+      "Integration with specialized social media tools is limited"
+    ],
+    "overall_experience": "This social media manager likely found Microsoft Teams to be a generally useful tool for team collaboration and communication within their small business. They appreciated its ability to centralize discussions and facilitate content reviews, but likely encountered frustrations with its performance overhead or perceived complexity for daily tasks. The platform served its core communication purpose, yet its corporate feel and lack of deep social media integrations might have limited a fully seamless workflow."
+  },
+  "ts": "2026-10-18T05:25:36.731787+00:00"
+}

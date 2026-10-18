@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c5859631c73870cec8693241b747bc951acd6d4757c46a23baa3f4551adbbefd",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 729,
+  "output_tokens": 823,
+  "cost_usd": 0.0022762,
+  "elapsed_s": 5.06,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 5,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Provided accurate and timely commission tracking.\",\n    \"Offered clear visibility into sales performance metrics.\",\n    \"Streamlined the compensation management process.\"\n  ],\n  \"cons\": [\n    \"Initial learning curve for new users.\",\n    \"Customization options could be complex without dedicated support.\",\n    \"Potential for data entry errors impacting reports if not carefully managed.\"\n  ],\n  \"overall_experience\": \"This individual likely found Xactly to be a highly effective tool for managing their sales commissions and tracking performance within a large enterprise setting. The system's robust functionality and strong support contributed to a positive experience, despite a possible initial learning phase. It successfully streamlined their core task of understanding and tracking compensation.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 5,
+    "recommendation_score": 9,
+    "pros": [
+      "Provided accurate and timely commission tracking.",
+      "Offered clear visibility into sales performance metrics.",
+      "Streamlined the compensation management process."
+    ],
+    "cons": [
+      "Initial learning curve for new users.",
+      "Customization options could be complex without dedicated support.",
+      "Potential for data entry errors impacting reports if not carefully managed."
+    ],
+    "overall_experience": "This individual likely found Xactly to be a highly effective tool for managing their sales commissions and tracking performance within a large enterprise setting. The system's robust functionality and strong support contributed to a positive experience, despite a possible initial learning phase. It successfully streamlined their core task of understanding and tracking compensation."
+  },
+  "ts": "2026-10-18T05:25:45.625056+00:00"
+}

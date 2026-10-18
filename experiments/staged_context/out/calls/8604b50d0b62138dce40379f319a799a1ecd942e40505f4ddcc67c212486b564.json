@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8604b50d0b62138dce40379f319a799a1ecd942e40505f4ddcc67c212486b564",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1685,
+  "output_tokens": 1158,
+  "cost_usd": 0.0034005,
+  "elapsed_s": 5.83,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effective consolidation and filtering of marketing data\",\n    \"Comprehensive suite of marketing tools\",\n    \"Intuitive design for managing campaigns\"\n  ],\n  \"cons\": [\n    \"Potential for a learning curve with advanced features\",\n    \"Pricing structure can be a concern for small businesses\",\n    \"Customer support response times could be improved\"\n  ],\n  \"overall_experience\": \"This Director likely found HubSpot Marketing Hub to be a highly functional tool for centralizing and managing marketing data within their small business. They appreciated its robust features and ease of use, contributing to a positive overall experience. However, the initial learning curve and the cost might have been minor drawbacks in an otherwise effective solution.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Effective consolidation and filtering of marketing data",
+      "Comprehensive suite of marketing tools",
+      "Intuitive design for managing campaigns"
+    ],
+    "cons": [
+      "Potential for a learning curve with advanced features",
+      "Pricing structure can be a concern for small businesses",
+      "Customer support response times could be improved"
+    ],
+    "overall_experience": "This Director likely found HubSpot Marketing Hub to be a highly functional tool for centralizing and managing marketing data within their small business. They appreciated its robust features and ease of use, contributing to a positive overall experience. However, the initial learning curve and the cost might have been minor drawbacks in an otherwise effective solution."
+  },
+  "ts": "2026-10-18T05:25:58.892723+00:00"
+}

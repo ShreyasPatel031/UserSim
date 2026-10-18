@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "fb2785b3e80d75ce6d8c449747f8eb8acf6085a9d393595c21082c44e5c97001",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2090,
+  "output_tokens": 1051,
+  "cost_usd": 0.0032545,
+  "elapsed_s": 6.34,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Provides clear and accurate commission data for approval.\",\n    \"Customizable dashboards and reports for quick insights.\",\n    \"Streamlines the process of accessing and managing compensation.\"\n  ],\n  \"cons\": [\n    \"Initial setup can be time-consuming and complex.\",\n    \"Reporting might lack advanced customization for specific needs.\",\n    \"Potential for slow updates or occasional bugs in data processing.\"\n  ],\n  \"overall_experience\": \"A Senior Strategic Account Manager at an enterprise-level company likely finds Xactly highly effective for their core task of accessing and approving detailed commission data. The platform's robust functionality and customization options for reporting are valued, though the initial implementation and occasional performance quirks might present minor frustrations. Overall, it serves as a critical tool for managing compensation efficiently.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Provides clear and accurate commission data for approval.",
+      "Customizable dashboards and reports for quick insights.",
+      "Streamlines the process of accessing and managing compensation."
+    ],
+    "cons": [
+      "Initial setup can be time-consuming and complex.",
+      "Reporting might lack advanced customization for specific needs.",
+      "Potential for slow updates or occasional bugs in data processing."
+    ],
+    "overall_experience": "A Senior Strategic Account Manager at an enterprise-level company likely finds Xactly highly effective for their core task of accessing and approving detailed commission data. The platform's robust functionality and customization options for reporting are valued, though the initial implementation and occasional performance quirks might present minor frustrations. Overall, it serves as a critical tool for managing compensation efficiently."
+  },
+  "ts": "2026-10-18T05:25:44.242705+00:00"
+}

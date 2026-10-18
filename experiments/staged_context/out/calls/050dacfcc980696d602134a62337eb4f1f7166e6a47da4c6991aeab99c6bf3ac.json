@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "050dacfcc980696d602134a62337eb4f1f7166e6a47da4c6991aeab99c6bf3ac",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 754,
+  "output_tokens": 884,
+  "cost_usd": 0.0024362000000000003,
+  "elapsed_s": 5.74,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Centralized platform for managing diverse marketing and growth activities.\",\n    \"Effective tools for reaching customers and maintaining promotional campaigns.\",\n    \"Streamlined workflows for a small team handling multiple marketing tasks.\"\n  ],\n  \"cons\": [\n    \"The cost could be a significant investment for a small business.\",\n    \"Some advanced features might have a learning curve for a small team.\",\n    \"Potential for underutilization of comprehensive features not immediately needed.\"\n  ],\n  \"overall_experience\": \"The E-Commerce Director likely found HubSpot Marketing Hub to be a robust and generally effective solution for managing their marketing and growth activities within a small business context. They appreciated its integrated capabilities for reaching customers and handling promotions. While highly functional, the platform's cost or complexity might have presented minor challenges for their smaller operation.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Centralized platform for managing diverse marketing and growth activities.",
+      "Effective tools for reaching customers and maintaining promotional campaigns.",
+      "Streamlined workflows for a small team handling multiple marketing tasks."
+    ],
+    "cons": [
+      "The cost could be a significant investment for a small business.",
+      "Some advanced features might have a learning curve for a small team.",
+      "Potential for underutilization of comprehensive features not immediately needed."
+    ],
+    "overall_experience": "The E-Commerce Director likely found HubSpot Marketing Hub to be a robust and generally effective solution for managing their marketing and growth activities within a small business context. They appreciated its integrated capabilities for reaching customers and handling promotions. While highly functional, the platform's cost or complexity might have presented minor challenges for their smaller operation."
+  },
+  "ts": "2026-10-18T05:26:00.512153+00:00"
+}

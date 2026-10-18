@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "63a969fdf8bc12e5209742b4c3027197c3c4d43d37bd293ed362a282cb64f000",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1082,
+  "output_tokens": 1017,
+  "cost_usd": 0.0028670999999999996,
+  "elapsed_s": 6.06,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Powerful e-commerce automation and segmentation\",\n    \"Seamless integration with their e-commerce platform\",\n    \"Detailed analytics for campaign optimization\"\n  ],\n  \"cons\": [\n    \"Pricing can become significant with list growth\",\n    \"Steep learning curve for advanced features initially\",\n    \"Occasional minor glitches or slow loading times\"\n  ],\n  \"overall_experience\": \"This Responsable Marketing, with over two years of experience, found Klaviyo to be an indispensable tool for managing e-commerce campaigns within the Apparel & Fashion industry. The platform's robust automation, segmentation capabilities, and deep e-commerce integrations were highly valued, enabling effective personalization and campaign optimization. While acknowledging that pricing could be a factor and the initial learning curve was steep, their overall satisfaction remained high, reflecting the significant value Klaviyo delivered to their marketing efforts.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Powerful e-commerce automation and segmentation",
+      "Seamless integration with their e-commerce platform",
+      "Detailed analytics for campaign optimization"
+    ],
+    "cons": [
+      "Pricing can become significant with list growth",
+      "Steep learning curve for advanced features initially",
+      "Occasional minor glitches or slow loading times"
+    ],
+    "overall_experience": "This Responsable Marketing, with over two years of experience, found Klaviyo to be an indispensable tool for managing e-commerce campaigns within the Apparel & Fashion industry. The platform's robust automation, segmentation capabilities, and deep e-commerce integrations were highly valued, enabling effective personalization and campaign optimization. While acknowledging that pricing could be a factor and the initial learning curve was steep, their overall satisfaction remained high, reflecting the significant value Klaviyo delivered to their marketing efforts."
+  },
+  "ts": "2026-10-18T05:26:40.287914+00:00"
+}

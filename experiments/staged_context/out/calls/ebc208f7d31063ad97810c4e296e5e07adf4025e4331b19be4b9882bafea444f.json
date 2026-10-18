@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ebc208f7d31063ad97810c4e296e5e07adf4025e4331b19be4b9882bafea444f",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 756,
+  "output_tokens": 1034,
+  "cost_usd": 0.0028118,
+  "elapsed_s": 6.69,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Streamlined and accurate sales commission calculations\",\n    \"Comprehensive reporting and analytics for compensation data\",\n    \"Ability to manage complex sales plans efficiently\"\n  ],\n  \"cons\": [\n    \"Initial setup and configuration can be complex\",\n    \"Requires dedicated resources for ongoing administration and plan changes\",\n    \"Cost can be a significant investment\"\n  ],\n  \"overall_experience\": \"This Senior Manager Sales Compensation likely found Xactly to be a highly effective tool for automating and managing their sales commission processes. They benefited from its robust functionality in calculating commissions and generating detailed reports, leading to increased accuracy and efficiency. While the initial setup and ongoing administration might have presented some challenges, the overall value and performance of the software in handling complex compensation structures were likely very positive.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Streamlined and accurate sales commission calculations",
+      "Comprehensive reporting and analytics for compensation data",
+      "Ability to manage complex sales plans efficiently"
+    ],
+    "cons": [
+      "Initial setup and configuration can be complex",
+      "Requires dedicated resources for ongoing administration and plan changes",
+      "Cost can be a significant investment"
+    ],
+    "overall_experience": "This Senior Manager Sales Compensation likely found Xactly to be a highly effective tool for automating and managing their sales commission processes. They benefited from its robust functionality in calculating commissions and generating detailed reports, leading to increased accuracy and efficiency. While the initial setup and ongoing administration might have presented some challenges, the overall value and performance of the software in handling complex compensation structures were likely very positive."
+  },
+  "ts": "2026-10-18T05:25:45.164204+00:00"
+}

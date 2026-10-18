@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7f680cb801a0622b834b5598109dea73da9626ea5a635617b284a22b1a3290a1",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 372,
+  "output_tokens": 1008,
+  "cost_usd": 0.0026316,
+  "elapsed_s": 6.2,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Good for tracking marketing-related customer inquiries.\",\n    \"Helpful for cross-departmental collaboration on customer issues.\",\n    \"Reasonable pricing for a mid-sized company.\"\n  ],\n  \"cons\": [\n    \"Some features might not be directly relevant to a marketing role.\",\n    \"Steep learning curve for advanced configurations.\",\n    \"Integrations with specific marketing tools could be more seamless.\"\n  ],\n  \"overall_experience\": \"This Marketing Specialist likely found Zoho Desk to be a generally useful tool for managing customer interactions and feedback relevant to marketing initiatives. While the platform offered sufficient functionality and good value for their mid-sized Food & Beverages company, they may have encountered some features that weren't directly applicable to their daily tasks. The customer support experience might have been adequate but not exceptional, leading to a moderately positive overall sentiment.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Good for tracking marketing-related customer inquiries.",
+      "Helpful for cross-departmental collaboration on customer issues.",
+      "Reasonable pricing for a mid-sized company."
+    ],
+    "cons": [
+      "Some features might not be directly relevant to a marketing role.",
+      "Steep learning curve for advanced configurations.",
+      "Integrations with specific marketing tools could be more seamless."
+    ],
+    "overall_experience": "This Marketing Specialist likely found Zoho Desk to be a generally useful tool for managing customer interactions and feedback relevant to marketing initiatives. While the platform offered sufficient functionality and good value for their mid-sized Food & Beverages company, they may have encountered some features that weren't directly applicable to their daily tasks. The customer support experience might have been adequate but not exceptional, leading to a moderately positive overall sentiment."
+  },
+  "ts": "2026-10-18T05:26:33.458666+00:00"
+}

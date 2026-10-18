@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0d09363096d978daa5d6df6db6f6e29fc09c50681100c5a3278ee624c4fcc30f",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1666,
+  "output_tokens": 1044,
+  "cost_usd": 0.0031098,
+  "elapsed_s": 8.74,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Relatively easy to get started with basic customer support functions.\",\n    \"Good value compared to more expensive enterprise solutions.\",\n    \"Centralized platform for managing customer interactions.\"\n  ],\n  \"cons\": [\n    \"Lacked robust features for lead and project management as needed.\",\n    \"Reporting capabilities felt somewhat limited or not intuitive for complex analysis.\",\n    \"Customization options were not as flexible as desired for specific workflows.\"\n  ],\n  \"overall_experience\": \"The Tech Director found Zoho Desk to be a decent, cost-effective solution for basic customer support operations. However, its functionality for managing leads, projects, and legal details was not as comprehensive or tailored as required, especially coming from Salesforce Sales Cloud. While easy to use for its core purpose, the product didn't fully align with all their departmental needs, leading to some frustration with advanced reporting and customization.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 3,
+    "overall_rating": 3,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 6,
+    "pros": [
+      "Relatively easy to get started with basic customer support functions.",
+      "Good value compared to more expensive enterprise solutions.",
+      "Centralized platform for managing customer interactions."
+    ],
+    "cons": [
+      "Lacked robust features for lead and project management as needed.",
+      "Reporting capabilities felt somewhat limited or not intuitive for complex analysis.",
+      "Customization options were not as flexible as desired for specific workflows."
+    ],
+    "overall_experience": "The Tech Director found Zoho Desk to be a decent, cost-effective solution for basic customer support operations. However, its functionality for managing leads, projects, and legal details was not as comprehensive or tailored as required, especially coming from Salesforce Sales Cloud. While easy to use for its core purpose, the product didn't fully align with all their departmental needs, leading to some frustration with advanced reporting and customization."
+  },
+  "ts": "2026-10-18T05:26:35.719574+00:00"
+}

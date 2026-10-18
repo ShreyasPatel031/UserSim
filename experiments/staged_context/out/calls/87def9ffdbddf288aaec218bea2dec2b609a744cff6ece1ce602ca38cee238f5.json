@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "87def9ffdbddf288aaec218bea2dec2b609a744cff6ece1ce602ca38cee238f5",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1953,
+  "output_tokens": 1083,
+  "cost_usd": 0.0032933999999999997,
+  "elapsed_s": 6.74,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4.5,\n  \"functionality_rating\": 4.5,\n  \"overall_rating\": 4.5,\n  \"value_for_money_rating\": 4.0,\n  \"customer_support_rating\": 4.0,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Streamlined management of core HR tasks like PTO and employee data.\",\n    \"Intuitive and easy-to-navigate user interface.\",\n    \"Consolidates employee information in a single, accessible platform.\"\n  ],\n  \"cons\": [\n    \"Limited customization options for specific HR workflows or reports.\",\n    \"Integration challenges with other marketing or financial tools.\",\n    \"Reporting features could be more robust for detailed analysis.\"\n  ],\n  \"overall_experience\": \"This Marketing Analyst likely found BambooHR to be a user-friendly and efficient tool for managing essential HR tasks. They appreciated its ability to centralize employee data and simplify routine processes. However, they might have encountered limitations with deeper customization, specific reporting needs, or seamless integration with their broader tech stack, which could impact its overall value for more complex scenarios.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4.5,
+    "functionality_rating": 4.5,
+    "overall_rating": 4.5,
+    "value_for_money_rating": 4.0,
+    "customer_support_rating": 4.0,
+    "recommendation_score": 8,
+    "pros": [
+      "Streamlined management of core HR tasks like PTO and employee data.",
+      "Intuitive and easy-to-navigate user interface.",
+      "Consolidates employee information in a single, accessible platform."
+    ],
+    "cons": [
+      "Limited customization options for specific HR workflows or reports.",
+      "Integration challenges with other marketing or financial tools.",
+      "Reporting features could be more robust for detailed analysis."
+    ],
+    "overall_experience": "This Marketing Analyst likely found BambooHR to be a user-friendly and efficient tool for managing essential HR tasks. They appreciated its ability to centralize employee data and simplify routine processes. However, they might have encountered limitations with deeper customization, specific reporting needs, or seamless integration with their broader tech stack, which could impact its overall value for more complex scenarios."
+  },
+  "ts": "2026-10-18T05:26:06.601393+00:00"
+}

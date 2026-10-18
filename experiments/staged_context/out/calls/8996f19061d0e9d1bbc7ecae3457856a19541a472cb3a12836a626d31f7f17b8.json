@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8996f19061d0e9d1bbc7ecae3457856a19541a472cb3a12836a626d31f7f17b8",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1389,
+  "output_tokens": 1044,
+  "cost_usd": 0.0030267,
+  "elapsed_s": 5.88,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"AI features for smart workflows and task automation\",\n    \"Effective for team collaboration and task organization\",\n    \"Good integration capabilities with other tools\"\n  ],\n  \"cons\": [\n    \"Pricing structure might be perceived as costly for small businesses\",\n    \"Initial learning curve for advanced AI features\",\n    \"Potential for performance issues with complex boards\"\n  ],\n  \"overall_experience\": \"This team leader likely found monday AI Work Platform to be a powerful and flexible tool for managing operations, appreciating its AI capabilities and integration options for streamlining tasks. However, they probably experienced some challenges with the platform's pricing structure for a small business and a slight learning curve when delving into its more advanced features. Despite these minor drawbacks, the platform's ability to centralize work and enhance team productivity was likely a significant benefit.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 7,
+    "pros": [
+      "AI features for smart workflows and task automation",
+      "Effective for team collaboration and task organization",
+      "Good integration capabilities with other tools"
+    ],
+    "cons": [
+      "Pricing structure might be perceived as costly for small businesses",
+      "Initial learning curve for advanced AI features",
+      "Potential for performance issues with complex boards"
+    ],
+    "overall_experience": "This team leader likely found monday AI Work Platform to be a powerful and flexible tool for managing operations, appreciating its AI capabilities and integration options for streamlining tasks. However, they probably experienced some challenges with the platform's pricing structure for a small business and a slight learning curve when delving into its more advanced features. Despite these minor drawbacks, the platform's ability to centralize work and enhance team productivity was likely a significant benefit."
+  },
+  "ts": "2026-10-18T05:25:09.084509+00:00"
+}

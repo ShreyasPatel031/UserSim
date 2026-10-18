@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "5a333ba35867eb2aa2d3ca665d0ff01895a1b076e7f1604d8dd2c4f5659899d8",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 343,
+  "output_tokens": 1013,
+  "cost_usd": 0.0026354,
+  "elapsed_s": 6.61,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Vast array of professional templates for quick design creation\",\n    \"Intuitive drag-and-drop interface makes design accessible to non-designers\",\n    \"Ability to maintain brand consistency with easy-to-use tools\"\n  ],\n  \"cons\": [\n    \"Limited advanced customization options for intricate designs\",\n    \"Occasionally experiences slow loading times with complex projects\",\n    \"Some desirable elements or features may be locked behind a premium subscription\"\n  ],\n  \"overall_experience\": \"The Artist Relations Manager likely found Canva to be an invaluable tool for quickly generating visually appealing content using its extensive template library. Its ease of use allowed them to produce professional-looking designs without needing advanced graphic design skills. The platform offered significant value, enabling them to efficiently manage visual communications for artists within a small business setting.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Vast array of professional templates for quick design creation",
+      "Intuitive drag-and-drop interface makes design accessible to non-designers",
+      "Ability to maintain brand consistency with easy-to-use tools"
+    ],
+    "cons": [
+      "Limited advanced customization options for intricate designs",
+      "Occasionally experiences slow loading times with complex projects",
+      "Some desirable elements or features may be locked behind a premium subscription"
+    ],
+    "overall_experience": "The Artist Relations Manager likely found Canva to be an invaluable tool for quickly generating visually appealing content using its extensive template library. Its ease of use allowed them to produce professional-looking designs without needing advanced graphic design skills. The platform offered significant value, enabling them to efficiently manage visual communications for artists within a small business setting."
+  },
+  "ts": "2026-10-18T05:25:11.542215+00:00"
+}

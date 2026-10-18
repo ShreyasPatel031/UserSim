@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "de1a7dc27795aea2cac9b19a3eb5ad57353c20cb4fcd05393c8d7970dcdf0c06",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1733,
+  "output_tokens": 929,
+  "cost_usd": 0.0028424,
+  "elapsed_s": 5.38,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Found the platform generally easy to set up for their new store.\",\n    \"Appreciated the core e-commerce features needed for retail.\",\n    \"Benefited from the platform's scalability for a small business.\"\n  ],\n  \"cons\": [\n    \"Experienced a learning curve with some advanced features or customizations.\",\n    \"Felt the pricing structure could be a concern for a small business.\",\n    \"Encountered occasional issues with customer support responsiveness.\"\n  ],\n  \"overall_experience\": \"This owner-operator, new to BigCommerce, likely found the platform capable of handling their e-commerce setup with relative ease, offering the essential functionalities for a retail business. However, they probably faced a learning curve due to the platform's depth and may have found the cost to be a significant consideration for a small company. Initial interactions with customer support might have been inconsistent, contributing to some frustration during their first few months of use.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Found the platform generally easy to set up for their new store.",
+      "Appreciated the core e-commerce features needed for retail.",
+      "Benefited from the platform's scalability for a small business."
+    ],
+    "cons": [
+      "Experienced a learning curve with some advanced features or customizations.",
+      "Felt the pricing structure could be a concern for a small business.",
+      "Encountered occasional issues with customer support responsiveness."
+    ],
+    "overall_experience": "This owner-operator, new to BigCommerce, likely found the platform capable of handling their e-commerce setup with relative ease, offering the essential functionalities for a retail business. However, they probably faced a learning curve due to the platform's depth and may have found the cost to be a significant consideration for a small company. Initial interactions with customer support might have been inconsistent, contributing to some frustration during their first few months of use."
+  },
+  "ts": "2026-10-18T05:26:41.943782+00:00"
+}

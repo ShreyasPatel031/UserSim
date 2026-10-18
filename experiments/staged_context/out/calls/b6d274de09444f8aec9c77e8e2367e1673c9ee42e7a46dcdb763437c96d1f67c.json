@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b6d274de09444f8aec9c77e8e2367e1673c9ee42e7a46dcdb763437c96d1f67c",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1821,
+  "output_tokens": 1025,
+  "cost_usd": 0.0031088,
+  "elapsed_s": 8.35,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Comprehensive platform for IT process management and tracking.\",\n    \"Robust reporting capabilities for time and effort analysis.\",\n    \"Strong integration potential within the IT ecosystem.\"\n  ],\n  \"cons\": [\n    \"Significant learning curve for new users and complex setup.\",\n    \"Customization can be challenging and require specialized skills.\",\n    \"Perceived high cost for advanced features and overall licensing.\"\n  ],\n  \"overall_experience\": \"The Advisor IT Process likely found ServiceNow IT Service Management to be a powerful tool for tracking IT organization time and effort, appreciating its comprehensive features and reporting capabilities. However, they probably faced challenges with the platform's complexity, requiring a substantial investment in learning and customization. The cost and potential for inconsistent support might have also been notable frustrations.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Comprehensive platform for IT process management and tracking.",
+      "Robust reporting capabilities for time and effort analysis.",
+      "Strong integration potential within the IT ecosystem."
+    ],
+    "cons": [
+      "Significant learning curve for new users and complex setup.",
+      "Customization can be challenging and require specialized skills.",
+      "Perceived high cost for advanced features and overall licensing."
+    ],
+    "overall_experience": "The Advisor IT Process likely found ServiceNow IT Service Management to be a powerful tool for tracking IT organization time and effort, appreciating its comprehensive features and reporting capabilities. However, they probably faced challenges with the platform's complexity, requiring a substantial investment in learning and customization. The cost and potential for inconsistent support might have also been notable frustrations."
+  },
+  "ts": "2026-10-18T05:25:08.979587+00:00"
+}

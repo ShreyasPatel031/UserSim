@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a27f5203be6485411f3ac5d1b474f409aed9213f9fe460f2850607b6d1495d88",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 256,
+  "output_tokens": 1050,
+  "cost_usd": 0.0027018,
+  "elapsed_s": 27.04,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Clear and intuitive sales pipeline visualization\",\n    \"Customizable deal stages and properties for specific processes\",\n    \"Effective reporting tools for pipeline analysis\"\n  ],\n  \"cons\": [\n    \"Initial setup and customization can be time-consuming\",\n    \"Pricing tiers can become costly for advanced features\",\n    \"Occasional data entry friction for new deals\"\n  ],\n  \"overall_experience\": \"This sales professional likely found HubSpot Sales Hub to be an effective tool for managing their pipeline, appreciating its clear visualization and customizable options. While the initial setup required some effort, the robust reporting capabilities proved valuable for tracking progress. They probably considered the cost a factor, but overall, it streamlined their sales process effectively.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Clear and intuitive sales pipeline visualization",
+      "Customizable deal stages and properties for specific processes",
+      "Effective reporting tools for pipeline analysis"
+    ],
+    "cons": [
+      "Initial setup and customization can be time-consuming",
+      "Pricing tiers can become costly for advanced features",
+      "Occasional data entry friction for new deals"
+    ],
+    "overall_experience": "This sales professional likely found HubSpot Sales Hub to be an effective tool for managing their pipeline, appreciating its clear visualization and customizable options. While the initial setup required some effort, the robust reporting capabilities proved valuable for tracking progress. They probably considered the cost a factor, but overall, it streamlined their sales process effectively."
+  },
+  "ts": "2026-10-18T05:24:52.120416+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a72c2abb9ef9d94770ecd8152d7bc082c3814f2b5c9ab00032322518fc528766",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1464,
+  "output_tokens": 1041,
+  "cost_usd": 0.0030417,
+  "elapsed_s": 6.18,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Significantly automates handling of basic customer questions\",\n    \"Frees up agents to focus on more complex issues\",\n    \"Intuitive interface for quick adoption by the team\"\n  ],\n  \"cons\": [\n    \"Limited customization to fit specific advanced workflows\",\n    \"Reporting tools could be more robust and intuitive for supervisors\",\n    \"Potential for higher pricing compared to basic alternatives\"\n  ],\n  \"overall_experience\": \"This supervisor likely found Fin by Intercom to be highly effective in automating responses to basic customer inquiries, which significantly improved team efficiency and reduced ticket volume. They appreciated the intuitive design that made it easy for their team to adopt. However, they probably encountered limitations in customizing the AI to handle more nuanced situations or integrate perfectly with unique workflows, and found the reporting capabilities less insightful than desired for performance analysis. The value for money might be a concern given its specialized AI focus, especially if more advanced features are not fully utilized or if support is not consistently responsive.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Significantly automates handling of basic customer questions",
+      "Frees up agents to focus on more complex issues",
+      "Intuitive interface for quick adoption by the team"
+    ],
+    "cons": [
+      "Limited customization to fit specific advanced workflows",
+      "Reporting tools could be more robust and intuitive for supervisors",
+      "Potential for higher pricing compared to basic alternatives"
+    ],
+    "overall_experience": "This supervisor likely found Fin by Intercom to be highly effective in automating responses to basic customer inquiries, which significantly improved team efficiency and reduced ticket volume. They appreciated the intuitive design that made it easy for their team to adopt. However, they probably encountered limitations in customizing the AI to handle more nuanced situations or integrate perfectly with unique workflows, and found the reporting capabilities less insightful than desired for performance analysis. The value for money might be a concern given its specialized AI focus, especially if more advanced features are not fully utilized or if support is not consistently responsive."
+  },
+  "ts": "2026-10-18T05:25:11.857664+00:00"
+}

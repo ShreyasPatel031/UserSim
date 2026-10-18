@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1997295090159b74c43b321dd4ea1854e254436dd6acf0c54a41af8777cffe98",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 265,
+  "output_tokens": 920,
+  "cost_usd": 0.0023795,
+  "elapsed_s": 24.5,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Robust security for sensitive credentials.\",\n    \"Efficient autofill and password generation.\",\n    \"Centralized and organized password management.\"\n  ],\n  \"cons\": [\n    \"Occasional browser extension glitches.\",\n    \"Initial setup can be somewhat involved.\",\n    \"Subscription cost might be a consideration.\"\n  ],\n  \"overall_experience\": \"This Application Development Analyst likely found 1Password to be an excellent tool for securely managing their passwords, appreciating its strong security features and efficient autofill capabilities. While the initial setup might have required some effort and minor browser extension issues could occur, the overall experience was positive due to its robust functionality and contribution to secure digital practices.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Robust security for sensitive credentials.",
+      "Efficient autofill and password generation.",
+      "Centralized and organized password management."
+    ],
+    "cons": [
+      "Occasional browser extension glitches.",
+      "Initial setup can be somewhat involved.",
+      "Subscription cost might be a consideration."
+    ],
+    "overall_experience": "This Application Development Analyst likely found 1Password to be an excellent tool for securely managing their passwords, appreciating its strong security features and efficient autofill capabilities. While the initial setup might have required some effort and minor browser extension issues could occur, the overall experience was positive due to its robust functionality and contribution to secure digital practices."
+  },
+  "ts": "2026-10-18T05:24:54.752832+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "155e3f6f880eae5f42d94184b98d35e86da100fd89d6b69c4852f2693bd7e557",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 260,
+  "output_tokens": 1071,
+  "cost_usd": 0.0027554999999999997,
+  "elapsed_s": 6.98,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Efficiently consolidates marketing data in one place\",\n    \"Robust filtering and reporting capabilities\",\n    \"Streamlined data access for strategic oversight\"\n  ],\n  \"cons\": [\n    \"Initial learning curve for comprehensive feature set\",\n    \"Cost could be a concern for a small business\",\n    \"Might offer more features than a small team fully utilizes\"\n  ],\n  \"overall_experience\": \"The Director likely found HubSpot Marketing Hub highly effective for their primary task of consolidating and filtering data, appreciating its robust reporting functionalities. While the platform's comprehensive nature might have presented a slight learning curve or felt extensive for a small business, its ability to centralize critical information was a significant benefit. Value for money might have been a consideration due to cost, but the strategic advantage of integrated data was clear.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Efficiently consolidates marketing data in one place",
+      "Robust filtering and reporting capabilities",
+      "Streamlined data access for strategic oversight"
+    ],
+    "cons": [
+      "Initial learning curve for comprehensive feature set",
+      "Cost could be a concern for a small business",
+      "Might offer more features than a small team fully utilizes"
+    ],
+    "overall_experience": "The Director likely found HubSpot Marketing Hub highly effective for their primary task of consolidating and filtering data, appreciating its robust reporting functionalities. While the platform's comprehensive nature might have presented a slight learning curve or felt extensive for a small business, its ability to centralize critical information was a significant benefit. Value for money might have been a consideration due to cost, but the strategic advantage of integrated data was clear."
+  },
+  "ts": "2026-10-18T05:25:01.001793+00:00"
+}

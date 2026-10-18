@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "192cf05363b0e760a1b6cf918a046143984f9a48d592ee194a035fd5481c29c0",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 365,
+  "output_tokens": 959,
+  "cost_usd": 0.0025069999999999997,
+  "elapsed_s": 6.15,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Streamlined campaign coordination visually.\",\n    \"Improved team capacity planning with AI insights.\",\n    \"Enhanced alignment of execution with strategy.\"\n  ],\n  \"cons\": [\n    \"Initial setup complexity for AI features.\",\n    \"Potential for AI to not fully integrate with existing workflows.\",\n    \"Pricing concerns for a small business as AI features scale.\"\n  ],\n  \"overall_experience\": \"This Director of SEO & Paid Media likely found monday AI Work Platform effective for their core tasks of campaign coordination, team capacity management, and strategic alignment. The visual nature and AI enhancements probably offered valuable efficiencies for their small business. However, they may have encountered some initial setup challenges or concerns regarding the cost-effectiveness of the AI features for their company size.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Streamlined campaign coordination visually.",
+      "Improved team capacity planning with AI insights.",
+      "Enhanced alignment of execution with strategy."
+    ],
+    "cons": [
+      "Initial setup complexity for AI features.",
+      "Potential for AI to not fully integrate with existing workflows.",
+      "Pricing concerns for a small business as AI features scale."
+    ],
+    "overall_experience": "This Director of SEO & Paid Media likely found monday AI Work Platform effective for their core tasks of campaign coordination, team capacity management, and strategic alignment. The visual nature and AI enhancements probably offered valuable efficiencies for their small business. However, they may have encountered some initial setup challenges or concerns regarding the cost-effectiveness of the AI features for their company size."
+  },
+  "ts": "2026-10-18T05:25:09.474318+00:00"
+}

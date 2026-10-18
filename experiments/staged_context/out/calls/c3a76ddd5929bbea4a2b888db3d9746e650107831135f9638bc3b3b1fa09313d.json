@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c3a76ddd5929bbea4a2b888db3d9746e650107831135f9638bc3b3b1fa09313d",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 769,
+  "output_tokens": 921,
+  "cost_usd": 0.0025332,
+  "elapsed_s": 4.99,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Streamlined payroll processing for accuracy\",\n    \"Effective management of employee timesheets\",\n    \"Intuitive interface for daily HR operations\"\n  ],\n  \"cons\": [\n    \"Complexity in generating specific or custom payroll reports\",\n    \"Inconsistent response times from customer support\",\n    \"Some advanced features may require a learning curve\"\n  ],\n  \"overall_experience\": \"This HR Manager likely found Paylocity to be a generally effective tool for managing employee timesheets and payroll, appreciating its ease of use for core HR tasks. While the overall experience was positive, they may have encountered occasional frustrations with the depth of certain functionalities or the responsiveness of customer support. The system likely met their primary needs for accuracy and efficiency in a mid-market company setting.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Streamlined payroll processing for accuracy",
+      "Effective management of employee timesheets",
+      "Intuitive interface for daily HR operations"
+    ],
+    "cons": [
+      "Complexity in generating specific or custom payroll reports",
+      "Inconsistent response times from customer support",
+      "Some advanced features may require a learning curve"
+    ],
+    "overall_experience": "This HR Manager likely found Paylocity to be a generally effective tool for managing employee timesheets and payroll, appreciating its ease of use for core HR tasks. While the overall experience was positive, they may have encountered occasional frustrations with the depth of certain functionalities or the responsiveness of customer support. The system likely met their primary needs for accuracy and efficiency in a mid-market company setting."
+  },
+  "ts": "2026-10-18T05:25:47.668942+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "bffa184baaf15d7ddd94daae9510efd890c012a4d1c5855c6d08a72948956ed3",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1068,
+  "output_tokens": 1109,
+  "cost_usd": 0.0030929,
+  "elapsed_s": 6.75,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Efficiently manages sales pipeline and contact information.\",\n    \"Intuitive interface simplifies daily tasks for the sales team.\",\n    \"Provides robust tools for tracking deals and communications.\"\n  ],\n  \"cons\": [\n    \"Advanced customization or reporting might require a steeper learning curve.\",\n    \"Pricing for certain advanced features or integrations could be a concern.\",\n    \"Occasional delays in customer support response for complex issues.\"\n  ],\n  \"overall_experience\": \"The Information Technology Project Lead likely found Freshsales to be a highly effective tool for managing the sales workflow within their legal services firm. They appreciated its intuitive interface and robust features for pipeline and contact management, which significantly streamlined their team's operations. While generally positive, they may have encountered minor frustrations with the pricing structure for advanced functionalities or occasional delays in customer support for more complex technical inquiries.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Efficiently manages sales pipeline and contact information.",
+      "Intuitive interface simplifies daily tasks for the sales team.",
+      "Provides robust tools for tracking deals and communications."
+    ],
+    "cons": [
+      "Advanced customization or reporting might require a steeper learning curve.",
+      "Pricing for certain advanced features or integrations could be a concern.",
+      "Occasional delays in customer support response for complex issues."
+    ],
+    "overall_experience": "The Information Technology Project Lead likely found Freshsales to be a highly effective tool for managing the sales workflow within their legal services firm. They appreciated its intuitive interface and robust features for pipeline and contact management, which significantly streamlined their team's operations. While generally positive, they may have encountered minor frustrations with the pricing structure for advanced functionalities or occasional delays in customer support for more complex technical inquiries."
+  },
+  "ts": "2026-10-18T05:26:12.626414+00:00"
+}

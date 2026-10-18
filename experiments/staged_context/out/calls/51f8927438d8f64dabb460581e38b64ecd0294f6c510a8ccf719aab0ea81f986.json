@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "51f8927438d8f64dabb460581e38b64ecd0294f6c510a8ccf719aab0ea81f986",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1041,
+  "output_tokens": 1009,
+  "cost_usd": 0.0028347999999999997,
+  "elapsed_s": 6.6,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Comprehensive features for managing sales and customer interactions.\",\n    \"Good value for money, particularly for a small business.\",\n    \"Customization options to fit specific telecommunications workflows.\"\n  ],\n  \"cons\": [\n    \"Initial setup and customization can be complex and time-consuming.\",\n    \"The extensive feature set can feel overwhelming at first.\",\n    \"Occasional minor glitches or performance inconsistencies.\"\n  ],\n  \"overall_experience\": \"As a Managing Partner in a small telecommunications company, this reviewer likely found Zoho CRM to be a highly functional and valuable tool for managing business applications and customer relationships. The platform offered a comprehensive suite of features that, once configured, significantly streamlined operations. Despite a potentially steep learning curve and some initial setup complexities, the overall benefit and cost-effectiveness made it a strong choice for their business needs.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Comprehensive features for managing sales and customer interactions.",
+      "Good value for money, particularly for a small business.",
+      "Customization options to fit specific telecommunications workflows."
+    ],
+    "cons": [
+      "Initial setup and customization can be complex and time-consuming.",
+      "The extensive feature set can feel overwhelming at first.",
+      "Occasional minor glitches or performance inconsistencies."
+    ],
+    "overall_experience": "As a Managing Partner in a small telecommunications company, this reviewer likely found Zoho CRM to be a highly functional and valuable tool for managing business applications and customer relationships. The platform offered a comprehensive suite of features that, once configured, significantly streamlined operations. Despite a potentially steep learning curve and some initial setup complexities, the overall benefit and cost-effectiveness made it a strong choice for their business needs."
+  },
+  "ts": "2026-10-18T05:26:14.269731+00:00"
+}

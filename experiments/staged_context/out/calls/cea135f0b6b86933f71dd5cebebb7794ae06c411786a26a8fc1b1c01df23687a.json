@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "cea135f0b6b86933f71dd5cebebb7794ae06c411786a26a8fc1b1c01df23687a",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1635,
+  "output_tokens": 1132,
+  "cost_usd": 0.0033205,
+  "elapsed_s": 5.98,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Robust e-commerce features for managing products and sales.\",\n    \"Good integration capabilities with other marketing tools.\",\n    \"Scalable platform that supports business growth.\"\n  ],\n  \"cons\": [\n    \"Pricing structure can become expensive with higher sales volumes.\",\n    \"Customization options for advanced branding might be limited or require developer input.\",\n    \"Customer support response times could be inconsistent.\"\n  ],\n  \"overall_experience\": \"This Marketing Director likely found BigCommerce to be a solid and functional platform for their retail e-commerce needs, appreciating its core features and integration potential. However, they probably faced some frustrations with its cost as their sales grew and potentially found advanced visual customization challenging. Despite these points, the platform adequately served their operational tasks for over two years.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Robust e-commerce features for managing products and sales.",
+      "Good integration capabilities with other marketing tools.",
+      "Scalable platform that supports business growth."
+    ],
+    "cons": [
+      "Pricing structure can become expensive with higher sales volumes.",
+      "Customization options for advanced branding might be limited or require developer input.",
+      "Customer support response times could be inconsistent."
+    ],
+    "overall_experience": "This Marketing Director likely found BigCommerce to be a solid and functional platform for their retail e-commerce needs, appreciating its core features and integration potential. However, they probably faced some frustrations with its cost as their sales grew and potentially found advanced visual customization challenging. Despite these points, the platform adequately served their operational tasks for over two years."
+  },
+  "ts": "2026-10-18T05:26:44.382073+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e3d25db0c174a0555ac19d178cfb6602fee97511ad145dbf27a27f83b3a56a15",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1545,
+  "output_tokens": 1055,
+  "cost_usd": 0.003101,
+  "elapsed_s": 8.26,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Streamlined email sequence creation for recruitment\",\n    \"Intuitive interface for managing outreach campaigns\",\n    \"Good reporting on campaign performance\"\n  ],\n  \"cons\": [\n    \"Pricing can be a bit high for the feature set\",\n    \"Some advanced customization options are not easily discoverable\",\n    \"Initial learning curve for optimizing outreach strategies\"\n  ],\n  \"overall_experience\": \"The Marketing Coordinator likely found Reply to be an effective tool for their recruitment email outreach, appreciating its ease of use for setting up and managing campaigns. While the platform offered solid functionality and good support, they might have found the pricing slightly high for their budget. The user probably experienced a generally positive outcome, making it a valuable asset for their specific task despite minor frustrations with customization or initial setup.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Streamlined email sequence creation for recruitment",
+      "Intuitive interface for managing outreach campaigns",
+      "Good reporting on campaign performance"
+    ],
+    "cons": [
+      "Pricing can be a bit high for the feature set",
+      "Some advanced customization options are not easily discoverable",
+      "Initial learning curve for optimizing outreach strategies"
+    ],
+    "overall_experience": "The Marketing Coordinator likely found Reply to be an effective tool for their recruitment email outreach, appreciating its ease of use for setting up and managing campaigns. While the platform offered solid functionality and good support, they might have found the pricing slightly high for their budget. The user probably experienced a generally positive outcome, making it a valuable asset for their specific task despite minor frustrations with customization or initial setup."
+  },
+  "ts": "2026-10-18T05:25:06.346958+00:00"
+}

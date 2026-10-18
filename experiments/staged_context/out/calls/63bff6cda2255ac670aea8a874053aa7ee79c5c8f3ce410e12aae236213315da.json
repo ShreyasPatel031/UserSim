@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "63bff6cda2255ac670aea8a874053aa7ee79c5c8f3ce410e12aae236213315da",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 797,
+  "output_tokens": 1077,
+  "cost_usd": 0.0029316,
+  "elapsed_s": 5.96,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Facilitated quick and accessible wellness activities for employees.\",\n    \"Provided a user-friendly interface that encouraged participation.\",\n    \"Offered robust features suitable for managing wellness programs across an enterprise.\"\n  ],\n  \"cons\": [\n    \"Integration with existing enterprise systems could be more streamlined.\",\n    \"Cost-effectiveness might be a minor concern for the range of features offered.\",\n    \"Occasional need for more proactive customer support for complex issues.\"\n  ],\n  \"overall_experience\": \"As a Manager of Risk Operations, this user likely found Wellable to be an effective tool for promoting employee wellness within their large organization. The platform's ease of use and functionality were highly appreciated, enabling quick participation in activities. While generally positive, they may have noted minor areas for improvement in value for money or customer support for specific enterprise-level needs.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Facilitated quick and accessible wellness activities for employees.",
+      "Provided a user-friendly interface that encouraged participation.",
+      "Offered robust features suitable for managing wellness programs across an enterprise."
+    ],
+    "cons": [
+      "Integration with existing enterprise systems could be more streamlined.",
+      "Cost-effectiveness might be a minor concern for the range of features offered.",
+      "Occasional need for more proactive customer support for complex issues."
+    ],
+    "overall_experience": "As a Manager of Risk Operations, this user likely found Wellable to be an effective tool for promoting employee wellness within their large organization. The platform's ease of use and functionality were highly appreciated, enabling quick participation in activities. While generally positive, they may have noted minor areas for improvement in value for money or customer support for specific enterprise-level needs."
+  },
+  "ts": "2026-10-18T05:25:41.643526+00:00"
+}
