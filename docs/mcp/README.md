@@ -231,6 +231,7 @@ If the file on main is broken (bad JSON, wrong types), the server keeps the last
 | `anon_allow_sms` | `true` | SMS tools without a token. They're made safe instead of blocked (see the next three rows) |
 | `sms_lease_s` | 600 | One session holds the SMS number at a time, for this many seconds or until it closes. Others get `busy` + `retry_after_s`. Applies to every caller |
 | `anon_daily_sms_leases_per_ip` | 10 | SMS-number leases per client IP per day without a token |
+| `anon_session_id_is_credential` | `false` | Without a token, sessions belong to the caller's IP. `true` lets a no-token caller whose outbound IP rotates (cloud agents) keep using its own session by its unguessable `session_id`. Token holders' sessions stay private |
 | `sms_sender_denylist` | apple, icloud, google, g-, banks, … | Texts whose sender or body contains one of these words (whole word, case-insensitive) are **never** returned to any caller: they protect the owner's personal codes (Apple ID, banks, 2FA). Add a word with a PR |
 | `anon_allow_paid_captcha` | `false` | Paid captcha solver (CapSolver) without a token |
 | `anon_allow_shared_aliases` | `false` | `no_plus` / plain signup addresses without a token. Those can repeat across sessions, so another caller could read the mail. Without a token you only get unique `+tag` aliases |

@@ -419,6 +419,19 @@ class GmailAliasInbox(Inbox):
         self.username, self.app_password = creds
         self.address = fresh_gmail_address(self.username, host, tag, dotted=dotted)
 
+    @classmethod
+    def for_address(cls, address: str) -> "GmailAliasInbox":
+        """Inbox for an alias issued earlier (returning sign-in: login links, new-device codes)."""
+        from mvp.email_codes import _imap_creds
+
+        creds = _imap_creds()
+        if not creds:
+            raise GmailInboxMissing(GMAIL_MISSING_MSG)
+        inbox = cls.__new__(cls)
+        inbox.username, inbox.app_password = creds
+        inbox.address = address.strip()
+        return inbox
+
     def messages(self, newer_than: float) -> list[dict[str, Any]]:
         from mvp.email_codes import _body_text, _decode, _msg_timestamp, messages_for_alias
 

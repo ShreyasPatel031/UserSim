@@ -306,9 +306,20 @@ async def _playwright() -> Any:
 
 
 def get_session(session_id: str, owner: str | None = None) -> SimSession:
-    """owner: the caller's token fingerprint. Another caller's session looks unknown."""
+    """owner: the caller's token fingerprint. Another caller's session looks unknown.
+
+    Callers without a token are keyed by IP, but cloud agents leave through rotating egress IPs, so their
+    next call arrives as a different 'anon:' owner and lost its own session. With the limit
+    anon_session_id_is_credential, the unguessable session_id is the credential between anonymous callers;
+    token holders' sessions stay private to their token either way.
+    """
+    from mvp.sim_mcp import limits
+
     sim = SESSIONS.get(session_id or "")
-    if sim is None or (owner is not None and sim.owner != owner):
+    by_id = (sim is not None and is_anon(owner or "") and is_anon(sim.owner)
+             and bool(limits.get("anon_session_id_is_credential")))
+    same = owner is None or sim is not None and (sim.owner == owner or by_id)
+    if sim is None or not same:
         raise SessionError(f"unknown session_id {session_id!r}")
     return sim
 
@@ -322,9 +333,12 @@ def study_owner(study: Any) -> str | None:
     return None
 
 
-def owns_study(study: Any, owner: str) -> bool:
+def owns_study(study: Any, owner: str, *, anon_read: bool = False) -> bool:
+    """anon_read: any caller without a token may read another anonymous caller's report (reports are public on
+    the website already). Study ids appear in public watch links, so writes stay tied to the creator."""
     backend = study.get("backend") if isinstance(study, dict) else getattr(study, "backend", "")
-    return backend == "mcp" and study_owner(study) == owner
+    created_by = study_owner(study)
+    return backend == "mcp" and (created_by == owner or (anon_read and is_anon(owner) and is_anon(created_by or "")))
 
 
 def _active() -> list[SimSession]:

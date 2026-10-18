@@ -429,7 +429,7 @@ async def usersim_get_report(ctx: Context, study_id: str, format: str = "markdow
 
     live = STUDIES.get(study_id)
     data = study_to_dict(live) if live is not None else (load_local_study(study_id) or load_study_from_gcs(study_id))
-    if not data or not S.owns_study(data, _owner(ctx)):
+    if not data or not S.owns_study(data, _owner(ctx), anon_read=True):
         return _fail(S.SessionError(f"unknown study_id {study_id!r}"))
     if is_matrix(data):
         srep = build_study_report(data)
@@ -452,24 +452,37 @@ def _host(sim: S.SimSession) -> str:
 
 
 @mcp.tool(structured_output=False)
-async def usersim_signup_identity(ctx: Context, session_id: str, no_plus: bool = False) -> str:
+async def usersim_signup_identity(ctx: Context, session_id: str, no_plus: bool = False, existing_email: str = "") -> str:
     """Fresh, never-used email alias (a real inbox UserSim reads) plus password, name and username for signing up.
 
     Same alias for the whole session. Sign up with this email only; never Google or GitHub sign-in.
     no_plus=true: the site rejected a "+" address; returns a fresh dot-variant address of the same inbox instead
     (replaces the earlier alias for this session).
+    existing_email: sign back in to an account made earlier with an alias of the signup inbox. The wait tools then
+    read that address's mail (login links, new-device codes). Token holders only; no password is returned.
     """
     import asyncio
     import re
     import time
 
-    from mvp.signup_tools import new_signup
+    from mvp.signup_tools import existing_signup, new_signup
 
     from mvp.sim_mcp import limits as L
 
     try:
         owner = _owner(ctx)
         sim = S.get_session(session_id, owner)
+        if existing_email:
+            if S.is_anon(owner):
+                # Any signup-inbox alias would let an open caller read another agent's login mail.
+                raise S.SessionError("existing_email needs a bearer token: without one, only fresh aliases are issued")
+            sim.inbox, sim.identity = await asyncio.to_thread(existing_signup, existing_email)
+            sim.mail_since = time.time() - 30
+            sim.row["signup_email"] = sim.inbox.address
+            sim.row["identity_existing"] = True
+            return json.dumps({"email": sim.inbox.address,
+                               "next": "Sign in with this email. If the site mails a login link or code, call "
+                                       "usersim_wait_for_verification_link / _code."})
         shared_ok = not S.is_anon(owner) or bool(L.get("anon_allow_shared_aliases"))
         if no_plus and not shared_ok:
             # A dot-variant (or plain) address can be issued again to another session, which could then read this

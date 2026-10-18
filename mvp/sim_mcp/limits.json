@@ -53,6 +53,10 @@
       "value": 10,
       "about": "SMS-number leases per client IP per day (America/Los_Angeles) for callers without a token."
     },
+    "anon_session_id_is_credential": {
+      "value": false,
+      "about": "Callers without a token are keyed by client IP, so an agent whose outbound IP rotates between calls (cloud egress pools) loses its own session on the next call. true: between callers without a token, the unguessable session_id is enough to reach that session (its inbox and SMS lease too). Sessions of token holders stay private either way. false keeps strict per-IP isolation."
+    },
     "sms_sender_denylist": {
       "value": [
         "apple",

@@ -40,6 +40,7 @@ DEFAULTS: dict[str, Any] = {
     "anon_allow_sms": True,
     "sms_lease_s": 600,
     "anon_daily_sms_leases_per_ip": 10,
+    "anon_session_id_is_credential": False,
     "sms_sender_denylist": [
         "apple", "icloud", "google", "g-", "gmail", "microsoft", "outlook", "amazon", "paypal", "venmo", "zelle",
         "chase", "bank", "wells fargo", "citi", "amex", "american express", "capital one", "discover", "coinbase",

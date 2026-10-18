@@ -100,6 +100,21 @@ def new_signup(site_host: str, tag: str, persona: dict[str, Any] | None = None, 
     return inbox, identity_fields(persona, inbox.address)
 
 
+def existing_signup(address: str) -> tuple[Any, dict[str, str]]:
+    """(inbox, identity) for signing back in to an account made earlier on the signup inbox.
+
+    Only aliases of the dedicated signup inbox are accepted. No password is returned: the caller
+    already has it, and sites that mail a login link or new-device code are read from this inbox.
+    """
+    from mvp.signup_inbox import GmailAliasInbox
+
+    assert_signup_inbox()
+    if not inbox_allowed(address):
+        raise RuntimeError("existing_email is not an alias of the dedicated signup inbox")
+    inbox = GmailAliasInbox.for_address(address)
+    return inbox, {"email": inbox.address}
+
+
 def wait_mail(inbox: Any, host: str, *, since: float, timeout_s: float, seen: set[str],
               want: str = "any") -> dict[str, Any] | None:
     """Next verification mail for this alias: {subject, sender, code, links}.
