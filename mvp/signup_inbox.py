@@ -27,6 +27,7 @@ _URL_RE = re.compile(r"https?://[^\s<>\"')\]]+", re.I)
 _SKIP_LINK = (
     "unsubscribe", "privacy", "terms", "help", "support",
     "/legal", "preferences", ".png", ".jpg", ".gif", "mailto:", "/blog", "careers",
+    ".css", ".woff", ".svg", ".ico",
 )
 # Matched against the link's host only: as substrings they also hit real product links
 # ("x.com/" is inside "sendfox.com/...", which dropped SendFox's verify link).
@@ -35,6 +36,8 @@ _SKIP_HOSTS = (
     "apps.apple.com", "play.google.com", "tiktok.com",
     # Demo-booking links in welcome mails are never the verification link (Atatus: calendly.com/j-atatus).
     "calendly.com", "cal.com", "meetings.hubspot.com", "savvycal.com", "chilipiper.com",
+    # Web-font stylesheets in the mail <head> (Clockify, Oct 18: link 1 was fonts.googleapis.com/css?family=Roboto).
+    "fonts.googleapis.com", "fonts.gstatic.com",
 )
 _SKIP_HOST_PREFIX = ("cdn.", "status.")
 
