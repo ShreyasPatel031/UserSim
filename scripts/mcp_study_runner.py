@@ -27,7 +27,11 @@ from mcp.client.streamable_http import streamablehttp_client
 
 URL = os.environ.get("USERSIM_MCP_URL", "https://35-202-98-224.sslip.io/mcp")
 MODEL = os.environ.get("RUNNER_MODEL", "claude-haiku-4-5@20251001")
-SUB_TOOLS = {"usersim_observe", "usersim_act", "usersim_finish"}
+# The simulated user needs the signup tools too: the server prompt (usersim_simulate_user) tells it to call
+# usersim_signup_identity and the verification wait/open tools, and a signup task cannot pass without them.
+SUB_TOOLS = {"usersim_observe", "usersim_act", "usersim_finish", "usersim_signup_identity",
+             "usersim_wait_for_verification_code", "usersim_wait_for_verification_link",
+             "usersim_open_verification_link", "usersim_solve_captcha", "usersim_signup_phone", "usersim_wait_for_sms_code"}
 BUSY = ("limit", "at capacity", "too many", "busy", "try again")
 
 
