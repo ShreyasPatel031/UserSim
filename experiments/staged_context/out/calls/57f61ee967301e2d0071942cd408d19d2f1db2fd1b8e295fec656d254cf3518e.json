@@ -1,0 +1,21 @@
+{
+  "stage": "mcp_classify",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "57f61ee967301e2d0071942cd408d19d2f1db2fd1b8e295fec656d254cf3518e",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 256,
+  "input_tokens": 90,
+  "output_tokens": 230,
+  "cost_usd": 0.000602,
+  "elapsed_s": 83.03,
+  "error": null,
+  "text": "{\n  \"category\": \"CRM\",\n  \"product_name\": \"Pipedrive\"\n}",
+  "json": {
+    "category": "CRM",
+    "product_name": "Pipedrive"
+  },
+  "ts": "2026-10-18T09:49:14.272405+00:00"
+}

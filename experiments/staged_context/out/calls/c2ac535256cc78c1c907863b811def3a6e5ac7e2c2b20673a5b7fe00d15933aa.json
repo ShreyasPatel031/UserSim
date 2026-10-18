@@ -1,0 +1,51 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c2ac535256cc78c1c907863b811def3a6e5ac7e2c2b20673a5b7fe00d15933aa",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 340,
+  "output_tokens": 634,
+  "cost_usd": 0.0016870000000000001,
+  "elapsed_s": 3.77,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"collaboration_sharing_permissions\",\n      \"observable\": \"partly\",\n      \"task\": \"Create a project and add tasks to understand organization tools.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"collaboration_sharing_permissions\",\n      \"observable\": \"partly\",\n      \"task\": \"Explore communication and task management features for remote work.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"partly\",\n      \"task\": \"Create a project and manage tasks to assess effectiveness.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"other\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"other\",\n      \"observable\": \"yes\",\n      \"task\": \"Check language settings or look for interface language options.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "collaboration_sharing_permissions",
+        "observable": "partly",
+        "task": "Create a project and add tasks to understand organization tools."
+      },
+      {
+        "id": "B2",
+        "theme": "collaboration_sharing_permissions",
+        "observable": "partly",
+        "task": "Explore communication and task management features for remote work."
+      },
+      {
+        "id": "B3",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "partly",
+        "task": "Create a project and manage tasks to assess effectiveness."
+      },
+      {
+        "id": "B4",
+        "theme": "other",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "F1",
+        "theme": "other",
+        "observable": "yes",
+        "task": "Check language settings or look for interface language options."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:54:06.792152+00:00"
+}

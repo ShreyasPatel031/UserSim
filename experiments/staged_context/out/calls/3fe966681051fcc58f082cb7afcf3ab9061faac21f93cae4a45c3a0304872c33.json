@@ -1,0 +1,51 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3fe966681051fcc58f082cb7afcf3ab9061faac21f93cae4a45c3a0304872c33",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 346,
+  "output_tokens": 611,
+  "cost_usd": 0.0016313,
+  "elapsed_s": 3.25,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"customization_flexibility\",\n      \"observable\": \"yes\",\n      \"task\": \"Explore board settings and column types.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"customer_support\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"automation_workflows\",\n      \"observable\": \"partly\",\n      \"task\": \"Set up a simple automation rule.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"customization_flexibility\",\n      \"observable\": \"yes\",\n      \"task\": \"Attempt to configure a complex board.\"\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"customer_support\",\n      \"observable\": \"no\",\n      \"task\": null\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "customization_flexibility",
+        "observable": "yes",
+        "task": "Explore board settings and column types."
+      },
+      {
+        "id": "B2",
+        "theme": "customer_support",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "B3",
+        "theme": "automation_workflows",
+        "observable": "partly",
+        "task": "Set up a simple automation rule."
+      },
+      {
+        "id": "F1",
+        "theme": "customization_flexibility",
+        "observable": "yes",
+        "task": "Attempt to configure a complex board."
+      },
+      {
+        "id": "F2",
+        "theme": "customer_support",
+        "observable": "no",
+        "task": null
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:33.981182+00:00"
+}

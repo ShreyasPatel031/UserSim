@@ -1,0 +1,57 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "dddf279b812d308555a3217f2d3574587b57f2f766ead3353483f295eca2b7de",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 363,
+  "output_tokens": 686,
+  "cost_usd": 0.0018238999999999998,
+  "elapsed_s": 4.14,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"partly\",\n      \"task\": \"Create tasks with dependencies and view Gantt chart.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"scaling_large_data_or_teams\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"other\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"other\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"setup_configuration\",\n      \"observable\": \"yes\",\n      \"task\": \"Attempt to configure a new project with custom settings.\"\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"collaboration_sharing_permissions\",\n      \"observable\": \"yes\",\n      \"task\": \"Attempt to share a sheet with an external user.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "partly",
+        "task": "Create tasks with dependencies and view Gantt chart."
+      },
+      {
+        "id": "B2",
+        "theme": "scaling_large_data_or_teams",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "B3",
+        "theme": "other",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "B4",
+        "theme": "other",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "F1",
+        "theme": "setup_configuration",
+        "observable": "yes",
+        "task": "Attempt to configure a new project with custom settings."
+      },
+      {
+        "id": "F2",
+        "theme": "collaboration_sharing_permissions",
+        "observable": "yes",
+        "task": "Attempt to share a sheet with an external user."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:54:14.808625+00:00"
+}

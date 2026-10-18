@@ -1,0 +1,51 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "47460e572841ac1ae1261862a47d74f138886b437808ed4a99594b6f7f7d53e0",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 345,
+  "output_tokens": 635,
+  "cost_usd": 0.0016910000000000002,
+  "elapsed_s": 3.5,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"reporting_analytics\",\n      \"observable\": \"yes\",\n      \"task\": \"Explore sample dashboards and reports\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Create a basic report from sample data\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"onboarding_learning_curve\",\n      \"observable\": \"partly\",\n      \"task\": \"Attempt to create a simple dashboard\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate the interface and view sample reports\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"partly\",\n      \"task\": \"Attempt advanced data transformations or custom calculations\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "reporting_analytics",
+        "observable": "yes",
+        "task": "Explore sample dashboards and reports"
+      },
+      {
+        "id": "B2",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Create a basic report from sample data"
+      },
+      {
+        "id": "B3",
+        "theme": "onboarding_learning_curve",
+        "observable": "partly",
+        "task": "Attempt to create a simple dashboard"
+      },
+      {
+        "id": "B4",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate the interface and view sample reports"
+      },
+      {
+        "id": "F1",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "partly",
+        "task": "Attempt advanced data transformations or custom calculations"
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:54.619127+00:00"
+}

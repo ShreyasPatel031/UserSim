@@ -1,0 +1,21 @@
+{
+  "stage": "mcp_classify",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "dca89c19c025b22bf182f40efbd46082bb93140949fa11476fecd74f99b67652",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 256,
+  "input_tokens": 88,
+  "output_tokens": 227,
+  "cost_usd": 0.0005939,
+  "elapsed_s": 54.51,
+  "error": null,
+  "text": "{\n  \"category\": \"Project Management\",\n  \"product_name\": \"Notion\"\n}",
+  "json": {
+    "category": "Project Management",
+    "product_name": "Notion"
+  },
+  "ts": "2026-10-18T09:49:15.091518+00:00"
+}

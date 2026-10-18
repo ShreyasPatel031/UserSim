@@ -1,0 +1,45 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0161bbd84d10651fc1e1f22d43fd0924d2962c7e7906d62826fa9a2c24f93b94",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 322,
+  "output_tokens": 592,
+  "cost_usd": 0.0015766,
+  "elapsed_s": 5.11,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"onboarding_learning_curve\",\n      \"observable\": \"yes\",\n      \"task\": \"Complete the initial setup and guided tour.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"customization_flexibility\",\n      \"observable\": \"partly\",\n      \"task\": \"Explore options to customize a record layout or add a custom field.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"reporting_analytics\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Change UI language to Spanish and navigate the interface.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "onboarding_learning_curve",
+        "observable": "yes",
+        "task": "Complete the initial setup and guided tour."
+      },
+      {
+        "id": "B2",
+        "theme": "customization_flexibility",
+        "observable": "partly",
+        "task": "Explore options to customize a record layout or add a custom field."
+      },
+      {
+        "id": "B3",
+        "theme": "reporting_analytics",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "F1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Change UI language to Spanish and navigate the interface."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:54:04.081683+00:00"
+}

@@ -1,0 +1,57 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "5165ee6f717cd7db1a19bf11c7905a63c3a4006efaaf1019e063dbad4bde0957",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 343,
+  "output_tokens": 721,
+  "cost_usd": 0.0019053999999999998,
+  "elapsed_s": 10.95,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Create a project and add a few tasks.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"notifications\",\n      \"observable\": \"partly\",\n      \"task\": \"Set a due date and a reminder for a task.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"notifications\",\n      \"observable\": \"partly\",\n      \"task\": \"Assign a task to yourself and set a due date.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Explore different project views and settings.\"\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate between projects, tasks, and inbox.\"\n    },\n    {\n      \"id\": \"F3\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Open a project with multiple tasks and details.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Create a project and add a few tasks."
+      },
+      {
+        "id": "B2",
+        "theme": "notifications",
+        "observable": "partly",
+        "task": "Set a due date and a reminder for a task."
+      },
+      {
+        "id": "B3",
+        "theme": "notifications",
+        "observable": "partly",
+        "task": "Assign a task to yourself and set a due date."
+      },
+      {
+        "id": "F1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Explore different project views and settings."
+      },
+      {
+        "id": "F2",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate between projects, tasks, and inbox."
+      },
+      {
+        "id": "F3",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Open a project with multiple tasks and details."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:29.831982+00:00"
+}

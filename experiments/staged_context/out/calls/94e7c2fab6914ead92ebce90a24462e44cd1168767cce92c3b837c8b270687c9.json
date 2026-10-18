@@ -1,0 +1,45 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "94e7c2fab6914ead92ebce90a24462e44cd1168767cce92c3b837c8b270687c9",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 326,
+  "output_tokens": 558,
+  "cost_usd": 0.0014928,
+  "elapsed_s": 3.09,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"customer_support\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"customer_support\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Explore chat features like canned responses, file sharing, and visitor monitoring.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"other\",\n      \"observable\": \"no\",\n      \"task\": null\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "customer_support",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "B2",
+        "theme": "customer_support",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "B3",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Explore chat features like canned responses, file sharing, and visitor monitoring."
+      },
+      {
+        "id": "B4",
+        "theme": "other",
+        "observable": "no",
+        "task": null
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:54:07.564522+00:00"
+}

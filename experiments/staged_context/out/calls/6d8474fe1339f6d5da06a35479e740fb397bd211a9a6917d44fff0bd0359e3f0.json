@@ -1,0 +1,39 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "6d8474fe1339f6d5da06a35479e740fb397bd211a9a6917d44fff0bd0359e3f0",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 325,
+  "output_tokens": 620,
+  "cost_usd": 0.0016474999999999999,
+  "elapsed_s": 3.73,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Explore all main menu items and sub-sections.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate through main sections and attempt basic actions.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"partly\",\n      \"task\": \"Create a new segment with advanced conditional logic.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Explore all main menu items and sub-sections."
+      },
+      {
+        "id": "B2",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate through main sections and attempt basic actions."
+      },
+      {
+        "id": "F1",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "partly",
+        "task": "Create a new segment with advanced conditional logic."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:54:11.354610+00:00"
+}

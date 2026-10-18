@@ -1,0 +1,69 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ccde6b792a8e3a52db6c69577a7992a55e466a64b12463cf9e50cdede7e27fee",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 378,
+  "output_tokens": 755,
+  "cost_usd": 0.0020009,
+  "elapsed_s": 14.74,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate through projects and tasks.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Create a project and add tasks.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Explore available features and modules.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"customization_flexibility\",\n      \"observable\": \"yes\",\n      \"task\": \"Adjust project views or task fields.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"other\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Test AI features with various prompts.\"\n    },\n    {\n      \"id\": \"F3\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Attempt to use AI features for a task.\"\n    },\n    {\n      \"id\": \"F4\",\n      \"theme\": \"other\",\n      \"observable\": \"no\",\n      \"task\": null\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate through projects and tasks."
+      },
+      {
+        "id": "B2",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Create a project and add tasks."
+      },
+      {
+        "id": "B3",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Explore available features and modules."
+      },
+      {
+        "id": "B4",
+        "theme": "customization_flexibility",
+        "observable": "yes",
+        "task": "Adjust project views or task fields."
+      },
+      {
+        "id": "F1",
+        "theme": "other",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "F2",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Test AI features with various prompts."
+      },
+      {
+        "id": "F3",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Attempt to use AI features for a task."
+      },
+      {
+        "id": "F4",
+        "theme": "other",
+        "observable": "no",
+        "task": null
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:29.902667+00:00"
+}

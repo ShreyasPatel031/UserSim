@@ -1,0 +1,36 @@
+{
+  "stage": "hm_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e44656eb1371f600d61ce8aaaeb483d346c7e42a63f7545571f5b10017cd570f",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3235,
+  "output_tokens": 1009,
+  "cost_usd": 0.0034929999999999996,
+  "elapsed_s": 5.82,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Simple interface for tracking communication and documents.\",\n    \"Easy to add and manage to-do lists and events.\",\n    \"Streamlined project overview with minimal clutter.\"\n  ],\n  \"cons\": [\n    \"Limited functionality compared to more feature-rich alternatives.\",\n    \"Free plan restrictions (e.g., one project) could be a constraint.\",\n    \"Manual date/time adjustments for events can be a minor friction point.\"\n  ],\n  \"overall_experience\": \"This Fullstack Developer likely found Basecamp to be a straightforward and efficient tool for organizing work, communication, and documents within their remote team. Its simplicity and ease of use were appreciated for core tasks, though the platform's more limited feature set compared to other project management tools might have occasionally left them wanting more advanced capabilities. Despite some minor workflow frictions, Basecamp served its purpose well for their daily operational needs.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Simple interface for tracking communication and documents.",
+      "Easy to add and manage to-do lists and events.",
+      "Streamlined project overview with minimal clutter."
+    ],
+    "cons": [
+      "Limited functionality compared to more feature-rich alternatives.",
+      "Free plan restrictions (e.g., one project) could be a constraint.",
+      "Manual date/time adjustments for events can be a minor friction point."
+    ],
+    "overall_experience": "This Fullstack Developer likely found Basecamp to be a straightforward and efficient tool for organizing work, communication, and documents within their remote team. Its simplicity and ease of use were appreciated for core tasks, though the platform's more limited feature set compared to other project management tools might have occasionally left them wanting more advanced capabilities. Despite some minor workflow frictions, Basecamp served its purpose well for their daily operational needs."
+  },
+  "ts": "2026-10-18T09:55:52.347781+00:00"
+}

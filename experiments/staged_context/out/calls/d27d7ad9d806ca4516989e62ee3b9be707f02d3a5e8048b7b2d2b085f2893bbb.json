@@ -1,0 +1,45 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d27d7ad9d806ca4516989e62ee3b9be707f02d3a5e8048b7b2d2b085f2893bbb",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 326,
+  "output_tokens": 604,
+  "cost_usd": 0.0016078000000000002,
+  "elapsed_s": 3.73,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"partly\",\n      \"task\": \"Explore main modules and settings\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"other\",\n      \"observable\": \"yes\",\n      \"task\": \"Sign up for Zoho CRM and explore dashboard\"\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"pricing_cost\",\n      \"observable\": \"yes\",\n      \"task\": \"Review pricing plans on website\"\n    },\n    {\n      \"id\": \"F3\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"partly\",\n      \"task\": \"Attempt to use a specific core feature\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "ui_ease_navigation",
+        "observable": "partly",
+        "task": "Explore main modules and settings"
+      },
+      {
+        "id": "F1",
+        "theme": "other",
+        "observable": "yes",
+        "task": "Sign up for Zoho CRM and explore dashboard"
+      },
+      {
+        "id": "F2",
+        "theme": "pricing_cost",
+        "observable": "yes",
+        "task": "Review pricing plans on website"
+      },
+      {
+        "id": "F3",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "partly",
+        "task": "Attempt to use a specific core feature"
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:54:03.543841+00:00"
+}

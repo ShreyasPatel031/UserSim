@@ -1,0 +1,51 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "05cfd197428c183b2aa90623b7d59958275d74f0edc6e2e2194668e2fd5e40b6",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 344,
+  "output_tokens": 628,
+  "cost_usd": 0.0016732,
+  "elapsed_s": 3.82,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"other\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"other\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"other\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate through main CRM sections\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"other\",\n      \"observable\": \"no\",\n      \"task\": null\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "other",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "B2",
+        "theme": "other",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "B3",
+        "theme": "other",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "B4",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate through main CRM sections"
+      },
+      {
+        "id": "F1",
+        "theme": "other",
+        "observable": "no",
+        "task": null
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:36.974485+00:00"
+}

@@ -1,0 +1,33 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "5cbf1a53d92f155f341f8d6502344cc7d31f40e739b49d4297e63398989833a5",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 308,
+  "output_tokens": 470,
+  "cost_usd": 0.0012674000000000001,
+  "elapsed_s": 9.84,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Locate and attempt to use the team member rewarding feature.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"partly\",\n      \"task\": \"Navigate the platform as different user roles (if available).\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Locate and attempt to use the team member rewarding feature."
+      },
+      {
+        "id": "B2",
+        "theme": "ui_ease_navigation",
+        "observable": "partly",
+        "task": "Navigate the platform as different user roles (if available)."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:28.409791+00:00"
+}

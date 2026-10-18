@@ -1,0 +1,26 @@
+{
+  "stage": "live_competitors",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "988562c40ec84df1d101b95efb888851a1360242b04ba1478f8c91165274be6a",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 512,
+  "input_tokens": 843,
+  "output_tokens": 410,
+  "cost_usd": 0.0012778999999999998,
+  "elapsed_s": 3.43,
+  "error": null,
+  "text": "{\n  \"competitors\": [\n    \"Stripe\",\n    \"Square\",\n    \"Adyen\",\n    \"Shopify Payments\",\n    \"Worldpay\"\n  ]\n}",
+  "json": {
+    "competitors": [
+      "Stripe",
+      "Square",
+      "Adyen",
+      "Shopify Payments",
+      "Worldpay"
+    ]
+  },
+  "ts": "2026-10-18T09:44:22.813233+00:00"
+}

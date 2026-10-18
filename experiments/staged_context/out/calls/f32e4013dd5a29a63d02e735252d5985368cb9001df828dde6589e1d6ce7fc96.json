@@ -1,0 +1,51 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f32e4013dd5a29a63d02e735252d5985368cb9001df828dde6589e1d6ce7fc96",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 352,
+  "output_tokens": 633,
+  "cost_usd": 0.0016880999999999999,
+  "elapsed_s": 13.11,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"automation_workflows\",\n      \"observable\": \"yes\",\n      \"task\": \"Send a reply and observe email status change.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"collaboration_sharing_permissions\",\n      \"observable\": \"yes\",\n      \"task\": \"Assign an email to a team member.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Apply tags to emails for categorization.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"templates\",\n      \"observable\": \"yes\",\n      \"task\": \"Create and use a saved reply.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Locate closed messages after responding.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "automation_workflows",
+        "observable": "yes",
+        "task": "Send a reply and observe email status change."
+      },
+      {
+        "id": "B2",
+        "theme": "collaboration_sharing_permissions",
+        "observable": "yes",
+        "task": "Assign an email to a team member."
+      },
+      {
+        "id": "B3",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Apply tags to emails for categorization."
+      },
+      {
+        "id": "B4",
+        "theme": "templates",
+        "observable": "yes",
+        "task": "Create and use a saved reply."
+      },
+      {
+        "id": "F1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Locate closed messages after responding."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:29.136574+00:00"
+}

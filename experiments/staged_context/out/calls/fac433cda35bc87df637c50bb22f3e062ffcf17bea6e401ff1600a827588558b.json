@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "fac433cda35bc87df637c50bb22f3e062ffcf17bea6e401ff1600a827588558b",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 197,
+  "output_tokens": 536,
+  "cost_usd": 0.0013991000000000001,
+  "elapsed_s": 10.18,
+  "error": null,
+  "text": "{\n  \"task\": \"Organize and train staff within an institution.\",\n  \"benefits\": [\n    \"Good for staff organization\",\n    \"Good for staff training\",\n    \"Useful for staff communication\"\n  ],\n  \"frictions\": [\n    \"Requires time to manage the app\",\n    \"Difficult to learn and use initially\"\n  ]\n}",
+  "json": {
+    "task": "Organize and train staff within an institution.",
+    "benefits": [
+      "Good for staff organization",
+      "Good for staff training",
+      "Useful for staff communication"
+    ],
+    "frictions": [
+      "Requires time to manage the app",
+      "Difficult to learn and use initially"
+    ]
+  },
+  "ts": "2026-10-18T09:55:22.676545+00:00"
+}

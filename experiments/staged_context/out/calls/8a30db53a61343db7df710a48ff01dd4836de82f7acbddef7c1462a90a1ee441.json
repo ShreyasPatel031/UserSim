@@ -1,0 +1,57 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8a30db53a61343db7df710a48ff01dd4836de82f7acbddef7c1462a90a1ee441",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 357,
+  "output_tokens": 693,
+  "cost_usd": 0.0018396,
+  "elapsed_s": 3.87,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate through channels and send messages.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"partly\",\n      \"task\": \"Send a direct message and observe delivery speed.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Initiate a video call with another user.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"notifications\",\n      \"observable\": \"yes\",\n      \"task\": \"Observe how new messages are indicated.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"mobile_app\",\n      \"observable\": \"yes\",\n      \"task\": \"Attempt to use speaker during a mobile call.\"\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"mobile_app\",\n      \"observable\": \"yes\",\n      \"task\": \"Search for hands-free options in mobile settings.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate through channels and send messages."
+      },
+      {
+        "id": "B2",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "partly",
+        "task": "Send a direct message and observe delivery speed."
+      },
+      {
+        "id": "B3",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Initiate a video call with another user."
+      },
+      {
+        "id": "B4",
+        "theme": "notifications",
+        "observable": "yes",
+        "task": "Observe how new messages are indicated."
+      },
+      {
+        "id": "F1",
+        "theme": "mobile_app",
+        "observable": "yes",
+        "task": "Attempt to use speaker during a mobile call."
+      },
+      {
+        "id": "F2",
+        "theme": "mobile_app",
+        "observable": "yes",
+        "task": "Search for hands-free options in mobile settings."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:55.840786+00:00"
+}

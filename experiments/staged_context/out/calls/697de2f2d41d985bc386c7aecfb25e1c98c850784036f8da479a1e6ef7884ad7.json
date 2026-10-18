@@ -1,0 +1,57 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "697de2f2d41d985bc386c7aecfb25e1c98c850784036f8da479a1e6ef7884ad7",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 368,
+  "output_tokens": 686,
+  "cost_usd": 0.0018254,
+  "elapsed_s": 3.95,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"collaboration_sharing_permissions\",\n      \"observable\": \"partly\",\n      \"task\": \"Explore the unified inbox interface with multiple channels.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"performance_speed\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"performance_speed\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"mobile_app\",\n      \"observable\": \"yes\",\n      \"task\": \"Open the mobile app and check ticket management options.\"\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"mobile_app\",\n      \"observable\": \"partly\",\n      \"task\": \"Attempt to handle a complex service request on the mobile app.\"\n    },\n    {\n      \"id\": \"F3\",\n      \"theme\": \"mobile_app\",\n      \"observable\": \"partly\",\n      \"task\": \"Try to respond to a ticket using the mobile app.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "collaboration_sharing_permissions",
+        "observable": "partly",
+        "task": "Explore the unified inbox interface with multiple channels."
+      },
+      {
+        "id": "B2",
+        "theme": "performance_speed",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "B3",
+        "theme": "performance_speed",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "F1",
+        "theme": "mobile_app",
+        "observable": "yes",
+        "task": "Open the mobile app and check ticket management options."
+      },
+      {
+        "id": "F2",
+        "theme": "mobile_app",
+        "observable": "partly",
+        "task": "Attempt to handle a complex service request on the mobile app."
+      },
+      {
+        "id": "F3",
+        "theme": "mobile_app",
+        "observable": "partly",
+        "task": "Try to respond to a ticket using the mobile app."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:54:09.134835+00:00"
+}

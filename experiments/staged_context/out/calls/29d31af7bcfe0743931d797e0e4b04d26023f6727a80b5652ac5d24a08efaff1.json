@@ -1,0 +1,51 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "29d31af7bcfe0743931d797e0e4b04d26023f6727a80b5652ac5d24a08efaff1",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 350,
+  "output_tokens": 659,
+  "cost_usd": 0.0017525,
+  "elapsed_s": 3.93,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Create a new page and type some text.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Create a new page and add a to-do list block.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"templates\",\n      \"observable\": \"yes\",\n      \"task\": \"Browse the Notion template gallery.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"pricing_cost\",\n      \"observable\": \"partly\",\n      \"task\": \"Attempt to use a premium template's advanced features.\"\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"free_plan_or_tier_limits\",\n      \"observable\": \"yes\",\n      \"task\": \"Use Notion AI for several prompts.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Create a new page and type some text."
+      },
+      {
+        "id": "B2",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Create a new page and add a to-do list block."
+      },
+      {
+        "id": "B3",
+        "theme": "templates",
+        "observable": "yes",
+        "task": "Browse the Notion template gallery."
+      },
+      {
+        "id": "F1",
+        "theme": "pricing_cost",
+        "observable": "partly",
+        "task": "Attempt to use a premium template's advanced features."
+      },
+      {
+        "id": "F2",
+        "theme": "free_plan_or_tier_limits",
+        "observable": "yes",
+        "task": "Use Notion AI for several prompts."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:36.093420+00:00"
+}

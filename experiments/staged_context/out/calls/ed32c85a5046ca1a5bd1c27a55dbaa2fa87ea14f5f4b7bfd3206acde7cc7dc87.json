@@ -1,0 +1,57 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ed32c85a5046ca1a5bd1c27a55dbaa2fa87ea14f5f4b7bfd3206acde7cc7dc87",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 364,
+  "output_tokens": 672,
+  "cost_usd": 0.0017892,
+  "elapsed_s": 3.79,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Set up a basic helpdesk and create a ticket.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"notifications\",\n      \"observable\": \"yes\",\n      \"task\": \"Create a task and set a reminder for 5 minutes later.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"reporting_analytics\",\n      \"observable\": \"partly\",\n      \"task\": \"Navigate to reports and view available metrics.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"search\",\n      \"observable\": \"yes\",\n      \"task\": \"Search the Solutions Centre for a keyword.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"integrations\",\n      \"observable\": \"yes\",\n      \"task\": \"Attempt to connect Freshdesk with Monday.com.\"\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"mobile_app\",\n      \"observable\": \"yes\",\n      \"task\": \"Download and use the mobile app for basic tasks.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Set up a basic helpdesk and create a ticket."
+      },
+      {
+        "id": "B2",
+        "theme": "notifications",
+        "observable": "yes",
+        "task": "Create a task and set a reminder for 5 minutes later."
+      },
+      {
+        "id": "B3",
+        "theme": "reporting_analytics",
+        "observable": "partly",
+        "task": "Navigate to reports and view available metrics."
+      },
+      {
+        "id": "B4",
+        "theme": "search",
+        "observable": "yes",
+        "task": "Search the Solutions Centre for a keyword."
+      },
+      {
+        "id": "F1",
+        "theme": "integrations",
+        "observable": "yes",
+        "task": "Attempt to connect Freshdesk with Monday.com."
+      },
+      {
+        "id": "F2",
+        "theme": "mobile_app",
+        "observable": "yes",
+        "task": "Download and use the mobile app for basic tasks."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:54:15.470264+00:00"
+}

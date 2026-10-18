@@ -1,0 +1,57 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "33c09fd43ff41453c723f1f21b0b8cc57913156fc54a34c69ea0b0e92e7739ca",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 358,
+  "output_tokens": 691,
+  "cost_usd": 0.0018348999999999998,
+  "elapsed_s": 3.67,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate through various sections; create a new project.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Create an issue; assign it; add a comment.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"integrations\",\n      \"observable\": \"partly\",\n      \"task\": \"Locate API documentation; review available endpoints.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Explore different project views and settings.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"collaboration_sharing_permissions\",\n      \"observable\": \"partly\",\n      \"task\": \"Attempt to add a new user and assign specific permissions.\"\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"other\",\n      \"observable\": \"no\",\n      \"task\": null\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate through various sections; create a new project."
+      },
+      {
+        "id": "B2",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Create an issue; assign it; add a comment."
+      },
+      {
+        "id": "B3",
+        "theme": "integrations",
+        "observable": "partly",
+        "task": "Locate API documentation; review available endpoints."
+      },
+      {
+        "id": "B4",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Explore different project views and settings."
+      },
+      {
+        "id": "F1",
+        "theme": "collaboration_sharing_permissions",
+        "observable": "partly",
+        "task": "Attempt to add a new user and assign specific permissions."
+      },
+      {
+        "id": "F2",
+        "theme": "other",
+        "observable": "no",
+        "task": null
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:54:00.836696+00:00"
+}

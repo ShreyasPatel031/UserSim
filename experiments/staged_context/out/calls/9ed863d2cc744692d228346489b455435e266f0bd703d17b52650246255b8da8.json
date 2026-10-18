@@ -1,0 +1,45 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9ed863d2cc744692d228346489b455435e266f0bd703d17b52650246255b8da8",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 327,
+  "output_tokens": 556,
+  "cost_usd": 0.0014881,
+  "elapsed_s": 3.22,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Log in; find and log hours.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate to timesheets; manage entries.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"other\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"customer_support\",\n      \"observable\": \"no\",\n      \"task\": null\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Log in; find and log hours."
+      },
+      {
+        "id": "B2",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate to timesheets; manage entries."
+      },
+      {
+        "id": "B3",
+        "theme": "other",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "B4",
+        "theme": "customer_support",
+        "observable": "no",
+        "task": null
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:48.325381+00:00"
+}

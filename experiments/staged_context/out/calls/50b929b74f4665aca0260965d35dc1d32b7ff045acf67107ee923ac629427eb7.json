@@ -1,0 +1,51 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "50b929b74f4665aca0260965d35dc1d32b7ff045acf67107ee923ac629427eb7",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 339,
+  "output_tokens": 684,
+  "cost_usd": 0.0018117,
+  "elapsed_s": 4.31,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"View a demo employee's paystub.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate to the benefits section.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Find and attempt to complete a demo training.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Request time off for a demo employee.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Identify employee subdivisions from the employee list.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "View a demo employee's paystub."
+      },
+      {
+        "id": "B2",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Navigate to the benefits section."
+      },
+      {
+        "id": "B3",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Find and attempt to complete a demo training."
+      },
+      {
+        "id": "B4",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Request time off for a demo employee."
+      },
+      {
+        "id": "F1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Identify employee subdivisions from the employee list."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:51.558495+00:00"
+}

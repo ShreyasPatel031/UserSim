@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8b4763db93a2eb024ce4198fdf5d51fd0c1eb19e4a4cb49497e0f3ff22eba02b",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2580,
+  "output_tokens": 1084,
+  "cost_usd": 0.0034839999999999997,
+  "elapsed_s": 6.28,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Facilitates clear team communication and project updates.\",\n    \"Straightforward interface makes it easy to onboard team members.\",\n    \"Centralized place for project documents and discussions.\"\n  ],\n  \"cons\": [\n    \"Lacks advanced customization options for complex workflows.\",\n    \"Reporting features may not be detailed enough for development metrics.\",\n    \"Could benefit from more robust integrations with developer-specific tools.\"\n  ],\n  \"overall_experience\": \"This software developer likely found Basecamp to be a highly effective tool for general project communication and task organization within their team. Its simplicity and focus on direct communication were probably appreciated for keeping everyone aligned. However, the developer may have encountered limitations regarding advanced functionality, detailed reporting, or deep customization often desired for technical project management.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Facilitates clear team communication and project updates.",
+      "Straightforward interface makes it easy to onboard team members.",
+      "Centralized place for project documents and discussions."
+    ],
+    "cons": [
+      "Lacks advanced customization options for complex workflows.",
+      "Reporting features may not be detailed enough for development metrics.",
+      "Could benefit from more robust integrations with developer-specific tools."
+    ],
+    "overall_experience": "This software developer likely found Basecamp to be a highly effective tool for general project communication and task organization within their team. Its simplicity and focus on direct communication were probably appreciated for keeping everyone aligned. However, the developer may have encountered limitations regarding advanced functionality, detailed reporting, or deep customization often desired for technical project management."
+  },
+  "ts": "2026-10-18T09:55:55.977637+00:00"
+}

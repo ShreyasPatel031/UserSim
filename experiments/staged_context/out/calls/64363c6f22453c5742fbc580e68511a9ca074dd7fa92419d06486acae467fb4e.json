@@ -1,0 +1,45 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "64363c6f22453c5742fbc580e68511a9ca074dd7fa92419d06486acae467fb4e",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 322,
+  "output_tokens": 614,
+  "cost_usd": 0.0016316,
+  "elapsed_s": 3.89,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate through main modules and perform basic actions.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Log in and find key features.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Attempt to complete a core workflow without guidance.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"customization_flexibility\",\n      \"observable\": \"partly\",\n      \"task\": \"Attempt to customize a specific setup element.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate through main modules and perform basic actions."
+      },
+      {
+        "id": "B2",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Log in and find key features."
+      },
+      {
+        "id": "B3",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Attempt to complete a core workflow without guidance."
+      },
+      {
+        "id": "F1",
+        "theme": "customization_flexibility",
+        "observable": "partly",
+        "task": "Attempt to customize a specific setup element."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:54:03.098228+00:00"
+}

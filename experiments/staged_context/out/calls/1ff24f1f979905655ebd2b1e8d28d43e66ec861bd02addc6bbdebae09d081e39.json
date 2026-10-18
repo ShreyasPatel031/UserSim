@@ -1,0 +1,26 @@
+{
+  "stage": "live_competitors",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1ff24f1f979905655ebd2b1e8d28d43e66ec861bd02addc6bbdebae09d081e39",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 512,
+  "input_tokens": 343,
+  "output_tokens": 436,
+  "cost_usd": 0.0011929,
+  "elapsed_s": 3.71,
+  "error": null,
+  "text": "{\n  \"competitors\": [\n    \"Zendesk Support Suite\",\n    \"HubSpot Service Hub\",\n    \"Intercom\",\n    \"Salesforce Service Cloud\",\n    \"Gorgias\"\n  ]\n}",
+  "json": {
+    "competitors": [
+      "Zendesk Support Suite",
+      "HubSpot Service Hub",
+      "Intercom",
+      "Salesforce Service Cloud",
+      "Gorgias"
+    ]
+  },
+  "ts": "2026-10-18T09:44:16.903062+00:00"
+}

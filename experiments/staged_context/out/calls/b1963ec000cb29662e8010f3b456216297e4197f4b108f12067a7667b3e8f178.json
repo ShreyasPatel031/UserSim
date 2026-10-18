@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b1963ec000cb29662e8010f3b456216297e4197f4b108f12067a7667b3e8f178",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 203,
+  "output_tokens": 479,
+  "cost_usd": 0.0012584,
+  "elapsed_s": 10.78,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage team tasks and facilitate company-wide collaboration\",\n  \"benefits\": [\n    \"Easy to use\",\n    \"Clean interface\",\n    \"Great functionality\",\n    \"Uncomplicates task/project management\"\n  ],\n  \"frictions\": [\n    \"Lacks advanced features\",\n    \"Too many boards to track\"\n  ]\n}",
+  "json": {
+    "task": "Manage team tasks and facilitate company-wide collaboration",
+    "benefits": [
+      "Easy to use",
+      "Clean interface",
+      "Great functionality",
+      "Uncomplicates task/project management"
+    ],
+    "frictions": [
+      "Lacks advanced features",
+      "Too many boards to track"
+    ]
+  },
+  "ts": "2026-10-18T09:55:21.865633+00:00"
+}

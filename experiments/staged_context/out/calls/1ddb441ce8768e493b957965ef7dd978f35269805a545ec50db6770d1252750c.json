@@ -1,0 +1,33 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1ddb441ce8768e493b957965ef7dd978f35269805a545ec50db6770d1252750c",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 316,
+  "output_tokens": 410,
+  "cost_usd": 0.0011197999999999998,
+  "elapsed_s": 2.74,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"onboarding_learning_curve\",\n      \"observable\": \"yes\",\n      \"task\": \"Create a basic store and add a product.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"pricing_cost\",\n      \"observable\": \"yes\",\n      \"task\": \"Browse premium themes in the theme store.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "onboarding_learning_curve",
+        "observable": "yes",
+        "task": "Create a basic store and add a product."
+      },
+      {
+        "id": "F1",
+        "theme": "pricing_cost",
+        "observable": "yes",
+        "task": "Browse premium themes in the theme store."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:50.213498+00:00"
+}

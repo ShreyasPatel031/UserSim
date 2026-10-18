@@ -1,0 +1,63 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "26c2779dc4f83df0422fab0d20cdb9ce9275dedbd1b4b45e9f5c04bd47564de3",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 369,
+  "output_tokens": 696,
+  "cost_usd": 0.0018507,
+  "elapsed_s": 4.0,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"scaling_large_data_or_teams\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"pricing_cost\",\n      \"observable\": \"partly\",\n      \"task\": \"Review pricing plans on the website\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"integrations\",\n      \"observable\": \"yes\",\n      \"task\": \"Browse available integrations in the app catalog\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Set up multi-factor authentication for a test user\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"bugs_reliability\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate through various admin settings and user management\"\n    },\n    {\n      \"id\": \"F3\",\n      \"theme\": \"pricing_cost\",\n      \"observable\": \"partly\",\n      \"task\": \"Review pricing plans on the website\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "scaling_large_data_or_teams",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "B2",
+        "theme": "pricing_cost",
+        "observable": "partly",
+        "task": "Review pricing plans on the website"
+      },
+      {
+        "id": "B3",
+        "theme": "integrations",
+        "observable": "yes",
+        "task": "Browse available integrations in the app catalog"
+      },
+      {
+        "id": "B4",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Set up multi-factor authentication for a test user"
+      },
+      {
+        "id": "F1",
+        "theme": "bugs_reliability",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "F2",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate through various admin settings and user management"
+      },
+      {
+        "id": "F3",
+        "theme": "pricing_cost",
+        "observable": "partly",
+        "task": "Review pricing plans on the website"
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:57.981520+00:00"
+}

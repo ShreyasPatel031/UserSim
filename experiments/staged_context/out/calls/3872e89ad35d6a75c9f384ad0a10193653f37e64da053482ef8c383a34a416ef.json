@@ -1,0 +1,36 @@
+{
+  "stage": "hm_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3872e89ad35d6a75c9f384ad0a10193653f37e64da053482ef8c383a34a416ef",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3003,
+  "output_tokens": 1094,
+  "cost_usd": 0.0036358999999999996,
+  "elapsed_s": 7.1,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Simple and clean calendar view for project tracking\",\n    \"Easy to add events, milestones, and deadlines once set up\",\n    \"Straightforward interface for managing personal projects\"\n  ],\n  \"cons\": [\n    \"Initial setup requires manual addition of essential tools like the calendar\",\n    \"Limited to one project on the free plan, which is restrictive for multiple client workstreams\",\n    \"Events default to a specific time, requiring manual adjustment for all-day deadlines\"\n  ],\n  \"overall_experience\": \"This designer and operations manager found Basecamp generally effective for tracking projects using its calendar view, appreciating its simplicity for managing their self-employed workload. While the core task of managing deadlines was straightforward once the calendar was configured, the initial manual setup of tools and the limitation of a single project on the free plan introduced some friction. Overall, it served its purpose adequately for basic project oversight but lacked the flexibility for more complex or multi-client scenarios.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Simple and clean calendar view for project tracking",
+      "Easy to add events, milestones, and deadlines once set up",
+      "Straightforward interface for managing personal projects"
+    ],
+    "cons": [
+      "Initial setup requires manual addition of essential tools like the calendar",
+      "Limited to one project on the free plan, which is restrictive for multiple client workstreams",
+      "Events default to a specific time, requiring manual adjustment for all-day deadlines"
+    ],
+    "overall_experience": "This designer and operations manager found Basecamp generally effective for tracking projects using its calendar view, appreciating its simplicity for managing their self-employed workload. While the core task of managing deadlines was straightforward once the calendar was configured, the initial manual setup of tools and the limitation of a single project on the free plan introduced some friction. Overall, it served its purpose adequately for basic project oversight but lacked the flexibility for more complex or multi-client scenarios."
+  },
+  "ts": "2026-10-18T09:56:05.618592+00:00"
+}

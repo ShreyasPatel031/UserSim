@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8a473a243ad002a40b87c76395dceab93d4af161ba484f943a8dc15c769bac8d",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 208,
+  "output_tokens": 466,
+  "cost_usd": 0.0012274,
+  "elapsed_s": 8.17,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage projects and facilitate team collaboration.\",\n  \"benefits\": [\n    \"Collaborate internally and with external vendors\",\n    \"Assign tasks to project group members\",\n    \"Chat on tasks/projects and include others\",\n    \"Organize and delegate tasks\"\n  ],\n  \"frictions\": [\n    \"Receive repetitive notification emails for project updates and task allocations\"\n  ]\n}",
+  "json": {
+    "task": "Manage projects and facilitate team collaboration.",
+    "benefits": [
+      "Collaborate internally and with external vendors",
+      "Assign tasks to project group members",
+      "Chat on tasks/projects and include others",
+      "Organize and delegate tasks"
+    ],
+    "frictions": [
+      "Receive repetitive notification emails for project updates and task allocations"
+    ]
+  },
+  "ts": "2026-10-18T09:55:21.845242+00:00"
+}

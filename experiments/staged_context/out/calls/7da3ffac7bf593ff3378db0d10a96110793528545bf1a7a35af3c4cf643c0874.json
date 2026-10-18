@@ -1,0 +1,51 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7da3ffac7bf593ff3378db0d10a96110793528545bf1a7a35af3c4cf643c0874",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 334,
+  "output_tokens": 668,
+  "cost_usd": 0.0017702,
+  "elapsed_s": 4.0,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate through different modules and pages.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"setup_configuration\",\n      \"observable\": \"partly\",\n      \"task\": \"Configure basic user settings or dashboard.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Schedule a meeting or task with a contact.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Perform common actions like creating a lead.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"pricing_cost\",\n      \"observable\": \"no\",\n      \"task\": null\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate through different modules and pages."
+      },
+      {
+        "id": "B2",
+        "theme": "setup_configuration",
+        "observable": "partly",
+        "task": "Configure basic user settings or dashboard."
+      },
+      {
+        "id": "B3",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Schedule a meeting or task with a contact."
+      },
+      {
+        "id": "B4",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Perform common actions like creating a lead."
+      },
+      {
+        "id": "F1",
+        "theme": "pricing_cost",
+        "observable": "no",
+        "task": null
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:38.065410+00:00"
+}

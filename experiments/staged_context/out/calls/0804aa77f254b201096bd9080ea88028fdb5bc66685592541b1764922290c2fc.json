@@ -1,0 +1,51 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0804aa77f254b201096bd9080ea88028fdb5bc66685592541b1764922290c2fc",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 350,
+  "output_tokens": 650,
+  "cost_usd": 0.00173,
+  "elapsed_s": 3.61,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"collaboration_sharing_permissions\",\n      \"observable\": \"yes\",\n      \"task\": \"Send a message to a team member.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"partly\",\n      \"task\": \"Locate leave management features.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"mobile_app\",\n      \"observable\": \"yes\",\n      \"task\": \"Download and open the mobile app.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"partly\",\n      \"task\": \"Find daily check-in/check-out functionality.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"notifications\",\n      \"observable\": \"no\",\n      \"task\": null\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "collaboration_sharing_permissions",
+        "observable": "yes",
+        "task": "Send a message to a team member."
+      },
+      {
+        "id": "B2",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "partly",
+        "task": "Locate leave management features."
+      },
+      {
+        "id": "B3",
+        "theme": "mobile_app",
+        "observable": "yes",
+        "task": "Download and open the mobile app."
+      },
+      {
+        "id": "B4",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "partly",
+        "task": "Find daily check-in/check-out functionality."
+      },
+      {
+        "id": "F1",
+        "theme": "notifications",
+        "observable": "no",
+        "task": null
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:54:06.754559+00:00"
+}

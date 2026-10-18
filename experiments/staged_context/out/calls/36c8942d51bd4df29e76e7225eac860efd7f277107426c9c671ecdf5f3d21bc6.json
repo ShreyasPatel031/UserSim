@@ -1,0 +1,57 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "36c8942d51bd4df29e76e7225eac860efd7f277107426c9c671ecdf5f3d21bc6",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 346,
+  "output_tokens": 704,
+  "cost_usd": 0.0018637999999999999,
+  "elapsed_s": 3.65,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate to time off section; Request leave.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"View an employee profile; Check hire date.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Upload a document to an employee profile.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"automation_workflows\",\n      \"observable\": \"yes\",\n      \"task\": \"Initiate an onboarding or offboarding process.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate through various sections; Perform common tasks.\"\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Attempt to create a job opening; Manage applicants.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Navigate to time off section; Request leave."
+      },
+      {
+        "id": "B2",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "View an employee profile; Check hire date."
+      },
+      {
+        "id": "B3",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Upload a document to an employee profile."
+      },
+      {
+        "id": "B4",
+        "theme": "automation_workflows",
+        "observable": "yes",
+        "task": "Initiate an onboarding or offboarding process."
+      },
+      {
+        "id": "F1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate through various sections; Perform common tasks."
+      },
+      {
+        "id": "F2",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Attempt to create a job opening; Manage applicants."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:48.411334+00:00"
+}

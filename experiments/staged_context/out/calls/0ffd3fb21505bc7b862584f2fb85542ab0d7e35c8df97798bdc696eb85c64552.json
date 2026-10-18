@@ -1,0 +1,39 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0ffd3fb21505bc7b862584f2fb85542ab0d7e35c8df97798bdc696eb85c64552",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 320,
+  "output_tokens": 549,
+  "cost_usd": 0.0014685,
+  "elapsed_s": 12.05,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"free_plan_or_tier_limits\",\n      \"observable\": \"yes\",\n      \"task\": \"Sign up for the free plan\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Create an email campaign\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate through main features\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "free_plan_or_tier_limits",
+        "observable": "yes",
+        "task": "Sign up for the free plan"
+      },
+      {
+        "id": "B2",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Create an email campaign"
+      },
+      {
+        "id": "B3",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate through main features"
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:28.711709+00:00"
+}

@@ -1,0 +1,51 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0c0a23778dce25e538143645645d1bf87589fdcd7ededfe9de5eba7e3647cc54",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 337,
+  "output_tokens": 684,
+  "cost_usd": 0.0018111000000000002,
+  "elapsed_s": 4.95,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Open a sheet and switch to calendar view.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"reporting_analytics\",\n      \"observable\": \"yes\",\n      \"task\": \"Create a new report from existing sheet data.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"integrations\",\n      \"observable\": \"partly\",\n      \"task\": \"Look for Slack integration options in settings.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"integrations\",\n      \"observable\": \"partly\",\n      \"task\": \"Look for Google Workspace integration options in settings.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate through different sections and features.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Open a sheet and switch to calendar view."
+      },
+      {
+        "id": "B2",
+        "theme": "reporting_analytics",
+        "observable": "yes",
+        "task": "Create a new report from existing sheet data."
+      },
+      {
+        "id": "B3",
+        "theme": "integrations",
+        "observable": "partly",
+        "task": "Look for Slack integration options in settings."
+      },
+      {
+        "id": "B4",
+        "theme": "integrations",
+        "observable": "partly",
+        "task": "Look for Google Workspace integration options in settings."
+      },
+      {
+        "id": "F1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate through different sections and features."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:54:15.085474+00:00"
+}

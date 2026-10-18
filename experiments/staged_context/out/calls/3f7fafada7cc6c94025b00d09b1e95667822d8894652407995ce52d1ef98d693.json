@@ -1,0 +1,36 @@
+{
+  "stage": "hm_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3f7fafada7cc6c94025b00d09b1e95667822d8894652407995ce52d1ef98d693",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3393,
+  "output_tokens": 1053,
+  "cost_usd": 0.0036504,
+  "elapsed_s": 5.58,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Simple and intuitive interface for project management\",\n    \"Clear tools for managing tasks and deadlines like To-dos and Calendar\",\n    \"Effective for coordinating team collaboration on recruitment projects\"\n  ],\n  \"cons\": [\n    \"Limited reporting and analytics capabilities for tracking performance metrics\",\n    \"Lack of advanced customization for complex workflows specific to recruitment\",\n    \"The one-project limitation on the free tier is restrictive for multiple initiatives\"\n  ],\n  \"overall_experience\": \"This Specialist Recruiter likely finds Basecamp to be a straightforward and reliable tool for managing their projects and collaborating with their team within the Media Production industry. While its simplicity aids ease of use, they may feel its functionality is somewhat basic compared to more robust project management solutions, particularly regarding detailed reporting or customization. Despite some limitations, it serves its core purpose effectively for their role over a long tenure.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Simple and intuitive interface for project management",
+      "Clear tools for managing tasks and deadlines like To-dos and Calendar",
+      "Effective for coordinating team collaboration on recruitment projects"
+    ],
+    "cons": [
+      "Limited reporting and analytics capabilities for tracking performance metrics",
+      "Lack of advanced customization for complex workflows specific to recruitment",
+      "The one-project limitation on the free tier is restrictive for multiple initiatives"
+    ],
+    "overall_experience": "This Specialist Recruiter likely finds Basecamp to be a straightforward and reliable tool for managing their projects and collaborating with their team within the Media Production industry. While its simplicity aids ease of use, they may feel its functionality is somewhat basic compared to more robust project management solutions, particularly regarding detailed reporting or customization. Despite some limitations, it serves its core purpose effectively for their role over a long tenure."
+  },
+  "ts": "2026-10-18T09:56:15.098476+00:00"
+}

@@ -1,0 +1,63 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "5d079dba46a509943d5ae43a2e1fd8ca2c8458307c04b89b43bb0f190248af2a",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 361,
+  "output_tokens": 829,
+  "cost_usd": 0.0021808,
+  "elapsed_s": 5.62,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Explore main sections and create a task.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Drag and drop a task to reorder it.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"collaboration_sharing_permissions\",\n      \"observable\": \"partly\",\n      \"task\": \"Assign a task to a team member and add a comment.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate between projects, tasks, and inbox.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"pricing_cost\",\n      \"observable\": \"yes\",\n      \"task\": \"Locate pricing plans on the website or within the app.\"\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"mobile_app\",\n      \"observable\": \"yes\",\n      \"task\": \"Install and explore the mobile app's features.\"\n    },\n    {\n      \"id\": \"F3\",\n      \"theme\": \"mobile_app\",\n      \"observable\": \"yes\",\n      \"task\": \"Attempt to create and manage tasks in the mobile app.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Explore main sections and create a task."
+      },
+      {
+        "id": "B2",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Drag and drop a task to reorder it."
+      },
+      {
+        "id": "B3",
+        "theme": "collaboration_sharing_permissions",
+        "observable": "partly",
+        "task": "Assign a task to a team member and add a comment."
+      },
+      {
+        "id": "B4",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate between projects, tasks, and inbox."
+      },
+      {
+        "id": "F1",
+        "theme": "pricing_cost",
+        "observable": "yes",
+        "task": "Locate pricing plans on the website or within the app."
+      },
+      {
+        "id": "F2",
+        "theme": "mobile_app",
+        "observable": "yes",
+        "task": "Install and explore the mobile app's features."
+      },
+      {
+        "id": "F3",
+        "theme": "mobile_app",
+        "observable": "yes",
+        "task": "Attempt to create and manage tasks in the mobile app."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:34.802855+00:00"
+}

@@ -1,0 +1,33 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e2892123305e707c4400db42f1101203fdd69e70f76547d1c33eaa0b1e43707e",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 313,
+  "output_tokens": 500,
+  "cost_usd": 0.0013439,
+  "elapsed_s": 3.11,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"collaboration_sharing_permissions\",\n      \"observable\": \"yes\",\n      \"task\": \"Upload a file to a channel\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"customization_flexibility\",\n      \"observable\": \"yes\",\n      \"task\": \"Change notification settings or theme\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "collaboration_sharing_permissions",
+        "observable": "yes",
+        "task": "Upload a file to a channel"
+      },
+      {
+        "id": "B2",
+        "theme": "customization_flexibility",
+        "observable": "yes",
+        "task": "Change notification settings or theme"
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:55.438780+00:00"
+}

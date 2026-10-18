@@ -1,0 +1,39 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ba88e9f87c05b7d6dd020a4515b36198fede0a4708ba875d27f733a561b9c05b",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 326,
+  "output_tokens": 509,
+  "cost_usd": 0.0013703,
+  "elapsed_s": 13.41,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Send test emails and observe conversation history.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"performance_speed\",\n      \"observable\": \"yes\",\n      \"task\": \"Send and receive test replies to gauge speed.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"pricing_cost\",\n      \"observable\": \"no\",\n      \"task\": null\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Send test emails and observe conversation history."
+      },
+      {
+        "id": "B2",
+        "theme": "performance_speed",
+        "observable": "yes",
+        "task": "Send and receive test replies to gauge speed."
+      },
+      {
+        "id": "F1",
+        "theme": "pricing_cost",
+        "observable": "no",
+        "task": null
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:29.051494+00:00"
+}

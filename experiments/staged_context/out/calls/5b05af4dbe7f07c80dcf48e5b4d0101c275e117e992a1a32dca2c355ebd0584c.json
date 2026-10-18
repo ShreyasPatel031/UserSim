@@ -1,0 +1,39 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "5b05af4dbe7f07c80dcf48e5b4d0101c275e117e992a1a32dca2c355ebd0584c",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 326,
+  "output_tokens": 483,
+  "cost_usd": 0.0013053000000000001,
+  "elapsed_s": 3.18,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate various sections and perform basic actions\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"collaboration_sharing_permissions\",\n      \"observable\": \"yes\",\n      \"task\": \"Create and publish an internal announcement\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Locate and use employee in/out tracking feature\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate various sections and perform basic actions"
+      },
+      {
+        "id": "B2",
+        "theme": "collaboration_sharing_permissions",
+        "observable": "yes",
+        "task": "Create and publish an internal announcement"
+      },
+      {
+        "id": "B3",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Locate and use employee in/out tracking feature"
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:48.715647+00:00"
+}

@@ -1,0 +1,69 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "dc83bcc0d1978876c637fe012492329284cf41e621ddafee81beb4f5f2052676",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 394,
+  "output_tokens": 770,
+  "cost_usd": 0.0020432,
+  "elapsed_s": 4.21,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Create a new project and explore its layout.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Switch between project views like list, board, and calendar.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"collaboration_sharing_permissions\",\n      \"observable\": \"partly\",\n      \"task\": \"Assign a task to a team member and add a comment.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"collaboration_sharing_permissions\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"onboarding_learning_curve\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate the interface without prior guidance.\"\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Observe the density of elements on the main dashboard.\"\n    },\n    {\n      \"id\": \"F3\",\n      \"theme\": \"onboarding_learning_curve\",\n      \"observable\": \"yes\",\n      \"task\": \"Attempt to use advanced features like rules or reporting.\"\n    },\n    {\n      \"id\": \"F4\",\n      \"theme\": \"pricing_cost\",\n      \"observable\": \"yes\",\n      \"task\": \"Attempt to access a feature marked as premium or paid.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Create a new project and explore its layout."
+      },
+      {
+        "id": "B2",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Switch between project views like list, board, and calendar."
+      },
+      {
+        "id": "B3",
+        "theme": "collaboration_sharing_permissions",
+        "observable": "partly",
+        "task": "Assign a task to a team member and add a comment."
+      },
+      {
+        "id": "B4",
+        "theme": "collaboration_sharing_permissions",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "F1",
+        "theme": "onboarding_learning_curve",
+        "observable": "yes",
+        "task": "Navigate the interface without prior guidance."
+      },
+      {
+        "id": "F2",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Observe the density of elements on the main dashboard."
+      },
+      {
+        "id": "F3",
+        "theme": "onboarding_learning_curve",
+        "observable": "yes",
+        "task": "Attempt to use advanced features like rules or reporting."
+      },
+      {
+        "id": "F4",
+        "theme": "pricing_cost",
+        "observable": "yes",
+        "task": "Attempt to access a feature marked as premium or paid."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:32.866738+00:00"
+}

@@ -1,0 +1,21 @@
+{
+  "stage": "mcp_classify",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "af84e6e1f3f6ab74163fb1b77a53a09d155acd3f8a75b357008bf23517f0a514",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 256,
+  "input_tokens": 1191,
+  "output_tokens": 214,
+  "cost_usd": 0.0008923,
+  "elapsed_s": 1.4,
+  "error": null,
+  "text": "{\n  \"category\": \"Marketing\",\n  \"product_name\": \"Marketing Hub\"\n}",
+  "json": {
+    "category": "Marketing",
+    "product_name": "Marketing Hub"
+  },
+  "ts": "2026-10-18T09:44:19.940553+00:00"
+}

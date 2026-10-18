@@ -1,0 +1,26 @@
+{
+  "stage": "live_competitors",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "727af1687138aab329481e4c3681e3ffc0b41d53b1bf649cb2e0bd595e164aad",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 512,
+  "input_tokens": 377,
+  "output_tokens": 466,
+  "cost_usd": 0.0012781000000000001,
+  "elapsed_s": 3.7,
+  "error": null,
+  "text": "{\n  \"competitors\": [\n    \"Airtable\",\n    \"monday.com\",\n    \"Asana\",\n    \"ClickUp\",\n    \"Jira Work Management\"\n  ]\n}",
+  "json": {
+    "competitors": [
+      "Airtable",
+      "monday.com",
+      "Asana",
+      "ClickUp",
+      "Jira Work Management"
+    ]
+  },
+  "ts": "2026-10-18T09:44:16.290650+00:00"
+}

@@ -1,0 +1,69 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "db63af493dfa464414b5ac78fc79eeb24717b0bbd63e4af7afe6a45100c742a1",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 371,
+  "output_tokens": 821,
+  "cost_usd": 0.0021638,
+  "elapsed_s": 6.37,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"reporting_analytics\",\n      \"observable\": \"yes\",\n      \"task\": \"Create various chart types with demo data.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"reporting_analytics\",\n      \"observable\": \"yes\",\n      \"task\": \"Build a dashboard and apply filters to its visuals.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"collaboration_sharing_permissions\",\n      \"observable\": \"partly\",\n      \"task\": \"Find and attempt to use the share report/dashboard function.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"integrations\",\n      \"observable\": \"partly\",\n      \"task\": \"Look for options to export data or reports to Excel.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"integrations\",\n      \"observable\": \"partly\",\n      \"task\": \"Attempt to connect to non-Microsoft data sources.\"\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"partly\",\n      \"task\": \"Explore data transformation options in Power Query Editor.\"\n    },\n    {\n      \"id\": \"F3\",\n      \"theme\": \"performance_speed\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"F4\",\n      \"theme\": \"onboarding_learning_curve\",\n      \"observable\": \"yes\",\n      \"task\": \"Attempt to create a complex report from scratch.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "reporting_analytics",
+        "observable": "yes",
+        "task": "Create various chart types with demo data."
+      },
+      {
+        "id": "B2",
+        "theme": "reporting_analytics",
+        "observable": "yes",
+        "task": "Build a dashboard and apply filters to its visuals."
+      },
+      {
+        "id": "B3",
+        "theme": "collaboration_sharing_permissions",
+        "observable": "partly",
+        "task": "Find and attempt to use the share report/dashboard function."
+      },
+      {
+        "id": "B4",
+        "theme": "integrations",
+        "observable": "partly",
+        "task": "Look for options to export data or reports to Excel."
+      },
+      {
+        "id": "F1",
+        "theme": "integrations",
+        "observable": "partly",
+        "task": "Attempt to connect to non-Microsoft data sources."
+      },
+      {
+        "id": "F2",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "partly",
+        "task": "Explore data transformation options in Power Query Editor."
+      },
+      {
+        "id": "F3",
+        "theme": "performance_speed",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "F4",
+        "theme": "onboarding_learning_curve",
+        "observable": "yes",
+        "task": "Attempt to create a complex report from scratch."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:56.767428+00:00"
+}

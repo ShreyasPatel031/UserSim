@@ -1,0 +1,51 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b3062d01fd722d46a196fdab6f02a333ccde77f62d7d703ab2b33078784f5ca5",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 356,
+  "output_tokens": 692,
+  "cost_usd": 0.0018368,
+  "elapsed_s": 3.59,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Store a secure note or password.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate to security settings to view 2FA options.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"free_plan_or_tier_limits\",\n      \"observable\": \"partly\",\n      \"task\": \"Use the free plan to store passwords and notes.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Attempt to store various types of notes and extra data.\"\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Install browser plugin and try to retrieve stored notes.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Store a secure note or password."
+      },
+      {
+        "id": "B2",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Navigate to security settings to view 2FA options."
+      },
+      {
+        "id": "B3",
+        "theme": "free_plan_or_tier_limits",
+        "observable": "partly",
+        "task": "Use the free plan to store passwords and notes."
+      },
+      {
+        "id": "F1",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Attempt to store various types of notes and extra data."
+      },
+      {
+        "id": "F2",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Install browser plugin and try to retrieve stored notes."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:59.509114+00:00"
+}

@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "001a7a2f48ae66302d51f9c306a914c25eb01a0cdae60e867dfdae7c27feadcc",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 166,
+  "output_tokens": 509,
+  "cost_usd": 0.0013223,
+  "elapsed_s": 8.93,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage projects and tasks\",\n  \"benefits\": [\n    \"Project management feature is useful\",\n    \"Task management feature is useful\",\n    \"Makes everything organized\",\n    \"Easy to allocate and monitor tasks\"\n  ],\n  \"frictions\": [\n    \"Instant message feature could be improved\",\n    \"Instant message feature is not instant\"\n  ]\n}",
+  "json": {
+    "task": "Manage projects and tasks",
+    "benefits": [
+      "Project management feature is useful",
+      "Task management feature is useful",
+      "Makes everything organized",
+      "Easy to allocate and monitor tasks"
+    ],
+    "frictions": [
+      "Instant message feature could be improved",
+      "Instant message feature is not instant"
+    ]
+  },
+  "ts": "2026-10-18T09:55:22.095819+00:00"
+}

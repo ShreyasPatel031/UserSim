@@ -1,0 +1,63 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "597c52d2e25097465b1dc791dddd67b7eebed02be08d2c868acd359000e0ed0a",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 381,
+  "output_tokens": 698,
+  "cost_usd": 0.0018593,
+  "elapsed_s": 4.28,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"setup_configuration\",\n      \"observable\": \"yes\",\n      \"task\": \"Sign up and complete initial setup steps.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"onboarding_learning_curve\",\n      \"observable\": \"yes\",\n      \"task\": \"Create a basic email campaign or segment.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"customer_support\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate through main features and create a workflow.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"scaling_large_data_or_teams\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"bugs_reliability\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"F3\",\n      \"theme\": \"setup_configuration\",\n      \"observable\": \"no\",\n      \"task\": null\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "setup_configuration",
+        "observable": "yes",
+        "task": "Sign up and complete initial setup steps."
+      },
+      {
+        "id": "B2",
+        "theme": "onboarding_learning_curve",
+        "observable": "yes",
+        "task": "Create a basic email campaign or segment."
+      },
+      {
+        "id": "B3",
+        "theme": "customer_support",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "B4",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate through main features and create a workflow."
+      },
+      {
+        "id": "F1",
+        "theme": "scaling_large_data_or_teams",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "F2",
+        "theme": "bugs_reliability",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "F3",
+        "theme": "setup_configuration",
+        "observable": "no",
+        "task": null
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:54:12.093049+00:00"
+}

@@ -1,0 +1,69 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9d172cc740030fa34ac35b4f13a0e6aa657e6e43f8502cde3e18ddd786c8a90c",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 398,
+  "output_tokens": 779,
+  "cost_usd": 0.0020669,
+  "elapsed_s": 3.83,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Explore available features and tools\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate through different sections\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Simulate email, chat, and call interactions\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"setup_configuration\",\n      \"observable\": \"yes\",\n      \"task\": \"Go through initial setup steps\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"bugs_reliability\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"search\",\n      \"observable\": \"partly\",\n      \"task\": \"Search for specific past emails\"\n    },\n    {\n      \"id\": \"F3\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"partly\",\n      \"task\": \"View a ticket's full communication history\"\n    },\n    {\n      \"id\": \"F4\",\n      \"theme\": \"search\",\n      \"observable\": \"partly\",\n      \"task\": \"Apply filters to a list of tickets\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Explore available features and tools"
+      },
+      {
+        "id": "B2",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate through different sections"
+      },
+      {
+        "id": "B3",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Simulate email, chat, and call interactions"
+      },
+      {
+        "id": "B4",
+        "theme": "setup_configuration",
+        "observable": "yes",
+        "task": "Go through initial setup steps"
+      },
+      {
+        "id": "F1",
+        "theme": "bugs_reliability",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "F2",
+        "theme": "search",
+        "observable": "partly",
+        "task": "Search for specific past emails"
+      },
+      {
+        "id": "F3",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "partly",
+        "task": "View a ticket's full communication history"
+      },
+      {
+        "id": "F4",
+        "theme": "search",
+        "observable": "partly",
+        "task": "Apply filters to a list of tickets"
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:54:15.876900+00:00"
+}

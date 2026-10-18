@@ -1,0 +1,63 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9c0b62cc7afd9169976d057a00c8796545bff9339b8831daf8de463b28d15e9f",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 357,
+  "output_tokens": 781,
+  "cost_usd": 0.0020596,
+  "elapsed_s": 4.8,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Explore main navigation and linked records.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Create and view a contact record.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Create a deal and move it through stages.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Create and assign a task to a contact or deal.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"reporting_analytics\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate to the reports section and browse available reports.\"\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"reporting_analytics\",\n      \"observable\": \"partly\",\n      \"task\": \"Attempt to find specific data points within reports.\"\n    },\n    {\n      \"id\": \"F3\",\n      \"theme\": \"onboarding_learning_curve\",\n      \"observable\": \"partly\",\n      \"task\": \"Explore data models and relationships between objects.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Explore main navigation and linked records."
+      },
+      {
+        "id": "B2",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Create and view a contact record."
+      },
+      {
+        "id": "B3",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Create a deal and move it through stages."
+      },
+      {
+        "id": "B4",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Create and assign a task to a contact or deal."
+      },
+      {
+        "id": "F1",
+        "theme": "reporting_analytics",
+        "observable": "yes",
+        "task": "Navigate to the reports section and browse available reports."
+      },
+      {
+        "id": "F2",
+        "theme": "reporting_analytics",
+        "observable": "partly",
+        "task": "Attempt to find specific data points within reports."
+      },
+      {
+        "id": "F3",
+        "theme": "onboarding_learning_curve",
+        "observable": "partly",
+        "task": "Explore data models and relationships between objects."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:37.921676+00:00"
+}

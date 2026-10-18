@@ -1,0 +1,51 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ff991dfec93a6b534102a8896db89346f8b278b38d3d940cb1343b6311423179",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 362,
+  "output_tokens": 666,
+  "cost_usd": 0.0017736,
+  "elapsed_s": 3.45,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"automation_workflows\",\n      \"observable\": \"yes\",\n      \"task\": \"Explore automation recipes and available triggers.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"automation_workflows\",\n      \"observable\": \"partly\",\n      \"task\": \"Find and explore AI automation features.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Locate and view the 'My Work' tab.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"customization_flexibility\",\n      \"observable\": \"yes\",\n      \"task\": \"Change visibility settings for an item or board.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"pricing_cost\",\n      \"observable\": \"yes\",\n      \"task\": \"Review pricing plans on the website.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "automation_workflows",
+        "observable": "yes",
+        "task": "Explore automation recipes and available triggers."
+      },
+      {
+        "id": "B2",
+        "theme": "automation_workflows",
+        "observable": "partly",
+        "task": "Find and explore AI automation features."
+      },
+      {
+        "id": "B3",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Locate and view the 'My Work' tab."
+      },
+      {
+        "id": "B4",
+        "theme": "customization_flexibility",
+        "observable": "yes",
+        "task": "Change visibility settings for an item or board."
+      },
+      {
+        "id": "F1",
+        "theme": "pricing_cost",
+        "observable": "yes",
+        "task": "Review pricing plans on the website."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:34.595364+00:00"
+}

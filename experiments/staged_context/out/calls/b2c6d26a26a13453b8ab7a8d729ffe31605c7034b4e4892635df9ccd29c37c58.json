@@ -1,0 +1,45 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b2c6d26a26a13453b8ab7a8d729ffe31605c7034b4e4892635df9ccd29c37c58",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 322,
+  "output_tokens": 601,
+  "cost_usd": 0.0015991,
+  "elapsed_s": 3.94,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate through main modules and perform basic actions.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"automation_workflows\",\n      \"observable\": \"partly\",\n      \"task\": \"Process a few transactions and observe workflow efficiency.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"automation_workflows\",\n      \"observable\": \"partly\",\n      \"task\": \"Process a few transactions and observe workflow efficiency.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"pricing_cost\",\n      \"observable\": \"yes\",\n      \"task\": \"Review the pricing plans on the website.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate through main modules and perform basic actions."
+      },
+      {
+        "id": "B2",
+        "theme": "automation_workflows",
+        "observable": "partly",
+        "task": "Process a few transactions and observe workflow efficiency."
+      },
+      {
+        "id": "B3",
+        "theme": "automation_workflows",
+        "observable": "partly",
+        "task": "Process a few transactions and observe workflow efficiency."
+      },
+      {
+        "id": "F1",
+        "theme": "pricing_cost",
+        "observable": "yes",
+        "task": "Review the pricing plans on the website."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:46.577368+00:00"
+}

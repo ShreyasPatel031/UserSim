@@ -1,0 +1,51 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "5ce4efd8ec5aa2a85416669da9645d40526649b60cc7b6958480f9a92f315061",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 340,
+  "output_tokens": 649,
+  "cost_usd": 0.0017245,
+  "elapsed_s": 3.79,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Log in and browse main dashboard.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Attempt to add a new employee record.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Compare navigation to other HRIS platforms.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"partly\",\n      \"task\": \"Locate and explore EHS-related modules.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"partly\",\n      \"task\": \"Explore the Learning Management System module.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Log in and browse main dashboard."
+      },
+      {
+        "id": "B2",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Attempt to add a new employee record."
+      },
+      {
+        "id": "B3",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Compare navigation to other HRIS platforms."
+      },
+      {
+        "id": "B4",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "partly",
+        "task": "Locate and explore EHS-related modules."
+      },
+      {
+        "id": "F1",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "partly",
+        "task": "Explore the Learning Management System module."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:49.499411+00:00"
+}

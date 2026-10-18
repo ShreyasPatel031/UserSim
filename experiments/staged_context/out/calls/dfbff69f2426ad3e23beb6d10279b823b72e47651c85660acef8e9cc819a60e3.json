@@ -1,0 +1,21 @@
+{
+  "stage": "mcp_classify",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "dfbff69f2426ad3e23beb6d10279b823b72e47651c85660acef8e9cc819a60e3",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 256,
+  "input_tokens": 454,
+  "output_tokens": 234,
+  "cost_usd": 0.0007212,
+  "elapsed_s": 25.09,
+  "error": null,
+  "text": "{\n  \"category\": \"Help Desk\",\n  \"product_name\": \"Intercom\"\n}",
+  "json": {
+    "category": "Help Desk",
+    "product_name": "Intercom"
+  },
+  "ts": "2026-10-18T09:49:14.505470+00:00"
+}

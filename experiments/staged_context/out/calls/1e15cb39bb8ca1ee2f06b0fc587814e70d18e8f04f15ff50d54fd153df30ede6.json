@@ -1,0 +1,21 @@
+{
+  "stage": "mcp_classify",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1e15cb39bb8ca1ee2f06b0fc587814e70d18e8f04f15ff50d54fd153df30ede6",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 256,
+  "input_tokens": 88,
+  "output_tokens": 226,
+  "cost_usd": 0.0005914,
+  "elapsed_s": 2.4,
+  "error": null,
+  "text": "{\n  \"category\": \"HR\",\n  \"product_name\": \"Rippling\"\n}",
+  "json": {
+    "category": "HR",
+    "product_name": "Rippling"
+  },
+  "ts": "2026-10-18T09:49:51.041668+00:00"
+}

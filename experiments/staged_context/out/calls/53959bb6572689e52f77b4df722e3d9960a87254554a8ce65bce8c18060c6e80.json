@@ -1,0 +1,39 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "53959bb6572689e52f77b4df722e3d9960a87254554a8ce65bce8c18060c6e80",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 331,
+  "output_tokens": 494,
+  "cost_usd": 0.0013343,
+  "elapsed_s": 3.46,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"onboarding_learning_curve\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate through several boards and items.\"\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Look for quick links or favorites feature.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "onboarding_learning_curve",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "F1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate through several boards and items."
+      },
+      {
+        "id": "F2",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Look for quick links or favorites feature."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:34.527834+00:00"
+}

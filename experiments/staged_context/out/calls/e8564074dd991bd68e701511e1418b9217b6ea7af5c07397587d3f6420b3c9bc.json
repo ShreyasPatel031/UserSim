@@ -1,0 +1,36 @@
+{
+  "stage": "hm_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e8564074dd991bd68e701511e1418b9217b6ea7af5c07397587d3f6420b3c9bc",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3016,
+  "output_tokens": 1150,
+  "cost_usd": 0.0037798,
+  "elapsed_s": 6.68,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Simple and straightforward for core project communication.\",\n    \"Excellent for organizing basic tasks and team discussions.\",\n    \"Easy for sales-oriented roles to quickly get updates without deep dives.\"\n  ],\n  \"cons\": [\n    \"Lacks advanced features and customization for complex animation projects.\",\n    \"Limited reporting capabilities for business development metrics.\",\n    \"May require workarounds for specific industry-specific workflows.\"\n  ],\n  \"overall_experience\": \"This business development executive likely found Basecamp to be a user-friendly tool for basic project communication and task management within their animation company. While appreciating its simplicity for team collaboration and quick updates, they probably felt its functionality was somewhat limited for the specific, more complex needs of their industry and role. The lack of advanced reporting and customization may have been a point of frustration over time.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 3,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 7,
+    "pros": [
+      "Simple and straightforward for core project communication.",
+      "Excellent for organizing basic tasks and team discussions.",
+      "Easy for sales-oriented roles to quickly get updates without deep dives."
+    ],
+    "cons": [
+      "Lacks advanced features and customization for complex animation projects.",
+      "Limited reporting capabilities for business development metrics.",
+      "May require workarounds for specific industry-specific workflows."
+    ],
+    "overall_experience": "This business development executive likely found Basecamp to be a user-friendly tool for basic project communication and task management within their animation company. While appreciating its simplicity for team collaboration and quick updates, they probably felt its functionality was somewhat limited for the specific, more complex needs of their industry and role. The lack of advanced reporting and customization may have been a point of frustration over time."
+  },
+  "ts": "2026-10-18T09:55:53.757096+00:00"
+}

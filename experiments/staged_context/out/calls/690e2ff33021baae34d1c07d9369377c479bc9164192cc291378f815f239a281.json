@@ -1,0 +1,39 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "690e2ff33021baae34d1c07d9369377c479bc9164192cc291378f815f239a281",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 323,
+  "output_tokens": 579,
+  "cost_usd": 0.0015444,
+  "elapsed_s": 3.96,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate through main menu items and explore features.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"performance_speed\",\n      \"observable\": \"yes\",\n      \"task\": \"Click various menu items and observe page load times.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"performance_speed\",\n      \"observable\": \"yes\",\n      \"task\": \"Click various menu items and observe page load times.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate through main menu items and explore features."
+      },
+      {
+        "id": "B2",
+        "theme": "performance_speed",
+        "observable": "yes",
+        "task": "Click various menu items and observe page load times."
+      },
+      {
+        "id": "F1",
+        "theme": "performance_speed",
+        "observable": "yes",
+        "task": "Click various menu items and observe page load times."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:36.861302+00:00"
+}

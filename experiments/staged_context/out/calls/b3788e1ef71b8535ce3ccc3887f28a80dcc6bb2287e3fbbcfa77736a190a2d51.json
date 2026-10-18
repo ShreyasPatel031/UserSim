@@ -1,0 +1,51 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b3788e1ef71b8535ce3ccc3887f28a80dcc6bb2287e3fbbcfa77736a190a2d51",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 353,
+  "output_tokens": 668,
+  "cost_usd": 0.0017759,
+  "elapsed_s": 3.79,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate UI; create a simple report.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"reporting_analytics\",\n      \"observable\": \"yes\",\n      \"task\": \"Load demo data; run quick insights feature.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"reporting_analytics\",\n      \"observable\": \"yes\",\n      \"task\": \"Explore demo reports; interpret data visualizations.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"collaboration_sharing_permissions\",\n      \"observable\": \"partly\",\n      \"task\": \"Attempt to share a report or visualization.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"pricing_cost\",\n      \"observable\": \"yes\",\n      \"task\": \"Attempt to use advanced features; check pricing page.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate UI; create a simple report."
+      },
+      {
+        "id": "B2",
+        "theme": "reporting_analytics",
+        "observable": "yes",
+        "task": "Load demo data; run quick insights feature."
+      },
+      {
+        "id": "B3",
+        "theme": "reporting_analytics",
+        "observable": "yes",
+        "task": "Explore demo reports; interpret data visualizations."
+      },
+      {
+        "id": "B4",
+        "theme": "collaboration_sharing_permissions",
+        "observable": "partly",
+        "task": "Attempt to share a report or visualization."
+      },
+      {
+        "id": "F1",
+        "theme": "pricing_cost",
+        "observable": "yes",
+        "task": "Attempt to use advanced features; check pricing page."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:54.427997+00:00"
+}

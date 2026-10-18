@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "928dbd91b3df1198c622d9760c3e5268c07920cbcbd36ba9e7c440e849f057be",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 153,
+  "output_tokens": 463,
+  "cost_usd": 0.0012033999999999999,
+  "elapsed_s": 10.93,
+  "error": null,
+  "text": "{\n  \"task\": \"Organize and manage tasks\",\n  \"benefits\": [\n    \"Offers smooth navigation between blocks\",\n    \"Organizes important tasks clearly and accessibly\",\n    \"Helps keep focus\",\n    \"Available for all devices\"\n  ],\n  \"frictions\": [\n    \"Some options are hidden (e.g., custom dashboard views, notify)\"\n  ]\n}",
+  "json": {
+    "task": "Organize and manage tasks",
+    "benefits": [
+      "Offers smooth navigation between blocks",
+      "Organizes important tasks clearly and accessibly",
+      "Helps keep focus",
+      "Available for all devices"
+    ],
+    "frictions": [
+      "Some options are hidden (e.g., custom dashboard views, notify)"
+    ]
+  },
+  "ts": "2026-10-18T09:55:22.125458+00:00"
+}

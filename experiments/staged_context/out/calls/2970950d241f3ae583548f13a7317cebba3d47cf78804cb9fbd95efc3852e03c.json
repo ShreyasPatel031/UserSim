@@ -1,0 +1,57 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2970950d241f3ae583548f13a7317cebba3d47cf78804cb9fbd95efc3852e03c",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 349,
+  "output_tokens": 682,
+  "cost_usd": 0.0018097,
+  "elapsed_s": 3.57,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"integrations\",\n      \"observable\": \"yes\",\n      \"task\": \"Attempt to connect a Shopify store.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Create a new email or template.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"reporting_analytics\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate to the analytics dashboard.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"mobile_app\",\n      \"observable\": \"yes\",\n      \"task\": \"Access the platform on a mobile browser.\"\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"partly\",\n      \"task\": \"Attempt to set up an SMS campaign for France.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "integrations",
+        "observable": "yes",
+        "task": "Attempt to connect a Shopify store."
+      },
+      {
+        "id": "B2",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "B3",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Create a new email or template."
+      },
+      {
+        "id": "B4",
+        "theme": "reporting_analytics",
+        "observable": "yes",
+        "task": "Navigate to the analytics dashboard."
+      },
+      {
+        "id": "F1",
+        "theme": "mobile_app",
+        "observable": "yes",
+        "task": "Access the platform on a mobile browser."
+      },
+      {
+        "id": "F2",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "partly",
+        "task": "Attempt to set up an SMS campaign for France."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:54:11.717557+00:00"
+}

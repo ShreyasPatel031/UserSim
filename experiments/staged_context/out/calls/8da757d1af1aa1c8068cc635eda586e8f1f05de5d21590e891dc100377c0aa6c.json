@@ -1,0 +1,21 @@
+{
+  "stage": "mcp_classify",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8da757d1af1aa1c8068cc635eda586e8f1f05de5d21590e891dc100377c0aa6c",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 256,
+  "input_tokens": 88,
+  "output_tokens": 228,
+  "cost_usd": 0.0005964,
+  "elapsed_s": 18.13,
+  "error": null,
+  "text": "{\n  \"category\": \"Marketing\",\n  \"product_name\": \"ActiveCampaign\"\n}",
+  "json": {
+    "category": "Marketing",
+    "product_name": "ActiveCampaign"
+  },
+  "ts": "2026-10-18T09:49:13.926116+00:00"
+}

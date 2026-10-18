@@ -1,0 +1,69 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4832a7f291c4ba20b197d2a464aa3492354d7d1fe853bcfc6543c7f2cbfecb47",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 432,
+  "output_tokens": 810,
+  "cost_usd": 0.0021546,
+  "elapsed_s": 5.71,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"integrations\",\n      \"observable\": \"yes\",\n      \"task\": \"Attempt to connect G Suite, Microsoft, and CSV data sources.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"integrations\",\n      \"observable\": \"partly\",\n      \"task\": \"Connect to BigQuery and run a simple query.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"customization_flexibility\",\n      \"observable\": \"yes\",\n      \"task\": \"Create a visualization and explore chart types and overlay options.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"bugs_reliability\",\n      \"observable\": \"yes\",\n      \"task\": \"Perform various actions to check for unexpected errors or crashes.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Attempt to create an accurate geographical data heat map.\"\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"bugs_reliability\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"F3\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Look for advanced data visualization tools beyond basic charts.\"\n    },\n    {\n      \"id\": \"F4\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"partly\",\n      \"task\": \"Attempt to perform complex data transformations or manipulations.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "integrations",
+        "observable": "yes",
+        "task": "Attempt to connect G Suite, Microsoft, and CSV data sources."
+      },
+      {
+        "id": "B2",
+        "theme": "integrations",
+        "observable": "partly",
+        "task": "Connect to BigQuery and run a simple query."
+      },
+      {
+        "id": "B3",
+        "theme": "customization_flexibility",
+        "observable": "yes",
+        "task": "Create a visualization and explore chart types and overlay options."
+      },
+      {
+        "id": "B4",
+        "theme": "bugs_reliability",
+        "observable": "yes",
+        "task": "Perform various actions to check for unexpected errors or crashes."
+      },
+      {
+        "id": "F1",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Attempt to create an accurate geographical data heat map."
+      },
+      {
+        "id": "F2",
+        "theme": "bugs_reliability",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "F3",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Look for advanced data visualization tools beyond basic charts."
+      },
+      {
+        "id": "F4",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "partly",
+        "task": "Attempt to perform complex data transformations or manipulations."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:54:07.233808+00:00"
+}

@@ -1,0 +1,33 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "89e2e23eb961c841517ad25593531d60f47dece489a1c5ada3c8bd6e51988810",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 309,
+  "output_tokens": 524,
+  "cost_usd": 0.0014027000000000002,
+  "elapsed_s": 3.26,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"setup_configuration\",\n      \"observable\": \"partly\",\n      \"task\": \"Create a basic e-store with a few products\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"performance_speed\",\n      \"observable\": \"partly\",\n      \"task\": \"Navigate through admin, add products, preview store\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "setup_configuration",
+        "observable": "partly",
+        "task": "Create a basic e-store with a few products"
+      },
+      {
+        "id": "B2",
+        "theme": "performance_speed",
+        "observable": "partly",
+        "task": "Navigate through admin, add products, preview store"
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:51.567557+00:00"
+}

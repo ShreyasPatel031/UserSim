@@ -1,0 +1,45 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3c9310c0d8c3343adbfc0ec01f459bbbf9b142256e546b7939d502a11b80bb8c",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 332,
+  "output_tokens": 567,
+  "cost_usd": 0.0015171,
+  "elapsed_s": 3.47,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Start a live chat conversation.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Attach a presentation file in a live chat.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"other\",\n      \"observable\": \"partly\",\n      \"task\": \"Explore available communication channels.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"bugs_reliability\",\n      \"observable\": \"yes\",\n      \"task\": \"Send an email from a ticket.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Start a live chat conversation."
+      },
+      {
+        "id": "B2",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Attach a presentation file in a live chat."
+      },
+      {
+        "id": "B3",
+        "theme": "other",
+        "observable": "partly",
+        "task": "Explore available communication channels."
+      },
+      {
+        "id": "F1",
+        "theme": "bugs_reliability",
+        "observable": "yes",
+        "task": "Send an email from a ticket."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:54:14.803386+00:00"
+}

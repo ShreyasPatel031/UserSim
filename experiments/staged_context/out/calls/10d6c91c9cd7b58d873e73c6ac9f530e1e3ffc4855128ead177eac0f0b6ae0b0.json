@@ -1,0 +1,26 @@
+{
+  "stage": "live_competitors",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "10d6c91c9cd7b58d873e73c6ac9f530e1e3ffc4855128ead177eac0f0b6ae0b0",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 512,
+  "input_tokens": 341,
+  "output_tokens": 448,
+  "cost_usd": 0.0012223,
+  "elapsed_s": 5.73,
+  "error": null,
+  "text": "{\n  \"competitors\": [\n    \"Freshdesk\",\n    \"Zendesk Support Suite\",\n    \"HubSpot Service Hub\",\n    \"Intercom\",\n    \"ServiceNow Customer Service Management\"\n  ]\n}",
+  "json": {
+    "competitors": [
+      "Freshdesk",
+      "Zendesk Support Suite",
+      "HubSpot Service Hub",
+      "Intercom",
+      "ServiceNow Customer Service Management"
+    ]
+  },
+  "ts": "2026-10-18T09:44:11.756549+00:00"
+}

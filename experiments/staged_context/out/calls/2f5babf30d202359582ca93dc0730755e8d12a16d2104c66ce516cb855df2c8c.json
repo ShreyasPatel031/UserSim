@@ -1,0 +1,36 @@
+{
+  "stage": "hm_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2f5babf30d202359582ca93dc0730755e8d12a16d2104c66ce516cb855df2c8c",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3318,
+  "output_tokens": 1128,
+  "cost_usd": 0.0038154000000000005,
+  "elapsed_s": 6.07,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Simple and intuitive interface for core project management.\",\n    \"Clear separation of tools for tasks, documents, and discussions.\",\n    \"Easy to set up and manage basic to-do lists and deadlines.\"\n  ],\n  \"cons\": [\n    \"Limited to one project on the free plan, hindering multiple client workstreams.\",\n    \"Lack of advanced features or customization for complex marketing campaigns.\",\n    \"Initial setup requires adding tools manually, which can feel less streamlined.\"\n  ],\n  \"overall_experience\": \"This digital marketing specialist likely found Basecamp straightforward for managing basic project tasks and deadlines, appreciating its uncluttered approach. However, the limitations of the free plan, particularly the single project constraint, would have been a significant drawback for a small agency handling multiple clients. They may have felt it lacked the advanced functionality or customization options found in more comprehensive project management tools for marketing campaigns.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 7,
+    "pros": [
+      "Simple and intuitive interface for core project management.",
+      "Clear separation of tools for tasks, documents, and discussions.",
+      "Easy to set up and manage basic to-do lists and deadlines."
+    ],
+    "cons": [
+      "Limited to one project on the free plan, hindering multiple client workstreams.",
+      "Lack of advanced features or customization for complex marketing campaigns.",
+      "Initial setup requires adding tools manually, which can feel less streamlined."
+    ],
+    "overall_experience": "This digital marketing specialist likely found Basecamp straightforward for managing basic project tasks and deadlines, appreciating its uncluttered approach. However, the limitations of the free plan, particularly the single project constraint, would have been a significant drawback for a small agency handling multiple clients. They may have felt it lacked the advanced functionality or customization options found in more comprehensive project management tools for marketing campaigns."
+  },
+  "ts": "2026-10-18T09:55:54.364821+00:00"
+}

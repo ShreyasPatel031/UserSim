@@ -1,0 +1,26 @@
+{
+  "stage": "live_competitors",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8454c11aeb32ee2bd3afb5174a866ccf54499c4690ef1b967291a11af553d48f",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 512,
+  "input_tokens": 404,
+  "output_tokens": 447,
+  "cost_usd": 0.0012387,
+  "elapsed_s": 5.1,
+  "error": null,
+  "text": "{\n  \"competitors\": [\n    \"Salesforce Sales Cloud\",\n    \"HubSpot Sales Hub\",\n    \"Microsoft Dynamics 365 Sales\",\n    \"Freshsales\",\n    \"Pipedrive\"\n  ]\n}",
+  "json": {
+    "competitors": [
+      "Salesforce Sales Cloud",
+      "HubSpot Sales Hub",
+      "Microsoft Dynamics 365 Sales",
+      "Freshsales",
+      "Pipedrive"
+    ]
+  },
+  "ts": "2026-10-18T09:44:11.482661+00:00"
+}

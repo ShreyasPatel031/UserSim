@@ -1,0 +1,51 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b3d41fcc8e0fceb437f4f7f96827aa2a0d15a854551e7352786810a94229bf1d",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 351,
+  "output_tokens": 631,
+  "cost_usd": 0.0016828000000000001,
+  "elapsed_s": 3.39,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"customer_support\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"reporting_analytics\",\n      \"observable\": \"yes\",\n      \"task\": \"Schedule a Look to be emailed daily\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"reporting_analytics\",\n      \"observable\": \"partly\",\n      \"task\": \"Create a new metric and apply it to multiple reports\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Attempt to find a distinct count of values in Explore\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "customer_support",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "B2",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "B3",
+        "theme": "reporting_analytics",
+        "observable": "yes",
+        "task": "Schedule a Look to be emailed daily"
+      },
+      {
+        "id": "B4",
+        "theme": "reporting_analytics",
+        "observable": "partly",
+        "task": "Create a new metric and apply it to multiple reports"
+      },
+      {
+        "id": "F1",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Attempt to find a distinct count of values in Explore"
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:54:05.131662+00:00"
+}

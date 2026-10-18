@@ -1,0 +1,51 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2da3bd14f7f4602a84e5f772dbc05e1c36a90fb99959febb2ac38deaf59d0b6c",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 352,
+  "output_tokens": 646,
+  "cost_usd": 0.0017205999999999999,
+  "elapsed_s": 3.8,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Install browser plugin, visit a site with saved credentials.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Create multiple logins for one site, visit site.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"partly\",\n      \"task\": \"Perform basic tasks like saving and filling a password.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"mobile_app\",\n      \"observable\": \"yes\",\n      \"task\": \"Use mobile app, view dropdown list for multiple logins.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Install browser plugin, visit a site with saved credentials."
+      },
+      {
+        "id": "B2",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Create multiple logins for one site, visit site."
+      },
+      {
+        "id": "B3",
+        "theme": "ui_ease_navigation",
+        "observable": "partly",
+        "task": "Perform basic tasks like saving and filling a password."
+      },
+      {
+        "id": "B4",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "F1",
+        "theme": "mobile_app",
+        "observable": "yes",
+        "task": "Use mobile app, view dropdown list for multiple logins."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:58.893593+00:00"
+}

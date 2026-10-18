@@ -1,0 +1,36 @@
+{
+  "stage": "hm_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d7f04215174f60838891dee589c9962ac8fa78582842b9d73b3003409590bc07",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3282,
+  "output_tokens": 947,
+  "cost_usd": 0.0033521000000000002,
+  "elapsed_s": 9.08,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Simple interface makes team communication straightforward.\",\n    \"Calendar and To-dos tools are easy to set up and use for basic tracking.\",\n    \"Clear project overview helps keep track of daily tasks.\"\n  ],\n  \"cons\": [\n    \"Limited project customization options compared to other tools.\",\n    \"Lack of advanced reporting features for detailed project analysis.\",\n    \"The one-project limit in the free plan was quickly outgrown.\"\n  ],\n  \"overall_experience\": \"This Project Manager found Basecamp to be a straightforward tool for basic team communication and task management within their small furniture company. While its simplicity made it easy to adopt, the platform's limited functionality and customization options became apparent as project needs grew. The initial ease of use was appreciated, but the lack of more robust features for detailed project oversight eventually led to some frustration.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 3,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 6,
+    "pros": [
+      "Simple interface makes team communication straightforward.",
+      "Calendar and To-dos tools are easy to set up and use for basic tracking.",
+      "Clear project overview helps keep track of daily tasks."
+    ],
+    "cons": [
+      "Limited project customization options compared to other tools.",
+      "Lack of advanced reporting features for detailed project analysis.",
+      "The one-project limit in the free plan was quickly outgrown."
+    ],
+    "overall_experience": "This Project Manager found Basecamp to be a straightforward tool for basic team communication and task management within their small furniture company. While its simplicity made it easy to adopt, the platform's limited functionality and customization options became apparent as project needs grew. The initial ease of use was appreciated, but the lack of more robust features for detailed project oversight eventually led to some frustration."
+  },
+  "ts": "2026-10-18T09:56:00.830344+00:00"
+}

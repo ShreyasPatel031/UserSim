@@ -1,0 +1,69 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "566f7c2413afa6d93906791fb1d07afc7f801df537a45f115b9e83d4a5be8939",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 423,
+  "output_tokens": 799,
+  "cost_usd": 0.0021244000000000002,
+  "elapsed_s": 17.58,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"customization_flexibility\",\n      \"observable\": \"partly\",\n      \"task\": \"Explore project setup options for varied needs.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"collaboration_sharing_permissions\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate through different sections and views.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"partly\",\n      \"task\": \"Create multiple projects and tasks across departments.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"onboarding_learning_curve\",\n      \"observable\": \"yes\",\n      \"task\": \"Attempt to set up a new project and understand features.\"\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"onboarding_learning_curve\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate the interface and try to perform basic actions.\"\n    },\n    {\n      \"id\": \"F3\",\n      \"theme\": \"onboarding_learning_curve\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"F4\",\n      \"theme\": \"notifications\",\n      \"observable\": \"no\",\n      \"task\": null\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "customization_flexibility",
+        "observable": "partly",
+        "task": "Explore project setup options for varied needs."
+      },
+      {
+        "id": "B2",
+        "theme": "collaboration_sharing_permissions",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "B3",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate through different sections and views."
+      },
+      {
+        "id": "B4",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "partly",
+        "task": "Create multiple projects and tasks across departments."
+      },
+      {
+        "id": "F1",
+        "theme": "onboarding_learning_curve",
+        "observable": "yes",
+        "task": "Attempt to set up a new project and understand features."
+      },
+      {
+        "id": "F2",
+        "theme": "onboarding_learning_curve",
+        "observable": "yes",
+        "task": "Navigate the interface and try to perform basic actions."
+      },
+      {
+        "id": "F3",
+        "theme": "onboarding_learning_curve",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "F4",
+        "theme": "notifications",
+        "observable": "no",
+        "task": null
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:32.164795+00:00"
+}

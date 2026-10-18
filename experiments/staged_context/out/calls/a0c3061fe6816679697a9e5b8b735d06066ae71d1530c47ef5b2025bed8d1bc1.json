@@ -1,0 +1,21 @@
+{
+  "stage": "mcp_classify",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a0c3061fe6816679697a9e5b8b735d06066ae71d1530c47ef5b2025bed8d1bc1",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 256,
+  "input_tokens": 531,
+  "output_tokens": 279,
+  "cost_usd": 0.0008568,
+  "elapsed_s": 2.49,
+  "error": null,
+  "text": "{\n  \"category\": \"Analytics & BI\",\n  \"product_name\": \"Sisense\"\n}",
+  "json": {
+    "category": "Analytics & BI",
+    "product_name": "Sisense"
+  },
+  "ts": "2026-10-18T09:44:30.546322+00:00"
+}

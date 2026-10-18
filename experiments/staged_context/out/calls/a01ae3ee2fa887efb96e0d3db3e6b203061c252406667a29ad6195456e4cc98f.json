@@ -1,0 +1,57 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a01ae3ee2fa887efb96e0d3db3e6b203061c252406667a29ad6195456e4cc98f",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 353,
+  "output_tokens": 690,
+  "cost_usd": 0.0018308999999999999,
+  "elapsed_s": 3.92,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Create a new website\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Find and use lead management features\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Find and use email marketing features\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Edit website content without technical knowledge\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"customization_flexibility\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"pricing_cost\",\n      \"observable\": \"partly\",\n      \"task\": \"Review pricing plans for advanced features\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Create a new website"
+      },
+      {
+        "id": "B2",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Find and use lead management features"
+      },
+      {
+        "id": "B3",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Find and use email marketing features"
+      },
+      {
+        "id": "B4",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Edit website content without technical knowledge"
+      },
+      {
+        "id": "F1",
+        "theme": "customization_flexibility",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "F2",
+        "theme": "pricing_cost",
+        "observable": "partly",
+        "task": "Review pricing plans for advanced features"
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:52.780864+00:00"
+}

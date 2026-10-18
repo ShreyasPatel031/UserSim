@@ -1,0 +1,28 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8c4bb7f21ee52d71222aeb60146f4d9424fed5a72ea604c6512cca3fc85f5924",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 174,
+  "output_tokens": 470,
+  "cost_usd": 0.0012272000000000001,
+  "elapsed_s": 10.47,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage tasks\",\n  \"benefits\": [\n    \"easy to use\"\n  ],\n  \"frictions\": [\n    \"lacks options for complex projects/campaigns\",\n    \"interface is not appealing\",\n    \"functionality is too simplistic\"\n  ]\n}",
+  "json": {
+    "task": "Manage tasks",
+    "benefits": [
+      "easy to use"
+    ],
+    "frictions": [
+      "lacks options for complex projects/campaigns",
+      "interface is not appealing",
+      "functionality is too simplistic"
+    ]
+  },
+  "ts": "2026-10-18T09:55:22.054884+00:00"
+}

@@ -1,0 +1,57 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2a1f6d8115184b43d1b37e2e27f5629cb6d1f543e4fa95069b8576883bba3036",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 351,
+  "output_tokens": 714,
+  "cost_usd": 0.0018903000000000001,
+  "elapsed_s": 4.24,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"reporting_analytics\",\n      \"observable\": \"yes\",\n      \"task\": \"Create a basic report.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"reporting_analytics\",\n      \"observable\": \"partly\",\n      \"task\": \"Generate a report and explore sharing options.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"reporting_analytics\",\n      \"observable\": \"yes\",\n      \"task\": \"Create a new report from scratch.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"reporting_analytics\",\n      \"observable\": \"partly\",\n      \"task\": \"Schedule a report delivery.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"onboarding_learning_curve\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate the interface and attempt a task.\"\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"onboarding_learning_curve\",\n      \"observable\": \"yes\",\n      \"task\": \"Attempt to complete a core task.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "reporting_analytics",
+        "observable": "yes",
+        "task": "Create a basic report."
+      },
+      {
+        "id": "B2",
+        "theme": "reporting_analytics",
+        "observable": "partly",
+        "task": "Generate a report and explore sharing options."
+      },
+      {
+        "id": "B3",
+        "theme": "reporting_analytics",
+        "observable": "yes",
+        "task": "Create a new report from scratch."
+      },
+      {
+        "id": "B4",
+        "theme": "reporting_analytics",
+        "observable": "partly",
+        "task": "Schedule a report delivery."
+      },
+      {
+        "id": "F1",
+        "theme": "onboarding_learning_curve",
+        "observable": "yes",
+        "task": "Navigate the interface and attempt a task."
+      },
+      {
+        "id": "F2",
+        "theme": "onboarding_learning_curve",
+        "observable": "yes",
+        "task": "Attempt to complete a core task."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:54:05.488703+00:00"
+}

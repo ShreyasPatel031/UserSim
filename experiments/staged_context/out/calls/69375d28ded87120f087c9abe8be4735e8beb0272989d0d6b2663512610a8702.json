@@ -1,0 +1,33 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "69375d28ded87120f087c9abe8be4735e8beb0272989d0d6b2663512610a8702",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 307,
+  "output_tokens": 483,
+  "cost_usd": 0.0012996,
+  "elapsed_s": 3.14,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Create and categorize a few demo tickets\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"other\",\n      \"observable\": \"no\",\n      \"task\": null\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Create and categorize a few demo tickets"
+      },
+      {
+        "id": "B2",
+        "theme": "other",
+        "observable": "no",
+        "task": null
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:39.611688+00:00"
+}

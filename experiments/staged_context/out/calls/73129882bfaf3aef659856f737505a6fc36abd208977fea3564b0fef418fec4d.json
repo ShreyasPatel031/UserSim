@@ -1,0 +1,63 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "73129882bfaf3aef659856f737505a6fc36abd208977fea3564b0fef418fec4d",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 366,
+  "output_tokens": 673,
+  "cost_usd": 0.0017923,
+  "elapsed_s": 3.77,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"customer_support\",\n      \"observable\": \"partly\",\n      \"task\": \"Contact support with a simple query.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"customer_support\",\n      \"observable\": \"yes\",\n      \"task\": \"Initiate a support chat or call.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"customer_support\",\n      \"observable\": \"partly\",\n      \"task\": \"Interact with a support representative.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"customer_support\",\n      \"observable\": \"partly\",\n      \"task\": \"Contact support with a simple query.\"\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"customer_support\",\n      \"observable\": \"partly\",\n      \"task\": \"Ask support for a resource or guide.\"\n    },\n    {\n      \"id\": \"F3\",\n      \"theme\": \"customer_support\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"F4\",\n      \"theme\": \"customer_support\",\n      \"observable\": \"no\",\n      \"task\": null\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "customer_support",
+        "observable": "partly",
+        "task": "Contact support with a simple query."
+      },
+      {
+        "id": "B2",
+        "theme": "customer_support",
+        "observable": "yes",
+        "task": "Initiate a support chat or call."
+      },
+      {
+        "id": "B3",
+        "theme": "customer_support",
+        "observable": "partly",
+        "task": "Interact with a support representative."
+      },
+      {
+        "id": "F1",
+        "theme": "customer_support",
+        "observable": "partly",
+        "task": "Contact support with a simple query."
+      },
+      {
+        "id": "F2",
+        "theme": "customer_support",
+        "observable": "partly",
+        "task": "Ask support for a resource or guide."
+      },
+      {
+        "id": "F3",
+        "theme": "customer_support",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "F4",
+        "theme": "customer_support",
+        "observable": "no",
+        "task": null
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:54:03.955395+00:00"
+}

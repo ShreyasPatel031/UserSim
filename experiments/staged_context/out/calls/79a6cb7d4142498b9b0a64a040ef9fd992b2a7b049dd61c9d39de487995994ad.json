@@ -1,0 +1,51 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "79a6cb7d4142498b9b0a64a040ef9fd992b2a7b049dd61c9d39de487995994ad",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 335,
+  "output_tokens": 614,
+  "cost_usd": 0.0016354999999999998,
+  "elapsed_s": 3.25,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Create a project and add several tasks.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Create a task and assign it to a team member.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate through projects, tasks, and settings.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"other\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"search\",\n      \"observable\": \"yes\",\n      \"task\": \"Delete a task, then try to find it using search.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Create a project and add several tasks."
+      },
+      {
+        "id": "B2",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Create a task and assign it to a team member."
+      },
+      {
+        "id": "B3",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate through projects, tasks, and settings."
+      },
+      {
+        "id": "B4",
+        "theme": "other",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "F1",
+        "theme": "search",
+        "observable": "yes",
+        "task": "Delete a task, then try to find it using search."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:31.745865+00:00"
+}

@@ -1,0 +1,51 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "caa29d0bef1329585f8ff75a73894eabfcb648e032807fd185803ee603ac90e4",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 336,
+  "output_tokens": 670,
+  "cost_usd": 0.0017758000000000001,
+  "elapsed_s": 5.32,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Send a message and join a channel.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Explore different sections of the interface.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Try out various buttons and menus.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"collaboration_sharing_permissions\",\n      \"observable\": \"partly\",\n      \"task\": \"Create a channel and reply in a thread.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"integrations\",\n      \"observable\": \"partly\",\n      \"task\": \"Browse available integrations and their listed features.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Send a message and join a channel."
+      },
+      {
+        "id": "B2",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Explore different sections of the interface."
+      },
+      {
+        "id": "B3",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Try out various buttons and menus."
+      },
+      {
+        "id": "B4",
+        "theme": "collaboration_sharing_permissions",
+        "observable": "partly",
+        "task": "Create a channel and reply in a thread."
+      },
+      {
+        "id": "F1",
+        "theme": "integrations",
+        "observable": "partly",
+        "task": "Browse available integrations and their listed features."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:57.077099+00:00"
+}

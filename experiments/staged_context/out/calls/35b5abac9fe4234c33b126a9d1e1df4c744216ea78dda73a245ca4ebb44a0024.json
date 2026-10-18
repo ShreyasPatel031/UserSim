@@ -1,0 +1,26 @@
+{
+  "stage": "live_competitors",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "35b5abac9fe4234c33b126a9d1e1df4c744216ea78dda73a245ca4ebb44a0024",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 512,
+  "input_tokens": 173,
+  "output_tokens": 424,
+  "cost_usd": 0.0011118999999999999,
+  "elapsed_s": 3.37,
+  "error": null,
+  "text": "{\n  \"competitors\": [\n    \"Slack\",\n    \"Google Workspace\",\n    \"Zoom Workplace\",\n    \"Webex App\",\n    \"RingCentral MVP\"\n  ]\n}",
+  "json": {
+    "competitors": [
+      "Slack",
+      "Google Workspace",
+      "Zoom Workplace",
+      "Webex App",
+      "RingCentral MVP"
+    ]
+  },
+  "ts": "2026-10-18T09:44:24.498381+00:00"
+}

@@ -1,0 +1,45 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "5a1a034b8961ebe036de27cb229bdead74e2ee61a533f1b2b6fb90b3a8da8f22",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 336,
+  "output_tokens": 574,
+  "cost_usd": 0.0015358,
+  "elapsed_s": 3.34,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Add a few income transactions and review cash flow.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Add several expense transactions and review them.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"reporting_analytics\",\n      \"observable\": \"yes\",\n      \"task\": \"Generate a custom financial report or dashboard.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"automation_workflows\",\n      \"observable\": \"yes\",\n      \"task\": \"Set up an automated bookkeeping or accounting rule.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Add a few income transactions and review cash flow."
+      },
+      {
+        "id": "B2",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Add several expense transactions and review them."
+      },
+      {
+        "id": "B3",
+        "theme": "reporting_analytics",
+        "observable": "yes",
+        "task": "Generate a custom financial report or dashboard."
+      },
+      {
+        "id": "B4",
+        "theme": "automation_workflows",
+        "observable": "yes",
+        "task": "Set up an automated bookkeeping or accounting rule."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:46.207498+00:00"
+}

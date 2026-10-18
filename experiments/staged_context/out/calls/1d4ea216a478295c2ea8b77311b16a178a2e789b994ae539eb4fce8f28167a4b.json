@@ -1,0 +1,21 @@
+{
+  "stage": "mcp_classify",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1d4ea216a478295c2ea8b77311b16a178a2e789b994ae539eb4fce8f28167a4b",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 256,
+  "input_tokens": 1001,
+  "output_tokens": 198,
+  "cost_usd": 0.0007953,
+  "elapsed_s": 2.45,
+  "error": null,
+  "text": "{\n  \"category\": \"eCommerce\",\n  \"product_name\": \"PayPal Business\"\n}",
+  "json": {
+    "category": "eCommerce",
+    "product_name": "PayPal Business"
+  },
+  "ts": "2026-10-18T09:44:19.308555+00:00"
+}

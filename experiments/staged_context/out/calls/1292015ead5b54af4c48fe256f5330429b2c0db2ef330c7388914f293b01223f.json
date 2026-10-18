@@ -1,0 +1,51 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1292015ead5b54af4c48fe256f5330429b2c0db2ef330c7388914f293b01223f",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 357,
+  "output_tokens": 689,
+  "cost_usd": 0.0018296,
+  "elapsed_s": 4.02,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Store a password for a new account.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Autofill passwords on three different websites.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"partly\",\n      \"task\": \"Explore available authentication service integrations.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"performance_speed\",\n      \"observable\": \"yes\",\n      \"task\": \"Sign in to five different accounts using autofill.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"bugs_reliability\",\n      \"observable\": \"yes\",\n      \"task\": \"Attempt autofill on several login forms.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Store a password for a new account."
+      },
+      {
+        "id": "B2",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Autofill passwords on three different websites."
+      },
+      {
+        "id": "B3",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "partly",
+        "task": "Explore available authentication service integrations."
+      },
+      {
+        "id": "B4",
+        "theme": "performance_speed",
+        "observable": "yes",
+        "task": "Sign in to five different accounts using autofill."
+      },
+      {
+        "id": "F1",
+        "theme": "bugs_reliability",
+        "observable": "yes",
+        "task": "Attempt autofill on several login forms."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:59.219087+00:00"
+}

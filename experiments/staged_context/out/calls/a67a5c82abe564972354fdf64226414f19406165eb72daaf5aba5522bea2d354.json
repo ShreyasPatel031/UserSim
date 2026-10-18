@@ -1,0 +1,36 @@
+{
+  "stage": "hm_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a67a5c82abe564972354fdf64226414f19406165eb72daaf5aba5522bea2d354",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3176,
+  "output_tokens": 1010,
+  "cost_usd": 0.0034778000000000005,
+  "elapsed_s": 5.47,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Simple and intuitive interface for project organization\",\n    \"Effective for managing administrative tasks and training content\",\n    \"Clear tools for tracking to-dos and deadlines\"\n  ],\n  \"cons\": [\n    \"Limited functionality or advanced features compared to other PM tools\",\n    \"Requires manual setup for each project tool\",\n    \"Free plan limitations (e.g., single project) could be restrictive for varied needs\"\n  ],\n  \"overall_experience\": \"This reviewer likely found Basecamp to be a straightforward and effective tool for their project management, administrative, and training module needs. The platform's ease of use and clear organization were beneficial for their dual role. While generally satisfied, they may have noted some functional limitations or the initial setup steps for tools as minor inconveniences.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Simple and intuitive interface for project organization",
+      "Effective for managing administrative tasks and training content",
+      "Clear tools for tracking to-dos and deadlines"
+    ],
+    "cons": [
+      "Limited functionality or advanced features compared to other PM tools",
+      "Requires manual setup for each project tool",
+      "Free plan limitations (e.g., single project) could be restrictive for varied needs"
+    ],
+    "overall_experience": "This reviewer likely found Basecamp to be a straightforward and effective tool for their project management, administrative, and training module needs. The platform's ease of use and clear organization were beneficial for their dual role. While generally satisfied, they may have noted some functional limitations or the initial setup steps for tools as minor inconveniences."
+  },
+  "ts": "2026-10-18T09:55:52.697996+00:00"
+}

@@ -1,0 +1,57 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "31b219823373261d3de611911457806fcfdd21bed941404802c4b0568a5d76d8",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 361,
+  "output_tokens": 621,
+  "cost_usd": 0.0016608,
+  "elapsed_s": 15.68,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"setup_configuration\",\n      \"observable\": \"yes\",\n      \"task\": \"Create a new pipeline and add custom stages.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"partly\",\n      \"task\": \"Add custom fields to a deal; explore integration options.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate through the deals pipeline view.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Explore different sections of the application.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"billing_contract\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"billing_contract\",\n      \"observable\": \"no\",\n      \"task\": null\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "setup_configuration",
+        "observable": "yes",
+        "task": "Create a new pipeline and add custom stages."
+      },
+      {
+        "id": "B2",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "partly",
+        "task": "Add custom fields to a deal; explore integration options."
+      },
+      {
+        "id": "B3",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate through the deals pipeline view."
+      },
+      {
+        "id": "B4",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Explore different sections of the application."
+      },
+      {
+        "id": "F1",
+        "theme": "billing_contract",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "F2",
+        "theme": "billing_contract",
+        "observable": "no",
+        "task": null
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:29.411875+00:00"
+}

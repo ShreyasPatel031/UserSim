@@ -1,0 +1,51 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "093cfd452fa8aa34d9bdba51498e0776505775cced213814dd2ba3a18a8a3461",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 331,
+  "output_tokens": 620,
+  "cost_usd": 0.0016493,
+  "elapsed_s": 3.43,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"templates\",\n      \"observable\": \"yes\",\n      \"task\": \"Browse and preview email/SMS templates.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate through different sections of the platform.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Attempt to create a basic email campaign.\"\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"automation_workflows\",\n      \"observable\": \"partly\",\n      \"task\": \"Attempt to send a test email or SMS campaign.\"\n    },\n    {\n      \"id\": \"F3\",\n      \"theme\": \"setup_configuration\",\n      \"observable\": \"yes\",\n      \"task\": \"Connect a data source or configure basic settings.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "templates",
+        "observable": "yes",
+        "task": "Browse and preview email/SMS templates."
+      },
+      {
+        "id": "B2",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate through different sections of the platform."
+      },
+      {
+        "id": "F1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Attempt to create a basic email campaign."
+      },
+      {
+        "id": "F2",
+        "theme": "automation_workflows",
+        "observable": "partly",
+        "task": "Attempt to send a test email or SMS campaign."
+      },
+      {
+        "id": "F3",
+        "theme": "setup_configuration",
+        "observable": "yes",
+        "task": "Connect a data source or configure basic settings."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:54:11.753792+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "hm_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3dfed33bbb4cf60e87f6bb7adbd188cbcfb264a0e29a375262ebd6f65a8d9acc",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3025,
+  "output_tokens": 1105,
+  "cost_usd": 0.00367,
+  "elapsed_s": 6.43,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Simple project structure for basic task management\",\n    \"Clear separation of tools like To-dos and Docs\",\n    \"Easy to add events to the calendar\"\n  ],\n  \"cons\": [\n    \"Limited to one project on the free plan, hindering separate workstreams\",\n    \"Requires manual addition of tools for each project, adding setup friction\",\n    \"Lack of advanced features or deep customization for complex needs\"\n  ],\n  \"overall_experience\": \"This self-employed retail CEO likely found Basecamp's initial setup and core tools straightforward for basic project organization. However, the free plan's limitations, particularly being restricted to one project, probably became a significant frustration for managing diverse business needs. The simplicity, while a pro for ease of use, likely meant a lack of functionality compared to more robust competitors, leading to a somewhat underwhelming overall experience for someone needing a comprehensive solution.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 3,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 6,
+    "pros": [
+      "Simple project structure for basic task management",
+      "Clear separation of tools like To-dos and Docs",
+      "Easy to add events to the calendar"
+    ],
+    "cons": [
+      "Limited to one project on the free plan, hindering separate workstreams",
+      "Requires manual addition of tools for each project, adding setup friction",
+      "Lack of advanced features or deep customization for complex needs"
+    ],
+    "overall_experience": "This self-employed retail CEO likely found Basecamp's initial setup and core tools straightforward for basic project organization. However, the free plan's limitations, particularly being restricted to one project, probably became a significant frustration for managing diverse business needs. The simplicity, while a pro for ease of use, likely meant a lack of functionality compared to more robust competitors, leading to a somewhat underwhelming overall experience for someone needing a comprehensive solution."
+  },
+  "ts": "2026-10-18T09:55:53.226560+00:00"
+}

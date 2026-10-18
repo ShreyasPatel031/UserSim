@@ -1,0 +1,63 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "14b825182df07b1b2f8ee2140d08ddffd8ad80883624a30cf1b5831c625be7cc",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 365,
+  "output_tokens": 772,
+  "cost_usd": 0.0020395,
+  "elapsed_s": 4.31,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"customization_flexibility\",\n      \"observable\": \"yes\",\n      \"task\": \"Create a project and move a task through different sections.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"customization_flexibility\",\n      \"observable\": \"yes\",\n      \"task\": \"Add a custom field to a task or project.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Create tasks, assign due dates, and mark priorities.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate through different project views and settings.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"mobile_app\",\n      \"observable\": \"yes\",\n      \"task\": \"Switch between tasks and projects in the mobile app.\"\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"mobile_app\",\n      \"observable\": \"yes\",\n      \"task\": \"Use the mobile app for several minutes to observe stability.\"\n    },\n    {\n      \"id\": \"F3\",\n      \"theme\": \"mobile_app\",\n      \"observable\": \"partly\",\n      \"task\": \"Create a task on desktop, then check its status on mobile.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "customization_flexibility",
+        "observable": "yes",
+        "task": "Create a project and move a task through different sections."
+      },
+      {
+        "id": "B2",
+        "theme": "customization_flexibility",
+        "observable": "yes",
+        "task": "Add a custom field to a task or project."
+      },
+      {
+        "id": "B3",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Create tasks, assign due dates, and mark priorities."
+      },
+      {
+        "id": "B4",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate through different project views and settings."
+      },
+      {
+        "id": "F1",
+        "theme": "mobile_app",
+        "observable": "yes",
+        "task": "Switch between tasks and projects in the mobile app."
+      },
+      {
+        "id": "F2",
+        "theme": "mobile_app",
+        "observable": "yes",
+        "task": "Use the mobile app for several minutes to observe stability."
+      },
+      {
+        "id": "F3",
+        "theme": "mobile_app",
+        "observable": "partly",
+        "task": "Create a task on desktop, then check its status on mobile."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:33.578147+00:00"
+}

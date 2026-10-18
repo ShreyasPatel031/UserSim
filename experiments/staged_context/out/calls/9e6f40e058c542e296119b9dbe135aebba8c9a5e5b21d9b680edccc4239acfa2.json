@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9e6f40e058c542e296119b9dbe135aebba8c9a5e5b21d9b680edccc4239acfa2",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2373,
+  "output_tokens": 1071,
+  "cost_usd": 0.0033894,
+  "elapsed_s": 9.08,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Streamlined communication and collaboration for the team\",\n    \"Simple and intuitive interface for quick adoption\",\n    \"Effective for managing diverse projects within a non-profit\"\n  ],\n  \"cons\": [\n    \"Limited advanced reporting capabilities\",\n    \"Less customization compared to other project management tools\",\n    \"Might lack specific features for highly complex project tracking\"\n  ],\n  \"overall_experience\": \"This Senior Director of Fundraising Technology found Basecamp to be a highly effective tool for facilitating team collaboration and managing projects, particularly appreciating its ease of use for a diverse non-profit staff. While it excelled at simplifying communication and task assignment, they likely wished for more robust reporting and customization options to suit more intricate project demands. Overall, it provided a solid, straightforward solution for their organizational needs over a long period.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Streamlined communication and collaboration for the team",
+      "Simple and intuitive interface for quick adoption",
+      "Effective for managing diverse projects within a non-profit"
+    ],
+    "cons": [
+      "Limited advanced reporting capabilities",
+      "Less customization compared to other project management tools",
+      "Might lack specific features for highly complex project tracking"
+    ],
+    "overall_experience": "This Senior Director of Fundraising Technology found Basecamp to be a highly effective tool for facilitating team collaboration and managing projects, particularly appreciating its ease of use for a diverse non-profit staff. While it excelled at simplifying communication and task assignment, they likely wished for more robust reporting and customization options to suit more intricate project demands. Overall, it provided a solid, straightforward solution for their organizational needs over a long period."
+  },
+  "ts": "2026-10-18T09:56:11.358134+00:00"
+}

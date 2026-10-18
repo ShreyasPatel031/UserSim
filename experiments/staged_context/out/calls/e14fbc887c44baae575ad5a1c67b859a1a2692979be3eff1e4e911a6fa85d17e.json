@@ -1,0 +1,36 @@
+{
+  "stage": "hm_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e14fbc887c44baae575ad5a1c67b859a1a2692979be3eff1e4e911a6fa85d17e",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3123,
+  "output_tokens": 1047,
+  "cost_usd": 0.0035544,
+  "elapsed_s": 5.39,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Calendar tool is straightforward for tracking deadlines and events\",\n    \"Clear, intuitive interface for managing to-dos and documents\",\n    \"Provides a simple, integrated platform for project oversight\"\n  ],\n  \"cons\": [\n    \"Free plan severely limits to a single project, hindering broader use\",\n    \"Initial setup requires manually adding tools to each project\",\n    \"Calendar events default to specific times rather than all-day deadlines\"\n  ],\n  \"overall_experience\": \"This designer and operations manager likely found Basecamp's calendar functional for tracking project deadlines, appreciating its clear interface for managing tasks. However, the limitation of the free plan to a single project was a significant constraint for managing multiple workstreams. They probably encountered some minor friction in the initial setup and event configuration, but the core tools were generally easy to use.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 7,
+    "pros": [
+      "Calendar tool is straightforward for tracking deadlines and events",
+      "Clear, intuitive interface for managing to-dos and documents",
+      "Provides a simple, integrated platform for project oversight"
+    ],
+    "cons": [
+      "Free plan severely limits to a single project, hindering broader use",
+      "Initial setup requires manually adding tools to each project",
+      "Calendar events default to specific times rather than all-day deadlines"
+    ],
+    "overall_experience": "This designer and operations manager likely found Basecamp's calendar functional for tracking project deadlines, appreciating its clear interface for managing tasks. However, the limitation of the free plan to a single project was a significant constraint for managing multiple workstreams. They probably encountered some minor friction in the initial setup and event configuration, but the core tools were generally easy to use."
+  },
+  "ts": "2026-10-18T09:56:03.945303+00:00"
+}

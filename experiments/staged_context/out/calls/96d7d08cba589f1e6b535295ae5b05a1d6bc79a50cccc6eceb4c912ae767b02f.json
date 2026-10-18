@@ -1,0 +1,21 @@
+{
+  "stage": "mcp_classify",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "96d7d08cba589f1e6b535295ae5b05a1d6bc79a50cccc6eceb4c912ae767b02f",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 256,
+  "input_tokens": 1243,
+  "output_tokens": 279,
+  "cost_usd": 0.0010704,
+  "elapsed_s": 2.78,
+  "error": null,
+  "text": "{\n  \"category\": \"Design & Dev\",\n  \"product_name\": \"Wix\"\n}",
+  "json": {
+    "category": "Design & Dev",
+    "product_name": "Wix"
+  },
+  "ts": "2026-10-18T09:49:57.295676+00:00"
+}

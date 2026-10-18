@@ -1,0 +1,51 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0fce4547cbe6c6a68d10078858587cf02de3d8ab3606208591f5930991f28625",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 338,
+  "output_tokens": 687,
+  "cost_usd": 0.0018189,
+  "elapsed_s": 3.86,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate dashboard and access common features.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"partly\",\n      \"task\": \"Add two business applications to the dashboard.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"reporting_analytics\",\n      \"observable\": \"yes\",\n      \"task\": \"Access and view available administrator reports.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"partly\",\n      \"task\": \"Attempt to configure multi-device access for a user.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate dashboard and access common features."
+      },
+      {
+        "id": "B2",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "B3",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "partly",
+        "task": "Add two business applications to the dashboard."
+      },
+      {
+        "id": "B4",
+        "theme": "reporting_analytics",
+        "observable": "yes",
+        "task": "Access and view available administrator reports."
+      },
+      {
+        "id": "F1",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "partly",
+        "task": "Attempt to configure multi-device access for a user."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:57.061326+00:00"
+}

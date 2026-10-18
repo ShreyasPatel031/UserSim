@@ -1,0 +1,26 @@
+{
+  "stage": "live_competitors",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8f228a20210f48a3f620c2b7302d9ef7803a05e2e0d6a3038f8f1fd965820c1c",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 512,
+  "input_tokens": 925,
+  "output_tokens": 384,
+  "cost_usd": 0.0012375,
+  "elapsed_s": 3.13,
+  "error": null,
+  "text": "{\n  \"competitors\": [\n    \"ConnectWise PSA\",\n    \"monday.com\",\n    \"ClickUp\",\n    \"Asana\",\n    \"Smartsheet\"\n  ]\n}",
+  "json": {
+    "competitors": [
+      "ConnectWise PSA",
+      "monday.com",
+      "ClickUp",
+      "Asana",
+      "Smartsheet"
+    ]
+  },
+  "ts": "2026-10-18T09:44:29.167206+00:00"
+}

@@ -1,0 +1,51 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "62d8f75aaa6edb3412f9017f29320805de39858e8270f5e8c1b9f14c368cc759",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 371,
+  "output_tokens": 650,
+  "cost_usd": 0.0017362999999999999,
+  "elapsed_s": 12.23,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"pricing_cost\",\n      \"observable\": \"partly\",\n      \"task\": \"Check pricing plans for email credits.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Explore dashboard and main features.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"onboarding_learning_curve\",\n      \"observable\": \"yes\",\n      \"task\": \"Attempt to create a basic campaign.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate through different sections.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"bugs_reliability\",\n      \"observable\": \"yes\",\n      \"task\": \"Log out and check browser history.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "pricing_cost",
+        "observable": "partly",
+        "task": "Check pricing plans for email credits."
+      },
+      {
+        "id": "B2",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Explore dashboard and main features."
+      },
+      {
+        "id": "B3",
+        "theme": "onboarding_learning_curve",
+        "observable": "yes",
+        "task": "Attempt to create a basic campaign."
+      },
+      {
+        "id": "B4",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate through different sections."
+      },
+      {
+        "id": "F1",
+        "theme": "bugs_reliability",
+        "observable": "yes",
+        "task": "Log out and check browser history."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:29.765059+00:00"
+}

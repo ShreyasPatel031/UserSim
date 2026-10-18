@@ -1,0 +1,39 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "20b3a0d979ca3c7ca23377e566909591c5ef920ab009450f339b99eeddae2e9f",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 350,
+  "output_tokens": 529,
+  "cost_usd": 0.0014275,
+  "elapsed_s": 2.95,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"other\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Create a client profile, add detailed notes and tasks.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"customization_flexibility\",\n      \"observable\": \"yes\",\n      \"task\": \"Attempt to personalize or reorder tabs in sales pipeline stages.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "other",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "B2",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Create a client profile, add detailed notes and tasks."
+      },
+      {
+        "id": "F1",
+        "theme": "customization_flexibility",
+        "observable": "yes",
+        "task": "Attempt to personalize or reorder tabs in sales pipeline stages."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:54:01.347076+00:00"
+}

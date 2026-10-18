@@ -1,0 +1,45 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "136c5b7821a516c083f8618c03773b76f653c2866eb75906a9392fc55af7339e",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 330,
+  "output_tokens": 626,
+  "cost_usd": 0.001664,
+  "elapsed_s": 5.4,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate through main sections and create a test ticket.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"partly\",\n      \"task\": \"Browse all available modules and settings menus.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Perform basic actions like creating and assigning a ticket.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"automation_workflows\",\n      \"observable\": \"partly\",\n      \"task\": \"Locate and review available automation and scheduling options.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate through main sections and create a test ticket."
+      },
+      {
+        "id": "B2",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "partly",
+        "task": "Browse all available modules and settings menus."
+      },
+      {
+        "id": "B3",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Perform basic actions like creating and assigning a ticket."
+      },
+      {
+        "id": "B4",
+        "theme": "automation_workflows",
+        "observable": "partly",
+        "task": "Locate and review available automation and scheduling options."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:54:11.922315+00:00"
+}

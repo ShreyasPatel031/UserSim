@@ -1,0 +1,39 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1e582720aa32cd42d945598be6881bd2e8a0686dd45085ac74afa6194b31e6b9",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 327,
+  "output_tokens": 539,
+  "cost_usd": 0.0014456,
+  "elapsed_s": 4.58,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"reporting_analytics\",\n      \"observable\": \"yes\",\n      \"task\": \"View demo reports and create a basic chart.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"customization_flexibility\",\n      \"observable\": \"yes\",\n      \"task\": \"Explore report editing options and try changing chart properties.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"integrations\",\n      \"observable\": \"no\",\n      \"task\": null\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "reporting_analytics",
+        "observable": "yes",
+        "task": "View demo reports and create a basic chart."
+      },
+      {
+        "id": "B2",
+        "theme": "customization_flexibility",
+        "observable": "yes",
+        "task": "Explore report editing options and try changing chart properties."
+      },
+      {
+        "id": "F1",
+        "theme": "integrations",
+        "observable": "no",
+        "task": null
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:54.963786+00:00"
+}

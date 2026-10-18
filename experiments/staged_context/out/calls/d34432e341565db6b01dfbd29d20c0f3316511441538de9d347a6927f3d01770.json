@@ -1,0 +1,26 @@
+{
+  "stage": "live_competitors",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d34432e341565db6b01dfbd29d20c0f3316511441538de9d347a6927f3d01770",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 512,
+  "input_tokens": 866,
+  "output_tokens": 445,
+  "cost_usd": 0.0013723,
+  "elapsed_s": 4.25,
+  "error": null,
+  "text": "{\n  \"competitors\": [\n    \"QuickBooks Online\",\n    \"Xero\",\n    \"FreshBooks\",\n    \"Sage 50cloud Accounting\",\n    \"Wave Accounting\"\n  ]\n}",
+  "json": {
+    "competitors": [
+      "QuickBooks Online",
+      "Xero",
+      "FreshBooks",
+      "Sage 50cloud Accounting",
+      "Wave Accounting"
+    ]
+  },
+  "ts": "2026-10-18T09:44:31.840762+00:00"
+}

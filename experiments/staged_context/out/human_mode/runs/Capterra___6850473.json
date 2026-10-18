@@ -1,0 +1,10 @@
+{"rid": "Capterra___6850473", "session_id": "7537f783ee524961aaafa65575d4ae54", "signed_in": false, "reached_product": false,
+ "outcome": "blocked", "steps_used": 32,
+ "observations": [
+  {"kind": "signup_friction", "what": "The free-trial flow asked for the work email on try-it, then again on a second app.smartsheet.com signup page, and each triggered a reCAPTCHA image challenge (crosswalks, then buses)."},
+  {"kind": "signup_friction", "what": "After the second submit the signup page showed a generic 'Sorry - an error has occurred' page; reloading brought the form back with no confirmation that the account was created."},
+  {"kind": "signup_friction", "what": "No verification email or code arrived after the final submit, and the page showed no 'check your inbox' message or resend option."},
+  {"kind": "signup_friction", "what": "The try-it page offers only Google, Microsoft and Apple social sign-up beside the work-email field, with a visible data-region selector."},
+  {"kind": "agent_failure", "what": "After a captcha tile click the page layout shifted, so my Verify click at stale coordinates hit 'Sign up with Microsoft' and left the signup flow; I navigated back without using it."},
+  {"kind": "agent_failure", "what": "I spent about 16 of the 40 steps on captcha tile clicks and re-submits, leaving no budget to retry after the error page."}
+ ]}

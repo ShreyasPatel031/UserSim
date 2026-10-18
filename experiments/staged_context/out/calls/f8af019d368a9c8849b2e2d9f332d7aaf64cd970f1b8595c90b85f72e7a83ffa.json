@@ -1,0 +1,51 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f8af019d368a9c8849b2e2d9f332d7aaf64cd970f1b8595c90b85f72e7a83ffa",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 343,
+  "output_tokens": 618,
+  "cost_usd": 0.0016478999999999999,
+  "elapsed_s": 3.54,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"automation_workflows\",\n      \"observable\": \"yes\",\n      \"task\": \"Create a simple automation workflow.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"collaboration_sharing_permissions\",\n      \"observable\": \"partly\",\n      \"task\": \"Look for options to share an automation.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"pricing_cost\",\n      \"observable\": \"yes\",\n      \"task\": \"Review available pricing plans.\"\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"customer_support\",\n      \"observable\": \"no\",\n      \"task\": null\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "automation_workflows",
+        "observable": "yes",
+        "task": "Create a simple automation workflow."
+      },
+      {
+        "id": "B2",
+        "theme": "collaboration_sharing_permissions",
+        "observable": "partly",
+        "task": "Look for options to share an automation."
+      },
+      {
+        "id": "B3",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "F1",
+        "theme": "pricing_cost",
+        "observable": "yes",
+        "task": "Review available pricing plans."
+      },
+      {
+        "id": "F2",
+        "theme": "customer_support",
+        "observable": "no",
+        "task": null
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:43.819112+00:00"
+}

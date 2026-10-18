@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "836b9aee29c3ba8e292b8cf2e706bc88e168b8ddb70aa68b7c59fb4f812e5506",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2543,
+  "output_tokens": 1046,
+  "cost_usd": 0.0033779,
+  "elapsed_s": 5.59,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Streamlined communication and collaboration features\",\n    \"Easy to onboard a large team\",\n    \"Transparent project overview and task management\"\n  ],\n  \"cons\": [\n    \"Limited advanced reporting capabilities for business development\",\n    \"Fewer integrations compared to other project management tools\",\n    \"Customization options may be too basic for complex workflows\"\n  ],\n  \"overall_experience\": \"This person likely found Basecamp to be a highly effective and straightforward tool for managing team collaboration within their large pharmaceutical logistics company. Its ease of use and clear communication features were significant benefits, making it simple to manage projects over their two-year tenure. However, they may have occasionally desired more sophisticated functionalities, such as advanced reporting or deeper integrations, common for a business development role in a large enterprise.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Streamlined communication and collaboration features",
+      "Easy to onboard a large team",
+      "Transparent project overview and task management"
+    ],
+    "cons": [
+      "Limited advanced reporting capabilities for business development",
+      "Fewer integrations compared to other project management tools",
+      "Customization options may be too basic for complex workflows"
+    ],
+    "overall_experience": "This person likely found Basecamp to be a highly effective and straightforward tool for managing team collaboration within their large pharmaceutical logistics company. Its ease of use and clear communication features were significant benefits, making it simple to manage projects over their two-year tenure. However, they may have occasionally desired more sophisticated functionalities, such as advanced reporting or deeper integrations, common for a business development role in a large enterprise."
+  },
+  "ts": "2026-10-18T09:55:52.623484+00:00"
+}

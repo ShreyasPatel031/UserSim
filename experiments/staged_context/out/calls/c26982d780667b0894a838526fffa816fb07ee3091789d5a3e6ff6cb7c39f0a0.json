@@ -1,0 +1,21 @@
+{
+  "stage": "mcp_classify",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c26982d780667b0894a838526fffa816fb07ee3091789d5a3e6ff6cb7c39f0a0",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 256,
+  "input_tokens": 1144,
+  "output_tokens": 275,
+  "cost_usd": 0.0010307,
+  "elapsed_s": 2.68,
+  "error": null,
+  "text": "{\n  \"category\": \"Communication\",\n  \"product_name\": \"Mattermost\"\n}",
+  "json": {
+    "category": "Communication",
+    "product_name": "Mattermost"
+  },
+  "ts": "2026-10-18T09:44:30.945208+00:00"
+}

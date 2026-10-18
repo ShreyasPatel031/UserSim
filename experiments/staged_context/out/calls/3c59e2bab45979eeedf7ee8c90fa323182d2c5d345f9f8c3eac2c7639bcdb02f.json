@@ -1,0 +1,27 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3c59e2bab45979eeedf7ee8c90fa323182d2c5d345f9f8c3eac2c7639bcdb02f",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 140,
+  "output_tokens": 345,
+  "cost_usd": 0.0009045,
+  "elapsed_s": 8.96,
+  "error": null,
+  "text": "{\n  \"task\": \"Store a large amount of various information.\",\n  \"benefits\": [\n    \"Store a large amount of various information.\",\n    \"Customize content within folders.\"\n  ],\n  \"frictions\": [\n    \"Requires time to learn the system.\"\n  ]\n}",
+  "json": {
+    "task": "Store a large amount of various information.",
+    "benefits": [
+      "Store a large amount of various information.",
+      "Customize content within folders."
+    ],
+    "frictions": [
+      "Requires time to learn the system."
+    ]
+  },
+  "ts": "2026-10-18T09:55:21.633365+00:00"
+}

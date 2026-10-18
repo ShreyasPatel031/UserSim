@@ -1,0 +1,45 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "af007f7f6eaf40730c95d2f239b75fae3fb0d23114af6684ef922af6868d09ea",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 326,
+  "output_tokens": 553,
+  "cost_usd": 0.0014803000000000001,
+  "elapsed_s": 3.1,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Access a connected application.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"bugs_reliability\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate the dashboard and settings.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Log in with multi-factor authentication.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Access a connected application."
+      },
+      {
+        "id": "B2",
+        "theme": "bugs_reliability",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "B3",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate the dashboard and settings."
+      },
+      {
+        "id": "F1",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Log in with multi-factor authentication."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:57.471781+00:00"
+}

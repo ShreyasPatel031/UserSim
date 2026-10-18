@@ -1,0 +1,51 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ed345c484bf1b6b4aa96fe1ff7fad6c8c64fe04fd752d0c83fac3bca64b263c6",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 351,
+  "output_tokens": 615,
+  "cost_usd": 0.0016428,
+  "elapsed_s": 3.53,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate through main menus and features.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"integrations\",\n      \"observable\": \"partly\",\n      \"task\": \"Browse available third-party integrations.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"reporting_analytics\",\n      \"observable\": \"partly\",\n      \"task\": \"View dashboard and financial reports.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"automation_workflows\",\n      \"observable\": \"partly\",\n      \"task\": \"Explore options for automating accounting tasks.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"onboarding_learning_curve\",\n      \"observable\": \"yes\",\n      \"task\": \"Attempt to set up basic accounting processes.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate through main menus and features."
+      },
+      {
+        "id": "B2",
+        "theme": "integrations",
+        "observable": "partly",
+        "task": "Browse available third-party integrations."
+      },
+      {
+        "id": "B3",
+        "theme": "reporting_analytics",
+        "observable": "partly",
+        "task": "View dashboard and financial reports."
+      },
+      {
+        "id": "B4",
+        "theme": "automation_workflows",
+        "observable": "partly",
+        "task": "Explore options for automating accounting tasks."
+      },
+      {
+        "id": "F1",
+        "theme": "onboarding_learning_curve",
+        "observable": "yes",
+        "task": "Attempt to set up basic accounting processes."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:46.190167+00:00"
+}

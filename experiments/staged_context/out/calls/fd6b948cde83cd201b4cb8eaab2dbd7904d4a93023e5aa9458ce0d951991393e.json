@@ -1,0 +1,26 @@
+{
+  "stage": "live_competitors",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "fd6b948cde83cd201b4cb8eaab2dbd7904d4a93023e5aa9458ce0d951991393e",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 512,
+  "input_tokens": 816,
+  "output_tokens": 440,
+  "cost_usd": 0.0013448000000000002,
+  "elapsed_s": 4.57,
+  "error": null,
+  "text": "{\n  \"competitors\": [\n    \"Varicent\",\n    \"SAP Commissions\",\n    \"Performio\",\n    \"Spiff\",\n    \"Oracle Sales Performance Management (SPM)\"\n  ]\n}",
+  "json": {
+    "competitors": [
+      "Varicent",
+      "SAP Commissions",
+      "Performio",
+      "Spiff",
+      "Oracle Sales Performance Management (SPM)"
+    ]
+  },
+  "ts": "2026-10-18T09:44:19.867804+00:00"
+}

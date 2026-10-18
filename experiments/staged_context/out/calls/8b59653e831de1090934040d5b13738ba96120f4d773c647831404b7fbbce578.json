@@ -1,0 +1,21 @@
+{
+  "stage": "mcp_classify",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8b59653e831de1090934040d5b13738ba96120f4d773c647831404b7fbbce578",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 256,
+  "input_tokens": 85,
+  "output_tokens": 231,
+  "cost_usd": 0.000603,
+  "elapsed_s": 57.06,
+  "error": null,
+  "text": "{\n  \"category\": \"Project Management\",\n  \"product_name\": \"monday.com\"\n}",
+  "json": {
+    "category": "Project Management",
+    "product_name": "monday.com"
+  },
+  "ts": "2026-10-18T09:49:13.678033+00:00"
+}

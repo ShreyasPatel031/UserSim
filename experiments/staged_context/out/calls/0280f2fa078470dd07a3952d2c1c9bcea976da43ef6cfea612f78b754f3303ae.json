@@ -1,0 +1,36 @@
+{
+  "stage": "hm_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0280f2fa078470dd07a3952d2c1c9bcea976da43ef6cfea612f78b754f3303ae",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3062,
+  "output_tokens": 956,
+  "cost_usd": 0.0033086,
+  "elapsed_s": 5.27,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Simple, clean interface for basic task management\",\n    \"Easy to add events to the calendar tool\",\n    \"Clear separation of tools like To-dos and Docs\"\n  ],\n  \"cons\": [\n    \"Limited to one project on the free trial, hindering exploration\",\n    \"Manual setup required for all tools and project templates\",\n    \"Lacked the advanced features and customization found in other platforms\"\n  ],\n  \"overall_experience\": \"This content creator found Basecamp's free trial to be a straightforward tool for basic project and task management, appreciating its clean interface. However, the limitations of the free plan, particularly the single project and the need to manually add every tool, created some friction. The product's simplicity, while a benefit for ease of use, ultimately left them wanting more robust features and customization options for managing creative marketing projects in real estate, especially compared to other tools they might consider.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 3,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 6,
+    "pros": [
+      "Simple, clean interface for basic task management",
+      "Easy to add events to the calendar tool",
+      "Clear separation of tools like To-dos and Docs"
+    ],
+    "cons": [
+      "Limited to one project on the free trial, hindering exploration",
+      "Manual setup required for all tools and project templates",
+      "Lacked the advanced features and customization found in other platforms"
+    ],
+    "overall_experience": "This content creator found Basecamp's free trial to be a straightforward tool for basic project and task management, appreciating its clean interface. However, the limitations of the free plan, particularly the single project and the need to manually add every tool, created some friction. The product's simplicity, while a benefit for ease of use, ultimately left them wanting more robust features and customization options for managing creative marketing projects in real estate, especially compared to other tools they might consider."
+  },
+  "ts": "2026-10-18T09:56:04.321323+00:00"
+}

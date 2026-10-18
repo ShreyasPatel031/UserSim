@@ -1,0 +1,57 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a718b77871fe0ad75a32e7eb1cac6508439687ec9c5c71394a9a6455a1534b51",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 360,
+  "output_tokens": 710,
+  "cost_usd": 0.0018830000000000001,
+  "elapsed_s": 15.86,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Create and manage a few tasks.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Create a new project and add tasks to it.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Create a project with several dependent tasks; view project.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"integrations\",\n      \"observable\": \"partly\",\n      \"task\": \"Install and use the Wrike Outlook add-in.\"\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"performance_speed\",\n      \"observable\": \"partly\",\n      \"task\": \"Install and load the Wrike Outlook add-in.\"\n    },\n    {\n      \"id\": \"F3\",\n      \"theme\": \"bugs_reliability\",\n      \"observable\": \"no\",\n      \"task\": null\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Create and manage a few tasks."
+      },
+      {
+        "id": "B2",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Create a new project and add tasks to it."
+      },
+      {
+        "id": "B3",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Create a project with several dependent tasks; view project."
+      },
+      {
+        "id": "F1",
+        "theme": "integrations",
+        "observable": "partly",
+        "task": "Install and use the Wrike Outlook add-in."
+      },
+      {
+        "id": "F2",
+        "theme": "performance_speed",
+        "observable": "partly",
+        "task": "Install and load the Wrike Outlook add-in."
+      },
+      {
+        "id": "F3",
+        "theme": "bugs_reliability",
+        "observable": "no",
+        "task": null
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:31.134597+00:00"
+}

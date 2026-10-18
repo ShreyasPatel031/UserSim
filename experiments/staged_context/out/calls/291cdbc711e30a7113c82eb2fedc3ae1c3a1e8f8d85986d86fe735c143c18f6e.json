@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "291cdbc711e30a7113c82eb2fedc3ae1c3a1e8f8d85986d86fe735c143c18f6e",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 137,
+  "output_tokens": 384,
+  "cost_usd": 0.0010011,
+  "elapsed_s": 7.19,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage tasks and collaborate with a team\",\n  \"benefits\": [\n    \"Task management\",\n    \"Collaboration with the team\",\n    \"Good software for collaboration\",\n    \"Easy to use\"\n  ],\n  \"frictions\": [\n    \"Lacks some additional features for organisation\"\n  ]\n}",
+  "json": {
+    "task": "Manage tasks and collaborate with a team",
+    "benefits": [
+      "Task management",
+      "Collaboration with the team",
+      "Good software for collaboration",
+      "Easy to use"
+    ],
+    "frictions": [
+      "Lacks some additional features for organisation"
+    ]
+  },
+  "ts": "2026-10-18T09:55:21.636391+00:00"
+}

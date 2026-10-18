@@ -1,0 +1,51 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2bdcd26dab97877dfab98591d64b8dbfcc68767ebac1d36970948f30fc926761",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 365,
+  "output_tokens": 621,
+  "cost_usd": 0.001662,
+  "elapsed_s": 3.71,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"collaboration_sharing_permissions\",\n      \"observable\": \"yes\",\n      \"task\": \"Create a page and share it\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Create a note and use AI to generate content\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"other\",\n      \"observable\": \"partly\",\n      \"task\": \"Create interconnected pages and databases\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Explore different page layouts and templates\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"data_import_export\",\n      \"observable\": \"no\",\n      \"task\": null\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "collaboration_sharing_permissions",
+        "observable": "yes",
+        "task": "Create a page and share it"
+      },
+      {
+        "id": "B2",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Create a note and use AI to generate content"
+      },
+      {
+        "id": "B3",
+        "theme": "other",
+        "observable": "partly",
+        "task": "Create interconnected pages and databases"
+      },
+      {
+        "id": "B4",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Explore different page layouts and templates"
+      },
+      {
+        "id": "F1",
+        "theme": "data_import_export",
+        "observable": "no",
+        "task": null
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:35.377101+00:00"
+}

@@ -1,0 +1,45 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "6573e08c45ce57ddc548bd42bac4ead6afbf12791ae26b61621684020afef51b",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 330,
+  "output_tokens": 596,
+  "cost_usd": 0.001589,
+  "elapsed_s": 3.45,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Explore main features and settings.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Click through all main menu items and sub-sections.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"onboarding_learning_curve\",\n      \"observable\": \"yes\",\n      \"task\": \"Simulate onboarding a new employee or user.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Locate and open various content sections.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Explore main features and settings."
+      },
+      {
+        "id": "B2",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Click through all main menu items and sub-sections."
+      },
+      {
+        "id": "B3",
+        "theme": "onboarding_learning_curve",
+        "observable": "yes",
+        "task": "Simulate onboarding a new employee or user."
+      },
+      {
+        "id": "B4",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Locate and open various content sections."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:50.251193+00:00"
+}

@@ -1,0 +1,57 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2e091eb640ee18302eb415cfa4405a75e5449dbaa2824a2e4188a83075f044e0",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 378,
+  "output_tokens": 648,
+  "cost_usd": 0.0017334000000000002,
+  "elapsed_s": 5.63,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"mobile_app\",\n      \"observable\": \"yes\",\n      \"task\": \"Install mobile app and view dashboard.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"notifications\",\n      \"observable\": \"partly\",\n      \"task\": \"Check notification settings for sales events.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate through main admin sections.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"pricing_cost\",\n      \"observable\": \"yes\",\n      \"task\": \"Review pricing plans and features.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"other\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"other\",\n      \"observable\": \"no\",\n      \"task\": null\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "mobile_app",
+        "observable": "yes",
+        "task": "Install mobile app and view dashboard."
+      },
+      {
+        "id": "B2",
+        "theme": "notifications",
+        "observable": "partly",
+        "task": "Check notification settings for sales events."
+      },
+      {
+        "id": "B3",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate through main admin sections."
+      },
+      {
+        "id": "B4",
+        "theme": "pricing_cost",
+        "observable": "yes",
+        "task": "Review pricing plans and features."
+      },
+      {
+        "id": "F1",
+        "theme": "other",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "F2",
+        "theme": "other",
+        "observable": "no",
+        "task": null
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:53.522890+00:00"
+}

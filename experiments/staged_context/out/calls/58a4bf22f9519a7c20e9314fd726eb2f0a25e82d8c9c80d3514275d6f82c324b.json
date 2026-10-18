@@ -1,0 +1,21 @@
+{
+  "stage": "mcp_classify",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "58a4bf22f9519a7c20e9314fd726eb2f0a25e82d8c9c80d3514275d6f82c324b",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 256,
+  "input_tokens": 863,
+  "output_tokens": 219,
+  "cost_usd": 0.0008064000000000001,
+  "elapsed_s": 1.93,
+  "error": null,
+  "text": "{\n  \"category\": \"Accounting\",\n  \"product_name\": \"Zoho Books\"\n}",
+  "json": {
+    "category": "Accounting",
+    "product_name": "Zoho Books"
+  },
+  "ts": "2026-10-18T09:44:27.504230+00:00"
+}

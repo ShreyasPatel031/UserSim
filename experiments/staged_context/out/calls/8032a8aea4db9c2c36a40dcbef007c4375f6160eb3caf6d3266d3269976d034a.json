@@ -1,0 +1,26 @@
+{
+  "stage": "live_competitors",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8032a8aea4db9c2c36a40dcbef007c4375f6160eb3caf6d3266d3269976d034a",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 512,
+  "input_tokens": 931,
+  "output_tokens": 422,
+  "cost_usd": 0.0013342999999999999,
+  "elapsed_s": 4.17,
+  "error": null,
+  "text": "{\n  \"competitors\": [\n    \"1Password\",\n    \"LastPass\",\n    \"Keeper Security\",\n    \"Dashlane\",\n    \"NordPass\"\n  ]\n}",
+  "json": {
+    "competitors": [
+      "1Password",
+      "LastPass",
+      "Keeper Security",
+      "Dashlane",
+      "NordPass"
+    ]
+  },
+  "ts": "2026-10-18T09:44:34.886850+00:00"
+}

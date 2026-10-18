@@ -1,0 +1,57 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "533fc80e9463b496c7da71e4401b903cb0cec93d5dc599ea0d9653a862ceb274",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 354,
+  "output_tokens": 706,
+  "cost_usd": 0.0018712000000000002,
+  "elapsed_s": 5.11,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"customer_support\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"customer_support\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Explore available features in the editor\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"templates\",\n      \"observable\": \"yes\",\n      \"task\": \"Browse and preview available website templates\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate through different editor sections and settings\"\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"onboarding_learning_curve\",\n      \"observable\": \"yes\",\n      \"task\": \"Attempt to build a basic page using the editor\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "customer_support",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "B2",
+        "theme": "customer_support",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "B3",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Explore available features in the editor"
+      },
+      {
+        "id": "B4",
+        "theme": "templates",
+        "observable": "yes",
+        "task": "Browse and preview available website templates"
+      },
+      {
+        "id": "F1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate through different editor sections and settings"
+      },
+      {
+        "id": "F2",
+        "theme": "onboarding_learning_curve",
+        "observable": "yes",
+        "task": "Attempt to build a basic page using the editor"
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:53.966864+00:00"
+}

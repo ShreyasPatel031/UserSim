@@ -1,0 +1,45 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "cd315662496d94346f49ea52b9d0dc691337bb1a11172275806fb32abced7f2b",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 332,
+  "output_tokens": 555,
+  "cost_usd": 0.0014871,
+  "elapsed_s": 3.25,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"customization_flexibility\",\n      \"observable\": \"partly\",\n      \"task\": \"Explore available settings and customization options.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"integrations\",\n      \"observable\": \"yes\",\n      \"task\": \"Check for Azure integration options in settings.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"integrations\",\n      \"observable\": \"yes\",\n      \"task\": \"Check for Setyl integration options in settings.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"performance_speed\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate through various modules and load pages.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "customization_flexibility",
+        "observable": "partly",
+        "task": "Explore available settings and customization options."
+      },
+      {
+        "id": "B2",
+        "theme": "integrations",
+        "observable": "yes",
+        "task": "Check for Azure integration options in settings."
+      },
+      {
+        "id": "B3",
+        "theme": "integrations",
+        "observable": "yes",
+        "task": "Check for Setyl integration options in settings."
+      },
+      {
+        "id": "B4",
+        "theme": "performance_speed",
+        "observable": "yes",
+        "task": "Navigate through various modules and load pages."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:48.154166+00:00"
+}

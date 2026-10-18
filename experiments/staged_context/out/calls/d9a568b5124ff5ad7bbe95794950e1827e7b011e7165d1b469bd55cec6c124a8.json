@@ -1,0 +1,36 @@
+{
+  "stage": "hm_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d9a568b5124ff5ad7bbe95794950e1827e7b011e7165d1b469bd55cec6c124a8",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2971,
+  "output_tokens": 1084,
+  "cost_usd": 0.0036013,
+  "elapsed_s": 7.21,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Simple task management with clear to-do lists and status tracking.\",\n    \"Calendar tool effective for managing deadlines and milestones.\",\n    \"Intuitive tool descriptions make it easy to select features.\"\n  ],\n  \"cons\": [\n    \"The free plan's single project limitation restricts managing multiple workstreams.\",\n    \"Requires manual addition of tools for each new project setup.\",\n    \"Some default settings, like event times, often need manual adjustment.\"\n  ],\n  \"overall_experience\": \"As a Quality Analyst new to Basecamp, the reviewer found its core project management features like to-do lists and calendars to be straightforward and helpful for tracking tasks. However, the initial setup requiring tools to be added one by one created some friction, and the limitation of a single project on the free plan was a significant constraint for managing diverse work. While generally easy to use for basic functions, the limited functionality compared to more robust platforms and the value proposition for a mid-sized company might have left them wanting more.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 7,
+    "pros": [
+      "Simple task management with clear to-do lists and status tracking.",
+      "Calendar tool effective for managing deadlines and milestones.",
+      "Intuitive tool descriptions make it easy to select features."
+    ],
+    "cons": [
+      "The free plan's single project limitation restricts managing multiple workstreams.",
+      "Requires manual addition of tools for each new project setup.",
+      "Some default settings, like event times, often need manual adjustment."
+    ],
+    "overall_experience": "As a Quality Analyst new to Basecamp, the reviewer found its core project management features like to-do lists and calendars to be straightforward and helpful for tracking tasks. However, the initial setup requiring tools to be added one by one created some friction, and the limitation of a single project on the free plan was a significant constraint for managing diverse work. While generally easy to use for basic functions, the limited functionality compared to more robust platforms and the value proposition for a mid-sized company might have left them wanting more."
+  },
+  "ts": "2026-10-18T09:55:57.459956+00:00"
+}

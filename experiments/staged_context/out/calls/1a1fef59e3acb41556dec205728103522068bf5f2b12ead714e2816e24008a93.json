@@ -1,0 +1,45 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1a1fef59e3acb41556dec205728103522068bf5f2b12ead714e2816e24008a93",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 324,
+  "output_tokens": 620,
+  "cost_usd": 0.0016472,
+  "elapsed_s": 5.38,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate through main sections and create an invoice.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Create a new client and send a simple invoice.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"pricing_cost\",\n      \"observable\": \"partly\",\n      \"task\": \"Review available pricing plans and features.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Create and categorize a few expenses and invoices.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate through main sections and create an invoice."
+      },
+      {
+        "id": "B2",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Create a new client and send a simple invoice."
+      },
+      {
+        "id": "B3",
+        "theme": "pricing_cost",
+        "observable": "partly",
+        "task": "Review available pricing plans and features."
+      },
+      {
+        "id": "B4",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Create and categorize a few expenses and invoices."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:49.424201+00:00"
+}

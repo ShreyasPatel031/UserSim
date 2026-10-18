@@ -1,0 +1,21 @@
+{
+  "stage": "mcp_classify",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e86b57bb0afb4a24a25e4d0e90eefb25971d8636f3e26d0c7543548d197aee50",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 256,
+  "input_tokens": 88,
+  "output_tokens": 217,
+  "cost_usd": 0.0005689,
+  "elapsed_s": 22.58,
+  "error": null,
+  "text": "{\n  \"category\": \"Communication\",\n  \"product_name\": \"Intercom\"\n}",
+  "json": {
+    "category": "Communication",
+    "product_name": "Intercom"
+  },
+  "ts": "2026-10-18T09:49:13.653728+00:00"
+}

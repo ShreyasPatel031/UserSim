@@ -1,0 +1,45 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "70d02137924e76388e14aa6cb569a449e811078ba1d530fd48f44f5addb8daae",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 337,
+  "output_tokens": 582,
+  "cost_usd": 0.0015561000000000001,
+  "elapsed_s": 3.69,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"integrations\",\n      \"observable\": \"yes\",\n      \"task\": \"Find and initiate Shopify integration.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"automation_workflows\",\n      \"observable\": \"yes\",\n      \"task\": \"Explore automation flows and Shopify-related triggers.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"pricing_cost\",\n      \"observable\": \"partly\",\n      \"task\": \"Locate pricing page and understand contact-based model.\"\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Attempt to create various types of forms.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "integrations",
+        "observable": "yes",
+        "task": "Find and initiate Shopify integration."
+      },
+      {
+        "id": "B2",
+        "theme": "automation_workflows",
+        "observable": "yes",
+        "task": "Explore automation flows and Shopify-related triggers."
+      },
+      {
+        "id": "F1",
+        "theme": "pricing_cost",
+        "observable": "partly",
+        "task": "Locate pricing page and understand contact-based model."
+      },
+      {
+        "id": "F2",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Attempt to create various types of forms."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:54:10.896319+00:00"
+}

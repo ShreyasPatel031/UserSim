@@ -1,0 +1,51 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "72285ef43e681952dfdbfd00c3a8950860b259d9f236ed416c0fd4546cfcb212",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 334,
+  "output_tokens": 639,
+  "cost_usd": 0.0016977,
+  "elapsed_s": 3.36,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Set up live chat widget and an automated message.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"setup_configuration\",\n      \"observable\": \"yes\",\n      \"task\": \"Integrate the chat widget into a test website.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"performance_speed\",\n      \"observable\": \"yes\",\n      \"task\": \"Send and receive messages via the live chat.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"pricing_cost\",\n      \"observable\": \"partly\",\n      \"task\": \"Review pricing plans on the website.\"\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"pricing_cost\",\n      \"observable\": \"partly\",\n      \"task\": \"Review pricing plans on the website.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Set up live chat widget and an automated message."
+      },
+      {
+        "id": "B2",
+        "theme": "setup_configuration",
+        "observable": "yes",
+        "task": "Integrate the chat widget into a test website."
+      },
+      {
+        "id": "B3",
+        "theme": "performance_speed",
+        "observable": "yes",
+        "task": "Send and receive messages via the live chat."
+      },
+      {
+        "id": "F1",
+        "theme": "pricing_cost",
+        "observable": "partly",
+        "task": "Review pricing plans on the website."
+      },
+      {
+        "id": "F2",
+        "theme": "pricing_cost",
+        "observable": "partly",
+        "task": "Review pricing plans on the website."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:40.415043+00:00"
+}

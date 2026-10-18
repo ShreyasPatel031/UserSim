@@ -1,0 +1,26 @@
+{
+  "stage": "live_competitors",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "16984d0e60797c2faf5f19c0e125d6711f8031f57ff44e83627d2c1c4abfa47c",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 512,
+  "input_tokens": 579,
+  "output_tokens": 420,
+  "cost_usd": 0.0012237,
+  "elapsed_s": 3.58,
+  "error": null,
+  "text": "{\n  \"competitors\": [\n    \"Braze\",\n    \"Iterable\",\n    \"Salesforce Marketing Cloud\",\n    \"ActiveCampaign\",\n    \"Omnisend\"\n  ]\n}",
+  "json": {
+    "competitors": [
+      "Braze",
+      "Iterable",
+      "Salesforce Marketing Cloud",
+      "ActiveCampaign",
+      "Omnisend"
+    ]
+  },
+  "ts": "2026-10-18T09:44:15.781102+00:00"
+}

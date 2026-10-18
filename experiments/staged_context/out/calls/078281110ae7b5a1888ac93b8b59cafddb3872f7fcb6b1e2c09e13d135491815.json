@@ -1,0 +1,28 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "078281110ae7b5a1888ac93b8b59cafddb3872f7fcb6b1e2c09e13d135491815",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 186,
+  "output_tokens": 477,
+  "cost_usd": 0.0012483,
+  "elapsed_s": 11.12,
+  "error": null,
+  "text": "{\n  \"task\": \"Track team and personal to-do items.\",\n  \"benefits\": [\n    \"to-do section\",\n    \"track items for entire team\",\n    \"track personal to-do items\"\n  ],\n  \"frictions\": [\n    \"main page is difficult to navigate with multiple projects\"\n  ]\n}",
+  "json": {
+    "task": "Track team and personal to-do items.",
+    "benefits": [
+      "to-do section",
+      "track items for entire team",
+      "track personal to-do items"
+    ],
+    "frictions": [
+      "main page is difficult to navigate with multiple projects"
+    ]
+  },
+  "ts": "2026-10-18T09:55:22.057206+00:00"
+}

@@ -1,0 +1,21 @@
+{
+  "stage": "mcp_classify",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8db0c3294ae4d29c7906af22f81fbdbb3b2ee2833b570a4cc4e66f52c8d6c61b",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 256,
+  "input_tokens": 91,
+  "output_tokens": 119,
+  "cost_usd": 0.00032480000000000003,
+  "elapsed_s": 48.5,
+  "error": null,
+  "text": "{\n  \"category\": \"CRM\",\n  \"product_name\": \"HubSpot CRM\"\n}",
+  "json": {
+    "category": "CRM",
+    "product_name": "HubSpot CRM"
+  },
+  "ts": "2026-10-18T09:49:13.687580+00:00"
+}

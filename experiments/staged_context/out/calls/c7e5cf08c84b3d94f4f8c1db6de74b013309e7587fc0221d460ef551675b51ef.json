@@ -1,0 +1,45 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c7e5cf08c84b3d94f4f8c1db6de74b013309e7587fc0221d460ef551675b51ef",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 331,
+  "output_tokens": 613,
+  "cost_usd": 0.0016318,
+  "elapsed_s": 3.78,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Create a repository and commit a file\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"other\",\n      \"observable\": \"partly\",\n      \"task\": \"Explore UI, create project, commit file\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"bugs_reliability\",\n      \"observable\": \"partly\",\n      \"task\": \"Upload and download a large file\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"partly\",\n      \"task\": \"Create a merge request with conflicts\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Create a repository and commit a file"
+      },
+      {
+        "id": "B2",
+        "theme": "other",
+        "observable": "partly",
+        "task": "Explore UI, create project, commit file"
+      },
+      {
+        "id": "B3",
+        "theme": "bugs_reliability",
+        "observable": "partly",
+        "task": "Upload and download a large file"
+      },
+      {
+        "id": "B4",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "partly",
+        "task": "Create a merge request with conflicts"
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:54:01.412421+00:00"
+}

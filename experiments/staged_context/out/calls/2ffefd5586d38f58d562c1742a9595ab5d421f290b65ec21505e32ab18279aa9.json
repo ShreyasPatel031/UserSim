@@ -1,0 +1,27 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2ffefd5586d38f58d562c1742a9595ab5d421f290b65ec21505e32ab18279aa9",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 294,
+  "output_tokens": 440,
+  "cost_usd": 0.0011882000000000002,
+  "elapsed_s": 9.25,
+  "error": null,
+  "text": "{\n  \"task\": \"Coordinate project work\",\n  \"benefits\": [\n    \"Chat in real-time with a group\",\n    \"Maintain visibility on work status via a shared dashboard\",\n    \"Share files and documents securely\",\n    \"Track projects from start to end\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Coordinate project work",
+    "benefits": [
+      "Chat in real-time with a group",
+      "Maintain visibility on work status via a shared dashboard",
+      "Share files and documents securely",
+      "Track projects from start to end"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T09:55:22.274101+00:00"
+}

@@ -1,0 +1,45 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "88aa678f272bd2348fbd2c49a9214decc0541032afe8503ca96c9b40d795f535",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 330,
+  "output_tokens": 583,
+  "cost_usd": 0.0015565,
+  "elapsed_s": 15.89,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Create a client, add a deal, and track its progress.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"other\",\n      \"observable\": \"partly\",\n      \"task\": \"Attempt to manage a typical sales workflow.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate through different sections and features.\"\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Attempt to complete a basic task without guidance.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Create a client, add a deal, and track its progress."
+      },
+      {
+        "id": "B2",
+        "theme": "other",
+        "observable": "partly",
+        "task": "Attempt to manage a typical sales workflow."
+      },
+      {
+        "id": "F1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate through different sections and features."
+      },
+      {
+        "id": "F2",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Attempt to complete a basic task without guidance."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:29.526132+00:00"
+}

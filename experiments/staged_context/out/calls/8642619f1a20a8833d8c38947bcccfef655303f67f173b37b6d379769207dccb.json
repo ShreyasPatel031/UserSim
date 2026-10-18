@@ -1,0 +1,51 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8642619f1a20a8833d8c38947bcccfef655303f67f173b37b6d379769207dccb",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 352,
+  "output_tokens": 635,
+  "cost_usd": 0.0016931000000000001,
+  "elapsed_s": 12.2,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"free_plan_or_tier_limits\",\n      \"observable\": \"partly\",\n      \"task\": \"Explore free plan features and limits.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate through main sections.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"onboarding_learning_curve\",\n      \"observable\": \"yes\",\n      \"task\": \"Attempt to create a basic campaign.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Interact with various interface elements.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"setup_configuration\",\n      \"observable\": \"yes\",\n      \"task\": \"Configure email sending with own domain.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "free_plan_or_tier_limits",
+        "observable": "partly",
+        "task": "Explore free plan features and limits."
+      },
+      {
+        "id": "B2",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate through main sections."
+      },
+      {
+        "id": "B3",
+        "theme": "onboarding_learning_curve",
+        "observable": "yes",
+        "task": "Attempt to create a basic campaign."
+      },
+      {
+        "id": "B4",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Interact with various interface elements."
+      },
+      {
+        "id": "F1",
+        "theme": "setup_configuration",
+        "observable": "yes",
+        "task": "Configure email sending with own domain."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:29.360637+00:00"
+}

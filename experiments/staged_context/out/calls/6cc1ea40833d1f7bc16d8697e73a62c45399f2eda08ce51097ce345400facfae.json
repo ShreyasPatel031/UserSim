@@ -1,0 +1,51 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "6cc1ea40833d1f7bc16d8697e73a62c45399f2eda08ce51097ce345400facfae",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 355,
+  "output_tokens": 654,
+  "cost_usd": 0.0017415,
+  "elapsed_s": 5.28,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"other\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"other\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"customization_flexibility\",\n      \"observable\": \"yes\",\n      \"task\": \"Explore options to customize workflows or data fields.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"bugs_reliability\",\n      \"observable\": \"partly\",\n      \"task\": \"Perform various common actions to check for errors.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"onboarding_learning_curve\",\n      \"observable\": \"yes\",\n      \"task\": \"Attempt to understand core features without guidance.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "other",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "B2",
+        "theme": "other",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "B3",
+        "theme": "customization_flexibility",
+        "observable": "yes",
+        "task": "Explore options to customize workflows or data fields."
+      },
+      {
+        "id": "B4",
+        "theme": "bugs_reliability",
+        "observable": "partly",
+        "task": "Perform various common actions to check for errors."
+      },
+      {
+        "id": "F1",
+        "theme": "onboarding_learning_curve",
+        "observable": "yes",
+        "task": "Attempt to understand core features without guidance."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:51.123602+00:00"
+}

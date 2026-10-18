@@ -1,0 +1,21 @@
+{
+  "stage": "mcp_classify",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f002b0fc699bd311555ee23d7d4e6767b76de276fe82b0cd33b7dadd7a6e03f3",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 256,
+  "input_tokens": 528,
+  "output_tokens": 280,
+  "cost_usd": 0.0008583999999999998,
+  "elapsed_s": 24.98,
+  "error": null,
+  "text": "{\n  \"category\": \"Marketing\",\n  \"product_name\": \"Mailchimp\"\n}",
+  "json": {
+    "category": "Marketing",
+    "product_name": "Mailchimp"
+  },
+  "ts": "2026-10-18T09:49:14.406988+00:00"
+}

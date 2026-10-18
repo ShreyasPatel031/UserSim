@@ -1,0 +1,36 @@
+{
+  "stage": "hm_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "09df747f8a96183c0646652255e8ffc46772590988c63514f2d2b02c9df2e0ed",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3091,
+  "output_tokens": 1071,
+  "cost_usd": 0.0036047999999999996,
+  "elapsed_s": 6.94,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Simple and intuitive interface for core project management tasks\",\n    \"Clear organization of to-do lists and documents within projects\",\n    \"Easy to add events and deadlines to the calendar tool\"\n  ],\n  \"cons\": [\n    \"Limited functionality and customization compared to more robust project management tools\",\n    \"Initial setup requires manual addition of tools for each project\",\n    \"Free plan restricts usage to a single project, limiting scalability\"\n  ],\n  \"overall_experience\": \"This Quality Analyst found Basecamp to be a straightforward tool for managing projects, appreciating its simplicity and ease of use for essential tasks like tracking to-dos and deadlines. However, the initial setup process, which required manually adding tools, presented some minor friction. They likely found the platform's core features sufficient for basic project oversight but potentially felt it lacked the advanced functionality or customization options present in other software, especially given their industry background and role.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 3,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Simple and intuitive interface for core project management tasks",
+      "Clear organization of to-do lists and documents within projects",
+      "Easy to add events and deadlines to the calendar tool"
+    ],
+    "cons": [
+      "Limited functionality and customization compared to more robust project management tools",
+      "Initial setup requires manual addition of tools for each project",
+      "Free plan restricts usage to a single project, limiting scalability"
+    ],
+    "overall_experience": "This Quality Analyst found Basecamp to be a straightforward tool for managing projects, appreciating its simplicity and ease of use for essential tasks like tracking to-dos and deadlines. However, the initial setup process, which required manually adding tools, presented some minor friction. They likely found the platform's core features sufficient for basic project oversight but potentially felt it lacked the advanced functionality or customization options present in other software, especially given their industry background and role."
+  },
+  "ts": "2026-10-18T09:55:57.505855+00:00"
+}

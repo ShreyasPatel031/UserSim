@@ -1,0 +1,39 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d9c188ee31a66e06e20ea69e491c955f3dfe0b4ecc46c31f76f24d8c57c13f07",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 329,
+  "output_tokens": 571,
+  "cost_usd": 0.0015262,
+  "elapsed_s": 3.74,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"templates\",\n      \"observable\": \"yes\",\n      \"task\": \"Create a new email template.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"templates\",\n      \"observable\": \"yes\",\n      \"task\": \"Design an email campaign with brand elements.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"pricing_cost\",\n      \"observable\": \"partly\",\n      \"task\": \"Review pricing plans based on contact list size.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "templates",
+        "observable": "yes",
+        "task": "Create a new email template."
+      },
+      {
+        "id": "B2",
+        "theme": "templates",
+        "observable": "yes",
+        "task": "Design an email campaign with brand elements."
+      },
+      {
+        "id": "F1",
+        "theme": "pricing_cost",
+        "observable": "partly",
+        "task": "Review pricing plans based on contact list size."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:43.944474+00:00"
+}

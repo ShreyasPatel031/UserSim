@@ -1,0 +1,45 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "08c19e36b9d8107cb2c4b073bcf87ed9b520bc050653a1886e7419142645081c",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 336,
+  "output_tokens": 566,
+  "cost_usd": 0.0015158,
+  "elapsed_s": 3.45,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"automation_workflows\",\n      \"observable\": \"partly\",\n      \"task\": \"Automate a recurring invoice or bank reconciliation.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"other\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"collaboration_sharing_permissions\",\n      \"observable\": \"yes\",\n      \"task\": \"Attempt to add multiple users or define user roles.\"\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"data_import_export\",\n      \"observable\": \"partly\",\n      \"task\": \"View transaction history or generate a report for past periods.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "automation_workflows",
+        "observable": "partly",
+        "task": "Automate a recurring invoice or bank reconciliation."
+      },
+      {
+        "id": "B2",
+        "theme": "other",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "F1",
+        "theme": "collaboration_sharing_permissions",
+        "observable": "yes",
+        "task": "Attempt to add multiple users or define user roles."
+      },
+      {
+        "id": "F2",
+        "theme": "data_import_export",
+        "observable": "partly",
+        "task": "View transaction history or generate a report for past periods."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:45.770050+00:00"
+}

@@ -1,0 +1,45 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9680bb3bf21d65f36c4e19b6b483a1cbc6ccdca6afcb9acaa26d6f15932526ab",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 325,
+  "output_tokens": 590,
+  "cost_usd": 0.0015725000000000001,
+  "elapsed_s": 3.93,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"performance_speed\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"mobile_app\",\n      \"observable\": \"yes\",\n      \"task\": \"Access store admin panel on a mobile device\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"bugs_reliability\",\n      \"observable\": \"no\",\n      \"task\": null\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "B2",
+        "theme": "performance_speed",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "B3",
+        "theme": "mobile_app",
+        "observable": "yes",
+        "task": "Access store admin panel on a mobile device"
+      },
+      {
+        "id": "B4",
+        "theme": "bugs_reliability",
+        "observable": "no",
+        "task": null
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:54:12.646268+00:00"
+}

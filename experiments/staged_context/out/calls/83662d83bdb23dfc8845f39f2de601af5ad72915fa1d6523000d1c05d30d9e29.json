@@ -1,0 +1,39 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "83662d83bdb23dfc8845f39f2de601af5ad72915fa1d6523000d1c05d30d9e29",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 320,
+  "output_tokens": 563,
+  "cost_usd": 0.0015035,
+  "elapsed_s": 3.79,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Create a new note and a new task.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"other\",\n      \"observable\": \"partly\",\n      \"task\": \"Create and manage several notes and tasks.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Type text into a new task description field.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Create a new note and a new task."
+      },
+      {
+        "id": "B2",
+        "theme": "other",
+        "observable": "partly",
+        "task": "Create and manage several notes and tasks."
+      },
+      {
+        "id": "F1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Type text into a new task description field."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:38.935719+00:00"
+}

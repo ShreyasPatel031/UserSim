@@ -1,0 +1,45 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3e3ea9023ecc3e4d14a8cf457e19a26e1186e97ba3720568a1102897ad710ed1",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 335,
+  "output_tokens": 562,
+  "cost_usd": 0.0015055,
+  "elapsed_s": 3.54,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"F1\",\n      \"theme\": \"performance_speed\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate through different modules and save a record.\"\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"performance_speed\",\n      \"observable\": \"yes\",\n      \"task\": \"Create and save a new lead or opportunity.\"\n    },\n    {\n      \"id\": \"F3\",\n      \"theme\": \"reporting_analytics\",\n      \"observable\": \"yes\",\n      \"task\": \"Generate a standard report and explore customization options.\"\n    },\n    {\n      \"id\": \"F4\",\n      \"theme\": \"performance_speed\",\n      \"observable\": \"yes\",\n      \"task\": \"Perform several common tasks like creating, editing, and saving.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "F1",
+        "theme": "performance_speed",
+        "observable": "yes",
+        "task": "Navigate through different modules and save a record."
+      },
+      {
+        "id": "F2",
+        "theme": "performance_speed",
+        "observable": "yes",
+        "task": "Create and save a new lead or opportunity."
+      },
+      {
+        "id": "F3",
+        "theme": "reporting_analytics",
+        "observable": "yes",
+        "task": "Generate a standard report and explore customization options."
+      },
+      {
+        "id": "F4",
+        "theme": "performance_speed",
+        "observable": "yes",
+        "task": "Perform several common tasks like creating, editing, and saving."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:38.052143+00:00"
+}

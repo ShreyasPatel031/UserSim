@@ -1,0 +1,33 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "dc1f50b8fab79c778d4a752b60a60003e86ac1d3c935d9e3769c94595ed968b0",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 314,
+  "output_tokens": 508,
+  "cost_usd": 0.0013641999999999999,
+  "elapsed_s": 3.48,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"partly\",\n      \"task\": \"Create and send a test email campaign.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"onboarding_learning_curve\",\n      \"observable\": \"yes\",\n      \"task\": \"Explore the main marketing automation features.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "partly",
+        "task": "Create and send a test email campaign."
+      },
+      {
+        "id": "B2",
+        "theme": "onboarding_learning_curve",
+        "observable": "yes",
+        "task": "Explore the main marketing automation features."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:44.036758+00:00"
+}

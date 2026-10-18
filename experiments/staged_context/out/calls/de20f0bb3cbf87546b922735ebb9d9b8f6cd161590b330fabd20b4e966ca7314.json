@@ -1,0 +1,26 @@
+{
+  "stage": "live_competitors",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "de20f0bb3cbf87546b922735ebb9d9b8f6cd161590b330fabd20b4e966ca7314",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 512,
+  "input_tokens": 168,
+  "output_tokens": 435,
+  "cost_usd": 0.0011378999999999998,
+  "elapsed_s": 3.36,
+  "error": null,
+  "text": "{\n  \"competitors\": [\n    \"ActiveCampaign\",\n    \"Brevo\",\n    \"MailerLite\",\n    \"Constant Contact\",\n    \"Omnisend\"\n  ]\n}",
+  "json": {
+    "competitors": [
+      "ActiveCampaign",
+      "Brevo",
+      "MailerLite",
+      "Constant Contact",
+      "Omnisend"
+    ]
+  },
+  "ts": "2026-10-18T09:44:29.788012+00:00"
+}

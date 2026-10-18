@@ -1,0 +1,26 @@
+{
+  "stage": "live_competitors",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "206556156960032826e3b2f0032fac12aae3dbeefbb2d12b548b9c781394e263",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 512,
+  "input_tokens": 858,
+  "output_tokens": 395,
+  "cost_usd": 0.0012449000000000002,
+  "elapsed_s": 4.04,
+  "error": null,
+  "text": "{\n  \"competitors\": [\n    \"Tableau\",\n    \"Microsoft Power BI\",\n    \"Qlik Sense\",\n    \"ThoughtSpot\",\n    \"AtScale\"\n  ]\n}",
+  "json": {
+    "competitors": [
+      "Tableau",
+      "Microsoft Power BI",
+      "Qlik Sense",
+      "ThoughtSpot",
+      "AtScale"
+    ]
+  },
+  "ts": "2026-10-18T09:44:11.253859+00:00"
+}

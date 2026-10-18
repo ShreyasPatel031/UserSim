@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "5cf3fe6d87ee8bcedb26f2c20fe5ce1f14deefd90ac703a269586cc28ee137e2",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 326,
+  "output_tokens": 551,
+  "cost_usd": 0.0014753,
+  "elapsed_s": 8.84,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage project documents, tasks, schedules, and communications.\",\n  \"benefits\": [\n    \"Provides tools for managing document versions, contracts, schedules, date reminders, tasks, and task templates.\",\n    \"Interface effectively amortizes tasks for users across project stages.\"\n  ],\n  \"frictions\": [\n    \"Difficulty achieving a digestible and actionable high-level view of tasks and projects.\",\n    \"Very linear and text-heavy interface.\",\n    \"Not suitable for users with visual, graphic, or pictorial learning and memory styles.\",\n    \"Can lead to frustration and wasted time if not used as the sole platform for all related functions.\"\n  ]\n}",
+  "json": {
+    "task": "Manage project documents, tasks, schedules, and communications.",
+    "benefits": [
+      "Provides tools for managing document versions, contracts, schedules, date reminders, tasks, and task templates.",
+      "Interface effectively amortizes tasks for users across project stages."
+    ],
+    "frictions": [
+      "Difficulty achieving a digestible and actionable high-level view of tasks and projects.",
+      "Very linear and text-heavy interface.",
+      "Not suitable for users with visual, graphic, or pictorial learning and memory styles.",
+      "Can lead to frustration and wasted time if not used as the sole platform for all related functions."
+    ]
+  },
+  "ts": "2026-10-18T09:55:23.416217+00:00"
+}

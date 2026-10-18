@@ -1,0 +1,51 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3833fe5faffb12f29682489d04b4c97b567e5755efc5eb16596cc3ff9e5838f6",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 344,
+  "output_tokens": 695,
+  "cost_usd": 0.0018406999999999998,
+  "elapsed_s": 3.8,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate through different sections\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Create a test ticket and reply to it\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"other\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"search\",\n      \"observable\": \"yes\",\n      \"task\": \"Search for a specific ticket ID\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"performance_speed\",\n      \"observable\": \"yes\",\n      \"task\": \"Perform several actions quickly\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate through different sections"
+      },
+      {
+        "id": "B2",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Create a test ticket and reply to it"
+      },
+      {
+        "id": "B3",
+        "theme": "other",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "B4",
+        "theme": "search",
+        "observable": "yes",
+        "task": "Search for a specific ticket ID"
+      },
+      {
+        "id": "F1",
+        "theme": "performance_speed",
+        "observable": "yes",
+        "task": "Perform several actions quickly"
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:54:16.122261+00:00"
+}

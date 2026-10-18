@@ -1,0 +1,63 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "6ae62a64a4dcc895a4dcbcc3db2d1a561f556f3411ac6cf935ec279d26ca7b4f",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 382,
+  "output_tokens": 738,
+  "cost_usd": 0.0019596,
+  "elapsed_s": 13.51,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate through different sections and features.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"onboarding_learning_curve\",\n      \"observable\": \"yes\",\n      \"task\": \"Attempt to use core features without reading documentation.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"other\",\n      \"observable\": \"partly\",\n      \"task\": \"Review available features and their descriptions.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"other\",\n      \"observable\": \"partly\",\n      \"task\": \"Explore the core functionality for support representatives.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"integrations\",\n      \"observable\": \"yes\",\n      \"task\": \"Check the list of available third-party integrations.\"\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Look for features to track chats and calls.\"\n    },\n    {\n      \"id\": \"F3\",\n      \"theme\": \"reporting_analytics\",\n      \"observable\": \"yes\",\n      \"task\": \"Review available analytics dashboards and reports.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate through different sections and features."
+      },
+      {
+        "id": "B2",
+        "theme": "onboarding_learning_curve",
+        "observable": "yes",
+        "task": "Attempt to use core features without reading documentation."
+      },
+      {
+        "id": "B3",
+        "theme": "other",
+        "observable": "partly",
+        "task": "Review available features and their descriptions."
+      },
+      {
+        "id": "B4",
+        "theme": "other",
+        "observable": "partly",
+        "task": "Explore the core functionality for support representatives."
+      },
+      {
+        "id": "F1",
+        "theme": "integrations",
+        "observable": "yes",
+        "task": "Check the list of available third-party integrations."
+      },
+      {
+        "id": "F2",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Look for features to track chats and calls."
+      },
+      {
+        "id": "F3",
+        "theme": "reporting_analytics",
+        "observable": "yes",
+        "task": "Review available analytics dashboards and reports."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:29.885985+00:00"
+}

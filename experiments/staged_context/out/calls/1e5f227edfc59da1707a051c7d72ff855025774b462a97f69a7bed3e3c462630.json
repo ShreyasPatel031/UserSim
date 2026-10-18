@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1e5f227edfc59da1707a051c7d72ff855025774b462a97f69a7bed3e3c462630",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2752,
+  "output_tokens": 923,
+  "cost_usd": 0.0031331,
+  "elapsed_s": 8.65,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Streamlined communication within project teams\",\n    \"Intuitive interface makes it easy for all users to adopt\",\n    \"Centralized hub for project discussions and documents\"\n  ],\n  \"cons\": [\n    \"Limited advanced reporting and analytics capabilities\",\n    \"May lack granular task management features for complex projects\",\n    \"Customization options are somewhat restricted for specific workflows\"\n  ],\n  \"overall_experience\": \"This Specialist Recruiter likely found Basecamp to be a straightforward and effective tool for managing team collaboration and communication within their large Media Production company. Its ease of use was a significant advantage, ensuring quick adoption across diverse teams. However, they may have encountered limitations with more advanced project tracking, reporting, or specific customization needs that arise in a large enterprise environment.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Streamlined communication within project teams",
+      "Intuitive interface makes it easy for all users to adopt",
+      "Centralized hub for project discussions and documents"
+    ],
+    "cons": [
+      "Limited advanced reporting and analytics capabilities",
+      "May lack granular task management features for complex projects",
+      "Customization options are somewhat restricted for specific workflows"
+    ],
+    "overall_experience": "This Specialist Recruiter likely found Basecamp to be a straightforward and effective tool for managing team collaboration and communication within their large Media Production company. Its ease of use was a significant advantage, ensuring quick adoption across diverse teams. However, they may have encountered limitations with more advanced project tracking, reporting, or specific customization needs that arise in a large enterprise environment."
+  },
+  "ts": "2026-10-18T09:56:17.368636+00:00"
+}

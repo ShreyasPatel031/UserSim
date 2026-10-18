@@ -1,0 +1,36 @@
+{
+  "stage": "hm_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "234d359c61b616e0bfe6dcfea646c914c46f42ccfa0748260b5789e36f890103",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3221,
+  "output_tokens": 1070,
+  "cost_usd": 0.0036412999999999997,
+  "elapsed_s": 5.92,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Simple and effective for managing project tasks and deadlines.\",\n    \"Clear interface for adding to-dos and tracking their status.\",\n    \"Useful tools like Card Table for visual workflow management.\"\n  ],\n  \"cons\": [\n    \"Limited customization options compared to more complex project management tools.\",\n    \"The free plan's single-project limit is restrictive for managing multiple workstreams.\",\n    \"Initial setup of tools for a new project can feel a bit manual.\"\n  ],\n  \"overall_experience\": \"This software developer likely found Basecamp to be a straightforward and practical tool for managing their projects. While appreciating its simplicity for task and deadline tracking, they might have occasionally desired more advanced customization or integration capabilities often found in other tools. The limitations of the free plan, particularly the single project, could have been a point of friction over their 6-12 months of use.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Simple and effective for managing project tasks and deadlines.",
+      "Clear interface for adding to-dos and tracking their status.",
+      "Useful tools like Card Table for visual workflow management."
+    ],
+    "cons": [
+      "Limited customization options compared to more complex project management tools.",
+      "The free plan's single-project limit is restrictive for managing multiple workstreams.",
+      "Initial setup of tools for a new project can feel a bit manual."
+    ],
+    "overall_experience": "This software developer likely found Basecamp to be a straightforward and practical tool for managing their projects. While appreciating its simplicity for task and deadline tracking, they might have occasionally desired more advanced customization or integration capabilities often found in other tools. The limitations of the free plan, particularly the single project, could have been a point of friction over their 6-12 months of use."
+  },
+  "ts": "2026-10-18T09:55:51.805899+00:00"
+}

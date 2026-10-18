@@ -1,0 +1,28 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "fe32979a399b270e1df4244cb81480060c32340f123b36ee160e6e0e795d9342",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 171,
+  "output_tokens": 512,
+  "cost_usd": 0.0013312999999999999,
+  "elapsed_s": 8.51,
+  "error": null,
+  "text": "{\n  \"task\": \"Use the calendar view to track current and upcoming projects\",\n  \"benefits\": [\n    \"visually see current and upcoming projects using the calendar view\"\n  ],\n  \"frictions\": [\n    \"limited features and functionality\",\n    \"required hacks like color coding calendar events to make data useful\",\n    \"required a lot of manual work to make it functional\"\n  ]\n}",
+  "json": {
+    "task": "Use the calendar view to track current and upcoming projects",
+    "benefits": [
+      "visually see current and upcoming projects using the calendar view"
+    ],
+    "frictions": [
+      "limited features and functionality",
+      "required hacks like color coding calendar events to make data useful",
+      "required a lot of manual work to make it functional"
+    ]
+  },
+  "ts": "2026-10-18T09:55:21.688748+00:00"
+}

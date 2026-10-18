@@ -1,0 +1,51 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f9d2eff16d7e5b090de17c992c930c618c11d91fe78e20b5b239b0d6082c6087",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 345,
+  "output_tokens": 679,
+  "cost_usd": 0.001801,
+  "elapsed_s": 4.59,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Create a page and add notes.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"partly\",\n      \"task\": \"Create a document, make edits, check page history.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"templates\",\n      \"observable\": \"yes\",\n      \"task\": \"Create a new page from a template.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Use AI to summarize existing text.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"onboarding_learning_curve\",\n      \"observable\": \"yes\",\n      \"task\": \"Explore various features and settings.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Create a page and add notes."
+      },
+      {
+        "id": "B2",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "partly",
+        "task": "Create a document, make edits, check page history."
+      },
+      {
+        "id": "B3",
+        "theme": "templates",
+        "observable": "yes",
+        "task": "Create a new page from a template."
+      },
+      {
+        "id": "B4",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Use AI to summarize existing text."
+      },
+      {
+        "id": "F1",
+        "theme": "onboarding_learning_curve",
+        "observable": "yes",
+        "task": "Explore various features and settings."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:36.736147+00:00"
+}

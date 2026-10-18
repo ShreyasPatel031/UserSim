@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ebe35bc0b0a59c5bdfb4e477ad3e00585e93745cf48f7f80fcc080eee8279458",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2629,
+  "output_tokens": 1002,
+  "cost_usd": 0.0032937,
+  "elapsed_s": 5.12,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effective for tracking team and personal to-do items\",\n    \"Streamlines task assignment and progress monitoring\",\n    \"Reliable for long-term use in a non-profit setting\"\n  ],\n  \"cons\": [\n    \"May lack advanced customization options\",\n    \"Reporting capabilities might be basic for detailed insights\",\n    \"Could feel less powerful compared to more complex tools\"\n  ],\n  \"overall_experience\": \"This Chapter Services Coordinator likely found Basecamp to be a stable and user-friendly tool for managing daily tasks and team to-dos over a long period. Its simplicity and reliability were probably key benefits for their operations role within a non-profit. However, they might have noted its limitations in advanced features or customization compared to more robust project management platforms.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Effective for tracking team and personal to-do items",
+      "Streamlines task assignment and progress monitoring",
+      "Reliable for long-term use in a non-profit setting"
+    ],
+    "cons": [
+      "May lack advanced customization options",
+      "Reporting capabilities might be basic for detailed insights",
+      "Could feel less powerful compared to more complex tools"
+    ],
+    "overall_experience": "This Chapter Services Coordinator likely found Basecamp to be a stable and user-friendly tool for managing daily tasks and team to-dos over a long period. Its simplicity and reliability were probably key benefits for their operations role within a non-profit. However, they might have noted its limitations in advanced features or customization compared to more robust project management platforms."
+  },
+  "ts": "2026-10-18T09:55:51.265962+00:00"
+}

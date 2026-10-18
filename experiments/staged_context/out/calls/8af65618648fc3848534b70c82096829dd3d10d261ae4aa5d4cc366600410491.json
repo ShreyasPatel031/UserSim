@@ -1,0 +1,36 @@
+{
+  "stage": "hm_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8af65618648fc3848534b70c82096829dd3d10d261ae4aa5d4cc366600410491",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3364,
+  "output_tokens": 916,
+  "cost_usd": 0.0032991999999999995,
+  "elapsed_s": 5.12,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Streamlined project management with clear To-do lists and task assignment.\",\n    \"Effective for organizing team activities and centralizing communication for a small team.\",\n    \"The Card Table feature provides a visual way to track project statuses.\"\n  ],\n  \"cons\": [\n    \"Limitations on the free plan, especially the single project restriction, could hinder growth.\",\n    \"The calendar functionality, while present, may lack advanced features like automated reminders.\",\n    \"Initial setup can involve multiple steps to add necessary tools and configure them.\"\n  ],\n  \"overall_experience\": \"This administrator likely finds Basecamp to be a solid, straightforward tool for managing projects and team activities within a small marketing agency. They appreciate its simplicity for task management and communication, supporting their operational needs. While generally satisfied, the reviewer may find some advanced features or customization options lacking compared to more complex alternatives, especially as their team's needs evolve.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Streamlined project management with clear To-do lists and task assignment.",
+      "Effective for organizing team activities and centralizing communication for a small team.",
+      "The Card Table feature provides a visual way to track project statuses."
+    ],
+    "cons": [
+      "Limitations on the free plan, especially the single project restriction, could hinder growth.",
+      "The calendar functionality, while present, may lack advanced features like automated reminders.",
+      "Initial setup can involve multiple steps to add necessary tools and configure them."
+    ],
+    "overall_experience": "This administrator likely finds Basecamp to be a solid, straightforward tool for managing projects and team activities within a small marketing agency. They appreciate its simplicity for task management and communication, supporting their operational needs. While generally satisfied, the reviewer may find some advanced features or customization options lacking compared to more complex alternatives, especially as their team's needs evolve."
+  },
+  "ts": "2026-10-18T09:56:09.954134+00:00"
+}

@@ -1,0 +1,21 @@
+{
+  "stage": "mcp_classify",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3f914d516852db3c2aa6a62e0b2a6d2e137c359026d38b80717e7df2b146ee92",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 256,
+  "input_tokens": 442,
+  "output_tokens": 218,
+  "cost_usd": 0.0006776,
+  "elapsed_s": 2.49,
+  "error": null,
+  "text": "{\n  \"category\": \"HR\",\n  \"product_name\": \"Wellable\"\n}",
+  "json": {
+    "category": "HR",
+    "product_name": "Wellable"
+  },
+  "ts": "2026-10-18T09:44:15.111442+00:00"
+}

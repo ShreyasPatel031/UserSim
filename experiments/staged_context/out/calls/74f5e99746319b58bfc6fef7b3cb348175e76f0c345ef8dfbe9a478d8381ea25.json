@@ -1,0 +1,33 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "74f5e99746319b58bfc6fef7b3cb348175e76f0c345ef8dfbe9a478d8381ea25",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 306,
+  "output_tokens": 512,
+  "cost_usd": 0.0013717999999999998,
+  "elapsed_s": 3.49,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate through different sections.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"integrations\",\n      \"observable\": \"partly\",\n      \"task\": \"View available integration options.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate through different sections."
+      },
+      {
+        "id": "B2",
+        "theme": "integrations",
+        "observable": "partly",
+        "task": "View available integration options."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:54:01.799381+00:00"
+}

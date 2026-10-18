@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "909f91959e04181a6e79a16bddbe015add5fa4597b14fdaa383289bf0fd13aee",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2482,
+  "output_tokens": 1088,
+  "cost_usd": 0.0034646,
+  "elapsed_s": 5.59,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"The calendar view is intuitive and effective for tracking current and upcoming projects.\",\n    \"Its simplicity and focused features prevent overwhelming a self-employed user.\",\n    \"Provides a centralized space for project oversight without excessive complexity.\"\n  ],\n  \"cons\": [\n    \"May lack advanced customization options or specialized views compared to other tools.\",\n    \"Could feel limited if more detailed task management or reporting features were needed.\",\n    \"The cost might be a consideration for a self-employed individual if not fully utilized.\"\n  ],\n  \"overall_experience\": \"This self-employed Designer and Operations Manager likely found Basecamp's calendar view to be a straightforward and efficient way to manage project timelines. The product's simplicity likely appealed to them, avoiding the steep learning curves or overwhelming interfaces often found in more feature-rich alternatives. While effective for their specific task, they might have noted a lack of deeper customization or advanced functionalities for broader project management needs.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "The calendar view is intuitive and effective for tracking current and upcoming projects.",
+      "Its simplicity and focused features prevent overwhelming a self-employed user.",
+      "Provides a centralized space for project oversight without excessive complexity."
+    ],
+    "cons": [
+      "May lack advanced customization options or specialized views compared to other tools.",
+      "Could feel limited if more detailed task management or reporting features were needed.",
+      "The cost might be a consideration for a self-employed individual if not fully utilized."
+    ],
+    "overall_experience": "This self-employed Designer and Operations Manager likely found Basecamp's calendar view to be a straightforward and efficient way to manage project timelines. The product's simplicity likely appealed to them, avoiding the steep learning curves or overwhelming interfaces often found in more feature-rich alternatives. While effective for their specific task, they might have noted a lack of deeper customization or advanced functionalities for broader project management needs."
+  },
+  "ts": "2026-10-18T09:56:03.815481+00:00"
+}

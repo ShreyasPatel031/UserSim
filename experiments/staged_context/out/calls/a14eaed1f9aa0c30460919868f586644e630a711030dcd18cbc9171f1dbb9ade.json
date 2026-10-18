@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a14eaed1f9aa0c30460919868f586644e630a711030dcd18cbc9171f1dbb9ade",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2446,
+  "output_tokens": 1053,
+  "cost_usd": 0.0033663,
+  "elapsed_s": 5.63,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Simple and intuitive interface for quick adoption\",\n    \"Effective for basic task tracking and team communication\",\n    \"Centralized hub for project files and discussions\"\n  ],\n  \"cons\": [\n    \"Lacks advanced project management features for complex engineering tasks\",\n    \"Limited customization options compared to competitors\",\n    \"Reporting capabilities might be insufficient for detailed project oversight\"\n  ],\n  \"overall_experience\": \"This software engineer likely found Basecamp to be a straightforward and easy-to-use tool for general project management and team collaboration within their small company. While appreciating its simplicity for communication and basic task organization, they may have found its functionality lacking for more complex engineering workflows or detailed project tracking. The experience was generally positive for its intended purpose, but potentially constrained by its feature set.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 3,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Simple and intuitive interface for quick adoption",
+      "Effective for basic task tracking and team communication",
+      "Centralized hub for project files and discussions"
+    ],
+    "cons": [
+      "Lacks advanced project management features for complex engineering tasks",
+      "Limited customization options compared to competitors",
+      "Reporting capabilities might be insufficient for detailed project oversight"
+    ],
+    "overall_experience": "This software engineer likely found Basecamp to be a straightforward and easy-to-use tool for general project management and team collaboration within their small company. While appreciating its simplicity for communication and basic task organization, they may have found its functionality lacking for more complex engineering workflows or detailed project tracking. The experience was generally positive for its intended purpose, but potentially constrained by its feature set."
+  },
+  "ts": "2026-10-18T09:56:09.887949+00:00"
+}

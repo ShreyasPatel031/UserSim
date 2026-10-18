@@ -1,0 +1,57 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2fde2cc957d08b77ff273a594e676426b89e6e21443c299313b951fccbf26909",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 369,
+  "output_tokens": 659,
+  "cost_usd": 0.0017582,
+  "elapsed_s": 4.09,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"other\",\n      \"observable\": \"partly\",\n      \"task\": \"Explore various core features and settings.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"onboarding_learning_curve\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate main sections and attempt basic operations.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"partly\",\n      \"task\": \"Review available sales and business development features.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"customer_support\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Compare navigation in sales vs. marketing sections.\"\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Attempt to find specific settings or advanced features.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "other",
+        "observable": "partly",
+        "task": "Explore various core features and settings."
+      },
+      {
+        "id": "B2",
+        "theme": "onboarding_learning_curve",
+        "observable": "yes",
+        "task": "Navigate main sections and attempt basic operations."
+      },
+      {
+        "id": "B3",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "partly",
+        "task": "Review available sales and business development features."
+      },
+      {
+        "id": "B4",
+        "theme": "customer_support",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "F1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Compare navigation in sales vs. marketing sections."
+      },
+      {
+        "id": "F2",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Attempt to find specific settings or advanced features."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:37.860765+00:00"
+}

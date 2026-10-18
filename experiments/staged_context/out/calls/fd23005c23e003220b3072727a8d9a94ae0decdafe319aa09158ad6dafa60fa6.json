@@ -1,0 +1,57 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "fd23005c23e003220b3072727a8d9a94ae0decdafe319aa09158ad6dafa60fa6",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 372,
+  "output_tokens": 697,
+  "cost_usd": 0.0018541,
+  "elapsed_s": 3.68,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Explore all main navigation items and modules.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"other\",\n      \"observable\": \"partly\",\n      \"task\": \"Review available features across different business functions.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"other\",\n      \"observable\": \"partly\",\n      \"task\": \"Review available features across different business functions.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"other\",\n      \"observable\": \"partly\",\n      \"task\": \"Attempt to replicate existing workflows using Intercom features.\"\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"pricing_cost\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"F3\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"partly\",\n      \"task\": \"Compare specific Intercom features with dedicated tools.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Explore all main navigation items and modules."
+      },
+      {
+        "id": "B2",
+        "theme": "other",
+        "observable": "partly",
+        "task": "Review available features across different business functions."
+      },
+      {
+        "id": "B3",
+        "theme": "other",
+        "observable": "partly",
+        "task": "Review available features across different business functions."
+      },
+      {
+        "id": "F1",
+        "theme": "other",
+        "observable": "partly",
+        "task": "Attempt to replicate existing workflows using Intercom features."
+      },
+      {
+        "id": "F2",
+        "theme": "pricing_cost",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "F3",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "partly",
+        "task": "Compare specific Intercom features with dedicated tools."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:40.532480+00:00"
+}

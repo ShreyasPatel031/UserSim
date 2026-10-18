@@ -1,0 +1,57 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "89d45778257125b65b57c844a9c968e984c3cf557b8232b207c11084daaa167e",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 366,
+  "output_tokens": 664,
+  "cost_usd": 0.0017698,
+  "elapsed_s": 3.71,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate through main features.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"customer_support\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"customization_flexibility\",\n      \"observable\": \"partly\",\n      \"task\": \"Attempt to add industry-specific fields.\"\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"reporting_analytics\",\n      \"observable\": \"yes\",\n      \"task\": \"View the main dashboard.\"\n    },\n    {\n      \"id\": \"F3\",\n      \"theme\": \"customer_support\",\n      \"observable\": \"yes\",\n      \"task\": \"Check support availability hours.\"\n    },\n    {\n      \"id\": \"F4\",\n      \"theme\": \"automation_workflows\",\n      \"observable\": \"partly\",\n      \"task\": \"Attempt to create a bot-triggered workflow.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate through main features."
+      },
+      {
+        "id": "B2",
+        "theme": "customer_support",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "F1",
+        "theme": "customization_flexibility",
+        "observable": "partly",
+        "task": "Attempt to add industry-specific fields."
+      },
+      {
+        "id": "F2",
+        "theme": "reporting_analytics",
+        "observable": "yes",
+        "task": "View the main dashboard."
+      },
+      {
+        "id": "F3",
+        "theme": "customer_support",
+        "observable": "yes",
+        "task": "Check support availability hours."
+      },
+      {
+        "id": "F4",
+        "theme": "automation_workflows",
+        "observable": "partly",
+        "task": "Attempt to create a bot-triggered workflow."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:54:01.800781+00:00"
+}

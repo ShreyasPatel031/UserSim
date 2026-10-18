@@ -1,0 +1,45 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "adae071a74fa991cc8126b17d1250cc87a5f86f04005bd05fbec3c1f42f3a77d",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 325,
+  "output_tokens": 625,
+  "cost_usd": 0.00166,
+  "elapsed_s": 3.65,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"performance_speed\",\n      \"observable\": \"yes\",\n      \"task\": \"Perform common actions quickly.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"partly\",\n      \"task\": \"Explore community forum features.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate through main sections.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"setup_configuration\",\n      \"observable\": \"yes\",\n      \"task\": \"Complete initial setup wizard.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "performance_speed",
+        "observable": "yes",
+        "task": "Perform common actions quickly."
+      },
+      {
+        "id": "B2",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "partly",
+        "task": "Explore community forum features."
+      },
+      {
+        "id": "B3",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate through main sections."
+      },
+      {
+        "id": "B4",
+        "theme": "setup_configuration",
+        "observable": "yes",
+        "task": "Complete initial setup wizard."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:54:14.948312+00:00"
+}

@@ -1,0 +1,33 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "64cd9b4622addb561ae2cb64aa98a83f31d616b8dd246f841b9aca4f0c1e3edf",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 308,
+  "output_tokens": 464,
+  "cost_usd": 0.0012524,
+  "elapsed_s": 3.14,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"other\",\n      \"observable\": \"yes\",\n      \"task\": \"Log in from different devices or locations\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"other\",\n      \"observable\": \"yes\",\n      \"task\": \"Disconnect internet and try to use the application\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "other",
+        "observable": "yes",
+        "task": "Log in from different devices or locations"
+      },
+      {
+        "id": "F1",
+        "theme": "other",
+        "observable": "yes",
+        "task": "Disconnect internet and try to use the application"
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:44.641493+00:00"
+}

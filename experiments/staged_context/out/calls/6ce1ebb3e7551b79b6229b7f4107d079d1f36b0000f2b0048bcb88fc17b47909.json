@@ -1,0 +1,39 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "6ce1ebb3e7551b79b6229b7f4107d079d1f36b0000f2b0048bcb88fc17b47909",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 320,
+  "output_tokens": 562,
+  "cost_usd": 0.001501,
+  "elapsed_s": 4.9,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Create and resolve several test tickets.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"partly\",\n      \"task\": \"Simulate a client problem and attempt to resolve it.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"data_import_export\",\n      \"observable\": \"yes\",\n      \"task\": \"Attempt to export data from the account.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Create and resolve several test tickets."
+      },
+      {
+        "id": "B2",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "partly",
+        "task": "Simulate a client problem and attempt to resolve it."
+      },
+      {
+        "id": "F1",
+        "theme": "data_import_export",
+        "observable": "yes",
+        "task": "Attempt to export data from the account."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:54:09.414550+00:00"
+}

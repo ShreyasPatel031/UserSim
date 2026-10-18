@@ -1,0 +1,27 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "6d4814d13317d7776fa5b2a70933765c60211d7c1bc89c64d4da28292e75b887",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 303,
+  "output_tokens": 241,
+  "cost_usd": 0.0006933999999999999,
+  "elapsed_s": 2.17,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"search\",\n      \"observable\": \"yes\",\n      \"task\": \"Search for a customer record.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "search",
+        "observable": "yes",
+        "task": "Search for a customer record."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:37.114765+00:00"
+}

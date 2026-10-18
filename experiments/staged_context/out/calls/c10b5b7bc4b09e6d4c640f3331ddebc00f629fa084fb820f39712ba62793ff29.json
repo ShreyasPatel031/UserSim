@@ -1,0 +1,21 @@
+{
+  "stage": "mcp_classify",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c10b5b7bc4b09e6d4c640f3331ddebc00f629fa084fb820f39712ba62793ff29",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 256,
+  "input_tokens": 88,
+  "output_tokens": 249,
+  "cost_usd": 0.0006489,
+  "elapsed_s": 84.2,
+  "error": null,
+  "text": "{\n  \"category\": \"Marketing\",\n  \"product_name\": \"Brevo\"\n}",
+  "json": {
+    "category": "Marketing",
+    "product_name": "Brevo"
+  },
+  "ts": "2026-10-18T09:49:14.719953+00:00"
+}

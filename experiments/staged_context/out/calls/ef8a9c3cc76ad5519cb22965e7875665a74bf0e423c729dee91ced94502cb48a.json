@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ef8a9c3cc76ad5519cb22965e7875665a74bf0e423c729dee91ced94502cb48a",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2504,
+  "output_tokens": 1065,
+  "cost_usd": 0.0034137,
+  "elapsed_s": 6.49,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Simple interface and easy to adopt for basic project management\",\n    \"Effective for centralizing communication and to-do lists\",\n    \"Predictable and transparent pricing structure\"\n  ],\n  \"cons\": [\n    \"May lack advanced features or deep customization options\",\n    \"Reporting capabilities might be too basic for some needs\",\n    \"Limited integrations compared to more complex platforms\"\n  ],\n  \"overall_experience\": \"This self-employed CEO in the Retail industry likely found Basecamp to be a straightforward and user-friendly tool for organizing their work and communications during their initial usage. While appreciating its simplicity and ease of getting started, they may have begun to notice its limitations in terms of advanced features or tailored customization as their needs evolved. The overall experience is positive, but not without some recognition of areas where the product could offer more depth.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Simple interface and easy to adopt for basic project management",
+      "Effective for centralizing communication and to-do lists",
+      "Predictable and transparent pricing structure"
+    ],
+    "cons": [
+      "May lack advanced features or deep customization options",
+      "Reporting capabilities might be too basic for some needs",
+      "Limited integrations compared to more complex platforms"
+    ],
+    "overall_experience": "This self-employed CEO in the Retail industry likely found Basecamp to be a straightforward and user-friendly tool for organizing their work and communications during their initial usage. While appreciating its simplicity and ease of getting started, they may have begun to notice its limitations in terms of advanced features or tailored customization as their needs evolved. The overall experience is positive, but not without some recognition of areas where the product could offer more depth."
+  },
+  "ts": "2026-10-18T09:55:57.573416+00:00"
+}

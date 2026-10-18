@@ -1,0 +1,21 @@
+{
+  "stage": "mcp_classify",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "09257b62a2efac251e34c59e45aad4b674a6002633751fd0fef8076599d2c175",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 256,
+  "input_tokens": 89,
+  "output_tokens": 216,
+  "cost_usd": 0.0005667000000000001,
+  "elapsed_s": 1.84,
+  "error": null,
+  "text": "{\n  \"category\": \"HR\",\n  \"product_name\": \"Paylocity\"\n}",
+  "json": {
+    "category": "HR",
+    "product_name": "Paylocity"
+  },
+  "ts": "2026-10-18T09:44:18.154682+00:00"
+}

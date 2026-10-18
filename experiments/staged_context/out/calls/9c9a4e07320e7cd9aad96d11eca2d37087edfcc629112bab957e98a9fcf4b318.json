@@ -1,0 +1,36 @@
+{
+  "stage": "hm_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9c9a4e07320e7cd9aad96d11eca2d37087edfcc629112bab957e98a9fcf4b318",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3202,
+  "output_tokens": 1094,
+  "cost_usd": 0.0036955999999999994,
+  "elapsed_s": 5.89,
+  "error": null,
+  "text": "{\n \"ease_of_use_rating\": 4,\n \"functionality_rating\": 4,\n \"overall_rating\": 4,\n \"value_for_money_rating\": 4,\n \"customer_support_rating\": 4,\n \"recommendation_score\": 8,\n \"pros\": [\n  \"Simple, clean interface for task and project organization.\",\n  \"Easy to add and manage to-do lists and team communication.\",\n  \"Clear distinction between different project tools like To-dos and Docs.\"\n ],\n \"cons\": [\n  \"Free plan is very limited, only allowing one project.\",\n  \"Initial setup requires manually adding tools to each project.\",\n  \"Some default settings for events (like time) require manual adjustment.\"\n ],\n \"overall_experience\": \"The social media specialist likely found Basecamp to be a straightforward tool for managing tasks and collaborating within a small team, appreciating its clean design. However, the limitations of the free plan and the need for manual setup of project tools could have introduced minor frustrations, especially for a new user. The product offered sufficient core functionality for their immediate needs, but its simplicity meant it wasn't overwhelming with too many features.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Simple, clean interface for task and project organization.",
+      "Easy to add and manage to-do lists and team communication.",
+      "Clear distinction between different project tools like To-dos and Docs."
+    ],
+    "cons": [
+      "Free plan is very limited, only allowing one project.",
+      "Initial setup requires manually adding tools to each project.",
+      "Some default settings for events (like time) require manual adjustment."
+    ],
+    "overall_experience": "The social media specialist likely found Basecamp to be a straightforward tool for managing tasks and collaborating within a small team, appreciating its clean design. However, the limitations of the free plan and the need for manual setup of project tools could have introduced minor frustrations, especially for a new user. The product offered sufficient core functionality for their immediate needs, but its simplicity meant it wasn't overwhelming with too many features."
+  },
+  "ts": "2026-10-18T09:56:13.422722+00:00"
+}

@@ -1,0 +1,51 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "abf00759ad25249da18c941f84908f8a8b55b94bb46580e9b50cf0f7ce232692",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 341,
+  "output_tokens": 665,
+  "cost_usd": 0.0017648,
+  "elapsed_s": 5.2,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Open several demo tickets and observe organization.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"customization_flexibility\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate to settings and explore customization options.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"integrations\",\n      \"observable\": \"partly\",\n      \"task\": \"Browse available integrations.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"automation_workflows\",\n      \"observable\": \"partly\",\n      \"task\": \"Explore automation rules or workflow builders.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"onboarding_learning_curve\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate through different sections and features.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Open several demo tickets and observe organization."
+      },
+      {
+        "id": "B2",
+        "theme": "customization_flexibility",
+        "observable": "yes",
+        "task": "Navigate to settings and explore customization options."
+      },
+      {
+        "id": "B3",
+        "theme": "integrations",
+        "observable": "partly",
+        "task": "Browse available integrations."
+      },
+      {
+        "id": "B4",
+        "theme": "automation_workflows",
+        "observable": "partly",
+        "task": "Explore automation rules or workflow builders."
+      },
+      {
+        "id": "F1",
+        "theme": "onboarding_learning_curve",
+        "observable": "yes",
+        "task": "Navigate through different sections and features."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:54:10.131564+00:00"
+}

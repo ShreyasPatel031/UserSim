@@ -1,0 +1,39 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "20a5d45197a1521e81656068c6d761f4314149b03e10a149d4fe239fb1c5cb2f",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 318,
+  "output_tokens": 559,
+  "cost_usd": 0.0014929000000000001,
+  "elapsed_s": 16.59,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate through main sections and create a deal.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Create and manage a task or activity for a deal.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"collaboration_sharing_permissions\",\n      \"observable\": \"partly\",\n      \"task\": \"Attempt to share a deal or activity with a team member.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate through main sections and create a deal."
+      },
+      {
+        "id": "B2",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Create and manage a task or activity for a deal."
+      },
+      {
+        "id": "B3",
+        "theme": "collaboration_sharing_permissions",
+        "observable": "partly",
+        "task": "Attempt to share a deal or activity with a team member."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:29.697462+00:00"
+}

@@ -1,0 +1,45 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b4e47245aa948e6e24262f75f9b759bcc70ec6a0fae5e4b0b7de7bb684257153",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 325,
+  "output_tokens": 602,
+  "cost_usd": 0.0016025,
+  "elapsed_s": 3.65,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Create a project and add tasks to it.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Create a new project and add several tasks.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"partly\",\n      \"task\": \"Assign due dates to tasks and view them on a timeline.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"collaboration_sharing_permissions\",\n      \"observable\": \"partly\",\n      \"task\": \"Invite a synthetic team member to a project and assign a task.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Create a project and add tasks to it."
+      },
+      {
+        "id": "B2",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Create a new project and add several tasks."
+      },
+      {
+        "id": "B3",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "partly",
+        "task": "Assign due dates to tasks and view them on a timeline."
+      },
+      {
+        "id": "B4",
+        "theme": "collaboration_sharing_permissions",
+        "observable": "partly",
+        "task": "Invite a synthetic team member to a project and assign a task."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:32.478277+00:00"
+}

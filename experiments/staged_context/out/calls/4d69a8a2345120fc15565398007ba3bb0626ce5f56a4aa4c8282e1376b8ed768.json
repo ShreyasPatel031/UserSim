@@ -1,0 +1,32 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4d69a8a2345120fc15565398007ba3bb0626ce5f56a4aa4c8282e1376b8ed768",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 335,
+  "output_tokens": 536,
+  "cost_usd": 0.0014405,
+  "elapsed_s": 8.92,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage team projects and communication.\",\n  \"benefits\": [\n    \"Rejects clutter found in most project management tools\",\n    \"Provides an intuitive and organized layout for message boards, to-do lists, schedules, and file sharing\",\n    \"Keeps the team on the same page without constant status meetings\",\n    \"Reduces email clutter and helps focus on work\"\n  ],\n  \"frictions\": [\n    \"Lacks complex automations\",\n    \"Does not support detailed Gantt charts\",\n    \"Lacks highly technical reporting features\",\n    \"Not suitable for incredibly complex project dependencies\"\n  ]\n}",
+  "json": {
+    "task": "Manage team projects and communication.",
+    "benefits": [
+      "Rejects clutter found in most project management tools",
+      "Provides an intuitive and organized layout for message boards, to-do lists, schedules, and file sharing",
+      "Keeps the team on the same page without constant status meetings",
+      "Reduces email clutter and helps focus on work"
+    ],
+    "frictions": [
+      "Lacks complex automations",
+      "Does not support detailed Gantt charts",
+      "Lacks highly technical reporting features",
+      "Not suitable for incredibly complex project dependencies"
+    ]
+  },
+  "ts": "2026-10-18T09:55:22.281809+00:00"
+}

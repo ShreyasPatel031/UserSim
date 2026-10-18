@@ -1,0 +1,45 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1e801a1a71fc013343c410d5950b4161ece699216a5b68e06e46f82276bd9c4f",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 334,
+  "output_tokens": 589,
+  "cost_usd": 0.0015727,
+  "elapsed_s": 3.58,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Create and assign a task.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"templates\",\n      \"observable\": \"yes\",\n      \"task\": \"Browse and apply a template.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"partly\",\n      \"task\": \"Explore workload view or capacity planning features.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"other\",\n      \"observable\": \"no\",\n      \"task\": null\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Create and assign a task."
+      },
+      {
+        "id": "B2",
+        "theme": "templates",
+        "observable": "yes",
+        "task": "Browse and apply a template."
+      },
+      {
+        "id": "B3",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "partly",
+        "task": "Explore workload view or capacity planning features."
+      },
+      {
+        "id": "F1",
+        "theme": "other",
+        "observable": "no",
+        "task": null
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:33.962384+00:00"
+}

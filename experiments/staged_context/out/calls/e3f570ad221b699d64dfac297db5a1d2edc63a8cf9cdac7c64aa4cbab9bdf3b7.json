@@ -1,0 +1,51 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e3f570ad221b699d64dfac297db5a1d2edc63a8cf9cdac7c64aa4cbab9bdf3b7",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 336,
+  "output_tokens": 689,
+  "cost_usd": 0.0018233000000000001,
+  "elapsed_s": 6.01,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate to admin settings and review available functions.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Explore the main dashboard and available modules.\"\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Browse different sections and observe button density.\"\n    },\n    {\n      \"id\": \"F3\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Open any settings panel and review available options.\"\n    },\n    {\n      \"id\": \"F4\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Look for a list of available keyboard shortcuts.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate to admin settings and review available functions."
+      },
+      {
+        "id": "F1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Explore the main dashboard and available modules."
+      },
+      {
+        "id": "F2",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Browse different sections and observe button density."
+      },
+      {
+        "id": "F3",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Open any settings panel and review available options."
+      },
+      {
+        "id": "F4",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Look for a list of available keyboard shortcuts."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:41.232552+00:00"
+}

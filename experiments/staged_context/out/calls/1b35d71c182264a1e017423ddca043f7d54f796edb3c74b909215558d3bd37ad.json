@@ -1,0 +1,57 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1b35d71c182264a1e017423ddca043f7d54f796edb3c74b909215558d3bd37ad",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 370,
+  "output_tokens": 632,
+  "cost_usd": 0.0016909999999999998,
+  "elapsed_s": 13.67,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate through the interface.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"setup_configuration\",\n      \"observable\": \"yes\",\n      \"task\": \"Complete initial setup steps.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"integrations\",\n      \"observable\": \"partly\",\n      \"task\": \"Attempt to link a knowledge base article.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"customer_support\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"customization_flexibility\",\n      \"observable\": \"partly\",\n      \"task\": \"Create and manage custom replies.\"\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Edit an article in the knowledge base.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate through the interface."
+      },
+      {
+        "id": "B2",
+        "theme": "setup_configuration",
+        "observable": "yes",
+        "task": "Complete initial setup steps."
+      },
+      {
+        "id": "B3",
+        "theme": "integrations",
+        "observable": "partly",
+        "task": "Attempt to link a knowledge base article."
+      },
+      {
+        "id": "B4",
+        "theme": "customer_support",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "F1",
+        "theme": "customization_flexibility",
+        "observable": "partly",
+        "task": "Create and manage custom replies."
+      },
+      {
+        "id": "F2",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Edit an article in the knowledge base."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:29.705977+00:00"
+}

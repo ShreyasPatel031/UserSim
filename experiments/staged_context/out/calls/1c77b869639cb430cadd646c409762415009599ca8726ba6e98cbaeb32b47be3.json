@@ -1,0 +1,27 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1c77b869639cb430cadd646c409762415009599ca8726ba6e98cbaeb32b47be3",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 149,
+  "output_tokens": 425,
+  "cost_usd": 0.0011071999999999998,
+  "elapsed_s": 10.02,
+  "error": null,
+  "text": "{\n  \"task\": \"Use the software for team collaboration and project management.\",\n  \"benefits\": [\n    \"Facilitate team collaboration\",\n    \"Support project management\"\n  ],\n  \"frictions\": [\n    \"Improve notification push functionality\"\n  ]\n}",
+  "json": {
+    "task": "Use the software for team collaboration and project management.",
+    "benefits": [
+      "Facilitate team collaboration",
+      "Support project management"
+    ],
+    "frictions": [
+      "Improve notification push functionality"
+    ]
+  },
+  "ts": "2026-10-18T09:55:22.236461+00:00"
+}

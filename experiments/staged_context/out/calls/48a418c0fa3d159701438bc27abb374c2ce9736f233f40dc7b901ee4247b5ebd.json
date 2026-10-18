@@ -1,0 +1,57 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "48a418c0fa3d159701438bc27abb374c2ce9736f233f40dc7b901ee4247b5ebd",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 372,
+  "output_tokens": 697,
+  "cost_usd": 0.0018541,
+  "elapsed_s": 3.92,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"integrations\",\n      \"observable\": \"yes\",\n      \"task\": \"Connect an email channel and view its messages in the inbox.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Reply to an email message from the inbox.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"performance_speed\",\n      \"observable\": \"partly\",\n      \"task\": \"Process a few tickets to gauge response speed.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"search\",\n      \"observable\": \"yes\",\n      \"task\": \"Search for a past customer interaction.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate through various sections of the interface.\"\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"mobile_app\",\n      \"observable\": \"yes\",\n      \"task\": \"Install and explore the iOS mobile application.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "integrations",
+        "observable": "yes",
+        "task": "Connect an email channel and view its messages in the inbox."
+      },
+      {
+        "id": "B2",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Reply to an email message from the inbox."
+      },
+      {
+        "id": "B3",
+        "theme": "performance_speed",
+        "observable": "partly",
+        "task": "Process a few tickets to gauge response speed."
+      },
+      {
+        "id": "B4",
+        "theme": "search",
+        "observable": "yes",
+        "task": "Search for a past customer interaction."
+      },
+      {
+        "id": "F1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate through various sections of the interface."
+      },
+      {
+        "id": "F2",
+        "theme": "mobile_app",
+        "observable": "yes",
+        "task": "Install and explore the iOS mobile application."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:54:07.968801+00:00"
+}

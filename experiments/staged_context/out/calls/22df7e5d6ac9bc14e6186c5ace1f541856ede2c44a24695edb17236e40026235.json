@@ -1,0 +1,39 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "22df7e5d6ac9bc14e6186c5ace1f541856ede2c44a24695edb17236e40026235",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 317,
+  "output_tokens": 541,
+  "cost_usd": 0.0014476,
+  "elapsed_s": 3.45,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Create a new sheet and add some data.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"performance_speed\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate between sheets and save changes.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"mobile_app\",\n      \"observable\": \"yes\",\n      \"task\": \"Download and use the mobile app for basic tasks.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Create a new sheet and add some data."
+      },
+      {
+        "id": "B2",
+        "theme": "performance_speed",
+        "observable": "yes",
+        "task": "Navigate between sheets and save changes."
+      },
+      {
+        "id": "F1",
+        "theme": "mobile_app",
+        "observable": "yes",
+        "task": "Download and use the mobile app for basic tasks."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:54:13.532482+00:00"
+}

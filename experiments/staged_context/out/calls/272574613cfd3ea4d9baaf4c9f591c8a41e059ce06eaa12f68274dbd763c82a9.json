@@ -1,0 +1,28 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "272574613cfd3ea4d9baaf4c9f591c8a41e059ce06eaa12f68274dbd763c82a9",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 139,
+  "output_tokens": 487,
+  "cost_usd": 0.0012592,
+  "elapsed_s": 7.88,
+  "error": null,
+  "text": "{\n  \"task\": \"Communicate with team members and assign tasks\",\n  \"benefits\": [\n    \"Communicate with team members\",\n    \"Assign tasks to team members\",\n    \"Provide a communication medium for remote workers\"\n  ],\n  \"frictions\": [\n    \"High loading time when there are many documents\"\n  ]\n}",
+  "json": {
+    "task": "Communicate with team members and assign tasks",
+    "benefits": [
+      "Communicate with team members",
+      "Assign tasks to team members",
+      "Provide a communication medium for remote workers"
+    ],
+    "frictions": [
+      "High loading time when there are many documents"
+    ]
+  },
+  "ts": "2026-10-18T09:55:22.043485+00:00"
+}

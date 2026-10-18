@@ -1,0 +1,45 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4b3bfd9387f2b8383b17781689ab4d059a0b6b81c4d4c3c23c38b49f2d994da5",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 330,
+  "output_tokens": 557,
+  "cost_usd": 0.0014915,
+  "elapsed_s": 3.4,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Create a basic website.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"onboarding_learning_curve\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"performance_speed\",\n      \"observable\": \"yes\",\n      \"task\": \"Design a page on a large monitor.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Create a basic website."
+      },
+      {
+        "id": "B2",
+        "theme": "onboarding_learning_curve",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "B3",
+        "theme": "ui_ease_navigation",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "F1",
+        "theme": "performance_speed",
+        "observable": "yes",
+        "task": "Design a page on a large monitor."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:53.133637+00:00"
+}

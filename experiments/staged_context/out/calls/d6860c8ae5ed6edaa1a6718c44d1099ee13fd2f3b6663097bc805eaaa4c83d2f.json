@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d6860c8ae5ed6edaa1a6718c44d1099ee13fd2f3b6663097bc805eaaa4c83d2f",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2242,
+  "output_tokens": 1016,
+  "cost_usd": 0.0032125999999999995,
+  "elapsed_s": 6.63,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Streamlined project organization and communication for high-level oversight.\",\n    \"Simple, intuitive interface that avoids unnecessary complexity.\",\n    \"Flat-rate pricing model offers predictable costs for a growing company.\"\n  ],\n  \"cons\": [\n    \"Limited advanced reporting or deep analytics capabilities for executive review.\",\n    \"Might lack specific integrations needed for niche food & beverage operations.\",\n    \"Less granular task management compared to more complex project tools.\"\n  ],\n  \"overall_experience\": \"This Non Executive Director has likely found Basecamp to be an effective tool for managing and organizing projects over two years, appreciating its straightforward approach. The platform's simplicity and clear communication features would have been beneficial for high-level oversight within their mid-sized food & beverages company. While generally positive, they might occasionally encounter limitations in advanced reporting or highly specialized functionalities.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Streamlined project organization and communication for high-level oversight.",
+      "Simple, intuitive interface that avoids unnecessary complexity.",
+      "Flat-rate pricing model offers predictable costs for a growing company."
+    ],
+    "cons": [
+      "Limited advanced reporting or deep analytics capabilities for executive review.",
+      "Might lack specific integrations needed for niche food & beverage operations.",
+      "Less granular task management compared to more complex project tools."
+    ],
+    "overall_experience": "This Non Executive Director has likely found Basecamp to be an effective tool for managing and organizing projects over two years, appreciating its straightforward approach. The platform's simplicity and clear communication features would have been beneficial for high-level oversight within their mid-sized food & beverages company. While generally positive, they might occasionally encounter limitations in advanced reporting or highly specialized functionalities."
+  },
+  "ts": "2026-10-18T09:56:09.220857+00:00"
+}

@@ -1,0 +1,51 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "79671184c179f4143d9484453e9ddd10d284f03ca9ed500786bbb40e65a212ca",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 361,
+  "output_tokens": 644,
+  "cost_usd": 0.0017183,
+  "elapsed_s": 4.05,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Create a wiki page and a project board.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"onboarding_learning_curve\",\n      \"observable\": \"yes\",\n      \"task\": \"Create a new page and add basic content.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"collaboration_sharing_permissions\",\n      \"observable\": \"partly\",\n      \"task\": \"Share a page and explore permission options.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"pricing_cost\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"automation_workflows\",\n      \"observable\": \"partly\",\n      \"task\": \"Attempt to create an advanced database automation.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Create a wiki page and a project board."
+      },
+      {
+        "id": "B2",
+        "theme": "onboarding_learning_curve",
+        "observable": "yes",
+        "task": "Create a new page and add basic content."
+      },
+      {
+        "id": "B3",
+        "theme": "collaboration_sharing_permissions",
+        "observable": "partly",
+        "task": "Share a page and explore permission options."
+      },
+      {
+        "id": "B4",
+        "theme": "pricing_cost",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "F1",
+        "theme": "automation_workflows",
+        "observable": "partly",
+        "task": "Attempt to create an advanced database automation."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:35.367274+00:00"
+}

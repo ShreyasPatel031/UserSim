@@ -1,0 +1,45 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1bbafdd5af78736052d87a2e2e3b6c79f98c873f515d23e5e1166bb54c1bd571",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 342,
+  "output_tokens": 594,
+  "cost_usd": 0.0015876,
+  "elapsed_s": 3.85,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Create a ticket, add text, find AI translation option.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"pricing_cost\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"collaboration_sharing_permissions\",\n      \"observable\": \"yes\",\n      \"task\": \"Try to chat directly with a colleague within a ticket.\"\n    },\n    {\n      \"id\": \"F3\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"partly\",\n      \"task\": \"Create a ticket with many fields and updates; assess readability.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Create a ticket, add text, find AI translation option."
+      },
+      {
+        "id": "F1",
+        "theme": "pricing_cost",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "F2",
+        "theme": "collaboration_sharing_permissions",
+        "observable": "yes",
+        "task": "Try to chat directly with a colleague within a ticket."
+      },
+      {
+        "id": "F3",
+        "theme": "ui_ease_navigation",
+        "observable": "partly",
+        "task": "Create a ticket with many fields and updates; assess readability."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:33.673191+00:00"
+}

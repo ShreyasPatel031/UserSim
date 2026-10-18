@@ -1,0 +1,57 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "67dbf4f8acd126fd10748a13f2e995812f742059ee59b66860a5fac65c5dc52a",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 348,
+  "output_tokens": 680,
+  "cost_usd": 0.0018044,
+  "elapsed_s": 4.01,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Send and receive messages in the inbox.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"partly\",\n      \"task\": \"Create a new campaign and explore targeting options.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Access and browse the Help Centre.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"automation_workflows\",\n      \"observable\": \"yes\",\n      \"task\": \"Interact with the Operator bot.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"automation_workflows\",\n      \"observable\": \"partly\",\n      \"task\": \"Set up automated responses for a campaign.\"\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"automation_workflows\",\n      \"observable\": \"partly\",\n      \"task\": \"Configure a custom bot for specific automation needs.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Send and receive messages in the inbox."
+      },
+      {
+        "id": "B2",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "partly",
+        "task": "Create a new campaign and explore targeting options."
+      },
+      {
+        "id": "B3",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Access and browse the Help Centre."
+      },
+      {
+        "id": "B4",
+        "theme": "automation_workflows",
+        "observable": "yes",
+        "task": "Interact with the Operator bot."
+      },
+      {
+        "id": "F1",
+        "theme": "automation_workflows",
+        "observable": "partly",
+        "task": "Set up automated responses for a campaign."
+      },
+      {
+        "id": "F2",
+        "theme": "automation_workflows",
+        "observable": "partly",
+        "task": "Configure a custom bot for specific automation needs."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:41.827858+00:00"
+}

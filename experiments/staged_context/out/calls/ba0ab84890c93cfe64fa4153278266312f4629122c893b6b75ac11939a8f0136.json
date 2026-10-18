@@ -1,0 +1,51 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ba0ab84890c93cfe64fa4153278266312f4629122c893b6b75ac11939a8f0136",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 351,
+  "output_tokens": 618,
+  "cost_usd": 0.0016503,
+  "elapsed_s": 5.34,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"other\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"pricing_cost\",\n      \"observable\": \"yes\",\n      \"task\": \"Find pricing plans and details on the website\"\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"billing_contract\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"F3\",\n      \"theme\": \"customer_support\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"F4\",\n      \"theme\": \"customer_support\",\n      \"observable\": \"no\",\n      \"task\": null\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "other",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "F1",
+        "theme": "pricing_cost",
+        "observable": "yes",
+        "task": "Find pricing plans and details on the website"
+      },
+      {
+        "id": "F2",
+        "theme": "billing_contract",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "F3",
+        "theme": "customer_support",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "F4",
+        "theme": "customer_support",
+        "observable": "no",
+        "task": null
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:54:13.861699+00:00"
+}

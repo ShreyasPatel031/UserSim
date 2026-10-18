@@ -1,0 +1,57 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "073fc8d9d898348a33a0637e04bc13f1677339a0224c19f9ee1b5b422cff4c99",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 354,
+  "output_tokens": 677,
+  "cost_usd": 0.0017987,
+  "elapsed_s": 3.88,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"performance_speed\",\n      \"observable\": \"yes\",\n      \"task\": \"Click around and open various pages.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"performance_speed\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate between different modules and records.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Explore different sections and interact with elements.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"onboarding_learning_curve\",\n      \"observable\": \"yes\",\n      \"task\": \"Attempt to perform a basic sales task.\"\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Browse through available features and menus.\"\n    },\n    {\n      \"id\": \"F3\",\n      \"theme\": \"scaling_large_data_or_teams\",\n      \"observable\": \"partly\",\n      \"task\": \"Review data storage limits and feature lists.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "performance_speed",
+        "observable": "yes",
+        "task": "Click around and open various pages."
+      },
+      {
+        "id": "B2",
+        "theme": "performance_speed",
+        "observable": "yes",
+        "task": "Navigate between different modules and records."
+      },
+      {
+        "id": "B3",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Explore different sections and interact with elements."
+      },
+      {
+        "id": "F1",
+        "theme": "onboarding_learning_curve",
+        "observable": "yes",
+        "task": "Attempt to perform a basic sales task."
+      },
+      {
+        "id": "F2",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Browse through available features and menus."
+      },
+      {
+        "id": "F3",
+        "theme": "scaling_large_data_or_teams",
+        "observable": "partly",
+        "task": "Review data storage limits and feature lists."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:37.680278+00:00"
+}

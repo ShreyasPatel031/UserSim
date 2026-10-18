@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "67c3f893f7863a95324bae91b9432a6a00046853bf96b0edd53d382d17015868",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 188,
+  "output_tokens": 480,
+  "cost_usd": 0.0012564000000000002,
+  "elapsed_s": 10.58,
+  "error": null,
+  "text": "{\n  \"task\": \"Organize work and track communication and documents in a remote environment\",\n  \"benefits\": [\n    \"Stay organized in a remote working environment\",\n    \"Keep track of all communication\",\n    \"Keep track of all documents\",\n    \"Allows global search\"\n  ],\n  \"frictions\": [\n    \"Site loads slow sometimes\",\n    \"Hard for new users to understand each part of the application\"\n  ]\n}",
+  "json": {
+    "task": "Organize work and track communication and documents in a remote environment",
+    "benefits": [
+      "Stay organized in a remote working environment",
+      "Keep track of all communication",
+      "Keep track of all documents",
+      "Allows global search"
+    ],
+    "frictions": [
+      "Site loads slow sometimes",
+      "Hard for new users to understand each part of the application"
+    ]
+  },
+  "ts": "2026-10-18T09:55:22.279470+00:00"
+}

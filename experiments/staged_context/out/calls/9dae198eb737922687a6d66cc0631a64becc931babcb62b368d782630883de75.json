@@ -1,0 +1,26 @@
+{
+  "stage": "live_competitors",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9dae198eb737922687a6d66cc0631a64becc931babcb62b368d782630883de75",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 512,
+  "input_tokens": 823,
+  "output_tokens": 394,
+  "cost_usd": 0.0012319,
+  "elapsed_s": 2.9,
+  "error": null,
+  "text": "{\n  \"competitors\": [\n    \"Rocket.Chat\",\n    \"Element (Matrix)\",\n    \"Microsoft Teams\",\n    \"Slack\",\n    \"Cisco Webex\"\n  ]\n}",
+  "json": {
+    "competitors": [
+      "Rocket.Chat",
+      "Element (Matrix)",
+      "Microsoft Teams",
+      "Slack",
+      "Cisco Webex"
+    ]
+  },
+  "ts": "2026-10-18T09:44:33.921674+00:00"
+}

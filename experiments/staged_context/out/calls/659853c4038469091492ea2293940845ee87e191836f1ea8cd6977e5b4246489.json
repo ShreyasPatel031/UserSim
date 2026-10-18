@@ -1,0 +1,39 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "659853c4038469091492ea2293940845ee87e191836f1ea8cd6977e5b4246489",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 319,
+  "output_tokens": 532,
+  "cost_usd": 0.0014257,
+  "elapsed_s": 3.42,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"templates\",\n      \"observable\": \"yes\",\n      \"task\": \"Browse available templates for a new site.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"onboarding_learning_curve\",\n      \"observable\": \"yes\",\n      \"task\": \"Explore available plugins and AI features.\"\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Attempt to design a basic website page.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "templates",
+        "observable": "yes",
+        "task": "Browse available templates for a new site."
+      },
+      {
+        "id": "F1",
+        "theme": "onboarding_learning_curve",
+        "observable": "yes",
+        "task": "Explore available plugins and AI features."
+      },
+      {
+        "id": "F2",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Attempt to design a basic website page."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:52.909072+00:00"
+}

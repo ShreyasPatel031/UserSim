@@ -1,0 +1,45 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2764e248425a08d6b33d51a7d99e7fe6c9b90a1ad779de974de3d1726845b3ac",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 346,
+  "output_tokens": 599,
+  "cost_usd": 0.0016013000000000002,
+  "elapsed_s": 3.93,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"collaboration_sharing_permissions\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"integrations\",\n      \"observable\": \"partly\",\n      \"task\": \"Browse available sales software integrations\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate through main sections and features\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"integrations\",\n      \"observable\": \"yes\",\n      \"task\": \"Check options for website integration\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "collaboration_sharing_permissions",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "B2",
+        "theme": "integrations",
+        "observable": "partly",
+        "task": "Browse available sales software integrations"
+      },
+      {
+        "id": "B3",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate through main sections and features"
+      },
+      {
+        "id": "B4",
+        "theme": "integrations",
+        "observable": "yes",
+        "task": "Check options for website integration"
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:41.435411+00:00"
+}

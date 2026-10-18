@@ -1,0 +1,51 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a9396a5f5815431c38f9294f3f01426d75b6ce7be3951e0739fb24b48e528b68",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 340,
+  "output_tokens": 619,
+  "cost_usd": 0.0016495,
+  "elapsed_s": 15.57,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Create a new project and add comprehensive details.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"customization_flexibility\",\n      \"observable\": \"yes\",\n      \"task\": \"Customize and organize fields within a project.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Mark a project as complete and view its status.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"bugs_reliability\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"bugs_reliability\",\n      \"observable\": \"partly\",\n      \"task\": \"Perform various actions to check for glitches.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Create a new project and add comprehensive details."
+      },
+      {
+        "id": "B2",
+        "theme": "customization_flexibility",
+        "observable": "yes",
+        "task": "Customize and organize fields within a project."
+      },
+      {
+        "id": "B3",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Mark a project as complete and view its status."
+      },
+      {
+        "id": "F1",
+        "theme": "bugs_reliability",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "F2",
+        "theme": "bugs_reliability",
+        "observable": "partly",
+        "task": "Perform various actions to check for glitches."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:29.781245+00:00"
+}

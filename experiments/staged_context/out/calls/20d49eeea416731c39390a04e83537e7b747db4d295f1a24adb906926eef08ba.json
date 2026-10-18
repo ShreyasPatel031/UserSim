@@ -1,0 +1,26 @@
+{
+  "stage": "live_competitors",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "20d49eeea416731c39390a04e83537e7b747db4d295f1a24adb906926eef08ba",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 512,
+  "input_tokens": 421,
+  "output_tokens": 421,
+  "cost_usd": 0.0011788,
+  "elapsed_s": 5.13,
+  "error": null,
+  "text": "{\n  \"competitors\": [\n    \"HubSpot Sales Hub\",\n    \"Salesforce Sales Cloud\",\n    \"Zoho CRM\",\n    \"Pipedrive\",\n    \"Insightly CRM\"\n  ]\n}",
+  "json": {
+    "competitors": [
+      "HubSpot Sales Hub",
+      "Salesforce Sales Cloud",
+      "Zoho CRM",
+      "Pipedrive",
+      "Insightly CRM"
+    ]
+  },
+  "ts": "2026-10-18T09:44:11.408873+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "hm_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f81291d3ea5b7624f0b07c3b3a35b7fa162eca3262ab3e5d9ada7a8e43994bd5",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3101,
+  "output_tokens": 1053,
+  "cost_usd": 0.0035627999999999996,
+  "elapsed_s": 7.71,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Clean interface for basic task tracking.\",\n    \"Straightforward communication tools.\",\n    \"Easy to get started with simple projects.\"\n  ],\n  \"cons\": [\n    \"Lacks advanced features and customization for complex development workflows.\",\n    \"Limited reporting and analytical capabilities compared to alternatives.\",\n    \"Requires manual addition of tools which can feel clunky.\"\n  ],\n  \"overall_experience\": \"This software developer likely found Basecamp to be a straightforward tool for basic project organization and communication within their team. However, its simplicity and lack of advanced features, customization options, and robust reporting would likely have become a significant limitation for managing the complexities of software development projects. While easy to use for simple tasks, the product probably felt insufficient for their professional needs over time, leading to a somewhat mixed experience.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 3,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 6,
+    "pros": [
+      "Clean interface for basic task tracking.",
+      "Straightforward communication tools.",
+      "Easy to get started with simple projects."
+    ],
+    "cons": [
+      "Lacks advanced features and customization for complex development workflows.",
+      "Limited reporting and analytical capabilities compared to alternatives.",
+      "Requires manual addition of tools which can feel clunky."
+    ],
+    "overall_experience": "This software developer likely found Basecamp to be a straightforward tool for basic project organization and communication within their team. However, its simplicity and lack of advanced features, customization options, and robust reporting would likely have become a significant limitation for managing the complexities of software development projects. While easy to use for simple tasks, the product probably felt insufficient for their professional needs over time, leading to a somewhat mixed experience."
+  },
+  "ts": "2026-10-18T09:55:55.724125+00:00"
+}

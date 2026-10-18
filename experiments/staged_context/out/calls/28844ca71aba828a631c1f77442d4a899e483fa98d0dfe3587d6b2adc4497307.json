@@ -1,0 +1,51 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "28844ca71aba828a631c1f77442d4a899e483fa98d0dfe3587d6b2adc4497307",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 333,
+  "output_tokens": 620,
+  "cost_usd": 0.0016499,
+  "elapsed_s": 3.27,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"customization_flexibility\",\n      \"observable\": \"partly\",\n      \"task\": \"Change theme settings; add different content types.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"customization_flexibility\",\n      \"observable\": \"partly\",\n      \"task\": \"Try customizing a theme; add various product types.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"integrations\",\n      \"observable\": \"yes\",\n      \"task\": \"Browse the app store for native integrations.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"integrations\",\n      \"observable\": \"yes\",\n      \"task\": \"Browse the app store for available tools.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"customization_flexibility\",\n      \"observable\": \"yes\",\n      \"task\": \"Attempt to add custom code to a theme file.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "customization_flexibility",
+        "observable": "partly",
+        "task": "Change theme settings; add different content types."
+      },
+      {
+        "id": "B2",
+        "theme": "customization_flexibility",
+        "observable": "partly",
+        "task": "Try customizing a theme; add various product types."
+      },
+      {
+        "id": "B3",
+        "theme": "integrations",
+        "observable": "yes",
+        "task": "Browse the app store for native integrations."
+      },
+      {
+        "id": "B4",
+        "theme": "integrations",
+        "observable": "yes",
+        "task": "Browse the app store for available tools."
+      },
+      {
+        "id": "F1",
+        "theme": "customization_flexibility",
+        "observable": "yes",
+        "task": "Attempt to add custom code to a theme file."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:51.624281+00:00"
+}

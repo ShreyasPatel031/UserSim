@@ -1,0 +1,45 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "fd232ff977e0ed909ad00f76b8d05434719f1c47bc0fc3b88d81941caaa9425e",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 336,
+  "output_tokens": 568,
+  "cost_usd": 0.0015208,
+  "elapsed_s": 3.37,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate between opportunities, accounts, and contacts.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Explore the main dashboard and menus.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"bugs_reliability\",\n      \"observable\": \"partly\",\n      \"task\": \"Create and update multiple opportunities with amounts.\"\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"customization_flexibility\",\n      \"observable\": \"yes\",\n      \"task\": \"Attempt to customize fields or layouts.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate between opportunities, accounts, and contacts."
+      },
+      {
+        "id": "B2",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Explore the main dashboard and menus."
+      },
+      {
+        "id": "F1",
+        "theme": "bugs_reliability",
+        "observable": "partly",
+        "task": "Create and update multiple opportunities with amounts."
+      },
+      {
+        "id": "F2",
+        "theme": "customization_flexibility",
+        "observable": "yes",
+        "task": "Attempt to customize fields or layouts."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:37.713510+00:00"
+}

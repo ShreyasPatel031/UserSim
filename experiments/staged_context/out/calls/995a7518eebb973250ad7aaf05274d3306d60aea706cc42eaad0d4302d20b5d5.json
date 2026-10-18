@@ -1,0 +1,36 @@
+{
+  "stage": "hm_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "995a7518eebb973250ad7aaf05274d3306d60aea706cc42eaad0d4302d20b5d5",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3402,
+  "output_tokens": 1150,
+  "cost_usd": 0.0038956,
+  "elapsed_s": 6.16,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Simple, intuitive interface for basic communication\",\n    \"Clear overview of project progress with to-dos and events\",\n    \"Easy to get started with core features like task lists\"\n  ],\n  \"cons\": [\n    \"Limited functionality for complex project management needs\",\n    \"Lack of advanced reporting and customization options\",\n    \"One-project limit on the free plan is highly restrictive\"\n  ],\n  \"overall_experience\": \"This Project Manager likely found Basecamp's simplicity appealing for basic team communication and task management within their small furniture company. However, the product's limited functionality and lack of advanced features, such as comprehensive reporting or robust customization, likely became a source of frustration over time, especially when compared to more feature-rich alternatives. The restrictive nature of the free plan, allowing only one project, would significantly hinder their ability to manage multiple workstreams.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 3,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 6,
+    "pros": [
+      "Simple, intuitive interface for basic communication",
+      "Clear overview of project progress with to-dos and events",
+      "Easy to get started with core features like task lists"
+    ],
+    "cons": [
+      "Limited functionality for complex project management needs",
+      "Lack of advanced reporting and customization options",
+      "One-project limit on the free plan is highly restrictive"
+    ],
+    "overall_experience": "This Project Manager likely found Basecamp's simplicity appealing for basic team communication and task management within their small furniture company. However, the product's limited functionality and lack of advanced features, such as comprehensive reporting or robust customization, likely became a source of frustration over time, especially when compared to more feature-rich alternatives. The restrictive nature of the free plan, allowing only one project, would significantly hinder their ability to manage multiple workstreams."
+  },
+  "ts": "2026-10-18T09:55:57.682871+00:00"
+}

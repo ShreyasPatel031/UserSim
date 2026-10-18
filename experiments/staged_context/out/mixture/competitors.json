@@ -1,0 +1,198 @@
+{
+  "Freshsales": [
+    "HubSpot Sales Hub",
+    "Salesforce Sales Cloud",
+    "Zoho CRM",
+    "Pipedrive",
+    "Insightly CRM"
+  ],
+  "Zoho CRM": [
+    "Salesforce Sales Cloud",
+    "HubSpot Sales Hub",
+    "Microsoft Dynamics 365 Sales",
+    "Freshsales",
+    "Pipedrive"
+  ],
+  "Looker": [
+    "Tableau",
+    "Microsoft Power BI",
+    "Qlik Sense",
+    "ThoughtSpot",
+    "AtScale"
+  ],
+  "Basecamp": [
+    "Monday.com",
+    "Asana",
+    "ClickUp",
+    "Trello",
+    "Wrike"
+  ],
+  "LiveAgent": [
+    "Zendesk Support Suite",
+    "Freshdesk",
+    "Help Scout",
+    "Intercom",
+    "Gorgias"
+  ],
+  "Zoho Desk": [
+    "Freshdesk",
+    "Zendesk Support Suite",
+    "HubSpot Service Hub",
+    "Intercom",
+    "ServiceNow Customer Service Management"
+  ],
+  "Klaviyo": [
+    "Braze",
+    "Iterable",
+    "Salesforce Marketing Cloud",
+    "ActiveCampaign",
+    "Omnisend"
+  ],
+  "BigCommerce": [
+    "Shopify Plus",
+    "Magento Open Source",
+    "Salesforce Commerce Cloud",
+    "WooCommerce",
+    "Commercetools"
+  ],
+  "Smartsheet": [
+    "Airtable",
+    "monday.com",
+    "Asana",
+    "ClickUp",
+    "Jira Work Management"
+  ],
+  "Freshdesk": [
+    "Zendesk Support Suite",
+    "HubSpot Service Hub",
+    "Intercom",
+    "Salesforce Service Cloud",
+    "Gorgias"
+  ],
+  "Wellable": [
+    "Virgin Pulse",
+    "Limeade",
+    "Bravo Wellness",
+    "Sprout",
+    "MoveSpring"
+  ],
+  "Xactly": [
+    "Varicent",
+    "SAP Commissions",
+    "Performio",
+    "Spiff",
+    "Oracle Sales Performance Management (SPM)"
+  ],
+  "Paylocity": [
+    "ADP Workforce Now",
+    "Paychex Flex",
+    "UKG Ready",
+    "Rippling",
+    "Gusto"
+  ],
+  "PayPal Payments": [
+    "Stripe",
+    "Square",
+    "Adyen",
+    "Shopify Payments",
+    "Worldpay"
+  ],
+  "SAP Concur": [
+    "Coupa",
+    "Rydoo",
+    "Expensify",
+    "Certify",
+    "TravelPerk"
+  ],
+  "HubSpot Marketing Hub": [
+    "Salesforce Marketing Cloud Account Engagement (Pardot)",
+    "Adobe Marketo Engage",
+    "ActiveCampaign",
+    "Braze",
+    "Oracle Eloqua Marketing Automation"
+  ],
+  "Microsoft Teams": [
+    "Slack",
+    "Google Workspace",
+    "Zoom Workplace",
+    "Webex App",
+    "RingCentral MVP"
+  ],
+  "BambooHR": [
+    "Gusto",
+    "Rippling",
+    "Paylocity",
+    "ADP Workforce Now",
+    "Paycom"
+  ],
+  "Copper": [
+    "HubSpot Sales Hub",
+    "Pipedrive",
+    "Zoho CRM",
+    "Freshsales Suite",
+    "Salesforce Sales Cloud"
+  ],
+  "Gorgias": [
+    "Richpanel",
+    "Kustomer",
+    "Gladly",
+    "Reamaze",
+    "Zendesk"
+  ],
+  "Teamwork.com": [
+    "ConnectWise PSA",
+    "monday.com",
+    "ClickUp",
+    "Asana",
+    "Smartsheet"
+  ],
+  "GetResponse": [
+    "ActiveCampaign",
+    "Brevo",
+    "MailerLite",
+    "Constant Contact",
+    "Omnisend"
+  ],
+  "Personio": [
+    "Factorial",
+    "BambooHR",
+    "Rippling",
+    "ADP Workforce Now",
+    "Paylocity"
+  ],
+  "Zoho Books": [
+    "QuickBooks Online",
+    "Xero",
+    "FreshBooks",
+    "Sage 50cloud Accounting",
+    "Wave Accounting"
+  ],
+  "Sisense": [
+    "Looker (Google Cloud Looker)",
+    "Microsoft Power BI Embedded",
+    "Tableau Embedded",
+    "Qlik Sense",
+    "Domo"
+  ],
+  "Mattermost": [
+    "Rocket.Chat",
+    "Element (Matrix)",
+    "Microsoft Teams",
+    "Slack",
+    "Cisco Webex"
+  ],
+  "Bitwarden": [
+    "1Password",
+    "LastPass",
+    "Keeper Security",
+    "Dashlane",
+    "NordPass"
+  ],
+  "Ecwid": [
+    "Shopify",
+    "Wix eCommerce",
+    "Squarespace",
+    "BigCommerce",
+    "WooCommerce"
+  ]
+}

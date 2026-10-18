@@ -1,0 +1,45 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "992099db5eccd88000cfc4f4bd90911795e53fc255897724e9592e752a7444a8",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 345,
+  "output_tokens": 618,
+  "cost_usd": 0.0016485,
+  "elapsed_s": 3.65,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"templates\",\n      \"observable\": \"yes\",\n      \"task\": \"Browse and apply a template; add a comment to a row.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate cells; add and customize a column.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"reporting_analytics\",\n      \"observable\": \"yes\",\n      \"task\": \"Create a new dashboard and add widgets.\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"collaboration_sharing_permissions\",\n      \"observable\": \"yes\",\n      \"task\": \"Share a sheet with another user (simulated); add a comment.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "templates",
+        "observable": "yes",
+        "task": "Browse and apply a template; add a comment to a row."
+      },
+      {
+        "id": "B2",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate cells; add and customize a column."
+      },
+      {
+        "id": "B3",
+        "theme": "reporting_analytics",
+        "observable": "yes",
+        "task": "Create a new dashboard and add widgets."
+      },
+      {
+        "id": "B4",
+        "theme": "collaboration_sharing_permissions",
+        "observable": "yes",
+        "task": "Share a sheet with another user (simulated); add a comment."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:54:14.906553+00:00"
+}

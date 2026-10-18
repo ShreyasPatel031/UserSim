@@ -1,0 +1,36 @@
+{
+  "stage": "hm_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ea844dd5a7b953a8b05e4359803ec90f1f861945aeba38a06bd66b2fe8319fce",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3182,
+  "output_tokens": 1028,
+  "cost_usd": 0.0035246,
+  "elapsed_s": 5.03,
+  "error": null,
+  "text": "{\n \"ease_of_use_rating\": 4,\n \"functionality_rating\": 4,\n \"overall_rating\": 4,\n \"value_for_money_rating\": 3,\n \"customer_support_rating\": 4,\n \"recommendation_score\": 7,\n \"pros\": [\n  \"Simple, clear interface for managing basic tasks\",\n  \"Effective calendar tool for tracking deadlines and milestones\",\n  \"Easy to add to-dos and documents within a project\"\n ],\n \"cons\": [\n  \"Free trial limitations to one project restricts testing multiple workflows\",\n  \"Initial setup requires manual addition of essential tools like To-dos and Calendar\",\n  \"Lacks advanced features or customization compared to alternatives\"\n ],\n \"overall_experience\": \"This content creator found Basecamp's free trial to be a straightforward tool for basic project and task management, appreciating its simplicity for tracking deadlines and to-dos. However, the limitation of a single project in the trial and the manual setup of core tools created some initial friction. While functional for their needs, they likely perceived it as less robust or flexible than other project management solutions available.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 7,
+    "pros": [
+      "Simple, clear interface for managing basic tasks",
+      "Effective calendar tool for tracking deadlines and milestones",
+      "Easy to add to-dos and documents within a project"
+    ],
+    "cons": [
+      "Free trial limitations to one project restricts testing multiple workflows",
+      "Initial setup requires manual addition of essential tools like To-dos and Calendar",
+      "Lacks advanced features or customization compared to alternatives"
+    ],
+    "overall_experience": "This content creator found Basecamp's free trial to be a straightforward tool for basic project and task management, appreciating its simplicity for tracking deadlines and to-dos. However, the limitation of a single project in the trial and the manual setup of core tools created some initial friction. While functional for their needs, they likely perceived it as less robust or flexible than other project management solutions available."
+  },
+  "ts": "2026-10-18T09:56:04.329758+00:00"
+}

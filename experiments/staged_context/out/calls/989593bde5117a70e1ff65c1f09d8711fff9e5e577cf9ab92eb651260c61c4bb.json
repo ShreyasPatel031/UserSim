@@ -1,0 +1,51 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "989593bde5117a70e1ff65c1f09d8711fff9e5e577cf9ab92eb651260c61c4bb",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 348,
+  "output_tokens": 605,
+  "cost_usd": 0.0016168999999999999,
+  "elapsed_s": 3.75,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"automation_workflows\",\n      \"observable\": \"yes\",\n      \"task\": \"Create a simple custom automation workflow.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate through main menu items and dashboard.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"automation_workflows\",\n      \"observable\": \"yes\",\n      \"task\": \"Attempt to set up a basic automation.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"onboarding_learning_curve\",\n      \"observable\": \"partly\",\n      \"task\": \"Attempt to set up a complex feature without guidance.\"\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"pricing_cost\",\n      \"observable\": \"no\",\n      \"task\": null\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "automation_workflows",
+        "observable": "yes",
+        "task": "Create a simple custom automation workflow."
+      },
+      {
+        "id": "B2",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate through main menu items and dashboard."
+      },
+      {
+        "id": "B3",
+        "theme": "automation_workflows",
+        "observable": "yes",
+        "task": "Attempt to set up a basic automation."
+      },
+      {
+        "id": "F1",
+        "theme": "onboarding_learning_curve",
+        "observable": "partly",
+        "task": "Attempt to set up a complex feature without guidance."
+      },
+      {
+        "id": "F2",
+        "theme": "pricing_cost",
+        "observable": "no",
+        "task": null
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:54:11.715995+00:00"
+}

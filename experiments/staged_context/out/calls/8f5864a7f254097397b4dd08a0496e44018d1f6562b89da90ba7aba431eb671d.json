@@ -1,0 +1,26 @@
+{
+  "stage": "live_competitors",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8f5864a7f254097397b4dd08a0496e44018d1f6562b89da90ba7aba431eb671d",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 512,
+  "input_tokens": 556,
+  "output_tokens": 415,
+  "cost_usd": 0.0012043,
+  "elapsed_s": 2.93,
+  "error": null,
+  "text": "{\n  \"competitors\": [\n    \"Looker (Google Cloud Looker)\",\n    \"Microsoft Power BI Embedded\",\n    \"Tableau Embedded\",\n    \"Qlik Sense\",\n    \"Domo\"\n  ]\n}",
+  "json": {
+    "competitors": [
+      "Looker (Google Cloud Looker)",
+      "Microsoft Power BI Embedded",
+      "Tableau Embedded",
+      "Qlik Sense",
+      "Domo"
+    ]
+  },
+  "ts": "2026-10-18T09:44:33.557153+00:00"
+}

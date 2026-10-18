@@ -1,0 +1,45 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f9a219a6a422c132d3984f7ca3ed968305fdabe7cd21ce54c36535b1e10f750b",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 330,
+  "output_tokens": 565,
+  "cost_usd": 0.0015114999999999998,
+  "elapsed_s": 3.31,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"core_feature_depth_or_missing\",\n      \"observable\": \"yes\",\n      \"task\": \"Explore main menu and modules.\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Attempt to find specific functions.\"\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"integrations\",\n      \"observable\": \"yes\",\n      \"task\": \"Look for email client within CRM.\"\n    },\n    {\n      \"id\": \"F3\",\n      \"theme\": \"integrations\",\n      \"observable\": \"yes\",\n      \"task\": \"Look for email client within CRM.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "core_feature_depth_or_missing",
+        "observable": "yes",
+        "task": "Explore main menu and modules."
+      },
+      {
+        "id": "F1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Attempt to find specific functions."
+      },
+      {
+        "id": "F2",
+        "theme": "integrations",
+        "observable": "yes",
+        "task": "Look for email client within CRM."
+      },
+      {
+        "id": "F3",
+        "theme": "integrations",
+        "observable": "yes",
+        "task": "Look for email client within CRM."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:54:03.645844+00:00"
+}

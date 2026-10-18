@@ -1,0 +1,45 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "23ba121b585511f51d2ffbb770f19cf225b4cf92b30827c3979b104862c1c242",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 325,
+  "output_tokens": 566,
+  "cost_usd": 0.0015125,
+  "elapsed_s": 3.57,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"View and update a customer profile\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"pricing_cost\",\n      \"observable\": \"partly\",\n      \"task\": \"Review available features and pricing plans\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"setup_configuration\",\n      \"observable\": \"partly\",\n      \"task\": \"Attempt to configure initial settings\"\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"setup_configuration\",\n      \"observable\": \"partly\",\n      \"task\": \"Attempt to configure initial settings\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "View and update a customer profile"
+      },
+      {
+        "id": "B2",
+        "theme": "pricing_cost",
+        "observable": "partly",
+        "task": "Review available features and pricing plans"
+      },
+      {
+        "id": "F1",
+        "theme": "setup_configuration",
+        "observable": "partly",
+        "task": "Attempt to configure initial settings"
+      },
+      {
+        "id": "F2",
+        "theme": "setup_configuration",
+        "observable": "partly",
+        "task": "Attempt to configure initial settings"
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:39.204588+00:00"
+}

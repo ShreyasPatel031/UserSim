@@ -1,0 +1,69 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "badcafc3d906ffee82d6545c3bf1fed8be2ae32427b0f7eea0f9d77b33295aec",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 368,
+  "output_tokens": 822,
+  "cost_usd": 0.0021654,
+  "elapsed_s": 4.98,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"reporting_analytics\",\n      \"observable\": \"yes\",\n      \"task\": \"Create a basic chart from demo data\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"reporting_analytics\",\n      \"observable\": \"yes\",\n      \"task\": \"Link two data tables and create a combined visual\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"onboarding_learning_curve\",\n      \"observable\": \"partly\",\n      \"task\": \"Attempt to create a simple report\"\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate the interface and create a simple report\"\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"performance_speed\",\n      \"observable\": \"yes\",\n      \"task\": \"Open the application and load demo data\"\n    },\n    {\n      \"id\": \"F2\",\n      \"theme\": \"performance_speed\",\n      \"observable\": \"yes\",\n      \"task\": \"Interact with visuals and apply filters\"\n    },\n    {\n      \"id\": \"F3\",\n      \"theme\": \"data_import_export\",\n      \"observable\": \"yes\",\n      \"task\": \"Attempt to export a report to PDF or Excel\"\n    },\n    {\n      \"id\": \"F4\",\n      \"theme\": \"performance_speed\",\n      \"observable\": \"yes\",\n      \"task\": \"Perform basic data transformations or calculations\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "reporting_analytics",
+        "observable": "yes",
+        "task": "Create a basic chart from demo data"
+      },
+      {
+        "id": "B2",
+        "theme": "reporting_analytics",
+        "observable": "yes",
+        "task": "Link two data tables and create a combined visual"
+      },
+      {
+        "id": "B3",
+        "theme": "onboarding_learning_curve",
+        "observable": "partly",
+        "task": "Attempt to create a simple report"
+      },
+      {
+        "id": "B4",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate the interface and create a simple report"
+      },
+      {
+        "id": "F1",
+        "theme": "performance_speed",
+        "observable": "yes",
+        "task": "Open the application and load demo data"
+      },
+      {
+        "id": "F2",
+        "theme": "performance_speed",
+        "observable": "yes",
+        "task": "Interact with visuals and apply filters"
+      },
+      {
+        "id": "F3",
+        "theme": "data_import_export",
+        "observable": "yes",
+        "task": "Attempt to export a report to PDF or Excel"
+      },
+      {
+        "id": "F4",
+        "theme": "performance_speed",
+        "observable": "yes",
+        "task": "Perform basic data transformations or calculations"
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:53:56.557043+00:00"
+}

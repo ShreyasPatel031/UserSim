@@ -48,8 +48,20 @@ def categories() -> list[str]:
     return sorted(data().product_category_group.unique())
 
 
+def recorded_category(url: str) -> str | None:
+    """Category router_eval recorded for a known product URL (pages change, so re-fetching would miss the call cache)."""
+    import router_eval as RE  # noqa: PLC0415
+
+    rec = E.read_json(E.OUT / "router" / "category_check.json")
+    name = next((p for p, u in RE.URLS.items() if u == url), None)
+    return (rec.get(name) or {}).get("classified") if name else None
+
+
 def classify(url: str) -> dict:
     """Fetch the product page and map it to a Capterra category with the model (cached)."""
+    known = recorded_category(url)
+    if known:
+        return {"category": known, "product_name": None, "page_text": ""}
     dest = E.CACHE / "pages" / f"mcp_{E.sha(url)[:12]}.html"
     E.download(url, dest)
     sents, _ = E.filter_sentences(E.page_text(dest.read_text(encoding="utf-8", errors="ignore")))

@@ -1,0 +1,36 @@
+{
+  "stage": "hm_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4c7d8f807826e0f9ad3a243f0dbe1d907176dad0f5af1ab7003decef251d7af1",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3052,
+  "output_tokens": 1069,
+  "cost_usd": 0.0035881000000000003,
+  "elapsed_s": 5.9,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Simple and intuitive interface for managing tasks and projects.\",\n    \"Calendar tool is effective for tracking deadlines and milestones.\",\n    \"To-dos and Card Tables provide clear status views for team management.\"\n  ],\n  \"cons\": [\n    \"Initial setup requires manual addition of tools to projects.\",\n    \"The limited project allowance on the free plan can be restrictive for diverse workstreams.\",\n    \"Default settings for events often require manual adjustments.\"\n  ],\n  \"overall_experience\": \"This manager likely found Basecamp to be a straightforward and effective tool for basic task and project management within their non-profit organization. Its ease of use and clear organization were beneficial for their small team. However, they may have encountered minor frustrations with initial setup complexities and limitations of the free plan for more extensive project needs.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Simple and intuitive interface for managing tasks and projects.",
+      "Calendar tool is effective for tracking deadlines and milestones.",
+      "To-dos and Card Tables provide clear status views for team management."
+    ],
+    "cons": [
+      "Initial setup requires manual addition of tools to projects.",
+      "The limited project allowance on the free plan can be restrictive for diverse workstreams.",
+      "Default settings for events often require manual adjustments."
+    ],
+    "overall_experience": "This manager likely found Basecamp to be a straightforward and effective tool for basic task and project management within their non-profit organization. Its ease of use and clear organization were beneficial for their small team. However, they may have encountered minor frustrations with initial setup complexities and limitations of the free plan for more extensive project needs."
+  },
+  "ts": "2026-10-18T09:55:54.884159+00:00"
+}

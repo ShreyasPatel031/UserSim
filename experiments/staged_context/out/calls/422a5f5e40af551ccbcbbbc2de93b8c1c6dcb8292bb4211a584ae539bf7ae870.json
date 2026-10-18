@@ -1,0 +1,36 @@
+{
+  "stage": "hm_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "422a5f5e40af551ccbcbbbc2de93b8c1c6dcb8292bb4211a584ae539bf7ae870",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3004,
+  "output_tokens": 990,
+  "cost_usd": 0.0033761999999999998,
+  "elapsed_s": 5.44,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effective for coordinating project deadlines and tasks.\",\n    \"Straightforward interface for adding events and to-dos.\",\n    \"Useful for tracking project statuses with card tables.\"\n  ],\n  \"cons\": [\n    \"Initial setup requires manual addition of tools to each project.\",\n    \"Limited to one project on the free plan, which can be restrictive.\",\n    \"May require manual adjustments for all-day deadlines in the calendar.\"\n  ],\n  \"overall_experience\": \"The Climate Change Analyst likely found Basecamp to be a generally effective tool for coordinating project work within their Think Tank. While the platform offered clear tools for managing tasks and deadlines, the initial setup and certain limitations, particularly the single-project free plan, may have caused some minor frustrations. Despite these, the long-term usage suggests it adequately met their core project coordination needs.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Effective for coordinating project deadlines and tasks.",
+      "Straightforward interface for adding events and to-dos.",
+      "Useful for tracking project statuses with card tables."
+    ],
+    "cons": [
+      "Initial setup requires manual addition of tools to each project.",
+      "Limited to one project on the free plan, which can be restrictive.",
+      "May require manual adjustments for all-day deadlines in the calendar."
+    ],
+    "overall_experience": "The Climate Change Analyst likely found Basecamp to be a generally effective tool for coordinating project work within their Think Tank. While the platform offered clear tools for managing tasks and deadlines, the initial setup and certain limitations, particularly the single-project free plan, may have caused some minor frustrations. Despite these, the long-term usage suggests it adequately met their core project coordination needs."
+  },
+  "ts": "2026-10-18T09:55:58.509765+00:00"
+}

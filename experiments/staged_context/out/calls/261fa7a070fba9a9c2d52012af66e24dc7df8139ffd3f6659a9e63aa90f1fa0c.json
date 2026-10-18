@@ -1,0 +1,26 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "261fa7a070fba9a9c2d52012af66e24dc7df8139ffd3f6659a9e63aa90f1fa0c",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 131,
+  "output_tokens": 274,
+  "cost_usd": 0.0007243,
+  "elapsed_s": 8.77,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage projects\",\n  \"benefits\": [\n    \"Good management features\"\n  ],\n  \"frictions\": [\n    \"Tickets require separate updates for comments and status\"\n  ]\n}",
+  "json": {
+    "task": "Manage projects",
+    "benefits": [
+      "Good management features"
+    ],
+    "frictions": [
+      "Tickets require separate updates for comments and status"
+    ]
+  },
+  "ts": "2026-10-18T09:55:20.991937+00:00"
+}

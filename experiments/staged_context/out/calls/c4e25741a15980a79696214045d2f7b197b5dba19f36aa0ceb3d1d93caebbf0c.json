@@ -1,0 +1,26 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c4e25741a15980a79696214045d2f7b197b5dba19f36aa0ceb3d1d93caebbf0c",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 146,
+  "output_tokens": 430,
+  "cost_usd": 0.0011188,
+  "elapsed_s": 10.55,
+  "error": null,
+  "text": "{\n  \"task\": null,\n  \"benefits\": [\n    \"features work very well\"\n  ],\n  \"frictions\": [\n    \"lack of a file transfer feature\"\n  ]\n}",
+  "json": {
+    "task": null,
+    "benefits": [
+      "features work very well"
+    ],
+    "frictions": [
+      "lack of a file transfer feature"
+    ]
+  },
+  "ts": "2026-10-18T09:55:22.351438+00:00"
+}

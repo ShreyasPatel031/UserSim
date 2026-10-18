@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "885ad5d3f18a412b644e5764e8382500b619b1dd616ee90b4997251b8bd00425",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 222,
+  "output_tokens": 461,
+  "cost_usd": 0.0012190999999999999,
+  "elapsed_s": 7.36,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage projects and team collaboration\",\n  \"benefits\": [\n    \"Facilitate real-time collaboration for geographically dispersed teams\",\n    \"Provide daily user diaries for managers to track project progress\",\n    \"Offer email alerts to save time\",\n    \"Assist in project accomplishment\"\n  ],\n  \"frictions\": [\n    \"Occasional error when assigning tasks, requiring a restart\"\n  ]\n}",
+  "json": {
+    "task": "Manage projects and team collaboration",
+    "benefits": [
+      "Facilitate real-time collaboration for geographically dispersed teams",
+      "Provide daily user diaries for managers to track project progress",
+      "Offer email alerts to save time",
+      "Assist in project accomplishment"
+    ],
+    "frictions": [
+      "Occasional error when assigning tasks, requiring a restart"
+    ]
+  },
+  "ts": "2026-10-18T09:55:21.972227+00:00"
+}

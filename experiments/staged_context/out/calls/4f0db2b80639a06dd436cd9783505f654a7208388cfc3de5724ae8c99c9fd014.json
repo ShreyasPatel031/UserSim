@@ -1,0 +1,26 @@
+{
+  "stage": "live_competitors",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4f0db2b80639a06dd436cd9783505f654a7208388cfc3de5724ae8c99c9fd014",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 512,
+  "input_tokens": 930,
+  "output_tokens": 405,
+  "cost_usd": 0.0012915,
+  "elapsed_s": 2.67,
+  "error": null,
+  "text": "{\n  \"competitors\": [\n    \"Shopify Plus\",\n    \"Magento Open Source\",\n    \"Salesforce Commerce Cloud\",\n    \"WooCommerce\",\n    \"Commercetools\"\n  ]\n}",
+  "json": {
+    "competitors": [
+      "Shopify Plus",
+      "Magento Open Source",
+      "Salesforce Commerce Cloud",
+      "WooCommerce",
+      "Commercetools"
+    ]
+  },
+  "ts": "2026-10-18T09:44:15.728592+00:00"
+}

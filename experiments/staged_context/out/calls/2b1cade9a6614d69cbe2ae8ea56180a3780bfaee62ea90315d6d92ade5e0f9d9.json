@@ -1,0 +1,51 @@
+{
+  "stage": "hm_observable",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2b1cade9a6614d69cbe2ae8ea56180a3780bfaee62ea90315d6d92ade5e0f9d9",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 335,
+  "output_tokens": 633,
+  "cost_usd": 0.001683,
+  "elapsed_s": 3.46,
+  "error": null,
+  "text": "{\n  \"points\": [\n    {\n      \"id\": \"B1\",\n      \"theme\": \"ui_ease_navigation\",\n      \"observable\": \"yes\",\n      \"task\": \"Navigate dashboard and create a product.\"\n    },\n    {\n      \"id\": \"B2\",\n      \"theme\": \"performance_speed\",\n      \"observable\": \"yes\",\n      \"task\": \"Load multiple pages and perform actions.\"\n    },\n    {\n      \"id\": \"B3\",\n      \"theme\": \"scaling_large_data_or_teams\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"B4\",\n      \"theme\": \"scaling_large_data_or_teams\",\n      \"observable\": \"no\",\n      \"task\": null\n    },\n    {\n      \"id\": \"F1\",\n      \"theme\": \"pricing_cost\",\n      \"observable\": \"partly\",\n      \"task\": \"Review available pricing plans.\"\n    }\n  ]\n}",
+  "json": {
+    "points": [
+      {
+        "id": "B1",
+        "theme": "ui_ease_navigation",
+        "observable": "yes",
+        "task": "Navigate dashboard and create a product."
+      },
+      {
+        "id": "B2",
+        "theme": "performance_speed",
+        "observable": "yes",
+        "task": "Load multiple pages and perform actions."
+      },
+      {
+        "id": "B3",
+        "theme": "scaling_large_data_or_teams",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "B4",
+        "theme": "scaling_large_data_or_teams",
+        "observable": "no",
+        "task": null
+      },
+      {
+        "id": "F1",
+        "theme": "pricing_cost",
+        "observable": "partly",
+        "task": "Review available pricing plans."
+      }
+    ]
+  },
+  "ts": "2026-10-18T09:54:13.156561+00:00"
+}

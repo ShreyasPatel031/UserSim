@@ -1,0 +1,36 @@
+{
+  "stage": "hm_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "124832f4bb6a713737b26bc6abacbd41944b1d7ca4d11c5f03fcb537e1c550b8",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3296,
+  "output_tokens": 1086,
+  "cost_usd": 0.0037038,
+  "elapsed_s": 6.68,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Simple and clear interface for project organization\",\n    \"Effective for managing deadlines and internal communications\",\n    \"Good for creating and sharing training modules\"\n  ],\n  \"cons\": [\n    \"Limited customization options for specific workflows\",\n    \"May require manual adjustments for recurring tasks or complex schedules\",\n    \"The single project limitation on the free plan was initially restrictive\"\n  ],\n  \"overall_experience\": \"This person likely found Basecamp to be a straightforward and effective tool for their project management, administrative tasks, and training module organization within a small healthcare team. They appreciated its simplicity and visual clarity for tasks and deadlines, supporting both their graphic artist and after-sales support roles. While generally positive, they may have encountered minor frustrations with a lack of advanced customization or some manual steps required for detailed scheduling.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Simple and clear interface for project organization",
+      "Effective for managing deadlines and internal communications",
+      "Good for creating and sharing training modules"
+    ],
+    "cons": [
+      "Limited customization options for specific workflows",
+      "May require manual adjustments for recurring tasks or complex schedules",
+      "The single project limitation on the free plan was initially restrictive"
+    ],
+    "overall_experience": "This person likely found Basecamp to be a straightforward and effective tool for their project management, administrative tasks, and training module organization within a small healthcare team. They appreciated its simplicity and visual clarity for tasks and deadlines, supporting both their graphic artist and after-sales support roles. While generally positive, they may have encountered minor frustrations with a lack of advanced customization or some manual steps required for detailed scheduling."
+  },
+  "ts": "2026-10-18T09:55:55.148641+00:00"
+}

@@ -1,0 +1,21 @@
+{
+  "stage": "mcp_classify",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d242237739b539699fd5d2db5f44642e4d5d26069147c8db878e6f4e3ddea70d",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 256,
+  "input_tokens": 598,
+  "output_tokens": 218,
+  "cost_usd": 0.0007244,
+  "elapsed_s": 1.7,
+  "error": null,
+  "text": "{\n  \"category\": \"Accounting\",\n  \"product_name\": \"SAP Concur\"\n}",
+  "json": {
+    "category": "Accounting",
+    "product_name": "SAP Concur"
+  },
+  "ts": "2026-10-18T09:44:18.696428+00:00"
+}
