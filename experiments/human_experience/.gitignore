@@ -8,3 +8,5 @@ cache/
 packets/case_*.json
 results/prompts/
 results/qualitative_reference_labels.json
+results/.*_identity.json
+results/mcp_shots/
