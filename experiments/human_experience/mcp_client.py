@@ -79,4 +79,8 @@ async def main() -> None:
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except BaseExceptionGroup as eg:  # output piped to `head`: the call itself already ran
+        if not eg.subgroup(BrokenPipeError):
+            raise

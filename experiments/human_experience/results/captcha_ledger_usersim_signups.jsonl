@@ -4,3 +4,5 @@
 {"attempt": 0, "captcha_type": "recaptcha_v3_enterprise", "event": "skip", "reason": "no_signup_attempt", "site": "clickup.com", "task_type": "ReCaptchaV3EnterpriseTaskProxyLess", "ts": "2026-10-18T02:20:06.311882+00:00"}
 {"attempt": 0, "captcha_type": "recaptcha_v3_enterprise", "event": "skip", "reason": "no_signup_attempt", "site": "asana.com", "task_type": "ReCaptchaV3EnterpriseTaskProxyLess", "ts": "2026-10-18T02:29:47.057491+00:00"}
 {"attempt": 0, "captcha_type": "recaptcha_v3_enterprise", "event": "skip", "reason": "no_signup_attempt", "site": "asana.com", "task_type": "ReCaptchaV3EnterpriseTaskProxyLess", "ts": "2026-10-18T02:31:08.310423+00:00"}
+{"attempt": 1, "event": "signup_start", "site": "asana.com", "ts": "2026-10-18T02:43:44.345273+00:00"}
+{"attempt": 1, "balance_after": 10.7312, "balance_before": 10.7312, "balance_delta": 0.0, "captcha_type": "recaptcha_v3_enterprise", "cost": 0.003, "event": "createTask", "list_price": 0.003, "note": "", "site": "asana.com", "solved": true, "task_id": "15cea6c6-0b02-42a1-a3c5-481b02dc2751", "task_type": "ReCaptchaV3EnterpriseTaskProxyLess", "ts": "2026-10-18T02:45:46.996754+00:00"}
