@@ -422,6 +422,23 @@ class GmailAliasInbox(Inbox):
         self.username, self.app_password = creds
         self.address = fresh_gmail_address(self.username, host, tag, dotted=dotted)
 
+    @classmethod
+    def for_address(cls, address: str) -> "GmailAliasInbox":
+        """Reopen an alias issued earlier (an account a past session created) on the same vault Gmail."""
+        from mvp.email_codes import _imap_creds
+
+        creds = _imap_creds()
+        if not creds:
+            raise GmailInboxMissing(GMAIL_MISSING_MSG)
+        local = creds[0].split("@")[0].replace(".", "").lower()
+        user, _, domain = address.partition("@")
+        if domain.lower() not in ("gmail.com", "googlemail.com") or user.split("+")[0].replace(".", "").lower() != local:
+            raise ValueError("address is not an alias of the signup inbox")
+        inbox = cls.__new__(cls)
+        inbox.username, inbox.app_password = creds
+        inbox.address = address
+        return inbox
+
     def messages(self, newer_than: float) -> list[dict[str, Any]]:
         from mvp.email_codes import _body_text, _decode, _msg_timestamp, messages_for_alias
 
