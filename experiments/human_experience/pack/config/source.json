@@ -1,0 +1,7 @@
+{
+  "dataset": "https://huggingface.co/datasets/FreshCrawl/capterra-b2b-software-reviews",
+  "download_url": "https://huggingface.co/datasets/FreshCrawl/capterra-b2b-software-reviews/resolve/main/capterra_software_reviews.csv",
+  "sha256": "867bea8491409204d296b47757cf78603f2056a5452fe6ba9b71deb2b2f8436a",
+  "bytes": 42765206,
+  "source_terms": "Retain dataset/source terms; this pack contains IDs, metadata, numeric outcomes and drafted task briefs, not a redistribution of all review prose."
+}

@@ -1,0 +1,213 @@
+{
+  "phase_a": [
+    {
+      "id": "A0",
+      "packs": [
+        "M"
+      ],
+      "cases": "all_36",
+      "task_given": false
+    },
+    {
+      "id": "A1",
+      "packs": [
+        "M",
+        "D"
+      ],
+      "cases": "all_36",
+      "task_given": false
+    },
+    {
+      "id": "A2",
+      "packs": [
+        "M",
+        "D",
+        "P"
+      ],
+      "cases": "all_36",
+      "task_given": false
+    },
+    {
+      "id": "A3",
+      "packs": [
+        "M",
+        "D",
+        "P",
+        "O"
+      ],
+      "cases": "all_36",
+      "task_given": false
+    },
+    {
+      "id": "A4",
+      "packs": [
+        "M",
+        "D",
+        "P",
+        "C"
+      ],
+      "cases": "all_36",
+      "task_given": false
+    },
+    {
+      "id": "A5",
+      "packs": [
+        "M",
+        "D",
+        "P",
+        "T"
+      ],
+      "cases": "all_36",
+      "task_given": false
+    },
+    {
+      "id": "A6",
+      "packs": [
+        "M",
+        "D",
+        "P",
+        "O",
+        "C"
+      ],
+      "cases": "all_36",
+      "task_given": false
+    },
+    {
+      "id": "A7",
+      "packs": [
+        "M",
+        "D",
+        "P",
+        "C",
+        "T"
+      ],
+      "cases": "all_36",
+      "task_given": false
+    },
+    {
+      "id": "A8",
+      "packs": [
+        "M",
+        "D",
+        "P",
+        "O",
+        "C",
+        "T"
+      ],
+      "cases": "all_36",
+      "task_given": false
+    }
+  ],
+  "phase_b": [
+    {
+      "id": "B0",
+      "engine": "none",
+      "packs": [
+        "M",
+        "D",
+        "P",
+        "Q"
+      ],
+      "cases": "core_6_first_then_all_12",
+      "task_given": true
+    },
+    {
+      "id": "B1",
+      "engine": "none",
+      "packs": [
+        "M",
+        "D",
+        "P",
+        "Q",
+        "O",
+        "C",
+        "T"
+      ],
+      "cases": "core_6_first_then_all_12",
+      "task_given": true
+    },
+    {
+      "id": "B2",
+      "engine": "generic",
+      "packs": [
+        "M",
+        "D",
+        "P",
+        "Q"
+      ],
+      "cases": "core_6_first_then_all_12",
+      "task_given": true
+    },
+    {
+      "id": "B3",
+      "engine": "generic",
+      "packs": [
+        "M",
+        "D",
+        "P",
+        "Q",
+        "O",
+        "C",
+        "T"
+      ],
+      "cases": "core_6_first_then_all_12",
+      "task_given": true
+    },
+    {
+      "id": "B4",
+      "engine": "usersim",
+      "packs": [
+        "M",
+        "D",
+        "P",
+        "Q"
+      ],
+      "cases": "core_6_first_then_all_12",
+      "task_given": true
+    },
+    {
+      "id": "B5",
+      "engine": "usersim",
+      "packs": [
+        "M",
+        "D",
+        "P",
+        "Q",
+        "O",
+        "C",
+        "T"
+      ],
+      "cases": "core_6_first_then_all_12",
+      "task_given": true
+    }
+  ],
+  "pack_legend": {
+    "M": "minimal neutral product seed",
+    "D": "public target and competitor docs",
+    "P": "recorded profile",
+    "O": "O*NET evidence",
+    "C": "competitor evidence reviews",
+    "T": "target evidence reviews",
+    "Q": "fixed neutral task/fixture"
+  },
+  "primary_targets": [
+    "ease_of_use_rating",
+    "functionality_rating",
+    "specific_benefits",
+    "specific_friction"
+  ],
+  "secondary_targets": [
+    "overall_rating",
+    "value_for_money_rating"
+  ],
+  "not_primary": [
+    "customer_support_rating",
+    "recommendation_score"
+  ],
+  "model_settings": "Same final prediction model/settings across all cells; log actual runner/harness settings",
+  "default_repetitions": 1,
+  "budget_usd_proposed": 20,
+  "phase_a_prediction_calls": 324,
+  "phase_b_core_prediction_calls": 36,
+  "phase_b_core_browser_runs": 24
+}
