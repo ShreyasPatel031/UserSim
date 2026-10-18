@@ -63,8 +63,10 @@ async def run_cell(study_id: str, cell: dict, max_turns: int, out: Path, llm) ->
     async with streamablehttp_client(URL, headers=_headers(), timeout=120, sse_read_timeout=900) as (r, w, _):
         async with ClientSession(r, w) as s:
             await s.initialize()
+            start = ({"study_id": study_id, "cell_id": cell["cell_id"]} if study_id else
+                     {"product_url": cell["site"], "persona": cell["persona"], "task": cell["task"]})
             for attempt in range(60):  # wait for a free browser slot
-                st = await s.call_tool("usersim_start_session", {"study_id": study_id, "cell_id": cell["cell_id"]})
+                st = await s.call_tool("usersim_start_session", start)
                 meta = _text(st)
                 try:
                     m = json.loads(meta[meta.index("{"):]) if "{" in meta else {}
@@ -170,6 +172,8 @@ async def main() -> None:
     ap.add_argument("--parallel", type=int, default=8, help="cells at once per study")
     ap.add_argument("--max-turns", type=int, default=90)
     ap.add_argument("--out", default="results/mcp_studies")
+    ap.add_argument("--smoke", nargs=2, metavar=("PERSONA", "TASK"),
+                    help="one session (no study) on the first product: checks the driver without a 108-cell study")
     a = ap.parse_args()
     from anthropic import AnthropicVertex
     from auth import vertex_credentials  # the repo's loader (file, base64 env or metadata server)
@@ -178,6 +182,12 @@ async def main() -> None:
                           credentials=vertex_credentials())
     root = Path(a.out)
     root.mkdir(parents=True, exist_ok=True)
+    if a.smoke:
+        cell = {"cell_id": f"smoke_{int(time.time())}", "site": a.products[0], "persona": a.smoke[0], "task": a.smoke[1]}
+        log = await run_cell("", cell, a.max_turns, root, llm)
+        print(json.dumps({k: log.get(k) for k in ("session_id", "error", "finish", "seconds")}, indent=1)[:2500])
+        print("steps", len(log["steps"]))
+        return
     res = await asyncio.gather(*(run_study(p, a.parallel, a.max_turns, root, llm) for p in a.products))
     (root / f"run_{int(time.time())}.json").write_text(json.dumps(res, indent=1))
     print(json.dumps(res, indent=1))
