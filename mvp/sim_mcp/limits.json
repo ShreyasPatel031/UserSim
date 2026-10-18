@@ -54,11 +54,11 @@
       "about": "When true, Browserbase sessions use residential proxies (higher success on signup flows; higher Browserbase cost). false uses cheaper datacenter routing."
     },
     "anon_daily_usd_per_ip": {
-      "value": 80.0,
-      "about": "Estimated spend allowed per client IP per day (America/Los_Angeles day) for callers without a token. Estimated with the est_usd_* rates below; real cost is not metered per call. 80 ≈ six 108-cell studies a day from one IP (docs/E2E_TEST.md needs 108 cells per study)."
+      "value": 15.0,
+      "about": "Estimated spend allowed per client IP per day (America/Los_Angeles day) for callers without a token. Estimated with the est_usd_* rates below; real cost is not metered per call. 15 ≈ one 108-cell study per IP per day (docs/E2E_TEST.md needs 108 cells per study; a typical study ≈ 13.5 units)."
     },
     "anon_daily_usd_global": {
-      "value": 120.0,
+      "value": 40.0,
       "about": "Estimated spend allowed per day across ALL callers without a token, together."
     },
     "est_usd_per_session": {
