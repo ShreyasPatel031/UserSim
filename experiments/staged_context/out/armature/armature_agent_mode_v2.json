@@ -1,0 +1,114 @@
+{
+ "devrel": {
+  "mode": "agent",
+  "status": "no_data",
+  "pending": [],
+  "errors": [],
+  "own_reviews_check": {
+   "ok": false,
+   "why": "The reviews describe an accreditation management software called 'Armature Fabric' used for teacher education programs and client care, which is distinct from the AI coding agent discoverability platform described on armature.tech."
+  },
+  "rivals_check": {
+   "GitHub Copilot": {
+    "ok": false,
+    "direct": "no",
+    "why": "Armature helps products get discovered and used by coding agents, while GitHub Copilot is a coding agent that developers use to write code."
+   },
+   "Tabnine": {
+    "ok": false,
+    "direct": "no",
+    "why": "Armature helps products get discovered and used by coding agents, while Tabnine is a coding assistant for individual developers to write code faster."
+   },
+   "Cursor": {
+    "ok": false,
+    "direct": "no",
+    "why": "Armature helps software products get discovered and used by coding agents, while Cursor is an AI-powered code editor that uses coding agents, serving different needs in the developer ecosystem."
+   }
+  },
+  "reason": "no usable reviews for Armature or its rivals ['GitHub Copilot', 'Tabnine', 'Cursor'] (see own_reviews_check / rivals_check)"
+ },
+ "founder": {
+  "mode": "agent",
+  "status": "no_data",
+  "pending": [],
+  "errors": [],
+  "own_reviews_check": {
+   "ok": false,
+   "why": "The reviews describe an accreditation management software called 'Armature Fabric' used for teacher education programs and client care, which is distinct from the AI coding agent discoverability platform described on armature.tech."
+  },
+  "rivals_check": {
+   "GitHub Copilot": {
+    "ok": false,
+    "direct": "no",
+    "why": "Armature helps products get discovered and used by coding agents, while GitHub Copilot is a coding agent that developers use to write code."
+   },
+   "Tabnine": {
+    "ok": false,
+    "direct": "no",
+    "why": "Armature helps products get discovered and used by coding agents, while Tabnine is a coding assistant for individual developers to write code faster."
+   },
+   "Cursor": {
+    "ok": false,
+    "direct": "no",
+    "why": "Armature helps software products get discovered and used by coding agents, while Cursor is an AI-powered code editor that uses coding agents, serving different needs in the developer ecosystem."
+   }
+  },
+  "reason": "no usable reviews for Armature or its rivals ['GitHub Copilot', 'Tabnine', 'Cursor'] (see own_reviews_check / rivals_check)"
+ },
+ "growth": {
+  "mode": "agent",
+  "status": "no_data",
+  "pending": [],
+  "errors": [],
+  "own_reviews_check": {
+   "ok": false,
+   "why": "The reviews describe an accreditation management software called 'Armature Fabric' used for teacher education programs and client care, which is distinct from the AI coding agent discoverability platform described on armature.tech."
+  },
+  "rivals_check": {
+   "GitHub Copilot": {
+    "ok": false,
+    "direct": "no",
+    "why": "Armature helps products get discovered and used by coding agents, while GitHub Copilot is a coding agent that developers use to write code."
+   },
+   "Tabnine": {
+    "ok": false,
+    "direct": "no",
+    "why": "Armature helps products get discovered and used by coding agents, while Tabnine is a coding assistant for individual developers to write code faster."
+   },
+   "Cursor": {
+    "ok": false,
+    "direct": "no",
+    "why": "Armature helps software products get discovered and used by coding agents, while Cursor is an AI-powered code editor that uses coding agents, serving different needs in the developer ecosystem."
+   }
+  },
+  "reason": "no usable reviews for Armature or its rivals ['GitHub Copilot', 'Tabnine', 'Cursor'] (see own_reviews_check / rivals_check)"
+ },
+ "engineer": {
+  "mode": "agent",
+  "status": "no_data",
+  "pending": [],
+  "errors": [],
+  "own_reviews_check": {
+   "ok": false,
+   "why": "The reviews describe an accreditation management software called 'Armature Fabric' used for teacher education programs and client care, which is distinct from the AI coding agent discoverability platform described on armature.tech."
+  },
+  "rivals_check": {
+   "GitHub Copilot": {
+    "ok": false,
+    "direct": "no",
+    "why": "Armature helps products get discovered and used by coding agents, while GitHub Copilot is a coding agent that developers use to write code."
+   },
+   "Tabnine": {
+    "ok": false,
+    "direct": "no",
+    "why": "Armature helps products get discovered and used by coding agents, while Tabnine is a coding assistant for individual developers to write code faster."
+   },
+   "Cursor": {
+    "ok": false,
+    "direct": "no",
+    "why": "Armature helps software products get discovered and used by coding agents, while Cursor is an AI-powered code editor that uses coding agents, serving different needs in the developer ecosystem."
+   }
+  },
+  "reason": "no usable reviews for Armature or its rivals ['GitHub Copilot', 'Tabnine', 'Cursor'] (see own_reviews_check / rivals_check)"
+ }
+}
