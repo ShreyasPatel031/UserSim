@@ -1,0 +1,22 @@
+{
+  "stage": "yc_relevance",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b3f058e688393fefaa0ec0bd4ae3e2719d437c16c4f6ad5768515522765b619b",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 512,
+  "input_tokens": 294,
+  "output_tokens": 444,
+  "cost_usd": 0.0011982000000000002,
+  "elapsed_s": 3.32,
+  "error": null,
+  "text": "{\n  \"reviews_are_of_named_product\": false,\n  \"direct_competitor\": \"yes\",\n  \"why\": \"Both HyperProbe and Shoreline.io aim to automate the detection, diagnosis, and resolution of production incidents in real-time, directly competing for the same operational pain points and buyer.\"\n}",
+  "json": {
+    "reviews_are_of_named_product": false,
+    "direct_competitor": "yes",
+    "why": "Both HyperProbe and Shoreline.io aim to automate the detection, diagnosis, and resolution of production incidents in real-time, directly competing for the same operational pain points and buyer."
+  },
+  "ts": "2026-10-18T11:19:14.138602+00:00"
+}

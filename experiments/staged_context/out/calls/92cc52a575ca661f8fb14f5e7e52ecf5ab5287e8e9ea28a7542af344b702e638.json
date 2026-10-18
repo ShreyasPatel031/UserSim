@@ -1,0 +1,22 @@
+{
+  "stage": "yc_relevance",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "92cc52a575ca661f8fb14f5e7e52ecf5ab5287e8e9ea28a7542af344b702e638",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 512,
+  "input_tokens": 226,
+  "output_tokens": 450,
+  "cost_usd": 0.0011928,
+  "elapsed_s": 3.28,
+  "error": null,
+  "text": "{\n  \"reviews_are_of_named_product\": false,\n  \"direct_competitor\": \"partly\",\n  \"why\": \"Guardsquare primarily focuses on mobile application protection (obfuscation, anti-tampering, RASP for mobile), while RASPIRE targets broader application runtime security, API abuse, and AI-powered fraud, making them adjacent but not direct competitors for the exact same use case.\"\n}",
+  "json": {
+    "reviews_are_of_named_product": false,
+    "direct_competitor": "partly",
+    "why": "Guardsquare primarily focuses on mobile application protection (obfuscation, anti-tampering, RASP for mobile), while RASPIRE targets broader application runtime security, API abuse, and AI-powered fraud, making them adjacent but not direct competitors for the exact same use case."
+  },
+  "ts": "2026-10-18T11:18:23.455796+00:00"
+}

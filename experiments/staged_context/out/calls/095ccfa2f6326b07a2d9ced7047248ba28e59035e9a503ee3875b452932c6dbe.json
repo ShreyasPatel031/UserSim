@@ -1,0 +1,22 @@
+{
+  "stage": "yc_relevance",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "095ccfa2f6326b07a2d9ced7047248ba28e59035e9a503ee3875b452932c6dbe",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 512,
+  "input_tokens": 930,
+  "output_tokens": 460,
+  "cost_usd": 0.001429,
+  "elapsed_s": 3.38,
+  "error": null,
+  "text": "{\n  \"reviews_are_of_named_product\": true,\n  \"direct_competitor\": \"partly\",\n  \"why\": \"While Twilio provides the underlying telecom infrastructure and APIs for programmatic communication, AgentPhone specifically targets giving phone numbers and identity to AI agents, which is a more specialized use case built on top of or adjacent to what Twilio offers.\"\n}",
+  "json": {
+    "reviews_are_of_named_product": true,
+    "direct_competitor": "partly",
+    "why": "While Twilio provides the underlying telecom infrastructure and APIs for programmatic communication, AgentPhone specifically targets giving phone numbers and identity to AI agents, which is a more specialized use case built on top of or adjacent to what Twilio offers."
+  },
+  "ts": "2026-10-18T11:17:46.105722+00:00"
+}

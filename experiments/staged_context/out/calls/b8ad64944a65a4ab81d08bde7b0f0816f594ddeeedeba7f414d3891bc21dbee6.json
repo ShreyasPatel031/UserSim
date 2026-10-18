@@ -1,0 +1,22 @@
+{
+  "stage": "yc_relevance",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b8ad64944a65a4ab81d08bde7b0f0816f594ddeeedeba7f414d3891bc21dbee6",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 512,
+  "input_tokens": 187,
+  "output_tokens": 464,
+  "cost_usd": 0.0012161,
+  "elapsed_s": 4.05,
+  "error": null,
+  "text": "{\n  \"reviews_are_of_named_product\": false,\n  \"direct_competitor\": \"no\",\n  \"why\": \"Without any product information or a web presence for 'CE-Check', it cannot be assessed as a competitor to Fuchsia, which clearly defines its offering in hardware certification and testing.\"\n}",
+  "json": {
+    "reviews_are_of_named_product": false,
+    "direct_competitor": "no",
+    "why": "Without any product information or a web presence for 'CE-Check', it cannot be assessed as a competitor to Fuchsia, which clearly defines its offering in hardware certification and testing."
+  },
+  "ts": "2026-10-18T11:19:06.602967+00:00"
+}

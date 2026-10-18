@@ -1,0 +1,22 @@
+{
+  "stage": "yc_relevance",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4a05c57e41c94c734798dc4f510f5778d818d4b03de587de8ca9e4e80087db0a",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 512,
+  "input_tokens": 1069,
+  "output_tokens": 437,
+  "cost_usd": 0.0014131999999999999,
+  "elapsed_s": 3.18,
+  "error": null,
+  "text": "{\n  \"reviews_are_of_named_product\": true,\n  \"direct_competitor\": \"partly\",\n  \"why\": \"Conifer focuses specifically on optimizing LLM inference costs through intelligent routing, while Anyscale is a broader platform for distributed machine learning workloads, including training and general inference, with some overlap in managing compute costs for inference.\"\n}",
+  "json": {
+    "reviews_are_of_named_product": true,
+    "direct_competitor": "partly",
+    "why": "Conifer focuses specifically on optimizing LLM inference costs through intelligent routing, while Anyscale is a broader platform for distributed machine learning workloads, including training and general inference, with some overlap in managing compute costs for inference."
+  },
+  "ts": "2026-10-18T11:18:11.220782+00:00"
+}

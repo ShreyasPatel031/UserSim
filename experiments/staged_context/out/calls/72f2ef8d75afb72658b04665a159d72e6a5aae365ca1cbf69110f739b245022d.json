@@ -1,0 +1,22 @@
+{
+  "stage": "yc_relevance",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "72f2ef8d75afb72658b04665a159d72e6a5aae365ca1cbf69110f739b245022d",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 512,
+  "input_tokens": 1048,
+  "output_tokens": 463,
+  "cost_usd": 0.0014719,
+  "elapsed_s": 2.93,
+  "error": null,
+  "text": "{\n  \"reviews_are_of_named_product\": true,\n  \"direct_competitor\": \"partly\",\n  \"why\": \"AssemblyAI provides core speech-to-text and voice agent capabilities that Speko routes, making them a component Speko might integrate or a direct alternative for those not needing dynamic model switching.\"\n}",
+  "json": {
+    "reviews_are_of_named_product": true,
+    "direct_competitor": "partly",
+    "why": "AssemblyAI provides core speech-to-text and voice agent capabilities that Speko routes, making them a component Speko might integrate or a direct alternative for those not needing dynamic model switching."
+  },
+  "ts": "2026-10-18T11:17:31.570166+00:00"
+}

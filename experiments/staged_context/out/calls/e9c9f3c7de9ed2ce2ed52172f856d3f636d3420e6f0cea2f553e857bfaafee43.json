@@ -1,0 +1,22 @@
+{
+  "stage": "yc_relevance",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e9c9f3c7de9ed2ce2ed52172f856d3f636d3420e6f0cea2f553e857bfaafee43",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 512,
+  "input_tokens": 936,
+  "output_tokens": 469,
+  "cost_usd": 0.0014532999999999998,
+  "elapsed_s": 3.39,
+  "error": null,
+  "text": "{\n  \"reviews_are_of_named_product\": true,\n  \"direct_competitor\": \"no\",\n  \"why\": \"Vonage provides traditional VoIP business communication services for human employees, while AgentPhone offers phone numbers specifically for AI agents to interact with the real world, serving entirely different user bases and purposes.\"\n}",
+  "json": {
+    "reviews_are_of_named_product": true,
+    "direct_competitor": "no",
+    "why": "Vonage provides traditional VoIP business communication services for human employees, while AgentPhone offers phone numbers specifically for AI agents to interact with the real world, serving entirely different user bases and purposes."
+  },
+  "ts": "2026-10-18T11:17:46.051314+00:00"
+}

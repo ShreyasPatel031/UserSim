@@ -1,0 +1,22 @@
+{
+  "stage": "yc_relevance",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "64f524578ef30db9a28a58d0111e6f11850e5761c93209df3fad086775522a13",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 512,
+  "input_tokens": 795,
+  "output_tokens": 462,
+  "cost_usd": 0.0013935,
+  "elapsed_s": 4.68,
+  "error": null,
+  "text": "{\n  \"reviews_are_of_named_product\": true,\n  \"direct_competitor\": \"partly\",\n  \"why\": \"While both serve tax professionals, Luca IQ is an API-first engine for building tax solutions, whereas Intuit ProConnect Tax is a complete, user-facing tax preparation software, making them different layers of the tax tech stack.\"\n}",
+  "json": {
+    "reviews_are_of_named_product": true,
+    "direct_competitor": "partly",
+    "why": "While both serve tax professionals, Luca IQ is an API-first engine for building tax solutions, whereas Intuit ProConnect Tax is a complete, user-facing tax preparation software, making them different layers of the tax tech stack."
+  },
+  "ts": "2026-10-18T11:16:55.347961+00:00"
+}

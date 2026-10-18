@@ -1,0 +1,22 @@
+{
+  "stage": "yc_relevance",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c8fd8e60f3a225be8afe7d381b27f27222f8baa8cb78ae315cc6498210803ecc",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 512,
+  "input_tokens": 1126,
+  "output_tokens": 481,
+  "cost_usd": 0.0015403,
+  "elapsed_s": 3.18,
+  "error": null,
+  "text": "{\n  \"reviews_are_of_named_product\": true,\n  \"direct_competitor\": \"no\",\n  \"why\": \"LabVantage is a LIMS (Laboratory Information Management System) that manages lab data and workflows, whereas Enjamb Labs provides an AI layer to automate tasks and integrate with existing, closed biopharma software systems like LIMS.\"\n}",
+  "json": {
+    "reviews_are_of_named_product": true,
+    "direct_competitor": "no",
+    "why": "LabVantage is a LIMS (Laboratory Information Management System) that manages lab data and workflows, whereas Enjamb Labs provides an AI layer to automate tasks and integrate with existing, closed biopharma software systems like LIMS."
+  },
+  "ts": "2026-10-18T11:18:34.517139+00:00"
+}

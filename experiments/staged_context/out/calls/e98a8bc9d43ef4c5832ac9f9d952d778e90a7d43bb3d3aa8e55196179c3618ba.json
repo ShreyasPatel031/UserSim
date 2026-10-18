@@ -1,0 +1,26 @@
+{
+  "stage": "yc_use_cases",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e98a8bc9d43ef4c5832ac9f9d952d778e90a7d43bb3d3aa8e55196179c3618ba",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 512,
+  "input_tokens": 2314,
+  "output_tokens": 495,
+  "cost_usd": 0.0019316999999999997,
+  "elapsed_s": 3.05,
+  "error": null,
+  "text": "{\n  \"tasks\": [\n    \"Secure mobile applications\",\n    \"Implement security without code changes\",\n    \"Protect against fraud and attacks\",\n    \"Integrate security into development processes\",\n    \"Obfuscate code and encrypt data\"\n  ]\n}",
+  "json": {
+    "tasks": [
+      "Secure mobile applications",
+      "Implement security without code changes",
+      "Protect against fraud and attacks",
+      "Integrate security into development processes",
+      "Obfuscate code and encrypt data"
+    ]
+  },
+  "ts": "2026-10-18T11:18:26.758966+00:00"
+}

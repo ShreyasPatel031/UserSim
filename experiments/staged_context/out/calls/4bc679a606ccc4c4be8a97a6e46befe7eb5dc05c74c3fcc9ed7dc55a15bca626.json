@@ -1,0 +1,25 @@
+{
+  "stage": "yc_run_task",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4bc679a606ccc4c4be8a97a6e46befe7eb5dc05c74c3fcc9ed7dc55a15bca626",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 512,
+  "input_tokens": 1105,
+  "output_tokens": 511,
+  "cost_usd": 0.001609,
+  "elapsed_s": 3.22,
+  "error": null,
+  "text": "{\n  \"task\": \"I need to quickly generate some marketing content for a new product launch. I'll create a social media post, a blog post outline, and a few ad headlines. Then, I want to organize these into a project and refine some of the generated text to better fit our brand voice, making sure I can easily find and reuse them later.\",\n  \"core_job\": \"Generate marketing content for a product launch.\",\n  \"features\": [\n    \"Project organization/management\",\n    \"Content editing/refinement\"\n  ]\n}",
+  "json": {
+    "task": "I need to quickly generate some marketing content for a new product launch. I'll create a social media post, a blog post outline, and a few ad headlines. Then, I want to organize these into a project and refine some of the generated text to better fit our brand voice, making sure I can easily find and reuse them later.",
+    "core_job": "Generate marketing content for a product launch.",
+    "features": [
+      "Project organization/management",
+      "Content editing/refinement"
+    ]
+  },
+  "ts": "2026-10-18T11:16:50.130966+00:00"
+}

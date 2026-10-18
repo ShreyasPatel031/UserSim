@@ -1,0 +1,22 @@
+{
+  "stage": "yc_relevance",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "bcbe8faa2e59e5f0c5b26cdec67f25ece5af0a10ef5a3ed7307d3c6a9d42947e",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 512,
+  "input_tokens": 802,
+  "output_tokens": 489,
+  "cost_usd": 0.0014630999999999997,
+  "elapsed_s": 3.63,
+  "error": null,
+  "text": "{\n  \"reviews_are_of_named_product\": true,\n  \"direct_competitor\": \"no\",\n  \"why\": \"Mentlio provides AI spend optimization and engineering intelligence for enterprises, while Turing.com is a platform for hiring remote developers.\"\n}",
+  "json": {
+    "reviews_are_of_named_product": true,
+    "direct_competitor": "no",
+    "why": "Mentlio provides AI spend optimization and engineering intelligence for enterprises, while Turing.com is a platform for hiring remote developers."
+  },
+  "ts": "2026-10-18T11:19:02.006333+00:00"
+}

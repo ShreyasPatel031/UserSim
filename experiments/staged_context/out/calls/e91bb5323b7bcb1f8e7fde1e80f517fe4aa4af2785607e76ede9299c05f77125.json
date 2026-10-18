@@ -1,0 +1,26 @@
+{
+  "stage": "yc_use_cases",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e91bb5323b7bcb1f8e7fde1e80f517fe4aa4af2785607e76ede9299c05f77125",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 512,
+  "input_tokens": 3198,
+  "output_tokens": 444,
+  "cost_usd": 0.0020694,
+  "elapsed_s": 4.7,
+  "error": null,
+  "text": "{\n  \"tasks\": [\n    \"Scale AI/ML workloads efficiently\",\n    \"Optimize distributed computing costs\",\n    \"Deploy machine learning models\",\n    \"Manage AI/ML infrastructure\",\n    \"Accelerate model development\"\n  ]\n}",
+  "json": {
+    "tasks": [
+      "Scale AI/ML workloads efficiently",
+      "Optimize distributed computing costs",
+      "Deploy machine learning models",
+      "Manage AI/ML infrastructure",
+      "Accelerate model development"
+    ]
+  },
+  "ts": "2026-10-18T11:18:16.154404+00:00"
+}

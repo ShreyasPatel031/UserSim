@@ -1,0 +1,26 @@
+{
+  "stage": "yc_use_cases",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "abf2b31be96003e3ca5951a604a9c99c4c97b291eee124981bc8b81d9a3f43e8",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 512,
+  "input_tokens": 2525,
+  "output_tokens": 468,
+  "cost_usd": 0.0019275,
+  "elapsed_s": 2.8,
+  "error": null,
+  "text": "{\n  \"tasks\": [\n    \"Automate repetitive tasks and workflows\",\n    \"Integrate various applications and tools\",\n    \"Connect AI agents to real-world apps\",\n    \"Automate Shopify order processing\",\n    \"Build SQL agents for database queries\"\n  ]\n}",
+  "json": {
+    "tasks": [
+      "Automate repetitive tasks and workflows",
+      "Integrate various applications and tools",
+      "Connect AI agents to real-world apps",
+      "Automate Shopify order processing",
+      "Build SQL agents for database queries"
+    ]
+  },
+  "ts": "2026-10-18T11:18:53.896714+00:00"
+}

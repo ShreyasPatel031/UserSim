@@ -1,0 +1,25 @@
+{
+  "stage": "yc_run_task",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a014295e00ca7aee0ac3ee04079a1bf5eef20ce112dfe388583326e3ccdfe6cb",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 512,
+  "input_tokens": 1081,
+  "output_tokens": 547,
+  "cost_usd": 0.0016917999999999998,
+  "elapsed_s": 3.66,
+  "error": null,
+  "text": "{\n  \"task\": \"I need to sign up for RASPIRE and quickly get a handle on the attack surface for three of our key applications. I'll define these assets, initiate their scans, and review the initial findings. Then, I want to set up a custom dashboard to track critical vulnerabilities across these apps and apply a filter to focus on high-severity issues. Finally, I'll update the status of a few identified vulnerabilities and generate a report for my team.\",\n  \"core_job\": \"Identify, analyze, and manage application attack surface.\",\n  \"features\": [\n    \"Custom Dashboards\",\n    \"Filtering & Reporting\"\n  ]\n}",
+  "json": {
+    "task": "I need to sign up for RASPIRE and quickly get a handle on the attack surface for three of our key applications. I'll define these assets, initiate their scans, and review the initial findings. Then, I want to set up a custom dashboard to track critical vulnerabilities across these apps and apply a filter to focus on high-severity issues. Finally, I'll update the status of a few identified vulnerabilities and generate a report for my team.",
+    "core_job": "Identify, analyze, and manage application attack surface.",
+    "features": [
+      "Custom Dashboards",
+      "Filtering & Reporting"
+    ]
+  },
+  "ts": "2026-10-18T11:18:30.733023+00:00"
+}

@@ -1,0 +1,26 @@
+{
+  "stage": "yc_use_cases",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3acd4d7bf951e0d74d7c2d04282b7f64edb5a38185d177d1bbe66225891c88dd",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 512,
+  "input_tokens": 3550,
+  "output_tokens": 473,
+  "cost_usd": 0.0022475,
+  "elapsed_s": 4.45,
+  "error": null,
+  "text": "{\n  \"tasks\": [\n    \"Transcribe audio to text accurately.\",\n    \"Build and test voice agents.\",\n    \"Transcribe meetings and calls for notes.\",\n    \"Integrate speech-to-text into applications.\",\n    \"Extract insights from audio data.\"\n  ]\n}",
+  "json": {
+    "tasks": [
+      "Transcribe audio to text accurately.",
+      "Build and test voice agents.",
+      "Transcribe meetings and calls for notes.",
+      "Integrate speech-to-text into applications.",
+      "Extract insights from audio data."
+    ]
+  },
+  "ts": "2026-10-18T11:17:37.873309+00:00"
+}

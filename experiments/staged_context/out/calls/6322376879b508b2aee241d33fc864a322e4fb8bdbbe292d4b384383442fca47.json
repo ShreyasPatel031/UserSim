@@ -1,0 +1,22 @@
+{
+  "stage": "yc_relevance",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "6322376879b508b2aee241d33fc864a322e4fb8bdbbe292d4b384383442fca47",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 512,
+  "input_tokens": 929,
+  "output_tokens": 481,
+  "cost_usd": 0.0014812,
+  "elapsed_s": 3.5,
+  "error": null,
+  "text": "{\n  \"reviews_are_of_named_product\": true,\n  \"direct_competitor\": \"no\",\n  \"why\": \"Amorphic Labs provides a marketplace and routing layer for AI agents to discover and use external tools and APIs, while ToolJet is a low-code platform for humans to build internal tools and dashboards.\"\n}",
+  "json": {
+    "reviews_are_of_named_product": true,
+    "direct_competitor": "no",
+    "why": "Amorphic Labs provides a marketplace and routing layer for AI agents to discover and use external tools and APIs, while ToolJet is a low-code platform for humans to build internal tools and dashboards."
+  },
+  "ts": "2026-10-18T11:17:12.492747+00:00"
+}

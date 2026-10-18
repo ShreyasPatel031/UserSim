@@ -1,0 +1,22 @@
+{
+  "stage": "yc_relevance",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8c00158bbf501f33b13729f6d1caabcc7fd976cd45f46b7905b0fc6bf721347e",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 512,
+  "input_tokens": 936,
+  "output_tokens": 466,
+  "cost_usd": 0.0014458000000000001,
+  "elapsed_s": 4.64,
+  "error": null,
+  "text": "{\n  \"reviews_are_of_named_product\": true,\n  \"direct_competitor\": \"no\",\n  \"why\": \"Luca IQ is an API-first tax engine for developers and firms to build upon, whereas UltraTax CS is a complete, end-user tax preparation software used directly by tax professionals.\"\n}",
+  "json": {
+    "reviews_are_of_named_product": true,
+    "direct_competitor": "no",
+    "why": "Luca IQ is an API-first tax engine for developers and firms to build upon, whereas UltraTax CS is a complete, end-user tax preparation software used directly by tax professionals."
+  },
+  "ts": "2026-10-18T11:16:55.345900+00:00"
+}

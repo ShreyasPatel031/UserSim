@@ -1,0 +1,22 @@
+{
+  "stage": "yc_relevance",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9c8f42c856a654a4248b87ca275abf35b842fcb4e9d3d29cb6b716956e79675b",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 512,
+  "input_tokens": 1015,
+  "output_tokens": 509,
+  "cost_usd": 0.001577,
+  "elapsed_s": 2.9,
+  "error": null,
+  "text": "{\n  \"reviews_are_of_named_product\": true,\n  \"direct_competitor\": \"partly\",\n  \"why\": \"While Alkera AI focuses on AI agents for performing data engineering and science tasks, Atlan is primarily a data catalog and governance platform that helps users find, understand, and trust data, with some overlap in data lineage and knowledge management.\"\n}",
+  "json": {
+    "reviews_are_of_named_product": true,
+    "direct_competitor": "partly",
+    "why": "While Alkera AI focuses on AI agents for performing data engineering and science tasks, Atlan is primarily a data catalog and governance platform that helps users find, understand, and trust data, with some overlap in data lineage and knowledge management."
+  },
+  "ts": "2026-10-18T11:17:15.959862+00:00"
+}
