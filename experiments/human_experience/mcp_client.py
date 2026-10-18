@@ -41,7 +41,7 @@ def _brief(text: str) -> str:
         return text
     if not isinstance(d, dict) or "fields" not in d:
         return text
-    out = [f"step {d.get('step')} left {d.get('steps_left')} | {d.get('url')} | {d.get('title')}"]
+    out = [f"[{d.get('session_id')}] step {d.get('step')} left {d.get('steps_left')} | {d.get('url')} | {d.get('title')}"]
     for f in d.get("fields") or []:
         extra = " filled" if f.get("filled") else ""
         opts = f" options={f['options'][:6]}" if f.get("options") else ""
