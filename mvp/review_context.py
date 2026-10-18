@@ -81,6 +81,11 @@ def _apify_run(actor: str, payload: dict[str, Any], token: str, wait_s: float = 
     return items.json()
 
 
+# automation-lab/g2-scraper companySegment ids, decoded by joining review ids with zen-studio/g2-reviews-scraper
+# (16 of 16 reviews agreed, Oct 2026). Industry ids are G2's long list and stay undecoded.
+G2_SEGMENTS = {"179": "Small-Business (50 or fewer emp.)", "180": "Mid-Market (51-1000 emp.)", "181": "Enterprise (> 1000 emp.)"}
+
+
 def _text(v: Any) -> str | None:
     """The G2 scraper returns some fields (industry, companySegment) as numeric ids; keep only real text."""
     v = str(v or "").strip()
@@ -154,7 +159,7 @@ def live_reviews(product_name: str, *, per_site: int = PER_SITE) -> dict[str, An
             # hateTheme are one-word tags, not text; easeOfUse is 1-7; switchedFromOtherProduct is yes/no. The full
             # review lives in reviewText, so that is the evidence; there is no separate dislikes text to count.
             reviews.append({"source": "g2", "product": r.get("productName") or "", "role": None,
-                            "size": _text(r.get("companySegment")), "industry": _text(r.get("industry")),
+                            "size": G2_SEGMENTS.get(str(r.get("companySegment"))), "industry": _text(r.get("industry")),
                             "rating": r.get("starRating"), "ease_1_7": r.get("easeOfUse"), "nps": r.get("nps"),
                             "text": r.get("reviewText"), "pros": None, "cons": None,
                             "love_theme": r.get("loveTheme"), "hate_theme": r.get("hateTheme"),
