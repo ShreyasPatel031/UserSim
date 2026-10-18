@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "84c5d5600fc9914e4b245adc0ba7e4219ecc7b5dd34eac1f8eda58c25b0ceefb",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2624,
+  "output_tokens": 1019,
+  "cost_usd": 0.0033347,
+  "elapsed_s": 7.57,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Highly flexible for organizing documents and content\",\n    \"Excellent for structuring creative writing projects\",\n    \"Consolidates various tools into one workspace\"\n  ],\n  \"cons\": [\n    \"Can feel overwhelming initially due to its many features\",\n    \"Requires time to set up and customize workflows\",\n    \"Performance can sometimes be slow with larger pages or databases\"\n  ],\n  \"overall_experience\": \"This copywriter likely found Notion to be a powerful tool for managing their documents and creative projects, appreciating its extensive functionality and customization options. However, as a new user, they might have experienced a learning curve, needing time to adapt to its flexible but complex nature. Despite this, the product's utility for content organization generally outweighed initial setup challenges.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Highly flexible for organizing documents and content",
+      "Excellent for structuring creative writing projects",
+      "Consolidates various tools into one workspace"
+    ],
+    "cons": [
+      "Can feel overwhelming initially due to its many features",
+      "Requires time to set up and customize workflows",
+      "Performance can sometimes be slow with larger pages or databases"
+    ],
+    "overall_experience": "This copywriter likely found Notion to be a powerful tool for managing their documents and creative projects, appreciating its extensive functionality and customization options. However, as a new user, they might have experienced a learning curve, needing time to adapt to its flexible but complex nature. Despite this, the product's utility for content organization generally outweighed initial setup challenges."
+  },
+  "ts": "2026-10-18T05:00:30.657820+00:00"
+}

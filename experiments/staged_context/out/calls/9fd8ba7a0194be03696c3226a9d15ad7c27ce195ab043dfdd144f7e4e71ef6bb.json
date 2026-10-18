@@ -1,0 +1,31 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9fd8ba7a0194be03696c3226a9d15ad7c27ce195ab043dfdd144f7e4e71ef6bb",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 199,
+  "output_tokens": 451,
+  "cost_usd": 0.0011872,
+  "elapsed_s": 24.79,
+  "error": null,
+  "text": "{\n  \"task\": null,\n  \"benefits\": [\n    \"Platform is intuitive\",\n    \"Continuously updated with new features\",\n    \"Great support available\",\n    \"Clean user interface\"\n  ],\n  \"frictions\": [\n    \"Sales teams are unfamiliar with HubSpot compared to Salesforce\",\n    \"Learning curve for sales teams\",\n    \"Platform has fixed customization options\"\n  ]\n}",
+  "json": {
+    "task": null,
+    "benefits": [
+      "Platform is intuitive",
+      "Continuously updated with new features",
+      "Great support available",
+      "Clean user interface"
+    ],
+    "frictions": [
+      "Sales teams are unfamiliar with HubSpot compared to Salesforce",
+      "Learning curve for sales teams",
+      "Platform has fixed customization options"
+    ]
+  },
+  "ts": "2026-10-18T04:56:10.736948+00:00"
+}

@@ -1,0 +1,32 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e92c5d529f4e5311904a809c8406255a3b7d583306a5c372555dc370b6640f3b",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 308,
+  "output_tokens": 539,
+  "cost_usd": 0.0014399,
+  "elapsed_s": 23.99,
+  "error": null,
+  "text": "{\n  \"task\": \"Deploy a messenger and build bots for customer communication\",\n  \"benefits\": [\n    \"Software is very easy to deploy\",\n    \"Interface is very easy to maneuver for building bots\",\n    \"Reporting is acceptable\",\n    \"Works well for small scale needs\"\n  ],\n  \"frictions\": [\n    \"Reporting could be better and metrics are hard to translate to industry standards\",\n    \"Reporting becomes overwhelming with multiple teams\",\n    \"AI and Resolution Bot features are underdeveloped\",\n    \"Integrations with other systems are poor\"\n  ]\n}",
+  "json": {
+    "task": "Deploy a messenger and build bots for customer communication",
+    "benefits": [
+      "Software is very easy to deploy",
+      "Interface is very easy to maneuver for building bots",
+      "Reporting is acceptable",
+      "Works well for small scale needs"
+    ],
+    "frictions": [
+      "Reporting could be better and metrics are hard to translate to industry standards",
+      "Reporting becomes overwhelming with multiple teams",
+      "AI and Resolution Bot features are underdeveloped",
+      "Integrations with other systems are poor"
+    ]
+  },
+  "ts": "2026-10-18T04:56:10.991178+00:00"
+}

@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a93c7961e8352957b28727d43588a035d504861807600f76928496fecdc936b5",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 200,
+  "output_tokens": 467,
+  "cost_usd": 0.0012275,
+  "elapsed_s": 25.99,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage and delegate company tasks\",\n  \"benefits\": [\n    \"Organize company work\",\n    \"Assign tasks and responsibilities\",\n    \"Use with ease\",\n    \"Improve administrative efficiency\"\n  ],\n  \"frictions\": [\n    \"Difficulty finding deleted tasks\"\n  ]\n}",
+  "json": {
+    "task": "Manage and delegate company tasks",
+    "benefits": [
+      "Organize company work",
+      "Assign tasks and responsibilities",
+      "Use with ease",
+      "Improve administrative efficiency"
+    ],
+    "frictions": [
+      "Difficulty finding deleted tasks"
+    ]
+  },
+  "ts": "2026-10-18T04:56:10.967922+00:00"
+}

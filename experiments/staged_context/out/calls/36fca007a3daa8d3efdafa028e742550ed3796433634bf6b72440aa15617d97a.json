@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "36fca007a3daa8d3efdafa028e742550ed3796433634bf6b72440aa15617d97a",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1056,
+  "output_tokens": 1083,
+  "cost_usd": 0.0030242999999999997,
+  "elapsed_s": 7.31,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Provides clear project oversight and task delegation for team members.\",\n    \"Facilitates communication and collaboration across various initiatives.\",\n    \"Helps organize and track diverse projects within the institution effectively.\"\n  ],\n  \"cons\": [\n    \"Learning curve for some advanced features or less tech-savvy team members.\",\n    \"Can become costly as the team grows and requires premium features.\",\n    \"Initial setup and standardization of workflows required significant effort.\"\n  ],\n  \"overall_experience\": \"The Chief Servant likely experienced Asana as a highly effective tool for managing the diverse projects and tasks within their religious institution. Its robust functionality for task tracking and team collaboration was a significant benefit, providing clear visibility and accountability. While the initial setup and potential cost for advanced features were considerations, the long-term use indicates a positive impact on their operational efficiency.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Provides clear project oversight and task delegation for team members.",
+      "Facilitates communication and collaboration across various initiatives.",
+      "Helps organize and track diverse projects within the institution effectively."
+    ],
+    "cons": [
+      "Learning curve for some advanced features or less tech-savvy team members.",
+      "Can become costly as the team grows and requires premium features.",
+      "Initial setup and standardization of workflows required significant effort."
+    ],
+    "overall_experience": "The Chief Servant likely experienced Asana as a highly effective tool for managing the diverse projects and tasks within their religious institution. Its robust functionality for task tracking and team collaboration was a significant benefit, providing clear visibility and accountability. While the initial setup and potential cost for advanced features were considerations, the long-term use indicates a positive impact on their operational efficiency."
+  },
+  "ts": "2026-10-18T05:00:23.801253+00:00"
+}

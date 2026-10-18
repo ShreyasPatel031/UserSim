@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1b0f433a49724965d7b3f84c6619e7324d420f0e3bb2425243b07fdbd7ac86ea",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 222,
+  "output_tokens": 466,
+  "cost_usd": 0.0012316,
+  "elapsed_s": 4.48,
+  "error": null,
+  "text": "{\n  \"task\": \"Build a professional-looking website\",\n  \"benefits\": [\n    \"Use the platform to build a professional-looking website\",\n    \"Control site appearance without needing technical skills\",\n    \"Offers better value for money\",\n    \"Is flexible and easy to use\"\n  ],\n  \"frictions\": [\n    \"Experience a learning curve at the beginning\"\n  ]\n}",
+  "json": {
+    "task": "Build a professional-looking website",
+    "benefits": [
+      "Use the platform to build a professional-looking website",
+      "Control site appearance without needing technical skills",
+      "Offers better value for money",
+      "Is flexible and easy to use"
+    ],
+    "frictions": [
+      "Experience a learning curve at the beginning"
+    ]
+  },
+  "ts": "2026-10-18T04:56:16.285738+00:00"
+}

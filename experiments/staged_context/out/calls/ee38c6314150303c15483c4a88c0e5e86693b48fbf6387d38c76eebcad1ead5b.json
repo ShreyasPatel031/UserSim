@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ee38c6314150303c15483c4a88c0e5e86693b48fbf6387d38c76eebcad1ead5b",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 233,
+  "output_tokens": 482,
+  "cost_usd": 0.0012748999999999998,
+  "elapsed_s": 22.39,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage business necessities, data, reports, documents, and invoices.\",\n  \"benefits\": [\n    \"Easy to use\",\n    \"Provides multiple tools for various business necessities in one application\",\n    \"Easy to distribute information to staff and clients\",\n    \"Organizes and makes business data, reports, documents, and invoices accessible to staff and clients\"\n  ],\n  \"frictions\": [\n    \"Expensive\"\n  ]\n}",
+  "json": {
+    "task": "Manage business necessities, data, reports, documents, and invoices.",
+    "benefits": [
+      "Easy to use",
+      "Provides multiple tools for various business necessities in one application",
+      "Easy to distribute information to staff and clients",
+      "Organizes and makes business data, reports, documents, and invoices accessible to staff and clients"
+    ],
+    "frictions": [
+      "Expensive"
+    ]
+  },
+  "ts": "2026-10-18T04:56:10.654487+00:00"
+}

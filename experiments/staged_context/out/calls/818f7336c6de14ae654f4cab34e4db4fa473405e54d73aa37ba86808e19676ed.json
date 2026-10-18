@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "818f7336c6de14ae654f4cab34e4db4fa473405e54d73aa37ba86808e19676ed",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1072,
+  "output_tokens": 1098,
+  "cost_usd": 0.0030666,
+  "elapsed_s": 6.91,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 2,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Centralized password storage for team use\",\n    \"Secure sharing of credentials\",\n    \"Browser extension for autofill\"\n  ],\n  \"cons\": [\n    \"Concerns regarding past security incidents\",\n    \"Autofill functionality can be inconsistent\",\n    \"Customer support was not very responsive or helpful\"\n  ],\n  \"overall_experience\": \"This operations manager likely found LastPass useful for centralizing password management and sharing within their team, appreciating its core functionality. However, they probably experienced frustration with inconsistent autofill, encountered concerns regarding the product's security history, and found customer support to be a significant weakness, leading to a somewhat mixed overall impression.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 2,
+    "recommendation_score": 6,
+    "pros": [
+      "Centralized password storage for team use",
+      "Secure sharing of credentials",
+      "Browser extension for autofill"
+    ],
+    "cons": [
+      "Concerns regarding past security incidents",
+      "Autofill functionality can be inconsistent",
+      "Customer support was not very responsive or helpful"
+    ],
+    "overall_experience": "This operations manager likely found LastPass useful for centralizing password management and sharing within their team, appreciating its core functionality. However, they probably experienced frustration with inconsistent autofill, encountered concerns regarding the product's security history, and found customer support to be a significant weakness, leading to a somewhat mixed overall impression."
+  },
+  "ts": "2026-10-18T05:01:23.856107+00:00"
+}

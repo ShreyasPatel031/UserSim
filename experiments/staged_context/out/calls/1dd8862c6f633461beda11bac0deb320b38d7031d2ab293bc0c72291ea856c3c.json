@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1dd8862c6f633461beda11bac0deb320b38d7031d2ab293bc0c72291ea856c3c",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2446,
+  "output_tokens": 1051,
+  "cost_usd": 0.0033613000000000002,
+  "elapsed_s": 7.82,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Improved visibility and tracking of HR tasks across the plant\",\n    \"Streamlined organization of various HR functions and projects\",\n    \"Effective for collaboration and communication within the HR team\"\n  ],\n  \"cons\": [\n    \"Initial learning curve for the team to adopt fully\",\n    \"Reporting features could be more robust for HR-specific analytics\",\n    \"Pricing might feel high for some advanced features or larger teams\"\n  ],\n  \"overall_experience\": \"This HR Director found Asana to be a valuable tool for managing and gaining visibility into the diverse needs and functions of HR within their manufacturing plant. While the platform offered strong organizational capabilities and improved collaboration, they likely felt that some advanced reporting or customization for HR-specific workflows could be enhanced. The value for money was generally good, though some specific features might have felt a bit expensive.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Improved visibility and tracking of HR tasks across the plant",
+      "Streamlined organization of various HR functions and projects",
+      "Effective for collaboration and communication within the HR team"
+    ],
+    "cons": [
+      "Initial learning curve for the team to adopt fully",
+      "Reporting features could be more robust for HR-specific analytics",
+      "Pricing might feel high for some advanced features or larger teams"
+    ],
+    "overall_experience": "This HR Director found Asana to be a valuable tool for managing and gaining visibility into the diverse needs and functions of HR within their manufacturing plant. While the platform offered strong organizational capabilities and improved collaboration, they likely felt that some advanced reporting or customization for HR-specific workflows could be enhanced. The value for money was generally good, though some specific features might have felt a bit expensive."
+  },
+  "ts": "2026-10-18T05:00:26.536347+00:00"
+}

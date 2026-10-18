@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8537c41381d0de6ad34fff5826e215ba3b52f843f1435d43e2bd649095300272",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2462,
+  "output_tokens": 1138,
+  "cost_usd": 0.0035836,
+  "elapsed_s": 7.02,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Reliable single sign-on streamlines access for a large team.\",\n    \"Robust multi-factor authentication enhances organizational security.\",\n    \"Centralized identity management simplifies user provisioning and de-provisioning.\"\n  ],\n  \"cons\": [\n    \"Potential for higher pricing compared to some alternatives, impacting non-profit budgets.\",\n    \"Some administrative configurations might have a slight learning curve.\",\n    \"Integration with niche or legacy non-profit specific applications could sometimes be challenging.\"\n  ],\n  \"overall_experience\": \"The Vice President Operations likely found Okta to be a highly effective and reliable solution for managing identity and access in their mid-sized non-profit. The robust security features and streamlined access for employees were significant benefits, contributing to operational efficiency. While generally satisfied, they may have noted the cost as a consideration for a non-profit budget, and some administrative aspects might have required initial effort.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Reliable single sign-on streamlines access for a large team.",
+      "Robust multi-factor authentication enhances organizational security.",
+      "Centralized identity management simplifies user provisioning and de-provisioning."
+    ],
+    "cons": [
+      "Potential for higher pricing compared to some alternatives, impacting non-profit budgets.",
+      "Some administrative configurations might have a slight learning curve.",
+      "Integration with niche or legacy non-profit specific applications could sometimes be challenging."
+    ],
+    "overall_experience": "The Vice President Operations likely found Okta to be a highly effective and reliable solution for managing identity and access in their mid-sized non-profit. The robust security features and streamlined access for employees were significant benefits, contributing to operational efficiency. While generally satisfied, they may have noted the cost as a consideration for a non-profit budget, and some administrative aspects might have required initial effort."
+  },
+  "ts": "2026-10-18T05:01:17.764029+00:00"
+}

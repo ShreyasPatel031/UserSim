@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "beb413f963a0a392c223fc8bb5a9a02fb1ac3ba7a58c6e44feaeb53082af477e",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 160,
+  "output_tokens": 484,
+  "cost_usd": 0.001258,
+  "elapsed_s": 22.07,
+  "error": null,
+  "text": "{\n  \"task\": null,\n  \"benefits\": [\n    \"Fast response\",\n    \"Speedy access to almost every page\",\n    \"Interface comfortable to use\"\n  ],\n  \"frictions\": [\n    \"Complicated to use at first\",\n    \"Platform has many features\",\n    \"Can store a lot of information and functions\"\n  ]\n}",
+  "json": {
+    "task": null,
+    "benefits": [
+      "Fast response",
+      "Speedy access to almost every page",
+      "Interface comfortable to use"
+    ],
+    "frictions": [
+      "Complicated to use at first",
+      "Platform has many features",
+      "Can store a lot of information and functions"
+    ]
+  },
+  "ts": "2026-10-18T04:56:08.234296+00:00"
+}

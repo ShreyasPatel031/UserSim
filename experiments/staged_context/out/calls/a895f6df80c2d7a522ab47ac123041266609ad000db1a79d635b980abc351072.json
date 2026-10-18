@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a895f6df80c2d7a522ab47ac123041266609ad000db1a79d635b980abc351072",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 195,
+  "output_tokens": 454,
+  "cost_usd": 0.0011935,
+  "elapsed_s": 23.25,
+  "error": null,
+  "text": "{\n  \"task\": \"Run email campaigns and build newsletters\",\n  \"benefits\": [\n    \"Easy to run email campaigns and newsletters\",\n    \"Fast learning curve\",\n    \"Many tools to make a professional newsletter\",\n    \"Good functionalities and builder\"\n  ],\n  \"frictions\": [\n    \"Possibly more expensive than the competition\"\n  ]\n}",
+  "json": {
+    "task": "Run email campaigns and build newsletters",
+    "benefits": [
+      "Easy to run email campaigns and newsletters",
+      "Fast learning curve",
+      "Many tools to make a professional newsletter",
+      "Good functionalities and builder"
+    ],
+    "frictions": [
+      "Possibly more expensive than the competition"
+    ]
+  },
+  "ts": "2026-10-18T04:56:10.395156+00:00"
+}

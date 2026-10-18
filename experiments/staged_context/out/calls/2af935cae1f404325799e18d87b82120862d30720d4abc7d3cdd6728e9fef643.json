@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2af935cae1f404325799e18d87b82120862d30720d4abc7d3cdd6728e9fef643",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1080,
+  "output_tokens": 1021,
+  "cost_usd": 0.0028765,
+  "elapsed_s": 7.56,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Intuitive interface for managing sales pipeline.\",\n    \"Integrated tools beyond just CRM, offering a comprehensive view.\",\n    \"Good reporting and analytics for opportunity tracking.\"\n  ],\n  \"cons\": [\n    \"Can become expensive when scaling up or requiring advanced features.\",\n    \"Initial learning curve for maximizing all available features.\",\n    \"Some features might feel redundant if primarily focused on sales-only tasks.\"\n  ],\n  \"overall_experience\": \"This Account Executive likely found HubSpot CRM to be a robust and user-friendly platform for managing their sales opportunities and processes, a noticeable upgrade in breadth from their previous Pipedrive experience. They appreciated its integrated nature and ease of tracking customer interactions. While generally positive, the cost of advanced features or the breadth of the platform beyond core sales might have been a minor point of consideration for their small company.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Intuitive interface for managing sales pipeline.",
+      "Integrated tools beyond just CRM, offering a comprehensive view.",
+      "Good reporting and analytics for opportunity tracking."
+    ],
+    "cons": [
+      "Can become expensive when scaling up or requiring advanced features.",
+      "Initial learning curve for maximizing all available features.",
+      "Some features might feel redundant if primarily focused on sales-only tasks."
+    ],
+    "overall_experience": "This Account Executive likely found HubSpot CRM to be a robust and user-friendly platform for managing their sales opportunities and processes, a noticeable upgrade in breadth from their previous Pipedrive experience. They appreciated its integrated nature and ease of tracking customer interactions. While generally positive, the cost of advanced features or the breadth of the platform beyond core sales might have been a minor point of consideration for their small company."
+  },
+  "ts": "2026-10-18T05:00:35.697582+00:00"
+}

@@ -1,0 +1,31 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "03e1ceaaad8f7a647ee2f6691b80c511b9ee05a6b79aa0d2955eba06a6e2a372",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 176,
+  "output_tokens": 505,
+  "cost_usd": 0.0013153000000000001,
+  "elapsed_s": 25.17,
+  "error": null,
+  "text": "{\n  \"task\": \"Consolidate platforms and track team progress\",\n  \"benefits\": [\n    \"Visibility of our business\",\n    \"Consolidate other platforms into one\",\n    \"Saving money\",\n    \"Saving time\"\n  ],\n  \"frictions\": [\n    \"Can feel overwhelming sometimes\",\n    \"AI features and setting up automations is tedious\",\n    \"AI features and setting up automations takes time\"\n  ]\n}",
+  "json": {
+    "task": "Consolidate platforms and track team progress",
+    "benefits": [
+      "Visibility of our business",
+      "Consolidate other platforms into one",
+      "Saving money",
+      "Saving time"
+    ],
+    "frictions": [
+      "Can feel overwhelming sometimes",
+      "AI features and setting up automations is tedious",
+      "AI features and setting up automations takes time"
+    ]
+  },
+  "ts": "2026-10-18T04:56:10.453048+00:00"
+}

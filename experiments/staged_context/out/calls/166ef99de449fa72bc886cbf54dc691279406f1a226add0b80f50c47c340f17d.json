@@ -1,0 +1,28 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "166ef99de449fa72bc886cbf54dc691279406f1a226add0b80f50c47c340f17d",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 156,
+  "output_tokens": 466,
+  "cost_usd": 0.0012118,
+  "elapsed_s": 4.73,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage human resources information and tools for the company.\",\n  \"benefits\": [\n    \"Provides many HR tools readily available\",\n    \"Company team has access to HR tools\",\n    \"All information needed to run the company is readily available\"\n  ],\n  \"frictions\": [\n    \"Lacks an appointment calendar for interviewing candidates\"\n  ]\n}",
+  "json": {
+    "task": "Manage human resources information and tools for the company.",
+    "benefits": [
+      "Provides many HR tools readily available",
+      "Company team has access to HR tools",
+      "All information needed to run the company is readily available"
+    ],
+    "frictions": [
+      "Lacks an appointment calendar for interviewing candidates"
+    ]
+  },
+  "ts": "2026-10-18T04:56:13.644775+00:00"
+}

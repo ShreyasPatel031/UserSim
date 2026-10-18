@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f37dde5b914aa66d01e1859148df7c106eb33e57d3cd3c5d2ddf7311ad5eb4bd",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2686,
+  "output_tokens": 1107,
+  "cost_usd": 0.0035732999999999997,
+  "elapsed_s": 6.96,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Comprehensive features for lead and client management\",\n    \"Robust sales forecasting capabilities\",\n    \"Scalability for future business growth\"\n  ],\n  \"cons\": [\n    \"Steep learning curve for a small team\",\n    \"High cost for advanced features\",\n    \"Complexity in customization without expert help\"\n  ],\n  \"overall_experience\": \"The founder found Salesforce Sales Cloud to be a powerful and comprehensive tool for managing sales leads, client interactions, and forecasting. While its extensive functionality was highly valued for strategic planning and growth, the complexity and cost presented challenges for a small team. The platform's robust features were beneficial despite a significant learning curve and perceived high investment.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 7,
+    "pros": [
+      "Comprehensive features for lead and client management",
+      "Robust sales forecasting capabilities",
+      "Scalability for future business growth"
+    ],
+    "cons": [
+      "Steep learning curve for a small team",
+      "High cost for advanced features",
+      "Complexity in customization without expert help"
+    ],
+    "overall_experience": "The founder found Salesforce Sales Cloud to be a powerful and comprehensive tool for managing sales leads, client interactions, and forecasting. While its extensive functionality was highly valued for strategic planning and growth, the complexity and cost presented challenges for a small team. The platform's robust features were beneficial despite a significant learning curve and perceived high investment."
+  },
+  "ts": "2026-10-18T05:00:37.957097+00:00"
+}

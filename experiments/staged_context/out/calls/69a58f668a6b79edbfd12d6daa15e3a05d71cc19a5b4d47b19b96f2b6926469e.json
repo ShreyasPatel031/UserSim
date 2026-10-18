@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "69a58f668a6b79edbfd12d6daa15e3a05d71cc19a5b4d47b19b96f2b6926469e",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 270,
+  "output_tokens": 1035,
+  "cost_usd": 0.0026684999999999994,
+  "elapsed_s": 7.51,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Intuitive interface for managing employee data\",\n    \"Centralized system for personal information and documents\",\n    \"Streamlined company directory\"\n  ],\n  \"cons\": [\n    \"Steep learning curve for some features initially\",\n    \"Reporting capabilities could be more robust for specific needs\",\n    \"Integration with existing payroll systems might require effort\"\n  ],\n  \"overall_experience\": \"The Operations Admin likely found BambooHR to be a significant improvement for centralizing employee information and managing payroll documents. Its ease of use for core HR tasks was appreciated during the initial adoption phase. While generally positive, some advanced reporting or specific payroll integration needs may have presented minor challenges.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Intuitive interface for managing employee data",
+      "Centralized system for personal information and documents",
+      "Streamlined company directory"
+    ],
+    "cons": [
+      "Steep learning curve for some features initially",
+      "Reporting capabilities could be more robust for specific needs",
+      "Integration with existing payroll systems might require effort"
+    ],
+    "overall_experience": "The Operations Admin likely found BambooHR to be a significant improvement for centralizing employee information and managing payroll documents. Its ease of use for core HR tasks was appreciated during the initial adoption phase. While generally positive, some advanced reporting or specific payroll integration needs may have presented minor challenges."
+  },
+  "ts": "2026-10-18T05:00:59.825687+00:00"
+}

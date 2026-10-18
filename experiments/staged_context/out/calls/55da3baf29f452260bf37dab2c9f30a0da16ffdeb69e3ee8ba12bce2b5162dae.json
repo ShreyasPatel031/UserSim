@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "55da3baf29f452260bf37dab2c9f30a0da16ffdeb69e3ee8ba12bce2b5162dae",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 257,
+  "output_tokens": 1034,
+  "cost_usd": 0.0026621,
+  "elapsed_s": 7.53,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 2,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 2,\n  \"recommendation_score\": 3,\n  \"pros\": [\n    \"Convenient cross-device password synchronization\",\n    \"Efficient form filling for various websites\",\n    \"Ability to securely store various sensitive notes\"\n  ],\n  \"cons\": [\n    \"Significant concerns regarding multiple security breaches\",\n    \"Reliability issues with customer support during critical times\",\n    \"Occasional browser extension glitches\"\n  ],\n  \"overall_experience\": \"This self-employed real estate owner likely appreciated LastPass initially for its convenience in managing numerous passwords and profiles across devices, especially compared to basic browser-based options. However, the recurring security incidents would have severely eroded trust in the product's core promise of data protection. This erosion of confidence would overshadow its practical benefits, leading to a generally negative long-term experience.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 3,
+    "overall_rating": 2,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 2,
+    "recommendation_score": 3,
+    "pros": [
+      "Convenient cross-device password synchronization",
+      "Efficient form filling for various websites",
+      "Ability to securely store various sensitive notes"
+    ],
+    "cons": [
+      "Significant concerns regarding multiple security breaches",
+      "Reliability issues with customer support during critical times",
+      "Occasional browser extension glitches"
+    ],
+    "overall_experience": "This self-employed real estate owner likely appreciated LastPass initially for its convenience in managing numerous passwords and profiles across devices, especially compared to basic browser-based options. However, the recurring security incidents would have severely eroded trust in the product's core promise of data protection. This erosion of confidence would overshadow its practical benefits, leading to a generally negative long-term experience."
+  },
+  "ts": "2026-10-18T05:01:22.326751+00:00"
+}

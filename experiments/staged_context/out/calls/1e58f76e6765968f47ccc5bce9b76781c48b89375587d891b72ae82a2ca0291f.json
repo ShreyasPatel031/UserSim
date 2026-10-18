@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1e58f76e6765968f47ccc5bce9b76781c48b89375587d891b72ae82a2ca0291f",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2196,
+  "output_tokens": 1092,
+  "cost_usd": 0.0033888,
+  "elapsed_s": 7.37,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Robust CRM capabilities for managing contacts\",\n    \"Scalable platform with extensive customization options\",\n    \"Good for tracking interactions and communication history\"\n  ],\n  \"cons\": [\n    \"Steep learning curve and complex setup for small teams\",\n    \"Pricing can be high for a small business not fully utilizing sales features\",\n    \"Core functionality is sales-focused, not ideal for dedicated marketing activities\"\n  ],\n  \"overall_experience\": \"This recruitment director likely found Salesforce Sales Cloud to be a powerful tool for contact management and tracking, appreciating its robust capabilities. However, they probably faced challenges with its complexity and learning curve, especially given their small team size and their primary task of managing marketing activities, which Salesforce Sales Cloud isn't explicitly designed for. The value for money might have been a concern due to the cost and potential underutilization of its core sales features for their specific needs.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 7,
+    "pros": [
+      "Robust CRM capabilities for managing contacts",
+      "Scalable platform with extensive customization options",
+      "Good for tracking interactions and communication history"
+    ],
+    "cons": [
+      "Steep learning curve and complex setup for small teams",
+      "Pricing can be high for a small business not fully utilizing sales features",
+      "Core functionality is sales-focused, not ideal for dedicated marketing activities"
+    ],
+    "overall_experience": "This recruitment director likely found Salesforce Sales Cloud to be a powerful tool for contact management and tracking, appreciating its robust capabilities. However, they probably faced challenges with its complexity and learning curve, especially given their small team size and their primary task of managing marketing activities, which Salesforce Sales Cloud isn't explicitly designed for. The value for money might have been a concern due to the cost and potential underutilization of its core sales features for their specific needs."
+  },
+  "ts": "2026-10-18T05:00:37.956486+00:00"
+}

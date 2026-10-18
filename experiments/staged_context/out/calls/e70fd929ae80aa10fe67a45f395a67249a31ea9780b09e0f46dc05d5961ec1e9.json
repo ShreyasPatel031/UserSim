@@ -1,0 +1,21 @@
+{
+  "stage": "mcp_classify",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e70fd929ae80aa10fe67a45f395a67249a31ea9780b09e0f46dc05d5961ec1e9",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 256,
+  "input_tokens": 1237,
+  "output_tokens": 251,
+  "cost_usd": 0.0009985999999999999,
+  "elapsed_s": 1.93,
+  "error": null,
+  "text": "{\n  \"category\": \"Analytics & BI\",\n  \"product_name\": \"Power BI\"\n}",
+  "json": {
+    "category": "Analytics & BI",
+    "product_name": "Power BI"
+  },
+  "ts": "2026-10-18T04:56:28.176584+00:00"
+}

@@ -1,0 +1,27 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9885771f312169e694241b806024589c85b059f870c10122f32dfe400366eb58",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 222,
+  "output_tokens": 552,
+  "cost_usd": 0.0014466,
+  "elapsed_s": 3.66,
+  "error": null,
+  "text": "{\n  \"task\": \"Log in, log hours, manage timesheets, and check payroll.\",\n  \"benefits\": [\n    \"simple login and hour logging\",\n    \"easy timesheet management\",\n    \"secure application\",\n    \"easy customer support and communication\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Log in, log hours, manage timesheets, and check payroll.",
+    "benefits": [
+      "simple login and hour logging",
+      "easy timesheet management",
+      "secure application",
+      "easy customer support and communication"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T04:56:12.548051+00:00"
+}

@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "39b719d2826d4a2522cde008c54657b0ff4a4f4d055327364b131b0561b5d79a",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 255,
+  "output_tokens": 465,
+  "cost_usd": 0.001239,
+  "elapsed_s": 3.44,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage accounting tasks\",\n  \"benefits\": [\n    \"Simplicity\",\n    \"Ease of use for non-accountants\"\n  ],\n  \"frictions\": [\n    \"Everyday tasks require awkward workarounds\",\n    \"Support provides workarounds instead of fixes\",\n    \"Difficulty allocating large payments across multiple invoices\"\n  ]\n}",
+  "json": {
+    "task": "Manage accounting tasks",
+    "benefits": [
+      "Simplicity",
+      "Ease of use for non-accountants"
+    ],
+    "frictions": [
+      "Everyday tasks require awkward workarounds",
+      "Support provides workarounds instead of fixes",
+      "Difficulty allocating large payments across multiple invoices"
+    ]
+  },
+  "ts": "2026-10-18T04:56:10.962786+00:00"
+}

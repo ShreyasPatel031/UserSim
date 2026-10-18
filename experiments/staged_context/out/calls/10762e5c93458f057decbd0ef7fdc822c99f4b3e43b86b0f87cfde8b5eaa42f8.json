@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "10762e5c93458f057decbd0ef7fdc822c99f4b3e43b86b0f87cfde8b5eaa42f8",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1062,
+  "output_tokens": 973,
+  "cost_usd": 0.0027511000000000002,
+  "elapsed_s": 9.36,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Simplified invoicing and expense tracking\",\n    \"Improved accessibility with cloud-based system\",\n    \"Intuitive interface compared to previous software\"\n  ],\n  \"cons\": [\n    \"Lacked some advanced job costing features for construction\",\n    \"Reporting might not be as detailed as QuickBooks Desktop\",\n    \"Initial adjustment to new workflows after switching\"\n  ],\n  \"overall_experience\": \"The owner-operator found FreshBooks to be a significant improvement in terms of ease of use and accessibility for managing their home construction business, especially after moving from QuickBooks Desktop. While appreciating its streamlined approach to invoicing and expense management, they likely noted some limitations in advanced, construction-specific accounting functionalities. Overall, it served their core needs well for a small operation, making daily financial tasks less cumbersome.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Simplified invoicing and expense tracking",
+      "Improved accessibility with cloud-based system",
+      "Intuitive interface compared to previous software"
+    ],
+    "cons": [
+      "Lacked some advanced job costing features for construction",
+      "Reporting might not be as detailed as QuickBooks Desktop",
+      "Initial adjustment to new workflows after switching"
+    ],
+    "overall_experience": "The owner-operator found FreshBooks to be a significant improvement in terms of ease of use and accessibility for managing their home construction business, especially after moving from QuickBooks Desktop. While appreciating its streamlined approach to invoicing and expense management, they likely noted some limitations in advanced, construction-specific accounting functionalities. Overall, it served their core needs well for a small operation, making daily financial tasks less cumbersome."
+  },
+  "ts": "2026-10-18T05:01:00.088084+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "bd7943f7d9ce86c53f35079104f049bfbb87e757e0c52580eb428f155b6d2d9b",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2403,
+  "output_tokens": 1016,
+  "cost_usd": 0.0032608999999999997,
+  "elapsed_s": 7.01,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Facilitated quick and direct communication with website visitors and leads.\",\n    \"Provided an intuitive interface for managing sales inquiries and customer service handoffs.\",\n    \"Helped in capturing lead information efficiently through the chat widget.\"\n  ],\n  \"cons\": [\n    \"Initial setup and customization might have a slight learning curve for optimal use.\",\n    \"Could find the pricing structure to be a bit high for a company of their size.\",\n    \"Potential for occasional performance issues or minor glitches with the chat interface.\"\n  ],\n  \"overall_experience\": \"The Sales Manager likely found Intercom to be a valuable tool for their primary task of enabling quick contact with sales or customer service. Its user-friendly interface and robust messaging capabilities streamlined lead engagement and support processes. While generally positive, the cost for a smaller company and the initial learning curve for full optimization might have been minor drawbacks during their first six months of use.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Facilitated quick and direct communication with website visitors and leads.",
+      "Provided an intuitive interface for managing sales inquiries and customer service handoffs.",
+      "Helped in capturing lead information efficiently through the chat widget."
+    ],
+    "cons": [
+      "Initial setup and customization might have a slight learning curve for optimal use.",
+      "Could find the pricing structure to be a bit high for a company of their size.",
+      "Potential for occasional performance issues or minor glitches with the chat interface."
+    ],
+    "overall_experience": "The Sales Manager likely found Intercom to be a valuable tool for their primary task of enabling quick contact with sales or customer service. Its user-friendly interface and robust messaging capabilities streamlined lead engagement and support processes. While generally positive, the cost for a smaller company and the initial learning curve for full optimization might have been minor drawbacks during their first six months of use."
+  },
+  "ts": "2026-10-18T05:00:45.219892+00:00"
+}

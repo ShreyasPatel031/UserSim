@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "5db3604145a29c79a3002a55dc731f97df964877bfbbc93ce58b357a2db56aad",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 263,
+  "output_tokens": 1121,
+  "cost_usd": 0.0028814,
+  "elapsed_s": 9.02,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Highly flexible and customizable for various research workflows.\",\n    \"Effective for consolidating notes, plans, and project management.\",\n    \"Strong collaborative features for team projects and documentation.\"\n  ],\n  \"cons\": [\n    \"Can become overwhelming to manage and standardize across a large team.\",\n    \"Search functionality sometimes struggles with large, complex workspaces.\",\n    \"Performance can occasionally be slow with very large pages or databases.\"\n  ],\n  \"overall_experience\": \"The Research Team Lead found Notion to be an incredibly powerful and adaptable tool for managing their team's diverse needs, from detailed notes to complex project plans. Its flexibility allowed them to tailor workspaces effectively, fostering better collaboration and organization within the telecommunications research environment. While generally positive, the reviewer noted challenges in maintaining consistency and performance at scale within a large enterprise setting.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Highly flexible and customizable for various research workflows.",
+      "Effective for consolidating notes, plans, and project management.",
+      "Strong collaborative features for team projects and documentation."
+    ],
+    "cons": [
+      "Can become overwhelming to manage and standardize across a large team.",
+      "Search functionality sometimes struggles with large, complex workspaces.",
+      "Performance can occasionally be slow with very large pages or databases."
+    ],
+    "overall_experience": "The Research Team Lead found Notion to be an incredibly powerful and adaptable tool for managing their team's diverse needs, from detailed notes to complex project plans. Its flexibility allowed them to tailor workspaces effectively, fostering better collaboration and organization within the telecommunications research environment. While generally positive, the reviewer noted challenges in maintaining consistency and performance at scale within a large enterprise setting."
+  },
+  "ts": "2026-10-18T05:00:33.172310+00:00"
+}

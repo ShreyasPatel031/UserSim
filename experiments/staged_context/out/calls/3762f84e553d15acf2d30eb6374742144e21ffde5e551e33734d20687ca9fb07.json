@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3762f84e553d15acf2d30eb6374742144e21ffde5e551e33734d20687ca9fb07",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2557,
+  "output_tokens": 1053,
+  "cost_usd": 0.0033996,
+  "elapsed_s": 9.82,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Highly customizable to fit specific project workflows\",\n    \"Visual dashboards and reporting provide good project oversight\",\n    \"Streamlined communication and task management within the platform\"\n  ],\n  \"cons\": [\n    \"Initial setup and learning curve can be steep for advanced features\",\n    \"Pricing structure can become costly for growing teams\",\n    \"Some advanced integrations require workarounds or are less robust\"\n  ],\n  \"overall_experience\": \"As a Lead Developer, this user found monday.com to be a powerful and flexible tool for project management, appreciating its customizability and visual reporting capabilities. While the platform offered significant functionality for managing development tasks and team collaboration, the initial learning curve and potential cost for advanced features were notable considerations. Overall, it provided a robust solution, though perhaps not as intuitive or seamless in every aspect compared to simpler tools.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Highly customizable to fit specific project workflows",
+      "Visual dashboards and reporting provide good project oversight",
+      "Streamlined communication and task management within the platform"
+    ],
+    "cons": [
+      "Initial setup and learning curve can be steep for advanced features",
+      "Pricing structure can become costly for growing teams",
+      "Some advanced integrations require workarounds or are less robust"
+    ],
+    "overall_experience": "As a Lead Developer, this user found monday.com to be a powerful and flexible tool for project management, appreciating its customizability and visual reporting capabilities. While the platform offered significant functionality for managing development tasks and team collaboration, the initial learning curve and potential cost for advanced features were notable considerations. Overall, it provided a robust solution, though perhaps not as intuitive or seamless in every aspect compared to simpler tools."
+  },
+  "ts": "2026-10-18T05:00:31.673080+00:00"
+}

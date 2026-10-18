@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a884ef88dd12dafee55be79a863a3b7495bd2952d788e74b9fb2f6559036cf06",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1080,
+  "output_tokens": 971,
+  "cost_usd": 0.0027515,
+  "elapsed_s": 9.04,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Intuitive interface for campaign creation and management\",\n    \"Robust audience segmentation and tracking features\",\n    \"Effective automation tools for email sequences\"\n  ],\n  \"cons\": [\n    \"Pricing tiers can become expensive as subscriber lists grow\",\n    \"Advanced reporting data can sometimes be overwhelming to interpret\",\n    \"Limited customization options for certain email templates\"\n  ],\n  \"overall_experience\": \"This Secretary General likely found Mailchimp to be an excellent tool for managing email marketing campaigns within their IT services company. The platform's ease of use and comprehensive functionality for audience management and automation were significant benefits. While generally satisfied, they may have noted that the cost could increase with scale and some advanced reporting features required extra effort to leverage fully.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Intuitive interface for campaign creation and management",
+      "Robust audience segmentation and tracking features",
+      "Effective automation tools for email sequences"
+    ],
+    "cons": [
+      "Pricing tiers can become expensive as subscriber lists grow",
+      "Advanced reporting data can sometimes be overwhelming to interpret",
+      "Limited customization options for certain email templates"
+    ],
+    "overall_experience": "This Secretary General likely found Mailchimp to be an excellent tool for managing email marketing campaigns within their IT services company. The platform's ease of use and comprehensive functionality for audience management and automation were significant benefits. While generally satisfied, they may have noted that the cost could increase with scale and some advanced reporting features required extra effort to leverage fully."
+  },
+  "ts": "2026-10-18T05:00:48.149238+00:00"
+}

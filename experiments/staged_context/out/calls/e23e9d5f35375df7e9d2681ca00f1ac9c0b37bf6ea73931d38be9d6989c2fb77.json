@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e23e9d5f35375df7e9d2681ca00f1ac9c0b37bf6ea73931d38be9d6989c2fb77",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1093,
+  "output_tokens": 986,
+  "cost_usd": 0.0027928999999999996,
+  "elapsed_s": 7.68,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Efficient client and deal management for a small business.\",\n    \"User-friendly interface simplifying daily tasks.\",\n    \"Scalable features that adapt as business needs evolve.\"\n  ],\n  \"cons\": [\n    \"Advanced features can become costly for a small consultancy.\",\n    \"Initial learning curve for maximizing all available tools.\",\n    \"Some integrations might require higher-tier plans.\"\n  ],\n  \"overall_experience\": \"The retirement plan consultant likely found HubSpot CRM to be a highly effective tool for managing their client relationships and sales pipeline. Its ease of use and comprehensive core functionalities were particularly beneficial for a small financial services firm. While the platform offered significant value, potential frustrations may have arisen from the cost of scaling to more advanced features or the initial time investment required to fully leverage its capabilities.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Efficient client and deal management for a small business.",
+      "User-friendly interface simplifying daily tasks.",
+      "Scalable features that adapt as business needs evolve."
+    ],
+    "cons": [
+      "Advanced features can become costly for a small consultancy.",
+      "Initial learning curve for maximizing all available tools.",
+      "Some integrations might require higher-tier plans."
+    ],
+    "overall_experience": "The retirement plan consultant likely found HubSpot CRM to be a highly effective tool for managing their client relationships and sales pipeline. Its ease of use and comprehensive core functionalities were particularly beneficial for a small financial services firm. While the platform offered significant value, potential frustrations may have arisen from the cost of scaling to more advanced features or the initial time investment required to fully leverage its capabilities."
+  },
+  "ts": "2026-10-18T05:00:33.994675+00:00"
+}

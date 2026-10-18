@@ -1,0 +1,27 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "954766ea0ec617cadecb54f8848aef2cc50dfc728ef0ddaf458bf77d81ee2c46",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 169,
+  "output_tokens": 442,
+  "cost_usd": 0.0011557000000000002,
+  "elapsed_s": 3.3,
+  "error": null,
+  "text": "{\n  \"task\": \"Configure the HR solution for business needs\",\n  \"benefits\": [\n    \"Flexibility in configuring the solution for your business\",\n    \"Ability to integrate into Azure\",\n    \"Ability to integrate into Setyl\",\n    \"Performs well\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Configure the HR solution for business needs",
+    "benefits": [
+      "Flexibility in configuring the solution for your business",
+      "Ability to integrate into Azure",
+      "Ability to integrate into Setyl",
+      "Performs well"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T04:56:12.102651+00:00"
+}

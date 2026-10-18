@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "da2078b33d537749c423815fa339b4c6e8308e5d00c7b49f1f64685ed476ec70",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1090,
+  "output_tokens": 1050,
+  "cost_usd": 0.0029519999999999998,
+  "elapsed_s": 6.48,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Streamlined employee data management and onboarding\",\n    \"Intuitive interface for daily HR tasks\",\n    \"Efficient tracking of time off and benefits\"\n  ],\n  \"cons\": [\n    \"Some features may not fully cater to specific construction industry requirements\",\n    \"Cost could be a factor for a smaller company budget\",\n    \"Initial setup or integration with other systems presented minor challenges\"\n  ],\n  \"overall_experience\": \"This HR professional in a small construction company likely found BambooHR to be a generally useful tool for managing core human resources information. While the platform offered good ease of use and functionality for standard HR tasks, there may have been minor frustrations related to industry-specific needs or value for money. Despite some limitations, the product was seen as a solid solution for their company's HR management.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Streamlined employee data management and onboarding",
+      "Intuitive interface for daily HR tasks",
+      "Efficient tracking of time off and benefits"
+    ],
+    "cons": [
+      "Some features may not fully cater to specific construction industry requirements",
+      "Cost could be a factor for a smaller company budget",
+      "Initial setup or integration with other systems presented minor challenges"
+    ],
+    "overall_experience": "This HR professional in a small construction company likely found BambooHR to be a generally useful tool for managing core human resources information. While the platform offered good ease of use and functionality for standard HR tasks, there may have been minor frustrations related to industry-specific needs or value for money. Despite some limitations, the product was seen as a solid solution for their company's HR management."
+  },
+  "ts": "2026-10-18T05:00:59.749918+00:00"
+}

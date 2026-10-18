@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d9d52be908cc4ca016797b2d2550d7582f1c45a7658eda9e021c349c4a7e3bd6",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 196,
+  "output_tokens": 459,
+  "cost_usd": 0.0012063,
+  "elapsed_s": 23.99,
+  "error": null,
+  "text": "{\n  \"task\": \"Learn marketing skills and knowledge\",\n  \"benefits\": [\n    \"Learn valued marketing skills\",\n    \"Access frequently updated market values\",\n    \"Gain marketing knowledge\",\n    \"Utilize a user-friendly CRM tool\"\n  ],\n  \"frictions\": [\n    \"Need more courses in fields other than marketing\"\n  ]\n}",
+  "json": {
+    "task": "Learn marketing skills and knowledge",
+    "benefits": [
+      "Learn valued marketing skills",
+      "Access frequently updated market values",
+      "Gain marketing knowledge",
+      "Utilize a user-friendly CRM tool"
+    ],
+    "frictions": [
+      "Need more courses in fields other than marketing"
+    ]
+  },
+  "ts": "2026-10-18T04:56:09.958170+00:00"
+}

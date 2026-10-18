@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b804f5dab26c25fccef555bcaf9a014f2e3933d6c54567f59abe3d4440170215",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1071,
+  "output_tokens": 993,
+  "cost_usd": 0.0028038,
+  "elapsed_s": 6.57,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Efficiently organizes communication into channels\",\n    \"Facilitates real-time team collaboration\",\n    \"Integrates well with other recruiting tools\"\n  ],\n  \"cons\": [\n    \"Can lead to notification fatigue and distractions\",\n    \"Cost can be a consideration for a smaller company\",\n    \"Information can be hard to track if not consistently organized\"\n  ],\n  \"overall_experience\": \"This Senior Recruiter likely found Slack to be a significant upgrade from Google Workspace for managing diverse group communications. The platform's dedicated channels and real-time features would have greatly improved team collaboration and organization over two years. While cost for a small business and potential notification overload might be minor drawbacks, the overall efficiency gained in their recruitment processes was valuable.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Efficiently organizes communication into channels",
+      "Facilitates real-time team collaboration",
+      "Integrates well with other recruiting tools"
+    ],
+    "cons": [
+      "Can lead to notification fatigue and distractions",
+      "Cost can be a consideration for a smaller company",
+      "Information can be hard to track if not consistently organized"
+    ],
+    "overall_experience": "This Senior Recruiter likely found Slack to be a significant upgrade from Google Workspace for managing diverse group communications. The platform's dedicated channels and real-time features would have greatly improved team collaboration and organization over two years. While cost for a small business and potential notification overload might be minor drawbacks, the overall efficiency gained in their recruitment processes was valuable."
+  },
+  "ts": "2026-10-18T05:01:14.327319+00:00"
+}

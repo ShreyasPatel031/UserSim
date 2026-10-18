@@ -1,0 +1,28 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "24909c819f382f82485411b1dc9701e353a97ac9c6b61d775fe4dc25440d4c32",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 150,
+  "output_tokens": 443,
+  "cost_usd": 0.0011524999999999999,
+  "elapsed_s": 4.37,
+  "error": null,
+  "text": "{\n  \"task\": \"Consolidate access to multiple applications.\",\n  \"benefits\": [\n    \"simplifies sign-on\",\n    \"consolidates applications\",\n    \"provides security\"\n  ],\n  \"frictions\": [\n    \"company icons sometimes do not display during sign-on\"\n  ]\n}",
+  "json": {
+    "task": "Consolidate access to multiple applications.",
+    "benefits": [
+      "simplifies sign-on",
+      "consolidates applications",
+      "provides security"
+    ],
+    "frictions": [
+      "company icons sometimes do not display during sign-on"
+    ]
+  },
+  "ts": "2026-10-18T04:56:19.823026+00:00"
+}

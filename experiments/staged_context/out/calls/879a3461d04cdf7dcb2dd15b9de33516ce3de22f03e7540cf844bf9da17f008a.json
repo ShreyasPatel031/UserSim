@@ -1,0 +1,28 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "879a3461d04cdf7dcb2dd15b9de33516ce3de22f03e7540cf844bf9da17f008a",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 142,
+  "output_tokens": 334,
+  "cost_usd": 0.0008776,
+  "elapsed_s": 3.66,
+  "error": null,
+  "text": "{\n  \"task\": \"Save passwords.\",\n  \"benefits\": [\n    \"simple to use\",\n    \"secure password saving\"\n  ],\n  \"frictions\": [\n    \"requires subscription for all features\",\n    \"limited to one device type\"\n  ]\n}",
+  "json": {
+    "task": "Save passwords.",
+    "benefits": [
+      "simple to use",
+      "secure password saving"
+    ],
+    "frictions": [
+      "requires subscription for all features",
+      "limited to one device type"
+    ]
+  },
+  "ts": "2026-10-18T04:56:19.371156+00:00"
+}

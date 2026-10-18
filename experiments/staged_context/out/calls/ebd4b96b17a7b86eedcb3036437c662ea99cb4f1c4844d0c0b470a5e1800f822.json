@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ebd4b96b17a7b86eedcb3036437c662ea99cb4f1c4844d0c0b470a5e1800f822",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 263,
+  "output_tokens": 1030,
+  "cost_usd": 0.0026539,
+  "elapsed_s": 10.34,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Efficient time tracking and payroll processing\",\n    \"Easy access to pay stubs and benefits information\",\n    \"Streamlined PTO requests and approvals\"\n  ],\n  \"cons\": [\n    \"Initial setup and learning curve for some features\",\n    \"Occasional minor glitches in the mobile app\",\n    \"Interface can sometimes feel overwhelming due to many options\"\n  ],\n  \"overall_experience\": \"The Mental Health Specialist likely found Rippling to be a generally effective tool for managing their time and ensuring pay accuracy. The system streamlined daily tasks like clocking in and out, and provided clear access to their payroll details. While the core functions were appreciated, there may have been minor frustrations with the system's breadth or occasional technical hiccups.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Efficient time tracking and payroll processing",
+      "Easy access to pay stubs and benefits information",
+      "Streamlined PTO requests and approvals"
+    ],
+    "cons": [
+      "Initial setup and learning curve for some features",
+      "Occasional minor glitches in the mobile app",
+      "Interface can sometimes feel overwhelming due to many options"
+    ],
+    "overall_experience": "The Mental Health Specialist likely found Rippling to be a generally effective tool for managing their time and ensuring pay accuracy. The system streamlined daily tasks like clocking in and out, and provided clear access to their payroll details. While the core functions were appreciated, there may have been minor frustrations with the system's breadth or occasional technical hiccups."
+  },
+  "ts": "2026-10-18T05:01:07.720744+00:00"
+}

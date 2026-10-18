@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "24906678aba1a09d91869f7c98e1ebcda0a54840a0b5b63b6049bd5ad16c34f7",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2522,
+  "output_tokens": 975,
+  "cost_usd": 0.0031941,
+  "elapsed_s": 6.84,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Simplified accounting for self-employed needs\",\n    \"Intuitive interface for daily tasks like invoicing\",\n    \"Better value compared to previous product\"\n  ],\n  \"cons\": [\n    \"Less comprehensive reporting than QuickBooks Online Advanced\",\n    \"Initial adjustment after switching from a more robust system\",\n    \"May lack some advanced features for complex accounting\"\n  ],\n  \"overall_experience\": \"This CEO, managing their self-employed health and wellness business, likely found FreshBooks to be a more streamlined and cost-effective solution after switching from QuickBooks Online Advanced. They appreciated its ease of use for essential accounting tasks, though they may have noted a reduction in advanced reporting or customization options. Overall, the experience was positive, meeting their core needs without the complexity or cost of their previous software.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Simplified accounting for self-employed needs",
+      "Intuitive interface for daily tasks like invoicing",
+      "Better value compared to previous product"
+    ],
+    "cons": [
+      "Less comprehensive reporting than QuickBooks Online Advanced",
+      "Initial adjustment after switching from a more robust system",
+      "May lack some advanced features for complex accounting"
+    ],
+    "overall_experience": "This CEO, managing their self-employed health and wellness business, likely found FreshBooks to be a more streamlined and cost-effective solution after switching from QuickBooks Online Advanced. They appreciated its ease of use for essential accounting tasks, though they may have noted a reduction in advanced reporting or customization options. Overall, the experience was positive, meeting their core needs without the complexity or cost of their previous software."
+  },
+  "ts": "2026-10-18T05:00:57.704884+00:00"
+}

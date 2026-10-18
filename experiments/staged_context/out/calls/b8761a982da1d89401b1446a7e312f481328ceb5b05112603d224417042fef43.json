@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b8761a982da1d89401b1446a7e312f481328ceb5b05112603d224417042fef43",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1085,
+  "output_tokens": 1019,
+  "cost_usd": 0.0028729999999999997,
+  "elapsed_s": 6.21,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Intuitive platform for setting up and managing an online store.\",\n    \"Excellent integrations with social media and marketing tools.\",\n    \"Vast app store to extend functionalities for sales and marketing.\"\n  ],\n  \"cons\": [\n    \"Transaction fees can become costly over time.\",\n    \"Advanced design customization may require technical knowledge or paid themes.\",\n    \"Customer support response times can sometimes be inconsistent.\"\n  ],\n  \"overall_experience\": \"This social media specialist likely had a very positive experience with Shopify, finding it highly effective for starting and managing their business over two years. They appreciated its user-friendly nature and robust marketing capabilities, which aligned well with their role. While generally satisfied, the reviewer may have found some aspects like transaction fees or deeper customization to be minor drawbacks.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Intuitive platform for setting up and managing an online store.",
+      "Excellent integrations with social media and marketing tools.",
+      "Vast app store to extend functionalities for sales and marketing."
+    ],
+    "cons": [
+      "Transaction fees can become costly over time.",
+      "Advanced design customization may require technical knowledge or paid themes.",
+      "Customer support response times can sometimes be inconsistent."
+    ],
+    "overall_experience": "This social media specialist likely had a very positive experience with Shopify, finding it highly effective for starting and managing their business over two years. They appreciated its user-friendly nature and robust marketing capabilities, which aligned well with their role. While generally satisfied, the reviewer may have found some aspects like transaction fees or deeper customization to be minor drawbacks."
+  },
+  "ts": "2026-10-18T05:01:04.722897+00:00"
+}

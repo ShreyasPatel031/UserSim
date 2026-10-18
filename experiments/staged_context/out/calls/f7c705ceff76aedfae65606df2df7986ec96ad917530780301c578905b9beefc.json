@@ -1,0 +1,24 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f7c705ceff76aedfae65606df2df7986ec96ad917530780301c578905b9beefc",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 123,
+  "output_tokens": 423,
+  "cost_usd": 0.0010944,
+  "elapsed_s": 3.88,
+  "error": null,
+  "text": "{\n  \"task\": \"Use the site for learning activities.\",\n  \"benefits\": [\n    \"Supports different learning activities\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Use the site for learning activities.",
+    "benefits": [
+      "Supports different learning activities"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T04:56:18.776874+00:00"
+}

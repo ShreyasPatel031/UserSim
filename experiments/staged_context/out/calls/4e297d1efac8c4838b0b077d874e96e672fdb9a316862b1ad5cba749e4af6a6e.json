@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4e297d1efac8c4838b0b077d874e96e672fdb9a316862b1ad5cba749e4af6a6e",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 257,
+  "output_tokens": 1006,
+  "cost_usd": 0.0025921,
+  "elapsed_s": 7.53,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Robust and flexible automation builder\",\n    \"Excellent segmentation capabilities for targeted campaigns\",\n    \"Reliable email delivery for publishing updates\"\n  ],\n  \"cons\": [\n    \"Initial learning curve for advanced features\",\n    \"Pricing can escalate with larger contact lists\",\n    \"Interface can feel dense at times due to feature depth\"\n  ],\n  \"overall_experience\": \"This reviewer, an author managing automations for a small publishing company, likely found ActiveCampaign to be a highly effective and powerful tool. Its robust automation and segmentation features were crucial for their content distribution and audience engagement strategies. Despite a potential initial learning curve, the platform's capabilities proved invaluable over their two-plus years of use.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Robust and flexible automation builder",
+      "Excellent segmentation capabilities for targeted campaigns",
+      "Reliable email delivery for publishing updates"
+    ],
+    "cons": [
+      "Initial learning curve for advanced features",
+      "Pricing can escalate with larger contact lists",
+      "Interface can feel dense at times due to feature depth"
+    ],
+    "overall_experience": "This reviewer, an author managing automations for a small publishing company, likely found ActiveCampaign to be a highly effective and powerful tool. Its robust automation and segmentation features were crucial for their content distribution and audience engagement strategies. Despite a potential initial learning curve, the platform's capabilities proved invaluable over their two-plus years of use."
+  },
+  "ts": "2026-10-18T05:00:49.196213+00:00"
+}

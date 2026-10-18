@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9d25ce76df22d3f62a208e80fd04dd2542c7e946b918503242e49fd907433c63",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2612,
+  "output_tokens": 1005,
+  "cost_usd": 0.0032961,
+  "elapsed_s": 7.57,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Streamlined payroll processing for international teams\",\n    \"Effective time off tracking and management\",\n    \"Integrated HR and IT functionalities\"\n  ],\n  \"cons\": [\n    \"Initial learning curve for new users\",\n    \"Potential for slower page loading times\",\n    \"Reporting features might lack desired depth\"\n  ],\n  \"overall_experience\": \"This manager likely found Rippling to be a generally effective tool for managing payroll and time off for their international teams, appreciating its integrated approach. While they may have experienced some initial setup or navigation challenges, the system generally met their core needs. The transition from BambooHR probably highlighted Rippling's broader capabilities, despite some areas potentially needing refinement or better performance.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Streamlined payroll processing for international teams",
+      "Effective time off tracking and management",
+      "Integrated HR and IT functionalities"
+    ],
+    "cons": [
+      "Initial learning curve for new users",
+      "Potential for slower page loading times",
+      "Reporting features might lack desired depth"
+    ],
+    "overall_experience": "This manager likely found Rippling to be a generally effective tool for managing payroll and time off for their international teams, appreciating its integrated approach. While they may have experienced some initial setup or navigation challenges, the system generally met their core needs. The transition from BambooHR probably highlighted Rippling's broader capabilities, despite some areas potentially needing refinement or better performance."
+  },
+  "ts": "2026-10-18T05:01:02.519682+00:00"
+}

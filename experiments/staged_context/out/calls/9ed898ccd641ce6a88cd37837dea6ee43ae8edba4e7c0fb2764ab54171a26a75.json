@@ -1,0 +1,28 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9ed898ccd641ce6a88cd37837dea6ee43ae8edba4e7c0fb2764ab54171a26a75",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 182,
+  "output_tokens": 481,
+  "cost_usd": 0.0012571,
+  "elapsed_s": 3.84,
+  "error": null,
+  "text": "{\n  \"task\": \"Create an online store\",\n  \"benefits\": [\n    \"Provides guided steps for store creation\"\n  ],\n  \"frictions\": [\n    \"Lacks sufficient detail in guided steps\",\n    \"Not as straightforward or easy to use as advertised\",\n    \"Lacks in-depth information\"\n  ]\n}",
+  "json": {
+    "task": "Create an online store",
+    "benefits": [
+      "Provides guided steps for store creation"
+    ],
+    "frictions": [
+      "Lacks sufficient detail in guided steps",
+      "Not as straightforward or easy to use as advertised",
+      "Lacks in-depth information"
+    ]
+  },
+  "ts": "2026-10-18T04:56:15.122282+00:00"
+}

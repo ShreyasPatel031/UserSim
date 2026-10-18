@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d9fb9743eabe38decae8205682ef97863643cb202aba779488e26f5b80212750",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2314,
+  "output_tokens": 1064,
+  "cost_usd": 0.0033542,
+  "elapsed_s": 6.55,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effective customer messaging and lead engagement features\",\n    \"Relatively easy to set up for core communication needs\",\n    \"Good integration capabilities for a developer's workflow\"\n  ],\n  \"cons\": [\n    \"Pricing structure might become a concern for a self-employed individual as usage scales\",\n    \"User interface can feel a bit complex or overwhelming initially\",\n    \"Potential for minor performance issues or occasional glitches\"\n  ],\n  \"overall_experience\": \"This self-employed programmer likely found Intercom to be a powerful tool for engaging customers and potential leads, appreciating its core messaging capabilities and integration options. While the initial setup and basic use were straightforward, they may have encountered a learning curve with more advanced features or felt the pricing could become a challenge. Overall, the product proved effective for their immediate needs in customer communication.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Effective customer messaging and lead engagement features",
+      "Relatively easy to set up for core communication needs",
+      "Good integration capabilities for a developer's workflow"
+    ],
+    "cons": [
+      "Pricing structure might become a concern for a self-employed individual as usage scales",
+      "User interface can feel a bit complex or overwhelming initially",
+      "Potential for minor performance issues or occasional glitches"
+    ],
+    "overall_experience": "This self-employed programmer likely found Intercom to be a powerful tool for engaging customers and potential leads, appreciating its core messaging capabilities and integration options. While the initial setup and basic use were straightforward, they may have encountered a learning curve with more advanced features or felt the pricing could become a challenge. Overall, the product proved effective for their immediate needs in customer communication."
+  },
+  "ts": "2026-10-18T05:00:45.021739+00:00"
+}

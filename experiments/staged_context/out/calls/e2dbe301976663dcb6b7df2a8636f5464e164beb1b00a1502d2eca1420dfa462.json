@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e2dbe301976663dcb6b7df2a8636f5464e164beb1b00a1502d2eca1420dfa462",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1098,
+  "output_tokens": 1032,
+  "cost_usd": 0.0029094,
+  "elapsed_s": 6.61,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8.4,\n  \"pros\": [\n    \"Streamlined employee data management and onboarding processes.\",\n    \"Intuitive and user-friendly interface for HR tasks.\",\n    \"Effective time-off tracking and approval workflows.\"\n  ],\n  \"cons\": [\n    \"Reporting features could be more robust or customizable.\",\n    \"Integration capabilities with niche marketing tools were sometimes limited.\",\n    \"Experienced occasional delays when seeking customer support.\"\n  ],\n  \"overall_experience\": \"The HR professional found BambooHR to be a largely positive tool for managing human resources tasks within their marketing and advertising company. They appreciated its ease of use and ability to consolidate employee information and streamline core HR functions. While generally satisfied, they noted some areas for improvement, particularly regarding advanced reporting and customer support responsiveness.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8.4,
+    "pros": [
+      "Streamlined employee data management and onboarding processes.",
+      "Intuitive and user-friendly interface for HR tasks.",
+      "Effective time-off tracking and approval workflows."
+    ],
+    "cons": [
+      "Reporting features could be more robust or customizable.",
+      "Integration capabilities with niche marketing tools were sometimes limited.",
+      "Experienced occasional delays when seeking customer support."
+    ],
+    "overall_experience": "The HR professional found BambooHR to be a largely positive tool for managing human resources tasks within their marketing and advertising company. They appreciated its ease of use and ability to consolidate employee information and streamline core HR functions. While generally satisfied, they noted some areas for improvement, particularly regarding advanced reporting and customer support responsiveness."
+  },
+  "ts": "2026-10-18T05:01:00.948009+00:00"
+}

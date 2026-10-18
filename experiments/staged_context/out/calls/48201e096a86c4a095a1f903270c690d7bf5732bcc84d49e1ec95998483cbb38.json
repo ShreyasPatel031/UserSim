@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "48201e096a86c4a095a1f903270c690d7bf5732bcc84d49e1ec95998483cbb38",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1127,
+  "output_tokens": 1032,
+  "cost_usd": 0.0029181,
+  "elapsed_s": 8.89,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Streamlined employee data management and onboarding.\",\n    \"Intuitive and easy-to-use interface for HR functions.\",\n    \"Effective for general HR reporting and employee self-service.\"\n  ],\n  \"cons\": [\n    \"Lacks specialized EHS modules or robust functionality.\",\n    \"Limited customization for specific EHS tracking requirements.\",\n    \"Potential challenges integrating with dedicated EHS software.\"\n  ],\n  \"overall_experience\": \"This senior manager likely found BambooHR to be a highly user-friendly and efficient platform for general HR management within their biotechnology company. They appreciated its core HR functionalities, which helped centralize employee data and streamline common HR processes. However, the reviewer probably noted its limitations in addressing specific environmental, health, and safety (EHS) needs, requiring workarounds or supplementary systems for those specialized tasks.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Streamlined employee data management and onboarding.",
+      "Intuitive and easy-to-use interface for HR functions.",
+      "Effective for general HR reporting and employee self-service."
+    ],
+    "cons": [
+      "Lacks specialized EHS modules or robust functionality.",
+      "Limited customization for specific EHS tracking requirements.",
+      "Potential challenges integrating with dedicated EHS software."
+    ],
+    "overall_experience": "This senior manager likely found BambooHR to be a highly user-friendly and efficient platform for general HR management within their biotechnology company. They appreciated its core HR functionalities, which helped centralize employee data and streamline common HR processes. However, the reviewer probably noted its limitations in addressing specific environmental, health, and safety (EHS) needs, requiring workarounds or supplementary systems for those specialized tasks."
+  },
+  "ts": "2026-10-18T05:01:03.509013+00:00"
+}

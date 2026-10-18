@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "6558f44518a192bf3a0b9c8018e9434a94a9ca9971b377d374318411a86311ef",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 266,
+  "output_tokens": 970,
+  "cost_usd": 0.0025048,
+  "elapsed_s": 7.22,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Efficient bank feeds and reconciliation for multiple clients\",\n    \"Intuitive cloud-based interface for collaboration\",\n    \"Strong ecosystem of third-party integrations\"\n  ],\n  \"cons\": [\n    \"Reporting features can be less customizable than alternatives\",\n    \"Lacks some advanced features found in enterprise-level software\",\n    \"Customer support response times can be inconsistent\"\n  ],\n  \"overall_experience\": \"This Director of an accounting practice, having used Xero for over two years, likely values its cloud capabilities and efficient bank reconciliation for managing client finances. While finding it generally user-friendly and a good fit for a small practice, they might note some limitations in advanced reporting or specific functionalities when compared to QuickBooks Enterprise. Overall, the software serves their core needs well, enabling effective client management.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Efficient bank feeds and reconciliation for multiple clients",
+      "Intuitive cloud-based interface for collaboration",
+      "Strong ecosystem of third-party integrations"
+    ],
+    "cons": [
+      "Reporting features can be less customizable than alternatives",
+      "Lacks some advanced features found in enterprise-level software",
+      "Customer support response times can be inconsistent"
+    ],
+    "overall_experience": "This Director of an accounting practice, having used Xero for over two years, likely values its cloud capabilities and efficient bank reconciliation for managing client finances. While finding it generally user-friendly and a good fit for a small practice, they might note some limitations in advanced reporting or specific functionalities when compared to QuickBooks Enterprise. Overall, the software serves their core needs well, enabling effective client management."
+  },
+  "ts": "2026-10-18T05:00:54.817086+00:00"
+}

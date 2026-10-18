@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0cb431086e373eac9ab19ed958a57edc6fd7b9467631b322751b5330887faa9e",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 210,
+  "output_tokens": 460,
+  "cost_usd": 0.0012129999999999999,
+  "elapsed_s": 4.18,
+  "error": null,
+  "text": "{\n  \"task\": \"Build a website\",\n  \"benefits\": [\n    \"Customer service representatives are helpful and patient\",\n    \"Customer service representatives are knowledgeable\",\n    \"Offers good features\",\n    \"Provides good templates\"\n  ],\n  \"frictions\": [\n    \"Editor navigation is not user-friendly\",\n    \"Editor navigation is difficult for inexperienced users\"\n  ]\n}",
+  "json": {
+    "task": "Build a website",
+    "benefits": [
+      "Customer service representatives are helpful and patient",
+      "Customer service representatives are knowledgeable",
+      "Offers good features",
+      "Provides good templates"
+    ],
+    "frictions": [
+      "Editor navigation is not user-friendly",
+      "Editor navigation is difficult for inexperienced users"
+    ]
+  },
+  "ts": "2026-10-18T04:56:15.947248+00:00"
+}

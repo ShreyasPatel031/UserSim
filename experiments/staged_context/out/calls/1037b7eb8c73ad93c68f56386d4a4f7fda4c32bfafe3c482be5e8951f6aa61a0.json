@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1037b7eb8c73ad93c68f56386d4a4f7fda4c32bfafe3c482be5e8951f6aa61a0",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1119,
+  "output_tokens": 1035,
+  "cost_usd": 0.0029231999999999995,
+  "elapsed_s": 7.23,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Intuitive interface for invoicing and time tracking\",\n    \"Streamlined project management and client communication\",\n    \"Good mobile app for on-the-go access\"\n  ],\n  \"cons\": [\n    \"Advanced accounting features might be limited compared to alternatives\",\n    \"Reporting capabilities could be more robust for larger teams\",\n    \"Integration with some existing IT systems may require workarounds\"\n  ],\n  \"overall_experience\": \"The web developer likely found FreshBooks to be user-friendly and efficient for managing invoicing and basic project accounting. While appreciating its simplicity, they may have noted some limitations in advanced functionality or comprehensive reporting compared to previous, more robust accounting solutions like QuickBooks Online or Zoho Books. Overall, the experience was positive, particularly for core tasks, but perhaps not perfectly suited for all the complex needs of a 201-500 employee company.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Intuitive interface for invoicing and time tracking",
+      "Streamlined project management and client communication",
+      "Good mobile app for on-the-go access"
+    ],
+    "cons": [
+      "Advanced accounting features might be limited compared to alternatives",
+      "Reporting capabilities could be more robust for larger teams",
+      "Integration with some existing IT systems may require workarounds"
+    ],
+    "overall_experience": "The web developer likely found FreshBooks to be user-friendly and efficient for managing invoicing and basic project accounting. While appreciating its simplicity, they may have noted some limitations in advanced functionality or comprehensive reporting compared to previous, more robust accounting solutions like QuickBooks Online or Zoho Books. Overall, the experience was positive, particularly for core tasks, but perhaps not perfectly suited for all the complex needs of a 201-500 employee company."
+  },
+  "ts": "2026-10-18T05:00:57.016694+00:00"
+}

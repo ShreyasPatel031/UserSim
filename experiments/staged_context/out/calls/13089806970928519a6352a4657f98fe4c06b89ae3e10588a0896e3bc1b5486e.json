@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "13089806970928519a6352a4657f98fe4c06b89ae3e10588a0896e3bc1b5486e",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 263,
+  "output_tokens": 958,
+  "cost_usd": 0.0024739,
+  "elapsed_s": 7.08,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Highly customizable databases for tracking projects and documentation.\",\n    \"Seamlessly integrates notes, tasks, and project plans in one place.\",\n    \"Superior organization and linking capabilities compared to OneNote.\"\n  ],\n  \"cons\": [\n    \"Initial learning curve for advanced features and database setup.\",\n    \"Can become slow or cluttered with very large workspaces.\",\n    \"Offline functionality is sometimes limited.\"\n  ],\n  \"overall_experience\": \"This project manager likely found Notion to be a significant upgrade from Microsoft OneNote for structured documentation and project tracking. The extensive customization and database features were highly beneficial for managing retail projects. While there was an initial learning curve, the long-term benefits for organizing and tracking notes and documentation made it a valuable tool for their role.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Highly customizable databases for tracking projects and documentation.",
+      "Seamlessly integrates notes, tasks, and project plans in one place.",
+      "Superior organization and linking capabilities compared to OneNote."
+    ],
+    "cons": [
+      "Initial learning curve for advanced features and database setup.",
+      "Can become slow or cluttered with very large workspaces.",
+      "Offline functionality is sometimes limited."
+    ],
+    "overall_experience": "This project manager likely found Notion to be a significant upgrade from Microsoft OneNote for structured documentation and project tracking. The extensive customization and database features were highly beneficial for managing retail projects. While there was an initial learning curve, the long-term benefits for organizing and tracking notes and documentation made it a valuable tool for their role."
+  },
+  "ts": "2026-10-18T05:00:31.603063+00:00"
+}

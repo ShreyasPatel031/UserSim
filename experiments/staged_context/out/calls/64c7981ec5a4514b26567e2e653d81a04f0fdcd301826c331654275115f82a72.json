@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "64c7981ec5a4514b26567e2e653d81a04f0fdcd301826c331654275115f82a72",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1073,
+  "output_tokens": 1040,
+  "cost_usd": 0.0029219,
+  "elapsed_s": 7.89,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Effective for organizing daily tasks and to-do lists\",\n    \"Helps in managing time and prioritizing sales activities\",\n    \"Useful for coordinating with team members on retail initiatives\"\n  ],\n  \"cons\": [\n    \"Could be more robust for advanced sales pipeline management\",\n    \"Initial setup for complex workflows sometimes time-consuming\",\n    \"Notifications can be overwhelming if not properly configured\"\n  ],\n  \"overall_experience\": \"This Territory Sales Manager likely found Asana highly effective for their core needs of organizing tasks, creating to-do lists, and managing time within a retail environment. They appreciated its ease of use and functionality for personal productivity and team coordination. While generally positive, some minor frustrations may have arisen concerning its suitability for highly specialized sales tracking or managing notification volume.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Effective for organizing daily tasks and to-do lists",
+      "Helps in managing time and prioritizing sales activities",
+      "Useful for coordinating with team members on retail initiatives"
+    ],
+    "cons": [
+      "Could be more robust for advanced sales pipeline management",
+      "Initial setup for complex workflows sometimes time-consuming",
+      "Notifications can be overwhelming if not properly configured"
+    ],
+    "overall_experience": "This Territory Sales Manager likely found Asana highly effective for their core needs of organizing tasks, creating to-do lists, and managing time within a retail environment. They appreciated its ease of use and functionality for personal productivity and team coordination. While generally positive, some minor frustrations may have arisen concerning its suitability for highly specialized sales tracking or managing notification volume."
+  },
+  "ts": "2026-10-18T05:00:25.824333+00:00"
+}

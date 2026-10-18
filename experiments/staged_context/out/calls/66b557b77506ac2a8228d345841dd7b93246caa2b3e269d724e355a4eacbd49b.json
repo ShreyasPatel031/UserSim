@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "66b557b77506ac2a8228d345841dd7b93246caa2b3e269d724e355a4eacbd49b",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 262,
+  "output_tokens": 1028,
+  "cost_usd": 0.0026486,
+  "elapsed_s": 7.97,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Provides clear visibility into the sales pipeline and team activities.\",\n    \"User-friendly interface makes it easy for the sales team to adopt and use daily.\",\n    \"Offers valuable reporting and analytics for strategic sales decision-making.\"\n  ],\n  \"cons\": [\n    \"Customization options might be somewhat limited for highly specific logistics workflows.\",\n    \"Advanced automation features can sometimes require a higher-tier plan.\",\n    \"Integrations with niche logistics-specific software might be lacking.\"\n  ],\n  \"overall_experience\": \"The Vice President of Sales likely found HubSpot CRM to be a highly effective tool for managing their sales team's activities and gaining crucial insights into the pipeline over the past two years. Its ease of use facilitated team adoption, which is vital for an SMB. While it generally met their needs, they may have occasionally encountered limitations regarding deep industry-specific customization or advanced automation without upgrading to higher plans.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Provides clear visibility into the sales pipeline and team activities.",
+      "User-friendly interface makes it easy for the sales team to adopt and use daily.",
+      "Offers valuable reporting and analytics for strategic sales decision-making."
+    ],
+    "cons": [
+      "Customization options might be somewhat limited for highly specific logistics workflows.",
+      "Advanced automation features can sometimes require a higher-tier plan.",
+      "Integrations with niche logistics-specific software might be lacking."
+    ],
+    "overall_experience": "The Vice President of Sales likely found HubSpot CRM to be a highly effective tool for managing their sales team's activities and gaining crucial insights into the pipeline over the past two years. Its ease of use facilitated team adoption, which is vital for an SMB. While it generally met their needs, they may have occasionally encountered limitations regarding deep industry-specific customization or advanced automation without upgrading to higher plans."
+  },
+  "ts": "2026-10-18T05:00:33.470579+00:00"
+}

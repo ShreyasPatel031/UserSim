@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "af5d455f2b14e6578e0e3f381a0496a85d8362f1b4b178eed1e7b06ef8f3c5b1",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2436,
+  "output_tokens": 972,
+  "cost_usd": 0.0031607999999999996,
+  "elapsed_s": 7.17,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Centralized client and project data for installations\",\n    \"Intuitive interface for task management and scheduling\",\n    \"Good integration with communication tools for daily tasks\"\n  ],\n  \"cons\": [\n    \"Potential for higher cost as features scale up\",\n    \"Steep learning curve for advanced features or customization\",\n    \"Occasional slowness or minor glitches in performance\"\n  ],\n  \"overall_experience\": \"The installation coordinator likely found HubSpot CRM to be a generally effective tool for managing their daily business tasks, appreciating its organized approach to client data and project tracking. While the platform offered a user-friendly experience for core functions, they might have encountered some challenges with cost scalability or the complexity of advanced features. Overall, it provided a solid foundation for operational efficiency within their role.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Centralized client and project data for installations",
+      "Intuitive interface for task management and scheduling",
+      "Good integration with communication tools for daily tasks"
+    ],
+    "cons": [
+      "Potential for higher cost as features scale up",
+      "Steep learning curve for advanced features or customization",
+      "Occasional slowness or minor glitches in performance"
+    ],
+    "overall_experience": "The installation coordinator likely found HubSpot CRM to be a generally effective tool for managing their daily business tasks, appreciating its organized approach to client data and project tracking. While the platform offered a user-friendly experience for core functions, they might have encountered some challenges with cost scalability or the complexity of advanced features. Overall, it provided a solid foundation for operational efficiency within their role."
+  },
+  "ts": "2026-10-18T05:00:35.111410+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "18d54150df8c7bad55c79e434df20473c58a50f52209ea5d6da2803618c301d9",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1109,
+  "output_tokens": 905,
+  "cost_usd": 0.0025951999999999998,
+  "elapsed_s": 6.48,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Efficiently centralizes client contact information.\",\n    \"Streamlines communication with integrated email and scheduling tools.\",\n    \"Provides good visibility into the sales pipeline for effective management.\"\n  ],\n  \"cons\": [\n    \"Certain advanced features can become costly with scaling.\",\n    \"Initial setup and customization may require a learning curve.\",\n    \"Reporting capabilities could be more flexible for specific sales metrics.\"\n  ],\n  \"overall_experience\": \"This Inside Sales Manager likely had a very positive experience with HubSpot CRM, finding it highly effective for managing contacts, client communication, and meeting scheduling. They appreciated its robust functionality and ease of use for daily sales operations. While generally satisfied, they might have noted that advanced features could increase costs, and that some reporting capabilities could be more tailored.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Efficiently centralizes client contact information.",
+      "Streamlines communication with integrated email and scheduling tools.",
+      "Provides good visibility into the sales pipeline for effective management."
+    ],
+    "cons": [
+      "Certain advanced features can become costly with scaling.",
+      "Initial setup and customization may require a learning curve.",
+      "Reporting capabilities could be more flexible for specific sales metrics."
+    ],
+    "overall_experience": "This Inside Sales Manager likely had a very positive experience with HubSpot CRM, finding it highly effective for managing contacts, client communication, and meeting scheduling. They appreciated its robust functionality and ease of use for daily sales operations. While generally satisfied, they might have noted that advanced features could increase costs, and that some reporting capabilities could be more tailored."
+  },
+  "ts": "2026-10-18T05:00:34.771866+00:00"
+}

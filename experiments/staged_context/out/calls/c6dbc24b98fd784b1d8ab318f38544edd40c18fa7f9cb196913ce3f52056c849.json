@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c6dbc24b98fd784b1d8ab318f38544edd40c18fa7f9cb196913ce3f52056c849",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 264,
+  "output_tokens": 969,
+  "cost_usd": 0.0025017000000000004,
+  "elapsed_s": 6.55,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": \"4\",\n  \"functionality_rating\": \"4\",\n  \"overall_rating\": \"4\",\n  \"value_for_money_rating\": \"3\",\n  \"customer_support_rating\": \"3\",\n  \"recommendation_score\": \"8\",\n  \"pros\": [\n    \"Simplified user access to numerous healthcare applications via SSO.\",\n    \"Centralized identity management improved security and compliance.\",\n    \"Intuitive administrative interface for managing users and apps.\"\n  ],\n  \"cons\": [\n    \"Initial setup and integration with some legacy systems could be complex.\",\n    \"Cost of licensing for larger user bases can be a significant factor.\",\n    \"Occasional issues with specific application integrations or user provisioning.\"\n  ],\n  \"overall_experience\": \"The Coordinator likely found Okta to be a highly effective solution for implementing single sign-on across their organization's applications. It significantly streamlined user access and enhanced security within the hospital environment. While the platform delivered strong functionality, the initial setup for certain applications and the ongoing cost were noted as potential challenges.\"\n}",
+  "json": {
+    "ease_of_use_rating": "4",
+    "functionality_rating": "4",
+    "overall_rating": "4",
+    "value_for_money_rating": "3",
+    "customer_support_rating": "3",
+    "recommendation_score": "8",
+    "pros": [
+      "Simplified user access to numerous healthcare applications via SSO.",
+      "Centralized identity management improved security and compliance.",
+      "Intuitive administrative interface for managing users and apps."
+    ],
+    "cons": [
+      "Initial setup and integration with some legacy systems could be complex.",
+      "Cost of licensing for larger user bases can be a significant factor.",
+      "Occasional issues with specific application integrations or user provisioning."
+    ],
+    "overall_experience": "The Coordinator likely found Okta to be a highly effective solution for implementing single sign-on across their organization's applications. It significantly streamlined user access and enhanced security within the hospital environment. While the platform delivered strong functionality, the initial setup for certain applications and the ongoing cost were noted as potential challenges."
+  },
+  "ts": "2026-10-18T05:01:19.741172+00:00"
+}

@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "00a66e86851a0710bd78a03b4ebdfc70bb62e9ab2d4c7acc436f0d8f0fb52f68",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 176,
+  "output_tokens": 513,
+  "cost_usd": 0.0013353,
+  "elapsed_s": 24.21,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage customer support tickets and interactions.\",\n  \"benefits\": [\n    \"Be cheaper than competitors.\",\n    \"Integrate with Aircall to automatically display customer contact information during calls.\",\n    \"Improve ticket tracking between teams.\",\n    \"Customize generated reports.\"\n  ],\n  \"frictions\": [\n    \"Lack user-friendliness and intuitiveness.\",\n    \"Lack a free tool to import data from competitors.\"\n  ]\n}",
+  "json": {
+    "task": "Manage customer support tickets and interactions.",
+    "benefits": [
+      "Be cheaper than competitors.",
+      "Integrate with Aircall to automatically display customer contact information during calls.",
+      "Improve ticket tracking between teams.",
+      "Customize generated reports."
+    ],
+    "frictions": [
+      "Lack user-friendliness and intuitiveness.",
+      "Lack a free tool to import data from competitors."
+    ]
+  },
+  "ts": "2026-10-18T04:56:10.944658+00:00"
+}

@@ -1,0 +1,26 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "989a6a52c39ff09ef7b83c869ec9aa29cb12039df2e42c856f2bb1313abe9515",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 130,
+  "output_tokens": 359,
+  "cost_usd": 0.0009364999999999999,
+  "elapsed_s": 22.58,
+  "error": null,
+  "text": "{\n  \"task\": null,\n  \"benefits\": [\n    \"Access from multiple locations\"\n  ],\n  \"frictions\": [\n    \"Inability to work offline\"\n  ]\n}",
+  "json": {
+    "task": null,
+    "benefits": [
+      "Access from multiple locations"
+    ],
+    "frictions": [
+      "Inability to work offline"
+    ]
+  },
+  "ts": "2026-10-18T04:56:10.477664+00:00"
+}

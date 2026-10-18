@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "df1e89ae5afd8008be9f8a39affd3b348851fa37f8218186497eaf4d409d7ef4",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 267,
+  "output_tokens": 1053,
+  "cost_usd": 0.0027126,
+  "elapsed_s": 8.21,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 2,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Improved live chat and knowledge base functionality\",\n    \"Professional and polished user interface\",\n    \"Robust feature set for customer engagement\"\n  ],\n  \"cons\": [\n    \"Significantly higher cost compared to previous solution\",\n    \"Pricing model can be expensive for small teams\",\n    \"Some features might be overkill for a small business\"\n  ],\n  \"overall_experience\": \"The owner likely found Intercom to be a powerful and feature-rich platform for managing customer support, offering a significant upgrade in capabilities and user experience over their previous solution. However, the high cost associated with Intercom's subscription, especially for a small company, was a considerable concern, impacting their perception of its value for money despite its strong functionality.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 2,
+    "customer_support_rating": 4,
+    "recommendation_score": 7,
+    "pros": [
+      "Improved live chat and knowledge base functionality",
+      "Professional and polished user interface",
+      "Robust feature set for customer engagement"
+    ],
+    "cons": [
+      "Significantly higher cost compared to previous solution",
+      "Pricing model can be expensive for small teams",
+      "Some features might be overkill for a small business"
+    ],
+    "overall_experience": "The owner likely found Intercom to be a powerful and feature-rich platform for managing customer support, offering a significant upgrade in capabilities and user experience over their previous solution. However, the high cost associated with Intercom's subscription, especially for a small company, was a considerable concern, impacting their perception of its value for money despite its strong functionality."
+  },
+  "ts": "2026-10-18T05:00:43.840884+00:00"
+}

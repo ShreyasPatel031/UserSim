@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ee7a7b3a0e5a468dff039008e2241677901e4ba287959f75c888e824580824b4",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1122,
+  "output_tokens": 1007,
+  "cost_usd": 0.0028541,
+  "elapsed_s": 9.61,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Robust API and SDK for seamless integration into web applications.\",\n    \"Effective real-time chat capabilities for instant customer support.\",\n    \"Customizable messenger experience to align with brand guidelines.\"\n  ],\n  \"cons\": [\n    \"High cost, particularly as the user base and feature requirements grow.\",\n    \"Occasional performance overhead from the embedded chat widget.\",\n    \"Complexity in navigating and configuring advanced automation rules.\"\n  ],\n  \"overall_experience\": \"This web developer found Intercom to be a highly effective tool for providing real-time customer support within their financial services organization. They appreciated its strong integration capabilities and the ability to customize the user experience. While generally satisfied, the cost and occasional performance concerns were noted as minor drawbacks.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Robust API and SDK for seamless integration into web applications.",
+      "Effective real-time chat capabilities for instant customer support.",
+      "Customizable messenger experience to align with brand guidelines."
+    ],
+    "cons": [
+      "High cost, particularly as the user base and feature requirements grow.",
+      "Occasional performance overhead from the embedded chat widget.",
+      "Complexity in navigating and configuring advanced automation rules."
+    ],
+    "overall_experience": "This web developer found Intercom to be a highly effective tool for providing real-time customer support within their financial services organization. They appreciated its strong integration capabilities and the ability to customize the user experience. While generally satisfied, the cost and occasional performance concerns were noted as minor drawbacks."
+  },
+  "ts": "2026-10-18T05:00:45.535657+00:00"
+}

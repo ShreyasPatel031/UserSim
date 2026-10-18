@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c292847ce8e78ed9e3dc627429fccd78de1bab88615b9fb59f32aa95ba82bea4",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2554,
+  "output_tokens": 991,
+  "cost_usd": 0.0032436999999999995,
+  "elapsed_s": 8.96,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Robust automation and segmentation capabilities\",\n    \"Detailed analytics for campaign performance\",\n    \"Scalable features for growing business needs\"\n  ],\n  \"cons\": [\n    \"Steep learning curve for advanced features\",\n    \"Pricing can become a concern as contact lists grow\",\n    \"Occasional complexity in campaign design tools\"\n  ],\n  \"overall_experience\": \"The CEO likely found ActiveCampaign to be a powerful tool for automating marketing efforts and segmenting their financial services clientele. While the platform offered extensive functionality and valuable insights, they probably experienced a learning curve when setting up more complex automations. The overall value was good, though cost might have been a recurring consideration for their small firm over time.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Robust automation and segmentation capabilities",
+      "Detailed analytics for campaign performance",
+      "Scalable features for growing business needs"
+    ],
+    "cons": [
+      "Steep learning curve for advanced features",
+      "Pricing can become a concern as contact lists grow",
+      "Occasional complexity in campaign design tools"
+    ],
+    "overall_experience": "The CEO likely found ActiveCampaign to be a powerful tool for automating marketing efforts and segmenting their financial services clientele. While the platform offered extensive functionality and valuable insights, they probably experienced a learning curve when setting up more complex automations. The overall value was good, though cost might have been a recurring consideration for their small firm over time."
+  },
+  "ts": "2026-10-18T05:00:53.348948+00:00"
+}

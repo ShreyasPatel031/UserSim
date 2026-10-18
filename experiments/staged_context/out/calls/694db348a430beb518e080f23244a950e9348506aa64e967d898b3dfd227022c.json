@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "694db348a430beb518e080f23244a950e9348506aa64e967d898b3dfd227022c",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1087,
+  "output_tokens": 890,
+  "cost_usd": 0.0025511,
+  "elapsed_s": 5.44,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 5,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Effortless access to paystubs and benefits information.\",\n    \"Simple and quick process for requesting time off.\",\n    \"User-friendly interface for daily HR tasks.\"\n  ],\n  \"cons\": [\n    \"Occasionally experiences minor interface inconsistencies.\",\n    \"Could offer more robust or interactive training module content.\",\n    \"Rarely, updates to benefits information might have a slight delay.\"\n  ],\n  \"overall_experience\": \"This customer care representative likely finds Rippling to be an extremely efficient and user-friendly platform for their core HR needs. The system provides seamless access to essential features like paystubs, benefits, and time-off requests, contributing to a highly positive long-term experience. While overall satisfaction is very high, minor improvements in specific areas like training content or occasional interface quirks might be noted.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 5,
+    "recommendation_score": 9,
+    "pros": [
+      "Effortless access to paystubs and benefits information.",
+      "Simple and quick process for requesting time off.",
+      "User-friendly interface for daily HR tasks."
+    ],
+    "cons": [
+      "Occasionally experiences minor interface inconsistencies.",
+      "Could offer more robust or interactive training module content.",
+      "Rarely, updates to benefits information might have a slight delay."
+    ],
+    "overall_experience": "This customer care representative likely finds Rippling to be an extremely efficient and user-friendly platform for their core HR needs. The system provides seamless access to essential features like paystubs, benefits, and time-off requests, contributing to a highly positive long-term experience. While overall satisfaction is very high, minor improvements in specific areas like training content or occasional interface quirks might be noted."
+  },
+  "ts": "2026-10-18T05:01:03.155634+00:00"
+}

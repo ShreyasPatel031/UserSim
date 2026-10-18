@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c12a233b945c265e08e9fd9297c90f62e7dbe879d32f1fffbe84af62d34eae2e",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2489,
+  "output_tokens": 960,
+  "cost_usd": 0.0031467,
+  "elapsed_s": 8.01,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"User-friendly interface for invoicing\",\n    \"Effective for tracking expenses\",\n    \"Good for basic accounting needs\"\n  ],\n  \"cons\": [\n    \"Reporting features could be more robust\",\n    \"May require some time to fully adapt to its workflow\",\n    \"Integration options might be limited for specific marketing tools\"\n  ],\n  \"overall_experience\": \"This user likely found FreshBooks to be a straightforward tool for handling their core accounting tasks like invoicing and expense tracking. While generally positive about its ease of use, they may have noted that some advanced features, particularly in reporting, could be improved. The initial learning period, as a new user, was manageable but required some adjustment.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "User-friendly interface for invoicing",
+      "Effective for tracking expenses",
+      "Good for basic accounting needs"
+    ],
+    "cons": [
+      "Reporting features could be more robust",
+      "May require some time to fully adapt to its workflow",
+      "Integration options might be limited for specific marketing tools"
+    ],
+    "overall_experience": "This user likely found FreshBooks to be a straightforward tool for handling their core accounting tasks like invoicing and expense tracking. While generally positive about its ease of use, they may have noted that some advanced features, particularly in reporting, could be improved. The initial learning period, as a new user, was manageable but required some adjustment."
+  },
+  "ts": "2026-10-18T05:00:58.196299+00:00"
+}

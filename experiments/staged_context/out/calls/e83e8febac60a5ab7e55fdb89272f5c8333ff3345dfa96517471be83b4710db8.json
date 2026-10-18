@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e83e8febac60a5ab7e55fdb89272f5c8333ff3345dfa96517471be83b4710db8",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1107,
+  "output_tokens": 994,
+  "cost_usd": 0.0028171000000000003,
+  "elapsed_s": 6.61,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 5,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Efficiently manages notes and tasks.\",\n    \"Provides a centralized view of customer data.\",\n    \"Scalable and robust for a large enterprise.\"\n  ],\n  \"cons\": [\n    \"Initial learning curve can be steep.\",\n    \"Can feel overwhelming with many features.\",\n    \"Data entry requirements can be time-consuming.\"\n  ],\n  \"overall_experience\": \"This Account Representative likely found Salesforce Sales Cloud to be a highly functional and valuable tool for managing their daily notes and tasks. Despite a potential initial learning curve and some interface complexity, the platform's robust capabilities and centralized data management significantly enhanced their workflow. They would recommend it due to its strong performance in a large organizational setting.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 5,
+    "recommendation_score": 9,
+    "pros": [
+      "Efficiently manages notes and tasks.",
+      "Provides a centralized view of customer data.",
+      "Scalable and robust for a large enterprise."
+    ],
+    "cons": [
+      "Initial learning curve can be steep.",
+      "Can feel overwhelming with many features.",
+      "Data entry requirements can be time-consuming."
+    ],
+    "overall_experience": "This Account Representative likely found Salesforce Sales Cloud to be a highly functional and valuable tool for managing their daily notes and tasks. Despite a potential initial learning curve and some interface complexity, the platform's robust capabilities and centralized data management significantly enhanced their workflow. They would recommend it due to its strong performance in a large organizational setting."
+  },
+  "ts": "2026-10-18T05:00:38.821186+00:00"
+}

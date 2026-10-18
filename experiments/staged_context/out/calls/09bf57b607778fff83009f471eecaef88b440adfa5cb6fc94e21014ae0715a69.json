@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "09bf57b607778fff83009f471eecaef88b440adfa5cb6fc94e21014ae0715a69",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1115,
+  "output_tokens": 1137,
+  "cost_usd": 0.003177,
+  "elapsed_s": 8.08,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Excellent resources for learning marketing skills and knowledge\",\n    \"Comprehensive suite of integrated marketing tools\",\n    \"Intuitive interface that simplifies digital marketing tasks\"\n  ],\n  \"cons\": [\n    \"Pricing can become substantial for advanced features in a larger organization\",\n    \"Limited deep customization for complex enterprise workflows\",\n    \"Potential integration challenges with highly specialized market research tools\"\n  ],\n  \"overall_experience\": \"The Executive likely found HubSpot CRM to be a highly valuable platform, particularly for leveraging its educational content to enhance marketing skills. They appreciated the integrated marketing functionalities and user-friendly design, which streamlined operations for their team. While generally positive, the cost for advanced features and some customization limitations for a larger company in market research might have presented minor frustrations.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Excellent resources for learning marketing skills and knowledge",
+      "Comprehensive suite of integrated marketing tools",
+      "Intuitive interface that simplifies digital marketing tasks"
+    ],
+    "cons": [
+      "Pricing can become substantial for advanced features in a larger organization",
+      "Limited deep customization for complex enterprise workflows",
+      "Potential integration challenges with highly specialized market research tools"
+    ],
+    "overall_experience": "The Executive likely found HubSpot CRM to be a highly valuable platform, particularly for leveraging its educational content to enhance marketing skills. They appreciated the integrated marketing functionalities and user-friendly design, which streamlined operations for their team. While generally positive, the cost for advanced features and some customization limitations for a larger company in market research might have presented minor frustrations."
+  },
+  "ts": "2026-10-18T05:00:35.000932+00:00"
+}

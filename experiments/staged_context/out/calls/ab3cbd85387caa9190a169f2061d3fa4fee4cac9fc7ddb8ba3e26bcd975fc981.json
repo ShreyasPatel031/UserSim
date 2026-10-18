@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ab3cbd85387caa9190a169f2061d3fa4fee4cac9fc7ddb8ba3e26bcd975fc981",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 232,
+  "output_tokens": 485,
+  "cost_usd": 0.0012821,
+  "elapsed_s": 22.63,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage email marketing and CRM activities.\",\n  \"benefits\": [\n    \"Simplicity of use\",\n    \"Good presentation of functions\",\n    \"Easy to implement\",\n    \"Everything is accessible\"\n  ],\n  \"frictions\": [\n    \"Prices increase significantly with scaling\"\n  ]\n}",
+  "json": {
+    "task": "Manage email marketing and CRM activities.",
+    "benefits": [
+      "Simplicity of use",
+      "Good presentation of functions",
+      "Easy to implement",
+      "Everything is accessible"
+    ],
+    "frictions": [
+      "Prices increase significantly with scaling"
+    ]
+  },
+  "ts": "2026-10-18T04:56:10.466594+00:00"
+}

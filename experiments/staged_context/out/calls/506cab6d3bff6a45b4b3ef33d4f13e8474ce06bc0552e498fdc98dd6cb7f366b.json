@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "506cab6d3bff6a45b4b3ef33d4f13e8474ce06bc0552e498fdc98dd6cb7f366b",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 170,
+  "output_tokens": 481,
+  "cost_usd": 0.0012535,
+  "elapsed_s": 23.04,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage notes, plans, and team projects.\",\n  \"benefits\": [\n    \"Versatile\",\n    \"User-friendly\",\n    \"Track team projects\",\n    \"Improved task assignments within a team\"\n  ],\n  \"frictions\": [\n    \"Becomes cluttered with notes as project depth increases\"\n  ]\n}",
+  "json": {
+    "task": "Manage notes, plans, and team projects.",
+    "benefits": [
+      "Versatile",
+      "User-friendly",
+      "Track team projects",
+      "Improved task assignments within a team"
+    ],
+    "frictions": [
+      "Becomes cluttered with notes as project depth increases"
+    ]
+  },
+  "ts": "2026-10-18T04:56:08.759593+00:00"
+}

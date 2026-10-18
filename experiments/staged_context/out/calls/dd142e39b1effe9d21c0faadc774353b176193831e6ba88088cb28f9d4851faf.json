@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "dd142e39b1effe9d21c0faadc774353b176193831e6ba88088cb28f9d4851faf",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2527,
+  "output_tokens": 1043,
+  "cost_usd": 0.0033656000000000007,
+  "elapsed_s": 10.15,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Comprehensive reporting capabilities for team oversight\",\n    \"Robust customization options to fit specific sales processes\",\n    \"Scalable platform that supports a growing sales organization\"\n  ],\n  \"cons\": [\n    \"Steep learning curve for new features or complex customizations\",\n    \"Pricing can be a significant investment for advanced modules\",\n    \"Interface can sometimes feel cluttered due to vast functionality\"\n  ],\n  \"overall_experience\": \"This Mid Market Sales Manager likely finds Salesforce Sales Cloud to be a highly powerful and essential tool for managing their team's performance and pipeline. The extensive reporting features are particularly valuable for their role, enabling effective team oversight and strategic decision-making. While the platform's depth offers significant advantages, they might occasionally encounter challenges with its complexity or cost for advanced functionalities.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Comprehensive reporting capabilities for team oversight",
+      "Robust customization options to fit specific sales processes",
+      "Scalable platform that supports a growing sales organization"
+    ],
+    "cons": [
+      "Steep learning curve for new features or complex customizations",
+      "Pricing can be a significant investment for advanced modules",
+      "Interface can sometimes feel cluttered due to vast functionality"
+    ],
+    "overall_experience": "This Mid Market Sales Manager likely finds Salesforce Sales Cloud to be a highly powerful and essential tool for managing their team's performance and pipeline. The extensive reporting features are particularly valuable for their role, enabling effective team oversight and strategic decision-making. While the platform's depth offers significant advantages, they might occasionally encounter challenges with its complexity or cost for advanced functionalities."
+  },
+  "ts": "2026-10-18T05:00:39.462585+00:00"
+}

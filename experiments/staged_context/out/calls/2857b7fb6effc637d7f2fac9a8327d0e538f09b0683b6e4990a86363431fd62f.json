@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2857b7fb6effc637d7f2fac9a8327d0e538f09b0683b6e4990a86363431fd62f",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 266,
+  "output_tokens": 459,
+  "cost_usd": 0.0012273000000000002,
+  "elapsed_s": 25.59,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage projects and workflows using a flexible, spreadsheet-style system.\",\n  \"benefits\": [\n    \"Automate workflows based on a large set of triggers\",\n    \"Utilize AI automation when standard options are insufficient\",\n    \"Aggregate assigned tasks across all boards in a 'My Work' tab\",\n    \"Customize visibility of items as needed\"\n  ],\n  \"frictions\": [\n    \"Cost of $4\"\n  ]\n}",
+  "json": {
+    "task": "Manage projects and workflows using a flexible, spreadsheet-style system.",
+    "benefits": [
+      "Automate workflows based on a large set of triggers",
+      "Utilize AI automation when standard options are insufficient",
+      "Aggregate assigned tasks across all boards in a 'My Work' tab",
+      "Customize visibility of items as needed"
+    ],
+    "frictions": [
+      "Cost of $4"
+    ]
+  },
+  "ts": "2026-10-18T04:56:11.024887+00:00"
+}

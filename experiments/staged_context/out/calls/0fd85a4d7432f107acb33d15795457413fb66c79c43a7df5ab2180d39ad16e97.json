@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0fd85a4d7432f107acb33d15795457413fb66c79c43a7df5ab2180d39ad16e97",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1120,
+  "output_tokens": 1054,
+  "cost_usd": 0.002971,
+  "elapsed_s": 6.61,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8.5,\n  \"pros\": [\n    \"Simplified process for making internal announcements\",\n    \"Effective tracking of employee presence and time off\",\n    \"Centralized employee data beneficial for financial oversight\"\n  ],\n  \"cons\": [\n    \"Potential limitations in advanced financial reporting or payroll integration\",\n    \"Customization options might not meet all specific finance department needs\",\n    \"Data export capabilities might require additional manipulation for complex analysis\"\n  ],\n  \"overall_experience\": \"The VP of Finance likely found BambooHR to be a user-friendly platform, particularly for managing internal communications and basic employee presence tracking. While it served its core purpose well for HR functions, they may have experienced some limitations regarding deeper financial functionalities or integrations required for a finance role. Overall, the system provided a solid foundation for HR data management within their mid-sized company.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8.5,
+    "pros": [
+      "Simplified process for making internal announcements",
+      "Effective tracking of employee presence and time off",
+      "Centralized employee data beneficial for financial oversight"
+    ],
+    "cons": [
+      "Potential limitations in advanced financial reporting or payroll integration",
+      "Customization options might not meet all specific finance department needs",
+      "Data export capabilities might require additional manipulation for complex analysis"
+    ],
+    "overall_experience": "The VP of Finance likely found BambooHR to be a user-friendly platform, particularly for managing internal communications and basic employee presence tracking. While it served its core purpose well for HR functions, they may have experienced some limitations regarding deeper financial functionalities or integrations required for a finance role. Overall, the system provided a solid foundation for HR data management within their mid-sized company."
+  },
+  "ts": "2026-10-18T05:01:00.608714+00:00"
+}

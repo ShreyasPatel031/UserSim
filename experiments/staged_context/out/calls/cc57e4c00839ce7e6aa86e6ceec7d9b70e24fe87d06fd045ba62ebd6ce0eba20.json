@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "cc57e4c00839ce7e6aa86e6ceec7d9b70e24fe87d06fd045ba62ebd6ce0eba20",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1079,
+  "output_tokens": 1024,
+  "cost_usd": 0.0028837,
+  "elapsed_s": 7.24,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 5,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Efficiently manages customer interactions across phone, chat, and email.\",\n    \"Streamlined workflow with automation and macros for quick issue resolution.\",\n    \"Provides a comprehensive view of customer history and interactions.\"\n  ],\n  \"cons\": [\n    \"Reporting features can be complex to customize for specific needs.\",\n    \"Initial setup and advanced configurations might require technical assistance.\",\n    \"Occasional performance slowdowns when handling high volumes or multiple integrations.\"\n  ],\n  \"overall_experience\": \"This Customer Service Representative likely found Zendesk Suite to be a highly effective tool for managing their daily tasks. The platform's omnichannel capabilities and workflow automation significantly improved their efficiency in a telecommunications environment. While generally positive, they may have encountered some challenges with advanced reporting or customization options.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 5,
+    "recommendation_score": 9,
+    "pros": [
+      "Efficiently manages customer interactions across phone, chat, and email.",
+      "Streamlined workflow with automation and macros for quick issue resolution.",
+      "Provides a comprehensive view of customer history and interactions."
+    ],
+    "cons": [
+      "Reporting features can be complex to customize for specific needs.",
+      "Initial setup and advanced configurations might require technical assistance.",
+      "Occasional performance slowdowns when handling high volumes or multiple integrations."
+    ],
+    "overall_experience": "This Customer Service Representative likely found Zendesk Suite to be a highly effective tool for managing their daily tasks. The platform's omnichannel capabilities and workflow automation significantly improved their efficiency in a telecommunications environment. While generally positive, they may have encountered some challenges with advanced reporting or customization options."
+  },
+  "ts": "2026-10-18T05:00:42.333585+00:00"
+}

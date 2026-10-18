@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b1a2e3ac4d68e96cea8e547414ca8593e949ba635b8b36dc7f2726afc50cece7",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 261,
+  "output_tokens": 927,
+  "cost_usd": 0.0023958,
+  "elapsed_s": 6.22,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Streamlined team communication across departments.\",\n    \"Efficient file sharing and quick access to documents.\",\n    \"Reduced internal email traffic significantly.\"\n  ],\n  \"cons\": [\n    \"Potential for information overload and notification fatigue.\",\n    \"Managing channel sprawl in a large organization can be challenging.\",\n    \"Concerns about data compliance for sensitive pharmaceutical information.\"\n  ],\n  \"overall_experience\": \"The General Manager found Slack to be a highly effective tool for maintaining team connectivity and sharing essential documents within their large pharmaceutical company. While appreciating its role in reducing email and centralizing communication, they occasionally struggled with managing the sheer volume of information and had some reservations regarding data compliance in their regulated industry. Overall, it significantly improved internal communication workflows.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Streamlined team communication across departments.",
+      "Efficient file sharing and quick access to documents.",
+      "Reduced internal email traffic significantly."
+    ],
+    "cons": [
+      "Potential for information overload and notification fatigue.",
+      "Managing channel sprawl in a large organization can be challenging.",
+      "Concerns about data compliance for sensitive pharmaceutical information."
+    ],
+    "overall_experience": "The General Manager found Slack to be a highly effective tool for maintaining team connectivity and sharing essential documents within their large pharmaceutical company. While appreciating its role in reducing email and centralizing communication, they occasionally struggled with managing the sheer volume of information and had some reservations regarding data compliance in their regulated industry. Overall, it significantly improved internal communication workflows."
+  },
+  "ts": "2026-10-18T05:01:14.875529+00:00"
+}

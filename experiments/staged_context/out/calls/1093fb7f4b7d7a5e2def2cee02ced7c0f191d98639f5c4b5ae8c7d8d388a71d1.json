@@ -1,0 +1,31 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1093fb7f4b7d7a5e2def2cee02ced7c0f191d98639f5c4b5ae8c7d8d388a71d1",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 216,
+  "output_tokens": 457,
+  "cost_usd": 0.0012073000000000001,
+  "elapsed_s": 25.65,
+  "error": null,
+  "text": "{\n  \"task\": \"Organize tasks, collaborate, and track project progress.\",\n  \"benefits\": [\n    \"User-friendly interface\",\n    \"Drag-and-drop layout\",\n    \"Excellent collaboration features\",\n    \"Easy navigation\"\n  ],\n  \"frictions\": [\n    \"Pricing is on the higher side\",\n    \"Mobile app has limited capabilities\",\n    \"Mobile app is complex to learn\"\n  ]\n}",
+  "json": {
+    "task": "Organize tasks, collaborate, and track project progress.",
+    "benefits": [
+      "User-friendly interface",
+      "Drag-and-drop layout",
+      "Excellent collaboration features",
+      "Easy navigation"
+    ],
+    "frictions": [
+      "Pricing is on the higher side",
+      "Mobile app has limited capabilities",
+      "Mobile app is complex to learn"
+    ]
+  },
+  "ts": "2026-10-18T04:56:10.783210+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e2ad4ff64f7d94174f64789243c98ad7d65af04be1fb907638a42b459afab41b",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1053,
+  "output_tokens": 1059,
+  "cost_usd": 0.0029634,
+  "elapsed_s": 7.28,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Intuitive interface for email design\",\n    \"Effective campaign tracking and reporting\",\n    \"Reliable delivery of marketing emails\"\n  ],\n  \"cons\": [\n    \"Customer support can be slow or unhelpful\",\n    \"Pricing structure can become costly with list growth\",\n    \"Advanced features might be less accessible\"\n  ],\n  \"overall_experience\": \"This owner of a building materials company likely found Mailchimp to be a generally effective tool for their email marketing needs over two years. They appreciated its ease of use for designing and sending campaigns, along with useful tracking features. However, they probably experienced some frustration with customer support and perceived value for money as their business grew.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Intuitive interface for email design",
+      "Effective campaign tracking and reporting",
+      "Reliable delivery of marketing emails"
+    ],
+    "cons": [
+      "Customer support can be slow or unhelpful",
+      "Pricing structure can become costly with list growth",
+      "Advanced features might be less accessible"
+    ],
+    "overall_experience": "This owner of a building materials company likely found Mailchimp to be a generally effective tool for their email marketing needs over two years. They appreciated its ease of use for designing and sending campaigns, along with useful tracking features. However, they probably experienced some frustration with customer support and perceived value for money as their business grew."
+  },
+  "ts": "2026-10-18T05:00:48.209973+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4d34a328df7826b09c59aa7ce890d205e4395a8c1ec650cf1b0108f46d03ef81",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2451,
+  "output_tokens": 1054,
+  "cost_usd": 0.0033703,
+  "elapsed_s": 7.2,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Comprehensive features for managing sales processes and opportunities\",\n    \"Improved robustness and functionality compared to Pipedrive\",\n    \"Good integration capabilities with other tools\"\n  ],\n  \"cons\": [\n    \"Can be more complex to set up and customize than expected\",\n    \"Reporting features may require a learning curve\",\n    \"Pricing might become a concern as the company grows\"\n  ],\n  \"overall_experience\": \"This Account Executive likely found HubSpot CRM to be a significant upgrade in terms of functionality and robustness compared to their previous experience with Pipedrive, especially for managing complex sales processes. While appreciating its comprehensive features and integrations, they may have encountered a steeper learning curve for advanced customization and reporting. Despite some complexity, the tool effectively supports their sales tasks, making it a valuable asset for their small software company.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Comprehensive features for managing sales processes and opportunities",
+      "Improved robustness and functionality compared to Pipedrive",
+      "Good integration capabilities with other tools"
+    ],
+    "cons": [
+      "Can be more complex to set up and customize than expected",
+      "Reporting features may require a learning curve",
+      "Pricing might become a concern as the company grows"
+    ],
+    "overall_experience": "This Account Executive likely found HubSpot CRM to be a significant upgrade in terms of functionality and robustness compared to their previous experience with Pipedrive, especially for managing complex sales processes. While appreciating its comprehensive features and integrations, they may have encountered a steeper learning curve for advanced customization and reporting. Despite some complexity, the tool effectively supports their sales tasks, making it a valuable asset for their small software company."
+  },
+  "ts": "2026-10-18T05:00:35.161310+00:00"
+}

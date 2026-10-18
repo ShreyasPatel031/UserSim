@@ -1,0 +1,31 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "89106ce9d4f8f2f398751c1728f8483f5e0542c56266a339e1c007340fd73703",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 351,
+  "output_tokens": 509,
+  "cost_usd": 0.0013778,
+  "elapsed_s": 24.85,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage business contacts and information\",\n  \"benefits\": [\n    \"Easy to get started\",\n    \"Customizable for needs\",\n    \"Good integrations with other platforms\",\n    \"Company listens to feedback and incorporates suggestions\"\n  ],\n  \"frictions\": [\n    \"Customer segments pricing structure is too broad (Free, $50, $850)\",\n    \"Takes time to understand features to get best use\",\n    \"Risk of paying high price for unused features\"\n  ]\n}",
+  "json": {
+    "task": "Manage business contacts and information",
+    "benefits": [
+      "Easy to get started",
+      "Customizable for needs",
+      "Good integrations with other platforms",
+      "Company listens to feedback and incorporates suggestions"
+    ],
+    "frictions": [
+      "Customer segments pricing structure is too broad (Free, $50, $850)",
+      "Takes time to understand features to get best use",
+      "Risk of paying high price for unused features"
+    ]
+  },
+  "ts": "2026-10-18T04:56:10.978753+00:00"
+}

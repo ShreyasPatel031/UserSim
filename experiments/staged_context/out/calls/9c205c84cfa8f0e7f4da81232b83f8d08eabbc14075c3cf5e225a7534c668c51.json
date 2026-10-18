@@ -1,0 +1,28 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9c205c84cfa8f0e7f4da81232b83f8d08eabbc14075c3cf5e225a7534c668c51",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 159,
+  "output_tokens": 473,
+  "cost_usd": 0.0012301999999999999,
+  "elapsed_s": 23.84,
+  "error": null,
+  "text": "{\n  \"task\": \"Create and manage various project boards\",\n  \"benefits\": [\n    \"Create many different boards\",\n    \"Use for individual or team projects\",\n    \"Design projects with different priorities\"\n  ],\n  \"frictions\": [\n    \"Lacks clarity/overview sometimes\"\n  ]\n}",
+  "json": {
+    "task": "Create and manage various project boards",
+    "benefits": [
+      "Create many different boards",
+      "Use for individual or team projects",
+      "Design projects with different priorities"
+    ],
+    "frictions": [
+      "Lacks clarity/overview sometimes"
+    ]
+  },
+  "ts": "2026-10-18T04:56:08.786375+00:00"
+}

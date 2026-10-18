@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9b7fc1b702fb61cc846d2c1bed7b10541e26eaa744529b202dbebda4007c5bde",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1073,
+  "output_tokens": 1028,
+  "cost_usd": 0.0028919,
+  "elapsed_s": 9.97,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Intuitive interface makes managing client accounts straightforward\",\n    \"Streamlined bank reconciliation features save time\",\n    \"Cloud accessibility allows for flexible work arrangements\"\n  ],\n  \"cons\": [\n    \"Specific advanced accounting features may require workarounds\",\n    \"Reporting customisation could be more robust for diverse client needs\",\n    \"Customer support response times can sometimes be slow\"\n  ],\n  \"overall_experience\": \"This Director found Xero to be a highly intuitive and efficient tool for managing their practice's and clients' financial operations, appreciating its ease of use and cloud capabilities. While generally satisfied, they noted some limitations in advanced functionality and reporting customisation compared to previous, more comprehensive systems. Despite minor frustrations with support, the overall experience remained positive, leading to a strong recommendation for others.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Intuitive interface makes managing client accounts straightforward",
+      "Streamlined bank reconciliation features save time",
+      "Cloud accessibility allows for flexible work arrangements"
+    ],
+    "cons": [
+      "Specific advanced accounting features may require workarounds",
+      "Reporting customisation could be more robust for diverse client needs",
+      "Customer support response times can sometimes be slow"
+    ],
+    "overall_experience": "This Director found Xero to be a highly intuitive and efficient tool for managing their practice's and clients' financial operations, appreciating its ease of use and cloud capabilities. While generally satisfied, they noted some limitations in advanced functionality and reporting customisation compared to previous, more comprehensive systems. Despite minor frustrations with support, the overall experience remained positive, leading to a strong recommendation for others."
+  },
+  "ts": "2026-10-18T05:00:57.641580+00:00"
+}

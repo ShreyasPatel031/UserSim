@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ac0e59f20af9353e03868a8f20a404bd14e35339bb73579072db769a1b5418bb",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2787,
+  "output_tokens": 1004,
+  "cost_usd": 0.0033460999999999994,
+  "elapsed_s": 6.4,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Powerful marketing automation and segmentation capabilities\",\n    \"Comprehensive lead scoring and CRM features\",\n    \"Smooth migration from HubSpot with enhanced functionality\"\n  ],\n  \"cons\": [\n    \"Steeper learning curve compared to simpler tools\",\n    \"Reporting customization could be more flexible\",\n    \"Interface can feel overwhelming at times due to extensive features\"\n  ],\n  \"overall_experience\": \"This VP of Marketing, having transitioned from HubSpot, likely found ActiveCampaign to be a robust upgrade for their marketing automation and email campaign needs. They would appreciate its advanced segmentation and automation capabilities, which are crucial for an IT services company. While the platform offers significant functionality, they may have experienced a learning curve, and wished for more intuitive reporting or a cleaner interface.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Powerful marketing automation and segmentation capabilities",
+      "Comprehensive lead scoring and CRM features",
+      "Smooth migration from HubSpot with enhanced functionality"
+    ],
+    "cons": [
+      "Steeper learning curve compared to simpler tools",
+      "Reporting customization could be more flexible",
+      "Interface can feel overwhelming at times due to extensive features"
+    ],
+    "overall_experience": "This VP of Marketing, having transitioned from HubSpot, likely found ActiveCampaign to be a robust upgrade for their marketing automation and email campaign needs. They would appreciate its advanced segmentation and automation capabilities, which are crucial for an IT services company. While the platform offers significant functionality, they may have experienced a learning curve, and wished for more intuitive reporting or a cleaner interface."
+  },
+  "ts": "2026-10-18T05:00:48.830153+00:00"
+}

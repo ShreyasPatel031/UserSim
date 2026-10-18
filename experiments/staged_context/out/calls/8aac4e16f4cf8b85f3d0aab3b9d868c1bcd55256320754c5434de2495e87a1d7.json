@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8aac4e16f4cf8b85f3d0aab3b9d868c1bcd55256320754c5434de2495e87a1d7",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2534,
+  "output_tokens": 1007,
+  "cost_usd": 0.0032777,
+  "elapsed_s": 5.85,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Helps organize and manage multiple passwords efficiently\",\n    \"Offers convenience of cross-device syncing\",\n    \"Saves time by reducing password resets\"\n  ],\n  \"cons\": [\n    \"Perceived as less user-friendly than some alternatives\",\n    \"Concerns about the pricing model for advanced features\",\n    \"Occasional performance issues or glitches\"\n  ],\n  \"overall_experience\": \"This marketer likely found LastPass a convenient tool for managing their passwords, appreciating its core functionality for organizing and syncing credentials across devices. However, they may have found its interface less intuitive compared to other password managers, leading to a slightly steeper learning curve. Concerns about its value for money, especially regarding potential pricing changes or perceived complexity for a small team, likely impacted their overall satisfaction.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Helps organize and manage multiple passwords efficiently",
+      "Offers convenience of cross-device syncing",
+      "Saves time by reducing password resets"
+    ],
+    "cons": [
+      "Perceived as less user-friendly than some alternatives",
+      "Concerns about the pricing model for advanced features",
+      "Occasional performance issues or glitches"
+    ],
+    "overall_experience": "This marketer likely found LastPass a convenient tool for managing their passwords, appreciating its core functionality for organizing and syncing credentials across devices. However, they may have found its interface less intuitive compared to other password managers, leading to a slightly steeper learning curve. Concerns about its value for money, especially regarding potential pricing changes or perceived complexity for a small team, likely impacted their overall satisfaction."
+  },
+  "ts": "2026-10-18T05:01:20.387761+00:00"
+}

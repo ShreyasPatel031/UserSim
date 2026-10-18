@@ -1,0 +1,28 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "161af59840c05d492f2e8416adef65967f4d7db81f75e46ed5e21b54f5366b70",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 217,
+  "output_tokens": 442,
+  "cost_usd": 0.0011701,
+  "elapsed_s": 3.79,
+  "error": null,
+  "text": "{\n  \"task\": \"Create a website for design or business purposes\",\n  \"benefits\": [\n    \"easy to use\",\n    \"easy client onboarding\",\n    \"clients can easily navigate the editor\"\n  ],\n  \"frictions\": [\n    \"lack of responsiveness on larger screens during design\"\n  ]\n}",
+  "json": {
+    "task": "Create a website for design or business purposes",
+    "benefits": [
+      "easy to use",
+      "easy client onboarding",
+      "clients can easily navigate the editor"
+    ],
+    "frictions": [
+      "lack of responsiveness on larger screens during design"
+    ]
+  },
+  "ts": "2026-10-18T04:56:16.057323+00:00"
+}

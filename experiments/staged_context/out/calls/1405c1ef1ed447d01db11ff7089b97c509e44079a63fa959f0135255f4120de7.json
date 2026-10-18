@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1405c1ef1ed447d01db11ff7089b97c509e44079a63fa959f0135255f4120de7",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1119,
+  "output_tokens": 968,
+  "cost_usd": 0.0027557,
+  "elapsed_s": 6.6,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Robust reporting and analytics for team accountability\",\n    \"Centralized system for tracking tickets across the enterprise\",\n    \"Ability to customize workflows for various teams\"\n  ],\n  \"cons\": [\n    \"Initial setup and advanced configuration can be complex\",\n    \"Cost of advanced features or scaling might add up\",\n    \"Some teams may experience a learning curve for specific features\"\n  ],\n  \"overall_experience\": \"The Director of IT found Zendesk Suite to be highly effective for managing tickets and ensuring team accountability across their enterprise. They appreciated the powerful reporting capabilities and the centralized nature of the platform. While generally satisfied, the initial implementation and potential costs for extensive customization were noted as areas requiring attention.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Robust reporting and analytics for team accountability",
+      "Centralized system for tracking tickets across the enterprise",
+      "Ability to customize workflows for various teams"
+    ],
+    "cons": [
+      "Initial setup and advanced configuration can be complex",
+      "Cost of advanced features or scaling might add up",
+      "Some teams may experience a learning curve for specific features"
+    ],
+    "overall_experience": "The Director of IT found Zendesk Suite to be highly effective for managing tickets and ensuring team accountability across their enterprise. They appreciated the powerful reporting capabilities and the centralized nature of the platform. While generally satisfied, the initial implementation and potential costs for extensive customization were noted as areas requiring attention."
+  },
+  "ts": "2026-10-18T05:00:39.631281+00:00"
+}

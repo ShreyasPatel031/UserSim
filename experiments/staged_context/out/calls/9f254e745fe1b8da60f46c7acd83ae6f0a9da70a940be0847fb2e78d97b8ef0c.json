@@ -1,0 +1,24 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9f254e745fe1b8da60f46c7acd83ae6f0a9da70a940be0847fb2e78d97b8ef0c",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 156,
+  "output_tokens": 434,
+  "cost_usd": 0.0011318,
+  "elapsed_s": 24.28,
+  "error": null,
+  "text": "{\n  \"task\": \"Find customer information.\",\n  \"benefits\": [\n    \"Easily find customer information using various search areas.\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Find customer information.",
+    "benefits": [
+      "Easily find customer information using various search areas."
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T04:56:10.699870+00:00"
+}

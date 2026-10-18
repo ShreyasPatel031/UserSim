@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4df8fe4c31cafdd825809d6c26b6657a75d843c8786aea54e798c1ab7685ff67",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2500,
+  "output_tokens": 976,
+  "cost_usd": 0.00319,
+  "elapsed_s": 6.68,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Intuitive interface and ease of use compared to previous CRM.\",\n    \"Integrated marketing, sales, and service tools in one platform.\",\n    \"Good value for a small business, especially compared to larger, more complex solutions.\"\n  ],\n  \"cons\": [\n    \"Customization options might feel limited after using Salesforce.\",\n    \"Higher-tier features can become expensive for a small company.\",\n    \"Reporting capabilities could be more robust for specific analytical needs.\"\n  ],\n  \"overall_experience\": \"This Director likely experienced HubSpot CRM as a refreshing change from Salesforce, appreciating its user-friendly design and integrated platform, which streamlined operations for their small marketing agency. They found it to offer strong value for money and good core functionality. While some advanced customization or reporting features might not match Salesforce's depth, the overall ease of use and accessibility were significant advantages.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Intuitive interface and ease of use compared to previous CRM.",
+      "Integrated marketing, sales, and service tools in one platform.",
+      "Good value for a small business, especially compared to larger, more complex solutions."
+    ],
+    "cons": [
+      "Customization options might feel limited after using Salesforce.",
+      "Higher-tier features can become expensive for a small company.",
+      "Reporting capabilities could be more robust for specific analytical needs."
+    ],
+    "overall_experience": "This Director likely experienced HubSpot CRM as a refreshing change from Salesforce, appreciating its user-friendly design and integrated platform, which streamlined operations for their small marketing agency. They found it to offer strong value for money and good core functionality. While some advanced customization or reporting features might not match Salesforce's depth, the overall ease of use and accessibility were significant advantages."
+  },
+  "ts": "2026-10-18T05:00:32.912881+00:00"
+}

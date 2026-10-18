@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "dcd8b53e28aea4fbd24b1843a50945eaf278fd462175320ba437e594ea38952c",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 204,
+  "output_tokens": 494,
+  "cost_usd": 0.0012962,
+  "elapsed_s": 25.01,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage work and workflows\",\n  \"benefits\": [\n    \"Customizability\",\n    \"Great customer support\",\n    \"Automations improve workflows\"\n  ],\n  \"frictions\": [\n    \"Excessive customizability makes it hard to use\",\n    \"Lack of a dedicated representative for initial customizations\"\n  ]\n}",
+  "json": {
+    "task": "Manage work and workflows",
+    "benefits": [
+      "Customizability",
+      "Great customer support",
+      "Automations improve workflows"
+    ],
+    "frictions": [
+      "Excessive customizability makes it hard to use",
+      "Lack of a dedicated representative for initial customizations"
+    ]
+  },
+  "ts": "2026-10-18T04:56:10.387269+00:00"
+}

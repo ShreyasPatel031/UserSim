@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "573747adc6936f778b00a09c1c7e648892d719dad226c9c9a7d98c7e4770eefc",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1076,
+  "output_tokens": 964,
+  "cost_usd": 0.0027327999999999996,
+  "elapsed_s": 6.6,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Powerful email automation and segmentation capabilities.\",\n    \"Effective for nurturing leads and client communication.\",\n    \"Robust tools for managing marketing campaigns efficiently.\"\n  ],\n  \"cons\": [\n    \"Learning curve can be steep for a small business owner.\",\n    \"Pricing might feel high for advanced features needed.\",\n    \"Interface could sometimes be overwhelming or complex.\"\n  ],\n  \"overall_experience\": \"This CEO and Chief Connector likely found ActiveCampaign to be a highly functional tool for managing email marketing campaigns, appreciating its automation and segmentation power for their professional training business. While it effectively handled their core tasks, they may have experienced some challenges with its complexity or felt the value for money could be slightly better, given their small company size and role.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Powerful email automation and segmentation capabilities.",
+      "Effective for nurturing leads and client communication.",
+      "Robust tools for managing marketing campaigns efficiently."
+    ],
+    "cons": [
+      "Learning curve can be steep for a small business owner.",
+      "Pricing might feel high for advanced features needed.",
+      "Interface could sometimes be overwhelming or complex."
+    ],
+    "overall_experience": "This CEO and Chief Connector likely found ActiveCampaign to be a highly functional tool for managing email marketing campaigns, appreciating its automation and segmentation power for their professional training business. While it effectively handled their core tasks, they may have experienced some challenges with its complexity or felt the value for money could be slightly better, given their small company size and role."
+  },
+  "ts": "2026-10-18T05:00:49.405516+00:00"
+}

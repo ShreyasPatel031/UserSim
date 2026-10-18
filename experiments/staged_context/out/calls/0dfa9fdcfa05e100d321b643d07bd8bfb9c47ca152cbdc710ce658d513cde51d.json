@@ -1,0 +1,31 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0dfa9fdcfa05e100d321b643d07bd8bfb9c47ca152cbdc710ce658d513cde51d",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 245,
+  "output_tokens": 491,
+  "cost_usd": 0.001301,
+  "elapsed_s": 25.49,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage projects and track tasks\",\n  \"benefits\": [\n    \"Utilize flexible workflows\",\n    \"Use custom fields\",\n    \"Track and prioritize tasks\",\n    \"Navigate a user-friendly interface\"\n  ],\n  \"frictions\": [\n    \"Experience difficulty switching between tasks and projects on the mobile app\",\n    \"Encounter mobile app freezing\",\n    \"Face mobile app syncing issues\"\n  ]\n}",
+  "json": {
+    "task": "Manage projects and track tasks",
+    "benefits": [
+      "Utilize flexible workflows",
+      "Use custom fields",
+      "Track and prioritize tasks",
+      "Navigate a user-friendly interface"
+    ],
+    "frictions": [
+      "Experience difficulty switching between tasks and projects on the mobile app",
+      "Encounter mobile app freezing",
+      "Face mobile app syncing issues"
+    ]
+  },
+  "ts": "2026-10-18T04:56:10.594915+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c5d048c428af4098a570cbf3f8846d4f9c4d5aaa75646a49c2c1655460975da4",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1089,
+  "output_tokens": 957,
+  "cost_usd": 0.0027191999999999997,
+  "elapsed_s": 6.59,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Intuitive interface and ease of adoption compared to previous CRM.\",\n    \"Integrated marketing and sales tools streamline operations for a small team.\",\n    \"Excellent value, especially for a growing marketing agency.\"\n  ],\n  \"cons\": [\n    \"Some advanced customization options may be less robust than enterprise solutions.\",\n    \"Could experience occasional feature bloat with less frequently used tools.\",\n    \"Cost can increase significantly when scaling up to higher-tier features.\"\n  ],\n  \"overall_experience\": \"The Director likely found HubSpot CRM a significant improvement in terms of user-friendliness and integrated functionality, especially after using Salesforce. The platform's strong marketing capabilities and value for money would have been particularly beneficial for their small agency. They would appreciate its ease of use and how it helps streamline their sales and marketing efforts.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Intuitive interface and ease of adoption compared to previous CRM.",
+      "Integrated marketing and sales tools streamline operations for a small team.",
+      "Excellent value, especially for a growing marketing agency."
+    ],
+    "cons": [
+      "Some advanced customization options may be less robust than enterprise solutions.",
+      "Could experience occasional feature bloat with less frequently used tools.",
+      "Cost can increase significantly when scaling up to higher-tier features."
+    ],
+    "overall_experience": "The Director likely found HubSpot CRM a significant improvement in terms of user-friendliness and integrated functionality, especially after using Salesforce. The platform's strong marketing capabilities and value for money would have been particularly beneficial for their small agency. They would appreciate its ease of use and how it helps streamline their sales and marketing efforts."
+  },
+  "ts": "2026-10-18T05:00:33.133427+00:00"
+}

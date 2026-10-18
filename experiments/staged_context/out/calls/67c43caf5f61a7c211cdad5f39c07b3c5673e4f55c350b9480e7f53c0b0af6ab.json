@@ -1,0 +1,25 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "67c43caf5f61a7c211cdad5f39c07b3c5673e4f55c350b9480e7f53c0b0af6ab",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 137,
+  "output_tokens": 446,
+  "cost_usd": 0.0011561000000000002,
+  "elapsed_s": 4.12,
+  "error": null,
+  "text": "{\n  \"task\": \"Store code and IT tasks.\",\n  \"benefits\": [\n    \"Easy to store\",\n    \"Excellent GitLab tool\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Store code and IT tasks.",
+    "benefits": [
+      "Easy to store",
+      "Excellent GitLab tool"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T04:56:21.123696+00:00"
+}

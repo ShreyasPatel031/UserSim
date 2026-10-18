@@ -1,0 +1,31 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ceeed1e3e3a4718b4368f2085a0f87f8b6b802dbffef10018d9dc8810578ef28",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 296,
+  "output_tokens": 498,
+  "cost_usd": 0.0013338,
+  "elapsed_s": 22.75,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage accounting with currency and account connections\",\n  \"benefits\": [\n    \"Offers simplicity\",\n    \"Provides ease of use\",\n    \"Good for getting started\",\n    \"Supports multiple currencies and account connections\"\n  ],\n  \"frictions\": [\n    \"Lacks direct support (no phone number or appointment scheduling)\",\n    \"Experiences substantial year-over-year price increases\",\n    \"Has an archaic platform feel\"\n  ]\n}",
+  "json": {
+    "task": "Manage accounting with currency and account connections",
+    "benefits": [
+      "Offers simplicity",
+      "Provides ease of use",
+      "Good for getting started",
+      "Supports multiple currencies and account connections"
+    ],
+    "frictions": [
+      "Lacks direct support (no phone number or appointment scheduling)",
+      "Experiences substantial year-over-year price increases",
+      "Has an archaic platform feel"
+    ]
+  },
+  "ts": "2026-10-18T04:56:10.774239+00:00"
+}

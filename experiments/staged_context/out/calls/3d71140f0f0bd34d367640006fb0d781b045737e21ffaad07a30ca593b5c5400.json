@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3d71140f0f0bd34d367640006fb0d781b045737e21ffaad07a30ca593b5c5400",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 268,
+  "output_tokens": 1003,
+  "cost_usd": 0.0025879,
+  "elapsed_s": 7.26,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Significantly improved HR data management and organization\",\n    \"Streamlined onboarding and time-off requests compared to previous tools\",\n    \"Enhanced employee self-service capabilities\"\n  ],\n  \"cons\": [\n    \"Reporting features may sometimes lack specific customization options\",\n    \"Integration with industry-specific operational tools could be better\",\n    \"Occasional limitations in advanced payroll or complex scheduling for the transportation sector\"\n  ],\n  \"overall_experience\": \"This Human Resource Manager likely experienced a substantial upgrade moving from QuickBooks to BambooHR, finding it significantly more effective for managing HR operations for their 51-200 employee transportation company. The dedicated HR functionalities streamlined many processes, improving data organization and employee self-service. While generally positive, they may have noted some areas where BambooHR could be more robust for industry-specific needs or highly customized reporting.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Significantly improved HR data management and organization",
+      "Streamlined onboarding and time-off requests compared to previous tools",
+      "Enhanced employee self-service capabilities"
+    ],
+    "cons": [
+      "Reporting features may sometimes lack specific customization options",
+      "Integration with industry-specific operational tools could be better",
+      "Occasional limitations in advanced payroll or complex scheduling for the transportation sector"
+    ],
+    "overall_experience": "This Human Resource Manager likely experienced a substantial upgrade moving from QuickBooks to BambooHR, finding it significantly more effective for managing HR operations for their 51-200 employee transportation company. The dedicated HR functionalities streamlined many processes, improving data organization and employee self-service. While generally positive, they may have noted some areas where BambooHR could be more robust for industry-specific needs or highly customized reporting."
+  },
+  "ts": "2026-10-18T05:01:00.753277+00:00"
+}

@@ -1,0 +1,28 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "fcfaee3a637caeb47bbe683e0d5750dddcd1a5c392dce0063792948365c69e55",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 164,
+  "output_tokens": 449,
+  "cost_usd": 0.0011717,
+  "elapsed_s": 25.47,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage projects for international teams\",\n  \"benefits\": [\n    \"AI integration helps translate tickets into other languages\"\n  ],\n  \"frictions\": [\n    \"Very expensive compared to other tools\",\n    \"No possibility to chat with colleagues\",\n    \"Tickets can get very long and confusing\"\n  ]\n}",
+  "json": {
+    "task": "Manage projects for international teams",
+    "benefits": [
+      "AI integration helps translate tickets into other languages"
+    ],
+    "frictions": [
+      "Very expensive compared to other tools",
+      "No possibility to chat with colleagues",
+      "Tickets can get very long and confusing"
+    ]
+  },
+  "ts": "2026-10-18T04:56:10.662822+00:00"
+}

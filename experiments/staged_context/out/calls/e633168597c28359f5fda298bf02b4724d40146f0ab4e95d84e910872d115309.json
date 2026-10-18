@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e633168597c28359f5fda298bf02b4724d40146f0ab4e95d84e910872d115309",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 277,
+  "output_tokens": 967,
+  "cost_usd": 0.0025006,
+  "elapsed_s": 8.58,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Highly customizable workflows for approvals.\",\n    \"Visual dashboards for tracking status of plans and disputes.\",\n    \"Automation features streamline routine tasks and notifications.\"\n  ],\n  \"cons\": [\n    \"Requires significant initial setup and customization.\",\n    \"Advanced financial calculations or reporting might necessitate workarounds.\",\n    \"Can become complex to manage with a large number of detailed items.\"\n  ],\n  \"overall_experience\": \"The Sales Compensation Analyst found monday.com AI Work Platform to be a valuable tool for managing the complex workflows of commission plan approvals and dispute resolution. Its customizable boards and automation capabilities significantly improved visibility and reduced manual communication. However, the platform's generalist nature meant some advanced financial analysis or specialized reporting required creative solutions or data exports.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Highly customizable workflows for approvals.",
+      "Visual dashboards for tracking status of plans and disputes.",
+      "Automation features streamline routine tasks and notifications."
+    ],
+    "cons": [
+      "Requires significant initial setup and customization.",
+      "Advanced financial calculations or reporting might necessitate workarounds.",
+      "Can become complex to manage with a large number of detailed items."
+    ],
+    "overall_experience": "The Sales Compensation Analyst found monday.com AI Work Platform to be a valuable tool for managing the complex workflows of commission plan approvals and dispute resolution. Its customizable boards and automation capabilities significantly improved visibility and reduced manual communication. However, the platform's generalist nature meant some advanced financial analysis or specialized reporting required creative solutions or data exports."
+  },
+  "ts": "2026-10-18T05:00:29.505838+00:00"
+}

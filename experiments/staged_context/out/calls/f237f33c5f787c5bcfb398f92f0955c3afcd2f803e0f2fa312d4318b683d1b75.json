@@ -1,0 +1,27 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f237f33c5f787c5bcfb398f92f0955c3afcd2f803e0f2fa312d4318b683d1b75",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 183,
+  "output_tokens": 432,
+  "cost_usd": 0.0011349,
+  "elapsed_s": 4.32,
+  "error": null,
+  "text": "{\n  \"task\": \"Collect and access necessary passwords from a single source\",\n  \"benefits\": [\n    \"Simple collection of necessary passwords\",\n    \"Ability to log in from a single source\",\n    \"Intuitive interface\",\n    \"Simple for new users\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Collect and access necessary passwords from a single source",
+    "benefits": [
+      "Simple collection of necessary passwords",
+      "Ability to log in from a single source",
+      "Intuitive interface",
+      "Simple for new users"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T04:56:19.704643+00:00"
+}

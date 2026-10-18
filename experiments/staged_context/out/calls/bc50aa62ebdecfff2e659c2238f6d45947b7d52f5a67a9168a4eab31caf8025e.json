@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "bc50aa62ebdecfff2e659c2238f6d45947b7d52f5a67a9168a4eab31caf8025e",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2667,
+  "output_tokens": 1136,
+  "cost_usd": 0.0036401000000000003,
+  "elapsed_s": 7.93,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Highly flexible for organizing diverse project notes and documentation.\",\n    \"Centralized platform for all project-related information, aiding collaboration.\",\n    \"Powerful database features for tracking tasks and project progress efficiently.\"\n  ],\n  \"cons\": [\n    \"Initial learning curve to fully leverage its advanced features.\",\n    \"Can become slow with very large and complex workspaces.\",\n    \"Mobile experience may sometimes lack the full functionality of the desktop version.\"\n  ],\n  \"overall_experience\": \"This Project Manager likely experienced Notion as a highly versatile and powerful tool, significantly improving their ability to organize and track notes and documentation compared to previous alternatives like Microsoft OneNote. They would appreciate its flexibility and database capabilities, which are crucial for managing complex projects within a large retail company. Despite a potential initial learning curve, their 2+ years of usage suggest they have successfully integrated it into their workflow, finding it an invaluable asset for project management.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Highly flexible for organizing diverse project notes and documentation.",
+      "Centralized platform for all project-related information, aiding collaboration.",
+      "Powerful database features for tracking tasks and project progress efficiently."
+    ],
+    "cons": [
+      "Initial learning curve to fully leverage its advanced features.",
+      "Can become slow with very large and complex workspaces.",
+      "Mobile experience may sometimes lack the full functionality of the desktop version."
+    ],
+    "overall_experience": "This Project Manager likely experienced Notion as a highly versatile and powerful tool, significantly improving their ability to organize and track notes and documentation compared to previous alternatives like Microsoft OneNote. They would appreciate its flexibility and database capabilities, which are crucial for managing complex projects within a large retail company. Despite a potential initial learning curve, their 2+ years of usage suggest they have successfully integrated it into their workflow, finding it an invaluable asset for project management."
+  },
+  "ts": "2026-10-18T05:00:32.461159+00:00"
+}

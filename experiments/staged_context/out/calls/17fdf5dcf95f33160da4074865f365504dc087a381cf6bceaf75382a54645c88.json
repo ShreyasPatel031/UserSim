@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "17fdf5dcf95f33160da4074865f365504dc087a381cf6bceaf75382a54645c88",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2426,
+  "output_tokens": 1013,
+  "cost_usd": 0.0032603,
+  "elapsed_s": 7.32,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Comprehensive feature set for managing customer relationships and business operations.\",\n    \"User-friendly interface making it easy to navigate and utilize.\",\n    \"Excellent for organizing leads, tracking deals, and automating workflows.\"\n  ],\n  \"cons\": [\n    \"Pricing can become a concern as the business scales or more advanced features are needed.\",\n    \"Initial learning curve for maximizing all available functionalities.\",\n    \"Customization options might be limited without higher-tier plans or developer assistance.\"\n  ],\n  \"overall_experience\": \"This software developer likely found HubSpot CRM to be a highly effective tool for managing customer relationships within their small IT services company. The platform's ease of use and comprehensive functionality were significant advantages, streamlining their business operations. While the overall value and customer support were good, they may have noted that advanced features or extensive customization could lead to increased costs or a steeper learning curve.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Comprehensive feature set for managing customer relationships and business operations.",
+      "User-friendly interface making it easy to navigate and utilize.",
+      "Excellent for organizing leads, tracking deals, and automating workflows."
+    ],
+    "cons": [
+      "Pricing can become a concern as the business scales or more advanced features are needed.",
+      "Initial learning curve for maximizing all available functionalities.",
+      "Customization options might be limited without higher-tier plans or developer assistance."
+    ],
+    "overall_experience": "This software developer likely found HubSpot CRM to be a highly effective tool for managing customer relationships within their small IT services company. The platform's ease of use and comprehensive functionality were significant advantages, streamlining their business operations. While the overall value and customer support were good, they may have noted that advanced features or extensive customization could lead to increased costs or a steeper learning curve."
+  },
+  "ts": "2026-10-18T05:00:33.544787+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "79d3a05f60dc3b312a4179861369a790a1fd451cd15b68c25d7517518d32efd4",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 256,
+  "output_tokens": 1000,
+  "cost_usd": 0.0025768,
+  "elapsed_s": 6.83,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 5,\n  \"pros\": [\n    \"Seamless browser integration for auto-fill\",\n    \"Effective password sharing for small teams\",\n    \"Good value for core password management\"\n  ],\n  \"cons\": [\n    \"Recent security incidents caused significant concern\",\n    \"Occasional issues with form filling accuracy\",\n    \"Interface could be more modern compared to alternatives\"\n  ],\n  \"overall_experience\": \"This owner of a small software company likely found LastPass to be a generally effective and cost-efficient solution for managing passwords for themselves and their team for over two years. While appreciating its core functionality and ease of browser integration, they would have been significantly impacted by the recent security breaches, leading to a diminished sense of trust. Despite this, the product's established role in their workflow and its value proposition likely kept them as a user, albeit with increased vigilance and potential consideration of alternatives.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 3,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 5,
+    "pros": [
+      "Seamless browser integration for auto-fill",
+      "Effective password sharing for small teams",
+      "Good value for core password management"
+    ],
+    "cons": [
+      "Recent security incidents caused significant concern",
+      "Occasional issues with form filling accuracy",
+      "Interface could be more modern compared to alternatives"
+    ],
+    "overall_experience": "This owner of a small software company likely found LastPass to be a generally effective and cost-efficient solution for managing passwords for themselves and their team for over two years. While appreciating its core functionality and ease of browser integration, they would have been significantly impacted by the recent security breaches, leading to a diminished sense of trust. Despite this, the product's established role in their workflow and its value proposition likely kept them as a user, albeit with increased vigilance and potential consideration of alternatives."
+  },
+  "ts": "2026-10-18T05:01:23.157494+00:00"
+}

@@ -1,0 +1,27 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "5e58339e24a8cf2d95e068d01f8e8369c57403614bb088faa35594eae38a217a",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 222,
+  "output_tokens": 377,
+  "cost_usd": 0.0010091,
+  "elapsed_s": 21.2,
+  "error": null,
+  "text": "{\n  \"task\": null,\n  \"benefits\": [\n    \"The trial was good\"\n  ],\n  \"frictions\": [\n    \"Expected features on a pro license require additional add-ons\",\n    \"Forced into a year contract instead of a monthly subscription\"\n  ]\n}",
+  "json": {
+    "task": null,
+    "benefits": [
+      "The trial was good"
+    ],
+    "frictions": [
+      "Expected features on a pro license require additional add-ons",
+      "Forced into a year contract instead of a monthly subscription"
+    ]
+  },
+  "ts": "2026-10-18T04:56:08.925463+00:00"
+}

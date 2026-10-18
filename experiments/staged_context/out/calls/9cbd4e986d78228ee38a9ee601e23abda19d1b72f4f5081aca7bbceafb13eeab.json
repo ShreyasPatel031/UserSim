@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9cbd4e986d78228ee38a9ee601e23abda19d1b72f4f5081aca7bbceafb13eeab",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 263,
+  "output_tokens": 944,
+  "cost_usd": 0.0024389,
+  "elapsed_s": 7.38,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Efficiently organizes daily sales tasks and follow-ups\",\n    \"Clear overview of to-do lists and deadlines\",\n    \"Improved personal time management and prioritization\"\n  ],\n  \"cons\": [\n    \"Lacked specific CRM functionalities for sales pipeline management\",\n    \"Initial learning curve for advanced features was somewhat steep\",\n    \"Occasional difficulty integrating with other sales tools\"\n  ],\n  \"overall_experience\": \"The Territory Sales Manager likely found Asana highly effective for their core needs of organizing tasks, creating to-do lists, and managing time. They appreciated its ability to streamline their daily workflow and improve personal productivity over their 1-2 years of use. While it excelled at general task management, they may have noted its limitations regarding specialized sales process features.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Efficiently organizes daily sales tasks and follow-ups",
+      "Clear overview of to-do lists and deadlines",
+      "Improved personal time management and prioritization"
+    ],
+    "cons": [
+      "Lacked specific CRM functionalities for sales pipeline management",
+      "Initial learning curve for advanced features was somewhat steep",
+      "Occasional difficulty integrating with other sales tools"
+    ],
+    "overall_experience": "The Territory Sales Manager likely found Asana highly effective for their core needs of organizing tasks, creating to-do lists, and managing time. They appreciated its ability to streamline their daily workflow and improve personal productivity over their 1-2 years of use. While it excelled at general task management, they may have noted its limitations regarding specialized sales process features."
+  },
+  "ts": "2026-10-18T05:00:25.036626+00:00"
+}

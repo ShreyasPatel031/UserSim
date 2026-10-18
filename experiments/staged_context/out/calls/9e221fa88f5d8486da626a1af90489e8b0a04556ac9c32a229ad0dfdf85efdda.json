@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9e221fa88f5d8486da626a1af90489e8b0a04556ac9c32a229ad0dfdf85efdda",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 261,
+  "output_tokens": 1009,
+  "cost_usd": 0.0026007999999999995,
+  "elapsed_s": 7.54,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Highly customizable databases for project tracking and documentation.\",\n    \"Centralized platform for knowledge bases, tasks, and team collaboration.\",\n    \"Flexible page structure allows for varied content and organization.\"\n  ],\n  \"cons\": [\n    \"Performance can degrade with large databases or complex pages.\",\n    \"Limited native integrations with developer-specific tools.\",\n    \"Steep learning curve to master advanced features and database relations.\"\n  ],\n  \"overall_experience\": \"As a software developer, this user likely found Notion to be an incredibly powerful and flexible tool for managing knowledge bases, project boards, and personal tasks. They appreciated its deep customization options and ability to consolidate various workflows. However, they may have encountered frustrations with performance limitations or the absence of more direct integrations with their development environment.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Highly customizable databases for project tracking and documentation.",
+      "Centralized platform for knowledge bases, tasks, and team collaboration.",
+      "Flexible page structure allows for varied content and organization."
+    ],
+    "cons": [
+      "Performance can degrade with large databases or complex pages.",
+      "Limited native integrations with developer-specific tools.",
+      "Steep learning curve to master advanced features and database relations."
+    ],
+    "overall_experience": "As a software developer, this user likely found Notion to be an incredibly powerful and flexible tool for managing knowledge bases, project boards, and personal tasks. They appreciated its deep customization options and ability to consolidate various workflows. However, they may have encountered frustrations with performance limitations or the absence of more direct integrations with their development environment."
+  },
+  "ts": "2026-10-18T05:00:30.602507+00:00"
+}

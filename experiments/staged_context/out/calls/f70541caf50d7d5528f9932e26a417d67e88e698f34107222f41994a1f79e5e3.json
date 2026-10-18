@@ -1,0 +1,32 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f70541caf50d7d5528f9932e26a417d67e88e698f34107222f41994a1f79e5e3",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 363,
+  "output_tokens": 562,
+  "cost_usd": 0.0015138999999999999,
+  "elapsed_s": 24.62,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage sales leads, client interactions, and sales forecasting.\",\n  \"benefits\": [\n    \"Consolidate all leads from various sources into one place.\",\n    \"Track communication channels that advance prospects.\",\n    \"Create pipeline pages for clients without developer assistance.\",\n    \"Keep track of warm introductions, retainer renewals, and upsell opportunities.\"\n  ],\n  \"frictions\": [\n    \"Requires significant setup and configuration.\",\n    \"User Interface (UI) is a bit crowded.\",\n    \"Customer support responses sometimes direct to lengthy articles.\",\n    \"Value for money decreases with occasional users.\"\n  ]\n}",
+  "json": {
+    "task": "Manage sales leads, client interactions, and sales forecasting.",
+    "benefits": [
+      "Consolidate all leads from various sources into one place.",
+      "Track communication channels that advance prospects.",
+      "Create pipeline pages for clients without developer assistance.",
+      "Keep track of warm introductions, retainer renewals, and upsell opportunities."
+    ],
+    "frictions": [
+      "Requires significant setup and configuration.",
+      "User Interface (UI) is a bit crowded.",
+      "Customer support responses sometimes direct to lengthy articles.",
+      "Value for money decreases with occasional users."
+    ]
+  },
+  "ts": "2026-10-18T04:56:11.018211+00:00"
+}

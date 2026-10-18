@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "60ac9dd8973051bc72d4a270d4671dbb1b6353a885cbd8a0193da44960aba910",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1079,
+  "output_tokens": 1071,
+  "cost_usd": 0.0030012,
+  "elapsed_s": 7.55,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Powerful marketing automation features\",\n    \"Advanced email segmentation capabilities\",\n    \"Intuitive visual automation builder\"\n  ],\n  \"cons\": [\n    \"Initial learning curve for full potential\",\n    \"Pricing can become significant with list growth\",\n    \"Missing some broader business management tools compared to Bitrix24\"\n  ],\n  \"overall_experience\": \"The Operations Manager likely found ActiveCampaign to be a highly functional tool, significantly boosting their marketing automation efforts compared to their previous solution. While the initial setup and learning curve presented some challenges, the powerful features for segmentation and workflow automation were a clear benefit for their marketing and advertising company. They probably viewed it as a valuable investment, despite potential concerns about escalating costs as their contact list expands.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Powerful marketing automation features",
+      "Advanced email segmentation capabilities",
+      "Intuitive visual automation builder"
+    ],
+    "cons": [
+      "Initial learning curve for full potential",
+      "Pricing can become significant with list growth",
+      "Missing some broader business management tools compared to Bitrix24"
+    ],
+    "overall_experience": "The Operations Manager likely found ActiveCampaign to be a highly functional tool, significantly boosting their marketing automation efforts compared to their previous solution. While the initial setup and learning curve presented some challenges, the powerful features for segmentation and workflow automation were a clear benefit for their marketing and advertising company. They probably viewed it as a valuable investment, despite potential concerns about escalating costs as their contact list expands."
+  },
+  "ts": "2026-10-18T05:00:51.652159+00:00"
+}

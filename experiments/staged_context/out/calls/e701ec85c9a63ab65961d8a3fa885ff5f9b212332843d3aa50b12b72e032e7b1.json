@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e701ec85c9a63ab65961d8a3fa885ff5f9b212332843d3aa50b12b72e032e7b1",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2741,
+  "output_tokens": 1049,
+  "cost_usd": 0.0034447999999999996,
+  "elapsed_s": 7.22,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Effective in managing complex project details and workflows for a large team.\",\n    \"Provides robust collaboration features essential for marketing campaigns.\",\n    \"Offers clear visibility into project progress and task ownership.\"\n  ],\n  \"cons\": [\n    \"Initial setup and customization for specific marketing workflows can be time-consuming.\",\n    \"May have a slight learning curve for new users transitioning from simpler platforms.\",\n    \"Potential for information overload if not meticulously organized.\"\n  ],\n  \"overall_experience\": \"This Marketing Specialist likely found Asana to be a highly effective tool for managing detailed projects across their large organization. Having used it for over two years, they would appreciate its robust functionality for tracking tasks, collaborating with various teams, and meeting both leadership and role-specific needs. While the platform offered significant power and flexibility, the initial configuration and ongoing management of its features might have presented a moderate learning curve compared to previous, potentially simpler tools.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Effective in managing complex project details and workflows for a large team.",
+      "Provides robust collaboration features essential for marketing campaigns.",
+      "Offers clear visibility into project progress and task ownership."
+    ],
+    "cons": [
+      "Initial setup and customization for specific marketing workflows can be time-consuming.",
+      "May have a slight learning curve for new users transitioning from simpler platforms.",
+      "Potential for information overload if not meticulously organized."
+    ],
+    "overall_experience": "This Marketing Specialist likely found Asana to be a highly effective tool for managing detailed projects across their large organization. Having used it for over two years, they would appreciate its robust functionality for tracking tasks, collaborating with various teams, and meeting both leadership and role-specific needs. While the platform offered significant power and flexibility, the initial configuration and ongoing management of its features might have presented a moderate learning curve compared to previous, potentially simpler tools."
+  },
+  "ts": "2026-10-18T05:00:24.644663+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "729e6c13a0c611616b27ad0076ef7d88e97c06237e2a608b06fe553dfd0c895e",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1090,
+  "output_tokens": 1062,
+  "cost_usd": 0.0029820000000000003,
+  "elapsed_s": 9.65,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Robust reporting capabilities for team performance.\",\n    \"Comprehensive view of sales pipeline and opportunities.\",\n    \"High degree of customization to fit specific sales processes.\"\n  ],\n  \"cons\": [\n    \"Initial setup and mastering advanced report features can be complex.\",\n    \"The cost can be a substantial investment for a mid-market company.\",\n    \"User interface can occasionally feel overwhelming with too many options.\"\n  ],\n  \"overall_experience\": \"The Mid Market Sales Manager likely found Salesforce Sales Cloud to be a powerful tool for managing their team and creating essential reports. Its extensive functionality provided deep insights into sales performance and pipeline management. While generally positive, the complexity of advanced features and the overall cost were likely notable considerations.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Robust reporting capabilities for team performance.",
+      "Comprehensive view of sales pipeline and opportunities.",
+      "High degree of customization to fit specific sales processes."
+    ],
+    "cons": [
+      "Initial setup and mastering advanced report features can be complex.",
+      "The cost can be a substantial investment for a mid-market company.",
+      "User interface can occasionally feel overwhelming with too many options."
+    ],
+    "overall_experience": "The Mid Market Sales Manager likely found Salesforce Sales Cloud to be a powerful tool for managing their team and creating essential reports. Its extensive functionality provided deep insights into sales performance and pipeline management. While generally positive, the complexity of advanced features and the overall cost were likely notable considerations."
+  },
+  "ts": "2026-10-18T05:00:39.143889+00:00"
+}

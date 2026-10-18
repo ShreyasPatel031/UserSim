@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "071c6451130e517e4b9b10136b41761c4c552ad6905dd883da676d0e1b315670",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 176,
+  "output_tokens": 460,
+  "cost_usd": 0.0012028,
+  "elapsed_s": 3.98,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage human resources operations\",\n  \"benefits\": [\n    \"simple user platform\",\n    \"outperforms the competition\",\n    \"all-in-one system\",\n    \"most affordable\"\n  ],\n  \"frictions\": [\n    \"payroll reporting needs improvement\"\n  ]\n}",
+  "json": {
+    "task": "Manage human resources operations",
+    "benefits": [
+      "simple user platform",
+      "outperforms the competition",
+      "all-in-one system",
+      "most affordable"
+    ],
+    "frictions": [
+      "payroll reporting needs improvement"
+    ]
+  },
+  "ts": "2026-10-18T04:56:12.945382+00:00"
+}

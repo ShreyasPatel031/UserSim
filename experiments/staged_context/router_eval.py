@@ -24,7 +24,19 @@ import usage as US  # noqa: E402
 import ux_mcp as U  # noqa: E402
 
 ROUT = E.OUT / "router"
-DEV = ["Pipedrive", "Wrike", "Help Scout", "Brevo", "Namely"]
+EXTRA_URLS = {
+    "Asana": "https://asana.com/", "monday.com AI Work Platform": "https://monday.com/", "Notion": "https://www.notion.com/",
+    "HubSpot CRM": "https://www.hubspot.com/products/crm", "Salesforce Sales Cloud": "https://www.salesforce.com/sales/",
+    "Zendesk Suite": "https://www.zendesk.com/", "Intercom": "https://www.intercom.com/", "Mailchimp": "https://mailchimp.com/",
+    "ActiveCampaign": "https://www.activecampaign.com/", "Xero": "https://www.xero.com/us/", "FreshBooks": "https://www.freshbooks.com/",
+    "BambooHR": "https://www.bamboohr.com/", "Rippling": "https://www.rippling.com/", "Shopify": "https://www.shopify.com/",
+    "Wix": "https://www.wix.com/", "Microsoft Power BI": "https://www.microsoft.com/en-us/power-platform/products/power-bi",
+    "Slack": "https://slack.com/", "Okta": "https://www.okta.com/", "LastPass": "https://www.lastpass.com/",
+    "GitLab": "https://about.gitlab.com/",
+}
+URLS = {**US.URLS, **EXTRA_URLS}
+# v1 chose on 5 products and picked "agent_alone" for pros; v2 chooses on these 25 (test set unchanged)
+DEV = ["Pipedrive", "Wrike", "Help Scout", "Brevo", "Namely"] + list(EXTRA_URLS)
 TEST = ["Freshsales", "Zoho CRM", "Looker", "Basecamp", "LiveAgent", "Zoho Desk", "Klaviyo", "BigCommerce", "Smartsheet", "Freshdesk"]
 PER_PRODUCT = 12
 FLASH = "gemini-2.5-flash"
@@ -82,7 +94,7 @@ def sample(df: pd.DataFrame) -> list[dict]:
 
 def card(r: dict, task: str | None) -> dict:
     prev = "; ".join(str(r[x]) for x in ("switched_from", "alternatives_considered") if r.get(x)) or "not stated"
-    return {"product": r["product_name"], "url": US.URLS[r["product_name"]], "role_title": E.clean(r["reviewer_job_title"]),
+    return {"product": r["product_name"], "url": URLS[r["product_name"]], "role_title": E.clean(r["reviewer_job_title"]),
             "role_family": E.role_family(r["reviewer_job_title"]), "industry": r["reviewer_industry"],
             "company_size": r["reviewer_company_size"], "time_used": r["reviewer_time_used_product"],
             "task": task or "not stated", "previous": prev}
@@ -104,9 +116,9 @@ def main() -> None:
                                 "frictions": [str(x) for x in (j.get("frictions") or [])][:4]}
 
     refs = dict(pool.map(extract, people))
-    cats = dict(pool.map(lambda p: (p, U.classify(US.URLS[p])["category"]), DEV + TEST))
+    cats = dict(pool.map(lambda p: (p, U.classify(URLS[p])["category"]), DEV + TEST))
     cards = {r["review_id"]: card(r, refs[r["review_id"]]["task"]) for r in people}
-    pkgs = dict(pool.map(lambda r: (r["review_id"], U.build_package(US.URLS[r["product_name"]], {
+    pkgs = dict(pool.map(lambda r: (r["review_id"], U.build_package(URLS[r["product_name"]], {
         "role_family": cards[r["review_id"]]["role_family"], "company_size": r["reviewer_company_size"],
         "time_used": r["reviewer_time_used_product"], "industry": r["reviewer_industry"]},
         exclude_product=r["product_name"], mask=U.mask_for(r["product_name"]))), people))

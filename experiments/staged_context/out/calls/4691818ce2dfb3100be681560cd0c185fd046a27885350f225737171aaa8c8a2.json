@@ -1,0 +1,28 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4691818ce2dfb3100be681560cd0c185fd046a27885350f225737171aaa8c8a2",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 150,
+  "output_tokens": 469,
+  "cost_usd": 0.0012174999999999998,
+  "elapsed_s": 23.32,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage email marketing and website building.\",\n  \"benefits\": [\n    \"allocates a wide array of features in one place\",\n    \"includes a website builder\",\n    \"provides email marketing capabilities\"\n  ],\n  \"frictions\": [\n    \"experiences mild bugs\"\n  ]\n}",
+  "json": {
+    "task": "Manage email marketing and website building.",
+    "benefits": [
+      "allocates a wide array of features in one place",
+      "includes a website builder",
+      "provides email marketing capabilities"
+    ],
+    "frictions": [
+      "experiences mild bugs"
+    ]
+  },
+  "ts": "2026-10-18T04:56:10.671788+00:00"
+}

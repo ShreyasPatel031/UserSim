@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a5616336eac41edda54f99030b817164fb5c2262f22dcb715455e88d623cbe4d",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 256,
+  "output_tokens": 1052,
+  "cost_usd": 0.0027068,
+  "elapsed_s": 7.31,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Seamless bank reconciliation and automated feeds.\",\n    \"Intuitive cloud-based interface for easy access.\",\n    \"Improved financial reporting compared to previous software.\"\n  ],\n  \"cons\": [\n    \"Basic inventory management features for retail needs.\",\n    \"Initial learning curve for specific retail-related workflows.\",\n    \"Reliance on online support channels could be slower at times.\"\n  ],\n  \"overall_experience\": \"This owner, transitioning from MYOB Business, likely found Xero to be a significant upgrade in terms of ease of use and cloud accessibility for their small retail company. They appreciated the automated bank feeds and clearer financial reporting, which helped streamline their business finances. While generally positive, the owner may have noted that Xero's built-in inventory management was less robust than ideal for a retail environment, requiring some workarounds.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Seamless bank reconciliation and automated feeds.",
+      "Intuitive cloud-based interface for easy access.",
+      "Improved financial reporting compared to previous software."
+    ],
+    "cons": [
+      "Basic inventory management features for retail needs.",
+      "Initial learning curve for specific retail-related workflows.",
+      "Reliance on online support channels could be slower at times."
+    ],
+    "overall_experience": "This owner, transitioning from MYOB Business, likely found Xero to be a significant upgrade in terms of ease of use and cloud accessibility for their small retail company. They appreciated the automated bank feeds and clearer financial reporting, which helped streamline their business finances. While generally positive, the owner may have noted that Xero's built-in inventory management was less robust than ideal for a retail environment, requiring some workarounds."
+  },
+  "ts": "2026-10-18T05:00:52.524597+00:00"
+}

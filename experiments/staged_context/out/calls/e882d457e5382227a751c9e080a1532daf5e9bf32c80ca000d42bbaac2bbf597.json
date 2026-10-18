@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e882d457e5382227a751c9e080a1532daf5e9bf32c80ca000d42bbaac2bbf597",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2311,
+  "output_tokens": 1035,
+  "cost_usd": 0.0032807999999999995,
+  "elapsed_s": 7.4,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"User-friendly interface for email campaigns\",\n    \"Effective for managing basic business growth needs\",\n    \"Affordable compared to more complex platforms like Salesforce\"\n  ],\n  \"cons\": [\n    \"Pricing can increase as contact lists grow\",\n    \"Advanced automation or CRM features might be limited\",\n    \"Reporting could be more in-depth for detailed analysis\"\n  ],\n  \"overall_experience\": \"This manager likely found Mailchimp to be a practical and user-friendly solution for their self-employed business, especially after using more complex systems like Salesforce. They appreciate its ease of use for managing basic marketing and growth needs over a period of 2+ years. While generally satisfied, they might find some advanced functionalities or pricing tiers less ideal as their business scales.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "User-friendly interface for email campaigns",
+      "Effective for managing basic business growth needs",
+      "Affordable compared to more complex platforms like Salesforce"
+    ],
+    "cons": [
+      "Pricing can increase as contact lists grow",
+      "Advanced automation or CRM features might be limited",
+      "Reporting could be more in-depth for detailed analysis"
+    ],
+    "overall_experience": "This manager likely found Mailchimp to be a practical and user-friendly solution for their self-employed business, especially after using more complex systems like Salesforce. They appreciate its ease of use for managing basic marketing and growth needs over a period of 2+ years. While generally satisfied, they might find some advanced functionalities or pricing tiers less ideal as their business scales."
+  },
+  "ts": "2026-10-18T05:00:46.466045+00:00"
+}

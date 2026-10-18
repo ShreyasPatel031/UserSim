@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e4c1594a6d3f33662088a44b371938d46e5e8ac96b2f2484d40c2a8584431f3c",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2489,
+  "output_tokens": 985,
+  "cost_usd": 0.0032091999999999997,
+  "elapsed_s": 8.8,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Effective for organizing and tracking diverse projects and tasks.\",\n    \"Enhances team collaboration and communication within the institution.\",\n    \"Provides good visibility into ongoing work and progress.\"\n  ],\n  \"cons\": [\n    \"Initial setup or complex workflows can require a learning curve.\",\n    \"Pricing might become a consideration as the team scales.\",\n    \"Reporting features could be more robust for executive oversight.\"\n  ],\n  \"overall_experience\": \"The Chief Servant likely finds Asana to be a highly effective tool for managing the diverse projects and tasks within their religious institution. Its robust functionality and collaborative features significantly aid in organizing work and improving team productivity over their extensive usage period. While generally positive, they may have noted some challenges with initial complexity or cost at scale.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Effective for organizing and tracking diverse projects and tasks.",
+      "Enhances team collaboration and communication within the institution.",
+      "Provides good visibility into ongoing work and progress."
+    ],
+    "cons": [
+      "Initial setup or complex workflows can require a learning curve.",
+      "Pricing might become a consideration as the team scales.",
+      "Reporting features could be more robust for executive oversight."
+    ],
+    "overall_experience": "The Chief Servant likely finds Asana to be a highly effective tool for managing the diverse projects and tasks within their religious institution. Its robust functionality and collaborative features significantly aid in organizing work and improving team productivity over their extensive usage period. While generally positive, they may have noted some challenges with initial complexity or cost at scale."
+  },
+  "ts": "2026-10-18T05:00:25.533284+00:00"
+}

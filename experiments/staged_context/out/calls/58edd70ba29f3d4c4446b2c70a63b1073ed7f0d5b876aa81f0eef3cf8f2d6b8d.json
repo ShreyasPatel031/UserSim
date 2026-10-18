@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "58edd70ba29f3d4c4446b2c70a63b1073ed7f0d5b876aa81f0eef3cf8f2d6b8d",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1091,
+  "output_tokens": 1097,
+  "cost_usd": 0.0030698,
+  "elapsed_s": 7.24,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Simpler interface compared to QuickBooks Online\",\n    \"Streamlined invoicing and expense tracking\",\n    \"Good for basic financial oversight in a non-profit\"\n  ],\n  \"cons\": [\n    \"Lacked some advanced accounting features found in QuickBooks Online\",\n    \"Integration with existing non-profit specific tools was not seamless\",\n    \"Initial setup and data migration from previous software was challenging\"\n  ],\n  \"overall_experience\": \"This secretary, coming from QuickBooks Online, likely found FreshBooks to be a more user-friendly option for their non-profit's administrative needs. While they appreciated its simplicity for tasks like invoicing and expense tracking, they may have noted some limitations in advanced accounting functionalities compared to their previous software. The overall experience was positive, particularly regarding ease of use, but some features or integrations might have caused minor frustrations during the initial months of adoption.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Simpler interface compared to QuickBooks Online",
+      "Streamlined invoicing and expense tracking",
+      "Good for basic financial oversight in a non-profit"
+    ],
+    "cons": [
+      "Lacked some advanced accounting features found in QuickBooks Online",
+      "Integration with existing non-profit specific tools was not seamless",
+      "Initial setup and data migration from previous software was challenging"
+    ],
+    "overall_experience": "This secretary, coming from QuickBooks Online, likely found FreshBooks to be a more user-friendly option for their non-profit's administrative needs. While they appreciated its simplicity for tasks like invoicing and expense tracking, they may have noted some limitations in advanced accounting functionalities compared to their previous software. The overall experience was positive, particularly regarding ease of use, but some features or integrations might have caused minor frustrations during the initial months of adoption."
+  },
+  "ts": "2026-10-18T05:00:56.292151+00:00"
+}

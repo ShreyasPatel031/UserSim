@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "24e83086b8449d62e964f4a2e77ac2448e55d4aa98349b3c7985d0273040e879",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1130,
+  "output_tokens": 1025,
+  "cost_usd": 0.0029015,
+  "elapsed_s": 6.33,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Streamlined onboarding processes for new employees.\",\n    \"Efficient handling of payroll and time card tracking.\",\n    \"Centralized management of employee data and files.\"\n  ],\n  \"cons\": [\n    \"Initial setup complexity for a large organization.\",\n    \"Occasional need for customer support to resolve specific issues.\",\n    \"Potential for improvement in reporting capabilities for executive oversight.\"\n  ],\n  \"overall_experience\": \"The Chief Operating Officer likely found Rippling to be a highly effective platform for managing core HR operations within their IT and Services company. They appreciated its ability to streamline payroll, time tracking, and especially employee onboarding for their 500+ employee base. While the initial integration might have presented some challenges, the overall functionality and operational efficiencies gained made it a valuable asset for their organization.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Streamlined onboarding processes for new employees.",
+      "Efficient handling of payroll and time card tracking.",
+      "Centralized management of employee data and files."
+    ],
+    "cons": [
+      "Initial setup complexity for a large organization.",
+      "Occasional need for customer support to resolve specific issues.",
+      "Potential for improvement in reporting capabilities for executive oversight."
+    ],
+    "overall_experience": "The Chief Operating Officer likely found Rippling to be a highly effective platform for managing core HR operations within their IT and Services company. They appreciated its ability to streamline payroll, time tracking, and especially employee onboarding for their 500+ employee base. While the initial integration might have presented some challenges, the overall functionality and operational efficiencies gained made it a valuable asset for their organization."
+  },
+  "ts": "2026-10-18T05:01:02.705028+00:00"
+}

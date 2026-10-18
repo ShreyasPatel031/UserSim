@@ -19,6 +19,86 @@
     "classified": "HR",
     "dataset": "HR"
   },
+  "Asana": {
+    "classified": "Project Management",
+    "dataset": "Project Management"
+  },
+  "monday.com AI Work Platform": {
+    "classified": "Project Management",
+    "dataset": "Project Management"
+  },
+  "Notion": {
+    "classified": "Project Management",
+    "dataset": "Project Management"
+  },
+  "HubSpot CRM": {
+    "classified": "CRM",
+    "dataset": "CRM"
+  },
+  "Salesforce Sales Cloud": {
+    "classified": "CRM",
+    "dataset": "CRM"
+  },
+  "Zendesk Suite": {
+    "classified": "Help Desk",
+    "dataset": "Help Desk"
+  },
+  "Intercom": {
+    "classified": "Help Desk",
+    "dataset": "Help Desk"
+  },
+  "Mailchimp": {
+    "classified": "Marketing",
+    "dataset": "Marketing"
+  },
+  "ActiveCampaign": {
+    "classified": "Marketing",
+    "dataset": "Marketing"
+  },
+  "Xero": {
+    "classified": "Accounting",
+    "dataset": "Accounting"
+  },
+  "FreshBooks": {
+    "classified": "Accounting",
+    "dataset": "Accounting"
+  },
+  "BambooHR": {
+    "classified": "HR",
+    "dataset": "HR"
+  },
+  "Rippling": {
+    "classified": "HR",
+    "dataset": "HR"
+  },
+  "Shopify": {
+    "classified": "eCommerce",
+    "dataset": "eCommerce"
+  },
+  "Wix": {
+    "classified": "Design & Dev",
+    "dataset": "eCommerce"
+  },
+  "Microsoft Power BI": {
+    "classified": "Analytics & BI",
+    "dataset": "Analytics & BI"
+  },
+  "Slack": {
+    "classified": "Communication",
+    "dataset": "Communication"
+  },
+  "Okta": {
+    "classified": "Security",
+    "dataset": "Security"
+  },
+  "LastPass": {
+    "classified": "Security",
+    "dataset": "Security"
+  },
+  "GitLab": {
+    "classified": "Design & Dev",
+    "dataset": "Design & Dev"
+  },
   "Freshsales": {
     "classified": "CRM",
     "dataset": "CRM"

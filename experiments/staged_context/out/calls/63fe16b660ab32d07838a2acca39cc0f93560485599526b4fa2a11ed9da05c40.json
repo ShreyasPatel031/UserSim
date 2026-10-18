@@ -1,0 +1,27 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "63fe16b660ab32d07838a2acca39cc0f93560485599526b4fa2a11ed9da05c40",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 143,
+  "output_tokens": 387,
+  "cost_usd": 0.0010103999999999998,
+  "elapsed_s": 23.52,
+  "error": null,
+  "text": "{\n  \"task\": \"Keep track of tickets and hold teams accountable for usage across the enterprise.\",\n  \"benefits\": [\n    \"Ability to use another company for configuration\"\n  ],\n  \"frictions\": [\n    \"Lack of color in menus\",\n    \"Outdated looking interface\"\n  ]\n}",
+  "json": {
+    "task": "Keep track of tickets and hold teams accountable for usage across the enterprise.",
+    "benefits": [
+      "Ability to use another company for configuration"
+    ],
+    "frictions": [
+      "Lack of color in menus",
+      "Outdated looking interface"
+    ]
+  },
+  "ts": "2026-10-18T04:56:10.035488+00:00"
+}

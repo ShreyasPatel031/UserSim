@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "6c217d500328f423339633b0a5009ae6123b4bd55453615cc7eab05724415963",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1087,
+  "output_tokens": 1141,
+  "cost_usd": 0.0031786,
+  "elapsed_s": 7.12,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Intuitive interface for creating and sending email campaigns.\",\n    \"Effective audience management and segmentation features.\",\n    \"Variety of professional templates for outreach.\"\n  ],\n  \"cons\": [\n    \"Pricing can become costly as contact lists expand.\",\n    \"Advanced automation features may require a learning curve.\",\n    \"Some limitations in deep analytical reporting for program evaluation.\"\n  ],\n  \"overall_experience\": \"This Research Specialist and Program Manager likely found Mailchimp to be a highly effective tool for their email outreach needs. They appreciated its user-friendly interface and robust features for managing audiences and designing campaigns. While generally positive, the reviewer might have noted increasing costs with list growth or desired more advanced analytical capabilities for their program management tasks.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Intuitive interface for creating and sending email campaigns.",
+      "Effective audience management and segmentation features.",
+      "Variety of professional templates for outreach."
+    ],
+    "cons": [
+      "Pricing can become costly as contact lists expand.",
+      "Advanced automation features may require a learning curve.",
+      "Some limitations in deep analytical reporting for program evaluation."
+    ],
+    "overall_experience": "This Research Specialist and Program Manager likely found Mailchimp to be a highly effective tool for their email outreach needs. They appreciated its user-friendly interface and robust features for managing audiences and designing campaigns. While generally positive, the reviewer might have noted increasing costs with list growth or desired more advanced analytical capabilities for their program management tasks."
+  },
+  "ts": "2026-10-18T05:00:46.676261+00:00"
+}

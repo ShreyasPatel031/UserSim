@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9960a5f0af47bd1b7a05e03a9c8586a0c8b0e223eeb03b0921741404ff0b3230",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 181,
+  "output_tokens": 495,
+  "cost_usd": 0.0012917999999999998,
+  "elapsed_s": 4.38,
+  "error": null,
+  "text": "{\n  \"task\": \"Implement organization-wide single sign-on.\",\n  \"benefits\": [\n    \"Great compatibility\",\n    \"Integrates with all leading tools in market\",\n    \"Easy setup\",\n    \"Admin friendly\"\n  ],\n  \"frictions\": [\n    \"High pricing compared to other services\"\n  ]\n}",
+  "json": {
+    "task": "Implement organization-wide single sign-on.",
+    "benefits": [
+      "Great compatibility",
+      "Integrates with all leading tools in market",
+      "Easy setup",
+      "Admin friendly"
+    ],
+    "frictions": [
+      "High pricing compared to other services"
+    ]
+  },
+  "ts": "2026-10-18T04:56:19.311388+00:00"
+}

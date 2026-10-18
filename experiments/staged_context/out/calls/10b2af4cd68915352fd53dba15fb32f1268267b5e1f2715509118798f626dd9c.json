@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "10b2af4cd68915352fd53dba15fb32f1268267b5e1f2715509118798f626dd9c",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 169,
+  "output_tokens": 475,
+  "cost_usd": 0.0012382,
+  "elapsed_s": 3.64,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage online inventories and categories to sell products online.\",\n  \"benefits\": [\n    \"Robust eCommerce platform\",\n    \"High capacity to manage large online inventories\",\n    \"High accuracy to manage large online inventories\",\n    \"Manage categories\"\n  ],\n  \"frictions\": [\n    \"Multi-store management can be overwhelming\"\n  ]\n}",
+  "json": {
+    "task": "Manage online inventories and categories to sell products online.",
+    "benefits": [
+      "Robust eCommerce platform",
+      "High capacity to manage large online inventories",
+      "High accuracy to manage large online inventories",
+      "Manage categories"
+    ],
+    "frictions": [
+      "Multi-store management can be overwhelming"
+    ]
+  },
+  "ts": "2026-10-18T04:56:14.954066+00:00"
+}

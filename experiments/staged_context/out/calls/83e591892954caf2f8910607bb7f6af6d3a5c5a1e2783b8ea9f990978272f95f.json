@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "83e591892954caf2f8910607bb7f6af6d3a5c5a1e2783b8ea9f990978272f95f",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 226,
+  "output_tokens": 489,
+  "cost_usd": 0.0012902999999999999,
+  "elapsed_s": 22.54,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage customer interactions and campaigns\",\n  \"benefits\": [\n    \"Simple inbox\",\n    \"Advanced campaign capability\",\n    \"New Help Centre\",\n    \"Effective Operator bot\"\n  ],\n  \"frictions\": [\n    \"Automation of campaign responses needs improvement\",\n    \"Custom bot does not handle specific automation needs\"\n  ]\n}",
+  "json": {
+    "task": "Manage customer interactions and campaigns",
+    "benefits": [
+      "Simple inbox",
+      "Advanced campaign capability",
+      "New Help Centre",
+      "Effective Operator bot"
+    ],
+    "frictions": [
+      "Automation of campaign responses needs improvement",
+      "Custom bot does not handle specific automation needs"
+    ]
+  },
+  "ts": "2026-10-18T04:56:09.595607+00:00"
+}

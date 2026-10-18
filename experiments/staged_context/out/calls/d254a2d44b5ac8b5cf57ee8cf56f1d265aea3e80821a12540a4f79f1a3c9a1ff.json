@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d254a2d44b5ac8b5cf57ee8cf56f1d265aea3e80821a12540a4f79f1a3c9a1ff",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1074,
+  "output_tokens": 1058,
+  "cost_usd": 0.0029671999999999997,
+  "elapsed_s": 6.95,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Robust tools for managing sales pipelines and opportunities.\",\n    \"Effective for scheduling and task management within the sales process.\",\n    \"Centralized data improves team collaboration and reporting.\"\n  ],\n  \"cons\": [\n    \"Initial setup and customization can be complex for a smaller team.\",\n    \"The user interface can feel overwhelming with many features.\",\n    \"Steep learning curve for new team members.\"\n  ],\n  \"overall_experience\": \"This business development professional likely found Salesforce Sales Cloud to be a powerful and comprehensive tool for managing their sales processes and scheduling tasks. While they appreciated its robust functionality and overall value, they probably encountered some challenges with its initial complexity and the learning curve involved. Despite these hurdles, the system effectively supported their sales operations within the medical devices industry.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Robust tools for managing sales pipelines and opportunities.",
+      "Effective for scheduling and task management within the sales process.",
+      "Centralized data improves team collaboration and reporting."
+    ],
+    "cons": [
+      "Initial setup and customization can be complex for a smaller team.",
+      "The user interface can feel overwhelming with many features.",
+      "Steep learning curve for new team members."
+    ],
+    "overall_experience": "This business development professional likely found Salesforce Sales Cloud to be a powerful and comprehensive tool for managing their sales processes and scheduling tasks. While they appreciated its robust functionality and overall value, they probably encountered some challenges with its initial complexity and the learning curve involved. Despite these hurdles, the system effectively supported their sales operations within the medical devices industry."
+  },
+  "ts": "2026-10-18T05:00:36.261483+00:00"
+}

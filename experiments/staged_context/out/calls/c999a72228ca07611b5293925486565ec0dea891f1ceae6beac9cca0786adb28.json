@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c999a72228ca07611b5293925486565ec0dea891f1ceae6beac9cca0786adb28",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 261,
+  "output_tokens": 1045,
+  "cost_usd": 0.0026907999999999997,
+  "elapsed_s": 8.19,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Intuitive interface for creating email campaigns.\",\n    \"Good template options and drag-and-drop editor.\",\n    \"Reliable delivery for internal and external communications.\"\n  ],\n  \"cons\": [\n    \"Advanced segmentation can sometimes be less straightforward.\",\n    \"Customer support response times can vary.\",\n    \"Pricing tiers can become restrictive for growing lists.\"\n  ],\n  \"overall_experience\": \"As a helpdesk analyst in education, they likely found Mailchimp to be a robust and generally user-friendly platform for managing communications. The ease of creating campaigns and managing lists was a significant benefit, though some advanced features or troubleshooting might have presented minor challenges. They probably appreciated its reliability for reaching diverse audiences within the institution.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Intuitive interface for creating email campaigns.",
+      "Good template options and drag-and-drop editor.",
+      "Reliable delivery for internal and external communications."
+    ],
+    "cons": [
+      "Advanced segmentation can sometimes be less straightforward.",
+      "Customer support response times can vary.",
+      "Pricing tiers can become restrictive for growing lists."
+    ],
+    "overall_experience": "As a helpdesk analyst in education, they likely found Mailchimp to be a robust and generally user-friendly platform for managing communications. The ease of creating campaigns and managing lists was a significant benefit, though some advanced features or troubleshooting might have presented minor challenges. They probably appreciated its reliability for reaching diverse audiences within the institution."
+  },
+  "ts": "2026-10-18T05:00:48.584190+00:00"
+}

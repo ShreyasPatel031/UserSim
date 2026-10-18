@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "45b9e79ec058baef30741c45dcc2697ce8bd9e49adc6bb97d20bc6c87c27843e",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2405,
+  "output_tokens": 1094,
+  "cost_usd": 0.0034564999999999995,
+  "elapsed_s": 7.03,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Unified platform for HR, IT, and device management simplifies operations\",\n    \"Strong IT and device management capabilities are highly beneficial for their role\",\n    \"Efficient onboarding and offboarding processes for employees and equipment\"\n  ],\n  \"cons\": [\n    \"Potential for a learning curve with the extensive feature set\",\n    \"Pricing might be a consideration for a mid-sized company\",\n    \"Customization options for certain workflows could be improved\"\n  ],\n  \"overall_experience\": \"The VoIP Engineer likely found Rippling to be an excellent, comprehensive solution for managing workforce operations, especially appreciating its robust IT and device management features. The platform's ability to centralize HR, IT, and payroll tasks would have significantly streamlined their daily responsibilities. While generally very positive, they might have noted minor areas for improvement in customization or initial setup complexity.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Unified platform for HR, IT, and device management simplifies operations",
+      "Strong IT and device management capabilities are highly beneficial for their role",
+      "Efficient onboarding and offboarding processes for employees and equipment"
+    ],
+    "cons": [
+      "Potential for a learning curve with the extensive feature set",
+      "Pricing might be a consideration for a mid-sized company",
+      "Customization options for certain workflows could be improved"
+    ],
+    "overall_experience": "The VoIP Engineer likely found Rippling to be an excellent, comprehensive solution for managing workforce operations, especially appreciating its robust IT and device management features. The platform's ability to centralize HR, IT, and payroll tasks would have significantly streamlined their daily responsibilities. While generally very positive, they might have noted minor areas for improvement in customization or initial setup complexity."
+  },
+  "ts": "2026-10-18T05:01:03.788767+00:00"
+}

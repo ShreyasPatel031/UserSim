@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c5764c6cdcbef732477ac4044d95544c3a1e6ddb55fb0666bf18fb615c85bbaa",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1040,
+  "output_tokens": 1117,
+  "cost_usd": 0.0031044999999999996,
+  "elapsed_s": 7.3,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Simplified invoicing and expense tracking for self-employment\",\n    \"Intuitive interface for managing basic accounting tasks\",\n    \"Seamless transition from QuickBooks Online for core needs\"\n  ],\n  \"cons\": [\n    \"May lack some advanced reporting compared to QBO\",\n    \"Occasional limitations for very specific industry accounting nuances\",\n    \"Pricing could be a concern if business scales significantly\"\n  ],\n  \"overall_experience\": \"This self-employed owner in Computer & Network Security has used FreshBooks for over two years, finding it a highly effective and user-friendly solution for managing their accounting tasks. Having previously used QuickBooks Online, they likely appreciated FreshBooks' streamlined approach and ease of use for their specific needs. The product has served them well, providing solid functionality and good value for money over the long term.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Simplified invoicing and expense tracking for self-employment",
+      "Intuitive interface for managing basic accounting tasks",
+      "Seamless transition from QuickBooks Online for core needs"
+    ],
+    "cons": [
+      "May lack some advanced reporting compared to QBO",
+      "Occasional limitations for very specific industry accounting nuances",
+      "Pricing could be a concern if business scales significantly"
+    ],
+    "overall_experience": "This self-employed owner in Computer & Network Security has used FreshBooks for over two years, finding it a highly effective and user-friendly solution for managing their accounting tasks. Having previously used QuickBooks Online, they likely appreciated FreshBooks' streamlined approach and ease of use for their specific needs. The product has served them well, providing solid functionality and good value for money over the long term."
+  },
+  "ts": "2026-10-18T05:00:57.757820+00:00"
+}

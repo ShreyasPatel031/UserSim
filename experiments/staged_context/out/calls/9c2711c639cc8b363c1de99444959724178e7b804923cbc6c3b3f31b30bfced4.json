@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9c2711c639cc8b363c1de99444959724178e7b804923cbc6c3b3f31b30bfced4",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2759,
+  "output_tokens": 1041,
+  "cost_usd": 0.0034302000000000004,
+  "elapsed_s": 6.8,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Facilitates seamless team communication and connectivity across departments.\",\n    \"Efficient and organized way to share files and documents within channels.\",\n    \"Streamlines workflows by integrating with other essential business applications.\"\n  ],\n  \"cons\": [\n    \"Can be perceived as costly for a large organization, especially with advanced features.\",\n    \"Notification management can sometimes be overwhelming without careful configuration.\",\n    \"Performance issues or resource consumption might occasionally be noticeable.\"\n  ],\n  \"overall_experience\": \"The General Manager has a highly positive overall experience with Slack, finding it an indispensable tool for maintaining team connectivity and managing document sharing within their large pharmaceutical company. They appreciate its robust functionality and ease of use for day-to-day operations, having integrated it deeply into their workflow over two years. While generally satisfied, they acknowledge that its cost and occasional notification overload are minor drawbacks.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Facilitates seamless team communication and connectivity across departments.",
+      "Efficient and organized way to share files and documents within channels.",
+      "Streamlines workflows by integrating with other essential business applications."
+    ],
+    "cons": [
+      "Can be perceived as costly for a large organization, especially with advanced features.",
+      "Notification management can sometimes be overwhelming without careful configuration.",
+      "Performance issues or resource consumption might occasionally be noticeable."
+    ],
+    "overall_experience": "The General Manager has a highly positive overall experience with Slack, finding it an indispensable tool for maintaining team connectivity and managing document sharing within their large pharmaceutical company. They appreciate its robust functionality and ease of use for day-to-day operations, having integrated it deeply into their workflow over two years. While generally satisfied, they acknowledge that its cost and occasional notification overload are minor drawbacks."
+  },
+  "ts": "2026-10-18T05:01:15.497187+00:00"
+}

@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "42c866548d91e1841571c2415f84728174adf1b87b44c5b98d353832dcfff76d",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 164,
+  "output_tokens": 504,
+  "cost_usd": 0.0013092,
+  "elapsed_s": 4.62,
+  "error": null,
+  "text": "{\n  \"task\": \"Set up and manage an online store\",\n  \"benefits\": [\n    \"Access many apps and features to grow a store\",\n    \"Tools are simple to use\",\n    \"Support team resolves issues quickly\",\n    \"Easy setup and management of an online store\"\n  ],\n  \"frictions\": [\n    \"Some advanced apps and themes can get expensive\"\n  ]\n}",
+  "json": {
+    "task": "Set up and manage an online store",
+    "benefits": [
+      "Access many apps and features to grow a store",
+      "Tools are simple to use",
+      "Support team resolves issues quickly",
+      "Easy setup and management of an online store"
+    ],
+    "frictions": [
+      "Some advanced apps and themes can get expensive"
+    ]
+  },
+  "ts": "2026-10-18T04:56:16.081210+00:00"
+}

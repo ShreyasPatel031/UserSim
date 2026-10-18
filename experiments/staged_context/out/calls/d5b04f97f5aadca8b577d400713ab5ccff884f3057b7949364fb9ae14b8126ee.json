@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d5b04f97f5aadca8b577d400713ab5ccff884f3057b7949364fb9ae14b8126ee",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 259,
+  "output_tokens": 1081,
+  "cost_usd": 0.0027802,
+  "elapsed_s": 7.85,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Accessible cloud-based financial management\",\n    \"Comprehensive and customizable reporting for oversight\",\n    \"Improved user interface compared to previous software\"\n  ],\n  \"cons\": [\n    \"Specific inventory management features may require add-ons\",\n    \"Initial data migration from MYOB could be challenging\",\n    \"Customer support response times can sometimes vary\"\n  ],\n  \"overall_experience\": \"As a Director in a wholesale company, their experience with Xero over 2+ years has likely been positive, appreciating its cloud accessibility and robust reporting capabilities, a significant upgrade from MYOB. The software effectively supports general accounting and financial oversight for their 11-50 person team. While core functions are strong, they might note that highly specialized wholesale features, like complex inventory, may require integrations or workarounds.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Accessible cloud-based financial management",
+      "Comprehensive and customizable reporting for oversight",
+      "Improved user interface compared to previous software"
+    ],
+    "cons": [
+      "Specific inventory management features may require add-ons",
+      "Initial data migration from MYOB could be challenging",
+      "Customer support response times can sometimes vary"
+    ],
+    "overall_experience": "As a Director in a wholesale company, their experience with Xero over 2+ years has likely been positive, appreciating its cloud accessibility and robust reporting capabilities, a significant upgrade from MYOB. The software effectively supports general accounting and financial oversight for their 11-50 person team. While core functions are strong, they might note that highly specialized wholesale features, like complex inventory, may require integrations or workarounds."
+  },
+  "ts": "2026-10-18T05:00:55.235886+00:00"
+}

@@ -1,0 +1,27 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1d8fa790c9cc63a47388665179602a915d296c68f5829627f4c37b0da717c22c",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 206,
+  "output_tokens": 470,
+  "cost_usd": 0.0012368000000000001,
+  "elapsed_s": 23.57,
+  "error": null,
+  "text": "{\n  \"task\": null,\n  \"benefits\": [],\n  \"frictions\": [\n    \"The product was always slow\",\n    \"Saving anything required the page to redraw\",\n    \"Reporting was not great\",\n    \"Overall time to do anything was high\"\n  ]\n}",
+  "json": {
+    "task": null,
+    "benefits": [],
+    "frictions": [
+      "The product was always slow",
+      "Saving anything required the page to redraw",
+      "Reporting was not great",
+      "Overall time to do anything was high"
+    ]
+  },
+  "ts": "2026-10-18T04:56:09.911579+00:00"
+}

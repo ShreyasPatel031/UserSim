@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "bb15034a2c62bfcd821130e64971219245b7cce8bd6f9e2e9158b561bf2dfb9d",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1063,
+  "output_tokens": 913,
+  "cost_usd": 0.0026014,
+  "elapsed_s": 5.98,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Enabled quick and direct communication with website visitors.\",\n    \"Helpful for capturing leads and initiating sales conversations.\",\n    \"User-friendly interface for managing customer interactions.\"\n  ],\n  \"cons\": [\n    \"Perceived cost might be a concern for a smaller company.\",\n    \"Initial setup or integration could have a slight learning curve.\",\n    \"Reporting features might not be as granular as desired for sales insights.\"\n  ],\n  \"overall_experience\": \"This Sales Manager likely found Intercom to be a valuable tool for their primary task of enabling quick contact with sales and customer service. The live chat and messaging capabilities were instrumental in improving lead capture and communication efficiency. While generally positive, the manager might have noted some areas for improvement regarding cost for a small business or initial configuration.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Enabled quick and direct communication with website visitors.",
+      "Helpful for capturing leads and initiating sales conversations.",
+      "User-friendly interface for managing customer interactions."
+    ],
+    "cons": [
+      "Perceived cost might be a concern for a smaller company.",
+      "Initial setup or integration could have a slight learning curve.",
+      "Reporting features might not be as granular as desired for sales insights."
+    ],
+    "overall_experience": "This Sales Manager likely found Intercom to be a valuable tool for their primary task of enabling quick contact with sales and customer service. The live chat and messaging capabilities were instrumental in improving lead capture and communication efficiency. While generally positive, the manager might have noted some areas for improvement regarding cost for a small business or initial configuration."
+  },
+  "ts": "2026-10-18T05:00:44.336436+00:00"
+}

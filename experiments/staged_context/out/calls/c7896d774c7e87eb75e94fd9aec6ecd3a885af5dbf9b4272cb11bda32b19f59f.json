@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c7896d774c7e87eb75e94fd9aec6ecd3a885af5dbf9b4272cb11bda32b19f59f",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 260,
+  "output_tokens": 950,
+  "cost_usd": 0.002453,
+  "elapsed_s": 6.62,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 2,\n  \"value_for_money_rating\": 2,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 3,\n  \"pros\": [\n    \"Browser integration for quick auto-fill\",\n    \"Basic password saving works reliably\",\n    \"Familiar interface for many users\"\n  ],\n  \"cons\": [\n    \"Security concerns and past breaches\",\n    \"Less transparent than previous product (Bitwarden)\",\n    \"Limited advanced features for a sys admin\"\n  ],\n  \"overall_experience\": \"The system administrator likely found LastPass functional for basic password saving and auto-fill, appreciating its widespread browser integration. However, coming from Bitwarden, they would have significant reservations regarding its security posture and transparency, potentially finding it less robust for administrative needs. The experience was likely overshadowed by concerns about trust and a perceived lack of advanced, enterprise-grade features compared to expectations.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 3,
+    "overall_rating": 2,
+    "value_for_money_rating": 2,
+    "customer_support_rating": 3,
+    "recommendation_score": 3,
+    "pros": [
+      "Browser integration for quick auto-fill",
+      "Basic password saving works reliably",
+      "Familiar interface for many users"
+    ],
+    "cons": [
+      "Security concerns and past breaches",
+      "Less transparent than previous product (Bitwarden)",
+      "Limited advanced features for a sys admin"
+    ],
+    "overall_experience": "The system administrator likely found LastPass functional for basic password saving and auto-fill, appreciating its widespread browser integration. However, coming from Bitwarden, they would have significant reservations regarding its security posture and transparency, potentially finding it less robust for administrative needs. The experience was likely overshadowed by concerns about trust and a perceived lack of advanced, enterprise-grade features compared to expectations."
+  },
+  "ts": "2026-10-18T05:01:20.787057+00:00"
+}

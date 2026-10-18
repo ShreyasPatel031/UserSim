@@ -1,0 +1,21 @@
+{
+  "stage": "mcp_classify",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "cc06170bd407ec1ccff4c6440a5adcb5d851cdc915d9836062883ae3865b32a2",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 256,
+  "input_tokens": 1205,
+  "output_tokens": 253,
+  "cost_usd": 0.000994,
+  "elapsed_s": 2.55,
+  "error": null,
+  "text": "{\n  \"category\": \"Security\",\n  \"product_name\": \"LastPass\"\n}",
+  "json": {
+    "category": "Security",
+    "product_name": "LastPass"
+  },
+  "ts": "2026-10-18T04:56:27.724968+00:00"
+}

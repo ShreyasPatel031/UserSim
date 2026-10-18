@@ -1,0 +1,27 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f5d796026b5e8669a8c5e0ade40b9c032287705a24bc16f97cf1a3b1b1c44daa",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 157,
+  "output_tokens": 449,
+  "cost_usd": 0.0011696,
+  "elapsed_s": 3.88,
+  "error": null,
+  "text": "{\n  \"task\": \"Use Wix for blogging and website design\",\n  \"benefits\": [\n    \"variety of templates\"\n  ],\n  \"frictions\": [\n    \"difficulty figuring out plugins and AI features\",\n    \"confusing in designing a website\"\n  ]\n}",
+  "json": {
+    "task": "Use Wix for blogging and website design",
+    "benefits": [
+      "variety of templates"
+    ],
+    "frictions": [
+      "difficulty figuring out plugins and AI features",
+      "confusing in designing a website"
+    ]
+  },
+  "ts": "2026-10-18T04:56:16.188626+00:00"
+}

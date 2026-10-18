@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7f941a1999e1a8caab91e7a1acd10395896c729eaa8f170bc08c0bfb74a4c855",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1093,
+  "output_tokens": 958,
+  "cost_usd": 0.0027229,
+  "elapsed_s": 7.22,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Highly versatile for managing diverse research notes and project plans\",\n    \"Excellent for team collaboration and centralizing information\",\n    \"Customizable databases for structured data and project tracking\"\n  ],\n  \"cons\": [\n    \"Performance can be slow with very large or complex pages\",\n    \"Steep learning curve for some team members to fully utilize advanced features\",\n    \"Potential for information sprawl if not well-governed within a large team\"\n  ],\n  \"overall_experience\": \"This Research Team Lead likely found Notion to be a powerful and highly adaptable tool for managing their team's notes, plans, and projects over the past 1-2 years. Its robust functionality and collaborative features were key benefits, despite occasional performance hiccups or the initial learning curve for the team. The overall sentiment suggests a very positive experience, leading to a strong recommendation.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Highly versatile for managing diverse research notes and project plans",
+      "Excellent for team collaboration and centralizing information",
+      "Customizable databases for structured data and project tracking"
+    ],
+    "cons": [
+      "Performance can be slow with very large or complex pages",
+      "Steep learning curve for some team members to fully utilize advanced features",
+      "Potential for information sprawl if not well-governed within a large team"
+    ],
+    "overall_experience": "This Research Team Lead likely found Notion to be a powerful and highly adaptable tool for managing their team's notes, plans, and projects over the past 1-2 years. Its robust functionality and collaborative features were key benefits, despite occasional performance hiccups or the initial learning curve for the team. The overall sentiment suggests a very positive experience, leading to a strong recommendation."
+  },
+  "ts": "2026-10-18T05:00:31.277257+00:00"
+}

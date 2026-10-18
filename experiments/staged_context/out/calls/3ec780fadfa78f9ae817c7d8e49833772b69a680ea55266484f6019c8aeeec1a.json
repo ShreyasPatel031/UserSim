@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3ec780fadfa78f9ae817c7d8e49833772b69a680ea55266484f6019c8aeeec1a",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 269,
+  "output_tokens": 1002,
+  "cost_usd": 0.0025857000000000002,
+  "elapsed_s": 7.38,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Intuitive and clean user interface for invoicing\",\n    \"Efficient time tracking and project management features\",\n    \"Good for managing client relationships and payments\"\n  ],\n  \"cons\": [\n    \"Accounting features less robust compared to QuickBooks Online\",\n    \"Might lack advanced integrations needed for a larger company\",\n    \"Customer support response times could be inconsistent\"\n  ],\n  \"overall_experience\": \"This web developer likely found FreshBooks to be a significant improvement in usability and efficiency over some previous alternatives, particularly for invoicing and time tracking. While appreciating its modern interface and core functionalities, they may have noted its limitations in comprehensive accounting features or integrations for a company of their size. The user generally had a positive experience, leveraging FreshBooks for specific project-based financial tasks.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Intuitive and clean user interface for invoicing",
+      "Efficient time tracking and project management features",
+      "Good for managing client relationships and payments"
+    ],
+    "cons": [
+      "Accounting features less robust compared to QuickBooks Online",
+      "Might lack advanced integrations needed for a larger company",
+      "Customer support response times could be inconsistent"
+    ],
+    "overall_experience": "This web developer likely found FreshBooks to be a significant improvement in usability and efficiency over some previous alternatives, particularly for invoicing and time tracking. While appreciating its modern interface and core functionalities, they may have noted its limitations in comprehensive accounting features or integrations for a company of their size. The user generally had a positive experience, leveraging FreshBooks for specific project-based financial tasks."
+  },
+  "ts": "2026-10-18T05:00:56.933099+00:00"
+}

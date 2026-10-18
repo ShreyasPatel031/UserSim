@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8481e2e4b4e9b57b57089be6466b57bc2c0495fee06e06996167d7ae6275840d",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 214,
+  "output_tokens": 526,
+  "cost_usd": 0.0013792,
+  "elapsed_s": 24.61,
+  "error": null,
+  "text": "{\n  \"task\": \"Take notes and create to-do lists.\",\n  \"benefits\": [\n    \"Take notes\",\n    \"Create to-do lists\",\n    \"Access spaces created by experienced creators\"\n  ],\n  \"frictions\": [\n    \"Paid templates require an additional subscription for some functions\",\n    \"Notion AI credits are insufficient for even a week's trial\"\n  ]\n}",
+  "json": {
+    "task": "Take notes and create to-do lists.",
+    "benefits": [
+      "Take notes",
+      "Create to-do lists",
+      "Access spaces created by experienced creators"
+    ],
+    "frictions": [
+      "Paid templates require an additional subscription for some functions",
+      "Notion AI credits are insufficient for even a week's trial"
+    ]
+  },
+  "ts": "2026-10-18T04:56:10.406946+00:00"
+}

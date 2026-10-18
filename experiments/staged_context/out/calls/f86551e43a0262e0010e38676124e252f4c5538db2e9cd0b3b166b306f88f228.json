@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f86551e43a0262e0010e38676124e252f4c5538db2e9cd0b3b166b306f88f228",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 263,
+  "output_tokens": 986,
+  "cost_usd": 0.0025438999999999995,
+  "elapsed_s": 7.51,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Robust sales process management\",\n    \"Effective for tracking leads and opportunities\",\n    \"Reliable scheduling and task management\"\n  ],\n  \"cons\": [\n    \"Steep learning curve for new users\",\n    \"Can be complex to customize without dedicated admin\",\n    \"Cost can be a significant factor for SMBs\"\n  ],\n  \"overall_experience\": \"This business development professional likely found Salesforce Sales Cloud to be a powerful tool for managing their sales processes and scheduling within the medical devices industry. While its extensive functionality was beneficial for tracking leads and opportunities, they may have faced challenges with its initial complexity and customization without strong internal IT support. Despite some frustrations, the system generally served their core needs effectively over their 1-2 years of use.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Robust sales process management",
+      "Effective for tracking leads and opportunities",
+      "Reliable scheduling and task management"
+    ],
+    "cons": [
+      "Steep learning curve for new users",
+      "Can be complex to customize without dedicated admin",
+      "Cost can be a significant factor for SMBs"
+    ],
+    "overall_experience": "This business development professional likely found Salesforce Sales Cloud to be a powerful tool for managing their sales processes and scheduling within the medical devices industry. While its extensive functionality was beneficial for tracking leads and opportunities, they may have faced challenges with its initial complexity and customization without strong internal IT support. Despite some frustrations, the system generally served their core needs effectively over their 1-2 years of use."
+  },
+  "ts": "2026-10-18T05:00:36.800840+00:00"
+}

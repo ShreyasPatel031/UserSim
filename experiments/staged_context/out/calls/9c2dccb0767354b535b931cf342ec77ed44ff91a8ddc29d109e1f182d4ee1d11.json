@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9c2dccb0767354b535b931cf342ec77ed44ff91a8ddc29d109e1f182d4ee1d11",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 259,
+  "output_tokens": 1024,
+  "cost_usd": 0.0026376999999999998,
+  "elapsed_s": 11.25,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Excellent task organization and tracking capabilities\",\n    \"Intuitive interface for project visibility\",\n    \"Effective for team collaboration and communication\"\n  ],\n  \"cons\": [\n    \"Advanced reporting features could be more robust\",\n    \"Can become complex with very large projects or many custom fields\",\n    \"Cost can add up for larger teams requiring premium features\"\n  ],\n  \"overall_experience\": \"The Senior Technical Manager likely found Asana to be a highly effective tool for managing projects and tracking tasks within their software company. Its organizational features and collaborative aspects were probably significant advantages, streamlining workflows. While generally positive, they may have encountered limitations with advanced reporting or scalability for very complex technical projects, which tempered their perception of its overall value for money.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Excellent task organization and tracking capabilities",
+      "Intuitive interface for project visibility",
+      "Effective for team collaboration and communication"
+    ],
+    "cons": [
+      "Advanced reporting features could be more robust",
+      "Can become complex with very large projects or many custom fields",
+      "Cost can add up for larger teams requiring premium features"
+    ],
+    "overall_experience": "The Senior Technical Manager likely found Asana to be a highly effective tool for managing projects and tracking tasks within their software company. Its organizational features and collaborative aspects were probably significant advantages, streamlining workflows. While generally positive, they may have encountered limitations with advanced reporting or scalability for very complex technical projects, which tempered their perception of its overall value for money."
+  },
+  "ts": "2026-10-18T05:00:29.499493+00:00"
+}

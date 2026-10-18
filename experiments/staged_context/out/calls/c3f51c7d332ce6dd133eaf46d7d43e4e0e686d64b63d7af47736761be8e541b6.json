@@ -1,0 +1,27 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c3f51c7d332ce6dd133eaf46d7d43e4e0e686d64b63d7af47736761be8e541b6",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 163,
+  "output_tokens": 403,
+  "cost_usd": 0.0010563999999999999,
+  "elapsed_s": 4.05,
+  "error": null,
+  "text": "{\n  \"task\": \"Use Slack for meetings and communication.\",\n  \"benefits\": [\n    \"excellent for meetings and communication\",\n    \"easy to use and manage\",\n    \"customer support is always on point\",\n    \"very affordable\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Use Slack for meetings and communication.",
+    "benefits": [
+      "excellent for meetings and communication",
+      "easy to use and manage",
+      "customer support is always on point",
+      "very affordable"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T04:56:18.123389+00:00"
+}

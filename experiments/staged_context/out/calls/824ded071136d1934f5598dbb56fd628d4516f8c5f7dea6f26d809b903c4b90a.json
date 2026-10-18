@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "824ded071136d1934f5598dbb56fd628d4516f8c5f7dea6f26d809b903c4b90a",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 264,
+  "output_tokens": 1060,
+  "cost_usd": 0.0027292,
+  "elapsed_s": 7.58,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Intuitive drag-and-drop email builder for professional newsletters.\",\n    \"Reliable delivery for important client communications.\",\n    \"Good selection of templates suitable for a financial context.\"\n  ],\n  \"cons\": [\n    \"Pricing can become significant for a large contact list.\",\n    \"Advanced segmentation features could be more robust.\",\n    \"Customer support response times could sometimes be slow.\"\n  ],\n  \"overall_experience\": \"This financial advisor likely found Mailchimp to be a reliable and user-friendly tool for their core tasks of sending newsletters and one-off emails to clients. While the cost for a large company might be a consideration, its ease of use for creating professional-looking communications over 2+ years suggests a generally positive and productive experience.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Intuitive drag-and-drop email builder for professional newsletters.",
+      "Reliable delivery for important client communications.",
+      "Good selection of templates suitable for a financial context."
+    ],
+    "cons": [
+      "Pricing can become significant for a large contact list.",
+      "Advanced segmentation features could be more robust.",
+      "Customer support response times could sometimes be slow."
+    ],
+    "overall_experience": "This financial advisor likely found Mailchimp to be a reliable and user-friendly tool for their core tasks of sending newsletters and one-off emails to clients. While the cost for a large company might be a consideration, its ease of use for creating professional-looking communications over 2+ years suggests a generally positive and productive experience."
+  },
+  "ts": "2026-10-18T05:00:47.728053+00:00"
+}

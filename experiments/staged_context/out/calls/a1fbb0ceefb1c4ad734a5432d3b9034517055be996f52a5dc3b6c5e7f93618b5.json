@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a1fbb0ceefb1c4ad734a5432d3b9034517055be996f52a5dc3b6c5e7f93618b5",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 174,
+  "output_tokens": 474,
+  "cost_usd": 0.0012372,
+  "elapsed_s": 23.46,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage various business functions using a single platform\",\n  \"benefits\": [\n    \"Provides a wealth of features\",\n    \"Serves as a one-stop shop for businesses\",\n    \"Offers an all-in-one package\"\n  ],\n  \"frictions\": [\n    \"Users can easily get locked in due to many features\",\n    \"Intercom can easily increase prices\",\n    \"Individual services may be superior to some Intercom features\"\n  ]\n}",
+  "json": {
+    "task": "Manage various business functions using a single platform",
+    "benefits": [
+      "Provides a wealth of features",
+      "Serves as a one-stop shop for businesses",
+      "Offers an all-in-one package"
+    ],
+    "frictions": [
+      "Users can easily get locked in due to many features",
+      "Intercom can easily increase prices",
+      "Individual services may be superior to some Intercom features"
+    ]
+  },
+  "ts": "2026-10-18T04:56:10.275726+00:00"
+}

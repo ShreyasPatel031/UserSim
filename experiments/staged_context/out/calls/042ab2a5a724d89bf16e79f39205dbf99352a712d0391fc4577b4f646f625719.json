@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "042ab2a5a724d89bf16e79f39205dbf99352a712d0391fc4577b4f646f625719",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2488,
+  "output_tokens": 1015,
+  "cost_usd": 0.0032839,
+  "elapsed_s": 7.41,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Comprehensive features for project tracking and collaboration\",\n    \"Improved organization for tasks compared to previous tools\",\n    \"Scalable for a growing team and complex IT projects\"\n  ],\n  \"cons\": [\n    \"Initial learning curve transitioning from Trello's simplicity\",\n    \"Can feel overwhelming with its extensive features for new users\",\n    \"Pricing structure might be a consideration for ongoing use\"\n  ],\n  \"overall_experience\": \"This Team Lead, coming from Trello, found Asana to be a powerful platform for organizing tasks, collaborating, and tracking project progress within their IT company. While the transition presented a slight learning curve due to Asana's increased complexity, they appreciated its robust functionality. The tool effectively supported their team management needs, although they are still in the early stages of full adoption.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Comprehensive features for project tracking and collaboration",
+      "Improved organization for tasks compared to previous tools",
+      "Scalable for a growing team and complex IT projects"
+    ],
+    "cons": [
+      "Initial learning curve transitioning from Trello's simplicity",
+      "Can feel overwhelming with its extensive features for new users",
+      "Pricing structure might be a consideration for ongoing use"
+    ],
+    "overall_experience": "This Team Lead, coming from Trello, found Asana to be a powerful platform for organizing tasks, collaborating, and tracking project progress within their IT company. While the transition presented a slight learning curve due to Asana's increased complexity, they appreciated its robust functionality. The tool effectively supported their team management needs, although they are still in the early stages of full adoption."
+  },
+  "ts": "2026-10-18T05:00:25.606763+00:00"
+}

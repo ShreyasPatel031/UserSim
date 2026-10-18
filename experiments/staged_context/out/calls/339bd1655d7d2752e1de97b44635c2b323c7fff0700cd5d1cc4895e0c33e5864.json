@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "339bd1655d7d2752e1de97b44635c2b323c7fff0700cd5d1cc4895e0c33e5864",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1089,
+  "output_tokens": 1012,
+  "cost_usd": 0.0028567,
+  "elapsed_s": 6.22,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"User-friendly interface for time tracking.\",\n    \"Centralized system for employee information.\",\n    \"Streamlined time-off request and approval process.\"\n  ],\n  \"cons\": [\n    \"Time tracking features may lack advanced project-specific capabilities for research.\",\n    \"Reporting options for time data could be more robust.\",\n    \"May feel like overkill if only using for basic time tracking.\"\n  ],\n  \"overall_experience\": \"This Market Research Specialist likely found BambooHR to be a generally positive experience for their time tracking needs. The system's ease of use and ability to centralize basic HR functions were appreciated, leading to a high overall satisfaction. However, they may have noted some limitations in the depth of time tracking functionality or reporting features specific to detailed market research projects.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "User-friendly interface for time tracking.",
+      "Centralized system for employee information.",
+      "Streamlined time-off request and approval process."
+    ],
+    "cons": [
+      "Time tracking features may lack advanced project-specific capabilities for research.",
+      "Reporting options for time data could be more robust.",
+      "May feel like overkill if only using for basic time tracking."
+    ],
+    "overall_experience": "This Market Research Specialist likely found BambooHR to be a generally positive experience for their time tracking needs. The system's ease of use and ability to centralize basic HR functions were appreciated, leading to a high overall satisfaction. However, they may have noted some limitations in the depth of time tracking functionality or reporting features specific to detailed market research projects."
+  },
+  "ts": "2026-10-18T05:00:58.377525+00:00"
+}

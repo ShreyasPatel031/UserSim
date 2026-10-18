@@ -1,0 +1,28 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b74e8902287b27c1c30806f04273fc495707c0abbdd249574d0cdb537f6550b5",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 186,
+  "output_tokens": 473,
+  "cost_usd": 0.0012383,
+  "elapsed_s": 4.52,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage single sign-on, two-factor authentication, and passwords.\",\n  \"benefits\": [\n    \"Provides SSO 2FA functionality\",\n    \"Stores passwords\",\n    \"Streamlines 2FA code entry\"\n  ],\n  \"frictions\": [\n    \"Dashboard can be slow at times\"\n  ]\n}",
+  "json": {
+    "task": "Manage single sign-on, two-factor authentication, and passwords.",
+    "benefits": [
+      "Provides SSO 2FA functionality",
+      "Stores passwords",
+      "Streamlines 2FA code entry"
+    ],
+    "frictions": [
+      "Dashboard can be slow at times"
+    ]
+  },
+  "ts": "2026-10-18T04:56:20.250056+00:00"
+}

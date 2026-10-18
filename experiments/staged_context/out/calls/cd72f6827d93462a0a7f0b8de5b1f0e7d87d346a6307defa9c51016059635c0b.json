@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "cd72f6827d93462a0a7f0b8de5b1f0e7d87d346a6307defa9c51016059635c0b",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2474,
+  "output_tokens": 988,
+  "cost_usd": 0.0032122,
+  "elapsed_s": 9.41,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Intuitive drag-and-drop email builder\",\n    \"Good range of templates for newsletters\",\n    \"Effective for basic email campaign management\"\n  ],\n  \"cons\": [\n    \"Pricing can escalate quickly with list growth\",\n    \"Limited advanced customization options for a developer\",\n    \"Customer support response times can be slow\"\n  ],\n  \"overall_experience\": \"This web developer found Mailchimp effective for sending email newsletters, appreciating its user-friendly interface for core tasks. However, the pricing structure became a concern as their list grew, and they likely desired more advanced customization or developer-centric features. While functional for their needs, occasional frustrations with support and platform limitations tempered their overall satisfaction.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Intuitive drag-and-drop email builder",
+      "Good range of templates for newsletters",
+      "Effective for basic email campaign management"
+    ],
+    "cons": [
+      "Pricing can escalate quickly with list growth",
+      "Limited advanced customization options for a developer",
+      "Customer support response times can be slow"
+    ],
+    "overall_experience": "This web developer found Mailchimp effective for sending email newsletters, appreciating its user-friendly interface for core tasks. However, the pricing structure became a concern as their list grew, and they likely desired more advanced customization or developer-centric features. While functional for their needs, occasional frustrations with support and platform limitations tempered their overall satisfaction."
+  },
+  "ts": "2026-10-18T05:00:50.541432+00:00"
+}

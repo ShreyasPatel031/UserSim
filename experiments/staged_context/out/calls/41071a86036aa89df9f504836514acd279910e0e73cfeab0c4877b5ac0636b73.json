@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "41071a86036aa89df9f504836514acd279910e0e73cfeab0c4877b5ac0636b73",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1088,
+  "output_tokens": 959,
+  "cost_usd": 0.0027239,
+  "elapsed_s": 7.34,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Highly flexible for building diverse knowledge bases and project boards\",\n    \"Consolidates various team tasks and documentation into one platform\",\n    \"Powerful database features for structured data management\"\n  ],\n  \"cons\": [\n    \"Can experience performance slowdowns with large or complex workspaces\",\n    \"Steep learning curve for new users to master advanced features\",\n    \"Occasional limitations in offline functionality or specific integrations\"\n  ],\n  \"overall_experience\": \"This software developer likely found Notion to be a highly versatile and valuable tool for managing knowledge bases, projects, and tasks within their small team. They appreciated its flexibility and ability to consolidate workflows. Despite some potential frustrations with performance or the initial learning curve, their overall experience was very positive, leading to a strong recommendation.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Highly flexible for building diverse knowledge bases and project boards",
+      "Consolidates various team tasks and documentation into one platform",
+      "Powerful database features for structured data management"
+    ],
+    "cons": [
+      "Can experience performance slowdowns with large or complex workspaces",
+      "Steep learning curve for new users to master advanced features",
+      "Occasional limitations in offline functionality or specific integrations"
+    ],
+    "overall_experience": "This software developer likely found Notion to be a highly versatile and valuable tool for managing knowledge bases, projects, and tasks within their small team. They appreciated its flexibility and ability to consolidate workflows. Despite some potential frustrations with performance or the initial learning curve, their overall experience was very positive, leading to a strong recommendation."
+  },
+  "ts": "2026-10-18T05:00:30.125116+00:00"
+}

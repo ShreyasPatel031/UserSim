@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b1750c64608c8f19a33a88736a299f9bab7e0c17526316075a9589eba2f6a2d9",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1080,
+  "output_tokens": 1137,
+  "cost_usd": 0.0031665,
+  "elapsed_s": 9.24,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Streamlined asset tracking and project workflows\",\n    \"Intuitive visual interface for team collaboration\",\n    \"Highly customizable to specific real estate needs\"\n  ],\n  \"cons\": [\n    \"Pricing can become a factor for growing teams\",\n    \"Initial setup for complex automations requires some effort\",\n    \"Occasional notification overload\"\n  ],\n  \"overall_experience\": \"The Asset Manager likely experienced monday.com as a highly effective and intuitive platform for managing real estate assets and team workflows. Its customization capabilities and visual interface were instrumental in streamlining operations over their two-plus years of use. While generally very satisfied, they may have noted some minor challenges with pricing scaling or the initial complexity of advanced features.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Streamlined asset tracking and project workflows",
+      "Intuitive visual interface for team collaboration",
+      "Highly customizable to specific real estate needs"
+    ],
+    "cons": [
+      "Pricing can become a factor for growing teams",
+      "Initial setup for complex automations requires some effort",
+      "Occasional notification overload"
+    ],
+    "overall_experience": "The Asset Manager likely experienced monday.com as a highly effective and intuitive platform for managing real estate assets and team workflows. Its customization capabilities and visual interface were instrumental in streamlining operations over their two-plus years of use. While generally very satisfied, they may have noted some minor challenges with pricing scaling or the initial complexity of advanced features."
+  },
+  "ts": "2026-10-18T05:00:30.503772+00:00"
+}

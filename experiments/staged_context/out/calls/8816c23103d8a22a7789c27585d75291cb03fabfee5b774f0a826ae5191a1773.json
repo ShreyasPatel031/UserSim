@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8816c23103d8a22a7789c27585d75291cb03fabfee5b774f0a826ae5191a1773",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1131,
+  "output_tokens": 973,
+  "cost_usd": 0.0027718,
+  "elapsed_s": 9.85,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Streamlined access to numerous marketing applications via single sign-on\",\n    \"Enhanced account security with reliable multi-factor authentication\",\n    \"Reduced password fatigue and management complexity\"\n  ],\n  \"cons\": [\n    \"Occasional MFA prompts can sometimes interrupt workflow\",\n    \"Minor integration challenges with less common or niche tools\",\n    \"Initial setup or onboarding of new applications might require IT assistance\"\n  ],\n  \"overall_experience\": \"This Digital Marketing Manager likely experienced Okta as a highly valuable and reliable solution. The seamless single sign-on and robust multi-factor authentication significantly improved their efficiency and security when accessing various marketing platforms. They found it to be an indispensable tool for managing digital access within their IT services company.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Streamlined access to numerous marketing applications via single sign-on",
+      "Enhanced account security with reliable multi-factor authentication",
+      "Reduced password fatigue and management complexity"
+    ],
+    "cons": [
+      "Occasional MFA prompts can sometimes interrupt workflow",
+      "Minor integration challenges with less common or niche tools",
+      "Initial setup or onboarding of new applications might require IT assistance"
+    ],
+    "overall_experience": "This Digital Marketing Manager likely experienced Okta as a highly valuable and reliable solution. The seamless single sign-on and robust multi-factor authentication significantly improved their efficiency and security when accessing various marketing platforms. They found it to be an indispensable tool for managing digital access within their IT services company."
+  },
+  "ts": "2026-10-18T05:01:23.690080+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8efc35ba5847039b1fb974c8e6cff5cf79b0a12e1c1f8e8e8042c547e7d66f64",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 258,
+  "output_tokens": 989,
+  "cost_usd": 0.0025499000000000003,
+  "elapsed_s": 7.35,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Excellent for visually tracking design phases and project timelines.\",\n    \"Streamlined collaboration with clients, contractors, and internal teams.\",\n    \"Effective in organizing complex construction projects and tasks for large groups.\"\n  ],\n  \"cons\": [\n    \"Initial setup and customization for specific construction workflows can be time-consuming.\",\n    \"Cost can become a concern when scaling up for multiple large projects or advanced features.\",\n    \"Reporting capabilities might require higher-tier plans for comprehensive project oversight.\"\n  ],\n  \"overall_experience\": \"This interior designer likely found Asana to be a powerful tool for managing the intricate details of construction projects, especially for coordinating large groups and ensuring visual clarity. While its robust features greatly aided project organization and collaboration, they may have experienced some challenges with initial configuration and felt the cost could be a limiting factor for a company of their size when needing advanced functionalities.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Excellent for visually tracking design phases and project timelines.",
+      "Streamlined collaboration with clients, contractors, and internal teams.",
+      "Effective in organizing complex construction projects and tasks for large groups."
+    ],
+    "cons": [
+      "Initial setup and customization for specific construction workflows can be time-consuming.",
+      "Cost can become a concern when scaling up for multiple large projects or advanced features.",
+      "Reporting capabilities might require higher-tier plans for comprehensive project oversight."
+    ],
+    "overall_experience": "This interior designer likely found Asana to be a powerful tool for managing the intricate details of construction projects, especially for coordinating large groups and ensuring visual clarity. While its robust features greatly aided project organization and collaboration, they may have experienced some challenges with initial configuration and felt the cost could be a limiting factor for a company of their size when needing advanced functionalities."
+  },
+  "ts": "2026-10-18T05:00:23.472750+00:00"
+}

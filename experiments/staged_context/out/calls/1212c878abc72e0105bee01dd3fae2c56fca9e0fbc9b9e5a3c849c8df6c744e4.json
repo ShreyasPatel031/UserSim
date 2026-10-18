@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1212c878abc72e0105bee01dd3fae2c56fca9e0fbc9b9e5a3c849c8df6c744e4",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2516,
+  "output_tokens": 1090,
+  "cost_usd": 0.0034798,
+  "elapsed_s": 6.55,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 5,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Streamlined user access with single sign-on across applications.\",\n    \"Enhanced security and compliance for sensitive healthcare data.\",\n    \"Centralized management of user identities and access permissions.\"\n  ],\n  \"cons\": [\n    \"Initial setup and integration with existing systems can be time-consuming.\",\n    \"Occasional need for browser extension or application refresh for seamless operation.\",\n    \"Pricing might be perceived as high for smaller departments within a larger organization.\"\n  ],\n  \"overall_experience\": \"This coordinator likely found Okta to be a highly effective solution for implementing single sign-on, significantly improving efficiency and security within their healthcare organization. The ability to centralize identity management was a key benefit, despite some initial effort required for setup. Overall, the experience was very positive, leading to a strong recommendation.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 5,
+    "recommendation_score": 9,
+    "pros": [
+      "Streamlined user access with single sign-on across applications.",
+      "Enhanced security and compliance for sensitive healthcare data.",
+      "Centralized management of user identities and access permissions."
+    ],
+    "cons": [
+      "Initial setup and integration with existing systems can be time-consuming.",
+      "Occasional need for browser extension or application refresh for seamless operation.",
+      "Pricing might be perceived as high for smaller departments within a larger organization."
+    ],
+    "overall_experience": "This coordinator likely found Okta to be a highly effective solution for implementing single sign-on, significantly improving efficiency and security within their healthcare organization. The ability to centralize identity management was a key benefit, despite some initial effort required for setup. Overall, the experience was very positive, leading to a strong recommendation."
+  },
+  "ts": "2026-10-18T05:01:20.049239+00:00"
+}

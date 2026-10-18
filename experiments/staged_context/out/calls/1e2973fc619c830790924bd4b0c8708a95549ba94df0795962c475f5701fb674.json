@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1e2973fc619c830790924bd4b0c8708a95549ba94df0795962c475f5701fb674",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 253,
+  "output_tokens": 489,
+  "cost_usd": 0.0012984,
+  "elapsed_s": 4.18,
+  "error": null,
+  "text": "{\n  \"task\": \"Use Okta for single sign-on and multi-factor authentication across various applications.\",\n  \"benefits\": [\n    \"Functions as an amazing single sign-on (SSO) application\",\n    \"Integrates well with many other applications\",\n    \"Mobile app (Okta App and Okta Verify App) is simple to use\",\n    \"Okta Verify works offline via unique codes\"\n  ],\n  \"frictions\": [\n    \"Frequent relogins can be problematic\"\n  ]\n}",
+  "json": {
+    "task": "Use Okta for single sign-on and multi-factor authentication across various applications.",
+    "benefits": [
+      "Functions as an amazing single sign-on (SSO) application",
+      "Integrates well with many other applications",
+      "Mobile app (Okta App and Okta Verify App) is simple to use",
+      "Okta Verify works offline via unique codes"
+    ],
+    "frictions": [
+      "Frequent relogins can be problematic"
+    ]
+  },
+  "ts": "2026-10-18T04:56:18.959205+00:00"
+}

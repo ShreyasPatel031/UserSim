@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "15bcafffe0571b55da3ed1fbceaa44782679a499619b1bf00e3111649fdc4e99",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 268,
+  "output_tokens": 1026,
+  "cost_usd": 0.0026454,
+  "elapsed_s": 8.42,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Efficiently organizes social media content calendars and campaigns\",\n    \"Streamlines task assignment and tracking for small teams\",\n    \"AI features likely assist with content generation or scheduling optimization\"\n  ],\n  \"cons\": [\n    \"Potential for a steeper learning curve with advanced features\",\n    \"Pricing might be a consideration for very small businesses\",\n    \"Some AI features may require fine-tuning for specific brand voices\"\n  ],\n  \"overall_experience\": \"This Social Media Manager has likely found monday.com AI Work Platform to be a highly effective tool for managing their creative workflows and tasks over two years. The platform's visual nature and AI capabilities would significantly aid in content planning, task delegation, and potentially generating social media content. While the cost for a small team might be a factor, the long-term usage suggests the value delivered outweighs this.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Efficiently organizes social media content calendars and campaigns",
+      "Streamlines task assignment and tracking for small teams",
+      "AI features likely assist with content generation or scheduling optimization"
+    ],
+    "cons": [
+      "Potential for a steeper learning curve with advanced features",
+      "Pricing might be a consideration for very small businesses",
+      "Some AI features may require fine-tuning for specific brand voices"
+    ],
+    "overall_experience": "This Social Media Manager has likely found monday.com AI Work Platform to be a highly effective tool for managing their creative workflows and tasks over two years. The platform's visual nature and AI capabilities would significantly aid in content planning, task delegation, and potentially generating social media content. While the cost for a small team might be a factor, the long-term usage suggests the value delivered outweighs this."
+  },
+  "ts": "2026-10-18T05:00:29.093199+00:00"
+}

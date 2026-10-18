@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "128abc0ee78bf880daaef48d47523841ed4d46ba419b79057453cf619b966b78",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 293,
+  "output_tokens": 482,
+  "cost_usd": 0.0012928999999999998,
+  "elapsed_s": 4.34,
+  "error": null,
+  "text": "{\n  \"task\": \"Build a website\",\n  \"benefits\": [\n    \"Use a drag-and-drop template builder\",\n    \"No coding required to build a site\",\n    \"Access a wide variety of templates\",\n    \"Create a professional-looking site quickly\"\n  ],\n  \"frictions\": [\n    \"Mobile version of the site can get messed up\",\n    \"Cannot switch templates after initial selection\"\n  ]\n}",
+  "json": {
+    "task": "Build a website",
+    "benefits": [
+      "Use a drag-and-drop template builder",
+      "No coding required to build a site",
+      "Access a wide variety of templates",
+      "Create a professional-looking site quickly"
+    ],
+    "frictions": [
+      "Mobile version of the site can get messed up",
+      "Cannot switch templates after initial selection"
+    ]
+  },
+  "ts": "2026-10-18T04:56:16.776804+00:00"
+}

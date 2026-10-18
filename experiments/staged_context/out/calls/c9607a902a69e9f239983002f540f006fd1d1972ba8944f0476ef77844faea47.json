@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c9607a902a69e9f239983002f540f006fd1d1972ba8944f0476ef77844faea47",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1080,
+  "output_tokens": 984,
+  "cost_usd": 0.0027840000000000005,
+  "elapsed_s": 6.48,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Comprehensive live chat and knowledge base features\",\n    \"Seamless integration for customer communication\",\n    \"Advanced automation capabilities compared to previous solutions\"\n  ],\n  \"cons\": [\n    \"Significantly higher cost for a small business\",\n    \"Some features felt overkill for their current needs\",\n    \"Initial setup and customization required a learning curve\"\n  ],\n  \"overall_experience\": \"This owner of a small software company found Intercom to be a powerful upgrade from tawk.to, appreciating its robust functionality for live chat and knowledge base. However, the substantial increase in cost for a business of their size significantly impacted the perceived value for money. While generally pleased with the feature set and ease of use, the pricing model presented a considerable challenge.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 7,
+    "pros": [
+      "Comprehensive live chat and knowledge base features",
+      "Seamless integration for customer communication",
+      "Advanced automation capabilities compared to previous solutions"
+    ],
+    "cons": [
+      "Significantly higher cost for a small business",
+      "Some features felt overkill for their current needs",
+      "Initial setup and customization required a learning curve"
+    ],
+    "overall_experience": "This owner of a small software company found Intercom to be a powerful upgrade from tawk.to, appreciating its robust functionality for live chat and knowledge base. However, the substantial increase in cost for a business of their size significantly impacted the perceived value for money. While generally pleased with the feature set and ease of use, the pricing model presented a considerable challenge."
+  },
+  "ts": "2026-10-18T05:00:42.317269+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3401c69afb2c241f3b147943149a279acf9ec0965dd4ba2e299b89d28c6b68df",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 266,
+  "output_tokens": 952,
+  "cost_usd": 0.0024598000000000003,
+  "elapsed_s": 7.65,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Effective for tracking client interactions and progress.\",\n    \"Centralized platform for sales activities.\",\n    \"Robust task management features.\"\n  ],\n  \"cons\": [\n    \"Can feel complex or overwhelming for simple tasks.\",\n    \"Data entry may be cumbersome with required fields.\",\n    \"Interface could be more intuitive for daily use.\"\n  ],\n  \"overall_experience\": \"The Account Representative found Salesforce Sales Cloud to be functional for managing notes and tasks, appreciating its ability to centralize sales activities. However, they likely experienced some frustration with its ease of use, finding it occasionally complex for routine data entry. While it served its purpose, the overall experience was somewhat neutral due to the steep learning curve and potential for feature overload in a large enterprise setting.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 6,
+    "pros": [
+      "Effective for tracking client interactions and progress.",
+      "Centralized platform for sales activities.",
+      "Robust task management features."
+    ],
+    "cons": [
+      "Can feel complex or overwhelming for simple tasks.",
+      "Data entry may be cumbersome with required fields.",
+      "Interface could be more intuitive for daily use."
+    ],
+    "overall_experience": "The Account Representative found Salesforce Sales Cloud to be functional for managing notes and tasks, appreciating its ability to centralize sales activities. However, they likely experienced some frustration with its ease of use, finding it occasionally complex for routine data entry. While it served its purpose, the overall experience was somewhat neutral due to the steep learning curve and potential for feature overload in a large enterprise setting."
+  },
+  "ts": "2026-10-18T05:00:39.921370+00:00"
+}

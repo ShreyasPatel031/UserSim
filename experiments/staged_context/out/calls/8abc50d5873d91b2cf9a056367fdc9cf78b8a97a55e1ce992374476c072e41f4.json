@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8abc50d5873d91b2cf9a056367fdc9cf78b8a97a55e1ce992374476c072e41f4",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2643,
+  "output_tokens": 948,
+  "cost_usd": 0.0031628999999999997,
+  "elapsed_s": 6.62,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Efficiently manages human resources information and employee data.\",\n    \"Provides robust reporting capabilities crucial for audit purposes.\",\n    \"User-friendly interface makes daily HR tasks more streamlined.\"\n  ],\n  \"cons\": [\n    \"Reporting customization might be limited for specific education sector needs.\",\n    \"Integration with other school-specific systems could be challenging.\",\n    \"Performance or loading times might occasionally be slow with a growing dataset.\"\n  ],\n  \"overall_experience\": \"This HR and Credentialing Lead likely found BambooHR to be a reliable and generally intuitive platform for managing HR information within their education institution. The system's reporting capabilities were valuable for audits, although they may have encountered some minor frustrations with customization or occasional performance lags. Overall, it served their core HR needs effectively over the long term.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Efficiently manages human resources information and employee data.",
+      "Provides robust reporting capabilities crucial for audit purposes.",
+      "User-friendly interface makes daily HR tasks more streamlined."
+    ],
+    "cons": [
+      "Reporting customization might be limited for specific education sector needs.",
+      "Integration with other school-specific systems could be challenging.",
+      "Performance or loading times might occasionally be slow with a growing dataset."
+    ],
+    "overall_experience": "This HR and Credentialing Lead likely found BambooHR to be a reliable and generally intuitive platform for managing HR information within their education institution. The system's reporting capabilities were valuable for audits, although they may have encountered some minor frustrations with customization or occasional performance lags. Overall, it served their core HR needs effectively over the long term."
+  },
+  "ts": "2026-10-18T05:00:57.895873+00:00"
+}

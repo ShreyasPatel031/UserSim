@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8358f39b32418289f4501c9d0ef005a0d56ed2d4fb1041ac71c110ae262eb342",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2566,
+  "output_tokens": 1026,
+  "cost_usd": 0.0033348,
+  "elapsed_s": 10.38,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Comprehensive sales process management and tracking\",\n    \"Extensive customization options for specific workflows\",\n    \"Powerful reporting and analytics capabilities\"\n  ],\n  \"cons\": [\n    \"Steep learning curve for advanced features and administration\",\n    \"High cost, especially for additional features and integrations\",\n    \"Performance can be slow with large data sets or complex configurations\"\n  ],\n  \"overall_experience\": \"The Operations Analyst likely found Salesforce Sales Cloud to be a powerful and highly functional CRM, essential for managing complex sales processes in their large organization. They appreciated its deep customization and reporting capabilities which aided in operational oversight. However, the initial setup complexity, ongoing administrative effort, and significant cost were likely notable drawbacks.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Comprehensive sales process management and tracking",
+      "Extensive customization options for specific workflows",
+      "Powerful reporting and analytics capabilities"
+    ],
+    "cons": [
+      "Steep learning curve for advanced features and administration",
+      "High cost, especially for additional features and integrations",
+      "Performance can be slow with large data sets or complex configurations"
+    ],
+    "overall_experience": "The Operations Analyst likely found Salesforce Sales Cloud to be a powerful and highly functional CRM, essential for managing complex sales processes in their large organization. They appreciated its deep customization and reporting capabilities which aided in operational oversight. However, the initial setup complexity, ongoing administrative effort, and significant cost were likely notable drawbacks."
+  },
+  "ts": "2026-10-18T05:00:39.235449+00:00"
+}

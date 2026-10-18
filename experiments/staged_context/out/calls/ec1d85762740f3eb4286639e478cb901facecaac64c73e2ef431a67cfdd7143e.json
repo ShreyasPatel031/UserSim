@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ec1d85762740f3eb4286639e478cb901facecaac64c73e2ef431a67cfdd7143e",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 267,
+  "output_tokens": 1012,
+  "cost_usd": 0.0026101,
+  "elapsed_s": 8.08,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Robust capabilities for tracking sales performance and pipeline.\",\n    \"Customizable dashboards provide quick team insights.\",\n    \"Ability to consolidate data from various sales activities.\"\n  ],\n  \"cons\": [\n    \"Complexity in building advanced, custom reports without admin support.\",\n    \"Initial learning curve for report creation can be steep.\",\n    \"Performance issues when running very large or complex reports.\"\n  ],\n  \"overall_experience\": \"This Mid Market Sales Manager likely found Salesforce Sales Cloud to be a powerful tool for overseeing their team's performance, leveraging its extensive reporting features after more than two years of use. While the platform offered robust functionality for tracking and analyzing sales data, they probably encountered challenges with the complexity of creating highly customized reports independently. Despite some frustrations with ease of use for advanced reporting, the ability to gain critical insights into their team's pipeline and activities made it a valuable, albeit occasionally demanding, resource for their role.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Robust capabilities for tracking sales performance and pipeline.",
+      "Customizable dashboards provide quick team insights.",
+      "Ability to consolidate data from various sales activities."
+    ],
+    "cons": [
+      "Complexity in building advanced, custom reports without admin support.",
+      "Initial learning curve for report creation can be steep.",
+      "Performance issues when running very large or complex reports."
+    ],
+    "overall_experience": "This Mid Market Sales Manager likely found Salesforce Sales Cloud to be a powerful tool for overseeing their team's performance, leveraging its extensive reporting features after more than two years of use. While the platform offered robust functionality for tracking and analyzing sales data, they probably encountered challenges with the complexity of creating highly customized reports independently. Despite some frustrations with ease of use for advanced reporting, the ability to gain critical insights into their team's pipeline and activities made it a valuable, albeit occasionally demanding, resource for their role."
+  },
+  "ts": "2026-10-18T05:00:37.575221+00:00"
+}

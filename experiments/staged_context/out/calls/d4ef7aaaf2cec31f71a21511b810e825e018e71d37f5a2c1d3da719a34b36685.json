@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d4ef7aaaf2cec31f71a21511b810e825e018e71d37f5a2c1d3da719a34b36685",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 220,
+  "output_tokens": 444,
+  "cost_usd": 0.0011760000000000002,
+  "elapsed_s": 23.0,
+  "error": null,
+  "text": "{\n  \"task\": \"Track and manage customer opportunities and sales processes.\",\n  \"benefits\": [\n    \"Intuitive interface\",\n    \"Centralize customer data\",\n    \"Automate tasks\",\n    \"Optimize daily sales tracking\"\n  ],\n  \"frictions\": [\n    \"Advanced features are paid\",\n    \"Integration with other tools can be complex to configure\"\n  ]\n}",
+  "json": {
+    "task": "Track and manage customer opportunities and sales processes.",
+    "benefits": [
+      "Intuitive interface",
+      "Centralize customer data",
+      "Automate tasks",
+      "Optimize daily sales tracking"
+    ],
+    "frictions": [
+      "Advanced features are paid",
+      "Integration with other tools can be complex to configure"
+    ]
+  },
+  "ts": "2026-10-18T04:56:09.029742+00:00"
+}

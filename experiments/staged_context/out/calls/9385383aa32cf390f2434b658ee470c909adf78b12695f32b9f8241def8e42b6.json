@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9385383aa32cf390f2434b658ee470c909adf78b12695f32b9f8241def8e42b6",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 196,
+  "output_tokens": 470,
+  "cost_usd": 0.0012338,
+  "elapsed_s": 22.2,
+  "error": null,
+  "text": "{\n  \"task\": \"Report and track problems or incidents\",\n  \"benefits\": [\n    \"Easy problem reporting and tracking\",\n    \"Fast notifications on replies\",\n    \"Simple ticket status\",\n    \"Effective search for similar incidents\"\n  ],\n  \"frictions\": [\n    \"Attachment upload/download failures\"\n  ]\n}",
+  "json": {
+    "task": "Report and track problems or incidents",
+    "benefits": [
+      "Easy problem reporting and tracking",
+      "Fast notifications on replies",
+      "Simple ticket status",
+      "Effective search for similar incidents"
+    ],
+    "frictions": [
+      "Attachment upload/download failures"
+    ]
+  },
+  "ts": "2026-10-18T04:56:08.851430+00:00"
+}

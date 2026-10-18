@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f579e3001081d2466a8588193ab33d09f03dcb492f2266a910e597baaf99420f",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2375,
+  "output_tokens": 1000,
+  "cost_usd": 0.0032125,
+  "elapsed_s": 6.23,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Efficient contact and lead management\",\n    \"Streamlined communication tools for clients\",\n    \"Easy meeting scheduling and tracking\"\n  ],\n  \"cons\": [\n    \"Steep learning curve for advanced features\",\n    \"Pricing can become expensive with added functionalities\",\n    \"Limited customization options for specific workflows\"\n  ],\n  \"overall_experience\": \"The Inside Sales Manager likely found HubSpot CRM highly effective for managing client contacts, communication, and scheduling. Its user-friendly interface and robust sales-oriented features contributed to a positive experience, aligning well with their daily tasks. While generally satisfied, they may have noted that advanced features required some learning and that costs could escalate with additional integrations or expanded use.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Efficient contact and lead management",
+      "Streamlined communication tools for clients",
+      "Easy meeting scheduling and tracking"
+    ],
+    "cons": [
+      "Steep learning curve for advanced features",
+      "Pricing can become expensive with added functionalities",
+      "Limited customization options for specific workflows"
+    ],
+    "overall_experience": "The Inside Sales Manager likely found HubSpot CRM highly effective for managing client contacts, communication, and scheduling. Its user-friendly interface and robust sales-oriented features contributed to a positive experience, aligning well with their daily tasks. While generally satisfied, they may have noted that advanced features required some learning and that costs could escalate with additional integrations or expanded use."
+  },
+  "ts": "2026-10-18T05:00:34.378704+00:00"
+}

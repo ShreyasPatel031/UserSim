@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "79fb7b7ff38fdc9e2ce930f681d1af398b8b999f25f718b4015d8a33bb65bbba",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 258,
+  "output_tokens": 957,
+  "cost_usd": 0.0024698999999999997,
+  "elapsed_s": 7.06,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 2,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Comprehensive knowledge base functionality for self-service\",\n    \"Good integration options for custom development needs\",\n    \"Scalable features for growing support operations\"\n  ],\n  \"cons\": [\n    \"Pricing can be high for self-employed individuals or small teams\",\n    \"Initial setup and advanced customization can be complex\",\n    \"Some features feel like overkill for basic 'get answers' tasks\"\n  ],\n  \"overall_experience\": \"This self-employed frontend developer likely found Zendesk Suite to be a capable platform for managing knowledge and providing answers, appreciating its robust feature set and integration possibilities. However, the comprehensive nature of the Suite, coupled with its pricing model, probably felt like an expensive overhead for their specific needs, leading to some frustration with its value for money and initial complexity.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 3,
+    "value_for_money_rating": 2,
+    "customer_support_rating": 3,
+    "recommendation_score": 6,
+    "pros": [
+      "Comprehensive knowledge base functionality for self-service",
+      "Good integration options for custom development needs",
+      "Scalable features for growing support operations"
+    ],
+    "cons": [
+      "Pricing can be high for self-employed individuals or small teams",
+      "Initial setup and advanced customization can be complex",
+      "Some features feel like overkill for basic 'get answers' tasks"
+    ],
+    "overall_experience": "This self-employed frontend developer likely found Zendesk Suite to be a capable platform for managing knowledge and providing answers, appreciating its robust feature set and integration possibilities. However, the comprehensive nature of the Suite, coupled with its pricing model, probably felt like an expensive overhead for their specific needs, leading to some frustration with its value for money and initial complexity."
+  },
+  "ts": "2026-10-18T05:00:41.315963+00:00"
+}

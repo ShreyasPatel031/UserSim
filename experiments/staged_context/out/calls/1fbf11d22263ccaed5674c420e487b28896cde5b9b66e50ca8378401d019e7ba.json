@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1fbf11d22263ccaed5674c420e487b28896cde5b9b66e50ca8378401d019e7ba",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 260,
+  "output_tokens": 980,
+  "cost_usd": 0.002528,
+  "elapsed_s": 6.89,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Streamlined customer communication and support\",\n    \"Effective campaign management and segmentation\",\n    \"Unified platform for marketing and customer success\"\n  ],\n  \"cons\": [\n    \"Pricing can become expensive as usage scales\",\n    \"Advanced features sometimes require a learning curve\",\n    \"Reporting could be more robust for detailed analysis\"\n  ],\n  \"overall_experience\": \"This person likely found Intercom to be a highly effective tool for their combined Marketing and Customer Success responsibilities. They appreciated its ability to centralize customer interactions and manage campaigns efficiently. While generally positive, the reviewer might have noted that the cost could escalate with increased usage and desired more depth in reporting capabilities.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Streamlined customer communication and support",
+      "Effective campaign management and segmentation",
+      "Unified platform for marketing and customer success"
+    ],
+    "cons": [
+      "Pricing can become expensive as usage scales",
+      "Advanced features sometimes require a learning curve",
+      "Reporting could be more robust for detailed analysis"
+    ],
+    "overall_experience": "This person likely found Intercom to be a highly effective tool for their combined Marketing and Customer Success responsibilities. They appreciated its ability to centralize customer interactions and manage campaigns efficiently. While generally positive, the reviewer might have noted that the cost could escalate with increased usage and desired more depth in reporting capabilities."
+  },
+  "ts": "2026-10-18T05:00:44.360079+00:00"
+}

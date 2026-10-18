@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9b674d35853cd52bf287c7c86ca4b07657b03a6e5b732fcfc62f3f0ab6e6b196",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1059,
+  "output_tokens": 1124,
+  "cost_usd": 0.0031277,
+  "elapsed_s": 8.6,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Streamlined task assignment and progress tracking for the team.\",\n    \"Enhanced visibility into ongoing projects and operational workflows.\",\n    \"Improved team collaboration and accountability over time.\"\n  ],\n  \"cons\": [\n    \"Initial setup and adoption for new team members required a learning curve.\",\n    \"Advanced reporting capabilities were sometimes limited in lower-tier plans.\",\n    \"Can become cluttered if not consistently organized, requiring careful project management.\"\n  ],\n  \"overall_experience\": \"The Operations Manager likely found Asana to be a highly effective tool for managing and delegating company tasks, significantly improving team coordination and oversight. The platform's features for task management and collaboration were a strong fit for their role and industry, contributing to a positive and productive experience over several years. While generally very satisfied, they may have encountered minor challenges with user onboarding or accessing premium reporting features.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Streamlined task assignment and progress tracking for the team.",
+      "Enhanced visibility into ongoing projects and operational workflows.",
+      "Improved team collaboration and accountability over time."
+    ],
+    "cons": [
+      "Initial setup and adoption for new team members required a learning curve.",
+      "Advanced reporting capabilities were sometimes limited in lower-tier plans.",
+      "Can become cluttered if not consistently organized, requiring careful project management."
+    ],
+    "overall_experience": "The Operations Manager likely found Asana to be a highly effective tool for managing and delegating company tasks, significantly improving team coordination and oversight. The platform's features for task management and collaboration were a strong fit for their role and industry, contributing to a positive and productive experience over several years. While generally very satisfied, they may have encountered minor challenges with user onboarding or accessing premium reporting features."
+  },
+  "ts": "2026-10-18T05:00:25.856863+00:00"
+}

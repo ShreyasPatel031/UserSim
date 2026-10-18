@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4e4eb4f74a6ada0e7b4512e3d10954637e3dd7312b195efee8e52007421bee07",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1073,
+  "output_tokens": 1031,
+  "cost_usd": 0.0028994,
+  "elapsed_s": 6.82,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Excellent bank feed integration for efficient reconciliation\",\n    \"Cloud-based collaboration simplifies client management\",\n    \"User-friendly interface makes it easy for clients to use\"\n  ],\n  \"cons\": [\n    \"Customer support can be slow or unhelpful at times\",\n    \"Reporting features could be more customizable\",\n    \"May lack some advanced features found in higher-tier software\"\n  ],\n  \"overall_experience\": \"This accountant found Xero to be a generally effective tool for managing small business clients, appreciating its cloud-based collaboration and strong bank feed capabilities. While the user-friendly interface was a plus for their clients, they occasionally encountered frustrations with customer support responsiveness and wished for more flexible reporting options. Despite minor drawbacks, Xero proved to be a solid choice for their accounting practice.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Excellent bank feed integration for efficient reconciliation",
+      "Cloud-based collaboration simplifies client management",
+      "User-friendly interface makes it easy for clients to use"
+    ],
+    "cons": [
+      "Customer support can be slow or unhelpful at times",
+      "Reporting features could be more customizable",
+      "May lack some advanced features found in higher-tier software"
+    ],
+    "overall_experience": "This accountant found Xero to be a generally effective tool for managing small business clients, appreciating its cloud-based collaboration and strong bank feed capabilities. While the user-friendly interface was a plus for their clients, they occasionally encountered frustrations with customer support responsiveness and wished for more flexible reporting options. Despite minor drawbacks, Xero proved to be a solid choice for their accounting practice."
+  },
+  "ts": "2026-10-18T05:00:52.878207+00:00"
+}

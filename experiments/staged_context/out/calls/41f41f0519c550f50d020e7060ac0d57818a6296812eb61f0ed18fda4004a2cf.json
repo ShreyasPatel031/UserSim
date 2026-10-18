@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "41f41f0519c550f50d020e7060ac0d57818a6296812eb61f0ed18fda4004a2cf",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 251,
+  "output_tokens": 944,
+  "cost_usd": 0.0024353,
+  "elapsed_s": 7.14,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Robust automation capabilities for client nurturing\",\n    \"Effective segmentation for targeted financial communication\",\n    \"Scalable features that support business growth\"\n  ],\n  \"cons\": [\n    \"Initial learning curve for advanced features\",\n    \"Pricing can be a significant investment for a small firm\",\n    \"Occasional complexity in setting up intricate workflows\"\n  ],\n  \"overall_experience\": \"This CEO likely found ActiveCampaign to be a powerful tool for automating client communication and managing leads within their small financial services firm. The platform's extensive automation and segmentation features were probably critical for delivering personalized service and maintaining compliance. Despite an initial learning curve and the investment required, the long-term value and efficiency gained over two years likely justified its use for driving business growth.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Robust automation capabilities for client nurturing",
+      "Effective segmentation for targeted financial communication",
+      "Scalable features that support business growth"
+    ],
+    "cons": [
+      "Initial learning curve for advanced features",
+      "Pricing can be a significant investment for a small firm",
+      "Occasional complexity in setting up intricate workflows"
+    ],
+    "overall_experience": "This CEO likely found ActiveCampaign to be a powerful tool for automating client communication and managing leads within their small financial services firm. The platform's extensive automation and segmentation features were probably critical for delivering personalized service and maintaining compliance. Despite an initial learning curve and the investment required, the long-term value and efficiency gained over two years likely justified its use for driving business growth."
+  },
+  "ts": "2026-10-18T05:00:51.364856+00:00"
+}

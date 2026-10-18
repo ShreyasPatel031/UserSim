@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "555b80c433686938a616d27eedc609ca4244608f6d360b3a6214b845caf3b027",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 165,
+  "output_tokens": 462,
+  "cost_usd": 0.0012045,
+  "elapsed_s": 3.27,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage human resources information and pull reports for audit purposes\",\n  \"benefits\": [\n    \"Easy to use\",\n    \"Easy to set up additional sections\",\n    \"Easy to set up tables\"\n  ],\n  \"frictions\": [\n    \"Cannot pull reports for files such as certifications or trainings\",\n    \"Reports only show dates, requiring individual file searches\"\n  ]\n}",
+  "json": {
+    "task": "Manage human resources information and pull reports for audit purposes",
+    "benefits": [
+      "Easy to use",
+      "Easy to set up additional sections",
+      "Easy to set up tables"
+    ],
+    "frictions": [
+      "Cannot pull reports for files such as certifications or trainings",
+      "Reports only show dates, requiring individual file searches"
+    ]
+  },
+  "ts": "2026-10-18T04:56:11.533435+00:00"
+}

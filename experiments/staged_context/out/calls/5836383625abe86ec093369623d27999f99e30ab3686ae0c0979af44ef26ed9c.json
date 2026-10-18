@@ -1,0 +1,25 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "5836383625abe86ec093369623d27999f99e30ab3686ae0c0979af44ef26ed9c",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 179,
+  "output_tokens": 433,
+  "cost_usd": 0.0011362000000000002,
+  "elapsed_s": 22.65,
+  "error": null,
+  "text": "{\n  \"task\": \"Generate accounting reports\",\n  \"benefits\": [\n    \"Generate all basic accounting reports needed\",\n    \"All reports needed for accounting purposes are available\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Generate accounting reports",
+    "benefits": [
+      "Generate all basic accounting reports needed",
+      "All reports needed for accounting purposes are available"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T04:56:10.579613+00:00"
+}

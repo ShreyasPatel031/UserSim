@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "dd5aa702c9460361dbc5b4616ebbf33a9b7f53d6677223eb4e5c38297b91673b",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1111,
+  "output_tokens": 1060,
+  "cost_usd": 0.0029833,
+  "elapsed_s": 6.69,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Powerful data visualization capabilities for key customer metrics.\",\n    \"Seamless integration with other Microsoft products and data sources.\",\n    \"Ability to build complex connections between different KPIs.\"\n  ],\n  \"cons\": [\n    \"Initial learning curve for advanced data modeling and DAX.\",\n    \"Performance can sometimes be slow with very large datasets.\",\n    \"Cost can add up when scaling across a larger team.\"\n  ],\n  \"overall_experience\": \"This Director of Customer Success likely found Microsoft Power BI to be an exceptionally powerful tool for tracking and visualizing critical customer data. Its robust functionality and strong integration capabilities enabled them to effectively connect various metrics. While there may have been a learning curve for more advanced features, the overall value and impact on their data analysis were highly positive.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Powerful data visualization capabilities for key customer metrics.",
+      "Seamless integration with other Microsoft products and data sources.",
+      "Ability to build complex connections between different KPIs."
+    ],
+    "cons": [
+      "Initial learning curve for advanced data modeling and DAX.",
+      "Performance can sometimes be slow with very large datasets.",
+      "Cost can add up when scaling across a larger team."
+    ],
+    "overall_experience": "This Director of Customer Success likely found Microsoft Power BI to be an exceptionally powerful tool for tracking and visualizing critical customer data. Its robust functionality and strong integration capabilities enabled them to effectively connect various metrics. While there may have been a learning curve for more advanced features, the overall value and impact on their data analysis were highly positive."
+  },
+  "ts": "2026-10-18T05:01:14.138061+00:00"
+}

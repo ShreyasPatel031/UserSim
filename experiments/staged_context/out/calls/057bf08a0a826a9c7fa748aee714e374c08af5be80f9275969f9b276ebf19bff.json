@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "057bf08a0a826a9c7fa748aee714e374c08af5be80f9275969f9b276ebf19bff",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2526,
+  "output_tokens": 1018,
+  "cost_usd": 0.0033028,
+  "elapsed_s": 7.62,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Comprehensive project and task tracking capabilities\",\n    \"Effective for team collaboration and workflow management\",\n    \"Customizable to suit different project needs\"\n  ],\n  \"cons\": [\n    \"Can become complex with extensive features\",\n    \"Potential for higher pricing as team needs grow\",\n    \"Reporting features might require some effort to set up\"\n  ],\n  \"overall_experience\": \"The Senior Technical Manager likely found Asana to be a highly effective tool for managing projects and tracking tasks within their team. They appreciated its robust functionality and ability to streamline workflows, making it a valuable asset for their 201-500 employee software company. While generally positive, they may have noted some complexity or cost concerns with advanced usage, common for feature-rich platforms.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Comprehensive project and task tracking capabilities",
+      "Effective for team collaboration and workflow management",
+      "Customizable to suit different project needs"
+    ],
+    "cons": [
+      "Can become complex with extensive features",
+      "Potential for higher pricing as team needs grow",
+      "Reporting features might require some effort to set up"
+    ],
+    "overall_experience": "The Senior Technical Manager likely found Asana to be a highly effective tool for managing projects and tracking tasks within their team. They appreciated its robust functionality and ability to streamline workflows, making it a valuable asset for their 201-500 employee software company. While generally positive, they may have noted some complexity or cost concerns with advanced usage, common for feature-rich platforms."
+  },
+  "ts": "2026-10-18T05:00:25.914597+00:00"
+}

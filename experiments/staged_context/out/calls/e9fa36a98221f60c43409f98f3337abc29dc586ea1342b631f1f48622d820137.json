@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e9fa36a98221f60c43409f98f3337abc29dc586ea1342b631f1f48622d820137",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1055,
+  "output_tokens": 1056,
+  "cost_usd": 0.0029565,
+  "elapsed_s": 7.93,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Centralized workspace for all projects and notes.\",\n    \"Highly customizable databases and page layouts.\",\n    \"Seamless integration of various content types.\"\n  ],\n  \"cons\": [\n    \"Can become complex to set up and maintain for intricate workflows.\",\n    \"Performance issues or slower loading times with large workspaces.\",\n    \"Steep learning curve to master advanced features.\"\n  ],\n  \"overall_experience\": \"This user likely appreciated Notion's ability to consolidate all their organizational needs into a single, flexible platform, a significant improvement from their previous tool. While the initial setup and customization offered great power, they probably encountered some frustrations with its complexity or occasional performance slowdowns. Despite these challenges, the overall utility for managing their self-employed entertainment business was largely positive.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Centralized workspace for all projects and notes.",
+      "Highly customizable databases and page layouts.",
+      "Seamless integration of various content types."
+    ],
+    "cons": [
+      "Can become complex to set up and maintain for intricate workflows.",
+      "Performance issues or slower loading times with large workspaces.",
+      "Steep learning curve to master advanced features."
+    ],
+    "overall_experience": "This user likely appreciated Notion's ability to consolidate all their organizational needs into a single, flexible platform, a significant improvement from their previous tool. While the initial setup and customization offered great power, they probably encountered some frustrations with its complexity or occasional performance slowdowns. Despite these challenges, the overall utility for managing their self-employed entertainment business was largely positive."
+  },
+  "ts": "2026-10-18T05:00:31.613770+00:00"
+}

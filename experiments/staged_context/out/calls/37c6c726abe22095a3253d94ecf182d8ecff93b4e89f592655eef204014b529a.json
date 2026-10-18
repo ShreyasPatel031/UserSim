@@ -1,0 +1,28 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "37c6c726abe22095a3253d94ecf182d8ecff93b4e89f592655eef204014b529a",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 202,
+  "output_tokens": 465,
+  "cost_usd": 0.0012231000000000002,
+  "elapsed_s": 22.71,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage school accounting, balance books, and process payments electronically.\",\n  \"benefits\": [\n    \"Improves time management\",\n    \"Limits financial risks\"\n  ],\n  \"frictions\": [\n    \"Service is unlimited to users\",\n    \"Keeps history of all accountabilities, billing, invoicing, and related services\"\n  ]\n}",
+  "json": {
+    "task": "Manage school accounting, balance books, and process payments electronically.",
+    "benefits": [
+      "Improves time management",
+      "Limits financial risks"
+    ],
+    "frictions": [
+      "Service is unlimited to users",
+      "Keeps history of all accountabilities, billing, invoicing, and related services"
+    ]
+  },
+  "ts": "2026-10-18T04:56:10.769143+00:00"
+}

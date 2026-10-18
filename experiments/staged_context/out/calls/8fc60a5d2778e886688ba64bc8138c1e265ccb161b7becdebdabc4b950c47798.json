@@ -1,0 +1,28 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8fc60a5d2778e886688ba64bc8138c1e265ccb161b7becdebdabc4b950c47798",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 189,
+  "output_tokens": 438,
+  "cost_usd": 0.0011517,
+  "elapsed_s": 24.92,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage daily business tasks\",\n  \"benefits\": [\n    \"Serves as central software for daily tasks\",\n    \"User friendly\",\n    \"Simple to train others\"\n  ],\n  \"frictions\": [\n    \"Colors caused headaches\"\n  ]\n}",
+  "json": {
+    "task": "Manage daily business tasks",
+    "benefits": [
+      "Serves as central software for daily tasks",
+      "User friendly",
+      "Simple to train others"
+    ],
+    "frictions": [
+      "Colors caused headaches"
+    ]
+  },
+  "ts": "2026-10-18T04:56:10.987739+00:00"
+}

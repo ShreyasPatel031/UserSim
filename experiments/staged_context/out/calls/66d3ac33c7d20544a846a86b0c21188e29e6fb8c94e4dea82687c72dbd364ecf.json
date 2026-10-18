@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "66d3ac33c7d20544a846a86b0c21188e29e6fb8c94e4dea82687c72dbd364ecf",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2722,
+  "output_tokens": 1120,
+  "cost_usd": 0.0036165999999999993,
+  "elapsed_s": 7.24,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Intuitive and easy-to-navigate interface\",\n    \"Streamlined expense tracking and invoicing features\",\n    \"Cloud-based access allows for flexible work\"\n  ],\n  \"cons\": [\n    \"Limited advanced reporting or customization options for complex data analysis\",\n    \"Potential for higher cost as the company scales or requires more features\",\n    \"Integrations might not cover all specialized healthcare or data tools\"\n  ],\n  \"overall_experience\": \"The Data Analyst likely found FreshBooks to be a straightforward and user-friendly accounting solution for their small to medium-sized company, especially for basic financial management. Its ease of use and cloud accessibility were probably appreciated. However, as a data professional, they may have noted some limitations in advanced reporting or customization that could become more apparent with longer-term use or more complex data needs.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Intuitive and easy-to-navigate interface",
+      "Streamlined expense tracking and invoicing features",
+      "Cloud-based access allows for flexible work"
+    ],
+    "cons": [
+      "Limited advanced reporting or customization options for complex data analysis",
+      "Potential for higher cost as the company scales or requires more features",
+      "Integrations might not cover all specialized healthcare or data tools"
+    ],
+    "overall_experience": "The Data Analyst likely found FreshBooks to be a straightforward and user-friendly accounting solution for their small to medium-sized company, especially for basic financial management. Its ease of use and cloud accessibility were probably appreciated. However, as a data professional, they may have noted some limitations in advanced reporting or customization that could become more apparent with longer-term use or more complex data needs."
+  },
+  "ts": "2026-10-18T05:00:55.839867+00:00"
+}

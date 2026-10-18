@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "80ce595cff35d8eb801991003c27cc74ceffa9fdada7aefa9f93fe51316a98ef",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2698,
+  "output_tokens": 1062,
+  "cost_usd": 0.0034644000000000003,
+  "elapsed_s": 7.27,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Intuitive interface for invoicing and expense tracking\",\n    \"Efficient time tracking features for client projects\",\n    \"Good integration capabilities with other business tools\"\n  ],\n  \"cons\": [\n    \"Could benefit from more advanced reporting options\",\n    \"Pricing can be a bit high compared to some alternatives\",\n    \"Occasional performance issues or slow loading times\"\n  ],\n  \"overall_experience\": \"This web developer likely found FreshBooks to be a straightforward and highly usable tool for managing their client invoicing and time tracking needs. While appreciating its core functionality and ease of use, they might have desired more sophisticated reporting or customization features, particularly given their background in IT. The value for money was generally good, though potentially a slight concern compared to previously used, more affordable options.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Intuitive interface for invoicing and expense tracking",
+      "Efficient time tracking features for client projects",
+      "Good integration capabilities with other business tools"
+    ],
+    "cons": [
+      "Could benefit from more advanced reporting options",
+      "Pricing can be a bit high compared to some alternatives",
+      "Occasional performance issues or slow loading times"
+    ],
+    "overall_experience": "This web developer likely found FreshBooks to be a straightforward and highly usable tool for managing their client invoicing and time tracking needs. While appreciating its core functionality and ease of use, they might have desired more sophisticated reporting or customization features, particularly given their background in IT. The value for money was generally good, though potentially a slight concern compared to previously used, more affordable options."
+  },
+  "ts": "2026-10-18T05:00:56.995861+00:00"
+}

@@ -1,0 +1,26 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "344195e8e5df4db8c3d1d0dc53a7669ac7e805f564f77317d55b4384c6f0323e",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 178,
+  "output_tokens": 210,
+  "cost_usd": 0.0005784000000000001,
+  "elapsed_s": 23.47,
+  "error": null,
+  "text": "{\n  \"task\": \"Store client contacts, communicate with clients, and schedule business meetings.\",\n  \"benefits\": [\n    \"Store client contacts\",\n    \"Easy communication with clients\",\n    \"Schedule business meetings\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Store client contacts, communicate with clients, and schedule business meetings.",
+    "benefits": [
+      "Store client contacts",
+      "Easy communication with clients",
+      "Schedule business meetings"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T04:56:09.572439+00:00"
+}

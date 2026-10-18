@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f01d6ae4aae492ac8e821cba03136926b76dcadc1769301564af171f1f2f0b11",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 178,
+  "output_tokens": 447,
+  "cost_usd": 0.0011709,
+  "elapsed_s": 3.54,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage an eCommerce business\",\n  \"benefits\": [\n    \"design\",\n    \"flexibility\",\n    \"payment integrations\",\n    \"custom sections options\"\n  ],\n  \"frictions\": [\n    \"lack of resources on how to solve unexpected bugs\"\n  ]\n}",
+  "json": {
+    "task": "Manage an eCommerce business",
+    "benefits": [
+      "design",
+      "flexibility",
+      "payment integrations",
+      "custom sections options"
+    ],
+    "frictions": [
+      "lack of resources on how to solve unexpected bugs"
+    ]
+  },
+  "ts": "2026-10-18T04:56:15.226105+00:00"
+}

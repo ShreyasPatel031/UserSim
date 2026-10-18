@@ -1,0 +1,21 @@
+{
+  "stage": "mcp_classify",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "17c2e820b1ca71212c68de578ef693540697b7857670c9962422304012a12935",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 256,
+  "input_tokens": 648,
+  "output_tokens": 156,
+  "cost_usd": 0.0005844,
+  "elapsed_s": 1.96,
+  "error": null,
+  "text": "{\n  \"category\": \"Accounting\",\n  \"product_name\": \"Xero\"\n}",
+  "json": {
+    "category": "Accounting",
+    "product_name": "Xero"
+  },
+  "ts": "2026-10-18T04:56:27.328058+00:00"
+}

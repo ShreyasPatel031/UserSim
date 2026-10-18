@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "43b323732c075095fec9f306c4c6fc5090982170e104cd6365ff866bfe84e9a5",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 256,
+  "output_tokens": 1007,
+  "cost_usd": 0.0025943000000000003,
+  "elapsed_s": 7.54,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Intuitive drag-and-drop editor\",\n    \"Reliable email delivery\",\n    \"Good template options\"\n  ],\n  \"cons\": [\n    \"Cost increases significantly with list size\",\n    \"Limited advanced customization without code\",\n    \"Customer support not always readily available\"\n  ],\n  \"overall_experience\": \"This self-employed web developer likely found Mailchimp to be a highly effective and user-friendly tool for sending email newsletters. They appreciated its ease of use and reliable performance for their core task. While the platform served their needs well, they may have noted the escalating costs as their subscriber list grew and perhaps desired more advanced customization options.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Intuitive drag-and-drop editor",
+      "Reliable email delivery",
+      "Good template options"
+    ],
+    "cons": [
+      "Cost increases significantly with list size",
+      "Limited advanced customization without code",
+      "Customer support not always readily available"
+    ],
+    "overall_experience": "This self-employed web developer likely found Mailchimp to be a highly effective and user-friendly tool for sending email newsletters. They appreciated its ease of use and reliable performance for their core task. While the platform served their needs well, they may have noted the escalating costs as their subscriber list grew and perhaps desired more advanced customization options."
+  },
+  "ts": "2026-10-18T05:00:48.683618+00:00"
+}

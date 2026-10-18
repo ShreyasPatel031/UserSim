@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3d796023f9c3bdb3b8cedcd5efbd8164cf00d39526f9bda3bea286d5a87aad0b",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1094,
+  "output_tokens": 972,
+  "cost_usd": 0.0027581999999999997,
+  "elapsed_s": 6.74,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Comprehensive platform for managing diverse HR and IT tasks efficiently.\",\n    \"Streamlines employee lifecycle management from onboarding to payroll.\",\n    \"Intuitive interface that simplifies complex administrative processes.\"\n  ],\n  \"cons\": [\n    \"Customer support can sometimes be slow to respond to complex issues.\",\n    \"Pricing for advanced modules or integrations might accumulate costs.\",\n    \"Initial setup or customization for specific workflows can require effort.\"\n  ],\n  \"overall_experience\": \"This VP, Revenue likely had a very positive experience with Rippling, appreciating its robust functionality for managing payroll, talent, and various HR operations for their mid-sized software company. The platform's ease of use and comprehensive nature significantly streamlined their tasks over two years. While largely satisfied, they may have occasionally encountered minor frustrations with customer support response times or the perceived value for money of certain features.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Comprehensive platform for managing diverse HR and IT tasks efficiently.",
+      "Streamlines employee lifecycle management from onboarding to payroll.",
+      "Intuitive interface that simplifies complex administrative processes."
+    ],
+    "cons": [
+      "Customer support can sometimes be slow to respond to complex issues.",
+      "Pricing for advanced modules or integrations might accumulate costs.",
+      "Initial setup or customization for specific workflows can require effort."
+    ],
+    "overall_experience": "This VP, Revenue likely had a very positive experience with Rippling, appreciating its robust functionality for managing payroll, talent, and various HR operations for their mid-sized software company. The platform's ease of use and comprehensive nature significantly streamlined their tasks over two years. While largely satisfied, they may have occasionally encountered minor frustrations with customer support response times or the perceived value for money of certain features."
+  },
+  "ts": "2026-10-18T05:01:02.808115+00:00"
+}

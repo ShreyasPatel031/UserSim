@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8dab162dd4ea0655bb506ee646f8ea42ca3f50a2548cd4b8681f205ba03a47ad",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 206,
+  "output_tokens": 480,
+  "cost_usd": 0.0012618000000000002,
+  "elapsed_s": 21.77,
+  "error": null,
+  "text": "{\n  \"task\": \"Build knowledge bases, project boards, or task lists\",\n  \"benefits\": [\n    \"Offers block-based documents\",\n    \"Provides various templates\",\n    \"Has a reasonable price\",\n    \"Features good integrations\"\n  ],\n  \"frictions\": [\n    \"Specialist tools might implement features like project management better\"\n  ]\n}",
+  "json": {
+    "task": "Build knowledge bases, project boards, or task lists",
+    "benefits": [
+      "Offers block-based documents",
+      "Provides various templates",
+      "Has a reasonable price",
+      "Features good integrations"
+    ],
+    "frictions": [
+      "Specialist tools might implement features like project management better"
+    ]
+  },
+  "ts": "2026-10-18T04:56:07.340242+00:00"
+}

@@ -1,0 +1,91 @@
+{
+  "strategy": {
+    "ease_of_use_rating": "agent_averages",
+    "functionality_rating": "agent_averages",
+    "overall_rating": "averages",
+    "value_for_money_rating": "averages",
+    "customer_support_rating": "averages",
+    "recommendation_score": "averages",
+    "pros": "agent_alone",
+    "cons": "agent_full",
+    "overall_experience": "agent_averages"
+  },
+  "risk": {
+    "unhappy_risk": "agent_full"
+  },
+  "chosen_on": [
+    "Pipedrive",
+    "Wrike",
+    "Help Scout",
+    "Brevo",
+    "Namely"
+  ],
+  "dev_scores": {
+    "ratings_mae": {
+      "agent_alone": {
+        "customer_support_rating": 1.304,
+        "ease_of_use_rating": 0.9,
+        "functionality_rating": 0.783,
+        "overall_rating": 0.933,
+        "recommendation_score": 1.949,
+        "value_for_money_rating": 0.959
+      },
+      "agent_averages": {
+        "customer_support_rating": 0.804,
+        "ease_of_use_rating": 0.617,
+        "functionality_rating": 0.633,
+        "overall_rating": 0.583,
+        "recommendation_score": 1.456,
+        "value_for_money_rating": 0.816
+      },
+      "agent_full": {
+        "customer_support_rating": 0.848,
+        "ease_of_use_rating": 0.683,
+        "functionality_rating": 0.7,
+        "overall_rating": 0.65,
+        "recommendation_score": 1.356,
+        "value_for_money_rating": 0.98
+      },
+      "averages": {
+        "customer_support_rating": 0.7,
+        "ease_of_use_rating": 0.667,
+        "functionality_rating": 0.634,
+        "overall_rating": 0.571,
+        "recommendation_score": 1.283,
+        "value_for_money_rating": 0.699
+      },
+      "blend": {
+        "customer_support_rating": 0.773,
+        "ease_of_use_rating": 0.675,
+        "functionality_rating": 0.667,
+        "overall_rating": 0.61,
+        "recommendation_score": 1.319,
+        "value_for_money_rating": 0.834
+      }
+    },
+    "text": {
+      "agent_alone": {
+        "cons": 0.151,
+        "overall_experience": 0.217,
+        "pros": 0.426
+      },
+      "agent_averages": {
+        "cons": 0.098,
+        "overall_experience": 0.233,
+        "pros": 0.372
+      },
+      "agent_full": {
+        "cons": 0.161,
+        "overall_experience": 0.133,
+        "pros": 0.415
+      }
+    },
+    "risk_auc": {
+      "agent_alone": 0.542,
+      "agent_averages": 0.36,
+      "agent_full": 0.642,
+      "averages": 0.342,
+      "blend": 0.538
+    }
+  }
+}

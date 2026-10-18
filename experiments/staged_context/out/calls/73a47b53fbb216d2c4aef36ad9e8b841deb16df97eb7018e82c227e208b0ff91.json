@@ -1,0 +1,21 @@
+{
+  "stage": "mcp_classify",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "73a47b53fbb216d2c4aef36ad9e8b841deb16df97eb7018e82c227e208b0ff91",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 256,
+  "input_tokens": 693,
+  "output_tokens": 224,
+  "cost_usd": 0.0007679,
+  "elapsed_s": 1.95,
+  "error": null,
+  "text": "{\n  \"category\": \"Communication\",\n  \"product_name\": \"Slack\"\n}",
+  "json": {
+    "category": "Communication",
+    "product_name": "Slack"
+  },
+  "ts": "2026-10-18T04:56:26.065322+00:00"
+}

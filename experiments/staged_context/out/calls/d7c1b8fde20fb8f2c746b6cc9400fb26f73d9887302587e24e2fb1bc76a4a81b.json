@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d7c1b8fde20fb8f2c746b6cc9400fb26f73d9887302587e24e2fb1bc76a4a81b",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 161,
+  "output_tokens": 482,
+  "cost_usd": 0.0012533,
+  "elapsed_s": 3.99,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage payroll, talent, surveys, performance reviews, offer letters, and onboarding.\",\n  \"benefits\": [\n    \"Everything is in one place\",\n    \"Admin for payroll\",\n    \"Admin for talent and survey cycles\",\n    \"Admin for performance reviews, offer letters, and onboarding\"\n  ],\n  \"frictions\": [\n    \"UI could be better for performance management\",\n    \"UI could be better for seeing an individual's performance over time\"\n  ]\n}",
+  "json": {
+    "task": "Manage payroll, talent, surveys, performance reviews, offer letters, and onboarding.",
+    "benefits": [
+      "Everything is in one place",
+      "Admin for payroll",
+      "Admin for talent and survey cycles",
+      "Admin for performance reviews, offer letters, and onboarding"
+    ],
+    "frictions": [
+      "UI could be better for performance management",
+      "UI could be better for seeing an individual's performance over time"
+    ]
+  },
+  "ts": "2026-10-18T04:56:13.741593+00:00"
+}

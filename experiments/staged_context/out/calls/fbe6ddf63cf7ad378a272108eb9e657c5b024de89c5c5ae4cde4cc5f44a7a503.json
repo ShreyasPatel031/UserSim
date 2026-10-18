@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "fbe6ddf63cf7ad378a272108eb9e657c5b024de89c5c5ae4cde4cc5f44a7a503",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2533,
+  "output_tokens": 1066,
+  "cost_usd": 0.0034249000000000003,
+  "elapsed_s": 6.63,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 2,\n  \"recommendation_score\": 5,\n  \"pros\": [\n    \"Centralized password storage and generation\",\n    \"Convenient for team password sharing in a small company\",\n    \"Browser integration for quick login\"\n  ],\n  \"cons\": [\n    \"Recent security incidents caused significant concern\",\n    \"Customer support response was unsatisfactory during breaches\",\n    \"Occasional performance issues or autofill glitches\"\n  ],\n  \"overall_experience\": \"This Assistant Program Manager likely found LastPass convenient for managing passwords in their small healthcare company for over two years. However, recent security breaches would have significantly eroded their trust, especially given the sensitive nature of their industry. While the core functionality was useful, the security concerns and perceived lack of adequate customer support likely led to a negative shift in their overall experience and a reduced recommendation.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 2,
+    "recommendation_score": 5,
+    "pros": [
+      "Centralized password storage and generation",
+      "Convenient for team password sharing in a small company",
+      "Browser integration for quick login"
+    ],
+    "cons": [
+      "Recent security incidents caused significant concern",
+      "Customer support response was unsatisfactory during breaches",
+      "Occasional performance issues or autofill glitches"
+    ],
+    "overall_experience": "This Assistant Program Manager likely found LastPass convenient for managing passwords in their small healthcare company for over two years. However, recent security breaches would have significantly eroded their trust, especially given the sensitive nature of their industry. While the core functionality was useful, the security concerns and perceived lack of adequate customer support likely led to a negative shift in their overall experience and a reduced recommendation."
+  },
+  "ts": "2026-10-18T05:01:22.846853+00:00"
+}

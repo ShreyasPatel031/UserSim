@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "44ef4a3e7c1cc3a6d111bc158c7f160e228abcfe58f12b046e671728f5787b9d",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1096,
+  "output_tokens": 1053,
+  "cost_usd": 0.0029613,
+  "elapsed_s": 6.39,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Simple and intuitive interface for invoicing\",\n    \"Efficient expense tracking for project costs\",\n    \"Streamlined financial reporting capabilities\"\n  ],\n  \"cons\": [\n    \"Limited integration with enterprise-level civil engineering software\",\n    \"May lack advanced features for complex project accounting\",\n    \"Scalability might be a concern for very large project portfolios\"\n  ],\n  \"overall_experience\": \"This Project Engineer likely found FreshBooks to be a highly effective and user-friendly tool for managing project-specific financial tasks. Its simplicity and focus on core accounting functions probably made it a valuable asset for tracking expenditures, generating invoices, and reporting on financial transactions within their role. While some advanced enterprise-level functionalities might be missing, the overall experience was very positive, driven by its ease of use and ability to efficiently handle their primary financial responsibilities.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Simple and intuitive interface for invoicing",
+      "Efficient expense tracking for project costs",
+      "Streamlined financial reporting capabilities"
+    ],
+    "cons": [
+      "Limited integration with enterprise-level civil engineering software",
+      "May lack advanced features for complex project accounting",
+      "Scalability might be a concern for very large project portfolios"
+    ],
+    "overall_experience": "This Project Engineer likely found FreshBooks to be a highly effective and user-friendly tool for managing project-specific financial tasks. Its simplicity and focus on core accounting functions probably made it a valuable asset for tracking expenditures, generating invoices, and reporting on financial transactions within their role. While some advanced enterprise-level functionalities might be missing, the overall experience was very positive, driven by its ease of use and ability to efficiently handle their primary financial responsibilities."
+  },
+  "ts": "2026-10-18T05:00:54.919254+00:00"
+}

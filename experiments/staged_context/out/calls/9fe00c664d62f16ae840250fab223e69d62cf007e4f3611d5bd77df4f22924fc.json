@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9fe00c664d62f16ae840250fab223e69d62cf007e4f3611d5bd77df4f22924fc",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1111,
+  "output_tokens": 894,
+  "cost_usd": 0.0025683,
+  "elapsed_s": 5.89,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 5,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Efficiently centralizes customer information for quick access.\",\n    \"Streamlines the sales process from lead to close.\",\n    \"Provides a comprehensive overview of customer interactions.\"\n  ],\n  \"cons\": [\n    \"Initial learning curve or setup can be complex.\",\n    \"Interface can feel cluttered if not properly customized.\",\n    \"Requires diligent data entry to maintain accuracy and effectiveness.\"\n  ],\n  \"overall_experience\": \"The RV Sales Specialist likely experienced Salesforce Sales Cloud as a highly effective and robust platform for managing customer relationships and sales activities. Its comprehensive features for finding customer information and streamlining the sales process significantly contributed to their productivity over more than two years. Despite potential initial complexities, the long-term benefits in sales efficiency and customer engagement were clearly valued.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 5,
+    "recommendation_score": 9,
+    "pros": [
+      "Efficiently centralizes customer information for quick access.",
+      "Streamlines the sales process from lead to close.",
+      "Provides a comprehensive overview of customer interactions."
+    ],
+    "cons": [
+      "Initial learning curve or setup can be complex.",
+      "Interface can feel cluttered if not properly customized.",
+      "Requires diligent data entry to maintain accuracy and effectiveness."
+    ],
+    "overall_experience": "The RV Sales Specialist likely experienced Salesforce Sales Cloud as a highly effective and robust platform for managing customer relationships and sales activities. Its comprehensive features for finding customer information and streamlining the sales process significantly contributed to their productivity over more than two years. Despite potential initial complexities, the long-term benefits in sales efficiency and customer engagement were clearly valued."
+  },
+  "ts": "2026-10-18T05:00:37.609497+00:00"
+}

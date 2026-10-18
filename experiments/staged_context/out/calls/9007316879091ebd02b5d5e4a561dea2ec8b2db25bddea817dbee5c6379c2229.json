@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9007316879091ebd02b5d5e4a561dea2ec8b2db25bddea817dbee5c6379c2229",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1108,
+  "output_tokens": 1003,
+  "cost_usd": 0.0028399000000000002,
+  "elapsed_s": 6.42,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Streamlined password sharing for the marketing team.\",\n    \"Securely stores a large number of credentials.\",\n    \"Browser integration improved daily workflow efficiency.\"\n  ],\n  \"cons\": [\n    \"Occasional autofill inconsistencies were frustrating.\",\n    \"Concerns regarding past security incidents.\",\n    \"User interface felt somewhat outdated at times.\"\n  ],\n  \"overall_experience\": \"This Director of Marketing found LastPass to be a highly valuable tool for managing and sharing login credentials across their team. The centralized storage and efficient sharing capabilities significantly improved their department's workflow. While generally satisfied, occasional autofill issues and lingering concerns about historical security breaches were minor drawbacks.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Streamlined password sharing for the marketing team.",
+      "Securely stores a large number of credentials.",
+      "Browser integration improved daily workflow efficiency."
+    ],
+    "cons": [
+      "Occasional autofill inconsistencies were frustrating.",
+      "Concerns regarding past security incidents.",
+      "User interface felt somewhat outdated at times."
+    ],
+    "overall_experience": "This Director of Marketing found LastPass to be a highly valuable tool for managing and sharing login credentials across their team. The centralized storage and efficient sharing capabilities significantly improved their department's workflow. While generally satisfied, occasional autofill issues and lingering concerns about historical security breaches were minor drawbacks."
+  },
+  "ts": "2026-10-18T05:01:22.432472+00:00"
+}

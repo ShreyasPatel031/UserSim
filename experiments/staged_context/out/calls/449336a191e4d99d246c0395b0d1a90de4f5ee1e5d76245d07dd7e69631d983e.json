@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "449336a191e4d99d246c0395b0d1a90de4f5ee1e5d76245d07dd7e69631d983e",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2492,
+  "output_tokens": 1111,
+  "cost_usd": 0.0035250999999999998,
+  "elapsed_s": 6.84,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Efficiently manages financial operations for multiple clients.\",\n    \"Streamlines bank reconciliations and general ledger tasks.\",\n    \"Provides good accessibility for both the practice and its clients.\"\n  ],\n  \"cons\": [\n    \"Customer support can be slow or unhelpful for complex issues.\",\n    \"Certain advanced reporting or customization options might be limited.\",\n    \"Occasional issues with bank feed reliability or specific integrations.\"\n  ],\n  \"overall_experience\": \"This Director in the accounting industry, managing a small practice, likely finds Xero a robust and generally user-friendly solution for their financial operations. The platform's core accounting functionalities and collaborative features are beneficial for managing multiple client accounts. However, they may encounter frustrations with customer support responsiveness or limitations in advanced customization and reporting, especially when compared to their previous experience with QuickBooks Enterprise.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Efficiently manages financial operations for multiple clients.",
+      "Streamlines bank reconciliations and general ledger tasks.",
+      "Provides good accessibility for both the practice and its clients."
+    ],
+    "cons": [
+      "Customer support can be slow or unhelpful for complex issues.",
+      "Certain advanced reporting or customization options might be limited.",
+      "Occasional issues with bank feed reliability or specific integrations."
+    ],
+    "overall_experience": "This Director in the accounting industry, managing a small practice, likely finds Xero a robust and generally user-friendly solution for their financial operations. The platform's core accounting functionalities and collaborative features are beneficial for managing multiple client accounts. However, they may encounter frustrations with customer support responsiveness or limitations in advanced customization and reporting, especially when compared to their previous experience with QuickBooks Enterprise."
+  },
+  "ts": "2026-10-18T05:00:54.543928+00:00"
+}

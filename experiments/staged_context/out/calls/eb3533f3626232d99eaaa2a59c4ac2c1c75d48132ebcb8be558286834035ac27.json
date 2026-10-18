@@ -1,0 +1,26 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "eb3533f3626232d99eaaa2a59c4ac2c1c75d48132ebcb8be558286834035ac27",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 155,
+  "output_tokens": 391,
+  "cost_usd": 0.0010240000000000002,
+  "elapsed_s": 4.04,
+  "error": null,
+  "text": "{\n  \"task\": \"Make internal announcements and track employee presence.\",\n  \"benefits\": [\n    \"Very user-friendly\",\n    \"Facilitates easy internal announcements across several locations\",\n    \"Allows daily tracking of employee in/out status\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Make internal announcements and track employee presence.",
+    "benefits": [
+      "Very user-friendly",
+      "Facilitates easy internal announcements across several locations",
+      "Allows daily tracking of employee in/out status"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T04:56:13.045755+00:00"
+}

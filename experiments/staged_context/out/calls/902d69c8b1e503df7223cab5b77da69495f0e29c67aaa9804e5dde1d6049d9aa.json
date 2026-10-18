@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "902d69c8b1e503df7223cab5b77da69495f0e29c67aaa9804e5dde1d6049d9aa",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1070,
+  "output_tokens": 949,
+  "cost_usd": 0.0026935,
+  "elapsed_s": 6.26,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effective at centralizing access to multiple applications\",\n    \"Broad integration catalog for various business tools\",\n    \"Streamlined user authentication and security policies\"\n  ],\n  \"cons\": [\n    \"Potential complexity for advanced configurations during a trial\",\n    \"Perceived high cost for a small company after the trial period\",\n    \"Initial learning curve for administrators to fully leverage features\"\n  ],\n  \"overall_experience\": \"As a Technical Product Manager evaluating Okta for consolidating application access in a small software company, the reviewer found its core functionality and integration capabilities impressive. While the platform delivered on its promise of centralized access, they likely encountered some complexities during the trial setup or were concerned about the overall cost for a company of their size. The experience was generally positive, highlighting Okta's robust features for identity management.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Effective at centralizing access to multiple applications",
+      "Broad integration catalog for various business tools",
+      "Streamlined user authentication and security policies"
+    ],
+    "cons": [
+      "Potential complexity for advanced configurations during a trial",
+      "Perceived high cost for a small company after the trial period",
+      "Initial learning curve for administrators to fully leverage features"
+    ],
+    "overall_experience": "As a Technical Product Manager evaluating Okta for consolidating application access in a small software company, the reviewer found its core functionality and integration capabilities impressive. While the platform delivered on its promise of centralized access, they likely encountered some complexities during the trial setup or were concerned about the overall cost for a company of their size. The experience was generally positive, highlighting Okta's robust features for identity management."
+  },
+  "ts": "2026-10-18T05:01:19.603070+00:00"
+}

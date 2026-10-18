@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "cee970e85abe171d96636f910035a13262b9e94b4fbc996146a0dfe930776444",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2423,
+  "output_tokens": 1025,
+  "cost_usd": 0.0032894,
+  "elapsed_s": 6.3,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effective for organizing tasks and projects across teams\",\n    \"Helps manage multiple large group projects\",\n    \"Clear overview of project progress and deadlines\"\n  ],\n  \"cons\": [\n    \"Steep learning curve for complex features\",\n    \"Customization options can be overwhelming initially\",\n    \"Potential for too many notifications if not managed well\"\n  ],\n  \"overall_experience\": \"This Interior Designer likely found Asana to be a capable tool for organizing tasks and projects for large groups within their construction company. While appreciating its core functionality for team collaboration and project tracking, they probably encountered a notable learning curve, especially when attempting to customize workflows. Despite these initial hurdles, the platform's ability to keep projects on track made it a generally positive, albeit sometimes challenging, experience.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Effective for organizing tasks and projects across teams",
+      "Helps manage multiple large group projects",
+      "Clear overview of project progress and deadlines"
+    ],
+    "cons": [
+      "Steep learning curve for complex features",
+      "Customization options can be overwhelming initially",
+      "Potential for too many notifications if not managed well"
+    ],
+    "overall_experience": "This Interior Designer likely found Asana to be a capable tool for organizing tasks and projects for large groups within their construction company. While appreciating its core functionality for team collaboration and project tracking, they probably encountered a notable learning curve, especially when attempting to customize workflows. Despite these initial hurdles, the platform's ability to keep projects on track made it a generally positive, albeit sometimes challenging, experience."
+  },
+  "ts": "2026-10-18T05:00:22.482719+00:00"
+}

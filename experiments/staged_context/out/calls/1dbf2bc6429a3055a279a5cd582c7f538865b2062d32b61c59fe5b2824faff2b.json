@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1dbf2bc6429a3055a279a5cd582c7f538865b2062d32b61c59fe5b2824faff2b",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2529,
+  "output_tokens": 1130,
+  "cost_usd": 0.0035836999999999996,
+  "elapsed_s": 7.71,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Excellent for organizing and tracking various client-specific projects and sales tasks.\",\n    \"Provides clear visibility into project progress and team member responsibilities.\",\n    \"Streamlines communication and collaboration for efficient account management.\"\n  ],\n  \"cons\": [\n    \"The initial learning curve might be steep for new users to fully leverage all features.\",\n    \"Advanced reporting capabilities for sales metrics could be more intuitive or robust.\",\n    \"Pricing structure might become a concern as the team or project volume grows.\"\n  ],\n  \"overall_experience\": \"This Key Account Manager likely found Asana highly effective for their core task of managing project boards, appreciating its strong organizational and collaboration features. They experienced a positive impact on tracking client-related activities and team coordination. While generally satisfied, they may have noted a learning curve or wished for more tailored reporting options for their sales role, especially considering the value for money for a small team.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Excellent for organizing and tracking various client-specific projects and sales tasks.",
+      "Provides clear visibility into project progress and team member responsibilities.",
+      "Streamlines communication and collaboration for efficient account management."
+    ],
+    "cons": [
+      "The initial learning curve might be steep for new users to fully leverage all features.",
+      "Advanced reporting capabilities for sales metrics could be more intuitive or robust.",
+      "Pricing structure might become a concern as the team or project volume grows."
+    ],
+    "overall_experience": "This Key Account Manager likely found Asana highly effective for their core task of managing project boards, appreciating its strong organizational and collaboration features. They experienced a positive impact on tracking client-related activities and team coordination. While generally satisfied, they may have noted a learning curve or wished for more tailored reporting options for their sales role, especially considering the value for money for a small team."
+  },
+  "ts": "2026-10-18T05:00:24.472558+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4b3413451a150ecd5afe6742f4b8640193b5807783463d994a0e24b7fd7d0b0c",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2427,
+  "output_tokens": 1076,
+  "cost_usd": 0.0034180999999999994,
+  "elapsed_s": 7.45,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Comprehensive suite of marketing tools for lead generation and campaign management\",\n    \"Excellent resources and academy for learning new marketing skills and knowledge\",\n    \"Centralized contact management and sales pipeline visibility\"\n  ],\n  \"cons\": [\n    \"Higher pricing tiers can be a significant investment for advanced features\",\n    \"Initial setup and customization may require a learning curve\",\n    \"User interface could be more intuitive in some areas\"\n  ],\n  \"overall_experience\": \"This Executive in Digital Marketing likely found HubSpot CRM to be a highly effective and integrated platform for managing marketing efforts and learning new skills. They appreciated its comprehensive features for lead analysis and campaign scaling, despite a moderate learning curve during initial setup. The value for money was generally good, though the cost of higher-tier features might have been a consideration.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Comprehensive suite of marketing tools for lead generation and campaign management",
+      "Excellent resources and academy for learning new marketing skills and knowledge",
+      "Centralized contact management and sales pipeline visibility"
+    ],
+    "cons": [
+      "Higher pricing tiers can be a significant investment for advanced features",
+      "Initial setup and customization may require a learning curve",
+      "User interface could be more intuitive in some areas"
+    ],
+    "overall_experience": "This Executive in Digital Marketing likely found HubSpot CRM to be a highly effective and integrated platform for managing marketing efforts and learning new skills. They appreciated its comprehensive features for lead analysis and campaign scaling, despite a moderate learning curve during initial setup. The value for money was generally good, though the cost of higher-tier features might have been a consideration."
+  },
+  "ts": "2026-10-18T05:00:34.170502+00:00"
+}

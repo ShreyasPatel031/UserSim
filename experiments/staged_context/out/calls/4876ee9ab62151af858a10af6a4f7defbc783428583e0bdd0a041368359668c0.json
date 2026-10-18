@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4876ee9ab62151af858a10af6a4f7defbc783428583e0bdd0a041368359668c0",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2468,
+  "output_tokens": 980,
+  "cost_usd": 0.0031904,
+  "elapsed_s": 6.94,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Provides excellent visibility and structure for managing diverse tasks.\",\n    \"Facilitates easy delegation and tracking of team responsibilities.\",\n    \"Helps streamline workflows and avoid communication silos in the organization.\"\n  ],\n  \"cons\": [\n    \"Advanced automation or reporting features can sometimes require a learning curve.\",\n    \"The cost might become a consideration for scaling up or accessing premium features.\",\n    \"Initial setup for complex workflows might be time-consuming.\"\n  ],\n  \"overall_experience\": \"The Operations Manager experienced Asana as a highly effective tool for managing and delegating tasks within their education management company. They found it particularly valuable for bringing structure and visibility to complex operational workflows, significantly improving team coordination. While generally positive, they noted that some advanced features required a bit of effort to master, and value for money might be a minor consideration for future scaling.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Provides excellent visibility and structure for managing diverse tasks.",
+      "Facilitates easy delegation and tracking of team responsibilities.",
+      "Helps streamline workflows and avoid communication silos in the organization."
+    ],
+    "cons": [
+      "Advanced automation or reporting features can sometimes require a learning curve.",
+      "The cost might become a consideration for scaling up or accessing premium features.",
+      "Initial setup for complex workflows might be time-consuming."
+    ],
+    "overall_experience": "The Operations Manager experienced Asana as a highly effective tool for managing and delegating tasks within their education management company. They found it particularly valuable for bringing structure and visibility to complex operational workflows, significantly improving team coordination. While generally positive, they noted that some advanced features required a bit of effort to master, and value for money might be a minor consideration for future scaling."
+  },
+  "ts": "2026-10-18T05:00:23.992515+00:00"
+}

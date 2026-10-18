@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d12032e0ec56f47fdc1d1f9cd1018a6ba956181a553c2fef2320a62f054f9cfd",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1110,
+  "output_tokens": 1080,
+  "cost_usd": 0.003033,
+  "elapsed_s": 9.99,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Robust integration capabilities for diverse enterprise applications.\",\n    \"Streamlined user experience for organization-wide SSO.\",\n    \"Scalability and reliability for a large user base.\"\n  ],\n  \"cons\": [\n    \"Complexity in initial setup and advanced configurations.\",\n    \"Pricing structure could be a significant investment for large enterprises.\",\n    \"Occasional delays in customer support response for complex issues.\"\n  ],\n  \"overall_experience\": \"This SME in MarTech, working in a large IT services company, likely found Okta to be a highly effective solution for implementing organization-wide single sign-on. The platform's robust functionality and ease of use for end-users were probably key benefits, especially when compared to previous solutions. While the initial setup and cost might have presented challenges, the long-term stability and integration capabilities likely made it a valuable asset.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Robust integration capabilities for diverse enterprise applications.",
+      "Streamlined user experience for organization-wide SSO.",
+      "Scalability and reliability for a large user base."
+    ],
+    "cons": [
+      "Complexity in initial setup and advanced configurations.",
+      "Pricing structure could be a significant investment for large enterprises.",
+      "Occasional delays in customer support response for complex issues."
+    ],
+    "overall_experience": "This SME in MarTech, working in a large IT services company, likely found Okta to be a highly effective solution for implementing organization-wide single sign-on. The platform's robust functionality and ease of use for end-users were probably key benefits, especially when compared to previous solutions. While the initial setup and cost might have presented challenges, the long-term stability and integration capabilities likely made it a valuable asset."
+  },
+  "ts": "2026-10-18T05:01:21.678701+00:00"
+}

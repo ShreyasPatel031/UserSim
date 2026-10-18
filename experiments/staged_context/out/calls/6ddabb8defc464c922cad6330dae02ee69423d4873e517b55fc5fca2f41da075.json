@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "6ddabb8defc464c922cad6330dae02ee69423d4873e517b55fc5fca2f41da075",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2628,
+  "output_tokens": 1015,
+  "cost_usd": 0.0033259,
+  "elapsed_s": 8.15,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Handles multiple currencies effectively for international operations\",\n    \"Good bank feed connections for streamlined reconciliation\",\n    \"More intuitive and modern interface compared to QuickBooks Online\"\n  ],\n  \"cons\": [\n    \"Initial learning curve for specific features can be steep\",\n    \"Reporting can sometimes lack depth or customization for capital markets\",\n    \"Customer support response times can be inconsistent\"\n  ],\n  \"overall_experience\": \"This President, managing a small capital markets firm, likely found Xero to be a significant improvement over QuickBooks Online, especially regarding its multi-currency capabilities and modern interface. While generally satisfied with its core accounting functions and bank connections, they may have encountered occasional frustrations with the depth of reporting or the responsiveness of customer support. The transition was beneficial for managing international transactions, despite a slight learning curve.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Handles multiple currencies effectively for international operations",
+      "Good bank feed connections for streamlined reconciliation",
+      "More intuitive and modern interface compared to QuickBooks Online"
+    ],
+    "cons": [
+      "Initial learning curve for specific features can be steep",
+      "Reporting can sometimes lack depth or customization for capital markets",
+      "Customer support response times can be inconsistent"
+    ],
+    "overall_experience": "This President, managing a small capital markets firm, likely found Xero to be a significant improvement over QuickBooks Online, especially regarding its multi-currency capabilities and modern interface. While generally satisfied with its core accounting functions and bank connections, they may have encountered occasional frustrations with the depth of reporting or the responsiveness of customer support. The transition was beneficial for managing international transactions, despite a slight learning curve."
+  },
+  "ts": "2026-10-18T05:00:54.579500+00:00"
+}

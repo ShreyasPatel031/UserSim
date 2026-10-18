@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1a59bc5fa660341d2775a94f17d3ab34c767b01538a642c8b0c6b8c40b8cdbb5",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1075,
+  "output_tokens": 1071,
+  "cost_usd": 0.0029999999999999996,
+  "elapsed_s": 7.06,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Streamlined access to multiple real estate applications via SSO\",\n    \"Enhanced security for client data with multi-factor authentication\",\n    \"Centralized management of user logins for the team\"\n  ],\n  \"cons\": [\n    \"Initial setup and integration with existing systems could be complex\",\n    \"Cost might be a consideration for a small business budget\",\n    \"Occasional need for customer support for specific issues\"\n  ],\n  \"overall_experience\": \"This Realtor likely found Okta highly effective for managing and securing their team's access to various real estate platforms. The ability to use single sign-on and strong authentication methods would have significantly improved operational efficiency and data security. While the value was clear, the initial implementation or ongoing cost might have been a minor point of friction for their small company.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Streamlined access to multiple real estate applications via SSO",
+      "Enhanced security for client data with multi-factor authentication",
+      "Centralized management of user logins for the team"
+    ],
+    "cons": [
+      "Initial setup and integration with existing systems could be complex",
+      "Cost might be a consideration for a small business budget",
+      "Occasional need for customer support for specific issues"
+    ],
+    "overall_experience": "This Realtor likely found Okta highly effective for managing and securing their team's access to various real estate platforms. The ability to use single sign-on and strong authentication methods would have significantly improved operational efficiency and data security. While the value was clear, the initial implementation or ongoing cost might have been a minor point of friction for their small company."
+  },
+  "ts": "2026-10-18T05:01:18.945721+00:00"
+}

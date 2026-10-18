@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9784345fc84c65159f778a594583ff1fea30977036adf1dd92ffff5efbeb8236",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1103,
+  "output_tokens": 959,
+  "cost_usd": 0.0027283999999999997,
+  "elapsed_s": 10.18,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Comprehensive tools for managing sales pipeline and customer interactions.\",\n    \"Robust reporting and analytics capabilities for tracking performance.\",\n    \"High degree of customization to fit specific construction industry sales processes.\"\n  ],\n  \"cons\": [\n    \"Initial setup and ongoing administration can be complex without dedicated resources.\",\n    \"Cost of licenses and additional features can be significant for a mid-sized company.\",\n    \"User interface can occasionally feel overwhelming due to the vast number of features.\"\n  ],\n  \"overall_experience\": \"This Design and Sales Manager likely finds Salesforce Sales Cloud to be a highly functional and essential tool for managing their sales operations within the construction industry. The platform's extensive features for customer data, prospecting, and reporting are a significant asset. While acknowledging its power, they might find the system's complexity and cost to be ongoing considerations.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Comprehensive tools for managing sales pipeline and customer interactions.",
+      "Robust reporting and analytics capabilities for tracking performance.",
+      "High degree of customization to fit specific construction industry sales processes."
+    ],
+    "cons": [
+      "Initial setup and ongoing administration can be complex without dedicated resources.",
+      "Cost of licenses and additional features can be significant for a mid-sized company.",
+      "User interface can occasionally feel overwhelming due to the vast number of features."
+    ],
+    "overall_experience": "This Design and Sales Manager likely finds Salesforce Sales Cloud to be a highly functional and essential tool for managing their sales operations within the construction industry. The platform's extensive features for customer data, prospecting, and reporting are a significant asset. While acknowledging its power, they might find the system's complexity and cost to be ongoing considerations."
+  },
+  "ts": "2026-10-18T05:00:42.189734+00:00"
+}

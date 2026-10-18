@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4ddce355ca4fd34e1a01c48949565ddb47cc566a816aba4c67c62612c7b6940b",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2408,
+  "output_tokens": 1153,
+  "cost_usd": 0.0036048999999999994,
+  "elapsed_s": 7.12,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Intuitive interface for invoicing and basic accounting.\",\n    \"Good for managing essential business documents and data.\",\n    \"Better fit for service-based businesses than some alternatives.\"\n  ],\n  \"cons\": [\n    \"Potential learning curve for setting up certain features.\",\n    \"May find it less robust for complex reporting needs.\",\n    \"Pricing could be a concern if business scales rapidly.\"\n  ],\n  \"overall_experience\": \"This self-employed business owner likely found FreshBooks to be a generally positive tool for managing their essential business needs, especially for invoicing and basic accounting. They appreciated its ease of use compared to more complex alternatives, fitting well with their consumer services industry. However, they may have encountered some initial setup challenges or wished for more advanced features as their business data grew.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Intuitive interface for invoicing and basic accounting.",
+      "Good for managing essential business documents and data.",
+      "Better fit for service-based businesses than some alternatives."
+    ],
+    "cons": [
+      "Potential learning curve for setting up certain features.",
+      "May find it less robust for complex reporting needs.",
+      "Pricing could be a concern if business scales rapidly."
+    ],
+    "overall_experience": "This self-employed business owner likely found FreshBooks to be a generally positive tool for managing their essential business needs, especially for invoicing and basic accounting. They appreciated its ease of use compared to more complex alternatives, fitting well with their consumer services industry. However, they may have encountered some initial setup challenges or wished for more advanced features as their business data grew."
+  },
+  "ts": "2026-10-18T05:00:56.184938+00:00"
+}

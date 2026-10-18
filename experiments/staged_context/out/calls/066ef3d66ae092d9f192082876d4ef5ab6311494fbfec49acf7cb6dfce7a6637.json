@@ -1,0 +1,26 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "066ef3d66ae092d9f192082876d4ef5ab6311494fbfec49acf7cb6dfce7a6637",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 156,
+  "output_tokens": 516,
+  "cost_usd": 0.0013368,
+  "elapsed_s": 25.06,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage sales activities\",\n  \"benefits\": [\n    \"Utilize sales functions and features\",\n    \"Receive supportive staff assistance\",\n    \"Obtain good value for money\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Manage sales activities",
+    "benefits": [
+      "Utilize sales functions and features",
+      "Receive supportive staff assistance",
+      "Obtain good value for money"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T04:56:10.920689+00:00"
+}

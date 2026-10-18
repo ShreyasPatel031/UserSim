@@ -1,0 +1,27 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "03e16acf96aa165ee2768b74611cbb74054dbe5019ee5e75dcf4631c1b075854",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 133,
+  "output_tokens": 323,
+  "cost_usd": 0.0008474,
+  "elapsed_s": 3.26,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage Git workflows and create merge requests.\",\n  \"benefits\": [\n    \"Manage Git workflows effectively\",\n    \"Create merge requests easily\"\n  ],\n  \"frictions\": [\n    \"Rebasing can cause graph problems\"\n  ]\n}",
+  "json": {
+    "task": "Manage Git workflows and create merge requests.",
+    "benefits": [
+      "Manage Git workflows effectively",
+      "Create merge requests easily"
+    ],
+    "frictions": [
+      "Rebasing can cause graph problems"
+    ]
+  },
+  "ts": "2026-10-18T04:56:20.715978+00:00"
+}

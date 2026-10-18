@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "620ce8aee70dcbdb6f420f0c0edc4b2ee50366116b53dfbad5bcc2f49b52e1c5",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1082,
+  "output_tokens": 1090,
+  "cost_usd": 0.0030496,
+  "elapsed_s": 8.35,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 5,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Improved visibility and tracking of customer-related tasks and projects.\",\n    \"Streamlined operational workflows for customer support and onboarding.\",\n    \"Enhanced team collaboration for resolving customer issues efficiently.\"\n  ],\n  \"cons\": [\n    \"Initial setup and customization for specific customer operations needs can be time-consuming.\",\n    \"Advanced features sometimes create complexity for basic task management.\",\n    \"Reporting capabilities could be more tailored for specific customer service metrics.\"\n  ],\n  \"overall_experience\": \"The customer operations professional likely found Asana to be a highly effective tool for managing projects and tasks. They would appreciate its robust functionality and ease of use in streamlining customer-facing operations and improving team collaboration. Despite some minor frustrations with customization and reporting, the overall experience was very positive, leading to a strong recommendation for its value in a medium-to-large sports industry company.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 5,
+    "recommendation_score": 9,
+    "pros": [
+      "Improved visibility and tracking of customer-related tasks and projects.",
+      "Streamlined operational workflows for customer support and onboarding.",
+      "Enhanced team collaboration for resolving customer issues efficiently."
+    ],
+    "cons": [
+      "Initial setup and customization for specific customer operations needs can be time-consuming.",
+      "Advanced features sometimes create complexity for basic task management.",
+      "Reporting capabilities could be more tailored for specific customer service metrics."
+    ],
+    "overall_experience": "The customer operations professional likely found Asana to be a highly effective tool for managing projects and tasks. They would appreciate its robust functionality and ease of use in streamlining customer-facing operations and improving team collaboration. Despite some minor frustrations with customization and reporting, the overall experience was very positive, leading to a strong recommendation for its value in a medium-to-large sports industry company."
+  },
+  "ts": "2026-10-18T05:00:24.712006+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f44ba150841e0230529da0dcc90b412453a80ac9debc87f65114a654d7af0a34",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 261,
+  "output_tokens": 971,
+  "cost_usd": 0.0025058,
+  "elapsed_s": 7.56,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 2,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 2,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 5,\n  \"pros\": [\n    \"Comprehensive lead and contact management\",\n    \"Ability to track marketing campaign effectiveness\",\n    \"Customizable to suit specific HR marketing needs\"\n  ],\n  \"cons\": [\n    \"Steep learning curve for a small team\",\n    \"Costly for a small business operating within the HR sector\",\n    \"Features felt overly complex for basic marketing tasks\"\n  ],\n  \"overall_experience\": \"This recruitment director likely found Salesforce Sales Cloud to be a powerful tool, but its extensive features and cost may have been overkill for a small HR company primarily focused on marketing activities. While it offered robust contact management and campaign tracking, the complexity and learning curve probably led to frustration, impacting its overall value for money and ease of use in their specific context.\"\n}",
+  "json": {
+    "ease_of_use_rating": 2,
+    "functionality_rating": 3,
+    "overall_rating": 3,
+    "value_for_money_rating": 2,
+    "customer_support_rating": 3,
+    "recommendation_score": 5,
+    "pros": [
+      "Comprehensive lead and contact management",
+      "Ability to track marketing campaign effectiveness",
+      "Customizable to suit specific HR marketing needs"
+    ],
+    "cons": [
+      "Steep learning curve for a small team",
+      "Costly for a small business operating within the HR sector",
+      "Features felt overly complex for basic marketing tasks"
+    ],
+    "overall_experience": "This recruitment director likely found Salesforce Sales Cloud to be a powerful tool, but its extensive features and cost may have been overkill for a small HR company primarily focused on marketing activities. While it offered robust contact management and campaign tracking, the complexity and learning curve probably led to frustration, impacting its overall value for money and ease of use in their specific context."
+  },
+  "ts": "2026-10-18T05:00:38.004902+00:00"
+}

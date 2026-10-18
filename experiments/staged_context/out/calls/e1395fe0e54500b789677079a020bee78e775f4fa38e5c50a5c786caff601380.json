@@ -1,0 +1,27 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e1395fe0e54500b789677079a020bee78e775f4fa38e5c50a5c786caff601380",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 171,
+  "output_tokens": 491,
+  "cost_usd": 0.0012788,
+  "elapsed_s": 3.63,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage a home business.\",\n  \"benefits\": [\n    \"User friendly\",\n    \"Easy to use\",\n    \"Cheaper to use\",\n    \"Keep everything in order\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Manage a home business.",
+    "benefits": [
+      "User friendly",
+      "Easy to use",
+      "Cheaper to use",
+      "Keep everything in order"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T04:56:11.150899+00:00"
+}

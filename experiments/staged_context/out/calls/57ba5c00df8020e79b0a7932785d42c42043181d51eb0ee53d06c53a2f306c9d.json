@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "57ba5c00df8020e79b0a7932785d42c42043181d51eb0ee53d06c53a2f306c9d",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 227,
+  "output_tokens": 473,
+  "cost_usd": 0.0012506,
+  "elapsed_s": 25.11,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage documents\",\n  \"benefits\": [\n    \"Functions as a document management tool\",\n    \"Handy for various purposes\",\n    \"Easy to use\",\n    \"Practical\"\n  ],\n  \"frictions\": [\n    \"Lack of documentation for unexplored features\",\n    \"Some blocks are unfamiliar\"\n  ]\n}",
+  "json": {
+    "task": "Manage documents",
+    "benefits": [
+      "Functions as a document management tool",
+      "Handy for various purposes",
+      "Easy to use",
+      "Practical"
+    ],
+    "frictions": [
+      "Lack of documentation for unexplored features",
+      "Some blocks are unfamiliar"
+    ]
+  },
+  "ts": "2026-10-18T04:56:10.702367+00:00"
+}

@@ -1,0 +1,26 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2bc7258c7abb06fe51773d025f395790cb96d6c1b4c0825f25a27e9a4c4fb921",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 181,
+  "output_tokens": 419,
+  "cost_usd": 0.0011018,
+  "elapsed_s": 4.52,
+  "error": null,
+  "text": "{\n  \"task\": \"Connect with customers and companies to collaborate.\",\n  \"benefits\": [\n    \"Communicate with multiple people from one company\",\n    \"Utilize good design\",\n    \"Access various communication options (text, call, notifications)\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Connect with customers and companies to collaborate.",
+    "benefits": [
+      "Communicate with multiple people from one company",
+      "Utilize good design",
+      "Access various communication options (text, call, notifications)"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T04:56:18.085687+00:00"
+}

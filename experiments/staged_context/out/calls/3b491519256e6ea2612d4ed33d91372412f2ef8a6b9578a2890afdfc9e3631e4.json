@@ -1,0 +1,26 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3b491519256e6ea2612d4ed33d91372412f2ef8a6b9578a2890afdfc9e3631e4",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 152,
+  "output_tokens": 360,
+  "cost_usd": 0.0009456000000000001,
+  "elapsed_s": 23.87,
+  "error": null,
+  "text": "{\n  \"task\": \"Get answers to questions\",\n  \"benefits\": [\n    \"Ease of use\",\n    \"Easy login regardless of company\",\n    \"Helps get needed answers\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Get answers to questions",
+    "benefits": [
+      "Ease of use",
+      "Easy login regardless of company",
+      "Helps get needed answers"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T04:56:10.644808+00:00"
+}

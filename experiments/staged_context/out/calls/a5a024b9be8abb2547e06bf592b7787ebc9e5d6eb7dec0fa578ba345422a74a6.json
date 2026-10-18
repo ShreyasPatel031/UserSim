@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a5a024b9be8abb2547e06bf592b7787ebc9e5d6eb7dec0fa578ba345422a74a6",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 192,
+  "output_tokens": 483,
+  "cost_usd": 0.0012651000000000001,
+  "elapsed_s": 4.64,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage and share passwords for a team.\",\n  \"benefits\": [\n    \"Easy setup and migration from previous products.\",\n    \"Helpful browser plugin.\",\n    \"Shared folders feature for teams.\",\n    \"Responsive support team.\"\n  ],\n  \"frictions\": [\n    \"Difficulty reducing licenses for a Teams account.\",\n    \"Requires creating a support ticket to reduce license count before renewal.\"\n  ]\n}",
+  "json": {
+    "task": "Manage and share passwords for a team.",
+    "benefits": [
+      "Easy setup and migration from previous products.",
+      "Helpful browser plugin.",
+      "Shared folders feature for teams.",
+      "Responsive support team."
+    ],
+    "frictions": [
+      "Difficulty reducing licenses for a Teams account.",
+      "Requires creating a support ticket to reduce license count before renewal."
+    ]
+  },
+  "ts": "2026-10-18T04:56:20.856277+00:00"
+}

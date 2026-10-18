@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "234ff5c799a59415f814cfd98543bff768e621b66b33b3b7906a93ed5ad49bc8",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 261,
+  "output_tokens": 982,
+  "cost_usd": 0.0025333,
+  "elapsed_s": 7.12,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Intuitive campaign builder\",\n    \"Comprehensive analytics and tracking\",\n    \"Reliable email delivery\"\n  ],\n  \"cons\": [\n    \"Pricing can increase with list size\",\n    \"Limited advanced automation features\",\n    \"Occasional interface glitches\"\n  ],\n  \"overall_experience\": \"The Secretary General likely found Mailchimp to be a highly effective and generally user-friendly tool for managing and tracking email marketing campaigns over their two-year tenure. Its robust reporting and ease of use for campaign creation were probably significant benefits for an operations-focused role in an IT company. While generally satisfied, they may have noted that costs could escalate with growing contact lists or desired more advanced automation capabilities.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Intuitive campaign builder",
+      "Comprehensive analytics and tracking",
+      "Reliable email delivery"
+    ],
+    "cons": [
+      "Pricing can increase with list size",
+      "Limited advanced automation features",
+      "Occasional interface glitches"
+    ],
+    "overall_experience": "The Secretary General likely found Mailchimp to be a highly effective and generally user-friendly tool for managing and tracking email marketing campaigns over their two-year tenure. Its robust reporting and ease of use for campaign creation were probably significant benefits for an operations-focused role in an IT company. While generally satisfied, they may have noted that costs could escalate with growing contact lists or desired more advanced automation capabilities."
+  },
+  "ts": "2026-10-18T05:00:45.902244+00:00"
+}

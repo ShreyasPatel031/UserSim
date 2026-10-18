@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a75b03260284062983ba80bfa6416c00e6149bacd52601958f8a9ed6d7194975",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 263,
+  "output_tokens": 1113,
+  "cost_usd": 0.0028614,
+  "elapsed_s": 7.73,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 5,\n  \"pros\": [\n    \"Reliable password generation and autofill capabilities\",\n    \"Secure storage for various sensitive notes and data\",\n    \"Cross-device synchronization for consistent access\"\n  ],\n  \"cons\": [\n    \"Significant concerns regarding historical security breaches and data vulnerabilities\",\n    \"Perceived decline in trust and product direction over time\",\n    \"Occasional issues with autofill accuracy on complex login forms\"\n  ],\n  \"overall_experience\": \"This senior engineer likely found LastPass's core functionality for managing passwords and securing notes to be generally effective and convenient. However, their experience was significantly overshadowed by persistent concerns regarding the product's security incidents and the perceived erosion of trust, particularly given their role in financial services. While functional, the security risks made them hesitant to fully endorse or rely on the product long-term.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 5,
+    "pros": [
+      "Reliable password generation and autofill capabilities",
+      "Secure storage for various sensitive notes and data",
+      "Cross-device synchronization for consistent access"
+    ],
+    "cons": [
+      "Significant concerns regarding historical security breaches and data vulnerabilities",
+      "Perceived decline in trust and product direction over time",
+      "Occasional issues with autofill accuracy on complex login forms"
+    ],
+    "overall_experience": "This senior engineer likely found LastPass's core functionality for managing passwords and securing notes to be generally effective and convenient. However, their experience was significantly overshadowed by persistent concerns regarding the product's security incidents and the perceived erosion of trust, particularly given their role in financial services. While functional, the security risks made them hesitant to fully endorse or rely on the product long-term."
+  },
+  "ts": "2026-10-18T05:01:24.287001+00:00"
+}

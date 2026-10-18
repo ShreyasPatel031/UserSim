@@ -1,0 +1,21 @@
+{
+  "stage": "mcp_classify",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "cfeb91ed56d51c7929c95e7c0c977c6eef51c9d7343ed0aed783b836bbb5afea",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 256,
+  "input_tokens": 848,
+  "output_tokens": 222,
+  "cost_usd": 0.0008094,
+  "elapsed_s": 2.55,
+  "error": null,
+  "text": "{\n  \"category\": \"HR\",\n  \"product_name\": \"BambooHR\"\n}",
+  "json": {
+    "category": "HR",
+    "product_name": "BambooHR"
+  },
+  "ts": "2026-10-18T04:56:27.252558+00:00"
+}

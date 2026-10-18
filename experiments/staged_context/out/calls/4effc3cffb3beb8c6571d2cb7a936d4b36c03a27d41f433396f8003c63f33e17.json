@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4effc3cffb3beb8c6571d2cb7a936d4b36c03a27d41f433396f8003c63f33e17",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 248,
+  "output_tokens": 1013,
+  "cost_usd": 0.0026069,
+  "elapsed_s": 7.92,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Highly flexible for organizing diverse content\",\n    \"Excellent for rich text document creation\",\n    \"Consolidates notes and drafts efficiently\"\n  ],\n  \"cons\": [\n    \"Initial setup and learning curve can be steep\",\n    \"Can feel overwhelming with too many features\",\n    \"Performance can sometimes be slow\"\n  ],\n  \"overall_experience\": \"The copywriter likely found Notion to be a powerful tool for managing their documents and content, appreciating its flexibility in organizing various types of information. While the initial learning curve presented a challenge, the platform's robust features for text creation and organization proved beneficial for their self-employed workflow.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Highly flexible for organizing diverse content",
+      "Excellent for rich text document creation",
+      "Consolidates notes and drafts efficiently"
+    ],
+    "cons": [
+      "Initial setup and learning curve can be steep",
+      "Can feel overwhelming with too many features",
+      "Performance can sometimes be slow"
+    ],
+    "overall_experience": "The copywriter likely found Notion to be a powerful tool for managing their documents and content, appreciating its flexibility in organizing various types of information. While the initial learning curve presented a challenge, the platform's robust features for text creation and organization proved beneficial for their self-employed workflow."
+  },
+  "ts": "2026-10-18T05:00:30.499492+00:00"
+}

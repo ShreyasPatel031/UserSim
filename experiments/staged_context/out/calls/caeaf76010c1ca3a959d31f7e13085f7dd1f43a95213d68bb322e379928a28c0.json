@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "caeaf76010c1ca3a959d31f7e13085f7dd1f43a95213d68bb322e379928a28c0",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2571,
+  "output_tokens": 1106,
+  "cost_usd": 0.0035363,
+  "elapsed_s": 8.57,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Consolidates notes, tasks, and projects into a single, flexible workspace.\",\n    \"Highly customizable to fit specific marketing and advertising workflows.\",\n    \"Empowers a small team to manage diverse projects efficiently.\"\n  ],\n  \"cons\": [\n    \"Initial setup and customization can have a steep learning curve.\",\n    \"Can become complex if not well-structured, requiring ongoing organization.\",\n    \"Performance might occasionally lag with extensive content or complex databases.\"\n  ],\n  \"overall_experience\": \"This owner in marketing and advertising likely found Notion to be a powerful and highly customizable solution for consolidating their team's notes, tasks, and projects, especially after using it for 1-2 years. While the initial learning curve and setup might have been challenging compared to more structured alternatives like monday.com, the flexibility and all-in-one nature of Notion proved invaluable for their small business. They appreciated its ability to adapt to their evolving needs, although maintaining organization within its vast capabilities required consistent effort.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Consolidates notes, tasks, and projects into a single, flexible workspace.",
+      "Highly customizable to fit specific marketing and advertising workflows.",
+      "Empowers a small team to manage diverse projects efficiently."
+    ],
+    "cons": [
+      "Initial setup and customization can have a steep learning curve.",
+      "Can become complex if not well-structured, requiring ongoing organization.",
+      "Performance might occasionally lag with extensive content or complex databases."
+    ],
+    "overall_experience": "This owner in marketing and advertising likely found Notion to be a powerful and highly customizable solution for consolidating their team's notes, tasks, and projects, especially after using it for 1-2 years. While the initial learning curve and setup might have been challenging compared to more structured alternatives like monday.com, the flexibility and all-in-one nature of Notion proved invaluable for their small business. They appreciated its ability to adapt to their evolving needs, although maintaining organization within its vast capabilities required consistent effort."
+  },
+  "ts": "2026-10-18T05:00:33.974197+00:00"
+}

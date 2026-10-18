@@ -1,0 +1,21 @@
+{
+  "stage": "mcp_classify",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "5c4f915086e817a9572dc9d7b019912c910d5e6d1932cef7593225f322617ba8",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 256,
+  "input_tokens": 615,
+  "output_tokens": 251,
+  "cost_usd": 0.0008119999999999999,
+  "elapsed_s": 2.47,
+  "error": null,
+  "text": "{\n  \"category\": \"eCommerce\",\n  \"product_name\": \"Shopify\"\n}",
+  "json": {
+    "category": "eCommerce",
+    "product_name": "Shopify"
+  },
+  "ts": "2026-10-18T04:56:28.410324+00:00"
+}

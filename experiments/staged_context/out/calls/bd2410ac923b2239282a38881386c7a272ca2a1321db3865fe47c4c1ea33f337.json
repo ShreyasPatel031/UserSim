@@ -1,0 +1,27 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "bd2410ac923b2239282a38881386c7a272ca2a1321db3865fe47c4c1ea33f337",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 214,
+  "output_tokens": 430,
+  "cost_usd": 0.0011392,
+  "elapsed_s": 3.27,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage employee personal information, payroll documents, and company directory\",\n  \"benefits\": [\n    \"Access personal information\",\n    \"Facilitate payroll document printing and updating\",\n    \"List a company-wide employee directory\",\n    \"Include department information in the directory\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Manage employee personal information, payroll documents, and company directory",
+    "benefits": [
+      "Access personal information",
+      "Facilitate payroll document printing and updating",
+      "List a company-wide employee directory",
+      "Include department information in the directory"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T04:56:11.711063+00:00"
+}

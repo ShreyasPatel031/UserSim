@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c9e887ce1667a2d5f265b0255bcbffc2a992b725952353f92b08e6630dbadf05",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1076,
+  "output_tokens": 1028,
+  "cost_usd": 0.0028928,
+  "elapsed_s": 7.44,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Effective for managing B2B sales pipelines and deal tracking.\",\n    \"Intuitive interface, making it easy to onboard sales team members.\",\n    \"Customizable to adapt to specific sporting goods sales processes.\"\n  ],\n  \"cons\": [\n    \"May require some effort to integrate with legacy sales tools specific to the sporting goods industry.\",\n    \"Advanced reporting features might sometimes feel less robust for detailed sales analytics.\",\n    \"Pricing could be a consideration for scaling teams within a medium-sized company.\"\n  ],\n  \"overall_experience\": \"The Sales Director likely found monday.com AI Work Platform to be a highly effective tool for their B2B sales pipeline management over two years. Its ease of use and core functionalities likely streamlined their team's operations. While generally positive, they may have encountered minor frustrations related to industry-specific integrations or advanced reporting capabilities, but the overall value and long-term utility were clear.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Effective for managing B2B sales pipelines and deal tracking.",
+      "Intuitive interface, making it easy to onboard sales team members.",
+      "Customizable to adapt to specific sporting goods sales processes."
+    ],
+    "cons": [
+      "May require some effort to integrate with legacy sales tools specific to the sporting goods industry.",
+      "Advanced reporting features might sometimes feel less robust for detailed sales analytics.",
+      "Pricing could be a consideration for scaling teams within a medium-sized company."
+    ],
+    "overall_experience": "The Sales Director likely found monday.com AI Work Platform to be a highly effective tool for their B2B sales pipeline management over two years. Its ease of use and core functionalities likely streamlined their team's operations. While generally positive, they may have encountered minor frustrations related to industry-specific integrations or advanced reporting capabilities, but the overall value and long-term utility were clear."
+  },
+  "ts": "2026-10-18T05:00:27.935728+00:00"
+}

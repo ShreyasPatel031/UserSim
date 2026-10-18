@@ -1,0 +1,28 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ccf58a30a1b598b3539a22b53f4378faa4d422a2207c06c1d375b825b56c7b94",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 147,
+  "output_tokens": 435,
+  "cost_usd": 0.0011316,
+  "elapsed_s": 4.93,
+  "error": null,
+  "text": "{\n  \"task\": null,\n  \"benefits\": [\n    \"great tool for startup businesses\",\n    \"low cost\"\n  ],\n  \"frictions\": [\n    \"could use more features\",\n    \"difficult for less savvy users to learn quickly\"\n  ]\n}",
+  "json": {
+    "task": null,
+    "benefits": [
+      "great tool for startup businesses",
+      "low cost"
+    ],
+    "frictions": [
+      "could use more features",
+      "difficult for less savvy users to learn quickly"
+    ]
+  },
+  "ts": "2026-10-18T04:56:17.990422+00:00"
+}

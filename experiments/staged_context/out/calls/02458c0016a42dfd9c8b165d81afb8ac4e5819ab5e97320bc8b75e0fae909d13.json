@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "02458c0016a42dfd9c8b165d81afb8ac4e5819ab5e97320bc8b75e0fae909d13",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 303,
+  "output_tokens": 530,
+  "cost_usd": 0.0014159,
+  "elapsed_s": 4.79,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage team hours, onboarding workflows, and document tracking for collaborators within a single platform\",\n  \"benefits\": [\n    \"Unifies all administrative functions under one dashboard\",\n    \"Manages team hours, onboarding, and document tracking without needing multiple software tools\",\n    \"Provides automated and smooth onboarding flows for new collaborators\",\n    \"Eliminates administrative drag from using disjointed tools\"\n  ],\n  \"frictions\": [\n    \"Initial setup for custom workflow automations requires significant time investment\",\n    \"Customer support routing system relies too heavily on automated help articles before connecting to live chat\"\n  ]\n}",
+  "json": {
+    "task": "Manage team hours, onboarding workflows, and document tracking for collaborators within a single platform",
+    "benefits": [
+      "Unifies all administrative functions under one dashboard",
+      "Manages team hours, onboarding, and document tracking without needing multiple software tools",
+      "Provides automated and smooth onboarding flows for new collaborators",
+      "Eliminates administrative drag from using disjointed tools"
+    ],
+    "frictions": [
+      "Initial setup for custom workflow automations requires significant time investment",
+      "Customer support routing system relies too heavily on automated help articles before connecting to live chat"
+    ]
+  },
+  "ts": "2026-10-18T04:56:14.528960+00:00"
+}

@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "dd5475821409e08290e9bf0342c1d53c938ff8099dffda21c5779925848a4a54",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 172,
+  "output_tokens": 468,
+  "cost_usd": 0.0012216,
+  "elapsed_s": 4.65,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage HR and EHS functions\",\n  \"benefits\": [\n    \"Clean interface\",\n    \"Easy to use HRIS\",\n    \"Better UX than most leading HRIS\",\n    \"Simplifies EHS functions\"\n  ],\n  \"frictions\": [\n    \"LMS could be expanded\"\n  ]\n}",
+  "json": {
+    "task": "Manage HR and EHS functions",
+    "benefits": [
+      "Clean interface",
+      "Easy to use HRIS",
+      "Better UX than most leading HRIS",
+      "Simplifies EHS functions"
+    ],
+    "frictions": [
+      "LMS could be expanded"
+    ]
+  },
+  "ts": "2026-10-18T04:56:13.947206+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "99f0e153fb3401f64e3c007d3e2b3086444b114f9ba09fc159cbe9cbe1798e0e",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2245,
+  "output_tokens": 1050,
+  "cost_usd": 0.0032984999999999998,
+  "elapsed_s": 6.43,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Centralized platform for managing team hours and onboarding\",\n    \"Streamlined document tracking for collaborators\",\n    \"Comprehensive feature set for HR and IT needs\"\n  ],\n  \"cons\": [\n    \"Initial setup and learning curve for a self-employed user\",\n    \"Perceived high cost for a small operation\",\n    \"Customer support response times could be improved\"\n  ],\n  \"overall_experience\": \"This founder likely found Rippling to be a powerful and comprehensive solution for managing their collaborators' hours, onboarding, and document tracking within a single platform. However, as a self-employed user, they may have encountered a steeper learning curve during the initial setup phase. The cost might have felt significant for their company size, and they might have wished for more immediate customer support.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Centralized platform for managing team hours and onboarding",
+      "Streamlined document tracking for collaborators",
+      "Comprehensive feature set for HR and IT needs"
+    ],
+    "cons": [
+      "Initial setup and learning curve for a self-employed user",
+      "Perceived high cost for a small operation",
+      "Customer support response times could be improved"
+    ],
+    "overall_experience": "This founder likely found Rippling to be a powerful and comprehensive solution for managing their collaborators' hours, onboarding, and document tracking within a single platform. However, as a self-employed user, they may have encountered a steeper learning curve during the initial setup phase. The cost might have felt significant for their company size, and they might have wished for more immediate customer support."
+  },
+  "ts": "2026-10-18T05:01:02.113188+00:00"
+}

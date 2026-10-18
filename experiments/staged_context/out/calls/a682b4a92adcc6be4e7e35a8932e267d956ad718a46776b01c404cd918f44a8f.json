@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a682b4a92adcc6be4e7e35a8932e267d956ad718a46776b01c404cd918f44a8f",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 197,
+  "output_tokens": 470,
+  "cost_usd": 0.0012341000000000001,
+  "elapsed_s": 23.92,
+  "error": null,
+  "text": "{\n  \"task\": \"Use Intercom to provide live chat and knowledge base support to customers.\",\n  \"benefits\": [\n    \"It functions reliably\",\n    \"It has good customer support\",\n    \"It helps customers solve problems effectively\",\n    \"It makes handling user tickets easier\"\n  ],\n  \"frictions\": [\n    \"It is very cost prohibitive compared to other solutions\"\n  ]\n}",
+  "json": {
+    "task": "Use Intercom to provide live chat and knowledge base support to customers.",
+    "benefits": [
+      "It functions reliably",
+      "It has good customer support",
+      "It helps customers solve problems effectively",
+      "It makes handling user tickets easier"
+    ],
+    "frictions": [
+      "It is very cost prohibitive compared to other solutions"
+    ]
+  },
+  "ts": "2026-10-18T04:56:10.778318+00:00"
+}

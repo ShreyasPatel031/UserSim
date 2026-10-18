@@ -1,0 +1,32 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b29f30ca7a660a50a60824f0108eed4c5b1ac8681432cd46f30dd3cd899df5be",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 297,
+  "output_tokens": 529,
+  "cost_usd": 0.0014115999999999998,
+  "elapsed_s": 25.87,
+  "error": null,
+  "text": "{\n  \"task\": \"Organize projects and tasks for a team.\",\n  \"benefits\": [\n    \"Provides visual and flexible project management.\",\n    \"Offers different views like Kanban and calendar for clarity.\",\n    \"Facilitates real-time task tracking for team collaboration.\",\n    \"Helps avoid unnecessary communication.\"\n  ],\n  \"frictions\": [\n    \"Users feel lost at the beginning.\",\n    \"The interface is cluttered.\",\n    \"Requires time to understand all features.\",\n    \"Some practical options are paywalled.\"\n  ]\n}",
+  "json": {
+    "task": "Organize projects and tasks for a team.",
+    "benefits": [
+      "Provides visual and flexible project management.",
+      "Offers different views like Kanban and calendar for clarity.",
+      "Facilitates real-time task tracking for team collaboration.",
+      "Helps avoid unnecessary communication."
+    ],
+    "frictions": [
+      "Users feel lost at the beginning.",
+      "The interface is cluttered.",
+      "Requires time to understand all features.",
+      "Some practical options are paywalled."
+    ]
+  },
+  "ts": "2026-10-18T04:56:10.939915+00:00"
+}

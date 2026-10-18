@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ea699fcc4115dc38aa25b1d4e84164c831be22b0e122c1b4c1b098ef34072a66",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 361,
+  "output_tokens": 491,
+  "cost_usd": 0.0013358,
+  "elapsed_s": 4.23,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage workforce operations including HR, IT, payroll, and device/app management.\",\n  \"benefits\": [\n    \"Unifies HR, IT, payroll, and device/app management in one platform\",\n    \"Automates tasks that previously required multiple tools\",\n    \"Provides an intuitive system\",\n    \"Saves a significant amount of time through automations\"\n  ],\n  \"frictions\": [\n    \"Slow customer support response times\",\n    \"Finding certain advanced settings requires digging\"\n  ]\n}",
+  "json": {
+    "task": "Manage workforce operations including HR, IT, payroll, and device/app management.",
+    "benefits": [
+      "Unifies HR, IT, payroll, and device/app management in one platform",
+      "Automates tasks that previously required multiple tools",
+      "Provides an intuitive system",
+      "Saves a significant amount of time through automations"
+    ],
+    "frictions": [
+      "Slow customer support response times",
+      "Finding certain advanced settings requires digging"
+    ]
+  },
+  "ts": "2026-10-18T04:56:14.165463+00:00"
+}

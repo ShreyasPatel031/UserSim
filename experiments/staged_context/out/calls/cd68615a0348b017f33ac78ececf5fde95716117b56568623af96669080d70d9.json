@@ -1,0 +1,28 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "cd68615a0348b017f33ac78ececf5fde95716117b56568623af96669080d70d9",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 140,
+  "output_tokens": 449,
+  "cost_usd": 0.0011645,
+  "elapsed_s": 22.75,
+  "error": null,
+  "text": "{\n  \"task\": null,\n  \"benefits\": [\n    \"Collaboration tools are perfect\",\n    \"Easy navigation to sites\"\n  ],\n  \"frictions\": [\n    \"Registration process takes time\",\n    \"Unnecessary questions during registration\"\n  ]\n}",
+  "json": {
+    "task": null,
+    "benefits": [
+      "Collaboration tools are perfect",
+      "Easy navigation to sites"
+    ],
+    "frictions": [
+      "Registration process takes time",
+      "Unnecessary questions during registration"
+    ]
+  },
+  "ts": "2026-10-18T04:56:10.982539+00:00"
+}

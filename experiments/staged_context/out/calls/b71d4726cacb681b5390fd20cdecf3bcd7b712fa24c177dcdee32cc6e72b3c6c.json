@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b71d4726cacb681b5390fd20cdecf3bcd7b712fa24c177dcdee32cc6e72b3c6c",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1116,
+  "output_tokens": 1055,
+  "cost_usd": 0.0029723,
+  "elapsed_s": 6.62,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 5,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Seamless single sign-on for numerous applications\",\n    \"Enhanced security through centralized access management and MFA\",\n    \"Simplified user provisioning and deprovisioning\"\n  ],\n  \"cons\": [\n    \"Initial setup and integration for some niche applications can be complex\",\n    \"Cost may be a consideration for smaller budgets within the healthcare sector\",\n    \"Occasional need for in-depth technical knowledge for advanced configurations\"\n  ],\n  \"overall_experience\": \"This coordinator likely had a highly positive experience with Okta, finding it instrumental in streamlining user access and bolstering security across their organization's applications. The product's core single sign-on functionality was a significant benefit for managing diverse user groups in a hospital environment. Despite potential initial setup complexities, the overall value and ease of ongoing use were well-regarded.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 5,
+    "recommendation_score": 9,
+    "pros": [
+      "Seamless single sign-on for numerous applications",
+      "Enhanced security through centralized access management and MFA",
+      "Simplified user provisioning and deprovisioning"
+    ],
+    "cons": [
+      "Initial setup and integration for some niche applications can be complex",
+      "Cost may be a consideration for smaller budgets within the healthcare sector",
+      "Occasional need for in-depth technical knowledge for advanced configurations"
+    ],
+    "overall_experience": "This coordinator likely had a highly positive experience with Okta, finding it instrumental in streamlining user access and bolstering security across their organization's applications. The product's core single sign-on functionality was a significant benefit for managing diverse user groups in a hospital environment. Despite potential initial setup complexities, the overall value and ease of ongoing use were well-regarded."
+  },
+  "ts": "2026-10-18T05:01:20.259121+00:00"
+}

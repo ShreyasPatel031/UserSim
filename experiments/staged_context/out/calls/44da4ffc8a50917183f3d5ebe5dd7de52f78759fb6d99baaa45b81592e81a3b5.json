@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "44da4ffc8a50917183f3d5ebe5dd7de52f78759fb6d99baaa45b81592e81a3b5",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1062,
+  "output_tokens": 1064,
+  "cost_usd": 0.0029786,
+  "elapsed_s": 6.69,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Intuitive cloud-based interface, a significant improvement over MYOB Business\",\n    \"Streamlined bank reconciliation saving time for a small retail business owner\",\n    \"Improved visibility of financial data and cash flow management\"\n  ],\n  \"cons\": [\n    \"Initial learning curve transitioning from a different accounting system\",\n    \"Some limitations in advanced inventory management features for a retail setting\",\n    \"Occasional frustration with customer support response times\"\n  ],\n  \"overall_experience\": \"This owner of a small retail business found Xero to be a generally positive change after switching from MYOB Business. They appreciated the modern, cloud-based interface and the efficiency it brought to managing their finances, particularly with bank reconciliation. While facing a minor learning curve and some specific retail functionality gaps, the overall ease of use and improved financial oversight made it a worthwhile transition.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Intuitive cloud-based interface, a significant improvement over MYOB Business",
+      "Streamlined bank reconciliation saving time for a small retail business owner",
+      "Improved visibility of financial data and cash flow management"
+    ],
+    "cons": [
+      "Initial learning curve transitioning from a different accounting system",
+      "Some limitations in advanced inventory management features for a retail setting",
+      "Occasional frustration with customer support response times"
+    ],
+    "overall_experience": "This owner of a small retail business found Xero to be a generally positive change after switching from MYOB Business. They appreciated the modern, cloud-based interface and the efficiency it brought to managing their finances, particularly with bank reconciliation. While facing a minor learning curve and some specific retail functionality gaps, the overall ease of use and improved financial oversight made it a worthwhile transition."
+  },
+  "ts": "2026-10-18T05:00:52.025254+00:00"
+}

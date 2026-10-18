@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "473b96350679060889d4083a98363b2cf5afd56e449ff783f1af4f097fa6d5c6",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 255,
+  "output_tokens": 1092,
+  "cost_usd": 0.0028065000000000004,
+  "elapsed_s": 7.25,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Intuitive store setup and theme customization\",\n    \"Excellent integrations for social media and marketing tools\",\n    \"Scalable platform that supported business growth\"\n  ],\n  \"cons\": [\n    \"Reliance on paid apps for advanced features increased costs\",\n    \"Transaction fees could add up for higher sales volumes\",\n    \"Deep customization often required developer assistance\"\n  ],\n  \"overall_experience\": \"The social media specialist likely found Shopify to be a highly effective platform for launching and growing an online business over two years. Its user-friendly interface and strong marketing integrations were particularly beneficial for their role in a marketing and advertising company. While appreciating its core functionality, they probably noted that costs could accumulate through transaction fees and necessary third-party apps.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Intuitive store setup and theme customization",
+      "Excellent integrations for social media and marketing tools",
+      "Scalable platform that supported business growth"
+    ],
+    "cons": [
+      "Reliance on paid apps for advanced features increased costs",
+      "Transaction fees could add up for higher sales volumes",
+      "Deep customization often required developer assistance"
+    ],
+    "overall_experience": "The social media specialist likely found Shopify to be a highly effective platform for launching and growing an online business over two years. Its user-friendly interface and strong marketing integrations were particularly beneficial for their role in a marketing and advertising company. While appreciating its core functionality, they probably noted that costs could accumulate through transaction fees and necessary third-party apps."
+  },
+  "ts": "2026-10-18T05:01:05.624815+00:00"
+}

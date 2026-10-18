@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c2f564c8c9858f8e51376a26a4e876cbc07f135cb53191e34334df108cfe1649",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 272,
+  "output_tokens": 1083,
+  "cost_usd": 0.0027890999999999997,
+  "elapsed_s": 7.86,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Efficient generation of audit-ready reports.\",\n    \"Centralized management of diverse HR and credentialing information.\",\n    \"Intuitive interface for daily HR operations.\"\n  ],\n  \"cons\": [\n    \"Potential limitations in highly specialized credentialing workflows.\",\n    \"Some reporting customizations might require extra effort.\",\n    \"Initial data migration complexity for a mid-sized organization.\"\n  ],\n  \"overall_experience\": \"This HR and Credentialing Lead likely found BambooHR to be a highly effective tool for managing human resources information and generating essential reports for audit purposes over two years. The system's ability to centralize data and provide robust reporting would have been critical for their role in the education sector. While generally positive, they may have encountered minor frustrations with specific customization needs or report complexity.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Efficient generation of audit-ready reports.",
+      "Centralized management of diverse HR and credentialing information.",
+      "Intuitive interface for daily HR operations."
+    ],
+    "cons": [
+      "Potential limitations in highly specialized credentialing workflows.",
+      "Some reporting customizations might require extra effort.",
+      "Initial data migration complexity for a mid-sized organization."
+    ],
+    "overall_experience": "This HR and Credentialing Lead likely found BambooHR to be a highly effective tool for managing human resources information and generating essential reports for audit purposes over two years. The system's ability to centralize data and provide robust reporting would have been critical for their role in the education sector. While generally positive, they may have encountered minor frustrations with specific customization needs or report complexity."
+  },
+  "ts": "2026-10-18T05:00:59.152150+00:00"
+}

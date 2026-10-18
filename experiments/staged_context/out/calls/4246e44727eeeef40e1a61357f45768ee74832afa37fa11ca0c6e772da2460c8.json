@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4246e44727eeeef40e1a61357f45768ee74832afa37fa11ca0c6e772da2460c8",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 281,
+  "output_tokens": 481,
+  "cost_usd": 0.0012868,
+  "elapsed_s": 4.3,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage HR, IT, and Finance operations, including employee payroll and hiring\",\n  \"benefits\": [\n    \"Employ best workers\",\n    \"Help HR, IT, and Finance teams get more value for money\",\n    \"Customize in-house work usages\",\n    \"Experience fewer bugs and issues\"\n  ],\n  \"frictions\": [\n    \"Requires teaching new members how to use the system from scratch\"\n  ]\n}",
+  "json": {
+    "task": "Manage HR, IT, and Finance operations, including employee payroll and hiring",
+    "benefits": [
+      "Employ best workers",
+      "Help HR, IT, and Finance teams get more value for money",
+      "Customize in-house work usages",
+      "Experience fewer bugs and issues"
+    ],
+    "frictions": [
+      "Requires teaching new members how to use the system from scratch"
+    ]
+  },
+  "ts": "2026-10-18T04:56:13.649187+00:00"
+}

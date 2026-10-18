@@ -1,0 +1,28 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f7617c9d8bc7fe24601cd40eb6d1c4936b62f88f2a67eb6e0185fc5e6883b5ec",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 178,
+  "output_tokens": 485,
+  "cost_usd": 0.0012659,
+  "elapsed_s": 4.19,
+  "error": null,
+  "text": "{\n  \"task\": \"Generate reports to visualize organizational activities\",\n  \"benefits\": [\n    \"Build reports quickly\",\n    \"Monitor activities across teams\"\n  ],\n  \"frictions\": [\n    \"Difficulty changing visuals\",\n    \"Difficulty moving elements precisely\"\n  ]\n}",
+  "json": {
+    "task": "Generate reports to visualize organizational activities",
+    "benefits": [
+      "Build reports quickly",
+      "Monitor activities across teams"
+    ],
+    "frictions": [
+      "Difficulty changing visuals",
+      "Difficulty moving elements precisely"
+    ]
+  },
+  "ts": "2026-10-18T04:56:17.010046+00:00"
+}

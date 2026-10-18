@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "aaa17a01fdb3306aa61bc758d91acc089464fd26b0821355d3d498f1125f20a7",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 257,
+  "output_tokens": 1047,
+  "cost_usd": 0.0026946,
+  "elapsed_s": 7.8,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Robust marketing automation and CRM features\",\n    \"Strong segmentation capabilities for targeted campaigns\",\n    \"Improved efficiency over previous solution (Bitrix24)\"\n  ],\n  \"cons\": [\n    \"Steep learning curve for advanced features and setup\",\n    \"Interface can feel overwhelming at times for new users\",\n    \"Requires significant time investment to fully optimize\"\n  ],\n  \"overall_experience\": \"The Operations Manager likely found ActiveCampaign to be a powerful tool for their marketing and advertising company, appreciating its robust automation and CRM capabilities, especially when transitioning from Bitrix24. Despite a relatively steep learning curve and the time investment required to master its features within the first six months, the platform offered significant potential for streamlining marketing operations. They probably recognized the value and strong functionality, even while navigating initial complexities.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Robust marketing automation and CRM features",
+      "Strong segmentation capabilities for targeted campaigns",
+      "Improved efficiency over previous solution (Bitrix24)"
+    ],
+    "cons": [
+      "Steep learning curve for advanced features and setup",
+      "Interface can feel overwhelming at times for new users",
+      "Requires significant time investment to fully optimize"
+    ],
+    "overall_experience": "The Operations Manager likely found ActiveCampaign to be a powerful tool for their marketing and advertising company, appreciating its robust automation and CRM capabilities, especially when transitioning from Bitrix24. Despite a relatively steep learning curve and the time investment required to master its features within the first six months, the platform offered significant potential for streamlining marketing operations. They probably recognized the value and strong functionality, even while navigating initial complexities."
+  },
+  "ts": "2026-10-18T05:00:51.524993+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2e0909c8d5d009a3d61b366cbc3db9dbd3057ddd8c304d18a82f13b98f1fbb02",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2371,
+  "output_tokens": 1118,
+  "cost_usd": 0.0035063,
+  "elapsed_s": 6.18,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Efficient automation of invoicing and billing tasks\",\n    \"Streamlined financial tracking and reporting\",\n    \"User-friendly interface for daily operations\"\n  ],\n  \"cons\": [\n    \"Limited advanced customization options for specific workflows\",\n    \"Integrations with other financial tools could be more robust\",\n    \"Reporting features might lack depth for complex analysis\"\n  ],\n  \"overall_experience\": \"As a Director of Operations in Financial Services, this person likely found FreshBooks to be a competent solution for automating repetitive accounting tasks. The platform's ease of use and ability to manage core financial operations were probably appreciated, leading to a generally positive experience. However, they may have encountered limitations in terms of advanced customization or integration capabilities needed for more complex financial management within a growing company.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Efficient automation of invoicing and billing tasks",
+      "Streamlined financial tracking and reporting",
+      "User-friendly interface for daily operations"
+    ],
+    "cons": [
+      "Limited advanced customization options for specific workflows",
+      "Integrations with other financial tools could be more robust",
+      "Reporting features might lack depth for complex analysis"
+    ],
+    "overall_experience": "As a Director of Operations in Financial Services, this person likely found FreshBooks to be a competent solution for automating repetitive accounting tasks. The platform's ease of use and ability to manage core financial operations were probably appreciated, leading to a generally positive experience. However, they may have encountered limitations in terms of advanced customization or integration capabilities needed for more complex financial management within a growing company."
+  },
+  "ts": "2026-10-18T05:00:56.115705+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "539465e57feacf7ed53700bd85d8435cdf8f65886d1c9ff32065fa579a3f361b",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1057,
+  "output_tokens": 926,
+  "cost_usd": 0.0026320999999999996,
+  "elapsed_s": 6.39,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Centralized password storage and sharing for a small team\",\n    \"Convenient autofill across devices and browsers\",\n    \"Secure note storage for sensitive company data\"\n  ],\n  \"cons\": [\n    \"Recent security incidents eroded trust in data protection\",\n    \"Customer support can be slow or unhelpful during critical issues\",\n    \"Interface sometimes feels less intuitive compared to previous alternatives\"\n  ],\n  \"overall_experience\": \"This owner, with over two years of experience, likely found LastPass initially effective for managing their small software company's sensitive data and passwords. The platform offered good functionality and convenience for their team, migrating from 1Password. However, recent security breaches have likely raised significant concerns about data integrity and trust, potentially leading them to reconsider its long-term viability despite its value and ease of use.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 3,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 6,
+    "pros": [
+      "Centralized password storage and sharing for a small team",
+      "Convenient autofill across devices and browsers",
+      "Secure note storage for sensitive company data"
+    ],
+    "cons": [
+      "Recent security incidents eroded trust in data protection",
+      "Customer support can be slow or unhelpful during critical issues",
+      "Interface sometimes feels less intuitive compared to previous alternatives"
+    ],
+    "overall_experience": "This owner, with over two years of experience, likely found LastPass initially effective for managing their small software company's sensitive data and passwords. The platform offered good functionality and convenience for their team, migrating from 1Password. However, recent security breaches have likely raised significant concerns about data integrity and trust, potentially leading them to reconsider its long-term viability despite its value and ease of use."
+  },
+  "ts": "2026-10-18T05:01:22.841048+00:00"
+}

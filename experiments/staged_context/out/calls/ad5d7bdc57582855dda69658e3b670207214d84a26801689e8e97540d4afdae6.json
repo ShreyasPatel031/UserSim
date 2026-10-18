@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ad5d7bdc57582855dda69658e3b670207214d84a26801689e8e97540d4afdae6",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2649,
+  "output_tokens": 1128,
+  "cost_usd": 0.0036147,
+  "elapsed_s": 7.42,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Consolidated customer communication and support onto a single platform\",\n    \"Enhanced efficiency in managing sales and customer service workflows\",\n    \"Strong customization options for various business functions\"\n  ],\n  \"cons\": [\n    \"Potential complexity in setting up advanced reporting or automations\",\n    \"Perceived high cost when scaling features or user licenses\",\n    \"Occasional support response times could be improved\"\n  ],\n  \"overall_experience\": \"This Head of Sales & CS, working in a small IT services company for over two years, likely found Intercom to be an extremely valuable tool for unifying various business functions. The platform's comprehensive features and ease of use significantly streamlined their sales and customer support operations. While generally satisfied, they may have encountered challenges with the pricing structure as their needs grew or with the complexity of advanced reporting features.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Consolidated customer communication and support onto a single platform",
+      "Enhanced efficiency in managing sales and customer service workflows",
+      "Strong customization options for various business functions"
+    ],
+    "cons": [
+      "Potential complexity in setting up advanced reporting or automations",
+      "Perceived high cost when scaling features or user licenses",
+      "Occasional support response times could be improved"
+    ],
+    "overall_experience": "This Head of Sales & CS, working in a small IT services company for over two years, likely found Intercom to be an extremely valuable tool for unifying various business functions. The platform's comprehensive features and ease of use significantly streamlined their sales and customer support operations. While generally satisfied, they may have encountered challenges with the pricing structure as their needs grew or with the complexity of advanced reporting features."
+  },
+  "ts": "2026-10-18T05:00:42.936490+00:00"
+}

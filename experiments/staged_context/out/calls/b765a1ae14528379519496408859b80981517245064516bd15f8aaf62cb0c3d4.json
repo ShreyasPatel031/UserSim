@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b765a1ae14528379519496408859b80981517245064516bd15f8aaf62cb0c3d4",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1035,
+  "output_tokens": 1072,
+  "cost_usd": 0.0029905,
+  "elapsed_s": 6.52,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Securely manages numerous website passwords\",\n    \"Streamlines login process for business tools\",\n    \"Reliable cross-device synchronization\"\n  ],\n  \"cons\": [\n    \"Occasional autofill inconsistencies\",\n    \"Customer support response times can be slow\",\n    \"Initial setup and migration from other tools took effort\"\n  ],\n  \"overall_experience\": \"This self-employed real estate professional, with over two years of experience, found LastPass to be a highly effective solution for managing a multitude of online accounts. The product significantly improved their workflow by securely storing and autofilling credentials across various websites. Despite minor frustrations with autofill and support, the overall reliability and functionality made it an indispensable tool for their business operations.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Securely manages numerous website passwords",
+      "Streamlines login process for business tools",
+      "Reliable cross-device synchronization"
+    ],
+    "cons": [
+      "Occasional autofill inconsistencies",
+      "Customer support response times can be slow",
+      "Initial setup and migration from other tools took effort"
+    ],
+    "overall_experience": "This self-employed real estate professional, with over two years of experience, found LastPass to be a highly effective solution for managing a multitude of online accounts. The product significantly improved their workflow by securely storing and autofilling credentials across various websites. Despite minor frustrations with autofill and support, the overall reliability and functionality made it an indispensable tool for their business operations."
+  },
+  "ts": "2026-10-18T05:01:21.301366+00:00"
+}

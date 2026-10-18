@@ -1,0 +1,32 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "82f2a0fb6b7bad94f864e55306fb0f98615f17b6b4a82a119643c432a11ce8a8",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 186,
+  "output_tokens": 489,
+  "cost_usd": 0.0012782999999999998,
+  "elapsed_s": 4.59,
+  "error": null,
+  "text": "{\n  \"task\": \"Visualize data and build connections between different metrics\",\n  \"benefits\": [\n    \"Visualize data\",\n    \"Build connections between different metrics\",\n    \"Ideal for basic users\",\n    \"Friendly to use\"\n  ],\n  \"frictions\": [\n    \"Extremely heavy to load\",\n    \"Extremely heavy to use\",\n    \"Extremely heavy to export\",\n    \"Extremely heavy to work on data\"\n  ]\n}",
+  "json": {
+    "task": "Visualize data and build connections between different metrics",
+    "benefits": [
+      "Visualize data",
+      "Build connections between different metrics",
+      "Ideal for basic users",
+      "Friendly to use"
+    ],
+    "frictions": [
+      "Extremely heavy to load",
+      "Extremely heavy to use",
+      "Extremely heavy to export",
+      "Extremely heavy to work on data"
+    ]
+  },
+  "ts": "2026-10-18T04:56:18.027957+00:00"
+}

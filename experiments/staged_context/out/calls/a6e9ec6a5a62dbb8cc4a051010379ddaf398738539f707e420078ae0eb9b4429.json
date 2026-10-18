@@ -1,0 +1,28 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a6e9ec6a5a62dbb8cc4a051010379ddaf398738539f707e420078ae0eb9b4429",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 207,
+  "output_tokens": 455,
+  "cost_usd": 0.0011996,
+  "elapsed_s": 24.02,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage sales processes and customer relationships\",\n  \"benefits\": [\n    \"Navigate between opportunities, accounts, and contacts\",\n    \"Utilize the interface\"\n  ],\n  \"frictions\": [\n    \"Encounter bugs with data and opportunity amounts\",\n    \"Lack access to more editable features\"\n  ]\n}",
+  "json": {
+    "task": "Manage sales processes and customer relationships",
+    "benefits": [
+      "Navigate between opportunities, accounts, and contacts",
+      "Utilize the interface"
+    ],
+    "frictions": [
+      "Encounter bugs with data and opportunity amounts",
+      "Lack access to more editable features"
+    ]
+  },
+  "ts": "2026-10-18T04:56:10.218808+00:00"
+}

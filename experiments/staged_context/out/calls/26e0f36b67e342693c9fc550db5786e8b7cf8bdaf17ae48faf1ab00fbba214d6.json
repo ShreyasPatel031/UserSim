@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "26e0f36b67e342693c9fc550db5786e8b7cf8bdaf17ae48faf1ab00fbba214d6",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 158,
+  "output_tokens": 541,
+  "cost_usd": 0.0013999,
+  "elapsed_s": 23.56,
+  "error": null,
+  "text": "{\n  \"task\": \"Provide real-time customer support.\",\n  \"benefits\": [\n    \"Live chat with automated messages\",\n    \"Easy to add to websites\",\n    \"Fast and reliable\"\n  ],\n  \"frictions\": [\n    \"Expensive\",\n    \"Lack of transparency\"\n  ]\n}",
+  "json": {
+    "task": "Provide real-time customer support.",
+    "benefits": [
+      "Live chat with automated messages",
+      "Easy to add to websites",
+      "Fast and reliable"
+    ],
+    "frictions": [
+      "Expensive",
+      "Lack of transparency"
+    ]
+  },
+  "ts": "2026-10-18T04:56:10.468912+00:00"
+}

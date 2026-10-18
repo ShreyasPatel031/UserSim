@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7af8d5d338a1bf4ab6bdc5413ec8bfc0ad44ce6f339ee2e91a7fae500b8020e4",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2501,
+  "output_tokens": 927,
+  "cost_usd": 0.0030678000000000003,
+  "elapsed_s": 8.17,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Simple interface for clocking in and out.\",\n    \"Easy submission and tracking of time-off requests.\",\n    \"Centralized access to personal HR information.\"\n  ],\n  \"cons\": [\n    \"Limited flexibility or customization for specific time tracking needs.\",\n    \"Potential for occasional performance lags during peak usage.\",\n    \"Reporting features for time data might be basic.\"\n  ],\n  \"overall_experience\": \"The Market Research Specialist likely found BambooHR to be a straightforward and generally effective tool for their time tracking needs. Its ease of use for daily clock-ins and PTO requests was probably appreciated. However, they might have encountered some limitations in advanced time tracking functionalities or reporting, leading to a slightly less enthusiastic view on its overall value.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Simple interface for clocking in and out.",
+      "Easy submission and tracking of time-off requests.",
+      "Centralized access to personal HR information."
+    ],
+    "cons": [
+      "Limited flexibility or customization for specific time tracking needs.",
+      "Potential for occasional performance lags during peak usage.",
+      "Reporting features for time data might be basic."
+    ],
+    "overall_experience": "The Market Research Specialist likely found BambooHR to be a straightforward and generally effective tool for their time tracking needs. Its ease of use for daily clock-ins and PTO requests was probably appreciated. However, they might have encountered some limitations in advanced time tracking functionalities or reporting, leading to a slightly less enthusiastic view on its overall value."
+  },
+  "ts": "2026-10-18T05:01:00.378331+00:00"
+}

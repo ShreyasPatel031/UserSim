@@ -1,0 +1,32 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3d527d6d7710b571ce97e6fd9146da85ba90c430ce72bc7d17360395b9983fc0",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 315,
+  "output_tokens": 482,
+  "cost_usd": 0.0012994999999999999,
+  "elapsed_s": 23.83,
+  "error": null,
+  "text": "{\n  \"task\": \"Enable users to quickly contact sales or customer service.\",\n  \"benefits\": [\n    \"Clean, easy to understand, and easy to implement interface\",\n    \"Streamlined design\",\n    \"Great auto-reply feature for quick responses\",\n    \"Customizable design and color scheme\"\n  ],\n  \"frictions\": [\n    \"High price\",\n    \"No direct document upload\",\n    \"Formatting issues\",\n    \"No image resizing\"\n  ]\n}",
+  "json": {
+    "task": "Enable users to quickly contact sales or customer service.",
+    "benefits": [
+      "Clean, easy to understand, and easy to implement interface",
+      "Streamlined design",
+      "Great auto-reply feature for quick responses",
+      "Customizable design and color scheme"
+    ],
+    "frictions": [
+      "High price",
+      "No direct document upload",
+      "Formatting issues",
+      "No image resizing"
+    ]
+  },
+  "ts": "2026-10-18T04:56:10.900081+00:00"
+}

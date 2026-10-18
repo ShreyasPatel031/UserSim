@@ -1,0 +1,25 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "27286b3c0a2154f41ae6360f9b6873ad8fe037fbefb55457bc11e6ba2e130c9f",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 135,
+  "output_tokens": 476,
+  "cost_usd": 0.0012305,
+  "elapsed_s": 23.07,
+  "error": null,
+  "text": "{\n  \"task\": \"Perform email marketing and marketing automation.\",\n  \"benefits\": [\n    \"Serves as a perfect email marketing alternative\",\n    \"Less complex than other marketing automation software\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Perform email marketing and marketing automation.",
+    "benefits": [
+      "Serves as a perfect email marketing alternative",
+      "Less complex than other marketing automation software"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T04:56:10.729751+00:00"
+}

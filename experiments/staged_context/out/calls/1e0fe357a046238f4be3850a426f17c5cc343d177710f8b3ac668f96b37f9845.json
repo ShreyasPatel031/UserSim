@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1e0fe357a046238f4be3850a426f17c5cc343d177710f8b3ac668f96b37f9845",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 166,
+  "output_tokens": 481,
+  "cost_usd": 0.0012523,
+  "elapsed_s": 4.17,
+  "error": null,
+  "text": "{\n  \"task\": \"Use the product to communicate and share files.\",\n  \"benefits\": [\n    \"Quick messaging and file sharing\",\n    \"Threads organize busy conversations\",\n    \"Calendar integration simplifies workflow\"\n  ],\n  \"frictions\": [\n    \"Excessive notifications\",\n    \"Inaccurate search for older content\"\n  ]\n}",
+  "json": {
+    "task": "Use the product to communicate and share files.",
+    "benefits": [
+      "Quick messaging and file sharing",
+      "Threads organize busy conversations",
+      "Calendar integration simplifies workflow"
+    ],
+    "frictions": [
+      "Excessive notifications",
+      "Inaccurate search for older content"
+    ]
+  },
+  "ts": "2026-10-18T04:56:18.137461+00:00"
+}

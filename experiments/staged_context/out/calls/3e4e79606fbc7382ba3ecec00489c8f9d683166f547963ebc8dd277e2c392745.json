@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3e4e79606fbc7382ba3ecec00489c8f9d683166f547963ebc8dd277e2c392745",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 185,
+  "output_tokens": 470,
+  "cost_usd": 0.0012305,
+  "elapsed_s": 4.27,
+  "error": null,
+  "text": "{\n  \"task\": \"Provide two-factor authentication for remote workers.\",\n  \"benefits\": [\n    \"Setup is easy\",\n    \"App is very small\",\n    \"IT can get it up and running quickly\",\n    \"Provides more security for remote workers\"\n  ],\n  \"frictions\": [\n    \"Program sometimes takes longer than usual to register input\"\n  ]\n}",
+  "json": {
+    "task": "Provide two-factor authentication for remote workers.",
+    "benefits": [
+      "Setup is easy",
+      "App is very small",
+      "IT can get it up and running quickly",
+      "Provides more security for remote workers"
+    ],
+    "frictions": [
+      "Program sometimes takes longer than usual to register input"
+    ]
+  },
+  "ts": "2026-10-18T04:56:19.606470+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d23ebf7bc0a548986ee7d8109e422e3e6a342d03e396e1c231e275e0e4b6b604",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 266,
+  "output_tokens": 987,
+  "cost_usd": 0.0025473,
+  "elapsed_s": 6.75,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Significantly more intuitive and user-friendly than ADP Workforce Now.\",\n    \"Seamless integration of payroll, HR, and scheduling functions.\",\n    \"Efficient management of employee leave requests and approvals.\"\n  ],\n  \"cons\": [\n    \"Initial setup for specific tax configurations required some learning.\",\n    \"Occasional minor bugs or slow loading times within the scheduling module.\",\n    \"Customer support response times could sometimes be inconsistent.\"\n  ],\n  \"overall_experience\": \"This Team Leader likely found Rippling to be a substantial upgrade from their previous experience with ADP Workforce Now, appreciating its modern interface and integrated approach to HR and payroll. They benefited from the streamlined management of employee schedules, leave, and income tax processes. While generally positive, some minor frustrations with specific configurations or support response times were likely encountered.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Significantly more intuitive and user-friendly than ADP Workforce Now.",
+      "Seamless integration of payroll, HR, and scheduling functions.",
+      "Efficient management of employee leave requests and approvals."
+    ],
+    "cons": [
+      "Initial setup for specific tax configurations required some learning.",
+      "Occasional minor bugs or slow loading times within the scheduling module.",
+      "Customer support response times could sometimes be inconsistent."
+    ],
+    "overall_experience": "This Team Leader likely found Rippling to be a substantial upgrade from their previous experience with ADP Workforce Now, appreciating its modern interface and integrated approach to HR and payroll. They benefited from the streamlined management of employee schedules, leave, and income tax processes. While generally positive, some minor frustrations with specific configurations or support response times were likely encountered."
+  },
+  "ts": "2026-10-18T05:01:01.752645+00:00"
+}

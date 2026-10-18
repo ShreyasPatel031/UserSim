@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2dd4c31db7ab09a4e9437b81f393268277d9efcd0fda8156539bc9a4dcd35f4d",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 170,
+  "output_tokens": 461,
+  "cost_usd": 0.0012035,
+  "elapsed_s": 22.61,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage financial data and generate reports\",\n  \"benefits\": [\n    \"Reporting is very segmentable\",\n    \"Integrations pull through data from credit cards easily\",\n    \"Integrations provide a live picture of financial health\"\n  ],\n  \"frictions\": [\n    \"Limited to 2 bespoke integrations\",\n    \"Complicated for non-accountant users\"\n  ]\n}",
+  "json": {
+    "task": "Manage financial data and generate reports",
+    "benefits": [
+      "Reporting is very segmentable",
+      "Integrations pull through data from credit cards easily",
+      "Integrations provide a live picture of financial health"
+    ],
+    "frictions": [
+      "Limited to 2 bespoke integrations",
+      "Complicated for non-accountant users"
+    ]
+  },
+  "ts": "2026-10-18T04:56:10.599068+00:00"
+}

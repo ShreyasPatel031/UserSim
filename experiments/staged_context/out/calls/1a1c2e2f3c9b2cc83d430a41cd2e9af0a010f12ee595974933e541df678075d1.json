@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1a1c2e2f3c9b2cc83d430a41cd2e9af0a010f12ee595974933e541df678075d1",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 253,
+  "output_tokens": 503,
+  "cost_usd": 0.0013334,
+  "elapsed_s": 24.86,
+  "error": null,
+  "text": "{\n  \"task\": \"Organize projects, notes, and databases in one place\",\n  \"benefits\": [\n    \"Very flexible and customizable\",\n    \"Easy to get started\",\n    \"Many templates available\",\n    \"Accessible on web, mobile, and computer\"\n  ],\n  \"frictions\": [\n    \"Slowdowns on certain pages with a lot of data\",\n    \"Requires external tools for advanced functions\"\n  ]\n}",
+  "json": {
+    "task": "Organize projects, notes, and databases in one place",
+    "benefits": [
+      "Very flexible and customizable",
+      "Easy to get started",
+      "Many templates available",
+      "Accessible on web, mobile, and computer"
+    ],
+    "frictions": [
+      "Slowdowns on certain pages with a lot of data",
+      "Requires external tools for advanced functions"
+    ]
+  },
+  "ts": "2026-10-18T04:56:10.536952+00:00"
+}

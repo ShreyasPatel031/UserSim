@@ -1,0 +1,27 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "151f290cd47b5d1fd3528f88f03bf20e3175516d406f507b1bbebf8950694583",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 205,
+  "output_tokens": 463,
+  "cost_usd": 0.0012189999999999998,
+  "elapsed_s": 24.76,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage customer relationships and business operations\",\n  \"benefits\": [\n    \"New users can explore the tool without hassle\",\n    \"Web UI is quite smooth\"\n  ],\n  \"frictions\": [\n    \"Web interface could be smoother\"\n  ]\n}",
+  "json": {
+    "task": "Manage customer relationships and business operations",
+    "benefits": [
+      "New users can explore the tool without hassle",
+      "Web UI is quite smooth"
+    ],
+    "frictions": [
+      "Web interface could be smoother"
+    ]
+  },
+  "ts": "2026-10-18T04:56:10.682220+00:00"
+}

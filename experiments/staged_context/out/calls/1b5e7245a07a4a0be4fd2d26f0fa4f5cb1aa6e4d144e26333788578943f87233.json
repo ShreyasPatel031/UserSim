@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1b5e7245a07a4a0be4fd2d26f0fa4f5cb1aa6e4d144e26333788578943f87233",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1077,
+  "output_tokens": 1077,
+  "cost_usd": 0.0030156000000000002,
+  "elapsed_s": 7.63,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"High level of customization and flexibility for various workflows\",\n    \"Consolidates notes, tasks, and project management into one tool\",\n    \"Scalable database features for tracking marketing campaigns\"\n  ],\n  \"cons\": [\n    \"Steeper learning curve compared to more structured alternatives like monday.com\",\n    \"Can become disorganized if not maintained diligently by a small team\",\n    \"Customer support responsiveness could be improved for urgent issues\"\n  ],\n  \"overall_experience\": \"As an owner of a small marketing agency, this individual found Notion to be a powerful and flexible tool for consolidating their team's notes, tasks, and project management needs. While appreciating its extensive customization, they likely experienced some initial challenges with its open-ended nature compared to their previous, more structured platform. The perceived value was good, though support could be a pain point for a small business needing quick resolutions.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "High level of customization and flexibility for various workflows",
+      "Consolidates notes, tasks, and project management into one tool",
+      "Scalable database features for tracking marketing campaigns"
+    ],
+    "cons": [
+      "Steeper learning curve compared to more structured alternatives like monday.com",
+      "Can become disorganized if not maintained diligently by a small team",
+      "Customer support responsiveness could be improved for urgent issues"
+    ],
+    "overall_experience": "As an owner of a small marketing agency, this individual found Notion to be a powerful and flexible tool for consolidating their team's notes, tasks, and project management needs. While appreciating its extensive customization, they likely experienced some initial challenges with its open-ended nature compared to their previous, more structured platform. The perceived value was good, though support could be a pain point for a small business needing quick resolutions."
+  },
+  "ts": "2026-10-18T05:00:33.168960+00:00"
+}

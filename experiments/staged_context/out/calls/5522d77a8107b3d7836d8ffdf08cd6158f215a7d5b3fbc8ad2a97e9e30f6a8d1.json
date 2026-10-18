@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "5522d77a8107b3d7836d8ffdf08cd6158f215a7d5b3fbc8ad2a97e9e30f6a8d1",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1070,
+  "output_tokens": 1039,
+  "cost_usd": 0.0029185,
+  "elapsed_s": 6.69,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Simplified invoicing and expense tracking\",\n    \"More intuitive and user-friendly interface than previous software\",\n    \"Streamlined accounting for a self-employed business\"\n  ],\n  \"cons\": [\n    \"Might lack some advanced reporting features of larger systems\",\n    \"Initial adjustment period from a more complex platform\",\n    \"Specific integrations might be desired\"\n  ],\n  \"overall_experience\": \"The CEO likely found FreshBooks to be a much simpler and more intuitive solution for managing their self-employed accounting needs after transitioning from QuickBooks Online Advanced. They appreciated its ease of use for invoicing and expense tracking, which streamlined their financial management. While some advanced functionalities might have been missed, the overall simplicity and efficiency made it a valuable tool for their health, wellness, and fitness business.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Simplified invoicing and expense tracking",
+      "More intuitive and user-friendly interface than previous software",
+      "Streamlined accounting for a self-employed business"
+    ],
+    "cons": [
+      "Might lack some advanced reporting features of larger systems",
+      "Initial adjustment period from a more complex platform",
+      "Specific integrations might be desired"
+    ],
+    "overall_experience": "The CEO likely found FreshBooks to be a much simpler and more intuitive solution for managing their self-employed accounting needs after transitioning from QuickBooks Online Advanced. They appreciated its ease of use for invoicing and expense tracking, which streamlined their financial management. While some advanced functionalities might have been missed, the overall simplicity and efficiency made it a valuable tool for their health, wellness, and fitness business."
+  },
+  "ts": "2026-10-18T05:00:57.658509+00:00"
+}

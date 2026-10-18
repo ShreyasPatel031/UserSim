@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "391d7449e67656062c4fba7c31a67ce13fc0706ebcc72daa90c8e9a3bc261016",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1099,
+  "output_tokens": 1008,
+  "cost_usd": 0.0028497,
+  "elapsed_s": 6.77,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Streamlined client management and sales processes.\",\n    \"Intuitive interface and ease of setup for a small team.\",\n    \"Good automation capabilities for repetitive tasks.\"\n  ],\n  \"cons\": [\n    \"Higher-tier features can become expensive for a small business.\",\n    \"Occasional limitations in customization for very specific workflows.\",\n    \"Reporting can sometimes require a learning curve to extract specific insights.\"\n  ],\n  \"overall_experience\": \"The software developer found HubSpot CRM to be a highly effective tool for managing customer relationships and operations within their small IT services company. They appreciated its user-friendly design and robust functionality, particularly for automating tasks and streamlining client interactions. While recognizing its strong capabilities, they noted that the cost of advanced features and some reporting complexities could be areas for improvement.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Streamlined client management and sales processes.",
+      "Intuitive interface and ease of setup for a small team.",
+      "Good automation capabilities for repetitive tasks."
+    ],
+    "cons": [
+      "Higher-tier features can become expensive for a small business.",
+      "Occasional limitations in customization for very specific workflows.",
+      "Reporting can sometimes require a learning curve to extract specific insights."
+    ],
+    "overall_experience": "The software developer found HubSpot CRM to be a highly effective tool for managing customer relationships and operations within their small IT services company. They appreciated its user-friendly design and robust functionality, particularly for automating tasks and streamlining client interactions. While recognizing its strong capabilities, they noted that the cost of advanced features and some reporting complexities could be areas for improvement."
+  },
+  "ts": "2026-10-18T05:00:33.013364+00:00"
+}

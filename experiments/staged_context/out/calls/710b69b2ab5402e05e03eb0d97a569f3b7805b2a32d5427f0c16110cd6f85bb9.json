@@ -1,0 +1,31 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "710b69b2ab5402e05e03eb0d97a569f3b7805b2a32d5427f0c16110cd6f85bb9",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 205,
+  "output_tokens": 524,
+  "cost_usd": 0.0013715,
+  "elapsed_s": 26.18,
+  "error": null,
+  "text": "{\n  \"task\": \"Organize work and assign tasks\",\n  \"benefits\": [\n    \"Provides organization\",\n    \"Allows tagging people\",\n    \"Enables assigning tasks\",\n    \"Helps with keeping things organized and seeing them laid out\"\n  ],\n  \"frictions\": [\n    \"Calendar portion is confusing\",\n    \"Calendar portion is not easy to navigate\",\n    \"Not the best for social media planning\"\n  ]\n}",
+  "json": {
+    "task": "Organize work and assign tasks",
+    "benefits": [
+      "Provides organization",
+      "Allows tagging people",
+      "Enables assigning tasks",
+      "Helps with keeping things organized and seeing them laid out"
+    ],
+    "frictions": [
+      "Calendar portion is confusing",
+      "Calendar portion is not easy to navigate",
+      "Not the best for social media planning"
+    ]
+  },
+  "ts": "2026-10-18T04:56:11.533139+00:00"
+}

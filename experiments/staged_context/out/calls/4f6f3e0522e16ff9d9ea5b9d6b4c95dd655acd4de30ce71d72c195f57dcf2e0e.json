@@ -1,0 +1,26 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4f6f3e0522e16ff9d9ea5b9d6b4c95dd655acd4de30ce71d72c195f57dcf2e0e",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 156,
+  "output_tokens": 459,
+  "cost_usd": 0.0011943000000000001,
+  "elapsed_s": 3.29,
+  "error": null,
+  "text": "{\n  \"task\": \"Start a business\",\n  \"benefits\": [\n    \"Start a business without needing to learn new skills\"\n  ],\n  \"frictions\": [\n    \"Shopify themes can be expensive for new business owners\"\n  ]\n}",
+  "json": {
+    "task": "Start a business",
+    "benefits": [
+      "Start a business without needing to learn new skills"
+    ],
+    "frictions": [
+      "Shopify themes can be expensive for new business owners"
+    ]
+  },
+  "ts": "2026-10-18T04:56:14.424928+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a1fad6c464e3e79fce68ae37920c957326f402731c1c7cc4104f9844163d82b9",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 272,
+  "output_tokens": 1008,
+  "cost_usd": 0.0026016,
+  "elapsed_s": 7.17,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Reliable two-factor authentication for remote access.\",\n    \"Streamlined login process once set up.\",\n    \"Enhanced security for sensitive healthcare data.\"\n  ],\n  \"cons\": [\n    \"Initial setup for new users sometimes required IT assistance.\",\n    \"Occasional delays with push notifications.\",\n    \"Limited understanding of its broader capabilities beyond MFA.\"\n  ],\n  \"overall_experience\": \"The Senior Recruiter found Okta to be an effective tool for implementing two-factor authentication for their remote workforce, which was crucial in the healthcare industry. While the core functionality of securing logins was reliable and appreciated, the initial onboarding for some new hires presented minor friction. Overall, it successfully addressed a critical security need for their organization.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Reliable two-factor authentication for remote access.",
+      "Streamlined login process once set up.",
+      "Enhanced security for sensitive healthcare data."
+    ],
+    "cons": [
+      "Initial setup for new users sometimes required IT assistance.",
+      "Occasional delays with push notifications.",
+      "Limited understanding of its broader capabilities beyond MFA."
+    ],
+    "overall_experience": "The Senior Recruiter found Okta to be an effective tool for implementing two-factor authentication for their remote workforce, which was crucial in the healthcare industry. While the core functionality of securing logins was reliable and appreciated, the initial onboarding for some new hires presented minor friction. Overall, it successfully addressed a critical security need for their organization."
+  },
+  "ts": "2026-10-18T05:01:19.448252+00:00"
+}

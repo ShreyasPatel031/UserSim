@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "51ae137da3e762b68876fc31832af92fbbbea04eb33d4ab825550df06c3e711a",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 176,
+  "output_tokens": 431,
+  "cost_usd": 0.0011303,
+  "elapsed_s": 2.97,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage employee leave, tenure, documents, onboarding, offboarding, and recruitment.\",\n  \"benefits\": [\n    \"Manage employee leave\",\n    \"Track employee tenure\",\n    \"Store employee documents\",\n    \"Handle employee onboarding and offboarding\"\n  ],\n  \"frictions\": [\n    \"Clunky user experience\",\n    \"Recruitment function is unusable\"\n  ]\n}",
+  "json": {
+    "task": "Manage employee leave, tenure, documents, onboarding, offboarding, and recruitment.",
+    "benefits": [
+      "Manage employee leave",
+      "Track employee tenure",
+      "Store employee documents",
+      "Handle employee onboarding and offboarding"
+    ],
+    "frictions": [
+      "Clunky user experience",
+      "Recruitment function is unusable"
+    ]
+  },
+  "ts": "2026-10-18T04:56:11.729865+00:00"
+}

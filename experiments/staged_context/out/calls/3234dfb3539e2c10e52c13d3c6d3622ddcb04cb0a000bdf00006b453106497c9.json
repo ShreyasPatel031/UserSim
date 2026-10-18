@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3234dfb3539e2c10e52c13d3c6d3622ddcb04cb0a000bdf00006b453106497c9",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2467,
+  "output_tokens": 1107,
+  "cost_usd": 0.0035076,
+  "elapsed_s": 8.62,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Securely stores and shares passwords for small teams\",\n    \"Autofill feature saves time for logging in\",\n    \"Helps maintain strong, unique passwords across services\"\n  ],\n  \"cons\": [\n    \"Recent changes to free tier or pricing have been a concern\",\n    \"Mobile app can sometimes be clunky or slow\",\n    \"Customer support responsiveness could be improved\"\n  ],\n  \"overall_experience\": \"This member manager has used LastPass for several years to manage credentials for their small entertainment company. While it generally serves its purpose well for secure password storage and sharing within the team, recent changes to pricing or features have impacted their perception of its value. They appreciate the core functionality, but occasionally experience frustrations with mobile performance and support.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Securely stores and shares passwords for small teams",
+      "Autofill feature saves time for logging in",
+      "Helps maintain strong, unique passwords across services"
+    ],
+    "cons": [
+      "Recent changes to free tier or pricing have been a concern",
+      "Mobile app can sometimes be clunky or slow",
+      "Customer support responsiveness could be improved"
+    ],
+    "overall_experience": "This member manager has used LastPass for several years to manage credentials for their small entertainment company. While it generally serves its purpose well for secure password storage and sharing within the team, recent changes to pricing or features have impacted their perception of its value. They appreciate the core functionality, but occasionally experience frustrations with mobile performance and support."
+  },
+  "ts": "2026-10-18T05:01:22.738983+00:00"
+}

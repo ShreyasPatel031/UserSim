@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "485d90bf934cd2c91ebdab1792a935f0243822c568e189fde0136fd10b202c62",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 263,
+  "output_tokens": 1009,
+  "cost_usd": 0.0026013999999999994,
+  "elapsed_s": 10.09,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 2,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Consolidated platform for managing collaborators\",\n    \"Streamlined onboarding workflows for contractors\",\n    \"Effective document tracking features\"\n  ],\n  \"cons\": [\n    \"Potentially too expensive for a self-employed operation\",\n    \"Overwhelming feature set for basic contractor management\",\n    \"Initial setup can be complex for a small user base\"\n  ],\n  \"overall_experience\": \"The founder likely found Rippling's comprehensive features for managing collaborators, including onboarding and document tracking, quite powerful and useful for their media production needs. However, as a self-employed individual, they probably felt the platform was overkill and potentially too costly for their specific scale. The initial learning curve might have also been steeper than anticipated for only managing a few collaborators.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 3,
+    "value_for_money_rating": 2,
+    "customer_support_rating": 3,
+    "recommendation_score": 6,
+    "pros": [
+      "Consolidated platform for managing collaborators",
+      "Streamlined onboarding workflows for contractors",
+      "Effective document tracking features"
+    ],
+    "cons": [
+      "Potentially too expensive for a self-employed operation",
+      "Overwhelming feature set for basic contractor management",
+      "Initial setup can be complex for a small user base"
+    ],
+    "overall_experience": "The founder likely found Rippling's comprehensive features for managing collaborators, including onboarding and document tracking, quite powerful and useful for their media production needs. However, as a self-employed individual, they probably felt the platform was overkill and potentially too costly for their specific scale. The initial learning curve might have also been steeper than anticipated for only managing a few collaborators."
+  },
+  "ts": "2026-10-18T05:01:05.781017+00:00"
+}

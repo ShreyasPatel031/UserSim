@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "5b604286808fab7848f6acced2a12842db7db3e0699efc7a0364a1f7cbd155cd",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 206,
+  "output_tokens": 456,
+  "cost_usd": 0.0012018,
+  "elapsed_s": 23.48,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage sales processes and scheduling\",\n  \"benefits\": [\n    \"User interface is phenomenal\",\n    \"Setup is easy\",\n    \"Scheduling is simple\",\n    \"Ease of use\"\n  ],\n  \"frictions\": [\n    \"A little pricey\"\n  ]\n}",
+  "json": {
+    "task": "Manage sales processes and scheduling",
+    "benefits": [
+      "User interface is phenomenal",
+      "Setup is easy",
+      "Scheduling is simple",
+      "Ease of use"
+    ],
+    "frictions": [
+      "A little pricey"
+    ]
+  },
+  "ts": "2026-10-18T04:56:09.655001+00:00"
+}

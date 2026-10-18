@@ -1,0 +1,27 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e6d68b68ec410b5ecb4f3f5f9779aa5eea671f0af15da8bfc8b69e198f96b13d",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 160,
+  "output_tokens": 498,
+  "cost_usd": 0.001293,
+  "elapsed_s": 25.88,
+  "error": null,
+  "text": "{\n  \"task\": \"Organize tasks, create to-do lists, and manage time.\",\n  \"benefits\": [\n    \"Organize tasks\",\n    \"Create to-do lists\",\n    \"Manage time\",\n    \"Collaborate with co-workers\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Organize tasks, create to-do lists, and manage time.",
+    "benefits": [
+      "Organize tasks",
+      "Create to-do lists",
+      "Manage time",
+      "Collaborate with co-workers"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T04:56:10.947622+00:00"
+}

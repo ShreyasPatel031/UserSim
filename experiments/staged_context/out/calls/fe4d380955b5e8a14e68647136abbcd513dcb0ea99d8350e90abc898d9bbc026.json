@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "fe4d380955b5e8a14e68647136abbcd513dcb0ea99d8350e90abc898d9bbc026",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 253,
+  "output_tokens": 968,
+  "cost_usd": 0.0024958999999999997,
+  "elapsed_s": 6.68,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Significantly easier to set up and manage than WordPress\",\n    \"Reliable hosting and security updates handled automatically\",\n    \"All-in-one platform for e-commerce, payments, and shipping\"\n  ],\n  \"cons\": [\n    \"Monthly subscription fees and transaction costs add up\",\n    \"Customization can be more restrictive than self-hosted platforms\",\n    \"Reliance on apps for advanced features can increase costs\"\n  ],\n  \"overall_experience\": \"This CEO likely found Shopify to be a substantial upgrade in terms of ease of use and reliability compared to their previous experience with WordPress. The platform's integrated features and reduced technical overhead allowed them to focus more on their apparel business. While appreciating the streamlined experience, they might have noted the ongoing subscription costs and occasional limitations in deep customization as minor drawbacks.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Significantly easier to set up and manage than WordPress",
+      "Reliable hosting and security updates handled automatically",
+      "All-in-one platform for e-commerce, payments, and shipping"
+    ],
+    "cons": [
+      "Monthly subscription fees and transaction costs add up",
+      "Customization can be more restrictive than self-hosted platforms",
+      "Reliance on apps for advanced features can increase costs"
+    ],
+    "overall_experience": "This CEO likely found Shopify to be a substantial upgrade in terms of ease of use and reliability compared to their previous experience with WordPress. The platform's integrated features and reduced technical overhead allowed them to focus more on their apparel business. While appreciating the streamlined experience, they might have noted the ongoing subscription costs and occasional limitations in deep customization as minor drawbacks."
+  },
+  "ts": "2026-10-18T05:01:07.186964+00:00"
+}

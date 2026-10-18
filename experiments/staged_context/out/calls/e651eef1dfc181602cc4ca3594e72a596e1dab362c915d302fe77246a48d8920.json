@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e651eef1dfc181602cc4ca3594e72a596e1dab362c915d302fe77246a48d8920",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1105,
+  "output_tokens": 1056,
+  "cost_usd": 0.0029715,
+  "elapsed_s": 10.61,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Intuitive drag-and-drop email builder for quick campaign creation\",\n    \"Robust automation capabilities to personalize visual content delivery\",\n    \"Good segmentation options for targeting specific audiences with tailored designs\"\n  ],\n  \"cons\": [\n    \"Limitations in advanced template customization for highly unique designs\",\n    \"Occasional UI quirks that can hinder design workflow efficiency\",\n    \"Steep learning curve for fully leveraging advanced automation features\"\n  ],\n  \"overall_experience\": \"This Senior Graphic Designer likely found ActiveCampaign to be a competent tool for managing email campaigns, appreciating its ease of use for building visually appealing emails and the power of its automation. While the platform offered solid functionality for their role, they might have encountered some constraints when attempting highly custom or intricate design elements. Overall, the experience was likely positive, supporting their creative marketing efforts within the IT services company.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Intuitive drag-and-drop email builder for quick campaign creation",
+      "Robust automation capabilities to personalize visual content delivery",
+      "Good segmentation options for targeting specific audiences with tailored designs"
+    ],
+    "cons": [
+      "Limitations in advanced template customization for highly unique designs",
+      "Occasional UI quirks that can hinder design workflow efficiency",
+      "Steep learning curve for fully leveraging advanced automation features"
+    ],
+    "overall_experience": "This Senior Graphic Designer likely found ActiveCampaign to be a competent tool for managing email campaigns, appreciating its ease of use for building visually appealing emails and the power of its automation. While the platform offered solid functionality for their role, they might have encountered some constraints when attempting highly custom or intricate design elements. Overall, the experience was likely positive, supporting their creative marketing efforts within the IT services company."
+  },
+  "ts": "2026-10-18T05:00:54.719732+00:00"
+}

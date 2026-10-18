@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f58039860f9014966275d5169fefb35740ec5c3cf2862e12b3aa7be99599d4e5",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1055,
+  "output_tokens": 1024,
+  "cost_usd": 0.0028764999999999997,
+  "elapsed_s": 7.31,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Highly customizable for managing diverse legal cases and workflows\",\n    \"Efficiently tracks task progress and assignments for a self-employed practice\",\n    \"AI features enhance productivity in legal documentation and task management\"\n  ],\n  \"cons\": [\n    \"Initial setup and customization can be time-consuming for complex legal processes\",\n    \"Pricing structure might be a concern for a self-employed professional with extensive AI feature needs\",\n    \"Learning curve for advanced AI functionalities might require dedicated effort\"\n  ],\n  \"overall_experience\": \"This attorney likely found monday.com AI Work Platform to be a highly effective and customizable solution for managing their legal cases and assignments over two years. The platform's flexibility and AI capabilities probably significantly enhanced their productivity and organization. While generally positive, the value for money and customer support ratings suggest minor frustrations, possibly related to cost or specific AI feature implementations for a self-employed practice.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Highly customizable for managing diverse legal cases and workflows",
+      "Efficiently tracks task progress and assignments for a self-employed practice",
+      "AI features enhance productivity in legal documentation and task management"
+    ],
+    "cons": [
+      "Initial setup and customization can be time-consuming for complex legal processes",
+      "Pricing structure might be a concern for a self-employed professional with extensive AI feature needs",
+      "Learning curve for advanced AI functionalities might require dedicated effort"
+    ],
+    "overall_experience": "This attorney likely found monday.com AI Work Platform to be a highly effective and customizable solution for managing their legal cases and assignments over two years. The platform's flexibility and AI capabilities probably significantly enhanced their productivity and organization. While generally positive, the value for money and customer support ratings suggest minor frustrations, possibly related to cost or specific AI feature implementations for a self-employed practice."
+  },
+  "ts": "2026-10-18T05:00:29.494405+00:00"
+}

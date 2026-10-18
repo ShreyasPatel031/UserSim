@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "afc542b835d80d2841ae48ba46a4ec028572489205fb53b1c93dc91bd4cdd1de",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 256,
+  "output_tokens": 1111,
+  "cost_usd": 0.0028543,
+  "elapsed_s": 8.48,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Robust e-commerce features and app ecosystem\",\n    \"Reliable platform for marketing and sales growth\",\n    \"Easier setup and maintenance than self-hosted WordPress\"\n  ],\n  \"cons\": [\n    \"Transaction fees can add up for small businesses\",\n    \"Customization beyond themes can be limited or costly\",\n    \"Pricing tiers might feel restrictive for growth\"\n  ],\n  \"overall_experience\": \"This marketing consultant found Shopify to be a highly functional and reliable platform for managing their eCommerce business over two years. They appreciated its robust features and extensive app store, which significantly aided their marketing efforts compared to previous alternatives like Wix or WordPress. While generally satisfied, they likely noted that the cumulative transaction fees and potential limitations in deep customization could impact overall value for a small operation.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Robust e-commerce features and app ecosystem",
+      "Reliable platform for marketing and sales growth",
+      "Easier setup and maintenance than self-hosted WordPress"
+    ],
+    "cons": [
+      "Transaction fees can add up for small businesses",
+      "Customization beyond themes can be limited or costly",
+      "Pricing tiers might feel restrictive for growth"
+    ],
+    "overall_experience": "This marketing consultant found Shopify to be a highly functional and reliable platform for managing their eCommerce business over two years. They appreciated its robust features and extensive app store, which significantly aided their marketing efforts compared to previous alternatives like Wix or WordPress. While generally satisfied, they likely noted that the cumulative transaction fees and potential limitations in deep customization could impact overall value for a small operation."
+  },
+  "ts": "2026-10-18T05:01:09.190781+00:00"
+}

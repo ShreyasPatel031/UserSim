@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b7d6421355a8a7e3a4a219f3e40efe5d5fddc9d3ecbd9ed410660d436fe8a549",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 261,
+  "output_tokens": 1049,
+  "cost_usd": 0.0027007999999999997,
+  "elapsed_s": 8.2,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Robust email campaign automation features\",\n    \"Good template customization options for designers\",\n    \"Strong segmentation capabilities for targeted messaging\"\n  ],\n  \"cons\": [\n    \"Steep learning curve for advanced automation flows\",\n    \"Occasional UI quirks in the email builder\",\n    \"Customer support response times can be inconsistent\"\n  ],\n  \"overall_experience\": \"The Senior Graphic Designer likely found ActiveCampaign to be a powerful tool for managing email campaigns, appreciating its robust automation and customization options for visual content. While the email builder offered good flexibility, they may have encountered occasional frustrations with its interface compared to dedicated design tools. Overall, it effectively supported their role within the IT and Services company.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Robust email campaign automation features",
+      "Good template customization options for designers",
+      "Strong segmentation capabilities for targeted messaging"
+    ],
+    "cons": [
+      "Steep learning curve for advanced automation flows",
+      "Occasional UI quirks in the email builder",
+      "Customer support response times can be inconsistent"
+    ],
+    "overall_experience": "The Senior Graphic Designer likely found ActiveCampaign to be a powerful tool for managing email campaigns, appreciating its robust automation and customization options for visual content. While the email builder offered good flexibility, they may have encountered occasional frustrations with its interface compared to dedicated design tools. Overall, it effectively supported their role within the IT and Services company."
+  },
+  "ts": "2026-10-18T05:00:52.275166+00:00"
+}

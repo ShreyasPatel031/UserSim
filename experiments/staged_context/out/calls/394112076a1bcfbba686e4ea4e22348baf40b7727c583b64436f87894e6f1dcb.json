@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "394112076a1bcfbba686e4ea4e22348baf40b7727c583b64436f87894e6f1dcb",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 266,
+  "output_tokens": 1041,
+  "cost_usd": 0.0026823000000000003,
+  "elapsed_s": 7.71,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Robust real-time messaging and automation for customer support\",\n    \"Developer-friendly APIs for custom integrations and workflows\",\n    \"Scalable solution suitable for large teams and high volumes\"\n  ],\n  \"cons\": [\n    \"Pricing can become significant for larger organizations\",\n    \"Advanced customization for specific financial services compliance might require workarounds\",\n    \"Learning curve for leveraging all advanced features and integrations\"\n  ],\n  \"overall_experience\": \"The web developer at a financial services company found Intercom to be a reliable and functional platform for providing real-time customer support over two years. They likely appreciated its integration capabilities and scalability for their large organization, despite potential concerns about its cost and the effort required for deep customization within a regulated industry.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Robust real-time messaging and automation for customer support",
+      "Developer-friendly APIs for custom integrations and workflows",
+      "Scalable solution suitable for large teams and high volumes"
+    ],
+    "cons": [
+      "Pricing can become significant for larger organizations",
+      "Advanced customization for specific financial services compliance might require workarounds",
+      "Learning curve for leveraging all advanced features and integrations"
+    ],
+    "overall_experience": "The web developer at a financial services company found Intercom to be a reliable and functional platform for providing real-time customer support over two years. They likely appreciated its integration capabilities and scalability for their large organization, despite potential concerns about its cost and the effort required for deep customization within a regulated industry."
+  },
+  "ts": "2026-10-18T05:00:43.689446+00:00"
+}

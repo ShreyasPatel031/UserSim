@@ -1,0 +1,26 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e23da9a3e7120389be3b222fe2c8c0a941774a175466ded011b147082beda27d",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 177,
+  "output_tokens": 427,
+  "cost_usd": 0.0011206,
+  "elapsed_s": 23.5,
+  "error": null,
+  "text": "{\n  \"task\": \"Message customers and potential customers\",\n  \"benefits\": [\n    \"Customization\",\n    \"Powerful tool\",\n    \"Granular segmentation and messaging\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Message customers and potential customers",
+    "benefits": [
+      "Customization",
+      "Powerful tool",
+      "Granular segmentation and messaging"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T04:56:10.603491+00:00"
+}

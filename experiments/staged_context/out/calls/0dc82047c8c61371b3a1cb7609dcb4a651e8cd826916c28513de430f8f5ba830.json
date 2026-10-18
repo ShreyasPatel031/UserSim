@@ -1,0 +1,21 @@
+{
+  "stage": "mcp_classify",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0dc82047c8c61371b3a1cb7609dcb4a651e8cd826916c28513de430f8f5ba830",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 256,
+  "input_tokens": 1220,
+  "output_tokens": 277,
+  "cost_usd": 0.0010585,
+  "elapsed_s": 2.99,
+  "error": null,
+  "text": "{\n  \"category\": \"CRM\",\n  \"product_name\": \"Salesforce Sales Cloud\"\n}",
+  "json": {
+    "category": "CRM",
+    "product_name": "Salesforce Sales Cloud"
+  },
+  "ts": "2026-10-18T04:56:28.400988+00:00"
+}

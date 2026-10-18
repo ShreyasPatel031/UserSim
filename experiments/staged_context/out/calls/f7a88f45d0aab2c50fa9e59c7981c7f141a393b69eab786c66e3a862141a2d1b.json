@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f7a88f45d0aab2c50fa9e59c7981c7f141a393b69eab786c66e3a862141a2d1b",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2363,
+  "output_tokens": 1076,
+  "cost_usd": 0.0033989,
+  "elapsed_s": 6.79,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Timesheet and payroll management are straightforward.\",\n    \"Easy to log in and track hours.\",\n    \"User interface is generally intuitive for core tasks.\"\n  ],\n  \"cons\": [\n    \"Might experience occasional performance sluggishness.\",\n    \"UI could feel somewhat dated compared to modern tech tools.\",\n    \"Limited customization options for personal dashboards.\"\n  ],\n  \"overall_experience\": \"As a Tech Intern, this individual found BambooHR to be a reliable tool for their routine HR tasks. They appreciated its ease of use for logging hours, managing timesheets, and checking payroll. While performing core functions effectively, the user might have wished for a more modern interface or faster performance at times, aligning with expectations from a tech-savvy role.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Timesheet and payroll management are straightforward.",
+      "Easy to log in and track hours.",
+      "User interface is generally intuitive for core tasks."
+    ],
+    "cons": [
+      "Might experience occasional performance sluggishness.",
+      "UI could feel somewhat dated compared to modern tech tools.",
+      "Limited customization options for personal dashboards."
+    ],
+    "overall_experience": "As a Tech Intern, this individual found BambooHR to be a reliable tool for their routine HR tasks. They appreciated its ease of use for logging hours, managing timesheets, and checking payroll. While performing core functions effectively, the user might have wished for a more modern interface or faster performance at times, aligning with expectations from a tech-savvy role."
+  },
+  "ts": "2026-10-18T05:01:00.150758+00:00"
+}

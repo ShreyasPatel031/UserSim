@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ff90f81132b39ec13f41c70b98d2f285ac8414e120ebe0d351450d689db24ff5",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 257,
+  "output_tokens": 980,
+  "cost_usd": 0.0025271,
+  "elapsed_s": 7.85,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effective task assignment and tracking for customer projects\",\n    \"Improved team collaboration on customer-facing initiatives\",\n    \"Visual project management (e.g., boards) helps organize workflows\"\n  ],\n  \"cons\": [\n    \"Can become complex to manage without consistent team adoption\",\n    \"Advanced reporting features may require higher-tier plans\",\n    \"Initial setup and template creation can be time-consuming\"\n  ],\n  \"overall_experience\": \"The user, working in Customer Operations at a mid-sized sports company, likely found Asana to be a highly effective tool for managing customer-related projects and tasks over their 1-2 years of use. They appreciated its ability to streamline team collaboration and provide clear visibility into task progress. While generally positive, they may have encountered challenges with the platform's complexity for larger teams or desired more robust reporting capabilities for their operational needs.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Effective task assignment and tracking for customer projects",
+      "Improved team collaboration on customer-facing initiatives",
+      "Visual project management (e.g., boards) helps organize workflows"
+    ],
+    "cons": [
+      "Can become complex to manage without consistent team adoption",
+      "Advanced reporting features may require higher-tier plans",
+      "Initial setup and template creation can be time-consuming"
+    ],
+    "overall_experience": "The user, working in Customer Operations at a mid-sized sports company, likely found Asana to be a highly effective tool for managing customer-related projects and tasks over their 1-2 years of use. They appreciated its ability to streamline team collaboration and provide clear visibility into task progress. While generally positive, they may have encountered challenges with the platform's complexity for larger teams or desired more robust reporting capabilities for their operational needs."
+  },
+  "ts": "2026-10-18T05:00:24.202698+00:00"
+}

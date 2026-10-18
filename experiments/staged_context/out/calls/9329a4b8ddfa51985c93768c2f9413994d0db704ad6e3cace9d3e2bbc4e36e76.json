@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9329a4b8ddfa51985c93768c2f9413994d0db704ad6e3cace9d3e2bbc4e36e76",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2616,
+  "output_tokens": 1090,
+  "cost_usd": 0.0035098,
+  "elapsed_s": 7.82,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Highly customizable for various team needs\",\n    \"Excellent for documentation and knowledge management\",\n    \"Streamlines team collaboration and task organization\"\n  ],\n  \"cons\": [\n    \"Can have a learning curve for new users\",\n    \"Occasional performance issues with large databases\",\n    \"Mobile app functionality could be more robust\"\n  ],\n  \"overall_experience\": \"This IT Manager likely found Notion to be an invaluable tool for organizing team tasks, documentation, and fostering collaboration within their medium-sized IT company. Its flexibility and comprehensive features for creating custom workflows and knowledge bases were highly appreciated. While the initial learning curve and occasional performance hiccups were noted, the overall benefits far outweighed these minor frustrations.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Highly customizable for various team needs",
+      "Excellent for documentation and knowledge management",
+      "Streamlines team collaboration and task organization"
+    ],
+    "cons": [
+      "Can have a learning curve for new users",
+      "Occasional performance issues with large databases",
+      "Mobile app functionality could be more robust"
+    ],
+    "overall_experience": "This IT Manager likely found Notion to be an invaluable tool for organizing team tasks, documentation, and fostering collaboration within their medium-sized IT company. Its flexibility and comprehensive features for creating custom workflows and knowledge bases were highly appreciated. While the initial learning curve and occasional performance hiccups were noted, the overall benefits far outweighed these minor frustrations."
+  },
+  "ts": "2026-10-18T05:00:31.295074+00:00"
+}

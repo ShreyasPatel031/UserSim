@@ -1,0 +1,27 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e1a6ad3f5a024772426486cf78af0a91d882e89e178fc471dd942d7b0c9141b4",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 215,
+  "output_tokens": 464,
+  "cost_usd": 0.0012245,
+  "elapsed_s": 23.57,
+  "error": null,
+  "text": "{\n  \"task\": \"Track needs and manage functions across a manufacturing plant to gain visibility.\",\n  \"benefits\": [\n    \"Track needs during manufacturing floor changes\",\n    \"Help in all areas of the business\",\n    \"Easy to use for all areas of the business\",\n    \"Provide visibility of all areas\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Track needs and manage functions across a manufacturing plant to gain visibility.",
+    "benefits": [
+      "Track needs during manufacturing floor changes",
+      "Help in all areas of the business",
+      "Easy to use for all areas of the business",
+      "Provide visibility of all areas"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T04:56:08.723632+00:00"
+}

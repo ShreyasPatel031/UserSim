@@ -1,0 +1,25 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d698ba022d34d4913a13be89d3bdb2fecea544fdc6ae8476cc7bebfea385c0f6",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 166,
+  "output_tokens": 470,
+  "cost_usd": 0.0012248,
+  "elapsed_s": 3.94,
+  "error": null,
+  "text": "{\n  \"task\": \"Create an e-store\",\n  \"benefits\": [\n    \"Is good software for e-store creation\",\n    \"Works very well\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Create an e-store",
+    "benefits": [
+      "Is good software for e-store creation",
+      "Works very well"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T04:56:15.456799+00:00"
+}

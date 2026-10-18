@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9ffba933bfcfd0236b80b709fda6a2dba49576f2162650d69d194c77c88d07b7",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 266,
+  "output_tokens": 1040,
+  "cost_usd": 0.0026798,
+  "elapsed_s": 8.06,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Improved visibility into HR initiatives and plant-wide needs.\",\n    \"Streamlined tracking of HR processes like onboarding and training.\",\n    \"Enhanced collaboration with other departments on shared projects.\"\n  ],\n  \"cons\": [\n    \"Steep learning curve for some team members initially.\",\n    \"Can become overwhelming without proper project structure.\",\n    \"Reporting features could be more robust for complex HR analytics.\"\n  ],\n  \"overall_experience\": \"The HR Director found Asana to be a valuable tool for gaining much-needed visibility into various functions and tracking needs across the manufacturing plant. It significantly helped in standardizing HR processes and improving cross-departmental coordination. While generally positive, they noted that effective use required consistent team adoption and careful project organization.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Improved visibility into HR initiatives and plant-wide needs.",
+      "Streamlined tracking of HR processes like onboarding and training.",
+      "Enhanced collaboration with other departments on shared projects."
+    ],
+    "cons": [
+      "Steep learning curve for some team members initially.",
+      "Can become overwhelming without proper project structure.",
+      "Reporting features could be more robust for complex HR analytics."
+    ],
+    "overall_experience": "The HR Director found Asana to be a valuable tool for gaining much-needed visibility into various functions and tracking needs across the manufacturing plant. It significantly helped in standardizing HR processes and improving cross-departmental coordination. While generally positive, they noted that effective use required consistent team adoption and careful project organization."
+  },
+  "ts": "2026-10-18T05:00:26.647695+00:00"
+}

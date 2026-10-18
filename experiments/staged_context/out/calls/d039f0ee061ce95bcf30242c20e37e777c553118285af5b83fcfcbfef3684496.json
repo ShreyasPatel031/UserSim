@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d039f0ee061ce95bcf30242c20e37e777c553118285af5b83fcfcbfef3684496",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1089,
+  "output_tokens": 1049,
+  "cost_usd": 0.0029492,
+  "elapsed_s": 7.04,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8.3,\n  \"pros\": [\n    \"Powerful marketing automation features\",\n    \"Flexible email campaign customization\",\n    \"Competitive pricing for advanced features\"\n  ],\n  \"cons\": [\n    \"Steeper learning curve compared to HubSpot\",\n    \"Interface could be more intuitive for new users\",\n    \"Initial setup and integration challenges\"\n  ],\n  \"overall_experience\": \"This partner likely found ActiveCampaign to be a powerful tool for marketing automation and email, appreciating its robust capabilities after transitioning from HubSpot. While the platform offers excellent functionality and value, the initial learning curve and user interface might have presented some challenges during the first six months. Overall, the experience was positive, particularly for a tech-savvy individual focused on strategic marketing outcomes.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8.3,
+    "pros": [
+      "Powerful marketing automation features",
+      "Flexible email campaign customization",
+      "Competitive pricing for advanced features"
+    ],
+    "cons": [
+      "Steeper learning curve compared to HubSpot",
+      "Interface could be more intuitive for new users",
+      "Initial setup and integration challenges"
+    ],
+    "overall_experience": "This partner likely found ActiveCampaign to be a powerful tool for marketing automation and email, appreciating its robust capabilities after transitioning from HubSpot. While the platform offers excellent functionality and value, the initial learning curve and user interface might have presented some challenges during the first six months. Overall, the experience was positive, particularly for a tech-savvy individual focused on strategic marketing outcomes."
+  },
+  "ts": "2026-10-18T05:00:50.362682+00:00"
+}

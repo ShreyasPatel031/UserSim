@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3d6e864f76b8e8c5fe164348bb3d94a4681211af87ddcb618f0dad2c82608615",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2386,
+  "output_tokens": 1074,
+  "cost_usd": 0.0034008000000000003,
+  "elapsed_s": 7.06,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Efficiently manages email marketing campaigns\",\n    \"Provides clear tracking and reporting features\",\n    \"User-friendly interface for administrative tasks\"\n  ],\n  \"cons\": [\n    \"Advanced customization options can be limited\",\n    \"Customer support response times can vary\",\n    \"Pricing may become a concern as contact lists grow\"\n  ],\n  \"overall_experience\": \"This Secretary General likely finds Mailchimp highly effective for managing their email marketing needs, appreciating its intuitive design and robust campaign tracking. The platform's ease of use and functionality are strong points, contributing to a very positive overall experience over their two-plus years of use. While generally satisfied, they might occasionally encounter limitations with advanced customization or experience varied customer support response times, and the cost could be a consideration for their company size.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Efficiently manages email marketing campaigns",
+      "Provides clear tracking and reporting features",
+      "User-friendly interface for administrative tasks"
+    ],
+    "cons": [
+      "Advanced customization options can be limited",
+      "Customer support response times can vary",
+      "Pricing may become a concern as contact lists grow"
+    ],
+    "overall_experience": "This Secretary General likely finds Mailchimp highly effective for managing their email marketing needs, appreciating its intuitive design and robust campaign tracking. The platform's ease of use and functionality are strong points, contributing to a very positive overall experience over their two-plus years of use. While generally satisfied, they might occasionally encounter limitations with advanced customization or experience varied customer support response times, and the cost could be a consideration for their company size."
+  },
+  "ts": "2026-10-18T05:00:45.925366+00:00"
+}

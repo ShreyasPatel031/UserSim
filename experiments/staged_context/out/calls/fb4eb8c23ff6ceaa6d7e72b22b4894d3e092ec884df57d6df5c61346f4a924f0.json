@@ -1,0 +1,28 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "fb4eb8c23ff6ceaa6d7e72b22b4894d3e092ec884df57d6df5c61346f4a924f0",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 147,
+  "output_tokens": 425,
+  "cost_usd": 0.0011066,
+  "elapsed_s": 22.25,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage email campaigns\",\n  \"benefits\": [\n    \"Design tool looks like a web editor\",\n    \"Design tool is easy to use\",\n    \"Helps with email campaigns\"\n  ],\n  \"frictions\": [\n    \"Difficulty finding options in the menu\"\n  ]\n}",
+  "json": {
+    "task": "Manage email campaigns",
+    "benefits": [
+      "Design tool looks like a web editor",
+      "Design tool is easy to use",
+      "Helps with email campaigns"
+    ],
+    "frictions": [
+      "Difficulty finding options in the menu"
+    ]
+  },
+  "ts": "2026-10-18T04:56:09.999051+00:00"
+}

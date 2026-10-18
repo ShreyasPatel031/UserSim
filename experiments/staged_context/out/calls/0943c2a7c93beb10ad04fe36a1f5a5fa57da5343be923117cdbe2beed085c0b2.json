@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0943c2a7c93beb10ad04fe36a1f5a5fa57da5343be923117cdbe2beed085c0b2",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 148,
+  "output_tokens": 445,
+  "cost_usd": 0.0011569,
+  "elapsed_s": 4.63,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage passwords.\",\n  \"benefits\": [\n    \"More secure than Google Password\",\n    \"Works on desktop and mobile\",\n    \"Works in browser and app\",\n    \"Provides encrypted data and maximum security\"\n  ],\n  \"frictions\": [\n    \"Best features are only available in the premium package\"\n  ]\n}",
+  "json": {
+    "task": "Manage passwords.",
+    "benefits": [
+      "More secure than Google Password",
+      "Works on desktop and mobile",
+      "Works in browser and app",
+      "Provides encrypted data and maximum security"
+    ],
+    "frictions": [
+      "Best features are only available in the premium package"
+    ]
+  },
+  "ts": "2026-10-18T04:56:20.465167+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0dc78f6a7d3466661449f91baddebf100d01a0e6a62d889d4f7aa1a5e5a8c2ed",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2374,
+  "output_tokens": 1011,
+  "cost_usd": 0.0032397,
+  "elapsed_s": 5.91,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Efficiently manages passwords across multiple sites and devices\",\n    \"Secure storage for sensitive login credentials\",\n    \"Seamless integration with web browsers for auto-filling\"\n  ],\n  \"cons\": [\n    \"Occasional performance slowdowns or glitches\",\n    \"Interface could be more intuitive for advanced features\",\n    \"Concerns regarding data security given past incidents\"\n  ],\n  \"overall_experience\": \"This self-employed real estate owner found LastPass to be a reliable tool for managing their numerous passwords and online profiles over two years. They appreciated its core functionality for secure storage and ease of access, which was crucial for their business operations. While generally satisfied, they likely experienced some minor frustrations with performance or interface usability, and may have held lingering concerns about security, leading to a slightly tempered overall rating.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Efficiently manages passwords across multiple sites and devices",
+      "Secure storage for sensitive login credentials",
+      "Seamless integration with web browsers for auto-filling"
+    ],
+    "cons": [
+      "Occasional performance slowdowns or glitches",
+      "Interface could be more intuitive for advanced features",
+      "Concerns regarding data security given past incidents"
+    ],
+    "overall_experience": "This self-employed real estate owner found LastPass to be a reliable tool for managing their numerous passwords and online profiles over two years. They appreciated its core functionality for secure storage and ease of access, which was crucial for their business operations. While generally satisfied, they likely experienced some minor frustrations with performance or interface usability, and may have held lingering concerns about security, leading to a slightly tempered overall rating."
+  },
+  "ts": "2026-10-18T05:01:20.704886+00:00"
+}

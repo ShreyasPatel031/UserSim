@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "177145c835df2816ce620e624b79e4008371aa8697af595140d9985314122d7e",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1093,
+  "output_tokens": 923,
+  "cost_usd": 0.0026354,
+  "elapsed_s": 5.95,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Excellent for real-time team communication and collaboration\",\n    \"Integrates well with other development and QA tools\",\n    \"Channels provide effective organization for projects and topics\"\n  ],\n  \"cons\": [\n    \"Can lead to notification fatigue and information overload\",\n    \"Search functionality for older messages could be improved\",\n    \"Desktop application can sometimes consume significant system resources\"\n  ],\n  \"overall_experience\": \"This Senior QA Engineer found Slack to be an indispensable tool for team communication and collaboration, greatly enhancing their ability to coordinate tasks and integrate with other development tools. While highly effective, they likely experienced minor frustrations with notification management and occasional performance issues with the desktop application.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Excellent for real-time team communication and collaboration",
+      "Integrates well with other development and QA tools",
+      "Channels provide effective organization for projects and topics"
+    ],
+    "cons": [
+      "Can lead to notification fatigue and information overload",
+      "Search functionality for older messages could be improved",
+      "Desktop application can sometimes consume significant system resources"
+    ],
+    "overall_experience": "This Senior QA Engineer found Slack to be an indispensable tool for team communication and collaboration, greatly enhancing their ability to coordinate tasks and integrate with other development tools. While highly effective, they likely experienced minor frustrations with notification management and occasional performance issues with the desktop application."
+  },
+  "ts": "2026-10-18T05:01:16.085315+00:00"
+}

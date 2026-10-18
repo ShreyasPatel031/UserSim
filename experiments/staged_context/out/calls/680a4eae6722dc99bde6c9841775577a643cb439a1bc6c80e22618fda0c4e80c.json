@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "680a4eae6722dc99bde6c9841775577a643cb439a1bc6c80e22618fda0c4e80c",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1094,
+  "output_tokens": 1119,
+  "cost_usd": 0.0031257,
+  "elapsed_s": 6.87,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Streamlined employee data management and onboarding processes.\",\n    \"Intuitive interface for end-users, simplifying HR tasks.\",\n    \"Robust reporting features for workforce analytics.\"\n  ],\n  \"cons\": [\n    \"Initial configuration for complex business rules required some effort.\",\n    \"Limited customization options for certain workflows and fields.\",\n    \"Integration with existing IT systems was not always seamless.\"\n  ],\n  \"overall_experience\": \"The IT Manager had a positive initial experience with BambooHR, finding its core HR functionalities and user interface to be efficient. While the configuration phase presented some challenges, particularly with customization and integration for their specific business needs, the system generally met expectations. They appreciated its ability to centralize employee data and automate key HR processes, making it a valuable tool for their mid-sized software company.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Streamlined employee data management and onboarding processes.",
+      "Intuitive interface for end-users, simplifying HR tasks.",
+      "Robust reporting features for workforce analytics."
+    ],
+    "cons": [
+      "Initial configuration for complex business rules required some effort.",
+      "Limited customization options for certain workflows and fields.",
+      "Integration with existing IT systems was not always seamless."
+    ],
+    "overall_experience": "The IT Manager had a positive initial experience with BambooHR, finding its core HR functionalities and user interface to be efficient. While the configuration phase presented some challenges, particularly with customization and integration for their specific business needs, the system generally met expectations. They appreciated its ability to centralize employee data and automate key HR processes, making it a valuable tool for their mid-sized software company."
+  },
+  "ts": "2026-10-18T05:00:59.766368+00:00"
+}

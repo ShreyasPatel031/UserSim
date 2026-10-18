@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8c8ebbb878c1d05628e8d1ec67add4ea8d340f538853bf8f62e63161d10ecfc2",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1096,
+  "output_tokens": 1021,
+  "cost_usd": 0.0028813,
+  "elapsed_s": 6.7,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Seamless integration of payroll and tax management\",\n    \"Improved employee scheduling capabilities\",\n    \"Modern and intuitive user interface\"\n  ],\n  \"cons\": [\n    \"Potential complexity in setting up specific leave policies\",\n    \"Initial learning curve for advanced features\",\n    \"Customer support response times could occasionally be slow\"\n  ],\n  \"overall_experience\": \"This team leader likely found Rippling to be a significant upgrade from ADP Workforce Now, appreciating its modern, integrated approach to managing employee schedules, payroll, and taxes. They likely experienced improved efficiency and a more user-friendly interface for their core HR tasks. While generally positive, some frustrations may have arisen from specific setup complexities or occasional customer support delays during their 6-12 months of use.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Seamless integration of payroll and tax management",
+      "Improved employee scheduling capabilities",
+      "Modern and intuitive user interface"
+    ],
+    "cons": [
+      "Potential complexity in setting up specific leave policies",
+      "Initial learning curve for advanced features",
+      "Customer support response times could occasionally be slow"
+    ],
+    "overall_experience": "This team leader likely found Rippling to be a significant upgrade from ADP Workforce Now, appreciating its modern, integrated approach to managing employee schedules, payroll, and taxes. They likely experienced improved efficiency and a more user-friendly interface for their core HR tasks. While generally positive, some frustrations may have arisen from specific setup complexities or occasional customer support delays during their 6-12 months of use."
+  },
+  "ts": "2026-10-18T05:01:01.920311+00:00"
+}

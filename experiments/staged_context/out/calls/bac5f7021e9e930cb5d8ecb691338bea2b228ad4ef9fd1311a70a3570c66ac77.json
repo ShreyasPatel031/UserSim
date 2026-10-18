@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "bac5f7021e9e930cb5d8ecb691338bea2b228ad4ef9fd1311a70a3570c66ac77",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2480,
+  "output_tokens": 989,
+  "cost_usd": 0.0032165,
+  "elapsed_s": 6.58,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effective for managing complex projects across international teams\",\n    \"Highly customizable workflows and visual boards\",\n    \"AI features provide valuable insights and automation for project tasks\"\n  ],\n  \"cons\": [\n    \"Initial learning curve for advanced features and integrations\",\n    \"Potential for notification overload if not carefully configured\",\n    \"Mobile app may lack full functionality compared to desktop version\"\n  ],\n  \"overall_experience\": \"This IT Project Manager likely found monday.com AI Work Platform to be a robust tool for managing international teams, appreciating its customization and AI-driven capabilities. While the platform offered powerful features for project oversight, they might have noted a learning curve for new users or when integrating with other systems. Despite minor frustrations with notifications or mobile access, the overall experience was positive, leading to a strong recommendation for its project management strengths.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Effective for managing complex projects across international teams",
+      "Highly customizable workflows and visual boards",
+      "AI features provide valuable insights and automation for project tasks"
+    ],
+    "cons": [
+      "Initial learning curve for advanced features and integrations",
+      "Potential for notification overload if not carefully configured",
+      "Mobile app may lack full functionality compared to desktop version"
+    ],
+    "overall_experience": "This IT Project Manager likely found monday.com AI Work Platform to be a robust tool for managing international teams, appreciating its customization and AI-driven capabilities. While the platform offered powerful features for project oversight, they might have noted a learning curve for new users or when integrating with other systems. Despite minor frustrations with notifications or mobile access, the overall experience was positive, leading to a strong recommendation for its project management strengths."
+  },
+  "ts": "2026-10-18T05:00:25.938998+00:00"
+}

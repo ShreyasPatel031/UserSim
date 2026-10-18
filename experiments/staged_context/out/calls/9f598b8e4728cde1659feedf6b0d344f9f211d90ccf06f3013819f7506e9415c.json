@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9f598b8e4728cde1659feedf6b0d344f9f211d90ccf06f3013819f7506e9415c",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 263,
+  "output_tokens": 855,
+  "cost_usd": 0.0022164,
+  "elapsed_s": 5.87,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Streamlined candidate tracking and communication\",\n    \"Efficient and paperless onboarding process\",\n    \"User-friendly interface for daily tasks\"\n  ],\n  \"cons\": [\n    \"Limited advanced ATS features compared to dedicated systems\",\n    \"Reporting capabilities could be more robust for TA metrics\",\n    \"Customization options for specific workflows might be basic\"\n  ],\n  \"overall_experience\": \"The Talent Acquisition Specialist likely found BambooHR to be a highly effective tool for managing candidates from application through onboarding. They appreciated its ease of use and the efficiency it brought to their core tasks, especially with onboarding. While generally satisfied, they may have noted some limitations in advanced recruiting functionalities or reporting compared to specialized ATS platforms.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Streamlined candidate tracking and communication",
+      "Efficient and paperless onboarding process",
+      "User-friendly interface for daily tasks"
+    ],
+    "cons": [
+      "Limited advanced ATS features compared to dedicated systems",
+      "Reporting capabilities could be more robust for TA metrics",
+      "Customization options for specific workflows might be basic"
+    ],
+    "overall_experience": "The Talent Acquisition Specialist likely found BambooHR to be a highly effective tool for managing candidates from application through onboarding. They appreciated its ease of use and the efficiency it brought to their core tasks, especially with onboarding. While generally satisfied, they may have noted some limitations in advanced recruiting functionalities or reporting compared to specialized ATS platforms."
+  },
+  "ts": "2026-10-18T05:00:57.498674+00:00"
+}

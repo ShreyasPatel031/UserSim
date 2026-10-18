@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "73d4e9a89e3c3141aa47ae936fd75fed3db490b86bff2975e954ba954a7bf8e0",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1098,
+  "output_tokens": 1056,
+  "cost_usd": 0.0029694,
+  "elapsed_s": 6.57,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Efficiently manages customer chats and interactions.\",\n    \"Provides quick access to customer details and history.\",\n    \"Streamlines helpdesk workflows for better support.\"\n  ],\n  \"cons\": [\n    \"Pricing structure can be a consideration for a smaller company.\",\n    \"Initial setup and advanced customization might require some effort.\",\n    \"Some features may feel underutilized for a small team.\"\n  ],\n  \"overall_experience\": \"The Expat Support / Helpdesk Consultant likely found Intercom to be a highly effective tool for managing customer chats and details, appreciating its ease of use and robust functionality. While the value for money and customer support were generally good, there might have been minor concerns regarding cost for a smaller company or complexity in advanced configurations. Overall, the experience was positive, significantly aiding in their daily support tasks.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Efficiently manages customer chats and interactions.",
+      "Provides quick access to customer details and history.",
+      "Streamlines helpdesk workflows for better support."
+    ],
+    "cons": [
+      "Pricing structure can be a consideration for a smaller company.",
+      "Initial setup and advanced customization might require some effort.",
+      "Some features may feel underutilized for a small team."
+    ],
+    "overall_experience": "The Expat Support / Helpdesk Consultant likely found Intercom to be a highly effective tool for managing customer chats and details, appreciating its ease of use and robust functionality. While the value for money and customer support were generally good, there might have been minor concerns regarding cost for a smaller company or complexity in advanced configurations. Overall, the experience was positive, significantly aiding in their daily support tasks."
+  },
+  "ts": "2026-10-18T05:00:44.265382+00:00"
+}

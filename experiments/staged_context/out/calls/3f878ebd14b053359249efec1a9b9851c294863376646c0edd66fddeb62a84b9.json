@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3f878ebd14b053359249efec1a9b9851c294863376646c0edd66fddeb62a84b9",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1095,
+  "output_tokens": 1134,
+  "cost_usd": 0.0031634999999999996,
+  "elapsed_s": 7.4,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Seamlessly integrated HR, IT, and payroll management\",\n    \"Automated IT provisioning and device management for employees\",\n    \"Streamlined onboarding and offboarding processes\"\n  ],\n  \"cons\": [\n    \"Steep learning curve for advanced IT configurations\",\n    \"Cost can be a significant factor for comprehensive features\",\n    \"Occasional minor bugs or UI inconsistencies\"\n  ],\n  \"overall_experience\": \"This VoIP Engineer likely experienced Rippling as a highly effective and comprehensive platform that significantly streamlined their workforce operations. The integrated HR, IT, and payroll functionalities, particularly device and app management, would have been a major benefit. While they appreciated the breadth of features and ease of use for most tasks, they might have noted the high cost and occasional technical quirks.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Seamlessly integrated HR, IT, and payroll management",
+      "Automated IT provisioning and device management for employees",
+      "Streamlined onboarding and offboarding processes"
+    ],
+    "cons": [
+      "Steep learning curve for advanced IT configurations",
+      "Cost can be a significant factor for comprehensive features",
+      "Occasional minor bugs or UI inconsistencies"
+    ],
+    "overall_experience": "This VoIP Engineer likely experienced Rippling as a highly effective and comprehensive platform that significantly streamlined their workforce operations. The integrated HR, IT, and payroll functionalities, particularly device and app management, would have been a major benefit. While they appreciated the breadth of features and ease of use for most tasks, they might have noted the high cost and occasional technical quirks."
+  },
+  "ts": "2026-10-18T05:01:04.199985+00:00"
+}

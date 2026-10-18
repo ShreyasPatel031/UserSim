@@ -1,0 +1,21 @@
+{
+  "stage": "mcp_classify",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d914350069b2380c6106be9a3f07ce91d0cf8e4d9549666f15618732ad49ebae",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 256,
+  "input_tokens": 1199,
+  "output_tokens": 248,
+  "cost_usd": 0.0009797,
+  "elapsed_s": 2.36,
+  "error": null,
+  "text": "{\n  \"category\": \"Help Desk\",\n  \"product_name\": \"Zendesk\"\n}",
+  "json": {
+    "category": "Help Desk",
+    "product_name": "Zendesk"
+  },
+  "ts": "2026-10-18T04:56:28.803387+00:00"
+}

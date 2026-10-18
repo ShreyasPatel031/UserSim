@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a350f38e73c4b80b77208a672080374a3b12fbf848db1f77f0b0dc645bf84920",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1131,
+  "output_tokens": 1084,
+  "cost_usd": 0.0030492999999999996,
+  "elapsed_s": 6.9,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Efficiently centralizes employee personal information\",\n    \"Company directory is easy to navigate and update\",\n    \"Intuitive interface for common HR tasks\"\n  ],\n  \"cons\": [\n    \"Initial learning curve for new users\",\n    \"Integration or specific features for payroll documents might require workarounds\",\n    \"Potential for minor limitations specific to the aviation industry's unique needs\"\n  ],\n  \"overall_experience\": \"The operations admin likely found BambooHR to be a generally effective tool for managing core HR data like employee information and the company directory. While the system offered good functionality and ease of use for these tasks, there might have been some initial challenges or minor frustrations with specific payroll document processes or industry-specific requirements, given their short time using the product.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Efficiently centralizes employee personal information",
+      "Company directory is easy to navigate and update",
+      "Intuitive interface for common HR tasks"
+    ],
+    "cons": [
+      "Initial learning curve for new users",
+      "Integration or specific features for payroll documents might require workarounds",
+      "Potential for minor limitations specific to the aviation industry's unique needs"
+    ],
+    "overall_experience": "The operations admin likely found BambooHR to be a generally effective tool for managing core HR data like employee information and the company directory. While the system offered good functionality and ease of use for these tasks, there might have been some initial challenges or minor frustrations with specific payroll document processes or industry-specific requirements, given their short time using the product."
+  },
+  "ts": "2026-10-18T05:00:58.830046+00:00"
+}

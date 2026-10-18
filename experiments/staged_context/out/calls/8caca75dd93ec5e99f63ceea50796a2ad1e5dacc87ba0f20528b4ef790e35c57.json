@@ -1,0 +1,27 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8caca75dd93ec5e99f63ceea50796a2ad1e5dacc87ba0f20528b4ef790e35c57",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 228,
+  "output_tokens": 468,
+  "cost_usd": 0.0012384,
+  "elapsed_s": 23.98,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage sales and customer support communications across teams\",\n  \"benefits\": [\n    \"Transfer chats to different agents for various queries\",\n    \"Integrate with sales software to track lead times and agent performance\",\n    \"Provide a clean and easy-to-use user interface\",\n    \"Offer integrations with multiple websites\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Manage sales and customer support communications across teams",
+    "benefits": [
+      "Transfer chats to different agents for various queries",
+      "Integrate with sales software to track lead times and agent performance",
+      "Provide a clean and easy-to-use user interface",
+      "Offer integrations with multiple websites"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T04:56:10.975245+00:00"
+}

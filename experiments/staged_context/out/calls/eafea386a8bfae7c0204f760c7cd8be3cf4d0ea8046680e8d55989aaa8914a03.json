@@ -1,0 +1,32 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "eafea386a8bfae7c0204f760c7cd8be3cf4d0ea8046680e8d55989aaa8914a03",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 222,
+  "output_tokens": 491,
+  "cost_usd": 0.0012941,
+  "elapsed_s": 24.61,
+  "error": null,
+  "text": "{\n  \"task\": \"Organize notes, tasks, and projects in one place\",\n  \"benefits\": [\n    \"Flexible\",\n    \"Organizes notes, tasks, and projects in one place\",\n    \"Facilitates team collaboration\",\n    \"Customizable\"\n  ],\n  \"frictions\": [\n    \"Has a learning curve\",\n    \"Can feel overwhelming at the beginning\",\n    \"Can feel unstructured at the beginning\",\n    \"Takes a long time to understand correct usage\"\n  ]\n}",
+  "json": {
+    "task": "Organize notes, tasks, and projects in one place",
+    "benefits": [
+      "Flexible",
+      "Organizes notes, tasks, and projects in one place",
+      "Facilitates team collaboration",
+      "Customizable"
+    ],
+    "frictions": [
+      "Has a learning curve",
+      "Can feel overwhelming at the beginning",
+      "Can feel unstructured at the beginning",
+      "Takes a long time to understand correct usage"
+    ]
+  },
+  "ts": "2026-10-18T04:56:10.429943+00:00"
+}

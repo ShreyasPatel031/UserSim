@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e7751d45cff3005cd07ae26f02f3fc83206da7149e7e73566279e1106ab6cb7c",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2689,
+  "output_tokens": 1101,
+  "cost_usd": 0.0035591999999999998,
+  "elapsed_s": 6.77,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Streamlined access to organizational applications\",\n    \"Robust security features for authentication\",\n    \"Good integration capabilities with various services\"\n  ],\n  \"cons\": [\n    \"Occasional performance lags during sign-in\",\n    \"Complexity in managing advanced configurations\",\n    \"User interface could be more intuitive for certain administrative tasks\"\n  ],\n  \"overall_experience\": \"As a System Engineer in a large software company, this user found Okta to be a highly functional tool for managing authentication and accessing organizational sites. The platform's security features and integration capabilities were particularly valued for maintaining a secure and efficient environment. While generally positive, some minor frustrations arose from occasional performance issues and the complexity of deeper administrative settings.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Streamlined access to organizational applications",
+      "Robust security features for authentication",
+      "Good integration capabilities with various services"
+    ],
+    "cons": [
+      "Occasional performance lags during sign-in",
+      "Complexity in managing advanced configurations",
+      "User interface could be more intuitive for certain administrative tasks"
+    ],
+    "overall_experience": "As a System Engineer in a large software company, this user found Okta to be a highly functional tool for managing authentication and accessing organizational sites. The platform's security features and integration capabilities were particularly valued for maintaining a secure and efficient environment. While generally positive, some minor frustrations arose from occasional performance issues and the complexity of deeper administrative settings."
+  },
+  "ts": "2026-10-18T05:01:19.412494+00:00"
+}

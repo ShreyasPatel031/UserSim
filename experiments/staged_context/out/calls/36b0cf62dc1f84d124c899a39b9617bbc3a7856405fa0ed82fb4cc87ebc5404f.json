@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "36b0cf62dc1f84d124c899a39b9617bbc3a7856405fa0ed82fb4cc87ebc5404f",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 269,
+  "output_tokens": 1008,
+  "cost_usd": 0.0026007,
+  "elapsed_s": 7.21,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Extensive application catalog and seamless SSO integrations.\",\n    \"Robust security features and adaptive MFA policies.\",\n    \"Cloud-native architecture simplified deployment and management.\"\n  ],\n  \"cons\": [\n    \"Initial setup for complex, custom applications required significant effort.\",\n    \"Cost can be substantial for a very large enterprise with many users.\",\n    \"Reporting and auditing features could sometimes be more intuitive.\"\n  ],\n  \"overall_experience\": \"This SME mar tech, responsible for organization-wide SSO in a large IT services company, found Okta to be a powerful and effective solution. They appreciated its comprehensive app integrations and strong security capabilities, which were a significant upgrade from their previous solution. While implementation for highly customized systems presented some challenges, the overall benefits in streamlining access and enhancing security over two years were clear.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Extensive application catalog and seamless SSO integrations.",
+      "Robust security features and adaptive MFA policies.",
+      "Cloud-native architecture simplified deployment and management."
+    ],
+    "cons": [
+      "Initial setup for complex, custom applications required significant effort.",
+      "Cost can be substantial for a very large enterprise with many users.",
+      "Reporting and auditing features could sometimes be more intuitive."
+    ],
+    "overall_experience": "This SME mar tech, responsible for organization-wide SSO in a large IT services company, found Okta to be a powerful and effective solution. They appreciated its comprehensive app integrations and strong security capabilities, which were a significant upgrade from their previous solution. While implementation for highly customized systems presented some challenges, the overall benefits in streamlining access and enhancing security over two years were clear."
+  },
+  "ts": "2026-10-18T05:01:18.745942+00:00"
+}

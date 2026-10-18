@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "510a425f28eec4ac2192e7302d5241fad440a60ef6e2fe565b1a84d19581f0ba",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 268,
+  "output_tokens": 1102,
+  "cost_usd": 0.0028353999999999996,
+  "elapsed_s": 8.12,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Streamlined project tracking and visibility for international teams.\",\n    \"AI features likely improved task automation and insights.\",\n    \"Highly customizable to fit specific IT project workflows.\"\n  ],\n  \"cons\": [\n    \"Initial setup and integration of AI features might have a learning curve.\",\n    \"Cost could be a consideration for a small company as features scale.\",\n    \"Some niche integrations or advanced AI functionalities might still be developing.\"\n  ],\n  \"overall_experience\": \"This IT Project Manager likely found monday.com AI Work Platform to be a robust solution for managing international teams, appreciating its visual interface and the added efficiency from AI capabilities. The platform's flexibility and collaboration tools were probably key benefits, though the cost and ongoing development of advanced AI features might have presented minor challenges. Overall, the experience was positive, enabling more effective project oversight across different time zones.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Streamlined project tracking and visibility for international teams.",
+      "AI features likely improved task automation and insights.",
+      "Highly customizable to fit specific IT project workflows."
+    ],
+    "cons": [
+      "Initial setup and integration of AI features might have a learning curve.",
+      "Cost could be a consideration for a small company as features scale.",
+      "Some niche integrations or advanced AI functionalities might still be developing."
+    ],
+    "overall_experience": "This IT Project Manager likely found monday.com AI Work Platform to be a robust solution for managing international teams, appreciating its visual interface and the added efficiency from AI capabilities. The platform's flexibility and collaboration tools were probably key benefits, though the cost and ongoing development of advanced AI features might have presented minor challenges. Overall, the experience was positive, enabling more effective project oversight across different time zones."
+  },
+  "ts": "2026-10-18T05:00:27.339884+00:00"
+}

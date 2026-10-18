@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "dccd1920ca4931e573e70aeb9400ec7b7debfe8e87e3338ae2b88b60e0c8024e",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 238,
+  "output_tokens": 499,
+  "cost_usd": 0.0013189,
+  "elapsed_s": 5.35,
+  "error": null,
+  "text": "{\n  \"task\": \"Organize communication within multiple groups.\",\n  \"benefits\": [\n    \"Integrates with a number of other software applications\",\n    \"Allows creation of multiple groups to organize communication effectively\",\n    \"Huddle feature enables quick, informal one-to-one interactions\",\n    \"Huddles resolve issues and prevent misunderstandings more efficiently than text messages\"\n  ],\n  \"frictions\": [\n    \"Lack of video tutorials when new features are released\"\n  ]\n}",
+  "json": {
+    "task": "Organize communication within multiple groups.",
+    "benefits": [
+      "Integrates with a number of other software applications",
+      "Allows creation of multiple groups to organize communication effectively",
+      "Huddle feature enables quick, informal one-to-one interactions",
+      "Huddles resolve issues and prevent misunderstandings more efficiently than text messages"
+    ],
+    "frictions": [
+      "Lack of video tutorials when new features are released"
+    ]
+  },
+  "ts": "2026-10-18T04:56:18.992159+00:00"
+}

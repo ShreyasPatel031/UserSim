@@ -1,0 +1,28 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b53f8061d2e3c078375de8be5a6c185e6ad471d8e947a14ef42bdc2283c283e1",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 193,
+  "output_tokens": 431,
+  "cost_usd": 0.0011354000000000002,
+  "elapsed_s": 22.03,
+  "error": null,
+  "text": "{\n  \"task\": \"Automate repetitive accounting tasks\",\n  \"benefits\": [\n    \"Automates major repetitive accounting tasks such as billing, invoicing, AP and AR\",\n    \"Saves time\",\n    \"Reduces financial errors\"\n  ],\n  \"frictions\": [\n    \"Mobile application fails to produce all features available on cloud-based systems\"\n  ]\n}",
+  "json": {
+    "task": "Automate repetitive accounting tasks",
+    "benefits": [
+      "Automates major repetitive accounting tasks such as billing, invoicing, AP and AR",
+      "Saves time",
+      "Reduces financial errors"
+    ],
+    "frictions": [
+      "Mobile application fails to produce all features available on cloud-based systems"
+    ]
+  },
+  "ts": "2026-10-18T04:56:10.391584+00:00"
+}

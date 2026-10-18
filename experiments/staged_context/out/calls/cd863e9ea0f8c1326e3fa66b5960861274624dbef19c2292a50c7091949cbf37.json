@@ -1,0 +1,27 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "cd863e9ea0f8c1326e3fa66b5960861274624dbef19c2292a50c7091949cbf37",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 142,
+  "output_tokens": 364,
+  "cost_usd": 0.0009526,
+  "elapsed_s": 2.68,
+  "error": null,
+  "text": "{\n  \"task\": \"Pay received invoices\",\n  \"benefits\": [\n    \"Easy to pay received invoices\"\n  ],\n  \"frictions\": [\n    \"Lack of paper billing option\",\n    \"No option to receive paid invoices by mail\"\n  ]\n}",
+  "json": {
+    "task": "Pay received invoices",
+    "benefits": [
+      "Easy to pay received invoices"
+    ],
+    "frictions": [
+      "Lack of paper billing option",
+      "No option to receive paid invoices by mail"
+    ]
+  },
+  "ts": "2026-10-18T04:56:10.722080+00:00"
+}

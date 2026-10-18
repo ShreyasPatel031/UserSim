@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ebd475e64a69c33d62637e2c7a6a47aef21ae1abc59f8be47594a4ffcbae40b5",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 183,
+  "output_tokens": 445,
+  "cost_usd": 0.0011674,
+  "elapsed_s": 3.89,
+  "error": null,
+  "text": "{\n  \"task\": \"Access paystubs, benefits, and training, and request time off.\",\n  \"benefits\": [\n    \"See paystubs\",\n    \"See benefits\",\n    \"Complete trainings in one place\",\n    \"Request time off\"\n  ],\n  \"frictions\": [\n    \"Difficulty determining employee subdivision from the employee list\"\n  ]\n}",
+  "json": {
+    "task": "Access paystubs, benefits, and training, and request time off.",
+    "benefits": [
+      "See paystubs",
+      "See benefits",
+      "Complete trainings in one place",
+      "Request time off"
+    ],
+    "frictions": [
+      "Difficulty determining employee subdivision from the employee list"
+    ]
+  },
+  "ts": "2026-10-18T04:56:14.139777+00:00"
+}

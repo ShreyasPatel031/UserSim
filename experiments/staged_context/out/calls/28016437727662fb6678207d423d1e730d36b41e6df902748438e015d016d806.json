@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "28016437727662fb6678207d423d1e730d36b41e6df902748438e015d016d806",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1096,
+  "output_tokens": 1044,
+  "cost_usd": 0.0029388,
+  "elapsed_s": 7.37,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Centralized hub for team documentation\",\n    \"Highly customizable for various workflows\",\n    \"Effective for task and project organization\"\n  ],\n  \"cons\": [\n    \"Steep learning curve for new team members\",\n    \"Performance can degrade with very large databases\",\n    \"Limited advanced administrative controls\"\n  ],\n  \"overall_experience\": \"As an IT Manager, this individual has likely found Notion to be an indispensable and highly flexible platform for their team's operational needs over the past two years. Its ability to centralize documentation, manage tasks, and support collaboration within their IT company has been a significant advantage. While the initial setup and ongoing management for a growing team might present some challenges, the overall benefits in terms of customization and functionality have led to a very positive experience.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Centralized hub for team documentation",
+      "Highly customizable for various workflows",
+      "Effective for task and project organization"
+    ],
+    "cons": [
+      "Steep learning curve for new team members",
+      "Performance can degrade with very large databases",
+      "Limited advanced administrative controls"
+    ],
+    "overall_experience": "As an IT Manager, this individual has likely found Notion to be an indispensable and highly flexible platform for their team's operational needs over the past two years. Its ability to centralize documentation, manage tasks, and support collaboration within their IT company has been a significant advantage. While the initial setup and ongoing management for a growing team might present some challenges, the overall benefits in terms of customization and functionality have led to a very positive experience."
+  },
+  "ts": "2026-10-18T05:00:31.026350+00:00"
+}

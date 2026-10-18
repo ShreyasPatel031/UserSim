@@ -1,0 +1,28 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "6d556a82e20412bff1bd73572d18ebd023cd8c40a240c20cef0e4f9e1cd15772",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 171,
+  "output_tokens": 490,
+  "cost_usd": 0.0012763,
+  "elapsed_s": 25.18,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage tasks and workloads.\",\n  \"benefits\": [\n    \"Manage tasks\",\n    \"Utilize a broad array of templates\",\n    \"Manage workloads\"\n  ],\n  \"frictions\": [\n    \"Lack of unique value in features compared to competitors\"\n  ]\n}",
+  "json": {
+    "task": "Manage tasks and workloads.",
+    "benefits": [
+      "Manage tasks",
+      "Utilize a broad array of templates",
+      "Manage workloads"
+    ],
+    "frictions": [
+      "Lack of unique value in features compared to competitors"
+    ]
+  },
+  "ts": "2026-10-18T04:56:10.483879+00:00"
+}

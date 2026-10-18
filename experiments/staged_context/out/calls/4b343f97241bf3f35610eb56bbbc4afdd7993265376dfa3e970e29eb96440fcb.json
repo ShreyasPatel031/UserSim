@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4b343f97241bf3f35610eb56bbbc4afdd7993265376dfa3e970e29eb96440fcb",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1043,
+  "output_tokens": 1009,
+  "cost_usd": 0.0028353999999999996,
+  "elapsed_s": 6.67,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Improved user interface and cloud accessibility compared to previous software.\",\n    \"Efficient bank reconciliation and financial tracking for a self-employed business.\",\n    \"Streamlined accounting processes suitable for a small operation.\"\n  ],\n  \"cons\": [\n    \"May find certain advanced reporting or customization options less robust than a larger ERP system.\",\n    \"Integration with niche financial services tools might require workarounds.\",\n    \"Customer support response times could be an occasional frustration for urgent issues.\"\n  ],\n  \"overall_experience\": \"This owner likely found Xero to be a significant upgrade in terms of ease of use and accessibility compared to their previous experience with Sage 300. The cloud-based nature and intuitive interface would have streamlined their accounting tasks as a self-employed professional. While generally positive, they may have occasionally noted limitations in advanced functionality or specific integrations compared to more complex enterprise systems, balancing simplicity with depth.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Improved user interface and cloud accessibility compared to previous software.",
+      "Efficient bank reconciliation and financial tracking for a self-employed business.",
+      "Streamlined accounting processes suitable for a small operation."
+    ],
+    "cons": [
+      "May find certain advanced reporting or customization options less robust than a larger ERP system.",
+      "Integration with niche financial services tools might require workarounds.",
+      "Customer support response times could be an occasional frustration for urgent issues."
+    ],
+    "overall_experience": "This owner likely found Xero to be a significant upgrade in terms of ease of use and accessibility compared to their previous experience with Sage 300. The cloud-based nature and intuitive interface would have streamlined their accounting tasks as a self-employed professional. While generally positive, they may have occasionally noted limitations in advanced functionality or specific integrations compared to more complex enterprise systems, balancing simplicity with depth."
+  },
+  "ts": "2026-10-18T05:00:52.304221+00:00"
+}

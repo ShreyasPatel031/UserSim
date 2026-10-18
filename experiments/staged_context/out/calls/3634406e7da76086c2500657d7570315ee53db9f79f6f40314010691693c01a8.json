@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3634406e7da76086c2500657d7570315ee53db9f79f6f40314010691693c01a8",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 264,
+  "output_tokens": 1125,
+  "cost_usd": 0.0028917,
+  "elapsed_s": 8.37,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Straightforward interface for daily time logging.\",\n    \"Easy submission and approval process for timesheets.\",\n    \"Reliable for basic clock-in/out functions.\"\n  ],\n  \"cons\": [\n    \"Limited advanced features for project-specific time tracking.\",\n    \"Reporting capabilities for time data could be more robust.\",\n    \"Occasional minor delays when navigating between time tracking screens.\"\n  ],\n  \"overall_experience\": \"The Market Research Specialist found BambooHR to be a generally effective tool for their time tracking needs. While it capably handled basic hour logging and timesheet submissions, they noted that its functionality for more intricate project-based time tracking was somewhat limited. Despite this, the platform's ease of use ensured their primary task was completed efficiently.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 3,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Straightforward interface for daily time logging.",
+      "Easy submission and approval process for timesheets.",
+      "Reliable for basic clock-in/out functions."
+    ],
+    "cons": [
+      "Limited advanced features for project-specific time tracking.",
+      "Reporting capabilities for time data could be more robust.",
+      "Occasional minor delays when navigating between time tracking screens."
+    ],
+    "overall_experience": "The Market Research Specialist found BambooHR to be a generally effective tool for their time tracking needs. While it capably handled basic hour logging and timesheet submissions, they noted that its functionality for more intricate project-based time tracking was somewhat limited. Despite this, the platform's ease of use ensured their primary task was completed efficiently."
+  },
+  "ts": "2026-10-18T05:01:00.504771+00:00"
+}

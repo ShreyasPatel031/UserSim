@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "182ec58b373c94f97cfcf7864f56b4de0e19589398ebb5aa0c25b5805a0fc536",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 264,
+  "output_tokens": 1052,
+  "cost_usd": 0.0027092,
+  "elapsed_s": 7.86,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Centralized platform for sales and support communications\",\n    \"Automation capabilities for routine customer interactions\",\n    \"Robust integration options with existing tech stack\"\n  ],\n  \"cons\": [\n    \"Pricing can become expensive as usage scales up\",\n    \"Advanced reporting and analytics sometimes require workarounds\",\n    \"Occasional UI complexities for deeper customization\"\n  ],\n  \"overall_experience\": \"This Product Operations Engineer found Intercom to be a highly effective tool for centralizing and managing sales and customer support communications across their small IT team for over two years. They appreciated its core functionality and automation capabilities, which streamlined workflows. While generally satisfied, the reviewer noted that pricing could be a concern as their company grew and desired more advanced, out-of-the-box reporting features.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Centralized platform for sales and support communications",
+      "Automation capabilities for routine customer interactions",
+      "Robust integration options with existing tech stack"
+    ],
+    "cons": [
+      "Pricing can become expensive as usage scales up",
+      "Advanced reporting and analytics sometimes require workarounds",
+      "Occasional UI complexities for deeper customization"
+    ],
+    "overall_experience": "This Product Operations Engineer found Intercom to be a highly effective tool for centralizing and managing sales and customer support communications across their small IT team for over two years. They appreciated its core functionality and automation capabilities, which streamlined workflows. While generally satisfied, the reviewer noted that pricing could be a concern as their company grew and desired more advanced, out-of-the-box reporting features."
+  },
+  "ts": "2026-10-18T05:00:44.848639+00:00"
+}

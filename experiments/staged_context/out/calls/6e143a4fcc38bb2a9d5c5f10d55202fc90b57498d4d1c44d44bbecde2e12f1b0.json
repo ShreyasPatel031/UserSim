@@ -1,0 +1,21 @@
+{
+  "stage": "mcp_classify",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "6e143a4fcc38bb2a9d5c5f10d55202fc90b57498d4d1c44d44bbecde2e12f1b0",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 256,
+  "input_tokens": 410,
+  "output_tokens": 264,
+  "cost_usd": 0.000783,
+  "elapsed_s": 2.64,
+  "error": null,
+  "text": "{\n  \"category\": \"Project Management\",\n  \"product_name\": \"Asana\"\n}",
+  "json": {
+    "category": "Project Management",
+    "product_name": "Asana"
+  },
+  "ts": "2026-10-18T04:56:29.067775+00:00"
+}

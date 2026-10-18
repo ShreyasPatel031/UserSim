@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4c7cc9a09e637d26a7abbf3b56bafa734cb2306af9fb6bc1ffe72918eb7f0f99",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 264,
+  "output_tokens": 1017,
+  "cost_usd": 0.0026217,
+  "elapsed_s": 7.22,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Consolidated sales, marketing, and support tools into one platform\",\n    \"Streamlined customer communication and lead management processes\",\n    \"Robust automation and segmentation capabilities for targeted engagement\"\n  ],\n  \"cons\": [\n    \"Pricing could become substantial as the company scales its usage\",\n    \"Initial setup and integration of all features might have a learning curve\",\n    \"Advanced reporting features might sometimes require deeper customization\"\n  ],\n  \"overall_experience\": \"This Head of Sales & CS likely found Intercom to be an indispensable tool, successfully consolidating multiple business functions onto a single platform. The long-term usage suggests the platform effectively streamlined their sales, support, and marketing efforts, proving its value for their growing IT and Services company. While potentially a significant investment for an SMB, the comprehensive functionality and integration capabilities likely justified the cost by enhancing efficiency and customer engagement.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Consolidated sales, marketing, and support tools into one platform",
+      "Streamlined customer communication and lead management processes",
+      "Robust automation and segmentation capabilities for targeted engagement"
+    ],
+    "cons": [
+      "Pricing could become substantial as the company scales its usage",
+      "Initial setup and integration of all features might have a learning curve",
+      "Advanced reporting features might sometimes require deeper customization"
+    ],
+    "overall_experience": "This Head of Sales & CS likely found Intercom to be an indispensable tool, successfully consolidating multiple business functions onto a single platform. The long-term usage suggests the platform effectively streamlined their sales, support, and marketing efforts, proving its value for their growing IT and Services company. While potentially a significant investment for an SMB, the comprehensive functionality and integration capabilities likely justified the cost by enhancing efficiency and customer engagement."
+  },
+  "ts": "2026-10-18T05:00:42.560382+00:00"
+}
