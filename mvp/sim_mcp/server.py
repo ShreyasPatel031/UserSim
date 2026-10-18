@@ -500,7 +500,7 @@ async def usersim_predict_experience(
     persona: AgentPersona = Field(description="The kind of user to predict for."),
     product_url: str = Field(default="", description="Public URL of the product (context for the words; optional)."),
     task: str = Field(default="", description="What this user is trying to get done (optional)."),
-    competitors: list[str] | None = Field(default=None, description='Names of 1-3 real rivals, e.g. ["Asana", "Trello"]. Used for the rating prior and for complaint topics.'),
+    competitors: list[str] | None = Field(default=None, description='Names of 1-3 real rivals, e.g. ["Asana", "Trello"]. Used for the rating prior and for complaint topics. Omit to have them discovered from product_url.'),
 ) -> str:
     """AGENT MODE: predict how this kind of user will experience the product from live review data. No browser.
 

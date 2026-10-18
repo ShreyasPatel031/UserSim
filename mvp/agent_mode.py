@@ -134,16 +134,35 @@ def gather(product: str, rivals: list[str], wait_s: float) -> dict[str, Any]:
     return got
 
 
+async def discover_rivals(url: str) -> list[str]:
+    """Rival names from the study planner (web search + live-URL checks), as the browser studies get them."""
+    from mvp.fast_plan import compare_plan_from_url
+
+    plan = await compare_plan_from_url(url) or {}
+    names = plan.get("competitor_names") or {}
+    return [str(names.get(u) or "").strip() for u in plan.get("competitors") or [] if str(names.get(u) or "").strip()]
+
+
 async def predict_experience(*, product: str, url: str, persona: dict[str, Any], task: str = "",
-                             competitors: list[str] | None = None, wait_s: float = 45.0, llm=None) -> dict[str, Any]:
-    """The agent-mode result. status: ok | pending (scrapes still running; call again) | no_data | disabled."""
+                             competitors: list[str] | None = None, wait_s: float = 45.0, llm=None,
+                             discover=None) -> dict[str, Any]:
+    """The agent-mode result. status: ok | pending (scrapes still running; call again) | no_data | disabled.
+
+    No competitors given and a URL given: rivals are discovered with the study planner (said in evidence)."""
     product, rivals = (product or "").strip(), [c.strip() for c in (competitors or []) if c and c.strip()]
+    rivals_source = "given" if rivals else "none"
     if not product:
         return {"mode": "agent", "status": "no_data", "reason": "product name is required (it is what the scrapers search for)"}
     if not RC.enabled():
         return {"mode": "agent", "status": "disabled", "reason": "MVP_REVIEW_CONTEXT=0"}
     if not RC.apify_token():
         return {"mode": "agent", "status": "no_data", "reason": "APIFY_TOKEN is not set on the server, so no reviews can be scraped"}
+    if not rivals and url:
+        try:
+            rivals = await (discover or discover_rivals)(url)
+            rivals_source = "discovered by the study planner" if rivals else "planner found none"
+        except Exception as exc:  # noqa: BLE001 - proceed on the product's own reviews; say so
+            rivals_source = f"discovery failed: {type(exc).__name__}"
     got = await asyncio.to_thread(gather, product, rivals, wait_s)
     pending = [n for n, v in got.items() if v is None]
     if got.get(product) is None:
@@ -178,7 +197,8 @@ async def predict_experience(*, product: str, url: str, persona: dict[str, Any],
         "pros": words.get("pros") or [], "cons": words.get("cons") or [],
         "overall_experience": words.get("overall_experience") or "", "likely_frictions": words.get("likely_frictions") or [],
         "words_error": words.get("error"),
-        "evidence": {"own_reviews": len(own), "rival_reviews": len(riv), "rivals_with_reviews": sorted({x["product"] for x in riv}),
+        "evidence": {"own_reviews": len(own), "rival_reviews": len(riv), "rivals": rivals, "rivals_source": rivals_source,
+                     "rivals_with_reviews": sorted({x["product"] for x in riv}),
                      "rivals_without_reviews": missing, "still_scraping": pending, "errors": errors},
         "how_to_read": ("Ratings set the expected LEVEL for users of this product (own recent reviews, shrunk to rivals); they "
                         "are not personalised, because per-person factors did not improve held-out accuracy. Pros/cons are "

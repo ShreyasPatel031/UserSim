@@ -57,6 +57,22 @@ class AgentModeTest(unittest.TestCase):
         self.assertIn("Reviews of Basecamp by the most similar people", prompt)
         self.assertIn("Too many notifications", prompt)
 
+    def test_rivals_discovered_from_url_when_none_given(self):
+        got = {"Basecamp": OWN, "Asana": RIVAL}
+
+        async def discover(url):
+            return ["Asana"]
+
+        async def fake_llm(prompt):
+            return {}
+        with mock.patch.object(RC, "apify_token", return_value="t"), mock.patch.object(RC, "prefetch"), \
+                mock.patch.object(RC, "cached_live_reviews", side_effect=lambda n: got.get(n)):
+            out = asyncio.run(A.predict_experience(product="Basecamp", url="https://basecamp.com/", persona={"role": "PM"},
+                                                   wait_s=0, llm=fake_llm, discover=discover))
+        self.assertEqual(out["evidence"]["rivals"], ["Asana"])
+        self.assertEqual(out["evidence"]["rivals_source"], "discovered by the study planner")
+        self.assertEqual(out["ratings"]["overall_rating"]["n_rivals"], 30)
+
     def test_pending_while_product_scrape_runs(self):
         with mock.patch.object(RC, "apify_token", return_value="t"), mock.patch.object(RC, "prefetch"), \
                 mock.patch.object(RC, "cached_live_reviews", return_value=None):

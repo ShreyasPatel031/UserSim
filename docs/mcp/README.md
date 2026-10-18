@@ -192,7 +192,7 @@ Returns `{study_id, watch_url, report_url, runs, cells:[…], rules:{max_steps, 
 | `persona` | object | `role` (required), `company_size`, `industry`, `bio` (optional). |
 | `product_url` | string | Optional context. |
 | `task` | string | Optional: what this user is trying to get done. |
-| `competitors` | string[] | 1–3 real rival names. They set the rating prior and the complaint topics. |
+| `competitors` | string[] | 1–3 real rival names. They set the rating prior and the complaint topics. Omit them to discover rivals from `product_url` with the study planner; `evidence.rivals_source` says which. |
 
 The first call starts live scrapes of the product and its rivals (Apify; 1–2 min) and returns `status: "pending"`. Call
 again with the same arguments. Other statuses: `ok`, `no_data` (with `reason`, e.g. no reviews found or no
