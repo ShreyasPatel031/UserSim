@@ -155,7 +155,7 @@ def test_judge_prompt_counts_end_state_for_move_tasks(monkeypatch):
     seen = {}
     monkeypatch.setattr(ui, "gemini_vision_json", lambda prompt, png: seen.setdefault("p", prompt) and {"goal_reached": True})
     e2e2_gates.judge_goal_screenshot(b"x" * 5000, task="mark it done", start_url="https://kanbanflow.com")
-    assert "Never fail because the item is \"already\" in that state" in seen["p"]
+    assert "Never fail it as \"already\" or \"still\" in that state" in seen["p"]
 
 
 def test_same_account_as_survives_restart(tmp_path, monkeypatch):

@@ -1394,6 +1394,7 @@ def judge_goal_screenshot(
     prompt = f"""You are an independent QA vision judge. You do not work for the agent that browsed this page. Judge only the final screenshot, the final URL, and the DOM text below, against the task goal.
 
 Task goal: {task or "unknown"}
+You see only the END of the run: the final screenshot is taken AFTER everything the run did (the server's action log below, when present, lists those actions). You cannot see earlier frames, so judge the end state, not whether you watched a change happen. For a task that asks to move, mark, set or change something ("mark it as done so it sits in Done", "move it to In progress", "set the status to Paid"), the requested end state shown on screen (the item in the requested column / status / list) means goal_reached=true. Never fail it as "already" or "still" in that state, or "not moved by the agent".
 Page the run opened on: {start_url or "unknown"}
 Final URL: {final_url or "unknown"}
 Final DOM text (may be truncated):
@@ -1403,8 +1404,6 @@ Final DOM text (may be truncated):
 For signup / create-account tasks: if the server facts show the verification email was received and its link or code was used, and the final page is ANY signed-in page of the product's app (an empty dashboard, a workspace, onboarding, a "create your first ..." or new-item page such as /app/forms/new, a settings page; logged-in app chrome or account menu visible), then goal_reached=true. Do not require the page to be literally titled "dashboard", and do not require further setup the task did not ask for. A post-signup welcome / onboarding form inside the signed-in app (e.g. "set your username / newsletter name", "create new website") also counts: the user is signed in. Still FAIL if the final page is a login form, a pre-account signup form, a "check your inbox" screen, an error, or an "account under review / suspended" block.
 
 For research tasks that ask the user to FIND OUT something (whether a feature exists, what a plan costs, how many users the free plan allows, where something is explained): goal_reached=true when the final screenshot or DOM text clearly states the answer, whether the answer is yes or no (a pricing table with the asked prices, a features, help or docs page that says the tool does or does not do it). The task does not ask the user to use or demonstrate the feature. FAIL if the final page does not contain the answer.
-
-The final screenshot is taken AFTER the run's own actions. For tasks that ask to move, mark, change, or create something ("mark it done", "move it to In progress", "set the status"), the end state the task asks for (the item sitting in the requested column / status / list) IS the goal: goal_reached=true when it is shown. Never fail because the item is "already" in that state.
 
 PASS goal_reached=true only when the screenshot and the final URL/DOM together show the goal was actually reached (for example the requested issue form or created issue, a drawing on the canvas, an export/share dialog, or the specific destination the task asked for).
 
