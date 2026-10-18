@@ -23,7 +23,7 @@ for p in (ROOT / "src", ROOT):
 import httpx  # noqa: E402
 
 from auth import cached_vertex_credentials, invalidate_credentials, vertex_credentials  # noqa: E402
-from capability.gemini_config import _endpoint, _to_vertex, extract_json  # noqa: E402
+from capability.gemini_config import _endpoint, _to_vertex, extract_json  # noqa: E402,F401
 
 # Vertex list prices, USD per 1M tokens (text). Recorded with each call.
 PRICES = {
@@ -47,6 +47,18 @@ async def call(
         {"role": "user", "content": prompt}
     ]
     contents, sys_inst = _to_vertex(messages)
+    return await call_contents(contents, sys_inst, model=model, temperature=temperature, max_retries=max_retries)
+
+
+async def call_contents(
+    contents: list[dict],
+    sys_inst: dict | None,
+    *,
+    model: str = FORECAST_MODEL,
+    temperature: float = FORECAST_TEMPERATURE,
+    max_retries: int = 6,
+) -> dict[str, Any]:
+    """Same call with prebuilt Vertex contents (used for the image-bearing trace judge)."""
     payload: dict[str, Any] = {
         "contents": contents,
         "generationConfig": {
