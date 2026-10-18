@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>UserSim for Armature</title>
+<style>
+:root{--bg:#FBF9F7;--card:#FDFCFB;--ink:#23201D;--muted:#6b645d;--line:#ECE6E2;--accent:#C8410D;--good:#2f7d4f}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141210;--card:#1d1a17;--ink:#F3EEE9;--muted:#a59d95;--line:#2d2925;--accent:#ff6b35;--good:#5fbf86}}
+:root[data-theme="dark"]{--bg:#141210;--card:#1d1a17;--ink:#F3EEE9;--muted:#a59d95;--line:#2d2925;--accent:#ff6b35;--good:#5fbf86}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif}
+nav{display:flex;gap:20px;align-items:center;padding:14px 16px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+nav b{font-size:17px}nav span{color:var(--muted);font-size:14px}
+.wrap{max-width:980px;margin:0 auto;padding:0 16px}
+.hero{padding:44px 0 24px}.hero h1{font-size:clamp(28px,5vw,44px);line-height:1.1;margin:0 0 12px;letter-spacing:-.02em}
+.hero h1 em{font-style:normal;color:var(--accent)}.hero p{color:var(--muted);max-width:660px;margin:0}
+.pill{display:inline-block;font-size:12px;padding:3px 10px;border:1px solid var(--line);border-radius:99px;color:var(--muted);margin-bottom:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin:18px 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;margin:16px 0}
+.grid .card{margin:0}
+.card h3{margin:0 0 4px;font-size:15px}.sub{color:var(--muted);font-size:13px;margin-bottom:12px}
+.bar{display:grid;grid-template-columns:140px 1fr 44px;gap:8px;align-items:center;font-size:13px;margin:6px 0}
+.track{height:10px;background:var(--line);border-radius:6px;overflow:hidden}.fill{height:100%;background:var(--accent)}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-weight:500}td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}.win{color:var(--good);font-weight:600}
+.flow{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 0}.step{flex:1 1 170px;border:1px dashed var(--line);border-radius:10px;padding:12px;font-size:13px}
+.step b{display:block;color:var(--accent);font-size:12px;letter-spacing:.04em;text-transform:uppercase}
+q{display:block;font-size:13px;border-left:3px solid var(--line);padding:4px 10px;margin:8px 0;color:var(--ink)}q::before,q::after{content:""}
+q span{display:block;color:var(--muted);font-size:12px}
+footer{color:var(--muted);font-size:12px;padding:24px 0 40px}.scroll{overflow-x:auto}
+</style></head><body>
+<nav><b>Armature</b><span>Discoverability</span><span>Usability</span><span style="color:var(--accent)">User simulation · UserSim</span></nav>
+<div class="wrap">
+<section class="hero">
+<span class="pill">app.armature.tech/usability/usersim · Sentry (error tracking) · live data, pulled today</span>
+<h1>The agent picked <em>Sentry</em>. Now: who uses it, and how will each of them feel?</h1>
+<p>UserSim pulled 97 live Sentry reviews (G2 62, TrustRadius 15, Gartner 14, Capterra 6), mapped who the users are, and predicts the experience per user type. Accuracy below is from 420 held-out real reviewers.</p>
+<div class="flow">
+<div class="step"><b>1 · Pull</b>Live reviews from G2, Capterra, TrustRadius, Gartner</div>
+<div class="step"><b>2 · Segment</b>Who actually uses it, by role and company size</div>
+<div class="step"><b>3 · Predict</b>Ratings, likes and frustrations per user type</div>
+<div class="step"><b>4 · Run</b>Simulated users try the product via MCP (human mode)</div>
+</div>
+</section>
+
+<div class="grid">
+<div class="card"><h3>Who uses Sentry · role</h3><div class="sub">60 reviewers with a known role</div>
+<div class="bar"><span>Software / IT eng.</span><div class="track"><div class="fill" style="width:62%"></div></div><span>62%</span></div>
+<div class="bar"><span>Founders / CTOs</span><div class="track"><div class="fill" style="width:15%"></div></div><span>15%</span></div>
+<div class="bar"><span>Eng. managers</span><div class="track"><div class="fill" style="width:10%"></div></div><span>10%</span></div>
+<div class="bar"><span>Research / analysis</span><div class="track"><div class="fill" style="width:5%"></div></div><span>5%</span></div>
+<div class="bar"><span>Ops / admin</span><div class="track"><div class="fill" style="width:3%"></div></div><span>3%</span></div>
+<div class="bar"><span>Product / freelance</span><div class="track"><div class="fill" style="width:3%"></div></div><span>3%</span></div>
+</div>
+<div class="card"><h3>Who uses Sentry · company size</h3><div class="sub">78 reviewers with a size</div>
+<div class="bar"><span>Small (≤ 50)</span><div class="track"><div class="fill" style="width:65%"></div></div><span>65%</span></div>
+<div class="bar"><span>Mid-market</span><div class="track"><div class="fill" style="width:28%"></div></div><span>28%</span></div>
+<div class="bar"><span>Enterprise</span><div class="track"><div class="fill" style="width:6%"></div></div><span>6%</span></div>
+<div class="sub" style="margin-top:12px">Average rating 4.57 / 5. Founders 4.78 and managers 4.75 rate it higher than engineers (4.53).</div>
+</div>
+<div class="card"><h3>What frustrates them</h3><div class="sub">share of 85 complaints</div>
+<div class="bar"><span>Pricing</span><div class="track"><div class="fill" style="width:28%"></div></div><span>28%</span></div>
+<div class="bar"><span>Learning curve / UI</span><div class="track"><div class="fill" style="width:27%"></div></div><span>27%</span></div>
+<div class="bar"><span>Reporting</span><div class="track"><div class="fill" style="width:12%"></div></div><span>12%</span></div>
+<div class="bar"><span>Integrations</span><div class="track"><div class="fill" style="width:9%"></div></div><span>9%</span></div>
+<div class="bar"><span>Performance</span><div class="track"><div class="fill" style="width:8%"></div></div><span>8%</span></div>
+</div>
+</div>
+
+<div class="card"><h3>Predicted experience per user type · first-time users (trial)</h3>
+<div class="sub">UserSim agent mode: Sentry's own reviews, shrunk toward people like this persona, plus within-product offsets learned on 56k reviews.</div>
+<div class="scroll"><table>
+<tr><th>User type</th><th class="n">overall (1–5)</th><th class="n">ease of use</th><th class="n">recommend (0–10)</th><th>what they'll likely say</th></tr>
+<tr><td>Senior software engineer, 201–500</td><td class="n">4.52</td><td class="n">4.13</td><td class="n">8.2</td><td>Full stack traces, Slack alerts; noisy repeat errors, cost at volume</td></tr>
+<tr><td>Engineering manager, 1k–5k</td><td class="n">4.55</td><td class="n">4.17</td><td class="n">8.3</td><td>Proactive heads-up in prod; issue grouping could be smarter</td></tr>
+<tr><td>CTO / founder, 11–50</td><td class="n">4.48</td><td class="n">4.01</td><td class="n">8.1</td><td>Fast setup, MCP + Claude workflow; UI feels busy, pricing</td></tr>
+<tr><td>Product manager, 51–200</td><td class="n">4.50</td><td class="n win">4.00</td><td class="n">8.0</td><td>Sees user-facing bugs; UI overwhelming, takes time to digest</td></tr>
+<tr><td>Freelance dev, 2+ years</td><td class="n win">4.60</td><td class="n win">4.23</td><td class="n win">8.7</td><td>Easy, affordable; WordPress docs thin</td></tr>
+</table></div>
+<div class="sub" style="margin-top:10px">Trial users score lower than long-time users. Ease of use is where the user types differ most: PMs and founders find the UI busiest.</div>
+</div>
+
+<div class="card"><h3>In their words</h3>
+<q>1st class MCP server integration. Being able to delegate everything clearly to Claude makes life so much easier.<span>Founder · 5/5 · G2</span></q>
+<q>The UI is overwhelming and it takes time to digest it.<span>Engineering manager · 4.5/5</span></q>
+<q>If we could decrease the costing via some kind of sampling of errors. Sometimes the same error is in a loop.<span>Software engineer · 4/5</span></q>
+<q>Sentry rolls up exceptions it feels are similar, but the logic to determine that similarity could be improved.<span>Software engineer · 4.5/5</span></q>
+</div>
+
+<div class="card"><h3>How accurate is this, per user type?</h3>
+<div class="sub">420 held-out real reviewers (35 products). Rating error = mean absolute error on 1–5, lower is better.</div>
+<div class="scroll"><table>
+<tr><th>User type</th><th class="n">people</th><th class="n">plain AI agent</th><th class="n">UserSim</th></tr>
+<tr><td>Founders / execs</td><td class="n">80</td><td class="n">0.68</td><td class="n win">0.53</td></tr>
+<tr><td>Software / IT eng.</td><td class="n">71</td><td class="n">0.61</td><td class="n win">0.55</td></tr>
+<tr><td>Marketing / creative</td><td class="n">59</td><td class="n">0.66</td><td class="n win">0.60</td></tr>
+<tr><td>Sales / customer</td><td class="n">55</td><td class="n">0.58</td><td class="n win">0.55</td></tr>
+<tr><td>Team managers</td><td class="n">41</td><td class="n">0.68</td><td class="n win">0.53</td></tr>
+<tr><td>Operations / admin</td><td class="n">37</td><td class="n">0.65</td><td class="n win">0.59</td></tr>
+<tr><td>Research / analysis</td><td class="n">20</td><td class="n">0.50</td><td class="n win">0.46</td></tr>
+<tr><td>Finance / HR / legal</td><td class="n">30</td><td class="n win">0.57</td><td class="n">0.76</td></tr>
+</table></div>
+<div class="sub" style="margin-top:10px">Model alone: 0.96. Better on 7 of 8 user types.</div>
+</div>
+<footer>Live Sentry reviews pulled 18 Oct 2026 via UserSim (all-in-one review scraper). Predictions from <code>mvp/agent_mode.py</code>; accuracy from held-out evals. Demo, not Armature's production app.</footer>
+</div></body></html>
