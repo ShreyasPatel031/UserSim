@@ -1,0 +1,26 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "25c6b62072b7a496f77703918427a783354bb0ac8c6406c0c023bc83164d8049",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 150,
+  "output_tokens": 337,
+  "cost_usd": 0.0008875,
+  "elapsed_s": 2.81,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage email campaigns, auto-responders, invitations, follow-ups, shipping information, and newsletters.\",\n  \"benefits\": [\n    \"customer service is efficient and responsive\"\n  ],\n  \"frictions\": [\n    \"tech team shifts blame for errors\"\n  ]\n}",
+  "json": {
+    "task": "Manage email campaigns, auto-responders, invitations, follow-ups, shipping information, and newsletters.",
+    "benefits": [
+      "customer service is efficient and responsive"
+    ],
+    "frictions": [
+      "tech team shifts blame for errors"
+    ]
+  },
+  "ts": "2026-10-18T10:47:05.773733+00:00"
+}

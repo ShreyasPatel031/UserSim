@@ -1,0 +1,30 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "abfbddbf62ec9aea86695866b80498abfe595261e08eda566c60f5d8f9bef739",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 136,
+  "output_tokens": 388,
+  "cost_usd": 0.0010107999999999998,
+  "elapsed_s": 2.87,
+  "error": null,
+  "text": "{\n  \"task\": \"Collect processes and workflows under one platform\",\n  \"benefits\": [\n    \"Custom fields\",\n    \"Views\",\n    \"Dashboard\",\n    \"AI (agent)\"\n  ],\n  \"frictions\": [\n    \"Forms are difficult to modify\",\n    \"Forms are not linked to tasks across spaces\"\n  ]\n}",
+  "json": {
+    "task": "Collect processes and workflows under one platform",
+    "benefits": [
+      "Custom fields",
+      "Views",
+      "Dashboard",
+      "AI (agent)"
+    ],
+    "frictions": [
+      "Forms are difficult to modify",
+      "Forms are not linked to tasks across spaces"
+    ]
+  },
+  "ts": "2026-10-18T10:56:17.755160+00:00"
+}

@@ -1,0 +1,30 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "eb5e558d2185dea6739cc06b336a1529d69b8178cd6bd1c7753cff0209d375cf",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 323,
+  "output_tokens": 522,
+  "cost_usd": 0.0014019,
+  "elapsed_s": 3.18,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage project sprints, ticketing, and client schedules.\",\n  \"benefits\": [\n    \"Manages sprints reliably without issues.\",\n    \"AI correctly formats notes.\",\n    \"Reliably stores and tracks frontend and QA tickets.\",\n    \"Provides clients with visibility into their schedules, reducing phone calls.\"\n  ],\n  \"frictions\": [\n    \"Difficulty finding features and sections, such as the CRM.\",\n    \"Inability to enable camera when creating video clips for the team.\"\n  ]\n}",
+  "json": {
+    "task": "Manage project sprints, ticketing, and client schedules.",
+    "benefits": [
+      "Manages sprints reliably without issues.",
+      "AI correctly formats notes.",
+      "Reliably stores and tracks frontend and QA tickets.",
+      "Provides clients with visibility into their schedules, reducing phone calls."
+    ],
+    "frictions": [
+      "Difficulty finding features and sections, such as the CRM.",
+      "Inability to enable camera when creating video clips for the team."
+    ]
+  },
+  "ts": "2026-10-18T10:50:11.701511+00:00"
+}

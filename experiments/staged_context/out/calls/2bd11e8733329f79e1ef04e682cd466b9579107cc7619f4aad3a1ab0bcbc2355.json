@@ -1,0 +1,32 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2bd11e8733329f79e1ef04e682cd466b9579107cc7619f4aad3a1ab0bcbc2355",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 160,
+  "output_tokens": 390,
+  "cost_usd": 0.001023,
+  "elapsed_s": 2.93,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage project communication and team alignment.\",\n  \"benefits\": [\n    \"user friendly\",\n    \"keeps all project communication centralized\",\n    \"helps the team to stay aligned\",\n    \"avoids getting lost in emails or scattered tools\"\n  ],\n  \"frictions\": [\n    \"lacks advanced features\",\n    \"lacks reporting\",\n    \"lacks time tracking\",\n    \"too simple for complex projects\"\n  ]\n}",
+  "json": {
+    "task": "Manage project communication and team alignment.",
+    "benefits": [
+      "user friendly",
+      "keeps all project communication centralized",
+      "helps the team to stay aligned",
+      "avoids getting lost in emails or scattered tools"
+    ],
+    "frictions": [
+      "lacks advanced features",
+      "lacks reporting",
+      "lacks time tracking",
+      "too simple for complex projects"
+    ]
+  },
+  "ts": "2026-10-18T10:50:08.011336+00:00"
+}

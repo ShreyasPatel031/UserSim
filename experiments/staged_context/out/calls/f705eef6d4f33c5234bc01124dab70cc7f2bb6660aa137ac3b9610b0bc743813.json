@@ -1,0 +1,29 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f705eef6d4f33c5234bc01124dab70cc7f2bb6660aa137ac3b9610b0bc743813",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 266,
+  "output_tokens": 485,
+  "cost_usd": 0.0012923000000000001,
+  "elapsed_s": 2.92,
+  "error": null,
+  "text": "{\n  \"task\": \"Separate projects, track time, and organize daily work.\",\n  \"benefits\": [\n    \"Separate projects and track time\",\n    \"Organize day-to-day work in an intelligent, automated way\",\n    \"Reduce operating costs\",\n    \"Upsell contracts\"\n  ],\n  \"frictions\": [\n    \"Agents are difficult to use\"\n  ]\n}",
+  "json": {
+    "task": "Separate projects, track time, and organize daily work.",
+    "benefits": [
+      "Separate projects and track time",
+      "Organize day-to-day work in an intelligent, automated way",
+      "Reduce operating costs",
+      "Upsell contracts"
+    ],
+    "frictions": [
+      "Agents are difficult to use"
+    ]
+  },
+  "ts": "2026-10-18T10:56:20.025410+00:00"
+}

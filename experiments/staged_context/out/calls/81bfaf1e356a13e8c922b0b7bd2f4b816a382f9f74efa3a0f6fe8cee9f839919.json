@@ -1,0 +1,36 @@
+{
+  "stage": "hm_agent_words",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "81bfaf1e356a13e8c922b0b7bd2f4b816a382f9f74efa3a0f6fe8cee9f839919",
+  "temperature": 0.7,
+  "seed": 1001,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3329,
+  "output_tokens": 1013,
+  "cost_usd": 0.0035312,
+  "elapsed_s": 8.56,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Comprehensive features for project and process management\",\n    \"High level of customization for various workflows\",\n    \"Improved efficiency in daily operations for a small team\"\n  ],\n  \"cons\": [\n    \"Steep learning curve to fully utilize all features\",\n    \"Occasional performance lags or UI glitches\",\n    \"Mobile app can be less intuitive or slower than desktop\"\n  ],\n  \"overall_experience\": \"This Director likely found ClickUp to be a powerful, all-in-one solution for automating business processes and managing projects within their small education management company. While the extensive features offered significant benefits in organization and efficiency, they may have faced an initial learning curve and occasional frustrations with performance or the mobile experience. Despite these minor drawbacks, the platform generally met their core needs for comprehensive project and workflow management.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Comprehensive features for project and process management",
+      "High level of customization for various workflows",
+      "Improved efficiency in daily operations for a small team"
+    ],
+    "cons": [
+      "Steep learning curve to fully utilize all features",
+      "Occasional performance lags or UI glitches",
+      "Mobile app can be less intuitive or slower than desktop"
+    ],
+    "overall_experience": "This Director likely found ClickUp to be a powerful, all-in-one solution for automating business processes and managing projects within their small education management company. While the extensive features offered significant benefits in organization and efficiency, they may have faced an initial learning curve and occasional frustrations with performance or the mobile experience. Despite these minor drawbacks, the platform generally met their core needs for comprehensive project and workflow management."
+  },
+  "ts": "2026-10-18T10:58:02.167208+00:00"
+}

@@ -1,0 +1,27 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "865a35cd8c33ad7829dcee84c6cfe7992edba7abd4bdaa45dcf1bd4a32fbf2b7",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 193,
+  "output_tokens": 524,
+  "cost_usd": 0.0013679000000000002,
+  "elapsed_s": 3.65,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage client communications and project status.\",\n  \"benefits\": [\n    \"Streamline client communications\",\n    \"Communicate seamlessly with remote clients\",\n    \"Share files easily\",\n    \"Clarify team project status\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Manage client communications and project status.",
+    "benefits": [
+      "Streamline client communications",
+      "Communicate seamlessly with remote clients",
+      "Share files easily",
+      "Clarify team project status"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T10:50:07.726022+00:00"
+}

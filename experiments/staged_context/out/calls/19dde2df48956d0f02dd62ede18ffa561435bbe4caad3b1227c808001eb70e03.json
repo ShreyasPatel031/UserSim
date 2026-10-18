@@ -1,0 +1,30 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "19dde2df48956d0f02dd62ede18ffa561435bbe4caad3b1227c808001eb70e03",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 286,
+  "output_tokens": 555,
+  "cost_usd": 0.0014733,
+  "elapsed_s": 4.13,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage multi-channel marketing campaigns and customer communications.\",\n  \"benefits\": [\n    \"Combine email, SMS, and WhatsApp marketing into one unified platform.\",\n    \"Set up advanced automation.\",\n    \"Save time by managing multi-channel campaigns and tracking customer behavior in one place.\",\n    \"Keep customer data and communications organized in one place.\"\n  ],\n  \"frictions\": [\n    \"Experience occasional limitations and strictness around deliverability checks and account verification processes.\",\n    \"Have campaigns temporarily blocked or slowed down due to verification processes.\"\n  ]\n}",
+  "json": {
+    "task": "Manage multi-channel marketing campaigns and customer communications.",
+    "benefits": [
+      "Combine email, SMS, and WhatsApp marketing into one unified platform.",
+      "Set up advanced automation.",
+      "Save time by managing multi-channel campaigns and tracking customer behavior in one place.",
+      "Keep customer data and communications organized in one place."
+    ],
+    "frictions": [
+      "Experience occasional limitations and strictness around deliverability checks and account verification processes.",
+      "Have campaigns temporarily blocked or slowed down due to verification processes."
+    ]
+  },
+  "ts": "2026-10-18T10:52:56.847900+00:00"
+}

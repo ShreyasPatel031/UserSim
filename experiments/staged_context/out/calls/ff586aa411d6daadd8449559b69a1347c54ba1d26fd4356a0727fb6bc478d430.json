@@ -1,0 +1,27 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ff586aa411d6daadd8449559b69a1347c54ba1d26fd4356a0727fb6bc478d430",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 207,
+  "output_tokens": 460,
+  "cost_usd": 0.0012121,
+  "elapsed_s": 4.42,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage online sales activities\",\n  \"benefits\": [\n    \"Prevents wasting valuable time troubleshooting\",\n    \"Prevents creating complicated links\",\n    \"Provides reliability\",\n    \"Offers competence\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Manage online sales activities",
+    "benefits": [
+      "Prevents wasting valuable time troubleshooting",
+      "Prevents creating complicated links",
+      "Provides reliability",
+      "Offers competence"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T10:47:04.104531+00:00"
+}

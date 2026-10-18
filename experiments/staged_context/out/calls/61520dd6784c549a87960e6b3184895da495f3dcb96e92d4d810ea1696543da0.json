@@ -1,0 +1,31 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "61520dd6784c549a87960e6b3184895da495f3dcb96e92d4d810ea1696543da0",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 287,
+  "output_tokens": 450,
+  "cost_usd": 0.0012111,
+  "elapsed_s": 3.57,
+  "error": null,
+  "text": "{\n  \"task\": \"Send newsletters and automate emails for sales.\",\n  \"benefits\": [\n    \"Email automation\",\n    \"Newsletter sending\",\n    \"Link with other apps\",\n    \"Tracking capabilities\"\n  ],\n  \"frictions\": [\n    \"Limited integration with other platforms\",\n    \"Lack of ease in CRM\",\n    \"WhatsApp automation is complicated\"\n  ]\n}",
+  "json": {
+    "task": "Send newsletters and automate emails for sales.",
+    "benefits": [
+      "Email automation",
+      "Newsletter sending",
+      "Link with other apps",
+      "Tracking capabilities"
+    ],
+    "frictions": [
+      "Limited integration with other platforms",
+      "Lack of ease in CRM",
+      "WhatsApp automation is complicated"
+    ]
+  },
+  "ts": "2026-10-18T10:52:59.680595+00:00"
+}

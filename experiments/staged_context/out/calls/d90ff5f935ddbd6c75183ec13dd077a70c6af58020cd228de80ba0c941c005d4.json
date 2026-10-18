@@ -1,0 +1,31 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d90ff5f935ddbd6c75183ec13dd077a70c6af58020cd228de80ba0c941c005d4",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 284,
+  "output_tokens": 502,
+  "cost_usd": 0.0013401999999999997,
+  "elapsed_s": 3.2,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage email marketing, lead generation, and automation\",\n  \"benefits\": [\n    \"Streamline email marketing\",\n    \"Provide an all-in-one platform for landing pages, pop-ups, and email campaigns\",\n    \"Offer high email deliverability\",\n    \"Feature well-designed automation workflows for setting up sequences\"\n  ],\n  \"frictions\": [\n    \"Reports lack in-depth analysis\",\n    \"Limited customization options in templates\",\n    \"Pricing increases significantly with email list size\"\n  ]\n}",
+  "json": {
+    "task": "Manage email marketing, lead generation, and automation",
+    "benefits": [
+      "Streamline email marketing",
+      "Provide an all-in-one platform for landing pages, pop-ups, and email campaigns",
+      "Offer high email deliverability",
+      "Feature well-designed automation workflows for setting up sequences"
+    ],
+    "frictions": [
+      "Reports lack in-depth analysis",
+      "Limited customization options in templates",
+      "Pricing increases significantly with email list size"
+    ]
+  },
+  "ts": "2026-10-18T10:47:02.214231+00:00"
+}

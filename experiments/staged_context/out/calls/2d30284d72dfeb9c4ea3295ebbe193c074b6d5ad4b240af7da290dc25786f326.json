@@ -1,0 +1,30 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2d30284d72dfeb9c4ea3295ebbe193c074b6d5ad4b240af7da290dc25786f326",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 283,
+  "output_tokens": 492,
+  "cost_usd": 0.0013149000000000001,
+  "elapsed_s": 3.33,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage email campaigns and multichannel marketing efforts\",\n  \"benefits\": [\n    \"AI-assisted content features draft and refine email campaign copy\",\n    \"Segmentation and personalization tools improve campaign relevance\",\n    \"Multichannel marketing from one platform simplifies management\",\n    \"Automation workflows reach recipients at the right time\"\n  ],\n  \"frictions\": [\n    \"AI output requires editing to match brand tone and messaging\",\n    \"Lack of confidence regarding data handling and AI data access controls\"\n  ]\n}",
+  "json": {
+    "task": "Manage email campaigns and multichannel marketing efforts",
+    "benefits": [
+      "AI-assisted content features draft and refine email campaign copy",
+      "Segmentation and personalization tools improve campaign relevance",
+      "Multichannel marketing from one platform simplifies management",
+      "Automation workflows reach recipients at the right time"
+    ],
+    "frictions": [
+      "AI output requires editing to match brand tone and messaging",
+      "Lack of confidence regarding data handling and AI data access controls"
+    ]
+  },
+  "ts": "2026-10-18T10:53:02.916855+00:00"
+}

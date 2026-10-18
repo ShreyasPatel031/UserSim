@@ -1,0 +1,36 @@
+{
+  "stage": "hm_agent_words",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "29457f0af979a00cffdfb759da26a6090f1053eaf11d95d0640b5de14f22eecf",
+  "temperature": 0.7,
+  "seed": 1001,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3160,
+  "output_tokens": 1014,
+  "cost_usd": 0.003483,
+  "elapsed_s": 5.5,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Centralized client support requests and communications\",\n    \"Customizable task statuses and fields for client workflows\",\n    \"Good value for money for a small team\"\n  ],\n  \"cons\": [\n    \"Occasional performance issues or lag, especially on mobile\",\n    \"Steep learning curve for new users to master all features\",\n    \"Customer support can be slow or unresponsive at times\"\n  ],\n  \"overall_experience\": \"This customer service representative likely finds ClickUp to be a powerful and cost-effective tool for managing client support requests within their small security and investigations company. The ability to centralize communications and customize workflows has significantly improved their efficiency over two years of use. However, they occasionally encounter performance issues and note that the platform has a learning curve, while also expressing some frustration with the responsiveness of customer support.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Centralized client support requests and communications",
+      "Customizable task statuses and fields for client workflows",
+      "Good value for money for a small team"
+    ],
+    "cons": [
+      "Occasional performance issues or lag, especially on mobile",
+      "Steep learning curve for new users to master all features",
+      "Customer support can be slow or unresponsive at times"
+    ],
+    "overall_experience": "This customer service representative likely finds ClickUp to be a powerful and cost-effective tool for managing client support requests within their small security and investigations company. The ability to centralize communications and customize workflows has significantly improved their efficiency over two years of use. However, they occasionally encounter performance issues and note that the platform has a learning curve, while also expressing some frustration with the responsiveness of customer support."
+  },
+  "ts": "2026-10-18T10:57:49.449443+00:00"
+}

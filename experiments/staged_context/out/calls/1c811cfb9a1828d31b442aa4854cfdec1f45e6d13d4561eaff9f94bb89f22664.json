@@ -1,0 +1,27 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1c811cfb9a1828d31b442aa4854cfdec1f45e6d13d4561eaff9f94bb89f22664",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 235,
+  "output_tokens": 459,
+  "cost_usd": 0.0012180000000000001,
+  "elapsed_s": 2.77,
+  "error": null,
+  "text": "{\n  \"task\": \"Achieve reach for email and landing page automation and create segmented lists\",\n  \"benefits\": [\n    \"Offers original templates and customizable campaign themes\",\n    \"Provides quantified and detailed reports\",\n    \"Has a detailed and accurate statistics system\",\n    \"Features an elegant and easy-to-use interface\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Achieve reach for email and landing page automation and create segmented lists",
+    "benefits": [
+      "Offers original templates and customizable campaign themes",
+      "Provides quantified and detailed reports",
+      "Has a detailed and accurate statistics system",
+      "Features an elegant and easy-to-use interface"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T10:47:06.375630+00:00"
+}

@@ -1,0 +1,30 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7534029bfed3b200391d83adf6271e8ae6584bfe9d30419e65816ff56d0fe3a4",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 211,
+  "output_tokens": 521,
+  "cost_usd": 0.0013658,
+  "elapsed_s": 3.42,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage contacts, design and send email campaigns, and track performance.\",\n  \"benefits\": [\n    \"Create and send email campaigns to a large audience\",\n    \"Manage contacts, design emails, and check campaign performance from one place\",\n    \"Send updates and newsletters\",\n    \"Track how people engage with emails\"\n  ],\n  \"frictions\": [\n    \"Advanced features take time to understand, especially automations\",\n    \"Interface can feel crowded in some sections\"\n  ]\n}",
+  "json": {
+    "task": "Manage contacts, design and send email campaigns, and track performance.",
+    "benefits": [
+      "Create and send email campaigns to a large audience",
+      "Manage contacts, design emails, and check campaign performance from one place",
+      "Send updates and newsletters",
+      "Track how people engage with emails"
+    ],
+    "frictions": [
+      "Advanced features take time to understand, especially automations",
+      "Interface can feel crowded in some sections"
+    ]
+  },
+  "ts": "2026-10-18T10:52:57.189397+00:00"
+}

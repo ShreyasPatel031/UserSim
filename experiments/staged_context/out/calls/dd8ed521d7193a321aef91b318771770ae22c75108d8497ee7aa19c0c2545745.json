@@ -1,0 +1,36 @@
+{
+  "stage": "hm_agent_words",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "dd8ed521d7193a321aef91b318771770ae22c75108d8497ee7aa19c0c2545745",
+  "temperature": 0.7,
+  "seed": 1001,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3799,
+  "output_tokens": 1149,
+  "cost_usd": 0.0040122000000000005,
+  "elapsed_s": 6.8,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Consolidates various marketing tasks and tools into one platform.\",\n    \"Offers extensive customization to fit specific team workflows.\",\n    \"Provides good visibility into project progress and team assignments.\"\n  ],\n  \"cons\": [\n    \"The sheer number of features can be overwhelming and lead to a steep learning curve.\",\n    \"Initial setup time is significant due to its complexity and customizability.\",\n    \"Pricing structure might feel expensive for a small business requiring advanced features.\"\n  ],\n  \"overall_experience\": \"This marketing director likely found ClickUp to be a powerful tool for centralizing and organizing their team's work tasks, appreciating its extensive features and customization options. However, the initial setup and ongoing management of its vast capabilities probably presented a significant challenge, leading to some frustration with its complexity. While it delivered on consolidating work, the learning curve and potential cost for a small business may have tempered their enthusiasm.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Consolidates various marketing tasks and tools into one platform.",
+      "Offers extensive customization to fit specific team workflows.",
+      "Provides good visibility into project progress and team assignments."
+    ],
+    "cons": [
+      "The sheer number of features can be overwhelming and lead to a steep learning curve.",
+      "Initial setup time is significant due to its complexity and customizability.",
+      "Pricing structure might feel expensive for a small business requiring advanced features."
+    ],
+    "overall_experience": "This marketing director likely found ClickUp to be a powerful tool for centralizing and organizing their team's work tasks, appreciating its extensive features and customization options. However, the initial setup and ongoing management of its vast capabilities probably presented a significant challenge, leading to some frustration with its complexity. While it delivered on consolidating work, the learning curve and potential cost for a small business may have tempered their enthusiasm."
+  },
+  "ts": "2026-10-18T10:56:58.543971+00:00"
+}

@@ -1,0 +1,30 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7813aaf8249edb6f2c93229034d4b7684753429590d6071f8791cc47a48418ed",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 224,
+  "output_tokens": 400,
+  "cost_usd": 0.0010672,
+  "elapsed_s": 3.54,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage and track tasks for multiple teams\",\n  \"benefits\": [\n    \"Categorization\",\n    \"Color Coding\",\n    \"Assignment\"\n  ],\n  \"frictions\": [\n    \"Loading\",\n    \"Templates\",\n    \"Space for Descriptions\"\n  ]\n}",
+  "json": {
+    "task": "Manage and track tasks for multiple teams",
+    "benefits": [
+      "Categorization",
+      "Color Coding",
+      "Assignment"
+    ],
+    "frictions": [
+      "Loading",
+      "Templates",
+      "Space for Descriptions"
+    ]
+  },
+  "ts": "2026-10-18T10:56:19.070213+00:00"
+}

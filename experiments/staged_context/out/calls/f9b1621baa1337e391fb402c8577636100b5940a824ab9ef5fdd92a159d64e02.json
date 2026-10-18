@@ -1,0 +1,29 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f9b1621baa1337e391fb402c8577636100b5940a824ab9ef5fdd92a159d64e02",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 139,
+  "output_tokens": 400,
+  "cost_usd": 0.0010417,
+  "elapsed_s": 2.47,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage projects and team workflows.\",\n  \"benefits\": [\n    \"flexibility to adapt to different types of projects\",\n    \"status updates\",\n    \"follow-up\",\n    \"speed up the process and centralize information\"\n  ],\n  \"frictions\": [\n    \"complexity for some users with less expertise in tech\"\n  ]\n}",
+  "json": {
+    "task": "Manage projects and team workflows.",
+    "benefits": [
+      "flexibility to adapt to different types of projects",
+      "status updates",
+      "follow-up",
+      "speed up the process and centralize information"
+    ],
+    "frictions": [
+      "complexity for some users with less expertise in tech"
+    ]
+  },
+  "ts": "2026-10-18T10:56:19.523396+00:00"
+}

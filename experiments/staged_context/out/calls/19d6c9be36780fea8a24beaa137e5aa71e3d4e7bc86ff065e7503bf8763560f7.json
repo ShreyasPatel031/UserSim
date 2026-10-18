@@ -1,0 +1,36 @@
+{
+  "stage": "hm_agent_words",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "19d6c9be36780fea8a24beaa137e5aa71e3d4e7bc86ff065e7503bf8763560f7",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3159,
+  "output_tokens": 1067,
+  "cost_usd": 0.0036152,
+  "elapsed_s": 9.02,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Competitive pricing for robust features\",\n    \"Secure sharing and centralized password management\",\n    \"Intuitive browser extension and autofill capabilities\"\n  ],\n  \"cons\": [\n    \"Autofill can sometimes be messy or require manual intervention\",\n    \"Admin features like collection permissions can be less intuitive\",\n    \"Occasional prompts for the master password can be disruptive\"\n  ],\n  \"overall_experience\": \"This user likely found Bitwarden to be a highly valuable tool for managing and securing passwords across their mid-market company. They appreciated its strong security features, ease of use for end-users, and the ability to securely share credentials among teams without breaking the bank. While generally positive, some minor frustrations might have arisen from the autofill behavior and the complexity of certain administrative configurations.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Competitive pricing for robust features",
+      "Secure sharing and centralized password management",
+      "Intuitive browser extension and autofill capabilities"
+    ],
+    "cons": [
+      "Autofill can sometimes be messy or require manual intervention",
+      "Admin features like collection permissions can be less intuitive",
+      "Occasional prompts for the master password can be disruptive"
+    ],
+    "overall_experience": "This user likely found Bitwarden to be a highly valuable tool for managing and securing passwords across their mid-market company. They appreciated its strong security features, ease of use for end-users, and the ability to securely share credentials among teams without breaking the bank. While generally positive, some minor frustrations might have arisen from the autofill behavior and the complexity of certain administrative configurations."
+  },
+  "ts": "2026-10-18T10:44:45.915609+00:00"
+}

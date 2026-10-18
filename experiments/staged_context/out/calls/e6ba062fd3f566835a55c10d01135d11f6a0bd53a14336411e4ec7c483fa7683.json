@@ -1,0 +1,29 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e6ba062fd3f566835a55c10d01135d11f6a0bd53a14336411e4ec7c483fa7683",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 280,
+  "output_tokens": 479,
+  "cost_usd": 0.0012815,
+  "elapsed_s": 7.17,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage and share sensitive information securely.\",\n  \"benefits\": [\n    \"Access the service conveniently via a browser extension without opening a separate application.\",\n    \"Share various data types including credentials, API tokens, secrets, and files.\",\n    \"Set different levels of sharing permissions for data.\",\n    \"Integrates password management and credential sharing effortlessly.\"\n  ],\n  \"frictions\": [\n    \"Browser extension sometimes prevents proper login.\"\n  ]\n}",
+  "json": {
+    "task": "Manage and share sensitive information securely.",
+    "benefits": [
+      "Access the service conveniently via a browser extension without opening a separate application.",
+      "Share various data types including credentials, API tokens, secrets, and files.",
+      "Set different levels of sharing permissions for data.",
+      "Integrates password management and credential sharing effortlessly."
+    ],
+    "frictions": [
+      "Browser extension sometimes prevents proper login."
+    ]
+  },
+  "ts": "2026-10-18T10:44:29.224604+00:00"
+}

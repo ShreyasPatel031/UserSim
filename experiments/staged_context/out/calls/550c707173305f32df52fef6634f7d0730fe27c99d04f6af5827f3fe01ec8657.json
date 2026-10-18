@@ -1,0 +1,30 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "550c707173305f32df52fef6634f7d0730fe27c99d04f6af5827f3fe01ec8657",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 169,
+  "output_tokens": 485,
+  "cost_usd": 0.0012632000000000001,
+  "elapsed_s": 3.41,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage customer contact lists, automate emails, and manage subscriptions.\",\n  \"benefits\": [\n    \"Email scheduling\",\n    \"CRM\",\n    \"Ease of use\",\n    \"Ease of setup\"\n  ],\n  \"frictions\": [\n    \"WhatsApp is hard to manage\",\n    \"Multichannel marketing feels only somewhat simplified\"\n  ]\n}",
+  "json": {
+    "task": "Manage customer contact lists, automate emails, and manage subscriptions.",
+    "benefits": [
+      "Email scheduling",
+      "CRM",
+      "Ease of use",
+      "Ease of setup"
+    ],
+    "frictions": [
+      "WhatsApp is hard to manage",
+      "Multichannel marketing feels only somewhat simplified"
+    ]
+  },
+  "ts": "2026-10-18T10:52:57.854932+00:00"
+}

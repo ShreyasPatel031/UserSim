@@ -1,0 +1,36 @@
+{
+  "stage": "hm_agent_words",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a1f84c39b755176ba972fb9fe37e349ca84a6efad37d4d34f2be6cf24a16c075",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3984,
+  "output_tokens": 1056,
+  "cost_usd": 0.0038351999999999995,
+  "elapsed_s": 6.78,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Keeps all project communication, tasks, and files organized in one central place.\",\n    \"Provides good visibility over project progress and team activities without micromanagement.\",\n    \"Flat-rate pricing model is predictable and cost-effective for self-employed users.\"\n  ],\n  \"cons\": [\n    \"Lacks some advanced project management features like native time tracking or complex dependencies.\",\n    \"Can feel overwhelming when managing many active projects, making it hard to find older information.\",\n    \"The search function for older items or specific IDs can be difficult to use effectively.\"\n  ],\n  \"overall_experience\": \"This self-employed owner has likely found Basecamp to be a reliable and efficient tool for managing their projects over the past two years. They appreciate its ability to centralize communication and tasks, providing clear oversight without excessive detail. While they value its simplicity and predictable pricing, they occasionally wish for more advanced project management features and find that navigating or searching through numerous active projects can sometimes be clunky.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Keeps all project communication, tasks, and files organized in one central place.",
+      "Provides good visibility over project progress and team activities without micromanagement.",
+      "Flat-rate pricing model is predictable and cost-effective for self-employed users."
+    ],
+    "cons": [
+      "Lacks some advanced project management features like native time tracking or complex dependencies.",
+      "Can feel overwhelming when managing many active projects, making it hard to find older information.",
+      "The search function for older items or specific IDs can be difficult to use effectively."
+    ],
+    "overall_experience": "This self-employed owner has likely found Basecamp to be a reliable and efficient tool for managing their projects over the past two years. They appreciate its ability to centralize communication and tasks, providing clear oversight without excessive detail. While they value its simplicity and predictable pricing, they occasionally wish for more advanced project management features and find that navigating or searching through numerous active projects can sometimes be clunky."
+  },
+  "ts": "2026-10-18T10:51:01.821697+00:00"
+}

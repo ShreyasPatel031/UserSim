@@ -1,0 +1,30 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b438fef55cabbe2454083ba7cc715d38cf4c03659c7b47e31afb67011d4bdfce",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 338,
+  "output_tokens": 494,
+  "cost_usd": 0.0013364,
+  "elapsed_s": 3.41,
+  "error": null,
+  "text": "{\n  \"task\": \"Handle transactional emails and marketing campaigns\",\n  \"benefits\": [\n    \"Clean interface\",\n    \"Comprehensive documentation\",\n    \"Responsive and helpful support team\",\n    \"Generous free plan\"\n  ],\n  \"frictions\": [\n    \"Initial SMTP configuration and account verification process was confusing for first-time users\",\n    \"Lack of clear onboarding guidance for protecting web forms\"\n  ]\n}",
+  "json": {
+    "task": "Handle transactional emails and marketing campaigns",
+    "benefits": [
+      "Clean interface",
+      "Comprehensive documentation",
+      "Responsive and helpful support team",
+      "Generous free plan"
+    ],
+    "frictions": [
+      "Initial SMTP configuration and account verification process was confusing for first-time users",
+      "Lack of clear onboarding guidance for protecting web forms"
+    ]
+  },
+  "ts": "2026-10-18T10:53:00.471409+00:00"
+}

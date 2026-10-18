@@ -1,0 +1,30 @@
+{
+  "stage": "hm_agent_edit",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2f4d68bb406f4a9cc24bb42abb03116ac2873cf482579be22ba010e7ed852ed2",
+  "temperature": 0.0,
+  "seed": 43,
+  "max_tokens": 4096,
+  "thinking_budget": 1024,
+  "input_tokens": 516,
+  "output_tokens": 857,
+  "cost_usd": 0.0022973,
+  "elapsed_s": 4.81,
+  "error": null,
+  "text": "{\n  \"pros\": [\n    \"Centralized client support requests and communications\",\n    \"Customizable task statuses and fields for client workflows\",\n    \"Good value for money for a small team\"\n  ],\n  \"cons\": [\n    \"Occasional performance issues or lag, especially on mobile\",\n    \"Steep learning curve for new users to master all features\",\n    \"Customer support can be slow or unresponsive at times\"\n  ],\n  \"changed\": []\n}",
+  "json": {
+    "pros": [
+      "Centralized client support requests and communications",
+      "Customizable task statuses and fields for client workflows",
+      "Good value for money for a small team"
+    ],
+    "cons": [
+      "Occasional performance issues or lag, especially on mobile",
+      "Steep learning curve for new users to master all features",
+      "Customer support can be slow or unresponsive at times"
+    ],
+    "changed": []
+  },
+  "ts": "2026-10-18T10:58:33.993108+00:00"
+}

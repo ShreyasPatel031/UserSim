@@ -1,0 +1,27 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9d21c6ead2ac08116628d3b92b8ad95f6ffed4fb10153591c6b507e4f59bca1a",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 279,
+  "output_tokens": 439,
+  "cost_usd": 0.0011811999999999999,
+  "elapsed_s": 6.63,
+  "error": null,
+  "text": "{\n  \"task\": \"Store and access passwords on multiple devices\",\n  \"benefits\": [\n    \"Safeguard passwords\",\n    \"User-friendly interface\",\n    \"Reliable on mobile and browser\",\n    \"Easy setup\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Store and access passwords on multiple devices",
+    "benefits": [
+      "Safeguard passwords",
+      "User-friendly interface",
+      "Reliable on mobile and browser",
+      "Easy setup"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T10:44:28.785141+00:00"
+}

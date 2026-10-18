@@ -1,0 +1,36 @@
+{
+  "stage": "hm_agent_words",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a17a6f2877a8458dd27645fae8d7423f37b73819356bcadba3cf2607dc77171c",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3147,
+  "output_tokens": 1012,
+  "cost_usd": 0.0034741,
+  "elapsed_s": 6.3,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Comprehensive features for project and task tracking\",\n    \"Customizable workflows and automations for tickets\",\n    \"Effective for managing recurring tasks and reminders\"\n  ],\n  \"cons\": [\n    \"Steep learning curve and initial setup can be overwhelming\",\n    \"Occasional performance issues or UI glitches\",\n    \"Overabundance of notifications requiring careful management\"\n  ],\n  \"overall_experience\": \"This IT Support professional likely found ClickUp to be a highly functional tool for managing tickets, projects, and recurring tasks, appreciating its extensive customization and automation capabilities. However, they probably experienced a significant learning curve and initial setup challenges due to the platform's vast feature set, along with some frustrations related to performance or notification overload.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Comprehensive features for project and task tracking",
+      "Customizable workflows and automations for tickets",
+      "Effective for managing recurring tasks and reminders"
+    ],
+    "cons": [
+      "Steep learning curve and initial setup can be overwhelming",
+      "Occasional performance issues or UI glitches",
+      "Overabundance of notifications requiring careful management"
+    ],
+    "overall_experience": "This IT Support professional likely found ClickUp to be a highly functional tool for managing tickets, projects, and recurring tasks, appreciating its extensive customization and automation capabilities. However, they probably experienced a significant learning curve and initial setup challenges due to the platform's vast feature set, along with some frustrations related to performance or notification overload."
+  },
+  "ts": "2026-10-18T10:57:26.784514+00:00"
+}

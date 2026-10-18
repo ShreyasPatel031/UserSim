@@ -1,0 +1,36 @@
+{
+  "stage": "hm_agent_words",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "47b430d4b310d25d7d4b28a5a5c45e85dea2b0eae79a40fe7fc191a885db38c3",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3577,
+  "output_tokens": 1017,
+  "cost_usd": 0.0036155999999999996,
+  "elapsed_s": 5.88,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Highly customizable for diverse project management needs\",\n    \"Comprehensive feature set for tracking tasks, communication, and issues\",\n    \"Good value for money compared to competitors\"\n  ],\n  \"cons\": [\n    \"Can be overwhelming for new users due to its extensive features\",\n    \"User interface may experience occasional glitches or feel clunky\",\n    \"Initial setup and configuring optimal workflows requires effort\"\n  ],\n  \"overall_experience\": \"This QA Tester likely found ClickUp to be a powerful and highly flexible tool for managing their workspace activities, communication, and issue tracking. They appreciated its deep customization options and ability to consolidate various project elements. However, the sheer breadth of features and occasional UI inconsistencies presented a learning curve and some frustration during initial adoption.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Highly customizable for diverse project management needs",
+      "Comprehensive feature set for tracking tasks, communication, and issues",
+      "Good value for money compared to competitors"
+    ],
+    "cons": [
+      "Can be overwhelming for new users due to its extensive features",
+      "User interface may experience occasional glitches or feel clunky",
+      "Initial setup and configuring optimal workflows requires effort"
+    ],
+    "overall_experience": "This QA Tester likely found ClickUp to be a powerful and highly flexible tool for managing their workspace activities, communication, and issue tracking. They appreciated its deep customization options and ability to consolidate various project elements. However, the sheer breadth of features and occasional UI inconsistencies presented a learning curve and some frustration during initial adoption."
+  },
+  "ts": "2026-10-18T10:56:57.001064+00:00"
+}

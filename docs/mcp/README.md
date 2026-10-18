@@ -24,6 +24,9 @@ Source of truth: `mvp/sim_mcp/server.py`, `mvp/sim_mcp/sessions.py`, `mvp/sim_mc
 - **Agent mode** (`usersim_predict_experience`): no browser. Predicts how a kind of user will experience a product from
   live G2, Capterra, TrustRadius and Gartner reviews of the product and its named rivals. Returns expected ratings, pros, cons and the overall experience.
   Use it to set expectations before human mode, or when a browser run isn't possible.
+- **Human mode on top of agent mode** (`usersim_plan_human_run` → a browser run → `usersim_combine_human_run`): the
+  run is given the task that adds signal, and what it saw is added to the agent-mode prediction in the amount that
+  held up on real reviewers. See [Human mode on top of agent mode](#human-mode-on-top-of-agent-mode).
 
 ## What it does
 
@@ -214,6 +217,44 @@ What you get on `ok`:
 - **`evidence`**: how many reviews were used, which rivals had none, and scraper errors.
 
 Callers without a token are charged `est_usd_per_prediction` against the daily caps, only when a call returns `ok`.
+
+### Human mode on top of agent mode
+
+Use these when you want a prediction (like `usersim_predict_experience`) that also uses first-hand evidence from a
+simulated user's session in the product.
+
+#### `usersim_plan_human_run`
+| param | type | notes |
+| --- | --- | --- |
+| `product` | string | Name as review sites list it. |
+| `product_url` | string | Public URL of the product (required). |
+| `persona` | string | One sentence: who the simulated user is. |
+| `competitors` | string[] | 1–3 rival names; omit to discover them from `product_url`. |
+
+Returns `start_session` (`product_url`, `persona`, `task`) for `usersim_start_session`, plus `observe`: the format
+for the run's observations. The task is built from the rivals' live review complaints. It asks for the core job done
+for real with 3+ items, then two second-level features (views, custom fields, reports, automations...), then
+editing or reorganising. It skips onboarding and pricing, because review data already predicts those
+(`experiments/staged_context/out/human_mode/themes.csv`). `status: "pending"` while rival scrapes run.
+
+#### `usersim_combine_human_run`
+| param | type | notes |
+| --- | --- | --- |
+| `product`, `persona`, `product_url`, `task`, `competitors` | | As for `usersim_predict_experience`. |
+| `observations` | object[] | The run's `[{"kind": "product_friction" \| "product_benefit" \| "signup_friction" \| "agent_failure", "what": "..."}]`. Only `product_*` ones are used. |
+
+Returns the agent-mode result with `mode: "human"`, the agent-mode words under `agent_mode`, `observations_used` and
+`rule`:
+
+- **Ratings:** always agent mode's. A first session's impressions ran about a star below real reviewers.
+- **Product with its own reviews:** pros, cons and the overall experience are rewritten from agent mode's evidence
+  plus the run's product observations. Held out on 173 real reviewers of 5 products, cons recall rose by
+  0.046 (95% CI +0.007 to +0.085) and pros were unchanged. Evidence: `experiments/staged_context/hm_agent_eval.py`.
+- **No own reviews (a new product):** at most one pro and one con change. Notes about setup, free-plan limits,
+  onboarding, pricing, billing and support are dropped first, because free-form notes hurt in that setting.
+
+Sign-up is the main limit for callers without a token: 6 of 12 test runs were blocked. Sites rejected `+` email
+aliases, showed image CAPTCHAs, required a phone, or had no free plan.
 
 ### Signup and inbox tools
 

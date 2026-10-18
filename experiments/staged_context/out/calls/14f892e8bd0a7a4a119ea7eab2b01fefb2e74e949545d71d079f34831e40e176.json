@@ -1,0 +1,27 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "14f892e8bd0a7a4a119ea7eab2b01fefb2e74e949545d71d079f34831e40e176",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 169,
+  "output_tokens": 474,
+  "cost_usd": 0.0012357,
+  "elapsed_s": 5.16,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage workspace activities, communication, tasks, meetings, and issue tracking.\",\n  \"benefits\": [\n    \"All-around functionality\",\n    \"Supports chat, tasks, and meetings\",\n    \"Useful for issuing tickets\",\n    \"Facilitates developer access to tickets for software improvement\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Manage workspace activities, communication, tasks, meetings, and issue tracking.",
+    "benefits": [
+      "All-around functionality",
+      "Supports chat, tasks, and meetings",
+      "Useful for issuing tickets",
+      "Facilitates developer access to tickets for software improvement"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T10:56:15.751940+00:00"
+}

@@ -1,0 +1,27 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "fdbc81ce7d0e9b6938d48dd23b5403dd3a8d1aa5e321f1b35c0627ba9a403a06",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 180,
+  "output_tokens": 493,
+  "cost_usd": 0.0012864999999999999,
+  "elapsed_s": 3.14,
+  "error": null,
+  "text": "{\n  \"task\": \"Organize and monitor work tasks.\",\n  \"benefits\": [\n    \"Intuitive user interface and dashboard\",\n    \"Easily navigate personal and team work\",\n    \"Clearly view assigned work\",\n    \"Understand work's contribution to overall project\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Organize and monitor work tasks.",
+    "benefits": [
+      "Intuitive user interface and dashboard",
+      "Easily navigate personal and team work",
+      "Clearly view assigned work",
+      "Understand work's contribution to overall project"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T10:50:05.512025+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "hm_agent_words",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3c553fe2472b9b1a612e549b1e8c7bde19f9a4066e2f34d48a8df3bead11a5d9",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3438,
+  "output_tokens": 997,
+  "cost_usd": 0.0035239,
+  "elapsed_s": 5.8,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Comprehensive platform for consolidating all work tasks and communication\",\n    \"Highly customizable to fit specific project management workflows\",\n    \"Effective for organizing deadlines, priorities, and team responsibilities\"\n  ],\n  \"cons\": [\n    \"Initial setup can be complex and time-consuming due to extensive features\",\n    \"The sheer number of options can feel overwhelming for a small team\",\n    \"Pricing model might be perceived as high for advanced features needed by a small business\"\n  ],\n  \"overall_experience\": \"This marketing director likely found ClickUp to be a powerful tool for centralizing and organizing work tasks, appreciating its extensive customization and all-in-one capabilities. However, the initial learning curve and the vast number of features probably led to some setup challenges and a feeling of being overwhelmed. While it effectively streamlined project management, the cost for a small business may have been a point of consideration.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Comprehensive platform for consolidating all work tasks and communication",
+      "Highly customizable to fit specific project management workflows",
+      "Effective for organizing deadlines, priorities, and team responsibilities"
+    ],
+    "cons": [
+      "Initial setup can be complex and time-consuming due to extensive features",
+      "The sheer number of options can feel overwhelming for a small team",
+      "Pricing model might be perceived as high for advanced features needed by a small business"
+    ],
+    "overall_experience": "This marketing director likely found ClickUp to be a powerful tool for centralizing and organizing work tasks, appreciating its extensive customization and all-in-one capabilities. However, the initial learning curve and the vast number of features probably led to some setup challenges and a feeling of being overwhelmed. While it effectively streamlined project management, the cost for a small business may have been a point of consideration."
+  },
+  "ts": "2026-10-18T10:56:36.868734+00:00"
+}

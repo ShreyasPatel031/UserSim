@@ -1,0 +1,16 @@
+{"product": "ClickUp", "run_id": "clickup_deep_1", "session_id": "da64d928200c4d84850fe6b66eb016c5",
+ "task": "I need to set up a new project in ClickUp for our upcoming 'Feature X' development. I'll add a few key tasks, assign them, and set due dates. Then, I want to create a custom field to track 'Priority' and set up a Kanban board view to visualize progress. Finally, I'll update a task's priority and move it to a different status.",
+ "signed_in": true, "reached_product": true, "outcome": "partial", "steps_used": 36,
+ "observations": [
+  {"kind": "signup_friction", "feature": "signup", "what": "Sign-up needed email, then a second form with name/password, a reCAPTCHA image challenge and a 4-digit emailed code before onboarding."},
+  {"kind": "signup_friction", "feature": "onboarding", "what": "Onboarding ran about 8 screens (use type, team, referral source, invites, imports, features, integrations, workspace name), and the features screen silently refused Next until at least one feature was picked, followed by a Free vs 14-day trial modal."},
+  {"kind": "product_benefit", "feature": "list view quick-add", "what": "The inline Add Task row stays open after Enter, so the second Feature X task was added with a single typed line and a 'Task created' toast offered View task / Copy URL."},
+  {"kind": "product_benefit", "feature": "custom fields", "what": "The + at the end of the list header opened a Fields panel where Dropdown was the first popular type, and a 'Priority' field with High/Low options was created in four actions on the free plan."},
+  {"kind": "product_friction", "feature": "custom fields", "what": "The dropdown field form starts with placeholder options 'Option 1' and 'Option 2' that have to be overwritten one at a time, and the Fields panel covers most of the task list while open."},
+  {"kind": "product_friction", "feature": "custom fields", "what": "ClickUp already has a built-in flag-style Priority on every card, so creating a custom 'Priority' dropdown gives no warning about duplicating that built-in field."},
+  {"kind": "product_benefit", "feature": "board view", "what": "A Board (Kanban) view tab already existed on the list next to List, so the Kanban view needed one click rather than setup."},
+  {"kind": "product_benefit", "feature": "board view status change", "what": "Dragging the Demo Alpha card from TO DO to IN PROGRESS worked in one drag, with column counts updating immediately (5 to 4, 0 to 1)."},
+  {"kind": "product_friction", "feature": "workspace/project setup", "what": "The new workspace was pre-filled with Project 1, Project 2 and placeholder Task 1-3 items, so my Feature X tasks ended up mixed in with demo clutter unless I spent extra steps creating a new list or deleting them."},
+  {"kind": "product_friction", "feature": "AI side panel", "what": "A Brain AI chat panel opened by default and took about a third of the screen, which squeezed the list so task names and the custom field column were truncated."},
+  {"kind": "agent_failure", "feature": "run budget", "what": "I spent about 25 of 39 steps on sign-up and onboarding and ran out before adding a third task, assignees, due dates, or setting a Priority value on a task."}
+ ]}

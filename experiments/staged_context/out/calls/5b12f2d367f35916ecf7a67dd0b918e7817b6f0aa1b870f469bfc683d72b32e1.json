@@ -1,0 +1,30 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "5b12f2d367f35916ecf7a67dd0b918e7817b6f0aa1b870f469bfc683d72b32e1",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 173,
+  "output_tokens": 489,
+  "cost_usd": 0.0012743999999999998,
+  "elapsed_s": 3.2,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage projects\",\n  \"benefits\": [\n    \"Simple and minimalistic usability\",\n    \"Good for tracking real-time fast-paced projects\",\n    \"Projects executed in less time\",\n    \"Less setups and ease of initiation\"\n  ],\n  \"frictions\": [\n    \"Not capable of handling heavy timeline projects\",\n    \"Only suitable for small or medium term projects\"\n  ]\n}",
+  "json": {
+    "task": "Manage projects",
+    "benefits": [
+      "Simple and minimalistic usability",
+      "Good for tracking real-time fast-paced projects",
+      "Projects executed in less time",
+      "Less setups and ease of initiation"
+    ],
+    "frictions": [
+      "Not capable of handling heavy timeline projects",
+      "Only suitable for small or medium term projects"
+    ]
+  },
+  "ts": "2026-10-18T10:50:06.050036+00:00"
+}

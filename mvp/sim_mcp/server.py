@@ -40,8 +40,8 @@ Two modes:
   on the first call (status "pending" means call again). Use it to set expectations before, or instead of, human mode.
 - HUMAN MODE ON TOP OF AGENT MODE (for a prediction): usersim_plan_human_run gives the task that adds signal (the core
   job done for real, not onboarding); run it with the flow below; then usersim_combine_human_run adds what the run saw
-  to the agent-mode prediction in the amount that held up on real reviewers (ratings unchanged, at most one pro and
-  one con changed).
+  to the agent-mode prediction in the amount that held up on real reviewers (ratings unchanged; pros/cons rewritten
+  with the run's product observations).
 
 Human mode flow:
 1. Get a PUBLIC product URL from the human (localhost won't work; a preview/staging deploy is fine). That is the only thing they must provide.
@@ -567,8 +567,9 @@ async def usersim_combine_human_run(
     competitors: list[str] | None = Field(default=None, description="1-3 rival names; omit to discover them from product_url."),
 ) -> str:
     """HUMAN MODE, step 3: agent-mode prediction plus what the simulated user saw, in the amount that held up on real
-    reviewers: ratings stay agent mode's; at most one pro and one con are changed by product observations (setup,
-    free-plan, pricing and support notes are dropped). May return status "pending": call again."""
+    reviewers. Ratings stay agent mode's. With the product's own reviews, pros / cons / overall experience are rewritten
+    with the run's product observations added (held out: cons recall +0.05); with none, at most one pro and one con
+    change (setup, free-plan, pricing and support notes dropped). May return status "pending": call again."""
     from mvp import human_mode
     from mvp.sim_mcp import limits as L
 

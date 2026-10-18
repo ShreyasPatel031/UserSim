@@ -1,0 +1,28 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7e439b14c6fefbf69c9d0fd386630a18175de1634a5f74f07548788e9bfa0083",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 187,
+  "output_tokens": 419,
+  "cost_usd": 0.0011036,
+  "elapsed_s": 3.16,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage email communications\",\n  \"benefits\": [\n    \"Free service is good for small clients\",\n    \"Paid plans are affordable\"\n  ],\n  \"frictions\": [\n    \"User interface is not intuitive\",\n    \"SMTP connection reactivation requires contacting support\"\n  ]\n}",
+  "json": {
+    "task": "Manage email communications",
+    "benefits": [
+      "Free service is good for small clients",
+      "Paid plans are affordable"
+    ],
+    "frictions": [
+      "User interface is not intuitive",
+      "SMTP connection reactivation requires contacting support"
+    ]
+  },
+  "ts": "2026-10-18T10:53:01.622716+00:00"
+}

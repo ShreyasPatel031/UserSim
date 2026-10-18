@@ -1,0 +1,31 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "5cba4e4edad3c9eefad29a4483dcf20e003ea431cabb4a68eff949afbe14739b",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 248,
+  "output_tokens": 484,
+  "cost_usd": 0.0012844,
+  "elapsed_s": 6.13,
+  "error": null,
+  "text": "{\n  \"task\": \"Centralize, securely share, and control access to credentials among a team\",\n  \"benefits\": [\n    \"Solve tasks on a single screen\",\n    \"Direct and simple user experience\",\n    \"Efficient task completion\",\n    \"Securely share credentials\"\n  ],\n  \"frictions\": [\n    \"Information and settings are hidden\",\n    \"Requires more navigation than desired\",\n    \"Hierarchy could be clearer for main actions and settings\"\n  ]\n}",
+  "json": {
+    "task": "Centralize, securely share, and control access to credentials among a team",
+    "benefits": [
+      "Solve tasks on a single screen",
+      "Direct and simple user experience",
+      "Efficient task completion",
+      "Securely share credentials"
+    ],
+    "frictions": [
+      "Information and settings are hidden",
+      "Requires more navigation than desired",
+      "Hierarchy could be clearer for main actions and settings"
+    ]
+  },
+  "ts": "2026-10-18T10:44:28.963505+00:00"
+}

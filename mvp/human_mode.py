@@ -10,11 +10,14 @@ excluded from the context so it is treated as new):
   navigation and core-feature depth. So the run is asked to do the core job for real (3+ items), then two
   second-level features (views, custom fields, reports, automations...), then edit / reorganise, and to report
   product facts, not onboarding.
-- Letting run notes rewrite the prediction hurt (pros recall 0.42 -> 0.36, cons 0.28 -> 0.21 over 3 products x 40
-  reviewers); the run's own ratings were about a star too low. Letting them change at most ONE pro and ONE con of the
-  context prediction, after dropping notes about free-plan limits, setup, onboarding, pricing, billing and support,
-  was the only rule that helped (cons recall 0.28 -> 0.31, reviewers with a matched con 42% -> 44%). Ratings stay as
-  agent mode set them.
+- On top of the shipped agent mode (product's own reviews + rivals), adding the run's product observations to the
+  evidence the words are written from raised cons recall 0.269 -> 0.315 (+0.046, 95% CI +0.007..+0.085; 173 held-out
+  reviewers, 5 products, better on 4); pros unchanged (+0.004). Changing at most one item instead was slightly worse
+  there (hm_agent_eval.py, out/human_mode/agent_mode_plus_run.csv).
+- With NO own reviews (a new product; context = competitors only), free-form notes hurt (pros 0.42 -> 0.36, cons
+  0.28 -> 0.21, product-level, 3 products) and only a bounded edit helped (at most one pro and one con changed, after
+  dropping free-plan / setup / onboarding / pricing / billing / support notes: cons 0.28 -> 0.31).
+- Ratings stay agent mode's: a first session's impressions ran about a star below real reviewers.
 No silent fallbacks: if agent mode has no result, or there are no usable observations, the result says so.
 """
 
@@ -145,16 +148,65 @@ async def filter_observations(observations: list[dict], llm=None) -> tuple[list[
     return kept, [ln for ln in lines if ln not in kept]
 
 
+RUN_SECTION = """## What a simulated new user saw when using {product} itself today (signed in, demo data)
+{obs}"""
+
+
+def product_lines(observations: list[dict]) -> list[str]:
+    return [f"- [{str(o.get('kind', '')).replace('product_', '')}] {str(o.get('what', '')).strip()}"
+            for o in observations if str(o.get("kind", "")) in ("product_friction", "product_benefit") and o.get("what")]
+
+
+async def _words_llm(prompt: str) -> dict:
+    """agent_mode's default words call (same system prompt, temperature and thinking)."""
+    from capability.gemini_config import extract_json, gemini_chat
+
+    raw = await gemini_chat([{"role": "system", "content": AM.WORDS_SYSTEM}, {"role": "user", "content": prompt}],
+                            temperature=0.7, json_mode=True, thinking_budget=AM.WORDS_THINKING)
+    j = extract_json(raw)
+    return j if isinstance(j, dict) else {}
+
+
 async def combine(*, product: str, url: str, persona: dict[str, Any], observations: list[dict], task: str = "",
-                  competitors: list[str] | None = None, wait_s: float = 45.0, llm=None, agent=None) -> dict[str, Any]:
-    """Agent-mode prediction, then at most MAX_EDITS pro and con changed by the run's product observations."""
+                  competitors: list[str] | None = None, wait_s: float = 45.0, llm=None, agent=None,
+                  words_llm=None) -> dict[str, Any]:
+    """Agent-mode prediction plus the run's product observations, in the amount that held up on real reviewers.
+
+    Product with its own reviews: the words are rewritten from agent mode's evidence plus the observations.
+    No own reviews: at most MAX_EDITS pro and con of agent mode's words change (first-session notes dropped).
+    Ratings are agent mode's in both cases."""
     base = await (agent or AM.predict_experience)(product=product, url=url, persona=persona, task=task,
                                                   competitors=competitors, wait_s=wait_s)
     if base.get("status") != "ok":
         return {**base, "mode": "human", "reason": "agent-mode prediction not ready: " + str(base.get("reason") or base.get("status"))}
+    lines = product_lines(observations or [])
+    if (base.get("evidence") or {}).get("own_reviews"):
+        out = {**base, "mode": "human", "agent_mode": {"pros": base.get("pros"), "cons": base.get("cons"),
+                                                       "overall_experience": base.get("overall_experience")},
+               "observations_used": lines, "rule": "own reviews present: words rewritten with the run's observations added"}
+        if not lines:
+            out["human_note"] = "no product observations in the run: the prediction is agent mode's, unchanged"
+            return out
+        section = "\n\n" + RUN_SECTION.format(product=product, obs="\n".join(lines))
+        inner = words_llm or _words_llm
+
+        async def with_run(prompt: str) -> dict:
+            return await inner(prompt + section)
+        again = await (agent or AM.predict_experience)(product=product, url=url, persona=persona, task=task,
+                                                       competitors=competitors, wait_s=wait_s, llm=with_run)
+        if again.get("status") != "ok" or again.get("words_error"):
+            out["human_note"] = f"rewriting with the observations failed ({again.get('words_error') or again.get('status')}): agent mode's words kept"
+            return out
+        out.update(pros=again.get("pros") or [], cons=again.get("cons") or [],
+                   overall_experience=again.get("overall_experience") or "")
+        out["how_to_read"] = (base.get("how_to_read", "") + " Human mode: ratings are agent mode's (a first session's "
+                              "impressions ran about a star low against real reviewers); pros, cons and overall experience "
+                              "were rewritten with what the simulated user saw added to the review evidence.")
+        return out
     kept, dropped = await filter_observations(observations or [], llm)
     out = {**base, "mode": "human", "agent_mode": {"pros": base.get("pros"), "cons": base.get("cons")},
-           "observations_used": kept, "observations_dropped_first_session": dropped, "changed": []}
+           "observations_used": kept, "observations_dropped_first_session": dropped, "changed": [],
+           "rule": "no own reviews: at most one pro and one con changed by the run's observations"}
     if not kept:
         out["human_note"] = ("no usable product observations (none, or only setup / free-plan / pricing / support notes): "
                              "the prediction is agent mode's, unchanged")

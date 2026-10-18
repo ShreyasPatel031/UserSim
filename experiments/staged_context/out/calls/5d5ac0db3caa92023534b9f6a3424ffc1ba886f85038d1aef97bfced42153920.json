@@ -1,0 +1,30 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "5d5ac0db3caa92023534b9f6a3424ffc1ba886f85038d1aef97bfced42153920",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 172,
+  "output_tokens": 474,
+  "cost_usd": 0.0012365999999999998,
+  "elapsed_s": 3.9,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage invoices and share files.\",\n  \"benefits\": [\n    \"Simple and well-organized invoicing\",\n    \"Easy payment tracking\",\n    \"Centralized project file storage\",\n    \"Quick team access to files\"\n  ],\n  \"frictions\": [\n    \"File storage has limits\",\n    \"Search function can be slow for older files in large projects\"\n  ]\n}",
+  "json": {
+    "task": "Manage invoices and share files.",
+    "benefits": [
+      "Simple and well-organized invoicing",
+      "Easy payment tracking",
+      "Centralized project file storage",
+      "Quick team access to files"
+    ],
+    "frictions": [
+      "File storage has limits",
+      "Search function can be slow for older files in large projects"
+    ]
+  },
+  "ts": "2026-10-18T10:50:09.491163+00:00"
+}

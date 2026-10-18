@@ -1,0 +1,30 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "6b4fbcc9a4df906d548460479a2656d76657f67e5438e29a998c52578f42630d",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 467,
+  "output_tokens": 526,
+  "cost_usd": 0.0014551,
+  "elapsed_s": 3.26,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage email and SMS marketing campaigns and transactional deliveries for clients.\",\n  \"benefits\": [\n    \"Offers volume-based pricing instead of active contacts.\",\n    \"Provides unified email and SMS channels within the same automation workflows.\",\n    \"Ensures reliable transactional email delivery.\",\n    \"Reduces the need for multiple third-party tools.\"\n  ],\n  \"frictions\": [\n    \"Has extremely rigorous compliance checks that can pause accounts.\",\n    \"Agency management user experience for switching between client accounts is not optimal.\"\n  ]\n}",
+  "json": {
+    "task": "Manage email and SMS marketing campaigns and transactional deliveries for clients.",
+    "benefits": [
+      "Offers volume-based pricing instead of active contacts.",
+      "Provides unified email and SMS channels within the same automation workflows.",
+      "Ensures reliable transactional email delivery.",
+      "Reduces the need for multiple third-party tools."
+    ],
+    "frictions": [
+      "Has extremely rigorous compliance checks that can pause accounts.",
+      "Agency management user experience for switching between client accounts is not optimal."
+    ]
+  },
+  "ts": "2026-10-18T10:52:57.783018+00:00"
+}

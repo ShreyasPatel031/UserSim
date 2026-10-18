@@ -1,0 +1,36 @@
+{
+  "stage": "hm_agent_words",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "5f0377c11cb0e10d67a88348bac4f37ba1c7eb624bba92bf0b74ea8c95d5c5f9",
+  "temperature": 0.7,
+  "seed": 1001,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3017,
+  "output_tokens": 1021,
+  "cost_usd": 0.0034576,
+  "elapsed_s": 9.35,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Efficiently manages and shares team credentials across development environments\",\n    \"Robust security features and organization with vaults\",\n    \"Seamless browser integration for autofill and password generation\"\n  ],\n  \"cons\": [\n    \"Autofill occasionally struggles on specific websites\",\n    \"Support response times could be improved\",\n    \"Initial setup or understanding of advanced features might have a slight learning curve\"\n  ],\n  \"overall_experience\": \"This Full Stack Developer likely found Bitwarden to be a highly effective solution for securely managing and sharing credentials within their large enterprise environment. They appreciated its strong security, organizational capabilities with vaults, and how it streamlined access to various applications and environments. While generally positive, minor frustrations may have arisen from occasional autofill inconsistencies or slower support interactions.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Efficiently manages and shares team credentials across development environments",
+      "Robust security features and organization with vaults",
+      "Seamless browser integration for autofill and password generation"
+    ],
+    "cons": [
+      "Autofill occasionally struggles on specific websites",
+      "Support response times could be improved",
+      "Initial setup or understanding of advanced features might have a slight learning curve"
+    ],
+    "overall_experience": "This Full Stack Developer likely found Bitwarden to be a highly effective solution for securely managing and sharing credentials within their large enterprise environment. They appreciated its strong security, organizational capabilities with vaults, and how it streamlined access to various applications and environments. While generally positive, minor frustrations may have arisen from occasional autofill inconsistencies or slower support interactions."
+  },
+  "ts": "2026-10-18T10:44:45.640108+00:00"
+}

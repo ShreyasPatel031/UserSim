@@ -1,0 +1,36 @@
+{
+  "stage": "hm_agent_words",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7d29b3185f66fdfbc96623e7484f68dda452eef39cba9e985bb757fbb1a6954a",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3814,
+  "output_tokens": 1089,
+  "cost_usd": 0.0038667,
+  "elapsed_s": 10.44,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Comprehensive feature set for task and project management\",\n    \"Strong automation capabilities for streamlining workflows\",\n    \"Customizable dashboards provide a good overview of team workload\"\n  ],\n  \"cons\": [\n    \"Steep learning curve due to the vast number of features\",\n    \"Performance issues like occasional lag, especially for larger teams\",\n    \"Reporting and analytics capabilities could be more in-depth for an analytics role\"\n  ],\n  \"overall_experience\": \"The manager found ClickUp to be a powerful tool for managing complex projects and automating workflows within their large aviation company. While the extensive features offered significant potential for innovation and efficiency, the initial learning curve and occasional performance lags were notable frustrations. They appreciated the customization for project oversight but desired more sophisticated analytics and reporting options to fully support their role.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Comprehensive feature set for task and project management",
+      "Strong automation capabilities for streamlining workflows",
+      "Customizable dashboards provide a good overview of team workload"
+    ],
+    "cons": [
+      "Steep learning curve due to the vast number of features",
+      "Performance issues like occasional lag, especially for larger teams",
+      "Reporting and analytics capabilities could be more in-depth for an analytics role"
+    ],
+    "overall_experience": "The manager found ClickUp to be a powerful tool for managing complex projects and automating workflows within their large aviation company. While the extensive features offered significant potential for innovation and efficiency, the initial learning curve and occasional performance lags were notable frustrations. They appreciated the customization for project oversight but desired more sophisticated analytics and reporting options to fully support their role."
+  },
+  "ts": "2026-10-18T10:57:05.938371+00:00"
+}

@@ -1,0 +1,29 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e310836d7f3f0ec1931496b88319338ea44d25b2a586f8567927e11319d55b31",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 633,
+  "output_tokens": 495,
+  "cost_usd": 0.0014274,
+  "elapsed_s": 3.44,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage projects, tasks, communications, and documents.\",\n  \"benefits\": [\n    \"Easy to understand and learn for new users\",\n    \"Provides a centralized view of activity, tasks, and conversations across multiple projects\",\n    \"Hill Charts offer a more accurate representation of project progress\",\n    \"Reduces time spent in status meetings and onboarding new team members\"\n  ],\n  \"frictions\": [\n    \"Simplicity can be a limitation for users who prefer extensive customization and multiple views\"\n  ]\n}",
+  "json": {
+    "task": "Manage projects, tasks, communications, and documents.",
+    "benefits": [
+      "Easy to understand and learn for new users",
+      "Provides a centralized view of activity, tasks, and conversations across multiple projects",
+      "Hill Charts offer a more accurate representation of project progress",
+      "Reduces time spent in status meetings and onboarding new team members"
+    ],
+    "frictions": [
+      "Simplicity can be a limitation for users who prefer extensive customization and multiple views"
+    ]
+  },
+  "ts": "2026-10-18T10:50:09.011856+00:00"
+}

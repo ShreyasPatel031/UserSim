@@ -1,0 +1,31 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b87aebd7929c7be99f4260c81d516cd5a81ce15efed1f4bd585e6bfc688a217c",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 226,
+  "output_tokens": 538,
+  "cost_usd": 0.0014127999999999999,
+  "elapsed_s": 3.59,
+  "error": null,
+  "text": "{\n  \"task\": \"Use Brevo for marketing and automation to engage customers.\",\n  \"benefits\": [\n    \"Easy to use (once capabilities are understood)\",\n    \"Excellent customer support\",\n    \"Achieves positive results and good customer engagement\",\n    \"Good value for money\"\n  ],\n  \"frictions\": [\n    \"Advanced features require a learning curve\",\n    \"Not beginner-friendly for users with limited marketing or automation experience\",\n    \"Pricing difference between 1,500-contact plan and higher tiers could be more competitive\"\n  ]\n}",
+  "json": {
+    "task": "Use Brevo for marketing and automation to engage customers.",
+    "benefits": [
+      "Easy to use (once capabilities are understood)",
+      "Excellent customer support",
+      "Achieves positive results and good customer engagement",
+      "Good value for money"
+    ],
+    "frictions": [
+      "Advanced features require a learning curve",
+      "Not beginner-friendly for users with limited marketing or automation experience",
+      "Pricing difference between 1,500-contact plan and higher tiers could be more competitive"
+    ]
+  },
+  "ts": "2026-10-18T10:53:01.426595+00:00"
+}

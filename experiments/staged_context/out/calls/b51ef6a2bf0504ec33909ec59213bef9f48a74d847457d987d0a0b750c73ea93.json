@@ -1,0 +1,36 @@
+{
+  "stage": "hm_agent_words",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b51ef6a2bf0504ec33909ec59213bef9f48a74d847457d987d0a0b750c73ea93",
+  "temperature": 0.7,
+  "seed": 1001,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3446,
+  "output_tokens": 985,
+  "cost_usd": 0.0034963,
+  "elapsed_s": 5.32,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Comprehensive features for project and team collaboration\",\n    \"Effective for managing marketing campaigns and content workflows\",\n    \"Customizable views and task filtering capabilities\"\n  ],\n  \"cons\": [\n    \"Steep learning curve due to extensive features and customization\",\n    \"Performance issues or glitches, particularly on mobile\",\n    \"Pricing model can be costly for large teams in higher education\"\n  ],\n  \"overall_experience\": \"This marketing professional likely finds ClickUp to be a powerful tool for managing projects and team collaboration within their large higher education institution. While appreciating its extensive features for streamlining workflows and centralizing information, they probably experience a significant learning curve and occasional performance frustrations, especially given the complexity often associated with large organizations. The cost might also be a concern due to the company's size, but the overall functionality supports their operational needs.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Comprehensive features for project and team collaboration",
+      "Effective for managing marketing campaigns and content workflows",
+      "Customizable views and task filtering capabilities"
+    ],
+    "cons": [
+      "Steep learning curve due to extensive features and customization",
+      "Performance issues or glitches, particularly on mobile",
+      "Pricing model can be costly for large teams in higher education"
+    ],
+    "overall_experience": "This marketing professional likely finds ClickUp to be a powerful tool for managing projects and team collaboration within their large higher education institution. While appreciating its extensive features for streamlining workflows and centralizing information, they probably experience a significant learning curve and occasional performance frustrations, especially given the complexity often associated with large organizations. The cost might also be a concern due to the company's size, but the overall functionality supports their operational needs."
+  },
+  "ts": "2026-10-18T10:57:33.384725+00:00"
+}

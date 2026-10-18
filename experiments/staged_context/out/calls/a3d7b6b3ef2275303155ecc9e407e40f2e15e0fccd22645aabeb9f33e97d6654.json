@@ -1,0 +1,30 @@
+{
+  "stage": "hm_agent_edit",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a3d7b6b3ef2275303155ecc9e407e40f2e15e0fccd22645aabeb9f33e97d6654",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 1024,
+  "input_tokens": 511,
+  "output_tokens": 848,
+  "cost_usd": 0.0022733,
+  "elapsed_s": 4.67,
+  "error": null,
+  "text": "{\n  \"pros\": [\n    \"Comprehensive features for task management and documentation\",\n    \"Effective for tracking project progress and team tickets\",\n    \"Good for centralizing work away from disparate tools\"\n  ],\n  \"cons\": [\n    \"Occasional UI glitches or performance issues\",\n    \"Can be overwhelming due to feature richness\",\n    \"Customer support might be slow or unresponsive at times\"\n  ],\n  \"changed\": []\n}",
+  "json": {
+    "pros": [
+      "Comprehensive features for task management and documentation",
+      "Effective for tracking project progress and team tickets",
+      "Good for centralizing work away from disparate tools"
+    ],
+    "cons": [
+      "Occasional UI glitches or performance issues",
+      "Can be overwhelming due to feature richness",
+      "Customer support might be slow or unresponsive at times"
+    ],
+    "changed": []
+  },
+  "ts": "2026-10-18T10:57:32.463288+00:00"
+}

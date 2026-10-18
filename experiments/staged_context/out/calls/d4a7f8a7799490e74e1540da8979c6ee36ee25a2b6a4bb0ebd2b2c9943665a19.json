@@ -1,0 +1,36 @@
+{
+  "stage": "hm_agent_words",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d4a7f8a7799490e74e1540da8979c6ee36ee25a2b6a4bb0ebd2b2c9943665a19",
+  "temperature": 0.7,
+  "seed": 1001,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3692,
+  "output_tokens": 1017,
+  "cost_usd": 0.0036501,
+  "elapsed_s": 5.75,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 2,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 2,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 3,\n  \"pros\": [\n    \"Extensive features for project collaboration\",\n    \"Good customisation options for task management\",\n    \"Kanban board view was readily available\"\n  ],\n  \"cons\": [\n    \"Overwhelming interface and steep learning curve for a trial user\",\n    \"Pre-filled demo data created clutter and confusion\",\n    \"Default AI chat panel took up too much screen space\"\n  ],\n  \"overall_experience\": \"As a self-employed individual on a free trial, this user found ClickUp's extensive features for project collaboration to be powerful but also overwhelming. The initial setup and navigation were complicated by pre-filled demo data and a busy interface, making it difficult to quickly grasp and implement for their specific needs. While the core functionality was present, the steep learning curve and initial friction points likely hindered a smooth evaluation process.\"\n}",
+  "json": {
+    "ease_of_use_rating": 2,
+    "functionality_rating": 3,
+    "overall_rating": 2,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 3,
+    "pros": [
+      "Extensive features for project collaboration",
+      "Good customisation options for task management",
+      "Kanban board view was readily available"
+    ],
+    "cons": [
+      "Overwhelming interface and steep learning curve for a trial user",
+      "Pre-filled demo data created clutter and confusion",
+      "Default AI chat panel took up too much screen space"
+    ],
+    "overall_experience": "As a self-employed individual on a free trial, this user found ClickUp's extensive features for project collaboration to be powerful but also overwhelming. The initial setup and navigation were complicated by pre-filled demo data and a busy interface, making it difficult to quickly grasp and implement for their specific needs. While the core functionality was present, the steep learning curve and initial friction points likely hindered a smooth evaluation process."
+  },
+  "ts": "2026-10-18T10:58:07.826153+00:00"
+}

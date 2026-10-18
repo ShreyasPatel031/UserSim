@@ -1,0 +1,30 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d02f7d8d38276ce8813fc51658e6705ae4532513c900096112a5a5b94fb9ca37",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 146,
+  "output_tokens": 490,
+  "cost_usd": 0.0012688,
+  "elapsed_s": 3.71,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage team communication and simplify processes\",\n  \"benefits\": [\n    \"Easy to learn\",\n    \"Easy to use\",\n    \"Good for team communication\",\n    \"Simplifies processes\"\n  ],\n  \"frictions\": [\n    \"Lacks customization\",\n    \"May not suit needs requiring more depth\"\n  ]\n}",
+  "json": {
+    "task": "Manage team communication and simplify processes",
+    "benefits": [
+      "Easy to learn",
+      "Easy to use",
+      "Good for team communication",
+      "Simplifies processes"
+    ],
+    "frictions": [
+      "Lacks customization",
+      "May not suit needs requiring more depth"
+    ]
+  },
+  "ts": "2026-10-18T10:50:05.615903+00:00"
+}

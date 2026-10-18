@@ -1,0 +1,27 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a16ef6db32776723bc267885cec606b9eb1f8dee7938f9c0ebd9d8f26dc90e0d",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 176,
+  "output_tokens": 473,
+  "cost_usd": 0.0012353,
+  "elapsed_s": 3.15,
+  "error": null,
+  "text": "{\n  \"task\": \"Allocate work and track timelines\",\n  \"benefits\": [\n    \"Great for work allocation\",\n    \"Great for keeping track of work\",\n    \"Has not faced any issues in using it\",\n    \"Has a simple easy to use interface\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Allocate work and track timelines",
+    "benefits": [
+      "Great for work allocation",
+      "Great for keeping track of work",
+      "Has not faced any issues in using it",
+      "Has a simple easy to use interface"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T10:56:15.981387+00:00"
+}

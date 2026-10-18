@@ -52,6 +52,31 @@ class HumanModeTest(unittest.TestCase):
         self.assertNotIn("misclicked", llm.prompts[-1])  # agent failures never reach the model
         self.assertEqual(out["agent_mode"]["cons"], BASE["cons"])
 
+    def test_own_reviews_rewrite_words_with_observations_and_keep_ratings(self):
+        calls = []
+
+        async def agent(**kw):
+            calls.append(kw)
+            base = {**BASE, "evidence": {"own_reviews": 60}}
+            if kw.get("llm"):
+                words = await kw["llm"]("WORDS PROMPT")
+                return {**base, "pros": words["pros"], "cons": words["cons"], "overall_experience": words["overall_experience"],
+                        "ratings": {"overall_rating": {"estimate": 1.0}}}
+            return base
+
+        async def words_llm(prompt):
+            words_llm.prompt = prompt
+            return {"pros": ["Fast to-do entry"], "cons": ["Calendar ignores to-do dates"], "overall_experience": "Good."}
+        out = asyncio.run(H.combine(product="Basecamp", url="https://basecamp.com/", persona={"role": "PM"}, observations=OBS,
+                                    agent=agent, words_llm=words_llm))
+        self.assertEqual(out["cons"], ["Calendar ignores to-do dates"])
+        self.assertEqual(out["ratings"], BASE["ratings"])  # the first (agent-mode) ratings, not the rewrite's
+        self.assertEqual(out["agent_mode"]["cons"], BASE["cons"])
+        self.assertIn("WORDS PROMPT", words_llm.prompt)
+        self.assertIn("Calendar does not show to-do due dates", words_llm.prompt)
+        self.assertNotIn("misclicked", words_llm.prompt)
+        self.assertEqual(len(calls), 2)
+
     def test_revision_changing_too_much_is_rejected(self):
         edit = {"pros": ["a", "b", "c"], "cons": ["d", "e", "f"]}
         out = _combine(_llm(["ui_ease_navigation", "ui_ease_navigation", "ui_ease_navigation"], edit))

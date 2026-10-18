@@ -1,0 +1,32 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1cd1c90da8839be4699b589dbbb711870ae3a3e132bb362324f95b1fe2430fd5",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 638,
+  "output_tokens": 536,
+  "cost_usd": 0.0015314,
+  "elapsed_s": 3.41,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage email and multi-channel communication campaigns\",\n  \"benefits\": [\n    \"Integrate email functionality with existing applications and workflows\",\n    \"Monitor email deliverability and identify spam issues\",\n    \"Create and customize email templates for consistent communication\",\n    \"Coordinate email, SMS, and WhatsApp from a single platform\"\n  ],\n  \"frictions\": [\n    \"Customization of templates can be time-consuming for precise control\",\n    \"Reporting and analytics lack granularity and ease of comparison across campaigns\",\n    \"Tracking scheduling details and making last-minute changes across multiple emails is cumbersome\",\n    \"Lack of a unified overview for comparing scheduling and performance across channels\"\n  ]\n}",
+  "json": {
+    "task": "Manage email and multi-channel communication campaigns",
+    "benefits": [
+      "Integrate email functionality with existing applications and workflows",
+      "Monitor email deliverability and identify spam issues",
+      "Create and customize email templates for consistent communication",
+      "Coordinate email, SMS, and WhatsApp from a single platform"
+    ],
+    "frictions": [
+      "Customization of templates can be time-consuming for precise control",
+      "Reporting and analytics lack granularity and ease of comparison across campaigns",
+      "Tracking scheduling details and making last-minute changes across multiple emails is cumbersome",
+      "Lack of a unified overview for comparing scheduling and performance across channels"
+    ]
+  },
+  "ts": "2026-10-18T10:52:58.339361+00:00"
+}

@@ -1,0 +1,31 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "61f7146bee61c33e5e16baf84064be59fb9d37e7fbd5c721e53697523daceaa1",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 177,
+  "output_tokens": 519,
+  "cost_usd": 0.0013506,
+  "elapsed_s": 3.07,
+  "error": null,
+  "text": "{\n  \"task\": null,\n  \"benefits\": [\n    \"Good features\",\n    \"Very easy to use\",\n    \"Intuitive interface\",\n    \"Excellent support\"\n  ],\n  \"frictions\": [\n    \"Onboarding experience could be improved\",\n    \"Relies heavily on online documentation\",\n    \"Limited hands-on guidance for new users\"\n  ]\n}",
+  "json": {
+    "task": null,
+    "benefits": [
+      "Good features",
+      "Very easy to use",
+      "Intuitive interface",
+      "Excellent support"
+    ],
+    "frictions": [
+      "Onboarding experience could be improved",
+      "Relies heavily on online documentation",
+      "Limited hands-on guidance for new users"
+    ]
+  },
+  "ts": "2026-10-18T10:52:55.158874+00:00"
+}

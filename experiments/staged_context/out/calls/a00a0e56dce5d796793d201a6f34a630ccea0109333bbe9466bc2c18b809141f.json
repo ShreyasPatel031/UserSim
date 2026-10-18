@@ -1,0 +1,36 @@
+{
+  "stage": "hm_agent_words",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a00a0e56dce5d796793d201a6f34a630ccea0109333bbe9466bc2c18b809141f",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3940,
+  "output_tokens": 1092,
+  "cost_usd": 0.0039120000000000005,
+  "elapsed_s": 9.8,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Flexible views (List, Board, Table) help track website tasks.\",\n    \"Custom fields and automation improve workflow for different teams.\",\n    \"Centralized task management reduces scattered communication.\"\n  ],\n  \"cons\": [\n    \"Initial setup can be overwhelming with many features and templates.\",\n    \"Mobile app performance can be inconsistent and less intuitive.\",\n    \"Occasional UI glitches or lag impact daily efficiency.\"\n  ],\n  \"overall_experience\": \"The Digital Website Project Coordinator likely found ClickUp to be a powerful tool for managing diverse website tasks across multiple teams. The platform's extensive customization and various project views were beneficial for organizing complex workflows. However, the initial learning curve and occasional performance issues might have created some frustration, particularly when needing quick updates on the go.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Flexible views (List, Board, Table) help track website tasks.",
+      "Custom fields and automation improve workflow for different teams.",
+      "Centralized task management reduces scattered communication."
+    ],
+    "cons": [
+      "Initial setup can be overwhelming with many features and templates.",
+      "Mobile app performance can be inconsistent and less intuitive.",
+      "Occasional UI glitches or lag impact daily efficiency."
+    ],
+    "overall_experience": "The Digital Website Project Coordinator likely found ClickUp to be a powerful tool for managing diverse website tasks across multiple teams. The platform's extensive customization and various project views were beneficial for organizing complex workflows. However, the initial learning curve and occasional performance issues might have created some frustration, particularly when needing quick updates on the go."
+  },
+  "ts": "2026-10-18T10:58:08.879203+00:00"
+}

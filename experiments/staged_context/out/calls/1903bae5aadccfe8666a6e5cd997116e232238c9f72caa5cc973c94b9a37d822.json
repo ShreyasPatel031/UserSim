@@ -1,0 +1,29 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1903bae5aadccfe8666a6e5cd997116e232238c9f72caa5cc973c94b9a37d822",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 218,
+  "output_tokens": 541,
+  "cost_usd": 0.0014179,
+  "elapsed_s": 3.59,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage projects, plan and organize tasks, and automate workflows for teams.\",\n  \"benefits\": [\n    \"AI agents\",\n    \"Project Management\",\n    \"Integration with several apps\",\n    \"Increases productivity and saves time and money\"\n  ],\n  \"frictions\": [\n    \"Admins cannot enable/disable automations for users\"\n  ]\n}",
+  "json": {
+    "task": "Manage projects, plan and organize tasks, and automate workflows for teams.",
+    "benefits": [
+      "AI agents",
+      "Project Management",
+      "Integration with several apps",
+      "Increases productivity and saves time and money"
+    ],
+    "frictions": [
+      "Admins cannot enable/disable automations for users"
+    ]
+  },
+  "ts": "2026-10-18T10:56:16.067556+00:00"
+}

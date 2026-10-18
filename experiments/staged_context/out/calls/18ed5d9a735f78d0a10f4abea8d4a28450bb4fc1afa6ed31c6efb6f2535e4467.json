@@ -1,0 +1,36 @@
+{
+  "stage": "hm_agent_words",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "18ed5d9a735f78d0a10f4abea8d4a28450bb4fc1afa6ed31c6efb6f2535e4467",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3597,
+  "output_tokens": 1081,
+  "cost_usd": 0.0037816,
+  "elapsed_s": 6.81,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Unified marketing automation builder for workflows\",\n    \"Ability to manage email lists and contacts efficiently\",\n    \"Visual workflow builder reduces manual setup time\"\n  ],\n  \"cons\": [\n    \"Limitations in custom fields, segmentation, and advanced automation functionality\",\n    \"Synchronization issues with integrated platforms and APIs\",\n    \"Flawed contact counting logic leading to unpredictable billing\"\n  ],\n  \"overall_experience\": \"This software developer likely found GetResponse's unified platform beneficial for building marketing automation workflows, appreciating the visual builder and integrated tools. However, they probably encountered significant frustrations with the limitations in advanced automation features, custom fields, and segmentation. Issues with API integrations and a potentially confusing contact counting model for billing would have also negatively impacted their experience, requiring workarounds rather than seamless functionality.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 6,
+    "pros": [
+      "Unified marketing automation builder for workflows",
+      "Ability to manage email lists and contacts efficiently",
+      "Visual workflow builder reduces manual setup time"
+    ],
+    "cons": [
+      "Limitations in custom fields, segmentation, and advanced automation functionality",
+      "Synchronization issues with integrated platforms and APIs",
+      "Flawed contact counting logic leading to unpredictable billing"
+    ],
+    "overall_experience": "This software developer likely found GetResponse's unified platform beneficial for building marketing automation workflows, appreciating the visual builder and integrated tools. However, they probably encountered significant frustrations with the limitations in advanced automation features, custom fields, and segmentation. Issues with API integrations and a potentially confusing contact counting model for billing would have also negatively impacted their experience, requiring workarounds rather than seamless functionality."
+  },
+  "ts": "2026-10-18T10:47:53.816261+00:00"
+}

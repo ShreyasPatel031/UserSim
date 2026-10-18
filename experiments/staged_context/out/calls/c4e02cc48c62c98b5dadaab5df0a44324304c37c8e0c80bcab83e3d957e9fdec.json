@@ -1,0 +1,30 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c4e02cc48c62c98b5dadaab5df0a44324304c37c8e0c80bcab83e3d957e9fdec",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 286,
+  "output_tokens": 468,
+  "cost_usd": 0.0012558,
+  "elapsed_s": 2.84,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage projects and team collaboration\",\n  \"benefits\": [\n    \"Increases collaborative efforts and transparency\",\n    \"Easy to use\",\n    \"Tracks projects and identifies bottlenecks\",\n    \"Automates functions\"\n  ],\n  \"frictions\": [\n    \"Difficult to set up automations without expert help\",\n    \"Difficult to figure out how to set up automations if not done regularly\"\n  ]\n}",
+  "json": {
+    "task": "Manage projects and team collaboration",
+    "benefits": [
+      "Increases collaborative efforts and transparency",
+      "Easy to use",
+      "Tracks projects and identifies bottlenecks",
+      "Automates functions"
+    ],
+    "frictions": [
+      "Difficult to set up automations without expert help",
+      "Difficult to figure out how to set up automations if not done regularly"
+    ]
+  },
+  "ts": "2026-10-18T10:56:18.390611+00:00"
+}

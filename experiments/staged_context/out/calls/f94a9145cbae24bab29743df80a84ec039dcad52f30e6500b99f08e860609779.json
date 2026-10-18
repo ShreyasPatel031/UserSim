@@ -1,0 +1,29 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f94a9145cbae24bab29743df80a84ec039dcad52f30e6500b99f08e860609779",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 221,
+  "output_tokens": 461,
+  "cost_usd": 0.0012188,
+  "elapsed_s": 3.11,
+  "error": null,
+  "text": "{\n  \"task\": \"Collaborate on projects and track progress\",\n  \"benefits\": [\n    \"Facilitates team collaboration on projects\",\n    \"Tracks project progress\",\n    \"Consolidates email notifications to a daily digest\",\n    \"Provides daily recaps\"\n  ],\n  \"frictions\": [\n    \"Difficulty managing projects with external consultants using separate Basecamp instances\"\n  ]\n}",
+  "json": {
+    "task": "Collaborate on projects and track progress",
+    "benefits": [
+      "Facilitates team collaboration on projects",
+      "Tracks project progress",
+      "Consolidates email notifications to a daily digest",
+      "Provides daily recaps"
+    ],
+    "frictions": [
+      "Difficulty managing projects with external consultants using separate Basecamp instances"
+    ]
+  },
+  "ts": "2026-10-18T10:50:05.340505+00:00"
+}

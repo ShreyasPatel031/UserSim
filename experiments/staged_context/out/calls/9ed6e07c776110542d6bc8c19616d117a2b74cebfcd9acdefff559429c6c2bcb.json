@@ -1,0 +1,28 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9ed6e07c776110542d6bc8c19616d117a2b74cebfcd9acdefff559429c6c2bcb",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 131,
+  "output_tokens": 429,
+  "cost_usd": 0.0011118,
+  "elapsed_s": 3.0,
+  "error": null,
+  "text": "{\n  \"task\": \"Create email campaigns\",\n  \"benefits\": [\n    \"Easy way to create email campaigns\",\n    \"Great customer support\"\n  ],\n  \"frictions\": [\n    \"Monthly price is very expensive\",\n    \"New tools offer better prices\"\n  ]\n}",
+  "json": {
+    "task": "Create email campaigns",
+    "benefits": [
+      "Easy way to create email campaigns",
+      "Great customer support"
+    ],
+    "frictions": [
+      "Monthly price is very expensive",
+      "New tools offer better prices"
+    ]
+  },
+  "ts": "2026-10-18T10:47:03.998614+00:00"
+}

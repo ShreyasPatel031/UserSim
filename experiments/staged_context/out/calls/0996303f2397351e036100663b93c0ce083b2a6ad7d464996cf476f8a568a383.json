@@ -1,0 +1,32 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0996303f2397351e036100663b93c0ce083b2a6ad7d464996cf476f8a568a383",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 291,
+  "output_tokens": 509,
+  "cost_usd": 0.0013598,
+  "elapsed_s": 3.26,
+  "error": null,
+  "text": "{\n  \"task\": \"Organize projects, communication, tasks, and files in one place\",\n  \"benefits\": [\n    \"Simple interface\",\n    \"Keeps tasks, discussions, schedules, and files organized in one place\",\n    \"Reduces back-and-forth emails\",\n    \"Facilitates team and client collaboration\"\n  ],\n  \"frictions\": [\n    \"Fewer advanced project management features\",\n    \"Limited reporting and analytics tools\",\n    \"Customization options are not flexible\",\n    \"May feel too simple for very large or complex teams\"\n  ]\n}",
+  "json": {
+    "task": "Organize projects, communication, tasks, and files in one place",
+    "benefits": [
+      "Simple interface",
+      "Keeps tasks, discussions, schedules, and files organized in one place",
+      "Reduces back-and-forth emails",
+      "Facilitates team and client collaboration"
+    ],
+    "frictions": [
+      "Fewer advanced project management features",
+      "Limited reporting and analytics tools",
+      "Customization options are not flexible",
+      "May feel too simple for very large or complex teams"
+    ]
+  },
+  "ts": "2026-10-18T10:50:06.425628+00:00"
+}

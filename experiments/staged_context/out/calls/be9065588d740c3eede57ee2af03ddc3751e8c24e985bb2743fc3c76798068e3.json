@@ -1,0 +1,26 @@
+{
+  "stage": "live_competitors",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "be9065588d740c3eede57ee2af03ddc3751e8c24e985bb2743fc3c76798068e3",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 512,
+  "input_tokens": 106,
+  "output_tokens": 441,
+  "cost_usd": 0.0011343,
+  "elapsed_s": 5.6,
+  "error": null,
+  "text": "{\n  \"competitors\": [\n    \"Asana\",\n    \"monday.com\",\n    \"Jira Work Management\",\n    \"Wrike\",\n    \"Smartsheet\"\n  ]\n}",
+  "json": {
+    "competitors": [
+      "Asana",
+      "monday.com",
+      "Jira Work Management",
+      "Wrike",
+      "Smartsheet"
+    ]
+  },
+  "ts": "2026-10-18T10:56:06.663409+00:00"
+}

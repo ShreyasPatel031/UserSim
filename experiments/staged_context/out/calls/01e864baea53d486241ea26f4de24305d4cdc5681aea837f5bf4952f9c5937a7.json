@@ -1,0 +1,32 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "01e864baea53d486241ea26f4de24305d4cdc5681aea837f5bf4952f9c5937a7",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 288,
+  "output_tokens": 562,
+  "cost_usd": 0.0014914,
+  "elapsed_s": 3.54,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage marketing operations and customer communication within a single platform\",\n  \"benefits\": [\n    \"Intuitive and easy to set up for campaigns\",\n    \"Powerful automation builder and effective segmentation tools\",\n    \"Strong deliverability rates and integrates with multiple CRM and e-commerce systems\",\n    \"Centralizes marketing operations and makes campaign management more efficient\"\n  ],\n  \"frictions\": [\n    \"Can be expensive for smaller teams\",\n    \"Some advanced automation functions have a learning curve\",\n    \"Some niche platforms require workarounds or specific API connections\",\n    \"Reporting dashboard could be more customizable\"\n  ]\n}",
+  "json": {
+    "task": "Manage marketing operations and customer communication within a single platform",
+    "benefits": [
+      "Intuitive and easy to set up for campaigns",
+      "Powerful automation builder and effective segmentation tools",
+      "Strong deliverability rates and integrates with multiple CRM and e-commerce systems",
+      "Centralizes marketing operations and makes campaign management more efficient"
+    ],
+    "frictions": [
+      "Can be expensive for smaller teams",
+      "Some advanced automation functions have a learning curve",
+      "Some niche platforms require workarounds or specific API connections",
+      "Reporting dashboard could be more customizable"
+    ]
+  },
+  "ts": "2026-10-18T10:47:05.843420+00:00"
+}

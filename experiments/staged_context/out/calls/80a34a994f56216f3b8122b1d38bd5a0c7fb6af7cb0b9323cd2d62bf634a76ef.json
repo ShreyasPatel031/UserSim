@@ -1,0 +1,29 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "80a34a994f56216f3b8122b1d38bd5a0c7fb6af7cb0b9323cd2d62bf634a76ef",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 308,
+  "output_tokens": 489,
+  "cost_usd": 0.0013149,
+  "elapsed_s": 3.35,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage an email list and send promotional emails\",\n  \"benefits\": [\n    \"Amazing customer support service\",\n    \"Affordable email marketing service\",\n    \"Email newsletters tool generates high revenue (over 70%)\",\n    \"Straightforward initial setup with helpful user guide\"\n  ],\n  \"frictions\": [\n    \"Limited email storage (500 emails) in the free version\"\n  ]\n}",
+  "json": {
+    "task": "Manage an email list and send promotional emails",
+    "benefits": [
+      "Amazing customer support service",
+      "Affordable email marketing service",
+      "Email newsletters tool generates high revenue (over 70%)",
+      "Straightforward initial setup with helpful user guide"
+    ],
+    "frictions": [
+      "Limited email storage (500 emails) in the free version"
+    ]
+  },
+  "ts": "2026-10-18T10:47:02.819215+00:00"
+}

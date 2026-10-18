@@ -1,0 +1,28 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "86dce410cf5f8fe0794ac1e5641b065725dfb30202fdc87183ecb65f8e462c2b",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 146,
+  "output_tokens": 341,
+  "cost_usd": 0.0008962999999999999,
+  "elapsed_s": 2.56,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage projects and facilitate cross-functional and geographical collaboration.\",\n  \"benefits\": [\n    \"Easy to navigate\",\n    \"Easy to teach others to use\"\n  ],\n  \"frictions\": [\n    \"Reports tab is tricky to use\",\n    \"Messages sometimes do not send immediately\"\n  ]\n}",
+  "json": {
+    "task": "Manage projects and facilitate cross-functional and geographical collaboration.",
+    "benefits": [
+      "Easy to navigate",
+      "Easy to teach others to use"
+    ],
+    "frictions": [
+      "Reports tab is tricky to use",
+      "Messages sometimes do not send immediately"
+    ]
+  },
+  "ts": "2026-10-18T10:50:10.115699+00:00"
+}

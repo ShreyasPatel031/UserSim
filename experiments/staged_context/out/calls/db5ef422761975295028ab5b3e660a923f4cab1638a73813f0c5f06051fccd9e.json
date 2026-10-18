@@ -1,0 +1,36 @@
+{
+  "stage": "hm_agent_words",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "db5ef422761975295028ab5b3e660a923f4cab1638a73813f0c5f06051fccd9e",
+  "temperature": 0.7,
+  "seed": 1001,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3811,
+  "output_tokens": 1060,
+  "cost_usd": 0.0037933000000000003,
+  "elapsed_s": 9.05,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Comprehensive feature set for managing diverse processes\",\n    \"High degree of customization for workflows and task states\",\n    \"Effective at centralizing project and task management\"\n  ],\n  \"cons\": [\n    \"Occasional UI glitches or performance slowdowns\",\n    \"Steep learning curve due to the sheer number of features\",\n    \"Overwhelming notification volume if not carefully managed\"\n  ],\n  \"overall_experience\": \"This user likely found ClickUp to be a powerful, all-in-one solution for managing complex IT and development processes, appreciating its flexibility and extensive feature set. While it effectively centralizes tasks and allows for significant customization, the platform's breadth sometimes leads to occasional performance hiccups or a steep learning curve. Despite these minor frustrations, it successfully served its purpose for comprehensive process and task management.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Comprehensive feature set for managing diverse processes",
+      "High degree of customization for workflows and task states",
+      "Effective at centralizing project and task management"
+    ],
+    "cons": [
+      "Occasional UI glitches or performance slowdowns",
+      "Steep learning curve due to the sheer number of features",
+      "Overwhelming notification volume if not carefully managed"
+    ],
+    "overall_experience": "This user likely found ClickUp to be a powerful, all-in-one solution for managing complex IT and development processes, appreciating its flexibility and extensive feature set. While it effectively centralizes tasks and allows for significant customization, the platform's breadth sometimes leads to occasional performance hiccups or a steep learning curve. Despite these minor frustrations, it successfully served its purpose for comprehensive process and task management."
+  },
+  "ts": "2026-10-18T10:57:07.486518+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "hm_agent_words",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0a961e42b66512dfac38617c6471bfa71832e4f17e3add97eca7b1cd7e48f71e",
+  "temperature": 0.7,
+  "seed": 1001,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3438,
+  "output_tokens": 978,
+  "cost_usd": 0.0034763999999999997,
+  "elapsed_s": 8.02,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Centralized task management and project visibility\",\n    \"High level of customization for workflows\",\n    \"Ability to integrate various tools into one platform\"\n  ],\n  \"cons\": [\n    \"Overwhelming number of features and options\",\n    \"Significant learning curve during initial setup\",\n    \"Pricing can feel high for a small business\"\n  ],\n  \"overall_experience\": \"This marketing director found ClickUp highly effective for consolidating and organizing their team's diverse work tasks, appreciating its powerful customization and ability to centralize project information. However, the initial setup and sheer volume of features presented a steep learning curve, leading to some frustration. While the platform offered robust functionality, the cost for a small business was a consideration.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Centralized task management and project visibility",
+      "High level of customization for workflows",
+      "Ability to integrate various tools into one platform"
+    ],
+    "cons": [
+      "Overwhelming number of features and options",
+      "Significant learning curve during initial setup",
+      "Pricing can feel high for a small business"
+    ],
+    "overall_experience": "This marketing director found ClickUp highly effective for consolidating and organizing their team's diverse work tasks, appreciating its powerful customization and ability to centralize project information. However, the initial setup and sheer volume of features presented a steep learning curve, leading to some frustration. While the platform offered robust functionality, the cost for a small business was a consideration."
+  },
+  "ts": "2026-10-18T10:56:29.578931+00:00"
+}

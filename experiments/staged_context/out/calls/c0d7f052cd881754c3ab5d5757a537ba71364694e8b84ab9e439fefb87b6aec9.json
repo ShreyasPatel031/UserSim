@@ -1,0 +1,32 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c0d7f052cd881754c3ab5d5757a537ba71364694e8b84ab9e439fefb87b6aec9",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 417,
+  "output_tokens": 546,
+  "cost_usd": 0.0014901,
+  "elapsed_s": 3.68,
+  "error": null,
+  "text": "{\n  \"task\": \"Use the product to manage customer communications and data for marketing campaigns.\",\n  \"benefits\": [\n    \"Reliable data management and connectivity with other systems\",\n    \"Import/export tools provide flexibility and control over data\",\n    \"Email and SMS are relatively easy to manage together\",\n    \"Automated welcome workflows segment new contacts and send email sequences\"\n  ],\n  \"frictions\": [\n    \"Building and personalizing emails can be time-consuming\",\n    \"Email deliverability issues are not always clear or actionable\",\n    \"WhatsApp management is difficult due to different setup and stricter rules\",\n    \"Automation can go wrong with incomplete or late contact data\"\n  ]\n}",
+  "json": {
+    "task": "Use the product to manage customer communications and data for marketing campaigns.",
+    "benefits": [
+      "Reliable data management and connectivity with other systems",
+      "Import/export tools provide flexibility and control over data",
+      "Email and SMS are relatively easy to manage together",
+      "Automated welcome workflows segment new contacts and send email sequences"
+    ],
+    "frictions": [
+      "Building and personalizing emails can be time-consuming",
+      "Email deliverability issues are not always clear or actionable",
+      "WhatsApp management is difficult due to different setup and stricter rules",
+      "Automation can go wrong with incomplete or late contact data"
+    ]
+  },
+  "ts": "2026-10-18T10:52:57.996236+00:00"
+}

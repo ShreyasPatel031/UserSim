@@ -1,0 +1,36 @@
+{
+  "stage": "hm_agent_words",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8deeb0ccae9cb7a45007f3b371f40caa27874f673f17b77e971f60aeeeb3cdd9",
+  "temperature": 0.7,
+  "seed": 1001,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3453,
+  "output_tokens": 1065,
+  "cost_usd": 0.0036984,
+  "elapsed_s": 9.01,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Comprehensive features for project and task management\",\n    \"Strong automation capabilities for workflows\",\n    \"Customizable dashboards and views for analytics\"\n  ],\n  \"cons\": [\n    \"Steep learning curve due to feature complexity\",\n    \"Occasional performance issues or interface lag\",\n    \"Reporting features could be more advanced for deep analytics\"\n  ],\n  \"overall_experience\": \"The Analytics and Digital Innovation Manager likely found ClickUp to be a powerful tool for managing complex projects and automating team workflows within their large aviation company. Its extensive feature set provided the necessary functionality for diverse operational needs. However, the initial setup and ongoing navigation of its many options likely presented a significant learning curve, and the manager may have desired more robust, enterprise-grade reporting and consistent performance.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Comprehensive features for project and task management",
+      "Strong automation capabilities for workflows",
+      "Customizable dashboards and views for analytics"
+    ],
+    "cons": [
+      "Steep learning curve due to feature complexity",
+      "Occasional performance issues or interface lag",
+      "Reporting features could be more advanced for deep analytics"
+    ],
+    "overall_experience": "The Analytics and Digital Innovation Manager likely found ClickUp to be a powerful tool for managing complex projects and automating team workflows within their large aviation company. Its extensive feature set provided the necessary functionality for diverse operational needs. However, the initial setup and ongoing navigation of its many options likely presented a significant learning curve, and the manager may have desired more robust, enterprise-grade reporting and consistent performance."
+  },
+  "ts": "2026-10-18T10:56:31.442991+00:00"
+}

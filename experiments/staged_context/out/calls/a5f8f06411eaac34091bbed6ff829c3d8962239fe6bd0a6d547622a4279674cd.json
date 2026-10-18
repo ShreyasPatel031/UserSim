@@ -1,0 +1,27 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a5f8f06411eaac34091bbed6ff829c3d8962239fe6bd0a6d547622a4279674cd",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 194,
+  "output_tokens": 467,
+  "cost_usd": 0.0012257000000000001,
+  "elapsed_s": 3.18,
+  "error": null,
+  "text": "{\n  \"task\": \"Automate email marketing.\",\n  \"benefits\": [\n    \"Quickly create email campaigns\",\n    \"Easily set promotional email triggers\",\n    \"Track email engagement analytics\",\n    \"Create target-based email campaigns\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Automate email marketing.",
+    "benefits": [
+      "Quickly create email campaigns",
+      "Easily set promotional email triggers",
+      "Track email engagement analytics",
+      "Create target-based email campaigns"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T10:47:06.342117+00:00"
+}

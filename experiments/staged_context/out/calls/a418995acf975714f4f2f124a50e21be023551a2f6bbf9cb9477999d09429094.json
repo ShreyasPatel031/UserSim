@@ -1,0 +1,29 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a418995acf975714f4f2f124a50e21be023551a2f6bbf9cb9477999d09429094",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 587,
+  "output_tokens": 511,
+  "cost_usd": 0.0014536,
+  "elapsed_s": 3.59,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage projects with clients and external people.\",\n  \"benefits\": [\n    \"Clients quickly understand how to use the platform, reducing explanation time.\",\n    \"Provides clear documentation and helpful support for questions.\",\n    \"Improved subtask management helps keep main tasks clear while tracking smaller steps.\",\n    \"Facilitates clear communication and context retention for project changes and decisions.\"\n  ],\n  \"frictions\": [\n    \"Limited for advanced controls, complex dashboards, or detailed resource planning.\"\n  ]\n}",
+  "json": {
+    "task": "Manage projects with clients and external people.",
+    "benefits": [
+      "Clients quickly understand how to use the platform, reducing explanation time.",
+      "Provides clear documentation and helpful support for questions.",
+      "Improved subtask management helps keep main tasks clear while tracking smaller steps.",
+      "Facilitates clear communication and context retention for project changes and decisions."
+    ],
+    "frictions": [
+      "Limited for advanced controls, complex dashboards, or detailed resource planning."
+    ]
+  },
+  "ts": "2026-10-18T10:50:12.514981+00:00"
+}

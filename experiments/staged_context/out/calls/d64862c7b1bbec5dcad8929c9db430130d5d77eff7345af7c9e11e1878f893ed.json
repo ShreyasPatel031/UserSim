@@ -1,0 +1,36 @@
+{
+  "stage": "hm_agent_words",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d64862c7b1bbec5dcad8929c9db430130d5d77eff7345af7c9e11e1878f893ed",
+  "temperature": 0.7,
+  "seed": 1001,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3551,
+  "output_tokens": 1102,
+  "cost_usd": 0.0038202999999999996,
+  "elapsed_s": 9.54,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Highly customizable views, especially for sprint planning and campaign visualization.\",\n    \"Centralized task management with robust features for tracking marketing campaigns.\",\n    \"Automations and templates streamline repetitive project management tasks.\"\n  ],\n  \"cons\": [\n    \"Steep learning curve due to the vast number of features and customization options.\",\n    \"Occasional performance issues and lag, particularly with complex boards or mobile use.\",\n    \"Reporting and analytics can feel basic for in-depth project analysis.\"\n  ],\n  \"overall_experience\": \"This project manager likely found ClickUp to be a powerful tool for managing sprints and marketing campaigns, appreciating its extensive customization and various views for visualizing project progress. However, the initial setup and ongoing navigation likely presented a learning curve due to the platform's depth. While effective for centralizing work, occasional performance slowdowns and less intuitive advanced reporting may have been points of frustration for managing large-scale operations.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Highly customizable views, especially for sprint planning and campaign visualization.",
+      "Centralized task management with robust features for tracking marketing campaigns.",
+      "Automations and templates streamline repetitive project management tasks."
+    ],
+    "cons": [
+      "Steep learning curve due to the vast number of features and customization options.",
+      "Occasional performance issues and lag, particularly with complex boards or mobile use.",
+      "Reporting and analytics can feel basic for in-depth project analysis."
+    ],
+    "overall_experience": "This project manager likely found ClickUp to be a powerful tool for managing sprints and marketing campaigns, appreciating its extensive customization and various views for visualizing project progress. However, the initial setup and ongoing navigation likely presented a learning curve due to the platform's depth. While effective for centralizing work, occasional performance slowdowns and less intuitive advanced reporting may have been points of frustration for managing large-scale operations."
+  },
+  "ts": "2026-10-18T10:56:40.975076+00:00"
+}

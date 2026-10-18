@@ -1,0 +1,31 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "dc781eb647e47edc05f44259aa42e44b71a68ac6e00e49459eede427ea7b341d",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 271,
+  "output_tokens": 535,
+  "cost_usd": 0.0014188,
+  "elapsed_s": 3.23,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage projects, collaborate with teams, automate processes, and organize tasks within a single platform.\",\n  \"benefits\": [\n    \"Consolidates multiple functions into one platform\",\n    \"Manages projects, collaborates with team members, automates repetitive processes, and organizes tasks\",\n    \"Customizable workflows and communication features keep everyone on the same page\",\n    \"Includes invoicing and payment tools for business management\"\n  ],\n  \"frictions\": [\n    \"Can feel overwhelming due to many features\",\n    \"Has a learning curve when setting up workflows and customizing the system\",\n    \"Some features may take time to fully understand\"\n  ]\n}",
+  "json": {
+    "task": "Manage projects, collaborate with teams, automate processes, and organize tasks within a single platform.",
+    "benefits": [
+      "Consolidates multiple functions into one platform",
+      "Manages projects, collaborates with team members, automates repetitive processes, and organizes tasks",
+      "Customizable workflows and communication features keep everyone on the same page",
+      "Includes invoicing and payment tools for business management"
+    ],
+    "frictions": [
+      "Can feel overwhelming due to many features",
+      "Has a learning curve when setting up workflows and customizing the system",
+      "Some features may take time to fully understand"
+    ]
+  },
+  "ts": "2026-10-18T10:56:18.759863+00:00"
+}

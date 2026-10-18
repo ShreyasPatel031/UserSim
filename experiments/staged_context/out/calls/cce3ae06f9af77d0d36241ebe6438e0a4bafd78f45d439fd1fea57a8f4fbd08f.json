@@ -1,0 +1,30 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "cce3ae06f9af77d0d36241ebe6438e0a4bafd78f45d439fd1fea57a8f4fbd08f",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 276,
+  "output_tokens": 458,
+  "cost_usd": 0.0012278,
+  "elapsed_s": 3.17,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage team projects and tasks\",\n  \"benefits\": [\n    \"Clean and simple visual interface\",\n    \"Easy team invitation and tagging\",\n    \"File sharing\",\n    \"Ability to block external user access\"\n  ],\n  \"frictions\": [\n    \"Difficulty finding previous threads\",\n    \"Notifications not working\"\n  ]\n}",
+  "json": {
+    "task": "Manage team projects and tasks",
+    "benefits": [
+      "Clean and simple visual interface",
+      "Easy team invitation and tagging",
+      "File sharing",
+      "Ability to block external user access"
+    ],
+    "frictions": [
+      "Difficulty finding previous threads",
+      "Notifications not working"
+    ]
+  },
+  "ts": "2026-10-18T10:50:05.443977+00:00"
+}

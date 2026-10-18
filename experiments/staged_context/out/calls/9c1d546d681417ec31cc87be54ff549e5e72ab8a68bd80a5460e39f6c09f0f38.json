@@ -1,0 +1,29 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9c1d546d681417ec31cc87be54ff549e5e72ab8a68bd80a5460e39f6c09f0f38",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 183,
+  "output_tokens": 474,
+  "cost_usd": 0.0012399,
+  "elapsed_s": 9.5,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage secure and different passwords across multiple environments\",\n  \"benefits\": [\n    \"free version has a lot of functionalities\",\n    \"no vendor lock-in\",\n    \"no card lock-in\",\n    \"easy to use\"\n  ],\n  \"frictions\": [\n    \"if someone gets access to it, all the passwords will be exposed\"\n  ]\n}",
+  "json": {
+    "task": "Manage secure and different passwords across multiple environments",
+    "benefits": [
+      "free version has a lot of functionalities",
+      "no vendor lock-in",
+      "no card lock-in",
+      "easy to use"
+    ],
+    "frictions": [
+      "if someone gets access to it, all the passwords will be exposed"
+    ]
+  },
+  "ts": "2026-10-18T10:44:28.930451+00:00"
+}

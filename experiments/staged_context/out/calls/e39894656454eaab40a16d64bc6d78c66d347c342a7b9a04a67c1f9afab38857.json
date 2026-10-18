@@ -1,0 +1,30 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e39894656454eaab40a16d64bc6d78c66d347c342a7b9a04a67c1f9afab38857",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 182,
+  "output_tokens": 449,
+  "cost_usd": 0.0011771,
+  "elapsed_s": 3.1,
+  "error": null,
+  "text": "{\n  \"task\": \"Organize documents, projects, clients, vendors, and designers.\",\n  \"benefits\": [\n    \"Keep all documents updated and easy to access\",\n    \"Keep clients, vendors and designers all organized\",\n    \"Easy to use and user friendly\",\n    \"Keep each project organized and separated\"\n  ],\n  \"frictions\": [\n    \"Client access can lead to overwhelming message volume\",\n    \"Clients sometimes treat it like a chat room\"\n  ]\n}",
+  "json": {
+    "task": "Organize documents, projects, clients, vendors, and designers.",
+    "benefits": [
+      "Keep all documents updated and easy to access",
+      "Keep clients, vendors and designers all organized",
+      "Easy to use and user friendly",
+      "Keep each project organized and separated"
+    ],
+    "frictions": [
+      "Client access can lead to overwhelming message volume",
+      "Clients sometimes treat it like a chat room"
+    ]
+  },
+  "ts": "2026-10-18T10:50:11.382029+00:00"
+}

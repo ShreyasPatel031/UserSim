@@ -1,0 +1,29 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "23d2d48f16feafb221c3c25b6fcb3199aa50e04f768598bbf3cff144c651ef74",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 214,
+  "output_tokens": 475,
+  "cost_usd": 0.0012517,
+  "elapsed_s": 3.5,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage files and facilitate feedback between postings.\",\n  \"benefits\": [\n    \"Organize projects and tasks.\",\n    \"Facilitate teamwork and collaboration.\",\n    \"Store files.\",\n    \"Provide feedback between postings.\"\n  ],\n  \"frictions\": [\n    \"Lack of introduction videos for new users.\"\n  ]\n}",
+  "json": {
+    "task": "Manage files and facilitate feedback between postings.",
+    "benefits": [
+      "Organize projects and tasks.",
+      "Facilitate teamwork and collaboration.",
+      "Store files.",
+      "Provide feedback between postings."
+    ],
+    "frictions": [
+      "Lack of introduction videos for new users."
+    ]
+  },
+  "ts": "2026-10-18T10:50:06.979729+00:00"
+}

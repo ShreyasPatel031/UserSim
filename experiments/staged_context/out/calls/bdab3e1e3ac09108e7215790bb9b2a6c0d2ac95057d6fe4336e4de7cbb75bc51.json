@@ -1,0 +1,30 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "bdab3e1e3ac09108e7215790bb9b2a6c0d2ac95057d6fe4336e4de7cbb75bc51",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 204,
+  "output_tokens": 468,
+  "cost_usd": 0.0012312,
+  "elapsed_s": 3.15,
+  "error": null,
+  "text": "{\n  \"task\": null,\n  \"benefits\": [\n    \"interface is very easy and intuitive\",\n    \"customer support has been great\",\n    \"strong value for features at a reasonable price\",\n    \"easy to use editor tools\"\n  ],\n  \"frictions\": [\n    \"desire for a price tier between business and enterprise level\",\n    \"certain minor features (like pop up forms) are not available until the BIG plan\"\n  ]\n}",
+  "json": {
+    "task": null,
+    "benefits": [
+      "interface is very easy and intuitive",
+      "customer support has been great",
+      "strong value for features at a reasonable price",
+      "easy to use editor tools"
+    ],
+    "frictions": [
+      "desire for a price tier between business and enterprise level",
+      "certain minor features (like pop up forms) are not available until the BIG plan"
+    ]
+  },
+  "ts": "2026-10-18T10:52:55.543248+00:00"
+}

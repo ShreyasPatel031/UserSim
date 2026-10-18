@@ -1,0 +1,36 @@
+{
+  "stage": "hm_agent_words",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "93d0a3f68ebfea780fb9f3e73a0eadee97bb006493faee507eba8927962d738b",
+  "temperature": 0.7,
+  "seed": 1001,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3501,
+  "output_tokens": 1157,
+  "cost_usd": 0.0039428,
+  "elapsed_s": 6.59,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Centralizes diverse workflows and processes effectively\",\n    \"Robust automation features streamline approvals and project communication\",\n    \"Highly customizable to manage creative projects and tasks\"\n  ],\n  \"cons\": [\n    \"Steep learning curve due to extensive features and navigation complexity\",\n    \"Performance may degrade with very large datasets or complex views\",\n    \"Automations can be limited by credit usage for advanced needs\"\n  ],\n  \"overall_experience\": \"This Creative Operations Director likely found ClickUp highly effective for centralizing their creative processes and workflows, appreciating its extensive features and automation capabilities for managing projects and approvals across a mid-market team. However, the platform's vast functionality and sometimes confusing UI probably led to a significant learning curve and initial setup challenges. Despite these complexities, the ability to consolidate operations and improve collaboration generally outweighed the frustrations.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Centralizes diverse workflows and processes effectively",
+      "Robust automation features streamline approvals and project communication",
+      "Highly customizable to manage creative projects and tasks"
+    ],
+    "cons": [
+      "Steep learning curve due to extensive features and navigation complexity",
+      "Performance may degrade with very large datasets or complex views",
+      "Automations can be limited by credit usage for advanced needs"
+    ],
+    "overall_experience": "This Creative Operations Director likely found ClickUp highly effective for centralizing their creative processes and workflows, appreciating its extensive features and automation capabilities for managing projects and approvals across a mid-market team. However, the platform's vast functionality and sometimes confusing UI probably led to a significant learning curve and initial setup challenges. Despite these complexities, the ability to consolidate operations and improve collaboration generally outweighed the frustrations."
+  },
+  "ts": "2026-10-18T10:56:37.854907+00:00"
+}

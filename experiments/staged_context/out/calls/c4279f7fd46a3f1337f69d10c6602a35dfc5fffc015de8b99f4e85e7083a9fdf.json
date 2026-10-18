@@ -1,0 +1,36 @@
+{
+  "stage": "hm_agent_words",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c4279f7fd46a3f1337f69d10c6602a35dfc5fffc015de8b99f4e85e7083a9fdf",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3872,
+  "output_tokens": 1062,
+  "cost_usd": 0.0038166000000000003,
+  "elapsed_s": 9.18,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Comprehensive features for project separation and task management\",\n    \"High level of customization to fit specific business needs\",\n    \"Effective for tracking time and organizing daily work\"\n  ],\n  \"cons\": [\n    \"Steep learning curve due to extensive features and configuration options\",\n    \"Performance issues like occasional lag or slow loading times\",\n    \"Interface can feel cluttered or overwhelming initially\"\n  ],\n  \"overall_experience\": \"This owner likely found ClickUp to be a powerful tool that effectively met their needs for separating projects, tracking time, and organizing daily work within their small business. While the initial setup and extensive customization options presented a learning curve and occasional performance frustrations, the platform's comprehensive feature set and flexibility ultimately delivered significant value. They would appreciate its ability to consolidate various workflows into one system, despite some initial friction.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Comprehensive features for project separation and task management",
+      "High level of customization to fit specific business needs",
+      "Effective for tracking time and organizing daily work"
+    ],
+    "cons": [
+      "Steep learning curve due to extensive features and configuration options",
+      "Performance issues like occasional lag or slow loading times",
+      "Interface can feel cluttered or overwhelming initially"
+    ],
+    "overall_experience": "This owner likely found ClickUp to be a powerful tool that effectively met their needs for separating projects, tracking time, and organizing daily work within their small business. While the initial setup and extensive customization options presented a learning curve and occasional performance frustrations, the platform's comprehensive feature set and flexibility ultimately delivered significant value. They would appreciate its ability to consolidate various workflows into one system, despite some initial friction."
+  },
+  "ts": "2026-10-18T10:58:22.498560+00:00"
+}

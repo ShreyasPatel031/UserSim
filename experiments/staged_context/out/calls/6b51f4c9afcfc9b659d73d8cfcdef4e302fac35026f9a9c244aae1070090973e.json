@@ -1,0 +1,32 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "6b51f4c9afcfc9b659d73d8cfcdef4e302fac35026f9a9c244aae1070090973e",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 472,
+  "output_tokens": 606,
+  "cost_usd": 0.0016565999999999998,
+  "elapsed_s": 8.09,
+  "error": null,
+  "text": "{\n  \"task\": \"Store, generate, and audit credentials across all platforms\",\n  \"benefits\": [\n    \"Provides open-source and secure password management\",\n    \"Offers flexibility with self-hosting for data control\",\n    \"Simplifies login with built-in 2FA in the Premium tier\",\n    \"Allows cross-device use with no device limits and seamless syncing\"\n  ],\n  \"frictions\": [\n    \"Has clunky or inconsistent autofill, especially on modern web applications\",\n    \"Sometimes fails to detect fields automatically, requiring manual triggers\",\n    \"Features a utilitarian user interface that prioritizes utility over visual polish\",\n    \"Lacks fluid animations, clean typography, and intuitive categorization in its design\"\n  ]\n}",
+  "json": {
+    "task": "Store, generate, and audit credentials across all platforms",
+    "benefits": [
+      "Provides open-source and secure password management",
+      "Offers flexibility with self-hosting for data control",
+      "Simplifies login with built-in 2FA in the Premium tier",
+      "Allows cross-device use with no device limits and seamless syncing"
+    ],
+    "frictions": [
+      "Has clunky or inconsistent autofill, especially on modern web applications",
+      "Sometimes fails to detect fields automatically, requiring manual triggers",
+      "Features a utilitarian user interface that prioritizes utility over visual polish",
+      "Lacks fluid animations, clean typography, and intuitive categorization in its design"
+    ]
+  },
+  "ts": "2026-10-18T10:44:29.459403+00:00"
+}

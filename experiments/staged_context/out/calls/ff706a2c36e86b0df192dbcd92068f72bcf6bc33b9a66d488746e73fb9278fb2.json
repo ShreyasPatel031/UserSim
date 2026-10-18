@@ -1,0 +1,30 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ff706a2c36e86b0df192dbcd92068f72bcf6bc33b9a66d488746e73fb9278fb2",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 395,
+  "output_tokens": 476,
+  "cost_usd": 0.0013085,
+  "elapsed_s": 3.23,
+  "error": null,
+  "text": "{\n  \"task\": \"Track infrastructure and platform work, including planned tasks and ad-hoc requests, and check task status and ownership.\",\n  \"benefits\": [\n    \"Organized structure\",\n    \"AI assists in quick ticket updates and creation\",\n    \"Multiple informative ticket views\",\n    \"Excellent onboarding experience\"\n  ],\n  \"frictions\": [\n    \"Notifications are noisy and difficult to tune\",\n    \"Frequent UI changes require relearning navigation\"\n  ]\n}",
+  "json": {
+    "task": "Track infrastructure and platform work, including planned tasks and ad-hoc requests, and check task status and ownership.",
+    "benefits": [
+      "Organized structure",
+      "AI assists in quick ticket updates and creation",
+      "Multiple informative ticket views",
+      "Excellent onboarding experience"
+    ],
+    "frictions": [
+      "Notifications are noisy and difficult to tune",
+      "Frequent UI changes require relearning navigation"
+    ]
+  },
+  "ts": "2026-10-18T10:56:17.104607+00:00"
+}

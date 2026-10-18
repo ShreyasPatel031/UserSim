@@ -1,0 +1,31 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "61b1a0fb2150f23fb07cc5b0a23f54c1647974b72241b7756bde6e4e158e562c",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 380,
+  "output_tokens": 507,
+  "cost_usd": 0.0013815,
+  "elapsed_s": 3.96,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage projects and track team progress\",\n  \"benefits\": [\n    \"Sleek design\",\n    \"Included AI credits reduce need for external AI tools\",\n    \"Easy to set up AI agents and automations to reduce manual effort\",\n    \"Forms provide consistent, streamlined, formatted requests\"\n  ],\n  \"frictions\": [\n    \"Can be slow sometimes\",\n    \"Overwhelming due to vast customization options\",\n    \"Steep learning curve for new users\"\n  ]\n}",
+  "json": {
+    "task": "Manage projects and track team progress",
+    "benefits": [
+      "Sleek design",
+      "Included AI credits reduce need for external AI tools",
+      "Easy to set up AI agents and automations to reduce manual effort",
+      "Forms provide consistent, streamlined, formatted requests"
+    ],
+    "frictions": [
+      "Can be slow sometimes",
+      "Overwhelming due to vast customization options",
+      "Steep learning curve for new users"
+    ]
+  },
+  "ts": "2026-10-18T10:56:15.033585+00:00"
+}

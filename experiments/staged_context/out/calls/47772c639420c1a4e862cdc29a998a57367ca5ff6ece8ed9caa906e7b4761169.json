@@ -1,0 +1,24 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "47772c639420c1a4e862cdc29a998a57367ca5ff6ece8ed9caa906e7b4761169",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 138,
+  "output_tokens": 382,
+  "cost_usd": 0.0009964,
+  "elapsed_s": 2.36,
+  "error": null,
+  "text": "{\n  \"task\": \"Schedule and share schedules with colleagues\",\n  \"benefits\": [\n    \"Scheduling and sharing schedules with colleagues\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Schedule and share schedules with colleagues",
+    "benefits": [
+      "Scheduling and sharing schedules with colleagues"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T10:56:19.997079+00:00"
+}

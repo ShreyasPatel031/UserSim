@@ -1,0 +1,36 @@
+{
+  "stage": "hm_agent_words",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "652fc4862e37e1b1fcdb303811778833db3f2cf831ce6e0b65bb726bbf3eb4d7",
+  "temperature": 0.7,
+  "seed": 1001,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3283,
+  "output_tokens": 1012,
+  "cost_usd": 0.0035149,
+  "elapsed_s": 5.66,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3.5,\n  \"functionality_rating\": 4.5,\n  \"overall_rating\": 4.5,\n  \"value_for_money_rating\": 4.0,\n  \"customer_support_rating\": 3.5,\n  \"recommendation_score\": 8.5,\n  \"pros\": [\n    \"Comprehensive features for project and workflow management\",\n    \"High degree of customization and ability to centralize information\",\n    \"Integrations with other tools like Slack and Zoom\"\n  ],\n  \"cons\": [\n    \"Steep learning curve due to extensive features and options\",\n    \"Layout can sometimes feel overwhelming or complex\",\n    \"Occasional performance issues or slowness\"\n  ],\n  \"overall_experience\": \"This Product Manager likely found ClickUp to be a powerful and comprehensive tool for managing projects and team workflows within their small business. They appreciated its ability to centralize information, offer various views, and integrate with other essential applications. However, they probably experienced an initial learning curve due to the platform's extensive features, which could feel overwhelming at times, and may have encountered occasional performance issues.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3.5,
+    "functionality_rating": 4.5,
+    "overall_rating": 4.5,
+    "value_for_money_rating": 4.0,
+    "customer_support_rating": 3.5,
+    "recommendation_score": 8.5,
+    "pros": [
+      "Comprehensive features for project and workflow management",
+      "High degree of customization and ability to centralize information",
+      "Integrations with other tools like Slack and Zoom"
+    ],
+    "cons": [
+      "Steep learning curve due to extensive features and options",
+      "Layout can sometimes feel overwhelming or complex",
+      "Occasional performance issues or slowness"
+    ],
+    "overall_experience": "This Product Manager likely found ClickUp to be a powerful and comprehensive tool for managing projects and team workflows within their small business. They appreciated its ability to centralize information, offer various views, and integrate with other essential applications. However, they probably experienced an initial learning curve due to the platform's extensive features, which could feel overwhelming at times, and may have encountered occasional performance issues."
+  },
+  "ts": "2026-10-18T10:58:01.437309+00:00"
+}

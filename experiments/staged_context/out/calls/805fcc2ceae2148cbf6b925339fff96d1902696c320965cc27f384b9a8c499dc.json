@@ -1,0 +1,31 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "805fcc2ceae2148cbf6b925339fff96d1902696c320965cc27f384b9a8c499dc",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 308,
+  "output_tokens": 500,
+  "cost_usd": 0.0013424,
+  "elapsed_s": 3.32,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage multiple campaigns across different markets and streamline omnichannel communication.\",\n  \"benefits\": [\n    \"Brings everything together in one place\",\n    \"Platform is intuitive, flexible, and robust\",\n    \"Support team is quick to respond and easy to work with\",\n    \"Simplifies segmentation, consent management, and automation\"\n  ],\n  \"frictions\": [\n    \"Alignment with industry-specific compliance needs could be improved\",\n    \"Needs tighter integration with CRM platforms like Veeva\",\n    \"Requires more built-in support for consent and opt-out tracking across multiple systems\"\n  ]\n}",
+  "json": {
+    "task": "Manage multiple campaigns across different markets and streamline omnichannel communication.",
+    "benefits": [
+      "Brings everything together in one place",
+      "Platform is intuitive, flexible, and robust",
+      "Support team is quick to respond and easy to work with",
+      "Simplifies segmentation, consent management, and automation"
+    ],
+    "frictions": [
+      "Alignment with industry-specific compliance needs could be improved",
+      "Needs tighter integration with CRM platforms like Veeva",
+      "Requires more built-in support for consent and opt-out tracking across multiple systems"
+    ]
+  },
+  "ts": "2026-10-18T10:47:03.061968+00:00"
+}

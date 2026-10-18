@@ -1,0 +1,29 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "049f4c95a3afa49c47cdb097f45fcac0e5c5dcba984da1a91938a9f526564026",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 305,
+  "output_tokens": 482,
+  "cost_usd": 0.0012965,
+  "elapsed_s": 7.59,
+  "error": null,
+  "text": "{\n  \"task\": \"Store passwords, create passphrases, share credentials, and sync data across devices.\",\n  \"benefits\": [\n    \"Clean UI/UX\",\n    \"Seamless cross-platform integrations\",\n    \"Biometric autofill on every device\",\n    \"Fast vault performance with instant syncing\"\n  ],\n  \"frictions\": [\n    \"Bugs sometimes prevent login credentials from showing for autofill\"\n  ]\n}",
+  "json": {
+    "task": "Store passwords, create passphrases, share credentials, and sync data across devices.",
+    "benefits": [
+      "Clean UI/UX",
+      "Seamless cross-platform integrations",
+      "Biometric autofill on every device",
+      "Fast vault performance with instant syncing"
+    ],
+    "frictions": [
+      "Bugs sometimes prevent login credentials from showing for autofill"
+    ]
+  },
+  "ts": "2026-10-18T10:44:29.035757+00:00"
+}

@@ -1,0 +1,31 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "249bc51e94cab24b20ce21dea339dbe1750d2426875cbc6ae98b990f0b8559d4",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 175,
+  "output_tokens": 517,
+  "cost_usd": 0.001345,
+  "elapsed_s": 3.44,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage email marketing, automation, landing pages, and webinars\",\n  \"benefits\": [\n    \"Offers a seamless combination of multiple marketing tools in one place\",\n    \"Streamlines email marketing and landing page creation\",\n    \"Helps launch campaigns faster\",\n    \"Assists in capturing leads and tracking performance\"\n  ],\n  \"frictions\": [\n    \"Interface can feel cluttered\",\n    \"Some features take a while to learn\",\n    \"Some tools could be more customizable\"\n  ]\n}",
+  "json": {
+    "task": "Manage email marketing, automation, landing pages, and webinars",
+    "benefits": [
+      "Offers a seamless combination of multiple marketing tools in one place",
+      "Streamlines email marketing and landing page creation",
+      "Helps launch campaigns faster",
+      "Assists in capturing leads and tracking performance"
+    ],
+    "frictions": [
+      "Interface can feel cluttered",
+      "Some features take a while to learn",
+      "Some tools could be more customizable"
+    ]
+  },
+  "ts": "2026-10-18T10:47:03.115983+00:00"
+}

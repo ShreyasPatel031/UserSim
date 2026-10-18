@@ -1,0 +1,30 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d050a91ee93f27c196d411a34ea19cbed4ccd15acefb0f6612165f256044a12c",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 246,
+  "output_tokens": 499,
+  "cost_usd": 0.0013212999999999999,
+  "elapsed_s": 3.52,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage finance team tasks, including recurring month-end and year-end work, and monitor task status.\",\n  \"benefits\": [\n    \"Supports recurring tasks for checklists, reconciliations, and reporting.\",\n    \"Provides quick overview of overdue items via dashboards.\",\n    \"Centralizes discussion within tasks using comments.\",\n    \"Helps manage multiple deadlines simultaneously.\"\n  ],\n  \"frictions\": [\n    \"Can be confusing due to many features.\",\n    \"Pricing can get expensive with more users.\"\n  ]\n}",
+  "json": {
+    "task": "Manage finance team tasks, including recurring month-end and year-end work, and monitor task status.",
+    "benefits": [
+      "Supports recurring tasks for checklists, reconciliations, and reporting.",
+      "Provides quick overview of overdue items via dashboards.",
+      "Centralizes discussion within tasks using comments.",
+      "Helps manage multiple deadlines simultaneously."
+    ],
+    "frictions": [
+      "Can be confusing due to many features.",
+      "Pricing can get expensive with more users."
+    ]
+  },
+  "ts": "2026-10-18T10:56:15.711457+00:00"
+}

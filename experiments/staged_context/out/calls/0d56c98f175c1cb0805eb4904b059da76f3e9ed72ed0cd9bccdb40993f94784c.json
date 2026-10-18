@@ -1,0 +1,31 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0d56c98f175c1cb0805eb4904b059da76f3e9ed72ed0cd9bccdb40993f94784c",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 199,
+  "output_tokens": 479,
+  "cost_usd": 0.0012572,
+  "elapsed_s": 3.17,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage email campaigns and marketing and sales activities\",\n  \"benefits\": [\n    \"User interface is easy to use\",\n    \"Minimal learning curve\",\n    \"Clean and simple layout\",\n    \"Basic email plans are affordable and good value\"\n  ],\n  \"frictions\": [\n    \"AI component is basic\",\n    \"Add-ons can get pricey\",\n    \"Platform has limitations compared to some others\"\n  ]\n}",
+  "json": {
+    "task": "Manage email campaigns and marketing and sales activities",
+    "benefits": [
+      "User interface is easy to use",
+      "Minimal learning curve",
+      "Clean and simple layout",
+      "Basic email plans are affordable and good value"
+    ],
+    "frictions": [
+      "AI component is basic",
+      "Add-ons can get pricey",
+      "Platform has limitations compared to some others"
+    ]
+  },
+  "ts": "2026-10-18T10:52:58.282673+00:00"
+}

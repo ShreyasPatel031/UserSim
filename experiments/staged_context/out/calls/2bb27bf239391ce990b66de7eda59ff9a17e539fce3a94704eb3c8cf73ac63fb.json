@@ -1,0 +1,36 @@
+{
+  "stage": "hm_agent_words",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2bb27bf239391ce990b66de7eda59ff9a17e539fce3a94704eb3c8cf73ac63fb",
+  "temperature": 0.7,
+  "seed": 1001,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3887,
+  "output_tokens": 1068,
+  "cost_usd": 0.0038360999999999994,
+  "elapsed_s": 6.29,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Comprehensive views for tracking multiple projects/tasks simultaneously\",\n    \"High degree of customization to tailor workflows\",\n    \"Visual project views like Kanban and Gantt charts\"\n  ],\n  \"cons\": [\n    \"Significant learning curve due to extensive features and initial setup complexity\",\n    \"Potential for a cluttered interface if not carefully managed\",\n    \"Performance issues or slowness, especially at startup\"\n  ],\n  \"overall_experience\": \"This project management professional in a small design business likely found ClickUp to be a powerful tool for viewing the progress of multiple tasks and projects due to its extensive features and customizable views. However, the initial complexity and potential for a steep learning curve might have been a source of frustration, requiring a significant investment of time to configure and master. While valuing its robust functionality, they may have found its overall performance and ease of adoption challenging, especially compared to simpler alternatives.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Comprehensive views for tracking multiple projects/tasks simultaneously",
+      "High degree of customization to tailor workflows",
+      "Visual project views like Kanban and Gantt charts"
+    ],
+    "cons": [
+      "Significant learning curve due to extensive features and initial setup complexity",
+      "Potential for a cluttered interface if not carefully managed",
+      "Performance issues or slowness, especially at startup"
+    ],
+    "overall_experience": "This project management professional in a small design business likely found ClickUp to be a powerful tool for viewing the progress of multiple tasks and projects due to its extensive features and customizable views. However, the initial complexity and potential for a steep learning curve might have been a source of frustration, requiring a significant investment of time to configure and master. While valuing its robust functionality, they may have found its overall performance and ease of adoption challenging, especially compared to simpler alternatives."
+  },
+  "ts": "2026-10-18T10:57:03.711573+00:00"
+}

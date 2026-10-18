@@ -1,0 +1,30 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f66b8c9f3ad8acdeba3eaa74afe2eeb15a66583a1ba8091decc6416cc8b11146",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 274,
+  "output_tokens": 489,
+  "cost_usd": 0.0013046999999999998,
+  "elapsed_s": 3.18,
+  "error": null,
+  "text": "{\n  \"task\": \"Combine email and SMS in automation workflows\",\n  \"benefits\": [\n    \"Seamlessly combine email and SMS in automation workflows\",\n    \"Automated welcome sequences and abandoned cart workflows function reliably\",\n    \"Segment subscribers based on purchase history and engagement\",\n    \"Workflows consistently reach recipients at optimal times\"\n  ],\n  \"frictions\": [\n    \"Strict contact verification and import process for new accounts\",\n    \"Advanced analytics options are less detailed on entry-level plans\"\n  ]\n}",
+  "json": {
+    "task": "Combine email and SMS in automation workflows",
+    "benefits": [
+      "Seamlessly combine email and SMS in automation workflows",
+      "Automated welcome sequences and abandoned cart workflows function reliably",
+      "Segment subscribers based on purchase history and engagement",
+      "Workflows consistently reach recipients at optimal times"
+    ],
+    "frictions": [
+      "Strict contact verification and import process for new accounts",
+      "Advanced analytics options are less detailed on entry-level plans"
+    ]
+  },
+  "ts": "2026-10-18T10:52:57.164317+00:00"
+}

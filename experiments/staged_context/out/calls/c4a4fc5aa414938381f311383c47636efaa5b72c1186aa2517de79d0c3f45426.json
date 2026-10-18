@@ -1,0 +1,36 @@
+{
+  "stage": "hm_agent_words",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c4a4fc5aa414938381f311383c47636efaa5b72c1186aa2517de79d0c3f45426",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3487,
+  "output_tokens": 999,
+  "cost_usd": 0.0035436,
+  "elapsed_s": 6.23,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Comprehensive features for project organization and tracking\",\n    \"High level of customization to fit specific real estate workflows\",\n    \"Improved team visibility and accountability\"\n  ],\n  \"cons\": [\n    \"Steep learning curve for new team members\",\n    \"Occasional performance issues or lag, especially on mobile\",\n    \"Overwhelming number of features and customization options\"\n  ],\n  \"overall_experience\": \"This CoFounder likely found ClickUp to be a powerful and highly customizable tool for managing real estate projects and team responsibilities. While appreciating its extensive features and ability to centralize operations, they probably experienced an initial learning curve and occasional performance frustrations. Despite these minor setbacks, the platform significantly improved project oversight and team productivity within their 11-50 person company.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Comprehensive features for project organization and tracking",
+      "High level of customization to fit specific real estate workflows",
+      "Improved team visibility and accountability"
+    ],
+    "cons": [
+      "Steep learning curve for new team members",
+      "Occasional performance issues or lag, especially on mobile",
+      "Overwhelming number of features and customization options"
+    ],
+    "overall_experience": "This CoFounder likely found ClickUp to be a powerful and highly customizable tool for managing real estate projects and team responsibilities. While appreciating its extensive features and ability to centralize operations, they probably experienced an initial learning curve and occasional performance frustrations. Despite these minor setbacks, the platform significantly improved project oversight and team productivity within their 11-50 person company."
+  },
+  "ts": "2026-10-18T10:56:34.645416+00:00"
+}

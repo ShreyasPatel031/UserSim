@@ -1,0 +1,31 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "cbe6f8218e34a965166c239dfa1e43ee17cb6faf7f091e0cf44a0b9d3eb2aae4",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 221,
+  "output_tokens": 510,
+  "cost_usd": 0.0013413000000000001,
+  "elapsed_s": 3.16,
+  "error": null,
+  "text": "{\n  \"task\": \"Organize projects and team work\",\n  \"benefits\": [\n    \"Centralizes all team work in one location\",\n    \"Easy to use, requiring no tutorial\",\n    \"Improves project organization process\",\n    \"Calendar makes financial deadlines visible\",\n    \"Flat pricing simplifies budget discussions\"\n  ],\n  \"frictions\": [\n    \"Bugs experienced when sharing files, attachments could not load\",\n    \"File sharing glitches impact accuracy in a billing environment\"\n  ]\n}",
+  "json": {
+    "task": "Organize projects and team work",
+    "benefits": [
+      "Centralizes all team work in one location",
+      "Easy to use, requiring no tutorial",
+      "Improves project organization process",
+      "Calendar makes financial deadlines visible",
+      "Flat pricing simplifies budget discussions"
+    ],
+    "frictions": [
+      "Bugs experienced when sharing files, attachments could not load",
+      "File sharing glitches impact accuracy in a billing environment"
+    ]
+  },
+  "ts": "2026-10-18T10:50:09.316790+00:00"
+}

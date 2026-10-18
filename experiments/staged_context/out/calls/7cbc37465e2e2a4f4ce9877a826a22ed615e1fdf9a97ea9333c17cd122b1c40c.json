@@ -1,0 +1,30 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7cbc37465e2e2a4f4ce9877a826a22ed615e1fdf9a97ea9333c17cd122b1c40c",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 188,
+  "output_tokens": 395,
+  "cost_usd": 0.0010439000000000002,
+  "elapsed_s": 4.45,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage projects and facilitate team communication.\",\n  \"benefits\": [\n    \"Integrates project management and communication\",\n    \"Works well for team video huddles for collaboration\",\n    \"Effective for working on client projects\"\n  ],\n  \"frictions\": [\n    \"Runs quite slow due to background processes\",\n    \"Documents do not pull up quickly\",\n    \"Frequent buffering\"\n  ]\n}",
+  "json": {
+    "task": "Manage projects and facilitate team communication.",
+    "benefits": [
+      "Integrates project management and communication",
+      "Works well for team video huddles for collaboration",
+      "Effective for working on client projects"
+    ],
+    "frictions": [
+      "Runs quite slow due to background processes",
+      "Documents do not pull up quickly",
+      "Frequent buffering"
+    ]
+  },
+  "ts": "2026-10-18T10:56:15.352339+00:00"
+}

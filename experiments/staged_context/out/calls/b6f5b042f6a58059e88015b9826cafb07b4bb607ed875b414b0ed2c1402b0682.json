@@ -1,0 +1,29 @@
+{
+  "stage": "hm_obs_theme",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b6f5b042f6a58059e88015b9826cafb07b4bb607ed875b414b0ed2c1402b0682",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 256,
+  "input_tokens": 507,
+  "output_tokens": 284,
+  "cost_usd": 0.0008621,
+  "elapsed_s": 1.78,
+  "error": null,
+  "text": "{\n  \"themes\": [\n    \"ui_ease_navigation\",\n    \"setup_configuration\",\n    \"ui_ease_navigation\",\n    \"core_feature_depth_or_missing\",\n    \"ui_ease_navigation\",\n    \"ui_ease_navigation\",\n    \"onboarding_learning_curve\",\n    \"ui_ease_navigation\"\n  ]\n}",
+  "json": {
+    "themes": [
+      "ui_ease_navigation",
+      "setup_configuration",
+      "ui_ease_navigation",
+      "core_feature_depth_or_missing",
+      "ui_ease_navigation",
+      "ui_ease_navigation",
+      "onboarding_learning_curve",
+      "ui_ease_navigation"
+    ]
+  },
+  "ts": "2026-10-18T10:56:08.679115+00:00"
+}

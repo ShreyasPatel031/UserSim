@@ -1,0 +1,36 @@
+{
+  "stage": "hm_agent_words",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "da6add90e9f2545f71b3cf841e4a2b4a75dd7878c15cb1eb45abd50a78a0bcc3",
+  "temperature": 0.7,
+  "seed": 1001,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3216,
+  "output_tokens": 1061,
+  "cost_usd": 0.0036173000000000004,
+  "elapsed_s": 5.73,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Comprehensive issue tracking and feedback loop for QA tasks\",\n    \"High level of customization for workflows and task states\",\n    \"Centralized platform for project management and team collaboration\"\n  ],\n  \"cons\": [\n    \"Initial setup and learning curve can be overwhelming due to many features\",\n    \"Occasional UI glitches or slow performance, especially during updates\",\n    \"Managing notifications can be difficult and distracting\"\n  ],\n  \"overall_experience\": \"This QA Tester likely found ClickUp to be a highly functional tool for managing their workspace activities, issue tracking, and team collaboration within a small business. Its customizable workflows and centralized nature would have been beneficial for their role. However, the initial complexity and occasional performance quirks might have presented a challenge during adoption.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Comprehensive issue tracking and feedback loop for QA tasks",
+      "High level of customization for workflows and task states",
+      "Centralized platform for project management and team collaboration"
+    ],
+    "cons": [
+      "Initial setup and learning curve can be overwhelming due to many features",
+      "Occasional UI glitches or slow performance, especially during updates",
+      "Managing notifications can be difficult and distracting"
+    ],
+    "overall_experience": "This QA Tester likely found ClickUp to be a highly functional tool for managing their workspace activities, issue tracking, and team collaboration within a small business. Its customizable workflows and centralized nature would have been beneficial for their role. However, the initial complexity and occasional performance quirks might have presented a challenge during adoption."
+  },
+  "ts": "2026-10-18T10:56:30.033741+00:00"
+}

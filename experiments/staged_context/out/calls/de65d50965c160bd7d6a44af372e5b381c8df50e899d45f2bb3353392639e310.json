@@ -1,0 +1,31 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "de65d50965c160bd7d6a44af372e5b381c8df50e899d45f2bb3353392639e310",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 271,
+  "output_tokens": 517,
+  "cost_usd": 0.0013738,
+  "elapsed_s": 3.88,
+  "error": null,
+  "text": "{\n  \"task\": \"Perform email marketing and automation tasks.\",\n  \"benefits\": [\n    \"Combines email campaigns, landing pages, automation workflows, and analytics in one place.\",\n    \"Saves time and improves productivity.\",\n    \"Provides a user-friendly interface and helpful templates.\",\n    \"Allows creation of professional campaigns without advanced technical skills.\"\n  ],\n  \"frictions\": [\n    \"Advanced features are only available on higher-tier plans.\",\n    \"Can be restrictive for smaller businesses or beginners on a budget.\",\n    \"Certain settings and automation options can take time to fully understand.\"\n  ]\n}",
+  "json": {
+    "task": "Perform email marketing and automation tasks.",
+    "benefits": [
+      "Combines email campaigns, landing pages, automation workflows, and analytics in one place.",
+      "Saves time and improves productivity.",
+      "Provides a user-friendly interface and helpful templates.",
+      "Allows creation of professional campaigns without advanced technical skills."
+    ],
+    "frictions": [
+      "Advanced features are only available on higher-tier plans.",
+      "Can be restrictive for smaller businesses or beginners on a budget.",
+      "Certain settings and automation options can take time to fully understand."
+    ]
+  },
+  "ts": "2026-10-18T10:47:04.722162+00:00"
+}

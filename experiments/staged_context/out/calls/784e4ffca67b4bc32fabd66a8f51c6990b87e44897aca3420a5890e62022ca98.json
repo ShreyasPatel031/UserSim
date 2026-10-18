@@ -1,0 +1,32 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "784e4ffca67b4bc32fabd66a8f51c6990b87e44897aca3420a5890e62022ca98",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 478,
+  "output_tokens": 533,
+  "cost_usd": 0.0014759,
+  "elapsed_s": 7.29,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage passwords and digital credentials.\",\n  \"benefits\": [\n    \"Customer support has been very good and quick to respond\",\n    \"Decent amount of integrations\",\n    \"Passkey and ToTP code support\",\n    \"Easy setup process\"\n  ],\n  \"frictions\": [\n    \"Simple Login integration disappears and needs re-setup\",\n    \"Sometimes refuses to work with certain sites, requiring manual copy/paste\",\n    \"Mobile app copies ToTP code to clipboard prematurely, overwriting password\",\n    \"Collections are not as intuitive as a folder structure for management\"\n  ]\n}",
+  "json": {
+    "task": "Manage passwords and digital credentials.",
+    "benefits": [
+      "Customer support has been very good and quick to respond",
+      "Decent amount of integrations",
+      "Passkey and ToTP code support",
+      "Easy setup process"
+    ],
+    "frictions": [
+      "Simple Login integration disappears and needs re-setup",
+      "Sometimes refuses to work with certain sites, requiring manual copy/paste",
+      "Mobile app copies ToTP code to clipboard prematurely, overwriting password",
+      "Collections are not as intuitive as a folder structure for management"
+    ]
+  },
+  "ts": "2026-10-18T10:44:29.283027+00:00"
+}

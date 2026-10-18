@@ -1,0 +1,26 @@
+{
+  "stage": "live_competitors",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7f71668fe043254b2f19e525022ecdc30f099df56eba67fbd66ae58c3d544f65",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 512,
+  "input_tokens": 108,
+  "output_tokens": 417,
+  "cost_usd": 0.0010749,
+  "elapsed_s": 3.92,
+  "error": null,
+  "text": "{\n  \"competitors\": [\n    \"Mailchimp\",\n    \"ActiveCampaign\",\n    \"GetResponse\",\n    \"Constant Contact\",\n    \"HubSpot Marketing Hub\"\n  ]\n}",
+  "json": {
+    "competitors": [
+      "Mailchimp",
+      "ActiveCampaign",
+      "GetResponse",
+      "Constant Contact",
+      "HubSpot Marketing Hub"
+    ]
+  },
+  "ts": "2026-10-18T10:49:58.285833+00:00"
+}

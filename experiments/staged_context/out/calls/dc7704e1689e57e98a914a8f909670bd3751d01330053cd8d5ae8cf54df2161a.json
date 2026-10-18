@@ -1,0 +1,36 @@
+{
+  "stage": "hm_agent_words",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "dc7704e1689e57e98a914a8f909670bd3751d01330053cd8d5ae8cf54df2161a",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3848,
+  "output_tokens": 979,
+  "cost_usd": 0.0036019,
+  "elapsed_s": 8.64,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Centralized project organization and task tracking\",\n    \"Customizable views and fields for real estate workflows\",\n    \"Improved team accountability and deadline management\"\n  ],\n  \"cons\": [\n    \"Initial setup can be complex and time-consuming\",\n    \"Occasional performance lags, especially with complex data\",\n    \"Mobile app experience could be more robust for field use\"\n  ],\n  \"overall_experience\": \"The CoFounder found ClickUp to be a powerful tool for centralizing project management and improving team accountability within their real estate business. While the extensive customization options were beneficial for tailoring workflows, the initial learning curve and setup required significant investment. Despite occasional performance quirks and a less-than-perfect mobile experience, the platform largely delivered on its promise to organize projects, assign responsibilities, and track progress effectively.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Centralized project organization and task tracking",
+      "Customizable views and fields for real estate workflows",
+      "Improved team accountability and deadline management"
+    ],
+    "cons": [
+      "Initial setup can be complex and time-consuming",
+      "Occasional performance lags, especially with complex data",
+      "Mobile app experience could be more robust for field use"
+    ],
+    "overall_experience": "The CoFounder found ClickUp to be a powerful tool for centralizing project management and improving team accountability within their real estate business. While the extensive customization options were beneficial for tailoring workflows, the initial learning curve and setup required significant investment. Despite occasional performance quirks and a less-than-perfect mobile experience, the platform largely delivered on its promise to organize projects, assign responsibilities, and track progress effectively."
+  },
+  "ts": "2026-10-18T10:57:06.790372+00:00"
+}

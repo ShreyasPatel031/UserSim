@@ -1,0 +1,30 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b3ad5e54ff8af94f0d0eb3e1ec13b7d0cdfcc40b72bab67f0e28ff43eb9078df",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 179,
+  "output_tokens": 458,
+  "cost_usd": 0.0011987,
+  "elapsed_s": 3.1,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage development workflow, including documentation, bug tracking, and sprint tasks.\",\n  \"benefits\": [\n    \"Integrate Git PRs directly with tasks\",\n    \"Automate status updates\",\n    \"Simplify sprint tracking and API specs with Kanban boards and Docs\",\n    \"Reduce administrative overhead\"\n  ],\n  \"frictions\": [\n    \"Occasional UI latency when loading large sprint boards\",\n    \"Search performance can slow down significantly when querying deeply nested task hierarchies\"\n  ]\n}",
+  "json": {
+    "task": "Manage development workflow, including documentation, bug tracking, and sprint tasks.",
+    "benefits": [
+      "Integrate Git PRs directly with tasks",
+      "Automate status updates",
+      "Simplify sprint tracking and API specs with Kanban boards and Docs",
+      "Reduce administrative overhead"
+    ],
+    "frictions": [
+      "Occasional UI latency when loading large sprint boards",
+      "Search performance can slow down significantly when querying deeply nested task hierarchies"
+    ]
+  },
+  "ts": "2026-10-18T10:56:16.226186+00:00"
+}

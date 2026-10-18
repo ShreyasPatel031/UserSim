@@ -1,0 +1,28 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "6f3dc2b195133ca816aa8265c8d21ed50c92aa4cefaf801f246c7a8d00699fbf",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 149,
+  "output_tokens": 410,
+  "cost_usd": 0.0010696999999999998,
+  "elapsed_s": 3.2,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage daily tasks and track team work reports.\",\n  \"benefits\": [\n    \"Manage daily tasks\",\n    \"Stay updated on team's work reports\"\n  ],\n  \"frictions\": [\n    \"Adding tasks can be difficult\",\n    \"User interface could be more attractive\"\n  ]\n}",
+  "json": {
+    "task": "Manage daily tasks and track team work reports.",
+    "benefits": [
+      "Manage daily tasks",
+      "Stay updated on team's work reports"
+    ],
+    "frictions": [
+      "Adding tasks can be difficult",
+      "User interface could be more attractive"
+    ]
+  },
+  "ts": "2026-10-18T10:50:07.821860+00:00"
+}

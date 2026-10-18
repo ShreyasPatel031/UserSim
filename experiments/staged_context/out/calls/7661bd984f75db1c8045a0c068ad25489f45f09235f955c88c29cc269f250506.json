@@ -1,0 +1,27 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7661bd984f75db1c8045a0c068ad25489f45f09235f955c88c29cc269f250506",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 199,
+  "output_tokens": 446,
+  "cost_usd": 0.0011747,
+  "elapsed_s": 3.47,
+  "error": null,
+  "text": "{\n  \"task\": \"Create and manage email campaigns and multi-channel marketing efforts.\",\n  \"benefits\": [\n    \"Create email campaigns easily and smoothly.\",\n    \"Automate and effectively manage multiple campaigns.\",\n    \"Perform multi-channel marketing (email, web, social media) from a single place.\",\n    \"Automate communication with customers and identify audience segments for email messaging.\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Create and manage email campaigns and multi-channel marketing efforts.",
+    "benefits": [
+      "Create email campaigns easily and smoothly.",
+      "Automate and effectively manage multiple campaigns.",
+      "Perform multi-channel marketing (email, web, social media) from a single place.",
+      "Automate communication with customers and identify audience segments for email messaging."
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T10:47:04.532887+00:00"
+}

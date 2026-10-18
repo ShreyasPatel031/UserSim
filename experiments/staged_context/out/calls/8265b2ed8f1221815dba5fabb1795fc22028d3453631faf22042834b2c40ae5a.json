@@ -1,0 +1,29 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8265b2ed8f1221815dba5fabb1795fc22028d3453631faf22042834b2c40ae5a",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 278,
+  "output_tokens": 471,
+  "cost_usd": 0.0012609,
+  "elapsed_s": 3.32,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage work processes, exchange files, and organize tasks with clients and employees\",\n  \"benefits\": [\n    \"Manage and exchange files with clients\",\n    \"Keep track of various aspects of the work process\",\n    \"Organize work into tasks and assign them to people\",\n    \"Monitor task completion and employee work\"\n  ],\n  \"frictions\": [\n    \"Requires getting the hang of assigning tasks initially\"\n  ]\n}",
+  "json": {
+    "task": "Manage work processes, exchange files, and organize tasks with clients and employees",
+    "benefits": [
+      "Manage and exchange files with clients",
+      "Keep track of various aspects of the work process",
+      "Organize work into tasks and assign them to people",
+      "Monitor task completion and employee work"
+    ],
+    "frictions": [
+      "Requires getting the hang of assigning tasks initially"
+    ]
+  },
+  "ts": "2026-10-18T10:50:07.108300+00:00"
+}

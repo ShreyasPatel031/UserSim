@@ -1,0 +1,31 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8011e87a090ecffddd144cb290df423494bad4eea688c85cbdac9b6738012548",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 269,
+  "output_tokens": 482,
+  "cost_usd": 0.0012856999999999999,
+  "elapsed_s": 3.69,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage projects and tasks.\",\n  \"benefits\": [\n    \"Flexibility\",\n    \"Customizable workflows\",\n    \"Task tracking\",\n    \"Automation features\"\n  ],\n  \"frictions\": [\n    \"Interface can feel complicated and overwhelming\",\n    \"Takes time to learn and navigate efficiently\",\n    \"Platform can be slow when handling large projects or multiple tasks\"\n  ]\n}",
+  "json": {
+    "task": "Manage projects and tasks.",
+    "benefits": [
+      "Flexibility",
+      "Customizable workflows",
+      "Task tracking",
+      "Automation features"
+    ],
+    "frictions": [
+      "Interface can feel complicated and overwhelming",
+      "Takes time to learn and navigate efficiently",
+      "Platform can be slow when handling large projects or multiple tasks"
+    ]
+  },
+  "ts": "2026-10-18T10:56:17.180055+00:00"
+}

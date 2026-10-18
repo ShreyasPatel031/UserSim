@@ -1,0 +1,27 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1a7f53a614a0c36a2aa777b9ddacc31f19be2ac78572082c3a3e3b6604a92b96",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 187,
+  "output_tokens": 498,
+  "cost_usd": 0.0013011,
+  "elapsed_s": 2.89,
+  "error": null,
+  "text": "{\n  \"task\": null,\n  \"benefits\": [],\n  \"frictions\": [\n    \"Interface is not user-friendly\",\n    \"Interface is scattered and confusing\",\n    \"Difficulty finding where things are\",\n    \"Constant confusion when navigating within the app\"\n  ]\n}",
+  "json": {
+    "task": null,
+    "benefits": [],
+    "frictions": [
+      "Interface is not user-friendly",
+      "Interface is scattered and confusing",
+      "Difficulty finding where things are",
+      "Constant confusion when navigating within the app"
+    ]
+  },
+  "ts": "2026-10-18T10:50:12.171071+00:00"
+}

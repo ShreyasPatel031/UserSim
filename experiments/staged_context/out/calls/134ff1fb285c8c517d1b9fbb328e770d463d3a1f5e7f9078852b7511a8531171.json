@@ -1,0 +1,29 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "134ff1fb285c8c517d1b9fbb328e770d463d3a1f5e7f9078852b7511a8531171",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 217,
+  "output_tokens": 456,
+  "cost_usd": 0.0012051,
+  "elapsed_s": 3.2,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage projects and facilitate team collaboration\",\n  \"benefits\": [\n    \"Bring people together to work on a project\",\n    \"Share documents, talk and chat\",\n    \"Interface is clean and organised\",\n    \"Easy space to navigate and get involved\"\n  ],\n  \"frictions\": [\n    \"Not cheap\"\n  ]\n}",
+  "json": {
+    "task": "Manage projects and facilitate team collaboration",
+    "benefits": [
+      "Bring people together to work on a project",
+      "Share documents, talk and chat",
+      "Interface is clean and organised",
+      "Easy space to navigate and get involved"
+    ],
+    "frictions": [
+      "Not cheap"
+    ]
+  },
+  "ts": "2026-10-18T10:50:05.757823+00:00"
+}

@@ -1,0 +1,28 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "050e4a20d144278a5488f20e4dbc8a225134e03c8f405064fc7050e81db50ce4",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 175,
+  "output_tokens": 434,
+  "cost_usd": 0.0011375,
+  "elapsed_s": 4.0,
+  "error": null,
+  "text": "{\n  \"task\": \"View the progress of multiple tasks and projects simultaneously.\",\n  \"benefits\": [\n    \"Best multiple project overview for Kanban/tasks\",\n    \"Board view shows progress of multiple tasks and projects\",\n    \"Great tool to see progress of multiple projects at the same time\"\n  ],\n  \"frictions\": [\n    \"Difficulty understanding and implementing the 'Spaces' UI concept\"\n  ]\n}",
+  "json": {
+    "task": "View the progress of multiple tasks and projects simultaneously.",
+    "benefits": [
+      "Best multiple project overview for Kanban/tasks",
+      "Board view shows progress of multiple tasks and projects",
+      "Great tool to see progress of multiple projects at the same time"
+    ],
+    "frictions": [
+      "Difficulty understanding and implementing the 'Spaces' UI concept"
+    ]
+  },
+  "ts": "2026-10-18T10:56:17.953249+00:00"
+}

@@ -1,0 +1,32 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "fdcdc44d290b1f4165e139dd94810d90ada5203c5326198b10f5b98e5c78d5a8",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 288,
+  "output_tokens": 496,
+  "cost_usd": 0.0013264,
+  "elapsed_s": 3.46,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage email campaigns and automations\",\n  \"benefits\": [\n    \"Interface is clean\",\n    \"Workflow builder is intuitive\",\n    \"Deliverability is solid\",\n    \"Built-in CRM features add value without requiring extra tools\"\n  ],\n  \"frictions\": [\n    \"Advanced customization options feel limited\",\n    \"Template editor can be rigid\",\n    \"Certain analytics views require extra clicks\",\n    \"Support is occasionally slow during peak hours\"\n  ]\n}",
+  "json": {
+    "task": "Manage email campaigns and automations",
+    "benefits": [
+      "Interface is clean",
+      "Workflow builder is intuitive",
+      "Deliverability is solid",
+      "Built-in CRM features add value without requiring extra tools"
+    ],
+    "frictions": [
+      "Advanced customization options feel limited",
+      "Template editor can be rigid",
+      "Certain analytics views require extra clicks",
+      "Support is occasionally slow during peak hours"
+    ]
+  },
+  "ts": "2026-10-18T10:52:55.615423+00:00"
+}

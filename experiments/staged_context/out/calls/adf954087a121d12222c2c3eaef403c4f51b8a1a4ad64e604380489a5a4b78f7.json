@@ -1,0 +1,27 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "adf954087a121d12222c2c3eaef403c4f51b8a1a4ad64e604380489a5a4b78f7",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 191,
+  "output_tokens": 420,
+  "cost_usd": 0.0011073,
+  "elapsed_s": 6.11,
+  "error": null,
+  "text": "{\n  \"task\": \"Store and share passwords and sensitive information\",\n  \"benefits\": [\n    \"Provides great customer service\",\n    \"Divides personal from work passwords\",\n    \"Offers a good price\",\n    \"Updates instantly\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Store and share passwords and sensitive information",
+    "benefits": [
+      "Provides great customer service",
+      "Divides personal from work passwords",
+      "Offers a good price",
+      "Updates instantly"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T10:44:28.742517+00:00"
+}

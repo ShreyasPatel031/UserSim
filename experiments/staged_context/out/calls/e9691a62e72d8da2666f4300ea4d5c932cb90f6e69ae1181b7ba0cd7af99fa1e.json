@@ -1,0 +1,36 @@
+{
+  "stage": "hm_agent_words",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e9691a62e72d8da2666f4300ea4d5c932cb90f6e69ae1181b7ba0cd7af99fa1e",
+  "temperature": 0.7,
+  "seed": 1001,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3511,
+  "output_tokens": 1165,
+  "cost_usd": 0.0039658,
+  "elapsed_s": 6.49,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"High level of customization to manage diverse projects and daily work.\",\n    \"Powerful automation features to streamline workflows and task management.\",\n    \"Ability to consolidate tasks, projects, and time tracking in one platform.\"\n  ],\n  \"cons\": [\n    \"Steep learning curve and initial setup can be complex and time-consuming.\",\n    \"Mobile app may experience performance issues, especially with slow internet.\",\n    \"Customization options can be overwhelming, leading to a convoluted setup if not careful.\"\n  ],\n  \"overall_experience\": \"This owner likely appreciates ClickUp's extensive functionality and customization, which allows them to effectively separate projects, track time, and organize daily work for their small business. They value the ability to consolidate all their operational needs into one platform and leverage automations for efficiency. However, the initial complexity and potential for an overwhelming number of features might have led to a challenging onboarding experience, and they may have encountered occasional performance issues, particularly with the mobile application.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "High level of customization to manage diverse projects and daily work.",
+      "Powerful automation features to streamline workflows and task management.",
+      "Ability to consolidate tasks, projects, and time tracking in one platform."
+    ],
+    "cons": [
+      "Steep learning curve and initial setup can be complex and time-consuming.",
+      "Mobile app may experience performance issues, especially with slow internet.",
+      "Customization options can be overwhelming, leading to a convoluted setup if not careful."
+    ],
+    "overall_experience": "This owner likely appreciates ClickUp's extensive functionality and customization, which allows them to effectively separate projects, track time, and organize daily work for their small business. They value the ability to consolidate all their operational needs into one platform and leverage automations for efficiency. However, the initial complexity and potential for an overwhelming number of features might have led to a challenging onboarding experience, and they may have encountered occasional performance issues, particularly with the mobile application."
+  },
+  "ts": "2026-10-18T10:57:57.750702+00:00"
+}

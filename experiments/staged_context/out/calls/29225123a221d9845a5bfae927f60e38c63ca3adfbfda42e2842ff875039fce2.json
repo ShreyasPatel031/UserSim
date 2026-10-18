@@ -1,0 +1,32 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "29225123a221d9845a5bfae927f60e38c63ca3adfbfda42e2842ff875039fce2",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 638,
+  "output_tokens": 517,
+  "cost_usd": 0.0014839,
+  "elapsed_s": 3.41,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage owned-channel communication strategy\",\n  \"benefits\": [\n    \"Offers email, SMS, and WhatsApp on a single platform\",\n    \"Provides a flexible data model for CRM with custom attributes and segmentation\",\n    \"Includes a generous free tier for building out features\",\n    \"Delivers clear, fair, and educational human support\"\n  ],\n  \"frictions\": [\n    \"Account protection process can be abrupt for first-time senders\",\n    \"Lack of clear warning before sending to high-risk lists\",\n    \"Self-service reactivation flow is initially confusing\",\n    \"API gaps for developer setups, such as inability to create forms or segments via API\"\n  ]\n}",
+  "json": {
+    "task": "Manage owned-channel communication strategy",
+    "benefits": [
+      "Offers email, SMS, and WhatsApp on a single platform",
+      "Provides a flexible data model for CRM with custom attributes and segmentation",
+      "Includes a generous free tier for building out features",
+      "Delivers clear, fair, and educational human support"
+    ],
+    "frictions": [
+      "Account protection process can be abrupt for first-time senders",
+      "Lack of clear warning before sending to high-risk lists",
+      "Self-service reactivation flow is initially confusing",
+      "API gaps for developer setups, such as inability to create forms or segments via API"
+    ]
+  },
+  "ts": "2026-10-18T10:53:00.515254+00:00"
+}

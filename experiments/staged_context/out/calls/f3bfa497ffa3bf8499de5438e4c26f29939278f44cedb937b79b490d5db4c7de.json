@@ -1,0 +1,36 @@
+{
+  "stage": "hm_agent_words",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f3bfa497ffa3bf8499de5438e4c26f29939278f44cedb937b79b490d5db4c7de",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3426,
+  "output_tokens": 1050,
+  "cost_usd": 0.0036527999999999995,
+  "elapsed_s": 6.72,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Reliable high-volume email campaign management\",\n    \"Effective segmentation and personalization features\",\n    \"Good for transactional emails via API\"\n  ],\n  \"cons\": [\n    \"Pricing can be restrictive with tier-based limitations\",\n    \"Some advanced configurations may require technical expertise\",\n    \"Integrations and reporting could be more robust for large-scale operations\"\n  ],\n  \"overall_experience\": \"This Admin. Servidores from a large retail company has found Brevo to be a generally reliable platform for managing high-volume email campaigns and transactional communications over two years. They appreciate its core functionality for segmentation and personalization, which is crucial for retail operations. However, they likely find the pricing structure and some limitations frustrating for a company of their size, and some advanced operational needs might require more technical workarounds or better native integrations.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Reliable high-volume email campaign management",
+      "Effective segmentation and personalization features",
+      "Good for transactional emails via API"
+    ],
+    "cons": [
+      "Pricing can be restrictive with tier-based limitations",
+      "Some advanced configurations may require technical expertise",
+      "Integrations and reporting could be more robust for large-scale operations"
+    ],
+    "overall_experience": "This Admin. Servidores from a large retail company has found Brevo to be a generally reliable platform for managing high-volume email campaigns and transactional communications over two years. They appreciate its core functionality for segmentation and personalization, which is crucial for retail operations. However, they likely find the pricing structure and some limitations frustrating for a company of their size, and some advanced operational needs might require more technical workarounds or better native integrations."
+  },
+  "ts": "2026-10-18T10:53:21.903346+00:00"
+}

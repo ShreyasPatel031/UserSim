@@ -1,0 +1,36 @@
+{
+  "stage": "hm_agent_words",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "cbc6e9b0df1cc561c0d0bf410d3324cadd1135e9b208402dfd253b05b35ae42d",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3383,
+  "output_tokens": 1037,
+  "cost_usd": 0.0036073999999999998,
+  "elapsed_s": 5.83,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 2,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Centralizes tasks and client interactions\",\n    \"Offers robust features for task management\",\n    \"Good for tracking client journeys and team collaboration\"\n  ],\n  \"cons\": [\n    \"Significant learning curve and initial complexity\",\n    \"Customer service and billing issues are a concern\",\n    \"Can feel overwhelming with too many options\"\n  ],\n  \"overall_experience\": \"This personal lines account manager found ClickUp to be a powerful tool for centralizing tasks, tracking client journeys, and managing responsibilities within a small business. While its extensive features and customization options were beneficial for organizing work, the steep learning curve and overwhelming number of options made initial adoption challenging. The potential for customer service and billing issues, as reported by similar users, also created a significant point of frustration.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 2,
+    "recommendation_score": 6,
+    "pros": [
+      "Centralizes tasks and client interactions",
+      "Offers robust features for task management",
+      "Good for tracking client journeys and team collaboration"
+    ],
+    "cons": [
+      "Significant learning curve and initial complexity",
+      "Customer service and billing issues are a concern",
+      "Can feel overwhelming with too many options"
+    ],
+    "overall_experience": "This personal lines account manager found ClickUp to be a powerful tool for centralizing tasks, tracking client journeys, and managing responsibilities within a small business. While its extensive features and customization options were beneficial for organizing work, the steep learning curve and overwhelming number of options made initial adoption challenging. The potential for customer service and billing issues, as reported by similar users, also created a significant point of frustration."
+  },
+  "ts": "2026-10-18T10:58:22.495559+00:00"
+}

@@ -1,0 +1,30 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "89a20b258a085334616f564407b7ae9f6552e944bf586789c5bc58199e9ec668",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 180,
+  "output_tokens": 461,
+  "cost_usd": 0.0012064999999999999,
+  "elapsed_s": 6.62,
+  "error": null,
+  "text": "{\n  \"task\": \"Store and retrieve passwords securely in the cloud\",\n  \"benefits\": [\n    \"Keeps passwords secure in the cloud\",\n    \"Allows quick retrieval of passwords\",\n    \"AI assistance is helpful\",\n    \"Support is great\"\n  ],\n  \"frictions\": [\n    \"Free plan is limited in terms of resources\",\n    \"Cannot use MFA on the free plan\"\n  ]\n}",
+  "json": {
+    "task": "Store and retrieve passwords securely in the cloud",
+    "benefits": [
+      "Keeps passwords secure in the cloud",
+      "Allows quick retrieval of passwords",
+      "AI assistance is helpful",
+      "Support is great"
+    ],
+    "frictions": [
+      "Free plan is limited in terms of resources",
+      "Cannot use MFA on the free plan"
+    ]
+  },
+  "ts": "2026-10-18T10:44:28.874243+00:00"
+}

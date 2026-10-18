@@ -1,0 +1,29 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2a13967c1d601e9aa628dc038e66df95a3b81e19594e75308adf8464d852a311",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 194,
+  "output_tokens": 466,
+  "cost_usd": 0.0012232,
+  "elapsed_s": 3.01,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage and execute multichannel marketing campaigns.\",\n  \"benefits\": [\n    \"Simplifies multichannel marketing\",\n    \"Collects data from multiple tools and excels\",\n    \"Allows previewing campaigns before running\",\n    \"Supports high-volume sending\"\n  ],\n  \"frictions\": [\n    \"Integrations are difficult to connect\"\n  ]\n}",
+  "json": {
+    "task": "Manage and execute multichannel marketing campaigns.",
+    "benefits": [
+      "Simplifies multichannel marketing",
+      "Collects data from multiple tools and excels",
+      "Allows previewing campaigns before running",
+      "Supports high-volume sending"
+    ],
+    "frictions": [
+      "Integrations are difficult to connect"
+    ]
+  },
+  "ts": "2026-10-18T10:53:01.774454+00:00"
+}

@@ -1,0 +1,32 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "79941d06d44ac528b79351add80859e308347945660c04c3ba19221495c8073c",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 250,
+  "output_tokens": 547,
+  "cost_usd": 0.0014424999999999998,
+  "elapsed_s": 3.4,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage marketing and stakeholder communications while ensuring GDPR compliance\",\n  \"benefits\": [\n    \"Provides an unmatched native GDPR suite for diplomatic stakeholder work\",\n    \"Logs timestamps and visitor IPs permanently for audits\",\n    \"Offers ready German consent forms that pass local data authority checks\",\n    \"Enables consent-based list segmentation to isolate cross-border partner data\"\n  ],\n  \"frictions\": [\n    \"Large batch contact imports often break custom compliance fields\",\n    \"Requires tedious manual fixes after large batch contact imports\",\n    \"Lacks formal templates suited for policy brief newsletters\",\n    \"German-speaking support is only available during standard hours for emergencies\"\n  ]\n}",
+  "json": {
+    "task": "Manage marketing and stakeholder communications while ensuring GDPR compliance",
+    "benefits": [
+      "Provides an unmatched native GDPR suite for diplomatic stakeholder work",
+      "Logs timestamps and visitor IPs permanently for audits",
+      "Offers ready German consent forms that pass local data authority checks",
+      "Enables consent-based list segmentation to isolate cross-border partner data"
+    ],
+    "frictions": [
+      "Large batch contact imports often break custom compliance fields",
+      "Requires tedious manual fixes after large batch contact imports",
+      "Lacks formal templates suited for policy brief newsletters",
+      "German-speaking support is only available during standard hours for emergencies"
+    ]
+  },
+  "ts": "2026-10-18T10:47:05.846715+00:00"
+}

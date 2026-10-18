@@ -1,0 +1,30 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9d0f77fab157687feb53a5376f27665c807871553f39f4973c5f31aa4d14ed9c",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 206,
+  "output_tokens": 482,
+  "cost_usd": 0.0012668,
+  "elapsed_s": 3.11,
+  "error": null,
+  "text": "{\n  \"task\": \"Send mass mailings and create campaigns for companies\",\n  \"benefits\": [\n    \"interactive interface\",\n    \"easy-to-use interface\",\n    \"create email templates easily\",\n    \"create email templates quickly\"\n  ],\n  \"frictions\": [\n    \"charges more for added users\",\n    \"plan upgrades without notice for sending more emails\"\n  ]\n}",
+  "json": {
+    "task": "Send mass mailings and create campaigns for companies",
+    "benefits": [
+      "interactive interface",
+      "easy-to-use interface",
+      "create email templates easily",
+      "create email templates quickly"
+    ],
+    "frictions": [
+      "charges more for added users",
+      "plan upgrades without notice for sending more emails"
+    ]
+  },
+  "ts": "2026-10-18T10:53:02.705525+00:00"
+}

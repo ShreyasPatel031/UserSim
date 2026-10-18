@@ -1,0 +1,36 @@
+{
+  "stage": "hm_agent_words",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "fbeccebc65e6df1cc320144d4ab35355d9e6b5a963848e274ecd76095bc0b930",
+  "temperature": 0.7,
+  "seed": 1001,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3912,
+  "output_tokens": 1045,
+  "cost_usd": 0.0037860999999999997,
+  "elapsed_s": 6.53,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Comprehensive views for sprint and campaign planning, including Kanban boards and timelines.\",\n    \"Extensive customization and templates for managing diverse marketing processes.\",\n    \"Centralizes tasks and communication, reducing reliance on disparate tools.\"\n  ],\n  \"cons\": [\n    \"Occasional UI glitches or performance issues, especially with the mobile app.\",\n    \"Learning curve for advanced customization and setting up complex workflows.\",\n    \"Customer support responsiveness can be inconsistent.\"\n  ],\n  \"overall_experience\": \"This Project Manager likely appreciates ClickUp's robust features for orchestrating marketing campaigns and sprints across a larger team. While the platform offers excellent customization and centralizes project data, they may find the initial setup complex and encounter occasional performance hiccups. Despite these frustrations, its comprehensive functionality makes it a valuable tool for their role.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Comprehensive views for sprint and campaign planning, including Kanban boards and timelines.",
+      "Extensive customization and templates for managing diverse marketing processes.",
+      "Centralizes tasks and communication, reducing reliance on disparate tools."
+    ],
+    "cons": [
+      "Occasional UI glitches or performance issues, especially with the mobile app.",
+      "Learning curve for advanced customization and setting up complex workflows.",
+      "Customer support responsiveness can be inconsistent."
+    ],
+    "overall_experience": "This Project Manager likely appreciates ClickUp's robust features for orchestrating marketing campaigns and sprints across a larger team. While the platform offers excellent customization and centralizes project data, they may find the initial setup complex and encounter occasional performance hiccups. Despite these frustrations, its comprehensive functionality makes it a valuable tool for their role."
+  },
+  "ts": "2026-10-18T10:57:12.965993+00:00"
+}

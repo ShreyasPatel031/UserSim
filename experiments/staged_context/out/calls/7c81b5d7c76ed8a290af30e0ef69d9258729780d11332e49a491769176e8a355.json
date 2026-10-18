@@ -1,0 +1,36 @@
+{
+  "stage": "hm_agent_words",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7c81b5d7c76ed8a290af30e0ef69d9258729780d11332e49a491769176e8a355",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3231,
+  "output_tokens": 1102,
+  "cost_usd": 0.0037243,
+  "elapsed_s": 10.37,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Centralized task tracking and project overview\",\n    \"Ability to assign tasks and manage team contributions\",\n    \"Customizable views for different project needs\"\n  ],\n  \"cons\": [\n    \"Steep learning curve due to extensive features\",\n    \"Initial setup felt complex and overwhelming\",\n    \"Occasional performance issues or slow loading\"\n  ],\n  \"overall_experience\": \"The Pharmacy Technician found ClickUp's comprehensive features beneficial for managing project tasks and keeping everything in one place. However, the sheer breadth of options led to a significant learning curve, making the initial setup and adoption challenging. While the functionality was powerful, the complexity sometimes hindered efficient daily use for their small business needs.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 6,
+    "pros": [
+      "Centralized task tracking and project overview",
+      "Ability to assign tasks and manage team contributions",
+      "Customizable views for different project needs"
+    ],
+    "cons": [
+      "Steep learning curve due to extensive features",
+      "Initial setup felt complex and overwhelming",
+      "Occasional performance issues or slow loading"
+    ],
+    "overall_experience": "The Pharmacy Technician found ClickUp's comprehensive features beneficial for managing project tasks and keeping everything in one place. However, the sheer breadth of options led to a significant learning curve, making the initial setup and adoption challenging. While the functionality was powerful, the complexity sometimes hindered efficient daily use for their small business needs."
+  },
+  "ts": "2026-10-18T10:56:36.968681+00:00"
+}

@@ -1,0 +1,29 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e92cfddc6bec7721cead1958cccae5dcd84fa6680945edf64c7a869c1a9068c6",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 159,
+  "output_tokens": 463,
+  "cost_usd": 0.0012051999999999998,
+  "elapsed_s": 2.95,
+  "error": null,
+  "text": "{\n  \"task\": \"Automate email marketing processes.\",\n  \"benefits\": [\n    \"User interface\",\n    \"User experience\",\n    \"User-friendly\",\n    \"Automating email marketing processes\"\n  ],\n  \"frictions\": [\n    \"High pricing\"\n  ]\n}",
+  "json": {
+    "task": "Automate email marketing processes.",
+    "benefits": [
+      "User interface",
+      "User experience",
+      "User-friendly",
+      "Automating email marketing processes"
+    ],
+    "frictions": [
+      "High pricing"
+    ]
+  },
+  "ts": "2026-10-18T10:47:04.223145+00:00"
+}

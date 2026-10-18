@@ -1,0 +1,28 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "773a2473f7c8d9e722783b7b4394bfbf8e25ae755d74e37b5c2d3f65c5500df2",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 149,
+  "output_tokens": 454,
+  "cost_usd": 0.0011796999999999999,
+  "elapsed_s": 4.16,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage project communications and team alignment\",\n  \"benefits\": [\n    \"Provides a central location to see past communication\",\n    \"Keeps everyone on all web projects on the same page\",\n    \"Keeps a record of communications\"\n  ],\n  \"frictions\": [\n    \"Replies are always at the bottom instead of under the message replied to\"\n  ]\n}",
+  "json": {
+    "task": "Manage project communications and team alignment",
+    "benefits": [
+      "Provides a central location to see past communication",
+      "Keeps everyone on all web projects on the same page",
+      "Keeps a record of communications"
+    ],
+    "frictions": [
+      "Replies are always at the bottom instead of under the message replied to"
+    ]
+  },
+  "ts": "2026-10-18T10:50:13.144524+00:00"
+}

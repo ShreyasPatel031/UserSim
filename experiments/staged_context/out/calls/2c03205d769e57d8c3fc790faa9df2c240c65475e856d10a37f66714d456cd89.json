@@ -1,0 +1,36 @@
+{
+  "stage": "hm_agent_words",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2c03205d769e57d8c3fc790faa9df2c240c65475e856d10a37f66714d456cd89",
+  "temperature": 0.7,
+  "seed": 1001,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3506,
+  "output_tokens": 1024,
+  "cost_usd": 0.0036117999999999996,
+  "elapsed_s": 5.71,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Comprehensive task management features\",\n    \"High degree of customization and flexibility\",\n    \"Potential for automation to streamline workflows\"\n  ],\n  \"cons\": [\n    \"Steep learning curve due to extensive features\",\n    \"Occasional performance issues or lag\",\n    \"Initial setup can be complex and time-consuming\"\n  ],\n  \"overall_experience\": \"As an owner of a small business, this person likely found ClickUp to be a powerful and highly customizable tool for managing tasks and drafting emails. They appreciated its extensive feature set and the potential for automation to save time. However, the sheer breadth of features likely led to a significant learning curve and initial setup challenges, potentially causing some frustration before realizing its full benefits. Performance issues and occasional lag might also have been minor annoyances.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Comprehensive task management features",
+      "High degree of customization and flexibility",
+      "Potential for automation to streamline workflows"
+    ],
+    "cons": [
+      "Steep learning curve due to extensive features",
+      "Occasional performance issues or lag",
+      "Initial setup can be complex and time-consuming"
+    ],
+    "overall_experience": "As an owner of a small business, this person likely found ClickUp to be a powerful and highly customizable tool for managing tasks and drafting emails. They appreciated its extensive feature set and the potential for automation to save time. However, the sheer breadth of features likely led to a significant learning curve and initial setup challenges, potentially causing some frustration before realizing its full benefits. Performance issues and occasional lag might also have been minor annoyances."
+  },
+  "ts": "2026-10-18T10:57:51.167615+00:00"
+}

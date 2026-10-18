@@ -1,0 +1,27 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2b8629ae5940286daf109250bf29d896ecbacd4d6cf6e996a6201a5cf0989852",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 204,
+  "output_tokens": 502,
+  "cost_usd": 0.0013161999999999998,
+  "elapsed_s": 2.99,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage projects, track IT support tickets, system upgrades, and team tasks.\",\n  \"benefits\": [\n    \"Provides an all-in-one approach to project management\",\n    \"Allows tracking of IT support tickets, system upgrades, and team tasks from a single dashboard\",\n    \"Offers task views, custom statuses, and time tracking to prioritize work and meet deadlines\",\n    \"Integrates with Slack, Google Drive, and Outlook to improve team collaboration and centralize updates\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Manage projects, track IT support tickets, system upgrades, and team tasks.",
+    "benefits": [
+      "Provides an all-in-one approach to project management",
+      "Allows tracking of IT support tickets, system upgrades, and team tasks from a single dashboard",
+      "Offers task views, custom statuses, and time tracking to prioritize work and meet deadlines",
+      "Integrates with Slack, Google Drive, and Outlook to improve team collaboration and centralize updates"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T10:56:19.798218+00:00"
+}

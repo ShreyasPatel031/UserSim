@@ -1,0 +1,29 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "6a269634c3adc27214a37bbaceeaad5a34e18e7ae3ea6c22693b5e0e66fbf642",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 240,
+  "output_tokens": 474,
+  "cost_usd": 0.0012569999999999999,
+  "elapsed_s": 4.19,
+  "error": null,
+  "text": "{\n  \"task\": \"Track assigned tasks and manage project deadlines\",\n  \"benefits\": [\n    \"User-friendly interface\",\n    \"Track assigned tasks\",\n    \"Maintain a clear task planner with due dates\",\n    \"Receive email alerts for deadlines\"\n  ],\n  \"frictions\": [\n    \"Lack of API endpoint to fetch and update labels from other platforms\"\n  ]\n}",
+  "json": {
+    "task": "Track assigned tasks and manage project deadlines",
+    "benefits": [
+      "User-friendly interface",
+      "Track assigned tasks",
+      "Maintain a clear task planner with due dates",
+      "Receive email alerts for deadlines"
+    ],
+    "frictions": [
+      "Lack of API endpoint to fetch and update labels from other platforms"
+    ]
+  },
+  "ts": "2026-10-18T10:50:10.743710+00:00"
+}

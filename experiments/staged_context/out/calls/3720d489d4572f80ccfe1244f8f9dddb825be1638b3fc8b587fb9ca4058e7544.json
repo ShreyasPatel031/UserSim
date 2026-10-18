@@ -1,0 +1,27 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3720d489d4572f80ccfe1244f8f9dddb825be1638b3fc8b587fb9ca4058e7544",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 194,
+  "output_tokens": 481,
+  "cost_usd": 0.0012607,
+  "elapsed_s": 2.98,
+  "error": null,
+  "text": "{\n  \"task\": \"Use for project collaboration\",\n  \"benefits\": [\n    \"Ease of use\",\n    \"Powerful process automation\",\n    \"Strong invoicing and payment features\",\n    \"Strong customer support\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Use for project collaboration",
+    "benefits": [
+      "Ease of use",
+      "Powerful process automation",
+      "Strong invoicing and payment features",
+      "Strong customer support"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T10:56:18.721021+00:00"
+}
