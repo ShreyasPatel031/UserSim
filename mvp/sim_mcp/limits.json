@@ -42,7 +42,7 @@
       "about": "Most persona x task x site runs one study may have, for callers without a token."
     },
     "anon_allow_sms": {
-      "value": false,
+      "value": true,
       "about": "Let callers without a token use usersim_signup_phone / usersim_wait_for_sms_code. The number is the owner's real phone, so it is made safe instead of blocked: one session holds the number at a time (sms_lease_s), a session only gets texts that arrived after its own lease started, and texts matching sms_sender_denylist are never returned to anyone."
     },
     "sms_lease_s": {

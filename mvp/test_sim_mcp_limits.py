@@ -49,7 +49,7 @@ class LimitsFileTests(unittest.TestCase):
         self.assertEqual(L.get("anon_max_concurrent_sessions_per_ip"), 3)
         self.assertEqual(L.get("anon_daily_usd_per_ip"), 2.0)
         self.assertEqual(L.get("anon_daily_usd_global"), 10.0)
-        self.assertIs(L.get("anon_allow_sms"), False)  # flipped to true in limits.json once the lease code is deployed
+        self.assertIs(L.get("anon_allow_sms"), True)
         self.assertEqual(L.get("sms_lease_s"), 600)
         self.assertEqual(L.get("anon_daily_sms_leases_per_ip"), 10)
         self.assertIn("apple", L.get("sms_sender_denylist"))
