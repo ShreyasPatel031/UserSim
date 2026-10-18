@@ -576,7 +576,10 @@ def build_report(study: dict[str, Any]) -> dict[str, Any]:
             "unverified": bool(verdict.get("unverified")) or summary.get("judge_status", "ok") != "ok",
         },
         "driver_claim": {"outcome": run.get("driver_outcome"), "notes": run.get("feedback") or run.get("driver_notes") or ""},
-        "proof": summary.get("proof") or {"pass": False, "checks": [], "note": "not finished"},
+        # The run's own proof checks (written by finalize as mcp_proof). A 1x1x1 study_start study is read by this
+        # one-run reader too, and it never had summary["proof"], so the report said FAIL while usersim_finish said
+        # proof_pass=true (Composer run 34943bfa).
+        "proof": run.get("mcp_proof") or summary.get("proof") or {"pass": False, "checks": [], "note": "not finished"},
         "num_steps": len(steps),
         "steps": steps,
         "friction": friction,
