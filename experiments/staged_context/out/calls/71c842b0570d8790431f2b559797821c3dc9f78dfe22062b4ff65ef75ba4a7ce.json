@@ -1,0 +1,29 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "71c842b0570d8790431f2b559797821c3dc9f78dfe22062b4ff65ef75ba4a7ce",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 305,
+  "output_tokens": 512,
+  "cost_usd": 0.0013714999999999999,
+  "elapsed_s": 7.89,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage email marketing campaigns and analyze performance\",\n  \"benefits\": [\n    \"Advanced email marketing analytics beyond basic open and click rates\",\n    \"Advanced segmentation capabilities for hyper-targeted campaign optimization\",\n    \"Accessible interface for setting up and monitoring multiple campaigns\",\n    \"Autoresponder function for nurturing leads with targeted content\"\n  ],\n  \"frictions\": [\n    \"A/B testing tool has fewer variables to test than subject lines and content variations\"\n  ]\n}",
+  "json": {
+    "task": "Manage email marketing campaigns and analyze performance",
+    "benefits": [
+      "Advanced email marketing analytics beyond basic open and click rates",
+      "Advanced segmentation capabilities for hyper-targeted campaign optimization",
+      "Accessible interface for setting up and monitoring multiple campaigns",
+      "Autoresponder function for nurturing leads with targeted content"
+    ],
+    "frictions": [
+      "A/B testing tool has fewer variables to test than subject lines and content variations"
+    ]
+  },
+  "ts": "2026-10-18T10:27:34.031956+00:00"
+}

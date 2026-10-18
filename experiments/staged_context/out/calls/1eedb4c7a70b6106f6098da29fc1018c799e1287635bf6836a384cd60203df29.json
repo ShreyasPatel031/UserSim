@@ -1,0 +1,31 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1eedb4c7a70b6106f6098da29fc1018c799e1287635bf6836a384cd60203df29",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 225,
+  "output_tokens": 469,
+  "cost_usd": 0.00124,
+  "elapsed_s": 9.09,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage marketing automation and campaigns\",\n  \"benefits\": [\n    \"Combines email marketing, landing pages, and automation workflows in one place\",\n    \"Saves time\",\n    \"Intuitive interface\",\n    \"Improves campaign management\"\n  ],\n  \"frictions\": [\n    \"Pricing increases quickly as subscriber list grows\",\n    \"Advanced automation features take time to learn\",\n    \"Lacks more detailed analytics and reporting options\"\n  ]\n}",
+  "json": {
+    "task": "Manage marketing automation and campaigns",
+    "benefits": [
+      "Combines email marketing, landing pages, and automation workflows in one place",
+      "Saves time",
+      "Intuitive interface",
+      "Improves campaign management"
+    ],
+    "frictions": [
+      "Pricing increases quickly as subscriber list grows",
+      "Advanced automation features take time to learn",
+      "Lacks more detailed analytics and reporting options"
+    ]
+  },
+  "ts": "2026-10-18T10:27:33.463070+00:00"
+}

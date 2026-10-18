@@ -1,0 +1,30 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e904864ada3988d45ded8756524f676d7315d42369b1e3c1bcd7dc72d59750ae",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 152,
+  "output_tokens": 517,
+  "cost_usd": 0.0013381,
+  "elapsed_s": 7.94,
+  "error": null,
+  "text": "{\n  \"task\": \"Segment customers and create follow-up communications.\",\n  \"benefits\": [\n    \"All features are available in one place\",\n    \"Provides clear statistics\",\n    \"Templates are easy to edit\",\n    \"Easy to create follow-ups\"\n  ],\n  \"frictions\": [\n    \"Difficult to handle at first\",\n    \"Becomes expensive as the database grows\"\n  ]\n}",
+  "json": {
+    "task": "Segment customers and create follow-up communications.",
+    "benefits": [
+      "All features are available in one place",
+      "Provides clear statistics",
+      "Templates are easy to edit",
+      "Easy to create follow-ups"
+    ],
+    "frictions": [
+      "Difficult to handle at first",
+      "Becomes expensive as the database grows"
+    ]
+  },
+  "ts": "2026-10-18T10:27:33.745376+00:00"
+}

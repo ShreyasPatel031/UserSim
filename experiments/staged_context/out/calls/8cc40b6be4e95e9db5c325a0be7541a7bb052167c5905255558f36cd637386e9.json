@@ -1,0 +1,31 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8cc40b6be4e95e9db5c325a0be7541a7bb052167c5905255558f36cd637386e9",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 271,
+  "output_tokens": 523,
+  "cost_usd": 0.0013888000000000001,
+  "elapsed_s": 8.11,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage email marketing lists and communicate with an audience\",\n  \"benefits\": [\n    \"Platform is intuitive\",\n    \"Setting up email campaigns is straightforward\",\n    \"Customer support live chat is responsive, polite, and helpful\"\n  ],\n  \"frictions\": [\n    \"Confusing billing policy regarding contact limits\",\n    \"No counter in the dashboard to monitor contact limits\",\n    \"Technical glitch where payment processed but plan upgrade failed automatically\",\n    \"Hidden billing mechanics and lack of transparent limits in the UI\"\n  ]\n}",
+  "json": {
+    "task": "Manage email marketing lists and communicate with an audience",
+    "benefits": [
+      "Platform is intuitive",
+      "Setting up email campaigns is straightforward",
+      "Customer support live chat is responsive, polite, and helpful"
+    ],
+    "frictions": [
+      "Confusing billing policy regarding contact limits",
+      "No counter in the dashboard to monitor contact limits",
+      "Technical glitch where payment processed but plan upgrade failed automatically",
+      "Hidden billing mechanics and lack of transparent limits in the UI"
+    ]
+  },
+  "ts": "2026-10-18T10:27:33.783562+00:00"
+}

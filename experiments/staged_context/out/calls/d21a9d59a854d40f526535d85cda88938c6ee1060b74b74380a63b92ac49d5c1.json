@@ -1,0 +1,36 @@
+{
+  "stage": "hm_plist",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d21a9d59a854d40f526535d85cda88938c6ee1060b74b74380a63b92ac49d5c1",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 1024,
+  "input_tokens": 472,
+  "output_tokens": 1001,
+  "cost_usd": 0.0026441,
+  "elapsed_s": 5.28,
+  "error": null,
+  "text": "{\n  \"pros\": [\n    \"Easy and quick list creation process.\",\n    \"Comprehensive and well-organized contact management area.\",\n    \"Clear display of plan limits and contact usage.\",\n    \"Flexible manual contact entry with inline automation and custom fields.\",\n    \"Robust automation features with workflow templates.\",\n    \"Trial access to advanced features like automation.\"\n  ],\n  \"cons\": [\n    \"Key features (email, automation) are hidden in a large mega-menu.\",\n    \"UI instability and layout shifts (e.g., banner loading causing page jump).\",\n    \"Lag or delay in UI interactions (e.g., form loading after selection).\",\n    \"Manual contact addition is multi-step and tedious without batch options.\",\n    \"Lack of top-level navigation for core marketing functions.\",\n    \"The 'Tools' mega-menu is overwhelming with 21 items.\"\n  ],\n  \"overall_rating\": 3.5\n}",
+  "json": {
+    "pros": [
+      "Easy and quick list creation process.",
+      "Comprehensive and well-organized contact management area.",
+      "Clear display of plan limits and contact usage.",
+      "Flexible manual contact entry with inline automation and custom fields.",
+      "Robust automation features with workflow templates.",
+      "Trial access to advanced features like automation."
+    ],
+    "cons": [
+      "Key features (email, automation) are hidden in a large mega-menu.",
+      "UI instability and layout shifts (e.g., banner loading causing page jump).",
+      "Lag or delay in UI interactions (e.g., form loading after selection).",
+      "Manual contact addition is multi-step and tedious without batch options.",
+      "Lack of top-level navigation for core marketing functions.",
+      "The 'Tools' mega-menu is overwhelming with 21 items."
+    ],
+    "overall_rating": 3.5
+  },
+  "ts": "2026-10-18T10:27:57.434324+00:00"
+}

@@ -1,0 +1,27 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "50502abd3a8e3769a200fcf6ffeca14a5bcafcff759be79c253d80b5ec702b01",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 164,
+  "output_tokens": 424,
+  "cost_usd": 0.0011091999999999999,
+  "elapsed_s": 9.86,
+  "error": null,
+  "text": "{\n  \"task\": \"Perform email marketing tasks\",\n  \"benefits\": [\n    \"Very professional with exclusive features\",\n    \"Customer support works perfectly and is very attentive\",\n    \"Well-implemented and easy to use precisely\",\n    \"Flawless integration\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Perform email marketing tasks",
+    "benefits": [
+      "Very professional with exclusive features",
+      "Customer support works perfectly and is very attentive",
+      "Well-implemented and easy to use precisely",
+      "Flawless integration"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T10:27:34.374670+00:00"
+}

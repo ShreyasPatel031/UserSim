@@ -1,0 +1,31 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d358e4adf50d5c910cd4b29a81ded1131418447d2ecc0a3eea91e3c74e1bef19",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 310,
+  "output_tokens": 512,
+  "cost_usd": 0.0013729999999999999,
+  "elapsed_s": 11.1,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage email campaigns and customer communications\",\n  \"benefits\": [\n    \"Good organization and visuals\",\n    \"Efficient analytics\",\n    \"Clear and non-confusing pricing tiers\",\n    \"Easy to set up and automate email campaigns\"\n  ],\n  \"frictions\": [\n    \"Tagging system is not efficient\",\n    \"Complicated when working with different lists and tagging users\",\n    \"Automation is difficult to organize and follow through with\"\n  ]\n}",
+  "json": {
+    "task": "Manage email campaigns and customer communications",
+    "benefits": [
+      "Good organization and visuals",
+      "Efficient analytics",
+      "Clear and non-confusing pricing tiers",
+      "Easy to set up and automate email campaigns"
+    ],
+    "frictions": [
+      "Tagging system is not efficient",
+      "Complicated when working with different lists and tagging users",
+      "Automation is difficult to organize and follow through with"
+    ]
+  },
+  "ts": "2026-10-18T10:27:34.376058+00:00"
+}

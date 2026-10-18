@@ -1,0 +1,32 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a042c1f686157789122b333c632afc5cd316845034057a614ce2b853543ca7f1",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 518,
+  "output_tokens": 554,
+  "cost_usd": 0.0015404,
+  "elapsed_s": 8.07,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage email marketing, marketing automation, landing page creation, lead generation, and e-commerce marketing campaigns.\",\n  \"benefits\": [\n    \"Create professional email campaigns without technical skills\",\n    \"Capture and nurture leads using landing pages, forms, and automation\",\n    \"Unifies email, automation, and basic e-commerce tools in one platform\",\n    \"Provides clear campaign performance tracking\"\n  ],\n  \"frictions\": [\n    \"Advanced automation features are less flexible compared to other tools\",\n    \"Reporting dashboard could be more intuitive and visually clear\",\n    \"Some template designs look outdated\",\n    \"Integrations with some third-party tools can be slow or limited\"\n  ]\n}",
+  "json": {
+    "task": "Manage email marketing, marketing automation, landing page creation, lead generation, and e-commerce marketing campaigns.",
+    "benefits": [
+      "Create professional email campaigns without technical skills",
+      "Capture and nurture leads using landing pages, forms, and automation",
+      "Unifies email, automation, and basic e-commerce tools in one platform",
+      "Provides clear campaign performance tracking"
+    ],
+    "frictions": [
+      "Advanced automation features are less flexible compared to other tools",
+      "Reporting dashboard could be more intuitive and visually clear",
+      "Some template designs look outdated",
+      "Integrations with some third-party tools can be slow or limited"
+    ]
+  },
+  "ts": "2026-10-18T10:27:34.438790+00:00"
+}

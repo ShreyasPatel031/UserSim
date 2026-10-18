@@ -1,0 +1,36 @@
+{
+  "stage": "hm_plist",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3ba5e37797af5956a96d2a0eb4a48c1a9caafbc32f596bfd27c561271c2e8490",
+  "temperature": 0.7,
+  "seed": 43,
+  "max_tokens": 4096,
+  "thinking_budget": 1024,
+  "input_tokens": 472,
+  "output_tokens": 1031,
+  "cost_usd": 0.0027191,
+  "elapsed_s": 7.22,
+  "error": null,
+  "text": "{\n  \"pros\": [\n    \"Powerful marketing automation and workflow capabilities.\",\n    \"Comprehensive suite of tools beyond email, like webinars and landing pages.\",\n    \"Centralized and well-organized contact management features.\",\n    \"Intuitive and quick list creation process.\",\n    \"Flexible options for adding and managing individual contacts.\",\n    \"Clear communication regarding plan limits and usage.\"\n  ],\n  \"cons\": [\n    \"Complex navigation and discoverability issues due to mega-menus.\",\n    \"User interface can be slow or experience layout shifts.\",\n    \"Steep learning curve for new users due to feature abundance.\",\n    \"Manual contact addition process can be tedious for multiple entries.\",\n    \"Overall UI/UX can feel dated compared to modern alternatives.\",\n    \"Some features might require a trial or higher plan to fully access.\"\n  ],\n  \"overall_rating\": 3.8\n}",
+  "json": {
+    "pros": [
+      "Powerful marketing automation and workflow capabilities.",
+      "Comprehensive suite of tools beyond email, like webinars and landing pages.",
+      "Centralized and well-organized contact management features.",
+      "Intuitive and quick list creation process.",
+      "Flexible options for adding and managing individual contacts.",
+      "Clear communication regarding plan limits and usage."
+    ],
+    "cons": [
+      "Complex navigation and discoverability issues due to mega-menus.",
+      "User interface can be slow or experience layout shifts.",
+      "Steep learning curve for new users due to feature abundance.",
+      "Manual contact addition process can be tedious for multiple entries.",
+      "Overall UI/UX can feel dated compared to modern alternatives.",
+      "Some features might require a trial or higher plan to fully access."
+    ],
+    "overall_rating": 3.8
+  },
+  "ts": "2026-10-18T10:28:25.805170+00:00"
+}

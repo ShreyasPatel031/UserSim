@@ -1,0 +1,25 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1cbd379e65f37b66115d5e5e7017763758e8ae55f28b2845a594d2251c3fb4b5",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 168,
+  "output_tokens": 417,
+  "cost_usd": 0.0010929,
+  "elapsed_s": 9.83,
+  "error": null,
+  "text": "{\n  \"task\": \"Visualize newsletters\",\n  \"benefits\": [\n    \"Comprehensive platform for digital marketing\",\n    \"Convenient support for resolving difficulties\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Visualize newsletters",
+    "benefits": [
+      "Comprehensive platform for digital marketing",
+      "Convenient support for resolving difficulties"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T10:27:34.632738+00:00"
+}

@@ -1,0 +1,32 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3bf81208081a3af862f5a8e67f93e493a6e252e799ec81fa6fa06214d9dc4446",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 384,
+  "output_tokens": 562,
+  "cost_usd": 0.0015202,
+  "elapsed_s": 11.33,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage lead capture and follow-up marketing campaigns\",\n  \"benefits\": [\n    \"Combines landing pages, contact management, email marketing, automation, and basic analytics in one platform\",\n    \"Enables quick campaign launches for small teams without needing multiple separate tools\",\n    \"Provides a simple-to-use landing page builder and easy contact/list features for lead capture and follow-up\",\n    \"Offers helpful support for technical setup like providing DNS records\"\n  ],\n  \"frictions\": [\n    \"Technical settings, especially DNS records for custom domains, are not easy to manage directly\",\n    \"Adding various technical records often requires contacting support instead of being self-service\",\n    \"Setup for analytics, email authentication, custom domains, and integrations can feel slower than expected\",\n    \"Domain/DNS management is not clear or easy to control from one place\"\n  ]\n}",
+  "json": {
+    "task": "Manage lead capture and follow-up marketing campaigns",
+    "benefits": [
+      "Combines landing pages, contact management, email marketing, automation, and basic analytics in one platform",
+      "Enables quick campaign launches for small teams without needing multiple separate tools",
+      "Provides a simple-to-use landing page builder and easy contact/list features for lead capture and follow-up",
+      "Offers helpful support for technical setup like providing DNS records"
+    ],
+    "frictions": [
+      "Technical settings, especially DNS records for custom domains, are not easy to manage directly",
+      "Adding various technical records often requires contacting support instead of being self-service",
+      "Setup for analytics, email authentication, custom domains, and integrations can feel slower than expected",
+      "Domain/DNS management is not clear or easy to control from one place"
+    ]
+  },
+  "ts": "2026-10-18T10:27:34.176064+00:00"
+}

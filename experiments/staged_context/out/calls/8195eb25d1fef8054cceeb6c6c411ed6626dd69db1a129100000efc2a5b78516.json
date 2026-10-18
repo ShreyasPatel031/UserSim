@@ -1,0 +1,30 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8195eb25d1fef8054cceeb6c6c411ed6626dd69db1a129100000efc2a5b78516",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 259,
+  "output_tokens": 514,
+  "cost_usd": 0.0013627000000000001,
+  "elapsed_s": 3.24,
+  "error": null,
+  "text": "{\n  \"task\": \"Perform marketing automation tasks\",\n  \"benefits\": [\n    \"Migrate and implement the tool easily\",\n    \"Receive support from a responsive sales and customer service team\",\n    \"Utilize a competitive pricing model\",\n    \"Integrate the tool in a straightforward manner\"\n  ],\n  \"frictions\": [\n    \"Experience restrictions when scaling CDP/Marketing automation for large businesses\",\n    \"Find the tool insufficient for high expectations or an all-in-one powerful solution\"\n  ]\n}",
+  "json": {
+    "task": "Perform marketing automation tasks",
+    "benefits": [
+      "Migrate and implement the tool easily",
+      "Receive support from a responsive sales and customer service team",
+      "Utilize a competitive pricing model",
+      "Integrate the tool in a straightforward manner"
+    ],
+    "frictions": [
+      "Experience restrictions when scaling CDP/Marketing automation for large businesses",
+      "Find the tool insufficient for high expectations or an all-in-one powerful solution"
+    ]
+  },
+  "ts": "2026-10-18T10:27:37.692742+00:00"
+}

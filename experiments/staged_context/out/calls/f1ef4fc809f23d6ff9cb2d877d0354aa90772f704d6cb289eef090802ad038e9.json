@@ -1,0 +1,30 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f1ef4fc809f23d6ff9cb2d877d0354aa90772f704d6cb289eef090802ad038e9",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 271,
+  "output_tokens": 487,
+  "cost_usd": 0.0012988000000000001,
+  "elapsed_s": 9.98,
+  "error": null,
+  "text": "{\n  \"task\": \"Send updates about concerts and events to an audience\",\n  \"benefits\": [\n    \"Facilitates audience connection\",\n    \"Handles compliance and data protection\",\n    \"Saves time\",\n    \"Reduces risk\"\n  ],\n  \"frictions\": [\n    \"Difficulty to switch account owner\",\n    \"Only one person can access invoices\"\n  ]\n}",
+  "json": {
+    "task": "Send updates about concerts and events to an audience",
+    "benefits": [
+      "Facilitates audience connection",
+      "Handles compliance and data protection",
+      "Saves time",
+      "Reduces risk"
+    ],
+    "frictions": [
+      "Difficulty to switch account owner",
+      "Only one person can access invoices"
+    ]
+  },
+  "ts": "2026-10-18T10:27:34.390993+00:00"
+}

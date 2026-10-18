@@ -1,0 +1,27 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8c4218e743058a73198873c9ebb18675abf0ce45220073f39369295d4045dff2",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 297,
+  "output_tokens": 477,
+  "cost_usd": 0.0012816,
+  "elapsed_s": 3.33,
+  "error": null,
+  "text": "{\n  \"task\": null,\n  \"benefits\": [],\n  \"frictions\": [\n    \"Cannot perform a needed task/basic function even with premium service\",\n    \"Unable to get a refund shortly after purchase\",\n    \"Description of services is outdated and inaccurate\",\n    \"Customer service quickly refused a refund\"\n  ]\n}",
+  "json": {
+    "task": null,
+    "benefits": [],
+    "frictions": [
+      "Cannot perform a needed task/basic function even with premium service",
+      "Unable to get a refund shortly after purchase",
+      "Description of services is outdated and inaccurate",
+      "Customer service quickly refused a refund"
+    ]
+  },
+  "ts": "2026-10-18T10:27:37.335989+00:00"
+}

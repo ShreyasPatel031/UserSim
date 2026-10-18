@@ -1,0 +1,32 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "5afe65d8df94487acbf1eb0aa964896fa781c60d467c352bce9757bbd9bd7d09",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 2169,
+  "output_tokens": 617,
+  "cost_usd": 0.0021932,
+  "elapsed_s": 11.25,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage multi-channel marketing campaigns including email, landing pages, and webinars within a single platform.\",\n  \"benefits\": [\n    \"Consolidates marketing tools into one platform, eliminating the need to stitch together separate tools.\",\n    \"Reduces manual campaign setup time by roughly five hours weekly with a visual workflow builder.\",\n    \"Automatically syncs webinar attendee data and triggers tailored follow-up emails, improving lead engagement.\",\n    \"Provides client-facing campaign summary reports with custom dashboards and read-only access, saving time on manual reporting.\"\n  ],\n  \"frictions\": [\n    \"Counts a single lead as multiple billable contacts if they appear on more than one client list, leading to unpredictable billing spikes.\",\n    \"Lacks native sub-account controls for managing multiple B2B clients, creating data privacy risks and preventing full isolation of client assets.\",\n    \"Has a rigid custom reporting engine that cannot combine cross-channel marketing metrics into tailored client performance dashboards.\",\n    \"Has a limited webinar recording storage cap, requiring manual download and archiving of recordings.\"\n  ]\n}",
+  "json": {
+    "task": "Manage multi-channel marketing campaigns including email, landing pages, and webinars within a single platform.",
+    "benefits": [
+      "Consolidates marketing tools into one platform, eliminating the need to stitch together separate tools.",
+      "Reduces manual campaign setup time by roughly five hours weekly with a visual workflow builder.",
+      "Automatically syncs webinar attendee data and triggers tailored follow-up emails, improving lead engagement.",
+      "Provides client-facing campaign summary reports with custom dashboards and read-only access, saving time on manual reporting."
+    ],
+    "frictions": [
+      "Counts a single lead as multiple billable contacts if they appear on more than one client list, leading to unpredictable billing spikes.",
+      "Lacks native sub-account controls for managing multiple B2B clients, creating data privacy risks and preventing full isolation of client assets.",
+      "Has a rigid custom reporting engine that cannot combine cross-channel marketing metrics into tailored client performance dashboards.",
+      "Has a limited webinar recording storage cap, requiring manual download and archiving of recordings."
+    ]
+  },
+  "ts": "2026-10-18T10:27:34.039788+00:00"
+}

@@ -1,0 +1,27 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ababdd14083991bb16e682d2402dd8dec7347717166791ba303b5a565441730c",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 226,
+  "output_tokens": 436,
+  "cost_usd": 0.0011578,
+  "elapsed_s": 10.89,
+  "error": null,
+  "text": "{\n  \"task\": \"Build landing pages and operate as an agency\",\n  \"benefits\": [\n    \"Access multiple ways to learn how to use the product\",\n    \"Utilize clear and engaging instructional videos\",\n    \"Easily get in touch with support agents\",\n    \"Receive personalized support, including custom videos\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Build landing pages and operate as an agency",
+    "benefits": [
+      "Access multiple ways to learn how to use the product",
+      "Utilize clear and engaging instructional videos",
+      "Easily get in touch with support agents",
+      "Receive personalized support, including custom videos"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T10:27:33.449573+00:00"
+}

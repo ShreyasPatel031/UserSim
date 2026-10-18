@@ -1,0 +1,36 @@
+{
+  "stage": "hm_plist",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a02eacca8bec41be4f4550d4323a866752c9c9b3a379f91eaae53cbafc286f93",
+  "temperature": 0.7,
+  "seed": 43,
+  "max_tokens": 4096,
+  "thinking_budget": 1024,
+  "input_tokens": 93,
+  "output_tokens": 808,
+  "cost_usd": 0.0020479,
+  "elapsed_s": 5.62,
+  "error": null,
+  "text": "{\n  \"pros\": [\n    \"Robust email marketing features (autoresponders, newsletters, segmentation).\",\n    \"Integrated marketing automation workflows are powerful for lead nurturing.\",\n    \"Included landing page builder makes lead capture easy.\",\n    \"Webinar hosting functionality is a unique differentiator.\",\n    \"Competitive pricing and good value for the feature set.\",\n    \"Generally responsive and helpful customer support.\"\n  ],\n  \"cons\": [\n    \"User interface (UI) can feel a bit outdated or clunky at times.\",\n    \"Deliverability can sometimes be inconsistent for certain campaigns.\",\n    \"Steep learning curve for maximizing advanced automation features.\",\n    \"Reporting and analytics could be more robust or intuitive.\",\n    \"Landing page templates, while functional, can be somewhat basic.\",\n    \"Pricing can escalate quickly as contact lists grow larger.\"\n  ],\n  \"overall_rating\": \"4.0\"\n}",
+  "json": {
+    "pros": [
+      "Robust email marketing features (autoresponders, newsletters, segmentation).",
+      "Integrated marketing automation workflows are powerful for lead nurturing.",
+      "Included landing page builder makes lead capture easy.",
+      "Webinar hosting functionality is a unique differentiator.",
+      "Competitive pricing and good value for the feature set.",
+      "Generally responsive and helpful customer support."
+    ],
+    "cons": [
+      "User interface (UI) can feel a bit outdated or clunky at times.",
+      "Deliverability can sometimes be inconsistent for certain campaigns.",
+      "Steep learning curve for maximizing advanced automation features.",
+      "Reporting and analytics could be more robust or intuitive.",
+      "Landing page templates, while functional, can be somewhat basic.",
+      "Pricing can escalate quickly as contact lists grow larger."
+    ],
+    "overall_rating": "4.0"
+  },
+  "ts": "2026-10-18T10:28:12.283555+00:00"
+}

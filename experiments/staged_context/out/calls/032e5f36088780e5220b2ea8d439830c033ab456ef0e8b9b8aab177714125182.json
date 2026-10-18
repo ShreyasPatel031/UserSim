@@ -1,0 +1,36 @@
+{
+  "stage": "hm_plist",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "032e5f36088780e5220b2ea8d439830c033ab456ef0e8b9b8aab177714125182",
+  "temperature": 0.7,
+  "seed": 44,
+  "max_tokens": 4096,
+  "thinking_budget": 1024,
+  "input_tokens": 472,
+  "output_tokens": 1001,
+  "cost_usd": 0.0026441,
+  "elapsed_s": 6.42,
+  "error": null,
+  "text": "{\n  \"pros\": [\n    \"Easy and quick list creation process\",\n    \"Comprehensive and clearly organized contact management\",\n    \"Robust marketing automation with templates for various use cases\",\n    \"All-in-one platform offering email, landing pages, webinars, and more\",\n    \"Flexible manual contact entry with autoresponder and custom field options\",\n    \"Reliable email deliverability rates\"\n  ],\n  \"cons\": [\n    \"Navigation can be cluttered with many features hidden in a mega-menu\",\n    \"UI elements sometimes load slowly or cause layout shifts\",\n    \"Manual contact addition process is slow and requires multiple steps\",\n    \"Steep learning curve for new users to master all advanced features\",\n    \"Pricing can become expensive as contact lists grow larger\",\n    \"Some features, like the landing page builder, may feel less intuitive than dedicated tools\"\n  ],\n  \"overall_rating\": 3.8\n}",
+  "json": {
+    "pros": [
+      "Easy and quick list creation process",
+      "Comprehensive and clearly organized contact management",
+      "Robust marketing automation with templates for various use cases",
+      "All-in-one platform offering email, landing pages, webinars, and more",
+      "Flexible manual contact entry with autoresponder and custom field options",
+      "Reliable email deliverability rates"
+    ],
+    "cons": [
+      "Navigation can be cluttered with many features hidden in a mega-menu",
+      "UI elements sometimes load slowly or cause layout shifts",
+      "Manual contact addition process is slow and requires multiple steps",
+      "Steep learning curve for new users to master all advanced features",
+      "Pricing can become expensive as contact lists grow larger",
+      "Some features, like the landing page builder, may feel less intuitive than dedicated tools"
+    ],
+    "overall_rating": 3.8
+  },
+  "ts": "2026-10-18T10:28:52.465756+00:00"
+}

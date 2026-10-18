@@ -1,0 +1,36 @@
+{
+  "stage": "hm_plist",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "483cfed1b74dddc5db94a73ae428dcbbf9c50bc73be0a9b7b2fe59038a5d82ce",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 1024,
+  "input_tokens": 1158,
+  "output_tokens": 965,
+  "cost_usd": 0.0027599,
+  "elapsed_s": 5.7,
+  "error": null,
+  "text": "{\n  \"pros\": [\n    \"Comprehensive marketing automation features (email, landing pages, webinars)\",\n    \"User-friendly interface and ease of use for core functions\",\n    \"Good value for money, especially for smaller businesses\",\n    \"Reliable email deliverability and campaign performance\",\n    \"Excellent customer support and resources\",\n    \"Robust analytics and reporting for campaign optimization\"\n  ],\n  \"cons\": [\n    \"Pricing can become expensive for advanced features or larger contact lists\",\n    \"Steep learning curve for advanced automation and complex features\",\n    \"Limited customization options for templates and advanced design\",\n    \"Reporting features can be basic or lack depth compared to competitors\",\n    \"Occasional performance glitches or slow loading times\",\n    \"Integrations might not be as deep or extensive as desired for specific tools\"\n  ],\n  \"overall_rating\": 4.3\n}",
+  "json": {
+    "pros": [
+      "Comprehensive marketing automation features (email, landing pages, webinars)",
+      "User-friendly interface and ease of use for core functions",
+      "Good value for money, especially for smaller businesses",
+      "Reliable email deliverability and campaign performance",
+      "Excellent customer support and resources",
+      "Robust analytics and reporting for campaign optimization"
+    ],
+    "cons": [
+      "Pricing can become expensive for advanced features or larger contact lists",
+      "Steep learning curve for advanced automation and complex features",
+      "Limited customization options for templates and advanced design",
+      "Reporting features can be basic or lack depth compared to competitors",
+      "Occasional performance glitches or slow loading times",
+      "Integrations might not be as deep or extensive as desired for specific tools"
+    ],
+    "overall_rating": 4.3
+  },
+  "ts": "2026-10-18T10:27:52.007185+00:00"
+}

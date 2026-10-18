@@ -1,0 +1,36 @@
+{
+  "stage": "hm_plist",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8592846447b0e6bb487af0ff872d4d905443a0a00ae768680fce343110e4b44e",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 1024,
+  "input_tokens": 93,
+  "output_tokens": 957,
+  "cost_usd": 0.0024203999999999996,
+  "elapsed_s": 5.98,
+  "error": null,
+  "text": "{\n  \"pros\": [\n    \"Comprehensive all-in-one marketing platform.\",\n    \"Excellent webinar hosting capabilities.\",\n    \"Powerful marketing automation workflows.\",\n    \"User-friendly email and landing page builders.\",\n    \"Good range of integrations.\",\n    \"Responsive customer support.\"\n  ],\n  \"cons\": [\n    \"Pricing can become expensive with list growth.\",\n    \"Steep learning curve for advanced features.\",\n    \"Interface can feel somewhat dated or clunky.\",\n    \"Deliverability concerns reported by some users.\",\n    \"Basic CRM functionality, not a full solution.\",\n    \"Website builder is less mature than core features.\"\n  ],\n  \"overall_rating\": \"4.0\"\n}",
+  "json": {
+    "pros": [
+      "Comprehensive all-in-one marketing platform.",
+      "Excellent webinar hosting capabilities.",
+      "Powerful marketing automation workflows.",
+      "User-friendly email and landing page builders.",
+      "Good range of integrations.",
+      "Responsive customer support."
+    ],
+    "cons": [
+      "Pricing can become expensive with list growth.",
+      "Steep learning curve for advanced features.",
+      "Interface can feel somewhat dated or clunky.",
+      "Deliverability concerns reported by some users.",
+      "Basic CRM functionality, not a full solution.",
+      "Website builder is less mature than core features."
+    ],
+    "overall_rating": "4.0"
+  },
+  "ts": "2026-10-18T10:27:46.189199+00:00"
+}

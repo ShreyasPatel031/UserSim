@@ -1,0 +1,30 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "6a6b5eb26f62b9d3cc995802025240c3d37a440c1e64e72476b8072dda6768b9",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 249,
+  "output_tokens": 514,
+  "cost_usd": 0.0013597000000000001,
+  "elapsed_s": 2.88,
+  "error": null,
+  "text": "{\n  \"task\": \"Build email funnels and target campaigns\",\n  \"benefits\": [\n    \"has a lot of features and options for targeting campaigns\",\n    \"possible to build very complex email funnels\"\n  ],\n  \"frictions\": [\n    \"takes quite a lot of time to learn how to use it and all its features\",\n    \"support was not very good\",\n    \"difficult to get proper replies from support\",\n    \"a bit too confusing to use\"\n  ]\n}",
+  "json": {
+    "task": "Build email funnels and target campaigns",
+    "benefits": [
+      "has a lot of features and options for targeting campaigns",
+      "possible to build very complex email funnels"
+    ],
+    "frictions": [
+      "takes quite a lot of time to learn how to use it and all its features",
+      "support was not very good",
+      "difficult to get proper replies from support",
+      "a bit too confusing to use"
+    ]
+  },
+  "ts": "2026-10-18T10:27:37.046419+00:00"
+}

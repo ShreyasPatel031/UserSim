@@ -1,0 +1,27 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "23d485d3710f4b89fe358ad2300d4002dda2c2855b5265775bd486319570bae9",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 140,
+  "output_tokens": 509,
+  "cost_usd": 0.0013145,
+  "elapsed_s": 10.35,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage contacts and personalize communications\",\n  \"benefits\": [\n    \"Easy to get started\",\n    \"Many options available\",\n    \"Application is great\",\n    \"Can personalize for each contact\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Manage contacts and personalize communications",
+    "benefits": [
+      "Easy to get started",
+      "Many options available",
+      "Application is great",
+      "Can personalize for each contact"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T10:27:33.882876+00:00"
+}

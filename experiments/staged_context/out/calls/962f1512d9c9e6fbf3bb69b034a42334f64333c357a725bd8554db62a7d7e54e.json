@@ -1,0 +1,29 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "962f1512d9c9e6fbf3bb69b034a42334f64333c357a725bd8554db62a7d7e54e",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 206,
+  "output_tokens": 510,
+  "cost_usd": 0.0013368000000000002,
+  "elapsed_s": 10.61,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage marketing campaigns\",\n  \"benefits\": [\n    \"Streamlines marketing campaigns\",\n    \"Consolidates marketing tools in one place\",\n    \"Makes the process quick\",\n    \"Saves time\"\n  ],\n  \"frictions\": [\n    \"Lacks a simple, built-in design feature\"\n  ]\n}",
+  "json": {
+    "task": "Manage marketing campaigns",
+    "benefits": [
+      "Streamlines marketing campaigns",
+      "Consolidates marketing tools in one place",
+      "Makes the process quick",
+      "Saves time"
+    ],
+    "frictions": [
+      "Lacks a simple, built-in design feature"
+    ]
+  },
+  "ts": "2026-10-18T10:27:34.643208+00:00"
+}

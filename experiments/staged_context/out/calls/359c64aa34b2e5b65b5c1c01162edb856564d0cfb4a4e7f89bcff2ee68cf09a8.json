@@ -1,0 +1,29 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "359c64aa34b2e5b65b5c1c01162edb856564d0cfb4a4e7f89bcff2ee68cf09a8",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 251,
+  "output_tokens": 496,
+  "cost_usd": 0.0013153,
+  "elapsed_s": 10.72,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage email marketing campaigns for multiple clients.\",\n  \"benefits\": [\n    \"Quickly create branded templates using the drag-and-drop builder.\",\n    \"Set up onboarding sequences, product reminders, and nurturing campaigns within minutes.\",\n    \"Easily compare performance across different clients using straightforward analytics.\",\n    \"Save hours of manual work by simplifying email creation and automating repetitive tasks.\"\n  ],\n  \"frictions\": [\n    \"Template customisation options feel limited at times.\"\n  ]\n}",
+  "json": {
+    "task": "Manage email marketing campaigns for multiple clients.",
+    "benefits": [
+      "Quickly create branded templates using the drag-and-drop builder.",
+      "Set up onboarding sequences, product reminders, and nurturing campaigns within minutes.",
+      "Easily compare performance across different clients using straightforward analytics.",
+      "Save hours of manual work by simplifying email creation and automating repetitive tasks."
+    ],
+    "frictions": [
+      "Template customisation options feel limited at times."
+    ]
+  },
+  "ts": "2026-10-18T10:27:33.687981+00:00"
+}

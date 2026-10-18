@@ -1,0 +1,36 @@
+{
+  "stage": "hm_plist",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "54b9b284ffd660ea4511dd22bfdde4bb8bba81ba5d39e8d32b1888f101a6ef41",
+  "temperature": 0.7,
+  "seed": 43,
+  "max_tokens": 4096,
+  "thinking_budget": 1024,
+  "input_tokens": 1158,
+  "output_tokens": 908,
+  "cost_usd": 0.0026173999999999998,
+  "elapsed_s": 6.05,
+  "error": null,
+  "text": "{\n  \"pros\": [\n    \"Comprehensive all-in-one marketing platform\",\n    \"Robust marketing automation capabilities\",\n    \"Integrated landing page and website builder\",\n    \"User-friendly email campaign creator\",\n    \"Webinar hosting functionality included\",\n    \"Responsive and helpful customer support\"\n  ],\n  \"cons\": [\n    \"Steep learning curve for advanced features\",\n    \"Pricing can become expensive as contact lists grow\",\n    \"Limited customization options for certain templates\",\n    \"Reporting and analytics could be more intuitive\",\n    \"Performance issues or clunkiness with complex workflows\",\n    \"Integrations sometimes lack depth or require workarounds\"\n  ],\n  \"overall_rating\": 4.3\n}",
+  "json": {
+    "pros": [
+      "Comprehensive all-in-one marketing platform",
+      "Robust marketing automation capabilities",
+      "Integrated landing page and website builder",
+      "User-friendly email campaign creator",
+      "Webinar hosting functionality included",
+      "Responsive and helpful customer support"
+    ],
+    "cons": [
+      "Steep learning curve for advanced features",
+      "Pricing can become expensive as contact lists grow",
+      "Limited customization options for certain templates",
+      "Reporting and analytics could be more intuitive",
+      "Performance issues or clunkiness with complex workflows",
+      "Integrations sometimes lack depth or require workarounds"
+    ],
+    "overall_rating": 4.3
+  },
+  "ts": "2026-10-18T10:28:18.456461+00:00"
+}

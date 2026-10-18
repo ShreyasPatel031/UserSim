@@ -52,7 +52,8 @@ misses most of the page). Errors come back as `{"error": ...}` text.
 - Never invite real people, email anyone, pay, upgrade, or start anything that needs a card.
 - Never print passwords. Keep any helper files in your own folder `<scratchpad>/<run_id>/` (parallel runs share the
   scratchpad), and delete any file holding the account password before you reply.
-- If sign-up is truly blocked after two honest attempts, finish with `blocked`, write the file with
+- If the site rejects the email (e.g. no '+' allowed), needs a card, or has no free plan, stop at once: finish
+  `blocked` within ~10 steps (the daily budget is shared). If sign-up is truly blocked after two honest attempts, finish with `blocked`, write the file with
   `signed_in: false`, and stop.
 
 Reply with only the result path and one line: signed_in / reached_product / outcome / steps_used.

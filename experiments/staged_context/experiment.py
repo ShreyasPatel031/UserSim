@@ -244,8 +244,13 @@ def call_model(stage: str, model: str, system: str, user: str, *, temperature: f
         key.append(thinking_budget)
     req_hash = sha(json.dumps(key))
     cache_path = CALLS / f"{req_hash}.json"
+    rec = None
     if cache_path.exists():
-        rec = read_json(cache_path)
+        try:
+            rec = read_json(cache_path)
+        except json.JSONDecodeError:  # torn by an earlier concurrent writer: treat as a miss
+            rec = None
+    if rec is not None:
         _log_call({**{k: rec[k] for k in ("stage", "model", "request_hash", "input_tokens", "output_tokens")},
                    "cost_usd": rec["cost_usd"], "cached": True, "elapsed_s": 0.0, "error": rec.get("error")})
         return rec
@@ -275,8 +280,10 @@ def call_model(stage: str, model: str, system: str, user: str, *, temperature: f
         "elapsed_s": round(time.time() - t0, 2), "error": err, "text": text, "json": parsed,
         "ts": datetime.now(timezone.utc).isoformat(),
     }
-    if err is None:
-        write_json(cache_path, rec)
+    if err is None:  # atomic: identical concurrent calls must not interleave their writes
+        tmp = cache_path.with_suffix(f".{os.getpid()}.{threading.get_ident()}.tmp")
+        write_json(tmp, rec)
+        os.replace(tmp, cache_path)
     _log_call({k: rec[k] for k in ("stage", "model", "provider", "request_hash", "temperature", "seed",
                                     "input_tokens", "output_tokens", "cost_usd", "elapsed_s", "error", "ts")}
               | {"cached": False})

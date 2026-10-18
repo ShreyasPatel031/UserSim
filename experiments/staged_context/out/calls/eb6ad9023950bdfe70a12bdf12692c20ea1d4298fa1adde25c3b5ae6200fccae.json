@@ -1,0 +1,28 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "eb6ad9023950bdfe70a12bdf12692c20ea1d4298fa1adde25c3b5ae6200fccae",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 218,
+  "output_tokens": 432,
+  "cost_usd": 0.0011454,
+  "elapsed_s": 10.82,
+  "error": null,
+  "text": "{\n  \"task\": \"Send email notifications and newsletters\",\n  \"benefits\": [\n    \"Create specific contact lists for different business areas\",\n    \"Create and reuse templates\"\n  ],\n  \"frictions\": [\n    \"Email building does not prioritize aesthetics\",\n    \"Email/newsletter builder experience is clunky\"\n  ]\n}",
+  "json": {
+    "task": "Send email notifications and newsletters",
+    "benefits": [
+      "Create specific contact lists for different business areas",
+      "Create and reuse templates"
+    ],
+    "frictions": [
+      "Email building does not prioritize aesthetics",
+      "Email/newsletter builder experience is clunky"
+    ]
+  },
+  "ts": "2026-10-18T10:27:33.645654+00:00"
+}

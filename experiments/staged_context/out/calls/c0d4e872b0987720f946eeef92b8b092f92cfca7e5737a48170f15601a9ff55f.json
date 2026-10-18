@@ -1,0 +1,36 @@
+{
+  "stage": "hm_plist",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c0d4e872b0987720f946eeef92b8b092f92cfca7e5737a48170f15601a9ff55f",
+  "temperature": 0.7,
+  "seed": 43,
+  "max_tokens": 4096,
+  "thinking_budget": 1024,
+  "input_tokens": 1697,
+  "output_tokens": 976,
+  "cost_usd": 0.0029490999999999996,
+  "elapsed_s": 6.59,
+  "error": null,
+  "text": "{\n  \"pros\": [\n    \"Comprehensive automation features with useful templates\",\n    \"Well-organized contact management with clear plan limits\",\n    \"Easy and quick list creation\",\n    \"Flexible contact import and management, including custom fields and autoresponder assignment\",\n    \"Integrated platform with many tools beyond email marketing\",\n    \"Clear overview of contact limits and plan usage\"\n  ],\n  \"cons\": [\n    \"Clunky and inefficient process for adding contacts manually or in small batches\",\n    \"Pricing can get expensive for advanced features or larger contact lists\",\n    \"Steep learning curve due to a cluttered mega-menu and complex navigation\",\n    \"Reporting capabilities are basic and lack depth for advanced analysis\",\n    \"User interface can be prone to minor glitches and lack polish\",\n    \"Limited customization options for advanced users, sometimes requiring code\"\n  ],\n  \"overall_rating\": 4.0\n}",
+  "json": {
+    "pros": [
+      "Comprehensive automation features with useful templates",
+      "Well-organized contact management with clear plan limits",
+      "Easy and quick list creation",
+      "Flexible contact import and management, including custom fields and autoresponder assignment",
+      "Integrated platform with many tools beyond email marketing",
+      "Clear overview of contact limits and plan usage"
+    ],
+    "cons": [
+      "Clunky and inefficient process for adding contacts manually or in small batches",
+      "Pricing can get expensive for advanced features or larger contact lists",
+      "Steep learning curve due to a cluttered mega-menu and complex navigation",
+      "Reporting capabilities are basic and lack depth for advanced analysis",
+      "User interface can be prone to minor glitches and lack polish",
+      "Limited customization options for advanced users, sometimes requiring code"
+    ],
+    "overall_rating": 4.0
+  },
+  "ts": "2026-10-18T10:28:32.510535+00:00"
+}

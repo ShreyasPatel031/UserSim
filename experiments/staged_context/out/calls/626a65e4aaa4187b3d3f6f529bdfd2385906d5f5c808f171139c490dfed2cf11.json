@@ -1,0 +1,27 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "626a65e4aaa4187b3d3f6f529bdfd2385906d5f5c808f171139c490dfed2cf11",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 168,
+  "output_tokens": 489,
+  "cost_usd": 0.0012728999999999998,
+  "elapsed_s": 8.21,
+  "error": null,
+  "text": "{\n  \"task\": null,\n  \"benefits\": [\n    \"Fast response from service\",\n    \"Attentive service\",\n    \"Issues solved quickly\",\n    \"Comfortable platform and dashboard\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": null,
+    "benefits": [
+      "Fast response from service",
+      "Attentive service",
+      "Issues solved quickly",
+      "Comfortable platform and dashboard"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T10:27:33.542570+00:00"
+}

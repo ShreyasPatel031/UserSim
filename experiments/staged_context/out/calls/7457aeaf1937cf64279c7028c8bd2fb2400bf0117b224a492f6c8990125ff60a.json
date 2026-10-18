@@ -1,0 +1,27 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7457aeaf1937cf64279c7028c8bd2fb2400bf0117b224a492f6c8990125ff60a",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 184,
+  "output_tokens": 467,
+  "cost_usd": 0.0012227000000000002,
+  "elapsed_s": 3.27,
+  "error": null,
+  "text": "{\n  \"task\": \"Create and manage email marketing campaigns to communicate with customers and promote products.\",\n  \"benefits\": [\n    \"Create professional newsletters\",\n    \"Optimize campaign results with various tools\",\n    \"Receive professional service at any time\",\n    \"Increase sales\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Create and manage email marketing campaigns to communicate with customers and promote products.",
+    "benefits": [
+      "Create professional newsletters",
+      "Optimize campaign results with various tools",
+      "Receive professional service at any time",
+      "Increase sales"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T10:27:36.647600+00:00"
+}

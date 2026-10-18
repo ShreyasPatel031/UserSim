@@ -1,0 +1,29 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "369bc224b75d3a1a7cf6659f11b27b36107a00a07f6d93701cf166728ca5bdae",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 151,
+  "output_tokens": 398,
+  "cost_usd": 0.0010403,
+  "elapsed_s": 10.27,
+  "error": null,
+  "text": "{\n  \"task\": \"Automate email marketing for newsletters and customer reactivation\",\n  \"benefits\": [\n    \"Decent automation\",\n    \"Good reporting\",\n    \"Good tracking\"\n  ],\n  \"frictions\": [\n    \"Features limited to higher pricing tiers\",\n    \"Limited flexibility for forms\"\n  ]\n}",
+  "json": {
+    "task": "Automate email marketing for newsletters and customer reactivation",
+    "benefits": [
+      "Decent automation",
+      "Good reporting",
+      "Good tracking"
+    ],
+    "frictions": [
+      "Features limited to higher pricing tiers",
+      "Limited flexibility for forms"
+    ]
+  },
+  "ts": "2026-10-18T10:27:33.677001+00:00"
+}

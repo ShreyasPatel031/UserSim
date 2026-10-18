@@ -1,0 +1,29 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2a8a1d38e7604c183f52e00f3a2e97c351b60b52e843ee462e1055c092dc7012",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 129,
+  "output_tokens": 435,
+  "cost_usd": 0.0011262,
+  "elapsed_s": 7.11,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage email campaigns and contact supporters\",\n  \"benefits\": [\n    \"system is very simple\",\n    \"system is user-friendly\",\n    \"quick contact with donors and supporters\",\n    \"direct contact with donors and supporters\"\n  ],\n  \"frictions\": [\n    \"lack of personalization in test email campaigns\"\n  ]\n}",
+  "json": {
+    "task": "Manage email campaigns and contact supporters",
+    "benefits": [
+      "system is very simple",
+      "system is user-friendly",
+      "quick contact with donors and supporters",
+      "direct contact with donors and supporters"
+    ],
+    "frictions": [
+      "lack of personalization in test email campaigns"
+    ]
+  },
+  "ts": "2026-10-18T10:27:33.387273+00:00"
+}

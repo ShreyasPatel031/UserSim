@@ -38,6 +38,10 @@ Two modes:
 - AGENT MODE (usersim_predict_experience): no browser. Predicts how a kind of user will experience a product from live
   G2/Capterra/TrustRadius/Gartner reviews of the product and its named rivals: expected ratings, pros, cons, overall experience. Takes 1-2 min
   on the first call (status "pending" means call again). Use it to set expectations before, or instead of, human mode.
+- HUMAN MODE ON TOP OF AGENT MODE (for a prediction): usersim_plan_human_run gives the task that adds signal (the core
+  job done for real, not onboarding); run it with the flow below; then usersim_combine_human_run adds what the run saw
+  to the agent-mode prediction in the amount that held up on real reviewers (ratings unchanged, at most one pro and
+  one con changed).
 
 Human mode flow:
 1. Get a PUBLIC product URL from the human (localhost won't work; a preview/staging deploy is fine). That is the only thing they must provide.
@@ -525,6 +529,62 @@ async def usersim_predict_experience(
     if out.get("status") == "ok" and S.is_anon(owner):
         try:
             L.charge(owner, float(L.get("est_usd_per_prediction")), "predict_experience")
+        except L.CapExceeded as exc:
+            return _cap_fail(exc)
+    return json.dumps(out, indent=1, default=str)
+
+
+# ---------------------------------------------------------------- human mode on top of agent mode
+
+
+@mcp.tool(structured_output=False)
+async def usersim_plan_human_run(
+    ctx: Context,
+    product: str = Field(description='Product name as review sites list it, e.g. "Basecamp".'),
+    product_url: str = Field(description="Public URL of the product."),
+    persona: str = Field(default="", description="One sentence: who the simulated user is."),
+    competitors: list[str] | None = Field(default=None, description="1-3 rival names; omit to discover them from product_url."),
+) -> str:
+    """HUMAN MODE, step 1: the task to give the simulated user so the run adds signal on top of agent mode.
+
+    Built from rivals' live review complaints: do the core job with 3+ items, two second-level features, then edit /
+    reorganise (onboarding and pricing are already predictable from reviews). Returns start_session arguments and the
+    observation format. May return status "pending" while rival scrapes run: call again."""
+    from mvp import human_mode
+
+    out = await human_mode.plan(product=product, url=product_url, persona=persona, competitors=list(competitors or []))
+    return json.dumps(out, indent=1, default=str)
+
+
+@mcp.tool(structured_output=False)
+async def usersim_combine_human_run(
+    ctx: Context,
+    product: str = Field(description='Product name as review sites list it, e.g. "Basecamp".'),
+    persona: AgentPersona = Field(description="The kind of user to predict for."),
+    observations: list[dict[str, Any]] = Field(description='The run\'s observations: [{"kind": "product_friction" | "product_benefit" | "signup_friction" | "agent_failure", "what": "..."}].'),
+    product_url: str = Field(default="", description="Public URL of the product."),
+    task: str = Field(default="", description="What this user is trying to get done (optional)."),
+    competitors: list[str] | None = Field(default=None, description="1-3 rival names; omit to discover them from product_url."),
+) -> str:
+    """HUMAN MODE, step 3: agent-mode prediction plus what the simulated user saw, in the amount that held up on real
+    reviewers: ratings stay agent mode's; at most one pro and one con are changed by product observations (setup,
+    free-plan, pricing and support notes are dropped). May return status "pending": call again."""
+    from mvp import human_mode
+    from mvp.sim_mcp import limits as L
+
+    owner = _owner(ctx)
+    try:
+        if S.is_anon(owner):
+            L.charge(owner, float(L.get("est_usd_per_prediction")), "combine_human_run", dry=True)
+    except L.CapExceeded as exc:
+        return _cap_fail(exc)
+    pdict = persona.model_dump(exclude_none=True) if isinstance(persona, BaseModel) else dict(persona or {})
+    out = await human_mode.combine(product=product, url=product_url, persona=pdict, task=task,
+                                   observations=human_mode.parse_observations(observations),
+                                   competitors=list(competitors or []))
+    if out.get("status") == "ok" and S.is_anon(owner):
+        try:
+            L.charge(owner, float(L.get("est_usd_per_prediction")), "combine_human_run")
         except L.CapExceeded as exc:
             return _cap_fail(exc)
     return json.dumps(out, indent=1, default=str)

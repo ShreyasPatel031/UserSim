@@ -1,0 +1,27 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9dd3fb4c354f604f5e072115a6cfcb1d97c1c009466b79512544e300403368c3",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 189,
+  "output_tokens": 533,
+  "cost_usd": 0.0013892000000000002,
+  "elapsed_s": 8.67,
+  "error": null,
+  "text": "{\n  \"task\": \"Create, send, and track email campaigns and manage customer contacts.\",\n  \"benefits\": [\n    \"The platform is user-friendly.\",\n    \"Campaign templates are flexible.\",\n    \"It simplifies creating, sending, and tracking emails all in one place.\",\n    \"The segmentation feature helps manage contacts based on their behavior and supports quick retargeting.\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Create, send, and track email campaigns and manage customer contacts.",
+    "benefits": [
+      "The platform is user-friendly.",
+      "Campaign templates are flexible.",
+      "It simplifies creating, sending, and tracking emails all in one place.",
+      "The segmentation feature helps manage contacts based on their behavior and supports quick retargeting."
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T10:27:33.873921+00:00"
+}

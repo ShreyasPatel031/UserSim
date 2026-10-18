@@ -418,6 +418,32 @@ def filter_first_session(product: str, obs: list[str]) -> list[str]:
     return [o for o, t in zip(obs, th) if t not in FIRST_SESSION]
 
 
+EDIT = """Here are predicted pros and cons of {product} written from data on competitors' users:
+{lists}
+
+A simulated new user then used {product} itself (signed in, demo data) and noted:
+{obs}
+
+Revise the prediction using the notes, changing AT MOST {k} pro(s) and AT MOST {k} con(s):
+- replace an item only when a note directly contradicts it or shows a clearly more {product}-specific version of it,
+- write replacements the way long-term reviewers write (themes such as "easy to use", "reporting is basic"), not UI
+  steps; first-session friction (setup, empty states, free-plan limits) fades for long-term users,
+- keep every other item exactly as it is, in the same order.
+Return {{"pros": [6 items], "cons": [6 items], "changed": ["what you changed and which note justified it", ...]}}"""
+
+
+def edit_list(product: str, base: dict, obs: list[str], k: int, seed: int) -> dict:
+    lists = "Pros:\n" + "\n".join(f"- {x}" for x in base.get("pros") or []) + "\nCons:\n" + "\n".join(
+        f"- {x}" for x in base.get("cons") or [])
+    rec = E.call_model("hm_edit", FLASH, "You revise product predictions conservatively. Return JSON only.",
+                       EDIT.format(product=product, lists=lists, obs="\n".join(obs), k=k), temperature=0.0 if seed == 0 else 0.7,
+                       seed=42 + seed, max_tokens=4096, thinking_budget=1024)
+    j = rec.get("json") if isinstance(rec.get("json"), dict) else {}
+    out = {"pros": j.get("pros") or base.get("pros"), "cons": j.get("cons") or base.get("cons"),
+           "overall_rating": base.get("overall_rating"), "changed": j.get("changed")}
+    return out
+
+
 def product_list(product: str, url: str, cond: str, ctx: str, obs: list[str], seed: int = 0) -> dict:
     parts = []
     if "ctx" in cond:
@@ -480,7 +506,7 @@ def product_eval(product: str, runs: list[dict], tag: str, live_rivals: list[str
     obs = run_obs(runs)
     ctx = agent_context(product, url, cat, live_rivals)
     ppl, refs = truth_people(product)
-    conds = ["none", "ctx"] + (["run", "ctx+run", "ctx+runF", "prosRunF_consCtx"] if obs else [])
+    conds = ["none", "ctx"] + (["run", "ctx+run", "ctx+runF", "prosRunF_consCtx", "edit1", "edit2", "edit1F"] if obs else [])
     obs_f = filter_first_session(product, obs)
     lists = {}
     for seed in range(N_SEEDS):
@@ -489,6 +515,9 @@ def product_eval(product: str, runs: list[dict], tag: str, live_rivals: list[str
             L_["ctx+runF"] = product_list(product, url, "ctx+run", ctx, obs_f, seed) if obs_f else L_["ctx"]
             L_["prosRunF_consCtx"] = {"pros": L_["ctx+runF"].get("pros"), "cons": L_["ctx"].get("cons"),
                                       "overall_rating": L_["ctx"].get("overall_rating")}
+            L_["edit1"] = edit_list(product, L_["ctx"], obs, 1, seed)
+            L_["edit2"] = edit_list(product, L_["ctx"], obs, 2, seed)
+            L_["edit1F"] = edit_list(product, L_["ctx"], obs_f, 1, seed) if obs_f else L_["ctx"]
         lists[seed] = L_
     pool = ThreadPoolExecutor(64)
     rows = list(pool.map(lambda job: {"product": product, "tag": tag, "rid": job[0]["rid"], "cond": job[1], "seed": job[2],

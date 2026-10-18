@@ -1,0 +1,36 @@
+{
+  "stage": "hm_plist",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2d02e2955ae24b7cd197740d67384ab754526f6cb3159a87ef79083a4da0c790",
+  "temperature": 0.7,
+  "seed": 44,
+  "max_tokens": 4096,
+  "thinking_budget": 1024,
+  "input_tokens": 93,
+  "output_tokens": 883,
+  "cost_usd": 0.0022354,
+  "elapsed_s": 6.62,
+  "error": null,
+  "text": "{\n  \"pros\": [\n    \"Comprehensive 'all-in-one' marketing platform (email, landing pages, webinars, automation)\",\n    \"Powerful marketing automation and workflow builder\",\n    \"Integrated webinar hosting capabilities\",\n    \"Robust email marketing features and autoresponders\",\n    \"Relatively easy-to-use landing page builder\",\n    \"Responsive and helpful customer support\"\n  ],\n  \"cons\": [\n    \"Can become expensive as subscriber lists and features grow\",\n    \"User interface can feel cluttered or less intuitive compared to modern alternatives\",\n    \"Steep learning curve for new users due to the breadth of features\",\n    \"Landing page and website builder can be less flexible than dedicated tools\",\n    \"Basic CRM functionality, not suitable for complex sales processes\",\n    \"Occasional reports of email deliverability issues\"\n  ],\n  \"overall_rating\": 4.1\n}",
+  "json": {
+    "pros": [
+      "Comprehensive 'all-in-one' marketing platform (email, landing pages, webinars, automation)",
+      "Powerful marketing automation and workflow builder",
+      "Integrated webinar hosting capabilities",
+      "Robust email marketing features and autoresponders",
+      "Relatively easy-to-use landing page builder",
+      "Responsive and helpful customer support"
+    ],
+    "cons": [
+      "Can become expensive as subscriber lists and features grow",
+      "User interface can feel cluttered or less intuitive compared to modern alternatives",
+      "Steep learning curve for new users due to the breadth of features",
+      "Landing page and website builder can be less flexible than dedicated tools",
+      "Basic CRM functionality, not suitable for complex sales processes",
+      "Occasional reports of email deliverability issues"
+    ],
+    "overall_rating": 4.1
+  },
+  "ts": "2026-10-18T10:28:39.279265+00:00"
+}

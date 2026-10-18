@@ -1,0 +1,27 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "71257e648b9ea3c5ec0804010a5d29b4e532db4003d275a57331f2cf49f69181",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 145,
+  "output_tokens": 500,
+  "cost_usd": 0.0012935,
+  "elapsed_s": 3.71,
+  "error": null,
+  "text": "{\n  \"task\": null,\n  \"benefits\": [\n    \"It pays\",\n    \"It helps pass the time when there is nothing to do\"\n  ],\n  \"frictions\": [\n    \"It does not pay very much\"\n  ]\n}",
+  "json": {
+    "task": null,
+    "benefits": [
+      "It pays",
+      "It helps pass the time when there is nothing to do"
+    ],
+    "frictions": [
+      "It does not pay very much"
+    ]
+  },
+  "ts": "2026-10-18T10:27:38.117233+00:00"
+}

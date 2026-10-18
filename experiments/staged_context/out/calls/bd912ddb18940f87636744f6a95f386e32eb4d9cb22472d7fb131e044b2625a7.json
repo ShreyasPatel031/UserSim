@@ -1,0 +1,27 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "bd912ddb18940f87636744f6a95f386e32eb4d9cb22472d7fb131e044b2625a7",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 197,
+  "output_tokens": 462,
+  "cost_usd": 0.0012141,
+  "elapsed_s": 8.2,
+  "error": null,
+  "text": "{\n  \"task\": \"Automate email campaigns and perform email marketing\",\n  \"benefits\": [\n    \"Engage with audience\",\n    \"User friendly\",\n    \"Easy to use\",\n    \"Get leads\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Automate email campaigns and perform email marketing",
+    "benefits": [
+      "Engage with audience",
+      "User friendly",
+      "Easy to use",
+      "Get leads"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T10:27:33.625727+00:00"
+}

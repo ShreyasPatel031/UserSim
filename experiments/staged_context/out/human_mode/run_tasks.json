@@ -131,5 +131,16 @@
       "Custom Fields",
       "Filtering"
     ]
+  },
+  "Basecamp#2": {
+    "url": "https://basecamp.com/",
+    "persona": "an operations coordinator at a 12-person architecture firm who tracks client deliverables and approvals",
+    "category": "Project Management",
+    "task": "I need to set up a new project for our 'Acme Corp HQ Redesign' client. I'll add key deliverables like 'Initial Concept Presentation', 'Material Selection Approval', and 'Final Blueprint Sign-off'. Then, I'll organize these tasks into a clear workflow, assign them to team members, and set due dates. I also want to create a template for future client projects and then filter tasks by their approval status to see what's pending.",
+    "core_job": "Manage client project deliverables and approvals.",
+    "features": [
+      "Templates",
+      "Filtering/Views"
+    ]
   }
 }

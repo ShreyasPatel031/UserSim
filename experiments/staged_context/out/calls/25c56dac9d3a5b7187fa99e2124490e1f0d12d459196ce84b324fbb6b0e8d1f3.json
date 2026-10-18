@@ -1,0 +1,36 @@
+{
+  "stage": "hm_plist",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "25c56dac9d3a5b7187fa99e2124490e1f0d12d459196ce84b324fbb6b0e8d1f3",
+  "temperature": 0.7,
+  "seed": 44,
+  "max_tokens": 4096,
+  "thinking_budget": 1024,
+  "input_tokens": 1697,
+  "output_tokens": 1094,
+  "cost_usd": 0.0032440999999999998,
+  "elapsed_s": 9.71,
+  "error": null,
+  "text": "{\n  \"pros\": [\n    \"Intuitive and quick setup for core tasks like list creation and contact management.\",\n    \"Comprehensive contact management features, including segmentation, tags, and custom fields.\",\n    \"Streamlined process for adding contacts and assigning them to autoresponders or custom fields.\",\n    \"Powerful automation builder with pre-built templates for various marketing scenarios.\",\n    \"Good range of marketing tools beyond just email, such as webinars and website builder.\",\n    \"Free plan available for getting started, clearly showing usage limits.\"\n  ],\n  \"cons\": [\n    \"Pricing can become expensive as contact lists grow, especially for advanced features.\",\n    \"User interface can feel clunky or have minor performance delays, leading to occasional friction.\",\n    \"The vast array of tools hidden in a mega-menu makes navigation less intuitive for new users.\",\n    \"Reporting features may lack depth and customization compared to competitors.\",\n    \"Basic plans might limit advanced segmentation and automation capabilities.\",\n    \"Some integrations may not offer the depth or bidirectional sync needed for complex workflows.\"\n  ],\n  \"overall_rating\": 4.2\n}",
+  "json": {
+    "pros": [
+      "Intuitive and quick setup for core tasks like list creation and contact management.",
+      "Comprehensive contact management features, including segmentation, tags, and custom fields.",
+      "Streamlined process for adding contacts and assigning them to autoresponders or custom fields.",
+      "Powerful automation builder with pre-built templates for various marketing scenarios.",
+      "Good range of marketing tools beyond just email, such as webinars and website builder.",
+      "Free plan available for getting started, clearly showing usage limits."
+    ],
+    "cons": [
+      "Pricing can become expensive as contact lists grow, especially for advanced features.",
+      "User interface can feel clunky or have minor performance delays, leading to occasional friction.",
+      "The vast array of tools hidden in a mega-menu makes navigation less intuitive for new users.",
+      "Reporting features may lack depth and customization compared to competitors.",
+      "Basic plans might limit advanced segmentation and automation capabilities.",
+      "Some integrations may not offer the depth or bidirectional sync needed for complex workflows."
+    ],
+    "overall_rating": 4.2
+  },
+  "ts": "2026-10-18T10:29:02.292737+00:00"
+}
