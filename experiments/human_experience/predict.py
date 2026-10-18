@@ -69,6 +69,10 @@ def exec_record(case_id: str, context: str, engine: str) -> dict | None:
 
 def exec_text(rec: dict) -> str:
     """Trace-supported observations only. A blocked run says so and carries no product observations."""
+    if rec["status"] == "runner_failure":
+        # The test agent broke down (looped, crashed) even after its one retry: nothing here is about the product.
+        return ("Status: the test agent failed (it looped or crashed), so this run says nothing about the product. "
+                "No product observations.")
     lines = [
         f"Status: {rec['status']}",
         f"Product capture date: {rec['product_version_or_capture_date']}; plan: {rec['plan']}",
