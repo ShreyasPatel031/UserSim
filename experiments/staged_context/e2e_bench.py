@@ -73,7 +73,9 @@ async def run_case(c: dict, sem: asyncio.Semaphore) -> dict:
     rid = r["review_id"]
     path = BOUT / "runs" / f"{rid}.json"
     if path.exists():
-        return E.read_json(path)
+        rec = E.read_json(path)
+        if not _infra_error(rec["run"].get("error")):
+            return rec
     persona = {"id": rid, "name": card["role_title"] or card["role_family"],
                "bio": f"{card['role_title']} at a {card['company_size']} company in {card['industry']}, trying {card['product']} for this job."}
     url = RE.URLS[r["product_name"]]
@@ -95,8 +97,13 @@ async def run_case(c: dict, sem: asyncio.Semaphore) -> dict:
            "run": {k: run.get(k) for k in ("completed", "visited_urls", "error", "num_steps", "final_url")},
            "steps": [{k: s.get(k) for k in ("step", "url", "action", "observation")} for s in (run.get("trace") or [])][:20],
            "feedback_no_reviews": fb_no, "feedback_with_reviews": fb_yes}
-    E.write_json(path, rec)
+    if not _infra_error(run.get("error")):  # rate limits / lost sessions are retried on the next invocation
+        E.write_json(path, rec)
     return rec
+
+
+def _infra_error(err: str | None) -> bool:
+    return bool(err) and any(k in err for k in ("RateLimit", "429", "Browserbase", "CancelledError", "TimeoutError"))
 
 
 def predict(c: dict, cond: str, rec: dict | None) -> dict:
