@@ -40,9 +40,9 @@ Flow:
 4. Run the simulated user as a subagent on the model chosen above. Give it the session_id, persona, task and the usersim_simulate_user prompt. It loops usersim_act until done, then calls usersim_finish.
 5. Call usersim_get_report and summarise it for the human. The judge verdict and proof checks come from UserSim, not from the simulated user.
 
-Several users, tasks or competitors (a study, like the UserSim website runs):
-1. Draft the personas and tasks (each can name the site it `favors`), show them with the competitor URLs, wait for approval.
-2. Call usersim_start_study once. It returns study_id, watch_url, report_url and one cell per persona x task x site.
+Full comparison study (the only study shape UserSim runs — see docs/E2E_TEST.md):
+1. Draft exactly six personas, six tasks, and two competitor URLs (target product + 2 rivals = 3 products). Show them to the human and wait for approval. Omitted rivals or personas/tasks can be auto-filled, but never fewer than the full matrix.
+2. Call usersim_start_study once. It returns study_id, watch_url, report_url and 108 cells (6 personas × 6 tasks × 3 sites).
 3. For every cell, run one subagent in parallel on that same model: it calls usersim_start_session with study_id + cell_id (nothing else), then plays that cell's persona and task with usersim_act and ends with usersim_finish.
    If a start says UserSim is at its limit, wait for running cells to finish and start the rest then.
 4. When the last cell finishes, UserSim writes the full study report (same page as a website study). Call usersim_get_report with the study_id; if it says the report is still being written, wait ~30 s and call again.
@@ -217,28 +217,37 @@ class StudyTask(BaseModel):
 @mcp.tool(structured_output=False)
 async def usersim_start_study(
     ctx: Context,
-    product_url: str = Field(description="Public URL of the product (https://...)."),
-    personas: list[StudyPersona] = Field(description='At least one. Example: [{"name": "Maya Ortiz", "bio": "Freelance designer who bills clients hourly"}]'),
-    tasks: list[StudyTask] = Field(description='At least one. Example: [{"prompt": "Sign up with email and verify your account"}]'),
-    competitors: list[str] | None = Field(default=None, description="Optional: up to 4 public URLs of competing products."),
+    product_url: str = Field(description="Public URL of the target product (https://...)."),
+    personas: list[StudyPersona] = Field(
+        description="Exactly 6 buyer personas, or [] to auto-generate. Each needs bio. See docs/E2E_TEST.md.",
+    ),
+    tasks: list[StudyTask] = Field(
+        description="Exactly 6 tasks, or [] to auto-generate. Include signup + email verification as one task. See docs/E2E_TEST.md.",
+    ),
+    competitors: list[str] | None = Field(
+        default=None,
+        description="Exactly 2 public competitor URLs, or omit/[] to auto-discover. Target + 2 rivals = 3 products. See docs/E2E_TEST.md.",
+    ),
 ) -> str:
-    """Create a study: every persona tries every task on the product and on each competitor.
+    """Start a full UserSim e2e study (docs/E2E_TEST.md): 3 products, 6 personas, 6 tasks, 108 cells, comparison report.
 
-    product_url: public URL of the product.
-    competitors: public URLs of competing products (optional, up to 4).
-    personas: [{"name": "Maya Ortiz", "bio": "who they are, what they know, why they're here", "favors": "<site URL or name it is aimed at, optional>"}]
-    tasks: [{"prompt": "one goal, in the user's words", "favors": "<site URL or name, optional>"}]
-    Ask the human to approve personas, tasks and competitors first.
+    Partial lists with the wrong length are rejected. Empty competitors/personas/tasks are filled using the same planner as the website.
     Returns study_id, watch_url, report_url and cells. Run each cell with usersim_start_session(study_id=..., cell_id=...).
     """
-    comps = list(competitors or [])
-    personas = [p.model_dump(exclude_none=True) if isinstance(p, BaseModel) else p for p in personas]
-    tasks = [t.model_dump(exclude_none=True) if isinstance(t, BaseModel) else t for t in tasks]
-    if len(comps) > 4:
-        return _fail(S.SessionError("at most 4 competitors"))
+    from mvp.e2e_study import E2EStudyRejected, ensure_full_study_inputs
+
+    personas_in = [p.model_dump(exclude_none=True) if isinstance(p, BaseModel) else p for p in personas]
+    tasks_in = [t.model_dump(exclude_none=True) if isinstance(t, BaseModel) else t for t in tasks]
     try:
-        study = S.create_matrix_study(product_url=product_url, competitors=comps, personas=personas, tasks=tasks,
-                                      owner=_owner(ctx))
+        comps, personas_in, tasks_in = await ensure_full_study_inputs(
+            product_url, list(competitors or []), personas_in, tasks_in
+        )
+    except E2EStudyRejected as exc:
+        return _fail(S.SessionError(str(exc)))
+    try:
+        study = S.create_matrix_study(
+            product_url=product_url, competitors=comps, personas=personas_in, tasks=tasks_in, owner=_owner(ctx)
+        )
     except S.SessionError as exc:
         return _fail(exc)
     return json.dumps(

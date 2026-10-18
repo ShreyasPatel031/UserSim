@@ -497,15 +497,29 @@ def create_matrix_study(
     personas: list[dict[str, Any]],
     tasks: list[dict[str, Any]],
     owner: str = "",
+    _skip_e2e_check: bool = False,
 ) -> Any:
     """One website-shaped study: every persona x every task on the product and each competitor.
 
     Each cell is run later by its own MCP session (start_session with study_id + cell_id).
     When the last cell ends, the website's own end-of-study pipeline writes the report.
     """
+    from mvp.e2e_study import E2E_DOC
+    from mvp.fast_plan import PERSONA_COUNT, RIVAL_COUNT, TASK_COUNT
     from mvp.study import create_study, expand_full_matrix, log_activity
 
     url = normalize_public_url(product_url)
+    if not _skip_e2e_check:
+        if len(competitors or []) != RIVAL_COUNT:
+            raise SessionError(
+                f"need exactly {RIVAL_COUNT} competitors (3 products total); got {len(competitors or [])}. See {E2E_DOC}."
+            )
+        if len(personas or []) != PERSONA_COUNT:
+            raise SessionError(
+                f"need exactly {PERSONA_COUNT} personas; got {len(personas or [])}. See {E2E_DOC}."
+            )
+        if len(tasks or []) != TASK_COUNT:
+            raise SessionError(f"need exactly {TASK_COUNT} tasks; got {len(tasks or [])}. See {E2E_DOC}.")
     rivals: list[str] = []
     for raw in competitors or []:
         c = normalize_public_url(str(raw))
@@ -532,7 +546,7 @@ def create_matrix_study(
             raise SessionError(f"task {i} needs a prompt")
         jobs.append({"id": f"t{i}", "title": str(t.get("title") or prompt)[:80], "prompt": prompt, "favors": _resolve_favors(t.get("favors"), sites)})
     if not people or not jobs:
-        raise SessionError("a study needs at least one persona and one task")
+        raise SessionError(f"a study needs {PERSONA_COUNT} personas and {TASK_COUNT} tasks. See {E2E_DOC}.")
     n = len(people) * len(jobs) * len(sites)
     if n > max_cells():
         raise SessionError(f"{n} runs is over the {max_cells()}-run limit for one study")
@@ -547,7 +561,9 @@ def create_matrix_study(
     study = create_study(url, people[0]["bio"])
     study.driver = DRIVER
     study.backend = "mcp"
-    study.study_mode = "compare" if rivals else "single"
+    if not rivals:
+        raise SessionError(f"comparison studies need {RIVAL_COUNT} competitors. See {E2E_DOC}.")
+    study.study_mode = "compare"
     study.product_name = _site_name(url)
     study.competitors = rivals
     study.competitor_names = {c: _site_name(c) for c in rivals}

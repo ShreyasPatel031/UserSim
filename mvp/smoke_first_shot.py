@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Measure time-to-first-screenshot for a 1-agent vercel-mode study.
+"""Measure time-to-first-screenshot for a full study started via POST /api/studies.
 
-Cheap smoke: test_mode + skip_competitors + one task.
+Reduced test_mode / skip_competitors requests are rejected (docs/E2E_TEST.md).
 Prints timeline and FAILS if first screenshot takes > threshold.
 """
 from __future__ import annotations
@@ -21,10 +21,7 @@ MAX_SHOT_S = float(__import__("os").environ.get("SMOKE_MAX_FIRST_SHOT_S", "45"))
 def post_start() -> str:
     payload = {
         "url": URL,
-        "test_mode": True,
-        "skip_competitors": True,
-        "segment": "Founders",
-        "tasks": ["Skim the homepage"],
+        "segment": "Founders evaluating dev tools",
     }
     req = urllib.request.Request(
         f"{BASE}/api/studies",

@@ -313,7 +313,14 @@ def test_cell_whose_browser_failed_goes_back_to_the_queue(monkeypatch):
 
     from mvp.sim_mcp import sessions as SS
 
-    study = SS.create_matrix_study(product_url="https://a.com", competitors=[], personas=[{"bio": "x"}], tasks=["y"])
+    people = [{"bio": f"p{i}"} for i in range(6)]
+    jobs = [{"prompt": f"t{i}"} for i in range(6)]
+    study = SS.create_matrix_study(
+        product_url="https://a.com",
+        competitors=["https://b.com", "https://c.com"],
+        personas=people,
+        tasks=jobs,
+    )
     cell = next(iter(study.live_sessions))
 
     async def bad_open(sim):

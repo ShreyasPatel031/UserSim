@@ -128,8 +128,8 @@ class StudyRequest(BaseModel):
     customers: str | None = Field(default=None, max_length=2000)
     competitors: list[str] = Field(default_factory=list)
     tasks: list[str] = Field(default_factory=list)
-    test_mode: bool = False
-    skip_competitors: bool = False
+    test_mode: bool = False  # rejected — see docs/E2E_TEST.md
+    skip_competitors: bool = False  # rejected — see docs/E2E_TEST.md
     max_agents: int | None = Field(default=None, ge=1, le=75)
     backend: str = Field(default="default", pattern="^(default)$")
 
@@ -535,6 +535,14 @@ async def list_studies(limit: int = 40):
 
 @app.post("/api/studies")
 async def start_study(body: StudyRequest, background: BackgroundTasks, request: Request):
+    from mvp.e2e_study import E2EStudyRejected, reject_disallowed_flags, validate_supplied_counts
+
+    try:
+        reject_disallowed_flags(test_mode=body.test_mode, skip_competitors=body.skip_competitors)
+        validate_supplied_counts(body.competitors, None, body.tasks)
+    except E2EStudyRejected as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
     from mvp.study import STUDIES, create_study, run_study, study_to_dict
 
     url = await _landing_url(_normalize_url(body.url))
@@ -544,9 +552,6 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
             "Auto-research target customers from the product URL "
             "and invent a mixed panel of directed simulated users."
         )
-    if body.test_mode and not (body.customers or body.segment):
-        segment = "Curious first-time visitor"
-
     study = create_study(url, segment)
     # Count busy Browserbase sessions while the plan is written, so the
     # queue check before agents start costs nothing on a free project.
@@ -556,7 +561,7 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
     # Stash optional inputs for the upcoming agent-loop planner.
     study.email = body.email
     study.customers = body.customers
-    study.test_mode = bool(body.test_mode)
+    study.test_mode = False
     # Browser agents use Gemini on Vertex (GCP). Live Chromium is Browserbase
     # when available; serverless falls back to grounded Vertex snapshots.
     study.backend = body.backend or "default"
@@ -564,11 +569,9 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
     study.competitors = [c.strip() for c in body.competitors if c and c.strip()]
     # Default: invent ~2 rivals when the box is blank (product + rivals in Products).
     # Only skip when the client explicitly opts out.
-    study.skip_competitors = bool(body.skip_competitors)
+    study.skip_competitors = False
     study.max_agents = int(body.max_agents or 0)
     study.tasks_override = [t.strip() for t in body.tasks if t and t.strip()]
-    if study.test_mode and not study.tasks_override:
-        study.tasks_override = ["Browse the homepage and try to find something interesting to watch or try"]
     # Create and navigate the product agents' browsers while the plan is written.
     try:
         from mvp.preopen import start_preopen
@@ -651,7 +654,7 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
         async def _finish_plan() -> None:
             """Apply the plan. Runs after the stream opens so its frames reach the page."""
             starter = None
-            if compare_mode() and not study.test_mode:
+            if compare_mode():
                 from mvp import early_start
 
                 if early_start.enabled():
