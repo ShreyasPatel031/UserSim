@@ -44,7 +44,8 @@ trap 'rm -rf "$STAGE"' EXIT
 TARBALL="https://codeload.github.com/${REPO}/tar.gz/${BRANCH}"
 curl -sfL --max-time 120 "$TARBALL" | tar -xz -C "$STAGE" --strip-components=1
 for path in api mvp pyproject.toml requirements-vercel.txt results scripts src vercel.json; do
-  [ -e "$STAGE/$path" ] && rsync -a "$STAGE/$path" "$APP_ROOT/"
+  [ -e "$STAGE/$path" ] || continue
+  if command -v rsync >/dev/null; then rsync -a "$STAGE/$path" "$APP_ROOT/"; else cp -a "$STAGE/$path" "$APP_ROOT/"; fi
 done
 echo "$SHORT $(date -u +%Y-%m-%dT%H:%M:%SZ) $BRANCH" > "$APP_ROOT/mvp/static/build.txt"
 export USERSIM_ENGINE_VERSION="$SHORT"

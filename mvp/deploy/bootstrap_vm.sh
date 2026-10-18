@@ -33,6 +33,7 @@ if [ "$(id -u)" -ne 0 ]; then
 fi
 
 mkdir -p "$APP_ROOT" "$BIN_DIR" "$STATE_DIR" /etc/usersim
+command -v rsync >/dev/null || { apt-get install -y -q rsync >/dev/null 2>&1 || log "rsync not installed; vm_pull_deploy.sh falls back to cp -a"; }
 install -m 755 "$ROOT/mvp/deploy/vm_pull_deploy.sh" "$BIN_DIR/vm_pull_deploy.sh"
 install -m 644 "$ROOT/mvp/deploy/usersim-pull-deploy.service" /etc/systemd/system/usersim-pull-deploy.service
 install -m 644 "$ROOT/mvp/deploy/usersim-pull-deploy.timer" /etc/systemd/system/usersim-pull-deploy.timer
