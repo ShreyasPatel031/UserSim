@@ -22,7 +22,12 @@ RIVAL = {"product": "Asana", "errors": [], "reviews": [_rev("Asana", 4, ease=4, 
                                                             pros="Boards", cons="Too many notifications")] * 30}
 
 
+async def ok_judge(prompt):
+    return {"same_product": True, "reviews_are_of_named_product": True, "direct_competitor": "yes", "why": "ok"}
+
+
 def _run(**kw):
+    kw.setdefault("judge", ok_judge)
     async def fake_llm(prompt):
         fake_llm.prompt = prompt
         return {"pros": ["Simple to-dos"], "cons": ["Weak reporting"], "overall_experience": "Fine.", "likely_frictions": []}
@@ -80,10 +85,52 @@ class AgentModeTest(unittest.TestCase):
         with mock.patch.object(RC, "apify_token", return_value="t"), mock.patch.object(RC, "prefetch"), \
                 mock.patch.object(RC, "cached_live_reviews", side_effect=lambda n: got.get(n)):
             out = asyncio.run(A.predict_experience(product="Basecamp", url="https://basecamp.com/", persona={"role": "PM"},
-                                                   wait_s=0, llm=fake_llm, discover=discover))
+                                                   wait_s=0, llm=fake_llm, discover=discover, judge=ok_judge))
         self.assertEqual(out["evidence"]["rivals"], ["Asana"])
         self.assertEqual(out["evidence"]["rivals_source"], "discovered by the study planner")
         self.assertEqual(out["ratings"]["overall_rating"]["n_rivals"], 30)
+
+    def _with(self, judge, url="https://basecamp.com/"):
+        got = {"Basecamp": OWN, "Asana": RIVAL}
+
+        async def fake_llm(prompt):
+            return {}
+        with mock.patch.object(RC, "apify_token", return_value="t"), mock.patch.object(RC, "prefetch"), \
+                mock.patch.object(RC, "cached_live_reviews", side_effect=lambda n: got.get(n)):
+            return asyncio.run(A.predict_experience(product="Basecamp", url=url, persona={"role": "PM"}, competitors=["Asana"],
+                                                    wait_s=0, llm=fake_llm, judge=judge))
+
+    def test_same_name_product_reviews_are_rejected(self):
+        async def judge(prompt):
+            if "Are these reviews of THIS product" in prompt:
+                return {"same_product": False, "why": "these are Dock Health, a different company"}
+            return await ok_judge(prompt)
+        out = self._with(judge)
+        self.assertEqual(out["evidence"]["own_reviews"], 0)
+        self.assertFalse(out["evidence"]["own_reviews_check"]["ok"])
+        self.assertEqual(out["ratings"]["overall_rating"]["basis"], "rivals only (no own reviews)")
+
+    def test_non_competitor_rival_is_dropped(self):
+        async def judge(prompt):
+            if "named as a competitor" in prompt:
+                return {"reviews_are_of_named_product": True, "direct_competitor": "no", "why": "different job"}
+            return await ok_judge(prompt)
+        out = self._with(judge)
+        self.assertEqual(out["evidence"]["rivals_used"], [])
+        self.assertEqual(out["evidence"]["rival_reviews"], 0)
+        self.assertEqual(out["ratings"]["overall_rating"]["basis"], "own reviews only (no rival ratings)")
+
+    def test_judge_failure_means_unchecked_sources_are_not_used(self):
+        async def judge(prompt):
+            raise RuntimeError("model down")
+        out = self._with(judge)
+        self.assertEqual(out["status"], "no_data")
+        self.assertIn("model down", out["own_reviews_check"]["why"])
+
+    def test_no_url_means_own_reviews_are_not_trusted(self):
+        out = self._with(ok_judge, url="")
+        self.assertEqual(out["evidence"]["own_reviews"], 0)
+        self.assertIn("no product_url", out["evidence"]["own_reviews_check"]["why"])
 
     def test_pending_while_product_scrape_runs(self):
         with mock.patch.object(RC, "apify_token", return_value="t"), mock.patch.object(RC, "prefetch"), \
