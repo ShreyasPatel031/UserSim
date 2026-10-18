@@ -78,6 +78,36 @@ Findings on TEST:
 
   The handoff's best was 0.53. Most of what can be spotted is the product's level; offsets add a little within a product.
 
+### 5. The shipped agent mode, end to end (`agent_mode_eval.py`, `live_words_bench.py`, `live_bench.py`)
+
+`agent_mode_eval.py` feeds snapshot reviews, shaped like live scrapes, through `mvp/agent_mode.py` itself: its rating
+math, persona offsets, evidence builder and prompt.
+- Own reviews: those dated before the person.
+- Rivals: the top 3 same-category products, 50 recent reviews each.
+
+Words were iterated four times; v4 is shipped:
+- v1: own prompt.
+- v2: the validated predictor prompt.
+- v3: all review fields shown.
+- v4: plus the people-like-this-person section.
+
+| | pros | cons | overall exp. | overall MAE | ease MAE | recommend MAE |
+| --- | --- | --- | --- | --- | --- | --- |
+| Capterra 420, plain context agent (agent_full) | 0.426 | 0.262 | 0.190 | 0.631 | 0.662 | 1.349 |
+| Capterra 420, **agent mode v4** | **0.455** | **0.284** | **0.205** | **0.562** | **0.602** | **1.226** |
+| G2 200, plain context agent | 0.505 | 0.233 | 0.265 | 0.760 | – | – |
+| G2 200, **agent mode v4** | **0.512** | **0.281** | **0.320** | **0.744** | – | – |
+
+- The research `own_similar` condition still gets Capterra overall experience to 0.27; agent mode v4 is at 0.205.
+  - Remaining differences: research drew similar rival reviews from the whole category, and its own reviews carried
+    reasons-for-choosing/switching fields.
+- **Live set** (`live_bench.py`, 14 new products, 1,394 reviewers, G2 / Capterra / TrustRadius / Gartner; nothing fit):
+  - Rating RMSE: global 0.779 → agent mode 0.772, or 0.770 with same-site own reviews.
+  - Words on 168 people: agent mode with own reviews ≈ rivals only (pros +0.006, cons +0.002, overall −0.036, all
+    within noise). Adding the people-like-them section lifted both.
+- **Caveat**: the segment stats in `mvp/agent_mode_segments.json` cover all Capterra products. In the Capterra eval that
+  includes the person's product and their own review, but that is one review among ~56k.
+
 ## Agent mode (shipped in PR #86)
 
 - **Tool**: `usersim_predict_experience` in `mvp/sim_mcp/server.py`; logic in `mvp/agent_mode.py`.

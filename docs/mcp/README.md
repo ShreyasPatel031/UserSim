@@ -209,7 +209,8 @@ What you get on `ok`:
   - On held-out reviewers the offsets raised per-person ranking within a product (recommend Spearman 0.00 → 0.13) and
     cut error on 6 of 7 test sets.
   - Evidence: `experiments/human_experience/heldout_bench.py` and `personalize.py`.
-- **`pros`**, **`cons`** and **`overall_experience`**: written for this persona from the most
+- **`pros`**, **`cons`** and **`overall_experience`**: written by the held-out-validated predictor prompt. Its evidence:
+  people-like-this-persona averages (`mvp/agent_mode_segments.json`), the rivals' ratings and complaint topics, and the most
   similar reviewers of the product and its rivals.
 - **`evidence`**: how many reviews were used, which rivals had none, and scraper errors.
 
