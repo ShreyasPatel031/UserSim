@@ -29,8 +29,8 @@ DEFAULT_URL = "https://raw.githubusercontent.com/ShreyasPatel031/UserSim/main/mv
 DEFAULTS: dict[str, Any] = {
     "refresh_s": 300,
     "allow_anonymous": True,
-    "max_sessions": 5,
-    "max_per_client": 2,
+    "max_sessions": 10,
+    "max_per_client": 8,
     "anon_max_concurrent_sessions_per_ip": 3,
     "anon_daily_usd_per_ip": 2.0,
     "anon_daily_usd_global": 10.0,
