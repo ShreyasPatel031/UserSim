@@ -336,14 +336,13 @@ SIGNIN_START: dict[str, str] = {
 }
 
 # Already have a live account on the base mailbox — do not burn signup budget.
+# The list belongs to one mailbox; an environment signing up from a different
+# base mailbox sets MVP_SIGNUP_RETIRED_HOSTS (comma list, empty for none).
+_DEFAULT_RETIRED = "clickup.com,app.clickup.com,replit.com,posthog.com,us.posthog.com"
 RETIRED_HOSTS: frozenset[str] = frozenset(
-    {
-        "clickup.com",
-        "app.clickup.com",
-        "replit.com",
-        "posthog.com",
-        "us.posthog.com",
-    }
+    h.strip().lower()
+    for h in os.environ.get("MVP_SIGNUP_RETIRED_HOSTS", _DEFAULT_RETIRED).split(",")
+    if h.strip()
 )
 
 
@@ -419,6 +418,15 @@ _COOKIE_HOST_ALIASES: dict[str, frozenset[str]] = {
 
 # Names that look auth-y but are bot/WAF/consent noise (keep in sync with seed_status).
 _AUTH_COOKIE_NOISE = (
+    # Ad/analytics trackers whose names contain "auth"/"sid"/"sess" and are set
+    # for every visitor (asana.com: _pin_unauth, _uetsid, ttcsid, FPGSID, ...).
+    "unauth",
+    "_pin_",
+    "_uet",
+    "ttcsid",
+    "fpgsid",
+    "optimizely",
+    "_gd_session",
     "analytics",
     "ab.storage",
     "_ga",
