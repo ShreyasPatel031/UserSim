@@ -1,3 +1,0 @@
-Browserbase session 2d9ba311-d36f-4a6b-a421-0edd6aeb36e0 flags={'proxies': True, 'solve_captchas': True, 'advanced_stealth': False}
-[c5021665] browserbase flags={'proxies': True, 'solve_captchas': True, 'advanced_stealth': False}
-INFO     [BrowserSession] Setting viewport to 1280x800 with device scale factor 1.0 whereas original device scale factor was 1.0
