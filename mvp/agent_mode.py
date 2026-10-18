@@ -338,6 +338,7 @@ async def discover_rivals(url: str, about: str = "", llm_json=None, n: int = 6) 
 
 
 IDENTITY_PROMPT = """Product: {product} ({url}).
+What it does, from its own website: {about}
 Review sites returned these reviews when searched for "{product}" (listed on the sites as: {found_as}):
 {sample}
 
@@ -345,6 +346,7 @@ Are these reviews of THIS product, the one at {url}? Different products that sha
 do not count. Return {{"same_product": true/false, "why": "<one sentence>"}}"""
 
 RIVAL_PROMPT = """Product: {product} ({url}).
+What it does, from its own website: {about}
 "{rival}" was named as a competitor. Review sites returned these reviews for "{rival}" (listed as: {found_as}):
 {sample}
 
@@ -360,7 +362,27 @@ def _sample(reviews: list[dict], k: int = 6) -> str:
                      f"{clip(r.get('cons'))} | {clip(r.get('text'))}" for r in rows) or "(no review text)"
 
 
-async def check_identity(product: str, url: str, own: list[dict], rivals: dict[str, list[dict]], judge) -> dict[str, Any]:
+def page_about(url: str, limit: int = 900) -> str:
+    """Title, meta description and opening text of the product's homepage, so the identity judge knows what the
+    product does (without it, a same-name product's reviews passed: 'Armature' matched Armature Fabric)."""
+    import html as _html
+
+    import httpx
+
+    try:
+        r = httpx.get(url, timeout=15, follow_redirects=True, headers={"User-Agent": "Mozilla/5.0 UserSim"})
+        t = r.text
+    except Exception as exc:  # noqa: BLE001 - said in the prompt, not substituted
+        return f"(could not fetch {url}: {type(exc).__name__})"
+    title = " ".join(re.findall(r"<title[^>]*>(.*?)</title>", t, re.S | re.I)[:1])
+    meta = " ".join(re.findall(r'<meta[^>]+name=["\']description["\'][^>]+content=["\']([^"\']*)', t, re.I)[:1])
+    body = re.sub(r"<script.*?</script>|<style.*?</style>", " ", t, flags=re.S | re.I)
+    body = re.sub(r"\s+", " ", _html.unescape(re.sub(r"<[^>]+>", " ", body))).strip()
+    return RS.clean(f"{_html.unescape(title)} | {_html.unescape(meta)} | {body}")[:limit]
+
+
+async def check_identity(product: str, url: str, own: list[dict], rivals: dict[str, list[dict]], judge,
+                         about: str = "") -> dict[str, Any]:
     """Model checks, in parallel (the YC test found same-name products and planner rivals that don't compete):
     own reviews must be of the product at `url`; each rival's reviews must be of that rival, and it must compete."""
     async def one(prompt: str) -> dict:
@@ -372,9 +394,11 @@ async def check_identity(product: str, url: str, own: list[dict], rivals: dict[s
     found = lambda revs: ", ".join(sorted({str(r.get("product") or "?") for r in revs}))[:200]  # noqa: E731
     jobs = []
     if own:
-        jobs.append(one(IDENTITY_PROMPT.format(product=product, url=url, found_as=found(own), sample=_sample(own))))
+        jobs.append(one(IDENTITY_PROMPT.format(product=product, url=url, about=about or "(not given)", found_as=found(own),
+                                               sample=_sample(own))))
     names = [n for n, revs in rivals.items() if revs]
-    jobs += [one(RIVAL_PROMPT.format(product=product, url=url, rival=n, found_as=found(rivals[n]), sample=_sample(rivals[n])))
+    jobs += [one(RIVAL_PROMPT.format(product=product, url=url, about=about or "(not given)", rival=n, found_as=found(rivals[n]),
+                                     sample=_sample(rivals[n])))
              for n in names]
     res = await asyncio.gather(*jobs)
     out = {"own": None, "rivals": {}}
@@ -481,8 +505,9 @@ async def predict_experience(*, product: str, url: str, persona: dict[str, Any],
     errors = [e for v in got.values() if v for e in v.get("errors", [])]
     missing = [n for n in rivals if got.get(n) is not None and not got[n]["reviews"]]
     # identity gate: no product URL means own reviews can't be checked, so they are not used (said in evidence)
+    about = await asyncio.to_thread(page_about, url) if url else ""
     ident = await check_identity(product, url, own if url else [], {n: got[n]["reviews"] for n in rivals if got.get(n)},
-                                 judge or _default_judge)
+                                 judge or _default_judge, about)
     own_check = ident["own"] or ({"ok": False, "why": "no product_url given, so the reviews' identity can't be checked"}
                                  if own and not url else None)
     if own_check and not own_check["ok"]:

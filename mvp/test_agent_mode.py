@@ -26,6 +26,9 @@ async def ok_judge(prompt):
     return {"same_product": True, "reviews_are_of_named_product": True, "direct_competitor": "yes", "why": "ok"}
 
 
+A.page_about = lambda url, limit=900: "Basecamp | Project management for teams"  # no network in tests
+
+
 def _run(**kw):
     kw.setdefault("judge", ok_judge)
     async def fake_llm(prompt):
@@ -133,6 +136,15 @@ class AgentModeTest(unittest.TestCase):
         out = self._with(judge)
         self.assertEqual(out["status"], "no_data")
         self.assertIn("model down", out["own_reviews_check"]["why"])
+
+    def test_identity_judge_sees_what_the_product_does(self):
+        seen = []
+
+        async def judge(prompt):
+            seen.append(prompt)
+            return await ok_judge(prompt)
+        self._with(judge)
+        self.assertTrue(all("Project management for teams" in p for p in seen if "Review sites returned" in p))
 
     def test_no_url_means_own_reviews_are_not_trusted(self):
         out = self._with(ok_judge, url="")
