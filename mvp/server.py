@@ -229,9 +229,12 @@ def _dedupe_studies_one_per_url(rows: list[dict]) -> list[dict]:
 
 
 @app.get("/")
-async def landing() -> FileResponse:
-    # Atelier landing page; the simulator itself lives at /app
+async def landing(request: Request) -> FileResponse:
+    # Atelier landing page; the simulator itself lives at /app.
+    # Old watch links (/?study=<id>) still open the live stage.
     page = STATIC / "landing.html"
+    if request.query_params.get("study"):
+        page = STATIC / "index.html"
     if not page.is_file():
         page = STATIC / "index.html"
     if not page.is_file():
