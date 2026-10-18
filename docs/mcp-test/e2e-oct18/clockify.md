@@ -1,6 +1,6 @@
 # Clockify (clockify.me): no-token MCP e2e
 
-Report: [https://usersim.vercel.app/report?study= eb205e50-1cba-4b4c-84c5-f39747abd7c3](https://usersim.vercel.app/report?study= eb205e50-1cba-4b4c-84c5-f39747abd7c3) · Persona: Dana Kim, a freelance web designer who bills two clients by the hour · Engine b63f3d3
+Report: [https://usersim.vercel.app/report?study=eb205e50-1cba-4b4c-84c5-f39747abd7c3](https://usersim.vercel.app/report?study=eb205e50-1cba-4b4c-84c5-f39747abd7c3) · Persona: Dana Kim, a freelance web designer who bills two clients by the hour · Engine b63f3d3
 
 **Result: signup ✅, 3/3 tasks ✅ (judge reached, proof PASS on all 4 cells).**
 
