@@ -1,5 +1,23 @@
 # Handoff: agent mode + what adds accuracy on top of the review-context agent
 
+## Morning summary
+
+Agent mode is in main as the MCP tool `usersim_predict_experience` (PRs #86–#91). Not deployed yet: the live server
+needs a redeploy and `APIFY_TOKEN`. Human mode (browser runs + combine) is session usersim-9c's, on
+`claude/modest-wozniak-p0bt3q`.
+
+What adds accuracy on top of the plain context agent, by held-out eval (bold = what agent mode ships):
+
+| Lever | Capterra (420 / ~2,500) | G2 (200 / ~3,200) | Live 4-site (14 new products) |
+| --- | --- | --- | --- |
+| **Rating level from the product's own recent reviews, shrunk to rivals (k=10)** | MAE overall .631 → .562, ease .662 → .602, recommend 1.35 → 1.23 | MAE .760 → .744; RMSE .726 → .648 | RMSE .779 → .772 |
+| **Within-product persona offsets (tenure ≫ size, role, industry)** | rank within product: recommend .00 → .13; unhappy AUC .62 → .66 | small | RMSE → .770 (same-site) |
+| **Words: validated prompt + people-like-them + rivals + own similar reviews** | pros .426 → .455, cons .262 → .284, overall .190 → .205–.224 | pros .505 → .512, cons .233 → .281, overall .265 → .320 | ≈ rivals-only (noise) |
+| **`most_likely` whole score (median rule)** | MAE .55 | MAE .43 | – |
+| Learned stacks / factor weights on top of the agent | none beyond a constant level | – | – |
+| Product's reviews on the *other* platform | worse | worse | – |
+| Named rivals' level vs global mean as prior | ≈ | ≈ | slightly worse |
+
 Branch `claude/zealous-knuth-4zbdb1`, PR https://github.com/ShreyasPatel031/UserSim/pull/86 (to main).
 Research code imports the review-context branch from `$CTX_ROOT` (default `/home/user/UserSim-ctx`):
 `git worktree add /home/user/UserSim-ctx origin/claude/modest-euler-6111ae`.
