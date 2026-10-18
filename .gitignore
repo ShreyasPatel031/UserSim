@@ -37,3 +37,4 @@ data/models/
 data/hackathon/
 .vercel
 .env*.local
+experiments/staged_context/hm/shots/
