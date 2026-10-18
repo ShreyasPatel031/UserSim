@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4bea2b66c91235226c1985d9f27d2d31fd0f969f907d1d21401fd00a68bbaa55",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3026,
+  "output_tokens": 1040,
+  "cost_usd": 0.0035077999999999997,
+  "elapsed_s": 13.14,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Freddy AI effectively prioritizes high-potential leads.\",\n    \"Streamlined lead management and sales process automation.\",\n    \"Customization options for fields and workflows are valuable.\"\n  ],\n  \"frictions\": [\n    \"Initial setup and integration required some effort.\",\n    \"Advanced AI features might have a learning curve.\",\n    \"Reporting could be more granular for specific needs.\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"AI-powered lead scoring and prioritization capabilities.\",\n    \"Comprehensive sales CRM features for small teams.\",\n    \"Positive reputation and integration with other Freshworks products.\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Freddy AI effectively prioritizes high-potential leads.",
+      "Streamlined lead management and sales process automation.",
+      "Customization options for fields and workflows are valuable."
+    ],
+    "frictions": [
+      "Initial setup and integration required some effort.",
+      "Advanced AI features might have a learning curve.",
+      "Reporting could be more granular for specific needs."
+    ],
+    "choosing_switching_reasons": [
+      "AI-powered lead scoring and prioritization capabilities.",
+      "Comprehensive sales CRM features for small teams.",
+      "Positive reputation and integration with other Freshworks products."
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:52.439516+00:00"
+}

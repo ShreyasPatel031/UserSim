@@ -1,0 +1,29 @@
+{
+  "stage": "out_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c60c3b015183c9c901e87d591a033124fd3b56b7020fea7aca46d0b121e24892",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 159,
+  "output_tokens": 303,
+  "cost_usd": 0.0008052,
+  "elapsed_s": 17.52,
+  "error": null,
+  "text": "{\n  \"benefits\": [\n    \"very user-friendly\",\n    \"easy to work\",\n    \"saves customer numbers\",\n    \"saves email addresses\"\n  ],\n  \"frictions\": [\n    \"cannot find contacts when searching\"\n  ],\n  \"choosing_switching_reasons\": []\n}",
+  "json": {
+    "benefits": [
+      "very user-friendly",
+      "easy to work",
+      "saves customer numbers",
+      "saves email addresses"
+    ],
+    "frictions": [
+      "cannot find contacts when searching"
+    ],
+    "choosing_switching_reasons": []
+  },
+  "ts": "2026-10-18T04:05:33.292526+00:00"
+}

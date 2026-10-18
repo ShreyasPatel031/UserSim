@@ -1,0 +1,28 @@
+{
+  "stage": "out_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7d0b5a8fec867290a6400a1bf91b9a4ae551ce141379c494dc83f6eeea48da54",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 188,
+  "output_tokens": 427,
+  "cost_usd": 0.0011239000000000002,
+  "elapsed_s": 17.56,
+  "error": null,
+  "text": "{\n  \"benefits\": [\n    \"Offers features of more expensive solutions\",\n    \"Good email features (tracking, sending from CRM)\"\n  ],\n  \"frictions\": [\n    \"Customer support could be better\",\n    \"Slow and inefficient customer support\"\n  ],\n  \"choosing_switching_reasons\": []\n}",
+  "json": {
+    "benefits": [
+      "Offers features of more expensive solutions",
+      "Good email features (tracking, sending from CRM)"
+    ],
+    "frictions": [
+      "Customer support could be better",
+      "Slow and inefficient customer support"
+    ],
+    "choosing_switching_reasons": []
+  },
+  "ts": "2026-10-18T04:05:33.443035+00:00"
+}

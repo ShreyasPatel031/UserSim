@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "bdf1a6e7ca1fac1969e28e648455bb02d639fe25a9d4682ba9e2c54020b752dc",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 5985,
+  "output_tokens": 1048,
+  "cost_usd": 0.0044155,
+  "elapsed_s": 14.62,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Comprehensive sales reporting and analytics for strategic oversight.\",\n    \"Efficient lead-to-contact conversion for accurate pipeline management.\",\n    \"Customizable fields and lifecycle stages to fit specific business processes.\"\n  ],\n  \"frictions\": [\n    \"Initial setup for custom reports can require some effort.\",\n    \"Potential for minor learning curve for some advanced features.\",\n    \"Integration with other specific financial tools might need extra configuration.\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Desired robust sales reporting and performance analytics.\",\n    \"Needed a system to effectively manage lead progression to contacts.\",\n    \"Sought an AI-powered CRM to boost sales productivity and insights.\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Comprehensive sales reporting and analytics for strategic oversight.",
+      "Efficient lead-to-contact conversion for accurate pipeline management.",
+      "Customizable fields and lifecycle stages to fit specific business processes."
+    ],
+    "frictions": [
+      "Initial setup for custom reports can require some effort.",
+      "Potential for minor learning curve for some advanced features.",
+      "Integration with other specific financial tools might need extra configuration."
+    ],
+    "choosing_switching_reasons": [
+      "Desired robust sales reporting and performance analytics.",
+      "Needed a system to effectively manage lead progression to contacts.",
+      "Sought an AI-powered CRM to boost sales productivity and insights."
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:51.534377+00:00"
+}

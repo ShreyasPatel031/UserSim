@@ -1,0 +1,30 @@
+{
+  "stage": "out_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d4d8e6719c35b61ce2a110df44ca2712c4b3a491758562b36016370b4d9bcda9",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 184,
+  "output_tokens": 436,
+  "cost_usd": 0.0011452,
+  "elapsed_s": 17.72,
+  "error": null,
+  "text": "{\n  \"benefits\": [\n    \"Search bar works perfectly\",\n    \"Easy to find any record\",\n    \"Many useful integrations\",\n    \"Good UX\",\n    \"Quite responsive support\"\n  ],\n  \"frictions\": [\n    \"Not possible to filter and export all participants for a deal/s\"\n  ],\n  \"choosing_switching_reasons\": []\n}",
+  "json": {
+    "benefits": [
+      "Search bar works perfectly",
+      "Easy to find any record",
+      "Many useful integrations",
+      "Good UX",
+      "Quite responsive support"
+    ],
+    "frictions": [
+      "Not possible to filter and export all participants for a deal/s"
+    ],
+    "choosing_switching_reasons": []
+  },
+  "ts": "2026-10-18T04:05:34.230195+00:00"
+}

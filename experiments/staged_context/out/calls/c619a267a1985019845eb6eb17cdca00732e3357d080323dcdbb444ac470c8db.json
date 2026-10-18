@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c619a267a1985019845eb6eb17cdca00732e3357d080323dcdbb444ac470c8db",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2304,
+  "output_tokens": 1068,
+  "cost_usd": 0.0033611999999999995,
+  "elapsed_s": 8.79,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Effectively organizes leads to prevent duplicate outreach efforts.\",\n    \"Customizable fields and layouts help tailor the system to our specific sales process.\",\n    \"Automation features save time on tracking and follow-ups, improving efficiency.\"\n  ],\n  \"frictions\": [\n    \"Initial setup and customization required a learning curve to get it just right.\",\n    \"Interface can feel a bit cluttered at times with many features available.\",\n    \"Integration with some niche industry-specific tools wasn't seamless.\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed a robust CRM to better manage our growing lead database.\",\n    \"Sought a cost-effective solution with strong customization capabilities.\",\n    \"Desired automation features to streamline our sales workflow and reduce manual errors.\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Effectively organizes leads to prevent duplicate outreach efforts.",
+      "Customizable fields and layouts help tailor the system to our specific sales process.",
+      "Automation features save time on tracking and follow-ups, improving efficiency."
+    ],
+    "frictions": [
+      "Initial setup and customization required a learning curve to get it just right.",
+      "Interface can feel a bit cluttered at times with many features available.",
+      "Integration with some niche industry-specific tools wasn't seamless."
+    ],
+    "choosing_switching_reasons": [
+      "Needed a robust CRM to better manage our growing lead database.",
+      "Sought a cost-effective solution with strong customization capabilities.",
+      "Desired automation features to streamline our sales workflow and reduce manual errors."
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:59.525701+00:00"
+}

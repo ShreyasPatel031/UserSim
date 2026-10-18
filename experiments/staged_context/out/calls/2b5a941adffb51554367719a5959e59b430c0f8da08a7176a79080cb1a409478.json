@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2b5a941adffb51554367719a5959e59b430c0f8da08a7176a79080cb1a409478",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 5992,
+  "output_tokens": 951,
+  "cost_usd": 0.0041751,
+  "elapsed_s": 10.14,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Intuitive interface for sales tracking\",\n    \"Good pipeline visualization\",\n    \"Seamless integrations with other tools\"\n  ],\n  \"frictions\": [\n    \"Steep learning curve for advanced features\",\n    \"Limited customization options for large-scale operations\",\n    \"Troubleshooting complex automation issues\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed a dedicated sales tracking solution\",\n    \"Reputation for ease of use in sales\",\n    \"Integration capabilities with existing tech stack\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Intuitive interface for sales tracking",
+      "Good pipeline visualization",
+      "Seamless integrations with other tools"
+    ],
+    "frictions": [
+      "Steep learning curve for advanced features",
+      "Limited customization options for large-scale operations",
+      "Troubleshooting complex automation issues"
+    ],
+    "choosing_switching_reasons": [
+      "Needed a dedicated sales tracking solution",
+      "Reputation for ease of use in sales",
+      "Integration capabilities with existing tech stack"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:06:06.156914+00:00"
+}

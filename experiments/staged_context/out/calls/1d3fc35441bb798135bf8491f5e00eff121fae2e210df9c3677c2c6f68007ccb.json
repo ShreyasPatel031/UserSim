@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1d3fc35441bb798135bf8491f5e00eff121fae2e210df9c3677c2c6f68007ccb",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 284,
+  "output_tokens": 1045,
+  "cost_usd": 0.0026977,
+  "elapsed_s": 14.79,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 7,\n  \"benefits\": [\n    \"Simple interface for adding new contacts.\",\n    \"Quick to get started with core lead management.\",\n    \"Accessible for a small team to try out.\"\n  ],\n  \"frictions\": [\n    \"Lacked advanced import options for lead lists.\",\n    \"Limited integration with existing tools in the free trial.\",\n    \"Felt geared more towards larger sales teams than a small investment firm.\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed a basic system to track client interactions.\",\n    \"Looking for an affordable CRM solution.\",\n    \"Ease of access through a free trial.\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 3,
+    "overall_rating": 3,
+    "value_for_money_rating": 4,
+    "recommendation_score": 7,
+    "benefits": [
+      "Simple interface for adding new contacts.",
+      "Quick to get started with core lead management.",
+      "Accessible for a small team to try out."
+    ],
+    "frictions": [
+      "Lacked advanced import options for lead lists.",
+      "Limited integration with existing tools in the free trial.",
+      "Felt geared more towards larger sales teams than a small investment firm."
+    ],
+    "choosing_switching_reasons": [
+      "Needed a basic system to track client interactions.",
+      "Looking for an affordable CRM solution.",
+      "Ease of access through a free trial."
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:52.664498+00:00"
+}

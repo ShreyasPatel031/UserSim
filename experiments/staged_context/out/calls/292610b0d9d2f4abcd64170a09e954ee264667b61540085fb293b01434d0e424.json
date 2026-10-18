@@ -1,0 +1,33 @@
+{
+  "stage": "out_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "292610b0d9d2f4abcd64170a09e954ee264667b61540085fb293b01434d0e424",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 174,
+  "output_tokens": 518,
+  "cost_usd": 0.0013472000000000002,
+  "elapsed_s": 17.39,
+  "error": null,
+  "text": "{\n  \"benefits\": [\n    \"Great software/sales CRM for smaller companies\",\n    \"Tracks data on deal size\",\n    \"Tracks data on velocity\",\n    \"Tracks customer data\"\n  ],\n  \"frictions\": [\n    \"Difficult to navigate\",\n    \"Difficult to keep rules in place for the team\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Cheaper\",\n    \"Less complicated to set up\"\n  ]\n}",
+  "json": {
+    "benefits": [
+      "Great software/sales CRM for smaller companies",
+      "Tracks data on deal size",
+      "Tracks data on velocity",
+      "Tracks customer data"
+    ],
+    "frictions": [
+      "Difficult to navigate",
+      "Difficult to keep rules in place for the team"
+    ],
+    "choosing_switching_reasons": [
+      "Cheaper",
+      "Less complicated to set up"
+    ]
+  },
+  "ts": "2026-10-18T04:05:33.908399+00:00"
+}

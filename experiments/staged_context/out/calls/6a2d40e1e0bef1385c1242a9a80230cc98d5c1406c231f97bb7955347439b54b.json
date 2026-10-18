@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "6a2d40e1e0bef1385c1242a9a80230cc98d5c1406c231f97bb7955347439b54b",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 291,
+  "output_tokens": 974,
+  "cost_usd": 0.0025223,
+  "elapsed_s": 8.03,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 7,\n  \"benefits\": [\n    \"Integrated administrative data management\",\n    \"Customizable fields for education-specific metrics\",\n    \"Web-based accessibility\"\n  ],\n  \"frictions\": [\n    \"Sales forecasting features require significant customization for education models\",\n    \"Initial setup for accurate revenue growth prediction was complex\",\n    \"Data input for forecasting felt somewhat manual for non-traditional 'sales'\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Cost-effectiveness compared to enterprise CRMs\",\n    \"Ability to manage diverse operational data\",\n    \"Scalability for a mid-sized institution\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 3,
+    "value_for_money_rating": 4,
+    "recommendation_score": 7,
+    "benefits": [
+      "Integrated administrative data management",
+      "Customizable fields for education-specific metrics",
+      "Web-based accessibility"
+    ],
+    "frictions": [
+      "Sales forecasting features require significant customization for education models",
+      "Initial setup for accurate revenue growth prediction was complex",
+      "Data input for forecasting felt somewhat manual for non-traditional 'sales'"
+    ],
+    "choosing_switching_reasons": [
+      "Cost-effectiveness compared to enterprise CRMs",
+      "Ability to manage diverse operational data",
+      "Scalability for a mid-sized institution"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:59.093720+00:00"
+}

@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4bf11e6d7cdb2462c763edb4f270e47cc8d0fe2c3c5cb69767d1ec9e043f29c8",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 289,
+  "output_tokens": 909,
+  "cost_usd": 0.0023591999999999997,
+  "elapsed_s": 9.61,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Clear visual sales pipeline management\",\n    \"Streamlined activity tracking for sales team\",\n    \"Intuitive interface for quick adoption\"\n  ],\n  \"frictions\": [\n    \"Native calling feature required additional setup/cost\",\n    \"Initial learning curve for advanced integrations\",\n    \"Dashboard customization could be more flexible\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed a dedicated sales CRM for growth\",\n    \"Recommended for ease of use by peers\",\n    \"Wanted to centralize sales activities\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 3,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Clear visual sales pipeline management",
+      "Streamlined activity tracking for sales team",
+      "Intuitive interface for quick adoption"
+    ],
+    "frictions": [
+      "Native calling feature required additional setup/cost",
+      "Initial learning curve for advanced integrations",
+      "Dashboard customization could be more flexible"
+    ],
+    "choosing_switching_reasons": [
+      "Needed a dedicated sales CRM for growth",
+      "Recommended for ease of use by peers",
+      "Wanted to centralize sales activities"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:06:07.343075+00:00"
+}

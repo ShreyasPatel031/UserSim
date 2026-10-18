@@ -1,0 +1,30 @@
+{
+  "stage": "out_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "6daff9d1546b7f3906f4888f915ac5b173bba6a0a109832a8e40669b0330ccb5",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 155,
+  "output_tokens": 310,
+  "cost_usd": 0.0008215,
+  "elapsed_s": 16.88,
+  "error": null,
+  "text": "{\n  \"benefits\": [\n    \"reporting was good\",\n    \"easy to integrate customer lists\",\n    \"easy to integrate data processing\"\n  ],\n  \"frictions\": [\n    \"geared more toward a high product sales sector\",\n    \"not suitable for services sector\",\n    \"somewhat clunky for our use\"\n  ],\n  \"choosing_switching_reasons\": []\n}",
+  "json": {
+    "benefits": [
+      "reporting was good",
+      "easy to integrate customer lists",
+      "easy to integrate data processing"
+    ],
+    "frictions": [
+      "geared more toward a high product sales sector",
+      "not suitable for services sector",
+      "somewhat clunky for our use"
+    ],
+    "choosing_switching_reasons": []
+  },
+  "ts": "2026-10-18T04:05:33.417571+00:00"
+}

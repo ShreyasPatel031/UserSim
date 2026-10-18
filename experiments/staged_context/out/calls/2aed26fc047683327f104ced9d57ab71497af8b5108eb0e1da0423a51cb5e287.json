@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2aed26fc047683327f104ced9d57ab71497af8b5108eb0e1da0423a51cb5e287",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 297,
+  "output_tokens": 952,
+  "cost_usd": 0.0024691,
+  "elapsed_s": 9.43,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Visual pipeline makes managing deals and stages very clear\",\n    \"Easy to customize sales funnels to our specific process\",\n    \"Helps track lead progress effectively from generation to close\"\n  ],\n  \"frictions\": [\n    \"Reporting can be a bit basic for deeper analysis\",\n    \"Initial setup of custom fields took some time\",\n    \"Integrations with some specific niche software are limited\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed a dedicated sales CRM with strong pipeline visualization\",\n    \"Affordable solution for a small sales team\",\n    \"Focus on sales process management rather than complex marketing features\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Visual pipeline makes managing deals and stages very clear",
+      "Easy to customize sales funnels to our specific process",
+      "Helps track lead progress effectively from generation to close"
+    ],
+    "frictions": [
+      "Reporting can be a bit basic for deeper analysis",
+      "Initial setup of custom fields took some time",
+      "Integrations with some specific niche software are limited"
+    ],
+    "choosing_switching_reasons": [
+      "Needed a dedicated sales CRM with strong pipeline visualization",
+      "Affordable solution for a small sales team",
+      "Focus on sales process management rather than complex marketing features"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:06:04.760024+00:00"
+}

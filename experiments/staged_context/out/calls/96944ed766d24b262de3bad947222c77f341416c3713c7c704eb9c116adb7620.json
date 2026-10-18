@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "96944ed766d24b262de3bad947222c77f341416c3713c7c704eb9c116adb7620",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3040,
+  "output_tokens": 1049,
+  "cost_usd": 0.0035345,
+  "elapsed_s": 14.27,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Efficiently logs all call and email interactions with contacts and opportunities.\",\n    \"Provides valuable insights into pipeline health and team performance.\",\n    \"Automates routine sales tasks, boosting team productivity.\"\n  ],\n  \"frictions\": [\n    \"Initial setup and customization for specific retail processes took some effort.\",\n    \"Occasional minor glitches when syncing emails from less common providers.\",\n    \"Advanced reporting features could be more intuitive for quick ad-hoc analysis.\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed a robust CRM to centralize all sales communication and track interactions.\",\n    \"Sought a solution with AI capabilities to improve lead qualification and deal insights.\",\n    \"Required better visibility into the sales pipeline for a growing team.\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Efficiently logs all call and email interactions with contacts and opportunities.",
+      "Provides valuable insights into pipeline health and team performance.",
+      "Automates routine sales tasks, boosting team productivity."
+    ],
+    "frictions": [
+      "Initial setup and customization for specific retail processes took some effort.",
+      "Occasional minor glitches when syncing emails from less common providers.",
+      "Advanced reporting features could be more intuitive for quick ad-hoc analysis."
+    ],
+    "choosing_switching_reasons": [
+      "Needed a robust CRM to centralize all sales communication and track interactions.",
+      "Sought a solution with AI capabilities to improve lead qualification and deal insights.",
+      "Required better visibility into the sales pipeline for a growing team."
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:52.502753+00:00"
+}

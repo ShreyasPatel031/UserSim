@@ -1,0 +1,31 @@
+{
+  "stage": "out_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f184e00f156b7dc88fc463ee199f0f292a93d1c6642ce844d35c90fffb5bc67a",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 235,
+  "output_tokens": 492,
+  "cost_usd": 0.0013005000000000002,
+  "elapsed_s": 17.83,
+  "error": null,
+  "text": "{\n  \"benefits\": [\n    \"Manage clients effortlessly\",\n    \"Seamless dashboard customization\",\n    \"Instantly track sales, projects, and customer interactions\",\n    \"Solves customer data tracking issues\"\n  ],\n  \"frictions\": [\n    \"Advanced AI only in premium versions\",\n    \"Restrictions on custom fields in basic plan\",\n    \"Restrictions on customer support in basic plan\"\n  ],\n  \"choosing_switching_reasons\": []\n}",
+  "json": {
+    "benefits": [
+      "Manage clients effortlessly",
+      "Seamless dashboard customization",
+      "Instantly track sales, projects, and customer interactions",
+      "Solves customer data tracking issues"
+    ],
+    "frictions": [
+      "Advanced AI only in premium versions",
+      "Restrictions on custom fields in basic plan",
+      "Restrictions on customer support in basic plan"
+    ],
+    "choosing_switching_reasons": []
+  },
+  "ts": "2026-10-18T04:05:34.153486+00:00"
+}

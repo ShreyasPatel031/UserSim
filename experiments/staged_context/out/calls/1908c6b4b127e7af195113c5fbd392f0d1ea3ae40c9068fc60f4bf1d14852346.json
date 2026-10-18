@@ -1,0 +1,31 @@
+{
+  "stage": "out_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1908c6b4b127e7af195113c5fbd392f0d1ea3ae40c9068fc60f4bf1d14852346",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 370,
+  "output_tokens": 564,
+  "cost_usd": 0.0015210000000000002,
+  "elapsed_s": 19.02,
+  "error": null,
+  "text": "{\n  \"benefits\": [\n    \"excellent job with account management\",\n    \"makes job easier for me and the team\",\n    \"ability to push and schedule workflow processes\",\n    \"handles job specifications well\"\n  ],\n  \"frictions\": [\n    \"reporting aspect had glitches\",\n    \"reports show inconsistent data (e.g., jobs disappearing)\",\n    \"freezes up when trying to get older information\"\n  ],\n  \"choosing_switching_reasons\": []\n}",
+  "json": {
+    "benefits": [
+      "excellent job with account management",
+      "makes job easier for me and the team",
+      "ability to push and schedule workflow processes",
+      "handles job specifications well"
+    ],
+    "frictions": [
+      "reporting aspect had glitches",
+      "reports show inconsistent data (e.g., jobs disappearing)",
+      "freezes up when trying to get older information"
+    ],
+    "choosing_switching_reasons": []
+  },
+  "ts": "2026-10-18T04:05:35.160897+00:00"
+}

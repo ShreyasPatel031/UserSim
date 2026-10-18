@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "26c59dec6f330dbed48fc0d0e2299afca27fbb90e9651f5fc367a64836f9f4ea",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 5363,
+  "output_tokens": 1041,
+  "cost_usd": 0.0042114000000000006,
+  "elapsed_s": 7.75,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Robust customization options for data fields and workflows\",\n    \"Strong automation capabilities for contact tracking and follow-ups\",\n    \"Ability to integrate with other tools and AI agents (e.g., via CLI)\"\n  ],\n  \"frictions\": [\n    \"Steep learning curve for advanced features and customization\",\n    \"Potential for support to be less responsive for complex technical issues\",\n    \"Interface might feel less intuitive compared to simpler CRMs\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Need for a highly customizable system to centralize diverse client data\",\n    \"Desire for advanced automation and AI-driven features\",\n    \"Seeking a comprehensive solution suitable for a growing mid-sized company\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Robust customization options for data fields and workflows",
+      "Strong automation capabilities for contact tracking and follow-ups",
+      "Ability to integrate with other tools and AI agents (e.g., via CLI)"
+    ],
+    "frictions": [
+      "Steep learning curve for advanced features and customization",
+      "Potential for support to be less responsive for complex technical issues",
+      "Interface might feel less intuitive compared to simpler CRMs"
+    ],
+    "choosing_switching_reasons": [
+      "Need for a highly customizable system to centralize diverse client data",
+      "Desire for advanced automation and AI-driven features",
+      "Seeking a comprehensive solution suitable for a growing mid-sized company"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:55.934033+00:00"
+}

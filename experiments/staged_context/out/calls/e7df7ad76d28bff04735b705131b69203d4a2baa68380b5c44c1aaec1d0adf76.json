@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e7df7ad76d28bff04735b705131b69203d4a2baa68380b5c44c1aaec1d0adf76",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2300,
+  "output_tokens": 963,
+  "cost_usd": 0.0030975,
+  "elapsed_s": 7.39,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Ability to extensively customize client tagging and segmentation.\",\n    \"Automation features streamline follow-ups and client management.\",\n    \"Provides a comprehensive overview of client interactions and sales pipeline.\"\n  ],\n  \"frictions\": [\n    \"Initial setup and customization for specific financial services needs required time.\",\n    \"Learning curve for advanced features or integrating with other specialized tools.\",\n    \"Occasional slowness or UI quirks when dealing with large datasets.\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Strong customization capabilities for client data and workflows.\",\n    \"Comprehensive suite of features for sales and client management.\",\n    \"Competitive pricing compared to other robust CRM solutions.\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Ability to extensively customize client tagging and segmentation.",
+      "Automation features streamline follow-ups and client management.",
+      "Provides a comprehensive overview of client interactions and sales pipeline."
+    ],
+    "frictions": [
+      "Initial setup and customization for specific financial services needs required time.",
+      "Learning curve for advanced features or integrating with other specialized tools.",
+      "Occasional slowness or UI quirks when dealing with large datasets."
+    ],
+    "choosing_switching_reasons": [
+      "Strong customization capabilities for client data and workflows.",
+      "Comprehensive suite of features for sales and client management.",
+      "Competitive pricing compared to other robust CRM solutions."
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:59.835167+00:00"
+}

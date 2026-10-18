@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "eb57c770f2b7eb99508eee4c3de7d193783f53da6934383fc789140841aad136",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 5986,
+  "output_tokens": 1033,
+  "cost_usd": 0.0043783,
+  "elapsed_s": 7.78,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 9,\n  \"benefits\": [\n    \"Visually track project leads and sales pipeline\",\n    \"Easy to customize for managing animation projects\",\n    \"Helps stay organized with client communications\"\n  ],\n  \"frictions\": [\n    \"Some advanced reporting features might be limited for specific project metrics\",\n    \"Initial setup can take time to tailor to unique project workflows\",\n    \"Cost can add up if needing many integrations or higher-tier features as a self-employed user\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed a simple, visual way to track sales activities and client progress\",\n    \"Pipedrive's focus on pipeline management suited project-based work\",\n    \"Customization options allowed adaptation for design industry needs\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 9,
+    "benefits": [
+      "Visually track project leads and sales pipeline",
+      "Easy to customize for managing animation projects",
+      "Helps stay organized with client communications"
+    ],
+    "frictions": [
+      "Some advanced reporting features might be limited for specific project metrics",
+      "Initial setup can take time to tailor to unique project workflows",
+      "Cost can add up if needing many integrations or higher-tier features as a self-employed user"
+    ],
+    "choosing_switching_reasons": [
+      "Needed a simple, visual way to track sales activities and client progress",
+      "Pipedrive's focus on pipeline management suited project-based work",
+      "Customization options allowed adaptation for design industry needs"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:06:01.597165+00:00"
+}

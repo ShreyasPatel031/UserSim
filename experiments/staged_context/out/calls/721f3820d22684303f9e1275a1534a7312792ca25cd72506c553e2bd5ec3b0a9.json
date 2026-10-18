@@ -1,0 +1,27 @@
+{
+  "stage": "out_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "721f3820d22684303f9e1275a1534a7312792ca25cd72506c553e2bd5ec3b0a9",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 231,
+  "output_tokens": 412,
+  "cost_usd": 0.0010992999999999999,
+  "elapsed_s": 18.01,
+  "error": null,
+  "text": "{\n  \"benefits\": [\n    \"very easy to use\",\n    \"extensive range of features\",\n    \"easy for customization and integration\",\n    \"mobile app makes tracking sales and client interaction easier\"\n  ],\n  \"frictions\": [],\n  \"choosing_switching_reasons\": []\n}",
+  "json": {
+    "benefits": [
+      "very easy to use",
+      "extensive range of features",
+      "easy for customization and integration",
+      "mobile app makes tracking sales and client interaction easier"
+    ],
+    "frictions": [],
+    "choosing_switching_reasons": []
+  },
+  "ts": "2026-10-18T04:05:34.160296+00:00"
+}

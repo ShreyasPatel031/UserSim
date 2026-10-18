@@ -1,0 +1,30 @@
+{
+  "stage": "out_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2a38a9d9e2703ca3f346d60874b8f787acdeca499e520e574a569c0551846406",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 231,
+  "output_tokens": 397,
+  "cost_usd": 0.0010618,
+  "elapsed_s": 14.89,
+  "error": null,
+  "text": "{\n  \"benefits\": [\n    \"simple and clean interface\",\n    \"focused just on moving deals through the pipeline\",\n    \"not a bloated and complicated piece of software\",\n    \"integrations and API are easy to use\"\n  ],\n  \"frictions\": [],\n  \"choosing_switching_reasons\": [\n    \"Cost primarily\",\n    \"simplicity second\"\n  ]\n}",
+  "json": {
+    "benefits": [
+      "simple and clean interface",
+      "focused just on moving deals through the pipeline",
+      "not a bloated and complicated piece of software",
+      "integrations and API are easy to use"
+    ],
+    "frictions": [],
+    "choosing_switching_reasons": [
+      "Cost primarily",
+      "simplicity second"
+    ]
+  },
+  "ts": "2026-10-18T04:05:31.312894+00:00"
+}

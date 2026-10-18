@@ -1,0 +1,27 @@
+{
+  "stage": "out_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a127a7cf49ea6351b4977a3a494289fe3faf5390028af8b9a534a1bc660aaa2c",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 150,
+  "output_tokens": 246,
+  "cost_usd": 0.0006600000000000001,
+  "elapsed_s": 16.74,
+  "error": null,
+  "text": "{\n  \"benefits\": [\n    \"super easy to customize layouts\",\n    \"super easy to set parameters\"\n  ],\n  \"frictions\": [\n    \"changing a field name does not ripple through to past values\"\n  ],\n  \"choosing_switching_reasons\": []\n}",
+  "json": {
+    "benefits": [
+      "super easy to customize layouts",
+      "super easy to set parameters"
+    ],
+    "frictions": [
+      "changing a field name does not ripple through to past values"
+    ],
+    "choosing_switching_reasons": []
+  },
+  "ts": "2026-10-18T04:05:32.972425+00:00"
+}

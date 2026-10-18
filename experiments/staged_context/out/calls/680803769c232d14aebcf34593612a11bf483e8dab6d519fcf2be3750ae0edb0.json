@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "680803769c232d14aebcf34593612a11bf483e8dab6d519fcf2be3750ae0edb0",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 300,
+  "output_tokens": 987,
+  "cost_usd": 0.0025575,
+  "elapsed_s": 9.91,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Clear visual overview of sales pipeline progress\",\n    \"Easy to monitor deal statuses and team activity\",\n    \"Helps in strategic planning and resource allocation\"\n  ],\n  \"frictions\": [\n    \"Reporting can be too sales-specific for broader HR insights\",\n    \"Limited advanced customization for non-sales metrics\",\n    \"Initial setup and integration across departments required effort\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed better visibility into sales performance for strategic planning\",\n    \"Wanted a user-friendly CRM for the sales team\",\n    \"Recommended by other departments for its pipeline management\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Clear visual overview of sales pipeline progress",
+      "Easy to monitor deal statuses and team activity",
+      "Helps in strategic planning and resource allocation"
+    ],
+    "frictions": [
+      "Reporting can be too sales-specific for broader HR insights",
+      "Limited advanced customization for non-sales metrics",
+      "Initial setup and integration across departments required effort"
+    ],
+    "choosing_switching_reasons": [
+      "Needed better visibility into sales performance for strategic planning",
+      "Wanted a user-friendly CRM for the sales team",
+      "Recommended by other departments for its pipeline management"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:06:05.789059+00:00"
+}

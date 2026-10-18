@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "fba92dbcb1259220f5e0ccd5c99514c37737f56708eeda4275e192fc590511be",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2965,
+  "output_tokens": 1007,
+  "cost_usd": 0.0034070000000000003,
+  "elapsed_s": 9.34,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Clear visualization and management of the sales pipeline\",\n    \"Ability to customize the sales process and data fields\",\n    \"Real-time sales reports and insights for strategic decision-making\"\n  ],\n  \"frictions\": [\n    \"Potential for a learning curve with advanced customizations\",\n    \"Need for regular data hygiene to maintain pipeline accuracy\",\n    \"Reliance on integrations for certain specialized functions\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Focus on pipeline management and closing deals\",\n    \"Adaptability to specific sales processes\",\n    \"Ease of use for sales teams\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Clear visualization and management of the sales pipeline",
+      "Ability to customize the sales process and data fields",
+      "Real-time sales reports and insights for strategic decision-making"
+    ],
+    "frictions": [
+      "Potential for a learning curve with advanced customizations",
+      "Need for regular data hygiene to maintain pipeline accuracy",
+      "Reliance on integrations for certain specialized functions"
+    ],
+    "choosing_switching_reasons": [
+      "Focus on pipeline management and closing deals",
+      "Adaptability to specific sales processes",
+      "Ease of use for sales teams"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:06:06.916080+00:00"
+}

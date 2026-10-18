@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "daea4d0f5bc9677e209f9a3a842af4a3ec6aef9fbcf6233aabb315f9571f924a",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 5341,
+  "output_tokens": 1002,
+  "cost_usd": 0.0041073,
+  "elapsed_s": 7.64,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Helps organize and track sales opportunities effectively.\",\n    \"Automation features save time on follow-ups and contact updates.\",\n    \"Customization options allow tailoring to specific marketing workflows.\"\n  ],\n  \"frictions\": [\n    \"Initial setup and customization can have a learning curve.\",\n    \"Interface might feel cluttered for a new user, requiring time to navigate.\",\n    \"Integrating with other marketing tools might require some effort.\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed a comprehensive solution to manage both sales and marketing interactions.\",\n    \"Attracted by the promise of AI-powered automation to streamline tasks.\",\n    \"Looked for a CRM that could be customized to fit unique business processes.\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Helps organize and track sales opportunities effectively.",
+      "Automation features save time on follow-ups and contact updates.",
+      "Customization options allow tailoring to specific marketing workflows."
+    ],
+    "frictions": [
+      "Initial setup and customization can have a learning curve.",
+      "Interface might feel cluttered for a new user, requiring time to navigate.",
+      "Integrating with other marketing tools might require some effort."
+    ],
+    "choosing_switching_reasons": [
+      "Needed a comprehensive solution to manage both sales and marketing interactions.",
+      "Attracted by the promise of AI-powered automation to streamline tasks.",
+      "Looked for a CRM that could be customized to fit unique business processes."
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:06:00.234847+00:00"
+}

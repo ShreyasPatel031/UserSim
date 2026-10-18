@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "20b796ad085e8949bf776ea09d7005719e83fc640ba03f3fe2393ac448e72176",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 5341,
+  "output_tokens": 1107,
+  "cost_usd": 0.0043698,
+  "elapsed_s": 8.59,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Efficiently automates lead follow-ups and email sequences\",\n    \"Customizable to fit our specific sales process and field updates\",\n    \"Helps streamline our sales pipeline and save time\"\n  ],\n  \"frictions\": [\n    \"Initial learning curve for advanced automation setup\",\n    \"Occasional need for support when encountering complex issues\",\n    \"Integrating with some niche broadcast media specific tools\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Strong automation capabilities for sales and marketing\",\n    \"Cost-effective solution compared to larger CRMs\",\n    \"Ability to customize workflows and fields without code\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Efficiently automates lead follow-ups and email sequences",
+      "Customizable to fit our specific sales process and field updates",
+      "Helps streamline our sales pipeline and save time"
+    ],
+    "frictions": [
+      "Initial learning curve for advanced automation setup",
+      "Occasional need for support when encountering complex issues",
+      "Integrating with some niche broadcast media specific tools"
+    ],
+    "choosing_switching_reasons": [
+      "Strong automation capabilities for sales and marketing",
+      "Cost-effective solution compared to larger CRMs",
+      "Ability to customize workflows and fields without code"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:56.466750+00:00"
+}

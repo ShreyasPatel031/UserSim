@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "eef30f1e2d56ae54f9fef45e63ed96c6f04a72795d7c341f4d06eddf2b7d86d9",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2972,
+  "output_tokens": 1005,
+  "cost_usd": 0.0034040999999999997,
+  "elapsed_s": 8.76,
+  "error": null,
+  "text": "{\n \"ease_of_use_rating\": 4,\n \"functionality_rating\": 4,\n \"overall_rating\": 4,\n \"value_for_money_rating\": 4,\n \"recommendation_score\": 8,\n \"benefits\": [\n  \"Streamlined task assignment for sales reps\",\n  \"Improved customer follow-up and pipeline management\",\n  \"Visibility into team activities and sales progress\"\n ],\n \"frictions\": [\n  \"Initial setup time for custom workflows\",\n  \"Occasional minor glitches with mobile app sync\",\n  \"Learning curve for advanced reporting features\"\n ],\n \"choosing_switching_reasons\": [\n  \"Needed a dedicated sales CRM for task management\",\n  \"Positive reviews on ease of use and pipeline visualization\",\n  \"Ability to customize sales processes\"\n ],\n \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Streamlined task assignment for sales reps",
+      "Improved customer follow-up and pipeline management",
+      "Visibility into team activities and sales progress"
+    ],
+    "frictions": [
+      "Initial setup time for custom workflows",
+      "Occasional minor glitches with mobile app sync",
+      "Learning curve for advanced reporting features"
+    ],
+    "choosing_switching_reasons": [
+      "Needed a dedicated sales CRM for task management",
+      "Positive reviews on ease of use and pipeline visualization",
+      "Ability to customize sales processes"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:06:02.473840+00:00"
+}

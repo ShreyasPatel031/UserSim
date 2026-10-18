@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7693ae34ecca8d7376db7e0c71df996c2138ad77d3a0500a612b1bc298bc96ce",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 296,
+  "output_tokens": 879,
+  "cost_usd": 0.0022863,
+  "elapsed_s": 9.04,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Clear visual sales pipeline management\",\n    \"Intuitive interface for sales team adoption\",\n    \"Improved lead tracking and deal progression\"\n  ],\n  \"frictions\": [\n    \"Limited advanced reporting and analytics\",\n    \"Basic customization options\",\n    \"Could improve integrations with other IT tools\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Focus on sales pipeline visualization\",\n    \"Affordable for an SMB\",\n    \"Ease of adoption for the sales team\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Clear visual sales pipeline management",
+      "Intuitive interface for sales team adoption",
+      "Improved lead tracking and deal progression"
+    ],
+    "frictions": [
+      "Limited advanced reporting and analytics",
+      "Basic customization options",
+      "Could improve integrations with other IT tools"
+    ],
+    "choosing_switching_reasons": [
+      "Focus on sales pipeline visualization",
+      "Affordable for an SMB",
+      "Ease of adoption for the sales team"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:06:06.327225+00:00"
+}

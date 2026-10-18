@@ -1,0 +1,39 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "634a3ad5939ea86e8a0620b24a82fa3ec2dee71f2843bbf17dab4a6aa285a22d",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 5327,
+  "output_tokens": 996,
+  "cost_usd": 0.0040881,
+  "elapsed_s": 16.24,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 2,\n  \"overall_rating\": 2,\n  \"value_for_money_rating\": 3,\n  \"recommendation_score\": 3,\n  \"benefits\": [\n    \"Interface seemed clean for managing contacts\",\n    \"Potential for sales process automation\"\n  ],\n  \"frictions\": [\n    \"Difficulty finding or creating invoices directly\",\n    \"Felt like a separate accounting tool was needed\",\n    \"Not intuitive for core retail operations like billing\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Looking for an all-in-one solution for sales and operations\",\n    \"Heard good things about Zoho's suite of products\",\n    \"Wanted to try a free CRM before committing\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 2,
+    "overall_rating": 2,
+    "value_for_money_rating": 3,
+    "recommendation_score": 3,
+    "benefits": [
+      "Interface seemed clean for managing contacts",
+      "Potential for sales process automation"
+    ],
+    "frictions": [
+      "Difficulty finding or creating invoices directly",
+      "Felt like a separate accounting tool was needed",
+      "Not intuitive for core retail operations like billing"
+    ],
+    "choosing_switching_reasons": [
+      "Looking for an all-in-one solution for sales and operations",
+      "Heard good things about Zoho's suite of products",
+      "Wanted to try a free CRM before committing"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:54.838107+00:00"
+}

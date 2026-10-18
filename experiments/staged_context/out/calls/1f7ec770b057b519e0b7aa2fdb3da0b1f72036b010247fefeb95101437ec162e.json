@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1f7ec770b057b519e0b7aa2fdb3da0b1f72036b010247fefeb95101437ec162e",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 305,
+  "output_tokens": 903,
+  "cost_usd": 0.002349,
+  "elapsed_s": 8.23,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Consolidates contact and deal tracking effectively\",\n    \"Provides a centralized hub for sales and customer data\",\n    \"Scalable enough for a large enterprise environment\"\n  ],\n  \"frictions\": [\n    \"Initial setup and customization can be complex for specific needs\",\n    \"Integration with highly specialized network operations tools might be limited\",\n    \"Reporting features could require more technical effort to extract specific insights\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Desired a unified platform for contact and deal management\",\n    \"Aimed to reduce reliance on multiple disparate tools for organization\",\n    \"Likely offered a comprehensive feature set suitable for large enterprise needs\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Consolidates contact and deal tracking effectively",
+      "Provides a centralized hub for sales and customer data",
+      "Scalable enough for a large enterprise environment"
+    ],
+    "frictions": [
+      "Initial setup and customization can be complex for specific needs",
+      "Integration with highly specialized network operations tools might be limited",
+      "Reporting features could require more technical effort to extract specific insights"
+    ],
+    "choosing_switching_reasons": [
+      "Desired a unified platform for contact and deal management",
+      "Aimed to reduce reliance on multiple disparate tools for organization",
+      "Likely offered a comprehensive feature set suitable for large enterprise needs"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:57.615401+00:00"
+}

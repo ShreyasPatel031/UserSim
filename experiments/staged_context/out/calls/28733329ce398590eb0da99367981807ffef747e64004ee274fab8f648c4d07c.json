@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "28733329ce398590eb0da99367981807ffef747e64004ee274fab8f648c4d07c",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2303,
+  "output_tokens": 1034,
+  "cost_usd": 0.0032759,
+  "elapsed_s": 8.29,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 2,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"recommendation_score\": 6,\n  \"benefits\": [\n    \"Consolidates some data within a single platform\",\n    \"Customization options helped tailor basic tracking\",\n    \"Good for core sales and customer management\"\n  ],\n  \"frictions\": [\n    \"Time tracking functionality is not intuitive or robust\",\n    \"Requires significant setup or workarounds for accurate time logs\",\n    \"Lack of dedicated features for project or task-based time tracking\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Desire for an all-in-one platform for various business operations\",\n    \"Zoho's reputation for a broad suite of integrated products\",\n    \"Cost-effectiveness compared to multiple separate tools\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 2,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "recommendation_score": 6,
+    "benefits": [
+      "Consolidates some data within a single platform",
+      "Customization options helped tailor basic tracking",
+      "Good for core sales and customer management"
+    ],
+    "frictions": [
+      "Time tracking functionality is not intuitive or robust",
+      "Requires significant setup or workarounds for accurate time logs",
+      "Lack of dedicated features for project or task-based time tracking"
+    ],
+    "choosing_switching_reasons": [
+      "Desire for an all-in-one platform for various business operations",
+      "Zoho's reputation for a broad suite of integrated products",
+      "Cost-effectiveness compared to multiple separate tools"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:59.691422+00:00"
+}

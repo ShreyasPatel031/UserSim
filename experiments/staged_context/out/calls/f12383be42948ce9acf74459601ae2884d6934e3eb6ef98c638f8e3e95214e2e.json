@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f12383be42948ce9acf74459601ae2884d6934e3eb6ef98c638f8e3e95214e2e",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3032,
+  "output_tokens": 955,
+  "cost_usd": 0.0032971,
+  "elapsed_s": 11.32,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Effectively tracks sales opportunities through customizable stages and kanban views.\",\n    \"AI features like deal recommendations and 'rotten deal' alerts help prioritize focus.\",\n    \"Provides good visual reporting to monitor sales performance and team progress.\"\n  ],\n  \"frictions\": [\n    \"Initial setup and customization of pipelines and fields can be time-consuming.\",\n    \"Integrating with specific accounting software might require workarounds or third-party tools.\",\n    \"Some advanced AI features might take time for a small team to fully leverage and understand.\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed a dedicated CRM to visualize and manage sales processes effectively.\",\n    \"Sought a user-friendly solution that could be customized for their specific sales workflow.\",\n    \"Value proposition for key sales features and AI assistance.\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Effectively tracks sales opportunities through customizable stages and kanban views.",
+      "AI features like deal recommendations and 'rotten deal' alerts help prioritize focus.",
+      "Provides good visual reporting to monitor sales performance and team progress."
+    ],
+    "frictions": [
+      "Initial setup and customization of pipelines and fields can be time-consuming.",
+      "Integrating with specific accounting software might require workarounds or third-party tools.",
+      "Some advanced AI features might take time for a small team to fully leverage and understand."
+    ],
+    "choosing_switching_reasons": [
+      "Needed a dedicated CRM to visualize and manage sales processes effectively.",
+      "Sought a user-friendly solution that could be customized for their specific sales workflow.",
+      "Value proposition for key sales features and AI assistance."
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:48.622554+00:00"
+}

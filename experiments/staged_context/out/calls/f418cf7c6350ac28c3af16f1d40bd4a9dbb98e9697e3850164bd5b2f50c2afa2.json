@@ -1,0 +1,36 @@
+{
+  "stage": "out_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f418cf7c6350ac28c3af16f1d40bd4a9dbb98e9697e3850164bd5b2f50c2afa2",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 359,
+  "output_tokens": 518,
+  "cost_usd": 0.0014027000000000002,
+  "elapsed_s": 17.91,
+  "error": null,
+  "text": "{\n  \"benefits\": [\n    \"Best integrations at its price point\",\n    \"High overall product quality\",\n    \"Can see all export reports for audit\",\n    \"Excellent mobile app\"\n  ],\n  \"frictions\": [\n    \"Cannot change task order within a stage\",\n    \"Workaround for task order is clunky\",\n    \"Ultimately used Trello for deal management\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed more CRM capabilities\",\n    \"General BCC of email\",\n    \"Ability to do bulk edits\",\n    \"Drag and drop between stages\"\n  ]\n}",
+  "json": {
+    "benefits": [
+      "Best integrations at its price point",
+      "High overall product quality",
+      "Can see all export reports for audit",
+      "Excellent mobile app"
+    ],
+    "frictions": [
+      "Cannot change task order within a stage",
+      "Workaround for task order is clunky",
+      "Ultimately used Trello for deal management"
+    ],
+    "choosing_switching_reasons": [
+      "Needed more CRM capabilities",
+      "General BCC of email",
+      "Ability to do bulk edits",
+      "Drag and drop between stages"
+    ]
+  },
+  "ts": "2026-10-18T04:05:34.247949+00:00"
+}

@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "51b0204aac37078efc9d7adb1beed8c162aa4228725bb3decbf1fa33b686d52a",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 5981,
+  "output_tokens": 1122,
+  "cost_usd": 0.0045993,
+  "elapsed_s": 14.11,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Efficiently track all past interactions and communications with contacts.\",\n    \"Centralized view of contact history helps with team coordination.\",\n    \"Customizable fields allow for capturing specific sports-related details.\"\n  ],\n  \"frictions\": [\n    \"Sales-focused terminology sometimes feels ill-suited for a sports context.\",\n    \"Initial setup for non-traditional CRM use cases required some adaptation.\",\n    \"Reporting on very specific historical data points can be less intuitive.\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed a robust system to manage diverse contacts (players, parents, sponsors).\",\n    \"Required a reliable way to log and retrieve historical communication.\",\n    \"Looked for a CRM that could be adapted beyond traditional sales.\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Efficiently track all past interactions and communications with contacts.",
+      "Centralized view of contact history helps with team coordination.",
+      "Customizable fields allow for capturing specific sports-related details."
+    ],
+    "frictions": [
+      "Sales-focused terminology sometimes feels ill-suited for a sports context.",
+      "Initial setup for non-traditional CRM use cases required some adaptation.",
+      "Reporting on very specific historical data points can be less intuitive."
+    ],
+    "choosing_switching_reasons": [
+      "Needed a robust system to manage diverse contacts (players, parents, sponsors).",
+      "Required a reliable way to log and retrieve historical communication.",
+      "Looked for a CRM that could be adapted beyond traditional sales."
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:53.580652+00:00"
+}

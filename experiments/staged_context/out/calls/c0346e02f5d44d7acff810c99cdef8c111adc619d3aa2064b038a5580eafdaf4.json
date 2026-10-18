@@ -1,0 +1,39 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c0346e02f5d44d7acff810c99cdef8c111adc619d3aa2064b038a5580eafdaf4",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 5989,
+  "output_tokens": 1016,
+  "cost_usd": 0.0043367,
+  "elapsed_s": 15.24,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 2,\n  \"functionality_rating\": 2,\n  \"overall_rating\": 2,\n  \"value_for_money_rating\": 2,\n  \"recommendation_score\": 2,\n  \"benefits\": [\n    \"Initial setup seemed straightforward for basic CRM needs\",\n    \"Interface was relatively clean for daily sales tasks\"\n  ],\n  \"frictions\": [\n    \"Exporting contact data for migration was unexpectedly difficult\",\n    \"Lack of clear options or flexibility in data export formats\",\n    \"Data integrity concerns during the export process\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Appeared to be a cost-effective CRM for a small team\",\n    \"Promised ease of use and streamlined sales processes\",\n    \"Needed a dedicated CRM solution to manage leads and customers\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 2,
+    "functionality_rating": 2,
+    "overall_rating": 2,
+    "value_for_money_rating": 2,
+    "recommendation_score": 2,
+    "benefits": [
+      "Initial setup seemed straightforward for basic CRM needs",
+      "Interface was relatively clean for daily sales tasks"
+    ],
+    "frictions": [
+      "Exporting contact data for migration was unexpectedly difficult",
+      "Lack of clear options or flexibility in data export formats",
+      "Data integrity concerns during the export process"
+    ],
+    "choosing_switching_reasons": [
+      "Appeared to be a cost-effective CRM for a small team",
+      "Promised ease of use and streamlined sales processes",
+      "Needed a dedicated CRM solution to manage leads and customers"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:52.488999+00:00"
+}

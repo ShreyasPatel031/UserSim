@@ -1,0 +1,35 @@
+{
+  "stage": "out_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "af6d4bef68c2cf82a9fa339306d1cfad029700564fdc1b3893c4b141e4538233",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 684,
+  "output_tokens": 530,
+  "cost_usd": 0.0015302,
+  "elapsed_s": 18.43,
+  "error": null,
+  "text": "{\n  \"benefits\": [\n    \"Easily view customer profiles\",\n    \"Records all communication in one location\",\n    \"Automated emails when fields are updated\",\n    \"Phone system built-in (see caller, click to profile)\"\n  ],\n  \"frictions\": [\n    \"Customer service via instant chats doesn't always lead to a solution\",\n    \"Creating Analytics Reports is complicated and difficult to understand\",\n    \"System prompts frequent page refreshes, losing place\",\n    \"Limited number of fields per customer\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed options for automation and fields that Freshsales had\",\n    \"Needed to keep in line with business growth\"\n  ]\n}",
+  "json": {
+    "benefits": [
+      "Easily view customer profiles",
+      "Records all communication in one location",
+      "Automated emails when fields are updated",
+      "Phone system built-in (see caller, click to profile)"
+    ],
+    "frictions": [
+      "Customer service via instant chats doesn't always lead to a solution",
+      "Creating Analytics Reports is complicated and difficult to understand",
+      "System prompts frequent page refreshes, losing place",
+      "Limited number of fields per customer"
+    ],
+    "choosing_switching_reasons": [
+      "Needed options for automation and fields that Freshsales had",
+      "Needed to keep in line with business growth"
+    ]
+  },
+  "ts": "2026-10-18T04:05:34.271745+00:00"
+}

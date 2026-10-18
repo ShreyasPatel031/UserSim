@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "6538aaa226d085b61adf8ed1088a1eaf701465dafad2ef053649661683377b53",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 304,
+  "output_tokens": 953,
+  "cost_usd": 0.0024737,
+  "elapsed_s": 11.36,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"recommendation_score\": 6,\n  \"benefits\": [\n    \"Visual pipeline helps team track deals effectively.\",\n    \"Ability to customize data fields and objects for specific needs.\",\n    \"Streamlined process for managing sales activities.\"\n  ],\n  \"frictions\": [\n    \"Steep learning curve for advanced customization tasks like object creation.\",\n    \"Finding specific filter options can be complex initially.\",\n    \"Limited reporting capabilities for highly customized data.\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed a dedicated sales CRM to improve team efficiency.\",\n    \"Heard positive feedback about its intuitive pipeline management.\",\n    \"Sought better visibility into team sales performance.\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "recommendation_score": 6,
+    "benefits": [
+      "Visual pipeline helps team track deals effectively.",
+      "Ability to customize data fields and objects for specific needs.",
+      "Streamlined process for managing sales activities."
+    ],
+    "frictions": [
+      "Steep learning curve for advanced customization tasks like object creation.",
+      "Finding specific filter options can be complex initially.",
+      "Limited reporting capabilities for highly customized data."
+    ],
+    "choosing_switching_reasons": [
+      "Needed a dedicated sales CRM to improve team efficiency.",
+      "Heard positive feedback about its intuitive pipeline management.",
+      "Sought better visibility into team sales performance."
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:06:06.673956+00:00"
+}

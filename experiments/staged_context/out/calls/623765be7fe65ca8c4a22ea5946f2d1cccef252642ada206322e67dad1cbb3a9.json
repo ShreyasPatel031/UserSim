@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "623765be7fe65ca8c4a22ea5946f2d1cccef252642ada206322e67dad1cbb3a9",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 5351,
+  "output_tokens": 1042,
+  "cost_usd": 0.004210299999999999,
+  "elapsed_s": 14.42,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Streamlined workflow automation for installation processes.\",\n    \"Customization options to fit our unique solar project stages.\",\n    \"Improved team coordination and visibility across different departments.\"\n  ],\n  \"frictions\": [\n    \"Initial setup and complex workflow configuration required a learning curve.\",\n    \"Some advanced features for process scheduling could be more intuitive.\",\n    \"Integration with some niche internal tools was not entirely seamless.\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed a robust CRM to manage complex, multi-stage installation projects.\",\n    \"Sought a platform with strong workflow automation capabilities to reduce manual tasks.\",\n    \"Required a solution that could be customized to our specific operational needs.\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Streamlined workflow automation for installation processes.",
+      "Customization options to fit our unique solar project stages.",
+      "Improved team coordination and visibility across different departments."
+    ],
+    "frictions": [
+      "Initial setup and complex workflow configuration required a learning curve.",
+      "Some advanced features for process scheduling could be more intuitive.",
+      "Integration with some niche internal tools was not entirely seamless."
+    ],
+    "choosing_switching_reasons": [
+      "Needed a robust CRM to manage complex, multi-stage installation projects.",
+      "Sought a platform with strong workflow automation capabilities to reduce manual tasks.",
+      "Required a solution that could be customized to our specific operational needs."
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:55.151383+00:00"
+}

@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "efbaf804bc67fd3b4a13abfae4caa80ea22051d2b039e3d7489427498a7d4b82",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 5985,
+  "output_tokens": 954,
+  "cost_usd": 0.0041805,
+  "elapsed_s": 10.15,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Helped organize client contacts effectively\",\n    \"Intuitive interface for managing sales pipeline\",\n    \"Good for a small team or individual consultant\"\n  ],\n  \"frictions\": [\n    \"Initial setup for syncing all contacts required some effort\",\n    \"Limited advanced customization options for specific wholesale needs\",\n    \"Some integrations for contact sources could be smoother\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed a dedicated sales CRM for client management\",\n    \"Praised for its ease of use and focus on sales pipeline\",\n    \"Good fit for a small business/freelance setup\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Helped organize client contacts effectively",
+      "Intuitive interface for managing sales pipeline",
+      "Good for a small team or individual consultant"
+    ],
+    "frictions": [
+      "Initial setup for syncing all contacts required some effort",
+      "Limited advanced customization options for specific wholesale needs",
+      "Some integrations for contact sources could be smoother"
+    ],
+    "choosing_switching_reasons": [
+      "Needed a dedicated sales CRM for client management",
+      "Praised for its ease of use and focus on sales pipeline",
+      "Good fit for a small business/freelance setup"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:06:04.606348+00:00"
+}

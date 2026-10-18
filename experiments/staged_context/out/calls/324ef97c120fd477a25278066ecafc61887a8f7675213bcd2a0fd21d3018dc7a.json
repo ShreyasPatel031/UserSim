@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "324ef97c120fd477a25278066ecafc61887a8f7675213bcd2a0fd21d3018dc7a",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 290,
+  "output_tokens": 874,
+  "cost_usd": 0.0022719999999999997,
+  "elapsed_s": 13.79,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Simple way to store customer contact details\",\n    \"Easy to add and retrieve notes for each customer\",\n    \"Helps keep customer information organized for our small team\"\n  ],\n  \"frictions\": [\n    \"Initial learning curve to set up contact fields\",\n    \"Occasionally found the interface a bit overwhelming for just basic tasks\",\n    \"Some features feel unnecessary for our limited needs\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed a dedicated system for customer data\",\n    \"Affordable option for a small research company\",\n    \"Recommended for basic CRM functions\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Simple way to store customer contact details",
+      "Easy to add and retrieve notes for each customer",
+      "Helps keep customer information organized for our small team"
+    ],
+    "frictions": [
+      "Initial learning curve to set up contact fields",
+      "Occasionally found the interface a bit overwhelming for just basic tasks",
+      "Some features feel unnecessary for our limited needs"
+    ],
+    "choosing_switching_reasons": [
+      "Needed a dedicated system for customer data",
+      "Affordable option for a small research company",
+      "Recommended for basic CRM functions"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:52.447333+00:00"
+}

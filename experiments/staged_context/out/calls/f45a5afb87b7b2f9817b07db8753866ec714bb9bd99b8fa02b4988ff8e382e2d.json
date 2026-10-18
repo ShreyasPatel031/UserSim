@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f45a5afb87b7b2f9817b07db8753866ec714bb9bd99b8fa02b4988ff8e382e2d",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2961,
+  "output_tokens": 858,
+  "cost_usd": 0.0030333,
+  "elapsed_s": 7.34,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"recommendation_score\": 6,\n  \"benefits\": [\n    \"Effective sales pipeline management\",\n    \"Good for tracking individual client interactions\",\n    \"Workflow automation for sales tasks\"\n  ],\n  \"frictions\": [\n    \"Limited native functionality for email broadcast campaigns\",\n    \"Requires integrations for advanced marketing emails\",\n    \"Not primarily designed for mass communication\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed a sales CRM to manage client pipeline\",\n    \"Desire for better organization of sales activities\",\n    \"Initially seemed to offer sufficient email capabilities\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 3,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "recommendation_score": 6,
+    "benefits": [
+      "Effective sales pipeline management",
+      "Good for tracking individual client interactions",
+      "Workflow automation for sales tasks"
+    ],
+    "frictions": [
+      "Limited native functionality for email broadcast campaigns",
+      "Requires integrations for advanced marketing emails",
+      "Not primarily designed for mass communication"
+    ],
+    "choosing_switching_reasons": [
+      "Needed a sales CRM to manage client pipeline",
+      "Desire for better organization of sales activities",
+      "Initially seemed to offer sufficient email capabilities"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:06:01.217121+00:00"
+}

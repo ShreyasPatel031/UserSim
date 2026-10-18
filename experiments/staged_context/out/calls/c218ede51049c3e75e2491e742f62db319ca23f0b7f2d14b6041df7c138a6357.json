@@ -1,0 +1,27 @@
+{
+  "stage": "out_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c218ede51049c3e75e2491e742f62db319ca23f0b7f2d14b6041df7c138a6357",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 159,
+  "output_tokens": 314,
+  "cost_usd": 0.0008327,
+  "elapsed_s": 16.23,
+  "error": null,
+  "text": "{\n  \"benefits\": [\n    \"see the progression of your work\",\n    \"add many points of contacts, including social media\"\n  ],\n  \"frictions\": [\n    \"difficulty connecting to outlook\"\n  ],\n  \"choosing_switching_reasons\": []\n}",
+  "json": {
+    "benefits": [
+      "see the progression of your work",
+      "add many points of contacts, including social media"
+    ],
+    "frictions": [
+      "difficulty connecting to outlook"
+    ],
+    "choosing_switching_reasons": []
+  },
+  "ts": "2026-10-18T04:05:32.096514+00:00"
+}

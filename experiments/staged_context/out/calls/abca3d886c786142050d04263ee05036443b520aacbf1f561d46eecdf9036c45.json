@@ -1,0 +1,29 @@
+{
+  "stage": "out_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "abca3d886c786142050d04263ee05036443b520aacbf1f561d46eecdf9036c45",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 171,
+  "output_tokens": 347,
+  "cost_usd": 0.0009188,
+  "elapsed_s": 17.87,
+  "error": null,
+  "text": "{\n  \"benefits\": [\n    \"Ability to send small mass emails directly\",\n    \"Easy email tracking for engagement understanding\",\n    \"Manage deals, contacts, and marketing emails\",\n    \"Simple and customizable\"\n  ],\n  \"frictions\": [\n    \"UI might be a little outdated\"\n  ],\n  \"choosing_switching_reasons\": []\n}",
+  "json": {
+    "benefits": [
+      "Ability to send small mass emails directly",
+      "Easy email tracking for engagement understanding",
+      "Manage deals, contacts, and marketing emails",
+      "Simple and customizable"
+    ],
+    "frictions": [
+      "UI might be a little outdated"
+    ],
+    "choosing_switching_reasons": []
+  },
+  "ts": "2026-10-18T04:05:34.023419+00:00"
+}

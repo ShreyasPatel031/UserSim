@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7bd439147271c5d7b7194ee388a58e8b1b6ddccbcef6777edb91ccd53134ba68",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2966,
+  "output_tokens": 1083,
+  "cost_usd": 0.0035973,
+  "elapsed_s": 12.76,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Highly customizable pipelines for managing design projects\",\n    \"Improved organization of client leads and project stages\",\n    \"Visual overview of the deal/project progression\"\n  ],\n  \"frictions\": [\n    \"Some features felt very sales-specific and less relevant to marketing/design project tracking\",\n    \"Initial setup required effort to adapt sales terminology to design workflow\",\n    \"Reporting features were more geared towards sales metrics than marketing campaign performance\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed a system to track leads and project progress\",\n    \"Attracted by the promise of customizable pipelines\",\n    \"Easy to get started for a small team\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Highly customizable pipelines for managing design projects",
+      "Improved organization of client leads and project stages",
+      "Visual overview of the deal/project progression"
+    ],
+    "frictions": [
+      "Some features felt very sales-specific and less relevant to marketing/design project tracking",
+      "Initial setup required effort to adapt sales terminology to design workflow",
+      "Reporting features were more geared towards sales metrics than marketing campaign performance"
+    ],
+    "choosing_switching_reasons": [
+      "Needed a system to track leads and project progress",
+      "Attracted by the promise of customizable pipelines",
+      "Easy to get started for a small team"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:06:10.990864+00:00"
+}

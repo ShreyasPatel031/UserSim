@@ -1,0 +1,35 @@
+{
+  "stage": "out_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "14b9cc80c35ed80e06540272e43e336abb3c5e05f8fd51330b834f8c2ad86ea9",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 289,
+  "output_tokens": 512,
+  "cost_usd": 0.0013666999999999998,
+  "elapsed_s": 17.59,
+  "error": null,
+  "text": "{\n  \"benefits\": [\n    \"Leading choice for SMBs\",\n    \"Comprehensive features at competitive prices\",\n    \"Enterprise-level capabilities accessible for smaller budgets\",\n    \"Stores and streamlines sales material and tasks\"\n  ],\n  \"frictions\": [\n    \"Extensive features can be a drawback for basic users\",\n    \"Excessive number of options can lead to unused features\",\n    \"Can confuse users who don't need advanced capabilities\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Old version of Msoft Dynamics had limited customization\",\n    \"Old version of Msoft Dynamics had limited integration capabilities\",\n    \"Old version of Msoft Dynamics had limited scheduling\"\n  ]\n}",
+  "json": {
+    "benefits": [
+      "Leading choice for SMBs",
+      "Comprehensive features at competitive prices",
+      "Enterprise-level capabilities accessible for smaller budgets",
+      "Stores and streamlines sales material and tasks"
+    ],
+    "frictions": [
+      "Extensive features can be a drawback for basic users",
+      "Excessive number of options can lead to unused features",
+      "Can confuse users who don't need advanced capabilities"
+    ],
+    "choosing_switching_reasons": [
+      "Old version of Msoft Dynamics had limited customization",
+      "Old version of Msoft Dynamics had limited integration capabilities",
+      "Old version of Msoft Dynamics had limited scheduling"
+    ]
+  },
+  "ts": "2026-10-18T04:05:33.911990+00:00"
+}

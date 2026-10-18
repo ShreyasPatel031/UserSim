@@ -1,0 +1,30 @@
+{
+  "stage": "out_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d5c824eab2dbe24953db41318aa8602f3321bda970dd4a5028795cbe7b7d24bf",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 314,
+  "output_tokens": 484,
+  "cost_usd": 0.0013042,
+  "elapsed_s": 18.43,
+  "error": null,
+  "text": "{\n  \"benefits\": [\n    \"Complete out of the box CRM solution\",\n    \"Intuitive deal flow for sales cycle management\",\n    \"Integrated dialing with call logging and optional recording\",\n    \"Email integration for logging all incoming and outgoing emails\"\n  ],\n  \"frictions\": [\n    \"Lacks robust reporting\",\n    \"Lacks ability to sort and filter tasks\"\n  ],\n  \"choosing_switching_reasons\": []\n}",
+  "json": {
+    "benefits": [
+      "Complete out of the box CRM solution",
+      "Intuitive deal flow for sales cycle management",
+      "Integrated dialing with call logging and optional recording",
+      "Email integration for logging all incoming and outgoing emails"
+    ],
+    "frictions": [
+      "Lacks robust reporting",
+      "Lacks ability to sort and filter tasks"
+    ],
+    "choosing_switching_reasons": []
+  },
+  "ts": "2026-10-18T04:05:34.403005+00:00"
+}

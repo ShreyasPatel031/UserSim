@@ -1,0 +1,32 @@
+{
+  "stage": "out_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0a29841276d65c4dd1bb7e7bdd1897b3004763c87f530609877ed8b19e9a56e4",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 307,
+  "output_tokens": 451,
+  "cost_usd": 0.0012196,
+  "elapsed_s": 17.82,
+  "error": null,
+  "text": "{\n  \"benefits\": [\n    \"Customization\",\n    \"Integration with other platforms\",\n    \"Automations/workflows\",\n    \"Flexible and scalable\"\n  ],\n  \"frictions\": [\n    \"Overwhelming learning curve\",\n    \"Picky phone number search (requires hyphens)\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Customization\"\n  ]\n}",
+  "json": {
+    "benefits": [
+      "Customization",
+      "Integration with other platforms",
+      "Automations/workflows",
+      "Flexible and scalable"
+    ],
+    "frictions": [
+      "Overwhelming learning curve",
+      "Picky phone number search (requires hyphens)"
+    ],
+    "choosing_switching_reasons": [
+      "Customization"
+    ]
+  },
+  "ts": "2026-10-18T04:05:33.957016+00:00"
+}

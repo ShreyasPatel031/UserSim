@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "59ac0c5800caf134672bbfc72ab20cca936421800405ffc02bb5139a5d608613",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 293,
+  "output_tokens": 980,
+  "cost_usd": 0.0025379,
+  "elapsed_s": 15.62,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 7,\n  \"benefits\": [\n    \"Comprehensive reporting tools for campaign tracking\",\n    \"Ability to customize reports for team organizational needs\",\n    \"Consolidates customer interactions and content engagement data\"\n  ],\n  \"frictions\": [\n    \"Steep learning curve for advanced report customization\",\n    \"Exported report formats sometimes require significant manual cleanup\",\n    \"Interface can feel cluttered when trying to build specific reports\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Robust feature set for marketing data management\",\n    \"Scalability for a growing retail team\",\n    \"Competitive pricing compared to other CRMs\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 3,
+    "value_for_money_rating": 4,
+    "recommendation_score": 7,
+    "benefits": [
+      "Comprehensive reporting tools for campaign tracking",
+      "Ability to customize reports for team organizational needs",
+      "Consolidates customer interactions and content engagement data"
+    ],
+    "frictions": [
+      "Steep learning curve for advanced report customization",
+      "Exported report formats sometimes require significant manual cleanup",
+      "Interface can feel cluttered when trying to build specific reports"
+    ],
+    "choosing_switching_reasons": [
+      "Robust feature set for marketing data management",
+      "Scalability for a growing retail team",
+      "Competitive pricing compared to other CRMs"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:55.469791+00:00"
+}

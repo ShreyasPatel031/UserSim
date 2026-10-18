@@ -1,0 +1,27 @@
+{
+  "stage": "out_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d6f6ef7d472afaeb5560bcfef58f7ab8f545d10169523cf18eb156415d5a3fba",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 299,
+  "output_tokens": 451,
+  "cost_usd": 0.0012172,
+  "elapsed_s": 18.17,
+  "error": null,
+  "text": "{\n  \"benefits\": [\n    \"Organizes customer relationships\",\n    \"Timely customer email responses\",\n    \"Effective promotional campaigns\",\n    \"Increased organizational capabilities\"\n  ],\n  \"frictions\": [],\n  \"choosing_switching_reasons\": []\n}",
+  "json": {
+    "benefits": [
+      "Organizes customer relationships",
+      "Timely customer email responses",
+      "Effective promotional campaigns",
+      "Increased organizational capabilities"
+    ],
+    "frictions": [],
+    "choosing_switching_reasons": []
+  },
+  "ts": "2026-10-18T04:05:33.986308+00:00"
+}

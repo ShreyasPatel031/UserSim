@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c41c80b11c92001090e6a701b62eac442d5ccfe43d0ee69aaf832a44f7e9df1b",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 295,
+  "output_tokens": 1002,
+  "cost_usd": 0.0025935000000000003,
+  "elapsed_s": 14.8,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"recommendation_score\": 6,\n  \"benefits\": [\n    \"Centralized contact management for sales teams\",\n    \"Streamlined lead tracking and pipeline visibility\",\n    \"Relatively intuitive interface for core tasks\"\n  ],\n  \"frictions\": [\n    \"Difficulty adding multiple social media profiles per contact\",\n    \"Manual entry for multiple contacts is time-consuming\",\n    \"Challenging to manage extensive contact details efficiently\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed a modern CRM for sales team\",\n    \"Desired better contact and lead tracking capabilities\",\n    \"Expected robust contact detail management\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 3,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "recommendation_score": 6,
+    "benefits": [
+      "Centralized contact management for sales teams",
+      "Streamlined lead tracking and pipeline visibility",
+      "Relatively intuitive interface for core tasks"
+    ],
+    "frictions": [
+      "Difficulty adding multiple social media profiles per contact",
+      "Manual entry for multiple contacts is time-consuming",
+      "Challenging to manage extensive contact details efficiently"
+    ],
+    "choosing_switching_reasons": [
+      "Needed a modern CRM for sales team",
+      "Desired better contact and lead tracking capabilities",
+      "Expected robust contact detail management"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:52.840508+00:00"
+}

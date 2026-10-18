@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "233c7424b37608eea663c8b9b1ac64eadcac85cf08595551a36714d5b47f78b3",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 283,
+  "output_tokens": 950,
+  "cost_usd": 0.0024599,
+  "elapsed_s": 12.79,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Streamlined contact and lead management\",\n    \"Good value for money for a small team\",\n    \"Improved visibility into the sales pipeline\"\n  ],\n  \"frictions\": [\n    \"Limited advanced customization options for specific workflows\",\n    \"Reporting features could be more robust for data analysis needs\",\n    \"Integration with other market research tools is basic\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed a dedicated system for lead tracking\",\n    \"Affordable pricing structure for a small company\",\n    \"Ease of initial setup and adoption\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Streamlined contact and lead management",
+      "Good value for money for a small team",
+      "Improved visibility into the sales pipeline"
+    ],
+    "frictions": [
+      "Limited advanced customization options for specific workflows",
+      "Reporting features could be more robust for data analysis needs",
+      "Integration with other market research tools is basic"
+    ],
+    "choosing_switching_reasons": [
+      "Needed a dedicated system for lead tracking",
+      "Affordable pricing structure for a small company",
+      "Ease of initial setup and adoption"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:49.453874+00:00"
+}

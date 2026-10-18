@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c3a623cdfbb94b157e7b58389fd0d6493b43b5368be934a72832280a5f9970ba",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 5999,
+  "output_tokens": 1072,
+  "cost_usd": 0.0044797,
+  "elapsed_s": 13.42,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Efficiently routes customer emails to the right team member\",\n    \"Helps ensure timely responses to customer inquiries\",\n    \"Automates tasks related to customer communication follow-up\"\n  ],\n  \"frictions\": [\n    \"Initial setup for complex email routing rules required some effort\",\n    \"Some features felt more geared towards sales than customer service workflow\",\n    \"May require integration with other tools for full social media management\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed a centralized system to manage customer communications\",\n    \"Sought to improve response times for customer emails\",\n    \"Offered automation capabilities to streamline workflow\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Efficiently routes customer emails to the right team member",
+      "Helps ensure timely responses to customer inquiries",
+      "Automates tasks related to customer communication follow-up"
+    ],
+    "frictions": [
+      "Initial setup for complex email routing rules required some effort",
+      "Some features felt more geared towards sales than customer service workflow",
+      "May require integration with other tools for full social media management"
+    ],
+    "choosing_switching_reasons": [
+      "Needed a centralized system to manage customer communications",
+      "Sought to improve response times for customer emails",
+      "Offered automation capabilities to streamline workflow"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:52.782335+00:00"
+}

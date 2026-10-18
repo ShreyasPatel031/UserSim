@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "318c47c266fa21f2c4abe332801cb4bcb745d816d101eea96fea0199f726236b",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 303,
+  "output_tokens": 1036,
+  "cost_usd": 0.0026809000000000004,
+  "elapsed_s": 9.22,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Efficient task assignment to sales representatives\",\n    \"Improved visibility of customer follow-up activities\",\n    \"Streamlined management of sales team's daily tasks\"\n  ],\n  \"frictions\": [\n    \"Reporting features could be more robust for detailed performance analysis\",\n    \"Some limitations in customizing sales workflows for specific telecom needs\",\n    \"Occasional slowness when managing a large volume of activities\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed a dedicated CRM to better manage sales tasks and follow-ups\",\n    \"Wanted a user-friendly interface for the sales team\",\n    \"Aimed to improve accountability and productivity within the sales department\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Efficient task assignment to sales representatives",
+      "Improved visibility of customer follow-up activities",
+      "Streamlined management of sales team's daily tasks"
+    ],
+    "frictions": [
+      "Reporting features could be more robust for detailed performance analysis",
+      "Some limitations in customizing sales workflows for specific telecom needs",
+      "Occasional slowness when managing a large volume of activities"
+    ],
+    "choosing_switching_reasons": [
+      "Needed a dedicated CRM to better manage sales tasks and follow-ups",
+      "Wanted a user-friendly interface for the sales team",
+      "Aimed to improve accountability and productivity within the sales department"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:06:02.857004+00:00"
+}

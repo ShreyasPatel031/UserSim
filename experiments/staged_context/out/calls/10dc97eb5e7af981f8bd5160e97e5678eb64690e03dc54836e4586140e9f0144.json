@@ -1,0 +1,31 @@
+{
+  "stage": "out_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "10dc97eb5e7af981f8bd5160e97e5678eb64690e03dc54836e4586140e9f0144",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 302,
+  "output_tokens": 411,
+  "cost_usd": 0.0011181,
+  "elapsed_s": 17.54,
+  "error": null,
+  "text": "{\n  \"benefits\": [\n    \"powerful customization\",\n    \"wide range of features\",\n    \"extensive database of direct integrations\"\n  ],\n  \"frictions\": [\n    \"feels clunky\",\n    \"overly complex for daily email marketing use\",\n    \"UI is outdated\",\n    \"integrations often break or require workarounds\"\n  ],\n  \"choosing_switching_reasons\": []\n}",
+  "json": {
+    "benefits": [
+      "powerful customization",
+      "wide range of features",
+      "extensive database of direct integrations"
+    ],
+    "frictions": [
+      "feels clunky",
+      "overly complex for daily email marketing use",
+      "UI is outdated",
+      "integrations often break or require workarounds"
+    ],
+    "choosing_switching_reasons": []
+  },
+  "ts": "2026-10-18T04:05:33.744444+00:00"
+}

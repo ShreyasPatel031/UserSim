@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3e5dafeae231c185215f3868972d4000d26f9c5d5b881eb9c9df64c9c257e455",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 294,
+  "output_tokens": 961,
+  "cost_usd": 0.0024907,
+  "elapsed_s": 9.53,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 7,\n  \"benefits\": [\n    \"Effective tracking of sales opportunities and customer interactions\",\n    \"Good value for a comprehensive CRM solution\",\n    \"Centralized view of client project progress\"\n  ],\n  \"frictions\": [\n    \"Steep learning curve for new users\",\n    \"Initial setup and customization can be complex\",\n    \"Interface can feel overwhelming due to feature richness\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Need for a centralized system to manage client data and sales pipeline\",\n    \"Cost-effectiveness for a growing SMB\",\n    \"Ability to track marketing-related project progress\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 3,
+    "value_for_money_rating": 4,
+    "recommendation_score": 7,
+    "benefits": [
+      "Effective tracking of sales opportunities and customer interactions",
+      "Good value for a comprehensive CRM solution",
+      "Centralized view of client project progress"
+    ],
+    "frictions": [
+      "Steep learning curve for new users",
+      "Initial setup and customization can be complex",
+      "Interface can feel overwhelming due to feature richness"
+    ],
+    "choosing_switching_reasons": [
+      "Need for a centralized system to manage client data and sales pipeline",
+      "Cost-effectiveness for a growing SMB",
+      "Ability to track marketing-related project progress"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:06:02.229076+00:00"
+}

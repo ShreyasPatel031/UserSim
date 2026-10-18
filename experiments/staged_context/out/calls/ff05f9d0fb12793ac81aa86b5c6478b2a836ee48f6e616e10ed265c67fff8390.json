@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ff05f9d0fb12793ac81aa86b5c6478b2a836ee48f6e616e10ed265c67fff8390",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 5989,
+  "output_tokens": 978,
+  "cost_usd": 0.004241699999999999,
+  "elapsed_s": 9.13,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Effectively tracks leads for new programs with visual pipeline management.\",\n    \"Provides quick insights into sales activities and progress.\",\n    \"Customizable to fit specific sales and marketing workflows for a small team.\"\n  ],\n  \"frictions\": [\n    \"Initial setup and customization for specific new programs required some learning curve.\",\n    \"Potential for minor frustration with advanced reporting for granular analysis.\",\n    \"May require some effort to integrate with existing nascent marketing tools.\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed a dedicated CRM to track leads for new sales programs.\",\n    \"Sought a user-friendly solution suitable for a small, growing team.\",\n    \"Attracted by features for pipeline management and sales process automation.\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Effectively tracks leads for new programs with visual pipeline management.",
+      "Provides quick insights into sales activities and progress.",
+      "Customizable to fit specific sales and marketing workflows for a small team."
+    ],
+    "frictions": [
+      "Initial setup and customization for specific new programs required some learning curve.",
+      "Potential for minor frustration with advanced reporting for granular analysis.",
+      "May require some effort to integrate with existing nascent marketing tools."
+    ],
+    "choosing_switching_reasons": [
+      "Needed a dedicated CRM to track leads for new sales programs.",
+      "Sought a user-friendly solution suitable for a small, growing team.",
+      "Attracted by features for pipeline management and sales process automation."
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:06:04.588180+00:00"
+}

@@ -24,6 +24,7 @@ import os
 import random
 import re
 import sys
+import threading
 import time
 import unicodedata
 from datetime import date, datetime, timezone
@@ -173,8 +174,19 @@ class SpendCapExceeded(RuntimeError):
     pass
 
 
+_LOG_LOCK = threading.Lock()
+
+
 def _ledger() -> list[dict]:
-    return read_jsonl(OUT / "call_log.jsonl")
+    with _LOG_LOCK:
+        lines = (OUT / "call_log.jsonl").read_text().splitlines() if (OUT / "call_log.jsonl").exists() else []
+    out = []
+    for line in lines:
+        try:
+            out.append(json.loads(line))
+        except json.JSONDecodeError:  # a line torn by an earlier concurrent writer
+            continue
+    return out
 
 
 def spent_usd() -> float:
@@ -273,7 +285,7 @@ def call_model(stage: str, model: str, system: str, user: str, *, temperature: f
 
 def _log_call(row: dict) -> None:
     OUT.mkdir(parents=True, exist_ok=True)
-    with (OUT / "call_log.jsonl").open("a") as f:
+    with _LOG_LOCK, (OUT / "call_log.jsonl").open("a") as f:
         f.write(json.dumps(row) + "\n")
 
 

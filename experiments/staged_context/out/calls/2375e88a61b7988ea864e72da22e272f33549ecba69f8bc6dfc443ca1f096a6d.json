@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2375e88a61b7988ea864e72da22e272f33549ecba69f8bc6dfc443ca1f096a6d",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 5348,
+  "output_tokens": 976,
+  "cost_usd": 0.0040444,
+  "elapsed_s": 9.12,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Ability to create custom modules for specific financial data\",\n    \"Flexible framework for linking data across modules\",\n    \"Customization options to adapt to unique workflows\"\n  ],\n  \"frictions\": [\n    \"Initial learning curve for advanced customization features\",\n    \"Potential complexity in managing custom relationships over time\",\n    \"Some features might require deeper technical understanding\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Need for advanced customization to handle specific data requirements\",\n    \"Comprehensive feature set suitable for financial services\",\n    \"Offers a flexible framework for data capture and linking\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Ability to create custom modules for specific financial data",
+      "Flexible framework for linking data across modules",
+      "Customization options to adapt to unique workflows"
+    ],
+    "frictions": [
+      "Initial learning curve for advanced customization features",
+      "Potential complexity in managing custom relationships over time",
+      "Some features might require deeper technical understanding"
+    ],
+    "choosing_switching_reasons": [
+      "Need for advanced customization to handle specific data requirements",
+      "Comprehensive feature set suitable for financial services",
+      "Offers a flexible framework for data capture and linking"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:54.670291+00:00"
+}

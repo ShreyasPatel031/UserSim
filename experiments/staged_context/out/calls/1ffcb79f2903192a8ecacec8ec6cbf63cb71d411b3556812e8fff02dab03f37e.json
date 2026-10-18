@@ -1,0 +1,28 @@
+{
+  "stage": "out_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1ffcb79f2903192a8ecacec8ec6cbf63cb71d411b3556812e8fff02dab03f37e",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 182,
+  "output_tokens": 368,
+  "cost_usd": 0.0009746,
+  "elapsed_s": 17.64,
+  "error": null,
+  "text": "{\n  \"benefits\": [\n    \"Easy to collect and organize contacts, conversations, and information\",\n    \"Great for business\",\n    \"Helped organize information in a detailed fashion\"\n  ],\n  \"frictions\": [\n    \"Customer service does not always have an answer\"\n  ],\n  \"choosing_switching_reasons\": []\n}",
+  "json": {
+    "benefits": [
+      "Easy to collect and organize contacts, conversations, and information",
+      "Great for business",
+      "Helped organize information in a detailed fashion"
+    ],
+    "frictions": [
+      "Customer service does not always have an answer"
+    ],
+    "choosing_switching_reasons": []
+  },
+  "ts": "2026-10-18T04:05:33.446943+00:00"
+}

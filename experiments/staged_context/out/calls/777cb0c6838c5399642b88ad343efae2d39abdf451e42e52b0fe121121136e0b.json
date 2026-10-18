@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "777cb0c6838c5399642b88ad343efae2d39abdf451e42e52b0fe121121136e0b",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3028,
+  "output_tokens": 986,
+  "cost_usd": 0.0033733999999999995,
+  "elapsed_s": 17.72,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"recommendation_score\": 6,\n  \"benefits\": [\n    \"Ability to track sales pipeline and deals effectively\",\n    \"Customizable fields help tailor data collection for financial services\",\n    \"Automation features save time for the sales team\"\n  ],\n  \"frictions\": [\n    \"Reporting on sales performance after lead conversion can be complex\",\n    \"Transitioning leads to contacts sometimes requires manual cleanup\",\n    \"Interface could be more intuitive for generating specific sales reports\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed a CRM to manage growing sales leads and client relationships\",\n    \"Appreciated the initial ease of setup and use\",\n    \"Cost-effectiveness for a small financial services firm\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 3,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "recommendation_score": 6,
+    "benefits": [
+      "Ability to track sales pipeline and deals effectively",
+      "Customizable fields help tailor data collection for financial services",
+      "Automation features save time for the sales team"
+    ],
+    "frictions": [
+      "Reporting on sales performance after lead conversion can be complex",
+      "Transitioning leads to contacts sometimes requires manual cleanup",
+      "Interface could be more intuitive for generating specific sales reports"
+    ],
+    "choosing_switching_reasons": [
+      "Needed a CRM to manage growing sales leads and client relationships",
+      "Appreciated the initial ease of setup and use",
+      "Cost-effectiveness for a small financial services firm"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:55.113258+00:00"
+}

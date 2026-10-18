@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e672157887410f7928df030abd5c01e538c11a477ca3952cdc92bc23d4df453e",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 296,
+  "output_tokens": 1014,
+  "cost_usd": 0.0026238,
+  "elapsed_s": 14.65,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 5,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Streamlined email communication directly from lead records.\",\n    \"Ability to track email opens and clicks for follow-up.\",\n    \"Centralized view of all customer interactions in one place.\"\n  ],\n  \"frictions\": [\n    \"Email deliverability sometimes inconsistent for bulk sends.\",\n    \"Limited advanced customization options for email templates.\",\n    \"Reporting on email campaign performance could be more robust.\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Cost-effective solution compared to other enterprise CRMs.\",\n    \"Integrated email features for sales and customer success tasks.\",\n    \"Scalability to support a growing customer success team.\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 5,
+    "recommendation_score": 8,
+    "benefits": [
+      "Streamlined email communication directly from lead records.",
+      "Ability to track email opens and clicks for follow-up.",
+      "Centralized view of all customer interactions in one place."
+    ],
+    "frictions": [
+      "Email deliverability sometimes inconsistent for bulk sends.",
+      "Limited advanced customization options for email templates.",
+      "Reporting on email campaign performance could be more robust."
+    ],
+    "choosing_switching_reasons": [
+      "Cost-effective solution compared to other enterprise CRMs.",
+      "Integrated email features for sales and customer success tasks.",
+      "Scalability to support a growing customer success team."
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:52.349446+00:00"
+}

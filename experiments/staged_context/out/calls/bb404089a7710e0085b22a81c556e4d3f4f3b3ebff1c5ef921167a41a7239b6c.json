@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "bb404089a7710e0085b22a81c556e4d3f4f3b3ebff1c5ef921167a41a7239b6c",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 291,
+  "output_tokens": 1186,
+  "cost_usd": 0.0030523,
+  "elapsed_s": 15.94,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Streamlined process for adding new leads and contacts.\",\n    \"Centralized all customer and account information in one place.\",\n    \"Intuitive interface made basic data entry quick.\"\n  ],\n  \"frictions\": [\n    \"Initial learning curve for setting up custom fields.\",\n    \"Some minor UI inconsistencies when navigating between record types.\",\n    \"Limited options for advanced bulk data management.\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed a dedicated CRM to better organize sales and marketing leads.\",\n    \"Affordable pricing structure for a small to medium-sized business.\",\n    \"Heard positive feedback about its user-friendliness for new users.\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Streamlined process for adding new leads and contacts.",
+      "Centralized all customer and account information in one place.",
+      "Intuitive interface made basic data entry quick."
+    ],
+    "frictions": [
+      "Initial learning curve for setting up custom fields.",
+      "Some minor UI inconsistencies when navigating between record types.",
+      "Limited options for advanced bulk data management."
+    ],
+    "choosing_switching_reasons": [
+      "Needed a dedicated CRM to better organize sales and marketing leads.",
+      "Affordable pricing structure for a small to medium-sized business.",
+      "Heard positive feedback about its user-friendliness for new users."
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:52.919644+00:00"
+}

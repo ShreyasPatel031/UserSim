@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3e66d86a0d32c77ea8f7592b03f4e9245b6a9a8e4dff77c1b07fbd7b065eb812",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 5973,
+  "output_tokens": 962,
+  "cost_usd": 0.0041969,
+  "elapsed_s": 13.13,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Easy to manage and close tasks.\",\n    \"Streamlined organization of daily activities.\",\n    \"Helps keep track of customer interactions efficiently.\"\n  ],\n  \"frictions\": [\n    \"Steep learning curve for advanced features not immediately needed.\",\n    \"Initial setup might take some time to customize.\",\n    \"Could feel overwhelming with features for a self-employed user.\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed a simple, effective CRM for sales.\",\n    \"Attracted by claims of being easy-to-use and streamlined.\",\n    \"Competitive pricing for a self-employed business owner.\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Easy to manage and close tasks.",
+      "Streamlined organization of daily activities.",
+      "Helps keep track of customer interactions efficiently."
+    ],
+    "frictions": [
+      "Steep learning curve for advanced features not immediately needed.",
+      "Initial setup might take some time to customize.",
+      "Could feel overwhelming with features for a self-employed user."
+    ],
+    "choosing_switching_reasons": [
+      "Needed a simple, effective CRM for sales.",
+      "Attracted by claims of being easy-to-use and streamlined.",
+      "Competitive pricing for a self-employed business owner."
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:51.656505+00:00"
+}

@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f42f345d7f9b82a3bc64ab367b116c53ded722e405eb2a18614c2c6008a77a8b",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 5345,
+  "output_tokens": 1022,
+  "cost_usd": 0.0041585,
+  "elapsed_s": 9.92,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Powerful automation for emails and sales processes\",\n    \"Customizable workflows for quotes and sales orders\",\n    \"Ability to adapt to unique sales processes and field updates\"\n  ],\n  \"frictions\": [\n    \"Initial setup and complex workflow design can be time-consuming\",\n    \"Steep learning curve for advanced automation features\",\n    \"Potential for minor bugs in complex, custom workflows\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Comprehensive automation capabilities for sales funnel\",\n    \"Flexibility to customize fields and layouts for specific needs\",\n    \"Strong value proposition compared to other CRMs with similar features\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Powerful automation for emails and sales processes",
+      "Customizable workflows for quotes and sales orders",
+      "Ability to adapt to unique sales processes and field updates"
+    ],
+    "frictions": [
+      "Initial setup and complex workflow design can be time-consuming",
+      "Steep learning curve for advanced automation features",
+      "Potential for minor bugs in complex, custom workflows"
+    ],
+    "choosing_switching_reasons": [
+      "Comprehensive automation capabilities for sales funnel",
+      "Flexibility to customize fields and layouts for specific needs",
+      "Strong value proposition compared to other CRMs with similar features"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:53.444324+00:00"
+}

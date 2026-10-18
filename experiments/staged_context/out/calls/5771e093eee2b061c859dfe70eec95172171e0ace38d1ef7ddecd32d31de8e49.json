@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "5771e093eee2b061c859dfe70eec95172171e0ace38d1ef7ddecd32d31de8e49",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 6004,
+  "output_tokens": 1050,
+  "cost_usd": 0.0044262,
+  "elapsed_s": 13.6,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Easy to set up custom fields for deal qualification and outcomes\",\n    \"Helps organize internal deals and track their status clearly\",\n    \"Provides good overview for pipeline management and reporting\"\n  ],\n  \"frictions\": [\n    \"Initial learning curve for advanced filtering or reporting with custom fields\",\n    \"Might require some trial and error to optimize custom field usage for specific needs\",\n    \"Integration with other internal project management tools could be smoother\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed a CRM with robust customization options for deal tracking\",\n    \"Appreciated the promised ease of use for a small team\",\n    \"Looked for a solution to better manage sales pipeline and outcomes\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Easy to set up custom fields for deal qualification and outcomes",
+      "Helps organize internal deals and track their status clearly",
+      "Provides good overview for pipeline management and reporting"
+    ],
+    "frictions": [
+      "Initial learning curve for advanced filtering or reporting with custom fields",
+      "Might require some trial and error to optimize custom field usage for specific needs",
+      "Integration with other internal project management tools could be smoother"
+    ],
+    "choosing_switching_reasons": [
+      "Needed a CRM with robust customization options for deal tracking",
+      "Appreciated the promised ease of use for a small team",
+      "Looked for a solution to better manage sales pipeline and outcomes"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:53.314029+00:00"
+}

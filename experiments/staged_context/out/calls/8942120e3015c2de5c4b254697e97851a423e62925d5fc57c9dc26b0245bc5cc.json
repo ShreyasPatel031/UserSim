@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8942120e3015c2de5c4b254697e97851a423e62925d5fc57c9dc26b0245bc5cc",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 5352,
+  "output_tokens": 958,
+  "cost_usd": 0.0040006,
+  "elapsed_s": 6.5,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Comprehensive platform for managing contacts and deals efficiently.\",\n    \"High degree of customization for workflows and data organization without coding.\",\n    \"Automation features streamline tasks, reducing manual effort and improving organization.\"\n  ],\n  \"frictions\": [\n    \"Initial setup and deep customization can be complex for specific IT workflows.\",\n    \"Performance might occasionally be slower when dealing with a very large dataset.\",\n    \"Integrating with highly specialized network monitoring or support tools can be challenging.\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Ability to consolidate contact and deal tracking into a single, integrated system.\",\n    \"Strong customization capabilities to adapt to specific operational needs.\",\n    \"Desire to reduce reliance on multiple disparate tools for sales and contact management.\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Comprehensive platform for managing contacts and deals efficiently.",
+      "High degree of customization for workflows and data organization without coding.",
+      "Automation features streamline tasks, reducing manual effort and improving organization."
+    ],
+    "frictions": [
+      "Initial setup and deep customization can be complex for specific IT workflows.",
+      "Performance might occasionally be slower when dealing with a very large dataset.",
+      "Integrating with highly specialized network monitoring or support tools can be challenging."
+    ],
+    "choosing_switching_reasons": [
+      "Ability to consolidate contact and deal tracking into a single, integrated system.",
+      "Strong customization capabilities to adapt to specific operational needs.",
+      "Desire to reduce reliance on multiple disparate tools for sales and contact management."
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:56.505912+00:00"
+}

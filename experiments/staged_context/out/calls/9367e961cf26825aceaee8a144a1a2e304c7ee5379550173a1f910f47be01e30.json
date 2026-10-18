@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9367e961cf26825aceaee8a144a1a2e304c7ee5379550173a1f910f47be01e30",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 292,
+  "output_tokens": 952,
+  "cost_usd": 0.0024676000000000003,
+  "elapsed_s": 12.63,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Streamlined sales pipeline management for small team\",\n    \"Easy to track client communication and deals\",\n    \"Good value for core CRM features\"\n  ],\n  \"frictions\": [\n    \"Email campaign features are basic, not robust enough for marketing\",\n    \"Limited advanced segmentation for broadcast emails\",\n    \"Requires integrations for more sophisticated email marketing\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed a simple, visual CRM for sales pipeline\",\n    \"Affordable solution for a small business\",\n    \"Good for managing client relationships and follow-ups\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 3,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Streamlined sales pipeline management for small team",
+      "Easy to track client communication and deals",
+      "Good value for core CRM features"
+    ],
+    "frictions": [
+      "Email campaign features are basic, not robust enough for marketing",
+      "Limited advanced segmentation for broadcast emails",
+      "Requires integrations for more sophisticated email marketing"
+    ],
+    "choosing_switching_reasons": [
+      "Needed a simple, visual CRM for sales pipeline",
+      "Affordable solution for a small business",
+      "Good for managing client relationships and follow-ups"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:06:06.365774+00:00"
+}

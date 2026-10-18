@@ -1,0 +1,26 @@
+{
+  "stage": "out_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "25a668d74bd5b61acd2b3fac1c0d8e424da812a01d3c0aa08849fa023fe6b03e",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 131,
+  "output_tokens": 317,
+  "cost_usd": 0.0008318,
+  "elapsed_s": 16.85,
+  "error": null,
+  "text": "{\n  \"benefits\": [\n    \"Easy of use\",\n    \"Perfect to organize sales activity\",\n    \"Very good to follow pipeline\"\n  ],\n  \"frictions\": [],\n  \"choosing_switching_reasons\": []\n}",
+  "json": {
+    "benefits": [
+      "Easy of use",
+      "Perfect to organize sales activity",
+      "Very good to follow pipeline"
+    ],
+    "frictions": [],
+    "choosing_switching_reasons": []
+  },
+  "ts": "2026-10-18T04:05:33.348164+00:00"
+}

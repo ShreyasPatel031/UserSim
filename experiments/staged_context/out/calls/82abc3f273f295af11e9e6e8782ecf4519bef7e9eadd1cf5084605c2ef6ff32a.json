@@ -1,0 +1,32 @@
+{
+  "stage": "out_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "82abc3f273f295af11e9e6e8782ecf4519bef7e9eadd1cf5084605c2ef6ff32a",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 493,
+  "output_tokens": 537,
+  "cost_usd": 0.0014904000000000002,
+  "elapsed_s": 18.19,
+  "error": null,
+  "text": "{\n  \"benefits\": [\n    \"Covers lead tracking, sales pipeline management, and basic team coordination\",\n    \"Manages client relationships across multiple product lines\",\n    \"Reasonable pricing compared to Western alternatives\",\n    \"Integration with other Zoho apps\"\n  ],\n  \"frictions\": [\n    \"Steep learning curve for new team members\",\n    \"Lacks support for African market-specific needs (local currencies, payment contexts)\",\n    \"Lacks support for slow-connection performance\",\n    \"Some features are built for Western business workflows and don't map well to local operations\"\n  ],\n  \"choosing_switching_reasons\": []\n}",
+  "json": {
+    "benefits": [
+      "Covers lead tracking, sales pipeline management, and basic team coordination",
+      "Manages client relationships across multiple product lines",
+      "Reasonable pricing compared to Western alternatives",
+      "Integration with other Zoho apps"
+    ],
+    "frictions": [
+      "Steep learning curve for new team members",
+      "Lacks support for African market-specific needs (local currencies, payment contexts)",
+      "Lacks support for slow-connection performance",
+      "Some features are built for Western business workflows and don't map well to local operations"
+    ],
+    "choosing_switching_reasons": []
+  },
+  "ts": "2026-10-18T04:05:34.324438+00:00"
+}

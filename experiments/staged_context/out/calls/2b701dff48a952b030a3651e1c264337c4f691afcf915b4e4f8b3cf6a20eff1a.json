@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2b701dff48a952b030a3651e1c264337c4f691afcf915b4e4f8b3cf6a20eff1a",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 5995,
+  "output_tokens": 1163,
+  "cost_usd": 0.004706,
+  "elapsed_s": 7.98,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Easy and visual sales pipeline management with drag & drop\",\n    \"Helps organize sales tasks and processes for a small team\",\n    \"Customizable to fit our specific sales workflow\"\n  ],\n  \"frictions\": [\n    \"Bulk editing for tasks could be more intuitive or robust\",\n    \"Initial setup and customization for specific needs required some learning\",\n    \"Pricing can become a concern as the team grows and more advanced features are needed\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Focus on sales pipeline visualization and deal management\",\n    \"Ease of use and quick implementation for a small team\",\n    \"Ability to customize to our unique sales process\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Easy and visual sales pipeline management with drag & drop",
+      "Helps organize sales tasks and processes for a small team",
+      "Customizable to fit our specific sales workflow"
+    ],
+    "frictions": [
+      "Bulk editing for tasks could be more intuitive or robust",
+      "Initial setup and customization for specific needs required some learning",
+      "Pricing can become a concern as the team grows and more advanced features are needed"
+    ],
+    "choosing_switching_reasons": [
+      "Focus on sales pipeline visualization and deal management",
+      "Ease of use and quick implementation for a small team",
+      "Ability to customize to our unique sales process"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:06:00.855206+00:00"
+}

@@ -1,0 +1,29 @@
+{
+  "stage": "out_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "671cb6d00eb84b8f688cc92c04362c29fbf9ae0ef7c42be40f519bab1044cc19",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 233,
+  "output_tokens": 432,
+  "cost_usd": 0.0011499,
+  "elapsed_s": 17.25,
+  "error": null,
+  "text": "{\n  \"benefits\": [\n    \"Able to assign tasks and assignments to sales reps for customer follow-up\",\n    \"Customer information from website quotes is automatically stored\",\n    \"Saves a lot of time entering customer information\",\n    \"Streamlines lead follow-up\"\n  ],\n  \"frictions\": [\n    \"Becomes cluttered with many clients over time\"\n  ],\n  \"choosing_switching_reasons\": []\n}",
+  "json": {
+    "benefits": [
+      "Able to assign tasks and assignments to sales reps for customer follow-up",
+      "Customer information from website quotes is automatically stored",
+      "Saves a lot of time entering customer information",
+      "Streamlines lead follow-up"
+    ],
+    "frictions": [
+      "Becomes cluttered with many clients over time"
+    ],
+    "choosing_switching_reasons": []
+  },
+  "ts": "2026-10-18T04:05:33.668429+00:00"
+}

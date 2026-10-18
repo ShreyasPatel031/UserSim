@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0a6acaf265fc19fbd042c3e88768d47275a9d5c12adb180e64d1aa743ee24fac",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 5989,
+  "output_tokens": 1020,
+  "cost_usd": 0.0043467,
+  "elapsed_s": 14.54,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"AI-powered lead and deal insights boost sales team efficiency.\",\n    \"Streamlined pipeline management helps track opportunities effectively.\",\n    \"Good automation capabilities for marketing and sales processes.\"\n  ],\n  \"frictions\": [\n    \"Initial setup of custom fields and stages can be time-consuming.\",\n    \"Integration with some niche marketing tools required extra effort.\",\n    \"Reporting features, while powerful, sometimes require a learning curve.\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed an easy-to-use CRM with strong sales and marketing features.\",\n    \"AI capabilities like Freddy AI for lead scoring were a key differentiator.\",\n    \"Scalable solution for a growing marketing and advertising agency.\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "AI-powered lead and deal insights boost sales team efficiency.",
+      "Streamlined pipeline management helps track opportunities effectively.",
+      "Good automation capabilities for marketing and sales processes."
+    ],
+    "frictions": [
+      "Initial setup of custom fields and stages can be time-consuming.",
+      "Integration with some niche marketing tools required extra effort.",
+      "Reporting features, while powerful, sometimes require a learning curve."
+    ],
+    "choosing_switching_reasons": [
+      "Needed an easy-to-use CRM with strong sales and marketing features.",
+      "AI capabilities like Freddy AI for lead scoring were a key differentiator.",
+      "Scalable solution for a growing marketing and advertising agency."
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:53.905071+00:00"
+}

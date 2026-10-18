@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "70ecf63ed474ade6905953cb596f7e7a0c3640fac75df6a5f82c12d29c9a46c8",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 6006,
+  "output_tokens": 1158,
+  "cost_usd": 0.0046968,
+  "elapsed_s": 10.65,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Improved organization of sales documents and contracts.\",\n    \"Customizable fields and workflows to track project-specific details.\",\n    \"Easy accessibility for all team members to essential project files.\"\n  ],\n  \"frictions\": [\n    \"Initial setup and integration with existing document storage might require some effort.\",\n    \"Potentially needing an external integration for robust document management beyond simple uploads.\",\n    \"Learning curve for less tech-savvy team members to utilize document features effectively.\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Desired a centralized system for sales pipeline and deal management.\",\n    \"Needed better organization and accessibility for crucial sales documents.\",\n    \"Sought a CRM that offered customization to fit specific sales processes.\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Improved organization of sales documents and contracts.",
+      "Customizable fields and workflows to track project-specific details.",
+      "Easy accessibility for all team members to essential project files."
+    ],
+    "frictions": [
+      "Initial setup and integration with existing document storage might require some effort.",
+      "Potentially needing an external integration for robust document management beyond simple uploads.",
+      "Learning curve for less tech-savvy team members to utilize document features effectively."
+    ],
+    "choosing_switching_reasons": [
+      "Desired a centralized system for sales pipeline and deal management.",
+      "Needed better organization and accessibility for crucial sales documents.",
+      "Sought a CRM that offered customization to fit specific sales processes."
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:06:06.592820+00:00"
+}

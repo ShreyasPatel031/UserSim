@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ecc8a5f945471c8908c97f6e62444f2eebd9b0358aca5ab14065ea0d12e1b0be",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2961,
+  "output_tokens": 1020,
+  "cost_usd": 0.0034383,
+  "elapsed_s": 9.34,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Improved sales pipeline visibility and tracking\",\n    \"Real-time sales reports for strategic decision-making\",\n    \"Customizable to fit small business sales processes\"\n  ],\n  \"frictions\": [\n    \"Initial time investment to customize fields and workflows\",\n    \"Potential for manual data entry to be repetitive for new records\",\n    \"Learning curve for leveraging all AI and automation features\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Focus on sales pipeline management\",\n    \"Promised ease of use and effectiveness for closing deals\",\n    \"Ability to customize to specific business needs\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Improved sales pipeline visibility and tracking",
+      "Real-time sales reports for strategic decision-making",
+      "Customizable to fit small business sales processes"
+    ],
+    "frictions": [
+      "Initial time investment to customize fields and workflows",
+      "Potential for manual data entry to be repetitive for new records",
+      "Learning curve for leveraging all AI and automation features"
+    ],
+    "choosing_switching_reasons": [
+      "Focus on sales pipeline management",
+      "Promised ease of use and effectiveness for closing deals",
+      "Ability to customize to specific business needs"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:06:06.351751+00:00"
+}

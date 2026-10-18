@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a6f074cfd8aab5be903faea8d921a83b194fe0a90bbd0ae9d1661dd8fef6d4b1",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 5990,
+  "output_tokens": 1044,
+  "cost_usd": 0.0044069999999999995,
+  "elapsed_s": 10.51,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Simplified the process of organizing prospect information.\",\n    \"Provided a clear visual pipeline to manage sales leads.\",\n    \"Allowed for easy customization to fit specific business needs.\"\n  ],\n  \"frictions\": [\n    \"Initial data migration required some manual effort.\",\n    \"Learning curve for some advanced features.\",\n    \"Integrations with specific health/wellness tools were not immediately obvious.\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed an easy-to-use CRM to manage growing client base.\",\n    \"Sought better organization for sales prospects.\",\n    \"Attracted by the visual pipeline management.\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Simplified the process of organizing prospect information.",
+      "Provided a clear visual pipeline to manage sales leads.",
+      "Allowed for easy customization to fit specific business needs."
+    ],
+    "frictions": [
+      "Initial data migration required some manual effort.",
+      "Learning curve for some advanced features.",
+      "Integrations with specific health/wellness tools were not immediately obvious."
+    ],
+    "choosing_switching_reasons": [
+      "Needed an easy-to-use CRM to manage growing client base.",
+      "Sought better organization for sales prospects.",
+      "Attracted by the visual pipeline management."
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:06:03.675255+00:00"
+}

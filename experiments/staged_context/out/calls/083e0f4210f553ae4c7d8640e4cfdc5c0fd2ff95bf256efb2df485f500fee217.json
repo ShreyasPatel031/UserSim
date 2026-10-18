@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "083e0f4210f553ae4c7d8640e4cfdc5c0fd2ff95bf256efb2df485f500fee217",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2957,
+  "output_tokens": 1003,
+  "cost_usd": 0.0033946000000000002,
+  "elapsed_s": 9.04,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Simplified the process of importing and organizing prospect data.\",\n    \"Customizable fields allowed for specific categorization needed in financial services.\",\n    \"Improved visibility of our sales pipeline from an executive perspective.\"\n  ],\n  \"frictions\": [\n    \"Initial learning curve for advanced categorization features.\",\n    \"Integration with existing financial tools was not always seamless out-of-the-box.\",\n    \"Still exploring the full range of automation features for a small team.\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed an easy-to-use CRM to manage a growing client base.\",\n    \"The promise of pipeline management and lead optimization was appealing.\",\n    \"Customization options were important for our specific industry needs.\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Simplified the process of importing and organizing prospect data.",
+      "Customizable fields allowed for specific categorization needed in financial services.",
+      "Improved visibility of our sales pipeline from an executive perspective."
+    ],
+    "frictions": [
+      "Initial learning curve for advanced categorization features.",
+      "Integration with existing financial tools was not always seamless out-of-the-box.",
+      "Still exploring the full range of automation features for a small team."
+    ],
+    "choosing_switching_reasons": [
+      "Needed an easy-to-use CRM to manage a growing client base.",
+      "The promise of pipeline management and lead optimization was appealing.",
+      "Customization options were important for our specific industry needs."
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:06:07.546387+00:00"
+}

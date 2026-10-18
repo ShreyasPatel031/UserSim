@@ -1,0 +1,27 @@
+{
+  "stage": "out_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b4eefe7d34b181534b6c9a1488cc9d61bbcebf1af55a9a38f9bb3bf04185df25",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 215,
+  "output_tokens": 409,
+  "cost_usd": 0.0010869999999999999,
+  "elapsed_s": 17.55,
+  "error": null,
+  "text": "{\n  \"benefits\": [\n    \"Creates prospect/client database\",\n    \"Enables effective/professional interaction\",\n    \"Helps close sales\",\n    \"Classifies potential clients\"\n  ],\n  \"frictions\": [],\n  \"choosing_switching_reasons\": []\n}",
+  "json": {
+    "benefits": [
+      "Creates prospect/client database",
+      "Enables effective/professional interaction",
+      "Helps close sales",
+      "Classifies potential clients"
+    ],
+    "frictions": [],
+    "choosing_switching_reasons": []
+  },
+  "ts": "2026-10-18T04:05:33.740374+00:00"
+}

@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "5455f79161a71bf3e91e866c2e0c3c99531757f82d1ee6bbda3dcc19e6eb3479",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 292,
+  "output_tokens": 966,
+  "cost_usd": 0.0025026000000000002,
+  "elapsed_s": 6.19,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 5,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Improved lead organization and tracking\",\n    \"Reduced instances of double-contacting leads\",\n    \"Cost-effective solution for a small team\"\n  ],\n  \"frictions\": [\n    \"Initial setup for de-duplication rules was complex\",\n    \"Occasional manual intervention needed for lead merging\",\n    \"Learning curve for less tech-savvy team members\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Affordable pricing for a small business\",\n    \"Comprehensive lead management features\",\n    \"Integration capabilities with other Zoho products\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 5,
+    "recommendation_score": 8,
+    "benefits": [
+      "Improved lead organization and tracking",
+      "Reduced instances of double-contacting leads",
+      "Cost-effective solution for a small team"
+    ],
+    "frictions": [
+      "Initial setup for de-duplication rules was complex",
+      "Occasional manual intervention needed for lead merging",
+      "Learning curve for less tech-savvy team members"
+    ],
+    "choosing_switching_reasons": [
+      "Affordable pricing for a small business",
+      "Comprehensive lead management features",
+      "Integration capabilities with other Zoho products"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:56.888246+00:00"
+}

@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c7313cd28a07cb09d2f63b713e7b34076957425aa9e82fd8787501e5a02cb13a",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 6001,
+  "output_tokens": 1114,
+  "cost_usd": 0.0045853000000000005,
+  "elapsed_s": 10.79,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"recommendation_score\": 6,\n  \"benefits\": [\n    \"Ability to customize data fields and objects for specific team needs\",\n    \"Real-time sales reports and pipeline visualization for team monitoring\",\n    \"Streamlined workflow for managing sales tasks\"\n  ],\n  \"frictions\": [\n    \"Steep learning curve for advanced customization like complex filters and custom objects\",\n    \"Initial setup and configuration for a large team can be time-consuming\",\n    \"Potential limitations in reporting complexity for enterprise-level insights\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Desired a CRM that adapts to specific sales processes\",\n    \"Needed improved sales pipeline tracking and team management\",\n    \"Sought a user-friendly interface compared to other CRMs\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "recommendation_score": 6,
+    "benefits": [
+      "Ability to customize data fields and objects for specific team needs",
+      "Real-time sales reports and pipeline visualization for team monitoring",
+      "Streamlined workflow for managing sales tasks"
+    ],
+    "frictions": [
+      "Steep learning curve for advanced customization like complex filters and custom objects",
+      "Initial setup and configuration for a large team can be time-consuming",
+      "Potential limitations in reporting complexity for enterprise-level insights"
+    ],
+    "choosing_switching_reasons": [
+      "Desired a CRM that adapts to specific sales processes",
+      "Needed improved sales pipeline tracking and team management",
+      "Sought a user-friendly interface compared to other CRMs"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:06:06.383025+00:00"
+}

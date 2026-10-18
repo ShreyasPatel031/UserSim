@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8a1aad6b65530808cdc8038da22a22f66df0b86c7896cd94452db5459dc4d157",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3047,
+  "output_tokens": 952,
+  "cost_usd": 0.0032941000000000003,
+  "elapsed_s": 14.37,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Ability to easily create custom fields for detailed deal tracking.\",\n    \"Streamlined deal pipeline management with customizable stages.\",\n    \"Improved visibility into deal qualification status and outcomes.\"\n  ],\n  \"frictions\": [\n    \"Initial learning curve for advanced customization options.\",\n    \"Potentially overwhelming number of features for a small team.\",\n    \"Reporting on custom field data could be improved for deeper analysis.\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed a CRM that allowed for granular customization of deal properties.\",\n    \"Looking for an affordable and user-friendly sales CRM solution.\",\n    \"Required better organization and tracking of internal sales processes.\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Ability to easily create custom fields for detailed deal tracking.",
+      "Streamlined deal pipeline management with customizable stages.",
+      "Improved visibility into deal qualification status and outcomes."
+    ],
+    "frictions": [
+      "Initial learning curve for advanced customization options.",
+      "Potentially overwhelming number of features for a small team.",
+      "Reporting on custom field data could be improved for deeper analysis."
+    ],
+    "choosing_switching_reasons": [
+      "Needed a CRM that allowed for granular customization of deal properties.",
+      "Looking for an affordable and user-friendly sales CRM solution.",
+      "Required better organization and tracking of internal sales processes."
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:51.806908+00:00"
+}

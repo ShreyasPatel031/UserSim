@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0b77e8afcb474a82c318d589c54572d9d408800d20184444600468e9e3e0652d",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 290,
+  "output_tokens": 880,
+  "cost_usd": 0.002287,
+  "elapsed_s": 9.48,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"recommendation_score\": 6,\n  \"benefits\": [\n    \"Centralized storage for customer contact information\",\n    \"Intuitive interface for basic data entry\",\n    \"Good for tracking sales-related customer interactions\"\n  ],\n  \"frictions\": [\n    \"Limited advanced data export options for analytical purposes\",\n    \"Custom reporting features not robust enough for deep analysis\",\n    \"Challenges integrating with existing data warehousing solutions\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Need for a structured system to manage customer data\",\n    \"Ease of adoption for sales team members\",\n    \"Positive reputation as a sales CRM\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 3,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "recommendation_score": 6,
+    "benefits": [
+      "Centralized storage for customer contact information",
+      "Intuitive interface for basic data entry",
+      "Good for tracking sales-related customer interactions"
+    ],
+    "frictions": [
+      "Limited advanced data export options for analytical purposes",
+      "Custom reporting features not robust enough for deep analysis",
+      "Challenges integrating with existing data warehousing solutions"
+    ],
+    "choosing_switching_reasons": [
+      "Need for a structured system to manage customer data",
+      "Ease of adoption for sales team members",
+      "Positive reputation as a sales CRM"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:06:05.704648+00:00"
+}

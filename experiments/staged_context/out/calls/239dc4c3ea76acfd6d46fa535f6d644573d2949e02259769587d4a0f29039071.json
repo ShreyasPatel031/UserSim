@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "239dc4c3ea76acfd6d46fa535f6d644573d2949e02259769587d4a0f29039071",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 298,
+  "output_tokens": 980,
+  "cost_usd": 0.0025394,
+  "elapsed_s": 9.19,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Visual pipeline helps track sales progress easily\",\n    \"Streamlined lead management for the sales team\",\n    \"Improved oversight of sales activities and performance\"\n  ],\n  \"frictions\": [\n    \"Advanced reporting could be more robust for executive-level insights\",\n    \"Occasional difficulty with deeper customization for specific workflows\",\n    \"Integration with some niche industry-specific tools was limited\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Strong focus on sales pipeline management\",\n    \"Intuitive and easy-to-learn interface for the sales team\",\n    \"Cost-effective solution for a growing sales operation\"\n  ],\n  \"switched_from\": \"null\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Visual pipeline helps track sales progress easily",
+      "Streamlined lead management for the sales team",
+      "Improved oversight of sales activities and performance"
+    ],
+    "frictions": [
+      "Advanced reporting could be more robust for executive-level insights",
+      "Occasional difficulty with deeper customization for specific workflows",
+      "Integration with some niche industry-specific tools was limited"
+    ],
+    "choosing_switching_reasons": [
+      "Strong focus on sales pipeline management",
+      "Intuitive and easy-to-learn interface for the sales team",
+      "Cost-effective solution for a growing sales operation"
+    ],
+    "switched_from": "null"
+  },
+  "ts": "2026-10-18T04:06:03.582152+00:00"
+}

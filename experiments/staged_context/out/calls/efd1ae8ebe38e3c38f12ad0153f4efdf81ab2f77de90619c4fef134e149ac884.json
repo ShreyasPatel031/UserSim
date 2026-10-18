@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "efd1ae8ebe38e3c38f12ad0153f4efdf81ab2f77de90619c4fef134e149ac884",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2975,
+  "output_tokens": 860,
+  "cost_usd": 0.0030425,
+  "elapsed_s": 9.15,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"recommendation_score\": 7,\n  \"benefits\": [\n    \"Seamless integration with email and calendar for full view of interactions\",\n    \"Mobile app is functional and helps keep data updated on the go\",\n    \"Automated data syncing streamlines workflow\"\n  ],\n  \"frictions\": [\n    \"Pricing might be a concern for a very small company post-trial\",\n    \"Initial setup for all integrations took some effort\",\n    \"Primarily sales-focused, some marketing features felt secondary\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed a solution to centralize customer interactions\",\n    \"Wanted automated data syncing across communication channels\",\n    \"Heard good things about its integration capabilities\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "recommendation_score": 7,
+    "benefits": [
+      "Seamless integration with email and calendar for full view of interactions",
+      "Mobile app is functional and helps keep data updated on the go",
+      "Automated data syncing streamlines workflow"
+    ],
+    "frictions": [
+      "Pricing might be a concern for a very small company post-trial",
+      "Initial setup for all integrations took some effort",
+      "Primarily sales-focused, some marketing features felt secondary"
+    ],
+    "choosing_switching_reasons": [
+      "Needed a solution to centralize customer interactions",
+      "Wanted automated data syncing across communication channels",
+      "Heard good things about its integration capabilities"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:06:05.762392+00:00"
+}

@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "22164d0dd7b71607ec4997ca76eb2d27be8bca05e50e0223f783b675ab5425dd",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 301,
+  "output_tokens": 1025,
+  "cost_usd": 0.0026528000000000003,
+  "elapsed_s": 10.23,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Ability to create specific custom modules to track unique financial data points.\",\n    \"Successfully linked custom data to core modules for a comprehensive client view.\",\n    \"Cost-effective solution for managing client relationships and compliance needs.\"\n  ],\n  \"frictions\": [\n    \"Setting up complex relationships between custom and base modules required a significant learning curve.\",\n    \"Initial data migration and ensuring data integrity across linked modules was time-consuming.\",\n    \"Some advanced reporting on custom module data required workarounds.\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed a flexible CRM to handle industry-specific data requirements.\",\n    \"Looked for a solution offering extensive customization capabilities.\",\n    \"Attractive pricing structure for a small financial services firm.\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Ability to create specific custom modules to track unique financial data points.",
+      "Successfully linked custom data to core modules for a comprehensive client view.",
+      "Cost-effective solution for managing client relationships and compliance needs."
+    ],
+    "frictions": [
+      "Setting up complex relationships between custom and base modules required a significant learning curve.",
+      "Initial data migration and ensuring data integrity across linked modules was time-consuming.",
+      "Some advanced reporting on custom module data required workarounds."
+    ],
+    "choosing_switching_reasons": [
+      "Needed a flexible CRM to handle industry-specific data requirements.",
+      "Looked for a solution offering extensive customization capabilities.",
+      "Attractive pricing structure for a small financial services firm."
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:54.830434+00:00"
+}

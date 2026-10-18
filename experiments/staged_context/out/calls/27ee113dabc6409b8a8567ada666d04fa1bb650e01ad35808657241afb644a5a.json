@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "27ee113dabc6409b8a8567ada666d04fa1bb650e01ad35808657241afb644a5a",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2305,
+  "output_tokens": 951,
+  "cost_usd": 0.0030690000000000005,
+  "elapsed_s": 14.64,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Customizable reporting helps track content performance and campaign ROI.\",\n    \"Ability to export data easily for team presentations and analysis.\",\n    \"Centralized data helps keep marketing and sales efforts organized.\"\n  ],\n  \"frictions\": [\n    \"Initial setup of custom reports can be time-consuming.\",\n    \"Interface for report customization can sometimes feel less intuitive.\",\n    \"Ensuring data consistency across different teams for accurate reporting.\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Comprehensive suite of offerings for a growing business.\",\n    \"Flexibility in customizing data fields to fit retail marketing needs.\",\n    \"Integration capabilities with other tools used for content distribution.\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Customizable reporting helps track content performance and campaign ROI.",
+      "Ability to export data easily for team presentations and analysis.",
+      "Centralized data helps keep marketing and sales efforts organized."
+    ],
+    "frictions": [
+      "Initial setup of custom reports can be time-consuming.",
+      "Interface for report customization can sometimes feel less intuitive.",
+      "Ensuring data consistency across different teams for accurate reporting."
+    ],
+    "choosing_switching_reasons": [
+      "Comprehensive suite of offerings for a growing business.",
+      "Flexibility in customizing data fields to fit retail marketing needs.",
+      "Integration capabilities with other tools used for content distribution."
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:54.778806+00:00"
+}

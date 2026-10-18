@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7c8aefefc24db6a15e250c3ff9aa66b0cb6eb0b457d6333466356842c183b6a9",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 5978,
+  "output_tokens": 973,
+  "cost_usd": 0.0042259,
+  "elapsed_s": 14.19,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"AI-driven lead scoring and insights for market research\",\n    \"Efficient contact organization with custom fields and lifecycle stages\",\n    \"Automation features for lead nurturing and communication\"\n  ],\n  \"frictions\": [\n    \"Potential limitations in deep integration with specialized market research tools\",\n    \"Advanced reporting features could be more robust for detailed analysis\",\n    \"Initial setup and customization for specific workflows required effort\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"AI capabilities for lead qualification and improved prospecting\",\n    \"Comprehensive contact and lead management features\",\n    \"Good value for a small team needing robust CRM functionality\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "AI-driven lead scoring and insights for market research",
+      "Efficient contact organization with custom fields and lifecycle stages",
+      "Automation features for lead nurturing and communication"
+    ],
+    "frictions": [
+      "Potential limitations in deep integration with specialized market research tools",
+      "Advanced reporting features could be more robust for detailed analysis",
+      "Initial setup and customization for specific workflows required effort"
+    ],
+    "choosing_switching_reasons": [
+      "AI capabilities for lead qualification and improved prospecting",
+      "Comprehensive contact and lead management features",
+      "Good value for a small team needing robust CRM functionality"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:53.560596+00:00"
+}

@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c9fe3ae32f423a05b7465a7288382d717a44665390770ea0a1975d02d766d893",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 5987,
+  "output_tokens": 1016,
+  "cost_usd": 0.0043361,
+  "elapsed_s": 15.12,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Ability to design and manage sales email templates efficiently\",\n    \"Automation of email sequences for outreach and follow-ups\",\n    \"AI assistance for email content or lead insights\"\n  ],\n  \"frictions\": [\n    \"Learning curve for new marketing automation features\",\n    \"Initial setup time for custom email templates and sequences\",\n    \"Some limitations in advanced aesthetic customization for emails\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed a CRM with strong email marketing and automation for sales outreach\",\n    \"Looking for a solution to streamline communication in recruiting\",\n    \"Attracted by AI features for lead and email management\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Ability to design and manage sales email templates efficiently",
+      "Automation of email sequences for outreach and follow-ups",
+      "AI assistance for email content or lead insights"
+    ],
+    "frictions": [
+      "Learning curve for new marketing automation features",
+      "Initial setup time for custom email templates and sequences",
+      "Some limitations in advanced aesthetic customization for emails"
+    ],
+    "choosing_switching_reasons": [
+      "Needed a CRM with strong email marketing and automation for sales outreach",
+      "Looking for a solution to streamline communication in recruiting",
+      "Attracted by AI features for lead and email management"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:52.832038+00:00"
+}

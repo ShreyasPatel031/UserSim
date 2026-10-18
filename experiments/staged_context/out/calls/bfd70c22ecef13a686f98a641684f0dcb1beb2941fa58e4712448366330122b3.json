@@ -1,0 +1,32 @@
+{
+  "stage": "out_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "bfd70c22ecef13a686f98a641684f0dcb1beb2941fa58e4712448366330122b3",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 214,
+  "output_tokens": 455,
+  "cost_usd": 0.0012017,
+  "elapsed_s": 17.24,
+  "error": null,
+  "text": "{\n  \"benefits\": [\n    \"Easy to customize\",\n    \"Can use only needed tools\",\n    \"Time tracking application useful\",\n    \"Solid product\"\n  ],\n  \"frictions\": [\n    \"Not user-friendly for employees\",\n    \"Frequent connectivity issues\",\n    \"Employees unable to access app\",\n    \"Requires light coding/app building skills\"\n  ],\n  \"choosing_switching_reasons\": []\n}",
+  "json": {
+    "benefits": [
+      "Easy to customize",
+      "Can use only needed tools",
+      "Time tracking application useful",
+      "Solid product"
+    ],
+    "frictions": [
+      "Not user-friendly for employees",
+      "Frequent connectivity issues",
+      "Employees unable to access app",
+      "Requires light coding/app building skills"
+    ],
+    "choosing_switching_reasons": []
+  },
+  "ts": "2026-10-18T04:05:33.520832+00:00"
+}

@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0ea9a3cc0dc70b8191de98527b74ceb81c39007af4466827b73dfa7f82912955",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 295,
+  "output_tokens": 946,
+  "cost_usd": 0.0024535,
+  "elapsed_s": 8.35,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 5,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Efficiently organizes potential client data\",\n    \"Robust tools for client classification and segmentation\",\n    \"Affordable solution for a self-employed consultant\"\n  ],\n  \"frictions\": [\n    \"Initial learning curve for setting up custom fields and workflows\",\n    \"Interface can sometimes feel overwhelming with many features\",\n    \"Limited advanced reporting for deeper insights without further setup\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed a cost-effective CRM for lead management\",\n    \"Required features for contact classification and outreach\",\n    \"Scalable solution for a growing freelance business\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 5,
+    "recommendation_score": 8,
+    "benefits": [
+      "Efficiently organizes potential client data",
+      "Robust tools for client classification and segmentation",
+      "Affordable solution for a self-employed consultant"
+    ],
+    "frictions": [
+      "Initial learning curve for setting up custom fields and workflows",
+      "Interface can sometimes feel overwhelming with many features",
+      "Limited advanced reporting for deeper insights without further setup"
+    ],
+    "choosing_switching_reasons": [
+      "Needed a cost-effective CRM for lead management",
+      "Required features for contact classification and outreach",
+      "Scalable solution for a growing freelance business"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:55.794243+00:00"
+}

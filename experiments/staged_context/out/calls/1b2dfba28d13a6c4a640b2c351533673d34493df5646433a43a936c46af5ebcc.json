@@ -1,0 +1,32 @@
+{
+  "stage": "out_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1b2dfba28d13a6c4a640b2c351533673d34493df5646433a43a936c46af5ebcc",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 251,
+  "output_tokens": 508,
+  "cost_usd": 0.0013452999999999998,
+  "elapsed_s": 19.26,
+  "error": null,
+  "text": "{\n  \"benefits\": [\n    \"Tracks sales activities\",\n    \"Helps create sales processes\",\n    \"Offers various communication channels (email, phone, chat, WhatsApp)\",\n    \"Provides sales activity reports\"\n  ],\n  \"frictions\": [\n    \"Takes time to learn all features\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Part of the Freshworks ecosystem (Freshdesk, Freshcaller, Freshchat)\",\n    \"It is the company's main CRM tool\"\n  ]\n}",
+  "json": {
+    "benefits": [
+      "Tracks sales activities",
+      "Helps create sales processes",
+      "Offers various communication channels (email, phone, chat, WhatsApp)",
+      "Provides sales activity reports"
+    ],
+    "frictions": [
+      "Takes time to learn all features"
+    ],
+    "choosing_switching_reasons": [
+      "Part of the Freshworks ecosystem (Freshdesk, Freshcaller, Freshchat)",
+      "It is the company's main CRM tool"
+    ]
+  },
+  "ts": "2026-10-18T04:05:35.064881+00:00"
+}

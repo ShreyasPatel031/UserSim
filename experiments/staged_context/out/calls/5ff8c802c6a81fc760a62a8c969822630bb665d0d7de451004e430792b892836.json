@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "5ff8c802c6a81fc760a62a8c969822630bb665d0d7de451004e430792b892836",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 324,
+  "output_tokens": 990,
+  "cost_usd": 0.0025721999999999997,
+  "elapsed_s": 9.82,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Visual pipeline makes tracking prospects through sales stages very clear.\",\n    \"Integrated appointment reminders and calendar synchronization streamline follow-ups.\",\n    \"Customizable sales stages allowed for easy setup of our specific process.\"\n  ],\n  \"frictions\": [\n    \"Reporting capabilities could be more advanced for deeper analysis.\",\n    \"Initial data import could be a bit cumbersome.\",\n    \"Occasional limitations with advanced automation for complex workflows.\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed a dedicated sales-focused CRM to manage leads efficiently.\",\n    \"Valued the intuitive visual pipeline interface for sales teams.\",\n    \"Looked for a solution that offered good value for a small to medium-sized business.\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Visual pipeline makes tracking prospects through sales stages very clear.",
+      "Integrated appointment reminders and calendar synchronization streamline follow-ups.",
+      "Customizable sales stages allowed for easy setup of our specific process."
+    ],
+    "frictions": [
+      "Reporting capabilities could be more advanced for deeper analysis.",
+      "Initial data import could be a bit cumbersome.",
+      "Occasional limitations with advanced automation for complex workflows."
+    ],
+    "choosing_switching_reasons": [
+      "Needed a dedicated sales-focused CRM to manage leads efficiently.",
+      "Valued the intuitive visual pipeline interface for sales teams.",
+      "Looked for a solution that offered good value for a small to medium-sized business."
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:06:04.480945+00:00"
+}

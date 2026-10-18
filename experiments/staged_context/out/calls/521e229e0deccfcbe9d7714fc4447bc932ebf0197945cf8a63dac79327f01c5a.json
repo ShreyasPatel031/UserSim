@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "521e229e0deccfcbe9d7714fc4447bc932ebf0197945cf8a63dac79327f01c5a",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2297,
+  "output_tokens": 958,
+  "cost_usd": 0.0030841,
+  "elapsed_s": 10.5,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 2,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"recommendation_score\": 6,\n  \"benefits\": [\n    \"Ability to customize some aspects of the CRM\",\n    \"Automation features for common sales tasks\",\n    \"Integration with AI tools like ChatGPT\"\n  ],\n  \"frictions\": [\n    \"Lack of a direct, easy-to-use voice note recording feature\",\n    \"Initial setup complexity for a small team\",\n    \"Requires workarounds or integrations for specific needs like voice notes\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Desire for a comprehensive CRM suite\",\n    \"Attracted by AI assistance and automation claims\",\n    \"Perceived value for a small budget\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 2,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "recommendation_score": 6,
+    "benefits": [
+      "Ability to customize some aspects of the CRM",
+      "Automation features for common sales tasks",
+      "Integration with AI tools like ChatGPT"
+    ],
+    "frictions": [
+      "Lack of a direct, easy-to-use voice note recording feature",
+      "Initial setup complexity for a small team",
+      "Requires workarounds or integrations for specific needs like voice notes"
+    ],
+    "choosing_switching_reasons": [
+      "Desire for a comprehensive CRM suite",
+      "Attracted by AI assistance and automation claims",
+      "Perceived value for a small budget"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:57.289980+00:00"
+}

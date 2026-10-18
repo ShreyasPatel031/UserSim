@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "98fe53cff327d4fd60bc98e183d7789741307e81f8d532a4b2d57aec72640dbb",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 290,
+  "output_tokens": 1065,
+  "cost_usd": 0.0027494999999999998,
+  "elapsed_s": 15.7,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Streamlined tracking of student application stages\",\n    \"Centralized communication history with prospective students\",\n    \"Improved visibility into student guidance pipeline\"\n  ],\n  \"frictions\": [\n    \"Initial setup to adapt sales terminology to education context\",\n    \"Limited advanced customization for unique educational workflows\",\n    \"Reporting could be more tailored for student enrollment metrics\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed a system to manage student inquiries and applications\",\n    \"Affordable CRM option for a small to medium-sized team\",\n    \"User-friendly interface for non-sales staff\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Streamlined tracking of student application stages",
+      "Centralized communication history with prospective students",
+      "Improved visibility into student guidance pipeline"
+    ],
+    "frictions": [
+      "Initial setup to adapt sales terminology to education context",
+      "Limited advanced customization for unique educational workflows",
+      "Reporting could be more tailored for student enrollment metrics"
+    ],
+    "choosing_switching_reasons": [
+      "Needed a system to manage student inquiries and applications",
+      "Affordable CRM option for a small to medium-sized team",
+      "User-friendly interface for non-sales staff"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:54.898409+00:00"
+}

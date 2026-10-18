@@ -1,0 +1,31 @@
+{
+  "stage": "out_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "573c694df99b9332c7de5c4a00522865e777797e97e3f4b74f65c0cabdee86b2",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 244,
+  "output_tokens": 445,
+  "cost_usd": 0.0011857,
+  "elapsed_s": 17.77,
+  "error": null,
+  "text": "{\n  \"benefits\": [\n    \"Robust customization options\",\n    \"Seamless integration with other Zoho apps\",\n    \"Powerful for managing customer relationships\",\n    \"Automates tasks\"\n  ],\n  \"frictions\": [\n    \"User interface can feel cluttered\",\n    \"Steep learning curve for beginners\",\n    \"Advanced features in higher-priced plans\"\n  ],\n  \"choosing_switching_reasons\": []\n}",
+  "json": {
+    "benefits": [
+      "Robust customization options",
+      "Seamless integration with other Zoho apps",
+      "Powerful for managing customer relationships",
+      "Automates tasks"
+    ],
+    "frictions": [
+      "User interface can feel cluttered",
+      "Steep learning curve for beginners",
+      "Advanced features in higher-priced plans"
+    ],
+    "choosing_switching_reasons": []
+  },
+  "ts": "2026-10-18T04:05:33.970092+00:00"
+}

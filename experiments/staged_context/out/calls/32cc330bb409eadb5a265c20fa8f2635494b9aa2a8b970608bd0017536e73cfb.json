@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "32cc330bb409eadb5a265c20fa8f2635494b9aa2a8b970608bd0017536e73cfb",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 291,
+  "output_tokens": 1030,
+  "cost_usd": 0.0026623000000000003,
+  "elapsed_s": 17.83,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Streamlined lead follow-up process\",\n    \"Intuitive interface for quick adoption\",\n    \"Affordable for a small startup\"\n  ],\n  \"frictions\": [\n    \"Reporting on lead engagement could be more in-depth\",\n    \"Limited customization options for email sequences\",\n    \"Initial learning curve for advanced automation features\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed a dedicated tool for lead management\",\n    \"Ease of setup and quick deployment\",\n    \"Cost-effectiveness for a small team\"\n  ],\n  \"switched_from\": \"null\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Streamlined lead follow-up process",
+      "Intuitive interface for quick adoption",
+      "Affordable for a small startup"
+    ],
+    "frictions": [
+      "Reporting on lead engagement could be more in-depth",
+      "Limited customization options for email sequences",
+      "Initial learning curve for advanced automation features"
+    ],
+    "choosing_switching_reasons": [
+      "Needed a dedicated tool for lead management",
+      "Ease of setup and quick deployment",
+      "Cost-effectiveness for a small team"
+    ],
+    "switched_from": "null"
+  },
+  "ts": "2026-10-18T04:05:55.466105+00:00"
+}

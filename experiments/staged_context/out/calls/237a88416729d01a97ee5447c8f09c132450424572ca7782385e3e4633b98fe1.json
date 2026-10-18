@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "237a88416729d01a97ee5447c8f09c132450424572ca7782385e3e4633b98fe1",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 5989,
+  "output_tokens": 1136,
+  "cost_usd": 0.0046367000000000005,
+  "elapsed_s": 13.89,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Effectively visualize and track sales opportunities through customizable pipeline stages.\",\n    \"Ease of use and intuitive interface for sales team adoption.\",\n    \"Customization options to align the CRM with specific sales processes.\"\n  ],\n  \"frictions\": [\n    \"Initial setup and configuration of custom stages and fields took some time.\",\n    \"Reporting features could be more robust for deeper sales analytics.\",\n    \"Potential for minor integration challenges with other accounting-specific tools.\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed a dedicated sales CRM to manage and visualize the sales pipeline more effectively.\",\n    \"Sought a user-friendly solution that sales team members would adopt quickly.\",\n    \"Competitive pricing for the features offered, suitable for a small to medium-sized business.\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Effectively visualize and track sales opportunities through customizable pipeline stages.",
+      "Ease of use and intuitive interface for sales team adoption.",
+      "Customization options to align the CRM with specific sales processes."
+    ],
+    "frictions": [
+      "Initial setup and configuration of custom stages and fields took some time.",
+      "Reporting features could be more robust for deeper sales analytics.",
+      "Potential for minor integration challenges with other accounting-specific tools."
+    ],
+    "choosing_switching_reasons": [
+      "Needed a dedicated sales CRM to manage and visualize the sales pipeline more effectively.",
+      "Sought a user-friendly solution that sales team members would adopt quickly.",
+      "Competitive pricing for the features offered, suitable for a small to medium-sized business."
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:51.744185+00:00"
+}

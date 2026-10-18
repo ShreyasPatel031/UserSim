@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "53cc3963315ead766171df63ee548c78b23a7d064bb5d1db817f61945db4dfdd",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 294,
+  "output_tokens": 1073,
+  "cost_usd": 0.0027707,
+  "elapsed_s": 15.54,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Streamlined task delegation to my sales team\",\n    \"Improved visibility into team activities and progress\",\n    \"Consolidated customer data for better sales management\"\n  ],\n  \"frictions\": [\n    \"Limited advanced reporting on task completion and team performance\",\n    \"Occasional difficulty with customizing complex workflows for delegation\",\n    \"Integration challenges with our existing project management tools\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Competitive pricing for a growing sales team\",\n    \"Reputation for ease of use for sales representatives\",\n    \"Robust feature set for sales pipeline management\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Streamlined task delegation to my sales team",
+      "Improved visibility into team activities and progress",
+      "Consolidated customer data for better sales management"
+    ],
+    "frictions": [
+      "Limited advanced reporting on task completion and team performance",
+      "Occasional difficulty with customizing complex workflows for delegation",
+      "Integration challenges with our existing project management tools"
+    ],
+    "choosing_switching_reasons": [
+      "Competitive pricing for a growing sales team",
+      "Reputation for ease of use for sales representatives",
+      "Robust feature set for sales pipeline management"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:52.241128+00:00"
+}

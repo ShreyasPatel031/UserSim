@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d2a6738b3569d1a374a1524a3d5c76210d565a9034e6350e41e496a297320828",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 5998,
+  "output_tokens": 1021,
+  "cost_usd": 0.0043519,
+  "elapsed_s": 9.21,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Ability to customize customer profile views to highlight key information\",\n    \"Streamlined view of customer contact details for quick access\",\n    \"User-friendly interface for managing sales-related customer data\"\n  ],\n  \"frictions\": [\n    \"Initial learning curve for setting up complex custom layouts\",\n    \"Occasional minor glitches when saving layout changes\",\n    \"Might require some trial and error to get the perfect profile display\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed a CRM that allowed customization of customer data display\",\n    \"Looked for an easy-to-use sales CRM solution\",\n    \"Appreciated features for managing and organizing customer interactions\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Ability to customize customer profile views to highlight key information",
+      "Streamlined view of customer contact details for quick access",
+      "User-friendly interface for managing sales-related customer data"
+    ],
+    "frictions": [
+      "Initial learning curve for setting up complex custom layouts",
+      "Occasional minor glitches when saving layout changes",
+      "Might require some trial and error to get the perfect profile display"
+    ],
+    "choosing_switching_reasons": [
+      "Needed a CRM that allowed customization of customer data display",
+      "Looked for an easy-to-use sales CRM solution",
+      "Appreciated features for managing and organizing customer interactions"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:45.626733+00:00"
+}

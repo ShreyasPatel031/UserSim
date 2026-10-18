@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "03e2be27f60120e4f509377c7185f67ebf2585e917a01fae0d0c27bb03f6c7a7",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 292,
+  "output_tokens": 937,
+  "cost_usd": 0.0024301,
+  "elapsed_s": 9.95,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Streamlined process for adding new customer records\",\n    \"Clear visual overview of the sales pipeline\",\n    \"Quick adoption by our small team\"\n  ],\n  \"frictions\": [\n    \"Limited advanced reporting for strategic insights\",\n    \"Some difficulty with mass data imports from other sources\",\n    \"Integrations with specific marketing tools could be smoother\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed an intuitive CRM for database growth\",\n    \"Affordable for a small startup\",\n    \"Recommended for its sales-centric approach\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Streamlined process for adding new customer records",
+      "Clear visual overview of the sales pipeline",
+      "Quick adoption by our small team"
+    ],
+    "frictions": [
+      "Limited advanced reporting for strategic insights",
+      "Some difficulty with mass data imports from other sources",
+      "Integrations with specific marketing tools could be smoother"
+    ],
+    "choosing_switching_reasons": [
+      "Needed an intuitive CRM for database growth",
+      "Affordable for a small startup",
+      "Recommended for its sales-centric approach"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:06:06.415493+00:00"
+}

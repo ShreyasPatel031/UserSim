@@ -1,0 +1,29 @@
+{
+  "stage": "out_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "497d4cc844081049cc32c2c914ef7a6ad32381d423134d4aea54e4e88d7b60e6",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 217,
+  "output_tokens": 223,
+  "cost_usd": 0.0006226000000000001,
+  "elapsed_s": 17.04,
+  "error": null,
+  "text": "{\n  \"benefits\": [\n    \"Delegating tasks to the team\",\n    \"Tracking of team activity / performance\",\n    \"Increase accuracy of sales forecast\",\n    \"Identifying neglected contacts in the database\"\n  ],\n  \"frictions\": [\n    \"software takes longer time to load in case of heavily loaded database\"\n  ],\n  \"choosing_switching_reasons\": []\n}",
+  "json": {
+    "benefits": [
+      "Delegating tasks to the team",
+      "Tracking of team activity / performance",
+      "Increase accuracy of sales forecast",
+      "Identifying neglected contacts in the database"
+    ],
+    "frictions": [
+      "software takes longer time to load in case of heavily loaded database"
+    ],
+    "choosing_switching_reasons": []
+  },
+  "ts": "2026-10-18T04:05:32.829530+00:00"
+}

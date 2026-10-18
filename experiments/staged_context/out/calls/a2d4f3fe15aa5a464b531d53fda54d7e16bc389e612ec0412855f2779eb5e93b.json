@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a2d4f3fe15aa5a464b531d53fda54d7e16bc389e612ec0412855f2779eb5e93b",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2978,
+  "output_tokens": 995,
+  "cost_usd": 0.0033809,
+  "elapsed_s": 9.65,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Centralized storage for deal-related documents like contracts and PDFs.\",\n    \"Ensures all team members have access to critical project files.\",\n    \"Customizable fields allow for organizing document links or attachments.\"\n  ],\n  \"frictions\": [\n    \"Initial setup to configure document storage and access permissions.\",\n    \"May require integration with a separate document management tool for advanced features.\",\n    \"Ensuring consistent team adoption for uploading all relevant files.\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Need for a centralized system to manage sales deals and associated documents.\",\n    \"Desire for improved team collaboration and visibility on client projects.\",\n    \"Pipedrive's focus on sales pipeline management aligns with core business needs.\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Centralized storage for deal-related documents like contracts and PDFs.",
+      "Ensures all team members have access to critical project files.",
+      "Customizable fields allow for organizing document links or attachments."
+    ],
+    "frictions": [
+      "Initial setup to configure document storage and access permissions.",
+      "May require integration with a separate document management tool for advanced features.",
+      "Ensuring consistent team adoption for uploading all relevant files."
+    ],
+    "choosing_switching_reasons": [
+      "Need for a centralized system to manage sales deals and associated documents.",
+      "Desire for improved team collaboration and visibility on client projects.",
+      "Pipedrive's focus on sales pipeline management aligns with core business needs."
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:06:05.131927+00:00"
+}

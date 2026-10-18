@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "055a63d52c3489fd3e6c9912041d16efaa793128b31899a914457a28ee4a450a",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 290,
+  "output_tokens": 949,
+  "cost_usd": 0.0024595,
+  "elapsed_s": 12.18,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 6,\n  \"benefits\": [\n    \"Affordable CRM solution for our sales team\",\n    \"Helps organize customer interactions and sales pipeline\",\n    \"Good for basic lead tracking and management\"\n  ],\n  \"frictions\": [\n    \"Difficulty converting leads to contacts effectively for reporting\",\n    \"Sales reporting is inaccurate or requires manual manipulation due to lead/contact status\",\n    \"Lack of seamless integration between lead conversion and sales analytics\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Cost-effective solution for a growing SMB\",\n    \"Needed a dedicated sales CRM\",\n    \"Offered essential features for lead and deal management\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 3,
+    "overall_rating": 3,
+    "value_for_money_rating": 4,
+    "recommendation_score": 6,
+    "benefits": [
+      "Affordable CRM solution for our sales team",
+      "Helps organize customer interactions and sales pipeline",
+      "Good for basic lead tracking and management"
+    ],
+    "frictions": [
+      "Difficulty converting leads to contacts effectively for reporting",
+      "Sales reporting is inaccurate or requires manual manipulation due to lead/contact status",
+      "Lack of seamless integration between lead conversion and sales analytics"
+    ],
+    "choosing_switching_reasons": [
+      "Cost-effective solution for a growing SMB",
+      "Needed a dedicated sales CRM",
+      "Offered essential features for lead and deal management"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:49.111535+00:00"
+}

@@ -1,0 +1,32 @@
+{
+  "stage": "out_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7066c35c8dc5506d4d4a953de888cee2eb6834751373c2e63d638e41f3c85699",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 211,
+  "output_tokens": 404,
+  "cost_usd": 0.0010733000000000001,
+  "elapsed_s": 15.19,
+  "error": null,
+  "text": "{\n  \"benefits\": [\n    \"very easy to use\",\n    \"maintaining leads and deals is easier\",\n    \"easy to send emails directly from CRM leads\"\n  ],\n  \"frictions\": [\n    \"difficult to integrate with previous CRM\",\n    \"gaps in capturing details compared to previous CRM\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"company decided to switch\",\n    \"difficulties faced in Freshsales\"\n  ]\n}",
+  "json": {
+    "benefits": [
+      "very easy to use",
+      "maintaining leads and deals is easier",
+      "easy to send emails directly from CRM leads"
+    ],
+    "frictions": [
+      "difficult to integrate with previous CRM",
+      "gaps in capturing details compared to previous CRM"
+    ],
+    "choosing_switching_reasons": [
+      "company decided to switch",
+      "difficulties faced in Freshsales"
+    ]
+  },
+  "ts": "2026-10-18T04:05:31.282288+00:00"
+}

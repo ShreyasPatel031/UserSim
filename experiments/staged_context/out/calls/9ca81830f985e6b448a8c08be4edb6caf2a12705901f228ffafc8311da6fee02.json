@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9ca81830f985e6b448a8c08be4edb6caf2a12705901f228ffafc8311da6fee02",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 5985,
+  "output_tokens": 1103,
+  "cost_usd": 0.004553,
+  "elapsed_s": 16.28,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Comprehensive tracking of sales activities and interactions.\",\n    \"User-friendly interface aids team adoption and training.\",\n    \"Valuable reporting and analytics for team performance insights.\"\n  ],\n  \"frictions\": [\n    \"Advanced customization might require a learning curve.\",\n    \"Occasional minor glitches or slowdowns with complex data.\",\n    \"Integration with some niche IT tools could be smoother.\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed a robust CRM to centralize sales activity tracking.\",\n    \"Sought a solution that would be easy for the sales team to adopt.\",\n    \"Desired better insights into sales performance and pipeline management.\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Comprehensive tracking of sales activities and interactions.",
+      "User-friendly interface aids team adoption and training.",
+      "Valuable reporting and analytics for team performance insights."
+    ],
+    "frictions": [
+      "Advanced customization might require a learning curve.",
+      "Occasional minor glitches or slowdowns with complex data.",
+      "Integration with some niche IT tools could be smoother."
+    ],
+    "choosing_switching_reasons": [
+      "Needed a robust CRM to centralize sales activity tracking.",
+      "Sought a solution that would be easy for the sales team to adopt.",
+      "Desired better insights into sales performance and pipeline management."
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:54.653472+00:00"
+}

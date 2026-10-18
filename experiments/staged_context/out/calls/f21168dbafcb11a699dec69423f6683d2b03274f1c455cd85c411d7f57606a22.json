@@ -1,0 +1,35 @@
+{
+  "stage": "out_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f21168dbafcb11a699dec69423f6683d2b03274f1c455cd85c411d7f57606a22",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 182,
+  "output_tokens": 509,
+  "cost_usd": 0.0013271,
+  "elapsed_s": 18.63,
+  "error": null,
+  "text": "{\n  \"benefits\": [\n    \"All-encompassing CRM software\",\n    \"Automation abilities in sales process\",\n    \"Automates sending emails\",\n    \"Automates following up with leads\"\n  ],\n  \"frictions\": [\n    \"Difficult UI\",\n    \"Difficult onboarding\",\n    \"Difficult customer support\",\n    \"Complex for new users\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Better pricing\",\n    \"Many different software offered in the suite\"\n  ]\n}",
+  "json": {
+    "benefits": [
+      "All-encompassing CRM software",
+      "Automation abilities in sales process",
+      "Automates sending emails",
+      "Automates following up with leads"
+    ],
+    "frictions": [
+      "Difficult UI",
+      "Difficult onboarding",
+      "Difficult customer support",
+      "Complex for new users"
+    ],
+    "choosing_switching_reasons": [
+      "Better pricing",
+      "Many different software offered in the suite"
+    ]
+  },
+  "ts": "2026-10-18T04:05:34.854815+00:00"
+}

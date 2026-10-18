@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "24be6fc8240f232f1a581a2d24fc7ffef241da3d1e59295d7e482cfc0a49fe5d",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 5994,
+  "output_tokens": 1048,
+  "cost_usd": 0.004418200000000001,
+  "elapsed_s": 9.66,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"recommendation_score\": 6,\n  \"benefits\": [\n    \"Good for sales pipeline visualization and deal management.\",\n    \"Customizable fields help tailor it to specific marketing data.\",\n    \"Integrates with other marketing tools for lead nurturing.\"\n  ],\n  \"frictions\": [\n    \"Search bar can be slow or inaccurate for specific records.\",\n    \"Finding historical data or specific campaign-related records is challenging.\",\n    \"Requires workarounds to locate records efficiently for marketing purposes.\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Designed to help manage sales pipelines effectively.\",\n    \"Ability to customize to fit sales and potentially marketing processes.\",\n    \"Positive reputation for ease of use in sales departments.\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 3,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "recommendation_score": 6,
+    "benefits": [
+      "Good for sales pipeline visualization and deal management.",
+      "Customizable fields help tailor it to specific marketing data.",
+      "Integrates with other marketing tools for lead nurturing."
+    ],
+    "frictions": [
+      "Search bar can be slow or inaccurate for specific records.",
+      "Finding historical data or specific campaign-related records is challenging.",
+      "Requires workarounds to locate records efficiently for marketing purposes."
+    ],
+    "choosing_switching_reasons": [
+      "Designed to help manage sales pipelines effectively.",
+      "Ability to customize to fit sales and potentially marketing processes.",
+      "Positive reputation for ease of use in sales departments."
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:06:07.001316+00:00"
+}

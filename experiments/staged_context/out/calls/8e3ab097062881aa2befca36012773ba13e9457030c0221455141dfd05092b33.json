@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8e3ab097062881aa2befca36012773ba13e9457030c0221455141dfd05092b33",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 5994,
+  "output_tokens": 1002,
+  "cost_usd": 0.0043032,
+  "elapsed_s": 13.29,
+  "error": null,
+  "text": "{\n \"ease_of_use_rating\": 5,\n \"functionality_rating\": 5,\n \"overall_rating\": 5,\n \"value_for_money_rating\": 4,\n \"recommendation_score\": 9,\n \"benefits\": [\n  \"Effortlessly sets meeting reminders that sync with email.\",\n  \"Helps prevent forgetting important client meetings.\",\n  \"Streamlines daily scheduling without manual diary checks.\"\n ],\n \"frictions\": [\n  \"Initial setup of email integration took a bit of time.\",\n  \"Limited advanced customization for reminder notifications.\",\n  \"Learning curve for other CRM features beyond core task management.\"\n ],\n \"choosing_switching_reasons\": [\n  \"Needed a reliable system for managing sales activities and client meetings.\",\n  \"Sought an easy-to-use CRM for a small team.\",\n  \"Required email integration for automated reminders.\"\n ],\n \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "recommendation_score": 9,
+    "benefits": [
+      "Effortlessly sets meeting reminders that sync with email.",
+      "Helps prevent forgetting important client meetings.",
+      "Streamlines daily scheduling without manual diary checks."
+    ],
+    "frictions": [
+      "Initial setup of email integration took a bit of time.",
+      "Limited advanced customization for reminder notifications.",
+      "Learning curve for other CRM features beyond core task management."
+    ],
+    "choosing_switching_reasons": [
+      "Needed a reliable system for managing sales activities and client meetings.",
+      "Sought an easy-to-use CRM for a small team.",
+      "Required email integration for automated reminders."
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:52.253183+00:00"
+}

@@ -1,0 +1,39 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "266c66f87c7e96783810341bb537881f26deb72ad5ce9e59d693200edaa4fb6b",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 280,
+  "output_tokens": 911,
+  "cost_usd": 0.0023615,
+  "elapsed_s": 11.7,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"recommendation_score\": 6,\n  \"benefits\": [\n    \"Integrated CRM and invoicing features\",\n    \"Ability to manage customer data in one place\"\n  ],\n  \"frictions\": [\n    \"Invoice creation process was not intuitive enough for quick use\",\n    \"Needed to navigate several menus to find invoicing options\",\n    \"Interface felt a bit cluttered for a simple task\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Looking for an all-in-one solution for sales and basic finance\",\n    \"Heard positive reviews about Zoho's suite of products\",\n    \"Attracted by the free trial offer to test functionality\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 3,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "recommendation_score": 6,
+    "benefits": [
+      "Integrated CRM and invoicing features",
+      "Ability to manage customer data in one place"
+    ],
+    "frictions": [
+      "Invoice creation process was not intuitive enough for quick use",
+      "Needed to navigate several menus to find invoicing options",
+      "Interface felt a bit cluttered for a simple task"
+    ],
+    "choosing_switching_reasons": [
+      "Looking for an all-in-one solution for sales and basic finance",
+      "Heard positive reviews about Zoho's suite of products",
+      "Attracted by the free trial offer to test functionality"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:48.064592+00:00"
+}

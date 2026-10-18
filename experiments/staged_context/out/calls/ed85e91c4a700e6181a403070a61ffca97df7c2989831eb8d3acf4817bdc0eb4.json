@@ -1,0 +1,31 @@
+{
+  "stage": "out_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ed85e91c4a700e6181a403070a61ffca97df7c2989831eb8d3acf4817bdc0eb4",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 209,
+  "output_tokens": 434,
+  "cost_usd": 0.0011477,
+  "elapsed_s": 17.94,
+  "error": null,
+  "text": "{\n  \"benefits\": [\n    \"Lovely interface\",\n    \"Easy to use and setup\",\n    \"Good support\",\n    \"Great features\"\n  ],\n  \"frictions\": [\n    \"Not as powerful as Salesforce\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Best CRM in that price range\"\n  ]\n}",
+  "json": {
+    "benefits": [
+      "Lovely interface",
+      "Easy to use and setup",
+      "Good support",
+      "Great features"
+    ],
+    "frictions": [
+      "Not as powerful as Salesforce"
+    ],
+    "choosing_switching_reasons": [
+      "Best CRM in that price range"
+    ]
+  },
+  "ts": "2026-10-18T04:05:33.866476+00:00"
+}

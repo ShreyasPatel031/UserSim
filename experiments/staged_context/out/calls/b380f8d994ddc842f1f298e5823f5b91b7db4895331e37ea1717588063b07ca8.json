@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b380f8d994ddc842f1f298e5823f5b91b7db4895331e37ea1717588063b07ca8",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 5331,
+  "output_tokens": 920,
+  "cost_usd": 0.0038992999999999996,
+  "elapsed_s": 9.1,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 5,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Efficiently manages email communications with leads and clients\",\n    \"Good value for the comprehensive feature set offered\",\n    \"Customizable to fit our specific education management workflows\"\n  ],\n  \"frictions\": [\n    \"Steep learning curve for advanced features and initial setup\",\n    \"Interface can feel cluttered due to the extensive functionality\",\n    \"Integrations with external document management systems could be smoother\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed a robust CRM that could handle email tracking and contact management\",\n    \"Appreciated the breadth of features available for a growing business\",\n    \"Competitive pricing and good value for money compared to alternatives\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 5,
+    "recommendation_score": 8,
+    "benefits": [
+      "Efficiently manages email communications with leads and clients",
+      "Good value for the comprehensive feature set offered",
+      "Customizable to fit our specific education management workflows"
+    ],
+    "frictions": [
+      "Steep learning curve for advanced features and initial setup",
+      "Interface can feel cluttered due to the extensive functionality",
+      "Integrations with external document management systems could be smoother"
+    ],
+    "choosing_switching_reasons": [
+      "Needed a robust CRM that could handle email tracking and contact management",
+      "Appreciated the breadth of features available for a growing business",
+      "Competitive pricing and good value for money compared to alternatives"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:06:00.962965+00:00"
+}

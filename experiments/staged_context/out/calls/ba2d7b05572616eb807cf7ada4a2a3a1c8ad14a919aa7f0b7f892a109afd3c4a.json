@@ -1,0 +1,32 @@
+{
+  "stage": "out_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ba2d7b05572616eb807cf7ada4a2a3a1c8ad14a919aa7f0b7f892a109afd3c4a",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 272,
+  "output_tokens": 500,
+  "cost_usd": 0.0013316,
+  "elapsed_s": 18.24,
+  "error": null,
+  "text": "{\n  \"benefits\": [\n    \"easy to manage sales pipeline\",\n    \"plentiful integration options\",\n    \"out of the box analytics\",\n    \"helpful support team\"\n  ],\n  \"frictions\": [\n    \"heavy customization can be difficult and time consuming\",\n    \"integration with other Zoho/third party applications can be difficult and time consuming\",\n    \"complex workflows difficult to recreate for initial config\",\n    \"lack of AI features compared to competitors\"\n  ],\n  \"choosing_switching_reasons\": []\n}",
+  "json": {
+    "benefits": [
+      "easy to manage sales pipeline",
+      "plentiful integration options",
+      "out of the box analytics",
+      "helpful support team"
+    ],
+    "frictions": [
+      "heavy customization can be difficult and time consuming",
+      "integration with other Zoho/third party applications can be difficult and time consuming",
+      "complex workflows difficult to recreate for initial config",
+      "lack of AI features compared to competitors"
+    ],
+    "choosing_switching_reasons": []
+  },
+  "ts": "2026-10-18T04:05:34.361578+00:00"
+}

@@ -1,0 +1,38 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1872664a006a879b4e2529c4dba6bd7b7c03d2638a4cb98aecaefc413a4a5087",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 294,
+  "output_tokens": 874,
+  "cost_usd": 0.0022732,
+  "elapsed_s": 14.84,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 2,\n  \"functionality_rating\": 2,\n  \"overall_rating\": 2,\n  \"value_for_money_rating\": 2,\n  \"recommendation_score\": 2,\n  \"benefits\": [\n    \"Initial setup seemed straightforward\",\n    \"Basic contact management available\"\n  ],\n  \"frictions\": [\n    \"Difficulty exporting data reliably\",\n    \"Lack of advanced data migration tools\",\n    \"Limitations in data handling for migration\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed a basic CRM solution\",\n    \"Initially appeared cost-effective\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 2,
+    "functionality_rating": 2,
+    "overall_rating": 2,
+    "value_for_money_rating": 2,
+    "recommendation_score": 2,
+    "benefits": [
+      "Initial setup seemed straightforward",
+      "Basic contact management available"
+    ],
+    "frictions": [
+      "Difficulty exporting data reliably",
+      "Lack of advanced data migration tools",
+      "Limitations in data handling for migration"
+    ],
+    "choosing_switching_reasons": [
+      "Needed a basic CRM solution",
+      "Initially appeared cost-effective"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:53.218572+00:00"
+}

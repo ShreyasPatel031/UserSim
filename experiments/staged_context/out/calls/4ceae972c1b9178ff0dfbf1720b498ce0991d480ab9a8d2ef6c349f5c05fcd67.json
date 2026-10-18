@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4ceae972c1b9178ff0dfbf1720b498ce0991d480ab9a8d2ef6c349f5c05fcd67",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 288,
+  "output_tokens": 939,
+  "cost_usd": 0.0024338999999999997,
+  "elapsed_s": 10.74,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Effective client and prospect segmentation through tagging\",\n    \"Improved organization of a growing client base\",\n    \"Good value for the features provided for a small team\"\n  ],\n  \"frictions\": [\n    \"Initial setup and customization of tagging rules required some effort\",\n    \"Interface can sometimes feel cluttered with many options\",\n    \"Occasional need for workarounds for very specific financial service needs\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed a scalable solution for client management\",\n    \"Competitive pricing for a feature-rich CRM\",\n    \"Ability to customize client data fields and tagging\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Effective client and prospect segmentation through tagging",
+      "Improved organization of a growing client base",
+      "Good value for the features provided for a small team"
+    ],
+    "frictions": [
+      "Initial setup and customization of tagging rules required some effort",
+      "Interface can sometimes feel cluttered with many options",
+      "Occasional need for workarounds for very specific financial service needs"
+    ],
+    "choosing_switching_reasons": [
+      "Needed a scalable solution for client management",
+      "Competitive pricing for a feature-rich CRM",
+      "Ability to customize client data fields and tagging"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:06:03.139943+00:00"
+}

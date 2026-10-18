@@ -1,0 +1,29 @@
+{
+  "stage": "out_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c733938ed00b2f541291bab25c9c343972ac6d6fb6c207ec5c32ef1cdf0595ac",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 155,
+  "output_tokens": 389,
+  "cost_usd": 0.0010190000000000002,
+  "elapsed_s": 17.66,
+  "error": null,
+  "text": "{\n  \"benefits\": [\n    \"Access to client details\",\n    \"Ability to load a sales cycle\",\n    \"Great service\"\n  ],\n  \"frictions\": [\n    \"Problem tracking sales\",\n    \"Glitch in sales tracking\"\n  ],\n  \"choosing_switching_reasons\": []\n}",
+  "json": {
+    "benefits": [
+      "Access to client details",
+      "Ability to load a sales cycle",
+      "Great service"
+    ],
+    "frictions": [
+      "Problem tracking sales",
+      "Glitch in sales tracking"
+    ],
+    "choosing_switching_reasons": []
+  },
+  "ts": "2026-10-18T04:05:33.497823+00:00"
+}

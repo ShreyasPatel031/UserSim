@@ -1,0 +1,32 @@
+{
+  "stage": "out_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "712248070d7eba65775216540cb97b64226d7ce9b8608d1ce968545530adf713",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 283,
+  "output_tokens": 383,
+  "cost_usd": 0.0010424,
+  "elapsed_s": 16.5,
+  "error": null,
+  "text": "{\n  \"benefits\": [\n    \"simplicity of the CRM\",\n    \"flexibility of features and options\",\n    \"integration with Freshdesk\",\n    \"great for sales pipeline management\"\n  ],\n  \"frictions\": [\n    \"onboarding was a little bit long\",\n    \"onboarding took around 3 days\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Bitrix24 interface was overwhelming\"\n  ]\n}",
+  "json": {
+    "benefits": [
+      "simplicity of the CRM",
+      "flexibility of features and options",
+      "integration with Freshdesk",
+      "great for sales pipeline management"
+    ],
+    "frictions": [
+      "onboarding was a little bit long",
+      "onboarding took around 3 days"
+    ],
+    "choosing_switching_reasons": [
+      "Bitrix24 interface was overwhelming"
+    ]
+  },
+  "ts": "2026-10-18T04:05:32.529988+00:00"
+}

@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "31813f744671b505a9f81d08438b30108f58224d9a2009407172f652fda8d362",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2973,
+  "output_tokens": 933,
+  "cost_usd": 0.0032243999999999997,
+  "elapsed_s": 8.6,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Visual pipeline makes tracking complex machinery deals intuitive\",\n    \"Easy to adjust deal stages and priorities on the fly\",\n    \"Improved organization and clarity on account progress\"\n  ],\n  \"frictions\": [\n    \"Initial setup for custom fields required some effort\",\n    \"Reporting could be more granular for specific account metrics\",\n    \"Mobile app sometimes less robust for advanced tasks\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Strong focus on visual pipeline management\",\n    \"Ease of use for sales team adoption\",\n    \"Customization options for industry-specific sales processes\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Visual pipeline makes tracking complex machinery deals intuitive",
+      "Easy to adjust deal stages and priorities on the fly",
+      "Improved organization and clarity on account progress"
+    ],
+    "frictions": [
+      "Initial setup for custom fields required some effort",
+      "Reporting could be more granular for specific account metrics",
+      "Mobile app sometimes less robust for advanced tasks"
+    ],
+    "choosing_switching_reasons": [
+      "Strong focus on visual pipeline management",
+      "Ease of use for sales team adoption",
+      "Customization options for industry-specific sales processes"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:06:01.661313+00:00"
+}

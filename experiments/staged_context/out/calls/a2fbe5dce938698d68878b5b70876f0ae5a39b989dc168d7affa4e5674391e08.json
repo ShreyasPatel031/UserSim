@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a2fbe5dce938698d68878b5b70876f0ae5a39b989dc168d7affa4e5674391e08",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 292,
+  "output_tokens": 923,
+  "cost_usd": 0.0023951000000000003,
+  "elapsed_s": 17.04,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 7,\n  \"benefits\": [\n    \"Integrated email within CRM for sales outreach\",\n    \"Ability to create and manage sales email templates\",\n    \"Streamlined communication for sales team\"\n  ],\n  \"frictions\": [\n    \"Email template design interface felt basic for marketing needs\",\n    \"Limited advanced customization options for email layouts\",\n    \"Steep learning curve for some CRM features beyond email\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed an integrated CRM with email capabilities\",\n    \"Cost-effective solution for a small team\",\n    \"Simplified sales communication for recruiters\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 3,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 7,
+    "benefits": [
+      "Integrated email within CRM for sales outreach",
+      "Ability to create and manage sales email templates",
+      "Streamlined communication for sales team"
+    ],
+    "frictions": [
+      "Email template design interface felt basic for marketing needs",
+      "Limited advanced customization options for email layouts",
+      "Steep learning curve for some CRM features beyond email"
+    ],
+    "choosing_switching_reasons": [
+      "Needed an integrated CRM with email capabilities",
+      "Cost-effective solution for a small team",
+      "Simplified sales communication for recruiters"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:54.491045+00:00"
+}

@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "91741c3335de8bcf2fbd2c78b8cdeecb8ef24af4f274c1f1f7b796f7dec9f298",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 5984,
+  "output_tokens": 1012,
+  "cost_usd": 0.0043251999999999995,
+  "elapsed_s": 12.67,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Efficiently organizes contacts and conversations with custom fields and activity tracking.\",\n    \"AI features like Freddy AI assist in lead qualification and task prioritization.\",\n    \"Email and communication integrations streamline outreach and tracking.\"\n  ],\n  \"frictions\": [\n    \"Initial setup and customization for specific real estate workflows might require a learning curve.\",\n    \"Some AI features, while helpful, might not be fully utilized by a very small team.\",\n    \"Advanced reporting for specific analytical needs could be less intuitive than desired.\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed a comprehensive solution to manage client interactions and property leads.\",\n    \"Attracted by the promise of AI-powered lead management and sales process streamlining.\",\n    \"Sought a user-friendly CRM suitable for a small business in a competitive market.\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Efficiently organizes contacts and conversations with custom fields and activity tracking.",
+      "AI features like Freddy AI assist in lead qualification and task prioritization.",
+      "Email and communication integrations streamline outreach and tracking."
+    ],
+    "frictions": [
+      "Initial setup and customization for specific real estate workflows might require a learning curve.",
+      "Some AI features, while helpful, might not be fully utilized by a very small team.",
+      "Advanced reporting for specific analytical needs could be less intuitive than desired."
+    ],
+    "choosing_switching_reasons": [
+      "Needed a comprehensive solution to manage client interactions and property leads.",
+      "Attracted by the promise of AI-powered lead management and sales process streamlining.",
+      "Sought a user-friendly CRM suitable for a small business in a competitive market."
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:48.594230+00:00"
+}

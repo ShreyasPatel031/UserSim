@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "df9095fa3673c509c382d6cc20d4ec8df3ac1afec237e1a64830133f9ed919cc",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 5354,
+  "output_tokens": 965,
+  "cost_usd": 0.0040187,
+  "elapsed_s": 6.49,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Automated lead capture from Facebook ads\",\n    \"Streamlined customer communication management\",\n    \"Customizable to fit unique workflows\"\n  ],\n  \"frictions\": [\n    \"Initial setup complexity for Facebook integration\",\n    \"Learning curve for advanced automation features\",\n    \"Occasional glitches with third-party app connections\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed advanced product offerings for IT services\",\n    \"Sought robust sales automation and lead management\",\n    \"Valued integration capabilities for various communication channels\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Automated lead capture from Facebook ads",
+      "Streamlined customer communication management",
+      "Customizable to fit unique workflows"
+    ],
+    "frictions": [
+      "Initial setup complexity for Facebook integration",
+      "Learning curve for advanced automation features",
+      "Occasional glitches with third-party app connections"
+    ],
+    "choosing_switching_reasons": [
+      "Needed advanced product offerings for IT services",
+      "Sought robust sales automation and lead management",
+      "Valued integration capabilities for various communication channels"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:58.228350+00:00"
+}

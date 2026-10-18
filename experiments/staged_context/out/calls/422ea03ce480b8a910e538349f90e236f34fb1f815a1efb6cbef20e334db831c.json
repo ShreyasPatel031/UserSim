@@ -1,0 +1,30 @@
+{
+  "stage": "out_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "422ea03ce480b8a910e538349f90e236f34fb1f815a1efb6cbef20e334db831c",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 256,
+  "output_tokens": 513,
+  "cost_usd": 0.0013593,
+  "elapsed_s": 19.75,
+  "error": null,
+  "text": "{\n  \"benefits\": [\n    \"easy to use and setup\",\n    \"very intuitive solutions for adding new leads and contacts\",\n    \"support is fast and reliable\"\n  ],\n  \"frictions\": [\n    \"the pricing\",\n    \"desires unlimited users at a package price or basic price with 3-5 users\",\n    \"wants a more specific price list/product list\"\n  ],\n  \"choosing_switching_reasons\": []\n}",
+  "json": {
+    "benefits": [
+      "easy to use and setup",
+      "very intuitive solutions for adding new leads and contacts",
+      "support is fast and reliable"
+    ],
+    "frictions": [
+      "the pricing",
+      "desires unlimited users at a package price or basic price with 3-5 users",
+      "wants a more specific price list/product list"
+    ],
+    "choosing_switching_reasons": []
+  },
+  "ts": "2026-10-18T04:05:35.703676+00:00"
+}

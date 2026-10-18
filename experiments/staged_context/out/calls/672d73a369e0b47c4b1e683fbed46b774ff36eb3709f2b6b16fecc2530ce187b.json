@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "672d73a369e0b47c4b1e683fbed46b774ff36eb3709f2b6b16fecc2530ce187b",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2973,
+  "output_tokens": 1019,
+  "cost_usd": 0.0034393999999999996,
+  "elapsed_s": 8.1,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Ability to customize data fields and workflow\",\n    \"Tailoring CRM to specific team sales process\",\n    \"Real-time sales insights and reporting for team management\"\n  ],\n  \"frictions\": [\n    \"Initial learning curve for advanced customization features\",\n    \"Integrating Pipedrive with existing complex IT infrastructure\",\n    \"Ensuring data consistency and governance across a large team\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Need for a customizable CRM to fit unique sales processes\",\n    \"Desire for better sales pipeline visibility and team management\",\n    \"Positive reputation for ease of use and effective sales focus\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Ability to customize data fields and workflow",
+      "Tailoring CRM to specific team sales process",
+      "Real-time sales insights and reporting for team management"
+    ],
+    "frictions": [
+      "Initial learning curve for advanced customization features",
+      "Integrating Pipedrive with existing complex IT infrastructure",
+      "Ensuring data consistency and governance across a large team"
+    ],
+    "choosing_switching_reasons": [
+      "Need for a customizable CRM to fit unique sales processes",
+      "Desire for better sales pipeline visibility and team management",
+      "Positive reputation for ease of use and effective sales focus"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:06:03.107583+00:00"
+}

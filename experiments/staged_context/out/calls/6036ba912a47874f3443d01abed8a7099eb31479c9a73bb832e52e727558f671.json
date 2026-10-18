@@ -1,0 +1,31 @@
+{
+  "stage": "out_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "6036ba912a47874f3443d01abed8a7099eb31479c9a73bb832e52e727558f671",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 177,
+  "output_tokens": 467,
+  "cost_usd": 0.0012206,
+  "elapsed_s": 15.42,
+  "error": null,
+  "text": "{\n  \"benefits\": [\n    \"super powerful tool\",\n    \"integrates well with other services\",\n    \"long list of other integrations available\",\n    \"helps us keep track of our sales\"\n  ],\n  \"frictions\": [\n    \"can get confusing for a first time user\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"switched from Highrise\"\n  ]\n}",
+  "json": {
+    "benefits": [
+      "super powerful tool",
+      "integrates well with other services",
+      "long list of other integrations available",
+      "helps us keep track of our sales"
+    ],
+    "frictions": [
+      "can get confusing for a first time user"
+    ],
+    "choosing_switching_reasons": [
+      "switched from Highrise"
+    ]
+  },
+  "ts": "2026-10-18T04:05:31.784706+00:00"
+}

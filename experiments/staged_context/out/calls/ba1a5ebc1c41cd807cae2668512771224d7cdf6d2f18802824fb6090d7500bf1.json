@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ba1a5ebc1c41cd807cae2668512771224d7cdf6d2f18802824fb6090d7500bf1",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 288,
+  "output_tokens": 971,
+  "cost_usd": 0.0025139,
+  "elapsed_s": 8.52,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 5,\n  \"recommendation_score\": 9,\n  \"benefits\": [\n    \"Effective lead scoring and prioritization tools\",\n    \"Intuitive interface for quick team adoption\",\n    \"Cost-effective solution for a small business\"\n  ],\n  \"frictions\": [\n    \"Limited advanced customization options for unique workflows\",\n    \"Reporting features could be more robust for deeper analysis\",\n    \"Occasional minor glitches or slow performance\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed a dedicated CRM to better manage and prioritize leads\",\n    \"Affordable pricing for a startup with essential CRM features\",\n    \"Ease of setup and use for a small team without dedicated IT\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 5,
+    "recommendation_score": 9,
+    "benefits": [
+      "Effective lead scoring and prioritization tools",
+      "Intuitive interface for quick team adoption",
+      "Cost-effective solution for a small business"
+    ],
+    "frictions": [
+      "Limited advanced customization options for unique workflows",
+      "Reporting features could be more robust for deeper analysis",
+      "Occasional minor glitches or slow performance"
+    ],
+    "choosing_switching_reasons": [
+      "Needed a dedicated CRM to better manage and prioritize leads",
+      "Affordable pricing for a startup with essential CRM features",
+      "Ease of setup and use for a small team without dedicated IT"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:44.834357+00:00"
+}

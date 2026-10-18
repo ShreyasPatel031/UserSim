@@ -1,0 +1,31 @@
+{
+  "stage": "out_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "389164f45db4c3aa23498bc06fa24088af375bd46bfae3bf8d063fddf7ef6de8",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 247,
+  "output_tokens": 431,
+  "cost_usd": 0.0011516,
+  "elapsed_s": 17.3,
+  "error": null,
+  "text": "{\n  \"benefits\": [\n    \"Lead Organization\",\n    \"Customizable Contact Tracking\",\n    \"Customizable Account Tracking\",\n    \"Avoided inadvertent double contact\"\n  ],\n  \"frictions\": [\n    \"Lack of integrations\",\n    \"Limited data integrity customizations\",\n    \"Limited analytics\"\n  ],\n  \"choosing_switching_reasons\": []\n}",
+  "json": {
+    "benefits": [
+      "Lead Organization",
+      "Customizable Contact Tracking",
+      "Customizable Account Tracking",
+      "Avoided inadvertent double contact"
+    ],
+    "frictions": [
+      "Lack of integrations",
+      "Limited data integrity customizations",
+      "Limited analytics"
+    ],
+    "choosing_switching_reasons": []
+  },
+  "ts": "2026-10-18T04:05:33.604924+00:00"
+}

@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0c2204d8d695b605156deb61a17b88305750f227e1da2008ba5b4cc245bcc7bf",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2317,
+  "output_tokens": 982,
+  "cost_usd": 0.0031501000000000003,
+  "elapsed_s": 7.32,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Consolidates contact and deal tracking, reducing need for multiple tools.\",\n    \"Customization options allow tailoring to specific workflow needs.\",\n    \"Automation features handle mundane tasks efficiently.\"\n  ],\n  \"frictions\": [\n    \"Initial setup and deep customization might require significant effort.\",\n    \"Integration with highly specialized internal network operations tools could be challenging.\",\n    \"Learning curve for advanced AI and automation features.\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Desired a single platform to manage contacts and deals for organization.\",\n    \"Ability to customize and adapt the system to unique workflows.\",\n    \"Zoho's reputation for a suite of advanced offerings suitable for a large enterprise.\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Consolidates contact and deal tracking, reducing need for multiple tools.",
+      "Customization options allow tailoring to specific workflow needs.",
+      "Automation features handle mundane tasks efficiently."
+    ],
+    "frictions": [
+      "Initial setup and deep customization might require significant effort.",
+      "Integration with highly specialized internal network operations tools could be challenging.",
+      "Learning curve for advanced AI and automation features."
+    ],
+    "choosing_switching_reasons": [
+      "Desired a single platform to manage contacts and deals for organization.",
+      "Ability to customize and adapt the system to unique workflows.",
+      "Zoho's reputation for a suite of advanced offerings suitable for a large enterprise."
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:56.859942+00:00"
+}

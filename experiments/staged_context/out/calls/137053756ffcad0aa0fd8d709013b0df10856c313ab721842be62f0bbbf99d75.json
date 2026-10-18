@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "137053756ffcad0aa0fd8d709013b0df10856c313ab721842be62f0bbbf99d75",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2958,
+  "output_tokens": 980,
+  "cost_usd": 0.0033374,
+  "elapsed_s": 9.72,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Helps organize and track client acquisition pipeline effectively\",\n    \"Customizable to adapt for project management workflow\",\n    \"Intuitive visual pipeline management\"\n  ],\n  \"frictions\": [\n    \"Some features might be overkill for a self-employed user\",\n    \"Initial setup and customization can take time\",\n    \"Pricing might feel high for a single user without a sales team\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed a structured way to manage potential clients and projects\",\n    \"Positive reputation for pipeline visualization\",\n    \"Ability to customize workflows for non-traditional sales\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Helps organize and track client acquisition pipeline effectively",
+      "Customizable to adapt for project management workflow",
+      "Intuitive visual pipeline management"
+    ],
+    "frictions": [
+      "Some features might be overkill for a self-employed user",
+      "Initial setup and customization can take time",
+      "Pricing might feel high for a single user without a sales team"
+    ],
+    "choosing_switching_reasons": [
+      "Needed a structured way to manage potential clients and projects",
+      "Positive reputation for pipeline visualization",
+      "Ability to customize workflows for non-traditional sales"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:06:02.884122+00:00"
+}

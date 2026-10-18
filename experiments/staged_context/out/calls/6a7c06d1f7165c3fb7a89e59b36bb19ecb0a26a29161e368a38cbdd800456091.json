@@ -1,0 +1,33 @@
+{
+  "stage": "out_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "6a7c06d1f7165c3fb7a89e59b36bb19ecb0a26a29161e368a38cbdd800456091",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 150,
+  "output_tokens": 319,
+  "cost_usd": 0.0008425,
+  "elapsed_s": 18.28,
+  "error": null,
+  "text": "{\n  \"benefits\": [\n    \"Usability\",\n    \"good back office support\",\n    \"Great Sales Tracking System\"\n  ],\n  \"frictions\": [\n    \"no Skype integration\",\n    \"no Apple calendar integration\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"usability\",\n    \"price\",\n    \"integrations\"\n  ]\n}",
+  "json": {
+    "benefits": [
+      "Usability",
+      "good back office support",
+      "Great Sales Tracking System"
+    ],
+    "frictions": [
+      "no Skype integration",
+      "no Apple calendar integration"
+    ],
+    "choosing_switching_reasons": [
+      "usability",
+      "price",
+      "integrations"
+    ]
+  },
+  "ts": "2026-10-18T04:05:34.057466+00:00"
+}

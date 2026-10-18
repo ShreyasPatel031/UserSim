@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9e746d82284fe007c2139b736db5e1f81527fd2b924ef160065554748d33b1ac",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 292,
+  "output_tokens": 959,
+  "cost_usd": 0.0024851,
+  "elapsed_s": 9.85,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 5,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Effective for basic client contact and account management\",\n    \"Affordable for a self-employed individual\",\n    \"Accessible from anywhere as a cloud-based solution\"\n  ],\n  \"frictions\": [\n    \"Initial setup and learning curve for some features\",\n    \"Interface can feel cluttered with unused advanced features\",\n    \"Occasional minor UI inconsistencies\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed a cost-effective CRM for solo operations\",\n    \"Provided essential client contact and account management features\",\n    \"Scalability if business grows in the future\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 5,
+    "recommendation_score": 8,
+    "benefits": [
+      "Effective for basic client contact and account management",
+      "Affordable for a self-employed individual",
+      "Accessible from anywhere as a cloud-based solution"
+    ],
+    "frictions": [
+      "Initial setup and learning curve for some features",
+      "Interface can feel cluttered with unused advanced features",
+      "Occasional minor UI inconsistencies"
+    ],
+    "choosing_switching_reasons": [
+      "Needed a cost-effective CRM for solo operations",
+      "Provided essential client contact and account management features",
+      "Scalability if business grows in the future"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:58.656612+00:00"
+}

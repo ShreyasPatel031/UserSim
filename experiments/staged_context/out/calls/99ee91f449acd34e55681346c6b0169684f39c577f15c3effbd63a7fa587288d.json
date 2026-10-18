@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "99ee91f449acd34e55681346c6b0169684f39c577f15c3effbd63a7fa587288d",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 288,
+  "output_tokens": 1025,
+  "cost_usd": 0.0026489,
+  "elapsed_s": 10.78,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Centralized contact management for clients\",\n    \"Intuitive pipeline visualization\",\n    \"Good for tracking sales activities\"\n  ],\n  \"frictions\": [\n    \"Initial setup for contact synchronization was complex\",\n    \"Some contact fields didn't map perfectly during import\",\n    \"Limited advanced customization for specific wholesale needs\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed a dedicated CRM for client management\",\n    \"Heard good things about its ease of use for sales teams\",\n    \"Affordable entry-level pricing for a freelancer\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 3,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Centralized contact management for clients",
+      "Intuitive pipeline visualization",
+      "Good for tracking sales activities"
+    ],
+    "frictions": [
+      "Initial setup for contact synchronization was complex",
+      "Some contact fields didn't map perfectly during import",
+      "Limited advanced customization for specific wholesale needs"
+    ],
+    "choosing_switching_reasons": [
+      "Needed a dedicated CRM for client management",
+      "Heard good things about its ease of use for sales teams",
+      "Affordable entry-level pricing for a freelancer"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:06:05.824133+00:00"
+}

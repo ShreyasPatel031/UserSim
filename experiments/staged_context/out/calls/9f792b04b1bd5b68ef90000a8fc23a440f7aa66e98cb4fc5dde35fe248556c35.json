@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9f792b04b1bd5b68ef90000a8fc23a440f7aa66e98cb4fc5dde35fe248556c35",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2310,
+  "output_tokens": 979,
+  "cost_usd": 0.0031405,
+  "elapsed_s": 10.29,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Efficiently automates sales processes like emails and follow-ups\",\n    \"Customizable workflows for quotes and sales orders\",\n    \"Reduces manual effort for field updates and contact tracking\"\n  ],\n  \"frictions\": [\n    \"Initial setup complexity for advanced automations\",\n    \"Occasional need for technical support for specific workflow issues\",\n    \"Learning curve for maximizing all automation features\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Comprehensive suite of advanced product offerings\",\n    \"Strong sales automation capabilities\",\n    \"Flexibility to adapt to unique workflows and sales processes\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Efficiently automates sales processes like emails and follow-ups",
+      "Customizable workflows for quotes and sales orders",
+      "Reduces manual effort for field updates and contact tracking"
+    ],
+    "frictions": [
+      "Initial setup complexity for advanced automations",
+      "Occasional need for technical support for specific workflow issues",
+      "Learning curve for maximizing all automation features"
+    ],
+    "choosing_switching_reasons": [
+      "Comprehensive suite of advanced product offerings",
+      "Strong sales automation capabilities",
+      "Flexibility to adapt to unique workflows and sales processes"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:53.800605+00:00"
+}

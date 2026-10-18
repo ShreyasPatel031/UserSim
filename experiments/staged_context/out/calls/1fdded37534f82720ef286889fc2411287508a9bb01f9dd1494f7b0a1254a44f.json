@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1fdded37534f82720ef286889fc2411287508a9bb01f9dd1494f7b0a1254a44f",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 304,
+  "output_tokens": 986,
+  "cost_usd": 0.0025562,
+  "elapsed_s": 13.93,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Centralized tracking of installation projects\",\n    \"Automation of routine scheduling and tasks\",\n    \"Improved coordination across teams\"\n  ],\n  \"frictions\": [\n    \"Complexity in setting up advanced workflows\",\n    \"Steep learning curve for some team members\",\n    \"Customization required for specific industry needs\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Need for robust workflow automation\",\n    \"Consolidate customer and project data\",\n    \"Scalability for a large company\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Centralized tracking of installation projects",
+      "Automation of routine scheduling and tasks",
+      "Improved coordination across teams"
+    ],
+    "frictions": [
+      "Complexity in setting up advanced workflows",
+      "Steep learning curve for some team members",
+      "Customization required for specific industry needs"
+    ],
+    "choosing_switching_reasons": [
+      "Need for robust workflow automation",
+      "Consolidate customer and project data",
+      "Scalability for a large company"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:05:54.215934+00:00"
+}

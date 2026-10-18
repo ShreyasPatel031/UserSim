@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ac0c327f25713378a3b1144957d22ea7abdd57aa34996548e59ba5caa28fcbf1",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 5989,
+  "output_tokens": 1061,
+  "cost_usd": 0.0044492,
+  "elapsed_s": 10.32,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Effective sales pipeline management\",\n    \"Good for tracking client interactions and follow-ups\",\n    \"Customizable to fit small business sales processes\"\n  ],\n  \"frictions\": [\n    \"Email broadcast/campaign features are basic or limited\",\n    \"May require integrations for advanced marketing automation\",\n    \"Initial setup for email campaigns could be complex\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Needed a dedicated sales CRM for lead and deal tracking\",\n    \"Ease of use for sales activities\",\n    \"Affordable solution for a small team\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 3,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Effective sales pipeline management",
+      "Good for tracking client interactions and follow-ups",
+      "Customizable to fit small business sales processes"
+    ],
+    "frictions": [
+      "Email broadcast/campaign features are basic or limited",
+      "May require integrations for advanced marketing automation",
+      "Initial setup for email campaigns could be complex"
+    ],
+    "choosing_switching_reasons": [
+      "Needed a dedicated sales CRM for lead and deal tracking",
+      "Ease of use for sales activities",
+      "Affordable solution for a small team"
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:06:04.965831+00:00"
+}

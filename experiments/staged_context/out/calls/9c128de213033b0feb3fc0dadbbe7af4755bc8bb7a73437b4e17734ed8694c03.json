@@ -1,0 +1,40 @@
+{
+  "stage": "out_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9c128de213033b0feb3fc0dadbbe7af4755bc8bb7a73437b4e17734ed8694c03",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 5992,
+  "output_tokens": 1142,
+  "cost_usd": 0.0046526,
+  "elapsed_s": 10.21,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"recommendation_score\": 8,\n  \"benefits\": [\n    \"Efficiently tracks conversations and pipelines for various stakeholders (customers, partners, suppliers).\",\n    \"Offers good customization options to adapt to diverse relationship management needs.\",\n    \"Provides valuable real-time insights and reporting to inform strategic decisions.\"\n  ],\n  \"frictions\": [\n    \"Primarily sales-focused, requiring some adaptation for non-sales related partner/supplier tracking.\",\n    \"Initial setup and integration with existing tools might have a learning curve.\",\n    \"Advanced features or specific integrations might require higher-tier plans or additional configuration.\"\n  ],\n  \"choosing_switching_reasons\": [\n    \"Need for a centralized system to manage diverse external communications and relationships.\",\n    \"Desire for better visibility into ongoing engagements and pipeline stages.\",\n    \"Pipedrive's reputation for ease of use and customizable pipeline management.\"\n  ],\n  \"switched_from\": null\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "recommendation_score": 8,
+    "benefits": [
+      "Efficiently tracks conversations and pipelines for various stakeholders (customers, partners, suppliers).",
+      "Offers good customization options to adapt to diverse relationship management needs.",
+      "Provides valuable real-time insights and reporting to inform strategic decisions."
+    ],
+    "frictions": [
+      "Primarily sales-focused, requiring some adaptation for non-sales related partner/supplier tracking.",
+      "Initial setup and integration with existing tools might have a learning curve.",
+      "Advanced features or specific integrations might require higher-tier plans or additional configuration."
+    ],
+    "choosing_switching_reasons": [
+      "Need for a centralized system to manage diverse external communications and relationships.",
+      "Desire for better visibility into ongoing engagements and pipeline stages.",
+      "Pipedrive's reputation for ease of use and customizable pipeline management."
+    ],
+    "switched_from": null
+  },
+  "ts": "2026-10-18T04:06:03.802846+00:00"
+}
