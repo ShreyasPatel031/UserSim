@@ -150,7 +150,8 @@ rating − shown estimate), with w chosen on DEV products.
 
 - The model ranks people within a product a little better than the offsets do, but DEV only kept it on G2. The samples
   are small, so it is **not shipped**.
-- Worth retesting on a larger set; the live 4-site people are the natural next one.
+- **Retested on the live 4-site people (168, agent-mode condition): it hurts.** RMSE 0.835 (shown) → 0.856 at
+  w=0.5 → 0.938 at w=1. Confirmed: not shipped.
 
 ## Agent mode (shipped in PR #86)
 

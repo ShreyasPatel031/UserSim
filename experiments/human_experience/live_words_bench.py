@@ -87,7 +87,9 @@ def main() -> None:
         prompt = A.words_prompt(p["query"], "", per, refs[p["rid"]]["task"], A.evidence_text(p["query"], own, rv, per, rat)[:14000])
         rec = E.call_model("live_words_v2", FLASH, A.WORDS_SYSTEM, prompt, temperature=0.7, seed=1000, max_tokens=8192,
                            thinking_budget=A.WORDS_THINKING, key_extra=f"{p['rid']}|{cond}")
-        return (p["rid"], cond), rec.get("json") if isinstance(rec.get("json"), dict) else {}
+        j = rec.get("json") if isinstance(rec.get("json"), dict) else {}
+        j["_shown"] = rat["overall_rating"].get("for_this_persona")
+        return (p["rid"], cond), j
 
     preds = dict(pool.map(run, [(p, c) for p in people for c in CONDS]))
 
@@ -114,7 +116,10 @@ def main() -> None:
     judged = dict(pool.map(judge, list(preds)))
     site = {p["rid"]: p["site"] for p in people}
     prod = {p["rid"]: p["query"] for p in people}
-    M = pd.DataFrame([{"rid": k[0], "cond": k[1], "site": site[k[0]], "product": prod[k[0]], **v} for k, v in judged.items()])
+    y = {p["rid"]: p["overall_rating"] for p in people}
+    M = pd.DataFrame([{"rid": k[0], "cond": k[1], "site": site[k[0]], "product": prod[k[0]], **v, "y": y[k[0]],
+                       "shown": preds[k].get("_shown"), "model": RE.U_num(preds[k].get("overall_rating"), 1, 5)}
+                      for k, v in judged.items()])
     M.to_csv(OUT / "per_person.csv", index=False)
     cols = ["pros", "cons", "overall_experience"]
     print(M.groupby("cond")[cols].mean().loc[CONDS].round(3).to_string())
