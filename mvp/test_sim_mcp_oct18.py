@@ -189,3 +189,12 @@ def test_same_account_as_survives_restart(tmp_path, monkeypatch):
             signup_inbox.GmailAliasInbox.for_address("someone.else+x@gmail.com")
     finally:
         S.SESSIONS.pop(second.id, None)
+
+
+def test_accounts_dir_prefers_dir_outside_app(tmp_path, monkeypatch):
+    monkeypatch.setattr(S, "ACCOUNTS_DIR", None)
+    monkeypatch.setenv("MVP_MCP_ACCOUNTS_DIR", str(tmp_path / "keep"))
+    assert S._accounts_dir() == tmp_path / "keep" and (tmp_path / "keep").is_dir()
+    monkeypatch.setattr(S, "ACCOUNTS_DIR", None)
+    monkeypatch.setenv("MVP_MCP_ACCOUNTS_DIR", "/proc/nope/x")
+    assert S._accounts_dir() == S.MVP_RUNS_DIR / "_mcp_accounts"

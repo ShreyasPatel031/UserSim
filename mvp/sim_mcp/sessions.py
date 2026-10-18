@@ -327,14 +327,32 @@ def get_session(session_id: str, owner: str | None = None) -> SimSession:
     return sim
 
 
-ACCOUNTS_DIR = MVP_RUNS_DIR / "_mcp_accounts"
+# Outside the app directory: each deploy replaces /opt/usersim/app (and its mvp/runs), so accounts saved there were
+# lost on the next deploy. Falls back to the runs dir where /var/lib is not writable (dev boxes, tests).
+ACCOUNTS_DIR: Path | None = None
 ACCOUNT_TTL_S = 30 * 86400
+
+
+def _accounts_dir() -> Path:
+    global ACCOUNTS_DIR
+    if ACCOUNTS_DIR is None:
+        for cand in (Path(os.environ.get("MVP_MCP_ACCOUNTS_DIR") or "/var/lib/usersim/mcp_accounts"), MVP_RUNS_DIR / "_mcp_accounts"):
+            try:
+                cand.mkdir(parents=True, exist_ok=True)
+                os.chmod(cand, 0o700)
+                ACCOUNTS_DIR = cand
+                break
+            except OSError:
+                continue
+        else:
+            ACCOUNTS_DIR = MVP_RUNS_DIR / "_mcp_accounts"
+    return ACCOUNTS_DIR
 
 
 def _account_file(session_id: str) -> Path:
     import hashlib
 
-    return ACCOUNTS_DIR / (hashlib.sha256((session_id or "").encode()).hexdigest()[:40] + ".json")
+    return _accounts_dir() / (hashlib.sha256((session_id or "").encode()).hexdigest()[:40] + ".json")
 
 
 def save_account(sim: "SimSession") -> None:
@@ -349,8 +367,7 @@ def save_account(sim: "SimSession") -> None:
     if sim.inbox is None or not sim.identity:
         return
     try:
-        ACCOUNTS_DIR.mkdir(parents=True, exist_ok=True)
-        os.chmod(ACCOUNTS_DIR, 0o700)
+        _accounts_dir().mkdir(parents=True, exist_ok=True)
         path = _account_file(sim.id)
         tmp = path.with_suffix(".tmp")
         tmp.write_text(_json.dumps({"address": sim.inbox.address, "identity": dict(sim.identity), "owner": sim.owner,
