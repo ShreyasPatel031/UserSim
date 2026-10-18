@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "aa665e7c4bd6627d91ebf38c058ecda2d607cb6a471c2902feb5659c70696da0",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1060,
+  "output_tokens": 1116,
+  "cost_usd": 0.003108,
+  "elapsed_s": 7.64,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Comprehensive sales management features\",\n    \"Streamlined lead tracking and deal progression\",\n    \"Ease of integration with existing workflows\"\n  ],\n  \"cons\": [\n    \"Specific customization for publishing industry needs\",\n    \"Occasional complexity in advanced reporting\",\n    \"Pricing tiers could be challenging for SMBs\"\n  ],\n  \"overall_experience\": \"This Sales Manager, having used Freshsales for over two years, likely found it highly effective for integrating and advancing their CRM system. They would appreciate its robust functionality for sales processes and its user-friendly interface. While generally satisfied, they might have noted some limitations regarding industry-specific customization or advanced reporting capabilities, and found the value for money to be good, but not exceptional, for their small to medium-sized publishing company.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Comprehensive sales management features",
+      "Streamlined lead tracking and deal progression",
+      "Ease of integration with existing workflows"
+    ],
+    "cons": [
+      "Specific customization for publishing industry needs",
+      "Occasional complexity in advanced reporting",
+      "Pricing tiers could be challenging for SMBs"
+    ],
+    "overall_experience": "This Sales Manager, having used Freshsales for over two years, likely found it highly effective for integrating and advancing their CRM system. They would appreciate its robust functionality for sales processes and its user-friendly interface. While generally satisfied, they might have noted some limitations regarding industry-specific customization or advanced reporting capabilities, and found the value for money to be good, but not exceptional, for their small to medium-sized publishing company."
+  },
+  "ts": "2026-10-18T04:43:42.891688+00:00"
+}

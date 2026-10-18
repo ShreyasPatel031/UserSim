@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c7133a2ae711bddaabec34554e1b3e6c01b758150f8488d8486b6a6feaeeaa7d",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 277,
+  "output_tokens": 502,
+  "cost_usd": 0.0013380999999999998,
+  "elapsed_s": 21.12,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage customer support tickets and communications\",\n  \"benefits\": [\n    \"Leave notes on tickets\",\n    \"Merge related posts or tickets\",\n    \"Integrate with external management software for quick client access\",\n    \"See if another agent is working on a ticket to prevent duplicate responses\"\n  ],\n  \"frictions\": [\n    \"Inability to cancel a sent email shortly after sending\"\n  ]\n}",
+  "json": {
+    "task": "Manage customer support tickets and communications",
+    "benefits": [
+      "Leave notes on tickets",
+      "Merge related posts or tickets",
+      "Integrate with external management software for quick client access",
+      "See if another agent is working on a ticket to prevent duplicate responses"
+    ],
+    "frictions": [
+      "Inability to cancel a sent email shortly after sending"
+    ]
+  },
+  "ts": "2026-10-18T04:41:31.166044+00:00"
+}

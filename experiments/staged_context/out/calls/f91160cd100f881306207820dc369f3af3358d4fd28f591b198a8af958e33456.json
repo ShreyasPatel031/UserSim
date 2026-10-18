@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f91160cd100f881306207820dc369f3af3358d4fd28f591b198a8af958e33456",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2646,
+  "output_tokens": 991,
+  "cost_usd": 0.0032712999999999996,
+  "elapsed_s": 7.03,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Intuitive interface for managing sales processes\",\n    \"Effective for tracking leads and customer interactions\",\n    \"Good value for a small business CRM\"\n  ],\n  \"cons\": [\n    \"Steep learning curve for advanced features or customization\",\n    \"Integration limitations with other business tools\",\n    \"Potentially basic reporting capabilities for detailed analysis\"\n  ],\n  \"overall_experience\": \"This owner of a small hospitality business likely found Freshsales to be a generally effective tool for managing their sales processes and customer interactions. They appreciated its ease of use for core tasks and considered it good value. However, they may have encountered some frustrations with its learning curve for deeper customization or specific integrations.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Intuitive interface for managing sales processes",
+      "Effective for tracking leads and customer interactions",
+      "Good value for a small business CRM"
+    ],
+    "cons": [
+      "Steep learning curve for advanced features or customization",
+      "Integration limitations with other business tools",
+      "Potentially basic reporting capabilities for detailed analysis"
+    ],
+    "overall_experience": "This owner of a small hospitality business likely found Freshsales to be a generally effective tool for managing their sales processes and customer interactions. They appreciated its ease of use for core tasks and considered it good value. However, they may have encountered some frustrations with its learning curve for deeper customization or specific integrations."
+  },
+  "ts": "2026-10-18T04:43:42.599001+00:00"
+}

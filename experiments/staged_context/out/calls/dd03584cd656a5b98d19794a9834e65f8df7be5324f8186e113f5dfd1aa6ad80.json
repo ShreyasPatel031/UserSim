@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "dd03584cd656a5b98d19794a9834e65f8df7be5324f8186e113f5dfd1aa6ad80",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1139,
+  "output_tokens": 953,
+  "cost_usd": 0.0027242,
+  "elapsed_s": 6.87,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Robust project and task management features for complex development cycles.\",\n    \"Advanced automation and reporting capabilities to streamline workflows.\",\n    \"Customizable dashboards and workflows adapted to specific team needs.\"\n  ],\n  \"cons\": [\n    \"Steep learning curve due to the extensive feature set.\",\n    \"Can be slow or clunky when managing very large projects or datasets.\",\n    \"Pricing structure might be a significant consideration for larger teams.\"\n  ],\n  \"overall_experience\": \"This Senior Software Developer likely had a very positive experience with Wrike over their 2+ years of usage. They highly valued its robust functionality for managing complex projects and automating reporting, finding it a powerful tool for their IT environment. While appreciating its capabilities, they may have found its extensive features contributed to a learning curve or occasional performance issues with large datasets.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Robust project and task management features for complex development cycles.",
+      "Advanced automation and reporting capabilities to streamline workflows.",
+      "Customizable dashboards and workflows adapted to specific team needs."
+    ],
+    "cons": [
+      "Steep learning curve due to the extensive feature set.",
+      "Can be slow or clunky when managing very large projects or datasets.",
+      "Pricing structure might be a significant consideration for larger teams."
+    ],
+    "overall_experience": "This Senior Software Developer likely had a very positive experience with Wrike over their 2+ years of usage. They highly valued its robust functionality for managing complex projects and automating reporting, finding it a powerful tool for their IT environment. While appreciating its capabilities, they may have found its extensive features contributed to a learning curve or occasional performance issues with large datasets."
+  },
+  "ts": "2026-10-18T04:43:33.641794+00:00"
+}

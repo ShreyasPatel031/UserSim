@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a36ba227cb43de9d5eabfc43e3ab949c1f3dc20ddec754694a21f68e67c1480b",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 266,
+  "output_tokens": 1100,
+  "cost_usd": 0.0028298000000000004,
+  "elapsed_s": 8.41,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Streamlined PTO requests and tracking\",\n    \"Easy access to benefits information\",\n    \"Intuitive interface for employee self-service\"\n  ],\n  \"cons\": [\n    \"Performance review module could be more customizable\",\n    \"Initial learning curve for specific features\",\n    \"Occasional minor glitches or slow loading times\"\n  ],\n  \"overall_experience\": \"As an Email Marketing Associate in an Internet company, this reviewer likely found Namely effective for managing their personal HR tasks such as PTO and benefits. The system's self-service capabilities for employees were probably appreciated, making these processes straightforward. While generally positive, there might have been minor frustrations with the performance review module or occasional technical hiccups given their relatively short time using the platform.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Streamlined PTO requests and tracking",
+      "Easy access to benefits information",
+      "Intuitive interface for employee self-service"
+    ],
+    "cons": [
+      "Performance review module could be more customizable",
+      "Initial learning curve for specific features",
+      "Occasional minor glitches or slow loading times"
+    ],
+    "overall_experience": "As an Email Marketing Associate in an Internet company, this reviewer likely found Namely effective for managing their personal HR tasks such as PTO and benefits. The system's self-service capabilities for employees were probably appreciated, making these processes straightforward. While generally positive, there might have been minor frustrations with the performance review module or occasional technical hiccups given their relatively short time using the platform."
+  },
+  "ts": "2026-10-18T04:43:40.896605+00:00"
+}

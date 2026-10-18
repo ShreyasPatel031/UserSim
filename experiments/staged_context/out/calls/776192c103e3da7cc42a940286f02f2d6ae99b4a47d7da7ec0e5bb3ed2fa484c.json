@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "776192c103e3da7cc42a940286f02f2d6ae99b4a47d7da7ec0e5bb3ed2fa484c",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 262,
+  "output_tokens": 1142,
+  "cost_usd": 0.0029335999999999997,
+  "elapsed_s": 7.7,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Significantly improved project pipeline visibility and tracking.\",\n    \"Enhanced collaboration compared to traditional spreadsheets.\",\n    \"Automated workflows saved time on routine tasks.\"\n  ],\n  \"cons\": [\n    \"Initial learning curve was steeper than anticipated coming from Excel.\",\n    \"Cost felt substantial for a company of their size.\",\n    \"Custom reporting options could be more flexible.\"\n  ],\n  \"overall_experience\": \"The Director likely found Smartsheet to be a substantial upgrade from Microsoft Excel for managing project pipelines, appreciating the improved visibility and collaboration. While the initial learning curve presented a challenge, the robust functionality and automation capabilities ultimately led to a positive experience. They likely viewed it as a valuable tool despite some concerns about its cost for their company size.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Significantly improved project pipeline visibility and tracking.",
+      "Enhanced collaboration compared to traditional spreadsheets.",
+      "Automated workflows saved time on routine tasks."
+    ],
+    "cons": [
+      "Initial learning curve was steeper than anticipated coming from Excel.",
+      "Cost felt substantial for a company of their size.",
+      "Custom reporting options could be more flexible."
+    ],
+    "overall_experience": "The Director likely found Smartsheet to be a substantial upgrade from Microsoft Excel for managing project pipelines, appreciating the improved visibility and collaboration. While the initial learning curve presented a challenge, the robust functionality and automation capabilities ultimately led to a positive experience. They likely viewed it as a valuable tool despite some concerns about its cost for their company size."
+  },
+  "ts": "2026-10-18T04:44:11.963095+00:00"
+}

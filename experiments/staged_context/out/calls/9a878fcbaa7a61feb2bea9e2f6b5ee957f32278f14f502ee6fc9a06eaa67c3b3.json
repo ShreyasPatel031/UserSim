@@ -1,0 +1,31 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9a878fcbaa7a61feb2bea9e2f6b5ee957f32278f14f502ee6fc9a06eaa67c3b3",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 205,
+  "output_tokens": 474,
+  "cost_usd": 0.0012464999999999998,
+  "elapsed_s": 20.96,
+  "error": null,
+  "text": "{\n  \"task\": \"Track and analyze company data\",\n  \"benefits\": [\n    \"Track different departments\",\n    \"Track current status of hitting goals\",\n    \"See how the company is doing as a whole\",\n    \"Link with Salesforce for data analysis\"\n  ],\n  \"frictions\": [\n    \"Slow performance\",\n    \"Requires reloading to get updated numbers\",\n    \"Takes a while to load\"\n  ]\n}",
+  "json": {
+    "task": "Track and analyze company data",
+    "benefits": [
+      "Track different departments",
+      "Track current status of hitting goals",
+      "See how the company is doing as a whole",
+      "Link with Salesforce for data analysis"
+    ],
+    "frictions": [
+      "Slow performance",
+      "Requires reloading to get updated numbers",
+      "Takes a while to load"
+    ]
+  },
+  "ts": "2026-10-18T04:41:30.594710+00:00"
+}

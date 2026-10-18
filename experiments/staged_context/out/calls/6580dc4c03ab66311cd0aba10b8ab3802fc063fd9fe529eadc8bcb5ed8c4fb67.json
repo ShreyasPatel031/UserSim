@@ -1,0 +1,28 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "6580dc4c03ab66311cd0aba10b8ab3802fc063fd9fe529eadc8bcb5ed8c4fb67",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 132,
+  "output_tokens": 363,
+  "cost_usd": 0.0009471,
+  "elapsed_s": 20.98,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage the sales workflow.\",\n  \"benefits\": [\n    \"Easy user onboarding\",\n    \"Extensive customization options\",\n    \"Accurate reporting\"\n  ],\n  \"frictions\": [\n    \"Poor Spanish translations\"\n  ]\n}",
+  "json": {
+    "task": "Manage the sales workflow.",
+    "benefits": [
+      "Easy user onboarding",
+      "Extensive customization options",
+      "Accurate reporting"
+    ],
+    "frictions": [
+      "Poor Spanish translations"
+    ]
+  },
+  "ts": "2026-10-18T04:41:30.224994+00:00"
+}

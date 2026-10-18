@@ -1,0 +1,21 @@
+{
+  "stage": "mcp_classify",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "17575eea33bfd6dfe18960536ab71b790da8b4e0e370158924344fe98b64050f",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 256,
+  "input_tokens": 379,
+  "output_tokens": 216,
+  "cost_usd": 0.0006537,
+  "elapsed_s": 2.06,
+  "error": null,
+  "text": "{\n  \"category\": \"CRM\",\n  \"product_name\": \"Zoho CRM\"\n}",
+  "json": {
+    "category": "CRM",
+    "product_name": "Zoho CRM"
+  },
+  "ts": "2026-10-18T04:41:39.617334+00:00"
+}

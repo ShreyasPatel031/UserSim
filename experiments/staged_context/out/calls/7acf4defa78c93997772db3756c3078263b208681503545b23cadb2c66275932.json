@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7acf4defa78c93997772db3756c3078263b208681503545b23cadb2c66275932",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 253,
+  "output_tokens": 1058,
+  "cost_usd": 0.0027208999999999996,
+  "elapsed_s": 8.41,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Integrated email marketing and CRM features\",\n    \"Relatively easy to set up initial campaigns\",\n    \"Cost-effective solution for small teams\"\n  ],\n  \"cons\": [\n    \"CRM functionality might lack advanced sales features\",\n    \"Learning curve for automation workflows\",\n    \"Customer support response times could be slow at times\"\n  ],\n  \"overall_experience\": \"This Sales Manager likely found Brevo to be a valuable all-in-one tool for their small machinery company, appreciating the integration of email marketing and basic CRM. While the core features were easy to use, they may have encountered some limitations with the CRM for deeper sales processes or faced a learning curve with marketing automation. Overall, it provided good value for money for their early usage.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Integrated email marketing and CRM features",
+      "Relatively easy to set up initial campaigns",
+      "Cost-effective solution for small teams"
+    ],
+    "cons": [
+      "CRM functionality might lack advanced sales features",
+      "Learning curve for automation workflows",
+      "Customer support response times could be slow at times"
+    ],
+    "overall_experience": "This Sales Manager likely found Brevo to be a valuable all-in-one tool for their small machinery company, appreciating the integration of email marketing and basic CRM. While the core features were easy to use, they may have encountered some limitations with the CRM for deeper sales processes or faced a learning curve with marketing automation. Overall, it provided good value for money for their early usage."
+  },
+  "ts": "2026-10-18T04:43:26.812765+00:00"
+}

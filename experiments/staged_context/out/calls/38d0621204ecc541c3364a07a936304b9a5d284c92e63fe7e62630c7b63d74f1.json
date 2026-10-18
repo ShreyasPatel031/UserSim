@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "38d0621204ecc541c3364a07a936304b9a5d284c92e63fe7e62630c7b63d74f1",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1030,
+  "output_tokens": 991,
+  "cost_usd": 0.0027865,
+  "elapsed_s": 6.87,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Simple interface for basic task management\",\n    \"Centralized communication for small teams\",\n    \"Easy to get started with the free trial\"\n  ],\n  \"cons\": [\n    \"Lacked specific CRM or sales-focused features\",\n    \"Limited advanced reporting capabilities\",\n    \"Pricing might be a consideration after the trial period\"\n  ],\n  \"overall_experience\": \"This self-employed sales associate likely found Basecamp to be a straightforward tool for organizing basic tasks and communications during their free trial. While its simplicity was appreciated, the product probably lacked the specialized CRM or sales pipeline management functionalities crucial for their retail role. The experience was generally positive for general organization but did not fully address their specific business needs.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Simple interface for basic task management",
+      "Centralized communication for small teams",
+      "Easy to get started with the free trial"
+    ],
+    "cons": [
+      "Lacked specific CRM or sales-focused features",
+      "Limited advanced reporting capabilities",
+      "Pricing might be a consideration after the trial period"
+    ],
+    "overall_experience": "This self-employed sales associate likely found Basecamp to be a straightforward tool for organizing basic tasks and communications during their free trial. While its simplicity was appreciated, the product probably lacked the specialized CRM or sales pipeline management functionalities crucial for their retail role. The experience was generally positive for general organization but did not fully address their specific business needs."
+  },
+  "ts": "2026-10-18T04:43:54.359572+00:00"
+}

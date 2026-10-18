@@ -982,7 +982,7 @@ ROLE_FAMILIES = [
 
 
 def role_family(title: str | None) -> str:
-    t = norm_text(title or "")
+    t = norm_text(title if isinstance(title, str) else "")
     if not t or t in {"n/a", "na", "none", "-", "unknown"}:
         return "unknown"
     for fam, pat in ROLE_FAMILIES:

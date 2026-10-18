@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "eb800add86b687ce263310c5ca72930a19fc47b665f83bc4fd76857890299ab8",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2580,
+  "output_tokens": 1000,
+  "cost_usd": 0.003274,
+  "elapsed_s": 5.97,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Advanced automation and segmentation capabilities\",\n    \"Seamless integration with e-commerce platforms\",\n    \"Provides powerful analytics and reporting\"\n  ],\n  \"cons\": [\n    \"Steeper learning curve compared to previous tools\",\n    \"Pricing can become costly for growing businesses\",\n    \"Initial setup and migration can be complex\"\n  ],\n  \"overall_experience\": \"This business admin found Klaviyo to be a significant upgrade from Mailchimp, appreciating its robust automation and segmentation features for their health and wellness business. While the transition involved a learning curve and higher costs, the enhanced functionality and detailed analytics justified the investment. They generally recommend Klaviyo for its powerful marketing capabilities, despite some initial setup challenges.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Advanced automation and segmentation capabilities",
+      "Seamless integration with e-commerce platforms",
+      "Provides powerful analytics and reporting"
+    ],
+    "cons": [
+      "Steeper learning curve compared to previous tools",
+      "Pricing can become costly for growing businesses",
+      "Initial setup and migration can be complex"
+    ],
+    "overall_experience": "This business admin found Klaviyo to be a significant upgrade from Mailchimp, appreciating its robust automation and segmentation features for their health and wellness business. While the transition involved a learning curve and higher costs, the enhanced functionality and detailed analytics justified the investment. They generally recommend Klaviyo for its powerful marketing capabilities, despite some initial setup challenges."
+  },
+  "ts": "2026-10-18T04:44:04.910221+00:00"
+}

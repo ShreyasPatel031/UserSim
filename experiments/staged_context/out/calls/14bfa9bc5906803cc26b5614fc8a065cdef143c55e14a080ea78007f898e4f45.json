@@ -1,0 +1,26 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "14bfa9bc5906803cc26b5614fc8a065cdef143c55e14a080ea78007f898e4f45",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 144,
+  "output_tokens": 428,
+  "cost_usd": 0.0011132,
+  "elapsed_s": 22.88,
+  "error": null,
+  "text": "{\n  \"task\": \"Stay on task and keep team members informed.\",\n  \"benefits\": [\n    \"Easy to use\",\n    \"Helps stay on task\",\n    \"Keeps everyone in the know\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Stay on task and keep team members informed.",
+    "benefits": [
+      "Easy to use",
+      "Helps stay on task",
+      "Keeps everyone in the know"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T04:41:30.773686+00:00"
+}

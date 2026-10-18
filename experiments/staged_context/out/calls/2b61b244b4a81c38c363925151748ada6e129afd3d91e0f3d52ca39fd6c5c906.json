@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2b61b244b4a81c38c363925151748ada6e129afd3d91e0f3d52ca39fd6c5c906",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 263,
+  "output_tokens": 998,
+  "cost_usd": 0.0025738999999999996,
+  "elapsed_s": 8.92,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 2,\n  \"overall_rating\": 2,\n  \"value_for_money_rating\": 2,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 3,\n  \"pros\": [\n    \"Clean and straightforward interface\",\n    \"Good for tracking client communication\",\n    \"Customizable fields for basic project status\"\n  ],\n  \"cons\": [\n    \"Lacks specific features for creative project management\",\n    \"Not easily integrated with design tools\",\n    \"Interface feels more functional than aesthetically inspiring\"\n  ],\n  \"overall_experience\": \"This designer likely found Pipedrive to be a functional CRM for tracking client interactions, but somewhat misaligned with their core creative workflows. While the interface was clean, they probably perceived a lack of specific features for managing design projects or integrating with their essential design tools. The experience was likely adequate for basic client tracking, but not optimized for their role within a large company's creative department.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 2,
+    "overall_rating": 2,
+    "value_for_money_rating": 2,
+    "customer_support_rating": 3,
+    "recommendation_score": 3,
+    "pros": [
+      "Clean and straightforward interface",
+      "Good for tracking client communication",
+      "Customizable fields for basic project status"
+    ],
+    "cons": [
+      "Lacks specific features for creative project management",
+      "Not easily integrated with design tools",
+      "Interface feels more functional than aesthetically inspiring"
+    ],
+    "overall_experience": "This designer likely found Pipedrive to be a functional CRM for tracking client interactions, but somewhat misaligned with their core creative workflows. While the interface was clean, they probably perceived a lack of specific features for managing design projects or integrating with their essential design tools. The experience was likely adequate for basic client tracking, but not optimized for their role within a large company's creative department."
+  },
+  "ts": "2026-10-18T04:43:28.315921+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "da28f789278aff6df9ca252b91fde69ecc486763c5980209eb2f0dbe1b274da5",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2324,
+  "output_tokens": 1076,
+  "cost_usd": 0.0033872,
+  "elapsed_s": 8.15,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Intuitive and user-friendly interface\",\n    \"Excellent visual pipeline management\",\n    \"More affordable than previous CRM\"\n  ],\n  \"cons\": [\n    \"Fewer advanced customization options compared to Salesforce\",\n    \"Reporting features could be more robust\",\n    \"Integrations sometimes require workarounds\"\n  ],\n  \"overall_experience\": \"This Director from an IT Services firm, previously using Salesforce Sales Cloud, found Pipedrive to be a refreshing change for their small team. They appreciated its straightforward approach to sales pipeline management and ease of use, which significantly reduced the learning curve. While it may not offer the extensive breadth of customization found in Salesforce, its focused functionality and better value for money made it an ideal solution for their operational needs.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Intuitive and user-friendly interface",
+      "Excellent visual pipeline management",
+      "More affordable than previous CRM"
+    ],
+    "cons": [
+      "Fewer advanced customization options compared to Salesforce",
+      "Reporting features could be more robust",
+      "Integrations sometimes require workarounds"
+    ],
+    "overall_experience": "This Director from an IT Services firm, previously using Salesforce Sales Cloud, found Pipedrive to be a refreshing change for their small team. They appreciated its straightforward approach to sales pipeline management and ease of use, which significantly reduced the learning curve. While it may not offer the extensive breadth of customization found in Salesforce, its focused functionality and better value for money made it an ideal solution for their operational needs."
+  },
+  "ts": "2026-10-18T04:43:28.759699+00:00"
+}

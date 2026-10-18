@@ -1,0 +1,28 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "eae7909e2becddf59e4b51f352955256c8468b29977300ba4d2470e340dcf0e0",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 163,
+  "output_tokens": 432,
+  "cost_usd": 0.0011289,
+  "elapsed_s": 20.43,
+  "error": null,
+  "text": "{\n  \"task\": null,\n  \"benefits\": [\n    \"access many features\"\n  ],\n  \"frictions\": [\n    \"confusing to navigate\",\n    \"two different platforms for email and CRM\",\n    \"platforms are not combined into one\"\n  ]\n}",
+  "json": {
+    "task": null,
+    "benefits": [
+      "access many features"
+    ],
+    "frictions": [
+      "confusing to navigate",
+      "two different platforms for email and CRM",
+      "platforms are not combined into one"
+    ]
+  },
+  "ts": "2026-10-18T04:41:29.869091+00:00"
+}

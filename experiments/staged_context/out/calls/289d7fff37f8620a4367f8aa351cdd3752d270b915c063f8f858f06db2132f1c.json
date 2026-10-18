@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "289d7fff37f8620a4367f8aa351cdd3752d270b915c063f8f858f06db2132f1c",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 260,
+  "output_tokens": 1051,
+  "cost_usd": 0.0027055,
+  "elapsed_s": 8.17,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Centralized platform for HR data and employee records\",\n    \"Improved efficiency for onboarding new hires\",\n    \"Modern and intuitive user interface\"\n  ],\n  \"cons\": [\n    \"Initial setup and implementation required significant effort\",\n    \"Some payroll complexities specific to medical practice were challenging\",\n    \"Learning curve for staff to adapt to the new system\"\n  ],\n  \"overall_experience\": \"The HR Director found Namely to be a generally capable platform for managing the employee lifecycle, appreciating its centralized nature and modern interface. While the initial implementation presented some challenges, particularly with industry-specific payroll needs, the system is beginning to streamline several HR processes. They anticipate greater efficiency as their team becomes more proficient with the software.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 6,
+    "pros": [
+      "Centralized platform for HR data and employee records",
+      "Improved efficiency for onboarding new hires",
+      "Modern and intuitive user interface"
+    ],
+    "cons": [
+      "Initial setup and implementation required significant effort",
+      "Some payroll complexities specific to medical practice were challenging",
+      "Learning curve for staff to adapt to the new system"
+    ],
+    "overall_experience": "The HR Director found Namely to be a generally capable platform for managing the employee lifecycle, appreciating its centralized nature and modern interface. While the initial implementation presented some challenges, particularly with industry-specific payroll needs, the system is beginning to streamline several HR processes. They anticipate greater efficiency as their team becomes more proficient with the software."
+  },
+  "ts": "2026-10-18T04:43:40.145118+00:00"
+}

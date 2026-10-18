@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "56f870764aa02cd730ab5357c896a33866e8986c58b18113cf5decf36935e779",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2501,
+  "output_tokens": 1063,
+  "cost_usd": 0.0034078,
+  "elapsed_s": 7.35,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 5,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Robust automation and personalization features for targeted campaigns.\",\n    \"User-friendly interface despite advanced capabilities, easing daily task management.\",\n    \"Scalability to handle communication needs for a large organization.\"\n  ],\n  \"cons\": [\n    \"Potential for a learning curve with advanced customization and integration features.\",\n    \"Pricing structure might become a concern for very extensive usage.\",\n    \"Reporting and analytics capabilities could be more comprehensive for in-depth insights.\"\n  ],\n  \"overall_experience\": \"This Sr. IT Manager likely had a highly positive experience with Brevo, finding it effective for managing daily communication and email marketing activities. The product's robust functionality and ease of use were appreciated, especially for an organization of their size. While generally very satisfied, they may have encountered minor challenges with advanced customization or wished for more detailed reporting.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 5,
+    "recommendation_score": 9,
+    "pros": [
+      "Robust automation and personalization features for targeted campaigns.",
+      "User-friendly interface despite advanced capabilities, easing daily task management.",
+      "Scalability to handle communication needs for a large organization."
+    ],
+    "cons": [
+      "Potential for a learning curve with advanced customization and integration features.",
+      "Pricing structure might become a concern for very extensive usage.",
+      "Reporting and analytics capabilities could be more comprehensive for in-depth insights."
+    ],
+    "overall_experience": "This Sr. IT Manager likely had a highly positive experience with Brevo, finding it effective for managing daily communication and email marketing activities. The product's robust functionality and ease of use were appreciated, especially for an organization of their size. While generally very satisfied, they may have encountered minor challenges with advanced customization or wished for more detailed reporting."
+  },
+  "ts": "2026-10-18T04:43:38.455165+00:00"
+}

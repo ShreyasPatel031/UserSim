@@ -1,0 +1,27 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "68f63f614d024be083f02fe8adbf48f630f20fad0745647839d9c19e44c74bba",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 309,
+  "output_tokens": 504,
+  "cost_usd": 0.0013527,
+  "elapsed_s": 21.85,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage prospects and sales processes.\",\n  \"benefits\": [\n    \"Navigate the system and find information easily with an intuitive user interface.\",\n    \"Manage contacts, companies, and prospects in one centralized location.\",\n    \"Plan, track, and manage sales-related activities like calls, meetings, and emails.\",\n    \"Organize contacts, activities, sales, and objectives.\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Manage prospects and sales processes.",
+    "benefits": [
+      "Navigate the system and find information easily with an intuitive user interface.",
+      "Manage contacts, companies, and prospects in one centralized location.",
+      "Plan, track, and manage sales-related activities like calls, meetings, and emails.",
+      "Organize contacts, activities, sales, and objectives."
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T04:41:29.861948+00:00"
+}

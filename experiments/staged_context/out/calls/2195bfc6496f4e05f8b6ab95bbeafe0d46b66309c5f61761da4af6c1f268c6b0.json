@@ -1,0 +1,27 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2195bfc6496f4e05f8b6ab95bbeafe0d46b66309c5f61761da4af6c1f268c6b0",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 130,
+  "output_tokens": 424,
+  "cost_usd": 0.001099,
+  "elapsed_s": 3.17,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage spreadsheets\",\n  \"benefits\": [\n    \"easy to use\",\n    \"very fast tool\"\n  ],\n  \"frictions\": [\n    \"mobile experience is not pleasant\"\n  ]\n}",
+  "json": {
+    "task": "Manage spreadsheets",
+    "benefits": [
+      "easy to use",
+      "very fast tool"
+    ],
+    "frictions": [
+      "mobile experience is not pleasant"
+    ]
+  },
+  "ts": "2026-10-18T04:41:34.156354+00:00"
+}

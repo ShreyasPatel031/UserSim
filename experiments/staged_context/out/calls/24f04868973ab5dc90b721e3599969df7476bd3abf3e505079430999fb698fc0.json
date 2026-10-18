@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "24f04868973ab5dc90b721e3599969df7476bd3abf3e505079430999fb698fc0",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1057,
+  "output_tokens": 1087,
+  "cost_usd": 0.0030346,
+  "elapsed_s": 7.2,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Cost-effective solution for email marketing needs\",\n    \"Good range of features for setting up campaigns\",\n    \"Positive experience with initial setup process\"\n  ],\n  \"cons\": [\n    \"Interface might feel less refined compared to previous tools\",\n    \"Some advanced automation features could be more robust\",\n    \"Learning curve present when switching from established platforms\"\n  ],\n  \"overall_experience\": \"As a self-employed founder in marketing, this person likely found Brevo to be a strong value proposition, especially when considering its cost-effectiveness for setting up email campaigns. While the platform offered good core functionality, they may have noted areas where the user interface or advanced features didn't quite match the polish or depth of previous, more established alternatives like ActiveCampaign or Klaviyo. Despite minor frustrations, the overall experience was positive enough to recommend it for others seeking a capable and affordable marketing solution.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Cost-effective solution for email marketing needs",
+      "Good range of features for setting up campaigns",
+      "Positive experience with initial setup process"
+    ],
+    "cons": [
+      "Interface might feel less refined compared to previous tools",
+      "Some advanced automation features could be more robust",
+      "Learning curve present when switching from established platforms"
+    ],
+    "overall_experience": "As a self-employed founder in marketing, this person likely found Brevo to be a strong value proposition, especially when considering its cost-effectiveness for setting up email campaigns. While the platform offered good core functionality, they may have noted areas where the user interface or advanced features didn't quite match the polish or depth of previous, more established alternatives like ActiveCampaign or Klaviyo. Despite minor frustrations, the overall experience was positive enough to recommend it for others seeking a capable and affordable marketing solution."
+  },
+  "ts": "2026-10-18T04:43:37.208532+00:00"
+}

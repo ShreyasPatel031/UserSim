@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d2114fff1b0217274625792e1696a0660c1023b6d87625cf76e16f5b78cc1a1d",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1041,
+  "output_tokens": 1059,
+  "cost_usd": 0.0029598000000000003,
+  "elapsed_s": 6.98,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Robust features for scaling a furniture business\",\n    \"Strong SEO capabilities for product visibility\",\n    \"Flexible design and customization options\"\n  ],\n  \"cons\": [\n    \"Steeper learning curve compared to Shopify\",\n    \"Can be more complex for a small team to manage\",\n    \"Pricing tiers might feel less value-driven for very small businesses\"\n  ],\n  \"overall_experience\": \"This CEO likely found BigCommerce to be a powerful platform offering significant functionality for their furniture e-commerce site, especially appreciating its scalability over their previous Shopify experience. While the platform offered robust features for growth and customization, they may have encountered a slightly steeper learning curve and some complexity in management for their small team. Overall, they see it as a valuable tool for their business's long-term online presence and growth.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Robust features for scaling a furniture business",
+      "Strong SEO capabilities for product visibility",
+      "Flexible design and customization options"
+    ],
+    "cons": [
+      "Steeper learning curve compared to Shopify",
+      "Can be more complex for a small team to manage",
+      "Pricing tiers might feel less value-driven for very small businesses"
+    ],
+    "overall_experience": "This CEO likely found BigCommerce to be a powerful platform offering significant functionality for their furniture e-commerce site, especially appreciating its scalability over their previous Shopify experience. While the platform offered robust features for growth and customization, they may have encountered a slightly steeper learning curve and some complexity in management for their small team. Overall, they see it as a valuable tool for their business's long-term online presence and growth."
+  },
+  "ts": "2026-10-18T04:44:06.685546+00:00"
+}

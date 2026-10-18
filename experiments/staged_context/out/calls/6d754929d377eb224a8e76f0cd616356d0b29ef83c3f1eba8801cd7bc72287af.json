@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "6d754929d377eb224a8e76f0cd616356d0b29ef83c3f1eba8801cd7bc72287af",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 134,
+  "output_tokens": 424,
+  "cost_usd": 0.0011002,
+  "elapsed_s": 20.63,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage sales campaigns and deals.\",\n  \"benefits\": [\n    \"Intuitive and smart sales campaigns\",\n    \"Very flexible\",\n    \"Easy to use pipelines\"\n  ],\n  \"frictions\": [\n    \"Limited options on workflows\",\n    \"Email inboxes management needs improvement\"\n  ]\n}",
+  "json": {
+    "task": "Manage sales campaigns and deals.",
+    "benefits": [
+      "Intuitive and smart sales campaigns",
+      "Very flexible",
+      "Easy to use pipelines"
+    ],
+    "frictions": [
+      "Limited options on workflows",
+      "Email inboxes management needs improvement"
+    ]
+  },
+  "ts": "2026-10-18T04:41:29.849390+00:00"
+}

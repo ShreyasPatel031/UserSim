@@ -1,0 +1,32 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "09abcdda64cdde65b10e0e4b7dae9656f746d188be0f3a7fee5019685b0c2d4e",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 156,
+  "output_tokens": 548,
+  "cost_usd": 0.0014168,
+  "elapsed_s": 20.88,
+  "error": null,
+  "text": "{\n  \"task\": null,\n  \"benefits\": [\n    \"easy to use\",\n    \"unlimited users\",\n    \"mobile apps available\",\n    \"uniform email signatures\"\n  ],\n  \"frictions\": [\n    \"lack of app integrations\",\n    \"limited help center\",\n    \"unappealing contact form design\",\n    \"no phone or live chat support\"\n  ]\n}",
+  "json": {
+    "task": null,
+    "benefits": [
+      "easy to use",
+      "unlimited users",
+      "mobile apps available",
+      "uniform email signatures"
+    ],
+    "frictions": [
+      "lack of app integrations",
+      "limited help center",
+      "unappealing contact form design",
+      "no phone or live chat support"
+    ]
+  },
+  "ts": "2026-10-18T04:41:29.256498+00:00"
+}

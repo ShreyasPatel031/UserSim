@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "390695805cbffaa1f47dadffca1b708554a90ca7852099e23de1a24e71b0fe0c",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2666,
+  "output_tokens": 1075,
+  "cost_usd": 0.0034872999999999996,
+  "elapsed_s": 7.01,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Comprehensive HRIS platform for managing employee and admin functions\",\n    \"Intuitive and user-friendly interface for daily tasks\",\n    \"Robust core features for a growing company in the software industry\"\n  ],\n  \"cons\": [\n    \"Customer support can be slow or lack immediate resolution for complex issues\",\n    \"Specific advanced features or customization options may be limited\",\n    \"Reporting capabilities might require further development for detailed analysis\"\n  ],\n  \"overall_experience\": \"The Sr. Director of Global People Operations likely finds Namely to be a highly effective and user-friendly HR information system, well-suited for managing employee data and administrative tasks within a 51-200 person software company. While core functionalities are strong and easy to navigate, the reviewer might occasionally encounter frustrations with customer support responsiveness and the depth of certain advanced features or reporting capabilities.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Comprehensive HRIS platform for managing employee and admin functions",
+      "Intuitive and user-friendly interface for daily tasks",
+      "Robust core features for a growing company in the software industry"
+    ],
+    "cons": [
+      "Customer support can be slow or lack immediate resolution for complex issues",
+      "Specific advanced features or customization options may be limited",
+      "Reporting capabilities might require further development for detailed analysis"
+    ],
+    "overall_experience": "The Sr. Director of Global People Operations likely finds Namely to be a highly effective and user-friendly HR information system, well-suited for managing employee data and administrative tasks within a 51-200 person software company. While core functionalities are strong and easy to navigate, the reviewer might occasionally encounter frustrations with customer support responsiveness and the depth of certain advanced features or reporting capabilities."
+  },
+  "ts": "2026-10-18T04:43:40.422608+00:00"
+}

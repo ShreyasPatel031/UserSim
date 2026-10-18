@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a3cb3b487e6a50b416fa28f1c674f408f17457f43ad36510d771d7fbea4ca94f",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 182,
+  "output_tokens": 536,
+  "cost_usd": 0.0013946,
+  "elapsed_s": 23.59,
+  "error": null,
+  "text": "{\n  \"task\": \"Create projects with different workflows\",\n  \"benefits\": [\n    \"Utilize the software in many different ways\",\n    \"Create projects with different workflows\",\n    \"View everything on the dashboard\"\n  ],\n  \"frictions\": [\n    \"Setting up advanced analytics is hard\",\n    \"Poor changes to the time sheet format\",\n    \"Removal of the simple filter feature\"\n  ]\n}",
+  "json": {
+    "task": "Create projects with different workflows",
+    "benefits": [
+      "Utilize the software in many different ways",
+      "Create projects with different workflows",
+      "View everything on the dashboard"
+    ],
+    "frictions": [
+      "Setting up advanced analytics is hard",
+      "Poor changes to the time sheet format",
+      "Removal of the simple filter feature"
+    ]
+  },
+  "ts": "2026-10-18T04:41:31.786594+00:00"
+}

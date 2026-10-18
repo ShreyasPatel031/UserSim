@@ -1,0 +1,27 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0d9fc8026e42fe2016ca857f8d55d006b7799ac30aa67688f7bdc97094025e48",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 204,
+  "output_tokens": 479,
+  "cost_usd": 0.0012587,
+  "elapsed_s": 3.91,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage customer community and CMS systems.\",\n  \"benefits\": [\n    \"Efficient\",\n    \"Directly what was needed for customer community\",\n    \"Straightforward\",\n    \"Easy to set up\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Manage customer community and CMS systems.",
+    "benefits": [
+      "Efficient",
+      "Directly what was needed for customer community",
+      "Straightforward",
+      "Easy to set up"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T04:41:35.733688+00:00"
+}

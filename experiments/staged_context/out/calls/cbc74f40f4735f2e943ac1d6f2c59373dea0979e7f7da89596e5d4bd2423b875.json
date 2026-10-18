@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "cbc74f40f4735f2e943ac1d6f2c59373dea0979e7f7da89596e5d4bd2423b875",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 170,
+  "output_tokens": 454,
+  "cost_usd": 0.001186,
+  "elapsed_s": 20.67,
+  "error": null,
+  "text": "{\n  \"task\": \"Prepare a deadlines calendar\",\n  \"benefits\": [\n    \"No fees per user\",\n    \"Free accounts for education workers and students\",\n    \"Prepare deadlines calendar\"\n  ],\n  \"frictions\": [\n    \"All users cannot get support\",\n    \"Does not support Gantt charts\"\n  ]\n}",
+  "json": {
+    "task": "Prepare a deadlines calendar",
+    "benefits": [
+      "No fees per user",
+      "Free accounts for education workers and students",
+      "Prepare deadlines calendar"
+    ],
+    "frictions": [
+      "All users cannot get support",
+      "Does not support Gantt charts"
+    ]
+  },
+  "ts": "2026-10-18T04:41:30.431333+00:00"
+}

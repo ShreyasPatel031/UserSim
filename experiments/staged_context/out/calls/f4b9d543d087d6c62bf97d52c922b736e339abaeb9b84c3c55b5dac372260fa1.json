@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f4b9d543d087d6c62bf97d52c922b736e339abaeb9b84c3c55b5dac372260fa1",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1124,
+  "output_tokens": 1009,
+  "cost_usd": 0.0028596999999999997,
+  "elapsed_s": 6.94,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Efficiently logs and tracks support conversations\",\n    \"Streamlined communication and collaboration features\",\n    \"Customizable ticket workflows for various issues\"\n  ],\n  \"cons\": [\n    \"Initial setup and advanced configuration can be complex\",\n    \"Reporting capabilities might lack depth for specific analyses\",\n    \"User interface can feel cluttered with many features\"\n  ],\n  \"overall_experience\": \"As a Technical Representative in a large construction firm, this person likely found Freshdesk to be a highly effective tool for logging and tracking support conversations over 1-2 years. The platform's robust functionality and ease of use were generally appreciated, supporting efficient communication within their support team. While the value for money and customer support were good, some advanced features or integrations might have presented minor challenges or areas for improvement.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Efficiently logs and tracks support conversations",
+      "Streamlined communication and collaboration features",
+      "Customizable ticket workflows for various issues"
+    ],
+    "cons": [
+      "Initial setup and advanced configuration can be complex",
+      "Reporting capabilities might lack depth for specific analyses",
+      "User interface can feel cluttered with many features"
+    ],
+    "overall_experience": "As a Technical Representative in a large construction firm, this person likely found Freshdesk to be a highly effective tool for logging and tracking support conversations over 1-2 years. The platform's robust functionality and ease of use were generally appreciated, supporting efficient communication within their support team. While the value for money and customer support were good, some advanced features or integrations might have presented minor challenges or areas for improvement."
+  },
+  "ts": "2026-10-18T04:44:14.057129+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0a7399f7690f7f35cbb7d1029953c208e5bc1d22587da1eb9d7ba676cb2dfa5b",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2728,
+  "output_tokens": 1031,
+  "cost_usd": 0.0033959,
+  "elapsed_s": 7.78,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Affordable pricing compared to Mailchimp\",\n    \"Effective for sending mass email campaigns\",\n    \"Good core email marketing features\"\n  ],\n  \"cons\": [\n    \"Initial learning curve or setup complexities\",\n    \"Interface might feel less polished than previous tools\",\n    \"Support response times could be inconsistent\"\n  ],\n  \"overall_experience\": \"This Marketing Manager likely found Brevo to be a cost-effective solution for their mass mailing campaigns, especially when migrating from Mailchimp. While the core functionality for sending emails was satisfactory, they may have experienced some initial friction or a learning curve during the setup process. The user probably appreciated the value for money, despite potentially encountering minor frustrations with the user interface or customer support responsiveness.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Affordable pricing compared to Mailchimp",
+      "Effective for sending mass email campaigns",
+      "Good core email marketing features"
+    ],
+    "cons": [
+      "Initial learning curve or setup complexities",
+      "Interface might feel less polished than previous tools",
+      "Support response times could be inconsistent"
+    ],
+    "overall_experience": "This Marketing Manager likely found Brevo to be a cost-effective solution for their mass mailing campaigns, especially when migrating from Mailchimp. While the core functionality for sending emails was satisfactory, they may have experienced some initial friction or a learning curve during the setup process. The user probably appreciated the value for money, despite potentially encountering minor frustrations with the user interface or customer support responsiveness."
+  },
+  "ts": "2026-10-18T04:43:38.574843+00:00"
+}

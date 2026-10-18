@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b69dc884fc85cf506faea9472f4f3501cb352a8f826db7d2c4f429070fa0f797",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 237,
+  "output_tokens": 482,
+  "cost_usd": 0.0012760999999999998,
+  "elapsed_s": 22.58,
+  "error": null,
+  "text": "{\n  \"task\": \"Track deals and their progress from inception to completion\",\n  \"benefits\": [\n    \"Intuitive and easy to use\",\n    \"Everything flows through easily\",\n    \"Track deals from inception to completion\"\n  ],\n  \"frictions\": [\n    \"Cannot collapse or remove certain categories or fields\",\n    \"Desired a completely customizable pipeline\"\n  ]\n}",
+  "json": {
+    "task": "Track deals and their progress from inception to completion",
+    "benefits": [
+      "Intuitive and easy to use",
+      "Everything flows through easily",
+      "Track deals from inception to completion"
+    ],
+    "frictions": [
+      "Cannot collapse or remove certain categories or fields",
+      "Desired a completely customizable pipeline"
+    ]
+  },
+  "ts": "2026-10-18T04:41:30.409272+00:00"
+}

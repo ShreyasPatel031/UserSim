@@ -1,0 +1,21 @@
+{
+  "stage": "mcp_classify",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "12b49f4570b8ead15fe6f77d7ecd5ae6e5a51e12dbeeaf55cb84ba17729f1739",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 256,
+  "input_tokens": 531,
+  "output_tokens": 240,
+  "cost_usd": 0.0007593000000000001,
+  "elapsed_s": 1.92,
+  "error": null,
+  "text": "{\n  \"category\": \"Help Desk\",\n  \"product_name\": \"Help Scout\"\n}",
+  "json": {
+    "category": "Help Desk",
+    "product_name": "Help Scout"
+  },
+  "ts": "2026-10-18T04:41:40.602318+00:00"
+}

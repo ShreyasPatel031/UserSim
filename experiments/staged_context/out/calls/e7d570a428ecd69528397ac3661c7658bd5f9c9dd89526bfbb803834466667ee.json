@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e7d570a428ecd69528397ac3661c7658bd5f9c9dd89526bfbb803834466667ee",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 217,
+  "output_tokens": 459,
+  "cost_usd": 0.0012126,
+  "elapsed_s": 3.61,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage customer support interactions\",\n  \"benefits\": [\n    \"User interface is friendly and easy to navigate\",\n    \"Automation feature handles repetitive tasks, saving time\",\n    \"Offers a wide range of advanced features\",\n    \"Integrates well with other software\"\n  ],\n  \"frictions\": [\n    \"Pricing plan is high compared to alternatives\",\n    \"Customer support is slow to respond\"\n  ]\n}",
+  "json": {
+    "task": "Manage customer support interactions",
+    "benefits": [
+      "User interface is friendly and easy to navigate",
+      "Automation feature handles repetitive tasks, saving time",
+      "Offers a wide range of advanced features",
+      "Integrates well with other software"
+    ],
+    "frictions": [
+      "Pricing plan is high compared to alternatives",
+      "Customer support is slow to respond"
+    ]
+  },
+  "ts": "2026-10-18T04:41:35.529013+00:00"
+}

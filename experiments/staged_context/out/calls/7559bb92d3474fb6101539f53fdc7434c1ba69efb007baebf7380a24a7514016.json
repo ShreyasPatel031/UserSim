@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7559bb92d3474fb6101539f53fdc7434c1ba69efb007baebf7380a24a7514016",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1129,
+  "output_tokens": 1025,
+  "cost_usd": 0.0029012,
+  "elapsed_s": 6.94,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9.0,\n  \"pros\": [\n    \"Centralized and accessible employee data management\",\n    \"Intuitive and user-friendly interface for daily tasks\",\n    \"Streamlined onboarding processes for new hires\"\n  ],\n  \"cons\": [\n    \"Occasional delays in customer support response times\",\n    \"Limitations or complexities with advanced custom reporting\",\n    \"Potential for specific integration challenges with niche recruiting tools\"\n  ],\n  \"overall_experience\": \"This Sr. Technical Recruiter likely found Namely to be a highly effective and user-friendly platform for managing employee records within their IT company. The system's robust functionality and ease of use contributed significantly to their daily workflow, especially in managing the lifecycle of technical talent. While generally very satisfied, they may have encountered minor frustrations with customer support responsiveness or specific reporting needs.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 4,
+    "recommendation_score": 9.0,
+    "pros": [
+      "Centralized and accessible employee data management",
+      "Intuitive and user-friendly interface for daily tasks",
+      "Streamlined onboarding processes for new hires"
+    ],
+    "cons": [
+      "Occasional delays in customer support response times",
+      "Limitations or complexities with advanced custom reporting",
+      "Potential for specific integration challenges with niche recruiting tools"
+    ],
+    "overall_experience": "This Sr. Technical Recruiter likely found Namely to be a highly effective and user-friendly platform for managing employee records within their IT company. The system's robust functionality and ease of use contributed significantly to their daily workflow, especially in managing the lifecycle of technical talent. While generally very satisfied, they may have encountered minor frustrations with customer support responsiveness or specific reporting needs."
+  },
+  "ts": "2026-10-18T04:43:40.343600+00:00"
+}

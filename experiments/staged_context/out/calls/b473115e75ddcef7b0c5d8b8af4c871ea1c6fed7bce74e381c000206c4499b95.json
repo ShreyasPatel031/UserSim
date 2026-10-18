@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b473115e75ddcef7b0c5d8b8af4c871ea1c6fed7bce74e381c000206c4499b95",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1079,
+  "output_tokens": 1095,
+  "cost_usd": 0.0030612000000000005,
+  "elapsed_s": 8.05,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 5,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Effective tools for recognizing team members' efforts.\",\n    \"User-friendly interface simplifies HR tasks.\",\n    \"Centralized platform streamlines administrative processes.\"\n  ],\n  \"cons\": [\n    \"Reporting features could be more robust for detailed analysis.\",\n    \"Occasional limitations in customizing certain aspects of the platform.\",\n    \"Response times from customer support might sometimes vary.\"\n  ],\n  \"overall_experience\": \"This pharmacy technician likely found Namely to be a highly effective and user-friendly solution for managing HR tasks, especially for recognizing their team's efforts. The platform's overall functionality and value for money were likely appreciated in their small healthcare setting. While generally positive, they may have encountered minor frustrations with reporting capabilities or customer support response times.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 5,
+    "recommendation_score": 9,
+    "pros": [
+      "Effective tools for recognizing team members' efforts.",
+      "User-friendly interface simplifies HR tasks.",
+      "Centralized platform streamlines administrative processes."
+    ],
+    "cons": [
+      "Reporting features could be more robust for detailed analysis.",
+      "Occasional limitations in customizing certain aspects of the platform.",
+      "Response times from customer support might sometimes vary."
+    ],
+    "overall_experience": "This pharmacy technician likely found Namely to be a highly effective and user-friendly solution for managing HR tasks, especially for recognizing their team's efforts. The platform's overall functionality and value for money were likely appreciated in their small healthcare setting. While generally positive, they may have encountered minor frustrations with reporting capabilities or customer support response times."
+  },
+  "ts": "2026-10-18T04:43:43.109412+00:00"
+}

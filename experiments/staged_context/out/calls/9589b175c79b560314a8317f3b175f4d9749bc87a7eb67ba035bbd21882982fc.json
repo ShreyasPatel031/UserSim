@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9589b175c79b560314a8317f3b175f4d9749bc87a7eb67ba035bbd21882982fc",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1074,
+  "output_tokens": 1005,
+  "cost_usd": 0.0028347,
+  "elapsed_s": 7.64,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 5,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Found it to be a cost-effective solution for their CRM needs.\",\n    \"Appreciated the robust features for managing customer relationships.\",\n    \"Valued the ability to customize the platform to fit their specific workflows.\"\n  ],\n  \"cons\": [\n    \"Experienced a slight learning curve when migrating from HubSpot.\",\n    \"Felt the user interface could be more modern or intuitive in some areas.\",\n    \"Encountered occasional minor glitches or performance slowdowns.\"\n  ],\n  \"overall_experience\": \"This Customer Success Manager likely had a very positive experience with Zoho CRM, finding it to be a highly functional and valuable tool for managing customer relationships within their education management company. They appreciated its cost-effectiveness and customization options, especially after migrating from HubSpot. While there may have been a slight adjustment period or minor UI preferences, the overall benefits and capabilities of Zoho CRM made it a strong choice for their role.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 5,
+    "recommendation_score": 9,
+    "pros": [
+      "Found it to be a cost-effective solution for their CRM needs.",
+      "Appreciated the robust features for managing customer relationships.",
+      "Valued the ability to customize the platform to fit their specific workflows."
+    ],
+    "cons": [
+      "Experienced a slight learning curve when migrating from HubSpot.",
+      "Felt the user interface could be more modern or intuitive in some areas.",
+      "Encountered occasional minor glitches or performance slowdowns."
+    ],
+    "overall_experience": "This Customer Success Manager likely had a very positive experience with Zoho CRM, finding it to be a highly functional and valuable tool for managing customer relationships within their education management company. They appreciated its cost-effectiveness and customization options, especially after migrating from HubSpot. While there may have been a slight adjustment period or minor UI preferences, the overall benefits and capabilities of Zoho CRM made it a strong choice for their role."
+  },
+  "ts": "2026-10-18T04:43:48.363039+00:00"
+}

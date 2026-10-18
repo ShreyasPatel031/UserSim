@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ec36844c64415553f738affb404800cacbaae777fb226df0685c4ab45207f90d",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 300,
+  "output_tokens": 453,
+  "cost_usd": 0.0012225,
+  "elapsed_s": 2.8,
+  "error": null,
+  "text": "{\n  \"task\": \"Host an e-commerce website\",\n  \"benefits\": [\n    \"Avoid maintaining own website servers\"\n  ],\n  \"frictions\": [\n    \"Lack of transparency on pricing\",\n    \"Overbilled due to pricing model not adjusting downwards automatically\",\n    \"Slow customer service response time (three weeks)\",\n    \"Deteriorating customer service\"\n  ]\n}",
+  "json": {
+    "task": "Host an e-commerce website",
+    "benefits": [
+      "Avoid maintaining own website servers"
+    ],
+    "frictions": [
+      "Lack of transparency on pricing",
+      "Overbilled due to pricing model not adjusting downwards automatically",
+      "Slow customer service response time (three weeks)",
+      "Deteriorating customer service"
+    ]
+  },
+  "ts": "2026-10-18T04:41:32.640250+00:00"
+}

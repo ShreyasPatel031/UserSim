@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "88d344f4dfd766d7566596f585d7ba84840b28995ea0e3e7c8ac48c1c5e94c6c",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 228,
+  "output_tokens": 447,
+  "cost_usd": 0.0011859,
+  "elapsed_s": 22.45,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage sales pipelines\",\n  \"benefits\": [\n    \"Set up and customize pipelines quickly\",\n    \"Track progress and manage deals efficiently with custom fields and integrations\",\n    \"Intuitive for pipeline management\",\n    \"User-friendly\"\n  ],\n  \"frictions\": [\n    \"Billing system is complicated to navigate\",\n    \"Difficulty downgrading billing plans\"\n  ]\n}",
+  "json": {
+    "task": "Manage sales pipelines",
+    "benefits": [
+      "Set up and customize pipelines quickly",
+      "Track progress and manage deals efficiently with custom fields and integrations",
+      "Intuitive for pipeline management",
+      "User-friendly"
+    ],
+    "frictions": [
+      "Billing system is complicated to navigate",
+      "Difficulty downgrading billing plans"
+    ]
+  },
+  "ts": "2026-10-18T04:41:30.439676+00:00"
+}

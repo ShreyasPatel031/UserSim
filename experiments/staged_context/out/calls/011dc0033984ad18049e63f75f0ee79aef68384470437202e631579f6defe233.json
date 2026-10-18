@@ -1,0 +1,32 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "011dc0033984ad18049e63f75f0ee79aef68384470437202e631579f6defe233",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 569,
+  "output_tokens": 550,
+  "cost_usd": 0.0015457000000000001,
+  "elapsed_s": 21.42,
+  "error": null,
+  "text": "{\n  \"task\": \"Build and develop data visuals and dashboards\",\n  \"benefits\": [\n    \"Connect to a plethora of compatible data sources including G Suite, Microsoft, and CSV files\",\n    \"Optimized for G Suite integration, especially BigQuery\",\n    \"Offers several customizable options for visuals, including various chart types and data overlaying\",\n    \"No significant issues or bugs experienced\"\n  ],\n  \"frictions\": [\n    \"Requires workarounds for data heat maps, which are not accurate or sufficient for geographical trends\",\n    \"Reliability is dependent on third-party providers like Google, leading to delays during outages\",\n    \"Lacks some more complex data visualization tools compared to competitors\",\n    \"Falls short in advanced data handling\"\n  ]\n}",
+  "json": {
+    "task": "Build and develop data visuals and dashboards",
+    "benefits": [
+      "Connect to a plethora of compatible data sources including G Suite, Microsoft, and CSV files",
+      "Optimized for G Suite integration, especially BigQuery",
+      "Offers several customizable options for visuals, including various chart types and data overlaying",
+      "No significant issues or bugs experienced"
+    ],
+    "frictions": [
+      "Requires workarounds for data heat maps, which are not accurate or sufficient for geographical trends",
+      "Reliability is dependent on third-party providers like Google, leading to delays during outages",
+      "Lacks some more complex data visualization tools compared to competitors",
+      "Falls short in advanced data handling"
+    ]
+  },
+  "ts": "2026-10-18T04:41:31.075984+00:00"
+}

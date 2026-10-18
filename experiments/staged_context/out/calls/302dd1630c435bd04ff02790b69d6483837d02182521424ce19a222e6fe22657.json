@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "302dd1630c435bd04ff02790b69d6483837d02182521424ce19a222e6fe22657",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 251,
+  "output_tokens": 449,
+  "cost_usd": 0.0011978,
+  "elapsed_s": 2.75,
+  "error": null,
+  "text": "{\n  \"task\": \"Create and manage an online store to sell products\",\n  \"benefits\": [\n    \"Easy to list and sell products online\",\n    \"Comprehensive product manager\",\n    \"Includes out-of-the-box SEO features\",\n    \"Many custom themes available\"\n  ],\n  \"frictions\": [\n    \"Difficult to do more than basic site creation\",\n    \"Outperformed by other e-commerce platforms\"\n  ]\n}",
+  "json": {
+    "task": "Create and manage an online store to sell products",
+    "benefits": [
+      "Easy to list and sell products online",
+      "Comprehensive product manager",
+      "Includes out-of-the-box SEO features",
+      "Many custom themes available"
+    ],
+    "frictions": [
+      "Difficult to do more than basic site creation",
+      "Outperformed by other e-commerce platforms"
+    ]
+  },
+  "ts": "2026-10-18T04:41:32.865892+00:00"
+}

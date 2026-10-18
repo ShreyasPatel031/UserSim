@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "71ade80ac3d759f4f72ae121aa3e0b14f23f9809aa039b0578ba92b91340ce0d",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 261,
+  "output_tokens": 998,
+  "cost_usd": 0.0025732999999999997,
+  "elapsed_s": 6.73,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Powerful segmentation and automation capabilities\",\n    \"Significant improvement in email marketing ROI\",\n    \"Robust e-commerce integrations\"\n  ],\n  \"cons\": [\n    \"Steeper learning curve compared to Mailchimp\",\n    \"Pricing can become costly with larger lists\",\n    \"Interface can feel overwhelming initially\"\n  ],\n  \"overall_experience\": \"This Marketing Director experienced Klaviyo as a highly effective tool for driving sales through sophisticated email automation, a significant upgrade from their previous solution. While acknowledging an initial learning curve and the potential for higher costs, the platform's advanced functionality and strong retail focus delivered substantial value over two years of use.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Powerful segmentation and automation capabilities",
+      "Significant improvement in email marketing ROI",
+      "Robust e-commerce integrations"
+    ],
+    "cons": [
+      "Steeper learning curve compared to Mailchimp",
+      "Pricing can become costly with larger lists",
+      "Interface can feel overwhelming initially"
+    ],
+    "overall_experience": "This Marketing Director experienced Klaviyo as a highly effective tool for driving sales through sophisticated email automation, a significant upgrade from their previous solution. While acknowledging an initial learning curve and the potential for higher costs, the platform's advanced functionality and strong retail focus delivered substantial value over two years of use."
+  },
+  "ts": "2026-10-18T04:44:04.579935+00:00"
+}

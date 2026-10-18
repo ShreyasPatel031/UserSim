@@ -1,0 +1,27 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7d0b26f4a8f42ebbd53e033ec730e15b169004df8ff817e0f4509593cd3f5d2c",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 180,
+  "output_tokens": 409,
+  "cost_usd": 0.0010765,
+  "elapsed_s": 21.44,
+  "error": null,
+  "text": "{\n  \"task\": \"Respond to customer inquiries.\",\n  \"benefits\": [\n    \"Keep all customer communications in one place\",\n    \"Respond to customers in almost real time\"\n  ],\n  \"frictions\": [\n    \"Pay more for integrations into a CRM\"\n  ]\n}",
+  "json": {
+    "task": "Respond to customer inquiries.",
+    "benefits": [
+      "Keep all customer communications in one place",
+      "Respond to customers in almost real time"
+    ],
+    "frictions": [
+      "Pay more for integrations into a CRM"
+    ]
+  },
+  "ts": "2026-10-18T04:41:29.857892+00:00"
+}

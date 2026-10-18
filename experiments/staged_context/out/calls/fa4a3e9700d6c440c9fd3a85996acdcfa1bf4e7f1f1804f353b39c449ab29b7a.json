@@ -1,0 +1,31 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "fa4a3e9700d6c440c9fd3a85996acdcfa1bf4e7f1f1804f353b39c449ab29b7a",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 196,
+  "output_tokens": 468,
+  "cost_usd": 0.0012288,
+  "elapsed_s": 19.65,
+  "error": null,
+  "text": "{\n  \"task\": null,\n  \"benefits\": [\n    \"Receive good response\",\n    \"Get immediate help\",\n    \"Interact with friendly support\"\n  ],\n  \"frictions\": [\n    \"Experience pathetic and glitchy customer support\",\n    \"Need to download links shared via chat for help\",\n    \"Receive inconsistent answers from different customer representatives\",\n    \"Lack an account manager\"\n  ]\n}",
+  "json": {
+    "task": null,
+    "benefits": [
+      "Receive good response",
+      "Get immediate help",
+      "Interact with friendly support"
+    ],
+    "frictions": [
+      "Experience pathetic and glitchy customer support",
+      "Need to download links shared via chat for help",
+      "Receive inconsistent answers from different customer representatives",
+      "Lack an account manager"
+    ]
+  },
+  "ts": "2026-10-18T04:41:29.049670+00:00"
+}

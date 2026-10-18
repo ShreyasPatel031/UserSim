@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b549f8cab23d1d716a825ef1a35fb7cca5dbd985e6411820e0630ed728ce5f3b",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 256,
+  "output_tokens": 1042,
+  "cost_usd": 0.0026818,
+  "elapsed_s": 7.75,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Robust built-in features reduced reliance on apps\",\n    \"No transaction fees, improving profit margins\",\n    \"Scalable platform supporting business growth\"\n  ],\n  \"cons\": [\n    \"Initial learning curve compared to previous platform\",\n    \"Theme customization could be more intuitive\",\n    \"App marketplace not as extensive as competitors\"\n  ],\n  \"overall_experience\": \"This owner successfully launched and ran their retail business on BigCommerce for 1-2 years, appreciating its powerful features and lack of transaction fees as they scaled. While the platform offered significant functional advantages for their growing retail operation, the user experienced a slight learning curve coming from Shopify. Despite minor frustrations with customization and the app ecosystem, the overall value and built-in capabilities made it a solid choice for their business.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Robust built-in features reduced reliance on apps",
+      "No transaction fees, improving profit margins",
+      "Scalable platform supporting business growth"
+    ],
+    "cons": [
+      "Initial learning curve compared to previous platform",
+      "Theme customization could be more intuitive",
+      "App marketplace not as extensive as competitors"
+    ],
+    "overall_experience": "This owner successfully launched and ran their retail business on BigCommerce for 1-2 years, appreciating its powerful features and lack of transaction fees as they scaled. While the platform offered significant functional advantages for their growing retail operation, the user experienced a slight learning curve coming from Shopify. Despite minor frustrations with customization and the app ecosystem, the overall value and built-in capabilities made it a solid choice for their business."
+  },
+  "ts": "2026-10-18T04:44:08.818802+00:00"
+}

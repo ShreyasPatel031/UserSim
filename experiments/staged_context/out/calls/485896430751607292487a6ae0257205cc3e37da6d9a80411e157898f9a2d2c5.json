@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "485896430751607292487a6ae0257205cc3e37da6d9a80411e157898f9a2d2c5",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 263,
+  "output_tokens": 956,
+  "cost_usd": 0.0024689,
+  "elapsed_s": 7.98,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Improved project visibility and tracking over Excel\",\n    \"Enhanced team collaboration on tasks and deadlines\",\n    \"Streamlined workflow automation for repeatable processes\"\n  ],\n  \"cons\": [\n    \"Initial learning curve for the team moving from spreadsheets\",\n    \"Cost per user can add up for a small company\",\n    \"Custom reporting could be more intuitive for executive dashboards\"\n  ],\n  \"overall_experience\": \"The CEO found Smartsheet to be a significant upgrade from managing projects in Excel, greatly improving overall project visibility and team collaboration within their construction company. While the initial team adoption required some effort, the benefits in workflow efficiency and tracking justified the investment. The platform effectively addressed the need for structured project management, though they noted some room for improvement in advanced reporting customization for executive oversight.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Improved project visibility and tracking over Excel",
+      "Enhanced team collaboration on tasks and deadlines",
+      "Streamlined workflow automation for repeatable processes"
+    ],
+    "cons": [
+      "Initial learning curve for the team moving from spreadsheets",
+      "Cost per user can add up for a small company",
+      "Custom reporting could be more intuitive for executive dashboards"
+    ],
+    "overall_experience": "The CEO found Smartsheet to be a significant upgrade from managing projects in Excel, greatly improving overall project visibility and team collaboration within their construction company. While the initial team adoption required some effort, the benefits in workflow efficiency and tracking justified the investment. The platform effectively addressed the need for structured project management, though they noted some room for improvement in advanced reporting customization for executive oversight."
+  },
+  "ts": "2026-10-18T04:44:13.190834+00:00"
+}

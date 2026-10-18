@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9be521100d8de8854a27cd8998bb02a1304b5e17503bd04b55891ee4c9a19e28",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 265,
+  "output_tokens": 451,
+  "cost_usd": 0.001207,
+  "elapsed_s": 20.01,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage sales processes and customer interactions\",\n  \"benefits\": [\n    \"Use the product easily\",\n    \"Receive excellent support from the support team\"\n  ],\n  \"frictions\": [\n    \"Lack customization for specific industries\",\n    \"Dashboard is not live and needs rework\",\n    \"Support is not available 24/7\",\n    \"Cannot link bots to activities or churn contacts based on responses\"\n  ]\n}",
+  "json": {
+    "task": "Manage sales processes and customer interactions",
+    "benefits": [
+      "Use the product easily",
+      "Receive excellent support from the support team"
+    ],
+    "frictions": [
+      "Lack customization for specific industries",
+      "Dashboard is not live and needs rework",
+      "Support is not available 24/7",
+      "Cannot link bots to activities or churn contacts based on responses"
+    ]
+  },
+  "ts": "2026-10-18T04:41:29.128705+00:00"
+}

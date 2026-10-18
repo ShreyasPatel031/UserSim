@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3ffa19f6f4aa6a5c67a5c059ab6e3081011b99124b93295d6cf6f378462bde01",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1085,
+  "output_tokens": 966,
+  "cost_usd": 0.0027405,
+  "elapsed_s": 7.31,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effective in managing sales pipelines and campaigns.\",\n    \"User interface is generally intuitive for daily tasks.\",\n    \"Good set of features for a small sales team.\"\n  ],\n  \"cons\": [\n    \"Initial setup and customization can be time-consuming.\",\n    \"Some advanced features might be overkill for a small company.\",\n    \"Integration with other specific IT tools could be improved.\"\n  ],\n  \"overall_experience\": \"The sales manager likely found Freshsales to be a competent tool for managing their sales campaigns and deals, offering good core functionality for their small IT services company. While the initial learning curve and setup might have presented some challenges, the product generally met their needs within the first six months of use. They probably saw good value, but perhaps not outstanding, given their company size and relatively short usage period.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Effective in managing sales pipelines and campaigns.",
+      "User interface is generally intuitive for daily tasks.",
+      "Good set of features for a small sales team."
+    ],
+    "cons": [
+      "Initial setup and customization can be time-consuming.",
+      "Some advanced features might be overkill for a small company.",
+      "Integration with other specific IT tools could be improved."
+    ],
+    "overall_experience": "The sales manager likely found Freshsales to be a competent tool for managing their sales campaigns and deals, offering good core functionality for their small IT services company. While the initial learning curve and setup might have presented some challenges, the product generally met their needs within the first six months of use. They probably saw good value, but perhaps not outstanding, given their company size and relatively short usage period."
+  },
+  "ts": "2026-10-18T04:43:44.363427+00:00"
+}

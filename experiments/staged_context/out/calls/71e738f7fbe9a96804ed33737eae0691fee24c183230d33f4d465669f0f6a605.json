@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "71e738f7fbe9a96804ed33737eae0691fee24c183230d33f4d465669f0f6a605",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1086,
+  "output_tokens": 888,
+  "cost_usd": 0.0025458,
+  "elapsed_s": 6.6,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Comprehensive features for managing customer relationships.\",\n    \"Strong value for money with a good feature set.\",\n    \"Effective for organizing and tracking market research leads and data.\"\n  ],\n  \"cons\": [\n    \"Initial setup and customization can be complex.\",\n    \"User interface might feel less intuitive at times.\",\n    \"Reporting features could sometimes require more advanced configuration.\"\n  ],\n  \"overall_experience\": \"This Sr. Analyst likely found Zoho CRM to be a highly functional tool for managing customer relationships within their market research firm. They appreciated its comprehensive features and perceived good value for the investment, despite potential challenges with initial complexity or the user interface. The system effectively supported their analytical tasks for over a year.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Comprehensive features for managing customer relationships.",
+      "Strong value for money with a good feature set.",
+      "Effective for organizing and tracking market research leads and data."
+    ],
+    "cons": [
+      "Initial setup and customization can be complex.",
+      "User interface might feel less intuitive at times.",
+      "Reporting features could sometimes require more advanced configuration."
+    ],
+    "overall_experience": "This Sr. Analyst likely found Zoho CRM to be a highly functional tool for managing customer relationships within their market research firm. They appreciated its comprehensive features and perceived good value for the investment, despite potential challenges with initial complexity or the user interface. The system effectively supported their analytical tasks for over a year."
+  },
+  "ts": "2026-10-18T04:43:48.098040+00:00"
+}

@@ -1,0 +1,32 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7dc60821009b6866ec0c71111ace9b24eb48ae3039be20ceeeacec5ba4ede5be",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 638,
+  "output_tokens": 549,
+  "cost_usd": 0.0015639,
+  "elapsed_s": 22.5,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage projects and team tasks.\",\n  \"benefits\": [\n    \"Flexible and powerful enough to adapt to virtually any use case.\",\n    \"Keeps teams on the same page and on-task.\",\n    \"Has a fresh and modern UI.\",\n    \"Captures and manages all department efforts in a single place.\"\n  ],\n  \"frictions\": [\n    \"Requires significant effort to determine how to leverage the tool.\",\n    \"Has a complex interface and a steep learning curve for teams.\",\n    \"Takes months to see benefits, making adoption an exercise in discipline.\",\n    \"Real-time browser notifications do not work reliably.\"\n  ]\n}",
+  "json": {
+    "task": "Manage projects and team tasks.",
+    "benefits": [
+      "Flexible and powerful enough to adapt to virtually any use case.",
+      "Keeps teams on the same page and on-task.",
+      "Has a fresh and modern UI.",
+      "Captures and manages all department efforts in a single place."
+    ],
+    "frictions": [
+      "Requires significant effort to determine how to leverage the tool.",
+      "Has a complex interface and a steep learning curve for teams.",
+      "Takes months to see benefits, making adoption an exercise in discipline.",
+      "Real-time browser notifications do not work reliably."
+    ]
+  },
+  "ts": "2026-10-18T04:41:30.614270+00:00"
+}

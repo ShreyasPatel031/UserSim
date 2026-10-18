@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "120a5d31fabe719dd34d5fccd79c2eb02d53cb993b37ca732d3db42f6d07efab",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1130,
+  "output_tokens": 1065,
+  "cost_usd": 0.0030015,
+  "elapsed_s": 7.14,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Robust segmentation for diverse customer groups\",\n    \"Powerful automation and flow builder for complex campaigns\",\n    \"Detailed analytics to track campaign performance\"\n  ],\n  \"cons\": [\n    \"Steep learning curve for advanced features\",\n    \"Integration challenges with existing enterprise systems\",\n    \"Pricing can become significant with large contact lists\"\n  ],\n  \"overall_experience\": \"The Head of Marketing found Klaviyo to be a highly functional platform, particularly strong for structuring sophisticated email campaigns and segmenting a large, varied customer base. While the initial setup and mastering advanced features presented a learning curve, the overall capabilities significantly enhanced their marketing efforts. They appreciated the powerful automation and detailed analytics, though they noted the cost could add up for a company of their size.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Robust segmentation for diverse customer groups",
+      "Powerful automation and flow builder for complex campaigns",
+      "Detailed analytics to track campaign performance"
+    ],
+    "cons": [
+      "Steep learning curve for advanced features",
+      "Integration challenges with existing enterprise systems",
+      "Pricing can become significant with large contact lists"
+    ],
+    "overall_experience": "The Head of Marketing found Klaviyo to be a highly functional platform, particularly strong for structuring sophisticated email campaigns and segmenting a large, varied customer base. While the initial setup and mastering advanced features presented a learning curve, the overall capabilities significantly enhanced their marketing efforts. They appreciated the powerful automation and detailed analytics, though they noted the cost could add up for a company of their size."
+  },
+  "ts": "2026-10-18T04:44:05.615267+00:00"
+}

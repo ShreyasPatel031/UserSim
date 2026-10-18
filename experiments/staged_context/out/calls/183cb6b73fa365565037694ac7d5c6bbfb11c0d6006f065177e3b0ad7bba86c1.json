@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "183cb6b73fa365565037694ac7d5c6bbfb11c0d6006f065177e3b0ad7bba86c1",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 261,
+  "output_tokens": 921,
+  "cost_usd": 0.0023808,
+  "elapsed_s": 7.26,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Significantly improved customer support organization over Gmail\",\n    \"Effective knowledge base management for self-service\",\n    \"User-friendly interface for streamlined workflows\"\n  ],\n  \"cons\": [\n    \"Initial setup might have a slight learning curve from a basic email system\",\n    \"Pricing could be a consideration for a self-employed individual\",\n    \"Limited advanced analytics compared to enterprise solutions\"\n  ],\n  \"overall_experience\": \"The founder and CEO found Help Scout to be a transformative upgrade from managing customer support through Gmail, greatly enhancing organization and professionalism. They particularly valued the integrated knowledge base and shared inbox functionalities which streamlined their support operations. Despite being a self-employed individual, the efficiency gains over two years justified the investment, making it an indispensable tool for their IT services business.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Significantly improved customer support organization over Gmail",
+      "Effective knowledge base management for self-service",
+      "User-friendly interface for streamlined workflows"
+    ],
+    "cons": [
+      "Initial setup might have a slight learning curve from a basic email system",
+      "Pricing could be a consideration for a self-employed individual",
+      "Limited advanced analytics compared to enterprise solutions"
+    ],
+    "overall_experience": "The founder and CEO found Help Scout to be a transformative upgrade from managing customer support through Gmail, greatly enhancing organization and professionalism. They particularly valued the integrated knowledge base and shared inbox functionalities which streamlined their support operations. Despite being a self-employed individual, the efficiency gains over two years justified the investment, making it an indispensable tool for their IT services business."
+  },
+  "ts": "2026-10-18T04:43:29.977366+00:00"
+}

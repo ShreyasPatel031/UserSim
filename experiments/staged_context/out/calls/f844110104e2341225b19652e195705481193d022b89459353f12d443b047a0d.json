@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f844110104e2341225b19652e195705481193d022b89459353f12d443b047a0d",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 264,
+  "output_tokens": 1013,
+  "cost_usd": 0.0026117000000000002,
+  "elapsed_s": 7.48,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effective in centralizing customer information\",\n    \"Streamlined lead processing and tracking\",\n    \"Intuitive interface for daily sales tasks\"\n  ],\n  \"cons\": [\n    \"Initial data import and setup required some effort\",\n    \"Limited customization options for specific wholesale workflows\",\n    \"Reporting features could be more advanced\"\n  ],\n  \"overall_experience\": \"This sales professional found Freshsales to be a valuable tool for their small wholesale business, particularly for centralizing client information and managing leads effectively. Despite being a relatively new user, they appreciated its straightforward approach to core CRM functions. The platform has helped them organize their sales processes, though they noted some areas where customization and reporting could be enhanced.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Effective in centralizing customer information",
+      "Streamlined lead processing and tracking",
+      "Intuitive interface for daily sales tasks"
+    ],
+    "cons": [
+      "Initial data import and setup required some effort",
+      "Limited customization options for specific wholesale workflows",
+      "Reporting features could be more advanced"
+    ],
+    "overall_experience": "This sales professional found Freshsales to be a valuable tool for their small wholesale business, particularly for centralizing client information and managing leads effectively. Despite being a relatively new user, they appreciated its straightforward approach to core CRM functions. The platform has helped them organize their sales processes, though they noted some areas where customization and reporting could be enhanced."
+  },
+  "ts": "2026-10-18T04:43:45.900616+00:00"
+}

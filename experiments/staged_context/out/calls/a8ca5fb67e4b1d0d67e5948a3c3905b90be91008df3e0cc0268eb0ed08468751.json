@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a8ca5fb67e4b1d0d67e5948a3c3905b90be91008df3e0cc0268eb0ed08468751",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2700,
+  "output_tokens": 1051,
+  "cost_usd": 0.0034375,
+  "elapsed_s": 7.97,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Streamlined employee onboarding processes\",\n    \"Comprehensive platform for managing HR tasks\",\n    \"Good integration of various HR functions\"\n  ],\n  \"cons\": [\n    \"Steep learning curve for new users\",\n    \"Reporting capabilities could be more robust\",\n    \"Occasional performance issues or slow loading\"\n  ],\n  \"overall_experience\": \"The HR Director likely found Namely to be a generally capable platform for managing the employee lifecycle, appreciating its ability to streamline onboarding and integrate various HR functions. However, as a new user, they may have experienced a learning curve and encountered some frustrations with reporting limitations or occasional performance issues. Despite these challenges, the platform likely met most of their core requirements for an HRIS.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Streamlined employee onboarding processes",
+      "Comprehensive platform for managing HR tasks",
+      "Good integration of various HR functions"
+    ],
+    "cons": [
+      "Steep learning curve for new users",
+      "Reporting capabilities could be more robust",
+      "Occasional performance issues or slow loading"
+    ],
+    "overall_experience": "The HR Director likely found Namely to be a generally capable platform for managing the employee lifecycle, appreciating its ability to streamline onboarding and integrate various HR functions. However, as a new user, they may have experienced a learning curve and encountered some frustrations with reporting limitations or occasional performance issues. Despite these challenges, the platform likely met most of their core requirements for an HRIS."
+  },
+  "ts": "2026-10-18T04:43:40.160855+00:00"
+}

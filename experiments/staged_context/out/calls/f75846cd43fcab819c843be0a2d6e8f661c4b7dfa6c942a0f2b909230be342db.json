@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f75846cd43fcab819c843be0a2d6e8f661c4b7dfa6c942a0f2b909230be342db",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 254,
+  "output_tokens": 1042,
+  "cost_usd": 0.0026811999999999995,
+  "elapsed_s": 8.36,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 2,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 2,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 4,\n  \"pros\": [\n    \"Comprehensive feature set for lead management\",\n    \"Potential for scalability\",\n    \"Good reporting capabilities (if configured)\"\n  ],\n  \"cons\": [\n    \"Steep learning curve for a free trial\",\n    \"Overwhelming interface for a small business CEO\",\n    \"Setup time seemed extensive for core lead tasks\"\n  ],\n  \"overall_experience\": \"The CEO likely found Zoho CRM to be a powerful tool with extensive functionality for lead management, but the free trial experience was probably overwhelming. The complexity and perceived setup time for a small team trying to quickly evaluate a solution likely hindered a positive initial impression, making it difficult to fully leverage its capabilities within the trial period.\"\n}",
+  "json": {
+    "ease_of_use_rating": 2,
+    "functionality_rating": 3,
+    "overall_rating": 2,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 4,
+    "pros": [
+      "Comprehensive feature set for lead management",
+      "Potential for scalability",
+      "Good reporting capabilities (if configured)"
+    ],
+    "cons": [
+      "Steep learning curve for a free trial",
+      "Overwhelming interface for a small business CEO",
+      "Setup time seemed extensive for core lead tasks"
+    ],
+    "overall_experience": "The CEO likely found Zoho CRM to be a powerful tool with extensive functionality for lead management, but the free trial experience was probably overwhelming. The complexity and perceived setup time for a small team trying to quickly evaluate a solution likely hindered a positive initial impression, making it difficult to fully leverage its capabilities within the trial period."
+  },
+  "ts": "2026-10-18T04:43:49.983960+00:00"
+}

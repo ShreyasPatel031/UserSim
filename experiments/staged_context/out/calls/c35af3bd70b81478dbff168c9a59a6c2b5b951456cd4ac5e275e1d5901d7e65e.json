@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c35af3bd70b81478dbff168c9a59a6c2b5b951456cd4ac5e275e1d5901d7e65e",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 215,
+  "output_tokens": 499,
+  "cost_usd": 0.0013119999999999998,
+  "elapsed_s": 22.64,
+  "error": null,
+  "text": "{\n  \"task\": \"Integrate and advance a CRM system\",\n  \"benefits\": [\n    \"Aims for the best user experience\",\n    \"Support is very fast and eager to understand and solve problems\",\n    \"No desire to switch to another CRM\"\n  ],\n  \"frictions\": [\n    \"Frequent software changes lead to wrong translations\",\n    \"Not every update contains sensible features\"\n  ]\n}",
+  "json": {
+    "task": "Integrate and advance a CRM system",
+    "benefits": [
+      "Aims for the best user experience",
+      "Support is very fast and eager to understand and solve problems",
+      "No desire to switch to another CRM"
+    ],
+    "frictions": [
+      "Frequent software changes lead to wrong translations",
+      "Not every update contains sensible features"
+    ]
+  },
+  "ts": "2026-10-18T04:41:31.726982+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "73af055bffa2e208fc4295b146b291894cdef3be17b3919fdccab272fc69ee85",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2293,
+  "output_tokens": 1046,
+  "cost_usd": 0.0033029,
+  "elapsed_s": 8.73,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Streamlined email management with a shared inbox\",\n    \"Intuitive and easy-to-use interface for quick adoption\",\n    \"Improved team collaboration on customer inquiries\"\n  ],\n  \"cons\": [\n    \"Pricing can feel a bit high for a small business\",\n    \"Limited advanced customization options compared to larger platforms\",\n    \"Reporting features could be more robust for deeper insights\"\n  ],\n  \"overall_experience\": \"This manager found Help Scout to be a highly effective tool for managing customer emails within their small travel and tourism business. Its ease of use and shared inbox functionality significantly streamlined communication and team collaboration. While generally positive, they likely felt the cost was a consideration and desired more advanced reporting or customization options.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Streamlined email management with a shared inbox",
+      "Intuitive and easy-to-use interface for quick adoption",
+      "Improved team collaboration on customer inquiries"
+    ],
+    "cons": [
+      "Pricing can feel a bit high for a small business",
+      "Limited advanced customization options compared to larger platforms",
+      "Reporting features could be more robust for deeper insights"
+    ],
+    "overall_experience": "This manager found Help Scout to be a highly effective tool for managing customer emails within their small travel and tourism business. Its ease of use and shared inbox functionality significantly streamlined communication and team collaboration. While generally positive, they likely felt the cost was a consideration and desired more advanced reporting or customization options."
+  },
+  "ts": "2026-10-18T04:43:33.604624+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9d3e143ea623382e6e8ebf48749a1a59c011f47cd5c0c2ed31800de6db2c679e",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1090,
+  "output_tokens": 1102,
+  "cost_usd": 0.0030819999999999997,
+  "elapsed_s": 6.73,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Robust e-commerce integrations and advanced segmentation capabilities.\",\n    \"Powerful automation flows for customer journeys and lifecycle marketing.\",\n    \"Improved campaign management and reporting for data-driven decisions.\"\n  ],\n  \"cons\": [\n    \"Steeper learning curve for leveraging all advanced features.\",\n    \"Pricing model could become costly as subscriber lists grow.\",\n    \"Occasional complexity in data migration or advanced custom setups.\"\n  ],\n  \"overall_experience\": \"This Director of Ecommerce found Klaviyo to be a significant upgrade for managing email marketing campaigns, appreciating its powerful e-commerce integrations and automation capabilities. The platform's advanced segmentation allowed for more targeted and effective communication, leading to improved customer engagement and sales. While the initial transition and full utilization of its extensive features presented some challenges, the overall impact on their publishing company's marketing efforts was positive.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Robust e-commerce integrations and advanced segmentation capabilities.",
+      "Powerful automation flows for customer journeys and lifecycle marketing.",
+      "Improved campaign management and reporting for data-driven decisions."
+    ],
+    "cons": [
+      "Steeper learning curve for leveraging all advanced features.",
+      "Pricing model could become costly as subscriber lists grow.",
+      "Occasional complexity in data migration or advanced custom setups."
+    ],
+    "overall_experience": "This Director of Ecommerce found Klaviyo to be a significant upgrade for managing email marketing campaigns, appreciating its powerful e-commerce integrations and automation capabilities. The platform's advanced segmentation allowed for more targeted and effective communication, leading to improved customer engagement and sales. While the initial transition and full utilization of its extensive features presented some challenges, the overall impact on their publishing company's marketing efforts was positive."
+  },
+  "ts": "2026-10-18T04:44:02.876742+00:00"
+}

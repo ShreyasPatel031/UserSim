@@ -1,0 +1,27 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "68dfa574fa6d93f2bf9bce5a5683a39a2a4f8c80b8e15dd57a0e4efb0e93c9fd",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 176,
+  "output_tokens": 461,
+  "cost_usd": 0.0012052999999999999,
+  "elapsed_s": 3.62,
+  "error": null,
+  "text": "{\n  \"task\": \"Provide customer service.\",\n  \"benefits\": [\n    \"automated ticketing system\",\n    \"increased productivity\"\n  ],\n  \"frictions\": [\n    \"user interface can be a bit difficult to navigate\"\n  ]\n}",
+  "json": {
+    "task": "Provide customer service.",
+    "benefits": [
+      "automated ticketing system",
+      "increased productivity"
+    ],
+    "frictions": [
+      "user interface can be a bit difficult to navigate"
+    ]
+  },
+  "ts": "2026-10-18T04:41:35.951820+00:00"
+}

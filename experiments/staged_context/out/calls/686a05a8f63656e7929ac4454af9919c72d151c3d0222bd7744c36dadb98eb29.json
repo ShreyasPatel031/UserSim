@@ -1,0 +1,32 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "686a05a8f63656e7929ac4454af9919c72d151c3d0222bd7744c36dadb98eb29",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 378,
+  "output_tokens": 508,
+  "cost_usd": 0.0013834,
+  "elapsed_s": 22.58,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage project timelines, resourcing, and review workflows\",\n  \"benefits\": [\n    \"Efficient\",\n    \"Easy to use\",\n    \"All-in-one tool\",\n    \"Very customizable\"\n  ],\n  \"frictions\": [\n    \"AI updates are rolling out too rapidly\",\n    \"AI features lack value unless given extremely specific prompts\",\n    \"AI features are tiring and wasteful to use\",\n    \"Concerns about AI potentially replacing human jobs\"\n  ]\n}",
+  "json": {
+    "task": "Manage project timelines, resourcing, and review workflows",
+    "benefits": [
+      "Efficient",
+      "Easy to use",
+      "All-in-one tool",
+      "Very customizable"
+    ],
+    "frictions": [
+      "AI updates are rolling out too rapidly",
+      "AI features lack value unless given extremely specific prompts",
+      "AI features are tiring and wasteful to use",
+      "Concerns about AI potentially replacing human jobs"
+    ]
+  },
+  "ts": "2026-10-18T04:41:30.805008+00:00"
+}

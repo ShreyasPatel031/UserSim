@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c788780eb4456bd924c8cc98b5ef9f69f935b98009c6d912595111edeee0bc0c",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 153,
+  "output_tokens": 479,
+  "cost_usd": 0.0012434,
+  "elapsed_s": 3.66,
+  "error": null,
+  "text": "{\n  \"task\": \"Collaborate on projects\",\n  \"benefits\": [\n    \"Facilitates team collaboration on projects\",\n    \"Ability to share sheets\",\n    \"Ability to assign tasks\",\n    \"Provides reporting options\"\n  ],\n  \"frictions\": [\n    \"Can be expensive for some businesses\",\n    \"Has a learning curve\"\n  ]\n}",
+  "json": {
+    "task": "Collaborate on projects",
+    "benefits": [
+      "Facilitates team collaboration on projects",
+      "Ability to share sheets",
+      "Ability to assign tasks",
+      "Provides reporting options"
+    ],
+    "frictions": [
+      "Can be expensive for some businesses",
+      "Has a learning curve"
+    ]
+  },
+  "ts": "2026-10-18T04:41:35.048860+00:00"
+}

@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ea23f5fd62e5e40ef3e13172b9bc83ff8f260a576716251f5432b2e3a474bc50",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 238,
+  "output_tokens": 457,
+  "cost_usd": 0.0012139,
+  "elapsed_s": 20.07,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage customer support interactions across multiple channels\",\n  \"benefits\": [\n    \"affordable pricing plans\",\n    \"social media integrations\",\n    \"live chat and reliable ticketing\",\n    \"incredible customer support\"\n  ],\n  \"frictions\": [\n    \"minor challenges when starting\"\n  ]\n}",
+  "json": {
+    "task": "Manage customer support interactions across multiple channels",
+    "benefits": [
+      "affordable pricing plans",
+      "social media integrations",
+      "live chat and reliable ticketing",
+      "incredible customer support"
+    ],
+    "frictions": [
+      "minor challenges when starting"
+    ]
+  },
+  "ts": "2026-10-18T04:41:30.248857+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "012e0b033df75982376e850a941168db628161e712d3c7c5508b19b97524d1a2",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1128,
+  "output_tokens": 1000,
+  "cost_usd": 0.0028384,
+  "elapsed_s": 7.84,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Robust project tracking and customizable workflows\",\n    \"Effective collaboration features for team communication\",\n    \"Detailed reporting capabilities for project oversight\"\n  ],\n  \"cons\": [\n    \"Initial learning curve due to extensive features\",\n    \"Interface can feel dense or overwhelming at times\",\n    \"Potential for minor performance issues with large datasets\"\n  ],\n  \"overall_experience\": \"As a QA/QC Field Engineer in a research environment, this person likely found Wrike to be a powerful tool for managing complex projects. The platform's extensive customization and tracking capabilities were beneficial for their role, enabling detailed oversight and efficient team collaboration. While the initial setup and feature richness presented a learning curve, the overall functionality and robust project management features made it a valuable asset for their work.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Robust project tracking and customizable workflows",
+      "Effective collaboration features for team communication",
+      "Detailed reporting capabilities for project oversight"
+    ],
+    "cons": [
+      "Initial learning curve due to extensive features",
+      "Interface can feel dense or overwhelming at times",
+      "Potential for minor performance issues with large datasets"
+    ],
+    "overall_experience": "As a QA/QC Field Engineer in a research environment, this person likely found Wrike to be a powerful tool for managing complex projects. The platform's extensive customization and tracking capabilities were beneficial for their role, enabling detailed oversight and efficient team collaboration. While the initial setup and feature richness presented a learning curve, the overall functionality and robust project management features made it a valuable asset for their work."
+  },
+  "ts": "2026-10-18T04:43:35.784856+00:00"
+}

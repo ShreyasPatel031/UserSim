@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f566eb3fdf216578f68b8e2ba024215a0aa560f9360e4a694c247a9462f86434",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 260,
+  "output_tokens": 1036,
+  "cost_usd": 0.0026680000000000002,
+  "elapsed_s": 8.13,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effective lead and deal management features\",\n    \"Streamlined integration for sales processes\",\n    \"Valuable reporting and analytics for sales managers\"\n  ],\n  \"cons\": [\n    \"Steeper learning curve for advanced automation\",\n    \"Occasional limitations in customization options\",\n    \"Minor UI inconsistencies across modules\"\n  ],\n  \"overall_experience\": \"This Sales Manager likely found Freshsales to be a reliable and functional CRM solution for their publishing company's needs. Having used it for over two years to integrate and advance their sales system, they appreciated its core capabilities and value for money. While generally positive, they may have encountered some minor frustrations with advanced features or customization limitations over time.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Effective lead and deal management features",
+      "Streamlined integration for sales processes",
+      "Valuable reporting and analytics for sales managers"
+    ],
+    "cons": [
+      "Steeper learning curve for advanced automation",
+      "Occasional limitations in customization options",
+      "Minor UI inconsistencies across modules"
+    ],
+    "overall_experience": "This Sales Manager likely found Freshsales to be a reliable and functional CRM solution for their publishing company's needs. Having used it for over two years to integrate and advance their sales system, they appreciated its core capabilities and value for money. While generally positive, they may have encountered some minor frustrations with advanced features or customization limitations over time."
+  },
+  "ts": "2026-10-18T04:43:43.201967+00:00"
+}

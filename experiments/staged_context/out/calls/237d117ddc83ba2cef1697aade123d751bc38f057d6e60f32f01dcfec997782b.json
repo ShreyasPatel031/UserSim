@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "237d117ddc83ba2cef1697aade123d751bc38f057d6e60f32f01dcfec997782b",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1131,
+  "output_tokens": 1031,
+  "cost_usd": 0.0029167999999999998,
+  "elapsed_s": 7.3,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Robust API and integration capabilities for internal tooling\",\n    \"Effective knowledge base and internal collaboration tools\",\n    \"Significant value for money compared to enterprise alternatives\"\n  ],\n  \"cons\": [\n    \"Some advanced reporting or customization options might require workarounds\",\n    \"Occasional UI inconsistencies or a steeper learning curve for non-technical users\",\n    \"Scalability or complex workflow management might be challenging in specific scenarios\"\n  ],\n  \"overall_experience\": \"This software developer likely found Zoho Desk to be a highly functional and cost-effective solution for monitoring business operations and knowledge sharing. Having used it for over two years after transitioning from Dynamics 365, they probably appreciated its robust integration options and value proposition. While generally satisfied, they may have encountered minor limitations in very specific advanced features or UI polish compared to more expensive enterprise platforms.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Robust API and integration capabilities for internal tooling",
+      "Effective knowledge base and internal collaboration tools",
+      "Significant value for money compared to enterprise alternatives"
+    ],
+    "cons": [
+      "Some advanced reporting or customization options might require workarounds",
+      "Occasional UI inconsistencies or a steeper learning curve for non-technical users",
+      "Scalability or complex workflow management might be challenging in specific scenarios"
+    ],
+    "overall_experience": "This software developer likely found Zoho Desk to be a highly functional and cost-effective solution for monitoring business operations and knowledge sharing. Having used it for over two years after transitioning from Dynamics 365, they probably appreciated its robust integration options and value proposition. While generally satisfied, they may have encountered minor limitations in very specific advanced features or UI polish compared to more expensive enterprise platforms."
+  },
+  "ts": "2026-10-18T04:43:59.636625+00:00"
+}

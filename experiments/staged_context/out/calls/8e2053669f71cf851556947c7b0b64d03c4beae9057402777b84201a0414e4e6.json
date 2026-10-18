@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8e2053669f71cf851556947c7b0b64d03c4beae9057402777b84201a0414e4e6",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1078,
+  "output_tokens": 1043,
+  "cost_usd": 0.0029309000000000006,
+  "elapsed_s": 7.17,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Centralized platform for all customer communications\",\n    \"Effective ticket organization and management for support teams\",\n    \"Scalable features that adapt to company growth\"\n  ],\n  \"cons\": [\n    \"Pricing structure can become expensive with advanced features\",\n    \"Occasional complexities in setting up specific workflows or integrations\",\n    \"Customer support response times could be improved for critical issues\"\n  ],\n  \"overall_experience\": \"This CEO likely found Freshdesk to be a reliable solution for managing their company's customer communications over two years. While appreciating its core functionality and ability to centralize support, they might have concerns regarding the overall value for money and the responsiveness of customer support, typical for an executive overseeing budget and operational efficiency. Despite some frustrations, the product likely met the essential needs of their writing and editing business.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Centralized platform for all customer communications",
+      "Effective ticket organization and management for support teams",
+      "Scalable features that adapt to company growth"
+    ],
+    "cons": [
+      "Pricing structure can become expensive with advanced features",
+      "Occasional complexities in setting up specific workflows or integrations",
+      "Customer support response times could be improved for critical issues"
+    ],
+    "overall_experience": "This CEO likely found Freshdesk to be a reliable solution for managing their company's customer communications over two years. While appreciating its core functionality and ability to centralize support, they might have concerns regarding the overall value for money and the responsiveness of customer support, typical for an executive overseeing budget and operational efficiency. Despite some frustrations, the product likely met the essential needs of their writing and editing business."
+  },
+  "ts": "2026-10-18T04:44:14.951042+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ebdd2be73ae6666ae37fcfa8b5bfc8588a6c2c69c5c46e787ca226e5e8fc7248",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2418,
+  "output_tokens": 972,
+  "cost_usd": 0.0031554,
+  "elapsed_s": 6.11,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Robust feature set for scaling businesses.\",\n    \"Good SEO tools and marketing integrations.\",\n    \"Flexible for advanced customization compared to simpler platforms.\"\n  ],\n  \"cons\": [\n    \"Pricing can be higher than alternatives like WooCommerce or Shopify.\",\n    \"Steeper learning curve for some advanced features.\",\n    \"Limited control over checkout page without higher plans.\"\n  ],\n  \"overall_experience\": \"This digital marketing professional likely found BigCommerce to be a powerful platform for setting up and managing their online retail store, appreciating its robust features for growth and marketing. However, they may have experienced a slightly steeper learning curve and found the pricing to be a bit high compared to their previous experiences with WooCommerce and Shopify, especially concerning value for money.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 7,
+    "pros": [
+      "Robust feature set for scaling businesses.",
+      "Good SEO tools and marketing integrations.",
+      "Flexible for advanced customization compared to simpler platforms."
+    ],
+    "cons": [
+      "Pricing can be higher than alternatives like WooCommerce or Shopify.",
+      "Steeper learning curve for some advanced features.",
+      "Limited control over checkout page without higher plans."
+    ],
+    "overall_experience": "This digital marketing professional likely found BigCommerce to be a powerful platform for setting up and managing their online retail store, appreciating its robust features for growth and marketing. However, they may have experienced a slightly steeper learning curve and found the pricing to be a bit high compared to their previous experiences with WooCommerce and Shopify, especially concerning value for money."
+  },
+  "ts": "2026-10-18T04:44:06.456547+00:00"
+}

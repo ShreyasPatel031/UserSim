@@ -1,0 +1,21 @@
+{
+  "stage": "mcp_classify",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f6e039e9226a2727c776632b60d5d3e6b3bc58fa74f889e605de8ad5792ce745",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 256,
+  "input_tokens": 905,
+  "output_tokens": 232,
+  "cost_usd": 0.0008515,
+  "elapsed_s": 2.39,
+  "error": null,
+  "text": "{\n  \"category\": \"eCommerce\",\n  \"product_name\": \"BigCommerce\"\n}",
+  "json": {
+    "category": "eCommerce",
+    "product_name": "BigCommerce"
+  },
+  "ts": "2026-10-18T04:41:41.365835+00:00"
+}

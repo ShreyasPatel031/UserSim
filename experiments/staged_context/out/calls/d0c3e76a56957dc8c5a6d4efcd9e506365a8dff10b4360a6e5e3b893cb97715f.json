@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d0c3e76a56957dc8c5a6d4efcd9e506365a8dff10b4360a6e5e3b893cb97715f",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1115,
+  "output_tokens": 1076,
+  "cost_usd": 0.0030245,
+  "elapsed_s": 7.38,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 5,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Streamlined management of internal associate requests\",\n    \"Improved communication and organization for support tasks\",\n    \"Scalable solution suitable for a mid-sized company\"\n  ],\n  \"cons\": [\n    \"Initial setup and customization for specific internal workflows\",\n    \"Learning curve for new associates adopting the system\",\n    \"Potential for advanced reporting features to be limited for detailed operational insights\"\n  ],\n  \"overall_experience\": \"The Operations Director likely experienced Help Scout as a highly effective tool for managing internal associate requests within their outsourcing company. They found it intuitive and functional, significantly improving the efficiency and organization of internal support. Despite being a relatively new user, the positive impact on operational workflows and communication was evident, leading to a strong overall satisfaction.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 5,
+    "recommendation_score": 9,
+    "pros": [
+      "Streamlined management of internal associate requests",
+      "Improved communication and organization for support tasks",
+      "Scalable solution suitable for a mid-sized company"
+    ],
+    "cons": [
+      "Initial setup and customization for specific internal workflows",
+      "Learning curve for new associates adopting the system",
+      "Potential for advanced reporting features to be limited for detailed operational insights"
+    ],
+    "overall_experience": "The Operations Director likely experienced Help Scout as a highly effective tool for managing internal associate requests within their outsourcing company. They found it intuitive and functional, significantly improving the efficiency and organization of internal support. Despite being a relatively new user, the positive impact on operational workflows and communication was evident, leading to a strong overall satisfaction."
+  },
+  "ts": "2026-10-18T04:43:34.990629+00:00"
+}

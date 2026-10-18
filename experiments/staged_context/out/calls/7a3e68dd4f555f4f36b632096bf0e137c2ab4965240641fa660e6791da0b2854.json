@@ -1,0 +1,21 @@
+{
+  "stage": "mcp_classify",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7a3e68dd4f555f4f36b632096bf0e137c2ab4965240641fa660e6791da0b2854",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 256,
+  "input_tokens": 318,
+  "output_tokens": 253,
+  "cost_usd": 0.0007279000000000001,
+  "elapsed_s": 1.9,
+  "error": null,
+  "text": "{\n  \"category\": \"Help Desk\",\n  \"product_name\": \"Freshdesk\"\n}",
+  "json": {
+    "category": "Help Desk",
+    "product_name": "Freshdesk"
+  },
+  "ts": "2026-10-18T04:41:41.135009+00:00"
+}

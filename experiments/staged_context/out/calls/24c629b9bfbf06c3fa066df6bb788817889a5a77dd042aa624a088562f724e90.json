@@ -1,0 +1,27 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "24c629b9bfbf06c3fa066df6bb788817889a5a77dd042aa624a088562f724e90",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 197,
+  "output_tokens": 458,
+  "cost_usd": 0.0012041,
+  "elapsed_s": 2.97,
+  "error": null,
+  "text": "{\n  \"task\": \"Set up automated emails based on user actions\",\n  \"benefits\": [\n    \"Segment customers based on attributes\",\n    \"Achieve granular audience targeting\"\n  ],\n  \"frictions\": [\n    \"Requires time to learn how it works\"\n  ]\n}",
+  "json": {
+    "task": "Set up automated emails based on user actions",
+    "benefits": [
+      "Segment customers based on attributes",
+      "Achieve granular audience targeting"
+    ],
+    "frictions": [
+      "Requires time to learn how it works"
+    ]
+  },
+  "ts": "2026-10-18T04:41:32.127990+00:00"
+}

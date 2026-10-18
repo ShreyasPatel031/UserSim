@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "520200d39ddf0d4b222e8b3078ab9427726bc25c163c7d483bfe9b5385666cf2",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 258,
+  "output_tokens": 1066,
+  "cost_usd": 0.0027424000000000003,
+  "elapsed_s": 7.89,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Comprehensive feature set for customer service\",\n    \"Potential for integration given developer background\",\n    \"Unified inbox for various channels\"\n  ],\n  \"cons\": [\n    \"Interface might have a learning curve for quick trial assessment\",\n    \"Setup process could be time-consuming for a small team\",\n    \"Pricing structure might not have aligned with small company budget\"\n  ],\n  \"overall_experience\": \"The web developer likely found LiveAgent to offer a robust set of features for managing customer service operations. However, the experience of a free trial suggests that while the functionality was noted, the overall ease of use, setup time, or perceived value for money may not have been compelling enough for conversion, leading to a neutral overall impression.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 6,
+    "pros": [
+      "Comprehensive feature set for customer service",
+      "Potential for integration given developer background",
+      "Unified inbox for various channels"
+    ],
+    "cons": [
+      "Interface might have a learning curve for quick trial assessment",
+      "Setup process could be time-consuming for a small team",
+      "Pricing structure might not have aligned with small company budget"
+    ],
+    "overall_experience": "The web developer likely found LiveAgent to offer a robust set of features for managing customer service operations. However, the experience of a free trial suggests that while the functionality was noted, the overall ease of use, setup time, or perceived value for money may not have been compelling enough for conversion, leading to a neutral overall impression."
+  },
+  "ts": "2026-10-18T04:43:57.028900+00:00"
+}

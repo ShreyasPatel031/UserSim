@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "448f0df1dc073cef458e05bb2705664b664d73fc4ab764a9ef13521866a76d97",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2657,
+  "output_tokens": 944,
+  "cost_usd": 0.0031571000000000004,
+  "elapsed_s": 9.47,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Robust features for managing sales pipelines and customer data.\",\n    \"Good customizability to adapt to specific higher education processes.\",\n    \"Helpful for tracking marketing campaigns and lead progression.\"\n  ],\n  \"cons\": [\n    \"Can have a learning curve, especially for advanced configurations.\",\n    \"Some integrations might require additional effort or third-party tools.\",\n    \"Reporting features could sometimes be more intuitive for marketing needs.\"\n  ],\n  \"overall_experience\": \"This Marketing Manager found Zoho CRM to be a solid tool for managing customer relationships and sales processes within their higher education institution. They appreciated its comprehensive functionality and ability to be customized to fit their specific operational needs. While generally positive, the initial learning curve and occasional complexities with integrations or advanced reporting were noted as minor challenges.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Robust features for managing sales pipelines and customer data.",
+      "Good customizability to adapt to specific higher education processes.",
+      "Helpful for tracking marketing campaigns and lead progression."
+    ],
+    "cons": [
+      "Can have a learning curve, especially for advanced configurations.",
+      "Some integrations might require additional effort or third-party tools.",
+      "Reporting features could sometimes be more intuitive for marketing needs."
+    ],
+    "overall_experience": "This Marketing Manager found Zoho CRM to be a solid tool for managing customer relationships and sales processes within their higher education institution. They appreciated its comprehensive functionality and ability to be customized to fit their specific operational needs. While generally positive, the initial learning curve and occasional complexities with integrations or advanced reporting were noted as minor challenges."
+  },
+  "ts": "2026-10-18T04:43:49.725309+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "655fc625d266d8b4891c4611f902a79cc5df5ca154bb09ee7ec471993f783738",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2371,
+  "output_tokens": 1126,
+  "cost_usd": 0.0035263,
+  "elapsed_s": 7.55,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Powerful e-commerce specific automation and segmentation\",\n    \"Excellent integration with Shopify for sales driving\",\n    \"More advanced features than previous platform\"\n  ],\n  \"cons\": [\n    \"Steeper learning curve than expected coming from Mailchimp\",\n    \"Initial setup and migration can be time-consuming\",\n    \"Customer support response times can be inconsistent\"\n  ],\n  \"overall_experience\": \"The E-Commerce Manager found Klaviyo to be a significant upgrade from Mailchimp, especially for driving sales with personalized emails due to its robust e-commerce features and strong Shopify integration. While the platform offers powerful functionality for automation and segmentation, they experienced a notable learning curve during the initial setup. Despite some frustrations with the onboarding process and occasional support delays, the manager recognized Klaviyo's potential to significantly boost their sales efforts.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Powerful e-commerce specific automation and segmentation",
+      "Excellent integration with Shopify for sales driving",
+      "More advanced features than previous platform"
+    ],
+    "cons": [
+      "Steeper learning curve than expected coming from Mailchimp",
+      "Initial setup and migration can be time-consuming",
+      "Customer support response times can be inconsistent"
+    ],
+    "overall_experience": "The E-Commerce Manager found Klaviyo to be a significant upgrade from Mailchimp, especially for driving sales with personalized emails due to its robust e-commerce features and strong Shopify integration. While the platform offers powerful functionality for automation and segmentation, they experienced a notable learning curve during the initial setup. Despite some frustrations with the onboarding process and occasional support delays, the manager recognized Klaviyo's potential to significantly boost their sales efforts."
+  },
+  "ts": "2026-10-18T04:44:04.402848+00:00"
+}

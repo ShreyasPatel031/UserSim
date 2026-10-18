@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "5e25dbc3c8f765a06ea741d3a201d739710f4c47dafc5abdcb0e819fb7423929",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 256,
+  "output_tokens": 944,
+  "cost_usd": 0.0024368000000000003,
+  "elapsed_s": 8.48,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Streamlined customer communication effectively.\",\n    \"Intuitive interface made team adoption quick.\",\n    \"Provided clear oversight into customer inquiry resolution.\"\n  ],\n  \"cons\": [\n    \"Limited advanced reporting for deeper insights.\",\n    \"Initial setup required careful configuration for specific industry needs.\",\n    \"Found some integrations with existing tools less robust than desired.\"\n  ],\n  \"overall_experience\": \"The CEO found Help Scout to be a valuable tool for managing customer inquiries within their capital markets firm. Its ease of use and ability to centralize communication were significant benefits for their team. While generally satisfied, they noted a desire for more advanced analytics and deeper integrations to fully meet their industry's complex demands.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Streamlined customer communication effectively.",
+      "Intuitive interface made team adoption quick.",
+      "Provided clear oversight into customer inquiry resolution."
+    ],
+    "cons": [
+      "Limited advanced reporting for deeper insights.",
+      "Initial setup required careful configuration for specific industry needs.",
+      "Found some integrations with existing tools less robust than desired."
+    ],
+    "overall_experience": "The CEO found Help Scout to be a valuable tool for managing customer inquiries within their capital markets firm. Its ease of use and ability to centralize communication were significant benefits for their team. While generally satisfied, they noted a desire for more advanced analytics and deeper integrations to fully meet their industry's complex demands."
+  },
+  "ts": "2026-10-18T04:43:28.591649+00:00"
+}

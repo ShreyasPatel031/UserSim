@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "bf8f6442b60b6189368c78acad999d343359dabc3762a79b2f5a915c7cfb4d7a",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 275,
+  "output_tokens": 1001,
+  "cost_usd": 0.002585,
+  "elapsed_s": 10.52,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Comprehensive API for custom integrations\",\n    \"Robust knowledge base features for internal sharing\",\n    \"Good value compared to enterprise alternatives\"\n  ],\n  \"cons\": [\n    \"Advanced reporting for business operations can be limited\",\n    \"Workflow automation sometimes requires workarounds\",\n    \"Occasional performance issues with larger data sets\"\n  ],\n  \"overall_experience\": \"This software developer found Zoho Desk to be a solid platform for managing internal knowledge and basic operational monitoring. They appreciated its strong API capabilities, which allowed for necessary custom integrations within their software company. While offering good value, they occasionally encountered limitations in advanced reporting and workflow customization compared to previous enterprise solutions.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Comprehensive API for custom integrations",
+      "Robust knowledge base features for internal sharing",
+      "Good value compared to enterprise alternatives"
+    ],
+    "cons": [
+      "Advanced reporting for business operations can be limited",
+      "Workflow automation sometimes requires workarounds",
+      "Occasional performance issues with larger data sets"
+    ],
+    "overall_experience": "This software developer found Zoho Desk to be a solid platform for managing internal knowledge and basic operational monitoring. They appreciated its strong API capabilities, which allowed for necessary custom integrations within their software company. While offering good value, they occasionally encountered limitations in advanced reporting and workflow customization compared to previous enterprise solutions."
+  },
+  "ts": "2026-10-18T04:44:02.580926+00:00"
+}

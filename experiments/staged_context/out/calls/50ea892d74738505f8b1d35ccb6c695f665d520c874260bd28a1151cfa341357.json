@@ -1,0 +1,32 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "50ea892d74738505f8b1d35ccb6c695f665d520c874260bd28a1151cfa341357",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 233,
+  "output_tokens": 522,
+  "cost_usd": 0.0013748999999999999,
+  "elapsed_s": 4.12,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage customer communications including emails, chat, and calls, and organize support tickets.\",\n  \"benefits\": [\n    \"Provides several helpful tools.\",\n    \"Offers simple navigation.\",\n    \"Consolidates emails, chat, and calls in one location.\",\n    \"Is easier to set up than other CRMs.\"\n  ],\n  \"frictions\": [\n    \"Experiences many bugs over time.\",\n    \"Unable to locate earlier emails.\",\n    \"Certain thread histories are not displayed.\",\n    \"Filters do not work effectively, causing tickets to not appear.\"\n  ]\n}",
+  "json": {
+    "task": "Manage customer communications including emails, chat, and calls, and organize support tickets.",
+    "benefits": [
+      "Provides several helpful tools.",
+      "Offers simple navigation.",
+      "Consolidates emails, chat, and calls in one location.",
+      "Is easier to set up than other CRMs."
+    ],
+    "frictions": [
+      "Experiences many bugs over time.",
+      "Unable to locate earlier emails.",
+      "Certain thread histories are not displayed.",
+      "Filters do not work effectively, causing tickets to not appear."
+    ]
+  },
+  "ts": "2026-10-18T04:41:36.166129+00:00"
+}

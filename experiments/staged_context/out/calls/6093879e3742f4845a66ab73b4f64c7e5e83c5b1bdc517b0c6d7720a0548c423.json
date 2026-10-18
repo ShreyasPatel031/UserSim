@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "6093879e3742f4845a66ab73b4f64c7e5e83c5b1bdc517b0c6d7720a0548c423",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2787,
+  "output_tokens": 871,
+  "cost_usd": 0.0030136,
+  "elapsed_s": 5.8,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Comprehensive features for complex email campaigns\",\n    \"Strong automation and segmentation capabilities\",\n    \"Integrates well with other marketing tools\"\n  ],\n  \"cons\": [\n    \"Steeper learning curve for new users\",\n    \"Pricing can become significant for larger audiences\",\n    \"Initial setup and customization can be time-consuming\"\n  ],\n  \"overall_experience\": \"The Head of Marketing found Klaviyo to be a powerful and effective platform for structuring email campaigns, appreciating its robust automation and segmentation. While the initial learning curve and potential cost for extensive use were noted, the comprehensive functionality justified the investment. The platform significantly enhanced their ability to execute sophisticated marketing strategies.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Comprehensive features for complex email campaigns",
+      "Strong automation and segmentation capabilities",
+      "Integrates well with other marketing tools"
+    ],
+    "cons": [
+      "Steeper learning curve for new users",
+      "Pricing can become significant for larger audiences",
+      "Initial setup and customization can be time-consuming"
+    ],
+    "overall_experience": "The Head of Marketing found Klaviyo to be a powerful and effective platform for structuring email campaigns, appreciating its robust automation and segmentation. While the initial learning curve and potential cost for extensive use were noted, the comprehensive functionality justified the investment. The platform significantly enhanced their ability to execute sophisticated marketing strategies."
+  },
+  "ts": "2026-10-18T04:44:04.317062+00:00"
+}

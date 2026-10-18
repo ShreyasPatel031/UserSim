@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3aaa431797dc466ea3743bfb40894e95c92058f61d367cc63a2df54100cc692a",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2542,
+  "output_tokens": 1043,
+  "cost_usd": 0.0033701000000000004,
+  "elapsed_s": 6.95,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 5,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Effective for sending campaign and purchase confirmation emails\",\n    \"CRM capabilities help manage customer interactions efficiently\",\n    \"Intuitive interface for creating and tracking email campaigns\"\n  ],\n  \"cons\": [\n    \"Advanced customization options might be somewhat limited\",\n    \"Reporting features could offer more in-depth analytics\",\n    \"Occasional minor glitches or performance issues\"\n  ],\n  \"overall_experience\": \"The customer service agent likely had a very positive experience with Brevo over their two-plus years of use. They found it highly effective for managing CRM tasks and executing both marketing campaigns and transactional emails. The platform's ease of use and strong core functionality contributed to a high overall satisfaction, despite potential minor limitations in advanced customization or reporting.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 5,
+    "recommendation_score": 9,
+    "pros": [
+      "Effective for sending campaign and purchase confirmation emails",
+      "CRM capabilities help manage customer interactions efficiently",
+      "Intuitive interface for creating and tracking email campaigns"
+    ],
+    "cons": [
+      "Advanced customization options might be somewhat limited",
+      "Reporting features could offer more in-depth analytics",
+      "Occasional minor glitches or performance issues"
+    ],
+    "overall_experience": "The customer service agent likely had a very positive experience with Brevo over their two-plus years of use. They found it highly effective for managing CRM tasks and executing both marketing campaigns and transactional emails. The platform's ease of use and strong core functionality contributed to a high overall satisfaction, despite potential minor limitations in advanced customization or reporting."
+  },
+  "ts": "2026-10-18T04:43:36.592078+00:00"
+}

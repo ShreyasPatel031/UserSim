@@ -1,0 +1,32 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e2a0bbb97d9084d984042931a9d74233bf51385c44603ec4d43ca25252bace8a",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 260,
+  "output_tokens": 509,
+  "cost_usd": 0.0013505,
+  "elapsed_s": 23.01,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage human resources information and payroll.\",\n  \"benefits\": [\n    \"Highly customizable\",\n    \"Ability to add custom data fields\",\n    \"Custom data fields are reportable\",\n    \"Responsive to customer feedback and continuously adds features\"\n  ],\n  \"frictions\": [\n    \"Basic functionality in some areas\",\n    \"Limited data flow from HRIS to payroll system\",\n    \"Issues with terminations, rehires, and benefit enrollment processes\",\n    \"Cannot directly edit onboarding templates\"\n  ]\n}",
+  "json": {
+    "task": "Manage human resources information and payroll.",
+    "benefits": [
+      "Highly customizable",
+      "Ability to add custom data fields",
+      "Custom data fields are reportable",
+      "Responsive to customer feedback and continuously adds features"
+    ],
+    "frictions": [
+      "Basic functionality in some areas",
+      "Limited data flow from HRIS to payroll system",
+      "Issues with terminations, rehires, and benefit enrollment processes",
+      "Cannot directly edit onboarding templates"
+    ]
+  },
+  "ts": "2026-10-18T04:41:31.869908+00:00"
+}

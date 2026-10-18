@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a3a0548d86abcbc542ff61d47c6cf057ae841bfd88351a2fcb1f3226bcf33cf4",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1078,
+  "output_tokens": 1022,
+  "cost_usd": 0.0028784,
+  "elapsed_s": 6.94,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Powerful tools for analyzing inventory and sales data.\",\n    \"Customizable dashboards provide quick insights into stock levels.\",\n    \"Effective for creating detailed reports for internal stakeholders.\"\n  ],\n  \"cons\": [\n    \"Initial setup and complex data model development can be challenging.\",\n    \"Performance might be slow with very large or poorly optimized datasets.\",\n    \"The cost could be a consideration for a company of this size.\"\n  ],\n  \"overall_experience\": \"This Stock Manager likely had a highly positive experience with Looker over two years, leveraging its powerful analytical capabilities to manage inventory and generate critical reports. They found it very functional and relatively easy to use for their daily tasks, contributing significantly to their operational efficiency. While generally satisfied, some aspects like initial complexity or cost might have presented minor frustrations.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Powerful tools for analyzing inventory and sales data.",
+      "Customizable dashboards provide quick insights into stock levels.",
+      "Effective for creating detailed reports for internal stakeholders."
+    ],
+    "cons": [
+      "Initial setup and complex data model development can be challenging.",
+      "Performance might be slow with very large or poorly optimized datasets.",
+      "The cost could be a consideration for a company of this size."
+    ],
+    "overall_experience": "This Stock Manager likely had a highly positive experience with Looker over two years, leveraging its powerful analytical capabilities to manage inventory and generate critical reports. They found it very functional and relatively easy to use for their daily tasks, contributing significantly to their operational efficiency. While generally satisfied, some aspects like initial complexity or cost might have presented minor frustrations."
+  },
+  "ts": "2026-10-18T04:43:50.133026+00:00"
+}

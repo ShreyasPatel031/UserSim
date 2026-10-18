@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c93df0e64893304566f1f3307b0e63f0f651d0c322638f260512e21c84097a1c",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 258,
+  "output_tokens": 1010,
+  "cost_usd": 0.0026024000000000004,
+  "elapsed_s": 6.95,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Intuitive interface made onboarding quick\",\n    \"Centralized communication for project discussions\",\n    \"Simple to set up and start new projects\"\n  ],\n  \"cons\": [\n    \"Lacked advanced features for complex ML project tracking\",\n    \"Limited reporting and analytics for large-scale oversight\",\n    \"Integrations with existing enterprise tools were not robust enough\"\n  ],\n  \"overall_experience\": \"The ML Data Associate likely found Basecamp's ease of use and communication features beneficial for managing basic project tasks during the free trial. However, for a large enterprise with specific technical and reporting needs, they probably encountered limitations in its functionality. The tool's simplicity, while a strength, may have been perceived as a drawback for advanced project management requirements.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 3,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 6,
+    "pros": [
+      "Intuitive interface made onboarding quick",
+      "Centralized communication for project discussions",
+      "Simple to set up and start new projects"
+    ],
+    "cons": [
+      "Lacked advanced features for complex ML project tracking",
+      "Limited reporting and analytics for large-scale oversight",
+      "Integrations with existing enterprise tools were not robust enough"
+    ],
+    "overall_experience": "The ML Data Associate likely found Basecamp's ease of use and communication features beneficial for managing basic project tasks during the free trial. However, for a large enterprise with specific technical and reporting needs, they probably encountered limitations in its functionality. The tool's simplicity, while a strength, may have been perceived as a drawback for advanced project management requirements."
+  },
+  "ts": "2026-10-18T04:43:55.719810+00:00"
+}

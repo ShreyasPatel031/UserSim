@@ -1,0 +1,28 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c76a003f0414a6fbd9b9f935f2ea2a4b26b69cdf908fda9c89210e187224d26f",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 171,
+  "output_tokens": 444,
+  "cost_usd": 0.0011613,
+  "elapsed_s": 21.88,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage email\",\n  \"benefits\": [\n    \"Improved group communication\",\n    \"Facilitated operations across multiple locations\",\n    \"Clear documentation\"\n  ],\n  \"frictions\": [\n    \"Phone application is unsatisfactory\"\n  ]\n}",
+  "json": {
+    "task": "Manage email",
+    "benefits": [
+      "Improved group communication",
+      "Facilitated operations across multiple locations",
+      "Clear documentation"
+    ],
+    "frictions": [
+      "Phone application is unsatisfactory"
+    ]
+  },
+  "ts": "2026-10-18T04:41:30.369123+00:00"
+}

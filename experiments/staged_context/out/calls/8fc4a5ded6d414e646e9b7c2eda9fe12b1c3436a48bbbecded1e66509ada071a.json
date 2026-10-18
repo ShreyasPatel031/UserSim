@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8fc4a5ded6d414e646e9b7c2eda9fe12b1c3436a48bbbecded1e66509ada071a",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1062,
+  "output_tokens": 1051,
+  "cost_usd": 0.0029461,
+  "elapsed_s": 7.82,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Helped organize sales leads and customer interactions efficiently.\",\n    \"Found the basic CRM features easy to set up for a small team.\",\n    \"Provided good value for managing sales without a large budget.\"\n  ],\n  \"cons\": [\n    \"Experienced a slight learning curve for some advanced features.\",\n    \"Customization options for niche hospitality workflows were sometimes limited.\",\n    \"Interface could feel a bit busy for a small business owner.\"\n  ],\n  \"overall_experience\": \"The owner of a small hospitality business found Freshsales to be a generally positive tool for managing their sales processes and customer interactions. They appreciated its ease of use for core CRM tasks and its value for money. While encountering some minor challenges with customization and a slight learning curve, the product effectively supported their operational needs within the initial six months of use.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Helped organize sales leads and customer interactions efficiently.",
+      "Found the basic CRM features easy to set up for a small team.",
+      "Provided good value for managing sales without a large budget."
+    ],
+    "cons": [
+      "Experienced a slight learning curve for some advanced features.",
+      "Customization options for niche hospitality workflows were sometimes limited.",
+      "Interface could feel a bit busy for a small business owner."
+    ],
+    "overall_experience": "The owner of a small hospitality business found Freshsales to be a generally positive tool for managing their sales processes and customer interactions. They appreciated its ease of use for core CRM tasks and its value for money. While encountering some minor challenges with customization and a slight learning curve, the product effectively supported their operational needs within the initial six months of use."
+  },
+  "ts": "2026-10-18T04:43:43.284422+00:00"
+}

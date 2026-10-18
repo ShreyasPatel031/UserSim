@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "17107fba71a42e791e5bf36159836d874db21f1e846aa364c04f84a3191eb8d8",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1115,
+  "output_tokens": 1085,
+  "cost_usd": 0.0030470000000000002,
+  "elapsed_s": 8.2,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8.92,\n  \"pros\": [\n    \"Robust features for managing complex creative workflows and approvals.\",\n    \"Centralized platform for project timelines, resourcing, and asset tracking.\",\n    \"Scalability to support a growing mid-to-large company's operational needs.\"\n  ],\n  \"cons\": [\n    \"Steeper learning curve and initial setup compared to simpler tools like Trello.\",\n    \"Occasional complexity in navigating advanced features or customizing dashboards.\",\n    \"Customer support response times could sometimes be improved.\"\n  ],\n  \"overall_experience\": \"This Manager of Creative Operations has found Wrike to be a highly effective and robust solution for managing project timelines, resourcing, and review workflows within their Food & Beverages company. Having used it for over two years, they appreciate its comprehensive functionality and scalability, which significantly improved upon their previous Trello experience. While acknowledging a slight learning curve and occasional interface complexity, the benefits for managing creative operations in a larger organization have proven to be substantial.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 4,
+    "recommendation_score": 8.92,
+    "pros": [
+      "Robust features for managing complex creative workflows and approvals.",
+      "Centralized platform for project timelines, resourcing, and asset tracking.",
+      "Scalability to support a growing mid-to-large company's operational needs."
+    ],
+    "cons": [
+      "Steeper learning curve and initial setup compared to simpler tools like Trello.",
+      "Occasional complexity in navigating advanced features or customizing dashboards.",
+      "Customer support response times could sometimes be improved."
+    ],
+    "overall_experience": "This Manager of Creative Operations has found Wrike to be a highly effective and robust solution for managing project timelines, resourcing, and review workflows within their Food & Beverages company. Having used it for over two years, they appreciate its comprehensive functionality and scalability, which significantly improved upon their previous Trello experience. While acknowledging a slight learning curve and occasional interface complexity, the benefits for managing creative operations in a larger organization have proven to be substantial."
+  },
+  "ts": "2026-10-18T04:43:30.415551+00:00"
+}

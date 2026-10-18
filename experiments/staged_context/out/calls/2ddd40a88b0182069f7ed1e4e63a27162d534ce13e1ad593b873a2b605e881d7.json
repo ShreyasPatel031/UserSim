@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2ddd40a88b0182069f7ed1e4e63a27162d534ce13e1ad593b873a2b605e881d7",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 289,
+  "output_tokens": 556,
+  "cost_usd": 0.0014767,
+  "elapsed_s": 21.91,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage HR information system functions for employees and administrators.\",\n  \"benefits\": [\n    \"HRIS is easy to use and manage\",\n    \"Creates a great experience for admins and employees\",\n    \"Seamless navigation\",\n    \"Customer-centric, knowledgeable, and responsive support team\"\n  ],\n  \"frictions\": [\n    \"Reporting aspects are not straightforward to use or understand for creating analytics and data pulling\"\n  ]\n}",
+  "json": {
+    "task": "Manage HR information system functions for employees and administrators.",
+    "benefits": [
+      "HRIS is easy to use and manage",
+      "Creates a great experience for admins and employees",
+      "Seamless navigation",
+      "Customer-centric, knowledgeable, and responsive support team"
+    ],
+    "frictions": [
+      "Reporting aspects are not straightforward to use or understand for creating analytics and data pulling"
+    ]
+  },
+  "ts": "2026-10-18T04:41:30.917383+00:00"
+}

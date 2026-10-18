@@ -1,0 +1,31 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "cdb1fe6dfc0e28076e14a0acbda2adcc13824ac754a6feeca4c59bf6732c0e45",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 365,
+  "output_tokens": 517,
+  "cost_usd": 0.001402,
+  "elapsed_s": 22.12,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage customer support interactions, primarily via email.\",\n  \"benefits\": [\n    \"User interface is easy to use.\",\n    \"Requires minimal training for new users.\",\n    \"Product is customer-focused.\",\n    \"Designed for daily use by support representatives.\"\n  ],\n  \"frictions\": [\n    \"Lacks integrations with other services.\",\n    \"Limited functionality for tracking chats and calls.\",\n    \"Requires manual data compilation for analytics outside of email.\"\n  ]\n}",
+  "json": {
+    "task": "Manage customer support interactions, primarily via email.",
+    "benefits": [
+      "User interface is easy to use.",
+      "Requires minimal training for new users.",
+      "Product is customer-focused.",
+      "Designed for daily use by support representatives."
+    ],
+    "frictions": [
+      "Lacks integrations with other services.",
+      "Limited functionality for tracking chats and calls.",
+      "Requires manual data compilation for analytics outside of email."
+    ]
+  },
+  "ts": "2026-10-18T04:41:30.621578+00:00"
+}

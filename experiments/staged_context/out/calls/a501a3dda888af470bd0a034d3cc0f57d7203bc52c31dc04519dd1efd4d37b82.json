@@ -1,0 +1,26 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a501a3dda888af470bd0a034d3cc0f57d7203bc52c31dc04519dd1efd4d37b82",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 151,
+  "output_tokens": 417,
+  "cost_usd": 0.0010878,
+  "elapsed_s": 21.74,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage helpdesk operations\",\n  \"benefits\": [\n    \"meets expectations\",\n    \"reliable\",\n    \"easy to use\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Manage helpdesk operations",
+    "benefits": [
+      "meets expectations",
+      "reliable",
+      "easy to use"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T04:41:30.075032+00:00"
+}

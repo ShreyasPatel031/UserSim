@@ -1,0 +1,31 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0fce75a875c616df85734fc7ec9ff86ba4450bf1b79dada703625d3a60da64b6",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 207,
+  "output_tokens": 550,
+  "cost_usd": 0.0014371000000000002,
+  "elapsed_s": 23.92,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage sales pipeline.\",\n  \"benefits\": [\n    \"Intuitive\",\n    \"Good for onboarding new sales reps\",\n    \"Reliable for tracking deals and organizing information\",\n    \"Good reporting features\"\n  ],\n  \"frictions\": [\n    \"Less feature-rich compared to other CRM systems\",\n    \"Lacks some marketing automation tools\",\n    \"Mobile app could be improved\"\n  ]\n}",
+  "json": {
+    "task": "Manage sales pipeline.",
+    "benefits": [
+      "Intuitive",
+      "Good for onboarding new sales reps",
+      "Reliable for tracking deals and organizing information",
+      "Good reporting features"
+    ],
+    "frictions": [
+      "Less feature-rich compared to other CRM systems",
+      "Lacks some marketing automation tools",
+      "Mobile app could be improved"
+    ]
+  },
+  "ts": "2026-10-18T04:41:31.950011+00:00"
+}

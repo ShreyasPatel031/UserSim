@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "74a3fcdc15e5c30dfc2becbff16e4268ca953e15710eabc08e5ba6304c3ee0a8",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 265,
+  "output_tokens": 1048,
+  "cost_usd": 0.0026995000000000005,
+  "elapsed_s": 7.81,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Streamlined onboarding for new hires\",\n    \"Centralized employee data access\",\n    \"Modern and intuitive user interface\"\n  ],\n  \"cons\": [\n    \"Limited flexibility in reporting\",\n    \"Occasional issues with integrations to other HR/recruiting tools\",\n    \"Lack of advanced customization options for specific workflows\"\n  ],\n  \"overall_experience\": \"As a Senior Technical Recruiter in an IT company, this individual likely found Namely competent for managing basic employee records and facilitating new hire onboarding. However, they may have encountered frustrations with its reporting capabilities and the depth of its integrations, which could hinder more complex data analysis or seamless workflow automation. Despite its modern interface, the platform's limitations in customization might have presented minor challenges given their technical background and the industry's typically high expectations for software.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 3,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 6,
+    "pros": [
+      "Streamlined onboarding for new hires",
+      "Centralized employee data access",
+      "Modern and intuitive user interface"
+    ],
+    "cons": [
+      "Limited flexibility in reporting",
+      "Occasional issues with integrations to other HR/recruiting tools",
+      "Lack of advanced customization options for specific workflows"
+    ],
+    "overall_experience": "As a Senior Technical Recruiter in an IT company, this individual likely found Namely competent for managing basic employee records and facilitating new hire onboarding. However, they may have encountered frustrations with its reporting capabilities and the depth of its integrations, which could hinder more complex data analysis or seamless workflow automation. Despite its modern interface, the platform's limitations in customization might have presented minor challenges given their technical background and the industry's typically high expectations for software."
+  },
+  "ts": "2026-10-18T04:43:40.875019+00:00"
+}

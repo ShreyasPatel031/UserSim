@@ -1,0 +1,28 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d26f34b5c31aa9c36b94c7ace28773c4a8ad542f7ed7324b4c9576ac3d8d2229",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 153,
+  "output_tokens": 378,
+  "cost_usd": 0.0009909,
+  "elapsed_s": 23.06,
+  "error": null,
+  "text": "{\n  \"task\": \"Track clients and deals\",\n  \"benefits\": [\n    \"Keeps track of clients and deals well\",\n    \"Meets user's needs\"\n  ],\n  \"frictions\": [\n    \"Interface is busy\",\n    \"Not user friendly\"\n  ]\n}",
+  "json": {
+    "task": "Track clients and deals",
+    "benefits": [
+      "Keeps track of clients and deals well",
+      "Meets user's needs"
+    ],
+    "frictions": [
+      "Interface is busy",
+      "Not user friendly"
+    ]
+  },
+  "ts": "2026-10-18T04:41:31.000543+00:00"
+}

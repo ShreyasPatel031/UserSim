@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "92a7f1d70541f8189f23a1b4725db8be256576e9fcc708613d363a2216ac3c48",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2818,
+  "output_tokens": 1139,
+  "cost_usd": 0.0036929000000000003,
+  "elapsed_s": 8.12,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Robust project planning and tracking features for complex projects.\",\n    \"Excellent for team collaboration and workflow management across departments.\",\n    \"Customizable dashboards and reporting provide valuable insights into progress.\"\n  ],\n  \"cons\": [\n    \"Initial learning curve can be steep for new team members.\",\n    \"The extensive features can sometimes lead to complexity in setup.\",\n    \"Pricing structure might be a concern for scaling specific functionalities.\"\n  ],\n  \"overall_experience\": \"This Senior Project Supervisor likely found Wrike to be a highly effective tool for managing large-scale projects within their higher education institution. Its comprehensive functionality and collaboration features significantly streamlined their work, planning, and progress tracking. While the initial setup and complexity might have presented a challenge, their long-term use suggests they leveraged its power to achieve project objectives.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Robust project planning and tracking features for complex projects.",
+      "Excellent for team collaboration and workflow management across departments.",
+      "Customizable dashboards and reporting provide valuable insights into progress."
+    ],
+    "cons": [
+      "Initial learning curve can be steep for new team members.",
+      "The extensive features can sometimes lead to complexity in setup.",
+      "Pricing structure might be a concern for scaling specific functionalities."
+    ],
+    "overall_experience": "This Senior Project Supervisor likely found Wrike to be a highly effective tool for managing large-scale projects within their higher education institution. Its comprehensive functionality and collaboration features significantly streamlined their work, planning, and progress tracking. While the initial setup and complexity might have presented a challenge, their long-term use suggests they leveraged its power to achieve project objectives."
+  },
+  "ts": "2026-10-18T04:43:29.491107+00:00"
+}

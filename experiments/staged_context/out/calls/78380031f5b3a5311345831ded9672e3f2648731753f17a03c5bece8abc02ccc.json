@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "78380031f5b3a5311345831ded9672e3f2648731753f17a03c5bece8abc02ccc",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2445,
+  "output_tokens": 990,
+  "cost_usd": 0.0032084999999999995,
+  "elapsed_s": 6.55,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Streamlined sending of multiple emails\",\n    \"Intuitive interface for email campaign setup\",\n    \"Effective for small business marketing needs\"\n  ],\n  \"cons\": [\n    \"Pricing structure can be a concern for small budgets\",\n    \"Limited customization options for templates\",\n    \"Customer support response times could be improved\"\n  ],\n  \"overall_experience\": \"This CO OWNER likely found Brevo to be a capable tool for their email marketing needs, particularly for sending multiple emails simultaneously. However, coming from Mailchimp, they might have found the pricing less competitive or the feature set not significantly superior for the cost. The user probably appreciated its ease of use but may have encountered some frustrations with customer support or template flexibility during their initial months.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Streamlined sending of multiple emails",
+      "Intuitive interface for email campaign setup",
+      "Effective for small business marketing needs"
+    ],
+    "cons": [
+      "Pricing structure can be a concern for small budgets",
+      "Limited customization options for templates",
+      "Customer support response times could be improved"
+    ],
+    "overall_experience": "This CO OWNER likely found Brevo to be a capable tool for their email marketing needs, particularly for sending multiple emails simultaneously. However, coming from Mailchimp, they might have found the pricing less competitive or the feature set not significantly superior for the cost. The user probably appreciated its ease of use but may have encountered some frustrations with customer support or template flexibility during their initial months."
+  },
+  "ts": "2026-10-18T04:43:34.547518+00:00"
+}

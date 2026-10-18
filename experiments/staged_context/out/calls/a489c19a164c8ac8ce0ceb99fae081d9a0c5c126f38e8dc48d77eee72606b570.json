@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a489c19a164c8ac8ce0ceb99fae081d9a0c5c126f38e8dc48d77eee72606b570",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2517,
+  "output_tokens": 1067,
+  "cost_usd": 0.0034226,
+  "elapsed_s": 8.34,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Intuitive visual pipeline for lead tracking\",\n    \"Easy transition from Trello due to user-friendly interface\",\n    \"Effective at organizing and managing sales activities\"\n  ],\n  \"cons\": [\n    \"Pricing can become a concern as the team or features needed grow\",\n    \"Reporting features may feel less robust than desired for detailed analysis\",\n    \"Initial setup and customization might require a small learning curve\"\n  ],\n  \"overall_experience\": \"The Managing Director likely found Pipedrive to be a significant upgrade from Trello, providing much-needed structure for lead management in their construction business. They appreciated its ease of use and visual pipeline, which helped organize their sales process effectively. While generally satisfied, the cost for advanced features or more extensive reporting might have been a minor point of contention over time.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Intuitive visual pipeline for lead tracking",
+      "Easy transition from Trello due to user-friendly interface",
+      "Effective at organizing and managing sales activities"
+    ],
+    "cons": [
+      "Pricing can become a concern as the team or features needed grow",
+      "Reporting features may feel less robust than desired for detailed analysis",
+      "Initial setup and customization might require a small learning curve"
+    ],
+    "overall_experience": "The Managing Director likely found Pipedrive to be a significant upgrade from Trello, providing much-needed structure for lead management in their construction business. They appreciated its ease of use and visual pipeline, which helped organize their sales process effectively. While generally satisfied, the cost for advanced features or more extensive reporting might have been a minor point of contention over time."
+  },
+  "ts": "2026-10-18T04:43:27.083955+00:00"
+}

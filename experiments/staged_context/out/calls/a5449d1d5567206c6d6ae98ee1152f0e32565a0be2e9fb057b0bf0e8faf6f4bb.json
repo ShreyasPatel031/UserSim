@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a5449d1d5567206c6d6ae98ee1152f0e32565a0be2e9fb057b0bf0e8faf6f4bb",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2232,
+  "output_tokens": 1072,
+  "cost_usd": 0.0033496000000000003,
+  "elapsed_s": 7.64,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Comprehensive HR features for managing employees.\",\n    \"Effective for onboarding and performance tracking.\",\n    \"Reliable for managing HR information over time.\"\n  ],\n  \"cons\": [\n    \"The cost may feel disproportionate for a self-employed individual or very small team.\",\n    \"Customer support response times could be inconsistent.\",\n    \"Some features might be overly complex or not fully utilized for their company size.\"\n  ],\n  \"overall_experience\": \"This CEO likely found Namely to be a robust and reliable platform for managing HR functions, especially given their 2+ years of usage. While it offered comprehensive capabilities for tasks like onboarding and performance, they may have found the system to be more extensive and potentially more expensive than necessary for their self-employed status or very small team. Customer support and value for money might have been occasional points of frustration, but the core functionality met their needs enough to continue using it.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Comprehensive HR features for managing employees.",
+      "Effective for onboarding and performance tracking.",
+      "Reliable for managing HR information over time."
+    ],
+    "cons": [
+      "The cost may feel disproportionate for a self-employed individual or very small team.",
+      "Customer support response times could be inconsistent.",
+      "Some features might be overly complex or not fully utilized for their company size."
+    ],
+    "overall_experience": "This CEO likely found Namely to be a robust and reliable platform for managing HR functions, especially given their 2+ years of usage. While it offered comprehensive capabilities for tasks like onboarding and performance, they may have found the system to be more extensive and potentially more expensive than necessary for their self-employed status or very small team. Customer support and value for money might have been occasional points of frustration, but the core functionality met their needs enough to continue using it."
+  },
+  "ts": "2026-10-18T04:43:39.683439+00:00"
+}

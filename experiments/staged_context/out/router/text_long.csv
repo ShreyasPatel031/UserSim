@@ -1,0 +1,1516 @@
+rid,product,split,output,strategy,score
+Capterra___2039561,Pipedrive,dev,pros,agent_alone,0.6666666666666666
+Capterra___2039561,Pipedrive,dev,cons,agent_alone,0.5
+Capterra___2039561,Pipedrive,dev,overall_experience,agent_alone,0.0
+Capterra___2039561,Pipedrive,dev,pros,agent_full,1.0
+Capterra___2039561,Pipedrive,dev,cons,agent_full,0.0
+Capterra___2039561,Pipedrive,dev,overall_experience,agent_full,0.0
+Capterra___2039561,Pipedrive,dev,pros,agent_averages,0.6666666666666666
+Capterra___2039561,Pipedrive,dev,cons,agent_averages,0.5
+Capterra___2039561,Pipedrive,dev,overall_experience,agent_averages,0.0
+Capterra___3575802,Pipedrive,dev,pros,agent_alone,0.5
+Capterra___3575802,Pipedrive,dev,overall_experience,agent_alone,1.0
+Capterra___3575802,Pipedrive,dev,pros,agent_full,0.0
+Capterra___3575802,Pipedrive,dev,overall_experience,agent_full,0.0
+Capterra___3575802,Pipedrive,dev,pros,agent_averages,0.25
+Capterra___3575802,Pipedrive,dev,overall_experience,agent_averages,0.0
+Capterra___3810653,Pipedrive,dev,pros,agent_alone,0.6666666666666666
+Capterra___3810653,Pipedrive,dev,overall_experience,agent_alone,0.0
+Capterra___3810653,Pipedrive,dev,pros,agent_full,0.6666666666666666
+Capterra___3810653,Pipedrive,dev,overall_experience,agent_full,0.0
+Capterra___3810653,Pipedrive,dev,pros,agent_averages,0.6666666666666666
+Capterra___3810653,Pipedrive,dev,overall_experience,agent_averages,0.0
+Capterra___1662178,Pipedrive,dev,pros,agent_alone,0.25
+Capterra___1662178,Pipedrive,dev,cons,agent_alone,0.0
+Capterra___1662178,Pipedrive,dev,overall_experience,agent_alone,0.0
+Capterra___1662178,Pipedrive,dev,pros,agent_full,0.25
+Capterra___1662178,Pipedrive,dev,cons,agent_full,0.0
+Capterra___1662178,Pipedrive,dev,overall_experience,agent_full,0.0
+Capterra___1662178,Pipedrive,dev,pros,agent_averages,0.25
+Capterra___1662178,Pipedrive,dev,cons,agent_averages,0.0
+Capterra___1662178,Pipedrive,dev,overall_experience,agent_averages,0.0
+Capterra___7063080,Pipedrive,dev,pros,agent_alone,0.5
+Capterra___7063080,Pipedrive,dev,cons,agent_alone,0.0
+Capterra___7063080,Pipedrive,dev,overall_experience,agent_alone,1.0
+Capterra___7063080,Pipedrive,dev,pros,agent_full,0.5
+Capterra___7063080,Pipedrive,dev,cons,agent_full,0.0
+Capterra___7063080,Pipedrive,dev,overall_experience,agent_full,0.0
+Capterra___7063080,Pipedrive,dev,pros,agent_averages,0.25
+Capterra___7063080,Pipedrive,dev,cons,agent_averages,0.0
+Capterra___7063080,Pipedrive,dev,overall_experience,agent_averages,0.0
+Capterra___1691794,Pipedrive,dev,pros,agent_alone,0.5
+Capterra___1691794,Pipedrive,dev,cons,agent_alone,0.0
+Capterra___1691794,Pipedrive,dev,overall_experience,agent_alone,1.0
+Capterra___1691794,Pipedrive,dev,pros,agent_full,0.25
+Capterra___1691794,Pipedrive,dev,cons,agent_full,0.5
+Capterra___1691794,Pipedrive,dev,overall_experience,agent_full,0.0
+Capterra___1691794,Pipedrive,dev,pros,agent_averages,0.25
+Capterra___1691794,Pipedrive,dev,cons,agent_averages,0.0
+Capterra___1691794,Pipedrive,dev,overall_experience,agent_averages,0.0
+Capterra___6027095,Pipedrive,dev,pros,agent_alone,0.5
+Capterra___6027095,Pipedrive,dev,cons,agent_alone,0.0
+Capterra___6027095,Pipedrive,dev,overall_experience,agent_alone,0.0
+Capterra___6027095,Pipedrive,dev,pros,agent_full,0.5
+Capterra___6027095,Pipedrive,dev,cons,agent_full,0.0
+Capterra___6027095,Pipedrive,dev,overall_experience,agent_full,0.0
+Capterra___6027095,Pipedrive,dev,pros,agent_averages,0.0
+Capterra___6027095,Pipedrive,dev,cons,agent_averages,0.0
+Capterra___6027095,Pipedrive,dev,overall_experience,agent_averages,0.0
+Capterra___4398372,Pipedrive,dev,pros,agent_alone,0.3333333333333333
+Capterra___4398372,Pipedrive,dev,overall_experience,agent_alone,0.0
+Capterra___4398372,Pipedrive,dev,pros,agent_full,0.3333333333333333
+Capterra___4398372,Pipedrive,dev,overall_experience,agent_full,0.0
+Capterra___4398372,Pipedrive,dev,pros,agent_averages,0.3333333333333333
+Capterra___4398372,Pipedrive,dev,overall_experience,agent_averages,0.0
+Capterra___4631041,Pipedrive,dev,pros,agent_alone,0.5
+Capterra___4631041,Pipedrive,dev,cons,agent_alone,0.0
+Capterra___4631041,Pipedrive,dev,overall_experience,agent_alone,0.0
+Capterra___4631041,Pipedrive,dev,pros,agent_full,0.5
+Capterra___4631041,Pipedrive,dev,cons,agent_full,0.0
+Capterra___4631041,Pipedrive,dev,overall_experience,agent_full,0.0
+Capterra___4631041,Pipedrive,dev,pros,agent_averages,0.5
+Capterra___4631041,Pipedrive,dev,cons,agent_averages,0.0
+Capterra___4631041,Pipedrive,dev,overall_experience,agent_averages,1.0
+Capterra___4613014,Pipedrive,dev,pros,agent_alone,0.25
+Capterra___4613014,Pipedrive,dev,overall_experience,agent_alone,0.0
+Capterra___4613014,Pipedrive,dev,pros,agent_full,0.5
+Capterra___4613014,Pipedrive,dev,overall_experience,agent_full,0.0
+Capterra___4613014,Pipedrive,dev,pros,agent_averages,0.25
+Capterra___4613014,Pipedrive,dev,overall_experience,agent_averages,0.0
+Capterra___6588819,Pipedrive,dev,pros,agent_alone,0.5
+Capterra___6588819,Pipedrive,dev,cons,agent_alone,0.0
+Capterra___6588819,Pipedrive,dev,overall_experience,agent_alone,1.0
+Capterra___6588819,Pipedrive,dev,pros,agent_full,0.5
+Capterra___6588819,Pipedrive,dev,cons,agent_full,0.0
+Capterra___6588819,Pipedrive,dev,overall_experience,agent_full,1.0
+Capterra___6588819,Pipedrive,dev,pros,agent_averages,0.75
+Capterra___6588819,Pipedrive,dev,cons,agent_averages,0.0
+Capterra___6588819,Pipedrive,dev,overall_experience,agent_averages,1.0
+Capterra___6062867,Pipedrive,dev,pros,agent_alone,1.0
+Capterra___6062867,Pipedrive,dev,cons,agent_alone,1.0
+Capterra___6062867,Pipedrive,dev,overall_experience,agent_alone,0.0
+Capterra___6062867,Pipedrive,dev,pros,agent_full,1.0
+Capterra___6062867,Pipedrive,dev,cons,agent_full,1.0
+Capterra___6062867,Pipedrive,dev,overall_experience,agent_full,0.0
+Capterra___6062867,Pipedrive,dev,pros,agent_averages,0.0
+Capterra___6062867,Pipedrive,dev,cons,agent_averages,0.0
+Capterra___6062867,Pipedrive,dev,overall_experience,agent_averages,0.0
+Capterra___6507816,Wrike,dev,pros,agent_alone,0.5
+Capterra___6507816,Wrike,dev,overall_experience,agent_alone,0.0
+Capterra___6507816,Wrike,dev,pros,agent_full,0.25
+Capterra___6507816,Wrike,dev,overall_experience,agent_full,0.0
+Capterra___6507816,Wrike,dev,pros,agent_averages,0.25
+Capterra___6507816,Wrike,dev,overall_experience,agent_averages,0.0
+Capterra___4678445,Wrike,dev,pros,agent_alone,0.3333333333333333
+Capterra___4678445,Wrike,dev,cons,agent_alone,0.0
+Capterra___4678445,Wrike,dev,overall_experience,agent_alone,0.0
+Capterra___4678445,Wrike,dev,pros,agent_full,0.6666666666666666
+Capterra___4678445,Wrike,dev,cons,agent_full,0.0
+Capterra___4678445,Wrike,dev,overall_experience,agent_full,0.0
+Capterra___4678445,Wrike,dev,pros,agent_averages,0.6666666666666666
+Capterra___4678445,Wrike,dev,cons,agent_averages,0.0
+Capterra___4678445,Wrike,dev,overall_experience,agent_averages,0.0
+Capterra___4660400,Wrike,dev,pros,agent_alone,0.5
+Capterra___4660400,Wrike,dev,cons,agent_alone,0.0
+Capterra___4660400,Wrike,dev,overall_experience,agent_alone,0.0
+Capterra___4660400,Wrike,dev,pros,agent_full,0.5
+Capterra___4660400,Wrike,dev,cons,agent_full,0.0
+Capterra___4660400,Wrike,dev,overall_experience,agent_full,0.0
+Capterra___4660400,Wrike,dev,pros,agent_averages,0.75
+Capterra___4660400,Wrike,dev,cons,agent_averages,0.0
+Capterra___4660400,Wrike,dev,overall_experience,agent_averages,0.0
+Capterra___4660857,Wrike,dev,pros,agent_alone,0.5
+Capterra___4660857,Wrike,dev,cons,agent_alone,0.5
+Capterra___4660857,Wrike,dev,overall_experience,agent_alone,1.0
+Capterra___4660857,Wrike,dev,pros,agent_full,0.25
+Capterra___4660857,Wrike,dev,cons,agent_full,0.5
+Capterra___4660857,Wrike,dev,overall_experience,agent_full,1.0
+Capterra___4660857,Wrike,dev,pros,agent_averages,0.75
+Capterra___4660857,Wrike,dev,cons,agent_averages,0.25
+Capterra___4660857,Wrike,dev,overall_experience,agent_averages,1.0
+Capterra___6767498,Wrike,dev,pros,agent_alone,0.5
+Capterra___6767498,Wrike,dev,cons,agent_alone,0.0
+Capterra___6767498,Wrike,dev,overall_experience,agent_alone,0.0
+Capterra___6767498,Wrike,dev,pros,agent_full,0.75
+Capterra___6767498,Wrike,dev,cons,agent_full,0.0
+Capterra___6767498,Wrike,dev,overall_experience,agent_full,0.0
+Capterra___6767498,Wrike,dev,pros,agent_averages,0.5
+Capterra___6767498,Wrike,dev,cons,agent_averages,0.0
+Capterra___6767498,Wrike,dev,overall_experience,agent_averages,0.0
+Capterra___7069760,Wrike,dev,pros,agent_alone,0.25
+Capterra___7069760,Wrike,dev,cons,agent_alone,0.5
+Capterra___7069760,Wrike,dev,overall_experience,agent_alone,0.0
+Capterra___7069760,Wrike,dev,pros,agent_full,0.25
+Capterra___7069760,Wrike,dev,cons,agent_full,0.0
+Capterra___7069760,Wrike,dev,overall_experience,agent_full,0.0
+Capterra___7069760,Wrike,dev,pros,agent_averages,0.25
+Capterra___7069760,Wrike,dev,cons,agent_averages,0.0
+Capterra___7069760,Wrike,dev,overall_experience,agent_averages,0.0
+Capterra___6073510,Wrike,dev,pros,agent_alone,0.0
+Capterra___6073510,Wrike,dev,cons,agent_alone,0.0
+Capterra___6073510,Wrike,dev,overall_experience,agent_alone,0.0
+Capterra___6073510,Wrike,dev,pros,agent_full,0.25
+Capterra___6073510,Wrike,dev,cons,agent_full,0.0
+Capterra___6073510,Wrike,dev,overall_experience,agent_full,0.0
+Capterra___6073510,Wrike,dev,pros,agent_averages,0.5
+Capterra___6073510,Wrike,dev,cons,agent_averages,0.0
+Capterra___6073510,Wrike,dev,overall_experience,agent_averages,0.0
+Capterra___4887087,Wrike,dev,pros,agent_alone,0.3333333333333333
+Capterra___4887087,Wrike,dev,cons,agent_alone,0.3333333333333333
+Capterra___4887087,Wrike,dev,overall_experience,agent_alone,1.0
+Capterra___4887087,Wrike,dev,pros,agent_full,0.3333333333333333
+Capterra___4887087,Wrike,dev,cons,agent_full,0.0
+Capterra___4887087,Wrike,dev,overall_experience,agent_full,0.0
+Capterra___4887087,Wrike,dev,pros,agent_averages,0.3333333333333333
+Capterra___4887087,Wrike,dev,cons,agent_averages,0.0
+Capterra___4887087,Wrike,dev,overall_experience,agent_averages,0.0
+Capterra___7123910,Wrike,dev,pros,agent_alone,0.5
+Capterra___7123910,Wrike,dev,cons,agent_alone,0.0
+Capterra___7123910,Wrike,dev,overall_experience,agent_alone,0.0
+Capterra___7123910,Wrike,dev,pros,agent_full,0.5
+Capterra___7123910,Wrike,dev,cons,agent_full,0.0
+Capterra___7123910,Wrike,dev,overall_experience,agent_full,0.0
+Capterra___7123910,Wrike,dev,pros,agent_averages,0.25
+Capterra___7123910,Wrike,dev,cons,agent_averages,0.0
+Capterra___7123910,Wrike,dev,overall_experience,agent_averages,0.0
+Capterra___7142624,Wrike,dev,pros,agent_alone,0.25
+Capterra___7142624,Wrike,dev,cons,agent_alone,0.0
+Capterra___7142624,Wrike,dev,overall_experience,agent_alone,0.0
+Capterra___7142624,Wrike,dev,pros,agent_full,0.25
+Capterra___7142624,Wrike,dev,cons,agent_full,0.0
+Capterra___7142624,Wrike,dev,overall_experience,agent_full,0.0
+Capterra___7142624,Wrike,dev,pros,agent_averages,0.25
+Capterra___7142624,Wrike,dev,cons,agent_averages,0.0
+Capterra___7142624,Wrike,dev,overall_experience,agent_averages,0.0
+Capterra___7134576,Wrike,dev,pros,agent_alone,0.3333333333333333
+Capterra___7134576,Wrike,dev,cons,agent_alone,0.0
+Capterra___7134576,Wrike,dev,overall_experience,agent_alone,0.0
+Capterra___7134576,Wrike,dev,pros,agent_full,0.3333333333333333
+Capterra___7134576,Wrike,dev,cons,agent_full,0.0
+Capterra___7134576,Wrike,dev,overall_experience,agent_full,0.0
+Capterra___7134576,Wrike,dev,pros,agent_averages,0.3333333333333333
+Capterra___7134576,Wrike,dev,cons,agent_averages,0.0
+Capterra___7134576,Wrike,dev,overall_experience,agent_averages,0.0
+Capterra___4694222,Wrike,dev,pros,agent_alone,0.0
+Capterra___4694222,Wrike,dev,cons,agent_alone,0.0
+Capterra___4694222,Wrike,dev,overall_experience,agent_alone,0.0
+Capterra___4694222,Wrike,dev,pros,agent_full,0.25
+Capterra___4694222,Wrike,dev,cons,agent_full,0.0
+Capterra___4694222,Wrike,dev,overall_experience,agent_full,0.0
+Capterra___4694222,Wrike,dev,pros,agent_averages,0.0
+Capterra___4694222,Wrike,dev,cons,agent_averages,0.0
+Capterra___4694222,Wrike,dev,overall_experience,agent_averages,0.0
+Capterra___4551179,Help Scout,dev,pros,agent_alone,0.3333333333333333
+Capterra___4551179,Help Scout,dev,cons,agent_alone,0.3333333333333333
+Capterra___4551179,Help Scout,dev,overall_experience,agent_alone,1.0
+Capterra___4551179,Help Scout,dev,pros,agent_full,0.3333333333333333
+Capterra___4551179,Help Scout,dev,cons,agent_full,0.3333333333333333
+Capterra___4551179,Help Scout,dev,overall_experience,agent_full,1.0
+Capterra___4551179,Help Scout,dev,pros,agent_averages,0.3333333333333333
+Capterra___4551179,Help Scout,dev,cons,agent_averages,0.0
+Capterra___4551179,Help Scout,dev,overall_experience,agent_averages,0.0
+Capterra___6278884,Help Scout,dev,pros,agent_alone,0.5
+Capterra___6278884,Help Scout,dev,overall_experience,agent_alone,0.0
+Capterra___6278884,Help Scout,dev,pros,agent_full,0.5
+Capterra___6278884,Help Scout,dev,overall_experience,agent_full,0.0
+Capterra___6278884,Help Scout,dev,pros,agent_averages,0.5
+Capterra___6278884,Help Scout,dev,overall_experience,agent_averages,0.0
+Capterra___6249369,Help Scout,dev,pros,agent_alone,0.6666666666666666
+Capterra___6249369,Help Scout,dev,overall_experience,agent_alone,0.0
+Capterra___6249369,Help Scout,dev,pros,agent_full,0.3333333333333333
+Capterra___6249369,Help Scout,dev,overall_experience,agent_full,0.0
+Capterra___6249369,Help Scout,dev,pros,agent_averages,0.0
+Capterra___6249369,Help Scout,dev,overall_experience,agent_averages,0.0
+Capterra___261113,Help Scout,dev,pros,agent_alone,0.25
+Capterra___261113,Help Scout,dev,cons,agent_alone,0.5
+Capterra___261113,Help Scout,dev,overall_experience,agent_alone,0.0
+Capterra___261113,Help Scout,dev,pros,agent_full,0.0
+Capterra___261113,Help Scout,dev,cons,agent_full,0.0
+Capterra___261113,Help Scout,dev,overall_experience,agent_full,0.0
+Capterra___261113,Help Scout,dev,pros,agent_averages,0.25
+Capterra___261113,Help Scout,dev,cons,agent_averages,0.0
+Capterra___261113,Help Scout,dev,overall_experience,agent_averages,0.0
+SoftwareAdvice___424346,Help Scout,dev,pros,agent_alone,0.25
+SoftwareAdvice___424346,Help Scout,dev,cons,agent_alone,0.0
+SoftwareAdvice___424346,Help Scout,dev,overall_experience,agent_alone,0.0
+SoftwareAdvice___424346,Help Scout,dev,pros,agent_full,0.0
+SoftwareAdvice___424346,Help Scout,dev,cons,agent_full,0.0
+SoftwareAdvice___424346,Help Scout,dev,overall_experience,agent_full,0.0
+SoftwareAdvice___424346,Help Scout,dev,pros,agent_averages,0.5
+SoftwareAdvice___424346,Help Scout,dev,cons,agent_averages,1.0
+SoftwareAdvice___424346,Help Scout,dev,overall_experience,agent_averages,0.0
+Capterra___6591078,Help Scout,dev,pros,agent_alone,0.5
+Capterra___6591078,Help Scout,dev,cons,agent_alone,0.0
+Capterra___6591078,Help Scout,dev,overall_experience,agent_alone,0.0
+Capterra___6591078,Help Scout,dev,pros,agent_full,0.5
+Capterra___6591078,Help Scout,dev,cons,agent_full,0.0
+Capterra___6591078,Help Scout,dev,overall_experience,agent_full,0.0
+Capterra___6591078,Help Scout,dev,pros,agent_averages,0.5
+Capterra___6591078,Help Scout,dev,cons,agent_averages,0.0
+Capterra___6591078,Help Scout,dev,overall_experience,agent_averages,0.0
+Capterra___2106744,Help Scout,dev,pros,agent_alone,0.5
+Capterra___2106744,Help Scout,dev,cons,agent_alone,0.0
+Capterra___2106744,Help Scout,dev,overall_experience,agent_alone,0.0
+Capterra___2106744,Help Scout,dev,pros,agent_full,0.25
+Capterra___2106744,Help Scout,dev,cons,agent_full,0.0
+Capterra___2106744,Help Scout,dev,overall_experience,agent_full,0.0
+Capterra___2106744,Help Scout,dev,pros,agent_averages,0.25
+Capterra___2106744,Help Scout,dev,cons,agent_averages,0.0
+Capterra___2106744,Help Scout,dev,overall_experience,agent_averages,0.0
+Capterra___6294490,Help Scout,dev,pros,agent_alone,0.0
+Capterra___6294490,Help Scout,dev,overall_experience,agent_alone,0.0
+Capterra___6294490,Help Scout,dev,pros,agent_full,0.0
+Capterra___6294490,Help Scout,dev,overall_experience,agent_full,0.0
+Capterra___6294490,Help Scout,dev,pros,agent_averages,0.0
+Capterra___6294490,Help Scout,dev,overall_experience,agent_averages,0.0
+Capterra___287794,Help Scout,dev,pros,agent_alone,0.0
+Capterra___287794,Help Scout,dev,cons,agent_alone,0.0
+Capterra___287794,Help Scout,dev,overall_experience,agent_alone,0.0
+Capterra___287794,Help Scout,dev,pros,agent_full,0.3333333333333333
+Capterra___287794,Help Scout,dev,cons,agent_full,0.0
+Capterra___287794,Help Scout,dev,overall_experience,agent_full,0.0
+Capterra___287794,Help Scout,dev,pros,agent_averages,0.0
+Capterra___287794,Help Scout,dev,cons,agent_averages,0.0
+Capterra___287794,Help Scout,dev,overall_experience,agent_averages,0.0
+Capterra___200905,Help Scout,dev,pros,agent_alone,0.5
+Capterra___200905,Help Scout,dev,cons,agent_alone,0.6666666666666666
+Capterra___200905,Help Scout,dev,overall_experience,agent_alone,1.0
+Capterra___200905,Help Scout,dev,pros,agent_full,0.5
+Capterra___200905,Help Scout,dev,cons,agent_full,0.0
+Capterra___200905,Help Scout,dev,overall_experience,agent_full,1.0
+Capterra___200905,Help Scout,dev,pros,agent_averages,0.5
+Capterra___200905,Help Scout,dev,cons,agent_averages,0.3333333333333333
+Capterra___200905,Help Scout,dev,overall_experience,agent_averages,1.0
+Capterra___1283488,Help Scout,dev,pros,agent_alone,0.25
+Capterra___1283488,Help Scout,dev,cons,agent_alone,0.0
+Capterra___1283488,Help Scout,dev,overall_experience,agent_alone,0.0
+Capterra___1283488,Help Scout,dev,pros,agent_full,0.25
+Capterra___1283488,Help Scout,dev,cons,agent_full,0.0
+Capterra___1283488,Help Scout,dev,overall_experience,agent_full,0.0
+Capterra___1283488,Help Scout,dev,pros,agent_averages,0.25
+Capterra___1283488,Help Scout,dev,cons,agent_averages,0.0
+Capterra___1283488,Help Scout,dev,overall_experience,agent_averages,1.0
+Capterra___1806489,Help Scout,dev,pros,agent_alone,0.75
+Capterra___1806489,Help Scout,dev,cons,agent_alone,0.0
+Capterra___1806489,Help Scout,dev,overall_experience,agent_alone,0.0
+Capterra___1806489,Help Scout,dev,pros,agent_full,0.25
+Capterra___1806489,Help Scout,dev,cons,agent_full,0.0
+Capterra___1806489,Help Scout,dev,overall_experience,agent_full,0.0
+Capterra___1806489,Help Scout,dev,pros,agent_averages,0.25
+Capterra___1806489,Help Scout,dev,cons,agent_averages,0.0
+Capterra___1806489,Help Scout,dev,overall_experience,agent_averages,0.0
+Capterra___7159151,Brevo,dev,pros,agent_alone,0.6666666666666666
+Capterra___7159151,Brevo,dev,overall_experience,agent_alone,0.0
+Capterra___7159151,Brevo,dev,pros,agent_full,0.3333333333333333
+Capterra___7159151,Brevo,dev,overall_experience,agent_full,1.0
+Capterra___7159151,Brevo,dev,pros,agent_averages,0.3333333333333333
+Capterra___7159151,Brevo,dev,overall_experience,agent_averages,1.0
+Capterra___6814343,Brevo,dev,pros,agent_alone,0.3333333333333333
+Capterra___6814343,Brevo,dev,cons,agent_alone,0.25
+Capterra___6814343,Brevo,dev,overall_experience,agent_alone,0.0
+Capterra___6814343,Brevo,dev,pros,agent_full,0.6666666666666666
+Capterra___6814343,Brevo,dev,cons,agent_full,0.0
+Capterra___6814343,Brevo,dev,overall_experience,agent_full,0.0
+Capterra___6814343,Brevo,dev,pros,agent_averages,0.6666666666666666
+Capterra___6814343,Brevo,dev,cons,agent_averages,0.0
+Capterra___6814343,Brevo,dev,overall_experience,agent_averages,0.0
+Capterra___6777922,Brevo,dev,pros,agent_alone,0.3333333333333333
+Capterra___6777922,Brevo,dev,cons,agent_alone,0.0
+Capterra___6777922,Brevo,dev,overall_experience,agent_alone,1.0
+Capterra___6777922,Brevo,dev,pros,agent_full,0.3333333333333333
+Capterra___6777922,Brevo,dev,cons,agent_full,1.0
+Capterra___6777922,Brevo,dev,overall_experience,agent_full,0.0
+Capterra___6777922,Brevo,dev,pros,agent_averages,0.3333333333333333
+Capterra___6777922,Brevo,dev,cons,agent_averages,0.0
+Capterra___6777922,Brevo,dev,overall_experience,agent_averages,0.0
+Capterra___6680822,Brevo,dev,pros,agent_alone,0.75
+Capterra___6680822,Brevo,dev,cons,agent_alone,0.0
+Capterra___6680822,Brevo,dev,overall_experience,agent_alone,1.0
+Capterra___6680822,Brevo,dev,pros,agent_full,0.25
+Capterra___6680822,Brevo,dev,cons,agent_full,1.0
+Capterra___6680822,Brevo,dev,overall_experience,agent_full,0.0
+Capterra___6680822,Brevo,dev,pros,agent_averages,0.25
+Capterra___6680822,Brevo,dev,cons,agent_averages,1.0
+Capterra___6680822,Brevo,dev,overall_experience,agent_averages,1.0
+Capterra___6697666,Brevo,dev,pros,agent_alone,0.0
+Capterra___6697666,Brevo,dev,overall_experience,agent_alone,0.0
+Capterra___6697666,Brevo,dev,pros,agent_full,0.25
+Capterra___6697666,Brevo,dev,overall_experience,agent_full,0.0
+Capterra___6697666,Brevo,dev,pros,agent_averages,0.5
+Capterra___6697666,Brevo,dev,overall_experience,agent_averages,0.0
+Capterra___6679484,Brevo,dev,pros,agent_alone,1.0
+Capterra___6679484,Brevo,dev,overall_experience,agent_alone,0.0
+Capterra___6679484,Brevo,dev,pros,agent_full,0.75
+Capterra___6679484,Brevo,dev,overall_experience,agent_full,0.0
+Capterra___6679484,Brevo,dev,pros,agent_averages,0.25
+Capterra___6679484,Brevo,dev,overall_experience,agent_averages,0.0
+Capterra___6828922,Brevo,dev,pros,agent_alone,1.0
+Capterra___6828922,Brevo,dev,cons,agent_alone,0.0
+Capterra___6828922,Brevo,dev,overall_experience,agent_alone,1.0
+Capterra___6828922,Brevo,dev,pros,agent_full,0.6666666666666666
+Capterra___6828922,Brevo,dev,cons,agent_full,0.0
+Capterra___6828922,Brevo,dev,overall_experience,agent_full,1.0
+Capterra___6828922,Brevo,dev,pros,agent_averages,0.6666666666666666
+Capterra___6828922,Brevo,dev,cons,agent_averages,0.0
+Capterra___6828922,Brevo,dev,overall_experience,agent_averages,1.0
+Capterra___6811354,Brevo,dev,pros,agent_alone,0.5
+Capterra___6811354,Brevo,dev,cons,agent_alone,0.0
+Capterra___6811354,Brevo,dev,overall_experience,agent_alone,0.0
+Capterra___6811354,Brevo,dev,pros,agent_full,0.0
+Capterra___6811354,Brevo,dev,cons,agent_full,0.0
+Capterra___6811354,Brevo,dev,overall_experience,agent_full,0.0
+Capterra___6811354,Brevo,dev,pros,agent_averages,0.0
+Capterra___6811354,Brevo,dev,cons,agent_averages,0.0
+Capterra___6811354,Brevo,dev,overall_experience,agent_averages,0.0
+Capterra___6737175,Brevo,dev,pros,agent_alone,0.25
+Capterra___6737175,Brevo,dev,cons,agent_alone,0.0
+Capterra___6737175,Brevo,dev,overall_experience,agent_alone,0.0
+Capterra___6737175,Brevo,dev,pros,agent_full,1.0
+Capterra___6737175,Brevo,dev,cons,agent_full,0.0
+Capterra___6737175,Brevo,dev,overall_experience,agent_full,0.0
+Capterra___6737175,Brevo,dev,pros,agent_averages,0.75
+Capterra___6737175,Brevo,dev,cons,agent_averages,0.0
+Capterra___6737175,Brevo,dev,overall_experience,agent_averages,1.0
+Capterra___6870613,Brevo,dev,pros,agent_alone,0.25
+Capterra___6870613,Brevo,dev,cons,agent_alone,0.0
+Capterra___6870613,Brevo,dev,overall_experience,agent_alone,0.0
+Capterra___6870613,Brevo,dev,pros,agent_full,0.25
+Capterra___6870613,Brevo,dev,cons,agent_full,0.0
+Capterra___6870613,Brevo,dev,overall_experience,agent_full,0.0
+Capterra___6870613,Brevo,dev,pros,agent_averages,0.25
+Capterra___6870613,Brevo,dev,cons,agent_averages,0.0
+Capterra___6870613,Brevo,dev,overall_experience,agent_averages,0.0
+Capterra___6838590,Brevo,dev,pros,agent_alone,0.25
+Capterra___6838590,Brevo,dev,cons,agent_alone,0.5
+Capterra___6838590,Brevo,dev,overall_experience,agent_alone,1.0
+Capterra___6838590,Brevo,dev,pros,agent_full,0.5
+Capterra___6838590,Brevo,dev,cons,agent_full,0.5
+Capterra___6838590,Brevo,dev,overall_experience,agent_full,1.0
+Capterra___6838590,Brevo,dev,pros,agent_averages,0.25
+Capterra___6838590,Brevo,dev,cons,agent_averages,0.0
+Capterra___6838590,Brevo,dev,overall_experience,agent_averages,1.0
+Capterra___6818241,Brevo,dev,pros,agent_alone,0.6666666666666666
+Capterra___6818241,Brevo,dev,cons,agent_alone,0.0
+Capterra___6818241,Brevo,dev,overall_experience,agent_alone,0.0
+Capterra___6818241,Brevo,dev,pros,agent_full,0.3333333333333333
+Capterra___6818241,Brevo,dev,cons,agent_full,0.5
+Capterra___6818241,Brevo,dev,overall_experience,agent_full,0.0
+Capterra___6818241,Brevo,dev,pros,agent_averages,1.0
+Capterra___6818241,Brevo,dev,cons,agent_averages,0.0
+Capterra___6818241,Brevo,dev,overall_experience,agent_averages,1.0
+Capterra___2149290,Namely,dev,pros,agent_alone,0.0
+Capterra___2149290,Namely,dev,cons,agent_alone,0.25
+Capterra___2149290,Namely,dev,overall_experience,agent_alone,0.0
+Capterra___2149290,Namely,dev,pros,agent_full,0.0
+Capterra___2149290,Namely,dev,cons,agent_full,0.0
+Capterra___2149290,Namely,dev,overall_experience,agent_full,0.0
+Capterra___2149290,Namely,dev,pros,agent_averages,0.0
+Capterra___2149290,Namely,dev,cons,agent_averages,0.0
+Capterra___2149290,Namely,dev,overall_experience,agent_averages,0.0
+Capterra___164392,Namely,dev,pros,agent_alone,0.25
+Capterra___164392,Namely,dev,cons,agent_alone,0.0
+Capterra___164392,Namely,dev,overall_experience,agent_alone,0.0
+Capterra___164392,Namely,dev,pros,agent_full,0.25
+Capterra___164392,Namely,dev,cons,agent_full,0.0
+Capterra___164392,Namely,dev,overall_experience,agent_full,0.0
+Capterra___164392,Namely,dev,pros,agent_averages,0.25
+Capterra___164392,Namely,dev,cons,agent_averages,0.0
+Capterra___164392,Namely,dev,overall_experience,agent_averages,0.0
+Capterra___4998942,Namely,dev,pros,agent_alone,0.5
+Capterra___4998942,Namely,dev,cons,agent_alone,0.0
+Capterra___4998942,Namely,dev,overall_experience,agent_alone,0.0
+Capterra___4998942,Namely,dev,pros,agent_full,0.5
+Capterra___4998942,Namely,dev,cons,agent_full,0.0
+Capterra___4998942,Namely,dev,overall_experience,agent_full,0.0
+Capterra___4998942,Namely,dev,pros,agent_averages,0.5
+Capterra___4998942,Namely,dev,cons,agent_averages,0.0
+Capterra___4998942,Namely,dev,overall_experience,agent_averages,0.0
+SoftwareAdvice___188365,Namely,dev,pros,agent_alone,0.25
+SoftwareAdvice___188365,Namely,dev,cons,agent_alone,0.0
+SoftwareAdvice___188365,Namely,dev,overall_experience,agent_alone,0.0
+SoftwareAdvice___188365,Namely,dev,pros,agent_full,0.5
+SoftwareAdvice___188365,Namely,dev,cons,agent_full,0.0
+SoftwareAdvice___188365,Namely,dev,overall_experience,agent_full,0.0
+SoftwareAdvice___188365,Namely,dev,pros,agent_averages,0.25
+SoftwareAdvice___188365,Namely,dev,cons,agent_averages,0.0
+SoftwareAdvice___188365,Namely,dev,overall_experience,agent_averages,0.0
+Capterra___1678383,Namely,dev,pros,agent_alone,0.75
+Capterra___1678383,Namely,dev,cons,agent_alone,0.0
+Capterra___1678383,Namely,dev,overall_experience,agent_alone,0.0
+Capterra___1678383,Namely,dev,pros,agent_full,0.75
+Capterra___1678383,Namely,dev,cons,agent_full,0.0
+Capterra___1678383,Namely,dev,overall_experience,agent_full,0.0
+Capterra___1678383,Namely,dev,pros,agent_averages,0.75
+Capterra___1678383,Namely,dev,cons,agent_averages,0.0
+Capterra___1678383,Namely,dev,overall_experience,agent_averages,1.0
+Capterra___1565192,Namely,dev,pros,agent_alone,1.0
+Capterra___1565192,Namely,dev,overall_experience,agent_alone,0.0
+Capterra___1565192,Namely,dev,pros,agent_full,1.0
+Capterra___1565192,Namely,dev,overall_experience,agent_full,0.0
+Capterra___1565192,Namely,dev,pros,agent_averages,0.5
+Capterra___1565192,Namely,dev,overall_experience,agent_averages,1.0
+Capterra___1669358,Namely,dev,pros,agent_alone,0.25
+Capterra___1669358,Namely,dev,cons,agent_alone,0.5
+Capterra___1669358,Namely,dev,overall_experience,agent_alone,1.0
+Capterra___1669358,Namely,dev,pros,agent_full,0.25
+Capterra___1669358,Namely,dev,cons,agent_full,0.25
+Capterra___1669358,Namely,dev,overall_experience,agent_full,0.0
+Capterra___1669358,Namely,dev,pros,agent_averages,0.25
+Capterra___1669358,Namely,dev,cons,agent_averages,0.0
+Capterra___1669358,Namely,dev,overall_experience,agent_averages,0.0
+Capterra___3258047,Namely,dev,pros,agent_alone,0.25
+Capterra___3258047,Namely,dev,cons,agent_alone,1.0
+Capterra___3258047,Namely,dev,overall_experience,agent_alone,0.0
+Capterra___3258047,Namely,dev,pros,agent_full,0.5
+Capterra___3258047,Namely,dev,cons,agent_full,1.0
+Capterra___3258047,Namely,dev,overall_experience,agent_full,0.0
+Capterra___3258047,Namely,dev,pros,agent_averages,0.5
+Capterra___3258047,Namely,dev,cons,agent_averages,1.0
+Capterra___3258047,Namely,dev,overall_experience,agent_averages,1.0
+SoftwareAdvice___549567,Namely,dev,pros,agent_alone,0.0
+SoftwareAdvice___549567,Namely,dev,cons,agent_alone,0.25
+SoftwareAdvice___549567,Namely,dev,overall_experience,agent_alone,0.0
+SoftwareAdvice___549567,Namely,dev,pros,agent_full,0.0
+SoftwareAdvice___549567,Namely,dev,cons,agent_full,0.0
+SoftwareAdvice___549567,Namely,dev,overall_experience,agent_full,0.0
+SoftwareAdvice___549567,Namely,dev,pros,agent_averages,0.0
+SoftwareAdvice___549567,Namely,dev,cons,agent_averages,0.5
+SoftwareAdvice___549567,Namely,dev,overall_experience,agent_averages,0.0
+GetApp___59675,Namely,dev,pros,agent_alone,0.5
+GetApp___59675,Namely,dev,cons,agent_alone,0.0
+GetApp___59675,Namely,dev,overall_experience,agent_alone,0.0
+GetApp___59675,Namely,dev,pros,agent_full,0.5
+GetApp___59675,Namely,dev,cons,agent_full,0.0
+GetApp___59675,Namely,dev,overall_experience,agent_full,0.0
+GetApp___59675,Namely,dev,pros,agent_averages,0.25
+GetApp___59675,Namely,dev,cons,agent_averages,0.0
+GetApp___59675,Namely,dev,overall_experience,agent_averages,0.0
+Capterra___2456076,Namely,dev,pros,agent_alone,0.6666666666666666
+Capterra___2456076,Namely,dev,cons,agent_alone,0.0
+Capterra___2456076,Namely,dev,overall_experience,agent_alone,0.0
+Capterra___2456076,Namely,dev,pros,agent_full,1.0
+Capterra___2456076,Namely,dev,cons,agent_full,1.0
+Capterra___2456076,Namely,dev,overall_experience,agent_full,1.0
+Capterra___2456076,Namely,dev,pros,agent_averages,1.0
+Capterra___2456076,Namely,dev,cons,agent_averages,0.0
+Capterra___2456076,Namely,dev,overall_experience,agent_averages,0.0
+Capterra___3505443,Namely,dev,pros,agent_alone,0.5
+Capterra___3505443,Namely,dev,overall_experience,agent_alone,0.0
+Capterra___3505443,Namely,dev,pros,agent_full,0.5
+Capterra___3505443,Namely,dev,overall_experience,agent_full,0.0
+Capterra___3505443,Namely,dev,pros,agent_averages,0.5
+Capterra___3505443,Namely,dev,overall_experience,agent_averages,0.0
+Capterra___2868417,Freshsales,test,pros,agent_alone,0.0
+Capterra___2868417,Freshsales,test,cons,agent_alone,0.0
+Capterra___2868417,Freshsales,test,overall_experience,agent_alone,0.0
+Capterra___2868417,Freshsales,test,pros,agent_full,0.0
+Capterra___2868417,Freshsales,test,cons,agent_full,0.0
+Capterra___2868417,Freshsales,test,overall_experience,agent_full,0.0
+Capterra___2868417,Freshsales,test,pros,agent_averages,0.0
+Capterra___2868417,Freshsales,test,cons,agent_averages,0.0
+Capterra___2868417,Freshsales,test,overall_experience,agent_averages,0.0
+Capterra___1298771,Freshsales,test,pros,agent_alone,0.25
+Capterra___1298771,Freshsales,test,cons,agent_alone,0.0
+Capterra___1298771,Freshsales,test,overall_experience,agent_alone,0.0
+Capterra___1298771,Freshsales,test,pros,agent_full,0.25
+Capterra___1298771,Freshsales,test,cons,agent_full,0.0
+Capterra___1298771,Freshsales,test,overall_experience,agent_full,0.0
+Capterra___1298771,Freshsales,test,pros,agent_averages,0.5
+Capterra___1298771,Freshsales,test,cons,agent_averages,0.6666666666666666
+Capterra___1298771,Freshsales,test,overall_experience,agent_averages,0.0
+Capterra___3875603,Freshsales,test,pros,agent_alone,0.5
+Capterra___3875603,Freshsales,test,cons,agent_alone,0.25
+Capterra___3875603,Freshsales,test,overall_experience,agent_alone,0.0
+Capterra___3875603,Freshsales,test,pros,agent_full,0.5
+Capterra___3875603,Freshsales,test,cons,agent_full,0.25
+Capterra___3875603,Freshsales,test,overall_experience,agent_full,0.0
+Capterra___3875603,Freshsales,test,pros,agent_averages,0.5
+Capterra___3875603,Freshsales,test,cons,agent_averages,0.25
+Capterra___3875603,Freshsales,test,overall_experience,agent_averages,0.0
+Capterra___1379542,Freshsales,test,pros,agent_alone,0.5
+Capterra___1379542,Freshsales,test,cons,agent_alone,0.0
+Capterra___1379542,Freshsales,test,overall_experience,agent_alone,1.0
+Capterra___1379542,Freshsales,test,pros,agent_full,0.75
+Capterra___1379542,Freshsales,test,cons,agent_full,0.0
+Capterra___1379542,Freshsales,test,overall_experience,agent_full,1.0
+Capterra___1379542,Freshsales,test,pros,agent_averages,0.25
+Capterra___1379542,Freshsales,test,cons,agent_averages,0.0
+Capterra___1379542,Freshsales,test,overall_experience,agent_averages,0.0
+Capterra___1283516,Freshsales,test,pros,agent_alone,0.5
+Capterra___1283516,Freshsales,test,overall_experience,agent_alone,0.0
+Capterra___1283516,Freshsales,test,pros,agent_full,1.0
+Capterra___1283516,Freshsales,test,overall_experience,agent_full,0.0
+Capterra___1283516,Freshsales,test,pros,agent_averages,0.0
+Capterra___1283516,Freshsales,test,overall_experience,agent_averages,0.0
+Capterra___1726667,Freshsales,test,pros,agent_alone,0.5
+Capterra___1726667,Freshsales,test,cons,agent_alone,1.0
+Capterra___1726667,Freshsales,test,overall_experience,agent_alone,0.0
+Capterra___1726667,Freshsales,test,pros,agent_full,1.0
+Capterra___1726667,Freshsales,test,cons,agent_full,0.0
+Capterra___1726667,Freshsales,test,overall_experience,agent_full,0.0
+Capterra___1726667,Freshsales,test,pros,agent_averages,0.5
+Capterra___1726667,Freshsales,test,cons,agent_averages,1.0
+Capterra___1726667,Freshsales,test,overall_experience,agent_averages,1.0
+Capterra___4319449,Freshsales,test,pros,agent_alone,0.25
+Capterra___4319449,Freshsales,test,cons,agent_alone,0.0
+Capterra___4319449,Freshsales,test,overall_experience,agent_alone,0.0
+Capterra___4319449,Freshsales,test,pros,agent_full,0.75
+Capterra___4319449,Freshsales,test,cons,agent_full,0.0
+Capterra___4319449,Freshsales,test,overall_experience,agent_full,0.0
+Capterra___4319449,Freshsales,test,pros,agent_averages,0.75
+Capterra___4319449,Freshsales,test,cons,agent_averages,0.0
+Capterra___4319449,Freshsales,test,overall_experience,agent_averages,0.0
+Capterra___1097706,Freshsales,test,pros,agent_alone,0.6666666666666666
+Capterra___1097706,Freshsales,test,cons,agent_alone,0.0
+Capterra___1097706,Freshsales,test,overall_experience,agent_alone,0.0
+Capterra___1097706,Freshsales,test,pros,agent_full,0.6666666666666666
+Capterra___1097706,Freshsales,test,cons,agent_full,0.0
+Capterra___1097706,Freshsales,test,overall_experience,agent_full,1.0
+Capterra___1097706,Freshsales,test,pros,agent_averages,0.6666666666666666
+Capterra___1097706,Freshsales,test,cons,agent_averages,0.0
+Capterra___1097706,Freshsales,test,overall_experience,agent_averages,0.0
+Capterra___1217255,Freshsales,test,pros,agent_alone,0.0
+Capterra___1217255,Freshsales,test,cons,agent_alone,0.0
+Capterra___1217255,Freshsales,test,overall_experience,agent_alone,0.0
+Capterra___1217255,Freshsales,test,pros,agent_full,0.0
+Capterra___1217255,Freshsales,test,cons,agent_full,0.0
+Capterra___1217255,Freshsales,test,overall_experience,agent_full,0.0
+Capterra___1217255,Freshsales,test,pros,agent_averages,0.3333333333333333
+Capterra___1217255,Freshsales,test,cons,agent_averages,0.0
+Capterra___1217255,Freshsales,test,overall_experience,agent_averages,0.0
+Capterra___4986074,Freshsales,test,pros,agent_alone,0.5
+Capterra___4986074,Freshsales,test,overall_experience,agent_alone,0.0
+Capterra___4986074,Freshsales,test,pros,agent_full,0.75
+Capterra___4986074,Freshsales,test,overall_experience,agent_full,0.0
+Capterra___4986074,Freshsales,test,pros,agent_averages,0.5
+Capterra___4986074,Freshsales,test,overall_experience,agent_averages,0.0
+Capterra___1253866,Freshsales,test,pros,agent_alone,0.3333333333333333
+Capterra___1253866,Freshsales,test,cons,agent_alone,1.0
+Capterra___1253866,Freshsales,test,overall_experience,agent_alone,1.0
+Capterra___1253866,Freshsales,test,pros,agent_full,0.3333333333333333
+Capterra___1253866,Freshsales,test,cons,agent_full,0.0
+Capterra___1253866,Freshsales,test,overall_experience,agent_full,0.0
+Capterra___1253866,Freshsales,test,pros,agent_averages,0.3333333333333333
+Capterra___1253866,Freshsales,test,cons,agent_averages,0.0
+Capterra___1253866,Freshsales,test,overall_experience,agent_averages,0.0
+Capterra___1450667,Freshsales,test,pros,agent_alone,0.5
+Capterra___1450667,Freshsales,test,cons,agent_alone,0.0
+Capterra___1450667,Freshsales,test,overall_experience,agent_alone,1.0
+Capterra___1450667,Freshsales,test,pros,agent_full,0.5
+Capterra___1450667,Freshsales,test,cons,agent_full,0.0
+Capterra___1450667,Freshsales,test,overall_experience,agent_full,1.0
+Capterra___1450667,Freshsales,test,pros,agent_averages,0.5
+Capterra___1450667,Freshsales,test,cons,agent_averages,0.0
+Capterra___1450667,Freshsales,test,overall_experience,agent_averages,1.0
+Capterra___4177313,Zoho CRM,test,pros,agent_alone,0.5
+Capterra___4177313,Zoho CRM,test,overall_experience,agent_alone,0.0
+Capterra___4177313,Zoho CRM,test,pros,agent_full,0.5
+Capterra___4177313,Zoho CRM,test,overall_experience,agent_full,0.0
+Capterra___4177313,Zoho CRM,test,pros,agent_averages,0.5
+Capterra___4177313,Zoho CRM,test,overall_experience,agent_averages,0.0
+Capterra___5021665,Zoho CRM,test,pros,agent_alone,0.0
+Capterra___5021665,Zoho CRM,test,overall_experience,agent_alone,0.0
+Capterra___5021665,Zoho CRM,test,pros,agent_full,0.5
+Capterra___5021665,Zoho CRM,test,overall_experience,agent_full,1.0
+Capterra___5021665,Zoho CRM,test,pros,agent_averages,0.5
+Capterra___5021665,Zoho CRM,test,overall_experience,agent_averages,0.0
+Capterra___5087270,Zoho CRM,test,pros,agent_alone,0.5
+Capterra___5087270,Zoho CRM,test,cons,agent_alone,0.0
+Capterra___5087270,Zoho CRM,test,overall_experience,agent_alone,0.0
+Capterra___5087270,Zoho CRM,test,pros,agent_full,0.0
+Capterra___5087270,Zoho CRM,test,cons,agent_full,0.0
+Capterra___5087270,Zoho CRM,test,overall_experience,agent_full,0.0
+Capterra___5087270,Zoho CRM,test,pros,agent_averages,0.5
+Capterra___5087270,Zoho CRM,test,cons,agent_averages,0.0
+Capterra___5087270,Zoho CRM,test,overall_experience,agent_averages,0.0
+Capterra___6235245,Zoho CRM,test,pros,agent_alone,0.3333333333333333
+Capterra___6235245,Zoho CRM,test,cons,agent_alone,0.0
+Capterra___6235245,Zoho CRM,test,overall_experience,agent_alone,0.0
+Capterra___6235245,Zoho CRM,test,pros,agent_full,0.3333333333333333
+Capterra___6235245,Zoho CRM,test,cons,agent_full,1.0
+Capterra___6235245,Zoho CRM,test,overall_experience,agent_full,0.0
+Capterra___6235245,Zoho CRM,test,pros,agent_averages,0.3333333333333333
+Capterra___6235245,Zoho CRM,test,cons,agent_averages,0.0
+Capterra___6235245,Zoho CRM,test,overall_experience,agent_averages,0.0
+Capterra___4677700,Zoho CRM,test,pros,agent_alone,0.0
+Capterra___4677700,Zoho CRM,test,cons,agent_alone,0.3333333333333333
+Capterra___4677700,Zoho CRM,test,overall_experience,agent_alone,0.0
+Capterra___4677700,Zoho CRM,test,pros,agent_full,0.0
+Capterra___4677700,Zoho CRM,test,cons,agent_full,0.0
+Capterra___4677700,Zoho CRM,test,overall_experience,agent_full,0.0
+Capterra___4677700,Zoho CRM,test,pros,agent_averages,0.0
+Capterra___4677700,Zoho CRM,test,cons,agent_averages,0.0
+Capterra___4677700,Zoho CRM,test,overall_experience,agent_averages,0.0
+Capterra___6457274,Zoho CRM,test,pros,agent_alone,0.0
+Capterra___6457274,Zoho CRM,test,cons,agent_alone,0.0
+Capterra___6457274,Zoho CRM,test,overall_experience,agent_alone,0.0
+Capterra___6457274,Zoho CRM,test,pros,agent_full,0.0
+Capterra___6457274,Zoho CRM,test,cons,agent_full,0.0
+Capterra___6457274,Zoho CRM,test,overall_experience,agent_full,0.0
+Capterra___6457274,Zoho CRM,test,pros,agent_averages,0.0
+Capterra___6457274,Zoho CRM,test,cons,agent_averages,0.0
+Capterra___6457274,Zoho CRM,test,overall_experience,agent_averages,0.0
+Capterra___6548669,Zoho CRM,test,pros,agent_alone,0.25
+Capterra___6548669,Zoho CRM,test,cons,agent_alone,0.3333333333333333
+Capterra___6548669,Zoho CRM,test,overall_experience,agent_alone,0.0
+Capterra___6548669,Zoho CRM,test,pros,agent_full,0.75
+Capterra___6548669,Zoho CRM,test,cons,agent_full,1.0
+Capterra___6548669,Zoho CRM,test,overall_experience,agent_full,0.0
+Capterra___6548669,Zoho CRM,test,pros,agent_averages,0.75
+Capterra___6548669,Zoho CRM,test,cons,agent_averages,0.3333333333333333
+Capterra___6548669,Zoho CRM,test,overall_experience,agent_averages,0.0
+Capterra___6545115,Zoho CRM,test,pros,agent_alone,1.0
+Capterra___6545115,Zoho CRM,test,cons,agent_alone,0.0
+Capterra___6545115,Zoho CRM,test,overall_experience,agent_alone,0.0
+Capterra___6545115,Zoho CRM,test,pros,agent_full,1.0
+Capterra___6545115,Zoho CRM,test,cons,agent_full,0.0
+Capterra___6545115,Zoho CRM,test,overall_experience,agent_full,0.0
+Capterra___6545115,Zoho CRM,test,pros,agent_averages,0.0
+Capterra___6545115,Zoho CRM,test,cons,agent_averages,0.3333333333333333
+Capterra___6545115,Zoho CRM,test,overall_experience,agent_averages,1.0
+Capterra___6679890,Zoho CRM,test,pros,agent_alone,1.0
+Capterra___6679890,Zoho CRM,test,cons,agent_alone,0.5
+Capterra___6679890,Zoho CRM,test,overall_experience,agent_alone,0.0
+Capterra___6679890,Zoho CRM,test,pros,agent_full,0.5
+Capterra___6679890,Zoho CRM,test,cons,agent_full,0.25
+Capterra___6679890,Zoho CRM,test,overall_experience,agent_full,0.0
+Capterra___6679890,Zoho CRM,test,pros,agent_averages,1.0
+Capterra___6679890,Zoho CRM,test,cons,agent_averages,0.0
+Capterra___6679890,Zoho CRM,test,overall_experience,agent_averages,0.0
+Capterra___7118584,Zoho CRM,test,pros,agent_alone,0.5
+Capterra___7118584,Zoho CRM,test,cons,agent_alone,0.6666666666666666
+Capterra___7118584,Zoho CRM,test,overall_experience,agent_alone,0.0
+Capterra___7118584,Zoho CRM,test,pros,agent_full,0.0
+Capterra___7118584,Zoho CRM,test,cons,agent_full,1.0
+Capterra___7118584,Zoho CRM,test,overall_experience,agent_full,0.0
+Capterra___7118584,Zoho CRM,test,pros,agent_averages,0.75
+Capterra___7118584,Zoho CRM,test,cons,agent_averages,1.0
+Capterra___7118584,Zoho CRM,test,overall_experience,agent_averages,0.0
+Capterra___6572239,Zoho CRM,test,pros,agent_alone,0.0
+Capterra___6572239,Zoho CRM,test,cons,agent_alone,0.0
+Capterra___6572239,Zoho CRM,test,overall_experience,agent_alone,0.0
+Capterra___6572239,Zoho CRM,test,pros,agent_full,0.25
+Capterra___6572239,Zoho CRM,test,cons,agent_full,0.3333333333333333
+Capterra___6572239,Zoho CRM,test,overall_experience,agent_full,0.0
+Capterra___6572239,Zoho CRM,test,pros,agent_averages,0.25
+Capterra___6572239,Zoho CRM,test,cons,agent_averages,0.0
+Capterra___6572239,Zoho CRM,test,overall_experience,agent_averages,0.0
+Capterra___6471700,Zoho CRM,test,pros,agent_alone,0.5
+Capterra___6471700,Zoho CRM,test,overall_experience,agent_alone,0.0
+Capterra___6471700,Zoho CRM,test,pros,agent_full,0.0
+Capterra___6471700,Zoho CRM,test,overall_experience,agent_full,0.0
+Capterra___6471700,Zoho CRM,test,pros,agent_averages,0.0
+Capterra___6471700,Zoho CRM,test,overall_experience,agent_averages,0.0
+Capterra___2562103,Looker,test,pros,agent_alone,0.75
+Capterra___2562103,Looker,test,overall_experience,agent_alone,0.0
+Capterra___2562103,Looker,test,pros,agent_full,0.5
+Capterra___2562103,Looker,test,overall_experience,agent_full,0.0
+Capterra___2562103,Looker,test,pros,agent_averages,0.25
+Capterra___2562103,Looker,test,overall_experience,agent_averages,0.0
+Capterra___4710832,Looker,test,pros,agent_alone,0.0
+Capterra___4710832,Looker,test,cons,agent_alone,0.5
+Capterra___4710832,Looker,test,overall_experience,agent_alone,0.0
+Capterra___4710832,Looker,test,pros,agent_full,0.0
+Capterra___4710832,Looker,test,cons,agent_full,0.25
+Capterra___4710832,Looker,test,overall_experience,agent_full,0.0
+Capterra___4710832,Looker,test,pros,agent_averages,0.0
+Capterra___4710832,Looker,test,cons,agent_averages,0.0
+Capterra___4710832,Looker,test,overall_experience,agent_averages,0.0
+Capterra___4969969,Looker,test,pros,agent_alone,0.3333333333333333
+Capterra___4969969,Looker,test,overall_experience,agent_alone,0.0
+Capterra___4969969,Looker,test,pros,agent_full,0.6666666666666666
+Capterra___4969969,Looker,test,overall_experience,agent_full,0.0
+Capterra___4969969,Looker,test,pros,agent_averages,0.3333333333333333
+Capterra___4969969,Looker,test,overall_experience,agent_averages,0.0
+Capterra___6622237,Looker,test,pros,agent_alone,0.5
+Capterra___6622237,Looker,test,cons,agent_alone,0.5
+Capterra___6622237,Looker,test,overall_experience,agent_alone,1.0
+Capterra___6622237,Looker,test,pros,agent_full,1.0
+Capterra___6622237,Looker,test,cons,agent_full,0.5
+Capterra___6622237,Looker,test,overall_experience,agent_full,1.0
+Capterra___6622237,Looker,test,pros,agent_averages,1.0
+Capterra___6622237,Looker,test,cons,agent_averages,0.5
+Capterra___6622237,Looker,test,overall_experience,agent_averages,0.0
+Capterra___6380397,Looker,test,pros,agent_alone,0.25
+Capterra___6380397,Looker,test,cons,agent_alone,1.0
+Capterra___6380397,Looker,test,overall_experience,agent_alone,0.0
+Capterra___6380397,Looker,test,pros,agent_full,0.25
+Capterra___6380397,Looker,test,cons,agent_full,1.0
+Capterra___6380397,Looker,test,overall_experience,agent_full,0.0
+Capterra___6380397,Looker,test,pros,agent_averages,0.5
+Capterra___6380397,Looker,test,cons,agent_averages,0.0
+Capterra___6380397,Looker,test,overall_experience,agent_averages,0.0
+Capterra___1511339,Looker,test,pros,agent_alone,0.5
+Capterra___1511339,Looker,test,cons,agent_alone,0.0
+Capterra___1511339,Looker,test,overall_experience,agent_alone,0.0
+Capterra___1511339,Looker,test,pros,agent_full,1.0
+Capterra___1511339,Looker,test,cons,agent_full,0.6666666666666666
+Capterra___1511339,Looker,test,overall_experience,agent_full,0.0
+Capterra___1511339,Looker,test,pros,agent_averages,0.75
+Capterra___1511339,Looker,test,cons,agent_averages,1.0
+Capterra___1511339,Looker,test,overall_experience,agent_averages,0.0
+Capterra___7085107,Looker,test,pros,agent_alone,0.25
+Capterra___7085107,Looker,test,cons,agent_alone,0.0
+Capterra___7085107,Looker,test,overall_experience,agent_alone,0.0
+Capterra___7085107,Looker,test,pros,agent_full,0.0
+Capterra___7085107,Looker,test,cons,agent_full,0.0
+Capterra___7085107,Looker,test,overall_experience,agent_full,0.0
+Capterra___7085107,Looker,test,pros,agent_averages,0.25
+Capterra___7085107,Looker,test,cons,agent_averages,0.0
+Capterra___7085107,Looker,test,overall_experience,agent_averages,1.0
+Capterra___292531,Looker,test,pros,agent_alone,0.5
+Capterra___292531,Looker,test,cons,agent_alone,0.0
+Capterra___292531,Looker,test,overall_experience,agent_alone,0.0
+Capterra___292531,Looker,test,pros,agent_full,0.5
+Capterra___292531,Looker,test,cons,agent_full,0.0
+Capterra___292531,Looker,test,overall_experience,agent_full,0.0
+Capterra___292531,Looker,test,pros,agent_averages,0.75
+Capterra___292531,Looker,test,cons,agent_averages,0.0
+Capterra___292531,Looker,test,overall_experience,agent_averages,0.0
+Capterra___4615803,Looker,test,pros,agent_alone,0.5
+Capterra___4615803,Looker,test,cons,agent_alone,0.0
+Capterra___4615803,Looker,test,overall_experience,agent_alone,0.0
+Capterra___4615803,Looker,test,pros,agent_full,0.75
+Capterra___4615803,Looker,test,cons,agent_full,0.0
+Capterra___4615803,Looker,test,overall_experience,agent_full,0.0
+Capterra___4615803,Looker,test,pros,agent_averages,0.75
+Capterra___4615803,Looker,test,cons,agent_averages,0.0
+Capterra___4615803,Looker,test,overall_experience,agent_averages,1.0
+Capterra___1461795,Looker,test,pros,agent_alone,0.0
+Capterra___1461795,Looker,test,cons,agent_alone,0.0
+Capterra___1461795,Looker,test,overall_experience,agent_alone,0.0
+Capterra___1461795,Looker,test,pros,agent_full,0.0
+Capterra___1461795,Looker,test,cons,agent_full,0.0
+Capterra___1461795,Looker,test,overall_experience,agent_full,0.0
+Capterra___1461795,Looker,test,pros,agent_averages,0.0
+Capterra___1461795,Looker,test,cons,agent_averages,0.0
+Capterra___1461795,Looker,test,overall_experience,agent_averages,0.0
+Capterra___1877504,Looker,test,pros,agent_alone,0.5
+Capterra___1877504,Looker,test,cons,agent_alone,1.0
+Capterra___1877504,Looker,test,overall_experience,agent_alone,0.0
+Capterra___1877504,Looker,test,pros,agent_full,0.5
+Capterra___1877504,Looker,test,cons,agent_full,1.0
+Capterra___1877504,Looker,test,overall_experience,agent_full,0.0
+Capterra___1877504,Looker,test,pros,agent_averages,0.0
+Capterra___1877504,Looker,test,cons,agent_averages,0.5
+Capterra___1877504,Looker,test,overall_experience,agent_averages,0.0
+Capterra___2686761,Looker,test,pros,agent_alone,0.5
+Capterra___2686761,Looker,test,cons,agent_alone,1.0
+Capterra___2686761,Looker,test,overall_experience,agent_alone,1.0
+Capterra___2686761,Looker,test,pros,agent_full,0.5
+Capterra___2686761,Looker,test,cons,agent_full,0.0
+Capterra___2686761,Looker,test,overall_experience,agent_full,0.0
+Capterra___2686761,Looker,test,pros,agent_averages,0.5
+Capterra___2686761,Looker,test,cons,agent_averages,0.0
+Capterra___2686761,Looker,test,overall_experience,agent_averages,0.0
+Capterra___4340159,Basecamp,test,pros,agent_alone,0.3333333333333333
+Capterra___4340159,Basecamp,test,cons,agent_alone,0.0
+Capterra___4340159,Basecamp,test,overall_experience,agent_alone,0.0
+Capterra___4340159,Basecamp,test,pros,agent_full,0.3333333333333333
+Capterra___4340159,Basecamp,test,cons,agent_full,0.0
+Capterra___4340159,Basecamp,test,overall_experience,agent_full,0.0
+Capterra___4340159,Basecamp,test,pros,agent_averages,0.3333333333333333
+Capterra___4340159,Basecamp,test,cons,agent_averages,0.0
+Capterra___4340159,Basecamp,test,overall_experience,agent_averages,0.0
+Capterra___6049570,Basecamp,test,pros,agent_alone,0.75
+Capterra___6049570,Basecamp,test,cons,agent_alone,0.0
+Capterra___6049570,Basecamp,test,overall_experience,agent_alone,0.0
+Capterra___6049570,Basecamp,test,pros,agent_full,0.75
+Capterra___6049570,Basecamp,test,cons,agent_full,0.0
+Capterra___6049570,Basecamp,test,overall_experience,agent_full,0.0
+Capterra___6049570,Basecamp,test,pros,agent_averages,0.75
+Capterra___6049570,Basecamp,test,cons,agent_averages,0.0
+Capterra___6049570,Basecamp,test,overall_experience,agent_averages,0.0
+Capterra___6843507,Basecamp,test,pros,agent_alone,0.6666666666666666
+Capterra___6843507,Basecamp,test,cons,agent_alone,0.0
+Capterra___6843507,Basecamp,test,overall_experience,agent_alone,0.0
+Capterra___6843507,Basecamp,test,pros,agent_full,0.6666666666666666
+Capterra___6843507,Basecamp,test,cons,agent_full,0.0
+Capterra___6843507,Basecamp,test,overall_experience,agent_full,0.0
+Capterra___6843507,Basecamp,test,pros,agent_averages,0.6666666666666666
+Capterra___6843507,Basecamp,test,cons,agent_averages,0.0
+Capterra___6843507,Basecamp,test,overall_experience,agent_averages,1.0
+Capterra___6077561,Basecamp,test,pros,agent_alone,0.3333333333333333
+Capterra___6077561,Basecamp,test,overall_experience,agent_alone,0.0
+Capterra___6077561,Basecamp,test,pros,agent_full,1.0
+Capterra___6077561,Basecamp,test,overall_experience,agent_full,0.0
+Capterra___6077561,Basecamp,test,pros,agent_averages,0.6666666666666666
+Capterra___6077561,Basecamp,test,overall_experience,agent_averages,1.0
+Capterra___4975169,Basecamp,test,pros,agent_alone,0.3333333333333333
+Capterra___4975169,Basecamp,test,cons,agent_alone,0.0
+Capterra___4975169,Basecamp,test,overall_experience,agent_alone,0.0
+Capterra___4975169,Basecamp,test,pros,agent_full,0.6666666666666666
+Capterra___4975169,Basecamp,test,cons,agent_full,0.0
+Capterra___4975169,Basecamp,test,overall_experience,agent_full,0.0
+Capterra___4975169,Basecamp,test,pros,agent_averages,1.0
+Capterra___4975169,Basecamp,test,cons,agent_averages,0.0
+Capterra___4975169,Basecamp,test,overall_experience,agent_averages,0.0
+Capterra___6670989,Basecamp,test,pros,agent_alone,0.25
+Capterra___6670989,Basecamp,test,overall_experience,agent_alone,0.0
+Capterra___6670989,Basecamp,test,pros,agent_full,0.25
+Capterra___6670989,Basecamp,test,overall_experience,agent_full,0.0
+Capterra___6670989,Basecamp,test,pros,agent_averages,0.25
+Capterra___6670989,Basecamp,test,overall_experience,agent_averages,0.0
+Capterra___4179824,Basecamp,test,pros,agent_alone,0.0
+Capterra___4179824,Basecamp,test,cons,agent_alone,0.0
+Capterra___4179824,Basecamp,test,overall_experience,agent_alone,0.0
+Capterra___4179824,Basecamp,test,pros,agent_full,0.25
+Capterra___4179824,Basecamp,test,cons,agent_full,0.0
+Capterra___4179824,Basecamp,test,overall_experience,agent_full,0.0
+Capterra___4179824,Basecamp,test,pros,agent_averages,0.0
+Capterra___4179824,Basecamp,test,cons,agent_averages,0.0
+Capterra___4179824,Basecamp,test,overall_experience,agent_averages,0.0
+Capterra___4956925,Basecamp,test,pros,agent_alone,0.5
+Capterra___4956925,Basecamp,test,overall_experience,agent_alone,0.0
+Capterra___4956925,Basecamp,test,pros,agent_full,0.5
+Capterra___4956925,Basecamp,test,overall_experience,agent_full,0.0
+Capterra___4956925,Basecamp,test,pros,agent_averages,0.5
+Capterra___4956925,Basecamp,test,overall_experience,agent_averages,0.0
+Capterra___4263409,Basecamp,test,pros,agent_alone,0.5
+Capterra___4263409,Basecamp,test,cons,agent_alone,0.0
+Capterra___4263409,Basecamp,test,overall_experience,agent_alone,0.0
+Capterra___4263409,Basecamp,test,pros,agent_full,0.5
+Capterra___4263409,Basecamp,test,cons,agent_full,0.0
+Capterra___4263409,Basecamp,test,overall_experience,agent_full,0.0
+Capterra___4263409,Basecamp,test,pros,agent_averages,0.5
+Capterra___4263409,Basecamp,test,cons,agent_averages,0.0
+Capterra___4263409,Basecamp,test,overall_experience,agent_averages,0.0
+Capterra___4952725,Basecamp,test,pros,agent_alone,0.25
+Capterra___4952725,Basecamp,test,cons,agent_alone,1.0
+Capterra___4952725,Basecamp,test,overall_experience,agent_alone,1.0
+Capterra___4952725,Basecamp,test,pros,agent_full,0.5
+Capterra___4952725,Basecamp,test,cons,agent_full,1.0
+Capterra___4952725,Basecamp,test,overall_experience,agent_full,1.0
+Capterra___4952725,Basecamp,test,pros,agent_averages,0.5
+Capterra___4952725,Basecamp,test,cons,agent_averages,0.5
+Capterra___4952725,Basecamp,test,overall_experience,agent_averages,1.0
+Capterra___6718205,Basecamp,test,pros,agent_alone,0.25
+Capterra___6718205,Basecamp,test,cons,agent_alone,0.0
+Capterra___6718205,Basecamp,test,overall_experience,agent_alone,0.0
+Capterra___6718205,Basecamp,test,pros,agent_full,0.25
+Capterra___6718205,Basecamp,test,cons,agent_full,1.0
+Capterra___6718205,Basecamp,test,overall_experience,agent_full,0.0
+Capterra___6718205,Basecamp,test,pros,agent_averages,0.25
+Capterra___6718205,Basecamp,test,cons,agent_averages,1.0
+Capterra___6718205,Basecamp,test,overall_experience,agent_averages,1.0
+Capterra___4281780,Basecamp,test,pros,agent_alone,0.5
+Capterra___4281780,Basecamp,test,cons,agent_alone,0.0
+Capterra___4281780,Basecamp,test,overall_experience,agent_alone,0.0
+Capterra___4281780,Basecamp,test,pros,agent_full,0.5
+Capterra___4281780,Basecamp,test,cons,agent_full,0.5
+Capterra___4281780,Basecamp,test,overall_experience,agent_full,0.0
+Capterra___4281780,Basecamp,test,pros,agent_averages,0.5
+Capterra___4281780,Basecamp,test,cons,agent_averages,0.0
+Capterra___4281780,Basecamp,test,overall_experience,agent_averages,0.0
+Capterra___2175203,LiveAgent,test,pros,agent_alone,0.25
+Capterra___2175203,LiveAgent,test,cons,agent_alone,0.0
+Capterra___2175203,LiveAgent,test,overall_experience,agent_alone,1.0
+Capterra___2175203,LiveAgent,test,pros,agent_full,0.25
+Capterra___2175203,LiveAgent,test,cons,agent_full,0.0
+Capterra___2175203,LiveAgent,test,overall_experience,agent_full,1.0
+Capterra___2175203,LiveAgent,test,pros,agent_averages,0.5
+Capterra___2175203,LiveAgent,test,cons,agent_averages,0.0
+Capterra___2175203,LiveAgent,test,overall_experience,agent_averages,1.0
+Capterra___3807524,LiveAgent,test,pros,agent_alone,0.0
+Capterra___3807524,LiveAgent,test,cons,agent_alone,0.0
+Capterra___3807524,LiveAgent,test,overall_experience,agent_alone,0.0
+Capterra___3807524,LiveAgent,test,pros,agent_full,0.0
+Capterra___3807524,LiveAgent,test,cons,agent_full,0.0
+Capterra___3807524,LiveAgent,test,overall_experience,agent_full,0.0
+Capterra___3807524,LiveAgent,test,pros,agent_averages,0.0
+Capterra___3807524,LiveAgent,test,cons,agent_averages,0.0
+Capterra___3807524,LiveAgent,test,overall_experience,agent_averages,0.0
+Capterra___4572303,LiveAgent,test,pros,agent_alone,0.25
+Capterra___4572303,LiveAgent,test,cons,agent_alone,0.0
+Capterra___4572303,LiveAgent,test,overall_experience,agent_alone,0.0
+Capterra___4572303,LiveAgent,test,pros,agent_full,0.25
+Capterra___4572303,LiveAgent,test,cons,agent_full,0.0
+Capterra___4572303,LiveAgent,test,overall_experience,agent_full,0.0
+Capterra___4572303,LiveAgent,test,pros,agent_averages,0.25
+Capterra___4572303,LiveAgent,test,cons,agent_averages,0.0
+Capterra___4572303,LiveAgent,test,overall_experience,agent_averages,1.0
+Capterra___4461779,LiveAgent,test,pros,agent_alone,0.25
+Capterra___4461779,LiveAgent,test,cons,agent_alone,0.0
+Capterra___4461779,LiveAgent,test,overall_experience,agent_alone,0.0
+Capterra___4461779,LiveAgent,test,pros,agent_full,0.25
+Capterra___4461779,LiveAgent,test,cons,agent_full,0.0
+Capterra___4461779,LiveAgent,test,overall_experience,agent_full,0.0
+Capterra___4461779,LiveAgent,test,pros,agent_averages,0.25
+Capterra___4461779,LiveAgent,test,cons,agent_averages,0.0
+Capterra___4461779,LiveAgent,test,overall_experience,agent_averages,0.0
+Capterra___4990464,LiveAgent,test,pros,agent_alone,0.5
+Capterra___4990464,LiveAgent,test,cons,agent_alone,0.0
+Capterra___4990464,LiveAgent,test,overall_experience,agent_alone,0.0
+Capterra___4990464,LiveAgent,test,pros,agent_full,0.0
+Capterra___4990464,LiveAgent,test,cons,agent_full,0.0
+Capterra___4990464,LiveAgent,test,overall_experience,agent_full,0.0
+Capterra___4990464,LiveAgent,test,pros,agent_averages,1.25
+Capterra___4990464,LiveAgent,test,cons,agent_averages,1.0
+Capterra___4990464,LiveAgent,test,overall_experience,agent_averages,0.0
+Capterra___4125837,LiveAgent,test,pros,agent_alone,0.5
+Capterra___4125837,LiveAgent,test,cons,agent_alone,0.0
+Capterra___4125837,LiveAgent,test,overall_experience,agent_alone,0.0
+Capterra___4125837,LiveAgent,test,pros,agent_full,0.5
+Capterra___4125837,LiveAgent,test,cons,agent_full,0.0
+Capterra___4125837,LiveAgent,test,overall_experience,agent_full,0.0
+Capterra___4125837,LiveAgent,test,pros,agent_averages,0.5
+Capterra___4125837,LiveAgent,test,cons,agent_averages,0.0
+Capterra___4125837,LiveAgent,test,overall_experience,agent_averages,0.0
+Capterra___3094177,LiveAgent,test,pros,agent_alone,0.25
+Capterra___3094177,LiveAgent,test,overall_experience,agent_alone,0.0
+Capterra___3094177,LiveAgent,test,pros,agent_full,0.5
+Capterra___3094177,LiveAgent,test,overall_experience,agent_full,0.0
+Capterra___3094177,LiveAgent,test,pros,agent_averages,0.5
+Capterra___3094177,LiveAgent,test,overall_experience,agent_averages,0.0
+Capterra___6860047,LiveAgent,test,pros,agent_alone,0.25
+Capterra___6860047,LiveAgent,test,cons,agent_alone,1.0
+Capterra___6860047,LiveAgent,test,overall_experience,agent_alone,0.0
+Capterra___6860047,LiveAgent,test,pros,agent_full,0.25
+Capterra___6860047,LiveAgent,test,cons,agent_full,0.0
+Capterra___6860047,LiveAgent,test,overall_experience,agent_full,0.0
+Capterra___6860047,LiveAgent,test,pros,agent_averages,0.0
+Capterra___6860047,LiveAgent,test,cons,agent_averages,1.0
+Capterra___6860047,LiveAgent,test,overall_experience,agent_averages,1.0
+Capterra___2563233,LiveAgent,test,pros,agent_alone,0.5
+Capterra___2563233,LiveAgent,test,cons,agent_alone,1.0
+Capterra___2563233,LiveAgent,test,overall_experience,agent_alone,0.0
+Capterra___2563233,LiveAgent,test,pros,agent_full,0.75
+Capterra___2563233,LiveAgent,test,cons,agent_full,1.0
+Capterra___2563233,LiveAgent,test,overall_experience,agent_full,1.0
+Capterra___2563233,LiveAgent,test,pros,agent_averages,0.75
+Capterra___2563233,LiveAgent,test,cons,agent_averages,1.0
+Capterra___2563233,LiveAgent,test,overall_experience,agent_averages,1.0
+Capterra___6080120,LiveAgent,test,pros,agent_alone,0.0
+Capterra___6080120,LiveAgent,test,cons,agent_alone,1.0
+Capterra___6080120,LiveAgent,test,overall_experience,agent_alone,0.0
+Capterra___6080120,LiveAgent,test,pros,agent_full,0.0
+Capterra___6080120,LiveAgent,test,cons,agent_full,0.5
+Capterra___6080120,LiveAgent,test,overall_experience,agent_full,0.0
+Capterra___6080120,LiveAgent,test,pros,agent_averages,0.0
+Capterra___6080120,LiveAgent,test,cons,agent_averages,0.0
+Capterra___6080120,LiveAgent,test,overall_experience,agent_averages,0.0
+Capterra___6749594,LiveAgent,test,pros,agent_alone,0.3333333333333333
+Capterra___6749594,LiveAgent,test,cons,agent_alone,0.0
+Capterra___6749594,LiveAgent,test,overall_experience,agent_alone,0.0
+Capterra___6749594,LiveAgent,test,pros,agent_full,1.0
+Capterra___6749594,LiveAgent,test,cons,agent_full,0.0
+Capterra___6749594,LiveAgent,test,overall_experience,agent_full,0.0
+Capterra___6749594,LiveAgent,test,pros,agent_averages,0.3333333333333333
+Capterra___6749594,LiveAgent,test,cons,agent_averages,0.0
+Capterra___6749594,LiveAgent,test,overall_experience,agent_averages,0.0
+Capterra___5000337,LiveAgent,test,pros,agent_alone,0.25
+Capterra___5000337,LiveAgent,test,overall_experience,agent_alone,0.0
+Capterra___5000337,LiveAgent,test,pros,agent_full,0.25
+Capterra___5000337,LiveAgent,test,overall_experience,agent_full,0.0
+Capterra___5000337,LiveAgent,test,pros,agent_averages,0.25
+Capterra___5000337,LiveAgent,test,overall_experience,agent_averages,0.0
+Capterra___4612825,Zoho Desk,test,pros,agent_alone,0.5
+Capterra___4612825,Zoho Desk,test,cons,agent_alone,0.0
+Capterra___4612825,Zoho Desk,test,overall_experience,agent_alone,0.0
+Capterra___4612825,Zoho Desk,test,pros,agent_full,0.75
+Capterra___4612825,Zoho Desk,test,cons,agent_full,0.0
+Capterra___4612825,Zoho Desk,test,overall_experience,agent_full,0.0
+Capterra___4612825,Zoho Desk,test,pros,agent_averages,0.5
+Capterra___4612825,Zoho Desk,test,cons,agent_averages,0.0
+Capterra___4612825,Zoho Desk,test,overall_experience,agent_averages,0.0
+Capterra___3778492,Zoho Desk,test,pros,agent_alone,0.0
+Capterra___3778492,Zoho Desk,test,cons,agent_alone,0.0
+Capterra___3778492,Zoho Desk,test,overall_experience,agent_alone,0.0
+Capterra___3778492,Zoho Desk,test,pros,agent_full,0.3333333333333333
+Capterra___3778492,Zoho Desk,test,cons,agent_full,0.0
+Capterra___3778492,Zoho Desk,test,overall_experience,agent_full,0.0
+Capterra___3778492,Zoho Desk,test,pros,agent_averages,0.0
+Capterra___3778492,Zoho Desk,test,cons,agent_averages,0.0
+Capterra___3778492,Zoho Desk,test,overall_experience,agent_averages,0.0
+Capterra___428734,Zoho Desk,test,pros,agent_alone,0.5
+Capterra___428734,Zoho Desk,test,cons,agent_alone,0.0
+Capterra___428734,Zoho Desk,test,overall_experience,agent_alone,0.0
+Capterra___428734,Zoho Desk,test,pros,agent_full,0.25
+Capterra___428734,Zoho Desk,test,cons,agent_full,0.0
+Capterra___428734,Zoho Desk,test,overall_experience,agent_full,1.0
+Capterra___428734,Zoho Desk,test,pros,agent_averages,0.5
+Capterra___428734,Zoho Desk,test,cons,agent_averages,0.0
+Capterra___428734,Zoho Desk,test,overall_experience,agent_averages,1.0
+Capterra___1102944,Zoho Desk,test,pros,agent_alone,0.0
+Capterra___1102944,Zoho Desk,test,cons,agent_alone,0.0
+Capterra___1102944,Zoho Desk,test,overall_experience,agent_alone,0.0
+Capterra___1102944,Zoho Desk,test,pros,agent_full,0.5
+Capterra___1102944,Zoho Desk,test,cons,agent_full,0.0
+Capterra___1102944,Zoho Desk,test,overall_experience,agent_full,1.0
+Capterra___1102944,Zoho Desk,test,pros,agent_averages,0.25
+Capterra___1102944,Zoho Desk,test,cons,agent_averages,0.0
+Capterra___1102944,Zoho Desk,test,overall_experience,agent_averages,1.0
+Capterra___1162843,Zoho Desk,test,pros,agent_alone,0.0
+Capterra___1162843,Zoho Desk,test,overall_experience,agent_alone,0.0
+Capterra___1162843,Zoho Desk,test,pros,agent_full,0.0
+Capterra___1162843,Zoho Desk,test,overall_experience,agent_full,0.0
+Capterra___1162843,Zoho Desk,test,pros,agent_averages,0.0
+Capterra___1162843,Zoho Desk,test,overall_experience,agent_averages,0.0
+Capterra___3031001,Zoho Desk,test,pros,agent_alone,0.0
+Capterra___3031001,Zoho Desk,test,cons,agent_alone,0.0
+Capterra___3031001,Zoho Desk,test,overall_experience,agent_alone,0.0
+Capterra___3031001,Zoho Desk,test,pros,agent_full,0.0
+Capterra___3031001,Zoho Desk,test,cons,agent_full,0.0
+Capterra___3031001,Zoho Desk,test,overall_experience,agent_full,0.0
+Capterra___3031001,Zoho Desk,test,pros,agent_averages,0.0
+Capterra___3031001,Zoho Desk,test,cons,agent_averages,0.0
+Capterra___3031001,Zoho Desk,test,overall_experience,agent_averages,1.0
+Capterra___3607614,Zoho Desk,test,pros,agent_alone,0.0
+Capterra___3607614,Zoho Desk,test,overall_experience,agent_alone,0.0
+Capterra___3607614,Zoho Desk,test,pros,agent_full,0.0
+Capterra___3607614,Zoho Desk,test,overall_experience,agent_full,0.0
+Capterra___3607614,Zoho Desk,test,pros,agent_averages,0.0
+Capterra___3607614,Zoho Desk,test,overall_experience,agent_averages,0.0
+Capterra___1462352,Zoho Desk,test,pros,agent_alone,0.0
+Capterra___1462352,Zoho Desk,test,cons,agent_alone,0.0
+Capterra___1462352,Zoho Desk,test,overall_experience,agent_alone,0.0
+Capterra___1462352,Zoho Desk,test,pros,agent_full,1.0
+Capterra___1462352,Zoho Desk,test,cons,agent_full,0.0
+Capterra___1462352,Zoho Desk,test,overall_experience,agent_full,0.0
+Capterra___1462352,Zoho Desk,test,pros,agent_averages,0.0
+Capterra___1462352,Zoho Desk,test,cons,agent_averages,0.0
+Capterra___1462352,Zoho Desk,test,overall_experience,agent_averages,0.0
+Capterra___4873495,Zoho Desk,test,pros,agent_alone,0.3333333333333333
+Capterra___4873495,Zoho Desk,test,overall_experience,agent_alone,0.0
+Capterra___4873495,Zoho Desk,test,pros,agent_full,0.6666666666666666
+Capterra___4873495,Zoho Desk,test,overall_experience,agent_full,0.0
+Capterra___4873495,Zoho Desk,test,pros,agent_averages,0.0
+Capterra___4873495,Zoho Desk,test,overall_experience,agent_averages,0.0
+Capterra___4597963,Zoho Desk,test,pros,agent_alone,0.0
+Capterra___4597963,Zoho Desk,test,cons,agent_alone,0.0
+Capterra___4597963,Zoho Desk,test,overall_experience,agent_alone,0.0
+Capterra___4597963,Zoho Desk,test,pros,agent_full,0.0
+Capterra___4597963,Zoho Desk,test,cons,agent_full,0.5
+Capterra___4597963,Zoho Desk,test,overall_experience,agent_full,0.0
+Capterra___4597963,Zoho Desk,test,pros,agent_averages,0.0
+Capterra___4597963,Zoho Desk,test,cons,agent_averages,0.0
+Capterra___4597963,Zoho Desk,test,overall_experience,agent_averages,0.0
+Capterra___4816969,Zoho Desk,test,pros,agent_alone,0.5
+Capterra___4816969,Zoho Desk,test,overall_experience,agent_alone,0.0
+Capterra___4816969,Zoho Desk,test,pros,agent_full,0.5
+Capterra___4816969,Zoho Desk,test,overall_experience,agent_full,0.0
+Capterra___4816969,Zoho Desk,test,pros,agent_averages,0.25
+Capterra___4816969,Zoho Desk,test,overall_experience,agent_averages,0.0
+Capterra___4613775,Zoho Desk,test,pros,agent_alone,0.3333333333333333
+Capterra___4613775,Zoho Desk,test,cons,agent_alone,0.0
+Capterra___4613775,Zoho Desk,test,overall_experience,agent_alone,0.0
+Capterra___4613775,Zoho Desk,test,pros,agent_full,0.3333333333333333
+Capterra___4613775,Zoho Desk,test,cons,agent_full,0.0
+Capterra___4613775,Zoho Desk,test,overall_experience,agent_full,0.0
+Capterra___4613775,Zoho Desk,test,pros,agent_averages,0.3333333333333333
+Capterra___4613775,Zoho Desk,test,cons,agent_averages,0.5
+Capterra___4613775,Zoho Desk,test,overall_experience,agent_averages,0.0
+Capterra___2733249,Klaviyo,test,pros,agent_alone,0.0
+Capterra___2733249,Klaviyo,test,cons,agent_alone,0.0
+Capterra___2733249,Klaviyo,test,overall_experience,agent_alone,0.0
+Capterra___2733249,Klaviyo,test,pros,agent_full,0.0
+Capterra___2733249,Klaviyo,test,cons,agent_full,0.0
+Capterra___2733249,Klaviyo,test,overall_experience,agent_full,0.0
+Capterra___2733249,Klaviyo,test,pros,agent_averages,0.0
+Capterra___2733249,Klaviyo,test,cons,agent_averages,0.0
+Capterra___2733249,Klaviyo,test,overall_experience,agent_averages,0.0
+Capterra___3090142,Klaviyo,test,pros,agent_alone,0.5
+Capterra___3090142,Klaviyo,test,cons,agent_alone,0.0
+Capterra___3090142,Klaviyo,test,overall_experience,agent_alone,0.0
+Capterra___3090142,Klaviyo,test,pros,agent_full,0.5
+Capterra___3090142,Klaviyo,test,cons,agent_full,0.0
+Capterra___3090142,Klaviyo,test,overall_experience,agent_full,0.0
+Capterra___3090142,Klaviyo,test,pros,agent_averages,0.5
+Capterra___3090142,Klaviyo,test,cons,agent_averages,0.0
+Capterra___3090142,Klaviyo,test,overall_experience,agent_averages,1.0
+Capterra___3268470,Klaviyo,test,pros,agent_alone,0.0
+Capterra___3268470,Klaviyo,test,cons,agent_alone,0.0
+Capterra___3268470,Klaviyo,test,overall_experience,agent_alone,0.0
+Capterra___3268470,Klaviyo,test,pros,agent_full,0.0
+Capterra___3268470,Klaviyo,test,cons,agent_full,0.0
+Capterra___3268470,Klaviyo,test,overall_experience,agent_full,0.0
+Capterra___3268470,Klaviyo,test,pros,agent_averages,0.0
+Capterra___3268470,Klaviyo,test,cons,agent_averages,0.0
+Capterra___3268470,Klaviyo,test,overall_experience,agent_averages,0.0
+Capterra___6746071,Klaviyo,test,pros,agent_alone,1.0
+Capterra___6746071,Klaviyo,test,cons,agent_alone,0.5
+Capterra___6746071,Klaviyo,test,overall_experience,agent_alone,0.0
+Capterra___6746071,Klaviyo,test,pros,agent_full,0.5
+Capterra___6746071,Klaviyo,test,cons,agent_full,0.0
+Capterra___6746071,Klaviyo,test,overall_experience,agent_full,0.0
+Capterra___6746071,Klaviyo,test,pros,agent_averages,0.5
+Capterra___6746071,Klaviyo,test,cons,agent_averages,0.5
+Capterra___6746071,Klaviyo,test,overall_experience,agent_averages,1.0
+Capterra___3868009,Klaviyo,test,pros,agent_alone,0.0
+Capterra___3868009,Klaviyo,test,cons,agent_alone,0.0
+Capterra___3868009,Klaviyo,test,overall_experience,agent_alone,0.0
+Capterra___3868009,Klaviyo,test,pros,agent_full,0.0
+Capterra___3868009,Klaviyo,test,cons,agent_full,0.0
+Capterra___3868009,Klaviyo,test,overall_experience,agent_full,0.0
+Capterra___3868009,Klaviyo,test,pros,agent_averages,0.0
+Capterra___3868009,Klaviyo,test,cons,agent_averages,0.0
+Capterra___3868009,Klaviyo,test,overall_experience,agent_averages,0.0
+Capterra___240671,Klaviyo,test,pros,agent_alone,0.0
+Capterra___240671,Klaviyo,test,cons,agent_alone,0.0
+Capterra___240671,Klaviyo,test,overall_experience,agent_alone,0.0
+Capterra___240671,Klaviyo,test,pros,agent_full,0.5
+Capterra___240671,Klaviyo,test,cons,agent_full,0.0
+Capterra___240671,Klaviyo,test,overall_experience,agent_full,0.0
+Capterra___240671,Klaviyo,test,pros,agent_averages,0.5
+Capterra___240671,Klaviyo,test,cons,agent_averages,1.0
+Capterra___240671,Klaviyo,test,overall_experience,agent_averages,0.0
+Capterra___6673616,Klaviyo,test,pros,agent_alone,0.3333333333333333
+Capterra___6673616,Klaviyo,test,cons,agent_alone,0.0
+Capterra___6673616,Klaviyo,test,overall_experience,agent_alone,0.0
+Capterra___6673616,Klaviyo,test,pros,agent_full,0.3333333333333333
+Capterra___6673616,Klaviyo,test,cons,agent_full,0.0
+Capterra___6673616,Klaviyo,test,overall_experience,agent_full,0.0
+Capterra___6673616,Klaviyo,test,pros,agent_averages,0.3333333333333333
+Capterra___6673616,Klaviyo,test,cons,agent_averages,0.0
+Capterra___6673616,Klaviyo,test,overall_experience,agent_averages,0.0
+Capterra___2049068,Klaviyo,test,pros,agent_alone,0.5
+Capterra___2049068,Klaviyo,test,cons,agent_alone,0.0
+Capterra___2049068,Klaviyo,test,overall_experience,agent_alone,1.0
+Capterra___2049068,Klaviyo,test,pros,agent_full,1.0
+Capterra___2049068,Klaviyo,test,cons,agent_full,1.0
+Capterra___2049068,Klaviyo,test,overall_experience,agent_full,0.0
+Capterra___2049068,Klaviyo,test,pros,agent_averages,1.0
+Capterra___2049068,Klaviyo,test,cons,agent_averages,1.0
+Capterra___2049068,Klaviyo,test,overall_experience,agent_averages,0.0
+Capterra___6525101,Klaviyo,test,pros,agent_alone,0.0
+Capterra___6525101,Klaviyo,test,cons,agent_alone,0.0
+Capterra___6525101,Klaviyo,test,overall_experience,agent_alone,0.0
+Capterra___6525101,Klaviyo,test,pros,agent_full,0.0
+Capterra___6525101,Klaviyo,test,cons,agent_full,0.0
+Capterra___6525101,Klaviyo,test,overall_experience,agent_full,0.0
+Capterra___6525101,Klaviyo,test,pros,agent_averages,0.0
+Capterra___6525101,Klaviyo,test,cons,agent_averages,0.0
+Capterra___6525101,Klaviyo,test,overall_experience,agent_averages,0.0
+Capterra___6862781,Klaviyo,test,pros,agent_alone,0.6666666666666666
+Capterra___6862781,Klaviyo,test,cons,agent_alone,0.5
+Capterra___6862781,Klaviyo,test,overall_experience,agent_alone,0.0
+Capterra___6862781,Klaviyo,test,pros,agent_full,0.6666666666666666
+Capterra___6862781,Klaviyo,test,cons,agent_full,1.0
+Capterra___6862781,Klaviyo,test,overall_experience,agent_full,1.0
+Capterra___6862781,Klaviyo,test,pros,agent_averages,0.3333333333333333
+Capterra___6862781,Klaviyo,test,cons,agent_averages,1.0
+Capterra___6862781,Klaviyo,test,overall_experience,agent_averages,1.0
+Capterra___4274320,Klaviyo,test,pros,agent_alone,0.25
+Capterra___4274320,Klaviyo,test,cons,agent_alone,0.0
+Capterra___4274320,Klaviyo,test,overall_experience,agent_alone,0.0
+Capterra___4274320,Klaviyo,test,pros,agent_full,0.0
+Capterra___4274320,Klaviyo,test,cons,agent_full,0.0
+Capterra___4274320,Klaviyo,test,overall_experience,agent_full,0.0
+Capterra___4274320,Klaviyo,test,pros,agent_averages,0.25
+Capterra___4274320,Klaviyo,test,cons,agent_averages,0.0
+Capterra___4274320,Klaviyo,test,overall_experience,agent_averages,0.0
+Capterra___3197974,Klaviyo,test,pros,agent_alone,0.0
+Capterra___3197974,Klaviyo,test,cons,agent_alone,0.0
+Capterra___3197974,Klaviyo,test,overall_experience,agent_alone,0.0
+Capterra___3197974,Klaviyo,test,pros,agent_full,0.0
+Capterra___3197974,Klaviyo,test,cons,agent_full,0.3333333333333333
+Capterra___3197974,Klaviyo,test,overall_experience,agent_full,0.0
+Capterra___3197974,Klaviyo,test,pros,agent_averages,0.0
+Capterra___3197974,Klaviyo,test,cons,agent_averages,0.3333333333333333
+Capterra___3197974,Klaviyo,test,overall_experience,agent_averages,0.0
+Capterra___1881956,BigCommerce,test,pros,agent_alone,0.0
+Capterra___1881956,BigCommerce,test,cons,agent_alone,1.0
+Capterra___1881956,BigCommerce,test,overall_experience,agent_alone,0.0
+Capterra___1881956,BigCommerce,test,pros,agent_full,0.0
+Capterra___1881956,BigCommerce,test,cons,agent_full,1.0
+Capterra___1881956,BigCommerce,test,overall_experience,agent_full,1.0
+Capterra___1881956,BigCommerce,test,pros,agent_averages,0.0
+Capterra___1881956,BigCommerce,test,cons,agent_averages,1.0
+Capterra___1881956,BigCommerce,test,overall_experience,agent_averages,0.0
+Capterra___4869746,BigCommerce,test,pros,agent_alone,0.0
+Capterra___4869746,BigCommerce,test,cons,agent_alone,0.0
+Capterra___4869746,BigCommerce,test,overall_experience,agent_alone,0.0
+Capterra___4869746,BigCommerce,test,pros,agent_full,0.0
+Capterra___4869746,BigCommerce,test,cons,agent_full,0.75
+Capterra___4869746,BigCommerce,test,overall_experience,agent_full,0.0
+Capterra___4869746,BigCommerce,test,pros,agent_averages,0.0
+Capterra___4869746,BigCommerce,test,cons,agent_averages,0.0
+Capterra___4869746,BigCommerce,test,overall_experience,agent_averages,0.0
+Capterra___1178331,BigCommerce,test,pros,agent_alone,0.25
+Capterra___1178331,BigCommerce,test,cons,agent_alone,0.0
+Capterra___1178331,BigCommerce,test,overall_experience,agent_alone,0.0
+Capterra___1178331,BigCommerce,test,pros,agent_full,0.25
+Capterra___1178331,BigCommerce,test,cons,agent_full,0.5
+Capterra___1178331,BigCommerce,test,overall_experience,agent_full,0.0
+Capterra___1178331,BigCommerce,test,pros,agent_averages,0.0
+Capterra___1178331,BigCommerce,test,cons,agent_averages,0.0
+Capterra___1178331,BigCommerce,test,overall_experience,agent_averages,0.0
+Capterra___4273939,BigCommerce,test,pros,agent_alone,0.25
+Capterra___4273939,BigCommerce,test,overall_experience,agent_alone,0.0
+Capterra___4273939,BigCommerce,test,pros,agent_full,0.0
+Capterra___4273939,BigCommerce,test,overall_experience,agent_full,0.0
+Capterra___4273939,BigCommerce,test,pros,agent_averages,0.0
+Capterra___4273939,BigCommerce,test,overall_experience,agent_averages,0.0
+Capterra___1955525,BigCommerce,test,pros,agent_alone,0.25
+Capterra___1955525,BigCommerce,test,cons,agent_alone,1.0
+Capterra___1955525,BigCommerce,test,overall_experience,agent_alone,0.0
+Capterra___1955525,BigCommerce,test,pros,agent_full,0.75
+Capterra___1955525,BigCommerce,test,cons,agent_full,1.0
+Capterra___1955525,BigCommerce,test,overall_experience,agent_full,0.0
+Capterra___1955525,BigCommerce,test,pros,agent_averages,0.25
+Capterra___1955525,BigCommerce,test,cons,agent_averages,0.5
+Capterra___1955525,BigCommerce,test,overall_experience,agent_averages,0.0
+Capterra___1275559,BigCommerce,test,pros,agent_alone,0.0
+Capterra___1275559,BigCommerce,test,cons,agent_alone,0.3333333333333333
+Capterra___1275559,BigCommerce,test,overall_experience,agent_alone,0.0
+Capterra___1275559,BigCommerce,test,pros,agent_full,0.0
+Capterra___1275559,BigCommerce,test,cons,agent_full,0.0
+Capterra___1275559,BigCommerce,test,overall_experience,agent_full,0.0
+Capterra___1275559,BigCommerce,test,pros,agent_averages,0.0
+Capterra___1275559,BigCommerce,test,cons,agent_averages,0.0
+Capterra___1275559,BigCommerce,test,overall_experience,agent_averages,0.0
+Capterra___3102145,BigCommerce,test,pros,agent_alone,0.0
+Capterra___3102145,BigCommerce,test,cons,agent_alone,0.0
+Capterra___3102145,BigCommerce,test,overall_experience,agent_alone,0.0
+Capterra___3102145,BigCommerce,test,pros,agent_full,0.25
+Capterra___3102145,BigCommerce,test,cons,agent_full,0.0
+Capterra___3102145,BigCommerce,test,overall_experience,agent_full,0.0
+Capterra___3102145,BigCommerce,test,pros,agent_averages,0.5
+Capterra___3102145,BigCommerce,test,cons,agent_averages,0.0
+Capterra___3102145,BigCommerce,test,overall_experience,agent_averages,0.0
+Capterra___1654748,BigCommerce,test,pros,agent_alone,0.5
+Capterra___1654748,BigCommerce,test,overall_experience,agent_alone,0.0
+Capterra___1654748,BigCommerce,test,pros,agent_full,0.5
+Capterra___1654748,BigCommerce,test,overall_experience,agent_full,0.0
+Capterra___1654748,BigCommerce,test,pros,agent_averages,0.5
+Capterra___1654748,BigCommerce,test,overall_experience,agent_averages,0.0
+Capterra___554602,BigCommerce,test,pros,agent_alone,0.25
+Capterra___554602,BigCommerce,test,overall_experience,agent_alone,0.0
+Capterra___554602,BigCommerce,test,pros,agent_full,0.25
+Capterra___554602,BigCommerce,test,overall_experience,agent_full,0.0
+Capterra___554602,BigCommerce,test,pros,agent_averages,0.25
+Capterra___554602,BigCommerce,test,overall_experience,agent_averages,0.0
+Capterra___2454352,BigCommerce,test,pros,agent_alone,0.25
+Capterra___2454352,BigCommerce,test,cons,agent_alone,0.0
+Capterra___2454352,BigCommerce,test,overall_experience,agent_alone,0.0
+Capterra___2454352,BigCommerce,test,pros,agent_full,0.25
+Capterra___2454352,BigCommerce,test,cons,agent_full,0.3333333333333333
+Capterra___2454352,BigCommerce,test,overall_experience,agent_full,0.0
+Capterra___2454352,BigCommerce,test,pros,agent_averages,0.25
+Capterra___2454352,BigCommerce,test,cons,agent_averages,0.6666666666666666
+Capterra___2454352,BigCommerce,test,overall_experience,agent_averages,0.0
+Capterra___3702959,BigCommerce,test,pros,agent_alone,0.0
+Capterra___3702959,BigCommerce,test,cons,agent_alone,1.0
+Capterra___3702959,BigCommerce,test,overall_experience,agent_alone,0.0
+Capterra___3702959,BigCommerce,test,pros,agent_full,0.5
+Capterra___3702959,BigCommerce,test,cons,agent_full,0.5
+Capterra___3702959,BigCommerce,test,overall_experience,agent_full,1.0
+Capterra___3702959,BigCommerce,test,pros,agent_averages,0.5
+Capterra___3702959,BigCommerce,test,cons,agent_averages,1.0
+Capterra___3702959,BigCommerce,test,overall_experience,agent_averages,0.0
+Capterra___4378110,BigCommerce,test,pros,agent_alone,0.0
+Capterra___4378110,BigCommerce,test,cons,agent_alone,0.0
+Capterra___4378110,BigCommerce,test,overall_experience,agent_alone,0.0
+Capterra___4378110,BigCommerce,test,pros,agent_full,0.0
+Capterra___4378110,BigCommerce,test,cons,agent_full,0.0
+Capterra___4378110,BigCommerce,test,overall_experience,agent_full,0.0
+Capterra___4378110,BigCommerce,test,pros,agent_averages,0.5
+Capterra___4378110,BigCommerce,test,cons,agent_averages,0.0
+Capterra___4378110,BigCommerce,test,overall_experience,agent_averages,0.0
+Capterra___4864409,Smartsheet,test,pros,agent_alone,0.5
+Capterra___4864409,Smartsheet,test,cons,agent_alone,1.0
+Capterra___4864409,Smartsheet,test,overall_experience,agent_alone,0.0
+Capterra___4864409,Smartsheet,test,pros,agent_full,0.5
+Capterra___4864409,Smartsheet,test,cons,agent_full,1.0
+Capterra___4864409,Smartsheet,test,overall_experience,agent_full,1.0
+Capterra___4864409,Smartsheet,test,pros,agent_averages,0.25
+Capterra___4864409,Smartsheet,test,cons,agent_averages,1.0
+Capterra___4864409,Smartsheet,test,overall_experience,agent_averages,1.0
+Capterra___4938518,Smartsheet,test,pros,agent_alone,0.0
+Capterra___4938518,Smartsheet,test,cons,agent_alone,0.0
+Capterra___4938518,Smartsheet,test,overall_experience,agent_alone,0.0
+Capterra___4938518,Smartsheet,test,pros,agent_full,0.5
+Capterra___4938518,Smartsheet,test,cons,agent_full,0.0
+Capterra___4938518,Smartsheet,test,overall_experience,agent_full,0.0
+Capterra___4938518,Smartsheet,test,pros,agent_averages,0.0
+Capterra___4938518,Smartsheet,test,cons,agent_averages,0.0
+Capterra___4938518,Smartsheet,test,overall_experience,agent_averages,0.0
+Capterra___6164409,Smartsheet,test,pros,agent_alone,0.25
+Capterra___6164409,Smartsheet,test,cons,agent_alone,0.0
+Capterra___6164409,Smartsheet,test,overall_experience,agent_alone,1.0
+Capterra___6164409,Smartsheet,test,pros,agent_full,0.25
+Capterra___6164409,Smartsheet,test,cons,agent_full,0.0
+Capterra___6164409,Smartsheet,test,overall_experience,agent_full,0.0
+Capterra___6164409,Smartsheet,test,pros,agent_averages,0.25
+Capterra___6164409,Smartsheet,test,cons,agent_averages,0.0
+Capterra___6164409,Smartsheet,test,overall_experience,agent_averages,1.0
+Capterra___4328554,Smartsheet,test,pros,agent_alone,0.25
+Capterra___4328554,Smartsheet,test,cons,agent_alone,0.0
+Capterra___4328554,Smartsheet,test,overall_experience,agent_alone,0.0
+Capterra___4328554,Smartsheet,test,pros,agent_full,0.25
+Capterra___4328554,Smartsheet,test,cons,agent_full,0.0
+Capterra___4328554,Smartsheet,test,overall_experience,agent_full,0.0
+Capterra___4328554,Smartsheet,test,pros,agent_averages,0.0
+Capterra___4328554,Smartsheet,test,cons,agent_averages,0.0
+Capterra___4328554,Smartsheet,test,overall_experience,agent_averages,0.0
+Capterra___6850473,Smartsheet,test,pros,agent_alone,0.0
+Capterra___6850473,Smartsheet,test,cons,agent_alone,0.5
+Capterra___6850473,Smartsheet,test,overall_experience,agent_alone,0.0
+Capterra___6850473,Smartsheet,test,pros,agent_full,0.5
+Capterra___6850473,Smartsheet,test,cons,agent_full,0.0
+Capterra___6850473,Smartsheet,test,overall_experience,agent_full,0.0
+Capterra___6850473,Smartsheet,test,pros,agent_averages,0.5
+Capterra___6850473,Smartsheet,test,cons,agent_averages,0.0
+Capterra___6850473,Smartsheet,test,overall_experience,agent_averages,0.0
+Capterra___4602658,Smartsheet,test,pros,agent_alone,0.6666666666666666
+Capterra___4602658,Smartsheet,test,cons,agent_alone,0.0
+Capterra___4602658,Smartsheet,test,overall_experience,agent_alone,0.0
+Capterra___4602658,Smartsheet,test,pros,agent_full,0.3333333333333333
+Capterra___4602658,Smartsheet,test,cons,agent_full,0.0
+Capterra___4602658,Smartsheet,test,overall_experience,agent_full,0.0
+Capterra___4602658,Smartsheet,test,pros,agent_averages,0.6666666666666666
+Capterra___4602658,Smartsheet,test,cons,agent_averages,0.0
+Capterra___4602658,Smartsheet,test,overall_experience,agent_averages,1.0
+Capterra___5026102,Smartsheet,test,pros,agent_alone,0.5
+Capterra___5026102,Smartsheet,test,cons,agent_alone,0.5
+Capterra___5026102,Smartsheet,test,overall_experience,agent_alone,0.0
+Capterra___5026102,Smartsheet,test,pros,agent_full,0.25
+Capterra___5026102,Smartsheet,test,cons,agent_full,1.0
+Capterra___5026102,Smartsheet,test,overall_experience,agent_full,1.0
+Capterra___5026102,Smartsheet,test,pros,agent_averages,0.25
+Capterra___5026102,Smartsheet,test,cons,agent_averages,1.0
+Capterra___5026102,Smartsheet,test,overall_experience,agent_averages,1.0
+Capterra___4769683,Smartsheet,test,pros,agent_alone,0.5
+Capterra___4769683,Smartsheet,test,cons,agent_alone,0.5
+Capterra___4769683,Smartsheet,test,overall_experience,agent_alone,0.0
+Capterra___4769683,Smartsheet,test,pros,agent_full,0.5
+Capterra___4769683,Smartsheet,test,cons,agent_full,0.5
+Capterra___4769683,Smartsheet,test,overall_experience,agent_full,0.0
+Capterra___4769683,Smartsheet,test,pros,agent_averages,0.5
+Capterra___4769683,Smartsheet,test,cons,agent_averages,0.5
+Capterra___4769683,Smartsheet,test,overall_experience,agent_averages,1.0
+Capterra___4623339,Smartsheet,test,pros,agent_alone,0.0
+Capterra___4623339,Smartsheet,test,cons,agent_alone,1.0
+Capterra___4623339,Smartsheet,test,overall_experience,agent_alone,0.0
+Capterra___4623339,Smartsheet,test,pros,agent_full,0.25
+Capterra___4623339,Smartsheet,test,cons,agent_full,1.0
+Capterra___4623339,Smartsheet,test,overall_experience,agent_full,0.0
+Capterra___4623339,Smartsheet,test,pros,agent_averages,0.25
+Capterra___4623339,Smartsheet,test,cons,agent_averages,1.0
+Capterra___4623339,Smartsheet,test,overall_experience,agent_averages,0.0
+Capterra___6339124,Smartsheet,test,pros,agent_alone,0.25
+Capterra___6339124,Smartsheet,test,cons,agent_alone,0.5
+Capterra___6339124,Smartsheet,test,overall_experience,agent_alone,0.0
+Capterra___6339124,Smartsheet,test,pros,agent_full,0.25
+Capterra___6339124,Smartsheet,test,cons,agent_full,0.5
+Capterra___6339124,Smartsheet,test,overall_experience,agent_full,1.0
+Capterra___6339124,Smartsheet,test,pros,agent_averages,0.75
+Capterra___6339124,Smartsheet,test,cons,agent_averages,0.5
+Capterra___6339124,Smartsheet,test,overall_experience,agent_averages,1.0
+Capterra___4599653,Smartsheet,test,pros,agent_alone,0.6666666666666666
+Capterra___4599653,Smartsheet,test,cons,agent_alone,0.5
+Capterra___4599653,Smartsheet,test,overall_experience,agent_alone,1.0
+Capterra___4599653,Smartsheet,test,pros,agent_full,0.6666666666666666
+Capterra___4599653,Smartsheet,test,cons,agent_full,0.5
+Capterra___4599653,Smartsheet,test,overall_experience,agent_full,1.0
+Capterra___4599653,Smartsheet,test,pros,agent_averages,0.6666666666666666
+Capterra___4599653,Smartsheet,test,cons,agent_averages,0.5
+Capterra___4599653,Smartsheet,test,overall_experience,agent_averages,1.0
+Capterra___4377840,Smartsheet,test,pros,agent_alone,0.5
+Capterra___4377840,Smartsheet,test,overall_experience,agent_alone,0.0
+Capterra___4377840,Smartsheet,test,pros,agent_full,0.5
+Capterra___4377840,Smartsheet,test,overall_experience,agent_full,0.0
+Capterra___4377840,Smartsheet,test,pros,agent_averages,0.5
+Capterra___4377840,Smartsheet,test,overall_experience,agent_averages,0.0
+Capterra___4807753,Freshdesk,test,pros,agent_alone,0.3333333333333333
+Capterra___4807753,Freshdesk,test,cons,agent_alone,0.0
+Capterra___4807753,Freshdesk,test,overall_experience,agent_alone,0.0
+Capterra___4807753,Freshdesk,test,pros,agent_full,0.3333333333333333
+Capterra___4807753,Freshdesk,test,cons,agent_full,0.0
+Capterra___4807753,Freshdesk,test,overall_experience,agent_full,0.0
+Capterra___4807753,Freshdesk,test,pros,agent_averages,0.6666666666666666
+Capterra___4807753,Freshdesk,test,cons,agent_averages,0.0
+Capterra___4807753,Freshdesk,test,overall_experience,agent_averages,0.0
+Capterra___6505501,Freshdesk,test,pros,agent_alone,0.75
+Capterra___6505501,Freshdesk,test,overall_experience,agent_alone,0.0
+Capterra___6505501,Freshdesk,test,pros,agent_full,0.25
+Capterra___6505501,Freshdesk,test,overall_experience,agent_full,0.0
+Capterra___6505501,Freshdesk,test,pros,agent_averages,0.5
+Capterra___6505501,Freshdesk,test,overall_experience,agent_averages,0.0
+Capterra___4986750,Freshdesk,test,pros,agent_alone,0.75
+Capterra___4986750,Freshdesk,test,cons,agent_alone,0.5
+Capterra___4986750,Freshdesk,test,overall_experience,agent_alone,1.0
+Capterra___4986750,Freshdesk,test,pros,agent_full,0.0
+Capterra___4986750,Freshdesk,test,cons,agent_full,0.5
+Capterra___4986750,Freshdesk,test,overall_experience,agent_full,0.0
+Capterra___4986750,Freshdesk,test,pros,agent_averages,0.0
+Capterra___4986750,Freshdesk,test,cons,agent_averages,0.0
+Capterra___4986750,Freshdesk,test,overall_experience,agent_averages,1.0
+Capterra___5016866,Freshdesk,test,pros,agent_alone,0.5
+Capterra___5016866,Freshdesk,test,cons,agent_alone,0.0
+Capterra___5016866,Freshdesk,test,overall_experience,agent_alone,0.0
+Capterra___5016866,Freshdesk,test,pros,agent_full,0.5
+Capterra___5016866,Freshdesk,test,cons,agent_full,0.0
+Capterra___5016866,Freshdesk,test,overall_experience,agent_full,0.0
+Capterra___5016866,Freshdesk,test,pros,agent_averages,0.5
+Capterra___5016866,Freshdesk,test,cons,agent_averages,0.0
+Capterra___5016866,Freshdesk,test,overall_experience,agent_averages,0.0
+Capterra___6602735,Freshdesk,test,pros,agent_alone,0.5
+Capterra___6602735,Freshdesk,test,cons,agent_alone,0.0
+Capterra___6602735,Freshdesk,test,overall_experience,agent_alone,0.0
+Capterra___6602735,Freshdesk,test,pros,agent_full,0.25
+Capterra___6602735,Freshdesk,test,cons,agent_full,0.0
+Capterra___6602735,Freshdesk,test,overall_experience,agent_full,0.0
+Capterra___6602735,Freshdesk,test,pros,agent_averages,0.5
+Capterra___6602735,Freshdesk,test,cons,agent_averages,0.0
+Capterra___6602735,Freshdesk,test,overall_experience,agent_averages,0.0
+Capterra___4986069,Freshdesk,test,pros,agent_alone,0.25
+Capterra___4986069,Freshdesk,test,cons,agent_alone,0.0
+Capterra___4986069,Freshdesk,test,overall_experience,agent_alone,0.0
+Capterra___4986069,Freshdesk,test,pros,agent_full,0.5
+Capterra___4986069,Freshdesk,test,cons,agent_full,0.0
+Capterra___4986069,Freshdesk,test,overall_experience,agent_full,0.0
+Capterra___4986069,Freshdesk,test,pros,agent_averages,0.25
+Capterra___4986069,Freshdesk,test,cons,agent_averages,0.75
+Capterra___4986069,Freshdesk,test,overall_experience,agent_averages,0.0
+Capterra___6005997,Freshdesk,test,pros,agent_alone,0.0
+Capterra___6005997,Freshdesk,test,overall_experience,agent_alone,0.0
+Capterra___6005997,Freshdesk,test,pros,agent_full,0.0
+Capterra___6005997,Freshdesk,test,overall_experience,agent_full,0.0
+Capterra___6005997,Freshdesk,test,pros,agent_averages,0.25
+Capterra___6005997,Freshdesk,test,overall_experience,agent_averages,0.0
+Capterra___6603731,Freshdesk,test,pros,agent_alone,0.25
+Capterra___6603731,Freshdesk,test,cons,agent_alone,0.0
+Capterra___6603731,Freshdesk,test,overall_experience,agent_alone,1.0
+Capterra___6603731,Freshdesk,test,pros,agent_full,0.25
+Capterra___6603731,Freshdesk,test,cons,agent_full,0.0
+Capterra___6603731,Freshdesk,test,overall_experience,agent_full,0.0
+Capterra___6603731,Freshdesk,test,pros,agent_averages,0.0
+Capterra___6603731,Freshdesk,test,cons,agent_averages,1.0
+Capterra___6603731,Freshdesk,test,overall_experience,agent_averages,0.0
+Capterra___4802503,Freshdesk,test,pros,agent_alone,0.75
+Capterra___4802503,Freshdesk,test,cons,agent_alone,0.0
+Capterra___4802503,Freshdesk,test,overall_experience,agent_alone,0.0
+Capterra___4802503,Freshdesk,test,pros,agent_full,0.75
+Capterra___4802503,Freshdesk,test,cons,agent_full,1.0
+Capterra___4802503,Freshdesk,test,overall_experience,agent_full,0.0
+Capterra___4802503,Freshdesk,test,pros,agent_averages,0.5
+Capterra___4802503,Freshdesk,test,cons,agent_averages,0.0
+Capterra___4802503,Freshdesk,test,overall_experience,agent_averages,0.0
+Capterra___4805749,Freshdesk,test,pros,agent_alone,0.5
+Capterra___4805749,Freshdesk,test,cons,agent_alone,0.0
+Capterra___4805749,Freshdesk,test,overall_experience,agent_alone,0.0
+Capterra___4805749,Freshdesk,test,pros,agent_full,0.5
+Capterra___4805749,Freshdesk,test,cons,agent_full,1.0
+Capterra___4805749,Freshdesk,test,overall_experience,agent_full,0.0
+Capterra___4805749,Freshdesk,test,pros,agent_averages,0.5
+Capterra___4805749,Freshdesk,test,cons,agent_averages,0.0
+Capterra___4805749,Freshdesk,test,overall_experience,agent_averages,0.0
+Capterra___4678227,Freshdesk,test,pros,agent_alone,0.75
+Capterra___4678227,Freshdesk,test,cons,agent_alone,0.0
+Capterra___4678227,Freshdesk,test,overall_experience,agent_alone,0.0
+Capterra___4678227,Freshdesk,test,pros,agent_full,0.75
+Capterra___4678227,Freshdesk,test,cons,agent_full,0.0
+Capterra___4678227,Freshdesk,test,overall_experience,agent_full,0.0
+Capterra___4678227,Freshdesk,test,pros,agent_averages,0.75
+Capterra___4678227,Freshdesk,test,cons,agent_averages,0.0
+Capterra___4678227,Freshdesk,test,overall_experience,agent_averages,0.0
+Capterra___4601260,Freshdesk,test,pros,agent_alone,0.5
+Capterra___4601260,Freshdesk,test,cons,agent_alone,0.0
+Capterra___4601260,Freshdesk,test,overall_experience,agent_alone,0.0
+Capterra___4601260,Freshdesk,test,pros,agent_full,0.25
+Capterra___4601260,Freshdesk,test,cons,agent_full,0.0
+Capterra___4601260,Freshdesk,test,overall_experience,agent_full,0.0
+Capterra___4601260,Freshdesk,test,pros,agent_averages,0.5
+Capterra___4601260,Freshdesk,test,cons,agent_averages,0.0
+Capterra___4601260,Freshdesk,test,overall_experience,agent_averages,0.0

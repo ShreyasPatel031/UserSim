@@ -1,0 +1,21 @@
+{
+  "stage": "mcp_classify",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "086c5f5efda2b27720970147c6b00383216a35575dee71026534ee7ee1dee58e",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 256,
+  "input_tokens": 554,
+  "output_tokens": 267,
+  "cost_usd": 0.0008336999999999999,
+  "elapsed_s": 1.78,
+  "error": null,
+  "text": "{\n  \"category\": \"Marketing\",\n  \"product_name\": \"Klaviyo\"\n}",
+  "json": {
+    "category": "Marketing",
+    "product_name": "Klaviyo"
+  },
+  "ts": "2026-10-18T04:41:40.873962+00:00"
+}

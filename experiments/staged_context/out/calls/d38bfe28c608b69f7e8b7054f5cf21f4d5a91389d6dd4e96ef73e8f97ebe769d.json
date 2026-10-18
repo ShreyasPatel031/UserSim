@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d38bfe28c608b69f7e8b7054f5cf21f4d5a91389d6dd4e96ef73e8f97ebe769d",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 267,
+  "output_tokens": 446,
+  "cost_usd": 0.0011951000000000002,
+  "elapsed_s": 22.07,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage tasks, projects, and timelines.\",\n  \"benefits\": [\n    \"User-friendly interface\",\n    \"Clear and customizable dashboard\",\n    \"Reliable for corporate project management\",\n    \"Efficient for corporate project management\"\n  ],\n  \"frictions\": [\n    \"Limited integration options\",\n    \"Integration setup can be cumbersome\"\n  ]\n}",
+  "json": {
+    "task": "Manage tasks, projects, and timelines.",
+    "benefits": [
+      "User-friendly interface",
+      "Clear and customizable dashboard",
+      "Reliable for corporate project management",
+      "Efficient for corporate project management"
+    ],
+    "frictions": [
+      "Limited integration options",
+      "Integration setup can be cumbersome"
+    ]
+  },
+  "ts": "2026-10-18T04:41:30.237858+00:00"
+}

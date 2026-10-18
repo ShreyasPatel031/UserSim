@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a06b69da11cab84ba4625a21c83144fba3b1fbe0ddcdc5b75c915d949fb73272",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1098,
+  "output_tokens": 972,
+  "cost_usd": 0.0027594,
+  "elapsed_s": 9.07,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Intuitive and user-friendly interface\",\n    \"Excellent visual pipeline management\",\n    \"More cost-effective than previous solutions\"\n  ],\n  \"cons\": [\n    \"Reporting features could be more robust\",\n    \"Limited advanced customization options\",\n    \"Integrations sometimes require workarounds\"\n  ],\n  \"overall_experience\": \"This Director likely found Pipedrive to be a significant improvement in terms of usability and cost-effectiveness compared to their previous CRM. The visual pipeline and ease of adoption for their small team were highly valued, streamlining sales processes. While generally positive, they may have noted some limitations in advanced reporting or customization compared to more enterprise-level solutions.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Intuitive and user-friendly interface",
+      "Excellent visual pipeline management",
+      "More cost-effective than previous solutions"
+    ],
+    "cons": [
+      "Reporting features could be more robust",
+      "Limited advanced customization options",
+      "Integrations sometimes require workarounds"
+    ],
+    "overall_experience": "This Director likely found Pipedrive to be a significant improvement in terms of usability and cost-effectiveness compared to their previous CRM. The visual pipeline and ease of adoption for their small team were highly valued, streamlining sales processes. While generally positive, they may have noted some limitations in advanced reporting or customization compared to more enterprise-level solutions."
+  },
+  "ts": "2026-10-18T04:43:29.621720+00:00"
+}

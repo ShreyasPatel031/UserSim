@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c2275eb6472bf29682862ef740bb0a1e0a7721eae7be06497923b8a01c89635f",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 256,
+  "output_tokens": 1071,
+  "cost_usd": 0.0027543,
+  "elapsed_s": 7.81,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Clean and modern user interface for self-service tasks\",\n    \"Easy to access personal employee information and pay stubs\",\n    \"Company directory was simple to navigate\"\n  ],\n  \"cons\": [\n    \"Limited depth for specific data management needs as a non-HR user\",\n    \"Initial learning curve for a new system within the first six months\",\n    \"Occasional slowness when loading certain pages\"\n  ],\n  \"overall_experience\": \"This Account Executive likely found Namely's interface generally user-friendly for basic self-service tasks like managing their own employee information. However, being new to the system and not an HR administrator, their interaction with its core 'management' features would have been limited. They probably appreciated the modern look but might have encountered some minor frustrations with performance or initial setup during their first few months of use.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 3,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 6,
+    "pros": [
+      "Clean and modern user interface for self-service tasks",
+      "Easy to access personal employee information and pay stubs",
+      "Company directory was simple to navigate"
+    ],
+    "cons": [
+      "Limited depth for specific data management needs as a non-HR user",
+      "Initial learning curve for a new system within the first six months",
+      "Occasional slowness when loading certain pages"
+    ],
+    "overall_experience": "This Account Executive likely found Namely's interface generally user-friendly for basic self-service tasks like managing their own employee information. However, being new to the system and not an HR administrator, their interaction with its core 'management' features would have been limited. They probably appreciated the modern look but might have encountered some minor frustrations with performance or initial setup during their first few months of use."
+  },
+  "ts": "2026-10-18T04:43:42.440699+00:00"
+}

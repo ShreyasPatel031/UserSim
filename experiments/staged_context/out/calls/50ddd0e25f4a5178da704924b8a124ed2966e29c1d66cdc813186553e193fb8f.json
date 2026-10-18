@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "50ddd0e25f4a5178da704924b8a124ed2966e29c1d66cdc813186553e193fb8f",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 261,
+  "output_tokens": 997,
+  "cost_usd": 0.0025708,
+  "elapsed_s": 8.26,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Intuitive visual sales pipeline management\",\n    \"Easy to set up and adopt for a small team\",\n    \"Effective for tracking deals and activities\"\n  ],\n  \"cons\": [\n    \"Reporting could be more robust for deeper analysis\",\n    \"Limited advanced marketing automation features\",\n    \"Customization options might feel restricted over time\"\n  ],\n  \"overall_experience\": \"This founder likely found Pipedrive to be a highly effective and user-friendly tool for managing their sales pipeline within their small marketing and advertising company. The visual interface and focus on sales activities would have been particularly beneficial for keeping track of deals. While generally positive, they may have encountered some limitations in advanced reporting or broader CRM functionalities after 1-2 years of use.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Intuitive visual sales pipeline management",
+      "Easy to set up and adopt for a small team",
+      "Effective for tracking deals and activities"
+    ],
+    "cons": [
+      "Reporting could be more robust for deeper analysis",
+      "Limited advanced marketing automation features",
+      "Customization options might feel restricted over time"
+    ],
+    "overall_experience": "This founder likely found Pipedrive to be a highly effective and user-friendly tool for managing their sales pipeline within their small marketing and advertising company. The visual interface and focus on sales activities would have been particularly beneficial for keeping track of deals. While generally positive, they may have encountered some limitations in advanced reporting or broader CRM functionalities after 1-2 years of use."
+  },
+  "ts": "2026-10-18T04:43:33.692443+00:00"
+}

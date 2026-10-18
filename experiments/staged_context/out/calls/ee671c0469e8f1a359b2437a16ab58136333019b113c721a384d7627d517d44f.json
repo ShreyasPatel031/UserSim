@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ee671c0469e8f1a359b2437a16ab58136333019b113c721a384d7627d517d44f",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2461,
+  "output_tokens": 1031,
+  "cost_usd": 0.0033158,
+  "elapsed_s": 6.7,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Effective for managing leads and sales activities\",\n    \"Good range of features for a small business CRM\",\n    \"Easy to set up initial lead tracking\"\n  ],\n  \"cons\": [\n    \"Steep learning curve to utilize advanced features\",\n    \"Pricing might become a concern after the free trial\",\n    \"Some difficulty with customization or integrations for specific needs\"\n  ],\n  \"overall_experience\": \"This CEO likely found Zoho CRM to be a capable tool for managing leads during their free trial, appreciating its core functionality for sales activities. However, they may have encountered a learning curve when trying to leverage its full potential, suggesting that while it was generally easy to get started, mastering it required more time. The value proposition might have been questioned, especially considering potential costs after the trial and the need for further customization or integrations common for Internet businesses.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Effective for managing leads and sales activities",
+      "Good range of features for a small business CRM",
+      "Easy to set up initial lead tracking"
+    ],
+    "cons": [
+      "Steep learning curve to utilize advanced features",
+      "Pricing might become a concern after the free trial",
+      "Some difficulty with customization or integrations for specific needs"
+    ],
+    "overall_experience": "This CEO likely found Zoho CRM to be a capable tool for managing leads during their free trial, appreciating its core functionality for sales activities. However, they may have encountered a learning curve when trying to leverage its full potential, suggesting that while it was generally easy to get started, mastering it required more time. The value proposition might have been questioned, especially considering potential costs after the trial and the need for further customization or integrations common for Internet businesses."
+  },
+  "ts": "2026-10-18T04:43:48.151321+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0057edd9baf100ba43b654061466b32f5d04e60f5c2dcb89e6426b8b0eb7129a",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1084,
+  "output_tokens": 1075,
+  "cost_usd": 0.0030126999999999997,
+  "elapsed_s": 6.87,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Efficient ticket management and routing for IT issues\",\n    \"Reliable performance over a long period of use\",\n    \"Customizable workflows to fit their small team's needs\"\n  ],\n  \"cons\": [\n    \"Reporting features might be less intuitive than desired\",\n    \"Occasional limitations in advanced automation for complex IT tasks\",\n    \"Pricing tiers could become less competitive as the company grows\"\n  ],\n  \"overall_experience\": \"This IT Technician likely had a very positive long-term experience with Freshdesk, appreciating its robust functionality and ease of use for managing help desk support within a small marketing agency. They found it to be a reliable and effective tool for over two years, though they may have encountered minor frustrations with reporting or advanced automation capabilities. Overall, they would highly recommend the product for similar IT support needs.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Efficient ticket management and routing for IT issues",
+      "Reliable performance over a long period of use",
+      "Customizable workflows to fit their small team's needs"
+    ],
+    "cons": [
+      "Reporting features might be less intuitive than desired",
+      "Occasional limitations in advanced automation for complex IT tasks",
+      "Pricing tiers could become less competitive as the company grows"
+    ],
+    "overall_experience": "This IT Technician likely had a very positive long-term experience with Freshdesk, appreciating its robust functionality and ease of use for managing help desk support within a small marketing agency. They found it to be a reliable and effective tool for over two years, though they may have encountered minor frustrations with reporting or advanced automation capabilities. Overall, they would highly recommend the product for similar IT support needs."
+  },
+  "ts": "2026-10-18T04:44:13.868652+00:00"
+}

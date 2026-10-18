@@ -1,0 +1,28 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "81a1f6697e9c5f67010513b99061d054dacebb957629adb3061232dbb64dc883",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 140,
+  "output_tokens": 451,
+  "cost_usd": 0.0011695,
+  "elapsed_s": 20.56,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage customer support interactions\",\n  \"benefits\": [\n    \"Interface is good\",\n    \"Ease of access\",\n    \"Good response time\"\n  ],\n  \"frictions\": [\n    \"Customer profile management was not good\"\n  ]\n}",
+  "json": {
+    "task": "Manage customer support interactions",
+    "benefits": [
+      "Interface is good",
+      "Ease of access",
+      "Good response time"
+    ],
+    "frictions": [
+      "Customer profile management was not good"
+    ]
+  },
+  "ts": "2026-10-18T04:41:30.853391+00:00"
+}

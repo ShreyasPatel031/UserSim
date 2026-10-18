@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "645b75349047942d50c2b44f35a57bd43b3d4c420b6e6467db3a8d8783d695e6",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 257,
+  "output_tokens": 1057,
+  "cost_usd": 0.0027196,
+  "elapsed_s": 7.08,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Powerful e-commerce specific automations and segmentation\",\n    \"Better integration capabilities than previous solution\",\n    \"Allows for highly targeted marketing campaigns\"\n  ],\n  \"cons\": [\n    \"Steeper learning curve compared to Mailchimp\",\n    \"Perceived higher cost for a small business\",\n    \"Initial setup and migration took some effort\"\n  ],\n  \"overall_experience\": \"This owner likely found Klaviyo to be a significant upgrade in terms of e-commerce specific functionality and automation, allowing for more sophisticated marketing. However, the transition from Mailchimp presented a learning curve and a potentially higher price point for a small business. Despite the initial hurdles, the enhanced capabilities for targeted campaigns were likely seen as valuable for their Food & Beverages business.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 7,
+    "pros": [
+      "Powerful e-commerce specific automations and segmentation",
+      "Better integration capabilities than previous solution",
+      "Allows for highly targeted marketing campaigns"
+    ],
+    "cons": [
+      "Steeper learning curve compared to Mailchimp",
+      "Perceived higher cost for a small business",
+      "Initial setup and migration took some effort"
+    ],
+    "overall_experience": "This owner likely found Klaviyo to be a significant upgrade in terms of e-commerce specific functionality and automation, allowing for more sophisticated marketing. However, the transition from Mailchimp presented a learning curve and a potentially higher price point for a small business. Despite the initial hurdles, the enhanced capabilities for targeted campaigns were likely seen as valuable for their Food & Beverages business."
+  },
+  "ts": "2026-10-18T04:44:03.462597+00:00"
+}

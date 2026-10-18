@@ -1,0 +1,31 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c0edbacf4a9d738c3d9766cb429ab6145bad5d1d824c9abd511b1a513f3e2533",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 225,
+  "output_tokens": 490,
+  "cost_usd": 0.0012925,
+  "elapsed_s": 3.11,
+  "error": null,
+  "text": "{\n  \"task\": \"Use the platform for marketing activities.\",\n  \"benefits\": [\n    \"Sign up and set up the platform easily.\",\n    \"Start work right away.\",\n    \"Interact with friendly staff.\",\n    \"Enable marketing teams to work independently due to an easy interface.\"\n  ],\n  \"frictions\": [\n    \"Manage multiple sites with separate logins.\",\n    \"Experience inconsistent deliverability.\",\n    \"Require calls to set up dedicated IP addresses.\"\n  ]\n}",
+  "json": {
+    "task": "Use the platform for marketing activities.",
+    "benefits": [
+      "Sign up and set up the platform easily.",
+      "Start work right away.",
+      "Interact with friendly staff.",
+      "Enable marketing teams to work independently due to an easy interface."
+    ],
+    "frictions": [
+      "Manage multiple sites with separate logins.",
+      "Experience inconsistent deliverability.",
+      "Require calls to set up dedicated IP addresses."
+    ]
+  },
+  "ts": "2026-10-18T04:41:32.409643+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c1de87ac5dc5504a99780d658df6d6dbb62b033006b3e4995254ef0c5c2ed013",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 264,
+  "output_tokens": 976,
+  "cost_usd": 0.0025192,
+  "elapsed_s": 8.7,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Centralized task and project tracking for campaigns\",\n    \"Customizable workflows and dashboards for marketing needs\",\n    \"Improved team collaboration and asset management\"\n  ],\n  \"cons\": [\n    \"Initial learning curve due to extensive features\",\n    \"Can feel overly complex for simpler tasks\",\n    \"Reporting capabilities sometimes require significant setup\"\n  ],\n  \"overall_experience\": \"The Digital Media Coordinator likely found Wrike to be a robust tool for managing complex marketing campaigns and content pipelines within their large government relations organization. While appreciating its powerful task management and collaboration features, the user probably experienced a notable learning curve due to the platform's depth. They would have benefited from its customization options but might have found some functionalities to be overkill for their specific role, contributing to a moderate ease of use rating.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Centralized task and project tracking for campaigns",
+      "Customizable workflows and dashboards for marketing needs",
+      "Improved team collaboration and asset management"
+    ],
+    "cons": [
+      "Initial learning curve due to extensive features",
+      "Can feel overly complex for simpler tasks",
+      "Reporting capabilities sometimes require significant setup"
+    ],
+    "overall_experience": "The Digital Media Coordinator likely found Wrike to be a robust tool for managing complex marketing campaigns and content pipelines within their large government relations organization. While appreciating its powerful task management and collaboration features, the user probably experienced a notable learning curve due to the platform's depth. They would have benefited from its customization options but might have found some functionalities to be overkill for their specific role, contributing to a moderate ease of use rating."
+  },
+  "ts": "2026-10-18T04:43:27.972779+00:00"
+}

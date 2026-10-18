@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "5b54fd41d32be1643ea6b726f708ceb932561e284aa6539ad2c79d4511007af7",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 179,
+  "output_tokens": 512,
+  "cost_usd": 0.0013337,
+  "elapsed_s": 20.19,
+  "error": null,
+  "text": "{\n  \"task\": \"Unite all workplace communication channels on one platform\",\n  \"benefits\": [\n    \"Unified inbox improves team communication with customers\",\n    \"Gains better response speed\",\n    \"Gains better performance\"\n  ],\n  \"frictions\": [\n    \"Some ticket management options are missing from the mobile app\",\n    \"Less effective at handling complex service requests on mobile\",\n    \"Ability to respond quickly is affected when working away from the office\"\n  ]\n}",
+  "json": {
+    "task": "Unite all workplace communication channels on one platform",
+    "benefits": [
+      "Unified inbox improves team communication with customers",
+      "Gains better response speed",
+      "Gains better performance"
+    ],
+    "frictions": [
+      "Some ticket management options are missing from the mobile app",
+      "Less effective at handling complex service requests on mobile",
+      "Ability to respond quickly is affected when working away from the office"
+    ]
+  },
+  "ts": "2026-10-18T04:41:30.394484+00:00"
+}

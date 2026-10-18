@@ -1,0 +1,27 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "82b3e3d280b49f1e3c5663503e4c0f86df7119619ac9d882552c1dc3aadc8754",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 189,
+  "output_tokens": 436,
+  "cost_usd": 0.0011467,
+  "elapsed_s": 3.45,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage customer service interactions.\",\n  \"benefits\": [\n    \"complete application\",\n    \"many options for customer support\",\n    \"affordable plans\",\n    \"fast program\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Manage customer service interactions.",
+    "benefits": [
+      "complete application",
+      "many options for customer support",
+      "affordable plans",
+      "fast program"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T04:41:35.534219+00:00"
+}

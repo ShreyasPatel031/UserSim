@@ -1,0 +1,31 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2455434fac1b894a9025cf8e84230a8dd82a1b4b032ca226633474967d099fa6",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 157,
+  "output_tokens": 462,
+  "cost_usd": 0.0012021,
+  "elapsed_s": 21.05,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage customer relationships\",\n  \"benefits\": [\n    \"Affordable pricing\",\n    \"User friendly interface\",\n    \"Integrated systems\",\n    \"Robust automation features\"\n  ],\n  \"frictions\": [\n    \"Limited support on basic plans\",\n    \"Storage constraints\",\n    \"Occasional performance lags\"\n  ]\n}",
+  "json": {
+    "task": "Manage customer relationships",
+    "benefits": [
+      "Affordable pricing",
+      "User friendly interface",
+      "Integrated systems",
+      "Robust automation features"
+    ],
+    "frictions": [
+      "Limited support on basic plans",
+      "Storage constraints",
+      "Occasional performance lags"
+    ]
+  },
+  "ts": "2026-10-18T04:41:30.539381+00:00"
+}

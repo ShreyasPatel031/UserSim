@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c44598ff71a22617bc695562b819aa8999732d7c0a4b93edb298affd6aeb26c2",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 195,
+  "output_tokens": 466,
+  "cost_usd": 0.0012235,
+  "elapsed_s": 20.08,
+  "error": null,
+  "text": "{\n  \"task\": \"Organize projects with a team\",\n  \"benefits\": [\n    \"Improve project organization with the team\",\n    \"Facilitate teleworking\",\n    \"Carry out projects effectively\",\n    \"More complete than other options\"\n  ],\n  \"frictions\": [\n    \"Only available in English\"\n  ]\n}",
+  "json": {
+    "task": "Organize projects with a team",
+    "benefits": [
+      "Improve project organization with the team",
+      "Facilitate teleworking",
+      "Carry out projects effectively",
+      "More complete than other options"
+    ],
+    "frictions": [
+      "Only available in English"
+    ]
+  },
+  "ts": "2026-10-18T04:41:29.976567+00:00"
+}

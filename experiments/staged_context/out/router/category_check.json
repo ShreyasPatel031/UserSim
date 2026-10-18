@@ -1,0 +1,62 @@
+{
+  "Pipedrive": {
+    "classified": "CRM",
+    "dataset": "CRM"
+  },
+  "Wrike": {
+    "classified": "Project Management",
+    "dataset": "Project Management"
+  },
+  "Help Scout": {
+    "classified": "Help Desk",
+    "dataset": "Help Desk"
+  },
+  "Brevo": {
+    "classified": "Marketing",
+    "dataset": "Marketing"
+  },
+  "Namely": {
+    "classified": "HR",
+    "dataset": "HR"
+  },
+  "Freshsales": {
+    "classified": "CRM",
+    "dataset": "CRM"
+  },
+  "Zoho CRM": {
+    "classified": "CRM",
+    "dataset": "CRM"
+  },
+  "Looker": {
+    "classified": "Analytics & BI",
+    "dataset": "Analytics & BI"
+  },
+  "Basecamp": {
+    "classified": "Project Management",
+    "dataset": "Project Management"
+  },
+  "LiveAgent": {
+    "classified": "Help Desk",
+    "dataset": "Help Desk"
+  },
+  "Zoho Desk": {
+    "classified": "Help Desk",
+    "dataset": "Help Desk"
+  },
+  "Klaviyo": {
+    "classified": "Marketing",
+    "dataset": "Marketing"
+  },
+  "BigCommerce": {
+    "classified": "eCommerce",
+    "dataset": "eCommerce"
+  },
+  "Smartsheet": {
+    "classified": "Project Management",
+    "dataset": "Project Management"
+  },
+  "Freshdesk": {
+    "classified": "Help Desk",
+    "dataset": "Help Desk"
+  }
+}

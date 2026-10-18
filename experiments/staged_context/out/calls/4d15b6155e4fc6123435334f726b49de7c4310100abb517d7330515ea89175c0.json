@@ -1,0 +1,21 @@
+{
+  "stage": "mcp_classify",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4d15b6155e4fc6123435334f726b49de7c4310100abb517d7330515ea89175c0",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 256,
+  "input_tokens": 974,
+  "output_tokens": 234,
+  "cost_usd": 0.0008772000000000001,
+  "elapsed_s": 1.92,
+  "error": null,
+  "text": "{\n  \"category\": \"HR\",\n  \"product_name\": \"Namely\"\n}",
+  "json": {
+    "category": "HR",
+    "product_name": "Namely"
+  },
+  "ts": "2026-10-18T04:41:40.863453+00:00"
+}

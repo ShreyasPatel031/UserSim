@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "edc700e60e2482edef6956cd11e9da19c44230f32af3899480b5a78bef13a4ab",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 215,
+  "output_tokens": 520,
+  "cost_usd": 0.0013644999999999998,
+  "elapsed_s": 21.61,
+  "error": null,
+  "text": "{\n  \"task\": \"Run successful mail campaigns\",\n  \"benefits\": [\n    \"Provides drag & drop email builder, forms, automation, contact management, and list segmentation\",\n    \"Offers all necessary features\",\n    \"Has a competitive price\"\n  ],\n  \"frictions\": [\n    \"Difficulty editing mobile version font styles\",\n    \"Branding options lack flexibility for multiple scenarios\"\n  ]\n}",
+  "json": {
+    "task": "Run successful mail campaigns",
+    "benefits": [
+      "Provides drag & drop email builder, forms, automation, contact management, and list segmentation",
+      "Offers all necessary features",
+      "Has a competitive price"
+    ],
+    "frictions": [
+      "Difficulty editing mobile version font styles",
+      "Branding options lack flexibility for multiple scenarios"
+    ]
+  },
+  "ts": "2026-10-18T04:41:30.455961+00:00"
+}

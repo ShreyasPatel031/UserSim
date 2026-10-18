@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e8731c21a2f752a153af7ea2a5a768d83a0b3f1ad148a35eaf6a8f635c601b97",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1094,
+  "output_tokens": 998,
+  "cost_usd": 0.0028231999999999997,
+  "elapsed_s": 6.78,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Centralized employee data management\",\n    \"Intuitive interface for HR tasks\",\n    \"Streamlined access to essential information\"\n  ],\n  \"cons\": [\n    \"Initial learning curve for new users\",\n    \"Reporting features could be more robust\",\n    \"Occasional minor glitches or slower performance\"\n  ],\n  \"overall_experience\": \"This Account Executive likely found Namely to be a highly effective tool for managing employee information, appreciating its ease of use and comprehensive functionality. While generally positive, the user might have encountered some initial challenges during the setup phase or wished for more advanced reporting capabilities. Despite these minor points, the overall experience was very satisfactory, leading to a strong recommendation.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Centralized employee data management",
+      "Intuitive interface for HR tasks",
+      "Streamlined access to essential information"
+    ],
+    "cons": [
+      "Initial learning curve for new users",
+      "Reporting features could be more robust",
+      "Occasional minor glitches or slower performance"
+    ],
+    "overall_experience": "This Account Executive likely found Namely to be a highly effective tool for managing employee information, appreciating its ease of use and comprehensive functionality. While generally positive, the user might have encountered some initial challenges during the setup phase or wished for more advanced reporting capabilities. Despite these minor points, the overall experience was very satisfactory, leading to a strong recommendation."
+  },
+  "ts": "2026-10-18T04:43:41.636981+00:00"
+}

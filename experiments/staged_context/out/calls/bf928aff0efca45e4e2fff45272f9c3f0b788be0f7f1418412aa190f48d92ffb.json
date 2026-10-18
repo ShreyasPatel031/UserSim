@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "bf928aff0efca45e4e2fff45272f9c3f0b788be0f7f1418412aa190f48d92ffb",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 266,
+  "output_tokens": 970,
+  "cost_usd": 0.0025048,
+  "elapsed_s": 7.24,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Robust e-commerce segmentation and automation flows\",\n    \"Effective in driving sales for fashion e-commerce\",\n    \"Detailed analytics and reporting capabilities\"\n  ],\n  \"cons\": [\n    \"Can become expensive with a growing contact list\",\n    \"Initial learning curve for advanced features\",\n    \"Occasional UI quirks or specific customization needs\"\n  ],\n  \"overall_experience\": \"This Responsable Marketing likely found Klaviyo to be a highly effective and powerful platform for managing e-commerce campaigns in the apparel and fashion industry. After over two years of use, they would be proficient in leveraging its segmentation and automation capabilities to drive significant revenue. While appreciating its robust features, the cost as their audience scaled might be a point of consideration, but its performance justified continued use.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Robust e-commerce segmentation and automation flows",
+      "Effective in driving sales for fashion e-commerce",
+      "Detailed analytics and reporting capabilities"
+    ],
+    "cons": [
+      "Can become expensive with a growing contact list",
+      "Initial learning curve for advanced features",
+      "Occasional UI quirks or specific customization needs"
+    ],
+    "overall_experience": "This Responsable Marketing likely found Klaviyo to be a highly effective and powerful platform for managing e-commerce campaigns in the apparel and fashion industry. After over two years of use, they would be proficient in leveraging its segmentation and automation capabilities to drive significant revenue. While appreciating its robust features, the cost as their audience scaled might be a point of consideration, but its performance justified continued use."
+  },
+  "ts": "2026-10-18T04:44:05.916361+00:00"
+}

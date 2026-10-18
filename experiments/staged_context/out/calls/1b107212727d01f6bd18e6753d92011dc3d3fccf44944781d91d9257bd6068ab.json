@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1b107212727d01f6bd18e6753d92011dc3d3fccf44944781d91d9257bd6068ab",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1108,
+  "output_tokens": 1096,
+  "cost_usd": 0.0030724,
+  "elapsed_s": 7.53,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Streamlined HR data and benefits administration.\",\n    \"Intuitive employee self-service portal.\",\n    \"Comprehensive platform for core HR functions.\"\n  ],\n  \"cons\": [\n    \"Reporting features could be more customizable.\",\n    \"Occasional delays in customer support response.\",\n    \"Integration with other niche tools sometimes challenging.\"\n  ],\n  \"overall_experience\": \"This HR professional likely found Namely to be a highly effective solution for managing their company's HR and benefits needs, appreciating its user-friendly interface and robust core functionalities. While generally positive, some minor frustrations may have arisen concerning the flexibility of reporting or the responsiveness of customer support for complex issues. Overall, the platform significantly streamlined their daily HR tasks.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Streamlined HR data and benefits administration.",
+      "Intuitive employee self-service portal.",
+      "Comprehensive platform for core HR functions."
+    ],
+    "cons": [
+      "Reporting features could be more customizable.",
+      "Occasional delays in customer support response.",
+      "Integration with other niche tools sometimes challenging."
+    ],
+    "overall_experience": "This HR professional likely found Namely to be a highly effective solution for managing their company's HR and benefits needs, appreciating its user-friendly interface and robust core functionalities. While generally positive, some minor frustrations may have arisen concerning the flexibility of reporting or the responsiveness of customer support for complex issues. Overall, the platform significantly streamlined their daily HR tasks."
+  },
+  "ts": "2026-10-18T04:43:39.760863+00:00"
+}

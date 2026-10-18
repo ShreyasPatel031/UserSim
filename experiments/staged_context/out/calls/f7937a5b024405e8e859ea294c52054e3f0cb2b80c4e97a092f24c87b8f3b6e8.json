@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f7937a5b024405e8e859ea294c52054e3f0cb2b80c4e97a092f24c87b8f3b6e8",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2466,
+  "output_tokens": 1003,
+  "cost_usd": 0.0032473000000000003,
+  "elapsed_s": 7.35,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Ability to create projects with diverse workflows\",\n    \"Good for task tracking and team communication\",\n    \"Integrations with other tools\"\n  ],\n  \"cons\": [\n    \"Steeper learning curve for new users\",\n    \"Initial setup and customization can be complex\",\n    \"May require some time to optimize for specific needs\"\n  ],\n  \"overall_experience\": \"As a Student Brand Ambassador in Financial Services, this person likely found Wrike to be a powerful tool for managing different project workflows, appreciating its robust features for task organization and team collaboration. However, the initial experience might have involved a learning curve to fully grasp its capabilities and tailor it to their specific needs within the first six months. Despite the complexity, they would likely recognize its potential for efficient project management once configured.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Ability to create projects with diverse workflows",
+      "Good for task tracking and team communication",
+      "Integrations with other tools"
+    ],
+    "cons": [
+      "Steeper learning curve for new users",
+      "Initial setup and customization can be complex",
+      "May require some time to optimize for specific needs"
+    ],
+    "overall_experience": "As a Student Brand Ambassador in Financial Services, this person likely found Wrike to be a powerful tool for managing different project workflows, appreciating its robust features for task organization and team collaboration. However, the initial experience might have involved a learning curve to fully grasp its capabilities and tailor it to their specific needs within the first six months. Despite the complexity, they would likely recognize its potential for efficient project management once configured."
+  },
+  "ts": "2026-10-18T04:43:33.397103+00:00"
+}

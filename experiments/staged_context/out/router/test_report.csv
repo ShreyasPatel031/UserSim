@@ -1,0 +1,11 @@
+output,metric,agent_alone,router_pick,router,best_on_test,best_value,n
+ease_of_use_rating,error (lower better),0.8583333333333333,agent_averages,0.675,agent_full,0.6333333333333333,120
+functionality_rating,error (lower better),0.7166666666666667,agent_averages,0.5916666666666667,agent_full,0.5583333333333333,120
+overall_rating,error (lower better),0.9583333333333334,averages,0.5793749881123547,agent_averages,0.55,120
+value_for_money_rating,error (lower better),0.956989247311828,averages,0.6870015710587072,averages,0.6870015710587072,93
+customer_support_rating,error (lower better),1.2150537634408602,averages,0.7755750673573412,averages,0.7755750673573412,93
+recommendation_score,error (lower better),1.9243697478991597,averages,1.3444611810637563,agent_averages,1.326890756302521,119
+pros,share matched (higher better),0.3229166666666667,agent_alone,0.3229166666666667,agent_full,0.3819444444444445,120
+cons,share matched (higher better),0.21853741496598642,agent_full,0.2568027210884354,agent_full,0.2568027210884354,98
+overall_experience,share matched (higher better),0.1,agent_averages,0.225,agent_averages,0.225,120
+unhappy_risk,AUC (0.5 = chance),0.5114285714285715,agent_full,0.5825396825396826,agent_full,0.5825396825396826,120

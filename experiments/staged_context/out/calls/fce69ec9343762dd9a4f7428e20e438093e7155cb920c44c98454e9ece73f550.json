@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "fce69ec9343762dd9a4f7428e20e438093e7155cb920c44c98454e9ece73f550",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 218,
+  "output_tokens": 473,
+  "cost_usd": 0.0012479,
+  "elapsed_s": 21.97,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage tasks and priorities using an electronic to-do list\",\n  \"benefits\": [\n    \"Provides an electronic, searchable, updatable to-do list\",\n    \"Helps users stay on track\",\n    \"Helps keep an ongoing priority list\",\n    \"Allows mentioning team members to bring attention to updates\"\n  ],\n  \"frictions\": [\n    \"The scrollbar is too thin and difficult to grab with the mouse\"\n  ]\n}",
+  "json": {
+    "task": "Manage tasks and priorities using an electronic to-do list",
+    "benefits": [
+      "Provides an electronic, searchable, updatable to-do list",
+      "Helps users stay on track",
+      "Helps keep an ongoing priority list",
+      "Allows mentioning team members to bring attention to updates"
+    ],
+    "frictions": [
+      "The scrollbar is too thin and difficult to grab with the mouse"
+    ]
+  },
+  "ts": "2026-10-18T04:41:30.159863+00:00"
+}

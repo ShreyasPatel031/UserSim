@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "57f9574048db5ca30fe6cb8c369d92b933cf19b7a8a101d81b448c63830d4ca0",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 142,
+  "output_tokens": 455,
+  "cost_usd": 0.0011801000000000001,
+  "elapsed_s": 20.78,
+  "error": null,
+  "text": "{\n  \"task\": \"Perform sales analysis\",\n  \"benefits\": [\n    \"Sales analysis\",\n    \"Comfortable to handle\",\n    \"Easy to use\",\n    \"Understandable\"\n  ],\n  \"frictions\": [\n    \"Weekly sales format with feedback for peers is not available\"\n  ]\n}",
+  "json": {
+    "task": "Perform sales analysis",
+    "benefits": [
+      "Sales analysis",
+      "Comfortable to handle",
+      "Easy to use",
+      "Understandable"
+    ],
+    "frictions": [
+      "Weekly sales format with feedback for peers is not available"
+    ]
+  },
+  "ts": "2026-10-18T04:41:29.983835+00:00"
+}

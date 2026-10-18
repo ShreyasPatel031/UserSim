@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "166b2509ec2bdc5b2e24a441b1dceaa910daa3d7612d478056f0e2eadd36cbfc",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 216,
+  "output_tokens": 490,
+  "cost_usd": 0.0012898,
+  "elapsed_s": 21.06,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage customer relationships for a company\",\n  \"benefits\": [\n    \"massive amount of functionality\",\n    \"massive amount of customization\"\n  ],\n  \"frictions\": [\n    \"artificial limits that reduce functionality\",\n    \"customization is difficult\",\n    \"customization is timely\",\n    \"customer service is very poor\"\n  ]\n}",
+  "json": {
+    "task": "Manage customer relationships for a company",
+    "benefits": [
+      "massive amount of functionality",
+      "massive amount of customization"
+    ],
+    "frictions": [
+      "artificial limits that reduce functionality",
+      "customization is difficult",
+      "customization is timely",
+      "customer service is very poor"
+    ]
+  },
+  "ts": "2026-10-18T04:41:30.511530+00:00"
+}

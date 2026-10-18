@@ -1,0 +1,21 @@
+{
+  "stage": "mcp_classify",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c8a1196d8af212da84c1e374aaa7a75a2242a20a31cc5c59e3b74bac9a8106d5",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 256,
+  "input_tokens": 1925,
+  "output_tokens": 234,
+  "cost_usd": 0.0011625,
+  "elapsed_s": 2.07,
+  "error": null,
+  "text": "{\n  \"category\": \"Project Management\",\n  \"product_name\": \"Basecamp\"\n}",
+  "json": {
+    "category": "Project Management",
+    "product_name": "Basecamp"
+  },
+  "ts": "2026-10-18T04:41:39.685233+00:00"
+}

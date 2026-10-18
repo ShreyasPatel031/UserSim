@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d4b4a203b7794d75ac82fcb30127da6196216b4b3f48223b79eaffb9989891ba",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1087,
+  "output_tokens": 984,
+  "cost_usd": 0.0027861000000000006,
+  "elapsed_s": 9.86,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Effective sales pipeline visualization and management\",\n    \"Intuitive interface for tracking deals and client interactions\",\n    \"Customizable reporting features for performance analysis\"\n  ],\n  \"cons\": [\n    \"Some advanced features required a steeper learning curve\",\n    \"Integration limitations with specific legal-industry software\",\n    \"Occasional minor bugs in certain modules\"\n  ],\n  \"overall_experience\": \"The Information Technology Project Lead likely found Freshsales to be a highly effective tool for managing their legal firm's sales workflow over the 1-2 years of use. The platform's ease of use and robust functionality significantly streamlined their processes, making it a valuable asset. While generally positive, some advanced features or specific integrations might have presented minor challenges, but these did not detract significantly from an otherwise positive experience.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Effective sales pipeline visualization and management",
+      "Intuitive interface for tracking deals and client interactions",
+      "Customizable reporting features for performance analysis"
+    ],
+    "cons": [
+      "Some advanced features required a steeper learning curve",
+      "Integration limitations with specific legal-industry software",
+      "Occasional minor bugs in certain modules"
+    ],
+    "overall_experience": "The Information Technology Project Lead likely found Freshsales to be a highly effective tool for managing their legal firm's sales workflow over the 1-2 years of use. The platform's ease of use and robust functionality significantly streamlined their processes, making it a valuable asset. While generally positive, some advanced features or specific integrations might have presented minor challenges, but these did not detract significantly from an otherwise positive experience."
+  },
+  "ts": "2026-10-18T04:43:47.048298+00:00"
+}

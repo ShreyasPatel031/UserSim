@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "76fd176dc98158c942e5fc5344e7fc1dc031614f14826bcfbe8a510d093224a6",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2694,
+  "output_tokens": 1002,
+  "cost_usd": 0.0033132000000000005,
+  "elapsed_s": 6.81,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Comprehensive sales data management in one place\",\n    \"Effective lead tracking and conversion support\",\n    \"Customization options for sales workflows\"\n  ],\n  \"cons\": [\n    \"Potential for a learning curve in advanced setup\",\n    \"Occasional need for manual fiddling with integrations\",\n    \"Reporting might require some effort for specific needs\"\n  ],\n  \"overall_experience\": \"This Sales Manager, having used Freshsales for over two years to integrate and advance their CRM system, likely found it to be a capable tool. The platform generally met their needs for managing sales processes and tracking leads, with customization options being a key benefit. While the initial setup or advanced reporting might have presented some challenges, the overall functionality and support were sufficient to maintain long-term usage within their publishing company.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Comprehensive sales data management in one place",
+      "Effective lead tracking and conversion support",
+      "Customization options for sales workflows"
+    ],
+    "cons": [
+      "Potential for a learning curve in advanced setup",
+      "Occasional need for manual fiddling with integrations",
+      "Reporting might require some effort for specific needs"
+    ],
+    "overall_experience": "This Sales Manager, having used Freshsales for over two years to integrate and advance their CRM system, likely found it to be a capable tool. The platform generally met their needs for managing sales processes and tracking leads, with customization options being a key benefit. While the initial setup or advanced reporting might have presented some challenges, the overall functionality and support were sufficient to maintain long-term usage within their publishing company."
+  },
+  "ts": "2026-10-18T04:43:42.073240+00:00"
+}

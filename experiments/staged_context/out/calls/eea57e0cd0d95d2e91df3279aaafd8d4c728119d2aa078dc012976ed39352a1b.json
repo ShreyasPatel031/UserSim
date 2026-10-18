@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "eea57e0cd0d95d2e91df3279aaafd8d4c728119d2aa078dc012976ed39352a1b",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1073,
+  "output_tokens": 1044,
+  "cost_usd": 0.0029319,
+  "elapsed_s": 6.18,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Intuitive spreadsheet-like interface for project tracking\",\n    \"Robust project management features like Gantt charts\",\n    \"Effective for collaborating with clients or students\"\n  ],\n  \"cons\": [\n    \"Can be more expensive than alternatives for a small business\",\n    \"Initial setup and customization might require a learning curve\",\n    \"Might offer more features than needed for simpler tasks\"\n  ],\n  \"overall_experience\": \"This career coach and instructor likely found Smartsheet to be a highly functional tool for managing their e-learning projects and client workflows. Its familiar interface and robust project management features were a significant improvement over previous, potentially more complex or less specialized, alternatives. While they appreciated its capabilities, the value for money for a small business may have been a minor consideration.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Intuitive spreadsheet-like interface for project tracking",
+      "Robust project management features like Gantt charts",
+      "Effective for collaborating with clients or students"
+    ],
+    "cons": [
+      "Can be more expensive than alternatives for a small business",
+      "Initial setup and customization might require a learning curve",
+      "Might offer more features than needed for simpler tasks"
+    ],
+    "overall_experience": "This career coach and instructor likely found Smartsheet to be a highly functional tool for managing their e-learning projects and client workflows. Its familiar interface and robust project management features were a significant improvement over previous, potentially more complex or less specialized, alternatives. While they appreciated its capabilities, the value for money for a small business may have been a minor consideration."
+  },
+  "ts": "2026-10-18T04:44:10.022892+00:00"
+}

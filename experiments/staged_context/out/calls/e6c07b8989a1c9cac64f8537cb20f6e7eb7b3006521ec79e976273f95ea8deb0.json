@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e6c07b8989a1c9cac64f8537cb20f6e7eb7b3006521ec79e976273f95ea8deb0",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1092,
+  "output_tokens": 1071,
+  "cost_usd": 0.0030050999999999997,
+  "elapsed_s": 6.96,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Found the interface intuitive and easy to navigate for managing customer interactions.\",\n    \"Appreciated the robust ticket management and automation features, improving workflow efficiency.\",\n    \"Valued its scalability and cost-effectiveness for a growing mid-sized company.\"\n  ],\n  \"cons\": [\n    \"Experienced occasional limitations when integrating with non-Zoho marketing tools.\",\n    \"Felt the reporting capabilities could be more tailored to specific marketing campaign insights.\",\n    \"Encountered a slight learning curve for advanced features and customization options.\"\n  ],\n  \"overall_experience\": \"The Marketing Specialist generally had a very positive experience with Zoho Desk over 1-2 years. They found it to be an intuitive and efficient platform for managing customer inquiries, which was crucial for their role in the Food & Beverages industry. While functionality was strong, they noted some areas for improvement in integrations and marketing-specific reporting.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Found the interface intuitive and easy to navigate for managing customer interactions.",
+      "Appreciated the robust ticket management and automation features, improving workflow efficiency.",
+      "Valued its scalability and cost-effectiveness for a growing mid-sized company."
+    ],
+    "cons": [
+      "Experienced occasional limitations when integrating with non-Zoho marketing tools.",
+      "Felt the reporting capabilities could be more tailored to specific marketing campaign insights.",
+      "Encountered a slight learning curve for advanced features and customization options."
+    ],
+    "overall_experience": "The Marketing Specialist generally had a very positive experience with Zoho Desk over 1-2 years. They found it to be an intuitive and efficient platform for managing customer inquiries, which was crucial for their role in the Food & Beverages industry. While functionality was strong, they noted some areas for improvement in integrations and marketing-specific reporting."
+  },
+  "ts": "2026-10-18T04:44:01.527774+00:00"
+}

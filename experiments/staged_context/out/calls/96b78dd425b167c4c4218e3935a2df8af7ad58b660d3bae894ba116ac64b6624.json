@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "96b78dd425b167c4c4218e3935a2df8af7ad58b660d3bae894ba116ac64b6624",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 190,
+  "output_tokens": 521,
+  "cost_usd": 0.0013594999999999998,
+  "elapsed_s": 20.2,
+  "error": null,
+  "text": "{\n  \"task\": \"Monitor business operations and share knowledge within a company\",\n  \"benefits\": [\n    \"Provides a turn-key solution for business monitoring\",\n    \"Facilitates knowledge sharing\",\n    \"Offers great support\",\n    \"Provides good value for money\"\n  ],\n  \"frictions\": [\n    \"Text editing bold option is not working\"\n  ]\n}",
+  "json": {
+    "task": "Monitor business operations and share knowledge within a company",
+    "benefits": [
+      "Provides a turn-key solution for business monitoring",
+      "Facilitates knowledge sharing",
+      "Offers great support",
+      "Provides good value for money"
+    ],
+    "frictions": [
+      "Text editing bold option is not working"
+    ]
+  },
+  "ts": "2026-10-18T04:41:30.461990+00:00"
+}

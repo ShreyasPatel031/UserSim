@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "db5a892b9cbee1cbed6478b285fe59375db17910e3011a7be53f7eb481b155f7",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2571,
+  "output_tokens": 1091,
+  "cost_usd": 0.0034988,
+  "elapsed_s": 7.75,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Effective visual pipeline for managing deals\",\n    \"Streamlines sales process for small teams\",\n    \"Good for organizing contacts and activities\"\n  ],\n  \"cons\": [\n    \"Pricing can become expensive as the team or features scale\",\n    \"Customer support can sometimes be slow or unhelpful\",\n    \"Customization options might be limited compared to competitors\"\n  ],\n  \"overall_experience\": \"As a founder of a small marketing agency, this user likely found Pipedrive to be a straightforward and effective tool for managing their sales pipeline. While the visual pipeline and core sales features were beneficial for organization and tracking, they probably encountered frustrations with its cost as their needs grew or with the responsiveness of customer support. The platform served its primary purpose, but its value proposition might have diminished over time due to scaling costs or lack of advanced customization.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Effective visual pipeline for managing deals",
+      "Streamlines sales process for small teams",
+      "Good for organizing contacts and activities"
+    ],
+    "cons": [
+      "Pricing can become expensive as the team or features scale",
+      "Customer support can sometimes be slow or unhelpful",
+      "Customization options might be limited compared to competitors"
+    ],
+    "overall_experience": "As a founder of a small marketing agency, this user likely found Pipedrive to be a straightforward and effective tool for managing their sales pipeline. While the visual pipeline and core sales features were beneficial for organization and tracking, they probably encountered frustrations with its cost as their needs grew or with the responsiveness of customer support. The platform served its primary purpose, but its value proposition might have diminished over time due to scaling costs or lack of advanced customization."
+  },
+  "ts": "2026-10-18T04:43:30.970982+00:00"
+}

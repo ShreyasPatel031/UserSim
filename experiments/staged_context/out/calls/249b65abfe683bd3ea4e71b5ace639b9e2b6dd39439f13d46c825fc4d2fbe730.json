@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "249b65abfe683bd3ea4e71b5ace639b9e2b6dd39439f13d46c825fc4d2fbe730",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2619,
+  "output_tokens": 1051,
+  "cost_usd": 0.0034132,
+  "elapsed_s": 7.86,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Successfully centralized all communication channels\",\n    \"Improved team efficiency and visibility into customer interactions\",\n    \"Streamlined customer support and sales inquiries\"\n  ],\n  \"cons\": [\n    \"Initial setup and advanced customization required some effort\",\n    \"Reporting features could be more tailored for sales performance metrics\",\n    \"Occasional minor performance issues with a high volume of concurrent chats\"\n  ],\n  \"overall_experience\": \"This Sales Supervisor found LiveAgent highly effective in centralizing their company's diverse communication channels, significantly improving overall team efficiency. The platform's ability to unify various touchpoints was a key benefit, although they noted that initial configuration and advanced customization required some effort. Despite minor frustrations with reporting capabilities for specific sales metrics, the supervisor generally had a positive experience and saw value in the solution.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Successfully centralized all communication channels",
+      "Improved team efficiency and visibility into customer interactions",
+      "Streamlined customer support and sales inquiries"
+    ],
+    "cons": [
+      "Initial setup and advanced customization required some effort",
+      "Reporting features could be more tailored for sales performance metrics",
+      "Occasional minor performance issues with a high volume of concurrent chats"
+    ],
+    "overall_experience": "This Sales Supervisor found LiveAgent highly effective in centralizing their company's diverse communication channels, significantly improving overall team efficiency. The platform's ability to unify various touchpoints was a key benefit, although they noted that initial configuration and advanced customization required some effort. Despite minor frustrations with reporting capabilities for specific sales metrics, the supervisor generally had a positive experience and saw value in the solution."
+  },
+  "ts": "2026-10-18T04:43:59.555591+00:00"
+}

@@ -1,0 +1,27 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "721566c4495da76e21db3d1f4b3d710527e0cd2d4b69af9744a00c077eef1e56",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 147,
+  "output_tokens": 425,
+  "cost_usd": 0.0011066,
+  "elapsed_s": 20.68,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage leads.\",\n  \"benefits\": [\n    \"Provide a great platform\",\n    \"Offer good support\",\n    \"Provide workflows\",\n    \"Allow customization of fields\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Manage leads.",
+    "benefits": [
+      "Provide a great platform",
+      "Offer good support",
+      "Provide workflows",
+      "Allow customization of fields"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T04:41:30.202706+00:00"
+}

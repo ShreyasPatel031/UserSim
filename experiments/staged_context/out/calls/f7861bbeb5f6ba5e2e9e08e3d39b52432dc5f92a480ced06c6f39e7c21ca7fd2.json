@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f7861bbeb5f6ba5e2e9e08e3d39b52432dc5f92a480ced06c6f39e7c21ca7fd2",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 261,
+  "output_tokens": 1001,
+  "cost_usd": 0.0025808,
+  "elapsed_s": 8.27,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Simple interface for managing tasks and to-do lists.\",\n    \"Centralized communication through message boards and Campfire.\",\n    \"Good for tracking project milestones and deadlines.\"\n  ],\n  \"cons\": [\n    \"Lacked advanced reporting or detailed project analytics.\",\n    \"Could feel limited for complex dependency management.\",\n    \"Integrations with specialized research software were not robust.\"\n  ],\n  \"overall_experience\": \"The Clinical Research Coordinator found Basecamp to be a straightforward tool for managing daily tasks and team communication. Its simplicity was appreciated for basic project coordination, though the lack of advanced features and reporting made it less ideal for the full scope of complex research studies. It served its purpose adequately for tracking statuses over the six to twelve months of use.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 3,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 6,
+    "pros": [
+      "Simple interface for managing tasks and to-do lists.",
+      "Centralized communication through message boards and Campfire.",
+      "Good for tracking project milestones and deadlines."
+    ],
+    "cons": [
+      "Lacked advanced reporting or detailed project analytics.",
+      "Could feel limited for complex dependency management.",
+      "Integrations with specialized research software were not robust."
+    ],
+    "overall_experience": "The Clinical Research Coordinator found Basecamp to be a straightforward tool for managing daily tasks and team communication. Its simplicity was appreciated for basic project coordination, though the lack of advanced features and reporting made it less ideal for the full scope of complex research studies. It served its purpose adequately for tracking statuses over the six to twelve months of use."
+  },
+  "ts": "2026-10-18T04:43:54.506218+00:00"
+}

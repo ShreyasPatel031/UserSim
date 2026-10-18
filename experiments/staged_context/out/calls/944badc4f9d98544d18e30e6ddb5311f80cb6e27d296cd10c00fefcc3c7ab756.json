@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "944badc4f9d98544d18e30e6ddb5311f80cb6e27d296cd10c00fefcc3c7ab756",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1134,
+  "output_tokens": 979,
+  "cost_usd": 0.0027877,
+  "elapsed_s": 7.41,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 5,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Robust email marketing and automation features\",\n    \"Reliable delivery for daily communications\",\n    \"Scalable solution for a large organization\"\n  ],\n  \"cons\": [\n    \"Advanced integrations required some technical effort\",\n    \"Reporting could offer deeper customization for specific metrics\",\n    \"Occasional learning curve for complex workflows\"\n  ],\n  \"overall_experience\": \"This Sr. IT Manager likely experienced Brevo as a highly effective and reliable platform for managing daily communication and email marketing across their large educational institution. They would have appreciated its comprehensive features and scalability, which facilitated smooth operations. While generally very satisfied, minor frustrations might have arisen regarding the depth of reporting customization or the technical effort required for certain advanced integrations.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 5,
+    "recommendation_score": 9,
+    "pros": [
+      "Robust email marketing and automation features",
+      "Reliable delivery for daily communications",
+      "Scalable solution for a large organization"
+    ],
+    "cons": [
+      "Advanced integrations required some technical effort",
+      "Reporting could offer deeper customization for specific metrics",
+      "Occasional learning curve for complex workflows"
+    ],
+    "overall_experience": "This Sr. IT Manager likely experienced Brevo as a highly effective and reliable platform for managing daily communication and email marketing across their large educational institution. They would have appreciated its comprehensive features and scalability, which facilitated smooth operations. While generally very satisfied, minor frustrations might have arisen regarding the depth of reporting customization or the technical effort required for certain advanced integrations."
+  },
+  "ts": "2026-10-18T04:43:38.365540+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e74914d816afaf7a5874bf321e95a876ab23a49c46f19e87075ad09cce01ab18",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2599,
+  "output_tokens": 1030,
+  "cost_usd": 0.0033547,
+  "elapsed_s": 6.25,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Streamlined core HR and payroll processes for a small to medium-sized organization.\",\n    \"User-friendly interface for managing employee data and basic HR tasks.\",\n    \"Consolidated HR and payroll functions into a single platform.\"\n  ],\n  \"cons\": [\n    \"Reporting and analytics capabilities might be less robust than desired for strategic insights.\",\n    \"Some advanced HR functionalities or complex benefits administration could be limited.\",\n    \"Potential for occasional clunkiness in specific workflows or integrations.\"\n  ],\n  \"overall_experience\": \"This Head of People likely found Namely to be a generally effective solution for managing HR and payroll operations within their education institution. The platform offered a good balance of ease of use and core functionality, helping to streamline essential tasks. However, they may have encountered some limitations in advanced features or reporting capabilities, suggesting room for improvement in deeper customization or analytical tools.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Streamlined core HR and payroll processes for a small to medium-sized organization.",
+      "User-friendly interface for managing employee data and basic HR tasks.",
+      "Consolidated HR and payroll functions into a single platform."
+    ],
+    "cons": [
+      "Reporting and analytics capabilities might be less robust than desired for strategic insights.",
+      "Some advanced HR functionalities or complex benefits administration could be limited.",
+      "Potential for occasional clunkiness in specific workflows or integrations."
+    ],
+    "overall_experience": "This Head of People likely found Namely to be a generally effective solution for managing HR and payroll operations within their education institution. The platform offered a good balance of ease of use and core functionality, helping to streamline essential tasks. However, they may have encountered some limitations in advanced features or reporting capabilities, suggesting room for improvement in deeper customization or analytical tools."
+  },
+  "ts": "2026-10-18T04:43:40.317887+00:00"
+}

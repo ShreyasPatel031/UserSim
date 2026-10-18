@@ -1,0 +1,27 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "6d98b20579cf5a3bee45d68995dbfa6ac19056cf099bf3580473f83fa4105ee9",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 134,
+  "output_tokens": 375,
+  "cost_usd": 0.0009777,
+  "elapsed_s": 21.05,
+  "error": null,
+  "text": "{\n  \"task\": \"Use the ticket system to manage customer support\",\n  \"benefits\": [\n    \"Ticket system is very efficient\",\n    \"Helps solve client problems\"\n  ],\n  \"frictions\": [\n    \"Difficulty exporting data to another account\"\n  ]\n}",
+  "json": {
+    "task": "Use the ticket system to manage customer support",
+    "benefits": [
+      "Ticket system is very efficient",
+      "Helps solve client problems"
+    ],
+    "frictions": [
+      "Difficulty exporting data to another account"
+    ]
+  },
+  "ts": "2026-10-18T04:41:31.172903+00:00"
+}

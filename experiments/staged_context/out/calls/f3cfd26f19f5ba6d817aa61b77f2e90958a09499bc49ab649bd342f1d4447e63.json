@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f3cfd26f19f5ba6d817aa61b77f2e90958a09499bc49ab649bd342f1d4447e63",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 261,
+  "output_tokens": 1049,
+  "cost_usd": 0.0027007999999999997,
+  "elapsed_s": 8.24,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Efficiently tracks employee birthdays and anniversaries\",\n    \"Streamlined process for editing employee time cards\",\n    \"Generally intuitive interface for daily tasks\"\n  ],\n  \"cons\": [\n    \"Occasional delays in customer support response times\",\n    \"Some difficulty with advanced reporting features\",\n    \"Interface can be clunky when navigating between modules\"\n  ],\n  \"overall_experience\": \"This manager likely found Namely to be a reliable tool for their core responsibilities of managing employee time cards and tracking important milestones. While generally satisfied with its functionality and ease of use for these specific tasks, they may have encountered some frustrations with customer support or the platform's broader navigation. Their long-term usage suggests it adequately met their company's needs for over two years.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Efficiently tracks employee birthdays and anniversaries",
+      "Streamlined process for editing employee time cards",
+      "Generally intuitive interface for daily tasks"
+    ],
+    "cons": [
+      "Occasional delays in customer support response times",
+      "Some difficulty with advanced reporting features",
+      "Interface can be clunky when navigating between modules"
+    ],
+    "overall_experience": "This manager likely found Namely to be a reliable tool for their core responsibilities of managing employee time cards and tracking important milestones. While generally satisfied with its functionality and ease of use for these specific tasks, they may have encountered some frustrations with customer support or the platform's broader navigation. Their long-term usage suggests it adequately met their company's needs for over two years."
+  },
+  "ts": "2026-10-18T04:43:40.776515+00:00"
+}

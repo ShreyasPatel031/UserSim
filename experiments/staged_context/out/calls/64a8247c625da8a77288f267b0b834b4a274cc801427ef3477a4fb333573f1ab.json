@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "64a8247c625da8a77288f267b0b834b4a274cc801427ef3477a4fb333573f1ab",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2577,
+  "output_tokens": 1105,
+  "cost_usd": 0.0035356000000000003,
+  "elapsed_s": 6.97,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 5,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Efficiently manages customer support interactions from various channels\",\n    \"Intuitive and easy-to-use interface for quick adoption\",\n    \"Robust ticketing system with good historical tracking\"\n  ],\n  \"cons\": [\n    \"Potential for a steep learning curve for advanced features\",\n    \"Reporting and analytics capabilities could be more comprehensive\",\n    \"Customization options might be limited compared to expectations\"\n  ],\n  \"overall_experience\": \"The Support Services Analyst likely found Freshdesk to be a highly effective tool for managing customer support within their higher education institution. They appreciated its ease of use and comprehensive ticketing system, which streamlined their daily tasks. While generally positive, they may have encountered some limitations regarding deeper customization or advanced reporting features.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 5,
+    "recommendation_score": 9,
+    "pros": [
+      "Efficiently manages customer support interactions from various channels",
+      "Intuitive and easy-to-use interface for quick adoption",
+      "Robust ticketing system with good historical tracking"
+    ],
+    "cons": [
+      "Potential for a steep learning curve for advanced features",
+      "Reporting and analytics capabilities could be more comprehensive",
+      "Customization options might be limited compared to expectations"
+    ],
+    "overall_experience": "The Support Services Analyst likely found Freshdesk to be a highly effective tool for managing customer support within their higher education institution. They appreciated its ease of use and comprehensive ticketing system, which streamlined their daily tasks. While generally positive, they may have encountered some limitations regarding deeper customization or advanced reporting features."
+  },
+  "ts": "2026-10-18T04:44:14.488484+00:00"
+}

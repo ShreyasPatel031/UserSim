@@ -1,0 +1,32 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "884e799e5a2e0a62b05d8c29ef0794ad0101dcdd74bbfc23815a789900bbb3e7",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 225,
+  "output_tokens": 506,
+  "cost_usd": 0.0013325000000000001,
+  "elapsed_s": 21.78,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage employee records and related data\",\n  \"benefits\": [\n    \"View employee records\",\n    \"Find performance data\",\n    \"Find compensation data\",\n    \"Find bonus and team allocation data\"\n  ],\n  \"frictions\": [\n    \"Software is glitchy, especially when integrated with other software\",\n    \"Features stop working without notification\",\n    \"Issues with W2s\",\n    \"Not flexible enough for mid-size or larger organizations\"\n  ]\n}",
+  "json": {
+    "task": "Manage employee records and related data",
+    "benefits": [
+      "View employee records",
+      "Find performance data",
+      "Find compensation data",
+      "Find bonus and team allocation data"
+    ],
+    "frictions": [
+      "Software is glitchy, especially when integrated with other software",
+      "Features stop working without notification",
+      "Issues with W2s",
+      "Not flexible enough for mid-size or larger organizations"
+    ]
+  },
+  "ts": "2026-10-18T04:41:30.740768+00:00"
+}

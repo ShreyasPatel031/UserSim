@@ -1,0 +1,27 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "61210c2eebbf6106f1f9b45c5e7bb1e1502c25095dcf1ecb25b883ffd2b39b01",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 156,
+  "output_tokens": 446,
+  "cost_usd": 0.0011618000000000002,
+  "elapsed_s": 21.0,
+  "error": null,
+  "text": "{\n  \"task\": \"Conclude purchases.\",\n  \"benefits\": [\n    \"Conclude multiple purchases\",\n    \"Strong CRM foundation\"\n  ],\n  \"frictions\": [\n    \"Bugs multiple times\"\n  ]\n}",
+  "json": {
+    "task": "Conclude purchases.",
+    "benefits": [
+      "Conclude multiple purchases",
+      "Strong CRM foundation"
+    ],
+    "frictions": [
+      "Bugs multiple times"
+    ]
+  },
+  "ts": "2026-10-18T04:41:30.360591+00:00"
+}

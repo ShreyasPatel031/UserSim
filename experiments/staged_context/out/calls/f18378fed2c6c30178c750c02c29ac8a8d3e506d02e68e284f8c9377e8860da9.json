@@ -1,0 +1,31 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f18378fed2c6c30178c750c02c29ac8a8d3e506d02e68e284f8c9377e8860da9",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 182,
+  "output_tokens": 469,
+  "cost_usd": 0.0012270999999999998,
+  "elapsed_s": 21.0,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage HR and benefits.\",\n  \"benefits\": [\n    \"Software is streamlined\",\n    \"Software is easy to use\",\n    \"Great account reps\",\n    \"Great customer service\"\n  ],\n  \"frictions\": [\n    \"Insufficient training on certain functions\",\n    \"Brokers/benefits team performed poorly\",\n    \"Brokers/benefits team negatively affected employees\"\n  ]\n}",
+  "json": {
+    "task": "Manage HR and benefits.",
+    "benefits": [
+      "Software is streamlined",
+      "Software is easy to use",
+      "Great account reps",
+      "Great customer service"
+    ],
+    "frictions": [
+      "Insufficient training on certain functions",
+      "Brokers/benefits team performed poorly",
+      "Brokers/benefits team negatively affected employees"
+    ]
+  },
+  "ts": "2026-10-18T04:41:29.873920+00:00"
+}

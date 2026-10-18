@@ -59,3 +59,19 @@ model call is cached by request hash in `out/calls/` and logged (tokens, cost, e
   hidden titles and predicted segments. Unmatched titles become `unknown` and are excluded from the denominator.
 - **Uncertainty**: within-product paired review bootstrap (`out/bootstrap.json`). This is conditional on the 20 sampled
   reviews and says nothing about other products.
+
+## Product-experience MCP (`ux_mcp_server.py`)
+
+One tool, `predict_experience(product_url, job_title, industry, company_size, time_used, task, previous_product)`.
+It classifies the product page into a Capterra category, then returns, for each output, whatever tested best on
+held-out products (`router_eval.py`, choices in `out/router/router.json`):
+
+- a ready estimate (people-like-them averages) for overall, value-for-money, support and recommend;
+- averages as context for ease, functionality and overall experience in words;
+- the full package (averages + competitor complaint rates + similar people's competitor reviews) for cons and unhappy risk;
+- nothing for pros (no data beat the agent on dev).
+
+```bash
+python experiments/staged_context/router_eval.py      # re-pick strategies on dev products, report on test products
+claude mcp add ux-experience -- python experiments/staged_context/ux_mcp_server.py
+```

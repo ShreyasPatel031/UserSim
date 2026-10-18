@@ -1,0 +1,31 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0cef06e46bec2d87be4b5bbc2d1edcc90d331c55c7ab9a2c51461d97e7ea30c3",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 283,
+  "output_tokens": 487,
+  "cost_usd": 0.0013024,
+  "elapsed_s": 22.43,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage projects and tasks for a team\",\n  \"benefits\": [\n    \"Highly customizable\",\n    \"Many different views and functionalities\",\n    \"Includes time logging, reporting, task dependencies, status changes, automation, and request forms\",\n    \"Can be tailored to personal needs and preferences\"\n  ],\n  \"frictions\": [\n    \"Lacks automatic timelog for all projects and tasks across all spaces\",\n    \"Lacks an easy archive option\",\n    \"Lacks a default time option of \\\"This Year\\\"\"\n  ]\n}",
+  "json": {
+    "task": "Manage projects and tasks for a team",
+    "benefits": [
+      "Highly customizable",
+      "Many different views and functionalities",
+      "Includes time logging, reporting, task dependencies, status changes, automation, and request forms",
+      "Can be tailored to personal needs and preferences"
+    ],
+    "frictions": [
+      "Lacks automatic timelog for all projects and tasks across all spaces",
+      "Lacks an easy archive option",
+      "Lacks a default time option of \"This Year\""
+    ]
+  },
+  "ts": "2026-10-18T04:41:30.572271+00:00"
+}

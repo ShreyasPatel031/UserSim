@@ -1,0 +1,21 @@
+{
+  "stage": "mcp_classify",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0ebd8210f091edc9aa674750b26fd765743419a4c5e0bfa93fc8e158234b3ebb",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 256,
+  "input_tokens": 1237,
+  "output_tokens": 244,
+  "cost_usd": 0.0009811,
+  "elapsed_s": 1.93,
+  "error": null,
+  "text": "{\n  \"category\": \"Project Management\",\n  \"product_name\": \"Wrike\"\n}",
+  "json": {
+    "category": "Project Management",
+    "product_name": "Wrike"
+  },
+  "ts": "2026-10-18T04:41:40.541396+00:00"
+}

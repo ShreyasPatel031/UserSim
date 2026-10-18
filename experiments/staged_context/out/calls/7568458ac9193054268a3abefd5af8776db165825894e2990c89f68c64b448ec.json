@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7568458ac9193054268a3abefd5af8776db165825894e2990c89f68c64b448ec",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1098,
+  "output_tokens": 972,
+  "cost_usd": 0.0027594,
+  "elapsed_s": 7.11,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Robust e-commerce features for managing products and sales.\",\n    \"Good scalability to support a growing online business.\",\n    \"Solid analytics and reporting tools for performance tracking.\"\n  ],\n  \"cons\": [\n    \"Pricing can be a bit high compared to some competitors.\",\n    \"Requires some technical understanding for advanced customization.\",\n    \"Limited flexibility in free theme options without coding.\"\n  ],\n  \"overall_experience\": \"This ecommerce analyst likely found BigCommerce to be a highly functional and scalable platform suitable for managing their company's online store. While appreciating its comprehensive features and analytical capabilities, they may have noted that its pricing and the need for some technical expertise for deeper customization were areas for consideration. Overall, their experience was positive, leading to a strong recommendation.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Robust e-commerce features for managing products and sales.",
+      "Good scalability to support a growing online business.",
+      "Solid analytics and reporting tools for performance tracking."
+    ],
+    "cons": [
+      "Pricing can be a bit high compared to some competitors.",
+      "Requires some technical understanding for advanced customization.",
+      "Limited flexibility in free theme options without coding."
+    ],
+    "overall_experience": "This ecommerce analyst likely found BigCommerce to be a highly functional and scalable platform suitable for managing their company's online store. While appreciating its comprehensive features and analytical capabilities, they may have noted that its pricing and the need for some technical expertise for deeper customization were areas for consideration. Overall, their experience was positive, leading to a strong recommendation."
+  },
+  "ts": "2026-10-18T04:44:06.615067+00:00"
+}

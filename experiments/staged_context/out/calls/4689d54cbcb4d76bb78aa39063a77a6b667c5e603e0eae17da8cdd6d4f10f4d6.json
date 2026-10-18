@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4689d54cbcb4d76bb78aa39063a77a6b667c5e603e0eae17da8cdd6d4f10f4d6",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1094,
+  "output_tokens": 1011,
+  "cost_usd": 0.0028556999999999996,
+  "elapsed_s": 6.52,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Successfully unified diverse communication channels\",\n    \"Enhanced visibility and management of customer interactions\",\n    \"Streamlined sales team's communication workflow\"\n  ],\n  \"cons\": [\n    \"Initial setup or integration with existing systems required effort\",\n    \"Advanced reporting or specific customization options were sometimes limited\",\n    \"Cost could escalate with additional features or higher user counts\"\n  ],\n  \"overall_experience\": \"This Sales Supervisor likely found LiveAgent to be a highly effective solution for centralizing all workplace communication channels. The platform significantly improved their ability to manage customer interactions and collaborate within their sales team. While generally positive, some initial setup complexities or limitations in advanced customization may have been noted.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Successfully unified diverse communication channels",
+      "Enhanced visibility and management of customer interactions",
+      "Streamlined sales team's communication workflow"
+    ],
+    "cons": [
+      "Initial setup or integration with existing systems required effort",
+      "Advanced reporting or specific customization options were sometimes limited",
+      "Cost could escalate with additional features or higher user counts"
+    ],
+    "overall_experience": "This Sales Supervisor likely found LiveAgent to be a highly effective solution for centralizing all workplace communication channels. The platform significantly improved their ability to manage customer interactions and collaborate within their sales team. While generally positive, some initial setup complexities or limitations in advanced customization may have been noted."
+  },
+  "ts": "2026-10-18T04:43:58.080784+00:00"
+}

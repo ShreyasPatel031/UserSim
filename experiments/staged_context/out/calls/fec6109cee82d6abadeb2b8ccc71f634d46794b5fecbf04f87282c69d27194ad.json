@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "fec6109cee82d6abadeb2b8ccc71f634d46794b5fecbf04f87282c69d27194ad",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1072,
+  "output_tokens": 1168,
+  "cost_usd": 0.0032416,
+  "elapsed_s": 7.51,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Efficient ticketing and automation for handling diverse logistics queries.\",\n    \"User-friendly interface, enabling quick adoption by a small customer service team.\",\n    \"Reliable performance and stability over more than two years of continuous use.\"\n  ],\n  \"cons\": [\n    \"Advanced customization for niche logistics integrations can be somewhat limited.\",\n    \"Reporting features, while adequate, might require more depth for highly specific operational insights.\",\n    \"Occasional minor bugs or performance slowdowns, as with most long-term software use.\"\n  ],\n  \"overall_experience\": \"This customer service professional likely had a highly positive experience with Freshdesk over their two-plus years of use. They found it to be an efficient and user-friendly tool, crucial for managing support operations within a small logistics company. While generally satisfied, they may have desired more advanced customization or deeper reporting capabilities specific to their industry.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Efficient ticketing and automation for handling diverse logistics queries.",
+      "User-friendly interface, enabling quick adoption by a small customer service team.",
+      "Reliable performance and stability over more than two years of continuous use."
+    ],
+    "cons": [
+      "Advanced customization for niche logistics integrations can be somewhat limited.",
+      "Reporting features, while adequate, might require more depth for highly specific operational insights.",
+      "Occasional minor bugs or performance slowdowns, as with most long-term software use."
+    ],
+    "overall_experience": "This customer service professional likely had a highly positive experience with Freshdesk over their two-plus years of use. They found it to be an efficient and user-friendly tool, crucial for managing support operations within a small logistics company. While generally satisfied, they may have desired more advanced customization or deeper reporting capabilities specific to their industry."
+  },
+  "ts": "2026-10-18T04:44:15.872960+00:00"
+}

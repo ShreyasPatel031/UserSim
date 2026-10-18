@@ -1,0 +1,31 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "6d3d915253663a61515d2c559c457e10e5962db48d4dd708e3ff6545c911d420",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 274,
+  "output_tokens": 527,
+  "cost_usd": 0.0013997,
+  "elapsed_s": 3.04,
+  "error": null,
+  "text": "{\n  \"task\": \"Set up products and integrate with Google Shopping.\",\n  \"benefits\": [\n    \"Operate an e-commerce store without needing to buy web hosting or install software.\",\n    \"Access a good amount of templates for store design.\",\n    \"Apply HTML and CSS styling for advanced customization.\",\n    \"Effectively set up products and integrate with Google Shopping.\"\n  ],\n  \"frictions\": [\n    \"Difficulty in evaluating and choosing the correct plan to avoid limitations.\",\n    \"Need to carefully review transaction fees and sales limits.\",\n    \"Required using Wordpress for coding and styling to strengthen the site.\"\n  ]\n}",
+  "json": {
+    "task": "Set up products and integrate with Google Shopping.",
+    "benefits": [
+      "Operate an e-commerce store without needing to buy web hosting or install software.",
+      "Access a good amount of templates for store design.",
+      "Apply HTML and CSS styling for advanced customization.",
+      "Effectively set up products and integrate with Google Shopping."
+    ],
+    "frictions": [
+      "Difficulty in evaluating and choosing the correct plan to avoid limitations.",
+      "Need to carefully review transaction fees and sales limits.",
+      "Required using Wordpress for coding and styling to strengthen the site."
+    ]
+  },
+  "ts": "2026-10-18T04:41:33.844020+00:00"
+}

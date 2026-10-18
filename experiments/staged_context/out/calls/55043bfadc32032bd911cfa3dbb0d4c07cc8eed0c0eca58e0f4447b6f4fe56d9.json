@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "55043bfadc32032bd911cfa3dbb0d4c07cc8eed0c0eca58e0f4447b6f4fe56d9",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 212,
+  "output_tokens": 521,
+  "cost_usd": 0.0013660999999999999,
+  "elapsed_s": 22.21,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage customer support interactions\",\n  \"benefits\": [\n    \"Pick up and use the software\",\n    \"Receive great support\",\n    \"Get prompt responses from support\"\n  ],\n  \"frictions\": [\n    \"Lacks many features compared to other products\",\n    \"Some existing features are too simplified\",\n    \"Requires reliance on other tools to complete tasks\"\n  ]\n}",
+  "json": {
+    "task": "Manage customer support interactions",
+    "benefits": [
+      "Pick up and use the software",
+      "Receive great support",
+      "Get prompt responses from support"
+    ],
+    "frictions": [
+      "Lacks many features compared to other products",
+      "Some existing features are too simplified",
+      "Requires reliance on other tools to complete tasks"
+    ]
+  },
+  "ts": "2026-10-18T04:41:30.480663+00:00"
+}

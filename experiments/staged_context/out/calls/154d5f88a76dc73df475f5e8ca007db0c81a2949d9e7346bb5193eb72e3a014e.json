@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "154d5f88a76dc73df475f5e8ca007db0c81a2949d9e7346bb5193eb72e3a014e",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 261,
+  "output_tokens": 1058,
+  "cost_usd": 0.0027232999999999997,
+  "elapsed_s": 8.17,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Ability to quickly view sales pipeline and lead performance data\",\n    \"Customizable dashboards for tracking individual BDR metrics\",\n    \"Improved understanding of target accounts and market trends\"\n  ],\n  \"cons\": [\n    \"Initial learning curve for a non-technical user\",\n    \"Can be slow when running complex queries or loading large dashboards\",\n    \"Reliance on internal data team for new data models or complex reports\"\n  ],\n  \"overall_experience\": \"The Business Development Representative found Looker to be a valuable tool for analyzing sales and lead data, despite a moderate initial learning curve. They appreciated the platform's ability to provide insights into their performance and market trends, which directly supported their daily tasks. While powerful, the BDR noted that accessing more complex data or custom reports often required assistance from their internal data team.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Ability to quickly view sales pipeline and lead performance data",
+      "Customizable dashboards for tracking individual BDR metrics",
+      "Improved understanding of target accounts and market trends"
+    ],
+    "cons": [
+      "Initial learning curve for a non-technical user",
+      "Can be slow when running complex queries or loading large dashboards",
+      "Reliance on internal data team for new data models or complex reports"
+    ],
+    "overall_experience": "The Business Development Representative found Looker to be a valuable tool for analyzing sales and lead data, despite a moderate initial learning curve. They appreciated the platform's ability to provide insights into their performance and market trends, which directly supported their daily tasks. While powerful, the BDR noted that accessing more complex data or custom reports often required assistance from their internal data team."
+  },
+  "ts": "2026-10-18T04:43:50.259104+00:00"
+}

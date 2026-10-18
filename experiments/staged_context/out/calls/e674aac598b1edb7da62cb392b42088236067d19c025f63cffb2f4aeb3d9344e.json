@@ -1,0 +1,31 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e674aac598b1edb7da62cb392b42088236067d19c025f63cffb2f4aeb3d9344e",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 230,
+  "output_tokens": 530,
+  "cost_usd": 0.001394,
+  "elapsed_s": 20.34,
+  "error": null,
+  "text": "{\n  \"task\": \"Add new leads and contacts\",\n  \"benefits\": [\n    \"easy to use\",\n    \"easy to set up\",\n    \"intuitive solutions for adding new leads and contacts\",\n    \"fast and reliable support\"\n  ],\n  \"frictions\": [\n    \"pricing structure\",\n    \"desire for unlimited users at a package price or basic price for 3-5 users\",\n    \"desire for a more specific price list/product list\"\n  ]\n}",
+  "json": {
+    "task": "Add new leads and contacts",
+    "benefits": [
+      "easy to use",
+      "easy to set up",
+      "intuitive solutions for adding new leads and contacts",
+      "fast and reliable support"
+    ],
+    "frictions": [
+      "pricing structure",
+      "desire for unlimited users at a package price or basic price for 3-5 users",
+      "desire for a more specific price list/product list"
+    ]
+  },
+  "ts": "2026-10-18T04:41:29.439605+00:00"
+}

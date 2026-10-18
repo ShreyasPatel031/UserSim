@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "21b5863eeea925acb084909e4919a3e486001c12e477e53c7a30819fbd697e0f",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2494,
+  "output_tokens": 1005,
+  "cost_usd": 0.0032607,
+  "elapsed_s": 6.61,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Effective for tracking sales and progress\",\n    \"Good range of features for a self-employed user\",\n    \"Affordable for a small operation\"\n  ],\n  \"cons\": [\n    \"Steep learning curve for initial setup\",\n    \"Customer support could be more responsive\",\n    \"Some features might be overkill for a sole proprietor\"\n  ],\n  \"overall_experience\": \"This self-employed researcher in Civil Engineering likely found Zoho CRM to be a functional tool for managing sales and progress, appreciating its core capabilities and value. However, the initial learning curve and occasional slowness in customer support might have presented some challenges during their first few months of use. Despite these minor frustrations, the product generally met their needs for a sole proprietorship.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Effective for tracking sales and progress",
+      "Good range of features for a self-employed user",
+      "Affordable for a small operation"
+    ],
+    "cons": [
+      "Steep learning curve for initial setup",
+      "Customer support could be more responsive",
+      "Some features might be overkill for a sole proprietor"
+    ],
+    "overall_experience": "This self-employed researcher in Civil Engineering likely found Zoho CRM to be a functional tool for managing sales and progress, appreciating its core capabilities and value. However, the initial learning curve and occasional slowness in customer support might have presented some challenges during their first few months of use. Despite these minor frustrations, the product generally met their needs for a sole proprietorship."
+  },
+  "ts": "2026-10-18T04:43:46.192107+00:00"
+}

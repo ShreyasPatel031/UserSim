@@ -1,0 +1,28 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "da0ac6c9332774763e31dd10d8bab3a1fde8449d53b52ae4108a4531b4f60880",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 183,
+  "output_tokens": 470,
+  "cost_usd": 0.0012299000000000001,
+  "elapsed_s": 21.6,
+  "error": null,
+  "text": "{\n  \"task\": \"Send multiple emails simultaneously\",\n  \"benefits\": [\n    \"Easy to use\",\n    \"Helpful\",\n    \"Send many emails at once\"\n  ],\n  \"frictions\": [\n    \"Limited number of free emails\"\n  ]\n}",
+  "json": {
+    "task": "Send multiple emails simultaneously",
+    "benefits": [
+      "Easy to use",
+      "Helpful",
+      "Send many emails at once"
+    ],
+    "frictions": [
+      "Limited number of free emails"
+    ]
+  },
+  "ts": "2026-10-18T04:41:30.253356+00:00"
+}

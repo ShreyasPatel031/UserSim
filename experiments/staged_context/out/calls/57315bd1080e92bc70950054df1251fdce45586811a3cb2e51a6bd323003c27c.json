@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "57315bd1080e92bc70950054df1251fdce45586811a3cb2e51a6bd323003c27c",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2364,
+  "output_tokens": 1065,
+  "cost_usd": 0.0033717,
+  "elapsed_s": 6.82,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"User-friendly interface for managing purchases\",\n    \"Effective for tracking deal progress\",\n    \"Good value for money compared to alternatives\"\n  ],\n  \"cons\": [\n    \"Limited customization options for specific workflows\",\n    \"Some integrations were not as seamless as desired\",\n    \"Occasional performance slowdowns\"\n  ],\n  \"overall_experience\": \"This assistant in a computer & network security company likely found Zoho CRM to be a generally effective tool for concluding purchases over their 6-12 months of use. They appreciated its ease of use and ability to track deals, finding it offered good value. However, they may have encountered frustrations with customization limitations, certain integrations, or occasional performance issues.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "User-friendly interface for managing purchases",
+      "Effective for tracking deal progress",
+      "Good value for money compared to alternatives"
+    ],
+    "cons": [
+      "Limited customization options for specific workflows",
+      "Some integrations were not as seamless as desired",
+      "Occasional performance slowdowns"
+    ],
+    "overall_experience": "This assistant in a computer & network security company likely found Zoho CRM to be a generally effective tool for concluding purchases over their 6-12 months of use. They appreciated its ease of use and ability to track deals, finding it offered good value. However, they may have encountered frustrations with customization limitations, certain integrations, or occasional performance issues."
+  },
+  "ts": "2026-10-18T04:43:46.164824+00:00"
+}

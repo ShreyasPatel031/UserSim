@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "60f89bff740a9b7143bef77c5675192c2bf8dc0e2577c063dfbeff6494ad1da9",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1077,
+  "output_tokens": 1043,
+  "cost_usd": 0.0029306000000000002,
+  "elapsed_s": 7.54,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Efficiently manages customer communication and support tickets.\",\n    \"Provides clear oversight for team performance and customer interactions.\",\n    \"User-friendly interface makes it easy for the team to adopt.\"\n  ],\n  \"cons\": [\n    \"Limited native functionality for managing or integrating presentation workflows.\",\n    \"Customization for animation-specific visual asset handling could be improved.\",\n    \"Pricing tiers might become less cost-effective as the team scales.\"\n  ],\n  \"overall_experience\": \"This manager found Freshdesk to be a solid solution for streamlining customer communication within their animation studio. While it excelled at core support tasks and offered good oversight, they likely encountered limitations when trying to incorporate presentation management into their workflow. The product delivered good value, but specific industry needs might have led to some frustrations.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 7,
+    "pros": [
+      "Efficiently manages customer communication and support tickets.",
+      "Provides clear oversight for team performance and customer interactions.",
+      "User-friendly interface makes it easy for the team to adopt."
+    ],
+    "cons": [
+      "Limited native functionality for managing or integrating presentation workflows.",
+      "Customization for animation-specific visual asset handling could be improved.",
+      "Pricing tiers might become less cost-effective as the team scales."
+    ],
+    "overall_experience": "This manager found Freshdesk to be a solid solution for streamlining customer communication within their animation studio. While it excelled at core support tasks and offered good oversight, they likely encountered limitations when trying to incorporate presentation management into their workflow. The product delivered good value, but specific industry needs might have led to some frustrations."
+  },
+  "ts": "2026-10-18T04:44:13.707858+00:00"
+}

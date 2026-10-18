@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "89a1060d58c844a2f49b174d411420624dbe4aa38af82e1e40b479f6842baeaf",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1079,
+  "output_tokens": 1067,
+  "cost_usd": 0.0029912000000000003,
+  "elapsed_s": 9.74,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Efficiently tracks goods arrival dates and status.\",\n    \"Customizable columns for specific delivery details.\",\n    \"Automated alerts for impending arrivals or delays.\"\n  ],\n  \"cons\": [\n    \"Initial setup can be time-consuming for detailed tracking sheets.\",\n    \"Interface might feel overwhelming for basic users at first.\",\n    \"Reporting features could be more intuitive for quick overviews.\"\n  ],\n  \"overall_experience\": \"This Account Manager likely found Smartsheet to be a highly effective tool for their specific need of tracking medical device arrival times. Its customizable sheet structure and automation capabilities would have significantly streamlined their process. While there may have been a slight learning curve or minor frustrations with advanced reporting, the core functionality for their task was very well-suited and delivered good value.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Efficiently tracks goods arrival dates and status.",
+      "Customizable columns for specific delivery details.",
+      "Automated alerts for impending arrivals or delays."
+    ],
+    "cons": [
+      "Initial setup can be time-consuming for detailed tracking sheets.",
+      "Interface might feel overwhelming for basic users at first.",
+      "Reporting features could be more intuitive for quick overviews."
+    ],
+    "overall_experience": "This Account Manager likely found Smartsheet to be a highly effective tool for their specific need of tracking medical device arrival times. Its customizable sheet structure and automation capabilities would have significantly streamlined their process. While there may have been a slight learning curve or minor frustrations with advanced reporting, the core functionality for their task was very well-suited and delivered good value."
+  },
+  "ts": "2026-10-18T04:44:13.411138+00:00"
+}

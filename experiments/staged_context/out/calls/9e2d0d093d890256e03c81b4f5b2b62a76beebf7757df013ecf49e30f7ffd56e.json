@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9e2d0d093d890256e03c81b4f5b2b62a76beebf7757df013ecf49e30f7ffd56e",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 200,
+  "output_tokens": 491,
+  "cost_usd": 0.0012875,
+  "elapsed_s": 22.01,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage marketing communications\",\n  \"benefits\": [\n    \"Clarity\",\n    \"Modern tool\",\n    \"Better feel\",\n    \"Good design\"\n  ],\n  \"frictions\": [\n    \"Cannot track when customers open an email\"\n  ]\n}",
+  "json": {
+    "task": "Manage marketing communications",
+    "benefits": [
+      "Clarity",
+      "Modern tool",
+      "Better feel",
+      "Good design"
+    ],
+    "frictions": [
+      "Cannot track when customers open an email"
+    ]
+  },
+  "ts": "2026-10-18T04:41:30.752056+00:00"
+}

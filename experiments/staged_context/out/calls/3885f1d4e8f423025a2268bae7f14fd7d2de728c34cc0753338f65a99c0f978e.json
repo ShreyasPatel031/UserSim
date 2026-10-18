@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3885f1d4e8f423025a2268bae7f14fd7d2de728c34cc0753338f65a99c0f978e",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2577,
+  "output_tokens": 1058,
+  "cost_usd": 0.0034181,
+  "elapsed_s": 7.78,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Robust features for project timelines and resourcing management\",\n    \"Streamlined and customizable review and approval workflows\",\n    \"Enhanced visibility and collaboration across creative teams\"\n  ],\n  \"cons\": [\n    \"Can have a steep learning curve for new users due to extensive features\",\n    \"Potential for complex setup and ongoing customization requirements\",\n    \"Occasional performance issues with very large projects or numerous users\"\n  ],\n  \"overall_experience\": \"The Manager of Creative Operations likely experienced Wrike as a powerful and highly functional platform, significantly improving their ability to manage complex project timelines, resource allocation, and creative review processes. The transition from Trello provided a substantial upgrade in capabilities, enabling greater control and visibility for their team. While the initial learning curve and extensive customization options could be challenging, the benefits of its robust feature set for creative operations in a mid-sized company outweighed these difficulties.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Robust features for project timelines and resourcing management",
+      "Streamlined and customizable review and approval workflows",
+      "Enhanced visibility and collaboration across creative teams"
+    ],
+    "cons": [
+      "Can have a steep learning curve for new users due to extensive features",
+      "Potential for complex setup and ongoing customization requirements",
+      "Occasional performance issues with very large projects or numerous users"
+    ],
+    "overall_experience": "The Manager of Creative Operations likely experienced Wrike as a powerful and highly functional platform, significantly improving their ability to manage complex project timelines, resource allocation, and creative review processes. The transition from Trello provided a substantial upgrade in capabilities, enabling greater control and visibility for their team. While the initial learning curve and extensive customization options could be challenging, the benefits of its robust feature set for creative operations in a mid-sized company outweighed these difficulties."
+  },
+  "ts": "2026-10-18T04:43:33.894586+00:00"
+}

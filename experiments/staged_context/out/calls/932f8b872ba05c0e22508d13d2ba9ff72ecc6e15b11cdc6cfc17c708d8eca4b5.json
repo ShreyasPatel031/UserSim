@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "932f8b872ba05c0e22508d13d2ba9ff72ecc6e15b11cdc6cfc17c708d8eca4b5",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2746,
+  "output_tokens": 1220,
+  "cost_usd": 0.0038737999999999997,
+  "elapsed_s": 7.93,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Intuitive interface and ease of use for managing support tickets.\",\n    \"Robust knowledge base features for internal knowledge sharing and monitoring business operations.\",\n    \"Good value for money compared to previous enterprise solutions like Dynamics 365.\"\n  ],\n  \"cons\": [\n    \"Reporting and analytics capabilities might lack the depth or flexibility of some competitors.\",\n    \"Initial setup or advanced customization could present a slight learning curve.\",\n    \"Integrations with specific niche development tools might require some custom work.\"\n  ],\n  \"overall_experience\": \"This software developer likely experienced Zoho Desk as a highly effective and user-friendly solution for managing business operations and facilitating knowledge sharing. They appreciated its intuitive nature and strong value proposition, especially when compared to more complex previous systems. While generally very satisfied, they might have noted some areas for improvement in reporting or specific integrations.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Intuitive interface and ease of use for managing support tickets.",
+      "Robust knowledge base features for internal knowledge sharing and monitoring business operations.",
+      "Good value for money compared to previous enterprise solutions like Dynamics 365."
+    ],
+    "cons": [
+      "Reporting and analytics capabilities might lack the depth or flexibility of some competitors.",
+      "Initial setup or advanced customization could present a slight learning curve.",
+      "Integrations with specific niche development tools might require some custom work."
+    ],
+    "overall_experience": "This software developer likely experienced Zoho Desk as a highly effective and user-friendly solution for managing business operations and facilitating knowledge sharing. They appreciated its intuitive nature and strong value proposition, especially when compared to more complex previous systems. While generally very satisfied, they might have noted some areas for improvement in reporting or specific integrations."
+  },
+  "ts": "2026-10-18T04:44:00.205046+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ed9f133ec6e4ddf7aef95f1a1728d6ae7b027000d950917182bc0d33522d5269",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2563,
+  "output_tokens": 1134,
+  "cost_usd": 0.0036038999999999997,
+  "elapsed_s": 8.04,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Efficiently manages tasks and priorities across multiple projects.\",\n    \"Provides good visibility into portfolio progress and status.\",\n    \"Customizable workflows help adapt to specific real estate project needs.\"\n  ],\n  \"cons\": [\n    \"Initial setup and learning curve were somewhat steep.\",\n    \"Performance can occasionally be slow with larger projects or many active users.\",\n    \"Reporting features, while comprehensive, can be complex to set up for specific needs.\"\n  ],\n  \"overall_experience\": \"This Manager of Portfolio Assets likely found Wrike to be a robust tool for overseeing tasks and priorities within their real estate projects. While the initial learning phase required some effort, the platform's comprehensive features and customization options proved beneficial for managing a diverse portfolio. They generally valued its functionality and support, though they might have encountered occasional performance issues or complexity in advanced reporting.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Efficiently manages tasks and priorities across multiple projects.",
+      "Provides good visibility into portfolio progress and status.",
+      "Customizable workflows help adapt to specific real estate project needs."
+    ],
+    "cons": [
+      "Initial setup and learning curve were somewhat steep.",
+      "Performance can occasionally be slow with larger projects or many active users.",
+      "Reporting features, while comprehensive, can be complex to set up for specific needs."
+    ],
+    "overall_experience": "This Manager of Portfolio Assets likely found Wrike to be a robust tool for overseeing tasks and priorities within their real estate projects. While the initial learning phase required some effort, the platform's comprehensive features and customization options proved beneficial for managing a diverse portfolio. They generally valued its functionality and support, though they might have encountered occasional performance issues or complexity in advanced reporting."
+  },
+  "ts": "2026-10-18T04:43:33.909874+00:00"
+}

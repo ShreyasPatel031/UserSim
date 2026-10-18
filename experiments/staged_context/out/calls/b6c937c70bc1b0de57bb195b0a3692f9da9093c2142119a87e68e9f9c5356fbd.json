@@ -1,0 +1,27 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b6c937c70bc1b0de57bb195b0a3692f9da9093c2142119a87e68e9f9c5356fbd",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 153,
+  "output_tokens": 461,
+  "cost_usd": 0.0011983999999999999,
+  "elapsed_s": 2.91,
+  "error": null,
+  "text": "{\n  \"task\": \"Launch an e-store\",\n  \"benefits\": [\n    \"Secure credit card payments\",\n    \"Fast credit card payments\",\n    \"Good mobile access\",\n    \"Reliable store hosting\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Launch an e-store",
+    "benefits": [
+      "Secure credit card payments",
+      "Fast credit card payments",
+      "Good mobile access",
+      "Reliable store hosting"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T04:41:32.895235+00:00"
+}

@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "22ca350a4e9cfc53c30d9d72d0edf66cbfddc520f7348aa1371c19f8d6b97a30",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 203,
+  "output_tokens": 448,
+  "cost_usd": 0.0011809,
+  "elapsed_s": 21.29,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage various HR functions including PTO, benefits, and performance reviews\",\n  \"benefits\": [\n    \"Access PTO information\",\n    \"Access benefits information\",\n    \"Access performance reviews\",\n    \"Use the platform easily\"\n  ],\n  \"frictions\": [\n    \"Difficulty contacting HR for questions about benefits\"\n  ]\n}",
+  "json": {
+    "task": "Manage various HR functions including PTO, benefits, and performance reviews",
+    "benefits": [
+      "Access PTO information",
+      "Access benefits information",
+      "Access performance reviews",
+      "Use the platform easily"
+    ],
+    "frictions": [
+      "Difficulty contacting HR for questions about benefits"
+    ]
+  },
+  "ts": "2026-10-18T04:41:30.286028+00:00"
+}

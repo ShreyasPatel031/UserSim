@@ -1,0 +1,28 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "73e19af1902950b3bb23839222526c67e9ecff8075ba70771ad786728bb7dda7",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 207,
+  "output_tokens": 506,
+  "cost_usd": 0.0013271000000000001,
+  "elapsed_s": 3.78,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage customer communication and presentations\",\n  \"benefits\": [\n    \"communicate via live chat\",\n    \"add presentations via live chat\",\n    \"consolidate communication modes into one software\"\n  ],\n  \"frictions\": [\n    \"email sent button does not work\"\n  ]\n}",
+  "json": {
+    "task": "Manage customer communication and presentations",
+    "benefits": [
+      "communicate via live chat",
+      "add presentations via live chat",
+      "consolidate communication modes into one software"
+    ],
+    "frictions": [
+      "email sent button does not work"
+    ]
+  },
+  "ts": "2026-10-18T04:41:35.571319+00:00"
+}

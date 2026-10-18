@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "67a843b5cf2959f80bacd3fdc61c62a00da097eb472e4fc60c19ed366b4e129a",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2651,
+  "output_tokens": 980,
+  "cost_usd": 0.0032453,
+  "elapsed_s": 7.25,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Comprehensive features for managing customer data and research projects\",\n    \"Good value for the extensive functionality offered\",\n    \"Effective tools for tracking interactions and lead progression\"\n  ],\n  \"cons\": [\n    \"Initial learning curve due to the breadth of features\",\n    \"Reporting and analytics capabilities could be more robust for in-depth market research\",\n    \"Occasional performance slowdowns with heavy usage\"\n  ],\n  \"overall_experience\": \"As a Senior Analyst in Market Research, this user found Zoho CRM to be a highly functional and valuable tool for managing customer relationships. The platform offered extensive features for organizing data and tracking interactions, which was crucial for their role. While they appreciated the comprehensive nature of the CRM, they noted a learning curve and a desire for more advanced reporting to fully support their analytical needs.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Comprehensive features for managing customer data and research projects",
+      "Good value for the extensive functionality offered",
+      "Effective tools for tracking interactions and lead progression"
+    ],
+    "cons": [
+      "Initial learning curve due to the breadth of features",
+      "Reporting and analytics capabilities could be more robust for in-depth market research",
+      "Occasional performance slowdowns with heavy usage"
+    ],
+    "overall_experience": "As a Senior Analyst in Market Research, this user found Zoho CRM to be a highly functional and valuable tool for managing customer relationships. The platform offered extensive features for organizing data and tracking interactions, which was crucial for their role. While they appreciated the comprehensive nature of the CRM, they noted a learning curve and a desire for more advanced reporting to fully support their analytical needs."
+  },
+  "ts": "2026-10-18T04:43:48.590343+00:00"
+}

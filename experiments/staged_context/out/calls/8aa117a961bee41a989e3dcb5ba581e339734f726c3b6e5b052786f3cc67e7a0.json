@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8aa117a961bee41a989e3dcb5ba581e339734f726c3b6e5b052786f3cc67e7a0",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1076,
+  "output_tokens": 979,
+  "cost_usd": 0.0027703,
+  "elapsed_s": 7.94,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Intuitive visual pipeline management\",\n    \"Streamlines sales activity tracking\",\n    \"Easy to set up and get started for a small team\"\n  ],\n  \"cons\": [\n    \"Reporting features could be more advanced\",\n    \"Can become costly as the team or feature needs grow\",\n    \"Limited customization options for complex workflows\"\n  ],\n  \"overall_experience\": \"As a founder in a small marketing and advertising company, they likely found Pipedrive highly effective for managing their sales pipeline over 1-2 years. Its visual interface and focus on sales activities helped them stay organized and track deals efficiently. While generally positive, some frustrations may have arisen regarding advanced reporting or the cost structure as their business evolved.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Intuitive visual pipeline management",
+      "Streamlines sales activity tracking",
+      "Easy to set up and get started for a small team"
+    ],
+    "cons": [
+      "Reporting features could be more advanced",
+      "Can become costly as the team or feature needs grow",
+      "Limited customization options for complex workflows"
+    ],
+    "overall_experience": "As a founder in a small marketing and advertising company, they likely found Pipedrive highly effective for managing their sales pipeline over 1-2 years. Its visual interface and focus on sales activities helped them stay organized and track deals efficiently. While generally positive, some frustrations may have arisen regarding advanced reporting or the cost structure as their business evolved."
+  },
+  "ts": "2026-10-18T04:43:26.361325+00:00"
+}

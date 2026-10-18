@@ -1,0 +1,31 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8c912fd0c55b874c63b75fc8360d850e55dbcc6937bbb8d9a83e8c13ec9fab12",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 330,
+  "output_tokens": 488,
+  "cost_usd": 0.0013189999999999999,
+  "elapsed_s": 21.96,
+  "error": null,
+  "text": "{\n  \"task\": \"Send email campaigns.\",\n  \"benefits\": [\n    \"Ease of use\",\n    \"Fantastic and intuitive UX\",\n    \"No maximum number of contacts in most packages\"\n  ],\n  \"frictions\": [\n    \"Low inboxing rate\",\n    \"Confusing pricing structure\",\n    \"Basic package is too expensive for its functionality\",\n    \"Loss of click tracking in a paid package that is available in the free package\"\n  ]\n}",
+  "json": {
+    "task": "Send email campaigns.",
+    "benefits": [
+      "Ease of use",
+      "Fantastic and intuitive UX",
+      "No maximum number of contacts in most packages"
+    ],
+    "frictions": [
+      "Low inboxing rate",
+      "Confusing pricing structure",
+      "Basic package is too expensive for its functionality",
+      "Loss of click tracking in a paid package that is available in the free package"
+    ]
+  },
+  "ts": "2026-10-18T04:41:30.578262+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "530271be27bde568d7ee452cfe45c97e71e10e52385aa9646b3b995a696df78f",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1094,
+  "output_tokens": 958,
+  "cost_usd": 0.0027232,
+  "elapsed_s": 9.05,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Streamlined ticket management for efficient support workflows.\",\n    \"Intuitive interface made agent adoption straightforward.\",\n    \"Effective tools for managing live chat interactions.\"\n  ],\n  \"cons\": [\n    \"Advanced reporting capabilities sometimes lacked depth for complex analysis.\",\n    \"Integration with specific financial industry tools was not always seamless.\",\n    \"Experienced occasional variations in customer support response times.\"\n  ],\n  \"overall_experience\": \"This senior analyst likely found Freshdesk to be a highly functional and user-friendly platform for managing customer support within their financial services company. It effectively streamlined ticket and live interaction management, contributing positively to daily operations. While generally satisfied, they may have desired more robust customization options for reporting and noted occasional inconsistencies in customer support.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Streamlined ticket management for efficient support workflows.",
+      "Intuitive interface made agent adoption straightforward.",
+      "Effective tools for managing live chat interactions."
+    ],
+    "cons": [
+      "Advanced reporting capabilities sometimes lacked depth for complex analysis.",
+      "Integration with specific financial industry tools was not always seamless.",
+      "Experienced occasional variations in customer support response times."
+    ],
+    "overall_experience": "This senior analyst likely found Freshdesk to be a highly functional and user-friendly platform for managing customer support within their financial services company. It effectively streamlined ticket and live interaction management, contributing positively to daily operations. While generally satisfied, they may have desired more robust customization options for reporting and noted occasional inconsistencies in customer support."
+  },
+  "ts": "2026-10-18T04:44:18.359906+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "46b2d938aff9d83ac66e0914db899659ac31e7ade4db278237fd418b1fd343e1",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1066,
+  "output_tokens": 1083,
+  "cost_usd": 0.0030272999999999997,
+  "elapsed_s": 7.62,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Streamlined customer data management\",\n    \"Improved visibility into sales pipeline\",\n    \"Efficient task automation for operational workflows\"\n  ],\n  \"cons\": [\n    \"Initial learning curve for new users\",\n    \"Some features might require deeper customization for specific printing industry needs\",\n    \"Reporting capabilities could be more intuitive for quick operational insights\"\n  ],\n  \"overall_experience\": \"The Operations Head found Freshsales to be a largely positive addition for managing customer relationships within their 201-500 employee printing company. While experiencing a slight initial learning curve, the system's ability to streamline customer data and improve sales visibility was beneficial. The overall value and functionality were rated positively, indicating it met core operational needs despite some minor frustrations during the initial six months of use.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Streamlined customer data management",
+      "Improved visibility into sales pipeline",
+      "Efficient task automation for operational workflows"
+    ],
+    "cons": [
+      "Initial learning curve for new users",
+      "Some features might require deeper customization for specific printing industry needs",
+      "Reporting capabilities could be more intuitive for quick operational insights"
+    ],
+    "overall_experience": "The Operations Head found Freshsales to be a largely positive addition for managing customer relationships within their 201-500 employee printing company. While experiencing a slight initial learning curve, the system's ability to streamline customer data and improve sales visibility was beneficial. The overall value and functionality were rated positively, indicating it met core operational needs despite some minor frustrations during the initial six months of use."
+  },
+  "ts": "2026-10-18T04:43:44.096713+00:00"
+}

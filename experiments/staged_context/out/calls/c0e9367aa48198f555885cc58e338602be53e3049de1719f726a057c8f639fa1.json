@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c0e9367aa48198f555885cc58e338602be53e3049de1719f726a057c8f639fa1",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1119,
+  "output_tokens": 913,
+  "cost_usd": 0.0026181999999999998,
+  "elapsed_s": 6.36,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Robust project tracking and reporting capabilities for marketing campaigns.\",\n    \"Customizable dashboards and workflows to adapt to team processes.\",\n    \"Enhanced visibility and collaboration across the marketing department.\"\n  ],\n  \"cons\": [\n    \"Initial setup and adoption required a significant learning curve.\",\n    \"The interface could feel overwhelming due to the extensive features.\",\n    \"Cost might be a consideration compared to previous simpler tools.\"\n  ],\n  \"overall_experience\": \"This Director of Marketing & Communications likely found Wrike to be a powerful upgrade from their previous tools, offering the advanced functionality needed for complex real estate marketing projects. While the robust features and customization were highly beneficial for team collaboration and project tracking, the initial complexity and learning curve presented some challenges. Overall, the platform provided strong value for managing their larger team's tasks and campaigns effectively.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Robust project tracking and reporting capabilities for marketing campaigns.",
+      "Customizable dashboards and workflows to adapt to team processes.",
+      "Enhanced visibility and collaboration across the marketing department."
+    ],
+    "cons": [
+      "Initial setup and adoption required a significant learning curve.",
+      "The interface could feel overwhelming due to the extensive features.",
+      "Cost might be a consideration compared to previous simpler tools."
+    ],
+    "overall_experience": "This Director of Marketing & Communications likely found Wrike to be a powerful upgrade from their previous tools, offering the advanced functionality needed for complex real estate marketing projects. While the robust features and customization were highly beneficial for team collaboration and project tracking, the initial complexity and learning curve presented some challenges. Overall, the platform provided strong value for managing their larger team's tasks and campaigns effectively."
+  },
+  "ts": "2026-10-18T04:43:35.287811+00:00"
+}

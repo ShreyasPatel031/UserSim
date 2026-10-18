@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4e875aebabafe7ac0812eecee56d42c5bd9f5fad67082e1015ee6e08782ca347",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 240,
+  "output_tokens": 510,
+  "cost_usd": 0.001347,
+  "elapsed_s": 3.63,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage customer support tickets and live interactions.\",\n  \"benefits\": [\n    \"User-friendly and easy to understand\",\n    \"Customizable settings with various options\",\n    \"Freshchat feature is a valuable addition\",\n    \"Easy to manage tickets\"\n  ],\n  \"frictions\": [\n    \"Freshchat notifications do not work at times, causing missed live chats\"\n  ]\n}",
+  "json": {
+    "task": "Manage customer support tickets and live interactions.",
+    "benefits": [
+      "User-friendly and easy to understand",
+      "Customizable settings with various options",
+      "Freshchat feature is a valuable addition",
+      "Easy to manage tickets"
+    ],
+    "frictions": [
+      "Freshchat notifications do not work at times, causing missed live chats"
+    ]
+  },
+  "ts": "2026-10-18T04:41:36.126194+00:00"
+}

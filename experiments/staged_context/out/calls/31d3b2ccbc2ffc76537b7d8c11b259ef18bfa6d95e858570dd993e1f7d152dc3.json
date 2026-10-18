@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "31d3b2ccbc2ffc76537b7d8c11b259ef18bfa6d95e858570dd993e1f7d152dc3",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2326,
+  "output_tokens": 1063,
+  "cost_usd": 0.0033552999999999994,
+  "elapsed_s": 8.09,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Streamlined customer inquiry management away from individual inboxes.\",\n    \"Easy to get started with basic functionality for the team.\",\n    \"Centralized communication for better oversight.\"\n  ],\n  \"cons\": [\n    \"Advanced customization or complex integrations proved challenging.\",\n    \"Pricing structure might feel less valuable for a small team needing specific features.\",\n    \"Potential learning curve for unlocking all features and optimizing workflows.\"\n  ],\n  \"overall_experience\": \"This CEO likely found Help Scout to be a significant improvement for centralizing customer inquiries, quickly getting their team up and running with basic support. While the core functionality and ease of initial use were appreciated, they might have encountered challenges with more complex customization or felt the value for money could be better given their specific needs and the short usage period. The experience was generally positive, but with room for improvement in deeper feature adoption.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Streamlined customer inquiry management away from individual inboxes.",
+      "Easy to get started with basic functionality for the team.",
+      "Centralized communication for better oversight."
+    ],
+    "cons": [
+      "Advanced customization or complex integrations proved challenging.",
+      "Pricing structure might feel less valuable for a small team needing specific features.",
+      "Potential learning curve for unlocking all features and optimizing workflows."
+    ],
+    "overall_experience": "This CEO likely found Help Scout to be a significant improvement for centralizing customer inquiries, quickly getting their team up and running with basic support. While the core functionality and ease of initial use were appreciated, they might have encountered challenges with more complex customization or felt the value for money could be better given their specific needs and the short usage period. The experience was generally positive, but with room for improvement in deeper feature adoption."
+  },
+  "ts": "2026-10-18T04:43:37.533215+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c4e449ead8496921c85fb796e7b7bc2f9cd67ca17b9d487fc0e5ef0b9a89f9cd",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1088,
+  "output_tokens": 1015,
+  "cost_usd": 0.0028639000000000004,
+  "elapsed_s": 7.54,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Robust feature set for lead and campaign management\",\n    \"Excellent value for the comprehensive tools provided\",\n    \"Good integration capabilities with other Zoho products\"\n  ],\n  \"cons\": [\n    \"Steep learning curve for advanced configurations and workflows\",\n    \"Interface can sometimes feel dated or less intuitive\",\n    \"Custom reporting can be complex to set up\"\n  ],\n  \"overall_experience\": \"This Marketing Manager likely found Zoho CRM to be a powerful and cost-effective solution for managing relationships and sales processes within their higher education institution. While appreciating its extensive functionality and value, they may have encountered challenges with the initial setup and ongoing customization, particularly regarding specific reporting needs. Despite some complexity, the tool generally met their needs for a robust CRM over their 1-2 years of use.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Robust feature set for lead and campaign management",
+      "Excellent value for the comprehensive tools provided",
+      "Good integration capabilities with other Zoho products"
+    ],
+    "cons": [
+      "Steep learning curve for advanced configurations and workflows",
+      "Interface can sometimes feel dated or less intuitive",
+      "Custom reporting can be complex to set up"
+    ],
+    "overall_experience": "This Marketing Manager likely found Zoho CRM to be a powerful and cost-effective solution for managing relationships and sales processes within their higher education institution. While appreciating its extensive functionality and value, they may have encountered challenges with the initial setup and ongoing customization, particularly regarding specific reporting needs. Despite some complexity, the tool generally met their needs for a robust CRM over their 1-2 years of use."
+  },
+  "ts": "2026-10-18T04:43:47.679233+00:00"
+}

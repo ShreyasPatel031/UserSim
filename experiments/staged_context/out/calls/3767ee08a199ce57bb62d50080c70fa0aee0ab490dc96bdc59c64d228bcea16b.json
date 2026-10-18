@@ -1,0 +1,28 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3767ee08a199ce57bb62d50080c70fa0aee0ab490dc96bdc59c64d228bcea16b",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 202,
+  "output_tokens": 489,
+  "cost_usd": 0.0012831,
+  "elapsed_s": 2.82,
+  "error": null,
+  "text": "{\n  \"task\": \"Drive sales using auto-sent, personalized emails\",\n  \"benefits\": [\n    \"Integrate with Shopify\",\n    \"Create workflows via Shopify\"\n  ],\n  \"frictions\": [\n    \"Pricing is expensive due to contact-based model\",\n    \"Lack of form options outside of email sign-up\"\n  ]\n}",
+  "json": {
+    "task": "Drive sales using auto-sent, personalized emails",
+    "benefits": [
+      "Integrate with Shopify",
+      "Create workflows via Shopify"
+    ],
+    "frictions": [
+      "Pricing is expensive due to contact-based model",
+      "Lack of form options outside of email sign-up"
+    ]
+  },
+  "ts": "2026-10-18T04:41:31.485584+00:00"
+}

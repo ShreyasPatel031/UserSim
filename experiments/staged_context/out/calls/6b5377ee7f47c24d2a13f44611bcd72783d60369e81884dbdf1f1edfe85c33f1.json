@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "6b5377ee7f47c24d2a13f44611bcd72783d60369e81884dbdf1f1edfe85c33f1",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1127,
+  "output_tokens": 1039,
+  "cost_usd": 0.0029356,
+  "elapsed_s": 10.49,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Comprehensive project and task management features for complex initiatives\",\n    \"High degree of customizability for workflows and reporting\",\n    \"Centralized visibility across multiple projects and teams\"\n  ],\n  \"cons\": [\n    \"Steep learning curve for new team members\",\n    \"Interface can sometimes feel cluttered due to extensive features\",\n    \"Performance can occasionally be slow with large data sets\"\n  ],\n  \"overall_experience\": \"The Head of PM likely found Wrike to be a powerful and highly functional tool essential for managing complex projects within a large banking environment. While appreciating its robust capabilities and customization, they probably noted the challenge of user adoption due to its complexity. Overall, the software provided significant value by centralizing project oversight and streamlining operations, despite some usability hurdles.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Comprehensive project and task management features for complex initiatives",
+      "High degree of customizability for workflows and reporting",
+      "Centralized visibility across multiple projects and teams"
+    ],
+    "cons": [
+      "Steep learning curve for new team members",
+      "Interface can sometimes feel cluttered due to extensive features",
+      "Performance can occasionally be slow with large data sets"
+    ],
+    "overall_experience": "The Head of PM likely found Wrike to be a powerful and highly functional tool essential for managing complex projects within a large banking environment. While appreciating its robust capabilities and customization, they probably noted the challenge of user adoption due to its complexity. Overall, the software provided significant value by centralizing project oversight and streamlining operations, despite some usability hurdles."
+  },
+  "ts": "2026-10-18T04:43:34.069173+00:00"
+}

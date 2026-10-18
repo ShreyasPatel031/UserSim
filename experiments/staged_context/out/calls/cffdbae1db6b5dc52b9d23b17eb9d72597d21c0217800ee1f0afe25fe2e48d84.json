@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "cffdbae1db6b5dc52b9d23b17eb9d72597d21c0217800ee1f0afe25fe2e48d84",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2344,
+  "output_tokens": 966,
+  "cost_usd": 0.0031182000000000002,
+  "elapsed_s": 6.13,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Simple and clear project organization\",\n    \"Effective for basic task and communication management\",\n    \"Straightforward for solo sales tracking\"\n  ],\n  \"cons\": [\n    \"Might lack advanced CRM features for sales\",\n    \"Limited customization compared to other tools\",\n    \"Pricing might be a concern after the free trial\"\n  ],\n  \"overall_experience\": \"This sales associate likely found Basecamp to be a relatively easy-to-use tool for basic project and task management, especially during their free trial period. They appreciated its straightforward approach to organizing work, which helped them manage their retail sales activities. However, they probably noticed its limitations for advanced sales-specific functions or deeper customizations, potentially leading them to consider other, more specialized solutions after the trial.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Simple and clear project organization",
+      "Effective for basic task and communication management",
+      "Straightforward for solo sales tracking"
+    ],
+    "cons": [
+      "Might lack advanced CRM features for sales",
+      "Limited customization compared to other tools",
+      "Pricing might be a concern after the free trial"
+    ],
+    "overall_experience": "This sales associate likely found Basecamp to be a relatively easy-to-use tool for basic project and task management, especially during their free trial period. They appreciated its straightforward approach to organizing work, which helped them manage their retail sales activities. However, they probably noticed its limitations for advanced sales-specific functions or deeper customizations, potentially leading them to consider other, more specialized solutions after the trial."
+  },
+  "ts": "2026-10-18T04:43:53.527486+00:00"
+}

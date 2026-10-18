@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3cf37674c1c3146fc943efc6c829b972c767c1be1b4d2f66f6f275715de17454",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1078,
+  "output_tokens": 977,
+  "cost_usd": 0.0027659000000000004,
+  "elapsed_s": 7.56,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 5,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Efficiently manages employee time cards\",\n    \"Reliable for tracking employee birthdays and anniversaries\",\n    \"Intuitive and user-friendly for daily HR tasks\"\n  ],\n  \"cons\": [\n    \"Occasional minor interface quirks\",\n    \"Reporting features could be more granular for specific time card details\",\n    \"Initial setup might require some learning\"\n  ],\n  \"overall_experience\": \"This manager likely had a highly positive experience with Namely, finding it very effective for their core responsibilities. They appreciated its ease of use and robust functionality for tasks like editing time cards and tracking employee milestones. The platform generally met their needs well over the extended period of use.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 5,
+    "recommendation_score": 9,
+    "pros": [
+      "Efficiently manages employee time cards",
+      "Reliable for tracking employee birthdays and anniversaries",
+      "Intuitive and user-friendly for daily HR tasks"
+    ],
+    "cons": [
+      "Occasional minor interface quirks",
+      "Reporting features could be more granular for specific time card details",
+      "Initial setup might require some learning"
+    ],
+    "overall_experience": "This manager likely had a highly positive experience with Namely, finding it very effective for their core responsibilities. They appreciated its ease of use and robust functionality for tasks like editing time cards and tracking employee milestones. The platform generally met their needs well over the extended period of use."
+  },
+  "ts": "2026-10-18T04:43:40.431333+00:00"
+}

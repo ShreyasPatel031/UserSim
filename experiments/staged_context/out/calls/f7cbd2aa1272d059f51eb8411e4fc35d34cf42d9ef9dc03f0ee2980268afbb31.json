@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f7cbd2aa1272d059f51eb8411e4fc35d34cf42d9ef9dc03f0ee2980268afbb31",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 203,
+  "output_tokens": 462,
+  "cost_usd": 0.0012159,
+  "elapsed_s": 3.5,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage and follow up on work\",\n  \"benefits\": [\n    \"Collaborate with others by viewing, editing, and commenting\",\n    \"Use the product for free\",\n    \"Utilize the product as a small company\",\n    \"Achieve more organized work management\"\n  ],\n  \"frictions\": [\n    \"Complete initial training\"\n  ]\n}",
+  "json": {
+    "task": "Manage and follow up on work",
+    "benefits": [
+      "Collaborate with others by viewing, editing, and commenting",
+      "Use the product for free",
+      "Utilize the product as a small company",
+      "Achieve more organized work management"
+    ],
+    "frictions": [
+      "Complete initial training"
+    ]
+  },
+  "ts": "2026-10-18T04:41:34.903608+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "df0d1c432a3dae8950e0c8195aadbc8bd40bc2853cd4b2699cc5b97c995d3055",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2518,
+  "output_tokens": 1089,
+  "cost_usd": 0.0034778999999999995,
+  "elapsed_s": 6.59,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effective for managing sales pipelines and deals\",\n    \"Intuitive visual interface for tracking progress\",\n    \"Good for a self-employed individual managing client interactions\"\n  ],\n  \"cons\": [\n    \"Pricing might feel high for a self-employed user without extensive features\",\n    \"Limited customization options compared to more robust systems\",\n    \"Initial learning curve for optimizing workflows\"\n  ],\n  \"overall_experience\": \"This owner, operating a self-employed marketing and advertising business, likely found Pipedrive to be a generally effective tool for managing their sales pipeline and client interactions over 6-12 months. While the core functionality and ease of use were appreciated for its visual nature, they may have found the value for money to be a minor concern given their small scale. The platform likely helped them stay organized, though some limitations in customization or a slight learning curve might have been noted.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Effective for managing sales pipelines and deals",
+      "Intuitive visual interface for tracking progress",
+      "Good for a self-employed individual managing client interactions"
+    ],
+    "cons": [
+      "Pricing might feel high for a self-employed user without extensive features",
+      "Limited customization options compared to more robust systems",
+      "Initial learning curve for optimizing workflows"
+    ],
+    "overall_experience": "This owner, operating a self-employed marketing and advertising business, likely found Pipedrive to be a generally effective tool for managing their sales pipeline and client interactions over 6-12 months. While the core functionality and ease of use were appreciated for its visual nature, they may have found the value for money to be a minor concern given their small scale. The platform likely helped them stay organized, though some limitations in customization or a slight learning curve might have been noted."
+  },
+  "ts": "2026-10-18T04:43:36.221369+00:00"
+}

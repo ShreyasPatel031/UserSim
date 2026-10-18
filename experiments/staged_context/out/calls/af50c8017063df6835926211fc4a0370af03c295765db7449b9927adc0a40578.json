@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "af50c8017063df6835926211fc4a0370af03c295765db7449b9927adc0a40578",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 274,
+  "output_tokens": 1101,
+  "cost_usd": 0.0028347,
+  "elapsed_s": 7.42,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Intuitive visual sales pipeline management\",\n    \"Streamlined activity and deal tracking\",\n    \"Improved focus on sales tasks compared to previous CRMs\"\n  ],\n  \"cons\": [\n    \"Limited advanced reporting for large organizations\",\n    \"Potential for minor integration challenges with existing enterprise systems\",\n    \"Less comprehensive than some full-suite alternatives\"\n  ],\n  \"overall_experience\": \"The Territory Manager likely found Pipedrive to be a significant improvement for managing their sales pipeline, appreciating its user-friendly interface and visual deal progression. While it excelled at core sales tasks, they might have noted some limitations in advanced reporting or broader enterprise functionalities compared to larger, more complex CRM solutions. Overall, it provided a focused and efficient tool for their day-to-day sales operations within a large pharmaceutical company.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Intuitive visual sales pipeline management",
+      "Streamlined activity and deal tracking",
+      "Improved focus on sales tasks compared to previous CRMs"
+    ],
+    "cons": [
+      "Limited advanced reporting for large organizations",
+      "Potential for minor integration challenges with existing enterprise systems",
+      "Less comprehensive than some full-suite alternatives"
+    ],
+    "overall_experience": "The Territory Manager likely found Pipedrive to be a significant improvement for managing their sales pipeline, appreciating its user-friendly interface and visual deal progression. While it excelled at core sales tasks, they might have noted some limitations in advanced reporting or broader enterprise functionalities compared to larger, more complex CRM solutions. Overall, it provided a focused and efficient tool for their day-to-day sales operations within a large pharmaceutical company."
+  },
+  "ts": "2026-10-18T04:43:25.524880+00:00"
+}

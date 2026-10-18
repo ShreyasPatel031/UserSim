@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "67d7c854fdcc289bc3f741535638e86c5285b7307fedecb7c3e7646fcbcc4b79",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 255,
+  "output_tokens": 1004,
+  "cost_usd": 0.0025865,
+  "elapsed_s": 7.97,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Comprehensive features for managing clients and projects.\",\n    \"Excellent value for money for a self-employed professional.\",\n    \"Customization options helped tailor it to specific entertainment industry needs.\"\n  ],\n  \"cons\": [\n    \"Initial setup and learning curve were somewhat challenging.\",\n    \"The interface could sometimes feel a bit cluttered.\",\n    \"Reporting features required some effort to configure effectively.\"\n  ],\n  \"overall_experience\": \"This Senior Overseer and Operations Manager found Zoho CRM to be a highly functional and cost-effective solution for managing their entertainment business. Despite a moderate learning curve, the extensive features and customization options proved invaluable for streamlining client relations and operational tasks. The platform offered significant value for money, making it a strong asset for their self-employed venture.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Comprehensive features for managing clients and projects.",
+      "Excellent value for money for a self-employed professional.",
+      "Customization options helped tailor it to specific entertainment industry needs."
+    ],
+    "cons": [
+      "Initial setup and learning curve were somewhat challenging.",
+      "The interface could sometimes feel a bit cluttered.",
+      "Reporting features required some effort to configure effectively."
+    ],
+    "overall_experience": "This Senior Overseer and Operations Manager found Zoho CRM to be a highly functional and cost-effective solution for managing their entertainment business. Despite a moderate learning curve, the extensive features and customization options proved invaluable for streamlining client relations and operational tasks. The platform offered significant value for money, making it a strong asset for their self-employed venture."
+  },
+  "ts": "2026-10-18T04:43:47.594769+00:00"
+}

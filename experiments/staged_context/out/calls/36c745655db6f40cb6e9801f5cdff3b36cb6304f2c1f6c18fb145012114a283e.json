@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "36c745655db6f40cb6e9801f5cdff3b36cb6304f2c1f6c18fb145012114a283e",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2537,
+  "output_tokens": 1198,
+  "cost_usd": 0.0037561,
+  "elapsed_s": 11.07,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effective for visualizing complex projects and tracking progress.\",\n    \"Facilitates collaboration across various teams within the organization.\",\n    \"Customizable dashboards provide good oversight for executive reporting.\"\n  ],\n  \"cons\": [\n    \"The learning curve can be steep for new users, requiring significant onboarding.\",\n    \"Advanced features and extensive customization can sometimes make the interface feel cluttered.\",\n    \"Mobile app performance occasionally lags when dealing with large project data.\"\n  ],\n  \"overall_experience\": \"The Deputy Chief of Staff likely found Wrike to be a robust tool for managing tasks and visualizing projects across their non-profit organization. While the platform offered strong functionality for collaboration and executive oversight, they may have noted challenges with its initial complexity and occasional performance issues on mobile. Despite these minor drawbacks, the long-term usage suggests it was a valuable asset for their operational needs.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Effective for visualizing complex projects and tracking progress.",
+      "Facilitates collaboration across various teams within the organization.",
+      "Customizable dashboards provide good oversight for executive reporting."
+    ],
+    "cons": [
+      "The learning curve can be steep for new users, requiring significant onboarding.",
+      "Advanced features and extensive customization can sometimes make the interface feel cluttered.",
+      "Mobile app performance occasionally lags when dealing with large project data."
+    ],
+    "overall_experience": "The Deputy Chief of Staff likely found Wrike to be a robust tool for managing tasks and visualizing projects across their non-profit organization. While the platform offered strong functionality for collaboration and executive oversight, they may have noted challenges with its initial complexity and occasional performance issues on mobile. Despite these minor drawbacks, the long-term usage suggests it was a valuable asset for their operational needs."
+  },
+  "ts": "2026-10-18T04:43:39.573896+00:00"
+}

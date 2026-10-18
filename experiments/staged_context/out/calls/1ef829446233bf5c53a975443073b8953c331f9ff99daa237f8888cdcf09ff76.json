@@ -1,0 +1,21 @@
+{
+  "stage": "mcp_classify",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1ef829446233bf5c53a975443073b8953c331f9ff99daa237f8888cdcf09ff76",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 256,
+  "input_tokens": 588,
+  "output_tokens": 238,
+  "cost_usd": 0.0007714,
+  "elapsed_s": 1.95,
+  "error": null,
+  "text": "{\n  \"category\": \"Help Desk\",\n  \"product_name\": \"LiveAgent\"\n}",
+  "json": {
+    "category": "Help Desk",
+    "product_name": "LiveAgent"
+  },
+  "ts": "2026-10-18T04:41:40.867642+00:00"
+}

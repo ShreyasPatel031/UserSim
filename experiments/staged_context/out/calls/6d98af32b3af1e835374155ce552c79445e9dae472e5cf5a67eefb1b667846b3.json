@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "6d98af32b3af1e835374155ce552c79445e9dae472e5cf5a67eefb1b667846b3",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 298,
+  "output_tokens": 506,
+  "cost_usd": 0.0013544,
+  "elapsed_s": 21.09,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage customer communications from multiple channels in a single inbox\",\n  \"benefits\": [\n    \"Integrates multiple customer channels into one inbox\",\n    \"Replies are sent back via the customer's original communication system\",\n    \"Allows quicker responses to customers\",\n    \"Provides easy access to past customer interactions\"\n  ],\n  \"frictions\": [\n    \"Interface is dated and needs a refresh\",\n    \"iOS app is limited and lacks features like canned responses\"\n  ]\n}",
+  "json": {
+    "task": "Manage customer communications from multiple channels in a single inbox",
+    "benefits": [
+      "Integrates multiple customer channels into one inbox",
+      "Replies are sent back via the customer's original communication system",
+      "Allows quicker responses to customers",
+      "Provides easy access to past customer interactions"
+    ],
+    "frictions": [
+      "Interface is dated and needs a refresh",
+      "iOS app is limited and lacks features like canned responses"
+    ]
+  },
+  "ts": "2026-10-18T04:41:31.169740+00:00"
+}

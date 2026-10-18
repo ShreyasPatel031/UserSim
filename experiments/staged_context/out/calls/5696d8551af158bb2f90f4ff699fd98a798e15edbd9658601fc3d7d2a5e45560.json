@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "5696d8551af158bb2f90f4ff699fd98a798e15edbd9658601fc3d7d2a5e45560",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2809,
+  "output_tokens": 1134,
+  "cost_usd": 0.0036777,
+  "elapsed_s": 7.79,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Comprehensive features for managing marketing projects.\",\n    \"Effective for team collaboration and task tracking.\",\n    \"Highly customizable to fit specific workflows.\"\n  ],\n  \"cons\": [\n    \"Steeper learning curve for new users due to extensive features.\",\n    \"Occasional complexity in setting up advanced configurations.\",\n    \"Pricing might be a consideration for some aspects.\"\n  ],\n  \"overall_experience\": \"This Marketing Specialist has a highly positive experience with Wrike, leveraging its robust features for over two years to manage team projects effectively. They appreciate its comprehensive functionality and customization capabilities, which are crucial for marketing workflows. While acknowledging a potential learning curve and occasional complexity, Wrike remains a valuable tool for their team's project management needs.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Comprehensive features for managing marketing projects.",
+      "Effective for team collaboration and task tracking.",
+      "Highly customizable to fit specific workflows."
+    ],
+    "cons": [
+      "Steeper learning curve for new users due to extensive features.",
+      "Occasional complexity in setting up advanced configurations.",
+      "Pricing might be a consideration for some aspects."
+    ],
+    "overall_experience": "This Marketing Specialist has a highly positive experience with Wrike, leveraging its robust features for over two years to manage team projects effectively. They appreciate its comprehensive functionality and customization capabilities, which are crucial for marketing workflows. While acknowledging a potential learning curve and occasional complexity, Wrike remains a valuable tool for their team's project management needs."
+  },
+  "ts": "2026-10-18T04:43:27.978622+00:00"
+}

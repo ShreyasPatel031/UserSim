@@ -1,0 +1,36 @@
+{
+  "stage": "router_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "dba19b74a4c63623e3b18491dd35a84329e3ce31e5bd95cbd9d71546cc5258ca",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 258,
+  "output_tokens": 1046,
+  "cost_usd": 0.0026924,
+  "elapsed_s": 7.86,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Affordable solution for an SMB\",\n    \"Adaptable for basic contact management\",\n    \"Part of a broader Zoho ecosystem\"\n  ],\n  \"cons\": [\n    \"Requires significant customization for HR-specific needs\",\n    \"Learning curve to adapt a sales CRM to HR processes\",\n    \"Lacks native HR functionality\"\n  ],\n  \"overall_experience\": \"This HR Executive likely found Zoho CRM to be a cost-effective option for their small hospitality company, appreciating its adaptability for basic contact management. However, they probably experienced a steep learning curve and frustration due to the need for extensive customization to fit typical HR processes, as the product is not inherently designed for human resources. The initial months were likely spent on configuration rather than seamless operation.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 3,
+    "overall_rating": 3,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 6,
+    "pros": [
+      "Affordable solution for an SMB",
+      "Adaptable for basic contact management",
+      "Part of a broader Zoho ecosystem"
+    ],
+    "cons": [
+      "Requires significant customization for HR-specific needs",
+      "Learning curve to adapt a sales CRM to HR processes",
+      "Lacks native HR functionality"
+    ],
+    "overall_experience": "This HR Executive likely found Zoho CRM to be a cost-effective option for their small hospitality company, appreciating its adaptability for basic contact management. However, they probably experienced a steep learning curve and frustration due to the need for extensive customization to fit typical HR processes, as the product is not inherently designed for human resources. The initial months were likely spent on configuration rather than seamless operation."
+  },
+  "ts": "2026-10-18T04:43:47.872401+00:00"
+}
