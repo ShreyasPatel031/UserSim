@@ -102,6 +102,8 @@ class HumanModeTest(unittest.TestCase):
                          "errors": []}}
 
         async def llm(prompt, system, temperature=0.0):
+            if "planner named" in prompt:
+                return {"reviews_are_of_named_product": True, "direct_competitor": "yes", "why": "same job"}
             llm.prompt = prompt
             return {"task": "Do the work.", "core_job": "manage projects", "features": ["views", "reports"]}
         with mock.patch.object(RC, "prefetch"), mock.patch.object(RC, "cached_live_reviews", side_effect=lambda n: got.get(n)):
@@ -110,6 +112,14 @@ class HumanModeTest(unittest.TestCase):
         self.assertEqual(out["status"], "ok")
         self.assertEqual(out["start_session"]["task"], "Do the work.")
         self.assertIn("reporting is very basic", llm.prompt)
+
+        async def not_rival(prompt, system, temperature=0.0):
+            return {"reviews_are_of_named_product": True, "direct_competitor": "no", "why": "different job"}
+        with mock.patch.object(RC, "prefetch"), mock.patch.object(RC, "cached_live_reviews", side_effect=lambda n: got.get(n)):
+            out = asyncio.run(H.plan(product="Basecamp", url="https://basecamp.com/", persona="a PM", competitors=["Asana"],
+                                     wait_s=0, llm=not_rival))
+        self.assertEqual(out["status"], "no_data")
+        self.assertFalse(out["rivals_checked"][0]["used"])
 
         async def none(url):
             return []

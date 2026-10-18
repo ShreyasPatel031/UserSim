@@ -54,6 +54,13 @@ Write the task in the simulated user's own words as {persona}. It must:
 3. then change or reorganise what was created (edit, move, filter or report on it).
 Return {{"task": "<one paragraph, under 90 words>", "core_job": "<5-10 words>", "features": ["...", "..."]}}"""
 
+RELEVANCE_PROMPT = """{product} ({url}). A planner named "{rival}" as a direct competitor. Review sites returned these
+reviews for "{rival}":
+{sample}
+Return {{"reviews_are_of_named_product": true/false, "direct_competitor": "yes" | "partly" | "no", "why": "<one sentence>"}}.
+"yes" = a buyer of {product} would compare them for the same job; "partly" = overlapping job or different buyer;
+"no" = different job. (YC test: 19 of 40 planner-named rivals of new startups were "no".)"""
+
 OBSERVE = """Report 6-12 observations as {"kind": "product_friction" | "product_benefit" | "signup_friction" | "agent_failure",
 "feature": "...", "what": "one specific sentence"}. Product observations are about using the product for the work:
 clicks the core job took, controls that were hard to find, clumsy editing, views / filters / reports / automations /
@@ -114,18 +121,33 @@ async def plan(*, product: str, url: str, persona: str, competitors: list[str] |
 
     got = await asyncio.to_thread(AM.gather, rivals[0], rivals[1:], wait_s)
     pending = [n for n, v in got.items() if v is None]
-    riv = [x for v in got.values() if v for x in v.get("reviews", [])]
+    if pending and not any(v and v.get("reviews") for v in got.values()):
+        return {"mode": "human", "status": "pending", "pending": pending,
+                "reason": "rival review scrapes take 1-2 minutes; call usersim_plan_human_run again"}
+    checked, riv = [], []
+    for n, v in got.items():
+        revs = (v or {}).get("reviews") or []
+        if not revs:
+            checked.append({"rival": n, "used": False, "why": "still scraping" if v is None else "no reviews found"})
+            continue
+        sample = "\n".join(f"- liked: {str(r.get('pros') or '')[:200]} | disliked: {str(r.get('cons') or '')[:200]} | "
+                           f"{str(r.get('text') or '')[:200]}" for r in revs[:6])
+        rel = await (llm or _default_llm)(RELEVANCE_PROMPT.format(product=product, url=url, rival=n, sample=sample),
+                                          "You know the B2B software market. Return JSON only.")
+        ok = rel.get("reviews_are_of_named_product") is True and rel.get("direct_competitor") in ("yes", "partly")
+        checked.append({"rival": n, "used": ok, "direct": rel.get("direct_competitor"), "why": rel.get("why")})
+        if ok:
+            riv += revs
     if not riv:
-        if pending:
-            return {"mode": "human", "status": "pending", "pending": pending,
-                    "reason": "rival review scrapes take 1-2 minutes; call usersim_plan_human_run again"}
-        return {"mode": "human", "status": "no_data", "reason": f"no reviews found for rivals {rivals}"}
+        return {"mode": "human", "status": "no_data", "rivals_checked": checked,
+                "reason": "none of the rivals is a real competitor with reviews of the named product; pass competitors"}
     j = await (llm or _default_llm)(TASK_PROMPT.format(product=product, url=url, persona=persona or "a typical user",
                                                        rival=rival_complaints(riv)[:3500]),
                                     "You design realistic product-usage sessions. Return JSON only.")
     if not j.get("task"):
         return {"mode": "human", "status": "no_data", "reason": "task generation returned nothing"}
-    return {"mode": "human", "status": "ok", "product": product, "rivals": rivals, "core_job": j.get("core_job"),
+    return {"mode": "human", "status": "ok", "product": product, "rivals": rivals, "rivals_checked": checked,
+            "core_job": j.get("core_job"),
             "features": j.get("features") or [],
             "start_session": {"product_url": url, "persona": persona, "task": j["task"]},
             "observe": OBSERVE,
