@@ -958,6 +958,9 @@ def describe_action(action: dict[str, Any]) -> str:
         return f"navigate — {action.get('url')}"
     if kind == "wait":
         return f"wait — {action.get('ms')}ms"
+    if kind == "select":
+        field = f" in {str(action.get('field'))[:40]!r}" if action.get("field") else ""
+        return f"select — {str(action.get('option') or '')[:60]!r}{field}"
     if kind == "drag":
         return f"drag — ({action.get('x')}, {action.get('y')}) to ({action.get('to_x')}, {action.get('to_y')})"
     return kind

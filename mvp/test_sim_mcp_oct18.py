@@ -198,3 +198,14 @@ def test_accounts_dir_prefers_dir_outside_app(tmp_path, monkeypatch):
     monkeypatch.setattr(S, "ACCOUNTS_DIR", None)
     monkeypatch.setenv("MVP_MCP_ACCOUNTS_DIR", "/proc/nope/x")
     assert S._accounts_dir() == S.MVP_RUNS_DIR / "_mcp_accounts"
+
+
+def test_select_described_with_option_and_judge_knows_groups(monkeypatch):
+    import mvp.e2e_ui_run as ui
+    from mvp import e2e2_gates
+
+    assert S.describe_action({"type": "select", "option": "Done", "field": "Column"}) == "select — 'Done' in 'Column'"
+    seen = {}
+    monkeypatch.setattr(ui, "gemini_vision_json", lambda prompt, png: seen.setdefault("p", prompt) and {"goal_reached": True})
+    e2e2_gates.judge_goal_screenshot(b"x" * 5000, task="mark it done", start_url="https://kanbanflow.com")
+    assert 'a date group such as "Today"' in seen["p"]

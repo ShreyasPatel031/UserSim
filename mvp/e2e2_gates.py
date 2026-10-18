@@ -1394,7 +1394,7 @@ def judge_goal_screenshot(
     prompt = f"""You are an independent QA vision judge. You do not work for the agent that browsed this page. Judge only the final screenshot, the final URL, and the DOM text below, against the task goal.
 
 Task goal: {task or "unknown"}
-You see only the END of the run: the final screenshot is taken AFTER everything the run did (the server's action log below, when present, lists those actions). You cannot see earlier frames, so judge the end state, not whether you watched a change happen. For a task that asks to move, mark, set or change something ("mark it as done so it sits in Done", "move it to In progress", "set the status to Paid"), the requested end state shown on screen (the item in the requested column / status / list) means goal_reached=true. Never fail it as "already" or "still" in that state, or "not moved by the agent".
+You see only the END of the run: the final screenshot is taken AFTER everything the run did (the server's action log below, when present, lists those actions). You cannot see earlier frames, so judge the end state, not whether you watched a change happen. For a task that asks to move, mark, set or change something ("mark it as done so it sits in Done", "move it to In progress", "set the status to Paid"), the requested end state shown on screen (the item in the requested column / status / list) means goal_reached=true. Never fail it as "already" or "still" in that state, or "not moved by the agent". A heading or group inside that column or list (a date group such as "Today", a swimlane, a section) is still that column or list.
 Page the run opened on: {start_url or "unknown"}
 Final URL: {final_url or "unknown"}
 Final DOM text (may be truncated):
