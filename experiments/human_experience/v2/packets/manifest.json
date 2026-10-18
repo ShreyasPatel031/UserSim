@@ -1,0 +1,4002 @@
+{
+ "token_estimate": "chars/4",
+ "capture_date": "2026-10-18",
+ "onet_version": "31.0",
+ "cases": {
+  "case_4f8799cc5d": {
+   "product": "Asana",
+   "packets": {
+    "M": {
+     "pack": "M",
+     "product": "Asana",
+     "url": "https://asana.com/",
+     "tokens_est": 35,
+     "sha256": "7773a52328afee0213395ab68308ec0170852e797ee04ad61a415d97af12cafa"
+    },
+    "D": {
+     "pack": "D",
+     "sources": [
+      {
+       "label": "target landing",
+       "product": "Asana",
+       "url": "https://asana.com/",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "target feature page",
+       "product": "Asana",
+       "url": "https://asana.com/features",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "peer overview: ClickUp",
+       "product": "ClickUp",
+       "url": "https://clickup.com/features",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "peer overview: Notion",
+       "product": "Notion",
+       "url": "https://www.notion.so/",
+       "capture_date": "2026-10-18",
+       "truncated": false
+      }
+     ],
+     "tokens_est": 2115,
+     "sha256": "647b886a55c5f0f890aaec0cfae1d48e892b841a6c9c2e937b8e07cc7498dd75"
+    },
+    "P": {
+     "pack": "P",
+     "fields": [
+      "reviewer_job_title",
+      "reviewer_industry",
+      "reviewer_company_size",
+      "reviewer_time_used_product"
+     ],
+     "tokens_est": 33,
+     "sha256": "75734e2ec1dfdd5db2faaf696c376df731d58a48a357521f840f340adf41edbf"
+    },
+    "O": {
+     "pack": "O",
+     "status": "ok",
+     "onet_version": "31.0",
+     "mapping": [
+      {
+       "code": "11-2021.00",
+       "why": "Manages marketing strategies and client accounts in a digital context."
+      },
+      {
+       "code": "13-1161.00",
+       "why": "Specializes in marketing, including digital strategies and client relationships."
+      },
+      {
+       "code": "41-3091.00",
+       "why": "Sells services and manages client accounts, fitting the 'Account Manager' title."
+      }
+     ],
+     "task_ids": [
+      "20709",
+      "958",
+      "951",
+      "954",
+      "5434",
+      "5437",
+      "5439",
+      "5433",
+      "23225",
+      "23222",
+      "23228",
+      "23227"
+     ],
+     "tokens_est": 598,
+     "mapping_call": {
+      "model": "gemini-2.5-flash",
+      "model_version": "gemini-2.5-flash",
+      "usage": {
+       "input_tokens": 18056,
+       "output_tokens": 102,
+       "cost_usd": 0.005672,
+       "latency_seconds": 2.03
+      }
+     },
+     "sha256": "682168bc1e976f879e8e4098a895afb9c543763848e3175a9b5170ab1c67214e"
+    },
+    "C": {
+     "pack": "C",
+     "evidence_ids": [
+      "Capterra___4921347",
+      "Capterra___6442214",
+      "Capterra___4959597",
+      "Capterra___6387081",
+      "Capterra___6431748",
+      "Capterra___5005410",
+      "Capterra___6639336",
+      "Capterra___6016439",
+      "Capterra___6316667",
+      "Capterra___7171576",
+      "Capterra___6397079",
+      "Capterra___6289410",
+      "Capterra___7162733",
+      "Capterra___5066744",
+      "Capterra___6580865",
+      "Capterra___7066074",
+      "Capterra___6521030",
+      "Capterra___6833142",
+      "Capterra___6507856",
+      "Capterra___7123895"
+     ],
+     "tokens_est": 3602,
+     "truncated_reviews": 5,
+     "sentences_removed_naming_target": 0,
+     "sha256": "3ea902067ac981a7ed9e2637ad02f45ed496f62ba311fc2828f7705cc0007ba9"
+    },
+    "T": {
+     "pack": "T",
+     "evidence_ids": [
+      "Capterra___6558743",
+      "Capterra___6747633",
+      "Capterra___6456007",
+      "Capterra___6485584",
+      "Capterra___7064179",
+      "Capterra___6784594",
+      "Capterra___6580577",
+      "Capterra___6578632",
+      "Capterra___6594799",
+      "Capterra___6603865"
+     ],
+     "tokens_est": 1512,
+     "truncated_reviews": 1,
+     "sentences_removed_naming_target": 0,
+     "sha256": "43feaedf9d94ece195619130ef889056d33fbaf75de0e7748c0194749e1b6d3c"
+    },
+    "Q": {
+     "pack": "Q",
+     "tokens_est": 100,
+     "fields": [
+      "goal",
+      "fixture.instructions",
+      "fixture.names",
+      "success_criteria",
+      "limits"
+     ],
+     "sha256": "cffe307aa852697f35fd43cbde831102f9316d135a84b1d89e815a5cd722167d"
+    }
+   }
+  },
+  "case_92a5835cec": {
+   "product": "Asana",
+   "packets": {
+    "M": {
+     "pack": "M",
+     "product": "Asana",
+     "url": "https://asana.com/",
+     "tokens_est": 35,
+     "sha256": "7773a52328afee0213395ab68308ec0170852e797ee04ad61a415d97af12cafa"
+    },
+    "D": {
+     "pack": "D",
+     "sources": [
+      {
+       "label": "target landing",
+       "product": "Asana",
+       "url": "https://asana.com/",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "target feature page",
+       "product": "Asana",
+       "url": "https://asana.com/features",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "peer overview: ClickUp",
+       "product": "ClickUp",
+       "url": "https://clickup.com/features",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "peer overview: Notion",
+       "product": "Notion",
+       "url": "https://www.notion.so/",
+       "capture_date": "2026-10-18",
+       "truncated": false
+      }
+     ],
+     "tokens_est": 2115,
+     "sha256": "647b886a55c5f0f890aaec0cfae1d48e892b841a6c9c2e937b8e07cc7498dd75"
+    },
+    "P": {
+     "pack": "P",
+     "fields": [
+      "reviewer_job_title",
+      "reviewer_industry",
+      "reviewer_company_size",
+      "reviewer_time_used_product"
+     ],
+     "tokens_est": 31,
+     "sha256": "3623ba64a1e98434a14f0ae105fb7f2dd8d6fed35e09d22b22d66321dd6d66bf"
+    },
+    "O": {
+     "pack": "O",
+     "status": "ok",
+     "onet_version": "31.0",
+     "mapping": [
+      {
+       "code": "17-2112.03",
+       "why": "Product engineers in industrial automation often focus on manufacturing processes."
+      },
+      {
+       "code": "17-2141.00",
+       "why": "Product engineers frequently apply mechanical engineering principles to design and develop products."
+      },
+      {
+       "code": "17-2199.08",
+       "why": "Industrial automation product engineers may specialize in robotics for automated systems."
+      }
+     ],
+     "task_ids": [
+      "18181",
+      "18177",
+      "20960",
+      "18167",
+      "1411",
+      "20733",
+      "20736",
+      "1412",
+      "16512",
+      "16517",
+      "16521",
+      "21057"
+     ],
+     "tokens_est": 469,
+     "mapping_call": {
+      "model": "gemini-2.5-flash",
+      "model_version": "gemini-2.5-flash",
+      "usage": {
+       "input_tokens": 18053,
+       "output_tokens": 98,
+       "cost_usd": 0.005661,
+       "latency_seconds": 1.42
+      }
+     },
+     "sha256": "eec68fb06dd2fe743a20b247260730515ae8ea3321b2233fcdb187320e9842fc"
+    },
+    "C": {
+     "pack": "C",
+     "evidence_ids": [
+      "Capterra___4921347",
+      "Capterra___6442214",
+      "Capterra___4959597",
+      "Capterra___6387081",
+      "Capterra___6431748",
+      "Capterra___5005410",
+      "Capterra___6639336",
+      "Capterra___6016439",
+      "Capterra___6316667",
+      "Capterra___7171576",
+      "Capterra___6397079",
+      "Capterra___6289410",
+      "Capterra___7162733",
+      "Capterra___5066744",
+      "Capterra___6580865",
+      "Capterra___7066074",
+      "Capterra___6521030",
+      "Capterra___6833142",
+      "Capterra___6507856",
+      "Capterra___7123895"
+     ],
+     "tokens_est": 3602,
+     "truncated_reviews": 5,
+     "sentences_removed_naming_target": 0,
+     "sha256": "3ea902067ac981a7ed9e2637ad02f45ed496f62ba311fc2828f7705cc0007ba9"
+    },
+    "T": {
+     "pack": "T",
+     "evidence_ids": [
+      "Capterra___6558743",
+      "Capterra___6747633",
+      "Capterra___6456007",
+      "Capterra___6485584",
+      "Capterra___7064179",
+      "Capterra___6784594",
+      "Capterra___6580577",
+      "Capterra___6578632",
+      "Capterra___6594799",
+      "Capterra___6603865"
+     ],
+     "tokens_est": 1512,
+     "truncated_reviews": 1,
+     "sentences_removed_naming_target": 0,
+     "sha256": "43feaedf9d94ece195619130ef889056d33fbaf75de0e7748c0194749e1b6d3c"
+    },
+    "Q": {
+     "pack": "Q",
+     "tokens_est": 103,
+     "fields": [
+      "goal",
+      "fixture.instructions",
+      "fixture.names",
+      "success_criteria",
+      "limits"
+     ],
+     "sha256": "d8a72eaba34ef631e2fb53ee8edb8e0971af48ae19b24ac0a9564bfc9642332e"
+    }
+   }
+  },
+  "case_f692c7793d": {
+   "product": "Asana",
+   "packets": {
+    "M": {
+     "pack": "M",
+     "product": "Asana",
+     "url": "https://asana.com/",
+     "tokens_est": 35,
+     "sha256": "7773a52328afee0213395ab68308ec0170852e797ee04ad61a415d97af12cafa"
+    },
+    "D": {
+     "pack": "D",
+     "sources": [
+      {
+       "label": "target landing",
+       "product": "Asana",
+       "url": "https://asana.com/",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "target feature page",
+       "product": "Asana",
+       "url": "https://asana.com/features",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "peer overview: ClickUp",
+       "product": "ClickUp",
+       "url": "https://clickup.com/features",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "peer overview: Notion",
+       "product": "Notion",
+       "url": "https://www.notion.so/",
+       "capture_date": "2026-10-18",
+       "truncated": false
+      }
+     ],
+     "tokens_est": 2115,
+     "sha256": "647b886a55c5f0f890aaec0cfae1d48e892b841a6c9c2e937b8e07cc7498dd75"
+    },
+    "P": {
+     "pack": "P",
+     "fields": [
+      "reviewer_job_title",
+      "reviewer_industry",
+      "reviewer_company_size",
+      "reviewer_time_used_product"
+     ],
+     "tokens_est": 28,
+     "sha256": "d153e0968880e395d226db1f96a737d56cadd92b487d37a5ae519ccc69063f42"
+    },
+    "O": {
+     "pack": "O",
+     "status": "ok",
+     "onet_version": "31.0",
+     "mapping": [
+      {
+       "code": "13-1071.00",
+       "why": "Directly matches 'HR Specialist' in the job title."
+      },
+      {
+       "code": "11-3121.00",
+       "why": "Senior HR roles often involve managerial responsibilities."
+      },
+      {
+       "code": "13-1141.00",
+       "why": "HR Specialists frequently handle compensation, benefits, and job analysis."
+      }
+     ],
+     "task_ids": [
+      "18861",
+      "18859",
+      "18864",
+      "18866",
+      "990",
+      "991",
+      "986",
+      "998",
+      "3359",
+      "3352",
+      "3363",
+      "3353"
+     ],
+     "tokens_est": 562,
+     "mapping_call": {
+      "model": "gemini-2.5-flash",
+      "model_version": "gemini-2.5-flash",
+      "usage": {
+       "input_tokens": 18054,
+       "output_tokens": 95,
+       "cost_usd": 0.005654,
+       "latency_seconds": 1.37
+      }
+     },
+     "sha256": "3a8c49dba43917cb237126b54f9c1cf75f1aa049f17205872a245c37c2f573f2"
+    },
+    "C": {
+     "pack": "C",
+     "evidence_ids": [
+      "Capterra___4921347",
+      "Capterra___6442214",
+      "Capterra___4959597",
+      "Capterra___6387081",
+      "Capterra___6431748",
+      "Capterra___5005410",
+      "Capterra___6639336",
+      "Capterra___6016439",
+      "Capterra___6316667",
+      "Capterra___7171576",
+      "Capterra___6397079",
+      "Capterra___6289410",
+      "Capterra___7162733",
+      "Capterra___5066744",
+      "Capterra___6580865",
+      "Capterra___7066074",
+      "Capterra___6521030",
+      "Capterra___6833142",
+      "Capterra___6507856",
+      "Capterra___7123895"
+     ],
+     "tokens_est": 3602,
+     "truncated_reviews": 5,
+     "sentences_removed_naming_target": 0,
+     "sha256": "3ea902067ac981a7ed9e2637ad02f45ed496f62ba311fc2828f7705cc0007ba9"
+    },
+    "T": {
+     "pack": "T",
+     "evidence_ids": [
+      "Capterra___6558743",
+      "Capterra___6747633",
+      "Capterra___6456007",
+      "Capterra___6485584",
+      "Capterra___7064179",
+      "Capterra___6784594",
+      "Capterra___6580577",
+      "Capterra___6578632",
+      "Capterra___6594799",
+      "Capterra___6603865"
+     ],
+     "tokens_est": 1512,
+     "truncated_reviews": 1,
+     "sentences_removed_naming_target": 0,
+     "sha256": "43feaedf9d94ece195619130ef889056d33fbaf75de0e7748c0194749e1b6d3c"
+    },
+    "Q": {
+     "pack": "Q",
+     "tokens_est": 98,
+     "fields": [
+      "goal",
+      "fixture.instructions",
+      "fixture.names",
+      "success_criteria",
+      "limits"
+     ],
+     "sha256": "bef51f1a8dda2cf0c5e049a7cb05de7c75d3bb9c9125db58bb9a1d4136719a54"
+    }
+   }
+  },
+  "case_5c1916fd5d": {
+   "product": "Asana",
+   "packets": {
+    "M": {
+     "pack": "M",
+     "product": "Asana",
+     "url": "https://asana.com/",
+     "tokens_est": 35,
+     "sha256": "7773a52328afee0213395ab68308ec0170852e797ee04ad61a415d97af12cafa"
+    },
+    "D": {
+     "pack": "D",
+     "sources": [
+      {
+       "label": "target landing",
+       "product": "Asana",
+       "url": "https://asana.com/",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "target feature page",
+       "product": "Asana",
+       "url": "https://asana.com/features",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "peer overview: ClickUp",
+       "product": "ClickUp",
+       "url": "https://clickup.com/features",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "peer overview: Notion",
+       "product": "Notion",
+       "url": "https://www.notion.so/",
+       "capture_date": "2026-10-18",
+       "truncated": false
+      }
+     ],
+     "tokens_est": 2115,
+     "sha256": "647b886a55c5f0f890aaec0cfae1d48e892b841a6c9c2e937b8e07cc7498dd75"
+    },
+    "P": {
+     "pack": "P",
+     "fields": [
+      "reviewer_job_title",
+      "reviewer_industry",
+      "reviewer_company_size",
+      "reviewer_time_used_product"
+     ],
+     "tokens_est": 26,
+     "sha256": "aff54540b32b806405b77ccdb811e2066ade24adf20c9fb55cc0f9039ba3cde1"
+    },
+    "O": {
+     "pack": "O",
+     "status": "ok",
+     "onet_version": "31.0",
+     "mapping": [
+      {
+       "code": "11-1011.00",
+       "why": "As self-employed, a Director likely functions as a Chief Executive."
+      },
+      {
+       "code": "11-1021.00",
+       "why": "A Director in a small business often handles general operations and management."
+      },
+      {
+       "code": "11-9199.00",
+       "why": "The title 'Director' is broad, and this covers managerial roles not otherwise classified."
+      }
+     ],
+     "task_ids": [
+      "8823",
+      "8824",
+      "8827",
+      "8826",
+      "20699",
+      "933",
+      "20700",
+      "20701"
+     ],
+     "tokens_est": 357,
+     "mapping_call": {
+      "model": "gemini-2.5-flash",
+      "model_version": "gemini-2.5-flash",
+      "usage": {
+       "input_tokens": 18047,
+       "output_tokens": 106,
+       "cost_usd": 0.005679,
+       "latency_seconds": 1.52
+      }
+     },
+     "sha256": "24c31e7822ba02e783dea159a418be85c0b993914557cc2342e703f28a73fc9c"
+    },
+    "C": {
+     "pack": "C",
+     "evidence_ids": [
+      "Capterra___4921347",
+      "Capterra___6442214",
+      "Capterra___4959597",
+      "Capterra___6387081",
+      "Capterra___6431748",
+      "Capterra___5005410",
+      "Capterra___6639336",
+      "Capterra___6016439",
+      "Capterra___6316667",
+      "Capterra___7171576",
+      "Capterra___6397079",
+      "Capterra___6289410",
+      "Capterra___7162733",
+      "Capterra___5066744",
+      "Capterra___6580865",
+      "Capterra___7066074",
+      "Capterra___6521030",
+      "Capterra___6833142",
+      "Capterra___6507856",
+      "Capterra___7123895"
+     ],
+     "tokens_est": 3602,
+     "truncated_reviews": 5,
+     "sentences_removed_naming_target": 0,
+     "sha256": "3ea902067ac981a7ed9e2637ad02f45ed496f62ba311fc2828f7705cc0007ba9"
+    },
+    "T": {
+     "pack": "T",
+     "evidence_ids": [
+      "Capterra___6558743",
+      "Capterra___6747633",
+      "Capterra___6456007",
+      "Capterra___6485584",
+      "Capterra___7064179",
+      "Capterra___6784594",
+      "Capterra___6580577",
+      "Capterra___6578632",
+      "Capterra___6594799",
+      "Capterra___6603865"
+     ],
+     "tokens_est": 1512,
+     "truncated_reviews": 1,
+     "sentences_removed_naming_target": 0,
+     "sha256": "43feaedf9d94ece195619130ef889056d33fbaf75de0e7748c0194749e1b6d3c"
+    },
+    "Q": {
+     "pack": "Q",
+     "tokens_est": 98,
+     "fields": [
+      "goal",
+      "fixture.instructions",
+      "fixture.names",
+      "success_criteria",
+      "limits"
+     ],
+     "sha256": "9a806cb150f4f754b6d67803f30ca9429fc273d73c14f6db555bb7a8a38112f6"
+    }
+   }
+  },
+  "case_af8986f233": {
+   "product": "ClickUp",
+   "packets": {
+    "M": {
+     "pack": "M",
+     "product": "ClickUp",
+     "url": "https://clickup.com/",
+     "tokens_est": 39,
+     "sha256": "f60548175cf56365b0b7cb19827b6cc592477ad2a8891437769b40b21cfe9fd0"
+    },
+    "D": {
+     "pack": "D",
+     "sources": [
+      {
+       "label": "target landing",
+       "product": "ClickUp",
+       "url": "https://clickup.com/",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "target feature page",
+       "product": "ClickUp",
+       "url": "https://clickup.com/features",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "peer overview: Asana",
+       "product": "Asana",
+       "url": "https://asana.com/features",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "peer overview: Notion",
+       "product": "Notion",
+       "url": "https://www.notion.so/",
+       "capture_date": "2026-10-18",
+       "truncated": false
+      }
+     ],
+     "tokens_est": 2130,
+     "sha256": "5b14fa79fb2fe5daa9d9e267dac2d7d3302c89c865524596b095798614419724"
+    },
+    "P": {
+     "pack": "P",
+     "fields": [
+      "reviewer_job_title",
+      "reviewer_industry",
+      "reviewer_company_size",
+      "reviewer_time_used_product"
+     ],
+     "tokens_est": 32,
+     "sha256": "10315f7d491e5c5eb5cabb3a7b271d219ab7194d3f2df51cdf4a5994be06bf89"
+    },
+    "O": {
+     "pack": "O",
+     "status": "ok",
+     "onet_version": "31.0",
+     "mapping": [
+      {
+       "code": "11-3021.00",
+       "why": "Manages computer and information systems, relevant for 'Platforms Lead' in telecom."
+      },
+      {
+       "code": "15-1241.00",
+       "why": "Designs and implements data communication networks, fitting for 'Platforms Lead' in telecom."
+      },
+      {
+       "code": "11-9199.00",
+       "why": "Manages regional operations and platforms within the telecommunications industry."
+      }
+     ],
+     "task_ids": [
+      "968",
+      "975",
+      "978",
+      "969",
+      "18968",
+      "18971",
+      "18965",
+      "18977"
+     ],
+     "tokens_est": 295,
+     "mapping_call": {
+      "model": "gemini-2.5-flash",
+      "model_version": "gemini-2.5-flash",
+      "usage": {
+       "input_tokens": 18057,
+       "output_tokens": 106,
+       "cost_usd": 0.005682,
+       "latency_seconds": 1.89
+      }
+     },
+     "sha256": "cb97f60ed07811075f30ce9a05f3129d6b14d9ff06ece54cf73de130a3d6bbf8"
+    },
+    "C": {
+     "pack": "C",
+     "evidence_ids": [
+      "Capterra___6558743",
+      "Capterra___6747633",
+      "Capterra___6456007",
+      "Capterra___6485584",
+      "Capterra___7064179",
+      "Capterra___6784594",
+      "Capterra___6580577",
+      "Capterra___6578632",
+      "Capterra___6594799",
+      "Capterra___6603865",
+      "Capterra___6397079",
+      "Capterra___6289410",
+      "Capterra___7162733",
+      "Capterra___5066744",
+      "Capterra___6580865",
+      "Capterra___7066074",
+      "Capterra___6521030",
+      "Capterra___6833142",
+      "Capterra___6507856",
+      "Capterra___7123895"
+     ],
+     "tokens_est": 3469,
+     "truncated_reviews": 4,
+     "sentences_removed_naming_target": 0,
+     "sha256": "37e90b25a10535a6aa68fba09d1004bc700d4fcaaa570990d7bcd8cb335341cc"
+    },
+    "T": {
+     "pack": "T",
+     "evidence_ids": [
+      "Capterra___4921347",
+      "Capterra___6442214",
+      "Capterra___4959597",
+      "Capterra___6387081",
+      "Capterra___6431748",
+      "Capterra___5005410",
+      "Capterra___6639336",
+      "Capterra___6016439",
+      "Capterra___6316667",
+      "Capterra___7171576"
+     ],
+     "tokens_est": 1645,
+     "truncated_reviews": 2,
+     "sentences_removed_naming_target": 0,
+     "sha256": "b1c1951596c492b45c2712bd9e92597471dc25990865704c90837cb0cd622997"
+    },
+    "Q": {
+     "pack": "Q",
+     "tokens_est": 103,
+     "fields": [
+      "goal",
+      "fixture.instructions",
+      "fixture.names",
+      "success_criteria",
+      "limits"
+     ],
+     "sha256": "75b0e99a738f06e35d2d192423281d6862213f99bb9992c61adc811570ac3135"
+    }
+   }
+  },
+  "case_4164789dd7": {
+   "product": "ClickUp",
+   "packets": {
+    "M": {
+     "pack": "M",
+     "product": "ClickUp",
+     "url": "https://clickup.com/",
+     "tokens_est": 39,
+     "sha256": "f60548175cf56365b0b7cb19827b6cc592477ad2a8891437769b40b21cfe9fd0"
+    },
+    "D": {
+     "pack": "D",
+     "sources": [
+      {
+       "label": "target landing",
+       "product": "ClickUp",
+       "url": "https://clickup.com/",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "target feature page",
+       "product": "ClickUp",
+       "url": "https://clickup.com/features",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "peer overview: Asana",
+       "product": "Asana",
+       "url": "https://asana.com/features",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "peer overview: Notion",
+       "product": "Notion",
+       "url": "https://www.notion.so/",
+       "capture_date": "2026-10-18",
+       "truncated": false
+      }
+     ],
+     "tokens_est": 2130,
+     "sha256": "5b14fa79fb2fe5daa9d9e267dac2d7d3302c89c865524596b095798614419724"
+    },
+    "P": {
+     "pack": "P",
+     "fields": [
+      "reviewer_job_title",
+      "reviewer_industry",
+      "reviewer_company_size",
+      "reviewer_time_used_product"
+     ],
+     "tokens_est": 36,
+     "sha256": "fd88ad6f8b16f3b20f901a8a7ae641d220a3257c726498366c725e0a9f59269c"
+    },
+    "O": {
+     "pack": "O",
+     "status": "ok",
+     "onet_version": "31.0",
+     "mapping": [
+      {
+       "code": "15-1221.00",
+       "why": "Machine Learning Engineers often conduct research in computer science."
+      },
+      {
+       "code": "15-1252.00",
+       "why": "Machine Learning Engineers develop and implement software applications."
+      },
+      {
+       "code": "15-2051.00",
+       "why": "Machine Learning Engineers analyze and interpret complex data sets."
+      }
+     ],
+     "task_ids": [
+      "14623",
+      "14626",
+      "14624",
+      "14628",
+      "21662",
+      "21669",
+      "21664",
+      "21670",
+      "21823",
+      "21828",
+      "21837",
+      "21829"
+     ],
+     "tokens_est": 485,
+     "mapping_call": {
+      "model": "gemini-2.5-flash",
+      "model_version": "gemini-2.5-flash",
+      "usage": {
+       "input_tokens": 18057,
+       "output_tokens": 91,
+       "cost_usd": 0.005645,
+       "latency_seconds": 1.63
+      }
+     },
+     "sha256": "32bed1b1c2d38b59e217c595e29c964070574b15421dee5257bd523d01680297"
+    },
+    "C": {
+     "pack": "C",
+     "evidence_ids": [
+      "Capterra___6558743",
+      "Capterra___6747633",
+      "Capterra___6456007",
+      "Capterra___6485584",
+      "Capterra___7064179",
+      "Capterra___6784594",
+      "Capterra___6580577",
+      "Capterra___6578632",
+      "Capterra___6594799",
+      "Capterra___6603865",
+      "Capterra___6397079",
+      "Capterra___6289410",
+      "Capterra___7162733",
+      "Capterra___5066744",
+      "Capterra___6580865",
+      "Capterra___7066074",
+      "Capterra___6521030",
+      "Capterra___6833142",
+      "Capterra___6507856",
+      "Capterra___7123895"
+     ],
+     "tokens_est": 3469,
+     "truncated_reviews": 4,
+     "sentences_removed_naming_target": 0,
+     "sha256": "37e90b25a10535a6aa68fba09d1004bc700d4fcaaa570990d7bcd8cb335341cc"
+    },
+    "T": {
+     "pack": "T",
+     "evidence_ids": [
+      "Capterra___4921347",
+      "Capterra___6442214",
+      "Capterra___4959597",
+      "Capterra___6387081",
+      "Capterra___6431748",
+      "Capterra___5005410",
+      "Capterra___6639336",
+      "Capterra___6016439",
+      "Capterra___6316667",
+      "Capterra___7171576"
+     ],
+     "tokens_est": 1645,
+     "truncated_reviews": 2,
+     "sentences_removed_naming_target": 0,
+     "sha256": "b1c1951596c492b45c2712bd9e92597471dc25990865704c90837cb0cd622997"
+    },
+    "Q": {
+     "pack": "Q",
+     "tokens_est": 107,
+     "fields": [
+      "goal",
+      "fixture.instructions",
+      "fixture.names",
+      "success_criteria",
+      "limits"
+     ],
+     "sha256": "99bd627a3747934b5b1fc9d086f82a412d1935b887a607e89c2d10c5f9d92562"
+    }
+   }
+  },
+  "case_b4bd3cce26": {
+   "product": "ClickUp",
+   "packets": {
+    "M": {
+     "pack": "M",
+     "product": "ClickUp",
+     "url": "https://clickup.com/",
+     "tokens_est": 39,
+     "sha256": "f60548175cf56365b0b7cb19827b6cc592477ad2a8891437769b40b21cfe9fd0"
+    },
+    "D": {
+     "pack": "D",
+     "sources": [
+      {
+       "label": "target landing",
+       "product": "ClickUp",
+       "url": "https://clickup.com/",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "target feature page",
+       "product": "ClickUp",
+       "url": "https://clickup.com/features",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "peer overview: Asana",
+       "product": "Asana",
+       "url": "https://asana.com/features",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "peer overview: Notion",
+       "product": "Notion",
+       "url": "https://www.notion.so/",
+       "capture_date": "2026-10-18",
+       "truncated": false
+      }
+     ],
+     "tokens_est": 2130,
+     "sha256": "5b14fa79fb2fe5daa9d9e267dac2d7d3302c89c865524596b095798614419724"
+    },
+    "P": {
+     "pack": "P",
+     "fields": [
+      "reviewer_job_title",
+      "reviewer_industry",
+      "reviewer_company_size",
+      "reviewer_time_used_product"
+     ],
+     "tokens_est": 33,
+     "sha256": "aeeee2c17077b89081b05ee3f890b5b7f6ef9432eb1b50c3e14c4f66d4e4ffe6"
+    },
+    "O": {
+     "pack": "O",
+     "status": "ok",
+     "onet_version": "31.0",
+     "mapping": [
+      {
+       "code": "13-1082.00",
+       "why": "Directs and coordinates activities of project personnel in software development."
+      }
+     ],
+     "task_ids": [
+      "21463",
+      "21467",
+      "21481",
+      "21464"
+     ],
+     "tokens_est": 141,
+     "mapping_call": {
+      "model": "gemini-2.5-flash",
+      "model_version": "gemini-2.5-flash",
+      "usage": {
+       "input_tokens": 18053,
+       "output_tokens": 36,
+       "cost_usd": 0.005506,
+       "latency_seconds": 1.42
+      }
+     },
+     "sha256": "e31abc936967c1459871da092aa4d6eadcd7e2ce5528e0341bd1f8ca37fbc466"
+    },
+    "C": {
+     "pack": "C",
+     "evidence_ids": [
+      "Capterra___6558743",
+      "Capterra___6747633",
+      "Capterra___6456007",
+      "Capterra___6485584",
+      "Capterra___7064179",
+      "Capterra___6784594",
+      "Capterra___6580577",
+      "Capterra___6578632",
+      "Capterra___6594799",
+      "Capterra___6603865",
+      "Capterra___6397079",
+      "Capterra___6289410",
+      "Capterra___7162733",
+      "Capterra___5066744",
+      "Capterra___6580865",
+      "Capterra___7066074",
+      "Capterra___6521030",
+      "Capterra___6833142",
+      "Capterra___6507856",
+      "Capterra___7123895"
+     ],
+     "tokens_est": 3469,
+     "truncated_reviews": 4,
+     "sentences_removed_naming_target": 0,
+     "sha256": "37e90b25a10535a6aa68fba09d1004bc700d4fcaaa570990d7bcd8cb335341cc"
+    },
+    "T": {
+     "pack": "T",
+     "evidence_ids": [
+      "Capterra___4921347",
+      "Capterra___6442214",
+      "Capterra___4959597",
+      "Capterra___6387081",
+      "Capterra___6431748",
+      "Capterra___5005410",
+      "Capterra___6639336",
+      "Capterra___6016439",
+      "Capterra___6316667",
+      "Capterra___7171576"
+     ],
+     "tokens_est": 1645,
+     "truncated_reviews": 2,
+     "sentences_removed_naming_target": 0,
+     "sha256": "b1c1951596c492b45c2712bd9e92597471dc25990865704c90837cb0cd622997"
+    },
+    "Q": {
+     "pack": "Q",
+     "tokens_est": 106,
+     "fields": [
+      "goal",
+      "fixture.instructions",
+      "fixture.names",
+      "success_criteria",
+      "limits"
+     ],
+     "sha256": "211acd11ee3ce6d801b67d05b2829c1b08f3f03768988ecdccb7168b870bff8d"
+    }
+   }
+  },
+  "case_11232793fc": {
+   "product": "ClickUp",
+   "packets": {
+    "M": {
+     "pack": "M",
+     "product": "ClickUp",
+     "url": "https://clickup.com/",
+     "tokens_est": 39,
+     "sha256": "f60548175cf56365b0b7cb19827b6cc592477ad2a8891437769b40b21cfe9fd0"
+    },
+    "D": {
+     "pack": "D",
+     "sources": [
+      {
+       "label": "target landing",
+       "product": "ClickUp",
+       "url": "https://clickup.com/",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "target feature page",
+       "product": "ClickUp",
+       "url": "https://clickup.com/features",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "peer overview: Asana",
+       "product": "Asana",
+       "url": "https://asana.com/features",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "peer overview: Notion",
+       "product": "Notion",
+       "url": "https://www.notion.so/",
+       "capture_date": "2026-10-18",
+       "truncated": false
+      }
+     ],
+     "tokens_est": 2130,
+     "sha256": "5b14fa79fb2fe5daa9d9e267dac2d7d3302c89c865524596b095798614419724"
+    },
+    "P": {
+     "pack": "P",
+     "fields": [
+      "reviewer_job_title",
+      "reviewer_industry",
+      "reviewer_company_size",
+      "reviewer_time_used_product"
+     ],
+     "tokens_est": 33,
+     "sha256": "38c27d7e2013a97f07b723bf8b45040c8b58a51fc46b314bfb4c39caaac069a4"
+    },
+    "O": {
+     "pack": "O",
+     "status": "ok",
+     "onet_version": "31.0",
+     "mapping": [
+      {
+       "code": "11-2021.00",
+       "why": "Manages marketing activities, aligning with the 'Marketing' part of the title."
+      },
+      {
+       "code": "11-3021.00",
+       "why": "Manages technology systems, aligning with the 'technology manager' part of the title."
+      },
+      {
+       "code": "13-1161.00",
+       "why": "Conducts market research and develops marketing strategies."
+      }
+     ],
+     "task_ids": [
+      "20709",
+      "958",
+      "951",
+      "954",
+      "968",
+      "975",
+      "978",
+      "969",
+      "5434",
+      "5437",
+      "5439",
+      "5433"
+     ],
+     "tokens_est": 565,
+     "mapping_call": {
+      "model": "gemini-2.5-flash",
+      "model_version": "gemini-2.5-flash",
+      "usage": {
+       "input_tokens": 18053,
+       "output_tokens": 104,
+       "cost_usd": 0.005676,
+       "latency_seconds": 1.59
+      }
+     },
+     "sha256": "8c958c1d6d5d4bf27369781256492b174784629af49ac08b7835544358a12110"
+    },
+    "C": {
+     "pack": "C",
+     "evidence_ids": [
+      "Capterra___6558743",
+      "Capterra___6747633",
+      "Capterra___6456007",
+      "Capterra___6485584",
+      "Capterra___7064179",
+      "Capterra___6784594",
+      "Capterra___6580577",
+      "Capterra___6578632",
+      "Capterra___6594799",
+      "Capterra___6603865",
+      "Capterra___6397079",
+      "Capterra___6289410",
+      "Capterra___7162733",
+      "Capterra___5066744",
+      "Capterra___6580865",
+      "Capterra___7066074",
+      "Capterra___6521030",
+      "Capterra___6833142",
+      "Capterra___6507856",
+      "Capterra___7123895"
+     ],
+     "tokens_est": 3469,
+     "truncated_reviews": 4,
+     "sentences_removed_naming_target": 0,
+     "sha256": "37e90b25a10535a6aa68fba09d1004bc700d4fcaaa570990d7bcd8cb335341cc"
+    },
+    "T": {
+     "pack": "T",
+     "evidence_ids": [
+      "Capterra___4921347",
+      "Capterra___6442214",
+      "Capterra___4959597",
+      "Capterra___6387081",
+      "Capterra___6431748",
+      "Capterra___5005410",
+      "Capterra___6639336",
+      "Capterra___6016439",
+      "Capterra___6316667",
+      "Capterra___7171576"
+     ],
+     "tokens_est": 1645,
+     "truncated_reviews": 2,
+     "sentences_removed_naming_target": 0,
+     "sha256": "b1c1951596c492b45c2712bd9e92597471dc25990865704c90837cb0cd622997"
+    },
+    "Q": {
+     "pack": "Q",
+     "tokens_est": 104,
+     "fields": [
+      "goal",
+      "fixture.instructions",
+      "fixture.names",
+      "success_criteria",
+      "limits"
+     ],
+     "sha256": "3aee689f0a44936c57f1a43b7ad61aa291e5efebb2ceb2cbeb67891d0b10916d"
+    }
+   }
+  },
+  "case_c9feaf8326": {
+   "product": "Asana",
+   "packets": {
+    "M": {
+     "pack": "M",
+     "product": "Asana",
+     "url": "https://asana.com/",
+     "tokens_est": 35,
+     "sha256": "7773a52328afee0213395ab68308ec0170852e797ee04ad61a415d97af12cafa"
+    },
+    "D": {
+     "pack": "D",
+     "sources": [
+      {
+       "label": "target landing",
+       "product": "Asana",
+       "url": "https://asana.com/",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "target feature page",
+       "product": "Asana",
+       "url": "https://asana.com/features",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "peer overview: ClickUp",
+       "product": "ClickUp",
+       "url": "https://clickup.com/features",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "peer overview: Notion",
+       "product": "Notion",
+       "url": "https://www.notion.so/",
+       "capture_date": "2026-10-18",
+       "truncated": false
+      }
+     ],
+     "tokens_est": 2115,
+     "sha256": "647b886a55c5f0f890aaec0cfae1d48e892b841a6c9c2e937b8e07cc7498dd75"
+    },
+    "P": {
+     "pack": "P",
+     "fields": [
+      "reviewer_job_title",
+      "reviewer_industry",
+      "reviewer_company_size",
+      "reviewer_time_used_product"
+     ],
+     "tokens_est": 27,
+     "sha256": "6890cdb261d1ef1721f76740113408d214adfd1fa6e6e150c681bfbc5937b420"
+    },
+    "O": {
+     "pack": "O",
+     "status": "ok",
+     "onet_version": "31.0",
+     "mapping": [
+      {
+       "code": "11-1011.00",
+       "why": "Co-Founders often act as chief executives, especially in small companies."
+      },
+      {
+       "code": "11-2021.00",
+       "why": "In media production, co-founders frequently handle marketing and business development."
+      },
+      {
+       "code": "27-2012.00",
+       "why": "Co-founders in media production often take on producer or director roles."
+      }
+     ],
+     "task_ids": [
+      "8823",
+      "8824",
+      "8827",
+      "8826",
+      "20709",
+      "958",
+      "951",
+      "954",
+      "22515",
+      "22516",
+      "22517",
+      "22522"
+     ],
+     "tokens_est": 537,
+     "mapping_call": {
+      "model": "gemini-2.5-flash",
+      "model_version": "gemini-2.5-flash",
+      "usage": {
+       "input_tokens": 18052,
+       "output_tokens": 106,
+       "cost_usd": 0.005681,
+       "latency_seconds": 1.49
+      }
+     },
+     "sha256": "78e13ab12f6d6d5c9ce83711ea138560221e887c4f93a3c550a0801afc8628fb"
+    },
+    "C": {
+     "pack": "C",
+     "evidence_ids": [
+      "Capterra___4921347",
+      "Capterra___6442214",
+      "Capterra___4959597",
+      "Capterra___6387081",
+      "Capterra___6431748",
+      "Capterra___5005410",
+      "Capterra___6639336",
+      "Capterra___6016439",
+      "Capterra___6316667",
+      "Capterra___7171576",
+      "Capterra___6397079",
+      "Capterra___6289410",
+      "Capterra___7162733",
+      "Capterra___5066744",
+      "Capterra___6580865",
+      "Capterra___7066074",
+      "Capterra___6521030",
+      "Capterra___6833142",
+      "Capterra___6507856",
+      "Capterra___7123895"
+     ],
+     "tokens_est": 3602,
+     "truncated_reviews": 5,
+     "sentences_removed_naming_target": 0,
+     "sha256": "3ea902067ac981a7ed9e2637ad02f45ed496f62ba311fc2828f7705cc0007ba9"
+    },
+    "T": {
+     "pack": "T",
+     "evidence_ids": [
+      "Capterra___6558743",
+      "Capterra___6747633",
+      "Capterra___6456007",
+      "Capterra___6485584",
+      "Capterra___7064179",
+      "Capterra___6784594",
+      "Capterra___6580577",
+      "Capterra___6578632",
+      "Capterra___6594799",
+      "Capterra___6603865"
+     ],
+     "tokens_est": 1512,
+     "truncated_reviews": 1,
+     "sentences_removed_naming_target": 0,
+     "sha256": "43feaedf9d94ece195619130ef889056d33fbaf75de0e7748c0194749e1b6d3c"
+    },
+    "Q": {
+     "pack": "Q",
+     "tokens_est": 175,
+     "fields": [
+      "goal",
+      "fixture.instructions",
+      "fixture.names",
+      "success_criteria",
+      "limits"
+     ],
+     "sha256": "313a0da213aceb84b9f83f5ac4e69249f2297e8d42f8e065b915f9f7b4c9158c"
+    }
+   }
+  },
+  "case_3f34c60341": {
+   "product": "ClickUp",
+   "packets": {
+    "M": {
+     "pack": "M",
+     "product": "ClickUp",
+     "url": "https://clickup.com/",
+     "tokens_est": 39,
+     "sha256": "f60548175cf56365b0b7cb19827b6cc592477ad2a8891437769b40b21cfe9fd0"
+    },
+    "D": {
+     "pack": "D",
+     "sources": [
+      {
+       "label": "target landing",
+       "product": "ClickUp",
+       "url": "https://clickup.com/",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "target feature page",
+       "product": "ClickUp",
+       "url": "https://clickup.com/features",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "peer overview: Asana",
+       "product": "Asana",
+       "url": "https://asana.com/features",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "peer overview: Notion",
+       "product": "Notion",
+       "url": "https://www.notion.so/",
+       "capture_date": "2026-10-18",
+       "truncated": false
+      }
+     ],
+     "tokens_est": 2130,
+     "sha256": "5b14fa79fb2fe5daa9d9e267dac2d7d3302c89c865524596b095798614419724"
+    },
+    "P": {
+     "pack": "P",
+     "fields": [
+      "reviewer_job_title",
+      "reviewer_industry",
+      "reviewer_company_size",
+      "reviewer_time_used_product"
+     ],
+     "tokens_est": 34,
+     "sha256": "767f6c9f2ced4d91c1aa7dfe485bc8355847fc0349ceecc6a2d274882d2b8a82"
+    },
+    "O": {
+     "pack": "O",
+     "status": "ok",
+     "onet_version": "31.0",
+     "mapping": [
+      {
+       "code": "15-1255.00",
+       "why": "Directly matches the job title and industry focus on digital design."
+      },
+      {
+       "code": "27-1021.00",
+       "why": "UI/UX designers create products, aligning with industrial design principles."
+      },
+      {
+       "code": "27-1024.00",
+       "why": "Graphic design skills are fundamental to UI/UX work."
+      }
+     ],
+     "task_ids": [
+      "21702",
+      "21692",
+      "21714",
+      "21706",
+      "6896",
+      "6898",
+      "6902",
+      "6900",
+      "307",
+      "304",
+      "300",
+      "306"
+     ],
+     "tokens_est": 516,
+     "mapping_call": {
+      "model": "gemini-2.5-flash",
+      "model_version": "gemini-2.5-flash",
+      "usage": {
+       "input_tokens": 18056,
+       "output_tokens": 99,
+       "cost_usd": 0.005664,
+       "latency_seconds": 1.63
+      }
+     },
+     "sha256": "f0c33d2f295b531c9ee3ede8879a7108241be94b511093c23514d9645899d71c"
+    },
+    "C": {
+     "pack": "C",
+     "evidence_ids": [
+      "Capterra___6558743",
+      "Capterra___6747633",
+      "Capterra___6456007",
+      "Capterra___6485584",
+      "Capterra___7064179",
+      "Capterra___6784594",
+      "Capterra___6580577",
+      "Capterra___6578632",
+      "Capterra___6594799",
+      "Capterra___6603865",
+      "Capterra___6397079",
+      "Capterra___6289410",
+      "Capterra___7162733",
+      "Capterra___5066744",
+      "Capterra___6580865",
+      "Capterra___7066074",
+      "Capterra___6521030",
+      "Capterra___6833142",
+      "Capterra___6507856",
+      "Capterra___7123895"
+     ],
+     "tokens_est": 3469,
+     "truncated_reviews": 4,
+     "sentences_removed_naming_target": 0,
+     "sha256": "37e90b25a10535a6aa68fba09d1004bc700d4fcaaa570990d7bcd8cb335341cc"
+    },
+    "T": {
+     "pack": "T",
+     "evidence_ids": [
+      "Capterra___4921347",
+      "Capterra___6442214",
+      "Capterra___4959597",
+      "Capterra___6387081",
+      "Capterra___6431748",
+      "Capterra___5005410",
+      "Capterra___6639336",
+      "Capterra___6016439",
+      "Capterra___6316667",
+      "Capterra___7171576"
+     ],
+     "tokens_est": 1645,
+     "truncated_reviews": 2,
+     "sentences_removed_naming_target": 0,
+     "sha256": "b1c1951596c492b45c2712bd9e92597471dc25990865704c90837cb0cd622997"
+    },
+    "Q": {
+     "pack": "Q",
+     "tokens_est": 105,
+     "fields": [
+      "goal",
+      "fixture.instructions",
+      "fixture.names",
+      "success_criteria",
+      "limits"
+     ],
+     "sha256": "066e0669f36a6460fb38c73a82045a398d6a31c976e6b5f3a3a73f0edc635550"
+    }
+   }
+  },
+  "v2_013cfb067b": {
+   "product": "Notion",
+   "packets": {
+    "M": {
+     "pack": "M",
+     "product": "Notion",
+     "url": "https://www.notion.so/",
+     "tokens_est": 32,
+     "sha256": "a67dfe19303d1e35f57d7689073ab924869ed3b7423cfc954dbcf387ba3077ba"
+    },
+    "D": {
+     "pack": "D",
+     "sources": [
+      {
+       "label": "target landing",
+       "product": "Notion",
+       "url": "https://www.notion.so/",
+       "capture_date": "2026-10-18",
+       "truncated": false
+      },
+      {
+       "label": "target feature page",
+       "product": "Notion",
+       "url": "https://www.notion.so/product",
+       "capture_date": "2026-10-18",
+       "truncated": false
+      },
+      {
+       "label": "peer overview: Asana",
+       "product": "Asana",
+       "url": "https://asana.com/features",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "peer overview: ClickUp",
+       "product": "ClickUp",
+       "url": "https://clickup.com/features",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      }
+     ],
+     "tokens_est": 1074,
+     "sha256": "29278c43ba28f786e48a3d279b1aa25dc295e923fccbd5a00bd2d4657b53e71c"
+    },
+    "P": {
+     "pack": "P",
+     "fields": [
+      "reviewer_job_title",
+      "reviewer_industry",
+      "reviewer_company_size",
+      "reviewer_time_used_product"
+     ],
+     "tokens_est": 34,
+     "sha256": "1bf5544c3c93a29176531e9fc404e88d239b099ce17261acf04990a016632d23"
+    },
+    "O": {
+     "pack": "O",
+     "status": "ok",
+     "onet_version": "31.0",
+     "mapping": [
+      {
+       "code": "21-1093.00",
+       "why": "Coordinates patient intake, common in healthcare social work and human services."
+      },
+      {
+       "code": "29-2099.08",
+       "why": "Patient Representatives often handle initial patient contact and coordination in hospitals."
+      },
+      {
+       "code": "43-4111.00",
+       "why": "Conducts initial interviews and gathers information for healthcare services."
+      }
+     ],
+     "task_ids": [
+      "21179",
+      "21180",
+      "3754",
+      "3755",
+      "17668",
+      "17670",
+      "17678",
+      "17671",
+      "2627",
+      "2634",
+      "2633",
+      "20435"
+     ],
+     "tokens_est": 486,
+     "mapping_call": {
+      "model": "gemini-2.5-flash",
+      "model_version": "gemini-2.5-flash",
+      "usage": {
+       "input_tokens": 18058,
+       "output_tokens": 136,
+       "cost_usd": 0.005757,
+       "latency_seconds": 2.23
+      }
+     },
+     "sha256": "38d447b01101c81b3b3b6b493d1cf8cc24df994a0aab06e912bf9cfc365e437e"
+    },
+    "C": {
+     "pack": "C",
+     "evidence_ids": [
+      "Capterra___6558743",
+      "Capterra___6747633",
+      "Capterra___6456007",
+      "Capterra___6485584",
+      "Capterra___7064179",
+      "Capterra___6784594",
+      "Capterra___6580577",
+      "Capterra___6578632",
+      "Capterra___6594799",
+      "Capterra___6603865",
+      "Capterra___4921347",
+      "Capterra___6442214",
+      "Capterra___4959597",
+      "Capterra___6387081",
+      "Capterra___6431748",
+      "Capterra___5005410",
+      "Capterra___6639336",
+      "Capterra___6016439",
+      "Capterra___6316667",
+      "Capterra___7171576"
+     ],
+     "tokens_est": 3136,
+     "truncated_reviews": 3,
+     "sentences_removed_naming_target": 1,
+     "sha256": "38821e406259b630b09197f73be35913affd53146a89700d3c8639c42e860f05"
+    },
+    "T": {
+     "pack": "T",
+     "evidence_ids": [
+      "Capterra___6397079",
+      "Capterra___6289410",
+      "Capterra___7162733",
+      "Capterra___5066744",
+      "Capterra___6580865",
+      "Capterra___7066074",
+      "Capterra___6521030",
+      "Capterra___6833142",
+      "Capterra___6507856",
+      "Capterra___7123895"
+     ],
+     "tokens_est": 1957,
+     "truncated_reviews": 3,
+     "sentences_removed_naming_target": 0,
+     "sha256": "81519f1a11ba6af83d874b57b9a5762aa0c9413bb58443122ccb1e52a78164fd"
+    },
+    "Q": {
+     "pack": "Q",
+     "tokens_est": 126,
+     "fields": [
+      "goal",
+      "fixture.instructions",
+      "fixture.names",
+      "success_criteria",
+      "limits"
+     ],
+     "sha256": "a45bda2c8808eff07654fed777c74e81869b9f5a3a5520c7f4d04819822a9cd1"
+    }
+   }
+  },
+  "v2_01a34be519": {
+   "product": "Notion",
+   "packets": {
+    "M": {
+     "pack": "M",
+     "product": "Notion",
+     "url": "https://www.notion.so/",
+     "tokens_est": 32,
+     "sha256": "a67dfe19303d1e35f57d7689073ab924869ed3b7423cfc954dbcf387ba3077ba"
+    },
+    "D": {
+     "pack": "D",
+     "sources": [
+      {
+       "label": "target landing",
+       "product": "Notion",
+       "url": "https://www.notion.so/",
+       "capture_date": "2026-10-18",
+       "truncated": false
+      },
+      {
+       "label": "target feature page",
+       "product": "Notion",
+       "url": "https://www.notion.so/product",
+       "capture_date": "2026-10-18",
+       "truncated": false
+      },
+      {
+       "label": "peer overview: Asana",
+       "product": "Asana",
+       "url": "https://asana.com/features",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "peer overview: ClickUp",
+       "product": "ClickUp",
+       "url": "https://clickup.com/features",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      }
+     ],
+     "tokens_est": 1074,
+     "sha256": "29278c43ba28f786e48a3d279b1aa25dc295e923fccbd5a00bd2d4657b53e71c"
+    },
+    "P": {
+     "pack": "P",
+     "fields": [
+      "reviewer_job_title",
+      "reviewer_industry",
+      "reviewer_company_size",
+      "reviewer_time_used_product"
+     ],
+     "tokens_est": 35,
+     "sha256": "4fa68ba51777cf50291ea1aed0d33ba1dc16ceb8881b722648ae4679c5704beb"
+    },
+    "O": {
+     "pack": "O",
+     "status": "ok",
+     "onet_version": "31.0",
+     "mapping": [
+      {
+       "code": "15-1211.00",
+       "why": "IT Consultant often involves analyzing and designing computer systems."
+      },
+      {
+       "code": "15-1299.08",
+       "why": "Consultants frequently design and integrate complex IT systems."
+      },
+      {
+       "code": "13-1111.00",
+       "why": "Self-employed consultants provide expert advice to organizations."
+      }
+     ],
+     "task_ids": [
+      "20950",
+      "3464",
+      "3465",
+      "3482",
+      "14666",
+      "14677",
+      "14674",
+      "14676",
+      "7276",
+      "7278",
+      "7277",
+      "7282"
+     ],
+     "tokens_est": 466,
+     "mapping_call": {
+      "model": "gemini-2.5-flash",
+      "model_version": "gemini-2.5-flash",
+      "usage": {
+       "input_tokens": 18056,
+       "output_tokens": 92,
+       "cost_usd": 0.005647,
+       "latency_seconds": 1.4
+      }
+     },
+     "sha256": "42953d5b8756c04e75089abf5e50d38e51458b686c3efd2d518f97d9163a54e7"
+    },
+    "C": {
+     "pack": "C",
+     "evidence_ids": [
+      "Capterra___6558743",
+      "Capterra___6747633",
+      "Capterra___6456007",
+      "Capterra___6485584",
+      "Capterra___7064179",
+      "Capterra___6784594",
+      "Capterra___6580577",
+      "Capterra___6578632",
+      "Capterra___6594799",
+      "Capterra___6603865",
+      "Capterra___4921347",
+      "Capterra___6442214",
+      "Capterra___4959597",
+      "Capterra___6387081",
+      "Capterra___6431748",
+      "Capterra___5005410",
+      "Capterra___6639336",
+      "Capterra___6016439",
+      "Capterra___6316667",
+      "Capterra___7171576"
+     ],
+     "tokens_est": 3136,
+     "truncated_reviews": 3,
+     "sentences_removed_naming_target": 1,
+     "sha256": "38821e406259b630b09197f73be35913affd53146a89700d3c8639c42e860f05"
+    },
+    "T": {
+     "pack": "T",
+     "evidence_ids": [
+      "Capterra___6397079",
+      "Capterra___6289410",
+      "Capterra___7162733",
+      "Capterra___5066744",
+      "Capterra___6580865",
+      "Capterra___7066074",
+      "Capterra___6521030",
+      "Capterra___6833142",
+      "Capterra___6507856",
+      "Capterra___7123895"
+     ],
+     "tokens_est": 1957,
+     "truncated_reviews": 3,
+     "sentences_removed_naming_target": 0,
+     "sha256": "81519f1a11ba6af83d874b57b9a5762aa0c9413bb58443122ccb1e52a78164fd"
+    },
+    "Q": {
+     "pack": "Q",
+     "tokens_est": 116,
+     "fields": [
+      "goal",
+      "fixture.instructions",
+      "fixture.names",
+      "success_criteria",
+      "limits"
+     ],
+     "sha256": "278bc63e7431008c443f59cdbea56ad9edd07ca6a19ea57504d9fa6907eb4478"
+    }
+   }
+  },
+  "v2_0035030405": {
+   "product": "Notion",
+   "packets": {
+    "M": {
+     "pack": "M",
+     "product": "Notion",
+     "url": "https://www.notion.so/",
+     "tokens_est": 32,
+     "sha256": "a67dfe19303d1e35f57d7689073ab924869ed3b7423cfc954dbcf387ba3077ba"
+    },
+    "D": {
+     "pack": "D",
+     "sources": [
+      {
+       "label": "target landing",
+       "product": "Notion",
+       "url": "https://www.notion.so/",
+       "capture_date": "2026-10-18",
+       "truncated": false
+      },
+      {
+       "label": "target feature page",
+       "product": "Notion",
+       "url": "https://www.notion.so/product",
+       "capture_date": "2026-10-18",
+       "truncated": false
+      },
+      {
+       "label": "peer overview: Asana",
+       "product": "Asana",
+       "url": "https://asana.com/features",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "peer overview: ClickUp",
+       "product": "ClickUp",
+       "url": "https://clickup.com/features",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      }
+     ],
+     "tokens_est": 1074,
+     "sha256": "29278c43ba28f786e48a3d279b1aa25dc295e923fccbd5a00bd2d4657b53e71c"
+    },
+    "P": {
+     "pack": "P",
+     "fields": [
+      "reviewer_job_title",
+      "reviewer_industry",
+      "reviewer_company_size",
+      "reviewer_time_used_product"
+     ],
+     "tokens_est": 27,
+     "sha256": "6d9f53024dc3d552c5aaea944fcb1fab2ef58bdf9fbc39e4632ab6af8666856b"
+    },
+    "O": {
+     "pack": "O",
+     "status": "missing_role_mapping",
+     "onet_version": "31.0",
+     "mapping": [],
+     "task_ids": [],
+     "tokens_est": 0,
+     "mapping_call": {
+      "model": "gemini-2.5-flash",
+      "model_version": "gemini-2.5-flash",
+      "usage": {
+       "input_tokens": 18053,
+       "output_tokens": 131,
+       "cost_usd": 0.005743,
+       "latency_seconds": 1.55
+      }
+     },
+     "sha256": "12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126"
+    },
+    "C": {
+     "pack": "C",
+     "evidence_ids": [
+      "Capterra___6558743",
+      "Capterra___6747633",
+      "Capterra___6456007",
+      "Capterra___6485584",
+      "Capterra___7064179",
+      "Capterra___6784594",
+      "Capterra___6580577",
+      "Capterra___6578632",
+      "Capterra___6594799",
+      "Capterra___6603865",
+      "Capterra___4921347",
+      "Capterra___6442214",
+      "Capterra___4959597",
+      "Capterra___6387081",
+      "Capterra___6431748",
+      "Capterra___5005410",
+      "Capterra___6639336",
+      "Capterra___6016439",
+      "Capterra___6316667",
+      "Capterra___7171576"
+     ],
+     "tokens_est": 3136,
+     "truncated_reviews": 3,
+     "sentences_removed_naming_target": 1,
+     "sha256": "38821e406259b630b09197f73be35913affd53146a89700d3c8639c42e860f05"
+    },
+    "T": {
+     "pack": "T",
+     "evidence_ids": [
+      "Capterra___6397079",
+      "Capterra___6289410",
+      "Capterra___7162733",
+      "Capterra___5066744",
+      "Capterra___6580865",
+      "Capterra___7066074",
+      "Capterra___6521030",
+      "Capterra___6833142",
+      "Capterra___6507856",
+      "Capterra___7123895"
+     ],
+     "tokens_est": 1957,
+     "truncated_reviews": 3,
+     "sentences_removed_naming_target": 0,
+     "sha256": "81519f1a11ba6af83d874b57b9a5762aa0c9413bb58443122ccb1e52a78164fd"
+    },
+    "Q": {
+     "pack": "Q",
+     "tokens_est": 183,
+     "fields": [
+      "goal",
+      "fixture.instructions",
+      "fixture.names",
+      "success_criteria",
+      "limits"
+     ],
+     "sha256": "422ad6307695e9722172f6b911bb3e48fb0615d1c8c36044dca91a21acb91837"
+    }
+   }
+  },
+  "v2_00804b8e56": {
+   "product": "Notion",
+   "packets": {
+    "M": {
+     "pack": "M",
+     "product": "Notion",
+     "url": "https://www.notion.so/",
+     "tokens_est": 32,
+     "sha256": "a67dfe19303d1e35f57d7689073ab924869ed3b7423cfc954dbcf387ba3077ba"
+    },
+    "D": {
+     "pack": "D",
+     "sources": [
+      {
+       "label": "target landing",
+       "product": "Notion",
+       "url": "https://www.notion.so/",
+       "capture_date": "2026-10-18",
+       "truncated": false
+      },
+      {
+       "label": "target feature page",
+       "product": "Notion",
+       "url": "https://www.notion.so/product",
+       "capture_date": "2026-10-18",
+       "truncated": false
+      },
+      {
+       "label": "peer overview: Asana",
+       "product": "Asana",
+       "url": "https://asana.com/features",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "peer overview: ClickUp",
+       "product": "ClickUp",
+       "url": "https://clickup.com/features",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      }
+     ],
+     "tokens_est": 1074,
+     "sha256": "29278c43ba28f786e48a3d279b1aa25dc295e923fccbd5a00bd2d4657b53e71c"
+    },
+    "P": {
+     "pack": "P",
+     "fields": [
+      "reviewer_job_title",
+      "reviewer_industry",
+      "reviewer_company_size",
+      "reviewer_time_used_product"
+     ],
+     "tokens_est": 29,
+     "sha256": "aaccdc51f34550f52b36569bc7218f648a3cd21c5d5b32f60013bc516258e8e3"
+    },
+    "O": {
+     "pack": "O",
+     "status": "ok",
+     "onet_version": "31.0",
+     "mapping": [
+      {
+       "code": "13-1161.00",
+       "why": "Freelancers in marketing often act as marketing specialists for various clients."
+      },
+      {
+       "code": "11-2021.00",
+       "why": "Self-employed individuals in marketing frequently manage marketing strategies and campaigns."
+      },
+      {
+       "code": "11-2011.00",
+       "why": "Freelancers in advertising often manage promotional activities and campaigns for clients."
+      }
+     ],
+     "task_ids": [
+      "5434",
+      "5437",
+      "5439",
+      "5433",
+      "20709",
+      "958",
+      "951",
+      "954",
+      "3224",
+      "3226",
+      "3227",
+      "21222"
+     ],
+     "tokens_est": 599,
+     "mapping_call": {
+      "model": "gemini-2.5-flash",
+      "model_version": "gemini-2.5-flash",
+      "usage": {
+       "input_tokens": 18048,
+       "output_tokens": 102,
+       "cost_usd": 0.005669,
+       "latency_seconds": 1.51
+      }
+     },
+     "sha256": "2aa5ec61e747cc59659fa130b639b3b0f5934953d9da4e96eea72d34e76b467e"
+    },
+    "C": {
+     "pack": "C",
+     "evidence_ids": [
+      "Capterra___6558743",
+      "Capterra___6747633",
+      "Capterra___6456007",
+      "Capterra___6485584",
+      "Capterra___7064179",
+      "Capterra___6784594",
+      "Capterra___6580577",
+      "Capterra___6578632",
+      "Capterra___6594799",
+      "Capterra___6603865",
+      "Capterra___4921347",
+      "Capterra___6442214",
+      "Capterra___4959597",
+      "Capterra___6387081",
+      "Capterra___6431748",
+      "Capterra___5005410",
+      "Capterra___6639336",
+      "Capterra___6016439",
+      "Capterra___6316667",
+      "Capterra___7171576"
+     ],
+     "tokens_est": 3136,
+     "truncated_reviews": 3,
+     "sentences_removed_naming_target": 1,
+     "sha256": "38821e406259b630b09197f73be35913affd53146a89700d3c8639c42e860f05"
+    },
+    "T": {
+     "pack": "T",
+     "evidence_ids": [
+      "Capterra___6397079",
+      "Capterra___6289410",
+      "Capterra___7162733",
+      "Capterra___5066744",
+      "Capterra___6580865",
+      "Capterra___7066074",
+      "Capterra___6521030",
+      "Capterra___6833142",
+      "Capterra___6507856",
+      "Capterra___7123895"
+     ],
+     "tokens_est": 1957,
+     "truncated_reviews": 3,
+     "sentences_removed_naming_target": 0,
+     "sha256": "81519f1a11ba6af83d874b57b9a5762aa0c9413bb58443122ccb1e52a78164fd"
+    },
+    "Q": {
+     "pack": "Q",
+     "tokens_est": 122,
+     "fields": [
+      "goal",
+      "fixture.instructions",
+      "fixture.names",
+      "success_criteria",
+      "limits"
+     ],
+     "sha256": "5cae72b5976231a9daceacf94e7e2e3f9e2b1af9ab73795acd6d4baf517f9b29"
+    }
+   }
+  },
+  "v2_0152b3900c": {
+   "product": "Notion",
+   "packets": {
+    "M": {
+     "pack": "M",
+     "product": "Notion",
+     "url": "https://www.notion.so/",
+     "tokens_est": 32,
+     "sha256": "a67dfe19303d1e35f57d7689073ab924869ed3b7423cfc954dbcf387ba3077ba"
+    },
+    "D": {
+     "pack": "D",
+     "sources": [
+      {
+       "label": "target landing",
+       "product": "Notion",
+       "url": "https://www.notion.so/",
+       "capture_date": "2026-10-18",
+       "truncated": false
+      },
+      {
+       "label": "target feature page",
+       "product": "Notion",
+       "url": "https://www.notion.so/product",
+       "capture_date": "2026-10-18",
+       "truncated": false
+      },
+      {
+       "label": "peer overview: Asana",
+       "product": "Asana",
+       "url": "https://asana.com/features",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "peer overview: ClickUp",
+       "product": "ClickUp",
+       "url": "https://clickup.com/features",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      }
+     ],
+     "tokens_est": 1074,
+     "sha256": "29278c43ba28f786e48a3d279b1aa25dc295e923fccbd5a00bd2d4657b53e71c"
+    },
+    "P": {
+     "pack": "P",
+     "fields": [
+      "reviewer_job_title",
+      "reviewer_industry",
+      "reviewer_company_size",
+      "reviewer_time_used_product"
+     ],
+     "tokens_est": 35,
+     "sha256": "6c2cff72b7263d1509ec28958927c05d662bdf83006021d7330273de66e878b8"
+    },
+    "O": {
+     "pack": "O",
+     "status": "ok",
+     "onet_version": "31.0",
+     "mapping": [
+      {
+       "code": "27-2022.00",
+       "why": "Directly aligns with 'Coach' in the job title and 'Wellness' in the industry."
+      },
+      {
+       "code": "39-9031.00",
+       "why": "Coaching in health and wellness often involves exercise instruction and fitness."
+      },
+      {
+       "code": "11-9179.01",
+       "why": "As a 'Creator and Head Coach' in wellness, coordinating fitness activities is plausible."
+      }
+     ],
+     "task_ids": [
+      "1742",
+      "20109",
+      "1747",
+      "1750",
+      "4559",
+      "4557",
+      "4565",
+      "4558",
+      "15558",
+      "15562",
+      "15552",
+      "15557"
+     ],
+     "tokens_est": 475,
+     "mapping_call": {
+      "model": "gemini-2.5-flash",
+      "model_version": "gemini-2.5-flash",
+      "usage": {
+       "input_tokens": 18053,
+       "output_tokens": 111,
+       "cost_usd": 0.005693,
+       "latency_seconds": 2.01
+      }
+     },
+     "sha256": "215ec1f25643607e8a20c84de972761914bd9295f7be61e8fdf46f87ef44d261"
+    },
+    "C": {
+     "pack": "C",
+     "evidence_ids": [
+      "Capterra___6558743",
+      "Capterra___6747633",
+      "Capterra___6456007",
+      "Capterra___6485584",
+      "Capterra___7064179",
+      "Capterra___6784594",
+      "Capterra___6580577",
+      "Capterra___6578632",
+      "Capterra___6594799",
+      "Capterra___6603865",
+      "Capterra___4921347",
+      "Capterra___6442214",
+      "Capterra___4959597",
+      "Capterra___6387081",
+      "Capterra___6431748",
+      "Capterra___5005410",
+      "Capterra___6639336",
+      "Capterra___6016439",
+      "Capterra___6316667",
+      "Capterra___7171576"
+     ],
+     "tokens_est": 3136,
+     "truncated_reviews": 3,
+     "sentences_removed_naming_target": 1,
+     "sha256": "38821e406259b630b09197f73be35913affd53146a89700d3c8639c42e860f05"
+    },
+    "T": {
+     "pack": "T",
+     "evidence_ids": [
+      "Capterra___6397079",
+      "Capterra___6289410",
+      "Capterra___7162733",
+      "Capterra___5066744",
+      "Capterra___6580865",
+      "Capterra___7066074",
+      "Capterra___6521030",
+      "Capterra___6833142",
+      "Capterra___6507856",
+      "Capterra___7123895"
+     ],
+     "tokens_est": 1957,
+     "truncated_reviews": 3,
+     "sentences_removed_naming_target": 0,
+     "sha256": "81519f1a11ba6af83d874b57b9a5762aa0c9413bb58443122ccb1e52a78164fd"
+    },
+    "Q": {
+     "pack": "Q",
+     "tokens_est": 170,
+     "fields": [
+      "goal",
+      "fixture.instructions",
+      "fixture.names",
+      "success_criteria",
+      "limits"
+     ],
+     "sha256": "e95bcbe5d8ab3385e01598699020fa76eaf41566fc4cf4c305fe68c04c4085f8"
+    }
+   }
+  },
+  "v2_0d2a51250b": {
+   "product": "Smartsheet",
+   "packets": {
+    "M": {
+     "pack": "M",
+     "product": "Smartsheet",
+     "url": "https://www.smartsheet.com/",
+     "tokens_est": 35,
+     "sha256": "116aadac3ffbfcde56ef41e58f750158ceab0f17e2bec07259c3d3b0f09aab12"
+    },
+    "D": {
+     "pack": "D",
+     "sources": [
+      {
+       "label": "target landing",
+       "product": "Smartsheet",
+       "url": "https://www.smartsheet.com/",
+       "capture_date": "2026-10-18",
+       "truncated": false
+      },
+      {
+       "label": "target feature page",
+       "product": "Smartsheet",
+       "url": "https://www.smartsheet.com/platform",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "peer overview: Asana",
+       "product": "Asana",
+       "url": "https://asana.com/features",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "peer overview: ClickUp",
+       "product": "ClickUp",
+       "url": "https://clickup.com/features",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      }
+     ],
+     "tokens_est": 2389,
+     "sha256": "a0869a031c879819da3c8c8f242bfd42c2c4908b26b4311d0e6eda4644dfa4a7"
+    },
+    "P": {
+     "pack": "P",
+     "fields": [
+      "reviewer_job_title",
+      "reviewer_industry",
+      "reviewer_company_size",
+      "reviewer_time_used_product"
+     ],
+     "tokens_est": 29,
+     "sha256": "3866b55249170afa4e0b662bfa194273b439e80c145bd9e9fb068acf9883cd2e"
+    },
+    "O": {
+     "pack": "O",
+     "status": "ok",
+     "onet_version": "31.0",
+     "mapping": [
+      {
+       "code": "11-1011.00",
+       "why": "As an owner, they are likely responsible for overall direction and strategy."
+      },
+      {
+       "code": "11-1021.00",
+       "why": "Owners of small businesses often manage daily operations and general business functions."
+      },
+      {
+       "code": "11-9179.01",
+       "why": "Given the industry, the owner likely coordinates fitness and wellness programs."
+      }
+     ],
+     "task_ids": [
+      "8823",
+      "8824",
+      "8827",
+      "8826",
+      "20699",
+      "933",
+      "20700",
+      "20701",
+      "15558",
+      "15562",
+      "15552",
+      "15557"
+     ],
+     "tokens_est": 507,
+     "mapping_call": {
+      "model": "gemini-2.5-flash",
+      "model_version": "gemini-2.5-flash",
+      "usage": {
+       "input_tokens": 18050,
+       "output_tokens": 102,
+       "cost_usd": 0.00567,
+       "latency_seconds": 1.36
+      }
+     },
+     "sha256": "87b93df28ef561643fe2352b35cd2d7c8e71e8103cd8c3d33a0d4391773e847c"
+    },
+    "C": {
+     "pack": "C",
+     "evidence_ids": [
+      "Capterra___6558743",
+      "Capterra___6747633",
+      "Capterra___6456007",
+      "Capterra___6485584",
+      "Capterra___7064179",
+      "Capterra___6784594",
+      "Capterra___6580577",
+      "Capterra___6578632",
+      "Capterra___6594799",
+      "Capterra___6603865",
+      "Capterra___4921347",
+      "Capterra___6442214",
+      "Capterra___4959597",
+      "Capterra___6387081",
+      "Capterra___6431748",
+      "Capterra___5005410",
+      "Capterra___6639336",
+      "Capterra___6016439",
+      "Capterra___6316667",
+      "Capterra___7171576"
+     ],
+     "tokens_est": 3157,
+     "truncated_reviews": 3,
+     "sentences_removed_naming_target": 0,
+     "sha256": "1ee3bce24b1c4fecb670632eadfe83ff17b89d8d58e5d9e10af1ec632e4f9a81"
+    },
+    "T": {
+     "pack": "T",
+     "evidence_ids": [
+      "Capterra___6299060",
+      "Capterra___6856497",
+      "Capterra___4966631",
+      "Capterra___6399958",
+      "Capterra___4485969",
+      "Capterra___6037885",
+      "Capterra___4868141",
+      "Capterra___4718896",
+      "Capterra___6476671",
+      "Capterra___6487346"
+     ],
+     "tokens_est": 1426,
+     "truncated_reviews": 1,
+     "sentences_removed_naming_target": 0,
+     "sha256": "e42366f78716386115551b7daf5ba5ea52ba9f70f30fedfbda869707087e7903"
+    },
+    "Q": {
+     "pack": "Q",
+     "tokens_est": 201,
+     "fields": [
+      "goal",
+      "fixture.instructions",
+      "fixture.names",
+      "success_criteria",
+      "limits"
+     ],
+     "sha256": "4cf7dbc1163f2018e268a3e191389678e3b5eae7dd8dad86a5e0e988265563fe"
+    }
+   }
+  },
+  "v2_0fef0d7754": {
+   "product": "Smartsheet",
+   "packets": {
+    "M": {
+     "pack": "M",
+     "product": "Smartsheet",
+     "url": "https://www.smartsheet.com/",
+     "tokens_est": 35,
+     "sha256": "116aadac3ffbfcde56ef41e58f750158ceab0f17e2bec07259c3d3b0f09aab12"
+    },
+    "D": {
+     "pack": "D",
+     "sources": [
+      {
+       "label": "target landing",
+       "product": "Smartsheet",
+       "url": "https://www.smartsheet.com/",
+       "capture_date": "2026-10-18",
+       "truncated": false
+      },
+      {
+       "label": "target feature page",
+       "product": "Smartsheet",
+       "url": "https://www.smartsheet.com/platform",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "peer overview: Asana",
+       "product": "Asana",
+       "url": "https://asana.com/features",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "peer overview: ClickUp",
+       "product": "ClickUp",
+       "url": "https://clickup.com/features",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      }
+     ],
+     "tokens_est": 2389,
+     "sha256": "a0869a031c879819da3c8c8f242bfd42c2c4908b26b4311d0e6eda4644dfa4a7"
+    },
+    "P": {
+     "pack": "P",
+     "fields": [
+      "reviewer_job_title",
+      "reviewer_industry",
+      "reviewer_company_size",
+      "reviewer_time_used_product"
+     ],
+     "tokens_est": 26,
+     "sha256": "db1e05205f32008b897218fd2c87f9ca20368e97ca04c2471dbe125354a8c65f"
+    },
+    "O": {
+     "pack": "O",
+     "status": "ok",
+     "onet_version": "31.0",
+     "mapping": [
+      {
+       "code": "11-3021.00",
+       "why": "CTO is a senior management role focused on computer and information systems."
+      },
+      {
+       "code": "11-1011.00",
+       "why": "As a CTO, they are a top executive, similar to a Chief Executive."
+      },
+      {
+       "code": "15-1299.08",
+       "why": "CTOs often have a strong background in computer systems engineering and architecture."
+      }
+     ],
+     "task_ids": [
+      "968",
+      "975",
+      "978",
+      "969",
+      "8823",
+      "8824",
+      "8827",
+      "8826",
+      "14666",
+      "14677",
+      "14674",
+      "14676"
+     ],
+     "tokens_est": 499,
+     "mapping_call": {
+      "model": "gemini-2.5-flash",
+      "model_version": "gemini-2.5-flash",
+      "usage": {
+       "input_tokens": 18050,
+       "output_tokens": 106,
+       "cost_usd": 0.00568,
+       "latency_seconds": 1.35
+      }
+     },
+     "sha256": "6eaaead30bd4cb4d06332779bf824c9090388e9b491992eda0ce9b56f6b0d538"
+    },
+    "C": {
+     "pack": "C",
+     "evidence_ids": [
+      "Capterra___6558743",
+      "Capterra___6747633",
+      "Capterra___6456007",
+      "Capterra___6485584",
+      "Capterra___7064179",
+      "Capterra___6784594",
+      "Capterra___6580577",
+      "Capterra___6578632",
+      "Capterra___6594799",
+      "Capterra___6603865",
+      "Capterra___4921347",
+      "Capterra___6442214",
+      "Capterra___4959597",
+      "Capterra___6387081",
+      "Capterra___6431748",
+      "Capterra___5005410",
+      "Capterra___6639336",
+      "Capterra___6016439",
+      "Capterra___6316667",
+      "Capterra___7171576"
+     ],
+     "tokens_est": 3157,
+     "truncated_reviews": 3,
+     "sentences_removed_naming_target": 0,
+     "sha256": "1ee3bce24b1c4fecb670632eadfe83ff17b89d8d58e5d9e10af1ec632e4f9a81"
+    },
+    "T": {
+     "pack": "T",
+     "evidence_ids": [
+      "Capterra___6299060",
+      "Capterra___6856497",
+      "Capterra___4966631",
+      "Capterra___6399958",
+      "Capterra___4485969",
+      "Capterra___6037885",
+      "Capterra___4868141",
+      "Capterra___4718896",
+      "Capterra___6476671",
+      "Capterra___6487346"
+     ],
+     "tokens_est": 1426,
+     "truncated_reviews": 1,
+     "sentences_removed_naming_target": 0,
+     "sha256": "e42366f78716386115551b7daf5ba5ea52ba9f70f30fedfbda869707087e7903"
+    },
+    "Q": {
+     "pack": "Q",
+     "tokens_est": 144,
+     "fields": [
+      "goal",
+      "fixture.instructions",
+      "fixture.names",
+      "success_criteria",
+      "limits"
+     ],
+     "sha256": "bf120087e762b9bbd40d12f89058c5a14ef487a717f33a0315e0026c39b8e6cb"
+    }
+   }
+  },
+  "v2_00400898e2": {
+   "product": "Smartsheet",
+   "packets": {
+    "M": {
+     "pack": "M",
+     "product": "Smartsheet",
+     "url": "https://www.smartsheet.com/",
+     "tokens_est": 35,
+     "sha256": "116aadac3ffbfcde56ef41e58f750158ceab0f17e2bec07259c3d3b0f09aab12"
+    },
+    "D": {
+     "pack": "D",
+     "sources": [
+      {
+       "label": "target landing",
+       "product": "Smartsheet",
+       "url": "https://www.smartsheet.com/",
+       "capture_date": "2026-10-18",
+       "truncated": false
+      },
+      {
+       "label": "target feature page",
+       "product": "Smartsheet",
+       "url": "https://www.smartsheet.com/platform",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "peer overview: Asana",
+       "product": "Asana",
+       "url": "https://asana.com/features",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "peer overview: ClickUp",
+       "product": "ClickUp",
+       "url": "https://clickup.com/features",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      }
+     ],
+     "tokens_est": 2389,
+     "sha256": "a0869a031c879819da3c8c8f242bfd42c2c4908b26b4311d0e6eda4644dfa4a7"
+    },
+    "P": {
+     "pack": "P",
+     "fields": [
+      "reviewer_job_title",
+      "reviewer_industry",
+      "reviewer_company_size",
+      "reviewer_time_used_product"
+     ],
+     "tokens_est": 28,
+     "sha256": "fa3cfdc9ddd4b038aa2a609dca1715f049a919760dd096846be94b7b70109a67"
+    },
+    "O": {
+     "pack": "O",
+     "status": "ok",
+     "onet_version": "31.0",
+     "mapping": [
+      {
+       "code": "27-4011.00",
+       "why": "Direct match for audio editing in media production."
+      },
+      {
+       "code": "27-4014.00",
+       "why": "Involves technical aspects of sound for various productions."
+      },
+      {
+       "code": "27-3041.00",
+       "why": "Editors often work with audio content, especially in e-learning."
+      }
+     ],
+     "task_ids": [
+      "3980",
+      "18650",
+      "3993",
+      "3990",
+      "7720",
+      "7722",
+      "7727",
+      "7729",
+      "1780",
+      "24025",
+      "1777",
+      "1776"
+     ],
+     "tokens_est": 395,
+     "mapping_call": {
+      "model": "gemini-2.5-flash",
+      "model_version": "gemini-2.5-flash",
+      "usage": {
+       "input_tokens": 18053,
+       "output_tokens": 95,
+       "cost_usd": 0.005653,
+       "latency_seconds": 1.76
+      }
+     },
+     "sha256": "73a23799a2d1c3f6d5d69dbf0109de0408b2676b8b87de635b90a32836dd5c00"
+    },
+    "C": {
+     "pack": "C",
+     "evidence_ids": [
+      "Capterra___6558743",
+      "Capterra___6747633",
+      "Capterra___6456007",
+      "Capterra___6485584",
+      "Capterra___7064179",
+      "Capterra___6784594",
+      "Capterra___6580577",
+      "Capterra___6578632",
+      "Capterra___6594799",
+      "Capterra___6603865",
+      "Capterra___4921347",
+      "Capterra___6442214",
+      "Capterra___4959597",
+      "Capterra___6387081",
+      "Capterra___6431748",
+      "Capterra___5005410",
+      "Capterra___6639336",
+      "Capterra___6016439",
+      "Capterra___6316667",
+      "Capterra___7171576"
+     ],
+     "tokens_est": 3157,
+     "truncated_reviews": 3,
+     "sentences_removed_naming_target": 0,
+     "sha256": "1ee3bce24b1c4fecb670632eadfe83ff17b89d8d58e5d9e10af1ec632e4f9a81"
+    },
+    "T": {
+     "pack": "T",
+     "evidence_ids": [
+      "Capterra___6299060",
+      "Capterra___6856497",
+      "Capterra___4966631",
+      "Capterra___6399958",
+      "Capterra___4485969",
+      "Capterra___6037885",
+      "Capterra___4868141",
+      "Capterra___4718896",
+      "Capterra___6476671",
+      "Capterra___6487346"
+     ],
+     "tokens_est": 1426,
+     "truncated_reviews": 1,
+     "sentences_removed_naming_target": 0,
+     "sha256": "e42366f78716386115551b7daf5ba5ea52ba9f70f30fedfbda869707087e7903"
+    },
+    "Q": {
+     "pack": "Q",
+     "tokens_est": 133,
+     "fields": [
+      "goal",
+      "fixture.instructions",
+      "fixture.names",
+      "success_criteria",
+      "limits"
+     ],
+     "sha256": "cc34a81e63f7a5f7a86419efaed8287054da024ac2d490c365245b83d6dd9ba9"
+    }
+   }
+  },
+  "v2_00513170d2": {
+   "product": "Smartsheet",
+   "packets": {
+    "M": {
+     "pack": "M",
+     "product": "Smartsheet",
+     "url": "https://www.smartsheet.com/",
+     "tokens_est": 35,
+     "sha256": "116aadac3ffbfcde56ef41e58f750158ceab0f17e2bec07259c3d3b0f09aab12"
+    },
+    "D": {
+     "pack": "D",
+     "sources": [
+      {
+       "label": "target landing",
+       "product": "Smartsheet",
+       "url": "https://www.smartsheet.com/",
+       "capture_date": "2026-10-18",
+       "truncated": false
+      },
+      {
+       "label": "target feature page",
+       "product": "Smartsheet",
+       "url": "https://www.smartsheet.com/platform",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "peer overview: Asana",
+       "product": "Asana",
+       "url": "https://asana.com/features",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "peer overview: ClickUp",
+       "product": "ClickUp",
+       "url": "https://clickup.com/features",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      }
+     ],
+     "tokens_est": 2389,
+     "sha256": "a0869a031c879819da3c8c8f242bfd42c2c4908b26b4311d0e6eda4644dfa4a7"
+    },
+    "P": {
+     "pack": "P",
+     "fields": [
+      "reviewer_job_title",
+      "reviewer_industry",
+      "reviewer_company_size",
+      "reviewer_time_used_product"
+     ],
+     "tokens_est": 32,
+     "sha256": "14b9961de84b66fe5d598963a36d2f205af01a2b5e94cbc7901693ae32ad8b59"
+    },
+    "O": {
+     "pack": "O",
+     "status": "ok",
+     "onet_version": "31.0",
+     "mapping": [
+      {
+       "code": "13-1111.00",
+       "why": "Consultants often analyze and improve organizational efficiency in various industries."
+      },
+      {
+       "code": "11-1021.00",
+       "why": "Consultants frequently advise on general operations and management strategies."
+      },
+      {
+       "code": "11-3071.00",
+       "why": "In transportation, consultants may specialize in logistics and distribution management."
+      }
+     ],
+     "task_ids": [
+      "7276",
+      "7278",
+      "7277",
+      "7282",
+      "20699",
+      "933",
+      "20700",
+      "20701",
+      "21340",
+      "21341",
+      "21342",
+      "21343"
+     ],
+     "tokens_est": 514,
+     "mapping_call": {
+      "model": "gemini-2.5-flash",
+      "model_version": "gemini-2.5-flash",
+      "usage": {
+       "input_tokens": 18056,
+       "output_tokens": 97,
+       "cost_usd": 0.005659,
+       "latency_seconds": 1.52
+      }
+     },
+     "sha256": "24883ef82bedaa04e6afba128c32902169d5765e2ad6e1c195e9b57b07fe38e6"
+    },
+    "C": {
+     "pack": "C",
+     "evidence_ids": [
+      "Capterra___6558743",
+      "Capterra___6747633",
+      "Capterra___6456007",
+      "Capterra___6485584",
+      "Capterra___7064179",
+      "Capterra___6784594",
+      "Capterra___6580577",
+      "Capterra___6578632",
+      "Capterra___6594799",
+      "Capterra___6603865",
+      "Capterra___4921347",
+      "Capterra___6442214",
+      "Capterra___4959597",
+      "Capterra___6387081",
+      "Capterra___6431748",
+      "Capterra___5005410",
+      "Capterra___6639336",
+      "Capterra___6016439",
+      "Capterra___6316667",
+      "Capterra___7171576"
+     ],
+     "tokens_est": 3157,
+     "truncated_reviews": 3,
+     "sentences_removed_naming_target": 0,
+     "sha256": "1ee3bce24b1c4fecb670632eadfe83ff17b89d8d58e5d9e10af1ec632e4f9a81"
+    },
+    "T": {
+     "pack": "T",
+     "evidence_ids": [
+      "Capterra___6299060",
+      "Capterra___6856497",
+      "Capterra___4966631",
+      "Capterra___6399958",
+      "Capterra___4485969",
+      "Capterra___6037885",
+      "Capterra___4868141",
+      "Capterra___4718896",
+      "Capterra___6476671",
+      "Capterra___6487346"
+     ],
+     "tokens_est": 1426,
+     "truncated_reviews": 1,
+     "sentences_removed_naming_target": 0,
+     "sha256": "e42366f78716386115551b7daf5ba5ea52ba9f70f30fedfbda869707087e7903"
+    },
+    "Q": {
+     "pack": "Q",
+     "tokens_est": 155,
+     "fields": [
+      "goal",
+      "fixture.instructions",
+      "fixture.names",
+      "success_criteria",
+      "limits"
+     ],
+     "sha256": "44e89de2372c412b9eb669ced18eb4f58f19594035e10aadef6176afb997399a"
+    }
+   }
+  },
+  "v2_00abc92c84": {
+   "product": "Smartsheet",
+   "packets": {
+    "M": {
+     "pack": "M",
+     "product": "Smartsheet",
+     "url": "https://www.smartsheet.com/",
+     "tokens_est": 35,
+     "sha256": "116aadac3ffbfcde56ef41e58f750158ceab0f17e2bec07259c3d3b0f09aab12"
+    },
+    "D": {
+     "pack": "D",
+     "sources": [
+      {
+       "label": "target landing",
+       "product": "Smartsheet",
+       "url": "https://www.smartsheet.com/",
+       "capture_date": "2026-10-18",
+       "truncated": false
+      },
+      {
+       "label": "target feature page",
+       "product": "Smartsheet",
+       "url": "https://www.smartsheet.com/platform",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "peer overview: Asana",
+       "product": "Asana",
+       "url": "https://asana.com/features",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "peer overview: ClickUp",
+       "product": "ClickUp",
+       "url": "https://clickup.com/features",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      }
+     ],
+     "tokens_est": 2389,
+     "sha256": "a0869a031c879819da3c8c8f242bfd42c2c4908b26b4311d0e6eda4644dfa4a7"
+    },
+    "P": {
+     "pack": "P",
+     "fields": [
+      "reviewer_job_title",
+      "reviewer_industry",
+      "reviewer_company_size",
+      "reviewer_time_used_product"
+     ],
+     "tokens_est": 28,
+     "sha256": "eba82dc37ac0ab3ce4584a57ac55bf76444997c14ca2bd99e17e619ed53e5a8e"
+    },
+    "O": {
+     "pack": "O",
+     "status": "ok",
+     "onet_version": "31.0",
+     "mapping": [
+      {
+       "code": "11-3051.01",
+       "why": "Manages quality control systems in a machinery manufacturing environment."
+      },
+      {
+       "code": "11-3051.00",
+       "why": "Oversees production and quality in a manufacturing setting."
+      },
+      {
+       "code": "11-9199.02",
+       "why": "Ensures adherence to quality standards and regulations."
+      }
+     ],
+     "task_ids": [
+      "15405",
+      "15415",
+      "15430",
+      "15414",
+      "39",
+      "32",
+      "34",
+      "35",
+      "15645",
+      "15650",
+      "21088",
+      "15653"
+     ],
+     "tokens_est": 488,
+     "mapping_call": {
+      "model": "gemini-2.5-flash",
+      "model_version": "gemini-2.5-flash",
+      "usage": {
+       "input_tokens": 18053,
+       "output_tokens": 92,
+       "cost_usd": 0.005646,
+       "latency_seconds": 1.58
+      }
+     },
+     "sha256": "833739313d22931aafa33e354b8986a1a5cb7ae3057b193667833f6e80717462"
+    },
+    "C": {
+     "pack": "C",
+     "evidence_ids": [
+      "Capterra___6558743",
+      "Capterra___6747633",
+      "Capterra___6456007",
+      "Capterra___6485584",
+      "Capterra___7064179",
+      "Capterra___6784594",
+      "Capterra___6580577",
+      "Capterra___6578632",
+      "Capterra___6594799",
+      "Capterra___6603865",
+      "Capterra___4921347",
+      "Capterra___6442214",
+      "Capterra___4959597",
+      "Capterra___6387081",
+      "Capterra___6431748",
+      "Capterra___5005410",
+      "Capterra___6639336",
+      "Capterra___6016439",
+      "Capterra___6316667",
+      "Capterra___7171576"
+     ],
+     "tokens_est": 3157,
+     "truncated_reviews": 3,
+     "sentences_removed_naming_target": 0,
+     "sha256": "1ee3bce24b1c4fecb670632eadfe83ff17b89d8d58e5d9e10af1ec632e4f9a81"
+    },
+    "T": {
+     "pack": "T",
+     "evidence_ids": [
+      "Capterra___6299060",
+      "Capterra___6856497",
+      "Capterra___4966631",
+      "Capterra___6399958",
+      "Capterra___4485969",
+      "Capterra___6037885",
+      "Capterra___4868141",
+      "Capterra___4718896",
+      "Capterra___6476671",
+      "Capterra___6487346"
+     ],
+     "tokens_est": 1426,
+     "truncated_reviews": 1,
+     "sentences_removed_naming_target": 0,
+     "sha256": "e42366f78716386115551b7daf5ba5ea52ba9f70f30fedfbda869707087e7903"
+    },
+    "Q": {
+     "pack": "Q",
+     "tokens_est": 109,
+     "fields": [
+      "goal",
+      "fixture.instructions",
+      "fixture.names",
+      "success_criteria",
+      "limits"
+     ],
+     "sha256": "d39dc548ba9c3af426d3b8ef4bd0ff2a7fb04383970eab2c617a6e775a3a4b21"
+    }
+   }
+  },
+  "v2_00ed1e56cd": {
+   "product": "Pipedrive",
+   "packets": {
+    "M": {
+     "pack": "M",
+     "product": "Pipedrive",
+     "url": "https://www.pipedrive.com/",
+     "tokens_est": 31,
+     "sha256": "269464a59aae6b7acdd51d669aae4828758f73acb951716ff810acd2084417f5"
+    },
+    "D": {
+     "pack": "D",
+     "sources": [
+      {
+       "label": "target landing",
+       "product": "Pipedrive",
+       "url": "https://www.pipedrive.com/",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "target feature page",
+       "product": "Pipedrive",
+       "url": "https://www.pipedrive.com/en/features",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "peer overview: Smartsheet",
+       "product": "Smartsheet",
+       "url": "https://www.smartsheet.com/platform",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "peer overview: ClickUp",
+       "product": "ClickUp",
+       "url": "https://clickup.com/features",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      }
+     ],
+     "tokens_est": 2527,
+     "sha256": "fec345dda449fc2d3e312e1d012e5843558ec80903312e5a8a753bb8d5b10bb1"
+    },
+    "P": {
+     "pack": "P",
+     "fields": [
+      "reviewer_job_title",
+      "reviewer_industry",
+      "reviewer_company_size",
+      "reviewer_time_used_product"
+     ],
+     "tokens_est": 30,
+     "sha256": "b5d357a6fa459fa824b44571b213ce27fe3e2407d030144b637e7777e0a5f181"
+    },
+    "O": {
+     "pack": "O",
+     "status": "missing_role_mapping",
+     "onet_version": "31.0",
+     "mapping": [],
+     "task_ids": [],
+     "tokens_est": 0,
+     "mapping_call": {
+      "model": "gemini-2.5-flash",
+      "model_version": "gemini-2.5-flash",
+      "usage": {
+       "input_tokens": 18052,
+       "output_tokens": 6,
+       "cost_usd": 0.005431,
+       "latency_seconds": 1.08
+      }
+     },
+     "sha256": "12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126"
+    },
+    "C": {
+     "pack": "C",
+     "evidence_ids": [
+      "Capterra___6299060",
+      "Capterra___6856497",
+      "Capterra___4966631",
+      "Capterra___6399958",
+      "Capterra___4485969",
+      "Capterra___6037885",
+      "Capterra___4868141",
+      "Capterra___4718896",
+      "Capterra___6476671",
+      "Capterra___6487346",
+      "Capterra___4921347",
+      "Capterra___6442214",
+      "Capterra___4959597",
+      "Capterra___6387081",
+      "Capterra___6431748",
+      "Capterra___5005410",
+      "Capterra___6639336",
+      "Capterra___6016439",
+      "Capterra___6316667",
+      "Capterra___7171576"
+     ],
+     "tokens_est": 3071,
+     "truncated_reviews": 3,
+     "sentences_removed_naming_target": 0,
+     "sha256": "b0f76f7e4b33f0b2640b22b29197f178aedb90e6cf5c823896b1ee6a89597c8b"
+    },
+    "T": {
+     "pack": "T",
+     "evidence_ids": [
+      "Capterra___4939428",
+      "Capterra___6240805",
+      "Capterra___4980870",
+      "Capterra___3835760",
+      "Capterra___4613246",
+      "Capterra___1900194",
+      "Capterra___2189198",
+      "GetApp___2048243",
+      "Capterra___4321478",
+      "Capterra___3847472"
+     ],
+     "tokens_est": 1678,
+     "truncated_reviews": 4,
+     "sentences_removed_naming_target": 0,
+     "sha256": "3b2cf5835388e298b7aebb7876fb122af75e6fa20f674d3e1b768f0063f85b84"
+    },
+    "Q": {
+     "pack": "Q",
+     "tokens_est": 100,
+     "fields": [
+      "goal",
+      "fixture.instructions",
+      "fixture.names",
+      "success_criteria",
+      "limits"
+     ],
+     "sha256": "56b38cff8f960b518f5589d4bf409917253bc3692b894c7c6fd5e1c8737a4a96"
+    }
+   }
+  },
+  "v2_029eb98bf2": {
+   "product": "Pipedrive",
+   "packets": {
+    "M": {
+     "pack": "M",
+     "product": "Pipedrive",
+     "url": "https://www.pipedrive.com/",
+     "tokens_est": 31,
+     "sha256": "269464a59aae6b7acdd51d669aae4828758f73acb951716ff810acd2084417f5"
+    },
+    "D": {
+     "pack": "D",
+     "sources": [
+      {
+       "label": "target landing",
+       "product": "Pipedrive",
+       "url": "https://www.pipedrive.com/",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "target feature page",
+       "product": "Pipedrive",
+       "url": "https://www.pipedrive.com/en/features",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "peer overview: Smartsheet",
+       "product": "Smartsheet",
+       "url": "https://www.smartsheet.com/platform",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "peer overview: ClickUp",
+       "product": "ClickUp",
+       "url": "https://clickup.com/features",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      }
+     ],
+     "tokens_est": 2527,
+     "sha256": "fec345dda449fc2d3e312e1d012e5843558ec80903312e5a8a753bb8d5b10bb1"
+    },
+    "P": {
+     "pack": "P",
+     "fields": [
+      "reviewer_job_title",
+      "reviewer_industry",
+      "reviewer_company_size",
+      "reviewer_time_used_product"
+     ],
+     "tokens_est": 31,
+     "sha256": "7e51c18f7cb880b129e6f36aed1fb503d956fa6023551fd87fb4d13e02f80f41"
+    },
+    "O": {
+     "pack": "O",
+     "status": "ok",
+     "onet_version": "31.0",
+     "mapping": [
+      {
+       "code": "11-1011.00",
+       "why": "As owner, they are the chief executive of the company."
+      },
+      {
+       "code": "11-2021.00",
+       "why": "Principal in a marketing firm implies a management role in marketing."
+      },
+      {
+       "code": "13-1161.00",
+       "why": "Small marketing firm owner likely performs marketing specialist duties."
+      }
+     ],
+     "task_ids": [
+      "8823",
+      "8824",
+      "8827",
+      "8826",
+      "20709",
+      "958",
+      "951",
+      "954",
+      "5434",
+      "5437",
+      "5439",
+      "5433"
+     ],
+     "tokens_est": 577,
+     "mapping_call": {
+      "model": "gemini-2.5-flash",
+      "model_version": "gemini-2.5-flash",
+      "usage": {
+       "input_tokens": 18053,
+       "output_tokens": 97,
+       "cost_usd": 0.005658,
+       "latency_seconds": 1.33
+      }
+     },
+     "sha256": "c500dfebcf98872f686ca2809989de8512ecd88796633059df0f6a4dc62b62f8"
+    },
+    "C": {
+     "pack": "C",
+     "evidence_ids": [
+      "Capterra___6299060",
+      "Capterra___6856497",
+      "Capterra___4966631",
+      "Capterra___6399958",
+      "Capterra___4485969",
+      "Capterra___6037885",
+      "Capterra___4868141",
+      "Capterra___4718896",
+      "Capterra___6476671",
+      "Capterra___6487346",
+      "Capterra___4921347",
+      "Capterra___6442214",
+      "Capterra___4959597",
+      "Capterra___6387081",
+      "Capterra___6431748",
+      "Capterra___5005410",
+      "Capterra___6639336",
+      "Capterra___6016439",
+      "Capterra___6316667",
+      "Capterra___7171576"
+     ],
+     "tokens_est": 3071,
+     "truncated_reviews": 3,
+     "sentences_removed_naming_target": 0,
+     "sha256": "b0f76f7e4b33f0b2640b22b29197f178aedb90e6cf5c823896b1ee6a89597c8b"
+    },
+    "T": {
+     "pack": "T",
+     "evidence_ids": [
+      "Capterra___4939428",
+      "Capterra___6240805",
+      "Capterra___4980870",
+      "Capterra___3835760",
+      "Capterra___4613246",
+      "Capterra___1900194",
+      "Capterra___2189198",
+      "GetApp___2048243",
+      "Capterra___4321478",
+      "Capterra___3847472"
+     ],
+     "tokens_est": 1678,
+     "truncated_reviews": 4,
+     "sentences_removed_naming_target": 0,
+     "sha256": "3b2cf5835388e298b7aebb7876fb122af75e6fa20f674d3e1b768f0063f85b84"
+    },
+    "Q": {
+     "pack": "Q",
+     "tokens_est": 91,
+     "fields": [
+      "goal",
+      "fixture.instructions",
+      "fixture.names",
+      "success_criteria",
+      "limits"
+     ],
+     "sha256": "a867740e8cced88c2a442e1e69080693dcb2c7c9508420bd5cd0d6ee21017251"
+    }
+   }
+  },
+  "v2_0062602056": {
+   "product": "Pipedrive",
+   "packets": {
+    "M": {
+     "pack": "M",
+     "product": "Pipedrive",
+     "url": "https://www.pipedrive.com/",
+     "tokens_est": 31,
+     "sha256": "269464a59aae6b7acdd51d669aae4828758f73acb951716ff810acd2084417f5"
+    },
+    "D": {
+     "pack": "D",
+     "sources": [
+      {
+       "label": "target landing",
+       "product": "Pipedrive",
+       "url": "https://www.pipedrive.com/",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "target feature page",
+       "product": "Pipedrive",
+       "url": "https://www.pipedrive.com/en/features",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "peer overview: Smartsheet",
+       "product": "Smartsheet",
+       "url": "https://www.smartsheet.com/platform",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "peer overview: ClickUp",
+       "product": "ClickUp",
+       "url": "https://clickup.com/features",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      }
+     ],
+     "tokens_est": 2527,
+     "sha256": "fec345dda449fc2d3e312e1d012e5843558ec80903312e5a8a753bb8d5b10bb1"
+    },
+    "P": {
+     "pack": "P",
+     "fields": [
+      "reviewer_job_title",
+      "reviewer_industry",
+      "reviewer_company_size",
+      "reviewer_time_used_product"
+     ],
+     "tokens_est": 25,
+     "sha256": "71bb4e681d102e7fbbdac8a8aec0f440eab21c0739d70cbeda73528989564662"
+    },
+    "O": {
+     "pack": "O",
+     "status": "ok",
+     "onet_version": "31.0",
+     "mapping": [
+      {
+       "code": "11-1011.00",
+       "why": "As an owner of a small to medium-sized business, they are likely a chief executive."
+      },
+      {
+       "code": "11-1021.00",
+       "why": "Owners of small businesses often manage overall operations and resources."
+      },
+      {
+       "code": "13-1199.00",
+       "why": "Owners in wholesale often handle various business operations and strategies."
+      }
+     ],
+     "task_ids": [
+      "8823",
+      "8824",
+      "8827",
+      "8826",
+      "20699",
+      "933",
+      "20700",
+      "20701"
+     ],
+     "tokens_est": 357,
+     "mapping_call": {
+      "model": "gemini-2.5-flash",
+      "model_version": "gemini-2.5-flash",
+      "usage": {
+       "input_tokens": 18050,
+       "output_tokens": 103,
+       "cost_usd": 0.005672,
+       "latency_seconds": 1.48
+      }
+     },
+     "sha256": "24c31e7822ba02e783dea159a418be85c0b993914557cc2342e703f28a73fc9c"
+    },
+    "C": {
+     "pack": "C",
+     "evidence_ids": [
+      "Capterra___6299060",
+      "Capterra___6856497",
+      "Capterra___4966631",
+      "Capterra___6399958",
+      "Capterra___4485969",
+      "Capterra___6037885",
+      "Capterra___4868141",
+      "Capterra___4718896",
+      "Capterra___6476671",
+      "Capterra___6487346",
+      "Capterra___4921347",
+      "Capterra___6442214",
+      "Capterra___4959597",
+      "Capterra___6387081",
+      "Capterra___6431748",
+      "Capterra___5005410",
+      "Capterra___6639336",
+      "Capterra___6016439",
+      "Capterra___6316667",
+      "Capterra___7171576"
+     ],
+     "tokens_est": 3071,
+     "truncated_reviews": 3,
+     "sentences_removed_naming_target": 0,
+     "sha256": "b0f76f7e4b33f0b2640b22b29197f178aedb90e6cf5c823896b1ee6a89597c8b"
+    },
+    "T": {
+     "pack": "T",
+     "evidence_ids": [
+      "Capterra___4939428",
+      "Capterra___6240805",
+      "Capterra___4980870",
+      "Capterra___3835760",
+      "Capterra___4613246",
+      "Capterra___1900194",
+      "Capterra___2189198",
+      "GetApp___2048243",
+      "Capterra___4321478",
+      "Capterra___3847472"
+     ],
+     "tokens_est": 1678,
+     "truncated_reviews": 4,
+     "sentences_removed_naming_target": 0,
+     "sha256": "3b2cf5835388e298b7aebb7876fb122af75e6fa20f674d3e1b768f0063f85b84"
+    },
+    "Q": {
+     "pack": "Q",
+     "tokens_est": 120,
+     "fields": [
+      "goal",
+      "fixture.instructions",
+      "fixture.names",
+      "success_criteria",
+      "limits"
+     ],
+     "sha256": "c336fe7ecf8b21db48accef668162305ca34ea418e36f193dea1c8940ee33deb"
+    }
+   }
+  },
+  "v2_0081225f55": {
+   "product": "Pipedrive",
+   "packets": {
+    "M": {
+     "pack": "M",
+     "product": "Pipedrive",
+     "url": "https://www.pipedrive.com/",
+     "tokens_est": 31,
+     "sha256": "269464a59aae6b7acdd51d669aae4828758f73acb951716ff810acd2084417f5"
+    },
+    "D": {
+     "pack": "D",
+     "sources": [
+      {
+       "label": "target landing",
+       "product": "Pipedrive",
+       "url": "https://www.pipedrive.com/",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "target feature page",
+       "product": "Pipedrive",
+       "url": "https://www.pipedrive.com/en/features",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "peer overview: Smartsheet",
+       "product": "Smartsheet",
+       "url": "https://www.smartsheet.com/platform",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "peer overview: ClickUp",
+       "product": "ClickUp",
+       "url": "https://clickup.com/features",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      }
+     ],
+     "tokens_est": 2527,
+     "sha256": "fec345dda449fc2d3e312e1d012e5843558ec80903312e5a8a753bb8d5b10bb1"
+    },
+    "P": {
+     "pack": "P",
+     "fields": [
+      "reviewer_job_title",
+      "reviewer_industry",
+      "reviewer_company_size",
+      "reviewer_time_used_product"
+     ],
+     "tokens_est": 36,
+     "sha256": "be60f65465d630acc9c0047043df92894969e4916410bcd3004c538e94c1470a"
+    },
+    "O": {
+     "pack": "O",
+     "status": "ok",
+     "onet_version": "31.0",
+     "mapping": [
+      {
+       "code": "41-3091.00",
+       "why": "Sales Development Representatives often sell services, aligning with this role."
+      },
+      {
+       "code": "41-4012.00",
+       "why": "SDRs frequently sell products, fitting the wholesale and manufacturing sales role."
+      },
+      {
+       "code": "13-1161.00",
+       "why": "SDRs perform market research and specialize in marketing strategies."
+      }
+     ],
+     "task_ids": [
+      "23225",
+      "23222",
+      "23228",
+      "23227",
+      "8113",
+      "8114",
+      "8116",
+      "8117",
+      "5434",
+      "5437",
+      "5439",
+      "5433"
+     ],
+     "tokens_est": 614,
+     "mapping_call": {
+      "model": "gemini-2.5-flash",
+      "model_version": "gemini-2.5-flash",
+      "usage": {
+       "input_tokens": 18055,
+       "output_tokens": 102,
+       "cost_usd": 0.005672,
+       "latency_seconds": 1.65
+      }
+     },
+     "sha256": "8ad50b9ed2148afc245997a2fcf3601cf05b3719aae496394522eedbdafc67fa"
+    },
+    "C": {
+     "pack": "C",
+     "evidence_ids": [
+      "Capterra___6299060",
+      "Capterra___6856497",
+      "Capterra___4966631",
+      "Capterra___6399958",
+      "Capterra___4485969",
+      "Capterra___6037885",
+      "Capterra___4868141",
+      "Capterra___4718896",
+      "Capterra___6476671",
+      "Capterra___6487346",
+      "Capterra___4921347",
+      "Capterra___6442214",
+      "Capterra___4959597",
+      "Capterra___6387081",
+      "Capterra___6431748",
+      "Capterra___5005410",
+      "Capterra___6639336",
+      "Capterra___6016439",
+      "Capterra___6316667",
+      "Capterra___7171576"
+     ],
+     "tokens_est": 3071,
+     "truncated_reviews": 3,
+     "sentences_removed_naming_target": 0,
+     "sha256": "b0f76f7e4b33f0b2640b22b29197f178aedb90e6cf5c823896b1ee6a89597c8b"
+    },
+    "T": {
+     "pack": "T",
+     "evidence_ids": [
+      "Capterra___4939428",
+      "Capterra___6240805",
+      "Capterra___4980870",
+      "Capterra___3835760",
+      "Capterra___4613246",
+      "Capterra___1900194",
+      "Capterra___2189198",
+      "GetApp___2048243",
+      "Capterra___4321478",
+      "Capterra___3847472"
+     ],
+     "tokens_est": 1678,
+     "truncated_reviews": 4,
+     "sentences_removed_naming_target": 0,
+     "sha256": "3b2cf5835388e298b7aebb7876fb122af75e6fa20f674d3e1b768f0063f85b84"
+    },
+    "Q": {
+     "pack": "Q",
+     "tokens_est": 133,
+     "fields": [
+      "goal",
+      "fixture.instructions",
+      "fixture.names",
+      "success_criteria",
+      "limits"
+     ],
+     "sha256": "a4d9814a1f9cc19a059f0b8ed84e12e976a13f443eaebb43f71afdf4fc35e68b"
+    }
+   }
+  },
+  "v2_0096217934": {
+   "product": "Pipedrive",
+   "packets": {
+    "M": {
+     "pack": "M",
+     "product": "Pipedrive",
+     "url": "https://www.pipedrive.com/",
+     "tokens_est": 31,
+     "sha256": "269464a59aae6b7acdd51d669aae4828758f73acb951716ff810acd2084417f5"
+    },
+    "D": {
+     "pack": "D",
+     "sources": [
+      {
+       "label": "target landing",
+       "product": "Pipedrive",
+       "url": "https://www.pipedrive.com/",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "target feature page",
+       "product": "Pipedrive",
+       "url": "https://www.pipedrive.com/en/features",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "peer overview: Smartsheet",
+       "product": "Smartsheet",
+       "url": "https://www.smartsheet.com/platform",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      },
+      {
+       "label": "peer overview: ClickUp",
+       "product": "ClickUp",
+       "url": "https://clickup.com/features",
+       "capture_date": "2026-10-18",
+       "truncated": true
+      }
+     ],
+     "tokens_est": 2527,
+     "sha256": "fec345dda449fc2d3e312e1d012e5843558ec80903312e5a8a753bb8d5b10bb1"
+    },
+    "P": {
+     "pack": "P",
+     "fields": [
+      "reviewer_job_title",
+      "reviewer_industry",
+      "reviewer_company_size",
+      "reviewer_time_used_product"
+     ],
+     "tokens_est": 34,
+     "sha256": "a813394f3f0e560da527974946efb25b98a7de889a1c56c3fee196750fd963d4"
+    },
+    "O": {
+     "pack": "O",
+     "status": "ok",
+     "onet_version": "31.0",
+     "mapping": [
+      {
+       "code": "11-2022.00",
+       "why": "Directs sales activities and manages events, aligning with sales management responsibilities."
+      },
+      {
+       "code": "13-1121.00",
+       "why": "Plans and directs events, a core function of meeting and event planners."
+      },
+      {
+       "code": "41-1012.00",
+       "why": "Supervises non-retail sales, which aligns with independent sales direction."
+      }
+     ],
+     "task_ids": [
+      "14",
+      "1",
+      "2",
+      "13",
+      "1209",
+      "1212",
+      "1214",
+      "1215",
+      "9661",
+      "9665",
+      "20266",
+      "9660"
+     ],
+     "tokens_est": 458,
+     "mapping_call": {
+      "model": "gemini-2.5-flash",
+      "model_version": "gemini-2.5-flash",
+      "usage": {
+       "input_tokens": 18055,
+       "output_tokens": 106,
+       "cost_usd": 0.005681,
+       "latency_seconds": 2.13
+      }
+     },
+     "sha256": "68f453645aaa8e8b41a456b3b3213432462452c9ca2ae7f5227bbc0a2090ccc7"
+    },
+    "C": {
+     "pack": "C",
+     "evidence_ids": [
+      "Capterra___6299060",
+      "Capterra___6856497",
+      "Capterra___4966631",
+      "Capterra___6399958",
+      "Capterra___4485969",
+      "Capterra___6037885",
+      "Capterra___4868141",
+      "Capterra___4718896",
+      "Capterra___6476671",
+      "Capterra___6487346",
+      "Capterra___4921347",
+      "Capterra___6442214",
+      "Capterra___4959597",
+      "Capterra___6387081",
+      "Capterra___6431748",
+      "Capterra___5005410",
+      "Capterra___6639336",
+      "Capterra___6016439",
+      "Capterra___6316667",
+      "Capterra___7171576"
+     ],
+     "tokens_est": 3071,
+     "truncated_reviews": 3,
+     "sentences_removed_naming_target": 0,
+     "sha256": "b0f76f7e4b33f0b2640b22b29197f178aedb90e6cf5c823896b1ee6a89597c8b"
+    },
+    "T": {
+     "pack": "T",
+     "evidence_ids": [
+      "Capterra___4939428",
+      "Capterra___6240805",
+      "Capterra___4980870",
+      "Capterra___3835760",
+      "Capterra___4613246",
+      "Capterra___1900194",
+      "Capterra___2189198",
+      "GetApp___2048243",
+      "Capterra___4321478",
+      "Capterra___3847472"
+     ],
+     "tokens_est": 1678,
+     "truncated_reviews": 4,
+     "sentences_removed_naming_target": 0,
+     "sha256": "3b2cf5835388e298b7aebb7876fb122af75e6fa20f674d3e1b768f0063f85b84"
+    },
+    "Q": {
+     "pack": "Q",
+     "tokens_est": 111,
+     "fields": [
+      "goal",
+      "fixture.instructions",
+      "fixture.names",
+      "success_criteria",
+      "limits"
+     ],
+     "sha256": "c0746b6e27ce2e09f0ac148f4b7aa5bc9a8d6678b7caf71036d970d748523814"
+    }
+   }
+  }
+ }
+}

@@ -12,3 +12,9 @@ results/.*_identity.json
 results/mcp_shots/
 results/.*_code.json
 results/.phone_lease.json
+v2/evidence/
+v2/evaluator_only/
+v2/packets/case_*.json
+v2/packets/v2_*.json
+v2/accounts/
+v2/runs/*/pre.json.tmp
