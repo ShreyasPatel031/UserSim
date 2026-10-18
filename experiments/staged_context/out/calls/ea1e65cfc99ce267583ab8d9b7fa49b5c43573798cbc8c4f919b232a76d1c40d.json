@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ea1e65cfc99ce267583ab8d9b7fa49b5c43573798cbc8c4f919b232a76d1c40d",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2636,
+  "output_tokens": 1054,
+  "cost_usd": 0.0034258,
+  "elapsed_s": 6.21,
+  "error": null,
+  "text": "{\n \"ease_of_use_rating\": 4,\n \"functionality_rating\": 4,\n \"overall_rating\": 4,\n \"value_for_money_rating\": 4,\n \"customer_support_rating\": 4,\n \"recommendation_score\": 8,\n \"pros\": [\n  \"Streamlined project management and tracking for multiple initiatives.\",\n  \"Facilitated effective collaboration on workflow charts with team members.\",\n  \"Automated reporting processes, saving significant time and effort.\"\n ],\n \"cons\": [\n  \"Experienced limitations in customization options for specific project needs.\",\n  \"Frustrated by the inability to edit multiple lines simultaneously.\",\n  \"Found the learning curve for advanced features to be somewhat steep initially.\"\n ],\n \"overall_experience\": \"This planning and project control engineer likely found Smartsheet to be a robust tool for managing and tracking their construction projects over two years. They appreciated its ability to simplify project management, enable effective collaboration on workflows, and automate reporting. However, they probably encountered some frustrations with limited customization and the inability to perform bulk edits, which may have slightly impacted their overall satisfaction despite its core benefits.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Streamlined project management and tracking for multiple initiatives.",
+      "Facilitated effective collaboration on workflow charts with team members.",
+      "Automated reporting processes, saving significant time and effort."
+    ],
+    "cons": [
+      "Experienced limitations in customization options for specific project needs.",
+      "Frustrated by the inability to edit multiple lines simultaneously.",
+      "Found the learning curve for advanced features to be somewhat steep initially."
+    ],
+    "overall_experience": "This planning and project control engineer likely found Smartsheet to be a robust tool for managing and tracking their construction projects over two years. They appreciated its ability to simplify project management, enable effective collaboration on workflows, and automate reporting. However, they probably encountered some frustrations with limited customization and the inability to perform bulk edits, which may have slightly impacted their overall satisfaction despite its core benefits."
+  },
+  "ts": "2026-10-18T10:03:58.454228+00:00"
+}

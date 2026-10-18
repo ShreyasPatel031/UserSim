@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f3015a142f2d7a9159d8d4cb05c8efe72d790f7bd603f98661cac51c4d3fba20",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2789,
+  "output_tokens": 973,
+  "cost_usd": 0.0032692,
+  "elapsed_s": 5.61,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Simplified project management for task tracking\",\n    \"Enabled effective work and organization\",\n    \"Easier to manage work than previous spreadsheet tools\"\n  ],\n  \"cons\": [\n    \"Limited customization options\",\n    \"Cannot edit multiple lines simultaneously\",\n    \"Some learning curve compared to simple spreadsheets\"\n  ],\n  \"overall_experience\": \"This coordinator found Smartsheet to be a significant improvement over Microsoft Excel for managing and following up on work within their small import and export company. The platform simplified project management and enabled more effective work tracking. While generally positive, they experienced some minor frustrations with limited customization and the inability to edit multiple lines simultaneously.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Simplified project management for task tracking",
+      "Enabled effective work and organization",
+      "Easier to manage work than previous spreadsheet tools"
+    ],
+    "cons": [
+      "Limited customization options",
+      "Cannot edit multiple lines simultaneously",
+      "Some learning curve compared to simple spreadsheets"
+    ],
+    "overall_experience": "This coordinator found Smartsheet to be a significant improvement over Microsoft Excel for managing and following up on work within their small import and export company. The platform simplified project management and enabled more effective work tracking. While generally positive, they experienced some minor frustrations with limited customization and the inability to edit multiple lines simultaneously."
+  },
+  "ts": "2026-10-18T10:03:52.316173+00:00"
+}

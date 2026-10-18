@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "15f51cd84edd374b07986a9c7c4dda4e2cbcadbdf371db01c90209e14933e13e",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2588,
+  "output_tokens": 1041,
+  "cost_usd": 0.0033789000000000002,
+  "elapsed_s": 5.96,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 2,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Advanced e-commerce features\",\n    \"Detailed analytics and reporting\",\n    \"Action-based flows for automation\"\n  ],\n  \"cons\": [\n    \"Very expensive for a small business\",\n    \"Steep learning curve for setup\",\n    \"Some email tools are difficult to use\"\n  ],\n  \"overall_experience\": \"This owner, new to Klaviyo after switching from Mailchimp, found the platform's advanced e-commerce features and detailed analytics very powerful for their business. However, they were significantly frustrated by the high cost and the difficulty associated with setting up and learning the more complex aspects of the platform. While recognizing its potential, the initial investment in time and money overshadowed some of the benefits.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 3,
+    "value_for_money_rating": 2,
+    "customer_support_rating": 3,
+    "recommendation_score": 6,
+    "pros": [
+      "Advanced e-commerce features",
+      "Detailed analytics and reporting",
+      "Action-based flows for automation"
+    ],
+    "cons": [
+      "Very expensive for a small business",
+      "Steep learning curve for setup",
+      "Some email tools are difficult to use"
+    ],
+    "overall_experience": "This owner, new to Klaviyo after switching from Mailchimp, found the platform's advanced e-commerce features and detailed analytics very powerful for their business. However, they were significantly frustrated by the high cost and the difficulty associated with setting up and learning the more complex aspects of the platform. While recognizing its potential, the initial investment in time and money overshadowed some of the benefits."
+  },
+  "ts": "2026-10-18T10:03:02.513115+00:00"
+}

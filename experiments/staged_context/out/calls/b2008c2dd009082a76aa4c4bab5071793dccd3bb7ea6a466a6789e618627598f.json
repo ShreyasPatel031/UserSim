@@ -1,0 +1,29 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b2008c2dd009082a76aa4c4bab5071793dccd3bb7ea6a466a6789e618627598f",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 232,
+  "output_tokens": 499,
+  "cost_usd": 0.0013170999999999999,
+  "elapsed_s": 3.0,
+  "error": null,
+  "text": "{\n  \"task\": \"Generate strong passwords, centralize credentials in a vault, and monitor leaked credentials without relying on the browser\",\n  \"benefits\": [\n    \"Friendly and clean interface\",\n    \"Ability to attach files for credentials like access keys or software keys\",\n    \"Simple initial setup process\",\n    \"Generates strong passwords, centralizes credentials, and monitors leaked credentials\"\n  ],\n  \"frictions\": [\n    \"Lacks a VPN system\"\n  ]\n}",
+  "json": {
+    "task": "Generate strong passwords, centralize credentials in a vault, and monitor leaked credentials without relying on the browser",
+    "benefits": [
+      "Friendly and clean interface",
+      "Ability to attach files for credentials like access keys or software keys",
+      "Simple initial setup process",
+      "Generates strong passwords, centralizes credentials, and monitors leaked credentials"
+    ],
+    "frictions": [
+      "Lacks a VPN system"
+    ]
+  },
+  "ts": "2026-10-18T10:16:00.842682+00:00"
+}

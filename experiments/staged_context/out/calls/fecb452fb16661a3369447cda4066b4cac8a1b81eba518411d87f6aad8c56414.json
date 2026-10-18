@@ -1,0 +1,28 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "fecb452fb16661a3369447cda4066b4cac8a1b81eba518411d87f6aad8c56414",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 137,
+  "output_tokens": 417,
+  "cost_usd": 0.0010836,
+  "elapsed_s": 3.68,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage information and credentials centrally.\",\n  \"benefits\": [\n    \"secure\",\n    \"lot of plugins available\",\n    \"easy to use\"\n  ],\n  \"frictions\": [\n    \"too much security can be disturbing sometimes\"\n  ]\n}",
+  "json": {
+    "task": "Manage information and credentials centrally.",
+    "benefits": [
+      "secure",
+      "lot of plugins available",
+      "easy to use"
+    ],
+    "frictions": [
+      "too much security can be disturbing sometimes"
+    ]
+  },
+  "ts": "2026-10-18T10:15:57.294912+00:00"
+}

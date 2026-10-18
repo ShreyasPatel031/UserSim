@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ce02d8b5311af6b7f3f1bca6b98ac3cf8ce38dd2f515ec71db3640407938fc0f",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2913,
+  "output_tokens": 999,
+  "cost_usd": 0.0033714,
+  "elapsed_s": 5.39,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Intuitive deal flow helps manage sales opportunities effectively\",\n    \"Ease of use makes it simple to manage clients and accounts\",\n    \"Provides reporting features useful for sales team oversight\"\n  ],\n  \"cons\": [\n    \"Lacks some advanced or 'nice-to-have' functions for detailed account management\",\n    \"Automatic reminders are missing, requiring manual tracking for client follow-ups\",\n    \"Historically, customer service has not been consistently strong\"\n  ],\n  \"overall_experience\": \"This sales professional likely found Freshsales to be a generally positive and easy-to-use tool for managing clients and account management tasks within their small IT company. The intuitive interface and reporting capabilities were beneficial for streamlining their sales process. However, the absence of some advanced features, automatic reminders, and potential customer support issues may have presented occasional frustrations.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Intuitive deal flow helps manage sales opportunities effectively",
+      "Ease of use makes it simple to manage clients and accounts",
+      "Provides reporting features useful for sales team oversight"
+    ],
+    "cons": [
+      "Lacks some advanced or 'nice-to-have' functions for detailed account management",
+      "Automatic reminders are missing, requiring manual tracking for client follow-ups",
+      "Historically, customer service has not been consistently strong"
+    ],
+    "overall_experience": "This sales professional likely found Freshsales to be a generally positive and easy-to-use tool for managing clients and account management tasks within their small IT company. The intuitive interface and reporting capabilities were beneficial for streamlining their sales process. However, the absence of some advanced features, automatic reminders, and potential customer support issues may have presented occasional frustrations."
+  },
+  "ts": "2026-10-18T10:01:10.118195+00:00"
+}

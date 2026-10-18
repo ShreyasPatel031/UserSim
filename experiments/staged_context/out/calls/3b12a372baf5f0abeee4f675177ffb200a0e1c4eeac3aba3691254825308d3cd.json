@@ -1,0 +1,25 @@
+{
+  "stage": "hm_task",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3b12a372baf5f0abeee4f675177ffb200a0e1c4eeac3aba3691254825308d3cd",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 512,
+  "input_tokens": 1155,
+  "output_tokens": 639,
+  "cost_usd": 0.001944,
+  "elapsed_s": 3.8,
+  "error": null,
+  "text": "{\n  \"task\": \"As a team lead at a 20-person nonprofit, I need to set up a Trello board to manage our upcoming 'Community Outreach Drive'. I'll create lists for 'To Do', 'In Progress', and 'Completed', then add three tasks: 'Recruit 10 volunteers', 'Design flyer', and 'Secure event venue'. After setting these up, I'll add custom fields for 'Volunteer Lead' and 'Deadline', assign deadlines, and then filter the board to see only tasks due next week. Finally, I'll move 'Design flyer' to 'In Progress' and update its deadline.\",\n  \"core_job\": \"Manage project tasks and track progress.\",\n  \"features\": [\n    \"Custom Fields\",\n    \"Filtering\"\n  ]\n}",
+  "json": {
+    "task": "As a team lead at a 20-person nonprofit, I need to set up a Trello board to manage our upcoming 'Community Outreach Drive'. I'll create lists for 'To Do', 'In Progress', and 'Completed', then add three tasks: 'Recruit 10 volunteers', 'Design flyer', and 'Secure event venue'. After setting these up, I'll add custom fields for 'Volunteer Lead' and 'Deadline', assign deadlines, and then filter the board to see only tasks due next week. Finally, I'll move 'Design flyer' to 'In Progress' and update its deadline.",
+    "core_job": "Manage project tasks and track progress.",
+    "features": [
+      "Custom Fields",
+      "Filtering"
+    ]
+  },
+  "ts": "2026-10-18T10:22:09.059833+00:00"
+}

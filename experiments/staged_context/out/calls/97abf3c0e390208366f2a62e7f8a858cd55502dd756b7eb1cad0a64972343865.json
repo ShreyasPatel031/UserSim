@@ -1,0 +1,33 @@
+{
+  "stage": "router_judge",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "97abf3c0e390208366f2a62e7f8a858cd55502dd756b7eb1cad0a64972343865",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 423,
+  "output_tokens": 493,
+  "cost_usd": 0.0013593999999999998,
+  "elapsed_s": 3.8,
+  "error": null,
+  "text": "{\n  \"pros\": [\n    {\n      \"pred\": \"P1\",\n      \"act\": \"A3\",\n      \"score\": 2\n    },\n    {\n      \"pred\": \"P1\",\n      \"act\": \"A4\",\n      \"score\": 2\n    }\n  ],\n  \"cons\": [],\n  \"overall\": 0\n}",
+  "json": {
+    "pros": [
+      {
+        "pred": "P1",
+        "act": "A3",
+        "score": 2
+      },
+      {
+        "pred": "P1",
+        "act": "A4",
+        "score": 2
+      }
+    ],
+    "cons": [],
+    "overall": 0
+  },
+  "ts": "2026-10-18T10:03:46.084308+00:00"
+}

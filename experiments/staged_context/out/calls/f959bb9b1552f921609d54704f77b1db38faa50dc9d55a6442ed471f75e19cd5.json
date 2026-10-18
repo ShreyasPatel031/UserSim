@@ -1,0 +1,27 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f959bb9b1552f921609d54704f77b1db38faa50dc9d55a6442ed471f75e19cd5",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 260,
+  "output_tokens": 460,
+  "cost_usd": 0.001228,
+  "elapsed_s": 3.26,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage passwords and authentication credentials\",\n  \"benefits\": [\n    \"Create and save complex passwords directly to sites\",\n    \"Provide easy access to password creation and storage for end users\",\n    \"Autofill feature simplifies user experience\",\n    \"Receive quick and useful support with fast issue resolution\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Manage passwords and authentication credentials",
+    "benefits": [
+      "Create and save complex passwords directly to sites",
+      "Provide easy access to password creation and storage for end users",
+      "Autofill feature simplifies user experience",
+      "Receive quick and useful support with fast issue resolution"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T10:15:57.793108+00:00"
+}

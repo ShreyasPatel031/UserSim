@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f5168230de0519f90122eb4ae48f7db3fb6a2b02e77e5d89e419a463ca3b8faf",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 345,
+  "output_tokens": 485,
+  "cost_usd": 0.0013160000000000001,
+  "elapsed_s": 5.28,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage leads, send sales pitches and updates, and analyze campaign results.\",\n  \"benefits\": [\n    \"User-friendly interface\",\n    \"Easy campaign management\",\n    \"Reporting tools for data-driven decisions\",\n    \"Helpful for lead generation\"\n  ],\n  \"frictions\": [\n    \"Limited social network integrations (Instagram, Facebook, LinkedIn)\",\n    \"File import process is slow and sometimes gets stuck\"\n  ]\n}",
+  "json": {
+    "task": "Manage leads, send sales pitches and updates, and analyze campaign results.",
+    "benefits": [
+      "User-friendly interface",
+      "Easy campaign management",
+      "Reporting tools for data-driven decisions",
+      "Helpful for lead generation"
+    ],
+    "frictions": [
+      "Limited social network integrations (Instagram, Facebook, LinkedIn)",
+      "File import process is slow and sometimes gets stuck"
+    ]
+  },
+  "ts": "2026-10-18T10:00:20.766374+00:00"
+}

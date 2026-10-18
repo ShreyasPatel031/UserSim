@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f52fe6a0a1fa5cb45de86e3a48a8968bb9b4bb24e2c8c6886e1a143ab8273121",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2460,
+  "output_tokens": 985,
+  "cost_usd": 0.0032005,
+  "elapsed_s": 5.76,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Simple interface for core project tasks\",\n    \"Effective to-do list management\",\n    \"Easy for new team members to pick up\"\n  ],\n  \"cons\": [\n    \"Difficulty tracking real-time project progress\",\n    \"Main page navigation becomes cumbersome with many projects\",\n    \"Limited advanced features compared to alternatives like Asana\"\n  ],\n  \"overall_experience\": \"This Ecommerce Manager has used Basecamp for over two years to organize projects within their retail team of 11-50 employees. While they appreciate its initial ease of use and effective to-do list features, the lack of real-time project progress tracking and navigation challenges with multiple projects are significant frustrations. Having previously used Asana, they likely find Basecamp's functionality more basic, leading to a mixed overall experience.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 3,
+    "overall_rating": 3,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 6,
+    "pros": [
+      "Simple interface for core project tasks",
+      "Effective to-do list management",
+      "Easy for new team members to pick up"
+    ],
+    "cons": [
+      "Difficulty tracking real-time project progress",
+      "Main page navigation becomes cumbersome with many projects",
+      "Limited advanced features compared to alternatives like Asana"
+    ],
+    "overall_experience": "This Ecommerce Manager has used Basecamp for over two years to organize projects within their retail team of 11-50 employees. While they appreciate its initial ease of use and effective to-do list features, the lack of real-time project progress tracking and navigation challenges with multiple projects are significant frustrations. Having previously used Asana, they likely find Basecamp's functionality more basic, leading to a mixed overall experience."
+  },
+  "ts": "2026-10-18T10:02:08.136612+00:00"
+}

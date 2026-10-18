@@ -1,0 +1,29 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "21e71128973efb89e2e665542647eae1d3adde12e70550931fa0f0627265b2b6",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 159,
+  "output_tokens": 444,
+  "cost_usd": 0.0011577,
+  "elapsed_s": 2.84,
+  "error": null,
+  "text": "{\n  \"task\": \"Store and manage passwords.\",\n  \"benefits\": [\n    \"Reduce mental load\",\n    \"Focus brainpower on other tasks\",\n    \"Avoid losing passwords\",\n    \"Increase security\"\n  ],\n  \"frictions\": [\n    \"Poor responsiveness of customer service in France\"\n  ]\n}",
+  "json": {
+    "task": "Store and manage passwords.",
+    "benefits": [
+      "Reduce mental load",
+      "Focus brainpower on other tasks",
+      "Avoid losing passwords",
+      "Increase security"
+    ],
+    "frictions": [
+      "Poor responsiveness of customer service in France"
+    ]
+  },
+  "ts": "2026-10-18T10:15:56.150525+00:00"
+}

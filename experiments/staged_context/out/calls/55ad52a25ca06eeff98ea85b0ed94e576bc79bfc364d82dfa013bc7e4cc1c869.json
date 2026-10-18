@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "55ad52a25ca06eeff98ea85b0ed94e576bc79bfc364d82dfa013bc7e4cc1c869",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2508,
+  "output_tokens": 1032,
+  "cost_usd": 0.0033323999999999997,
+  "elapsed_s": 5.83,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"User-friendly interface made daily tasks manageable.\",\n    \"The AI sales assistant provided helpful, personalized insights.\",\n    \"Integration with other tools was generally effective.\"\n  ],\n  \"cons\": [\n    \"Reporting tools were not comprehensive enough for detailed analysis.\",\n    \"Customization options felt rigid for specific business needs.\",\n    \"The initial usage guide was lacking, requiring extra effort to learn.\"\n  ],\n  \"overall_experience\": \"This Customer Success Manager found Zoho CRM to be a solid tool for managing customer relationships, appreciating its user-friendly interface and the helpful AI sales assistant. While it offered good value and functionality for their small education management company, they encountered frustrations with the limitations of its reporting tools and the rigidity of customization options. Overall, it served their core needs effectively, but with some areas for improvement compared to their previous experience with HubSpot CRM.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "User-friendly interface made daily tasks manageable.",
+      "The AI sales assistant provided helpful, personalized insights.",
+      "Integration with other tools was generally effective."
+    ],
+    "cons": [
+      "Reporting tools were not comprehensive enough for detailed analysis.",
+      "Customization options felt rigid for specific business needs.",
+      "The initial usage guide was lacking, requiring extra effort to learn."
+    ],
+    "overall_experience": "This Customer Success Manager found Zoho CRM to be a solid tool for managing customer relationships, appreciating its user-friendly interface and the helpful AI sales assistant. While it offered good value and functionality for their small education management company, they encountered frustrations with the limitations of its reporting tools and the rigidity of customization options. Overall, it served their core needs effectively, but with some areas for improvement compared to their previous experience with HubSpot CRM."
+  },
+  "ts": "2026-10-18T10:01:32.747538+00:00"
+}

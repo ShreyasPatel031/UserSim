@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ccd8078e50b15bbd1227911cb788cd853252c74e8b409c75b9e8e76c115a1aaa",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2551,
+  "output_tokens": 988,
+  "cost_usd": 0.0032353,
+  "elapsed_s": 5.62,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"User-friendly interface simplifying daily tasks\",\n    \"Effective AI sales assistant for personalized insights\",\n    \"Streamlined process for concluding purchases\"\n  ],\n  \"cons\": [\n    \"Reporting tools lack desired comprehensiveness\",\n    \"Initial struggle with the limited usage guide\",\n    \"Potential for minor frustration with integration options\"\n  ],\n  \"overall_experience\": \"This assistant in computer and network security found Zoho CRM to be a capable tool for managing purchase conclusions over 6-12 months. They appreciated its ease of use and the helpful AI features, which contributed positively to their operational workflow. However, the reviewer experienced some limitations with reporting capabilities and the initial guidance for the product.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "User-friendly interface simplifying daily tasks",
+      "Effective AI sales assistant for personalized insights",
+      "Streamlined process for concluding purchases"
+    ],
+    "cons": [
+      "Reporting tools lack desired comprehensiveness",
+      "Initial struggle with the limited usage guide",
+      "Potential for minor frustration with integration options"
+    ],
+    "overall_experience": "This assistant in computer and network security found Zoho CRM to be a capable tool for managing purchase conclusions over 6-12 months. They appreciated its ease of use and the helpful AI features, which contributed positively to their operational workflow. However, the reviewer experienced some limitations with reporting capabilities and the initial guidance for the product."
+  },
+  "ts": "2026-10-18T10:01:25.471812+00:00"
+}

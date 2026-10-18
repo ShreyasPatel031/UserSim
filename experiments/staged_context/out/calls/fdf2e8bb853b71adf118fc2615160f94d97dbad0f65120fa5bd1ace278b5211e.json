@@ -1,0 +1,44 @@
+{
+  "stage": "router_judge",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "fdf2e8bb853b71adf118fc2615160f94d97dbad0f65120fa5bd1ace278b5211e",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 543,
+  "output_tokens": 487,
+  "cost_usd": 0.0013804,
+  "elapsed_s": 2.97,
+  "error": null,
+  "text": "{\n  \"pros\": [\n    {\n      \"pred\": \"P1\",\n      \"act\": \"A4\",\n      \"score\": 1\n    },\n    {\n      \"pred\": \"P2\",\n      \"act\": \"A3\",\n      \"score\": 2\n    },\n    {\n      \"pred\": \"P3\",\n      \"act\": \"A4\",\n      \"score\": 1\n    }\n  ],\n  \"cons\": [\n    {\n      \"pred\": \"P3\",\n      \"act\": \"A1\",\n      \"score\": 1\n    }\n  ],\n  \"overall\": 1\n}",
+  "json": {
+    "pros": [
+      {
+        "pred": "P1",
+        "act": "A4",
+        "score": 1
+      },
+      {
+        "pred": "P2",
+        "act": "A3",
+        "score": 2
+      },
+      {
+        "pred": "P3",
+        "act": "A4",
+        "score": 1
+      }
+    ],
+    "cons": [
+      {
+        "pred": "P3",
+        "act": "A1",
+        "score": 1
+      }
+    ],
+    "overall": 1
+  },
+  "ts": "2026-10-18T10:01:28.438664+00:00"
+}

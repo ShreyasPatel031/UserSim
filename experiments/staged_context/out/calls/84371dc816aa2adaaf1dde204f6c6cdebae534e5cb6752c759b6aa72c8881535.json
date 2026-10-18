@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "84371dc816aa2adaaf1dde204f6c6cdebae534e5cb6752c759b6aa72c8881535",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 265,
+  "output_tokens": 468,
+  "cost_usd": 0.0012495,
+  "elapsed_s": 2.93,
+  "error": null,
+  "text": "{\n  \"task\": \"Integrate customer support for small to medium-sized businesses\",\n  \"benefits\": [\n    \"affordable\",\n    \"comprehensive features\",\n    \"includes knowledge base feature\",\n    \"includes customizable surveys feature\"\n  ],\n  \"frictions\": [\n    \"steep learning curve for operators\",\n    \"lack of comprehensive training content on YouTube and website\"\n  ]\n}",
+  "json": {
+    "task": "Integrate customer support for small to medium-sized businesses",
+    "benefits": [
+      "affordable",
+      "comprehensive features",
+      "includes knowledge base feature",
+      "includes customizable surveys feature"
+    ],
+    "frictions": [
+      "steep learning curve for operators",
+      "lack of comprehensive training content on YouTube and website"
+    ]
+  },
+  "ts": "2026-10-18T10:01:01.318912+00:00"
+}

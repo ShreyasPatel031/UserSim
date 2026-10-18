@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2f9c317782e673cc6ec1931415ffff2b6c24ef78989715722648d7e44bb9cc29",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2389,
+  "output_tokens": 1027,
+  "cost_usd": 0.0032842,
+  "elapsed_s": 6.76,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 2,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Easy to use for basic lead and contact management\",\n    \"Intuitive interface for navigating deal flow\",\n    \"Offers extensive features even at the free trial level\"\n  ],\n  \"cons\": [\n    \"Customer support was not responsive or helpful\",\n    \"Lacked robust reporting features for detailed analysis\",\n    \"Missing some advanced functions an executive might expect\"\n  ],\n  \"overall_experience\": \"This Partner likely found Freshsales to be a generally user-friendly platform for their core task of adding new leads and contacts during the free trial. They appreciated the intuitive design and the value offered by the free tier. However, the lack of robust reporting and historically poor customer support likely tempered their overall satisfaction, leading to a moderate recommendation.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 2,
+    "recommendation_score": 7,
+    "pros": [
+      "Easy to use for basic lead and contact management",
+      "Intuitive interface for navigating deal flow",
+      "Offers extensive features even at the free trial level"
+    ],
+    "cons": [
+      "Customer support was not responsive or helpful",
+      "Lacked robust reporting features for detailed analysis",
+      "Missing some advanced functions an executive might expect"
+    ],
+    "overall_experience": "This Partner likely found Freshsales to be a generally user-friendly platform for their core task of adding new leads and contacts during the free trial. They appreciated the intuitive design and the value offered by the free tier. However, the lack of robust reporting and historically poor customer support likely tempered their overall satisfaction, leading to a moderate recommendation."
+  },
+  "ts": "2026-10-18T10:01:09.407670+00:00"
+}

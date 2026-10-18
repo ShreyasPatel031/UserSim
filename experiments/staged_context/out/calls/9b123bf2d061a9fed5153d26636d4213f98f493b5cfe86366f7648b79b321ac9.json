@@ -1,0 +1,36 @@
+{
+  "stage": "hm_plist",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9b123bf2d061a9fed5153d26636d4213f98f493b5cfe86366f7648b79b321ac9",
+  "temperature": 0.7,
+  "seed": 44,
+  "max_tokens": 4096,
+  "thinking_budget": 1024,
+  "input_tokens": 1161,
+  "output_tokens": 982,
+  "cost_usd": 0.0028033,
+  "elapsed_s": 6.04,
+  "error": null,
+  "text": "{\n  \"pros\": [\n    \"Open-source and transparent security model.\",\n    \"Generous free tier and highly affordable premium plans.\",\n    \"Strong encryption and robust security features.\",\n    \"Cross-platform compatibility (desktop, mobile, browser extensions).\",\n    \"Option for self-hosting for advanced users and organizations.\",\n    \"Reliable password syncing across devices.\"\n  ],\n  \"cons\": [\n    \"User interface (UI) can feel less polished or modern compared to competitors.\",\n    \"Mobile app experience can sometimes be less intuitive or smooth.\",\n    \"Steeper learning curve for advanced features or self-hosting setup.\",\n    \"Customer support, while responsive, might not be as extensive as enterprise-focused solutions.\",\n    \"Occasional minor issues with autofill or browser extension integration.\",\n    \"Lack of some niche integrations or advanced reporting features found in enterprise tools.\"\n  ],\n  \"overall_rating\": 4.6\n}",
+  "json": {
+    "pros": [
+      "Open-source and transparent security model.",
+      "Generous free tier and highly affordable premium plans.",
+      "Strong encryption and robust security features.",
+      "Cross-platform compatibility (desktop, mobile, browser extensions).",
+      "Option for self-hosting for advanced users and organizations.",
+      "Reliable password syncing across devices."
+    ],
+    "cons": [
+      "User interface (UI) can feel less polished or modern compared to competitors.",
+      "Mobile app experience can sometimes be less intuitive or smooth.",
+      "Steeper learning curve for advanced features or self-hosting setup.",
+      "Customer support, while responsive, might not be as extensive as enterprise-focused solutions.",
+      "Occasional minor issues with autofill or browser extension integration.",
+      "Lack of some niche integrations or advanced reporting features found in enterprise tools."
+    ],
+    "overall_rating": 4.6
+  },
+  "ts": "2026-10-18T10:17:24.396214+00:00"
+}

@@ -1,0 +1,25 @@
+{
+  "stage": "hm_task",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "fe5350ddab17fd616e75f80f14f79b1ff26c170316fbc46e8c7d37ac15d0aa55",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 512,
+  "input_tokens": 1169,
+  "output_tokens": 520,
+  "cost_usd": 0.0016507,
+  "elapsed_s": 3.94,
+  "error": null,
+  "text": "{\n  \"task\": \"I need to evaluate Bitwarden for our 50-person company. I'll start by securely storing a few critical logins like our CRM, a shared social media account, and a secure note for server access. Then, I'll test its sharing capabilities by creating a collection and sharing the social media login with a team member. Finally, I'll organize these entries by adding custom fields and filtering them to see how easily I can manage our growing vault.\",\n  \"core_job\": \"Securely store, manage, and access company credentials.\",\n  \"features\": [\n    \"Secure sharing and collections\",\n    \"Custom fields and filtering\"\n  ]\n}",
+  "json": {
+    "task": "I need to evaluate Bitwarden for our 50-person company. I'll start by securely storing a few critical logins like our CRM, a shared social media account, and a secure note for server access. Then, I'll test its sharing capabilities by creating a collection and sharing the social media login with a team member. Finally, I'll organize these entries by adding custom fields and filtering them to see how easily I can manage our growing vault.",
+    "core_job": "Securely store, manage, and access company credentials.",
+    "features": [
+      "Secure sharing and collections",
+      "Custom fields and filtering"
+    ]
+  },
+  "ts": "2026-10-18T09:58:10.211644+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "hm_plist",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2a144b6a2c9e0340792263b92cde1cafd6755b1075a155b27f528b728e6831f2",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 1024,
+  "input_tokens": 595,
+  "output_tokens": 1067,
+  "cost_usd": 0.002846,
+  "elapsed_s": 5.27,
+  "error": null,
+  "text": "{\n  \"pros\": [\n    \"Clear descriptions for each tool make selection easy.\",\n    \"Quick and straightforward process for adding tasks and events.\",\n    \"Flexible project customization by adding specific tools as needed.\",\n    \"Initial project setup provides clear guidance for new users.\",\n    \"Option to skip onboarding tour for experienced users.\",\n    \"Dedicated calendar tool for managing deadlines and milestones.\"\n  ],\n  \"cons\": [\n    \"Free plan severely limits users to only one project.\",\n    \"Tools must be manually added to each new project before use.\",\n    \"Default event times are often inconvenient and require manual adjustment.\",\n    \"Clicking tool titles renames them instead of opening the tool.\",\n    \"Page layout shifts unexpectedly after adding new tools.\",\n    \"New projects start completely empty, requiring initial setup.\"\n  ],\n  \"overall_rating\": 3.5\n}",
+  "json": {
+    "pros": [
+      "Clear descriptions for each tool make selection easy.",
+      "Quick and straightforward process for adding tasks and events.",
+      "Flexible project customization by adding specific tools as needed.",
+      "Initial project setup provides clear guidance for new users.",
+      "Option to skip onboarding tour for experienced users.",
+      "Dedicated calendar tool for managing deadlines and milestones."
+    ],
+    "cons": [
+      "Free plan severely limits users to only one project.",
+      "Tools must be manually added to each new project before use.",
+      "Default event times are often inconvenient and require manual adjustment.",
+      "Clicking tool titles renames them instead of opening the tool.",
+      "Page layout shifts unexpectedly after adding new tools.",
+      "New projects start completely empty, requiring initial setup."
+    ],
+    "overall_rating": 3.5
+  },
+  "ts": "2026-10-18T10:10:22.217286+00:00"
+}

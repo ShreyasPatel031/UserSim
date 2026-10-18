@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3787a1b930728cd7ca49cb8f021454c7ab5d495123d99ca8472f5d3b09fd7704",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2783,
+  "output_tokens": 988,
+  "cost_usd": 0.0033049,
+  "elapsed_s": 5.11,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effective for managing project pipelines\",\n    \"Reliable and secure platform\",\n    \"Good job after the initial learning curve\"\n  ],\n  \"cons\": [\n    \"Steep learning curve at the beginning\",\n    \"Limited customization options\",\n    \"Fickle copy/paste functionality\"\n  ],\n  \"overall_experience\": \"This Director in E-Learning found Smartsheet to be a capable tool for managing project pipelines, appreciating its reliability and the clarity it brought after an initial adjustment period. However, the product's learning curve and limited customization options were points of frustration. Despite these challenges, they generally found it to be a valuable solution for their team's needs.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Effective for managing project pipelines",
+      "Reliable and secure platform",
+      "Good job after the initial learning curve"
+    ],
+    "cons": [
+      "Steep learning curve at the beginning",
+      "Limited customization options",
+      "Fickle copy/paste functionality"
+    ],
+    "overall_experience": "This Director in E-Learning found Smartsheet to be a capable tool for managing project pipelines, appreciating its reliability and the clarity it brought after an initial adjustment period. However, the product's learning curve and limited customization options were points of frustration. Despite these challenges, they generally found it to be a valuable solution for their team's needs."
+  },
+  "ts": "2026-10-18T10:03:46.302662+00:00"
+}

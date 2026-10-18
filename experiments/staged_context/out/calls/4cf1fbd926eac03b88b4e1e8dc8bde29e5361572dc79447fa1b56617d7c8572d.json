@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4cf1fbd926eac03b88b4e1e8dc8bde29e5361572dc79447fa1b56617d7c8572d",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 209,
+  "output_tokens": 504,
+  "cost_usd": 0.0013227,
+  "elapsed_s": 4.39,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage sales activities and client ticketing.\",\n  \"benefits\": [\n    \"Provides an all-in-one solution\",\n    \"Offers a powerful sales tool\",\n    \"Includes a great ticketing feature\"\n  ],\n  \"frictions\": [\n    \"Can be overwhelming for beginners\",\n    \"Navigation is not simple\",\n    \"Integrations with different websites can be difficult\"\n  ]\n}",
+  "json": {
+    "task": "Manage sales activities and client ticketing.",
+    "benefits": [
+      "Provides an all-in-one solution",
+      "Offers a powerful sales tool",
+      "Includes a great ticketing feature"
+    ],
+    "frictions": [
+      "Can be overwhelming for beginners",
+      "Navigation is not simple",
+      "Integrations with different websites can be difficult"
+    ]
+  },
+  "ts": "2026-10-18T10:00:27.544388+00:00"
+}

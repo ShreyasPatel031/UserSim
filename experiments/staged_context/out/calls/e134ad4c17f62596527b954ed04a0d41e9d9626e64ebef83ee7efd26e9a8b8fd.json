@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e134ad4c17f62596527b954ed04a0d41e9d9626e64ebef83ee7efd26e9a8b8fd",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2730,
+  "output_tokens": 1001,
+  "cost_usd": 0.0033215,
+  "elapsed_s": 6.37,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effective for managing complex spreadsheets and projects\",\n    \"Reliable performance and good security\",\n    \"Linking documents to dashboards provides clear oversight\"\n  ],\n  \"cons\": [\n    \"Initial learning curve can be steep\",\n    \"Limited customization options compared to other tools\",\n    \"Fickle copy/paste and inability to edit multiple lines simultaneously\"\n  ],\n  \"overall_experience\": \"This Software Development Engineer likely found Smartsheet to be a powerful tool for managing spreadsheets and projects, especially after overcoming the initial learning phase. The reliability and ability to link data across documents were significant benefits. However, specific frustrations related to data manipulation, such as copy/paste issues and limited multi-line editing, slightly hindered the user experience, alongside a desire for more customization.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Effective for managing complex spreadsheets and projects",
+      "Reliable performance and good security",
+      "Linking documents to dashboards provides clear oversight"
+    ],
+    "cons": [
+      "Initial learning curve can be steep",
+      "Limited customization options compared to other tools",
+      "Fickle copy/paste and inability to edit multiple lines simultaneously"
+    ],
+    "overall_experience": "This Software Development Engineer likely found Smartsheet to be a powerful tool for managing spreadsheets and projects, especially after overcoming the initial learning phase. The reliability and ability to link data across documents were significant benefits. However, specific frustrations related to data manipulation, such as copy/paste issues and limited multi-line editing, slightly hindered the user experience, alongside a desire for more customization."
+  },
+  "ts": "2026-10-18T10:03:41.892395+00:00"
+}

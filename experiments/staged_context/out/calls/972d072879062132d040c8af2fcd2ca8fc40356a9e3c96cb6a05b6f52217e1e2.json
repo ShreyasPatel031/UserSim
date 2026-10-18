@@ -1,0 +1,31 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "972d072879062132d040c8af2fcd2ca8fc40356a9e3c96cb6a05b6f52217e1e2",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 203,
+  "output_tokens": 488,
+  "cost_usd": 0.0012809,
+  "elapsed_s": 2.9,
+  "error": null,
+  "text": "{\n  \"task\": \"Use the forms portion of the product\",\n  \"benefits\": [\n    \"Does a great job after initial learning\",\n    \"Users love using the forms portion\",\n    \"Offers more options compared to competitors\"\n  ],\n  \"frictions\": [\n    \"Product was overwhelming at the beginning\",\n    \"Not as visually appealing as other products\",\n    \"Not as intuitive as competitors\",\n    \"Visuals and layouts are not nice looking\"\n  ]\n}",
+  "json": {
+    "task": "Use the forms portion of the product",
+    "benefits": [
+      "Does a great job after initial learning",
+      "Users love using the forms portion",
+      "Offers more options compared to competitors"
+    ],
+    "frictions": [
+      "Product was overwhelming at the beginning",
+      "Not as visually appealing as other products",
+      "Not as intuitive as competitors",
+      "Visuals and layouts are not nice looking"
+    ]
+  },
+  "ts": "2026-10-18T10:00:57.064606+00:00"
+}

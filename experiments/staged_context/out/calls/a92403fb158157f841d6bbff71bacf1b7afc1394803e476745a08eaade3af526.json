@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a92403fb158157f841d6bbff71bacf1b7afc1394803e476745a08eaade3af526",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2901,
+  "output_tokens": 931,
+  "cost_usd": 0.0031977999999999998,
+  "elapsed_s": 5.31,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Improved sales effectiveness for the team\",\n    \"Intuitive deal flow management across the sales cycle\",\n    \"Consolidated all sales data and processes within one platform\"\n  ],\n  \"cons\": [\n    \"Lacked some advanced functions for deeper analysis\",\n    \"Customer support was not always responsive or helpful\",\n    \"Reporting features were not robust enough for detailed needs\"\n  ],\n  \"overall_experience\": \"This Sales Manager likely found Freshsales to be a highly effective tool for improving their team's sales effectiveness and managing deal flow. The platform's ease of use and ability to consolidate sales data were key benefits, especially given their goal to integrate and advance a CRM system. However, they probably faced frustrations with the limitations of advanced functionality and reporting, and may have experienced some challenges with customer support over their two years of use.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Improved sales effectiveness for the team",
+      "Intuitive deal flow management across the sales cycle",
+      "Consolidated all sales data and processes within one platform"
+    ],
+    "cons": [
+      "Lacked some advanced functions for deeper analysis",
+      "Customer support was not always responsive or helpful",
+      "Reporting features were not robust enough for detailed needs"
+    ],
+    "overall_experience": "This Sales Manager likely found Freshsales to be a highly effective tool for improving their team's sales effectiveness and managing deal flow. The platform's ease of use and ability to consolidate sales data were key benefits, especially given their goal to integrate and advance a CRM system. However, they probably faced frustrations with the limitations of advanced functionality and reporting, and may have experienced some challenges with customer support over their two years of use."
+  },
+  "ts": "2026-10-18T10:01:08.412194+00:00"
+}

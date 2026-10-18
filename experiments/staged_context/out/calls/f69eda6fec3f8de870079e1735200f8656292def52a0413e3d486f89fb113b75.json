@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f69eda6fec3f8de870079e1735200f8656292def52a0413e3d486f89fb113b75",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2833,
+  "output_tokens": 1081,
+  "cost_usd": 0.0035524,
+  "elapsed_s": 6.63,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effective for project collaboration and tracking\",\n    \"Reliable and secure with no crashes\",\n    \"Simplified project management after initial learning\"\n  ],\n  \"cons\": [\n    \"Steep learning curve at the beginning\",\n    \"Limited customization options\",\n    \"Fickle copy/paste and inability to edit multiple lines\"\n  ],\n  \"overall_experience\": \"This reviewer likely found Smartsheet to be a robust tool for project collaboration within their biotechnology role, appreciating its reliability and comprehensive tracking capabilities. While the initial learning curve and some interface quirks presented challenges, the platform ultimately proved effective for managing clinical projects. They valued its functionality for team-based work, despite wishing for more flexibility in customization.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Effective for project collaboration and tracking",
+      "Reliable and secure with no crashes",
+      "Simplified project management after initial learning"
+    ],
+    "cons": [
+      "Steep learning curve at the beginning",
+      "Limited customization options",
+      "Fickle copy/paste and inability to edit multiple lines"
+    ],
+    "overall_experience": "This reviewer likely found Smartsheet to be a robust tool for project collaboration within their biotechnology role, appreciating its reliability and comprehensive tracking capabilities. While the initial learning curve and some interface quirks presented challenges, the platform ultimately proved effective for managing clinical projects. They valued its functionality for team-based work, despite wishing for more flexibility in customization."
+  },
+  "ts": "2026-10-18T10:03:49.933388+00:00"
+}

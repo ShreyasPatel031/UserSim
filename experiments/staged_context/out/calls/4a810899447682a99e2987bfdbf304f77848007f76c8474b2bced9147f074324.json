@@ -1,0 +1,25 @@
+{
+  "stage": "hm_task",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4a810899447682a99e2987bfdbf304f77848007f76c8474b2bced9147f074324",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 512,
+  "input_tokens": 1176,
+  "output_tokens": 522,
+  "cost_usd": 0.0016577999999999999,
+  "elapsed_s": 5.32,
+  "error": null,
+  "text": "{\n  \"task\": \"Alright, I need to get our new 'Summer Campaign Launch' project set up in Wrike. I'll create the main project, then add three key tasks: 'Creative Brief Development', 'Ad Copywriting', and 'Media Buying'. I'll assign them to team members, set deadlines, and then use custom fields to track their status and priority. Finally, I'll generate a quick report to see our progress and reassign a task if needed.\",\n  \"core_job\": \"Project and task management for marketing campaigns\",\n  \"features\": [\n    \"Custom Fields\",\n    \"Reporting\"\n  ]\n}",
+  "json": {
+    "task": "Alright, I need to get our new 'Summer Campaign Launch' project set up in Wrike. I'll create the main project, then add three key tasks: 'Creative Brief Development', 'Ad Copywriting', and 'Media Buying'. I'll assign them to team members, set deadlines, and then use custom fields to track their status and priority. Finally, I'll generate a quick report to see our progress and reassign a task if needed.",
+    "core_job": "Project and task management for marketing campaigns",
+    "features": [
+      "Custom Fields",
+      "Reporting"
+    ]
+  },
+  "ts": "2026-10-18T10:21:57.836404+00:00"
+}

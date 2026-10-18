@@ -1,0 +1,25 @@
+{
+  "stage": "hm_task",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ead716ac261395cc0f7811b0cd6d15bc0a309e605b8198623df9d816b3bc477a",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 512,
+  "input_tokens": 1167,
+  "output_tokens": 540,
+  "cost_usd": 0.0017001,
+  "elapsed_s": 3.97,
+  "error": null,
+  "text": "{\n  \"task\": \"I need to set up a new client project in Basecamp, including a few key to-do lists for different phases and some important documents. Then, I'll check the project's progress using a calendar view and assign some tasks to my team. Finally, I'll reorganize a to-do list and update a task's due date to reflect a change in scope.\",\n  \"core_job\": \"Manage a client project with tasks and files.\",\n  \"features\": [\n    \"Calendar view for project timelines\",\n    \"Task assignment and due date management\"\n  ]\n}",
+  "json": {
+    "task": "I need to set up a new client project in Basecamp, including a few key to-do lists for different phases and some important documents. Then, I'll check the project's progress using a calendar view and assign some tasks to my team. Finally, I'll reorganize a to-do list and update a task's due date to reflect a change in scope.",
+    "core_job": "Manage a client project with tasks and files.",
+    "features": [
+      "Calendar view for project timelines",
+      "Task assignment and due date management"
+    ]
+  },
+  "ts": "2026-10-18T09:57:36.248408+00:00"
+}

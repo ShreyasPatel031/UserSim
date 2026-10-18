@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a7a9a24f56ec70e407827810b393c7330622cde88284bbbfa0820bf0698e90f2",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 267,
+  "output_tokens": 521,
+  "cost_usd": 0.0013825999999999999,
+  "elapsed_s": 5.17,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage the sales funnel, opportunities, calls, and emails.\",\n  \"benefits\": [\n    \"Provides an intuitive deal flow for moving opportunities across the sales cycle.\",\n    \"Offers integrated dialing with call logging and optional recording.\",\n    \"Allows email integration to log all incoming and outgoing emails.\"\n  ],\n  \"frictions\": [\n    \"Lacks robust reporting.\",\n    \"Lacks the ability to sort and filter tasks to focus on relevant contacts.\"\n  ]\n}",
+  "json": {
+    "task": "Manage the sales funnel, opportunities, calls, and emails.",
+    "benefits": [
+      "Provides an intuitive deal flow for moving opportunities across the sales cycle.",
+      "Offers integrated dialing with call logging and optional recording.",
+      "Allows email integration to log all incoming and outgoing emails."
+    ],
+    "frictions": [
+      "Lacks robust reporting.",
+      "Lacks the ability to sort and filter tasks to focus on relevant contacts."
+    ]
+  },
+  "ts": "2026-10-18T10:00:20.859017+00:00"
+}

@@ -1,0 +1,30 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0aef3966affaead23636d87eb453c27aa14f40739f310d10d158171a058aa0ff",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 314,
+  "output_tokens": 491,
+  "cost_usd": 0.0013217,
+  "elapsed_s": 2.8,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage and share passwords centrally within an organization\",\n  \"benefits\": [\n    \"Easily import passwords\",\n    \"Provides an excellent user experience and helpful browser extension\",\n    \"Offers centralized password management with a zero-trust framework and Collections feature\",\n    \"Allows secure password sharing without revealing actual passwords\"\n  ],\n  \"frictions\": [\n    \"Frequent master password prompts\",\n    \"Help articles are sometimes hard to find\"\n  ]\n}",
+  "json": {
+    "task": "Manage and share passwords centrally within an organization",
+    "benefits": [
+      "Easily import passwords",
+      "Provides an excellent user experience and helpful browser extension",
+      "Offers centralized password management with a zero-trust framework and Collections feature",
+      "Allows secure password sharing without revealing actual passwords"
+    ],
+    "frictions": [
+      "Frequent master password prompts",
+      "Help articles are sometimes hard to find"
+    ]
+  },
+  "ts": "2026-10-18T10:16:00.290299+00:00"
+}

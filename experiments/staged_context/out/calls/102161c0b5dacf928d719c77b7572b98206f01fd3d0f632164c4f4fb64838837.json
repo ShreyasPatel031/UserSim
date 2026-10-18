@@ -1,0 +1,25 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "102161c0b5dacf928d719c77b7572b98206f01fd3d0f632164c4f4fb64838837",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 125,
+  "output_tokens": 428,
+  "cost_usd": 0.0011075,
+  "elapsed_s": 2.85,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage CRM for a small business\",\n  \"benefits\": [\n    \"Easy to use and manage\",\n    \"Suitable for small businesses\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Manage CRM for a small business",
+    "benefits": [
+      "Easy to use and manage",
+      "Suitable for small businesses"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T10:00:25.916418+00:00"
+}

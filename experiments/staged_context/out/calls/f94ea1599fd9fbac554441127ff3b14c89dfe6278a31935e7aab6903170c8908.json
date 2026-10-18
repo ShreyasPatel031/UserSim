@@ -1,0 +1,29 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f94ea1599fd9fbac554441127ff3b14c89dfe6278a31935e7aab6903170c8908",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 229,
+  "output_tokens": 513,
+  "cost_usd": 0.0013512,
+  "elapsed_s": 3.18,
+  "error": null,
+  "text": "{\n  \"task\": \"Store passwords securely, generate passphrases, and autofill websites.\",\n  \"benefits\": [\n    \"Easy to use\",\n    \"Generates passphrases\",\n    \"Autofills websites\"\n  ],\n  \"frictions\": [\n    \"Requires locking extension to update team/group passwords\",\n    \"Initial setup was not easy\"\n  ]\n}",
+  "json": {
+    "task": "Store passwords securely, generate passphrases, and autofill websites.",
+    "benefits": [
+      "Easy to use",
+      "Generates passphrases",
+      "Autofills websites"
+    ],
+    "frictions": [
+      "Requires locking extension to update team/group passwords",
+      "Initial setup was not easy"
+    ]
+  },
+  "ts": "2026-10-18T10:15:58.122446+00:00"
+}

@@ -1,0 +1,28 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "14ad96894525115bddc9a281d06c2c12203d6d7c3d5a8adc667d54e41a464c29",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 133,
+  "output_tokens": 395,
+  "cost_usd": 0.0010274000000000001,
+  "elapsed_s": 2.67,
+  "error": null,
+  "text": "{\n  \"task\": \"Use Klaviyo as an email platform on Shopify.\",\n  \"benefits\": [\n    \"great integration\",\n    \"good software\",\n    \"good features\"\n  ],\n  \"frictions\": [\n    \"expensive subscription\"\n  ]\n}",
+  "json": {
+    "task": "Use Klaviyo as an email platform on Shopify.",
+    "benefits": [
+      "great integration",
+      "good software",
+      "good features"
+    ],
+    "frictions": [
+      "expensive subscription"
+    ]
+  },
+  "ts": "2026-10-18T10:00:46.787777+00:00"
+}

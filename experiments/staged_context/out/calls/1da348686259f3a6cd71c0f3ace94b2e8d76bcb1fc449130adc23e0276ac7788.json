@@ -1,0 +1,28 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1da348686259f3a6cd71c0f3ace94b2e8d76bcb1fc449130adc23e0276ac7788",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 186,
+  "output_tokens": 449,
+  "cost_usd": 0.0011783,
+  "elapsed_s": 5.9,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage customer relationships\",\n  \"benefits\": [\n    \"Is intuitive to use\",\n    \"Is easy to learn\",\n    \"Helps beginners understand CRM software\"\n  ],\n  \"frictions\": [\n    \"Lacks advanced features for experienced users\"\n  ]\n}",
+  "json": {
+    "task": "Manage customer relationships",
+    "benefits": [
+      "Is intuitive to use",
+      "Is easy to learn",
+      "Helps beginners understand CRM software"
+    ],
+    "frictions": [
+      "Lacks advanced features for experienced users"
+    ]
+  },
+  "ts": "2026-10-18T10:00:21.108684+00:00"
+}

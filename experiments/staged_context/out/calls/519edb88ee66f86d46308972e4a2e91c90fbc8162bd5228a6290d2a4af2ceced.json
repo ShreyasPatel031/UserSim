@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "519edb88ee66f86d46308972e4a2e91c90fbc8162bd5228a6290d2a4af2ceced",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 264,
+  "output_tokens": 511,
+  "cost_usd": 0.0013567,
+  "elapsed_s": 2.86,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage customer support tickets, automate workflows, and deliver customer service.\",\n  \"benefits\": [\n    \"Offers an intuitive, all-in-one customer support platform.\",\n    \"Helps teams manage tickets efficiently.\",\n    \"Automates workflows.\",\n    \"Delivers faster, more consistent customer service.\"\n  ],\n  \"frictions\": [\n    \"Can become costly as teams grow due to advanced features being on higher-tier plans.\",\n    \"Occasional bugs/issues appear when new features are added.\"\n  ]\n}",
+  "json": {
+    "task": "Manage customer support tickets, automate workflows, and deliver customer service.",
+    "benefits": [
+      "Offers an intuitive, all-in-one customer support platform.",
+      "Helps teams manage tickets efficiently.",
+      "Automates workflows.",
+      "Delivers faster, more consistent customer service."
+    ],
+    "frictions": [
+      "Can become costly as teams grow due to advanced features being on higher-tier plans.",
+      "Occasional bugs/issues appear when new features are added."
+    ]
+  },
+  "ts": "2026-10-18T10:01:01.717218+00:00"
+}

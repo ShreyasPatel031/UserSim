@@ -1,0 +1,30 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4af5650710c5fd4f5efc1edeea5ffefaf69738338f1813ab135ab37773afd2ce",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 496,
+  "output_tokens": 563,
+  "cost_usd": 0.0015563,
+  "elapsed_s": 3.38,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage and share secure passwords and secrets.\",\n  \"benefits\": [\n    \"Easy to use across browser, desktop, and mobile apps\",\n    \"Fast syncing between devices\",\n    \"Free for personal use\",\n    \"Supports Touch ID unlock on Mac\"\n  ],\n  \"frictions\": [\n    \"Limited profile avatar options (image/color)\",\n    \"Limited 2FA features in the free version\"\n  ]\n}",
+  "json": {
+    "task": "Manage and share secure passwords and secrets.",
+    "benefits": [
+      "Easy to use across browser, desktop, and mobile apps",
+      "Fast syncing between devices",
+      "Free for personal use",
+      "Supports Touch ID unlock on Mac"
+    ],
+    "frictions": [
+      "Limited profile avatar options (image/color)",
+      "Limited 2FA features in the free version"
+    ]
+  },
+  "ts": "2026-10-18T10:15:59.217651+00:00"
+}

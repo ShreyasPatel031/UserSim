@@ -1,0 +1,28 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ea2eca16af53a1c84a2b88a563c378093c5349d9b9abd18e6aa26d1e92005936",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 148,
+  "output_tokens": 474,
+  "cost_usd": 0.0012293999999999999,
+  "elapsed_s": 2.93,
+  "error": null,
+  "text": "{\n  \"task\": \"Use the platform to create automations to increase sales.\",\n  \"benefits\": [\n    \"Native integration with Shopify.\",\n    \"Numerous automation flows available.\"\n  ],\n  \"frictions\": [\n    \"High cost.\",\n    \"Lack of intuitiveness compared to other email platforms.\"\n  ]\n}",
+  "json": {
+    "task": "Use the platform to create automations to increase sales.",
+    "benefits": [
+      "Native integration with Shopify.",
+      "Numerous automation flows available."
+    ],
+    "frictions": [
+      "High cost.",
+      "Lack of intuitiveness compared to other email platforms."
+    ]
+  },
+  "ts": "2026-10-18T10:00:46.502873+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "6c284d7c115cedc52063c5c21d1446ce2cd371c7d4e3ec70b93f5bb2c7f832e5",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2956,
+  "output_tokens": 950,
+  "cost_usd": 0.0032617999999999996,
+  "elapsed_s": 5.28,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8.2,\n  \"pros\": [\n    \"Significantly simplified project management processes.\",\n    \"Improved team collaboration and project visibility.\",\n    \"Reliable performance with no crashes or data loss.\"\n  ],\n  \"cons\": [\n    \"Experienced a noticeable learning curve at the beginning.\",\n    \"Copy/paste functionality could be more robust.\",\n    \"Desired more advanced customization options for specific workflows.\"\n  ],\n  \"overall_experience\": \"The CEO found Smartsheet to be a significant upgrade from Excel for managing construction projects and team workflows. While there was an initial learning curve, the platform ultimately delivered simplified project management and enhanced collaboration. They appreciated its reliability and the ability to gain better visibility into ongoing operations, despite wishing for more refined customization and copy/paste functions.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8.2,
+    "pros": [
+      "Significantly simplified project management processes.",
+      "Improved team collaboration and project visibility.",
+      "Reliable performance with no crashes or data loss."
+    ],
+    "cons": [
+      "Experienced a noticeable learning curve at the beginning.",
+      "Copy/paste functionality could be more robust.",
+      "Desired more advanced customization options for specific workflows."
+    ],
+    "overall_experience": "The CEO found Smartsheet to be a significant upgrade from Excel for managing construction projects and team workflows. While there was an initial learning curve, the platform ultimately delivered simplified project management and enhanced collaboration. They appreciated its reliability and the ability to gain better visibility into ongoing operations, despite wishing for more refined customization and copy/paste functions."
+  },
+  "ts": "2026-10-18T10:03:55.320435+00:00"
+}

@@ -1,0 +1,30 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "59efd582711d774597b04c439ad94eb425a18a39cc1ee8c24bbb97bf5dc4f9eb",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 290,
+  "output_tokens": 531,
+  "cost_usd": 0.0014145000000000002,
+  "elapsed_s": 3.27,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage passwords for client projects with multiple employees and control user access\",\n  \"benefits\": [\n    \"Set up folders for different types of passwords and multiple clients\",\n    \"Set users as admins or standard users to control access to sensitive passwords\",\n    \"Cloud subscription is wonderful\",\n    \"Easy setup and migration from self-hosted to cloud by importing passwords\"\n  ],\n  \"frictions\": [\n    \"Self-hosted feature did not work well\",\n    \"Passwords from self-hosted system did not appear in browser extension\"\n  ]\n}",
+  "json": {
+    "task": "Manage passwords for client projects with multiple employees and control user access",
+    "benefits": [
+      "Set up folders for different types of passwords and multiple clients",
+      "Set users as admins or standard users to control access to sensitive passwords",
+      "Cloud subscription is wonderful",
+      "Easy setup and migration from self-hosted to cloud by importing passwords"
+    ],
+    "frictions": [
+      "Self-hosted feature did not work well",
+      "Passwords from self-hosted system did not appear in browser extension"
+    ]
+  },
+  "ts": "2026-10-18T10:15:59.126785+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "bc1ac890ea27aaaa9a5089d00461932dba86edad207f6db92b416c5c9a46cdf5",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2626,
+  "output_tokens": 1129,
+  "cost_usd": 0.0036103,
+  "elapsed_s": 6.46,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Intuitive deal flow for managing opportunities through the sales cycle\",\n    \"Overall ease of use and ability to improve sales effectiveness\",\n    \"Offers extensive features, even at the free level, for a small team\"\n  ],\n  \"cons\": [\n    \"Reporting features are not robust enough for in-depth analysis\",\n    \"Lacks automatic reminders for critical follow-ups and tasks\",\n    \"Customer service has historically been a point of frustration\"\n  ],\n  \"overall_experience\": \"This sales manager likely found Freshsales to be a user-friendly platform that effectively supports their core task of managing sales campaigns and deals, particularly appreciating its intuitive deal flow. However, the experience was tempered by frustrations regarding the lack of robust reporting features and the absence of automatic reminders, which are crucial for a manager. The historically poor customer support also likely impacted their overall satisfaction despite the platform's general ease of use.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Intuitive deal flow for managing opportunities through the sales cycle",
+      "Overall ease of use and ability to improve sales effectiveness",
+      "Offers extensive features, even at the free level, for a small team"
+    ],
+    "cons": [
+      "Reporting features are not robust enough for in-depth analysis",
+      "Lacks automatic reminders for critical follow-ups and tasks",
+      "Customer service has historically been a point of frustration"
+    ],
+    "overall_experience": "This sales manager likely found Freshsales to be a user-friendly platform that effectively supports their core task of managing sales campaigns and deals, particularly appreciating its intuitive deal flow. However, the experience was tempered by frustrations regarding the lack of robust reporting features and the absence of automatic reminders, which are crucial for a manager. The historically poor customer support also likely impacted their overall satisfaction despite the platform's general ease of use."
+  },
+  "ts": "2026-10-18T10:01:13.139853+00:00"
+}

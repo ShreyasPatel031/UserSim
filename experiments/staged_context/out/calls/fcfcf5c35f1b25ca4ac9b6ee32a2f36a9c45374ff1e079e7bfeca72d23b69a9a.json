@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "fcfcf5c35f1b25ca4ac9b6ee32a2f36a9c45374ff1e079e7bfeca72d23b69a9a",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2584,
+  "output_tokens": 1132,
+  "cost_usd": 0.0036052000000000002,
+  "elapsed_s": 5.92,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"The user-friendly interface makes daily operations management straightforward.\",\n    \"Customization options allow the system to adapt to specific business needs.\",\n    \"Effective for organizing and automating CRM and workflow management tasks.\"\n  ],\n  \"cons\": [\n    \"Reporting tools can lack the comprehensiveness required for detailed analysis.\",\n    \"The user interface can occasionally feel overwhelming.\",\n    \"Struggles to adapt if the sales pipeline doesn't perfectly match Zoho's model.\"\n  ],\n  \"overall_experience\": \"As a Senior Overseer and Operations Manager, this individual likely found Zoho CRM to be a capable tool for managing their self-employed entertainment business. The platform's ease of use and customization were beneficial for streamlining operations. However, some limitations in reporting and a potentially overwhelming interface may have slightly impacted the overall experience, leading to a generally positive but not perfect impression.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "The user-friendly interface makes daily operations management straightforward.",
+      "Customization options allow the system to adapt to specific business needs.",
+      "Effective for organizing and automating CRM and workflow management tasks."
+    ],
+    "cons": [
+      "Reporting tools can lack the comprehensiveness required for detailed analysis.",
+      "The user interface can occasionally feel overwhelming.",
+      "Struggles to adapt if the sales pipeline doesn't perfectly match Zoho's model."
+    ],
+    "overall_experience": "As a Senior Overseer and Operations Manager, this individual likely found Zoho CRM to be a capable tool for managing their self-employed entertainment business. The platform's ease of use and customization were beneficial for streamlining operations. However, some limitations in reporting and a potentially overwhelming interface may have slightly impacted the overall experience, leading to a generally positive but not perfect impression."
+  },
+  "ts": "2026-10-18T10:01:28.276244+00:00"
+}

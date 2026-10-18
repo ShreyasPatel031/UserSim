@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "deb1d1cce8fe24de260f9823633d1ad1268b938a27beff888bc2661eda00b641",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2805,
+  "output_tokens": 1067,
+  "cost_usd": 0.003509,
+  "elapsed_s": 5.61,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Simplified project management for daily tasks and ad sales tracking.\",\n    \"Enabled effective work by providing clear visibility into projects.\",\n    \"Facilitated better collaboration and task assignment across teams.\"\n  ],\n  \"cons\": [\n    \"Limitations in customization options for complex workflows.\",\n    \"Inability to edit multiple lines simultaneously, slowing down some tasks.\",\n    \"Potential for a learning curve when setting up advanced features.\"\n  ],\n  \"overall_experience\": \"This System Administrator likely found Smartsheet to be a highly effective tool for managing projects and tracking ad sales within their large IT organization. They appreciated its ability to simplify project management and enable efficient work, leading to improved task visibility and team collaboration. While generally positive, the reviewer may have noted some frustrations with limited customization and the inability to perform bulk edits.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Simplified project management for daily tasks and ad sales tracking.",
+      "Enabled effective work by providing clear visibility into projects.",
+      "Facilitated better collaboration and task assignment across teams."
+    ],
+    "cons": [
+      "Limitations in customization options for complex workflows.",
+      "Inability to edit multiple lines simultaneously, slowing down some tasks.",
+      "Potential for a learning curve when setting up advanced features."
+    ],
+    "overall_experience": "This System Administrator likely found Smartsheet to be a highly effective tool for managing projects and tracking ad sales within their large IT organization. They appreciated its ability to simplify project management and enable efficient work, leading to improved task visibility and team collaboration. While generally positive, the reviewer may have noted some frustrations with limited customization and the inability to perform bulk edits."
+  },
+  "ts": "2026-10-18T10:03:40.229531+00:00"
+}

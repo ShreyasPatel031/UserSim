@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f98020977c038cc1b82adf4e34cfa7e9c6a5680b8c966e8032eaa56117cc6330",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 151,
+  "output_tokens": 469,
+  "cost_usd": 0.0012178,
+  "elapsed_s": 2.96,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage customer relationships and convert leads\",\n  \"benefits\": [\n    \"AI sales assistant provides personalized tips\",\n    \"Helps convert leads better\",\n    \"Simplifies customer relationship management\"\n  ],\n  \"frictions\": [\n    \"Reporting tools lack comprehensiveness\",\n    \"Reporting tools lack depth for specific analyses\"\n  ]\n}",
+  "json": {
+    "task": "Manage customer relationships and convert leads",
+    "benefits": [
+      "AI sales assistant provides personalized tips",
+      "Helps convert leads better",
+      "Simplifies customer relationship management"
+    ],
+    "frictions": [
+      "Reporting tools lack comprehensiveness",
+      "Reporting tools lack depth for specific analyses"
+    ]
+  },
+  "ts": "2026-10-18T10:00:25.940343+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "15d44a660f2e1dc64c4ce6dcdaba51a11a6228b7fc575dac2d1222cdafedba60",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2565,
+  "output_tokens": 974,
+  "cost_usd": 0.0032045,
+  "elapsed_s": 5.66,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 2,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 5,\n  \"pros\": [\n    \"Offers advanced email marketing features for their e-commerce business\",\n    \"Provides robust automation capabilities\",\n    \"Easy to navigate once setup is complete\"\n  ],\n  \"cons\": [\n    \"Found the initial setup process to be difficult and complex\",\n    \"Perceived the pricing to be very expensive for a small business\",\n    \"Experienced a steep learning curve compared to previous tools\"\n  ],\n  \"overall_experience\": \"This owner, new to Klaviyo, found the platform offered powerful and advanced email marketing capabilities, a significant upgrade from their previous tool. However, the initial setup proved challenging and the learning curve was steep. They likely found the cost to be a significant drawback for their small business, impacting the overall value perception despite the strong features.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 3,
+    "value_for_money_rating": 2,
+    "customer_support_rating": 3,
+    "recommendation_score": 5,
+    "pros": [
+      "Offers advanced email marketing features for their e-commerce business",
+      "Provides robust automation capabilities",
+      "Easy to navigate once setup is complete"
+    ],
+    "cons": [
+      "Found the initial setup process to be difficult and complex",
+      "Perceived the pricing to be very expensive for a small business",
+      "Experienced a steep learning curve compared to previous tools"
+    ],
+    "overall_experience": "This owner, new to Klaviyo, found the platform offered powerful and advanced email marketing capabilities, a significant upgrade from their previous tool. However, the initial setup proved challenging and the learning curve was steep. They likely found the cost to be a significant drawback for their small business, impacting the overall value perception despite the strong features."
+  },
+  "ts": "2026-10-18T10:03:02.973066+00:00"
+}

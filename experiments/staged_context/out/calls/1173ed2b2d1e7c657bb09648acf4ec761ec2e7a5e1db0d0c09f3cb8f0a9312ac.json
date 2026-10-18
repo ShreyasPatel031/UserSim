@@ -1,0 +1,29 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1173ed2b2d1e7c657bb09648acf4ec761ec2e7a5e1db0d0c09f3cb8f0a9312ac",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 296,
+  "output_tokens": 486,
+  "cost_usd": 0.0013038,
+  "elapsed_s": 2.83,
+  "error": null,
+  "text": "{\n  \"task\": \"Generate, store, and share passwords and sensitive information securely\",\n  \"benefits\": [\n    \"Customizable and strong password generation\",\n    \"Cross-platform accessibility across various devices and operating systems\",\n    \"Self-hosting option for complete data control\",\n    \"Secure password sharing with team members or collaborators\"\n  ],\n  \"frictions\": [\n    \"Mobile Application UI\"\n  ]\n}",
+  "json": {
+    "task": "Generate, store, and share passwords and sensitive information securely",
+    "benefits": [
+      "Customizable and strong password generation",
+      "Cross-platform accessibility across various devices and operating systems",
+      "Self-hosting option for complete data control",
+      "Secure password sharing with team members or collaborators"
+    ],
+    "frictions": [
+      "Mobile Application UI"
+    ]
+  },
+  "ts": "2026-10-18T10:15:58.097602+00:00"
+}

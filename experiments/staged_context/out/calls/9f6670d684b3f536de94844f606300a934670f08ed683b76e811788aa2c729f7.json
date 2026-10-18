@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9f6670d684b3f536de94844f606300a934670f08ed683b76e811788aa2c729f7",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2550,
+  "output_tokens": 1030,
+  "cost_usd": 0.00334,
+  "elapsed_s": 5.71,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Advanced email marketing capabilities for e-commerce\",\n    \"Robust customer segmentation options\",\n    \"Effective for managing email marketing flows\"\n  ],\n  \"cons\": [\n    \"High cost, especially as the business grows\",\n    \"Steep learning curve or initial setup difficulty\",\n    \"Lack of template variety compared to previous tools\"\n  ],\n  \"overall_experience\": \"This Founder likely values Klaviyo's advanced e-commerce features and strong segmentation capabilities, which were a significant upgrade from their previous solution. While the platform was initially challenging to set up and is quite expensive, its powerful functionality and ease of navigation for daily tasks have proven beneficial over two years of use. The cost remains a notable concern, impacting the perceived value for money.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Advanced email marketing capabilities for e-commerce",
+      "Robust customer segmentation options",
+      "Effective for managing email marketing flows"
+    ],
+    "cons": [
+      "High cost, especially as the business grows",
+      "Steep learning curve or initial setup difficulty",
+      "Lack of template variety compared to previous tools"
+    ],
+    "overall_experience": "This Founder likely values Klaviyo's advanced e-commerce features and strong segmentation capabilities, which were a significant upgrade from their previous solution. While the platform was initially challenging to set up and is quite expensive, its powerful functionality and ease of navigation for daily tasks have proven beneficial over two years of use. The cost remains a notable concern, impacting the perceived value for money."
+  },
+  "ts": "2026-10-18T10:03:09.211290+00:00"
+}

@@ -1,0 +1,28 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0d5a1b534127e81ad8f65ccc76a68cd14fa6302f1e84775ed295668256405c9f",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 214,
+  "output_tokens": 444,
+  "cost_usd": 0.0011742,
+  "elapsed_s": 3.26,
+  "error": null,
+  "text": "{\n  \"task\": \"Run an e-commerce business\",\n  \"benefits\": [\n    \"easy to navigate layout\",\n    \"helpful support team\",\n    \"effective payment timing and capturing\"\n  ],\n  \"frictions\": [\n    \"limited design options\"\n  ]\n}",
+  "json": {
+    "task": "Run an e-commerce business",
+    "benefits": [
+      "easy to navigate layout",
+      "helpful support team",
+      "effective payment timing and capturing"
+    ],
+    "frictions": [
+      "limited design options"
+    ]
+  },
+  "ts": "2026-10-18T10:00:51.378791+00:00"
+}

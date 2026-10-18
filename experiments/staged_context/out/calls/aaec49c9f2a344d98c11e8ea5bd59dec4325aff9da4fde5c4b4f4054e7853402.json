@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "aaec49c9f2a344d98c11e8ea5bd59dec4325aff9da4fde5c4b4f4054e7853402",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2498,
+  "output_tokens": 1023,
+  "cost_usd": 0.0033068999999999998,
+  "elapsed_s": 5.59,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"The platform is intuitive and easy to use.\",\n    \"All necessary sales information is available in one platform.\",\n    \"It provides an intuitive deal flow for managing opportunities.\"\n  ],\n  \"cons\": [\n    \"Certain advanced functions or 'nice-to-have' features are lacking.\",\n    \"Reporting capabilities could be more robust.\",\n    \"Automatic reminders are missing.\"\n  ],\n  \"overall_experience\": \"The Help Desk Manager found Freshsales to be a highly intuitive and user-friendly platform, simplifying sales process management within their small IT services company. They appreciated having all essential sales data consolidated in one place. However, the reviewer noted that while effective, the platform could benefit from more advanced functionalities and more robust reporting features to fully meet their evolving needs, and also mentioned the absence of automatic reminders.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "The platform is intuitive and easy to use.",
+      "All necessary sales information is available in one platform.",
+      "It provides an intuitive deal flow for managing opportunities."
+    ],
+    "cons": [
+      "Certain advanced functions or 'nice-to-have' features are lacking.",
+      "Reporting capabilities could be more robust.",
+      "Automatic reminders are missing."
+    ],
+    "overall_experience": "The Help Desk Manager found Freshsales to be a highly intuitive and user-friendly platform, simplifying sales process management within their small IT services company. They appreciated having all essential sales data consolidated in one place. However, the reviewer noted that while effective, the platform could benefit from more advanced functionalities and more robust reporting features to fully meet their evolving needs, and also mentioned the absence of automatic reminders."
+  },
+  "ts": "2026-10-18T10:01:14.969548+00:00"
+}

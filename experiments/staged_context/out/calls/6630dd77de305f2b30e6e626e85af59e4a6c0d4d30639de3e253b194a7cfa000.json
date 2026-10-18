@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "6630dd77de305f2b30e6e626e85af59e4a6c0d4d30639de3e253b194a7cfa000",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2751,
+  "output_tokens": 1025,
+  "cost_usd": 0.0033878,
+  "elapsed_s": 5.97,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"User-friendly interface for managing leads\",\n    \"Good organization and customization options\",\n    \"AI sales assistant provides personalized tips\"\n  ],\n  \"cons\": [\n    \"Interface can be overwhelming for beginners\",\n    \"Reporting tools lack comprehensiveness\",\n    \"Struggled to adapt to their specific sales pipeline\"\n  ],\n  \"overall_experience\": \"The CEO, using a free trial for a small Internet company, found Zoho CRM generally capable for managing leads, appreciating its user-friendly interface and customization. However, they felt the system could be overwhelming and rigid, particularly in adapting to their unique sales process. The reporting tools also left something to be desired, impacting the overall value perceived from the trial.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "User-friendly interface for managing leads",
+      "Good organization and customization options",
+      "AI sales assistant provides personalized tips"
+    ],
+    "cons": [
+      "Interface can be overwhelming for beginners",
+      "Reporting tools lack comprehensiveness",
+      "Struggled to adapt to their specific sales pipeline"
+    ],
+    "overall_experience": "The CEO, using a free trial for a small Internet company, found Zoho CRM generally capable for managing leads, appreciating its user-friendly interface and customization. However, they felt the system could be overwhelming and rigid, particularly in adapting to their unique sales process. The reporting tools also left something to be desired, impacting the overall value perceived from the trial."
+  },
+  "ts": "2026-10-18T10:01:40.895554+00:00"
+}

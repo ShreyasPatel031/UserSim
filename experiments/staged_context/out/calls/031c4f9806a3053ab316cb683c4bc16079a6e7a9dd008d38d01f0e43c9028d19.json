@@ -1,0 +1,36 @@
+{
+  "stage": "hm_plist",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "031c4f9806a3053ab316cb683c4bc16079a6e7a9dd008d38d01f0e43c9028d19",
+  "temperature": 0.7,
+  "seed": 44,
+  "max_tokens": 4096,
+  "thinking_budget": 1024,
+  "input_tokens": 435,
+  "output_tokens": 901,
+  "cost_usd": 0.002383,
+  "elapsed_s": 8.94,
+  "error": null,
+  "text": "{\n  \"pros\": [\n    \"Generous free tier with essential features\",\n    \"Open-source and strong security posture\",\n    \"Cross-platform availability and browser integration\",\n    \"Easy and quick creation of basic login/note entries\",\n    \"Option for self-hosting for ultimate data control\",\n    \"Comprehensive item types including SSH keys and secure notes\"\n  ],\n  \"cons\": [\n    \"UI/UX can feel less polished or intuitive than competitors\",\n    \"Separation of personal vault and organization admin console\",\n    \"Limited free organization features (e.g., 2 users, 2 collections)\",\n    \"Custom fields and advanced options can be less discoverable\",\n    \"Occasional autofill inconsistencies in browser extensions\",\n    \"Steeper learning curve for advanced organization sharing\"\n  ],\n  \"overall_rating\": 4.5\n}",
+  "json": {
+    "pros": [
+      "Generous free tier with essential features",
+      "Open-source and strong security posture",
+      "Cross-platform availability and browser integration",
+      "Easy and quick creation of basic login/note entries",
+      "Option for self-hosting for ultimate data control",
+      "Comprehensive item types including SSH keys and secure notes"
+    ],
+    "cons": [
+      "UI/UX can feel less polished or intuitive than competitors",
+      "Separation of personal vault and organization admin console",
+      "Limited free organization features (e.g., 2 users, 2 collections)",
+      "Custom fields and advanced options can be less discoverable",
+      "Occasional autofill inconsistencies in browser extensions",
+      "Steeper learning curve for advanced organization sharing"
+    ],
+    "overall_rating": 4.5
+  },
+  "ts": "2026-10-18T10:17:33.480668+00:00"
+}

@@ -1,0 +1,31 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7b34deead258723f2720eebe7b88561537702898f1e1ec3aecd952fe00c1f633",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 272,
+  "output_tokens": 483,
+  "cost_usd": 0.0012891,
+  "elapsed_s": 3.22,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage passwords securely and efficiently across multiple devices.\",\n  \"benefits\": [\n    \"Clean and soft user interface\",\n    \"Fast and seamless experience\",\n    \"Consistent experience across all devices\",\n    \"Easy initial setup\"\n  ],\n  \"frictions\": [\n    \"Receiving emails about new features\",\n    \"Presence of modal screens in the app\",\n    \"Lack of in-app checkbox for managing new terms notifications\"\n  ]\n}",
+  "json": {
+    "task": "Manage passwords securely and efficiently across multiple devices.",
+    "benefits": [
+      "Clean and soft user interface",
+      "Fast and seamless experience",
+      "Consistent experience across all devices",
+      "Easy initial setup"
+    ],
+    "frictions": [
+      "Receiving emails about new features",
+      "Presence of modal screens in the app",
+      "Lack of in-app checkbox for managing new terms notifications"
+    ]
+  },
+  "ts": "2026-10-18T10:15:55.488612+00:00"
+}

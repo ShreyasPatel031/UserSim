@@ -1,0 +1,24 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ffffd4d1aa0b6ae2abad1670f413c12bc7a3af79de471e6e1bb068f8300fae2e",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 125,
+  "output_tokens": 378,
+  "cost_usd": 0.0009825,
+  "elapsed_s": 2.76,
+  "error": null,
+  "text": "{\n  \"task\": null,\n  \"benefits\": [\n    \"The app is very practical to use\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": null,
+    "benefits": [
+      "The app is very practical to use"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T10:01:01.686501+00:00"
+}

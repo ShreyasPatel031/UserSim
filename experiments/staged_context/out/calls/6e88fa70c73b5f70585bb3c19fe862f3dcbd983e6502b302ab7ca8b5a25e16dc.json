@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "6e88fa70c73b5f70585bb3c19fe862f3dcbd983e6502b302ab7ca8b5a25e16dc",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 294,
+  "output_tokens": 490,
+  "cost_usd": 0.0013132,
+  "elapsed_s": 2.88,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage email lists, create email content, and analyze marketing performance.\",\n  \"benefits\": [\n    \"Intuitive for email list management and content creation\",\n    \"Provides helpful analytics and suggestions for improvement\",\n    \"Integrates easily with Shopify\",\n    \"Helpful live trainings and responsive support team\"\n  ],\n  \"frictions\": [\n    \"Difficulty tracking email origin (flows vs. Shopify) after initial integration\",\n    \"Training information is hard to implement for companies not introducing new products often or with high-cost products\"\n  ]\n}",
+  "json": {
+    "task": "Manage email lists, create email content, and analyze marketing performance.",
+    "benefits": [
+      "Intuitive for email list management and content creation",
+      "Provides helpful analytics and suggestions for improvement",
+      "Integrates easily with Shopify",
+      "Helpful live trainings and responsive support team"
+    ],
+    "frictions": [
+      "Difficulty tracking email origin (flows vs. Shopify) after initial integration",
+      "Training information is hard to implement for companies not introducing new products often or with high-cost products"
+    ]
+  },
+  "ts": "2026-10-18T10:00:46.072641+00:00"
+}

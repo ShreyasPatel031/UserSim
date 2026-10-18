@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1fc0a8e6f86e9071415340b3dfc99309c2169e58ec49474164ea3e9606d127a2",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 178,
+  "output_tokens": 492,
+  "cost_usd": 0.0012834,
+  "elapsed_s": 3.11,
+  "error": null,
+  "text": "{\n  \"task\": \"Track customer queries.\",\n  \"benefits\": [\n    \"Make the process more efficient\",\n    \"Make the process more reliable\",\n    \"Easy to onboard\",\n    \"Affordable pricing\"\n  ],\n  \"frictions\": [\n    \"Customizations are very limited\",\n    \"Personalizations are very limited\"\n  ]\n}",
+  "json": {
+    "task": "Track customer queries.",
+    "benefits": [
+      "Make the process more efficient",
+      "Make the process more reliable",
+      "Easy to onboard",
+      "Affordable pricing"
+    ],
+    "frictions": [
+      "Customizations are very limited",
+      "Personalizations are very limited"
+    ]
+  },
+  "ts": "2026-10-18T10:01:02.402092+00:00"
+}

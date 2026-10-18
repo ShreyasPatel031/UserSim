@@ -1,0 +1,28 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "37d61e35357dd2dd573db0a811460dc5b36d4f1c88534e90653ce77a4ba0aaf1",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 132,
+  "output_tokens": 397,
+  "cost_usd": 0.0010321,
+  "elapsed_s": 2.32,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage support tickets\",\n  \"benefits\": [\n    \"Makes customer support system easier\",\n    \"Makes customer support system professional\"\n  ],\n  \"frictions\": [\n    \"Requires time to understand\",\n    \"Could be more user-friendly\"\n  ]\n}",
+  "json": {
+    "task": "Manage support tickets",
+    "benefits": [
+      "Makes customer support system easier",
+      "Makes customer support system professional"
+    ],
+    "frictions": [
+      "Requires time to understand",
+      "Could be more user-friendly"
+    ]
+  },
+  "ts": "2026-10-18T10:01:01.909762+00:00"
+}

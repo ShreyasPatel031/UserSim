@@ -1,0 +1,29 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "50253f81fc099ae16cf2c3b0cc6fa07da0c95d76c83afe81cf8615d618e2186c",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 232,
+  "output_tokens": 505,
+  "cost_usd": 0.0013321000000000001,
+  "elapsed_s": 3.01,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage and secure passwords and secrets across different platforms.\",\n  \"benefits\": [\n    \"easy to use\",\n    \"valuable extension and integration features\",\n    \"convenient management of passwords and secrets across different platforms\",\n    \"easy initial setup\"\n  ],\n  \"frictions\": [\n    \"lacks automatic injection of 2FA or one-time codes\"\n  ]\n}",
+  "json": {
+    "task": "Manage and secure passwords and secrets across different platforms.",
+    "benefits": [
+      "easy to use",
+      "valuable extension and integration features",
+      "convenient management of passwords and secrets across different platforms",
+      "easy initial setup"
+    ],
+    "frictions": [
+      "lacks automatic injection of 2FA or one-time codes"
+    ]
+  },
+  "ts": "2026-10-18T10:16:00.412688+00:00"
+}

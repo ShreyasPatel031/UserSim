@@ -1,0 +1,32 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b619bf718950aaf286fafb2fd45055c5422917a2d43579ee9d23ee98d14f1bb4",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 485,
+  "output_tokens": 537,
+  "cost_usd": 0.0014880000000000002,
+  "elapsed_s": 4.41,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage an online store\",\n  \"benefits\": [\n    \"Excellent customer support\",\n    \"Handles PCI compliance\",\n    \"Consistent site functionality\",\n    \"Simple product, category, and landing page management\"\n  ],\n  \"frictions\": [\n    \"Some tasks take a long time to complete\",\n    \"301 redirects are difficult to manage\",\n    \"Product page load times can exceed 1000ms\",\n    \"Mobile PageSpeed is slower than average\"\n  ]\n}",
+  "json": {
+    "task": "Manage an online store",
+    "benefits": [
+      "Excellent customer support",
+      "Handles PCI compliance",
+      "Consistent site functionality",
+      "Simple product, category, and landing page management"
+    ],
+    "frictions": [
+      "Some tasks take a long time to complete",
+      "301 redirects are difficult to manage",
+      "Product page load times can exceed 1000ms",
+      "Mobile PageSpeed is slower than average"
+    ]
+  },
+  "ts": "2026-10-18T10:00:52.655229+00:00"
+}

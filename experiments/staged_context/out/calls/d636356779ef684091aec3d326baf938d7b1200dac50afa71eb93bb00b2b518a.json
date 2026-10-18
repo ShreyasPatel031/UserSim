@@ -1,0 +1,28 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d636356779ef684091aec3d326baf938d7b1200dac50afa71eb93bb00b2b518a",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 177,
+  "output_tokens": 490,
+  "cost_usd": 0.0012781,
+  "elapsed_s": 3.81,
+  "error": null,
+  "text": "{\n  \"task\": \"Send emails to a large audience\",\n  \"benefits\": [\n    \"Has many built-in features\",\n    \"Enables sending emails to a large audience\",\n    \"Is understandable even for non-experts\"\n  ],\n  \"frictions\": [\n    \"Terms used for different software areas are confusing and sound similar\"\n  ]\n}",
+  "json": {
+    "task": "Send emails to a large audience",
+    "benefits": [
+      "Has many built-in features",
+      "Enables sending emails to a large audience",
+      "Is understandable even for non-experts"
+    ],
+    "frictions": [
+      "Terms used for different software areas are confusing and sound similar"
+    ]
+  },
+  "ts": "2026-10-18T10:00:47.583655+00:00"
+}

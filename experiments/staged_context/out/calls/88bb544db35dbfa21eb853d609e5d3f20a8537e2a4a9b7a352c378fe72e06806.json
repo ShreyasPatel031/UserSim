@@ -1,0 +1,30 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "88bb544db35dbfa21eb853d609e5d3f20a8537e2a4a9b7a352c378fe72e06806",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 199,
+  "output_tokens": 506,
+  "cost_usd": 0.0013247,
+  "elapsed_s": 3.21,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage company passwords, integrate with Azure for group management, and maintain individual corporate credentials\",\n  \"benefits\": [\n    \"Support service responds very quickly\",\n    \"Incorporates improvements over time\",\n    \"Integrated Send service is very useful\",\n    \"Smooth with an acceptable load of passwords in the database\"\n  ],\n  \"frictions\": [\n    \"Managing nested collections is tedious\",\n    \"Becomes cumbersome when organizing multiple levels\"\n  ]\n}",
+  "json": {
+    "task": "Manage company passwords, integrate with Azure for group management, and maintain individual corporate credentials",
+    "benefits": [
+      "Support service responds very quickly",
+      "Incorporates improvements over time",
+      "Integrated Send service is very useful",
+      "Smooth with an acceptable load of passwords in the database"
+    ],
+    "frictions": [
+      "Managing nested collections is tedious",
+      "Becomes cumbersome when organizing multiple levels"
+    ]
+  },
+  "ts": "2026-10-18T10:15:55.734199+00:00"
+}

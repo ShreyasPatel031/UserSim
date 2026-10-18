@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "03e0cd9b62663b5cc62bcec4262da9e232555af7050c95b78ff8db55758377c8",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 189,
+  "output_tokens": 501,
+  "cost_usd": 0.0013092000000000002,
+  "elapsed_s": 3.26,
+  "error": null,
+  "text": "{\n  \"task\": \"Access and generate various reports and information.\",\n  \"benefits\": [\n    \"See different information\",\n    \"Quick updates\",\n    \"Generate many different reports with all needed information\"\n  ],\n  \"frictions\": [\n    \"Difficult to navigate the program\",\n    \"Requires help to create new reports\"\n  ]\n}",
+  "json": {
+    "task": "Access and generate various reports and information.",
+    "benefits": [
+      "See different information",
+      "Quick updates",
+      "Generate many different reports with all needed information"
+    ],
+    "frictions": [
+      "Difficult to navigate the program",
+      "Requires help to create new reports"
+    ]
+  },
+  "ts": "2026-10-18T10:00:31.806339+00:00"
+}

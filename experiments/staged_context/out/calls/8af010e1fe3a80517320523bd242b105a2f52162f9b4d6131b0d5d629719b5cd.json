@@ -1,0 +1,27 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8af010e1fe3a80517320523bd242b105a2f52162f9b4d6131b0d5d629719b5cd",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 129,
+  "output_tokens": 450,
+  "cost_usd": 0.0011637,
+  "elapsed_s": 3.29,
+  "error": null,
+  "text": "{\n  \"task\": \"Store and manage credentials\",\n  \"benefits\": [\n    \"Enhance safety\",\n    \"Enable quick refilling of forms\"\n  ],\n  \"frictions\": [\n    \"Becomes unreliable with a large number of entries\"\n  ]\n}",
+  "json": {
+    "task": "Store and manage credentials",
+    "benefits": [
+      "Enhance safety",
+      "Enable quick refilling of forms"
+    ],
+    "frictions": [
+      "Becomes unreliable with a large number of entries"
+    ]
+  },
+  "ts": "2026-10-18T10:15:54.987247+00:00"
+}

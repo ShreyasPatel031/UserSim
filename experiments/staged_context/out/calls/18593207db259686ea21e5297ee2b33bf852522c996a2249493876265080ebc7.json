@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "18593207db259686ea21e5297ee2b33bf852522c996a2249493876265080ebc7",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 160,
+  "output_tokens": 418,
+  "cost_usd": 0.0010930000000000002,
+  "elapsed_s": 2.7,
+  "error": null,
+  "text": "{\n  \"task\": \"Automate marketing processes.\",\n  \"benefits\": [\n    \"Streamline marketing processes\",\n    \"Improve customer engagement\",\n    \"Drive sales growth\",\n    \"Automate marketing processes\"\n  ],\n  \"frictions\": [\n    \"Results are not as good as desired\"\n  ]\n}",
+  "json": {
+    "task": "Automate marketing processes.",
+    "benefits": [
+      "Streamline marketing processes",
+      "Improve customer engagement",
+      "Drive sales growth",
+      "Automate marketing processes"
+    ],
+    "frictions": [
+      "Results are not as good as desired"
+    ]
+  },
+  "ts": "2026-10-18T10:00:46.816636+00:00"
+}

@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9793b8381bb2cbaa1b615b2ce571cc350c443701cc5a6956aaf4a916b65004d2",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 286,
+  "output_tokens": 497,
+  "cost_usd": 0.0013283000000000001,
+  "elapsed_s": 2.89,
+  "error": null,
+  "text": "{\n  \"task\": \"Allow customers to submit issues with details and screenshots, and track customer questions and concerns.\",\n  \"benefits\": [\n    \"Customers can submit detailed issues with screenshots\",\n    \"Helps keep track of customer questions and concerns\",\n    \"Enables quick response to customer inquiries\",\n    \"Agent's work and performance are visible and trackable in real time\"\n  ],\n  \"frictions\": [\n    \"Lack of a desktop application\",\n    \"Inconvenient placement of the Recent tab's quick access icon\"\n  ]\n}",
+  "json": {
+    "task": "Allow customers to submit issues with details and screenshots, and track customer questions and concerns.",
+    "benefits": [
+      "Customers can submit detailed issues with screenshots",
+      "Helps keep track of customer questions and concerns",
+      "Enables quick response to customer inquiries",
+      "Agent's work and performance are visible and trackable in real time"
+    ],
+    "frictions": [
+      "Lack of a desktop application",
+      "Inconvenient placement of the Recent tab's quick access icon"
+    ]
+  },
+  "ts": "2026-10-18T10:00:41.411339+00:00"
+}

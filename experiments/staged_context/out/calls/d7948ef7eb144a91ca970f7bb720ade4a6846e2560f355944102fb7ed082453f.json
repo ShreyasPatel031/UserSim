@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d7948ef7eb144a91ca970f7bb720ade4a6846e2560f355944102fb7ed082453f",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2840,
+  "output_tokens": 1233,
+  "cost_usd": 0.0039345,
+  "elapsed_s": 6.6,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Intuitive deal flow for managing sales opportunities.\",\n    \"Ease of use and having all sales data integrated in one platform.\",\n    \"Improved sales effectiveness through streamlined processes.\"\n  ],\n  \"cons\": [\n    \"Lack of robust reporting capabilities for advanced analysis.\",\n    \"Missing some advanced functions and automatic reminders.\",\n    \"Historically inconsistent customer support experience.\"\n  ],\n  \"overall_experience\": \"This Sales Manager likely found Freshsales to be an intuitive and effective tool for managing their sales pipeline and centralizing data, contributing to improved sales effectiveness. While appreciating its ease of use, they probably faced frustrations with the limitations in advanced reporting and the absence of certain 'nice-to-have' features, including the occasional need for better customer support.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Intuitive deal flow for managing sales opportunities.",
+      "Ease of use and having all sales data integrated in one platform.",
+      "Improved sales effectiveness through streamlined processes."
+    ],
+    "cons": [
+      "Lack of robust reporting capabilities for advanced analysis.",
+      "Missing some advanced functions and automatic reminders.",
+      "Historically inconsistent customer support experience."
+    ],
+    "overall_experience": "This Sales Manager likely found Freshsales to be an intuitive and effective tool for managing their sales pipeline and centralizing data, contributing to improved sales effectiveness. While appreciating its ease of use, they probably faced frustrations with the limitations in advanced reporting and the absence of certain 'nice-to-have' features, including the occasional need for better customer support."
+  },
+  "ts": "2026-10-18T10:01:14.585592+00:00"
+}

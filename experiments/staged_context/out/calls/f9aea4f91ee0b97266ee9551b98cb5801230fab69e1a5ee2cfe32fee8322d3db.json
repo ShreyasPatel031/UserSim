@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f9aea4f91ee0b97266ee9551b98cb5801230fab69e1a5ee2cfe32fee8322d3db",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 359,
+  "output_tokens": 494,
+  "cost_usd": 0.0013427,
+  "elapsed_s": 5.69,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage marketing statistics, sales data, and support tools in an integrated platform.\",\n  \"benefits\": [\n    \"Offers extensive features at the free level.\",\n    \"Integrates marketing, sales, and support tools.\",\n    \"Cost-effective for smaller companies.\",\n    \"Simple and intuitive to use.\"\n  ],\n  \"frictions\": [\n    \"Lacks certain 'nice-to-have' functions.\"\n  ]\n}",
+  "json": {
+    "task": "Manage marketing statistics, sales data, and support tools in an integrated platform.",
+    "benefits": [
+      "Offers extensive features at the free level.",
+      "Integrates marketing, sales, and support tools.",
+      "Cost-effective for smaller companies.",
+      "Simple and intuitive to use."
+    ],
+    "frictions": [
+      "Lacks certain 'nice-to-have' functions."
+    ]
+  },
+  "ts": "2026-10-18T10:00:20.814586+00:00"
+}

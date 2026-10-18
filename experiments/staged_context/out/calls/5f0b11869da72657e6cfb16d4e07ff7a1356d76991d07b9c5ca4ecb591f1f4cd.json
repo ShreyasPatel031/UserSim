@@ -1,0 +1,30 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "5f0b11869da72657e6cfb16d4e07ff7a1356d76991d07b9c5ca4ecb591f1f4cd",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 202,
+  "output_tokens": 508,
+  "cost_usd": 0.0013306,
+  "elapsed_s": 2.94,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage and save information with password-restricted access\",\n  \"benefits\": [\n    \"Ability to save information under personal and global sections\",\n    \"Data is saved with password-restricted access\",\n    \"Easy to manage\"\n  ],\n  \"frictions\": [\n    \"Not able to have an active site link directly\",\n    \"Sub-level delegation is limited\",\n    \"MFA resetting is too complex when getting a new phone\"\n  ]\n}",
+  "json": {
+    "task": "Manage and save information with password-restricted access",
+    "benefits": [
+      "Ability to save information under personal and global sections",
+      "Data is saved with password-restricted access",
+      "Easy to manage"
+    ],
+    "frictions": [
+      "Not able to have an active site link directly",
+      "Sub-level delegation is limited",
+      "MFA resetting is too complex when getting a new phone"
+    ]
+  },
+  "ts": "2026-10-18T10:15:59.322290+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "adff8b02a2551da6d2020af6e03639eae7e6080f149912a25741aa181541184d",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2467,
+  "output_tokens": 1049,
+  "cost_usd": 0.0033626,
+  "elapsed_s": 8.32,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Intuitive deal flow helps manage sales opportunities effectively.\",\n    \"Ease of use makes it straightforward for daily customer relationship management.\",\n    \"Provides a centralized platform for sales activities.\"\n  ],\n  \"cons\": [\n    \"Reporting features are not robust enough for detailed operational oversight.\",\n    \"Lacks some advanced functions that could streamline complex workflows.\",\n    \"Customer support response times can be slow or unhelpful.\"\n  ],\n  \"overall_experience\": \"The Operations Head likely found Freshsales to be generally easy to use, appreciating its intuitive interface for managing customer relationships and sales deals. However, the limited reporting capabilities and absence of certain advanced features might have caused some frustration, especially for an operations role needing detailed insights. Early experiences with customer support may also have been a point of concern, impacting the overall satisfaction during the initial six months of use.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Intuitive deal flow helps manage sales opportunities effectively.",
+      "Ease of use makes it straightforward for daily customer relationship management.",
+      "Provides a centralized platform for sales activities."
+    ],
+    "cons": [
+      "Reporting features are not robust enough for detailed operational oversight.",
+      "Lacks some advanced functions that could streamline complex workflows.",
+      "Customer support response times can be slow or unhelpful."
+    ],
+    "overall_experience": "The Operations Head likely found Freshsales to be generally easy to use, appreciating its intuitive interface for managing customer relationships and sales deals. However, the limited reporting capabilities and absence of certain advanced features might have caused some frustration, especially for an operations role needing detailed insights. Early experiences with customer support may also have been a point of concern, impacting the overall satisfaction during the initial six months of use."
+  },
+  "ts": "2026-10-18T10:01:15.903369+00:00"
+}

@@ -1,0 +1,17 @@
+{"product": "Basecamp", "run_id": "basecamp_deep_1", "session_id": "e84112ed546d4ccfb38fb554ba168833",
+ "task": "I need to set up a new client project in Basecamp, including a few key to-do lists for different phases and some important documents. Then, I'll check the project's progress using a calendar view and assign some tasks to my team. Finally, I'll reorganize a to-do list and update a task's due date to reflect a change in scope.",
+ "signed_in": true, "reached_product": true, "outcome": "partial", "steps_used": 36,
+ "observations": [
+  {"kind": "signup_friction", "feature": "Sign-up", "what": "Sign-up was name/email/org, then password, guarded by an invisible hCaptcha on both steps; no email verification was required before landing in the app."},
+  {"kind": "product_friction", "feature": "Projects (Free plan)", "what": "The Free plan allows 1 project and a blank 'My Project' is pre-created, so visiting New project redirected straight to the upgrade/plans page; I had to reuse 'My Project' as the client project."},
+  {"kind": "product_friction", "feature": "Add a tool menu", "what": "A new project is completely blank and every tool (To-dos, Docs & Files, Calendar) must be added one by one from the plus menu; my clicks on Docs & Files and Calendar while the menu stayed open after adding To-dos did not add those tools."},
+  {"kind": "product_friction", "feature": "Project tool card", "what": "Clicking the 'To-dos' title on the project card put it into rename mode (Save / Never Mind) instead of opening the tool."},
+  {"kind": "product_benefit", "feature": "To-do creation", "what": "The to-do form shows Assigned to, When done notify, Due on, Notes and Subtasks inline, and after saving one to-do it immediately opens a blank one so pressing Enter after typing a name added Beta and Gamma in one action each."},
+  {"kind": "product_benefit", "feature": "Assigning", "what": "Typing 'Sam' in Assigned to gave an autocomplete chip in one click, and the saved to-do shows the assignee and due date as compact chips beside the name."},
+  {"kind": "product_friction", "feature": "To-do form", "what": "Picking a due date inserted a new Repeat row that pushed the 'Add this to-do' button down, so a click aimed at its old position missed."},
+  {"kind": "product_benefit", "feature": "Reordering to-dos", "what": "Dragging the handle on the left of Demo Gamma moved it from third to first in a single drag with no confirmation."},
+  {"kind": "product_benefit", "feature": "Due date editing", "what": "Clicking the date chip on a to-do opened an inline editor with a date picker, and changing Oct 21 to Oct 28 took two clicks (date, Save)."},
+  {"kind": "product_friction", "feature": "My Events (calendar)", "what": "My Events showed only 'No events today' for October and did not list the to-do due Oct 28, so it was not usable to check project progress by date without a project Calendar tool."},
+  {"kind": "agent_failure", "feature": "To-do form", "what": "My first click on 'Add this to-do' missed because the Repeat row had shifted the button."},
+  {"kind": "agent_failure", "feature": "Scope", "what": "I ran out of steps before creating multiple phase lists, adding documents, or opening a real calendar view."}
+ ]}

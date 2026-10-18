@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7a4ea787907b5cd4655d66e08d2b0a0d4e0f2d890cdf4d5dcfc0ee702a4434ed",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2565,
+  "output_tokens": 1180,
+  "cost_usd": 0.0037195000000000006,
+  "elapsed_s": 6.82,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Intuitive deal flow for sales cycle management\",\n    \"Comprehensive features within one platform\",\n    \"Good value, especially for initial features\"\n  ],\n  \"cons\": [\n    \"Lack of robust reporting capabilities\",\n    \"Historically poor customer service experience\",\n    \"Missing some advanced or 'nice-to-have' functions\"\n  ],\n  \"overall_experience\": \"The Help Desk Manager likely found Freshsales to be generally easy to use and appreciated its all-in-one platform approach, offering good value for money. However, they probably experienced frustration with the historically weak customer support and perceived a lack of robust reporting and some advanced functionalities, which might have hindered their team's operational efficiency over time.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Intuitive deal flow for sales cycle management",
+      "Comprehensive features within one platform",
+      "Good value, especially for initial features"
+    ],
+    "cons": [
+      "Lack of robust reporting capabilities",
+      "Historically poor customer service experience",
+      "Missing some advanced or 'nice-to-have' functions"
+    ],
+    "overall_experience": "The Help Desk Manager likely found Freshsales to be generally easy to use and appreciated its all-in-one platform approach, offering good value for money. However, they probably experienced frustration with the historically weak customer support and perceived a lack of robust reporting and some advanced functionalities, which might have hindered their team's operational efficiency over time."
+  },
+  "ts": "2026-10-18T10:01:16.143809+00:00"
+}

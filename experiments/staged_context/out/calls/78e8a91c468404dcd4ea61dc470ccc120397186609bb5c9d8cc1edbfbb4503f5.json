@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "78e8a91c468404dcd4ea61dc470ccc120397186609bb5c9d8cc1edbfbb4503f5",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2777,
+  "output_tokens": 1045,
+  "cost_usd": 0.0034455999999999996,
+  "elapsed_s": 5.67,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Comprehensive functionality for managing customer relationships and sales.\",\n    \"Good value for money compared to other CRM solutions.\",\n    \"The AI sales assistant provides helpful personalized tips.\"\n  ],\n  \"cons\": [\n    \"Reporting tools could be more comprehensive for marketing analysis.\",\n    \"The initial learning curve can be steep for new users.\",\n    \"The usage guide might lack detail during the decision-making phase.\"\n  ],\n  \"overall_experience\": \"This Marketing Manager likely finds Zoho CRM to be a highly functional and valuable tool for managing customer relationships and sales processes within their higher education institution. They appreciate its comprehensive features and the personalized insights offered by the AI assistant. While acknowledging a potential learning curve and some limitations in reporting, the overall experience is positive, driven by strong functionality and excellent value for money.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Comprehensive functionality for managing customer relationships and sales.",
+      "Good value for money compared to other CRM solutions.",
+      "The AI sales assistant provides helpful personalized tips."
+    ],
+    "cons": [
+      "Reporting tools could be more comprehensive for marketing analysis.",
+      "The initial learning curve can be steep for new users.",
+      "The usage guide might lack detail during the decision-making phase."
+    ],
+    "overall_experience": "This Marketing Manager likely finds Zoho CRM to be a highly functional and valuable tool for managing customer relationships and sales processes within their higher education institution. They appreciate its comprehensive features and the personalized insights offered by the AI assistant. While acknowledging a potential learning curve and some limitations in reporting, the overall experience is positive, driven by strong functionality and excellent value for money."
+  },
+  "ts": "2026-10-18T10:01:29.865583+00:00"
+}

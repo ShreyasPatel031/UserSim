@@ -1,0 +1,9 @@
+{"product": "Teamwork.com", "run_id": "teamwork_deep_1", "session_id": "95acec81b64d49e0950eee08303af1c6",
+ "task": "I need to set up a new client project, 'Brand Refresh for Stellar Corp', with key phases like 'Discovery', 'Design Concepts', and 'Content Creation'. I'll add specific tasks under each, assign them to my team, and set deadlines. Then, I'll customize the project view to track progress visually and add a custom field for 'Client Priority'. Finally, I'll filter tasks to see only those due next week for a quick status update.",
+ "signed_in": false, "reached_product": false, "outcome": "blocked", "steps_used": 16,
+ "observations": [
+  {"kind": "signup_friction", "feature": "Sign-up form", "what": "Free sign-up is a two-page form: email/password/name, then industry, company size, seat count, role, company name and a required phone number, with no option to skip."},
+  {"kind": "signup_friction", "feature": "Sign-up form", "what": "The second page reveals new required fields (seats, company name, phone) one at a time as earlier ones are filled, so the layout keeps shifting under the cursor."},
+  {"kind": "signup_friction", "feature": "Sign-up submission", "what": "After every field was filled, including a valid US phone number, Continue showed the red toast 'We're sorry, we can't create an account for you right now', and a second submit gave the same result."},
+  {"kind": "agent_failure", "feature": "Sign-up form", "what": "In the first session (9ecd54f9942348d48ad14064f531aff7) I typed the company name into the phone field because the layout had shifted. That session then timed out while I waited about 10 minutes for the shared SMS number."}
+ ]}

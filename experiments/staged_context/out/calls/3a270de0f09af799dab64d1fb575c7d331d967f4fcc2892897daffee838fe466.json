@@ -1,0 +1,34 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3a270de0f09af799dab64d1fb575c7d331d967f4fcc2892897daffee838fe466",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2471,
+  "output_tokens": 1039,
+  "cost_usd": 0.0033388,
+  "elapsed_s": 5.75,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"It helps to improve sales effectiveness for their small team.\",\n    \"The intuitive deal flow makes managing opportunities easy for their sales cycle.\"\n  ],\n  \"cons\": [\n    \"They found the reporting functionality to be less robust than desired.\",\n    \"Automatic reminders for tasks or follow-ups were missing.\"\n  ],\n  \"overall_experience\": \"This sales manager likely found Freshsales to be a very capable tool for managing sales campaigns and deals within their small IT company. The intuitive deal flow and overall ease of use contributed to a positive initial experience, despite some limitations in reporting and the absence of automatic reminders. They would likely recommend it for its core sales effectiveness.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "It helps to improve sales effectiveness for their small team.",
+      "The intuitive deal flow makes managing opportunities easy for their sales cycle."
+    ],
+    "cons": [
+      "They found the reporting functionality to be less robust than desired.",
+      "Automatic reminders for tasks or follow-ups were missing."
+    ],
+    "overall_experience": "This sales manager likely found Freshsales to be a very capable tool for managing sales campaigns and deals within their small IT company. The intuitive deal flow and overall ease of use contributed to a positive initial experience, despite some limitations in reporting and the absence of automatic reminders. They would likely recommend it for its core sales effectiveness."
+  },
+  "ts": "2026-10-18T10:01:09.717301+00:00"
+}

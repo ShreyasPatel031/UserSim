@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "85e86f802c0c71968fda3bfd0de2b7b8688ca73e20ab3a649fad434c278a2e5b",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2553,
+  "output_tokens": 1030,
+  "cost_usd": 0.0033409,
+  "elapsed_s": 6.2,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"User-friendly interface made it easy to get started quickly.\",\n    \"Effective for keeping track of sales and progress.\",\n    \"AI sales assistant offered useful personalized tips.\"\n  ],\n  \"cons\": [\n    \"Reporting tools felt somewhat limited for in-depth analysis.\",\n    \"Initial setup was slightly challenging due to a lacking usage guide.\",\n    \"Customer support response times could occasionally be slow.\"\n  ],\n  \"overall_experience\": \"This self-employed researcher found Zoho CRM to be a highly user-friendly tool, which was beneficial for quickly adopting it to track sales and progress. While the AI sales assistant was a helpful feature, the reviewer experienced some frustration with the comprehensiveness of the reporting tools and the initial guidance available. Despite minor drawbacks, it served its primary purpose well for their civil engineering business.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "User-friendly interface made it easy to get started quickly.",
+      "Effective for keeping track of sales and progress.",
+      "AI sales assistant offered useful personalized tips."
+    ],
+    "cons": [
+      "Reporting tools felt somewhat limited for in-depth analysis.",
+      "Initial setup was slightly challenging due to a lacking usage guide.",
+      "Customer support response times could occasionally be slow."
+    ],
+    "overall_experience": "This self-employed researcher found Zoho CRM to be a highly user-friendly tool, which was beneficial for quickly adopting it to track sales and progress. While the AI sales assistant was a helpful feature, the reviewer experienced some frustration with the comprehensiveness of the reporting tools and the initial guidance available. Despite minor drawbacks, it served its primary purpose well for their civil engineering business."
+  },
+  "ts": "2026-10-18T10:01:26.980589+00:00"
+}

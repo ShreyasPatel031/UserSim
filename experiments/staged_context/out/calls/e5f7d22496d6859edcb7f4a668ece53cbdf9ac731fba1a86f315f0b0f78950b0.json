@@ -1,0 +1,36 @@
+{
+  "stage": "hm_plist",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e5f7d22496d6859edcb7f4a668ece53cbdf9ac731fba1a86f315f0b0f78950b0",
+  "temperature": 0.7,
+  "seed": 43,
+  "max_tokens": 4096,
+  "thinking_budget": 1024,
+  "input_tokens": 1792,
+  "output_tokens": 1044,
+  "cost_usd": 0.0031476,
+  "elapsed_s": 5.93,
+  "error": null,
+  "text": "{\n  \"pros\": [\n    \"Simple and intuitive interface, making it easy to get started without a steep learning curve.\",\n    \"Efficient task management with quick task creation and clear assignment/due date visibility.\",\n    \"Streamlined communication features keep team conversations organized within projects.\",\n    \"Focus on core project management without overwhelming extra features.\",\n    \"Clear overview of project progress with distinct tools for different needs.\",\n    \"Reliable performance and stability for daily use.\"\n  ],\n  \"cons\": [\n    \"Limited free plan that quickly pushes users to upgrade for more projects.\",\n    \"Basic reporting and overview capabilities, making it harder to track progress across multiple projects or for detailed analytics.\",\n    \"Initial project setup requires manually adding every tool, which can feel repetitive.\",\n    \"Fewer integrations compared to more feature-rich competitors.\",\n    \"Some UI quirks can lead to minor frustration or confusion.\",\n    \"Less customization options for workflows and project views.\"\n  ],\n  \"overall_rating\": 4.25\n}",
+  "json": {
+    "pros": [
+      "Simple and intuitive interface, making it easy to get started without a steep learning curve.",
+      "Efficient task management with quick task creation and clear assignment/due date visibility.",
+      "Streamlined communication features keep team conversations organized within projects.",
+      "Focus on core project management without overwhelming extra features.",
+      "Clear overview of project progress with distinct tools for different needs.",
+      "Reliable performance and stability for daily use."
+    ],
+    "cons": [
+      "Limited free plan that quickly pushes users to upgrade for more projects.",
+      "Basic reporting and overview capabilities, making it harder to track progress across multiple projects or for detailed analytics.",
+      "Initial project setup requires manually adding every tool, which can feel repetitive.",
+      "Fewer integrations compared to more feature-rich competitors.",
+      "Some UI quirks can lead to minor frustration or confusion.",
+      "Less customization options for workflows and project views."
+    ],
+    "overall_rating": 4.25
+  },
+  "ts": "2026-10-18T10:12:54.650716+00:00"
+}

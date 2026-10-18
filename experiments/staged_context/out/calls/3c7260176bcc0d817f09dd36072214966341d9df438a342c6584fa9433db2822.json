@@ -1,0 +1,30 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3c7260176bcc0d817f09dd36072214966341d9df438a342c6584fa9433db2822",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 287,
+  "output_tokens": 491,
+  "cost_usd": 0.0013136,
+  "elapsed_s": 3.29,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage personal and professional password credentials\",\n  \"benefits\": [\n    \"Works across all devices (Android, Linux, Mac, Windows)\",\n    \"Seamlessly integrates with web browsers (Chrome, Firefox)\",\n    \"Easy initial setup\"\n  ],\n  \"frictions\": [\n    \"Password creation could be more user-friendly\",\n    \"Lack of automatic organization for old credentials\",\n    \"Limited security features, such as changing passwords directly on websites\"\n  ]\n}",
+  "json": {
+    "task": "Manage personal and professional password credentials",
+    "benefits": [
+      "Works across all devices (Android, Linux, Mac, Windows)",
+      "Seamlessly integrates with web browsers (Chrome, Firefox)",
+      "Easy initial setup"
+    ],
+    "frictions": [
+      "Password creation could be more user-friendly",
+      "Lack of automatic organization for old credentials",
+      "Limited security features, such as changing passwords directly on websites"
+    ]
+  },
+  "ts": "2026-10-18T10:15:54.821350+00:00"
+}

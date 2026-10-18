@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "08e81c4554e5a43bf51da868f8c51710e546daceb11cc7b92d44662b7daeed18",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 281,
+  "output_tokens": 494,
+  "cost_usd": 0.0013193,
+  "elapsed_s": 3.6,
+  "error": null,
+  "text": "{\n  \"task\": \"Create and manage an online store.\",\n  \"benefits\": [\n    \"Create professional-looking online stores\",\n    \"Products display correctly\",\n    \"Inventory manager works well\",\n    \"Secure payment processes with reliable gateways\"\n  ],\n  \"frictions\": [\n    \"Store design and adaptability to different devices could be improved\"\n  ]\n}",
+  "json": {
+    "task": "Create and manage an online store.",
+    "benefits": [
+      "Create professional-looking online stores",
+      "Products display correctly",
+      "Inventory manager works well",
+      "Secure payment processes with reliable gateways"
+    ],
+    "frictions": [
+      "Store design and adaptability to different devices could be improved"
+    ]
+  },
+  "ts": "2026-10-18T10:00:52.721073+00:00"
+}

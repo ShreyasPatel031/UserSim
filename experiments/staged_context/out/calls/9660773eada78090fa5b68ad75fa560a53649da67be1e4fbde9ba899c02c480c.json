@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9660773eada78090fa5b68ad75fa560a53649da67be1e4fbde9ba899c02c480c",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 191,
+  "output_tokens": 434,
+  "cost_usd": 0.0011423,
+  "elapsed_s": 2.56,
+  "error": null,
+  "text": "{\n  \"task\": \"Organize tasks and collaborate with others.\",\n  \"benefits\": [\n    \"Is intuitive\",\n    \"Is a one-stop shop\",\n    \"Is easier to navigate than Excel\",\n    \"Helps users stay organized\"\n  ],\n  \"frictions\": [\n    \"Displays advertisements to upgrade\"\n  ]\n}",
+  "json": {
+    "task": "Organize tasks and collaborate with others.",
+    "benefits": [
+      "Is intuitive",
+      "Is a one-stop shop",
+      "Is easier to navigate than Excel",
+      "Helps users stay organized"
+    ],
+    "frictions": [
+      "Displays advertisements to upgrade"
+    ]
+  },
+  "ts": "2026-10-18T10:00:56.606788+00:00"
+}

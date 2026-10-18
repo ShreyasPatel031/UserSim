@@ -1,0 +1,28 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "05f2c8107197adf3ca709387a7f2c626a5072c9fb78e4af312ebeddf2a1a27bb",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 150,
+  "output_tokens": 409,
+  "cost_usd": 0.0010674999999999999,
+  "elapsed_s": 2.68,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage customer support needs.\",\n  \"benefits\": [\n    \"Quick Setup\",\n    \"Easy Setup\",\n    \"Phenomenal Customer Support\"\n  ],\n  \"frictions\": [\n    \"Can be a little pricey\"\n  ]\n}",
+  "json": {
+    "task": "Manage customer support needs.",
+    "benefits": [
+      "Quick Setup",
+      "Easy Setup",
+      "Phenomenal Customer Support"
+    ],
+    "frictions": [
+      "Can be a little pricey"
+    ]
+  },
+  "ts": "2026-10-18T10:01:01.743335+00:00"
+}

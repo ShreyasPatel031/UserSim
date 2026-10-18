@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "153421b5b09e4629b32683d2e9a2bf04d7f8a26e34d9505dbb4f12020e70d91a",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2457,
+  "output_tokens": 1075,
+  "cost_usd": 0.0034246,
+  "elapsed_s": 5.9,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Intuitive deal flow and ease of use for managing sales pipeline.\",\n    \"Centralized platform for sales activities, improving effectiveness.\",\n    \"Good value, especially with extensive features available at free level.\"\n  ],\n  \"cons\": [\n    \"Reporting features may not be robust enough for all needs.\",\n    \"Lacks certain advanced functions and call recording capabilities.\",\n    \"Customer service has historically been a point of frustration.\"\n  ],\n  \"overall_experience\": \"This account manager likely found Freshsales to be a highly intuitive and effective tool for managing their sales pipeline, appreciating its ease of use and consolidated features. The value for money, especially for a small company, was probably a significant positive. However, they may have encountered limitations with more advanced reporting or specific functionalities like call recording, and potentially experienced subpar customer support.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 3,
+    "recommendation_score": 9,
+    "pros": [
+      "Intuitive deal flow and ease of use for managing sales pipeline.",
+      "Centralized platform for sales activities, improving effectiveness.",
+      "Good value, especially with extensive features available at free level."
+    ],
+    "cons": [
+      "Reporting features may not be robust enough for all needs.",
+      "Lacks certain advanced functions and call recording capabilities.",
+      "Customer service has historically been a point of frustration."
+    ],
+    "overall_experience": "This account manager likely found Freshsales to be a highly intuitive and effective tool for managing their sales pipeline, appreciating its ease of use and consolidated features. The value for money, especially for a small company, was probably a significant positive. However, they may have encountered limitations with more advanced reporting or specific functionalities like call recording, and potentially experienced subpar customer support."
+  },
+  "ts": "2026-10-18T10:01:15.400719+00:00"
+}

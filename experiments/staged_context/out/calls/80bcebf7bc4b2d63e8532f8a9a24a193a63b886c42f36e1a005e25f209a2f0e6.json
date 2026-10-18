@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "80bcebf7bc4b2d63e8532f8a9a24a193a63b886c42f36e1a005e25f209a2f0e6",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 320,
+  "output_tokens": 462,
+  "cost_usd": 0.001251,
+  "elapsed_s": 3.23,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage an online store.\",\n  \"benefits\": [\n    \"Offers more built-in features than competitors\",\n    \"Provides straightforward setup for quick launch\",\n    \"Experiences very minimal downtime\",\n    \"Offers quick customer support handling\"\n  ],\n  \"frictions\": [\n    \"Themes and store interface are not easy to customize\",\n    \"Source code changes do not carry over with theme updates\"\n  ]\n}",
+  "json": {
+    "task": "Manage an online store.",
+    "benefits": [
+      "Offers more built-in features than competitors",
+      "Provides straightforward setup for quick launch",
+      "Experiences very minimal downtime",
+      "Offers quick customer support handling"
+    ],
+    "frictions": [
+      "Themes and store interface are not easy to customize",
+      "Source code changes do not carry over with theme updates"
+    ]
+  },
+  "ts": "2026-10-18T10:00:52.291523+00:00"
+}

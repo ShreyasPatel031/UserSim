@@ -1,0 +1,27 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e6726ecaf42aa792c73d222717ce89a2857198ff0be605a745d5292353b60c2e",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 176,
+  "output_tokens": 451,
+  "cost_usd": 0.0011803,
+  "elapsed_s": 5.57,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage relationships with users and business opportunities\",\n  \"benefits\": [\n    \"Improve sales effectiveness\"\n  ],\n  \"frictions\": [\n    \"Automatic reminders are missing\",\n    \"Cannot set specific alarms for customer follow-up\"\n  ]\n}",
+  "json": {
+    "task": "Manage relationships with users and business opportunities",
+    "benefits": [
+      "Improve sales effectiveness"
+    ],
+    "frictions": [
+      "Automatic reminders are missing",
+      "Cannot set specific alarms for customer follow-up"
+    ]
+  },
+  "ts": "2026-10-18T10:00:20.473749+00:00"
+}

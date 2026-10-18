@@ -1,0 +1,27 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9f783ff620bba85d8e7e8164a1ae27db89eeada70e89f6c82d2942e17287d974",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 166,
+  "output_tokens": 459,
+  "cost_usd": 0.0011973,
+  "elapsed_s": 3.12,
+  "error": null,
+  "text": "{\n  \"task\": \"Track and resolve support issues.\",\n  \"benefits\": [\n    \"Integrates with Zoho CRM and Zoho Books\",\n    \"Easy to use\",\n    \"Provides great support\",\n    \"Automatically pulls account data from CRM, eliminating manual entry\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Track and resolve support issues.",
+    "benefits": [
+      "Integrates with Zoho CRM and Zoho Books",
+      "Easy to use",
+      "Provides great support",
+      "Automatically pulls account data from CRM, eliminating manual entry"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T10:00:42.058453+00:00"
+}

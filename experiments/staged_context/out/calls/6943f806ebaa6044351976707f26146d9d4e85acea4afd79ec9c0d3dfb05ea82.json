@@ -1,0 +1,27 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "6943f806ebaa6044351976707f26146d9d4e85acea4afd79ec9c0d3dfb05ea82",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 301,
+  "output_tokens": 538,
+  "cost_usd": 0.0014352999999999998,
+  "elapsed_s": 3.01,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage contact and communication with VIP clients, including post-sale inquiries and future preferences.\",\n  \"benefits\": [\n    \"Provides a complete program base\",\n    \"Offers accurate data\",\n    \"Collects data from emails, live chats, personnel qualification, post-sales, and customer retention\",\n    \"Generates data in a user-friendly way\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Manage contact and communication with VIP clients, including post-sale inquiries and future preferences.",
+    "benefits": [
+      "Provides a complete program base",
+      "Offers accurate data",
+      "Collects data from emails, live chats, personnel qualification, post-sales, and customer retention",
+      "Generates data in a user-friendly way"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T10:00:41.745485+00:00"
+}

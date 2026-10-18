@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "247a4e069d335ecf6b2e6375ff81a849f09f55f36aa49f78c1699d48f7e6efdc",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3051,
+  "output_tokens": 910,
+  "cost_usd": 0.0031903,
+  "elapsed_s": 4.91,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effectively centralizes support communications for HR tasks\",\n    \"Cost-effective solution for a large organization\",\n    \"Streamlines email processing and ticket management\"\n  ],\n  \"cons\": [\n    \"Experiences occasional software bugs and slowness\",\n    \"Missing essential tools in the mobile version\",\n    \"Widgets are not visually appealing\"\n  ],\n  \"overall_experience\": \"This Human Resources Generalist found LiveAgent to be a generally effective tool for centralizing support communications within their large healthcare organization over two years. While it offered good value and streamlined email processing, they occasionally encountered frustrating software bugs and performance issues. The lack of robust mobile tools and visually appealing widgets were also minor drawbacks, but the platform ultimately helped ensure requests were processed efficiently.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Effectively centralizes support communications for HR tasks",
+      "Cost-effective solution for a large organization",
+      "Streamlines email processing and ticket management"
+    ],
+    "cons": [
+      "Experiences occasional software bugs and slowness",
+      "Missing essential tools in the mobile version",
+      "Widgets are not visually appealing"
+    ],
+    "overall_experience": "This Human Resources Generalist found LiveAgent to be a generally effective tool for centralizing support communications within their large healthcare organization over two years. While it offered good value and streamlined email processing, they occasionally encountered frustrating software bugs and performance issues. The lack of robust mobile tools and visually appealing widgets were also minor drawbacks, but the platform ultimately helped ensure requests were processed efficiently."
+  },
+  "ts": "2026-10-18T10:02:23.549382+00:00"
+}

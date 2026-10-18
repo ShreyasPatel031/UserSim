@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "14175af511e00dca448fe35739501a3fad4b3f2577ece7ed7b6ae51925c2ac29",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2590,
+  "output_tokens": 1121,
+  "cost_usd": 0.0035795,
+  "elapsed_s": 6.61,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"The intuitive deal flow helps manage sales opportunities efficiently.\",\n    \"It offers comprehensive features within a single platform.\",\n    \"Ease of use makes it straightforward for daily tasks.\"\n  ],\n  \"cons\": [\n    \"The reporting features, while present, lack the robustness needed for in-depth sales analysis.\",\n    \"Customer service response times or effectiveness could be improved.\",\n    \"Some advanced functions or 'nice-to-have' features are missing.\"\n  ],\n  \"overall_experience\": \"This manager likely found Freshsales generally easy to use and beneficial for managing their sales pipeline due to its intuitive deal flow and integrated features. However, their primary task of sales analysis was somewhat hampered by the lack of robust reporting capabilities. Additionally, they may have encountered frustrations with customer support or the absence of certain advanced functionalities, impacting their overall satisfaction despite the product's core strengths.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "The intuitive deal flow helps manage sales opportunities efficiently.",
+      "It offers comprehensive features within a single platform.",
+      "Ease of use makes it straightforward for daily tasks."
+    ],
+    "cons": [
+      "The reporting features, while present, lack the robustness needed for in-depth sales analysis.",
+      "Customer service response times or effectiveness could be improved.",
+      "Some advanced functions or 'nice-to-have' features are missing."
+    ],
+    "overall_experience": "This manager likely found Freshsales generally easy to use and beneficial for managing their sales pipeline due to its intuitive deal flow and integrated features. However, their primary task of sales analysis was somewhat hampered by the lack of robust reporting capabilities. Additionally, they may have encountered frustrations with customer support or the absence of certain advanced functionalities, impacting their overall satisfaction despite the product's core strengths."
+  },
+  "ts": "2026-10-18T10:01:11.898408+00:00"
+}

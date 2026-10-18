@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "fbd0c3a7c9884a37b0951680ac5d77aaaa79fa0ced1d9c4c0210069308924ff2",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 218,
+  "output_tokens": 454,
+  "cost_usd": 0.0012004,
+  "elapsed_s": 3.19,
+  "error": null,
+  "text": "{\n  \"task\": \"Run an online store\",\n  \"benefits\": [\n    \"Easy to set up\",\n    \"Easy to use\",\n    \"Very reliable\",\n    \"Excellent support while keeping the site standard\"\n  ],\n  \"frictions\": [\n    \"Lose support when performing customizations\",\n    \"Support directs users to developers for customized issues\"\n  ]\n}",
+  "json": {
+    "task": "Run an online store",
+    "benefits": [
+      "Easy to set up",
+      "Easy to use",
+      "Very reliable",
+      "Excellent support while keeping the site standard"
+    ],
+    "frictions": [
+      "Lose support when performing customizations",
+      "Support directs users to developers for customized issues"
+    ]
+  },
+  "ts": "2026-10-18T10:00:51.739628+00:00"
+}

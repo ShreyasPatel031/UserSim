@@ -1,0 +1,31 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "91dc5459c128ffd4a01ef7ce295fadf657d68861138c839a5ed9f453150b3511",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 229,
+  "output_tokens": 504,
+  "cost_usd": 0.0013287000000000002,
+  "elapsed_s": 3.15,
+  "error": null,
+  "text": "{\n  \"task\": \"Store and manage passwords centrally\",\n  \"benefits\": [\n    \"Provides auto-fill functionality\",\n    \"Includes roles and permissions management\",\n    \"Offers auditing capabilities\",\n    \"Supports Single Sign-On (SSO)\"\n  ],\n  \"frictions\": [\n    \"SSO is not available in the Chrome plugin\",\n    \"Requires frequent re-login (every browser refresh or new tab)\",\n    \"Chrome plugin is slow to load after unlock\"\n  ]\n}",
+  "json": {
+    "task": "Store and manage passwords centrally",
+    "benefits": [
+      "Provides auto-fill functionality",
+      "Includes roles and permissions management",
+      "Offers auditing capabilities",
+      "Supports Single Sign-On (SSO)"
+    ],
+    "frictions": [
+      "SSO is not available in the Chrome plugin",
+      "Requires frequent re-login (every browser refresh or new tab)",
+      "Chrome plugin is slow to load after unlock"
+    ]
+  },
+  "ts": "2026-10-18T10:15:55.666390+00:00"
+}

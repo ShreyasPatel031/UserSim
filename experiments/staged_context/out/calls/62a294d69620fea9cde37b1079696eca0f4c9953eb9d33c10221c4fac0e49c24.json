@@ -1,0 +1,28 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "62a294d69620fea9cde37b1079696eca0f4c9953eb9d33c10221c4fac0e49c24",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 179,
+  "output_tokens": 461,
+  "cost_usd": 0.0012062,
+  "elapsed_s": 2.83,
+  "error": null,
+  "text": "{\n  \"task\": \"Provide client support.\",\n  \"benefits\": [\n    \"Provides 24/7 assistance\",\n    \"Increases client happiness\",\n    \"Shortens response times\"\n  ],\n  \"frictions\": [\n    \"System uptime and accessibility are affected by outages and malfunctions\"\n  ]\n}",
+  "json": {
+    "task": "Provide client support.",
+    "benefits": [
+      "Provides 24/7 assistance",
+      "Increases client happiness",
+      "Shortens response times"
+    ],
+    "frictions": [
+      "System uptime and accessibility are affected by outages and malfunctions"
+    ]
+  },
+  "ts": "2026-10-18T10:00:36.800590+00:00"
+}

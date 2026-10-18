@@ -1,0 +1,29 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "bdcdd990b71606554055d24afe37959242bb929ecaa4800fecff511829d30f81",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 246,
+  "output_tokens": 453,
+  "cost_usd": 0.0012063,
+  "elapsed_s": 2.65,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage and generate passwords to avoid reuse and aid recall\",\n  \"benefits\": [\n    \"intuitive UI\",\n    \"easy password personalization\",\n    \"available on mobile and desktop\",\n    \"password generator and login information storage\"\n  ],\n  \"frictions\": [\n    \"login process can be difficult\"\n  ]\n}",
+  "json": {
+    "task": "Manage and generate passwords to avoid reuse and aid recall",
+    "benefits": [
+      "intuitive UI",
+      "easy password personalization",
+      "available on mobile and desktop",
+      "password generator and login information storage"
+    ],
+    "frictions": [
+      "login process can be difficult"
+    ]
+  },
+  "ts": "2026-10-18T10:15:55.936481+00:00"
+}

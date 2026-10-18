@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d7ee6154e7c4621d592cb5e86a9dc2fde5afc62a139938ea007ec3708f1d98ed",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 210,
+  "output_tokens": 458,
+  "cost_usd": 0.0012079999999999999,
+  "elapsed_s": 2.54,
+  "error": null,
+  "text": "{\n  \"task\": \"Use the product to take notes and track projects\",\n  \"benefits\": [\n    \"Useful for note taking during meetings\",\n    \"Easy to create templates for company-wide use\",\n    \"Straightforward for note-taking\",\n    \"Straightforward for tracking projects\"\n  ],\n  \"frictions\": [\n    \"Can be overwhelming when starting out\"\n  ]\n}",
+  "json": {
+    "task": "Use the product to take notes and track projects",
+    "benefits": [
+      "Useful for note taking during meetings",
+      "Easy to create templates for company-wide use",
+      "Straightforward for note-taking",
+      "Straightforward for tracking projects"
+    ],
+    "frictions": [
+      "Can be overwhelming when starting out"
+    ]
+  },
+  "ts": "2026-10-18T10:00:56.621396+00:00"
+}

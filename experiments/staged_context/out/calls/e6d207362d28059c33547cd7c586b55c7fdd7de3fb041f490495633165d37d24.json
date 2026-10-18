@@ -1,0 +1,36 @@
+{
+  "stage": "hm_plist",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e6d207362d28059c33547cd7c586b55c7fdd7de3fb041f490495633165d37d24",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 1024,
+  "input_tokens": 1579,
+  "output_tokens": 934,
+  "cost_usd": 0.0028087000000000003,
+  "elapsed_s": 5.97,
+  "error": null,
+  "text": "{\n  \"pros\": [\n    \"Generous free tier and affordable premium plans\",\n    \"Strong security features and open-source transparency\",\n    \"Intuitive interface for basic password management\",\n    \"Efficient search and filtering capabilities\",\n    \"Cross-platform availability and browser integration\",\n    \"Easy to create and save new login items\"\n  ],\n  \"cons\": [\n    \"Clunky organization and sharing workflows for teams\",\n    \"Mobile app experience can be inconsistent or less polished\",\n    \"Custom fields are not easily discoverable or accessible\",\n    \"Separate admin console creates a disjointed user experience\",\n    \"Limited advanced reporting features for enterprise users\",\n    \"Occasional auto-fill inconsistencies on certain websites\"\n  ],\n  \"overall_rating\": 4.5\n}",
+  "json": {
+    "pros": [
+      "Generous free tier and affordable premium plans",
+      "Strong security features and open-source transparency",
+      "Intuitive interface for basic password management",
+      "Efficient search and filtering capabilities",
+      "Cross-platform availability and browser integration",
+      "Easy to create and save new login items"
+    ],
+    "cons": [
+      "Clunky organization and sharing workflows for teams",
+      "Mobile app experience can be inconsistent or less polished",
+      "Custom fields are not easily discoverable or accessible",
+      "Separate admin console creates a disjointed user experience",
+      "Limited advanced reporting features for enterprise users",
+      "Occasional auto-fill inconsistencies on certain websites"
+    ],
+    "overall_rating": 4.5
+  },
+  "ts": "2026-10-18T10:16:40.201613+00:00"
+}

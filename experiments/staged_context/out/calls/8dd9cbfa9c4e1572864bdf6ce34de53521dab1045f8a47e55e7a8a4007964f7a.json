@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8dd9cbfa9c4e1572864bdf6ce34de53521dab1045f8a47e55e7a8a4007964f7a",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2824,
+  "output_tokens": 1024,
+  "cost_usd": 0.0034072,
+  "elapsed_s": 5.96,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Generally easy to use for new project managers\",\n    \"Effective to-do list management\",\n    \"Good for facilitating basic collaboration\"\n  ],\n  \"cons\": [\n    \"Difficulty seeing real-time project progress\",\n    \"Main page navigation can be complex with many projects\",\n    \"Lacks advanced reporting functionality\"\n  ],\n  \"overall_experience\": \"This software engineer found Basecamp to be a straightforward tool for basic project management and team collaboration, appreciating its ease of use for general tasks. However, they encountered frustrations with the inability to track real-time project progress and navigate multiple projects efficiently. While functional for their needs, the product's limitations in advanced project oversight prevented a higher overall satisfaction.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Generally easy to use for new project managers",
+      "Effective to-do list management",
+      "Good for facilitating basic collaboration"
+    ],
+    "cons": [
+      "Difficulty seeing real-time project progress",
+      "Main page navigation can be complex with many projects",
+      "Lacks advanced reporting functionality"
+    ],
+    "overall_experience": "This software engineer found Basecamp to be a straightforward tool for basic project management and team collaboration, appreciating its ease of use for general tasks. However, they encountered frustrations with the inability to track real-time project progress and navigate multiple projects efficiently. While functional for their needs, the product's limitations in advanced project oversight prevented a higher overall satisfaction."
+  },
+  "ts": "2026-10-18T10:02:03.131751+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "028cb62703459f4f4be28e781a2efb30be4920559761474376c5d6a808dea162",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2642,
+  "output_tokens": 1106,
+  "cost_usd": 0.0035576,
+  "elapsed_s": 6.61,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Intuitive deal flow for managing B2B/B2C opportunities.\",\n    \"Streamlined operations by having everything in one platform.\",\n    \"Ease of use for a small business team.\"\n  ],\n  \"cons\": [\n    \"Absence of automatic reminders for follow-ups.\",\n    \"Limitations in customer support responsiveness or quality.\",\n    \"Lack of certain advanced functions like call recording.\"\n  ],\n  \"overall_experience\": \"This CEO likely found Freshsales to be a generally effective CRM for managing B2B and B2C customer relationships within their small outsourcing firm. The platform's ease of use and intuitive deal flow were beneficial for quickly getting started and streamlining operations. However, the experience was slightly hampered by missing advanced features, such as automatic reminders, and concerns regarding the responsiveness of customer support.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Intuitive deal flow for managing B2B/B2C opportunities.",
+      "Streamlined operations by having everything in one platform.",
+      "Ease of use for a small business team."
+    ],
+    "cons": [
+      "Absence of automatic reminders for follow-ups.",
+      "Limitations in customer support responsiveness or quality.",
+      "Lack of certain advanced functions like call recording."
+    ],
+    "overall_experience": "This CEO likely found Freshsales to be a generally effective CRM for managing B2B and B2C customer relationships within their small outsourcing firm. The platform's ease of use and intuitive deal flow were beneficial for quickly getting started and streamlining operations. However, the experience was slightly hampered by missing advanced features, such as automatic reminders, and concerns regarding the responsiveness of customer support."
+  },
+  "ts": "2026-10-18T10:01:11.088733+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "hm_plist",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "cec03597a5340ed1410be5775f12e6bcfc58b7e0c201a25ac49d6fe7ee793137",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 1024,
+  "input_tokens": 608,
+  "output_tokens": 1107,
+  "cost_usd": 0.0029499,
+  "elapsed_s": 5.82,
+  "error": null,
+  "text": "{\n  \"pros\": [\n    \"Clear, descriptive tool menu makes it easy to pick the right tool for tasks or documents.\",\n    \"Simple To-do management allows inline addition and easy completion tracking.\",\n    \"Calendar tool effectively manages events, milestones, and deadlines.\",\n    \"Card Table offers a visual way to track work with cards and columns.\",\n    \"Empty project prompts guide new users on how to get started.\",\n    \"Onboarding tour is skippable for experienced users.\"\n  ],\n  \"cons\": [\n    \"Tools must be added manually to each project, requiring extra setup steps.\",\n    \"Free plan is limited to a single project, restricting separate workstreams.\",\n    \"Default event times in the calendar often require manual adjustment to all-day.\",\n    \"Adding the To-dos tool requires an extra title-rename step before use.\",\n    \"Page layout shifts after adding tools, causing minor UI disruption.\",\n    \"Projects start completely empty without any pre-configured tasks or status templates.\"\n  ],\n  \"overall_rating\": \"3.5\"\n}",
+  "json": {
+    "pros": [
+      "Clear, descriptive tool menu makes it easy to pick the right tool for tasks or documents.",
+      "Simple To-do management allows inline addition and easy completion tracking.",
+      "Calendar tool effectively manages events, milestones, and deadlines.",
+      "Card Table offers a visual way to track work with cards and columns.",
+      "Empty project prompts guide new users on how to get started.",
+      "Onboarding tour is skippable for experienced users."
+    ],
+    "cons": [
+      "Tools must be added manually to each project, requiring extra setup steps.",
+      "Free plan is limited to a single project, restricting separate workstreams.",
+      "Default event times in the calendar often require manual adjustment to all-day.",
+      "Adding the To-dos tool requires an extra title-rename step before use.",
+      "Page layout shifts after adding tools, causing minor UI disruption.",
+      "Projects start completely empty without any pre-configured tasks or status templates."
+    ],
+    "overall_rating": "3.5"
+  },
+  "ts": "2026-10-18T10:05:46.232275+00:00"
+}

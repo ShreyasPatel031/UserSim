@@ -1,0 +1,37 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "704c8e7fd92db40ee1b7132c3a4b80586bb14b46ea16d67ea53a9ba62d67a467",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2698,
+  "output_tokens": 1178,
+  "cost_usd": 0.0037544,
+  "elapsed_s": 7.34,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Robust e-commerce platform suitable for wholesale operations\",\n    \"Good integration capabilities with ERPs like Fishbowl or Netsuite\",\n    \"Offers a solid range of customization options for site management\"\n  ],\n  \"cons\": [\n    \"Specific customization options may still be lacking for advanced needs\",\n    \"Initial setup and integration, especially with ERPs, can be challenging\",\n    \"Pricing might be a concern given industry-specific needs\"\n  ],\n  \"overall_experience\": \"This National Account Manager likely finds BigCommerce to be a generally effective platform for managing their wholesale e-commerce websites over a long period. While the ability to integrate with essential ERP systems like Fishbowl is a significant benefit, the actual implementation and ongoing management of these integrations, along with certain customization limitations, may present occasional challenges. Despite these hurdles, the platform's overall functionality and stability have likely kept them satisfied.\",\n  \"unhappy_share_notes\": \"The higher unhappiness share for the Wholesale industry (16.0%) suggests that while the platform is used for 2+ years, there might be specific industry-related pain points. The '2+ years' usage (9.8% unhappy share) generally indicates satisfaction over time, but the wholesale context adds a layer of complexity. The ratings are slightly adjusted down from the combined estimate to reflect this potential for industry-specific friction.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Robust e-commerce platform suitable for wholesale operations",
+      "Good integration capabilities with ERPs like Fishbowl or Netsuite",
+      "Offers a solid range of customization options for site management"
+    ],
+    "cons": [
+      "Specific customization options may still be lacking for advanced needs",
+      "Initial setup and integration, especially with ERPs, can be challenging",
+      "Pricing might be a concern given industry-specific needs"
+    ],
+    "overall_experience": "This National Account Manager likely finds BigCommerce to be a generally effective platform for managing their wholesale e-commerce websites over a long period. While the ability to integrate with essential ERP systems like Fishbowl is a significant benefit, the actual implementation and ongoing management of these integrations, along with certain customization limitations, may present occasional challenges. Despite these hurdles, the platform's overall functionality and stability have likely kept them satisfied.",
+    "unhappy_share_notes": "The higher unhappiness share for the Wholesale industry (16.0%) suggests that while the platform is used for 2+ years, there might be specific industry-related pain points. The '2+ years' usage (9.8% unhappy share) generally indicates satisfaction over time, but the wholesale context adds a layer of complexity. The ratings are slightly adjusted down from the combined estimate to reflect this potential for industry-specific friction."
+  },
+  "ts": "2026-10-18T10:03:34.150403+00:00"
+}

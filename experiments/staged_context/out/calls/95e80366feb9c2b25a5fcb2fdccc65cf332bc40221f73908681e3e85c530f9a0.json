@@ -1,0 +1,27 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "95e80366feb9c2b25a5fcb2fdccc65cf332bc40221f73908681e3e85c530f9a0",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 183,
+  "output_tokens": 451,
+  "cost_usd": 0.0011824000000000001,
+  "elapsed_s": 3.21,
+  "error": null,
+  "text": "{\n  \"task\": \"Perform two-factor authentication\",\n  \"benefits\": [\n    \"Speed of Bitwarden\",\n    \"Fast for two-factor authentication\",\n    \"Easy initial setup\",\n    \"Solves problems in performing sensitive actions on Google Ads\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Perform two-factor authentication",
+    "benefits": [
+      "Speed of Bitwarden",
+      "Fast for two-factor authentication",
+      "Easy initial setup",
+      "Solves problems in performing sensitive actions on Google Ads"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T10:15:59.536049+00:00"
+}

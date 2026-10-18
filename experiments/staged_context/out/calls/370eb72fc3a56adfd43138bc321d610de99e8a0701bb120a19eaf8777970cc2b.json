@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "370eb72fc3a56adfd43138bc321d610de99e8a0701bb120a19eaf8777970cc2b",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 190,
+  "output_tokens": 492,
+  "cost_usd": 0.0012870000000000002,
+  "elapsed_s": 2.91,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage customer relationships and sales processes\",\n  \"benefits\": [\n    \"Gets the basics right\",\n    \"Has easily customisable views\",\n    \"Teams get needed information straight away\"\n  ],\n  \"frictions\": [\n    \"Can be a struggle to adapt to individual company needs if sales pipeline doesn't match Zoho's model\",\n    \"Lacks integrations with other tools\",\n    \"Struggles with advanced functionality\"\n  ]\n}",
+  "json": {
+    "task": "Manage customer relationships and sales processes",
+    "benefits": [
+      "Gets the basics right",
+      "Has easily customisable views",
+      "Teams get needed information straight away"
+    ],
+    "frictions": [
+      "Can be a struggle to adapt to individual company needs if sales pipeline doesn't match Zoho's model",
+      "Lacks integrations with other tools",
+      "Struggles with advanced functionality"
+    ]
+  },
+  "ts": "2026-10-18T10:00:26.713083+00:00"
+}

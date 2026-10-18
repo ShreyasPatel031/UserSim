@@ -1,0 +1,27 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e6201d17c59b5552b37ac9eee5778c8d9dc5c2d8656b4e22e065ef3035dfcf33",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 198,
+  "output_tokens": 406,
+  "cost_usd": 0.0010744,
+  "elapsed_s": 3.32,
+  "error": null,
+  "text": "{\n  \"task\": \"Build an e-commerce website\",\n  \"benefits\": [\n    \"Easy to build site\",\n    \"Easy to choose features\",\n    \"Easy to choose templates\",\n    \"Excellent customer service/tech support\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Build an e-commerce website",
+    "benefits": [
+      "Easy to build site",
+      "Easy to choose features",
+      "Easy to choose templates",
+      "Excellent customer service/tech support"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T10:00:52.436696+00:00"
+}

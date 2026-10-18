@@ -1,0 +1,29 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "de410230b6235880d2b759332df035ed6fcbf088169a636fa14fa12aec9f25ed",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 191,
+  "output_tokens": 457,
+  "cost_usd": 0.0011998,
+  "elapsed_s": 2.83,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage passwords.\",\n  \"benefits\": [\n    \"Makes digital life simpler\",\n    \"Focuses on security\",\n    \"Can be used on many devices at the same time\"\n  ],\n  \"frictions\": [\n    \"User interface could be improved\",\n    \"Customer support is not fast\"\n  ]\n}",
+  "json": {
+    "task": "Manage passwords.",
+    "benefits": [
+      "Makes digital life simpler",
+      "Focuses on security",
+      "Can be used on many devices at the same time"
+    ],
+    "frictions": [
+      "User interface could be improved",
+      "Customer support is not fast"
+    ]
+  },
+  "ts": "2026-10-18T10:15:57.795106+00:00"
+}

@@ -1,0 +1,29 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d5d1cbc3e91566c04936895ec8626b888fa59f067549af47f71fe757b3fdad21",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 325,
+  "output_tokens": 460,
+  "cost_usd": 0.0012475,
+  "elapsed_s": 3.09,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage passwords and generate new ones.\",\n  \"benefits\": [\n    \"Organize passwords with folders\",\n    \"Generate passwords directly within the application\",\n    \"Quickly access sites from a centralized location\",\n    \"Smooth initial setup with password import\"\n  ],\n  \"frictions\": [\n    \"Requires frequent password entry to log in\"\n  ]\n}",
+  "json": {
+    "task": "Manage passwords and generate new ones.",
+    "benefits": [
+      "Organize passwords with folders",
+      "Generate passwords directly within the application",
+      "Quickly access sites from a centralized location",
+      "Smooth initial setup with password import"
+    ],
+    "frictions": [
+      "Requires frequent password entry to log in"
+    ]
+  },
+  "ts": "2026-10-18T10:15:56.721404+00:00"
+}

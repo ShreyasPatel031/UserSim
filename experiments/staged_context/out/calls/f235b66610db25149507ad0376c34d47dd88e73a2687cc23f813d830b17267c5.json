@@ -1,0 +1,30 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f235b66610db25149507ad0376c34d47dd88e73a2687cc23f813d830b17267c5",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 235,
+  "output_tokens": 489,
+  "cost_usd": 0.0012929999999999999,
+  "elapsed_s": 3.0,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage passwords across multiple sites and devices\",\n  \"benefits\": [\n    \"Offers unlimited passwords on a free account\",\n    \"Supports unlimited devices (desktop, mobile, browser extensions) on a free account\",\n    \"Completely free\"\n  ],\n  \"frictions\": [\n    \"UI feels rigid and \\\"engineered\\\"\",\n    \"UI lacks visual finesse\",\n    \"UI is not as slick or polished as competitors\"\n  ]\n}",
+  "json": {
+    "task": "Manage passwords across multiple sites and devices",
+    "benefits": [
+      "Offers unlimited passwords on a free account",
+      "Supports unlimited devices (desktop, mobile, browser extensions) on a free account",
+      "Completely free"
+    ],
+    "frictions": [
+      "UI feels rigid and \"engineered\"",
+      "UI lacks visual finesse",
+      "UI is not as slick or polished as competitors"
+    ]
+  },
+  "ts": "2026-10-18T10:15:57.951392+00:00"
+}

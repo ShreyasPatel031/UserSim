@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "bfccfb15b96d064338c5c2a4a27dca4eccbef8bf55d89fb0121fde945e9278a5",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2534,
+  "output_tokens": 1151,
+  "cost_usd": 0.0036377,
+  "elapsed_s": 6.03,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Intuitive deal flow for managing sales opportunities.\",\n    \"Ease of use and comprehensive features on a single platform.\",\n    \"Good value, especially with extensive free-tier offerings.\"\n  ],\n  \"cons\": [\n    \"Customer support response times can be slow or unhelpful.\",\n    \"Reporting features are present but lack robustness for detailed analysis.\",\n    \"Missing some advanced functionalities and 'nice-to-have' features.\"\n  ],\n  \"overall_experience\": \"This Operations Head likely found Freshsales to be a generally user-friendly platform for managing customer relationships, appreciating its integrated features and intuitive deal flow. However, the experience was tempered by frustrations regarding customer support responsiveness and some limitations in advanced functionalities and robust reporting, which might be crucial for their operational oversight. Despite these drawbacks, the platform offered decent value for money, especially for a company new to the product.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Intuitive deal flow for managing sales opportunities.",
+      "Ease of use and comprehensive features on a single platform.",
+      "Good value, especially with extensive free-tier offerings."
+    ],
+    "cons": [
+      "Customer support response times can be slow or unhelpful.",
+      "Reporting features are present but lack robustness for detailed analysis.",
+      "Missing some advanced functionalities and 'nice-to-have' features."
+    ],
+    "overall_experience": "This Operations Head likely found Freshsales to be a generally user-friendly platform for managing customer relationships, appreciating its integrated features and intuitive deal flow. However, the experience was tempered by frustrations regarding customer support responsiveness and some limitations in advanced functionalities and robust reporting, which might be crucial for their operational oversight. Despite these drawbacks, the platform offered decent value for money, especially for a company new to the product."
+  },
+  "ts": "2026-10-18T10:01:13.004139+00:00"
+}

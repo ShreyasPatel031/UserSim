@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b1756639d0bfc8d7f4572197fbb6b1e2fb4db4f7bfe9d6acb4785c27b7fb16e4",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2567,
+  "output_tokens": 998,
+  "cost_usd": 0.0032651,
+  "elapsed_s": 5.15,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8.5,\n  \"pros\": [\n    \"Comprehensive customization options for data management\",\n    \"Good organization and overall user-friendliness\",\n    \"Effective at automating CRM and workflow tasks\"\n  ],\n  \"cons\": [\n    \"Reporting tools may lack comprehensiveness for deep analysis\",\n    \"The user interface can sometimes feel overwhelming due to its many features\",\n    \"Potential struggle to adapt to specific non-profit sales pipeline models\"\n  ],\n  \"overall_experience\": \"The Data Analyst likely found Zoho CRM to be a highly functional and customizable tool for managing customer relationships within their non-profit organization. While its extensive features offered great capabilities, they might have experienced some initial overwhelm and limitations with advanced reporting. Overall, the product provided good value and effectively supported their data management tasks.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8.5,
+    "pros": [
+      "Comprehensive customization options for data management",
+      "Good organization and overall user-friendliness",
+      "Effective at automating CRM and workflow tasks"
+    ],
+    "cons": [
+      "Reporting tools may lack comprehensiveness for deep analysis",
+      "The user interface can sometimes feel overwhelming due to its many features",
+      "Potential struggle to adapt to specific non-profit sales pipeline models"
+    ],
+    "overall_experience": "The Data Analyst likely found Zoho CRM to be a highly functional and customizable tool for managing customer relationships within their non-profit organization. While its extensive features offered great capabilities, they might have experienced some initial overwhelm and limitations with advanced reporting. Overall, the product provided good value and effectively supported their data management tasks."
+  },
+  "ts": "2026-10-18T10:01:34.366815+00:00"
+}

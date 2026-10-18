@@ -1,0 +1,31 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9c26af8073d55a0b3a8ca17381bc259c1f1580ba210a22dbec7649a426a8909a",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 181,
+  "output_tokens": 471,
+  "cost_usd": 0.0012318,
+  "elapsed_s": 3.06,
+  "error": null,
+  "text": "{\n  \"task\": \"Host an e-commerce website\",\n  \"benefits\": [\n    \"Ease of use\",\n    \"Integration capabilities\",\n    \"Clean UI\",\n    \"Organization of most used features were easy to find\"\n  ],\n  \"frictions\": [\n    \"Random glitches\",\n    \"Some add-ons stated they were compatible but were in fact not\",\n    \"Some issues with image uploads\"\n  ]\n}",
+  "json": {
+    "task": "Host an e-commerce website",
+    "benefits": [
+      "Ease of use",
+      "Integration capabilities",
+      "Clean UI",
+      "Organization of most used features were easy to find"
+    ],
+    "frictions": [
+      "Random glitches",
+      "Some add-ons stated they were compatible but were in fact not",
+      "Some issues with image uploads"
+    ]
+  },
+  "ts": "2026-10-18T10:00:51.659315+00:00"
+}

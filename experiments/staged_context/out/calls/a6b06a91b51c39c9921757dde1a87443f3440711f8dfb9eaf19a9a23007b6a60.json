@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a6b06a91b51c39c9921757dde1a87443f3440711f8dfb9eaf19a9a23007b6a60",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2784,
+  "output_tokens": 1094,
+  "cost_usd": 0.0035701999999999995,
+  "elapsed_s": 6.89,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Robust platform for managing a retail business\",\n    \"Strong customization options compared to alternatives\",\n    \"Ability to integrate with business-critical ERPs like Fishbowl\"\n  ],\n  \"cons\": [\n    \"Experienced initial setup and integration difficulties\",\n    \"Steeper learning curve than previous platform (Shopify)\",\n    \"Perceived higher cost compared to previous alternatives\"\n  ],\n  \"overall_experience\": \"This owner used BigCommerce to establish their retail business after previously using Shopify. While appreciating its robust features, scalability, and customization capabilities for a growing retail operation, they likely encountered some initial friction with setup and integrations. The platform offered the advanced functionality needed, but perhaps came with a slightly steeper learning curve and a higher perceived cost compared to their prior experience.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 7,
+    "pros": [
+      "Robust platform for managing a retail business",
+      "Strong customization options compared to alternatives",
+      "Ability to integrate with business-critical ERPs like Fishbowl"
+    ],
+    "cons": [
+      "Experienced initial setup and integration difficulties",
+      "Steeper learning curve than previous platform (Shopify)",
+      "Perceived higher cost compared to previous alternatives"
+    ],
+    "overall_experience": "This owner used BigCommerce to establish their retail business after previously using Shopify. While appreciating its robust features, scalability, and customization capabilities for a growing retail operation, they likely encountered some initial friction with setup and integrations. The platform offered the advanced functionality needed, but perhaps came with a slightly steeper learning curve and a higher perceived cost compared to their prior experience."
+  },
+  "ts": "2026-10-18T10:03:30.087269+00:00"
+}

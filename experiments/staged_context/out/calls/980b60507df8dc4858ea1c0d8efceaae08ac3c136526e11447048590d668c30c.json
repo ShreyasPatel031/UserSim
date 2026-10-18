@@ -1,0 +1,29 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "980b60507df8dc4858ea1c0d8efceaae08ac3c136526e11447048590d668c30c",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 210,
+  "output_tokens": 515,
+  "cost_usd": 0.0013505,
+  "elapsed_s": 3.21,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage all passwords under a single location\",\n  \"benefits\": [\n    \"Is very simple\",\n    \"Has enough features to manage passwords\",\n    \"Makes logging into websites and accounts very easy\",\n    \"Speeds up productivity\"\n  ],\n  \"frictions\": [\n    \"Requires manual sign-in to the vault every time a website is opened\"\n  ]\n}",
+  "json": {
+    "task": "Manage all passwords under a single location",
+    "benefits": [
+      "Is very simple",
+      "Has enough features to manage passwords",
+      "Makes logging into websites and accounts very easy",
+      "Speeds up productivity"
+    ],
+    "frictions": [
+      "Requires manual sign-in to the vault every time a website is opened"
+    ]
+  },
+  "ts": "2026-10-18T10:16:00.465904+00:00"
+}

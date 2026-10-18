@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "84d35c8274966a60fe954d33946fb8e0c0775cbae29c8887f27058dc55050194",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2429,
+  "output_tokens": 1051,
+  "cost_usd": 0.0033562,
+  "elapsed_s": 6.23,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Intuitive deal flow for managing sales opportunities.\",\n    \"Effective for adding and managing new leads and contacts.\",\n    \"Contributes to improved sales effectiveness.\"\n  ],\n  \"cons\": [\n    \"Lacks robust reporting capabilities for executive oversight.\",\n    \"Missing automatic reminders for lead follow-up.\",\n    \"May require some initial learning despite an intuitive interface.\"\n  ],\n  \"overall_experience\": \"This Partner in Investment Management likely found Freshsales to be a generally effective tool for their primary task of adding and managing leads and contacts, appreciating its intuitive deal flow. However, they may have noted some limitations, particularly the absence of automatic reminders crucial for follow-up and the lack of robust reporting features expected by an executive. The experience on a free trial likely provided a good glimpse into its core benefits for sales efficiency.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Intuitive deal flow for managing sales opportunities.",
+      "Effective for adding and managing new leads and contacts.",
+      "Contributes to improved sales effectiveness."
+    ],
+    "cons": [
+      "Lacks robust reporting capabilities for executive oversight.",
+      "Missing automatic reminders for lead follow-up.",
+      "May require some initial learning despite an intuitive interface."
+    ],
+    "overall_experience": "This Partner in Investment Management likely found Freshsales to be a generally effective tool for their primary task of adding and managing leads and contacts, appreciating its intuitive deal flow. However, they may have noted some limitations, particularly the absence of automatic reminders crucial for follow-up and the lack of robust reporting features expected by an executive. The experience on a free trial likely provided a good glimpse into its core benefits for sales efficiency."
+  },
+  "ts": "2026-10-18T10:01:09.293767+00:00"
+}

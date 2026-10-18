@@ -1,0 +1,32 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e238bcf31dae5363870cac9358341003ad42c5c7dacff9c64e19da8114083d6b",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 260,
+  "output_tokens": 550,
+  "cost_usd": 0.001453,
+  "elapsed_s": 4.97,
+  "error": null,
+  "text": "{\n  \"task\": null,\n  \"benefits\": [\n    \"Files and information are fully encrypted locally before leaving the device\",\n    \"Master password never leaves the device and is never sent to Bitwarden servers\",\n    \"Passwords and information remain unreadable even in the event of a server breach\",\n    \"Provides a high level of privacy and security\"\n  ],\n  \"frictions\": [\n    \"Free plan limits secure sharing to two users\",\n    \"Interface contains too many details\",\n    \"Self-hosting requires technical expertise\",\n    \"Attachment storage is restricted and emergency access is paywalled\"\n  ]\n}",
+  "json": {
+    "task": null,
+    "benefits": [
+      "Files and information are fully encrypted locally before leaving the device",
+      "Master password never leaves the device and is never sent to Bitwarden servers",
+      "Passwords and information remain unreadable even in the event of a server breach",
+      "Provides a high level of privacy and security"
+    ],
+    "frictions": [
+      "Free plan limits secure sharing to two users",
+      "Interface contains too many details",
+      "Self-hosting requires technical expertise",
+      "Attachment storage is restricted and emergency access is paywalled"
+    ]
+  },
+  "ts": "2026-10-18T10:15:57.410526+00:00"
+}

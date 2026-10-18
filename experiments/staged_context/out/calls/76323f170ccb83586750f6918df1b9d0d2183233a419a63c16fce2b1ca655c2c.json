@@ -1,0 +1,34 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "76323f170ccb83586750f6918df1b9d0d2183233a419a63c16fce2b1ca655c2c",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2749,
+  "output_tokens": 950,
+  "cost_usd": 0.0031996999999999998,
+  "elapsed_s": 5.51,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Simplified project management for pipeline tracking.\",\n    \"Enabled more effective work and team coordination.\"\n  ],\n  \"cons\": [\n    \"Limited customization options for specific workflows.\",\n    \"Inability to edit multiple lines simultaneously was a frustration.\"\n  ],\n  \"overall_experience\": \"This Director likely found Smartsheet to be a significant improvement over Excel for managing project pipelines. They appreciated its ability to simplify project oversight and enable more effective team work within their e-learning company. While generally positive, the reviewer may have encountered some frustrations with its customization limitations and the inability to perform bulk edits.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Simplified project management for pipeline tracking.",
+      "Enabled more effective work and team coordination."
+    ],
+    "cons": [
+      "Limited customization options for specific workflows.",
+      "Inability to edit multiple lines simultaneously was a frustration."
+    ],
+    "overall_experience": "This Director likely found Smartsheet to be a significant improvement over Excel for managing project pipelines. They appreciated its ability to simplify project oversight and enable more effective team work within their e-learning company. While generally positive, the reviewer may have encountered some frustrations with its customization limitations and the inability to perform bulk edits."
+  },
+  "ts": "2026-10-18T10:03:47.492219+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f3e95f7404868aae223bf77f36dc960c9fe3c955368d53cb49ec587919af306f",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2947,
+  "output_tokens": 1108,
+  "cost_usd": 0.0036541,
+  "elapsed_s": 6.09,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4.3,\n  \"functionality_rating\": 4.4,\n  \"overall_rating\": 4.4,\n  \"value_for_money_rating\": 4.5,\n  \"customer_support_rating\": 4.3,\n  \"recommendation_score\": 8.5,\n  \"pros\": [\n    \"Comprehensive customization options for CRM and workflows\",\n    \"Good organization and a generally user-friendly interface\",\n    \"Offers an all-in-one solution with an AI sales assistant\"\n  ],\n  \"cons\": [\n    \"Reporting tools may lack the comprehensiveness needed for marketing insights\",\n    \"The user interface can still feel overwhelming at times\",\n    \"Adapting to the platform can be challenging if sales pipeline doesn't match Zoho's model\"\n  ],\n  \"overall_experience\": \"This Marketing Manager likely found Zoho CRM to be a capable and valuable tool for managing customer relationships and sales processes over their 1-2 years of use. They appreciated its customization capabilities, organizational structure, and the overall value it provided as an all-in-one solution. However, they probably faced some frustration with less comprehensive reporting features and an occasionally overwhelming user interface, which could hinder deeper marketing analysis and adaptation to specific higher education processes.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4.3,
+    "functionality_rating": 4.4,
+    "overall_rating": 4.4,
+    "value_for_money_rating": 4.5,
+    "customer_support_rating": 4.3,
+    "recommendation_score": 8.5,
+    "pros": [
+      "Comprehensive customization options for CRM and workflows",
+      "Good organization and a generally user-friendly interface",
+      "Offers an all-in-one solution with an AI sales assistant"
+    ],
+    "cons": [
+      "Reporting tools may lack the comprehensiveness needed for marketing insights",
+      "The user interface can still feel overwhelming at times",
+      "Adapting to the platform can be challenging if sales pipeline doesn't match Zoho's model"
+    ],
+    "overall_experience": "This Marketing Manager likely found Zoho CRM to be a capable and valuable tool for managing customer relationships and sales processes over their 1-2 years of use. They appreciated its customization capabilities, organizational structure, and the overall value it provided as an all-in-one solution. However, they probably faced some frustration with less comprehensive reporting features and an occasionally overwhelming user interface, which could hinder deeper marketing analysis and adaptation to specific higher education processes."
+  },
+  "ts": "2026-10-18T10:01:30.160324+00:00"
+}

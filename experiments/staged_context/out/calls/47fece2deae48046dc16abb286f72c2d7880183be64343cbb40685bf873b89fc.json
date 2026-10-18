@@ -1,0 +1,25 @@
+{
+  "stage": "hm_task",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "47fece2deae48046dc16abb286f72c2d7880183be64343cbb40685bf873b89fc",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 512,
+  "input_tokens": 1178,
+  "output_tokens": 489,
+  "cost_usd": 0.0015758999999999999,
+  "elapsed_s": 3.4,
+  "error": null,
+  "text": "{\n  \"task\": \"Okay, I need to set up a new project in ClickUp for our upcoming 'Feature X' development. I'll add a few key tasks, assign them, and set due dates. Then, I want to create a custom field to track 'Priority' and set up a Kanban board view to visualize progress. Finally, I'll update a task's priority and move it to a different status.\",\n  \"core_job\": \"Manage project tasks and track progress.\",\n  \"features\": [\n    \"Custom Fields\",\n    \"Board View\"\n  ]\n}",
+  "json": {
+    "task": "Okay, I need to set up a new project in ClickUp for our upcoming 'Feature X' development. I'll add a few key tasks, assign them, and set due dates. Then, I want to create a custom field to track 'Priority' and set up a Kanban board view to visualize progress. Finally, I'll update a task's priority and move it to a different status.",
+    "core_job": "Manage project tasks and track progress.",
+    "features": [
+      "Custom Fields",
+      "Board View"
+    ]
+  },
+  "ts": "2026-10-18T10:22:05.064683+00:00"
+}

@@ -1,0 +1,27 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e195dfe7ae7d8e40e79d2ce27a861ef66d02c32809008680e11a6be8200c3411",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 176,
+  "output_tokens": 474,
+  "cost_usd": 0.0012377999999999998,
+  "elapsed_s": 2.93,
+  "error": null,
+  "text": "{\n  \"task\": \"Perform email marketing for an e-commerce store.\",\n  \"benefits\": [\n    \"Generate significant income through email marketing.\"\n  ],\n  \"frictions\": [\n    \"Some email tools are difficult to use.\",\n    \"Limited HTML design tools.\"\n  ]\n}",
+  "json": {
+    "task": "Perform email marketing for an e-commerce store.",
+    "benefits": [
+      "Generate significant income through email marketing."
+    ],
+    "frictions": [
+      "Some email tools are difficult to use.",
+      "Limited HTML design tools."
+    ]
+  },
+  "ts": "2026-10-18T10:00:46.106946+00:00"
+}

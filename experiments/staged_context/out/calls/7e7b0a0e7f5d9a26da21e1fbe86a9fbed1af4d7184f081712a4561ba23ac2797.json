@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7e7b0a0e7f5d9a26da21e1fbe86a9fbed1af4d7184f081712a4561ba23ac2797",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 200,
+  "output_tokens": 320,
+  "cost_usd": 0.0008600000000000001,
+  "elapsed_s": 2.53,
+  "error": null,
+  "text": "{\n  \"task\": \"Set up a CRM tool\",\n  \"benefits\": [\n    \"User-friendly interface\",\n    \"Customization options\",\n    \"Extensive feature set\",\n    \"Affordable pricing\"\n  ],\n  \"frictions\": [\n    \"Third-party integrations cause project delays\"\n  ]\n}",
+  "json": {
+    "task": "Set up a CRM tool",
+    "benefits": [
+      "User-friendly interface",
+      "Customization options",
+      "Extensive feature set",
+      "Affordable pricing"
+    ],
+    "frictions": [
+      "Third-party integrations cause project delays"
+    ]
+  },
+  "ts": "2026-10-18T10:00:25.817916+00:00"
+}

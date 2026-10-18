@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7fbfb21d0660d3fe30d83c7cf5c942e856129e3ad68be9f1a6fd0d329fe28871",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2649,
+  "output_tokens": 1083,
+  "cost_usd": 0.0035021999999999996,
+  "elapsed_s": 6.37,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Makes customer communication management easier\",\n    \"Offers an intuitive, all-in-one support platform\",\n    \"Auto-assign feature for tickets helps streamline workflow\"\n  ],\n  \"cons\": [\n    \"Can have a steep learning curve for team members\",\n    \"New reporting features may provide inaccurate or hard-to-digest data\",\n    \"Can become costly as the team grows due to higher-tier features\"\n  ],\n  \"overall_experience\": \"This manager from an animation company likely found Freshdesk to be a generally capable platform for managing customer communication and presentations. While appreciating its intuitive nature and features that streamline support, they probably encountered some challenges with the learning curve for their team and potentially found the reporting features less reliable or harder to interpret. The cost for advanced features might have also been a concern for their 11-50 employee company.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 7,
+    "pros": [
+      "Makes customer communication management easier",
+      "Offers an intuitive, all-in-one support platform",
+      "Auto-assign feature for tickets helps streamline workflow"
+    ],
+    "cons": [
+      "Can have a steep learning curve for team members",
+      "New reporting features may provide inaccurate or hard-to-digest data",
+      "Can become costly as the team grows due to higher-tier features"
+    ],
+    "overall_experience": "This manager from an animation company likely found Freshdesk to be a generally capable platform for managing customer communication and presentations. While appreciating its intuitive nature and features that streamline support, they probably encountered some challenges with the learning curve for their team and potentially found the reporting features less reliable or harder to interpret. The cost for advanced features might have also been a concern for their 11-50 employee company."
+  },
+  "ts": "2026-10-18T10:04:01.111174+00:00"
+}

@@ -1,0 +1,30 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "726d42ab5764519297a012ea91220603ecb9c473ea5079562bdea1cf7d7b9bdd",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 242,
+  "output_tokens": 484,
+  "cost_usd": 0.0012825999999999998,
+  "elapsed_s": 3.3,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage work and personal passwords, securely send text, consolidate tokens and passkeys, and manage MFA\",\n  \"benefits\": [\n    \"Set up and manage MFA\",\n    \"Consolidate tokens, passkeys, and passwords in one app\",\n    \"Securely send passwords and other texts\",\n    \"Set up the product initially\"\n  ],\n  \"frictions\": [\n    \"Extension is unreliable when picking up password changes\",\n    \"Extension causes browsers to hang, requiring reboots\"\n  ]\n}",
+  "json": {
+    "task": "Manage work and personal passwords, securely send text, consolidate tokens and passkeys, and manage MFA",
+    "benefits": [
+      "Set up and manage MFA",
+      "Consolidate tokens, passkeys, and passwords in one app",
+      "Securely send passwords and other texts",
+      "Set up the product initially"
+    ],
+    "frictions": [
+      "Extension is unreliable when picking up password changes",
+      "Extension causes browsers to hang, requiring reboots"
+    ]
+  },
+  "ts": "2026-10-18T10:16:00.591112+00:00"
+}

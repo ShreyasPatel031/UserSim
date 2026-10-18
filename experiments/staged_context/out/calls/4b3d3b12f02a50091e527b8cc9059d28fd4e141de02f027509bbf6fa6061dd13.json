@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4b3d3b12f02a50091e527b8cc9059d28fd4e141de02f027509bbf6fa6061dd13",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 161,
+  "output_tokens": 454,
+  "cost_usd": 0.0011833,
+  "elapsed_s": 3.02,
+  "error": null,
+  "text": "{\n  \"task\": \"Create new reports\",\n  \"benefits\": [\n    \"Very accessible\",\n    \"Receives updates\",\n    \"Offers many propositions\",\n    \"Enables rapid report creation\"\n  ],\n  \"frictions\": [\n    \"Requires knowing the measures well\",\n    \"Requires a tech background\"\n  ]\n}",
+  "json": {
+    "task": "Create new reports",
+    "benefits": [
+      "Very accessible",
+      "Receives updates",
+      "Offers many propositions",
+      "Enables rapid report creation"
+    ],
+    "frictions": [
+      "Requires knowing the measures well",
+      "Requires a tech background"
+    ]
+  },
+  "ts": "2026-10-18T10:00:31.700772+00:00"
+}

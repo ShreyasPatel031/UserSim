@@ -1,0 +1,27 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "84a4bd26d9ccebf96883e3e23f0763ea48c987a3016279d3b86de3cd8a1edaf3",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 236,
+  "output_tokens": 466,
+  "cost_usd": 0.0012358,
+  "elapsed_s": 2.71,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage projects and track their progress\",\n  \"benefits\": [\n    \"Easy to use\",\n    \"Enables team organization and project tracking\",\n    \"Alerts prevent projects from being left behind and help finish them on schedule\",\n    \"Enables multiple users to simultaneously edit or update\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Manage projects and track their progress",
+    "benefits": [
+      "Easy to use",
+      "Enables team organization and project tracking",
+      "Alerts prevent projects from being left behind and help finish them on schedule",
+      "Enables multiple users to simultaneously edit or update"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T10:00:55.943126+00:00"
+}

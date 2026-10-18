@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2f754b017f2723c46d0c0a6735b8896f22d341f35bf15b8134c0817c4a921b30",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2642,
+  "output_tokens": 1049,
+  "cost_usd": 0.0034151,
+  "elapsed_s": 6.63,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Advanced e-commerce email marketing features\",\n    \"Effective for managing complex campaigns\",\n    \"Easy to navigate once set up\"\n  ],\n  \"cons\": [\n    \"High cost can be a significant concern\",\n    \"Initial setup process can be challenging\",\n    \"Reporting dashboards could be clearer\"\n  ],\n  \"overall_experience\": \"This Responsable Marketing likely found Klaviyo to be an incredibly powerful tool for managing their e-commerce marketing campaigns over their 2+ years of use. While the platform offered advanced functionality and was easy to navigate day-to-day, the initial setup presented some difficulties. The high cost of Klaviyo was probably a notable drawback, yet its effectiveness in driving results for their apparel and fashion business made it a valuable asset despite the expense.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Advanced e-commerce email marketing features",
+      "Effective for managing complex campaigns",
+      "Easy to navigate once set up"
+    ],
+    "cons": [
+      "High cost can be a significant concern",
+      "Initial setup process can be challenging",
+      "Reporting dashboards could be clearer"
+    ],
+    "overall_experience": "This Responsable Marketing likely found Klaviyo to be an incredibly powerful tool for managing their e-commerce marketing campaigns over their 2+ years of use. While the platform offered advanced functionality and was easy to navigate day-to-day, the initial setup presented some difficulties. The high cost of Klaviyo was probably a notable drawback, yet its effectiveness in driving results for their apparel and fashion business made it a valuable asset despite the expense."
+  },
+  "ts": "2026-10-18T10:03:16.826486+00:00"
+}

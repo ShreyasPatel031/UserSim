@@ -1,0 +1,32 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f36c44316da8e176e1d163d18c7a84539a5dc0c35cd221284942f6da10b2fd0d",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 254,
+  "output_tokens": 515,
+  "cost_usd": 0.0013637,
+  "elapsed_s": 3.14,
+  "error": null,
+  "text": "{\n  \"task\": \"Use the application for email marketing in ecommerce\",\n  \"benefits\": [\n    \"Advanced email marketing app for ecommerce\",\n    \"Reliable email marketing app for ecommerce\",\n    \"Automation builder is advanced\",\n    \"Automation builder is customizable\"\n  ],\n  \"frictions\": [\n    \"Very expensive\",\n    \"Dynamic discount code creation is time-consuming\",\n    \"Deleting profiles is time-consuming\",\n    \"Basic functions are awkward and complex\"\n  ]\n}",
+  "json": {
+    "task": "Use the application for email marketing in ecommerce",
+    "benefits": [
+      "Advanced email marketing app for ecommerce",
+      "Reliable email marketing app for ecommerce",
+      "Automation builder is advanced",
+      "Automation builder is customizable"
+    ],
+    "frictions": [
+      "Very expensive",
+      "Dynamic discount code creation is time-consuming",
+      "Deleting profiles is time-consuming",
+      "Basic functions are awkward and complex"
+    ]
+  },
+  "ts": "2026-10-18T10:00:46.090649+00:00"
+}

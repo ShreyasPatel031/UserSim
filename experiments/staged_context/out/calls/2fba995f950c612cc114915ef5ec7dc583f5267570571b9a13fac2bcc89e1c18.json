@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2fba995f950c612cc114915ef5ec7dc583f5267570571b9a13fac2bcc89e1c18",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2588,
+  "output_tokens": 1062,
+  "cost_usd": 0.0034314000000000002,
+  "elapsed_s": 5.81,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Improved the sales team's overall effectiveness.\",\n    \"Provided an intuitive deal flow for managing opportunities.\",\n    \"Helped centralize critical sales information.\"\n  ],\n  \"cons\": [\n    \"Automatic reminders for tasks were notably absent.\",\n    \"Reporting features were not robust enough for detailed analysis.\",\n    \"Experienced a learning curve during initial setup.\"\n  ],\n  \"overall_experience\": \"This Sales Professional found Freshsales to be a generally positive tool for centralizing information and managing leads, appreciating its intuitive deal flow and impact on sales effectiveness. However, they noted some frustrations with the lack of automatic reminders and less robust reporting capabilities. The initial learning curve also presented a minor challenge during their early usage.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Improved the sales team's overall effectiveness.",
+      "Provided an intuitive deal flow for managing opportunities.",
+      "Helped centralize critical sales information."
+    ],
+    "cons": [
+      "Automatic reminders for tasks were notably absent.",
+      "Reporting features were not robust enough for detailed analysis.",
+      "Experienced a learning curve during initial setup."
+    ],
+    "overall_experience": "This Sales Professional found Freshsales to be a generally positive tool for centralizing information and managing leads, appreciating its intuitive deal flow and impact on sales effectiveness. However, they noted some frustrations with the lack of automatic reminders and less robust reporting capabilities. The initial learning curve also presented a minor challenge during their early usage."
+  },
+  "ts": "2026-10-18T10:01:22.188067+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d44f41e7b1f531a0cfcca7d2f977a22b6b8059d5cbee4490c2ac4cc6344fcc4e",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2894,
+  "output_tokens": 940,
+  "cost_usd": 0.0032182,
+  "elapsed_s": 4.89,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Reliable and secure for clinical application data\",\n    \"Simplified project management for collaborative tasks\",\n    \"Effective in linking multiple documents to a central dashboard\"\n  ],\n  \"cons\": [\n    \"Initial learning curve could be overwhelming\",\n    \"Limited customization options for specific workflows\",\n    \"Copy/paste functionality can be unreliable\"\n  ],\n  \"overall_experience\": \"This reviewer, working as a clinical app in the biotechnology industry, found Smartsheet to be a highly functional and reliable tool for project collaboration. They appreciated its ability to simplify project management and provide secure data handling, which is crucial in their field. While initially finding the platform somewhat overwhelming, they experienced its full benefits after the learning period, though some minor interface frustrations persisted.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Reliable and secure for clinical application data",
+      "Simplified project management for collaborative tasks",
+      "Effective in linking multiple documents to a central dashboard"
+    ],
+    "cons": [
+      "Initial learning curve could be overwhelming",
+      "Limited customization options for specific workflows",
+      "Copy/paste functionality can be unreliable"
+    ],
+    "overall_experience": "This reviewer, working as a clinical app in the biotechnology industry, found Smartsheet to be a highly functional and reliable tool for project collaboration. They appreciated its ability to simplify project management and provide secure data handling, which is crucial in their field. While initially finding the platform somewhat overwhelming, they experienced its full benefits after the learning period, though some minor interface frustrations persisted."
+  },
+  "ts": "2026-10-18T10:03:49.142812+00:00"
+}

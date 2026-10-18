@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "19b490549fc7c8f7eed04a72b2d9a1847430159f58cd2117515e7235276b726e",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2941,
+  "output_tokens": 1002,
+  "cost_usd": 0.0033873,
+  "elapsed_s": 5.56,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"User-friendly interface and good organization\",\n    \"Customization options for CRM and workflow management\",\n    \"AI sales assistant provides personalized tips\"\n  ],\n  \"cons\": [\n    \"Reporting tools lack comprehensiveness for in-depth analysis\",\n    \"Can be overwhelming for new users or if sales pipeline doesn't match model\",\n    \"Usage guide was lacking at the time of initial decision\"\n  ],\n  \"overall_experience\": \"This Sr. Analyst in Market Research found Zoho CRM to be a capable tool for managing customer relationships. They appreciated its user-friendly interface, organization, and customization features, alongside the AI assistant. However, the lack of comprehensive reporting tools and potential difficulty in adapting it to specific company sales models posed some frustration for their analytical role.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "User-friendly interface and good organization",
+      "Customization options for CRM and workflow management",
+      "AI sales assistant provides personalized tips"
+    ],
+    "cons": [
+      "Reporting tools lack comprehensiveness for in-depth analysis",
+      "Can be overwhelming for new users or if sales pipeline doesn't match model",
+      "Usage guide was lacking at the time of initial decision"
+    ],
+    "overall_experience": "This Sr. Analyst in Market Research found Zoho CRM to be a capable tool for managing customer relationships. They appreciated its user-friendly interface, organization, and customization features, alongside the AI assistant. However, the lack of comprehensive reporting tools and potential difficulty in adapting it to specific company sales models posed some frustration for their analytical role."
+  },
+  "ts": "2026-10-18T10:01:39.230649+00:00"
+}

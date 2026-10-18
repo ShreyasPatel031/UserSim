@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d2a1baf74aafd263ee49437dc78984a4e3193bb4f392ce5ef323a2972a06c9e6",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2701,
+  "output_tokens": 1150,
+  "cost_usd": 0.0036853,
+  "elapsed_s": 6.85,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Competitive pricing and good feature set for SMBs.\",\n    \"Integrated tools for lead management and campaign tracking.\",\n    \"User-friendly interface simplifying daily tasks.\"\n  ],\n  \"cons\": [\n    \"Reporting tools might lack the desired depth for strategic analysis.\",\n    \"Potential learning curve for new users to utilize all features effectively.\",\n    \"Initial customer support experience might be inconsistent or slow.\"\n  ],\n  \"overall_experience\": \"This digital marketing strategist likely found Zoho CRM to be a capable and cost-effective solution for their team's needs, particularly for managing leads and tracking marketing activities. While appreciating its integrated features and user-friendly design, they may have encountered limitations with advanced reporting and experienced a slight learning curve during their initial months of use. The value for money likely outweighed minor frustrations, leading to a generally positive experience.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Competitive pricing and good feature set for SMBs.",
+      "Integrated tools for lead management and campaign tracking.",
+      "User-friendly interface simplifying daily tasks."
+    ],
+    "cons": [
+      "Reporting tools might lack the desired depth for strategic analysis.",
+      "Potential learning curve for new users to utilize all features effectively.",
+      "Initial customer support experience might be inconsistent or slow."
+    ],
+    "overall_experience": "This digital marketing strategist likely found Zoho CRM to be a capable and cost-effective solution for their team's needs, particularly for managing leads and tracking marketing activities. While appreciating its integrated features and user-friendly design, they may have encountered limitations with advanced reporting and experienced a slight learning curve during their initial months of use. The value for money likely outweighed minor frustrations, leading to a generally positive experience."
+  },
+  "ts": "2026-10-18T10:01:32.322542+00:00"
+}

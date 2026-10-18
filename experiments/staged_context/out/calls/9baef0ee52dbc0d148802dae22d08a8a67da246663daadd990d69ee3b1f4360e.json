@@ -1,0 +1,27 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9baef0ee52dbc0d148802dae22d08a8a67da246663daadd990d69ee3b1f4360e",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 160,
+  "output_tokens": 410,
+  "cost_usd": 0.001073,
+  "elapsed_s": 2.65,
+  "error": null,
+  "text": "{\n  \"task\": \"Provide customer support through chat.\",\n  \"benefits\": [\n    \"See customer's chat location\",\n    \"See customer's current website page\"\n  ],\n  \"frictions\": [\n    \"Software can be slow\"\n  ]\n}",
+  "json": {
+    "task": "Provide customer support through chat.",
+    "benefits": [
+      "See customer's chat location",
+      "See customer's current website page"
+    ],
+    "frictions": [
+      "Software can be slow"
+    ]
+  },
+  "ts": "2026-10-18T10:00:35.538563+00:00"
+}

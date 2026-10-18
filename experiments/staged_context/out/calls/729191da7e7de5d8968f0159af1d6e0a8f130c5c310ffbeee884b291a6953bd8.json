@@ -1,0 +1,20 @@
+{
+  "stage": "hm_side_judge",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "729191da7e7de5d8968f0159af1d6e0a8f130c5c310ffbeee884b291a6953bd8",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 512,
+  "input_tokens": 216,
+  "output_tokens": 401,
+  "cost_usd": 0.0010673,
+  "elapsed_s": 4.37,
+  "error": null,
+  "text": "{\n  \"pairs\": []\n}",
+  "json": {
+    "pairs": []
+  },
+  "ts": "2026-10-18T10:18:40.515798+00:00"
+}

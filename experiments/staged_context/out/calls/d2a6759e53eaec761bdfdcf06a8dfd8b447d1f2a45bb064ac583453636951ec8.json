@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d2a6759e53eaec761bdfdcf06a8dfd8b447d1f2a45bb064ac583453636951ec8",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2559,
+  "output_tokens": 987,
+  "cost_usd": 0.0032352,
+  "elapsed_s": 5.34,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Intuitive deal flow for managing sales opportunities.\",\n    \"Ease of use for sales campaign management.\",\n    \"Consolidates sales tools onto one platform.\"\n  ],\n  \"cons\": [\n    \"Lacks robust reporting for detailed analysis.\",\n    \"Missing some advanced sales functions.\",\n    \"Customer support could be more responsive.\"\n  ],\n  \"overall_experience\": \"This sales manager likely found Freshsales to be an intuitive and easy-to-use platform for managing sales campaigns and deals within their small IT company. The consolidated features were a benefit for their operations. However, they may have noted some limitations in advanced reporting and functionality, and potentially experienced less than ideal customer support during their initial months of use.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Intuitive deal flow for managing sales opportunities.",
+      "Ease of use for sales campaign management.",
+      "Consolidates sales tools onto one platform."
+    ],
+    "cons": [
+      "Lacks robust reporting for detailed analysis.",
+      "Missing some advanced sales functions.",
+      "Customer support could be more responsive."
+    ],
+    "overall_experience": "This sales manager likely found Freshsales to be an intuitive and easy-to-use platform for managing sales campaigns and deals within their small IT company. The consolidated features were a benefit for their operations. However, they may have noted some limitations in advanced reporting and functionality, and potentially experienced less than ideal customer support during their initial months of use."
+  },
+  "ts": "2026-10-18T10:01:13.703065+00:00"
+}

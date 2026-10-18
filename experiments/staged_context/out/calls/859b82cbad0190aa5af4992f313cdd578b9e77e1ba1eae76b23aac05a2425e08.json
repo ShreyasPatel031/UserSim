@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "859b82cbad0190aa5af4992f313cdd578b9e77e1ba1eae76b23aac05a2425e08",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2676,
+  "output_tokens": 1010,
+  "cost_usd": 0.0033278000000000005,
+  "elapsed_s": 7.81,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Intuitive deal flow makes managing sales opportunities straightforward.\",\n    \"Centralizes all necessary sales information within one platform.\",\n    \"Provides reporting features useful for tracking lead progress.\"\n  ],\n  \"cons\": [\n    \"Lacks some advanced features that could further enhance lead processing.\",\n    \"Reporting capabilities are not as robust as desired for detailed analysis.\",\n    \"Automatic reminders for follow-ups are missing, requiring manual tracking.\"\n  ],\n  \"overall_experience\": \"This sales professional found Freshsales to be a solid tool for centralizing information and managing leads within their wholesale business. They appreciated its ease of use and integrated platform for sales activities. However, the lack of certain advanced functionalities, especially in reporting and automated reminders, presented some minor frustrations for their workflow.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Intuitive deal flow makes managing sales opportunities straightforward.",
+      "Centralizes all necessary sales information within one platform.",
+      "Provides reporting features useful for tracking lead progress."
+    ],
+    "cons": [
+      "Lacks some advanced features that could further enhance lead processing.",
+      "Reporting capabilities are not as robust as desired for detailed analysis.",
+      "Automatic reminders for follow-ups are missing, requiring manual tracking."
+    ],
+    "overall_experience": "This sales professional found Freshsales to be a solid tool for centralizing information and managing leads within their wholesale business. They appreciated its ease of use and integrated platform for sales activities. However, the lack of certain advanced functionalities, especially in reporting and automated reminders, presented some minor frustrations for their workflow."
+  },
+  "ts": "2026-10-18T10:01:24.763665+00:00"
+}

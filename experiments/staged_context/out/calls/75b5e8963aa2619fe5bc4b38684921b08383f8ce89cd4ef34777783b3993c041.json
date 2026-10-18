@@ -1,0 +1,28 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "75b5e8963aa2619fe5bc4b38684921b08383f8ce89cd4ef34777783b3993c041",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 125,
+  "output_tokens": 474,
+  "cost_usd": 0.0012224999999999998,
+  "elapsed_s": 4.31,
+  "error": null,
+  "text": "{\n  \"task\": null,\n  \"benefits\": [\n    \"easy to use\",\n    \"easy to access\"\n  ],\n  \"frictions\": [\n    \"limited free software support and services\",\n    \"issues with connection type\"\n  ]\n}",
+  "json": {
+    "task": null,
+    "benefits": [
+      "easy to use",
+      "easy to access"
+    ],
+    "frictions": [
+      "limited free software support and services",
+      "issues with connection type"
+    ]
+  },
+  "ts": "2026-10-18T10:00:37.798409+00:00"
+}

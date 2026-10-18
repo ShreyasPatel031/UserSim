@@ -1,0 +1,36 @@
+{
+  "stage": "hm_plist",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "baef18eca794db5dc385c5ba64f42a34b933114a47160e42b8532accca78005c",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 1024,
+  "input_tokens": 1822,
+  "output_tokens": 1113,
+  "cost_usd": 0.0033291,
+  "elapsed_s": 5.67,
+  "error": null,
+  "text": "{\n  \"pros\": [\n    \"Simple and intuitive interface for core project management tasks like to-dos and documents.\",\n    \"Clear, concise descriptions for each tool make it easy to understand their purpose.\",\n    \"Dedicated Calendar tool for tracking events, milestones, and deadlines.\",\n    \"Card Table tool provides a visual way to track work progress with cards and columns.\",\n    \"Straightforward task management with inline adding and simple completion marking.\",\n    \"Helpful prompts and clear empty states guide new users on how to get started.\"\n  ],\n  \"cons\": [\n    \"The free plan is severely limited to only one project, hindering multi-project use without upgrading.\",\n    \"Requires manual setup of tools for each project, adding an initial learning curve and extra steps.\",\n    \"Default settings for events (e.g., specific times) often require manual adjustment for common use cases like all-day deadlines.\",\n    \"Lack of pre-configured templates for projects or tasks means more initial setup work.\",\n    \"Interface shifts slightly when adding new tools, which can be a minor visual disruption.\",\n    \"Limited customization options for project structure and workflows compared to more flexible competitors.\"\n  ],\n  \"overall_rating\": \"4.2\"\n}",
+  "json": {
+    "pros": [
+      "Simple and intuitive interface for core project management tasks like to-dos and documents.",
+      "Clear, concise descriptions for each tool make it easy to understand their purpose.",
+      "Dedicated Calendar tool for tracking events, milestones, and deadlines.",
+      "Card Table tool provides a visual way to track work progress with cards and columns.",
+      "Straightforward task management with inline adding and simple completion marking.",
+      "Helpful prompts and clear empty states guide new users on how to get started."
+    ],
+    "cons": [
+      "The free plan is severely limited to only one project, hindering multi-project use without upgrading.",
+      "Requires manual setup of tools for each project, adding an initial learning curve and extra steps.",
+      "Default settings for events (e.g., specific times) often require manual adjustment for common use cases like all-day deadlines.",
+      "Lack of pre-configured templates for projects or tasks means more initial setup work.",
+      "Interface shifts slightly when adding new tools, which can be a minor visual disruption.",
+      "Limited customization options for project structure and workflows compared to more flexible competitors."
+    ],
+    "overall_rating": "4.2"
+  },
+  "ts": "2026-10-18T10:05:52.026514+00:00"
+}

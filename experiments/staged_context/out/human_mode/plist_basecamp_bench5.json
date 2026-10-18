@@ -1,0 +1,144 @@
+{
+  "lists": {
+    "none": {
+      "pros": [
+        "Extremely simple and easy to use",
+        "Fixed, predictable pricing (no per-user fees)",
+        "Excellent for centralized team communication",
+        "Effective and easy client collaboration",
+        "\"Hill Charts\" for clear project progress",
+        "Useful automated daily/weekly check-ins"
+      ],
+      "cons": [
+        "Lacks advanced project management features",
+        "Limited customization and workflow flexibility",
+        "Basic reporting and analytics capabilities",
+        "No native time tracking functionality",
+        "Can be restrictive for large, complex projects",
+        "Notification management can be overwhelming"
+      ],
+      "overall_rating": 4
+    },
+    "ctx": {
+      "pros": [
+        "Extremely easy to learn and use, with a low learning curve",
+        "Simple, uncluttered interface focused on core project management",
+        "Clear communication tools (messages, pings) for team collaboration",
+        "Transparent project overview and progress tracking",
+        "Predictable and straightforward pricing model",
+        "Reliable performance and stability"
+      ],
+      "cons": [
+        "Limited customization options compared to more flexible tools",
+        "Fewer advanced features or complex automations",
+        "Integrations with other software can be limited",
+        "Reporting and analytics capabilities are basic",
+        "May feel too simplistic for very large or complex projects",
+        "Mobile app functionality might lack some desktop features"
+      ],
+      "overall_rating": "4.3"
+    },
+    "run": {
+      "pros": [
+        "Clear descriptions for each tool make selection easy.",
+        "Quick and straightforward process for adding tasks and events.",
+        "Flexible project customization by adding specific tools as needed.",
+        "Initial project setup provides clear guidance for new users.",
+        "Option to skip onboarding tour for experienced users.",
+        "Dedicated calendar tool for managing deadlines and milestones."
+      ],
+      "cons": [
+        "Free plan severely limits users to only one project.",
+        "Tools must be manually added to each new project before use.",
+        "Default event times are often inconvenient and require manual adjustment.",
+        "Clicking tool titles renames them instead of opening the tool.",
+        "Page layout shifts unexpectedly after adding new tools.",
+        "New projects start completely empty, requiring initial setup."
+      ],
+      "overall_rating": 3.5
+    },
+    "ctx+run": {
+      "pros": [
+        "Simple and intuitive interface, making it easy to get started without much training.",
+        "Clear and focused tools for core project management tasks like to-dos, documents, and calendars.",
+        "Excellent for team communication and collaboration, keeping everything in one place.",
+        "Straightforward pricing model, avoiding complex tiers or hidden costs.",
+        "Reliable performance with minimal lag or slowdowns.",
+        "Good for small to medium teams who prefer a less feature-heavy solution."
+      ],
+      "cons": [
+        "Limited functionality and customization compared to more robust project management tools.",
+        "The free plan is very restrictive, allowing only one project, which is insufficient for most teams.",
+        "Lack of advanced reporting or analytics features.",
+        "Fewer integrations with third-party apps compared to competitors.",
+        "Initial setup requires manually adding core tools like To-dos and Calendars to each new project.",
+        "Mobile app experience might not be as smooth or feature-rich as the desktop version."
+      ],
+      "overall_rating": 4.25
+    },
+    "ctx+runF": {
+      "pros": [
+        "Simple and intuitive interface, making it easy to get started and manage projects.",
+        "Clear and focused tools for core project management, like to-dos, documents, and calendars.",
+        "Excellent for team communication and collaboration, keeping conversations organized within projects.",
+        "Quick and efficient task creation with essential details like assignees and due dates.",
+        "Reduces complexity by offering a streamlined set of features, avoiding feature bloat.",
+        "Good for managing deadlines and milestones with a dedicated calendar tool."
+      ],
+      "cons": [
+        "Limited customization options compared to more flexible project management platforms.",
+        "Reporting and analytics capabilities are basic, making it hard to get detailed insights.",
+        "Can feel restrictive for complex workflows or teams needing advanced features.",
+        "Integrations with other software are not as extensive as some competitors.",
+        "The mobile experience can sometimes lack the smoothness of the desktop version.",
+        "Specific workflow quirks, like event default times, can require manual adjustments."
+      ],
+      "overall_rating": 4.3
+    },
+    "prosRunF_consCtx": {
+      "pros": [
+        "Simple and intuitive interface, making it easy to get started and manage projects.",
+        "Clear and focused tools for core project management, like to-dos, documents, and calendars.",
+        "Excellent for team communication and collaboration, keeping conversations organized within projects.",
+        "Quick and efficient task creation with essential details like assignees and due dates.",
+        "Reduces complexity by offering a streamlined set of features, avoiding feature bloat.",
+        "Good for managing deadlines and milestones with a dedicated calendar tool."
+      ],
+      "cons": [
+        "Limited customization options compared to more flexible tools",
+        "Fewer advanced features or complex automations",
+        "Integrations with other software can be limited",
+        "Reporting and analytics capabilities are basic",
+        "May feel too simplistic for very large or complex projects",
+        "Mobile app functionality might lack some desktop features"
+      ],
+      "overall_rating": "4.3"
+    }
+  },
+  "obs": [
+    "- [benefit] The onboarding tour could be skipped with one link ('Skip the tour, I'm completely familiar'), landing directly on Home.",
+    "- [friction] The free plan allows only 1 project, so managing multiple projects is not possible without upgrading.",
+    "- [friction] A new project is empty; tools like To-dos must be added through a plus menu before any work can start.",
+    "- [friction] Clicking the To-dos tool title opens a rename field rather than the tool, so the tool is opened via the 'Add your first to-do' link.",
+    "- [benefit] Adding a to-do is quick: one name field plus optional assignee, due date, notes and subtasks.",
+    "- [benefit] The free plan gave a ready-made empty project with a clear 'Add something to get this project started' prompt listing to-dos and documents.",
+    "- [benefit] The Add a tool menu describes each tool in one line (To-dos, Docs, Files & Images), making it easy to pick the right one for tasks versus documents.",
+    "- [friction] Tools must be added to the project one by one before use, so a new user has to learn the plus-menu to get to to-dos and docs.",
+    "- [friction] The page layout shifted after adding a tool (activity line appeared), moving the tool menu items down about 32px.",
+    "- [friction] The free plan is limited to 1 project, so a second project for a separate workstream is not possible without upgrading.",
+    "- [benefit] The project's Add a tool menu lists a Calendar tool described as 'Add events, milestones, deadlines, etc.', which maps directly onto a deadlines calendar.",
+    "- [benefit] The new Calendar's empty state offers an 'Add your first event' link, and the event form has name, dates, times, repeat, notes and people, so posting an event took three actions.",
+    "- [friction] A fresh free account has a single empty 'My Project' with no tools, so a calendar had to be added manually before any deadline could be entered.",
+    "- [friction] The posted event defaulted to today at 5:30am-6:00am, so a deadline needs its date and time changed by hand instead of being an all-day date."
+  ],
+  "obs_filtered": [
+    "- [friction] Clicking the To-dos tool title opens a rename field rather than the tool, so the tool is opened via the 'Add your first to-do' link.",
+    "- [benefit] Adding a to-do is quick: one name field plus optional assignee, due date, notes and subtasks.",
+    "- [benefit] The Add a tool menu describes each tool in one line (To-dos, Docs, Files & Images), making it easy to pick the right one for tasks versus documents.",
+    "- [friction] The page layout shifted after adding a tool (activity line appeared), moving the tool menu items down about 32px.",
+    "- [benefit] The project's Add a tool menu lists a Calendar tool described as 'Add events, milestones, deadlines, etc.', which maps directly onto a deadlines calendar.",
+    "- [benefit] The new Calendar's empty state offers an 'Add your first event' link, and the event form has name, dates, times, repeat, notes and people, so posting an event took three actions.",
+    "- [friction] The posted event defaulted to today at 5:30am-6:00am, so a deadline needs its date and time changed by hand instead of being an all-day date."
+  ],
+  "true_mean_overall": 4.55
+}

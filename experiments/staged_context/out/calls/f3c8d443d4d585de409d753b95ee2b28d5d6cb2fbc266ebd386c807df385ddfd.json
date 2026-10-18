@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f3c8d443d4d585de409d753b95ee2b28d5d6cb2fbc266ebd386c807df385ddfd",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2689,
+  "output_tokens": 1068,
+  "cost_usd": 0.0034766999999999997,
+  "elapsed_s": 8.54,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Powerful advanced email marketing features for e-commerce.\",\n    \"Robust automation and segmentation capabilities for targeted campaigns.\",\n    \"Intuitive navigation and user interface once initial setup is complete.\"\n  ],\n  \"cons\": [\n    \"The initial setup process was quite complex and time-consuming.\",\n    \"Klaviyo's pricing structure feels expensive for a small business.\",\n    \"Steep learning curve to fully utilize all advanced features.\"\n  ],\n  \"overall_experience\": \"This business admin likely found Klaviyo to be a significant upgrade in terms of marketing functionality compared to Mailchimp, especially for their e-commerce needs. While the advanced features and powerful segmentation were highly valued, the initial setup proved challenging and the cost was a notable concern for their small business. Despite these hurdles, the platform's capabilities made it a worthwhile investment for their marketing efforts.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Powerful advanced email marketing features for e-commerce.",
+      "Robust automation and segmentation capabilities for targeted campaigns.",
+      "Intuitive navigation and user interface once initial setup is complete."
+    ],
+    "cons": [
+      "The initial setup process was quite complex and time-consuming.",
+      "Klaviyo's pricing structure feels expensive for a small business.",
+      "Steep learning curve to fully utilize all advanced features."
+    ],
+    "overall_experience": "This business admin likely found Klaviyo to be a significant upgrade in terms of marketing functionality compared to Mailchimp, especially for their e-commerce needs. While the advanced features and powerful segmentation were highly valued, the initial setup proved challenging and the cost was a notable concern for their small business. Despite these hurdles, the platform's capabilities made it a worthwhile investment for their marketing efforts."
+  },
+  "ts": "2026-10-18T10:03:21.459957+00:00"
+}

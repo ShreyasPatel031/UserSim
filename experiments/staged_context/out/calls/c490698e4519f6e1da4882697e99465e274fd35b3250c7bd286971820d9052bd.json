@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c490698e4519f6e1da4882697e99465e274fd35b3250c7bd286971820d9052bd",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2738,
+  "output_tokens": 1102,
+  "cost_usd": 0.0035763999999999995,
+  "elapsed_s": 6.88,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Comprehensive built-in features reduce reliance on third-party apps.\",\n    \"Robust for managing a diverse furniture catalog and bulk discounts.\",\n    \"Offers more flexibility for complex integrations like ERPs.\"\n  ],\n  \"cons\": [\n    \"Customization options can be limited without development expertise.\",\n    \"Occasional random glitches disrupt the workflow.\",\n    \"Loss of support when performing custom modifications is frustrating.\"\n  ],\n  \"overall_experience\": \"This CEO, having used BigCommerce for over two years after switching from Shopify, likely appreciates its powerful built-in features and capabilities for managing a furniture e-commerce site. While finding it more functional for their business needs, they may still encounter frustrations with customization limitations and the occasional technical glitch. The experience is generally positive, but with room for improvement in flexibility and support for advanced modifications.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Comprehensive built-in features reduce reliance on third-party apps.",
+      "Robust for managing a diverse furniture catalog and bulk discounts.",
+      "Offers more flexibility for complex integrations like ERPs."
+    ],
+    "cons": [
+      "Customization options can be limited without development expertise.",
+      "Occasional random glitches disrupt the workflow.",
+      "Loss of support when performing custom modifications is frustrating."
+    ],
+    "overall_experience": "This CEO, having used BigCommerce for over two years after switching from Shopify, likely appreciates its powerful built-in features and capabilities for managing a furniture e-commerce site. While finding it more functional for their business needs, they may still encounter frustrations with customization limitations and the occasional technical glitch. The experience is generally positive, but with room for improvement in flexibility and support for advanced modifications."
+  },
+  "ts": "2026-10-18T10:03:22.311780+00:00"
+}

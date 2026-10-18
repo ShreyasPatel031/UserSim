@@ -1,0 +1,35 @@
+{
+  "stage": "hm_obs_theme",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "fbf16e5c07f9febe17fb6ecdf7423181deb125172489f2c3347717877fe9c88a",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 256,
+  "input_tokens": 654,
+  "output_tokens": 372,
+  "cost_usd": 0.0011262,
+  "elapsed_s": 1.9,
+  "error": null,
+  "text": "{\n  \"themes\": [\n    \"onboarding_learning_curve\",\n    \"free_plan_or_tier_limits\",\n    \"setup_configuration\",\n    \"ui_ease_navigation\",\n    \"ui_ease_navigation\",\n    \"onboarding_learning_curve\",\n    \"ui_ease_navigation\",\n    \"setup_configuration\",\n    \"ui_ease_navigation\",\n    \"free_plan_or_tier_limits\",\n    \"ui_ease_navigation\",\n    \"ui_ease_navigation\",\n    \"setup_configuration\",\n    \"ui_ease_navigation\"\n  ]\n}",
+  "json": {
+    "themes": [
+      "onboarding_learning_curve",
+      "free_plan_or_tier_limits",
+      "setup_configuration",
+      "ui_ease_navigation",
+      "ui_ease_navigation",
+      "onboarding_learning_curve",
+      "ui_ease_navigation",
+      "setup_configuration",
+      "ui_ease_navigation",
+      "free_plan_or_tier_limits",
+      "ui_ease_navigation",
+      "ui_ease_navigation",
+      "setup_configuration",
+      "ui_ease_navigation"
+    ]
+  },
+  "ts": "2026-10-18T10:10:16.814662+00:00"
+}

@@ -1,0 +1,26 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "566c61a422245c089c063f028d7f7ae6c80ef6a219a67350d6a125b5477ba8da",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 132,
+  "output_tokens": 242,
+  "cost_usd": 0.0006446,
+  "elapsed_s": 2.57,
+  "error": null,
+  "text": "{\n  \"task\": null,\n  \"benefits\": [\n    \"Software interface is very user friendly\"\n  ],\n  \"frictions\": [\n    \"Customer's Card is not flexible enough\"\n  ]\n}",
+  "json": {
+    "task": null,
+    "benefits": [
+      "Software interface is very user friendly"
+    ],
+    "frictions": [
+      "Customer's Card is not flexible enough"
+    ]
+  },
+  "ts": "2026-10-18T10:00:41.786695+00:00"
+}

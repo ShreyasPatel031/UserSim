@@ -1,0 +1,31 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "fe3c564ddef4265747c49deb80c680ddea271b82d913181e97eb136d67b0ddb5",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 192,
+  "output_tokens": 461,
+  "cost_usd": 0.0012101,
+  "elapsed_s": 5.88,
+  "error": null,
+  "text": "{\n  \"task\": \"Set up and manage CRM for sales teams\",\n  \"benefits\": [\n    \"Simple Interface\",\n    \"Detailed Help text and videos\",\n    \"In-portal live Chat Support\",\n    \"Unambiguous pricing\"\n  ],\n  \"frictions\": [\n    \"Integrations\",\n    \"Reports\",\n    \"User Access Roles - Few are confusing\"\n  ]\n}",
+  "json": {
+    "task": "Set up and manage CRM for sales teams",
+    "benefits": [
+      "Simple Interface",
+      "Detailed Help text and videos",
+      "In-portal live Chat Support",
+      "Unambiguous pricing"
+    ],
+    "frictions": [
+      "Integrations",
+      "Reports",
+      "User Access Roles - Few are confusing"
+    ]
+  },
+  "ts": "2026-10-18T10:00:20.531231+00:00"
+}

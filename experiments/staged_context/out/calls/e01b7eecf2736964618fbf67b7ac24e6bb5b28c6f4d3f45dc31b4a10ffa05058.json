@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e01b7eecf2736964618fbf67b7ac24e6bb5b28c6f4d3f45dc31b4a10ffa05058",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2791,
+  "output_tokens": 1033,
+  "cost_usd": 0.0034198,
+  "elapsed_s": 5.9,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Simplified project management and task tracking capabilities.\",\n    \"Ability to link multiple documents to a centralized dashboard.\",\n    \"Overall reliability and secure operation without crashes.\"\n  ],\n  \"cons\": [\n    \"Initial learning curve made the product overwhelming at first.\",\n    \"Limitations in simultaneously editing multiple lines.\",\n    \"The copy/paste function can be inconsistent and unreliable.\"\n  ],\n  \"overall_experience\": \"This Software Development Engineer found Smartsheet to be a highly functional tool for managing spreadsheets and project tasks within their large organization. While there was an initial learning curve, the product ultimately proved user-friendly for project management and offered strong reliability. However, some frustrations arose from limitations in multi-line editing and an unreliable copy/paste feature.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Simplified project management and task tracking capabilities.",
+      "Ability to link multiple documents to a centralized dashboard.",
+      "Overall reliability and secure operation without crashes."
+    ],
+    "cons": [
+      "Initial learning curve made the product overwhelming at first.",
+      "Limitations in simultaneously editing multiple lines.",
+      "The copy/paste function can be inconsistent and unreliable."
+    ],
+    "overall_experience": "This Software Development Engineer found Smartsheet to be a highly functional tool for managing spreadsheets and project tasks within their large organization. While there was an initial learning curve, the product ultimately proved user-friendly for project management and offered strong reliability. However, some frustrations arose from limitations in multi-line editing and an unreliable copy/paste feature."
+  },
+  "ts": "2026-10-18T10:03:42.095562+00:00"
+}

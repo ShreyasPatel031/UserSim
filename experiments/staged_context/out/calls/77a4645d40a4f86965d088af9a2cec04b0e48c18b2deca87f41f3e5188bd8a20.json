@@ -1,0 +1,35 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "77a4645d40a4f86965d088af9a2cec04b0e48c18b2deca87f41f3e5188bd8a20",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2827,
+  "output_tokens": 1104,
+  "cost_usd": 0.0036081,
+  "elapsed_s": 6.14,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Helps make customer support operations easier to manage\",\n    \"Benefits from the auto-assign feature for tickets\",\n    \"Provides an intuitive, all-in-one platform for support\"\n  ],\n  \"cons\": [\n    \"Pricing can become costly for advanced features as the team grows\",\n    \"New reporting and analytics might sometimes be inaccurate or hard to digest\"\n  ],\n  \"overall_experience\": \"This customer service professional likely finds Freshdesk to be a highly effective and intuitive tool for managing their support operations. After over two years of use in a small logistics company, they appreciate its ability to streamline ticket management and provide an all-in-one solution. While generally satisfied, they may have concerns about the cost of higher-tier features and occasional issues with reporting accuracy.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Helps make customer support operations easier to manage",
+      "Benefits from the auto-assign feature for tickets",
+      "Provides an intuitive, all-in-one platform for support"
+    ],
+    "cons": [
+      "Pricing can become costly for advanced features as the team grows",
+      "New reporting and analytics might sometimes be inaccurate or hard to digest"
+    ],
+    "overall_experience": "This customer service professional likely finds Freshdesk to be a highly effective and intuitive tool for managing their support operations. After over two years of use in a small logistics company, they appreciate its ability to streamline ticket management and provide an all-in-one solution. While generally satisfied, they may have concerns about the cost of higher-tier features and occasional issues with reporting accuracy."
+  },
+  "ts": "2026-10-18T10:04:13.476518+00:00"
+}

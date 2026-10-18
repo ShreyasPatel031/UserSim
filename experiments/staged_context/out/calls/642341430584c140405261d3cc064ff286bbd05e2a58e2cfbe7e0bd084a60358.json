@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "642341430584c140405261d3cc064ff286bbd05e2a58e2cfbe7e0bd084a60358",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 227,
+  "output_tokens": 473,
+  "cost_usd": 0.0012506,
+  "elapsed_s": 3.01,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage customer support incidents and solutions.\",\n  \"benefits\": [\n    \"Implement the software easily\",\n    \"Use an intuitive, simple, and clean interface\",\n    \"Receive constant updates and new features\",\n    \"Discover its potential and usability\"\n  ],\n  \"frictions\": [\n    \"Lack of custom modules\",\n    \"Lack of a supplier module\"\n  ]\n}",
+  "json": {
+    "task": "Manage customer support incidents and solutions.",
+    "benefits": [
+      "Implement the software easily",
+      "Use an intuitive, simple, and clean interface",
+      "Receive constant updates and new features",
+      "Discover its potential and usability"
+    ],
+    "frictions": [
+      "Lack of custom modules",
+      "Lack of a supplier module"
+    ]
+  },
+  "ts": "2026-10-18T10:00:41.280353+00:00"
+}

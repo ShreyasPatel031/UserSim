@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3f07944060f7eda7f3fc0966c932f30e74701f71b85bc18935311be6d9ff324a",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2752,
+  "output_tokens": 1050,
+  "cost_usd": 0.0034506,
+  "elapsed_s": 5.78,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Intuitive deal flow for managing sales opportunities\",\n    \"Improved sales effectiveness over time\",\n    \"Generally easy to use for daily sales tasks\"\n  ],\n  \"cons\": [\n    \"Lack of robust reporting features\",\n    \"Absence of automatic reminders\",\n    \"Potential limitations in advanced customization\"\n  ],\n  \"overall_experience\": \"This Sales Manager, working in publishing for over two years, found Freshsales to be a largely effective tool for managing their sales pipeline and improving overall sales effectiveness. The intuitive deal flow was particularly beneficial for moving opportunities through the sales cycle. However, the experience was slightly hampered by the absence of automatic reminders and a perceived lack of robust reporting capabilities, which could be a significant drawback for optimizing sales strategies.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Intuitive deal flow for managing sales opportunities",
+      "Improved sales effectiveness over time",
+      "Generally easy to use for daily sales tasks"
+    ],
+    "cons": [
+      "Lack of robust reporting features",
+      "Absence of automatic reminders",
+      "Potential limitations in advanced customization"
+    ],
+    "overall_experience": "This Sales Manager, working in publishing for over two years, found Freshsales to be a largely effective tool for managing their sales pipeline and improving overall sales effectiveness. The intuitive deal flow was particularly beneficial for moving opportunities through the sales cycle. However, the experience was slightly hampered by the absence of automatic reminders and a perceived lack of robust reporting capabilities, which could be a significant drawback for optimizing sales strategies."
+  },
+  "ts": "2026-10-18T10:01:11.099334+00:00"
+}

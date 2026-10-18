@@ -1,0 +1,27 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4fe40f3cd1ffb461973aded4ed668952a3958ad0b44669a5cb7f116de0c4cc5d",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 141,
+  "output_tokens": 377,
+  "cost_usd": 0.0009848,
+  "elapsed_s": 2.6,
+  "error": null,
+  "text": "{\n  \"task\": \"Visualize data\",\n  \"benefits\": [\n    \"Easier to start with than other visualization tools\"\n  ],\n  \"frictions\": [\n    \"Some charts take long to load\",\n    \"The learning curve is still not insignificant\"\n  ]\n}",
+  "json": {
+    "task": "Visualize data",
+    "benefits": [
+      "Easier to start with than other visualization tools"
+    ],
+    "frictions": [
+      "Some charts take long to load",
+      "The learning curve is still not insignificant"
+    ]
+  },
+  "ts": "2026-10-18T10:00:31.944288+00:00"
+}

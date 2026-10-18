@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f4e136a2d825a946e496af43eba3877bbf727fed699506bad6922b0672515e0d",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2624,
+  "output_tokens": 1093,
+  "cost_usd": 0.0035197,
+  "elapsed_s": 6.27,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Intuitive, all-in-one platform for customer support\",\n    \"Effective auto-assign feature for tickets\",\n    \"Ability to set up multiple client-specific support channels\"\n  ],\n  \"cons\": [\n    \"Steep learning curve and requires time to understand\",\n    \"Can be perceived as costly for a self-employed individual\",\n    \"Reporting features might be inaccurate or hard to digest\"\n  ],\n  \"overall_experience\": \"This person likely found Freshdesk to offer strong core functionalities for managing customer service interactions, appreciating features like ticket auto-assignment and multi-channel support. However, they probably experienced a significant learning curve during their free trial, requiring a considerable time investment to grasp the system. The potential cost for advanced features beyond the trial period, especially for a self-employed individual, was likely a deterrent, impacting their overall value perception.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 7,
+    "pros": [
+      "Intuitive, all-in-one platform for customer support",
+      "Effective auto-assign feature for tickets",
+      "Ability to set up multiple client-specific support channels"
+    ],
+    "cons": [
+      "Steep learning curve and requires time to understand",
+      "Can be perceived as costly for a self-employed individual",
+      "Reporting features might be inaccurate or hard to digest"
+    ],
+    "overall_experience": "This person likely found Freshdesk to offer strong core functionalities for managing customer service interactions, appreciating features like ticket auto-assignment and multi-channel support. However, they probably experienced a significant learning curve during their free trial, requiring a considerable time investment to grasp the system. The potential cost for advanced features beyond the trial period, especially for a self-employed individual, was likely a deterrent, impacting their overall value perception."
+  },
+  "ts": "2026-10-18T10:04:11.581705+00:00"
+}

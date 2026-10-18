@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4b0d4e53bfe9b116cbeb0f46852fc8441914d5a23d4a3a40b790e9fba2fec26f",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2648,
+  "output_tokens": 1016,
+  "cost_usd": 0.0033343999999999995,
+  "elapsed_s": 5.86,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"User-friendly interface for managing leads\",\n    \"AI sales assistant provides helpful tips\",\n    \"Comprehensive functionality for CRM tasks\"\n  ],\n  \"cons\": [\n    \"Reporting tools lacked comprehensiveness\",\n    \"Usage guide was insufficient during decision-making\",\n    \"Perceived value for money during the free trial was not outstanding\"\n  ],\n  \"overall_experience\": \"This CEO found Zoho CRM to be a capable tool for managing leads, appreciating its user-friendly interface and AI sales assistant. However, the trial experience was hampered by less comprehensive reporting and insufficient guidance, which impacted the overall perceived value. While functional, the product did not fully convince the reviewer of its long-term benefits during the free trial period.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "User-friendly interface for managing leads",
+      "AI sales assistant provides helpful tips",
+      "Comprehensive functionality for CRM tasks"
+    ],
+    "cons": [
+      "Reporting tools lacked comprehensiveness",
+      "Usage guide was insufficient during decision-making",
+      "Perceived value for money during the free trial was not outstanding"
+    ],
+    "overall_experience": "This CEO found Zoho CRM to be a capable tool for managing leads, appreciating its user-friendly interface and AI sales assistant. However, the trial experience was hampered by less comprehensive reporting and insufficient guidance, which impacted the overall perceived value. While functional, the product did not fully convince the reviewer of its long-term benefits during the free trial period."
+  },
+  "ts": "2026-10-18T10:01:40.847242+00:00"
+}

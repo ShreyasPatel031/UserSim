@@ -1,0 +1,36 @@
+{
+  "stage": "hm_plist",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "cbe22bf997a3b5ddb8b91efc4414a788950391132853283364c3042cf6fb59ad",
+  "temperature": 0.7,
+  "seed": 44,
+  "max_tokens": 4096,
+  "thinking_budget": 1024,
+  "input_tokens": 1579,
+  "output_tokens": 1118,
+  "cost_usd": 0.0032687000000000003,
+  "elapsed_s": 6.9,
+  "error": null,
+  "text": "{\n  \"pros\": [\n    \"Generous free tier and affordable premium plans, offering excellent value.\",\n    \"Broad support for various item types, including logins, secure notes, and SSH keys.\",\n    \"Efficient and quick creation of new vault items with minimal mandatory fields.\",\n    \"Strong security features and open-source nature, building user trust.\",\n    \"Effective filtering and search capabilities within the vault for easy navigation.\",\n    \"Reliable cross-device syncing and auto-fill functionality.\"\n  ],\n  \"cons\": [\n    \"Clunky organization and sharing workflow, especially for new teams or organizations.\",\n    \"User interface can be less intuitive, requiring a learning curve for advanced features.\",\n    \"Mobile app experience can sometimes be inconsistent or less polished than desktop.\",\n    \"Limited visibility or access to custom fields during initial item creation.\",\n    \"Separation of the Admin Console from the main vault adds complexity for management.\",\n    \"Reporting and advanced administrative features might be basic compared to some competitors.\"\n  ],\n  \"overall_rating\": 4.5\n}",
+  "json": {
+    "pros": [
+      "Generous free tier and affordable premium plans, offering excellent value.",
+      "Broad support for various item types, including logins, secure notes, and SSH keys.",
+      "Efficient and quick creation of new vault items with minimal mandatory fields.",
+      "Strong security features and open-source nature, building user trust.",
+      "Effective filtering and search capabilities within the vault for easy navigation.",
+      "Reliable cross-device syncing and auto-fill functionality."
+    ],
+    "cons": [
+      "Clunky organization and sharing workflow, especially for new teams or organizations.",
+      "User interface can be less intuitive, requiring a learning curve for advanced features.",
+      "Mobile app experience can sometimes be inconsistent or less polished than desktop.",
+      "Limited visibility or access to custom fields during initial item creation.",
+      "Separation of the Admin Console from the main vault adds complexity for management.",
+      "Reporting and advanced administrative features might be basic compared to some competitors."
+    ],
+    "overall_rating": 4.5
+  },
+  "ts": "2026-10-18T10:17:46.337348+00:00"
+}

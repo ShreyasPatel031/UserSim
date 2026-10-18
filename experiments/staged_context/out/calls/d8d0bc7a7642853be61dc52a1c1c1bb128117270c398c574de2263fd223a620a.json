@@ -1,0 +1,27 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d8d0bc7a7642853be61dc52a1c1c1bb128117270c398c574de2263fd223a620a",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 222,
+  "output_tokens": 460,
+  "cost_usd": 0.0012166,
+  "elapsed_s": 2.7,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage tasks, teamwork, tracking, and progress\",\n  \"benefits\": [\n    \"Enable effective work\",\n    \"View progress in real time\",\n    \"Allow for preventive actions\",\n    \"Provide precise progress and tracking\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Manage tasks, teamwork, tracking, and progress",
+    "benefits": [
+      "Enable effective work",
+      "View progress in real time",
+      "Allow for preventive actions",
+      "Provide precise progress and tracking"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T10:00:55.740181+00:00"
+}

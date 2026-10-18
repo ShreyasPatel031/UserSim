@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "366ced11d2b34b93d5506e69ec06303828bde82ff18c8b14a2efd84a8c2d6743",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2744,
+  "output_tokens": 986,
+  "cost_usd": 0.0032882,
+  "elapsed_s": 6.11,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Simplified project management and task tracking for ad sales.\",\n    \"Effective for coordinating work across large teams.\",\n    \"Intuitive spreadsheet-like interface for data entry.\"\n  ],\n  \"cons\": [\n    \"Limited customization options compared to other platforms.\",\n    \"Inability to edit multiple lines simultaneously can be inefficient.\",\n    \"Learning curve for advanced features might be present.\"\n  ],\n  \"overall_experience\": \"This System Administrator likely found Smartsheet to be a capable tool for managing projects and tracking ad sales within their large organization. Its simplified approach to project management was a benefit, enabling effective work. However, the limited customization options and specific UI frictions like not being able to edit multiple lines simultaneously were noted frustrations, especially coming from a more feature-rich tool like ClickUp.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Simplified project management and task tracking for ad sales.",
+      "Effective for coordinating work across large teams.",
+      "Intuitive spreadsheet-like interface for data entry."
+    ],
+    "cons": [
+      "Limited customization options compared to other platforms.",
+      "Inability to edit multiple lines simultaneously can be inefficient.",
+      "Learning curve for advanced features might be present."
+    ],
+    "overall_experience": "This System Administrator likely found Smartsheet to be a capable tool for managing projects and tracking ad sales within their large organization. Its simplified approach to project management was a benefit, enabling effective work. However, the limited customization options and specific UI frictions like not being able to edit multiple lines simultaneously were noted frustrations, especially coming from a more feature-rich tool like ClickUp."
+  },
+  "ts": "2026-10-18T10:03:39.290840+00:00"
+}

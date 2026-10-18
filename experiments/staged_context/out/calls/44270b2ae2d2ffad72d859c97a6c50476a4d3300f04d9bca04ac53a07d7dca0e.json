@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "44270b2ae2d2ffad72d859c97a6c50476a4d3300f04d9bca04ac53a07d7dca0e",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2700,
+  "output_tokens": 1121,
+  "cost_usd": 0.0036125000000000003,
+  "elapsed_s": 5.9,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"User-friendly interface for daily operations\",\n    \"Helpful AI sales assistant for personalized insights\",\n    \"Effective for managing sales opportunities in a small team\"\n  ],\n  \"cons\": [\n    \"Reporting tools could be more comprehensive for in-depth analysis\",\n    \"Initial setup or understanding might be hindered by a lacking usage guide\",\n    \"Customer support response times or issue resolution could be improved\"\n  ],\n  \"overall_experience\": \"This Managing Partner likely found Zoho CRM to be a generally positive tool for their small telecommunications business. They appreciated its ease of use for managing daily tasks and the smart AI assistance, which helped streamline sales processes. However, they probably encountered some limitations with the reporting capabilities and may have faced frustrations with customer support or the initial learning curve, impacting their overall satisfaction slightly.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "User-friendly interface for daily operations",
+      "Helpful AI sales assistant for personalized insights",
+      "Effective for managing sales opportunities in a small team"
+    ],
+    "cons": [
+      "Reporting tools could be more comprehensive for in-depth analysis",
+      "Initial setup or understanding might be hindered by a lacking usage guide",
+      "Customer support response times or issue resolution could be improved"
+    ],
+    "overall_experience": "This Managing Partner likely found Zoho CRM to be a generally positive tool for their small telecommunications business. They appreciated its ease of use for managing daily tasks and the smart AI assistance, which helped streamline sales processes. However, they probably encountered some limitations with the reporting capabilities and may have faced frustrations with customer support or the initial learning curve, impacting their overall satisfaction slightly."
+  },
+  "ts": "2026-10-18T10:01:24.293913+00:00"
+}

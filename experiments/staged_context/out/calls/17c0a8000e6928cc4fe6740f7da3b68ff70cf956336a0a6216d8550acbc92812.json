@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "17c0a8000e6928cc4fe6740f7da3b68ff70cf956336a0a6216d8550acbc92812",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2419,
+  "output_tokens": 1016,
+  "cost_usd": 0.0032657,
+  "elapsed_s": 6.26,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Advanced e-commerce features for sales\",\n    \"Strong personalization and automation capabilities\",\n    \"Easy to navigate once set up\"\n  ],\n  \"cons\": [\n    \"Steep learning curve for initial setup\",\n    \"Pricing can be a significant concern\",\n    \"Support responsiveness could be improved\"\n  ],\n  \"overall_experience\": \"This E-Commerce Manager likely found Klaviyo to be a powerful tool for driving sales through personalized emails, especially coming from Mailchimp. While the advanced e-commerce functionality and navigation were beneficial, the initial setup proved challenging. The cost and customer support were also potential areas of frustration during their early experience with the platform.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Advanced e-commerce features for sales",
+      "Strong personalization and automation capabilities",
+      "Easy to navigate once set up"
+    ],
+    "cons": [
+      "Steep learning curve for initial setup",
+      "Pricing can be a significant concern",
+      "Support responsiveness could be improved"
+    ],
+    "overall_experience": "This E-Commerce Manager likely found Klaviyo to be a powerful tool for driving sales through personalized emails, especially coming from Mailchimp. While the advanced e-commerce functionality and navigation were beneficial, the initial setup proved challenging. The cost and customer support were also potential areas of frustration during their early experience with the platform."
+  },
+  "ts": "2026-10-18T10:03:04.442529+00:00"
+}

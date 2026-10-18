@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ddd858c9d2779d3e863169d03a912a6daf9db9c6fa2fdaca09b0ab2c306cbb68",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2688,
+  "output_tokens": 1163,
+  "cost_usd": 0.0037139,
+  "elapsed_s": 6.09,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Simplified project management compared to Excel\",\n    \"Enabled more effective work and collaboration\",\n    \"Improved visibility of project pipelines\"\n  ],\n  \"cons\": [\n    \"Limited customization options for specific needs\",\n    \"Inability to edit multiple lines simultaneously\",\n    \"Initial learning curve to adapt from spreadsheet-based workflows\"\n  ],\n  \"overall_experience\": \"The Director in E-Learning found Smartsheet to be a significant upgrade from Microsoft Excel for managing project pipelines. They appreciated its ability to simplify project management and enable more effective team collaboration. However, the user experienced some frustration with limited customization options and the inability to edit multiple lines concurrently, which sometimes hindered workflow efficiency.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Simplified project management compared to Excel",
+      "Enabled more effective work and collaboration",
+      "Improved visibility of project pipelines"
+    ],
+    "cons": [
+      "Limited customization options for specific needs",
+      "Inability to edit multiple lines simultaneously",
+      "Initial learning curve to adapt from spreadsheet-based workflows"
+    ],
+    "overall_experience": "The Director in E-Learning found Smartsheet to be a significant upgrade from Microsoft Excel for managing project pipelines. They appreciated its ability to simplify project management and enable more effective team collaboration. However, the user experienced some frustration with limited customization options and the inability to edit multiple lines concurrently, which sometimes hindered workflow efficiency."
+  },
+  "ts": "2026-10-18T10:03:47.113262+00:00"
+}

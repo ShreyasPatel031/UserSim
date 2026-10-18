@@ -1,0 +1,135 @@
+{
+  "Basecamp": {
+    "url": "https://basecamp.com/",
+    "persona": "a project manager at a 30-person agency",
+    "category": "Project Management",
+    "task": "I need to set up a new client project in Basecamp, including a few key to-do lists for different phases and some important documents. Then, I'll check the project's progress using a calendar view and assign some tasks to my team. Finally, I'll reorganize a to-do list and update a task's due date to reflect a change in scope.",
+    "core_job": "Manage a client project with tasks and files.",
+    "features": [
+      "Calendar view for project timelines",
+      "Task assignment and due date management"
+    ]
+  },
+  "Zoho Desk": {
+    "url": "https://www.zoho.com/desk/",
+    "persona": "a support team lead at a 40-person software company",
+    "category": "Help Desk",
+    "task": "Alright team, let's get Zoho Desk set up for our customer support. I need you to create three new support tickets, assign them, and resolve them. Then, set up a custom view to track urgent issues and create a report on our weekly ticket resolution times. Finally, update one of the resolved tickets with a new internal note.",
+    "core_job": "Manage customer support tickets end-to-end.",
+    "features": [
+      "Custom Views/Filters",
+      "Reports"
+    ]
+  },
+  "Klaviyo": {
+    "url": "https://www.klaviyo.com/",
+    "persona": "an e-commerce marketing manager at a small online store",
+    "category": "Marketing",
+    "task": "I need to set up a welcome email series for new subscribers, an abandoned cart flow, and a post-purchase follow-up. I'll create segments for each, design the emails, and then activate the flows. After that, I want to check the analytics for my welcome series and refine the segment for my abandoned cart flow to include only high-value items.",
+    "core_job": "Automate email marketing flows and segment customers",
+    "features": [
+      "Automated Flows",
+      "Segmentation",
+      "Analytics"
+    ]
+  },
+  "Freshdesk": {
+    "url": "https://www.freshworks.com/freshdesk/",
+    "persona": "a customer support manager at a 60-person company",
+    "category": "Help Desk",
+    "task": "As a support manager, I need to set up our Freshdesk trial to handle incoming customer issues. I'll create a few tickets for common problems, assign them, and track their resolution. Then, I'll customize a view to quickly see urgent tickets and generate a basic report on ticket volume to understand our workload.",
+    "core_job": "Manage customer support tickets end-to-end.",
+    "features": [
+      "Custom Views/Filters",
+      "Reporting"
+    ]
+  },
+  "Teamwork.com": {
+    "url": "https://www.teamwork.com/",
+    "persona": "an account manager at a 25-person creative agency",
+    "category": "Project Management",
+    "task": "I need to set up a new client project, 'Brand Refresh for Stellar Corp', with key phases like 'Discovery', 'Design Concepts', and 'Content Creation'. I'll add specific tasks under each, assign them to my team, and set deadlines. Then, I'll customize the project view to track progress visually and add a custom field for 'Client Priority'. Finally, I'll filter tasks to see only those due next week for a quick status update.",
+    "core_job": "Manage client projects and tasks",
+    "features": [
+      "Custom views (e.g., Gantt, Board)",
+      "Custom fields and filtering"
+    ]
+  },
+  "Bitwarden": {
+    "url": "https://bitwarden.com/",
+    "persona": "an IT admin at a 50-person company",
+    "category": "Security",
+    "task": "I need to evaluate Bitwarden for our 50-person company. I'll start by securely storing a few critical logins like our CRM, a shared social media account, and a secure note for server access. Then, I'll test its sharing capabilities by creating a collection and sharing the social media login with a team member. Finally, I'll organize these entries by adding custom fields and filtering them to see how easily I can manage our growing vault.",
+    "core_job": "Securely store, manage, and access company credentials.",
+    "features": [
+      "Secure sharing and collections",
+      "Custom fields and filtering"
+    ]
+  },
+  "GetResponse": {
+    "url": "https://www.getresponse.com/",
+    "persona": "the marketing lead at a 20-person online course business",
+    "category": null,
+    "task": "As the marketing lead, I need to set up a new email campaign for our upcoming 'AI for Beginners' course. I'll create a new list, import some existing leads, design a promotional email using a template, and schedule it. Then, I'll segment this list based on engagement and set up a simple automation for new sign-ups, finally reviewing the campaign's performance metrics.",
+    "core_job": "Email campaign creation and subscriber management",
+    "features": [
+      "Segmentation",
+      "Automation"
+    ]
+  },
+  "Ecwid": {
+    "url": "https://www.ecwid.com/",
+    "persona": "the owner of a small handmade-goods shop selling on social media",
+    "category": null,
+    "task": "I need to get my handmade jewelry and craft items online quickly. I'll set up my Ecwid store, add a few unique products with details and photos, organize them into categories, and then customize my store's look to match my brand. Finally, I'll try to update some product details in bulk or reorganize my categories to see how flexible it is.",
+    "core_job": "Set up store, add products, categorize, customize design.",
+    "features": [
+      "Product management (categories, attributes, bulk edits)",
+      "Store design and layout customization"
+    ]
+  },
+  "Wrike": {
+    "url": "https://www.wrike.com/",
+    "persona": "an operations manager at a 45-person marketing agency",
+    "category": "Project Management",
+    "task": "Alright, I need to get our new 'Summer Campaign Launch' project set up in Wrike. I'll create the main project, then add three key tasks: 'Creative Brief Development', 'Ad Copywriting', and 'Media Buying'. I'll assign them to team members, set deadlines, and then use custom fields to track their status and priority. Finally, I'll generate a quick report to see our progress and reassign a task if needed.",
+    "core_job": "Project and task management for marketing campaigns",
+    "features": [
+      "Custom Fields",
+      "Reporting"
+    ]
+  },
+  "Brevo": {
+    "url": "https://www.brevo.com/",
+    "persona": "the marketing manager at a 15-person B2B SaaS startup",
+    "category": "Marketing",
+    "task": "As the marketing manager for a B2B SaaS startup, I need to set up Brevo to manage our email campaigns. I'll create three distinct email campaigns for different customer segments, including a welcome series, a feature update, and a promotional offer. Then, I'll segment our contact list based on engagement and product interest, and finally, I'll review the campaign reports to understand performance and identify areas for improvement.",
+    "core_job": "Create and send email marketing campaigns",
+    "features": [
+      "Audience segmentation",
+      "Campaign reporting"
+    ]
+  },
+  "ClickUp": {
+    "url": "https://clickup.com/",
+    "persona": "a product manager at a 35-person software startup",
+    "category": "Project Management",
+    "task": "Okay, I need to set up a new project in ClickUp for our upcoming 'Feature X' development. I'll add a few key tasks, assign them, and set due dates. Then, I want to create a custom field to track 'Priority' and set up a Kanban board view to visualize progress. Finally, I'll update a task's priority and move it to a different status.",
+    "core_job": "Manage project tasks and track progress.",
+    "features": [
+      "Custom Fields",
+      "Board View"
+    ]
+  },
+  "Trello": {
+    "url": "https://trello.com/",
+    "persona": "a team lead at a 20-person nonprofit",
+    "category": "Project Management",
+    "task": "As a team lead at a 20-person nonprofit, I need to set up a Trello board to manage our upcoming 'Community Outreach Drive'. I'll create lists for 'To Do', 'In Progress', and 'Completed', then add three tasks: 'Recruit 10 volunteers', 'Design flyer', and 'Secure event venue'. After setting these up, I'll add custom fields for 'Volunteer Lead' and 'Deadline', assign deadlines, and then filter the board to see only tasks due next week. Finally, I'll move 'Design flyer' to 'In Progress' and update its deadline.",
+    "core_job": "Manage project tasks and track progress.",
+    "features": [
+      "Custom Fields",
+      "Filtering"
+    ]
+  }
+}

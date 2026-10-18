@@ -1,0 +1,25 @@
+{
+  "stage": "hm_task",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "207ad844701d63daed65f678ee19b5125a4284cccfdb983fa17135042c462a82",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 512,
+  "input_tokens": 1089,
+  "output_tokens": 546,
+  "cost_usd": 0.0016917,
+  "elapsed_s": 3.92,
+  "error": null,
+  "text": "{\n  \"task\": \"I need to get my handmade jewelry and craft items online quickly. I'll set up my Ecwid store, add a few unique products with details and photos, organize them into categories, and then customize my store's look to match my brand. Finally, I'll try to update some product details in bulk or reorganize my categories to see how flexible it is.\",\n  \"core_job\": \"Set up store, add products, categorize, customize design.\",\n  \"features\": [\n    \"Product management (categories, attributes, bulk edits)\",\n    \"Store design and layout customization\"\n  ]\n}",
+  "json": {
+    "task": "I need to get my handmade jewelry and craft items online quickly. I'll set up my Ecwid store, add a few unique products with details and photos, organize them into categories, and then customize my store's look to match my brand. Finally, I'll try to update some product details in bulk or reorganize my categories to see how flexible it is.",
+    "core_job": "Set up store, add products, categorize, customize design.",
+    "features": [
+      "Product management (categories, attributes, bulk edits)",
+      "Store design and layout customization"
+    ]
+  },
+  "ts": "2026-10-18T10:11:41.222437+00:00"
+}

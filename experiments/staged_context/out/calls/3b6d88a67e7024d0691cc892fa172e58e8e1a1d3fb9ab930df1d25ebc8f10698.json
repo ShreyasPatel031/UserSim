@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3b6d88a67e7024d0691cc892fa172e58e8e1a1d3fb9ab930df1d25ebc8f10698",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2481,
+  "output_tokens": 1102,
+  "cost_usd": 0.0034992999999999995,
+  "elapsed_s": 6.25,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Intuitive and user-friendly interface\",\n    \"Helpful AI sales assistant for personalized tips\",\n    \"Strong customization options for managing sales processes\"\n  ],\n  \"cons\": [\n    \"Reporting tools could be more comprehensive\",\n    \"Customer support responsiveness might be inconsistent\",\n    \"Potential for a learning curve with advanced features\"\n  ],\n  \"overall_experience\": \"As a Senior Overseer & Operations Manager, this individual likely found Zoho CRM to be a capable tool for managing their operational needs over 1-2 years. The user-friendly interface and AI assistant probably enhanced productivity, though the reporting capabilities may have left some room for improvement. Overall, the system provided solid value and functionality for a self-employed professional in the entertainment industry.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Intuitive and user-friendly interface",
+      "Helpful AI sales assistant for personalized tips",
+      "Strong customization options for managing sales processes"
+    ],
+    "cons": [
+      "Reporting tools could be more comprehensive",
+      "Customer support responsiveness might be inconsistent",
+      "Potential for a learning curve with advanced features"
+    ],
+    "overall_experience": "As a Senior Overseer & Operations Manager, this individual likely found Zoho CRM to be a capable tool for managing their operational needs over 1-2 years. The user-friendly interface and AI assistant probably enhanced productivity, though the reporting capabilities may have left some room for improvement. Overall, the system provided solid value and functionality for a self-employed professional in the entertainment industry."
+  },
+  "ts": "2026-10-18T10:01:28.732435+00:00"
+}

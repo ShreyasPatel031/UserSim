@@ -1,0 +1,27 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ed8699fdeaff6625a3bab14420d3be152dc1c61a68c2998df1af68a21ca0bb52",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 195,
+  "output_tokens": 470,
+  "cost_usd": 0.0012335,
+  "elapsed_s": 3.95,
+  "error": null,
+  "text": "{\n  \"task\": \"Create and manage SLAs for various consumer categories\",\n  \"benefits\": [\n    \"Ensures consumer requests are processed in accordance with predetermined schedules\",\n    \"Assists businesses in keeping compliance with service level obligations\"\n  ],\n  \"frictions\": [\n    \"Bugs can cause the entire live chat to be thrown out\"\n  ]\n}",
+  "json": {
+    "task": "Create and manage SLAs for various consumer categories",
+    "benefits": [
+      "Ensures consumer requests are processed in accordance with predetermined schedules",
+      "Assists businesses in keeping compliance with service level obligations"
+    ],
+    "frictions": [
+      "Bugs can cause the entire live chat to be thrown out"
+    ]
+  },
+  "ts": "2026-10-18T10:00:37.173077+00:00"
+}

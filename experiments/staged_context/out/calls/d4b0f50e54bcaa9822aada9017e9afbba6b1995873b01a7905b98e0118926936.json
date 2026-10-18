@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d4b0f50e54bcaa9822aada9017e9afbba6b1995873b01a7905b98e0118926936",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 295,
+  "output_tokens": 479,
+  "cost_usd": 0.001286,
+  "elapsed_s": 3.16,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage projects and data using spreadsheets\",\n  \"benefits\": [\n    \"Reliable and secure (no crashes or infections)\",\n    \"Open models with no vendor lock-in\",\n    \"Integrates with Google Apps\",\n    \"Adaptable and user-friendly interface\"\n  ],\n  \"frictions\": [\n    \"Cannot edit multiple lines simultaneously\"\n  ]\n}",
+  "json": {
+    "task": "Manage projects and data using spreadsheets",
+    "benefits": [
+      "Reliable and secure (no crashes or infections)",
+      "Open models with no vendor lock-in",
+      "Integrates with Google Apps",
+      "Adaptable and user-friendly interface"
+    ],
+    "frictions": [
+      "Cannot edit multiple lines simultaneously"
+    ]
+  },
+  "ts": "2026-10-18T10:00:56.976300+00:00"
+}

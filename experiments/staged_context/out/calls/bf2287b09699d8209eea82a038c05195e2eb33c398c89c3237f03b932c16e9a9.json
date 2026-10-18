@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "bf2287b09699d8209eea82a038c05195e2eb33c398c89c3237f03b932c16e9a9",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 172,
+  "output_tokens": 490,
+  "cost_usd": 0.0012766,
+  "elapsed_s": 3.13,
+  "error": null,
+  "text": "{\n  \"task\": \"Pull data from multiple platforms to understand work progress.\",\n  \"benefits\": [\n    \"Able to pull in different data from multiple platforms\",\n    \"Provides a better scope and understanding of work done and work yet to do\",\n    \"Increases team visibility to everything\"\n  ],\n  \"frictions\": [\n    \"Pages sometimes take a while to load\",\n    \"Individual cells load slowly\"\n  ]\n}",
+  "json": {
+    "task": "Pull data from multiple platforms to understand work progress.",
+    "benefits": [
+      "Able to pull in different data from multiple platforms",
+      "Provides a better scope and understanding of work done and work yet to do",
+      "Increases team visibility to everything"
+    ],
+    "frictions": [
+      "Pages sometimes take a while to load",
+      "Individual cells load slowly"
+    ]
+  },
+  "ts": "2026-10-18T10:00:32.219774+00:00"
+}

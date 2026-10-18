@@ -1,0 +1,36 @@
+{
+  "stage": "hm_plist",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a92995d1c307afde6094eaab4a69cdf84c8763788a2df1f81905adbe05e9d2c6",
+  "temperature": 0.7,
+  "seed": 43,
+  "max_tokens": 4096,
+  "thinking_budget": 1024,
+  "input_tokens": 1161,
+  "output_tokens": 1043,
+  "cost_usd": 0.0029558000000000006,
+  "elapsed_s": 6.66,
+  "error": null,
+  "text": "{\n  \"pros\": [\n    \"Generous free tier and highly affordable premium plans\",\n    \"Strong emphasis on security, open-source nature, and transparency\",\n    \"Cross-platform compatibility (desktop, web, mobile, browser extensions)\",\n    \"Reliable password syncing and autofill functionality\",\n    \"Self-hosting option for advanced users\",\n    \"Comprehensive feature set including 2FA, secure notes, and identity storage\"\n  ],\n  \"cons\": [\n    \"User interface (UI) can feel less polished or modern compared to some competitors\",\n    \"Learning curve for advanced features or initial setup for new users\",\n    \"Occasional inconsistencies or minor bugs with autofill on certain websites or mobile devices\",\n    \"Customer support for free users is primarily community-driven\",\n    \"Mobile app experience, while functional, can sometimes be less intuitive than desktop\",\n    \"Admin features for large organizations might be less robust or require more manual configuration\"\n  ],\n  \"overall_rating\": 4.6\n}",
+  "json": {
+    "pros": [
+      "Generous free tier and highly affordable premium plans",
+      "Strong emphasis on security, open-source nature, and transparency",
+      "Cross-platform compatibility (desktop, web, mobile, browser extensions)",
+      "Reliable password syncing and autofill functionality",
+      "Self-hosting option for advanced users",
+      "Comprehensive feature set including 2FA, secure notes, and identity storage"
+    ],
+    "cons": [
+      "User interface (UI) can feel less polished or modern compared to some competitors",
+      "Learning curve for advanced features or initial setup for new users",
+      "Occasional inconsistencies or minor bugs with autofill on certain websites or mobile devices",
+      "Customer support for free users is primarily community-driven",
+      "Mobile app experience, while functional, can sometimes be less intuitive than desktop",
+      "Admin features for large organizations might be less robust or require more manual configuration"
+    ],
+    "overall_rating": 4.6
+  },
+  "ts": "2026-10-18T10:16:52.411886+00:00"
+}

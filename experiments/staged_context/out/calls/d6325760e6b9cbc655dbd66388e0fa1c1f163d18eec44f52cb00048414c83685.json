@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d6325760e6b9cbc655dbd66388e0fa1c1f163d18eec44f52cb00048414c83685",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2411,
+  "output_tokens": 1115,
+  "cost_usd": 0.0035108,
+  "elapsed_s": 6.38,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Easy to get started as a first-time user\",\n    \"Effective to-do list functionality\",\n    \"Good for basic project tracking\"\n  ],\n  \"cons\": [\n    \"Difficulty navigating with multiple projects\",\n    \"Lacked real-time project progress visibility\",\n    \"May feel limited for complex sales workflows\"\n  ],\n  \"overall_experience\": \"This Sales Associate likely found Basecamp straightforward for initial use and appreciated its to-do features. However, they probably encountered frustrations with navigating multiple projects and the lack of real-time progress tracking. As a self-employed individual using a free trial, they might have found it sufficient for basic needs but potentially limited for more comprehensive sales management.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 7,
+    "pros": [
+      "Easy to get started as a first-time user",
+      "Effective to-do list functionality",
+      "Good for basic project tracking"
+    ],
+    "cons": [
+      "Difficulty navigating with multiple projects",
+      "Lacked real-time project progress visibility",
+      "May feel limited for complex sales workflows"
+    ],
+    "overall_experience": "This Sales Associate likely found Basecamp straightforward for initial use and appreciated its to-do features. However, they probably encountered frustrations with navigating multiple projects and the lack of real-time progress tracking. As a self-employed individual using a free trial, they might have found it sufficient for basic needs but potentially limited for more comprehensive sales management."
+  },
+  "ts": "2026-10-18T10:02:10.654848+00:00"
+}

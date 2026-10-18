@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ef50a2451d6b427184ac25a24f2561823cbc7ef168efbdc8e3b0946e3ec5b715",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 317,
+  "output_tokens": 510,
+  "cost_usd": 0.0013701000000000002,
+  "elapsed_s": 2.85,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage email marketing campaigns and flows\",\n  \"benefits\": [\n    \"Create infinite email flows, campaigns, and text campaigns\",\n    \"Connect to Facebook for creating custom audiences\",\n    \"Track customer purchase frequency and site activity\",\n    \"Format campaigns exactly as desired\"\n  ],\n  \"frictions\": [\n    \"Pricing is expensive for new customers\",\n    \"Cost becomes ridiculous as usage scales\"\n  ]\n}",
+  "json": {
+    "task": "Manage email marketing campaigns and flows",
+    "benefits": [
+      "Create infinite email flows, campaigns, and text campaigns",
+      "Connect to Facebook for creating custom audiences",
+      "Track customer purchase frequency and site activity",
+      "Format campaigns exactly as desired"
+    ],
+    "frictions": [
+      "Pricing is expensive for new customers",
+      "Cost becomes ridiculous as usage scales"
+    ]
+  },
+  "ts": "2026-10-18T10:00:46.880704+00:00"
+}

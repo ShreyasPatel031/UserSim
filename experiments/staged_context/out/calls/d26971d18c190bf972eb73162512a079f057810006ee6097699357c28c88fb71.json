@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d26971d18c190bf972eb73162512a079f057810006ee6097699357c28c88fb71",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 233,
+  "output_tokens": 457,
+  "cost_usd": 0.0012124,
+  "elapsed_s": 3.79,
+  "error": null,
+  "text": "{\n  \"task\": \"Visualize, explore, and understand data analysis\",\n  \"benefits\": [\n    \"Visualize data analysis\",\n    \"Explore and understand data efficiently\",\n    \"Wide variety of data sources\",\n    \"Flexible and customizable\"\n  ],\n  \"frictions\": [\n    \"Quite expensive\"\n  ]\n}",
+  "json": {
+    "task": "Visualize, explore, and understand data analysis",
+    "benefits": [
+      "Visualize data analysis",
+      "Explore and understand data efficiently",
+      "Wide variety of data sources",
+      "Flexible and customizable"
+    ],
+    "frictions": [
+      "Quite expensive"
+    ]
+  },
+  "ts": "2026-10-18T10:00:32.546750+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ae17b53dc2760590b06f4102a9b6990c368d2e35aa164925ee26ad2ceb9053a2",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2661,
+  "output_tokens": 1098,
+  "cost_usd": 0.0035433,
+  "elapsed_s": 6.35,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Found the software easy to implement and get started with.\",\n    \"The user interface was generally intuitive for daily tasks.\",\n    \"Effective for managing basic customer service tickets.\"\n  ],\n  \"cons\": [\n    \"Experienced limitations due to a lack of custom modules for specific workflows.\",\n    \"The platform's features for external vendor collaboration without full access felt somewhat constrained.\",\n    \"Noted that the system could benefit from more frequent updates or a fresher feel.\"\n  ],\n  \"overall_experience\": \"This person, in a Marketing and Group Sales role, found Zoho Desk relatively easy to set up and use for general ticket management. However, the specific requirement for nuanced external vendor collaboration without full system access was somewhat challenging due to perceived limitations in custom module functionality. While the product was functional, it didn't fully meet the bespoke needs of their unique vendor interaction workflow within the initial six months of use.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Found the software easy to implement and get started with.",
+      "The user interface was generally intuitive for daily tasks.",
+      "Effective for managing basic customer service tickets."
+    ],
+    "cons": [
+      "Experienced limitations due to a lack of custom modules for specific workflows.",
+      "The platform's features for external vendor collaboration without full access felt somewhat constrained.",
+      "Noted that the system could benefit from more frequent updates or a fresher feel."
+    ],
+    "overall_experience": "This person, in a Marketing and Group Sales role, found Zoho Desk relatively easy to set up and use for general ticket management. However, the specific requirement for nuanced external vendor collaboration without full system access was somewhat challenging due to perceived limitations in custom module functionality. While the product was functional, it didn't fully meet the bespoke needs of their unique vendor interaction workflow within the initial six months of use."
+  },
+  "ts": "2026-10-18T10:02:42.631631+00:00"
+}

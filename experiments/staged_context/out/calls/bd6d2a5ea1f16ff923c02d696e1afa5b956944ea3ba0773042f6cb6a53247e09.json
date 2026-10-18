@@ -1,0 +1,25 @@
+{
+  "stage": "hm_task",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "bd6d2a5ea1f16ff923c02d696e1afa5b956944ea3ba0773042f6cb6a53247e09",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 512,
+  "input_tokens": 1047,
+  "output_tokens": 542,
+  "cost_usd": 0.0016690999999999998,
+  "elapsed_s": 3.32,
+  "error": null,
+  "text": "{\n  \"task\": \"As the marketing manager for a B2B SaaS startup, I need to set up Brevo to manage our email campaigns. I'll create three distinct email campaigns for different customer segments, including a welcome series, a feature update, and a promotional offer. Then, I'll segment our contact list based on engagement and product interest, and finally, I'll review the campaign reports to understand performance and identify areas for improvement.\",\n  \"core_job\": \"Create and send email marketing campaigns\",\n  \"features\": [\n    \"Audience segmentation\",\n    \"Campaign reporting\"\n  ]\n}",
+  "json": {
+    "task": "As the marketing manager for a B2B SaaS startup, I need to set up Brevo to manage our email campaigns. I'll create three distinct email campaigns for different customer segments, including a welcome series, a feature update, and a promotional offer. Then, I'll segment our contact list based on engagement and product interest, and finally, I'll review the campaign reports to understand performance and identify areas for improvement.",
+    "core_job": "Create and send email marketing campaigns",
+    "features": [
+      "Audience segmentation",
+      "Campaign reporting"
+    ]
+  },
+  "ts": "2026-10-18T10:22:01.460629+00:00"
+}

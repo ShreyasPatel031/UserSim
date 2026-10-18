@@ -1,0 +1,9 @@
+{"product": "Zoho Desk", "run_id": "zoho_desk_deep_1", "session_id": "c1afd3e643654e91b14cb2ee66ad46f2",
+ "task": "Let's get Zoho Desk set up for our customer support. I need to create three new support tickets, assign them, and resolve them. Then, set up a custom view to track urgent issues and create a report on our weekly ticket resolution times. Finally, update one of the resolved tickets with a new internal note.",
+ "signed_in": false, "reached_product": false, "outcome": "blocked", "steps_used": 14,
+ "observations": [
+  {"kind": "signup_friction", "feature": "Zoho Desk sign-up form", "what": "The Desk sign-up page rejected the email with the inline error 'Email address cannot contain the + character', so no account could be created."},
+  {"kind": "signup_friction", "feature": "Zoho Accounts register page", "what": "The general Zoho account register page (accounts.zoho.com/register) has the same '+' email ban and also asks for a mobile number up front."},
+  {"kind": "signup_friction", "feature": "Zoho Desk marketing site", "what": "Clicking 'Signup for free' on the Desk home page opened a 'Book your demo / Request a call back' popup instead of the sign-up form."},
+  {"kind": "agent_failure", "feature": "sign-up", "what": "I filled the Desk form before seeing the '+' error and then had to switch pages, which used about 12 of the 39 steps; the server's no-plus address option is not available without a token."}
+ ]}

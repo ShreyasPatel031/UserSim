@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "6819ef52a12bfbabc91257798ecd923ad4b193f4842cdd63abeebd1c6aba65e5",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 161,
+  "output_tokens": 452,
+  "cost_usd": 0.0011783,
+  "elapsed_s": 2.61,
+  "error": null,
+  "text": "{\n  \"task\": \"Keep track of customer interactions and manage the sales pipeline.\",\n  \"benefits\": [\n    \"customization options\",\n    \"automation features\",\n    \"streamlining sales process\"\n  ],\n  \"frictions\": [\n    \"user interface can be overwhelming\",\n    \"takes time to learn the software\"\n  ]\n}",
+  "json": {
+    "task": "Keep track of customer interactions and manage the sales pipeline.",
+    "benefits": [
+      "customization options",
+      "automation features",
+      "streamlining sales process"
+    ],
+    "frictions": [
+      "user interface can be overwhelming",
+      "takes time to learn the software"
+    ]
+  },
+  "ts": "2026-10-18T10:00:26.476260+00:00"
+}

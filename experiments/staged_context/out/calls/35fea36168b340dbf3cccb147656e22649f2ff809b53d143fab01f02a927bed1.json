@@ -1,0 +1,27 @@
+{
+  "stage": "hm_plist_judge",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "35fea36168b340dbf3cccb147656e22649f2ff809b53d143fab01f02a927bed1",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 431,
+  "output_tokens": 415,
+  "cost_usd": 0.0011668,
+  "elapsed_s": 2.65,
+  "error": null,
+  "text": "{\n  \"pros\": [\n    {\n      \"pred\": \"P4\",\n      \"act\": \"A2\",\n      \"score\": 1\n    }\n  ],\n  \"cons\": []\n}",
+  "json": {
+    "pros": [
+      {
+        "pred": "P4",
+        "act": "A2",
+        "score": 1
+      }
+    ],
+    "cons": []
+  },
+  "ts": "2026-10-18T10:06:03.942779+00:00"
+}

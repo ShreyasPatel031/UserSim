@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b6535fbc4f3f416a1bc31f70d979df2a6b023451ceeeb07119f8c03d18ff3711",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 229,
+  "output_tokens": 476,
+  "cost_usd": 0.0012587000000000002,
+  "elapsed_s": 2.92,
+  "error": null,
+  "text": "{\n  \"task\": \"Measure marketing ROI and build subscriber flows.\",\n  \"benefits\": [\n    \"Easy to navigate\",\n    \"Clean design\",\n    \"All necessary information in one dashboard\",\n    \"Effective marketing automation for building subscriber flows\"\n  ],\n  \"frictions\": [\n    \"Difficult to set up\",\n    \"Customer support was not effective for setup\"\n  ]\n}",
+  "json": {
+    "task": "Measure marketing ROI and build subscriber flows.",
+    "benefits": [
+      "Easy to navigate",
+      "Clean design",
+      "All necessary information in one dashboard",
+      "Effective marketing automation for building subscriber flows"
+    ],
+    "frictions": [
+      "Difficult to set up",
+      "Customer support was not effective for setup"
+    ]
+  },
+  "ts": "2026-10-18T10:00:46.448644+00:00"
+}

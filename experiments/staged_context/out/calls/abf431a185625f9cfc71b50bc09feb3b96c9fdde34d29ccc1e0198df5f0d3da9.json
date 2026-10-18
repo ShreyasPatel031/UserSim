@@ -1,0 +1,28 @@
+{
+  "stage": "hm_live_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "abf431a185625f9cfc71b50bc09feb3b96c9fdde34d29ccc1e0198df5f0d3da9",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 161,
+  "output_tokens": 402,
+  "cost_usd": 0.0010533,
+  "elapsed_s": 2.67,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage passwords for an organization.\",\n  \"benefits\": [\n    \"Simple to set up\",\n    \"Provides all necessary password manager features\",\n    \"Quick to deploy within an organization\"\n  ],\n  \"frictions\": [\n    \"Becoming pricey as staff members increase\"\n  ]\n}",
+  "json": {
+    "task": "Manage passwords for an organization.",
+    "benefits": [
+      "Simple to set up",
+      "Provides all necessary password manager features",
+      "Quick to deploy within an organization"
+    ],
+    "frictions": [
+      "Becoming pricey as staff members increase"
+    ]
+  },
+  "ts": "2026-10-18T10:15:59.008474+00:00"
+}

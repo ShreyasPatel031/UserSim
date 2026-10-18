@@ -1,0 +1,36 @@
+{
+  "stage": "hm_plist",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "14166534d121439d9df1c04b17687fd3e0199a7498182e1972198d42c6ce2b11",
+  "temperature": 0.7,
+  "seed": 44,
+  "max_tokens": 4096,
+  "thinking_budget": 1024,
+  "input_tokens": 1666,
+  "output_tokens": 1029,
+  "cost_usd": 0.0030723,
+  "elapsed_s": 5.68,
+  "error": null,
+  "text": "{\n  \"pros\": [\n    \"Comprehensive item types including SSH keys and secure notes\",\n    \"Streamlined process for adding new login credentials and secure notes\",\n    \"Robust and flexible organization management for teams\",\n    \"Strong security features and open-source transparency\",\n    \"Excellent value, especially for its free tier and paid plans\",\n    \"Good search and filtering options for vault management\"\n  ],\n  \"cons\": [\n    \"Limited free organization features, quickly requiring an upgrade for teams\",\n    \"Custom fields are not easily discoverable or visible during initial entry\",\n    \"Mobile app experience can sometimes be less intuitive than desktop\",\n    \"Occasional issues with auto-fill or browser extension synchronization\",\n    \"Admin console is separate from the personal vault, causing context switching\",\n    \"Steeper learning curve for advanced organizational features and sharing\"\n  ],\n  \"overall_rating\": 4.5\n}",
+  "json": {
+    "pros": [
+      "Comprehensive item types including SSH keys and secure notes",
+      "Streamlined process for adding new login credentials and secure notes",
+      "Robust and flexible organization management for teams",
+      "Strong security features and open-source transparency",
+      "Excellent value, especially for its free tier and paid plans",
+      "Good search and filtering options for vault management"
+    ],
+    "cons": [
+      "Limited free organization features, quickly requiring an upgrade for teams",
+      "Custom fields are not easily discoverable or visible during initial entry",
+      "Mobile app experience can sometimes be less intuitive than desktop",
+      "Occasional issues with auto-fill or browser extension synchronization",
+      "Admin console is separate from the personal vault, causing context switching",
+      "Steeper learning curve for advanced organizational features and sharing"
+    ],
+    "overall_rating": 4.5
+  },
+  "ts": "2026-10-18T10:17:39.290135+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "23eaa5807d4a96f51150e031252403e10d972fefa2b9ea7f9bde974083249ba5",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2684,
+  "output_tokens": 1048,
+  "cost_usd": 0.0034252000000000006,
+  "elapsed_s": 5.63,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Ease of setup and use for basic store management.\",\n    \"Offers more built-in features compared to alternatives like Shopify.\",\n    \"Ability to apply bulk discounts is a useful marketing tool.\"\n  ],\n  \"cons\": [\n    \"Limited customization options for themes and store interface.\",\n    \"Pricing can feel less competitive, especially when comparing features to cost.\",\n    \"Experienced random glitches which impacted marketing tasks.\"\n  ],\n  \"overall_experience\": \"This reviewer, working in digital marketing for a retail company, found BigCommerce generally easy to set up and manage for their online store. They appreciated the built-in features and bulk discount capabilities, which aided their marketing efforts. However, the platform's limited customization options and occasional glitches created frustration, and they felt the value for money could be improved compared to alternatives they've used.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 7,
+    "pros": [
+      "Ease of setup and use for basic store management.",
+      "Offers more built-in features compared to alternatives like Shopify.",
+      "Ability to apply bulk discounts is a useful marketing tool."
+    ],
+    "cons": [
+      "Limited customization options for themes and store interface.",
+      "Pricing can feel less competitive, especially when comparing features to cost.",
+      "Experienced random glitches which impacted marketing tasks."
+    ],
+    "overall_experience": "This reviewer, working in digital marketing for a retail company, found BigCommerce generally easy to set up and manage for their online store. They appreciated the built-in features and bulk discount capabilities, which aided their marketing efforts. However, the platform's limited customization options and occasional glitches created frustration, and they felt the value for money could be improved compared to alternatives they've used."
+  },
+  "ts": "2026-10-18T10:03:25.665820+00:00"
+}

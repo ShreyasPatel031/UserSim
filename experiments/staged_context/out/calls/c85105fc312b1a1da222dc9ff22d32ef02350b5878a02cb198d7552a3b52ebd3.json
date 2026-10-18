@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c85105fc312b1a1da222dc9ff22d32ef02350b5878a02cb198d7552a3b52ebd3",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2716,
+  "output_tokens": 1068,
+  "cost_usd": 0.0034847999999999997,
+  "elapsed_s": 6.11,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Advanced features for email marketing campaigns\",\n    \"Seamless integration with e-commerce platforms like Shopify\",\n    \"Action-based flows for targeted communication\"\n  ],\n  \"cons\": [\n    \"High pricing, especially for a small business\",\n    \"Steep learning curve and difficult initial setup\",\n    \"Some email creation tools are not intuitive\"\n  ],\n  \"overall_experience\": \"This owner from a small food & beverages company found Klaviyo to be a powerful email marketing platform, especially for its advanced features and e-commerce integrations, which were an upgrade from Mailchimp. However, the high cost and initial complexity presented significant challenges for a business of their size and limited time using the product. While functional, the value for money was a considerable concern, impacting their overall satisfaction and recommendation.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 7,
+    "pros": [
+      "Advanced features for email marketing campaigns",
+      "Seamless integration with e-commerce platforms like Shopify",
+      "Action-based flows for targeted communication"
+    ],
+    "cons": [
+      "High pricing, especially for a small business",
+      "Steep learning curve and difficult initial setup",
+      "Some email creation tools are not intuitive"
+    ],
+    "overall_experience": "This owner from a small food & beverages company found Klaviyo to be a powerful email marketing platform, especially for its advanced features and e-commerce integrations, which were an upgrade from Mailchimp. However, the high cost and initial complexity presented significant challenges for a business of their size and limited time using the product. While functional, the value for money was a considerable concern, impacting their overall satisfaction and recommendation."
+  },
+  "ts": "2026-10-18T10:03:03.000227+00:00"
+}

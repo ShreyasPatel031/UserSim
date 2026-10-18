@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9432805f3d8eb565d9ab87c195cdf5fadf78446ac23a977b6f0cc414adedb80f",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2854,
+  "output_tokens": 1086,
+  "cost_usd": 0.0035712,
+  "elapsed_s": 5.65,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Robust e-commerce specific automation and flows\",\n    \"Detailed analytics and reporting capabilities\",\n    \"Seamless integration with e-commerce platforms like Shopify\"\n  ],\n  \"cons\": [\n    \"High cost, particularly for growing businesses\",\n    \"Some email creation tools can be difficult to use\",\n    \"Initial setup may have a learning curve\"\n  ],\n  \"overall_experience\": \"This Responsable Marketing has likely had a very positive experience with Klaviyo over their 2+ years of use, appreciating its powerful e-commerce focused features, advanced automation, and detailed analytics. While they find the platform highly effective for managing campaigns and generating revenue, the significant cost is a notable drawback. Despite some minor difficulties with specific email tools, the overall value and functionality make it a strong recommendation for their apparel and fashion e-commerce business.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Robust e-commerce specific automation and flows",
+      "Detailed analytics and reporting capabilities",
+      "Seamless integration with e-commerce platforms like Shopify"
+    ],
+    "cons": [
+      "High cost, particularly for growing businesses",
+      "Some email creation tools can be difficult to use",
+      "Initial setup may have a learning curve"
+    ],
+    "overall_experience": "This Responsable Marketing has likely had a very positive experience with Klaviyo over their 2+ years of use, appreciating its powerful e-commerce focused features, advanced automation, and detailed analytics. While they find the platform highly effective for managing campaigns and generating revenue, the significant cost is a notable drawback. Despite some minor difficulties with specific email tools, the overall value and functionality make it a strong recommendation for their apparel and fashion e-commerce business."
+  },
+  "ts": "2026-10-18T10:03:16.536872+00:00"
+}

@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d6fa4700d8a8452e9f8345764241c1854c1c4911bf9ef6e0f154e623d078a08e",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 208,
+  "output_tokens": 467,
+  "cost_usd": 0.0012299000000000001,
+  "elapsed_s": 2.73,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage customer support tickets\",\n  \"benefits\": [\n    \"Easy to use\",\n    \"Search for tickets quickly\",\n    \"Close tickets without sending email to client\"\n  ],\n  \"frictions\": [\n    \"Needs updating\",\n    \"Client information from CRM does not pull over accurately into tickets\",\n    \"Inaccurate client information leads to extra work to identify clients\"\n  ]\n}",
+  "json": {
+    "task": "Manage customer support tickets",
+    "benefits": [
+      "Easy to use",
+      "Search for tickets quickly",
+      "Close tickets without sending email to client"
+    ],
+    "frictions": [
+      "Needs updating",
+      "Client information from CRM does not pull over accurately into tickets",
+      "Inaccurate client information leads to extra work to identify clients"
+    ]
+  },
+  "ts": "2026-10-18T10:00:41.648663+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1a09ed95f2cc81424a9814b2deffb518462ad43fc198292b058c7164b672d7a9",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2738,
+  "output_tokens": 1043,
+  "cost_usd": 0.0034289000000000004,
+  "elapsed_s": 6.6,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Facilitates effective project collaboration.\",\n    \"Simplified project management for tracking tasks.\",\n    \"Centralizes project data, enhancing clarity.\"\n  ],\n  \"cons\": [\n    \"Limited customization options for specific workflows.\",\n    \"Inability to edit multiple lines simultaneously.\",\n    \"Potential learning curve for advanced features.\"\n  ],\n  \"overall_experience\": \"This reviewer likely found Smartsheet to be a valuable tool for project collaboration within their biotechnology company. They appreciated its ability to simplify project management and centralize task tracking. However, they may have encountered some frustrations with its limited customization capabilities and the inability to perform certain bulk edits.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Facilitates effective project collaboration.",
+      "Simplified project management for tracking tasks.",
+      "Centralizes project data, enhancing clarity."
+    ],
+    "cons": [
+      "Limited customization options for specific workflows.",
+      "Inability to edit multiple lines simultaneously.",
+      "Potential learning curve for advanced features."
+    ],
+    "overall_experience": "This reviewer likely found Smartsheet to be a valuable tool for project collaboration within their biotechnology company. They appreciated its ability to simplify project management and centralize task tracking. However, they may have encountered some frustrations with its limited customization capabilities and the inability to perform certain bulk edits."
+  },
+  "ts": "2026-10-18T10:03:49.387109+00:00"
+}

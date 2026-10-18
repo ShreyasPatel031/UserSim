@@ -1,0 +1,36 @@
+{
+  "stage": "hm_oracle",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d2f78e2c232261e8753681e241fead0f2ccedb44c60858679f7aba4fad383e11",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2968,
+  "output_tokens": 1020,
+  "cost_usd": 0.0034404,
+  "elapsed_s": 7.98,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Intuitive deal flow for managing sales opportunities\",\n    \"Ease of use for daily sales operations\",\n    \"Consolidates sales data into a single platform\"\n  ],\n  \"cons\": [\n    \"Reporting features are not robust enough for advanced analysis\",\n    \"Lacks certain advanced functions and 'nice-to-have' features\",\n    \"Customer service can be historically problematic\"\n  ],\n  \"overall_experience\": \"This Sales Manager likely found Freshsales to be an easy-to-use CRM that effectively streamlined their sales cycle and kept all necessary information in one place. While the core sales effectiveness and intuitive interface were appreciated over two years of use, they probably encountered limitations with advanced reporting and specific functionalities. The experience with customer support was likely a point of frustration, slightly tempering an otherwise positive long-term engagement.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Intuitive deal flow for managing sales opportunities",
+      "Ease of use for daily sales operations",
+      "Consolidates sales data into a single platform"
+    ],
+    "cons": [
+      "Reporting features are not robust enough for advanced analysis",
+      "Lacks certain advanced functions and 'nice-to-have' features",
+      "Customer service can be historically problematic"
+    ],
+    "overall_experience": "This Sales Manager likely found Freshsales to be an easy-to-use CRM that effectively streamlined their sales cycle and kept all necessary information in one place. While the core sales effectiveness and intuitive interface were appreciated over two years of use, they probably encountered limitations with advanced reporting and specific functionalities. The experience with customer support was likely a point of frustration, slightly tempering an otherwise positive long-term engagement."
+  },
+  "ts": "2026-10-18T10:01:16.386080+00:00"
+}
