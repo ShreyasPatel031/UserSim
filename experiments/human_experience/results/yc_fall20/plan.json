@@ -1,0 +1,312 @@
+[
+ {
+  "name": "Ploid",
+  "website": "https://ploid.com",
+  "one_liner": "The people data company for the agent era",
+  "subindustry": "B2B -> Sales",
+  "rivals": [
+   "Visier",
+   "Workday",
+   "SAP SuccessFactors",
+   "Culture Amp",
+   "Lattice",
+   "Gtmhub",
+   "ZoomInfo",
+   "Apollo.io"
+  ]
+ },
+ {
+  "name": "Vorelios",
+  "website": "https://vorelios.com",
+  "one_liner": "A foundation model for engineering physics",
+  "subindustry": "B2B",
+  "rivals": [
+   "Ansys",
+   "COMSOL Multiphysics",
+   "Siemens Simcenter",
+   "Altair HyperWorks",
+   "Dassault Syst\u00e8mes SIMULIA",
+   "MSC Software Apex",
+   "Ansys Fluent",
+   "SimScale"
+  ]
+ },
+ {
+  "name": "Boat",
+  "website": "https://boat.dev",
+  "one_liner": "The best cloud VMs for billions of agents",
+  "subindustry": "B2B -> Infrastructure",
+  "rivals": [
+   "Amazon EC2",
+   "Google Compute Engine",
+   "Azure Virtual Machines",
+   "RunPod",
+   "Lambda Labs",
+   "CoreWeave",
+   "E2B",
+   "Daytona"
+  ]
+ },
+ {
+  "name": "Asakana",
+  "website": "https://www.asakana.co/",
+  "one_liner": "Automating away manual admin for food distributors: texts to ERP",
+  "subindustry": "B2B -> Supply Chain and Logistics",
+  "rivals": [
+   "NetSuite",
+   "Microsoft Dynamics 365 Business Central",
+   "SAP Business One",
+   "Acumatica Cloud ERP",
+   "Epicor Kinetic",
+   "Sage Intacct",
+   "Distribion",
+   "FoodLogiQ"
+  ]
+ },
+ {
+  "name": "ByteAsk",
+  "website": "https://byteask.ai/",
+  "one_liner": "The AI coding agent for C and C++",
+  "subindustry": "B2B -> Engineering, Product and Design",
+  "rivals": [
+   "GitHub Copilot",
+   "Tabnine",
+   "Amazon CodeWhisperer",
+   "Sourcegraph Cody",
+   "Replit Ghostwriter",
+   "Kite",
+   "CodiumAI",
+   "Mutable.ai"
+  ]
+ },
+ {
+  "name": "OnePatch",
+  "website": "https://onepatch.dev",
+  "one_liner": "Automate on-call at agent-scale.",
+  "subindustry": "B2B -> Engineering, Product and Design",
+  "rivals": [
+   "PagerDuty",
+   "Opsgenie",
+   "Splunk On-Call",
+   "VictorOps",
+   "xMatters",
+   "Everbridge",
+   "Sentry",
+   "Datadog"
+  ]
+ },
+ {
+  "name": "Terse",
+  "website": "https://www.useterse.ai/",
+  "one_liner": "Durable state for AI agents",
+  "subindustry": "B2B -> Infrastructure",
+  "rivals": [
+   "LangChain",
+   "LlamaIndex",
+   "Pinecone",
+   "Weaviate",
+   "Milvus",
+   "Chroma",
+   "Cloudflare",
+   "Rivet"
+  ]
+ },
+ {
+  "name": "Praxis",
+  "website": "https://runpraxis.ai",
+  "one_liner": "AI agents that run law firm operations.",
+  "subindustry": "B2B -> Legal",
+  "rivals": [
+   "Clio Manage",
+   "MyCase",
+   "PracticePanther",
+   "Filevine",
+   "Zola Suite",
+   "Lawmatics",
+   "Clio"
+  ]
+ },
+ {
+  "name": "Simulithic",
+  "website": "https://simulithic.com",
+  "one_liner": "AI users that test your app on every device and browser",
+  "subindustry": "B2B -> Engineering, Product and Design",
+  "rivals": [
+   "BrowserStack",
+   "Sauce Labs",
+   "LambdaTest",
+   "Cypress",
+   "Testim",
+   "Applitools"
+  ]
+ },
+ {
+  "name": "Forward",
+  "website": "https://www.useforward.co/",
+  "one_liner": "Unifying Global Private Credit",
+  "subindustry": "B2B",
+  "rivals": [
+   "Altana Wealth",
+   "Allvue Credit Management",
+   "Volaris",
+   "Clearwater Analytics",
+   "SS&C Advent",
+   "Foreside",
+   "Finastra Commercial Lending",
+   "Aladdin Accounting"
+  ]
+ },
+ {
+  "name": "Kailash Labs",
+  "website": "https://www.kailashlabs.com/",
+  "one_liner": "A factory for small and specialized video reasoning models",
+  "subindustry": "B2B -> Analytics",
+  "rivals": [
+   "Amazon Rekognition",
+   "Google Cloud Video Intelligence API",
+   "Microsoft Azure Video Indexer",
+   "IBM Watson Video Analysis",
+   "Clarifai",
+   "Vframe",
+   "Covariant",
+   "Osaro"
+  ]
+ },
+ {
+  "name": "GrayPass",
+  "website": "https://www.graypass.org",
+  "one_liner": "Verify the expected person is still in control before sensitive\u2026",
+  "subindustry": "B2B -> Infrastructure",
+  "rivals": [
+   "Socure",
+   "Veriff",
+   "Onfido",
+   "Arkose Labs",
+   "BioCatch",
+   "SEON",
+   "Auth0",
+   "Duo Security"
+  ]
+ },
+ {
+  "name": "Composal",
+  "website": "https://composal.ai",
+  "one_liner": "Swarms of agents acting like users to find bugs before release",
+  "subindustry": "B2B",
+  "rivals": [
+   "Functionize",
+   "Testim",
+   "Applitools",
+   "Mabl",
+   "Sauce Labs",
+   "BrowserStack"
+  ]
+ },
+ {
+  "name": "Agent Relay",
+  "website": "https://agentrelay.com",
+  "one_liner": "Let your teams' coding agents message each other",
+  "subindustry": "B2B -> Engineering, Product and Design",
+  "rivals": [
+   "LangChain",
+   "LlamaIndex",
+   "Auto-GPT",
+   "CrewAI",
+   "Microsoft Azure AI",
+   "OpenAI API"
+  ]
+ },
+ {
+  "name": "Applied Kinetics",
+  "website": "https://appliedkinetics.ai",
+  "one_liner": "AI for the industries that power America. ",
+  "subindustry": "B2B -> Supply Chain and Logistics",
+  "rivals": [
+   "Uptake",
+   "Augury",
+   "C3 AI",
+   "AspenTech",
+   "GE Digital",
+   "Siemens Digital Industries Software",
+   "Aura AI",
+   "Paragon AI"
+  ]
+ },
+ {
+  "name": "Maritime",
+  "website": "https://maritime.sh/",
+  "one_liner": "The managed cloud for AI agents.",
+  "subindustry": "B2B -> Infrastructure",
+  "rivals": [
+   "LangChain",
+   "LlamaIndex",
+   "Anyscale",
+   "Hugging Face",
+   "Scale AI",
+   "AssemblyAI",
+   "Modal",
+   "Beam"
+  ]
+ },
+ {
+  "name": "Sintropix",
+  "website": "https://sintropix.com/",
+  "one_liner": "Autonomous accounting platform for global companies",
+  "subindustry": "B2B -> Finance and Accounting",
+  "rivals": [
+   "NetSuite",
+   "SAP S/4HANA",
+   "Oracle Fusion Cloud ERP",
+   "Microsoft Dynamics 365 Finance",
+   "BlackLine",
+   "Workday Financial Management"
+  ]
+ },
+ {
+  "name": "Boxes.dev",
+  "website": "https://boxes.dev",
+  "one_liner": "Cloud development environments for AI coding",
+  "subindustry": "B2B -> Engineering, Product and Design",
+  "rivals": [
+   "GitHub Codespaces",
+   "Gitpod",
+   "AWS Cloud9",
+   "Google Cloud Shell Editor",
+   "CodiumAI",
+   "Replit",
+   "Coder"
+  ]
+ },
+ {
+  "name": "TrueMile",
+  "website": "https://TrueMile.AI/",
+  "one_liner": "An AI-operated logistics company.",
+  "subindustry": "B2B -> Supply Chain and Logistics",
+  "rivals": [
+   "project44",
+   "FourKites",
+   "Blue Yonder Luminate Platform",
+   "Manhattan Active Omni",
+   "Kuebix TMS",
+   "MercuryGate TMS",
+   "McLeod Software",
+   "Trimble Transportation"
+  ]
+ },
+ {
+  "name": "ObsessionDB",
+  "website": "https://obsessiondb.com",
+  "one_liner": "Real-time data warehouse for agents",
+  "subindustry": "B2B -> Infrastructure",
+  "rivals": [
+   "Intercom",
+   "Zendesk",
+   "Salesforce Service Cloud",
+   "Genesys Cloud CX",
+   "Datadog",
+   "Amplitude",
+   "ClickHouse Cloud",
+   "Altinity.Cloud"
+  ]
+ }
+]

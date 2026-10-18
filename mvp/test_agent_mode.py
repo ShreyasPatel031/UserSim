@@ -139,6 +139,37 @@ class AgentModeTest(unittest.TestCase):
         self.assertEqual(out["evidence"]["own_reviews"], 0)
         self.assertIn("no product_url", out["evidence"]["own_reviews_check"]["why"])
 
+    def test_new_product_gets_profile_from_checked_rivals(self):
+        got = {"Basecamp": {"reviews": [], "errors": []}, "Asana": RIVAL}
+
+        async def judge(prompt):
+            if "is a new product" in prompt:
+                return {"use_cases": ["Plan a campaign"], "what_users_value": ["Boards"], "what_frustrates_users": ["Notifications"]}
+            return await ok_judge(prompt)
+
+        async def fake_llm(prompt):
+            return {}
+        with mock.patch.object(RC, "apify_token", return_value="t"), mock.patch.object(RC, "prefetch"), \
+                mock.patch.object(RC, "cached_live_reviews", side_effect=lambda n: got.get(n)):
+            out = asyncio.run(A.predict_experience(product="Basecamp", url="https://basecamp.com/", persona={"role": "PM"},
+                                                   competitors=["Asana"], wait_s=0, llm=fake_llm, judge=judge))
+        self.assertTrue(out["new_product"])
+        prof = out["product_profile"]
+        self.assertEqual(prof["likely_users"]["role_families"], {"marketing_creative_content": 1.0})
+        self.assertEqual(prof["use_cases"], ["Plan a campaign"])
+        self.assertEqual(prof["competitor_ratings"]["Asana"]["reviews"], 30)
+
+    def test_discovery_merges_named_and_planner_rivals(self):
+        async def named(prompt):
+            return {"competitors": ["Asana", "monday.com", "Trello"]}
+
+        async def plan(url):
+            return {"competitors": ["https://trello.com/", "https://clickup.com/"],
+                    "competitor_names": {"https://trello.com/": "Trello", "https://clickup.com/": "ClickUp"}}
+        with mock.patch("mvp.fast_plan.compare_plan_from_url", plan):
+            out = asyncio.run(A.discover_rivals("https://basecamp.com/", llm_json=named))
+        self.assertEqual(out, ["Asana", "monday.com", "Trello", "ClickUp"])
+
     def test_pending_while_product_scrape_runs(self):
         with mock.patch.object(RC, "apify_token", return_value="t"), mock.patch.object(RC, "prefetch"), \
                 mock.patch.object(RC, "cached_live_reviews", return_value=None):

@@ -272,13 +272,42 @@ def gather(product: str, rivals: list[str], wait_s: float) -> dict[str, Any]:
     return got
 
 
-async def discover_rivals(url: str) -> list[str]:
-    """Rival names from the study planner (web search + live-URL checks), as the browser studies get them."""
+NAME_RIVALS_PROMPT = """Name the direct competitors of the product at {url}{about}: products a buyer would compare it
+against for the same job and the same kind of customer. Real, currently sold software only, most direct first, using
+the exact names they are listed under on G2 / Capterra / TrustRadius (established products with reviews are most useful;
+include them even if the product is new). Do not include the product itself or another edition of it.
+Return {{"competitors": ["name", ...]}} with up to {n} names."""
+
+
+async def discover_rivals(url: str, about: str = "", llm_json=None, n: int = 6) -> list[str]:
+    """Rival names for a product that has none given: the study planner's (web search + live-URL checks) plus up to n
+    named by the model under their review-site names. The YC test found the planner alone often names 2 rivals that
+    are not competitors or have no reviews, so more candidates go in and the identity gate keeps the real ones."""
     from mvp.fast_plan import compare_plan_from_url
 
-    plan = await compare_plan_from_url(url) or {}
-    names = plan.get("competitor_names") or {}
-    return [str(names.get(u) or "").strip() for u in plan.get("competitors") or [] if str(names.get(u) or "").strip()]
+    async def planner() -> list[str]:
+        try:
+            plan = await compare_plan_from_url(url) or {}
+        except Exception:  # noqa: BLE001 - the named list still stands
+            return []
+        names = plan.get("competitor_names") or {}
+        return [str(names.get(u) or "").strip() for u in plan.get("competitors") or [] if str(names.get(u) or "").strip()]
+
+    async def named() -> list[str]:
+        try:
+            j = await (llm_json or _default_judge)(NAME_RIVALS_PROMPT.format(url=url, about=f" ({about})" if about else "", n=n))
+        except Exception:  # noqa: BLE001
+            return []
+        return [str(x).strip() for x in (j.get("competitors") or []) if isinstance(x, str) and x.strip()][:n]
+
+    a, b = await asyncio.gather(planner(), named())
+    seen, out = set(), []
+    for x in b + a:  # review-site names first: they are what the scrapers can find
+        k = re.sub(r"[^a-z0-9]", "", x.lower())
+        if k and k not in seen:
+            seen.add(k)
+            out.append(x)
+    return out[:8]
 
 
 IDENTITY_PROMPT = """Product: {product} ({url}).
@@ -340,6 +369,62 @@ async def _default_judge(prompt: str) -> dict:
     return j if isinstance(j, dict) else {}
 
 
+PROFILE_PROMPT = """{product} ({url}) is a new product. Real users of its direct competitors ({rivals}) wrote these reviews:
+{sample}
+
+From these reviews only, return JSON:
+{{"use_cases": [5 concrete things people use products like this for, as short imperative tasks a new user of {product} could try, most common first],
+ "what_users_value": [5 short specific things users of these products like most, most common first],
+ "what_frustrates_users": [5 short specific complaints, most common first],
+ "switching_reasons": [up to 3 reasons people say they chose or left one of these products, if stated]}}"""
+
+
+def _mix(values: list[Any], top: int = 6) -> dict[str, float]:
+    vals = [str(v).strip() for v in values if v not in (None, "") and str(v).strip() and str(v).strip().lower() != "unknown"]
+    if not vals:
+        return {}
+    counts: dict[str, int] = {}
+    for v in vals:
+        counts[v] = counts.get(v, 0) + 1
+    return {k: round(c / len(vals), 3) for k, c in sorted(counts.items(), key=lambda kv: -kv[1])[:top]}
+
+
+def likely_users(rivals: list[dict]) -> dict[str, Any]:
+    """Who uses this kind of product: the counted mix of the direct competitors' reviewers. Held out, competitors'
+    reviewer mix predicted a product's own mix 2-3x closer than a model guessing (staged_context usage.py) and closer
+    than the all-products average (experiments/human_experience/mix_bench.py)."""
+    return {"n_reviewers": len(rivals),
+            "role_families": _mix([RS.role_family(str(r.get("role") or "")) for r in rivals if r.get("role")]),
+            "company_sizes": _mix([r.get("size") for r in rivals]),
+            "industries": _mix([str(r.get("industry") or "").lower() for r in rivals]),
+            "review_sites": _mix([r.get("source") for r in rivals])}
+
+
+async def product_profile(product: str, url: str, rivals_by_name: dict[str, list[dict]], judge) -> dict[str, Any]:
+    """What an agent can know about a NEW product (no reviews of its own) from its checked direct competitors."""
+    revs = [r for v in rivals_by_name.values() for r in v]
+    out: dict[str, Any] = {"likely_users": likely_users(revs)}
+    cons = [str(r.get("cons") or r.get("text") or "").lower() for r in revs if r.get("cons") or r.get("text")]
+    if cons:
+        out["complaint_topic_rates"] = {k.replace("complaint_", ""): round(sum(bool(re.search(p, c)) for c in cons) / len(cons), 3)
+                                        for k, p in RS.TOPICS.items()}
+    avg = {k: round(sum(v) / len(v), 2) for k, v in ((k, _values(revs, k)) for k in OUT_SCALE) if v}
+    out["competitor_ratings"] = {n: {k: round(sum(v) / len(v), 2) for k, v in ((k, _values(rv, k)) for k in OUT_SCALE) if v}
+                                 | {"reviews": len(rv)} for n, rv in rivals_by_name.items()}
+    out["competitor_ratings_all"] = avg
+    if revs:
+        try:
+            j = await judge(PROFILE_PROMPT.format(product=product, url=url or "-", rivals=", ".join(rivals_by_name),
+                                                  sample=_sample(revs, 40)))
+        except Exception as exc:  # noqa: BLE001 - the counted parts still stand
+            j = {"error": f"{type(exc).__name__}: {str(exc)[:120]}"}
+        for k in ("use_cases", "what_users_value", "what_frustrates_users", "switching_reasons"):
+            out[k] = j.get(k) or []
+        if j.get("error"):
+            out["summary_error"] = j["error"]
+    return out
+
+
 async def predict_experience(*, product: str, url: str, persona: dict[str, Any], task: str = "",
                              competitors: list[str] | None = None, wait_s: float = 45.0, llm=None,
                              discover=None, judge=None) -> dict[str, Any]:
@@ -382,6 +467,7 @@ async def predict_experience(*, product: str, url: str, persona: dict[str, Any],
                 "own_reviews_check": own_check, "rivals_check": ident["rivals"],
                 "reason": f"no usable reviews for {product}" + (f" or its rivals {rivals}" if rivals else "; name its competitors to use theirs")
                           + " (see own_reviews_check / rivals_check)"}
+    profile = await product_profile(product, url, {n: got[n]["reviews"] for n in kept}, judge or _default_judge)
     ratings = rating_estimates(own, riv)
     personalize(ratings, persona)
     ev = evidence_text(product, own, riv, persona, ratings)
@@ -400,6 +486,8 @@ async def predict_experience(*, product: str, url: str, persona: dict[str, Any],
         words = {"error": f"{type(exc).__name__}: {str(exc)[:200]}"}
     return {
         "mode": "agent", "status": "ok", "product": product, "persona": persona, "task": task,
+        "new_product": not own,
+        "product_profile": profile,
         "ratings": ratings,
         "pros": words.get("pros") or [], "cons": words.get("cons") or [],
         "overall_experience": words.get("overall_experience") or "",

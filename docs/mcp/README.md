@@ -211,6 +211,16 @@ What you get on `ok`:
   - On held-out reviewers the offsets raised per-person ranking within a product (recommend Spearman 0.00 → 0.13) and
     cut error on 6 of 7 test sets.
   - Evidence: `experiments/human_experience/heldout_bench.py` and `personalize.py`.
+- **`new_product`** is true when the product has no usable reviews of its own (the normal case for a startup). Then
+  ratings come from its checked competitors only, which is a level for the category and not for this product.
+- **`product_profile`**: what an agent can know about a new product from its checked direct competitors.
+  - `likely_users`: the counted role, company-size and industry mix of competitors' reviewers. Held out, it predicted
+    a product's real user mix better than the all-products average for roles (TVD 0.17 vs 0.22 on Capterra, 0.27 vs
+    0.31 on G2) and company size. Industry is no better (`experiments/human_experience/mix_bench.py`).
+  - `use_cases`, `what_users_value`, `what_frustrates_users` and `switching_reasons`: summarised from competitors' reviews.
+  - `complaint_topic_rates`, plus `competitor_ratings` per competitor.
+- **Competitors**: when none are given, rivals are discovered from `product_url`. The study planner's are merged with
+  up to 6 named by the model under their review-site names, and the identity gate keeps only real competitors.
 - **`pros`**, **`cons`** and **`overall_experience`**: written by the held-out-validated predictor prompt. Its evidence:
   people-like-this-persona averages (`mvp/agent_mode_segments.json`), the rivals' ratings and complaint topics, and the most
   similar reviewers of the product and its rivals.
