@@ -105,6 +105,11 @@ def _api_key() -> str:
 
 
 def vault_phone() -> str | None:
+    """The forwarded phone's number: MVP_SMS_PHONE (servers that get it from their env, like the prod VM, without
+    a copy of secrets/credentials.json), else the vault."""
+    env = (os.environ.get("MVP_SMS_PHONE") or "").strip()
+    if env:
+        return env
     vault = _load_vault()
     for site in vault.get("sites") or []:
         phone = (site.get("phone") or "").strip()
