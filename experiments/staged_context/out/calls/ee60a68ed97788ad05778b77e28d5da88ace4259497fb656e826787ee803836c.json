@@ -1,0 +1,36 @@
+{
+  "stage": "e2e_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ee60a68ed97788ad05778b77e28d5da88ace4259497fb656e826787ee803836c",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3125,
+  "output_tokens": 1032,
+  "cost_usd": 0.0035175,
+  "elapsed_s": 5.26,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Comprehensive features for sales management\",\n    \"Effective in tracking sales data and pipelines\",\n    \"Good support when needed for setup\"\n  ],\n  \"cons\": [\n    \"Reporting limitations with customized fields\",\n    \"Some setup and advanced workflows can be clunky\",\n    \"Integrations with newer tools might be lacking\"\n  ],\n  \"overall_experience\": \"This Sales Manager, with over two years of experience using Freshsales in a publishing company, likely found the product generally effective for managing their sales pipeline. While the initial setup and advanced customization for specific reporting needs presented some challenges and a learning curve, the system's core functionality for tracking and managing sales data was a significant improvement over previous methods. They would appreciate its comprehensive features, though they might express a desire for more seamless advanced integrations and reporting flexibility.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Comprehensive features for sales management",
+      "Effective in tracking sales data and pipelines",
+      "Good support when needed for setup"
+    ],
+    "cons": [
+      "Reporting limitations with customized fields",
+      "Some setup and advanced workflows can be clunky",
+      "Integrations with newer tools might be lacking"
+    ],
+    "overall_experience": "This Sales Manager, with over two years of experience using Freshsales in a publishing company, likely found the product generally effective for managing their sales pipeline. While the initial setup and advanced customization for specific reporting needs presented some challenges and a learning curve, the system's core functionality for tracking and managing sales data was a significant improvement over previous methods. They would appreciate its comprehensive features, though they might express a desire for more seamless advanced integrations and reporting flexibility."
+  },
+  "ts": "2026-10-18T07:28:46.729363+00:00"
+}

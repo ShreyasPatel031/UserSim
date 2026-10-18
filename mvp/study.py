@@ -1218,13 +1218,15 @@ async def summarize_agent_feedback(
     task: dict[str, Any],
     run: dict[str, Any],
     rivals: list[str] | None = None,
+    review_evidence: str | None = None,
 ) -> dict[str, Any]:
     """Turn a real browser session into persona feedback, grounded in observed steps.
 
     Capterra + G2 reviews of similar competitors (mvp.review_context) are added as outside evidence: they may shape
     the persona's overall feedback and likely frictions, never the frictions the steps actually show.
     """
-    reviews = await _review_evidence(task.get("site_url") or url, persona, rivals)
+    # review_evidence: a pre-built package (benchmarks pass one that excludes the product's own reviews); "" = none
+    reviews = review_evidence if review_evidence is not None else await _review_evidence(task.get("site_url") or url, persona, rivals)
     steps = [
         {
             "step": s.get("step"),

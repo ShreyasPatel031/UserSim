@@ -1,0 +1,5 @@
+rid,product,condition,run_completed,run_error,ease_of_use_rating_abs_err,functionality_rating_abs_err,overall_rating_abs_err,value_for_money_rating_abs_err,customer_support_rating_abs_err,recommendation_score_abs_err,pros,cons,overall_experience
+Capterra___2868417,Freshsales,C1_agent_alone,True,False,0.0,1.0,0.0,1.0,1.0,2.0,0.0,0.0,0.0
+Capterra___2868417,Freshsales,C2_reviews_only,True,False,0.0,1.0,0.0,1.0,1.0,2.0,0.0,0.0,0.0
+Capterra___2868417,Freshsales,C3_run_only,True,False,0.0,1.0,0.0,1.0,2.0,2.0,0.0,0.0,0.0
+Capterra___2868417,Freshsales,C4_run_plus_reviews,True,False,0.0,1.0,0.0,1.0,1.0,2.0,0.3333333333333333,0.0,0.0
