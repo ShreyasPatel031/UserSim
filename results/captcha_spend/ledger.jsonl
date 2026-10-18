@@ -202,3 +202,5 @@
 {"attempt": 0, "captcha_type": "recaptcha_v3_enterprise", "event": "skip", "reason": "host_not_paid", "site": "trello.com", "task_type": "ReCaptchaV3EnterpriseTaskProxyLess", "ts": "2026-10-18T00:48:53.913357+00:00"}
 {"attempt": 0, "captcha_type": "recaptcha_v3_enterprise", "event": "skip", "reason": "host_not_paid", "site": "asana.com", "task_type": "ReCaptchaV3EnterpriseTaskProxyLess", "ts": "2026-10-18T01:04:04.128319+00:00"}
 {"attempt": 0, "captcha_type": "recaptcha_v3_enterprise", "event": "skip", "reason": "host_not_paid", "site": "asana.com", "task_type": "ReCaptchaV3EnterpriseTaskProxyLess", "ts": "2026-10-18T01:05:33.089767+00:00"}
+{"attempt": 1, "event": "signup_start", "site": "clickup.com", "ts": "2026-10-18T01:25:55.428529+00:00"}
+{"attempt": 2, "event": "signup_start", "site": "asana.com", "ts": "2026-10-18T01:26:55.166929+00:00"}
