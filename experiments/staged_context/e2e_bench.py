@@ -83,7 +83,7 @@ async def run_case(c: dict, sem: asyncio.Semaphore) -> dict:
             run = await asyncio.wait_for(run_browser_agent(study_id="e2e_bench", agent_id=rid.replace("Capterra___", "c"), url=url,
                                                            task_prompt=card["task"], persona=persona,
                                                            segment=f"{card['role_family']} / {card['industry']}"), timeout=420)
-        except Exception as exc:  # noqa: BLE001
+        except (Exception, asyncio.CancelledError) as exc:  # noqa: BLE001 - browser_use cancels on internal timeouts
             run = {"error": f"{type(exc).__name__}: {exc}"[:400], "trace": [], "completed": False, "visited_urls": []}
     pk = package(c)
     ev = ("\nEvidence from real Capterra and G2 reviews of competing products by people like this persona "
@@ -162,9 +162,14 @@ def main() -> None:
             print(f"[{done}/{len(cs)}] {rec['product']}: completed={rec['run'].get('completed')} steps={len(rec['steps'])} "
                   f"err={(rec['run'].get('error') or '')[:60]} {rec['secs']}s", flush=True)
             return rec
-        return await asyncio.gather(*(one(c) for c in cs))
+        res = await asyncio.gather(*(one(c) for c in cs), return_exceptions=True)
+        for c, r in zip(cs, res):
+            if isinstance(r, BaseException):
+                print(f"case {c['row']['review_id']} failed outside the browser run: {r!r}", flush=True)
+        return [r for r in res if isinstance(r, dict)]
 
     recs = {r["rid"]: r for r in asyncio.run(go())}
+    cs = [c for c in cs if c["row"]["review_id"] in recs]
     pool = ThreadPoolExecutor(64)
     jobs = [(c, k) for c in cs for k in CONDS]
     preds = dict(zip([(c["row"]["review_id"], k) for c, k in jobs],
