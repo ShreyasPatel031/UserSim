@@ -203,7 +203,7 @@ again with the same arguments. Other statuses: `ok`, `no_data` (with `reason`, e
 
 What you get on `ok`:
 
-- **`ratings`**: `overall_rating`, `ease_of_use_rating` and `recommendation_score`, each with `estimate`, `basis`,
+- **`ratings`**: `overall_rating`, `ease_of_use_rating`, `recommendation_score` and, from Capterra reviews only, `functionality_rating`, `value_for_money_rating` and `customer_support_rating`. Each has `estimate`, `basis`,
   `n_own`, `n_rivals`, `own_mean` and `rivals_mean`. The estimate is the product's last 100 own reviews, shrunk toward
   its rivals' average with k = 10. With no own reviews, it is the rivals' average.
   - **`most_likely`** is the single likeliest whole score (`for_this_persona` − 0.25, rounded up). Use it when one

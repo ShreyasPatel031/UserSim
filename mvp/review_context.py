@@ -56,7 +56,10 @@ def _all_in_one_item(x: dict[str, Any]) -> dict[str, Any]:
             "size": rv.get("companySize"), "industry": rv.get("industry"), "time_used": pdata.get("timeUsedProduct"),
             "rating": rating if isinstance(rating, (int, float)) and rating > 0 else None,
             "nps": x.get("recommendationScore"), "pros": x.get("pros"), "cons": x.get("cons"), "text": x.get("text"),
-            "date": x.get("date")}
+            "date": x.get("date"),
+            # Capterra only (checked on 2,901 scraped items): 1-5 sub-ratings in platformData; 0 = not rated
+            "ease": pdata.get("easeOfUseRating"), "functionality": pdata.get("functionalityRating"),
+            "value": pdata.get("valueForMoneyRating"), "support": pdata.get("customerSupportRating")}
 
 
 def enabled() -> bool:
