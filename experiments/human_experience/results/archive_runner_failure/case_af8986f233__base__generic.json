@@ -1,0 +1,223 @@
+{
+ "run_id": "case_af8986f233__base__generic",
+ "case_id": "case_af8986f233",
+ "engine": "generic",
+ "context": "base",
+ "status": "runner_failure",
+ "success_criteria_results": [
+  {
+   "criterion": "Dates and assignment are visible",
+   "result": "not_met",
+   "step": 40
+  },
+  {
+   "criterion": "The available schedule view is recorded",
+   "result": "not_met",
+   "step": 40
+  }
+ ],
+ "observations": [
+  {
+   "step": 0,
+   "text": "The agent opened https://clickup.com/."
+  },
+  {
+   "step": 1,
+   "text": "The agent navigated to https://app.clickup.com/."
+  },
+  {
+   "step": 2,
+   "text": "The agent clicked a div with the text \"Home\"."
+  },
+  {
+   "step": 3,
+   "text": "The agent clicked a div with the text \"Home\" again."
+  },
+  {
+   "step": 4,
+   "text": "The agent clicked a button with aria-label \"Create task\"."
+  },
+  {
+   "step": 5,
+   "text": "The agent clicked a button with the text \"Don't update\"."
+  },
+  {
+   "step": 6,
+   "text": "The agent clicked a button with aria-label \"Create task\" again."
+  },
+  {
+   "step": 7,
+   "text": "The agent typed 'Demo Alpha' into an input field."
+  },
+  {
+   "step": 8,
+   "text": "The agent clicked a div with role \"button\" and text \"Due date\"."
+  },
+  {
+   "step": 9,
+   "text": "The agent clicked a 'cu-date-nlp-input' element."
+  },
+  {
+   "step": 10,
+   "text": "The agent clicked a 'cu3-icon' element."
+  },
+  {
+   "step": 11,
+   "text": "The agent clicked a 'cu-calendar-day' element with the text \"18 September\"."
+  },
+  {
+   "step": 12,
+   "text": "The agent clicked a 'cu-calendar-day' element with the text \"18 September\"."
+  },
+  {
+   "step": 13,
+   "text": "The agent clicked a 'cu-calendar-day' element with the text \"18 September\"."
+  },
+  {
+   "step": 14,
+   "text": "The agent clicked a 'cu-calendar-day' element with the text \"18 September\"."
+  },
+  {
+   "step": 15,
+   "text": "The agent clicked a 'cu-calendar-day' element with the text \"18 September\"."
+  },
+  {
+   "step": 16,
+   "text": "The agent clicked a 'cu-calendar-day' element with the text \"18 September\"."
+  },
+  {
+   "step": 17,
+   "text": "The agent clicked a 'cu-calendar-day' element with the text \"18 September\"."
+  },
+  {
+   "step": 18,
+   "text": "The agent clicked a 'cu-calendar-day' element with the text \"18 September\"."
+  },
+  {
+   "step": 19,
+   "text": "The agent clicked a 'cu-calendar-day' element with the text \"18 September\"."
+  },
+  {
+   "step": 20,
+   "text": "The agent clicked a 'cu-calendar-day' element with the text \"18 September\"."
+  },
+  {
+   "step": 21,
+   "text": "The agent clicked a 'cu-calendar-day' element with the text \"18 September\"."
+  },
+  {
+   "step": 22,
+   "text": "The agent clicked a 'cu-calendar-day' element with the text \"18 September\"."
+  },
+  {
+   "step": 23,
+   "text": "The agent clicked a 'cu-calendar-day' element with the text \"18 September\"."
+  },
+  {
+   "step": 24,
+   "text": "The agent clicked a 'cu-calendar-day' element with the text \"18 September\"."
+  },
+  {
+   "step": 25,
+   "text": "The agent clicked a 'cu-calendar-day' element with the text \"18 September\"."
+  },
+  {
+   "step": 26,
+   "text": "The agent clicked a 'cu-calendar-day' element with the text \"18 September\"."
+  },
+  {
+   "step": 27,
+   "text": "The agent clicked a 'cu-calendar-day' element with the text \"18 September\"."
+  },
+  {
+   "step": 28,
+   "text": "The agent clicked a 'cu-calendar-day' element with the text \"18 September\"."
+  },
+  {
+   "step": 29,
+   "text": "The agent clicked a 'cu-calendar-day' element with the text \"18 September\"."
+  },
+  {
+   "step": 30,
+   "text": "The agent clicked a 'cu-calendar-day' element with the text \"18 September\"."
+  },
+  {
+   "step": 31,
+   "text": "The agent clicked a 'cu-calendar-day' element with the text \"18 September\"."
+  },
+  {
+   "step": 32,
+   "text": "The agent clicked a 'cu-calendar-day' element with the text \"18 September\"."
+  },
+  {
+   "step": 33,
+   "text": "The agent clicked a 'cu-calendar-day' element with the text \"18 September\"."
+  },
+  {
+   "step": 34,
+   "text": "The agent clicked a 'cu-calendar-day' element with the text \"18 September\"."
+  },
+  {
+   "step": 35,
+   "text": "The agent clicked a 'cu-calendar-day' element with the text \"18 September\"."
+  },
+  {
+   "step": 36,
+   "text": "The agent clicked a button with the text \"18 October\"."
+  },
+  {
+   "step": 37,
+   "text": "The agent clicked a 'cu-calendar-day' element with the text \"18 October\"."
+  },
+  {
+   "step": 38,
+   "text": "The agent clicked a 'cu-calendar-day' element with the text \"18 October\"."
+  },
+  {
+   "step": 39,
+   "text": "The agent clicked a button with the text \"18 October\"."
+  },
+  {
+   "step": 40,
+   "text": "The agent reported being stuck in a loop while trying to set the due date for the 'Demo Alpha' task, repeatedly selecting '18 September' and then clicking '18 October' without confirming the date selection."
+  }
+ ],
+ "errors": [
+  {
+   "kind": "runner_failure",
+   "text": "The agent was unable to complete the task of scheduling project work and assigning responsibilities due to being stuck in a loop while trying to set the due date for the 'Demo Alpha' task. The agent repeatedly selected the 18th of September and then clicked '18 October' without confirming the date selection."
+  }
+ ],
+ "actions": 40,
+ "elapsed_seconds": 542.2,
+ "plan": "free plan of a fresh test account (unknown seen in run)",
+ "product_version_or_capture_date": "2026-10-18",
+ "environment_mismatches": [
+  "fresh test account with synthetic data; reviewer's historical version, plan, team and data unknown",
+  "short single-session run cannot recreate long tenure or team adoption"
+ ],
+ "trace_path": "results/execution/traces/case_af8986f233__base__generic.json",
+ "runner": {
+  "action_model": "gemini-2.5-flash-lite",
+  "max_steps": 40,
+  "max_actions_per_step": 2,
+  "wall_seconds": 600,
+  "backend": "browserbase",
+  "usage": {
+   "input_tokens": 839455,
+   "output_tokens": 9809,
+   "cost_usd": 0.08559228
+  }
+ },
+ "judge": {
+  "model": "gemini-2.5-flash",
+  "model_version": "gemini-2.5-flash",
+  "usage": {
+   "input_tokens": 6150,
+   "output_tokens": 1827,
+   "cost_usd": 0.006412,
+   "latency_seconds": 7.14
+  },
+  "status": "automated_provisional"
+ }
+}

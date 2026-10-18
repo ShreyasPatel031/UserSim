@@ -1,0 +1,401 @@
+rid,product,split,cond,overall_rating_pred,overall_rating_y,overall_rating_abs_err,pros,cons,overall_experience
+G:11360160,Reply,dev,agent_full,4.0,5.0,1.0,0.5,0.0,0.0
+G:11360160,Reply,dev,own_similar,4.0,5.0,1.0,0.5,0.0,1.0
+G:11568699,Reply,dev,agent_full,4.0,5.0,1.0,0.75,0.0,0.0
+G:11568699,Reply,dev,own_similar,4.0,5.0,1.0,0.5,0.0,1.0
+G:4517354,Reply,dev,agent_full,4.0,4.0,0.0,0.25,0.3333333333333333,0.0
+G:4517354,Reply,dev,own_similar,4.0,4.0,0.0,0.25,0.0,0.0
+G:11907324,Reply,dev,agent_full,4.0,4.5,0.5,0.75,0.0,0.0
+G:11907324,Reply,dev,own_similar,4.0,4.5,0.5,0.5,0.0,1.0
+G:11667118,Reply,dev,agent_full,4.0,4.5,0.5,0.25,0.5,1.0
+G:11667118,Reply,dev,own_similar,4.0,4.5,0.5,0.25,0.5,1.0
+G:4361137,Reply,dev,agent_full,4.0,4.0,0.0,0.25,0.0,0.0
+G:4361137,Reply,dev,own_similar,4.0,4.0,0.0,0.5,0.0,1.0
+G:9709795,Reply,dev,agent_full,4.0,5.0,1.0,0.5,0.0,0.0
+G:9709795,Reply,dev,own_similar,5.0,5.0,0.0,0.5,0.0,0.0
+G:12780667,Reply,dev,agent_full,4.0,4.5,0.5,0.0,0.0,0.0
+G:12780667,Reply,dev,own_similar,4.0,4.5,0.5,0.75,0.0,0.0
+G:12138168,Reply,dev,agent_full,4.0,5.0,1.0,0.5,0.0,0.0
+G:12138168,Reply,dev,own_similar,4.0,5.0,1.0,0.0,0.0,0.0
+G:10909978,Reply,dev,agent_full,4.0,5.0,1.0,0.25,0.5,0.0
+G:10909978,Reply,dev,own_similar,5.0,5.0,0.0,0.5,0.5,1.0
+G:4621307,HubSpot Sales Hub,dev,agent_full,4.0,2.5,1.5,1.0,0.0,0.0
+G:4621307,HubSpot Sales Hub,dev,own_similar,3.0,2.5,0.5,0.0,0.0,1.0
+G:9924961,HubSpot Sales Hub,dev,agent_full,4.0,2.5,1.5,0.5,,1.0
+G:9924961,HubSpot Sales Hub,dev,own_similar,4.0,2.5,1.5,0.5,,0.0
+G:12020297,HubSpot Sales Hub,dev,agent_full,4.0,4.0,0.0,0.25,0.0,0.0
+G:12020297,HubSpot Sales Hub,dev,own_similar,4.0,4.0,0.0,0.5,1.0,1.0
+G:2013133,HubSpot Sales Hub,dev,agent_full,4.0,1.0,3.0,0.5,0.0,0.0
+G:2013133,HubSpot Sales Hub,dev,own_similar,2.0,1.0,1.0,0.25,0.5,0.0
+G:12184870,HubSpot Sales Hub,dev,agent_full,4.0,3.5,0.5,0.5,0.0,0.0
+G:12184870,HubSpot Sales Hub,dev,own_similar,4.0,3.5,0.5,0.5,0.0,0.0
+G:11299040,HubSpot Sales Hub,dev,agent_full,4.0,1.5,2.5,0.5,0.0,0.0
+G:11299040,HubSpot Sales Hub,dev,own_similar,4.0,1.5,2.5,1.0,0.0,0.0
+G:12609378,HubSpot Sales Hub,dev,agent_full,4.0,4.0,0.0,0.75,1.0,1.0
+G:12609378,HubSpot Sales Hub,dev,own_similar,4.5,4.0,0.5,0.5,0.5,1.0
+G:12190557,HubSpot Sales Hub,dev,agent_full,4.0,4.0,0.0,0.5,1.0,1.0
+G:12190557,HubSpot Sales Hub,dev,own_similar,4.0,4.0,0.0,0.25,0.0,0.0
+G:4768258,HubSpot Sales Hub,dev,agent_full,4.0,1.5,2.5,0.0,0.0,0.0
+G:4768258,HubSpot Sales Hub,dev,own_similar,3.0,1.5,1.5,0.0,0.0,0.0
+G:13262279,HubSpot Sales Hub,dev,agent_full,4.0,4.5,0.5,0.25,1.0,0.0
+G:13262279,HubSpot Sales Hub,dev,own_similar,4.0,4.5,0.5,0.25,1.0,0.0
+G:12931598,ServiceNow IT Service Management,dev,agent_full,4.0,4.0,0.0,0.75,0.0,0.0
+G:12931598,ServiceNow IT Service Management,dev,own_similar,4.0,4.0,0.0,1.0,0.0,0.0
+G:12747614,ServiceNow IT Service Management,dev,agent_full,4.0,4.0,0.0,0.75,0.3333333333333333,1.0
+G:12747614,ServiceNow IT Service Management,dev,own_similar,4.0,4.0,0.0,0.75,0.6666666666666666,0.0
+G:11698736,ServiceNow IT Service Management,dev,agent_full,4.0,4.0,0.0,0.5,0.3333333333333333,0.0
+G:11698736,ServiceNow IT Service Management,dev,own_similar,4.0,4.0,0.0,0.75,0.0,0.0
+G:11143947,ServiceNow IT Service Management,dev,agent_full,4.0,4.0,0.0,0.25,0.5,1.0
+G:11143947,ServiceNow IT Service Management,dev,own_similar,4.0,4.0,0.0,0.25,1.0,1.0
+G:10839567,ServiceNow IT Service Management,dev,agent_full,4.0,2.5,1.5,0.5,0.0,0.0
+G:10839567,ServiceNow IT Service Management,dev,own_similar,4.0,2.5,1.5,1.0,0.0,0.0
+G:12665116,ServiceNow IT Service Management,dev,agent_full,4.0,3.5,0.5,0.0,0.0,0.0
+G:12665116,ServiceNow IT Service Management,dev,own_similar,4.0,3.5,0.5,0.3333333333333333,0.0,0.0
+G:5239875,ServiceNow IT Service Management,dev,agent_full,4.5,3.0,1.5,0.5,0.0,0.0
+G:5239875,ServiceNow IT Service Management,dev,own_similar,4.0,3.0,1.0,1.0,0.0,0.0
+G:12767803,ServiceNow IT Service Management,dev,agent_full,4.0,4.0,0.0,0.75,0.3333333333333333,1.0
+G:12767803,ServiceNow IT Service Management,dev,own_similar,4.0,4.0,0.0,0.75,0.3333333333333333,1.0
+G:13334252,ServiceNow IT Service Management,dev,agent_full,4.0,5.0,1.0,0.25,0.75,1.0
+G:13334252,ServiceNow IT Service Management,dev,own_similar,4.0,5.0,1.0,0.25,0.75,1.0
+G:13206437,ServiceNow IT Service Management,dev,agent_full,4.0,4.0,0.0,0.75,0.0,0.0
+G:13206437,ServiceNow IT Service Management,dev,own_similar,4.0,4.0,0.0,0.5,0.5,1.0
+G:10846753,monday AI Work Platform,dev,agent_full,4.0,5.0,1.0,0.3333333333333333,0.0,0.0
+G:10846753,monday AI Work Platform,dev,own_similar,4.0,5.0,1.0,0.3333333333333333,0.0,0.0
+G:13264012,monday AI Work Platform,dev,agent_full,4.0,4.5,0.5,0.75,0.0,0.0
+G:13264012,monday AI Work Platform,dev,own_similar,4.0,4.5,0.5,0.5,0.0,0.0
+G:13133928,monday AI Work Platform,dev,agent_full,4.0,5.0,1.0,0.3333333333333333,0.0,0.0
+G:13133928,monday AI Work Platform,dev,own_similar,4.0,5.0,1.0,0.3333333333333333,0.0,0.0
+G:13253782,monday AI Work Platform,dev,agent_full,4.0,3.5,0.5,1.0,0.0,0.0
+G:13253782,monday AI Work Platform,dev,own_similar,5.0,3.5,1.5,0.0,0.0,0.0
+G:13232484,monday AI Work Platform,dev,agent_full,4.0,4.5,0.5,0.75,0.5,1.0
+G:13232484,monday AI Work Platform,dev,own_similar,4.0,4.5,0.5,0.25,0.5,1.0
+G:12993592,monday AI Work Platform,dev,agent_full,4.0,3.5,0.5,0.5,0.75,1.0
+G:12993592,monday AI Work Platform,dev,own_similar,4.0,3.5,0.5,0.75,0.75,0.0
+G:13234547,monday AI Work Platform,dev,agent_full,4.0,4.5,0.5,0.75,0.0,0.0
+G:13234547,monday AI Work Platform,dev,own_similar,5.0,4.5,0.5,0.5,0.0,0.0
+G:13233524,monday AI Work Platform,dev,agent_full,4.0,5.0,1.0,1.0,0.0,0.0
+G:13233524,monday AI Work Platform,dev,own_similar,4.5,5.0,0.5,0.5,0.0,0.0
+G:13238499,monday AI Work Platform,dev,agent_full,3.0,4.0,1.0,0.25,1.0,0.0
+G:13238499,monday AI Work Platform,dev,own_similar,4.0,4.0,0.0,0.25,0.0,1.0
+G:13249203,monday AI Work Platform,dev,agent_full,4.0,5.0,1.0,0.25,0.0,0.0
+G:13249203,monday AI Work Platform,dev,own_similar,4.0,5.0,1.0,0.5,0.0,0.0
+G:12599533,Canva,dev,agent_full,4.0,4.0,0.0,0.5,0.0,1.0
+G:12599533,Canva,dev,own_similar,4.0,4.0,0.0,0.5,0.0,0.0
+G:53376,Canva,dev,agent_full,4.0,2.5,1.5,1.0,0.0,0.0
+G:53376,Canva,dev,own_similar,4.0,2.5,1.5,0.3333333333333333,0.0,0.0
+G:12865340,Canva,dev,agent_full,4.0,4.5,0.5,0.75,0.0,0.0
+G:12865340,Canva,dev,own_similar,4.0,4.5,0.5,0.75,0.0,0.0
+G:13273103,Canva,dev,agent_full,4.0,5.0,1.0,0.3333333333333333,0.0,1.0
+G:13273103,Canva,dev,own_similar,4.0,5.0,1.0,0.3333333333333333,0.0,0.0
+G:13401486,Canva,dev,agent_full,4.0,4.5,0.5,0.5,1.0,1.0
+G:13401486,Canva,dev,own_similar,4.0,4.5,0.5,0.5,1.0,1.0
+G:12095957,Canva,dev,agent_full,4.0,4.0,0.0,0.5,0.5,1.0
+G:12095957,Canva,dev,own_similar,4.0,4.0,0.0,0.5,0.5,1.0
+G:13253893,Canva,dev,agent_full,4.0,4.5,0.5,0.25,0.0,0.0
+G:13253893,Canva,dev,own_similar,4.0,4.5,0.5,0.25,0.0,1.0
+G:12968351,Canva,dev,agent_full,4.0,5.0,1.0,0.5,0.0,0.0
+G:12968351,Canva,dev,own_similar,4.0,5.0,1.0,0.75,0.0,0.0
+G:12111149,Canva,dev,agent_full,4.0,3.5,0.5,0.75,0.5,1.0
+G:12111149,Canva,dev,own_similar,4.0,3.5,0.5,0.75,1.0,1.0
+G:13057061,Canva,dev,agent_full,5.0,5.0,0.0,1.0,0.0,0.0
+G:13057061,Canva,dev,own_similar,4.0,5.0,1.0,0.3333333333333333,0.0,1.0
+G:8088236,Fin by Intercom,dev,agent_full,4.0,5.0,1.0,0.5,,0.0
+G:8088236,Fin by Intercom,dev,own_similar,4.0,5.0,1.0,0.75,,0.0
+G:8241051,Fin by Intercom,dev,agent_full,4.0,4.0,0.0,1.0,0.0,0.0
+G:8241051,Fin by Intercom,dev,own_similar,4.0,4.0,0.0,0.75,0.0,0.0
+G:10341771,Fin by Intercom,dev,agent_full,4.0,4.5,0.5,0.25,0.0,0.0
+G:10341771,Fin by Intercom,dev,own_similar,4.0,4.5,0.5,0.25,0.0,0.0
+G:12058808,Fin by Intercom,dev,agent_full,4.0,4.5,0.5,0.25,0.0,0.0
+G:12058808,Fin by Intercom,dev,own_similar,4.0,4.5,0.5,0.5,1.0,0.0
+G:11597449,Fin by Intercom,dev,agent_full,3.0,3.0,0.0,0.75,0.0,0.0
+G:11597449,Fin by Intercom,dev,own_similar,3.0,3.0,0.0,0.0,0.0,0.0
+G:11978502,Fin by Intercom,dev,agent_full,5.0,5.0,0.0,0.5,0.0,0.0
+G:11978502,Fin by Intercom,dev,own_similar,4.0,5.0,1.0,0.5,1.0,1.0
+G:11849221,Fin by Intercom,dev,agent_full,4.0,4.5,0.5,0.25,0.0,0.0
+G:11849221,Fin by Intercom,dev,own_similar,4.0,4.5,0.5,0.5,0.5,1.0
+G:11722433,Fin by Intercom,dev,agent_full,4.0,5.0,1.0,0.5,0.0,0.0
+G:11722433,Fin by Intercom,dev,own_similar,4.0,5.0,1.0,0.5,1.0,1.0
+G:12357317,Fin by Intercom,dev,agent_full,4.0,5.0,1.0,1.0,0.0,0.0
+G:12357317,Fin by Intercom,dev,own_similar,3.0,5.0,2.0,1.0,0.0,1.0
+G:11588938,Fin by Intercom,dev,agent_full,5.0,4.0,1.0,0.25,0.0,1.0
+G:11588938,Fin by Intercom,dev,own_similar,4.0,4.0,0.0,0.5,0.25,1.0
+G:12248846,Instantly,dev,agent_full,4.0,5.0,1.0,0.5,,0.0
+G:12248846,Instantly,dev,own_similar,5.0,5.0,0.0,0.5,,0.0
+G:12376104,Instantly,dev,agent_full,4.0,4.5,0.5,0.25,0.0,0.0
+G:12376104,Instantly,dev,own_similar,5.0,4.5,0.5,0.25,0.0,0.0
+G:12708307,Instantly,dev,agent_full,4.0,5.0,1.0,2.0,,0.0
+G:12708307,Instantly,dev,own_similar,5.0,5.0,0.0,0.0,,0.0
+G:10012248,Instantly,dev,agent_full,4.0,1.0,3.0,0.5,0.5,0.0
+G:10012248,Instantly,dev,own_similar,4.0,1.0,3.0,0.5,0.0,0.0
+G:13291458,Instantly,dev,agent_full,4.0,4.5,0.5,0.5,0.0,1.0
+G:13291458,Instantly,dev,own_similar,4.0,4.5,0.5,0.25,0.5,1.0
+G:10226283,Instantly,dev,agent_full,5.0,4.0,1.0,0.3333333333333333,0.3333333333333333,1.0
+G:10226283,Instantly,dev,own_similar,4.0,4.0,0.0,0.3333333333333333,0.0,0.0
+G:12508993,Instantly,dev,agent_full,4.0,4.5,0.5,0.6666666666666666,0.0,0.0
+G:12508993,Instantly,dev,own_similar,4.0,4.5,0.5,0.6666666666666666,0.3333333333333333,1.0
+G:12127511,Instantly,dev,agent_full,4.0,4.5,0.5,0.25,,0.0
+G:12127511,Instantly,dev,own_similar,4.0,4.5,0.5,0.25,,0.0
+G:10398514,Instantly,dev,agent_full,4.0,4.0,0.0,0.3333333333333333,0.0,0.0
+G:10398514,Instantly,dev,own_similar,4.0,4.0,0.0,0.3333333333333333,0.6666666666666666,0.0
+G:12788748,Instantly,dev,agent_full,4.0,5.0,1.0,0.75,0.0,0.0
+G:12788748,Instantly,dev,own_similar,4.0,5.0,1.0,0.75,0.0,0.0
+G:7687003,Jasper,dev,agent_full,4.0,4.0,0.0,1.0,0.0,0.0
+G:7687003,Jasper,dev,own_similar,4.0,4.0,0.0,0.75,0.0,0.0
+G:7688393,Jasper,dev,agent_full,4.0,3.5,0.5,1.0,0.0,0.0
+G:7688393,Jasper,dev,own_similar,4.0,3.5,0.5,1.0,0.0,1.0
+G:4871566,Jasper,dev,agent_full,4.0,3.0,1.0,1.0,1.0,0.0
+G:4871566,Jasper,dev,own_similar,4.0,3.0,1.0,1.0,0.0,0.0
+G:7691335,Jasper,dev,agent_full,4.0,3.5,0.5,0.75,0.0,0.0
+G:7691335,Jasper,dev,own_similar,4.0,3.5,0.5,0.5,1.0,1.0
+G:5340885,Jasper,dev,agent_full,4.0,4.0,0.0,0.5,1.0,1.0
+G:5340885,Jasper,dev,own_similar,5.0,4.0,1.0,0.5,1.0,1.0
+G:7549824,Jasper,dev,agent_full,4.0,0.5,3.5,1.0,0.0,0.0
+G:7549824,Jasper,dev,own_similar,4.0,0.5,3.5,1.0,0.0,0.0
+G:7102117,Jasper,dev,agent_full,4.0,4.0,0.0,0.25,0.0,0.0
+G:7102117,Jasper,dev,own_similar,4.0,4.0,0.0,0.5,0.0,0.0
+G:7697672,Jasper,dev,agent_full,4.0,4.0,0.0,0.75,0.6666666666666666,1.0
+G:7697672,Jasper,dev,own_similar,4.0,4.0,0.0,0.5,0.3333333333333333,1.0
+G:9231695,Jasper,dev,agent_full,4.0,5.0,1.0,0.3333333333333333,1.0,1.0
+G:9231695,Jasper,dev,own_similar,4.0,5.0,1.0,0.0,0.0,0.0
+G:6506111,Jasper,dev,agent_full,4.0,3.5,0.5,1.0,0.3333333333333333,1.0
+G:6506111,Jasper,dev,own_similar,5.0,3.5,1.5,1.0,0.6666666666666666,1.0
+G:5221746,Rippling,dev,agent_full,4.0,5.0,1.0,0.75,0.0,0.0
+G:5221746,Rippling,dev,own_similar,4.0,5.0,1.0,0.75,0.0,0.0
+G:12368127,Rippling,dev,agent_full,4.0,5.0,1.0,0.5,0.0,0.0
+G:12368127,Rippling,dev,own_similar,4.0,5.0,1.0,0.5,0.5,0.0
+G:11824560,Rippling,dev,agent_full,4.0,5.0,1.0,0.3333333333333333,0.0,0.0
+G:11824560,Rippling,dev,own_similar,4.0,5.0,1.0,0.3333333333333333,0.0,0.0
+G:10730071,Rippling,dev,agent_full,4.0,4.5,0.5,0.6666666666666666,0.5,1.0
+G:10730071,Rippling,dev,own_similar,4.0,4.5,0.5,0.3333333333333333,0.0,0.0
+G:11686044,Rippling,dev,agent_full,4.0,4.0,0.0,0.5,0.5,0.0
+G:11686044,Rippling,dev,own_similar,4.0,4.0,0.0,0.75,0.0,1.0
+G:7523748,Rippling,dev,agent_full,4.0,5.0,1.0,0.75,0.0,1.0
+G:7523748,Rippling,dev,own_similar,4.0,5.0,1.0,0.75,0.0,0.0
+G:11830982,Rippling,dev,agent_full,4.0,4.0,0.0,0.5,0.0,0.0
+G:11830982,Rippling,dev,own_similar,4.0,4.0,0.0,0.25,0.0,0.0
+G:10518425,Rippling,dev,agent_full,4.0,4.0,0.0,0.75,0.0,0.0
+G:10518425,Rippling,dev,own_similar,4.0,4.0,0.0,1.0,0.0,0.0
+G:11046512,Rippling,dev,agent_full,4.0,3.5,0.5,1.0,0.0,1.0
+G:11046512,Rippling,dev,own_similar,4.0,3.5,0.5,0.3333333333333333,0.0,0.0
+G:12565168,Rippling,dev,agent_full,4.0,0.5,3.5,0.75,0.5,0.0
+G:12565168,Rippling,dev,own_similar,4.0,0.5,3.5,0.75,0.5,0.0
+G:8303242,KnowBe4 Security Awareness Training,dev,agent_full,4.0,5.0,1.0,0.75,,0.0
+G:8303242,KnowBe4 Security Awareness Training,dev,own_similar,4.0,5.0,1.0,0.5,,0.0
+G:9903069,KnowBe4 Security Awareness Training,dev,agent_full,4.0,4.0,0.0,1.0,0.0,0.0
+G:9903069,KnowBe4 Security Awareness Training,dev,own_similar,4.0,4.0,0.0,0.6666666666666666,0.0,0.0
+G:11822260,KnowBe4 Security Awareness Training,dev,agent_full,4.0,5.0,1.0,0.25,0.5,0.0
+G:11822260,KnowBe4 Security Awareness Training,dev,own_similar,4.5,5.0,0.5,1.0,0.5,1.0
+G:10668075,KnowBe4 Security Awareness Training,dev,agent_full,4.0,3.5,0.5,0.3333333333333333,0.0,0.0
+G:10668075,KnowBe4 Security Awareness Training,dev,own_similar,4.0,3.5,0.5,0.6666666666666666,0.6666666666666666,1.0
+G:9660436,KnowBe4 Security Awareness Training,dev,agent_full,4.0,4.0,0.0,0.5,0.0,1.0
+G:9660436,KnowBe4 Security Awareness Training,dev,own_similar,5.0,4.0,1.0,0.25,0.0,1.0
+G:2040123,KnowBe4 Security Awareness Training,dev,agent_full,4.0,0.5,3.5,0.0,0.0,0.0
+G:2040123,KnowBe4 Security Awareness Training,dev,own_similar,5.0,0.5,4.5,0.75,0.0,0.0
+G:12302088,KnowBe4 Security Awareness Training,dev,agent_full,4.0,4.5,0.5,0.75,0.5,0.0
+G:12302088,KnowBe4 Security Awareness Training,dev,own_similar,4.0,4.5,0.5,0.25,0.0,0.0
+G:8392968,KnowBe4 Security Awareness Training,dev,agent_full,4.0,4.5,0.5,0.0,0.0,0.0
+G:8392968,KnowBe4 Security Awareness Training,dev,own_similar,4.0,4.5,0.5,0.0,0.0,0.0
+G:8615060,KnowBe4 Security Awareness Training,dev,agent_full,4.0,3.5,0.5,0.6666666666666666,0.0,1.0
+G:8615060,KnowBe4 Security Awareness Training,dev,own_similar,4.0,3.5,0.5,0.3333333333333333,0.0,0.0
+G:11236183,KnowBe4 Security Awareness Training,dev,agent_full,5.0,5.0,0.0,0.25,,1.0
+G:11236183,KnowBe4 Security Awareness Training,dev,own_similar,4.0,5.0,1.0,0.5,,0.0
+G:10036609,Freshdesk,dev,agent_full,4.0,3.5,0.5,0.75,0.0,0.0
+G:10036609,Freshdesk,dev,own_similar,4.0,3.5,0.5,0.5,0.0,0.0
+G:12244221,Freshdesk,dev,agent_full,4.0,4.5,0.5,0.5,0.0,0.0
+G:12244221,Freshdesk,dev,own_similar,4.0,4.5,0.5,0.25,0.0,0.0
+G:12007803,Freshdesk,dev,agent_full,4.0,4.0,0.0,0.75,0.0,0.0
+G:12007803,Freshdesk,dev,own_similar,4.0,4.0,0.0,0.25,0.0,0.0
+G:12661772,Freshdesk,dev,agent_full,4.0,4.0,0.0,0.5,0.0,0.0
+G:12661772,Freshdesk,dev,own_similar,4.0,4.0,0.0,0.5,0.0,0.0
+G:10066560,Freshdesk,dev,agent_full,4.0,4.5,0.5,0.0,1.0,1.0
+G:10066560,Freshdesk,dev,own_similar,4.0,4.5,0.5,0.25,0.0,0.0
+G:10477053,Freshdesk,dev,agent_full,4.0,5.0,1.0,0.0,0.0,0.0
+G:10477053,Freshdesk,dev,own_similar,4.0,5.0,1.0,1.0,0.0,0.0
+G:10711222,Freshdesk,dev,agent_full,4.0,4.0,0.0,0.5,1.0,0.0
+G:10711222,Freshdesk,dev,own_similar,4.0,4.0,0.0,0.25,1.0,0.0
+G:10467962,Freshdesk,dev,agent_full,4.0,3.5,0.5,0.5,1.0,1.0
+G:10467962,Freshdesk,dev,own_similar,4.0,3.5,0.5,0.25,0.5,0.0
+G:10425794,Freshdesk,dev,agent_full,4.0,2.0,2.0,0.0,0.0,0.0
+G:10425794,Freshdesk,dev,own_similar,4.0,2.0,2.0,0.0,0.0,0.0
+G:5270192,Freshdesk,dev,agent_full,4.0,5.0,1.0,0.5,0.5,0.0
+G:5270192,Freshdesk,dev,own_similar,4.0,5.0,1.0,0.5,0.5,1.0
+G:12100109,1Password,dev,agent_full,4.0,4.5,0.5,0.25,0.5,0.0
+G:12100109,1Password,dev,own_similar,4.0,4.5,0.5,0.75,1.0,1.0
+G:12127387,1Password,dev,agent_full,4.0,3.5,0.5,0.25,0.0,0.0
+G:12127387,1Password,dev,own_similar,4.0,3.5,0.5,0.25,0.25,0.0
+G:11920028,1Password,dev,agent_full,4.0,5.0,1.0,0.3333333333333333,,0.0
+G:11920028,1Password,dev,own_similar,4.0,5.0,1.0,0.3333333333333333,,0.0
+G:12497237,1Password,dev,agent_full,4.0,4.0,0.0,0.6666666666666666,0.5,0.0
+G:12497237,1Password,dev,own_similar,4.0,4.0,0.0,0.3333333333333333,0.5,0.0
+G:12221583,1Password,dev,agent_full,4.0,5.0,1.0,0.3333333333333333,,0.0
+G:12221583,1Password,dev,own_similar,4.0,5.0,1.0,1.0,,0.0
+G:11811154,1Password,dev,agent_full,4.0,4.0,0.0,0.5,0.5,0.0
+G:11811154,1Password,dev,own_similar,4.0,4.0,0.0,0.5,0.5,1.0
+G:12246304,1Password,dev,agent_full,4.0,5.0,1.0,0.25,0.6666666666666666,0.0
+G:12246304,1Password,dev,own_similar,4.0,5.0,1.0,0.5,0.3333333333333333,1.0
+G:12146918,1Password,dev,agent_full,4.0,5.0,1.0,0.5,,0.0
+G:12146918,1Password,dev,own_similar,4.0,5.0,1.0,0.5,,0.0
+G:301511,1Password,dev,agent_full,4.0,4.0,0.0,0.0,0.0,0.0
+G:301511,1Password,dev,own_similar,5.0,4.0,1.0,0.6666666666666666,0.0,0.0
+G:12098363,1Password,dev,agent_full,4.0,5.0,1.0,0.5,,0.0
+G:12098363,1Password,dev,own_similar,4.0,5.0,1.0,0.25,,0.0
+G:12280515,Wellable,test,agent_full,3.0,3.0,0.0,1.0,0.0,0.0
+G:12280515,Wellable,test,own_similar,4.0,3.0,1.0,1.0,0.0,0.0
+G:12281631,Wellable,test,agent_full,4.0,5.0,1.0,0.5,,1.0
+G:12281631,Wellable,test,own_similar,4.0,5.0,1.0,0.5,,0.0
+G:12106416,Wellable,test,agent_full,4.0,5.0,1.0,0.5,0.0,0.0
+G:12106416,Wellable,test,own_similar,5.0,5.0,0.0,0.5,1.0,1.0
+G:12112661,Wellable,test,agent_full,4.0,3.5,0.5,0.25,0.25,0.0
+G:12112661,Wellable,test,own_similar,4.0,3.5,0.5,0.25,0.5,0.0
+G:12016633,Wellable,test,agent_full,4.0,5.0,1.0,0.3333333333333333,,0.0
+G:12016633,Wellable,test,own_similar,4.0,5.0,1.0,0.6666666666666666,,0.0
+G:11255758,Wellable,test,agent_full,4.0,4.0,0.0,0.5,,0.0
+G:11255758,Wellable,test,own_similar,4.0,4.0,0.0,0.5,,0.0
+G:10042944,Wellable,test,agent_full,4.0,4.0,0.0,0.5,0.0,1.0
+G:10042944,Wellable,test,own_similar,5.0,4.0,1.0,0.5,0.0,0.0
+G:12458152,Wellable,test,agent_full,4.0,3.5,0.5,0.75,1.0,0.0
+G:12458152,Wellable,test,own_similar,4.0,3.5,0.5,1.0,0.0,0.0
+G:10821192,Wellable,test,agent_full,4.0,4.0,0.0,0.25,0.0,0.0
+G:10821192,Wellable,test,own_similar,4.0,4.0,0.0,0.25,0.0,0.0
+G:13045698,Wellable,test,agent_full,4.0,4.0,0.0,0.5,0.3333333333333333,1.0
+G:13045698,Wellable,test,own_similar,5.0,4.0,1.0,1.0,0.3333333333333333,1.0
+G:8980367,Xactly,test,agent_full,4.0,4.0,0.0,0.5,0.0,0.0
+G:8980367,Xactly,test,own_similar,4.0,4.0,0.0,1.0,0.0,0.0
+G:11102054,Xactly,test,agent_full,4.0,5.0,1.0,0.5,0.0,0.0
+G:11102054,Xactly,test,own_similar,4.0,5.0,1.0,0.5,0.0,1.0
+G:2374128,Xactly,test,agent_full,4.0,3.5,0.5,1.0,0.0,0.0
+G:2374128,Xactly,test,own_similar,4.0,3.5,0.5,1.0,0.0,0.0
+G:7654637,Xactly,test,agent_full,4.0,4.0,0.0,1.25,0.0,0.0
+G:7654637,Xactly,test,own_similar,4.0,4.0,0.0,0.5,0.0,0.0
+G:11662470,Xactly,test,agent_full,4.0,5.0,1.0,0.5,0.3333333333333333,1.0
+G:11662470,Xactly,test,own_similar,4.0,5.0,1.0,0.5,0.6666666666666666,1.0
+G:11448488,Xactly,test,agent_full,4.0,3.5,0.5,0.6666666666666666,0.0,0.0
+G:11448488,Xactly,test,own_similar,4.0,3.5,0.5,0.3333333333333333,0.0,1.0
+G:8505250,Xactly,test,agent_full,4.0,4.0,0.0,0.25,0.25,1.0
+G:8505250,Xactly,test,own_similar,4.0,4.0,0.0,0.5,0.5,1.0
+G:9943575,Xactly,test,agent_full,4.0,4.0,0.0,0.25,1.0,1.0
+G:9943575,Xactly,test,own_similar,4.5,4.0,0.5,0.25,1.0,1.0
+G:4420953,Xactly,test,agent_full,4.0,4.0,0.0,0.25,0.0,1.0
+G:4420953,Xactly,test,own_similar,3.0,4.0,1.0,0.25,0.0,0.0
+G:10051537,Xactly,test,agent_full,4.0,5.0,1.0,0.75,0.0,0.0
+G:10051537,Xactly,test,own_similar,4.0,5.0,1.0,1.0,0.0,0.0
+G:12919114,Paylocity,test,agent_full,3.0,5.0,2.0,0.75,,0.0
+G:12919114,Paylocity,test,own_similar,3.0,5.0,2.0,0.5,,0.0
+G:12115262,Paylocity,test,agent_full,4.0,3.0,1.0,0.0,0.0,0.0
+G:12115262,Paylocity,test,own_similar,3.0,3.0,0.0,1.0,0.75,0.0
+G:8895999,Paylocity,test,agent_full,4.0,5.0,1.0,0.0,0.0,0.0
+G:8895999,Paylocity,test,own_similar,3.0,5.0,2.0,0.0,0.0,0.0
+G:12915222,Paylocity,test,agent_full,4.0,4.5,0.5,0.0,0.0,0.0
+G:12915222,Paylocity,test,own_similar,4.0,4.5,0.5,0.5,1.0,0.0
+G:10052077,Paylocity,test,agent_full,4.0,4.0,0.0,0.25,0.25,1.0
+G:10052077,Paylocity,test,own_similar,4.0,4.0,0.0,0.5,0.75,1.0
+G:11054735,Paylocity,test,agent_full,4.0,4.0,0.0,0.6666666666666666,0.5,0.0
+G:11054735,Paylocity,test,own_similar,4.0,4.0,0.0,1.0,0.0,0.0
+G:12460039,Paylocity,test,agent_full,4.0,3.5,0.5,0.0,0.5,0.0
+G:12460039,Paylocity,test,own_similar,3.0,3.5,0.5,0.6666666666666666,0.0,0.0
+G:12915095,Paylocity,test,agent_full,4.0,4.0,0.0,0.5,0.0,0.0
+G:12915095,Paylocity,test,own_similar,3.0,4.0,1.0,0.5,0.0,0.0
+G:12115291,Paylocity,test,agent_full,4.0,4.0,0.0,0.0,0.0,0.0
+G:12115291,Paylocity,test,own_similar,4.0,4.0,0.0,0.5,0.0,0.0
+G:13160648,Paylocity,test,agent_full,4.0,5.0,1.0,0.75,0.5,1.0
+G:13160648,Paylocity,test,own_similar,3.0,5.0,2.0,0.5,0.0,0.0
+G:11377882,PayPal Payments,test,agent_full,4.0,3.0,1.0,0.5,0.3333333333333333,1.0
+G:11377882,PayPal Payments,test,own_similar,4.0,3.0,1.0,0.75,0.3333333333333333,1.0
+G:12507982,PayPal Payments,test,agent_full,4.0,4.5,0.5,0.25,1.0,1.0
+G:12507982,PayPal Payments,test,own_similar,4.0,4.5,0.5,0.25,0.5,1.0
+G:10795625,PayPal Payments,test,agent_full,4.0,4.0,0.0,0.5,1.0,1.0
+G:10795625,PayPal Payments,test,own_similar,4.0,4.0,0.0,0.25,0.0,0.0
+G:12147877,PayPal Payments,test,agent_full,4.0,5.0,1.0,0.5,0.25,1.0
+G:12147877,PayPal Payments,test,own_similar,4.0,5.0,1.0,0.75,0.75,1.0
+G:12193221,PayPal Payments,test,agent_full,4.0,4.5,0.5,0.0,1.0,0.0
+G:12193221,PayPal Payments,test,own_similar,4.0,4.5,0.5,0.6666666666666666,1.0,0.0
+G:12165242,PayPal Payments,test,agent_full,4.0,4.5,0.5,0.5,,0.0
+G:12165242,PayPal Payments,test,own_similar,4.0,4.5,0.5,0.5,,0.0
+G:11370473,PayPal Payments,test,agent_full,4.0,5.0,1.0,0.5,1.0,0.0
+G:11370473,PayPal Payments,test,own_similar,4.0,5.0,1.0,0.5,1.0,1.0
+G:12229296,PayPal Payments,test,agent_full,4.0,5.0,1.0,0.25,,0.0
+G:12229296,PayPal Payments,test,own_similar,4.0,5.0,1.0,0.75,,0.0
+G:12275233,PayPal Payments,test,agent_full,4.0,4.5,0.5,0.5,0.6666666666666666,1.0
+G:12275233,PayPal Payments,test,own_similar,4.0,4.5,0.5,0.5,1.0,1.0
+G:12153974,PayPal Payments,test,agent_full,3.0,4.0,1.0,0.25,0.0,0.0
+G:12153974,PayPal Payments,test,own_similar,4.0,4.0,0.0,0.5,0.5,1.0
+G:12505458,SAP Concur,test,agent_full,4.0,4.5,0.5,0.75,0.5,0.0
+G:12505458,SAP Concur,test,own_similar,4.0,4.5,0.5,0.0,0.0,0.0
+G:12459831,SAP Concur,test,agent_full,4.0,4.5,0.5,0.5,0.25,0.0
+G:12459831,SAP Concur,test,own_similar,4.0,4.5,0.5,0.5,0.25,1.0
+G:12046953,SAP Concur,test,agent_full,4.0,1.5,2.5,0.0,0.25,0.0
+G:12046953,SAP Concur,test,own_similar,3.5,1.5,2.0,0.0,0.0,0.0
+G:12470637,SAP Concur,test,agent_full,4.0,4.0,0.0,0.75,1.0,1.0
+G:12470637,SAP Concur,test,own_similar,3.0,4.0,1.0,0.25,1.0,0.0
+G:12025223,SAP Concur,test,agent_full,4.0,3.5,0.5,0.25,1.0,0.0
+G:12025223,SAP Concur,test,own_similar,4.0,3.5,0.5,0.25,0.0,0.0
+G:12611236,SAP Concur,test,agent_full,3.0,4.5,1.5,0.25,,0.0
+G:12611236,SAP Concur,test,own_similar,3.0,4.5,1.5,0.0,,0.0
+G:12976859,SAP Concur,test,agent_full,4.0,2.5,1.5,0.25,0.25,1.0
+G:12976859,SAP Concur,test,own_similar,4.0,2.5,1.5,0.5,0.5,1.0
+G:12502432,SAP Concur,test,agent_full,4.0,4.5,0.5,0.25,0.0,0.0
+G:12502432,SAP Concur,test,own_similar,4.0,4.5,0.5,0.0,0.0,0.0
+G:4947287,SAP Concur,test,agent_full,4.0,2.0,2.0,0.0,0.0,0.0
+G:4947287,SAP Concur,test,own_similar,3.0,2.0,1.0,0.0,0.0,0.0
+G:12497091,SAP Concur,test,agent_full,4.0,5.0,1.0,0.25,0.0,0.0
+G:12497091,SAP Concur,test,own_similar,3.0,5.0,2.0,0.5,0.0,0.0
+G:6556086,HubSpot Marketing Hub,test,agent_full,4.0,4.0,0.0,0.6666666666666666,0.0,0.0
+G:6556086,HubSpot Marketing Hub,test,own_similar,3.0,4.0,1.0,0.6666666666666666,0.0,0.0
+G:12706991,HubSpot Marketing Hub,test,agent_full,4.0,4.0,0.0,0.5,0.0,0.0
+G:12706991,HubSpot Marketing Hub,test,own_similar,4.0,4.0,0.0,0.25,0.0,0.0
+G:12973192,HubSpot Marketing Hub,test,agent_full,4.0,4.0,0.0,1.0,1.0,1.0
+G:12973192,HubSpot Marketing Hub,test,own_similar,4.0,4.0,0.0,0.75,1.0,1.0
+G:12348011,HubSpot Marketing Hub,test,agent_full,4.0,3.5,0.5,0.25,,0.0
+G:12348011,HubSpot Marketing Hub,test,own_similar,4.0,3.5,0.5,0.25,,0.0
+G:8917830,HubSpot Marketing Hub,test,agent_full,4.0,1.0,3.0,0.5,1.0,0.0
+G:8917830,HubSpot Marketing Hub,test,own_similar,3.0,1.0,2.0,0.25,0.5,0.0
+G:13234075,HubSpot Marketing Hub,test,agent_full,4.0,5.0,1.0,0.5,0.0,0.0
+G:13234075,HubSpot Marketing Hub,test,own_similar,4.0,5.0,1.0,0.75,0.0,0.0
+G:12802146,HubSpot Marketing Hub,test,agent_full,4.0,0.5,3.5,0.5,0.25,0.0
+G:12802146,HubSpot Marketing Hub,test,own_similar,4.0,0.5,3.5,0.5,0.25,0.0
+G:12985419,HubSpot Marketing Hub,test,agent_full,4.0,4.0,0.0,0.3333333333333333,0.0,0.0
+G:12985419,HubSpot Marketing Hub,test,own_similar,4.0,4.0,0.0,1.0,0.0,0.0
+G:12371106,HubSpot Marketing Hub,test,agent_full,4.0,4.0,0.0,0.5,0.0,0.0
+G:12371106,HubSpot Marketing Hub,test,own_similar,4.0,4.0,0.0,0.75,0.0,0.0
+G:13353469,HubSpot Marketing Hub,test,agent_full,4.0,4.0,0.0,0.6666666666666666,0.0,0.0
+G:13353469,HubSpot Marketing Hub,test,own_similar,4.0,4.0,0.0,0.6666666666666666,0.0,0.0
+G:10005020,Microsoft Teams,test,agent_full,4.0,4.0,0.0,0.25,0.0,0.0
+G:10005020,Microsoft Teams,test,own_similar,4.0,4.0,0.0,0.25,0.0,0.0
+G:13357639,Microsoft Teams,test,agent_full,4.0,5.0,1.0,0.5,0.5,1.0
+G:13357639,Microsoft Teams,test,own_similar,4.0,5.0,1.0,0.75,0.75,1.0
+G:13326152,Microsoft Teams,test,agent_full,4.0,2.0,2.0,1.0,0.0,0.0
+G:13326152,Microsoft Teams,test,own_similar,,2.0,,0.0,0.0,0.0
+G:7781589,Microsoft Teams,test,agent_full,4.0,2.0,2.0,1.0,0.0,0.0
+G:7781589,Microsoft Teams,test,own_similar,2.0,2.0,0.0,1.0,0.5,1.0
+G:12841345,Microsoft Teams,test,agent_full,4.0,5.0,1.0,0.0,0.0,0.0
+G:12841345,Microsoft Teams,test,own_similar,4.0,5.0,1.0,0.0,0.0,0.0
+G:12564932,Microsoft Teams,test,agent_full,4.0,3.0,1.0,0.0,0.0,0.0
+G:12564932,Microsoft Teams,test,own_similar,3.0,3.0,0.0,1.0,0.0,0.0
+G:12852850,Microsoft Teams,test,agent_full,4.0,5.0,1.0,0.75,0.0,0.0
+G:12852850,Microsoft Teams,test,own_similar,4.0,5.0,1.0,0.0,0.0,0.0
+G:4532992,Microsoft Teams,test,agent_full,4.0,2.0,2.0,0.25,0.25,1.0
+G:4532992,Microsoft Teams,test,own_similar,2.0,2.0,0.0,0.25,0.75,0.0
+G:11355024,Microsoft Teams,test,agent_full,4.0,5.0,1.0,1.0,0.6666666666666666,1.0
+G:11355024,Microsoft Teams,test,own_similar,2.0,5.0,3.0,0.5,1.0,0.0
+G:13270805,Microsoft Teams,test,agent_full,4.0,4.5,0.5,0.25,0.0,0.0
+G:13270805,Microsoft Teams,test,own_similar,4.0,4.5,0.5,0.5,0.0,0.0
+G:12883463,BambooHR,test,agent_full,4.0,2.5,1.5,0.5,0.0,0.0
+G:12883463,BambooHR,test,own_similar,3.0,2.5,0.5,0.75,0.0,0.0
+G:12601210,BambooHR,test,agent_full,4.0,2.5,1.5,0.6666666666666666,0.0,0.0
+G:12601210,BambooHR,test,own_similar,4.0,2.5,1.5,0.3333333333333333,0.0,0.0
+G:12752800,BambooHR,test,agent_full,4.0,2.5,1.5,0.5,0.0,0.0
+G:12752800,BambooHR,test,own_similar,3.0,2.5,0.5,0.0,0.0,0.0
+G:6732167,BambooHR,test,agent_full,4.0,0.5,3.5,1.0,0.0,0.0
+G:6732167,BambooHR,test,own_similar,3.0,0.5,2.5,0.0,1.0,0.0
+G:12735104,BambooHR,test,agent_full,4.0,2.5,1.5,0.5,0.0,1.0
+G:12735104,BambooHR,test,own_similar,3.0,2.5,0.5,0.5,0.0,0.0
+G:2025622,BambooHR,test,agent_full,4.0,3.0,1.0,0.25,,0.0
+G:2025622,BambooHR,test,own_similar,3.0,3.0,0.0,0.25,,0.0
+G:12774679,BambooHR,test,agent_full,4.0,2.5,1.5,1.0,0.0,1.0
+G:12774679,BambooHR,test,own_similar,3.0,2.5,0.5,0.0,1.0,0.0
+G:12303982,BambooHR,test,agent_full,4.0,3.0,1.0,1.0,0.0,0.0
+G:12303982,BambooHR,test,own_similar,4.0,3.0,1.0,1.0,0.0,0.0
+G:12814307,BambooHR,test,agent_full,4.0,2.5,1.5,0.6666666666666666,1.0,1.0
+G:12814307,BambooHR,test,own_similar,3.0,2.5,0.5,0.3333333333333333,0.6666666666666666,1.0
+G:9001215,BambooHR,test,agent_full,4.0,5.0,1.0,0.25,0.0,0.0
+G:9001215,BambooHR,test,own_similar,4.0,5.0,1.0,0.25,0.0,0.0

@@ -579,9 +579,13 @@ function showReport(data) {
   document.title = `UserSim — ${name} study`;
   document.getElementById("product-badge").textContent = name;
   const compared = data?.summary?.comparison;
-  document.getElementById("report-title").innerHTML = compared
-    ? `${escapeHtml(name)} vs ${escapeHtml((compared.sites || []).filter((s) => s.key !== "product").map((s) => s.label).join(", "))}<br /><em>where you win, where you lose</em>`
-    : `${escapeHtml(name)} study<br /><em>analytics + traces</em>`;
+  const rivals = (compared?.sites || []).filter((s) => s.key !== "product");
+  document.getElementById("report-title").innerHTML =
+    compared && rivals.length
+      ? `${escapeHtml(name)} vs ${escapeHtml(rivals.map((s) => s.label).join(", "))}<br /><em>where you win, where you lose</em>`
+      : compared
+        ? `${escapeHtml(name)} study<br /><em>comparison report (rivals pending)</em>`
+        : `${escapeHtml(name)} study<br /><em>analytics + traces</em>`;
   const lede = document.getElementById("report-lede");
   if (!_insights) {
     const status = data?.status || "unknown";

@@ -126,10 +126,6 @@ function formatEta(secondsLeft) {
 function estimateStudySeconds(data) {
   const tasks = data?.tasks || [];
   const n = Math.max(tasks.length, 1);
-  const testMode =
-    Boolean(data?.test_mode) ||
-    (n <= 1 && (data?.personas || []).length <= 1 && !(data?.competitors || []).length);
-  if (testMode) return 180; // ~3 min smoke with flash-lite
   const parallel = Math.min(25, n);
   const waves = Math.ceil(n / Math.max(parallel, 1));
   // Brief ~45s + ~120s per concurrent wave + summary ~30s (fits ~8–12 min studies)
@@ -1895,7 +1891,6 @@ form.addEventListener("submit", async (e) => {
   const customers = form.customers?.value?.trim() || "";
   const competitors = lines(form.competitors?.value);
   const tasks = lines(form.tasks?.value);
-  const testMode = Boolean(form.test_mode?.checked);
   _notifyEmail = "";
   const segment =
     customers ||
@@ -1908,7 +1903,6 @@ form.addEventListener("submit", async (e) => {
       competitors,
       tasks: [],
       personas: [],
-      test_mode: testMode,
       phase: "Understanding context of product",
     },
     []
@@ -1935,7 +1929,6 @@ form.addEventListener("submit", async (e) => {
         customers: customers || null,
         competitors,
         tasks,
-        test_mode: testMode,
         backend: "default",
         ...(Number(new URLSearchParams(location.search).get("max_agents") || 0) > 0
           ? { max_agents: Number(new URLSearchParams(location.search).get("max_agents")) }
@@ -2226,22 +2219,43 @@ document.getElementById("stage-task-select")?.addEventListener("change", syncSta
 document.getElementById("stage-user-select")?.addEventListener("change", syncStageFromControls);
 
 if (typeof IS_LOCAL_HOST !== "undefined" && IS_LOCAL_HOST) {
-  const smokeRow = document.getElementById("local-smoke-row");
-  const smokeBtn = document.getElementById("smoke-btn");
-  const smokeInput = document.getElementById("test-mode-input");
   const localNav = document.getElementById("local-nav");
-  if (smokeRow) smokeRow.hidden = false;
   if (localNav) localNav.hidden = false;
-  if (smokeBtn) {
-    smokeBtn.hidden = false;
-    smokeBtn.addEventListener("click", () => {
-      if (smokeInput) smokeInput.checked = true;
-      const urlInput = form?.url;
-      if (urlInput && !String(urlInput.value || "").trim()) {
-        urlInput.value = "https://useagency.dev/";
-      }
-      if (typeof form?.requestSubmit === "function") form.requestSubmit();
-      else form?.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
-    });
+}
+
+// /?study=<id>: watch an existing study on the same live stage a Run shows.
+// MCP runs (a coding agent driving the simulated user) open this link.
+async function watchExistingStudy(studyId) {
+  hideError();
+  resetLiveUI();
+  if (resultsSection) resultsSection.hidden = true;
+  livePanel.hidden = false;
+  progressPanel.hidden = false;
+  const startedAt = Date.now();
+  try {
+    let data = await pollStudy(studyId);
+    updateProgressUI(data, startedAt);
+    renderLiveStudy(data);
+    while (studyStillRunning(data)) {
+      await new Promise((r) => setTimeout(r, livePollDelay(startedAt)));
+      data = await pollLive(studyId);
+      renderIfChanged(data, startedAt);
+    }
+    if (data.status === "complete") {
+      progressFill.style.width = "100%";
+      phaseLabel.textContent = "Complete";
+      renderLiveStudy(data);
+      saveReportAndOfferLink(data);
+    } else {
+      renderLiveStudy(data);
+      showError(data.error || data.phase || "Study did not complete");
+    }
+  } catch (err) {
+    showError(err.message || String(err));
   }
+}
+
+{
+  const watchId = new URLSearchParams(location.search).get("study");
+  if (watchId) watchExistingStudy(watchId);
 }

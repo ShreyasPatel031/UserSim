@@ -25,6 +25,12 @@ IS_VERCEL = bool(os.environ.get("VERCEL") or os.environ.get("VERCEL_ENV"))
 
 app = FastAPI(title="UserSim MVP", version="0.1.0")
 
+# MCP endpoint (/mcp): a coding agent drives one simulated user on our Browserbase.
+if os.environ.get("MVP_MCP", "1").lower() not in {"0", "false", "no"}:
+    from mvp.sim_mcp.server import mount as _mount_mcp
+
+    _mount_mcp(app)
+
 
 @app.on_event("startup")
 async def _prime_browser_sessions() -> None:
@@ -122,8 +128,8 @@ class StudyRequest(BaseModel):
     customers: str | None = Field(default=None, max_length=2000)
     competitors: list[str] = Field(default_factory=list)
     tasks: list[str] = Field(default_factory=list)
-    test_mode: bool = False
-    skip_competitors: bool = False
+    test_mode: bool = False  # rejected — see docs/E2E_TEST.md
+    skip_competitors: bool = False  # rejected — see docs/E2E_TEST.md
     max_agents: int | None = Field(default=None, ge=1, le=75)
     backend: str = Field(default="default", pattern="^(default)$")
 
@@ -529,6 +535,14 @@ async def list_studies(limit: int = 40):
 
 @app.post("/api/studies")
 async def start_study(body: StudyRequest, background: BackgroundTasks, request: Request):
+    from mvp.e2e_study import E2EStudyRejected, reject_disallowed_flags, validate_supplied_counts
+
+    try:
+        reject_disallowed_flags(test_mode=body.test_mode, skip_competitors=body.skip_competitors)
+        validate_supplied_counts(body.competitors, None, body.tasks)
+    except E2EStudyRejected as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
     from mvp.study import STUDIES, create_study, run_study, study_to_dict
 
     url = await _landing_url(_normalize_url(body.url))
@@ -538,9 +552,6 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
             "Auto-research target customers from the product URL "
             "and invent a mixed panel of directed simulated users."
         )
-    if body.test_mode and not (body.customers or body.segment):
-        segment = "Curious first-time visitor"
-
     study = create_study(url, segment)
     # Count busy Browserbase sessions while the plan is written, so the
     # queue check before agents start costs nothing on a free project.
@@ -550,7 +561,7 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
     # Stash optional inputs for the upcoming agent-loop planner.
     study.email = body.email
     study.customers = body.customers
-    study.test_mode = bool(body.test_mode)
+    study.test_mode = False
     # Browser agents use Gemini on Vertex (GCP). Live Chromium is Browserbase
     # when available; serverless falls back to grounded Vertex snapshots.
     study.backend = body.backend or "default"
@@ -558,11 +569,9 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
     study.competitors = [c.strip() for c in body.competitors if c and c.strip()]
     # Default: invent ~2 rivals when the box is blank (product + rivals in Products).
     # Only skip when the client explicitly opts out.
-    study.skip_competitors = bool(body.skip_competitors)
+    study.skip_competitors = False
     study.max_agents = int(body.max_agents or 0)
     study.tasks_override = [t.strip() for t in body.tasks if t and t.strip()]
-    if study.test_mode and not study.tasks_override:
-        study.tasks_override = ["Browse the homepage and try to find something interesting to watch or try"]
     # Create and navigate the product agents' browsers while the plan is written.
     try:
         from mvp.preopen import start_preopen
@@ -645,7 +654,7 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
         async def _finish_plan() -> None:
             """Apply the plan. Runs after the stream opens so its frames reach the page."""
             starter = None
-            if compare_mode() and not study.test_mode:
+            if compare_mode():
                 from mvp import early_start
 
                 if early_start.enabled():
@@ -952,26 +961,41 @@ async def set_report_email(study_id: str, body: ReportEmailRequest):
     The waiting screen captured an address but only kept it in the browser, so
     the promised mail was never sent.
     """
-    from mvp.report_email import email_configured
-    from mvp.study import STUDIES, persist_study
+    from types import SimpleNamespace
+
+    from mvp.report_email import email_configured, send_report_email
+    from mvp.study import STUDIES, load_local_study, load_study_from_gcs, persist_study
 
     email = (body.email or "").strip()
     if "@" not in email:
         raise HTTPException(status_code=400, detail="A valid email is required")
     study = STUDIES.get(study_id)
-    if study is None:
-        raise HTTPException(status_code=404, detail="Study not found")
-    study.email = email
-    try:
-        persist_study(study)
-    except Exception:
-        pass
-    # A finished study has nothing left to wait for: send it now.
-    sent = False
-    if str(getattr(study, "status", "")) == "complete":
-        from mvp.report_email import send_report_email
+    if study is not None:
+        study.email = email
+        try:
+            persist_study(study)
+        except Exception:
+            pass
+        # A finished study has nothing left to wait for: send it now.
+        sent = False
+        if str(getattr(study, "status", "")) == "complete":
+            sent = await asyncio.to_thread(send_report_email, study)
+        return {"ok": True, "email": email, "sent": sent, "configured": email_configured()}
 
-        sent = await asyncio.to_thread(send_report_email, study)
+    # After a restart the study may only live in GCS / local snapshots.
+    saved = load_local_study(study_id) or await asyncio.to_thread(load_study_from_gcs, study_id)
+    if not isinstance(saved, dict):
+        raise HTTPException(status_code=404, detail="Study not found")
+    status = str(saved.get("status") or "")
+    sent = False
+    if status == "complete":
+        proxy = SimpleNamespace(
+            id=saved.get("id") or study_id,
+            url=saved.get("url") or "",
+            summary=saved.get("summary"),
+            email=email,
+        )
+        sent = await asyncio.to_thread(send_report_email, proxy, email)
     return {"ok": True, "email": email, "sent": sent, "configured": email_configured()}
 
 
@@ -1204,7 +1228,9 @@ async def post_live_frame(request: Request):
 
 @app.get("/health")
 async def health():
-    return {"ok": True}
+    from mvp.version import stamp
+
+    return {"ok": True, **stamp()}
 
 
 @app.get("/recurse-study")

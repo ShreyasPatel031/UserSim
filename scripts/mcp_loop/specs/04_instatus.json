@@ -1,0 +1,20 @@
+{
+  "product_url": "https://instatus.com",
+  "competitors": ["https://hund.io", "https://statuspal.io"],
+  "personas": [
+    {"name": "Kevin Park", "bio": "Solo developer running a small SaaS who wants a free public status page today; impatient with setup.", "favors": "https://instatus.com"},
+    {"name": "Aisha Bello", "bio": "Support lead at a 40-person startup tired of answering 'is it down?' tickets; not an engineer.", "favors": "https://instatus.com"},
+    {"name": "Marco Rossi", "bio": "SRE at a mid-size company who wants automated monitoring that updates the status page by itself.", "favors": "https://hund.io"},
+    {"name": "Emily Shaw", "bio": "CTO of a fintech startup who needs an uptime history customers can audit; cares about reliability over looks.", "favors": "https://hund.io"},
+    {"name": "Lucas Meyer", "bio": "Agency owner who hosts sites for clients in the EU and wants one status page per client on custom domains.", "favors": "https://statuspal.io"},
+    {"name": "Rachel Green", "bio": "Customer success manager who wants customers to subscribe to incident emails; avoids technical jargon.", "favors": "https://statuspal.io"}
+  ],
+  "tasks": [
+    {"prompt": "Sign up with your email and create a status page for your product.", "favors": "https://instatus.com"},
+    {"prompt": "Find out what the free plan includes and what the cheapest paid plan costs.", "favors": "https://instatus.com"},
+    {"prompt": "Sign up with your email and get to the place where you add a component or service to monitor.", "favors": "https://hund.io"},
+    {"prompt": "Find out whether this tool can check your website automatically and change the status by itself.", "favors": "https://hund.io"},
+    {"prompt": "Sign up with your email and start setting up your first status page.", "favors": "https://statuspal.io"},
+    {"prompt": "Find out whether your customers can subscribe to incident updates by email, and where that is explained.", "favors": "https://statuspal.io"}
+  ]
+}

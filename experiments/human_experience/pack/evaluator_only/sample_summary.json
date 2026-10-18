@@ -1,0 +1,49 @@
+{
+  "selected_n": 36,
+  "products": {
+    "Asana": {
+      "large|high": 2,
+      "large|low": 2,
+      "mid|high": 2,
+      "mid|low": 2,
+      "solo_small|high": 2,
+      "solo_small|low": 2
+    },
+    "Trello": {
+      "large|high": 2,
+      "large|low": 2,
+      "mid|high": 2,
+      "mid|low": 2,
+      "solo_small|high": 2,
+      "solo_small|low": 2
+    },
+    "ClickUp": {
+      "large|high": 2,
+      "large|low": 2,
+      "mid|high": 2,
+      "mid|low": 2,
+      "solo_small|high": 2,
+      "solo_small|low": 2
+    }
+  },
+  "organization_groups": {
+    "solo_small": "Self-employed or 1-10 employees",
+    "mid": "11-200 employees",
+    "large": "201+ employees"
+  },
+  "rating_groups": {
+    "low": "overall 1-3",
+    "high": "overall 4-5"
+  },
+  "important": "Balanced diagnostic sample; low ratings deliberately oversampled. Use weights only for the full 36-case phase A.",
+  "e2e_candidates": 12,
+  "e2e_core": 6,
+  "rating_nonmissing": {
+    "overall_rating": 36,
+    "ease_of_use_rating": 36,
+    "functionality_rating": 36,
+    "value_for_money_rating": 27,
+    "customer_support_rating": 27,
+    "recommendation_score": 34
+  }
+}

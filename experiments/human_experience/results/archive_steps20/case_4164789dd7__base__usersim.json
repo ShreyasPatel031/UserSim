@@ -1,0 +1,86 @@
+{
+ "run_id": "case_4164789dd7__base__usersim",
+ "case_id": "case_4164789dd7",
+ "engine": "usersim",
+ "context": "base",
+ "status": "failed",
+ "success_criteria_results": [
+  {
+   "criterion": "Three tasks can be located in the intended sprint",
+   "result": "not_met",
+   "step": 20
+  },
+  {
+   "criterion": "The selected task has the requested status",
+   "result": "not_met",
+   "step": 20
+  }
+ ],
+ "observations": [
+  {
+   "step": 5,
+   "text": "Clicking the 'Create Task' button failed due to a page change."
+  },
+  {
+   "step": 6,
+   "text": "Clicking the 'Create Task' button failed again due to a page change."
+  },
+  {
+   "step": 7,
+   "text": "Clicking the 'Create Task' button failed a third time due to a page change."
+  },
+  {
+   "step": 11,
+   "text": "The task 'Demo Alpha' was created."
+  },
+  {
+   "step": 15,
+   "text": "The task 'Demo Beta' was created."
+  },
+  {
+   "step": 17,
+   "text": "The task 'Demo Gamma' was created."
+  },
+  {
+   "step": 19,
+   "text": "A new status named 'Demo Alpha' was created."
+  },
+  {
+   "step": 20,
+   "text": "The agent stopped before attempting to advance a task to the new status."
+  }
+ ],
+ "errors": [],
+ "actions": 20,
+ "elapsed_seconds": 276.3,
+ "plan": "free plan of a fresh test account (unknown seen in run)",
+ "product_version_or_capture_date": "2026-10-18",
+ "environment_mismatches": [
+  "fresh test account with synthetic data; reviewer's historical version, plan, team and data unknown",
+  "short single-session run cannot recreate long tenure or team adoption"
+ ],
+ "trace_path": "results/execution/traces/case_4164789dd7__base__usersim.json",
+ "runner": {
+  "action_model": "gemini-2.5-flash-lite",
+  "max_steps": 20,
+  "max_actions_per_step": 2,
+  "wall_seconds": 300,
+  "backend": "browserbase",
+  "usage": {
+   "input_tokens": 325469,
+   "output_tokens": 5024,
+   "cost_usd": 0.032856670000000004
+  }
+ },
+ "judge": {
+  "model": "gemini-2.5-flash",
+  "model_version": "gemini-2.5-flash",
+  "usage": {
+   "input_tokens": 4256,
+   "output_tokens": 394,
+   "cost_usd": 0.002262,
+   "latency_seconds": 4.15
+  },
+  "status": "automated_provisional"
+ }
+}

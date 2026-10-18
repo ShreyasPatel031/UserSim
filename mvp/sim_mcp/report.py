@@ -1,0 +1,776 @@
+"""Judge, proof checks, and the report an MCP run hands back to the coding agent.
+
+The judge and the proof read only what the server recorded (screenshots, URLs,
+page text, executed actions). The driver's own "I finished" is shown next to
+the verdict, never used as the verdict.
+"""
+
+from __future__ import annotations
+
+import asyncio
+import re
+import os
+import time
+from typing import Any
+
+from mvp.paths import MVP_RUNS_DIR
+from mvp.sim_mcp.sessions import AGENT_ID, DRIVER, FINAL_DOM_CHARS, SimSession, close
+
+OUTCOMES = ("completed", "gave_up", "blocked", "abandoned")
+
+
+def _public_base() -> str:
+    return (os.environ.get("MVP_PUBLIC_BASE_URL") or "https://usersim.vercel.app").rstrip("/")
+
+
+def watch_url(study_id: str) -> str:
+    return f"{_public_base()}/?study={study_id}"
+
+
+def report_url(study_id: str) -> str:
+    return f"{_public_base()}/report?study={study_id}"
+
+
+# ---------------------------------------------------------------- judge
+
+
+def signup_evidence(row: dict[str, Any]) -> str:
+    """Server-observed signup facts for the judge and proof (inbox reads, links opened, URL path)."""
+    lines = []
+    if row.get("login_email") and not row.get("signup_email"):
+        lines.append(f"- This run logs in to the account an earlier run created ({row['login_email']}); it is not a new signup")
+    if row.get("signup_email"):
+        lines.append(f"- Fresh signup alias issued by the server: {row['signup_email']}")
+    for m in row.get("signup_mail") or []:
+        lines.append(f"- Verification email received at that alias: subject {m.get('subject')!r} from {m.get('sender')!r}")
+    trace = row.get("trace") or []
+
+    for u in row.get("opened_links") or []:
+        if _opened_verifies(row, u):
+            lines.append("- The verification link from that email was opened in the browser, so the email address is verified")
+        else:
+            lines.append(f"- A NON-verification link (help / welcome / tracking) from that email was opened: {u.split('?')[0][:80]}")
+    if row.get("opened_links") is None and any("verification link" in str(t.get("action") or t.get("action_text") or "") for t in trace):
+        lines.append("- The verification link from that email was opened in the browser")
+    if row.get("signup_code_received"):
+        lines.append("- The verification code from that email was handed to the agent to enter")
+    if row.get("signup_code_used"):
+        lines.append("- That verification code was typed into the page")
+    acts = [str(t.get("action") or "") for t in trace
+            if isinstance(t, dict) and t.get("action_kind") not in (None, "open", "wait") and t.get("action")]
+    if acts:
+        # Oct 18 KanbanFlow t4: the judge saw the card in Done and failed it as "already done". It needs to know the
+        # final screenshot comes after the run's own actions (server-recorded; typed secrets are masked upstream).
+        lines.append(f"- Browser actions the server executed in this run, in order ({len(acts)}; the final screenshot "
+                     "was taken after them): " + "; ".join(a[:80] for a in acts[-12:]))
+    if row.get("final_marks"):
+        # innerText drops strike-through and checkbox state; a "checked off" item looked unchanged (Oct 18 Dynalist t4).
+        lines.append("- Visual state the server read from the final page (CSS / checkbox state): " + "; ".join(row["final_marks"][:25]))
+    urls = []
+    for t in trace:
+        u = str(t.get("url") or "")
+        if u and (not urls or urls[-1] != u):
+            urls.append(u.split("?")[0])
+    if urls:
+        lines.append("- URL path of the run (query strings removed): " + " -> ".join(urls[-8:]))
+    return "\n".join(lines)
+
+
+_SIGNUP_TASK_RE = re.compile(
+    r"sign ?up|create (?:a |an |your |a new )?(?:new )?account|register|registration|verify your email", re.I)
+
+
+def is_research_task(row: dict[str, Any]) -> bool:
+    """The task itself asks for no account (find a price, compare plans, ...), whatever tools the client called."""
+    task = str(row.get("task_prompt") or "")
+    if not task:
+        return False
+    if re.search(r"without (?:creating|signing|making|registering|an account|a signup|sign)", task, re.I):
+        return True
+    return not _SIGNUP_TASK_RE.search(task)
+
+
+def is_signup_goal(row: dict[str, Any]) -> bool:
+    """The run was a signup: the server issued a signup alias, or the task asks for an account."""
+    if row.get("signup_email"):
+        return True
+    task = str(row.get("task_prompt") or "")
+    if re.search(r"without (?:creating|signing|making|registering|an account|a signup|sign)", task, re.I):
+        return False
+    return bool(_SIGNUP_TASK_RE.search(task))
+
+
+_CLAUSE_SPLIT_RE = re.compile(r"\s*(?:[,;:.!]|\.\.\.|\band then\b|\bthen\b|\band\b|&)\s*", re.I)
+_SIGNUP_STEP_RE = re.compile(
+    r"\b(?:verify|confirm|activate|validate)\b.*\b(?:email|e-mail|account|address|it)\b|\b(?:sign|log) ?(?:in|on)\b|"
+    r"\b(?:get|create|open|make|start)\b.*\b(?:free )?(?:account|trial)\b", re.I)
+_REACH_STEP_RE = re.compile(
+    r"^(?:(?:to|finally|then|so|until)\s+)*(?:i\s+)?(?:reach|get(?: to| into| in)?|go(?: to)?|land(?: on| in)?|end(?: up)?(?: on| in)?|"
+    r"arrive(?: at| on)?|see|access|open|enter|be|navigate(?: to)?|continue(?: to)?|proceed(?: to)?|make it(?: to)?)\b.*"
+    r"\b(?:dashboard|workspace|app|application|account|home ?page|home|onboarding|signed[- ]in|logged[- ]in|portal|console)\b",
+    re.I)
+_EXTRA_GOAL_WORDS_RE = re.compile(
+    r"\b(?:publish|send|invite|upload|import|export|install|connect|integrate|add|build|write|post|embed|share|deploy|"
+    r"submit|schedule|configure|set ?up|buy|pay|purchase|subscribe|upgrade|download|find|compare|run|track)\b", re.I)
+
+
+def signup_only_goal(row: dict[str, Any]) -> bool:
+    """The task asks for nothing beyond creating/verifying an account and reaching the signed-in app.
+
+    Tasks with more (\"sign up and publish a contact form\") are judged against their own wording, and the
+    signed-in-page override never applies to them.
+    """
+    task = str(row.get("task_prompt") or "").strip()
+    if not task:
+        return False
+    for clause in _CLAUSE_SPLIT_RE.split(task):
+        clause = clause.strip()
+        if not clause or not re.search(r"[a-z]", clause, re.I):
+            continue
+        if _EXTRA_GOAL_WORDS_RE.search(clause):
+            return False
+        if not (_SIGNUP_TASK_RE.search(clause) or _SIGNUP_STEP_RE.search(clause) or _REACH_STEP_RE.search(clause)):
+            return False
+    return True
+
+
+def frame_unrendered(png: bytes) -> bool:
+    """Nothing usable painted: a flat frame, or a blank page with only a spinner / one short line.
+
+    Measures the share of pixels that differ from the dominant colour. A leftover dim modal backdrop
+    over real content keeps that share well above the bar (Litlyx: 0.5-1.3%); a white page with a
+    spinner does not (FormBold: 0.02-0.03%). Size-independent (frames are compared at 1280x800).
+    """
+    import io
+
+    from PIL import Image
+
+    try:
+        im = Image.open(io.BytesIO(png)).convert("L")
+    except Exception:  # noqa: BLE001
+        return True
+    if im.size != (1280, 800):
+        im = im.resize((1280, 800))
+    hist = im.histogram()
+    mode = max(range(256), key=lambda i: hist[i])
+    off = sum(c for v, c in enumerate(hist) if abs(v - mode) >= 4)
+    return off / (1280 * 800) < 0.0015
+
+
+def _opened_verifies(row: dict[str, Any], url: str) -> bool:
+    from mvp.signup_inbox import verification_link
+
+    return verification_link(url, (row.get("opened_link_texts") or {}).get(url, ""),
+                             chain=(row.get("opened_link_chains") or {}).get(url))
+
+
+def signup_verified(row: dict[str, Any]) -> bool:
+    trace = row.get("trace") or []
+    mail = bool(row.get("signup_mail"))
+
+    links = row.get("opened_links")
+    if links is None:  # older rows: fall back to the trace
+        opened = any("verification link" in str(t.get("action") or t.get("action_text") or "") for t in trace)
+    else:  # the opened link has to verify: its URL, its anchor text in the mail, or its redirect chain
+        opened = any(_opened_verifies(row, u) for u in links)
+    typed_code = bool(row.get("signup_code_used"))
+    return bool(row.get("signup_email")) and mail and (opened or typed_code)
+
+
+# The signup bar (Oct 11): an email-verified signup on the product that ends signed in. The judge kept reading
+# "reach the signed-in dashboard" literally and failed onboarding pages (Raygun /onboarding/setup-raygun,
+# StatusCake /monitoring/uptime/create) after a verified signup. Judge verified signups against the bar instead.
+SIGNUP_BAR_TASK = ("Create an account with email and verify it, then end on ANY signed-in page of the product's app. "
+                   "A dashboard, workspace, onboarding or setup step inside the app, or a 'create your first ...' page "
+                   "all count; the page does not need to be titled dashboard and no further setup is required.")
+
+
+def judge_votes() -> int:
+    try:
+        return max(1, min(5, int(os.environ.get("MVP_JUDGE_VOTES", "3"))))
+    except ValueError:
+        return 3
+
+
+async def _goal_votes(png: bytes, row: dict[str, Any], task: str, n: int) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+    """Up to n independent goal-judge calls; stop once a majority is settled. Returns (majority verdict, votes)."""
+    from mvp.e2e2_gates import judge_goal_screenshot
+
+    need = n // 2 + 1
+    votes: list[dict[str, Any]] = []
+    for _ in range(n):
+        v = await asyncio.wait_for(
+            asyncio.to_thread(judge_goal_screenshot, png, task=task, start_url=str(row.get("site_url") or ""),
+                              final_url=str(row.get("final_url") or ""), dom=str(row.get("final_dom") or ""), dom_limit=FINAL_DOM_CHARS,
+                              evidence=signup_evidence(row)),
+            timeout=float(os.environ.get("MVP_PAGE_VERDICT_TIMEOUT_S", "45")),
+        )
+        votes.append(v if isinstance(v, dict) else {})
+        yes = sum(bool(x.get("goal_reached")) for x in votes)
+        if yes >= need or len(votes) - yes >= need:
+            break
+    yes = sum(bool(x.get("goal_reached")) for x in votes)
+    passed = yes >= need
+    pick = next((x for x in votes if bool(x.get("goal_reached")) == passed), votes[-1])
+    out = dict(pick)
+    out["goal_reached"] = passed
+    out["signed_in_app_page"] = sum(bool(x.get("signed_in_app_page")) for x in votes) >= (len(votes) // 2 + 1)
+    return out, votes
+
+
+async def judge_run(study_id: str, row: dict[str, Any]) -> tuple[dict[str, Any], str]:
+    """(verdict, status). status is 'ok', 'no_screenshot', or 'error: …' — never a silent pass."""
+    from mvp.e2e2_gates import coerce_verdict, judge_goal_screenshot, judge_signed_in
+
+    path = MVP_RUNS_DIR / study_id / str(row.get("agent_id") or AGENT_ID) / "screenshots" / "final.png"
+    if not path.is_file():
+        return coerce_verdict({"goal_reached": False, "reason": "no final screenshot"}), "no_screenshot"
+    votes: list[dict[str, Any]] = []
+    try:
+        if is_signup_goal(row) and signup_only_goal(row) and signup_verified(row):
+            raw, votes = await _goal_votes(path.read_bytes(), row, SIGNUP_BAR_TASK, judge_votes())
+        else:
+            raw = await asyncio.wait_for(
+                asyncio.to_thread(
+                    judge_goal_screenshot,
+                    path.read_bytes(),
+                    task=str(row.get("task_prompt") or ""),
+                    start_url=str(row.get("site_url") or ""),
+                    final_url=str(row.get("final_url") or ""),
+                    dom=str(row.get("final_dom") or ""), dom_limit=FINAL_DOM_CHARS,
+                    evidence=signup_evidence(row),
+                ),
+                timeout=float(os.environ.get("MVP_PAGE_VERDICT_TIMEOUT_S", "45")),
+            )
+    except Exception as exc:  # noqa: BLE001
+        reason = f"judge failed: {exc!r}"[:200]
+        verdict = coerce_verdict({"goal_reached": False, "reason": reason})
+        verdict["unverified"] = True
+        return verdict, f"error: {reason}"
+    png = path.read_bytes()
+    if (isinstance(raw, dict) and not raw.get("goal_reached") and not raw.get("signed_in_app_page")
+            and not raw.get("page_loading") and not frame_unrendered(png)
+            and is_signup_goal(row) and signup_only_goal(row) and signup_verified(row)):
+        # The goal judge ties signed_in_app_page to the task wording; ask the signed-in question on its own.
+        try:
+            second = await asyncio.wait_for(
+                asyncio.to_thread(judge_signed_in, png, final_url=str(row.get("final_url") or ""),
+                                  account_email=str(row.get("signup_email") or "")),
+                timeout=float(os.environ.get("MVP_PAGE_VERDICT_TIMEOUT_S", "45")),
+            )
+        except Exception as exc:  # noqa: BLE001
+            second = {"signed_in": False, "evidence": f"second look failed: {exc!r}"[:120]}
+        raw = dict(raw, signed_in_app_page=bool(second.get("signed_in")))
+        raw["signed_in_check"] = second
+    verdict = apply_hard_rules(row, coerce_verdict(raw), raw, png)
+    if isinstance(raw, dict) and raw.get("signed_in_check"):
+        verdict["signed_in_check"] = raw["signed_in_check"]
+    if votes:
+        verdict["votes"] = [{"goal_reached": bool(v.get("goal_reached")), "signed_in_app_page": bool(v.get("signed_in_app_page")),
+                             "reason": str(v.get("reason") or "")[:200]} for v in votes]
+        verdict["votes_yes"] = sum(x["goal_reached"] for x in verdict["votes"])
+    verdict["checked_at_ts"] = time.time()
+    return verdict, "ok"
+
+
+_BILLING_HOSTS = ("checkout.stripe.com", "billing.stripe.com", "buy.stripe.com", "checkout.paddle.com",
+                  "buy.paddle.com", "checkout.chargebee.com", "app.lemonsqueezy.com", "pay.lemonsqueezy.com")
+_BILLING_PATH = re.compile(r"(?:^|/)(?:billing|checkout|payment|payments|subscribe|subscription|upgrade|"
+                           r"choose[-_]?plan|select[-_]?plan|plans?|pricing|paywall|trial[-_]?expired)(?:/|$|[?#])", re.I)
+
+
+def billing_wall(url: str) -> bool:
+    """True when the final URL is a billing, payment or plan-picker page (a paywall, not the signed-in product)."""
+    from urllib.parse import urlsplit
+
+    if not url:
+        return False
+    parts = urlsplit(url)
+    host = (parts.hostname or "").lower()
+    if host in _BILLING_HOSTS or host.endswith(".chargebee.com") or host.startswith("billing."):
+        return True
+    return bool(_BILLING_PATH.search(parts.path or "/"))
+
+
+def apply_hard_rules(row: dict[str, Any], verdict: dict[str, Any], raw: Any, png: bytes) -> dict[str, Any]:
+    """Server-side rules the vision judge cannot overrule.
+
+    1. A final page that is blank, loading or only a spinner never reaches a goal.
+    2. A signup goal never passes unless signup_verified (the verify mail's link/code was really used).
+    3. A signup that ends on a billing / plan-picker page is not signed in.
+    4. Otherwise a signed-in app page after a verified signup counts (the judge is often too literal), but only
+       when signup is the whole task; tasks with further goals keep the judge's verdict on their own wording.
+    """
+    signed_in = isinstance(raw, dict) and bool(raw.get("signed_in_app_page"))
+    loading = isinstance(raw, dict) and bool(raw.get("page_loading"))
+    verdict["signed_in_app_page"] = signed_in
+    signup = is_signup_goal(row)
+    verified = signup and signup_verified(row)
+    unrendered = frame_unrendered(png)
+    if unrendered or loading:
+        verdict["page_unrendered"] = True
+        if verdict.get("goal_reached"):
+            verdict["goal_reached"] = False
+            verdict["reason"] = ("Final page is blank / still loading (spinner), so the goal is not shown. Judge note: "
+                                 + str(verdict.get("reason") or ""))
+        return verdict
+    if signup and not verified:
+        if verdict.get("goal_reached"):
+            verdict["goal_reached"] = False
+            verdict["reason"] = ("Signup not email-verified: the server never saw the verification link or code used. "
+                                 "Judge note: " + str(verdict.get("reason") or ""))
+        verdict["signup_verified"] = False
+        return verdict
+    if signup:
+        verdict["signup_verified"] = True
+    if signup and billing_wall(str(row.get("final_url") or "")):
+        # A billing / payment / plan-picker page is a paywall, never a signed-in product page. Only for signup
+        # goals: on "find out what the plan costs" the pricing page is the answer (Tally, study f80f043a).
+        verdict["signed_in_app_page"] = False
+        verdict["billing_wall"] = True
+        if verdict.get("goal_reached"):
+            verdict["goal_reached"] = False
+            verdict["reason"] = "Final page is a billing/payment wall, which never counts as signed in. Judge note: " + str(verdict.get("reason") or "")
+        return verdict
+    if not verdict.get("goal_reached") and signed_in and verified and signup_only_goal(row):
+        verdict["goal_reached"] = True
+        verdict["reason"] = "Signed-in app page after server-observed email verification. Judge note: " + str(verdict.get("reason") or "")
+    return verdict
+
+
+# ---------------------------------------------------------------- proof
+
+
+def _shot_ok(study_id: str, agent_id: str, step: dict[str, Any]) -> bool:
+    from mvp.opening_shot import png_bytes_ok
+
+    name = str(step.get("screenshot_url") or "").rsplit("/", 1)[-1]
+    if not name:
+        return False
+    path = MVP_RUNS_DIR / study_id / agent_id / "screenshots" / name
+    try:
+        raw = path.read_bytes()
+    except OSError:
+        return False
+    return png_bytes_ok(raw) and not frame_unrendered(raw)
+
+
+def _opening_redirect(row: dict[str, Any]) -> bool:
+    """The page opened where the product URL itself redirected the server's first load (teable.io -> teable.ai)."""
+    from urllib.parse import urlsplit
+
+    from mvp.e2e2_gates import opened_url_of
+    from mvp.sim_mcp.sessions import registrable_domain
+
+    landed = urlsplit(str(row.get("opening_redirect") or "")).hostname or ""
+    opened = urlsplit(str(opened_url_of(row) or "")).hostname or ""
+    return bool(landed and opened) and registrable_domain(landed) == registrable_domain(opened)
+
+
+def _same_registrable(row: dict[str, Any]) -> bool:
+    """talk.example.com redirecting to example.com is still the assigned product."""
+    from urllib.parse import urlsplit
+
+    from mvp.e2e2_gates import opened_url_of
+    from mvp.sim_mcp.sessions import registrable_domain
+
+    a = urlsplit(str(row.get("site_url") or "")).hostname or ""
+    b = urlsplit(str(opened_url_of(row) or "")).hostname or ""
+    return bool(a and b) and registrable_domain(a) == registrable_domain(b)
+
+
+# A product whose own signup is hosted by its parent company's identity service. Strict: the product's registrable
+# domain maps to the exact parent registrable domains allowed; nothing else is ever accepted.
+PARENT_AUTH_DOMAINS: dict[str, frozenset[str]] = {
+    "bugsnag.com": frozenset({"smartbear.com"}),  # SmartBear owns Bugsnag; signup runs on auth.id.smartbear.com
+}
+
+
+def _parent_auth_opened(row: dict[str, Any]) -> bool:
+    """The run opened on the product's parent-company auth domain AND ended signed in on the product itself."""
+    from urllib.parse import urlsplit
+
+    from mvp.e2e2_gates import opened_url_of
+    from mvp.sim_mcp.sessions import registrable_domain
+
+    site = registrable_domain(urlsplit(str(row.get("site_url") or "")).hostname or "")
+    opened = registrable_domain(urlsplit(str(opened_url_of(row) or "")).hostname or "")
+    final = registrable_domain(urlsplit(str(row.get("final_url") or "")).hostname or "")
+    if not site or opened not in PARENT_AUTH_DOMAINS.get(site, frozenset()):
+        return False
+    verdict = row.get("page_verdict") if isinstance(row.get("page_verdict"), dict) else {}
+    return final == site and bool(verdict.get("signed_in_app_page"))
+
+
+def proof_checks(study: dict[str, Any], row: dict[str, Any], judge_status: str) -> dict[str, Any]:
+    """Did a real browser on the real product do real actions that a person could watch?
+
+    Same gate functions the website's e2e2 harness uses, sized for one agent.
+    """
+    from mvp.e2e2_gates import beyond_first_screen, has_click_type_scroll, opened_on_assigned_site
+
+    steps = [s for s in row.get("trace") or [] if isinstance(s, dict) and isinstance(s.get("step"), int)]
+    aid = str(row.get("agent_id") or AGENT_ID)
+    bad_shots = [s["step"] for s in steps if not _shot_ok(str(study.get("id")), aid, s)]
+    site = row.get("site_url")
+    checks = [
+        ("opened_on_product", opened_on_assigned_site(row) or _same_registrable(row) or _parent_auth_opened(row)
+         or _opening_redirect(row),
+         f"opened {row.get('page_url') or '?'} for {site}", f"opened {row.get('page_url') or '?'}, which is NOT the product {site}"),
+        ("real_action", has_click_type_scroll(row), "at least one click, type, or scroll ran on the page",
+         "no click, type, or scroll ever ran on the page"),
+        ("screenshots_real", bool(steps) and not bad_shots, f"{len(steps)} steps, every screenshot shows a rendered page",
+         f"{len(steps)} steps; blank, spinner-only or missing screenshots at steps {bad_shots or 'all (no steps)'}"),
+        _first_screen_check(row, site),
+        ("live_view_offered", bool(row.get("live_view_url")), "Browserbase live view was available to watch",
+         "no Browserbase live view URL was recorded"),
+        ("judge_ran", judge_status == "ok", "independent judge ran: ok", f"independent judge did not run cleanly: {judge_status}"),
+        ("not_degraded", not study.get("test_mode") and study.get("driver") == DRIVER, "real browser run, not snapshot / test mode",
+         f"degraded run (test_mode={bool(study.get('test_mode'))}, driver={study.get('driver')!r})"),
+    ]
+    if is_signup_goal(row) and not is_research_task(row):
+        # Oct 14 (74b7210f): a research cell must not need signup proof just because the client asked for an alias.
+        checks.append(("signup_verified", signup_verified(row),
+                       "server saw the verification email for the fresh alias and its verify link/code was used",
+                       "NOT verified: no verification email was seen, or no verify link/code from it was used"))
+    out = [{"name": n, "pass": bool(ok), "detail": dp if ok else df} for n, ok, dp, df in checks]
+    failed = [f"{c['name']}: {c['detail']}" for c in out if not c["pass"]]
+    return {"pass": not failed, "checks": out, "reason": "; ".join(failed) if failed else "all proof checks passed"}
+
+
+def _first_screen_check(row: dict[str, Any], site: Any) -> tuple[str, bool, str, str]:
+    """beyond_first_screen, except a research answer may sit on the opening page (Oct 14 74b7210f, Plausible pricing)."""
+    from mvp.e2e2_gates import beyond_first_screen
+
+    moved = beyond_first_screen(row, str(site or ""))
+    verdict = row.get("page_verdict") if isinstance(row.get("page_verdict"), dict) else {}
+    if not moved and is_research_task(row) and verdict.get("goal_reached"):
+        return ("beyond_first_screen", True, "research task: the judge found the answer on the opening page (moving on is not required)", "")
+    return ("beyond_first_screen", moved, "URL or page content changed from the opening page",
+            "URL and page content never changed from the opening page")
+
+
+# ---------------------------------------------------------------- finalize
+
+
+async def finalize(sim: SimSession, *, outcome: str, notes: str) -> dict[str, Any]:
+    """Close the browser, judge, run proof, write the study as complete. Caller holds sim.lock."""
+    from mvp.study import finish_clocks, log_activity, persist_study, study_to_dict
+
+    if sim.closed and (sim.study.status in {"complete", "error"} or (sim.matrix and sim.row.get("status") in {"complete", "error"})):
+        return study_to_dict(sim.study)
+    outcome = outcome if outcome in OUTCOMES else "gave_up"
+    study = sim.study
+    study.phase = "Judging the run"
+    try:
+        from mvp.sim_mcp.sessions import settle_final
+
+        await settle_final(sim)
+    except Exception:  # noqa: BLE001
+        pass
+    await close(sim, reason=f"finished: {outcome}")
+    row = sim.row
+    row["status"] = "complete"
+    row["driver_outcome"] = outcome
+    from mvp.sim_mcp.sessions import scrub
+
+    row["driver_notes"] = scrub(sim, (notes or "").strip())[:4000]
+    verdict, judge_status = await judge_run(study.id, row)
+    row["page_verdict"] = verdict
+    result = {
+        k: row.get(k)
+        for k in (
+            "agent_id", "persona_id", "persona_name", "persona_bio", "task_id", "task_title", "task_prompt",
+            "site_key", "site_url", "site_label", "num_steps", "final_url", "final_dom",
+            "final_screenshot_url", "phase_ms", "first_action_at_ts",
+        )
+    }
+    result.update(
+        {
+            "mode": "mcp",
+            "driver": DRIVER,
+            "status": "complete",
+            "agent_claimed_done": outcome == "completed",
+            "driver_outcome": outcome,
+            "page_verdict": verdict,
+            "completed": bool(verdict.get("goal_reached")),
+            "feedback": row["driver_notes"],
+            "trace": row.get("trace") or [],
+        }
+    )
+    if sim.matrix:
+        payload = study_to_dict(study)
+        proof = proof_checks(payload, row, judge_status)
+        result["mcp_proof"] = proof
+        result["judge_status"] = judge_status
+        row["mcp_proof"] = proof
+        study.agent_results = [r for r in study.agent_results if r.get("agent_id") != sim.agent_id] + [result]
+        from mvp.sim_mcp.sessions import matrix_phase
+
+        study.phase = matrix_phase(study)
+        log_activity(study, "agents", f"{row.get('persona_name')} on {row.get('site_label')}: {outcome}; judge {judge_status}; proof pass={proof['pass']}", agent_id=sim.agent_id)
+        await maybe_finish_study(study)
+        return study_to_dict(study)
+    study.agent_results = [result]
+    payload = study_to_dict(study)
+    proof = proof_checks(payload, row, judge_status)
+    mcp = {"mcp_headline": _headline(verdict, outcome, proof), "driver": DRIVER, "proof": proof, "judge_status": judge_status}
+    log_activity(study, "complete", f"MCP run finished ({outcome}); judge: {judge_status}; proof pass={proof['pass']}")
+    try:
+        # The website's own report pipeline (executive summary, insights, verdict summary), keeping the MCP's verdicts.
+        from mvp.study import finish_study
+
+        await finish_study(study, keep_verdicts=True)
+        study.summary = {**(study.summary or {}), **mcp}
+        study.summary.setdefault("headline", mcp["mcp_headline"])
+    except Exception as exc:  # noqa: BLE001
+        print(f"[mcp] website finish_study failed for {study.id}: {exc!r}; writing the MCP summary only", flush=True)
+        study.summary = {**(study.summary or {}), **mcp, "headline": mcp["mcp_headline"], "report_error": repr(exc)[:300]}
+    study.status = "complete"
+    study.phase = "Complete"
+    finish_clocks(study)
+    await asyncio.to_thread(persist_study, study)
+    return study_to_dict(study)
+
+
+def _headline(verdict: dict[str, Any], outcome: str, proof: dict[str, Any]) -> str:
+    if not proof["pass"]:
+        failed = ", ".join(c["name"] for c in proof["checks"] if not c["pass"])
+        return f"Run did not pass proof checks ({failed}); treat findings as unverified."
+    if verdict.get("goal_reached"):
+        return "The simulated user reached the goal."
+    return f"The simulated user did not reach the goal ({outcome.replace('_', ' ')})."
+
+
+# ---------------------------------------------------------------- report
+
+
+def build_report(study: dict[str, Any]) -> dict[str, Any]:
+    """Structured report for the coding agent, from a saved study."""
+    sid = str(study.get("id") or "")
+    results = [r for r in study.get("agent_results") or [] if isinstance(r, dict)]
+    sessions = [s for s in study.get("live_sessions") or [] if isinstance(s, dict)]
+    run = results[0] if results else (sessions[0] if sessions else {})
+    summary = study.get("summary") or {}
+    verdict = run.get("page_verdict") or {}
+    base = _public_base()
+    steps = []
+    for s in run.get("trace") or []:
+        if not isinstance(s, dict) or not isinstance(s.get("step"), int):
+            continue
+        shot = str(s.get("screenshot_url") or "")
+        steps.append(
+            {
+                "step": s["step"],
+                "action": s.get("action"),
+                "thought": s.get("thought") or "",
+                "url": s.get("url"),
+                "error": s.get("error") or "",
+                "screenshot": f"{base}{shot}" if shot.startswith("/") else shot,
+            }
+        )
+    friction = [
+        {"step": s["step"], "what": s["thought"] or s["error"], "url": s["url"], "screenshot": s["screenshot"]}
+        for s in steps
+        if s["error"]
+        or any(w in s["thought"].lower() for w in ("confus", "can't", "cannot", "unclear", "stuck", "where is", "not sure", "frustrat", "expected", "error"))
+    ]
+    return {
+        "study_id": sid,
+        "status": study.get("status"),
+        "headline": summary.get("headline") or study.get("phase"),
+        "product_url": study.get("url"),
+        "persona": run.get("persona_bio") or study.get("segment"),
+        "task": run.get("task_prompt"),
+        "judge": {
+            "goal_reached": bool(verdict.get("goal_reached")),
+            "reason": verdict.get("reason") or "",
+            "unverified": bool(verdict.get("unverified")) or summary.get("judge_status", "ok") != "ok",
+        },
+        "driver_claim": {"outcome": run.get("driver_outcome"), "notes": run.get("feedback") or run.get("driver_notes") or ""},
+        # The run's own proof checks (written by finalize as mcp_proof). A 1x1x1 study_start study is read by this
+        # one-run reader too, and it never had summary["proof"], so the report said FAIL while usersim_finish said
+        # proof_pass=true (Composer run 34943bfa).
+        "proof": run.get("mcp_proof") or summary.get("proof") or {"pass": False, "checks": [], "note": "not finished"},
+        "num_steps": len(steps),
+        "steps": steps,
+        "friction": friction,
+        "links": {"watch": watch_url(sid), "report": report_url(sid)},
+        "engine_version": study.get("engine_version"),
+        "config_hash": study.get("config_hash"),
+        "total_time_s": study.get("total_time_s"),
+    }
+
+
+def report_markdown(rep: dict[str, Any]) -> str:
+    j, proof = rep["judge"], rep["proof"]
+    lines = [
+        f"# UserSim report — {rep.get('product_url')}",
+        "",
+        f"**{rep.get('headline')}**",
+        "",
+        f"- Persona: {rep.get('persona')}",
+        f"- Task: {rep.get('task')}",
+        f"- Judge (independent): {'goal reached' if j['goal_reached'] else 'goal NOT reached'}"
+        + (" — UNVERIFIED" if j["unverified"] else "")
+        + f" — {j['reason']}",
+        f"- Simulated user said: {rep['driver_claim'].get('outcome')} — {rep['driver_claim'].get('notes') or '(no notes)'}",
+        f"- Steps: {rep['num_steps']} · time: {rep.get('total_time_s')}s",
+        f"- Proof: {'PASS' if proof.get('pass') else 'FAIL'}",
+    ]
+    for c in proof.get("checks") or []:
+        lines.append(f"  - {'✓' if c['pass'] else '✗'} {c['name']}: {c['detail']}")
+    if rep["friction"]:
+        lines += ["", "## Friction"]
+        for f in rep["friction"]:
+            lines.append(f"- Step {f['step']} ({f['url']}): {f['what']} — [screenshot]({f['screenshot']})")
+    lines += ["", "## Steps"]
+    for s in rep["steps"]:
+        err = f" — error: {s['error']}" if s["error"] else ""
+        thought = f" — “{s['thought']}”" if s["thought"] else ""
+        lines.append(f"{s['step']}. {s['action']} @ {s['url']}{thought}{err} — [screenshot]({s['screenshot']})")
+    lines += [
+        "",
+        f"Watch / replay: {rep['links']['watch']}",
+        f"Full report: {rep['links']['report']}",
+        f"Engine: {rep.get('engine_version')} · config {rep.get('config_hash')}",
+    ]
+    return "\n".join(lines)
+
+
+# ---------------------------------------------------------------- multi-run studies
+
+_TERMINAL_ROWS = {"complete", "done", "error", "skipped"}
+_FINISHING: set[str] = set()
+
+
+async def maybe_finish_study(study: Any, *, force: bool = False) -> bool:
+    """When every cell has ended (or force), run the website's end-of-study pipeline once.
+
+    Runs in the background so the last simulated user's usersim_finish returns at once.
+    Cells never started are marked skipped. Returns True if the finish was started.
+    """
+    rows = list(study.live_sessions.values())
+    if study.id in _FINISHING or study.status != "running":
+        return False
+    if not force and any(r.get("status") not in _TERMINAL_ROWS for r in rows):
+        return False
+    from mvp.sim_mcp.sessions import SESSIONS
+
+    if force and any(s.study is study and not s.closed for s in SESSIONS.values()):
+        raise RuntimeError("some simulated users are still running; finish them first")
+    _FINISHING.add(study.id)
+    done_ids = {a.get("agent_id") for a in study.agent_results}
+    for r in rows:
+        if r.get("status") not in _TERMINAL_ROWS:
+            r["status"] = "skipped"
+            r["live_active"] = False
+        if r.get("status") == "skipped" and r.get("agent_id") not in done_ids:
+            # Oct 14 (74b7210f): an unstarted cell had no agent_results row, so the report showed "—" instead of "skipped".
+            study.agent_results.append(skipped_result(r))
+    study.phase = "Writing the report"
+    asyncio.get_running_loop().create_task(_finish_matrix(study))
+    return True
+
+
+def skipped_result(row: dict[str, Any]) -> dict[str, Any]:
+    """agent_results row for a cell that never started, so the report says "skipped" instead of a blank."""
+    keep = ("agent_id", "cell_id", "persona_id", "persona_name", "persona_bio", "task_id", "task_title", "task_prompt",
+            "site_key", "site_url", "site_label")
+    out = {k: row.get(k) for k in keep if row.get(k) is not None}
+    reason = "Cell never started (skipped)."
+    out.update({"mode": "mcp", "driver": DRIVER, "status": "skipped", "driver_outcome": "skipped", "completed": False,
+                "skipped": True, "num_steps": 0, "trace": [], "feedback": reason,
+                "page_verdict": {"goal_reached": False, "skipped": True, "reason": reason},
+                "mcp_proof": {"pass": False, "skipped": True, "checks": [], "reason": "skipped: the cell never started"}})
+    return out
+
+
+async def _finish_matrix(study: Any) -> None:
+    from mvp.study import finish_study, log_activity, persist_study
+
+    try:
+        await finish_study(study, keep_verdicts=True)
+        proofs = [r.get("mcp_proof") or {} for r in study.agent_results]
+        study.summary = {
+            **(study.summary or {}),
+            "driver": DRIVER,
+            "mcp_proof": {
+                "runs": sum(1 for r in study.agent_results if r.get("status") != "skipped"),
+                "passed": sum(1 for p in proofs if p.get("pass")),
+                "failed_runs": [r.get("agent_id") for r in study.agent_results
+                                if r.get("status") != "skipped" and not (r.get("mcp_proof") or {}).get("pass")],
+                "skipped_runs": [r.get("agent_id") for r in study.agent_results if r.get("status") == "skipped"],
+            },
+        }
+        await asyncio.to_thread(persist_study, study)
+    except Exception as exc:  # noqa: BLE001
+        print(f"[mcp] finishing study {study.id} failed: {exc!r}", flush=True)
+        study.status = "error"
+        study.error = f"report failed: {exc!r}"[:500]
+        log_activity(study, "error", study.error)
+        await asyncio.to_thread(persist_study, study)
+    finally:
+        _FINISHING.discard(study.id)
+
+
+def build_study_report(study: dict[str, Any]) -> dict[str, Any]:
+    """Multi-run study: the website report's headline plus one line per cell."""
+    sid = str(study.get("id") or "")
+    summary = study.get("summary") or {}
+    by_id = {r.get("agent_id"): r for r in study.get("agent_results") or [] if isinstance(r, dict)}
+    rows = [s for s in study.get("live_sessions") or [] if isinstance(s, dict)]
+    cells = []
+    for row in rows:
+        res = by_id.get(row.get("agent_id")) or {}
+        verdict = res.get("page_verdict") or row.get("page_verdict") or {}
+        cells.append(
+            {
+                "cell_id": row.get("agent_id"),
+                "site": row.get("site_label"),
+                "persona": row.get("persona_name"),
+                "task": row.get("task_prompt"),
+                "status": row.get("status"),
+                "goal_reached": bool(verdict.get("goal_reached")) if verdict else None,
+                "judge_reason": verdict.get("reason") or "",
+                "proof_pass": (res.get("mcp_proof") or {}).get("pass"),
+                "steps": row.get("num_steps") or 0,
+                "driver_outcome": res.get("driver_outcome"),
+            }
+        )
+    return {
+        "study_id": sid,
+        "status": study.get("status"),
+        "phase": study.get("phase"),
+        "headline": summary.get("verdict_summary") or summary.get("headline") or study.get("phase"),
+        "product_url": study.get("url"),
+        "competitors": study.get("competitors") or [],
+        "summary": {k: summary.get(k) for k in ("headline", "verdict_summary", "recommendations", "strengths", "weaknesses") if summary.get(k)},
+        "proof": summary.get("mcp_proof") or {},
+        "cells": cells,
+        "links": {"watch": watch_url(sid), "report": report_url(sid)},
+        "engine_version": study.get("engine_version"),
+        "config_hash": study.get("config_hash"),
+    }
+
+
+def study_report_markdown(rep: dict[str, Any]) -> str:
+    lines = [f"# UserSim study — {rep.get('product_url')}", "", f"**{rep.get('headline')}**", ""]
+    if rep["status"] != "complete":
+        lines += [f"Status: {rep['status']} — {rep.get('phase')}", ""]
+    proof = rep.get("proof") or {}
+    if proof:
+        lines.append(f"Proof: {proof.get('passed')}/{proof.get('runs')} runs passed")
+    lines += ["", "| Site | Persona | Task | Judge | Proof | Steps |", "|---|---|---|---|---|---|"]
+    for c in rep["cells"]:
+        judge = "—" if c["goal_reached"] is None else ("reached" if c["goal_reached"] else "NOT reached")
+        pr = "—" if c["proof_pass"] is None else ("pass" if c["proof_pass"] else "FAIL")
+        lines.append(f"| {c['site']} | {c['persona']} | {c['task']} | {judge} | {pr} | {c['steps']} |")
+    lines += ["", f"Full report (same page as a website study): {rep['links']['report']}", f"Watch / replay: {rep['links']['watch']}"]
+    return "\n".join(lines)
+
+
+def is_matrix(study: dict[str, Any]) -> bool:
+    rows = study.get("live_sessions") or []
+    # A 1x1x1 study is shaped exactly like the one-run report, so either reader works for it.
+    return study.get("backend") == "mcp" and (len(rows) > 1 or any(r.get("agent_id") != AGENT_ID for r in rows if isinstance(r, dict)))

@@ -1,0 +1,464 @@
+[
+ {
+  "study_id": "c69dd13c-2573-44aa-a78e-30c49806e737",
+  "status": "ok",
+  "recorded_signup_verified": true,
+  "goal_reached": true,
+  "votes_yes": 2,
+  "votes": [
+   {
+    "goal_reached": true,
+    "signed_in_app_page": true,
+    "reason": "The user successfully created an account, verified their email, and landed on the dashboard of the application."
+   },
+   {
+    "goal_reached": true,
+    "signed_in_app_page": true,
+    "reason": "The user successfully created an account, verified their email, and landed on the dashboard of the application."
+   }
+  ],
+  "reason": "The user successfully created an account, verified their email, and landed on the dashboard of the application.",
+  "old_verdict_reason": "The user successfully created an account, verified their email, and landed on the dashboard page."
+ },
+ {
+  "study_id": "baef6381-93f1-480b-bbc3-c87784c356a6",
+  "status": "ok",
+  "recorded_signup_verified": true,
+  "goal_reached": true,
+  "votes_yes": 2,
+  "votes": [
+   {
+    "goal_reached": true,
+    "signed_in_app_page": true,
+    "reason": "The user successfully created an account, verified their email, and landed on a page within the application to add their first website."
+   },
+   {
+    "goal_reached": true,
+    "signed_in_app_page": true,
+    "reason": "The user successfully created an account, verified their email, and landed on a page within the application to add their first website."
+   }
+  ],
+  "reason": "The user successfully created an account, verified their email, and landed on a page within the application to add their first website.",
+  "old_verdict_reason": "The user successfully created an account, verified their email, and landed on the \"My personal sites\" page, which is a signed-in application page."
+ },
+ {
+  "study_id": "63d14215-7d47-44ee-a84b-28c8d68b2f1f",
+  "status": "ok",
+  "recorded_signup_verified": true,
+  "goal_reached": true,
+  "votes_yes": 2,
+  "votes": [
+   {
+    "goal_reached": true,
+    "signed_in_app_page": true,
+    "reason": "The user successfully created an account, verified their email, and landed on an onboarding page within the application."
+   },
+   {
+    "goal_reached": true,
+    "signed_in_app_page": true,
+    "reason": "The user successfully created an account, verified their email, and landed on an onboarding page within the application."
+   }
+  ],
+  "reason": "The user successfully created an account, verified their email, and landed on an onboarding page within the application.",
+  "old_verdict_reason": "The user successfully created an account, verified their email, and landed on the onboarding dashboard."
+ },
+ {
+  "study_id": "c6a0d668-be31-4ab4-8a75-a0ea7d8d27d4",
+  "status": "ok",
+  "recorded_signup_verified": true,
+  "goal_reached": true,
+  "votes_yes": 2,
+  "votes": [
+   {
+    "goal_reached": true,
+    "signed_in_app_page": true,
+    "reason": "The user has successfully created an account, verified their email, and is now on an onboarding page within the application."
+   },
+   {
+    "goal_reached": true,
+    "signed_in_app_page": true,
+    "reason": "The user has successfully created an account, verified their email, and is now on an onboarding page within the application."
+   }
+  ],
+  "reason": "The user has successfully created an account, verified their email, and is now on an onboarding page within the application.",
+  "old_verdict_reason": "The user has successfully created an account, verified their email, and is now on an onboarding screen within the application."
+ },
+ {
+  "study_id": "262b3bb5-9132-4ae1-9e2d-e36b6f15534d",
+  "status": "ok",
+  "recorded_signup_verified": true,
+  "goal_reached": true,
+  "votes_yes": 2,
+  "votes": [
+   {
+    "goal_reached": true,
+    "signed_in_app_page": true,
+    "reason": "The user successfully created an account, verified their email, and landed on a signed-in page of the application."
+   },
+   {
+    "goal_reached": true,
+    "signed_in_app_page": true,
+    "reason": "The user successfully created an account, verified their email, and landed on a signed-in page of the application."
+   }
+  ],
+  "reason": "The user successfully created an account, verified their email, and landed on a signed-in page of the application.",
+  "old_verdict_reason": "The user successfully created an account, verified their email, and landed on the signed-in dashboard page."
+ },
+ {
+  "study_id": "a40d7428-fd2a-4502-9b3f-a6802c994807",
+  "status": "ok",
+  "recorded_signup_verified": true,
+  "goal_reached": true,
+  "votes_yes": 2,
+  "votes": [
+   {
+    "goal_reached": true,
+    "signed_in_app_page": true,
+    "reason": "The user successfully created an account, verified their email, and landed on the main dashboard of the application."
+   },
+   {
+    "goal_reached": true,
+    "signed_in_app_page": true,
+    "reason": "The user successfully created an account, verified their email, and landed on the main dashboard of the application."
+   }
+  ],
+  "reason": "The user successfully created an account, verified their email, and landed on the main dashboard of the application.",
+  "old_verdict_reason": "The user successfully created an account, verified their email, and landed on the signed-in dashboard page."
+ },
+ {
+  "study_id": "3c5086e2-ee41-40f0-b9bd-fef14e1ee964",
+  "status": "ok",
+  "recorded_signup_verified": true,
+  "goal_reached": true,
+  "votes_yes": 2,
+  "votes": [
+   {
+    "goal_reached": true,
+    "signed_in_app_page": true,
+    "reason": "The user successfully created an account, verified their email, and landed on the product's overview page, which is a signed-in application page."
+   },
+   {
+    "goal_reached": true,
+    "signed_in_app_page": true,
+    "reason": "The user successfully created an account, verified their email, and landed on the product's overview page, which is a signed-in application page."
+   }
+  ],
+  "reason": "The user successfully created an account, verified their email, and landed on the product's overview page, which is a signed-in application page.",
+  "old_verdict_reason": "The user successfully created an account using email, verified it, and landed on the signed-in dashboard page."
+ },
+ {
+  "study_id": "0db5a554-b7e4-43cf-9a66-08a4d9d736ab",
+  "status": "ok",
+  "recorded_signup_verified": true,
+  "goal_reached": true,
+  "votes_yes": 2,
+  "votes": [
+   {
+    "goal_reached": true,
+    "signed_in_app_page": true,
+    "reason": "The user successfully created an account, verified their email, and landed on an onboarding page within the application."
+   },
+   {
+    "goal_reached": true,
+    "signed_in_app_page": true,
+    "reason": "The user successfully created an account, verified their email, and landed on an onboarding page within the application."
+   }
+  ],
+  "reason": "The user successfully created an account, verified their email, and landed on an onboarding page within the application.",
+  "old_verdict_reason": "Signed-in app page after server-observed email verification. Judge note: The user is on an onboarding page within the app, but has not yet completed the signup process or verified their email. The task requires verification and reaching a s"
+ },
+ {
+  "study_id": "c2a9abf3-cc38-4f5d-a4d3-05cd83e7ef75",
+  "status": "ok",
+  "recorded_signup_verified": true,
+  "goal_reached": true,
+  "votes_yes": 2,
+  "votes": [
+   {
+    "goal_reached": true,
+    "signed_in_app_page": true,
+    "reason": "The user successfully created an account, verified their email, and landed on the monitors page, which is a signed-in application page."
+   },
+   {
+    "goal_reached": true,
+    "signed_in_app_page": true,
+    "reason": "The user successfully created an account, verified their email, and landed on the monitors page, which is a signed-in application page."
+   }
+  ],
+  "reason": "The user successfully created an account, verified their email, and landed on the monitors page, which is a signed-in application page.",
+  "old_verdict_reason": "The user successfully created an account, verified their email, and landed on the monitors dashboard."
+ },
+ {
+  "study_id": "6a5b3563-5e96-4708-9c2a-69b392ed28f1",
+  "status": "ok",
+  "recorded_signup_verified": true,
+  "goal_reached": true,
+  "votes_yes": 2,
+  "votes": [
+   {
+    "goal_reached": true,
+    "signed_in_app_page": true,
+    "reason": "The user successfully created an account, verified their email, and landed on a signed-in page within the application, specifically the projects page which prompts the creation of the first project."
+   },
+   {
+    "goal_reached": true,
+    "signed_in_app_page": true,
+    "reason": "The user successfully created an account, verified their email, and landed on a signed-in page within the application, specifically the projects page which prompts the creation of the first project."
+   }
+  ],
+  "reason": "The user successfully created an account, verified their email, and landed on a signed-in page within the application, specifically the projects page which prompts the creation of the first project.",
+  "old_verdict_reason": "The user successfully created an account, verified their email, and landed on the projects page within the application."
+ },
+ {
+  "study_id": "3e7d7b4d-ffa7-44e5-b585-fb081a816bc7",
+  "status": "ok",
+  "recorded_signup_verified": true,
+  "goal_reached": true,
+  "votes_yes": 2,
+  "votes": [
+   {
+    "goal_reached": true,
+    "signed_in_app_page": true,
+    "reason": "The user successfully created an account, verified their email, and landed on a signed-in page within the application."
+   },
+   {
+    "goal_reached": true,
+    "signed_in_app_page": true,
+    "reason": "The user successfully created an account, verified their email, and landed on a signed-in page within the application."
+   }
+  ],
+  "reason": "The user successfully created an account, verified their email, and landed on a signed-in page within the application.",
+  "old_verdict_reason": "The user successfully created an account, verified their email, and landed on the signed-in dashboard of the application."
+ },
+ {
+  "study_id": "963db0cf-2bb7-47f9-82af-1828fe0b8994",
+  "status": "ok",
+  "recorded_signup_verified": true,
+  "goal_reached": true,
+  "votes_yes": 2,
+  "votes": [
+   {
+    "goal_reached": true,
+    "signed_in_app_page": true,
+    "reason": "The user successfully created an account, verified their email, and landed on the product's main workspace page."
+   },
+   {
+    "goal_reached": true,
+    "signed_in_app_page": true,
+    "reason": "The user successfully created an account, verified their email, and landed on the product's main workspace page."
+   }
+  ],
+  "reason": "The user successfully created an account, verified their email, and landed on the product's main workspace page.",
+  "old_verdict_reason": "The user successfully created an account using email, verified it, and landed on the main dashboard of the application."
+ },
+ {
+  "study_id": "6179c6d6-079b-4993-8061-2813074c3c59",
+  "status": "ok",
+  "recorded_signup_verified": true,
+  "goal_reached": true,
+  "votes_yes": 2,
+  "votes": [
+   {
+    "goal_reached": true,
+    "signed_in_app_page": true,
+    "reason": "The user successfully created an account, verified their email, and landed on a dashboard page within the application."
+   },
+   {
+    "goal_reached": true,
+    "signed_in_app_page": true,
+    "reason": "The user successfully created an account, verified their email, and landed on a dashboard page within the application."
+   }
+  ],
+  "reason": "The user successfully created an account, verified their email, and landed on a dashboard page within the application.",
+  "old_verdict_reason": "The user successfully created an account using email, verified their email, and landed on the dashboard page."
+ },
+ {
+  "study_id": "307100f4-e717-4d52-93b7-0cdb1bead074",
+  "status": "ok",
+  "recorded_signup_verified": true,
+  "goal_reached": true,
+  "votes_yes": 2,
+  "votes": [
+   {
+    "goal_reached": true,
+    "signed_in_app_page": true,
+    "reason": "The user successfully created an account, verified their email, and landed on a signed-in page of the application."
+   },
+   {
+    "goal_reached": true,
+    "signed_in_app_page": true,
+    "reason": "The user successfully created an account, verified their email, and landed on a signed-in page of the application."
+   }
+  ],
+  "reason": "The user successfully created an account, verified their email, and landed on a signed-in page of the application.",
+  "old_verdict_reason": "The user successfully created an account, verified their email, and landed on the signed-in dashboard page."
+ },
+ {
+  "study_id": "8fbb98c3-9253-4d55-a560-2304a8ca5e57",
+  "status": "ok",
+  "recorded_signup_verified": true,
+  "goal_reached": true,
+  "votes_yes": 2,
+  "votes": [
+   {
+    "goal_reached": true,
+    "signed_in_app_page": true,
+    "reason": "The user successfully created an account, verified their email, and landed on a project overview page within the application."
+   },
+   {
+    "goal_reached": true,
+    "signed_in_app_page": true,
+    "reason": "The user successfully created an account, verified their email, and landed on a project overview page within the application."
+   }
+  ],
+  "reason": "The user successfully created an account, verified their email, and landed on a project overview page within the application.",
+  "old_verdict_reason": "The user successfully created an account using email, verified it, and landed on the project dashboard."
+ },
+ {
+  "study_id": "17e0f8ac-ea11-427f-bf35-173172929585",
+  "status": "ok",
+  "recorded_signup_verified": true,
+  "goal_reached": true,
+  "votes_yes": 0,
+  "votes": [
+   {
+    "goal_reached": false,
+    "signed_in_app_page": false,
+    "reason": "The agent is still in the signup flow, asking for the organization's name, and has not yet completed email verification or reached a signed-in page."
+   },
+   {
+    "goal_reached": false,
+    "signed_in_app_page": false,
+    "reason": "The agent is still in the signup flow, asking for the organization's name, and has not yet completed email verification or reached a signed-in page."
+   }
+  ],
+  "reason": "Signed-in app page after server-observed email verification. Judge note: The agent is still in the signup flow, asking for the organization's name, and has not yet completed email verification or reached a signed-in page.",
+  "old_verdict_reason": "Signed-in app page after server-observed email verification. Judge note: The agent is still on the signup flow, asking for the organization's name, and has not yet verified the email or reached the dashboard."
+ },
+ {
+  "study_id": "92c7ca25-207f-46a2-b550-f8386c6f3e8e",
+  "status": "ok",
+  "recorded_signup_verified": true,
+  "goal_reached": true,
+  "votes_yes": 2,
+  "votes": [
+   {
+    "goal_reached": true,
+    "signed_in_app_page": true,
+    "reason": "The user successfully created an account, verified their email, and landed on the dashboard of the application."
+   },
+   {
+    "goal_reached": true,
+    "signed_in_app_page": true,
+    "reason": "The user successfully created an account, verified their email, and landed on the dashboard of the application."
+   }
+  ],
+  "reason": "The user successfully created an account, verified their email, and landed on the dashboard of the application.",
+  "old_verdict_reason": "The user successfully created an account, verified their email, and landed on the dashboard of the application."
+ },
+ {
+  "study_id": "0c771645-db21-494c-b59d-ce02c0ffa3ad",
+  "status": "ok",
+  "recorded_signup_verified": true,
+  "goal_reached": true,
+  "votes_yes": 0,
+  "votes": [
+   {
+    "goal_reached": false,
+    "signed_in_app_page": true,
+    "reason": "The user has successfully created an account and is on a page within the application, but has not yet connected any social accounts, which is a prerequisite for proceeding with the task's implied next"
+   },
+   {
+    "goal_reached": false,
+    "signed_in_app_page": true,
+    "reason": "The user has successfully created an account and is on a page within the application, but has not yet connected any social accounts, which is a prerequisite for proceeding with the task's implied next"
+   }
+  ],
+  "reason": "Signed-in app page after server-observed email verification. Judge note: The user has successfully created an account and is on a page within the application, but has not yet connected any social accounts, which is a prerequisite for procee",
+  "old_verdict_reason": "Signed-in app page after server-observed email verification. Judge note: The user has successfully signed in and is on an internal application page, but the task requires verifying the email and reaching the signed-in dashboard, which has n"
+ },
+ {
+  "study_id": "e2a8e2af-4d69-45b1-96f7-fe217e012822",
+  "status": "ok",
+  "recorded_signup_verified": true,
+  "goal_reached": true,
+  "votes_yes": 2,
+  "votes": [
+   {
+    "goal_reached": true,
+    "signed_in_app_page": true,
+    "reason": "The user successfully created an account, verified their email, and landed on the project overview page within the application."
+   },
+   {
+    "goal_reached": true,
+    "signed_in_app_page": true,
+    "reason": "The user successfully created an account, verified their email, and landed on the project overview page within the application."
+   }
+  ],
+  "reason": "The user successfully created an account, verified their email, and landed on the project overview page within the application.",
+  "old_verdict_reason": "Signed-in app page after server-observed email verification. Judge note: The user has successfully created an account and is on the project overview page, but has not yet verified their email or integrated the application."
+ },
+ {
+  "study_id": "fb3ef2da-c736-43d9-bf90-60388adc77c9",
+  "status": "ok",
+  "recorded_signup_verified": true,
+  "goal_reached": true,
+  "votes_yes": 2,
+  "votes": [
+   {
+    "goal_reached": true,
+    "signed_in_app_page": true,
+    "reason": "The user successfully created an account, verified their email, and landed on a signed-in page within the application."
+   },
+   {
+    "goal_reached": true,
+    "signed_in_app_page": true,
+    "reason": "The user successfully created an account, verified their email, and landed on a signed-in page within the application."
+   }
+  ],
+  "reason": "The user successfully created an account, verified their email, and landed on a signed-in page within the application.",
+  "old_verdict_reason": "The user successfully created an account, verified their email, and landed on the signed-in dashboard page."
+ },
+ {
+  "study_id": "43935abb-a499-4801-9b21-c1c76a5c711c",
+  "status": "ok",
+  "recorded_signup_verified": true,
+  "goal_reached": true,
+  "votes_yes": 2,
+  "votes": [
+   {
+    "goal_reached": true,
+    "signed_in_app_page": true,
+    "reason": "The user successfully created an account, verified their email, and landed on a signed-in page within the application."
+   },
+   {
+    "goal_reached": true,
+    "signed_in_app_page": true,
+    "reason": "The user successfully created an account, verified their email, and landed on a signed-in page within the application."
+   }
+  ],
+  "reason": "The user successfully created an account, verified their email, and landed on a signed-in page within the application.",
+  "old_verdict_reason": "Signed-in app page after server-observed email verification. Judge note: The user was redirected to the registration page, but the final screenshot shows a blank page with a banner indicating a free trial expiration, not a signed-in dashboa"
+ },
+ {
+  "study_id": "e14e93e6-a328-40f5-9f13-4ae23406b93f",
+  "status": "ok",
+  "recorded_signup_verified": true,
+  "goal_reached": true,
+  "votes_yes": 2,
+  "votes": [
+   {
+    "goal_reached": true,
+    "signed_in_app_page": true,
+    "reason": "The user has successfully created an account, verified their email, and is now on a signed-in page within the Marker.io application, specifically the projects page."
+   },
+   {
+    "goal_reached": true,
+    "signed_in_app_page": true,
+    "reason": "The user has successfully created an account, verified their email, and is now on a signed-in page within the Marker.io application, specifically the projects page."
+   }
+  ],
+  "reason": "The user has successfully created an account, verified their email, and is now on a signed-in page within the Marker.io application, specifically the projects page.",
+  "old_verdict_reason": "The user successfully created an account, verified their email, and landed on the projects page within the application."
+ }
+]

@@ -1,0 +1,10 @@
+{"rid": "Capterra___4938518", "session_id": "d5165a6141e445f89d7f416f0c6fea60", "signed_in": false, "reached_product": false,
+ "outcome": "blocked", "steps_used": 9,
+ "observations": [
+  {"kind": "signup_friction", "what": "After the first email step the site sent me to a second 'Sign up here' page asking for the same email again before showing a CAPTCHA."},
+  {"kind": "signup_friction", "what": "After the CAPTCHA cleared, the page dropped back to the very first 'Get started with your work account' form with the email empty, so I had to enter it a second time."},
+  {"kind": "signup_friction", "what": "The 'Welcome!' confirmation page said to check email, but no verification mail arrived in about 6 minutes of waiting."},
+  {"kind": "signup_friction", "what": "The 'Click here if you don't see the email' link opened a generic help-center article instead of offering a resend button."},
+  {"kind": "signup_friction", "what": "The signup page offered only work-email entry plus Google/Microsoft/Apple, with a data-region dropdown that I had no guidance on choosing."},
+  {"kind": "agent_failure", "what": "I did not notice the signup had reset after the CAPTCHA and had to re-enter the email, costing two steps."}
+ ]}

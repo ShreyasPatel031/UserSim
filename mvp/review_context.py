@@ -1,7 +1,8 @@
 """Live Capterra + G2 reviews of the study's own rivals, for the session-feedback step.
 
-Production uses ONLY live scrapes of the rivals named in the study plan (Apify: trakk/capterra-reviews-scraper and
-automation-lab/g2-scraper; APIFY_TOKEN, or the token file at ~/.config/apify/token). The FreshCrawl snapshots in
+Production uses ONLY live scrapes of the rivals named in the study plan (Apify zen-studio/software-review-scraper:
+G2, Capterra, TrustRadius and Gartner in one call; MVP_REVIEW_SCRAPER=legacy uses trakk/capterra-reviews-scraper and
+automation-lab/g2-scraper instead. APIFY_TOKEN, or the token file at ~/.config/apify/token). The FreshCrawl snapshots in
 experiments/staged_context are research data covering arbitrary products and are never used here.
 
 From the scraped reviews it builds what tested best in experiments/staged_context (see HANDOFF_review_context.md):
@@ -24,10 +25,16 @@ from typing import Any
 
 import requests
 
-_EXP = Path(__file__).resolve().parents[1] / "experiments" / "staged_context"
-_APIFY_CACHE = _EXP / "cache" / "apify"
+from mvp import review_signals as RS
+
+_APIFY_CACHE = Path(os.environ.get("MVP_APIFY_CACHE_DIR") or Path(__file__).resolve().parents[1] / "cache" / "apify")
 _LOCK = threading.Lock()
 _IN_FLIGHT: set[str] = set()
+# Default: one call covers G2, Capterra, TrustRadius and Gartner with job titles and pros/cons text (best in the
+# scraper bake-off, experiments/staged_context/SCRAPER_BAKEOFF.md). MVP_REVIEW_SCRAPER=legacy picks the two older actors.
+ALL_IN_ONE_ACTOR = "zen-studio~software-review-scraper"
+ALL_IN_ONE_PLATFORMS = ["g2", "capterra", "trustradius", "gartner"]
+ALL_IN_ONE_MAX = 100  # the actor's minimum maxResults
 G2_ACTOR = "automation-lab~g2-scraper"
 CAPTERRA_ACTOR = "trakk~capterra-reviews-scraper"
 PER_SITE = 50
@@ -36,18 +43,24 @@ _RUN_SLOTS = threading.BoundedSemaphore(int(os.environ.get("MVP_APIFY_MAX_RUNS",
 _RUN_MEMORY_MB = {"trakk~capterra-reviews-scraper": 2048, "automation-lab~g2-scraper": 256}
 
 
+def scraper() -> str:
+    return "legacy" if os.environ.get("MVP_REVIEW_SCRAPER", "").strip().lower() == "legacy" else "all_in_one"
+
+
+def _all_in_one_item(x: dict[str, Any]) -> dict[str, Any]:
+    """zen-studio/software-review-scraper item -> the shared review schema (field names as the actor returns them,
+    checked on real scrapes in experiments/staged_context/live.py)."""
+    rv, pdata = x.get("reviewer") or {}, x.get("platformData") or {}
+    rating = x.get("rating")
+    return {"source": x.get("platform"), "product": x.get("productName") or "", "role": rv.get("jobTitle"),
+            "size": rv.get("companySize"), "industry": rv.get("industry"), "time_used": pdata.get("timeUsedProduct"),
+            "rating": rating if isinstance(rating, (int, float)) and rating > 0 else None,
+            "nps": x.get("recommendationScore"), "pros": x.get("pros"), "cons": x.get("cons"), "text": x.get("text"),
+            "date": x.get("date")}
+
+
 def enabled() -> bool:
     return os.environ.get("MVP_REVIEW_CONTEXT", "1").strip().lower() not in {"0", "false", "no", "off"}
-
-
-def _helpers():
-    """role_family / clean / complaint topics are shared with the experiments (pure functions, no data)."""
-    if str(_EXP) not in sys.path:
-        sys.path.insert(0, str(_EXP))
-    import experiment as E  # noqa: PLC0415
-    import predictability as PR  # noqa: PLC0415
-
-    return E, PR
 
 
 def apify_token() -> str | None:
@@ -102,9 +115,15 @@ def _same_product(found: str | None, wanted: str) -> bool:
     return bool(f) and (f == w or f.startswith(w + "-") or w.startswith(f + "-"))
 
 
+def _cache_path(product_name: str) -> Path:
+    """One cache file per product and scraper, so switching scrapers never reads the other's schema."""
+    prefix = "" if scraper() == "legacy" else "aio-"
+    return _APIFY_CACHE / f"{prefix}{_slug(product_name)}.json"
+
+
 def cached_live_reviews(product_name: str) -> dict[str, Any] | None:
     """{reviews, errors} for a rival once its scrape has finished, else None."""
-    cache = _APIFY_CACHE / f"{_slug(product_name)}.json"
+    cache = _cache_path(product_name)
     return json.loads(cache.read_text()) if cache.is_file() else None
 
 
@@ -133,15 +152,25 @@ def prefetch(names: list[str]) -> None:
 
 
 def live_reviews(product_name: str, *, per_site: int = PER_SITE) -> dict[str, Any]:
-    """Recent Capterra + G2 reviews for one rival. Blocking (1-2 min); studies prefetch() and read the cache."""
+    """Recent reviews of one product (G2 / Capterra / TrustRadius / Gartner). Blocking (1-3 min); studies prefetch()
+    and read the cache."""
     token = apify_token()
     if not token:
         raise RuntimeError("APIFY_TOKEN missing")
-    cache = _APIFY_CACHE / f"{_slug(product_name)}.json"
+    cache = _cache_path(product_name)
     if cache.is_file():
         return json.loads(cache.read_text())
     reviews: list[dict[str, Any]] = []
     errors: list[str] = []
+    if scraper() == "all_in_one":
+        try:
+            items = _apify_run(ALL_IN_ONE_ACTOR, {"query": product_name, "platforms": ALL_IN_ONE_PLATFORMS,
+                                                  "maxResults": max(ALL_IN_ONE_MAX, per_site), "sort": "most_recent",
+                                                  "starRatings": []}, token, wait_s=900.0)
+            reviews = [_all_in_one_item(x) for x in items]
+        except (requests.RequestException, KeyError, ValueError, RuntimeError) as exc:
+            errors.append(_redact(f"{ALL_IN_ONE_ACTOR}: {exc!r}", token))
+        return _finish(product_name, reviews, errors, list(errors), cache)
     try:
         for r in _apify_run(CAPTERRA_ACTOR, {"searchQueries": [product_name], "maxProductsPerQuery": 1,
                                              "maxReviewsPerProduct": per_site, "maxItems": per_site,
@@ -167,6 +196,10 @@ def live_reviews(product_name: str, *, per_site: int = PER_SITE) -> dict[str, An
     except (requests.RequestException, KeyError, ValueError, RuntimeError) as exc:
         errors.append(_redact(f"g2: {exc!r}", token))
     failed = list(errors)  # fetch failures (credit, network): not cached, so the next study retries
+    return _finish(product_name, reviews, errors, failed, cache)
+
+
+def _finish(product_name: str, reviews: list[dict[str, Any]], errors: list[str], failed: list[str], cache: Path) -> dict[str, Any]:
     wrong = sorted({x["product"] for x in reviews if not _same_product(x["product"], product_name)})
     if wrong:
         errors.append(f"dropped reviews of other products returned by search: {wrong}")
@@ -205,9 +238,8 @@ def review_context(site_url: str, persona: dict[str, Any], *, rivals: list[str] 
     if not reviews:
         why = (f"scrapes still running for {pending}" if pending else "no matching reviews") + (f"; errors: {errors}" if errors else "")
         return {"status": "unavailable", "reason": why, "text": "", "sources": []}
-    E, PR = _helpers()
-    role = E.role_family(" ".join(str(persona.get(k) or "") for k in ("role", "bio", "name")))
-    same = [x for x in reviews if E.role_family(str(x.get("role") or "")) == role]
+    role = RS.role_family(" ".join(str(persona.get(k) or "") for k in ("role", "bio", "name")))
+    same = [x for x in reviews if RS.role_family(str(x.get("role") or "")) == role]
 
     def avg(rows, key):
         v = [n for n in (_num(x.get(key)) for x in rows) if n]  # 0 means "not rated" in the Capterra scrape
@@ -221,11 +253,11 @@ def review_context(site_url: str, persona: dict[str, Any], *, rivals: list[str] 
             lines.append(f"- {label}: all reviewers {a:.2f} (n={n})" + (f"; reviewers in this persona's role family '{role}' {b:.2f} (n={m})" if b is not None else ""))
     cons = [str(x.get("cons") or "").lower() for x in reviews if x.get("cons")]
     topics = [f"- {k.replace('complaint_', '')}: {sum(bool(re.search(p, c)) for c in cons) / len(cons):.0%} of complaints"
-              for k, p in PR.TOPICS.items()] if cons else []
+              for k, p in RS.TOPICS.items()] if cons else []
     sim = (same + [x for x in reviews if x not in same])[:8]
     revs = [f"[{x['product']} | {x['source']}] role: {x.get('role') or '-'}; size: {x.get('size') or '-'}; rating: {x.get('rating') or '-'}\n"
-            + (f"Review: {E.clean(x.get('text'))[:700]}" if x.get("text") else
-               f"Liked: {E.clean(x.get('pros'))[:400]}\nDisliked: {E.clean(x.get('cons'))[:400]}") for x in sim]
+            + (f"Review: {RS.clean(x.get('text'))[:700]}" if x.get("text") else
+               f"Liked: {RS.clean(x.get('pros'))[:400]}\nDisliked: {RS.clean(x.get('cons'))[:400]}") for x in sim]
     used = sorted({x["product"] for x in reviews})
     text = (f"## Ratings from live Capterra/G2 reviews of the rivals ({', '.join(used)}; {len(reviews)} reviews)\n" + "\n".join(lines)
             + ("\n\n## Complaint topics in those reviews\n" + "\n".join(topics) if topics else "")

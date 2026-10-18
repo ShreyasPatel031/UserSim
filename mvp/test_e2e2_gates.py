@@ -932,7 +932,9 @@ class PageOpenedTests(unittest.TestCase):
         for claim in insights["strengths"] + insights["weaknesses"]:
             for ev in claim.get("evidence") or []:
                 ev.pop("final_screenshot", None)
+                ev.pop("final_screenshot_url", None)
                 ev.pop("ax_tree", None)
+                ev.pop("accessibility_tree", None)
                 ev.pop("step_url", None)
                 ev.pop("url", None)
         for run in study["agent_results"]:

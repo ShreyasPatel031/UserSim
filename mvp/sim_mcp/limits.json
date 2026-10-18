@@ -1,0 +1,119 @@
+{
+  "_about": "Caps for the public UserSim MCP server (/mcp). Anyone can change them: edit this file and merge the PR to main. The running server re-reads this file from main on GitHub every refresh_s seconds (default 300), so no redeploy and no env vars are needed. Only 'value' is read; 'about' explains it. Env vars named MVP_MCP_<KEY in upper case> override a value on one server if set (optional). See docs/mcp/README.md#limits.",
+  "limits": {
+    "refresh_s": {
+      "value": 300,
+      "about": "How often (seconds) the server re-reads this file from main. Minimum 30."
+    },
+    "allow_anonymous": {
+      "value": true,
+      "about": "true = anyone with the URL can call /mcp without a token. false = only callers with a bearer token (kill switch)."
+    },
+    "max_sessions": {
+      "value": 10,
+      "about": "Browser sessions open at once across the whole server, all callers."
+    },
+    "max_per_client": {
+      "value": 8,
+      "about": "Browser sessions open at once per client IP for callers that send a bearer token (a study client runs cells in parallel)."
+    },
+    "anon_max_concurrent_sessions_per_ip": {
+      "value": 3,
+      "about": "Browser sessions open at once per client IP for callers without a token."
+    },
+    "anon_daily_usd_per_ip": {
+      "value": 6.0,
+      "about": "Estimated spend allowed per client IP per day (America/Los_Angeles day) for callers without a token. Estimated with the two est_usd_* rates below; real cost is not metered per call."
+    },
+    "anon_daily_usd_global": {
+      "value": 20.0,
+      "about": "Estimated spend allowed per day across ALL callers without a token, together."
+    },
+    "est_usd_per_session": {
+      "value": 0.1,
+      "about": "Budget units charged when a browser session starts (browser time, judge and report). An assumption, not a measured cost; change it when real numbers exist."
+    },
+    "est_usd_per_step": {
+      "value": 0.01,
+      "about": "Budget units charged per browser step (usersim_act, usersim_open_verification_link, usersim_solve_captcha). An assumption, not a measured cost. A full 40-step session = 0.10 + 40 x 0.01 = 0.50."
+    },
+    "est_usd_per_prediction": {
+      "value": 0.6,
+      "about": "Budget units charged per agent-mode prediction that returns results (usersim_predict_experience). Covers live review scrapes of the product and its rivals (Apify, about $0.5 per 100 reviews) and one model call. An assumption, not a measured cost."
+    },
+    "anon_max_cells_per_study": {
+      "value": 12,
+      "about": "Most persona x task x site runs one study may have, for callers without a token."
+    },
+    "anon_allow_sms": {
+      "value": true,
+      "about": "Let callers without a token use usersim_signup_phone / usersim_wait_for_sms_code. The number is the owner's real phone, so it is made safe instead of blocked: one session holds the number at a time (sms_lease_s), a session only gets texts that arrived after its own lease started, and texts matching sms_sender_denylist are never returned to anyone."
+    },
+    "sms_lease_s": {
+      "value": 600,
+      "about": "Seconds one session holds the phone number after usersim_signup_phone (or until that session closes). Another session asking meanwhile gets 'number busy, retry in N s'. Applies to every caller, token or not."
+    },
+    "anon_daily_sms_leases_per_ip": {
+      "value": 10,
+      "about": "SMS-number leases per client IP per day (America/Los_Angeles) for callers without a token."
+    },
+    "sms_sender_denylist": {
+      "value": [
+        "apple",
+        "icloud",
+        "google",
+        "g-",
+        "gmail",
+        "microsoft",
+        "outlook",
+        "amazon",
+        "paypal",
+        "venmo",
+        "zelle",
+        "chase",
+        "bank",
+        "wells fargo",
+        "citi",
+        "amex",
+        "american express",
+        "capital one",
+        "discover",
+        "coinbase",
+        "robinhood",
+        "fidelity",
+        "schwab",
+        "vanguard",
+        "irs",
+        "ssa",
+        "dmv",
+        "searce",
+        "okta",
+        "duo",
+        "authy",
+        "whatsapp",
+        "signal",
+        "telegram",
+        "facebook",
+        "instagram",
+        "meta",
+        "twitter",
+        "github",
+        "linkedin",
+        "verizon",
+        "t-mobile",
+        "at&t",
+        "comcast",
+        "xfinity"
+      ],
+      "about": "Texts whose sender (ntfy title) or body contains any of these words (case-insensitive, whole word) are never returned by usersim_wait_for_sms_code, to any caller. Protects the owner's personal codes: Apple ID ('Your Apple Account Code is ...'), banks, Google and other 2FA. Add a word with a PR."
+    },
+    "anon_allow_paid_captcha": {
+      "value": false,
+      "about": "Let callers without a token trigger the paid captcha solver (CapSolver)."
+    },
+    "anon_allow_shared_aliases": {
+      "value": false,
+      "about": "Let callers without a token get no_plus (dot-variant) or plain signup addresses. Those can repeat across sessions, so another caller could see the mail. Keep false: callers without a token only get unique +tag aliases."
+    }
+  }
+}
