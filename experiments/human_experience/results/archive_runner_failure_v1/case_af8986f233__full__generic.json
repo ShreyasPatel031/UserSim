@@ -1,0 +1,143 @@
+{
+ "run_id": "case_af8986f233__full__generic",
+ "case_id": "case_af8986f233",
+ "engine": "generic",
+ "context": "full",
+ "status": "runner_failure",
+ "success_criteria_results": [
+  {
+   "criterion": "Dates and assignment are visible",
+   "result": "not_met",
+   "step": 20
+  },
+  {
+   "criterion": "The available schedule view is recorded",
+   "result": "not_met",
+   "step": 20
+  }
+ ],
+ "observations": [
+  {
+   "step": 0,
+   "text": "The agent opened the URL 'https://clickup.com/'."
+  },
+  {
+   "step": 1,
+   "text": "The agent clicked a 'Login' button."
+  },
+  {
+   "step": 2,
+   "text": "The agent waited for 5 seconds."
+  },
+  {
+   "step": 3,
+   "text": "The agent waited for 5 seconds."
+  },
+  {
+   "step": 4,
+   "text": "The agent clicked a button labeled \"Don't update\"."
+  },
+  {
+   "step": 5,
+   "text": "The agent clicked a button with aria-label 'Create task'."
+  },
+  {
+   "step": 6,
+   "text": "The agent typed 'Demo Alpha' into a text field."
+  },
+  {
+   "step": 7,
+   "text": "The agent clicked a div with role 'button' and text \"Due date\"."
+  },
+  {
+   "step": 8,
+   "text": "The agent clicked a cu-calendar-day element with text \"19 October\"."
+  },
+  {
+   "step": 9,
+   "text": "The agent clicked a button with aria-label 'Next Month'."
+  },
+  {
+   "step": 10,
+   "text": "The agent clicked a button with aria-label 'Previous Month'."
+  },
+  {
+   "step": 11,
+   "text": "The agent clicked a button with aria-label 'Previous Month'."
+  },
+  {
+   "step": 12,
+   "text": "The agent clicked a button with aria-label 'Previous Month'."
+  },
+  {
+   "step": 13,
+   "text": "The agent clicked a button with aria-label 'Previous Month'."
+  },
+  {
+   "step": 14,
+   "text": "The agent clicked a button with aria-label 'Previous Month'."
+  },
+  {
+   "step": 15,
+   "text": "The agent clicked a button with aria-label 'Previous Month'."
+  },
+  {
+   "step": 16,
+   "text": "The agent clicked a button with aria-label 'Previous Month'."
+  },
+  {
+   "step": 17,
+   "text": "The agent clicked a button with aria-label 'Next Month'."
+  },
+  {
+   "step": 18,
+   "text": "The agent clicked a button with aria-label 'Previous Month'."
+  },
+  {
+   "step": 19,
+   "text": "The agent clicked a button with aria-label 'Previous Month'."
+  },
+  {
+   "step": 20,
+   "text": "The agent was unable to set the due date for the 'Demo Alpha' task due to being stuck in a loop within the date picker. The agent repeatedly clicked 'Previous Month' while trying to navigate to October 2026, but the calendar remained on November 2026."
+  }
+ ],
+ "errors": [
+  {
+   "kind": "runner_failure",
+   "text": "The agent was unable to set the due date for the 'Demo Alpha' task due to being stuck in a loop within the date picker. The agent repeatedly clicked 'Previous Month' while trying to navigate to October 2026, but the calendar remained on November 2026."
+  }
+ ],
+ "actions": 20,
+ "elapsed_seconds": 257.1,
+ "plan": "free plan of a fresh test account (unknown seen in run)",
+ "product_version_or_capture_date": "2026-10-18",
+ "environment_mismatches": [
+  "fresh test account with synthetic data; reviewer's historical version, plan, team and data unknown",
+  "short single-session run cannot recreate long tenure or team adoption"
+ ],
+ "trace_path": "results/execution/traces/case_af8986f233__full__generic.json",
+ "runner": {
+  "action_model": "gemini-2.5-flash-lite",
+  "max_steps": 20,
+  "max_actions_per_step": 2,
+  "wall_seconds": 300,
+  "backend": "browserbase",
+  "usage": {
+   "input_tokens": 442173,
+   "output_tokens": 5687,
+   "cost_usd": 0.04313996
+  }
+ },
+ "judge": {
+  "model": "gemini-2.5-flash",
+  "model_version": "gemini-2.5-flash",
+  "usage": {
+   "input_tokens": 4235,
+   "output_tokens": 930,
+   "cost_usd": 0.003596,
+   "latency_seconds": 4.84
+  },
+  "status": "automated_provisional"
+ }
+}

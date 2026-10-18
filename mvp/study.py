@@ -1202,6 +1202,24 @@ Page snapshot:
     return result
 
 
+async def _review_evidence(site_url: str, persona: dict[str, Any], rivals: list[str] | None = None) -> str:
+    """Competitor review package for this persona, or "" when disabled or unavailable (never blocks feedback)."""
+    from mvp.review_context import enabled, review_context
+
+    if not enabled():
+        return ""
+    try:
+        ctx = await asyncio.wait_for(asyncio.to_thread(review_context, site_url, persona, rivals=rivals), timeout=200)
+    except Exception as exc:  # noqa: BLE001
+        print(f"[review_context] skipped for {site_url}: {exc!r}", flush=True)
+        return ""
+    if not ctx.get("text"):
+        print(f"[review_context] no competitor review evidence for {site_url}: {ctx.get('status')} ({ctx.get('reason')})", flush=True)
+        return ""
+    return ("\nEvidence from live Capterra and G2 reviews of this study's competitors, by people like this persona:\n"
+            f"{ctx['text'][:9000]}\n")
+
+
 async def summarize_agent_feedback(
     *,
     url: str,
@@ -1209,8 +1227,16 @@ async def summarize_agent_feedback(
     persona: dict[str, Any],
     task: dict[str, Any],
     run: dict[str, Any],
+    rivals: list[str] | None = None,
+    review_evidence: str | None = None,
 ) -> dict[str, Any]:
-    """Turn a real browser session into persona feedback, grounded in observed steps."""
+    """Turn a real browser session into persona feedback, grounded in observed steps.
+
+    Capterra + G2 reviews of similar competitors (mvp.review_context) are added as outside evidence: they may shape
+    the persona's overall feedback and likely frictions, never the frictions the steps actually show.
+    """
+    # review_evidence: a pre-built package (benchmarks pass one that excludes the product's own reviews); "" = none
+    reviews = review_evidence if review_evidence is not None else await _review_evidence(task.get("site_url") or url, persona, rivals)
     steps = [
         {
             "step": s.get("step"),
@@ -1232,11 +1258,12 @@ Pages actually visited: {json.dumps(run.get("visited_urls") or [], indent=0)}
 
 Recorded steps (these really happened — do not invent others):
 {json.dumps(steps, indent=2)[:12000]}
-
+{reviews}
 Return JSON only:
 {{
   "difficulty": "easy|medium|hard",
   "friction_points": ["specific friction actually observed in the steps"],
+  "likely_frictions_from_similar_users": ["a short specific sentence each, e.g. 'Notifications pile up and important updates get missed'; taken from what similar users report in the review evidence, never a topic label; empty if none"],
   "what_was_easy": ["what actually went smoothly"],
   "product_feedback": "2-4 sentences as this persona: likes, dislikes, trust, clarity",
   "would_convert": "yes|maybe|no",
@@ -1248,7 +1275,9 @@ Rules:
 - Ground every claim in the recorded steps above. If the agent never looked for something,
   do not list it as missing.
 - Include one step_outcomes entry for every recorded step, using its step number.
-- Judge the product for what it actually is, not for lacking features of a different product."""
+- Judge the product for what it actually is, not for lacking features of a different product.
+- Review evidence, when present, describes OTHER users of competing products. Use it for product_feedback,
+  would_convert and likely_frictions_from_similar_users; never cite it as something this session showed."""
     async with _AGENT_SEMAPHORE:
         raw = await _llm_chat(
             [
@@ -1510,6 +1539,13 @@ async def run_study(
                 pass
         schedule_persist(study)
 
+    try:
+        from mvp import review_context
+
+        # live Capterra/G2 scrapes of rivals take 1-2 min; start them now so feedback can use them later
+        review_context.prefetch(list(study.competitor_names.values()))
+    except Exception as exc:  # noqa: BLE001
+        print(f"[review_context] prefetch skipped: {exc!r}", flush=True)
     try:
         await browser_slots.acquire(study, queued)
         await _run_study_body(study_id, on_update=on_update)
@@ -3646,6 +3682,7 @@ async def _run_study_body(
                             feedback = await asyncio.wait_for(
                                 summarize_agent_feedback(
                                     url=study.url,
+                                    rivals=list(study.competitor_names.values()),
                                     segment=study.segment,
                                     persona=persona,
                                     task=task,
@@ -3799,6 +3836,7 @@ async def _run_study_body(
                                     sess["status"] = "summarizing"
                                     feedback = await summarize_agent_feedback(
                                         url=study.url,
+                                        rivals=list(study.competitor_names.values()),
                                         segment=study.segment,
                                         persona=persona,
                                         task=task,

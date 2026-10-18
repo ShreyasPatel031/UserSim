@@ -1,0 +1,130 @@
+{
+ "run_id": "case_11232793fc__full__usersim",
+ "case_id": "case_11232793fc",
+ "engine": "usersim",
+ "context": "full",
+ "status": "completed",
+ "success_criteria_results": [
+  {
+   "criterion": "Project and tasks exist",
+   "result": "met",
+   "step": 15
+  },
+  {
+   "criterion": "The update is visible to the permitted test identity",
+   "result": "met",
+   "step": 18
+  }
+ ],
+ "observations": [
+  {
+   "step": 0,
+   "text": "The agent opened https://clickup.com/ and the landing page loaded."
+  },
+  {
+   "step": 1,
+   "text": "The agent navigated to https://app.clickup.com/."
+  },
+  {
+   "step": 2,
+   "text": "The agent clicked on a div element with the text \"Home\"."
+  },
+  {
+   "step": 3,
+   "text": "The agent clicked on an img element."
+  },
+  {
+   "step": 4,
+   "text": "The agent clicked a button with the text \"Create\"."
+  },
+  {
+   "step": 5,
+   "text": "The agent clicked a button with the text \"Don't update\"."
+  },
+  {
+   "step": 6,
+   "text": "The agent clicked a cu-sidebar-creation-menu-button with the role \"button\" and text \"Create\"."
+  },
+  {
+   "step": 7,
+   "text": "The agent clicked a cu3-combo-box-item with the role \"option\" and text \"List Track tasks, projects, ...\"."
+  },
+  {
+   "step": 8,
+   "text": "The agent typed 'Demo Alpha' into an input field."
+  },
+  {
+   "step": 9,
+   "text": "The agent clicked a button with the text \"Create\"."
+  },
+  {
+   "step": 10,
+   "text": "The agent clicked a button with the text \"Apply suggestions\"."
+  },
+  {
+   "step": 11,
+   "text": "The agent typed 'Demo Alpha' into an input field."
+  },
+  {
+   "step": 12,
+   "text": "The agent clicked a cu3-icon."
+  },
+  {
+   "step": 13,
+   "text": "The agent clicked a button with the text \"Save\" and aria-label \"Save\"."
+  },
+  {
+   "step": 14,
+   "text": "The agent typed 'Demo Beta' into an input field and then clicked a button with the text \"Save\" and aria-label \"Save\"."
+  },
+  {
+   "step": 15,
+   "text": "The agent typed 'Demo Gamma' into an input field and then clicked a button with the text \"Save\" and aria-label \"Save\"."
+  },
+  {
+   "step": 16,
+   "text": "The agent clicked a cu-task-row-main element with the text \"Demo Alpha\"."
+  },
+  {
+   "step": 17,
+   "text": "The agent clicked an 'a' element with the text \"Demo Alpha\"."
+  },
+  {
+   "step": 18,
+   "text": "The agent typed 'This is a test update for Demo Alpha.' into an input field and then clicked a span element with the text \"Send\". The screenshot shows the text 'This is a test update for Demo Alpha' in a comment section."
+  }
+ ],
+ "errors": [],
+ "actions": 19,
+ "elapsed_seconds": 284.9,
+ "plan": "free plan of a fresh test account (unknown seen in run)",
+ "product_version_or_capture_date": "2026-10-18",
+ "environment_mismatches": [
+  "fresh test account with synthetic data; reviewer's historical version, plan, team and data unknown",
+  "short single-session run cannot recreate long tenure or team adoption"
+ ],
+ "trace_path": "results/execution/traces/case_11232793fc__full__usersim.json",
+ "runner": {
+  "action_model": "gemini-2.5-flash-lite",
+  "max_steps": 20,
+  "max_actions_per_step": 2,
+  "wall_seconds": 300,
+  "backend": "browserbase",
+  "usage": {
+   "input_tokens": 442533,
+   "output_tokens": 4833,
+   "cost_usd": 0.044860260000000006
+  }
+ },
+ "judge": {
+  "model": "gemini-2.5-flash",
+  "model_version": "gemini-2.5-flash",
+  "usage": {
+   "input_tokens": 4038,
+   "output_tokens": 866,
+   "cost_usd": 0.003376,
+   "latency_seconds": 4.64
+  },
+  "status": "automated_provisional"
+ }
+}

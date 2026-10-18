@@ -1,0 +1,12 @@
+{"rid": "Capterra___6077561", "session_id": "d3e13cfe2cb7427c9fb387c4b59fa1ba", "signed_in": true, "reached_product": true,
+ "outcome": "completed", "steps_used": 25,
+ "observations": [
+  {"kind": "signup_friction", "what": "Sign-up needed an hCaptcha plus a two-step form (name/email/org, then password) before the account was created."},
+  {"kind": "signup_friction", "what": "No email verification was required; the account opened straight into onboarding."},
+  {"kind": "product_benefit", "what": "The onboarding tour could be skipped with one link ('Skip the tour, I'm completely familiar'), landing directly on Home."},
+  {"kind": "product_friction", "what": "The free plan allows only 1 project, so managing multiple projects is not possible without upgrading."},
+  {"kind": "product_friction", "what": "A new project is empty; tools like To-dos must be added through a plus menu before any work can start."},
+  {"kind": "product_friction", "what": "Clicking the To-dos tool title opens a rename field rather than the tool, so the tool is opened via the 'Add your first to-do' link."},
+  {"kind": "product_benefit", "what": "Adding a to-do is quick: one name field plus optional assignee, due date, notes and subtasks."},
+  {"kind": "agent_failure", "what": "I clicked the To-dos title twice, opening the rename field both times, and wasted two steps."}
+ ]}

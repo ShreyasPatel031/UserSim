@@ -1,0 +1,22 @@
+# Regenerable from pack/scripts/prepare_reviews.py; source terms forbid redistributing review prose.
+pack/local_source/
+pack/evidence/
+pack/development/
+pack/evaluator_only/raw_test_reviews.jsonl
+cache/
+# Packets and serialized prompts quote evidence review prose; manifest.json keeps IDs and hashes.
+packets/case_*.json
+results/prompts/
+results/qualitative_reference_labels.json
+results/.*_identity.json
+results/mcp_shots/
+results/.*_code.json
+results/.phone_lease.json
+v2/evidence/
+v2/evaluator_only/
+v2/packets/case_*.json
+v2/packets/v2_*.json
+v2/accounts/
+v2/runs/*/pre.json.tmp
+v2/results/prompts/
+results/.e2e_identity.json

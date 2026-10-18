@@ -1,0 +1,9 @@
+{"rid": "Capterra___6164409", "session_id": "6a879b4b9a1f4d5a858432784e961503", "signed_in": false, "reached_product": false,
+ "outcome": "blocked", "steps_used": 10,
+ "observations": [
+  {"kind": "signup_friction", "what": "After submitting the work email, the invisible reCAPTCHA challenge appeared and on clearing it the page returned to the empty email form, so the email had to be entered a second time."},
+  {"kind": "signup_friction", "what": "The signup flow showed a 'Welcome!' page telling me to check my email, but no verification email (link or code) arrived within about 5 minutes."},
+  {"kind": "signup_friction", "what": "The 'Click here if you don't see the email' link did not resend anything; it opened a generic help-center article about trial emails not arriving."},
+  {"kind": "signup_friction", "what": "The first signup page offered only work-email, Google, Microsoft and Apple options, with no visible way to proceed without receiving a mailed confirmation."},
+  {"kind": "agent_failure", "what": "I did not try logging in directly with the new credentials after the email failed to arrive, so I cannot say whether the account was usable without verification."}
+ ]}

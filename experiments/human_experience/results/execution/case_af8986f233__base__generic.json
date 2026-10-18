@@ -1,0 +1,159 @@
+{
+ "run_id": "case_af8986f233__base__generic",
+ "case_id": "case_af8986f233",
+ "engine": "generic",
+ "context": "base",
+ "status": "failed",
+ "success_criteria_results": [
+  {
+   "criterion": "Dates and assignment are visible",
+   "result": "not_met",
+   "step": 40
+  },
+  {
+   "criterion": "The available schedule view is recorded",
+   "result": "not_met",
+   "step": 40
+  }
+ ],
+ "observations": [
+  {
+   "step": 4,
+   "text": "A timezone update modal appeared and was closed by clicking 'Don't update'."
+  },
+  {
+   "step": 5,
+   "text": "The 'Add Task' button was clicked twice in a row (steps 3 and 5) before typing the task name."
+  },
+  {
+   "step": 8,
+   "text": "The agent attempted to select '13 December' as the due date for 'Demo Alpha' by clicking 'December'."
+  },
+  {
+   "step": 9,
+   "text": "The agent selected '13 December' as the due date for 'Demo Alpha'."
+  },
+  {
+   "step": 10,
+   "text": "The agent clicked a 'cu3-icon' to confirm the date for 'Demo Alpha'."
+  },
+  {
+   "step": 11,
+   "text": "The agent clicked a div with role=button to confirm the date for 'Demo Alpha'."
+  },
+  {
+   "step": 13,
+   "text": "The agent selected '13 December' as the start date for 'Demo Alpha'."
+  },
+  {
+   "step": 14,
+   "text": "The agent clicked a div with role=button to confirm the start date for 'Demo Alpha'."
+  },
+  {
+   "step": 16,
+   "text": "The 'Demo Alpha' task was assigned to 'Me'."
+  },
+  {
+   "step": 19,
+   "text": "The agent clicked a 'cu3-icon' to set the due date for 'Demo Beta'."
+  },
+  {
+   "step": 20,
+   "text": "The agent selected '13 November' as the due date for 'Demo Beta', despite the agent note stating '13 December'."
+  },
+  {
+   "step": 21,
+   "text": "The agent clicked a button '13 November' to confirm the due date for 'Demo Beta'."
+  },
+  {
+   "step": 22,
+   "text": "The agent clicked a button labeled 'Dashboard' instead of 'Add Task' for the third task."
+  },
+  {
+   "step": 23,
+   "text": "The agent clicked a button labeled 'Task' instead of 'Add Task' for the third task."
+  },
+  {
+   "step": 24,
+   "text": "The agent clicked a button labeled 'Close' instead of 'Add Task' for the third task."
+  },
+  {
+   "step": 27,
+   "text": "The agent clicked 'Change start and due dates' for 'Demo Gamma'."
+  },
+  {
+   "step": 28,
+   "text": "The agent clicked a 'cu-date-nlp-input' for 'Demo Gamma'."
+  },
+  {
+   "step": 29,
+   "text": "The agent clicked a button 'Set Recurring' for 'Demo Gamma'."
+  },
+  {
+   "step": 30,
+   "text": "The agent clicked 'Save' to close the date picker for 'Demo Beta', which was intended for 'Demo Gamma'."
+  },
+  {
+   "step": 31,
+   "text": "The task name 'Demo Gamma' was typed again after previous date setting attempts."
+  },
+  {
+   "step": 32,
+   "text": "The agent clicked a div with role=button 'Today' to set the start date for 'Demo Gamma'."
+  },
+  {
+   "step": 33,
+   "text": "The agent selected '13 December' as the start date for 'Demo Gamma'."
+  },
+  {
+   "step": 34,
+   "text": "The agent clicked '27 December' to confirm the start date for 'Demo Gamma', which was not the intended date."
+  },
+  {
+   "step": 35,
+   "text": "The agent repeatedly clicked '27 December' (steps 34-39) while attempting to correct the start date for 'Demo Gamma' to December 13th."
+  },
+  {
+   "step": 40,
+   "text": "The task ended due to the step limit. 'Demo Alpha' was created with start and due dates set to December 13, 2026, and assigned to 'Me'. 'Demo Beta' was created with a due date of November 13, 2026. 'Demo Gamma' was created but its dates were not correctly set to December 13th."
+  }
+ ],
+ "errors": [
+  {
+   "kind": "time_or_step_limit",
+   "text": "The test reached the maximum number of steps before completing the task. The agent was unable to fully create and configure all three tasks as intended."
+  }
+ ],
+ "actions": 40,
+ "elapsed_seconds": 598.1,
+ "plan": "free plan of a fresh test account (unknown seen in run)",
+ "product_version_or_capture_date": "2026-10-18",
+ "environment_mismatches": [
+  "fresh test account with synthetic data; reviewer's historical version, plan, team and data unknown",
+  "short single-session run cannot recreate long tenure or team adoption"
+ ],
+ "trace_path": "results/execution/traces/case_af8986f233__base__generic.json",
+ "runner": {
+  "action_model": "gemini-2.5-flash-lite",
+  "max_steps": 40,
+  "max_actions_per_step": 2,
+  "wall_seconds": 600,
+  "backend": "browserbase",
+  "usage": {
+   "input_tokens": 883694,
+   "output_tokens": 11063,
+   "cost_usd": 0.08940285999999999
+  }
+ },
+ "judge": {
+  "model": "gemini-2.5-flash",
+  "model_version": "gemini-2.5-flash",
+  "usage": {
+   "input_tokens": 6141,
+   "output_tokens": 1242,
+   "cost_usd": 0.004947,
+   "latency_seconds": 5.74
+  },
+  "status": "automated_provisional"
+ }
+}

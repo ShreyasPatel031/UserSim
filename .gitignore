@@ -37,3 +37,7 @@ data/models/
 data/hackathon/
 .vercel
 .env*.local
+# live review scrapes (mvp/review_context.py)
+cache/apify/
+# live run logs of the own-reviews benches
+experiments/human_experience/results_own_bench*.log

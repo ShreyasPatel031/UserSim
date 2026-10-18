@@ -1,0 +1,25 @@
+{
+ "run_id": "case_11232793fc__base__generic",
+ "case_id": "case_11232793fc",
+ "engine": "generic",
+ "context": "base",
+ "status": "environment_failure",
+ "success_criteria_results": [],
+ "observations": [],
+ "errors": [
+  {
+   "kind": "inaccessible_account",
+   "text": "No test account: repo marks clickup.com retired (live account on base mailbox, credentials not on this VM); override was not permitted in this session"
+  }
+ ],
+ "actions": 0,
+ "elapsed_seconds": 0,
+ "plan": "no test account available",
+ "product_version_or_capture_date": "2026-10-18",
+ "environment_mismatches": [
+  "run not executed; no product observations"
+ ],
+ "trace_path": null,
+ "runner": null,
+ "judge": null
+}

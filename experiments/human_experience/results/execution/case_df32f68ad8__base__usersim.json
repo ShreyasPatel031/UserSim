@@ -1,0 +1,25 @@
+{
+ "run_id": "case_df32f68ad8__base__usersim",
+ "case_id": "case_df32f68ad8",
+ "engine": "usersim",
+ "context": "base",
+ "status": "environment_failure",
+ "success_criteria_results": [],
+ "observations": [],
+ "errors": [
+  {
+   "kind": "inaccessible_account",
+   "text": "No test account: Trello/Atlassian sign-up blocked locally by reCAPTCHA and on the MCP by a hanging final onboarding step"
+  }
+ ],
+ "actions": 0,
+ "elapsed_seconds": 0,
+ "plan": "no test account available",
+ "product_version_or_capture_date": "2026-10-18",
+ "environment_mismatches": [
+  "run not executed; no product observations"
+ ],
+ "trace_path": null,
+ "runner": null,
+ "judge": null
+}
