@@ -162,6 +162,9 @@ def main() -> None:
         for o in ("overall_rating", "ease_of_use_rating", "recommendation_score"):
             y = r.get(o)
             rec = out["ratings"].get(o) or {}
+            row[f"{o}_y"] = y
+            row[f"{o}_shown"] = rec.get("for_this_persona")
+            row[f"{o}_model"] = RE.U_num(out["words"].get(o), *A.OUT_SCALE[o])
             for k in ("estimate", "for_this_persona"):
                 v = rec.get(k)
                 row[f"{o}_{k}_abs_err"] = abs(v - y) if v is not None and y is not None and not (isinstance(y, float) and np.isnan(y)) else None
