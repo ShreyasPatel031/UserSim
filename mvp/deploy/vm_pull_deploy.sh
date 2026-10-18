@@ -44,14 +44,28 @@ trap 'rm -rf "$STAGE"' EXIT
 TARBALL="https://codeload.github.com/${REPO}/tar.gz/${BRANCH}"
 curl -sfL --max-time 120 "$TARBALL" | tar -xz -C "$STAGE" --strip-components=1
 for path in api mvp pyproject.toml requirements-vercel.txt results scripts src vercel.json; do
-  [ -e "$STAGE/$path" ] && rsync -a "$STAGE/$path" "$APP_ROOT/"
+  [ -e "$STAGE/$path" ] || continue
+  if command -v rsync >/dev/null; then rsync -a "$STAGE/$path" "$APP_ROOT/"; else cp -a "$STAGE/$path" "$APP_ROOT/"; fi
 done
 echo "$SHORT $(date -u +%Y-%m-%dT%H:%M:%SZ) $BRANCH" > "$APP_ROOT/mvp/static/build.txt"
 export USERSIM_ENGINE_VERSION="$SHORT"
 export USERSIM_ORIGIN_SHA="$SHA"
 
 if [ -x "$VENV/bin/pip" ]; then
-  "$VENV/bin/pip" install -q -r "$APP_ROOT/requirements-vercel.txt"
+  "$VENV/bin/pip" install -q -r "$APP_ROOT/requirements-vercel.txt" "uvicorn[standard]>=0.30"
+  # Same pins as the old GCS deploy.sh: newer google-auth/api-core broke GCE metadata auth (Vertex) on this VM.
+  "$VENV/bin/pip" install -q "google-auth==2.58.1" "google-api-core==2.39.0"
+fi
+
+# The service reads EnvironmentFile=/etc/usersim/env, so an exported USERSIM_ENGINE_VERSION here never reaches it and
+# /health kept reporting the old pinned version. Rewrite only that one line (no other line is read or printed).
+ENV_FILE="${USERSIM_ENV_FILE:-/etc/usersim/env}"
+if [ -f "$ENV_FILE" ]; then
+  if grep -q '^\(export \)\?USERSIM_ENGINE_VERSION=' "$ENV_FILE"; then
+    sed -i "s/^\(export \)\?USERSIM_ENGINE_VERSION=.*/USERSIM_ENGINE_VERSION=$SHORT/" "$ENV_FILE"
+  else
+    echo "USERSIM_ENGINE_VERSION=$SHORT" >> "$ENV_FILE"
+  fi
 fi
 
 systemctl restart "$SERVICE"

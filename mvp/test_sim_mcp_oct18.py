@@ -62,7 +62,7 @@ class Oct18Tests(unittest.TestCase):
         self.assertEqual(defs["StudyTask"]["required"], ["prompt"])
         self.assertIn("description", sch["properties"]["personas"])
         self.assertEqual(set(sch["required"]), {"product_url", "personas", "tasks"})
-        self.assertIn("Example", json.dumps(sch))
+        self.assertIn("e.g.", json.dumps(sch))
 
 
 if __name__ == "__main__":
@@ -228,3 +228,16 @@ def test_final_marks_reach_the_judge_and_prompt_reads_strikethrough(monkeypatch)
 def test_marks_js_reads_wrapper_strike_and_done_classes():
     js = S._MARKS_JS
     assert "innerText" in js and "marked done by its class" in js and "taken.some" in js
+
+
+def test_wait_tool_reads_wait_max_from_limits_without_name_error():
+    """PR #100 moved the mail-wait cap to limits.json; _wait must import limits (NameError 'L' broke link/code waits)."""
+    import inspect
+    from mvp.sim_mcp import server as SV
+    src = inspect.getsource(SV._wait)
+    assert "import limits as L" in src
+
+
+def test_secret_manager_default_project_is_the_real_project_id():
+    from mvp import secrets_store as SS
+    assert SS.DEFAULT_PROJECT == "project-amer-scs-sandbox"

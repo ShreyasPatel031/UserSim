@@ -164,7 +164,9 @@ class HCaptchaTests(unittest.TestCase):
             product_url = "https://www.chatwoot.com/"
             row: dict = {}
 
-        with mock.patch.object(cs, "begin_inrun_attempt", side_effect=AssertionError("attempt counted")):
+        with mock.patch.object(cs, "begin_inrun_attempt", side_effect=AssertionError("attempt counted")), \
+                mock.patch.object(SV, "_paid_captcha_on", return_value=True), \
+                mock.patch.object(SV, "_paid_allowed", return_value=True):
             out = asyncio.run(SV._paid_token(Sim(), "recaptcha_v2", {}))
         self.assertFalse(out["ok"])
         self.assertEqual(out["type"], "hcaptcha")

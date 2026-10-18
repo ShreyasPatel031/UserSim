@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # One-time VM setup: pull-deploy timer + migrate /etc/usersim/env secrets to Secret Manager.
-# Run on usersim-grokbot-web (or any prod host) as a user with sudo and gcloud auth to amer-scs-sandbox.
+# Run on usersim-grokbot-web (or any prod host) as a user with sudo and gcloud auth to project-amer-scs-sandbox.
 #
 #   curl -fsSL https://raw.githubusercontent.com/ShreyasPatel031/UserSim/main/mvp/deploy/bootstrap_vm.sh | sudo bash
 # or from a checkout:
@@ -13,7 +13,7 @@ if [ ! -f "$ROOT/mvp/deploy/vm_pull_deploy.sh" ]; then
   ROOT=$(mktemp -d)
   git clone --depth 1 https://github.com/ShreyasPatel031/UserSim.git "$ROOT"
 fi
-PROJECT="${USERSIM_GCP_PROJECT:-amer-scs-sandbox}"
+PROJECT="${USERSIM_GCP_PROJECT:-project-amer-scs-sandbox}"
 ENV_FILE="${USERSIM_ENV_FILE:-/etc/usersim/env}"
 APP_ROOT="${USERSIM_APP_ROOT:-/opt/usersim/app}"
 BIN_DIR="${USERSIM_BIN_DIR:-/opt/usersim/bin}"
@@ -33,6 +33,7 @@ if [ "$(id -u)" -ne 0 ]; then
 fi
 
 mkdir -p "$APP_ROOT" "$BIN_DIR" "$STATE_DIR" /etc/usersim
+command -v rsync >/dev/null || { apt-get install -y -q rsync >/dev/null 2>&1 || log "rsync not installed; vm_pull_deploy.sh falls back to cp -a"; }
 install -m 755 "$ROOT/mvp/deploy/vm_pull_deploy.sh" "$BIN_DIR/vm_pull_deploy.sh"
 install -m 644 "$ROOT/mvp/deploy/usersim-pull-deploy.service" /etc/systemd/system/usersim-pull-deploy.service
 install -m 644 "$ROOT/mvp/deploy/usersim-pull-deploy.timer" /etc/systemd/system/usersim-pull-deploy.timer

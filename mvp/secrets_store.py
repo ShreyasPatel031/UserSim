@@ -1,6 +1,6 @@
 """Server secrets from GCP Secret Manager with hot reload and file fallback.
 
-Each secret is stored as ``usersim-<ENV_VAR_NAME>`` in project ``amer-scs-sandbox`` (override with
+Each secret is stored as ``usersim-<ENV_VAR_NAME>`` in project ``project-amer-scs-sandbox`` (override with
 ``USERSIM_GCP_PROJECT``). On refresh, the latest enabled version is loaded into ``os.environ`` so
 existing code keeps working. If Secret Manager has no value, falls back to ``/etc/usersim/env``.
 
@@ -16,7 +16,7 @@ import time
 from pathlib import Path
 from typing import Any
 
-DEFAULT_PROJECT = "amer-scs-sandbox"
+DEFAULT_PROJECT = "project-amer-scs-sandbox"
 def _env_file() -> Path:
     return Path(os.environ.get("USERSIM_ENV_FILE", "/etc/usersim/env"))
 REFRESH_S = max(60.0, float(os.environ.get("USERSIM_SECRETS_REFRESH_S", "300")))
