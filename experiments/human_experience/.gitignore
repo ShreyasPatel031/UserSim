@@ -7,3 +7,4 @@ cache/
 # Packets and serialized prompts quote evidence review prose; manifest.json keeps IDs and hashes.
 packets/case_*.json
 results/prompts/
+results/qualitative_reference_labels.json
