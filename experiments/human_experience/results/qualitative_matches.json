@@ -1511,56 +1511,6 @@
    "latency_seconds": 1.92
   }
  },
- "case_4164789dd7__B4": {
-  "matches": {
-   "benefits": [
-    {
-     "pred_index": 0,
-     "ref_id": null,
-     "score": 0,
-     "disagreement": false
-    },
-    {
-     "pred_index": 1,
-     "ref_id": null,
-     "score": 0,
-     "disagreement": false
-    },
-    {
-     "pred_index": 2,
-     "ref_id": null,
-     "score": 0,
-     "disagreement": false
-    }
-   ],
-   "frictions": [
-    {
-     "pred_index": 0,
-     "ref_id": "f1",
-     "score": 1,
-     "disagreement": false
-    },
-    {
-     "pred_index": 1,
-     "ref_id": "f3",
-     "score": 1,
-     "disagreement": false
-    },
-    {
-     "pred_index": 2,
-     "ref_id": null,
-     "score": 0,
-     "disagreement": false
-    }
-   ]
-  },
-  "usage": {
-   "input_tokens": 1108,
-   "output_tokens": 173,
-   "cost_usd": 0.000765,
-   "latency_seconds": 1.79
-  }
- },
  "case_4164789dd7__B2": {
   "matches": {
    "benefits": [
@@ -1659,56 +1609,6 @@
    "output_tokens": 175,
    "cost_usd": 0.000704,
    "latency_seconds": 1.53
-  }
- },
- "case_11232793fc__B2": {
-  "matches": {
-   "benefits": [
-    {
-     "pred_index": 0,
-     "ref_id": null,
-     "score": 0,
-     "disagreement": false
-    },
-    {
-     "pred_index": 1,
-     "ref_id": null,
-     "score": 0,
-     "disagreement": false
-    },
-    {
-     "pred_index": 2,
-     "ref_id": null,
-     "score": 0,
-     "disagreement": false
-    }
-   ],
-   "frictions": [
-    {
-     "pred_index": 0,
-     "ref_id": null,
-     "score": 0,
-     "disagreement": false
-    },
-    {
-     "pred_index": 1,
-     "ref_id": "f1",
-     "score": 1,
-     "disagreement": false
-    },
-    {
-     "pred_index": 2,
-     "ref_id": null,
-     "score": 0,
-     "disagreement": false
-    }
-   ]
-  },
-  "usage": {
-   "input_tokens": 822,
-   "output_tokens": 171,
-   "cost_usd": 0.000674,
-   "latency_seconds": 1.48
   }
  },
  "case_11232793fc__B4": {

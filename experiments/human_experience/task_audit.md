@@ -16,3 +16,10 @@ allowed by design (pack README §6).
 | case_11232793fc (ClickUp) | Coordinate internal technology project tasks | pass | Setup-difficulty complaint not carried. |
 
 Edits: none. Goals frozen as supplied.
+
+## Extended ClickUp cases (audited before their runs)
+
+| Case | Goal | Verdict | Note |
+| --- | --- | --- | --- |
+| case_af8986f233 (ClickUp) | Schedule project work and assign responsibilities | pass | Activity from pros (dates, assignment); "intimidating features" complaint not carried. |
+| case_b4bd3cce26 (ClickUp) | Manage project tickets in board and list views | pass | Activity from pros; the sprint-confusion complaint is not in the task. |
