@@ -76,6 +76,7 @@ class HumanModeTest(unittest.TestCase):
         self.assertIn("Calendar does not show to-do due dates", words_llm.prompt)
         self.assertNotIn("misclicked", words_llm.prompt)
         self.assertEqual(len(calls), 2)
+        self.assertIs(calls[0]["judge"], calls[1]["judge"])  # same identity answers for both calls
 
     def test_revision_changing_too_much_is_rejected(self):
         edit = {"pros": ["a", "b", "c"], "cons": ["d", "e", "f"]}

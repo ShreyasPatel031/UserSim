@@ -191,14 +191,21 @@ async def _words_llm(prompt: str) -> dict:
 
 async def combine(*, product: str, url: str, persona: dict[str, Any], observations: list[dict], task: str = "",
                   competitors: list[str] | None = None, wait_s: float = 45.0, llm=None, agent=None,
-                  words_llm=None) -> dict[str, Any]:
+                  words_llm=None, judge=None) -> dict[str, Any]:
     """Agent-mode prediction plus the run's product observations, in the amount that held up on real reviewers.
 
     Product with its own reviews: the words are rewritten from agent mode's evidence plus the observations.
     No own reviews: at most MAX_EDITS pro and con of agent mode's words change (first-session notes dropped).
     Ratings are agent mode's in both cases."""
+    seen: dict[str, dict] = {}
+
+    async def same_judge(prompt: str) -> dict:
+        """Both agent-mode calls must keep the same reviews: answer each identity check once."""
+        if prompt not in seen:
+            seen[prompt] = await (judge or AM._default_judge)(prompt)
+        return seen[prompt]
     base = await (agent or AM.predict_experience)(product=product, url=url, persona=persona, task=task,
-                                                  competitors=competitors, wait_s=wait_s)
+                                                  competitors=competitors, wait_s=wait_s, judge=same_judge)
     if base.get("status") != "ok":
         return {**base, "mode": "human", "reason": "agent-mode prediction not ready: " + str(base.get("reason") or base.get("status"))}
     lines = product_lines(observations or [])
@@ -215,7 +222,8 @@ async def combine(*, product: str, url: str, persona: dict[str, Any], observatio
         async def with_run(prompt: str) -> dict:
             return await inner(prompt + section)
         again = await (agent or AM.predict_experience)(product=product, url=url, persona=persona, task=task,
-                                                       competitors=competitors, wait_s=wait_s, llm=with_run)
+                                                       competitors=competitors, wait_s=wait_s, llm=with_run,
+                                                       judge=same_judge)
         if again.get("status") != "ok" or again.get("words_error"):
             out["human_note"] = f"rewriting with the observations failed ({again.get('words_error') or again.get('status')}): agent mode's words kept"
             return out
