@@ -106,6 +106,29 @@ def _infra_error(err: str | None) -> bool:
     return bool(err) and any(k in err for k in ("RateLimit", "429", "Browserbase", "CancelledError", "TimeoutError"))
 
 
+async def run_in_child(c: dict, sem: asyncio.Semaphore, per_product: int) -> dict:
+    """One case per process: browser_use's CDP clients fail when several sessions share one event loop."""
+    rid = c["row"]["review_id"]
+    path = BOUT / "runs" / f"{rid}.json"
+    if path.exists() and not _infra_error(E.read_json(path)["run"].get("error")):
+        return E.read_json(path)
+    (BOUT / "logs").mkdir(parents=True, exist_ok=True)
+    t0 = time.time()
+    async with sem:
+        with open(BOUT / "logs" / f"{rid}.log", "w") as log:
+            proc = await asyncio.create_subprocess_exec(sys.executable, __file__, "--one", rid, "--per-product", str(per_product),
+                                                        stdout=log, stderr=asyncio.subprocess.STDOUT)
+            try:
+                await asyncio.wait_for(proc.wait(), timeout=600)
+            except asyncio.TimeoutError:
+                proc.kill()
+                await proc.wait()
+    if path.exists():
+        return E.read_json(path)
+    return {"rid": rid, "product": c["row"]["product_name"], "secs": round(time.time() - t0, 1), "steps": [],
+            "run": {"error": "TimeoutError: child process gave no result (infrastructure)", "completed": False}}
+
+
 def predict(c: dict, cond: str, rec: dict | None) -> dict:
     card, rid = c["card"], c["row"]["review_id"]
     if cond == "C1_agent_alone":
@@ -152,8 +175,14 @@ def main() -> None:
     ap.add_argument("--per-product", type=int, default=4)
     ap.add_argument("--cases", type=int, default=0, help="limit total cases (smoke)")
     ap.add_argument("--concurrency", type=int, default=10)
+    ap.add_argument("--one", help="run a single case (by review id) in this process; used by the parent")
     a = ap.parse_args()
     cs = cases(a.per_product)
+    if a.one:
+        c = next(c for c in cs if c["row"]["review_id"] == a.one)
+        rec = asyncio.run(run_case(c, asyncio.Semaphore(1)))
+        print(json.dumps({"error": rec["run"].get("error")}), flush=True)
+        return
     if a.cases:
         cs = cs[: a.cases]
     print(f"{len(cs)} cases across {len({c['row']['product_name'] for c in cs})} products", flush=True)
@@ -164,7 +193,7 @@ def main() -> None:
 
         async def one(c):
             nonlocal done
-            rec = await run_case(c, sem)
+            rec = await run_in_child(c, sem, a.per_product)
             done += 1
             print(f"[{done}/{len(cs)}] {rec['product']}: completed={rec['run'].get('completed')} steps={len(rec['steps'])} "
                   f"err={(rec['run'].get('error') or '')[:60]} {rec['secs']}s", flush=True)
@@ -175,7 +204,8 @@ def main() -> None:
                 print(f"case {c['row']['review_id']} failed outside the browser run: {r!r}", flush=True)
         return [r for r in res if isinstance(r, dict)]
 
-    recs = {r["rid"]: r for r in asyncio.run(go())}
+    recs = {r["rid"]: r for r in asyncio.run(go()) if "feedback_no_reviews" in r}
+    print(f"usable runs: {len(recs)}/{len(cs)}", flush=True)
     cs = [c for c in cs if c["row"]["review_id"] in recs]
     pool = ThreadPoolExecutor(64)
     jobs = [(c, k) for c in cs for k in CONDS]
