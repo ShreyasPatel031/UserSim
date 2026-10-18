@@ -1,2 +1,5 @@
 cache/
 out/e2e_bench/logs/
+# model-call cache (large; restore from branch history: git checkout <commit> -- experiments/staged_context/out/calls)
+out/calls/
+hm/shots/
