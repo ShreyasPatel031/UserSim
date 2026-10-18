@@ -1,0 +1,18 @@
+{
+  "_about": "Caps for the public UserSim MCP server (/mcp). Anyone can change them: edit this file and merge the PR to main. The running server re-reads this file from main on GitHub every refresh_s seconds (default 300), so no redeploy and no env vars are needed. Only 'value' is read; 'about' explains it. Env vars named MVP_MCP_<KEY in upper case> override a value on one server if set (optional). See docs/mcp/README.md#limits.",
+  "limits": {
+    "refresh_s": {"value": 300, "about": "How often (seconds) the server re-reads this file from main. Minimum 30."},
+    "allow_anonymous": {"value": true, "about": "true = anyone with the URL can call /mcp without a token. false = only callers with a bearer token (kill switch)."},
+    "max_sessions": {"value": 5, "about": "Browser sessions open at once across the whole server, all callers."},
+    "max_per_client": {"value": 2, "about": "Browser sessions open at once per client IP for callers that send a bearer token."},
+    "anon_max_concurrent_sessions_per_ip": {"value": 3, "about": "Browser sessions open at once per client IP for callers without a token."},
+    "anon_daily_usd_per_ip": {"value": 2.0, "about": "Estimated spend allowed per client IP per day (America/Los_Angeles day) for callers without a token. Estimated with the two est_usd_* rates below; real cost is not metered per call."},
+    "anon_daily_usd_global": {"value": 10.0, "about": "Estimated spend allowed per day across ALL callers without a token, together."},
+    "est_usd_per_session": {"value": 0.1, "about": "Budget units charged when a browser session starts (browser time, judge and report). An assumption, not a measured cost; change it when real numbers exist."},
+    "est_usd_per_step": {"value": 0.01, "about": "Budget units charged per browser step (usersim_act, usersim_open_verification_link, usersim_solve_captcha). An assumption, not a measured cost. A full 40-step session = 0.10 + 40 x 0.01 = 0.50."},
+    "anon_max_cells_per_study": {"value": 12, "about": "Most persona x task x site runs one study may have, for callers without a token."},
+    "anon_allow_sms": {"value": false, "about": "Let callers without a token use usersim_signup_phone / usersim_wait_for_sms_code. Keep false: the SMS number is the owner's real phone."},
+    "anon_allow_paid_captcha": {"value": false, "about": "Let callers without a token trigger the paid captcha solver (CapSolver)."},
+    "anon_allow_shared_aliases": {"value": false, "about": "Let callers without a token get no_plus (dot-variant) or plain signup addresses. Those can repeat across sessions, so another caller could see the mail. Keep false: callers without a token only get unique +tag aliases."}
+  }
+}

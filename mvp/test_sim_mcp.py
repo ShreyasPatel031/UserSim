@@ -304,10 +304,13 @@ class BearerTests(unittest.TestCase):
             return {"type": "http.request"}
 
         app = _require_bearer(inner, "s3cret")
-        asyncio.run(app({"type": "http", "headers": []}, receive, send))
+        asyncio.run(app({"type": "http", "headers": [(b"authorization", b"Bearer wrong")]}, receive, send))
         self.assertEqual(sent[0]["status"], 401)
         asyncio.run(app({"type": "http", "headers": [(b"authorization", b"Bearer s3cret")]}, receive, send))
         self.assertEqual(hits, [1])
+        # Oct 17: no Authorization header at all = the open endpoint (limits.json allow_anonymous)
+        asyncio.run(app({"type": "http", "headers": []}, receive, send))
+        self.assertEqual(hits, [1, 1])
 
 
 class TypeEmailGuardTests(unittest.TestCase):

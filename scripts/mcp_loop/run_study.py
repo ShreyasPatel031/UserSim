@@ -3,7 +3,7 @@
   python scripts/mcp_loop/run_study.py spec.json --out runs/<name> [--parallel 8] [--model haiku]
 
 spec.json: {"product_url": ..., "competitors": [...], "personas": [...], "tasks": [...]}
-Env: USERSIM_MCP (default https://atelier-sim.com/mcp), MCP_CLIENT_TOKEN.
+Env: USERSIM_MCP (default https://atelier-sim.com/mcp), MCP_CLIENT_TOKEN (optional; /mcp is open since Oct 17).
 
 Each cell gets its own `claude -p` process with only the usersim MCP tools. The agent's
 prompt is the server's own usersim_simulate_user prompt, so this is exactly what any MCP
@@ -40,7 +40,8 @@ async def _call_once(tool: str, args: dict, *, prompt: bool = False) -> object:
     from mcp import ClientSession
     from mcp.client.streamable_http import streamablehttp_client
 
-    headers = {"Authorization": f"Bearer {os.environ['MCP_CLIENT_TOKEN']}"}
+    tok = os.environ.get("MCP_CLIENT_TOKEN", "").strip()  # optional since Oct 17 (open /mcp)
+    headers = {"Authorization": f"Bearer {tok}"} if tok else None
     async with streamablehttp_client(URL, headers=headers, timeout=300, sse_read_timeout=600) as (r, w, _):
         async with ClientSession(r, w) as s:
             await s.initialize()
@@ -108,8 +109,9 @@ async def main() -> None:
     spec = json.loads(Path(a.spec).read_text())
 
     cfg = out / "mcp.json"
-    cfg.write_text(json.dumps({"mcpServers": {"usersim": {"type": "http", "url": URL, "headers": {
-        "Authorization": f"Bearer {os.environ['MCP_CLIENT_TOKEN']}"}}}}))
+    tok = os.environ.get("MCP_CLIENT_TOKEN", "").strip()  # optional since Oct 17 (open /mcp)
+    server = {"type": "http", "url": URL, **({"headers": {"Authorization": f"Bearer {tok}"}} if tok else {})}
+    cfg.write_text(json.dumps({"mcpServers": {"usersim": server}}))
     cfg.chmod(0o600)
 
     if a.resume:

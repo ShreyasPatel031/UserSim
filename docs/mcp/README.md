@@ -1,96 +1,77 @@
 # UserSim MCP server: guide for agents
 
-Source of truth: `mvp/sim_mcp/server.py`, `mvp/sim_mcp/sessions.py`, `mvp/sim_mcp/report.py` on branch `mcp-signup-parity` (PR #65). If this guide and the code disagree, the code wins. A live server also describes itself: call `list_tools` and read the server `instructions`.
+Source of truth: `mvp/sim_mcp/server.py`, `mvp/sim_mcp/sessions.py`, `mvp/sim_mcp/report.py`, `mvp/sim_mcp/limits.py` / `limits.json` on `main`. If this guide and the code disagree, the code wins. A live server also describes itself: call `list_tools` and read the server `instructions`.
 
 ## What it does
 
 UserSim lets an AI agent act as a **simulated user** of a real, public web product, inside a real cloud browser (Browserbase) that UserSim runs and records. The calling model *is* the simulated user: it looks at screenshots and sends one action at a time (`usersim_act`). UserSim records every step, screenshot and first-person `thought`. When the session ends, UserSim runs its own independent judge and proof checks and writes a report. The report is the same one the UserSim website produces. A multi-product **study** mode runs every persona × task × site (your product plus up to 4 competitors) and writes one combined study report. Signup tools give the simulated user a real email inbox, so it can complete email-verified signups.
 
-## Deployment status (read this first)
+## Connecting (no token needed)
 
-- **Public hostnames are not wired up yet.** As of Oct 2026, `https://usersim.vercel.app/mcp` and `https://atelier-sim.com/mcp` both return **404**. Do not point a client at those URLs until the owner says they are live.
-- **The working endpoint today** is the private copy on the prod VM (`usersim-grokbot-web`, zone `[REDACTED]-a`, project `[REDACTED]`). Reach it only through an IAP tunnel: run `source /workspace/gcp-auth.sh` on the box, then
-- Every call needs `Authorization: Bearer <token>`. Without it the server answers **401** `{"error":"missing or wrong bearer token"}`. Ask the owner for the token; never commit it.
-- Studies from that VM copy save under `mvp_studies/`, so `report_url` links (`https://usersim.vercel.app/report?study=<id>`) open on the website when the study id exists there.
-- When public `/mcp` is enabled on Vercel or atelier-sim.com, the owner will update this section.
+The whole setup is one URL:
 
-  ```bash
-  gcloud compute ssh usersim-grokbot-web --zone us-central1-a --tunnel-through-iap -- -N -L 8788:127.0.0.1:8788
-  # test endpoint is now http://127.0.0.1:8788/mcp on your machine
-  ```
-  Since Oct 12 the test copy also saves to `mvp_studies/`, so its report links open on the website too.
+```
+https://35-202-98-224.sslip.io/mcp
+```
 
-## Connecting
+No token, no env file, no tunnel. Since Oct 17, 2026 the endpoint is open to anyone who has the URL. Callers without a token get the caps in [Limits](#limits). (`usersim.vercel.app/mcp` and `atelier-sim.com/mcp` still return 404 until the Vercel `/mcp` rewrite is deployed; use the URL above.)
 
 | | |
 |---|---|
 | Transport | MCP **streamable HTTP**, stateless, JSON responses |
-| Path | `/mcp` (methods GET, POST, DELETE) |
-| Auth | Header `Authorization: Bearer <token>`. If the token is missing or wrong, you get **401** `{"error":"missing or wrong bearer token"}` |
-| Server-side token | `MVP_MCP_TOKEN` (or a file at `MVP_MCP_TOKEN_FILE`). If no token is configured, **every call gets 401** (fail closed) unless `MVP_MCP_ALLOW_OPEN=1`, which is for local development only |
-| Client-side env var (convention used below) | `MCP_CLIENT_TOKEN` |
-
-Never paste the token into docs, chats or commits. Ask the owner for it, and keep it in an env var.
+| URL | `https://35-202-98-224.sslip.io/mcp` (methods GET, POST, DELETE) |
+| Auth | None. An optional `Authorization: Bearer <token>` still works for existing clients, and a valid token skips the anonymous caps. A **wrong** token gets **401** (remove the header instead) |
+| Who owns what | Without a token, your sessions and studies belong to your client IP. Another IP gets `unknown session_id` for them, and the inbox tools only return mail for the alias your own session created |
 
 ### Claude Code
-Use `http://127.0.0.1:8788/mcp` after the IAP tunnel below (or whatever public URL the owner enables).
 ```bash
-claude mcp add --transport http usersim http://127.0.0.1:8788/mcp \
-  --header "Authorization: Bearer $MCP_CLIENT_TOKEN"
+claude mcp add --transport http usersim https://35-202-98-224.sslip.io/mcp
 ```
 
 ### Claude Desktop (`claude_desktop_config.json`, via the `mcp-remote` bridge)
 ```json
 {
   "mcpServers": {
-    "usersim": {
-      "command": "npx",
-      "args": ["-y", "mcp-remote", "http://127.0.0.1:8788/mcp",
-               "--header", "Authorization: Bearer ${MCP_CLIENT_TOKEN}"],
-      "env": { "MCP_CLIENT_TOKEN": "<set locally, never commit>" }
-    }
+    "usersim": { "command": "npx", "args": ["-y", "mcp-remote", "https://35-202-98-224.sslip.io/mcp"] }
   }
 }
 ```
-`mcp-remote` refuses plain `http://` to non-localhost hosts. 127.0.0.1 through the tunnel is fine.
 
 ### Cursor (`~/.cursor/mcp.json` or `.cursor/mcp.json`)
 ```json
 {
   "mcpServers": {
-    "usersim": {
-      "url": "http://127.0.0.1:8788/mcp",
-      "headers": { "Authorization": "Bearer ${env:MCP_CLIENT_TOKEN}" }
-    }
+    "usersim": { "url": "https://35-202-98-224.sslip.io/mcp" }
   }
 }
 ```
 
-### Python (official `mcp` SDK; this matches `/workspace/mcp-client/`)
+### Python (official `mcp` SDK)
 ```python
-import asyncio, os
+import asyncio
 from mcp import ClientSession
-from mcp.client.streamable_http import streamable_http_client
-from mcp.shared._httpx_utils import create_mcp_http_client
+from mcp.client.streamable_http import streamablehttp_client
 
-URL = os.environ.get("USERSIM_MCP", "http://127.0.0.1:8788/mcp")
+URL = "https://35-202-98-224.sslip.io/mcp"
 
 async def main():
-    hc = create_mcp_http_client(headers={"Authorization": f"Bearer {os.environ['MCP_CLIENT_TOKEN']}"})
-    async with hc, streamable_http_client(URL, http_client=hc) as (r, w):
+    async with streamablehttp_client(URL, timeout=300) as (r, w, _):
         async with ClientSession(r, w) as s:
             await s.initialize()
             print([t.name for t in (await s.list_tools()).tools])
             res = await s.call_tool("usersim_start_session", {
                 "product_url": "https://example.com",
                 "persona": "Priya, a freelance designer who has never used this tool.",
-                "task": "Sign up for a free account."})
+                "task": "Find out what this site is for."})
             for c in res.content:          # text = JSON metadata, image = JPEG screenshot (base64)
                 print(c.type, c.text[:400] if c.type == "text" else len(c.data))
 
 asyncio.run(main())
 ```
-On the box you can use the ready-made CLI: `python /workspace/mcp-client/list_tools.py [url]` and `python /workspace/mcp-client/call.py <tool> '<json args>'`. `call.py` saves images under `/workspace/mcp-client/shots/` and reads `USERSIM_MCP` and `MCP_CLIENT_TOKEN`.
+`python -m mvp.e2e_mcp --base https://35-202-98-224.sslip.io` runs the built-in smoke test (no token needed).
+
+### Running the server (operators)
+The prod copy runs on the VM `usersim-grokbot-web` (uvicorn :80 behind caddy on :443). It redeploys itself within about 20 s of a new app tarball in GCS (`/workspace/deploy/push_from.sh`). Run uvicorn with **one worker**, because MCP sessions live in process memory. `MVP_MCP_TOKEN` / `MVP_MCP_TOKEN_FILE` are optional now: they only define tokens that skip the anonymous caps.
 
 ## Response conventions
 
@@ -223,17 +204,39 @@ Arguments: `session_id`, `persona`, `task`. This returns the instructions for th
 - Report page: `https://usersim.vercel.app/report?study=<study_id>` (`report_url`). Live view: `https://usersim.vercel.app/?study=<study_id>` (`watch_url`). The base URL is `MVP_PUBLIC_BASE_URL`.
 - The website reads studies from `gs://usersim-bakeoff-347838016394/mvp_studies/` (the default `MVP_GCS_PREFIX` in `mvp/gcs_store.py`). Since Oct 12 the VM test copy writes there too (start.sh `MVP_GCS_PREFIX=gs://usersim-bakeoff-347838016394`), so a new study opens at `https://usersim.vercel.app/?study=<id>` and `/api/studies/<id>`. Studies from Oct 9–11 were first saved under `mcp-test-vm/` and were copied over on Oct 12.
 
-## Limits (server defaults, env-overridable)
-| limit | default | env |
+## Limits
+
+Every cap lives in one file on main: [`mvp/sim_mcp/limits.json`](../../mvp/sim_mcp/limits.json). Each entry has a `value` and an `about` line that explains it.
+
+**How to change a limit (anyone, any agent):**
+1. Edit the `value` in `mvp/sim_mcp/limits.json` and open a PR. Run `python -m pytest mvp/test_sim_mcp_limits.py`, which checks that every key is documented and that the defaults in `limits.py` match.
+2. Merge it to `main`.
+3. Within about 5 minutes (`refresh_s`, plus up to about 5 min of GitHub raw caching), the running server picks it up. It re-reads `https://raw.githubusercontent.com/ShreyasPatel031/UserSim/main/mvp/sim_mcp/limits.json`. **No redeploy and no env vars are needed.**
+4. Check what the server is using: `curl -s https://35-202-98-224.sslip.io/api/mcp/limits` shows the effective `values`, the `source` they came from, any `env_overrides`, the last fetch `error` (if any), and today's anonymous spend total.
+
+If the file on main is broken (bad JSON, wrong types), the server keeps the last good values and reports the problem in `error`. A value that is negative or the wrong type is ignored for that key only. Optional per-server override: an env var named `MVP_MCP_<KEY IN UPPER CASE>` (for example `MVP_MCP_ANON_DAILY_USD_PER_IP=1`) beats the file on that one server. Set it only when you must, because it hides later changes to the file. Set `MVP_MCP_LIMITS_URL=off` to stop the server fetching from main (it then uses the bundled copy).
+
+| key | default | meaning |
 |---|---|---|
-| steps per session | 40 | `MVP_MCP_MAX_STEPS` |
-| time per session | 900 s | `MVP_MCP_BUDGET_S` |
-| idle timeout | 300 s | `MVP_MCP_IDLE_S` |
-| concurrent sessions (server) | 5 | `MVP_MCP_MAX_SESSIONS` |
-| concurrent sessions per client IP | 2 | `MVP_MCP_MAX_PER_CLIENT` |
-| competitors per study | 4 | fixed |
-| cells per study | 60 | fixed |
-| judge votes | 3 (1–5) | `MVP_JUDGE_VOTES` |
+| `allow_anonymous` | `true` | `false` = kill switch. Only callers with a valid bearer token get through; everyone else gets 401 |
+| `refresh_s` | 300 | How often the server re-reads the file from main (minimum 30) |
+| `max_sessions` | 5 | Browser sessions open at once on the whole server, all callers |
+| `max_per_client` | 2 | Open sessions per client IP for callers **with** a token |
+| `anon_max_concurrent_sessions_per_ip` | 3 | Open sessions per client IP **without** a token |
+| `anon_daily_usd_per_ip` | 2.0 | Estimated $ per client IP per day without a token (day = America/Los_Angeles) |
+| `anon_daily_usd_global` | 10.0 | Estimated $ per day for **all** callers without a token, together |
+| `est_usd_per_session` | 0.10 | Charged against those budgets when a browser session starts |
+| `est_usd_per_step` | 0.01 | Charged per `usersim_act`, `usersim_open_verification_link` and `usersim_solve_captcha` call (a full 40-step session = $0.50) |
+| `anon_max_cells_per_study` | 12 | Most runs (persona × task × site) one study may have without a token |
+| `anon_allow_sms` | `false` | SMS tools without a token. Keep false: the SMS number is the owner's real phone |
+| `anon_allow_paid_captcha` | `false` | Paid captcha solver (CapSolver) without a token |
+| `anon_allow_shared_aliases` | `false` | `no_plus` / plain signup addresses without a token. Those can repeat across sessions, so another caller could read the mail. Without a token you only get unique `+tag` aliases |
+
+The $ figures are a **budget estimate**, not metered cost: the server doesn't measure real Browserbase or model spend per call. Change `est_usd_*` when real numbers exist. Anonymous spend is kept per client IP (hashed) and saved to `/var/lib/usersim/mcp_anon_spend.json` (`MVP_MCP_SPEND_FILE`), so a restart doesn't reset it. `usersim_finish` is always allowed, even over budget, so open sessions still get their report.
+
+Fixed limits (code, not the file): 40 steps per session (`MVP_MCP_MAX_STEPS`), 900 s per session (`MVP_MCP_BUDGET_S`), 300 s idle timeout (`MVP_MCP_IDLE_S`), 4 competitors per study, 108 runs per study (`MVP_MCP_MAX_CELLS`), 3 judge votes (`MVP_JUDGE_VOTES`).
+
+When a cap is hit, the tool returns `{"error": "...", "limit": "<key>", "limits_file": "<link>"}`. Concurrent-session errors start with `cap anon_max_concurrent_sessions_per_ip`.
 
 ## Costs
 - Calling the MCP costs the client nothing beyond its own model tokens. Screenshots are the main token cost.
@@ -243,11 +246,15 @@ Arguments: `session_id`, `persona`, `task`. This returns the instructions for th
 ## Common errors
 | error text | meaning / fix |
 |---|---|
-| `missing or wrong bearer token` (HTTP 401) | Send `Authorization: Bearer $MCP_CLIENT_TOKEN`. A server with no token configured refuses everyone |
+| `wrong bearer token` (HTTP 401) | Your client sends an old or wrong token. Remove the `Authorization` header: no token is needed |
+| `needs a bearer token right now (limits.json allow_anonymous is false)` (HTTP 401) | The open endpoint was switched off in `limits.json` |
+| `limit: anon_daily_usd_per_ip` / `anon_daily_usd_global` | Daily budget without a token is used up. It resets at midnight America/Los_Angeles |
+| `cap anon_max_concurrent_sessions_per_ip` | 3 sessions are already open from your IP, so finish one first |
+| `cap anon_allow_sms` / `anon_allow_shared_aliases` / `anon_max_cells_per_study` | Not available without a token (see [Limits](#limits)) |
 | HTTP 404 on `usersim.vercel.app/mcp` | Wrong path, or the server is on an old build. Check `https://usersim.vercel.app/health` for `engine_version` |
 | `product_url must be a public URL …` | localhost, private IP or `.local`: use a public preview/staging URL |
 | `UserSim is at its simulated-user limit right now…` | 5 sessions are already open server-wide, so retry in a few minutes |
-| `this client already has the maximum number of open sessions…` | Finish one of your 2 open sessions first |
+| `this client already has the maximum number of open sessions…` | With a token: finish one of your 2 open sessions first |
 | `unknown session_id` / `unknown study_id` / `unknown cell_id` | Wrong ID, or the server restarted (sessions live in memory) |
 | `cell … was already run` | Each cell runs once |
 | `step limit reached` / `time budget used up; call usersim_finish` | Call `usersim_finish` |
@@ -261,8 +268,8 @@ Arguments: `session_id`, `persona`, `task`. This returns the instructions for th
 | `at most 4 competitors`, `… over the 60-run limit` | Shrink the study |
 
 ## Troubleshooting
-- **Tunnel up but 401:** the token doesn't match the server's `MVP_MCP_TOKEN`. Check that the env var is exported in the process that runs your client.
-- **Connection refused on 127.0.0.1:8788:** the tunnel isn't running, or the test server is down. Check `gcloud compute ssh … --tunnel-through-iap` and the server logs on the VM.
+- **401:** your client sends a wrong token, so remove the header. If there's no header and you still get 401, `allow_anonymous` is off in `limits.json`.
+- **Caps look wrong:** `curl -s https://35-202-98-224.sslip.io/api/mcp/limits` shows the values in force and where they came from.
 - **Clicks land in the wrong place:** coordinates must come from the 1280×800 screenshot you were given. Prefer the exact x,y in `fields`.
 - **Form "does nothing" on submit:** read `unfilled_fields`, `page_errors` and `captcha.hint`. Usually there's an empty required field or a captcha with no token.
 - **No verification mail:** confirm that the form really submitted, call the wait tool again (up to 240 s per call), or click "resend". If the site rejected `+`, call `usersim_signup_identity(no_plus=true)` and retype the email.

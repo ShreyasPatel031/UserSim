@@ -47,11 +47,20 @@ def idle_s() -> int:
 
 
 def max_active() -> int:
-    return _env_int("MVP_MCP_MAX_SESSIONS", 5)
+    from mvp.sim_mcp import limits  # limits.json on main; env MVP_MCP_MAX_SESSIONS still overrides
+
+    return int(limits.get("max_sessions"))
 
 
 def max_per_client() -> int:
-    return _env_int("MVP_MCP_MAX_PER_CLIENT", 2)
+    from mvp.sim_mcp import limits  # env MVP_MCP_MAX_PER_CLIENT still overrides
+
+    return int(limits.get("max_per_client"))
+
+
+def is_anon(owner: str) -> bool:
+    """Owner key of a caller that sent no bearer token (server._owner): 'anon:' + hash of its IP."""
+    return str(owner or "").startswith("anon:")
 
 
 # Final-page text kept for the judge. 1500 cut Tally's GDPR page just before "based in Belgium (EU)" (study
@@ -445,6 +454,13 @@ def create_matrix_study(
     n = len(people) * len(jobs) * len(sites)
     if n > max_cells():
         raise SessionError(f"{n} runs is over the {max_cells()}-run limit for one study")
+    if is_anon(owner):
+        from mvp.sim_mcp import limits
+
+        cap = int(limits.get("anon_max_cells_per_study"))
+        if n > cap:
+            raise SessionError(f"cap anon_max_cells_per_study: {n} runs is over the {cap}-run limit for one study without a "
+                               "token; use fewer personas, tasks or competitors")
 
     study = create_study(url, people[0]["bio"])
     study.driver = DRIVER
@@ -540,10 +556,18 @@ def _create_bb(study_id: str) -> Any:
     )
 
 
-def _check_capacity(client: str) -> None:
+def _check_capacity(client: str, owner: str = "") -> None:
     active = _active()
     if len(active) >= max_active():
         raise SessionError("UserSim is at its simulated-user limit right now; try again in a few minutes")
+    if is_anon(owner):
+        from mvp.sim_mcp import limits
+
+        cap = int(limits.get("anon_max_concurrent_sessions_per_ip"))
+        if sum(1 for s in active if s.owner == owner) >= cap:
+            raise SessionError(f"cap anon_max_concurrent_sessions_per_ip: this client IP already has {cap} open browser "
+                               "sessions (the limit without a token); finish one with usersim_finish first")
+        return
     if client and sum(1 for s in active if s.client == client) >= max_per_client():
         raise SessionError("this client already has the maximum number of open sessions; finish one first")
 
@@ -561,7 +585,7 @@ def _cell_session(study_id: str, cell_id: str, client: str, owner: str = "") -> 
         raise SessionError(f"cell {cell_id} was already run (status {row.get('status')})")
     if study.status != "running":
         raise SessionError(f"study is {study.status}")
-    _check_capacity(client)
+    _check_capacity(client, owner)
     row["status"] = "starting"
     row["live_thoughts"] = [{"at": _now(), "text": f"Opening {row['site_label']}…", "kind": "status"}]
     persona = f"{row['persona_name']}: {row['persona_bio']}"
@@ -600,7 +624,7 @@ async def start_session(
             raise SessionError("task is required")
         if not persona:
             raise SessionError("persona is required")
-        _check_capacity(client)
+        _check_capacity(client, owner)
         study = _new_study(url, task[:2000], persona[:2000])
         study.live_sessions[AGENT_ID]["mcp_owner"] = owner
         sim = SimSession(id=uuid.uuid4().hex, study=study, product_url=url, task=task, persona=persona, client=client,

@@ -137,7 +137,9 @@ def test_owner_is_token_fingerprint():
     def ctx(tok):
         return SimpleNamespace(request_context=SimpleNamespace(request=SimpleNamespace(headers={"authorization": f"Bearer {tok}"})))
 
-    assert SV._owner(ctx("t1")) == SV._owner(ctx("t1")) != SV._owner(ctx("t2"))
+    with mock.patch.object(SV, "_TOKENS", ["t1", "t2"]):  # only configured tokens count (Oct 17: others are anon)
+        assert SV._owner(ctx("t1")) == SV._owner(ctx("t1")) != SV._owner(ctx("t2"))
+        assert not SV._owner(ctx("t1")).startswith("anon:")
     assert "t1" not in SV._owner(ctx("t1"))
     assert SV._owner(None) == ""
 
