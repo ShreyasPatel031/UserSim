@@ -305,10 +305,23 @@ async def _playwright() -> Any:
         return _PW
 
 
+def same_owner(have: str | None, caller: str) -> bool:
+    """Is the caller allowed to use what `have` created? Token callers: the same token fingerprint. Callers without
+    a token: any caller without a token. Their key is a hash of the client IP, and many real clients (Cloudflare
+    WARP, iCloud Private Relay, mobile carrier NAT, cloud agent egress pools) send consecutive requests from
+    different IPs, so an exact-IP match made a study or session vanish one call after it was created (Oct 18 e2e:
+    start_study from 104.28.217.48, start_session from 104.28.249.47 -> "unknown study_id"). For sessions the
+    session_id itself is the credential: a random 128-bit id returned only to its creator. The per-IP caps still
+    use the exact IP key."""
+    if have is None:
+        return False
+    return have == caller or (is_anon(have) and is_anon(caller))
+
+
 def get_session(session_id: str, owner: str | None = None) -> SimSession:
-    """owner: the caller's token fingerprint. Another caller's session looks unknown."""
+    """owner: the caller's owner key (see same_owner). Another caller's session looks unknown."""
     sim = SESSIONS.get(session_id or "")
-    if sim is None or (owner is not None and sim.owner != owner):
+    if sim is None or (owner is not None and not same_owner(sim.owner, owner)):
         raise SessionError(f"unknown session_id {session_id!r}")
     return sim
 
@@ -325,7 +338,7 @@ def study_owner(study: Any) -> str | None:
 
 def owns_study(study: Any, owner: str) -> bool:
     backend = study.get("backend") if isinstance(study, dict) else getattr(study, "backend", "")
-    return backend == "mcp" and study_owner(study) == owner
+    return backend == "mcp" and same_owner(study_owner(study), owner)
 
 
 def _active() -> list[SimSession]:

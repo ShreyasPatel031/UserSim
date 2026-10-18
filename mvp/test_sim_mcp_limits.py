@@ -126,11 +126,16 @@ class ServerCapTests(unittest.TestCase):
         self.assertFalse(SV._owner(_ctx(auth="Bearer tok-1")).startswith("anon:"))
         self.assertTrue(SV._owner(_ctx(auth="Bearer wrong")).startswith("anon:"))
 
-    def test_other_ip_cannot_reach_my_session_or_inbox(self):
+    def test_session_id_is_the_credential_without_a_token(self):
+        # Same client, next request from another IP of its NAT/relay pool: still its session (Oct 18 e2e).
         sim = self._sim(SV._owner(_ctx("203.0.113.5")))
         sim.inbox = SimpleNamespace(address="usersim.signups+x1@gmail.com")
-        out = json.loads(asyncio.run(SV.usersim_wait_for_verification_code(_ctx("203.0.113.6"), sim.id, 10)))
+        self.assertIs(S.get_session(sim.id, SV._owner(_ctx("203.0.113.6"))), sim)
+        # A guessed id is unknown; a token caller cannot reach a no-token session.
+        out = json.loads(asyncio.run(SV.usersim_wait_for_verification_code(_ctx("203.0.113.6"), "f" * 32 if sim.id != "f" * 32 else "e" * 32, 10)))
         self.assertIn("unknown session_id", out["error"])
+        with self.assertRaises(S.SessionError):
+            S.get_session(sim.id, "0123456789abcdef")
 
     def test_three_concurrent_sessions_per_ip(self):
         owner = SV._owner(_ctx())

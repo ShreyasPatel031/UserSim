@@ -21,7 +21,7 @@ No token, no env file, no tunnel. Since Oct 17, 2026 the endpoint is open to any
 | Transport | MCP **streamable HTTP**, stateless, JSON responses |
 | URL | `https://35-202-98-224.sslip.io/mcp` (methods GET, POST, DELETE) |
 | Auth | None. An optional `Authorization: Bearer <token>` still works for existing clients, and a valid token skips the anonymous caps. A **wrong** token gets **401** (remove the header instead) |
-| Who owns what | Without a token, your sessions and studies belong to your client IP. Another IP gets `unknown session_id` for them, and the inbox tools only return mail for the alias your own session created |
+| Who owns what | Without a token, the `session_id` is your credential: it is random, returned only to you, and works even if your IP changes between calls (NAT, Cloudflare WARP, iCloud Private Relay, cloud-agent egress pools). Keep it private. Study ids are public (they're in watch links), so any caller without a token who has a study id can run its queued cells. Token callers only see what their own token created. The inbox tools only return mail for the alias your own session created. Caps are still counted per client IP |
 
 ### Claude Code
 ```bash
