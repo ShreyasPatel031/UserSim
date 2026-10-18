@@ -499,7 +499,7 @@ async def usersim_predict_experience(
     ctx: Context,
     product: str = Field(description='Product name as review sites list it, e.g. "Basecamp". The scrapers search by this name.'),
     persona: AgentPersona = Field(description="The kind of user to predict for."),
-    product_url: str = Field(default="", description="Public URL of the product (context for the words; optional)."),
+    product_url: str = Field(default="", description="Public URL of the product. Used to check that scraped reviews are of THIS product (not another with the same name); without it the product's own reviews are not used."),
     task: str = Field(default="", description="What this user is trying to get done (optional)."),
     competitors: list[str] | None = Field(default=None, description='Names of 1-3 real rivals, e.g. ["Asana", "Trello"]. Used for the rating prior and for complaint topics. Omit to have them discovered from product_url.'),
 ) -> str:

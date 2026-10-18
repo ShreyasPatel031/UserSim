@@ -279,9 +279,68 @@ async def discover_rivals(url: str) -> list[str]:
     return [str(names.get(u) or "").strip() for u in plan.get("competitors") or [] if str(names.get(u) or "").strip()]
 
 
+IDENTITY_PROMPT = """Product: {product} ({url}).
+Review sites returned these reviews when searched for "{product}" (listed on the sites as: {found_as}):
+{sample}
+
+Are these reviews of THIS product, the one at {url}? Different products that share a name (another company's "{product}")
+do not count. Return {{"same_product": true/false, "why": "<one sentence>"}}"""
+
+RIVAL_PROMPT = """Product: {product} ({url}).
+"{rival}" was named as a competitor. Review sites returned these reviews for "{rival}" (listed as: {found_as}):
+{sample}
+
+Return {{"reviews_are_of_named_product": true/false, "direct_competitor": "yes" | "partly" | "no", "why": "<one sentence>"}}.
+"yes" = a buyer of {product} would seriously compare the two for the same job; "partly" = overlapping job or a different
+buyer; "no" = a different job."""
+
+
+def _sample(reviews: list[dict], k: int = 6) -> str:
+    rows = [r for r in reviews if r.get("pros") or r.get("text") or r.get("cons")][:k]
+    clip = lambda v: RS.clean(v)[:220] if v else "-"  # noqa: E731
+    return "\n".join(f"- [{r.get('source')}; {r.get('role') or 'role n/a'}] liked: {clip(r.get('pros'))} | disliked: "
+                     f"{clip(r.get('cons'))} | {clip(r.get('text'))}" for r in rows) or "(no review text)"
+
+
+async def check_identity(product: str, url: str, own: list[dict], rivals: dict[str, list[dict]], judge) -> dict[str, Any]:
+    """Model checks, in parallel (the YC test found same-name products and planner rivals that don't compete):
+    own reviews must be of the product at `url`; each rival's reviews must be of that rival, and it must compete."""
+    async def one(prompt: str) -> dict:
+        try:
+            j = await judge(prompt)
+            return j if isinstance(j, dict) else {}
+        except Exception as exc:  # noqa: BLE001 - an unchecked source is reported, not trusted
+            return {"error": f"{type(exc).__name__}: {str(exc)[:120]}"}
+    found = lambda revs: ", ".join(sorted({str(r.get("product") or "?") for r in revs}))[:200]  # noqa: E731
+    jobs = []
+    if own:
+        jobs.append(one(IDENTITY_PROMPT.format(product=product, url=url, found_as=found(own), sample=_sample(own))))
+    names = [n for n, revs in rivals.items() if revs]
+    jobs += [one(RIVAL_PROMPT.format(product=product, url=url, rival=n, found_as=found(rivals[n]), sample=_sample(rivals[n])))
+             for n in names]
+    res = await asyncio.gather(*jobs)
+    out = {"own": None, "rivals": {}}
+    if own:
+        j = res.pop(0)
+        out["own"] = {"ok": j.get("same_product") is True, "why": j.get("why") or j.get("error") or "no answer"}
+    for n, j in zip(names, res):
+        ok = j.get("reviews_are_of_named_product") is True and j.get("direct_competitor") in ("yes", "partly")
+        out["rivals"][n] = {"ok": ok, "direct": j.get("direct_competitor"), "why": j.get("why") or j.get("error") or "no answer"}
+    return out
+
+
+async def _default_judge(prompt: str) -> dict:
+    from capability.gemini_config import extract_json, gemini_chat
+
+    raw = await gemini_chat([{"role": "system", "content": "You know the B2B software market. Return JSON only."},
+                             {"role": "user", "content": prompt}], temperature=0.0, json_mode=True, thinking_budget=512)
+    j = extract_json(raw)
+    return j if isinstance(j, dict) else {}
+
+
 async def predict_experience(*, product: str, url: str, persona: dict[str, Any], task: str = "",
                              competitors: list[str] | None = None, wait_s: float = 45.0, llm=None,
-                             discover=None) -> dict[str, Any]:
+                             discover=None, judge=None) -> dict[str, Any]:
     """The agent-mode result. status: ok | pending (scrapes still running; call again) | no_data | disabled.
 
     No competitors given and a URL given: rivals are discovered with the study planner (said in evidence)."""
@@ -305,12 +364,22 @@ async def predict_experience(*, product: str, url: str, persona: dict[str, Any],
         return {"mode": "agent", "status": "pending", "pending": pending,
                 "reason": "live review scrapes take 1-2 minutes; call usersim_predict_experience again with the same arguments"}
     own = got[product]["reviews"]
-    riv = [x for n in rivals if got.get(n) for x in got[n]["reviews"]]
     errors = [e for v in got.values() if v for e in v.get("errors", [])]
     missing = [n for n in rivals if got.get(n) is not None and not got[n]["reviews"]]
+    # identity gate: no product URL means own reviews can't be checked, so they are not used (said in evidence)
+    ident = await check_identity(product, url, own if url else [], {n: got[n]["reviews"] for n in rivals if got.get(n)},
+                                 judge or _default_judge)
+    own_check = ident["own"] or ({"ok": False, "why": "no product_url given, so the reviews' identity can't be checked"}
+                                 if own and not url else None)
+    if own_check and not own_check["ok"]:
+        own = []
+    kept = [n for n, c in ident["rivals"].items() if c["ok"]]
+    riv = [x for n in kept for x in got[n]["reviews"]]
     if not own and not riv:
         return {"mode": "agent", "status": "no_data", "pending": pending, "errors": errors,
-                "reason": f"no reviews found for {product}" + (f" or its rivals {rivals}" if rivals else "; name its competitors to use theirs")}
+                "own_reviews_check": own_check, "rivals_check": ident["rivals"],
+                "reason": f"no usable reviews for {product}" + (f" or its rivals {rivals}" if rivals else "; name its competitors to use theirs")
+                          + " (see own_reviews_check / rivals_check)"}
     ratings = rating_estimates(own, riv)
     personalize(ratings, persona)
     ev = evidence_text(product, own, riv, persona, ratings)
@@ -335,6 +404,7 @@ async def predict_experience(*, product: str, url: str, persona: dict[str, Any],
         "words_error": words.get("error"),
         "evidence": {"own_reviews": len(own), "rival_reviews": len(riv), "rivals": rivals, "rivals_source": rivals_source,
                      "rivals_with_reviews": sorted({x["product"] for x in riv}),
+                     "own_reviews_check": own_check, "rivals_check": ident["rivals"], "rivals_used": kept,
                      "rivals_without_reviews": missing, "still_scraping": pending, "errors": errors},
         "how_to_read": ("ratings.*.estimate is the expected level for users of this product (own recent reviews, shrunk to "
                         "rivals). for_this_persona adds small within-product offsets for this persona's role, company size, "

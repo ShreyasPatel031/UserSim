@@ -190,7 +190,7 @@ Returns `{study_id, watch_url, report_url, runs, cells:[…], rules:{max_steps, 
 | --- | --- | --- |
 | `product` | string | Name as review sites list it, e.g. `"Basecamp"`. The scrapers search by this name. |
 | `persona` | object | `role` (required); `company_size`, `industry`, `time_used` (`"trial"`, `"<6 months"`, `"6-12 months"`, `"1-2 years"`, `"2+ years"`) and `bio` are optional. |
-| `product_url` | string | Optional context. |
+| `product_url` | string | Strongly recommended. A model checks that the scraped reviews are of the product at this URL and not another product with the same name. Without it, the product's own reviews are not used. |
 | `task` | string | Optional: what this user is trying to get done. |
 | `competitors` | string[] | 1–3 real rival names. They set the rating prior and the complaint topics. Omit them to discover rivals from `product_url` with the study planner; `evidence.rivals_source` says which. |
 
@@ -215,6 +215,11 @@ What you get on `ok`:
   people-like-this-persona averages (`mvp/agent_mode_segments.json`), the rivals' ratings and complaint topics, and the most
   similar reviewers of the product and its rivals.
 - **`evidence`**: how many reviews were used, which rivals had none, and scraper errors.
+  - `own_reviews_check` and `rivals_check` record the identity gate. A model checks that the own reviews are of this
+    product, and that each rival's reviews are of that rival and it is a direct or partial competitor.
+  - Anything that fails, or can't be checked, is left out, and the reason is given. `rivals_used` lists the rivals that passed.
+  - The gate was added after the YC test, where a startup named "Dock" pulled in reviews of Dock Health, and the planner
+    named rivals that do a different job.
 
 Callers without a token are charged `est_usd_per_prediction` against the daily caps, only when a call returns `ok`.
 

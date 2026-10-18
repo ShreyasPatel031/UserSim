@@ -153,6 +153,19 @@ rating − shown estimate), with w chosen on DEV products.
 - **Retested on the live 4-site people (168, agent-mode condition): it hurts.** RMSE 0.835 (shown) → 0.856 at
   w=0.5 → 0.938 at w=1. Confirmed: not shipped.
 
+### 7. Identity gate (after session usersim-9c's YC test)
+
+The YC test found two problems: "Dock" scraped Dock Health's reviews (a same-name product), and the planner named
+rivals that do a different job.
+- The gate: `agent_mode.check_identity` asks the model whether the own reviews are of the product at `product_url`, and
+  whether each rival's reviews are of that rival and it is a direct or partial competitor.
+- Anything that fails or can't be checked is left out; `evidence.own_reviews_check` and `rivals_check` give the reason.
+- **False-rejection check on known-good data** (`gate_check.py`; 35 benchmark products, own reviews plus the top 3
+  same-category rivals):
+  - Own reviews: 35/35 kept. Rivals: 100/105 kept.
+  - The 5 rejections are real non-competitors that the snapshot's broad categories put together: Cloudflare and
+    1Password for Okta, Cloudflare for LastPass, Canva and Adobe CC for GitLab.
+
 ## Agent mode (shipped in PR #86)
 
 - **Tool**: `usersim_predict_experience` in `mvp/sim_mcp/server.py`; logic in `mvp/agent_mode.py`.
