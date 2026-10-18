@@ -78,10 +78,15 @@ claude mcp add ux-experience -- python experiments/staged_context/ux_mcp_server.
 
 ## In UserSim studies (`mvp/review_context.py`)
 
-Every study's session-feedback step (`mvp/study.py::summarize_agent_feedback`) now receives Capterra + G2 evidence
-about similar competitors for the persona: people-like-them rating averages, competitor complaint-topic rates and
-reviews from the most similar people. Rivals the local snapshots do not cover are scraped live from Capterra
-(`trakk/capterra-reviews-scraper`) and G2 (`automation-lab/g2-scraper`) on Apify, started in the background when
-the study starts and cached in `cache/apify/`. Needs `APIFY_TOKEN` (or `~/.config/apify/token`); without it only the
-local snapshots are used. The feedback adds `likely_frictions_from_similar_users`; observed `friction_points` stay
-grounded in the recorded steps. Disable with `MVP_REVIEW_CONTEXT=0`.
+Production uses **only live Capterra + G2 scrapes of the competitors the study plan names** (Apify:
+`trakk/capterra-reviews-scraper`, `automation-lab/g2-scraper`; needs `APIFY_TOKEN`). The FreshCrawl snapshots
+here cover arbitrary products and are research data only, never used in studies. Scrapes start in the background
+when a study starts and are cached per rival in `cache/apify/`. From them the feedback step gets people-like-this-
+persona rating averages, complaint-topic rates and the most similar people's reviews, plus a
+`likely_frictions_from_similar_users` field. Observed `friction_points` stay grounded in the recorded steps.
+If no scrape is usable, the feedback carries no review evidence and the log says why; nothing is substituted.
+Failed scrapes (no credit, network) are not cached, so the next study retries them. Disable with `MVP_REVIEW_CONTEXT=0`.
+
+Known limits (Oct 2026): Capterra lists few AI coding tools (search returns other products, which are dropped);
+the G2 scraper returns no job titles and numeric ids for industry and company segment, so role-matching uses
+Capterra reviews only.

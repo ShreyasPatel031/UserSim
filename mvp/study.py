@@ -1205,9 +1205,10 @@ async def _review_evidence(site_url: str, persona: dict[str, Any], rivals: list[
         print(f"[review_context] skipped for {site_url}: {exc!r}", flush=True)
         return ""
     if not ctx.get("text"):
+        print(f"[review_context] no competitor review evidence for {site_url}: {ctx.get('status')} ({ctx.get('reason')})", flush=True)
         return ""
-    return ("\nEvidence from real Capterra and G2 reviews of competing products by people like this persona "
-            f"(category: {ctx.get('category')}):\n{ctx['text'][:9000]}\n")
+    return ("\nEvidence from live Capterra and G2 reviews of this study's competitors, by people like this persona:\n"
+            f"{ctx['text'][:9000]}\n")
 
 
 async def summarize_agent_feedback(

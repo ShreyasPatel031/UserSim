@@ -54,7 +54,9 @@ G2 reviewers, but it never made things worse, so it is kept.
 ## How to use it in a task run
 
 1. Before writing feedback, attach the package for the persona as **outside evidence**:
-   - `mvp/review_context.py::review_context`, or `corpus.sections(person, category, {"capterra", "g2"}, exclude_product, mask)`.
+   - production: `mvp/review_context.py::review_context`, built only from **live scrapes of the study's named rivals**;
+   - the FreshCrawl snapshots (`corpus.py`) are for research and evaluation only. They cover arbitrary products, so
+     never use them as a product's competitors.
 2. Observed frictions must still come only from the session.
    - Reviews may shape overall sentiment, conversion, and a separate `likely_frictions_from_similar_users` field.
 3. For ratings, report the people-like-them average (or the agent's number given it). Don't let the agent guess raw.
