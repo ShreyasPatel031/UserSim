@@ -1,0 +1,162 @@
+{
+ "cell": {
+  "cell_id": "t5__p5__product",
+  "site": "https://www.smartsheet.com",
+  "site_name": "Product",
+  "persona_name": "Emily White",
+  "persona": "Emily oversees design projects and client deliverables. She needs a tool for visual project planning and client communication.",
+  "task": "Compare enterprise plan features",
+  "status": "queued"
+ },
+ "steps": [
+  {
+   "turn": 0,
+   "tool": "usersim_observe",
+   "action": null
+  },
+  {
+   "turn": 1,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 2,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 3,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 4,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 5,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 6,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 7,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 8,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 9,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 10,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 11,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 12,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 13,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 14,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 15,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 16,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 17,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 18,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 19,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 20,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 21,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 22,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 23,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 24,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 25,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 26,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 27,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 28,
+   "tool": "usersim_finish",
+   "action": null
+  }
+ ],
+ "started": 1792366286.9147918,
+ "session_id": "a658b8c1ab824a0d932bab0328d55570",
+ "finish": "{\"study_id\": \"75183a40-5bd9-4a57-b31e-1833c53e1893\", \"cell_id\": \"t5__p5__product\", \"goal_reached\": true, \"proof_pass\": true, \"study_phase\": \"80/108 runs done \\u00b7 8 simulated users working\", \"next\": \"Done with this cell. The study report is written when the last cell finishes.\"}",
+ "seconds": 268
+}
