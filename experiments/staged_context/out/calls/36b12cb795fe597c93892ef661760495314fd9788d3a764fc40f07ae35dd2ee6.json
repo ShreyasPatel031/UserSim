@@ -1,0 +1,36 @@
+{
+  "stage": "hm_plist",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "36b12cb795fe597c93892ef661760495314fd9788d3a764fc40f07ae35dd2ee6",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 1024,
+  "input_tokens": 448,
+  "output_tokens": 1088,
+  "cost_usd": 0.0028544,
+  "elapsed_s": 6.02,
+  "error": null,
+  "text": "{\n  \"pros\": [\n    \"Highly customizable to fit diverse workflows and team needs\",\n    \"Feature-rich, offering a wide array of tools for project management\",\n    \"Multiple view options (List, Board, Calendar, etc.) are readily available\",\n    \"Efficient task creation with inline adding and quick actions\",\n    \"Smooth drag-and-drop functionality for task management\",\n    \"Generous free plan allows extensive exploration of features\"\n  ],\n  \"cons\": [\n    \"Can be overwhelming and complex, leading to a steep learning curve\",\n    \"Performance issues, with users often reporting slowness or lag\",\n    \"UI can feel cluttered and busy, especially with default panels like AI chat\",\n    \"Inconsistent user experience and occasional bugs or glitches\",\n    \"Onboarding can be messy with pre-filled demo data that needs cleanup\",\n    \"Redundant features or lack of guidance can lead to duplicate custom fields\"\n  ],\n  \"overall_rating\": 3.5\n}",
+  "json": {
+    "pros": [
+      "Highly customizable to fit diverse workflows and team needs",
+      "Feature-rich, offering a wide array of tools for project management",
+      "Multiple view options (List, Board, Calendar, etc.) are readily available",
+      "Efficient task creation with inline adding and quick actions",
+      "Smooth drag-and-drop functionality for task management",
+      "Generous free plan allows extensive exploration of features"
+    ],
+    "cons": [
+      "Can be overwhelming and complex, leading to a steep learning curve",
+      "Performance issues, with users often reporting slowness or lag",
+      "UI can feel cluttered and busy, especially with default panels like AI chat",
+      "Inconsistent user experience and occasional bugs or glitches",
+      "Onboarding can be messy with pre-filled demo data that needs cleanup",
+      "Redundant features or lack of guidance can lead to duplicate custom fields"
+    ],
+    "overall_rating": 3.5
+  },
+  "ts": "2026-10-18T11:24:06.246961+00:00"
+}

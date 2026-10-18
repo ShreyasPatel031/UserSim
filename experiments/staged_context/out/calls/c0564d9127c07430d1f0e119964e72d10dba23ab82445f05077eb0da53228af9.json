@@ -1,0 +1,27 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c0564d9127c07430d1f0e119964e72d10dba23ab82445f05077eb0da53228af9",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 147,
+  "output_tokens": 468,
+  "cost_usd": 0.0012141,
+  "elapsed_s": 3.12,
+  "error": null,
+  "text": "{\n  \"task\": \"Automate project and task management\",\n  \"benefits\": [\n    \"Automates project and task management\",\n    \"Offers instant messaging features\",\n    \"Offers chat features\",\n    \"Accomplishes all needs without complications\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Automate project and task management",
+    "benefits": [
+      "Automates project and task management",
+      "Offers instant messaging features",
+      "Offers chat features",
+      "Accomplishes all needs without complications"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T11:23:43.538389+00:00"
+}

@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "baf52d56bcfaf345a647f988df8bccb016ddc27b191512cd354fcdf1aef612b4",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 190,
+  "output_tokens": 458,
+  "cost_usd": 0.001202,
+  "elapsed_s": 2.65,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage projects\",\n  \"benefits\": [\n    \"Offers extensive functionality\",\n    \"Easy to learn using the free account\",\n    \"Allows starting with a basic version using the free account\",\n    \"Provides a lot of information and tutorials online\"\n  ],\n  \"frictions\": [\n    \"Requires time to get familiar with the software\",\n    \"Takes time to learn about its many features\"\n  ]\n}",
+  "json": {
+    "task": "Manage projects",
+    "benefits": [
+      "Offers extensive functionality",
+      "Easy to learn using the free account",
+      "Allows starting with a basic version using the free account",
+      "Provides a lot of information and tutorials online"
+    ],
+    "frictions": [
+      "Requires time to get familiar with the software",
+      "Takes time to learn about its many features"
+    ]
+  },
+  "ts": "2026-10-18T11:23:47.474950+00:00"
+}

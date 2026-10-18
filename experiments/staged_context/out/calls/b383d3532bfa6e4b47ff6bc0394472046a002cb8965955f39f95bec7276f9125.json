@@ -1,0 +1,27 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b383d3532bfa6e4b47ff6bc0394472046a002cb8965955f39f95bec7276f9125",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 140,
+  "output_tokens": 390,
+  "cost_usd": 0.001017,
+  "elapsed_s": 3.69,
+  "error": null,
+  "text": "{\n  \"task\": \"Get organized\",\n  \"benefits\": [\n    \"Has everything\",\n    \"Has something for anyone\"\n  ],\n  \"frictions\": [\n    \"Has a slight learning curve\"\n  ]\n}",
+  "json": {
+    "task": "Get organized",
+    "benefits": [
+      "Has everything",
+      "Has something for anyone"
+    ],
+    "frictions": [
+      "Has a slight learning curve"
+    ]
+  },
+  "ts": "2026-10-18T11:23:45.056368+00:00"
+}

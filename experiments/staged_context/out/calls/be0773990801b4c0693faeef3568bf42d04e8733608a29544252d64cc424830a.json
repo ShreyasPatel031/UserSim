@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "be0773990801b4c0693faeef3568bf42d04e8733608a29544252d64cc424830a",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 190,
+  "output_tokens": 501,
+  "cost_usd": 0.0013095000000000001,
+  "elapsed_s": 2.88,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage projects and tasks within a firm\",\n  \"benefits\": [\n    \"Offers multiple ways to collaborate\",\n    \"Highly customizable\",\n    \"Supports different visual styles like Gantt, bird's eye, and task by task\"\n  ],\n  \"frictions\": [\n    \"Has an overwhelming number of options\",\n    \"Difficult to set up and customize for a specific firm\"\n  ]\n}",
+  "json": {
+    "task": "Manage projects and tasks within a firm",
+    "benefits": [
+      "Offers multiple ways to collaborate",
+      "Highly customizable",
+      "Supports different visual styles like Gantt, bird's eye, and task by task"
+    ],
+    "frictions": [
+      "Has an overwhelming number of options",
+      "Difficult to set up and customize for a specific firm"
+    ]
+  },
+  "ts": "2026-10-18T11:23:46.028717+00:00"
+}

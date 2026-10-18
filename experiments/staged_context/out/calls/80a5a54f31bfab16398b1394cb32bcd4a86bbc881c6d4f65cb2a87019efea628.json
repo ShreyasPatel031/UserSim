@@ -1,0 +1,31 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "80a5a54f31bfab16398b1394cb32bcd4a86bbc881c6d4f65cb2a87019efea628",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 294,
+  "output_tokens": 610,
+  "cost_usd": 0.0016132,
+  "elapsed_s": 4.9,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage tasks and projects\",\n  \"benefits\": [\n    \"Organize tasks and projects in one place\",\n    \"Gain good visibility of work\",\n    \"Collaborate with the team\",\n    \"Customize workflows\"\n  ],\n  \"frictions\": [\n    \"Can be overwhelming initially due to many options\",\n    \"Interface can feel overloaded\",\n    \"Navigation can be slow until familiarized\"\n  ]\n}",
+  "json": {
+    "task": "Manage tasks and projects",
+    "benefits": [
+      "Organize tasks and projects in one place",
+      "Gain good visibility of work",
+      "Collaborate with the team",
+      "Customize workflows"
+    ],
+    "frictions": [
+      "Can be overwhelming initially due to many options",
+      "Interface can feel overloaded",
+      "Navigation can be slow until familiarized"
+    ]
+  },
+  "ts": "2026-10-18T11:23:42.721687+00:00"
+}

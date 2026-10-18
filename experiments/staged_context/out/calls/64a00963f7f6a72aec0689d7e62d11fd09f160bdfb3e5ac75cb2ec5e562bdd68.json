@@ -1,0 +1,27 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "64a00963f7f6a72aec0689d7e62d11fd09f160bdfb3e5ac75cb2ec5e562bdd68",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 163,
+  "output_tokens": 309,
+  "cost_usd": 0.0008214,
+  "elapsed_s": 2.53,
+  "error": null,
+  "text": "{\n  \"task\": \"Keep track of tasks, deadlines, and project progress.\",\n  \"benefits\": [\n    \"customizable task views\",\n    \"seamless collaboration features\"\n  ],\n  \"frictions\": [\n    \"steep learning curve for advanced features\"\n  ]\n}",
+  "json": {
+    "task": "Keep track of tasks, deadlines, and project progress.",
+    "benefits": [
+      "customizable task views",
+      "seamless collaboration features"
+    ],
+    "frictions": [
+      "steep learning curve for advanced features"
+    ]
+  },
+  "ts": "2026-10-18T11:23:40.820727+00:00"
+}

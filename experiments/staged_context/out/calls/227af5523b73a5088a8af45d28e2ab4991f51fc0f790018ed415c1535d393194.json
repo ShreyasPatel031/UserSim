@@ -1,0 +1,25 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "227af5523b73a5088a8af45d28e2ab4991f51fc0f790018ed415c1535d393194",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 147,
+  "output_tokens": 431,
+  "cost_usd": 0.0011216000000000002,
+  "elapsed_s": 2.78,
+  "error": null,
+  "text": "{\n  \"task\": \"Collaborate between employees and departments to keep tasks on track\",\n  \"benefits\": [\n    \"Ease of use for collaboration\",\n    \"Helps keep tasks on track\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Collaborate between employees and departments to keep tasks on track",
+    "benefits": [
+      "Ease of use for collaboration",
+      "Helps keep tasks on track"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T11:23:46.652338+00:00"
+}

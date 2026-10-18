@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "df33f073c50a0fa80a5b9e95ef394ad34b81284d37c21ee12a041e16327cf921",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 345,
+  "output_tokens": 489,
+  "cost_usd": 0.001326,
+  "elapsed_s": 3.24,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage projects and processes across different departments\",\n  \"benefits\": [\n    \"Easy to use and train new users\",\n    \"Highly customizable for different needs and departments\",\n    \"Facilitates project collaboration and cross-team consistency\",\n    \"Excellent customer support\"\n  ],\n  \"frictions\": [\n    \"Feature and update requests take months to be implemented\",\n    \"Upvoted features are sometimes never considered\"\n  ]\n}",
+  "json": {
+    "task": "Manage projects and processes across different departments",
+    "benefits": [
+      "Easy to use and train new users",
+      "Highly customizable for different needs and departments",
+      "Facilitates project collaboration and cross-team consistency",
+      "Excellent customer support"
+    ],
+    "frictions": [
+      "Feature and update requests take months to be implemented",
+      "Upvoted features are sometimes never considered"
+    ]
+  },
+  "ts": "2026-10-18T11:23:45.508411+00:00"
+}

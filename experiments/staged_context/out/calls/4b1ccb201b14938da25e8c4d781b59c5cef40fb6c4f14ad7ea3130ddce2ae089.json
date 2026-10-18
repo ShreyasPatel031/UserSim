@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4b1ccb201b14938da25e8c4d781b59c5cef40fb6c4f14ad7ea3130ddce2ae089",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 158,
+  "output_tokens": 484,
+  "cost_usd": 0.0012573999999999999,
+  "elapsed_s": 3.5,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage projects across a team\",\n  \"benefits\": [\n    \"Facilitates team project management\",\n    \"Provides many templates for various project management scenarios\",\n    \"Has a user-friendly interface\",\n    \"Offers a highly customizable interface\"\n  ],\n  \"frictions\": [\n    \"Calendar view becomes difficult to manage with too many assigned tasks\"\n  ]\n}",
+  "json": {
+    "task": "Manage projects across a team",
+    "benefits": [
+      "Facilitates team project management",
+      "Provides many templates for various project management scenarios",
+      "Has a user-friendly interface",
+      "Offers a highly customizable interface"
+    ],
+    "frictions": [
+      "Calendar view becomes difficult to manage with too many assigned tasks"
+    ]
+  },
+  "ts": "2026-10-18T11:23:41.395508+00:00"
+}

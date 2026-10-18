@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4b97c0e6b7dc3b6e6bd8e1636f1b05c5382ed61f6f5fc53b8195938cad3c6fa1",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 329,
+  "output_tokens": 523,
+  "cost_usd": 0.0014062,
+  "elapsed_s": 4.48,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage projects and team collaboration on a single platform.\",\n  \"benefits\": [\n    \"Flexibility of using different tools on one platform\",\n    \"Ability to manage more projects in one platform\",\n    \"Recent update on form management (FORM HUB) stands out\",\n    \"Improved customer management\"\n  ],\n  \"frictions\": [\n    \"Email management is still falling behind\",\n    \"No integration with Mailchimp\"\n  ]\n}",
+  "json": {
+    "task": "Manage projects and team collaboration on a single platform.",
+    "benefits": [
+      "Flexibility of using different tools on one platform",
+      "Ability to manage more projects in one platform",
+      "Recent update on form management (FORM HUB) stands out",
+      "Improved customer management"
+    ],
+    "frictions": [
+      "Email management is still falling behind",
+      "No integration with Mailchimp"
+    ]
+  },
+  "ts": "2026-10-18T11:23:40.803820+00:00"
+}

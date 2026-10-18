@@ -254,7 +254,8 @@ Returns the agent-mode result with `mode: "human"`, the agent-mode words under `
   plus the run's product observations. Held out on 173 real reviewers of 5 products, cons recall rose by
   0.046 (95% CI +0.007 to +0.085) and pros were unchanged. Evidence: `experiments/staged_context/hm_agent_eval.py`.
 - **No own reviews (a new product):** at most one pro and one con change. Notes about setup, free-plan limits,
-  onboarding, pricing, billing and support are dropped first, because free-form notes hurt in that setting.
+  onboarding, pricing, billing and support are dropped first. On 5 products this raised cons recall by 0.033
+  (95% CI +0.001 to +0.066), while free-form notes lowered both pros and cons.
 
 Sign-up is the main limit for callers without a token: 6 of 12 test runs were blocked. Sites rejected `+` email
 aliases, showed image CAPTCHAs, required a phone, or had no free plan.

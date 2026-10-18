@@ -1,0 +1,27 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d162c76dce32db747819067f829c8d8223c748821d60bc229cc75a3c1dbd8f49",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 148,
+  "output_tokens": 372,
+  "cost_usd": 0.0009743999999999999,
+  "elapsed_s": 2.81,
+  "error": null,
+  "text": "{\n  \"task\": \"Track and schedule projects\",\n  \"benefits\": [\n    \"flexibility\",\n    \"manage all projects from a single point\"\n  ],\n  \"frictions\": [\n    \"customer support is not proactive\"\n  ]\n}",
+  "json": {
+    "task": "Track and schedule projects",
+    "benefits": [
+      "flexibility",
+      "manage all projects from a single point"
+    ],
+    "frictions": [
+      "customer support is not proactive"
+    ]
+  },
+  "ts": "2026-10-18T11:23:40.195446+00:00"
+}

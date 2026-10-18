@@ -1,0 +1,28 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0aba4ccd37d7fab8e9fd48805700ad771aa1cebfe86ee921e5b87477fc1b7472",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 150,
+  "output_tokens": 475,
+  "cost_usd": 0.0012324999999999999,
+  "elapsed_s": 3.02,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage projects\",\n  \"benefits\": [\n    \"Customer support is responsive\",\n    \"Easy to use\",\n    \"Easy to manage\"\n  ],\n  \"frictions\": [\n    \"Had issues with integration\"\n  ]\n}",
+  "json": {
+    "task": "Manage projects",
+    "benefits": [
+      "Customer support is responsive",
+      "Easy to use",
+      "Easy to manage"
+    ],
+    "frictions": [
+      "Had issues with integration"
+    ]
+  },
+  "ts": "2026-10-18T11:23:48.292888+00:00"
+}

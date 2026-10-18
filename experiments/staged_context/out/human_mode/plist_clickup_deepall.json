@@ -1,0 +1,573 @@
+{
+  "lists": {
+    "0": {
+      "none": {
+        "pros": [
+          "Extremely feature-rich, 'all-in-one' solution",
+          "High level of customization for workflows and views",
+          "Excellent value, generous free plan",
+          "Multiple task views (List, Board, Calendar, Gantt)",
+          "Strong integration capabilities with other tools",
+          "Active development with frequent new features"
+        ],
+        "cons": [
+          "Overwhelming and steep learning curve",
+          "Frequent performance issues (slow, laggy)",
+          "Can be overly complex, leading to setup paralysis",
+          "Inconsistent user interface and experience",
+          "Prone to bugs and glitches after updates",
+          "Notification system can be chaotic and overwhelming"
+        ],
+        "overall_rating": 3.8
+      },
+      "ctx": {
+        "pros": [
+          "Extremely comprehensive feature set, aiming to be an 'all-in-one' solution.",
+          "High degree of customization and flexibility to adapt to various workflows.",
+          "Multiple views (List, Board, Calendar, Gantt, etc.) for diverse preferences.",
+          "Strong collaboration features for team communication and project tracking.",
+          "Good value for money, especially given the extensive functionality.",
+          "Frequent updates and new features are regularly introduced."
+        ],
+        "cons": [
+          "Steep learning curve due to the sheer number of features and options.",
+          "Can feel overwhelming and complex, leading to initial setup challenges.",
+          "Performance issues, including slow loading times or occasional lag.",
+          "Frequent bugs or glitches, especially after major updates.",
+          "Mobile app functionality is often less robust and can be clunky.",
+          "Notification system can be overwhelming or difficult to manage effectively."
+        ],
+        "overall_rating": 4.2
+      },
+      "run": {
+        "pros": [
+          "Highly customizable to fit diverse workflows and team needs",
+          "Feature-rich, offering a wide array of tools for project management",
+          "Multiple view options (List, Board, Calendar, etc.) are readily available",
+          "Efficient task creation with inline adding and quick actions",
+          "Smooth drag-and-drop functionality for task management",
+          "Generous free plan allows extensive exploration of features"
+        ],
+        "cons": [
+          "Can be overwhelming and complex, leading to a steep learning curve",
+          "Performance issues, with users often reporting slowness or lag",
+          "UI can feel cluttered and busy, especially with default panels like AI chat",
+          "Inconsistent user experience and occasional bugs or glitches",
+          "Onboarding can be messy with pre-filled demo data that needs cleanup",
+          "Redundant features or lack of guidance can lead to duplicate custom fields"
+        ],
+        "overall_rating": 3.5
+      },
+      "ctx+run": {
+        "pros": [
+          "Highly customizable with many views and features to adapt to any workflow",
+          "Efficient task creation and management, including inline adding and drag-and-drop",
+          "Offers a generous free plan and competitive pricing for its extensive functionality",
+          "Centralizes project management, documents, and communication in one platform",
+          "Strong collaboration tools for team communication and shared tasks",
+          "Intuitive interface for core functionalities once familiarized"
+        ],
+        "cons": [
+          "Steep learning curve due to the sheer number of features and customization options",
+          "Can feel overwhelming and cluttered, especially for new users or smaller teams",
+          "Performance issues, including slow loading times and occasional glitches",
+          "Mobile app functionality and user experience are often less robust than desktop",
+          "Reporting and analytics can be basic or require significant setup",
+          "Notifications can be excessive or difficult to manage effectively"
+        ],
+        "overall_rating": 4.3
+      },
+      "ctx+runF": {
+        "pros": [
+          "Extensive features and customization options make it highly versatile for various workflows.",
+          "Intuitive core task management, like adding tasks and using Kanban boards, is quick and efficient.",
+          "Offers a wide range of views (List, Board, Calendar, etc.) to suit different preferences.",
+          "Strong automation capabilities help streamline repetitive tasks.",
+          "Good value for money, especially with a robust free tier for smaller teams.",
+          "Centralizes many project management functions into one platform."
+        ],
+        "cons": [
+          "Significant learning curve due to the sheer number of features and configuration options.",
+          "Can feel overwhelming and cluttered, especially for new users or smaller projects.",
+          "Performance issues, with some pages or features loading slowly.",
+          "Customization, while powerful, can be complex to set up and manage effectively.",
+          "Mobile app functionality and user experience are often reported as less polished than desktop.",
+          "Notifications can be excessive or difficult to configure precisely."
+        ],
+        "overall_rating": 4.3
+      },
+      "prosRunF_consCtx": {
+        "pros": [
+          "Extensive features and customization options make it highly versatile for various workflows.",
+          "Intuitive core task management, like adding tasks and using Kanban boards, is quick and efficient.",
+          "Offers a wide range of views (List, Board, Calendar, etc.) to suit different preferences.",
+          "Strong automation capabilities help streamline repetitive tasks.",
+          "Good value for money, especially with a robust free tier for smaller teams.",
+          "Centralizes many project management functions into one platform."
+        ],
+        "cons": [
+          "Steep learning curve due to the sheer number of features and options.",
+          "Can feel overwhelming and complex, leading to initial setup challenges.",
+          "Performance issues, including slow loading times or occasional lag.",
+          "Frequent bugs or glitches, especially after major updates.",
+          "Mobile app functionality is often less robust and can be clunky.",
+          "Notification system can be overwhelming or difficult to manage effectively."
+        ],
+        "overall_rating": 4.2
+      },
+      "edit1": {
+        "pros": [
+          "Extremely comprehensive feature set, aiming to be an 'all-in-one' solution.",
+          "High degree of customization and flexibility to adapt to various workflows.",
+          "Multiple views (List, Board, Calendar, Gantt, etc.) for diverse preferences.",
+          "Strong collaboration features for team communication and project tracking.",
+          "Good value for money, especially given the extensive functionality.",
+          "Frequent updates and new features are regularly introduced."
+        ],
+        "cons": [
+          "Steep learning curve due to the sheer number of features and options.",
+          "Can feel overwhelming and complex, leading to initial setup challenges.",
+          "Performance issues, including slow loading times or occasional lag.",
+          "Frequent bugs or glitches, especially after major updates.",
+          "Mobile app functionality is often less robust and can be clunky.",
+          "The interface can feel cluttered or visually overwhelming, especially with default panels."
+        ],
+        "overall_rating": 4.2,
+        "changed": [
+          "Cons: 'Notification system can be overwhelming or difficult to manage effectively' was replaced by 'The interface can feel cluttered or visually overwhelming, especially with default panels' because the Brain AI chat panel note directly highlighted visual clutter and screen space issues."
+        ]
+      },
+      "edit2": {
+        "pros": [
+          "Extremely comprehensive feature set, aiming to be an 'all-in-one' solution.",
+          "High degree of customization and flexibility to adapt to various workflows.",
+          "Multiple views (List, Board, Calendar, Gantt, etc.) are readily available for diverse preferences.",
+          "Strong collaboration features for team communication and project tracking.",
+          "Good value for money, especially given the extensive functionality.",
+          "Frequent updates and new features are regularly introduced."
+        ],
+        "cons": [
+          "Steep learning curve due to the sheer number of features and options.",
+          "Can feel overwhelming and complex, with potential for feature duplication and initial setup challenges.",
+          "Performance issues, including slow loading times or occasional lag.",
+          "Frequent bugs or glitches, especially after major updates.",
+          "Mobile app functionality is often less robust and can be clunky.",
+          "Notification system can be overwhelming or difficult to manage effectively."
+        ],
+        "overall_rating": 4.2,
+        "changed": [
+          "pros[2]: 'Multiple views (List, Board, Calendar, Gantt, etc.) are readily available for diverse preferences.' justified by '[benefit] A Board (Kanban) view tab already existed on the list next to List, so the Kanban view needed one click rather than setup.'",
+          "cons[1]: 'Can feel overwhelming and complex, with potential for feature duplication and initial setup challenges.' justified by '[friction] ClickUp already has a built-in flag-style Priority on every card, so creating a custom 'Priority' dropdown gives no warning about duplicating that built-in field.' and '[friction] The new workspace was pre-filled with Project 1, Project 2 and placeholder Task 1-3 items, so my Feature X tasks ended up mixed in with demo clutter unless I spent extra steps creating a new list or deleting them.'"
+        ]
+      },
+      "edit1F": {
+        "pros": [
+          "Extremely comprehensive feature set, aiming to be an 'all-in-one' solution.",
+          "High degree of customization and flexibility to adapt to various workflows.",
+          "Multiple views (List, Board, Calendar, Gantt, etc.) for diverse preferences.",
+          "Strong collaboration features for team communication and project tracking.",
+          "Good value for money, especially given the extensive functionality.",
+          "Frequent updates and new features are regularly introduced."
+        ],
+        "cons": [
+          "Steep learning curve due to the sheer number of features and options.",
+          "Can feel overwhelming and complex, leading to initial setup challenges.",
+          "Performance issues, including slow loading times or occasional lag.",
+          "Frequent bugs or glitches, especially after major updates.",
+          "Mobile app functionality is often less robust and can be clunky.",
+          "The user interface can be cluttered or intrusive, especially with default panels."
+        ],
+        "overall_rating": 4.2,
+        "changed": [
+          "cons: Replaced 'Notification system can be overwhelming or difficult to manage effectively.' with 'The user interface can be cluttered or intrusive, especially with default panels.' based on the note '[friction] A Brain AI chat panel opened by default and took about a third of the screen, which squeezed the list so task names and the custom field column were truncated.' and '[friction] The dropdown field form starts with placeholder options 'Option 1' and 'Option 2' that have to be overwritten one at a time, and the Fields panel covers most of the task list while open.'"
+        ]
+      }
+    },
+    "1": {
+      "none": {
+        "pros": [
+          "Highly customizable to fit diverse workflows",
+          "All-in-one platform attempting to consolidate tools",
+          "Flexible task views (list, board, calendar, etc.)",
+          "Generous free plan for individuals/small teams",
+          "Robust task management features (subtasks, custom fields)",
+          "Strong collaboration tools for team communication"
+        ],
+        "cons": [
+          "Overwhelming complexity and steep learning curve",
+          "Frequent performance issues (slow loading, bugs)",
+          "Inconsistent user interface and experience (UI/UX)",
+          "Notifications can be excessive and hard to manage",
+          "Mobile app often lags behind desktop functionality",
+          "Constant updates sometimes add to bloat/confusion"
+        ],
+        "overall_rating": 4.1
+      },
+      "ctx": {
+        "pros": [
+          "Extremely comprehensive features, making it an 'all-in-one' solution",
+          "High level of customization and flexibility for various workflows",
+          "Consolidates many tools, reducing tool sprawl and cost",
+          "Powerful for complex project management and task tracking",
+          "Good value for money, especially for the breadth of features",
+          "Strong collaboration tools for team communication"
+        ],
+        "cons": [
+          "Steep learning curve due to overwhelming number of features and options",
+          "Can be slow, buggy, or suffer from performance issues",
+          "Overly complex and clunky interface for new users",
+          "Notifications can be overwhelming and difficult to manage",
+          "Mobile app often lacks full functionality and can be clunky",
+          "Pricing can become expensive for larger teams needing advanced features"
+        ],
+        "overall_rating": 4.0
+      },
+      "run": {
+        "pros": [
+          "Highly customizable and flexible for various workflows",
+          "All-in-one platform consolidating many tools",
+          "Multiple task views (List, Board, Calendar) readily available",
+          "Efficient and quick task creation (e.g., inline add)",
+          "Intuitive drag-and-drop functionality for tasks",
+          "Robust free plan for basic use"
+        ],
+        "cons": [
+          "Overwhelming and cluttered user interface for new users",
+          "Performance issues (slowness, bugs) can be frequent",
+          "Steep learning curve due to extensive features",
+          "Pre-filled demo data creates initial clutter",
+          "Tedious setup for some custom fields or options",
+          "Lack of warnings for duplicating built-in fields"
+        ],
+        "overall_rating": 3.5
+      },
+      "ctx+run": {
+        "pros": [
+          "Highly customizable to fit diverse team workflows and project needs",
+          "Efficient and quick task creation, especially for adding multiple items",
+          "Offers a wide variety of versatile views, including Kanban, readily available",
+          "Feature-rich, providing extensive project management capabilities",
+          "Good for consolidating multiple tools into one platform",
+          "Strong support for task organization and tracking"
+        ],
+        "cons": [
+          "Steep learning curve due to the sheer number of features and options",
+          "Can feel cluttered or overwhelming, especially for new users or smaller teams",
+          "Performance issues like slow loading times, particularly with large workspaces",
+          "UI/UX can be inconsistent or have quirky design choices (e.g., intrusive AI panel, overlapping elements)",
+          "Customization can lead to duplication of built-in fields or complex setup",
+          "Mobile experience is often reported as less smooth or functional than desktop"
+        ],
+        "overall_rating": 4.3
+      },
+      "ctx+runF": {
+        "pros": [
+          "Highly customizable to fit diverse workflows and team needs.",
+          "Efficient task creation and management with intuitive UI elements.",
+          "Offers a wide range of views (e.g., Kanban, List) readily available.",
+          "Excellent for centralizing many aspects of project and team work.",
+          "Real-time updates and smooth dragging/dropping in task views.",
+          "Strong feature set for various project management methodologies."
+        ],
+        "cons": [
+          "Significant learning curve due to the sheer number of features and customization options.",
+          "Can feel overwhelming or cluttered, especially when setting up custom fields or views.",
+          "Performance issues can arise, with the interface sometimes feeling slow or sluggish.",
+          "The mobile app experience is often less refined and functional than the desktop version.",
+          "Custom field creation and management can be cumbersome and not always intuitive.",
+          "Pricing model can become expensive for larger teams or advanced features."
+        ],
+        "overall_rating": 4.25
+      },
+      "prosRunF_consCtx": {
+        "pros": [
+          "Highly customizable to fit diverse workflows and team needs.",
+          "Efficient task creation and management with intuitive UI elements.",
+          "Offers a wide range of views (e.g., Kanban, List) readily available.",
+          "Excellent for centralizing many aspects of project and team work.",
+          "Real-time updates and smooth dragging/dropping in task views.",
+          "Strong feature set for various project management methodologies."
+        ],
+        "cons": [
+          "Steep learning curve due to overwhelming number of features and options",
+          "Can be slow, buggy, or suffer from performance issues",
+          "Overly complex and clunky interface for new users",
+          "Notifications can be overwhelming and difficult to manage",
+          "Mobile app often lacks full functionality and can be clunky",
+          "Pricing can become expensive for larger teams needing advanced features"
+        ],
+        "overall_rating": 4.0
+      },
+      "edit1": {
+        "pros": [
+          "Extremely comprehensive features, making it an 'all-in-one' solution",
+          "High level of customization and flexibility for various workflows",
+          "Consolidates many tools, reducing tool sprawl and cost",
+          "Powerful for complex project management and task tracking",
+          "Good value for money, especially for the breadth of features",
+          "Strong collaboration tools for team communication"
+        ],
+        "cons": [
+          "Steep learning curve due to overwhelming number of features and options",
+          "Can be slow, buggy, or suffer from performance issues",
+          "Overly complex and clunky interface for new users",
+          "Default configurations and AI features can be intrusive",
+          "Mobile app often lacks full functionality and can be clunky",
+          "Pricing can become expensive for larger teams needing advanced features"
+        ],
+        "overall_rating": 4.0,
+        "changed": [
+          "Replaced 'Notifications can be overwhelming and difficult to manage' with 'Default configurations and AI features can be intrusive' because the 'Brain AI chat panel opened by default and took about a third of the screen, which squeezed the list so task names and the custom field column were truncated' note showed a more specific and immediate type of intrusiveness than just notifications, and 'first-session friction' was to be replaced with a 'long-term reviewer' theme."
+        ]
+      },
+      "edit2": {
+        "pros": [
+          "Extremely comprehensive features, making it an 'all-in-one' solution",
+          "Customization for workflows is intuitive and powerful, even on free plans",
+          "Consolidates many tools, reducing tool sprawl and cost",
+          "Powerful for complex project management and task tracking",
+          "Good value for money, especially for the breadth of features",
+          "Strong collaboration tools for team communication"
+        ],
+        "cons": [
+          "Steep learning curve due to overwhelming number of features and options",
+          "Can be slow, buggy, or suffer from performance issues",
+          "Interface can be cluttered and confusing, especially with default elements",
+          "Notifications can be overwhelming and difficult to manage",
+          "Mobile app often lacks full functionality and can be clunky",
+          "Pricing can become expensive for larger teams needing advanced features"
+        ],
+        "overall_rating": 4.0,
+        "changed": [
+          "Pro 2: 'High level of customization and flexibility for various workflows' replaced with 'Customization for workflows is intuitive and powerful, even on free plans' based on the note '[benefit] The + at the end of the list header opened a Fields panel where Dropdown was the first popular type, and a 'Priority' field with High/Low options was created in four actions on the free plan.' This highlights the ease and power of customization specifically shown in the demo.",
+          "Con 3: 'Overly complex and clunky interface for new users' replaced with 'Interface can be cluttered and confusing, especially with default elements' based on the note '[friction] A Brain AI chat panel opened by default and took about a third of the screen, which squeezed the list so task names and the custom field column were truncated.' This provides a more specific and direct reason for interface complexity related to default elements rather than just general clunkiness."
+        ]
+      },
+      "edit1F": {
+        "pros": [
+          "Extremely comprehensive features, making it an 'all-in-one' solution",
+          "High level of customization and flexibility for various workflows",
+          "Consolidates many tools, reducing tool sprawl and cost",
+          "Powerful for complex project management and task tracking",
+          "Good value for money, especially for the breadth of features",
+          "Strong collaboration tools for team communication"
+        ],
+        "cons": [
+          "Steep learning curve due to overwhelming number of features and options",
+          "Can be slow, buggy, or suffer from performance issues",
+          "Interface can be cluttered or overwhelming due to feature density",
+          "Notifications can be overwhelming and difficult to manage",
+          "Mobile app often lacks full functionality and can be clunky",
+          "Pricing can become expensive for larger teams needing advanced features"
+        ],
+        "overall_rating": 4.0,
+        "changed": [
+          "Con 3: Changed 'Overly complex and clunky interface for new users' to 'Interface can be cluttered or overwhelming due to feature density' because the AI chat panel note highlighted how features can intrinsically lead to a cluttered view, which is a more specific long-term issue than just initial 'clunkiness' for new users."
+        ]
+      }
+    },
+    "2": {
+      "none": {
+        "pros": [
+          "Extremely feature-rich, attempts to be an all-in-one solution.",
+          "High level of customization for workflows, views, and statuses.",
+          "Flexible and adaptable for various team sizes and project types.",
+          "Good value for money, especially compared to competitors.",
+          "Frequent updates and continuous release of new features.",
+          "Strong integration capabilities with many other popular tools."
+        ],
+        "cons": [
+          "Can be overwhelming due to vast features; steep learning curve.",
+          "Performance issues, often reported as slow or buggy.",
+          "Overly complex for simple project management needs.",
+          "Notification system can be overwhelming or hard to manage.",
+          "Inconsistent user interface and user experience across sections.",
+          "Frequent updates sometimes introduce new bugs or changes."
+        ],
+        "overall_rating": 4.2
+      },
+      "ctx": {
+        "pros": [
+          "Highly customizable and flexible to fit diverse workflows",
+          "Extensive feature set making it an all-in-one solution",
+          "Consolidates multiple tools into one platform",
+          "Effective task management and project organization",
+          "Regular updates and new features are frequently released",
+          "Offers various views (Gantt, Board, List) for different preferences"
+        ],
+        "cons": [
+          "Steep learning curve due to the sheer number of features and customization options",
+          "Can feel overwhelming and complex for new users or small teams",
+          "Performance issues, including slowness or lag, especially with larger workspaces",
+          "Mobile app functionality and user experience are often less robust than desktop",
+          "Overwhelming or difficult-to-manage notifications",
+          "Pricing can become expensive for larger teams or advanced features"
+        ],
+        "overall_rating": 4.2
+      },
+      "run": {
+        "pros": [
+          "Highly customizable and flexible for various workflows",
+          "Offers a vast array of features and integrations (all-in-one)",
+          "Multiple task views (List, Board, Calendar, etc.) are readily available",
+          "Efficient and quick task creation/entry methods",
+          "Intuitive drag-and-drop for tasks and reordering",
+          "Good for collaboration and team management"
+        ],
+        "cons": [
+          "Can be overwhelming and complex due to too many features",
+          "Performance issues, often slow or buggy at times",
+          "Cluttered or confusing user interface, especially for new users",
+          "Steep learning curve due to extensive options and settings",
+          "Inconsistent UI/UX design across different features or views",
+          "Notifications can be excessive or poorly managed"
+        ],
+        "overall_rating": 3.5
+      },
+      "ctx+run": {
+        "pros": [
+          "Highly customizable and versatile for various workflows",
+          "Offers a wide range of views (e.g., Kanban, List) for different needs",
+          "Efficient and responsive task creation and management",
+          "Many features available even on the free plan",
+          "Centralized platform for multiple project types",
+          "Smooth and intuitive drag-and-drop functionality"
+        ],
+        "cons": [
+          "Steep learning curve due to the sheer number of features",
+          "Can feel cluttered and overwhelming with too many options by default",
+          "UI can be clunky, with panels covering content or poor use of screen space",
+          "Lack of guidance, leading to feature duplication or confusion",
+          "Performance issues, especially with default elements like intrusive AI panels",
+          "Initial setup and organization can be time-consuming"
+        ],
+        "overall_rating": 4.2
+      },
+      "ctx+runF": {
+        "pros": [
+          "Highly customizable to fit diverse team workflows and needs.",
+          "Offers a vast array of features and views (e.g., List, Board, Calendar) within a single platform.",
+          "Efficient and intuitive task creation and management, especially for core actions.",
+          "Strong collaboration features for team communication and project updates.",
+          "Good value for money compared to other feature-rich project management tools.",
+          "Continuous development and addition of new functionalities."
+        ],
+        "cons": [
+          "Steep learning curve due to the sheer number of features and customization options, can be overwhelming for new users.",
+          "UI can feel cluttered or complex, especially with many panels or custom fields open.",
+          "Performance issues, such as slow loading times or occasional lag, are commonly reported.",
+          "Mobile app functionality and user experience can be less robust or intuitive than the desktop version.",
+          "Customization can sometimes be clunky or lack proper guidance, leading to redundant fields or confusing setups.",
+          "Reporting capabilities, while present, may not be as advanced or flexible as some users require."
+        ],
+        "overall_rating": 4.25
+      },
+      "prosRunF_consCtx": {
+        "pros": [
+          "Highly customizable to fit diverse team workflows and needs.",
+          "Offers a vast array of features and views (e.g., List, Board, Calendar) within a single platform.",
+          "Efficient and intuitive task creation and management, especially for core actions.",
+          "Strong collaboration features for team communication and project updates.",
+          "Good value for money compared to other feature-rich project management tools.",
+          "Continuous development and addition of new functionalities."
+        ],
+        "cons": [
+          "Steep learning curve due to the sheer number of features and customization options",
+          "Can feel overwhelming and complex for new users or small teams",
+          "Performance issues, including slowness or lag, especially with larger workspaces",
+          "Mobile app functionality and user experience are often less robust than desktop",
+          "Overwhelming or difficult-to-manage notifications",
+          "Pricing can become expensive for larger teams or advanced features"
+        ],
+        "overall_rating": 4.2
+      },
+      "edit1": {
+        "pros": [
+          "Highly customizable and flexible to fit diverse workflows",
+          "Extensive feature set making it an all-in-one solution",
+          "Consolidates multiple tools into one platform",
+          "Effective task management and project organization",
+          "Regular updates and new features are frequently released",
+          "Provides readily accessible diverse views (Gantt, Board, List) for different preferences"
+        ],
+        "cons": [
+          "Steep learning curve due to the sheer number of features and customization options",
+          "Can feel overwhelming and complex for new users or small teams",
+          "Performance issues, including slowness or lag, especially with larger workspaces",
+          "Mobile app functionality and user experience are often less robust than desktop",
+          "The interface can feel cluttered and overwhelming, particularly with default elements like AI panels",
+          "Pricing can become expensive for larger teams or advanced features"
+        ],
+        "overall_rating": 4.2,
+        "changed": [
+          "pros: 'Offers various views (Gantt, Board, List) for different preferences' was replaced with 'Provides readily accessible diverse views (Gantt, Board, List) for different preferences' because '[benefit] A Board (Kanban) view tab already existed on the list next to List, so the Kanban view needed one click rather than setup.' showed the ease of access to these views, making the original pro more specific.",
+          "cons: 'Overwhelming or difficult-to-manage notifications' was replaced with 'The interface can feel cluttered and overwhelming, particularly with default elements like AI panels' because '[friction] A Brain AI chat panel opened by default and took about a third of the screen, which squeezed the list so task names and the custom field column were truncated.' indicated a broader issue of interface clutter beyond just notifications, impacting screen real estate and usability."
+        ]
+      },
+      "edit2": {
+        "pros": [
+          "Highly customizable and flexible to fit diverse workflows",
+          "Extensive feature set making it an all-in-one solution",
+          "Consolidates multiple tools into one platform",
+          "Efficient task creation and workflow automation",
+          "Regular updates and new features are frequently released",
+          "Offers various views (Gantt, Board, List) for different preferences"
+        ],
+        "cons": [
+          "Steep learning curve due to the sheer number of features and customization options",
+          "Can feel overwhelming and complex for new users or small teams",
+          "Performance issues, including slowness or lag, especially with larger workspaces",
+          "Mobile app functionality and user experience are often less robust than desktop",
+          "The interface can feel cluttered, with many features and panels vying for attention",
+          "Pricing can become expensive for larger teams or advanced features"
+        ],
+        "overall_rating": 4.2,
+        "changed": [
+          "Changed 'Effective task management and project organization' to 'Efficient task creation and workflow automation' because the inline task creation and immediate view options highlighted specific efficiencies in task management.",
+          "Changed 'Overwhelming or difficult-to-manage notifications' to 'The interface can feel cluttered, with many features and panels vying for attention' because the Brain AI panel, custom field panel, and demo data clutter contributed to a sense of a busy or cramped interface, which is a broader and more impactful long-term observation than just notifications."
+        ]
+      },
+      "edit1F": {
+        "pros": [
+          "Highly customizable and flexible to fit diverse workflows",
+          "Extensive feature set making it an an all-in-one solution",
+          "Consolidates multiple tools into one platform",
+          "Effective task management and project organization",
+          "Regular updates and new features are frequently released",
+          "Offers various views (Gantt, Board, List) for different preferences"
+        ],
+        "cons": [
+          "Steep learning curve due to the sheer number of features and customization options",
+          "Can feel overwhelming and complex for new users or small teams",
+          "Performance issues, including slowness or lag, especially with larger workspaces",
+          "Mobile app functionality and user experience are often less robust than desktop",
+          "Default UI elements or AI features can clutter the workspace and reduce visibility",
+          "Pricing can become expensive for larger teams or advanced features"
+        ],
+        "overall_rating": 4.2,
+        "changed": [
+          "Con #5: Replaced 'Overwhelming or difficult-to-manage notifications' with 'Default UI elements or AI features can clutter the workspace and reduce visibility' because the new user noted significant screen space taken by a default AI chat panel, which is a more immediate and specific clutter issue than general notifications."
+        ]
+      }
+    }
+  },
+  "obs": [
+    "- [benefit] The inline Add Task row stays open after Enter, so the second Feature X task was added with a single typed line and a 'Task created' toast offered View task / Copy URL.",
+    "- [benefit] The + at the end of the list header opened a Fields panel where Dropdown was the first popular type, and a 'Priority' field with High/Low options was created in four actions on the free plan.",
+    "- [friction] The dropdown field form starts with placeholder options 'Option 1' and 'Option 2' that have to be overwritten one at a time, and the Fields panel covers most of the task list while open.",
+    "- [friction] ClickUp already has a built-in flag-style Priority on every card, so creating a custom 'Priority' dropdown gives no warning about duplicating that built-in field.",
+    "- [benefit] A Board (Kanban) view tab already existed on the list next to List, so the Kanban view needed one click rather than setup.",
+    "- [benefit] Dragging the Demo Alpha card from TO DO to IN PROGRESS worked in one drag, with column counts updating immediately (5 to 4, 0 to 1).",
+    "- [friction] The new workspace was pre-filled with Project 1, Project 2 and placeholder Task 1-3 items, so my Feature X tasks ended up mixed in with demo clutter unless I spent extra steps creating a new list or deleting them.",
+    "- [friction] A Brain AI chat panel opened by default and took about a third of the screen, which squeezed the list so task names and the custom field column were truncated."
+  ],
+  "obs_filtered": [
+    "- [benefit] The inline Add Task row stays open after Enter, so the second Feature X task was added with a single typed line and a 'Task created' toast offered View task / Copy URL.",
+    "- [friction] The dropdown field form starts with placeholder options 'Option 1' and 'Option 2' that have to be overwritten one at a time, and the Fields panel covers most of the task list while open.",
+    "- [friction] ClickUp already has a built-in flag-style Priority on every card, so creating a custom 'Priority' dropdown gives no warning about duplicating that built-in field.",
+    "- [benefit] A Board (Kanban) view tab already existed on the list next to List, so the Kanban view needed one click rather than setup.",
+    "- [benefit] Dragging the Demo Alpha card from TO DO to IN PROGRESS worked in one drag, with column counts updating immediately (5 to 4, 0 to 1).",
+    "- [friction] A Brain AI chat panel opened by default and took about a third of the screen, which squeezed the list so task names and the custom field column were truncated."
+  ],
+  "true_mean_overall": 4.375
+}

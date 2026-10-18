@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "25010d7dd0808137e75529c604b5c3b93abe38193f8bdf5d5d12c55496f6f37b",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 509,
+  "output_tokens": 469,
+  "cost_usd": 0.0013252,
+  "elapsed_s": 3.25,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage projects and CRM needs.\",\n  \"benefits\": [\n    \"Access a variety of templates.\",\n    \"Offers a robust free plan with extensive features.\",\n    \"Provides an easy-to-navigate user interface.\",\n    \"Supports business operations effectively at no additional cost.\"\n  ],\n  \"frictions\": [\n    \"Requires a learning curve depending on user familiarity and time commitment.\"\n  ]\n}",
+  "json": {
+    "task": "Manage projects and CRM needs.",
+    "benefits": [
+      "Access a variety of templates.",
+      "Offers a robust free plan with extensive features.",
+      "Provides an easy-to-navigate user interface.",
+      "Supports business operations effectively at no additional cost."
+    ],
+    "frictions": [
+      "Requires a learning curve depending on user familiarity and time commitment."
+    ]
+  },
+  "ts": "2026-10-18T11:23:42.425898+00:00"
+}

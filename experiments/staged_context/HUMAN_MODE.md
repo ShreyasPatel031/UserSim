@@ -32,11 +32,15 @@ to add to the agent-mode prediction, so that predictions of **real reviewers** g
      new runs did not.
 4. **No own reviews (a new product), so context = competitors only:** free-form notes hurt and a bounded edit
    helped.
-   - Product-level top-6 lists, 3 products × 40 reviewers × 3 seeds (`human_mode.py`, `out/human_mode/plist_*`).
-   - Free-form notes: pros 0.42 → 0.36, cons 0.28 → 0.21.
+   - Product-level top-6 lists, 5 products (Basecamp with 2 runs, Bitwarden, Brevo, ClickUp, GetResponse) × 40
+     reviewers × 3 seeds (`human_mode.py`, `out/human_mode/plist_all_deepall.csv`).
+   - Free-form notes:
+     - pros −0.071 (95% CI −0.105 to −0.039);
+     - cons −0.050 (CI −0.094 to −0.003).
    - Edit at most 1 pro and 1 con, after dropping free-plan / setup / onboarding / pricing / billing / support notes:
-     cons 0.28 → 0.31, reviewers covered 42% → 44%.
-   - This is small, on 3 products, and has no CI yet. Shipped as the no-own-reviews rule.
+     - **cons +0.033 (CI +0.001 to +0.066)**;
+     - pros +0.008 (CI −0.004 to +0.021).
+   - Allowing 2 edits: pros −0.026. Shipped as the no-own-reviews rule.
 5. **Even true facts about the product don't raise per-person pros/cons when given to a context-only agent.**
    - Oracle test: notes from 12 other real reviewers of the same product, 120 people (`out/human_mode/oracle.csv`).
    - Cons fell 0.257 → about 0.21.
@@ -61,6 +65,8 @@ to add to the agent-mode prediction, so that predictions of **real reviewers** g
 
    Anonymous callers can't get no-`+` aliases (`anon_allow_shared_aliases: false` in `mvp/sim_mcp/limits.json`).
    With the anonymous cap of $6/day per IP, about 12 runs a day fit.
+
+Agent-mode side (ratings, words, held-out tables): `experiments/human_experience/HANDOFF_agent_mode.md`.
 
 ## Caveats
 

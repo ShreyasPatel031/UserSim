@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1ce38a3fee060e87753d38922815389365ac2ba1fff56983fcf5c9dbc0e57b69",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 162,
+  "output_tokens": 498,
+  "cost_usd": 0.0012936,
+  "elapsed_s": 3.0,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage projects and facilitate team collaboration\",\n  \"benefits\": [\n    \"all-in-one software\",\n    \"many useful features\",\n    \"tracking progress\",\n    \"storing documents\"\n  ],\n  \"frictions\": [\n    \"complexity for first-time users due to many features\"\n  ]\n}",
+  "json": {
+    "task": "Manage projects and facilitate team collaboration",
+    "benefits": [
+      "all-in-one software",
+      "many useful features",
+      "tracking progress",
+      "storing documents"
+    ],
+    "frictions": [
+      "complexity for first-time users due to many features"
+    ]
+  },
+  "ts": "2026-10-18T11:23:44.480604+00:00"
+}

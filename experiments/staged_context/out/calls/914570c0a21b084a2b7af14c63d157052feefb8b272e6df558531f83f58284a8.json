@@ -1,0 +1,27 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "914570c0a21b084a2b7af14c63d157052feefb8b272e6df558531f83f58284a8",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 147,
+  "output_tokens": 415,
+  "cost_usd": 0.0010816,
+  "elapsed_s": 2.85,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage projects and tasks.\",\n  \"benefits\": [\n    \"Collaborate with other team members on a project\",\n    \"Break projects into smaller tasks\"\n  ],\n  \"frictions\": [\n    \"Remember to mark a task complete\"\n  ]\n}",
+  "json": {
+    "task": "Manage projects and tasks.",
+    "benefits": [
+      "Collaborate with other team members on a project",
+      "Break projects into smaller tasks"
+    ],
+    "frictions": [
+      "Remember to mark a task complete"
+    ]
+  },
+  "ts": "2026-10-18T11:23:45.481506+00:00"
+}

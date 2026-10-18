@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ba49222d4f9dd1b5d78cf50d4135ebbab372d3b79fcc40ea4710cb6a5d4435b4",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 317,
+  "output_tokens": 505,
+  "cost_usd": 0.0013576000000000003,
+  "elapsed_s": 3.32,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage tasks.\",\n  \"benefits\": [\n    \"easy to set up simple tasks\"\n  ],\n  \"frictions\": [\n    \"problematic and misleading payment method\",\n    \"poor invoicing system\",\n    \"problematic adding user access and/or client portals\",\n    \"horrible customer service\"\n  ]\n}",
+  "json": {
+    "task": "Manage tasks.",
+    "benefits": [
+      "easy to set up simple tasks"
+    ],
+    "frictions": [
+      "problematic and misleading payment method",
+      "poor invoicing system",
+      "problematic adding user access and/or client portals",
+      "horrible customer service"
+    ]
+  },
+  "ts": "2026-10-18T11:23:39.413332+00:00"
+}

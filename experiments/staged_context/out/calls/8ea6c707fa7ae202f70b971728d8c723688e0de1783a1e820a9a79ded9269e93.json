@@ -1,0 +1,32 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8ea6c707fa7ae202f70b971728d8c723688e0de1783a1e820a9a79ded9269e93",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 331,
+  "output_tokens": 525,
+  "cost_usd": 0.0014118,
+  "elapsed_s": 3.92,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage projects and tasks with a supervisor\",\n  \"benefits\": [\n    \"Dashboard is nice\",\n    \"Dashboard is pretty easy to navigate\",\n    \"Collaboration is high quality\",\n    \"Able to communicate well with supervisor on projects\"\n  ],\n  \"frictions\": [\n    \"Clunky\",\n    \"Challenging to navigate\",\n    \"Process automations aren't intuitive or effective\",\n    \"Managing many clients/locations is challenging\"\n  ]\n}",
+  "json": {
+    "task": "Manage projects and tasks with a supervisor",
+    "benefits": [
+      "Dashboard is nice",
+      "Dashboard is pretty easy to navigate",
+      "Collaboration is high quality",
+      "Able to communicate well with supervisor on projects"
+    ],
+    "frictions": [
+      "Clunky",
+      "Challenging to navigate",
+      "Process automations aren't intuitive or effective",
+      "Managing many clients/locations is challenging"
+    ]
+  },
+  "ts": "2026-10-18T11:23:47.013426+00:00"
+}

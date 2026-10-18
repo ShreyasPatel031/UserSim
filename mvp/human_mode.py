@@ -14,9 +14,9 @@ excluded from the context so it is treated as new):
   evidence the words are written from raised cons recall 0.269 -> 0.315 (+0.046, 95% CI +0.007..+0.085; 173 held-out
   reviewers, 5 products, better on 4); pros unchanged (+0.004). Changing at most one item instead was slightly worse
   there (hm_agent_eval.py, out/human_mode/agent_mode_plus_run.csv).
-- With NO own reviews (a new product; context = competitors only), free-form notes hurt (pros 0.42 -> 0.36, cons
-  0.28 -> 0.21, product-level, 3 products) and only a bounded edit helped (at most one pro and one con changed, after
-  dropping free-plan / setup / onboarding / pricing / billing / support notes: cons 0.28 -> 0.31).
+- With NO own reviews (a new product; context = competitors only), free-form notes hurt (product-level, 5 products:
+  pros -0.071, cons -0.050, both CIs below 0) and only a bounded edit helped (at most one pro and one con changed,
+  after dropping free-plan / setup / onboarding / pricing / billing / support notes: cons +0.033, CI +0.001..+0.066).
 - Ratings stay agent mode's: a first session's impressions ran about a star below real reviewers.
 No silent fallbacks: if agent mode has no result, or there are no usable observations, the result says so.
 """

@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "42c2622781990f653a6c714ae9d9c24bd48c8df9d81f1b19cee029025c3b06eb",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 212,
+  "output_tokens": 493,
+  "cost_usd": 0.0012961,
+  "elapsed_s": 4.49,
+  "error": null,
+  "text": "{\n  \"task\": \"Organize an entire business including recurring tasks, projects, and workflows\",\n  \"benefits\": [\n    \"Organize an entire business\",\n    \"Adapt the tool optimally to situations using different views\",\n    \"Simplifies everyday business life\",\n    \"Manage recurring tasks, projects, and workflows\"\n  ],\n  \"frictions\": [\n    \"Overwhelming scope of the tool at the beginning\",\n    \"Requires many tutorials and a lot of training time to use optimally\"\n  ]\n}",
+  "json": {
+    "task": "Organize an entire business including recurring tasks, projects, and workflows",
+    "benefits": [
+      "Organize an entire business",
+      "Adapt the tool optimally to situations using different views",
+      "Simplifies everyday business life",
+      "Manage recurring tasks, projects, and workflows"
+    ],
+    "frictions": [
+      "Overwhelming scope of the tool at the beginning",
+      "Requires many tutorials and a lot of training time to use optimally"
+    ]
+  },
+  "ts": "2026-10-18T11:23:41.449908+00:00"
+}
