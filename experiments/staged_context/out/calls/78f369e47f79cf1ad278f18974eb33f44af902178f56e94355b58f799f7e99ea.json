@@ -1,0 +1,35 @@
+{
+  "stage": "e2e_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "78f369e47f79cf1ad278f18974eb33f44af902178f56e94355b58f799f7e99ea",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 728,
+  "output_tokens": 1049,
+  "cost_usd": 0.0028409,
+  "elapsed_s": 37.09,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 2,\n  \"functionality_rating\": 2,\n  \"overall_rating\": 2,\n  \"value_for_money_rating\": 2,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 3,\n  \"pros\": [\n    \"Initial website access was straightforward\",\n    \"Basic navigation elements functioned as expected\"\n  ],\n  \"cons\": [\n    \"Difficulty locating specific features for external vendor collaboration\",\n    \"Unclear navigation led to frustration and repeated searching\",\n    \"Uncertainty if the product supports limiting vendor access as required\"\n  ],\n  \"overall_experience\": \"This user found Zoho Desk's interface difficult to navigate, particularly when trying to find information about external vendor collaboration features. They struggled to determine if the product could meet their specific need for limited vendor access, leading to frustration. The overall experience was hampered by the lack of clear functional information for their critical task.\"\n}",
+  "json": {
+    "ease_of_use_rating": 2,
+    "functionality_rating": 2,
+    "overall_rating": 2,
+    "value_for_money_rating": 2,
+    "customer_support_rating": 3,
+    "recommendation_score": 3,
+    "pros": [
+      "Initial website access was straightforward",
+      "Basic navigation elements functioned as expected"
+    ],
+    "cons": [
+      "Difficulty locating specific features for external vendor collaboration",
+      "Unclear navigation led to frustration and repeated searching",
+      "Uncertainty if the product supports limiting vendor access as required"
+    ],
+    "overall_experience": "This user found Zoho Desk's interface difficult to navigate, particularly when trying to find information about external vendor collaboration features. They struggled to determine if the product could meet their specific need for limited vendor access, leading to frustration. The overall experience was hampered by the lack of clear functional information for their critical task."
+  },
+  "ts": "2026-10-18T08:28:45.645919+00:00"
+}

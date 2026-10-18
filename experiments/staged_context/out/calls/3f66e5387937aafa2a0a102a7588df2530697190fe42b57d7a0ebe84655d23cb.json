@@ -1,0 +1,36 @@
+{
+  "stage": "e2e_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3f66e5387937aafa2a0a102a7588df2530697190fe42b57d7a0ebe84655d23cb",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 697,
+  "output_tokens": 1055,
+  "cost_usd": 0.0028466,
+  "elapsed_s": 6.24,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Good range of project management templates available\",\n    \"Initial navigation to project resources is straightforward\",\n    \"Offers a visual and structured approach to tasks\"\n  ],\n  \"cons\": [\n    \"Difficulty transitioning from templates to active project management\",\n    \"Finding the most suitable template can be overwhelming\",\n    \"Less intuitive than Airtable for flexible data management\"\n  ],\n  \"overall_experience\": \"The user likely found Smartsheet to be a capable tool for project management, especially appreciating its structured approach and template variety after using both Jira and Airtable. However, they may have experienced frustration with the initial learning curve, particularly in understanding how to effectively implement and manage projects using the templates. While visually appealing, the lack of clear guidance on active project management might have hindered their productivity during the onboarding phase, leading to a moderately positive but not outstanding experience.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 6,
+    "pros": [
+      "Good range of project management templates available",
+      "Initial navigation to project resources is straightforward",
+      "Offers a visual and structured approach to tasks"
+    ],
+    "cons": [
+      "Difficulty transitioning from templates to active project management",
+      "Finding the most suitable template can be overwhelming",
+      "Less intuitive than Airtable for flexible data management"
+    ],
+    "overall_experience": "The user likely found Smartsheet to be a capable tool for project management, especially appreciating its structured approach and template variety after using both Jira and Airtable. However, they may have experienced frustration with the initial learning curve, particularly in understanding how to effectively implement and manage projects using the templates. While visually appealing, the lack of clear guidance on active project management might have hindered their productivity during the onboarding phase, leading to a moderately positive but not outstanding experience."
+  },
+  "ts": "2026-10-18T08:28:51.181551+00:00"
+}

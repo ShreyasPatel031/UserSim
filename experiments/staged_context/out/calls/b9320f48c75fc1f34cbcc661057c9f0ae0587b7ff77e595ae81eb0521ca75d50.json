@@ -1,0 +1,36 @@
+{
+  "stage": "e2e_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b9320f48c75fc1f34cbcc661057c9f0ae0587b7ff77e595ae81eb0521ca75d50",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 685,
+  "output_tokens": 954,
+  "cost_usd": 0.0025905,
+  "elapsed_s": 8.89,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Effective for logging and tracking basic support conversations\",\n    \"Initial loading of the landing page was quick\",\n    \"Provides essential features for technical representatives\"\n  ],\n  \"cons\": [\n    \"Navigation within the Freshworks ecosystem can be confusing\",\n    \"Interface sometimes leads to accidental clicks on other products\",\n    \"May require extra steps to find specific product pages or features\"\n  ],\n  \"overall_experience\": \"The technical representative likely found Freshdesk to be a moderately effective tool for their primary task of logging and tracking support conversations over a 1-2 year period. While the core functionality was acceptable, the broader Freshworks product navigation occasionally presented friction, making it less seamless than desired. The initial experience of finding the correct product page could have been frustrating, though daily usage would bypass this particular hurdle.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 3,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 6,
+    "pros": [
+      "Effective for logging and tracking basic support conversations",
+      "Initial loading of the landing page was quick",
+      "Provides essential features for technical representatives"
+    ],
+    "cons": [
+      "Navigation within the Freshworks ecosystem can be confusing",
+      "Interface sometimes leads to accidental clicks on other products",
+      "May require extra steps to find specific product pages or features"
+    ],
+    "overall_experience": "The technical representative likely found Freshdesk to be a moderately effective tool for their primary task of logging and tracking support conversations over a 1-2 year period. While the core functionality was acceptable, the broader Freshworks product navigation occasionally presented friction, making it less seamless than desired. The initial experience of finding the correct product page could have been frustrating, though daily usage would bypass this particular hurdle."
+  },
+  "ts": "2026-10-18T08:28:55.686895+00:00"
+}

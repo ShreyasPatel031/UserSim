@@ -1,0 +1,36 @@
+{
+  "stage": "e2e_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "934dff83e6e8686595b46df950e6327fda9386f2ff897575b6ce6eefc90a7260",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 691,
+  "output_tokens": 1017,
+  "cost_usd": 0.0027497999999999997,
+  "elapsed_s": 26.87,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Comprehensive platform with powerful features\",\n    \"Good navigation and information presentation for exploration\",\n    \"Detailed insights into design and developer solutions\"\n  ],\n  \"cons\": [\n    \"Lack of clear pricing for advanced features\",\n    \"Uncertainty around implementation steps\",\n    \"Difficulty in comparing different product offerings\"\n  ],\n  \"overall_experience\": \"This ecommerce analyst found BigCommerce to be a comprehensive and powerful platform for building and managing their company's e-commerce website. They appreciated the detailed information available for features like Catalyst, but were frustrated by the lack of clear pricing and implementation details for advanced solutions. This made it challenging to fully assess the value and plan for future growth within the platform.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 6,
+    "pros": [
+      "Comprehensive platform with powerful features",
+      "Good navigation and information presentation for exploration",
+      "Detailed insights into design and developer solutions"
+    ],
+    "cons": [
+      "Lack of clear pricing for advanced features",
+      "Uncertainty around implementation steps",
+      "Difficulty in comparing different product offerings"
+    ],
+    "overall_experience": "This ecommerce analyst found BigCommerce to be a comprehensive and powerful platform for building and managing their company's e-commerce website. They appreciated the detailed information available for features like Catalyst, but were frustrated by the lack of clear pricing and implementation details for advanced solutions. This made it challenging to fully assess the value and plan for future growth within the platform."
+  },
+  "ts": "2026-10-18T08:28:45.520673+00:00"
+}

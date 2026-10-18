@@ -1,0 +1,36 @@
+{
+  "stage": "e2e_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "68fab46013059f30ac93d882a245d5aaaa6a11226b3705d4b5de0d8fc39cb173",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2959,
+  "output_tokens": 1016,
+  "cost_usd": 0.0034276999999999997,
+  "elapsed_s": 5.24,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Flexible and adaptable for various project needs\",\n    \"Effective for tracking tasks and project progress\",\n    \"Provides good visibility for team collaboration\"\n  ],\n  \"cons\": [\n    \"Can have a significant learning curve for advanced features\",\n    \"Pricing might be perceived as high compared to alternatives\",\n    \"Initial setup and customization can be time-consuming\"\n  ],\n  \"overall_experience\": \"This Software Development Engineer likely found Smartsheet to be a capable tool for managing spreadsheets and project tasks, appreciating its flexibility and ability to track progress. However, they may have experienced a learning curve when trying to leverage its more advanced functionalities. Concerns regarding the product's cost-effectiveness compared to other solutions, especially given their role in a larger company, were probably present.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Flexible and adaptable for various project needs",
+      "Effective for tracking tasks and project progress",
+      "Provides good visibility for team collaboration"
+    ],
+    "cons": [
+      "Can have a significant learning curve for advanced features",
+      "Pricing might be perceived as high compared to alternatives",
+      "Initial setup and customization can be time-consuming"
+    ],
+    "overall_experience": "This Software Development Engineer likely found Smartsheet to be a capable tool for managing spreadsheets and project tasks, appreciating its flexibility and ability to track progress. However, they may have experienced a learning curve when trying to leverage its more advanced functionalities. Concerns regarding the product's cost-effectiveness compared to other solutions, especially given their role in a larger company, were probably present."
+  },
+  "ts": "2026-10-18T08:28:49.291853+00:00"
+}

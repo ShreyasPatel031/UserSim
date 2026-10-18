@@ -1,0 +1,36 @@
+{
+  "stage": "e2e_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8d694f0d7eedd8b22d32f8d847215cde5d9a1fb59a7ea30675828e8a8f3e377f",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 644,
+  "output_tokens": 1038,
+  "cost_usd": 0.0027882000000000002,
+  "elapsed_s": 55.71,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Comprehensive feature set for general CRM tasks\",\n    \"Good value for a small business\",\n    \"Basic navigation is straightforward\"\n  ],\n  \"cons\": [\n    \"Specific application management features are not clearly defined or easily found for complex industries.\",\n    \"Overwhelming number of features can make it difficult to find specific functionalities.\",\n    \"Uncertainty about its ability to handle telecommunications industry-specific complexities.\"\n  ],\n  \"overall_experience\": \"The Managing Partner found Zoho CRM to be a decent solution for their small telecommunications business over 1-2 years, appreciating its general CRM capabilities and value. However, they consistently struggled to find clear details or robust functionality for managing specific business applications, which was a critical task for them. This led to concerns about its suitability for the complexities of their industry, despite its overall breadth of features.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 3,
+    "overall_rating": 3,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 6,
+    "pros": [
+      "Comprehensive feature set for general CRM tasks",
+      "Good value for a small business",
+      "Basic navigation is straightforward"
+    ],
+    "cons": [
+      "Specific application management features are not clearly defined or easily found for complex industries.",
+      "Overwhelming number of features can make it difficult to find specific functionalities.",
+      "Uncertainty about its ability to handle telecommunications industry-specific complexities."
+    ],
+    "overall_experience": "The Managing Partner found Zoho CRM to be a decent solution for their small telecommunications business over 1-2 years, appreciating its general CRM capabilities and value. However, they consistently struggled to find clear details or robust functionality for managing specific business applications, which was a critical task for them. This led to concerns about its suitability for the complexities of their industry, despite its overall breadth of features."
+  },
+  "ts": "2026-10-18T08:28:45.834201+00:00"
+}

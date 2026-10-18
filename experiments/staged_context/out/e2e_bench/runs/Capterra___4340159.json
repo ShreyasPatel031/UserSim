@@ -1,0 +1,238 @@
+{
+  "rid": "Capterra___4340159",
+  "product": "Basecamp",
+  "url": "https://basecamp.com/",
+  "task": "Prepare a deadlines calendar",
+  "secs": 119.2,
+  "run": {
+    "completed": true,
+    "visited_urls": [
+      "https://basecamp.com/"
+    ],
+    "error": null,
+    "num_steps": 13,
+    "final_url": "https://basecamp.com/"
+  },
+  "steps": [
+    {
+      "step": 0,
+      "url": "https://basecamp.com/",
+      "action": "Opened https://basecamp.com/",
+      "observation": "Landing page loaded — agent starting…"
+    },
+    {
+      "step": 1,
+      "url": "https://basecamp.com/",
+      "action": "click — index=107",
+      "observation": "Clicked button aria-label=Tool: Deadlines & Mi"
+    },
+    {
+      "step": 2,
+      "url": "https://basecamp.com/",
+      "action": "scroll — down=True, pages=1.0",
+      "observation": "🔍 Scrolled down 790px"
+    },
+    {
+      "step": 3,
+      "url": "https://basecamp.com/",
+      "action": "scroll — down=True, pages=1.0",
+      "observation": "🔍 Scrolled down 790px"
+    },
+    {
+      "step": 4,
+      "url": "https://basecamp.com/",
+      "action": "scroll — down=True, pages=1.0",
+      "observation": "🔍 Scrolled down 790px"
+    },
+    {
+      "step": 5,
+      "url": "https://basecamp.com/",
+      "action": "scroll — down=True, pages=1.0",
+      "observation": "🔍 Scrolled down 790px"
+    },
+    {
+      "step": 6,
+      "url": "https://basecamp.com/",
+      "action": "scroll — down=True, pages=1.0",
+      "observation": "🔍 Scrolled down 790px"
+    },
+    {
+      "step": 7,
+      "url": "https://basecamp.com/",
+      "action": "scroll — down=True, pages=1.0",
+      "observation": "🔍 Scrolled down 790px"
+    },
+    {
+      "step": 8,
+      "url": "https://basecamp.com/",
+      "action": "scroll — down=True, pages=1.0",
+      "observation": "🔍 Scrolled down 790px"
+    },
+    {
+      "step": 9,
+      "url": "https://basecamp.com/",
+      "action": "scroll — down=True, pages=1.0",
+      "observation": "🔍 Scrolled down 790px"
+    },
+    {
+      "step": 10,
+      "url": "https://basecamp.com/",
+      "action": "scroll — down=True, pages=1.0",
+      "observation": "🔍 Scrolled down 790px"
+    },
+    {
+      "step": 11,
+      "url": "https://basecamp.com/",
+      "action": "scroll — down=True, pages=1.0",
+      "observation": "🔍 Scrolled down 790px"
+    },
+    {
+      "step": 12,
+      "url": "https://basecamp.com/",
+      "action": "done — text=I was unable to prepare a deadlines calendar as requested. After navigating to the 'Deadlines & Milestones' section, I repeatedly scrolled down the page but could not find any interactive elements to add new deadlines or create events. The page only displayed existing deadlines. I have r",
+      "observation": "I was unable to prepare a deadlines calendar as requested. After navigating to the 'Deadlines & Milestones' section, I repeatedly scrolled down the page but could not find any interactive elements to add new deadlines or create events. The page only displayed existing deadlines. I have reached the maximum number of steps allowed and cannot proceed further."
+    }
+  ],
+  "feedback_no_reviews": {
+    "difficulty": "hard",
+    "friction_points": [
+      "Could not find a way to add new deadlines or create events on the calendar."
+    ],
+    "likely_frictions_from_similar_users": [
+      "The calendar view is confusing and doesn't clearly show how to add new items.",
+      "It's hard to distinguish between tasks and deadlines on the calendar."
+    ],
+    "what_was_easy": [
+      "Navigating to the Deadlines & Milestones section was straightforward."
+    ],
+    "product_feedback": "I was trying to prepare a deadlines calendar for my company, but I couldn't figure out how to add any new deadlines. I clicked on the Deadlines section and just kept scrolling, but there was no obvious way to add anything. It seems like it only shows existing deadlines, which isn't helpful for creating a new calendar.",
+    "would_convert": "no",
+    "quote": "I couldn't find a way to add any deadlines to the calendar, so I can't prepare it as requested.",
+    "step_outcomes": [
+      {
+        "step": 0,
+        "outcome": "easy"
+      },
+      {
+        "step": 1,
+        "outcome": "easy"
+      },
+      {
+        "step": 2,
+        "outcome": "friction"
+      },
+      {
+        "step": 3,
+        "outcome": "friction"
+      },
+      {
+        "step": 4,
+        "outcome": "friction"
+      },
+      {
+        "step": 5,
+        "outcome": "friction"
+      },
+      {
+        "step": 6,
+        "outcome": "friction"
+      },
+      {
+        "step": 7,
+        "outcome": "friction"
+      },
+      {
+        "step": 8,
+        "outcome": "friction"
+      },
+      {
+        "step": 9,
+        "outcome": "friction"
+      },
+      {
+        "step": 10,
+        "outcome": "friction"
+      },
+      {
+        "step": 11,
+        "outcome": "friction"
+      },
+      {
+        "step": 12,
+        "outcome": "friction"
+      }
+    ]
+  },
+  "feedback_with_reviews": {
+    "difficulty": "hard",
+    "friction_points": [
+      "Unable to find a way to add new deadlines or create events on the calendar.",
+      "The page only displayed existing deadlines without clear options for adding new ones."
+    ],
+    "likely_frictions_from_similar_users": [
+      "The program in general is difficult and needs to be learned step by step.",
+      "It took time to figure out how to use the advanced features.",
+      "Because of the amount of options, you need some time to be able to use it, it's not easy to manage when you first start using it."
+    ],
+    "what_was_easy": [
+      "Navigated to the Deadlines & Milestones section."
+    ],
+    "product_feedback": "I clicked on the Deadlines & Milestones tool, but I couldn't figure out how to add any new deadlines. I scrolled down multiple times, but it just showed me existing deadlines. I'm not sure how to prepare a calendar if I can't add anything to it. This feels like it's missing a key function for my needs.",
+    "would_convert": "no",
+    "quote": "I was unable to prepare a deadlines calendar as requested because I couldn't find a way to add any new deadlines.",
+    "step_outcomes": [
+      {
+        "step": 0,
+        "outcome": "easy"
+      },
+      {
+        "step": 1,
+        "outcome": "easy"
+      },
+      {
+        "step": 2,
+        "outcome": "friction"
+      },
+      {
+        "step": 3,
+        "outcome": "friction"
+      },
+      {
+        "step": 4,
+        "outcome": "friction"
+      },
+      {
+        "step": 5,
+        "outcome": "friction"
+      },
+      {
+        "step": 6,
+        "outcome": "friction"
+      },
+      {
+        "step": 7,
+        "outcome": "friction"
+      },
+      {
+        "step": 8,
+        "outcome": "friction"
+      },
+      {
+        "step": 9,
+        "outcome": "friction"
+      },
+      {
+        "step": 10,
+        "outcome": "friction"
+      },
+      {
+        "step": 11,
+        "outcome": "friction"
+      },
+      {
+        "step": 12,
+        "outcome": "friction"
+      }
+    ]
+  }
+}

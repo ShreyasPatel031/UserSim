@@ -1,0 +1,36 @@
+{
+  "stage": "e2e_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "6c9c1afe83730cc77189f1f349923ad5270456d5b7f1838665eee333d2142234",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2769,
+  "output_tokens": 1110,
+  "cost_usd": 0.0036057000000000003,
+  "elapsed_s": 33.84,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"User-friendly interface for general navigation.\",\n    \"Effective for basic lead and customer data management.\",\n    \"Good for tracking sales opportunities.\"\n  ],\n  \"cons\": [\n    \"Difficulty finding in-depth lead scoring or qualification features.\",\n    \"Customization options for specific marketing needs could be limited.\",\n    \"Customer support response times might be inconsistent.\"\n  ],\n  \"overall_experience\": \"This Digital Account Manager likely found Zoho CRM generally easy to navigate for core CRM functions, especially for managing leads and customer data. However, they may have encountered limitations or difficulties in finding advanced features for lead scoring, qualification, or deep conversion tracking, which are critical for their role. While adequate for basic tasks, the platform's depth in specific marketing and sales automation might not fully meet their expectations, leading to some frustration with customization and potentially customer support.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "User-friendly interface for general navigation.",
+      "Effective for basic lead and customer data management.",
+      "Good for tracking sales opportunities."
+    ],
+    "cons": [
+      "Difficulty finding in-depth lead scoring or qualification features.",
+      "Customization options for specific marketing needs could be limited.",
+      "Customer support response times might be inconsistent."
+    ],
+    "overall_experience": "This Digital Account Manager likely found Zoho CRM generally easy to navigate for core CRM functions, especially for managing leads and customer data. However, they may have encountered limitations or difficulties in finding advanced features for lead scoring, qualification, or deep conversion tracking, which are critical for their role. While adequate for basic tasks, the platform's depth in specific marketing and sales automation might not fully meet their expectations, leading to some frustration with customization and potentially customer support."
+  },
+  "ts": "2026-10-18T08:28:46.204733+00:00"
+}

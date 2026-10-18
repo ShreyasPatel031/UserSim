@@ -1,0 +1,36 @@
+{
+  "stage": "e2e_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "014758676914364ddfc4845ed9eff9da53461ac4367a046dbb804803b575aa38",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2715,
+  "output_tokens": 1070,
+  "cost_usd": 0.0034895,
+  "elapsed_s": 41.94,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Straightforward interface for managing deals and purchases\",\n    \"Good value for the features available at their plan level\",\n    \"Effective for tracking sales goals and client interactions\"\n  ],\n  \"cons\": [\n    \"Advanced analytics and customization are limited to higher tiers\",\n    \"Initial setup or integration can be complex if not carefully managed\",\n    \"Customer support can sometimes be slow to respond to issues\"\n  ],\n  \"overall_experience\": \"The assistant found Zoho CRM to be a generally user-friendly and valuable tool for concluding purchases and managing client interactions. While the core functionalities met their needs, they likely encountered some limitations with advanced features and customization options tied to higher pricing plans. Initial setup might have presented some challenges, but overall, it served as a solid solution for their company's CRM needs.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Straightforward interface for managing deals and purchases",
+      "Good value for the features available at their plan level",
+      "Effective for tracking sales goals and client interactions"
+    ],
+    "cons": [
+      "Advanced analytics and customization are limited to higher tiers",
+      "Initial setup or integration can be complex if not carefully managed",
+      "Customer support can sometimes be slow to respond to issues"
+    ],
+    "overall_experience": "The assistant found Zoho CRM to be a generally user-friendly and valuable tool for concluding purchases and managing client interactions. While the core functionalities met their needs, they likely encountered some limitations with advanced features and customization options tied to higher pricing plans. Initial setup might have presented some challenges, but overall, it served as a solid solution for their company's CRM needs."
+  },
+  "ts": "2026-10-18T08:28:48.701623+00:00"
+}

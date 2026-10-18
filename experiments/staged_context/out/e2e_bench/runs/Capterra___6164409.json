@@ -1,0 +1,240 @@
+{
+  "rid": "Capterra___6164409",
+  "product": "Smartsheet",
+  "url": "https://www.smartsheet.com/",
+  "task": "Track goods arrival times.",
+  "secs": 165.0,
+  "run": {
+    "completed": true,
+    "visited_urls": [
+      "https://www.smartsheet.com/",
+      "https://www.smartsheet.com/platform"
+    ],
+    "error": null,
+    "num_steps": 13,
+    "final_url": "https://www.smartsheet.com/platform"
+  },
+  "steps": [
+    {
+      "step": 0,
+      "url": "https://www.smartsheet.com/",
+      "action": "Opened https://www.smartsheet.com/",
+      "observation": "Landing page loaded — agent starting…"
+    },
+    {
+      "step": 1,
+      "url": "https://www.smartsheet.com/",
+      "action": "click — index=422",
+      "observation": "Clicked button \"Product\" id=menu-toggle--product"
+    },
+    {
+      "step": 2,
+      "url": "https://www.smartsheet.com/",
+      "action": "click — index=423",
+      "observation": "Clicked a \"Product Overview\nManage projec...\""
+    },
+    {
+      "step": 3,
+      "url": "https://www.smartsheet.com/platform",
+      "action": "scroll — down=True, pages=1.0",
+      "observation": "🔍 Scrolled down 785px"
+    },
+    {
+      "step": 4,
+      "url": "https://www.smartsheet.com/platform",
+      "action": "scroll — down=True, pages=1.0",
+      "observation": "🔍 Scrolled down 785px"
+    },
+    {
+      "step": 5,
+      "url": "https://www.smartsheet.com/platform",
+      "action": "scroll — down=True, pages=1.0",
+      "observation": "🔍 Scrolled down 785px"
+    },
+    {
+      "step": 6,
+      "url": "https://www.smartsheet.com/platform",
+      "action": "scroll — down=True, pages=1.0",
+      "observation": "🔍 Scrolled down 785px"
+    },
+    {
+      "step": 7,
+      "url": "https://www.smartsheet.com/platform",
+      "action": "scroll — down=True, pages=1.0",
+      "observation": "🔍 Scrolled down 785px"
+    },
+    {
+      "step": 8,
+      "url": "https://www.smartsheet.com/platform",
+      "action": "scroll — down=True, pages=1.0",
+      "observation": "🔍 Scrolled down 785px"
+    },
+    {
+      "step": 9,
+      "url": "https://www.smartsheet.com/platform",
+      "action": "scroll — down=True, pages=1.0",
+      "observation": "🔍 Scrolled down 785px"
+    },
+    {
+      "step": 10,
+      "url": "https://www.smartsheet.com/platform",
+      "action": "click — index=35759",
+      "observation": "Clicked textarea id=multimodal-chat-inpu name=chat-input"
+    },
+    {
+      "step": 11,
+      "url": "https://www.smartsheet.com/platform",
+      "action": "input — index=35759, text=How can I track goods arrival times?, clear=True",
+      "observation": "Typed 'How can I track goods arrival times?'"
+    },
+    {
+      "step": 12,
+      "url": "https://www.smartsheet.com/platform",
+      "action": "done — text=The agent attempted to find information on tracking goods arrival times by scrolling through the product overview page and then by using the 'Ask Smartsheet' AI agent. The agent typed the question 'How can I track goods arrival times?' into the AI chat input. However, the agent has reach",
+      "observation": "The agent attempted to find information on tracking goods arrival times by scrolling through the product overview page and then by using the 'Ask Smartsheet' AI agent. The agent typed the question 'How can I track goods arrival times?' into the AI chat input. However, the agent has reached the maximum number of steps and cannot proceed further to get a response from the AI agent or to complete the"
+    }
+  ],
+  "feedback_no_reviews": {
+    "difficulty": "medium",
+    "friction_points": [
+      "The agent had to scroll multiple times to find relevant information.",
+      "The agent reached the maximum number of steps before receiving a response from the AI agent."
+    ],
+    "likely_frictions_from_similar_users": [
+      "Users report that it's difficult to find specific solutions for niche problems.",
+      "Information overload on product pages can make it hard to locate relevant features."
+    ],
+    "what_was_easy": [
+      "Navigating to the product overview page was straightforward.",
+      "Using the AI chat feature to ask a question was intuitive."
+    ],
+    "product_feedback": "The product has a clean interface, and the AI chat feature is promising for quick answers. However, finding specific solutions for tasks like tracking goods arrival times was not immediately apparent through browsing. It would be helpful if there were more direct links or examples for specific use cases within the product overview.",
+    "would_convert": "maybe",
+    "quote": "I had to scroll a lot to find what I was looking for, and then I didn't even get an answer from the AI.",
+    "step_outcomes": [
+      {
+        "step": 0,
+        "outcome": "easy"
+      },
+      {
+        "step": 1,
+        "outcome": "easy"
+      },
+      {
+        "step": 2,
+        "outcome": "easy"
+      },
+      {
+        "step": 3,
+        "outcome": "friction"
+      },
+      {
+        "step": 4,
+        "outcome": "friction"
+      },
+      {
+        "step": 5,
+        "outcome": "friction"
+      },
+      {
+        "step": 6,
+        "outcome": "friction"
+      },
+      {
+        "step": 7,
+        "outcome": "friction"
+      },
+      {
+        "step": 8,
+        "outcome": "friction"
+      },
+      {
+        "step": 9,
+        "outcome": "friction"
+      },
+      {
+        "step": 10,
+        "outcome": "easy"
+      },
+      {
+        "step": 11,
+        "outcome": "easy"
+      },
+      {
+        "step": 12,
+        "outcome": "friction"
+      }
+    ]
+  },
+  "feedback_with_reviews": {
+    "difficulty": "medium",
+    "friction_points": [
+      "The agent had to scroll multiple times to find relevant information on the product overview page.",
+      "The agent was unable to complete the task within the given steps, specifically in getting a response from the AI agent."
+    ],
+    "likely_frictions_from_similar_users": [
+      "Some parts take too many clicks, like when I want to change the view or find a specific sprint.",
+      "Wish the search was a bit smarter, sometimes I type something in and still gotta scroll to find what I need."
+    ],
+    "what_was_easy": [
+      "Navigating to the product overview page was straightforward after clicking the 'Product' menu item."
+    ],
+    "product_feedback": "The platform appears to have a lot of features, requiring extensive scrolling to explore. The AI chat feature is a promising way to get quick answers, but the agent was unable to see its response due to step limitations. It's unclear if the platform directly addresses specific tracking needs like goods arrival times without further interaction.",
+    "would_convert": "maybe",
+    "quote": "I need to find a way to track goods arrival times and I'm hoping this platform can help.",
+    "step_outcomes": [
+      {
+        "step": 0,
+        "outcome": "easy"
+      },
+      {
+        "step": 1,
+        "outcome": "easy"
+      },
+      {
+        "step": 2,
+        "outcome": "easy"
+      },
+      {
+        "step": 3,
+        "outcome": "friction"
+      },
+      {
+        "step": 4,
+        "outcome": "friction"
+      },
+      {
+        "step": 5,
+        "outcome": "friction"
+      },
+      {
+        "step": 6,
+        "outcome": "friction"
+      },
+      {
+        "step": 7,
+        "outcome": "friction"
+      },
+      {
+        "step": 8,
+        "outcome": "friction"
+      },
+      {
+        "step": 9,
+        "outcome": "friction"
+      },
+      {
+        "step": 10,
+        "outcome": "easy"
+      },
+      {
+        "step": 11,
+        "outcome": "easy"
+      },
+      {
+        "step": 12,
+        "outcome": "friction"
+      }
+    ]
+  }
+}

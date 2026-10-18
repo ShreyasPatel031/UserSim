@@ -1,0 +1,34 @@
+{
+  "stage": "e2e_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "76c9f3c3681381383916b00d5c8a8ce150124a128881d405841f2ae71504967c",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 698,
+  "output_tokens": 989,
+  "cost_usd": 0.0026819000000000005,
+  "elapsed_s": 57.64,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 1,\n  \"functionality_rating\": 2,\n  \"overall_rating\": 1,\n  \"value_for_money_rating\": 2,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 0,\n  \"pros\": [\n    \"Landing page loaded successfully\"\n  ],\n  \"cons\": [\n    \"Difficulty finding core features for B2B/B2C operations\",\n    \"Unintuitive navigation and page layout\",\n    \"Unable to quickly assess product capabilities\"\n  ],\n  \"overall_experience\": \"The user, a CEO of a small outsourcing firm, had a very frustrating initial experience with Freshsales. They struggled significantly to locate information about how the product could manage customer relationships for both B2B and B2C operations, which was their primary task. This made it impossible to evaluate the product's suitability, leading to a strong negative impression and a decision not to proceed further.\"\n}",
+  "json": {
+    "ease_of_use_rating": 1,
+    "functionality_rating": 2,
+    "overall_rating": 1,
+    "value_for_money_rating": 2,
+    "customer_support_rating": 3,
+    "recommendation_score": 0,
+    "pros": [
+      "Landing page loaded successfully"
+    ],
+    "cons": [
+      "Difficulty finding core features for B2B/B2C operations",
+      "Unintuitive navigation and page layout",
+      "Unable to quickly assess product capabilities"
+    ],
+    "overall_experience": "The user, a CEO of a small outsourcing firm, had a very frustrating initial experience with Freshsales. They struggled significantly to locate information about how the product could manage customer relationships for both B2B and B2C operations, which was their primary task. This made it impossible to evaluate the product's suitability, leading to a strong negative impression and a decision not to proceed further."
+  },
+  "ts": "2026-10-18T08:28:47.629652+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "e2e_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "37f634dcb70b925cf03b639fe80059d7c50c406177831c4da19d23c8d8c9eec5",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 673,
+  "output_tokens": 1027,
+  "cost_usd": 0.0027694,
+  "elapsed_s": 54.57,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Initial website navigation was straightforward\",\n    \"Clear layout on the landing page\",\n    \"Easy to find general product information\"\n  ],\n  \"cons\": [\n    \"Difficulty finding specific AI chatbot features for their industry\",\n    \"Lack of detailed information for niche business needs\",\n    \"Unclear how certain functionalities would apply to textiles\"\n  ],\n  \"overall_experience\": \"This web developer experienced LiveAgent's free trial as initially easy to navigate, with a clear website layout. However, they encountered friction when trying to find specific details about AI chatbot capabilities relevant to the textiles industry. The lack of tailored information made it challenging to fully assess the product's suitability for their company's customer service operations.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 3,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 6,
+    "pros": [
+      "Initial website navigation was straightforward",
+      "Clear layout on the landing page",
+      "Easy to find general product information"
+    ],
+    "cons": [
+      "Difficulty finding specific AI chatbot features for their industry",
+      "Lack of detailed information for niche business needs",
+      "Unclear how certain functionalities would apply to textiles"
+    ],
+    "overall_experience": "This web developer experienced LiveAgent's free trial as initially easy to navigate, with a clear website layout. However, they encountered friction when trying to find specific details about AI chatbot capabilities relevant to the textiles industry. The lack of tailored information made it challenging to fully assess the product's suitability for their company's customer service operations."
+  },
+  "ts": "2026-10-18T08:28:45.931437+00:00"
+}

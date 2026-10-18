@@ -1,0 +1,36 @@
+{
+  "stage": "e2e_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ddcc232293711935cf110553d64b5500abd661a45eaf1f24d8eb92efda18a7de",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 644,
+  "output_tokens": 909,
+  "cost_usd": 0.0024657,
+  "elapsed_s": 56.43,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Comprehensive feature set for ticketing and customer management\",\n    \"Good value for the range of tools offered\",\n    \"Integrates well with other Zoho products\"\n  ],\n  \"cons\": [\n    \"User interface can feel clunky or dated compared to alternatives\",\n    \"Steep learning curve for new agents\",\n    \"Customization options can be complex to implement\"\n  ],\n  \"overall_experience\": \"The Customer Support Analyst likely found Zoho Desk to be a powerful tool for managing customer interactions, appreciating its extensive features and cost-effectiveness for a retail business. However, they probably encountered some frustrations with its user interface and overall ease of use, especially when compared to more modern platforms like Gladly. Despite the learning curve, the product generally met their core needs for handling customer support tasks.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 3,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 6,
+    "pros": [
+      "Comprehensive feature set for ticketing and customer management",
+      "Good value for the range of tools offered",
+      "Integrates well with other Zoho products"
+    ],
+    "cons": [
+      "User interface can feel clunky or dated compared to alternatives",
+      "Steep learning curve for new agents",
+      "Customization options can be complex to implement"
+    ],
+    "overall_experience": "The Customer Support Analyst likely found Zoho Desk to be a powerful tool for managing customer interactions, appreciating its extensive features and cost-effectiveness for a retail business. However, they probably encountered some frustrations with its user interface and overall ease of use, especially when compared to more modern platforms like Gladly. Despite the learning curve, the product generally met their core needs for handling customer support tasks."
+  },
+  "ts": "2026-10-18T08:28:48.154504+00:00"
+}

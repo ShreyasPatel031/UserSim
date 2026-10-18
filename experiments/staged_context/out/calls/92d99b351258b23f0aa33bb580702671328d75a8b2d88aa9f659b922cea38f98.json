@@ -1,0 +1,35 @@
+{
+  "stage": "e2e_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "92d99b351258b23f0aa33bb580702671328d75a8b2d88aa9f659b922cea38f98",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2936,
+  "output_tokens": 1007,
+  "cost_usd": 0.0033983,
+  "elapsed_s": 35.21,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 2,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 2,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 3,\n  \"pros\": [\n    \"Initial landing page loaded quickly.\",\n    \"Potential for B2B/B2C CRM management.\"\n  ],\n  \"cons\": [\n    \"Difficulty finding key features and product information.\",\n    \"Setup process could be overwhelming for new users.\",\n    \"Concerns about potential clunky mobile app experience.\"\n  ],\n  \"overall_experience\": \"This CEO likely found the initial experience with Freshsales frustrating due to significant difficulty in locating essential features and understanding its capabilities for B2B and B2C operations. While the landing page loaded quickly, the lack of intuitive navigation to core functionalities led to a poor first impression. The user's short tenure suggests they might still be in the early stages of evaluating or setting up the product, potentially encountering issues like overwhelming setup or slow support, which are common complaints among similar users.\"\n}",
+  "json": {
+    "ease_of_use_rating": 2,
+    "functionality_rating": 3,
+    "overall_rating": 2,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 3,
+    "pros": [
+      "Initial landing page loaded quickly.",
+      "Potential for B2B/B2C CRM management."
+    ],
+    "cons": [
+      "Difficulty finding key features and product information.",
+      "Setup process could be overwhelming for new users.",
+      "Concerns about potential clunky mobile app experience."
+    ],
+    "overall_experience": "This CEO likely found the initial experience with Freshsales frustrating due to significant difficulty in locating essential features and understanding its capabilities for B2B and B2C operations. While the landing page loaded quickly, the lack of intuitive navigation to core functionalities led to a poor first impression. The user's short tenure suggests they might still be in the early stages of evaluating or setting up the product, potentially encountering issues like overwhelming setup or slow support, which are common complaints among similar users."
+  },
+  "ts": "2026-10-18T08:28:44.495216+00:00"
+}

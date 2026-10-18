@@ -1,0 +1,36 @@
+{
+  "stage": "e2e_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "123eafa11db327e22bece2522ad1c43d682d2b32288d48120d30e2c8875616ee",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 684,
+  "output_tokens": 1073,
+  "cost_usd": 0.0028877,
+  "elapsed_s": 17.95,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Intuitive navigation for general project management tasks.\",\n    \"The AI chat feature is helpful for finding specific information.\",\n    \"Scalable for large enterprise environments.\"\n  ],\n  \"cons\": [\n    \"Specific functionality like ad sales tracking is not immediately apparent.\",\n    \"May require significant customization for niche use cases.\",\n    \"Steeper learning curve compared to some alternatives for advanced features.\"\n  ],\n  \"overall_experience\": \"This System Administrator likely found Smartsheet capable for general project management across a large organization. However, the lack of immediate clarity or dedicated features for specific tasks like ad sales tracking might have caused some friction, requiring reliance on AI features or deeper exploration. While easy to navigate initially, the depth of functionality for their specific needs might have felt less straightforward compared to previous tools.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 3,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 6,
+    "pros": [
+      "Intuitive navigation for general project management tasks.",
+      "The AI chat feature is helpful for finding specific information.",
+      "Scalable for large enterprise environments."
+    ],
+    "cons": [
+      "Specific functionality like ad sales tracking is not immediately apparent.",
+      "May require significant customization for niche use cases.",
+      "Steeper learning curve compared to some alternatives for advanced features."
+    ],
+    "overall_experience": "This System Administrator likely found Smartsheet capable for general project management across a large organization. However, the lack of immediate clarity or dedicated features for specific tasks like ad sales tracking might have caused some friction, requiring reliance on AI features or deeper exploration. While easy to navigate initially, the depth of functionality for their specific needs might have felt less straightforward compared to previous tools."
+  },
+  "ts": "2026-10-18T08:28:45.551227+00:00"
+}

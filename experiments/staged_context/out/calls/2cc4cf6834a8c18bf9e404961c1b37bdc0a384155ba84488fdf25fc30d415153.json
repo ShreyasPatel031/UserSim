@@ -1,0 +1,34 @@
+{
+  "stage": "e2e_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2cc4cf6834a8c18bf9e404961c1b37bdc0a384155ba84488fdf25fc30d415153",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3061,
+  "output_tokens": 1003,
+  "cost_usd": 0.0034258,
+  "elapsed_s": 5.72,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 1,\n  \"functionality_rating\": 2,\n  \"overall_rating\": 1,\n  \"value_for_money_rating\": 1,\n  \"customer_support_rating\": 2,\n  \"recommendation_score\": 0,\n  \"pros\": [\n    \"Initial landing page loaded straightforwardly\"\n  ],\n  \"cons\": [\n    \"Difficulty navigating to the correct product (Freshdesk)\",\n    \"Accidentally redirected to Freshservice repeatedly\",\n    \"Unable to access core features due to navigation issues\"\n  ],\n  \"overall_experience\": \"This Technical Representative likely had a highly frustrating initial experience with Freshdesk, being unable to even access the product due to navigation issues. They repeatedly encountered a loop of misdirection to Freshservice, preventing them from performing their task of logging and tracking conversations. This fundamental hurdle would have led to a very negative overall impression and an inability to assess the product's actual functionality or value.\"\n}",
+  "json": {
+    "ease_of_use_rating": 1,
+    "functionality_rating": 2,
+    "overall_rating": 1,
+    "value_for_money_rating": 1,
+    "customer_support_rating": 2,
+    "recommendation_score": 0,
+    "pros": [
+      "Initial landing page loaded straightforwardly"
+    ],
+    "cons": [
+      "Difficulty navigating to the correct product (Freshdesk)",
+      "Accidentally redirected to Freshservice repeatedly",
+      "Unable to access core features due to navigation issues"
+    ],
+    "overall_experience": "This Technical Representative likely had a highly frustrating initial experience with Freshdesk, being unable to even access the product due to navigation issues. They repeatedly encountered a loop of misdirection to Freshservice, preventing them from performing their task of logging and tracking conversations. This fundamental hurdle would have led to a very negative overall impression and an inability to assess the product's actual functionality or value."
+  },
+  "ts": "2026-10-18T08:28:57.326434+00:00"
+}

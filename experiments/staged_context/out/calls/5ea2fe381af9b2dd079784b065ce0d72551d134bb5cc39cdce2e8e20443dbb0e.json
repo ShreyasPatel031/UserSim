@@ -1,0 +1,36 @@
+{
+  "stage": "e2e_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "5ea2fe381af9b2dd079784b065ce0d72551d134bb5cc39cdce2e8e20443dbb0e",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3106,
+  "output_tokens": 982,
+  "cost_usd": 0.0033868,
+  "elapsed_s": 31.45,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 2,\n  \"functionality_rating\": 2,\n  \"overall_rating\": 2,\n  \"value_for_money_rating\": 2,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 3,\n  \"pros\": [\n    \"Initial landing page loaded successfully\",\n    \"Potential for comprehensive sales process management\",\n    \"Centralized customer interaction tracking\"\n  ],\n  \"cons\": [\n    \"Significant difficulty navigating the product to find features\",\n    \"Unstable or changing page structure causing navigation issues\",\n    \"Lack of clear and accessible information regarding product capabilities\"\n  ],\n  \"overall_experience\": \"This owner experienced significant frustration trying to navigate Freshsales and understand its capabilities, struggling to even locate basic feature information. The perceived instability and lack of clear user guidance made for a challenging initial impression. Without being able to easily explore the product's functionality, their overall view was likely negative, questioning its user-friendliness and value.\"\n}",
+  "json": {
+    "ease_of_use_rating": 2,
+    "functionality_rating": 2,
+    "overall_rating": 2,
+    "value_for_money_rating": 2,
+    "customer_support_rating": 3,
+    "recommendation_score": 3,
+    "pros": [
+      "Initial landing page loaded successfully",
+      "Potential for comprehensive sales process management",
+      "Centralized customer interaction tracking"
+    ],
+    "cons": [
+      "Significant difficulty navigating the product to find features",
+      "Unstable or changing page structure causing navigation issues",
+      "Lack of clear and accessible information regarding product capabilities"
+    ],
+    "overall_experience": "This owner experienced significant frustration trying to navigate Freshsales and understand its capabilities, struggling to even locate basic feature information. The perceived instability and lack of clear user guidance made for a challenging initial impression. Without being able to easily explore the product's functionality, their overall view was likely negative, questioning its user-friendliness and value."
+  },
+  "ts": "2026-10-18T08:28:45.639217+00:00"
+}

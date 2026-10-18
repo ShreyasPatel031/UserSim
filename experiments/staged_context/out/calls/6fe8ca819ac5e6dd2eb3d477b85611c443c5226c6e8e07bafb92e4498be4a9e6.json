@@ -1,0 +1,36 @@
+{
+  "stage": "e2e_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "6fe8ca819ac5e6dd2eb3d477b85611c443c5226c6e8e07bafb92e4498be4a9e6",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2601,
+  "output_tokens": 1117,
+  "cost_usd": 0.0035727999999999997,
+  "elapsed_s": 34.66,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Easy and quick sign-up process for the trial.\",\n    \"Straightforward interface for basic lead and contact entry.\",\n    \"Good starting point for managing sales processes.\"\n  ],\n  \"cons\": [\n    \"Configuration could be complex for new users.\",\n    \"Potential challenges integrating into existing workflows.\",\n    \"May require time to fully set up and customize for specific needs.\"\n  ],\n  \"overall_experience\": \"This Partner in Investment Management had an easy initial experience with Freshsales, finding the free trial sign-up and basic lead entry straightforward. They appreciated the quick start to managing leads, indicating a positive first impression of the core functionality. However, as a trial user, they likely anticipated potential complexities with deeper configuration and integration, which could impact long-term satisfaction.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Easy and quick sign-up process for the trial.",
+      "Straightforward interface for basic lead and contact entry.",
+      "Good starting point for managing sales processes."
+    ],
+    "cons": [
+      "Configuration could be complex for new users.",
+      "Potential challenges integrating into existing workflows.",
+      "May require time to fully set up and customize for specific needs."
+    ],
+    "overall_experience": "This Partner in Investment Management had an easy initial experience with Freshsales, finding the free trial sign-up and basic lead entry straightforward. They appreciated the quick start to managing leads, indicating a positive first impression of the core functionality. However, as a trial user, they likely anticipated potential complexities with deeper configuration and integration, which could impact long-term satisfaction."
+  },
+  "ts": "2026-10-18T08:28:46.146022+00:00"
+}

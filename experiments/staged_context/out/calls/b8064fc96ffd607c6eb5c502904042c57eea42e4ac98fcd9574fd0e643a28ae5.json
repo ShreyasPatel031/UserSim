@@ -1,0 +1,36 @@
+{
+  "stage": "e2e_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b8064fc96ffd607c6eb5c502904042c57eea42e4ac98fcd9574fd0e643a28ae5",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 601,
+  "output_tokens": 958,
+  "cost_usd": 0.0025753,
+  "elapsed_s": 55.15,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Streamlined process for concluding sales\",\n    \"Good value for money compared to alternatives\",\n    \"Comprehensive features for managing customer data\"\n  ],\n  \"cons\": [\n    \"Occasional UI quirks or unexpected navigation\",\n    \"Learning curve for advanced features\",\n    \"Integration with specific security tools could be improved\"\n  ],\n  \"overall_experience\": \"This operations assistant likely found Zoho CRM to be a capable tool for managing and concluding purchases within their company. The product offered good value and sufficient functionality for their role, though they may have encountered minor usability issues or a learning curve for some features. Overall, their experience was positive, contributing to efficient operations.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Streamlined process for concluding sales",
+      "Good value for money compared to alternatives",
+      "Comprehensive features for managing customer data"
+    ],
+    "cons": [
+      "Occasional UI quirks or unexpected navigation",
+      "Learning curve for advanced features",
+      "Integration with specific security tools could be improved"
+    ],
+    "overall_experience": "This operations assistant likely found Zoho CRM to be a capable tool for managing and concluding purchases within their company. The product offered good value and sufficient functionality for their role, though they may have encountered minor usability issues or a learning curve for some features. Overall, their experience was positive, contributing to efficient operations."
+  },
+  "ts": "2026-10-18T08:28:45.389454+00:00"
+}

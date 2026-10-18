@@ -1,0 +1,36 @@
+{
+  "stage": "e2e_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "be743d7ed4490eb9f7d453f608e224e77d94b63d68a1a0a61b9fd514242ebc23",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2973,
+  "output_tokens": 1014,
+  "cost_usd": 0.0034269,
+  "elapsed_s": 22.34,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Robust features for campaign management and automation\",\n    \"Strong integration capabilities for e-commerce\",\n    \"Effective for managing ESP transitions\"\n  ],\n  \"cons\": [\n    \"Can have a steep learning curve due to extensive features\",\n    \"Pricing might be perceived as high for certain feature sets\",\n    \"Customization options for some fields may be limited\"\n  ],\n  \"overall_experience\": \"As a Director of Ecommerce, this reviewer likely found Klaviyo to be a powerful and comprehensive tool for managing email marketing campaigns and navigating ESP transitions. The platform's extensive features were beneficial for their tasks, enabling advanced automation and integrations. However, the initial learning curve and the potential for overwhelming options may have presented some challenges, with the cost-benefit ratio being a point of consideration.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Robust features for campaign management and automation",
+      "Strong integration capabilities for e-commerce",
+      "Effective for managing ESP transitions"
+    ],
+    "cons": [
+      "Can have a steep learning curve due to extensive features",
+      "Pricing might be perceived as high for certain feature sets",
+      "Customization options for some fields may be limited"
+    ],
+    "overall_experience": "As a Director of Ecommerce, this reviewer likely found Klaviyo to be a powerful and comprehensive tool for managing email marketing campaigns and navigating ESP transitions. The platform's extensive features were beneficial for their tasks, enabling advanced automation and integrations. However, the initial learning curve and the potential for overwhelming options may have presented some challenges, with the cost-benefit ratio being a point of consideration."
+  },
+  "ts": "2026-10-18T08:28:45.469917+00:00"
+}

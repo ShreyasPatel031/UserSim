@@ -1,0 +1,35 @@
+{
+  "stage": "e2e_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8dabbd616a5aec6832221c7db31c4a0d387fd8d69b6bf8cced882acc75009bcb",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2912,
+  "output_tokens": 1024,
+  "cost_usd": 0.0034335999999999998,
+  "elapsed_s": 5.23,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 2,\n  \"functionality_rating\": 2,\n  \"overall_rating\": 2,\n  \"value_for_money_rating\": 2,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 3,\n  \"pros\": [\n    \"Initial navigation to product listings was straightforward\",\n    \"Landing page loaded smoothly\"\n  ],\n  \"cons\": [\n    \"Difficulty locating specific features for community and CMS management\",\n    \"Learning curve for finding core functionalities was high\",\n    \"Perceived lack of direct tools for their specific tasks\"\n  ],\n  \"overall_experience\": \"This CMS Advisor, working as a contractual consultant for a small broadcast media company, had a frustrating initial experience with Freshdesk. They struggled to find the specific features required for managing customer communities and CMS systems, leading to a perception that the product did not meet their core needs. This difficulty in locating essential functionalities likely resulted in a low overall satisfaction and a low recommendation score.\"\n}",
+  "json": {
+    "ease_of_use_rating": 2,
+    "functionality_rating": 2,
+    "overall_rating": 2,
+    "value_for_money_rating": 2,
+    "customer_support_rating": 3,
+    "recommendation_score": 3,
+    "pros": [
+      "Initial navigation to product listings was straightforward",
+      "Landing page loaded smoothly"
+    ],
+    "cons": [
+      "Difficulty locating specific features for community and CMS management",
+      "Learning curve for finding core functionalities was high",
+      "Perceived lack of direct tools for their specific tasks"
+    ],
+    "overall_experience": "This CMS Advisor, working as a contractual consultant for a small broadcast media company, had a frustrating initial experience with Freshdesk. They struggled to find the specific features required for managing customer communities and CMS systems, leading to a perception that the product did not meet their core needs. This difficulty in locating essential functionalities likely resulted in a low overall satisfaction and a low recommendation score."
+  },
+  "ts": "2026-10-18T08:28:55.850106+00:00"
+}

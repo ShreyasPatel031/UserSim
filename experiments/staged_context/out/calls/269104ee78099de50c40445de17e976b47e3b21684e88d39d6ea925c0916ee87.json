@@ -1,0 +1,36 @@
+{
+  "stage": "e2e_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "269104ee78099de50c40445de17e976b47e3b21684e88d39d6ea925c0916ee87",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 726,
+  "output_tokens": 1015,
+  "cost_usd": 0.0027553000000000005,
+  "elapsed_s": 54.98,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Effective for organizing project tasks\",\n    \"Straightforward document management features\",\n    \"Professional and clean interface\"\n  ],\n  \"cons\": [\n    \"Initial sign-in process was confusing\",\n    \"Difficulty finding the trial sign-up option\",\n    \"Could improve onboarding for new users\"\n  ],\n  \"overall_experience\": \"This IT Support Engineer likely found Basecamp to be a functional tool for managing project tasks and documents, appreciating its core organizational capabilities. However, their initial experience was hampered by a confusing sign-in and onboarding process, which created unnecessary friction. While the product felt professional and clear once past these hurdles, the initial usability issues slightly impacted their overall satisfaction and willingness to fully recommend it.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 6,
+    "pros": [
+      "Effective for organizing project tasks",
+      "Straightforward document management features",
+      "Professional and clean interface"
+    ],
+    "cons": [
+      "Initial sign-in process was confusing",
+      "Difficulty finding the trial sign-up option",
+      "Could improve onboarding for new users"
+    ],
+    "overall_experience": "This IT Support Engineer likely found Basecamp to be a functional tool for managing project tasks and documents, appreciating its core organizational capabilities. However, their initial experience was hampered by a confusing sign-in and onboarding process, which created unnecessary friction. While the product felt professional and clear once past these hurdles, the initial usability issues slightly impacted their overall satisfaction and willingness to fully recommend it."
+  },
+  "ts": "2026-10-18T08:28:45.879129+00:00"
+}

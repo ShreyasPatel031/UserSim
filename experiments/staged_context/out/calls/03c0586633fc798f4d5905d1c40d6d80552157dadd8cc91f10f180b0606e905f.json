@@ -1,0 +1,36 @@
+{
+  "stage": "e2e_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "03c0586633fc798f4d5905d1c40d6d80552157dadd8cc91f10f180b0606e905f",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3075,
+  "output_tokens": 1022,
+  "cost_usd": 0.0034774999999999997,
+  "elapsed_s": 29.39,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Easy navigation to main feature and platform overviews.\",\n    \"Centralized system for managing contacts and sales activities.\",\n    \"Potentially good for general CRM tasks if specific needs are met.\"\n  ],\n  \"cons\": [\n    \"Difficulty finding specific features for managing business applications.\",\n    \"Lack of clarity or discoverability for specific use cases.\",\n    \"Potential for limited customization in basic versions.\"\n  ],\n  \"overall_experience\": \"The Managing Partner found the initial navigation of Zoho CRM straightforward, but encountered significant friction when trying to locate specific information or features related to managing business applications. They likely experienced frustration with the product's discoverability for their niche needs, which may have impacted their perception of its functionality and ease of use. While it provided a centralized system, the specific task of managing business applications seemed poorly supported or documented, leading to a moderately negative experience.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 3,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 6,
+    "pros": [
+      "Easy navigation to main feature and platform overviews.",
+      "Centralized system for managing contacts and sales activities.",
+      "Potentially good for general CRM tasks if specific needs are met."
+    ],
+    "cons": [
+      "Difficulty finding specific features for managing business applications.",
+      "Lack of clarity or discoverability for specific use cases.",
+      "Potential for limited customization in basic versions."
+    ],
+    "overall_experience": "The Managing Partner found the initial navigation of Zoho CRM straightforward, but encountered significant friction when trying to locate specific information or features related to managing business applications. They likely experienced frustration with the product's discoverability for their niche needs, which may have impacted their perception of its functionality and ease of use. While it provided a centralized system, the specific task of managing business applications seemed poorly supported or documented, leading to a moderately negative experience."
+  },
+  "ts": "2026-10-18T08:28:43.297570+00:00"
+}

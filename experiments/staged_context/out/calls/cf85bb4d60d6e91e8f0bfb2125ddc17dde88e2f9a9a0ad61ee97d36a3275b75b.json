@@ -1,0 +1,35 @@
+{
+  "stage": "e2e_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "cf85bb4d60d6e91e8f0bfb2125ddc17dde88e2f9a9a0ad61ee97d36a3275b75b",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3107,
+  "output_tokens": 1021,
+  "cost_usd": 0.0034846,
+  "elapsed_s": 28.38,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 2,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 2,\n  \"value_for_money_rating\": 2,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 3,\n  \"pros\": [\n    \"Simple email and organization name input during sign-up\",\n    \"Straightforward agreement to terms of service\"\n  ],\n  \"cons\": [\n    \"Difficulty with initial login and navigating to sign-up form\",\n    \"Sign-up process was confusing and multi-step\",\n    \"Uncertainty about product's efficiency for task and document management\"\n  ],\n  \"overall_experience\": \"This IT Support Engineer found the initial experience with Basecamp to be frustrating and clunky, particularly during the sign-up process. They encountered multiple friction points, including login issues and confusing navigation, which led to doubts about the product's suitability for managing tasks and documents. While some basic input steps were easy, the overall onboarding process left them questioning the tool's efficiency and potential value for their team.\"\n}",
+  "json": {
+    "ease_of_use_rating": 2,
+    "functionality_rating": 3,
+    "overall_rating": 2,
+    "value_for_money_rating": 2,
+    "customer_support_rating": 3,
+    "recommendation_score": 3,
+    "pros": [
+      "Simple email and organization name input during sign-up",
+      "Straightforward agreement to terms of service"
+    ],
+    "cons": [
+      "Difficulty with initial login and navigating to sign-up form",
+      "Sign-up process was confusing and multi-step",
+      "Uncertainty about product's efficiency for task and document management"
+    ],
+    "overall_experience": "This IT Support Engineer found the initial experience with Basecamp to be frustrating and clunky, particularly during the sign-up process. They encountered multiple friction points, including login issues and confusing navigation, which led to doubts about the product's suitability for managing tasks and documents. While some basic input steps were easy, the overall onboarding process left them questioning the tool's efficiency and potential value for their team."
+  },
+  "ts": "2026-10-18T08:28:44.760283+00:00"
+}

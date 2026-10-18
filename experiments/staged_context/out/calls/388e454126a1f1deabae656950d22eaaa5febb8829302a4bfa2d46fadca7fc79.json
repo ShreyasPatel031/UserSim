@@ -1,0 +1,35 @@
+{
+  "stage": "e2e_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "388e454126a1f1deabae656950d22eaaa5febb8829302a4bfa2d46fadca7fc79",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 640,
+  "output_tokens": 962,
+  "cost_usd": 0.002597,
+  "elapsed_s": 54.18,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 5,\n  \"pros\": [\n    \"Straightforward navigation to main pages\",\n    \"Simple interface for basic browsing\"\n  ],\n  \"cons\": [\n    \"Difficulty finding specific project management details\",\n    \"Lack of clarity on core collaboration features\",\n    \"Required extensive scrolling to assess product fit\"\n  ],\n  \"overall_experience\": \"This software engineer from an accounting firm found the initial navigation of Basecamp's website easy, but struggled to find specific details regarding its project management and collaboration features. The lack of clear information on these core functionalities made it difficult for them to assess if the product would meet their critical task requirements. Their initial experience suggests a lukewarm impression due to the opacity of key feature descriptions.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 3,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 5,
+    "pros": [
+      "Straightforward navigation to main pages",
+      "Simple interface for basic browsing"
+    ],
+    "cons": [
+      "Difficulty finding specific project management details",
+      "Lack of clarity on core collaboration features",
+      "Required extensive scrolling to assess product fit"
+    ],
+    "overall_experience": "This software engineer from an accounting firm found the initial navigation of Basecamp's website easy, but struggled to find specific details regarding its project management and collaboration features. The lack of clear information on these core functionalities made it difficult for them to assess if the product would meet their critical task requirements. Their initial experience suggests a lukewarm impression due to the opacity of key feature descriptions."
+  },
+  "ts": "2026-10-18T08:28:45.289616+00:00"
+}

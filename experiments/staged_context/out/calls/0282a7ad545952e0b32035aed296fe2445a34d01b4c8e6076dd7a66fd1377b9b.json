@@ -1,0 +1,36 @@
+{
+  "stage": "e2e_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0282a7ad545952e0b32035aed296fe2445a34d01b4c8e6076dd7a66fd1377b9b",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3002,
+  "output_tokens": 1074,
+  "cost_usd": 0.0035856000000000004,
+  "elapsed_s": 28.77,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Powerful data modeling capabilities for complex relationships.\",\n    \"Effective for creating and sharing internal dashboards.\",\n    \"Integrates well within a larger data ecosystem.\"\n  ],\n  \"cons\": [\n    \"Discoverability of specific reporting functionalities can be challenging.\",\n    \"Setting up complex data relationships can be tedious and time-consuming.\",\n    \"Performance might degrade with very large datasets or complex calculations.\"\n  ],\n  \"overall_experience\": \"The Solutions Engineer likely found Looker to be a robust tool for data modeling and internal reporting over their 2+ years of use. However, they probably experienced some frustrations with the discoverability of specific reporting features and the tedium involved in setting up complex data relationships. While generally satisfied, the product's value for money might be questioned due to these complexities and potential performance issues with large datasets.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 7,
+    "pros": [
+      "Powerful data modeling capabilities for complex relationships.",
+      "Effective for creating and sharing internal dashboards.",
+      "Integrates well within a larger data ecosystem."
+    ],
+    "cons": [
+      "Discoverability of specific reporting functionalities can be challenging.",
+      "Setting up complex data relationships can be tedious and time-consuming.",
+      "Performance might degrade with very large datasets or complex calculations."
+    ],
+    "overall_experience": "The Solutions Engineer likely found Looker to be a robust tool for data modeling and internal reporting over their 2+ years of use. However, they probably experienced some frustrations with the discoverability of specific reporting features and the tedium involved in setting up complex data relationships. While generally satisfied, the product's value for money might be questioned due to these complexities and potential performance issues with large datasets."
+  },
+  "ts": "2026-10-18T08:28:46.133058+00:00"
+}

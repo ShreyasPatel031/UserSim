@@ -1,0 +1,36 @@
+{
+  "stage": "e2e_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "98f152b484ea6fd7d5aa1a9d33a7a443376d954ba50dc39f32573e77a8479d85",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2776,
+  "output_tokens": 1051,
+  "cost_usd": 0.0034603,
+  "elapsed_s": 20.53,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Robust features for personalized email marketing\",\n    \"Advanced segmentation and unified customer profiles\",\n    \"Straightforward navigation to key features\"\n  ],\n  \"cons\": [\n    \"User interface feels outdated and not smooth\",\n    \"Potential need to go into code for changes\",\n    \"Value proposition for sales impact not immediately clear\"\n  ],\n  \"overall_experience\": \"This E-Commerce Manager found Klaviyo's core features for personalized email marketing and segmentation to be robust and easy to locate. However, they were likely frustrated by an outdated user interface and the potential need for coding to make certain changes, which hindered their initial ease of use. While the functionality is there, the direct impact on driving sales through automation wasn't immediately apparent, leading to some hesitation about its overall value for their specific needs.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 6,
+    "pros": [
+      "Robust features for personalized email marketing",
+      "Advanced segmentation and unified customer profiles",
+      "Straightforward navigation to key features"
+    ],
+    "cons": [
+      "User interface feels outdated and not smooth",
+      "Potential need to go into code for changes",
+      "Value proposition for sales impact not immediately clear"
+    ],
+    "overall_experience": "This E-Commerce Manager found Klaviyo's core features for personalized email marketing and segmentation to be robust and easy to locate. However, they were likely frustrated by an outdated user interface and the potential need for coding to make certain changes, which hindered their initial ease of use. While the functionality is there, the direct impact on driving sales through automation wasn't immediately apparent, leading to some hesitation about its overall value for their specific needs."
+  },
+  "ts": "2026-10-18T08:28:45.369459+00:00"
+}

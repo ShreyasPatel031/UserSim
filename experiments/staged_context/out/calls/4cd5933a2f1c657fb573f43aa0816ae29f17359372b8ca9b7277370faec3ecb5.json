@@ -1,0 +1,22 @@
+{
+  "stage": "router_judge",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4cd5933a2f1c657fb573f43aa0816ae29f17359372b8ca9b7277370faec3ecb5",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 440,
+  "output_tokens": 389,
+  "cost_usd": 0.0011045,
+  "elapsed_s": 2.68,
+  "error": null,
+  "text": "{\n  \"pros\": [],\n  \"cons\": [],\n  \"overall\": 0\n}",
+  "json": {
+    "pros": [],
+    "cons": [],
+    "overall": 0
+  },
+  "ts": "2026-10-18T08:29:05.165493+00:00"
+}

@@ -1,0 +1,35 @@
+{
+  "stage": "e2e_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "72e4dad1e80028f33a93c10b682c19674cc2129b20636834c9d74e8fcc5f741a",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2916,
+  "output_tokens": 917,
+  "cost_usd": 0.0031672999999999996,
+  "elapsed_s": 24.98,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 2,\n  \"functionality_rating\": 2,\n  \"overall_rating\": 2,\n  \"value_for_money_rating\": 2,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 3,\n  \"pros\": [\n    \"Initial website page load was quick\",\n    \"Easy to navigate basic website elements\"\n  ],\n  \"cons\": [\n    \"Difficulty finding features for external vendor collaboration\",\n    \"Inability to complete the task of managing tickets with limited vendor access\",\n    \"Lack of detailed information on the demo request page\"\n  ],\n  \"overall_experience\": \"This reviewer likely had a frustrating initial experience with Zoho Desk, primarily due to the inability to locate specific features for their critical task of managing customer service tickets with external vendor collaboration without granting full system access. While the website loaded quickly, the lack of clarity and difficulty in finding relevant information for their unique use case led to significant friction and task incompletion. This suggests a poor fit for their immediate needs, impacting their overall impression negatively.\"\n}",
+  "json": {
+    "ease_of_use_rating": 2,
+    "functionality_rating": 2,
+    "overall_rating": 2,
+    "value_for_money_rating": 2,
+    "customer_support_rating": 3,
+    "recommendation_score": 3,
+    "pros": [
+      "Initial website page load was quick",
+      "Easy to navigate basic website elements"
+    ],
+    "cons": [
+      "Difficulty finding features for external vendor collaboration",
+      "Inability to complete the task of managing tickets with limited vendor access",
+      "Lack of detailed information on the demo request page"
+    ],
+    "overall_experience": "This reviewer likely had a frustrating initial experience with Zoho Desk, primarily due to the inability to locate specific features for their critical task of managing customer service tickets with external vendor collaboration without granting full system access. While the website loaded quickly, the lack of clarity and difficulty in finding relevant information for their unique use case led to significant friction and task incompletion. This suggests a poor fit for their immediate needs, impacting their overall impression negatively."
+  },
+  "ts": "2026-10-18T08:28:45.233120+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "e2e_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "dd29be67e5c365d7e841a4906909e0b7733a5abf999230fce1cebfcb17fc6141",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 661,
+  "output_tokens": 1020,
+  "cost_usd": 0.0027483000000000004,
+  "elapsed_s": 5.87,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Improved collaboration on project data\",\n    \"Integration of spreadsheet data with project management\",\n    \"Automation capabilities for workflows\"\n  ],\n  \"cons\": [\n    \"Lacked advanced data manipulation features compared to dedicated spreadsheets\",\n    \"Learning curve for non-spreadsheet specific functionalities\",\n    \"Potential performance issues with very large or complex datasets\"\n  ],\n  \"overall_experience\": \"As a Software Development Engineer managing spreadsheets for 1-2 years, this user likely appreciated Smartsheet's collaborative and project management features, which offered an upgrade from traditional spreadsheets. However, they may have found its capabilities for complex data manipulation somewhat limited compared to more specialized tools, and the transition to its unique interface might have presented a learning curve. While it served its purpose for project-related spreadsheet tasks, it probably didn't fully satisfy all advanced technical requirements.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 6,
+    "pros": [
+      "Improved collaboration on project data",
+      "Integration of spreadsheet data with project management",
+      "Automation capabilities for workflows"
+    ],
+    "cons": [
+      "Lacked advanced data manipulation features compared to dedicated spreadsheets",
+      "Learning curve for non-spreadsheet specific functionalities",
+      "Potential performance issues with very large or complex datasets"
+    ],
+    "overall_experience": "As a Software Development Engineer managing spreadsheets for 1-2 years, this user likely appreciated Smartsheet's collaborative and project management features, which offered an upgrade from traditional spreadsheets. However, they may have found its capabilities for complex data manipulation somewhat limited compared to more specialized tools, and the transition to its unique interface might have presented a learning curve. While it served its purpose for project-related spreadsheet tasks, it probably didn't fully satisfy all advanced technical requirements."
+  },
+  "ts": "2026-10-18T08:28:49.143478+00:00"
+}

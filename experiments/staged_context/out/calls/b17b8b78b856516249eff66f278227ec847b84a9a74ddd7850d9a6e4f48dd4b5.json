@@ -1,0 +1,36 @@
+{
+  "stage": "e2e_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b17b8b78b856516249eff66f278227ec847b84a9a74ddd7850d9a6e4f48dd4b5",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 620,
+  "output_tokens": 1030,
+  "cost_usd": 0.002761,
+  "elapsed_s": 27.9,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Advanced segmentation capabilities for personalized emails\",\n    \"Comprehensive e-commerce specific features\",\n    \"Clear interface for exploring core marketing sections\"\n  ],\n  \"cons\": [\n    \"Steep learning curve for setting up automated flows\",\n    \"Difficulty in quickly seeing the value of auto-sent emails\",\n    \"Initial complexity compared to previous tools like Mailchimp\"\n  ],\n  \"overall_experience\": \"The E-Commerce Manager likely found Klaviyo to be a powerful platform with robust e-commerce features and advanced segmentation, a significant upgrade from Mailchimp. However, as a new user, they experienced challenges and a steep learning curve in effectively setting up and customizing automated flows for driving sales. While the potential is recognized, realizing that potential within the first six months proved frustrating due to implementation complexities.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 6,
+    "pros": [
+      "Advanced segmentation capabilities for personalized emails",
+      "Comprehensive e-commerce specific features",
+      "Clear interface for exploring core marketing sections"
+    ],
+    "cons": [
+      "Steep learning curve for setting up automated flows",
+      "Difficulty in quickly seeing the value of auto-sent emails",
+      "Initial complexity compared to previous tools like Mailchimp"
+    ],
+    "overall_experience": "The E-Commerce Manager likely found Klaviyo to be a powerful platform with robust e-commerce features and advanced segmentation, a significant upgrade from Mailchimp. However, as a new user, they experienced challenges and a steep learning curve in effectively setting up and customizing automated flows for driving sales. While the potential is recognized, realizing that potential within the first six months proved frustrating due to implementation complexities."
+  },
+  "ts": "2026-10-18T08:28:45.894339+00:00"
+}

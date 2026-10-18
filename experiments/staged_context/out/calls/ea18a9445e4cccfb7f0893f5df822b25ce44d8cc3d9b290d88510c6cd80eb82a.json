@@ -1,0 +1,36 @@
+{
+  "stage": "e2e_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ea18a9445e4cccfb7f0893f5df822b25ce44d8cc3d9b290d88510c6cd80eb82a",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3090,
+  "output_tokens": 992,
+  "cost_usd": 0.003407,
+  "elapsed_s": 17.21,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Easy to navigate and find information about platform capabilities.\",\n    \"Good for building and managing e-commerce websites.\",\n    \"Offers advanced solutions like headless commerce (Catalyst).\"\n  ],\n  \"cons\": [\n    \"Some advanced features or tools may be locked behind higher-paid plans.\",\n    \"Cost of essential plugins or add-ons can be expensive.\",\n    \"Switching templates after site construction could be difficult.\"\n  ],\n  \"overall_experience\": \"As an ecommerce analyst, this person found BigCommerce to be a capable platform for building and managing e-commerce websites. They appreciated the ease of navigating the platform and exploring its features, including advanced solutions. However, they noted that the pricing of some plugins and the potential difficulty in switching templates were areas that could be improved.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Easy to navigate and find information about platform capabilities.",
+      "Good for building and managing e-commerce websites.",
+      "Offers advanced solutions like headless commerce (Catalyst)."
+    ],
+    "cons": [
+      "Some advanced features or tools may be locked behind higher-paid plans.",
+      "Cost of essential plugins or add-ons can be expensive.",
+      "Switching templates after site construction could be difficult."
+    ],
+    "overall_experience": "As an ecommerce analyst, this person found BigCommerce to be a capable platform for building and managing e-commerce websites. They appreciated the ease of navigating the platform and exploring its features, including advanced solutions. However, they noted that the pricing of some plugins and the potential difficulty in switching templates were areas that could be improved."
+  },
+  "ts": "2026-10-18T08:28:42.681822+00:00"
+}

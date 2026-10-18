@@ -1,0 +1,243 @@
+{
+  "rid": "Capterra___428734",
+  "product": "Zoho Desk",
+  "url": "https://www.zoho.com/desk/",
+  "task": "Manage customer service tickets with external vendor collaboration without granting full system access or direct customer communication capabilities.",
+  "secs": 147.5,
+  "run": {
+    "completed": true,
+    "visited_urls": [
+      "https://www.zoho.com/desk/",
+      "https://www.zoho.com/desk/#zw-template-inner",
+      "https://www.zoho.com/desk/helpdesk-demo.html?src=book-your-demo-pop"
+    ],
+    "error": null,
+    "num_steps": 13,
+    "final_url": "https://www.zoho.com/desk/helpdesk-demo.html?src=book-your-demo-pop"
+  },
+  "steps": [
+    {
+      "step": 0,
+      "url": "https://www.zoho.com/desk/",
+      "action": "Opened https://www.zoho.com/desk/",
+      "observation": "Landing page loaded — agent starting…"
+    },
+    {
+      "step": 1,
+      "url": "https://www.zoho.com/desk/",
+      "action": "click — index=2775",
+      "observation": "Clicked a \"Skip to main content\" id=zw-product-header-sk"
+    },
+    {
+      "step": 2,
+      "url": "https://www.zoho.com/desk/#zw-template-inner",
+      "action": "scroll — down=True, pages=1.0",
+      "observation": "🔍 Scrolled down 800px"
+    },
+    {
+      "step": 3,
+      "url": "https://www.zoho.com/desk/#zw-template-inner",
+      "action": "scroll — down=True, pages=1.0",
+      "observation": "🔍 Scrolled down 800px"
+    },
+    {
+      "step": 4,
+      "url": "https://www.zoho.com/desk/#zw-template-inner",
+      "action": "scroll — down=True, pages=1.0",
+      "observation": "🔍 Scrolled down 800px"
+    },
+    {
+      "step": 5,
+      "url": "https://www.zoho.com/desk/#zw-template-inner",
+      "action": "scroll — down=True, pages=1.0",
+      "observation": "🔍 Scrolled down 800px"
+    },
+    {
+      "step": 6,
+      "url": "https://www.zoho.com/desk/#zw-template-inner",
+      "action": "scroll — down=True, pages=1.0",
+      "observation": "🔍 Scrolled down 800px"
+    },
+    {
+      "step": 7,
+      "url": "https://www.zoho.com/desk/#zw-template-inner",
+      "action": "scroll — down=True, pages=1.0",
+      "observation": "🔍 Scrolled down 800px"
+    },
+    {
+      "step": 8,
+      "url": "https://www.zoho.com/desk/#zw-template-inner",
+      "action": "click — index=105",
+      "observation": "Clicked a \"Book your Demo\". Automatically switched to new tab (tab_id: 03B0)."
+    },
+    {
+      "step": 9,
+      "url": "https://www.zoho.com/desk/helpdesk-demo.html?src=book-your-demo-pop",
+      "action": "scroll — down=True, pages=0.5",
+      "observation": "🔍 Scrolled down 0.5 pages"
+    },
+    {
+      "step": 10,
+      "url": "https://www.zoho.com/desk/helpdesk-demo.html?src=book-your-demo-pop",
+      "action": "scroll — down=True, pages=1.0",
+      "observation": "🔍 Scrolled down 800px"
+    },
+    {
+      "step": 11,
+      "url": "https://www.zoho.com/desk/helpdesk-demo.html?src=book-your-demo-pop",
+      "action": "scroll — down=True, pages=0.5",
+      "observation": "🔍 Scrolled down 0.5 pages"
+    },
+    {
+      "step": 12,
+      "url": "https://www.zoho.com/desk/helpdesk-demo.html?src=book-your-demo-pop",
+      "action": "done — text=The agent was unable to find features for managing customer service tickets with external vendor collaboration without granting full system access. The agent navigated to the demo request page but did not find the required information. The task could not be fully completed within the all",
+      "observation": "The agent was unable to find features for managing customer service tickets with external vendor collaboration without granting full system access. The agent navigated to the demo request page but did not find the required information. The task could not be fully completed within the allowed steps."
+    }
+  ],
+  "feedback_no_reviews": {
+    "difficulty": "hard",
+    "friction_points": [
+      "Agent repeatedly scrolled down the page multiple times without finding relevant information.",
+      "Agent clicked on 'Book your Demo' expecting to find information on collaboration features but landed on a demo request page.",
+      "Agent was unable to find features for managing customer service tickets with external vendor collaboration without granting full system access."
+    ],
+    "likely_frictions_from_similar_users": [
+      "The process for setting up external vendor collaboration is not immediately clear.",
+      "It is difficult to understand how to limit vendor access without impacting core functionality."
+    ],
+    "what_was_easy": [
+      "The initial landing page loaded successfully.",
+      "The 'Skip to main content' link was functional."
+    ],
+    "product_feedback": "The website's navigation was confusing, leading me to repeatedly scroll and eventually end up on a demo request page when I was trying to understand specific features. I am unsure if Zoho Desk has the capabilities I need because the information wasn't readily available on the pages I visited. I would need more clarity on how it handles external vendor collaboration.",
+    "would_convert": "maybe",
+    "quote": "I scrolled down so many times and still couldn't find how to manage tickets with external vendors without giving them full access.",
+    "step_outcomes": [
+      {
+        "step": 0,
+        "outcome": "easy"
+      },
+      {
+        "step": 1,
+        "outcome": "easy"
+      },
+      {
+        "step": 2,
+        "outcome": "friction"
+      },
+      {
+        "step": 3,
+        "outcome": "friction"
+      },
+      {
+        "step": 4,
+        "outcome": "friction"
+      },
+      {
+        "step": 5,
+        "outcome": "friction"
+      },
+      {
+        "step": 6,
+        "outcome": "friction"
+      },
+      {
+        "step": 7,
+        "outcome": "friction"
+      },
+      {
+        "step": 8,
+        "outcome": "friction"
+      },
+      {
+        "step": 9,
+        "outcome": "friction"
+      },
+      {
+        "step": 10,
+        "outcome": "friction"
+      },
+      {
+        "step": 11,
+        "outcome": "friction"
+      },
+      {
+        "step": 12,
+        "outcome": "friction"
+      }
+    ]
+  },
+  "feedback_with_reviews": {
+    "difficulty": "medium",
+    "friction_points": [
+      "Agent could not locate specific features for managing customer service tickets with external vendor collaboration without granting full system access.",
+      "Agent was unable to find the required information on the demo request page, leading to task incompletion."
+    ],
+    "likely_frictions_from_similar_users": [
+      "The pricing model is slightly steep, with functionality which would be considered essential on other platforms stuck in the highest tier.",
+      "It is expensive to use and requires a lot of time to implement especially deploying knowledgebase or help center."
+    ],
+    "what_was_easy": [
+      "The initial page load was quick.",
+      "Clicking the 'Skip to main content' link was straightforward."
+    ],
+    "product_feedback": "The website loaded quickly, but it was difficult to find specific information about managing customer service tickets with external vendor collaboration without granting full system access. Navigating to the demo request page did not provide the necessary details to complete the task. More clarity on features related to vendor collaboration would be beneficial.",
+    "would_convert": "maybe",
+    "quote": "I couldn't find the specific features I was looking for regarding external vendor collaboration on the website.",
+    "step_outcomes": [
+      {
+        "step": 0,
+        "outcome": "easy"
+      },
+      {
+        "step": 1,
+        "outcome": "easy"
+      },
+      {
+        "step": 2,
+        "outcome": "friction"
+      },
+      {
+        "step": 3,
+        "outcome": "friction"
+      },
+      {
+        "step": 4,
+        "outcome": "friction"
+      },
+      {
+        "step": 5,
+        "outcome": "friction"
+      },
+      {
+        "step": 6,
+        "outcome": "friction"
+      },
+      {
+        "step": 7,
+        "outcome": "friction"
+      },
+      {
+        "step": 8,
+        "outcome": "friction"
+      },
+      {
+        "step": 9,
+        "outcome": "friction"
+      },
+      {
+        "step": 10,
+        "outcome": "friction"
+      },
+      {
+        "step": 11,
+        "outcome": "friction"
+      },
+      {
+        "step": 12,
+        "outcome": "friction"
+      }
+    ]
+  }
+}
