@@ -1883,6 +1883,35 @@ async def _page_text(page: Any) -> str:
         return ""
 
 
+_MARKS_JS = """() => {
+  // Done / checked state that innerText drops: struck-through text, ticked checkboxes (Oct 18 Dynalist "Check off").
+  const out = [], seen = new Set();
+  const vis = el => { const r = el.getBoundingClientRect(); return r.width > 0 && r.height > 0 && r.bottom > 0 && r.top < innerHeight; };
+  const add = (kind, t) => { t = (t || '').replace(/\\s+/g, ' ').trim().slice(0, 60); const k = kind + t;
+    if (t && !seen.has(k) && out.length < 25) { seen.add(k); out.push(kind + ': ' + JSON.stringify(t)); } };
+  for (const el of document.querySelectorAll('body *')) {
+    if (out.length >= 25) break;
+    if (!el.childNodes.length || !vis(el)) continue;
+    const own = [...el.childNodes].filter(n => n.nodeType === 3).map(n => n.textContent).join(' ').trim();
+    if (own && own.length <= 120 && (getComputedStyle(el).textDecorationLine || '').includes('line-through')) add('struck through', own);
+  }
+  for (const el of document.querySelectorAll('input[type=checkbox]:checked, [role=checkbox][aria-checked=true]')) {
+    if (!vis(el)) continue;
+    const lab = el.closest('label') || el.parentElement;
+    add('checked', el.getAttribute('aria-label') || (lab && lab.innerText) || '');
+  }
+  return out;
+}"""
+
+
+async def _page_marks(page: Any) -> list[str]:
+    try:
+        got = await page.evaluate(_MARKS_JS)
+        return [str(x)[:90] for x in got][:25] if isinstance(got, list) else []
+    except Exception:  # noqa: BLE001
+        return []
+
+
 async def _title(page: Any) -> str:
     try:
         return str(await page.title())[:200]
@@ -2281,6 +2310,7 @@ async def record_step(
     row["last_action"] = action_text
     row["final_url"] = redact_url(url)
     row["final_dom"] = text[:FINAL_DOM_CHARS]
+    row["final_marks"] = await _page_marks(page)
     row["final_screenshot_url"] = f"/api/studies/{study.id}/agents/{sim.agent_id}/screenshots/final.png"
     row["final_screenshot"] = row["final_screenshot_url"]
     row["page_url"] = row.get("page_url") or redact_url(url)
@@ -2335,6 +2365,7 @@ async def settle_final(sim: SimSession, max_s: float = 12.0) -> bool:
     asyncio.get_running_loop().create_task(upload_screenshot(sim.study.id, sim.agent_id, shots / "final.png"))
     sim.row["final_url"] = redact_url(sim.page.url)
     sim.row["final_dom"] = (await _page_text(sim.page))[:FINAL_DOM_CHARS]
+    sim.row["final_marks"] = await _page_marks(sim.page)
     sim.row["final_settle"] = "final frame re-taken after the page finished loading"
     return True
 

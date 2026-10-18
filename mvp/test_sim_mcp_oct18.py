@@ -209,3 +209,17 @@ def test_select_described_with_option_and_judge_knows_groups(monkeypatch):
     monkeypatch.setattr(ui, "gemini_vision_json", lambda prompt, png: seen.setdefault("p", prompt) and {"goal_reached": True})
     e2e2_gates.judge_goal_screenshot(b"x" * 5000, task="mark it done", start_url="https://kanbanflow.com")
     assert 'a date group such as "Today"' in seen["p"]
+
+
+def test_final_marks_reach_the_judge_and_prompt_reads_strikethrough(monkeypatch):
+    import mvp.e2e_ui_run as ui
+    from mvp import e2e2_gates
+    from mvp.sim_mcp.report import signup_evidence
+
+    ev = signup_evidence({"final_marks": ['struck through: "Research"'], "trace": []})
+    assert 'Visual state the server read from the final page (CSS / checkbox state): struck through: "Research"' in ev
+    assert "Visual state" not in signup_evidence({"trace": []})
+    seen = {}
+    monkeypatch.setattr(ui, "gemini_vision_json", lambda prompt, png: seen.setdefault("p", prompt) and {"goal_reached": True})
+    e2e2_gates.judge_goal_screenshot(b"x" * 5000, task="check off Research", start_url="https://dynalist.io")
+    assert "struck-through or greyed-out text instead of a ticked checkbox" in seen["p"]
