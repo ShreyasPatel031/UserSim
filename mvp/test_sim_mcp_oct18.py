@@ -27,9 +27,30 @@ class Oct18Tests(unittest.TestCase):
         d = _saved_study("anon:abc")
         self.assertEqual(S.study_owner(d), "anon:abc")
         self.assertTrue(S.owns_study(d, "anon:abc"))
-        self.assertFalse(S.owns_study(d, "anon:other"))
+        # Same caller from another IP of its NAT/relay pool: still its study.
+        self.assertTrue(S.owns_study(d, "anon:other"))
+        self.assertFalse(S.owns_study(d, "tokfingerprint"))
         d["live_sessions"] = {"a": {"mcp_owner": "tok"}}
         self.assertEqual(S.study_owner(d), "tok")
+        self.assertFalse(S.owns_study(d, "anon:abc"))
+        self.assertFalse(S.owns_study(d, "tok2"))
+
+    def test_session_survives_client_ip_change_without_token(self):
+        from types import SimpleNamespace
+        sim = SimpleNamespace(id="sid1", owner="anon:ip1")
+        S.SESSIONS["sid1"] = sim
+        try:
+            self.assertIs(S.get_session("sid1", "anon:ip2"), sim)
+            with self.assertRaises(S.SessionError):
+                S.get_session("sid1", "tokenfp")
+            sim.owner = "tokenfp"
+            with self.assertRaises(S.SessionError):
+                S.get_session("sid1", "anon:ip1")
+            with self.assertRaises(S.SessionError):
+                S.get_session("sid1", "othertoken")
+            self.assertIs(S.get_session("sid1", "tokenfp"), sim)
+        finally:
+            S.SESSIONS.pop("sid1", None)
 
     def test_start_study_schema_names_required_fields(self):
         tools = asyncio.run(srv.mcp.list_tools())

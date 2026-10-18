@@ -99,8 +99,9 @@ def _headers(ctx: Context | None) -> tuple[dict[str, str], str]:
 def _owner(ctx: Context | None) -> str:
     """Who owns the sessions and studies this caller creates. A valid bearer token: a fingerprint of that token
     (every holder of one shared token is the same owner). No token (the public, open endpoint): 'anon:' plus a
-    fingerprint of the client IP, so callers without a token see only what their own IP created, and the caps in
-    limits.json apply to them."""
+    fingerprint of the client IP; the caps in limits.json are counted per that key. Ownership checks use
+    sessions.same_owner: callers without a token keep their sessions and studies when their IP changes between
+    requests (NAT/relay pools), and a session_id (random, returned only to its creator) is their credential."""
     import hashlib
     import hmac
 
