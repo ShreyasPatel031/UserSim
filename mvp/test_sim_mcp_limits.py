@@ -49,7 +49,10 @@ class LimitsFileTests(unittest.TestCase):
         self.assertEqual(L.get("anon_max_concurrent_sessions_per_ip"), 3)
         self.assertEqual(L.get("anon_daily_usd_per_ip"), 2.0)
         self.assertEqual(L.get("anon_daily_usd_global"), 10.0)
-        self.assertIs(L.get("anon_allow_sms"), False)
+        self.assertIs(L.get("anon_allow_sms"), False)  # flipped to true in limits.json once the lease code is deployed
+        self.assertEqual(L.get("sms_lease_s"), 600)
+        self.assertEqual(L.get("anon_daily_sms_leases_per_ip"), 10)
+        self.assertIn("apple", L.get("sms_sender_denylist"))
 
     def test_env_override_and_bad_values_ignored(self):
         with mock.patch.dict(os.environ, {"MVP_MCP_ANON_DAILY_USD_PER_IP": "0.5", "MVP_MCP_ALLOW_ANONYMOUS": "0"}):
@@ -156,12 +159,8 @@ class ServerCapTests(unittest.TestCase):
         SV._spend(SV._owner(_ctx(auth="Bearer tok-1")), "one step")
         self.assertEqual(L.spend_summary()["total_usd"], 0)
 
-    def test_sms_and_no_plus_refused_without_token(self):
+    def test_no_plus_refused_without_token(self):
         sim = self._sim(SV._owner(_ctx()))
-        out = json.loads(asyncio.run(SV.usersim_signup_phone(_ctx(), sim.id)))
-        self.assertIn("anon_allow_sms", out["error"])
-        out = json.loads(asyncio.run(SV.usersim_wait_for_sms_code(_ctx(), sim.id)))
-        self.assertIn("anon_allow_sms", out["error"])
         out = json.loads(asyncio.run(SV.usersim_signup_identity(_ctx(), sim.id, no_plus=True)))
         self.assertIn("anon_allow_shared_aliases", out["error"])
 
@@ -178,6 +177,126 @@ class ServerCapTests(unittest.TestCase):
     def test_paid_captcha_off_without_token(self):
         self.assertFalse(SV._paid_allowed(SimpleNamespace(owner="anon:abc")))
         self.assertTrue(SV._paid_allowed(SimpleNamespace(owner="0123456789abcdef")))
+
+
+class SmsLeaseTests(unittest.TestCase):
+    """Oct 17 evening: SMS works without a token, made safe by a one-session lease + sender denylist."""
+
+    def setUp(self):
+        from mvp.sim_mcp import sms_lease
+
+        self.tmp = tempfile.TemporaryDirectory()
+        self.env = mock.patch.dict(os.environ, {**BASE_ENV, "MVP_MCP_SPEND_FILE": os.path.join(self.tmp.name, "s.json"),
+                                                "MVP_MCP_ANON_ALLOW_SMS": "1"})
+        self.env.start()
+        L.reset_for_tests()
+        sms_lease.reset_for_tests()
+        self.saved = dict(S.SESSIONS)
+        S.SESSIONS.clear()
+        from mvp.sms_provider import Number
+
+        self.num = Number(phone="+15550000000", backend="ntfy", raw={"topic": "t"})
+        self.lp = mock.patch("mvp.sms_provider.lease_number", return_value=self.num)
+        self.lp.start()
+
+    def tearDown(self):
+        self.lp.stop()
+        S.SESSIONS.clear()
+        S.SESSIONS.update(self.saved)
+        self.env.stop()
+        self.tmp.cleanup()
+
+    def _sim(self, ip):
+        sim = SimpleNamespace(id=os.urandom(8).hex(), owner=SV._owner(_ctx(ip)), client=ip, closed=False, inbox=None,
+                              sms_number=None, row={}, product_url="https://acme.test", close_reason="")
+        S.SESSIONS[sim.id] = sim
+        return sim
+
+    def _phone(self, sim, ip):
+        return json.loads(asyncio.run(SV.usersim_signup_phone(_ctx(ip), sim.id)))
+
+    def test_no_token_gets_number_and_second_caller_is_busy(self):
+        a, b = self._sim("203.0.113.5"), self._sim("203.0.113.6")
+        out = self._phone(a, "203.0.113.5")
+        self.assertEqual(out["phone"], "+15550000000")
+        self.assertEqual(out["lease"], "new")
+        busy = self._phone(b, "203.0.113.6")
+        self.assertTrue(busy["busy"])
+        self.assertIn("busy", busy["error"])
+        self.assertGreater(busy["retry_after_s"], 500)
+        self.assertNotIn("phone", busy)
+        self.assertEqual(self._phone(a, "203.0.113.5")["lease"], "renewed")  # same session keeps it
+
+    def test_wait_only_for_lease_holder_after_lease_start_with_denylist(self):
+        a, b = self._sim("203.0.113.5"), self._sim("203.0.113.6")
+        self._phone(a, "203.0.113.5")
+        b.sms_number = self.num  # even if b somehow had the number object
+        out = json.loads(asyncio.run(SV.usersim_wait_for_sms_code(_ctx("203.0.113.6"), b.id, 10)))
+        self.assertIn("no longer holds the SMS number", out["error"])
+        seen = {}
+
+        def fake_wait(number, **kw):
+            seen.update(kw)
+            return "482913"
+
+        with mock.patch("mvp.sms_provider.wait_for_sms", side_effect=fake_wait):
+            out = json.loads(asyncio.run(SV.usersim_wait_for_sms_code(_ctx("203.0.113.5"), a.id, 10)))
+        self.assertEqual(out, {"found": True, "code": "482913"})
+        self.assertEqual(seen["newer_than"], a.row["sms_since"])
+        self.assertEqual(seen["slack_s"], 0.0)
+        self.assertIs(seen["skip"], L.sms_denied)
+
+    def test_lease_frees_when_session_closes_or_expires(self):
+        from mvp.sim_mcp import sms_lease
+
+        a, b = self._sim("203.0.113.5"), self._sim("203.0.113.6")
+        self._phone(a, "203.0.113.5")
+        a.closed = True
+        self.assertEqual(self._phone(b, "203.0.113.6")["lease"], "new")
+        sms_lease.reset_for_tests()
+        with mock.patch.dict(os.environ, {"MVP_MCP_SMS_LEASE_S": "0"}):
+            self.assertEqual(self._phone(self._sim("203.0.113.7"), "203.0.113.7")["lease"], "new")
+        self.assertEqual(self._phone(b, "203.0.113.6")["lease"], "new")  # expired at once
+
+    def test_daily_lease_cap_per_ip(self):
+        from mvp.sim_mcp import sms_lease
+
+        with mock.patch.dict(os.environ, {"MVP_MCP_ANON_DAILY_SMS_LEASES_PER_IP": "2"}):
+            for _ in range(2):
+                sms_lease.reset_for_tests()
+                self.assertIn("phone", self._phone(self._sim("203.0.113.5"), "203.0.113.5"))
+            sms_lease.reset_for_tests()
+            out = self._phone(self._sim("203.0.113.5"), "203.0.113.5")
+        self.assertEqual(out["limit"], "anon_daily_sms_leases_per_ip")
+
+    def test_denylist_matches_apple_and_2fa_not_ordinary_codes(self):
+        self.assertTrue(L.sms_denied("", "Your Apple Account Code is: 426078. Don't share it with anyone."))
+        self.assertTrue(L.sms_denied("Apple", "426078"))
+        self.assertTrue(L.sms_denied("", "G-123456 is your Google verification code."))
+        self.assertTrue(L.sms_denied("Chase", "Your one-time code is 123456"))
+        self.assertFalse(L.sms_denied("+18885551234", "Your Acme verification code is 553311"))
+        self.assertFalse(L.sms_denied("", "Welcome to Pineapple Notes: code 553311"))  # whole words only
+        self.assertFalse(L.sms_denied("", "City Bikes code 553311"))
+
+    def test_ntfy_reader_drops_denylisted_and_old_texts(self):
+        import time as _t
+
+        from mvp import sms_provider as P
+
+        now = _t.time()
+        lines = "\n".join(json.dumps(m) for m in [
+            {"event": "message", "id": "1", "time": now - 30, "title": "+1888", "message": "Acme code 111111"},  # before lease
+            {"event": "message", "id": "2", "time": now + 1, "title": "", "message": "Your Apple Account Code is: 426078."},
+            {"event": "message", "id": "3", "time": now + 2, "title": "+1888", "message": "Your Acme code is 553311"},
+        ])
+        resp = SimpleNamespace(status_code=200, text=lines)
+        with mock.patch.object(P.httpx, "get", return_value=resp):
+            got = P.wait_for_sms(self.num, timeout_s=1, newer_than=now, poll_s=0.1, skip=L.sms_denied, slack_s=0.0)
+        self.assertEqual(got, "553311")
+        only_apple = SimpleNamespace(status_code=200, text=lines.split("\n")[1])
+        with mock.patch.object(P.httpx, "get", return_value=only_apple):
+            got = P.wait_for_sms(self.num, timeout_s=0.3, newer_than=now, poll_s=0.1, skip=L.sms_denied, slack_s=0.0)
+        self.assertIsNone(got)
 
 
 if __name__ == "__main__":

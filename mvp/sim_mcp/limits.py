@@ -38,6 +38,15 @@ DEFAULTS: dict[str, Any] = {
     "est_usd_per_step": 0.01,
     "anon_max_cells_per_study": 12,
     "anon_allow_sms": False,
+    "sms_lease_s": 600,
+    "anon_daily_sms_leases_per_ip": 10,
+    "sms_sender_denylist": [
+        "apple", "icloud", "google", "g-", "gmail", "microsoft", "outlook", "amazon", "paypal", "venmo", "zelle",
+        "chase", "bank", "wells fargo", "citi", "amex", "american express", "capital one", "discover", "coinbase",
+        "robinhood", "fidelity", "schwab", "vanguard", "irs", "ssa", "dmv", "searce", "okta", "duo", "authy",
+        "whatsapp", "signal", "telegram", "facebook", "instagram", "meta", "twitter", "github", "linkedin",
+        "verizon", "t-mobile", "at&t", "comcast", "xfinity",
+    ],
     "anon_allow_paid_captcha": False,
     "anon_allow_shared_aliases": False,
 }
@@ -58,7 +67,10 @@ def parse(text: str) -> dict[str, Any]:
             continue
         val = row.get("value") if isinstance(row, dict) else row
         want = DEFAULTS[key]
-        if isinstance(want, bool):
+        if isinstance(want, list):
+            if isinstance(val, list) and all(isinstance(v, str) for v in val):
+                out[key] = [v.strip().lower() for v in val if v.strip()]
+        elif isinstance(want, bool):
             if isinstance(val, bool):
                 out[key] = val
         elif isinstance(val, (int, float)) and not isinstance(val, bool) and val >= 0:
@@ -128,6 +140,8 @@ def get(key: str) -> Any:
     want = DEFAULTS[key]
     if env is not None and env.strip() != "":
         try:
+            if isinstance(want, list):
+                return [v.strip().lower() for v in env.split(",") if v.strip()]
             if isinstance(want, bool):
                 return env.strip().lower() in {"1", "true", "yes", "on"}
             return type(want)(float(env)) if isinstance(want, int) else float(env)
@@ -166,7 +180,7 @@ def client_ip(headers: dict[str, str], peer: str) -> str:
 
 # ---------------------------------------------------------------- spend ledger (callers without a token)
 
-_SPEND: dict[str, Any] = {"day": "", "ip": {}, "total": 0.0}
+_SPEND: dict[str, Any] = {"day": "", "ip": {}, "total": 0.0, "sms": {}}
 _SPEND_LOADED = False
 
 
@@ -191,7 +205,8 @@ def _load_spend() -> None:
     try:
         data = json.loads(Path(_spend_path()).read_text())
         if isinstance(data, dict) and data.get("day") == today():
-            _SPEND.update(day=data["day"], ip=dict(data.get("ip") or {}), total=float(data.get("total") or 0))
+            _SPEND.update(day=data["day"], ip=dict(data.get("ip") or {}), total=float(data.get("total") or 0),
+                          sms=dict(data.get("sms") or {}))
     except Exception:  # noqa: BLE001
         pass
 
@@ -199,7 +214,7 @@ def _load_spend() -> None:
 def _roll() -> None:
     _load_spend()
     if _SPEND["day"] != today():
-        _SPEND.update(day=today(), ip={}, total=0.0)
+        _SPEND.update(day=today(), ip={}, total=0.0, sms={})
 
 
 def _save() -> None:
@@ -251,15 +266,47 @@ def charge(ip: str, usd: float, what: str, *, dry: bool = False) -> None:
         _save()
 
 
+def count_sms_lease(ip: str) -> int:
+    """Count one SMS-number lease for a caller without a token; CapExceeded past anon_daily_sms_leases_per_ip."""
+    cap = int(get("anon_daily_sms_leases_per_ip"))
+    with _LOCK:
+        _roll()
+        n = int(_SPEND["sms"].get(ip, 0))
+        if n >= cap:
+            raise CapExceeded("anon_daily_sms_leases_per_ip", (
+                f"this client IP has used its {cap} SMS-number leases for today. It resets at midnight "
+                "America/Los_Angeles. Limits: mvp/sim_mcp/limits.json on main."))
+        _SPEND["sms"][ip] = n + 1
+        _save()
+        return n + 1
+
+
+def sms_denied(title: str, body: str) -> bool:
+    """True if a text matches sms_sender_denylist (case-insensitive, sender/title or body). Such texts are never
+    returned by usersim_wait_for_sms_code: the number is the owner's real phone (Apple ID / bank / 2FA codes)."""
+    terms = [t for t in (get("sms_sender_denylist") or []) if t]
+    sender = (title or "").lower()
+    text = (body or "").lower()
+    import re as _re
+
+    for t in terms:
+        # word-ish match so "citi" doesn't hit "city", but "g-" still hits "G-123456"
+        pat = r"(?<![a-z0-9])" + _re.escape(t) + (r"" if not t[-1].isalnum() else r"(?![a-z0-9])")
+        if _re.search(pat, sender) or _re.search(pat, text):
+            return True
+    return False
+
+
 def spend_summary() -> dict[str, Any]:
     with _LOCK:
         _roll()
-        return {"day": _SPEND["day"], "total_usd": round(float(_SPEND["total"]), 4), "ips": len(_SPEND["ip"])}
+        return {"day": _SPEND["day"], "total_usd": round(float(_SPEND["total"]), 4), "ips": len(_SPEND["ip"]),
+                "sms_leases": sum(int(v) for v in _SPEND["sms"].values())}
 
 
 def reset_for_tests() -> None:
     global _SPEND_LOADED
     with _LOCK:
-        _SPEND.update(day="", ip={}, total=0.0)
+        _SPEND.update(day="", ip={}, total=0.0, sms={})
         _SPEND_LOADED = True
         _STATE.update(values={}, source="", loaded_at=0.0, checked_at=time.time(), error="", fetching=False)
