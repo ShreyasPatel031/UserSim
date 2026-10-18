@@ -1,5 +1,23 @@
 # Handoff: agent mode + what adds accuracy on top of the review-context agent
 
+## Morning summary
+
+Agent mode is in main as the MCP tool `usersim_predict_experience` (PRs #86–#91). Not deployed yet: the live server
+needs a redeploy and `APIFY_TOKEN`. Human mode (browser runs + combine) is session usersim-9c's, on
+`claude/modest-wozniak-p0bt3q`.
+
+What adds accuracy on top of the plain context agent, by held-out eval (bold = what agent mode ships):
+
+| Lever | Capterra (420 / ~2,500) | G2 (200 / ~3,200) | Live 4-site (14 new products) |
+| --- | --- | --- | --- |
+| **Rating level from the product's own recent reviews, shrunk to rivals (k=10)** | MAE overall .631 → .562, ease .662 → .602, recommend 1.35 → 1.23 | MAE .760 → .744; RMSE .726 → .648 | RMSE .779 → .772 |
+| **Within-product persona offsets (tenure ≫ size, role, industry)** | rank within product: recommend .00 → .13; unhappy AUC .62 → .66 | small | RMSE → .770 (same-site) |
+| **Words: validated prompt + people-like-them + rivals + own similar reviews** | pros .426 → .455, cons .262 → .284, overall .190 → .205–.224 | pros .505 → .512, cons .233 → .281, overall .265 → .320 | ≈ rivals-only (noise) |
+| **`most_likely` whole score (median rule)** | MAE .55 | MAE .43 | – |
+| Learned stacks / factor weights on top of the agent | none beyond a constant level | – | – |
+| Product's reviews on the *other* platform | worse | worse | – |
+| Named rivals' level vs global mean as prior | ≈ | ≈ | slightly worse |
+
 Branch `claude/zealous-knuth-4zbdb1`, PR https://github.com/ShreyasPatel031/UserSim/pull/86 (to main).
 Research code imports the review-context branch from `$CTX_ROOT` (default `/home/user/UserSim-ctx`):
 `git worktree add /home/user/UserSim-ctx origin/claude/modest-euler-6111ae`.
@@ -77,6 +95,63 @@ Findings on TEST:
 | level + persona offsets | **0.662** | **0.550** | 0.814 |
 
   The handoff's best was 0.53. Most of what can be spotted is the product's level; offsets add a little within a product.
+
+### 5. The shipped agent mode, end to end (`agent_mode_eval.py`, `live_words_bench.py`, `live_bench.py`)
+
+`agent_mode_eval.py` feeds snapshot reviews, shaped like live scrapes, through `mvp/agent_mode.py` itself: its rating
+math, persona offsets, evidence builder and prompt.
+- Own reviews: those dated before the person.
+- Rivals: the top 3 same-category products, 50 recent reviews each.
+
+Words were iterated four times; v4 is shipped:
+- v1: own prompt.
+- v2: the validated predictor prompt.
+- v3: all review fields shown.
+- v4: plus the people-like-this-person section.
+
+| | pros | cons | overall exp. | overall MAE | ease MAE | recommend MAE |
+| --- | --- | --- | --- | --- | --- | --- |
+| Capterra 420, plain context agent (agent_full) | 0.426 | 0.262 | 0.190 | 0.631 | 0.662 | 1.349 |
+| Capterra 420, **agent mode v4** | **0.455** | **0.284** | **0.205** | **0.562** | **0.602** | **1.226** |
+| G2 200, plain context agent | 0.505 | 0.233 | 0.265 | 0.760 | – | – |
+| G2 200, **agent mode v4** | **0.512** | **0.281** | **0.320** | **0.744** | – | – |
+
+- The research `own_similar` condition got Capterra overall experience to 0.27; agent mode v4 is at 0.205–0.224.
+  Ablations (`AM_VARIANT=... python agent_mode_eval.py`, Capterra 420):
+
+| variant | pros | cons | overall exp. |
+| --- | --- | --- | --- |
+| v4 (shipped) | 0.455 | 0.284 | 0.205 |
+| v4 resampled (noise) | 0.461 | 0.272 | 0.224 |
+| rival reviews from the whole category | 0.460 | 0.237 | 0.238 |
+| own reviews with reasons for choosing/switching | 0.469 | 0.249 | 0.214 |
+| both | 0.457 | 0.271 | 0.236 |
+
+  - The resample moves each metric by about ±0.02, so none of the variants is a clear win.
+  - Whole-category rivals may cost cons. v4 stays.
+- **Live set** (`live_bench.py`, 14 new products, 1,394 reviewers, G2 / Capterra / TrustRadius / Gartner; nothing fit):
+  - Rating RMSE: global 0.779 → agent mode 0.772, or 0.770 with same-site own reviews.
+  - Words on 168 people: agent mode with own reviews ≈ rivals only (pros +0.006, cons +0.002, overall −0.036, all
+    within noise). Adding the people-like-them section lifted both.
+- **Caveat**: the segment stats in `mvp/agent_mode_segments.json` cover all Capterra products. In the Capterra eval that
+  includes the person's product and their own review, but that is one review among ~56k.
+
+### 6. Does the model's own rating add per-person signal? (replay of agent_mode_eval, no spend)
+
+The words call also returns ratings, which agent mode ignores. The test: on top of `for_this_persona`, add w × (model
+rating − shown estimate), with w chosen on DEV products.
+
+| TEST | RMSE shown → blended | within-product Spearman: shown / model / blended | w (DEV) |
+| --- | --- | --- | --- |
+| G2 overall (n=70) | 1.033 → **0.969** | 0.107 / 0.263 / 0.200 | 0.5 |
+| Capterra overall (n=108) | 0.682 → 0.682 | 0.080 / 0.134 / 0.080 | 0 |
+| Capterra ease (n=108) | 0.762 → 0.762 | 0.073 / 0.092 / 0.073 | 0 |
+| Capterra recommend (n=107) | 1.822 → 1.822 | 0.027 / 0.073 / 0.027 | 0 |
+
+- The model ranks people within a product a little better than the offsets do, but DEV only kept it on G2. The samples
+  are small, so it is **not shipped**.
+- **Retested on the live 4-site people (168, agent-mode condition): it hurts.** RMSE 0.835 (shown) → 0.856 at
+  w=0.5 → 0.938 at w=1. Confirmed: not shipped.
 
 ## Agent mode (shipped in PR #86)
 

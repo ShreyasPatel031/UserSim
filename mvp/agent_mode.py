@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import math
 import re
 import time
 from functools import lru_cache
@@ -137,6 +138,39 @@ def _size_band(v: str) -> str | None:
     return "10,001+ employees"
 
 
+@lru_cache(maxsize=1)
+def _segments() -> dict[str, Any]:
+    return json.loads((Path(__file__).with_name("agent_mode_segments.json")).read_text())
+
+
+def people_like_them(persona: dict[str, Any]) -> str:
+    """The handoff's people-like-this-person section (tested in the held-out winner), from aggregate segment stats
+    over Capterra reviews of 66 products (agent_mode_segments.json). Shrunk deviations, k=20, as ux_mcp did."""
+    seg, levels = _segments(), persona_levels(persona)
+    keys = {"role_family": "role_family", "size_fine": "company_size", "time_used": "time_used", "industry": "industry"}
+    found = {}
+    for f, v in levels.items():
+        table = seg["factors"].get(keys[f], {})
+        k = next((x for x in table if x.lower() == v.lower()), None)
+        if k is not None:
+            found[keys[f]] = (k, table[k])
+    if not found:
+        return ""
+    lines = []
+    for r, mu in seg["all"].items():
+        dev, parts = 0.0, []
+        for f, (k, st) in found.items():
+            if r in st:
+                m, n = st[r]
+                dev += (m * n + 20 * mu) / (n + 20) - mu
+                parts.append(f"{f} '{k}': {m:.2f} (n={n})")
+        lo, hi = {"recommendation_score": (0, 10)}.get(r, (1, 5))
+        lines.append(f"- {r}: all reviewers {mu:.2f}; " + "; ".join(parts) + f"; combined estimate {min(hi, max(lo, mu + dev)):.2f}")
+    for f, (k, st) in found.items():
+        lines.append(f"- unhappy share (overall<=3 or recommend<=6) for {f} '{k}': {st['unhappy']:.1%} vs {seg['unhappy_all']:.1%} overall")
+    return "## People like this person (other software products)\n" + "\n".join(lines)
+
+
 def persona_levels(persona: dict[str, Any]) -> dict[str, str]:
     """The persona's factor levels as the offsets table names them (only the ones that could be read)."""
     out = {}
@@ -151,6 +185,9 @@ def persona_levels(persona: dict[str, Any]) -> dict[str, str]:
     if persona.get("industry"):
         out["industry"] = str(persona["industry"]).strip()
     return out
+
+
+MOST_LIKELY_T = 0.25  # heldout_bench median rule, chosen on DEV (Capterra); MAE 0.55 on TEST
 
 
 def personalize(ratings: dict[str, dict[str, Any]], persona: dict[str, Any]) -> None:
@@ -169,6 +206,8 @@ def personalize(ratings: dict[str, dict[str, Any]], persona: dict[str, Any]) -> 
         lo, hi = OUT_SCALE[name]
         rec["for_this_persona"] = round(min(hi, max(lo, rec["estimate"] + cfg["weight"] * sum(used.values()))), 2)
         rec["persona_offsets"] = used
+        # ratings are whole numbers skewed to the top, so the single most likely score sits above the mean
+        rec["most_likely"] = int(min(hi, max(lo, math.ceil(rec["for_this_persona"] - MOST_LIKELY_T))))
 
 
 def _similar(reviews: list[dict], persona: dict, k: int = SIMILAR) -> list[dict]:
@@ -197,7 +236,7 @@ def evidence_text(product: str, own: list[dict], rivals: list[dict], persona: di
                   ratings: dict[str, dict[str, Any]] | None = None) -> str:
     """Laid out like the held-out winner (own_reviews_bench `own_similar`): rivals' ratings and complaint topics, the
     most similar people's rival reviews, then the product's own rating line and its most similar earlier reviewers."""
-    parts = []
+    parts = [x for x in [people_like_them(persona)] if x]
     if rivals:
         names = sorted({str(x.get("product") or "") for x in rivals if x.get("product")})
         cons = [str(x.get("cons") or x.get("text") or "").lower() for x in rivals if x.get("cons") or x.get("text")]

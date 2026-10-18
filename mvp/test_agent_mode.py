@@ -46,6 +46,7 @@ class AgentModeTest(unittest.TestCase):
         self.assertIn("size_fine=11-50 employees", rec["persona_offsets"])
         self.assertLess(rec["persona_offsets"]["time_used=I used a free trial"], 0)
         self.assertLess(rec["for_this_persona"], rec["estimate"])
+        self.assertEqual(rec["most_likely"], 9)  # 8.7-ish expected value -> 9 is the likeliest whole score
 
     def test_rivals_only_when_product_has_no_reviews(self):
         r = A.rating_estimates([], RIVAL["reviews"])
@@ -65,6 +66,7 @@ class AgentModeTest(unittest.TestCase):
         self.assertEqual(out["cons"], ["Weak reporting"])
         self.assertIn("This product's own earlier reviews", prompt)
         self.assertIn("Time using Basecamp", prompt)
+        self.assertIn("People like this person", prompt)
         self.assertIn("Too many notifications", prompt)
 
     def test_rivals_discovered_from_url_when_none_given(self):

@@ -206,13 +206,16 @@ What you get on `ok`:
 - **`ratings`**: `overall_rating`, `ease_of_use_rating` and `recommendation_score`, each with `estimate`, `basis`,
   `n_own`, `n_rivals`, `own_mean` and `rivals_mean`. The estimate is the product's last 100 own reviews, shrunk toward
   its rivals' average with k = 10. With no own reviews, it is the rivals' average.
+  - **`most_likely`** is the single likeliest whole score (`for_this_persona` − 0.25, rounded up). Use it when one
+    number is wanted. Ratings skew to the top, so the likeliest score sits above the average (held-out MAE 0.55).
   - **`for_this_persona`** adds small within-product offsets for the persona's role, company size, `time_used` and
     industry; `persona_offsets` lists the ones applied. Time using the product matters most: a first-time
     (`"trial"`) user recommends about 0.5 points lower than the product's average.
   - On held-out reviewers the offsets raised per-person ranking within a product (recommend Spearman 0.00 → 0.13) and
     cut error on 6 of 7 test sets.
   - Evidence: `experiments/human_experience/heldout_bench.py` and `personalize.py`.
-- **`pros`**, **`cons`** and **`overall_experience`**: written for this persona from the most
+- **`pros`**, **`cons`** and **`overall_experience`**: written by the held-out-validated predictor prompt. Its evidence:
+  people-like-this-persona averages (`mvp/agent_mode_segments.json`), the rivals' ratings and complaint topics, and the most
   similar reviewers of the product and its rivals.
 - **`evidence`**: how many reviews were used, which rivals had none, and scraper errors.
 

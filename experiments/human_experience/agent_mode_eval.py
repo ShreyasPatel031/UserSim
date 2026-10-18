@@ -49,16 +49,24 @@ def live_shape(r: dict) -> dict:
             "rating": g("overall_rating"), "ease": g("ease_of_use_rating"), "nps": g("recommendation_score"),
             "pros": g("pros"), "cons": g("cons"),
             # Capterra's summary comment; for G2 the full review text (live scrapes return it as `text`)
-            "text": g("general_comments") if r["source"] == "capterra" else g("review_text")}
+            "text": (" ".join(x for x in (g("general_comments"), g("reasons_for_choosing"), g("reasons_for_switching")) if x)
+                     if "own_reasons" in VARIANT else g("general_comments")) if r["source"] == "capterra" else g("review_text")}
+
+
+VARIANT = os.environ.get("AM_VARIANT", "")  # ablations: "rivals_category", "own_reasons", or both joined by "+"
 
 
 def main() -> None:
+    global OUT
+    if VARIANT:
+        OUT = OUT.parent / f"agent_mode_eval_{VARIANT.replace('+', '_')}"
     OUT.mkdir(parents=True, exist_ok=True)
     d = C.corpus().copy()
     d["date"] = HB.frame().date.values
     cap = U.data().set_index(U.data().review_id.astype(str))
     d["role_title"] = d.rid.str[2:].map(cap.reviewer_job_title).where(d.source == "capterra")
-    d["general_comments"] = d.rid.str[2:].map(cap.general_comments).where(d.source == "capterra")
+    for col in ("general_comments", "reasons_for_choosing", "reasons_for_switching"):
+        d[col] = d.rid.str[2:].map(cap[col]).where(d.source == "capterra")
     pool = ThreadPoolExecutor(96)
 
     # people: Capterra (router_eval) and G2 (g2_merge), with their cards and extracted references (cache hits)
@@ -66,7 +74,7 @@ def main() -> None:
     for r in RE.sample(U.data()):
         people.append({"rid": "C:" + str(r["review_id"]), "orig": r, "source": "capterra", "product": r["product_name"],
                        "category": r["product_category_group"]})
-    gp, _, _ = G.g2_people()
+    gp, _, _ = G.g2_people() if not VARIANT else ([], [], [])
     for r in gp:
         people.append({"rid": r["rid"], "orig": r, "source": "g2", "product": r["product"], "category": r["category"]})
     by_rid = d.set_index("rid")
@@ -105,6 +113,8 @@ def main() -> None:
         comp = d[(d.source == src) & (d.category == p["category"]) & (d["product"] != prod)]
         top = comp.groupby("product").size().sort_values(ascending=False).index[:RIVALS]
         riv = pd.concat([comp[comp["product"] == t].sort_values("date", ascending=False).head(PER_RIVAL) for t in top]) if len(top) else comp.head(0)
+        if "rivals_category" in VARIANT:  # research layout: similar reviews drawn from the whole category
+            riv, top = comp, list(comp["product"].unique())
         return [live_shape(x) for x in own.head(A.LAST).to_dict("records")], [live_shape(x) for x in riv.to_dict("records")], list(top)
 
     def run(p):
@@ -114,8 +124,8 @@ def main() -> None:
         A.personalize(ratings, per)
         url = RE.URLS.get(p["product"], "") if p["source"] == "capterra" else ""
         prompt = A.words_prompt(p["product"], url, per, refs[p["rid"]]["task"], A.evidence_text(p["product"], own, riv, per, ratings)[:14000])
-        rec = E.call_model("agent_mode_words_v3", FLASH, A.WORDS_SYSTEM, prompt, temperature=0.7, seed=1000, max_tokens=8192,
-                           thinking_budget=A.WORDS_THINKING, key_extra=p["rid"])
+        rec = E.call_model("agent_mode_words_v4" + (f"_{VARIANT}" if VARIANT else ""), FLASH, A.WORDS_SYSTEM, prompt, temperature=0.7, seed=1000, max_tokens=8192,
+                           thinking_budget=A.WORDS_THINKING, key_extra=p["rid"] + (f"|{VARIANT}" if VARIANT else ""))
         words = rec.get("json") if isinstance(rec.get("json"), dict) else {}
         return p["rid"], {"ratings": ratings, "words": words, "rivals": top, "n_own": len(own)}
 
@@ -145,11 +155,16 @@ def main() -> None:
     judged = dict(pool.map(judge, people))
     rows = []
     for p in people:
+        if p["rid"] not in res:
+            continue
         r, out = p["orig"], res[p["rid"]]
         row = {"rid": p["rid"], "source": p["source"], "product": p["product"], "n_own": out["n_own"], **judged[p["rid"]]}
         for o in ("overall_rating", "ease_of_use_rating", "recommendation_score"):
             y = r.get(o)
             rec = out["ratings"].get(o) or {}
+            row[f"{o}_y"] = y
+            row[f"{o}_shown"] = rec.get("for_this_persona")
+            row[f"{o}_model"] = RE.U_num(out["words"].get(o), *A.OUT_SCALE[o])
             for k in ("estimate", "for_this_persona"):
                 v = rec.get(k)
                 row[f"{o}_{k}_abs_err"] = abs(v - y) if v is not None and y is not None and not (isinstance(y, float) and np.isnan(y)) else None
@@ -161,7 +176,7 @@ def main() -> None:
     base_g = pd.read_csv(HERE / "results/own_reviews_bench_g2/per_person.csv")
     base = pd.concat([base_c.assign(rid="C:" + base_c.rid.astype(str), source="capterra"), base_g.assign(source="g2")])
     pd.set_option("display.width", 250)
-    for src in ("capterra", "g2"):
+    for src in (("capterra",) if VARIANT else ("capterra", "g2")):
         b = base[base.source == src].groupby("cond")[["pros", "cons", "overall_experience"] +
                                                     [c for c in base.columns if c == "overall_rating_abs_err"]].mean()
         m = M[M.source == src]
