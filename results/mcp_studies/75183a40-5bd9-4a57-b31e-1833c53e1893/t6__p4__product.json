@@ -1,0 +1,317 @@
+{
+ "cell": {
+  "cell_id": "t6__p4__product",
+  "site": "https://www.smartsheet.com",
+  "site_name": "Product",
+  "persona_name": "James Wilson",
+  "persona": "James manages IT projects and needs to integrate with existing systems. He requires a platform with strong security and customization.",
+  "task": "Manage complex task dependencies",
+  "status": "queued"
+ },
+ "steps": [
+  {
+   "turn": 0,
+   "tool": "usersim_observe",
+   "action": null
+  },
+  {
+   "turn": 1,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 2,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 3,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 4,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 5,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 6,
+   "tool": "usersim_signup_identity",
+   "action": null
+  },
+  {
+   "turn": 7,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 8,
+   "tool": "usersim_act",
+   "action": "us.ersimsignups+smartsheet472d07@gmail.com"
+  },
+  {
+   "turn": 9,
+   "tool": "usersim_act",
+   "action": "type"
+  },
+  {
+   "turn": 10,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 11,
+   "tool": "usersim_signup_identity",
+   "action": null
+  },
+  {
+   "turn": 12,
+   "tool": "usersim_act",
+   "action": "triple_click"
+  },
+  {
+   "turn": 13,
+   "tool": "usersim_act",
+   "action": "type"
+  },
+  {
+   "turn": 14,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 15,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 16,
+   "tool": "usersim_act",
+   "action": "type"
+  },
+  {
+   "turn": 17,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 18,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 19,
+   "tool": "usersim_solve_captcha",
+   "action": null
+  },
+  {
+   "turn": 20,
+   "tool": "usersim_wait_for_verification_link",
+   "action": null
+  },
+  {
+   "turn": 21,
+   "tool": "usersim_wait_for_verification_link",
+   "action": null
+  },
+  {
+   "turn": 22,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 23,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 24,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 25,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 26,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 27,
+   "tool": "usersim_act",
+   "action": "type"
+  },
+  {
+   "turn": 28,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 29,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 30,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 31,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 32,
+   "tool": "usersim_act",
+   "action": "type"
+  },
+  {
+   "turn": 33,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 34,
+   "tool": "usersim_wait_for_verification_link",
+   "action": null
+  },
+  {
+   "turn": 35,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 36,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 37,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 38,
+   "tool": "usersim_wait_for_verification_code",
+   "action": null
+  },
+  {
+   "turn": 39,
+   "tool": "usersim_wait_for_verification_code",
+   "action": null
+  },
+  {
+   "turn": 40,
+   "tool": "usersim_act",
+   "action": "navigate"
+  },
+  {
+   "turn": 41,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 42,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 43,
+   "tool": "usersim_act",
+   "action": "navigate"
+  },
+  {
+   "turn": 44,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 45,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 46,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 47,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 48,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 49,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 50,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 51,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 52,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 53,
+   "tool": "usersim_act",
+   "action": "navigate"
+  },
+  {
+   "turn": 54,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 55,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 56,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 57,
+   "tool": "usersim_act",
+   "action": "type"
+  },
+  {
+   "turn": 58,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 59,
+   "tool": "usersim_finish",
+   "action": null
+  }
+ ],
+ "started": 1792365098.6756191,
+ "session_id": "7076b63ccc1d479fbfc8f5e2412f4e87",
+ "finish": "{\"study_id\": \"75183a40-5bd9-4a57-b31e-1833c53e1893\", \"cell_id\": \"t6__p4__product\", \"goal_reached\": false, \"proof_pass\": true, \"study_phase\": \"72/108 runs done \\u00b7 8 simulated users working\", \"next\": \"Done with this cell. The study report is written when the last cell finishes.\"}",
+ "seconds": 826
+}
