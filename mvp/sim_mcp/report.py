@@ -56,6 +56,13 @@ def signup_evidence(row: dict[str, Any]) -> str:
         lines.append("- The verification code from that email was handed to the agent to enter")
     if row.get("signup_code_used"):
         lines.append("- That verification code was typed into the page")
+    acts = [str(t.get("action") or "") for t in trace
+            if isinstance(t, dict) and t.get("action_kind") not in (None, "open", "wait") and t.get("action")]
+    if acts:
+        # Oct 18 KanbanFlow t4: the judge saw the card in Done and failed it as "already done". It needs to know the
+        # final screenshot comes after the run's own actions (server-recorded; typed secrets are masked upstream).
+        lines.append(f"- Browser actions the server executed in this run, in order ({len(acts)}; the final screenshot "
+                     "was taken after them): " + "; ".join(a[:80] for a in acts[-12:]))
     urls = []
     for t in trace:
         u = str(t.get("url") or "")

@@ -15,6 +15,7 @@ import os
 import time
 import uuid
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any
 from urllib.parse import urlsplit
 
@@ -324,6 +325,56 @@ def get_session(session_id: str, owner: str | None = None) -> SimSession:
     if sim is None or (owner is not None and not same_owner(sim.owner, owner)):
         raise SessionError(f"unknown session_id {session_id!r}")
     return sim
+
+
+ACCOUNTS_DIR = MVP_RUNS_DIR / "_mcp_accounts"
+ACCOUNT_TTL_S = 30 * 86400
+
+
+def _account_file(session_id: str) -> Path:
+    import hashlib
+
+    return ACCOUNTS_DIR / (hashlib.sha256((session_id or "").encode()).hexdigest()[:40] + ".json")
+
+
+def save_account(sim: "SimSession") -> None:
+    """Keep the account a session signed up with, so same_account_as still works after a server restart.
+
+    Oct 18: sessions live in memory, so a deploy between a signup cell and its later cells lost the account
+    (KanbanFlow rerun). Stored on the server's own disk only, keyed by a hash of the session id (the credential),
+    mode 600, never served; expires after 30 days.
+    """
+    import json as _json
+
+    if sim.inbox is None or not sim.identity:
+        return
+    try:
+        ACCOUNTS_DIR.mkdir(parents=True, exist_ok=True)
+        os.chmod(ACCOUNTS_DIR, 0o700)
+        path = _account_file(sim.id)
+        tmp = path.with_suffix(".tmp")
+        tmp.write_text(_json.dumps({"address": sim.inbox.address, "identity": dict(sim.identity), "owner": sim.owner,
+                                    "host": urlsplit(sim.product_url).hostname or "", "agent_id": sim.agent_id,
+                                    "ts": time.time()}))
+        os.chmod(tmp, 0o600)
+        tmp.replace(path)
+    except OSError as exc:
+        print(f"[sim_mcp] could not save account for reuse: {exc!r}", flush=True)
+
+
+def load_account(session_id: str, owner: str | None) -> dict[str, Any] | None:
+    """The saved account of an earlier (possibly pre-restart) session, or None. Same owner rule as get_session."""
+    import json as _json
+
+    try:
+        data = _json.loads(_account_file(session_id).read_text())
+    except (OSError, ValueError):
+        return None
+    if not isinstance(data, dict) or time.time() - float(data.get("ts") or 0) > ACCOUNT_TTL_S:
+        return None
+    if owner is not None and not same_owner(str(data.get("owner") or ""), owner):
+        return None
+    return data
 
 
 def study_owner(study: Any) -> str | None:
@@ -890,6 +941,8 @@ def describe_action(action: dict[str, Any]) -> str:
         return f"navigate — {action.get('url')}"
     if kind == "wait":
         return f"wait — {action.get('ms')}ms"
+    if kind == "drag":
+        return f"drag — ({action.get('x')}, {action.get('y')}) to ({action.get('to_x')}, {action.get('to_y')})"
     return kind
 
 

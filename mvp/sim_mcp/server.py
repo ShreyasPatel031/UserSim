@@ -517,6 +517,7 @@ async def usersim_signup_identity(ctx: Context, session_id: str, no_plus: bool =
             sim.inbox, sim.identity = inbox, identity
             sim.mail_since = time.time() - 30
             sim.row["signup_email"] = sim.inbox.address
+            S.save_account(sim)
         ident = {k: v for k, v in sim.identity.items() if k != "code"}
         repeats = int(sim.row.get("identity_repeat_calls") or 0)
         if not issued_now:
@@ -541,20 +542,31 @@ def _reuse_account(sim: S.SimSession, prev_id: str, owner: str) -> str:
 
     from mvp.sim_mcp.sessions import registrable_domain
 
-    prev = S.get_session(prev_id, owner)
-    if prev.id == sim.id:
+    if prev_id == sim.id:
         raise S.SessionError("same_account_as must be an EARLIER session's id, not this one")
-    if prev.inbox is None or not prev.identity:
-        raise S.SessionError("that session never got a signup identity, so there is no account to log in to")
-    if registrable_domain(_host(prev)) != registrable_domain(_host(sim)):
-        raise S.SessionError(f"that account is for {_host(prev)}, not {_host(sim)}")
-    if sim.inbox is not None and sim.inbox.address != prev.inbox.address:
+    try:
+        prev = S.get_session(prev_id, owner)
+        if prev.inbox is None or not prev.identity:
+            raise S.SessionError("that session never got a signup identity, so there is no account to log in to")
+        inbox, identity, host, from_id = prev.inbox, dict(prev.identity), _host(prev), prev.agent_id or prev.id[:8]
+    except S.SessionError:
+        # The session is gone from memory (server restarted since): use the account it saved at signup.
+        saved = S.load_account(prev_id, owner)
+        if not saved:
+            raise
+        from mvp.signup_inbox import GmailAliasInbox
+
+        inbox = GmailAliasInbox.for_address(str(saved["address"]))
+        identity, host, from_id = dict(saved.get("identity") or {}), str(saved.get("host") or ""), str(saved.get("agent_id") or prev_id[:8])
+    if registrable_domain(host) != registrable_domain(_host(sim)):
+        raise S.SessionError(f"that account is for {host}, not {_host(sim)}")
+    if sim.inbox is not None and sim.inbox.address != inbox.address:
         raise S.SessionError("this session already has its own signup alias; start a new session to log in instead")
-    sim.inbox, sim.identity = prev.inbox, dict(prev.identity)
+    sim.inbox, sim.identity = inbox, identity
     sim.mail_since = time.time() - 30
     # Not a signup: the report and proof must not ask this run for a verified fresh signup.
-    sim.row["login_email"] = prev.inbox.address
-    sim.row["reused_account_from"] = prev.agent_id or prev.id[:8]
+    sim.row["login_email"] = inbox.address
+    sim.row["reused_account_from"] = from_id
     ident = {k: v for k, v in sim.identity.items() if k != "code"}
     return json.dumps({**ident, "reused_account": True,
                        "next": "Log in with this email and password (not a new signup). If the site emails a login code "
@@ -592,10 +604,22 @@ async def _wait(ctx: Context, session_id: str, timeout_s: int, want: str) -> str
         sim.row.setdefault("signup_mail", []).append({"subject": msg.get("subject"), "sender": msg.get("sender")})
         return json.dumps({"found": True, "subject": msg.get("subject"), "sender": msg.get("sender"),
                            "code": msg.get("code"), "links": sim.mail_links[:5], "link_texts": (msg.get("link_texts") or [])[:5],
-                           "next": "to open a link call usersim_open_verification_link with link_number=1 (first link) "
-                                   "rather than copying its URL"})
+                           "next": wait_next_hint(msg.get("code"), sim.mail_links)})
     except Exception as exc:  # noqa: BLE001
         return _fail(exc)
+
+
+def wait_next_hint(code: Any, links: list[str]) -> str:
+    """What to do with a found mail. Oct 18 (Clockify, KanbanFlow): a code-only mail said "open link 1" (a footer
+    link or no link at all), which points an agent at the wrong step."""
+    if code and not links:
+        return f"type the code {code} into the site's code field and submit"
+    if code:
+        return (f"if the page has a code field, type the code {code} and submit; only if it asks you to click the "
+                "emailed link, call usersim_open_verification_link with link_number=1")
+    if links:
+        return "to open a link call usersim_open_verification_link with link_number=1 (first link) rather than copying its URL"
+    return "this mail has no code and no link: check the page for what it expects, or call this tool again for a newer mail"
 
 
 @mcp.tool(structured_output=False)

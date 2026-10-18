@@ -1404,6 +1404,8 @@ For signup / create-account tasks: if the server facts show the verification ema
 
 For research tasks that ask the user to FIND OUT something (whether a feature exists, what a plan costs, how many users the free plan allows, where something is explained): goal_reached=true when the final screenshot or DOM text clearly states the answer, whether the answer is yes or no (a pricing table with the asked prices, a features, help or docs page that says the tool does or does not do it). The task does not ask the user to use or demonstrate the feature. FAIL if the final page does not contain the answer.
 
+The final screenshot is taken AFTER the run's own actions. For tasks that ask to move, mark, change, or create something ("mark it done", "move it to In progress", "set the status"), the end state the task asks for (the item sitting in the requested column / status / list) IS the goal: goal_reached=true when it is shown. Never fail because the item is "already" in that state.
+
 PASS goal_reached=true only when the screenshot and the final URL/DOM together show the goal was actually reached (for example the requested issue form or created issue, a drawing on the canvas, an export/share dialog, or the specific destination the task asked for).
 
 FAIL goal_reached=false when:

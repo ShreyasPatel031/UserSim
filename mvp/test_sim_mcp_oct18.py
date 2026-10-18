@@ -4,6 +4,8 @@ import asyncio
 import json
 import unittest
 
+import pytest
+
 from mvp.sim_mcp import report as R
 from mvp.sim_mcp import server as srv
 from mvp.sim_mcp import sessions as S
@@ -119,3 +121,71 @@ class Oct18FixesTests(unittest.TestCase):
         finally:
             for x in (first, second, other):
                 S.SESSIONS.pop(x.id, None)
+
+
+def test_wait_hint_for_code_mail_says_type_the_code():
+    from mvp.sim_mcp.server import wait_next_hint
+
+    assert "type the code 490726" in wait_next_hint("490726", [])
+    assert "link_number=1" not in wait_next_hint("490726", [])
+    assert "code field" in wait_next_hint("RLX8X1", ["https://cake.com"])
+    assert wait_next_hint(None, ["https://x.example/verify"]).startswith("to open a link")
+    assert "no code and no link" in wait_next_hint(None, [])
+
+
+def test_judge_evidence_lists_server_actions_and_drag_is_described():
+    from mvp.sim_mcp.report import signup_evidence
+    from mvp.sim_mcp.sessions import describe_action
+
+    assert describe_action({"type": "drag", "x": 640, "y": 140, "to_x": 1144, "to_y": 180}) == "drag — (640, 140) to (1144, 180)"
+    row = {"login_email": "a@b.c", "trace": [
+        {"step": 0, "action_kind": "open", "action": "Opened https://kanbanflow.com", "url": "https://kanbanflow.com/"},
+        {"step": 1, "action_kind": "click", "action": "click — (968, 35)", "url": "https://kanbanflow.com/login"},
+        {"step": 2, "action_kind": "drag", "action": "drag — (640, 140) to (1144, 180)", "url": "https://kanbanflow.com/board/x"},
+    ]}
+    ev = signup_evidence(row)
+    assert "final screenshot was taken after them" in ev
+    assert "drag — (640, 140) to (1144, 180)" in ev and "Opened" not in ev.split("in order")[1]
+
+
+def test_judge_prompt_counts_end_state_for_move_tasks(monkeypatch):
+    import mvp.e2e_ui_run as ui
+    from mvp import e2e2_gates
+
+    seen = {}
+    monkeypatch.setattr(ui, "gemini_vision_json", lambda prompt, png: seen.setdefault("p", prompt) and {"goal_reached": True})
+    e2e2_gates.judge_goal_screenshot(b"x" * 5000, task="mark it done", start_url="https://kanbanflow.com")
+    assert "Never fail because the item is \"already\" in that state" in seen["p"]
+
+
+def test_same_account_as_survives_restart(tmp_path, monkeypatch):
+    import os
+    from types import SimpleNamespace
+    from unittest import mock
+
+    from mvp import signup_inbox
+
+    monkeypatch.setattr(S, "ACCOUNTS_DIR", tmp_path / "_mcp_accounts")
+    monkeypatch.setattr("mvp.email_codes._imap_creds", lambda: ("usersim.signups@gmail.com", "app-pw"))
+    inbox = signup_inbox.GmailAliasInbox.for_address("usersim.signups+kanbanflow1@gmail.com")
+    first = SimpleNamespace(id="k1" * 16, owner="anon:a", product_url="https://kanbanflow.com", inbox=inbox,
+                            identity={"email": inbox.address, "password": "pw"}, agent_id="t1__p1__product")
+    S.save_account(first)
+    f = S._account_file(first.id)
+    assert f.is_file() and oct(os.stat(f).st_mode & 0o777) == "0o600"
+    assert first.id not in f.name and "pw" in f.read_text()
+    # server restarted: the session is gone from memory
+    second = SimpleNamespace(id="k2" * 16, owner="anon:z", product_url="https://kanbanflow.com/login", inbox=None,
+                             identity={}, row={}, agent_id="t4__p1__product", mail_since=0.0, closed=False)
+    S.SESSIONS[second.id] = second
+    try:
+        with mock.patch.object(srv, "_owner", return_value="anon:b"):
+            out = json.loads(asyncio.run(srv.usersim_signup_identity(None, second.id, same_account_as=first.id)))
+        assert out["reused_account"] and out["email"] == inbox.address and out["password"] == "pw"
+        assert second.inbox.address == inbox.address and second.row["login_email"] == inbox.address
+        assert second.row["reused_account_from"] == "t1__p1__product"
+        assert S.load_account(first.id, "tokenfp") is None
+        with pytest.raises(ValueError):
+            signup_inbox.GmailAliasInbox.for_address("someone.else+x@gmail.com")
+    finally:
+        S.SESSIONS.pop(second.id, None)
