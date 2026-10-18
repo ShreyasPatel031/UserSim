@@ -49,9 +49,9 @@ class LimitsFileTests(unittest.TestCase):
         self.assertEqual(L.get("max_steps"), 90)
         self.assertEqual(L.get("budget_s"), 900)
         self.assertIs(L.get("paid_captcha"), False)
-        self.assertEqual(L.get("anon_max_concurrent_sessions_per_ip"), 3)
-        self.assertEqual(L.get("anon_daily_usd_per_ip"), 6.0)
-        self.assertEqual(L.get("anon_daily_usd_global"), 20.0)
+        self.assertEqual(L.get("anon_max_concurrent_sessions_per_ip"), 6)
+        self.assertEqual(L.get("anon_daily_usd_per_ip"), 15.0)
+        self.assertEqual(L.get("anon_daily_usd_global"), 40.0)
         self.assertIs(L.get("anon_allow_sms"), True)
         self.assertEqual(L.get("sms_lease_s"), 600)
         self.assertEqual(L.get("anon_daily_sms_leases_per_ip"), 10)
@@ -157,7 +157,7 @@ class ServerCapTests(unittest.TestCase):
 
     def test_three_concurrent_sessions_per_ip(self):
         owner = SV._owner(_ctx())
-        for _ in range(3):
+        for _ in range(int(L.get("anon_max_concurrent_sessions_per_ip"))):
             self._sim(owner)
         with self.assertRaises(S.SessionError) as e:
             S._check_capacity("203.0.113.5", owner)
@@ -165,7 +165,7 @@ class ServerCapTests(unittest.TestCase):
         S._check_capacity("203.0.113.9", SV._owner(_ctx("203.0.113.9")))  # another IP is fine
 
     def test_start_session_refused_when_budget_used_up(self):
-        with mock.patch.dict(os.environ, {"MVP_MCP_ANON_DAILY_USD_PER_IP": "0.05"}):
+        with mock.patch.dict(os.environ, {"MVP_MCP_ANON_DAILY_USD_PER_IP": "0.01"}):
             out = json.loads(asyncio.run(SV.usersim_start_session(_ctx(), product_url="https://example.com",
                                                                    task="t", persona="p")))
         self.assertEqual(out["limit"], "anon_daily_usd_per_ip")
