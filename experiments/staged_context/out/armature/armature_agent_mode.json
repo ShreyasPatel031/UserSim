@@ -1,0 +1,973 @@
+{
+ "devrel": {
+  "mode": "agent",
+  "status": "ok",
+  "product": "Armature",
+  "persona": {
+   "role": "Head of Developer Relations",
+   "company_size": "11-50",
+   "industry": "Computer Software",
+   "time_used": "trial"
+  },
+  "task": "Get our developer tool discovered and used by coding agents",
+  "new_product": false,
+  "product_profile": {
+   "likely_users": {
+    "n_reviewers": 183,
+    "role_families": {
+     "software_it_engineering": 0.619,
+     "executive_owner": 0.079,
+     "marketing_creative_content": 0.071,
+     "general_team_mgmt": 0.048,
+     "education_research_analysis": 0.04,
+     "project_program_mgmt": 0.04
+    },
+    "company_sizes": {
+     "Small-Business (50 or fewer emp.)": 0.5,
+     "Mid-Market (51-1000 emp.)": 0.169,
+     "<50M USD": 0.079,
+     "50M-1B USD": 0.067,
+     "Enterprise (> 1000 emp.)": 0.051,
+     "11-50 employees": 0.028
+    },
+    "industries": {
+     "computer software": 0.213,
+     "information technology and services": 0.146,
+     "software": 0.135,
+     "it services": 0.079,
+     "services (non-government)": 0.045,
+     "information technology & services": 0.045
+    },
+    "review_sites": {
+     "g2": 0.727,
+     "gartner": 0.186,
+     "trustradius": 0.055,
+     "capterra": 0.033
+    }
+   },
+   "complaint_topic_rates": {
+    "pricing": 0.115,
+    "learning_curve": 0.158,
+    "mobile": 0.0,
+    "integrations": 0.066,
+    "performance": 0.098,
+    "support": 0.011,
+    "notifications": 0.005,
+    "reporting": 0.016,
+    "customization": 0.077
+   },
+   "competitor_ratings": {
+    "Tabnine": {
+     "overall_rating": 4.34,
+     "ease_of_use_rating": 4.6,
+     "recommendation_score": 7.6,
+     "functionality_rating": 4.0,
+     "value_for_money_rating": 3.5,
+     "customer_support_rating": 3.0,
+     "reviews": 88
+    },
+    "Cursor": {
+     "overall_rating": 4.54,
+     "ease_of_use_rating": 5.0,
+     "recommendation_score": 9.18,
+     "functionality_rating": 5.0,
+     "value_for_money_rating": 4.0,
+     "reviews": 95
+    }
+   },
+   "competitor_ratings_all": {
+    "overall_rating": 4.44,
+    "ease_of_use_rating": 4.67,
+    "recommendation_score": 8.69,
+    "functionality_rating": 4.17,
+    "value_for_money_rating": 3.67,
+    "customer_support_rating": 3.0
+   },
+   "use_cases": [
+    "Autocomplete code snippets",
+    "Generate boilerplate code",
+    "Speed up repetitive coding tasks",
+    "Complete common code patterns",
+    "Write code faster"
+   ],
+   "what_users_value": [
+    "Saves time",
+    "Increases productivity",
+    "Speeds up coding workflow",
+    "Reduces repetitive tasks",
+    "Provides accurate code suggestions"
+   ],
+   "what_frustrates_users": [
+    "Suggestions are sometimes inaccurate or irrelevant",
+    "Suggestions require manual correction",
+    "Consumes significant system resources (CPU/memory)",
+    "Loses contextual awareness in complex projects",
+    "Can be cumbersome to set up"
+   ],
+   "switching_reasons": []
+  },
+  "ratings": {
+   "overall_rating": {
+    "estimate": 4.31,
+    "basis": "own reviews shrunk to rivals + people like them",
+    "n_own": 7,
+    "n_rivals": 177,
+    "own_mean": 4.14,
+    "rivals_mean": 4.44,
+    "people_like_them": 4.42,
+    "for_this_persona": 4.23,
+    "persona_offsets": {
+     "role_family=software_it_engineering": 0.0112,
+     "size_fine=11-50 employees": -0.0178,
+     "time_used=I used a free trial": -0.1183,
+     "industry=Computer Software": -0.0444
+    },
+    "most_likely": 4
+   },
+   "ease_of_use_rating": {
+    "estimate": 4.4,
+    "basis": "own reviews shrunk to rivals + people like them",
+    "n_own": 7,
+    "n_rivals": 6,
+    "own_mean": 4.29,
+    "rivals_mean": 4.67,
+    "people_like_them": 4.3,
+    "for_this_persona": 4.3,
+    "persona_offsets": {
+     "role_family=software_it_engineering": 0.0412,
+     "size_fine=11-50 employees": -0.0174,
+     "time_used=I used a free trial": -0.1238,
+     "industry=Computer Software": -0.0272
+    },
+    "most_likely": 5
+   },
+   "recommendation_score": {
+    "estimate": 8.47,
+    "basis": "own reviews shrunk to rivals + people like them",
+    "n_own": 7,
+    "n_rivals": 16,
+    "own_mean": 8.57,
+    "rivals_mean": 8.69,
+    "people_like_them": 8.09,
+    "for_this_persona": 8.08,
+    "persona_offsets": {
+     "role_family=software_it_engineering": 0.0597,
+     "size_fine=11-50 employees": -0.0259,
+     "time_used=I used a free trial": -0.5193,
+     "industry=Computer Software": -0.0354
+    },
+    "most_likely": 8
+   },
+   "functionality_rating": {
+    "estimate": 4.1,
+    "basis": "own reviews shrunk to rivals + people like them",
+    "n_own": 7,
+    "n_rivals": 6,
+    "own_mean": 3.86,
+    "rivals_mean": 4.17,
+    "people_like_them": 4.39
+   },
+   "value_for_money_rating": {
+    "estimate": 4.08,
+    "basis": "own reviews shrunk to rivals + people like them",
+    "n_own": 5,
+    "n_rivals": 3,
+    "own_mean": 4.4,
+    "rivals_mean": 3.67,
+    "people_like_them": 4.18
+   },
+   "customer_support_rating": {
+    "estimate": 3.99,
+    "basis": "own reviews shrunk to rivals + people like them",
+    "n_own": 7,
+    "n_rivals": 2,
+    "own_mean": 4.57,
+    "rivals_mean": 3.0,
+    "people_like_them": 4.15
+   }
+  },
+  "pros": [
+   "Support during trial was responsive",
+   "Basic navigation is straightforward"
+  ],
+  "cons": [
+   "Does not support the core task of developer tool discovery by coding agents",
+   "Limited functionality for developer-focused use cases",
+   "Potential learning curve for advanced customization"
+  ],
+  "overall_experience": "The reviewer found Armature to be adequately supportive during their trial, but the product's core functionality did not align with their specific task of enabling developer tool discovery by coding agents. While basic navigation was acceptable, the platform lacked the specialized features required for this developer-relations objective, leading to a middling overall assessment.",
+  "words_error": null,
+  "evidence": {
+   "own_reviews": 7,
+   "rival_reviews": 183,
+   "rivals": [
+    "GitHub Copilot",
+    "Tabnine",
+    "Cursor"
+   ],
+   "rivals_source": "given",
+   "rivals_with_reviews": [
+    "Cursor",
+    "Tabnine"
+   ],
+   "own_reviews_check": {
+    "ok": true,
+    "why": "The reviews consistently mention 'Armature' or 'Armature Fabric' and its application in accreditation, which directly matches the product's described use cases on armature.tech."
+   },
+   "rivals_check": {
+    "GitHub Copilot": {
+     "ok": false,
+     "direct": "no",
+     "why": "GitHub Copilot is an AI pair programmer for individual developers, whereas Armature is a platform for building and deploying AI agent applications and workflows."
+    },
+    "Tabnine": {
+     "ok": true,
+     "direct": "yes",
+     "why": "Both Armature and Tabnine are AI-powered coding assistants that help developers write code faster and more efficiently through suggestions and code generation."
+    },
+    "Cursor": {
+     "ok": true,
+     "direct": "yes",
+     "why": "Cursor is an AI-powered IDE that directly competes with other AI coding assistants and platforms like Armature by offering similar features for code generation, analysis, and developer productivity."
+    }
+   },
+   "rivals_used": [
+    "Tabnine",
+    "Cursor"
+   ],
+   "rivals_without_reviews": [],
+   "still_scraping": [],
+   "errors": []
+  },
+  "how_to_read": "ratings.*.estimate is the expected level for users of this product (own recent reviews, shrunk to rivals). for_this_persona adds small within-product offsets for this persona's role, company size, time using the product and industry (persona_offsets lists them). Pros/cons are written for this persona from the most similar reviewers. Nothing here was observed in a browser; use human mode (usersim_start_session) to see the product first-hand."
+ },
+ "founder": {
+  "mode": "agent",
+  "status": "ok",
+  "product": "Armature",
+  "persona": {
+   "role": "Founder & CEO",
+   "company_size": "1-10",
+   "industry": "Computer Software",
+   "time_used": "trial"
+  },
+  "task": "Get our developer tool discovered and used by coding agents",
+  "new_product": false,
+  "product_profile": {
+   "likely_users": {
+    "n_reviewers": 183,
+    "role_families": {
+     "software_it_engineering": 0.619,
+     "executive_owner": 0.079,
+     "marketing_creative_content": 0.071,
+     "general_team_mgmt": 0.048,
+     "education_research_analysis": 0.04,
+     "project_program_mgmt": 0.04
+    },
+    "company_sizes": {
+     "Small-Business (50 or fewer emp.)": 0.5,
+     "Mid-Market (51-1000 emp.)": 0.169,
+     "<50M USD": 0.079,
+     "50M-1B USD": 0.067,
+     "Enterprise (> 1000 emp.)": 0.051,
+     "11-50 employees": 0.028
+    },
+    "industries": {
+     "computer software": 0.213,
+     "information technology and services": 0.146,
+     "software": 0.135,
+     "it services": 0.079,
+     "services (non-government)": 0.045,
+     "information technology & services": 0.045
+    },
+    "review_sites": {
+     "g2": 0.727,
+     "gartner": 0.186,
+     "trustradius": 0.055,
+     "capterra": 0.033
+    }
+   },
+   "complaint_topic_rates": {
+    "pricing": 0.115,
+    "learning_curve": 0.158,
+    "mobile": 0.0,
+    "integrations": 0.066,
+    "performance": 0.098,
+    "support": 0.011,
+    "notifications": 0.005,
+    "reporting": 0.016,
+    "customization": 0.077
+   },
+   "competitor_ratings": {
+    "Tabnine": {
+     "overall_rating": 4.34,
+     "ease_of_use_rating": 4.6,
+     "recommendation_score": 7.6,
+     "functionality_rating": 4.0,
+     "value_for_money_rating": 3.5,
+     "customer_support_rating": 3.0,
+     "reviews": 88
+    },
+    "Cursor": {
+     "overall_rating": 4.54,
+     "ease_of_use_rating": 5.0,
+     "recommendation_score": 9.18,
+     "functionality_rating": 5.0,
+     "value_for_money_rating": 4.0,
+     "reviews": 95
+    }
+   },
+   "competitor_ratings_all": {
+    "overall_rating": 4.44,
+    "ease_of_use_rating": 4.67,
+    "recommendation_score": 8.69,
+    "functionality_rating": 4.17,
+    "value_for_money_rating": 3.67,
+    "customer_support_rating": 3.0
+   },
+   "use_cases": [
+    "Autocomplete code snippets",
+    "Generate boilerplate code",
+    "Speed up repetitive coding tasks",
+    "Complete common code patterns",
+    "Write code faster"
+   ],
+   "what_users_value": [
+    "Saves time",
+    "Increases productivity",
+    "Speeds up coding workflow",
+    "Reduces repetitive tasks",
+    "Provides accurate code suggestions"
+   ],
+   "what_frustrates_users": [
+    "Suggestions are sometimes inaccurate or irrelevant",
+    "Suggestions require manual correction",
+    "Consumes significant system resources (CPU/memory)",
+    "Loses contextual awareness in complex projects",
+    "Can be cumbersome to set up"
+   ],
+   "switching_reasons": []
+  },
+  "ratings": {
+   "overall_rating": {
+    "estimate": 4.28,
+    "basis": "own reviews shrunk to rivals + people like them",
+    "n_own": 7,
+    "n_rivals": 177,
+    "own_mean": 4.14,
+    "rivals_mean": 4.44,
+    "people_like_them": 4.3,
+    "for_this_persona": 4.16,
+    "persona_offsets": {
+     "role_family=executive_owner": -0.0462,
+     "size_fine=1-10 employees": -0.0248,
+     "time_used=I used a free trial": -0.1183,
+     "industry=Computer Software": -0.0444
+    },
+    "most_likely": 4
+   },
+   "ease_of_use_rating": {
+    "estimate": 4.36,
+    "basis": "own reviews shrunk to rivals + people like them",
+    "n_own": 7,
+    "n_rivals": 6,
+    "own_mean": 4.29,
+    "rivals_mean": 4.67,
+    "people_like_them": 4.16,
+    "for_this_persona": 4.16,
+    "persona_offsets": {
+     "role_family=executive_owner": -0.0784,
+     "size_fine=1-10 employees": -0.0406,
+     "time_used=I used a free trial": -0.1238,
+     "industry=Computer Software": -0.0272
+    },
+    "most_likely": 4
+   },
+   "recommendation_score": {
+    "estimate": 8.38,
+    "basis": "own reviews shrunk to rivals + people like them",
+    "n_own": 7,
+    "n_rivals": 16,
+    "own_mean": 8.57,
+    "rivals_mean": 8.69,
+    "people_like_them": 7.82,
+    "for_this_persona": 7.84,
+    "persona_offsets": {
+     "role_family=executive_owner": -0.0854,
+     "size_fine=1-10 employees": -0.0861,
+     "time_used=I used a free trial": -0.5193,
+     "industry=Computer Software": -0.0354
+    },
+    "most_likely": 8
+   },
+   "functionality_rating": {
+    "estimate": 4.07,
+    "basis": "own reviews shrunk to rivals + people like them",
+    "n_own": 7,
+    "n_rivals": 6,
+    "own_mean": 3.86,
+    "rivals_mean": 4.17,
+    "people_like_them": 4.27
+   },
+   "value_for_money_rating": {
+    "estimate": 4.02,
+    "basis": "own reviews shrunk to rivals + people like them",
+    "n_own": 5,
+    "n_rivals": 3,
+    "own_mean": 4.4,
+    "rivals_mean": 3.67,
+    "people_like_them": 4.0
+   },
+   "customer_support_rating": {
+    "estimate": 3.93,
+    "basis": "own reviews shrunk to rivals + people like them",
+    "n_own": 7,
+    "n_rivals": 2,
+    "own_mean": 4.57,
+    "rivals_mean": 3.0,
+    "people_like_them": 3.97
+   }
+  },
+  "pros": [
+   "Potential to discover and use by coding agents",
+   "Flexible for custom needs",
+   "Responsive support"
+  ],
+  "cons": [
+   "Uncertainty about effectiveness for coding agent discovery",
+   "Potential learning curve for advanced customization",
+   "Limited reporting capabilities"
+  ],
+  "overall_experience": "The Founder & CEO was evaluating Armature during a trial to see if it could help their developer tool get discovered and used by coding agents. They found the tool flexible and the support responsive, but had concerns about its specific functionality for their unique task and noted potential limitations in reporting and customization.",
+  "words_error": null,
+  "evidence": {
+   "own_reviews": 7,
+   "rival_reviews": 183,
+   "rivals": [
+    "GitHub Copilot",
+    "Tabnine",
+    "Cursor"
+   ],
+   "rivals_source": "given",
+   "rivals_with_reviews": [
+    "Cursor",
+    "Tabnine"
+   ],
+   "own_reviews_check": {
+    "ok": true,
+    "why": "The reviews consistently mention 'Armature' or 'Armature Fabric' and its application in accreditation, which directly matches the product's described use cases on armature.tech."
+   },
+   "rivals_check": {
+    "GitHub Copilot": {
+     "ok": false,
+     "direct": "no",
+     "why": "GitHub Copilot is an AI pair programmer for individual developers, whereas Armature is a platform for building and deploying AI agent applications and workflows."
+    },
+    "Tabnine": {
+     "ok": true,
+     "direct": "yes",
+     "why": "Both Armature and Tabnine are AI-powered coding assistants that help developers write code faster and more efficiently through suggestions and code generation."
+    },
+    "Cursor": {
+     "ok": true,
+     "direct": "yes",
+     "why": "Cursor is an AI-powered IDE that directly competes with other AI coding assistants and platforms like Armature by offering similar features for code generation, analysis, and developer productivity."
+    }
+   },
+   "rivals_used": [
+    "Tabnine",
+    "Cursor"
+   ],
+   "rivals_without_reviews": [],
+   "still_scraping": [],
+   "errors": []
+  },
+  "how_to_read": "ratings.*.estimate is the expected level for users of this product (own recent reviews, shrunk to rivals). for_this_persona adds small within-product offsets for this persona's role, company size, time using the product and industry (persona_offsets lists them). Pros/cons are written for this persona from the most similar reviewers. Nothing here was observed in a browser; use human mode (usersim_start_session) to see the product first-hand."
+ },
+ "growth": {
+  "mode": "agent",
+  "status": "ok",
+  "product": "Armature",
+  "persona": {
+   "role": "Growth Marketing Manager",
+   "company_size": "51-200",
+   "industry": "Computer Software",
+   "time_used": "trial"
+  },
+  "task": "Get our developer tool discovered and used by coding agents",
+  "new_product": false,
+  "product_profile": {
+   "likely_users": {
+    "n_reviewers": 183,
+    "role_families": {
+     "software_it_engineering": 0.619,
+     "executive_owner": 0.079,
+     "marketing_creative_content": 0.071,
+     "general_team_mgmt": 0.048,
+     "education_research_analysis": 0.04,
+     "project_program_mgmt": 0.04
+    },
+    "company_sizes": {
+     "Small-Business (50 or fewer emp.)": 0.5,
+     "Mid-Market (51-1000 emp.)": 0.169,
+     "<50M USD": 0.079,
+     "50M-1B USD": 0.067,
+     "Enterprise (> 1000 emp.)": 0.051,
+     "11-50 employees": 0.028
+    },
+    "industries": {
+     "computer software": 0.213,
+     "information technology and services": 0.146,
+     "software": 0.135,
+     "it services": 0.079,
+     "services (non-government)": 0.045,
+     "information technology & services": 0.045
+    },
+    "review_sites": {
+     "g2": 0.727,
+     "gartner": 0.186,
+     "trustradius": 0.055,
+     "capterra": 0.033
+    }
+   },
+   "complaint_topic_rates": {
+    "pricing": 0.115,
+    "learning_curve": 0.158,
+    "mobile": 0.0,
+    "integrations": 0.066,
+    "performance": 0.098,
+    "support": 0.011,
+    "notifications": 0.005,
+    "reporting": 0.016,
+    "customization": 0.077
+   },
+   "competitor_ratings": {
+    "Tabnine": {
+     "overall_rating": 4.34,
+     "ease_of_use_rating": 4.6,
+     "recommendation_score": 7.6,
+     "functionality_rating": 4.0,
+     "value_for_money_rating": 3.5,
+     "customer_support_rating": 3.0,
+     "reviews": 88
+    },
+    "Cursor": {
+     "overall_rating": 4.54,
+     "ease_of_use_rating": 5.0,
+     "recommendation_score": 9.18,
+     "functionality_rating": 5.0,
+     "value_for_money_rating": 4.0,
+     "reviews": 95
+    }
+   },
+   "competitor_ratings_all": {
+    "overall_rating": 4.44,
+    "ease_of_use_rating": 4.67,
+    "recommendation_score": 8.69,
+    "functionality_rating": 4.17,
+    "value_for_money_rating": 3.67,
+    "customer_support_rating": 3.0
+   },
+   "use_cases": [
+    "Autocomplete code snippets",
+    "Generate boilerplate code",
+    "Speed up repetitive coding tasks",
+    "Complete common code patterns",
+    "Write code faster"
+   ],
+   "what_users_value": [
+    "Saves time",
+    "Increases productivity",
+    "Speeds up coding workflow",
+    "Reduces repetitive tasks",
+    "Provides accurate code suggestions"
+   ],
+   "what_frustrates_users": [
+    "Suggestions are sometimes inaccurate or irrelevant",
+    "Suggestions require manual correction",
+    "Consumes significant system resources (CPU/memory)",
+    "Loses contextual awareness in complex projects",
+    "Can be cumbersome to set up"
+   ],
+   "switching_reasons": []
+  },
+  "ratings": {
+   "overall_rating": {
+    "estimate": 4.32,
+    "basis": "own reviews shrunk to rivals + people like them",
+    "n_own": 7,
+    "n_rivals": 177,
+    "own_mean": 4.14,
+    "rivals_mean": 4.44,
+    "people_like_them": 4.43,
+    "for_this_persona": 4.25,
+    "persona_offsets": {
+     "role_family=marketing_creative_content": 0.0019,
+     "size_fine=51-200 employees": 0.0197,
+     "time_used=I used a free trial": -0.1183,
+     "industry=Computer Software": -0.0444
+    },
+    "most_likely": 4
+   },
+   "ease_of_use_rating": {
+    "estimate": 4.4,
+    "basis": "own reviews shrunk to rivals + people like them",
+    "n_own": 7,
+    "n_rivals": 6,
+    "own_mean": 4.29,
+    "rivals_mean": 4.67,
+    "people_like_them": 4.3,
+    "for_this_persona": 4.31,
+    "persona_offsets": {
+     "role_family=marketing_creative_content": 0.0009,
+     "size_fine=51-200 employees": 0.0303,
+     "time_used=I used a free trial": -0.1238,
+     "industry=Computer Software": -0.0272
+    },
+    "most_likely": 5
+   },
+   "recommendation_score": {
+    "estimate": 8.44,
+    "basis": "own reviews shrunk to rivals + people like them",
+    "n_own": 7,
+    "n_rivals": 16,
+    "own_mean": 8.57,
+    "rivals_mean": 8.69,
+    "people_like_them": 8.01,
+    "for_this_persona": 8.03,
+    "persona_offsets": {
+     "role_family=marketing_creative_content": -0.0087,
+     "size_fine=51-200 employees": 0.0168,
+     "time_used=I used a free trial": -0.5193,
+     "industry=Computer Software": -0.0354
+    },
+    "most_likely": 8
+   },
+   "functionality_rating": {
+    "estimate": 4.1,
+    "basis": "own reviews shrunk to rivals + people like them",
+    "n_own": 7,
+    "n_rivals": 6,
+    "own_mean": 3.86,
+    "rivals_mean": 4.17,
+    "people_like_them": 4.36
+   },
+   "value_for_money_rating": {
+    "estimate": 4.08,
+    "basis": "own reviews shrunk to rivals + people like them",
+    "n_own": 5,
+    "n_rivals": 3,
+    "own_mean": 4.4,
+    "rivals_mean": 3.67,
+    "people_like_them": 4.18
+   },
+   "customer_support_rating": {
+    "estimate": 4.0,
+    "basis": "own reviews shrunk to rivals + people like them",
+    "n_own": 7,
+    "n_rivals": 2,
+    "own_mean": 4.57,
+    "rivals_mean": 3.0,
+    "people_like_them": 4.19
+   }
+  },
+  "pros": [
+   "Helped in discovering and potentially promoting the developer tool.",
+   "Integration capabilities with existing developer workflows.",
+   "Familiar interface that is easy to navigate."
+  ],
+  "cons": [
+   "Potential learning curve for advanced customization.",
+   "Limited reporting capabilities for tracking discovery/usage metrics.",
+   "Suggestions may require careful review for accuracy and context."
+  ],
+  "overall_experience": "The Growth Marketing Manager likely found Armature to be a moderately useful tool for managing developer tools, especially for discovery. While the platform offered ease of use and integration, specific reporting features for the task of getting tools discovered by coding agents might have been lacking, leading to a need for manual review of outcomes.",
+  "words_error": null,
+  "evidence": {
+   "own_reviews": 7,
+   "rival_reviews": 183,
+   "rivals": [
+    "GitHub Copilot",
+    "Tabnine",
+    "Cursor"
+   ],
+   "rivals_source": "given",
+   "rivals_with_reviews": [
+    "Cursor",
+    "Tabnine"
+   ],
+   "own_reviews_check": {
+    "ok": true,
+    "why": "The reviews consistently mention 'Armature' or 'Armature Fabric' and its application in accreditation, which directly matches the product's described use cases on armature.tech."
+   },
+   "rivals_check": {
+    "GitHub Copilot": {
+     "ok": false,
+     "direct": "no",
+     "why": "GitHub Copilot is an AI pair programmer for individual developers, whereas Armature is a platform for building and deploying AI agent applications and workflows."
+    },
+    "Tabnine": {
+     "ok": true,
+     "direct": "yes",
+     "why": "Both Armature and Tabnine are AI-powered coding assistants that help developers write code faster and more efficiently through suggestions and code generation."
+    },
+    "Cursor": {
+     "ok": true,
+     "direct": "yes",
+     "why": "Cursor is an AI-powered IDE that directly competes with other AI coding assistants and platforms like Armature by offering similar features for code generation, analysis, and developer productivity."
+    }
+   },
+   "rivals_used": [
+    "Tabnine",
+    "Cursor"
+   ],
+   "rivals_without_reviews": [],
+   "still_scraping": [],
+   "errors": []
+  },
+  "how_to_read": "ratings.*.estimate is the expected level for users of this product (own recent reviews, shrunk to rivals). for_this_persona adds small within-product offsets for this persona's role, company size, time using the product and industry (persona_offsets lists them). Pros/cons are written for this persona from the most similar reviewers. Nothing here was observed in a browser; use human mode (usersim_start_session) to see the product first-hand."
+ },
+ "engineer": {
+  "mode": "agent",
+  "status": "ok",
+  "product": "Armature",
+  "persona": {
+   "role": "Senior Software Engineer",
+   "company_size": "51-200",
+   "industry": "Computer Software",
+   "time_used": "trial"
+  },
+  "task": "Get our developer tool discovered and used by coding agents",
+  "new_product": false,
+  "product_profile": {
+   "likely_users": {
+    "n_reviewers": 183,
+    "role_families": {
+     "software_it_engineering": 0.619,
+     "executive_owner": 0.079,
+     "marketing_creative_content": 0.071,
+     "general_team_mgmt": 0.048,
+     "education_research_analysis": 0.04,
+     "project_program_mgmt": 0.04
+    },
+    "company_sizes": {
+     "Small-Business (50 or fewer emp.)": 0.5,
+     "Mid-Market (51-1000 emp.)": 0.169,
+     "<50M USD": 0.079,
+     "50M-1B USD": 0.067,
+     "Enterprise (> 1000 emp.)": 0.051,
+     "11-50 employees": 0.028
+    },
+    "industries": {
+     "computer software": 0.213,
+     "information technology and services": 0.146,
+     "software": 0.135,
+     "it services": 0.079,
+     "services (non-government)": 0.045,
+     "information technology & services": 0.045
+    },
+    "review_sites": {
+     "g2": 0.727,
+     "gartner": 0.186,
+     "trustradius": 0.055,
+     "capterra": 0.033
+    }
+   },
+   "complaint_topic_rates": {
+    "pricing": 0.115,
+    "learning_curve": 0.158,
+    "mobile": 0.0,
+    "integrations": 0.066,
+    "performance": 0.098,
+    "support": 0.011,
+    "notifications": 0.005,
+    "reporting": 0.016,
+    "customization": 0.077
+   },
+   "competitor_ratings": {
+    "Tabnine": {
+     "overall_rating": 4.34,
+     "ease_of_use_rating": 4.6,
+     "recommendation_score": 7.6,
+     "functionality_rating": 4.0,
+     "value_for_money_rating": 3.5,
+     "customer_support_rating": 3.0,
+     "reviews": 88
+    },
+    "Cursor": {
+     "overall_rating": 4.54,
+     "ease_of_use_rating": 5.0,
+     "recommendation_score": 9.18,
+     "functionality_rating": 5.0,
+     "value_for_money_rating": 4.0,
+     "reviews": 95
+    }
+   },
+   "competitor_ratings_all": {
+    "overall_rating": 4.44,
+    "ease_of_use_rating": 4.67,
+    "recommendation_score": 8.69,
+    "functionality_rating": 4.17,
+    "value_for_money_rating": 3.67,
+    "customer_support_rating": 3.0
+   },
+   "use_cases": [
+    "Autocomplete code snippets",
+    "Generate boilerplate code",
+    "Speed up repetitive coding tasks",
+    "Complete common code patterns",
+    "Write code faster"
+   ],
+   "what_users_value": [
+    "Saves time",
+    "Increases productivity",
+    "Speeds up coding workflow",
+    "Reduces repetitive tasks",
+    "Provides accurate code suggestions"
+   ],
+   "what_frustrates_users": [
+    "Suggestions are sometimes inaccurate or irrelevant",
+    "Suggestions require manual correction",
+    "Consumes significant system resources (CPU/memory)",
+    "Loses contextual awareness in complex projects",
+    "Can be cumbersome to set up"
+   ],
+   "switching_reasons": []
+  },
+  "ratings": {
+   "overall_rating": {
+    "estimate": 4.33,
+    "basis": "own reviews shrunk to rivals + people like them",
+    "n_own": 7,
+    "n_rivals": 177,
+    "own_mean": 4.14,
+    "rivals_mean": 4.44,
+    "people_like_them": 4.47,
+    "for_this_persona": 4.26,
+    "persona_offsets": {
+     "role_family=software_it_engineering": 0.0112,
+     "size_fine=51-200 employees": 0.0197,
+     "time_used=I used a free trial": -0.1183,
+     "industry=Computer Software": -0.0444
+    },
+    "most_likely": 5
+   },
+   "ease_of_use_rating": {
+    "estimate": 4.42,
+    "basis": "own reviews shrunk to rivals + people like them",
+    "n_own": 7,
+    "n_rivals": 6,
+    "own_mean": 4.29,
+    "rivals_mean": 4.67,
+    "people_like_them": 4.36,
+    "for_this_persona": 4.36,
+    "persona_offsets": {
+     "role_family=software_it_engineering": 0.0412,
+     "size_fine=51-200 employees": 0.0303,
+     "time_used=I used a free trial": -0.1238,
+     "industry=Computer Software": -0.0272
+    },
+    "most_likely": 5
+   },
+   "recommendation_score": {
+    "estimate": 8.48,
+    "basis": "own reviews shrunk to rivals + people like them",
+    "n_own": 7,
+    "n_rivals": 16,
+    "own_mean": 8.57,
+    "rivals_mean": 8.69,
+    "people_like_them": 8.14,
+    "for_this_persona": 8.12,
+    "persona_offsets": {
+     "role_family=software_it_engineering": 0.0597,
+     "size_fine=51-200 employees": 0.0168,
+     "time_used=I used a free trial": -0.5193,
+     "industry=Computer Software": -0.0354
+    },
+    "most_likely": 8
+   },
+   "functionality_rating": {
+    "estimate": 4.11,
+    "basis": "own reviews shrunk to rivals + people like them",
+    "n_own": 7,
+    "n_rivals": 6,
+    "own_mean": 3.86,
+    "rivals_mean": 4.17,
+    "people_like_them": 4.41
+   },
+   "value_for_money_rating": {
+    "estimate": 4.1,
+    "basis": "own reviews shrunk to rivals + people like them",
+    "n_own": 5,
+    "n_rivals": 3,
+    "own_mean": 4.4,
+    "rivals_mean": 3.67,
+    "people_like_them": 4.23
+   },
+   "customer_support_rating": {
+    "estimate": 4.0,
+    "basis": "own reviews shrunk to rivals + people like them",
+    "n_own": 7,
+    "n_rivals": 2,
+    "own_mean": 4.57,
+    "rivals_mean": 3.0,
+    "people_like_them": 4.21
+   }
+  },
+  "pros": [
+   "Easy navigation and layout",
+   "Flexibility for bespoke requirements",
+   "Responsive customer support"
+  ],
+  "cons": [
+   "Limited reporting capabilities",
+   "Steep learning curve for customizations",
+   "Functionality may not fully meet developer tool needs"
+  ],
+  "overall_experience": "During the trial, the reviewer found Armature easy to navigate and appreciated its flexibility for specific company needs. However, the product's functionality and reporting capabilities were found to be lacking for the task of integrating developer tools with coding agents, leading to a hesitant recommendation.",
+  "words_error": null,
+  "evidence": {
+   "own_reviews": 7,
+   "rival_reviews": 183,
+   "rivals": [
+    "GitHub Copilot",
+    "Tabnine",
+    "Cursor"
+   ],
+   "rivals_source": "given",
+   "rivals_with_reviews": [
+    "Cursor",
+    "Tabnine"
+   ],
+   "own_reviews_check": {
+    "ok": true,
+    "why": "The reviews consistently mention 'Armature' or 'Armature Fabric' and its application in accreditation, which directly matches the product's described use cases on armature.tech."
+   },
+   "rivals_check": {
+    "GitHub Copilot": {
+     "ok": false,
+     "direct": "no",
+     "why": "GitHub Copilot is an AI pair programmer for individual developers, whereas Armature is a platform for building and deploying AI agent applications and workflows."
+    },
+    "Tabnine": {
+     "ok": true,
+     "direct": "yes",
+     "why": "Both Armature and Tabnine are AI-powered coding assistants that help developers write code faster and more efficiently through suggestions and code generation."
+    },
+    "Cursor": {
+     "ok": true,
+     "direct": "yes",
+     "why": "Cursor is an AI-powered IDE that directly competes with other AI coding assistants and platforms like Armature by offering similar features for code generation, analysis, and developer productivity."
+    }
+   },
+   "rivals_used": [
+    "Tabnine",
+    "Cursor"
+   ],
+   "rivals_without_reviews": [],
+   "still_scraping": [],
+   "errors": []
+  },
+  "how_to_read": "ratings.*.estimate is the expected level for users of this product (own recent reviews, shrunk to rivals). for_this_persona adds small within-product offsets for this persona's role, company size, time using the product and industry (persona_offsets lists them). Pros/cons are written for this persona from the most similar reviewers. Nothing here was observed in a browser; use human mode (usersim_start_session) to see the product first-hand."
+ }
+}
