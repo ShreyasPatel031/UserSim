@@ -36,20 +36,36 @@ RATINGS = {"overall_rating": (("rating", 1.0, 5.0),), "ease_of_use_rating": (("e
            "recommendation_score": (("nps", 0.0, 10.0),)}
 OUT_SCALE = {"overall_rating": (1.0, 5.0), "ease_of_use_rating": (1.0, 5.0), "recommendation_score": (0.0, 10.0)}
 
-WORDS_PROMPT = """Predict how THIS kind of user will experience {product}, from reviews by real users. Do not invent
-features; use only what the evidence supports.
+# The predictor prompt validated on held-out reviewers (experiments/staged_context/router_eval.py PRED + matched.PRED_SYSTEM,
+# with thinking on). Its ratings are ignored: agent mode computes ratings from the data, which tested better.
+WORDS_SYSTEM = ("You forecast a specific historical reviewer's reported experience of a software product from incomplete "
+                "context. Never write a first-person testimonial. Return JSON only.")
+WORDS_PROMPT = """Predict how THIS person experienced {product}. Their review is hidden; you only know the context below.
 
 - Product: {product} ({url})
-- Persona: {persona}
+- Role: {role_title} (family: {role_family})
+- Industry: {industry}
+- Company size: {company_size}
+- Time using {product}: {time_used}
 - Task: {task}
-
-{evidence}
+- Previous product / alternatives: {previous}
 
 Return JSON:
-{{"pros": [up to 3 short specific things this user will likely like],
- "cons": [up to 3 short specific things that will likely frustrate them],
- "overall_experience": "2-3 sentences, third person",
- "likely_frictions": [up to 3 short specific sentences about problems similar users report]}}"""
+{{"ease_of_use_rating": 1-5, "functionality_rating": 1-5, "overall_rating": 1-5, "value_for_money_rating": 1-5,
+ "customer_support_rating": 1-5, "recommendation_score": 0-10,
+ "pros": [up to 3 short specific things they liked], "cons": [up to 3 short specific things that frustrated them],
+ "overall_experience": "2-3 sentences summarising their experience, in third person"}}
+{evidence}"""
+WORDS_THINKING = 1024
+
+
+def words_prompt(product: str, url: str, persona: dict[str, Any], task: str, evidence: str) -> str:
+    role = str(persona.get("role") or persona.get("bio") or "")
+    return WORDS_PROMPT.format(product=product, url=url or "no URL given", role_title=role or "not stated",
+                               role_family=RS.role_family(role), industry=persona.get("industry") or "not stated",
+                               company_size=persona.get("company_size") or "not stated",
+                               time_used=persona.get("time_used") or "not stated", task=task or "not stated",
+                               previous=persona.get("previous") or "not stated", evidence=evidence)
 
 
 def _num(v: Any) -> float | None:
@@ -174,17 +190,29 @@ def _fmt(r: dict) -> str:
     return head + f"\nLiked: {RS.clean(r.get('pros'))[:400]}\nDisliked: {RS.clean(r.get('cons'))[:400]}"
 
 
-def evidence_text(product: str, own: list[dict], rivals: list[dict], persona: dict) -> str:
+def evidence_text(product: str, own: list[dict], rivals: list[dict], persona: dict,
+                  ratings: dict[str, dict[str, Any]] | None = None) -> str:
+    """Laid out like the held-out winner (own_reviews_bench `own_similar`): rivals' ratings and complaint topics, the
+    most similar people's rival reviews, then the product's own rating line and its most similar earlier reviewers."""
     parts = []
-    if own:
-        parts.append(f"## Reviews of {product} by the most similar people\n" + "\n\n".join(_fmt(r) for r in _similar(own, persona)))
     if rivals:
+        names = sorted({str(x.get("product") or "") for x in rivals if x.get("product")})
         cons = [str(x.get("cons") or x.get("text") or "").lower() for x in rivals if x.get("cons") or x.get("text")]
-        if cons:
-            parts.append("## Complaint topics in rivals' reviews\n" + "\n".join(
-                f"- {k.replace('complaint_', '')}: {sum(bool(re.search(p, c)) for c in cons) / len(cons):.0%}" for k, p in RS.TOPICS.items()))
-        parts.append("## Reviews of rival products by the most similar people\n" + "\n\n".join(_fmt(r) for r in _similar(rivals, persona)))
-    return "\n\n".join(parts)
+        avg = "; ".join(f"{k} {sum(v) / len(v):.2f}" for k, v in ((k, _values(rivals, k)) for k in OUT_SCALE) if v)
+        topics = "\n".join(f"- {k.replace('complaint_', '')}: {sum(bool(re.search(p, c)) for c in cons) / len(cons):.1%} mention it"
+                           for k, p in RS.TOPICS.items()) if cons else "- (no complaint text)"
+        parts.append(f"## Same-category competitors\nCompetitors: {', '.join(names)} ({len(rivals)} reviews).\n"
+                     f"Average ratings: {avg}\nComplaint topics in their cons:\n{topics}")
+        parts.append("## Reviews of competitor products by the most similar people\n" + "\n\n".join(_fmt(r) for r in _similar(rivals, persona)))
+    if own:
+        lines = []
+        for k, rec in (ratings or {}).items():
+            if rec.get("estimate") is not None and rec.get("n_own"):
+                lines.append(f"- {k}: last {rec['n_own']} reviews of this product average {rec['own_mean']:.2f}; "
+                             f"competitors {rec['rivals_mean'] if rec['rivals_mean'] is not None else 'n/a'}; combined estimate {rec['estimate']:.2f}")
+        parts.append(f"## This product's own earlier reviews (other people; {len(own)} available)\nRatings:\n" + "\n".join(lines)
+                     + "\n\nMost similar earlier reviewers:\n" + "\n\n".join(_fmt(r) for r in _similar(own, persona)))
+    return "\nData:\n" + "\n\n".join(parts) if parts else ""
 
 
 def gather(product: str, rivals: list[str], wait_s: float) -> dict[str, Any]:
@@ -242,26 +270,25 @@ async def predict_experience(*, product: str, url: str, persona: dict[str, Any],
                 "reason": f"no reviews found for {product}" + (f" or its rivals {rivals}" if rivals else "; name its competitors to use theirs")}
     ratings = rating_estimates(own, riv)
     personalize(ratings, persona)
-    ev = evidence_text(product, own, riv, persona)
+    ev = evidence_text(product, own, riv, persona, ratings)
     words: dict[str, Any] = {}
     if llm is None:
         from capability.gemini_config import extract_json, gemini_chat
 
         async def llm(prompt: str) -> dict:  # noqa: F811 - default model call
-            raw = await gemini_chat([{"role": "system", "content": "You predict user experience from review evidence. Return JSON only."},
-                                     {"role": "user", "content": prompt}], temperature=0.3, json_mode=True)
+            raw = await gemini_chat([{"role": "system", "content": WORDS_SYSTEM}, {"role": "user", "content": prompt}],
+                                    temperature=0.7, json_mode=True, thinking_budget=WORDS_THINKING)
             j = extract_json(raw)
             return j if isinstance(j, dict) else {}
     try:
-        words = await llm(WORDS_PROMPT.format(product=product, url=url or "-", persona=json.dumps(persona, ensure_ascii=False),
-                                              task=task or "not stated", evidence=ev[:12000]))
+        words = await llm(words_prompt(product, url, persona, task, ev[:14000]))
     except Exception as exc:  # noqa: BLE001 - ratings still stand; say why the words are missing
         words = {"error": f"{type(exc).__name__}: {str(exc)[:200]}"}
     return {
         "mode": "agent", "status": "ok", "product": product, "persona": persona, "task": task,
         "ratings": ratings,
         "pros": words.get("pros") or [], "cons": words.get("cons") or [],
-        "overall_experience": words.get("overall_experience") or "", "likely_frictions": words.get("likely_frictions") or [],
+        "overall_experience": words.get("overall_experience") or "",
         "words_error": words.get("error"),
         "evidence": {"own_reviews": len(own), "rival_reviews": len(riv), "rivals": rivals, "rivals_source": rivals_source,
                      "rivals_with_reviews": sorted({x["product"] for x in riv}),

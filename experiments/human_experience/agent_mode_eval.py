@@ -13,7 +13,6 @@ Words go through agent_mode.WORDS_PROMPT with Gemini 2.5 Flash (cached) and the 
 
 from __future__ import annotations
 
-import json
 import os
 import sys
 from concurrent.futures import ThreadPoolExecutor
@@ -93,7 +92,8 @@ def main() -> None:
         r = p["orig"]
         if p["source"] == "capterra":
             return {"role": E.clean(r["reviewer_job_title"]), "company_size": r["reviewer_company_size"],
-                    "industry": r["reviewer_industry"], "time_used": r["reviewer_time_used_product"]}
+                    "industry": r["reviewer_industry"], "time_used": r["reviewer_time_used_product"],
+                    "previous": RE.card(r, None)["previous"]}
         return {"role": E.clean(r["title"]), "company_size": r["size3"], "industry": r["industry"]}
 
     def evidence(p):
@@ -109,11 +109,10 @@ def main() -> None:
         per = persona(p)
         ratings = A.rating_estimates(own, riv)
         A.personalize(ratings, per)
-        prompt = A.WORDS_PROMPT.format(product=p["product"], url="-", persona=json.dumps(per, ensure_ascii=False),
-                                       task=refs[p["rid"]]["task"] or "not stated",
-                                       evidence=A.evidence_text(p["product"], own, riv, per)[:12000])
-        rec = E.call_model("agent_mode_words", FLASH, "You predict user experience from review evidence. Return JSON only.",
-                           prompt, temperature=0.3, seed=1000, max_tokens=8192, thinking_budget=1024, key_extra=p["rid"])
+        url = RE.URLS.get(p["product"], "") if p["source"] == "capterra" else ""
+        prompt = A.words_prompt(p["product"], url, per, refs[p["rid"]]["task"], A.evidence_text(p["product"], own, riv, per, ratings)[:14000])
+        rec = E.call_model("agent_mode_words_v2", FLASH, A.WORDS_SYSTEM, prompt, temperature=0.7, seed=1000, max_tokens=8192,
+                           thinking_budget=A.WORDS_THINKING, key_extra=p["rid"])
         words = rec.get("json") if isinstance(rec.get("json"), dict) else {}
         return p["rid"], {"ratings": ratings, "words": words, "rivals": top, "n_own": len(own)}
 
