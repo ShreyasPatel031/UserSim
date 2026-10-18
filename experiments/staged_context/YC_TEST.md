@@ -12,6 +12,36 @@ the production path:
 
 `yc_test.py`; full output in `out/yc/yc_report.json`.
 
+## Update: with more competitors, 16 of 20 have usable data
+
+The first pass used only the study planner's 2 competitors per startup. For the 10 flagged startups, a model then
+named 6 established products listed on G2 / Capterra / TrustRadius / Gartner (`out/yc/more_rivals.json`). Those were
+scraped and judged the same way (`yc_test.py more`, `out/yc/more_rivals_report.json`).
+
+- **6 of the 10 recover**, with 3–5 usable competitors and 270–500 reviewers each.
+- **That makes 16 of 20 YC startups with usable competitor data**, against 10 with the planner alone.
+- **The fix belongs in discovery:** ask for established products listed on review sites, not the 2 nearest look-alikes.
+  The agent-mode session's wider discovery (PR #98) does this.
+- **The 4 left are real gaps, not tool failures:**
+  - Parasma (brain-cell compute) and MusicArena (AI-music benchmark): no product on any of the four sites does the
+    same job.
+  - transload (freight measurement from cameras): its true rivals (Cubiscan, FreightSnap) have no reviews.
+  - Dock ("AI agents run your business"): every candidate was judged "no". Zapier and UiPath are arguably partial;
+    the judge is strict.
+
+| Startup | What it does | Usable competitors (judged, reviews) | Reviewers | Top use case |
+| --- | --- | --- | --- | --- |
+| TryNearby | Local creators for local businesses | Grin (partly, 100), Aspire (partly, 99), Upfluence (partly, 99), HypeAuditor (partly, 99), Fiverr (partly, 100) | 497 | Manage influencer relationships and communications. |
+| transload | Measure freight with security cameras | **none** | 0 | – |
+| Parasma | Replacing GPUs with human brain cells | **none** | 0 | – |
+| Amorphic Labs | OpenRouter for Agent Tools | Zapier (partly, 100), Kong Gateway (partly, 71), Workato (partly, 100) | 271 | Automate workflows between business apps |
+| MusicArena | The crowdsourced benchmark for AI-generated music and music production | **none** | 0 | – |
+| Enjamb Labs | The AI Workforce for Biopharma | UiPath (partly, 100), Workato (partly, 100), SAS (partly, 98) | 298 | Automate repetitive business processes |
+| Mentlio | Engineering Intelligence and Token Optimization for the AI-Coding Era | PromptLayer (partly, 22), Arize AI (partly, 77), Datadog (partly, 100), LinearB (partly, 98) | 297 | Track and version prompts |
+| Fuchsia | Vanta for hardware | PTC Windchill (partly, 88), Siemens Teamcenter (partly, 100), Arena PLM (partly, 100), MasterControl (partly, 100), ETQ Reliance (partly, 100) | 488 | Manage document versions and revisions |
+| Dock | Hire AI agents to start and run your business | **none** | 0 | – |
+| HyperProbe | AI engineer that debugs and fixes production incidents in realtime | Datadog (partly, 100), New Relic (partly, 42), Dynatrace (partly, 100), Lightrun (yes, 95), PagerDuty (partly, 100) | 437 | Monitor applications |
+
 ## Results first
 
 - **10 of 20 startups get usable data**: at least one real competitor ("yes" or "partly") with 20+ reviews of the

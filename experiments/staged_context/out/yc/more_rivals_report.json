@@ -1,0 +1,795 @@
+[
+  {
+    "name": "TryNearby",
+    "one_liner": "Local creators for local businesses",
+    "competitors": [
+      {
+        "name": "Reef",
+        "source": "planner",
+        "reviews": 2,
+        "reviews_match": true,
+        "direct": "no",
+        "why": "Reef.ai is a customer success and revenue management platform for B2B companies, which is entirely different from TryNearby's focus on local content creation and social media marketing for restaurants."
+      },
+      {
+        "name": "Influencer Marketing Hub",
+        "source": "planner",
+        "reviews": 0,
+        "reviews_match": true,
+        "direct": "no",
+        "why": "Influencer Marketing Hub is primarily a resource and data platform for influencer marketing, not a service that directly connects local businesses with creators for content creation like TryNearby."
+      },
+      {
+        "name": "Grin",
+        "source": "more",
+        "reviews": 100,
+        "reviews_match": true,
+        "direct": "partly",
+        "why": "While both platforms deal with creator/influencer marketing, TryNearby focuses on automated content generation for local businesses, whereas Grin is a comprehensive platform for brands to manage their own influencer programs and relationships."
+      },
+      {
+        "name": "Aspire",
+        "source": "more",
+        "reviews": 99,
+        "reviews_match": true,
+        "direct": "partly",
+        "why": "Aspire is a broader influencer marketing platform that could be used by businesses to manage creator relationships, while TryNearby is a specialized service focused on local businesses and content creators for local discovery, offering a more hands-off, subscription-based content generation model."
+      },
+      {
+        "name": "Upfluence",
+        "source": "more",
+        "reviews": 99,
+        "reviews_match": true,
+        "direct": "partly",
+        "why": "While both platforms connect businesses with creators/influencers, TryNearby offers an automated, subscription-based service specifically for local businesses seeking ongoing content for local discovery, whereas Upfluence is a broader influencer marketing platform for brands and agencies to manage campaigns."
+      },
+      {
+        "name": "HypeAuditor",
+        "source": "more",
+        "reviews": 99,
+        "reviews_match": true,
+        "direct": "partly",
+        "why": "TryNearby offers an automated service for local content creation and discovery, while HypeAuditor is a platform for businesses to manage their own influencer marketing campaigns, making them adjacent but not direct competitors for the same buyer or job."
+      },
+      {
+        "name": "Fiverr",
+        "source": "more",
+        "reviews": 100,
+        "reviews_match": true,
+        "direct": "partly",
+        "why": "While both platforms connect businesses with creators, TryNearby offers an automated, subscription-based service focused on continuous local content for discovery, whereas Fiverr is a project-based marketplace for on-demand freelance services with varying quality and no inherent local focus or automation."
+      },
+      {
+        "name": "Podium",
+        "source": "more",
+        "reviews": 99,
+        "reviews_match": true,
+        "direct": "no",
+        "why": "TryNearby focuses on generating new social media content for discovery through local creators, while Podium is a customer communication and reputation management platform for existing customer interactions."
+      }
+    ],
+    "usable": [
+      "Grin (partly, 100)",
+      "Aspire (partly, 99)",
+      "Upfluence (partly, 99)",
+      "HypeAuditor (partly, 99)",
+      "Fiverr (partly, 100)"
+    ],
+    "n_reviewers": 497,
+    "roles": {
+      "marketing_creative_content": 0.35,
+      "executive_owner": 0.19,
+      "general_team_mgmt": 0.11,
+      "unknown": 0.1
+    },
+    "use_cases": [
+      "Manage influencer relationships and communications.",
+      "Track campaign performance and analytics.",
+      "Organize and manage influencer campaigns."
+    ]
+  },
+  {
+    "name": "transload",
+    "one_liner": "Measure freight with security cameras",
+    "competitors": [
+      {
+        "name": "Cubiscan",
+        "source": "more",
+        "reviews": 0,
+        "reviews_match": false,
+        "direct": "yes",
+        "why": "Cubiscan provides dedicated hardware for dimensioning and weighing freight, directly addressing the same core problem of accurate shipment measurement and revenue recovery that transload solves with existing security cameras."
+      },
+      {
+        "name": "FreightSnap",
+        "source": "more",
+        "reviews": 0,
+        "reviews_match": false,
+        "direct": "partly",
+        "why": "Without product details for 'FreightSnap', its description as a 'planner' suggests it might address freight optimization or logistics planning, which could overlap with Transload's value proposition of improved trailer utilization, but not necessarily its core camera-based dimensioning."
+      },
+      {
+        "name": "Manhattan Associates WMS",
+        "source": "more",
+        "reviews": 0,
+        "reviews_match": false,
+        "direct": "partly",
+        "why": "Manhattan Associates WMS is a comprehensive warehouse management system that can integrate with dimensioning solutions, while transload is a specialized dimensioning solution; they are not direct competitors for the same core job but operate in the same ecosystem."
+      },
+      {
+        "name": "Blue Yonder WMS",
+        "source": "more",
+        "reviews": 0,
+        "reviews_match": false,
+        "direct": "partly",
+        "why": "Blue Yonder WMS is a comprehensive warehouse management system that could utilize the data transload provides, but it does not directly offer automated freight dimensioning via security cameras as its core function."
+      },
+      {
+        "name": "MercuryGate TMS",
+        "source": "more",
+        "reviews": 32,
+        "reviews_match": true,
+        "direct": "no",
+        "why": "transload provides a specific physical measurement solution for freight dimensions, while MercuryGate TMS is a broad transportation management system that handles the overall logistics process, not the granular physical measurement of goods."
+      },
+      {
+        "name": "3Gtms",
+        "source": "more",
+        "reviews": 0,
+        "reviews_match": false,
+        "direct": "no",
+        "why": "Transload provides automated freight dimensioning using cameras, while 3Gtms is a comprehensive Transportation Management System (TMS) that manages the entire shipping process but does not offer physical measurement capabilities."
+      }
+    ],
+    "usable": [],
+    "n_reviewers": 0,
+    "roles": {},
+    "use_cases": []
+  },
+  {
+    "name": "Parasma",
+    "one_liner": "Replacing GPUs with human brain cells",
+    "competitors": [
+      {
+        "name": "FinalSpark",
+        "source": "planner",
+        "reviews": 0,
+        "reviews_match": false,
+        "direct": "no",
+        "why": "Without any information on 'FinalSpark's' product or service, it is impossible to determine if it competes with Parasma's highly specialized bio-compute offering."
+      },
+      {
+        "name": "Innoskel",
+        "source": "planner",
+        "reviews": 0,
+        "reviews_match": false,
+        "direct": "no",
+        "why": "Parasma offers bio-compute infrastructure to replace GPUs, while Innoskel is described as a planner, serving entirely different functions and markets."
+      },
+      {
+        "name": "Amazon SageMaker",
+        "source": "more",
+        "reviews": 100,
+        "reviews_match": true,
+        "direct": "no",
+        "why": "Parasma offers a novel biological computing substrate (human brain cells) to replace GPUs, while Amazon SageMaker is a cloud-based platform for building, training, and deploying machine learning models using conventional hardware."
+      },
+      {
+        "name": "Google Cloud Vertex AI",
+        "source": "more",
+        "reviews": 100,
+        "reviews_match": true,
+        "direct": "no",
+        "why": "Parasma offers a novel, biological compute substrate, while Google Cloud Vertex AI is a platform for developing and deploying AI/ML models on traditional cloud infrastructure."
+      },
+      {
+        "name": "Microsoft Azure Machine Learning",
+        "source": "more",
+        "reviews": 100,
+        "reviews_match": true,
+        "direct": "no",
+        "why": "Parasma offers a novel biological compute substrate (human brain cells) to replace GPUs, while Microsoft Azure Machine Learning is a cloud platform that *uses* traditional compute resources (including GPUs) to facilitate the machine learning lifecycle, making them fundamentally different in their core offering."
+      },
+      {
+        "name": "NVIDIA DGX Cloud",
+        "source": "more",
+        "reviews": 3,
+        "reviews_match": true,
+        "direct": "partly",
+        "why": "Both aim to provide high-performance compute for AI workloads, but Parasma's technology is radically different and likely targets a future or niche market compared to NVIDIA DGX Cloud's established GPU-based cloud infrastructure."
+      },
+      {
+        "name": "Databricks",
+        "source": "more",
+        "reviews": 100,
+        "reviews_match": true,
+        "direct": "no",
+        "why": "Parasma offers a novel compute substrate using human brain cells, aiming to replace GPUs, while Databricks is a software platform for data engineering, data science, and analytics, making them fundamentally different solutions."
+      },
+      {
+        "name": "Hugging Face",
+        "source": "more",
+        "reviews": 82,
+        "reviews_match": true,
+        "direct": "no",
+        "why": "Hugging Face provides software tools, models, and a platform for machine learning development, while Parasma offers a novel biological compute substrate (human brain cells) to replace traditional hardware like GPUs."
+      }
+    ],
+    "usable": [],
+    "n_reviewers": 0,
+    "roles": {},
+    "use_cases": []
+  },
+  {
+    "name": "Amorphic Labs",
+    "one_liner": "OpenRouter for Agent Tools",
+    "competitors": [
+      {
+        "name": "Superagent",
+        "source": "planner",
+        "reviews": 0,
+        "reviews_match": false,
+        "direct": "no",
+        "why": "No information or product details were found for 'Superagent', making a competitive assessment impossible; Amorphic Labs addresses a specific, emerging need for AI agent tool orchestration."
+      },
+      {
+        "name": "ToolJet",
+        "source": "planner",
+        "reviews": 54,
+        "reviews_match": true,
+        "direct": "no",
+        "why": "Amorphic Labs provides a marketplace and routing layer for AI agents to discover and use external tools and APIs, while ToolJet is a low-code platform for humans to build internal tools and dashboards."
+      },
+      {
+        "name": "RapidAPI Hub",
+        "source": "more",
+        "reviews": 0,
+        "reviews_match": false,
+        "direct": "partly",
+        "why": "RapidAPI is a general API marketplace for human developers, while Amorphic Labs focuses specifically on providing a dynamic, benchmark-driven capability marketplace for AI agents to consume tools and APIs at runtime."
+      },
+      {
+        "name": "Zapier",
+        "source": "more",
+        "reviews": 100,
+        "reviews_match": true,
+        "direct": "partly",
+        "why": "While both platforms facilitate connections and automation, Zapier focuses on human-driven no-code integration of existing business applications, whereas Amorphic Labs is specifically designed as a capability marketplace and router for AI agents to autonomously find and utilize tools at runtime."
+      },
+      {
+        "name": "Kong Gateway",
+        "source": "more",
+        "reviews": 71,
+        "reviews_match": true,
+        "direct": "partly",
+        "why": "While Kong Gateway is an API management solution that can handle AI integrations, Amorphic Labs specifically targets AI agents as users and provides a marketplace for dynamic tool discovery, payment, and intelligent routing, which is a more specialized and agent-centric problem than Kong's general API gateway function."
+      },
+      {
+        "name": "Google Cloud Apigee",
+        "source": "more",
+        "reviews": 41,
+        "reviews_match": true,
+        "direct": "no",
+        "why": "Amorphic Labs provides a marketplace and intelligent routing for AI agents to consume tools and APIs, whereas Google Cloud Apigee is an API management platform for human developers to manage, secure, and scale their own APIs."
+      },
+      {
+        "name": "Workato",
+        "source": "more",
+        "reviews": 100,
+        "reviews_match": true,
+        "direct": "partly",
+        "why": "Workato is an iPaaS for human-driven business process automation, while Amorphic Labs is a capability marketplace specifically designed for AI agents to discover and utilize tools at runtime, addressing a different user and use case paradigm."
+      },
+      {
+        "name": "Postman",
+        "source": "more",
+        "reviews": 100,
+        "reviews_match": true,
+        "direct": "no",
+        "why": "Amorphic Labs is a runtime marketplace and orchestration layer for AI agents to discover and use APIs, while Postman is a development tool for human developers to test and debug APIs."
+      }
+    ],
+    "usable": [
+      "Zapier (partly, 100)",
+      "Kong Gateway (partly, 71)",
+      "Workato (partly, 100)"
+    ],
+    "n_reviewers": 271,
+    "roles": {
+      "software_it_engineering": 0.48,
+      "executive_owner": 0.14,
+      "marketing_creative_content": 0.08,
+      "general_team_mgmt": 0.07
+    },
+    "use_cases": [
+      "Automate workflows between business apps",
+      "Integrate various tools and platforms",
+      "Automate repetitive data transfer"
+    ]
+  },
+  {
+    "name": "MusicArena",
+    "one_liner": "The crowdsourced benchmark for AI-generated music and music production",
+    "competitors": [
+      {
+        "name": "Splice",
+        "source": "more",
+        "reviews": 5,
+        "reviews_match": true,
+        "direct": "no",
+        "why": "The reviews for 'Splice Machine' describe a data management and AI/ML platform for enterprise data, often in healthcare, which is completely unrelated to MusicArena's focus on crowdsourced benchmarking for AI-generated music and music production."
+      },
+      {
+        "name": "Loopcloud",
+        "source": "planner",
+        "reviews": 0,
+        "reviews_match": false,
+        "direct": "no",
+        "why": "MusicArena is a benchmarking platform for AI-generated music and production, while Loopcloud is a sample library and loop management service for music creation, serving fundamentally different user needs."
+      },
+      {
+        "name": "Ableton Live",
+        "source": "more",
+        "reviews": 96,
+        "reviews_match": true,
+        "direct": "no",
+        "why": "Ableton Live is a Digital Audio Workstation (DAW) used for creating and producing music, whereas MusicArena is a platform for crowdsourced benchmarking and evaluation of AI-generated music and music production, serving entirely different purposes."
+      },
+      {
+        "name": "FL Studio",
+        "source": "more",
+        "reviews": 100,
+        "reviews_match": true,
+        "direct": "no",
+        "why": "FL Studio is a Digital Audio Workstation (DAW) used for creating and producing music, while MusicArena is a platform for crowdsourced benchmarking and evaluation of AI-generated music and music production, serving entirely different purposes."
+      },
+      {
+        "name": "iZotope RX",
+        "source": "more",
+        "reviews": 0,
+        "reviews_match": false,
+        "direct": "no",
+        "why": "MusicArena is a platform for benchmarking AI-generated music and production, while iZotope RX is an audio repair and post-production suite for fixing existing audio."
+      },
+      {
+        "name": "Soundraw",
+        "source": "more",
+        "reviews": 37,
+        "reviews_match": true,
+        "direct": "no",
+        "why": "Soundraw is an AI music generation and customization tool, whereas MusicArena is a crowdsourced benchmarking platform for AI-generated music, serving different primary functions."
+      },
+      {
+        "name": "AIVA",
+        "source": "more",
+        "reviews": 2,
+        "reviews_match": true,
+        "direct": "no",
+        "why": "MusicArena is a platform for benchmarking and evaluating AI-generated music, while AIVA is an AI music generation tool used to create music."
+      }
+    ],
+    "usable": [],
+    "n_reviewers": 0,
+    "roles": {},
+    "use_cases": []
+  },
+  {
+    "name": "Enjamb Labs",
+    "one_liner": "The AI Workforce for Biopharma",
+    "competitors": [
+      {
+        "name": "Benchling",
+        "source": "more",
+        "reviews": 83,
+        "reviews_match": true,
+        "direct": "no",
+        "why": "Benchling is a foundational software system (ELN, LIMS, sequence analysis) that Enjamb Labs aims to integrate with and automate, rather than a direct competitor offering the same AI-driven workforce solution."
+      },
+      {
+        "name": "LabVantage",
+        "source": "planner",
+        "reviews": 22,
+        "reviews_match": true,
+        "direct": "no",
+        "why": "LabVantage is a LIMS (Laboratory Information Management System) that manages lab data and workflows, whereas Enjamb Labs provides an AI layer to automate tasks and integrate with existing, closed biopharma software systems like LIMS."
+      },
+      {
+        "name": "UiPath",
+        "source": "more",
+        "reviews": 100,
+        "reviews_match": true,
+        "direct": "partly",
+        "why": "While both offer automation and integration, UiPath focuses on RPA for repetitive tasks across various industries, whereas Enjamb Labs provides a specialized AI agent layer specifically for biopharma's closed systems, enabling intelligent agents to perform work directly within those systems."
+      },
+      {
+        "name": "Workato",
+        "source": "more",
+        "reviews": 100,
+        "reviews_match": true,
+        "direct": "partly",
+        "why": "While Workato is an iPaaS that connects systems and automates workflows, Enjamb Labs specifically provides an AI layer that *does the work* within biopharma's closed systems, which is a more advanced and domain-specific form of automation than Workato's general integration capabilities."
+      },
+      {
+        "name": "Veeva Vault",
+        "source": "more",
+        "reviews": 81,
+        "reviews_match": true,
+        "direct": "no",
+        "why": "Veeva Vault is a foundational content and quality management system for biopharma, while Enjamb Labs provides an AI layer that integrates with and automates tasks within existing systems like Veeva, making them complementary rather than direct competitors."
+      },
+      {
+        "name": "SAS",
+        "source": "more",
+        "reviews": 98,
+        "reviews_match": true,
+        "direct": "partly",
+        "why": "While Base SAS is used for data analysis and reporting in clinical trials, which is relevant to biopharma, it is a traditional statistical software, not an AI layer that integrates with and automates tasks across existing biopharma systems like Enjamb Labs."
+      },
+      {
+        "name": "ServiceNow",
+        "source": "more",
+        "reviews": 100,
+        "reviews_match": true,
+        "direct": "no",
+        "why": "Enjamb Labs provides an AI layer specifically for biopharma R&D systems to automate scientific workflows, whereas ServiceNow IT Service Management is a broad IT service management platform focused on IT operations, incident, and request management."
+      }
+    ],
+    "usable": [
+      "UiPath (partly, 100)",
+      "Workato (partly, 100)",
+      "SAS (partly, 98)"
+    ],
+    "n_reviewers": 298,
+    "roles": {
+      "software_it_engineering": 0.65,
+      "education_research_analysis": 0.1,
+      "unknown": 0.06,
+      "general_team_mgmt": 0.04
+    },
+    "use_cases": [
+      "Automate repetitive business processes",
+      "Process and extract data from documents",
+      "Integrate with third-party applications"
+    ]
+  },
+  {
+    "name": "Mentlio",
+    "one_liner": "Engineering Intelligence and Token Optimization for the AI-Coding Era",
+    "competitors": [
+      {
+        "name": "Glean",
+        "source": "planner",
+        "reviews": 100,
+        "reviews_match": true,
+        "direct": "no",
+        "why": "Mentlio focuses on optimizing AI spend and performance for engineering teams using AI models, while Glean is an enterprise search and knowledge management tool that helps employees find internal information across various data sources."
+      },
+      {
+        "name": "Turing",
+        "source": "planner",
+        "reviews": 22,
+        "reviews_match": true,
+        "direct": "no",
+        "why": "Mentlio provides AI spend optimization and engineering intelligence for enterprises, while Turing.com is a platform for hiring remote developers."
+      },
+      {
+        "name": "Vellum AI",
+        "source": "more",
+        "reviews": 19,
+        "reviews_match": true,
+        "direct": "partly",
+        "why": "Vellum AI focuses on accelerating AI application development and deployment, while Mentlio focuses on optimizing AI spend and ROI for existing AI usage, creating an adjacent but not directly overlapping core value proposition."
+      },
+      {
+        "name": "PromptLayer",
+        "source": "more",
+        "reviews": 22,
+        "reviews_match": true,
+        "direct": "partly",
+        "why": "PromptLayer focuses on prompt management, versioning, testing, and observability, which are components of AI development, while Mentlio focuses on broader AI ROI optimization, spend reduction through intelligent routing, context optimization, and prompt compression, which are more about cost and performance efficiency at a system level."
+      },
+      {
+        "name": "Arize AI",
+        "source": "more",
+        "reviews": 77,
+        "reviews_match": true,
+        "direct": "partly",
+        "why": "Arize AX focuses on AI observability, monitoring, and evaluation for model performance and debugging, which is a foundational layer for understanding AI usage, while Mentlio focuses on optimizing AI spend and ROI through token optimization and intelligent routing, which could leverage insights from observability platforms."
+      },
+      {
+        "name": "Weights & Biases",
+        "source": "more",
+        "reviews": 83,
+        "reviews_match": true,
+        "direct": "no",
+        "why": "Mentlio focuses on optimizing AI spend and ROI through token optimization, intelligent routing, and prompt compression for deployed AI models, while Weights & Biases is an MLOps platform primarily for tracking, visualizing, and managing machine learning experiments during model development."
+      },
+      {
+        "name": "Datadog",
+        "source": "more",
+        "reviews": 100,
+        "reviews_match": true,
+        "direct": "partly",
+        "why": "Datadog is a broad observability platform that can monitor AI infrastructure, but Mentlio specifically focuses on optimizing AI spend and token usage, which is a niche Datadog does not directly address."
+      },
+      {
+        "name": "LinearB",
+        "source": "more",
+        "reviews": 98,
+        "reviews_match": true,
+        "direct": "partly",
+        "why": "While both offer engineering intelligence, LinearB focuses on traditional software development metrics and team performance, whereas Mentlio specifically targets AI spend optimization and ROI for AI-coding workflows."
+      }
+    ],
+    "usable": [
+      "PromptLayer (partly, 22)",
+      "Arize AI (partly, 77)",
+      "Datadog (partly, 100)",
+      "LinearB (partly, 98)"
+    ],
+    "n_reviewers": 297,
+    "roles": {
+      "software_it_engineering": 0.6,
+      "unknown": 0.07,
+      "executive_owner": 0.07,
+      "sales_customer": 0.05
+    },
+    "use_cases": [
+      "Track and version prompts",
+      "Compare prompt versions and outputs",
+      "Test and evaluate prompts"
+    ]
+  },
+  {
+    "name": "Fuchsia",
+    "one_liner": "Vanta for hardware",
+    "competitors": [
+      {
+        "name": "ComplianceGate",
+        "source": "planner",
+        "reviews": 0,
+        "reviews_match": false,
+        "direct": "partly",
+        "why": "While 'ComplianceGate' suggests a compliance focus, without product details or reviews, it's impossible to confirm if it specifically addresses hardware certification and testing like Fuchsia, making it an adjacent or overlapping solution rather than a direct, like-for-like competitor."
+      },
+      {
+        "name": "CE-Check",
+        "source": "planner",
+        "reviews": 0,
+        "reviews_match": false,
+        "direct": "no",
+        "why": "Without any product information or a web presence for 'CE-Check', it cannot be assessed as a competitor to Fuchsia, which clearly defines its offering in hardware certification and testing."
+      },
+      {
+        "name": "PTC Windchill",
+        "source": "more",
+        "reviews": 88,
+        "reviews_match": true,
+        "direct": "partly",
+        "why": "Fuchsia focuses on automating hardware certification and testing for compliance, while PTC Windchill is a broader PLM system that manages product data, documentation, and change control, which can include some aspects of quality and testing data but not the core certification automation."
+      },
+      {
+        "name": "Siemens Teamcenter",
+        "source": "more",
+        "reviews": 100,
+        "reviews_match": true,
+        "direct": "partly",
+        "why": "Teamcenter is a broad PLM system that manages product data, CAD integration, and project workflows, which can include aspects of product development that precede or run parallel to certification, whereas Fuchsia specifically automates hardware certification and testing, a more specialized compliance function."
+      },
+      {
+        "name": "Arena PLM",
+        "source": "more",
+        "reviews": 100,
+        "reviews_match": true,
+        "direct": "partly",
+        "why": "Fuchsia focuses specifically on hardware certification and testing, while Arena PLM is a broader Product Lifecycle Management (PLM) and Quality Management System (QMS) solution that includes compliance and quality processes as part of its larger scope."
+      },
+      {
+        "name": "MasterControl",
+        "source": "more",
+        "reviews": 100,
+        "reviews_match": true,
+        "direct": "partly",
+        "why": "MasterControl is a broad QMS platform for document control, training, and quality events, which overlaps with Fuchsia's need for traceability and compliance but lacks the specific focus on automated hardware certification and testing."
+      },
+      {
+        "name": "ETQ Reliance",
+        "source": "more",
+        "reviews": 100,
+        "reviews_match": true,
+        "direct": "partly",
+        "why": "ETQ Reliance is a broad Quality Management System (QMS) that includes compliance and documentation, which overlaps with Fuchsia's focus on hardware certification and testing, but Fuchsia is more specialized for hardware-specific compliance automation."
+      },
+      {
+        "name": "Jira",
+        "source": "more",
+        "reviews": 0,
+        "reviews_match": false,
+        "direct": "no",
+        "why": "Fuchsia automates hardware certification and testing, while Jira is a project management and issue tracking tool; they serve entirely different functions in the product development lifecycle."
+      }
+    ],
+    "usable": [
+      "PTC Windchill (partly, 88)",
+      "Siemens Teamcenter (partly, 100)",
+      "Arena PLM (partly, 100)",
+      "MasterControl (partly, 100)",
+      "ETQ Reliance (partly, 100)"
+    ],
+    "n_reviewers": 488,
+    "roles": {
+      "software_it_engineering": 0.48,
+      "general_team_mgmt": 0.15,
+      "unknown": 0.14,
+      "operations_admin": 0.08
+    },
+    "use_cases": [
+      "Manage document versions and revisions",
+      "Create and manage Bill of Materials (BOMs)",
+      "Manage engineering changes (ECN/ECR)"
+    ]
+  },
+  {
+    "name": "Dock",
+    "one_liner": "Hire AI agents to start and run your business",
+    "competitors": [
+      {
+        "name": "Adept",
+        "source": "planner",
+        "reviews": 99,
+        "reviews_match": true,
+        "direct": "no",
+        "why": "Dock focuses on AI agents to automate and run an entire business, while Adept is a document management system primarily used for engineering and design files."
+      },
+      {
+        "name": "Cognition Labs",
+        "source": "planner",
+        "reviews": 2,
+        "reviews_match": true,
+        "direct": "no",
+        "why": "Dock aims to run an entire business with AI agents, including customer acquisition and operations, whereas Devin AI is a specialized AI coding agent focused on software engineering tasks."
+      },
+      {
+        "name": "Salesforce Sales Cloud",
+        "source": "more",
+        "reviews": 100,
+        "reviews_match": true,
+        "direct": "no",
+        "why": "Dock is an AI-powered platform for autonomously starting and running an entire business, whereas Salesforce Sales Cloud is a CRM system focused on managing sales processes and customer relationships for human sales teams within an existing business."
+      },
+      {
+        "name": "UiPath",
+        "source": "more",
+        "reviews": 100,
+        "reviews_match": true,
+        "direct": "no",
+        "why": "Dock aims to create and run entire businesses autonomously using AI agents, whereas UiPath is an RPA platform focused on automating existing, structured, repetitive tasks within established business processes."
+      },
+      {
+        "name": "Zapier",
+        "source": "more",
+        "reviews": 100,
+        "reviews_match": true,
+        "direct": "no",
+        "why": "Dock aims to use AI agents to start and run an entire business from an idea, whereas Zapier is a workflow automation tool that connects existing applications to automate specific tasks within an established business."
+      },
+      {
+        "name": "HubSpot Marketing Hub",
+        "source": "more",
+        "reviews": 100,
+        "reviews_match": true,
+        "direct": "no",
+        "why": "Dock aims to replace or significantly automate an entire business operation using AI agents, whereas HubSpot Marketing Hub is a comprehensive suite of tools designed to streamline and automate specific marketing functions within an existing business."
+      },
+      {
+        "name": "Upwork",
+        "source": "more",
+        "reviews": 99,
+        "reviews_match": true,
+        "direct": "no",
+        "why": "Dock provides AI agents to automate and run an entire business, whereas Upwork is a platform for hiring human freelancers for specific tasks or projects."
+      },
+      {
+        "name": "Asana",
+        "source": "more",
+        "reviews": 100,
+        "reviews_match": true,
+        "direct": "no",
+        "why": "Asana is a project and work management tool for human teams to organize and track their tasks, whereas Dock aims to replace human effort by having AI agents perform and run business operations autonomously."
+      }
+    ],
+    "usable": [],
+    "n_reviewers": 0,
+    "roles": {},
+    "use_cases": []
+  },
+  {
+    "name": "HyperProbe",
+    "one_liner": "AI engineer that debugs and fixes production incidents in realtime",
+    "competitors": [
+      {
+        "name": "Shoreline.io",
+        "source": "planner",
+        "reviews": 0,
+        "reviews_match": false,
+        "direct": "yes",
+        "why": "Both HyperProbe and Shoreline.io aim to automate the detection, diagnosis, and resolution of production incidents in real-time, directly competing for the same operational pain points and buyer."
+      },
+      {
+        "name": "Blameless",
+        "source": "planner",
+        "reviews": 1,
+        "reviews_match": true,
+        "direct": "partly",
+        "why": "Blameless focuses on incident response workflow and management for human teams, while HyperProbe provides an AI engineer for automated, real-time, deep technical debugging and fixing of production incidents by gathering granular data from memory."
+      },
+      {
+        "name": "Datadog",
+        "source": "more",
+        "reviews": 100,
+        "reviews_match": true,
+        "direct": "partly",
+        "why": "Datadog provides broad observability and incident management, including APM and AI-assisted root cause analysis, which overlaps with HyperProbe's goal of faster incident resolution, but HyperProbe's unique value is deep, live memory introspection for autonomous debugging, which Datadog does not explicitly offer."
+      },
+      {
+        "name": "New Relic",
+        "source": "more",
+        "reviews": 42,
+        "reviews_match": true,
+        "direct": "partly",
+        "why": "New Relic is a broad observability platform that provides monitoring and APM, which helps identify issues, but HyperProbe offers a specialized, real-time, autonomous debugging solution that captures exact variable states at the moment of failure, a capability New Relic does not explicitly highlight."
+      },
+      {
+        "name": "Dynatrace",
+        "source": "more",
+        "reviews": 100,
+        "reviews_match": true,
+        "direct": "partly",
+        "why": "While both address production incidents and observability, Dynatrace is a broad observability platform focused on detection and root cause analysis using existing telemetry, whereas HyperProbe specializes in real-time, deep-dive debugging by injecting probes to gather missing data for autonomous incident resolution."
+      },
+      {
+        "name": "Lightrun",
+        "source": "more",
+        "reviews": 95,
+        "reviews_match": true,
+        "direct": "yes",
+        "why": "Both HyperProbe and Lightrun offer real-time production debugging capabilities by injecting probes/snapshots to capture variable states and logs without redeploying, directly addressing the same core problem for engineers."
+      },
+      {
+        "name": "Rookout",
+        "source": "more",
+        "reviews": 0,
+        "reviews_match": false,
+        "direct": "yes",
+        "why": "Rookout is a well-known live debugging platform that directly competes with HyperProbe's core offering of collecting real-time variable states from live production environments without redeployments."
+      },
+      {
+        "name": "PagerDuty",
+        "source": "more",
+        "reviews": 100,
+        "reviews_match": true,
+        "direct": "partly",
+        "why": "PagerDuty focuses on incident *notification and management* (getting the right alert to the right person), while HyperProbe focuses on incident *debugging and resolution* (providing data to fix the problem itself), making them complementary rather than direct competitors for the same job, though both address production incidents."
+      }
+    ],
+    "usable": [
+      "Datadog (partly, 100)",
+      "New Relic (partly, 42)",
+      "Dynatrace (partly, 100)",
+      "Lightrun (yes, 95)",
+      "PagerDuty (partly, 100)"
+    ],
+    "n_reviewers": 437,
+    "roles": {
+      "software_it_engineering": 0.66,
+      "general_team_mgmt": 0.1,
+      "unknown": 0.06,
+      "executive_owner": 0.04
+    },
+    "use_cases": [
+      "Monitor applications",
+      "Analyze logs",
+      "Perform root cause analysis"
+    ]
+  }
+]
