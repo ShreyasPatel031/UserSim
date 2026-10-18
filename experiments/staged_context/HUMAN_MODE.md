@@ -10,7 +10,8 @@ to add to the agent-mode prediction, so that predictions of **real reviewers** g
    - Agent-mode words are rewritten from the same evidence plus the run's product notes.
    - Held out: 173 real reviewers of 5 products (Basecamp, Bitwarden, Brevo, ClickUp, GetResponse; 40 each, not in
      the evidence; 2 seeds).
-   - Cons recall: 0.269 → 0.315, **+0.046, 95% CI +0.007 to +0.085**. It improved on 4 of 5 products; Basecamp,
+   - Cons recall: 0.269 → 0.315, **+0.046, 95% CI +0.007 to +0.085** over people (+0.043, +0.001 to +0.083 when
+     resampling the 5 products). It improved on 4 of 5 products; Basecamp,
      the only product with 2 runs, gained the most (+0.12).
    - Pros: 0.382 → 0.386 (+0.004, CI −0.02 to +0.03), so no change.
    - Changing at most one item instead of rewriting was slightly worse on this setup: cons −0.019.
@@ -28,8 +29,13 @@ to add to the agent-mode prediction, so that predictions of **real reviewers** g
      - do the main job with 3+ items;
      - then two second-level features (views, custom fields, reports, automations);
      - then edit or reorganise.
-   - The old onboarding-style runs (5 on Basecamp) cut product-level cons coverage from 36% of reviewers to 15%. The
-     new runs did not.
+   - **Correction (18 Oct, later):** an earlier version of this report said the old onboarding-style runs cut cons
+     coverage and the core-job run did not. That came from a first, flawed judge (pros and cons scored in one call,
+     one seed). Under the final judge, added on top of context on Basecamp, the five onboarding-style runs gave pros
+     +0.17 and cons −0.03 (one seed), and the core-job run pros +0.03 and cons −0.01 (three seeds). So there is **no
+     demonstrated advantage** of the core-job task when added to context.
+   - What is supported: alone, the core-job run's notes match far more of what real reviewers wrote (cons 0.22, pros
+     0.44) than the onboarding-style notes (cons 0.01, pros 0.12). That is Basecamp only.
 4. **No own reviews (a new product), so context = competitors only:** free-form notes hurt and a bounded edit
    helped.
    - Product-level top-6 lists, 5 products (Basecamp with 2 runs, Bitwarden, Brevo, ClickUp, GetResponse) × 40
@@ -67,6 +73,25 @@ to add to the agent-mode prediction, so that predictions of **real reviewers** g
    With the anonymous cap of $6/day per IP, about 12 runs a day fit.
 
 Agent-mode side (ratings, words, held-out tables): `experiments/human_experience/HANDOFF_agent_mode.md`.
+
+## How solid this is
+
+- **Effective sample is 5 products and 6 runs.** Every reviewer of a product shares that product's one run, so
+  intervals over reviewers overstate precision. Resampling products, the own-reviews effect is +0.043 with a lower
+  bound of +0.001, and one product (GetResponse) went down.
+- **The rule for each case was chosen after seeing these same products.** With own reviews, a free rewrite helped
+  (4 of 5 products up) and the one-item edit did not (2 of 5). With competitors only, the free rewrite hurt (0 of 5)
+  and the one-item edit helped (5 of 5). The two settings measure different outputs (per-person words, product-level
+  lists), so the flip is not a clean contrast. No fresh products have confirmed either rule.
+- **Unmeasured run-to-run variance:** one run per product (two for Basecamp). A second run could give different notes.
+- **The model alone is already strong on these products.** Without any data it matches 0.34 of cons and 0.38 of pros
+  at product level; competitor-review context adds +0.02 and +0.05. A run's +0.03 on cons is the same size as the
+  whole competitor context.
+- **Known products.** All held-out products are established, and the model may have seen their reviews in training.
+  Nothing here measures new startups, which have no reviews to score against.
+- **Ratings:** "about a star too low" rests on Basecamp (3.5 predicted, 4.55 real).
+- **Judge:** Gemini 2.5 Flash scores the match; no human has checked a sample. The agent-mode session measured
+  resample noise at about ±0.02 on these scores.
 
 ## Caveats
 
