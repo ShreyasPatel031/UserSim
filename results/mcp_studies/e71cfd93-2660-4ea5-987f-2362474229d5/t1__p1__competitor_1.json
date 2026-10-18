@@ -1,0 +1,247 @@
+{
+ "cell": {
+  "cell_id": "t1__p1__competitor_1",
+  "site": "https://monday.com/",
+  "site_name": "Monday",
+  "persona_name": "Sarah Chen",
+  "persona": "Manages complex portfolios across departments, needs robust reporting and governance for strategic initiatives.",
+  "task": "Create a cross-departmental project portfolio dashboard\n\nYou are evaluating the site https://monday.com/ only. Stay on that site; opening it is correct.",
+  "status": "queued"
+ },
+ "steps": [
+  {
+   "turn": 0,
+   "tool": "usersim_observe",
+   "action": null
+  },
+  {
+   "turn": 1,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 2,
+   "tool": "usersim_signup_identity",
+   "action": null
+  },
+  {
+   "turn": 3,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 4,
+   "tool": "usersim_act",
+   "action": "type"
+  },
+  {
+   "turn": 5,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 6,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 7,
+   "tool": "usersim_act",
+   "action": "type"
+  },
+  {
+   "turn": 8,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 9,
+   "tool": "usersim_act",
+   "action": "type"
+  },
+  {
+   "turn": 10,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 11,
+   "tool": "usersim_act",
+   "action": "type"
+  },
+  {
+   "turn": 12,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 13,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 14,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 15,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 16,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 17,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 18,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 19,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 20,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 21,
+   "tool": "usersim_act",
+   "action": "triple_click"
+  },
+  {
+   "turn": 22,
+   "tool": "usersim_act",
+   "action": "type"
+  },
+  {
+   "turn": 23,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 24,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 25,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 26,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 27,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 28,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 29,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 30,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 31,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 32,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 33,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 34,
+   "tool": "usersim_act",
+   "action": "wait"
+  },
+  {
+   "turn": 35,
+   "tool": "usersim_act",
+   "action": "wait"
+  },
+  {
+   "turn": 36,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 37,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 38,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 39,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 40,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 41,
+   "tool": "usersim_finish",
+   "action": null
+  },
+  {
+   "turn": 42,
+   "tool": "usersim_wait_for_verification_link",
+   "action": null
+  },
+  {
+   "turn": 43,
+   "tool": "usersim_open_verification_link",
+   "action": null
+  },
+  {
+   "turn": 44,
+   "tool": "usersim_act",
+   "action": "wait"
+  },
+  {
+   "turn": 45,
+   "tool": "usersim_finish",
+   "action": null
+  }
+ ],
+ "started": 1792359121.2658596,
+ "session_id": "9ccac49490ab42e194f7811f5f9d7e2b",
+ "finish": "{\"study_id\": \"e71cfd93-2660-4ea5-987f-2362474229d5\", \"cell_id\": \"t1__p1__competitor_1\", \"goal_reached\": true, \"proof_pass\": true, \"study_phase\": \"1/108 runs done \\u00b7 9 simulated users working\", \"next\": \"Done with this cell. The study report is written when the last cell finishes.\"}",
+ "seconds": 482
+}
