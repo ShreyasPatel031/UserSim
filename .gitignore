@@ -42,3 +42,4 @@ cache/apify/
 # live run logs of the own-reviews benches
 experiments/human_experience/results_own_bench*.log
 experiments/human_experience/results_own_bench_agent_mode*.log
+experiments/human_experience/results_own_bench_*.log

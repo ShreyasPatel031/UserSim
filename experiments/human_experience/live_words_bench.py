@@ -85,7 +85,7 @@ def main() -> None:
         rat = A.rating_estimates(own, rv)
         A.personalize(rat, per)
         prompt = A.words_prompt(p["query"], "", per, refs[p["rid"]]["task"], A.evidence_text(p["query"], own, rv, per, rat)[:14000])
-        rec = E.call_model("live_words", FLASH, A.WORDS_SYSTEM, prompt, temperature=0.7, seed=1000, max_tokens=8192,
+        rec = E.call_model("live_words_v2", FLASH, A.WORDS_SYSTEM, prompt, temperature=0.7, seed=1000, max_tokens=8192,
                            thinking_budget=A.WORDS_THINKING, key_extra=f"{p['rid']}|{cond}")
         return (p["rid"], cond), rec.get("json") if isinstance(rec.get("json"), dict) else {}
 
