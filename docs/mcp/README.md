@@ -1,5 +1,7 @@
 # UserSim MCP server: guide for agents
 
+**Settings:** [CONFIG.md](CONFIG.md) (`limits.json`). **Deploy / secrets / ops:** [OPERATIONS.md](OPERATIONS.md). No Grok Bot approval required.
+
 ## For client agents
 
 Connect to **`https://35-202-98-224.sslip.io/mcp`** with **no token** and **no env vars**.
@@ -347,12 +349,17 @@ If the file on main is broken (bad JSON, wrong types), the server keeps the last
 | `sms_lease_s` | 600 | One session holds the SMS number at a time, for this many seconds or until it closes. Others get `busy` + `retry_after_s`. Applies to every caller |
 | `anon_daily_sms_leases_per_ip` | 10 | SMS-number leases per client IP per day without a token |
 | `sms_sender_denylist` | apple, icloud, google, g-, banks, … | Texts whose sender or body contains one of these words (whole word, case-insensitive) are **never** returned to any caller: they protect the owner's personal codes (Apple ID, banks, 2FA). Add a word with a PR |
-| `anon_allow_paid_captcha` | `false` | Paid captcha solver (CapSolver) without a token |
-| `anon_allow_shared_aliases` | `false` | `no_plus` / plain signup addresses without a token. Those can repeat across sessions, so another caller could read the mail. Without a token you only get unique `+tag` aliases |
+| `max_steps` | `90` | Browser steps per session |
+| `budget_s` | `900` | Wall-clock seconds per session |
+| `idle_s` | `300` | Idle timeout before auto-close |
+| `max_cells` | `108` | Runs per study |
+| `paid_captcha` | `false` | Master paid CapSolver switch (server-wide) |
+| `anon_allow_paid_captcha` | `false` | Paid solver without a token (requires `paid_captcha` true). ~$0.002–0.01/solve |
+| `anon_allow_shared_aliases` | `false` | `no_plus` / plain addresses without a token — **risk:** shared inbox, another caller could read your mail |
 
 The $ figures are a **budget estimate**, not metered cost: the server doesn't measure real Browserbase or model spend per call. Change `est_usd_*` when real numbers exist. Anonymous spend is kept per client IP (hashed) and saved to `/var/lib/usersim/mcp_anon_spend.json` (`MVP_MCP_SPEND_FILE`), so a restart doesn't reset it. `usersim_finish` is always allowed, even over budget, so open sessions still get their report.
 
-Fixed limits (code, not the file): 40 steps per session (`MVP_MCP_MAX_STEPS`), 900 s per session (`MVP_MCP_BUDGET_S`), 300 s idle timeout (`MVP_MCP_IDLE_S`), 4 competitors per study, 108 runs per study (`MVP_MCP_MAX_CELLS`), 3 judge votes (`MVP_JUDGE_VOTES`).
+Session timing and size (`max_steps`, `budget_s`, `idle_s`, `max_cells`, `paid_captcha`, …) are in the same file — see [CONFIG.md](CONFIG.md). Still fixed in code only: 4 competitors per study, 3 judge votes (`MVP_JUDGE_VOTES`).
 
 When a cap is hit, the tool returns `{"error": "...", "limit": "<key>", "limits_file": "<link>"}`. Concurrent-session errors start with `cap anon_max_concurrent_sessions_per_ip`.
 

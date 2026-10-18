@@ -32,6 +32,14 @@ DEFAULTS: dict[str, Any] = {
     "max_sessions": 10,
     "max_per_client": 8,
     "anon_max_concurrent_sessions_per_ip": 3,
+    "max_steps": 90,
+    "budget_s": 900,
+    "idle_s": 300,
+    "max_cells": 108,
+    "wait_max_s": 50,
+    "paid_captcha": False,
+    "probe_sites": True,
+    "bb_proxies": True,
     "anon_daily_usd_per_ip": 6.0,
     "anon_daily_usd_global": 20.0,
     "est_usd_per_session": 0.1,
@@ -134,6 +142,18 @@ def _raw(key: str) -> Any:
     return _STATE["values"].get(key, DEFAULTS[key])
 
 
+def source_for(key: str) -> str:
+    """Where get(key) came from: env, the loaded limits.json URL/path, bundled, or built-in default."""
+    if key not in DEFAULTS:
+        return "unknown"
+    if (os.environ.get("MVP_MCP_" + key.upper()) or "").strip():
+        return "env"
+    with _LOCK:
+        if key in _STATE["values"]:
+            return _STATE["source"] or "limits.json"
+    return "default"
+
+
 def get(key: str) -> Any:
     """Current value: env override MVP_MCP_<KEY>, else limits.json (refreshed from main), else DEFAULTS."""
     _maybe_refresh()
@@ -157,7 +177,8 @@ def snapshot() -> dict[str, Any]:
     overrides = sorted(k for k in DEFAULTS if (os.environ.get("MVP_MCP_" + k.upper()) or "").strip())
     with _LOCK:
         st = dict(_STATE)
-    return {"values": vals, "source": st["source"], "loaded_at": st["loaded_at"], "checked_at": st["checked_at"],
+    return {"values": vals, "value_sources": {k: source_for(k) for k in DEFAULTS},
+            "source": st["source"], "loaded_at": st["loaded_at"], "checked_at": st["checked_at"],
             "error": st["error"], "env_overrides": overrides, "today": today(), "spend": spend_summary()}
 
 

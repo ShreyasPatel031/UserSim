@@ -1,0 +1,12 @@
+[Unit]
+Description=UserSim pull deploy from GitHub main
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+Environment=USERSIM_APP_ROOT=/opt/usersim/app
+Environment=USERSIM_VENV=/opt/usersim/venv
+Environment=USERSIM_STATE_DIR=/var/lib/usersim
+ExecStart=/opt/usersim/bin/vm_pull_deploy.sh
+Nice=10

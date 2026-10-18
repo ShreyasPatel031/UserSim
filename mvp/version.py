@@ -17,13 +17,22 @@ from functools import lru_cache
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+_BUILD_TXT = Path(__file__).resolve().parent / "static" / "build.txt"
 
 _CONFIG_PREFIXES = ("MVP_", "BROWSERBASE_MAX", "GEMINI_MODEL", "USE_BROWSERBASE", "VERTEX_LOCATION")
 
 
+def _build_txt_sha() -> str:
+    try:
+        line = _BUILD_TXT.read_text().splitlines()[0].strip()
+        return (line.split() or [""])[0]
+    except OSError:
+        return ""
+
+
 @lru_cache(maxsize=1)
 def engine_version() -> str:
-    pinned = (os.environ.get("USERSIM_ENGINE_VERSION") or "").strip()
+    pinned = (os.environ.get("USERSIM_ENGINE_VERSION") or "").strip() or _build_txt_sha()
     if pinned:
         return pinned
     try:

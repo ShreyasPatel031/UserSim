@@ -2,6 +2,8 @@
 
 This is the **only** definition of an e2e test in UserSim. Agents, the website, and the MCP server must follow it.
 
+**MCP caps and runtime knobs** (steps, budgets, anonymous limits): any agent may change them with a PR to [`mvp/sim_mcp/limits.json`](../mvp/sim_mcp/limits.json) — see [docs/mcp/CONFIG.md](mcp/CONFIG.md).
+
 ## For client agents
 
 Connect to **`https://35-202-98-224.sslip.io/mcp`** with **no token** and **no env vars**.

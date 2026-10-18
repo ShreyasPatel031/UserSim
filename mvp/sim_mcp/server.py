@@ -710,7 +710,7 @@ async def _wait(ctx: Context, session_id: str, timeout_s: int, want: str) -> str
             raise S.SessionError("call usersim_signup_identity and submit the signup form first")
         # Many MCP clients give a tool call 60 s (Claude Code's default MCP_TOOL_TIMEOUT); Haiku asked for 180 s and the
         # client gave up first (study e7c5d942). Each call waits at most MVP_MCP_WAIT_MAX_S; the agent calls again.
-        t = max(10, min(int(timeout_s or 45), S._env_int("MVP_MCP_WAIT_MAX_S", 50)))
+        t = max(10, min(int(timeout_s or 45), int(L.get("wait_max_s"))))
         msg = await asyncio.to_thread(wait_mail, sim.inbox, _host(sim), since=sim.mail_since, timeout_s=t, seen=sim.mail_seen, want=want)
         sim.last_used = __import__("time").time()
         if not msg:
@@ -912,7 +912,7 @@ async def usersim_wait_for_sms_code(ctx: Context, session_id: str, timeout_s: in
         from mvp.sms_provider import wait_for_sms
 
         left = lease.expires - time.time()
-        t = max(5, min(int(timeout_s or 45), S._env_int("MVP_MCP_WAIT_MAX_S", 50), int(left)))
+        t = max(5, min(int(timeout_s or 45), int(L.get("wait_max_s")), int(left)))
         code = await asyncio.to_thread(wait_for_sms, sim.sms_number, timeout_s=t, newer_than=lease.started,
                                        skip=L.sms_denied, slack_s=0.0)
         if code:
@@ -1031,7 +1031,7 @@ async def usersim_solve_captcha(ctx: Context, session_id: str) -> list[Any] | st
             elif state.get("invisible") and not state.get("token_ready"):
                 result["note"] = ("invisible reCAPTCHA with no challenge on screen: there is nothing to solve. Do not call this "
                                   "again; fill any field with filled:false and submit")
-            if os.environ.get("MVP_MCP_PAID_CAPTCHA") == "1" and state and not state.get("token_ready"):
+            if _paid_captcha_on() and state and not state.get("token_ready"):
                 result["paid"] = await _paid_token(sim, state.get("kind") or "", info or {})
             await S._settle(sim.page)
             obs = await S.record_step(sim, kind="captcha", action_text="captcha attempt",
@@ -1201,7 +1201,7 @@ async def _maybe_paid_presolve(sim: S.SimSession) -> dict | None:
 
     from mvp import captcha_spend as cs
 
-    if os.environ.get("MVP_MCP_PAID_CAPTCHA") != "1" or not _paid_allowed(sim):
+    if not _paid_captcha_on() or not _paid_allowed(sim):
         return None
     host = (urlsplit(sim.product_url).hostname or "").removeprefix("www.")
     if host not in cs.paid_hosts() or int(sim.row.get("capsolver_tries") or 0) >= 2:
@@ -1259,6 +1259,12 @@ async def _is_hcaptcha(page, info: dict) -> bool:
         return False
 
 
+def _paid_captcha_on() -> bool:
+    from mvp.sim_mcp import limits as L
+
+    return bool(L.get("paid_captcha"))
+
+
 def _paid_allowed(sim: S.SimSession) -> bool:
     from mvp.sim_mcp import limits as L
 
@@ -1274,6 +1280,8 @@ async def _paid_token(sim: S.SimSession, kind: str, info: dict) -> dict:
     from mvp import captcha as cap
     from mvp import captcha_spend as cs
 
+    if not _paid_captcha_on():
+        return {"ok": False, "detail": "paid captcha solver is off (limits.json paid_captcha is false)"}
     if not _paid_allowed(sim):
         return {"ok": False, "detail": "cap anon_allow_paid_captcha: the paid captcha solver is not available without a token"}
     host = (urlsplit(sim.product_url).hostname or "").removeprefix("www.")
@@ -1409,7 +1417,9 @@ def mount(app: Any) -> None:
     app.router.routes.insert(0, Route("/mcp", endpoint=endpoint, methods=["GET", "POST", "DELETE"]))
 
     async def _limits(request: Any) -> Any:
-        return JSONResponse(L.snapshot())
+        from mvp.secrets_store import snapshot as secrets_snapshot
+
+        return JSONResponse({**L.snapshot(), "secrets": secrets_snapshot()})
 
     app.router.routes.insert(0, Route("/api/mcp/limits", endpoint=_limits, methods=["GET"]))
     L.load_bundled()

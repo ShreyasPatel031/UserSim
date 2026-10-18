@@ -36,15 +36,21 @@ def _env_int(name: str, default: int) -> int:
 
 
 def max_steps() -> int:
-    return _env_int("MVP_MCP_MAX_STEPS", 40)
+    from mvp.sim_mcp import limits
+
+    return int(limits.get("max_steps"))
 
 
 def budget_s() -> int:
-    return _env_int("MVP_MCP_BUDGET_S", 900)
+    from mvp.sim_mcp import limits
+
+    return int(limits.get("budget_s"))
 
 
 def idle_s() -> int:
-    return _env_int("MVP_MCP_IDLE_S", 300)
+    from mvp.sim_mcp import limits
+
+    return int(limits.get("idle_s"))
 
 
 def max_active() -> int:
@@ -75,7 +81,9 @@ START_TRIES = 3
 
 def max_cells() -> int:
     """Runs per study. 108 = the website's usual 6 personas x 6 tasks x 3 sites."""
-    return _env_int("MVP_MCP_MAX_CELLS", 108)
+    from mvp.sim_mcp import limits
+
+    return int(limits.get("max_cells"))
 
 
 class SessionError(Exception):
@@ -201,7 +209,9 @@ def probe_reachable(url: str) -> None:
     """
     import httpx
 
-    if os.environ.get("MVP_MCP_PROBE_SITES", "1").lower() in {"0", "false", "no"}:
+    from mvp.sim_mcp import limits
+
+    if not bool(limits.get("probe_sites")):
         return
     try:
         httpx.get(url, timeout=10, follow_redirects=True, headers={"User-Agent": "Mozilla/5.0 UserSim"})
@@ -641,7 +651,9 @@ def _create_bb(study_id: str) -> Any:
 
     # Same Browserbase flags as the website's signup sessions (browser_agent._product_session_call_kwargs):
     # residential proxies + Browserbase's built-in captcha solving. create_session walks down the ladder.
-    on = os.environ.get("MVP_MCP_BB_PROXIES", "1").lower() not in {"0", "false", "no"}
+    from mvp.sim_mcp import limits
+
+    on = bool(limits.get("bb_proxies"))
     return create_session(
         proxies=on,
         keep_alive=False,
