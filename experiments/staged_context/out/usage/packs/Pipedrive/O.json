@@ -1,0 +1,119 @@
+{
+  "status": "ok",
+  "onet_version": "db_31_0_csv",
+  "mapping_model": "gemini-2.5-pro",
+  "task_selection": "Core first, then lexical overlap with target D text, then Task ID",
+  "occupations": [
+    {
+      "id": "O:11-2022.00",
+      "code": "11-2022.00",
+      "title": "Sales Managers",
+      "mapping": "model-inferred from pack D (no review data)",
+      "rationale": "The software is explicitly used by Sales Managers to monitor team performance, set goals, forecast revenue, and track sales metrics, as evidenced by a testimonial from a \"Sales Manager\" and features like \"team monitoring\" and \"advanced sales metrics tools\" [D:Pipedrive:landing:2, D:Pipedrive:landing:5].",
+      "tasks": [
+        {
+          "id": "O:11-2022.00:3",
+          "task_id": "3",
+          "text": "Direct and coordinate activities involving sales of manufactured products, services, commodities, real estate, or other subjects of sale.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 5
+        },
+        {
+          "id": "O:11-2022.00:5",
+          "task_id": "5",
+          "text": "Review operational records and reports to project sales and determine profitability.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 4
+        },
+        {
+          "id": "O:11-2022.00:2",
+          "task_id": "2",
+          "text": "Monitor customer preferences to determine focus of sales efforts.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 3
+        },
+        {
+          "id": "O:11-2022.00:11",
+          "task_id": "11",
+          "text": "Plan and direct staffing, training, and performance evaluations to develop and control sales and service programs.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 2
+        }
+      ]
+    },
+    {
+      "id": "O:41-4012.00",
+      "code": "41-4012.00",
+      "title": "Sales Representatives, Wholesale and Manufacturing, Except Technical and Scientific Products",
+      "mapping": "model-inferred from pack D (no review data)",
+      "rationale": "The product is designed for salespeople to manage their daily work, as it helps them \"track your sales pipeline, optimize leads, manage deals with AI and automate your entire sales process so you can focus on selling\" [D:Pipedrive:landing:1, D:Pipedrive:landing:5].",
+      "tasks": [
+        {
+          "id": "O:41-4012.00:8124",
+          "task_id": "8124",
+          "text": "Perform administrative duties, such as preparing sales budgets and reports, keeping sales records, and filing expense account reports.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 4
+        },
+        {
+          "id": "O:41-4012.00:8114",
+          "task_id": "8114",
+          "text": "Recommend products to customers, based on customers' needs and interests.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 3
+        },
+        {
+          "id": "O:41-4012.00:8115",
+          "task_id": "8115",
+          "text": "Contact regular and prospective customers to demonstrate products, explain product features, and solicit orders.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 3
+        },
+        {
+          "id": "O:41-4012.00:8117",
+          "task_id": "8117",
+          "text": "Consult with clients after sales or contract signings to resolve problems and to provide ongoing support.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 3
+        }
+      ]
+    },
+    {
+      "id": "O:11-1011.00",
+      "code": "11-1011.00",
+      "title": "Chief Executives",
+      "mapping": "model-inferred from pack D (no review data)",
+      "rationale": "Testimonials from a \"CEO and Founder\" and \"Managing Director\" indicate that business leaders use the software to \"harness sales insights to drive your strategy\" and ensure \"predictable revenue\" by using its forecasting and reporting features [D:Pipedrive:landing:2, D:Pipedrive:landing:4].",
+      "tasks": [
+        {
+          "id": "O:11-1011.00:8825",
+          "task_id": "8825",
+          "text": "Analyze operations to evaluate performance of a company or its staff in meeting objectives or to determine areas of potential cost reduction, program improvement, or policy change.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 3
+        },
+        {
+          "id": "O:11-1011.00:8834",
+          "task_id": "8834",
+          "text": "Prepare or present reports concerning activities, expenses, budgets, government statutes or rulings, or other items affecting businesses or program services.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 3
+        },
+        {
+          "id": "O:11-1011.00:8823",
+          "task_id": "8823",
+          "text": "Direct or coordinate an organization's financial or budget activities to fund operations, maximize investments, or increase efficiency.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 2
+        },
+        {
+          "id": "O:11-1011.00:8826",
+          "task_id": "8826",
+          "text": "Direct, plan, or implement policies, objectives, or activities of organizations or businesses to ensure continuing operations, to maximize returns on investments, or to increase productivity.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 2
+        }
+      ]
+    }
+  ]
+}

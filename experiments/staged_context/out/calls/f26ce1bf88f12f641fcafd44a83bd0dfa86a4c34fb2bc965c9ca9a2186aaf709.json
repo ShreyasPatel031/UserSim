@@ -1,0 +1,36 @@
+{
+  "stage": "onet_map",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "f26ce1bf88f12f641fcafd44a83bd0dfa86a4c34fb2bc965c9ca9a2186aaf709",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": null,
+  "input_tokens": 18689,
+  "output_tokens": 1595,
+  "cost_usd": 0.03931125,
+  "elapsed_s": 24.16,
+  "error": null,
+  "text": "{\n  \"occupations\": [\n    {\n      \"code\": \"11-2022.00\",\n      \"title\": \"Sales Managers\",\n      \"rationale\": \"The product offers \\\"intelligent sales automation\\\" to help teams \\\"build better pipelines\\\" and \\\"close more deals\\\" [D:Zoho CRM:landing:1].\"\n    },\n    {\n      \"code\": \"11-2021.00\",\n      \"title\": \"Marketing Managers\",\n      \"rationale\": \"A testimonial from a \\\"Head of Marketing\\\" indicates the product is used to gain \\\"clarity, confidence, and more time\\\" [D:Zoho CRM:landing:3].\"\n    },\n    {\n      \"code\": \"11-1011.00\",\n      \"title\": \"Chief Executives\",\n      \"rationale\": \"A CEO is quoted as a user, highlighting the CRM's functionality and its role in achieving productivity [D:Zoho CRM:landing:4].\"\n    }\n  ]\n}",
+  "json": {
+    "occupations": [
+      {
+        "code": "11-2022.00",
+        "title": "Sales Managers",
+        "rationale": "The product offers \"intelligent sales automation\" to help teams \"build better pipelines\" and \"close more deals\" [D:Zoho CRM:landing:1]."
+      },
+      {
+        "code": "11-2021.00",
+        "title": "Marketing Managers",
+        "rationale": "A testimonial from a \"Head of Marketing\" indicates the product is used to gain \"clarity, confidence, and more time\" [D:Zoho CRM:landing:3]."
+      },
+      {
+        "code": "11-1011.00",
+        "title": "Chief Executives",
+        "rationale": "A CEO is quoted as a user, highlighting the CRM's functionality and its role in achieving productivity [D:Zoho CRM:landing:4]."
+      }
+    ]
+  },
+  "ts": "2026-10-18T02:09:53.819168+00:00"
+}

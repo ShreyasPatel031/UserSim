@@ -1,0 +1,119 @@
+{
+  "status": "ok",
+  "onet_version": "db_31_0_csv",
+  "mapping_model": "gemini-2.5-pro",
+  "task_selection": "Core first, then lexical overlap with target D text, then Task ID",
+  "occupations": [
+    {
+      "id": "O:11-2022.00",
+      "code": "11-2022.00",
+      "title": "Sales Managers",
+      "mapping": "model-inferred from pack D (no review data)",
+      "rationale": "The product is an \"AI-POWERED SALES CRM\" designed to help users plan the sales process, streamline processes, and improve team productivity and morale, all of which are core duties of a sales manager.",
+      "tasks": [
+        {
+          "id": "O:11-2022.00:11",
+          "task_id": "11",
+          "text": "Plan and direct staffing, training, and performance evaluations to develop and control sales and service programs.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 3
+        },
+        {
+          "id": "O:11-2022.00:2",
+          "task_id": "2",
+          "text": "Monitor customer preferences to determine focus of sales efforts.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 2
+        },
+        {
+          "id": "O:11-2022.00:1",
+          "task_id": "1",
+          "text": "Resolve customer complaints regarding sales and service.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 1
+        },
+        {
+          "id": "O:11-2022.00:14",
+          "task_id": "14",
+          "text": "Oversee regional and local sales managers and their staffs.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 1
+        }
+      ]
+    },
+    {
+      "id": "O:41-4012.00",
+      "code": "41-4012.00",
+      "title": "Sales Representatives, Wholesale and Manufacturing, Except Technical and Scientific Products",
+      "mapping": "model-inferred from pack D (no review data)",
+      "rationale": "The software is designed to help users \"Sell smarter and close deals faster,\" \"Grow your pipeline,\" and \"Focus on valuable leads,\" which are the primary activities of sales representatives.",
+      "tasks": [
+        {
+          "id": "O:41-4012.00:8122",
+          "task_id": "8122",
+          "text": "Monitor market conditions, product innovations, and competitors' products, prices, and sales.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 2
+        },
+        {
+          "id": "O:41-4012.00:20267",
+          "task_id": "20267",
+          "text": "Prepare sales contracts and order forms.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 1
+        },
+        {
+          "id": "O:41-4012.00:8117",
+          "task_id": "8117",
+          "text": "Consult with clients after sales or contract signings to resolve problems and to provide ongoing support.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 1
+        },
+        {
+          "id": "O:41-4012.00:8120",
+          "task_id": "8120",
+          "text": "Identify prospective customers by using business directories, following leads from existing clients, participating in organizations and clubs, and attending trade shows and conferences.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 1
+        }
+      ]
+    },
+    {
+      "id": "O:11-2021.00",
+      "code": "11-2021.00",
+      "title": "Marketing Managers",
+      "mapping": "model-inferred from pack D (no review data)",
+      "rationale": "The software helps users \"run smart sales campaigns to generate more leads\" and gather \"intent data from email engagement\" to \"market to niches better,\" which are key functions of marketing management.",
+      "tasks": [
+        {
+          "id": "O:11-2021.00:958",
+          "task_id": "958",
+          "text": "Use sales forecasting or strategic planning to ensure the sale and profitability of products, lines, or services, analyzing business developments and monitoring market trends.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 3
+        },
+        {
+          "id": "O:11-2021.00:19505",
+          "task_id": "19505",
+          "text": "Recommend modifications to products, packaging, production processes, or other characteristics to improve the environmental soundness or sustainability of products.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 2
+        },
+        {
+          "id": "O:11-2021.00:951",
+          "task_id": "951",
+          "text": "Identify, develop, or evaluate marketing strategy, based on knowledge of establishment objectives, market characteristics, and cost and markup factors.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 1
+        },
+        {
+          "id": "O:11-2021.00:954",
+          "task_id": "954",
+          "text": "Direct the hiring, training, or performance evaluations of marketing or sales staff and oversee their daily activities.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 1
+        }
+      ]
+    }
+  ]
+}

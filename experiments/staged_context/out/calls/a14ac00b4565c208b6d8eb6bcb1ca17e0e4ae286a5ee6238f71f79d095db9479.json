@@ -1,0 +1,36 @@
+{
+  "stage": "onet_map",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "a14ac00b4565c208b6d8eb6bcb1ca17e0e4ae286a5ee6238f71f79d095db9479",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": null,
+  "input_tokens": 18585,
+  "output_tokens": 1881,
+  "cost_usd": 0.04204125,
+  "elapsed_s": 23.16,
+  "error": null,
+  "text": "{\n  \"occupations\": [\n    {\n      \"code\": \"43-4051.00\",\n      \"title\": \"Customer Service Representatives\",\n      \"rationale\": \"The excerpts describe a help desk software for a \\\"support team\\\" [D:Freshdesk:landing:3] to improve \\\"service\\\" [D:Freshdesk:landing:1], which is the primary function of customer service representatives.\"\n    },\n    {\n      \"code\": \"15-1232.00\",\n      \"title\": \"Computer User Support Specialists\",\n      \"rationale\": \"The product is a help desk software used by a \\\"support team\\\" [D:Freshdesk:landing:3] to provide \\\"service\\\" [D:Freshdesk:landing:1], which directly aligns with the work of computer user support specialists who resolve technical issues.\"\n    },\n    {\n      \"code\": \"11-3021.00\",\n      \"title\": \"Computer and Information Systems Managers\",\n      \"rationale\": \"These managers would use the product's features to \\\"[t]urn support metrics into strategy\\\" and \\\"close performance gaps\\\" [D:Freshdesk:landing:2] for the IT service and support teams they oversee.\"\n    }\n  ]\n}",
+  "json": {
+    "occupations": [
+      {
+        "code": "43-4051.00",
+        "title": "Customer Service Representatives",
+        "rationale": "The excerpts describe a help desk software for a \"support team\" [D:Freshdesk:landing:3] to improve \"service\" [D:Freshdesk:landing:1], which is the primary function of customer service representatives."
+      },
+      {
+        "code": "15-1232.00",
+        "title": "Computer User Support Specialists",
+        "rationale": "The product is a help desk software used by a \"support team\" [D:Freshdesk:landing:3] to provide \"service\" [D:Freshdesk:landing:1], which directly aligns with the work of computer user support specialists who resolve technical issues."
+      },
+      {
+        "code": "11-3021.00",
+        "title": "Computer and Information Systems Managers",
+        "rationale": "These managers would use the product's features to \"[t]urn support metrics into strategy\" and \"close performance gaps\" [D:Freshdesk:landing:2] for the IT service and support teams they oversee."
+      }
+    ]
+  },
+  "ts": "2026-10-18T02:09:57.118917+00:00"
+}

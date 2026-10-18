@@ -1,0 +1,78 @@
+{
+  "stage": "usage_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "02273cdcf7b0538599b62e46b5e08b792d4fd266a80be026c000da582529daa8",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1544,
+  "output_tokens": 1436,
+  "cost_usd": 0.0040532,
+  "elapsed_s": 8.84,
+  "error": null,
+  "text": "{\n  \"role_family\": {\n    \"executive_owner\": 0.05,\n    \"project_program_mgmt\": 0.05,\n    \"product_mgmt\": 0.03,\n    \"healthcare_wellness\": 0.02,\n    \"software_it_engineering\": 0.20,\n    \"marketing_creative_content\": 0.05,\n    \"sales_customer\": 0.40,\n    \"operations_admin\": 0.08,\n    \"finance_hr_legal\": 0.02,\n    \"education_research_analysis\": 0.02,\n    \"consultant_freelance\": 0.03,\n    \"general_team_mgmt\": 0.05,\n    \"unknown\": 0.00\n  },\n  \"company_size\": {\n    \"Self-employed\": 0.03,\n    \"1-10 employees\": 0.15,\n    \"11-50 employees\": 0.25,\n    \"51-200 employees\": 0.20,\n    \"201-500 employees\": 0.10,\n    \"501-1,000 employees\": 0.07,\n    \"1,001-5,000 employees\": 0.08,\n    \"5,001-10,000 employees\": 0.06,\n    \"10,001+ employees\": 0.06\n  },\n  \"industry\": {\n    \"Information Technology and Services\": 0.20,\n    \"Computer Software\": 0.15,\n    \"Marketing and Advertising\": 0.08,\n    \"Education Management\": 0.04,\n    \"Retail\": 0.10,\n    \"Health, Wellness and Fitness\": 0.03,\n    \"Financial Services\": 0.07,\n    \"Construction\": 0.02,\n    \"Hospital & Health Care\": 0.05,\n    \"Accounting\": 0.02,\n    \"Non-Profit Organization Management\": 0.04,\n    \"Design\": 0.03,\n    \"Internet\": 0.06,\n    \"Real Estate\": 0.03,\n    \"E-Learning\": 0.04,\n    \"Other\": 0.04\n  },\n  \"time_used\": {\n    \"I used a free trial\": 0.05,\n    \"Less than 6 months\": 0.20,\n    \"6-12 months\": 0.25,\n    \"1-2 years\": 0.25,\n    \"2+ years\": 0.25\n  },\n  \"switched_share\": 0.70,\n  \"top_prior_tools\": [\n    \"Zendesk\",\n    \"Jira Service Management\",\n    \"Salesforce Service Cloud\",\n    \"Intercom\",\n    \"Gmail/Outlook\"\n  ]\n}",
+  "json": {
+    "role_family": {
+      "executive_owner": 0.05,
+      "project_program_mgmt": 0.05,
+      "product_mgmt": 0.03,
+      "healthcare_wellness": 0.02,
+      "software_it_engineering": 0.2,
+      "marketing_creative_content": 0.05,
+      "sales_customer": 0.4,
+      "operations_admin": 0.08,
+      "finance_hr_legal": 0.02,
+      "education_research_analysis": 0.02,
+      "consultant_freelance": 0.03,
+      "general_team_mgmt": 0.05,
+      "unknown": 0.0
+    },
+    "company_size": {
+      "Self-employed": 0.03,
+      "1-10 employees": 0.15,
+      "11-50 employees": 0.25,
+      "51-200 employees": 0.2,
+      "201-500 employees": 0.1,
+      "501-1,000 employees": 0.07,
+      "1,001-5,000 employees": 0.08,
+      "5,001-10,000 employees": 0.06,
+      "10,001+ employees": 0.06
+    },
+    "industry": {
+      "Information Technology and Services": 0.2,
+      "Computer Software": 0.15,
+      "Marketing and Advertising": 0.08,
+      "Education Management": 0.04,
+      "Retail": 0.1,
+      "Health, Wellness and Fitness": 0.03,
+      "Financial Services": 0.07,
+      "Construction": 0.02,
+      "Hospital & Health Care": 0.05,
+      "Accounting": 0.02,
+      "Non-Profit Organization Management": 0.04,
+      "Design": 0.03,
+      "Internet": 0.06,
+      "Real Estate": 0.03,
+      "E-Learning": 0.04,
+      "Other": 0.04
+    },
+    "time_used": {
+      "I used a free trial": 0.05,
+      "Less than 6 months": 0.2,
+      "6-12 months": 0.25,
+      "1-2 years": 0.25,
+      "2+ years": 0.25
+    },
+    "switched_share": 0.7,
+    "top_prior_tools": [
+      "Zendesk",
+      "Jira Service Management",
+      "Salesforce Service Cloud",
+      "Intercom",
+      "Gmail/Outlook"
+    ]
+  },
+  "ts": "2026-10-18T02:10:32.282537+00:00"
+}

@@ -1,0 +1,42 @@
+{
+  "U0": {
+    "role_family_tvd": 0.06666666666666667,
+    "company_size_tvd": 0.4,
+    "industry_tvd": 0.0,
+    "time_used_tvd": 0.4666666666666667,
+    "switched_share_abs_err": 0.06666666666666667,
+    "top_prior_tools_overlap": 0.06666666666666667
+  },
+  "U1": {
+    "role_family_tvd": 0.0,
+    "company_size_tvd": 0.3333333333333333,
+    "industry_tvd": 0.0,
+    "time_used_tvd": 0.4666666666666667,
+    "switched_share_abs_err": 0.06666666666666667,
+    "top_prior_tools_overlap": 0.2
+  },
+  "U2": {
+    "role_family_tvd": 0.0,
+    "company_size_tvd": 0.26666666666666666,
+    "industry_tvd": 0.0,
+    "time_used_tvd": 0.3333333333333333,
+    "switched_share_abs_err": 0.06666666666666667,
+    "top_prior_tools_overlap": 0.2
+  },
+  "U3": {
+    "role_family_tvd": 0.0,
+    "company_size_tvd": 0.4666666666666667,
+    "industry_tvd": 0.0,
+    "time_used_tvd": 0.4,
+    "switched_share_abs_err": 0.26666666666666666,
+    "top_prior_tools_overlap": 0.06666666666666667
+  },
+  "U4": {
+    "role_family_tvd": 0.06666666666666667,
+    "company_size_tvd": 0.4666666666666667,
+    "industry_tvd": 0.0,
+    "time_used_tvd": 0.3333333333333333,
+    "switched_share_abs_err": 0.06666666666666667,
+    "top_prior_tools_overlap": 0.06666666666666667
+  }
+}

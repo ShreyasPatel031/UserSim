@@ -1,0 +1,36 @@
+{
+  "stage": "onet_map",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "077dc3a2c05a42529dfc05d7c29bd82378f800ba9e8295e16e05c6ffd72b82ae",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": null,
+  "input_tokens": 18597,
+  "output_tokens": 1119,
+  "cost_usd": 0.03443625,
+  "elapsed_s": 17.07,
+  "error": null,
+  "text": "{\n  \"occupations\": [\n    {\n      \"code\": \"43-4051.00\",\n      \"title\": \"Customer Service Representatives\",\n      \"rationale\": \"The product is a help desk software used for managing \\\"Client Experience\\\" [D:Zoho Desk:landing:3] by routing tickets, collaborating on issues, and tracking service level agreements [D:Zoho Desk:landing:2, D:Zoho Desk:landing:3].\"\n    },\n    {\n      \"code\": \"15-1232.00\",\n      \"title\": \"Computer User Support Specialists\",\n      \"rationale\": \"These specialists provide help desk support and would use the software to handle routine issues, route tickets to the right person, and collaborate across teams for resolution [D:Zoho Desk:landing:1, D:Zoho Desk:landing:2].\"\n    },\n    {\n      \"code\": \"11-3021.00\",\n      \"title\": \"Computer and Information Systems Managers\",\n      \"rationale\": \"Managers of support teams would use the software to assign and route tickets based on agent skills and workload, and to set and monitor service level agreements with automated escalations [D:Zoho Desk:landing:2, D:Zoho Desk:landing:3].\"\n    }\n  ]\n}",
+  "json": {
+    "occupations": [
+      {
+        "code": "43-4051.00",
+        "title": "Customer Service Representatives",
+        "rationale": "The product is a help desk software used for managing \"Client Experience\" [D:Zoho Desk:landing:3] by routing tickets, collaborating on issues, and tracking service level agreements [D:Zoho Desk:landing:2, D:Zoho Desk:landing:3]."
+      },
+      {
+        "code": "15-1232.00",
+        "title": "Computer User Support Specialists",
+        "rationale": "These specialists provide help desk support and would use the software to handle routine issues, route tickets to the right person, and collaborate across teams for resolution [D:Zoho Desk:landing:1, D:Zoho Desk:landing:2]."
+      },
+      {
+        "code": "11-3021.00",
+        "title": "Computer and Information Systems Managers",
+        "rationale": "Managers of support teams would use the software to assign and route tickets based on agent skills and workload, and to set and monitor service level agreements with automated escalations [D:Zoho Desk:landing:2, D:Zoho Desk:landing:3]."
+      }
+    ]
+  },
+  "ts": "2026-10-18T02:09:49.370006+00:00"
+}

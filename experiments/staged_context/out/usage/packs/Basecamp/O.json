@@ -1,0 +1,119 @@
+{
+  "status": "ok",
+  "onet_version": "db_31_0_csv",
+  "mapping_model": "gemini-2.5-pro",
+  "task_selection": "Core first, then lexical overlap with target D text, then Task ID",
+  "occupations": [
+    {
+      "id": "O:13-1082.00",
+      "code": "13-1082.00",
+      "title": "Project Management Specialists",
+      "mapping": "model-inferred from pack D (no review data)",
+      "rationale": "The product is explicitly for project management and the excerpts describe its use for \"juggling people, projects, and expectations\" by managing tasks, discussions, files, and deadlines [D:Basecamp:landing:9, D:Basecamp:landing:18, D:Basecamp:landing:19].",
+      "tasks": [
+        {
+          "id": "O:13-1082.00:21470",
+          "task_id": "21470",
+          "text": "Monitor project milestones and deliverables.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 3
+        },
+        {
+          "id": "O:13-1082.00:21481",
+          "task_id": "21481",
+          "text": "Submit project deliverables to clients, ensuring adherence to quality standards.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 3
+        },
+        {
+          "id": "O:13-1082.00:21463",
+          "task_id": "21463",
+          "text": "Communicate with key stakeholders to determine project requirements and objectives.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 2
+        },
+        {
+          "id": "O:13-1082.00:21465",
+          "task_id": "21465",
+          "text": "Create project status presentations for delivery to customers or project personnel.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 2
+        }
+      ]
+    },
+    {
+      "id": "O:15-1255.00",
+      "code": "15-1255.00",
+      "title": "Web and Digital Interface Designers",
+      "mapping": "model-inferred from pack D (no review data)",
+      "rationale": "The excerpts show a \"Website Redesign Project\" being managed, with specific tasks assigned to designers such as creating visual mockups, defining button states, and designing pages [D:Basecamp:landing:7, D:Basecamp:landing:9, D:Basecamp:landing:10, D:Basecamp:landing:13].",
+      "tasks": [
+        {
+          "id": "O:15-1255.00:21686",
+          "task_id": "21686",
+          "text": "Collaborate with web development professionals, such as front-end or back-end developers, to complete the full scope of Web development projects.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 5
+        },
+        {
+          "id": "O:15-1255.00:21692",
+          "task_id": "21692",
+          "text": "Design, build, or maintain Web sites, using authoring or scripting languages, content creation tools, management tools, and digital media.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 5
+        },
+        {
+          "id": "O:15-1255.00:21694",
+          "task_id": "21694",
+          "text": "Develop new visual design concepts and modify concepts based on stakeholder feedback.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 5
+        },
+        {
+          "id": "O:15-1255.00:21697",
+          "task_id": "21697",
+          "text": "Develop Web site maps, application models, image templates, or page templates that meet project goals, user needs, or industry standards.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 5
+        }
+      ]
+    },
+    {
+      "id": "O:11-2021.00",
+      "code": "11-2021.00",
+      "title": "Marketing Managers",
+      "mapping": "model-inferred from pack D (no review data)",
+      "rationale": "The software is used to manage a \"Website Redesign Project,\" including coordinating the project launch, gathering brand assets, and managing client communications, all of which are typical responsibilities for a marketing manager [D:Basecamp:landing:1, D:Basecamp:landing:6, D:Basecamp:landing:10].",
+      "tasks": [
+        {
+          "id": "O:11-2021.00:956",
+          "task_id": "956",
+          "text": "Consult with product development personnel on product specifications, such as design, color, or packaging.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 3
+        },
+        {
+          "id": "O:11-2021.00:961",
+          "task_id": "961",
+          "text": "Coordinate or participate in promotional activities or trade shows, working with developers, advertisers, or production managers, to market products or services.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 3
+        },
+        {
+          "id": "O:11-2021.00:19505",
+          "task_id": "19505",
+          "text": "Recommend modifications to products, packaging, production processes, or other characteristics to improve the environmental soundness or sustainability of products.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 2
+        },
+        {
+          "id": "O:11-2021.00:20709",
+          "task_id": "20709",
+          "text": "Formulate, direct, or coordinate marketing activities or policies to promote products or services, working with advertising or promotion managers.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 2
+        }
+      ]
+    }
+  ]
+}

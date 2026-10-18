@@ -1,0 +1,119 @@
+{
+  "status": "ok",
+  "onet_version": "db_31_0_csv",
+  "mapping_model": "gemini-2.5-pro",
+  "task_selection": "Core first, then lexical overlap with target D text, then Task ID",
+  "occupations": [
+    {
+      "id": "O:15-2051.01",
+      "code": "15-2051.01",
+      "title": "Business Intelligence Analysts",
+      "mapping": "model-inferred from pack D (no review data)",
+      "rationale": "Looker is explicitly described as an \"Analytics & BI software product\" and an \"agentic BI platform\" [D:Looker:landing:1] that enables \"Self-Service BI\" for users including \"human analysts\" [D:Looker:landing:3].",
+      "tasks": [
+        {
+          "id": "O:15-2051.01:16134",
+          "task_id": "16134",
+          "text": "Provide technical support for existing reports, dashboards, or other tools.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 4
+        },
+        {
+          "id": "O:15-2051.01:16136",
+          "task_id": "16136",
+          "text": "Identify or monitor current and potential customers, using business intelligence tools.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 4
+        },
+        {
+          "id": "O:15-2051.01:16139",
+          "task_id": "16139",
+          "text": "Maintain or update business intelligence tools, databases, dashboards, systems, or methods.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 4
+        },
+        {
+          "id": "O:15-2051.01:16140",
+          "task_id": "16140",
+          "text": "Manage timely flow of business intelligence information to users.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 4
+        }
+      ]
+    },
+    {
+      "id": "O:15-2051.00",
+      "code": "15-2051.00",
+      "title": "Data Scientists",
+      "mapping": "model-inferred from pack D (no review data)",
+      "rationale": "The product is a \"dynamic data analytics powerhouse\" that integrates with data warehouses like BigQuery to \"transform raw information into actionable insights\" using a \"semantic modeling layer\" [D:Looker:landing:8, D:Looker:landing:9], which are core tasks for data scientists.",
+      "tasks": [
+        {
+          "id": "O:15-2051.00:21828",
+          "task_id": "21828",
+          "text": "Create graphs, charts, or other visualizations to convey the results of data analysis using specialized software.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 5
+        },
+        {
+          "id": "O:15-2051.00:21833",
+          "task_id": "21833",
+          "text": "Identify solutions to business problems, such as budgeting, staffing, and marketing decisions, using the results of data analysis.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 5
+        },
+        {
+          "id": "O:15-2051.00:21827",
+          "task_id": "21827",
+          "text": "Compare models using statistical performance metrics, such as loss functions or proportion of explained variance.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 4
+        },
+        {
+          "id": "O:15-2051.00:21829",
+          "task_id": "21829",
+          "text": "Deliver oral or written presentations of the results of mathematical modeling and data analysis to management or other end users.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 4
+        }
+      ]
+    },
+    {
+      "id": "O:11-3031.00",
+      "code": "11-3031.00",
+      "title": "Financial Managers",
+      "mapping": "model-inferred from pack D (no review data)",
+      "rationale": "The excerpts highlight a specific use case for \"cloud cost management\" that gives \"finance and engineering teams real-time visibility into multicloud spend\" to optimize budgets [D:Looker:landing:11].",
+      "tasks": [
+        {
+          "id": "O:11-3031.00:21311",
+          "task_id": "21311",
+          "text": "Establish and maintain relationships with individual or business customers or provide assistance with problems these customers may encounter.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 3
+        },
+        {
+          "id": "O:11-3031.00:21312",
+          "task_id": "21312",
+          "text": "Plan, direct, or coordinate the activities of workers in branches, offices, or departments of establishments, such as branch banks, brokerage firms, risk and insurance departments, or credit departments.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 1
+        },
+        {
+          "id": "O:11-3031.00:21315",
+          "task_id": "21315",
+          "text": "Evaluate data pertaining to costs to plan budgets.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 1
+        },
+        {
+          "id": "O:11-3031.00:21319",
+          "task_id": "21319",
+          "text": "Oversee the flow of cash or financial instruments.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 1
+        }
+      ]
+    }
+  ]
+}

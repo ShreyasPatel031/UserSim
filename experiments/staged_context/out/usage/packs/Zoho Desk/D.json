@@ -1,0 +1,39 @@
+{
+  "items": [
+    {
+      "id": "D:Zoho Desk:landing:1",
+      "text": "It simplifies the routine with AI, without overriding human judgment. Bring AI where it helps and humans where it matters Zia weaves AI into your work, naturally. Autonomous AI agents handle routine issues end to end, handing off seamlessly when human judgment matters most.",
+      "product": "Zoho Desk",
+      "role": "target",
+      "url": "https://www.zoho.com/desk/"
+    },
+    {
+      "id": "D:Zoho Desk:landing:2",
+      "text": "Even then, Zia stays in the background—surfacing insights and drafting clear responses. Assign Route tickets to the right person based on their skills, workload, and availability. Collaborate Work across teams with shared ticket ownership, internal notes, and clear hand-offs.",
+      "product": "Zoho Desk",
+      "role": "target",
+      "url": "https://www.zoho.com/desk/"
+    },
+    {
+      "id": "D:Zoho Desk:landing:3",
+      "text": "Orchestrate Auto-trigger actions based on events and guide teams through step-by-step resolution processes. Commit Set service level agreements with automated escalations and deadline tracking. Bianca Bento Client Experience, NOOA Brasil The fact that our team was able to transition to Zoho Desk so smoothly really shows how user friendly the platform is.",
+      "product": "Zoho Desk",
+      "role": "target",
+      "url": "https://www.zoho.com/desk/"
+    },
+    {
+      "id": "D:Zoho Desk:landing:4",
+      "text": "The fact that we could do most of it ourselves impressed our team. Deeply integrated Integrates with 360+ apps, including the Zoho ecosystem and your existing stack. Fairly priced Transparent pricing with flexible plans, no long-term lock-ins, and no hidden fees.",
+      "product": "Zoho Desk",
+      "role": "target",
+      "url": "https://www.zoho.com/desk/"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.zoho.com/desk/",
+      "html_sha256": "a1657c7a0cf152886bb74cdf38fd91b1fbed41b66cf60fb8944ad8d83a8b65d7",
+      "sentences_dropped_by_filter": 19
+    }
+  ]
+}

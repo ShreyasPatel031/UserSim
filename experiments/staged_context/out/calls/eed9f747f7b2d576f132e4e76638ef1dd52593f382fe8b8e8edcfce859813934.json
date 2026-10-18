@@ -1,0 +1,78 @@
+{
+  "stage": "usage_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "eed9f747f7b2d576f132e4e76638ef1dd52593f382fe8b8e8edcfce859813934",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2507,
+  "output_tokens": 1577,
+  "cost_usd": 0.0046946,
+  "elapsed_s": 9.73,
+  "error": null,
+  "text": "{\n  \"role_family\": {\n    \"executive_owner\": \"0.15\",\n    \"project_program_mgmt\": \"0.05\",\n    \"product_mgmt\": \"0.08\",\n    \"healthcare_wellness\": \"0.00\",\n    \"software_it_engineering\": \"0.10\",\n    \"marketing_creative_content\": \"0.20\",\n    \"sales_customer\": \"0.07\",\n    \"operations_admin\": \"0.18\",\n    \"finance_hr_legal\": \"0.03\",\n    \"education_research_analysis\": \"0.00\",\n    \"consultant_freelance\": \"0.10\",\n    \"general_team_mgmt\": \"0.04\",\n    \"unknown\": \"0.00\"\n  },\n  \"company_size\": {\n    \"Self-employed\": \"0.05\",\n    \"1-10 employees\": \"0.20\",\n    \"11-50 employees\": \"0.25\",\n    \"51-200 employees\": \"0.20\",\n    \"201-500 employees\": \"0.10\",\n    \"501-1,000 employees\": \"0.07\",\n    \"1,001-5,000 employees\": \"0.06\",\n    \"5,001-10,000 employees\": \"0.04\",\n    \"10,001+ employees\": \"0.03\"\n  },\n  \"industry\": {\n    \"Information Technology and Services\": \"0.10\",\n    \"Computer Software\": \"0.05\",\n    \"Marketing and Advertising\": \"0.08\",\n    \"Education Management\": \"0.01\",\n    \"Retail\": \"0.30\",\n    \"Health, Wellness and Fitness\": \"0.05\",\n    \"Financial Services\": \"0.02\",\n    \"Construction\": \"0.02\",\n    \"Hospital & Health Care\": \"0.00\",\n    \"Accounting\": \"0.01\",\n    \"Non-Profit Organization Management\": \"0.01\",\n    \"Design\": \"0.03\",\n    \"Internet\": \"0.05\",\n    \"Real Estate\": \"0.01\",\n    \"E-Learning\": \"0.00\",\n    \"Other\": \"0.26\"\n  },\n  \"time_used\": {\n    \"I used a free trial\": \"0.10\",\n    \"Less than 6 months\": \"0.15\",\n    \"6-12 months\": \"0.20\",\n    \"1-2 years\": \"0.25\",\n    \"2+ years\": \"0.30\"\n  },\n  \"switched_share\": \"0.60\",\n  \"top_prior_tools\": [\n    \"Shopify\",\n    \"WooCommerce\",\n    \"Magento\",\n    \"Squarespace\",\n    \"Wix\"\n  ]\n}",
+  "json": {
+    "role_family": {
+      "executive_owner": "0.15",
+      "project_program_mgmt": "0.05",
+      "product_mgmt": "0.08",
+      "healthcare_wellness": "0.00",
+      "software_it_engineering": "0.10",
+      "marketing_creative_content": "0.20",
+      "sales_customer": "0.07",
+      "operations_admin": "0.18",
+      "finance_hr_legal": "0.03",
+      "education_research_analysis": "0.00",
+      "consultant_freelance": "0.10",
+      "general_team_mgmt": "0.04",
+      "unknown": "0.00"
+    },
+    "company_size": {
+      "Self-employed": "0.05",
+      "1-10 employees": "0.20",
+      "11-50 employees": "0.25",
+      "51-200 employees": "0.20",
+      "201-500 employees": "0.10",
+      "501-1,000 employees": "0.07",
+      "1,001-5,000 employees": "0.06",
+      "5,001-10,000 employees": "0.04",
+      "10,001+ employees": "0.03"
+    },
+    "industry": {
+      "Information Technology and Services": "0.10",
+      "Computer Software": "0.05",
+      "Marketing and Advertising": "0.08",
+      "Education Management": "0.01",
+      "Retail": "0.30",
+      "Health, Wellness and Fitness": "0.05",
+      "Financial Services": "0.02",
+      "Construction": "0.02",
+      "Hospital & Health Care": "0.00",
+      "Accounting": "0.01",
+      "Non-Profit Organization Management": "0.01",
+      "Design": "0.03",
+      "Internet": "0.05",
+      "Real Estate": "0.01",
+      "E-Learning": "0.00",
+      "Other": "0.26"
+    },
+    "time_used": {
+      "I used a free trial": "0.10",
+      "Less than 6 months": "0.15",
+      "6-12 months": "0.20",
+      "1-2 years": "0.25",
+      "2+ years": "0.30"
+    },
+    "switched_share": "0.60",
+    "top_prior_tools": [
+      "Shopify",
+      "WooCommerce",
+      "Magento",
+      "Squarespace",
+      "Wix"
+    ]
+  },
+  "ts": "2026-10-18T02:10:31.605755+00:00"
+}

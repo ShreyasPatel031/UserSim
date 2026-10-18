@@ -1,0 +1,67 @@
+{
+  "items": [
+    {
+      "id": "D:Klaviyo:landing:1",
+      "text": "Klaviyo: AI Email Marketing & SMS | B2C CRM the AUTONOMOUS B2C CRM Real relationships. The AI marketing and service platform built to deliver personalized, omnichannel campaigns and 24/7 support—all from a single prompt. Composer, your AI marketing agent Know your best revenue opportunity?",
+      "product": "Klaviyo",
+      "role": "target",
+      "url": "https://www.klaviyo.com/"
+    },
+    {
+      "id": "D:Klaviyo:landing:2",
+      "text": "With one prompt, Composer audits your flows, segments, and forms, and creates an entire on-brand campaign to maximize your revenue. Pre-trained on your brand on day one, and customizable with skills. Tell it what you want, it builds it for you.",
+      "product": "Klaviyo",
+      "role": "target",
+      "url": "https://www.klaviyo.com/"
+    },
+    {
+      "id": "D:Klaviyo:landing:3",
+      "text": "Connect your data across your entire tech stack. How much does Klaviyo cost? Is there a free plan?",
+      "product": "Klaviyo",
+      "role": "target",
+      "url": "https://www.klaviyo.com/"
+    },
+    {
+      "id": "D:Klaviyo:landing:4",
+      "text": "Klaviyo offers a free plan with core features , and paid plans scale based on the number of contacts and channel usage (such as email and SMS). Enterprise pricing is also available for large organizations with advanced needs. What integrations does Klaviyo offer?",
+      "product": "Klaviyo",
+      "role": "target",
+      "url": "https://www.klaviyo.com/"
+    },
+    {
+      "id": "D:Klaviyo:landing:5",
+      "text": "Klaviyo offers native integrations with ecommerce platforms like Shopify , plus connectors for payment providers, CRMs, analytics tools, and messaging platforms. We also integrate with your favorite AI tools with our Klaviyo ChatGPT app, Klaviyo Claude Connector, and Klaviyo MCP for building agentic workflows. What channels does Klaviyo support?",
+      "product": "Klaviyo",
+      "role": "target",
+      "url": "https://www.klaviyo.com/"
+    },
+    {
+      "id": "D:Klaviyo:landing:6",
+      "text": "How does Klaviyo support enterprise brands? For enterprise brands , Klaviyo is the unified B2C CRM built to replace fragmented legacy stacks — consolidating data, execution, and analytics into one secure, scalable platform. Unlike rigid suites that require constant developer intervention and data syncing, Klaviyo gives marketing teams the autonomy to launch sophisticated omnichannel campaigns across email, SMS, push, WhatsApp, and web in days, not months.",
+      "product": "Klaviyo",
+      "role": "target",
+      "url": "https://www.klaviyo.com/"
+    },
+    {
+      "id": "D:Klaviyo:landing:7",
+      "text": "Which languages is Klaviyo available in? The Klaviyo platform and Help Center are localized into 11 languages: English, French, German, Spanish, Mexican Spanish, Italian, Korean, Brazilian Portuguese, Swedish, Polish, and Dutch — with each version continuously being updated as new features become available for market. For step-by-step instructions on how to change language in the Klaviyo Platform visit our Help Center guide .",
+      "product": "Klaviyo",
+      "role": "target",
+      "url": "https://www.klaviyo.com/"
+    },
+    {
+      "id": "D:Klaviyo:landing:8",
+      "text": "Is Klaviyo GDPR compliant? Klaviyo has implemented measures to meet its GDPR obligations as a data processor, including a Data Processing Agreement , comprehensive security measures, and self-service tools to support data subject rights requests.",
+      "product": "Klaviyo",
+      "role": "target",
+      "url": "https://www.klaviyo.com/"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.klaviyo.com/",
+      "html_sha256": "6e5af4fe0f4f1ddd648803b9ffb4954a3810784da9facf9bca01437d90eaade9",
+      "sentences_dropped_by_filter": 20
+    }
+  ]
+}

@@ -1,0 +1,119 @@
+{
+  "status": "ok",
+  "onet_version": "db_31_0_csv",
+  "mapping_model": "gemini-2.5-pro",
+  "task_selection": "Core first, then lexical overlap with target D text, then Task ID",
+  "occupations": [
+    {
+      "id": "O:13-1082.00",
+      "code": "13-1082.00",
+      "title": "Project Management Specialists",
+      "mapping": "model-inferred from pack D (no review data)",
+      "rationale": "The excerpts state the product is a work management platform that runs and tracks projects, and specifically mentions 'PPM pros' (project and portfolio management professionals) as a target audience [D:Smartsheet:landing:1, D:Smartsheet:landing:3, D:Smartsheet:landing:5].",
+      "tasks": [
+        {
+          "id": "O:13-1082.00:21478",
+          "task_id": "21478",
+          "text": "Report project status, such as budget, resources, technical issues, or customer satisfaction, to managers.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 2
+        },
+        {
+          "id": "O:13-1082.00:21462",
+          "task_id": "21462",
+          "text": "Assign duties or responsibilities to project personnel.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 1
+        },
+        {
+          "id": "O:13-1082.00:21463",
+          "task_id": "21463",
+          "text": "Communicate with key stakeholders to determine project requirements and objectives.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 1
+        },
+        {
+          "id": "O:13-1082.00:21464",
+          "task_id": "21464",
+          "text": "Confer with project personnel to identify and resolve problems.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 1
+        }
+      ]
+    },
+    {
+      "id": "O:15-1299.09",
+      "code": "15-1299.09",
+      "title": "Information Technology Project Managers",
+      "mapping": "model-inferred from pack D (no review data)",
+      "rationale": "The product is described as a platform that 'connects systems' and integrates AI into workflows, which are tasks commonly overseen by IT project managers [D:Smartsheet:landing:1, D:Smartsheet:landing:4].",
+      "tasks": [
+        {
+          "id": "O:15-1299.09:16170",
+          "task_id": "16170",
+          "text": "Develop or update project plans for information technology projects including information such as project objectives, technologies, systems, information specifications, schedules, funding, and staffing.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 3
+        },
+        {
+          "id": "O:15-1299.09:16166",
+          "task_id": "16166",
+          "text": "Develop and manage annual budgets for information technology projects.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 2
+        },
+        {
+          "id": "O:15-1299.09:16152",
+          "task_id": "16152",
+          "text": "Submit project deliverables, ensuring adherence to quality standards.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 1
+        },
+        {
+          "id": "O:15-1299.09:16153",
+          "task_id": "16153",
+          "text": "Monitor the performance of project team members, providing and documenting performance feedback.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 1
+        }
+      ]
+    },
+    {
+      "id": "O:11-1021.00",
+      "code": "11-1021.00",
+      "title": "General and Operations Managers",
+      "mapping": "model-inferred from pack D (no review data)",
+      "rationale": "These managers would use the software to drive 'business efficiencies with process automation' and track 'mission critical projects from inception to implementation' [D:Smartsheet:landing:2, D:Smartsheet:landing:3].",
+      "tasks": [
+        {
+          "id": "O:11-1021.00:20703",
+          "task_id": "20703",
+          "text": "Direct or coordinate financial or budget activities to fund operations, maximize investments, or increase efficiency.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 1
+        },
+        {
+          "id": "O:11-1021.00:20704",
+          "task_id": "20704",
+          "text": "Establish or implement departmental policies, goals, objectives, or procedures in conjunction with board members, organization officials, or staff members.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 1
+        },
+        {
+          "id": "O:11-1021.00:20699",
+          "task_id": "20699",
+          "text": "Review financial statements, sales or activity reports, or other performance data to measure productivity or goal achievement or to identify areas needing cost reduction or program improvement.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 0
+        },
+        {
+          "id": "O:11-1021.00:20700",
+          "task_id": "20700",
+          "text": "Direct administrative activities directly related to making products or providing services.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 0
+        }
+      ]
+    }
+  ]
+}

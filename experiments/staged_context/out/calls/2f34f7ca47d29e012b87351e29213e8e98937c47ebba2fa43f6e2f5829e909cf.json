@@ -1,0 +1,36 @@
+{
+  "stage": "onet_map",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "2f34f7ca47d29e012b87351e29213e8e98937c47ebba2fa43f6e2f5829e909cf",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": null,
+  "input_tokens": 18704,
+  "output_tokens": 1434,
+  "cost_usd": 0.03772,
+  "elapsed_s": 18.72,
+  "error": null,
+  "text": "{\n  \"occupations\": [\n    {\n      \"code\": \"11-2022.00\",\n      \"title\": \"Sales Managers\",\n      \"rationale\": \"The product is an \\\"AI-POWERED SALES CRM\\\" designed to help users plan the sales process, streamline processes, and improve team productivity and morale, all of which are core duties of a sales manager.\"\n    },\n    {\n      \"code\": \"41-4012.00\",\n      \"title\": \"Sales Representatives, Wholesale and Manufacturing, Except Technical and Scientific Products\",\n      \"rationale\": \"The software is designed to help users \\\"Sell smarter and close deals faster,\\\" \\\"Grow your pipeline,\\\" and \\\"Focus on valuable leads,\\\" which are the primary activities of sales representatives.\"\n    },\n    {\n      \"code\": \"11-2021.00\",\n      \"title\": \"Marketing Managers\",\n      \"rationale\": \"The software helps users \\\"run smart sales campaigns to generate more leads\\\" and gather \\\"intent data from email engagement\\\" to \\\"market to niches better,\\\" which are key functions of marketing management.\"\n    }\n  ]\n}",
+  "json": {
+    "occupations": [
+      {
+        "code": "11-2022.00",
+        "title": "Sales Managers",
+        "rationale": "The product is an \"AI-POWERED SALES CRM\" designed to help users plan the sales process, streamline processes, and improve team productivity and morale, all of which are core duties of a sales manager."
+      },
+      {
+        "code": "41-4012.00",
+        "title": "Sales Representatives, Wholesale and Manufacturing, Except Technical and Scientific Products",
+        "rationale": "The software is designed to help users \"Sell smarter and close deals faster,\" \"Grow your pipeline,\" and \"Focus on valuable leads,\" which are the primary activities of sales representatives."
+      },
+      {
+        "code": "11-2021.00",
+        "title": "Marketing Managers",
+        "rationale": "The software helps users \"run smart sales campaigns to generate more leads\" and gather \"intent data from email engagement\" to \"market to niches better,\" which are key functions of marketing management."
+      }
+    ]
+  },
+  "ts": "2026-10-18T02:09:02.788977+00:00"
+}

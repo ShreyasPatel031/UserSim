@@ -1,0 +1,36 @@
+{
+  "stage": "onet_map",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "b90ba8a0362767ca84903935b541f6bfc61bfc449a3856ef0eab36c85e8444ec",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": null,
+  "input_tokens": 18953,
+  "output_tokens": 1515,
+  "cost_usd": 0.03884125,
+  "elapsed_s": 22.27,
+  "error": null,
+  "text": "{\n  \"occupations\": [\n    {\n      \"code\": \"43-4051.00\",\n      \"title\": \"Customer Service Representatives\",\n      \"rationale\": \"Help Scout is a help desk software that consolidates customer communications from email, SMS, social, chat, and voice into a single inbox to help teams resolve conversations faster [D:Help Scout:landing:1, D:Help Scout:landing:2].\"\n    },\n    {\n      \"code\": \"15-1232.00\",\n      \"title\": \"Computer User Support Specialists\",\n      \"rationale\": \"As a help desk software used by SaaS companies, computer user support specialists would use Help Scout to manage and resolve technical support conversations with users [D:Help Scout:landing:1, D:Help Scout:landing:7].\"\n    },\n    {\n      \"code\": \"43-1011.00\",\n      \"title\": \"First-Line Supervisors of Office and Administrative Support Workers\",\n      \"rationale\": \"These supervisors would use Help Scout's productivity reports to manage staffing and scheduling challenges for the customer service teams they oversee [D:Help Scout:landing:6].\"\n    }\n  ]\n}",
+  "json": {
+    "occupations": [
+      {
+        "code": "43-4051.00",
+        "title": "Customer Service Representatives",
+        "rationale": "Help Scout is a help desk software that consolidates customer communications from email, SMS, social, chat, and voice into a single inbox to help teams resolve conversations faster [D:Help Scout:landing:1, D:Help Scout:landing:2]."
+      },
+      {
+        "code": "15-1232.00",
+        "title": "Computer User Support Specialists",
+        "rationale": "As a help desk software used by SaaS companies, computer user support specialists would use Help Scout to manage and resolve technical support conversations with users [D:Help Scout:landing:1, D:Help Scout:landing:7]."
+      },
+      {
+        "code": "43-1011.00",
+        "title": "First-Line Supervisors of Office and Administrative Support Workers",
+        "rationale": "These supervisors would use Help Scout's productivity reports to manage staffing and scheduling challenges for the customer service teams they oversee [D:Help Scout:landing:6]."
+      }
+    ]
+  },
+  "ts": "2026-10-18T02:09:55.445074+00:00"
+}

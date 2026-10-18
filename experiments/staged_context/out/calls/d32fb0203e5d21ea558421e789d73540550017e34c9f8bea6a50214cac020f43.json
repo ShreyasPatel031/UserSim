@@ -1,0 +1,78 @@
+{
+  "stage": "usage_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d32fb0203e5d21ea558421e789d73540550017e34c9f8bea6a50214cac020f43",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 4385,
+  "output_tokens": 1540,
+  "cost_usd": 0.0051655,
+  "elapsed_s": 9.16,
+  "error": null,
+  "text": "{\n  \"role_family\": {\n    \"executive_owner\": \"0.15\",\n    \"project_program_mgmt\": \"0.35\",\n    \"product_mgmt\": \"0.05\",\n    \"healthcare_wellness\": \"0.02\",\n    \"software_it_engineering\": \"0.10\",\n    \"marketing_creative_content\": \"0.05\",\n    \"sales_customer\": \"0.03\",\n    \"operations_admin\": \"0.10\",\n    \"finance_hr_legal\": \"0.05\",\n    \"education_research_analysis\": \"0.02\",\n    \"consultant_freelance\": \"0.03\",\n    \"general_team_mgmt\": \"0.05\",\n    \"unknown\": \"0.00\"\n  },\n  \"company_size\": {\n    \"Self-employed\": \"0.01\",\n    \"1-10 employees\": \"0.03\",\n    \"11-50 employees\": \"0.07\",\n    \"51-200 employees\": \"0.10\",\n    \"201-500 employees\": \"0.15\",\n    \"501-1,000 employees\": \"0.17\",\n    \"1,001-5,000 employees\": \"0.22\",\n    \"5,001-10,000 employees\": \"0.15\",\n    \"10,001+ employees\": \"0.10\"\n  },\n  \"industry\": {\n    \"Information Technology and Services\": \"0.18\",\n    \"Computer Software\": \"0.15\",\n    \"Marketing and Advertising\": \"00.05\",\n    \"Education Management\": \"0.03\",\n    \"Retail\": \"0.02\",\n    \"Health, Wellness and Fitness\": \"0.05\",\n    \"Financial Services\": \"0.08\",\n    \"Construction\": \"0.05\",\n    \"Hospital & Health Care\": \"0.07\",\n    \"Accounting\": \"0.03\",\n    \"Non-Profit Organization Management\": \"0.04\",\n    \"Design\": \"0.02\",\n    \"Internet\": \"0.05\",\n    \"Real Estate\": \"0.03\",\n    \"E-Learning\": \"0.01\",\n    \"Other\": \"0.14\"\n  },\n  \"time_used\": {\n    \"I used a free trial\": \"0.05\",\n    \"Less than 6 months\": \"0.15\",\n    \"6-12 months\": \"0.20\",\n    \"1-2 years\": \"0.25\",\n    \"2+ years\": \"0.35\"\n  },\n  \"switched_share\": \"0.20\",\n  \"top_prior_tools\": [\n    \"Microsoft Excel\",\n    \"Asana\",\n    \"Jira\",\n    \"Trello\",\n    \"Monday.com\"\n  ]\n}",
+  "json": {
+    "role_family": {
+      "executive_owner": "0.15",
+      "project_program_mgmt": "0.35",
+      "product_mgmt": "0.05",
+      "healthcare_wellness": "0.02",
+      "software_it_engineering": "0.10",
+      "marketing_creative_content": "0.05",
+      "sales_customer": "0.03",
+      "operations_admin": "0.10",
+      "finance_hr_legal": "0.05",
+      "education_research_analysis": "0.02",
+      "consultant_freelance": "0.03",
+      "general_team_mgmt": "0.05",
+      "unknown": "0.00"
+    },
+    "company_size": {
+      "Self-employed": "0.01",
+      "1-10 employees": "0.03",
+      "11-50 employees": "0.07",
+      "51-200 employees": "0.10",
+      "201-500 employees": "0.15",
+      "501-1,000 employees": "0.17",
+      "1,001-5,000 employees": "0.22",
+      "5,001-10,000 employees": "0.15",
+      "10,001+ employees": "0.10"
+    },
+    "industry": {
+      "Information Technology and Services": "0.18",
+      "Computer Software": "0.15",
+      "Marketing and Advertising": "00.05",
+      "Education Management": "0.03",
+      "Retail": "0.02",
+      "Health, Wellness and Fitness": "0.05",
+      "Financial Services": "0.08",
+      "Construction": "0.05",
+      "Hospital & Health Care": "0.07",
+      "Accounting": "0.03",
+      "Non-Profit Organization Management": "0.04",
+      "Design": "0.02",
+      "Internet": "0.05",
+      "Real Estate": "0.03",
+      "E-Learning": "0.01",
+      "Other": "0.14"
+    },
+    "time_used": {
+      "I used a free trial": "0.05",
+      "Less than 6 months": "0.15",
+      "6-12 months": "0.20",
+      "1-2 years": "0.25",
+      "2+ years": "0.35"
+    },
+    "switched_share": "0.20",
+    "top_prior_tools": [
+      "Microsoft Excel",
+      "Asana",
+      "Jira",
+      "Trello",
+      "Monday.com"
+    ]
+  },
+  "ts": "2026-10-18T02:10:32.239033+00:00"
+}

@@ -1,0 +1,46 @@
+{
+  "items": [
+    {
+      "id": "D:Zoho CRM:landing:1",
+      "text": "Join them, start free. Read more → 02/03 Build better pipelines Intelligent sales automation for follow-ups, approvals, and contextual suggestions, so your team always know what to do next. Read more → 03/03 Close more deals From queries to quotes, engage each critical touchpoint with thoughtful automation — just ask Zia!",
+      "product": "Zoho CRM",
+      "role": "target",
+      "url": "https://www.zoho.com/crm/"
+    },
+    {
+      "id": "D:Zoho CRM:landing:2",
+      "text": "Discover, hire, and deploy in minutes. Custom agents Build custom agents in Zia Agent Studio. Also works via CLI with Cursor, VS Code, Claude Code, and more.",
+      "product": "Zoho CRM",
+      "role": "target",
+      "url": "https://www.zoho.com/crm/"
+    },
+    {
+      "id": "D:Zoho CRM:landing:3",
+      "text": "Connect via MCP Access Zoho CRM with Claude, ChatGPT, etc for your bespoke sales operations. IT Services We selected Zoho because our main focus was to find a provider with a suite of advanced product offerings. Read more Ryan King Senior Director of Global Strategy Healthcare Nikolai Hammer Head of Marketing, Doctors Implants Zoho gives us clarity, confidence, and more time for our patients.",
+      "product": "Zoho CRM",
+      "role": "target",
+      "url": "https://www.zoho.com/crm/"
+    },
+    {
+      "id": "D:Zoho CRM:landing:4",
+      "text": "Insurance Salesforce does a nice job of making people think all other CRMs lack functionality. Read more Alex Tolbert CEO, Bernard Health Telecommunications Sean Rivers Platform Evangelist, Relay Our systems used to operate in silos, but now they're more integrated than ever. Internet One of the pillars behind the productivity that we've been able to achieve today is definitely our usage of Zoho.",
+      "product": "Zoho CRM",
+      "role": "target",
+      "url": "https://www.zoho.com/crm/"
+    },
+    {
+      "id": "D:Zoho CRM:landing:5",
+      "text": "We’ll make it effortless with free migration assistance, and if you’re locked mid-contract, Zoho CRM is on us for 6 months.",
+      "product": "Zoho CRM",
+      "role": "target",
+      "url": "https://www.zoho.com/crm/"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.zoho.com/crm/",
+      "html_sha256": "9392c4af5ee832e7e64b9aa5ab06aad880a0aaf233bcf528ea91ab736d1405e0",
+      "sentences_dropped_by_filter": 9
+    }
+  ]
+}

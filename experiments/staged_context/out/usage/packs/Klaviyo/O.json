@@ -1,0 +1,119 @@
+{
+  "status": "ok",
+  "onet_version": "db_31_0_csv",
+  "mapping_model": "gemini-2.5-pro",
+  "task_selection": "Core first, then lexical overlap with target D text, then Task ID",
+  "occupations": [
+    {
+      "id": "O:11-2021.00",
+      "code": "11-2021.00",
+      "title": "Marketing Managers",
+      "mapping": "model-inferred from pack D (no review data)",
+      "rationale": "These managers would use Klaviyo to give their marketing teams the autonomy to launch sophisticated omnichannel campaigns across email, SMS, push, WhatsApp, and web, as mentioned in excerpt D:Klaviyo:landing:6.",
+      "tasks": [
+        {
+          "id": "O:11-2021.00:951",
+          "task_id": "951",
+          "text": "Identify, develop, or evaluate marketing strategy, based on knowledge of establishment objectives, market characteristics, and cost and markup factors.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 4
+        },
+        {
+          "id": "O:11-2021.00:20709",
+          "task_id": "20709",
+          "text": "Formulate, direct, or coordinate marketing activities or policies to promote products or services, working with advertising or promotion managers.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 1
+        },
+        {
+          "id": "O:11-2021.00:950",
+          "task_id": "950",
+          "text": "Develop pricing strategies, balancing firm objectives and customer satisfaction.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 1
+        },
+        {
+          "id": "O:11-2021.00:952",
+          "task_id": "952",
+          "text": "Evaluate the financial aspects of product development, such as budgets, expenditures, research and development appropriations, or return-on-investment and profit-loss projections.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 1
+        }
+      ]
+    },
+    {
+      "id": "O:13-1161.00",
+      "code": "13-1161.00",
+      "title": "Market Research Analysts and Marketing Specialists",
+      "mapping": "model-inferred from pack D (no review data)",
+      "rationale": "These specialists would directly use the platform's AI marketing agent to audit flows, manage segments, and create entire on-brand campaigns to maximize revenue, as described in excerpt D:Klaviyo:landing:2.",
+      "tasks": [
+        {
+          "id": "O:13-1161.00:5433",
+          "task_id": "5433",
+          "text": "Collect and analyze data on customer demographics, preferences, needs, and buying habits to identify potential markets and factors affecting product demand.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 2
+        },
+        {
+          "id": "O:13-1161.00:5436",
+          "task_id": "5436",
+          "text": "Forecast and track marketing and sales trends, analyzing collected data.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 2
+        },
+        {
+          "id": "O:13-1161.00:5441",
+          "task_id": "5441",
+          "text": "Gather data on competitors and analyze their prices, sales, and method of marketing and distribution.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 2
+        },
+        {
+          "id": "O:13-1161.00:5443",
+          "task_id": "5443",
+          "text": "Devise and evaluate methods and procedures for collecting data, such as surveys, opinion polls, or questionnaires, or arrange to obtain existing data.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 2
+        }
+      ]
+    },
+    {
+      "id": "O:13-1199.06",
+      "code": "13-1199.06",
+      "title": "Online Merchants",
+      "mapping": "model-inferred from pack D (no review data)",
+      "rationale": "Online merchants would use this product as it is a B2C CRM that offers native integrations with ecommerce platforms like Shopify to run personalized marketing campaigns, as stated in excerpts D:Klaviyo:landing:1 and D:Klaviyo:landing:5.",
+      "tasks": [
+        {
+          "id": "O:13-1199.06:15719",
+          "task_id": "15719",
+          "text": "Measure and analyze Web site usage data to maximize search engine returns or refine customer interfaces.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 4
+        },
+        {
+          "id": "O:13-1199.06:15725",
+          "task_id": "15725",
+          "text": "Develop or revise business plans for online business, emphasizing factors such as product line, pricing, inventory, or marketing strategy.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 4
+        },
+        {
+          "id": "O:13-1199.06:15732",
+          "task_id": "15732",
+          "text": "Prepare or organize online storefront marketing material, including product descriptions or subject lines, optimizing content to search engine criteria.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 3
+        },
+        {
+          "id": "O:13-1199.06:15703",
+          "task_id": "15703",
+          "text": "Upload digital media, such as photos, video, or scanned images to online storefront, auction sites, or other shopping Web sites.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 2
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "stage": "usage_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c80f03999bd846cbb618f03b30e60f5b9b3cd6e05953eca89369b6314bd51124",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1010,
+  "output_tokens": 1582,
+  "cost_usd": 0.0042580000000000005,
+  "elapsed_s": 12.08,
+  "error": null,
+  "text": "{\n  \"role_family\": {\n    \"executive_owner\": 0.10,\n    \"project_program_mgmt\": 0.35,\n    \"product_mgmt\": 0.06,\n    \"healthcare_wellness\": 0.01,\n    \"software_it_engineering\": 0.08,\n    \"marketing_creative_content\": 0.07,\n    \"sales_customer\": 0.01,\n    \"operations_admin\": 0.08,\n    \"finance_hr_legal\": 0.03,\n    \"education_research_analysis\": 0.01,\n    \"consultant_freelance\": 0.04,\n    \"general_team_mgmt\": 0.15,\n    \"unknown\": 0.01\n  },\n  \"company_size\": {\n    \"Self-employed\": 0.01,\n    \"1-10 employees\": 0.03,\n    \"11-50 employees\": 0.07,\n    \"51-200 employees\": 0.15,\n    \"201-500 employees\": 0.16,\n    \"501-1,000 employees\": 0.15,\n    \"1,001-5,000 employees\": 0.18,\n    \"5,001-10,000 employees\": 0.12,\n    \"10,001+ employees\": 0.13\n  },\n  \"industry\": {\n    \"Information Technology and Services\": 0.18,\n    \"Computer Software\": 0.15,\n    \"Marketing and Advertising\": 0.08,\n    \"Education Management\": 0.03,\n    \"Retail\": 0.04,\n    \"Health, Wellness and Fitness\": 0.03,\n    \"Financial Services\": 0.07,\n    \"Construction\": 0.05,\n    \"Hospital & Health Care\": 0.04,\n    \"Accounting\": 0.02,\n    \"Non-Profit Organization Management\": 0.05,\n    \"Design\": 0.02,\n    \"Internet\": 0.03,\n    \"Real Estate\": 0.03,\n    \"E-Learning\": 0.01,\n    \"Other\": 0.17\n  },\n  \"time_used\": {\n    \"I used a free trial\": 0.05,\n    \"Less than 6 months\": 0.15,\n    \"6-12 months\": 0.20,\n    \"1-2 years\": 0.30,\n    \"2+ years\": 0.30\n  },\n  \"switched_share\": 0.65,\n  \"top_prior_tools\": [\n    \"Microsoft Excel\",\n    \"Asana\",\n    \"Jira\",\n    \"Trello\",\n    \"Microsoft Project\"\n  ]\n}",
+  "json": {
+    "role_family": {
+      "executive_owner": 0.1,
+      "project_program_mgmt": 0.35,
+      "product_mgmt": 0.06,
+      "healthcare_wellness": 0.01,
+      "software_it_engineering": 0.08,
+      "marketing_creative_content": 0.07,
+      "sales_customer": 0.01,
+      "operations_admin": 0.08,
+      "finance_hr_legal": 0.03,
+      "education_research_analysis": 0.01,
+      "consultant_freelance": 0.04,
+      "general_team_mgmt": 0.15,
+      "unknown": 0.01
+    },
+    "company_size": {
+      "Self-employed": 0.01,
+      "1-10 employees": 0.03,
+      "11-50 employees": 0.07,
+      "51-200 employees": 0.15,
+      "201-500 employees": 0.16,
+      "501-1,000 employees": 0.15,
+      "1,001-5,000 employees": 0.18,
+      "5,001-10,000 employees": 0.12,
+      "10,001+ employees": 0.13
+    },
+    "industry": {
+      "Information Technology and Services": 0.18,
+      "Computer Software": 0.15,
+      "Marketing and Advertising": 0.08,
+      "Education Management": 0.03,
+      "Retail": 0.04,
+      "Health, Wellness and Fitness": 0.03,
+      "Financial Services": 0.07,
+      "Construction": 0.05,
+      "Hospital & Health Care": 0.04,
+      "Accounting": 0.02,
+      "Non-Profit Organization Management": 0.05,
+      "Design": 0.02,
+      "Internet": 0.03,
+      "Real Estate": 0.03,
+      "E-Learning": 0.01,
+      "Other": 0.17
+    },
+    "time_used": {
+      "I used a free trial": 0.05,
+      "Less than 6 months": 0.15,
+      "6-12 months": 0.2,
+      "1-2 years": 0.3,
+      "2+ years": 0.3
+    },
+    "switched_share": 0.65,
+    "top_prior_tools": [
+      "Microsoft Excel",
+      "Asana",
+      "Jira",
+      "Trello",
+      "Microsoft Project"
+    ]
+  },
+  "ts": "2026-10-18T02:10:34.931454+00:00"
+}

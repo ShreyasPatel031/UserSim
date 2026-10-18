@@ -1,0 +1,46 @@
+{
+  "items": [
+    {
+      "id": "D:Smartsheet:landing:1",
+      "text": "Work Management Platform | Smartsheet Skip to main content AI that connects systems, runs projects, and helps teams act faster Watch a demo Try Smartsheet for free Set goals. Try Smartsheet for free Watch a demo Smarter solutions. Greater velocity of work.",
+      "product": "Smartsheet",
+      "role": "target",
+      "url": "https://www.smartsheet.com/"
+    },
+    {
+      "id": "D:Smartsheet:landing:2",
+      "text": "Explore all integrations Sync your tools, keep teams connected Integrate your favorite apps with Smartsheet, keeping all your work in sync and your team in the loop. Explore all integrations Real stories, real impact Real stories, real impact 58 58 day deployment McLaren Racing accelerates PMO efficiency and drives top-line growth. $ 1M 1M annual savings Sutherland drives business efficiencies with process automation.",
+      "product": "Smartsheet",
+      "role": "target",
+      "url": "https://www.smartsheet.com/"
+    },
+    {
+      "id": "D:Smartsheet:landing:3",
+      "text": "200 200 projects tracked DIRECTV tracks mission critical projects from inception to implementation. Our enterprise-grade security keeps it protected, so you can focus on driving results. Access the report AI PULSE Responsible AI Isn't a Policy Problem.",
+      "product": "Smartsheet",
+      "role": "target",
+      "url": "https://www.smartsheet.com/"
+    },
+    {
+      "id": "D:Smartsheet:landing:4",
+      "text": "It's a Workflow Design Problem. AI fails when governance is bolted on. Responsible AI builds guardrails and accountability into workflows from day one.",
+      "product": "Smartsheet",
+      "role": "target",
+      "url": "https://www.smartsheet.com/"
+    },
+    {
+      "id": "D:Smartsheet:landing:5",
+      "text": "Learn how FIRST PARTY RESEARCH The 2026 project and portfolio management priorities report Our latest research exposes the readiness gap between PPM pros and AI, and how companies can bridge it with Intelligent Work Management.",
+      "product": "Smartsheet",
+      "role": "target",
+      "url": "https://www.smartsheet.com/"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.smartsheet.com/",
+      "html_sha256": "2e1bffc1711d6dd80a553f9ee74ffc0c670485578909cdb7a6acc070061d4e7a",
+      "sentences_dropped_by_filter": 8
+    }
+  ]
+}

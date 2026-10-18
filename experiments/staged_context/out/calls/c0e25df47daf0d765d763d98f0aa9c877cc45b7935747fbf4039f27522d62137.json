@@ -1,0 +1,36 @@
+{
+  "stage": "onet_map",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "c0e25df47daf0d765d763d98f0aa9c877cc45b7935747fbf4039f27522d62137",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": null,
+  "input_tokens": 20548,
+  "output_tokens": 2361,
+  "cost_usd": 0.049295,
+  "elapsed_s": 26.88,
+  "error": null,
+  "text": "{\n  \"occupations\": [\n    {\n      \"code\": \"13-1082.00\",\n      \"title\": \"Project Management Specialists\",\n      \"rationale\": \"The product is explicitly for project management and the excerpts describe its use for \\\"juggling people, projects, and expectations\\\" by managing tasks, discussions, files, and deadlines [D:Basecamp:landing:9, D:Basecamp:landing:18, D:Basecamp:landing:19].\"\n    },\n    {\n      \"code\": \"15-1255.00\",\n      \"title\": \"Web and Digital Interface Designers\",\n      \"rationale\": \"The excerpts show a \\\"Website Redesign Project\\\" being managed, with specific tasks assigned to designers such as creating visual mockups, defining button states, and designing pages [D:Basecamp:landing:7, D:Basecamp:landing:9, D:Basecamp:landing:10, D:Basecamp:landing:13].\"\n    },\n    {\n      \"code\": \"11-2021.00\",\n      \"title\": \"Marketing Managers\",\n      \"rationale\": \"The software is used to manage a \\\"Website Redesign Project,\\\" including coordinating the project launch, gathering brand assets, and managing client communications, all of which are typical responsibilities for a marketing manager [D:Basecamp:landing:1, D:Basecamp:landing:6, D:Basecamp:landing:10].\"\n    }\n  ]\n}",
+  "json": {
+    "occupations": [
+      {
+        "code": "13-1082.00",
+        "title": "Project Management Specialists",
+        "rationale": "The product is explicitly for project management and the excerpts describe its use for \"juggling people, projects, and expectations\" by managing tasks, discussions, files, and deadlines [D:Basecamp:landing:9, D:Basecamp:landing:18, D:Basecamp:landing:19]."
+      },
+      {
+        "code": "15-1255.00",
+        "title": "Web and Digital Interface Designers",
+        "rationale": "The excerpts show a \"Website Redesign Project\" being managed, with specific tasks assigned to designers such as creating visual mockups, defining button states, and designing pages [D:Basecamp:landing:7, D:Basecamp:landing:9, D:Basecamp:landing:10, D:Basecamp:landing:13]."
+      },
+      {
+        "code": "11-2021.00",
+        "title": "Marketing Managers",
+        "rationale": "The software is used to manage a \"Website Redesign Project,\" including coordinating the project launch, gathering brand assets, and managing client communications, all of which are typical responsibilities for a marketing manager [D:Basecamp:landing:1, D:Basecamp:landing:6, D:Basecamp:landing:10]."
+      }
+    ]
+  },
+  "ts": "2026-10-18T02:09:59.098666+00:00"
+}

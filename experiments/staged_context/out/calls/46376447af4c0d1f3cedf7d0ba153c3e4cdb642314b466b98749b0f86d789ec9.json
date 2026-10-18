@@ -1,0 +1,36 @@
+{
+  "stage": "onet_map",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "46376447af4c0d1f3cedf7d0ba153c3e4cdb642314b466b98749b0f86d789ec9",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": null,
+  "input_tokens": 19516,
+  "output_tokens": 2318,
+  "cost_usd": 0.047575000000000006,
+  "elapsed_s": 24.0,
+  "error": null,
+  "text": "{\n  \"occupations\": [\n    {\n      \"code\": \"11-3121.00\",\n      \"title\": \"Human Resources Managers\",\n      \"rationale\": \"The product is an all-in-one HCM platform designed to simplify HR, is marketed to \\\"HR pros,\\\" and is explicitly used by HR Directors and People Managers [D:Namely:landing:1, D:Namely:landing:4, D:Namely:landing:12, D:Namely:landing:13].\"\n    },\n    {\n      \"code\": \"43-3051.00\",\n      \"title\": \"Payroll and Timekeeping Clerks\",\n      \"rationale\": \"The software provides core features for \\\"Payroll & Time,\\\" \\\"Time-Tracking,\\\" and \\\"Managed Payroll\\\" to speed processing, ensure accuracy, and eliminate the burden of daily payroll administration [D:Namely:landing:2, D:Namely:landing:4, D:Namely:landing:6, D:Namely:landing:8].\"\n    },\n    {\n      \"code\": \"11-3111.00\",\n      \"title\": \"Compensation and Benefits Managers\",\n      \"rationale\": \"The platform offers enhanced modules and managed services for \\\"Benefits\\\" and \\\"Benefits Administration,\\\" and is praised by users for enabling better decision-making around benefits [D:Namely:landing:3, D:Namely:landing:7, D:Namely:landing:9, D:Namely:landing:12].\"\n    }\n  ]\n}",
+  "json": {
+    "occupations": [
+      {
+        "code": "11-3121.00",
+        "title": "Human Resources Managers",
+        "rationale": "The product is an all-in-one HCM platform designed to simplify HR, is marketed to \"HR pros,\" and is explicitly used by HR Directors and People Managers [D:Namely:landing:1, D:Namely:landing:4, D:Namely:landing:12, D:Namely:landing:13]."
+      },
+      {
+        "code": "43-3051.00",
+        "title": "Payroll and Timekeeping Clerks",
+        "rationale": "The software provides core features for \"Payroll & Time,\" \"Time-Tracking,\" and \"Managed Payroll\" to speed processing, ensure accuracy, and eliminate the burden of daily payroll administration [D:Namely:landing:2, D:Namely:landing:4, D:Namely:landing:6, D:Namely:landing:8]."
+      },
+      {
+        "code": "11-3111.00",
+        "title": "Compensation and Benefits Managers",
+        "rationale": "The platform offers enhanced modules and managed services for \"Benefits\" and \"Benefits Administration,\" and is praised by users for enabling better decision-making around benefits [D:Namely:landing:3, D:Namely:landing:7, D:Namely:landing:9, D:Namely:landing:12]."
+      }
+    ]
+  },
+  "ts": "2026-10-18T02:09:57.812693+00:00"
+}
