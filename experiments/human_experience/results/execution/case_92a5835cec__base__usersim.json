@@ -1,0 +1,25 @@
+{
+ "run_id": "case_92a5835cec__base__usersim",
+ "case_id": "case_92a5835cec",
+ "engine": "usersim",
+ "context": "base",
+ "status": "environment_failure",
+ "success_criteria_results": [],
+ "observations": [],
+ "errors": [
+  {
+   "kind": "inaccessible_account",
+   "text": "Account created and signed in (usersim.signups+asana@gmail.com), but session capture failed twice (BrowserContext.storage_state: browser closed); saved state has no Asana login cookie, and runners land on app.asana.com/-/login"
+  }
+ ],
+ "actions": 0,
+ "elapsed_seconds": 0,
+ "plan": "no test account available",
+ "product_version_or_capture_date": "2026-10-18",
+ "environment_mismatches": [
+  "run not executed; no product observations"
+ ],
+ "trace_path": null,
+ "runner": null,
+ "judge": null
+}

@@ -1,0 +1,12 @@
+{"rid": "Capterra___4975169", "session_id": "70a65ceba7b34ac59216fb850a93fe97", "signed_in": true, "reached_product": true,
+ "outcome": "completed", "steps_used": 32,
+ "observations": [
+  {"kind": "signup_friction", "what": "Sign-up from the free pricing plan needed name, email, organization, terms checkbox, an hCaptcha, then a separate password page with a second hCaptcha."},
+  {"kind": "signup_friction", "what": "No verification email was required to enter the product; the only mail that arrived was a welcome/help message."},
+  {"kind": "signup_friction", "what": "The onboarding page offered a 'Skip the tour' link for existing Basecamp users, which got straight to Home."},
+  {"kind": "product_friction", "what": "The free plan allows only 1 project, shown as 'My Project', which starts empty with just a plus button and no task or status template."},
+  {"kind": "product_friction", "what": "Adding the To-dos tool first opened a title-rename form before any to-do could be added, an extra step."},
+  {"kind": "product_benefit", "what": "The To-dos list took a name in one field and added the item inline; ticking the checkbox marks a to-do done, which gives a simple status view."},
+  {"kind": "product_benefit", "what": "The tool menu offers a Card Table described as tracking work with cards and columns, a fit for project statuses."},
+  {"kind": "agent_failure", "what": "I clicked a Card Table entry that was in a hidden menu and nothing happened; I had to reopen the plus menu."}
+ ]}

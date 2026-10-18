@@ -1,0 +1,143 @@
+{
+ "run_id": "case_4164789dd7__base__generic",
+ "case_id": "case_4164789dd7",
+ "engine": "generic",
+ "context": "base",
+ "status": "failed",
+ "success_criteria_results": [
+  {
+   "criterion": "Three tasks can be located in the intended sprint",
+   "result": "not_met",
+   "step": 20
+  },
+  {
+   "criterion": "The selected task has the requested status",
+   "result": "not_met",
+   "step": 20
+  }
+ ],
+ "observations": [
+  {
+   "step": 0,
+   "text": "The agent opened 'https://clickup.com/' and the landing page loaded."
+  },
+  {
+   "step": 1,
+   "text": "The agent navigated to 'https://app.clickup.com/'."
+  },
+  {
+   "step": 2,
+   "text": "The agent clicked on a div element with the text 'Home'."
+  },
+  {
+   "step": 3,
+   "text": "The agent clicked on a div element with the text 'Home' again."
+  },
+  {
+   "step": 4,
+   "text": "The agent clicked a button with the text 'Don't update' to dismiss a timezone update modal."
+  },
+  {
+   "step": 5,
+   "text": "The agent clicked a button with the aria-label 'Create task'."
+  },
+  {
+   "step": 6,
+   "text": "The agent typed 'Demo Alpha' into a text field."
+  },
+  {
+   "step": 7,
+   "text": "The agent clicked a button with the text 'Create Task'."
+  },
+  {
+   "step": 8,
+   "text": "The agent clicked a div element with role 'button' and text 'Select List...'."
+  },
+  {
+   "step": 9,
+   "text": "The agent clicked a 'cu3-combo-box-item' with role 'option' and text 'S Space'."
+  },
+  {
+   "step": 10,
+   "text": "The agent clicked a button with the text 'Create Task'."
+  },
+  {
+   "step": 11,
+   "text": "The agent clicked a button with the text 'Create Task' again."
+  },
+  {
+   "step": 12,
+   "text": "The agent clicked a button with the text 'Create Task' again."
+  },
+  {
+   "step": 13,
+   "text": "The agent clicked a button with the text 'Create Task' again."
+  },
+  {
+   "step": 14,
+   "text": "The agent clicked a button with the text 'Create Task' again."
+  },
+  {
+   "step": 15,
+   "text": "The agent clicked a button with the text 'Close'."
+  },
+  {
+   "step": 16,
+   "text": "The agent clicked a button with the text 'Save'."
+  },
+  {
+   "step": 17,
+   "text": "The agent clicked a button with the aria-label 'Create task'."
+  },
+  {
+   "step": 18,
+   "text": "The agent clicked a button with the text 'Task'."
+  },
+  {
+   "step": 19,
+   "text": "The agent clicked a button with the text 'Task' again."
+  },
+  {
+   "step": 20,
+   "text": "The agent stopped due to reaching the maximum number of allowed actions. The task creation process was not completed as intended, and only one task was partially created."
+  }
+ ],
+ "errors": [
+  {
+   "kind": "time_or_step_limit",
+   "text": "The agent reached the maximum number of allowed actions before completing the task. Only one task was partially created."
+  }
+ ],
+ "actions": 20,
+ "elapsed_seconds": 229.6,
+ "plan": "free plan of a fresh test account (unknown seen in run)",
+ "product_version_or_capture_date": "2026-10-18",
+ "environment_mismatches": [
+  "fresh test account with synthetic data; reviewer's historical version, plan, team and data unknown",
+  "short single-session run cannot recreate long tenure or team adoption"
+ ],
+ "trace_path": "results/execution/traces/case_4164789dd7__base__generic.json",
+ "runner": {
+  "action_model": "gemini-2.5-flash-lite",
+  "max_steps": 20,
+  "max_actions_per_step": 2,
+  "wall_seconds": 300,
+  "backend": "browserbase",
+  "usage": {
+   "input_tokens": 256518,
+   "output_tokens": 4995,
+   "cost_usd": 0.025455509999999997
+  }
+ },
+ "judge": {
+  "model": "gemini-2.5-flash",
+  "model_version": "gemini-2.5-flash",
+  "usage": {
+   "input_tokens": 4038,
+   "output_tokens": 906,
+   "cost_usd": 0.003476,
+   "latency_seconds": 4.74
+  },
+  "status": "automated_provisional"
+ }
+}

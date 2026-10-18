@@ -1,0 +1,143 @@
+{
+ "run_id": "case_af8986f233__full__usersim",
+ "case_id": "case_af8986f233",
+ "engine": "usersim",
+ "context": "full",
+ "status": "failed",
+ "success_criteria_results": [
+  {
+   "criterion": "Dates and assignment are visible",
+   "result": "not_met",
+   "step": 20
+  },
+  {
+   "criterion": "The available schedule view is recorded",
+   "result": "not_met",
+   "step": 20
+  }
+ ],
+ "observations": [
+  {
+   "step": 0,
+   "text": "The agent opened 'https://clickup.com/' and the landing page loaded."
+  },
+  {
+   "step": 1,
+   "text": "The agent navigated to 'https://app.clickup.com/'."
+  },
+  {
+   "step": 2,
+   "text": "The agent clicked a div with text 'S'."
+  },
+  {
+   "step": 3,
+   "text": "The agent clicked an svg element."
+  },
+  {
+   "step": 4,
+   "text": "The agent typed 'Demo Alpha' into a field, but the field's actual value remained empty, suggesting the input was not registered or was reformatted/autocompleted."
+  },
+  {
+   "step": 5,
+   "text": "The agent clicked a cu-page-header-dates-picker element with text 'Add List dates C...'."
+  },
+  {
+   "step": 6,
+   "text": "The agent attempted to click a cu-calendar-day element with text '1 September' but failed because the element was not interactable or visible, or the page changed."
+  },
+  {
+   "step": 7,
+   "text": "The agent attempted to click an element at index 35825 but failed because the element was not available, suggesting the page may have changed."
+  },
+  {
+   "step": 8,
+   "text": "The agent clicked a div with role 'button' and text '9/1/26'."
+  },
+  {
+   "step": 9,
+   "text": "The agent clicked a cu-calendar-day element with text '18 October'."
+  },
+  {
+   "step": 10,
+   "text": "The agent clicked a cu-calendar-day element with text '24 October'."
+  },
+  {
+   "step": 11,
+   "text": "The agent clicked a button with aria-label 'Create task'."
+  },
+  {
+   "step": 12,
+   "text": "The agent clicked a button with aria-label 'Create task'."
+  },
+  {
+   "step": 13,
+   "text": "The agent clicked a button with aria-label 'Create task'."
+  },
+  {
+   "step": 14,
+   "text": "The agent clicked a button with aria-label 'Create task'."
+  },
+  {
+   "step": 15,
+   "text": "The agent clicked a button with aria-label 'Create task'."
+  },
+  {
+   "step": 16,
+   "text": "The agent clicked a button with aria-label 'Create task'."
+  },
+  {
+   "step": 17,
+   "text": "The agent clicked a button with aria-label 'Create task'."
+  },
+  {
+   "step": 18,
+   "text": "The agent clicked a button with aria-label 'Create task'."
+  },
+  {
+   "step": 19,
+   "text": "The agent clicked a button with aria-label 'Create task'."
+  },
+  {
+   "step": 20,
+   "text": "The agent successfully created the first task, 'Demo Alpha', with start and end dates. However, the agent reached the maximum number of steps and could not complete the creation of 'Demo Beta' and 'Demo'."
+  }
+ ],
+ "errors": [
+  {
+   "kind": "time_or_step_limit",
+   "text": "The agent successfully created the first task, 'Demo Alpha', with start and end dates. The agent is now proceeding to create the second task, 'Demo Beta'. However, due to reaching the maximum number of steps, the task could not be fully completed. The agent was unable to create 'Demo Beta' and 'Demo"
+  }
+ ],
+ "actions": 20,
+ "elapsed_seconds": 290.2,
+ "plan": "free plan of a fresh test account (unknown seen in run)",
+ "product_version_or_capture_date": "2026-10-18",
+ "environment_mismatches": [
+  "fresh test account with synthetic data; reviewer's historical version, plan, team and data unknown",
+  "short single-session run cannot recreate long tenure or team adoption"
+ ],
+ "trace_path": "results/execution/traces/case_af8986f233__full__usersim.json",
+ "runner": {
+  "action_model": "gemini-2.5-flash-lite",
+  "max_steps": 20,
+  "max_actions_per_step": 2,
+  "wall_seconds": 300,
+  "backend": "browserbase",
+  "usage": {
+   "input_tokens": 618871,
+   "output_tokens": 5283,
+   "cost_usd": 0.0640003
+  }
+ },
+ "judge": {
+  "model": "gemini-2.5-flash",
+  "model_version": "gemini-2.5-flash",
+  "usage": {
+   "input_tokens": 4271,
+   "output_tokens": 1014,
+   "cost_usd": 0.003816,
+   "latency_seconds": 5.39
+  },
+  "status": "automated_provisional"
+ }
+}

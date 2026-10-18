@@ -1,0 +1,25 @@
+{
+ "run_id": "case_140855addc__full__usersim",
+ "case_id": "case_140855addc",
+ "engine": "usersim",
+ "context": "full",
+ "status": "environment_failure",
+ "success_criteria_results": [],
+ "observations": [],
+ "errors": [
+  {
+   "kind": "inaccessible_account",
+   "text": "Atlassian sign-up blocked: reCAPTCHA v3 enterprise unsolved without a CapSolver key (attempt 1); attempt 2 ended not signed in after 23 steps"
+  }
+ ],
+ "actions": 0,
+ "elapsed_seconds": 0,
+ "plan": "no test account available",
+ "product_version_or_capture_date": "2026-10-18",
+ "environment_mismatches": [
+  "run not executed; no product observations"
+ ],
+ "trace_path": null,
+ "runner": null,
+ "judge": null
+}

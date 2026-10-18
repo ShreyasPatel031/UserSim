@@ -304,6 +304,32 @@ def _cdp_cookies(state: dict[str, Any] | None) -> list[dict[str, Any]]:
     return out
 
 
+def _local_storage_script(state: dict[str, Any] | None) -> str:
+    """JS that restores the saved localStorage of the page's own origin.
+
+    Some apps keep their session flags there (app.clickup.com redirects to
+    /login without access_token_meta even when cu_jwt is set).
+    """
+    by_origin = {
+        str(o.get("origin")): {
+            str(i.get("name")): str(i.get("value"))
+            for i in o.get("localStorage") or []
+            if i.get("name") is not None
+        }
+        for o in (state or {}).get("origins") or []
+        if o.get("origin") and o.get("localStorage")
+    }
+    if not by_origin:
+        return ""
+    return (
+        "(() => { try { const all = " + json.dumps(by_origin) + ";"
+        " const items = all[location.origin]; if (!items) return;"
+        " for (const [k, v] of Object.entries(items)) {"
+        " if (localStorage.getItem(k) === null) localStorage.setItem(k, v); }"
+        " } catch (e) {} })();"
+    )
+
+
 async def _inject_cookies(session: Any, state: dict[str, Any] | None) -> int:
     cookies = _cdp_cookies(state)
     if not cookies:
@@ -315,6 +341,15 @@ async def _inject_cookies(session: Any, state: dict[str, Any] | None) -> int:
         )
     except Exception:
         return 0
+    script = _local_storage_script(state)
+    if script:
+        try:
+            # Runs before page scripts on every later navigation of this tab.
+            await cdp.cdp_client.send.Page.addScriptToEvaluateOnNewDocument(
+                {"source": script}, session_id=cdp.session_id
+            )
+        except Exception as exc:  # noqa: BLE001
+            print(f"[auth] localStorage restore failed: {exc!r}", flush=True)
     return len(cookies)
 
 

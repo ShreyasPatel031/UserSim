@@ -1,0 +1,94 @@
+{
+ "run_id": "case_11232793fc__base__generic",
+ "case_id": "case_11232793fc",
+ "engine": "generic",
+ "context": "base",
+ "status": "partial",
+ "success_criteria_results": [
+  {
+   "criterion": "Project and tasks exist",
+   "result": "met",
+   "step": 9
+  },
+  {
+   "criterion": "The update is visible to the permitted test identity",
+   "result": "unverifiable",
+   "step": 9
+  }
+ ],
+ "observations": [
+  {
+   "step": 0,
+   "text": "The agent opened https://clickup.com/ and the landing page loaded."
+  },
+  {
+   "step": 1,
+   "text": "The agent navigated to https://app.clickup.com/."
+  },
+  {
+   "step": 2,
+   "text": "The agent clicked a button with role \"button\" and label \"Dropdown menu\"."
+  },
+  {
+   "step": 3,
+   "text": "The agent clicked a button with role \"button\" labeled \"Direct Messages\" and then clicked a button labeled \"Don't update\"."
+  },
+  {
+   "step": 4,
+   "text": "The agent clicked a span element labeled \"Favorite\"."
+  },
+  {
+   "step": 5,
+   "text": "The agent clicked a button labeled \"Add Task\"."
+  },
+  {
+   "step": 6,
+   "text": "The agent typed 'Demo Alpha' into a text field and clicked a button labeled \"Create Task\"."
+  },
+  {
+   "step": 7,
+   "text": "The agent clicked a button with aria-label \"Create task\" and typed 'Demo Beta' into a text field."
+  },
+  {
+   "step": 8,
+   "text": "The agent clicked a button labeled \"Task\" and typed 'Demo Gamma' into a text field."
+  },
+  {
+   "step": 9,
+   "text": "The agent reported successful creation of the project 'Demo Alpha' with three tasks: 'Demo Alpha', 'Demo Beta', and 'Demo Gamma'. The agent also stated that the project and tasks exist and the update is visible within the ClickUp workspace."
+  }
+ ],
+ "errors": [],
+ "actions": 9,
+ "elapsed_seconds": 147.8,
+ "plan": "free plan of a fresh test account (unknown seen in run)",
+ "product_version_or_capture_date": "2026-10-18",
+ "environment_mismatches": [
+  "fresh test account with synthetic data; reviewer's historical version, plan, team and data unknown",
+  "short single-session run cannot recreate long tenure or team adoption"
+ ],
+ "trace_path": "results/execution/traces/case_11232793fc__base__generic.json",
+ "runner": {
+  "action_model": "gemini-2.5-flash-lite",
+  "max_steps": 20,
+  "max_actions_per_step": 2,
+  "wall_seconds": 300,
+  "backend": "browserbase",
+  "usage": {
+   "input_tokens": 169463,
+   "output_tokens": 2516,
+   "cost_usd": 0.017952700000000002
+  }
+ },
+ "judge": {
+  "model": "gemini-2.5-flash",
+  "model_version": "gemini-2.5-flash",
+  "usage": {
+   "input_tokens": 3127,
+   "output_tokens": 533,
+   "cost_usd": 0.002271,
+   "latency_seconds": 3.3
+  },
+  "status": "automated_provisional"
+ }
+}

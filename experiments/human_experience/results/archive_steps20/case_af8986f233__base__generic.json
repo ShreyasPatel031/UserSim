@@ -1,0 +1,143 @@
+{
+ "run_id": "case_af8986f233__base__generic",
+ "case_id": "case_af8986f233",
+ "engine": "generic",
+ "context": "base",
+ "status": "runner_failure",
+ "success_criteria_results": [
+  {
+   "criterion": "Dates and assignment are visible",
+   "result": "not_met",
+   "step": 20
+  },
+  {
+   "criterion": "The available schedule view is recorded",
+   "result": "not_met",
+   "step": 20
+  }
+ ],
+ "observations": [
+  {
+   "step": 0,
+   "text": "The agent opened the URL 'https://clickup.com/'."
+  },
+  {
+   "step": 1,
+   "text": "The agent navigated to 'https://app.clickup.com/'."
+  },
+  {
+   "step": 2,
+   "text": "The agent waited for 5 seconds."
+  },
+  {
+   "step": 3,
+   "text": "The agent clicked the button 'Don't update'."
+  },
+  {
+   "step": 4,
+   "text": "The agent clicked the 'Add Task' button."
+  },
+  {
+   "step": 5,
+   "text": "The agent typed 'Demo Alpha' into the task name field."
+  },
+  {
+   "step": 6,
+   "text": "The agent clicked the 'Due date' button."
+  },
+  {
+   "step": 7,
+   "text": "The agent clicked a div role=button, which was intended to select 'October 2026'."
+  },
+  {
+   "step": 8,
+   "text": "The agent clicked 'cu-calendar-day' for '28 October'."
+  },
+  {
+   "step": 9,
+   "text": "The agent clicked 'cu-date-nlp-input', which was intended to set the start date."
+  },
+  {
+   "step": 10,
+   "text": "The agent clicked 'cu-calendar-day' for '28 October'."
+  },
+  {
+   "step": 11,
+   "text": "The agent clicked the 'Assignee' button."
+  },
+  {
+   "step": 12,
+   "text": "The agent clicked a div with the text 'Me'."
+  },
+  {
+   "step": 13,
+   "text": "The agent clicked the button 'Show custom fields'."
+  },
+  {
+   "step": 14,
+   "text": "The agent clicked the button 'AI'."
+  },
+  {
+   "step": 15,
+   "text": "The agent clicked a div role=button with aria-label 'Change status for De'."
+  },
+  {
+   "step": 16,
+   "text": "The agent clicked 'cu3-combo-box-item' with role=option 'to do'."
+  },
+  {
+   "step": 17,
+   "text": "The agent clicked a div with the text 'Write a description'."
+  },
+  {
+   "step": 18,
+   "text": "The agent clicked 'cu-calendar-day' for '28 October'."
+  },
+  {
+   "step": 19,
+   "text": "The agent clicked 'cu-calendar-day' for '28 October'."
+  },
+  {
+   "step": 20,
+   "text": "An 'Upgrade to Business to get unlimited Brain AI' modal appeared, obscuring the view and preventing further interaction for task assignment."
+  }
+ ],
+ "errors": [
+  {
+   "kind": "runner_failure",
+   "text": "The agent encountered an unexpected element (an 'Upgrade to Business' modal) while attempting to assign a task, which prevented the completion of the assignment and further steps."
+  }
+ ],
+ "actions": 20,
+ "elapsed_seconds": 281.8,
+ "plan": "free plan of a fresh test account (unknown seen in run)",
+ "product_version_or_capture_date": "2026-10-18",
+ "environment_mismatches": [
+  "fresh test account with synthetic data; reviewer's historical version, plan, team and data unknown",
+  "short single-session run cannot recreate long tenure or team adoption"
+ ],
+ "trace_path": "results/execution/traces/case_af8986f233__base__generic.json",
+ "runner": {
+  "action_model": "gemini-2.5-flash-lite",
+  "max_steps": 20,
+  "max_actions_per_step": 2,
+  "wall_seconds": 300,
+  "backend": "browserbase",
+  "usage": {
+   "input_tokens": 373731,
+   "output_tokens": 5633,
+   "cost_usd": 0.03723563
+  }
+ },
+ "judge": {
+  "model": "gemini-2.5-flash",
+  "model_version": "gemini-2.5-flash",
+  "usage": {
+   "input_tokens": 4162,
+   "output_tokens": 894,
+   "cost_usd": 0.003484,
+   "latency_seconds": 5.47
+  },
+  "status": "automated_provisional"
+ }
+}

@@ -1,0 +1,12 @@
+{"rid": "Capterra___6049570", "session_id": "834dd071b43844948d302ac894ed1f75", "signed_in": true, "reached_product": true,
+ "outcome": "completed", "steps_used": 39,
+ "observations": [
+  {"kind": "signup_friction", "what": "Sign-up needed an hCaptcha solve twice (once per form step), but no email verification was required before reaching onboarding."},
+  {"kind": "signup_friction", "what": "The onboarding welcome page had a video and a skip-tour link; skipping showed the same page for a few seconds before the Home screen loaded."},
+  {"kind": "product_benefit", "what": "The free plan gave a ready-made empty project with a clear 'Add something to get this project started' prompt listing to-dos and documents."},
+  {"kind": "product_benefit", "what": "The Add a tool menu describes each tool in one line (To-dos, Docs, Files & Images), making it easy to pick the right one for tasks versus documents."},
+  {"kind": "product_friction", "what": "Tools must be added to the project one by one before use, so a new user has to learn the plus-menu to get to to-dos and docs."},
+  {"kind": "product_friction", "what": "The page layout shifted after adding a tool (activity line appeared), moving the tool menu items down about 32px."},
+  {"kind": "product_friction", "what": "The free plan is limited to 1 project, so a second project for a separate workstream is not possible without upgrading."},
+  {"kind": "agent_failure", "what": "My first Docs click after adding To-dos hit a closed menu and did not add the tool, costing extra steps."}
+ ]}

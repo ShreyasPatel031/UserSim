@@ -1,0 +1,7 @@
+condition,ease_of_use_rating_abs_err,functionality_rating_abs_err,overall_rating_abs_err,value_for_money_rating_abs_err,customer_support_rating_abs_err,recommendation_score_abs_err,pros,cons,overall_experience
+C1_agent_alone,0.2,0.8,1.2,1.0,1.0,0.8,0.4833333333333333,0.0,0.0
+C2_reviews_only,0.2,0.2,0.8,1.0,0.5,1.6,0.6833333333333333,0.0,0.0
+C3_run_only,1.5,1.25,1.5,1.5,1.5,2.75,0.22916666666666666,0.0,0.0
+C4_run_plus_reviews,1.75,1.5,1.75,1.5,1.0,3.25,0.08333333333333333,0.0,0.0
+C5_mcp_run_only,1.0,1.0,1.2,1.0,1.5,2.4,0.3,0.0,0.0
+C6_mcp_run_plus_reviews,0.6,0.8,1.2,2.0,0.5,1.6,0.2333333333333333,0.125,0.0
