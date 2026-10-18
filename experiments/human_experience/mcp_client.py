@@ -57,7 +57,8 @@ def _brief(text: str) -> str:
 
 async def main() -> None:
     url, token = _env()
-    headers = {"Authorization": f"Bearer {token}"}
+    # --anon: call the open endpoint the way a caller without a token does.
+    headers = {} if "--anon" in sys.argv else {"Authorization": f"Bearer {token}"}
     async with streamablehttp_client(url, headers=headers, timeout=60, sse_read_timeout=600) as (r, w, _):
         async with ClientSession(r, w) as s:
             await s.initialize()

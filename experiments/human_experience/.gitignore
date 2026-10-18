@@ -11,3 +11,4 @@ results/qualitative_reference_labels.json
 results/.*_identity.json
 results/mcp_shots/
 results/.*_code.json
+results/.phone_lease.json
