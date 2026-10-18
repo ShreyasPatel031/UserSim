@@ -1,0 +1,21 @@
+[
+ {
+  "product_url": "https://www.smartsheet.com",
+  "study_id": "e71cfd93-2660-4ea5-987f-2362474229d5",
+  "report_url": "https://atelier-sim.com/report?study=e71cfd93-2660-4ea5-987f-2362474229d5",
+  "cells": 108,
+  "finished": 11,
+  "errors": [
+   "{\"error\": \"unknown study_id 'e71cfd93-2660-4ea5-987f-2362474229d5'\"}",
+   "{\"error\": \"unknown study_id 'e71cfd93-2660-4ea5-987f-2362474229d5'\"}",
+   "{\"error\": \"unknown study_id 'e71cfd93-2660-4ea5-987f-2362474229d5'\"}",
+   "{\"error\": \"unknown study_id 'e71cfd93-2660-4ea5-987f-2362474229d5'\"}",
+   "{\"error\": \"unknown study_id 'e71cfd93-2660-4ea5-987f-2362474229d5'\"}",
+   "{\"error\": \"unknown study_id 'e71cfd93-2660-4ea5-987f-2362474229d5'\"}",
+   "{\"error\": \"unknown study_id 'e71cfd93-2660-4ea5-987f-2362474229d5'\"}",
+   "{\"error\": \"unknown study_id 'e71cfd93-2660-4ea5-987f-2362474229d5'\"}",
+   "{\"error\": \"unknown study_id 'e71cfd93-2660-4ea5-987f-2362474229d5'\"}",
+   "{\"error\": \"unknown study_id 'e71cfd93-2660-4ea5-987f-2362474229d5'\"}"
+  ]
+ }
+]

@@ -1,0 +1,410 @@
+{
+ "cell": {
+  "cell_id": "t3__p1__competitor_1",
+  "site": "https://monday.com/",
+  "site_name": "Monday",
+  "persona_name": "Sarah Chen",
+  "persona": "Manages complex portfolios across departments, needs robust reporting and governance for strategic initiatives.",
+  "task": "Set up a visual board for content calendar planning\n\nYou are evaluating the site https://monday.com/ only. Stay on that site; opening it is correct.",
+  "status": "queued"
+ },
+ "steps": [
+  {
+   "turn": 0,
+   "tool": "usersim_observe",
+   "action": null
+  },
+  {
+   "turn": 1,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 2,
+   "tool": "usersim_signup_identity",
+   "action": null
+  },
+  {
+   "turn": 3,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 4,
+   "tool": "usersim_act",
+   "action": "type"
+  },
+  {
+   "turn": 5,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 6,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 7,
+   "tool": "usersim_act",
+   "action": "type"
+  },
+  {
+   "turn": 8,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 9,
+   "tool": "usersim_solve_captcha",
+   "action": null
+  },
+  {
+   "turn": 10,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 11,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 12,
+   "tool": "usersim_act",
+   "action": "wait"
+  },
+  {
+   "turn": 13,
+   "tool": "usersim_act",
+   "action": "reload"
+  },
+  {
+   "turn": 14,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 15,
+   "tool": "usersim_act",
+   "action": "type"
+  },
+  {
+   "turn": 16,
+   "tool": "usersim_act",
+   "action": "wait"
+  },
+  {
+   "turn": 17,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 18,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 19,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 20,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 21,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 22,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 23,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 24,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 25,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 26,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 27,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 28,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 29,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 30,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 31,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 32,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 33,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 34,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 35,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 36,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 37,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 38,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 39,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 40,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 41,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 42,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 43,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 44,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 45,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 46,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 47,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 48,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 49,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 50,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 51,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 52,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 53,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 54,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 56,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 57,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 58,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 59,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 60,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 61,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 62,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 63,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 64,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 65,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 66,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 67,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 68,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 69,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 70,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 71,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 72,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 73,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 74,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 75,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 76,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 77,
+   "tool": "usersim_observe",
+   "action": null
+  },
+  {
+   "turn": 78,
+   "tool": "usersim_finish",
+   "action": null
+  }
+ ],
+ "started": 1792359121.6823506,
+ "session_id": "038ae3baa6924619ace497db0f7aff73",
+ "tool_errors": [
+  "usersim_act: HTTPStatusError: Server error '502 Bad Gateway' for url 'https://35-202-98-224.sslip.io/mcp'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/502"
+ ],
+ "finish": "{\"error\": \"unknown session_id '038ae3baa6924619ace497db0f7aff73'\"}",
+ "seconds": 834
+}
