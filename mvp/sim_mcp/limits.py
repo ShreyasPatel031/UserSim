@@ -36,6 +36,7 @@ DEFAULTS: dict[str, Any] = {
     "anon_daily_usd_global": 20.0,
     "est_usd_per_session": 0.1,
     "est_usd_per_step": 0.01,
+    "est_usd_per_prediction": 0.6,
     "anon_max_cells_per_study": 12,
     "anon_allow_sms": True,
     "sms_lease_s": 600,

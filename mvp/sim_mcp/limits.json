@@ -37,6 +37,10 @@
       "value": 0.01,
       "about": "Budget units charged per browser step (usersim_act, usersim_open_verification_link, usersim_solve_captcha). An assumption, not a measured cost. A full 40-step session = 0.10 + 40 x 0.01 = 0.50."
     },
+    "est_usd_per_prediction": {
+      "value": 0.6,
+      "about": "Budget units charged per agent-mode prediction that returns results (usersim_predict_experience). Covers live review scrapes of the product and its rivals (Apify, about $0.5 per 100 reviews) and one model call. An assumption, not a measured cost."
+    },
     "anon_max_cells_per_study": {
       "value": 12,
       "about": "Most persona x task x site runs one study may have, for callers without a token."

@@ -17,6 +17,14 @@ Accounts are always **fresh signups** on `usersim.signups+<tag>@gmail.com` alias
 
 Source of truth: `mvp/sim_mcp/server.py`, `mvp/sim_mcp/sessions.py`, `mvp/sim_mcp/report.py`, `mvp/sim_mcp/limits.py` / `limits.json` on `main`. If this guide and the code disagree, the code wins. A live server also describes itself: call `list_tools` and read the server `instructions`.
 
+## Two modes
+
+- **Human mode** (everything below except `usersim_predict_experience`): a simulated user really uses the product in
+  a recorded cloud browser, and UserSim judges it.
+- **Agent mode** (`usersim_predict_experience`): no browser. Predicts how a kind of user will experience a product from
+  live Capterra/G2 reviews of the product and its named rivals. Returns expected ratings, pros, cons and likely frictions.
+  Use it to set expectations before human mode, or when a browser run isn't possible.
+
 ## What it does
 
 UserSim lets an AI agent act as a **simulated user** of a real, public web product, inside a real cloud browser (Browserbase) that UserSim runs and records. The calling model *is* the simulated user: it looks at screenshots and sends one action at a time (`usersim_act`). UserSim records every step, screenshot and first-person `thought`. When the session ends, UserSim runs its own independent judge and proof checks and writes a report. The report is the same one the UserSim website produces. A **study** is always the full e2e matrix ([docs/E2E_TEST.md](../E2E_TEST.md)): your product plus **2** competitors, **6** personas, **6** tasks, **108** scored cells, and the comparison report. Signup tools give the simulated user a real email inbox, so it can complete email-verified signups.
@@ -174,6 +182,35 @@ Returns `{study_id, watch_url, report_url, runs, cells:[…], rules:{max_steps, 
 
 #### `usersim_finish_study`
 `study_id: string`. This writes the report now from the cells that ran, and marks cells that never started as skipped. Finish any running cells first. Returns `{study_id, started, status, phase, next}`.
+
+### Agent mode tool
+
+#### `usersim_predict_experience`
+| param | type | notes |
+| --- | --- | --- |
+| `product` | string | Name as review sites list it, e.g. `"Basecamp"`. The scrapers search by this name. |
+| `persona` | object | `role` (required), `company_size`, `industry`, `bio` (optional). |
+| `product_url` | string | Optional context. |
+| `task` | string | Optional: what this user is trying to get done. |
+| `competitors` | string[] | 1–3 real rival names. They set the rating prior and the complaint topics. |
+
+The first call starts live scrapes of the product and its rivals (Apify; 1–2 min) and returns `status: "pending"`. Call
+again with the same arguments. Other statuses: `ok`, `no_data` (with `reason`, e.g. no reviews found or no
+`APIFY_TOKEN` on the server; nothing is substituted), `disabled`.
+
+What you get on `ok`:
+
+- **`ratings`**: `overall_rating`, `ease_of_use_rating` and `recommendation_score`, each with `estimate`, `basis`,
+  `n_own`, `n_rivals`, `own_mean` and `rivals_mean`. The estimate is the product's last 100 own reviews, shrunk toward
+  its rivals' average with k = 10. With no own reviews, it is the rivals' average.
+  - Ratings are **not** personalised: on held-out Capterra and G2 reviewers, per-person factors didn't improve accuracy
+    once the level was right.
+  - Evidence: `experiments/human_experience/results/calibrate/FINDINGS.md` and `heldout_bench.py`.
+- **`pros`**, **`cons`**, **`overall_experience`** and **`likely_frictions`**: written for this persona from the most
+  similar reviewers of the product and its rivals.
+- **`evidence`**: how many reviews were used, which rivals had none, and scraper errors.
+
+Callers without a token are charged `est_usd_per_prediction` against the daily caps, only when a call returns `ok`.
 
 ### Signup and inbox tools
 

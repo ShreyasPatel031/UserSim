@@ -33,7 +33,13 @@ INSTRUCTIONS = """UserSim lets you act as a simulated user of a real web product
 
 The simulated user is whatever model is calling these tools. UserSim does not name or require a model. If the human asked for a specific model, use that. Otherwise use the model you are already running as.
 
-Flow:
+Two modes:
+- HUMAN MODE (the flow below): a simulated user really uses the product in a cloud browser; UserSim records and judges it.
+- AGENT MODE (usersim_predict_experience): no browser. Predicts how a kind of user will experience a product from live
+  Capterra/G2 reviews of the product and its named rivals: expected ratings, pros, cons, likely frictions. Takes 1-2 min
+  on the first call (status "pending" means call again). Use it to set expectations before, or instead of, human mode.
+
+Human mode flow:
 1. Get a PUBLIC product URL from the human (localhost won't work; a preview/staging deploy is fine). That is the only thing they must provide.
 2. Draft a realistic persona (one or two sentences: who they are, what they know, why they are here) and ONE task, using the codebase / recent changes if helpful. Show both to the human and wait for approval.
 3. Call usersim_start_session. Open the returned watch_url for the human (e.g. `open <url>` on macOS, `xdg-open <url>` on Linux) so they can watch the browser live.
@@ -472,6 +478,55 @@ async def usersim_get_report(ctx: Context, study_id: str, format: str = "markdow
     if data.get("status") != "complete":
         rep["note"] = "Study is not finished yet; call usersim_finish first."
     return json.dumps(rep, indent=1) if format == "json" else report_markdown(rep)
+
+
+# ---------------------------------------------------------------- agent mode (review data only, no browser)
+
+
+class AgentPersona(BaseModel):
+    """The kind of user to predict for. Fill what you know; role matters most for the words."""
+
+    model_config = ConfigDict(extra="allow")
+    role: str = Field(description='Job title, e.g. "Marketing manager".')
+    company_size: str | None = Field(default=None, description='e.g. "11-50 employees" or "Mid-Market".')
+    industry: str | None = Field(default=None, description='e.g. "Marketing and Advertising".')
+    bio: str | None = Field(default=None, description="Optional one-line description.")
+
+
+@mcp.tool(structured_output=False)
+async def usersim_predict_experience(
+    ctx: Context,
+    product: str = Field(description='Product name as review sites list it, e.g. "Basecamp". The scrapers search by this name.'),
+    persona: AgentPersona = Field(description="The kind of user to predict for."),
+    product_url: str = Field(default="", description="Public URL of the product (context for the words; optional)."),
+    task: str = Field(default="", description="What this user is trying to get done (optional)."),
+    competitors: list[str] | None = Field(default=None, description='Names of 1-3 real rivals, e.g. ["Asana", "Trello"]. Used for the rating prior and for complaint topics.'),
+) -> str:
+    """AGENT MODE: predict how this kind of user will experience the product from live review data. No browser.
+
+    Returns expected ratings (overall, ease of use, recommend 0-10) set from the product's own recent Capterra/G2
+    reviews shrunk toward its rivals', plus pros, cons, overall experience and likely frictions written from the
+    most similar reviewers. The first call starts the scrapes (1-2 min) and may return status "pending": call
+    again with the same arguments. For first-hand evidence use HUMAN MODE (usersim_start_session).
+    """
+    from mvp import agent_mode
+    from mvp.sim_mcp import limits as L
+
+    owner = _owner(ctx)
+    try:
+        if S.is_anon(owner):
+            L.charge(owner, float(L.get("est_usd_per_prediction")), "predict_experience", dry=True)
+    except L.CapExceeded as exc:
+        return _cap_fail(exc)
+    pdict = persona.model_dump(exclude_none=True) if isinstance(persona, BaseModel) else dict(persona or {})
+    out = await agent_mode.predict_experience(product=product, url=product_url, persona=pdict, task=task,
+                                              competitors=list(competitors or []))
+    if out.get("status") == "ok" and S.is_anon(owner):
+        try:
+            L.charge(owner, float(L.get("est_usd_per_prediction")), "predict_experience")
+        except L.CapExceeded as exc:
+            return _cap_fail(exc)
+    return json.dumps(out, indent=1, default=str)
 
 
 # ---------------------------------------------------------------- signup tools (shared core: mvp.signup_tools)

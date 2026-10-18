@@ -37,3 +37,5 @@ data/models/
 data/hackathon/
 .vercel
 .env*.local
+# live review scrapes (mvp/review_context.py)
+cache/apify/
