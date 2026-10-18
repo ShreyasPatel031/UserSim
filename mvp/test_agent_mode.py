@@ -53,6 +53,13 @@ class AgentModeTest(unittest.TestCase):
         self.assertLess(rec["for_this_persona"], rec["estimate"])
         self.assertEqual(rec["most_likely"], 9)  # 8.7-ish expected value -> 9 is the likeliest whole score
 
+    def test_capterra_sub_ratings_become_outputs_and_zero_is_unrated(self):
+        own = [_rev("Basecamp", 5, ease=4, value=0, support=3, functionality=5)] * 4
+        r = A.rating_estimates(own, [])
+        self.assertEqual(r["ease_of_use_rating"]["estimate"], 4.0)
+        self.assertEqual(r["customer_support_rating"]["estimate"], 3.0)
+        self.assertIsNone(r["value_for_money_rating"]["estimate"])
+
     def test_rivals_only_when_product_has_no_reviews(self):
         r = A.rating_estimates([], RIVAL["reviews"])
         self.assertEqual((r["overall_rating"]["estimate"], r["overall_rating"]["basis"]), (4.0, "rivals only (no own reviews)"))

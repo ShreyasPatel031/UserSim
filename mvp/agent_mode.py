@@ -34,8 +34,10 @@ K = 10.0  # shrinkage toward the rivals' average, in reviews
 SIMILAR = 8
 # live-scrape fields -> output scale; G2's 1-7 ease is rescaled to 1-5
 RATINGS = {"overall_rating": (("rating", 1.0, 5.0),), "ease_of_use_rating": (("ease", 1.0, 5.0), ("ease_1_7", 1.0, 7.0)),
-           "recommendation_score": (("nps", 0.0, 10.0),)}
-OUT_SCALE = {"overall_rating": (1.0, 5.0), "ease_of_use_rating": (1.0, 5.0), "recommendation_score": (0.0, 10.0)}
+           "recommendation_score": (("nps", 0.0, 10.0),), "functionality_rating": (("functionality", 1.0, 5.0),),
+           "value_for_money_rating": (("value", 1.0, 5.0),), "customer_support_rating": (("support", 1.0, 5.0),)}
+OUT_SCALE = {"overall_rating": (1.0, 5.0), "ease_of_use_rating": (1.0, 5.0), "recommendation_score": (0.0, 10.0),
+             "functionality_rating": (1.0, 5.0), "value_for_money_rating": (1.0, 5.0), "customer_support_rating": (1.0, 5.0)}
 
 # The predictor prompt validated on held-out reviewers (experiments/staged_context/router_eval.py PRED + matched.PRED_SYSTEM,
 # with thinking on). Its ratings are ignored: agent mode computes ratings from the data, which tested better.

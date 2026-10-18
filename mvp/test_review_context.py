@@ -48,7 +48,7 @@ class ReviewContextTest(unittest.TestCase):
         items = [{"platform": "trustradius", "productName": "Asana", "rating": 4, "recommendationScore": 8, "pros": "Boards",
                   "cons": "Notifications", "text": "ok", "date": "2026-09-01",
                   "reviewer": {"jobTitle": "Marketing Manager", "companySize": "51-200 employees", "industry": "Marketing"},
-                  "platformData": {"timeUsedProduct": "1-2 years"}},
+                  "platformData": {"timeUsedProduct": "1-2 years", "easeOfUseRating": 4, "valueForMoneyRating": 0}},
                  {"platform": "g2", "productName": "Trello", "rating": 5}]
         with tempfile.TemporaryDirectory() as tmp, mock.patch.object(R, "_APIFY_CACHE", Path(tmp)), \
                 mock.patch.object(R, "apify_token", return_value="t"), mock.patch.object(R, "_apify_run", return_value=items) as run, \
@@ -60,6 +60,7 @@ class ReviewContextTest(unittest.TestCase):
         r = out["reviews"][0]
         self.assertEqual((r["source"], r["role"], r["time_used"], r["nps"]), ("trustradius", "Marketing Manager", "1-2 years", 8))
         self.assertIn("Trello", " ".join(out["errors"]))
+        self.assertEqual((r["ease"], r["value"]), (4, 0))
 
     def test_prefetch_without_token_starts_nothing(self):
         with mock.patch.object(R, "apify_token", return_value=None), mock.patch("threading.Thread") as thread:
