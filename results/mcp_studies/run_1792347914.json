@@ -1,0 +1,21 @@
+[
+ {
+  "product_url": "https://www.smartsheet.com",
+  "study_id": "83721ac5-db3c-49a7-a3f2-32866a36fec6",
+  "report_url": "https://atelier-sim.com/report?study=83721ac5-db3c-49a7-a3f2-32866a36fec6",
+  "cells": 108,
+  "finished": 1,
+  "errors": [
+   "ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)",
+   "ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)",
+   "ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)",
+   "ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)",
+   "ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)",
+   "ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)",
+   "ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)",
+   "ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)",
+   "ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)",
+   "ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)"
+  ]
+ }
+]
