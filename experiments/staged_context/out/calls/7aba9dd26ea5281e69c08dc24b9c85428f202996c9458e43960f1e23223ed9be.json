@@ -1,0 +1,29 @@
+{
+  "stage": "mix_live_categorize",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7aba9dd26ea5281e69c08dc24b9c85428f202996c9458e43960f1e23223ed9be",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 119,
+  "output_tokens": 407,
+  "cost_usd": 0.0010532000000000002,
+  "elapsed_s": 3.34,
+  "error": null,
+  "text": "{\n  \"Bitwarden\": \"Security\",\n  \"Copper\": \"CRM\",\n  \"Ecwid\": \"eCommerce\",\n  \"GetResponse\": \"Marketing\",\n  \"Gorgias\": \"Help Desk\",\n  \"Mattermost\": \"Communication\",\n  \"Personio\": \"HR\",\n  \"Sisense\": \"Analytics & BI\",\n  \"Teamwork.com\": \"Project Management\",\n  \"Zoho Books\": \"Accounting\"\n}",
+  "json": {
+    "Bitwarden": "Security",
+    "Copper": "CRM",
+    "Ecwid": "eCommerce",
+    "GetResponse": "Marketing",
+    "Gorgias": "Help Desk",
+    "Mattermost": "Communication",
+    "Personio": "HR",
+    "Sisense": "Analytics & BI",
+    "Teamwork.com": "Project Management",
+    "Zoho Books": "Accounting"
+  },
+  "ts": "2026-10-18T11:04:12.158456+00:00"
+}

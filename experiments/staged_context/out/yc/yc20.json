@@ -1,0 +1,345 @@
+[
+ {
+  "name": "TryNearby",
+  "slug": "trynearby",
+  "website": "https://trynearby.com",
+  "one_liner": "Local creators for local businesses",
+  "industry": "B2B",
+  "subindustry": "B2B -> Marketing",
+  "batch": "Summer 2026",
+  "team_size": 5,
+  "status": "Active",
+  "tags": [
+   "Restaurant Tech",
+   "Marketing",
+   "Creator Economy",
+   "SMB"
+  ],
+  "stage": "Early",
+  "long_description": "TryNearby connects local businesses with creators who live nearby. Restaurants subscribe monthly and automatically get booked visits from local creators who film, edit, and post a review to the local algorithm. This creates a steady stream of content that compounds into discovery on TikTok, Instagram, and increasingly AI search. Over 100 restaurants and thousands of creators are on the platform across Southern California, with AI agents handling matching, booking, and every creator conversation."
+ },
+ {
+  "name": "transload",
+  "slug": "transload",
+  "website": "https://www.transload.ai",
+  "one_liner": "Measure freight with security cameras",
+  "industry": "B2B",
+  "subindustry": "B2B -> Supply Chain and Logistics",
+  "batch": "Spring 2026",
+  "team_size": 3,
+  "status": "Active",
+  "tags": [],
+  "stage": "Early",
+  "long_description": "transload helps logistics companies measure shipments using the security cameras they already have. A pallet, a couch, a tire \u2013 we capture its true size as it moves through the warehouse.\r\n\r\nFor our customers, 15% of shipments turn out to be bigger than what the sender claimed. Catching those differences is worth ~$50k per site per month in rebillings and improved trailer utilization."
+ },
+ {
+  "name": "Miso Labs",
+  "slug": "miso-labs",
+  "website": "https://misolabs.ai",
+  "one_liner": "Emotive foundation voice models",
+  "industry": "B2B",
+  "subindustry": "B2B -> Infrastructure",
+  "batch": "Spring 2026",
+  "team_size": 3,
+  "status": "Active",
+  "tags": [],
+  "stage": "Early",
+  "long_description": "Miso Labs is building the world\u2019s most emotive foundation models for voice. Our goal is to pass the voice Turing test."
+ },
+ {
+  "name": "Luca IQ",
+  "slug": "luca-iq",
+  "website": "https://lucaiq.com/",
+  "one_liner": "API-first tax engine for CPA firms and developers",
+  "industry": "B2B",
+  "subindustry": "B2B -> Finance and Accounting",
+  "batch": "Summer 2026",
+  "team_size": 5,
+  "status": "Active",
+  "tags": [
+   "Artificial Intelligence",
+   "B2B",
+   "API",
+   "Infrastructure"
+  ],
+  "stage": "Early",
+  "long_description": "Luca IQ is an API for deterministic tax calculation and an IRS Authorized e-filing engine - the foundation for accounting firms and fintechs building on tax."
+ },
+ {
+  "name": "Parasma",
+  "slug": "parasma",
+  "website": "https://parasma.com",
+  "one_liner": "Replacing GPUs with human brain cells",
+  "industry": "B2B",
+  "subindustry": "B2B -> Infrastructure",
+  "batch": "Summer 2026",
+  "team_size": 2,
+  "status": "Active",
+  "tags": [
+   "Machine Learning",
+   "Neurotechnology",
+   "AI"
+  ],
+  "stage": "Early",
+  "long_description": "We train human brain cells for compute"
+ },
+ {
+  "name": "Amorphic Labs",
+  "slug": "amorphic-labs",
+  "website": "https://www.agentmuxer.com",
+  "one_liner": "OpenRouter for Agent Tools",
+  "industry": "B2B",
+  "subindustry": "B2B -> Engineering, Product and Design",
+  "batch": "Summer 2026",
+  "team_size": 2,
+  "status": "Active",
+  "tags": [
+   "Artificial Intelligence",
+   "Marketplace",
+   "B2B"
+  ],
+  "stage": "Early",
+  "long_description": "The next billion software users are AI agents, yet agents still can't act on their own: every paid tool they need runs through a human making accounts, managing API keys, and guessing which provider is best. We are the capability marketplace built for agents: one MCP and one balance through which agents find, pay for, and use APIs, data, skills, other agents, and software at runtime, with every request routed to the best provider based on benchmarks from real tasks and outcome feedback from the agents themselves."
+ },
+ {
+  "name": "Alkera AI",
+  "slug": "alkera-ai",
+  "website": "https://alkera.ai",
+  "one_liner": "Reliable and safe data engineering and data science agents",
+  "industry": "B2B",
+  "subindustry": "B2B -> Engineering, Product and Design",
+  "batch": "Summer 2026",
+  "team_size": 3,
+  "status": "Active",
+  "tags": [
+   "Artificial Intelligence",
+   "Developer Tools",
+   "Data Science",
+   "Data Engineering",
+   "Enterprise Software"
+  ],
+  "stage": "Early",
+  "long_description": "Alkera is a data engineering/analysis/science agent that works in your IDE or CLI. If you\u2019re tired of agents that produce false, or even dangerous, reports about your data, then Alkera is for you. Our agent is equipped with your data\u2019s history and lineage, your team\u2019s knowledge, and tailored plugins for data apps such as Snowflake and dbt. Simply install and connect your services to begin doing trusted agentic data work. We also offer VPC & on-prem deployment options for when data can't leave your boundary."
+ },
+ {
+  "name": "MusicArena",
+  "slug": "musicarena",
+  "website": "https://musicarena.io/",
+  "one_liner": "The crowdsourced benchmark for AI-generated music and music production",
+  "industry": "B2B",
+  "subindustry": "B2B",
+  "batch": "Summer 2026",
+  "team_size": -1,
+  "status": "Active",
+  "tags": [
+   "Music",
+   "Crowdsourcing",
+   "AI"
+  ],
+  "stage": "Early",
+  "long_description": "https://musicarena.io/"
+ },
+ {
+  "name": "Speko",
+  "slug": "speko",
+  "website": "https://speko.ai/?utm_source=ycombinator&utm_medium=profile",
+  "one_liner": "OpenRouter for Voice AI: one API, every call on the best speech model",
+  "industry": "B2B",
+  "subindustry": "B2B -> Infrastructure",
+  "batch": "Summer 2026",
+  "team_size": 4,
+  "status": "Active",
+  "tags": [
+   "Artificial Intelligence",
+   "Developer Tools",
+   "Conversational AI"
+  ],
+  "stage": "Early",
+  "long_description": "Speko is a router for voice models: one API key, and your voice agent runs on the speech-to-text, LLM, and text-to-speech models we measured as best for your language and use case. The measurements are public at benchmarks.speko.ai: we test new models the day they ship and re-route when the numbers change, so you rewrite nothing. We ran this bake-off by hand for four years at previous company, shipping production voice for Fortune 500s."
+ },
+ {
+  "name": "AgentPhone",
+  "slug": "agentphone",
+  "website": "https://agentphone.ai/",
+  "one_liner": "Phone Numbers for AI Agents",
+  "industry": "B2B",
+  "subindustry": "B2B -> Infrastructure",
+  "batch": "Spring 2026",
+  "team_size": null,
+  "status": "Active",
+  "tags": [],
+  "stage": "Early",
+  "long_description": "The $2T global telecom industry was built for humans. Agents can't act in the real world today because without a phone number, they lack identity. AgentPhone gives every AI agent its own phone number to reach people and businesses through messages and calls."
+ },
+ {
+  "name": "Ooak Data",
+  "slug": "ooak-data",
+  "website": "https://ooakdata.com/",
+  "one_liner": "We turn company data into training data",
+  "industry": "B2B",
+  "subindustry": "B2B",
+  "batch": "Summer 2026",
+  "team_size": 5,
+  "status": "Active",
+  "tags": [
+   "Artificial Intelligence",
+   "Reinforcement Learning"
+  ],
+  "stage": "Early",
+  "long_description": "Ooak Data turns internal company data into a training ground where AI agents can be tested on real work.\r\n"
+ },
+ {
+  "name": "Conifer",
+  "slug": "conifer",
+  "website": "https://www.conifer.build",
+  "one_liner": "Least cost routing system to reduce 70%+ token spend",
+  "industry": "B2B",
+  "subindustry": "B2B",
+  "batch": "Summer 2026",
+  "team_size": 4,
+  "status": "Active",
+  "tags": [
+   "Artificial Intelligence",
+   "Developer Tools",
+   "B2B",
+   "Security"
+  ],
+  "stage": "Early",
+  "long_description": "There are thousands of models, providers, and harnesses, each with its own pricing and strengths, leaving an overwhelming number of choices when it comes to managing token spend and intelligence. Conifer uses intelligent routing and orchestration logic to handle the full path of each query: model selection, provider choice, and cache management. It all runs inside your existing harness, so tools like Claude Code and Codex work without changing your setup. By centralizing where inference occurs, Conifer lets companies save on their inference bill while leaving teams free to focus on what they are building."
+ },
+ {
+  "name": "RASPIRE",
+  "slug": "raspire",
+  "website": "https://raspire.com/",
+  "one_liner": "Autonomous Runtime Security",
+  "industry": "B2B",
+  "subindustry": "B2B -> Security",
+  "batch": "Spring 2026",
+  "team_size": 3,
+  "status": "Active",
+  "tags": [],
+  "stage": "Early",
+  "long_description": "RASPIRE is the first line of defense for applications against AI-powered fraud attacks, API abuse, and runtime threats. Unlike code scanners and pentesting tools that identify vulnerabilities before release, RASPIRE operates like a security expert running inside applications, monitoring, detecting, and blocking attacks 24/7 in real time. All without writing a single line of code."
+ },
+ {
+  "name": "Enjamb Labs",
+  "slug": "enjamb-labs",
+  "website": "https://www.enjamb.ai",
+  "one_liner": "The AI Workforce for Biopharma",
+  "industry": "B2B",
+  "subindustry": "B2B",
+  "batch": "Spring 2026",
+  "team_size": 2,
+  "status": "Active",
+  "tags": [
+   "SaaS",
+   "B2B",
+   "Biotech",
+   "Automation",
+   "AI"
+  ],
+  "stage": "Early",
+  "long_description": "We've worked with 130 life science companies, preclinical through phase 3, to deploy AI securely inside the systems they already work in.\r\n\r\nPharma runs on decades of closed software like Benchling, Veeva, Medidata, and SAS. None of it has an AI layer or speaks MCP, so agents cannot reach the systems where the work lives.\r\n\r\nEnjamb is that layer. Our agents run on top of existing systems and data, with no migration, and they reach the lab systems and internal tools no other AI touches. They learn how a team works, then do the work in Slack, in Teams, and in the systems themselves, across preclinical research, clinical evidence, trial design, statistical programming, and regulatory submissions.\r\n\r\nThis is AI tailored for how medicine gets made."
+ },
+ {
+  "name": "Netter",
+  "slug": "netter",
+  "website": "https://netter.ai",
+  "one_liner": "AI agents for data science (enterprise)",
+  "industry": "B2B",
+  "subindustry": "B2B -> Analytics",
+  "batch": "Spring 2026",
+  "team_size": 4,
+  "status": "Active",
+  "tags": [],
+  "stage": "Early",
+  "long_description": "Netter (YC P26) helps companies regain control over their data, so teams can pilot their activities with high precision.\r\n\r\nMost companies are sitting on years of valuable data, spread across different formats and disconnected tools that don't talk to each other.\r\n\r\nNetter brings technical capacity to companies that don't have an army of data engineers, and tackles their most complex data challenges.\r\n\r\n- A nursing home group was chasing unpaid invoices manually across disconnected tools. Netter centralized the collection workflows, automated reminders, real-time visibility, task routing.\r\n- A retail chain had years of loyalty card data sitting unused. Netter cross-referenced it with public demographic data to build precise customer segments and trigger the right promotions to the right people.\r\n"
+ },
+ {
+  "name": "Executor",
+  "slug": "executor",
+  "website": "https://executor.sh",
+  "one_liner": "The open source tool gateway",
+  "industry": "B2B",
+  "subindustry": "B2B -> Infrastructure",
+  "batch": "Summer 2026",
+  "team_size": 1,
+  "status": "Active",
+  "tags": [
+   "AIOps",
+   "Artificial Intelligence",
+   "SaaS"
+  ],
+  "stage": "Early",
+  "long_description": "Executor.sh is an MCP gateway that allows you to sign in once to all of your integrations and use them with any client.\r\n\r\nWe enable you to connect your agents to anything (MCP, GraphQL, OpenAPI) so regardless of what you're trying to connect agents to you're able to.\r\n\r\nIf you're trying to scale agents to access all of your production services, data, etc, you need Executor as a unified management layer."
+ },
+ {
+  "name": "Mentlio",
+  "slug": "mentlio",
+  "website": "https://mentlio.com",
+  "one_liner": "Engineering Intelligence and Token Optimization for the AI-Coding Era",
+  "industry": "B2B",
+  "subindustry": "B2B",
+  "batch": "Summer 2026",
+  "team_size": 0,
+  "status": "Active",
+  "tags": [
+   "Developer Tools",
+   "Machine Learning",
+   "Productivity"
+  ],
+  "stage": "Early",
+  "long_description": "Mentlio an applied research lab focused on optimizing AI ROI for the modern enterprise. We help engineering teams draw a line between their AI spend and delivery, per engineer. We then cut ~30% of AI spend via Mentlio's custom ML-based intelligent routing, context optimization, and prompt compression."
+ },
+ {
+  "name": "Fuchsia",
+  "slug": "fuchsia",
+  "website": "https://getfuchsia.ai/",
+  "one_liner": "Vanta for hardware",
+  "industry": "B2B",
+  "subindustry": "B2B",
+  "batch": "Spring 2026",
+  "team_size": 3,
+  "status": "Active",
+  "tags": [],
+  "stage": "Early",
+  "long_description": "Fuchsia handles hardware certification and testing so great products can get to markets faster. AI agents keep our work accurate, timely, and fully traceable for every stakeholder."
+ },
+ {
+  "name": "Dock",
+  "slug": "dock",
+  "website": "https://trydock.ai",
+  "one_liner": "Hire AI agents to start and run your business",
+  "industry": "B2B",
+  "subindustry": "B2B",
+  "batch": "Summer 2026",
+  "team_size": 2,
+  "status": "Active",
+  "tags": [
+   "Artificial Intelligence",
+   "B2B"
+  ],
+  "stage": "Early",
+  "long_description": "Dock is where you hire AI agents for business. Bring an idea, and your agents turn it into a company that runs: they find the customers, do the work and keep it moving, day and night. Building a company used to mean hiring a building full of people first. With Dock, entrepreneurs can start a real business today and run it like a company of a hundred. You decide where it goes. Your agents make it happen."
+ },
+ {
+  "name": "HyperProbe",
+  "slug": "hyperprobe",
+  "website": "https://hyperprobe.co",
+  "one_liner": "AI engineer that debugs and fixes production incidents in realtime",
+  "industry": "B2B",
+  "subindustry": "B2B -> Engineering, Product and Design",
+  "batch": "Summer 2026",
+  "team_size": 8,
+  "status": "Active",
+  "tags": [
+   "AIOps",
+   "Artificial Intelligence",
+   "Developer Tools",
+   "SaaS",
+   "DevOps"
+  ],
+  "stage": "Early",
+  "long_description": "With tools like Cursor and Claude Code, writing software is no longer the bottleneck. Debugging is. Agents cannot fix production crashes using logs and traces that were sized for human eyeballs. The gap is missing data.\r\n\r\nHyperProbe allows agents to debug live software autonomously. Our SDK drops non-breaking probes straight into running services to read exact variable states from memory at the moment of failure, instead of reasoning backwards from flat logs.\r\n\r\nZero redeploys. Under 1% CPU overhead. Automatic PII redaction.\r\n\r\nWe turn 4-hour production war rooms into 10-minute automated resolutions. As agents write and operate more of the world's software, HyperProbe is the runtime observability layer that lets them understand what they built.\r\n\r\n"
+ }
+]

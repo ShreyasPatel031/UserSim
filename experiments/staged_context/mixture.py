@@ -208,3 +208,71 @@ def live_people(comps: dict) -> list[dict]:
         f = f.assign(_h=f.rid.map(lambda i: E.sha(f"42|live|{p}|{i}"))).sort_values("_h").head(LIVE_PER_PRODUCT)
         out += [{k: (None if isinstance(v, float) and np.isnan(v) else v) for k, v in r.items()} for r in f.to_dict("records")]
     return out
+
+
+# ----------------------------------------------------------------------------- model-free mixture test (ratings level, user mix)
+
+def _norm(name: str) -> str:
+    import re
+    return re.sub(r"[^a-z0-9]", "", str(name).lower().split("(")[0].replace("formerly", ""))[:6]
+
+
+def live_categories(names: list[str]) -> dict:
+    cats = U.categories()
+    rec = E.call_model("mix_live_categorize", FLASH, "You classify software products. Return JSON only.",
+                       f"Assign each product to one category from {cats}, or 'Other'.\nProducts: {json.dumps(sorted(names))}\n"
+                       'Return {"<product>": "<category>", ...}', temperature=0.0, seed=42, max_tokens=4096, thinking_budget=512)
+    j = rec.get("json") if isinstance(rec.get("json"), dict) else {}
+    return {n: j.get(n) if j.get(n) in cats else None for n in names}
+
+
+def tvd(a: pd.Series, b: pd.Series) -> float | None:
+    a, b = a.dropna(), b.dropna()
+    if not len(a) or not len(b):
+        return None
+    pa, pb = a.value_counts(normalize=True), b.value_counts(normalize=True)
+    keys = set(pa.index) | set(pb.index)
+    return float(0.5 * sum(abs(pa.get(k, 0) - pb.get(k, 0)) for k in keys))
+
+
+def mix_eval() -> pd.DataFrame:
+    """Per held-out product: rating level error and role / size mix TVD for each mixture of C, G, L."""
+    comps = E.read_json(MOUT / "competitors.json")
+    df = C.corpus()
+    _, g_test = g2_test()
+    targets_ = {"capterra": list(RE.TEST), "g2": list(g_test), "live": list(LIVE_TARGETS)}
+    lcat = live_categories(list(LIVE_TARGETS))
+    rows = []
+    for evs, prods in targets_.items():
+        for p in prods:
+            if evs == "live":
+                truth = L.frame(p)
+                cat = lcat.get(p)
+            else:
+                truth = df[(df.source == ("capterra" if evs == "capterra" else "g2")) & (df["product"] == p)]
+                cat = truth.category.iloc[0] if len(truth) else None
+            truth = truth[truth.role_family != "unknown"] if "role_family" in truth else truth
+            src = {}
+            for s, sname in (("C", "capterra"), ("G", "g2")):
+                pool = df[(df.source == sname) & (df.category == cat) & (df["product"].map(_norm) != _norm(p))] if cat else df.iloc[:0]
+                src[s] = pool
+            src["L"] = live_pool(p, comps)
+            for mix in MIXES:
+                parts = [src[s] for s in mix if len(src[s])]
+                if len(parts) != len(mix):
+                    continue  # a source has no data for this product: the mixture is not available
+                lvl = float(np.mean([pt.overall_rating.mean() for pt in parts]))
+                role = pd.concat([pt.role_family[pt.role_family != "unknown"].sample(
+                    n=min(300, int((pt.role_family != "unknown").sum())), random_state=0) for pt in parts])
+                size = pd.concat([pt.size3.dropna().sample(n=min(300, int(pt.size3.notna().sum())), random_state=0) for pt in parts])
+                rows.append({"eval_set": evs, "product": p, "category": cat, "mix": mix,
+                             "rating_err": abs(lvl - truth.overall_rating.mean()),
+                             "role_tvd": tvd(role, truth.role_family), "size_tvd": tvd(size, truth.size3),
+                             "n_truth": len(truth)})
+    R = pd.DataFrame(rows)
+    R.to_csv(MOUT / "mix_eval.csv", index=False)
+    return R
+
+
+if __name__ == "__main__":
+    {"scrape": scrape_all, "mix_eval": lambda: print(mix_eval().groupby(["eval_set", "mix"])[["rating_err", "role_tvd", "size_tvd"]].mean().round(3))}[sys.argv[1]]()
