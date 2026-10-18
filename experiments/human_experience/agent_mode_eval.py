@@ -74,7 +74,7 @@ def main() -> None:
     for r in RE.sample(U.data()):
         people.append({"rid": "C:" + str(r["review_id"]), "orig": r, "source": "capterra", "product": r["product_name"],
                        "category": r["product_category_group"]})
-    gp, _, _ = G.g2_people() if not VARIANT else ([], [], [])
+    gp, _, _ = G.g2_people() if (not VARIANT or "no_own" in VARIANT) else ([], [], [])
     for r in gp:
         people.append({"rid": r["rid"], "orig": r, "source": "g2", "product": r["product"], "category": r["category"]})
     by_rid = d.set_index("rid")
@@ -115,6 +115,8 @@ def main() -> None:
         riv = pd.concat([comp[comp["product"] == t].sort_values("date", ascending=False).head(PER_RIVAL) for t in top]) if len(top) else comp.head(0)
         if "rivals_category" in VARIANT:  # research layout: similar reviews drawn from the whole category
             riv, top = comp, list(comp["product"].unique())
+        if "no_own" in VARIANT:  # a net-new product: no reviews of its own exist
+            own = own.head(0)
         return [live_shape(x) for x in own.head(A.LAST).to_dict("records")], [live_shape(x) for x in riv.to_dict("records")], list(top)
 
     def run(p):
@@ -176,7 +178,7 @@ def main() -> None:
     base_g = pd.read_csv(HERE / "results/own_reviews_bench_g2/per_person.csv")
     base = pd.concat([base_c.assign(rid="C:" + base_c.rid.astype(str), source="capterra"), base_g.assign(source="g2")])
     pd.set_option("display.width", 250)
-    for src in (("capterra",) if VARIANT else ("capterra", "g2")):
+    for src in (("capterra",) if (VARIANT and "no_own" not in VARIANT) else ("capterra", "g2")):
         b = base[base.source == src].groupby("cond")[["pros", "cons", "overall_experience"] +
                                                     [c for c in base.columns if c == "overall_rating_abs_err"]].mean()
         m = M[M.source == src]
