@@ -125,7 +125,7 @@ def main() -> None:
         url = RE.URLS.get(p["product"], "") if p["source"] == "capterra" else ""
         prompt = A.words_prompt(p["product"], url, per, refs[p["rid"]]["task"], A.evidence_text(p["product"], own, riv, per, ratings)[:14000])
         rec = E.call_model("agent_mode_words_v4" + (f"_{VARIANT}" if VARIANT else ""), FLASH, A.WORDS_SYSTEM, prompt, temperature=0.7, seed=1000, max_tokens=8192,
-                           thinking_budget=A.WORDS_THINKING, key_extra=p["rid"])
+                           thinking_budget=A.WORDS_THINKING, key_extra=p["rid"] + (f"|{VARIANT}" if VARIANT else ""))
         words = rec.get("json") if isinstance(rec.get("json"), dict) else {}
         return p["rid"], {"ratings": ratings, "words": words, "rivals": top, "n_own": len(own)}
 
