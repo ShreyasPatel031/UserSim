@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d88965ac4a65067d8f7d9825e90c448989d2d53d9312d3114588bda516c06b86",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 260,
+  "output_tokens": 1123,
+  "cost_usd": 0.0028855,
+  "elapsed_s": 10.9,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Intuitive visual pipeline management\",\n    \"Cost-effective compared to HubSpot\",\n    \"Easy for the sales team to adopt\"\n  ],\n  \"cons\": [\n    \"Reporting capabilities were less comprehensive than desired\",\n    \"Missed some integrated marketing features from previous CRM\",\n    \"Required additional integrations for full business needs\"\n  ],\n  \"overall_experience\": \"The Managing Director likely found Pipedrive to be a highly effective and more focused tool for managing their small sales team's leads, especially after transitioning from the more feature-rich HubSpot. The platform's ease of use and visual pipeline were significant benefits, offering clear oversight of sales activities. While some advanced reporting or integrated marketing features from their previous CRM were missed, the excellent value for money and simplified sales process made it a worthwhile change for their transportation business.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Intuitive visual pipeline management",
+      "Cost-effective compared to HubSpot",
+      "Easy for the sales team to adopt"
+    ],
+    "cons": [
+      "Reporting capabilities were less comprehensive than desired",
+      "Missed some integrated marketing features from previous CRM",
+      "Required additional integrations for full business needs"
+    ],
+    "overall_experience": "The Managing Director likely found Pipedrive to be a highly effective and more focused tool for managing their small sales team's leads, especially after transitioning from the more feature-rich HubSpot. The platform's ease of use and visual pipeline were significant benefits, offering clear oversight of sales activities. While some advanced reporting or integrated marketing features from their previous CRM were missed, the excellent value for money and simplified sales process made it a worthwhile change for their transportation business."
+  },
+  "ts": "2026-10-18T04:33:22.369013+00:00"
+}

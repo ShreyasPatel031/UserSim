@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e1ca2f4e7b368122271cda75d4f17f10925564eae5ced4f71d1af1adc18ea90d",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2314,
+  "output_tokens": 1043,
+  "cost_usd": 0.0033017000000000003,
+  "elapsed_s": 26.7,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effective for tracking sales and managing client interactions.\",\n    \"Relatively straightforward to get started and use for daily tasks.\",\n    \"Provides good value for a small financial services firm.\"\n  ],\n  \"cons\": [\n    \"Some limitations in advanced customization options.\",\n    \"Integrations with specific financial tools may not be seamless.\",\n    \"Reporting capabilities could be more robust for in-depth analysis.\"\n  ],\n  \"overall_experience\": \"This Managing Director likely found Freshsales to be a solid and practical CRM solution for their small financial services firm. They appreciated its core functionality for sales tracking and ease of use, finding it a cost-effective choice. However, they may have encountered some frustrations with advanced customization, specific integrations, or the depth of reporting available, which are common pain points in this category.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Effective for tracking sales and managing client interactions.",
+      "Relatively straightforward to get started and use for daily tasks.",
+      "Provides good value for a small financial services firm."
+    ],
+    "cons": [
+      "Some limitations in advanced customization options.",
+      "Integrations with specific financial tools may not be seamless.",
+      "Reporting capabilities could be more robust for in-depth analysis."
+    ],
+    "overall_experience": "This Managing Director likely found Freshsales to be a solid and practical CRM solution for their small financial services firm. They appreciated its core functionality for sales tracking and ease of use, finding it a cost-effective choice. However, they may have encountered some frustrations with advanced customization, specific integrations, or the depth of reporting available, which are common pain points in this category."
+  },
+  "ts": "2026-10-18T04:33:11.932743+00:00"
+}

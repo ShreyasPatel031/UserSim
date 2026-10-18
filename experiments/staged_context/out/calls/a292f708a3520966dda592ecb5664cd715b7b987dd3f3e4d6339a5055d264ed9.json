@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a292f708a3520966dda592ecb5664cd715b7b987dd3f3e4d6339a5055d264ed9",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1985,
+  "output_tokens": 1027,
+  "cost_usd": 0.003163,
+  "elapsed_s": 5.64,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Intuitive interface for daily tasks\",\n    \"Effective at organizing sales pipeline\",\n    \"Good integration capabilities for marketing tools\"\n  ],\n  \"cons\": [\n    \"Search functionality can sometimes be slow or clunky\",\n    \"Pricing can become expensive for advanced features\",\n    \"Limited customization options for reporting\"\n  ],\n  \"overall_experience\": \"This digital marketing manager generally found Pipedrive to be a solid tool for managing their sales pipeline, appreciating its user-friendly interface and integration capabilities. However, they experienced occasional frustration with the search bar's performance when trying to locate specific records, a critical task for their role. While the core functionality met their needs, they found the value for money decreased with the desire for more advanced features, echoing common concerns about CRM pricing.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Intuitive interface for daily tasks",
+      "Effective at organizing sales pipeline",
+      "Good integration capabilities for marketing tools"
+    ],
+    "cons": [
+      "Search functionality can sometimes be slow or clunky",
+      "Pricing can become expensive for advanced features",
+      "Limited customization options for reporting"
+    ],
+    "overall_experience": "This digital marketing manager generally found Pipedrive to be a solid tool for managing their sales pipeline, appreciating its user-friendly interface and integration capabilities. However, they experienced occasional frustration with the search bar's performance when trying to locate specific records, a critical task for their role. While the core functionality met their needs, they found the value for money decreased with the desire for more advanced features, echoing common concerns about CRM pricing."
+  },
+  "ts": "2026-10-18T04:33:19.053182+00:00"
+}

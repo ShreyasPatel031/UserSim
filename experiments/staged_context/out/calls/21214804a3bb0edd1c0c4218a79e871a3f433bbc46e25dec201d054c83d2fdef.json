@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "21214804a3bb0edd1c0c4218a79e871a3f433bbc46e25dec201d054c83d2fdef",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2207,
+  "output_tokens": 945,
+  "cost_usd": 0.0030246,
+  "elapsed_s": 25.81,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Ability to customize customer profile views\",\n    \"Centralized contact information\",\n    \"Improved visibility of key details\"\n  ],\n  \"cons\": [\n    \"Initial complexity in setting up custom views\",\n    \"Potential for minor UI quirks\",\n    \"Limited advanced reporting features\"\n  ],\n  \"overall_experience\": \"This Learn Support Coordinator likely found Freshsales to be a generally capable tool for managing customer profiles, particularly appreciating its customization options for displaying critical contact information. While setup for specific views might have presented a slight learning curve, the long-term use suggests satisfaction with its core functionality. The experience was positive enough to recommend it, though not without minor frustrations.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Ability to customize customer profile views",
+      "Centralized contact information",
+      "Improved visibility of key details"
+    ],
+    "cons": [
+      "Initial complexity in setting up custom views",
+      "Potential for minor UI quirks",
+      "Limited advanced reporting features"
+    ],
+    "overall_experience": "This Learn Support Coordinator likely found Freshsales to be a generally capable tool for managing customer profiles, particularly appreciating its customization options for displaying critical contact information. While setup for specific views might have presented a slight learning curve, the long-term use suggests satisfaction with its core functionality. The experience was positive enough to recommend it, though not without minor frustrations."
+  },
+  "ts": "2026-10-18T04:33:11.260441+00:00"
+}

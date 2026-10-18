@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "cfcd7000f154cd2f93ab79e87e5275905580bc3772e02e5de9c21b13e8346ca2",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2181,
+  "output_tokens": 1113,
+  "cost_usd": 0.0034368000000000003,
+  "elapsed_s": 25.86,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Cost-effective alternative to Salesforce/HubSpot\",\n    \"Effective for automating email and lead follow-up\",\n    \"Robust customization for sales process fields\"\n  ],\n  \"cons\": [\n    \"Initial learning curve for advanced features\",\n    \"Occasional performance or reporting limitations\",\n    \"Customer support could be more responsive\"\n  ],\n  \"overall_experience\": \"This owner, having used Zoho CRM for over two years, likely values its ability to automate key sales tasks like email sending and lead follow-up, especially coming from more expensive alternatives. While finding it generally functional and offering strong value for money compared to Salesforce or HubSpot, they may have encountered some challenges with ease of use or advanced customization, consistent with an owner's need for a powerful yet manageable system in a small to medium-sized broadcast media company.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Cost-effective alternative to Salesforce/HubSpot",
+      "Effective for automating email and lead follow-up",
+      "Robust customization for sales process fields"
+    ],
+    "cons": [
+      "Initial learning curve for advanced features",
+      "Occasional performance or reporting limitations",
+      "Customer support could be more responsive"
+    ],
+    "overall_experience": "This owner, having used Zoho CRM for over two years, likely values its ability to automate key sales tasks like email sending and lead follow-up, especially coming from more expensive alternatives. While finding it generally functional and offering strong value for money compared to Salesforce or HubSpot, they may have encountered some challenges with ease of use or advanced customization, consistent with an owner's need for a powerful yet manageable system in a small to medium-sized broadcast media company."
+  },
+  "ts": "2026-10-18T04:33:12.737012+00:00"
+}

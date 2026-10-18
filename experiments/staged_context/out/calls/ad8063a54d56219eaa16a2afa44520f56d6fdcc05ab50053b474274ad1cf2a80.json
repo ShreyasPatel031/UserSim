@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ad8063a54d56219eaa16a2afa44520f56d6fdcc05ab50053b474274ad1cf2a80",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 253,
+  "output_tokens": 1038,
+  "cost_usd": 0.0026709,
+  "elapsed_s": 25.41,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Centralized contact and lead management\",\n    \"Streamlined email communication\",\n    \"Good value for the features provided\"\n  ],\n  \"cons\": [\n    \"Initial learning curve for setup\",\n    \"Interface can feel cluttered at times\",\n    \"Integration with specific education tools might be limited\"\n  ],\n  \"overall_experience\": \"The founder owner likely found Zoho CRM to be a significant upgrade from their previous manual methods, greatly improving their ability to manage contacts and communicate via email. Its comprehensive features and competitive pricing offered strong value, allowing them to centralize operations and track interactions more effectively over their 2+ years of use. While the initial setup may have required some effort, the overall functionality and ease of daily tasks for their core needs were beneficial for their education management company.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Centralized contact and lead management",
+      "Streamlined email communication",
+      "Good value for the features provided"
+    ],
+    "cons": [
+      "Initial learning curve for setup",
+      "Interface can feel cluttered at times",
+      "Integration with specific education tools might be limited"
+    ],
+    "overall_experience": "The founder owner likely found Zoho CRM to be a significant upgrade from their previous manual methods, greatly improving their ability to manage contacts and communicate via email. Its comprehensive features and competitive pricing offered strong value, allowing them to centralize operations and track interactions more effectively over their 2+ years of use. While the initial setup may have required some effort, the overall functionality and ease of daily tasks for their core needs were beneficial for their education management company."
+  },
+  "ts": "2026-10-18T04:33:12.603316+00:00"
+}

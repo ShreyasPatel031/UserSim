@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9c933c5b262fb8845cfeb429ef8b6f159e694f2d6ccd01f1c696566ebaa188ab",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2406,
+  "output_tokens": 1015,
+  "cost_usd": 0.0032593,
+  "elapsed_s": 24.04,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Better value for money compared to Salesforce\",\n    \"Streamlined client and prospect tagging\",\n    \"Sufficient functionality for core CRM needs\"\n  ],\n  \"cons\": [\n    \"May lack some advanced features of Salesforce\",\n    \"Initial learning curve for customization\",\n    \"Reporting might be less robust than desired\"\n  ],\n  \"overall_experience\": \"This CEO likely found Zoho CRM to be a cost-effective and capable alternative to Salesforce Sales Cloud, especially for managing client and prospect data. The product offered good value for money and sufficient core functionality for their small to medium-sized financial services firm. While it might not have all the advanced features of its predecessor, its ease of use and price point made it a suitable choice for their operational needs.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Better value for money compared to Salesforce",
+      "Streamlined client and prospect tagging",
+      "Sufficient functionality for core CRM needs"
+    ],
+    "cons": [
+      "May lack some advanced features of Salesforce",
+      "Initial learning curve for customization",
+      "Reporting might be less robust than desired"
+    ],
+    "overall_experience": "This CEO likely found Zoho CRM to be a cost-effective and capable alternative to Salesforce Sales Cloud, especially for managing client and prospect data. The product offered good value for money and sufficient core functionality for their small to medium-sized financial services firm. While it might not have all the advanced features of its predecessor, its ease of use and price point made it a suitable choice for their operational needs."
+  },
+  "ts": "2026-10-18T04:33:11.350955+00:00"
+}

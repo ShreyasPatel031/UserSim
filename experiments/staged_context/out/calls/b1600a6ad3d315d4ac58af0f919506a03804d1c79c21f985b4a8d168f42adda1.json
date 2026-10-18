@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b1600a6ad3d315d4ac58af0f919506a03804d1c79c21f985b4a8d168f42adda1",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2366,
+  "output_tokens": 1022,
+  "cost_usd": 0.0032648,
+  "elapsed_s": 26.83,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Integrated time tracking within the CRM platform\",\n    \"Helps organize and track employee time efficiently\",\n    \"Centralized system for various operational tasks\"\n  ],\n  \"cons\": [\n    \"Time tracking feature might lack advanced functionalities\",\n    \"Initial setup and customization can be complex\",\n    \"Finding specific features within the broad suite can be time-consuming\"\n  ],\n  \"overall_experience\": \"The Office Manager likely found Zoho CRM to be a capable tool for managing various operational aspects, particularly appreciating the convenience of integrated time tracking. While the core CRM functions were generally positive, the specific time tracking feature may have been adequate but not exceptionally robust. Customization and navigating the extensive features might have presented a slight learning curve during their 1-2 years of use.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Integrated time tracking within the CRM platform",
+      "Helps organize and track employee time efficiently",
+      "Centralized system for various operational tasks"
+    ],
+    "cons": [
+      "Time tracking feature might lack advanced functionalities",
+      "Initial setup and customization can be complex",
+      "Finding specific features within the broad suite can be time-consuming"
+    ],
+    "overall_experience": "The Office Manager likely found Zoho CRM to be a capable tool for managing various operational aspects, particularly appreciating the convenience of integrated time tracking. While the core CRM functions were generally positive, the specific time tracking feature may have been adequate but not exceptionally robust. Customization and navigating the extensive features might have presented a slight learning curve during their 1-2 years of use."
+  },
+  "ts": "2026-10-18T04:33:13.977542+00:00"
+}

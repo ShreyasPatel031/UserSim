@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7c35cc1ac9a1067d4768ad22dd43daf2601575c125070face388a0c773c454d4",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2263,
+  "output_tokens": 1076,
+  "cost_usd": 0.0033688999999999998,
+  "elapsed_s": 8.56,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Visual sales pipeline is intuitive for deal management\",\n    \"Easy to set up and start tracking sales activities\",\n    \"Good for a small team needing basic CRM features\"\n  ],\n  \"cons\": [\n    \"Reporting capabilities felt somewhat limited for deeper analysis\",\n    \"Customization options could be more robust\",\n    \"Pricing might become a concern for scaling beyond basic features\"\n  ],\n  \"overall_experience\": \"The Growth Manager found Pipedrive to be a straightforward tool for managing sales deals during the free trial. They appreciated its visual pipeline and ease of use for basic sales process management. However, they noted some limitations in reporting and customization that might become restrictive for more complex needs as the company grows.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Visual sales pipeline is intuitive for deal management",
+      "Easy to set up and start tracking sales activities",
+      "Good for a small team needing basic CRM features"
+    ],
+    "cons": [
+      "Reporting capabilities felt somewhat limited for deeper analysis",
+      "Customization options could be more robust",
+      "Pricing might become a concern for scaling beyond basic features"
+    ],
+    "overall_experience": "The Growth Manager found Pipedrive to be a straightforward tool for managing sales deals during the free trial. They appreciated its visual pipeline and ease of use for basic sales process management. However, they noted some limitations in reporting and customization that might become restrictive for more complex needs as the company grows."
+  },
+  "ts": "2026-10-18T04:33:20.231489+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "6e95f6a438bd5fa0649e5a7cfe72a787609bf320728fe6665274cf96c3b7444a",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2033,
+  "output_tokens": 1073,
+  "cost_usd": 0.0032924,
+  "elapsed_s": 24.24,
+  "error": null,
+  "text": "{\n \"ease_of_use_rating\": 4,\n \"functionality_rating\": 4,\n \"overall_rating\": 4,\n \"value_for_money_rating\": 4,\n \"customer_support_rating\": 4,\n \"recommendation_score\": 8,\n \"pros\": [\n  \"Robust features for email automation\",\n  \"Customizable workflows for client management\",\n  \"Consolidated customer data in one platform\"\n ],\n \"cons\": [\n  \"Steep learning curve for advanced features\",\n  \"Interface can feel overwhelming for a solo consultant\",\n  \"Potential for high costs with additional features or scaling\"\n ],\n \"overall_experience\": \"As a self-employed Marketing Consultant, this individual found Zoho CRM to be a powerful tool for setting up automated email workflows and managing client relationships. While the platform offered robust functionality and customization, they likely experienced a learning curve, especially in the initial months. The overall experience was positive due to its comprehensive features, but the complexity and potential cost might be noted as minor frustrations for a solo user.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Robust features for email automation",
+      "Customizable workflows for client management",
+      "Consolidated customer data in one platform"
+    ],
+    "cons": [
+      "Steep learning curve for advanced features",
+      "Interface can feel overwhelming for a solo consultant",
+      "Potential for high costs with additional features or scaling"
+    ],
+    "overall_experience": "As a self-employed Marketing Consultant, this individual found Zoho CRM to be a powerful tool for setting up automated email workflows and managing client relationships. While the platform offered robust functionality and customization, they likely experienced a learning curve, especially in the initial months. The overall experience was positive due to its comprehensive features, but the complexity and potential cost might be noted as minor frustrations for a solo user."
+  },
+  "ts": "2026-10-18T04:33:11.507011+00:00"
+}

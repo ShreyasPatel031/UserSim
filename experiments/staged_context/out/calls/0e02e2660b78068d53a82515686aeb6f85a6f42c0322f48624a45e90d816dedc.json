@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0e02e2660b78068d53a82515686aeb6f85a6f42c0322f48624a45e90d816dedc",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2284,
+  "output_tokens": 1131,
+  "cost_usd": 0.0035127,
+  "elapsed_s": 27.08,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effective lead scoring and pipeline management for prioritizing high-potential leads.\",\n    \"Relatively intuitive interface, making it easy for a small team to adopt.\",\n    \"Offers good value for money with essential CRM functionalities for a startup.\"\n  ],\n  \"cons\": [\n    \"Could have some limitations in advanced customization or automation as the business scales.\",\n    \"Reporting features might lack depth for more complex analytical needs.\",\n    \"Potential for minor performance lags or occasional UI quirks.\"\n  ],\n  \"overall_experience\": \"This Co-Founder likely found Freshsales to be a solid tool for managing and prioritizing leads within their small software company. While generally satisfied with its ease of use and core functionalities, they probably encountered some minor limitations or areas for improvement, particularly regarding deeper customization or reporting. The product offered good value for money, making it a suitable choice for their startup's needs.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Effective lead scoring and pipeline management for prioritizing high-potential leads.",
+      "Relatively intuitive interface, making it easy for a small team to adopt.",
+      "Offers good value for money with essential CRM functionalities for a startup."
+    ],
+    "cons": [
+      "Could have some limitations in advanced customization or automation as the business scales.",
+      "Reporting features might lack depth for more complex analytical needs.",
+      "Potential for minor performance lags or occasional UI quirks."
+    ],
+    "overall_experience": "This Co-Founder likely found Freshsales to be a solid tool for managing and prioritizing leads within their small software company. While generally satisfied with its ease of use and core functionalities, they probably encountered some minor limitations or areas for improvement, particularly regarding deeper customization or reporting. The product offered good value for money, making it a suitable choice for their startup's needs."
+  },
+  "ts": "2026-10-18T04:33:13.015733+00:00"
+}

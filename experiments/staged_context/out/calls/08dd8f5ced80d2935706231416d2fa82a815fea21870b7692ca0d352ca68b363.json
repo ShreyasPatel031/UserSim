@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "08dd8f5ced80d2935706231416d2fa82a815fea21870b7692ca0d352ca68b363",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2317,
+  "output_tokens": 1021,
+  "cost_usd": 0.0032476000000000002,
+  "elapsed_s": 28.63,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effective lead tracking and management features.\",\n    \"User interface is generally intuitive and easy to navigate.\",\n    \"Good reporting capabilities for sales pipeline visibility.\"\n  ],\n  \"cons\": [\n    \"Limited customization options for specific real estate workflows.\",\n    \"Integrations with other industry-specific tools could be improved.\",\n    \"Occasional performance issues or slowness when loading data.\"\n  ],\n  \"overall_experience\": \"This software engineer likely found Freshsales to be a competent tool for managing sales leads within their real estate company. They appreciated its ease of use and core functionality for tracking the sales process. However, the reviewer probably encountered some limitations regarding customization for their specific industry needs and desired better integration capabilities, leading to a generally positive but not outstanding experience.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Effective lead tracking and management features.",
+      "User interface is generally intuitive and easy to navigate.",
+      "Good reporting capabilities for sales pipeline visibility."
+    ],
+    "cons": [
+      "Limited customization options for specific real estate workflows.",
+      "Integrations with other industry-specific tools could be improved.",
+      "Occasional performance issues or slowness when loading data."
+    ],
+    "overall_experience": "This software engineer likely found Freshsales to be a competent tool for managing sales leads within their real estate company. They appreciated its ease of use and core functionality for tracking the sales process. However, the reviewer probably encountered some limitations regarding customization for their specific industry needs and desired better integration capabilities, leading to a generally positive but not outstanding experience."
+  },
+  "ts": "2026-10-18T04:33:14.478900+00:00"
+}

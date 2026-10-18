@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7ba63fbfb7af5f1ab8062292d407a18bc314ea1cbdc1a3d5c22ca514699c8117",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2478,
+  "output_tokens": 1106,
+  "cost_usd": 0.0035084,
+  "elapsed_s": 25.79,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Extensive feature set for comprehensive client relationship management.\",\n    \"Strong integration capabilities, useful for connecting with other tech tools.\",\n    \"Customization options to adapt to specific business workflows.\"\n  ],\n  \"cons\": [\n    \"Steep learning curve for advanced features and setup.\",\n    \"Potential for complexity in managing multiple product lines.\",\n    \"Pricing can become a concern as the company scales or requires more advanced modules.\"\n  ],\n  \"overall_experience\": \"This software developer likely found Zoho CRM to be a robust and highly functional platform, capable of managing complex client relationships for a growing tech company. Its extensive features and integration potential were probably key advantages, allowing for tailored solutions. However, the initial learning curve and potential cost implications for advanced customization or scaling may have presented some challenges.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Extensive feature set for comprehensive client relationship management.",
+      "Strong integration capabilities, useful for connecting with other tech tools.",
+      "Customization options to adapt to specific business workflows."
+    ],
+    "cons": [
+      "Steep learning curve for advanced features and setup.",
+      "Potential for complexity in managing multiple product lines.",
+      "Pricing can become a concern as the company scales or requires more advanced modules."
+    ],
+    "overall_experience": "This software developer likely found Zoho CRM to be a robust and highly functional platform, capable of managing complex client relationships for a growing tech company. Its extensive features and integration potential were probably key advantages, allowing for tailored solutions. However, the initial learning curve and potential cost implications for advanced customization or scaling may have presented some challenges."
+  },
+  "ts": "2026-10-18T04:33:12.366003+00:00"
+}

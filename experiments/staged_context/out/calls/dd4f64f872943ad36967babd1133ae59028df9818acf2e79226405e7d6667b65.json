@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "dd4f64f872943ad36967babd1133ae59028df9818acf2e79226405e7d6667b65",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 251,
+  "output_tokens": 980,
+  "cost_usd": 0.0025253,
+  "elapsed_s": 29.4,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Intuitive interface for daily contact management\",\n    \"Streamlined lead tracking and pipeline visibility\",\n    \"Good value for a small team's core CRM needs\"\n  ],\n  \"cons\": [\n    \"Limited advanced customization for specific market research workflows\",\n    \"Reporting features could be more robust for deep data analysis\",\n    \"Integrations with niche tools were sometimes lacking\"\n  ],\n  \"overall_experience\": \"The CTO found Freshsales to be a significant improvement in usability compared to previous CRM systems, which greatly benefited their small market research team in managing contacts and leads. While it performed well for core sales functions and offered good value, they occasionally desired more sophisticated reporting and customization options to perfectly align with their industry-specific data analysis needs. The product effectively served their primary goal of lead and contact management.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Intuitive interface for daily contact management",
+      "Streamlined lead tracking and pipeline visibility",
+      "Good value for a small team's core CRM needs"
+    ],
+    "cons": [
+      "Limited advanced customization for specific market research workflows",
+      "Reporting features could be more robust for deep data analysis",
+      "Integrations with niche tools were sometimes lacking"
+    ],
+    "overall_experience": "The CTO found Freshsales to be a significant improvement in usability compared to previous CRM systems, which greatly benefited their small market research team in managing contacts and leads. While it performed well for core sales functions and offered good value, they occasionally desired more sophisticated reporting and customization options to perfectly align with their industry-specific data analysis needs. The product effectively served their primary goal of lead and contact management."
+  },
+  "ts": "2026-10-18T04:33:15.692246+00:00"
+}

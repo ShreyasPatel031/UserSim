@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0cb21d6af6e1b166dfa8b67e38cd1a8d82393f300d73d1e7b6ec8ffed128cc0c",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2210,
+  "output_tokens": 1066,
+  "cost_usd": 0.0033280000000000002,
+  "elapsed_s": 28.15,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Efficient email sending and tracking features\",\n    \"Good for organizing client communications\",\n    \"Generally user-friendly interface\"\n  ],\n  \"cons\": [\n    \"Occasional login issues or session timeouts\",\n    \"Limited customization options for email templates\",\n    \"Pricing could become a concern for advanced features\"\n  ],\n  \"overall_experience\": \"This Project Manager likely found Freshsales to be a solid CRM for managing client communications and tracking emails, which was their primary task. The email functionality was generally effective and easy to use, helping to keep correspondence organized. While the core features met their needs, they might have experienced minor frustrations with login persistence or wished for more flexibility in email template customization, suggesting a good but not perfect experience.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Efficient email sending and tracking features",
+      "Good for organizing client communications",
+      "Generally user-friendly interface"
+    ],
+    "cons": [
+      "Occasional login issues or session timeouts",
+      "Limited customization options for email templates",
+      "Pricing could become a concern for advanced features"
+    ],
+    "overall_experience": "This Project Manager likely found Freshsales to be a solid CRM for managing client communications and tracking emails, which was their primary task. The email functionality was generally effective and easy to use, helping to keep correspondence organized. While the core features met their needs, they might have experienced minor frustrations with login persistence or wished for more flexibility in email template customization, suggesting a good but not perfect experience."
+  },
+  "ts": "2026-10-18T04:33:13.923793+00:00"
+}

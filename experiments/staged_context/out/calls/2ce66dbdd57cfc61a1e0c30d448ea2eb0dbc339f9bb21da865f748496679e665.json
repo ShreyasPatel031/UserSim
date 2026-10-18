@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2ce66dbdd57cfc61a1e0c30d448ea2eb0dbc339f9bb21da865f748496679e665",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2137,
+  "output_tokens": 1060,
+  "cost_usd": 0.0032911,
+  "elapsed_s": 27.22,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effective meeting reminders integrated with email\",\n    \"Intuitive interface for daily sales tasks\",\n    \"Good core CRM functionality for small teams\"\n  ],\n  \"cons\": [\n    \"Potential for a learning curve with advanced features\",\n    \"Limited customization options compared to larger CRMs\",\n    \"Occasional performance issues or slowness\"\n  ],\n  \"overall_experience\": \"This Account Manager likely found Freshsales to be a generally positive and straightforward CRM, particularly appreciating its ability to manage meeting reminders effectively. The product's ease of use and core sales functionalities would have been beneficial for their small team, though they might have encountered some minor frustrations with performance or advanced customization limitations common to new users in this segment.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Effective meeting reminders integrated with email",
+      "Intuitive interface for daily sales tasks",
+      "Good core CRM functionality for small teams"
+    ],
+    "cons": [
+      "Potential for a learning curve with advanced features",
+      "Limited customization options compared to larger CRMs",
+      "Occasional performance issues or slowness"
+    ],
+    "overall_experience": "This Account Manager likely found Freshsales to be a generally positive and straightforward CRM, particularly appreciating its ability to manage meeting reminders effectively. The product's ease of use and core sales functionalities would have been beneficial for their small team, though they might have encountered some minor frustrations with performance or advanced customization limitations common to new users in this segment."
+  },
+  "ts": "2026-10-18T04:33:12.819773+00:00"
+}

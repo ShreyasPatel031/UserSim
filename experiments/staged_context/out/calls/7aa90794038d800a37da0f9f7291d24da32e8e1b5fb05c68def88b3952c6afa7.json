@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7aa90794038d800a37da0f9f7291d24da32e8e1b5fb05c68def88b3952c6afa7",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2135,
+  "output_tokens": 1030,
+  "cost_usd": 0.0032155,
+  "elapsed_s": 25.28,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effective tools for designing sales email templates\",\n    \"Streamlined process for managing contacts and leads\",\n    \"Integration capabilities with other marketing tools\"\n  ],\n  \"cons\": [\n    \"Initial learning curve for advanced features\",\n    \"Limited customization options for email templates\",\n    \"Occasional performance issues when handling large data sets\"\n  ],\n  \"overall_experience\": \"This Marketing Manager likely found Freshsales to be a generally capable tool for their primary task of designing sales email templates, appreciating its core functionalities. While they experienced a positive initial impression, they may have encountered a moderate learning curve and wished for more advanced customization options. Overall, the product met most of their immediate needs for a new CRM in a small to medium-sized staffing firm.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Effective tools for designing sales email templates",
+      "Streamlined process for managing contacts and leads",
+      "Integration capabilities with other marketing tools"
+    ],
+    "cons": [
+      "Initial learning curve for advanced features",
+      "Limited customization options for email templates",
+      "Occasional performance issues when handling large data sets"
+    ],
+    "overall_experience": "This Marketing Manager likely found Freshsales to be a generally capable tool for their primary task of designing sales email templates, appreciating its core functionalities. While they experienced a positive initial impression, they may have encountered a moderate learning curve and wished for more advanced customization options. Overall, the product met most of their immediate needs for a new CRM in a small to medium-sized staffing firm."
+  },
+  "ts": "2026-10-18T04:33:11.353434+00:00"
+}

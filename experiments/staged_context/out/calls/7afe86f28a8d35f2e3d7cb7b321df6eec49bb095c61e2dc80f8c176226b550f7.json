@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7afe86f28a8d35f2e3d7cb7b321df6eec49bb095c61e2dc80f8c176226b550f7",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2226,
+  "output_tokens": 1048,
+  "cost_usd": 0.0032878000000000004,
+  "elapsed_s": 28.02,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Ability to set up custom fields for deal tracking\",\n    \"Streamlined deal qualification and outcome logging\",\n    \"Overall ease of use for core CRM functions\"\n  ],\n  \"cons\": [\n    \"Potential for minor UI quirks when setting up advanced filters\",\n    \"Learning curve for fully leveraging all customization options\",\n    \"Pricing structure could be a concern for small businesses\"\n  ],\n  \"overall_experience\": \"The project manager likely found Freshsales to be a capable tool for managing internal deals, appreciating its ability to create custom fields for qualification statuses and reasons. While generally easy to use for their core task, they may have encountered occasional complexities or a slight learning curve when fine-tuning specific filters. Overall, the product met their needs effectively for a small IT company.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Ability to set up custom fields for deal tracking",
+      "Streamlined deal qualification and outcome logging",
+      "Overall ease of use for core CRM functions"
+    ],
+    "cons": [
+      "Potential for minor UI quirks when setting up advanced filters",
+      "Learning curve for fully leveraging all customization options",
+      "Pricing structure could be a concern for small businesses"
+    ],
+    "overall_experience": "The project manager likely found Freshsales to be a capable tool for managing internal deals, appreciating its ability to create custom fields for qualification statuses and reasons. While generally easy to use for their core task, they may have encountered occasional complexities or a slight learning curve when fine-tuning specific filters. Overall, the product met their needs effectively for a small IT company."
+  },
+  "ts": "2026-10-18T04:33:14.209200+00:00"
+}

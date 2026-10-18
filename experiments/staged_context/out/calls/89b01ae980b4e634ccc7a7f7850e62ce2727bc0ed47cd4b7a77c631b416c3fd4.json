@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "89b01ae980b4e634ccc7a7f7850e62ce2727bc0ed47cd4b7a77c631b416c3fd4",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2514,
+  "output_tokens": 949,
+  "cost_usd": 0.0031267,
+  "elapsed_s": 28.79,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effective lead capture form builder for website integration\",\n    \"Good value compared to more expensive alternatives like HubSpot\",\n    \"Streamlined lead management within the CRM\"\n  ],\n  \"cons\": [\n    \"Initial setup and customization of forms can be somewhat complex\",\n    \"Reporting features for lead sources might lack depth\",\n    \"Interface may feel less polished than HubSpot CRM\"\n  ],\n  \"overall_experience\": \"The Marketing Executive likely found Freshsales to be a competent tool for their primary task of capturing leads via website forms, offering a solid feature set for the price. While it may not have the same level of polish or extensive integrations as HubSpot CRM, it provided a more cost-effective solution for their small-to-medium business. They appreciated its core functionality for lead management, though some aspects of form customization and reporting could have been more intuitive or robust.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Effective lead capture form builder for website integration",
+      "Good value compared to more expensive alternatives like HubSpot",
+      "Streamlined lead management within the CRM"
+    ],
+    "cons": [
+      "Initial setup and customization of forms can be somewhat complex",
+      "Reporting features for lead sources might lack depth",
+      "Interface may feel less polished than HubSpot CRM"
+    ],
+    "overall_experience": "The Marketing Executive likely found Freshsales to be a competent tool for their primary task of capturing leads via website forms, offering a solid feature set for the price. While it may not have the same level of polish or extensive integrations as HubSpot CRM, it provided a more cost-effective solution for their small-to-medium business. They appreciated its core functionality for lead management, though some aspects of form customization and reporting could have been more intuitive or robust."
+  },
+  "ts": "2026-10-18T04:33:14.453014+00:00"
+}

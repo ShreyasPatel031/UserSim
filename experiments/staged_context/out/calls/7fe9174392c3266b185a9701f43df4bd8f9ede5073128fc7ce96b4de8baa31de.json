@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7fe9174392c3266b185a9701f43df4bd8f9ede5073128fc7ce96b4de8baa31de",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2494,
+  "output_tokens": 901,
+  "cost_usd": 0.0030007000000000002,
+  "elapsed_s": 6.75,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Visual pipeline for clear sales process overview\",\n    \"Effective activity tracking and reminders\",\n    \"User-friendly interface for quick adoption\"\n  ],\n  \"cons\": [\n    \"Limited advanced customization options\",\n    \"Reporting features may lack depth for complex analysis\",\n    \"Integrations could be more seamless with specific tools\"\n  ],\n  \"overall_experience\": \"This Technical Sales Manager likely found Pipedrive to be a straightforward and efficient tool for managing their sales activities, appreciating its visual pipeline and ease of use. While it effectively met their primary need for tracking, they might have noticed some limitations in advanced reporting or customization compared to more robust platforms. Overall, the experience was positive, particularly given the short tenure and focus on core sales management.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Visual pipeline for clear sales process overview",
+      "Effective activity tracking and reminders",
+      "User-friendly interface for quick adoption"
+    ],
+    "cons": [
+      "Limited advanced customization options",
+      "Reporting features may lack depth for complex analysis",
+      "Integrations could be more seamless with specific tools"
+    ],
+    "overall_experience": "This Technical Sales Manager likely found Pipedrive to be a straightforward and efficient tool for managing their sales activities, appreciating its visual pipeline and ease of use. While it effectively met their primary need for tracking, they might have noticed some limitations in advanced reporting or customization compared to more robust platforms. Overall, the experience was positive, particularly given the short tenure and focus on core sales management."
+  },
+  "ts": "2026-10-18T04:33:21.183025+00:00"
+}

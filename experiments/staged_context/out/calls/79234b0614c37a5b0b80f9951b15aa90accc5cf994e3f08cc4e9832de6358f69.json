@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "79234b0614c37a5b0b80f9951b15aa90accc5cf994e3f08cc4e9832de6358f69",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2282,
+  "output_tokens": 988,
+  "cost_usd": 0.0031546,
+  "elapsed_s": 7.57,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Streamlined sales pipeline management\",\n    \"Easy to integrate customer lists for processing\",\n    \"Good for tracking deals and client interactions\"\n  ],\n  \"cons\": [\n    \"Initial setup or advanced customization can be complex\",\n    \"Reporting features might lack depth for specific needs\",\n    \"Pricing tiers could become a concern as features are added\"\n  ],\n  \"overall_experience\": \"This Director of Business Development likely found Pipedrive to be a highly effective tool for managing their sales pipeline and customer data, appreciating its intuitive interface for tracking deals. While the core functionality for integrating customer lists was beneficial, they may have encountered some challenges with advanced customization or reporting capabilities. Overall, the product proved to be a valuable asset for their small to medium-sized team, contributing to organized sales efforts.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Streamlined sales pipeline management",
+      "Easy to integrate customer lists for processing",
+      "Good for tracking deals and client interactions"
+    ],
+    "cons": [
+      "Initial setup or advanced customization can be complex",
+      "Reporting features might lack depth for specific needs",
+      "Pricing tiers could become a concern as features are added"
+    ],
+    "overall_experience": "This Director of Business Development likely found Pipedrive to be a highly effective tool for managing their sales pipeline and customer data, appreciating its intuitive interface for tracking deals. While the core functionality for integrating customer lists was beneficial, they may have encountered some challenges with advanced customization or reporting capabilities. Overall, the product proved to be a valuable asset for their small to medium-sized team, contributing to organized sales efforts."
+  },
+  "ts": "2026-10-18T04:33:21.693921+00:00"
+}

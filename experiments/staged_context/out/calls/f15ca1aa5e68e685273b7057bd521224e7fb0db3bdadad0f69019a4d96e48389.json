@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f15ca1aa5e68e685273b7057bd521224e7fb0db3bdadad0f69019a4d96e48389",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 270,
+  "output_tokens": 1075,
+  "cost_usd": 0.0027684999999999997,
+  "elapsed_s": 26.21,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effective for tracking contacts and deals centrally\",\n    \"Reduces reliance on multiple disparate tools for organization\",\n    \"Scalable enough for large enterprise use\"\n  ],\n  \"cons\": [\n    \"Initial setup and complex customizations can be time-consuming\",\n    \"Interface can feel cluttered with advanced features\",\n    \"Customer support response times could be inconsistent for complex issues\"\n  ],\n  \"overall_experience\": \"As a Senior Technical Support Specialist, this user found Zoho CRM to be a highly effective solution for centralizing contact and deal tracking, successfully reducing the need for additional tools within their large organization. While the platform delivered strong core functionality and value over two years of use, the initial complexity of setup and the occasional clunkiness of the interface required some investment to master. They appreciated its scalability but noted that customer support could sometimes be a bottleneck for intricate technical problems.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Effective for tracking contacts and deals centrally",
+      "Reduces reliance on multiple disparate tools for organization",
+      "Scalable enough for large enterprise use"
+    ],
+    "cons": [
+      "Initial setup and complex customizations can be time-consuming",
+      "Interface can feel cluttered with advanced features",
+      "Customer support response times could be inconsistent for complex issues"
+    ],
+    "overall_experience": "As a Senior Technical Support Specialist, this user found Zoho CRM to be a highly effective solution for centralizing contact and deal tracking, successfully reducing the need for additional tools within their large organization. While the platform delivered strong core functionality and value over two years of use, the initial complexity of setup and the occasional clunkiness of the interface required some investment to master. They appreciated its scalability but noted that customer support could sometimes be a bottleneck for intricate technical problems."
+  },
+  "ts": "2026-10-18T04:33:13.241162+00:00"
+}

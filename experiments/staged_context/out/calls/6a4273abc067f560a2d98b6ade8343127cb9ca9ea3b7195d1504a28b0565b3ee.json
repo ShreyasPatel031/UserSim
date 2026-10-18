@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "6a4273abc067f560a2d98b6ade8343127cb9ca9ea3b7195d1504a28b0565b3ee",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 259,
+  "output_tokens": 973,
+  "cost_usd": 0.0025102,
+  "elapsed_s": 9.33,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Intuitive visual pipeline for managing leads\",\n    \"Good for tracking basic customer interactions\",\n    \"Easy to get sales team onboarded\"\n  ],\n  \"cons\": [\n    \"Search bar can be finicky or slow for specific record types\",\n    \"Limited advanced marketing automation features\",\n    \"Reporting capabilities could be more robust for marketing insights\"\n  ],\n  \"overall_experience\": \"The digital marketing manager found Pipedrive generally adequate for basic lead tracking and collaboration with sales, appreciating its visual pipeline. However, a recurring frustration was the search bar's inconsistency when trying to quickly locate specific records, which hindered efficiency. While it served its purpose for certain aspects, the platform felt less tailored to comprehensive digital marketing needs.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 3,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 6,
+    "pros": [
+      "Intuitive visual pipeline for managing leads",
+      "Good for tracking basic customer interactions",
+      "Easy to get sales team onboarded"
+    ],
+    "cons": [
+      "Search bar can be finicky or slow for specific record types",
+      "Limited advanced marketing automation features",
+      "Reporting capabilities could be more robust for marketing insights"
+    ],
+    "overall_experience": "The digital marketing manager found Pipedrive generally adequate for basic lead tracking and collaboration with sales, appreciating its visual pipeline. However, a recurring frustration was the search bar's inconsistency when trying to quickly locate specific records, which hindered efficiency. While it served its purpose for certain aspects, the platform felt less tailored to comprehensive digital marketing needs."
+  },
+  "ts": "2026-10-18T04:33:22.666737+00:00"
+}

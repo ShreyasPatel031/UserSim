@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4a922bbd84e1c441befcded0e03297e29fce55ea0ddd3932201ad11d34dd68ed",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 257,
+  "output_tokens": 1111,
+  "cost_usd": 0.0028546,
+  "elapsed_s": 26.56,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Affordable for a self-employed individual\",\n    \"Effective for basic contact and account tracking\",\n    \"Good feature set for future scalability\"\n  ],\n  \"cons\": [\n    \"User interface felt less intuitive than HubSpot CRM\",\n    \"Some features were overwhelming for basic needs\",\n    \"Initial setup and customization took time\"\n  ],\n  \"overall_experience\": \"This content strategist, operating as self-employed, found Zoho CRM to be a highly cost-effective solution for their basic client tracking needs. While the interface was not as seamless as their previous experience with HubSpot CRM, it delivered the core functionality required for managing contacts and accounts effectively. The robust feature set provided good value, despite some initial learning curve and potential for feature bloat for their specific use case.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Affordable for a self-employed individual",
+      "Effective for basic contact and account tracking",
+      "Good feature set for future scalability"
+    ],
+    "cons": [
+      "User interface felt less intuitive than HubSpot CRM",
+      "Some features were overwhelming for basic needs",
+      "Initial setup and customization took time"
+    ],
+    "overall_experience": "This content strategist, operating as self-employed, found Zoho CRM to be a highly cost-effective solution for their basic client tracking needs. While the interface was not as seamless as their previous experience with HubSpot CRM, it delivered the core functionality required for managing contacts and accounts effectively. The robust feature set provided good value, despite some initial learning curve and potential for feature bloat for their specific use case."
+  },
+  "ts": "2026-10-18T04:33:13.526566+00:00"
+}

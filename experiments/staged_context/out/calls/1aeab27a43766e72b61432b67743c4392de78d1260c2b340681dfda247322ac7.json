@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1aeab27a43766e72b61432b67743c4392de78d1260c2b340681dfda247322ac7",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 266,
+  "output_tokens": 1026,
+  "cost_usd": 0.0026448,
+  "elapsed_s": 27.75,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Ability to customize customer profile views for key information\",\n    \"Comprehensive contact management features for support roles\",\n    \"Scalable enough for a growing SMB over 2+ years\"\n  ],\n  \"cons\": [\n    \"Initial setup or flexibility for custom views might have been complex\",\n    \"User interface could be less intuitive compared to previous CRMs like Nimble\",\n    \"Potential for minor frustrations with specific customization limitations\"\n  ],\n  \"overall_experience\": \"The Learn Support Coordinator likely found Freshsales to be a generally effective CRM for managing customer interactions over 2+ years, especially appreciating the ability to tailor customer profile views to prioritize essential contact details. While it provided necessary functionality for their role in an E-Learning SMB, they might have experienced some initial learning curve or minor frustrations with its ease of use or advanced customization compared to prior tools.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Ability to customize customer profile views for key information",
+      "Comprehensive contact management features for support roles",
+      "Scalable enough for a growing SMB over 2+ years"
+    ],
+    "cons": [
+      "Initial setup or flexibility for custom views might have been complex",
+      "User interface could be less intuitive compared to previous CRMs like Nimble",
+      "Potential for minor frustrations with specific customization limitations"
+    ],
+    "overall_experience": "The Learn Support Coordinator likely found Freshsales to be a generally effective CRM for managing customer interactions over 2+ years, especially appreciating the ability to tailor customer profile views to prioritize essential contact details. While it provided necessary functionality for their role in an E-Learning SMB, they might have experienced some initial learning curve or minor frustrations with its ease of use or advanced customization compared to prior tools."
+  },
+  "ts": "2026-10-18T04:33:13.118526+00:00"
+}

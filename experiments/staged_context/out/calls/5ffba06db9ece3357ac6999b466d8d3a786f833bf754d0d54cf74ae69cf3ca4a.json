@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "5ffba06db9ece3357ac6999b466d8d3a786f833bf754d0d54cf74ae69cf3ca4a",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 266,
+  "output_tokens": 1038,
+  "cost_usd": 0.0026748,
+  "elapsed_s": 25.71,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Powerful custom list view capabilities for data segmentation.\",\n    \"Comprehensive features for lead tracking and campaign management.\",\n    \"Good value for the price, especially for a small team.\"\n  ],\n  \"cons\": [\n    \"Initial setup and learning curve can be steep for new users.\",\n    \"Interface sometimes feels a bit overwhelming with many options.\",\n    \"Customization for specific marketing workflows can require time.\"\n  ],\n  \"overall_experience\": \"This reviewer likely found Zoho CRM to be a highly functional tool for their marketing needs, particularly appreciating its ability to create custom list views for data analysis. While the initial learning curve and extensive features might have presented a challenge for a small team, the overall value and comprehensive capabilities made it a worthwhile investment over 6-12 months of use.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Powerful custom list view capabilities for data segmentation.",
+      "Comprehensive features for lead tracking and campaign management.",
+      "Good value for the price, especially for a small team."
+    ],
+    "cons": [
+      "Initial setup and learning curve can be steep for new users.",
+      "Interface sometimes feels a bit overwhelming with many options.",
+      "Customization for specific marketing workflows can require time."
+    ],
+    "overall_experience": "This reviewer likely found Zoho CRM to be a highly functional tool for their marketing needs, particularly appreciating its ability to create custom list views for data analysis. While the initial learning curve and extensive features might have presented a challenge for a small team, the overall value and comprehensive capabilities made it a worthwhile investment over 6-12 months of use."
+  },
+  "ts": "2026-10-18T04:33:12.710790+00:00"
+}

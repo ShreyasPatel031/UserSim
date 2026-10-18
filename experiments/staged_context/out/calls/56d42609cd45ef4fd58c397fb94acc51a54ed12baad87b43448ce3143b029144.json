@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "56d42609cd45ef4fd58c397fb94acc51a54ed12baad87b43448ce3143b029144",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 251,
+  "output_tokens": 1080,
+  "cost_usd": 0.0027753,
+  "elapsed_s": 10.69,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Streamlined sales pipeline visualization\",\n    \"Ability to call prospects directly from the dashboard\",\n    \"Cost-effective solution compared to previous CRM\"\n  ],\n  \"cons\": [\n    \"Limited advanced marketing automation features\",\n    \"Initial learning curve for some integrations\",\n    \"Could benefit from more in-depth reporting for strategic oversight\"\n  ],\n  \"overall_experience\": \"The CEO found Pipedrive to be a highly valuable and focused sales tool, especially appreciating its core pipeline management and direct calling capabilities. The transition from a more comprehensive CRM like HubSpot was smooth due to Pipedrive's ease of use and better value for their small team. While it excelled in sales, some broader functionalities found in their previous system were noted as less robust.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Streamlined sales pipeline visualization",
+      "Ability to call prospects directly from the dashboard",
+      "Cost-effective solution compared to previous CRM"
+    ],
+    "cons": [
+      "Limited advanced marketing automation features",
+      "Initial learning curve for some integrations",
+      "Could benefit from more in-depth reporting for strategic oversight"
+    ],
+    "overall_experience": "The CEO found Pipedrive to be a highly valuable and focused sales tool, especially appreciating its core pipeline management and direct calling capabilities. The transition from a more comprehensive CRM like HubSpot was smooth due to Pipedrive's ease of use and better value for their small team. While it excelled in sales, some broader functionalities found in their previous system were noted as less robust."
+  },
+  "ts": "2026-10-18T04:33:24.535484+00:00"
+}

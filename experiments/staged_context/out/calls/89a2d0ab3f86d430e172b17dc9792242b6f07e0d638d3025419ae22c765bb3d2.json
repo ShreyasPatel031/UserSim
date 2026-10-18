@@ -1,0 +1,26 @@
+{
+  "stage": "mix_judge",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "89a2d0ab3f86d430e172b17dc9792242b6f07e0d638d3025419ae22c765bb3d2",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 152,
+  "output_tokens": 481,
+  "cost_usd": 0.0012481,
+  "elapsed_s": 3.97,
+  "error": null,
+  "text": "{\n  \"matches\": [\n    {\n      \"pred\": \"P1\",\n      \"act\": \"A3\",\n      \"score\": 1\n    }\n  ]\n}",
+  "json": {
+    "matches": [
+      {
+        "pred": "P1",
+        "act": "A3",
+        "score": 1
+      }
+    ]
+  },
+  "ts": "2026-10-18T04:34:13.994751+00:00"
+}

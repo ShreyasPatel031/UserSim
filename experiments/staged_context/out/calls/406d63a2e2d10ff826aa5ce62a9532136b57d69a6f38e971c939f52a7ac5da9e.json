@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "406d63a2e2d10ff826aa5ce62a9532136b57d69a6f38e971c939f52a7ac5da9e",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2191,
+  "output_tokens": 1107,
+  "cost_usd": 0.0034248,
+  "elapsed_s": 6.83,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Visual pipeline management for sales funnels\",\n    \"Intuitive and easy-to-use interface compared to alternatives\",\n    \"Good for tracking lead generation stages\"\n  ],\n  \"cons\": [\n    \"Limited advanced reporting or deep customization options\",\n    \"Pricing can become a concern as the team or features needed grow\",\n    \"Integrations might be less comprehensive than larger CRMs\"\n  ],\n  \"overall_experience\": \"This sales professional likely found Pipedrive to be a significant improvement in terms of ease of use and visual pipeline management compared to their previous experience with Zoho CRM. They appreciated its straightforward approach to managing sales funnels and lead stages, which directly supported their primary task. While generally positive, they may have noted some limitations in advanced features or felt the cost could add up for a small business, similar to common frustrations with other CRMs in their segment.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Visual pipeline management for sales funnels",
+      "Intuitive and easy-to-use interface compared to alternatives",
+      "Good for tracking lead generation stages"
+    ],
+    "cons": [
+      "Limited advanced reporting or deep customization options",
+      "Pricing can become a concern as the team or features needed grow",
+      "Integrations might be less comprehensive than larger CRMs"
+    ],
+    "overall_experience": "This sales professional likely found Pipedrive to be a significant improvement in terms of ease of use and visual pipeline management compared to their previous experience with Zoho CRM. They appreciated its straightforward approach to managing sales funnels and lead stages, which directly supported their primary task. While generally positive, they may have noted some limitations in advanced features or felt the cost could add up for a small business, similar to common frustrations with other CRMs in their segment."
+  },
+  "ts": "2026-10-18T04:33:18.215997+00:00"
+}

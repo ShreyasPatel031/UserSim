@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "994435d967de35c03ba9382e96ea5a4d892015495fe5181a0504cfab91059dd2",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2229,
+  "output_tokens": 955,
+  "cost_usd": 0.0030562,
+  "elapsed_s": 6.69,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Intuitive visual sales pipeline management\",\n    \"Streamlined lead tracking for small sales teams\",\n    \"More focused and potentially less complex than HubSpot CRM\"\n  ],\n  \"cons\": [\n    \"Limited advanced reporting capabilities\",\n    \"Integration with other business tools could be improved\",\n    \"Customer support response times can be slow\"\n  ],\n  \"overall_experience\": \"The Managing Director likely found Pipedrive to be a practical and focused solution for managing leads for their small sales team, especially after using HubSpot CRM. Its visual pipeline probably offered a more straightforward approach to sales processes. While generally positive, they may have noted some limitations in advanced reporting or integration capabilities, and customer support might not always meet expectations for an executive user.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Intuitive visual sales pipeline management",
+      "Streamlined lead tracking for small sales teams",
+      "More focused and potentially less complex than HubSpot CRM"
+    ],
+    "cons": [
+      "Limited advanced reporting capabilities",
+      "Integration with other business tools could be improved",
+      "Customer support response times can be slow"
+    ],
+    "overall_experience": "The Managing Director likely found Pipedrive to be a practical and focused solution for managing leads for their small sales team, especially after using HubSpot CRM. Its visual pipeline probably offered a more straightforward approach to sales processes. While generally positive, they may have noted some limitations in advanced reporting or integration capabilities, and customer support might not always meet expectations for an executive user."
+  },
+  "ts": "2026-10-18T04:33:18.234927+00:00"
+}

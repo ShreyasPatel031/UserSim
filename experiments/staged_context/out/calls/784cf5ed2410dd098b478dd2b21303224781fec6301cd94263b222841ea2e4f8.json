@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "784cf5ed2410dd098b478dd2b21303224781fec6301cd94263b222841ea2e4f8",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 257,
+  "output_tokens": 1081,
+  "cost_usd": 0.0027796,
+  "elapsed_s": 27.37,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"More affordable than HubSpot CRM\",\n    \"Adequate for basic lead capture forms\",\n    \"Good customer support responsiveness\"\n  ],\n  \"cons\": [\n    \"Form builder lacked advanced customization\",\n    \"Less intuitive than previous CRM experience\",\n    \"Limited integration with other marketing tools\"\n  ],\n  \"overall_experience\": \"The marketing executive found Freshsales to be a more cost-effective solution compared to their previous use of HubSpot CRM. While the platform adequately handled basic lead capture form creation, they noted that the form builder was less intuitive and offered fewer advanced customization options than desired. The overall experience was satisfactory for core needs, balancing affordability with functional limitations.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 3,
+    "overall_rating": 3,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 6,
+    "pros": [
+      "More affordable than HubSpot CRM",
+      "Adequate for basic lead capture forms",
+      "Good customer support responsiveness"
+    ],
+    "cons": [
+      "Form builder lacked advanced customization",
+      "Less intuitive than previous CRM experience",
+      "Limited integration with other marketing tools"
+    ],
+    "overall_experience": "The marketing executive found Freshsales to be a more cost-effective solution compared to their previous use of HubSpot CRM. While the platform adequately handled basic lead capture form creation, they noted that the form builder was less intuitive and offered fewer advanced customization options than desired. The overall experience was satisfactory for core needs, balancing affordability with functional limitations."
+  },
+  "ts": "2026-10-18T04:33:13.004939+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "62058a6fd09d20402ebb0dcbd1cc43b85cbddea90929e7c5f7821513bc929955",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 256,
+  "output_tokens": 933,
+  "cost_usd": 0.0024093,
+  "elapsed_s": 25.09,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Comprehensive sales forecasting tools available\",\n    \"Good value for the feature set provided\",\n    \"Effective for managing educational lead/enrollment data\"\n  ],\n  \"cons\": [\n    \"Complexity in customizing forecasting for education-specific metrics\",\n    \"Steep learning curve for advanced features like forecasting\",\n    \"Interface could be more intuitive for administrative roles\"\n  ],\n  \"overall_experience\": \"This user likely found Zoho CRM to be a capable tool for their administrative tasks in education management, particularly appreciating its sales forecasting functionality for predicting enrollment. However, they probably faced challenges in tailoring the generic CRM features to their specific industry needs and found the system's complexity a hurdle. Despite the learning curve, its value for money was likely a significant factor in their continued use.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 3,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 6,
+    "pros": [
+      "Comprehensive sales forecasting tools available",
+      "Good value for the feature set provided",
+      "Effective for managing educational lead/enrollment data"
+    ],
+    "cons": [
+      "Complexity in customizing forecasting for education-specific metrics",
+      "Steep learning curve for advanced features like forecasting",
+      "Interface could be more intuitive for administrative roles"
+    ],
+    "overall_experience": "This user likely found Zoho CRM to be a capable tool for their administrative tasks in education management, particularly appreciating its sales forecasting functionality for predicting enrollment. However, they probably faced challenges in tailoring the generic CRM features to their specific industry needs and found the system's complexity a hurdle. Despite the learning curve, its value for money was likely a significant factor in their continued use."
+  },
+  "ts": "2026-10-18T04:33:12.185948+00:00"
+}

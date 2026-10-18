@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a159cda7767e12cff7023c2bfa3c82717e131638e312ef0820a341e66cf427a1",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 272,
+  "output_tokens": 994,
+  "cost_usd": 0.0025666,
+  "elapsed_s": 25.56,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Centralized lead management from Facebook ads\",\n    \"Good value for money for a small team\",\n    \"Comprehensive features for customer communication\"\n  ],\n  \"cons\": [\n    \"Complexity of setting up specific integrations\",\n    \"Steep learning curve for advanced features\",\n    \"Occasional glitches with social media syncing\"\n  ],\n  \"overall_experience\": \"This manager likely appreciated Zoho CRM's robust feature set and its ability to centralize customer communications from Facebook ads, which was crucial for their small IT services company. While the initial setup for specific integrations might have presented a learning curve, the overall value for money and comprehensive functionality made it a worthwhile tool for managing customer interactions and leads. They probably found it to be a solid solution despite some occasional technical hurdles.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Centralized lead management from Facebook ads",
+      "Good value for money for a small team",
+      "Comprehensive features for customer communication"
+    ],
+    "cons": [
+      "Complexity of setting up specific integrations",
+      "Steep learning curve for advanced features",
+      "Occasional glitches with social media syncing"
+    ],
+    "overall_experience": "This manager likely appreciated Zoho CRM's robust feature set and its ability to centralize customer communications from Facebook ads, which was crucial for their small IT services company. While the initial setup for specific integrations might have presented a learning curve, the overall value for money and comprehensive functionality made it a worthwhile tool for managing customer interactions and leads. They probably found it to be a solid solution despite some occasional technical hurdles."
+  },
+  "ts": "2026-10-18T04:33:12.714390+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1ea0efdbc124f25d179b83b6ad2115ec12e557656659afb95db441855bbc7b35",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 270,
+  "output_tokens": 997,
+  "cost_usd": 0.0025735,
+  "elapsed_s": 26.06,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"More cost-effective than previous CRM\",\n    \"Adequate for basic task and lead tracking\",\n    \"Good for standardizing simpler processes\"\n  ],\n  \"cons\": [\n    \"Workflow automation felt less robust than Salesforce\",\n    \"Challenging to scale complex process management\",\n    \"Limited customization for industry-specific needs\"\n  ],\n  \"overall_experience\": \"The solar installation coordinator found Zoho CRM to be a more budget-friendly alternative to their previous system, which was beneficial for the company. While it handled basic lead and task management adequately, they encountered limitations when attempting to implement and manage complex, company-wide workflow processes. The system felt less flexible and powerful for their operational needs compared to their prior experience.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 3,
+    "overall_rating": 3,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 6,
+    "pros": [
+      "More cost-effective than previous CRM",
+      "Adequate for basic task and lead tracking",
+      "Good for standardizing simpler processes"
+    ],
+    "cons": [
+      "Workflow automation felt less robust than Salesforce",
+      "Challenging to scale complex process management",
+      "Limited customization for industry-specific needs"
+    ],
+    "overall_experience": "The solar installation coordinator found Zoho CRM to be a more budget-friendly alternative to their previous system, which was beneficial for the company. While it handled basic lead and task management adequately, they encountered limitations when attempting to implement and manage complex, company-wide workflow processes. The system felt less flexible and powerful for their operational needs compared to their prior experience."
+  },
+  "ts": "2026-10-18T04:33:12.588526+00:00"
+}

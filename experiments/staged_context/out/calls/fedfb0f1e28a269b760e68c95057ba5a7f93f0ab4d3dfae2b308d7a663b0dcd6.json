@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "fedfb0f1e28a269b760e68c95057ba5a7f93f0ab4d3dfae2b308d7a663b0dcd6",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2050,
+  "output_tokens": 1047,
+  "cost_usd": 0.0032325,
+  "elapsed_s": 25.69,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Good value compared to Salesforce.\",\n    \"Effective for managing workflow processes.\",\n    \"Customization options for specific solar installation needs.\"\n  ],\n  \"cons\": [\n    \"Steeper learning curve than expected coming from Salesforce.\",\n    \"Interface can be less intuitive or overwhelming at times.\",\n    \"Occasional performance lags or minor bugs.\"\n  ],\n  \"overall_experience\": \"This solar installation coordinator likely found Zoho CRM to be a functional and cost-effective alternative to Salesforce, effectively handling their workflow management tasks. While appreciating its capabilities for process scheduling and customization, they probably experienced a noticeable difference in ease of use and interface polish compared to their previous system. The platform offered good value, but required some adaptation to its specific quirks and occasional performance issues.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Good value compared to Salesforce.",
+      "Effective for managing workflow processes.",
+      "Customization options for specific solar installation needs."
+    ],
+    "cons": [
+      "Steeper learning curve than expected coming from Salesforce.",
+      "Interface can be less intuitive or overwhelming at times.",
+      "Occasional performance lags or minor bugs."
+    ],
+    "overall_experience": "This solar installation coordinator likely found Zoho CRM to be a functional and cost-effective alternative to Salesforce, effectively handling their workflow management tasks. While appreciating its capabilities for process scheduling and customization, they probably experienced a noticeable difference in ease of use and interface polish compared to their previous system. The platform offered good value, but required some adaptation to its specific quirks and occasional performance issues."
+  },
+  "ts": "2026-10-18T04:33:12.243515+00:00"
+}

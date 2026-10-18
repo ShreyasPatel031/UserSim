@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "47932d031d50ac98ece7fb10d2e93c2b784f2acee04ce2b5a5b89119b185f24d",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 263,
+  "output_tokens": 1003,
+  "cost_usd": 0.0025864,
+  "elapsed_s": 25.93,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effective task and reminder management for follow-ups\",\n    \"User-friendly interface suitable for small teams\",\n    \"Good value for money, especially for a non-profit organization\"\n  ],\n  \"cons\": [\n    \"Potential for some advanced features to be overwhelming for a small team\",\n    \"Initial setup might require some learning, though manageable\",\n    \"Reporting capabilities could be more intuitive for specific non-profit metrics\"\n  ],\n  \"overall_experience\": \"The Marketing and Sales Associate likely found Freshsales to be a highly effective tool for managing their outreach and follow-up tasks, particularly appreciating its reminder system. Its ease of use and value for money would have been significant benefits for a small non-profit. While generally positive, some advanced features might have felt slightly complex for their limited team resources.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Effective task and reminder management for follow-ups",
+      "User-friendly interface suitable for small teams",
+      "Good value for money, especially for a non-profit organization"
+    ],
+    "cons": [
+      "Potential for some advanced features to be overwhelming for a small team",
+      "Initial setup might require some learning, though manageable",
+      "Reporting capabilities could be more intuitive for specific non-profit metrics"
+    ],
+    "overall_experience": "The Marketing and Sales Associate likely found Freshsales to be a highly effective tool for managing their outreach and follow-up tasks, particularly appreciating its reminder system. Its ease of use and value for money would have been significant benefits for a small non-profit. While generally positive, some advanced features might have felt slightly complex for their limited team resources."
+  },
+  "ts": "2026-10-18T04:33:12.301285+00:00"
+}

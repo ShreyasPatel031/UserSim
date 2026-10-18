@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "19cc02533e63fa7fcd3970ef9308bf170b79e827373ac09df534ca992679ec2c",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 258,
+  "output_tokens": 1046,
+  "cost_usd": 0.0026924,
+  "elapsed_s": 26.74,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Comprehensive sales and marketing features\",\n    \"Good value for a growing team\",\n    \"Improved reporting capabilities over previous tool\"\n  ],\n  \"cons\": [\n    \"Initial setup for core tasks felt less intuitive than Pipedrive\",\n    \"User interface can be cluttered at times\",\n    \"Onboarding team members took longer than expected\"\n  ],\n  \"overall_experience\": \"The reviewer, a CEO in the marketing and advertising sector, found Freshsales offered a broader feature set than their previous CRM, Pipedrive, particularly appreciating its reporting. However, they noted that fundamental sales tasks, like creating opportunities with associated accounts and contacts, required a slightly steeper learning curve for their team. While the platform provided good value for their 11-50 employee company, the user experience occasionally felt less streamlined.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 3,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 6,
+    "pros": [
+      "Comprehensive sales and marketing features",
+      "Good value for a growing team",
+      "Improved reporting capabilities over previous tool"
+    ],
+    "cons": [
+      "Initial setup for core tasks felt less intuitive than Pipedrive",
+      "User interface can be cluttered at times",
+      "Onboarding team members took longer than expected"
+    ],
+    "overall_experience": "The reviewer, a CEO in the marketing and advertising sector, found Freshsales offered a broader feature set than their previous CRM, Pipedrive, particularly appreciating its reporting. However, they noted that fundamental sales tasks, like creating opportunities with associated accounts and contacts, required a slightly steeper learning curve for their team. While the platform provided good value for their 11-50 employee company, the user experience occasionally felt less streamlined."
+  },
+  "ts": "2026-10-18T04:33:12.984280+00:00"
+}

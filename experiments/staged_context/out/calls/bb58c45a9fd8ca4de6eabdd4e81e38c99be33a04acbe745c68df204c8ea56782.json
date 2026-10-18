@@ -1,0 +1,20 @@
+{
+  "stage": "mix_judge",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "bb58c45a9fd8ca4de6eabdd4e81e38c99be33a04acbe745c68df204c8ea56782",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 512,
+  "input_tokens": 379,
+  "output_tokens": 373,
+  "cost_usd": 0.0010462000000000002,
+  "elapsed_s": 4.15,
+  "error": null,
+  "text": "{\n  \"score\": 2\n}",
+  "json": {
+    "score": 2
+  },
+  "ts": "2026-10-18T04:33:37.292585+00:00"
+}

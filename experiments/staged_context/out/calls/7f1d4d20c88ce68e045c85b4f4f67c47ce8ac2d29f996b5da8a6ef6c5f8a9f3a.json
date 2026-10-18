@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7f1d4d20c88ce68e045c85b4f4f67c47ce8ac2d29f996b5da8a6ef6c5f8a9f3a",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2395,
+  "output_tokens": 1062,
+  "cost_usd": 0.0033735,
+  "elapsed_s": 26.29,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effective pipeline visualization and tracking for sales opportunities.\",\n    \"Relatively straightforward to get sales representatives onboarded and productive.\",\n    \"Good value proposition compared to more expensive, complex alternatives.\"\n  ],\n  \"cons\": [\n    \"Reporting capabilities might be somewhat limited for in-depth analysis.\",\n    \"Customization options for specific accounting sales workflows could be more robust.\",\n    \"Occasional minor performance issues or slower loading times.\"\n  ],\n  \"overall_experience\": \"The Director of Sales & Onboarding likely found Freshsales to be a solid CRM for managing their sales pipeline and team. Its ease of use and clear interface facilitated efficient onboarding for new sales reps and allowed for effective tracking of opportunities. While generally positive, they may have desired more advanced customization and reporting features to perfectly align with their specific accounting industry needs.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Effective pipeline visualization and tracking for sales opportunities.",
+      "Relatively straightforward to get sales representatives onboarded and productive.",
+      "Good value proposition compared to more expensive, complex alternatives."
+    ],
+    "cons": [
+      "Reporting capabilities might be somewhat limited for in-depth analysis.",
+      "Customization options for specific accounting sales workflows could be more robust.",
+      "Occasional minor performance issues or slower loading times."
+    ],
+    "overall_experience": "The Director of Sales & Onboarding likely found Freshsales to be a solid CRM for managing their sales pipeline and team. Its ease of use and clear interface facilitated efficient onboarding for new sales reps and allowed for effective tracking of opportunities. While generally positive, they may have desired more advanced customization and reporting features to perfectly align with their specific accounting industry needs."
+  },
+  "ts": "2026-10-18T04:33:12.699440+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "187be55c30b630f1191b470c8d251700b4546231e765ef20712e6e6d1e1014c4",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 249,
+  "output_tokens": 1006,
+  "cost_usd": 0.0025897,
+  "elapsed_s": 27.78,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Efficiently logs and retrieves past communications with parents/players.\",\n    \"Centralized contact management for team members and stakeholders.\",\n    \"User interface is generally straightforward for basic tasks.\"\n  ],\n  \"cons\": [\n    \"Some sales-centric features are irrelevant for a coaching role.\",\n    \"Customization for specific sports-related tracking could be more intuitive.\",\n    \"Initial setup for non-sales use cases required some adaptation.\"\n  ],\n  \"overall_experience\": \"The hockey coach found Freshsales to be a functional tool for managing team communications and referencing historical interactions, which was crucial for their role. While the core task of referencing past logs was handled well, some aspects felt geared towards a traditional sales environment rather than sports management. They appreciated the centralized data but noted that adapting the system for specific coaching needs required some effort.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 3,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 6,
+    "pros": [
+      "Efficiently logs and retrieves past communications with parents/players.",
+      "Centralized contact management for team members and stakeholders.",
+      "User interface is generally straightforward for basic tasks."
+    ],
+    "cons": [
+      "Some sales-centric features are irrelevant for a coaching role.",
+      "Customization for specific sports-related tracking could be more intuitive.",
+      "Initial setup for non-sales use cases required some adaptation."
+    ],
+    "overall_experience": "The hockey coach found Freshsales to be a functional tool for managing team communications and referencing historical interactions, which was crucial for their role. While the core task of referencing past logs was handled well, some aspects felt geared towards a traditional sales environment rather than sports management. They appreciated the centralized data but noted that adapting the system for specific coaching needs required some effort."
+  },
+  "ts": "2026-10-18T04:33:12.896723+00:00"
+}

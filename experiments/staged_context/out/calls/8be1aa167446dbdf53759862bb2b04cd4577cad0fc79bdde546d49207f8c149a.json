@@ -1,0 +1,46 @@
+{
+  "stage": "mix_judge",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8be1aa167446dbdf53759862bb2b04cd4577cad0fc79bdde546d49207f8c149a",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 163,
+  "output_tokens": 595,
+  "cost_usd": 0.0015364,
+  "elapsed_s": 3.86,
+  "error": null,
+  "text": "{\n  \"matches\": [\n    {\n      \"pred\": \"P1\",\n      \"act\": \"A3\",\n      \"score\": 2\n    },\n    {\n      \"pred\": \"P2\",\n      \"act\": \"A2\",\n      \"score\": 2\n    },\n    {\n      \"pred\": \"P2\",\n      \"act\": \"A4\",\n      \"score\": 1\n    },\n    {\n      \"pred\": \"P3\",\n      \"act\": \"A3\",\n      \"score\": 1\n    },\n    {\n      \"pred\": \"P3\",\n      \"act\": \"A4\",\n      \"score\": 1\n    }\n  ]\n}",
+  "json": {
+    "matches": [
+      {
+        "pred": "P1",
+        "act": "A3",
+        "score": 2
+      },
+      {
+        "pred": "P2",
+        "act": "A2",
+        "score": 2
+      },
+      {
+        "pred": "P2",
+        "act": "A4",
+        "score": 1
+      },
+      {
+        "pred": "P3",
+        "act": "A3",
+        "score": 1
+      },
+      {
+        "pred": "P3",
+        "act": "A4",
+        "score": 1
+      }
+    ]
+  },
+  "ts": "2026-10-18T04:34:15.658937+00:00"
+}

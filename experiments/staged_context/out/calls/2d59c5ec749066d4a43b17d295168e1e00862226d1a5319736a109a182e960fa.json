@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2d59c5ec749066d4a43b17d295168e1e00862226d1a5319736a109a182e960fa",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2309,
+  "output_tokens": 1072,
+  "cost_usd": 0.0033727,
+  "elapsed_s": 27.14,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Efficiently organizes contacts and conversations.\",\n    \"User-friendly interface for daily tasks.\",\n    \"Good value for a small real estate business.\"\n  ],\n  \"cons\": [\n    \"Limited customization options for specific real estate workflows.\",\n    \"Reporting features could be more robust.\",\n    \"Occasional performance slowdowns.\"\n  ],\n  \"overall_experience\": \"This workflow analyst found Freshsales to be a generally positive tool for managing contacts and conversations within their small real estate company. While it effectively handles core CRM tasks and offers good value, they likely experienced some frustrations with the depth of customization and reporting capabilities. Overall, it served its primary purpose well for their 6-12 months of use.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Efficiently organizes contacts and conversations.",
+      "User-friendly interface for daily tasks.",
+      "Good value for a small real estate business."
+    ],
+    "cons": [
+      "Limited customization options for specific real estate workflows.",
+      "Reporting features could be more robust.",
+      "Occasional performance slowdowns."
+    ],
+    "overall_experience": "This workflow analyst found Freshsales to be a generally positive tool for managing contacts and conversations within their small real estate company. While it effectively handles core CRM tasks and offers good value, they likely experienced some frustrations with the depth of customization and reporting capabilities. Overall, it served its primary purpose well for their 6-12 months of use."
+  },
+  "ts": "2026-10-18T04:33:12.310022+00:00"
+}

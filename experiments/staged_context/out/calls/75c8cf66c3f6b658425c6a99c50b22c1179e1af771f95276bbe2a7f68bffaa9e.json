@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "75c8cf66c3f6b658425c6a99c50b22c1179e1af771f95276bbe2a7f68bffaa9e",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 263,
+  "output_tokens": 1014,
+  "cost_usd": 0.0026138999999999997,
+  "elapsed_s": 25.93,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Effective for structuring sales pipeline stages\",\n    \"Good value for money for a comprehensive CRM\",\n    \"Customizable views for tracking leads and deals\"\n  ],\n  \"cons\": [\n    \"Initial setup can require a learning curve\",\n    \"Interface can sometimes feel a bit cluttered\",\n    \"Customer support response times can vary\"\n  ],\n  \"overall_experience\": \"This Project Analyst likely found Zoho CRM to be a highly effective tool for managing their sales pipeline, appreciating its ability to provide a structured view of leads and deals. They would have valued its robust functionality and excellent value for money, despite experiencing some minor frustrations with the initial setup complexity and occasional interface clutter. The platform generally met their needs for organizing sales processes within their logistics and supply chain environment.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Effective for structuring sales pipeline stages",
+      "Good value for money for a comprehensive CRM",
+      "Customizable views for tracking leads and deals"
+    ],
+    "cons": [
+      "Initial setup can require a learning curve",
+      "Interface can sometimes feel a bit cluttered",
+      "Customer support response times can vary"
+    ],
+    "overall_experience": "This Project Analyst likely found Zoho CRM to be a highly effective tool for managing their sales pipeline, appreciating its ability to provide a structured view of leads and deals. They would have valued its robust functionality and excellent value for money, despite experiencing some minor frustrations with the initial setup complexity and occasional interface clutter. The platform generally met their needs for organizing sales processes within their logistics and supply chain environment."
+  },
+  "ts": "2026-10-18T04:33:12.527139+00:00"
+}

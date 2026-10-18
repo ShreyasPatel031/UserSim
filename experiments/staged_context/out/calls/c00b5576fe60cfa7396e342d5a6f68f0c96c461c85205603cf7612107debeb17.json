@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c00b5576fe60cfa7396e342d5a6f68f0c96c461c85205603cf7612107debeb17",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2230,
+  "output_tokens": 1042,
+  "cost_usd": 0.0032739999999999996,
+  "elapsed_s": 27.41,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Powerful workflow automation for sales processes\",\n    \"Streamlines email, quotes, and sales order generation\",\n    \"Effective in managing customer data and opportunities\"\n  ],\n  \"cons\": [\n    \"Initial setup and complex workflow configuration can be time-consuming\",\n    \"Some reporting and dashboard customization can be challenging\",\n    \"Occasional performance issues with larger data sets\"\n  ],\n  \"overall_experience\": \"This Director of Business Development likely finds Zoho CRM to be a highly effective tool for automating key sales and business development processes. The robust workflow capabilities significantly streamline their operations, especially for email communication, quoting, and sales orders. While the initial configuration might present a learning curve, the long-term benefits in efficiency and data management contribute to a very positive overall experience.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Powerful workflow automation for sales processes",
+      "Streamlines email, quotes, and sales order generation",
+      "Effective in managing customer data and opportunities"
+    ],
+    "cons": [
+      "Initial setup and complex workflow configuration can be time-consuming",
+      "Some reporting and dashboard customization can be challenging",
+      "Occasional performance issues with larger data sets"
+    ],
+    "overall_experience": "This Director of Business Development likely finds Zoho CRM to be a highly effective tool for automating key sales and business development processes. The robust workflow capabilities significantly streamline their operations, especially for email communication, quoting, and sales orders. While the initial configuration might present a learning curve, the long-term benefits in efficiency and data management contribute to a very positive overall experience."
+  },
+  "ts": "2026-10-18T04:33:14.064287+00:00"
+}

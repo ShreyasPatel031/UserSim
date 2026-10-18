@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2e6fcacf2b7e3e7ef0f4380f9407be21b2f68a018c69acdb1a78245c893e3f6f",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 262,
+  "output_tokens": 1086,
+  "cost_usd": 0.0027936,
+  "elapsed_s": 7.12,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Clear visual pipeline for quick oversight\",\n    \"Easy-to-understand reporting on deal progress\",\n    \"Helps in understanding sales team performance\"\n  ],\n  \"cons\": [\n    \"Some features felt irrelevant for non-sales roles\",\n    \"Initial setup and customization for unique medical practice workflows took time\",\n    \"Reporting could be more flexible for HR/strategic insights\"\n  ],\n  \"overall_experience\": \"The People & Culture Director found Pipedrive effective for their specific need of monitoring sales pipeline progress. The visual interface and basic reporting provided clear insights into deal flow and team performance. While some sales-centric features were not directly applicable to their role, the core functionality for oversight was robust and helpful for strategic planning within the medical practice.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Clear visual pipeline for quick oversight",
+      "Easy-to-understand reporting on deal progress",
+      "Helps in understanding sales team performance"
+    ],
+    "cons": [
+      "Some features felt irrelevant for non-sales roles",
+      "Initial setup and customization for unique medical practice workflows took time",
+      "Reporting could be more flexible for HR/strategic insights"
+    ],
+    "overall_experience": "The People & Culture Director found Pipedrive effective for their specific need of monitoring sales pipeline progress. The visual interface and basic reporting provided clear insights into deal flow and team performance. While some sales-centric features were not directly applicable to their role, the core functionality for oversight was robust and helpful for strategic planning within the medical practice."
+  },
+  "ts": "2026-10-18T04:33:20.282962+00:00"
+}

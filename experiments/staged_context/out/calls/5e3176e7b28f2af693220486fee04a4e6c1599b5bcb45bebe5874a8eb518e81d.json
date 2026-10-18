@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "5e3176e7b28f2af693220486fee04a4e6c1599b5bcb45bebe5874a8eb518e81d",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 258,
+  "output_tokens": 968,
+  "cost_usd": 0.0024974,
+  "elapsed_s": 26.86,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Robust reporting tools for tracking campaign performance.\",\n    \"Effective in organizing customer data for the team.\",\n    \"Good value for the features provided, especially for a growing retail business.\"\n  ],\n  \"cons\": [\n    \"User interface for report customization can be complex.\",\n    \"Exporting reports sometimes requires extra steps or formatting adjustments.\",\n    \"Initial learning curve for new team members to fully utilize reporting capabilities.\"\n  ],\n  \"overall_experience\": \"This user likely found Zoho CRM to be a functional tool for their core task of creating and exporting reports to maintain team organization. While the reporting features were generally robust and offered good value for the price, they probably encountered some challenges with the complexity of report customization and the export process. Despite these hurdles, their two-plus years of use suggest they successfully integrated it into their workflow, appreciating its ability to centralize customer data for their retail team.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 3,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Robust reporting tools for tracking campaign performance.",
+      "Effective in organizing customer data for the team.",
+      "Good value for the features provided, especially for a growing retail business."
+    ],
+    "cons": [
+      "User interface for report customization can be complex.",
+      "Exporting reports sometimes requires extra steps or formatting adjustments.",
+      "Initial learning curve for new team members to fully utilize reporting capabilities."
+    ],
+    "overall_experience": "This user likely found Zoho CRM to be a functional tool for their core task of creating and exporting reports to maintain team organization. While the reporting features were generally robust and offered good value for the price, they probably encountered some challenges with the complexity of report customization and the export process. Despite these hurdles, their two-plus years of use suggest they successfully integrated it into their workflow, appreciating its ability to centralize customer data for their retail team."
+  },
+  "ts": "2026-10-18T04:33:13.360027+00:00"
+}

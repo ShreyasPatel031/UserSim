@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "433f778e2c00924a688c34c8469818006c6c6b165b31332bf92358f61b87ee1a",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 256,
+  "output_tokens": 992,
+  "cost_usd": 0.0025568,
+  "elapsed_s": 28.96,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Extensive customization options for fields and workflows\",\n    \"Good value for money with a comprehensive feature set\",\n    \"Robust API for integrations with other internal tools\"\n  ],\n  \"cons\": [\n    \"Steep learning curve due to the breadth of features\",\n    \"User interface can sometimes feel cluttered or unintuitive\",\n    \"Occasional performance slowdowns when handling large datasets\"\n  ],\n  \"overall_experience\": \"This software developer found Zoho CRM to be a powerful and cost-effective solution for managing client relationships across multiple product lines. They appreciated the deep customization and automation capabilities, which allowed them to tailor the system to their specific needs. However, the initial complexity and occasional UI quirks presented some challenges, requiring a significant time investment to master.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Extensive customization options for fields and workflows",
+      "Good value for money with a comprehensive feature set",
+      "Robust API for integrations with other internal tools"
+    ],
+    "cons": [
+      "Steep learning curve due to the breadth of features",
+      "User interface can sometimes feel cluttered or unintuitive",
+      "Occasional performance slowdowns when handling large datasets"
+    ],
+    "overall_experience": "This software developer found Zoho CRM to be a powerful and cost-effective solution for managing client relationships across multiple product lines. They appreciated the deep customization and automation capabilities, which allowed them to tailor the system to their specific needs. However, the initial complexity and occasional UI quirks presented some challenges, requiring a significant time investment to master."
+  },
+  "ts": "2026-10-18T04:33:15.518363+00:00"
+}

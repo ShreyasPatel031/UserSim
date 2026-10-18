@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "01213abf83cf5abb6ffdc39baf3c06246a4f1de4f78e9be1f526ae25e0698f9e",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2143,
+  "output_tokens": 970,
+  "cost_usd": 0.0030679,
+  "elapsed_s": 25.9,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"User-friendly interface for managing leads and deals\",\n    \"Streamlines task delegation and team workflow\",\n    \"Comprehensive view of customer journey\"\n  ],\n  \"cons\": [\n    \"Reporting features could be more extensive\",\n    \"Potential for limited customization for complex needs\",\n    \"Integration with some external tools might be challenging\"\n  ],\n  \"overall_experience\": \"This Manager Business Development likely found Freshsales to be a highly effective tool for managing their team's sales activities and delegating tasks. The product's ease of use and ability to provide a comprehensive view of customer interactions were significant positives. While generally satisfied, the reviewer might have noted some limitations in advanced reporting or specific customization options.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 4,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "User-friendly interface for managing leads and deals",
+      "Streamlines task delegation and team workflow",
+      "Comprehensive view of customer journey"
+    ],
+    "cons": [
+      "Reporting features could be more extensive",
+      "Potential for limited customization for complex needs",
+      "Integration with some external tools might be challenging"
+    ],
+    "overall_experience": "This Manager Business Development likely found Freshsales to be a highly effective tool for managing their team's sales activities and delegating tasks. The product's ease of use and ability to provide a comprehensive view of customer interactions were significant positives. While generally satisfied, the reviewer might have noted some limitations in advanced reporting or specific customization options."
+  },
+  "ts": "2026-10-18T04:33:11.175253+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "06360abcceeabc87f9688cf5cb9d368fbf1ac57428480539e165925e202f7077",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2258,
+  "output_tokens": 1007,
+  "cost_usd": 0.0031949,
+  "elapsed_s": 7.54,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Effective for tracking customer, partner, and supplier conversations\",\n    \"Streamlines workflow for managing deals and contacts\",\n    \"Relatively easy to set up and get started\"\n  ],\n  \"cons\": [\n    \"Could require some time to master its full potential\",\n    \"Reporting features might lack advanced customization\",\n    \"Potential for pricing to feel a bit high for certain functionalities\"\n  ],\n  \"overall_experience\": \"The Principal Engineer likely found Pipedrive to be a solid tool for managing their various business conversations, appreciating its straightforward approach to CRM. While generally positive about its ease of use and core functionality for tracking, they may have noted areas like reporting or deeper customization where the product could improve. The overall sentiment suggests a productive, if not perfect, experience over their 1-2 years of use.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Effective for tracking customer, partner, and supplier conversations",
+      "Streamlines workflow for managing deals and contacts",
+      "Relatively easy to set up and get started"
+    ],
+    "cons": [
+      "Could require some time to master its full potential",
+      "Reporting features might lack advanced customization",
+      "Potential for pricing to feel a bit high for certain functionalities"
+    ],
+    "overall_experience": "The Principal Engineer likely found Pipedrive to be a solid tool for managing their various business conversations, appreciating its straightforward approach to CRM. While generally positive about its ease of use and core functionality for tracking, they may have noted areas like reporting or deeper customization where the product could improve. The overall sentiment suggests a productive, if not perfect, experience over their 1-2 years of use."
+  },
+  "ts": "2026-10-18T04:33:15.347885+00:00"
+}

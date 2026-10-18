@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "804a461e6bfc46d0cf3ac89b9ad9ebe2653e0b30558d8fc1d5f4134d4a2e2f00",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 261,
+  "output_tokens": 1021,
+  "cost_usd": 0.0026308,
+  "elapsed_s": 26.09,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 3,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Integrated sales task management\",\n    \"Centralized storage for sales assets\",\n    \"Cost-effective alternative to larger CRMs\"\n  ],\n  \"cons\": [\n    \"Learning curve for new interface compared to Microsoft 365\",\n    \"Document management might feel less intuitive than dedicated file systems\",\n    \"Initial setup and customization for specific needs\"\n  ],\n  \"overall_experience\": \"The Head of Commercial Growth and Partnerships likely found Zoho CRM to be a decent, cost-effective solution for centralizing sales materials and tasks within a single platform. However, coming from a Microsoft 365 environment, they may have experienced a learning curve with Zoho's interface and found its document management less streamlined than dedicated file storage. The initial months were likely focused on adaptation and basic utilization rather than leveraging advanced CRM features.\"\n}",
+  "json": {
+    "ease_of_use_rating": 3,
+    "functionality_rating": 3,
+    "overall_rating": 3,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 6,
+    "pros": [
+      "Integrated sales task management",
+      "Centralized storage for sales assets",
+      "Cost-effective alternative to larger CRMs"
+    ],
+    "cons": [
+      "Learning curve for new interface compared to Microsoft 365",
+      "Document management might feel less intuitive than dedicated file systems",
+      "Initial setup and customization for specific needs"
+    ],
+    "overall_experience": "The Head of Commercial Growth and Partnerships likely found Zoho CRM to be a decent, cost-effective solution for centralizing sales materials and tasks within a single platform. However, coming from a Microsoft 365 environment, they may have experienced a learning curve with Zoho's interface and found its document management less streamlined than dedicated file storage. The initial months were likely focused on adaptation and basic utilization rather than leveraging advanced CRM features."
+  },
+  "ts": "2026-10-18T04:33:13.339003+00:00"
+}

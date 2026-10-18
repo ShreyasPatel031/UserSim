@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "5e2e9e821fc8b3771fec6323c2b77dd22597fde70c38f4853ab2d9dd2ef9a8ee",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 268,
+  "output_tokens": 1011,
+  "cost_usd": 0.0026079,
+  "elapsed_s": 6.77,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 3,\n  \"overall_rating\": 3,\n  \"value_for_money_rating\": 3,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 6,\n  \"pros\": [\n    \"Email and calendar integration were straightforward\",\n    \"Provided a clear overview of sales activities\",\n    \"Intuitive visual pipeline interface\"\n  ],\n  \"cons\": [\n    \"Mobile phone integration for calls/SMS felt less seamless\",\n    \"Limited depth for comprehensive marketing-centric customer interactions\",\n    \"Required some effort to get all data syncing perfectly during trial\"\n  ],\n  \"overall_experience\": \"The Marketing Manager found Pipedrive's email and calendar integrations to be reasonably effective for tracking basic customer communications. However, achieving a truly comprehensive view of all customer interactions, especially from mobile and a broader marketing perspective, felt somewhat limited during the free trial. While the interface was intuitive, fully leveraging the desired data syncing required more setup than anticipated for a quick evaluation.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 3,
+    "overall_rating": 3,
+    "value_for_money_rating": 3,
+    "customer_support_rating": 3,
+    "recommendation_score": 6,
+    "pros": [
+      "Email and calendar integration were straightforward",
+      "Provided a clear overview of sales activities",
+      "Intuitive visual pipeline interface"
+    ],
+    "cons": [
+      "Mobile phone integration for calls/SMS felt less seamless",
+      "Limited depth for comprehensive marketing-centric customer interactions",
+      "Required some effort to get all data syncing perfectly during trial"
+    ],
+    "overall_experience": "The Marketing Manager found Pipedrive's email and calendar integrations to be reasonably effective for tracking basic customer communications. However, achieving a truly comprehensive view of all customer interactions, especially from mobile and a broader marketing perspective, felt somewhat limited during the free trial. While the interface was intuitive, fully leveraging the desired data syncing required more setup than anticipated for a quick evaluation."
+  },
+  "ts": "2026-10-18T04:33:19.549221+00:00"
+}

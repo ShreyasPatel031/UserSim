@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1207725575214c929679c25e9911cb9019d7d0e79edcb7b67e325e3b5700c364",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 253,
+  "output_tokens": 1149,
+  "cost_usd": 0.0029484,
+  "elapsed_s": 28.36,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Efficient pipeline management for student enrollment cycles\",\n    \"Customizable fields to track specific student guidance data\",\n    \"Good for managing communications with prospective students\"\n  ],\n  \"cons\": [\n    \"Requires some adaptation for education-specific workflows\",\n    \"Reporting features could be more granular for academic metrics\",\n    \"Initial setup for complex sales cycles was a bit time-consuming\"\n  ],\n  \"overall_experience\": \"This Student Guidance Manager likely found Freshsales to be a solid CRM tool for managing their student enrollment and communication cycles over their 1-2 years of use. While not purpose-built for education, its customization capabilities allowed them to adapt it for their needs, particularly for loading and tracking sales cycles. They probably appreciated its core functionality for an SMB in the e-learning space, though some education-specific features might have been desired.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Efficient pipeline management for student enrollment cycles",
+      "Customizable fields to track specific student guidance data",
+      "Good for managing communications with prospective students"
+    ],
+    "cons": [
+      "Requires some adaptation for education-specific workflows",
+      "Reporting features could be more granular for academic metrics",
+      "Initial setup for complex sales cycles was a bit time-consuming"
+    ],
+    "overall_experience": "This Student Guidance Manager likely found Freshsales to be a solid CRM tool for managing their student enrollment and communication cycles over their 1-2 years of use. While not purpose-built for education, its customization capabilities allowed them to adapt it for their needs, particularly for loading and tracking sales cycles. They probably appreciated its core functionality for an SMB in the e-learning space, though some education-specific features might have been desired."
+  },
+  "ts": "2026-10-18T04:33:13.893312+00:00"
+}

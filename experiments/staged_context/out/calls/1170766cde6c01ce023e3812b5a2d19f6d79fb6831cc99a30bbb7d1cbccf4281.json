@@ -1,0 +1,35 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1170766cde6c01ce023e3812b5a2d19f6d79fb6831cc99a30bbb7d1cbccf4281",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 257,
+  "output_tokens": 991,
+  "cost_usd": 0.0025545999999999998,
+  "elapsed_s": 25.95,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 2,\n  \"functionality_rating\": 2,\n  \"overall_rating\": 2,\n  \"value_for_money_rating\": 2,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 3,\n  \"pros\": [\n    \"Modern interface compared to Act!\",\n    \"Basic contact management was adequate\"\n  ],\n  \"cons\": [\n    \"Difficulty exporting contacts for migration\",\n    \"Limited flexibility in data export formats\",\n    \"Time-consuming data migration process\"\n  ],\n  \"overall_experience\": \"The Director likely found Freshsales' interface an improvement over their previous system, Act!, for general contact management. However, their experience was significantly hampered by the critical task of exporting contacts for migration. The process was likely cumbersome or lacked the necessary flexibility, leading to frustration and a negative overall impression, especially given their short usage period and the need to move data out of the system.\"\n}",
+  "json": {
+    "ease_of_use_rating": 2,
+    "functionality_rating": 2,
+    "overall_rating": 2,
+    "value_for_money_rating": 2,
+    "customer_support_rating": 3,
+    "recommendation_score": 3,
+    "pros": [
+      "Modern interface compared to Act!",
+      "Basic contact management was adequate"
+    ],
+    "cons": [
+      "Difficulty exporting contacts for migration",
+      "Limited flexibility in data export formats",
+      "Time-consuming data migration process"
+    ],
+    "overall_experience": "The Director likely found Freshsales' interface an improvement over their previous system, Act!, for general contact management. However, their experience was significantly hampered by the critical task of exporting contacts for migration. The process was likely cumbersome or lacked the necessary flexibility, leading to frustration and a negative overall impression, especially given their short usage period and the need to move data out of the system."
+  },
+  "ts": "2026-10-18T04:33:12.290731+00:00"
+}

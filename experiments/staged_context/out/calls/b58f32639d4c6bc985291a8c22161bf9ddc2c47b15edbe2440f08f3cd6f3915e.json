@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b58f32639d4c6bc985291a8c22161bf9ddc2c47b15edbe2440f08f3cd6f3915e",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2610,
+  "output_tokens": 998,
+  "cost_usd": 0.0032779999999999997,
+  "elapsed_s": 25.75,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Consolidates contact and deal tracking, eliminating need for external tools\",\n    \"Offers robust customization options for specific workflows\",\n    \"Provides strong integration capabilities with other systems\"\n  ],\n  \"cons\": [\n    \"Steep learning curve due to extensive features and configuration options\",\n    \"Can be complex to set up and maintain without dedicated technical expertise\",\n    \"Some basic tasks might require more clicks than ideal for quick access\"\n  ],\n  \"overall_experience\": \"This Senior Technical Support Specialist likely found Zoho CRM to be a highly functional tool for centralizing contact and deal management, effectively meeting their core need to keep everything organized. While appreciating its customization and integration strengths, they probably experienced a significant learning curve and complexity in its implementation and ongoing management. Despite these challenges, its comprehensive feature set made it a valuable asset for their large enterprise environment.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 5,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 8,
+    "pros": [
+      "Consolidates contact and deal tracking, eliminating need for external tools",
+      "Offers robust customization options for specific workflows",
+      "Provides strong integration capabilities with other systems"
+    ],
+    "cons": [
+      "Steep learning curve due to extensive features and configuration options",
+      "Can be complex to set up and maintain without dedicated technical expertise",
+      "Some basic tasks might require more clicks than ideal for quick access"
+    ],
+    "overall_experience": "This Senior Technical Support Specialist likely found Zoho CRM to be a highly functional tool for centralizing contact and deal management, effectively meeting their core need to keep everything organized. While appreciating its customization and integration strengths, they probably experienced a significant learning curve and complexity in its implementation and ongoing management. Despite these challenges, its comprehensive feature set made it a valuable asset for their large enterprise environment."
+  },
+  "ts": "2026-10-18T04:33:12.796032+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "eee69f06002f2e558f733bc2e27c5edd43d38544f51280614cb0ae23de1da16a",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2444,
+  "output_tokens": 1057,
+  "cost_usd": 0.0033756999999999997,
+  "elapsed_s": 25.7,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 7,\n  \"pros\": [\n    \"Efficiently adds new leads and contacts\",\n    \"Intuitive interface for core CRM tasks\",\n    \"Good organizational capabilities for small teams\"\n  ],\n  \"cons\": [\n    \"Potential for limited customization options\",\n    \"May lack advanced reporting features for deeper analysis\",\n    \"Customer support might be less responsive for free trial users\"\n  ],\n  \"overall_experience\": \"The Partner likely found Freshsales to be a generally capable tool for managing leads and contacts during their free trial, appreciating its ease of use for essential tasks. While the core functionality met their immediate needs for a small investment management firm, they may have found some limitations in customization or advanced features. The experience was positive enough to consider it, but not overwhelmingly so, potentially due to aspects like customer support for free users.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 7,
+    "pros": [
+      "Efficiently adds new leads and contacts",
+      "Intuitive interface for core CRM tasks",
+      "Good organizational capabilities for small teams"
+    ],
+    "cons": [
+      "Potential for limited customization options",
+      "May lack advanced reporting features for deeper analysis",
+      "Customer support might be less responsive for free trial users"
+    ],
+    "overall_experience": "The Partner likely found Freshsales to be a generally capable tool for managing leads and contacts during their free trial, appreciating its ease of use for essential tasks. While the core functionality met their immediate needs for a small investment management firm, they may have found some limitations in customization or advanced features. The experience was positive enough to consider it, but not overwhelmingly so, potentially due to aspects like customer support for free users."
+  },
+  "ts": "2026-10-18T04:33:11.853405+00:00"
+}

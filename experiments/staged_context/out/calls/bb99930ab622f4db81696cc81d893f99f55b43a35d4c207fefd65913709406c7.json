@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "bb99930ab622f4db81696cc81d893f99f55b43a35d4c207fefd65913709406c7",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 255,
+  "output_tokens": 965,
+  "cost_usd": 0.0024890000000000003,
+  "elapsed_s": 10.06,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Intuitive visual pipeline management\",\n    \"Efficient activity scheduling and tracking\",\n    \"Good for keeping sales processes organized\"\n  ],\n  \"cons\": [\n    \"Reporting could be more customizable for specific technical metrics\",\n    \"Initial setup of custom fields took some effort\",\n    \"Limited advanced automation features for complex sales workflows\"\n  ],\n  \"overall_experience\": \"The technical sales manager found Pipedrive to be a highly effective tool for keeping track of sales activities and managing their pipeline. The visual interface made it easy to see where deals stood, which was particularly helpful in their complex sales environment. While the core activity tracking was excellent, they noted some areas for improvement in advanced reporting and workflow automation that would better suit their technical sales process.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Intuitive visual pipeline management",
+      "Efficient activity scheduling and tracking",
+      "Good for keeping sales processes organized"
+    ],
+    "cons": [
+      "Reporting could be more customizable for specific technical metrics",
+      "Initial setup of custom fields took some effort",
+      "Limited advanced automation features for complex sales workflows"
+    ],
+    "overall_experience": "The technical sales manager found Pipedrive to be a highly effective tool for keeping track of sales activities and managing their pipeline. The visual interface made it easy to see where deals stood, which was particularly helpful in their complex sales environment. While the core activity tracking was excellent, they noted some areas for improvement in advanced reporting and workflow automation that would better suit their technical sales process."
+  },
+  "ts": "2026-10-18T04:33:24.638782+00:00"
+}

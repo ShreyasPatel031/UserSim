@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "08c41dee7f1d38b38d2908dcf4108af80bcd2ce7a1b4a7f702d530b8426e3820",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 273,
+  "output_tokens": 997,
+  "cost_usd": 0.0025744,
+  "elapsed_s": 26.21,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 5,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Strong customization capabilities for specific data\",\n    \"Good value for money compared to alternatives\",\n    \"Effective for linking related data across modules\"\n  ],\n  \"cons\": [\n    \"Learning curve for advanced custom module development\",\n    \"Potential limitations in very complex data relationships\",\n    \"Occasional UI quirks or performance inconsistencies\"\n  ],\n  \"overall_experience\": \"This supervisor likely found Zoho CRM to be a highly valuable tool for their financial services company, especially given its ability to create and link custom modules for specific data capture. The product offered a cost-effective alternative to more expensive enterprise solutions like Dynamics 365 or Salesforce, while still providing robust functionality. While the customization process may have presented a learning curve, the overall flexibility and value made it a strong fit for their team management needs.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 5,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Strong customization capabilities for specific data",
+      "Good value for money compared to alternatives",
+      "Effective for linking related data across modules"
+    ],
+    "cons": [
+      "Learning curve for advanced custom module development",
+      "Potential limitations in very complex data relationships",
+      "Occasional UI quirks or performance inconsistencies"
+    ],
+    "overall_experience": "This supervisor likely found Zoho CRM to be a highly valuable tool for their financial services company, especially given its ability to create and link custom modules for specific data capture. The product offered a cost-effective alternative to more expensive enterprise solutions like Dynamics 365 or Salesforce, while still providing robust functionality. While the customization process may have presented a learning curve, the overall flexibility and value made it a strong fit for their team management needs."
+  },
+  "ts": "2026-10-18T04:33:12.931437+00:00"
+}

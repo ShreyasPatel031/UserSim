@@ -1,0 +1,36 @@
+{
+  "stage": "mix_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b65be908b8068a6228ceddeb28103fb11608f2e36573c7b28ef057c3f0ecf821",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2364,
+  "output_tokens": 1029,
+  "cost_usd": 0.0032817000000000002,
+  "elapsed_s": 8.63,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 5,\n  \"functionality_rating\": 5,\n  \"overall_rating\": 5,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 4,\n  \"recommendation_score\": 9,\n  \"pros\": [\n    \"Excellent visual pipeline management for sales stages\",\n    \"Intuitive and easy to set up for tracking prospects\",\n    \"Seamless calendar integration for appointment reminders\"\n  ],\n  \"cons\": [\n    \"Reporting might lack depth for complex analysis\",\n    \"Potential for higher costs with advanced features or integrations\",\n    \"Customer support can sometimes be slow to respond\"\n  ],\n  \"overall_experience\": \"The Business Development Manager likely found Pipedrive to be an highly effective and straightforward tool for managing their sales pipeline. Its visual interface and clear stage tracking aligned perfectly with their need to monitor prospects from initial contact through negotiation and follow-up. While generally pleased with its core functionality and ease of use, they may have noted some limitations in advanced reporting or found the pricing to increase with additional features.\"\n}",
+  "json": {
+    "ease_of_use_rating": 5,
+    "functionality_rating": 5,
+    "overall_rating": 5,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 4,
+    "recommendation_score": 9,
+    "pros": [
+      "Excellent visual pipeline management for sales stages",
+      "Intuitive and easy to set up for tracking prospects",
+      "Seamless calendar integration for appointment reminders"
+    ],
+    "cons": [
+      "Reporting might lack depth for complex analysis",
+      "Potential for higher costs with advanced features or integrations",
+      "Customer support can sometimes be slow to respond"
+    ],
+    "overall_experience": "The Business Development Manager likely found Pipedrive to be an highly effective and straightforward tool for managing their sales pipeline. Its visual interface and clear stage tracking aligned perfectly with their need to monitor prospects from initial contact through negotiation and follow-up. While generally pleased with its core functionality and ease of use, they may have noted some limitations in advanced reporting or found the pricing to increase with additional features."
+  },
+  "ts": "2026-10-18T04:33:20.486560+00:00"
+}
