@@ -69,6 +69,14 @@ Findings on TEST:
 - Within-product Spearman rose: recommend 0.00 → 0.13, ease 0.02 → 0.10, overall 0.04 → 0.09.
 - Time using the product dominates: a free-trial user recommends 0.53 lower, a 2+ year user 0.28 higher.
 - Exported to `mvp/agent_mode_offsets.json`; agent mode reports the result as `for_this_persona`.
+- Unhappy users (overall ≤ 3 or recommend ≤ 6) are ranked by the predicted shortfall:
+
+| AUC | Capterra test, pooled | Capterra test, within product | G2 test, pooled |
+| --- | --- | --- | --- |
+| own-review level only | 0.624 | 0.524 | 0.813 |
+| level + persona offsets | **0.662** | **0.550** | 0.814 |
+
+  The handoff's best was 0.53. Most of what can be spotted is the product's level; offsets add a little within a product.
 
 ## Agent mode (shipped in PR #86)
 
