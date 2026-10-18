@@ -14,7 +14,9 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 TARGETS = ["ease_of_use_rating", "functionality_rating", "overall_rating"]
 CELLS = ["B0", "B1", "B2", "B3", "B4", "B5"]
-NO_RUN = {"environment_failure", "blocked_login_wall", "blocked_captcha", "blocked_site_error", "blocked_paid_plan"}
+# Only a run that never opened the product counts as not executed; a run the judge marked blocked mid-task
+# (e.g. a view that would not load) still observed the product.
+NO_RUN = {"environment_failure"}
 
 
 def main() -> None:
