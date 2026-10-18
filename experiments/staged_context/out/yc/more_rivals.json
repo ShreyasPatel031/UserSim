@@ -1,0 +1,82 @@
+{
+  "TryNearby": [
+    "Grin",
+    "Aspire",
+    "Upfluence",
+    "HypeAuditor",
+    "Fiverr",
+    "Podium"
+  ],
+  "transload": [
+    "Cubiscan",
+    "FreightSnap",
+    "Manhattan Associates WMS",
+    "Blue Yonder WMS",
+    "MercuryGate TMS",
+    "3Gtms"
+  ],
+  "Parasma": [
+    "Amazon SageMaker",
+    "Google Cloud Vertex AI",
+    "Microsoft Azure Machine Learning",
+    "NVIDIA DGX Cloud",
+    "Databricks",
+    "Hugging Face"
+  ],
+  "Amorphic Labs": [
+    "RapidAPI Hub",
+    "Zapier",
+    "Kong Gateway",
+    "Google Cloud Apigee",
+    "Workato",
+    "Postman"
+  ],
+  "MusicArena": [
+    "Ableton Live",
+    "FL Studio",
+    "iZotope RX",
+    "Splice",
+    "Soundraw",
+    "AIVA"
+  ],
+  "Enjamb Labs": [
+    "UiPath",
+    "Workato",
+    "Benchling",
+    "Veeva Vault",
+    "SAS",
+    "ServiceNow"
+  ],
+  "Mentlio": [
+    "Vellum AI",
+    "PromptLayer",
+    "Arize AI",
+    "Weights & Biases",
+    "Datadog",
+    "LinearB"
+  ],
+  "Fuchsia": [
+    "PTC Windchill",
+    "Siemens Teamcenter",
+    "Arena PLM",
+    "MasterControl",
+    "ETQ Reliance",
+    "Jira"
+  ],
+  "Dock": [
+    "Salesforce Sales Cloud",
+    "UiPath",
+    "Zapier",
+    "HubSpot Marketing Hub",
+    "Upwork",
+    "Asana"
+  ],
+  "HyperProbe": [
+    "Datadog",
+    "New Relic",
+    "Dynatrace",
+    "Lightrun",
+    "Rookout",
+    "PagerDuty"
+  ]
+}

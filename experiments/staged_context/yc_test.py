@@ -164,9 +164,52 @@ def report() -> None:
     E.write_json(YOUT / "yc_report.json", rows)
 
 
+def more_rivals() -> None:
+    """Flagged startups again, with 6 more model-named rivals listed on review sites (out/yc/more_rivals.json):
+    is the failure the planner's 2 picks, or a real lack of review data?"""
+    cos = {c["name"]: c for c in E.read_json(YOUT / "yc20.json")}
+    rep = {r["name"]: r for r in E.read_json(YOUT / "yc_report.json")}
+    more = E.read_json(YOUT / "more_rivals.json")
+    pool = ThreadPoolExecutor(16)
+    out = []
+    for name, extra in more.items():
+        c = cos[name]
+        names = list(dict.fromkeys([x["name"] for x in rep[name]["competitors"]] + extra))
+
+        def judge(n):
+            f = L.LIVE / f"{L.slug(n)}.json"
+            rv = [RC._all_in_one_item(x) for x in L.scrape(n)] if f.is_file() else None
+            found_as = sorted({str(r.get("product")) for r in (rv or []) if r.get("product")})[:3]
+            rec = E.call_model("yc_relevance", FLASH, "You know the B2B software market. Return JSON only.", RELEVANCE.format(
+                name=name, url=c["website"], one_liner=c["one_liner"], desc=(c.get("long_description") or "")[:600],
+                rival=n, found_as=found_as or "nothing found", sample=_sample(rv or [])),
+                temperature=0.0, seed=42, max_tokens=2048, thinking_budget=512)
+            j = rec.get("json") if isinstance(rec.get("json"), dict) else {}
+            return {"name": n, "source": "planner" if n not in extra else "more", "reviews": len(rv) if rv is not None else 0,
+                    "reviews_match": j.get("reviews_are_of_named_product"), "direct": j.get("direct_competitor"), "why": j.get("why"), "rv": rv or []}
+        comp = list(pool.map(judge, names))
+        good = [x for x in comp if x["direct"] in ("yes", "partly") and x["reviews_match"] and x["reviews"] >= 20]
+        riv = [r for x in good for r in x["rv"]]
+        fam = Counter(RE_role(r.get("role")) for r in riv if r.get("role"))
+        tot = sum(fam.values()) or 1
+        uc = []
+        if riv:
+            rec = E.call_model("yc_use_cases", FLASH, "You analyse software reviews. Return JSON only.", USE_CASES.format(
+                rivals=", ".join(x["name"] for x in good), name=name, one_liner=c["one_liner"], sample=_sample(riv, 30)),
+                temperature=0.0, seed=42, max_tokens=2048, thinking_budget=512)
+            uc = (rec.get("json") or {}).get("tasks") or [] if isinstance(rec.get("json"), dict) else []
+        row = {"name": name, "one_liner": c["one_liner"],
+               "competitors": [{k: v for k, v in x.items() if k != "rv"} for x in comp],
+               "usable": [f"{x['name']} ({x['direct']}, {x['reviews']})" for x in good], "n_reviewers": len(riv),
+               "roles": {k: round(v / tot, 2) for k, v in fam.most_common(4)}, "use_cases": uc[:3]}
+        out.append(row)
+        print(f"{name:14} usable={row['usable']} reviewers={len(riv)}", flush=True)
+    E.write_json(YOUT / "more_rivals_report.json", out)
+
+
 def RE_role(t):
     return E.role_family(t or "")
 
 
 if __name__ == "__main__":
-    {"plan": plan, "report": report}[sys.argv[1]]()
+    {"plan": plan, "report": report, "more": more_rivals}[sys.argv[1]]()
