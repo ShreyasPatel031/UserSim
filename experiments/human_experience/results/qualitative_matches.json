@@ -199,56 +199,6 @@
    "latency_seconds": 2.88
   }
  },
- "case_11232793fc__B4": {
-  "matches": {
-   "benefits": [
-    {
-     "pred_index": 0,
-     "ref_id": null,
-     "score": 0,
-     "disagreement": false
-    },
-    {
-     "pred_index": 1,
-     "ref_id": "b1",
-     "score": 1,
-     "disagreement": false
-    },
-    {
-     "pred_index": 2,
-     "ref_id": null,
-     "score": 0,
-     "disagreement": false
-    }
-   ],
-   "frictions": [
-    {
-     "pred_index": 0,
-     "ref_id": "f1",
-     "score": 2,
-     "disagreement": false
-    },
-    {
-     "pred_index": 1,
-     "ref_id": null,
-     "score": 0,
-     "disagreement": false
-    },
-    {
-     "pred_index": 2,
-     "ref_id": null,
-     "score": 0,
-     "disagreement": false
-    }
-   ]
-  },
-  "usage": {
-   "input_tokens": 846,
-   "output_tokens": 173,
-   "cost_usd": 0.000686,
-   "latency_seconds": 2.87
-  }
- },
  "case_604a32d5df__B4": {
   "matches": {
    "benefits": [
@@ -349,56 +299,6 @@
    "latency_seconds": 2.59
   }
  },
- "case_11232793fc__B3": {
-  "matches": {
-   "benefits": [
-    {
-     "pred_index": 0,
-     "ref_id": null,
-     "score": 0,
-     "disagreement": false
-    },
-    {
-     "pred_index": 1,
-     "ref_id": "b2",
-     "score": 1,
-     "disagreement": false
-    },
-    {
-     "pred_index": 2,
-     "ref_id": null,
-     "score": 0,
-     "disagreement": false
-    }
-   ],
-   "frictions": [
-    {
-     "pred_index": 0,
-     "ref_id": "f1",
-     "score": 2,
-     "disagreement": false
-    },
-    {
-     "pred_index": 1,
-     "ref_id": null,
-     "score": 0,
-     "disagreement": false
-    },
-    {
-     "pred_index": 2,
-     "ref_id": null,
-     "score": 0,
-     "disagreement": false
-    }
-   ]
-  },
-  "usage": {
-   "input_tokens": 915,
-   "output_tokens": 173,
-   "cost_usd": 0.000707,
-   "latency_seconds": 2.88
-  }
- },
  "case_140855addc__B2": {
   "matches": {
    "benefits": [
@@ -459,156 +359,6 @@
    "output_tokens": 10,
    "cost_usd": 0.000191,
    "latency_seconds": 2.26
-  }
- },
- "case_4164789dd7__B4": {
-  "matches": {
-   "benefits": [
-    {
-     "pred_index": 0,
-     "ref_id": null,
-     "score": 0,
-     "disagreement": false
-    },
-    {
-     "pred_index": 1,
-     "ref_id": null,
-     "score": 0,
-     "disagreement": false
-    },
-    {
-     "pred_index": 2,
-     "ref_id": null,
-     "score": 0,
-     "disagreement": false
-    }
-   ],
-   "frictions": [
-    {
-     "pred_index": 0,
-     "ref_id": null,
-     "score": 0,
-     "disagreement": false
-    },
-    {
-     "pred_index": 1,
-     "ref_id": null,
-     "score": 0,
-     "disagreement": false
-    },
-    {
-     "pred_index": 2,
-     "ref_id": null,
-     "score": 0,
-     "disagreement": false
-    }
-   ]
-  },
-  "usage": {
-   "input_tokens": 1132,
-   "output_tokens": 169,
-   "cost_usd": 0.000762,
-   "latency_seconds": 2.5
-  }
- },
- "case_4164789dd7__B3": {
-  "matches": {
-   "benefits": [
-    {
-     "pred_index": 0,
-     "ref_id": "b2",
-     "score": 1,
-     "disagreement": false
-    },
-    {
-     "pred_index": 1,
-     "ref_id": null,
-     "score": 0,
-     "disagreement": false
-    },
-    {
-     "pred_index": 2,
-     "ref_id": null,
-     "score": 0,
-     "disagreement": false
-    }
-   ],
-   "frictions": [
-    {
-     "pred_index": 0,
-     "ref_id": "f3",
-     "score": 1,
-     "disagreement": false
-    },
-    {
-     "pred_index": 1,
-     "ref_id": "f1",
-     "score": 1,
-     "disagreement": false
-    },
-    {
-     "pred_index": 2,
-     "ref_id": null,
-     "score": 0,
-     "disagreement": false
-    }
-   ]
-  },
-  "usage": {
-   "input_tokens": 1217,
-   "output_tokens": 175,
-   "cost_usd": 0.000803,
-   "latency_seconds": 2.58
-  }
- },
- "case_4164789dd7__B5": {
-  "matches": {
-   "benefits": [
-    {
-     "pred_index": 0,
-     "ref_id": "b2",
-     "score": 1,
-     "disagreement": false
-    },
-    {
-     "pred_index": 1,
-     "ref_id": null,
-     "score": 0,
-     "disagreement": false
-    },
-    {
-     "pred_index": 2,
-     "ref_id": null,
-     "score": 0,
-     "disagreement": false
-    }
-   ],
-   "frictions": [
-    {
-     "pred_index": 0,
-     "ref_id": "f3",
-     "score": 1,
-     "disagreement": false
-    },
-    {
-     "pred_index": 1,
-     "ref_id": "f1",
-     "score": 1,
-     "disagreement": false
-    },
-    {
-     "pred_index": 2,
-     "ref_id": null,
-     "score": 0,
-     "disagreement": false
-    }
-   ]
-  },
-  "usage": {
-   "input_tokens": 1217,
-   "output_tokens": 175,
-   "cost_usd": 0.000803,
-   "latency_seconds": 2.46
   }
  },
  "case_604a32d5df__B2": {
@@ -911,56 +661,6 @@
    "latency_seconds": 2.19
   }
  },
- "case_11232793fc__B5": {
-  "matches": {
-   "benefits": [
-    {
-     "pred_index": 0,
-     "ref_id": null,
-     "score": 0,
-     "disagreement": false
-    },
-    {
-     "pred_index": 1,
-     "ref_id": "b2",
-     "score": 1,
-     "disagreement": false
-    },
-    {
-     "pred_index": 2,
-     "ref_id": null,
-     "score": 0,
-     "disagreement": false
-    }
-   ],
-   "frictions": [
-    {
-     "pred_index": 0,
-     "ref_id": "f1",
-     "score": 2,
-     "disagreement": false
-    },
-    {
-     "pred_index": 1,
-     "ref_id": null,
-     "score": 0,
-     "disagreement": false
-    },
-    {
-     "pred_index": 2,
-     "ref_id": null,
-     "score": 0,
-     "disagreement": false
-    }
-   ]
-  },
-  "usage": {
-   "input_tokens": 915,
-   "output_tokens": 173,
-   "cost_usd": 0.000707,
-   "latency_seconds": 2.2
-  }
- },
  "case_f692c7793d__B2": {
   "matches": {
    "benefits": [
@@ -1161,56 +861,6 @@
    "latency_seconds": 2.39
   }
  },
- "case_4164789dd7__B2": {
-  "matches": {
-   "benefits": [
-    {
-     "pred_index": 0,
-     "ref_id": null,
-     "score": 0,
-     "disagreement": false
-    },
-    {
-     "pred_index": 1,
-     "ref_id": null,
-     "score": 0,
-     "disagreement": false
-    },
-    {
-     "pred_index": 2,
-     "ref_id": null,
-     "score": 0,
-     "disagreement": false
-    }
-   ],
-   "frictions": [
-    {
-     "pred_index": 0,
-     "ref_id": null,
-     "score": 0,
-     "disagreement": false
-    },
-    {
-     "pred_index": 1,
-     "ref_id": null,
-     "score": 0,
-     "disagreement": false
-    },
-    {
-     "pred_index": 2,
-     "ref_id": null,
-     "score": 0,
-     "disagreement": false
-    }
-   ]
-  },
-  "usage": {
-   "input_tokens": 1132,
-   "output_tokens": 169,
-   "cost_usd": 0.000762,
-   "latency_seconds": 1.93
-  }
- },
  "case_f692c7793d__B0": {
   "matches": {
    "benefits": [
@@ -1409,56 +1059,6 @@
    "output_tokens": 173,
    "cost_usd": 0.000729,
    "latency_seconds": 2.12
-  }
- },
- "case_11232793fc__B2": {
-  "matches": {
-   "benefits": [
-    {
-     "pred_index": 0,
-     "ref_id": null,
-     "score": 0,
-     "disagreement": false
-    },
-    {
-     "pred_index": 1,
-     "ref_id": "b1",
-     "score": 1,
-     "disagreement": false
-    },
-    {
-     "pred_index": 2,
-     "ref_id": null,
-     "score": 0,
-     "disagreement": false
-    }
-   ],
-   "frictions": [
-    {
-     "pred_index": 0,
-     "ref_id": "f1",
-     "score": 2,
-     "disagreement": false
-    },
-    {
-     "pred_index": 1,
-     "ref_id": null,
-     "score": 0,
-     "disagreement": false
-    },
-    {
-     "pred_index": 2,
-     "ref_id": null,
-     "score": 0,
-     "disagreement": false
-    }
-   ]
-  },
-  "usage": {
-   "input_tokens": 846,
-   "output_tokens": 173,
-   "cost_usd": 0.000686,
-   "latency_seconds": 1.69
   }
  },
  "case_140855addc__B4": {
@@ -1759,6 +1359,406 @@
    "output_tokens": 173,
    "cost_usd": 0.000729,
    "latency_seconds": 1.38
+  }
+ },
+ "case_4164789dd7__B5": {
+  "matches": {
+   "benefits": [
+    {
+     "pred_index": 0,
+     "ref_id": "b2",
+     "score": 2,
+     "disagreement": false
+    },
+    {
+     "pred_index": 1,
+     "ref_id": null,
+     "score": 0,
+     "disagreement": false
+    },
+    {
+     "pred_index": 2,
+     "ref_id": null,
+     "score": 0,
+     "disagreement": false
+    }
+   ],
+   "frictions": [
+    {
+     "pred_index": 0,
+     "ref_id": "f3",
+     "score": 1,
+     "disagreement": false
+    },
+    {
+     "pred_index": 1,
+     "ref_id": "f1",
+     "score": 1,
+     "disagreement": false
+    },
+    {
+     "pred_index": 2,
+     "ref_id": null,
+     "score": 0,
+     "disagreement": false
+    }
+   ]
+  },
+  "usage": {
+   "input_tokens": 1205,
+   "output_tokens": 175,
+   "cost_usd": 0.000799,
+   "latency_seconds": 1.94
+  }
+ },
+ "case_11232793fc__B5": {
+  "matches": {
+   "benefits": [
+    {
+     "pred_index": 0,
+     "ref_id": "b1",
+     "score": 2,
+     "disagreement": false
+    },
+    {
+     "pred_index": 1,
+     "ref_id": "b2",
+     "score": 1,
+     "disagreement": false
+    },
+    {
+     "pred_index": 2,
+     "ref_id": null,
+     "score": 0,
+     "disagreement": false
+    }
+   ],
+   "frictions": [
+    {
+     "pred_index": 0,
+     "ref_id": "f1",
+     "score": 2,
+     "disagreement": false
+    },
+    {
+     "pred_index": 1,
+     "ref_id": null,
+     "score": 0,
+     "disagreement": false
+    },
+    {
+     "pred_index": 2,
+     "ref_id": null,
+     "score": 0,
+     "disagreement": false
+    }
+   ]
+  },
+  "usage": {
+   "input_tokens": 957,
+   "output_tokens": 175,
+   "cost_usd": 0.000725,
+   "latency_seconds": 2.0
+  }
+ },
+ "case_4164789dd7__B3": {
+  "matches": {
+   "benefits": [
+    {
+     "pred_index": 0,
+     "ref_id": null,
+     "score": 0,
+     "disagreement": false
+    },
+    {
+     "pred_index": 1,
+     "ref_id": "b2",
+     "score": 2,
+     "disagreement": false
+    },
+    {
+     "pred_index": 2,
+     "ref_id": null,
+     "score": 0,
+     "disagreement": false
+    }
+   ],
+   "frictions": [
+    {
+     "pred_index": 0,
+     "ref_id": "f3",
+     "score": 1,
+     "disagreement": false
+    },
+    {
+     "pred_index": 1,
+     "ref_id": "f1",
+     "score": 1,
+     "disagreement": false
+    },
+    {
+     "pred_index": 2,
+     "ref_id": null,
+     "score": 0,
+     "disagreement": false
+    }
+   ]
+  },
+  "usage": {
+   "input_tokens": 1185,
+   "output_tokens": 175,
+   "cost_usd": 0.000793,
+   "latency_seconds": 1.92
+  }
+ },
+ "case_4164789dd7__B4": {
+  "matches": {
+   "benefits": [
+    {
+     "pred_index": 0,
+     "ref_id": null,
+     "score": 0,
+     "disagreement": false
+    },
+    {
+     "pred_index": 1,
+     "ref_id": null,
+     "score": 0,
+     "disagreement": false
+    },
+    {
+     "pred_index": 2,
+     "ref_id": null,
+     "score": 0,
+     "disagreement": false
+    }
+   ],
+   "frictions": [
+    {
+     "pred_index": 0,
+     "ref_id": "f1",
+     "score": 1,
+     "disagreement": false
+    },
+    {
+     "pred_index": 1,
+     "ref_id": "f3",
+     "score": 1,
+     "disagreement": false
+    },
+    {
+     "pred_index": 2,
+     "ref_id": null,
+     "score": 0,
+     "disagreement": false
+    }
+   ]
+  },
+  "usage": {
+   "input_tokens": 1108,
+   "output_tokens": 173,
+   "cost_usd": 0.000765,
+   "latency_seconds": 1.79
+  }
+ },
+ "case_4164789dd7__B2": {
+  "matches": {
+   "benefits": [
+    {
+     "pred_index": 0,
+     "ref_id": null,
+     "score": 0,
+     "disagreement": false
+    },
+    {
+     "pred_index": 1,
+     "ref_id": null,
+     "score": 0,
+     "disagreement": false
+    },
+    {
+     "pred_index": 2,
+     "ref_id": null,
+     "score": 0,
+     "disagreement": false
+    }
+   ],
+   "frictions": [
+    {
+     "pred_index": 0,
+     "ref_id": "f3",
+     "score": 1,
+     "disagreement": false
+    },
+    {
+     "pred_index": 1,
+     "ref_id": null,
+     "score": 0,
+     "disagreement": false
+    },
+    {
+     "pred_index": 2,
+     "ref_id": null,
+     "score": 0,
+     "disagreement": false
+    }
+   ]
+  },
+  "usage": {
+   "input_tokens": 1178,
+   "output_tokens": 171,
+   "cost_usd": 0.000781,
+   "latency_seconds": 2.02
+  }
+ },
+ "case_11232793fc__B3": {
+  "matches": {
+   "benefits": [
+    {
+     "pred_index": 0,
+     "ref_id": "b1",
+     "score": 1,
+     "disagreement": false
+    },
+    {
+     "pred_index": 1,
+     "ref_id": "b2",
+     "score": 1,
+     "disagreement": false
+    },
+    {
+     "pred_index": 2,
+     "ref_id": null,
+     "score": 0,
+     "disagreement": false
+    }
+   ],
+   "frictions": [
+    {
+     "pred_index": 0,
+     "ref_id": "f1",
+     "score": 2,
+     "disagreement": false
+    },
+    {
+     "pred_index": 1,
+     "ref_id": null,
+     "score": 0,
+     "disagreement": false
+    },
+    {
+     "pred_index": 2,
+     "ref_id": null,
+     "score": 0,
+     "disagreement": false
+    }
+   ]
+  },
+  "usage": {
+   "input_tokens": 888,
+   "output_tokens": 175,
+   "cost_usd": 0.000704,
+   "latency_seconds": 1.53
+  }
+ },
+ "case_11232793fc__B2": {
+  "matches": {
+   "benefits": [
+    {
+     "pred_index": 0,
+     "ref_id": null,
+     "score": 0,
+     "disagreement": false
+    },
+    {
+     "pred_index": 1,
+     "ref_id": null,
+     "score": 0,
+     "disagreement": false
+    },
+    {
+     "pred_index": 2,
+     "ref_id": null,
+     "score": 0,
+     "disagreement": false
+    }
+   ],
+   "frictions": [
+    {
+     "pred_index": 0,
+     "ref_id": null,
+     "score": 0,
+     "disagreement": false
+    },
+    {
+     "pred_index": 1,
+     "ref_id": "f1",
+     "score": 1,
+     "disagreement": false
+    },
+    {
+     "pred_index": 2,
+     "ref_id": null,
+     "score": 0,
+     "disagreement": false
+    }
+   ]
+  },
+  "usage": {
+   "input_tokens": 822,
+   "output_tokens": 171,
+   "cost_usd": 0.000674,
+   "latency_seconds": 1.48
+  }
+ },
+ "case_11232793fc__B4": {
+  "matches": {
+   "benefits": [
+    {
+     "pred_index": 0,
+     "ref_id": null,
+     "score": 0,
+     "disagreement": false
+    },
+    {
+     "pred_index": 1,
+     "ref_id": null,
+     "score": 0,
+     "disagreement": false
+    },
+    {
+     "pred_index": 2,
+     "ref_id": "b1",
+     "score": 1,
+     "disagreement": false
+    }
+   ],
+   "frictions": [
+    {
+     "pred_index": 0,
+     "ref_id": "f1",
+     "score": 2,
+     "disagreement": false
+    },
+    {
+     "pred_index": 1,
+     "ref_id": null,
+     "score": 0,
+     "disagreement": false
+    },
+    {
+     "pred_index": 2,
+     "ref_id": null,
+     "score": 0,
+     "disagreement": false
+    }
+   ]
+  },
+  "usage": {
+   "input_tokens": 833,
+   "output_tokens": 173,
+   "cost_usd": 0.000682,
+   "latency_seconds": 1.77
   }
  }
 }

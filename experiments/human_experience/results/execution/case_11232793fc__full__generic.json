@@ -1,0 +1,126 @@
+{
+ "run_id": "case_11232793fc__full__generic",
+ "case_id": "case_11232793fc",
+ "engine": "generic",
+ "context": "full",
+ "status": "completed",
+ "success_criteria_results": [
+  {
+   "criterion": "Project and tasks exist",
+   "result": "met",
+   "step": 11
+  },
+  {
+   "criterion": "The update is visible to the permitted test identity",
+   "result": "met",
+   "step": 17
+  }
+ ],
+ "observations": [
+  {
+   "step": 0,
+   "text": "The agent opened https://clickup.com/ and the landing page loaded."
+  },
+  {
+   "step": 1,
+   "text": "The agent navigated to https://app.clickup.com/."
+  },
+  {
+   "step": 2,
+   "text": "The agent clicked the 'Add Task' button."
+  },
+  {
+   "step": 3,
+   "text": "The agent typed 'Demo Alpha' into the task name field."
+  },
+  {
+   "step": 4,
+   "text": "The agent clicked the 'Create Task' button."
+  },
+  {
+   "step": 5,
+   "text": "The agent clicked the 'Don't update' button, dismissing a timezone update prompt."
+  },
+  {
+   "step": 6,
+   "text": "The agent clicked the 'Add Task' button again."
+  },
+  {
+   "step": 7,
+   "text": "The agent typed 'Demo Beta' into the task name field."
+  },
+  {
+   "step": 8,
+   "text": "The agent clicked the 'Create Task' button."
+  },
+  {
+   "step": 9,
+   "text": "The agent clicked the 'Create task' button (aria-label)."
+  },
+  {
+   "step": 10,
+   "text": "The agent typed 'Demo Gamma' into the task name field."
+  },
+  {
+   "step": 11,
+   "text": "The agent clicked the 'Create Task' button."
+  },
+  {
+   "step": 12,
+   "text": "The agent clicked on 'Demo Gamma'."
+  },
+  {
+   "step": 13,
+   "text": "The agent clicked a button with aria-label 'Demo Alpha (ctrl + s)'."
+  },
+  {
+   "step": 14,
+   "text": "The agent clicked a button with aria-label 'Demo Alpha (ctrl + s)'."
+  },
+  {
+   "step": 15,
+   "text": "The agent clicked a button with aria-label 'Demo Alpha (ctrl + s)'."
+  },
+  {
+   "step": 16,
+   "text": "The agent clicked a button with aria-label 'Demo Alpha (ctrl + s)'."
+  },
+  {
+   "step": 17,
+   "text": "The agent typed 'Test collaborator update for Demo Alpha.' into an input field. The screenshot shows this text visible in the activity feed."
+  }
+ ],
+ "errors": [],
+ "actions": 18,
+ "elapsed_seconds": 273.0,
+ "plan": "free plan of a fresh test account (unknown seen in run)",
+ "product_version_or_capture_date": "2026-10-18",
+ "environment_mismatches": [
+  "fresh test account with synthetic data; reviewer's historical version, plan, team and data unknown",
+  "short single-session run cannot recreate long tenure or team adoption"
+ ],
+ "trace_path": "results/execution/traces/case_11232793fc__full__generic.json",
+ "runner": {
+  "action_model": "gemini-2.5-flash-lite",
+  "max_steps": 20,
+  "max_actions_per_step": 2,
+  "wall_seconds": 300,
+  "backend": "browserbase",
+  "usage": {
+   "input_tokens": 391601,
+   "output_tokens": 4561,
+   "cost_usd": 0.03713286
+  }
+ },
+ "judge": {
+  "model": "gemini-2.5-flash",
+  "model_version": "gemini-2.5-flash",
+  "usage": {
+   "input_tokens": 3864,
+   "output_tokens": 738,
+   "cost_usd": 0.003004,
+   "latency_seconds": 4.57
+  },
+  "status": "automated_provisional"
+ }
+}
