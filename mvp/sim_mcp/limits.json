@@ -18,7 +18,7 @@
       "about": "Browser sessions open at once per client IP for callers that send a bearer token (a study client runs cells in parallel)."
     },
     "anon_max_concurrent_sessions_per_ip": {
-      "value": 3,
+      "value": 6,
       "about": "Browser sessions open at once per client IP for callers without a token."
     },
     "max_steps": {
@@ -54,27 +54,27 @@
       "about": "When true, Browserbase sessions use residential proxies (higher success on signup flows; higher Browserbase cost). false uses cheaper datacenter routing."
     },
     "anon_daily_usd_per_ip": {
-      "value": 6.0,
-      "about": "Estimated spend allowed per client IP per day (America/Los_Angeles day) for callers without a token. Estimated with the est_usd_* rates below; real cost is not metered per call."
+      "value": 80.0,
+      "about": "Estimated spend allowed per client IP per day (America/Los_Angeles day) for callers without a token. Estimated with the est_usd_* rates below; real cost is not metered per call. 80 ≈ six 108-cell studies a day from one IP (docs/E2E_TEST.md needs 108 cells per study)."
     },
     "anon_daily_usd_global": {
-      "value": 20.0,
+      "value": 120.0,
       "about": "Estimated spend allowed per day across ALL callers without a token, together."
     },
     "est_usd_per_session": {
-      "value": 0.1,
-      "about": "Budget units charged when a browser session starts (browser time, judge and report). An assumption, not a measured cost; change it when real numbers exist."
+      "value": 0.05,
+      "about": "Budget units charged when a browser session starts. Calibrated Oct 18 from the four 108-cell studies of Oct 13: server-side Vertex (judge + planner) was about $0.72 for ~394 cells (≈ $0.002/cell); the rest of this value covers Browserbase time. The driver model is the caller's, not ours."
     },
     "est_usd_per_step": {
-      "value": 0.01,
-      "about": "Budget units charged per browser step (usersim_act, usersim_open_verification_link, usersim_solve_captcha). An assumption, not a measured cost. A full 90-step session = 0.10 + 90 x 0.01 = 1.00."
+      "value": 0.005,
+      "about": "Budget units charged per browser step (usersim_act, usersim_open_verification_link, usersim_solve_captcha). Oct 13 full studies averaged ~15 steps per cell, so a typical cell = 0.05 + 15 x 0.005 ≈ 0.125 and a 108-cell study ≈ 13.5."
     },
     "est_usd_per_prediction": {
       "value": 0.6,
       "about": "Budget units charged per agent-mode prediction that returns results (usersim_predict_experience). Covers live review scrapes of the product and its rivals (Apify, about $0.5 per 100 reviews) and one model call. An assumption, not a measured cost."
     },
     "anon_max_cells_per_study": {
-      "value": 12,
+      "value": 108,
       "about": "Most persona x task x site runs one study may have, for callers without a token."
     },
     "anon_allow_sms": {

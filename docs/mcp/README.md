@@ -182,7 +182,7 @@ Returns `{study_id, headline, proof_pass, next}` for a standalone session, or `{
 | `tasks` | list[object] | `[{"prompt":"one goal in the user's words","favors":"<optional>"}]`. `prompt` is required |
 | `competitors` | list[string] \| null | Exactly **2** public URLs, or omit/`[]` to auto-discover. A competitor can't be the same site as the product |
 
-Required shape: **6** personas, **6** tasks, **2** competitors (108 cells). Wrong partial counts are rejected with a pointer to `docs/E2E_TEST.md`. Anonymous callers are still capped by `anon_max_cells_per_study` in `limits.json` (default 12 without a token — use a bearer token for a full 108-cell study).
+Required shape: **6** personas, **6** tasks, **2** competitors (108 cells). Wrong partial counts are rejected with a pointer to `docs/E2E_TEST.md`. Anonymous callers are still capped by `anon_max_cells_per_study` in `limits.json` (108, so a full study runs without a token).
 Returns `{study_id, watch_url, report_url, runs, cells:[…], rules:{max_steps, budget_s, idle_timeout_s, max_parallel}, next}`.
 
 #### `usersim_finish_study`
@@ -339,12 +339,12 @@ If the file on main is broken (bad JSON, wrong types), the server keeps the last
 | `refresh_s` | 300 | How often the server re-reads the file from main (minimum 30) |
 | `max_sessions` | 10 | Browser sessions open at once on the whole server, all callers |
 | `max_per_client` | 8 | Open sessions per client IP for callers **with** a token |
-| `anon_max_concurrent_sessions_per_ip` | 3 | Open sessions per client IP **without** a token |
-| `anon_daily_usd_per_ip` | 6.0 | Estimated $ per client IP per day without a token (day = America/Los_Angeles) |
-| `anon_daily_usd_global` | 20.0 | Estimated $ per day for **all** callers without a token, together |
-| `est_usd_per_session` | 0.10 | Charged against those budgets when a browser session starts |
-| `est_usd_per_step` | 0.01 | Charged per `usersim_act`, `usersim_open_verification_link` and `usersim_solve_captcha` call (a full 40-step session = $0.50) |
-| `anon_max_cells_per_study` | 12 | Most runs (persona × task × site) one study may have without a token |
+| `anon_max_concurrent_sessions_per_ip` | 6 | Open sessions per client IP **without** a token |
+| `anon_daily_usd_per_ip` | 80.0 | Estimated $ per client IP per day without a token (day = America/Los_Angeles) |
+| `anon_daily_usd_global` | 120.0 | Estimated $ per day for **all** callers without a token, together |
+| `est_usd_per_session` | 0.05 | Charged against those budgets when a browser session starts |
+| `est_usd_per_step` | 0.005 | Charged per `usersim_act`, `usersim_open_verification_link` and `usersim_solve_captcha` call (a 20-step session = $0.15) |
+| `anon_max_cells_per_study` | 108 | Most runs (persona × task × site) one study may have without a token |
 | `anon_allow_sms` | `true` | SMS tools without a token. They're made safe instead of blocked (see the next three rows) |
 | `sms_lease_s` | 600 | One session holds the SMS number at a time, for this many seconds or until it closes. Others get `busy` + `retry_after_s`. Applies to every caller |
 | `anon_daily_sms_leases_per_ip` | 10 | SMS-number leases per client IP per day without a token |
