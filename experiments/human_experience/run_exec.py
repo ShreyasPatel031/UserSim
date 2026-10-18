@@ -102,8 +102,25 @@ class GenericAgent(RecordingAgent):
     engine = "generic"
 
 
+APP_URLS = {
+    "Asana": "https://app.asana.com/",
+    "Trello": "https://trello.com/",
+    "ClickUp": "https://app.clickup.com/",
+}
+
+
+def signed_in_line(product: str) -> str:
+    # The runner opens the marketing page before the saved session is loaded,
+    # so the first action has to move into the app rather than the login form.
+    return (
+        f"You are already signed in to {product}. Your first action is to navigate to "
+        f"{APP_URLS[product]} . Never use a login or sign-up form and never type an email address."
+    )
+
+
 def harness_task(packets: dict, context: str, product: str) -> str:
     blocks = [
+        signed_in_line(product),
         packets["Q"]["text"],
         f"Work only in the signed-in {product} workspace. Name any board, project, list or sprint you "
         f"create so that it starts with 'Demo'. Use only the synthetic names given. Do not invite real "
@@ -135,6 +152,7 @@ def persona_for(case: dict, packets: dict) -> tuple[dict, str]:
 
 def reset_task(product: str) -> str:
     return (
+        f"{signed_in_line(product)}\n"
         f"Reset this signed-in {product} workspace for a test. Delete every board, project, list, sprint, "
         f"task or card whose name starts with 'Demo' (for example Demo Alpha, Demo Beta, Demo Gamma, "
         f"Demo Pipeline). Do not delete or change anything else, do not invite anyone, do not buy anything. "

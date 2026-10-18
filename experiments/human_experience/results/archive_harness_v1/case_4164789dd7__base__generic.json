@@ -1,0 +1,83 @@
+{
+ "run_id": "case_4164789dd7__base__generic",
+ "case_id": "case_4164789dd7",
+ "engine": "generic",
+ "context": "base",
+ "status": "failed",
+ "success_criteria_results": [
+  {
+   "criterion": "Three tasks can be located in the intended sprint",
+   "result": "unverifiable",
+   "step": 20
+  },
+  {
+   "criterion": "The selected task has the requested status",
+   "result": "unverifiable",
+   "step": 20
+  }
+ ],
+ "observations": [
+  {
+   "step": 2,
+   "text": "The field's actual value was empty after typing 'your_email@example.com', suggesting the input may have been reformatted or autocompleted."
+  },
+  {
+   "step": 4,
+   "text": "The element at index 14557 was not available, indicating a possible page change."
+  },
+  {
+   "step": 13,
+   "text": "The agent clicked the 'Create Task' button for the fourth time, despite only needing to create three tasks."
+  },
+  {
+   "step": 18,
+   "text": "The agent clicked a button with id '0-90149399653-add-ac' and aria-label 'New List', which was intended to be a 'Save' button according to the agent's note."
+  },
+  {
+   "step": 19,
+   "text": "The agent clicked a span element, which was intended to be a 'Create' button according to the agent's note, to finalize list creation."
+  },
+  {
+   "step": 20,
+   "text": "The agent stopped due to reaching the maximum number of steps, with the task of configuring workflow statuses incomplete."
+  }
+ ],
+ "errors": [
+  {
+   "kind": "time_or_step_limit",
+   "text": "The agent reached the maximum number of steps before completing the task."
+  }
+ ],
+ "actions": 20,
+ "elapsed_seconds": 219.8,
+ "plan": "free plan of a fresh test account (unknown seen in run)",
+ "product_version_or_capture_date": "2026-10-18",
+ "environment_mismatches": [
+  "fresh test account with synthetic data; reviewer's historical version, plan, team and data unknown",
+  "short single-session run cannot recreate long tenure or team adoption"
+ ],
+ "trace_path": "results/execution/traces/case_4164789dd7__base__generic.json",
+ "runner": {
+  "action_model": "gemini-2.5-flash-lite",
+  "max_steps": 20,
+  "max_actions_per_step": 2,
+  "wall_seconds": 300,
+  "backend": "browserbase",
+  "usage": {
+   "input_tokens": 265348,
+   "output_tokens": 5014,
+   "cost_usd": 0.02699591
+  }
+ },
+ "judge": {
+  "model": "gemini-2.5-flash",
+  "model_version": "gemini-2.5-flash",
+  "usage": {
+   "input_tokens": 4177,
+   "output_tokens": 447,
+   "cost_usd": 0.002371,
+   "latency_seconds": 3.54
+  },
+  "status": "automated_provisional"
+ }
+}
