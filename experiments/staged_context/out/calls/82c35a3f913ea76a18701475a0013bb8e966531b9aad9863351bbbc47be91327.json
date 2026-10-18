@@ -1,0 +1,28 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "82c35a3f913ea76a18701475a0013bb8e966531b9aad9863351bbbc47be91327",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 176,
+  "output_tokens": 409,
+  "cost_usd": 0.0010753,
+  "elapsed_s": 4.35,
+  "error": null,
+  "text": "{\n  \"task\": \"Organize work priorities.\",\n  \"benefits\": [\n    \"Customize column organization and prioritization\",\n    \"Stay focused\",\n    \"Work consistently\"\n  ],\n  \"frictions\": [\n    \"Confused information when companies intermixed whilst sorted\"\n  ]\n}",
+  "json": {
+    "task": "Organize work priorities.",
+    "benefits": [
+      "Customize column organization and prioritization",
+      "Stay focused",
+      "Work consistently"
+    ],
+    "frictions": [
+      "Confused information when companies intermixed whilst sorted"
+    ]
+  },
+  "ts": "2026-10-18T05:05:16.910615+00:00"
+}

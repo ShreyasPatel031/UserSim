@@ -1,0 +1,27 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d4931a1d1931116c9755065324ae229adda499ffc25d39f8f01ce8844d7aab10",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 330,
+  "output_tokens": 464,
+  "cost_usd": 0.001259,
+  "elapsed_s": 3.91,
+  "error": null,
+  "text": "{\n  \"task\": \"Contact partners and support teams using multiple communication channels.\",\n  \"benefits\": [\n    \"Allows simultaneous chat and email communication.\",\n    \"Features a user-friendly interface.\",\n    \"Provides smooth performance and reliability.\",\n    \"Integrates multiple communication channels into one platform.\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Contact partners and support teams using multiple communication channels.",
+    "benefits": [
+      "Allows simultaneous chat and email communication.",
+      "Features a user-friendly interface.",
+      "Provides smooth performance and reliability.",
+      "Integrates multiple communication channels into one platform."
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T05:05:18.206824+00:00"
+}

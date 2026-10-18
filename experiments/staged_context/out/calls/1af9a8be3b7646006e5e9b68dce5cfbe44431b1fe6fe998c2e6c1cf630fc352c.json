@@ -1,0 +1,31 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1af9a8be3b7646006e5e9b68dce5cfbe44431b1fe6fe998c2e6c1cf630fc352c",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 375,
+  "output_tokens": 511,
+  "cost_usd": 0.00139,
+  "elapsed_s": 3.27,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage multichannel outreach to potential clients, including email and LinkedIn, and perform email warm-up and validation.\",\n  \"benefits\": [\n    \"Provides multichannel outreach capabilities (email, LinkedIn, cold calling)\",\n    \"Integrates email inbox warm-up and validation in one place\",\n    \"Offers straightforward setup with clear instructions\",\n    \"Achieves good email deliverability\"\n  ],\n  \"frictions\": [\n    \"Setup process is long and cumbersome, requiring navigation through too many windows\",\n    \"Warm-up feature requires redirection and setup across multiple places\",\n    \"Lacks A/B testing for LinkedIn\"\n  ]\n}",
+  "json": {
+    "task": "Manage multichannel outreach to potential clients, including email and LinkedIn, and perform email warm-up and validation.",
+    "benefits": [
+      "Provides multichannel outreach capabilities (email, LinkedIn, cold calling)",
+      "Integrates email inbox warm-up and validation in one place",
+      "Offers straightforward setup with clear instructions",
+      "Achieves good email deliverability"
+    ],
+    "frictions": [
+      "Setup process is long and cumbersome, requiring navigation through too many windows",
+      "Warm-up feature requires redirection and setup across multiple places",
+      "Lacks A/B testing for LinkedIn"
+    ]
+  },
+  "ts": "2026-10-18T05:05:13.540704+00:00"
+}

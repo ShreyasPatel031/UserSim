@@ -1,0 +1,29 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b96bc5665a13d7fd647a026105dff3c7f261321a0732f1c5591fda8526ec7f70",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 149,
+  "output_tokens": 495,
+  "cost_usd": 0.0012821999999999998,
+  "elapsed_s": 3.42,
+  "error": null,
+  "text": "{\n  \"task\": \"Store and manage multiple passwords.\",\n  \"benefits\": [\n    \"Stores multiple passwords\",\n    \"Manages all passwords in one place\",\n    \"Saves effort in password management\"\n  ],\n  \"frictions\": [\n    \"Expensive\",\n    \"No easy recovery option if master password is lost\"\n  ]\n}",
+  "json": {
+    "task": "Store and manage multiple passwords.",
+    "benefits": [
+      "Stores multiple passwords",
+      "Manages all passwords in one place",
+      "Saves effort in password management"
+    ],
+    "frictions": [
+      "Expensive",
+      "No easy recovery option if master password is lost"
+    ]
+  },
+  "ts": "2026-10-18T05:05:23.180865+00:00"
+}

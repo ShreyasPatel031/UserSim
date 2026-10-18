@@ -1,0 +1,28 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0a300c39ca1f1dc3e5224aa32032c45ea9ccc6ad36a10f88b6a1aaa85b34bd49",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 233,
+  "output_tokens": 473,
+  "cost_usd": 0.0012523999999999999,
+  "elapsed_s": 2.92,
+  "error": null,
+  "text": "{\n  \"task\": \"Deliver security awareness training to an organization.\",\n  \"benefits\": [\n    \"Use an easy interface.\",\n    \"Gain insight into risky users through reporting.\",\n    \"Utilize an effective phish button.\"\n  ],\n  \"frictions\": [\n    \"Content can be perceived as immature due to games and cartoons.\"\n  ]\n}",
+  "json": {
+    "task": "Deliver security awareness training to an organization.",
+    "benefits": [
+      "Use an easy interface.",
+      "Gain insight into risky users through reporting.",
+      "Utilize an effective phish button."
+    ],
+    "frictions": [
+      "Content can be perceived as immature due to games and cartoons."
+    ]
+  },
+  "ts": "2026-10-18T05:05:21.494029+00:00"
+}

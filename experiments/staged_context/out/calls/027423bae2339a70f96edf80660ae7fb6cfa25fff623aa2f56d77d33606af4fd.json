@@ -1,0 +1,30 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "027423bae2339a70f96edf80660ae7fb6cfa25fff623aa2f56d77d33606af4fd",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 145,
+  "output_tokens": 490,
+  "cost_usd": 0.0012684999999999999,
+  "elapsed_s": 3.67,
+  "error": null,
+  "text": "{\n  \"task\": \"Automate cold email outreach.\",\n  \"benefits\": [\n    \"Platform for cold email\",\n    \"Suitable for beginners\",\n    \"Suitable for in-house use\",\n    \"Automates cold email outreach\"\n  ],\n  \"frictions\": [\n    \"Inbox testing could be more accurate\",\n    \"Does not allow control of individual inboxes\"\n  ]\n}",
+  "json": {
+    "task": "Automate cold email outreach.",
+    "benefits": [
+      "Platform for cold email",
+      "Suitable for beginners",
+      "Suitable for in-house use",
+      "Automates cold email outreach"
+    ],
+    "frictions": [
+      "Inbox testing could be more accurate",
+      "Does not allow control of individual inboxes"
+    ]
+  },
+  "ts": "2026-10-18T05:05:18.762675+00:00"
+}

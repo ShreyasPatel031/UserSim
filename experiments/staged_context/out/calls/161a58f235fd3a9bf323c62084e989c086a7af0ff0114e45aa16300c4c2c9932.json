@@ -1,0 +1,31 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "161a58f235fd3a9bf323c62084e989c086a7af0ff0114e45aa16300c4c2c9932",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 185,
+  "output_tokens": 530,
+  "cost_usd": 0.0013805,
+  "elapsed_s": 3.76,
+  "error": null,
+  "text": "{\n  \"task\": \"Make purchases and receive funds\",\n  \"benefits\": [\n    \"Transactions are handled swiftly\",\n    \"Do not have to provide sensitive financial information to each merchant\",\n    \"Option to resolve disputes\",\n    \"Monitor payments in real time\",\n    \"Lowers the risk of fraud\"\n  ],\n  \"frictions\": [\n    \"High transaction fees\",\n    \"High fees for international transfers\"\n  ]\n}",
+  "json": {
+    "task": "Make purchases and receive funds",
+    "benefits": [
+      "Transactions are handled swiftly",
+      "Do not have to provide sensitive financial information to each merchant",
+      "Option to resolve disputes",
+      "Monitor payments in real time",
+      "Lowers the risk of fraud"
+    ],
+    "frictions": [
+      "High transaction fees",
+      "High fees for international transfers"
+    ]
+  },
+  "ts": "2026-10-18T05:05:27.194655+00:00"
+}

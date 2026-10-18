@@ -1,0 +1,31 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a63da02b022026e74e777edcfd90528cff4d7a4b2a481dabff6c676734a6cd31",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 266,
+  "output_tokens": 544,
+  "cost_usd": 0.0014398000000000002,
+  "elapsed_s": 3.53,
+  "error": null,
+  "text": "{\n  \"task\": \"Calculate and track commission expenses\",\n  \"benefits\": [\n    \"Automate commission expense calculations and tracking\",\n    \"Ensure compliance with ASC 606\",\n    \"Integrate with other existing systems\",\n    \"Improve accuracy and audit-readiness of reporting\"\n  ],\n  \"frictions\": [\n    \"Setup requires significant time for the team to adapt\",\n    \"Dashboard lacks intuitiveness\",\n    \"Customizing reports is complicated\"\n  ]\n}",
+  "json": {
+    "task": "Calculate and track commission expenses",
+    "benefits": [
+      "Automate commission expense calculations and tracking",
+      "Ensure compliance with ASC 606",
+      "Integrate with other existing systems",
+      "Improve accuracy and audit-readiness of reporting"
+    ],
+    "frictions": [
+      "Setup requires significant time for the team to adapt",
+      "Dashboard lacks intuitiveness",
+      "Customizing reports is complicated"
+    ]
+  },
+  "ts": "2026-10-18T05:05:25.161984+00:00"
+}

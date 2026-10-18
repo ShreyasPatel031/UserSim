@@ -1,0 +1,30 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "30aa05514ff8b20a8d010b09b6c386d2ecc691ab06adbf4b58eb41f249482b2e",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 197,
+  "output_tokens": 486,
+  "cost_usd": 0.0012741,
+  "elapsed_s": 3.4,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage HR-related tasks\",\n  \"benefits\": [\n    \"Streamlined interface\",\n    \"View benefits information\",\n    \"Request time off\"\n  ],\n  \"frictions\": [\n    \"Screen refreshes when clocking in/out\",\n    \"Clock-in/out often fails to register\",\n    \"Requires manual correction of punches due to errors\"\n  ]\n}",
+  "json": {
+    "task": "Manage HR-related tasks",
+    "benefits": [
+      "Streamlined interface",
+      "View benefits information",
+      "Request time off"
+    ],
+    "frictions": [
+      "Screen refreshes when clocking in/out",
+      "Clock-in/out often fails to register",
+      "Requires manual correction of punches due to errors"
+    ]
+  },
+  "ts": "2026-10-18T05:05:30.136562+00:00"
+}

@@ -1,0 +1,32 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8ad9f7a599345e71ffae4ecfa4a41cf778830d1f52c78b594142f4d015276cf9",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 535,
+  "output_tokens": 554,
+  "cost_usd": 0.0015455,
+  "elapsed_s": 4.4,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage and process incentive compensation payouts, including data synchronization, calculation, approval, and payroll integration.\",\n  \"benefits\": [\n    \"Build and maintain sophisticated data pipeline tasks using Xactly Connect\",\n    \"Reduce time for plan configuration process due to improved Plan Design areas\",\n    \"Achieve payout accuracy and cycle-time reduction\",\n    \"Manage changes to sales incentive plans and rules with date effectivity\"\n  ],\n  \"frictions\": [\n    \"Outdated UI requiring many clicks\",\n    \"Cumbersome Plan Doc administration and customization\",\n    \"Lack of standard observability capabilities (alerting is custom)\",\n    \"Customer Support tickets are closed or ignored without RCA/5-Why's\"\n  ]\n}",
+  "json": {
+    "task": "Manage and process incentive compensation payouts, including data synchronization, calculation, approval, and payroll integration.",
+    "benefits": [
+      "Build and maintain sophisticated data pipeline tasks using Xactly Connect",
+      "Reduce time for plan configuration process due to improved Plan Design areas",
+      "Achieve payout accuracy and cycle-time reduction",
+      "Manage changes to sales incentive plans and rules with date effectivity"
+    ],
+    "frictions": [
+      "Outdated UI requiring many clicks",
+      "Cumbersome Plan Doc administration and customization",
+      "Lack of standard observability capabilities (alerting is custom)",
+      "Customer Support tickets are closed or ignored without RCA/5-Why's"
+    ]
+  },
+  "ts": "2026-10-18T05:05:26.225305+00:00"
+}

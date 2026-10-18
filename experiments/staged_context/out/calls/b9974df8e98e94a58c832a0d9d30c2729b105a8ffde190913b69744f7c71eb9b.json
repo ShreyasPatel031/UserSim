@@ -1,0 +1,29 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b9974df8e98e94a58c832a0d9d30c2729b105a8ffde190913b69744f7c71eb9b",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 228,
+  "output_tokens": 467,
+  "cost_usd": 0.0012359,
+  "elapsed_s": 3.34,
+  "error": null,
+  "text": "{\n  \"task\": \"Participate in wellbeing programs and track activities\",\n  \"benefits\": [\n    \"Access a variety of wellbeing seminars\",\n    \"Learn from friendly, knowledgeable, and informative instructors\",\n    \"Track activities and earn incentives\",\n    \"Engage with a user-friendly platform\"\n  ],\n  \"frictions\": [\n    \"Limited number of classes available\"\n  ]\n}",
+  "json": {
+    "task": "Participate in wellbeing programs and track activities",
+    "benefits": [
+      "Access a variety of wellbeing seminars",
+      "Learn from friendly, knowledgeable, and informative instructors",
+      "Track activities and earn incentives",
+      "Engage with a user-friendly platform"
+    ],
+    "frictions": [
+      "Limited number of classes available"
+    ]
+  },
+  "ts": "2026-10-18T05:05:23.850219+00:00"
+}

@@ -1,0 +1,29 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0a7e368ec502bb75f06deebcbfa78b94087e49d5ea1129f5217353d7e856568a",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 284,
+  "output_tokens": 495,
+  "cost_usd": 0.0013226999999999998,
+  "elapsed_s": 3.13,
+  "error": null,
+  "text": "{\n  \"task\": \"Use the product to facilitate team communication and collaboration.\",\n  \"benefits\": [\n    \"Consolidate communication and collaboration in one place\",\n    \"Quickly connect with employees\",\n    \"Record meetings that save to OneDrive\",\n    \"Integrate with Microsoft 365 and SharePoint\"\n  ],\n  \"frictions\": [\n    \"Status sometimes displays as a white dot instead of the correct availability indicator\"\n  ]\n}",
+  "json": {
+    "task": "Use the product to facilitate team communication and collaboration.",
+    "benefits": [
+      "Consolidate communication and collaboration in one place",
+      "Quickly connect with employees",
+      "Record meetings that save to OneDrive",
+      "Integrate with Microsoft 365 and SharePoint"
+    ],
+    "frictions": [
+      "Status sometimes displays as a white dot instead of the correct availability indicator"
+    ]
+  },
+  "ts": "2026-10-18T05:05:29.673214+00:00"
+}

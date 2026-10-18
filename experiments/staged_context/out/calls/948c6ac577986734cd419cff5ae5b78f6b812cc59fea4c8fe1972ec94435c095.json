@@ -1,0 +1,30 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "948c6ac577986734cd419cff5ae5b78f6b812cc59fea4c8fe1972ec94435c095",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 176,
+  "output_tokens": 467,
+  "cost_usd": 0.0012203000000000001,
+  "elapsed_s": 2.74,
+  "error": null,
+  "text": "{\n  \"task\": \"Calculate sales commissions and generate reports.\",\n  \"benefits\": [\n    \"Provide professional visibility to the Sales Team\",\n    \"Quickly calculate commissions\",\n    \"Easily build different levels of reporting\",\n    \"Minimize manual audits\"\n  ],\n  \"frictions\": [\n    \"Lack of a Quota attainment Dashboard\",\n    \"Challenges in updating quotas for different versions\"\n  ]\n}",
+  "json": {
+    "task": "Calculate sales commissions and generate reports.",
+    "benefits": [
+      "Provide professional visibility to the Sales Team",
+      "Quickly calculate commissions",
+      "Easily build different levels of reporting",
+      "Minimize manual audits"
+    ],
+    "frictions": [
+      "Lack of a Quota attainment Dashboard",
+      "Challenges in updating quotas for different versions"
+    ]
+  },
+  "ts": "2026-10-18T05:05:24.264429+00:00"
+}

@@ -1,0 +1,30 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "da44870be789699d38a1766d6a851a8be658254335d05638bf2481d03eb35cf4",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 220,
+  "output_tokens": 479,
+  "cost_usd": 0.0012635,
+  "elapsed_s": 3.23,
+  "error": null,
+  "text": "{\n  \"task\": \"Warm up emails for campaigns\",\n  \"benefits\": [\n    \"interface is easy to use\",\n    \"interface is good looking\"\n  ],\n  \"frictions\": [\n    \"couldn't warm up emails properly\",\n    \"dropped the email health score\",\n    \"emails would land in spam\",\n    \"wasted time and money\"\n  ]\n}",
+  "json": {
+    "task": "Warm up emails for campaigns",
+    "benefits": [
+      "interface is easy to use",
+      "interface is good looking"
+    ],
+    "frictions": [
+      "couldn't warm up emails properly",
+      "dropped the email health score",
+      "emails would land in spam",
+      "wasted time and money"
+    ]
+  },
+  "ts": "2026-10-18T05:05:18.611954+00:00"
+}

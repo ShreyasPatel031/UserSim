@@ -1,0 +1,26 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f5c35c301366474cfd1e96ebe742453fec417a6ca61d31d4e9e131cb7b6cf6c9",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 159,
+  "output_tokens": 427,
+  "cost_usd": 0.0011152,
+  "elapsed_s": 3.48,
+  "error": null,
+  "text": "{\n  \"task\": \"Track activities to earn rewards\",\n  \"benefits\": [\n    \"earns money for existing activities\"\n  ],\n  \"frictions\": [\n    \"uploading medical, dental, flu information is cumbersome\"\n  ]\n}",
+  "json": {
+    "task": "Track activities to earn rewards",
+    "benefits": [
+      "earns money for existing activities"
+    ],
+    "frictions": [
+      "uploading medical, dental, flu information is cumbersome"
+    ]
+  },
+  "ts": "2026-10-18T05:05:23.759048+00:00"
+}

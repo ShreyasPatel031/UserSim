@@ -1,0 +1,32 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4cc74384635d82b9b0a0082b0dee3120d6bc4c64d1690478f56f5e68c581c9db",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 372,
+  "output_tokens": 469,
+  "cost_usd": 0.0012840999999999998,
+  "elapsed_s": 2.96,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage and track job information and project statuses\",\n  \"benefits\": [\n    \"View all job information in one place\",\n    \"Search for jobs easily using the search bar and grid view\",\n    \"Find specific jobs quickly even with many open jobs\",\n    \"Sort projects by stages of completeness to see status at a glance\"\n  ],\n  \"frictions\": [\n    \"Difficulty attributing jobs to specific clients due to similar client names\",\n    \"Inability to distinguish lead/client status or active/inactive status\",\n    \"Email connection issues\",\n    \"Difficult initial setup\"\n  ]\n}",
+  "json": {
+    "task": "Manage and track job information and project statuses",
+    "benefits": [
+      "View all job information in one place",
+      "Search for jobs easily using the search bar and grid view",
+      "Find specific jobs quickly even with many open jobs",
+      "Sort projects by stages of completeness to see status at a glance"
+    ],
+    "frictions": [
+      "Difficulty attributing jobs to specific clients due to similar client names",
+      "Inability to distinguish lead/client status or active/inactive status",
+      "Email connection issues",
+      "Difficult initial setup"
+    ]
+  },
+  "ts": "2026-10-18T05:05:28.430652+00:00"
+}

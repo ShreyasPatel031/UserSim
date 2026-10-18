@@ -1,0 +1,32 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "586a47d66a9d0199d8a52dd9f3e2d3c101d3bd23cddcb18f3e4d60c8683a882f",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 277,
+  "output_tokens": 577,
+  "cost_usd": 0.0015256000000000002,
+  "elapsed_s": 5.13,
+  "error": null,
+  "text": "{\n  \"task\": \"Make online payments\",\n  \"benefits\": [\n    \"broad acceptance\",\n    \"fast international transactions\",\n    \"enhanced security by not sharing card or bank information\",\n    \"uncomplicated handling of refunds and disputes\"\n  ],\n  \"frictions\": [\n    \"high transaction fees for international payments and currency conversions\",\n    \"account limitations or holds imposed without clear explanations\",\n    \"slow customer support response in complicated situations\",\n    \"dispute resolution process takes longer than anticipated\"\n  ]\n}",
+  "json": {
+    "task": "Make online payments",
+    "benefits": [
+      "broad acceptance",
+      "fast international transactions",
+      "enhanced security by not sharing card or bank information",
+      "uncomplicated handling of refunds and disputes"
+    ],
+    "frictions": [
+      "high transaction fees for international payments and currency conversions",
+      "account limitations or holds imposed without clear explanations",
+      "slow customer support response in complicated situations",
+      "dispute resolution process takes longer than anticipated"
+    ]
+  },
+  "ts": "2026-10-18T05:05:28.434934+00:00"
+}

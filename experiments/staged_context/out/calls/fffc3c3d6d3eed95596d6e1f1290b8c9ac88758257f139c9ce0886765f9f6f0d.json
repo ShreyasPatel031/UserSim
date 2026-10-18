@@ -1,0 +1,26 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "fffc3c3d6d3eed95596d6e1f1290b8c9ac88758257f139c9ce0886765f9f6f0d",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 145,
+  "output_tokens": 384,
+  "cost_usd": 0.0010035,
+  "elapsed_s": 2.85,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage payroll and employee information.\",\n  \"benefits\": [\n    \"Fast setup/onboarding\"\n  ],\n  \"frictions\": [\n    \"Slow customer support response time\"\n  ]\n}",
+  "json": {
+    "task": "Manage payroll and employee information.",
+    "benefits": [
+      "Fast setup/onboarding"
+    ],
+    "frictions": [
+      "Slow customer support response time"
+    ]
+  },
+  "ts": "2026-10-18T05:05:29.646023+00:00"
+}

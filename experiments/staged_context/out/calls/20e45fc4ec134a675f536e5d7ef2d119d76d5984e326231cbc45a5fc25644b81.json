@@ -1,0 +1,30 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "20e45fc4ec134a675f536e5d7ef2d119d76d5984e326231cbc45a5fc25644b81",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 150,
+  "output_tokens": 456,
+  "cost_usd": 0.0011849999999999999,
+  "elapsed_s": 3.41,
+  "error": null,
+  "text": "{\n  \"task\": \"Create company logos, website pages, and various cards.\",\n  \"benefits\": [\n    \"Create company logos\",\n    \"Create website pages\",\n    \"Contains templates for all types of work\",\n    \"Saves a lot of time in designing\"\n  ],\n  \"frictions\": [\n    \"Some versions are paid\",\n    \"Not all templates are free\"\n  ]\n}",
+  "json": {
+    "task": "Create company logos, website pages, and various cards.",
+    "benefits": [
+      "Create company logos",
+      "Create website pages",
+      "Contains templates for all types of work",
+      "Saves a lot of time in designing"
+    ],
+    "frictions": [
+      "Some versions are paid",
+      "Not all templates are free"
+    ]
+  },
+  "ts": "2026-10-18T05:05:17.029423+00:00"
+}

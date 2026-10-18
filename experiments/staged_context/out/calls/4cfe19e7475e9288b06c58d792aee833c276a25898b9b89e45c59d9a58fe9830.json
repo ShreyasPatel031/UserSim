@@ -1,0 +1,29 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4cfe19e7475e9288b06c58d792aee833c276a25898b9b89e45c59d9a58fe9830",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 150,
+  "output_tokens": 486,
+  "cost_usd": 0.0012599999999999998,
+  "elapsed_s": 3.29,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage customer communication and support tickets.\",\n  \"benefits\": [\n    \"Operate smoothly\",\n    \"Create multiple tickets\",\n    \"Communicate with customers easily\",\n    \"Follow up on tickets with internal coordination\"\n  ],\n  \"frictions\": [\n    \"Cannot get bulk deleted tickets data for investigation\"\n  ]\n}",
+  "json": {
+    "task": "Manage customer communication and support tickets.",
+    "benefits": [
+      "Operate smoothly",
+      "Create multiple tickets",
+      "Communicate with customers easily",
+      "Follow up on tickets with internal coordination"
+    ],
+    "frictions": [
+      "Cannot get bulk deleted tickets data for investigation"
+    ]
+  },
+  "ts": "2026-10-18T05:05:22.075826+00:00"
+}

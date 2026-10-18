@@ -1,0 +1,27 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f69e7be8998a2a184cc800d21e7503c9e3be3b5a3999989d5f792987c8433b60",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 148,
+  "output_tokens": 480,
+  "cost_usd": 0.0012444,
+  "elapsed_s": 3.44,
+  "error": null,
+  "text": "{\n  \"task\": \"Conduct email outreach for recruitment\",\n  \"benefits\": [\n    \"separates responses within each send\",\n    \"allows users to see email metrics\"\n  ],\n  \"frictions\": [\n    \"unable to sync to Bizzabo to remove registrants between sends\"\n  ]\n}",
+  "json": {
+    "task": "Conduct email outreach for recruitment",
+    "benefits": [
+      "separates responses within each send",
+      "allows users to see email metrics"
+    ],
+    "frictions": [
+      "unable to sync to Bizzabo to remove registrants between sends"
+    ]
+  },
+  "ts": "2026-10-18T05:05:14.136004+00:00"
+}

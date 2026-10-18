@@ -1,0 +1,30 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1e915266dbc8e08850156cf6309aebe5cf0f506797595181b415a614765bdd17",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 159,
+  "output_tokens": 477,
+  "cost_usd": 0.0012402,
+  "elapsed_s": 3.53,
+  "error": null,
+  "text": "{\n  \"task\": \"Consolidate and filter data in one location\",\n  \"benefits\": [\n    \"Is powerful\",\n    \"Is full featured\",\n    \"Has great support\",\n    \"Gets all data in one place\"\n  ],\n  \"frictions\": [\n    \"Billing model\",\n    \"Introduction of 'marketing contacts' as a currency for undercover billing\"\n  ]\n}",
+  "json": {
+    "task": "Consolidate and filter data in one location",
+    "benefits": [
+      "Is powerful",
+      "Is full featured",
+      "Has great support",
+      "Gets all data in one place"
+    ],
+    "frictions": [
+      "Billing model",
+      "Introduction of 'marketing contacts' as a currency for undercover billing"
+    ]
+  },
+  "ts": "2026-10-18T05:05:28.768378+00:00"
+}

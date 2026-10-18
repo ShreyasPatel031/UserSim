@@ -1,0 +1,29 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8973819112e8f6a8d6dd52b84c0a8734ec4bd914d5acd4e76f3bf6c887d5dbee",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 242,
+  "output_tokens": 496,
+  "cost_usd": 0.0013126,
+  "elapsed_s": 3.23,
+  "error": null,
+  "text": "{\n  \"task\": \"Use Teams to conduct meetings with a team.\",\n  \"benefits\": [\n    \"Helps set up meeting times that work for everyone.\",\n    \"Provides accurate meeting transcripts.\",\n    \"Allows use of integrated apps.\",\n    \"Transcripts help users stay updated in conversations.\"\n  ],\n  \"frictions\": [\n    \"Lacks a feature to automatically create a task planner from tasks mentioned.\"\n  ]\n}",
+  "json": {
+    "task": "Use Teams to conduct meetings with a team.",
+    "benefits": [
+      "Helps set up meeting times that work for everyone.",
+      "Provides accurate meeting transcripts.",
+      "Allows use of integrated apps.",
+      "Transcripts help users stay updated in conversations."
+    ],
+    "frictions": [
+      "Lacks a feature to automatically create a task planner from tasks mentioned."
+    ]
+  },
+  "ts": "2026-10-18T05:05:29.428765+00:00"
+}

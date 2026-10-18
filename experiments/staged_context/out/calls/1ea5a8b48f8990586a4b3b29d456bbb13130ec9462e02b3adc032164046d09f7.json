@@ -1,0 +1,27 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1ea5a8b48f8990586a4b3b29d456bbb13130ec9462e02b3adc032164046d09f7",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 328,
+  "output_tokens": 528,
+  "cost_usd": 0.0014184,
+  "elapsed_s": 3.26,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage sales processes and customer data.\",\n  \"benefits\": [\n    \"User-friendly interface and extensive features\",\n    \"Seamless integration with other tools\",\n    \"Exceptional and responsive customer support\",\n    \"Robust reporting and analytics features\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Manage sales processes and customer data.",
+    "benefits": [
+      "User-friendly interface and extensive features",
+      "Seamless integration with other tools",
+      "Exceptional and responsive customer support",
+      "Robust reporting and analytics features"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T05:05:14.067690+00:00"
+}

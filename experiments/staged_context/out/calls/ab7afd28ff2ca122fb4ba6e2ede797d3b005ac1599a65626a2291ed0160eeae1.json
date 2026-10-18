@@ -1,0 +1,29 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ab7afd28ff2ca122fb4ba6e2ede797d3b005ac1599a65626a2291ed0160eeae1",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 159,
+  "output_tokens": 451,
+  "cost_usd": 0.0011752,
+  "elapsed_s": 3.34,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage customer support interactions and data\",\n  \"benefits\": [\n    \"Easy to navigate\",\n    \"Good support articles\",\n    \"Fast performance\",\n    \"Helpful report builder and data exports\"\n  ],\n  \"frictions\": [\n    \"Lack of some automation events for complex automations\"\n  ]\n}",
+  "json": {
+    "task": "Manage customer support interactions and data",
+    "benefits": [
+      "Easy to navigate",
+      "Good support articles",
+      "Fast performance",
+      "Helpful report builder and data exports"
+    ],
+    "frictions": [
+      "Lack of some automation events for complex automations"
+    ]
+  },
+  "ts": "2026-10-18T05:05:22.291779+00:00"
+}

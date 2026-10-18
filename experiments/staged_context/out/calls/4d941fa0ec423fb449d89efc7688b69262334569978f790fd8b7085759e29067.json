@@ -1,0 +1,26 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4d941fa0ec423fb449d89efc7688b69262334569978f790fd8b7085759e29067",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 146,
+  "output_tokens": 467,
+  "cost_usd": 0.0012113000000000002,
+  "elapsed_s": 4.13,
+  "error": null,
+  "text": "{\n  \"task\": \"Create boards with specific information.\",\n  \"benefits\": [\n    \"Helps create boards with specific information\"\n  ],\n  \"frictions\": [\n    \"Not smart enough to help with more complex things\"\n  ]\n}",
+  "json": {
+    "task": "Create boards with specific information.",
+    "benefits": [
+      "Helps create boards with specific information"
+    ],
+    "frictions": [
+      "Not smart enough to help with more complex things"
+    ]
+  },
+  "ts": "2026-10-18T05:05:16.818480+00:00"
+}

@@ -1,0 +1,32 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f1f3e3131735b2982bf862d102f75ed649403976eb65a916f206c2af5cfe6f1e",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 259,
+  "output_tokens": 479,
+  "cost_usd": 0.0012752,
+  "elapsed_s": 3.17,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage contacts remotely\",\n  \"benefits\": [\n    \"Free to use\",\n    \"Plenty of help available\",\n    \"Smooth and easy contact importation\",\n    \"Access contacts remotely\"\n  ],\n  \"frictions\": [\n    \"Difficulty accessing the CRM\",\n    \"Complicated setup process\",\n    \"Difficulty navigating to contacts\",\n    \"Confusion getting to contacts\"\n  ]\n}",
+  "json": {
+    "task": "Manage contacts remotely",
+    "benefits": [
+      "Free to use",
+      "Plenty of help available",
+      "Smooth and easy contact importation",
+      "Access contacts remotely"
+    ],
+    "frictions": [
+      "Difficulty accessing the CRM",
+      "Complicated setup process",
+      "Difficulty navigating to contacts",
+      "Confusion getting to contacts"
+    ]
+  },
+  "ts": "2026-10-18T05:05:14.230385+00:00"
+}

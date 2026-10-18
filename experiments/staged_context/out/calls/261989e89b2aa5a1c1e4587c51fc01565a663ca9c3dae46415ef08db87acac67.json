@@ -1,0 +1,28 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "261989e89b2aa5a1c1e4587c51fc01565a663ca9c3dae46415ef08db87acac67",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 154,
+  "output_tokens": 457,
+  "cost_usd": 0.0011887,
+  "elapsed_s": 3.38,
+  "error": null,
+  "text": "{\n  \"task\": \"Design and manage visual content.\",\n  \"benefits\": [\n    \"easy to share designs with others\",\n    \"provides design software for teams\",\n    \"does not require expertise\"\n  ],\n  \"frictions\": [\n    \"hard to save private files\"\n  ]\n}",
+  "json": {
+    "task": "Design and manage visual content.",
+    "benefits": [
+      "easy to share designs with others",
+      "provides design software for teams",
+      "does not require expertise"
+    ],
+    "frictions": [
+      "hard to save private files"
+    ]
+  },
+  "ts": "2026-10-18T05:05:17.012480+00:00"
+}

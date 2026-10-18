@@ -1,0 +1,27 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "75e13a61689f60dd5732cdd385fd886a2afa1143a4cc8c6243c59b1ae3918a37",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 169,
+  "output_tokens": 366,
+  "cost_usd": 0.0009657,
+  "elapsed_s": 3.78,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage expenses for reimbursement\",\n  \"benefits\": [\n    \"Helps manage expenses\",\n    \"Easy to use\",\n    \"User-friendly software\",\n    \"Initial setup was very easy\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Manage expenses for reimbursement",
+    "benefits": [
+      "Helps manage expenses",
+      "Easy to use",
+      "User-friendly software",
+      "Initial setup was very easy"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T05:05:28.166858+00:00"
+}

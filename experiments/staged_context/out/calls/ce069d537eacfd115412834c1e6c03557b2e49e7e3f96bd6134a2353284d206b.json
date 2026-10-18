@@ -1,0 +1,27 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ce069d537eacfd115412834c1e6c03557b2e49e7e3f96bd6134a2353284d206b",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 168,
+  "output_tokens": 462,
+  "cost_usd": 0.0012054,
+  "elapsed_s": 4.36,
+  "error": null,
+  "text": "{\n  \"task\": \"Receive reminders for healthy choices and daily self-care\",\n  \"benefits\": [\n    \"Easy to navigate\",\n    \"Reminds users to stay active\",\n    \"Encourages healthy choices\",\n    \"Promotes daily self-care\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Receive reminders for healthy choices and daily self-care",
+    "benefits": [
+      "Easy to navigate",
+      "Reminds users to stay active",
+      "Encourages healthy choices",
+      "Promotes daily self-care"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T05:05:24.787778+00:00"
+}

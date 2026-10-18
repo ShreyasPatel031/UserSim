@@ -1,0 +1,31 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "94572f0d594757c5e18ffb3fa167a5f5c0764d837e2b047953b9da597d54e52e",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 323,
+  "output_tokens": 557,
+  "cost_usd": 0.0014894,
+  "elapsed_s": 3.34,
+  "error": null,
+  "text": "{\n  \"task\": \"Schedule and publish social media posts across multiple platforms for a week\",\n  \"benefits\": [\n    \"Schedule an entire week of social media posts at one time\",\n    \"Post to several social media companies from one spot\",\n    \"Provides functionality beyond just social media management\"\n  ],\n  \"frictions\": [\n    \"Blog list sorting and filtering is not remembered after navigating away\",\n    \"Difficulty uploading social media images directly into defined folders\",\n    \"Webpage creation is difficult, especially for specific design elements like rounded corner boxes\",\n    \"Specific fonts used on pages are not available in the list when adding new text fields\"\n  ]\n}",
+  "json": {
+    "task": "Schedule and publish social media posts across multiple platforms for a week",
+    "benefits": [
+      "Schedule an entire week of social media posts at one time",
+      "Post to several social media companies from one spot",
+      "Provides functionality beyond just social media management"
+    ],
+    "frictions": [
+      "Blog list sorting and filtering is not remembered after navigating away",
+      "Difficulty uploading social media images directly into defined folders",
+      "Webpage creation is difficult, especially for specific design elements like rounded corner boxes",
+      "Specific fonts used on pages are not available in the list when adding new text fields"
+    ]
+  },
+  "ts": "2026-10-18T05:05:28.145684+00:00"
+}

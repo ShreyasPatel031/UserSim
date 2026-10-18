@@ -1,0 +1,30 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "50bd4d82b0c381dc91052f6460a8a77f3affa93e5a8e02b752ae438ff1215b79",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 365,
+  "output_tokens": 555,
+  "cost_usd": 0.001497,
+  "elapsed_s": 4.69,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage company invoices and expenses\",\n  \"benefits\": [\n    \"Captures travel expenses within company budget\",\n    \"Reduces manual data entry and reporting errors\",\n    \"Mobile app is user-friendly and saves time on data reports\",\n    \"Integrates with other applications like Oracle and HR systems\"\n  ],\n  \"frictions\": [\n    \"Needs more advanced support options\",\n    \"Virtual support is too AI-generated\"\n  ]\n}",
+  "json": {
+    "task": "Manage company invoices and expenses",
+    "benefits": [
+      "Captures travel expenses within company budget",
+      "Reduces manual data entry and reporting errors",
+      "Mobile app is user-friendly and saves time on data reports",
+      "Integrates with other applications like Oracle and HR systems"
+    ],
+    "frictions": [
+      "Needs more advanced support options",
+      "Virtual support is too AI-generated"
+    ]
+  },
+  "ts": "2026-10-18T05:05:29.320637+00:00"
+}

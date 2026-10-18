@@ -1,0 +1,28 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "72ec33c7d74822c4b7b8c45ffb8dac755edfb07cfed2a019cf0a30d0897fc53e",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 175,
+  "output_tokens": 456,
+  "cost_usd": 0.0011925,
+  "elapsed_s": 3.37,
+  "error": null,
+  "text": "{\n  \"task\": \"Conduct calls and video conferences, and present content to external participants\",\n  \"benefits\": [\n    \"good call clarity\",\n    \"good video clarity\"\n  ],\n  \"frictions\": [\n    \"ability to present as an external is unreliable\",\n    \"lack of error messages when issues occur\"\n  ]\n}",
+  "json": {
+    "task": "Conduct calls and video conferences, and present content to external participants",
+    "benefits": [
+      "good call clarity",
+      "good video clarity"
+    ],
+    "frictions": [
+      "ability to present as an external is unreliable",
+      "lack of error messages when issues occur"
+    ]
+  },
+  "ts": "2026-10-18T05:05:29.309713+00:00"
+}

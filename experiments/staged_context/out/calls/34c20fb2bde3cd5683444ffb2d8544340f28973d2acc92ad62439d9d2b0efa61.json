@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "34c20fb2bde3cd5683444ffb2d8544340f28973d2acc92ad62439d9d2b0efa61",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 255,
+  "output_tokens": 1039,
+  "cost_usd": 0.002674,
+  "elapsed_s": 6.72,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Efficiently automates outreach sequences\",\n    \"Streamlines follow-up processes\",\n    \"Helps manage multiple campaigns effectively\"\n  ],\n  \"cons\": [\n    \"Initial setup and integration required some technical effort\",\n    \"Reporting features could be more robust for detailed analysis\",\n    \"Occasional minor glitches in sequence execution\"\n  ],\n  \"overall_experience\": \"As a GTM Engineer in a small business, this individual found Reply to be a valuable tool for automating and managing their critical outreach and follow-up sequences. The product generally met their core needs, saving significant time and effort in sales and marketing operations. While appreciating its core functionality, they noted that some aspects like initial configuration and advanced reporting could be improved for an even smoother experience.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Efficiently automates outreach sequences",
+      "Streamlines follow-up processes",
+      "Helps manage multiple campaigns effectively"
+    ],
+    "cons": [
+      "Initial setup and integration required some technical effort",
+      "Reporting features could be more robust for detailed analysis",
+      "Occasional minor glitches in sequence execution"
+    ],
+    "overall_experience": "As a GTM Engineer in a small business, this individual found Reply to be a valuable tool for automating and managing their critical outreach and follow-up sequences. The product generally met their core needs, saving significant time and effort in sales and marketing operations. While appreciating its core functionality, they noted that some aspects like initial configuration and advanced reporting could be improved for an even smoother experience."
+  },
+  "ts": "2026-10-18T05:12:14.092842+00:00"
+}

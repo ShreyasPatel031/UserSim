@@ -1,0 +1,30 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "884098f7efae3eda55c5093e88214bc05935efe3fbf3792d768439ff184d6ea3",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 306,
+  "output_tokens": 525,
+  "cost_usd": 0.0014042999999999998,
+  "elapsed_s": 3.26,
+  "error": null,
+  "text": "{\n  \"task\": \"Use KnowBe4 to build and maintain security awareness across an organization.\",\n  \"benefits\": [\n    \"Training content is clear, up-to-date, and easy to understand.\",\n    \"Phishing simulations and short modules reinforce security practices non-disruptively.\",\n    \"Platform facilitates progress tracking and builds overall security awareness.\",\n    \"Provides a structured program to reduce phishing-related incidents and risky behavior.\"\n  ],\n  \"frictions\": [\n    \"Some training modules can feel repetitive over time.\",\n    \"Certain simulations may not always reflect the most recent real-world scenarios.\"\n  ]\n}",
+  "json": {
+    "task": "Use KnowBe4 to build and maintain security awareness across an organization.",
+    "benefits": [
+      "Training content is clear, up-to-date, and easy to understand.",
+      "Phishing simulations and short modules reinforce security practices non-disruptively.",
+      "Platform facilitates progress tracking and builds overall security awareness.",
+      "Provides a structured program to reduce phishing-related incidents and risky behavior."
+    ],
+    "frictions": [
+      "Some training modules can feel repetitive over time.",
+      "Certain simulations may not always reflect the most recent real-world scenarios."
+    ]
+  },
+  "ts": "2026-10-18T05:05:21.574771+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1289700bc49dfa1bec8280f543149fe803d681ae5df1c285a1e972bb38297dfa",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 248,
+  "output_tokens": 1002,
+  "cost_usd": 0.0025794000000000004,
+  "elapsed_s": 6.72,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Efficiently scales outreach to large user bases\",\n    \"Automation features save significant time\",\n    \"Helps a small team achieve broader reach\"\n  ],\n  \"cons\": [\n    \"Initial setup for large-scale campaigns can be complex\",\n    \"Requires careful monitoring to avoid spam filters\",\n    \"Pricing might be a consideration for a small business\"\n  ],\n  \"overall_experience\": \"The CEO likely found Reply to be a highly effective tool for scaling their small business's outreach efforts, appreciating its automation capabilities to connect with a large number of users efficiently. While the initial setup for mass outreach may have presented some challenges, the platform's core functionality delivered on the promise of broader reach. They likely viewed it as a valuable investment that empowered their team to expand their communication strategy without needing extensive additional resources.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Efficiently scales outreach to large user bases",
+      "Automation features save significant time",
+      "Helps a small team achieve broader reach"
+    ],
+    "cons": [
+      "Initial setup for large-scale campaigns can be complex",
+      "Requires careful monitoring to avoid spam filters",
+      "Pricing might be a consideration for a small business"
+    ],
+    "overall_experience": "The CEO likely found Reply to be a highly effective tool for scaling their small business's outreach efforts, appreciating its automation capabilities to connect with a large number of users efficiently. While the initial setup for mass outreach may have presented some challenges, the platform's core functionality delivered on the promise of broader reach. They likely viewed it as a valuable investment that empowered their team to expand their communication strategy without needing extensive additional resources."
+  },
+  "ts": "2026-10-18T05:12:14.284270+00:00"
+}

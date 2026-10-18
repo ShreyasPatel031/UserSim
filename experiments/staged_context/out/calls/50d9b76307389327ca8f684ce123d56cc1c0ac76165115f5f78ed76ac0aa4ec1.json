@@ -1,0 +1,28 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "50d9b76307389327ca8f684ce123d56cc1c0ac76165115f5f78ed76ac0aa4ec1",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 146,
+  "output_tokens": 407,
+  "cost_usd": 0.0010613000000000003,
+  "elapsed_s": 3.09,
+  "error": null,
+  "text": "{\n  \"task\": null,\n  \"benefits\": [\n    \"easy to navigate\",\n    \"user friendly\"\n  ],\n  \"frictions\": [\n    \"onboarding process is difficult\",\n    \"onboarding is rigid\"\n  ]\n}",
+  "json": {
+    "task": null,
+    "benefits": [
+      "easy to navigate",
+      "user friendly"
+    ],
+    "frictions": [
+      "onboarding process is difficult",
+      "onboarding is rigid"
+    ]
+  },
+  "ts": "2026-10-18T05:05:25.956276+00:00"
+}

@@ -1,0 +1,32 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c0f3612ba192473931e360be8c01c1ed8cc5f37f5c3310e8ae295b9fe5318e9f",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 337,
+  "output_tokens": 492,
+  "cost_usd": 0.0013311000000000002,
+  "elapsed_s": 3.8,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage projects, timelines, and budgets, and build custom tools and processes\",\n  \"benefits\": [\n    \"Stay organized and on top of projects\",\n    \"Efficiently review timelines and budgets\",\n    \"Flexible and scalable\",\n    \"Build tailored tools and processes\"\n  ],\n  \"frictions\": [\n    \"Board views can become long, large, and confusing\",\n    \"Requires an investment in time for setup\",\n    \"Requires careful design of processes, boards, and integrations\",\n    \"Designing processes and integrations can be complicated\"\n  ]\n}",
+  "json": {
+    "task": "Manage projects, timelines, and budgets, and build custom tools and processes",
+    "benefits": [
+      "Stay organized and on top of projects",
+      "Efficiently review timelines and budgets",
+      "Flexible and scalable",
+      "Build tailored tools and processes"
+    ],
+    "frictions": [
+      "Board views can become long, large, and confusing",
+      "Requires an investment in time for setup",
+      "Requires careful design of processes, boards, and integrations",
+      "Designing processes and integrations can be complicated"
+    ]
+  },
+  "ts": "2026-10-18T05:05:16.769241+00:00"
+}

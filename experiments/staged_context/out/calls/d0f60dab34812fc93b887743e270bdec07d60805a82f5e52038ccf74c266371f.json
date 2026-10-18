@@ -1,0 +1,31 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d0f60dab34812fc93b887743e270bdec07d60805a82f5e52038ccf74c266371f",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 206,
+  "output_tokens": 456,
+  "cost_usd": 0.0012018,
+  "elapsed_s": 3.02,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage and distribute customer support tickets among agents\",\n  \"benefits\": [\n    \"Provides a user-first experience\",\n    \"Offers automatic ticket assignment\",\n    \"Includes analytical insights\",\n    \"Has a cooperative support team\"\n  ],\n  \"frictions\": [\n    \"Absence of a dedicated CSM\",\n    \"Lack of regular follow-ups\",\n    \"Lack of scheduled meetings\"\n  ]\n}",
+  "json": {
+    "task": "Manage and distribute customer support tickets among agents",
+    "benefits": [
+      "Provides a user-first experience",
+      "Offers automatic ticket assignment",
+      "Includes analytical insights",
+      "Has a cooperative support team"
+    ],
+    "frictions": [
+      "Absence of a dedicated CSM",
+      "Lack of regular follow-ups",
+      "Lack of scheduled meetings"
+    ]
+  },
+  "ts": "2026-10-18T05:05:21.774326+00:00"
+}

@@ -1,0 +1,29 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f63fa2c75fddead33503424d767d05e55a65740ccded851fc394d14a27d87bb0",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 175,
+  "output_tokens": 514,
+  "cost_usd": 0.0013375000000000001,
+  "elapsed_s": 3.49,
+  "error": null,
+  "text": "{\n  \"task\": \"Isolate and sort lead sources into lists for team outreach\",\n  \"benefits\": [\n    \"Intuitive interface\",\n    \"Facilitates lead sorting\",\n    \"Simplifies isolating lead sources\"\n  ],\n  \"frictions\": [\n    \"Lack of SMS reporting\",\n    \"Inability to view full SMS history\"\n  ]\n}",
+  "json": {
+    "task": "Isolate and sort lead sources into lists for team outreach",
+    "benefits": [
+      "Intuitive interface",
+      "Facilitates lead sorting",
+      "Simplifies isolating lead sources"
+    ],
+    "frictions": [
+      "Lack of SMS reporting",
+      "Inability to view full SMS history"
+    ]
+  },
+  "ts": "2026-10-18T05:05:29.263215+00:00"
+}

@@ -1,0 +1,27 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0e60e44ccb8ddfc5044f2a6eccfbefaa3edd8ea0aee877e5ce0484786ab5ff3c",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 196,
+  "output_tokens": 487,
+  "cost_usd": 0.0012763,
+  "elapsed_s": 3.21,
+  "error": null,
+  "text": "{\n  \"task\": \"Automate marketing emails and manage campaigns.\",\n  \"benefits\": [\n    \"Use workflow flow charts in marketing emails\",\n    \"Utilize web hooks\",\n    \"Capture and manage feedback from potential clients\",\n    \"Track email performance\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Automate marketing emails and manage campaigns.",
+    "benefits": [
+      "Use workflow flow charts in marketing emails",
+      "Utilize web hooks",
+      "Capture and manage feedback from potential clients",
+      "Track email performance"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T05:05:28.340237+00:00"
+}

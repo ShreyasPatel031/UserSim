@@ -1,0 +1,29 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "393e302eb723aa493f14614da531866330082dba4d54ade793f0ec1f232c0861",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 168,
+  "output_tokens": 526,
+  "cost_usd": 0.0013654,
+  "elapsed_s": 3.75,
+  "error": null,
+  "text": "{\n  \"task\": \"Access and unify data from sales, operations, and finance to receive simplified responses to queries.\",\n  \"benefits\": [\n    \"Unify data from sales, operations, and finance.\",\n    \"Provide simplified responses to queries.\",\n    \"Unify data across departments.\",\n    \"Efficiently flag problems as soon as they occur.\"\n  ],\n  \"frictions\": [\n    \"Heavy data sizes can reduce performance.\"\n  ]\n}",
+  "json": {
+    "task": "Access and unify data from sales, operations, and finance to receive simplified responses to queries.",
+    "benefits": [
+      "Unify data from sales, operations, and finance.",
+      "Provide simplified responses to queries.",
+      "Unify data across departments.",
+      "Efficiently flag problems as soon as they occur."
+    ],
+    "frictions": [
+      "Heavy data sizes can reduce performance."
+    ]
+  },
+  "ts": "2026-10-18T05:05:16.632375+00:00"
+}

@@ -1,0 +1,32 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0bdede45eb19bf4e915d886be8e60e289034cf350238ce598c7c3619b8b14457",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 232,
+  "output_tokens": 522,
+  "cost_usd": 0.0013746,
+  "elapsed_s": 3.4,
+  "error": null,
+  "text": "{\n  \"task\": \"Automate payroll, contractor payments, reimbursements, and tax filings\",\n  \"benefits\": [\n    \"Seamless payroll once set up\",\n    \"Good UI/UX\",\n    \"Automates paying employees and contractors\",\n    \"Automates handling reimbursements and filing employer taxes\"\n  ],\n  \"frictions\": [\n    \"Atrocious customer support\",\n    \"Impossible to get a hold of someone who can fix things\",\n    \"Terrible initial setup\",\n    \"Unable to pay UK employees through the software\"\n  ]\n}",
+  "json": {
+    "task": "Automate payroll, contractor payments, reimbursements, and tax filings",
+    "benefits": [
+      "Seamless payroll once set up",
+      "Good UI/UX",
+      "Automates paying employees and contractors",
+      "Automates handling reimbursements and filing employer taxes"
+    ],
+    "frictions": [
+      "Atrocious customer support",
+      "Impossible to get a hold of someone who can fix things",
+      "Terrible initial setup",
+      "Unable to pay UK employees through the software"
+    ]
+  },
+  "ts": "2026-10-18T05:05:21.131141+00:00"
+}

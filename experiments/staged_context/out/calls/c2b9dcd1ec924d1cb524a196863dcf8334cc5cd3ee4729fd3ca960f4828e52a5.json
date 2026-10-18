@@ -1,0 +1,26 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c2b9dcd1ec924d1cb524a196863dcf8334cc5cd3ee4729fd3ca960f4828e52a5",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 173,
+  "output_tokens": 480,
+  "cost_usd": 0.0012519,
+  "elapsed_s": 3.28,
+  "error": null,
+  "text": "{\n  \"task\": \"Save and access passwords for software and accounts.\",\n  \"benefits\": [\n    \"Save all passwords for software and other accounts\",\n    \"Easy to access passwords\",\n    \"Eliminates the need to search for passwords\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Save and access passwords for software and accounts.",
+    "benefits": [
+      "Save all passwords for software and other accounts",
+      "Easy to access passwords",
+      "Eliminates the need to search for passwords"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T05:05:23.161113+00:00"
+}

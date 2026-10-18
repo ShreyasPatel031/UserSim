@@ -1,0 +1,32 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "486f85fdcd22c528135ed0cab04f3d9427f2cf39315d3b9ac564022b0660a774",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 321,
+  "output_tokens": 516,
+  "cost_usd": 0.0013862999999999998,
+  "elapsed_s": 3.09,
+  "error": null,
+  "text": "{\n  \"task\": \"Process payroll, manage workforce planning, file taxes, and house international employees.\",\n  \"benefits\": [\n    \"Houses international employees in one system\",\n    \"Processes payroll efficiently and accurately\",\n    \"Is a full suite\",\n    \"Constantly updates and takes product feedback seriously\"\n  ],\n  \"frictions\": [\n    \"Limited platform customization\",\n    \"Reporting features are standard and not customizable\",\n    \"Cannot manipulate and combine some fields in reporting\",\n    \"Requires running multiple reports and combining them manually in Excel\"\n  ]\n}",
+  "json": {
+    "task": "Process payroll, manage workforce planning, file taxes, and house international employees.",
+    "benefits": [
+      "Houses international employees in one system",
+      "Processes payroll efficiently and accurately",
+      "Is a full suite",
+      "Constantly updates and takes product feedback seriously"
+    ],
+    "frictions": [
+      "Limited platform customization",
+      "Reporting features are standard and not customizable",
+      "Cannot manipulate and combine some fields in reporting",
+      "Requires running multiple reports and combining them manually in Excel"
+    ]
+  },
+  "ts": "2026-10-18T05:05:25.588328+00:00"
+}

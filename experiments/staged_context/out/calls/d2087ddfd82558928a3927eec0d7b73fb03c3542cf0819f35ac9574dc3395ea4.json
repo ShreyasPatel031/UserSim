@@ -1,0 +1,31 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d2087ddfd82558928a3927eec0d7b73fb03c3542cf0819f35ac9574dc3395ea4",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 213,
+  "output_tokens": 482,
+  "cost_usd": 0.0012688999999999999,
+  "elapsed_s": 3.13,
+  "error": null,
+  "text": "{\n  \"task\": \"Process money transactions\",\n  \"benefits\": [\n    \"Support payment methods across many platforms\",\n    \"User-friendly for frequent transactions\",\n    \"Good for making payments abroad\",\n    \"Simple setup and straightforward installation\"\n  ],\n  \"frictions\": [\n    \"Limitations for business purposes, especially advanced customization\",\n    \"Customer support delays on multiple occasions\",\n    \"Higher fees than other payment applications, especially for larger transaction volumes\"\n  ]\n}",
+  "json": {
+    "task": "Process money transactions",
+    "benefits": [
+      "Support payment methods across many platforms",
+      "User-friendly for frequent transactions",
+      "Good for making payments abroad",
+      "Simple setup and straightforward installation"
+    ],
+    "frictions": [
+      "Limitations for business purposes, especially advanced customization",
+      "Customer support delays on multiple occasions",
+      "Higher fees than other payment applications, especially for larger transaction volumes"
+    ]
+  },
+  "ts": "2026-10-18T05:05:26.960746+00:00"
+}

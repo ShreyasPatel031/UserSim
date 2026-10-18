@@ -1,0 +1,31 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "fcf15b9190eb34ff71a25155eb9f185ba1e2af79d7be2a1eed7fe46c6e44761a",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 251,
+  "output_tokens": 499,
+  "cost_usd": 0.0013227999999999998,
+  "elapsed_s": 3.83,
+  "error": null,
+  "text": "{\n  \"task\": \"Accept payments from international clients\",\n  \"benefits\": [\n    \"Build trust and familiarity with international clients\",\n    \"Accept payments in multiple currencies easily\",\n    \"Clean user interface\",\n    \"Straightforward integration process for basic use cases\"\n  ],\n  \"frictions\": [\n    \"High fees, especially for international transactions\",\n    \"Outdated support\",\n    \"Not ideal for India-first businesses\"\n  ]\n}",
+  "json": {
+    "task": "Accept payments from international clients",
+    "benefits": [
+      "Build trust and familiarity with international clients",
+      "Accept payments in multiple currencies easily",
+      "Clean user interface",
+      "Straightforward integration process for basic use cases"
+    ],
+    "frictions": [
+      "High fees, especially for international transactions",
+      "Outdated support",
+      "Not ideal for India-first businesses"
+    ]
+  },
+  "ts": "2026-10-18T05:05:26.816645+00:00"
+}

@@ -1,0 +1,29 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3e5bd206024063ad59ea0358ffb2a0a7a2ba7daa3fee64adb31ebec8d6fa4f3e",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 164,
+  "output_tokens": 452,
+  "cost_usd": 0.0011791999999999998,
+  "elapsed_s": 3.12,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage customer complaints and support requests.\",\n  \"benefits\": [\n    \"Easy to set up\",\n    \"Easy to use\",\n    \"Strong escalation matrix\",\n    \"Easy to integrate with other solutions\"\n  ],\n  \"frictions\": [\n    \"Making reports is complicated\"\n  ]\n}",
+  "json": {
+    "task": "Manage customer complaints and support requests.",
+    "benefits": [
+      "Easy to set up",
+      "Easy to use",
+      "Strong escalation matrix",
+      "Easy to integrate with other solutions"
+    ],
+    "frictions": [
+      "Making reports is complicated"
+    ]
+  },
+  "ts": "2026-10-18T05:05:22.279153+00:00"
+}

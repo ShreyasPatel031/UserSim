@@ -1,0 +1,32 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ad05a576120e5872997ff73de256d7fca93c6a471627bf3d167735d37d0bd3e3",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 175,
+  "output_tokens": 495,
+  "cost_usd": 0.00129,
+  "elapsed_s": 3.31,
+  "error": null,
+  "text": "{\n  \"task\": \"Engage in holistic wellness activities\",\n  \"benefits\": [\n    \"Make holistic wellness engaging\",\n    \"Make holistic wellness accessible\",\n    \"Make holistic wellness personalized\",\n    \"Utilize a well-integrated platform\"\n  ],\n  \"frictions\": [\n    \"Technical glitches\",\n    \"Repetitive content\",\n    \"Limited personalization options\",\n    \"Rewards system with insufficient incentives\"\n  ]\n}",
+  "json": {
+    "task": "Engage in holistic wellness activities",
+    "benefits": [
+      "Make holistic wellness engaging",
+      "Make holistic wellness accessible",
+      "Make holistic wellness personalized",
+      "Utilize a well-integrated platform"
+    ],
+    "frictions": [
+      "Technical glitches",
+      "Repetitive content",
+      "Limited personalization options",
+      "Rewards system with insufficient incentives"
+    ]
+  },
+  "ts": "2026-10-18T05:05:23.836752+00:00"
+}

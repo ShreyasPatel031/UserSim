@@ -1,0 +1,30 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e04ff7b12e7abccbe22ff1b81d3621fa63cd4526f3597e70f412e2f44f0a8e81",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 225,
+  "output_tokens": 525,
+  "cost_usd": 0.00138,
+  "elapsed_s": 3.67,
+  "error": null,
+  "text": "{\n  \"task\": \"Track workflow, prioritize tasks, and plan experiments.\",\n  \"benefits\": [\n    \"Track workflow\",\n    \"Prioritize tasks based on time\",\n    \"Stay organized\",\n    \"Stay focused\"\n  ],\n  \"frictions\": [\n    \"Clicking on a row now prompts to edit the row's name instead of opening its content\",\n    \"Must click on the far right side of a row to open its content\"\n  ]\n}",
+  "json": {
+    "task": "Track workflow, prioritize tasks, and plan experiments.",
+    "benefits": [
+      "Track workflow",
+      "Prioritize tasks based on time",
+      "Stay organized",
+      "Stay focused"
+    ],
+    "frictions": [
+      "Clicking on a row now prompts to edit the row's name instead of opening its content",
+      "Must click on the far right side of a row to open its content"
+    ]
+  },
+  "ts": "2026-10-18T05:05:16.779628+00:00"
+}

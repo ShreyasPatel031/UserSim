@@ -1,0 +1,32 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c221e3f2c4b2912f964ca064624abba6b2417f83155e9030a197dc3777bf9b96",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 198,
+  "output_tokens": 467,
+  "cost_usd": 0.0012269000000000002,
+  "elapsed_s": 3.27,
+  "error": null,
+  "text": "{\n  \"task\": \"Automate and synchronize travel, expense, and invoice data\",\n  \"benefits\": [\n    \"Provides AI-powered automation\",\n    \"Offers mobile receipt scanning\",\n    \"Reduces manual efforts\",\n    \"Leads to more efficient results\"\n  ],\n  \"frictions\": [\n    \"Steep learning curve\",\n    \"Non-intuitive interface\",\n    \"Slow app performance, especially mobile\",\n    \"Difficult in resulting\"\n  ]\n}",
+  "json": {
+    "task": "Automate and synchronize travel, expense, and invoice data",
+    "benefits": [
+      "Provides AI-powered automation",
+      "Offers mobile receipt scanning",
+      "Reduces manual efforts",
+      "Leads to more efficient results"
+    ],
+    "frictions": [
+      "Steep learning curve",
+      "Non-intuitive interface",
+      "Slow app performance, especially mobile",
+      "Difficult in resulting"
+    ]
+  },
+  "ts": "2026-10-18T05:05:27.408351+00:00"
+}

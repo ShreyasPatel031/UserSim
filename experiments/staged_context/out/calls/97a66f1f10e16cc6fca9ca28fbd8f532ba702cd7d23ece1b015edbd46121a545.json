@@ -1,0 +1,31 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "97a66f1f10e16cc6fca9ca28fbd8f532ba702cd7d23ece1b015edbd46121a545",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 282,
+  "output_tokens": 552,
+  "cost_usd": 0.0014646,
+  "elapsed_s": 3.78,
+  "error": null,
+  "text": "{\n  \"task\": \"Automate end-to-end IT service management workflows, including incidents, problems, changes, and requests, within a single platform.\",\n  \"benefits\": [\n    \"Provides end-to-end workflow automation\",\n    \"Consolidates incidents, problems, changes, and requests into one platform\",\n    \"Intelligently triggers related processes (e.g., incidents generating problem records)\",\n    \"Reduces firefighting and promotes root-cause resolution\"\n  ],\n  \"frictions\": [\n    \"Experiences complexity creep due to customization over time\",\n    \"Customization leads to tangled workflows, custom scripts, and inconsistent data models\",\n    \"Simple changes become risky and slow after extensive customization\"\n  ]\n}",
+  "json": {
+    "task": "Automate end-to-end IT service management workflows, including incidents, problems, changes, and requests, within a single platform.",
+    "benefits": [
+      "Provides end-to-end workflow automation",
+      "Consolidates incidents, problems, changes, and requests into one platform",
+      "Intelligently triggers related processes (e.g., incidents generating problem records)",
+      "Reduces firefighting and promotes root-cause resolution"
+    ],
+    "frictions": [
+      "Experiences complexity creep due to customization over time",
+      "Customization leads to tangled workflows, custom scripts, and inconsistent data models",
+      "Simple changes become risky and slow after extensive customization"
+    ]
+  },
+  "ts": "2026-10-18T05:05:15.516660+00:00"
+}

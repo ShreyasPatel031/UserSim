@@ -1,0 +1,30 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "af42c8b535631f45fd2257e2da296b27c73297e4663b7dcc0b341d2096ee7bed",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 199,
+  "output_tokens": 466,
+  "cost_usd": 0.0012247,
+  "elapsed_s": 3.57,
+  "error": null,
+  "text": "{\n  \"task\": \"Collect cross-border payments and transfer funds.\",\n  \"benefits\": [\n    \"Easy to use for collecting payments and transferring money\",\n    \"Convenient auto bank transfer feature\",\n    \"Easy setup\",\n    \"Guarantees service delivery to customers\"\n  ],\n  \"frictions\": [\n    \"High commission\",\n    \"Low forex rate\"\n  ]\n}",
+  "json": {
+    "task": "Collect cross-border payments and transfer funds.",
+    "benefits": [
+      "Easy to use for collecting payments and transferring money",
+      "Convenient auto bank transfer feature",
+      "Easy setup",
+      "Guarantees service delivery to customers"
+    ],
+    "frictions": [
+      "High commission",
+      "Low forex rate"
+    ]
+  },
+  "ts": "2026-10-18T05:05:26.706914+00:00"
+}

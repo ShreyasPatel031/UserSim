@@ -1,0 +1,29 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2e9293a103ecf09660ec2bd695edd59606839963d0551893c117b65762b22bfe",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 209,
+  "output_tokens": 552,
+  "cost_usd": 0.0014426999999999999,
+  "elapsed_s": 3.44,
+  "error": null,
+  "text": "{\n  \"task\": \"Organize cold outreach.\",\n  \"benefits\": [\n    \"Integrate with LinkedIn to add contacts directly.\",\n    \"Access detailed reporting for sequence performance.\",\n    \"Incorporate LinkedIn requests, InMails, and calls into a single sequence.\",\n    \"Utilize email quality check for professional communication.\"\n  ],\n  \"frictions\": [\n    \"Maximum email account limit is too low.\"\n  ]\n}",
+  "json": {
+    "task": "Organize cold outreach.",
+    "benefits": [
+      "Integrate with LinkedIn to add contacts directly.",
+      "Access detailed reporting for sequence performance.",
+      "Incorporate LinkedIn requests, InMails, and calls into a single sequence.",
+      "Utilize email quality check for professional communication."
+    ],
+    "frictions": [
+      "Maximum email account limit is too low."
+    ]
+  },
+  "ts": "2026-10-18T05:05:14.069957+00:00"
+}

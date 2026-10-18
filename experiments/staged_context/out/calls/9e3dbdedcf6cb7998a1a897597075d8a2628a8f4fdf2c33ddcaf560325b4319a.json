@@ -1,0 +1,29 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9e3dbdedcf6cb7998a1a897597075d8a2628a8f4fdf2c33ddcaf560325b4319a",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 147,
+  "output_tokens": 451,
+  "cost_usd": 0.0011716,
+  "elapsed_s": 3.39,
+  "error": null,
+  "text": "{\n  \"task\": \"Access and approve detailed commission data.\",\n  \"benefits\": [\n    \"Provides clear and precise information about commissions for sales reps\",\n    \"Provides clear and precise projections for the next cycles\",\n    \"Offers very detailed data\",\n    \"Allows data to be viewable and approvable by both users and administrators\"\n  ],\n  \"frictions\": [\n    \"Multiple documents can sometimes get confusing\"\n  ]\n}",
+  "json": {
+    "task": "Access and approve detailed commission data.",
+    "benefits": [
+      "Provides clear and precise information about commissions for sales reps",
+      "Provides clear and precise projections for the next cycles",
+      "Offers very detailed data",
+      "Allows data to be viewable and approvable by both users and administrators"
+    ],
+    "frictions": [
+      "Multiple documents can sometimes get confusing"
+    ]
+  },
+  "ts": "2026-10-18T05:05:24.945114+00:00"
+}

@@ -1,0 +1,29 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0cd433154befc19c9fe3761d5c7f645ea65e9553aa9e7f3fe62c3e44688c0d86",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 188,
+  "output_tokens": 483,
+  "cost_usd": 0.0012639,
+  "elapsed_s": 3.18,
+  "error": null,
+  "text": "{\n  \"task\": \"Communicate and connect with employees across an organization\",\n  \"benefits\": [\n    \"Maintain good call quality without interruptions during voice or video calls\",\n    \"Easily reach and connect with many people across the organization\"\n  ],\n  \"frictions\": [\n    \"App feels bloated with too many options and small widgets\",\n    \"Overall user experience is poor\",\n    \"Engage is embedded in the Teams app\"\n  ]\n}",
+  "json": {
+    "task": "Communicate and connect with employees across an organization",
+    "benefits": [
+      "Maintain good call quality without interruptions during voice or video calls",
+      "Easily reach and connect with many people across the organization"
+    ],
+    "frictions": [
+      "App feels bloated with too many options and small widgets",
+      "Overall user experience is poor",
+      "Engage is embedded in the Teams app"
+    ]
+  },
+  "ts": "2026-10-18T05:05:29.112821+00:00"
+}

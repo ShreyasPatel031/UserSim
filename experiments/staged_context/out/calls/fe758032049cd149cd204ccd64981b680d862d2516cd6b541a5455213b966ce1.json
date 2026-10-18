@@ -1,0 +1,28 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "fe758032049cd149cd204ccd64981b680d862d2516cd6b541a5455213b966ce1",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 184,
+  "output_tokens": 418,
+  "cost_usd": 0.0011002000000000002,
+  "elapsed_s": 4.76,
+  "error": null,
+  "text": "{\n  \"task\": \"Run NPS campaigns inside a platform\",\n  \"benefits\": [\n    \"Answers setup questions right away\",\n    \"Provides fast answers for simple queries\",\n    \"Eliminates waiting for human support for basic questions\"\n  ],\n  \"frictions\": [\n    \"Requires human support for clarification on API connectors\"\n  ]\n}",
+  "json": {
+    "task": "Run NPS campaigns inside a platform",
+    "benefits": [
+      "Answers setup questions right away",
+      "Provides fast answers for simple queries",
+      "Eliminates waiting for human support for basic questions"
+    ],
+    "frictions": [
+      "Requires human support for clarification on API connectors"
+    ]
+  },
+  "ts": "2026-10-18T05:05:19.612957+00:00"
+}

@@ -1,0 +1,28 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "971e6908977045918551957cae949b5c0ee9b72f931bb258462c28cea8a90c11",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 157,
+  "output_tokens": 358,
+  "cost_usd": 0.0009421,
+  "elapsed_s": 3.57,
+  "error": null,
+  "text": "{\n  \"task\": \"Do annual health insurance enrollment.\",\n  \"benefits\": [\n    \"Easy annual health insurance enrollment\",\n    \"Email notifications for payroll\",\n    \"Cute graphics\"\n  ],\n  \"frictions\": [\n    \"Long login process due to 2FA\"\n  ]\n}",
+  "json": {
+    "task": "Do annual health insurance enrollment.",
+    "benefits": [
+      "Easy annual health insurance enrollment",
+      "Email notifications for payroll",
+      "Cute graphics"
+    ],
+    "frictions": [
+      "Long login process due to 2FA"
+    ]
+  },
+  "ts": "2026-10-18T05:05:20.824363+00:00"
+}

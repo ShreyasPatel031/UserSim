@@ -1,0 +1,30 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0630b6e4706c7f33194e8a63cbf615be5590ebc4590c40bcfe2b01b400b36985",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 296,
+  "output_tokens": 505,
+  "cost_usd": 0.0013513000000000002,
+  "elapsed_s": 3.53,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage and secure passwords across multiple devices and for teams.\",\n  \"benefits\": [\n    \"Cross-platform compatibility and password synchronization\",\n    \"Efficient autofill and streamlined login via browser integration\",\n    \"Secure, centralized storage and sharing of credentials\",\n    \"Enhanced security and audit compliance through visibility\"\n  ],\n  \"frictions\": [\n    \"Subscription is more expensive compared to other options\",\n    \"No fully free version available, only a temporary trial\"\n  ]\n}",
+  "json": {
+    "task": "Manage and secure passwords across multiple devices and for teams.",
+    "benefits": [
+      "Cross-platform compatibility and password synchronization",
+      "Efficient autofill and streamlined login via browser integration",
+      "Secure, centralized storage and sharing of credentials",
+      "Enhanced security and audit compliance through visibility"
+    ],
+    "frictions": [
+      "Subscription is more expensive compared to other options",
+      "No fully free version available, only a temporary trial"
+    ]
+  },
+  "ts": "2026-10-18T05:05:23.359640+00:00"
+}

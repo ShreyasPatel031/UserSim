@@ -1,0 +1,30 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b647c3839dd82700707360be4b766ff822c018d3171306af0b4e9d93685955a0",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 226,
+  "output_tokens": 486,
+  "cost_usd": 0.0012828,
+  "elapsed_s": 3.8,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage sales activities and project tracking\",\n  \"benefits\": [\n    \"Draft follow-up emails for clients with AI\",\n    \"Consolidate operations and marketing to track projects\",\n    \"Predict estimated revenue generation\",\n    \"Replace heavy manual inputs with AI\"\n  ],\n  \"frictions\": [\n    \"Requires frequent data updates to ensure accuracy\",\n    \"AI works with data available no matter how messy or erroneous\"\n  ]\n}",
+  "json": {
+    "task": "Manage sales activities and project tracking",
+    "benefits": [
+      "Draft follow-up emails for clients with AI",
+      "Consolidate operations and marketing to track projects",
+      "Predict estimated revenue generation",
+      "Replace heavy manual inputs with AI"
+    ],
+    "frictions": [
+      "Requires frequent data updates to ensure accuracy",
+      "AI works with data available no matter how messy or erroneous"
+    ]
+  },
+  "ts": "2026-10-18T05:05:16.307588+00:00"
+}

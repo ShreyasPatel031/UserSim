@@ -1,0 +1,26 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a6af2005d6be83d72888dd598818fa519761be1bdd88884313136a3bf18586bf",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 144,
+  "output_tokens": 445,
+  "cost_usd": 0.0011557,
+  "elapsed_s": 4.59,
+  "error": null,
+  "text": "{\n  \"task\": \"Engage employees in wellness activities\",\n  \"benefits\": [\n    \"Dashboard\",\n    \"Ease of use\",\n    \"Good sync with other apps\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Engage employees in wellness activities",
+    "benefits": [
+      "Dashboard",
+      "Ease of use",
+      "Good sync with other apps"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T05:05:25.185048+00:00"
+}

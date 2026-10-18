@@ -1,0 +1,28 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "549555f6bbbaec1dc7597b4a71bf1586ae830235d397ecc7aa3c092ff5d37d21",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 177,
+  "output_tokens": 464,
+  "cost_usd": 0.0012131,
+  "elapsed_s": 3.28,
+  "error": null,
+  "text": "{\n  \"task\": \"Sign up for benefits and refer new employees.\",\n  \"benefits\": [\n    \"easy to use\",\n    \"works quickly\",\n    \"works smoothly\"\n  ],\n  \"frictions\": [\n    \"clunky and old school look\"\n  ]\n}",
+  "json": {
+    "task": "Sign up for benefits and refer new employees.",
+    "benefits": [
+      "easy to use",
+      "works quickly",
+      "works smoothly"
+    ],
+    "frictions": [
+      "clunky and old school look"
+    ]
+  },
+  "ts": "2026-10-18T05:05:20.761832+00:00"
+}

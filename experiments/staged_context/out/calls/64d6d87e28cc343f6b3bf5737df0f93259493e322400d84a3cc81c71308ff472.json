@@ -1,0 +1,27 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "64d6d87e28cc343f6b3bf5737df0f93259493e322400d84a3cc81c71308ff472",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 155,
+  "output_tokens": 409,
+  "cost_usd": 0.001069,
+  "elapsed_s": 4.11,
+  "error": null,
+  "text": "{\n  \"task\": null,\n  \"benefits\": [\n    \"Use on every device\"\n  ],\n  \"frictions\": [\n    \"Randomly disconnects from account\",\n    \"No notification upon disconnection\"\n  ]\n}",
+  "json": {
+    "task": null,
+    "benefits": [
+      "Use on every device"
+    ],
+    "frictions": [
+      "Randomly disconnects from account",
+      "No notification upon disconnection"
+    ]
+  },
+  "ts": "2026-10-18T05:05:30.202171+00:00"
+}

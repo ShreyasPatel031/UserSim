@@ -1,0 +1,29 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3efa1521b607c88212ee6958da4c43f06cf038fb5867f3c4267801c3266c40ab",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 179,
+  "output_tokens": 499,
+  "cost_usd": 0.0013012,
+  "elapsed_s": 3.54,
+  "error": null,
+  "text": "{\n  \"task\": \"Train users to be aware of potential scams and creative phishing techniques\",\n  \"benefits\": [\n    \"User management portal for training\",\n    \"Keeping track of phishing campaigns\",\n    \"Easy control of the administration portion\"\n  ],\n  \"frictions\": [\n    \"Lack of AI for creating and managing campaigns\",\n    \"Lack of a reminder feature for incomplete training\"\n  ]\n}",
+  "json": {
+    "task": "Train users to be aware of potential scams and creative phishing techniques",
+    "benefits": [
+      "User management portal for training",
+      "Keeping track of phishing campaigns",
+      "Easy control of the administration portion"
+    ],
+    "frictions": [
+      "Lack of AI for creating and managing campaigns",
+      "Lack of a reminder feature for incomplete training"
+    ]
+  },
+  "ts": "2026-10-18T05:05:21.435501+00:00"
+}

@@ -1,0 +1,30 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f6a965e3f88da350d9470d90d8efc9f3885f79131af92bd5be393479bc6be358",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 245,
+  "output_tokens": 505,
+  "cost_usd": 0.0013360000000000002,
+  "elapsed_s": 3.07,
+  "error": null,
+  "text": "{\n  \"task\": \"Evaluate the risk of security breaches from users.\",\n  \"benefits\": [\n    \"Evaluates risk of breach from users\",\n    \"Support team is helpful with setup for accurate information\",\n    \"Provides accurate information\",\n    \"Simple and easy to use\"\n  ],\n  \"frictions\": [\n    \"Uncertain long-term value\",\n    \"Does not provide actual protection\"\n  ]\n}",
+  "json": {
+    "task": "Evaluate the risk of security breaches from users.",
+    "benefits": [
+      "Evaluates risk of breach from users",
+      "Support team is helpful with setup for accurate information",
+      "Provides accurate information",
+      "Simple and easy to use"
+    ],
+    "frictions": [
+      "Uncertain long-term value",
+      "Does not provide actual protection"
+    ]
+  },
+  "ts": "2026-10-18T05:05:21.241156+00:00"
+}

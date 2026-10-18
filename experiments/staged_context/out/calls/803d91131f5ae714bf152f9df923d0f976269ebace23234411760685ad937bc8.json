@@ -1,0 +1,32 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "803d91131f5ae714bf152f9df923d0f976269ebace23234411760685ad937bc8",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 225,
+  "output_tokens": 518,
+  "cost_usd": 0.0013625000000000002,
+  "elapsed_s": 2.99,
+  "error": null,
+  "text": "{\n  \"task\": \"Store and manage passwords securely in one location.\",\n  \"benefits\": [\n    \"Feel safe and reliable security-wise\",\n    \"Address the challenge of remembering numerous passwords\",\n    \"Avoid relying on weak or repeated passwords\",\n    \"Securely store all passwords in a single location\"\n  ],\n  \"frictions\": [\n    \"Takes time to unlock or sync sometimes\",\n    \"Seems a bit pricey compared to others\",\n    \"Free version offers very limited features\",\n    \"Experiences syncing problems occasionally\"\n  ]\n}",
+  "json": {
+    "task": "Store and manage passwords securely in one location.",
+    "benefits": [
+      "Feel safe and reliable security-wise",
+      "Address the challenge of remembering numerous passwords",
+      "Avoid relying on weak or repeated passwords",
+      "Securely store all passwords in a single location"
+    ],
+    "frictions": [
+      "Takes time to unlock or sync sometimes",
+      "Seems a bit pricey compared to others",
+      "Free version offers very limited features",
+      "Experiences syncing problems occasionally"
+    ]
+  },
+  "ts": "2026-10-18T05:05:22.599037+00:00"
+}

@@ -1,0 +1,30 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "46280e80c661799c82f59ebdf3c7d6a8edb87869f1498fca003afa65525e68be",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 614,
+  "output_tokens": 528,
+  "cost_usd": 0.0015042,
+  "elapsed_s": 3.59,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage HR, IT, and payroll functions and automate employee lifecycle processes.\",\n  \"benefits\": [\n    \"Seamless implementation and intuitive data migration tools\",\n    \"Acts as a single source of truth for IT, Payroll, and HR, saving manual data entry hours\",\n    \"Modern, intuitive user interface and world-class mobile app for employee self-service\",\n    \"Automates cross-system provisioning and data consistency across integrated tools\"\n  ],\n  \"frictions\": [\n    \"Initial setup required trial and error due to platform power and customizability\",\n    \"Many features are sold as add-on modules, requiring careful package selection to avoid overspending\"\n  ]\n}",
+  "json": {
+    "task": "Manage HR, IT, and payroll functions and automate employee lifecycle processes.",
+    "benefits": [
+      "Seamless implementation and intuitive data migration tools",
+      "Acts as a single source of truth for IT, Payroll, and HR, saving manual data entry hours",
+      "Modern, intuitive user interface and world-class mobile app for employee self-service",
+      "Automates cross-system provisioning and data consistency across integrated tools"
+    ],
+    "frictions": [
+      "Initial setup required trial and error due to platform power and customizability",
+      "Many features are sold as add-on modules, requiring careful package selection to avoid overspending"
+    ]
+  },
+  "ts": "2026-10-18T05:05:20.591816+00:00"
+}

@@ -1,0 +1,29 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "efcee55f37436191abab81a848d8befd4de83126f6dcc52db27be20be64c34ef",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 279,
+  "output_tokens": 480,
+  "cost_usd": 0.0012837,
+  "elapsed_s": 3.47,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage personal employment and tax information.\",\n  \"benefits\": [\n    \"Access all information from a single dashboard.\",\n    \"Easily find and access paystubs, medical information, vacation time, and tax info.\",\n    \"Eliminates the need for secondary spreadsheets to duplicate information.\",\n    \"Consolidates tax, health insurance, investment, and business information in one location.\"\n  ],\n  \"frictions\": [\n    \"Expense reimbursement is an outside process.\"\n  ]\n}",
+  "json": {
+    "task": "Manage personal employment and tax information.",
+    "benefits": [
+      "Access all information from a single dashboard.",
+      "Easily find and access paystubs, medical information, vacation time, and tax info.",
+      "Eliminates the need for secondary spreadsheets to duplicate information.",
+      "Consolidates tax, health insurance, investment, and business information in one location."
+    ],
+    "frictions": [
+      "Expense reimbursement is an outside process."
+    ]
+  },
+  "ts": "2026-10-18T05:05:21.120581+00:00"
+}

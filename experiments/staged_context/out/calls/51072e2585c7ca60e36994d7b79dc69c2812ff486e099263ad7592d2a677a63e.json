@@ -1,0 +1,36 @@
+{
+  "stage": "g2_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "51072e2585c7ca60e36994d7b79dc69c2812ff486e099263ad7592d2a677a63e",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 250,
+  "output_tokens": 1051,
+  "cost_usd": 0.0027025,
+  "elapsed_s": 7.09,
+  "error": null,
+  "text": "{\n  \"ease_of_use_rating\": 4,\n  \"functionality_rating\": 4,\n  \"overall_rating\": 4,\n  \"value_for_money_rating\": 4,\n  \"customer_support_rating\": 3,\n  \"recommendation_score\": 8,\n  \"pros\": [\n    \"Streamlined organization of cold outreach campaigns.\",\n    \"Efficiently managed contact lists for various outreach initiatives.\",\n    \"Automated follow-ups, saving significant administrative time.\"\n  ],\n  \"cons\": [\n    \"Initial setup and learning curve for campaign logic was a bit steep.\",\n    \"Interface could sometimes be overwhelming for a non-specialized user.\",\n    \"Limited advanced reporting features for deeper insights.\"\n  ],\n  \"overall_experience\": \"This HR & Admin Assistant likely found Reply to be a valuable tool for bringing structure and automation to cold outreach tasks within their small business. The platform helped them efficiently organize communications and manage contacts, despite a slight learning curve. They appreciated its core functionality in streamlining administrative efforts related to outreach.\"\n}",
+  "json": {
+    "ease_of_use_rating": 4,
+    "functionality_rating": 4,
+    "overall_rating": 4,
+    "value_for_money_rating": 4,
+    "customer_support_rating": 3,
+    "recommendation_score": 8,
+    "pros": [
+      "Streamlined organization of cold outreach campaigns.",
+      "Efficiently managed contact lists for various outreach initiatives.",
+      "Automated follow-ups, saving significant administrative time."
+    ],
+    "cons": [
+      "Initial setup and learning curve for campaign logic was a bit steep.",
+      "Interface could sometimes be overwhelming for a non-specialized user.",
+      "Limited advanced reporting features for deeper insights."
+    ],
+    "overall_experience": "This HR & Admin Assistant likely found Reply to be a valuable tool for bringing structure and automation to cold outreach tasks within their small business. The platform helped them efficiently organize communications and manage contacts, despite a slight learning curve. They appreciated its core functionality in streamlining administrative efforts related to outreach."
+  },
+  "ts": "2026-10-18T05:12:14.642659+00:00"
+}

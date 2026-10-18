@@ -1,0 +1,30 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c7f243bcd62dd6051d4e9630aed9f8e5945c2bdb566f132df19d08b745dd1cce",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 238,
+  "output_tokens": 508,
+  "cost_usd": 0.0013414,
+  "elapsed_s": 3.46,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage employee onboarding, payroll, benefits, and app access.\",\n  \"benefits\": [\n    \"Saves time during onboarding and payroll\",\n    \"Centralizes new hire setup (benefits, app access) in one flow\",\n    \"Provides a seamless experience\",\n    \"Eliminates juggling multiple HR and IT systems\"\n  ],\n  \"frictions\": [\n    \"Can feel overwhelming due to many features tucked away in different sections\",\n    \"Takes new admins time to get used to the system\"\n  ]\n}",
+  "json": {
+    "task": "Manage employee onboarding, payroll, benefits, and app access.",
+    "benefits": [
+      "Saves time during onboarding and payroll",
+      "Centralizes new hire setup (benefits, app access) in one flow",
+      "Provides a seamless experience",
+      "Eliminates juggling multiple HR and IT systems"
+    ],
+    "frictions": [
+      "Can feel overwhelming due to many features tucked away in different sections",
+      "Takes new admins time to get used to the system"
+    ]
+  },
+  "ts": "2026-10-18T05:05:20.741512+00:00"
+}

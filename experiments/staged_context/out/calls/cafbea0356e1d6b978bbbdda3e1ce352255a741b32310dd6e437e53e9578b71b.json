@@ -1,0 +1,28 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "cafbea0356e1d6b978bbbdda3e1ce352255a741b32310dd6e437e53e9578b71b",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 140,
+  "output_tokens": 440,
+  "cost_usd": 0.001142,
+  "elapsed_s": 3.51,
+  "error": null,
+  "text": "{\n  \"task\": \"Generate written content.\",\n  \"benefits\": [\n    \"Generates written content effectively\"\n  ],\n  \"frictions\": [\n    \"Company subscription/cancellation policy is problematic\",\n    \"Lacks other useful features\",\n    \"Offers no unique value compared to free alternatives\"\n  ]\n}",
+  "json": {
+    "task": "Generate written content.",
+    "benefits": [
+      "Generates written content effectively"
+    ],
+    "frictions": [
+      "Company subscription/cancellation policy is problematic",
+      "Lacks other useful features",
+      "Offers no unique value compared to free alternatives"
+    ]
+  },
+  "ts": "2026-10-18T05:05:20.004855+00:00"
+}

@@ -1,0 +1,27 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1d6b146f77ac3890f5f7a3dcf90babe5d1cc71c4f68932837206b6531e2760ca",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 157,
+  "output_tokens": 455,
+  "cost_usd": 0.0011846,
+  "elapsed_s": 3.61,
+  "error": null,
+  "text": "{\n  \"task\": null,\n  \"benefits\": [\n    \"Utilize many features\",\n    \"Receive quick notifications for emails\"\n  ],\n  \"frictions\": [\n    \"Updates take a long time to come through\"\n  ]\n}",
+  "json": {
+    "task": null,
+    "benefits": [
+      "Utilize many features",
+      "Receive quick notifications for emails"
+    ],
+    "frictions": [
+      "Updates take a long time to come through"
+    ]
+  },
+  "ts": "2026-10-18T05:05:22.928878+00:00"
+}

@@ -1,0 +1,28 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "27c2f272051fcfbacfb3a3f62681b6148ca72a4d4915d5df980a2617366053e0",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 152,
+  "output_tokens": 475,
+  "cost_usd": 0.0012331,
+  "elapsed_s": 3.27,
+  "error": null,
+  "text": "{\n  \"task\": \"Outreach large masses of users\",\n  \"benefits\": [\n    \"integrates with a lot of tools\",\n    \"gives good reports\"\n  ],\n  \"frictions\": [\n    \"doesn't fully support multi-platforms\",\n    \"couldn't use LinkedIn\"\n  ]\n}",
+  "json": {
+    "task": "Outreach large masses of users",
+    "benefits": [
+      "integrates with a lot of tools",
+      "gives good reports"
+    ],
+    "frictions": [
+      "doesn't fully support multi-platforms",
+      "couldn't use LinkedIn"
+    ]
+  },
+  "ts": "2026-10-18T05:05:13.686868+00:00"
+}

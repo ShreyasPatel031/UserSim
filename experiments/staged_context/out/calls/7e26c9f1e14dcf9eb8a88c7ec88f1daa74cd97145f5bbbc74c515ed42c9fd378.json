@@ -1,0 +1,31 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7e26c9f1e14dcf9eb8a88c7ec88f1daa74cd97145f5bbbc74c515ed42c9fd378",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 253,
+  "output_tokens": 492,
+  "cost_usd": 0.0013059000000000002,
+  "elapsed_s": 3.25,
+  "error": null,
+  "text": "{\n  \"task\": \"Process payroll and manage project financial reporting\",\n  \"benefits\": [\n    \"User-friendly interface\",\n    \"Step-by-step guidance for payroll\",\n    \"Simple to learn\"\n  ],\n  \"frictions\": [\n    \"System is slow\",\n    \"System shuts down frequently\",\n    \"Support team lacks program understanding\",\n    \"Users cannot create custom reports without support\"\n  ]\n}",
+  "json": {
+    "task": "Process payroll and manage project financial reporting",
+    "benefits": [
+      "User-friendly interface",
+      "Step-by-step guidance for payroll",
+      "Simple to learn"
+    ],
+    "frictions": [
+      "System is slow",
+      "System shuts down frequently",
+      "Support team lacks program understanding",
+      "Users cannot create custom reports without support"
+    ]
+  },
+  "ts": "2026-10-18T05:05:25.953960+00:00"
+}

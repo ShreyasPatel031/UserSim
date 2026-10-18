@@ -1,0 +1,27 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b380bbdec360655c4c424d9dc063c7551701cf4cf60929f089b66e8485ec4fb4",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 206,
+  "output_tokens": 453,
+  "cost_usd": 0.0011943000000000001,
+  "elapsed_s": 2.93,
+  "error": null,
+  "text": "{\n  \"task\": \"Provide cybersecurity awareness training to staff and educate users on protective measures for the organization\",\n  \"benefits\": [\n    \"Improves staff awareness and understanding of cybersecurity\",\n    \"Customizes training and follow-up based on user results\",\n    \"Easy to deploy\",\n    \"Users are not overly annoyed when completing training\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Provide cybersecurity awareness training to staff and educate users on protective measures for the organization",
+    "benefits": [
+      "Improves staff awareness and understanding of cybersecurity",
+      "Customizes training and follow-up based on user results",
+      "Easy to deploy",
+      "Users are not overly annoyed when completing training"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T05:05:21.572319+00:00"
+}

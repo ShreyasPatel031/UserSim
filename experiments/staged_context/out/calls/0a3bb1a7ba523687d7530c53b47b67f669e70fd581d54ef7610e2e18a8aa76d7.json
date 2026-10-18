@@ -1,0 +1,29 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0a3bb1a7ba523687d7530c53b47b67f669e70fd581d54ef7610e2e18a8aa76d7",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 304,
+  "output_tokens": 487,
+  "cost_usd": 0.0013087,
+  "elapsed_s": 3.3,
+  "error": null,
+  "text": "{\n  \"task\": \"Review expense line items\",\n  \"benefits\": [\n    \"App for uploading receipts\"\n  ],\n  \"frictions\": [\n    \"Website page has too much dead space\",\n    \"Cannot resize the area for expense line items\",\n    \"Scrolling jumps several line items at a time\",\n    \"Webpage is unusable on a laptop\"\n  ]\n}",
+  "json": {
+    "task": "Review expense line items",
+    "benefits": [
+      "App for uploading receipts"
+    ],
+    "frictions": [
+      "Website page has too much dead space",
+      "Cannot resize the area for expense line items",
+      "Scrolling jumps several line items at a time",
+      "Webpage is unusable on a laptop"
+    ]
+  },
+  "ts": "2026-10-18T05:05:27.425188+00:00"
+}

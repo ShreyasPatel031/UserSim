@@ -1,0 +1,32 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "70850ba813256f3b3badf7a1bc76294351428e1185b52d3b994404ac95879576",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 336,
+  "output_tokens": 521,
+  "cost_usd": 0.0014033,
+  "elapsed_s": 4.74,
+  "error": null,
+  "text": "{\n  \"task\": \"Automate resolution of customer inquiries\",\n  \"benefits\": [\n    \"Reduces burden on the human team\",\n    \"Easy integration with workflows and macros for complex routes and consistent responses\",\n    \"Provides clear metrics on cases resolved by AI vs. agents\",\n    \"Allows customer service to scale with customer base growth\"\n  ],\n  \"frictions\": [\n    \"Feels limited in advanced scenarios\",\n    \"Dependency on Intercom support for complex configurations\",\n    \"Room for improvement in customization of responses in certain languages\",\n    \"Lack of flexibility in some workflows\"\n  ]\n}",
+  "json": {
+    "task": "Automate resolution of customer inquiries",
+    "benefits": [
+      "Reduces burden on the human team",
+      "Easy integration with workflows and macros for complex routes and consistent responses",
+      "Provides clear metrics on cases resolved by AI vs. agents",
+      "Allows customer service to scale with customer base growth"
+    ],
+    "frictions": [
+      "Feels limited in advanced scenarios",
+      "Dependency on Intercom support for complex configurations",
+      "Room for improvement in customization of responses in certain languages",
+      "Lack of flexibility in some workflows"
+    ]
+  },
+  "ts": "2026-10-18T05:05:19.822114+00:00"
+}

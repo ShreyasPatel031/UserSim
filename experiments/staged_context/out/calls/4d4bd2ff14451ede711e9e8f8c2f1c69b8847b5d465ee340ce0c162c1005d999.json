@@ -1,0 +1,29 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4d4bd2ff14451ede711e9e8f8c2f1c69b8847b5d465ee340ce0c162c1005d999",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 153,
+  "output_tokens": 522,
+  "cost_usd": 0.0013509,
+  "elapsed_s": 3.41,
+  "error": null,
+  "text": "{\n  \"task\": \"Input text to receive alternative versions and suggestions for sentence structure or words\",\n  \"benefits\": [\n    \"receive alternative versions of text\",\n    \"get ideas on better sentence structure\",\n    \"get ideas on better words\",\n    \"solves writer's block\"\n  ],\n  \"frictions\": [\n    \"suggestions do not align with brand voice\"\n  ]\n}",
+  "json": {
+    "task": "Input text to receive alternative versions and suggestions for sentence structure or words",
+    "benefits": [
+      "receive alternative versions of text",
+      "get ideas on better sentence structure",
+      "get ideas on better words",
+      "solves writer's block"
+    ],
+    "frictions": [
+      "suggestions do not align with brand voice"
+    ]
+  },
+  "ts": "2026-10-18T05:05:19.670168+00:00"
+}

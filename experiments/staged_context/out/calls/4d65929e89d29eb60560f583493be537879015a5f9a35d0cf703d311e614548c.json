@@ -1,0 +1,30 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4d65929e89d29eb60560f583493be537879015a5f9a35d0cf703d311e614548c",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 256,
+  "output_tokens": 499,
+  "cost_usd": 0.0013242999999999998,
+  "elapsed_s": 3.16,
+  "error": null,
+  "text": "{\n  \"task\": \"Provide security awareness training\",\n  \"benefits\": [\n    \"Offers a broad variety of topics\",\n    \"Has an easy-to-use user interface\",\n    \"Helps businesses maintain PCI, SOC2, and HIPAA compliance\"\n  ],\n  \"frictions\": [\n    \"Requires adding TXT files to DNS servers for user enrollment\",\n    \"Does not allow creating custom quizzes or adding own content to courses\",\n    \"Reporting is difficult due to the need to download CSV files\"\n  ]\n}",
+  "json": {
+    "task": "Provide security awareness training",
+    "benefits": [
+      "Offers a broad variety of topics",
+      "Has an easy-to-use user interface",
+      "Helps businesses maintain PCI, SOC2, and HIPAA compliance"
+    ],
+    "frictions": [
+      "Requires adding TXT files to DNS servers for user enrollment",
+      "Does not allow creating custom quizzes or adding own content to courses",
+      "Reporting is difficult due to the need to download CSV files"
+    ]
+  },
+  "ts": "2026-10-18T05:05:21.246581+00:00"
+}

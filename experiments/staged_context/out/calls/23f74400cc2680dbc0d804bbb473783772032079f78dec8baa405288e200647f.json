@@ -1,0 +1,26 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "23f74400cc2680dbc0d804bbb473783772032079f78dec8baa405288e200647f",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 142,
+  "output_tokens": 377,
+  "cost_usd": 0.0009851,
+  "elapsed_s": 2.93,
+  "error": null,
+  "text": "{\n  \"task\": \"Track total weekly hours worked\",\n  \"benefits\": [\n    \"Everything is accessible through the app\"\n  ],\n  \"frictions\": [\n    \"Some specifics are not spelled out\"\n  ]\n}",
+  "json": {
+    "task": "Track total weekly hours worked",
+    "benefits": [
+      "Everything is accessible through the app"
+    ],
+    "frictions": [
+      "Some specifics are not spelled out"
+    ]
+  },
+  "ts": "2026-10-18T05:05:29.969338+00:00"
+}

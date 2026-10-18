@@ -1,0 +1,27 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7ad58e11145d90b5663cfcd1c1034ebafd8fd3638944aafd4c31eedb4ba150f2",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 228,
+  "output_tokens": 465,
+  "cost_usd": 0.0012309,
+  "elapsed_s": 4.44,
+  "error": null,
+  "text": "{\n  \"task\": \"Convert currency and receive payments from US-based companies\",\n  \"benefits\": [\n    \"Helpful for receiving payments from US-based companies\",\n    \"High security measures and secure account verification\",\n    \"Low charges/fees\",\n    \"Easy to set up using email ID and basic personal information\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Convert currency and receive payments from US-based companies",
+    "benefits": [
+      "Helpful for receiving payments from US-based companies",
+      "High security measures and secure account verification",
+      "Low charges/fees",
+      "Easy to set up using email ID and basic personal information"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T05:05:27.769200+00:00"
+}

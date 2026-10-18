@@ -1,0 +1,27 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "6fdca31b196e6091cfa08608f0cec1fe0e03723f5f7d349f46dff36f5bdfd715",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 156,
+  "output_tokens": 438,
+  "cost_usd": 0.0011418,
+  "elapsed_s": 2.87,
+  "error": null,
+  "text": "{\n  \"task\": \"Use custom reporting to monitor timecards and payroll\",\n  \"benefits\": [\n    \"Software is very user friendly\",\n    \"Easily navigate through the software\",\n    \"Software is very logical\",\n    \"Support is responsive and helpful\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Use custom reporting to monitor timecards and payroll",
+    "benefits": [
+      "Software is very user friendly",
+      "Easily navigate through the software",
+      "Software is very logical",
+      "Support is responsive and helpful"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T05:05:25.090773+00:00"
+}

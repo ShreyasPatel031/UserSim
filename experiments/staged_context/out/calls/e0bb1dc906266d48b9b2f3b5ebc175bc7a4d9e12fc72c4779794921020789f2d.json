@@ -1,0 +1,29 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e0bb1dc906266d48b9b2f3b5ebc175bc7a4d9e12fc72c4779794921020789f2d",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 152,
+  "output_tokens": 503,
+  "cost_usd": 0.0013031,
+  "elapsed_s": 3.46,
+  "error": null,
+  "text": "{\n  \"task\": \"Enable immediate customer contact for communication, support, and customer success.\",\n  \"benefits\": [\n    \"The dashboard is friendly\",\n    \"Everything keeps handy on the dashboard\",\n    \"Customers can contact us immediately\",\n    \"Solves communication, support, and customer success areas\"\n  ],\n  \"frictions\": [\n    \"Requires training due to multiple options\"\n  ]\n}",
+  "json": {
+    "task": "Enable immediate customer contact for communication, support, and customer success.",
+    "benefits": [
+      "The dashboard is friendly",
+      "Everything keeps handy on the dashboard",
+      "Customers can contact us immediately",
+      "Solves communication, support, and customer success areas"
+    ],
+    "frictions": [
+      "Requires training due to multiple options"
+    ]
+  },
+  "ts": "2026-10-18T05:05:17.663717+00:00"
+}

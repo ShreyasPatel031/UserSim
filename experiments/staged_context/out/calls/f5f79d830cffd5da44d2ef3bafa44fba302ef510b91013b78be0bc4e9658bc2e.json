@@ -1,0 +1,31 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f5f79d830cffd5da44d2ef3bafa44fba302ef510b91013b78be0bc4e9658bc2e",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 202,
+  "output_tokens": 451,
+  "cost_usd": 0.0011881,
+  "elapsed_s": 3.41,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage IT operations, automate workflows, and improve service management\",\n  \"benefits\": [\n    \"Provide strong workflow automation\",\n    \"Offer customization and integration capabilities\",\n    \"Help standardize IT operations and improve service efficiency\",\n    \"Centralize IT operations and automate manual workflows\"\n  ],\n  \"frictions\": [\n    \"Platform can become complex to manage at scale\",\n    \"Licensing costs are high for some advanced modules and customizations\",\n    \"Upgrades require careful testing in heavily customized environments\"\n  ]\n}",
+  "json": {
+    "task": "Manage IT operations, automate workflows, and improve service management",
+    "benefits": [
+      "Provide strong workflow automation",
+      "Offer customization and integration capabilities",
+      "Help standardize IT operations and improve service efficiency",
+      "Centralize IT operations and automate manual workflows"
+    ],
+    "frictions": [
+      "Platform can become complex to manage at scale",
+      "Licensing costs are high for some advanced modules and customizations",
+      "Upgrades require careful testing in heavily customized environments"
+    ]
+  },
+  "ts": "2026-10-18T05:05:15.559485+00:00"
+}

@@ -1,0 +1,30 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1b5936664e2261f01f2015e7e9f470806e826d87c6fc0fb2d9c43059b3fb3b1a",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 235,
+  "output_tokens": 498,
+  "cost_usd": 0.0013155,
+  "elapsed_s": 3.37,
+  "error": null,
+  "text": "{\n  \"task\": \"Store and manage resumes in a centralized workflow.\",\n  \"benefits\": [\n    \"Easy to use\",\n    \"Quickly sends job postings to partner sites (Indeed, Glassdoor, ZipRecruiter)\",\n    \"Ability to quickly duplicate identical job orders\"\n  ],\n  \"frictions\": [\n    \"Recruiting module lacks focus for enhancements and support\",\n    \"No way to run open job order reports\",\n    \"Support team gives conflicting answers regarding the module\"\n  ]\n}",
+  "json": {
+    "task": "Store and manage resumes in a centralized workflow.",
+    "benefits": [
+      "Easy to use",
+      "Quickly sends job postings to partner sites (Indeed, Glassdoor, ZipRecruiter)",
+      "Ability to quickly duplicate identical job orders"
+    ],
+    "frictions": [
+      "Recruiting module lacks focus for enhancements and support",
+      "No way to run open job order reports",
+      "Support team gives conflicting answers regarding the module"
+    ]
+  },
+  "ts": "2026-10-18T05:05:30.492978+00:00"
+}

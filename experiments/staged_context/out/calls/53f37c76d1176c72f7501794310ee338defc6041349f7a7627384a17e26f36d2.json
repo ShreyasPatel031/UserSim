@@ -1,0 +1,30 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "53f37c76d1176c72f7501794310ee338defc6041349f7a7627384a17e26f36d2",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 268,
+  "output_tokens": 473,
+  "cost_usd": 0.0012629,
+  "elapsed_s": 2.91,
+  "error": null,
+  "text": "{\n  \"task\": \"Improve employee cybersecurity awareness and reduce phishing and social engineering incidents.\",\n  \"benefits\": [\n    \"Very easy to set up\",\n    \"Integrates smoothly with existing environment\",\n    \"Uses domain authentication for simple and secure user management\",\n    \"Seamless onboarding process for employees\"\n  ],\n  \"frictions\": [\n    \"Interface could be more user-friendly\",\n    \"Some customization options take time to get used to\"\n  ]\n}",
+  "json": {
+    "task": "Improve employee cybersecurity awareness and reduce phishing and social engineering incidents.",
+    "benefits": [
+      "Very easy to set up",
+      "Integrates smoothly with existing environment",
+      "Uses domain authentication for simple and secure user management",
+      "Seamless onboarding process for employees"
+    ],
+    "frictions": [
+      "Interface could be more user-friendly",
+      "Some customization options take time to get used to"
+    ]
+  },
+  "ts": "2026-10-18T05:05:20.916124+00:00"
+}

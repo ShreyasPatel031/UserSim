@@ -1,0 +1,27 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "fb9e0630138c8b7566d555f931b2362596bb9d9865930e00f72902eded6dd07c",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 179,
+  "output_tokens": 509,
+  "cost_usd": 0.0013262,
+  "elapsed_s": 3.39,
+  "error": null,
+  "text": "{\n  \"task\": \"Perform quick wellness activities\",\n  \"benefits\": [\n    \"Access challenges\",\n    \"Attend periodic webinars\",\n    \"Use OnDemand function for quick resets\",\n    \"Perform 5-minute yoga or mindfulness activities\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Perform quick wellness activities",
+    "benefits": [
+      "Access challenges",
+      "Attend periodic webinars",
+      "Use OnDemand function for quick resets",
+      "Perform 5-minute yoga or mindfulness activities"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T05:05:24.203064+00:00"
+}

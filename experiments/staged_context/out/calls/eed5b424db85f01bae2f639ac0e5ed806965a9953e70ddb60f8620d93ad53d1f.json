@@ -1,0 +1,30 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "eed5b424db85f01bae2f639ac0e5ed806965a9953e70ddb60f8620d93ad53d1f",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 281,
+  "output_tokens": 551,
+  "cost_usd": 0.0014617999999999999,
+  "elapsed_s": 4.07,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage recruiting, onboarding, and talent bench in one place.\",\n  \"benefits\": [\n    \"Connect HR operations directly to business revenue and client delivery.\",\n    \"AI drafts job descriptions and screens resumes.\",\n    \"AI insights alert early for high attrition risk.\",\n    \"Reduced average time-to-fill for technical roles from 45 to 21 days.\"\n  ],\n  \"frictions\": [\n    \"Initial setup to connect HR boards with sales and delivery took about 3 weeks.\",\n    \"Mobile app is not ideal for editing complex onboarding workflows.\"\n  ]\n}",
+  "json": {
+    "task": "Manage recruiting, onboarding, and talent bench in one place.",
+    "benefits": [
+      "Connect HR operations directly to business revenue and client delivery.",
+      "AI drafts job descriptions and screens resumes.",
+      "AI insights alert early for high attrition risk.",
+      "Reduced average time-to-fill for technical roles from 45 to 21 days."
+    ],
+    "frictions": [
+      "Initial setup to connect HR boards with sales and delivery took about 3 weeks.",
+      "Mobile app is not ideal for editing complex onboarding workflows."
+    ]
+  },
+  "ts": "2026-10-18T05:05:16.783958+00:00"
+}

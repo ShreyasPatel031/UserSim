@@ -1,0 +1,29 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "bc0d7ac2d60861f5ab0d426b75baed5f12e71ac00a5f1f7a4107b5c8174f91a0",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 199,
+  "output_tokens": 539,
+  "cost_usd": 0.0014072,
+  "elapsed_s": 3.61,
+  "error": null,
+  "text": "{\n  \"task\": \"Send cold emails to prospects for sales and lead nurturing\",\n  \"benefits\": [\n    \"Easy drip campaign setup\",\n    \"Reliable email warm-up\",\n    \"Effective for customer outreach\",\n    \"Straightforward lead outreach and conversation management\"\n  ],\n  \"frictions\": [\n    \"Difficulty understanding campaign issues and their causes\"\n  ]\n}",
+  "json": {
+    "task": "Send cold emails to prospects for sales and lead nurturing",
+    "benefits": [
+      "Easy drip campaign setup",
+      "Reliable email warm-up",
+      "Effective for customer outreach",
+      "Straightforward lead outreach and conversation management"
+    ],
+    "frictions": [
+      "Difficulty understanding campaign issues and their causes"
+    ]
+  },
+  "ts": "2026-10-18T05:05:19.439691+00:00"
+}

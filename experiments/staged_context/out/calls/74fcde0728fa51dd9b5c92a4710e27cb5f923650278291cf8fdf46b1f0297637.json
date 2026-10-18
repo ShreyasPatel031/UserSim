@@ -1,0 +1,26 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "74fcde0728fa51dd9b5c92a4710e27cb5f923650278291cf8fdf46b1f0297637",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 157,
+  "output_tokens": 447,
+  "cost_usd": 0.0011646,
+  "elapsed_s": 3.21,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage global employee reimbursements\",\n  \"benefits\": [\n    \"Reliable over many years of usage\"\n  ],\n  \"frictions\": [\n    \"Lacks a tracking email with a quick link to check invoice payment status\"\n  ]\n}",
+  "json": {
+    "task": "Manage global employee reimbursements",
+    "benefits": [
+      "Reliable over many years of usage"
+    ],
+    "frictions": [
+      "Lacks a tracking email with a quick link to check invoice payment status"
+    ]
+  },
+  "ts": "2026-10-18T05:05:25.483847+00:00"
+}

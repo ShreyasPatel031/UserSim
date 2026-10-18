@@ -1,0 +1,28 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f739ec7cc6fbc88bbc063201093a0ac6312a575b09192affc3992fe458b19c50",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 260,
+  "output_tokens": 489,
+  "cost_usd": 0.0013004999999999998,
+  "elapsed_s": 3.64,
+  "error": null,
+  "text": "{\n  \"task\": \"View daily profit and commissions with source breakdowns, and access historical data.\",\n  \"benefits\": [\n    \"View daily profit and commissions with breakdowns\",\n    \"Navigate to previous quarters or years to see past data\"\n  ],\n  \"frictions\": [\n    \"Lack of transparency regarding billing amounts\",\n    \"Does not show how much money a deal has made overall\"\n  ]\n}",
+  "json": {
+    "task": "View daily profit and commissions with source breakdowns, and access historical data.",
+    "benefits": [
+      "View daily profit and commissions with breakdowns",
+      "Navigate to previous quarters or years to see past data"
+    ],
+    "frictions": [
+      "Lack of transparency regarding billing amounts",
+      "Does not show how much money a deal has made overall"
+    ]
+  },
+  "ts": "2026-10-18T05:05:25.154664+00:00"
+}

@@ -1,0 +1,29 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d1ac02aea9851a90d14420b7b79deb9ada0d19ddf3abbeabdafe173b4b6e35d7",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 184,
+  "output_tokens": 445,
+  "cost_usd": 0.0011677,
+  "elapsed_s": 3.02,
+  "error": null,
+  "text": "{\n  \"task\": \"Generate content.\",\n  \"benefits\": [\n    \"Has many features.\",\n    \"Has good knowledge.\",\n    \"Predicts writing accurately.\",\n    \"Generates content quickly.\"\n  ],\n  \"frictions\": [\n    \"Generates the same output sometimes.\"\n  ]\n}",
+  "json": {
+    "task": "Generate content.",
+    "benefits": [
+      "Has many features.",
+      "Has good knowledge.",
+      "Predicts writing accurately.",
+      "Generates content quickly."
+    ],
+    "frictions": [
+      "Generates the same output sometimes."
+    ]
+  },
+  "ts": "2026-10-18T05:05:19.521870+00:00"
+}

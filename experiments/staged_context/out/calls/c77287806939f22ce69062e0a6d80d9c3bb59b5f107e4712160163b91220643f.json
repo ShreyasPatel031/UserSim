@@ -1,0 +1,27 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c77287806939f22ce69062e0a6d80d9c3bb59b5f107e4712160163b91220643f",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 155,
+  "output_tokens": 452,
+  "cost_usd": 0.0011765,
+  "elapsed_s": 3.22,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage customer relationships and sales processes\",\n  \"benefits\": [\n    \"inexpensive for small sales teams and startups\"\n  ],\n  \"frictions\": [\n    \"difficult to navigate\",\n    \"difficult to parse out leads, contacts, organizations\"\n  ]\n}",
+  "json": {
+    "task": "Manage customer relationships and sales processes",
+    "benefits": [
+      "inexpensive for small sales teams and startups"
+    ],
+    "frictions": [
+      "difficult to navigate",
+      "difficult to parse out leads, contacts, organizations"
+    ]
+  },
+  "ts": "2026-10-18T05:05:14.915121+00:00"
+}

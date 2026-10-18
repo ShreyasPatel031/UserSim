@@ -1,0 +1,28 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e08ab5cd2e48aa52e0b4d7be73eec48ede894d4a7605e76c10253d0ce79c0364",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 148,
+  "output_tokens": 429,
+  "cost_usd": 0.0011169,
+  "elapsed_s": 2.97,
+  "error": null,
+  "text": "{\n  \"task\": \"Track the sales pipeline\",\n  \"benefits\": [\n    \"easy to read layout\",\n    \"tracks the pipeline\"\n  ],\n  \"frictions\": [\n    \"over amount of features\",\n    \"contact and company fields double the amount of leads\"\n  ]\n}",
+  "json": {
+    "task": "Track the sales pipeline",
+    "benefits": [
+      "easy to read layout",
+      "tracks the pipeline"
+    ],
+    "frictions": [
+      "over amount of features",
+      "contact and company fields double the amount of leads"
+    ]
+  },
+  "ts": "2026-10-18T05:05:14.200647+00:00"
+}

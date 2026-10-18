@@ -1,0 +1,29 @@
+{
+  "stage": "g2_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "174cb52524e5a8a4b8a5786843fb59106c547196aabe3f5119f5eedbbf0ed349",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 241,
+  "output_tokens": 482,
+  "cost_usd": 0.0012772999999999999,
+  "elapsed_s": 3.12,
+  "error": null,
+  "text": "{\n  \"task\": \"Track sales leads, manage email composition, and monitor client engagement.\",\n  \"benefits\": [\n    \"Access great and easy-to-reach customer service.\",\n    \"Utilize AI tools to simplify processes and gather emails.\",\n    \"Experience an easy initial setup.\",\n    \"Provide easy access to communications for out-of-office teammates.\"\n  ],\n  \"frictions\": [\n    \"Emails sometimes get mixed up with other tickets, requiring extra navigation to find them.\"\n  ]\n}",
+  "json": {
+    "task": "Track sales leads, manage email composition, and monitor client engagement.",
+    "benefits": [
+      "Access great and easy-to-reach customer service.",
+      "Utilize AI tools to simplify processes and gather emails.",
+      "Experience an easy initial setup.",
+      "Provide easy access to communications for out-of-office teammates."
+    ],
+    "frictions": [
+      "Emails sometimes get mixed up with other tickets, requiring extra navigation to find them."
+    ]
+  },
+  "ts": "2026-10-18T05:05:27.987016+00:00"
+}
