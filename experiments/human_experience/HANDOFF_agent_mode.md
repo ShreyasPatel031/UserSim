@@ -136,6 +136,22 @@ Words were iterated four times; v4 is shipped:
 - **Caveat**: the segment stats in `mvp/agent_mode_segments.json` cover all Capterra products. In the Capterra eval that
   includes the person's product and their own review, but that is one review among ~56k.
 
+### 6. Does the model's own rating add per-person signal? (replay of agent_mode_eval, no spend)
+
+The words call also returns ratings, which agent mode ignores. The test: on top of `for_this_persona`, add w × (model
+rating − shown estimate), with w chosen on DEV products.
+
+| TEST | RMSE shown → blended | within-product Spearman: shown / model / blended | w (DEV) |
+| --- | --- | --- | --- |
+| G2 overall (n=70) | 1.033 → **0.969** | 0.107 / 0.263 / 0.200 | 0.5 |
+| Capterra overall (n=108) | 0.682 → 0.682 | 0.080 / 0.134 / 0.080 | 0 |
+| Capterra ease (n=108) | 0.762 → 0.762 | 0.073 / 0.092 / 0.073 | 0 |
+| Capterra recommend (n=107) | 1.822 → 1.822 | 0.027 / 0.073 / 0.027 | 0 |
+
+- The model ranks people within a product a little better than the offsets do, but DEV only kept it on G2. The samples
+  are small, so it is **not shipped**.
+- Worth retesting on a larger set; the live 4-site people are the natural next one.
+
 ## Agent mode (shipped in PR #86)
 
 - **Tool**: `usersim_predict_experience` in `mvp/sim_mcp/server.py`; logic in `mvp/agent_mode.py`.
