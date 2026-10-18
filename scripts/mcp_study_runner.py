@@ -62,72 +62,111 @@ async def call(tool: str, args: dict) -> object:
             return await s.call_tool(tool, args)
 
 
-async def run_cell(study_id: str, cell: dict, max_turns: int, out: Path, llm) -> dict:
-    log = {"cell": cell, "steps": [], "started": time.time()}
+def _leaf(exc: BaseException) -> str:
+    """The real error inside anyio's ExceptionGroup wrappers."""
+    while isinstance(exc, BaseExceptionGroup) and exc.exceptions:
+        exc = exc.exceptions[0]
+    return f"{type(exc).__name__}: {str(exc)[:300]}"
+
+
+async def tool(name: str, args: dict, retries: int = 3):
+    """One MCP call on its own connection (the server keeps no state per connection; a session is its session_id), so a
+    dropped connection costs one retry instead of the whole cell. Calls that act on the page use retries=1."""
+    for k in range(retries):
+        try:
+            async with streamablehttp_client(URL, headers=_headers(), timeout=120, sse_read_timeout=900) as (r, w, _):
+                async with ClientSession(r, w) as s:
+                    await s.initialize()
+                    return await s.call_tool(name, args)
+        except Exception as exc:  # noqa: BLE001 - includes ExceptionGroup; CancelledError is not caught
+            if k == retries - 1:
+                raise RuntimeError(f"{name}: {_leaf(exc)}") from None
+            await asyncio.sleep(2 ** (k + 1))
+
+
+async def listing(what: str, *args):
     async with streamablehttp_client(URL, headers=_headers(), timeout=120, sse_read_timeout=900) as (r, w, _):
         async with ClientSession(r, w) as s:
             await s.initialize()
-            start = ({"study_id": study_id, "cell_id": cell["cell_id"]} if study_id else
-                     {"product_url": cell["site"], "persona": cell["persona"], "task": cell["task"]})
-            for attempt in range(60):  # wait for a free browser slot
-                st = await s.call_tool("usersim_start_session", start)
-                meta = _text(st)
-                try:
-                    m = json.loads(meta[meta.index("{"):]) if "{" in meta else {}
-                except ValueError:
-                    m = {}
-                if m.get("session_id"):
-                    break
-                if any(b in meta.lower() for b in BUSY):
-                    await asyncio.sleep(30)
-                    continue
-                log["error"] = meta[:600]
-                return log
-            else:
-                log["error"] = "no free session slot after 30 min"
-                return log
-            sid = m["session_id"]
-            log["session_id"] = sid
-            tools = (await s.list_tools()).tools
-            prompt = await s.get_prompt("usersim_simulate_user", {"session_id": sid, "persona": cell.get("persona") or "",
-                                                                 "task": cell.get("task") or ""})
-            system = "\n".join(x.content.text for x in prompt.messages if getattr(x.content, "text", None))
-            atools = [{"name": t.name, "description": (t.description or "")[:3000], "input_schema": t.inputSchema}
-                      for t in tools if t.name in SUB_TOOLS]
-            msgs = [{"role": "user", "content": f"Begin. Your session_id is {sid}. Call usersim_observe first."}]
-            finished = False
-            for turn in range(max_turns):
-                imgs = [(i, j) for i, mm in enumerate(msgs) if isinstance(mm["content"], list)
-                        for j, b in enumerate(mm["content"]) if b.get("type") == "tool_result"
-                        and any(x.get("type") == "image" for x in b.get("content", []))]
-                for i, j in imgs[:-2]:  # keep the 2 newest screenshots
-                    b = msgs[i]["content"][j]
-                    b["content"] = [x for x in b["content"] if x.get("type") != "image"] + [{"type": "text", "text": "[older screenshot removed]"}]
-                resp = await asyncio.to_thread(llm.messages.create, model=MODEL, max_tokens=1024, system=system,
-                                               tools=atools, messages=msgs)
-                msgs.append({"role": "assistant", "content": [b.model_dump(exclude_none=True) for b in resp.content]})
-                uses = [b for b in resp.content if b.type == "tool_use"]
-                if not uses:
-                    msgs.append({"role": "user", "content": "Use a tool: observe, act, or finish."})
-                    continue
-                results = []
-                for u in uses:
-                    args = dict(u.input)
-                    args.setdefault("session_id", sid)
-                    res = await s.call_tool(u.name, args)
-                    a = args.get("action")
-                    log["steps"].append({"turn": turn, "tool": u.name, "action": a if isinstance(a, (str, type(None))) else a.get("type")})
-                    results.append({"type": "tool_result", "tool_use_id": u.id, "content": _blocks(res)})
-                    if u.name == "usersim_finish":
-                        finished = True
-                        log["finish"] = _text(res)[:1500]
-                msgs.append({"role": "user", "content": results})
-                if finished:
-                    break
-            if not finished:
-                res = await s.call_tool("usersim_finish", {"session_id": sid, "outcome": "gave_up",
-                                                           "notes": f"Runner hit its {max_turns}-turn cap."})
-                log["finish"] = _text(res)[:1500]
+            return await (s.list_tools() if what == "tools" else s.get_prompt(*args))
+
+
+async def ask_model(llm, **kw):
+    for k in range(8):  # Vertex rate limits and overloads show up as exceptions under 10 parallel cells
+        try:
+            return await asyncio.to_thread(llm.messages.create, **kw)
+        except Exception as exc:  # noqa: BLE001
+            if k == 7:
+                raise RuntimeError(f"model: {_leaf(exc)}") from None
+            await asyncio.sleep(min(60, 2 ** (k + 1)))
+
+
+async def run_cell(study_id: str, cell: dict, max_turns: int, out: Path, llm) -> dict:
+    log = {"cell": cell, "steps": [], "started": time.time()}
+    start = ({"study_id": study_id, "cell_id": cell["cell_id"]} if study_id else
+             {"product_url": cell["site"], "persona": cell["persona"], "task": cell["task"]})
+    m: dict = {}
+    for attempt in range(60):  # wait for a free browser slot
+        meta = _text(await tool("usersim_start_session", start))
+        try:
+            m = json.loads(meta[meta.index("{"):]) if "{" in meta else {}
+        except ValueError:
+            m = {}
+        if m.get("session_id"):
+            break
+        if any(b in meta.lower() for b in BUSY):
+            await asyncio.sleep(30)
+            continue
+        log["error"] = meta[:600]
+        return log
+    else:
+        log["error"] = "no free session slot after 30 min"
+        return log
+    sid = m["session_id"]
+    log["session_id"] = sid
+    tools = (await listing("tools")).tools
+    prompt = await listing("prompt", "usersim_simulate_user", {"session_id": sid, "persona": cell.get("persona") or "",
+                                                              "task": cell.get("task") or ""})
+    system = "\n".join(x.content.text for x in prompt.messages if getattr(x.content, "text", None))
+    atools = [{"name": t.name, "description": (t.description or "")[:3000], "input_schema": t.inputSchema}
+              for t in tools if t.name in SUB_TOOLS]
+    msgs = [{"role": "user", "content": f"Begin. Your session_id is {sid}. Call usersim_observe first."}]
+    finished = False
+    for turn in range(max_turns):
+        imgs = [(i, j) for i, mm in enumerate(msgs) if isinstance(mm["content"], list)
+                for j, b in enumerate(mm["content"]) if b.get("type") == "tool_result"
+                and any(x.get("type") == "image" for x in b.get("content", []))]
+        for i, j in imgs[:-2]:  # keep the 2 newest screenshots
+            b = msgs[i]["content"][j]
+            b["content"] = [x for x in b["content"] if x.get("type") != "image"] + [{"type": "text", "text": "[older screenshot removed]"}]
+        resp = await ask_model(llm, model=MODEL, max_tokens=1024, system=system, tools=atools, messages=msgs)
+        msgs.append({"role": "assistant", "content": [b.model_dump(exclude_none=True) for b in resp.content]})
+        uses = [b for b in resp.content if b.type == "tool_use"]
+        if not uses:
+            msgs.append({"role": "user", "content": "Use a tool: observe, act, or finish."})
+            continue
+        results = []
+        for u in uses:
+            args = dict(u.input)
+            args.setdefault("session_id", sid)
+            a = args.get("action")
+            log["steps"].append({"turn": turn, "tool": u.name, "action": a if isinstance(a, (str, type(None))) else a.get("type")})
+            try:
+                res = await tool(u.name, args, retries=3 if u.name == "usersim_observe" else 1)
+                results.append({"type": "tool_result", "tool_use_id": u.id, "content": _blocks(res)})
+                if u.name == "usersim_finish":
+                    finished = True
+                    log["finish"] = _text(res)[:1500]
+            except Exception as exc:  # noqa: BLE001 - tell the model; it observes again instead of the cell dying
+                log.setdefault("tool_errors", []).append(str(exc)[:300])
+                results.append({"type": "tool_result", "tool_use_id": u.id, "is_error": True,
+                                "content": [{"type": "text", "text": f"{exc}. The action may or may not have happened: call usersim_observe."}]})
+        msgs.append({"role": "user", "content": results})
+        if finished:
+            break
+    if not finished:
+        res = await tool("usersim_finish", {"session_id": sid, "outcome": "gave_up", "notes": f"Runner hit its {max_turns}-turn cap."})
+        log["finish"] = _text(res)[:1500]
     log["seconds"] = round(time.time() - log["started"])
     (out / f"{cell['cell_id']}.json").write_text(json.dumps(log, indent=1))
     return log
@@ -147,13 +186,19 @@ async def run_study(product_url: str, parallel: int, max_turns: int, root: Path,
     (out / "study.json").write_text(json.dumps(study, indent=1))
     print(f"[{product_url}] study {study['study_id']} {len(study['cells'])} cells  watch {study.get('watch_url')}", flush=True)
     sem = asyncio.Semaphore(parallel)
+    done = [0]
 
     async def one(cell):
         async with sem:
             try:
                 return await run_cell(study["study_id"], cell, max_turns, out, llm)
             except Exception as exc:  # noqa: BLE001 - one cell's failure must not stop the study
-                return {"cell": cell, "error": f"{type(exc).__name__}: {str(exc)[:300]}"}
+                res = {"cell": cell, "error": _leaf(exc)}
+                (out / f"{cell['cell_id']}.error.json").write_text(json.dumps(res, indent=1))
+                return res
+            finally:
+                done[0] += 1
+                print(f"[{product_url}] {done[0]}/{len(study['cells'])} cells ended", flush=True)
     logs = await asyncio.gather(*(one(c) for c in study["cells"]))
     report = ""
     for _ in range(20):  # the server writes the report after the last cell
