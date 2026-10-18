@@ -46,15 +46,15 @@ class LimitsFileTests(unittest.TestCase):
             self.assertEqual(row["value"], L.DEFAULTS[key], key)
 
     def test_defaults(self):
-        self.assertEqual(L.get("max_steps"), 90)
-        self.assertEqual(L.get("budget_s"), 900)
-        self.assertIs(L.get("paid_captcha"), False)
-        self.assertEqual(L.get("anon_max_concurrent_sessions_per_ip"), 6)
-        self.assertEqual(L.get("anon_daily_usd_per_ip"), 15.0)
-        self.assertEqual(L.get("anon_daily_usd_global"), 40.0)
+        self.assertEqual(L.get("max_steps"), 200)
+        self.assertEqual(L.get("budget_s"), 1800)
+        self.assertIs(L.get("paid_captcha"), True)
+        self.assertEqual(L.get("anon_max_concurrent_sessions_per_ip"), 60)
+        self.assertEqual(L.get("anon_daily_usd_per_ip"), 10000.0)
+        self.assertEqual(L.get("anon_daily_usd_global"), 10000.0)
         self.assertIs(L.get("anon_allow_sms"), True)
         self.assertEqual(L.get("sms_lease_s"), 600)
-        self.assertEqual(L.get("anon_daily_sms_leases_per_ip"), 10)
+        self.assertEqual(L.get("anon_daily_sms_leases_per_ip"), 1000)
         self.assertIn("apple", L.get("sms_sender_denylist"))
 
     def test_env_override_and_bad_values_ignored(self):
@@ -182,32 +182,34 @@ class ServerCapTests(unittest.TestCase):
         SV._spend(SV._owner(_ctx(auth="Bearer tok-1")), "one step")
         self.assertEqual(L.spend_summary()["total_usd"], 0)
 
-    def test_no_plus_refused_without_token(self):
+    def test_no_plus_allowed_without_token_when_limits_allow(self):
         sim = self._sim(SV._owner(_ctx()))
-        out = json.loads(asyncio.run(SV.usersim_signup_identity(_ctx(), sim.id, no_plus=True)))
-        self.assertIn("anon_allow_shared_aliases", out["error"])
+        with mock.patch("mvp.signup_tools.new_signup", return_value=(SimpleNamespace(address="usersim.signups@gmail.com"),
+                                                                     {"email": "usersim.signups@gmail.com"})):
+            out = json.loads(asyncio.run(SV.usersim_signup_identity(_ctx(), sim.id, no_plus=True)))
+        self.assertNotIn("error", out)
 
-    def test_plain_shared_address_refused_without_token(self):
+    def test_plain_shared_address_allowed_without_token_when_limits_allow(self):
         sim = self._sim(SV._owner(_ctx()))
         sim.product_url = "https://chatwoot.com"
         sim.row = {}
         plain = (SimpleNamespace(address="usersim.signups@gmail.com"), {"email": "usersim.signups@gmail.com"})
         with mock.patch("mvp.signup_tools.new_signup", return_value=plain):
             out = json.loads(asyncio.run(SV.usersim_signup_identity(_ctx(), sim.id)))
-        self.assertIn("anon_allow_shared_aliases", out["error"])
-        self.assertIsNone(sim.inbox)
+        self.assertNotIn("error", out)
+        self.assertIsNotNone(sim.inbox)
 
-    def test_paid_captcha_off_without_token(self):
-        self.assertFalse(SV._paid_allowed(SimpleNamespace(owner="anon:abc")))
+    def test_paid_captcha_allowed_without_token_when_limits_allow(self):
+        self.assertTrue(SV._paid_allowed(SimpleNamespace(owner="anon:abc")))
         self.assertTrue(SV._paid_allowed(SimpleNamespace(owner="0123456789abcdef")))
 
     def test_paid_captcha_master_switch_from_limits(self):
-        self.assertFalse(SV._paid_captcha_on())
-        with mock.patch.dict(os.environ, {"MVP_MCP_PAID_CAPTCHA": "1"}):
-            self.assertTrue(SV._paid_captcha_on())
+        self.assertTrue(SV._paid_captcha_on())
+        with mock.patch.dict(os.environ, {"MVP_MCP_PAID_CAPTCHA": "0"}):
+            self.assertFalse(SV._paid_captcha_on())
         L.reset_for_tests()
         L.load_bundled()
-        good = json.dumps({"limits": {"paid_captcha": {"value": True}}}).encode()
+        good = json.dumps({"limits": {"paid_captcha": {"value": False}, "anon_allow_paid_captcha": {"value": False}}}).encode()
 
         class Resp:
             def __init__(self, body): self.body = body
@@ -219,8 +221,8 @@ class ServerCapTests(unittest.TestCase):
             os.environ.pop("MVP_MCP_PAID_CAPTCHA", None)
             with mock.patch("urllib.request.urlopen", return_value=Resp(good)):
                 L.refresh_now()
-            self.assertTrue(SV._paid_captcha_on())
-            self.assertFalse(SV._paid_allowed(SimpleNamespace(owner="anon:abc")))  # anon_allow still false
+            self.assertFalse(SV._paid_captcha_on())
+            self.assertFalse(SV._paid_allowed(SimpleNamespace(owner="anon:abc")))
 
 
 class SmsLeaseTests(unittest.TestCase):
