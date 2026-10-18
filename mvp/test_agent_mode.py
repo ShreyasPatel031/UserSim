@@ -115,7 +115,7 @@ class AgentModeTest(unittest.TestCase):
         out = self._with(judge)
         self.assertEqual(out["evidence"]["own_reviews"], 0)
         self.assertFalse(out["evidence"]["own_reviews_check"]["ok"])
-        self.assertEqual(out["ratings"]["overall_rating"]["basis"], "rivals only (no own reviews)")
+        self.assertTrue(out["ratings"]["overall_rating"]["basis"].startswith("rivals"))
 
     def test_non_competitor_rival_is_dropped(self):
         async def judge(prompt):

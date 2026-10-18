@@ -68,7 +68,7 @@ def main() -> None:
             row = {"rid": r["rid"], "product": target, "site": r["site"], "y": r["overall_rating"], "global": glob,
                    "n_past": len(past)}
             for name, own in (("own_all", past), ("own_same_site", past[past.site == r["site"]])):
-                rat = A.rating_estimates([live_shape(x) for x in own.to_dict("records")], rv)
+                rat = A.rating_estimates([live_shape(x) for x in own.to_dict("records")], rv, persona)
                 A.personalize(rat, persona)
                 o = rat["overall_rating"]
                 row["rivals"] = o["rivals_mean"]

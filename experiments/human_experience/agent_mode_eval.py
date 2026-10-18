@@ -122,7 +122,7 @@ def main() -> None:
     def run(p):
         own, riv, top = evidence(p)
         per = persona(p)
-        ratings = A.rating_estimates(own, riv)
+        ratings = A.rating_estimates(own, riv, per)
         A.personalize(ratings, per)
         url = RE.URLS.get(p["product"], "") if p["source"] == "capterra" else ""
         prompt = A.words_prompt(p["product"], url, per, refs[p["rid"]]["task"], A.evidence_text(p["product"], own, riv, per, ratings)[:14000])
