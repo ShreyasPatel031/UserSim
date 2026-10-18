@@ -1,0 +1,26 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d348be773f91239c926479228285b5b62a417f2bb21135e05aa37f95df3c791c",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 163,
+  "output_tokens": 453,
+  "cost_usd": 0.0011814,
+  "elapsed_s": 3.26,
+  "error": null,
+  "text": "{\n  \"task\": null,\n  \"benefits\": [\n    \"Excellent customer service\",\n    \"Quick response to support and refund requests\",\n    \"Positive feedback/resolution for support and refund requests\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": null,
+    "benefits": [
+      "Excellent customer service",
+      "Quick response to support and refund requests",
+      "Positive feedback/resolution for support and refund requests"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T11:12:29.340570+00:00"
+}

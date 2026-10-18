@@ -1,0 +1,36 @@
+{
+  "stage": "hm_plist",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2c1b3f3af8b62b69f34783998f57ff8fec5bea08bc07a03f82227aecbcf50825",
+  "temperature": 0.7,
+  "seed": 44,
+  "max_tokens": 4096,
+  "thinking_budget": 1024,
+  "input_tokens": 756,
+  "output_tokens": 1187,
+  "cost_usd": 0.0031942999999999997,
+  "elapsed_s": 5.11,
+  "error": null,
+  "text": "{\n  \"pros\": [\n    \"Efficient and quick to-do creation with inline fields and rapid entry of multiple items.\",\n    \"Smart autocomplete for assigning tasks and clear display of assignees and due dates.\",\n    \"Easy drag-and-drop reordering of to-do list items without confirmation steps.\",\n    \"Convenient inline editing of due dates directly from the task list.\",\n    \"Centralized place for all project communication and documents.\",\n    \"Simple, clean interface that minimizes distractions.\"\n  ],\n  \"cons\": [\n    \"Free plan is very limited, forcing upgrades for basic functionality like new projects.\",\n    \"New projects start completely blank, requiring manual addition of every tool one by one.\",\n    \"Counter-intuitive UI elements, like clicking a tool title to rename instead of open.\",\n    \"UI shifts when setting due dates (e.g., 'Repeat' row appearing) can lead to misclicks.\",\n    \"Lack of dedicated approval workflows or fields for tasks, relying on keyword searches.\",\n    \"To-do due dates don't automatically appear in 'My Events' without a separate Calendar tool.\"\n  ],\n  \"overall_rating\": \"3.5\"\n}",
+  "json": {
+    "pros": [
+      "Efficient and quick to-do creation with inline fields and rapid entry of multiple items.",
+      "Smart autocomplete for assigning tasks and clear display of assignees and due dates.",
+      "Easy drag-and-drop reordering of to-do list items without confirmation steps.",
+      "Convenient inline editing of due dates directly from the task list.",
+      "Centralized place for all project communication and documents.",
+      "Simple, clean interface that minimizes distractions."
+    ],
+    "cons": [
+      "Free plan is very limited, forcing upgrades for basic functionality like new projects.",
+      "New projects start completely blank, requiring manual addition of every tool one by one.",
+      "Counter-intuitive UI elements, like clicking a tool title to rename instead of open.",
+      "UI shifts when setting due dates (e.g., 'Repeat' row appearing) can lead to misclicks.",
+      "Lack of dedicated approval workflows or fields for tasks, relying on keyword searches.",
+      "To-do due dates don't automatically appear in 'My Events' without a separate Calendar tool."
+    ],
+    "overall_rating": "3.5"
+  },
+  "ts": "2026-10-18T11:06:47.557857+00:00"
+}

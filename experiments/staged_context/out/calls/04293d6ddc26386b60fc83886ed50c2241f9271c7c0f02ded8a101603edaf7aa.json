@@ -1,0 +1,36 @@
+{
+  "stage": "hm_plist",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "04293d6ddc26386b60fc83886ed50c2241f9271c7c0f02ded8a101603edaf7aa",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 1024,
+  "input_tokens": 1433,
+  "output_tokens": 1017,
+  "cost_usd": 0.0029723999999999996,
+  "elapsed_s": 4.84,
+  "error": null,
+  "text": "{\n  \"pros\": [\n    \"Good value for money, especially for core email marketing features.\",\n    \"Intuitive interface and clear navigation for common tasks.\",\n    \"Robust automation capabilities for email sequences and workflows.\",\n    \"Comprehensive contact management with lists and segmentation.\",\n    \"Reliable email deliverability and campaign performance.\",\n    \"Integrated CRM and marketing tools in one platform.\"\n  ],\n  \"cons\": [\n    \"Pricing can become expensive as subscriber lists grow or advanced features are needed.\",\n    \"Some advanced features or customization options are locked behind higher-tier plans.\",\n    \"Reporting and analytics can be basic, lacking depth for detailed insights.\",\n    \"Occasional UI/UX quirks or performance issues, like slow loading times.\",\n    \"Steep learning curve for new users, especially with automations.\",\n    \"Customer support responsiveness can be inconsistent.\"\n  ],\n  \"overall_rating\": 4.0\n}",
+  "json": {
+    "pros": [
+      "Good value for money, especially for core email marketing features.",
+      "Intuitive interface and clear navigation for common tasks.",
+      "Robust automation capabilities for email sequences and workflows.",
+      "Comprehensive contact management with lists and segmentation.",
+      "Reliable email deliverability and campaign performance.",
+      "Integrated CRM and marketing tools in one platform."
+    ],
+    "cons": [
+      "Pricing can become expensive as subscriber lists grow or advanced features are needed.",
+      "Some advanced features or customization options are locked behind higher-tier plans.",
+      "Reporting and analytics can be basic, lacking depth for detailed insights.",
+      "Occasional UI/UX quirks or performance issues, like slow loading times.",
+      "Steep learning curve for new users, especially with automations.",
+      "Customer support responsiveness can be inconsistent."
+    ],
+    "overall_rating": 4.0
+  },
+  "ts": "2026-10-18T11:13:01.058943+00:00"
+}

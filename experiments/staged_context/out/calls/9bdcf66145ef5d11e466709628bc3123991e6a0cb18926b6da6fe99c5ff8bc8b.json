@@ -1,0 +1,51 @@
+{
+  "stage": "hm_side_judge",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9bdcf66145ef5d11e466709628bc3123991e6a0cb18926b6da6fe99c5ff8bc8b",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 512,
+  "input_tokens": 244,
+  "output_tokens": 611,
+  "cost_usd": 0.0016007,
+  "elapsed_s": 3.31,
+  "error": null,
+  "text": "{\n  \"pairs\": [\n    {\n      \"pred\": \"P1\",\n      \"act\": \"A2\",\n      \"score\": 1\n    },\n    {\n      \"pred\": \"P2\",\n      \"act\": \"A2\",\n      \"score\": 1\n    },\n    {\n      \"pred\": \"P3\",\n      \"act\": \"A2\",\n      \"score\": 1\n    },\n    {\n      \"pred\": \"P4\",\n      \"act\": \"A2\",\n      \"score\": 1\n    },\n    {\n      \"pred\": \"P5\",\n      \"act\": \"A2\",\n      \"score\": 1\n    },\n    {\n      \"pred\": \"P6\",\n      \"act\": \"A2\",\n      \"score\": 1\n    }\n  ]\n}",
+  "json": {
+    "pairs": [
+      {
+        "pred": "P1",
+        "act": "A2",
+        "score": 1
+      },
+      {
+        "pred": "P2",
+        "act": "A2",
+        "score": 1
+      },
+      {
+        "pred": "P3",
+        "act": "A2",
+        "score": 1
+      },
+      {
+        "pred": "P4",
+        "act": "A2",
+        "score": 1
+      },
+      {
+        "pred": "P5",
+        "act": "A2",
+        "score": 1
+      },
+      {
+        "pred": "P6",
+        "act": "A2",
+        "score": 1
+      }
+    ]
+  },
+  "ts": "2026-10-18T11:09:03.326843+00:00"
+}

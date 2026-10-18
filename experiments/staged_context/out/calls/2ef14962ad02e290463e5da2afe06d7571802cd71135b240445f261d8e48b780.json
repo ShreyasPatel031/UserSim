@@ -1,0 +1,31 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2ef14962ad02e290463e5da2afe06d7571802cd71135b240445f261d8e48b780",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 238,
+  "output_tokens": 508,
+  "cost_usd": 0.0013414,
+  "elapsed_s": 4.88,
+  "error": null,
+  "text": "{\n  \"task\": null,\n  \"benefits\": [\n    \"Simplicity to navigate\",\n    \"Enjoyable data reports\",\n    \"High percentage of delivery\",\n    \"Easy to follow instructions\"\n  ],\n  \"frictions\": [\n    \"Technical issue with customer service\",\n    \"Customer service took months to resolve an issue\",\n    \"Price increased by more than 20%\"\n  ]\n}",
+  "json": {
+    "task": null,
+    "benefits": [
+      "Simplicity to navigate",
+      "Enjoyable data reports",
+      "High percentage of delivery",
+      "Easy to follow instructions"
+    ],
+    "frictions": [
+      "Technical issue with customer service",
+      "Customer service took months to resolve an issue",
+      "Price increased by more than 20%"
+    ]
+  },
+  "ts": "2026-10-18T11:12:28.900625+00:00"
+}

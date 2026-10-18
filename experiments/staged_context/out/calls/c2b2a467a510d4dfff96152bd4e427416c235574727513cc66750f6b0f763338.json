@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c2b2a467a510d4dfff96152bd4e427416c235574727513cc66750f6b0f763338",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 181,
+  "output_tokens": 442,
+  "cost_usd": 0.0011593,
+  "elapsed_s": 3.19,
+  "error": null,
+  "text": "{\n  \"task\": \"Perform marketing automation.\",\n  \"benefits\": [\n    \"Offers comprehensive functionalities\",\n    \"Focuses on compliance\",\n    \"Allows for integrations\",\n    \"Provides a generous free tier\"\n  ],\n  \"frictions\": [\n    \"New automation editor is buggy\",\n    \"New automation editor freezes\"\n  ]\n}",
+  "json": {
+    "task": "Perform marketing automation.",
+    "benefits": [
+      "Offers comprehensive functionalities",
+      "Focuses on compliance",
+      "Allows for integrations",
+      "Provides a generous free tier"
+    ],
+    "frictions": [
+      "New automation editor is buggy",
+      "New automation editor freezes"
+    ]
+  },
+  "ts": "2026-10-18T11:12:29.939370+00:00"
+}

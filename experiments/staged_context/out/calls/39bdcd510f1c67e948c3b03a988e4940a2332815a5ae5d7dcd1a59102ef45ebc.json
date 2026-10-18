@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "39bdcd510f1c67e948c3b03a988e4940a2332815a5ae5d7dcd1a59102ef45ebc",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 253,
+  "output_tokens": 475,
+  "cost_usd": 0.0012634,
+  "elapsed_s": 3.0,
+  "error": null,
+  "text": "{\n  \"task\": null,\n  \"benefits\": [\n    \"Receive quick responses to support tickets\",\n    \"Get detailed technical information quickly\"\n  ],\n  \"frictions\": [\n    \"Lack of real-time chat support\",\n    \"Support is ticket-based only\",\n    \"No human real-time chat support\",\n    \"No account manager\"\n  ]\n}",
+  "json": {
+    "task": null,
+    "benefits": [
+      "Receive quick responses to support tickets",
+      "Get detailed technical information quickly"
+    ],
+    "frictions": [
+      "Lack of real-time chat support",
+      "Support is ticket-based only",
+      "No human real-time chat support",
+      "No account manager"
+    ]
+  },
+  "ts": "2026-10-18T11:12:29.927347+00:00"
+}

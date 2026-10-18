@@ -1,0 +1,28 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "34d2efd4a5a55cdd25f8ccec231f0c0580c98a5f86574eba5b042beb31e76012",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 232,
+  "output_tokens": 470,
+  "cost_usd": 0.0012446,
+  "elapsed_s": 3.58,
+  "error": null,
+  "text": "{\n  \"task\": \"Send out newsletters\",\n  \"benefits\": [\n    \"Easily send out well-designed newsletters\",\n    \"Work in a data protection compliant manner\",\n    \"Receive human assistance for questions\"\n  ],\n  \"frictions\": [\n    \"Increased costs after the billing period\"\n  ]\n}",
+  "json": {
+    "task": "Send out newsletters",
+    "benefits": [
+      "Easily send out well-designed newsletters",
+      "Work in a data protection compliant manner",
+      "Receive human assistance for questions"
+    ],
+    "frictions": [
+      "Increased costs after the billing period"
+    ]
+  },
+  "ts": "2026-10-18T11:12:24.549797+00:00"
+}

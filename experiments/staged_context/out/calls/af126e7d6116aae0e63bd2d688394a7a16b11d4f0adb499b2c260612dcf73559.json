@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "af126e7d6116aae0e63bd2d688394a7a16b11d4f0adb499b2c260612dcf73559",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 198,
+  "output_tokens": 459,
+  "cost_usd": 0.0012069000000000001,
+  "elapsed_s": 2.85,
+  "error": null,
+  "text": "{\n  \"task\": \"Send newsletters and manage email campaigns\",\n  \"benefits\": [\n    \"Use the newsletter tool easily\",\n    \"Receive professional and helpful support from the team\",\n    \"Achieve communication goals simply\",\n    \"Utilize a cost-effective solution for a startup\"\n  ],\n  \"frictions\": [\n    \"Experience occasional delays in customer support response time\"\n  ]\n}",
+  "json": {
+    "task": "Send newsletters and manage email campaigns",
+    "benefits": [
+      "Use the newsletter tool easily",
+      "Receive professional and helpful support from the team",
+      "Achieve communication goals simply",
+      "Utilize a cost-effective solution for a startup"
+    ],
+    "frictions": [
+      "Experience occasional delays in customer support response time"
+    ]
+  },
+  "ts": "2026-10-18T11:12:25.492075+00:00"
+}

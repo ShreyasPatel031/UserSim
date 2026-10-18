@@ -1,0 +1,36 @@
+{
+  "stage": "hm_plist",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "207076460a6c0bbe6537e4fc4ba4a94645ae57c9bc4dce66db4b0693042cc1fb",
+  "temperature": 0.7,
+  "seed": 44,
+  "max_tokens": 4096,
+  "thinking_budget": 1024,
+  "input_tokens": 1354,
+  "output_tokens": 1027,
+  "cost_usd": 0.0029736999999999997,
+  "elapsed_s": 5.41,
+  "error": null,
+  "text": "{\n  \"pros\": [\n    \"Intuitive navigation and clear organization of features\",\n    \"Good value for money, especially for core email marketing needs\",\n    \"Quick and efficient creation of contact lists\",\n    \"Reliable delivery of emails and campaigns\",\n    \"Comprehensive marketing automation capabilities\",\n    \"Strong segmentation options for targeted campaigns\"\n  ],\n  \"cons\": [\n    \"Significant performance issues, especially with campaign loading\",\n    \"Clunky and non-intuitive user interface for some basic tasks\",\n    \"Limited customization options for advanced users\",\n    \"Reporting and analytics can be basic or lack depth\",\n    \"Steep learning curve for more complex features and automations\",\n    \"Customer support responsiveness can be slow at times\"\n  ],\n  \"overall_rating\": 3.5\n}",
+  "json": {
+    "pros": [
+      "Intuitive navigation and clear organization of features",
+      "Good value for money, especially for core email marketing needs",
+      "Quick and efficient creation of contact lists",
+      "Reliable delivery of emails and campaigns",
+      "Comprehensive marketing automation capabilities",
+      "Strong segmentation options for targeted campaigns"
+    ],
+    "cons": [
+      "Significant performance issues, especially with campaign loading",
+      "Clunky and non-intuitive user interface for some basic tasks",
+      "Limited customization options for advanced users",
+      "Reporting and analytics can be basic or lack depth",
+      "Steep learning curve for more complex features and automations",
+      "Customer support responsiveness can be slow at times"
+    ],
+    "overall_rating": 3.5
+  },
+  "ts": "2026-10-18T11:14:39.508808+00:00"
+}

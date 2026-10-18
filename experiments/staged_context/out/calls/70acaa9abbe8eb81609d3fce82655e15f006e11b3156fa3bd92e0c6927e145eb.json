@@ -1,0 +1,26 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "70acaa9abbe8eb81609d3fce82655e15f006e11b3156fa3bd92e0c6927e145eb",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 162,
+  "output_tokens": 421,
+  "cost_usd": 0.0011011,
+  "elapsed_s": 3.26,
+  "error": null,
+  "text": "{\n  \"task\": \"Send enrollment information to employees.\",\n  \"benefits\": [\n    \"Effective for sending enrollment information to employees\"\n  ],\n  \"frictions\": [\n    \"Contact importing is sometimes wonky\"\n  ]\n}",
+  "json": {
+    "task": "Send enrollment information to employees.",
+    "benefits": [
+      "Effective for sending enrollment information to employees"
+    ],
+    "frictions": [
+      "Contact importing is sometimes wonky"
+    ]
+  },
+  "ts": "2026-10-18T11:12:27.605638+00:00"
+}

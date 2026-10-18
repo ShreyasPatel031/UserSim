@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "dabc9792c7fba2e6f311514bdeb3559321d3315d4d05caaae8451d8b0e490cc8",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 245,
+  "output_tokens": 494,
+  "cost_usd": 0.0013085,
+  "elapsed_s": 3.67,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage email campaigns, marketing automation, and SMS integration.\",\n  \"benefits\": [\n    \"Accessible for small nonprofit teams\",\n    \"Drag-and-drop email builder\",\n    \"Marketing automation and SMS integration\",\n    \"Budget-friendly\"\n  ],\n  \"frictions\": [\n    \"Automation workflows can be limiting\",\n    \"Learning curve for team members unfamiliar with CRMs\"\n  ]\n}",
+  "json": {
+    "task": "Manage email campaigns, marketing automation, and SMS integration.",
+    "benefits": [
+      "Accessible for small nonprofit teams",
+      "Drag-and-drop email builder",
+      "Marketing automation and SMS integration",
+      "Budget-friendly"
+    ],
+    "frictions": [
+      "Automation workflows can be limiting",
+      "Learning curve for team members unfamiliar with CRMs"
+    ]
+  },
+  "ts": "2026-10-18T11:12:33.876266+00:00"
+}

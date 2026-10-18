@@ -1,0 +1,41 @@
+{
+  "stage": "hm_side_judge",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1ddc1217845a8260055cc5e9639f3613ec26622b9ac408ccfe2d50a2a59d0ada",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 512,
+  "input_tokens": 227,
+  "output_tokens": 562,
+  "cost_usd": 0.0014731,
+  "elapsed_s": 2.97,
+  "error": null,
+  "text": "{\n  \"pairs\": [\n    {\n      \"pred\": \"P2\",\n      \"act\": \"A1\",\n      \"score\": 2\n    },\n    {\n      \"pred\": \"P3\",\n      \"act\": \"A2\",\n      \"score\": 2\n    },\n    {\n      \"pred\": \"P3\",\n      \"act\": \"A3\",\n      \"score\": 2\n    },\n    {\n      \"pred\": \"P1\",\n      \"act\": \"A4\",\n      \"score\": 2\n    }\n  ]\n}",
+  "json": {
+    "pairs": [
+      {
+        "pred": "P2",
+        "act": "A1",
+        "score": 2
+      },
+      {
+        "pred": "P3",
+        "act": "A2",
+        "score": 2
+      },
+      {
+        "pred": "P3",
+        "act": "A3",
+        "score": 2
+      },
+      {
+        "pred": "P1",
+        "act": "A4",
+        "score": 2
+      }
+    ]
+  },
+  "ts": "2026-10-18T11:11:50.852659+00:00"
+}

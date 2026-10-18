@@ -1,0 +1,26 @@
+{
+  "stage": "hm_side_judge",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0a6d12a7ae503a5aeb7741eab3156d72a1ca6e4ec3850e03a5d9cbebb8b289d3",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 512,
+  "input_tokens": 256,
+  "output_tokens": 512,
+  "cost_usd": 0.0013567999999999998,
+  "elapsed_s": 3.31,
+  "error": null,
+  "text": "{\n  \"pairs\": [\n    {\n      \"pred\": \"P6\",\n      \"act\": \"A1\",\n      \"score\": 2\n    }\n  ]\n}",
+  "json": {
+    "pairs": [
+      {
+        "pred": "P6",
+        "act": "A1",
+        "score": 2
+      }
+    ]
+  },
+  "ts": "2026-10-18T11:15:30.852000+00:00"
+}

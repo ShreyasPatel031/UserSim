@@ -1,0 +1,36 @@
+{
+  "stage": "hm_plist",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e78818796efd3985e1e3a1576b7aa67a26072c97e4555ee4f217992e6f655e50",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 1024,
+  "input_tokens": 350,
+  "output_tokens": 1026,
+  "cost_usd": 0.00267,
+  "elapsed_s": 6.22,
+  "error": null,
+  "text": "{\n  \"pros\": [\n    \"Affordable pricing and good value for money, especially for contact-heavy lists.\",\n    \"Comprehensive all-in-one platform (email, SMS, CRM, automation, chat).\",\n    \"Generally good email deliverability rates.\",\n    \"Intuitive and well-organized user interface for core tasks.\",\n    \"Generous free plan for basic email marketing needs.\",\n    \"Powerful marketing automation features.\"\n  ],\n  \"cons\": [\n    \"Customer support can be slow or difficult to reach.\",\n    \"Occasional UI/UX quirks and inconsistencies (e.g., unnecessary clicks).\",\n    \"Performance issues or bugs, such as pages failing to load.\",\n    \"Persistent 'account under review' banners causing initial friction for new users.\",\n    \"Key features (like forms, landing pages) locked behind paid plans.\",\n    \"Reporting and analytics can sometimes lack depth compared to competitors.\"\n  ],\n  \"overall_rating\": 4\n}",
+  "json": {
+    "pros": [
+      "Affordable pricing and good value for money, especially for contact-heavy lists.",
+      "Comprehensive all-in-one platform (email, SMS, CRM, automation, chat).",
+      "Generally good email deliverability rates.",
+      "Intuitive and well-organized user interface for core tasks.",
+      "Generous free plan for basic email marketing needs.",
+      "Powerful marketing automation features."
+    ],
+    "cons": [
+      "Customer support can be slow or difficult to reach.",
+      "Occasional UI/UX quirks and inconsistencies (e.g., unnecessary clicks).",
+      "Performance issues or bugs, such as pages failing to load.",
+      "Persistent 'account under review' banners causing initial friction for new users.",
+      "Key features (like forms, landing pages) locked behind paid plans.",
+      "Reporting and analytics can sometimes lack depth compared to competitors."
+    ],
+    "overall_rating": 4
+  },
+  "ts": "2026-10-18T11:12:55.971350+00:00"
+}

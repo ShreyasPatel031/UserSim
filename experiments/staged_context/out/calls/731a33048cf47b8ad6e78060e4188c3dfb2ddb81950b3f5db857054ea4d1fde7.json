@@ -1,0 +1,28 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "731a33048cf47b8ad6e78060e4188c3dfb2ddb81950b3f5db857054ea4d1fde7",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 191,
+  "output_tokens": 367,
+  "cost_usd": 0.0009748,
+  "elapsed_s": 4.12,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage email marketing campaigns and contacts\",\n  \"benefits\": [\n    \"Simplicity and ease of use\",\n    \"User interface and functions\",\n    \"No charge for storing contacts\"\n  ],\n  \"frictions\": [\n    \"Contact import onboarding needs more detailed coverage, possibly with video tutorials\"\n  ]\n}",
+  "json": {
+    "task": "Manage email marketing campaigns and contacts",
+    "benefits": [
+      "Simplicity and ease of use",
+      "User interface and functions",
+      "No charge for storing contacts"
+    ],
+    "frictions": [
+      "Contact import onboarding needs more detailed coverage, possibly with video tutorials"
+    ]
+  },
+  "ts": "2026-10-18T11:12:26.977676+00:00"
+}

@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "fd0bea14477049073e091ced99ac5b752d1614e2b64f0e89b4ac47b3e2201067",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 217,
+  "output_tokens": 468,
+  "cost_usd": 0.0012351,
+  "elapsed_s": 3.26,
+  "error": null,
+  "text": "{\n  \"task\": \"Set up accounts and send campaigns\",\n  \"benefits\": [\n    \"Simple and easy to use\",\n    \"Reliable campaign sending\",\n    \"Smart and clean interface\",\n    \"Cost effective\"\n  ],\n  \"frictions\": [\n    \"Initial trouble with interface layout\"\n  ]\n}",
+  "json": {
+    "task": "Set up accounts and send campaigns",
+    "benefits": [
+      "Simple and easy to use",
+      "Reliable campaign sending",
+      "Smart and clean interface",
+      "Cost effective"
+    ],
+    "frictions": [
+      "Initial trouble with interface layout"
+    ]
+  },
+  "ts": "2026-10-18T11:12:28.039959+00:00"
+}

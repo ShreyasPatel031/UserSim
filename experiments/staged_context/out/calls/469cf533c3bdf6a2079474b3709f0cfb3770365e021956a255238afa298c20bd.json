@@ -1,0 +1,38 @@
+{
+  "stage": "hm_edit",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "469cf533c3bdf6a2079474b3709f0cfb3770365e021956a255238afa298c20bd",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 1024,
+  "input_tokens": 534,
+  "output_tokens": 1073,
+  "cost_usd": 0.0028427,
+  "elapsed_s": 7.14,
+  "error": null,
+  "text": "{\n  \"pros\": [\n    \"Good value for money, especially for smaller businesses or those with growing lists.\",\n    \"User-friendly interface that makes it easy to get started with email campaigns.\",\n    \"Robust email automation and campaign management features.\",\n    \"Reliable email deliverability ensuring messages reach the inbox.\",\n    \"Comprehensive suite of marketing tools beyond just email (e.g., SMS, CRM).\",\n    \"Effective segmentation capabilities for targeted messaging.\"\n  ],\n  \"cons\": [\n    \"Pricing can become expensive as subscriber lists grow or advanced features are needed.\",\n    \"Steep learning curve for mastering advanced automation and complex workflows.\",\n    \"Limited customization options for email templates and reporting dashboards.\",\n    \"Reporting and analytics may lack depth or advanced insights compared to competitors.\",\n    \"Customer support can be slow to respond or less personalized at times.\",\n    \"Core campaign management features can be unreliable or inaccessible at times.\"\n  ],\n  \"changed\": [\n    \"Replaced 'Some users may find certain integrations or advanced functionalities lacking' with 'Core campaign management features can be unreliable or inaccessible at times' because the Campaigns listing page failed to render, directly impacting a core functionality.\"\n  ]\n}",
+  "json": {
+    "pros": [
+      "Good value for money, especially for smaller businesses or those with growing lists.",
+      "User-friendly interface that makes it easy to get started with email campaigns.",
+      "Robust email automation and campaign management features.",
+      "Reliable email deliverability ensuring messages reach the inbox.",
+      "Comprehensive suite of marketing tools beyond just email (e.g., SMS, CRM).",
+      "Effective segmentation capabilities for targeted messaging."
+    ],
+    "cons": [
+      "Pricing can become expensive as subscriber lists grow or advanced features are needed.",
+      "Steep learning curve for mastering advanced automation and complex workflows.",
+      "Limited customization options for email templates and reporting dashboards.",
+      "Reporting and analytics may lack depth or advanced insights compared to competitors.",
+      "Customer support can be slow to respond or less personalized at times.",
+      "Core campaign management features can be unreliable or inaccessible at times."
+    ],
+    "changed": [
+      "Replaced 'Some users may find certain integrations or advanced functionalities lacking' with 'Core campaign management features can be unreliable or inaccessible at times' because the Campaigns listing page failed to render, directly impacting a core functionality."
+    ]
+  },
+  "ts": "2026-10-18T11:13:25.224427+00:00"
+}

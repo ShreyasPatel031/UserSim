@@ -1,0 +1,36 @@
+{
+  "stage": "hm_plist",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9617af611897a2899f1118f106b40cefd55b12ebd03f7a7fbf57ee748836d0f5",
+  "temperature": 0.7,
+  "seed": 43,
+  "max_tokens": 4096,
+  "thinking_budget": 1024,
+  "input_tokens": 1016,
+  "output_tokens": 1082,
+  "cost_usd": 0.0030098,
+  "elapsed_s": 6.83,
+  "error": null,
+  "text": "{\n  \"pros\": [\n    \"Competitive pricing and generous free tier offer great value\",\n    \"User-friendly interface and intuitive drag-and-drop editor\",\n    \"Reliable email delivery and high deliverability rates\",\n    \"Good for basic email marketing and automation needs\",\n    \"Includes SMS and WhatsApp marketing capabilities\",\n    \"Responsive and helpful customer support for common issues\"\n  ],\n  \"cons\": [\n    \"Limited advanced features and customization options compared to high-end tools\",\n    \"Reporting and analytics can lack depth for complex insights\",\n    \"Learning curve for more complex automation workflows\",\n    \"Integrations with other platforms can sometimes be limited or clunky\",\n    \"Customer support responsiveness may vary for complex technical issues\",\n    \"Some users find the platform's performance occasionally slow\"\n  ],\n  \"overall_rating\": 4.3\n}",
+  "json": {
+    "pros": [
+      "Competitive pricing and generous free tier offer great value",
+      "User-friendly interface and intuitive drag-and-drop editor",
+      "Reliable email delivery and high deliverability rates",
+      "Good for basic email marketing and automation needs",
+      "Includes SMS and WhatsApp marketing capabilities",
+      "Responsive and helpful customer support for common issues"
+    ],
+    "cons": [
+      "Limited advanced features and customization options compared to high-end tools",
+      "Reporting and analytics can lack depth for complex insights",
+      "Learning curve for more complex automation workflows",
+      "Integrations with other platforms can sometimes be limited or clunky",
+      "Customer support responsiveness may vary for complex technical issues",
+      "Some users find the platform's performance occasionally slow"
+    ],
+    "overall_rating": 4.3
+  },
+  "ts": "2026-10-18T11:13:37.928239+00:00"
+}

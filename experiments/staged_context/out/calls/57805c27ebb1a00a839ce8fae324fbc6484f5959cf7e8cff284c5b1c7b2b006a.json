@@ -1,0 +1,36 @@
+{
+  "stage": "hm_plist",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "57805c27ebb1a00a839ce8fae324fbc6484f5959cf7e8cff284c5b1c7b2b006a",
+  "temperature": 0.7,
+  "seed": 44,
+  "max_tokens": 4096,
+  "thinking_budget": 1024,
+  "input_tokens": 350,
+  "output_tokens": 931,
+  "cost_usd": 0.0024324999999999998,
+  "elapsed_s": 5.84,
+  "error": null,
+  "text": "{\n  \"pros\": [\n    \"Easy-to-understand navigation for core features (email, CRM).\",\n    \"Good deliverability for email campaigns.\",\n    \"Comprehensive marketing automation capabilities.\",\n    \"Integrated CRM functionality helps manage contacts.\",\n    \"Affordable pricing, with a useful free tier available.\",\n    \"Strong transactional email service.\"\n  ],\n  \"cons\": [\n    \"Occasional UI bugs, silent failures, or slow loading times.\",\n    \"Key features (e.g., forms, landing pages) locked behind paid plans.\",\n    \"Account review process can be slow and obtrusive with persistent banners.\",\n    \"Some basic actions require extra clicks or hidden steps.\",\n    \"Reporting and analytics can be less intuitive or detailed than competitors.\",\n    \"Customer support can be slow or unhelpful for complex issues.\"\n  ],\n  \"overall_rating\": 3.8\n}",
+  "json": {
+    "pros": [
+      "Easy-to-understand navigation for core features (email, CRM).",
+      "Good deliverability for email campaigns.",
+      "Comprehensive marketing automation capabilities.",
+      "Integrated CRM functionality helps manage contacts.",
+      "Affordable pricing, with a useful free tier available.",
+      "Strong transactional email service."
+    ],
+    "cons": [
+      "Occasional UI bugs, silent failures, or slow loading times.",
+      "Key features (e.g., forms, landing pages) locked behind paid plans.",
+      "Account review process can be slow and obtrusive with persistent banners.",
+      "Some basic actions require extra clicks or hidden steps.",
+      "Reporting and analytics can be less intuitive or detailed than competitors.",
+      "Customer support can be slow or unhelpful for complex issues."
+    ],
+    "overall_rating": 3.8
+  },
+  "ts": "2026-10-18T11:14:27.167857+00:00"
+}

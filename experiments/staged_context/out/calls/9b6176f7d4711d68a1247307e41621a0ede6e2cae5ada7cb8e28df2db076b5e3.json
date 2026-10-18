@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9b6176f7d4711d68a1247307e41621a0ede6e2cae5ada7cb8e28df2db076b5e3",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 180,
+  "output_tokens": 428,
+  "cost_usd": 0.001124,
+  "elapsed_s": 2.83,
+  "error": null,
+  "text": "{\n  \"task\": \"Send emails.\",\n  \"benefits\": [\n    \"The editor is simple.\",\n    \"The platform is personalizable.\",\n    \"The platform is user-friendly.\",\n    \"The platform is intuitive.\"\n  ],\n  \"frictions\": [\n    \"The free account limits sending to 300 emails.\"\n  ]\n}",
+  "json": {
+    "task": "Send emails.",
+    "benefits": [
+      "The editor is simple.",
+      "The platform is personalizable.",
+      "The platform is user-friendly.",
+      "The platform is intuitive."
+    ],
+    "frictions": [
+      "The free account limits sending to 300 emails."
+    ]
+  },
+  "ts": "2026-10-18T11:12:30.543623+00:00"
+}

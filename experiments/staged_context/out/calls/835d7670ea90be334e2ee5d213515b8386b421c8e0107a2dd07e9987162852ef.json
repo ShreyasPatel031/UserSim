@@ -1,0 +1,36 @@
+{
+  "stage": "hm_plist",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "835d7670ea90be334e2ee5d213515b8386b421c8e0107a2dd07e9987162852ef",
+  "temperature": 0.7,
+  "seed": 44,
+  "max_tokens": 4096,
+  "thinking_budget": 1024,
+  "input_tokens": 1016,
+  "output_tokens": 1008,
+  "cost_usd": 0.0028248,
+  "elapsed_s": 5.81,
+  "error": null,
+  "text": "{\n  \"pros\": [\n    \"User-friendly interface and ease of use for core features\",\n    \"Robust automation capabilities for email campaigns\",\n    \"Good value for money, especially for essential features\",\n    \"Reliable email delivery and campaign performance\",\n    \"Effective contact management and segmentation tools\",\n    \"Responsive and helpful customer support\"\n  ],\n  \"cons\": [\n    \"Pricing can become expensive as subscriber lists grow or advanced features are needed\",\n    \"Steep learning curve for advanced features and complex automations\",\n    \"Limited customization options for templates and advanced reporting\",\n    \"Reporting and analytics may lack depth for granular insights\",\n    \"Some users find the UI/UX clunky or less intuitive than competitors\",\n    \"Integrations with other tools can sometimes be limited or difficult to set up\"\n  ],\n  \"overall_rating\": 4.2\n}",
+  "json": {
+    "pros": [
+      "User-friendly interface and ease of use for core features",
+      "Robust automation capabilities for email campaigns",
+      "Good value for money, especially for essential features",
+      "Reliable email delivery and campaign performance",
+      "Effective contact management and segmentation tools",
+      "Responsive and helpful customer support"
+    ],
+    "cons": [
+      "Pricing can become expensive as subscriber lists grow or advanced features are needed",
+      "Steep learning curve for advanced features and complex automations",
+      "Limited customization options for templates and advanced reporting",
+      "Reporting and analytics may lack depth for granular insights",
+      "Some users find the UI/UX clunky or less intuitive than competitors",
+      "Integrations with other tools can sometimes be limited or difficult to set up"
+    ],
+    "overall_rating": 4.2
+  },
+  "ts": "2026-10-18T11:14:21.059389+00:00"
+}

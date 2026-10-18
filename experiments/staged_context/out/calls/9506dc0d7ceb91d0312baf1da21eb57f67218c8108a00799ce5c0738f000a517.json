@@ -1,0 +1,36 @@
+{
+  "stage": "hm_plist",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9506dc0d7ceb91d0312baf1da21eb57f67218c8108a00799ce5c0738f000a517",
+  "temperature": 0.7,
+  "seed": 44,
+  "max_tokens": 4096,
+  "thinking_budget": 1024,
+  "input_tokens": 1433,
+  "output_tokens": 1055,
+  "cost_usd": 0.0030674,
+  "elapsed_s": 6.45,
+  "error": null,
+  "text": "{\n  \"pros\": [\n    \"User-friendly interface and clear navigation for core tasks.\",\n    \"Reliable email delivery and campaign management.\",\n    \"Good value for money, especially for smaller businesses or those with specific needs.\",\n    \"Comprehensive marketing automation features.\",\n    \"Effective contact management and segmentation tools.\",\n    \"Responsive and helpful customer support.\"\n  ],\n  \"cons\": [\n    \"Pricing can become expensive as subscriber lists and feature needs grow, especially for advanced capabilities.\",\n    \"Limited functionality on the free plan, with essential features like forms and landing pages often locked.\",\n    \"Occasional performance issues or slow loading times within the platform, particularly on campaign pages.\",\n    \"Reporting and analytics can be basic, lacking depth for advanced insights.\",\n    \"Some advanced customization options for email templates and workflows are not intuitive or available.\",\n    \"The initial learning curve can be steep for new users due to the breadth of features.\"\n  ],\n  \"overall_rating\": 4.2\n}",
+  "json": {
+    "pros": [
+      "User-friendly interface and clear navigation for core tasks.",
+      "Reliable email delivery and campaign management.",
+      "Good value for money, especially for smaller businesses or those with specific needs.",
+      "Comprehensive marketing automation features.",
+      "Effective contact management and segmentation tools.",
+      "Responsive and helpful customer support."
+    ],
+    "cons": [
+      "Pricing can become expensive as subscriber lists and feature needs grow, especially for advanced capabilities.",
+      "Limited functionality on the free plan, with essential features like forms and landing pages often locked.",
+      "Occasional performance issues or slow loading times within the platform, particularly on campaign pages.",
+      "Reporting and analytics can be basic, lacking depth for advanced insights.",
+      "Some advanced customization options for email templates and workflows are not intuitive or available.",
+      "The initial learning curve can be steep for new users due to the breadth of features."
+    ],
+    "overall_rating": 4.2
+  },
+  "ts": "2026-10-18T11:14:33.867645+00:00"
+}

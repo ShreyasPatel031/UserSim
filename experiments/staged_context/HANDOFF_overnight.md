@@ -2,6 +2,35 @@
 
 Branch: `claude/modest-euler-6111ae` (repo ShreyasPatel031/UserSim). All research code is in `experiments/staged_context/`.
 
+## Update: overnight session (branch `claude/modest-wozniak-p0bt3q`, 18 Oct)
+
+The user split the work. Agent mode belongs to the session on `claude/zealous-knuth-4zbdb1`
+(`mvp/agent_mode.py`, `usersim_predict_experience`). This branch does **human mode on top of agent mode**, plus the
+live data, the mixture test and the YC test. It is merged with that branch, which includes main.
+
+- **Human mode** (`HUMAN_MODE.md`; `mvp/human_mode.py`; MCP tools `usersim_plan_human_run` /
+  `usersim_combine_human_run`; tests in `mvp/test_human_mode.py`; docs in `docs/mcp/README.md`):
+  - What to ask the run: the core job done for real, then second-level features, then editing. Context already
+    predicts onboarding and pricing.
+  - How much to add, for a product with its own reviews: rewrite agent mode's words with the run's product
+    observations. Cons recall +0.046 (CI +0.007..+0.085), held out on 5 products.
+  - For a product without own reviews: a bounded one-item edit.
+  - Ratings: always agent mode's.
+- **Live data:** `out/live/live_reviews.csv.gz` (79 products), `live.py`, `out/mixture/competitors.json`.
+- **Mixture** (`MIXTURE.md`): live named rivals are in every top mixture; CL is best overall and L is the
+  production choice.
+- **YC test:** `yc_test.py`, `out/yc/` (see below).
+- **Runs:** use the anonymous MCP client in `hm/`. Limits: 3 concurrent sessions and about 12 runs a day per IP.
+  6 of 12 runs were blocked at sign-up (`+` aliases rejected, CAPTCHA, phone, no free plan).
+- **Environment:**
+  - `mcp` 2.x is installed system-wide, so the server tests need `.venv` (`mcp<2` plus `mvp/requirements.txt`,
+    `browserbase`, `playwright`, `pillow`).
+  - Run them with `PYTHONPATH=src .venv/bin/python -m pytest mvp/test_sim_mcp*.py mvp/test_*_mode.py`. 212 pass and
+    1 fails (`oct18`, which also fails on main).
+- **Apify:** the key was passed to curl only, via `$T`. The auto-mode classifier blocks saving it to a file or
+  passing it to Python. Scrapes go through the scratchpad's `apify_scrape.sh` (curl), and Python reads
+  `cache/live/`. About $45 of $105 is used so far.
+
 ## The task (from the user, verbatim intent)
 
 1. Choose data sources (main G2 + Capterra, plus a few other scrapers) and a held-out set.

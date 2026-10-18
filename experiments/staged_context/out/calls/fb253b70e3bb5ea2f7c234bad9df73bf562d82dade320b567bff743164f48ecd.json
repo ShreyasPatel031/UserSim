@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "fb253b70e3bb5ea2f7c234bad9df73bf562d82dade320b567bff743164f48ecd",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 240,
+  "output_tokens": 524,
+  "cost_usd": 0.0013820000000000002,
+  "elapsed_s": 3.07,
+  "error": null,
+  "text": "{\n  \"task\": \"Manage email campaigns and follow contacts\",\n  \"benefits\": [\n    \"offers a good amount of features\",\n    \"easy to use\",\n    \"reliable\",\n    \"duplicate feature for campaigns is helpful for template reuse\"\n  ],\n  \"frictions\": [\n    \"actions (e.g., deleting contacts, sending test emails) can take too long to complete\"\n  ]\n}",
+  "json": {
+    "task": "Manage email campaigns and follow contacts",
+    "benefits": [
+      "offers a good amount of features",
+      "easy to use",
+      "reliable",
+      "duplicate feature for campaigns is helpful for template reuse"
+    ],
+    "frictions": [
+      "actions (e.g., deleting contacts, sending test emails) can take too long to complete"
+    ]
+  },
+  "ts": "2026-10-18T11:12:23.495742+00:00"
+}

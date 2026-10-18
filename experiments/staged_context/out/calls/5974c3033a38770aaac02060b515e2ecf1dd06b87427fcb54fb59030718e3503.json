@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "5974c3033a38770aaac02060b515e2ecf1dd06b87427fcb54fb59030718e3503",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 198,
+  "output_tokens": 482,
+  "cost_usd": 0.0012644,
+  "elapsed_s": 3.24,
+  "error": null,
+  "text": "{\n  \"task\": \"Send email campaigns\",\n  \"benefits\": [],\n  \"frictions\": [\n    \"constant interruptions to campaigns\",\n    \"AI-decided interruptions with no legitimacy\",\n    \"basic templates\",\n    \"high cost\",\n    \"lack of support\",\n    \"restrictive processes\"\n  ]\n}",
+  "json": {
+    "task": "Send email campaigns",
+    "benefits": [],
+    "frictions": [
+      "constant interruptions to campaigns",
+      "AI-decided interruptions with no legitimacy",
+      "basic templates",
+      "high cost",
+      "lack of support",
+      "restrictive processes"
+    ]
+  },
+  "ts": "2026-10-18T11:12:26.953989+00:00"
+}

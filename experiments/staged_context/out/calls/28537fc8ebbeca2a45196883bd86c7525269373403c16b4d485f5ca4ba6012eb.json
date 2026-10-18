@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "28537fc8ebbeca2a45196883bd86c7525269373403c16b4d485f5ca4ba6012eb",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 210,
+  "output_tokens": 491,
+  "cost_usd": 0.0012905,
+  "elapsed_s": 4.29,
+  "error": null,
+  "text": "{\n  \"task\": \"Send outgoing emails to subscribers\",\n  \"benefits\": [\n    \"Easy to use\",\n    \"Excellent rich text editor (RTE)\",\n    \"Fair pricing model based on outgoing emails\",\n    \"Reliable\"\n  ],\n  \"frictions\": [\n    \"Prefers the product to stick to core competencies rather than expanding functionality\"\n  ]\n}",
+  "json": {
+    "task": "Send outgoing emails to subscribers",
+    "benefits": [
+      "Easy to use",
+      "Excellent rich text editor (RTE)",
+      "Fair pricing model based on outgoing emails",
+      "Reliable"
+    ],
+    "frictions": [
+      "Prefers the product to stick to core competencies rather than expanding functionality"
+    ]
+  },
+  "ts": "2026-10-18T11:12:33.295360+00:00"
+}

@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8758025d0b4b4f35cd4a65873cdb8f955da314f469e1b5f77e974c5c7563b084",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 198,
+  "output_tokens": 440,
+  "cost_usd": 0.0011594,
+  "elapsed_s": 4.79,
+  "error": null,
+  "text": "{\n  \"task\": \"Create and manage email campaigns\",\n  \"benefits\": [\n    \"Easy to use\",\n    \"Lots of features\",\n    \"Less expensive than competitors\",\n    \"Excellent automation tools\"\n  ],\n  \"frictions\": [\n    \"Creating campaign designs can be challenging\",\n    \"Design tools are not as good as some competitors'\"\n  ]\n}",
+  "json": {
+    "task": "Create and manage email campaigns",
+    "benefits": [
+      "Easy to use",
+      "Lots of features",
+      "Less expensive than competitors",
+      "Excellent automation tools"
+    ],
+    "frictions": [
+      "Creating campaign designs can be challenging",
+      "Design tools are not as good as some competitors'"
+    ]
+  },
+  "ts": "2026-10-18T11:12:26.895089+00:00"
+}

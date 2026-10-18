@@ -1,0 +1,576 @@
+{
+  "lists": {
+    "0": {
+      "none": {
+        "pros": [
+          "Generous and fully functional free tier",
+          "Open-source code for transparency and trust",
+          "Excellent cross-platform compatibility (all devices/browsers)",
+          "Strong encryption and robust security features",
+          "Option to self-host for ultimate control",
+          "Reliable syncing across all devices"
+        ],
+        "cons": [
+          "User interface can feel less polished than competitors",
+          "Occasional autofill inconsistencies on some websites",
+          "Steeper learning curve for advanced features like self-hosting",
+          "Customer support can be slower compared to paid enterprise solutions",
+          "Some advanced features might be less refined than premium competitors",
+          "Initial setup can be slightly overwhelming for new users"
+        ],
+        "overall_rating": 4.7
+      },
+      "ctx": {
+        "pros": [
+          "Generous free tier and highly affordable premium plans",
+          "Open-source nature provides transparency and community trust",
+          "Strong security features with end-to-end encryption and zero-knowledge architecture",
+          "Excellent cross-platform availability and browser integration",
+          "Reliable synchronization across all devices",
+          "Option for self-hosting for ultimate data control"
+        ],
+        "cons": [
+          "User interface (UI) can feel less polished or modern compared to some competitors",
+          "Learning curve for advanced features or self-hosting setup",
+          "Mobile app experience, while functional, can sometimes be less intuitive than desktop",
+          "Customer support for free users is primarily community-driven",
+          "Some niche integrations or advanced enterprise reporting features may be less robust",
+          "Occasional minor performance hiccups or autofill inconsistencies"
+        ],
+        "overall_rating": 4.6
+      },
+      "run": {
+        "pros": [
+          "Open-source nature and strong security focus.",
+          "Generous free tier for individuals and affordable premium plans.",
+          "Wide cross-platform availability (browser extensions, desktop, mobile).",
+          "Ability to self-host the server for ultimate control.",
+          "Easy and flexible creation of diverse item types (logins, notes, cards, SSH keys).",
+          "Robust search and filtering capabilities for vault items."
+        ],
+        "cons": [
+          "User interface (UI) and user experience (UX) can feel less polished than competitors.",
+          "Complexity and separation between personal vault and organization management/admin console.",
+          "Limited free tier for teams (e.g., 2 users, 2 collections).",
+          "Custom fields are not prominently displayed or easily accessible during initial item creation.",
+          "Steeper learning curve for advanced features like organization setup and sharing.",
+          "Some advanced features found in premium competitors might be missing or less intuitive."
+        ],
+        "overall_rating": "4.5"
+      },
+      "ctx+run": {
+        "pros": [
+          "Streamlined process for adding new items like logins and secure notes.",
+          "Supports a wide variety of item types including logins, cards, identities, secure notes, and SSH keys.",
+          "Effective filtering and search capabilities for managing vault items.",
+          "Easy and quick setup for basic organizational sharing.",
+          "Strong security features and open-source nature (inferred from general Bitwarden knowledge and competitor context).",
+          "Generous free personal plan (inferred from competitor context where free plans are often limited)."
+        ],
+        "cons": [
+          "Significant limitations on the free organization plan, making it unsuitable for evaluating larger teams.",
+          "Disjointed user experience when switching between the personal vault and the separate Admin Console for organizations.",
+          "Advanced features like custom fields are not easily discoverable or accessible during initial item creation.",
+          "The process for setting up sharing and organizations is not intuitive from the personal vault.",
+          "Mobile experience can be inconsistent or less polished compared to desktop (inferred from competitor complaints).",
+          "Learning curve for advanced organizational features and settings."
+        ],
+        "overall_rating": 4.5
+      },
+      "ctx+runF": {
+        "pros": [
+          "Generous free tier and affordable premium plans",
+          "Strong security features and open-source transparency",
+          "Intuitive interface for basic password management",
+          "Efficient search and filtering capabilities",
+          "Cross-platform availability and browser integration",
+          "Easy to create and save new login items"
+        ],
+        "cons": [
+          "Clunky organization and sharing workflows for teams",
+          "Mobile app experience can be inconsistent or less polished",
+          "Custom fields are not easily discoverable or accessible",
+          "Separate admin console creates a disjointed user experience",
+          "Limited advanced reporting features for enterprise users",
+          "Occasional auto-fill inconsistencies on certain websites"
+        ],
+        "overall_rating": 4.5
+      },
+      "prosRunF_consCtx": {
+        "pros": [
+          "Generous free tier and affordable premium plans",
+          "Strong security features and open-source transparency",
+          "Intuitive interface for basic password management",
+          "Efficient search and filtering capabilities",
+          "Cross-platform availability and browser integration",
+          "Easy to create and save new login items"
+        ],
+        "cons": [
+          "User interface (UI) can feel less polished or modern compared to some competitors",
+          "Learning curve for advanced features or self-hosting setup",
+          "Mobile app experience, while functional, can sometimes be less intuitive than desktop",
+          "Customer support for free users is primarily community-driven",
+          "Some niche integrations or advanced enterprise reporting features may be less robust",
+          "Occasional minor performance hiccups or autofill inconsistencies"
+        ],
+        "overall_rating": 4.6
+      },
+      "edit1": {
+        "pros": [
+          "Generous free tier and highly affordable premium plans",
+          "Open-source nature provides transparency and community trust",
+          "Strong security features with end-to-end encryption and zero-knowledge architecture",
+          "Excellent cross-platform availability and browser integration",
+          "Reliable synchronization across all devices",
+          "Option for self-hosting for ultimate data control"
+        ],
+        "cons": [
+          "User interface (UI) can feel less polished or modern compared to some competitors",
+          "Learning curve for advanced features or self-hosting setup",
+          "Mobile app experience, while functional, can sometimes be less intuitive than desktop",
+          "Customer support for free users is primarily community-driven",
+          "Some niche integrations or advanced enterprise reporting features may be less robust",
+          "Organization management can feel somewhat separate from personal vault usage"
+        ],
+        "overall_rating": 4.6,
+        "changed": [
+          "Cons: 'Organization management can feel somewhat separate from personal vault usage' replaced 'Occasional minor performance hiccups or autofill inconsistencies' because the note '[friction] After creating the organization the app jumps from Password Manager into a separate Admin Console with its own sidebar, so my saved CRM and note items were not visible where collections and members are managed' directly describes a separation in the user experience for organization management."
+        ]
+      },
+      "edit2": {
+        "pros": [
+          "Generous free tier and highly affordable premium plans, with easy access to team features",
+          "Open-source nature provides transparency and community trust",
+          "Strong security features with end-to-end encryption and zero-knowledge architecture",
+          "Excellent cross-platform availability and browser integration",
+          "Reliable synchronization across all devices",
+          "Option for self-hosting for ultimate data control"
+        ],
+        "cons": [
+          "User interface (UI) can feel less polished or modern compared to some competitors",
+          "Learning curve for advanced features or self-hosting setup",
+          "Mobile app experience, while functional, can sometimes be less intuitive than desktop",
+          "Customer support for free users is primarily community-driven",
+          "Some niche integrations or advanced enterprise reporting features may be less robust",
+          "Team management features can feel somewhat separated from personal vault management"
+        ],
+        "overall_rating": 4.6,
+        "changed": [
+          "Pros item 1: 'Generous free tier and highly affordable premium plans' was updated to 'Generous free tier and highly affordable premium plans, with easy access to team features' based on the note '[benefit] Creating a free organization took a name, a pre-filled billing email, the Free radio and Submit, and immediately produced a 'Default collection' plus a Members page with an Invite member button.'",
+          "Cons item 6: 'Occasional minor performance hiccups or autofill inconsistencies' was replaced with 'Team management features can feel somewhat separated from personal vault management' based on the note '[friction] After creating the organization the app jumps from Password Manager into a separate Admin Console with its own sidebar, so my saved CRM and note items were not visible where collections and members are managed.'"
+        ]
+      },
+      "edit1F": {
+        "pros": [
+          "Generous free tier and highly affordable premium plans",
+          "Open-source nature provides transparency and community trust",
+          "Strong security features with end-to-end encryption and zero-knowledge architecture",
+          "Excellent cross-platform availability and browser integration",
+          "Reliable synchronization across all devices",
+          "Option for self-hosting for ultimate data control"
+        ],
+        "cons": [
+          "User interface (UI) can feel less polished or modern compared to some competitors",
+          "Organizational features and advanced settings can have a steeper learning curve",
+          "Mobile app experience, while functional, can sometimes be less intuitive than desktop",
+          "Customer support for free users is primarily community-driven",
+          "Some niche integrations or advanced enterprise reporting features may be less robust",
+          "Occasional minor performance hiccups or autofill inconsistencies"
+        ],
+        "overall_rating": 4.6,
+        "changed": [
+          "Con 2: 'Learning curve for advanced features or self-hosting setup' was replaced with 'Organizational features and advanced settings can have a steeper learning curve' because the notes highlighted specific friction points related to organization setup and custom fields, which are advanced features, reinforcing the learning curve aspect in a more specific way."
+        ]
+      }
+    },
+    "1": {
+      "none": {
+        "pros": [
+          "Excellent security practices & open-source nature.",
+          "Generous free tier and affordable premium plans.",
+          "Seamless cross-platform synchronization and availability.",
+          "Self-hosting option for ultimate privacy and control.",
+          "Comprehensive feature set including TOTP, secure notes.",
+          "Reliable autofill and browser extension integration."
+        ],
+        "cons": [
+          "User interface (UI) can feel less polished than competitors.",
+          "Occasional autofill inconsistencies on specific websites.",
+          "Steeper learning curve for advanced features like self-hosting.",
+          "Customer support can be slower or less personalized.",
+          "Mobile app experience sometimes lags desktop/browser extensions.",
+          "Sharing features, while present, could be more intuitive."
+        ],
+        "overall_rating": 4.7
+      },
+      "ctx": {
+        "pros": [
+          "Generous free tier and highly affordable premium plans",
+          "Strong emphasis on security, open-source nature, and transparency",
+          "Cross-platform compatibility (desktop, web, mobile, browser extensions)",
+          "Reliable password syncing and autofill functionality",
+          "Self-hosting option for advanced users",
+          "Comprehensive feature set including 2FA, secure notes, and identity storage"
+        ],
+        "cons": [
+          "User interface (UI) can feel less polished or modern compared to some competitors",
+          "Learning curve for advanced features or initial setup for new users",
+          "Occasional inconsistencies or minor bugs with autofill on certain websites or mobile devices",
+          "Customer support for free users is primarily community-driven",
+          "Mobile app experience, while functional, can sometimes be less intuitive than desktop",
+          "Admin features for large organizations might be less robust or require more manual configuration"
+        ],
+        "overall_rating": 4.6
+      },
+      "run": {
+        "pros": [
+          "Open-source nature and strong security/encryption practices",
+          "Generous free tier and highly affordable premium plan",
+          "Cross-platform availability and reliable synchronization",
+          "Ease of quickly creating basic entries like logins and secure notes",
+          "Comprehensive item types including logins, cards, identities, and SSH keys",
+          "Self-hosting option for advanced users and organizations"
+        ],
+        "cons": [
+          "User interface can feel less polished or intuitive than competitors",
+          "Organization and sharing features can be confusing, especially for new teams",
+          "Switching between personal vault and organization admin console is disjointed",
+          "Custom fields are not prominently visible, requiring scrolling to find",
+          "Free organization limits (e.g., 2 users, 2 collections) are restrictive for evaluation",
+          "Some advanced features (like TOTP) are locked behind premium subscriptions"
+        ],
+        "overall_rating": 4.5
+      },
+      "ctx+run": {
+        "pros": [
+          "Offers a generous free tier for individual users, making it highly accessible.",
+          "Supports a wide variety of item types (login, card, identity, note, SSH key) for comprehensive vault management.",
+          "Streamlined and intuitive process for creating new vault entries quickly.",
+          "Easy to set up and manage basic organizational features like collections and inviting members.",
+          "Robust filtering and search capabilities within the vault for efficient item retrieval.",
+          "Strong focus on security and open-source transparency, appealing to technically-minded users."
+        ],
+        "cons": [
+          "The free organization plan is very limited, hindering evaluation for larger teams beyond a single colleague.",
+          "The separation between the personal vault and organization admin console can be confusing for new users.",
+          "Custom fields are not prominently displayed, potentially overlooked by users seeking advanced customization.",
+          "Mobile app experience can be less polished or intuitive compared to desktop, with occasional autofill issues.",
+          "User interface for managing shared items and organization structure could be more cohesive.",
+          "Advanced reporting and administrative features might be less developed compared to enterprise-focused competitors."
+        ],
+        "overall_rating": 4.5
+      },
+      "ctx+runF": {
+        "pros": [
+          "Generous free tier and excellent value for paid plans",
+          "Streamlined creation of various item types (logins, notes, cards, SSH keys)",
+          "Robust organization, filtering, and search capabilities",
+          "Flexible item creation with optional fields",
+          "Strong security features and open-source transparency",
+          "Reliable cross-device syncing"
+        ],
+        "cons": [
+          "Steep learning curve for advanced features and organizational setup",
+          "UI can be less intuitive, especially for custom fields and team management",
+          "Separate Admin Console makes team management feel disconnected from the main vault",
+          "Mobile app experience can be inconsistent or less smooth than desktop",
+          "Limited reporting features for enterprise users",
+          "Customer support response times can be slow"
+        ],
+        "overall_rating": 4.5
+      },
+      "prosRunF_consCtx": {
+        "pros": [
+          "Generous free tier and excellent value for paid plans",
+          "Streamlined creation of various item types (logins, notes, cards, SSH keys)",
+          "Robust organization, filtering, and search capabilities",
+          "Flexible item creation with optional fields",
+          "Strong security features and open-source transparency",
+          "Reliable cross-device syncing"
+        ],
+        "cons": [
+          "User interface (UI) can feel less polished or modern compared to some competitors",
+          "Learning curve for advanced features or initial setup for new users",
+          "Occasional inconsistencies or minor bugs with autofill on certain websites or mobile devices",
+          "Customer support for free users is primarily community-driven",
+          "Mobile app experience, while functional, can sometimes be less intuitive than desktop",
+          "Admin features for large organizations might be less robust or require more manual configuration"
+        ],
+        "overall_rating": 4.6
+      },
+      "edit1": {
+        "pros": [
+          "Generous free tier and highly affordable premium plans",
+          "Strong emphasis on security, open-source nature, and transparency",
+          "Cross-platform compatibility (desktop, web, mobile, browser extensions)",
+          "Reliable password syncing and autofill functionality",
+          "Self-hosting option for advanced users",
+          "Efficient creation and organization of diverse item types"
+        ],
+        "cons": [
+          "User interface (UI) can feel less polished or modern compared to some competitors",
+          "Learning curve for advanced features or initial setup for new users",
+          "Occasional inconsistencies or minor bugs with autofill on certain websites or mobile devices",
+          "Customer support for free users is primarily community-driven",
+          "Mobile app experience, while functional, can sometimes be less intuitive than desktop",
+          "Organizational features for teams can feel disjointed or have initial limitations"
+        ],
+        "overall_rating": 4.6,
+        "changed": [
+          "Pro 6: 'Comprehensive feature set including 2FA, secure notes, and identity storage' changed to 'Efficient creation and organization of diverse item types' because notes '[benefit] The Add button offers Login, Card, Identity, Note, SSH key and Folder in one dropdown, so starting a CRM login or a server-access note took two clicks.' and '[benefit] A login or secure note saves with only the Item name filled (username and password optional), so the CRM entry and the server-access note were each created in about three actions.' highlighted the ease of use for creating and categorizing items.",
+          "Con 6: 'Admin features for large organizations might be less robust or require more manual configuration' changed to 'Organizational features for teams can feel disjointed or have initial limitations' because notes '[friction] The personal vault Add menu has no Collection option; sharing requires first creating an organization from a 'New organization' link tucked into the vault filter sidebar.', '[friction] The Free organization is limited to 2 users (including me) and 2 collections, so a 50-person team cannot be evaluated beyond a single teammate without moving to Teams.', and '[friction] After creating the organization the app jumps from Password Manager into a separate Admin Console with its own sidebar, so my saved CRM and note items were not visible where collections and members are managed.' indicated a less integrated and more segmented experience for team management, especially when starting out or on the free tier."
+        ]
+      },
+      "edit2": {
+        "pros": [
+          "Generous free tier and highly affordable premium plans",
+          "Strong emphasis on security, open-source nature, and transparency",
+          "Cross-platform compatibility (desktop, web, mobile, browser extensions)",
+          "Reliable password syncing and autofill functionality",
+          "Self-hosting option for advanced users",
+          "Efficient item creation for diverse data types (logins, notes, SSH keys, etc.)"
+        ],
+        "cons": [
+          "User interface (UI) can feel less polished or modern compared to some competitors",
+          "Initial setup for organizational sharing and advanced features introduces complexity",
+          "Occasional inconsistencies or minor bugs with autofill on certain websites or mobile devices",
+          "Customer support for free users is primarily community-driven",
+          "Mobile app experience, while functional, can sometimes be less intuitive than desktop",
+          "Organizational administration has a distinct interface separate from the personal vault"
+        ],
+        "overall_rating": 4.6,
+        "changed": [
+          "Pro 6: 'Comprehensive feature set including 2FA, secure notes, and identity storage' was replaced with 'Efficient item creation for diverse data types (logins, notes, SSH keys, etc.)' because the user notes specifically highlighted the streamlined process for adding various item types.",
+          "Con 2: 'Learning curve for advanced features or initial setup for new users' was replaced with 'Initial setup for organizational sharing and advanced features introduces complexity' because the notes detailed specific friction points around creating organizations and finding advanced fields, providing a more precise description of the learning curve.",
+          "Con 6: 'Admin features for large organizations might be less robust or require more manual configuration' was replaced with 'Organizational administration has a distinct interface separate from the personal vault' because the notes explicitly mentioned the app jumping into a separate Admin Console, which is a specific UI/workflow friction for organization management."
+        ]
+      },
+      "edit1F": {
+        "pros": [
+          "Generous free tier and highly affordable premium plans",
+          "Strong emphasis on security, open-source nature, and transparency",
+          "Cross-platform compatibility (desktop, web, mobile, browser extensions)",
+          "Reliable password syncing and autofill functionality",
+          "Self-hosting option for advanced users",
+          "Comprehensive and easily accessible feature set for diverse item types (logins, notes, cards, identities, SSH keys)"
+        ],
+        "cons": [
+          "User interface (UI) can feel less polished or modern compared to some competitors",
+          "Learning curve for advanced features or organizational setup",
+          "Occasional inconsistencies or minor bugs with autofill on certain websites or mobile devices",
+          "Customer support for free users is primarily community-driven",
+          "Mobile app experience, while functional, can sometimes be less intuitive than desktop",
+          "Admin features for large organizations might be less robust or require more manual configuration"
+        ],
+        "overall_rating": 4.6,
+        "changed": [
+          "pro: 'Comprehensive feature set including 2FA, secure notes, and identity storage' was replaced by 'Comprehensive and easily accessible feature set for diverse item types (logins, notes, cards, identities, SSH keys)' because the note '[benefit] The Add button offers Login, Card, Identity, Note, SSH key and Folder in one dropdown, so starting a CRM login or a server-access note took two clicks.' highlights the breadth and accessibility of item types.",
+          "con: 'Learning curve for advanced features or initial setup for new users' was replaced by 'Learning curve for advanced features or organizational setup' because the notes '[friction] The personal vault Add menu has no Collection option; sharing requires first creating an organization from a 'New organization' link tucked into the vault filter sidebar.' and '[friction] After creating the organization the app jumps from Password Manager into a separate Admin Console with its own sidebar, so my saved CRM and note items were not visible where collections and members are managed.' specifically point to friction related to organizational features rather than just general initial setup."
+        ]
+      }
+    },
+    "2": {
+      "none": {
+        "pros": [
+          "Generous and fully functional free tier.",
+          "Open-source and strong security model (audited).",
+          "Cross-platform compatibility (all major OS and browsers).",
+          "Affordable premium and family plans.",
+          "Built-in TOTP authenticator for 2FA.",
+          "Option for self-hosting the server."
+        ],
+        "cons": [
+          "Less polished UI/UX compared to some competitors.",
+          "Occasional autofill inconsistencies on complex websites.",
+          "Steeper learning curve for advanced features/settings.",
+          "Customer support can be limited for free users.",
+          "Some desirable convenience features are locked behind premium.",
+          "Desktop application can feel less integrated than browser extension."
+        ],
+        "overall_rating": 5
+      },
+      "ctx": {
+        "pros": [
+          "Open-source and transparent security model.",
+          "Generous free tier and highly affordable premium plans.",
+          "Strong encryption and robust security features.",
+          "Cross-platform compatibility (desktop, mobile, browser extensions).",
+          "Option for self-hosting for advanced users and organizations.",
+          "Reliable password syncing across devices."
+        ],
+        "cons": [
+          "User interface (UI) can feel less polished or modern compared to competitors.",
+          "Mobile app experience can sometimes be less intuitive or smooth.",
+          "Steeper learning curve for advanced features or self-hosting setup.",
+          "Customer support, while responsive, might not be as extensive as enterprise-focused solutions.",
+          "Occasional minor issues with autofill or browser extension integration.",
+          "Lack of some niche integrations or advanced reporting features found in enterprise tools."
+        ],
+        "overall_rating": 4.6
+      },
+      "run": {
+        "pros": [
+          "Generous free tier with essential features",
+          "Open-source and strong security posture",
+          "Cross-platform availability and browser integration",
+          "Easy and quick creation of basic login/note entries",
+          "Option for self-hosting for ultimate data control",
+          "Comprehensive item types including SSH keys and secure notes"
+        ],
+        "cons": [
+          "UI/UX can feel less polished or intuitive than competitors",
+          "Separation of personal vault and organization admin console",
+          "Limited free organization features (e.g., 2 users, 2 collections)",
+          "Custom fields and advanced options can be less discoverable",
+          "Occasional autofill inconsistencies in browser extensions",
+          "Steeper learning curve for advanced organization sharing"
+        ],
+        "overall_rating": 4.5
+      },
+      "ctx+run": {
+        "pros": [
+          "Comprehensive item types including SSH keys and secure notes",
+          "Streamlined process for adding new login credentials and secure notes",
+          "Robust and flexible organization management for teams",
+          "Strong security features and open-source transparency",
+          "Excellent value, especially for its free tier and paid plans",
+          "Good search and filtering options for vault management"
+        ],
+        "cons": [
+          "Limited free organization features, quickly requiring an upgrade for teams",
+          "Custom fields are not easily discoverable or visible during initial entry",
+          "Mobile app experience can sometimes be less intuitive than desktop",
+          "Occasional issues with auto-fill or browser extension synchronization",
+          "Admin console is separate from the personal vault, causing context switching",
+          "Steeper learning curve for advanced organizational features and sharing"
+        ],
+        "overall_rating": 4.5
+      },
+      "ctx+runF": {
+        "pros": [
+          "Generous free tier and affordable premium plans, offering excellent value.",
+          "Broad support for various item types, including logins, secure notes, and SSH keys.",
+          "Efficient and quick creation of new vault items with minimal mandatory fields.",
+          "Strong security features and open-source nature, building user trust.",
+          "Effective filtering and search capabilities within the vault for easy navigation.",
+          "Reliable cross-device syncing and auto-fill functionality."
+        ],
+        "cons": [
+          "Clunky organization and sharing workflow, especially for new teams or organizations.",
+          "User interface can be less intuitive, requiring a learning curve for advanced features.",
+          "Mobile app experience can sometimes be inconsistent or less polished than desktop.",
+          "Limited visibility or access to custom fields during initial item creation.",
+          "Separation of the Admin Console from the main vault adds complexity for management.",
+          "Reporting and advanced administrative features might be basic compared to some competitors."
+        ],
+        "overall_rating": 4.5
+      },
+      "prosRunF_consCtx": {
+        "pros": [
+          "Generous free tier and affordable premium plans, offering excellent value.",
+          "Broad support for various item types, including logins, secure notes, and SSH keys.",
+          "Efficient and quick creation of new vault items with minimal mandatory fields.",
+          "Strong security features and open-source nature, building user trust.",
+          "Effective filtering and search capabilities within the vault for easy navigation.",
+          "Reliable cross-device syncing and auto-fill functionality."
+        ],
+        "cons": [
+          "User interface (UI) can feel less polished or modern compared to competitors.",
+          "Mobile app experience can sometimes be less intuitive or smooth.",
+          "Steeper learning curve for advanced features or self-hosting setup.",
+          "Customer support, while responsive, might not be as extensive as enterprise-focused solutions.",
+          "Occasional minor issues with autofill or browser extension integration.",
+          "Lack of some niche integrations or advanced reporting features found in enterprise tools."
+        ],
+        "overall_rating": 4.6
+      },
+      "edit1": {
+        "pros": [
+          "Open-source and transparent security model.",
+          "Generous personal free tier and highly affordable premium plans.",
+          "Strong encryption and robust security features.",
+          "Cross-platform compatibility (desktop, mobile, browser extensions).",
+          "Option for self-hosting for advanced users and organizations.",
+          "Reliable password syncing across devices."
+        ],
+        "cons": [
+          "User interface (UI) can feel less polished or modern compared to competitors.",
+          "Mobile app experience can sometimes be less intuitive or smooth.",
+          "Steeper learning curve for advanced features, such as team sharing or self-hosting setup.",
+          "Customer support, while responsive, might not be as extensive as enterprise-focused solutions.",
+          "Occasional minor issues with autofill or browser extension integration.",
+          "Lack of some niche integrations or advanced reporting features found in enterprise tools."
+        ],
+        "overall_rating": 4.6,
+        "changed": [
+          "Changed pro #2: 'Generous free tier and highly affordable premium plans.' to 'Generous personal free tier and highly affordable premium plans.' because the note '[friction] The Free organization is limited to 2 users (including me) and 2 collections, so a 50-person team cannot be evaluated beyond a single teammate without moving to Teams.' indicates the free tier for organizations is not as generous as for individuals, warranting a clarification.",
+          "Changed con #3: 'Steeper learning curve for advanced features or self-hosting setup.' to 'Steeper learning curve for advanced features, such as team sharing or self-hosting setup.' because the note '[friction] The personal vault Add menu has no Collection option; sharing requires first creating an organization from a 'New organization' link tucked into the vault filter sidebar.' directly highlights friction in setting up sharing, which is an advanced feature."
+        ]
+      },
+      "edit2": {
+        "pros": [
+          "Open-source and transparent security model.",
+          "Generous free tier and highly affordable premium plans.",
+          "Strong encryption and robust security features.",
+          "Cross-platform compatibility (desktop, mobile, browser extensions).",
+          "Option for self-hosting for advanced users and organizations.",
+          "Efficient and flexible item creation with diverse types."
+        ],
+        "cons": [
+          "Mobile app experience can sometimes be less intuitive or smooth.",
+          "Steeper learning curve for advanced features or self-hosting setup.",
+          "Customer support, while responsive, might not be as extensive as enterprise-focused solutions.",
+          "Occasional minor issues with autofill or browser extension integration.",
+          "Organization features can initially feel separated and have free-tier limitations.",
+          "Lack of some niche integrations or advanced reporting features found in enterprise tools."
+        ],
+        "overall_rating": 4.6,
+        "changed": [
+          "pro 6: 'Reliable password syncing across devices.' replaced with 'Efficient and flexible item creation with diverse types.' justified by '[benefit] The Add button offers Login, Card, Identity, Note, SSH key and Folder in one dropdown, so starting a CRM login or a server-access note took two clicks.' and '[benefit] A login or secure note saves with only the Item name filled (username and password optional), so the CRM entry and the server-access note were each created in about three actions.'",
+          "con 1: 'User interface (UI) can feel less polished or modern compared to competitors.' replaced with 'Organization features can initially feel separated and have free-tier limitations.' justified by '[friction] The personal vault Add menu has no Collection option; sharing requires first creating an organization from a 'New organization' link tucked into the vault filter sidebar.', '[friction] The Free organization is limited to 2 users (including me) and 2 collections, so a 50-person team cannot be evaluated beyond a single teammate without moving to Teams.', and '[friction] After creating the organization the app jumps from Password Manager into a separate Admin Console with its own sidebar, so my saved CRM and note items were not visible where collections and members are managed.'"
+        ]
+      },
+      "edit1F": {
+        "pros": [
+          "Open-source and transparent security model.",
+          "Generous free tier and highly affordable premium plans.",
+          "Strong encryption and robust security features.",
+          "Cross-platform compatibility (desktop, mobile, browser extensions).",
+          "Option for self-hosting for advanced users and organizations.",
+          "Reliable password syncing across devices."
+        ],
+        "cons": [
+          "User interface (UI) can feel less polished or modern compared to competitors.",
+          "Mobile app experience can sometimes be less intuitive or smooth.",
+          "Organizational features and sharing can present a steeper learning curve for new users.",
+          "Customer support, while responsive, might not be as extensive as enterprise-focused solutions.",
+          "Occasional minor issues with autofill or browser extension integration.",
+          "Lack of some niche integrations or advanced reporting features found in enterprise tools."
+        ],
+        "overall_rating": 4.6,
+        "changed": [
+          "Cons item 3: 'Steeper learning curve for advanced features or self-hosting setup.' was replaced with 'Organizational features and sharing can present a steeper learning curve for new users.' because the note '[friction] The personal vault Add menu has no Collection option; sharing requires first creating an organization from a 'New organization' link tucked into the vault filter sidebar.' directly illustrates a specific area of learning curve related to organization and sharing, making the con more specific to Bitwarden's user experience."
+        ]
+      }
+    }
+  },
+  "obs": [
+    "- [benefit] The Add button offers Login, Card, Identity, Note, SSH key and Folder in one dropdown, so starting a CRM login or a server-access note took two clicks.",
+    "- [benefit] A login or secure note saves with only the Item name filled (username and password optional), so the CRM entry and the server-access note were each created in about three actions.",
+    "- [friction] The personal vault Add menu has no Collection option; sharing requires first creating an organization from a 'New organization' link tucked into the vault filter sidebar.",
+    "- [friction] Custom fields are not visible in the initial Add login dialog view; they sit further down the scrolled form, so I did not reach them in the time I had.",
+    "- [benefit] Creating a free organization took a name, a pre-filled billing email, the Free radio and Submit, and immediately produced a 'Default collection' plus a Members page with an Invite member button.",
+    "- [friction] The Free organization is limited to 2 users (including me) and 2 collections, so a 50-person team cannot be evaluated beyond a single teammate without moving to Teams.",
+    "- [friction] After creating the organization the app jumps from Password Manager into a separate Admin Console with its own sidebar, so my saved CRM and note items were not visible where collections and members are managed.",
+    "- [benefit] The vault and the org collections view both have a filter panel by type (Login, Card, Identity, Secure note, SSH key), plus Collections, Trash and a search box."
+  ],
+  "obs_filtered": [
+    "- [benefit] The Add button offers Login, Card, Identity, Note, SSH key and Folder in one dropdown, so starting a CRM login or a server-access note took two clicks.",
+    "- [benefit] A login or secure note saves with only the Item name filled (username and password optional), so the CRM entry and the server-access note were each created in about three actions.",
+    "- [friction] The personal vault Add menu has no Collection option; sharing requires first creating an organization from a 'New organization' link tucked into the vault filter sidebar.",
+    "- [friction] Custom fields are not visible in the initial Add login dialog view; they sit further down the scrolled form, so I did not reach them in the time I had.",
+    "- [friction] After creating the organization the app jumps from Password Manager into a separate Admin Console with its own sidebar, so my saved CRM and note items were not visible where collections and members are managed.",
+    "- [benefit] The vault and the org collections view both have a filter panel by type (Login, Card, Identity, Secure note, SSH key), plus Collections, Trash and a search box."
+  ],
+  "true_mean_overall": 4.55
+}

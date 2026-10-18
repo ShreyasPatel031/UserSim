@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "863e4f4d888c58ac96924db4ba1b6f179555790f2cc333571247088bd9f982d0",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 215,
+  "output_tokens": 489,
+  "cost_usd": 0.001287,
+  "elapsed_s": 3.25,
+  "error": null,
+  "text": "{\n  \"task\": \"Provide functional email services to a customer base\",\n  \"benefits\": [\n    \"The name is easy to pronounce\",\n    \"The B in the logo is looking nice\"\n  ],\n  \"frictions\": [\n    \"Account suspended for over 11 hours\",\n    \"No reply to messages to support\",\n    \"Customer base left without functional email services\",\n    \"Unresponsive support\"\n  ]\n}",
+  "json": {
+    "task": "Provide functional email services to a customer base",
+    "benefits": [
+      "The name is easy to pronounce",
+      "The B in the logo is looking nice"
+    ],
+    "frictions": [
+      "Account suspended for over 11 hours",
+      "No reply to messages to support",
+      "Customer base left without functional email services",
+      "Unresponsive support"
+    ]
+  },
+  "ts": "2026-10-18T11:12:25.609727+00:00"
+}

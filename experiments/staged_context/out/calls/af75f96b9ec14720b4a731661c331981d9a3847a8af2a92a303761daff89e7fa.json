@@ -1,0 +1,35 @@
+{
+  "stage": "hm_obs_theme",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "af75f96b9ec14720b4a731661c331981d9a3847a8af2a92a303761daff89e7fa",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "thinking_budget": 256,
+  "input_tokens": 815,
+  "output_tokens": 399,
+  "cost_usd": 0.0012419999999999998,
+  "elapsed_s": 3.21,
+  "error": null,
+  "text": "{\n  \"themes\": [\n    \"free_plan_or_tier_limits\",\n    \"setup_configuration\",\n    \"ui_ease_navigation\",\n    \"core_feature_depth_or_missing\",\n    \"ui_ease_navigation\",\n    \"ui_ease_navigation\",\n    \"ui_ease_navigation\",\n    \"ui_ease_navigation\",\n    \"core_feature_depth_or_missing\",\n    \"setup_configuration\",\n    \"core_feature_depth_or_missing\",\n    \"core_feature_depth_or_missing\",\n    \"ui_ease_navigation\",\n    \"core_feature_depth_or_missing\"\n  ]\n}",
+  "json": {
+    "themes": [
+      "free_plan_or_tier_limits",
+      "setup_configuration",
+      "ui_ease_navigation",
+      "core_feature_depth_or_missing",
+      "ui_ease_navigation",
+      "ui_ease_navigation",
+      "ui_ease_navigation",
+      "ui_ease_navigation",
+      "core_feature_depth_or_missing",
+      "setup_configuration",
+      "core_feature_depth_or_missing",
+      "core_feature_depth_or_missing",
+      "ui_ease_navigation",
+      "core_feature_depth_or_missing"
+    ]
+  },
+  "ts": "2026-10-18T11:05:27.151569+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "hm_plist",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0c32c1a71a2a2dc928aea4aa737df67c024ff76f19301e0bfd7ac4339551720c",
+  "temperature": 0.7,
+  "seed": 43,
+  "max_tokens": 4096,
+  "thinking_budget": 1024,
+  "input_tokens": 1354,
+  "output_tokens": 873,
+  "cost_usd": 0.0025886999999999998,
+  "elapsed_s": 4.29,
+  "error": null,
+  "text": "{\n  \"pros\": [\n    \"Clear organization of marketing and CRM features\",\n    \"Easy to locate core functionalities for tasks\",\n    \"Quick execution of basic list management once initial hurdles are cleared\",\n    \"Good value for money compared to competitors\",\n    \"Reliable core email sending functionality\",\n    \"Straightforward for users with basic email marketing needs\"\n  ],\n  \"cons\": [\n    \"Campaigns loading issues and slow performance\",\n    \"Clunky or unintuitive UI/UX for basic tasks like list creation\",\n    \"Basic reporting and analytics capabilities\",\n    \"Steep learning curve for advanced features\",\n    \"Limited customization options for emails and automations\",\n    \"Support responsiveness can be inconsistent\"\n  ],\n  \"overall_rating\": 4.1\n}",
+  "json": {
+    "pros": [
+      "Clear organization of marketing and CRM features",
+      "Easy to locate core functionalities for tasks",
+      "Quick execution of basic list management once initial hurdles are cleared",
+      "Good value for money compared to competitors",
+      "Reliable core email sending functionality",
+      "Straightforward for users with basic email marketing needs"
+    ],
+    "cons": [
+      "Campaigns loading issues and slow performance",
+      "Clunky or unintuitive UI/UX for basic tasks like list creation",
+      "Basic reporting and analytics capabilities",
+      "Steep learning curve for advanced features",
+      "Limited customization options for emails and automations",
+      "Support responsiveness can be inconsistent"
+    ],
+    "overall_rating": 4.1
+  },
+  "ts": "2026-10-18T11:13:54.600604+00:00"
+}

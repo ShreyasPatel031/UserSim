@@ -1,0 +1,27 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e197e256e7cbbaa3c757a943ff72dd2124ade07a14952b8835392c26e0791261",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 192,
+  "output_tokens": 417,
+  "cost_usd": 0.0011001000000000001,
+  "elapsed_s": 4.31,
+  "error": null,
+  "text": "{\n  \"task\": \"Build a database and send e-newsletters\",\n  \"benefits\": [\n    \"Easy to use\",\n    \"Good analysis of results\",\n    \"Professional-looking design\",\n    \"Easy to build design\"\n  ],\n  \"frictions\": []\n}",
+  "json": {
+    "task": "Build a database and send e-newsletters",
+    "benefits": [
+      "Easy to use",
+      "Good analysis of results",
+      "Professional-looking design",
+      "Easy to build design"
+    ],
+    "frictions": []
+  },
+  "ts": "2026-10-18T11:12:31.141820+00:00"
+}

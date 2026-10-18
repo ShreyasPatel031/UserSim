@@ -1,0 +1,30 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "821b594317d41906567e7fa2064711975f7bc2eb1c70b2d767ecd92535f3d154",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 251,
+  "output_tokens": 460,
+  "cost_usd": 0.0012253,
+  "elapsed_s": 3.37,
+  "error": null,
+  "text": "{\n  \"task\": \"Use the platform to reach customers and potential customers\",\n  \"benefits\": [\n    \"Interface is easy to use and self-explanatory\",\n    \"Offers a free trial before paid accounts\",\n    \"Provides prompt and helpful customer service\",\n    \"Competitive pricing\"\n  ],\n  \"frictions\": [\n    \"Automatically rolls into a subscription upon upgrade\",\n    \"Difficulty understanding the customer or client lists section\"\n  ]\n}",
+  "json": {
+    "task": "Use the platform to reach customers and potential customers",
+    "benefits": [
+      "Interface is easy to use and self-explanatory",
+      "Offers a free trial before paid accounts",
+      "Provides prompt and helpful customer service",
+      "Competitive pricing"
+    ],
+    "frictions": [
+      "Automatically rolls into a subscription upon upgrade",
+      "Difficulty understanding the customer or client lists section"
+    ]
+  },
+  "ts": "2026-10-18T11:12:23.992062+00:00"
+}

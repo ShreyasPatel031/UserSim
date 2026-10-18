@@ -1,0 +1,29 @@
+{
+  "stage": "router_extract",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ae7a3c7f973fa9928a8ff5a44e59a45dc0080b70f3529cbbca37a53bc0914fe9",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 198,
+  "output_tokens": 449,
+  "cost_usd": 0.0011819,
+  "elapsed_s": 2.66,
+  "error": null,
+  "text": "{\n  \"task\": \"Automate website emails\",\n  \"benefits\": [\n    \"Send emails quickly\",\n    \"Understand the platform easily\",\n    \"Automate emails reliably\",\n    \"Set up the platform straightforwardly\"\n  ],\n  \"frictions\": [\n    \"Email credit limits are not generous enough\"\n  ]\n}",
+  "json": {
+    "task": "Automate website emails",
+    "benefits": [
+      "Send emails quickly",
+      "Understand the platform easily",
+      "Automate emails reliably",
+      "Set up the platform straightforwardly"
+    ],
+    "frictions": [
+      "Email credit limits are not generous enough"
+    ]
+  },
+  "ts": "2026-10-18T11:12:30.707981+00:00"
+}

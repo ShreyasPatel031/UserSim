@@ -1,0 +1,36 @@
+{
+  "stage": "hm_plist",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a65381aec189316ad0066cb230a282de510205ddb49bcbc271976adc825d359c",
+  "temperature": 0.7,
+  "seed": 44,
+  "max_tokens": 4096,
+  "thinking_budget": 1024,
+  "input_tokens": 1882,
+  "output_tokens": 1067,
+  "cost_usd": 0.0032321,
+  "elapsed_s": 7.0,
+  "error": null,
+  "text": "{\n  \"pros\": [\n    \"Extremely easy to use with a clean, intuitive interface that avoids feature bloat.\",\n    \"Streamlined task management, allowing quick creation and assignment of to-dos.\",\n    \"Efficient workflow for adding multiple items and managing due dates.\",\n    \"Excellent for basic project communication and centralizing discussions.\",\n    \"Simple and straightforward design, ideal for teams who don't need complex features.\",\n    \"Good value for money if core project management and communication are the primary needs.\"\n  ],\n  \"cons\": [\n    \"Limited reporting and overview capabilities, lacking a comprehensive project calendar.\",\n    \"Lack of advanced customization options, especially for workflow automation and approval processes.\",\n    \"Basic functionality compared to competitors, which might be insufficient for complex projects.\",\n    \"Integrations with other tools are not as extensive as some alternatives.\",\n    \"Mobile app experience can be less fluid than the desktop version.\",\n    \"Finding specific information or older items can sometimes be challenging due to basic search/filtering.\"\n  ],\n  \"overall_rating\": 4.0\n}",
+  "json": {
+    "pros": [
+      "Extremely easy to use with a clean, intuitive interface that avoids feature bloat.",
+      "Streamlined task management, allowing quick creation and assignment of to-dos.",
+      "Efficient workflow for adding multiple items and managing due dates.",
+      "Excellent for basic project communication and centralizing discussions.",
+      "Simple and straightforward design, ideal for teams who don't need complex features.",
+      "Good value for money if core project management and communication are the primary needs."
+    ],
+    "cons": [
+      "Limited reporting and overview capabilities, lacking a comprehensive project calendar.",
+      "Lack of advanced customization options, especially for workflow automation and approval processes.",
+      "Basic functionality compared to competitors, which might be insufficient for complex projects.",
+      "Integrations with other tools are not as extensive as some alternatives.",
+      "Mobile app experience can be less fluid than the desktop version.",
+      "Finding specific information or older items can sometimes be challenging due to basic search/filtering."
+    ],
+    "overall_rating": 4.0
+  },
+  "ts": "2026-10-18T11:07:00.265909+00:00"
+}
