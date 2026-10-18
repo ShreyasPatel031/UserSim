@@ -1,0 +1,29 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a596c6ec97edac4b4d612ac6564ddf2c25967c5d13e1e402eda4b810bc8b980f",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 337,
+  "output_tokens": 502,
+  "cost_usd": 0.0013560999999999998,
+  "elapsed_s": 3.93,
+  "error": null,
+  "text": "{\n  \"eligible\": true,\n  \"reason\": \"The review explicitly states 'Sales Tracking System' multiple times, which describes the core activity of 'tracking sales'. This is a concrete activity with an object ('sales') and can be initiated within a 15-minute trial by creating and updating a few sales deals or opportunities.\",\n  \"task\": {\n    \"action\": \"Track\",\n    \"object\": \"sales\",\n    \"context\": null,\n    \"purpose\": null\n  },\n  \"neutral_task\": \"Track sales.\",\n  \"span\": \"Sales Tracking System\"\n}",
+  "json": {
+    "eligible": true,
+    "reason": "The review explicitly states 'Sales Tracking System' multiple times, which describes the core activity of 'tracking sales'. This is a concrete activity with an object ('sales') and can be initiated within a 15-minute trial by creating and updating a few sales deals or opportunities.",
+    "task": {
+      "action": "Track",
+      "object": "sales",
+      "context": null,
+      "purpose": null
+    },
+    "neutral_task": "Track sales.",
+    "span": "Sales Tracking System"
+  },
+  "ts": "2026-10-18T01:22:26.565977+00:00"
+}

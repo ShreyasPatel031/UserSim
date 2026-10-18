@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "54367d17ff1e7b0a50bff858f852a7dbe39fed94603d7c8c7a4605e53b8664ed",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 355,
+  "output_tokens": 506,
+  "cost_usd": 0.0013715,
+  "elapsed_s": 3.75,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review explicitly states 'I am in testing phase at the moment and do not have a full review.' It does not describe any specific task or activity the reviewer is performing within Zoho CRM, only their current evaluation status and reasons for choosing the product (cost).\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review explicitly states 'I am in testing phase at the moment and do not have a full review.' It does not describe any specific task or activity the reviewer is performing within Zoho CRM, only their current evaluation status and reasons for choosing the product (cost).",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:24:07.335615+00:00"
+}

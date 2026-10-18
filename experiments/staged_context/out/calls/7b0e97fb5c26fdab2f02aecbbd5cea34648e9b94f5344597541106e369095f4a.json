@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7b0e97fb5c26fdab2f02aecbbd5cea34648e9b94f5344597541106e369095f4a",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 348,
+  "output_tokens": 482,
+  "cost_usd": 0.0013093999999999998,
+  "elapsed_s": 4.06,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The stated activities are too broad and generic to be considered a concrete, 15-minute task. 'Manage sales processes' and 'customer management' are high-level functions, not specific actions like 'create a lead record' or 'assign a contact to a sales rep'. While features like 'lead management' and 'contact management' are mentioned, the review doesn't describe a specific, actionable task using them.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The stated activities are too broad and generic to be considered a concrete, 15-minute task. 'Manage sales processes' and 'customer management' are high-level functions, not specific actions like 'create a lead record' or 'assign a contact to a sales rep'. While features like 'lead management' and 'contact management' are mentioned, the review doesn't describe a specific, actionable task using them.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:23:37.565367+00:00"
+}

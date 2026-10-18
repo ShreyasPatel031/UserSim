@@ -1,0 +1,119 @@
+{
+  "status": "ok",
+  "onet_version": "db_31_0_csv",
+  "mapping_model": "gemini-2.5-pro",
+  "task_selection": "Core first, then lexical overlap with target D text, then Task ID",
+  "occupations": [
+    {
+      "id": "O:11-2022.00",
+      "code": "11-2022.00",
+      "title": "Sales Managers",
+      "mapping": "model-inferred from pack D (no review data)",
+      "rationale": "The software is explicitly designed to \"build better pipelines,\" \"accelerate sales, and measure sales performance,\" and a \"Sales Manager\" is quoted as a user [D:Zoho CRM:landing:1, D:Zoho CRM:features:1, D:Pipedrive:landing:5].",
+      "tasks": [
+        {
+          "id": "O:11-2022.00:3",
+          "task_id": "3",
+          "text": "Direct and coordinate activities involving sales of manufactured products, services, commodities, real estate, or other subjects of sale.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 4
+        },
+        {
+          "id": "O:11-2022.00:11",
+          "task_id": "11",
+          "text": "Plan and direct staffing, training, and performance evaluations to develop and control sales and service programs.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 2
+        },
+        {
+          "id": "O:11-2022.00:2",
+          "task_id": "2",
+          "text": "Monitor customer preferences to determine focus of sales efforts.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 2
+        },
+        {
+          "id": "O:11-2022.00:7",
+          "task_id": "7",
+          "text": "Confer or consult with department heads to plan advertising services and to secure information on equipment and customer specifications.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 2
+        }
+      ]
+    },
+    {
+      "id": "O:41-4012.00",
+      "code": "41-4012.00",
+      "title": "Sales Representatives, Wholesale and Manufacturing, Except Technical and Scientific Products",
+      "mapping": "model-inferred from pack D (no review data)",
+      "rationale": "The product is designed to help sales teams by automating activities across the sales funnel and \"guiding sales reps contextually to ensure process uniformity\" [D:Zoho CRM:features:3].",
+      "tasks": [
+        {
+          "id": "O:41-4012.00:8115",
+          "task_id": "8115",
+          "text": "Contact regular and prospective customers to demonstrate products, explain product features, and solicit orders.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 3
+        },
+        {
+          "id": "O:41-4012.00:8117",
+          "task_id": "8117",
+          "text": "Consult with clients after sales or contract signings to resolve problems and to provide ongoing support.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 2
+        },
+        {
+          "id": "O:41-4012.00:8120",
+          "task_id": "8120",
+          "text": "Identify prospective customers by using business directories, following leads from existing clients, participating in organizations and clubs, and attending trade shows and conferences.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 2
+        },
+        {
+          "id": "O:41-4012.00:8122",
+          "task_id": "8122",
+          "text": "Monitor market conditions, product innovations, and competitors' products, prices, and sales.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 2
+        }
+      ]
+    },
+    {
+      "id": "O:11-2021.00",
+      "code": "11-2021.00",
+      "title": "Marketing Managers",
+      "mapping": "model-inferred from pack D (no review data)",
+      "rationale": "The CRM helps to \"increase leads\" and run \"smart sales campaigns to generate more leads,\" and a \"Head of Marketing\" is quoted as a user [D:Zoho CRM:features:1, D:Freshsales:landing:1, D:Zoho CRM:landing:3].",
+      "tasks": [
+        {
+          "id": "O:11-2021.00:958",
+          "task_id": "958",
+          "text": "Use sales forecasting or strategic planning to ensure the sale and profitability of products, lines, or services, analyzing business developments and monitoring market trends.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 5
+        },
+        {
+          "id": "O:11-2021.00:954",
+          "task_id": "954",
+          "text": "Direct the hiring, training, or performance evaluations of marketing or sales staff and oversee their daily activities.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 4
+        },
+        {
+          "id": "O:11-2021.00:20709",
+          "task_id": "20709",
+          "text": "Formulate, direct, or coordinate marketing activities or policies to promote products or services, working with advertising or promotion managers.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 3
+        },
+        {
+          "id": "O:11-2021.00:19505",
+          "task_id": "19505",
+          "text": "Recommend modifications to products, packaging, production processes, or other characteristics to improve the environmental soundness or sustainability of products.",
+          "task_type": "Core",
+          "lexical_overlap_with_D": 2
+        }
+      ]
+    }
+  ]
+}

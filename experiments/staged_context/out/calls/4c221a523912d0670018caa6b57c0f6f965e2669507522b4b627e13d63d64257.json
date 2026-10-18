@@ -1,0 +1,29 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4c221a523912d0670018caa6b57c0f6f965e2669507522b4b627e13d63d64257",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 382,
+  "output_tokens": 553,
+  "cost_usd": 0.0014971000000000001,
+  "elapsed_s": 4.92,
+  "error": null,
+  "text": "{\n  \"eligible\": true,\n  \"reason\": \"The review explicitly states a concrete task: 'creating an opportunity when account, opportunity, and contact setup is needed'. This is a specific action that can be attempted in a trial within 15 minutes.\",\n  \"task\": {\n    \"action\": \"create\",\n    \"object\": \"an opportunity\",\n    \"context\": null,\n    \"purpose\": \"when account, opportunity, and contact setup is needed\"\n  },\n  \"neutral_task\": \"Create an opportunity, including setting up the associated account and contact.\",\n  \"span\": \"creating an opportunity requires 10 minutes when account, opportunity, and contact setup is needed\"\n}",
+  "json": {
+    "eligible": true,
+    "reason": "The review explicitly states a concrete task: 'creating an opportunity when account, opportunity, and contact setup is needed'. This is a specific action that can be attempted in a trial within 15 minutes.",
+    "task": {
+      "action": "create",
+      "object": "an opportunity",
+      "context": null,
+      "purpose": "when account, opportunity, and contact setup is needed"
+    },
+    "neutral_task": "Create an opportunity, including setting up the associated account and contact.",
+    "span": "creating an opportunity requires 10 minutes when account, opportunity, and contact setup is needed"
+  },
+  "ts": "2026-10-18T01:23:07.067702+00:00"
+}

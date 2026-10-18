@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "816691f9d3d251b42283b15257de162e26d1c6a420449b69718e0e7f9311f51b",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 352,
+  "output_tokens": 492,
+  "cost_usd": 0.0013356000000000002,
+  "elapsed_s": 3.87,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review describes features and a requested feature, but does not state a concrete, explicit task the reviewer uses the product for. 'Being able to switch between leads, contacts, deals and analytics' describes navigation between data types, not a specific activity with an object. The suggestion to 'see the total amount for all deals' is a request for a reporting feature, not a task the user performs.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review describes features and a requested feature, but does not state a concrete, explicit task the reviewer uses the product for. 'Being able to switch between leads, contacts, deals and analytics' describes navigation between data types, not a specific activity with an object. The suggestion to 'see the total amount for all deals' is a request for a reporting feature, not a task the user performs.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:22:40.379608+00:00"
+}

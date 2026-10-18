@@ -1,0 +1,29 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "082b7c01ece020ca651e618358de45ec8affdb3fd9cc72098f8d8d79acbd1f35",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 380,
+  "output_tokens": 551,
+  "cost_usd": 0.0014914999999999998,
+  "elapsed_s": 3.75,
+  "error": null,
+  "text": "{\n  \"eligible\": true,\n  \"reason\": \"The review explicitly states a concrete activity with an object ('control the workflow from Lead, opportunity, to a billed costumer') that could be attempted in a fresh trial within 15 minutes by setting up or observing the sales pipeline stages.\",\n  \"task\": {\n    \"action\": \"Control\",\n    \"object\": \"the workflow\",\n    \"context\": null,\n    \"purpose\": \"to manage the progression of a sales process from Lead, through opportunity, to a billed customer.\"\n  },\n  \"neutral_task\": \"Control the workflow from Lead, opportunity, to a billed customer.\",\n  \"span\": \"control the workflow from Lead, opportunity, to a billed costumer.\"\n}",
+  "json": {
+    "eligible": true,
+    "reason": "The review explicitly states a concrete activity with an object ('control the workflow from Lead, opportunity, to a billed costumer') that could be attempted in a fresh trial within 15 minutes by setting up or observing the sales pipeline stages.",
+    "task": {
+      "action": "Control",
+      "object": "the workflow",
+      "context": null,
+      "purpose": "to manage the progression of a sales process from Lead, through opportunity, to a billed customer."
+    },
+    "neutral_task": "Control the workflow from Lead, opportunity, to a billed customer.",
+    "span": "control the workflow from Lead, opportunity, to a billed costumer."
+  },
+  "ts": "2026-10-18T01:22:48.123349+00:00"
+}

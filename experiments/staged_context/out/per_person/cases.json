@@ -1,0 +1,1460 @@
+{
+  "seed": 42,
+  "per_band": 10,
+  "bands": {
+    "low_1_3": [
+      1,
+      2,
+      3
+    ],
+    "four": [
+      4
+    ],
+    "five": [
+      5
+    ]
+  },
+  "screen_model": "gemini-2.5-flash",
+  "cases": [
+    {
+      "case_id": "case-744d3884",
+      "product": "Freshsales",
+      "role_title": "Hockey Coach",
+      "role_family": "healthcare_wellness",
+      "industry": "Sports",
+      "company_size_band": "201-500 employees",
+      "tenure_band": "6-12 months",
+      "task": {
+        "action": "Reference",
+        "object": "past logs",
+        "context": null,
+        "purpose": null
+      },
+      "neutral_task": "Reference past logs."
+    },
+    {
+      "case_id": "case-8a7834bf",
+      "product": "Freshsales",
+      "role_title": "Workflow analyst",
+      "role_family": "education_research_analysis",
+      "industry": "Real Estate",
+      "company_size_band": "1-10 employees",
+      "tenure_band": "6-12 months",
+      "task": {
+        "action": "Collect and organize",
+        "object": "contacts and conversations",
+        "context": null,
+        "purpose": null
+      },
+      "neutral_task": "Collect and organize contacts and conversations."
+    },
+    {
+      "case_id": "case-41455684",
+      "product": "Freshsales",
+      "role_title": "Managing Director",
+      "role_family": "executive_owner",
+      "industry": "Financial Services",
+      "company_size_band": "1-10 employees",
+      "tenure_band": "1-2 years",
+      "task": {
+        "action": "Track",
+        "object": "sales",
+        "context": null,
+        "purpose": null
+      },
+      "neutral_task": "Track sales."
+    },
+    {
+      "case_id": "case-ec278269",
+      "product": "Freshsales",
+      "role_title": "Manager Business Development",
+      "role_family": "sales_customer",
+      "industry": "Mechanical or Industrial Engineering",
+      "company_size_band": "501-1,000 employees",
+      "tenure_band": "6-12 months",
+      "task": {
+        "action": "Delegate tasks",
+        "object": "to the team",
+        "context": null,
+        "purpose": null
+      },
+      "neutral_task": "Delegate tasks to the team."
+    },
+    {
+      "case_id": "case-3500d0b7",
+      "product": "Freshsales",
+      "role_title": "Customer service",
+      "role_family": "sales_customer",
+      "industry": "Research",
+      "company_size_band": "1-10 employees",
+      "tenure_band": "Less than 6 months",
+      "task": {
+        "action": "Save",
+        "object": "customer contact information and notes",
+        "context": null,
+        "purpose": null
+      },
+      "neutral_task": "Save customer phone numbers, email addresses, and associated notes."
+    },
+    {
+      "case_id": "case-edc34cdf",
+      "product": "Freshsales",
+      "role_title": "Learning and Development Supervisor",
+      "role_family": "general_team_mgmt",
+      "industry": "Information Technology and Services",
+      "company_size_band": "51-200 employees",
+      "tenure_band": "2+ years",
+      "task": {
+        "action": "Track",
+        "object": "sales activities",
+        "context": null,
+        "purpose": null
+      },
+      "neutral_task": "Track sales activities."
+    },
+    {
+      "case_id": "case-b688209a",
+      "product": "Freshsales",
+      "role_title": "Learn Support Coordinator",
+      "role_family": "sales_customer",
+      "industry": "E-Learning",
+      "company_size_band": "11-50 employees",
+      "tenure_band": "2+ years",
+      "task": {
+        "action": "Edit",
+        "object": "customer profile views",
+        "context": null,
+        "purpose": "to see important details at the top of their profile, like their contact details"
+      },
+      "neutral_task": "Edit the customer profile views to display important details, such as contact information, at the top of the profile."
+    },
+    {
+      "case_id": "case-70197ac7",
+      "product": "Freshsales",
+      "role_title": "Marketing and Social Media",
+      "role_family": "marketing_creative_content",
+      "industry": "Restaurants",
+      "company_size_band": "51-200 employees",
+      "tenure_band": "2+ years",
+      "task": {
+        "action": "answer",
+        "object": "any email from customers",
+        "context": "by the responsible member",
+        "purpose": "in a timely manner"
+      },
+      "neutral_task": "Set up a system to ensure any email from customers is answered by the responsible member in a timely manner."
+    },
+    {
+      "case_id": "case-74be1f66",
+      "product": "Freshsales",
+      "role_title": "Student Guidance manager",
+      "role_family": "education_research_analysis",
+      "industry": "E-Learning",
+      "company_size_band": "11-50 employees",
+      "tenure_band": "1-2 years",
+      "task": {
+        "action": "Load up",
+        "object": "a sales cycle",
+        "context": null,
+        "purpose": null
+      },
+      "neutral_task": "Load up a sales cycle."
+    },
+    {
+      "case_id": "case-3edd98a3",
+      "product": "Freshsales",
+      "role_title": "Account Manager",
+      "role_family": "sales_customer",
+      "industry": "Information Technology and Services",
+      "company_size_band": "1-10 employees",
+      "tenure_band": "Less than 6 months",
+      "task": {
+        "action": "Receive reminders",
+        "object": "meetings",
+        "context": "that reflect in the email",
+        "purpose": "to make work easier, avoid checking a physical diary, and prevent forgetting"
+      },
+      "neutral_task": "Set up reminders for meetings that reflect in email to avoid manual diary checks and prevent forgetting."
+    },
+    {
+      "case_id": "case-f1e81d52",
+      "product": "Freshsales",
+      "role_title": "Marketing Executive",
+      "role_family": "marketing_creative_content",
+      "industry": "Telecommunications",
+      "company_size_band": "11-50 employees",
+      "tenure_band": "6-12 months",
+      "task": {
+        "action": "create and deploy",
+        "object": "forms",
+        "context": "on a website",
+        "purpose": "to get leads"
+      },
+      "neutral_task": "Create and deploy forms on a website to capture leads."
+    },
+    {
+      "case_id": "case-0f2b6ae8",
+      "product": "Freshsales",
+      "role_title": "Business Development",
+      "role_family": "sales_customer",
+      "industry": "Security and Investigations",
+      "company_size_band": "10,001+ employees",
+      "tenure_band": "Less than 6 months",
+      "task": {
+        "action": "Add",
+        "object": "points of contacts",
+        "context": "including social media",
+        "purpose": null
+      },
+      "neutral_task": "Add multiple points of contact, including their social media information."
+    },
+    {
+      "case_id": "case-60b39cb5",
+      "product": "Freshsales",
+      "role_title": "Project Manager",
+      "role_family": "project_program_mgmt",
+      "industry": "Design",
+      "company_size_band": "11-50 employees",
+      "tenure_band": "6-12 months",
+      "task": {
+        "action": "Send and track emails",
+        "object": "emails",
+        "context": "from within the CRM",
+        "purpose": null
+      },
+      "neutral_task": "Send emails from within the CRM and track their status."
+    },
+    {
+      "case_id": "case-45fbb0ec",
+      "product": "Freshsales",
+      "role_title": "manager",
+      "role_family": "general_team_mgmt",
+      "industry": "Telecommunications",
+      "company_size_band": "1-10 employees",
+      "tenure_band": "Less than 6 months",
+      "task": {
+        "action": "follow up",
+        "object": "leads and communication",
+        "context": null,
+        "purpose": null
+      },
+      "neutral_task": "Follow up on leads and their associated communication."
+    },
+    {
+      "case_id": "case-37a13203",
+      "product": "Freshsales",
+      "role_title": "Software Engineer",
+      "role_family": "software_it_engineering",
+      "industry": "Real Estate",
+      "company_size_band": "11-50 employees",
+      "tenure_band": "1-2 years",
+      "task": {
+        "action": "Track",
+        "object": "leads",
+        "context": "within the sales process",
+        "purpose": "to simplify the sales process"
+      },
+      "neutral_task": "Track leads within the sales process."
+    },
+    {
+      "case_id": "case-f57f7d33",
+      "product": "Freshsales",
+      "role_title": "Sales & Marketing",
+      "role_family": "marketing_creative_content",
+      "industry": "Hospitality",
+      "company_size_band": "11-50 employees",
+      "tenure_band": "Less than 6 months",
+      "task": {
+        "action": "Add",
+        "object": "new leads, contacts and accounts",
+        "context": null,
+        "purpose": null
+      },
+      "neutral_task": "Add new leads, contacts, and accounts."
+    },
+    {
+      "case_id": "case-26270e40",
+      "product": "Freshsales",
+      "role_title": "Co-Founder",
+      "role_family": "executive_owner",
+      "industry": "Computer Software",
+      "company_size_band": "1-10 employees",
+      "tenure_band": "6-12 months",
+      "task": {
+        "action": "prioritize",
+        "object": "high-potential leads",
+        "context": null,
+        "purpose": null
+      },
+      "neutral_task": "Prioritize high-potential leads."
+    },
+    {
+      "case_id": "case-4ce64e59",
+      "product": "Freshsales",
+      "role_title": "Networking Manager",
+      "role_family": "general_team_mgmt",
+      "industry": "Telecommunications",
+      "company_size_band": "11-50 employees",
+      "tenure_band": "Less than 6 months",
+      "task": {
+        "action": "Control",
+        "object": "the workflow",
+        "context": null,
+        "purpose": "to manage the progression of a sales process from Lead, through opportunity, to a billed customer."
+      },
+      "neutral_task": "Control the workflow from Lead, opportunity, to a billed customer."
+    },
+    {
+      "case_id": "case-dcbcd65b",
+      "product": "Freshsales",
+      "role_title": "Cofounder of hellonext",
+      "role_family": "executive_owner",
+      "industry": "Information Technology and Services",
+      "company_size_band": "1-10 employees",
+      "tenure_band": "Less than 6 months",
+      "task": {
+        "action": "Follow up",
+        "object": "leads",
+        "context": "the reviewer's leads",
+        "purpose": null
+      },
+      "neutral_task": "Follow up with leads."
+    },
+    {
+      "case_id": "case-40377e2e",
+      "product": "Freshsales",
+      "role_title": "Marketing Manager",
+      "role_family": "marketing_creative_content",
+      "industry": "Staffing and Recruiting",
+      "company_size_band": "11-50 employees",
+      "tenure_band": "Less than 6 months",
+      "task": {
+        "action": "design",
+        "object": "email templates",
+        "context": null,
+        "purpose": "for sales"
+      },
+      "neutral_task": "Design email templates, specifically sales templates."
+    },
+    {
+      "case_id": "case-f5b7203a",
+      "product": "Freshsales",
+      "role_title": "Partner",
+      "role_family": "executive_owner",
+      "industry": "Investment Management",
+      "company_size_band": "1-10 employees",
+      "tenure_band": "I used a free trial",
+      "task": {
+        "action": "Add",
+        "object": "new leads and contacts",
+        "context": null,
+        "purpose": null
+      },
+      "neutral_task": "Add new leads and contacts."
+    },
+    {
+      "case_id": "case-e6e81592",
+      "product": "Freshsales",
+      "role_title": "VP Business Development",
+      "role_family": "sales_customer",
+      "industry": "Retail",
+      "company_size_band": "201-500 employees",
+      "tenure_band": "6-12 months",
+      "task": {
+        "action": "Log",
+        "object": "calls and emails",
+        "context": "within Freshsales",
+        "purpose": "to track all interactions with opportunities/contacts"
+      },
+      "neutral_task": "Log all incoming and outgoing calls and emails within Freshsales to track interactions with opportunities or contacts."
+    },
+    {
+      "case_id": "case-680344b5",
+      "product": "Freshsales",
+      "role_title": "Project manager",
+      "role_family": "project_program_mgmt",
+      "industry": "Information Technology and Services",
+      "company_size_band": "1-10 employees",
+      "tenure_band": "6-12 months",
+      "task": {
+        "action": "Manage deals internally",
+        "object": "deals",
+        "context": "using custom fields",
+        "purpose": "to see how we are doing and to filter all leads that were qualified and won and all the ones that we lost as well as the reason for each"
+      },
+      "neutral_task": "Set up custom fields to filter internal deals by qualification status (qualified, won, lost) and the reason for each outcome."
+    },
+    {
+      "case_id": "case-14c2b460",
+      "product": "Freshsales",
+      "role_title": "President",
+      "role_family": "executive_owner",
+      "industry": "Financial Services",
+      "company_size_band": "11-50 employees",
+      "tenure_band": "2+ years",
+      "task": {
+        "action": "Change",
+        "object": "leads to contacts",
+        "context": null,
+        "purpose": "to get reports of sales"
+      },
+      "neutral_task": "Change leads to contacts in order to get reports of sales."
+    },
+    {
+      "case_id": "case-d785bd2e",
+      "product": "Freshsales",
+      "role_title": "CEO",
+      "role_family": "executive_owner",
+      "industry": "Marketing and Advertising",
+      "company_size_band": "11-50 employees",
+      "tenure_band": "6-12 months",
+      "task": {
+        "action": "create",
+        "object": "an opportunity",
+        "context": null,
+        "purpose": "when account, opportunity, and contact setup is needed"
+      },
+      "neutral_task": "Create an opportunity, including setting up the associated account and contact."
+    },
+    {
+      "case_id": "case-0377d4ab",
+      "product": "Freshsales",
+      "role_title": "CTO",
+      "role_family": "executive_owner",
+      "industry": "Market Research",
+      "company_size_band": "1-10 employees",
+      "tenure_band": "1-2 years",
+      "task": {
+        "action": "Manage",
+        "object": "contacts and leads",
+        "context": null,
+        "purpose": null
+      },
+      "neutral_task": "Manage contacts and leads."
+    },
+    {
+      "case_id": "case-22e1c9ad",
+      "product": "Freshsales",
+      "role_title": "owner",
+      "role_family": "executive_owner",
+      "industry": "Hospitality",
+      "company_size_band": "Self-employed",
+      "tenure_band": "Less than 6 months",
+      "task": {
+        "action": "Close",
+        "object": "a task",
+        "context": null,
+        "purpose": null
+      },
+      "neutral_task": "Close a task."
+    },
+    {
+      "case_id": "case-57b362a8",
+      "product": "Freshsales",
+      "role_title": "Director",
+      "role_family": "general_team_mgmt",
+      "industry": "Information Technology and Services",
+      "company_size_band": "1-10 employees",
+      "tenure_band": "Less than 6 months",
+      "task": {
+        "action": "export",
+        "object": "contacts",
+        "context": "from the system",
+        "purpose": "to go to another system that works more reliable"
+      },
+      "neutral_task": "Export contacts from the system to migrate them to another system."
+    },
+    {
+      "case_id": "case-e601d7d0",
+      "product": "Freshsales",
+      "role_title": "Marketing and Sales Associate",
+      "role_family": "marketing_creative_content",
+      "industry": "Non-Profit Organization Management",
+      "company_size_band": "1-10 employees",
+      "tenure_band": "6-12 months",
+      "task": {
+        "action": "Set",
+        "object": "reminders for tasks",
+        "context": null,
+        "purpose": "to remember them a week or months later"
+      },
+      "neutral_task": "Set reminders for tasks to remember them a week or months later."
+    },
+    {
+      "case_id": "case-dc2099e7",
+      "product": "Freshsales",
+      "role_title": "Director of Sales & Onboarding",
+      "role_family": "sales_customer",
+      "industry": "Accounting",
+      "company_size_band": "11-50 employees",
+      "tenure_band": "6-12 months",
+      "task": {
+        "action": "Track",
+        "object": "sales pipeline",
+        "context": null,
+        "purpose": null
+      },
+      "neutral_task": "Track the progress of sales opportunities through defined stages."
+    },
+    {
+      "case_id": "case-36895e85",
+      "product": "Zoho CRM",
+      "role_title": "Owner",
+      "role_family": "executive_owner",
+      "industry": "Retail",
+      "company_size_band": "11-50 employees",
+      "tenure_band": "I used a free trial",
+      "task": {
+        "action": "Create",
+        "object": "an invoice",
+        "context": "daily",
+        "purpose": null
+      },
+      "neutral_task": "Create an invoice."
+    },
+    {
+      "case_id": "case-cf035322",
+      "product": "Zoho CRM",
+      "role_title": "Customer Success Executive",
+      "role_family": "sales_customer",
+      "industry": "Information Technology and Services",
+      "company_size_band": "1,001-5,000 employees",
+      "tenure_band": "6-12 months",
+      "task": {
+        "action": "Send out",
+        "object": "emails",
+        "context": "directly from CRM leads",
+        "purpose": null
+      },
+      "neutral_task": "Send out emails directly from CRM leads."
+    },
+    {
+      "case_id": "case-67235e4d",
+      "product": "Zoho CRM",
+      "role_title": "Digital Content Creator and Promotional Model",
+      "role_family": "marketing_creative_content",
+      "industry": "Retail",
+      "company_size_band": "51-200 employees",
+      "tenure_band": "2+ years",
+      "task": {
+        "action": "Create and export",
+        "object": "reports",
+        "context": null,
+        "purpose": "to keep the team organized"
+      },
+      "neutral_task": "Create and export reports to keep the team organized."
+    },
+    {
+      "case_id": "case-53a680e9",
+      "product": "Zoho CRM",
+      "role_title": "Solar installation coordinator",
+      "role_family": "operations_admin",
+      "industry": "Environmental Services",
+      "company_size_band": "1,001-5,000 employees",
+      "tenure_band": "6-12 months",
+      "task": {
+        "action": "Push and schedule",
+        "object": "workflow processes",
+        "context": "for their job and the team's job throughout the company",
+        "purpose": "to make their job and the team's job easier"
+      },
+      "neutral_task": "Push and schedule workflow processes for their job and the team's job throughout the company."
+    },
+    {
+      "case_id": "case-49fea168",
+      "product": "Zoho CRM",
+      "role_title": "Software Developer",
+      "role_family": "software_it_engineering",
+      "industry": "Computer Software",
+      "company_size_band": "1-10 employees",
+      "tenure_band": "2+ years",
+      "task": {
+        "action": "Manage",
+        "object": "client relationships",
+        "context": "across multiple product lines",
+        "purpose": "for a growing tech company"
+      },
+      "neutral_task": "Manage client relationships across multiple product lines for a growing tech company."
+    },
+    {
+      "case_id": "case-39d5697f",
+      "product": "Zoho CRM",
+      "role_title": "Project Analyst",
+      "role_family": "project_program_mgmt",
+      "industry": "Logistics and Supply Chain",
+      "company_size_band": "51-200 employees",
+      "tenure_band": "1-2 years",
+      "task": {
+        "action": "Manage",
+        "object": "Sales pipeline",
+        "context": "by providing a structured view of leads/deals",
+        "purpose": null
+      },
+      "neutral_task": "Manage the sales pipeline by setting up a structured view of leads and deals."
+    },
+    {
+      "case_id": "case-406d09f3",
+      "product": "Zoho CRM",
+      "role_title": "Director of Business Development",
+      "role_family": "sales_customer",
+      "industry": "Professional Training & Coaching",
+      "company_size_band": "11-50 employees",
+      "tenure_band": "2+ years",
+      "task": {
+        "action": "Automate",
+        "object": "emails, field updates, quotes, and sales orders",
+        "context": "using Zoho CRM workflows/automations",
+        "purpose": null
+      },
+      "neutral_task": "Automate emails, field updates, quotes, and sales orders using Zoho CRM workflows."
+    },
+    {
+      "case_id": "case-2900ba27",
+      "product": "Zoho CRM",
+      "role_title": "SYSTEM ADMINSTRATOR",
+      "role_family": "software_it_engineering",
+      "industry": "Computer & Network Security",
+      "company_size_band": "11-50 employees",
+      "tenure_band": "6-12 months",
+      "task": {
+        "action": "Track",
+        "object": "sales",
+        "context": "using the mobile app",
+        "purpose": null
+      },
+      "neutral_task": "Track sales using the mobile app."
+    },
+    {
+      "case_id": "case-19b806d5",
+      "product": "Zoho CRM",
+      "role_title": "Project Manager",
+      "role_family": "project_program_mgmt",
+      "industry": "Information Technology and Services",
+      "company_size_band": "11-50 employees",
+      "tenure_band": "Less than 6 months",
+      "task": {
+        "action": "Send",
+        "object": "small mass emails",
+        "context": null,
+        "purpose": null
+      },
+      "neutral_task": "Send small mass emails directly."
+    },
+    {
+      "case_id": "case-f09d2c8b",
+      "product": "Zoho CRM",
+      "role_title": "Supervisor",
+      "role_family": "general_team_mgmt",
+      "industry": "Financial Services",
+      "company_size_band": "11-50 employees",
+      "tenure_band": "6-12 months",
+      "task": {
+        "action": "Create",
+        "object": "a custom module",
+        "context": "to capture specific data",
+        "purpose": "to make all data linkable by relating it to base modules"
+      },
+      "neutral_task": "Create a custom module to capture specific data and relate it to base modules to make all data linkable."
+    },
+    {
+      "case_id": "case-945cd736",
+      "product": "Zoho CRM",
+      "role_title": "directeur",
+      "role_family": "general_team_mgmt",
+      "industry": "International Affairs",
+      "company_size_band": "1-10 employees",
+      "tenure_band": "Less than 6 months",
+      "task": {
+        "action": "Record",
+        "object": "voice notes",
+        "context": null,
+        "purpose": null
+      },
+      "neutral_task": "Record voice notes within the CRM."
+    },
+    {
+      "case_id": "case-ed0322f1",
+      "product": "Zoho CRM",
+      "role_title": "freelancer",
+      "role_family": "consultant_freelance",
+      "industry": "Information Technology and Services",
+      "company_size_band": "Self-employed",
+      "tenure_band": "6-12 months",
+      "task": {
+        "action": "Create and classify",
+        "object": "a database of potential clients",
+        "context": null,
+        "purpose": "to connect with people interested in products"
+      },
+      "neutral_task": "Create a database of potential clients and classify them to connect with people interested in products."
+    },
+    {
+      "case_id": "case-113816ba",
+      "product": "Zoho CRM",
+      "role_title": "Responsable relation client",
+      "role_family": "sales_customer",
+      "industry": "Sports",
+      "company_size_band": "10,001+ employees",
+      "tenure_band": "2+ years",
+      "task": {
+        "action": "Centralize and organize",
+        "object": "all customer-related information",
+        "context": null,
+        "purpose": "to facilitate customer relationship management"
+      },
+      "neutral_task": "Centralize and organize all customer-related information to facilitate customer relationship management."
+    },
+    {
+      "case_id": "case-700412d0",
+      "product": "Zoho CRM",
+      "role_title": "VP of Marketing",
+      "role_family": "marketing_creative_content",
+      "industry": "Computer Software",
+      "company_size_band": "11-50 employees",
+      "tenure_band": "6-12 months",
+      "task": {
+        "action": "Perform",
+        "object": "list segmentation or campaign tracking",
+        "context": "for daily email marketing use",
+        "purpose": null
+      },
+      "neutral_task": "Perform list segmentation or campaign tracking for daily email marketing use."
+    },
+    {
+      "case_id": "case-c9d26e66",
+      "product": "Zoho CRM",
+      "role_title": "Owner",
+      "role_family": "executive_owner",
+      "industry": "Broadcast Media",
+      "company_size_band": "11-50 employees",
+      "tenure_band": "2+ years",
+      "task": {
+        "action": "Automate",
+        "object": "sales process activities",
+        "context": "the entire sales process",
+        "purpose": null
+      },
+      "neutral_task": "Automate sending emails, following up with leads, and updating fields within the sales process."
+    },
+    {
+      "case_id": "case-b49ac5d5",
+      "product": "Zoho CRM",
+      "role_title": "System Adminstrator",
+      "role_family": "software_it_engineering",
+      "industry": "Food Production",
+      "company_size_band": "51-200 employees",
+      "tenure_band": "I used a free trial",
+      "task": {
+        "action": "tailor",
+        "object": "workflows",
+        "context": null,
+        "purpose": "to specific business needs"
+      },
+      "neutral_task": "Tailor workflows to specific business needs."
+    },
+    {
+      "case_id": "case-5524f822",
+      "product": "Zoho CRM",
+      "role_title": "ENGINEER",
+      "role_family": "software_it_engineering",
+      "industry": "Consumer Services",
+      "company_size_band": "201-500 employees",
+      "tenure_band": "6-12 months",
+      "task": {
+        "action": "store and track",
+        "object": "details like contact information, correspondence history, activities, and custom data fields",
+        "context": "within a thorough contact management system",
+        "purpose": "to unify and manage all client and lead data in a single spot"
+      },
+      "neutral_task": "Store and track client and lead details, including contact information, communication history, activities, and custom data fields, within a contact management system to centralize all related data."
+    },
+    {
+      "case_id": "case-c8e3ebb9",
+      "product": "Zoho CRM",
+      "role_title": "VP Operations",
+      "role_family": "operations_admin",
+      "industry": "Banking",
+      "company_size_band": "11-50 employees",
+      "tenure_band": "2+ years",
+      "task": {
+        "action": "Customize",
+        "object": "layouts",
+        "context": null,
+        "purpose": null
+      },
+      "neutral_task": "Customize layouts within Zoho CRM."
+    },
+    {
+      "case_id": "case-0aabe159",
+      "product": "Zoho CRM",
+      "role_title": "Content Strategist",
+      "role_family": "marketing_creative_content",
+      "industry": "Marketing and Advertising",
+      "company_size_band": "Self-employed",
+      "tenure_band": "6-12 months",
+      "task": {
+        "action": "keep track of",
+        "object": "all clients",
+        "context": null,
+        "purpose": null
+      },
+      "neutral_task": "Keep track of all clients using basic contact and account management features."
+    },
+    {
+      "case_id": "case-f4d4df80",
+      "product": "Zoho CRM",
+      "role_title": "marketing",
+      "role_family": "marketing_creative_content",
+      "industry": "Marketing and Advertising",
+      "company_size_band": "1-10 employees",
+      "tenure_band": "6-12 months",
+      "task": {
+        "action": "Create",
+        "object": "custom list views of your data",
+        "context": "to adapt your view of the fields that are most important to you",
+        "purpose": null
+      },
+      "neutral_task": "Create custom list views of your data to adapt your view of the fields that are most important to you."
+    },
+    {
+      "case_id": "case-ea9169f9",
+      "product": "Zoho CRM",
+      "role_title": "Senior. Technical Support Specialist for Network Operations",
+      "role_family": "software_it_engineering",
+      "industry": "Information Technology and Services",
+      "company_size_band": "10,001+ employees",
+      "tenure_band": "2+ years",
+      "task": {
+        "action": "Track",
+        "object": "contacts and deals",
+        "context": "in one place",
+        "purpose": "to keep everything organised without needing extra tools"
+      },
+      "neutral_task": "Track contacts and deals in one place to keep everything organized without needing extra tools."
+    },
+    {
+      "case_id": "case-93941023",
+      "product": "Zoho CRM",
+      "role_title": "Account Manager",
+      "role_family": "sales_customer",
+      "industry": "Transportation/Trucking/Railroad",
+      "company_size_band": "11-50 employees",
+      "tenure_band": "1-2 years",
+      "task": {
+        "action": "Organize",
+        "object": "leads",
+        "context": null,
+        "purpose": "to avoid inadvertent double contact"
+      },
+      "neutral_task": "Organize leads to avoid inadvertent double contact."
+    },
+    {
+      "case_id": "case-247dad28",
+      "product": "Zoho CRM",
+      "role_title": "Teaching Assistant",
+      "role_family": "operations_admin",
+      "industry": "Education Management",
+      "company_size_band": "201-500 employees",
+      "tenure_band": "1-2 years",
+      "task": {
+        "action": "predict",
+        "object": "revenue growth",
+        "context": null,
+        "purpose": "realistically"
+      },
+      "neutral_task": "Use the sales forecasting feature to predict revenue growth realistically."
+    },
+    {
+      "case_id": "case-bac4f52a",
+      "product": "Zoho CRM",
+      "role_title": "Office Manager",
+      "role_family": "operations_admin",
+      "industry": "Hospital & Health Care",
+      "company_size_band": "11-50 employees",
+      "tenure_band": "1-2 years",
+      "task": {
+        "action": "Track",
+        "object": "time",
+        "context": "using the time tracking application within Zoho CRM",
+        "purpose": null
+      },
+      "neutral_task": "Track time using the time tracking application within Zoho CRM."
+    },
+    {
+      "case_id": "case-5f152d42",
+      "product": "Zoho CRM",
+      "role_title": "manager",
+      "role_family": "general_team_mgmt",
+      "industry": "Information Technology and Services",
+      "company_size_band": "1-10 employees",
+      "tenure_band": "1-2 years",
+      "task": {
+        "action": "Link",
+        "object": "Zoho CRM to Facebook",
+        "context": "to receive calls and messages from running ads",
+        "purpose": "to enable Zoho CRM to respond to coming calls from customers"
+      },
+      "neutral_task": "Link Zoho CRM to a Facebook account to receive calls and messages generated by running ads, enabling Zoho CRM to respond to incoming customer communications."
+    },
+    {
+      "case_id": "case-0e1a1375",
+      "product": "Zoho CRM",
+      "role_title": "Founder Owner",
+      "role_family": "executive_owner",
+      "industry": "Education Management",
+      "company_size_band": "11-50 employees",
+      "tenure_band": "2+ years",
+      "task": {
+        "action": "Contact",
+        "object": "people",
+        "context": null,
+        "purpose": null
+      },
+      "neutral_task": "Contact people using email and DMS."
+    },
+    {
+      "case_id": "case-f89ceb01",
+      "product": "Zoho CRM",
+      "role_title": "Head of Commercial Growth and Partnerships",
+      "role_family": "general_team_mgmt",
+      "industry": "Marketing and Advertising",
+      "company_size_band": "201-500 employees",
+      "tenure_band": "Less than 6 months",
+      "task": {
+        "action": "Store",
+        "object": "sales material and tasks",
+        "context": null,
+        "purpose": null
+      },
+      "neutral_task": "Store sales material and tasks."
+    },
+    {
+      "case_id": "case-1a925c37",
+      "product": "Zoho CRM",
+      "role_title": "Marketing Consultant",
+      "role_family": "marketing_creative_content",
+      "industry": "Telecommunications",
+      "company_size_band": "Self-employed",
+      "tenure_band": "Less than 6 months",
+      "task": {
+        "action": "Set up",
+        "object": "automated email workflows",
+        "context": "within the CRM",
+        "purpose": "as a core function for managing customer relationships"
+      },
+      "neutral_task": "Set up automated email workflows within the CRM as a core function for managing customer relationships."
+    },
+    {
+      "case_id": "case-c2fa114a",
+      "product": "Zoho CRM",
+      "role_title": "CEO",
+      "role_family": "executive_owner",
+      "industry": "Financial Services",
+      "company_size_band": "11-50 employees",
+      "tenure_band": "6-12 months",
+      "task": {
+        "action": "Tag",
+        "object": "clients and prospects",
+        "context": "when working with many clients",
+        "purpose": null
+      },
+      "neutral_task": "Tag clients and prospects when working with many clients."
+    },
+    {
+      "case_id": "case-bd325d4c",
+      "product": "Zoho CRM",
+      "role_title": "SEO Executive",
+      "role_family": "marketing_creative_content",
+      "industry": "Capital Markets",
+      "company_size_band": "11-50 employees",
+      "tenure_band": "Less than 6 months",
+      "task": {
+        "action": "Track",
+        "object": "the status of sales opportunities, project progress, and customer interactions",
+        "context": "within client relationships",
+        "purpose": "to stay instantly informed"
+      },
+      "neutral_task": "Track the status of sales opportunities, project progress, and customer interactions."
+    },
+    {
+      "case_id": "case-26ef6aaa",
+      "product": "Pipedrive",
+      "role_title": "Founder",
+      "role_family": "executive_owner",
+      "industry": "Marketing and Advertising",
+      "company_size_band": "1-10 employees",
+      "tenure_band": "2+ years",
+      "task": {
+        "action": "drag & drop or bulk change",
+        "object": "statuses of tasks",
+        "context": "in spreadsheet mode",
+        "purpose": null
+      },
+      "neutral_task": "Change the statuses of tasks using drag & drop or bulk editing in spreadsheet mode."
+    },
+    {
+      "case_id": "case-7275672e",
+      "product": "Pipedrive",
+      "role_title": "CEO",
+      "role_family": "executive_owner",
+      "industry": "Health, Wellness and Fitness",
+      "company_size_band": "1-10 employees",
+      "tenure_band": "Less than 6 months",
+      "task": {
+        "action": "transfer",
+        "object": "prospect information",
+        "context": null,
+        "purpose": null
+      },
+      "neutral_task": "Transfer prospect information into Pipedrive."
+    },
+    {
+      "case_id": "case-9ec9f61b",
+      "product": "Pipedrive",
+      "role_title": "Senior Key Account Manager",
+      "role_family": "sales_customer",
+      "industry": "Machinery",
+      "company_size_band": "201-500 employees",
+      "tenure_band": "6-12 months",
+      "task": {
+        "action": "track",
+        "object": "the progress of deals",
+        "context": "using the visual pipeline feature",
+        "purpose": "to make adjustments as needed"
+      },
+      "neutral_task": "Track the progress of deals using the visual pipeline feature to make adjustments as needed."
+    },
+    {
+      "case_id": "case-688b23bd",
+      "product": "Pipedrive",
+      "role_title": "Animation Project Manager",
+      "role_family": "project_program_mgmt",
+      "industry": "Design",
+      "company_size_band": "Self-employed",
+      "tenure_band": "2+ years",
+      "task": {
+        "action": "keep track",
+        "object": "our sales",
+        "context": null,
+        "purpose": null
+      },
+      "neutral_task": "Keep track of sales activities and progress."
+    },
+    {
+      "case_id": "case-7170d429",
+      "product": "Pipedrive",
+      "role_title": "Principal Engineer",
+      "role_family": "executive_owner",
+      "industry": "Internet",
+      "company_size_band": "201-500 employees",
+      "tenure_band": "1-2 years",
+      "task": {
+        "action": "Track",
+        "object": "conversations",
+        "context": "with potential customers, partners and suppliers",
+        "purpose": null
+      },
+      "neutral_task": "Track conversations with potential customers, partners and suppliers."
+    },
+    {
+      "case_id": "case-8670bb40",
+      "product": "Pipedrive",
+      "role_title": "Consultant",
+      "role_family": "consultant_freelance",
+      "industry": "Wholesale",
+      "company_size_band": "1-10 employees",
+      "tenure_band": "Less than 6 months",
+      "task": {
+        "action": "sync",
+        "object": "contacts",
+        "context": null,
+        "purpose": null
+      },
+      "neutral_task": "Sync all contacts together."
+    },
+    {
+      "case_id": "case-bc163f5d",
+      "product": "Pipedrive",
+      "role_title": "VP Of Operations",
+      "role_family": "operations_admin",
+      "industry": "Professional Training & Coaching",
+      "company_size_band": "1-10 employees",
+      "tenure_band": "2+ years",
+      "task": {
+        "action": "Send",
+        "object": "email broadcast/campaigns",
+        "context": null,
+        "purpose": null
+      },
+      "neutral_task": "Send email broadcast/campaigns."
+    },
+    {
+      "case_id": "case-4c613be3",
+      "product": "Pipedrive",
+      "role_title": "Business Manager",
+      "role_family": "general_team_mgmt",
+      "industry": "Telecommunications",
+      "company_size_band": "51-200 employees",
+      "tenure_band": "6-12 months",
+      "task": {
+        "action": "Assign tasks and assignments",
+        "object": "to sales reps",
+        "context": null,
+        "purpose": "to follow up with customers"
+      },
+      "neutral_task": "Assign tasks and assignments to sales representatives to ensure follow-up with customers."
+    },
+    {
+      "case_id": "case-c13372e0",
+      "product": "Pipedrive",
+      "role_title": "VP Sales",
+      "role_family": "sales_customer",
+      "industry": "E-Learning",
+      "company_size_band": "51-200 employees",
+      "tenure_band": "6-12 months",
+      "task": {
+        "action": "Convert",
+        "object": "users to deals or opportunities",
+        "context": null,
+        "purpose": null
+      },
+      "neutral_task": "Convert users into deals or opportunities."
+    },
+    {
+      "case_id": "case-e949afbc",
+      "product": "Pipedrive",
+      "role_title": "Sales",
+      "role_family": "sales_customer",
+      "industry": "Computer Software",
+      "company_size_band": "1-10 employees",
+      "tenure_band": "1-2 years",
+      "task": {
+        "action": "Create",
+        "object": "funnels",
+        "context": null,
+        "purpose": "to manage the sales process and the stages of lead generation"
+      },
+      "neutral_task": "Create funnels to manage the sales process and the stages of lead generation."
+    },
+    {
+      "case_id": "case-1a97b768",
+      "product": "Pipedrive",
+      "role_title": "Managing Director",
+      "role_family": "executive_owner",
+      "industry": "Transportation/Trucking/Railroad",
+      "company_size_band": "51-200 employees",
+      "tenure_band": "1-2 years",
+      "task": {
+        "action": "Manage",
+        "object": "leads",
+        "context": "for a small sales team",
+        "purpose": null
+      },
+      "neutral_task": "Manage leads for a small sales team."
+    },
+    {
+      "case_id": "case-6d4dbba4",
+      "product": "Pipedrive",
+      "role_title": "Growth Manager",
+      "role_family": "general_team_mgmt",
+      "industry": "Computer Software",
+      "company_size_band": "11-50 employees",
+      "tenure_band": "I used a free trial",
+      "task": {
+        "action": "moving",
+        "object": "deals",
+        "context": "through the pipeline",
+        "purpose": "to meet the needs of a lean & agile team"
+      },
+      "neutral_task": "Move deals through a sales pipeline."
+    },
+    {
+      "case_id": "case-a5cce753",
+      "product": "Pipedrive",
+      "role_title": "Business Development Manager",
+      "role_family": "sales_customer",
+      "industry": "Marketing and Advertising",
+      "company_size_band": "11-50 employees",
+      "tenure_band": "2+ years",
+      "task": {
+        "action": "manage and keep track of",
+        "object": "prospects",
+        "context": "in various stages to include initial contact, email sent, proposal sent, in negotiation, follow up, setting appointment reminders that are integrated with your calendar based software such as calendly or Google Calendar",
+        "purpose": "to ensure vital sales process steps are followed"
+      },
+      "neutral_task": "Set up a system to manage and track prospects through various sales stages, including initial contact, email sent, proposal sent, negotiation, and follow-up, incorporating appointment reminders integrated with calendar software."
+    },
+    {
+      "case_id": "case-6d07e86c",
+      "product": "Pipedrive",
+      "role_title": "COO",
+      "role_family": "executive_owner",
+      "industry": "Computer Software",
+      "company_size_band": "1-10 employees",
+      "tenure_band": "Less than 6 months",
+      "task": {
+        "action": "track",
+        "object": "leads",
+        "context": "for 2 new sales and marketing programs",
+        "purpose": "effectively and efficiently"
+      },
+      "neutral_task": "Track leads for two new sales and marketing programs."
+    },
+    {
+      "case_id": "case-368e1e0d",
+      "product": "Pipedrive",
+      "role_title": "Team Lead",
+      "role_family": "general_team_mgmt",
+      "industry": "Information Technology and Services",
+      "company_size_band": "5,001-10,000 employees",
+      "tenure_band": "Less than 6 months",
+      "task": {
+        "action": "create",
+        "object": "filters and objects",
+        "context": null,
+        "purpose": null
+      },
+      "neutral_task": "Create filters and objects within Pipedrive."
+    },
+    {
+      "case_id": "case-f4f95d41",
+      "product": "Pipedrive",
+      "role_title": "IT Support Associate II",
+      "role_family": "software_it_engineering",
+      "industry": "Information Technology and Services",
+      "company_size_band": "10,001+ employees",
+      "tenure_band": "Less than 6 months",
+      "task": {
+        "action": "tracking",
+        "object": "sales",
+        "context": null,
+        "purpose": null
+      },
+      "neutral_task": "Track sales."
+    },
+    {
+      "case_id": "case-6b95cbfd",
+      "product": "Pipedrive",
+      "role_title": "Marketing Manager",
+      "role_family": "marketing_creative_content",
+      "industry": "Computer Software",
+      "company_size_band": "1-10 employees",
+      "tenure_band": "I used a free trial",
+      "task": {
+        "action": "Connect",
+        "object": "email, calendar, and mobile phone",
+        "context": null,
+        "purpose": "to automatically sync data and have a full view of customer interactions"
+      },
+      "neutral_task": "Connect email, calendar, and mobile phone to automatically sync data and have a full view of customer interactions."
+    },
+    {
+      "case_id": "case-43ecadf6",
+      "product": "Pipedrive",
+      "role_title": "Account Director",
+      "role_family": "sales_customer",
+      "industry": "Marketing and Advertising",
+      "company_size_band": "51-200 employees",
+      "tenure_band": "6-12 months",
+      "task": {
+        "action": "add",
+        "object": "contracts/pdf's",
+        "context": "directly to a project",
+        "purpose": "to ensure nothing is lost and is accessible to all"
+      },
+      "neutral_task": "Add contracts or PDFs directly to a project to ensure they are not lost and are accessible to all team members."
+    },
+    {
+      "case_id": "case-9ca1291d",
+      "product": "Pipedrive",
+      "role_title": "Data Analyst",
+      "role_family": "software_it_engineering",
+      "industry": "Internet",
+      "company_size_band": "51-200 employees",
+      "tenure_band": "Less than 6 months",
+      "task": {
+        "action": "store",
+        "object": "customer data",
+        "context": "our",
+        "purpose": null
+      },
+      "neutral_task": "Store customer data."
+    },
+    {
+      "case_id": "case-5458227e",
+      "product": "Pipedrive",
+      "role_title": "People & Culture Director",
+      "role_family": "finance_hr_legal",
+      "industry": "Medical Practice",
+      "company_size_band": "51-200 employees",
+      "tenure_band": "6-12 months",
+      "task": {
+        "action": "follow",
+        "object": "pipeline",
+        "context": null,
+        "purpose": null
+      },
+      "neutral_task": "Monitor the progress of deals through the sales pipeline."
+    },
+    {
+      "case_id": "case-c8b58a1c",
+      "product": "Pipedrive",
+      "role_title": "Digital marketing manager",
+      "role_family": "marketing_creative_content",
+      "industry": "Security and Investigations",
+      "company_size_band": "51-200 employees",
+      "tenure_band": "1-2 years",
+      "task": {
+        "action": "find",
+        "object": "any record",
+        "context": null,
+        "purpose": null
+      },
+      "neutral_task": "Locate any record using the search bar."
+    },
+    {
+      "case_id": "case-f761a26b",
+      "product": "Pipedrive",
+      "role_title": "CEO",
+      "role_family": "executive_owner",
+      "industry": "Internet",
+      "company_size_band": "1-10 employees",
+      "tenure_band": "6-12 months",
+      "task": {
+        "action": "increase",
+        "object": "the customer database",
+        "context": "as part of daily use by the sales team",
+        "purpose": null
+      },
+      "neutral_task": "Increase the customer database by adding new customer records."
+    },
+    {
+      "case_id": "case-49d67484",
+      "product": "Pipedrive",
+      "role_title": "Director",
+      "role_family": "general_team_mgmt",
+      "industry": "Consumer Electronics",
+      "company_size_band": "201-500 employees",
+      "tenure_band": "6-12 months",
+      "task": {
+        "action": "Track data",
+        "object": "deal size, velocity, and customer data",
+        "context": null,
+        "purpose": null
+      },
+      "neutral_task": "Track data related to deal size, deal velocity, and customer information."
+    },
+    {
+      "case_id": "case-fb5577d6",
+      "product": "Pipedrive",
+      "role_title": "Director",
+      "role_family": "general_team_mgmt",
+      "industry": "Information Technology and Services",
+      "company_size_band": "11-50 employees",
+      "tenure_band": "1-2 years",
+      "task": {
+        "action": "Move",
+        "object": "leads",
+        "context": "through the sales pipeline",
+        "purpose": "to closing"
+      },
+      "neutral_task": "Move leads through the sales pipeline to closing."
+    },
+    {
+      "case_id": "case-871d05f3",
+      "product": "Pipedrive",
+      "role_title": "CEO",
+      "role_family": "executive_owner",
+      "industry": "Computer Software",
+      "company_size_band": "1-10 employees",
+      "tenure_band": "Less than 6 months",
+      "task": {
+        "action": "Call",
+        "object": "prospects",
+        "context": "directly from the dashboard",
+        "purpose": null
+      },
+      "neutral_task": "Call prospects directly from the dashboard."
+    },
+    {
+      "case_id": "case-875cecb7",
+      "product": "Pipedrive",
+      "role_title": "President",
+      "role_family": "executive_owner",
+      "industry": "Financial Services",
+      "company_size_band": "1-10 employees",
+      "tenure_band": "Less than 6 months",
+      "task": {
+        "action": "Import and categorize",
+        "object": "prospects",
+        "context": null,
+        "purpose": null
+      },
+      "neutral_task": "Import prospects and categorize them."
+    },
+    {
+      "case_id": "case-09301e19",
+      "product": "Pipedrive",
+      "role_title": "Director of Business Development",
+      "role_family": "sales_customer",
+      "industry": "Aviation & Aerospace",
+      "company_size_band": "11-50 employees",
+      "tenure_band": "6-12 months",
+      "task": {
+        "action": "integrate",
+        "object": "customer lists and data processing",
+        "context": null,
+        "purpose": null
+      },
+      "neutral_task": "Integrate customer lists and associated data for processing within Pipedrive."
+    },
+    {
+      "case_id": "case-1174f961",
+      "product": "Pipedrive",
+      "role_title": "Social Media Manager",
+      "role_family": "marketing_creative_content",
+      "industry": "Design",
+      "company_size_band": "1-10 employees",
+      "tenure_band": "6-12 months",
+      "task": {
+        "action": "Manage",
+        "object": "leads and deals",
+        "context": "through a customizable pipeline",
+        "purpose": "to streamline and increase the efficiency of the team's workflow"
+      },
+      "neutral_task": "Set up a customizable pipeline to manage leads and deals."
+    },
+    {
+      "case_id": "case-9072b5bd",
+      "product": "Pipedrive",
+      "role_title": "Technical Sales Manager",
+      "role_family": "software_it_engineering",
+      "industry": "Renewables & Environment",
+      "company_size_band": "51-200 employees",
+      "tenure_band": "Less than 6 months",
+      "task": {
+        "action": "Track",
+        "object": "activity",
+        "context": null,
+        "purpose": null
+      },
+      "neutral_task": "Track activity."
+    },
+    {
+      "case_id": "case-0e99aefb",
+      "product": "Pipedrive",
+      "role_title": "General Manager",
+      "role_family": "executive_owner",
+      "industry": "Computer Software",
+      "company_size_band": "1-10 employees",
+      "tenure_band": "1-2 years",
+      "task": {
+        "action": "track and sync",
+        "object": "communications",
+        "context": "with specific deals",
+        "purpose": "ensuring nothing gets overlooked"
+      },
+      "neutral_task": "Track and sync email communications with specific deals to ensure nothing is overlooked."
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4dce59b159701bcaae0f7a3f6916395149111948ca1431be99faceacc3b7710e",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 322,
+  "output_tokens": 460,
+  "cost_usd": 0.0012466,
+  "elapsed_s": 4.66,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review mentions 'project management' as a general use case in the title, but it does not describe a specific, concrete task with an object that the reviewer uses the product for. The body of the review focuses on the learning curve and UI clutter, not on a particular activity.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review mentions 'project management' as a general use case in the title, but it does not describe a specific, concrete task with an object that the reviewer uses the product for. The body of the review focuses on the learning curve and UI clutter, not on a particular activity.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:23:57.833340+00:00"
+}

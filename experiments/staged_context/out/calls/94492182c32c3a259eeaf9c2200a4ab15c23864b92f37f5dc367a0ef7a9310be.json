@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "94492182c32c3a259eeaf9c2200a4ab15c23864b92f37f5dc367a0ef7a9310be",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 324,
+  "output_tokens": 490,
+  "cost_usd": 0.0013222,
+  "elapsed_s": 3.43,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review mentions generic benefits like 'follow up' and 'organization', and a feature ('see the history of the customer'), but does not describe a concrete, dominant task the reviewer performs with the product. The 'cons' section describes a desired feature (easier filtering) rather than a task.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review mentions generic benefits like 'follow up' and 'organization', and a feature ('see the history of the customer'), but does not describe a concrete, dominant task the reviewer performs with the product. The 'cons' section describes a desired feature (easier filtering) rather than a task.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:22:35.770463+00:00"
+}

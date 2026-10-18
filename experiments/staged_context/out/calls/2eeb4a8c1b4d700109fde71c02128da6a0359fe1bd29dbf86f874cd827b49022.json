@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2eeb4a8c1b4d700109fde71c02128da6a0359fe1bd29dbf86f874cd827b49022",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 321,
+  "output_tokens": 447,
+  "cost_usd": 0.0012138,
+  "elapsed_s": 3.6,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review does not state a clear, dominant task. It offers general praise about ease of use and setup, and a suggestion for features, but no specific activity the reviewer performs with the product.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review does not state a clear, dominant task. It offers general praise about ease of use and setup, and a suggestion for features, but no specific activity the reviewer performs with the product.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:22:26.237212+00:00"
+}

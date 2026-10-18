@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "55c56edfd73fa955673a07e19572a3272513a8c41b7bc45143a9454b750f675d",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 428,
+  "output_tokens": 504,
+  "cost_usd": 0.0013884000000000001,
+  "elapsed_s": 3.42,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review describes the product's general capabilities ('management of sales, marketing, and customer support operations') and benefits ('boosting productivity and efficiency'), but does not state a single, concrete, dominant task that a user performs. The mention of 'customization options' is too vague and is described as potentially 'overwhelming or complex to set up initially', which contradicts the 15-minute attemptability criterion.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review describes the product's general capabilities ('management of sales, marketing, and customer support operations') and benefits ('boosting productivity and efficiency'), but does not state a single, concrete, dominant task that a user performs. The mention of 'customization options' is too vague and is described as potentially 'overwhelming or complex to set up initially', which contradicts the 15-minute attemptability criterion.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:23:56.600460+00:00"
+}

@@ -1,0 +1,29 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "bcf8dfb71f6da298c9b85a320593ed8ee0b74dfb99df3767d2538c6fe511c618",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 369,
+  "output_tokens": 526,
+  "cost_usd": 0.0014257,
+  "elapsed_s": 3.68,
+  "error": null,
+  "text": "{\n  \"eligible\": true,\n  \"reason\": \"The review explicitly states the core activity of managing leads and deals through a customizable pipeline, which is a concrete and foundational task in Pipedrive, achievable in a fresh trial workspace within 15 minutes.\",\n  \"task\": {\n    \"action\": \"Manage\",\n    \"object\": \"leads and deals\",\n    \"context\": \"through a customizable pipeline\",\n    \"purpose\": \"to streamline and increase the efficiency of the team's workflow\"\n  },\n  \"neutral_task\": \"Set up a customizable pipeline to manage leads and deals.\",\n  \"span\": \"mange leads and deals through a customizable pipeline\"\n}",
+  "json": {
+    "eligible": true,
+    "reason": "The review explicitly states the core activity of managing leads and deals through a customizable pipeline, which is a concrete and foundational task in Pipedrive, achievable in a fresh trial workspace within 15 minutes.",
+    "task": {
+      "action": "Manage",
+      "object": "leads and deals",
+      "context": "through a customizable pipeline",
+      "purpose": "to streamline and increase the efficiency of the team's workflow"
+    },
+    "neutral_task": "Set up a customizable pipeline to manage leads and deals.",
+    "span": "mange leads and deals through a customizable pipeline"
+  },
+  "ts": "2026-10-18T01:25:05.201748+00:00"
+}

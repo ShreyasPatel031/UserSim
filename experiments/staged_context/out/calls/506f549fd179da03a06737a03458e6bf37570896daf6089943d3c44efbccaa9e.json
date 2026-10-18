@@ -1,0 +1,32 @@
+{
+  "stage": "pp_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "506f549fd179da03a06737a03458e6bf37570896daf6089943d3c44efbccaa9e",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 276,
+  "output_tokens": 1013,
+  "cost_usd": 0.0026153,
+  "elapsed_s": 6.47,
+  "error": null,
+  "text": "{\n  \"ease_of_use_probabilities_1_to_5\": [0.05, 0.15, 0.35, 0.35, 0.10],\n  \"likely_frictions\": [\n    \"Complexity in setting up conditional logic or dependencies for custom fields.\",\n    \"Limited options for custom field types or data validation.\",\n    \"Non-intuitive interface for creating and applying filters based on custom fields.\"\n  ],\n  \"rationale\": \"This project manager, working in IT for a small company, has been using Freshsales for 6-12 months. Their task involves setting up custom fields and filtering, which is a common and expected customization in a CRM. For a tech-savvy user in a small company, the expectation is that such a core customization should be reasonably straightforward. However, the exact ease can vary depending on the depth of customization required (e.g., complex dependencies, validation rules) and the intuitiveness of Freshsales's specific implementation. While the task itself is standard, potential frictions could arise if Freshsales's custom field creation or filtering interface is clunky, lacks advanced options, or requires workarounds. Given their role and industry, they are likely capable of navigating some complexity, but would still appreciate a smooth experience. Therefore, a mid-to-high rating (3 or 4) is most probable, reflecting a manageable but not necessarily perfect experience, with a lower chance of extreme dissatisfaction or delight.\"\n}",
+  "json": {
+    "ease_of_use_probabilities_1_to_5": [
+      0.05,
+      0.15,
+      0.35,
+      0.35,
+      0.1
+    ],
+    "likely_frictions": [
+      "Complexity in setting up conditional logic or dependencies for custom fields.",
+      "Limited options for custom field types or data validation.",
+      "Non-intuitive interface for creating and applying filters based on custom fields."
+    ],
+    "rationale": "This project manager, working in IT for a small company, has been using Freshsales for 6-12 months. Their task involves setting up custom fields and filtering, which is a common and expected customization in a CRM. For a tech-savvy user in a small company, the expectation is that such a core customization should be reasonably straightforward. However, the exact ease can vary depending on the depth of customization required (e.g., complex dependencies, validation rules) and the intuitiveness of Freshsales's specific implementation. While the task itself is standard, potential frictions could arise if Freshsales's custom field creation or filtering interface is clunky, lacks advanced options, or requires workarounds. Given their role and industry, they are likely capable of navigating some complexity, but would still appreciate a smooth experience. Therefore, a mid-to-high rating (3 or 4) is most probable, reflecting a manageable but not necessarily perfect experience, with a lower chance of extreme dissatisfaction or delight."
+  },
+  "ts": "2026-10-18T01:27:02.613863+00:00"
+}

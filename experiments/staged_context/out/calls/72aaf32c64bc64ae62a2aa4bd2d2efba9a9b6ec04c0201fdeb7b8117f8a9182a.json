@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "72aaf32c64bc64ae62a2aa4bd2d2efba9a9b6ec04c0201fdeb7b8117f8a9182a",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 338,
+  "output_tokens": 438,
+  "cost_usd": 0.0011964,
+  "elapsed_s": 3.36,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review describes features of the product ('In-depth categories and info blocks', 'many lines of sales progress') but does not explicitly state a concrete task the reviewer uses the product for. It lacks a verb describing an action performed by the user.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review describes features of the product ('In-depth categories and info blocks', 'many lines of sales progress') but does not explicitly state a concrete task the reviewer uses the product for. It lacks a verb describing an action performed by the user.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:24:12.796818+00:00"
+}

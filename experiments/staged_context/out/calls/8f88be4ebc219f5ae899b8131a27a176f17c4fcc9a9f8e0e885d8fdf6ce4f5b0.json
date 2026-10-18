@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8f88be4ebc219f5ae899b8131a27a176f17c4fcc9a9f8e0e885d8fdf6ce4f5b0",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 448,
+  "output_tokens": 516,
+  "cost_usd": 0.0014244,
+  "elapsed_s": 3.46,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review mentions 'easier sms integration' as a reason for choosing, but this is a feature or capability, not a concrete, actionable task that a user would perform within 15 minutes in a trial. It doesn't describe what the user *does* with the SMS integration (e.g., 'send automated SMS reminders to new leads', 'set up a workflow to send SMS updates to clients'). It's too generic to be considered a clear, dominant task.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review mentions 'easier sms integration' as a reason for choosing, but this is a feature or capability, not a concrete, actionable task that a user would perform within 15 minutes in a trial. It doesn't describe what the user *does* with the SMS integration (e.g., 'send automated SMS reminders to new leads', 'set up a workflow to send SMS updates to clients'). It's too generic to be considered a clear, dominant task.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:24:12.875315+00:00"
+}

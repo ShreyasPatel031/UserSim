@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "55d77cd82d9c1de395a43445fb78c357485ac0104ed4c0cf0f75210238232a0e",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 333,
+  "output_tokens": 468,
+  "cost_usd": 0.0012699,
+  "elapsed_s": 3.71,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review lists general capabilities ('generate detailed on sales and activity', 'track key performance metrics', 'gain insights into their sales process') rather than a single, concrete, dominant task that could be attempted in a fresh trial workspace within 15 minutes. The descriptions are too high-level or vague to qualify as a specific task.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review lists general capabilities ('generate detailed on sales and activity', 'track key performance metrics', 'gain insights into their sales process') rather than a single, concrete, dominant task that could be attempted in a fresh trial workspace within 15 minutes. The descriptions are too high-level or vague to qualify as a specific task.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:24:51.071614+00:00"
+}

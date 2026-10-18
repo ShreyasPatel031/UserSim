@@ -1,0 +1,29 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d5d4907af5e22da4bb177b8ce5e4ac64f4d87058a781aad1073d60d6a27240aa",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 401,
+  "output_tokens": 540,
+  "cost_usd": 0.0014703000000000001,
+  "elapsed_s": 3.76,
+  "error": null,
+  "text": "{\n  \"eligible\": true,\n  \"reason\": \"\",\n  \"task\": {\n    \"action\": \"add\",\n    \"object\": \"contracts/pdf's\",\n    \"context\": \"directly to a project\",\n    \"purpose\": \"to ensure nothing is lost and is accessible to all\"\n  },\n  \"neutral_task\": \"Add contracts or PDFs directly to a project to ensure they are not lost and are accessible to all team members.\",\n  \"span\": \"add contracts/pdf's directly to a project so nothing is lost and is accessible to all\"\n}",
+  "json": {
+    "eligible": true,
+    "reason": "",
+    "task": {
+      "action": "add",
+      "object": "contracts/pdf's",
+      "context": "directly to a project",
+      "purpose": "to ensure nothing is lost and is accessible to all"
+    },
+    "neutral_task": "Add contracts or PDFs directly to a project to ensure they are not lost and are accessible to all team members.",
+    "span": "add contracts/pdf's directly to a project so nothing is lost and is accessible to all"
+  },
+  "ts": "2026-10-18T01:24:51.115808+00:00"
+}

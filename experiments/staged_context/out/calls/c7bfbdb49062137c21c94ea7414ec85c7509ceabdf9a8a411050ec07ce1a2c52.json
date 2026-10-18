@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c7bfbdb49062137c21c94ea7414ec85c7509ceabdf9a8a411050ec07ce1a2c52",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 369,
+  "output_tokens": 482,
+  "cost_usd": 0.0013157,
+  "elapsed_s": 5.84,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review focuses on a security feature (Multi-factor authentication) and its benefits/limitations (data security, scalability) rather than describing a specific task the reviewer performs using Zoho CRM. There is no concrete activity with an object that a user would attempt in a trial.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review focuses on a security feature (Multi-factor authentication) and its benefits/limitations (data security, scalability) rather than describing a specific task the reviewer performs using Zoho CRM. There is no concrete activity with an object that a user would attempt in a trial.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:24:09.404253+00:00"
+}

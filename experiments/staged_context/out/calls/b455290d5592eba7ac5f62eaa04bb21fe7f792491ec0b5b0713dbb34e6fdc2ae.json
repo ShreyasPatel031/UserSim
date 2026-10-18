@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b455290d5592eba7ac5f62eaa04bb21fe7f792491ec0b5b0713dbb34e6fdc2ae",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 378,
+  "output_tokens": 489,
+  "cost_usd": 0.0013358999999999999,
+  "elapsed_s": 3.44,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review mentions features (lead generation forms, web visitors tool, project management tool) and a general desired outcome ('all in one' system for project management), but it does not explicitly state a concrete, specific task the reviewer performs with Pipedrive that meets all criteria. The mention of 'project management' is too generic and refers to a tool's capability rather than a specific action the user takes.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review mentions features (lead generation forms, web visitors tool, project management tool) and a general desired outcome ('all in one' system for project management), but it does not explicitly state a concrete, specific task the reviewer performs with Pipedrive that meets all criteria. The mention of 'project management' is too generic and refers to a tool's capability rather than a specific action the user takes.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:25:10.362858+00:00"
+}

@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "21d6997a60ed1451e3e5891503239c79e4ba6980bd7872df8658ffd32ae02334",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 367,
+  "output_tokens": 452,
+  "cost_usd": 0.0012400999999999998,
+  "elapsed_s": 3.88,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review states a general benefit ('administrar as vendas' - manage sales) rather than a concrete, specific task that could be attempted in a fresh trial workspace within 15 minutes. It describes the outcome of using the product's organization, not a specific action.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review states a general benefit ('administrar as vendas' - manage sales) rather than a concrete, specific task that could be attempted in a fresh trial workspace within 15 minutes. It describes the outcome of using the product's organization, not a specific action.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:24:26.047035+00:00"
+}

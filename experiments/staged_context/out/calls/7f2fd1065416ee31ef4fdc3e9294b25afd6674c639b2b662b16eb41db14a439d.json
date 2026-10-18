@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7f2fd1065416ee31ef4fdc3e9294b25afd6674c639b2b662b16eb41db14a439d",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 408,
+  "output_tokens": 478,
+  "cost_usd": 0.0013174,
+  "elapsed_s": 3.41,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review mentions 'full migration support from our previous CRM', which is a service provided by the vendor, not a concrete activity the reviewer performs with the product. It also refers to 'tracking snippet' issues and 'downtime for our sales team', which are problems encountered rather than tasks. No clear, dominant task performed by the reviewer using the product is stated.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review mentions 'full migration support from our previous CRM', which is a service provided by the vendor, not a concrete activity the reviewer performs with the product. It also refers to 'tracking snippet' issues and 'downtime for our sales team', which are problems encountered rather than tasks. No clear, dominant task performed by the reviewer using the product is stated.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:22:56.689001+00:00"
+}

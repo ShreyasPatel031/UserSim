@@ -1,0 +1,29 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1d6b248c54a46088f128a62952bca82223f4c80aedcd727c3f6d33142f49a7c0",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 336,
+  "output_tokens": 521,
+  "cost_usd": 0.0014033,
+  "elapsed_s": 3.84,
+  "error": null,
+  "text": "{\n  \"eligible\": true,\n  \"reason\": \"The review explicitly states the concrete activity of adding contacts with social media details, which is a task easily attempted in a trial.\",\n  \"task\": {\n    \"action\": \"Add\",\n    \"object\": \"points of contacts\",\n    \"context\": \"including social media\",\n    \"purpose\": null\n  },\n  \"neutral_task\": \"Add multiple points of contact, including their social media information.\",\n  \"span\": \"add so many points of contacts, including social media!\"\n}",
+  "json": {
+    "eligible": true,
+    "reason": "The review explicitly states the concrete activity of adding contacts with social media details, which is a task easily attempted in a trial.",
+    "task": {
+      "action": "Add",
+      "object": "points of contacts",
+      "context": "including social media",
+      "purpose": null
+    },
+    "neutral_task": "Add multiple points of contact, including their social media information.",
+    "span": "add so many points of contacts, including social media!"
+  },
+  "ts": "2026-10-18T01:22:44.242599+00:00"
+}

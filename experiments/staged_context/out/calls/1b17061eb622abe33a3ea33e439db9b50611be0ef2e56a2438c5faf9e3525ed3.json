@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1b17061eb622abe33a3ea33e439db9b50611be0ef2e56a2438c5faf9e3525ed3",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 323,
+  "output_tokens": 347,
+  "cost_usd": 0.0009644,
+  "elapsed_s": 3.06,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review does not explicitly state any specific task or activity performed with the software. It uses generic praise like \\\"Loved the things that can be achieved using the software\\\" without providing concrete details.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review does not explicitly state any specific task or activity performed with the software. It uses generic praise like \"Loved the things that can be achieved using the software\" without providing concrete details.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:22:29.648676+00:00"
+}

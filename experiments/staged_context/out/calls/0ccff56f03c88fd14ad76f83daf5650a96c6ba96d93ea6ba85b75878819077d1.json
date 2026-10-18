@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0ccff56f03c88fd14ad76f83daf5650a96c6ba96d93ea6ba85b75878819077d1",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 398,
+  "output_tokens": 482,
+  "cost_usd": 0.0013243999999999999,
+  "elapsed_s": 3.57,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The stated activity, 'automate a lot of processes,' is too generic. It lacks the specificity of a concrete activity with an object that could be attempted in a fresh trial workspace within about 15 minutes. It's more of a general outcome or capability rather than a distinct, actionable task.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The stated activity, 'automate a lot of processes,' is too generic. It lacks the specificity of a concrete activity with an object that could be attempted in a fresh trial workspace within about 15 minutes. It's more of a general outcome or capability rather than a distinct, actionable task.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:24:01.848244+00:00"
+}

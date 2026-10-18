@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "4aa94e7249e6873fb00bfd02bfa926bb48a53fe76bfb8d3b4daa3f13c08bf3fb",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 371,
+  "output_tokens": 491,
+  "cost_usd": 0.0013388,
+  "elapsed_s": 3.81,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review does not explicitly state a concrete, dominant task the reviewer uses Pipedrive for. It mentions general use as a CRM and issues like client duplication, but no specific activity that could be attempted in a fresh trial within 15 minutes.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review does not explicitly state a concrete, dominant task the reviewer uses Pipedrive for. It mentions general use as a CRM and issues like client duplication, but no specific activity that could be attempted in a fresh trial within 15 minutes.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:24:31.286619+00:00"
+}

@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "78d5b3f290ca7ceede8e3f2f91adeeacdca58570ea71eee9f3a8549371b3807d",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 447,
+  "output_tokens": 387,
+  "cost_usd": 0.0011015999999999999,
+  "elapsed_s": 3.07,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review is for Zoho Books, not Zoho CRM, as specified in the prompt. Therefore, no task for Zoho CRM can be identified.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review is for Zoho Books, not Zoho CRM, as specified in the prompt. Therefore, no task for Zoho CRM can be identified.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:24:16.461985+00:00"
+}

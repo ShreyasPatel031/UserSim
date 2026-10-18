@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a753dc805fcbdb1feb6e58f196504ed0efffb8419c9c624c5e500dcfd3fa46b7",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 313,
+  "output_tokens": 465,
+  "cost_usd": 0.0012564000000000002,
+  "elapsed_s": 3.66,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review mentions a feature provided by Zoho ('Zoho provided us with a free domain name email') but does not describe a task the reviewer performs *within* Zoho CRM using the product's functionalities. It's a benefit received, not an activity undertaken.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review mentions a feature provided by Zoho ('Zoho provided us with a free domain name email') but does not describe a task the reviewer performs *within* Zoho CRM using the product's functionalities. It's a benefit received, not an activity undertaken.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:23:15.728381+00:00"
+}

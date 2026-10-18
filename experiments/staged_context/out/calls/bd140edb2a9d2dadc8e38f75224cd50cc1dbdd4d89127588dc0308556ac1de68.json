@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "bd140edb2a9d2dadc8e38f75224cd50cc1dbdd4d89127588dc0308556ac1de68",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 361,
+  "output_tokens": 500,
+  "cost_usd": 0.0013583,
+  "elapsed_s": 3.38,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review describes the product's general scope and benefits ('cover the entire of business marketing , sales and pre-sales operations together', 'fully of much details for each single piece of marketing , sales and pre-sales operations') rather than a concrete, actionable task a user performs. The descriptions are too generic and do not specify an activity with an object that could be attempted in a 15-minute trial.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review describes the product's general scope and benefits ('cover the entire of business marketing , sales and pre-sales operations together', 'fully of much details for each single piece of marketing , sales and pre-sales operations') rather than a concrete, actionable task a user performs. The descriptions are too generic and do not specify an activity with an object that could be attempted in a 15-minute trial.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:23:01.725519+00:00"
+}

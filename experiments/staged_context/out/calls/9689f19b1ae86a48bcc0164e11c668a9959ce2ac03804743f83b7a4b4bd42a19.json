@@ -1,0 +1,29 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9689f19b1ae86a48bcc0164e11c668a9959ce2ac03804743f83b7a4b4bd42a19",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 597,
+  "output_tokens": 534,
+  "cost_usd": 0.0015140999999999998,
+  "elapsed_s": 3.49,
+  "error": null,
+  "text": "{\n  \"eligible\": true,\n  \"reason\": \"The review explicitly states the concrete activity of tracking leads and deals, which can be attempted in a trial workspace within 15 minutes. The purpose of keeping everything organized is also clear.\",\n  \"task\": {\n    \"action\": \"Track\",\n    \"object\": \"contacts and deals\",\n    \"context\": \"in one place\",\n    \"purpose\": \"to keep everything organised without needing extra tools\"\n  },\n  \"neutral_task\": \"Track contacts and deals in one place to keep everything organized without needing extra tools.\",\n  \"span\": \"track contacts and deals in one place\"\n}",
+  "json": {
+    "eligible": true,
+    "reason": "The review explicitly states the concrete activity of tracking leads and deals, which can be attempted in a trial workspace within 15 minutes. The purpose of keeping everything organized is also clear.",
+    "task": {
+      "action": "Track",
+      "object": "contacts and deals",
+      "context": "in one place",
+      "purpose": "to keep everything organised without needing extra tools"
+    },
+    "neutral_task": "Track contacts and deals in one place to keep everything organized without needing extra tools.",
+    "span": "track contacts and deals in one place"
+  },
+  "ts": "2026-10-18T01:24:01.770938+00:00"
+}

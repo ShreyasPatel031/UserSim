@@ -1,0 +1,29 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "396abe92ba49b583bd2350a895d6f8bbceecaacfd5c9e9d2ece3336f84965076",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 313,
+  "output_tokens": 482,
+  "cost_usd": 0.0012989,
+  "elapsed_s": 3.92,
+  "error": null,
+  "text": "{\n  \"eligible\": true,\n  \"reason\": \"The review explicitly states 'follow pipeline', which is a concrete activity (monitoring deals) with an object (the sales pipeline). This is a core Pipedrive function that can be demonstrated quickly in a trial.\",\n  \"task\": {\n    \"action\": \"follow\",\n    \"object\": \"pipeline\",\n    \"context\": null,\n    \"purpose\": null\n  },\n  \"neutral_task\": \"Monitor the progress of deals through the sales pipeline.\",\n  \"span\": \"follow pipeline\"\n}",
+  "json": {
+    "eligible": true,
+    "reason": "The review explicitly states 'follow pipeline', which is a concrete activity (monitoring deals) with an object (the sales pipeline). This is a core Pipedrive function that can be demonstrated quickly in a trial.",
+    "task": {
+      "action": "follow",
+      "object": "pipeline",
+      "context": null,
+      "purpose": null
+    },
+    "neutral_task": "Monitor the progress of deals through the sales pipeline.",
+    "span": "follow pipeline"
+  },
+  "ts": "2026-10-18T01:24:55.306087+00:00"
+}

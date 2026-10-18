@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3242387e1ae4718bf5da4b2fde90ca88454b08dfce2c30f2e623316dcb15e100",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 446,
+  "output_tokens": 466,
+  "cost_usd": 0.0012988000000000001,
+  "elapsed_s": 3.66,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The task 'get this up and running' is too generic and lacks a concrete object or specific activity that could be attempted within 15 minutes. It refers to the general setup of the entire software, not a specific feature or workflow.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The task 'get this up and running' is too generic and lacks a concrete object or specific activity that could be attempted within 15 minutes. It refers to the general setup of the entire software, not a specific feature or workflow.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:23:05.820528+00:00"
+}

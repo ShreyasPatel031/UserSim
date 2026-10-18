@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "71b0884244b2776ad02ca39f208f5f6c9e63678b5c8eeead5a122d016f1890a9",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 457,
+  "output_tokens": 480,
+  "cost_usd": 0.0013371000000000001,
+  "elapsed_s": 3.89,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review mentions several areas of application ('payroll, invoices, workflow management') but none are described as a single, dominant, concrete task that could be attempted in a 15-minute trial. 'Invoices' is mentioned as a problem faced before switching, implying Zoho CRM helps with it, but the specific task is not detailed enough (e.g., 'create an invoice' vs. 'manage invoicing process'). 'Workflow management' is too generic without further detail.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review mentions several areas of application ('payroll, invoices, workflow management') but none are described as a single, dominant, concrete task that could be attempted in a 15-minute trial. 'Invoices' is mentioned as a problem faced before switching, implying Zoho CRM helps with it, but the specific task is not detailed enough (e.g., 'create an invoice' vs. 'manage invoicing process'). 'Workflow management' is too generic without further detail.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:23:37.380066+00:00"
+}

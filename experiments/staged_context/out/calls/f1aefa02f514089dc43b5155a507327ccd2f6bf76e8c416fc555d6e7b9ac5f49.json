@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f1aefa02f514089dc43b5155a507327ccd2f6bf76e8c416fc555d6e7b9ac5f49",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 363,
+  "output_tokens": 465,
+  "cost_usd": 0.0012714000000000002,
+  "elapsed_s": 3.6,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"No clear, dominant task is explicitly stated. The review mentions \\\"leads managed differently to pipeline deals\\\" which describes a system feature/design, and \\\"Workflows enable automation\\\" which is a feature description, but neither specifies a concrete activity the reviewer performs with an object that could be attempted in 15 minutes.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "No clear, dominant task is explicitly stated. The review mentions \"leads managed differently to pipeline deals\" which describes a system feature/design, and \"Workflows enable automation\" which is a feature description, but neither specifies a concrete activity the reviewer performs with an object that could be attempted in 15 minutes.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:22:53.185931+00:00"
+}

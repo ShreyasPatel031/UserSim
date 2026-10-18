@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "091d35bf434e79834b3c6bdd1907d4d4d23897f04978884d81d390a71c771df4",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 380,
+  "output_tokens": 439,
+  "cost_usd": 0.0012115,
+  "elapsed_s": 3.23,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review does not state any specific, concrete task the reviewer used the product for. It only refers to general CRM usage ('getting started with a CRM', 'what we needed at an entry level').\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review does not state any specific, concrete task the reviewer used the product for. It only refers to general CRM usage ('getting started with a CRM', 'what we needed at an entry level').",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:23:32.934821+00:00"
+}

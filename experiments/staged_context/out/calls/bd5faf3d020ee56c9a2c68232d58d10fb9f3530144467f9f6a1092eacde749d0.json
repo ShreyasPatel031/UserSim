@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "bd5faf3d020ee56c9a2c68232d58d10fb9f3530144467f9f6a1092eacde749d0",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 341,
+  "output_tokens": 510,
+  "cost_usd": 0.0013773000000000001,
+  "elapsed_s": 3.5,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review describes general usage and features (navigating, customization) rather than a single, concrete business task the user performs with the product. 'Navigate through contacts, deals, and tasks' is too generic and describes interaction with the interface rather than a specific outcome or goal. 'Tailor the CRM to fit my specific business needs' is also too broad and lacks a concrete object or action that could be attempted in 15 minutes.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review describes general usage and features (navigating, customization) rather than a single, concrete business task the user performs with the product. 'Navigate through contacts, deals, and tasks' is too generic and describes interaction with the interface rather than a specific outcome or goal. 'Tailor the CRM to fit my specific business needs' is also too broad and lacks a concrete object or action that could be attempted in 15 minutes.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:23:51.694616+00:00"
+}

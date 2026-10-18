@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "5a2c1e3c176b8c80793ce6608fb1f0e3d36bd94a7b585d6549a31218649e759e",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 525,
+  "output_tokens": 534,
+  "cost_usd": 0.0014925,
+  "elapsed_s": 3.96,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review mentions 'keeps all your info for a client in one place' which describes a benefit or outcome rather than a concrete, actionable task a user performs. While 'power dial' is a concrete activity mentioned in 'Reasons for switching', it's stated as something the *previous* software didn't do well, not as a task the reviewer *uses Zoho CRM for*. The review lacks a clear, dominant task explicitly stated for Zoho CRM itself that meets all criteria.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review mentions 'keeps all your info for a client in one place' which describes a benefit or outcome rather than a concrete, actionable task a user performs. While 'power dial' is a concrete activity mentioned in 'Reasons for switching', it's stated as something the *previous* software didn't do well, not as a task the reviewer *uses Zoho CRM for*. The review lacks a clear, dominant task explicitly stated for Zoho CRM itself that meets all criteria.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:23:29.689191+00:00"
+}

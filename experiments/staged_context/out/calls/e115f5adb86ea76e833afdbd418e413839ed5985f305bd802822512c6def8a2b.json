@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e115f5adb86ea76e833afdbd418e413839ed5985f305bd802822512c6def8a2b",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 432,
+  "output_tokens": 480,
+  "cost_usd": 0.0013296,
+  "elapsed_s": 3.41,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review mentions general areas like 'lead management', 'marketing', and 'data management' as reasons for exploring the product, but these are broad categories, not concrete, specific tasks that could be attempted within 15 minutes in a fresh trial workspace. The review lacks a clear, dominant, actionable task with a specific object.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review mentions general areas like 'lead management', 'marketing', and 'data management' as reasons for exploring the product, but these are broad categories, not concrete, specific tasks that could be attempted within 15 minutes in a fresh trial workspace. The review lacks a clear, dominant, actionable task with a specific object.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:24:12.831545+00:00"
+}

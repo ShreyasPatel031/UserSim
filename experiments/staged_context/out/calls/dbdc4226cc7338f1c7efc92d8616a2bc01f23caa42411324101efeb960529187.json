@@ -1,0 +1,29 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "dbdc4226cc7338f1c7efc92d8616a2bc01f23caa42411324101efeb960529187",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 443,
+  "output_tokens": 562,
+  "cost_usd": 0.0015379,
+  "elapsed_s": 5.49,
+  "error": null,
+  "text": "{\n  \"eligible\": true,\n  \"reason\": \"The review explicitly states the concrete task of storing and tracking various client and lead details, which is a specific activity performable within a short trial period.\",\n  \"task\": {\n    \"action\": \"store and track\",\n    \"object\": \"details like contact information, correspondence history, activities, and custom data fields\",\n    \"context\": \"within a thorough contact management system\",\n    \"purpose\": \"to unify and manage all client and lead data in a single spot\"\n  },\n  \"neutral_task\": \"Store and track client and lead details, including contact information, communication history, activities, and custom data fields, within a contact management system to centralize all related data.\",\n  \"span\": \"store and track subtleties like contact data, correspondence history, exercises, and custom information fields\"\n}",
+  "json": {
+    "eligible": true,
+    "reason": "The review explicitly states the concrete task of storing and tracking various client and lead details, which is a specific activity performable within a short trial period.",
+    "task": {
+      "action": "store and track",
+      "object": "details like contact information, correspondence history, activities, and custom data fields",
+      "context": "within a thorough contact management system",
+      "purpose": "to unify and manage all client and lead data in a single spot"
+    },
+    "neutral_task": "Store and track client and lead details, including contact information, communication history, activities, and custom data fields, within a contact management system to centralize all related data.",
+    "span": "store and track subtleties like contact data, correspondence history, exercises, and custom information fields"
+  },
+  "ts": "2026-10-18T01:23:48.168678+00:00"
+}

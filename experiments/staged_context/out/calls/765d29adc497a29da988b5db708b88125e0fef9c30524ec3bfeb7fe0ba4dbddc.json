@@ -1,0 +1,29 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "765d29adc497a29da988b5db708b88125e0fef9c30524ec3bfeb7fe0ba4dbddc",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 386,
+  "output_tokens": 578,
+  "cost_usd": 0.0015607999999999998,
+  "elapsed_s": 3.39,
+  "error": null,
+  "text": "{\n  \"eligible\": true,\n  \"reason\": \"The review explicitly mentions 'designing email templates' and 'creating sales templates' as a concrete activity with an object. This task is specific enough and could be attempted in a fresh trial within 15 minutes.\",\n  \"task\": {\n    \"action\": \"design\",\n    \"object\": \"email templates\",\n    \"context\": null,\n    \"purpose\": \"for sales\"\n  },\n  \"neutral_task\": \"Design email templates, specifically sales templates.\",\n  \"span\": \"Email templates are a little buggy when designing. However, once you get used to the bugs that consistently happen, it just becomes normal to deal with. After the templates are created they work fine, however, if you have a lot of sales templates like my team, it gets very frustrating in the beginning.\"\n}",
+  "json": {
+    "eligible": true,
+    "reason": "The review explicitly mentions 'designing email templates' and 'creating sales templates' as a concrete activity with an object. This task is specific enough and could be attempted in a fresh trial within 15 minutes.",
+    "task": {
+      "action": "design",
+      "object": "email templates",
+      "context": null,
+      "purpose": "for sales"
+    },
+    "neutral_task": "Design email templates, specifically sales templates.",
+    "span": "Email templates are a little buggy when designing. However, once you get used to the bugs that consistently happen, it just becomes normal to deal with. After the templates are created they work fine, however, if you have a lot of sales templates like my team, it gets very frustrating in the beginning."
+  },
+  "ts": "2026-10-18T01:22:52.965311+00:00"
+}

@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "6f7a25da7578421354d3497722053a6d07419cff7667ca70fb7111865869289f",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 375,
+  "output_tokens": 503,
+  "cost_usd": 0.00137,
+  "elapsed_s": 3.59,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review lists multiple categories of functionality (email campaign, CRM, contact management, email handling, phone services) that the user was looking for and found in the product. However, it does not describe a single, concrete, dominant task with an explicit action and object that could be attempted in a 15-minute trial. The listed items are broad functionalities rather than specific, actionable tasks.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review lists multiple categories of functionality (email campaign, CRM, contact management, email handling, phone services) that the user was looking for and found in the product. However, it does not describe a single, concrete, dominant task with an explicit action and object that could be attempted in a 15-minute trial. The listed items are broad functionalities rather than specific, actionable tasks.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:22:56.859097+00:00"
+}

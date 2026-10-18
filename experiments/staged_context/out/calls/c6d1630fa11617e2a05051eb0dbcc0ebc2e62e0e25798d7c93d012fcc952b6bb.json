@@ -1,0 +1,29 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c6d1630fa11617e2a05051eb0dbcc0ebc2e62e0e25798d7c93d012fcc952b6bb",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 350,
+  "output_tokens": 536,
+  "cost_usd": 0.001445,
+  "elapsed_s": 3.55,
+  "error": null,
+  "text": "{\n  \"eligible\": true,\n  \"reason\": \"The task 'send small mass emails directly' is explicitly stated, concrete, and could be attempted in a trial within 15 minutes. It is presented as a key benefit.\",\n  \"task\": {\n    \"action\": \"Send\",\n    \"object\": \"small mass emails\",\n    \"context\": null,\n    \"purpose\": null\n  },\n  \"neutral_task\": \"Send small mass emails directly.\",\n  \"span\": \"send small mass emails directly\"\n}",
+  "json": {
+    "eligible": true,
+    "reason": "The task 'send small mass emails directly' is explicitly stated, concrete, and could be attempted in a trial within 15 minutes. It is presented as a key benefit.",
+    "task": {
+      "action": "Send",
+      "object": "small mass emails",
+      "context": null,
+      "purpose": null
+    },
+    "neutral_task": "Send small mass emails directly.",
+    "span": "send small mass emails directly"
+  },
+  "ts": "2026-10-18T01:23:29.270893+00:00"
+}

@@ -1,0 +1,32 @@
+{
+  "stage": "pp_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "542b11410a32b145411b0782a9607e75761c79cd661e78cff860f6adb77889aa",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 262,
+  "output_tokens": 1037,
+  "cost_usd": 0.0026710999999999996,
+  "elapsed_s": 7.23,
+  "error": null,
+  "text": "{\n  \"ease_of_use_probabilities_1_to_5\": [\n    0.05,\n    0.10,\n    0.25,\n    0.40,\n    0.20\n  ],\n  \"likely_frictions\": [\n    \"Initial data import complexity\",\n    \"Learning specific Pipedrive terminology/workflow\",\n    \"Limited customization for very specific sales processes\"\n  ],\n  \"rationale\": \"An IT Support Associate II in a large IT company is likely tech-savvy and accustomed to various software systems. Pipedrive is generally known for its intuitive design and focus on sales pipeline visualization, which should align well with the task of 'track sales'. As a new user (less than 6 months), they are still in the learning phase, but Pipedrive's reputation for ease of use suggests a relatively quick adoption. Their IT background might make them critical of minor UI/UX inconsistencies or lack of advanced customization, but the core functionality for their stated task is typically straightforward. Thus, a rating of 4 is most probable, with a good chance of 3 or 5 depending on their specific expectations and experience with other CRMs.\"\n}",
+  "json": {
+    "ease_of_use_probabilities_1_to_5": [
+      0.05,
+      0.1,
+      0.25,
+      0.4,
+      0.2
+    ],
+    "likely_frictions": [
+      "Initial data import complexity",
+      "Learning specific Pipedrive terminology/workflow",
+      "Limited customization for very specific sales processes"
+    ],
+    "rationale": "An IT Support Associate II in a large IT company is likely tech-savvy and accustomed to various software systems. Pipedrive is generally known for its intuitive design and focus on sales pipeline visualization, which should align well with the task of 'track sales'. As a new user (less than 6 months), they are still in the learning phase, but Pipedrive's reputation for ease of use suggests a relatively quick adoption. Their IT background might make them critical of minor UI/UX inconsistencies or lack of advanced customization, but the core functionality for their stated task is typically straightforward. Thus, a rating of 4 is most probable, with a good chance of 3 or 5 depending on their specific expectations and experience with other CRMs."
+  },
+  "ts": "2026-10-18T01:31:29.909006+00:00"
+}

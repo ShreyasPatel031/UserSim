@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "46d93a6d22df13551cbff79b7ffef9745cda8d4e5f81b51ad76e4ed7bd89446a",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 380,
+  "output_tokens": 479,
+  "cost_usd": 0.0013115,
+  "elapsed_s": 3.57,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review mentions 'pipeline management' and 'contact management' as features, but does not describe a specific, concrete task the reviewer uses the product for. 'Managing the pipeline' is too generic to be considered a concrete activity with an object that could be attempted in 15 minutes.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review mentions 'pipeline management' and 'contact management' as features, but does not describe a specific, concrete task the reviewer uses the product for. 'Managing the pipeline' is too generic to be considered a concrete activity with an object that could be attempted in 15 minutes.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:25:10.493755+00:00"
+}

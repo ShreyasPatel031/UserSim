@@ -1,0 +1,29 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "65fca2f80456eee31950b031a181d913ee0753895dad6be4ad8fa3713310aa57",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 589,
+  "output_tokens": 498,
+  "cost_usd": 0.0014217,
+  "elapsed_s": 3.55,
+  "error": null,
+  "text": "{\n  \"eligible\": true,\n  \"reason\": \"The review explicitly states the concrete activity of tracking deal progress using the visual pipeline feature, which is a core Pipedrive function and can be demonstrated quickly in a trial.\",\n  \"task\": {\n    \"action\": \"track\",\n    \"object\": \"the progress of deals\",\n    \"context\": \"using the visual pipeline feature\",\n    \"purpose\": \"to make adjustments as needed\"\n  },\n  \"neutral_task\": \"Track the progress of deals using the visual pipeline feature to make adjustments as needed.\",\n  \"span\": \"track the progress of deals and make adjustments as needed\"\n}",
+  "json": {
+    "eligible": true,
+    "reason": "The review explicitly states the concrete activity of tracking deal progress using the visual pipeline feature, which is a core Pipedrive function and can be demonstrated quickly in a trial.",
+    "task": {
+      "action": "track",
+      "object": "the progress of deals",
+      "context": "using the visual pipeline feature",
+      "purpose": "to make adjustments as needed"
+    },
+    "neutral_task": "Track the progress of deals using the visual pipeline feature to make adjustments as needed.",
+    "span": "track the progress of deals and make adjustments as needed"
+  },
+  "ts": "2026-10-18T01:24:25.699427+00:00"
+}

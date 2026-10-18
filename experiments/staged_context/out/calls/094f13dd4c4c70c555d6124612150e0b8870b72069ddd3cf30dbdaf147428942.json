@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "094f13dd4c4c70c555d6124612150e0b8870b72069ddd3cf30dbdaf147428942",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 321,
+  "output_tokens": 480,
+  "cost_usd": 0.0012963,
+  "elapsed_s": 3.95,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review describes a feature benefit ('easy to access you all CRM in one page') rather than a concrete, active task the reviewer performs. The 'Cons' section mentions 'export your data in mail', which is a task, but it's described with a negative sentiment ('taking too much time'), violating the neutrality requirement for task extraction. Therefore, no clear, dominant, neutral task can be extracted.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review describes a feature benefit ('easy to access you all CRM in one page') rather than a concrete, active task the reviewer performs. The 'Cons' section mentions 'export your data in mail', which is a task, but it's described with a negative sentiment ('taking too much time'), violating the neutrality requirement for task extraction. Therefore, no clear, dominant, neutral task can be extracted.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:24:46.452255+00:00"
+}

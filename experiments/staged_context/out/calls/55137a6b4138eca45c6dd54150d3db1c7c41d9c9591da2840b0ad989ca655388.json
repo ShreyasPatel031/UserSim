@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "55137a6b4138eca45c6dd54150d3db1c7c41d9c9591da2840b0ad989ca655388",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 375,
+  "output_tokens": 485,
+  "cost_usd": 0.001325,
+  "elapsed_s": 3.54,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review contains only generic praise, benefits, or a problem statement, but no clear, concrete, dominant task that meets all criteria. 'Data Management' is too broad and presented as a general outcome, not a specific activity. 'Search within Accounts' is mentioned as a difficulty, not the primary task the reviewer uses the product for, and is still quite generic.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review contains only generic praise, benefits, or a problem statement, but no clear, concrete, dominant task that meets all criteria. 'Data Management' is too broad and presented as a general outcome, not a specific activity. 'Search within Accounts' is mentioned as a difficulty, not the primary task the reviewer uses the product for, and is still quite generic.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:23:25.363864+00:00"
+}

@@ -1,0 +1,29 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "52f551db3bce240a72b04d11ae0189e02ac11b76ce1fdac4238a85680529b47b",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 530,
+  "output_tokens": 543,
+  "cost_usd": 0.0015165,
+  "elapsed_s": 3.72,
+  "error": null,
+  "text": "{\n  \"eligible\": true,\n  \"reason\": \"The review explicitly states a concrete activity (drag & drop or bulk change statuses of tasks) that can be attempted in a fresh trial workspace within about 15 minutes.\",\n  \"task\": {\n    \"action\": \"drag & drop or bulk change\",\n    \"object\": \"statuses of tasks\",\n    \"context\": \"in spreadsheet mode\",\n    \"purpose\": null\n  },\n  \"neutral_task\": \"Change the statuses of tasks using drag & drop or bulk editing in spreadsheet mode.\",\n  \"span\": \"drag & drop or bulk change statuses of tasks in spreadsheet mode\"\n}",
+  "json": {
+    "eligible": true,
+    "reason": "The review explicitly states a concrete activity (drag & drop or bulk change statuses of tasks) that can be attempted in a fresh trial workspace within about 15 minutes.",
+    "task": {
+      "action": "drag & drop or bulk change",
+      "object": "statuses of tasks",
+      "context": "in spreadsheet mode",
+      "purpose": null
+    },
+    "neutral_task": "Change the statuses of tasks using drag & drop or bulk editing in spreadsheet mode.",
+    "span": "drag & drop or bulk change statuses of tasks in spreadsheet mode"
+  },
+  "ts": "2026-10-18T01:24:25.868460+00:00"
+}

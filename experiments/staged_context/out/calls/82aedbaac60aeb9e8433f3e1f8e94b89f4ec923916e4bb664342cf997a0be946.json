@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "82aedbaac60aeb9e8433f3e1f8e94b89f4ec923916e4bb664342cf997a0be946",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 346,
+  "output_tokens": 524,
+  "cost_usd": 0.0014138000000000002,
+  "elapsed_s": 3.42,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review uses very generic language like \\\"handle so many different tasks all at once\\\" and \\\"working on a minor or major financial project.\\\" These are not concrete activities with a specific object, nor do they describe a single task that could be attempted in a fresh trial workspace within 15 minutes. The task is not explicitly stated in a specific, actionable way.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review uses very generic language like \"handle so many different tasks all at once\" and \"working on a minor or major financial project.\" These are not concrete activities with a specific object, nor do they describe a single task that could be attempted in a fresh trial workspace within 15 minutes. The task is not explicitly stated in a specific, actionable way.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:24:30.873142+00:00"
+}

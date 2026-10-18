@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8fbac1894ca91927908e76fc607f4eb241e9ee87ab049a8e6fb5eb0874bdd98c",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 318,
+  "output_tokens": 449,
+  "cost_usd": 0.0012179,
+  "elapsed_s": 3.4,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review praises a feature ('effortless integration of emailing within the CRM') rather than describing a specific, concrete task the reviewer performs with the product. It doesn't state what kind of emails are sent, to whom, or for what purpose.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review praises a feature ('effortless integration of emailing within the CRM') rather than describing a specific, concrete task the reviewer performs with the product. It doesn't state what kind of emails are sent, to whom, or for what purpose.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:25:10.329463+00:00"
+}

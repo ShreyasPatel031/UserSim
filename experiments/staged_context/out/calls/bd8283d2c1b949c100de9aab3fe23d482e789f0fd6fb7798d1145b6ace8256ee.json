@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "bd8283d2c1b949c100de9aab3fe23d482e789f0fd6fb7798d1145b6ace8256ee",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 384,
+  "output_tokens": 479,
+  "cost_usd": 0.0013127,
+  "elapsed_s": 3.74,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review mentions 'contact management' which is a feature category or a continuous process, not a concrete, single task that can be attempted within 15 minutes. It lacks the specificity required for a 'concrete activity with an object'.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review mentions 'contact management' which is a feature category or a continuous process, not a concrete, single task that can be attempted within 15 minutes. It lacks the specificity required for a 'concrete activity with an object'.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:23:51.928151+00:00"
+}

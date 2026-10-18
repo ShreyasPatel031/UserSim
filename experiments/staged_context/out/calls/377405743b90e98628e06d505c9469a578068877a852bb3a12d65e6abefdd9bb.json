@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "377405743b90e98628e06d505c9469a578068877a852bb3a12d65e6abefdd9bb",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 336,
+  "output_tokens": 475,
+  "cost_usd": 0.0012883,
+  "elapsed_s": 3.57,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review does not state a clear, dominant, concrete task that the reviewer uses the product for. It contains general praise, mentions a feature ('teams integration'), and describes a desired viewing capability ('being able to see leads title without viewing all'), but no specific action the user performs with the product.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review does not state a clear, dominant, concrete task that the reviewer uses the product for. It contains general praise, mentions a feature ('teams integration'), and describes a desired viewing capability ('being able to see leads title without viewing all'), but no specific action the user performs with the product.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:24:46.065601+00:00"
+}

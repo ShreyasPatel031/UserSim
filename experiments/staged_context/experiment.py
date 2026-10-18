@@ -681,47 +681,50 @@ def leakage_checks() -> dict:
 ONET_SYSTEM = "You map software products to plausible user occupations using the O*NET taxonomy. Return JSON only."
 
 
-def build_onet() -> None:
+def onet_pack(t: str, D: dict, seed_sentence: str) -> dict:
+    """Pack O for one product: model maps D to <=3 O*NET occupations; tasks chosen lexically (Core first)."""
     occ = pd.read_csv(CACHE / "onet" / "occupation_data.csv", dtype=str)
     tasks = pd.read_csv(CACHE / "onet" / "task_statements.csv", dtype=str)
     catalog = "\n".join(f"{r['O*NET-SOC Code']}\t{r['Title']}" for _, r in occ.iterrows())
     codes = set(occ["O*NET-SOC Code"])
+    d_target = " ".join(x["text"] for x in D["items"] if x["role"] == "target")
+    user = (
+        f"Product: {t}. {seed_sentence}\n\nPublic product page excerpts:\n{pack_text('D', D)}\n\n"
+        "From these excerpts only, choose at most 3 O*NET occupations whose workers plausibly use this "
+        "product in their work. Use codes exactly as listed in the catalog below.\n"
+        'Return {"occupations": [{"code": "...", "title": "...", "rationale": "one sentence citing the excerpts"}]}\n\n'
+        f"O*NET catalog (code<TAB>title):\n{catalog}"
+    )
+    rec = call_model("onet_map", JUDGE_MODEL, ONET_SYSTEM, user, temperature=0.0, seed=42, max_tokens=4096)
+    if rec.get("error"):
+        return {"status": f"failed: {rec['error']}", "occupations": []}
+    chosen = [o for o in (rec["json"] or {}).get("occupations", []) if o.get("code") in codes][:3]
+    d_words = set(re.findall(r"[a-z]+", d_target.lower())) - STOP
+    out_occ, budget = [], CAP_O
+    for o in chosen:
+        ts = tasks[tasks["O*NET-SOC Code"] == o["code"]].copy()
+        ts["overlap"] = ts["Task"].map(lambda s: len((set(re.findall(r"[a-z]+", s.lower())) - STOP) & d_words))
+        ts["core"] = (ts["Task Type"] == "Core").astype(int)
+        ts = ts.sort_values(["core", "overlap", "Task ID"], ascending=[False, False, True]).head(4)
+        sel = []
+        for _, r in ts.iterrows():
+            if approx_tokens(r["Task"]) + 10 > budget:
+                break
+            budget -= approx_tokens(r["Task"]) + 10
+            sel.append({"id": f"O:{o['code']}:{r['Task ID']}", "task_id": r["Task ID"], "text": r["Task"],
+                        "task_type": r["Task Type"], "lexical_overlap_with_D": int(r["overlap"])})
+        title = occ.loc[occ["O*NET-SOC Code"] == o["code"], "Title"].iloc[0]
+        out_occ.append({"id": f"O:{o['code']}", "code": o["code"], "title": title,
+                        "mapping": "model-inferred from pack D (no review data)", "rationale": o.get("rationale"),
+                        "tasks": sel})
+    return {"status": "ok", "onet_version": ONET_VERSION, "mapping_model": JUDGE_MODEL,
+            "task_selection": "Core first, then lexical overlap with target D text, then Task ID",
+            "occupations": out_occ}
+
+
+def build_onet() -> None:
     for t in PRODUCTS:
-        D = read_json(PACKS / t / "D.json")
-        d_target = " ".join(x["text"] for x in D["items"] if x["role"] == "target")
-        user = (
-            f"Product: {t}. {SEED_SENTENCE[t]}\n\nPublic product page excerpts:\n{pack_text('D', D)}\n\n"
-            "From these excerpts only, choose at most 3 O*NET occupations whose workers plausibly use this "
-            "product in their work. Use codes exactly as listed in the catalog below.\n"
-            'Return {"occupations": [{"code": "...", "title": "...", "rationale": "one sentence citing the excerpts"}]}\n\n'
-            f"O*NET catalog (code<TAB>title):\n{catalog}"
-        )
-        rec = call_model("onet_map", JUDGE_MODEL, ONET_SYSTEM, user, temperature=0.0, seed=42, max_tokens=4096)
-        if rec.get("error"):
-            write_json(PACKS / t / "O.json", {"status": f"failed: {rec['error']}", "occupations": []})
-            continue
-        chosen = [o for o in (rec["json"] or {}).get("occupations", []) if o.get("code") in codes][:3]
-        d_words = set(re.findall(r"[a-z]+", d_target.lower())) - STOP
-        out_occ, budget = [], CAP_O
-        for i, o in enumerate(chosen, 1):
-            ts = tasks[tasks["O*NET-SOC Code"] == o["code"]].copy()
-            ts["overlap"] = ts["Task"].map(lambda s: len((set(re.findall(r"[a-z]+", s.lower())) - STOP) & d_words))
-            ts["core"] = (ts["Task Type"] == "Core").astype(int)
-            ts = ts.sort_values(["core", "overlap", "Task ID"], ascending=[False, False, True]).head(4)
-            sel = []
-            for _, r in ts.iterrows():
-                if approx_tokens(r["Task"]) + 10 > budget:
-                    break
-                budget -= approx_tokens(r["Task"]) + 10
-                sel.append({"id": f"O:{o['code']}:{r['Task ID']}", "task_id": r["Task ID"], "text": r["Task"],
-                            "task_type": r["Task Type"], "lexical_overlap_with_D": int(r["overlap"])})
-            title = occ.loc[occ["O*NET-SOC Code"] == o["code"], "Title"].iloc[0]
-            out_occ.append({"id": f"O:{o['code']}", "code": o["code"], "title": title,
-                            "mapping": "model-inferred from pack D (no review data)", "rationale": o.get("rationale"),
-                            "tasks": sel})
-        write_json(PACKS / t / "O.json", {"status": "ok", "onet_version": ONET_VERSION, "mapping_model": JUDGE_MODEL,
-                                          "task_selection": "Core first, then lexical overlap with target D text, then Task ID",
-                                          "occupations": out_occ})
+        write_json(PACKS / t / "O.json", onet_pack(t, read_json(PACKS / t / "D.json"), SEED_SENTENCE[t]))
     man = read_json(OUT / "evidence_manifest.json")
     for t in PRODUCTS:
         man["targets"][t]["O"] = pack_summary("O", read_json(PACKS / t / "O.json"))

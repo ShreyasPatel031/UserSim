@@ -1,0 +1,29 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ea87aec8d394f402bee642fce845ea4939410a8a42953af791e376e218291a96",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 401,
+  "output_tokens": 502,
+  "cost_usd": 0.0013752999999999999,
+  "elapsed_s": 3.44,
+  "error": null,
+  "text": "{\n  \"eligible\": true,\n  \"reason\": null,\n  \"task\": {\n    \"action\": \"track\",\n    \"object\": \"leads\",\n    \"context\": \"for 2 new sales and marketing programs\",\n    \"purpose\": \"effectively and efficiently\"\n  },\n  \"neutral_task\": \"Track leads for two new sales and marketing programs.\",\n  \"span\": \"track leads\"\n}",
+  "json": {
+    "eligible": true,
+    "reason": null,
+    "task": {
+      "action": "track",
+      "object": "leads",
+      "context": "for 2 new sales and marketing programs",
+      "purpose": "effectively and efficiently"
+    },
+    "neutral_task": "Track leads for two new sales and marketing programs.",
+    "span": "track leads"
+  },
+  "ts": "2026-10-18T01:24:41.263416+00:00"
+}

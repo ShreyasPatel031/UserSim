@@ -1,0 +1,29 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0074e3de576f1a3e225a7c9275f8841907a4eb36b1f7dfa68e62a0499e040209",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 343,
+  "output_tokens": 474,
+  "cost_usd": 0.0012878999999999998,
+  "elapsed_s": 3.19,
+  "error": null,
+  "text": "{\n  \"eligible\": true,\n  \"reason\": \"The review explicitly states a concrete activity ('integrate customer lists and data processing') that is specific enough to be attempted in a trial.\",\n  \"task\": {\n    \"action\": \"integrate\",\n    \"object\": \"customer lists and data processing\",\n    \"context\": null,\n    \"purpose\": null\n  },\n  \"neutral_task\": \"Integrate customer lists and associated data for processing within Pipedrive.\",\n  \"span\": \"integrate customer lists and data processing\"\n}",
+  "json": {
+    "eligible": true,
+    "reason": "The review explicitly states a concrete activity ('integrate customer lists and data processing') that is specific enough to be attempted in a trial.",
+    "task": {
+      "action": "integrate",
+      "object": "customer lists and data processing",
+      "context": null,
+      "purpose": null
+    },
+    "neutral_task": "Integrate customer lists and associated data for processing within Pipedrive.",
+    "span": "integrate customer lists and data processing"
+  },
+  "ts": "2026-10-18T01:25:04.693791+00:00"
+}

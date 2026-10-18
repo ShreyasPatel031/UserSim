@@ -1,0 +1,32 @@
+{
+  "stage": "pp_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "dd49c1d6b23bbcade6b1ee0ca47f076fbbd15dafb3ce14b4c722e0b02cd3cf53",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 256,
+  "output_tokens": 969,
+  "cost_usd": 0.0024993000000000003,
+  "elapsed_s": 5.66,
+  "error": null,
+  "text": "{\n  \"ease_of_use_probabilities_1_to_5\": [\n    0.05,\n    0.15,\n    0.35,\n    0.30,\n    0.15\n  ],\n  \"likely_frictions\": [\n    \"Initial setup and customization for a small team.\",\n    \"Learning curve for features beyond basic lead tracking.\",\n    \"Integration with existing communication tools.\"\n  ],\n  \"rationale\": \"This manager in a small telecommunications company, using Freshsales for less than 6 months to manage lead follow-ups, likely prioritizes ease of use. For a small team, a CRM needs to be intuitive and quick to adopt without extensive training. While Freshsales is generally considered user-friendly for core sales tasks, initial setup, customization to fit their specific workflow, or integrating with other communication tools could present some minor challenges. The short usage time suggests they are still in the adoption phase, where minor hiccups in ease of use can be more impactful. Therefore, a slightly above-average rating is likely, with some potential for minor frustrations preventing a top score.\"\n}",
+  "json": {
+    "ease_of_use_probabilities_1_to_5": [
+      0.05,
+      0.15,
+      0.35,
+      0.3,
+      0.15
+    ],
+    "likely_frictions": [
+      "Initial setup and customization for a small team.",
+      "Learning curve for features beyond basic lead tracking.",
+      "Integration with existing communication tools."
+    ],
+    "rationale": "This manager in a small telecommunications company, using Freshsales for less than 6 months to manage lead follow-ups, likely prioritizes ease of use. For a small team, a CRM needs to be intuitive and quick to adopt without extensive training. While Freshsales is generally considered user-friendly for core sales tasks, initial setup, customization to fit their specific workflow, or integrating with other communication tools could present some minor challenges. The short usage time suggests they are still in the adoption phase, where minor hiccups in ease of use can be more impactful. Therefore, a slightly above-average rating is likely, with some potential for minor frustrations preventing a top score."
+  },
+  "ts": "2026-10-18T01:26:22.091424+00:00"
+}

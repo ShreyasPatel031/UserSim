@@ -1,0 +1,29 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "73dc9b527765e577209c43054437f783e1a352763e09cad166b9869bd656f027",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 410,
+  "output_tokens": 493,
+  "cost_usd": 0.0013555,
+  "elapsed_s": 3.59,
+  "error": null,
+  "text": "{\n  \"eligible\": true,\n  \"reason\": \"The review explicitly states 'tracking activity' and 'data capturing' as the primary tasks the software is used for, which are concrete activities. While 'data capturing' is broad, 'tracking activity' is a specific function. Both are actions that can be attempted in a trial.\",\n  \"task\": {\n    \"action\": \"Track\",\n    \"object\": \"activity\",\n    \"context\": null,\n    \"purpose\": null\n  },\n  \"neutral_task\": \"Track activity.\",\n  \"span\": \"tracking activity\"\n}",
+  "json": {
+    "eligible": true,
+    "reason": "The review explicitly states 'tracking activity' and 'data capturing' as the primary tasks the software is used for, which are concrete activities. While 'data capturing' is broad, 'tracking activity' is a specific function. Both are actions that can be attempted in a trial.",
+    "task": {
+      "action": "Track",
+      "object": "activity",
+      "context": null,
+      "purpose": null
+    },
+    "neutral_task": "Track activity.",
+    "span": "tracking activity"
+  },
+  "ts": "2026-10-18T01:25:05.139442+00:00"
+}

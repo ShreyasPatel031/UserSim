@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7bb9dbb5f1d7d343db2421e7468d7820389269bcb2e7ee4f00bc6ebd066b27e7",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 422,
+  "output_tokens": 493,
+  "cost_usd": 0.0013590999999999998,
+  "elapsed_s": 3.41,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review mentions two distinct tasks ('import contact' and 'share it with other team mates') rather than one clear, dominant task. The primary focus of the review is also on billing issues, not product usage.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review mentions two distinct tasks ('import contact' and 'share it with other team mates') rather than one clear, dominant task. The primary focus of the review is also on billing issues, not product usage.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:24:35.057673+00:00"
+}

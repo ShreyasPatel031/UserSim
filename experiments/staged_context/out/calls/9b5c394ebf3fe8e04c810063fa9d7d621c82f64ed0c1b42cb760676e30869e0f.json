@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "9b5c394ebf3fe8e04c810063fa9d7d621c82f64ed0c1b42cb760676e30869e0f",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 584,
+  "output_tokens": 512,
+  "cost_usd": 0.0014551999999999998,
+  "elapsed_s": 3.88,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review primarily focuses on feature comparisons, complaints about missing functionality (especially regarding the GSuite/Gmail plugin), and general praise for onboarding. It does not explicitly state a clear, dominant, concrete task the reviewer uses Pipedrive for. The closest mention is a desired workflow from a previous CRM ('access all of my deals, contacts and notes right within Gmail'), which is not a task performed with Pipedrive.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review primarily focuses on feature comparisons, complaints about missing functionality (especially regarding the GSuite/Gmail plugin), and general praise for onboarding. It does not explicitly state a clear, dominant, concrete task the reviewer uses Pipedrive for. The closest mention is a desired workflow from a previous CRM ('access all of my deals, contacts and notes right within Gmail'), which is not a task performed with Pipedrive.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:24:46.356051+00:00"
+}

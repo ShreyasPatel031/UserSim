@@ -1,0 +1,21 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "45afe9545624597958f16fe6fc0b1440142c1ca90489256e9e500d7ff60650e0",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 320,
+  "output_tokens": 417,
+  "cost_usd": 0.0011385,
+  "elapsed_s": 3.56,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review does not explicitly state any specific task the user performs with the product. It offers general praise ('User ability is amazing') and a complaint about flexibility ('limilbilty of changing things'), but no concrete activity with an object.\"\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review does not explicitly state any specific task the user performs with the product. It offers general praise ('User ability is amazing') and a complaint about flexibility ('limilbilty of changing things'), but no concrete activity with an object."
+  },
+  "ts": "2026-10-18T01:23:33.263981+00:00"
+}

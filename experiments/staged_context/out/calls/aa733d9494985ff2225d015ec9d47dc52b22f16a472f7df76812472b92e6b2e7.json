@@ -1,0 +1,32 @@
+{
+  "stage": "pp_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "aa733d9494985ff2225d015ec9d47dc52b22f16a472f7df76812472b92e6b2e7",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 265,
+  "output_tokens": 1016,
+  "cost_usd": 0.0026195,
+  "elapsed_s": 7.27,
+  "error": null,
+  "text": "{\n  \"ease_of_use_probabilities_1_to_5\": [\n    0.05,\n    0.20,\n    0.40,\n    0.30,\n    0.05\n  ],\n  \"likely_frictions\": [\n    \"Initial setup complexity for custom pipeline views\",\n    \"Interface can feel dense with many features\",\n    \"Integration challenges with specific logistics tools\"\n  ],\n  \"rationale\": \"The Project Analyst role suggests a user who values structure and organization, aligning well with Zoho CRM's capabilities for custom pipelines and views. The 1-2 years of use indicate they have moved past the initial learning curve. While Zoho CRM is comprehensive for sales pipeline management and suitable for SMBs in the logistics industry, its extensive feature set can sometimes lead to a perception of moderate complexity, especially when setting up highly customized 'structured views' or integrating with niche industry tools. This points to a generally positive but not perfect ease-of-use experience, leaning towards a 3 or 4 rating.\"\n}",
+  "json": {
+    "ease_of_use_probabilities_1_to_5": [
+      0.05,
+      0.2,
+      0.4,
+      0.3,
+      0.05
+    ],
+    "likely_frictions": [
+      "Initial setup complexity for custom pipeline views",
+      "Interface can feel dense with many features",
+      "Integration challenges with specific logistics tools"
+    ],
+    "rationale": "The Project Analyst role suggests a user who values structure and organization, aligning well with Zoho CRM's capabilities for custom pipelines and views. The 1-2 years of use indicate they have moved past the initial learning curve. While Zoho CRM is comprehensive for sales pipeline management and suitable for SMBs in the logistics industry, its extensive feature set can sometimes lead to a perception of moderate complexity, especially when setting up highly customized 'structured views' or integrating with niche industry tools. This points to a generally positive but not perfect ease-of-use experience, leaning towards a 3 or 4 rating."
+  },
+  "ts": "2026-10-18T01:28:06.857121+00:00"
+}

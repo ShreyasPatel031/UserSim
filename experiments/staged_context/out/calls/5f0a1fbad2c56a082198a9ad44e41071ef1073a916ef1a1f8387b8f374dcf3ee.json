@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "5f0a1fbad2c56a082198a9ad44e41071ef1073a916ef1a1f8387b8f374dcf3ee",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 446,
+  "output_tokens": 535,
+  "cost_usd": 0.0014713,
+  "elapsed_s": 3.58,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review primarily discusses missing capabilities and difficulties with existing features, rather than a clear, dominant task the reviewer uses the product for. While 'make a phone call' is mentioned, it's a basic feature, not a specific task the reviewer performs with context or purpose. Other mentions are about what the product *cannot* do or does poorly (e.g., 'route calls to others', 'send texts with attachments'), not a task the reviewer actively uses Freshsales to accomplish.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review primarily discusses missing capabilities and difficulties with existing features, rather than a clear, dominant task the reviewer uses the product for. While 'make a phone call' is mentioned, it's a basic feature, not a specific task the reviewer performs with context or purpose. Other mentions are about what the product *cannot* do or does poorly (e.g., 'route calls to others', 'send texts with attachments'), not a task the reviewer actively uses Freshsales to accomplish.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:23:10.667383+00:00"
+}

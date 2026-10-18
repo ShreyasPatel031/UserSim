@@ -1,0 +1,29 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "dfd70ee66d43ab4a3db4ccccf74a30bf3b65d208463f857ba7eb83df1313a859",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 371,
+  "output_tokens": 527,
+  "cost_usd": 0.0014288,
+  "elapsed_s": 3.19,
+  "error": null,
+  "text": "{\n  \"eligible\": true,\n  \"reason\": \"The review explicitly states using the reminder/task feature to set reminders for future tasks, which is a concrete activity and could be attempted in a trial within 15 minutes.\",\n  \"task\": {\n    \"action\": \"Set\",\n    \"object\": \"reminders for tasks\",\n    \"context\": null,\n    \"purpose\": \"to remember them a week or months later\"\n  },\n  \"neutral_task\": \"Set reminders for tasks to remember them a week or months later.\",\n  \"span\": \"love the reminder/task feature. It helps me to stay organized when I need to remind myself of a task a week or months later.\"\n}",
+  "json": {
+    "eligible": true,
+    "reason": "The review explicitly states using the reminder/task feature to set reminders for future tasks, which is a concrete activity and could be attempted in a trial within 15 minutes.",
+    "task": {
+      "action": "Set",
+      "object": "reminders for tasks",
+      "context": null,
+      "purpose": "to remember them a week or months later"
+    },
+    "neutral_task": "Set reminders for tasks to remember them a week or months later.",
+    "span": "love the reminder/task feature. It helps me to stay organized when I need to remind myself of a task a week or months later."
+  },
+  "ts": "2026-10-18T01:23:10.270255+00:00"
+}

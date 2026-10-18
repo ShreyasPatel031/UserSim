@@ -1,0 +1,29 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "86acf69e9a967f415b773bc8955b867b27039d76b4970b6a502ba6b56810f02f",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 386,
+  "output_tokens": 584,
+  "cost_usd": 0.0015758,
+  "elapsed_s": 3.8,
+  "error": null,
+  "text": "{\n  \"eligible\": true,\n  \"reason\": \"The review explicitly states the task of managing deals internally, including the specific actions of using custom fields to filter leads by status (qualified, won, lost) and reason. This is a concrete activity that could be set up and tested within a short timeframe in a trial.\",\n  \"task\": {\n    \"action\": \"Manage deals internally\",\n    \"object\": \"deals\",\n    \"context\": \"using custom fields\",\n    \"purpose\": \"to see how we are doing and to filter all leads that were qualified and won and all the ones that we lost as well as the reason for each\"\n  },\n  \"neutral_task\": \"Set up custom fields to filter internal deals by qualification status (qualified, won, lost) and the reason for each outcome.\",\n  \"span\": \"We are using this to manage internally our deals to see how we are doing with some custom fields where we can filter all leads that were qualified and won and all the ones that we lost as well as the reason for each.\"\n}",
+  "json": {
+    "eligible": true,
+    "reason": "The review explicitly states the task of managing deals internally, including the specific actions of using custom fields to filter leads by status (qualified, won, lost) and reason. This is a concrete activity that could be set up and tested within a short timeframe in a trial.",
+    "task": {
+      "action": "Manage deals internally",
+      "object": "deals",
+      "context": "using custom fields",
+      "purpose": "to see how we are doing and to filter all leads that were qualified and won and all the ones that we lost as well as the reason for each"
+    },
+    "neutral_task": "Set up custom fields to filter internal deals by qualification status (qualified, won, lost) and the reason for each outcome.",
+    "span": "We are using this to manage internally our deals to see how we are doing with some custom fields where we can filter all leads that were qualified and won and all the ones that we lost as well as the reason for each."
+  },
+  "ts": "2026-10-18T01:23:05.941721+00:00"
+}

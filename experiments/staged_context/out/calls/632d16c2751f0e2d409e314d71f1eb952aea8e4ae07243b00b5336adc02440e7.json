@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "632d16c2751f0e2d409e314d71f1eb952aea8e4ae07243b00b5336adc02440e7",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 377,
+  "output_tokens": 470,
+  "cost_usd": 0.0012881000000000001,
+  "elapsed_s": 5.94,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review does not state a concrete activity with an object. Phrases like 'keep on top of my details' and 'sales forecasting works better' are either too generic or describe outcomes/benefits rather than specific, actionable tasks that could be attempted in a 15-minute trial.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review does not state a concrete activity with an object. Phrases like 'keep on top of my details' and 'sales forecasting works better' are either too generic or describe outcomes/benefits rather than specific, actionable tasks that could be attempted in a 15-minute trial.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:22:21.023808+00:00"
+}

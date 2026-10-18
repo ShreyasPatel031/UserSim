@@ -1,0 +1,32 @@
+{
+  "stage": "pp_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "b588b340d805da86b4f7eb4075669c73df657bad52643963f06ad53282d3b4f9",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2999,
+  "output_tokens": 1136,
+  "cost_usd": 0.0037397,
+  "elapsed_s": 6.21,
+  "error": null,
+  "text": "{\n  \"ease_of_use_probabilities_1_to_5\": [\n    0.35,\n    0.3,\n    0.2,\n    0.1,\n    0.05\n  ],\n  \"likely_frictions\": [\n    \"Difficulty locating or executing the contact export function, especially if not prominently featured.\",\n    \"Exported data format issues (e.g., messy CSV, missing fields) requiring significant manual cleanup for migration.\",\n    \"Lack of clear documentation or support for data migration processes, leading to frustration for a new user.\"\n  ],\n  \"rationale\": \"The reviewer is a Director at a small IT company, using Freshsales for less than 6 months, and tasked with exporting contacts for migration to another system. While Freshsales markets itself as 'easy-to-use' and AI-powered, the specific task of data *export for migration* is often overlooked in ease-of-use marketing and can be complex. For a new user in a small company, any friction in this critical process (especially if they are potentially moving away from the system) would significantly impact their perception of ease of use. The lack of explicit mention of data export features in the provided product evidence, combined with the fact that they are migrating after a short usage period, suggests a higher likelihood of encountering difficulties. Zoho CRM, a competitor, explicitly mentions 'free migration assistance,' highlighting that this is a known point of friction in the CRM market. Therefore, the probability leans towards a lower ease-of-use rating, reflecting potential frustrations with this specific, non-routine task.\"\n}",
+  "json": {
+    "ease_of_use_probabilities_1_to_5": [
+      0.35,
+      0.3,
+      0.2,
+      0.1,
+      0.05
+    ],
+    "likely_frictions": [
+      "Difficulty locating or executing the contact export function, especially if not prominently featured.",
+      "Exported data format issues (e.g., messy CSV, missing fields) requiring significant manual cleanup for migration.",
+      "Lack of clear documentation or support for data migration processes, leading to frustration for a new user."
+    ],
+    "rationale": "The reviewer is a Director at a small IT company, using Freshsales for less than 6 months, and tasked with exporting contacts for migration to another system. While Freshsales markets itself as 'easy-to-use' and AI-powered, the specific task of data *export for migration* is often overlooked in ease-of-use marketing and can be complex. For a new user in a small company, any friction in this critical process (especially if they are potentially moving away from the system) would significantly impact their perception of ease of use. The lack of explicit mention of data export features in the provided product evidence, combined with the fact that they are migrating after a short usage period, suggests a higher likelihood of encountering difficulties. Zoho CRM, a competitor, explicitly mentions 'free migration assistance,' highlighting that this is a known point of friction in the CRM market. Therefore, the probability leans towards a lower ease-of-use rating, reflecting potential frustrations with this specific, non-routine task."
+  },
+  "ts": "2026-10-18T01:27:26.177261+00:00"
+}

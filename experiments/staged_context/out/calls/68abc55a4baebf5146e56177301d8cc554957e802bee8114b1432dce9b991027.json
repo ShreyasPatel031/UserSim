@@ -1,0 +1,32 @@
+{
+  "stage": "pp_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "68abc55a4baebf5146e56177301d8cc554957e802bee8114b1432dce9b991027",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 250,
+  "output_tokens": 1148,
+  "cost_usd": 0.0029449999999999997,
+  "elapsed_s": 7.75,
+  "error": null,
+  "text": "{\n  \"ease_of_use_probabilities_1_to_5\": [\n    0.05,\n    0.15,\n    0.30,\n    0.35,\n    0.15\n  ],\n  \"likely_frictions\": [\n    \"Difficulty customizing contact/lead fields to fit specific market research data requirements.\",\n    \"Limitations in advanced segmentation or reporting features for nuanced market research analysis.\",\n    \"Occasional unintuitive workflows for more complex data handling tasks beyond basic lead management.\"\n  ],\n  \"rationale\": \"As a CTO in a small market research firm, this individual has likely been using Freshsales for a substantial period (1-2 years) primarily for managing contacts and leads. This suggests the core functionality is generally usable and meets their basic needs, preventing churn. For small businesses, ease of use is often a primary driver for adoption and retention. However, a CTO, even in a small company, would likely appreciate efficiency and robust functionality. While Freshsales generally targets SMBs with user-friendly interfaces, specific needs of the market research industry (e.g., highly customized data fields, complex segmentation, or specific reporting for research insights) might present minor friction points, leading to a 'good' to 'very good' experience rather than an 'excellent' one. The long-term usage implies they've overcome initial hurdles, but they might still encounter occasional inefficiencies or limitations for more specialized tasks, leading to a slightly higher probability for a 3 or 4 rating, with a lower chance of extreme dissatisfaction or perfect satisfaction.\"\n}",
+  "json": {
+    "ease_of_use_probabilities_1_to_5": [
+      0.05,
+      0.15,
+      0.3,
+      0.35,
+      0.15
+    ],
+    "likely_frictions": [
+      "Difficulty customizing contact/lead fields to fit specific market research data requirements.",
+      "Limitations in advanced segmentation or reporting features for nuanced market research analysis.",
+      "Occasional unintuitive workflows for more complex data handling tasks beyond basic lead management."
+    ],
+    "rationale": "As a CTO in a small market research firm, this individual has likely been using Freshsales for a substantial period (1-2 years) primarily for managing contacts and leads. This suggests the core functionality is generally usable and meets their basic needs, preventing churn. For small businesses, ease of use is often a primary driver for adoption and retention. However, a CTO, even in a small company, would likely appreciate efficiency and robust functionality. While Freshsales generally targets SMBs with user-friendly interfaces, specific needs of the market research industry (e.g., highly customized data fields, complex segmentation, or specific reporting for research insights) might present minor friction points, leading to a 'good' to 'very good' experience rather than an 'excellent' one. The long-term usage implies they've overcome initial hurdles, but they might still encounter occasional inefficiencies or limitations for more specialized tasks, leading to a slightly higher probability for a 3 or 4 rating, with a lower chance of extreme dissatisfaction or perfect satisfaction."
+  },
+  "ts": "2026-10-18T01:27:17.595669+00:00"
+}

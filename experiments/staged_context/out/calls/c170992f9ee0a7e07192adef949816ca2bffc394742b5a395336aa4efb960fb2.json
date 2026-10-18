@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "c170992f9ee0a7e07192adef949816ca2bffc394742b5a395336aa4efb960fb2",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 339,
+  "output_tokens": 439,
+  "cost_usd": 0.0011991999999999999,
+  "elapsed_s": 3.14,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review does not explicitly state a concrete task the reviewer uses the product for. Phrases like \\\"useful for a small org\\\" are too generic and do not describe a specific activity with an object.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review does not explicitly state a concrete task the reviewer uses the product for. Phrases like \"useful for a small org\" are too generic and do not describe a specific activity with an object.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:25:04.635816+00:00"
+}

@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "bd9aee83e2d98e993ff185a2d498c4f15a9fedc089a2fbe9354ee24e84eb1212",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 421,
+  "output_tokens": 473,
+  "cost_usd": 0.0013088,
+  "elapsed_s": 4.65,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review mentions 'lead management' and its components ('lead management stages', 'lead stage insights', 'lead details column'), but 'lead management' itself is a broad process rather than a single, concrete task that could be attempted in 15 minutes in a fresh trial. The review praises the sufficiency of features for this process, but doesn't describe a specific, actionable task.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review mentions 'lead management' and its components ('lead management stages', 'lead stage insights', 'lead details column'), but 'lead management' itself is a broad process rather than a single, concrete task that could be attempted in 15 minutes in a fresh trial. The review praises the sufficiency of features for this process, but doesn't describe a specific, actionable task.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:24:08.196580+00:00"
+}

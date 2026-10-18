@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0892ce29dc74d43fd37f9004a531a71c4e3cf1ee0bd1426338ceccf59618c75f",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 372,
+  "output_tokens": 459,
+  "cost_usd": 0.0012591,
+  "elapsed_s": 3.33,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review does not state any concrete, specific task that a user performs within Zoho CRM. All statements are high-level descriptions of benefits or features, or generic praise, rather than actionable tasks.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review does not state any concrete, specific task that a user performs within Zoho CRM. All statements are high-level descriptions of benefits or features, or generic praise, rather than actionable tasks.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:23:20.878267+00:00"
+}

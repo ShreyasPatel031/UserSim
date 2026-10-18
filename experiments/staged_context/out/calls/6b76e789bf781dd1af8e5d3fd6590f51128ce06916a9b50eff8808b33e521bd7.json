@@ -1,0 +1,32 @@
+{
+  "stage": "pp_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "6b76e789bf781dd1af8e5d3fd6590f51128ce06916a9b50eff8808b33e521bd7",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 5956,
+  "output_tokens": 1236,
+  "cost_usd": 0.0048768,
+  "elapsed_s": 7.2,
+  "error": null,
+  "text": "{\n  \"ease_of_use_probabilities_1_to_5\": [\n    0.05,\n    0.15,\n    0.35,\n    0.3,\n    0.15\n  ],\n  \"likely_frictions\": [\n    \"Difficulty locating or configuring the specific export function for contacts.\",\n    \"Potential for data formatting issues or incomplete data during the export process.\",\n    \"Lack of clear guidance or support for data migration to another system.\"\n  ],\n  \"rationale\": \"The reviewer is a Director in a small IT and Services company, using Freshsales for less than 6 months. Freshsales heavily advertises itself as 'easy-to-use' and 'AI-powered' to 'streamline processes' and 'boost productivity.' For general CRM tasks, the product likely delivers on this, leading to a generally positive ease-of-use experience (ratings of 3 or 4). However, the specific task of 'exporting contacts to migrate to another system' is a critical, potentially complex, and often infrequent operation. While Freshsales emphasizes many features, there's no explicit mention of data export/migration tools on its public pages. This type of task, especially for a newer user in a small company who might not have dedicated technical support, can be unexpectedly cumbersome even in an otherwise user-friendly system. The absence of specific marketing around easy data export or migration features, combined with the inherent complexity of ensuring data integrity during such a move, introduces a higher probability of friction compared to day-to-day CRM usage. The fact that the reviewer is moving data to 'another system' might also imply they are evaluating or switching CRMs, making the ease of this specific task highly impactful on their overall perception of ease of use for this particular operation. Therefore, a rating of 3 or 4 is most likely, with a lower but still significant chance of a 2 due to the specific task's potential for friction.\"\n}",
+  "json": {
+    "ease_of_use_probabilities_1_to_5": [
+      0.05,
+      0.15,
+      0.35,
+      0.3,
+      0.15
+    ],
+    "likely_frictions": [
+      "Difficulty locating or configuring the specific export function for contacts.",
+      "Potential for data formatting issues or incomplete data during the export process.",
+      "Lack of clear guidance or support for data migration to another system."
+    ],
+    "rationale": "The reviewer is a Director in a small IT and Services company, using Freshsales for less than 6 months. Freshsales heavily advertises itself as 'easy-to-use' and 'AI-powered' to 'streamline processes' and 'boost productivity.' For general CRM tasks, the product likely delivers on this, leading to a generally positive ease-of-use experience (ratings of 3 or 4). However, the specific task of 'exporting contacts to migrate to another system' is a critical, potentially complex, and often infrequent operation. While Freshsales emphasizes many features, there's no explicit mention of data export/migration tools on its public pages. This type of task, especially for a newer user in a small company who might not have dedicated technical support, can be unexpectedly cumbersome even in an otherwise user-friendly system. The absence of specific marketing around easy data export or migration features, combined with the inherent complexity of ensuring data integrity during such a move, introduces a higher probability of friction compared to day-to-day CRM usage. The fact that the reviewer is moving data to 'another system' might also imply they are evaluating or switching CRMs, making the ease of this specific task highly impactful on their overall perception of ease of use for this particular operation. Therefore, a rating of 3 or 4 is most likely, with a lower but still significant chance of a 2 due to the specific task's potential for friction."
+  },
+  "ts": "2026-10-18T01:27:29.676650+00:00"
+}

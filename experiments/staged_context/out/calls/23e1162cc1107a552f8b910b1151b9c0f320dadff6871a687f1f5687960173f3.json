@@ -1,0 +1,29 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "23e1162cc1107a552f8b910b1151b9c0f320dadff6871a687f1f5687960173f3",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 492,
+  "output_tokens": 501,
+  "cost_usd": 0.0014001,
+  "elapsed_s": 3.56,
+  "error": null,
+  "text": "{\n  \"eligible\": true,\n  \"reason\": \"The review explicitly states the concrete activity of exporting contacts, which is a task that could be attempted in a fresh trial.\",\n  \"task\": {\n    \"action\": \"export\",\n    \"object\": \"contacts\",\n    \"context\": \"from the system\",\n    \"purpose\": \"to go to another system that works more reliable\"\n  },\n  \"neutral_task\": \"Export contacts from the system to migrate them to another system.\",\n  \"span\": \"export my contacts from the system\"\n}",
+  "json": {
+    "eligible": true,
+    "reason": "The review explicitly states the concrete activity of exporting contacts, which is a task that could be attempted in a fresh trial.",
+    "task": {
+      "action": "export",
+      "object": "contacts",
+      "context": "from the system",
+      "purpose": "to go to another system that works more reliable"
+    },
+    "neutral_task": "Export contacts from the system to migrate them to another system.",
+    "span": "export my contacts from the system"
+  },
+  "ts": "2026-10-18T01:23:05.728816+00:00"
+}

@@ -1,0 +1,32 @@
+{
+  "stage": "pp_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "5987cdc4442fae131c37d60ec2997b762e33e4b6932571d7d32ee2daa65681be",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 5307,
+  "output_tokens": 1112,
+  "cost_usd": 0.0043721,
+  "elapsed_s": 6.95,
+  "error": null,
+  "text": "{\n  \"ease_of_use_probabilities_1_to_5\": [\n    0.05,\n    0.15,\n    0.3,\n    0.35,\n    0.15\n  ],\n  \"likely_frictions\": [\n    \"Initial setup complexity for a mid-sized company's specific workflows.\",\n    \"Overwhelmed by the extensive feature set beyond basic task management.\",\n    \"Potential learning curve for advanced customization options.\"\n  ],\n  \"rationale\": \"The reviewer is a Head of Commercial Growth and Partnerships in a mid-sized Marketing and Advertising company, using Zoho CRM for less than 6 months to 'store sales material and tasks'. While the stated task is basic, their role implies a need for strategic oversight and potentially more advanced usage later. Zoho CRM advertises itself as comprehensive, scalable, and highly customizable with features like 'visually intuitive interface, no code required' and 'simplified access'. However, for a new user in a mid-sized company, the sheer breadth of features and customization options (e.g., 'design an environment that adapts to your unique workflows', 'customize fields, layouts, and modules to match your sales processes, down to the last detail') might lead to an initial learning curve or complexity during setup, even if the basic task of storing materials and tasks is straightforward. The 'less than 6 months' usage period suggests they are still in the adoption phase. Therefore, a neutral to slightly positive rating (3 or 4) is most likely, as the core task is supported, but the full potential or advanced customization might present some initial friction for a new user in a complex role/company size.\"\n}",
+  "json": {
+    "ease_of_use_probabilities_1_to_5": [
+      0.05,
+      0.15,
+      0.3,
+      0.35,
+      0.15
+    ],
+    "likely_frictions": [
+      "Initial setup complexity for a mid-sized company's specific workflows.",
+      "Overwhelmed by the extensive feature set beyond basic task management.",
+      "Potential learning curve for advanced customization options."
+    ],
+    "rationale": "The reviewer is a Head of Commercial Growth and Partnerships in a mid-sized Marketing and Advertising company, using Zoho CRM for less than 6 months to 'store sales material and tasks'. While the stated task is basic, their role implies a need for strategic oversight and potentially more advanced usage later. Zoho CRM advertises itself as comprehensive, scalable, and highly customizable with features like 'visually intuitive interface, no code required' and 'simplified access'. However, for a new user in a mid-sized company, the sheer breadth of features and customization options (e.g., 'design an environment that adapts to your unique workflows', 'customize fields, layouts, and modules to match your sales processes, down to the last detail') might lead to an initial learning curve or complexity during setup, even if the basic task of storing materials and tasks is straightforward. The 'less than 6 months' usage period suggests they are still in the adoption phase. Therefore, a neutral to slightly positive rating (3 or 4) is most likely, as the core task is supported, but the full potential or advanced customization might present some initial friction for a new user in a complex role/company size."
+  },
+  "ts": "2026-10-18T01:30:00.270944+00:00"
+}

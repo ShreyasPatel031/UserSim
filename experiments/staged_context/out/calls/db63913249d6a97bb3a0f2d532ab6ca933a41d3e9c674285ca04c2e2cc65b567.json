@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "db63913249d6a97bb3a0f2d532ab6ca933a41d3e9c674285ca04c2e2cc65b567",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 359,
+  "output_tokens": 473,
+  "cost_usd": 0.0012902,
+  "elapsed_s": 3.54,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review mentions 'start/manage your sales processes' in the title, which is too generic to be considered a concrete activity with an object. The 'Cons' section refers to 'Contacts/Leads/Deals forms' but only to complain about the lack of tool-tips, not to describe a specific task performed using them. No clear, dominant, concrete task is explicitly stated.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review mentions 'start/manage your sales processes' in the title, which is too generic to be considered a concrete activity with an object. The 'Cons' section refers to 'Contacts/Leads/Deals forms' but only to complain about the lack of tool-tips, not to describe a specific task performed using them. No clear, dominant, concrete task is explicitly stated.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:22:53.139226+00:00"
+}

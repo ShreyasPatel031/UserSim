@@ -1,0 +1,29 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "bc976dd7cbd526df26146cff6d6b7bfea3b25f1cb9821f7ec430834e4d59169c",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 449,
+  "output_tokens": 518,
+  "cost_usd": 0.0014297000000000001,
+  "elapsed_s": 3.76,
+  "error": null,
+  "text": "{\n  \"eligible\": true,\n  \"reason\": \"The review explicitly states a concrete activity ('store sales material' and 'store tasks') that could be attempted in a trial within 15 minutes. While 'streamline' is too abstract, 'store' meets the criteria.\",\n  \"task\": {\n    \"action\": \"Store\",\n    \"object\": \"sales material and tasks\",\n    \"context\": null,\n    \"purpose\": null\n  },\n  \"neutral_task\": \"Store sales material and tasks.\",\n  \"span\": \"store and streamline sales material and taks\"\n}",
+  "json": {
+    "eligible": true,
+    "reason": "The review explicitly states a concrete activity ('store sales material' and 'store tasks') that could be attempted in a trial within 15 minutes. While 'streamline' is too abstract, 'store' meets the criteria.",
+    "task": {
+      "action": "Store",
+      "object": "sales material and tasks",
+      "context": null,
+      "purpose": null
+    },
+    "neutral_task": "Store sales material and tasks.",
+    "span": "store and streamline sales material and taks"
+  },
+  "ts": "2026-10-18T01:24:17.133470+00:00"
+}

@@ -1,0 +1,29 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "630fb35313af9e0e9c44d51db9122687c962c7cdd0e4de493dd86f98ab6d2558",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 395,
+  "output_tokens": 525,
+  "cost_usd": 0.0014309999999999998,
+  "elapsed_s": 3.59,
+  "error": null,
+  "text": "{\n  \"eligible\": true,\n  \"reason\": \"The review explicitly states a concrete activity ('tailor workflows') with an object ('workflows') and a clear purpose ('to specific business needs'). A simple workflow customization could be attempted in a trial within 15 minutes.\",\n  \"task\": {\n    \"action\": \"tailor\",\n    \"object\": \"workflows\",\n    \"context\": null,\n    \"purpose\": \"to specific business needs\"\n  },\n  \"neutral_task\": \"Tailor workflows to specific business needs.\",\n  \"span\": \"tailor workflows to specific business needs\"\n}",
+  "json": {
+    "eligible": true,
+    "reason": "The review explicitly states a concrete activity ('tailor workflows') with an object ('workflows') and a clear purpose ('to specific business needs'). A simple workflow customization could be attempted in a trial within 15 minutes.",
+    "task": {
+      "action": "tailor",
+      "object": "workflows",
+      "context": null,
+      "purpose": "to specific business needs"
+    },
+    "neutral_task": "Tailor workflows to specific business needs.",
+    "span": "tailor workflows to specific business needs"
+  },
+  "ts": "2026-10-18T01:23:46.255367+00:00"
+}

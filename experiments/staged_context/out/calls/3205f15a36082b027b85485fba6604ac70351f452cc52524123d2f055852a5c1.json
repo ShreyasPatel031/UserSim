@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3205f15a36082b027b85485fba6604ac70351f452cc52524123d2f055852a5c1",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 364,
+  "output_tokens": 491,
+  "cost_usd": 0.0013367000000000001,
+  "elapsed_s": 3.36,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review mentions general outcomes like 'improve the relationship with clients and provide more personalized attention' and 'optimized the sales level,' but these are high-level goals or results, not concrete, actionable tasks that could be attempted in a 15-minute trial. There is no specific activity with an object described.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review mentions general outcomes like 'improve the relationship with clients and provide more personalized attention' and 'optimized the sales level,' but these are high-level goals or results, not concrete, actionable tasks that could be attempted in a 15-minute trial. There is no specific activity with an object described.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:23:41.933892+00:00"
+}

@@ -1,0 +1,29 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "6de7c993757d972872ac462ca188f5c134d4860344093df84dd5f2bed67398c2",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 622,
+  "output_tokens": 544,
+  "cost_usd": 0.0015466000000000002,
+  "elapsed_s": 5.21,
+  "error": null,
+  "text": "{\n  \"eligible\": true,\n  \"reason\": \"The review explicitly states the task of prioritizing leads, which is a concrete activity with an object and can be initiated within a 15-minute trial by setting up basic scoring or manually tagging leads.\",\n  \"task\": {\n    \"action\": \"prioritize\",\n    \"object\": \"high-potential leads\",\n    \"context\": null,\n    \"purpose\": null\n  },\n  \"neutral_task\": \"Prioritize high-potential leads.\",\n  \"span\": \"prioritize high-potential leads\"\n}",
+  "json": {
+    "eligible": true,
+    "reason": "The review explicitly states the task of prioritizing leads, which is a concrete activity with an object and can be initiated within a 15-minute trial by setting up basic scoring or manually tagging leads.",
+    "task": {
+      "action": "prioritize",
+      "object": "high-potential leads",
+      "context": null,
+      "purpose": null
+    },
+    "neutral_task": "Prioritize high-potential leads.",
+    "span": "prioritize high-potential leads"
+  },
+  "ts": "2026-10-18T01:22:49.563266+00:00"
+}

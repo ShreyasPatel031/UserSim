@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a2c69f9205408137d4a7272ec8a1f060973e9896aadb7b0a4c0d5d492343b4dc",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 334,
+  "output_tokens": 433,
+  "cost_usd": 0.0011827,
+  "elapsed_s": 5.09,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The stated task \\\"CRM organization\\\" is too generic. It does not describe a concrete activity with a specific object that could be attempted in a trial within 15 minutes. It lacks detail on what aspects of CRM are being organized or how.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The stated task \"CRM organization\" is too generic. It does not describe a concrete activity with a specific object that could be attempted in a trial within 15 minutes. It lacks detail on what aspects of CRM are being organized or how.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:24:36.749759+00:00"
+}

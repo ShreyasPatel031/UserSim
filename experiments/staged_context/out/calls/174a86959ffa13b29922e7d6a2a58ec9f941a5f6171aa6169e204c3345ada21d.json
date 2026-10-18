@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "174a86959ffa13b29922e7d6a2a58ec9f941a5f6171aa6169e204c3345ada21d",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 295,
+  "output_tokens": 352,
+  "cost_usd": 0.0009685,
+  "elapsed_s": 2.9,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review provides only generic praise (\\\"Nice experience with the app is good, understand\\\") and does not explicitly state any concrete, specific task the reviewer uses the product for.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review provides only generic praise (\"Nice experience with the app is good, understand\") and does not explicitly state any concrete, specific task the reviewer uses the product for.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:24:20.080647+00:00"
+}

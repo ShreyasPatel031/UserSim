@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "adc91ef2e0b4ed7bba51d9ede456e261a0d5710e0f1a0fded439890eed8b4f79",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 424,
+  "output_tokens": 448,
+  "cost_usd": 0.0012472,
+  "elapsed_s": 3.58,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review mentions several general capabilities ('distribute to customers', 'manage territories', 'segment them', 'manage sales funnels') but none are described as a single, dominant, concrete activity with an object that could be attempted in a 15-minute trial. They are too high-level or generic.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review mentions several general capabilities ('distribute to customers', 'manage territories', 'segment them', 'manage sales funnels') but none are described as a single, dominant, concrete activity with an object that could be attempted in a 15-minute trial. They are too high-level or generic.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:23:01.939297+00:00"
+}

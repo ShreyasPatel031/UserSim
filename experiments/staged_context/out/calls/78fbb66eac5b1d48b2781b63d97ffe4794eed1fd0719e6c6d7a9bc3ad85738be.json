@@ -1,0 +1,29 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "78fbb66eac5b1d48b2781b63d97ffe4794eed1fd0719e6c6d7a9bc3ad85738be",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 331,
+  "output_tokens": 505,
+  "cost_usd": 0.0013618000000000002,
+  "elapsed_s": 3.62,
+  "error": null,
+  "text": "{\n  \"eligible\": true,\n  \"reason\": \"The review explicitly mentions 'customize layouts' and 'set parameters' as concrete activities that can be attempted within 15 minutes in a trial environment. 'Customize layouts' is chosen as the primary task as it encompasses a broader configuration activity.\",\n  \"task\": {\n    \"action\": \"Customize\",\n    \"object\": \"layouts\",\n    \"context\": null,\n    \"purpose\": null\n  },\n  \"neutral_task\": \"Customize layouts within Zoho CRM.\",\n  \"span\": \"customize layouts\"\n}",
+  "json": {
+    "eligible": true,
+    "reason": "The review explicitly mentions 'customize layouts' and 'set parameters' as concrete activities that can be attempted within 15 minutes in a trial environment. 'Customize layouts' is chosen as the primary task as it encompasses a broader configuration activity.",
+    "task": {
+      "action": "Customize",
+      "object": "layouts",
+      "context": null,
+      "purpose": null
+    },
+    "neutral_task": "Customize layouts within Zoho CRM.",
+    "span": "customize layouts"
+  },
+  "ts": "2026-10-18T01:23:51.817695+00:00"
+}

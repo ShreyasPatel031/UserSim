@@ -1,0 +1,29 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "206d00363f5b46f33a40c779683be60b2c6969057d0b0ab0404e262112f758a7",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 448,
+  "output_tokens": 588,
+  "cost_usd": 0.0016044,
+  "elapsed_s": 3.78,
+  "error": null,
+  "text": "{\n  \"eligible\": true,\n  \"reason\": \"The review explicitly states a concrete activity (create a custom module) with a clear object (specific data) and purpose (making data linkable). This is a task that could reasonably be attempted in a trial environment within 15 minutes.\",\n  \"task\": {\n    \"action\": \"Create\",\n    \"object\": \"a custom module\",\n    \"context\": \"to capture specific data\",\n    \"purpose\": \"to make all data linkable by relating it to base modules\"\n  },\n  \"neutral_task\": \"Create a custom module to capture specific data and relate it to base modules to make all data linkable.\",\n  \"span\": \"create a custom module to capture specific data, this can be related to the base modules, making all your data linkable\"\n}",
+  "json": {
+    "eligible": true,
+    "reason": "The review explicitly states a concrete activity (create a custom module) with a clear object (specific data) and purpose (making data linkable). This is a task that could reasonably be attempted in a trial environment within 15 minutes.",
+    "task": {
+      "action": "Create",
+      "object": "a custom module",
+      "context": "to capture specific data",
+      "purpose": "to make all data linkable by relating it to base modules"
+    },
+    "neutral_task": "Create a custom module to capture specific data and relate it to base modules to make all data linkable.",
+    "span": "create a custom module to capture specific data, this can be related to the base modules, making all your data linkable"
+  },
+  "ts": "2026-10-18T01:23:29.527847+00:00"
+}

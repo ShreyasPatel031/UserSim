@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a0c0ad4b911e136e0434bc233e076db06297adbd9175f0feb785df4d1319159b",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 383,
+  "output_tokens": 465,
+  "cost_usd": 0.0012774000000000001,
+  "elapsed_s": 3.7,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review mentions \\\"implementation process\\\" but does not describe a concrete, specific task with an object that the reviewer was attempting to perform within Pipedrive. It focuses on the overall experience and difficulty rather than a particular activity.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review mentions \"implementation process\" but does not describe a concrete, specific task with an object that the reviewer was attempting to perform within Pipedrive. It focuses on the overall experience and difficulty rather than a particular activity.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:25:10.641741+00:00"
+}

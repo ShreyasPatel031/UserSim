@@ -1,0 +1,5 @@
+{
+  "cases_disjoint_from_pool": true,
+  "c_packs_from_pool": true,
+  "no_target_mentions_in_C": true
+}

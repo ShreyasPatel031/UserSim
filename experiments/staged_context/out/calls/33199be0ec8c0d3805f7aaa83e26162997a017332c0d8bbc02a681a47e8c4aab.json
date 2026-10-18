@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "33199be0ec8c0d3805f7aaa83e26162997a017332c0d8bbc02a681a47e8c4aab",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 354,
+  "output_tokens": 483,
+  "cost_usd": 0.0013137000000000001,
+  "elapsed_s": 3.65,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review does not state a concrete activity with an object. It mentions 'sales CRM' and 'marketing CRM' as product types and 'all the functions you need' as generic praise, but no specific task the reviewer performs with the product.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review does not state a concrete activity with an object. It mentions 'sales CRM' and 'marketing CRM' as product types and 'all the functions you need' as generic praise, but no specific task the reviewer performs with the product.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:22:30.223839+00:00"
+}

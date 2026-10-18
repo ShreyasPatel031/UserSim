@@ -1,0 +1,32 @@
+{
+  "stage": "pp_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ad5822f29620e5e4c0804c3427d0a36f6a4e9a2264141bc8fb17b952693a5df5",
+  "temperature": 0.7,
+  "seed": 1001,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 6570,
+  "output_tokens": 1284,
+  "cost_usd": 0.005181,
+  "elapsed_s": 9.74,
+  "error": null,
+  "text": "{\n  \"ease_of_use_probabilities_1_to_5\": [0.05, 0.15, 0.30, 0.35, 0.15],\n  \"likely_frictions\": [\n    \"Initial setup and customization of reminder workflows might require a learning curve beyond basic task creation.\",\n    \"Potential for the broader CRM functionality to be overwhelming for a small non-profit team, even if specific tasks are easy.\",\n    \"Integration with other tools specific to non-profit operations might not be seamless, adding complexity.\"\n  ],\n  \"rationale\": \"The reviewer is a Marketing and Sales Associate in a small non-profit, using Freshsales for 6-12 months, with a specific task of setting reminders. Freshsales explicitly advertises itself as an 'easy-to-use sales CRM' and directly highlights 'Task management Create tasks, reminders, and appointments' as a feature. For a small team, a straightforward feature like setting reminders should be highly accessible and efficient, especially after 6-12 months of use. However, CRMs can still have a learning curve for broader functionality, and a non-profit might find the extensive features slightly more complex than needed for basic reminder setting, potentially lowering the rating slightly from a perfect 5. The 'Marketing and Sales Associate' role suggests they'd leverage more than just reminders, and while Freshsales also offers marketing automation, integrating and optimizing all these features might present some complexity. Competitor reviews for Zoho CRM (which is also highly customizable like Freshsales) show a range of ease-of-use ratings, with some noting complexity due to customization, but others praising its user-friendliness for specific tasks. Given the direct match of the task to a core, seemingly simple feature, a higher rating is probable, but not necessarily a perfect 5 due to the potential for overall CRM complexity in a small, non-profit context.\"\n}",
+  "json": {
+    "ease_of_use_probabilities_1_to_5": [
+      0.05,
+      0.15,
+      0.3,
+      0.35,
+      0.15
+    ],
+    "likely_frictions": [
+      "Initial setup and customization of reminder workflows might require a learning curve beyond basic task creation.",
+      "Potential for the broader CRM functionality to be overwhelming for a small non-profit team, even if specific tasks are easy.",
+      "Integration with other tools specific to non-profit operations might not be seamless, adding complexity."
+    ],
+    "rationale": "The reviewer is a Marketing and Sales Associate in a small non-profit, using Freshsales for 6-12 months, with a specific task of setting reminders. Freshsales explicitly advertises itself as an 'easy-to-use sales CRM' and directly highlights 'Task management Create tasks, reminders, and appointments' as a feature. For a small team, a straightforward feature like setting reminders should be highly accessible and efficient, especially after 6-12 months of use. However, CRMs can still have a learning curve for broader functionality, and a non-profit might find the extensive features slightly more complex than needed for basic reminder setting, potentially lowering the rating slightly from a perfect 5. The 'Marketing and Sales Associate' role suggests they'd leverage more than just reminders, and while Freshsales also offers marketing automation, integrating and optimizing all these features might present some complexity. Competitor reviews for Zoho CRM (which is also highly customizable like Freshsales) show a range of ease-of-use ratings, with some noting complexity due to customization, but others praising its user-friendliness for specific tasks. Given the direct match of the task to a core, seemingly simple feature, a higher rating is probable, but not necessarily a perfect 5 due to the potential for overall CRM complexity in a small, non-profit context."
+  },
+  "ts": "2026-10-18T01:27:44.224762+00:00"
+}

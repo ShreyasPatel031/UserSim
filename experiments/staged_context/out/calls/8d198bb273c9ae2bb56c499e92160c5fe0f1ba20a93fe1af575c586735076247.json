@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8d198bb273c9ae2bb56c499e92160c5fe0f1ba20a93fe1af575c586735076247",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 316,
+  "output_tokens": 455,
+  "cost_usd": 0.0012323,
+  "elapsed_s": 3.44,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The task described (\\\"Administration of the tickets\\\") is too generic and not a concrete activity with a specific object. It does not meet the criterion of being a concrete activity with an object that a person could attempt in a fresh trial workspace within about 15 minutes.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The task described (\"Administration of the tickets\") is too generic and not a concrete activity with a specific object. It does not meet the criterion of being a concrete activity with an object that a person could attempt in a fresh trial workspace within about 15 minutes.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:22:53.023970+00:00"
+}

@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d03cfe36847c5c094926dec05ecf402140843858f753a72330296dfe230791a2",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 397,
+  "output_tokens": 479,
+  "cost_usd": 0.0013166,
+  "elapsed_s": 3.83,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review mentions 'traceability Account Management' but this is too generic to be considered a concrete activity with an object that could be attempted in a fresh trial within 15 minutes. It describes a general capability or benefit rather than a specific, actionable task.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review mentions 'traceability Account Management' but this is too generic to be considered a concrete activity with an object that could be attempted in a fresh trial within 15 minutes. It describes a general capability or benefit rather than a specific, actionable task.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:23:37.316526+00:00"
+}

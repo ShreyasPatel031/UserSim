@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d03a6147d09d6c954b46740f1508014dd5c16b6f7d4ec1c6bbd1511fdfdf7115",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 352,
+  "output_tokens": 479,
+  "cost_usd": 0.0013031,
+  "elapsed_s": 3.63,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review mentions features and their benefits (e.g., 'automation and customization streamline sales', 'Zia AI boosts lead scoring and task efficiency') but does not describe a single, concrete task that the reviewer performs with the product. 'Streamline sales' and 'boost lead scoring' are outcomes or capabilities, not specific, actionable tasks that could be attempted in 15 minutes.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review mentions features and their benefits (e.g., 'automation and customization streamline sales', 'Zia AI boosts lead scoring and task efficiency') but does not describe a single, concrete task that the reviewer performs with the product. 'Streamline sales' and 'boost lead scoring' are outcomes or capabilities, not specific, actionable tasks that could be attempted in 15 minutes.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:23:42.189748+00:00"
+}

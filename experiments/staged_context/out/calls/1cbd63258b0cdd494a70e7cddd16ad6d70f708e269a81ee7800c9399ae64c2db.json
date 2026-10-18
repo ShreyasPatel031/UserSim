@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1cbd63258b0cdd494a70e7cddd16ad6d70f708e269a81ee7800c9399ae64c2db",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 400,
+  "output_tokens": 498,
+  "cost_usd": 0.0013650000000000001,
+  "elapsed_s": 3.37,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review does not state a clear, concrete task that a user performs within Pipedrive. It mentions a high-level benefit ('achieve sales automation effectively') but does not describe a specific activity with an object that could be attempted in a fresh trial workspace within 15 minutes.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review does not state a clear, concrete task that a user performs within Pipedrive. It mentions a high-level benefit ('achieve sales automation effectively') but does not describe a specific activity with an object that could be attempted in a fresh trial workspace within 15 minutes.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:24:54.755303+00:00"
+}

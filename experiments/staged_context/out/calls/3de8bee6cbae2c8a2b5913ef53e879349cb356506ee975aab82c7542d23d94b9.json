@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3de8bee6cbae2c8a2b5913ef53e879349cb356506ee975aab82c7542d23d94b9",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 351,
+  "output_tokens": 503,
+  "cost_usd": 0.0013628,
+  "elapsed_s": 4.0,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review praises features and their benefits (e.g., 'separation between leads and deals', 'swim lane layout for deals is easy to track and gives great visibility') but does not explicitly state a concrete, dominant task the reviewer performs with the product. 'Track deals' is too generic without further context or object to meet the criteria of a concrete activity.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review praises features and their benefits (e.g., 'separation between leads and deals', 'swim lane layout for deals is easy to track and gives great visibility') but does not explicitly state a concrete, dominant task the reviewer performs with the product. 'Track deals' is too generic without further context or object to meet the criteria of a concrete activity.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:24:51.369930+00:00"
+}

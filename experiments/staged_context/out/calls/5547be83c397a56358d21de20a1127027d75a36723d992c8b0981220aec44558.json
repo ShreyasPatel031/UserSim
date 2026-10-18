@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "5547be83c397a56358d21de20a1127027d75a36723d992c8b0981220aec44558",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 390,
+  "output_tokens": 539,
+  "cost_usd": 0.0014644999999999999,
+  "elapsed_s": 3.9,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review mentions features like 'link accounts and create accounts, deals, or contacts' but does not describe a single, concrete, dominant task the reviewer used the product for. It praises the 'ability' to do these things, but doesn't frame them as a specific activity the user set out to accomplish, nor does it provide enough context to form a concrete task that meets the 15-minute trial criterion.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review mentions features like 'link accounts and create accounts, deals, or contacts' but does not describe a single, concrete, dominant task the reviewer used the product for. It praises the 'ability' to do these things, but doesn't frame them as a specific activity the user set out to accomplish, nor does it provide enough context to form a concrete task that meets the 15-minute trial criterion.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:24:13.349088+00:00"
+}

@@ -1,0 +1,32 @@
+{
+  "stage": "pp_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f3ac1cb8a2a3cbe3e5f8fe5008e6666cdad80c310e1f9b392d96761d5877aa18",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3602,
+  "output_tokens": 1206,
+  "cost_usd": 0.0040956000000000005,
+  "elapsed_s": 8.78,
+  "error": null,
+  "text": "{\n  \"ease_of_use_probabilities_1_to_5\": [\n    0.05,\n    0.15,\n    0.30,\n    0.40,\n    0.10\n  ],\n  \"likely_frictions\": [\n    \"Overwhelmed by advanced AI features not essential for basic contact organization.\",\n    \"Initial learning curve for customizing fields and activities to fit specific real estate workflows.\",\n    \"Potential for minor UI inconsistencies or occasional bugs over 6-12 months of use.\"\n  ],\n  \"rationale\": \"The reviewer is a 'Workflow analyst' in a small Real Estate company (1-10 employees) using Freshsales for 6-12 months to 'collect and organize contacts and conversations.' Freshsales heavily promotes itself as an 'easy-to-use,' 'streamlined,' and 'efficient organizing' CRM, with features like custom fields, activity tracking, email integration, and deduplication directly supporting this core task. The 6-12 month usage period suggests they've moved past initial setup and are familiar with the system. For a workflow analyst, the ability to customize and organize (e.g., custom fields, custom activities) would be a positive for ease of use in tailoring the system. However, Freshsales also boasts a lot of AI-powered features (Freddy AI) and extensive automation capabilities that might be overkill or even slightly complex for a small team primarily focused on basic 'collect and organize' tasks, potentially leading to some initial friction or unused complexity. Given the small company size, a strong emphasis on 'easy-to-use' is expected. Therefore, a rating of 3 or 4 is most likely, reflecting general satisfaction but with potential minor complexities or unused advanced features.\"\n}",
+  "json": {
+    "ease_of_use_probabilities_1_to_5": [
+      0.05,
+      0.15,
+      0.3,
+      0.4,
+      0.1
+    ],
+    "likely_frictions": [
+      "Overwhelmed by advanced AI features not essential for basic contact organization.",
+      "Initial learning curve for customizing fields and activities to fit specific real estate workflows.",
+      "Potential for minor UI inconsistencies or occasional bugs over 6-12 months of use."
+    ],
+    "rationale": "The reviewer is a 'Workflow analyst' in a small Real Estate company (1-10 employees) using Freshsales for 6-12 months to 'collect and organize contacts and conversations.' Freshsales heavily promotes itself as an 'easy-to-use,' 'streamlined,' and 'efficient organizing' CRM, with features like custom fields, activity tracking, email integration, and deduplication directly supporting this core task. The 6-12 month usage period suggests they've moved past initial setup and are familiar with the system. For a workflow analyst, the ability to customize and organize (e.g., custom fields, custom activities) would be a positive for ease of use in tailoring the system. However, Freshsales also boasts a lot of AI-powered features (Freddy AI) and extensive automation capabilities that might be overkill or even slightly complex for a small team primarily focused on basic 'collect and organize' tasks, potentially leading to some initial friction or unused complexity. Given the small company size, a strong emphasis on 'easy-to-use' is expected. Therefore, a rating of 3 or 4 is most likely, reflecting general satisfaction but with potential minor complexities or unused advanced features."
+  },
+  "ts": "2026-10-18T01:25:31.389427+00:00"
+}

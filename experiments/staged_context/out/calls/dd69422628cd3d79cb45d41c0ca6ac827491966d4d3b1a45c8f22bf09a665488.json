@@ -1,0 +1,36 @@
+{
+  "stage": "onet_map",
+  "model": "gemini-2.5-pro",
+  "provider": "vertex",
+  "request_hash": "dd69422628cd3d79cb45d41c0ca6ac827491966d4d3b1a45c8f22bf09a665488",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": null,
+  "input_tokens": 20920,
+  "output_tokens": 1940,
+  "cost_usd": 0.04555,
+  "elapsed_s": 18.86,
+  "error": null,
+  "text": "{\n  \"occupations\": [\n    {\n      \"code\": \"11-2022.00\",\n      \"title\": \"Sales Managers\",\n      \"rationale\": \"Pipedrive is a sales CRM that provides tools for team monitoring, goal-setting, and refining strategy with real-time performance insights, and a \\\"Sales Manager\\\" is quoted as a user [D:Pipedrive:landing:2, D:Pipedrive:landing:5].\"\n    },\n    {\n      \"code\": \"41-3091.00\",\n      \"title\": \"Sales Representatives of Services, Except Advertising, Insurance, Financial Services, and Travel\",\n      \"rationale\": \"The product is described as a tool for salespeople to track their sales pipeline, manage deals, automate their sales process, and ultimately \\\"focus on selling\\\" and \\\"closing deals\\\" [D:Pipedrive:landing:1, D:Pipedrive:landing:6].\"\n    },\n    {\n      \"code\": \"11-1011.00\",\n      \"title\": \"Chief Executives\",\n      \"rationale\": \"A \\\"CEO and Founder\\\" is quoted as a user, and the software provides high-level business insights such as real-time sales reports and predictable revenue forecasting [D:Pipedrive:landing:2, D:Pipedrive:landing:4].\"\n    }\n  ]\n}",
+  "json": {
+    "occupations": [
+      {
+        "code": "11-2022.00",
+        "title": "Sales Managers",
+        "rationale": "Pipedrive is a sales CRM that provides tools for team monitoring, goal-setting, and refining strategy with real-time performance insights, and a \"Sales Manager\" is quoted as a user [D:Pipedrive:landing:2, D:Pipedrive:landing:5]."
+      },
+      {
+        "code": "41-3091.00",
+        "title": "Sales Representatives of Services, Except Advertising, Insurance, Financial Services, and Travel",
+        "rationale": "The product is described as a tool for salespeople to track their sales pipeline, manage deals, automate their sales process, and ultimately \"focus on selling\" and \"closing deals\" [D:Pipedrive:landing:1, D:Pipedrive:landing:6]."
+      },
+      {
+        "code": "11-1011.00",
+        "title": "Chief Executives",
+        "rationale": "A \"CEO and Founder\" is quoted as a user, and the software provides high-level business insights such as real-time sales reports and predictable revenue forecasting [D:Pipedrive:landing:2, D:Pipedrive:landing:4]."
+      }
+    ]
+  },
+  "ts": "2026-10-18T01:22:04.404386+00:00"
+}

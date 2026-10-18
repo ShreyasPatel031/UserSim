@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f99b53ece36b2ac107ded44a9431a143b343feec81bc01121272862bebef05fa",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 370,
+  "output_tokens": 487,
+  "cost_usd": 0.0013285,
+  "elapsed_s": 4.16,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review contains only generic praise about the product's benefits (e.g., 'shortens a lot of effort and work with its reports', 'the work of reports is faster', 'coordination between employees and customers is much easier') rather than describing a specific, concrete task the reviewer performs with the product. No explicit, actionable task is stated.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review contains only generic praise about the product's benefits (e.g., 'shortens a lot of effort and work with its reports', 'the work of reports is faster', 'coordination between employees and customers is much easier') rather than describing a specific, concrete task the reviewer performs with the product. No explicit, actionable task is stated.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:24:31.630317+00:00"
+}

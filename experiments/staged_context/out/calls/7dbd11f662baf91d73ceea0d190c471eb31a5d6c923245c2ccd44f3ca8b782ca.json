@@ -1,0 +1,29 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7dbd11f662baf91d73ceea0d190c471eb31a5d6c923245c2ccd44f3ca8b782ca",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 343,
+  "output_tokens": 465,
+  "cost_usd": 0.0012654,
+  "elapsed_s": 3.27,
+  "error": null,
+  "text": "{\n  \"eligible\": true,\n  \"reason\": \"The review explicitly states the concrete activity of collecting and organizing contacts and conversations, which could be attempted in a fresh trial within 15 minutes.\",\n  \"task\": {\n    \"action\": \"Collect and organize\",\n    \"object\": \"contacts and conversations\",\n    \"context\": null,\n    \"purpose\": null\n  },\n  \"neutral_task\": \"Collect and organize contacts and conversations.\",\n  \"span\": \"collect and organize contacts, conversations\"\n}",
+  "json": {
+    "eligible": true,
+    "reason": "The review explicitly states the concrete activity of collecting and organizing contacts and conversations, which could be attempted in a fresh trial within 15 minutes.",
+    "task": {
+      "action": "Collect and organize",
+      "object": "contacts and conversations",
+      "context": null,
+      "purpose": null
+    },
+    "neutral_task": "Collect and organize contacts and conversations.",
+    "span": "collect and organize contacts, conversations"
+  },
+  "ts": "2026-10-18T01:22:25.903748+00:00"
+}

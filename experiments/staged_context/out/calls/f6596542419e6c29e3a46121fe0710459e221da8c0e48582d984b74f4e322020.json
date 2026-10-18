@@ -1,0 +1,29 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "f6596542419e6c29e3a46121fe0710459e221da8c0e48582d984b74f4e322020",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 440,
+  "output_tokens": 499,
+  "cost_usd": 0.0013794999999999999,
+  "elapsed_s": 3.46,
+  "error": null,
+  "text": "{\n  \"eligible\": true,\n  \"reason\": \"The review explicitly mentions 'list segmentation' and 'campaign tracking' as key tasks, which are concrete activities that could be attempted in a trial within 15 minutes. These are presented as core activities within the 'daily email marketing use' context.\",\n  \"task\": {\n    \"action\": \"Perform\",\n    \"object\": \"list segmentation or campaign tracking\",\n    \"context\": \"for daily email marketing use\",\n    \"purpose\": null\n  },\n  \"neutral_task\": \"Perform list segmentation or campaign tracking for daily email marketing use.\",\n  \"span\": \"key tasks like list segmentation or campaign tracking\"\n}",
+  "json": {
+    "eligible": true,
+    "reason": "The review explicitly mentions 'list segmentation' and 'campaign tracking' as key tasks, which are concrete activities that could be attempted in a trial within 15 minutes. These are presented as core activities within the 'daily email marketing use' context.",
+    "task": {
+      "action": "Perform",
+      "object": "list segmentation or campaign tracking",
+      "context": "for daily email marketing use",
+      "purpose": null
+    },
+    "neutral_task": "Perform list segmentation or campaign tracking for daily email marketing use.",
+    "span": "key tasks like list segmentation or campaign tracking"
+  },
+  "ts": "2026-10-18T01:23:36.946478+00:00"
+}

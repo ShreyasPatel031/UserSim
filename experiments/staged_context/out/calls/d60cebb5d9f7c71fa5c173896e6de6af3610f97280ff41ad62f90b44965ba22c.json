@@ -1,0 +1,29 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d60cebb5d9f7c71fa5c173896e6de6af3610f97280ff41ad62f90b44965ba22c",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 345,
+  "output_tokens": 541,
+  "cost_usd": 0.001456,
+  "elapsed_s": 3.74,
+  "error": null,
+  "text": "{\n  \"eligible\": true,\n  \"reason\": \"The review explicitly states two concrete activities: 'keep track of all my customer interactions' and 'manage my sales pipeline'. Both are specific enough and could be attempted in a trial within 15 minutes (e.g., by logging a few interactions or creating a few pipeline stages). 'Keep track of all my customer interactions' is chosen as the primary task as it's a foundational CRM activity.\",\n  \"task\": {\n    \"action\": \"Keep track of\",\n    \"object\": \"customer interactions\",\n    \"context\": null,\n    \"purpose\": null\n  },\n  \"neutral_task\": \"Keep track of customer interactions.\",\n  \"span\": \"keep track of all my customer interactions\"\n}",
+  "json": {
+    "eligible": true,
+    "reason": "The review explicitly states two concrete activities: 'keep track of all my customer interactions' and 'manage my sales pipeline'. Both are specific enough and could be attempted in a trial within 15 minutes (e.g., by logging a few interactions or creating a few pipeline stages). 'Keep track of all my customer interactions' is chosen as the primary task as it's a foundational CRM activity.",
+    "task": {
+      "action": "Keep track of",
+      "object": "customer interactions",
+      "context": null,
+      "purpose": null
+    },
+    "neutral_task": "Keep track of customer interactions.",
+    "span": "keep track of all my customer interactions"
+  },
+  "ts": "2026-10-18T01:24:20.924015+00:00"
+}

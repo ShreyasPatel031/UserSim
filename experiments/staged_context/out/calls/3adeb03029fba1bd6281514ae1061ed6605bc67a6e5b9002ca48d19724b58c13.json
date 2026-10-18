@@ -1,0 +1,29 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3adeb03029fba1bd6281514ae1061ed6605bc67a6e5b9002ca48d19724b58c13",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 451,
+  "output_tokens": 524,
+  "cost_usd": 0.0014453000000000003,
+  "elapsed_s": 3.66,
+  "error": null,
+  "text": "{\n  \"eligible\": true,\n  \"reason\": \"The review explicitly mentions logging calls and emails as concrete activities that can be performed within Freshsales. These are specific enough to be attempted in a trial within 15 minutes.\",\n  \"task\": {\n    \"action\": \"Log\",\n    \"object\": \"calls and emails\",\n    \"context\": \"within Freshsales\",\n    \"purpose\": \"to track all interactions with opportunities/contacts\"\n  },\n  \"neutral_task\": \"Log all incoming and outgoing calls and emails within Freshsales to track interactions with opportunities or contacts.\",\n  \"span\": \"integrated dialing that allows for logging all calls and optional call recording. In addition, one can integrate their email into Freshsales, so that all incoming and out going emails are logged.\"\n}",
+  "json": {
+    "eligible": true,
+    "reason": "The review explicitly mentions logging calls and emails as concrete activities that can be performed within Freshsales. These are specific enough to be attempted in a trial within 15 minutes.",
+    "task": {
+      "action": "Log",
+      "object": "calls and emails",
+      "context": "within Freshsales",
+      "purpose": "to track all interactions with opportunities/contacts"
+    },
+    "neutral_task": "Log all incoming and outgoing calls and emails within Freshsales to track interactions with opportunities or contacts.",
+    "span": "integrated dialing that allows for logging all calls and optional call recording. In addition, one can integrate their email into Freshsales, so that all incoming and out going emails are logged."
+  },
+  "ts": "2026-10-18T01:23:02.032945+00:00"
+}

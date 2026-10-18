@@ -1,0 +1,32 @@
+{
+  "stage": "pp_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "03c65dd0079d16ac4b55e7a882119bb1e4e477decaaafef036fb17a82445f3fb",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2895,
+  "output_tokens": 1314,
+  "cost_usd": 0.0041535,
+  "elapsed_s": 8.18,
+  "error": null,
+  "text": "{\n  \"ease_of_use_probabilities_1_to_5\": [\n    0.05,\n    0.1,\n    0.2,\n    0.4,\n    0.25\n  ],\n  \"likely_frictions\": [\n    \"Initial setup and complex customization might require a learning curve for an owner.\",\n    \"Integrating Zoho CRM with existing broadcast media specific tools or workflows.\",\n    \"Ensuring the 'no-code' customization truly aligns with specific, perhaps unique, broadcast media sales processes.\"\n  ],\n  \"rationale\": \"The reviewer, an owner of a broadcast media company (11-50 employees) using Zoho CRM for 2+ years, is focused on automating email sending, lead follow-ups, and updating sales process fields. Zoho CRM's public pages heavily emphasize 'intelligent sales automation for follow-ups' (D:Zoho CRM:landing:1), 'automating tedious, mundane tasks like contact tracking, follow-ups, and updates' (D:Zoho CRM:features:2), and 'automating activities across the sales funnel' (D:Zoho CRM:features:3). Furthermore, the product highlights 'no code required' customization for fields, layouts, and modules (D:Zoho CRM:features:5, D:Zoho CRM:features:6), directly addressing the need to update fields within the sales process. The presence of AI (Zia) for assistance and streamlining actions (D:Zoho CRM:features:1, D:Zoho CRM:features:2) further supports ease of use for automation. Given the long tenure (2+ years), the reviewer has likely overcome any initial learning curve and is benefiting from the system's capabilities. While an owner might face some complexity in initial advanced setup or deep customization to perfectly match unique broadcast media workflows, the core automation features crucial to their task are explicitly designed for ease and efficiency, making a higher ease-of-use rating probable.\"\n}",
+  "json": {
+    "ease_of_use_probabilities_1_to_5": [
+      0.05,
+      0.1,
+      0.2,
+      0.4,
+      0.25
+    ],
+    "likely_frictions": [
+      "Initial setup and complex customization might require a learning curve for an owner.",
+      "Integrating Zoho CRM with existing broadcast media specific tools or workflows.",
+      "Ensuring the 'no-code' customization truly aligns with specific, perhaps unique, broadcast media sales processes."
+    ],
+    "rationale": "The reviewer, an owner of a broadcast media company (11-50 employees) using Zoho CRM for 2+ years, is focused on automating email sending, lead follow-ups, and updating sales process fields. Zoho CRM's public pages heavily emphasize 'intelligent sales automation for follow-ups' (D:Zoho CRM:landing:1), 'automating tedious, mundane tasks like contact tracking, follow-ups, and updates' (D:Zoho CRM:features:2), and 'automating activities across the sales funnel' (D:Zoho CRM:features:3). Furthermore, the product highlights 'no code required' customization for fields, layouts, and modules (D:Zoho CRM:features:5, D:Zoho CRM:features:6), directly addressing the need to update fields within the sales process. The presence of AI (Zia) for assistance and streamlining actions (D:Zoho CRM:features:1, D:Zoho CRM:features:2) further supports ease of use for automation. Given the long tenure (2+ years), the reviewer has likely overcome any initial learning curve and is benefiting from the system's capabilities. While an owner might face some complexity in initial advanced setup or deep customization to perfectly match unique broadcast media workflows, the core automation features crucial to their task are explicitly designed for ease and efficiency, making a higher ease-of-use rating probable."
+  },
+  "ts": "2026-10-18T01:28:55.830063+00:00"
+}

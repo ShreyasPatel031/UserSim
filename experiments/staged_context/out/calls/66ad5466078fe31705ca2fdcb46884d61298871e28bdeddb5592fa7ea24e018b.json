@@ -1,0 +1,29 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "66ad5466078fe31705ca2fdcb46884d61298871e28bdeddb5592fa7ea24e018b",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 504,
+  "output_tokens": 499,
+  "cost_usd": 0.0013987,
+  "elapsed_s": 3.28,
+  "error": null,
+  "text": "{\n  \"eligible\": true,\n  \"reason\": null,\n  \"task\": {\n    \"action\": \"track and sync\",\n    \"object\": \"communications\",\n    \"context\": \"with specific deals\",\n    \"purpose\": \"ensuring nothing gets overlooked\"\n  },\n  \"neutral_task\": \"Track and sync email communications with specific deals to ensure nothing is overlooked.\",\n  \"span\": \"track and sync our communications with specific deals, ensuring nothing gets overlooked\"\n}",
+  "json": {
+    "eligible": true,
+    "reason": null,
+    "task": {
+      "action": "track and sync",
+      "object": "communications",
+      "context": "with specific deals",
+      "purpose": "ensuring nothing gets overlooked"
+    },
+    "neutral_task": "Track and sync email communications with specific deals to ensure nothing is overlooked.",
+    "span": "track and sync our communications with specific deals, ensuring nothing gets overlooked"
+  },
+  "ts": "2026-10-18T01:25:10.216735+00:00"
+}

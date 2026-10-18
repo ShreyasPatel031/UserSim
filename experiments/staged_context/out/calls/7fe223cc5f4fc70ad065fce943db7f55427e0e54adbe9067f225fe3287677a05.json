@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7fe223cc5f4fc70ad065fce943db7f55427e0e54adbe9067f225fe3287677a05",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 406,
+  "output_tokens": 518,
+  "cost_usd": 0.0014168000000000002,
+  "elapsed_s": 5.74,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review mentions 'register and setup all options' which is an initial configuration, not a recurring task the user performs with the product. It also mentions 'overview of all orders and customers' and 'complex overview of communication', but these are described as benefits/assets rather than concrete, actionable tasks the user performs within the system. No specific, actionable task that could be attempted in 15 minutes is explicitly stated.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review mentions 'register and setup all options' which is an initial configuration, not a recurring task the user performs with the product. It also mentions 'overview of all orders and customers' and 'complex overview of communication', but these are described as benefits/assets rather than concrete, actionable tasks the user performs within the system. No specific, actionable task that could be attempted in 15 minutes is explicitly stated.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:22:32.334013+00:00"
+}

@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "fe2109ae39d52943481e43bd7d20a5280bb75f63915f2d352a8cbc60f55f0441",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 342,
+  "output_tokens": 502,
+  "cost_usd": 0.0013575999999999998,
+  "elapsed_s": 3.76,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review does not explicitly state a task the reviewer uses the product for. It mentions a problem ('IT JUST DOESNT HAVE MY MOST RECENT LEADS'), which implies a desired state or a task that isn't being fulfilled, but it doesn't describe an activity the reviewer performs with the product.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review does not explicitly state a task the reviewer uses the product for. It mentions a problem ('IT JUST DOESNT HAVE MY MOST RECENT LEADS'), which implies a desired state or a task that isn't being fulfilled, but it doesn't describe an activity the reviewer performs with the product.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:23:02.117046+00:00"
+}

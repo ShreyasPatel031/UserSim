@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d7339b134f0d77241bca9e281e7726fa4df5bbc9ccbc43e6eab80856cc1d8514",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 387,
+  "output_tokens": 529,
+  "cost_usd": 0.0014386,
+  "elapsed_s": 3.59,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review discusses feature limitations (e.g., inability to sort contacts by county) and customer service issues, but it does not explicitly state a clear, dominant task the reviewer uses the product for. The mention of 'contact management' is too generic without a specific action or object the user performs within Pipedrive.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review discusses feature limitations (e.g., inability to sort contacts by county) and customer service issues, but it does not explicitly state a clear, dominant task the reviewer uses the product for. The mention of 'contact management' is too generic without a specific action or object the user performs within Pipedrive.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:25:05.116420+00:00"
+}

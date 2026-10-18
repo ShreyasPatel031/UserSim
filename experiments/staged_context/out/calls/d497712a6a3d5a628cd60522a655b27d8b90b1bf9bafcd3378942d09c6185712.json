@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d497712a6a3d5a628cd60522a655b27d8b90b1bf9bafcd3378942d09c6185712",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 411,
+  "output_tokens": 523,
+  "cost_usd": 0.0014308,
+  "elapsed_s": 3.87,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review mentions 'lead capture' and 'deal organization' but these are described as general capabilities or processes ('makes lead capture and deal organization a breeze') rather than a single, concrete, dominant task the reviewer performs. 'Deal organization' is also too generic without further specification of *how* deals are organized. The only specific setup task mentioned ('Setting up the pipeline') is explicitly stated to 'take some time', violating the 15-minute criterion.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review mentions 'lead capture' and 'deal organization' but these are described as general capabilities or processes ('makes lead capture and deal organization a breeze') rather than a single, concrete, dominant task the reviewer performs. 'Deal organization' is also too generic without further specification of *how* deals are organized. The only specific setup task mentioned ('Setting up the pipeline') is explicitly stated to 'take some time', violating the 15-minute criterion.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:24:55.244815+00:00"
+}

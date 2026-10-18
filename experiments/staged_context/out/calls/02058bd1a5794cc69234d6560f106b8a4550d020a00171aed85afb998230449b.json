@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "02058bd1a5794cc69234d6560f106b8a4550d020a00171aed85afb998230449b",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 454,
+  "output_tokens": 494,
+  "cost_usd": 0.0013712,
+  "elapsed_s": 3.56,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review mentions 'automate tasks' multiple times, but this is too generic. It does not specify *what* tasks are being automated or provide a concrete activity with an object that a user performs. 'Follow the progress via mobile' describes a feature (mobile access) and a generic action, not a specific, concrete task the user sets out to accomplish with the product.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review mentions 'automate tasks' multiple times, but this is too generic. It does not specify *what* tasks are being automated or provide a concrete activity with an object that a user performs. 'Follow the progress via mobile' describes a feature (mobile access) and a generic action, not a specific, concrete task the user sets out to accomplish with the product.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:25:10.477234+00:00"
+}

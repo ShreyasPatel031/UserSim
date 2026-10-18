@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7ddaa01ed71169dcecfec0fe478da5f37acf58f229ea17cd56d7d9c9d8b81218",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 328,
+  "output_tokens": 443,
+  "cost_usd": 0.0012059,
+  "elapsed_s": 4.21,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review does not state any specific, concrete task the reviewer used Zoho CRM for. It offers general opinions about the service, tools, customer service, and price, but no actionable activity.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review does not state any specific, concrete task the reviewer used Zoho CRM for. It offers general opinions about the service, tools, customer service, and price, but no actionable activity.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:23:57.380710+00:00"
+}

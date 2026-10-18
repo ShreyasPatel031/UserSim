@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2b48765a02c88fa32cbb5113224dc9aaf15da6589efa64a58028b6849fa20d90",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 469,
+  "output_tokens": 501,
+  "cost_usd": 0.0013932000000000003,
+  "elapsed_s": 3.54,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review contains generic praise and mentions features like 'automation' and 'customizing stages' but does not describe a single, concrete task with an object that a user performs. 'Automate my flow' is too vague, and 'customize the stages of your workflow' is a feature, not a specific task with a clear object and purpose that can be attempted in 15 minutes.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review contains generic praise and mentions features like 'automation' and 'customizing stages' but does not describe a single, concrete task with an object that a user performs. 'Automate my flow' is too vague, and 'customize the stages of your workflow' is a feature, not a specific task with a clear object and purpose that can be attempted in 15 minutes.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:24:59.887486+00:00"
+}

@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "18c29a482dd91c82591f3d15f1883c53c933ec3ab06375e830e5acdbf90456e0",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 315,
+  "output_tokens": 438,
+  "cost_usd": 0.0011895,
+  "elapsed_s": 3.71,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review discusses features (analytics, integrations) and general aspects (UX, support, setup) but does not state a specific, concrete task the reviewer uses Pipedrive for. It focuses on what is lacking rather than what is being done.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review discusses features (analytics, integrations) and general aspects (UX, support, setup) but does not state a specific, concrete task the reviewer uses Pipedrive for. It focuses on what is lacking rather than what is being done.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:24:55.109505+00:00"
+}

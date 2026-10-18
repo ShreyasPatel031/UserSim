@@ -1,0 +1,29 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "e2017cfb2b5685f5a703c9bed10318992a1e0cf57d3dac0da53a5d83f09f2cee",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 386,
+  "output_tokens": 499,
+  "cost_usd": 0.0013633,
+  "elapsed_s": 3.47,
+  "error": null,
+  "text": "{\n  \"eligible\": true,\n  \"reason\": \"The review explicitly mentions a specific, concrete activity related to a core CRM function (converting users to deals/opportunities) that could be attempted in a trial.\",\n  \"task\": {\n    \"action\": \"Convert\",\n    \"object\": \"users to deals or opportunities\",\n    \"context\": null,\n    \"purpose\": null\n  },\n  \"neutral_task\": \"Convert users into deals or opportunities.\",\n  \"span\": \"converting users to deals or opportunities\"\n}",
+  "json": {
+    "eligible": true,
+    "reason": "The review explicitly mentions a specific, concrete activity related to a core CRM function (converting users to deals/opportunities) that could be attempted in a trial.",
+    "task": {
+      "action": "Convert",
+      "object": "users to deals or opportunities",
+      "context": null,
+      "purpose": null
+    },
+    "neutral_task": "Convert users into deals or opportunities.",
+    "span": "converting users to deals or opportunities"
+  },
+  "ts": "2026-10-18T01:24:35.127960+00:00"
+}

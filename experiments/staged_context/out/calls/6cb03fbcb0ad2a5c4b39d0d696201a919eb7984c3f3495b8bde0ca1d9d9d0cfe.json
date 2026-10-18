@@ -1,0 +1,29 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "6cb03fbcb0ad2a5c4b39d0d696201a919eb7984c3f3495b8bde0ca1d9d9d0cfe",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 330,
+  "output_tokens": 546,
+  "cost_usd": 0.001464,
+  "elapsed_s": 3.68,
+  "error": null,
+  "text": "{\n  \"eligible\": true,\n  \"reason\": \"The review explicitly mentions 'load up a sales cycle' which is a concrete activity with an object and could be attempted in a trial. It also mentions 'track sales' but this is framed as a problem, not a dominant task the reviewer *uses* the product for successfully.\",\n  \"task\": {\n    \"action\": \"Load up\",\n    \"object\": \"a sales cycle\",\n    \"context\": null,\n    \"purpose\": null\n  },\n  \"neutral_task\": \"Load up a sales cycle.\",\n  \"span\": \"load up a sales cycle\"\n}",
+  "json": {
+    "eligible": true,
+    "reason": "The review explicitly mentions 'load up a sales cycle' which is a concrete activity with an object and could be attempted in a trial. It also mentions 'track sales' but this is framed as a problem, not a dominant task the reviewer *uses* the product for successfully.",
+    "task": {
+      "action": "Load up",
+      "object": "a sales cycle",
+      "context": null,
+      "purpose": null
+    },
+    "neutral_task": "Load up a sales cycle.",
+    "span": "load up a sales cycle"
+  },
+  "ts": "2026-10-18T01:22:40.159392+00:00"
+}

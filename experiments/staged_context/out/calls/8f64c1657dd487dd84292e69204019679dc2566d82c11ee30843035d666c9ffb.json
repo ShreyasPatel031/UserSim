@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8f64c1657dd487dd84292e69204019679dc2566d82c11ee30843035d666c9ffb",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 329,
+  "output_tokens": 460,
+  "cost_usd": 0.0012487,
+  "elapsed_s": 3.79,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review does not explicitly state a concrete task the reviewer uses the product for. It mentions general product qualities, customer support, and limitations (missing invoice integration, language-specific accounting integrations), but not a specific activity performed with the software.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review does not explicitly state a concrete task the reviewer uses the product for. It mentions general product qualities, customer support, and limitations (missing invoice integration, language-specific accounting integrations), but not a specific activity performed with the software.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:22:48.167591+00:00"
+}

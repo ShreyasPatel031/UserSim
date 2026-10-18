@@ -1,0 +1,29 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ef4f1394340ae6e95c9b30bfacfb23873a0ddc10ad62304278d5eabece93fde8",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 376,
+  "output_tokens": 510,
+  "cost_usd": 0.0013878,
+  "elapsed_s": 3.46,
+  "error": null,
+  "text": "{\n  \"eligible\": true,\n  \"reason\": \"The review explicitly states a concrete activity: 'tagging' clients/prospects. While 'working with many clients' is broad, the 'tagging' aspect makes it specific enough. Attempting to tag a few clients/prospects in a fresh trial workspace is feasible within 15 minutes.\",\n  \"task\": {\n    \"action\": \"Tag\",\n    \"object\": \"clients and prospects\",\n    \"context\": \"when working with many clients\",\n    \"purpose\": null\n  },\n  \"neutral_task\": \"Tag clients and prospects when working with many clients.\",\n  \"span\": \"working with many clients and tagging the with many prospects\"\n}",
+  "json": {
+    "eligible": true,
+    "reason": "The review explicitly states a concrete activity: 'tagging' clients/prospects. While 'working with many clients' is broad, the 'tagging' aspect makes it specific enough. Attempting to tag a few clients/prospects in a fresh trial workspace is feasible within 15 minutes.",
+    "task": {
+      "action": "Tag",
+      "object": "clients and prospects",
+      "context": "when working with many clients",
+      "purpose": null
+    },
+    "neutral_task": "Tag clients and prospects when working with many clients.",
+    "span": "working with many clients and tagging the with many prospects"
+  },
+  "ts": "2026-10-18T01:24:20.600792+00:00"
+}

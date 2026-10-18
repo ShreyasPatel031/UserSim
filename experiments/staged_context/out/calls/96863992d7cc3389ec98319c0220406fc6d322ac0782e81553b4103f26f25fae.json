@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "96863992d7cc3389ec98319c0220406fc6d322ac0782e81553b4103f26f25fae",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 408,
+  "output_tokens": 474,
+  "cost_usd": 0.0013073999999999998,
+  "elapsed_s": 3.64,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review mentions a specific action ('create certain fields') but it is presented as a difficulty/con, not as a clear, dominant task the reviewer uses the product for. The overall sentiment is about general business management and ease of use, which are too generic.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review mentions a specific action ('create certain fields') but it is presented as a difficulty/con, not as a clear, dominant task the reviewer uses the product for. The overall sentiment is about general business management and ease of use, which are too generic.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:22:56.911325+00:00"
+}

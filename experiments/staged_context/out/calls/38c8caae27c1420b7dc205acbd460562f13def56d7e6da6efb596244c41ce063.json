@@ -1,0 +1,29 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "38c8caae27c1420b7dc205acbd460562f13def56d7e6da6efb596244c41ce063",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 371,
+  "output_tokens": 488,
+  "cost_usd": 0.0013312999999999999,
+  "elapsed_s": 3.41,
+  "error": null,
+  "text": "{\n  \"eligible\": true,\n  \"reason\": null,\n  \"task\": {\n    \"action\": \"Automate\",\n    \"object\": \"sales process activities\",\n    \"context\": \"the entire sales process\",\n    \"purpose\": null\n  },\n  \"neutral_task\": \"Automate sending emails, following up with leads, and updating fields within the sales process.\",\n  \"span\": \"automation abilities in the entire the sales process, including sending emails, following up with leads, and updating fields\"\n}",
+  "json": {
+    "eligible": true,
+    "reason": null,
+    "task": {
+      "action": "Automate",
+      "object": "sales process activities",
+      "context": "the entire sales process",
+      "purpose": null
+    },
+    "neutral_task": "Automate sending emails, following up with leads, and updating fields within the sales process.",
+    "span": "automation abilities in the entire the sales process, including sending emails, following up with leads, and updating fields"
+  },
+  "ts": "2026-10-18T01:23:41.959302+00:00"
+}

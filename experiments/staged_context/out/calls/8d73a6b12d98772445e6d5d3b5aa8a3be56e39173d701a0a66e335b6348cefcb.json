@@ -1,0 +1,29 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8d73a6b12d98772445e6d5d3b5aa8a3be56e39173d701a0a66e335b6348cefcb",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 401,
+  "output_tokens": 494,
+  "cost_usd": 0.0013553,
+  "elapsed_s": 3.43,
+  "error": null,
+  "text": "{\n  \"eligible\": true,\n  \"reason\": null,\n  \"task\": {\n    \"action\": \"Track\",\n    \"object\": \"the status of sales opportunities, project progress, and customer interactions\",\n    \"context\": \"within client relationships\",\n    \"purpose\": \"to stay instantly informed\"\n  },\n  \"neutral_task\": \"Track the status of sales opportunities, project progress, and customer interactions.\",\n  \"span\": \"track the status of sales opportunities, project progress, and customer interactions\"\n}",
+  "json": {
+    "eligible": true,
+    "reason": null,
+    "task": {
+      "action": "Track",
+      "object": "the status of sales opportunities, project progress, and customer interactions",
+      "context": "within client relationships",
+      "purpose": "to stay instantly informed"
+    },
+    "neutral_task": "Track the status of sales opportunities, project progress, and customer interactions.",
+    "span": "track the status of sales opportunities, project progress, and customer interactions"
+  },
+  "ts": "2026-10-18T01:24:20.588217+00:00"
+}

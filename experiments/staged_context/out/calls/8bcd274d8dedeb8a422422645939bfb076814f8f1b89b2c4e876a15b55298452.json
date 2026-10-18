@@ -1,0 +1,32 @@
+{
+  "stage": "pp_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "8bcd274d8dedeb8a422422645939bfb076814f8f1b89b2c4e876a15b55298452",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3602,
+  "output_tokens": 1230,
+  "cost_usd": 0.0041556,
+  "elapsed_s": 5.66,
+  "error": null,
+  "text": "{\n  \"ease_of_use_probabilities_1_to_5\": [\n    0.05,\n    0.15,\n    0.35,\n    0.35,\n    0.10\n  ],\n  \"likely_frictions\": [\n    \"Overwhelmed by AI features not immediately needed by a small team\",\n    \"Initial setup and customization for specific sales processes\",\n    \"Learning curve for managing sales sequences and automation\"\n  ],\n  \"rationale\": \"The reviewer is a manager in a small telecommunications company, using Freshsales for less than 6 months to follow up on leads and communication. Freshsales explicitly markets itself as an 'easy-to-use sales CRM' and highlights features like 'declutter your sales view' and 'Freddy AI makes work smarter and easier'. Key features such as email integration, sales sequences, activity tracking, and lead management directly support the reviewer's stated task. The Kanban view and drag-and-drop elements suggest a user-friendly interface for sales process visualization. However, for a small company, the extensive AI features (Freddy AI for lead scoring, deal recommendations, email writing) might be more advanced than immediately necessary or could introduce a slight learning curve if the manager wants to fully leverage them. The initial setup and customization of lead lifecycle stages, custom fields, and sales sequences, while beneficial, could present a minor friction point during the first six months of use. Given the direct alignment with the core task and the product's marketing as easy-to-use, a rating in the 3-4 range is most likely, indicating a generally positive experience with some potential for minor initial setup or feature complexity.\"\n}",
+  "json": {
+    "ease_of_use_probabilities_1_to_5": [
+      0.05,
+      0.15,
+      0.35,
+      0.35,
+      0.1
+    ],
+    "likely_frictions": [
+      "Overwhelmed by AI features not immediately needed by a small team",
+      "Initial setup and customization for specific sales processes",
+      "Learning curve for managing sales sequences and automation"
+    ],
+    "rationale": "The reviewer is a manager in a small telecommunications company, using Freshsales for less than 6 months to follow up on leads and communication. Freshsales explicitly markets itself as an 'easy-to-use sales CRM' and highlights features like 'declutter your sales view' and 'Freddy AI makes work smarter and easier'. Key features such as email integration, sales sequences, activity tracking, and lead management directly support the reviewer's stated task. The Kanban view and drag-and-drop elements suggest a user-friendly interface for sales process visualization. However, for a small company, the extensive AI features (Freddy AI for lead scoring, deal recommendations, email writing) might be more advanced than immediately necessary or could introduce a slight learning curve if the manager wants to fully leverage them. The initial setup and customization of lead lifecycle stages, custom fields, and sales sequences, while beneficial, could present a minor friction point during the first six months of use. Given the direct alignment with the core task and the product's marketing as easy-to-use, a rating in the 3-4 range is most likely, indicating a generally positive experience with some potential for minor initial setup or feature complexity."
+  },
+  "ts": "2026-10-18T01:26:22.809160+00:00"
+}

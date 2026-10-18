@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "da70fa4fda73c973a6fd27a0a579666fb8fbc929d42de747e863a89a9db64baa",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 307,
+  "output_tokens": 388,
+  "cost_usd": 0.0010620999999999998,
+  "elapsed_s": 3.23,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review does not explicitly state any specific task the reviewer uses the product for; it contains only generic praise.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review does not explicitly state any specific task the reviewer uses the product for; it contains only generic praise.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:23:20.792326+00:00"
+}

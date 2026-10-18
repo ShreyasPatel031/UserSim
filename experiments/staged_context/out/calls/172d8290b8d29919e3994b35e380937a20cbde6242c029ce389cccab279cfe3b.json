@@ -1,0 +1,29 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "172d8290b8d29919e3994b35e380937a20cbde6242c029ce389cccab279cfe3b",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 732,
+  "output_tokens": 577,
+  "cost_usd": 0.0016621000000000001,
+  "elapsed_s": 4.11,
+  "error": null,
+  "text": "{\n  \"eligible\": true,\n  \"reason\": \"The review explicitly states the task of editing customer profile views to prioritize important information. This is a concrete activity with a clear object (customer profile views) and purpose (seeing needed details first). It is also a task that could reasonably be attempted within a 15-minute trial.\",\n  \"task\": {\n    \"action\": \"Edit\",\n    \"object\": \"customer profile views\",\n    \"context\": null,\n    \"purpose\": \"to see important details at the top of their profile, like their contact details\"\n  },\n  \"neutral_task\": \"Edit the customer profile views to display important details, such as contact information, at the top of the profile.\",\n  \"span\": \"Edit the views to see what is needed most - for example, we have important details at the top of their profile, like their contact details.\"\n}",
+  "json": {
+    "eligible": true,
+    "reason": "The review explicitly states the task of editing customer profile views to prioritize important information. This is a concrete activity with a clear object (customer profile views) and purpose (seeing needed details first). It is also a task that could reasonably be attempted within a 15-minute trial.",
+    "task": {
+      "action": "Edit",
+      "object": "customer profile views",
+      "context": null,
+      "purpose": "to see important details at the top of their profile, like their contact details"
+    },
+    "neutral_task": "Edit the customer profile views to display important details, such as contact information, at the top of the profile.",
+    "span": "Edit the views to see what is needed most - for example, we have important details at the top of their profile, like their contact details."
+  },
+  "ts": "2026-10-18T01:22:36.471525+00:00"
+}

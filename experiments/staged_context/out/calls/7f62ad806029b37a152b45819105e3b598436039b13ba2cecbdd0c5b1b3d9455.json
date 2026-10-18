@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7f62ad806029b37a152b45819105e3b598436039b13ba2cecbdd0c5b1b3d9455",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 325,
+  "output_tokens": 462,
+  "cost_usd": 0.0012525,
+  "elapsed_s": 3.43,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review does not state any specific task the reviewer uses the product for. It only provides general praise about features and a critique of the API, which is a technical component rather than a user-facing task within the CRM itself.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review does not state any specific task the reviewer uses the product for. It only provides general praise about features and a critique of the API, which is a technical component rather than a user-facing task within the CRM itself.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:23:46.080925+00:00"
+}

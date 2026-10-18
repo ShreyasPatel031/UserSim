@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "463a6051122992adc6d71e6db2633d558efa4eeab0f84f908a5191e980d09662",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 342,
+  "output_tokens": 400,
+  "cost_usd": 0.0011026,
+  "elapsed_s": 3.01,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review does not state a specific, concrete task. Phrases like \\\"get your job done\\\" are too generic and lack a clear object or activity.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review does not state a specific, concrete task. Phrases like \"get your job done\" are too generic and lack a clear object or activity.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:24:12.433422+00:00"
+}

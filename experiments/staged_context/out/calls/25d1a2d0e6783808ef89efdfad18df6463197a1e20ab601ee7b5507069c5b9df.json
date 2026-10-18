@@ -1,0 +1,29 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "25d1a2d0e6783808ef89efdfad18df6463197a1e20ab601ee7b5507069c5b9df",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 361,
+  "output_tokens": 485,
+  "cost_usd": 0.0013208,
+  "elapsed_s": 3.52,
+  "error": null,
+  "text": "{\n  \"eligible\": true,\n  \"reason\": null,\n  \"task\": {\n    \"action\": \"create\",\n    \"object\": \"filters and objects\",\n    \"context\": null,\n    \"purpose\": null\n  },\n  \"neutral_task\": \"Create filters and objects within Pipedrive.\",\n  \"span\": \"creating filters and objects\"\n}",
+  "json": {
+    "eligible": true,
+    "reason": null,
+    "task": {
+      "action": "create",
+      "object": "filters and objects",
+      "context": null,
+      "purpose": null
+    },
+    "neutral_task": "Create filters and objects within Pipedrive.",
+    "span": "creating filters and objects"
+  },
+  "ts": "2026-10-18T01:24:46.001567+00:00"
+}

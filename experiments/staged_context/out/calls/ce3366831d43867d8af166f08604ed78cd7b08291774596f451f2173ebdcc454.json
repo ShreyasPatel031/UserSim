@@ -1,0 +1,32 @@
+{
+  "stage": "pp_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "ce3366831d43867d8af166f08604ed78cd7b08291774596f451f2173ebdcc454",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 262,
+  "output_tokens": 1056,
+  "cost_usd": 0.0027186,
+  "elapsed_s": 6.33,
+  "error": null,
+  "text": "{\n  \"ease_of_use_probabilities_1_to_5\": [\n    0.05,\n    0.15,\n    0.4,\n    0.3,\n    0.1\n  ],\n  \"likely_frictions\": [\n    \"Repetitive manual entry for multiple contacts\",\n    \"Difficulty finding or adding social media fields\",\n    \"Lack of bulk import for social media information\"\n  ],\n  \"rationale\": \"The reviewer is a new user (less than 6 months) in Business Development, focusing on a core CRM task: adding multiple contacts with social media info. While Freshsales generally aims for ease of use, this specific task, if not streamlined, can be cumbersome. 'Multiple' contacts suggest potential for repetitive data entry, and if social media fields aren't native or easily customizable/importable, it could lead to friction. The large company size might imply a higher volume of data, exacerbating any manual processes. Therefore, the ease of use is likely moderate to good, but with specific points of frustration that prevent a top rating.\"\n}",
+  "json": {
+    "ease_of_use_probabilities_1_to_5": [
+      0.05,
+      0.15,
+      0.4,
+      0.3,
+      0.1
+    ],
+    "likely_frictions": [
+      "Repetitive manual entry for multiple contacts",
+      "Difficulty finding or adding social media fields",
+      "Lack of bulk import for social media information"
+    ],
+    "rationale": "The reviewer is a new user (less than 6 months) in Business Development, focusing on a core CRM task: adding multiple contacts with social media info. While Freshsales generally aims for ease of use, this specific task, if not streamlined, can be cumbersome. 'Multiple' contacts suggest potential for repetitive data entry, and if social media fields aren't native or easily customizable/importable, it could lead to friction. The large company size might imply a higher volume of data, exacerbating any manual processes. Therefore, the ease of use is likely moderate to good, but with specific points of frustration that prevent a top rating."
+  },
+  "ts": "2026-10-18T01:26:14.992590+00:00"
+}

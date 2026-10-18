@@ -1,0 +1,32 @@
+{
+  "stage": "pp_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "1a7d1b262f1d6415db837215d31671a3a399e6afa6319fad47f5801d8696e62f",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 5308,
+  "output_tokens": 1233,
+  "cost_usd": 0.0046749,
+  "elapsed_s": 8.42,
+  "error": null,
+  "text": "{\n  \"ease_of_use_probabilities_1_to_5\": [\n    0.05,\n    0.15,\n    0.35,\n    0.3,\n    0.15\n  ],\n  \"likely_frictions\": [\n    \"Initial setup and configuration for advanced marketing automation features.\",\n    \"Potential complexity in integrating with other marketing tools for a seamless workflow.\",\n    \"Learning curve for leveraging deep customization options for reporting and segmentation.\"\n  ],\n  \"rationale\": \"The reviewer is a VP of Marketing at a small-to-medium software company, using Zoho CRM for 6-12 months for list segmentation and email campaign tracking. Zoho CRM highlights its AI, automation, and extensive customization capabilities ('Canvas, customize layouts, structure pages, arrange fields, and create a visually intuitive interface, no code required'). While 'no code required' suggests user-friendliness, the breadth of customization and advanced features like 'bespoke sales operations' imply that setting up and fully leveraging these for specific marketing tasks like sophisticated segmentation or campaign tracking might require a significant initial investment of time and effort. For a VP of Marketing, the daily use *after* setup could be smooth due to automation, but the initial configuration for optimal performance in their specific role (which often demands tailored reports and workflows) could present challenges. Competitors like Freshsales are often lauded for being 'easy to use' and having 'marketing automation features' out-of-the-box, suggesting a slightly lower bar for initial setup for basic marketing tasks. Pipedrive also emphasizes ease for sales, but its marketing features are less prominent. Given the '6-12 months' usage, the reviewer would likely have overcome initial hurdles but might still encounter friction when trying to push the boundaries of the system for advanced marketing needs or integrating with other platforms. Therefore, a rating of 3 or 4 is most probable, indicating a generally good experience but with some notable areas of friction.\"\n}",
+  "json": {
+    "ease_of_use_probabilities_1_to_5": [
+      0.05,
+      0.15,
+      0.35,
+      0.3,
+      0.15
+    ],
+    "likely_frictions": [
+      "Initial setup and configuration for advanced marketing automation features.",
+      "Potential complexity in integrating with other marketing tools for a seamless workflow.",
+      "Learning curve for leveraging deep customization options for reporting and segmentation."
+    ],
+    "rationale": "The reviewer is a VP of Marketing at a small-to-medium software company, using Zoho CRM for 6-12 months for list segmentation and email campaign tracking. Zoho CRM highlights its AI, automation, and extensive customization capabilities ('Canvas, customize layouts, structure pages, arrange fields, and create a visually intuitive interface, no code required'). While 'no code required' suggests user-friendliness, the breadth of customization and advanced features like 'bespoke sales operations' imply that setting up and fully leveraging these for specific marketing tasks like sophisticated segmentation or campaign tracking might require a significant initial investment of time and effort. For a VP of Marketing, the daily use *after* setup could be smooth due to automation, but the initial configuration for optimal performance in their specific role (which often demands tailored reports and workflows) could present challenges. Competitors like Freshsales are often lauded for being 'easy to use' and having 'marketing automation features' out-of-the-box, suggesting a slightly lower bar for initial setup for basic marketing tasks. Pipedrive also emphasizes ease for sales, but its marketing features are less prominent. Given the '6-12 months' usage, the reviewer would likely have overcome initial hurdles but might still encounter friction when trying to push the boundaries of the system for advanced marketing needs or integrating with other platforms. Therefore, a rating of 3 or 4 is most probable, indicating a generally good experience but with some notable areas of friction."
+  },
+  "ts": "2026-10-18T01:28:54.523290+00:00"
+}

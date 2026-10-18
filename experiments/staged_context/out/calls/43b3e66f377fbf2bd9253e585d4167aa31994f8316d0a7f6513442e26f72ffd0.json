@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "43b3e66f377fbf2bd9253e585d4167aa31994f8316d0a7f6513442e26f72ffd0",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 446,
+  "output_tokens": 483,
+  "cost_usd": 0.0013413000000000001,
+  "elapsed_s": 3.43,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review does not state a clear, dominant, concrete task that the reviewer uses the product for. It mentions integrating 3rd parties as a feature that enables processes, and sending emails as an action that sometimes has a bug, but neither is presented as the primary, concrete activity the reviewer performs with the product.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review does not state a clear, dominant, concrete task that the reviewer uses the product for. It mentions integrating 3rd parties as a feature that enables processes, and sending emails as an action that sometimes has a bug, but neither is presented as the primary, concrete activity the reviewer performs with the product.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:24:41.260220+00:00"
+}

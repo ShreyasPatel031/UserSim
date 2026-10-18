@@ -1,0 +1,29 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d5a315a0e83b47d210d50a14cd4406c3c98e6df6a63b1a25eed5b0e1393da535",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 342,
+  "output_tokens": 508,
+  "cost_usd": 0.0013725999999999999,
+  "elapsed_s": 3.72,
+  "error": null,
+  "text": "{\n  \"eligible\": true,\n  \"reason\": \"The task 'follow up on leads and communication' is explicitly stated, describes a concrete activity with an object, and is something a user could attempt in a trial within 15 minutes by adding leads and logging interactions.\",\n  \"task\": {\n    \"action\": \"follow up\",\n    \"object\": \"leads and communication\",\n    \"context\": null,\n    \"purpose\": null\n  },\n  \"neutral_task\": \"Follow up on leads and their associated communication.\",\n  \"span\": \"follow up on leads and communication\"\n}",
+  "json": {
+    "eligible": true,
+    "reason": "The task 'follow up on leads and communication' is explicitly stated, describes a concrete activity with an object, and is something a user could attempt in a trial within 15 minutes by adding leads and logging interactions.",
+    "task": {
+      "action": "follow up",
+      "object": "leads and communication",
+      "context": null,
+      "purpose": null
+    },
+    "neutral_task": "Follow up on leads and their associated communication.",
+    "span": "follow up on leads and communication"
+  },
+  "ts": "2026-10-18T01:22:48.066833+00:00"
+}

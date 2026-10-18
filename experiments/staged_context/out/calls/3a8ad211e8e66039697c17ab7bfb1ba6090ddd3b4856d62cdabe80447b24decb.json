@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3a8ad211e8e66039697c17ab7bfb1ba6090ddd3b4856d62cdabe80447b24decb",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 475,
+  "output_tokens": 548,
+  "cost_usd": 0.0015125,
+  "elapsed_s": 3.69,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review does not explicitly state a concrete, specific task that the reviewer uses the product for. It mentions 'integration' as a problem/process of setting up the system, but not a specific activity performed within Zoho CRM itself. The 'Pros' section is generic praise ('the number of things that theoretically can be done').\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review does not explicitly state a concrete, specific task that the reviewer uses the product for. It mentions 'integration' as a problem/process of setting up the system, but not a specific activity performed within Zoho CRM itself. The 'Pros' section is generic praise ('the number of things that theoretically can be done').",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:24:17.059890+00:00"
+}

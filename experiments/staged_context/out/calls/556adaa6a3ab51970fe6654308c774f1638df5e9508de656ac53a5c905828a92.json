@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "556adaa6a3ab51970fe6654308c774f1638df5e9508de656ac53a5c905828a92",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 377,
+  "output_tokens": 439,
+  "cost_usd": 0.0012106,
+  "elapsed_s": 2.78,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review mentions 'managed relationships with customers', which is too generic and high-level to be considered a concrete activity. It doesn't describe a specific, actionable task that could be attempted in 15 minutes in a fresh trial workspace.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review mentions 'managed relationships with customers', which is too generic and high-level to be considered a concrete activity. It doesn't describe a specific, actionable task that could be attempted in 15 minutes in a fresh trial workspace.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:24:06.325222+00:00"
+}

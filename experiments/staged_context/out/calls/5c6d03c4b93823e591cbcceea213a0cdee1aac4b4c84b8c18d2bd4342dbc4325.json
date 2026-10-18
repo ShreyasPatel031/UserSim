@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "5c6d03c4b93823e591cbcceea213a0cdee1aac4b4c84b8c18d2bd4342dbc4325",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 309,
+  "output_tokens": 456,
+  "cost_usd": 0.0012327,
+  "elapsed_s": 3.81,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review does not explicitly state a concrete task the reviewer uses the product for. It mentions features like 'dashboard', 'integrations', and 'roles and permissions' but not a specific activity performed with them.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review does not explicitly state a concrete task the reviewer uses the product for. It mentions features like 'dashboard', 'integrations', and 'roles and permissions' but not a specific activity performed with them.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:23:21.365549+00:00"
+}

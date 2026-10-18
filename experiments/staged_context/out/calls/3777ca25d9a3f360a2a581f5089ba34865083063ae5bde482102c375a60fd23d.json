@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "3777ca25d9a3f360a2a581f5089ba34865083063ae5bde482102c375a60fd23d",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 334,
+  "output_tokens": 470,
+  "cost_usd": 0.0012752,
+  "elapsed_s": 3.38,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review mentions 'manage customer relationships' which is too generic and broad to be considered a concrete activity. It also highlights 'functional automations' as a feature, but doesn't describe a specific task involving these automations that could be attempted in 15 minutes.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review mentions 'manage customer relationships' which is too generic and broad to be considered a concrete activity. It also highlights 'functional automations' as a feature, but doesn't describe a specific task involving these automations that could be attempted in 15 minutes.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:23:29.101452+00:00"
+}

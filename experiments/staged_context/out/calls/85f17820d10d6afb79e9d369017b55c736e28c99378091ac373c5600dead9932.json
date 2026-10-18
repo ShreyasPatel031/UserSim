@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "85f17820d10d6afb79e9d369017b55c736e28c99378091ac373c5600dead9932",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 346,
+  "output_tokens": 468,
+  "cost_usd": 0.0012738,
+  "elapsed_s": 4.9,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review does not explicitly state a concrete task the reviewer uses the product for. It mentions general praise about functionalities and a complaint about the 'automation process' but doesn't specify what is being automated or what specific activity the user performs.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review does not explicitly state a concrete task the reviewer uses the product for. It mentions general praise about functionalities and a complaint about the 'automation process' but doesn't specify what is being automated or what specific activity the user performs.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:24:56.296409+00:00"
+}

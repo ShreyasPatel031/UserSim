@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "22a1bdd965c73889618469eadc26ef1e3cbad23750bfbf112f63c931bc5f4b76",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 323,
+  "output_tokens": 380,
+  "cost_usd": 0.0010469000000000001,
+  "elapsed_s": 2.94,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review lists features (email, chat, live view) but does not describe a specific, concrete task the reviewer uses the product for. 'Testing it' is the reason for choosing, not a task performed with the product.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review lists features (email, chat, live view) but does not describe a specific, concrete task the reviewer uses the product for. 'Testing it' is the reason for choosing, not a task performed with the product.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:23:24.803794+00:00"
+}

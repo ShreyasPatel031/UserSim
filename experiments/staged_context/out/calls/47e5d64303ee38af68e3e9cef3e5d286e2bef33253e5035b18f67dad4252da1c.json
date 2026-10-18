@@ -1,0 +1,29 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "47e5d64303ee38af68e3e9cef3e5d286e2bef33253e5035b18f67dad4252da1c",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 469,
+  "output_tokens": 572,
+  "cost_usd": 0.0015707,
+  "elapsed_s": 3.79,
+  "error": null,
+  "text": "{\n  \"eligible\": true,\n  \"reason\": null,\n  \"task\": {\n    \"action\": \"manage and keep track of\",\n    \"object\": \"prospects\",\n    \"context\": \"in various stages to include initial contact, email sent, proposal sent, in negotiation, follow up, setting appointment reminders that are integrated with your calendar based software such as calendly or Google Calendar\",\n    \"purpose\": \"to ensure vital sales process steps are followed\"\n  },\n  \"neutral_task\": \"Set up a system to manage and track prospects through various sales stages, including initial contact, email sent, proposal sent, negotiation, and follow-up, incorporating appointment reminders integrated with calendar software.\",\n  \"span\": \"manage and keep track of prospects in various stages to include initial contact, email sent, proposal sent, in negotiation, follow up, setting appointment reminders that are integrated with your calendar based software such as calendly or Google Calendar\"\n}",
+  "json": {
+    "eligible": true,
+    "reason": null,
+    "task": {
+      "action": "manage and keep track of",
+      "object": "prospects",
+      "context": "in various stages to include initial contact, email sent, proposal sent, in negotiation, follow up, setting appointment reminders that are integrated with your calendar based software such as calendly or Google Calendar",
+      "purpose": "to ensure vital sales process steps are followed"
+    },
+    "neutral_task": "Set up a system to manage and track prospects through various sales stages, including initial contact, email sent, proposal sent, negotiation, and follow-up, incorporating appointment reminders integrated with calendar software.",
+    "span": "manage and keep track of prospects in various stages to include initial contact, email sent, proposal sent, in negotiation, follow up, setting appointment reminders that are integrated with your calendar based software such as calendly or Google Calendar"
+  },
+  "ts": "2026-10-18T01:24:41.615635+00:00"
+}

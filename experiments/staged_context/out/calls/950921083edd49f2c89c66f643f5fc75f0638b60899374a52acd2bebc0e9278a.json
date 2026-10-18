@@ -1,0 +1,29 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "950921083edd49f2c89c66f643f5fc75f0638b60899374a52acd2bebc0e9278a",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 372,
+  "output_tokens": 523,
+  "cost_usd": 0.0014191,
+  "elapsed_s": 3.94,
+  "error": null,
+  "text": "{\n  \"eligible\": true,\n  \"reason\": \"The review explicitly states the task of creating and deploying forms to capture leads from a website, which is a concrete activity with an object and could be attempted in a trial within 15 minutes.\",\n  \"task\": {\n    \"action\": \"create and deploy\",\n    \"object\": \"forms\",\n    \"context\": \"on a website\",\n    \"purpose\": \"to get leads\"\n  },\n  \"neutral_task\": \"Create and deploy forms on a website to capture leads.\",\n  \"span\": \"create the forms and deploy on my website to get leads\"\n}",
+  "json": {
+    "eligible": true,
+    "reason": "The review explicitly states the task of creating and deploying forms to capture leads from a website, which is a concrete activity with an object and could be attempted in a trial within 15 minutes.",
+    "task": {
+      "action": "create and deploy",
+      "object": "forms",
+      "context": "on a website",
+      "purpose": "to get leads"
+    },
+    "neutral_task": "Create and deploy forms on a website to capture leads.",
+    "span": "create the forms and deploy on my website to get leads"
+  },
+  "ts": "2026-10-18T01:22:44.340761+00:00"
+}

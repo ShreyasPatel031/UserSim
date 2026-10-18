@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d045a720b06e70476d51e5be82a89ac491182eae4d305de28168263fe7ca3cc6",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 389,
+  "output_tokens": 505,
+  "cost_usd": 0.0013792000000000001,
+  "elapsed_s": 3.6,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The review lists multiple distinct activities (assigning tasks, adding notes, creating appointments, teaching leads through the sales process) without one being clearly dominant or encompassing the others as a single, overarching task. The phrase 'teaching leads all the way through the sales process' is too generic to be a concrete activity with an object that can be attempted in 15 minutes.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The review lists multiple distinct activities (assigning tasks, adding notes, creating appointments, teaching leads through the sales process) without one being clearly dominant or encompassing the others as a single, overarching task. The phrase 'teaching leads all the way through the sales process' is too generic to be a concrete activity with an object that can be attempted in 15 minutes.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:22:56.893525+00:00"
+}

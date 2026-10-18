@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "80864004e89d84c081cc84dbb4226d0d700b3f7d4dce0258f6c51b8e789aaeb7",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 393,
+  "output_tokens": 491,
+  "cost_usd": 0.0013454,
+  "elapsed_s": 3.7,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"The stated activity, 'manage and organise our leads and prospects,' is too generic. It describes a broad function rather than a concrete, specific task with a clear object and action that could be attempted in a fresh trial within 15 minutes. It lacks the specificity of 'what' is being done to 'leads and prospects' beyond general management/organization.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "The stated activity, 'manage and organise our leads and prospects,' is too generic. It describes a broad function rather than a concrete, specific task with a clear object and action that could be attempted in a fresh trial within 15 minutes. It lacks the specificity of 'what' is being done to 'leads and prospects' beyond general management/organization.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:24:46.178700+00:00"
+}

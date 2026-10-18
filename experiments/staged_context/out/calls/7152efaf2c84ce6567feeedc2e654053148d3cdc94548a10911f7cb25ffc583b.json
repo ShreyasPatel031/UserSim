@@ -1,0 +1,28 @@
+{
+  "stage": "pp_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "7152efaf2c84ce6567feeedc2e654053148d3cdc94548a10911f7cb25ffc583b",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 6591,
+  "output_tokens": 1014,
+  "cost_usd": 0.0045123,
+  "elapsed_s": 8.65,
+  "error": null,
+  "text": "{\n  \"ease_of_use_probabilities_1_to_5\": [\n    0.01,\n    0.02,\n    0.07,\n    0.30,\n    0.60\n  ],\n  \"likely_frictions\": [],\n  \"rationale\": \"The reviewer is a Founder in a small Marketing and Advertising company, using Pipedrive for over 2 years. This long tenure strongly suggests that the product meets their usability needs, as significant ease-of-use issues would likely lead to switching. Pipedrive consistently markets itself as an 'easy and effective CRM' [D:Pipedrive:landing:1] and emphasizes workflow simplification [D:Pipedrive:landing:4]. The specific task, changing task statuses via drag & drop or bulk editing, represents core CRM functionality that Pipedrive, as a pipeline-focused tool, is expected to handle intuitively and efficiently. Drag & drop is a highly user-friendly interaction, and bulk editing is a common efficiency feature. Given the reviewer's profile (founder needing efficient tools) and extensive experience with the product, it's highly probable they find these fundamental operations very easy to use. There is no specific evidence to suggest friction for this particular task or user profile, especially after 2+ years of usage.\"\n}",
+  "json": {
+    "ease_of_use_probabilities_1_to_5": [
+      0.01,
+      0.02,
+      0.07,
+      0.3,
+      0.6
+    ],
+    "likely_frictions": [],
+    "rationale": "The reviewer is a Founder in a small Marketing and Advertising company, using Pipedrive for over 2 years. This long tenure strongly suggests that the product meets their usability needs, as significant ease-of-use issues would likely lead to switching. Pipedrive consistently markets itself as an 'easy and effective CRM' [D:Pipedrive:landing:1] and emphasizes workflow simplification [D:Pipedrive:landing:4]. The specific task, changing task statuses via drag & drop or bulk editing, represents core CRM functionality that Pipedrive, as a pipeline-focused tool, is expected to handle intuitively and efficiently. Drag & drop is a highly user-friendly interaction, and bulk editing is a common efficiency feature. Given the reviewer's profile (founder needing efficient tools) and extensive experience with the product, it's highly probable they find these fundamental operations very easy to use. There is no specific evidence to suggest friction for this particular task or user profile, especially after 2+ years of usage."
+  },
+  "ts": "2026-10-18T01:30:20.013679+00:00"
+}

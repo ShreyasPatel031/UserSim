@@ -1,0 +1,24 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "16213e658c23b75bcba1bbd291e0ce6b16bdf723921ae0e7a666a113e5669bb2",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 472,
+  "output_tokens": 473,
+  "cost_usd": 0.0013241,
+  "elapsed_s": 3.7,
+  "error": null,
+  "text": "{\n  \"eligible\": false,\n  \"reason\": \"No clear, dominant task is explicitly stated. The review mentions features like 'customizing dashboards and workflow', 'lead scoring', and 'integration with Gsuite and phone system for tracking all contacts', but these are either too generic, describe features rather than specific user actions, or imply setup without explicitly stating the user's task.\",\n  \"task\": null,\n  \"neutral_task\": null,\n  \"span\": null\n}",
+  "json": {
+    "eligible": false,
+    "reason": "No clear, dominant task is explicitly stated. The review mentions features like 'customizing dashboards and workflow', 'lead scoring', and 'integration with Gsuite and phone system for tracking all contacts', but these are either too generic, describe features rather than specific user actions, or imply setup without explicitly stating the user's task.",
+    "task": null,
+    "neutral_task": null,
+    "span": null
+  },
+  "ts": "2026-10-18T01:22:44.091664+00:00"
+}

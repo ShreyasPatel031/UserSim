@@ -1,0 +1,29 @@
+{
+  "stage": "pp_screen",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "a10cb3b6f03550b19b1d8fdc299d20013c5ae631a812a2554b097e473e9c1c98",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_tokens": 4096,
+  "thinking_budget": 512,
+  "input_tokens": 423,
+  "output_tokens": 563,
+  "cost_usd": 0.0015344,
+  "elapsed_s": 3.66,
+  "error": null,
+  "text": "{\n  \"eligible\": true,\n  \"reason\": \"The review explicitly states the task of managing a sales pipeline, which is a concrete activity with a clear object (sales pipeline, leads/deals). A user could set up and view a basic sales pipeline with leads/deals in a trial environment within 15 minutes.\",\n  \"task\": {\n    \"action\": \"Manage\",\n    \"object\": \"Sales pipeline\",\n    \"context\": \"by providing a structured view of leads/deals\",\n    \"purpose\": null\n  },\n  \"neutral_task\": \"Manage the sales pipeline by setting up a structured view of leads and deals.\",\n  \"span\": \"manage our Sales pipeline by providing a structured view of leads/deals\"\n}",
+  "json": {
+    "eligible": true,
+    "reason": "The review explicitly states the task of managing a sales pipeline, which is a concrete activity with a clear object (sales pipeline, leads/deals). A user could set up and view a basic sales pipeline with leads/deals in a trial environment within 15 minutes.",
+    "task": {
+      "action": "Manage",
+      "object": "Sales pipeline",
+      "context": "by providing a structured view of leads/deals",
+      "purpose": null
+    },
+    "neutral_task": "Manage the sales pipeline by setting up a structured view of leads and deals.",
+    "span": "manage our Sales pipeline by providing a structured view of leads/deals"
+  },
+  "ts": "2026-10-18T01:23:21.217487+00:00"
+}
