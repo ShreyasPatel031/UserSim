@@ -92,9 +92,32 @@ def _values(reviews: list[dict], out: str) -> list[float]:
     return vals
 
 
-def rating_estimates(own: list[dict], rivals: list[dict]) -> dict[str, dict[str, Any]]:
-    """Per output: expected rating = (sum of last-LAST own + K * rivals mean) / (n_own + K). Own reviews are taken in
-    the order the scrapers return them (most recent first)."""
+def segment_estimates(persona: dict[str, Any] | None) -> dict[str, float]:
+    """People-like-this-persona rating per output (agent_mode_segments.json, shrunk deviations, k=20)."""
+    if not persona:
+        return {}
+    seg, levels = _segments(), persona_levels(persona)
+    keys = {"role_family": "role_family", "size_fine": "company_size", "time_used": "time_used", "industry": "industry"}
+    out = {}
+    for r, mu in seg["all"].items():
+        dev = 0.0
+        for f, v in levels.items():
+            table = seg["factors"].get(keys[f], {})
+            k = next((x for x in table if x.lower() == v.lower()), None)
+            if k is not None and r in table[k]:
+                m, n = table[k][r]
+                dev += (m * n + 20 * mu) / (n + 20) - mu
+        out[r] = mu + dev
+    return out
+
+
+def rating_estimates(own: list[dict], rivals: list[dict], persona: dict[str, Any] | None = None) -> dict[str, dict[str, Any]]:
+    """Per output: expected rating = (sum of last-LAST own + K * prior) / (n_own + K). Own reviews are taken in the
+    order the scrapers return them (most recent first).
+
+    prior = the average of the rivals' mean and the people-like-this-persona estimate when a persona is given (best
+    prior on DEV in heldout_bench: Capterra test RMSE .822 -> .819, G2 .746 -> .729 vs rivals alone); else rivals."""
+    seg = segment_estimates(persona)
     out = {}
     for name in OUT_SCALE:
         mine = _values(own, name)[:LAST]
@@ -102,16 +125,20 @@ def rating_estimates(own: list[dict], rivals: list[dict]) -> dict[str, dict[str,
         if not mine and not theirs:
             out[name] = {"estimate": None, "basis": "no ratings in the scraped reviews"}
             continue
-        prior = sum(theirs) / len(theirs) if theirs else None
+        rivals_mean = sum(theirs) / len(theirs) if theirs else None
+        prior = rivals_mean
+        if rivals_mean is not None and name in seg:
+            prior = (rivals_mean + seg[name]) / 2
         if mine and prior is not None:
-            est, basis = (sum(mine) + K * prior) / (len(mine) + K), "own reviews shrunk to rivals"
+            est, basis = (sum(mine) + K * prior) / (len(mine) + K), "own reviews shrunk to rivals" + (" + people like them" if name in seg else "")
         elif mine:
             est, basis = sum(mine) / len(mine), "own reviews only (no rival ratings)"
         else:
-            est, basis = prior, "rivals only (no own reviews)"
+            est, basis = prior, "rivals only (no own reviews)" if name not in seg else "rivals + people like them (no own reviews)"
         out[name] = {"estimate": round(est, 2), "basis": basis, "n_own": len(mine), "n_rivals": len(theirs),
                      "own_mean": round(sum(mine) / len(mine), 2) if mine else None,
-                     "rivals_mean": round(prior, 2) if prior is not None else None}
+                     "rivals_mean": round(rivals_mean, 2) if rivals_mean is not None else None,
+                     "people_like_them": round(seg[name], 2) if name in seg else None}
     return out
 
 
@@ -468,7 +495,7 @@ async def predict_experience(*, product: str, url: str, persona: dict[str, Any],
                 "reason": f"no usable reviews for {product}" + (f" or its rivals {rivals}" if rivals else "; name its competitors to use theirs")
                           + " (see own_reviews_check / rivals_check)"}
     profile = await product_profile(product, url, {n: got[n]["reviews"] for n in kept}, judge or _default_judge)
-    ratings = rating_estimates(own, riv)
+    ratings = rating_estimates(own, riv, persona)
     personalize(ratings, persona)
     ev = evidence_text(product, own, riv, persona, ratings)
     words: dict[str, Any] = {}

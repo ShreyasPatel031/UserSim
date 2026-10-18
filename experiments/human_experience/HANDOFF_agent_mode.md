@@ -13,7 +13,10 @@ Most products UserSim gets are new, so own reviews (the biggest rating lever) wo
 | G2 200, plain context agent | 0.505 | 0.233 | 0.265 | **0.760** | – | – |
 | G2 200, **new-product agent mode** | 0.491 | **0.262** | **0.340** | 0.843 (1.048 most_likely) | – | – |
 
-- On G2, competitors-only ratings are worse than the plain agent's. G2 categories are model-assigned and noisy, and
+- Prior for new products is now the average of the competitors' mean and the people-like-them estimate (best on DEV in
+  heldout_bench; Capterra test RMSE .822 → .819, G2 .746 → .729). Capterra overall MAE .593 → .586.
+- On G2, competitors-only ratings are worse than the plain agent's. Most of the gap is the sample: these 200 G2 reviewers
+  average 3.95 stars, against about 4.3 for G2 overall, and agent mode predicts the competitors' level (4.55). G2 categories are model-assigned and noisy, and
   people-like-them priors beat category priors there (heldout_bench).
 - `most_likely`'s round-up rule suits whole-star sites (Capterra), not G2's half stars.
 - **`product_profile.likely_users`** (`mix_bench.py`; every product treated as new, its real reviewers as the truth):

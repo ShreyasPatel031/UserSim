@@ -82,7 +82,7 @@ def main() -> None:
         own = [live_shape(x) for x in own.head(A.LAST).to_dict("records")] if cond == "agent_mode" else []
         g = lambda k: p[k] if isinstance(p.get(k), str) else None  # noqa: E731
         per = {"role": g("title") or "", "company_size": g("size3"), "industry": g("industry"), "time_used": g("time_used")}
-        rat = A.rating_estimates(own, rv)
+        rat = A.rating_estimates(own, rv, per)
         A.personalize(rat, per)
         prompt = A.words_prompt(p["query"], "", per, refs[p["rid"]]["task"], A.evidence_text(p["query"], own, rv, per, rat)[:14000])
         rec = E.call_model("live_words_v2", FLASH, A.WORDS_SYSTEM, prompt, temperature=0.7, seed=1000, max_tokens=8192,
