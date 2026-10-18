@@ -1,0 +1,28 @@
+{
+    "values": {
+        "refresh_s": 300,
+        "allow_anonymous": true,
+        "max_sessions": 10,
+        "max_per_client": 8,
+        "anon_max_concurrent_sessions_per_ip": 3,
+        "anon_daily_usd_per_ip": 2.0,
+        "anon_daily_usd_global": 10.0,
+        "est_usd_per_session": 0.1,
+        "est_usd_per_step": 0.01,
+        "anon_max_cells_per_study": 12,
+        "anon_allow_sms": false,
+        "anon_allow_paid_captcha": false,
+        "anon_allow_shared_aliases": false
+    },
+    "source": "https://raw.githubusercontent.com/ShreyasPatel031/UserSim/main/mvp/sim_mcp/limits.json",
+    "loaded_at": 1792289880.5886226,
+    "checked_at": 1792289880.5886295,
+    "error": "",
+    "env_overrides": [],
+    "today": "2026-10-17",
+    "spend": {
+        "day": "2026-10-17",
+        "total_usd": 0.4,
+        "ips": 2
+    }
+}
