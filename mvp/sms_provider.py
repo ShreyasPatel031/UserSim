@@ -174,8 +174,16 @@ def wait_for_sms(
     timeout_s: float = 180.0,
     newer_than: float | None = None,
     poll_s: float = 3.0,
+    skip: Any = None,
+    slack_s: float = 5.0,
 ) -> str | None:
-    """Block until a verification code arrives for ``number``."""
+    """Block until a verification code arrives for ``number``.
+
+    skip(title, body) -> True drops a text without returning it (the MCP's sender denylist). slack_s: how many
+    seconds before ``newer_than`` a text may be (clock skew); 0 = strictly after. skip/slack_s apply to the ntfy
+    backend (the forwarded owner phone); other backends refuse a skip filter rather than ignore it."""
+    if skip is not None and number.backend != "ntfy":
+        raise RuntimeError(f"SMS sender filtering is only supported on the ntfy backend, not {number.backend!r}")
     if number.backend == "messages":
         return wait_for_code(
             timeout_s=timeout_s,
@@ -188,6 +196,8 @@ def wait_for_sms(
             timeout_s=timeout_s,
             newer_than=newer_than,
             poll_s=poll_s,
+            skip=skip,
+            slack_s=slack_s,
         )
     if number.backend == "sms-activate":
         return _sms_activate_wait(number, timeout_s=timeout_s, poll_s=poll_s)
@@ -254,6 +264,8 @@ def _ntfy_wait(
     timeout_s: float,
     newer_than: float | None,
     poll_s: float,
+    skip: Any = None,
+    slack_s: float = 5.0,
 ) -> str | None:
     """Read a code the handset forwarded to an ntfy topic.
 
@@ -271,7 +283,7 @@ def _ntfy_wait(
 
     cutoff = newer_than or time.time()
     # A couple of seconds of slack for clock skew between handset and VM.
-    since = int(cutoff - 5)
+    since = int(cutoff - max(5.0, slack_s))
     url = f"{_ntfy_base()}/{quote(topic, safe='')}/json"
 
     deadline = time.monotonic() + timeout_s
@@ -300,12 +312,12 @@ def _ntfy_wait(
                     if msg_id in seen:
                         continue
                     seen.add(msg_id)
-                    if float(msg.get("time") or 0) < cutoff - 5:
+                    if float(msg.get("time") or 0) < cutoff - slack_s:
                         continue
-                    code = _sms_code(
-                        str(msg.get("title") or ""),
-                        str(msg.get("message") or ""),
-                    )
+                    title, body = str(msg.get("title") or ""), str(msg.get("message") or "")
+                    if skip is not None and skip(title, body):
+                        continue  # denylisted sender / content: never returned
+                    code = _sms_code(title, body)
                     if code:
                         return code
         except Exception:

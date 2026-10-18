@@ -168,8 +168,8 @@ Returns `{study_id, watch_url, report_url, runs, cells:[…], rules:{max_steps, 
 | `usersim_wait_for_verification_code` | `session_id`, `timeout_s: int = 120` (clamped to 10–240) | `{found, subject, sender, code, links, link_texts}` or `{found:false, note}` |
 | `usersim_wait_for_verification_link` | `session_id`, `timeout_s: int = 120` (10–240) | Same shape, with links ordered best first. Links from earlier mails stay openable |
 | `usersim_open_verification_link` | `session_id`, `url`, `thought` (default "I click the link in the email.") | Opens the link in the session browser and returns an observation. Only URLs returned by the wait tool are accepted, and each one opens only once. The redirect chain is recorded, so click-tracking redirects are fine |
-| `usersim_signup_phone` | `session_id` | `{phone}`. Use it only if a site insists on SMS |
-| `usersim_wait_for_sms_code` | `session_id`, `timeout_s: int = 90` (15–180) | `{found, code}` |
+| `usersim_signup_phone` | `session_id` | `{phone, lease_seconds_left, lease}`. Use it only if a site insists on SMS. The number is shared, so it is leased to one session at a time (`sms_lease_s`, about 10 min, or until your session ends). If another session holds it: `{error, busy: true, retry_after_s}`, so wait and call again. Calling again from the same session renews the lease |
+| `usersim_wait_for_sms_code` | `session_id`, `timeout_s: int = 45` (5–50) | `{found, code}`. Only for the session holding the lease, and only codes from texts that arrived **after** your lease started. Texts on `sms_sender_denylist` are never returned |
 | `usersim_solve_captcha` | `session_id` | Observation plus a `captcha` object (detected type, turnstile/audio/challenge results, `note`, `paid` if used) |
 
 Rules:
@@ -228,7 +228,10 @@ If the file on main is broken (bad JSON, wrong types), the server keeps the last
 | `est_usd_per_session` | 0.10 | Charged against those budgets when a browser session starts |
 | `est_usd_per_step` | 0.01 | Charged per `usersim_act`, `usersim_open_verification_link` and `usersim_solve_captcha` call (a full 40-step session = $0.50) |
 | `anon_max_cells_per_study` | 12 | Most runs (persona × task × site) one study may have without a token |
-| `anon_allow_sms` | `false` | SMS tools without a token. Keep false: the SMS number is the owner's real phone |
+| `anon_allow_sms` | `true` | SMS tools without a token. They're made safe instead of blocked (see the next three rows) |
+| `sms_lease_s` | 600 | One session holds the SMS number at a time, for this many seconds or until it closes. Others get `busy` + `retry_after_s`. Applies to every caller |
+| `anon_daily_sms_leases_per_ip` | 10 | SMS-number leases per client IP per day without a token |
+| `sms_sender_denylist` | apple, icloud, google, g-, banks, … | Texts whose sender or body contains one of these words (whole word, case-insensitive) are **never** returned to any caller: they protect the owner's personal codes (Apple ID, banks, 2FA). Add a word with a PR |
 | `anon_allow_paid_captcha` | `false` | Paid captcha solver (CapSolver) without a token |
 | `anon_allow_shared_aliases` | `false` | `no_plus` / plain signup addresses without a token. Those can repeat across sessions, so another caller could read the mail. Without a token you only get unique `+tag` aliases |
 
@@ -250,7 +253,10 @@ When a cap is hit, the tool returns `{"error": "...", "limit": "<key>", "limits_
 | `needs a bearer token right now (limits.json allow_anonymous is false)` (HTTP 401) | The open endpoint was switched off in `limits.json` |
 | `limit: anon_daily_usd_per_ip` / `anon_daily_usd_global` | Daily budget without a token is used up. It resets at midnight America/Los_Angeles |
 | `cap anon_max_concurrent_sessions_per_ip` | 3 sessions are already open from your IP, so finish one first |
-| `cap anon_allow_sms` / `anon_allow_shared_aliases` / `anon_max_cells_per_study` | Not available without a token (see [Limits](#limits)) |
+| `cap anon_allow_shared_aliases` / `anon_max_cells_per_study` | Not available without a token (see [Limits](#limits)) |
+| `the SMS number is busy … Retry in N s` (`busy: true`) | Another simulated user holds the phone number. Wait `retry_after_s` and call `usersim_signup_phone` again |
+| `this session no longer holds the SMS number` | Your lease expired or was never granted. Call `usersim_signup_phone` again, then request a new code on the site |
+| `limit: anon_daily_sms_leases_per_ip` | 10 SMS leases from your IP today; resets at midnight America/Los_Angeles |
 | HTTP 404 on `usersim.vercel.app/mcp` | Wrong path, or the server is on an old build. Check `https://usersim.vercel.app/health` for `engine_version` |
 | `product_url must be a public URL …` | localhost, private IP or `.local`: use a public preview/staging URL |
 | `UserSim is at its simulated-user limit right now…` | `max_sessions` sessions are already open server-wide, so retry in a few minutes |

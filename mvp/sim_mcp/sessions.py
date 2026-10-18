@@ -2225,6 +2225,12 @@ async def settle_final(sim: SimSession, max_s: float = 12.0) -> bool:
 
 async def close(sim: SimSession, *, reason: str, status: str = "") -> None:
     """Release the browser. status='' leaves the study state to the caller."""
+    try:
+        from mvp.sim_mcp import sms_lease
+
+        sms_lease.release(sim.id)  # the shared SMS number is free again
+    except Exception:  # noqa: BLE001
+        pass
     if sim.closed:
         return
     sim.closed = True
