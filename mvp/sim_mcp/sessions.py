@@ -316,7 +316,8 @@ def get_session(session_id: str, owner: str | None = None) -> SimSession:
 def study_owner(study: Any) -> str | None:
     """Token fingerprint of the caller that created an MCP study (StudyState or its dict); None if not recorded."""
     rows = study.get("live_sessions") if isinstance(study, dict) else getattr(study, "live_sessions", None)
-    for row in (rows or {}).values():
+    # StudyState keeps live_sessions as a dict; a study loaded back from disk or GCS has it as a list.
+    for row in (rows.values() if isinstance(rows, dict) else rows or []):
         if isinstance(row, dict) and "mcp_owner" in row:
             return str(row["mcp_owner"])
     return None

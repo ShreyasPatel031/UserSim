@@ -13,6 +13,7 @@ from contextlib import AsyncExitStack
 from typing import Any
 
 from mcp.server.fastmcp import Context, FastMCP, Image
+from pydantic import BaseModel, ConfigDict, Field
 from mcp.server.transport_security import TransportSecuritySettings
 
 from mvp.sim_mcp import sessions as S
@@ -194,13 +195,31 @@ def _fail(exc: Exception) -> str:
     return json.dumps({"error": str(exc)})
 
 
+class StudyPersona(BaseModel):
+    """One simulated person. bio is required."""
+
+    model_config = ConfigDict(extra="allow")
+    name: str = Field(default="", description='Display name, e.g. "Maya Ortiz". Optional.')
+    bio: str = Field(description="Required. One or two sentences: who they are, what they know, why they are here.")
+    favors: str | None = Field(default=None, description="Optional: the site URL or name this persona is aimed at.")
+
+
+class StudyTask(BaseModel):
+    """One goal every persona tries on every site. prompt is required."""
+
+    model_config = ConfigDict(extra="allow")
+    prompt: str = Field(description='Required. One goal in the user\'s own words, e.g. "Sign up and create your first project".')
+    title: str | None = Field(default=None, description="Optional short label for the report; defaults to the prompt.")
+    favors: str | None = Field(default=None, description="Optional: the site URL or name this task is aimed at.")
+
+
 @mcp.tool(structured_output=False)
 async def usersim_start_study(
     ctx: Context,
-    product_url: str,
-    personas: list[dict[str, Any]],
-    tasks: list[dict[str, Any]],
-    competitors: list[str] | None = None,
+    product_url: str = Field(description="Public URL of the product (https://...)."),
+    personas: list[StudyPersona] = Field(description='At least one. Example: [{"name": "Maya Ortiz", "bio": "Freelance designer who bills clients hourly"}]'),
+    tasks: list[StudyTask] = Field(description='At least one. Example: [{"prompt": "Sign up with email and verify your account"}]'),
+    competitors: list[str] | None = Field(default=None, description="Optional: up to 4 public URLs of competing products."),
 ) -> str:
     """Create a study: every persona tries every task on the product and on each competitor.
 
@@ -212,6 +231,8 @@ async def usersim_start_study(
     Returns study_id, watch_url, report_url and cells. Run each cell with usersim_start_session(study_id=..., cell_id=...).
     """
     comps = list(competitors or [])
+    personas = [p.model_dump(exclude_none=True) if isinstance(p, BaseModel) else p for p in personas]
+    tasks = [t.model_dump(exclude_none=True) if isinstance(t, BaseModel) else t for t in tasks]
     if len(comps) > 4:
         return _fail(S.SessionError("at most 4 competitors"))
     try:
