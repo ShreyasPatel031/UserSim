@@ -1,0 +1,44 @@
+[
+ {
+  "persona": "Software Engineer, 10,001+ emp, 2+ yrs (Capterra #3)",
+  "steps": 34,
+  "seconds": 242,
+  "proof_pass": true,
+  "study_id": "14a7099d-c7a2-4d88-9c51-8f5574b7c7ff"
+ },
+ {
+  "persona": "Software Engineer, 51-200 emp, 1-2 yrs (#4)",
+  "steps": 40,
+  "seconds": 274,
+  "proof_pass": true,
+  "study_id": "125b443b-664e-4754-bb7e-0daef053a8ac"
+ },
+ {
+  "persona": "Senior iOS Developer, 5,001-10,000 emp, <6 mo (#5)",
+  "steps": 39,
+  "seconds": 294,
+  "proof_pass": true,
+  "study_id": "067fbe93-9827-43c5-8bd0-bcd87be0518c"
+ },
+ {
+  "persona": "CTO, 11-50 emp, 2+ yrs (#1)",
+  "steps": 37,
+  "seconds": 257,
+  "proof_pass": true,
+  "study_id": "b05c5a15-93fc-46d8-a294-9e008ab54723"
+ },
+ {
+  "persona": "Growth Manager, 11-50 emp, <6 mo (#2)",
+  "steps": 37,
+  "seconds": 280,
+  "proof_pass": true,
+  "study_id": "b19d9490-823f-43fb-9d1e-db5810991e23"
+ },
+ {
+  "persona": "Product, 1-10 emp, free trial (#0)",
+  "steps": 33,
+  "seconds": 253,
+  "proof_pass": true,
+  "study_id": "7ebe2f17-b076-4ee6-81ac-013fb56d7ba8"
+ }
+]
