@@ -1,0 +1,507 @@
+{
+ "cell": {
+  "cell_id": "t1__p3__competitor_1",
+  "site": "https://www.monday.com/",
+  "site_name": "Monday",
+  "persona_name": "Maria Garcia",
+  "persona": "Maria coordinates creative campaigns and tracks team progress. She needs intuitive task management and collaboration features.",
+  "task": "Create a new project dashboard\n\nYou are evaluating the site https://www.monday.com/ only. Stay on that site; opening it is correct.",
+  "status": "queued"
+ },
+ "steps": [
+  {
+   "turn": 0,
+   "tool": "usersim_observe",
+   "action": null
+  },
+  {
+   "turn": 1,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 2,
+   "tool": "usersim_signup_identity",
+   "action": null
+  },
+  {
+   "turn": 3,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 4,
+   "tool": "usersim_act",
+   "action": "type"
+  },
+  {
+   "turn": 5,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 6,
+   "tool": "usersim_solve_captcha",
+   "action": null
+  },
+  {
+   "turn": 7,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 8,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 9,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 10,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 11,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 12,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 13,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 14,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 15,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 16,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 17,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 18,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 19,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 20,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 21,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 22,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 23,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 25,
+   "tool": "usersim_observe",
+   "action": null
+  },
+  {
+   "turn": 26,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 27,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 28,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 29,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 30,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 31,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 32,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 33,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 34,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 35,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 36,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 37,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 38,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 39,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 40,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 41,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 42,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 43,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 44,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 45,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 46,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 47,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 48,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 49,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 50,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 51,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 52,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 53,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 54,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 55,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 56,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 57,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 58,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 59,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 60,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 61,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 62,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 63,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 64,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 65,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 66,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 67,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 68,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 69,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 70,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 72,
+   "tool": "usersim_observe",
+   "action": null
+  },
+  {
+   "turn": 73,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 74,
+   "tool": "usersim_act",
+   "action": "type"
+  },
+  {
+   "turn": 75,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 76,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 77,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 78,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 79,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 80,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 81,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 82,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 83,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 84,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 85,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 86,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 87,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 88,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 89,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 90,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 91,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 92,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 93,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 94,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 95,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 96,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 97,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 98,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 99,
+   "tool": "usersim_act",
+   "action": "click"
+  }
+ ],
+ "started": 1792362515.2877955,
+ "session_id": "b8a41488863f4811b1dea021964b3e47",
+ "finish": "{\"study_id\": \"75183a40-5bd9-4a57-b31e-1833c53e1893\", \"cell_id\": \"t1__p3__competitor_1\", \"goal_reached\": false, \"proof_pass\": true, \"study_phase\": \"39/108 runs done \\u00b7 9 simulated users working\", \"next\": \"Done with this cell. The study report is written when the last cell finishes.\"}",
+ "seconds": 1052
+}
