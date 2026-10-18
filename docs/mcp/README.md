@@ -189,7 +189,7 @@ Returns `{study_id, watch_url, report_url, runs, cells:[…], rules:{max_steps, 
 | param | type | notes |
 | --- | --- | --- |
 | `product` | string | Name as review sites list it, e.g. `"Basecamp"`. The scrapers search by this name. |
-| `persona` | object | `role` (required), `company_size`, `industry`, `bio` (optional). |
+| `persona` | object | `role` (required); `company_size`, `industry`, `time_used` (`"trial"`, `"<6 months"`, `"6-12 months"`, `"1-2 years"`, `"2+ years"`) and `bio` are optional. |
 | `product_url` | string | Optional context. |
 | `task` | string | Optional: what this user is trying to get done. |
 | `competitors` | string[] | 1–3 real rival names. They set the rating prior and the complaint topics. Omit them to discover rivals from `product_url` with the study planner; `evidence.rivals_source` says which. |
@@ -203,9 +203,12 @@ What you get on `ok`:
 - **`ratings`**: `overall_rating`, `ease_of_use_rating` and `recommendation_score`, each with `estimate`, `basis`,
   `n_own`, `n_rivals`, `own_mean` and `rivals_mean`. The estimate is the product's last 100 own reviews, shrunk toward
   its rivals' average with k = 10. With no own reviews, it is the rivals' average.
-  - Ratings are **not** personalised: on held-out Capterra and G2 reviewers, per-person factors didn't improve accuracy
-    once the level was right.
-  - Evidence: `experiments/human_experience/results/calibrate/FINDINGS.md` and `heldout_bench.py`.
+  - **`for_this_persona`** adds small within-product offsets for the persona's role, company size, `time_used` and
+    industry; `persona_offsets` lists the ones applied. Time using the product matters most: a first-time
+    (`"trial"`) user recommends about 0.5 points lower than the product's average.
+  - On held-out reviewers the offsets raised per-person ranking within a product (recommend Spearman 0.00 → 0.13) and
+    cut error on 6 of 7 test sets.
+  - Evidence: `experiments/human_experience/heldout_bench.py` and `personalize.py`.
 - **`pros`**, **`cons`**, **`overall_experience`** and **`likely_frictions`**: written for this persona from the most
   similar reviewers of the product and its rivals.
 - **`evidence`**: how many reviews were used, which rivals had none, and scraper errors.

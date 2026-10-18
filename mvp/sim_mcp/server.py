@@ -490,6 +490,7 @@ class AgentPersona(BaseModel):
     role: str = Field(description='Job title, e.g. "Marketing manager".')
     company_size: str | None = Field(default=None, description='e.g. "11-50 employees" or "Mid-Market".')
     industry: str | None = Field(default=None, description='e.g. "Marketing and Advertising".')
+    time_used: str | None = Field(default=None, description='How long they have used the product: "trial", "<6 months", "6-12 months", "1-2 years" or "2+ years". A first-time user is "trial".')
     bio: str | None = Field(default=None, description="Optional one-line description.")
 
 

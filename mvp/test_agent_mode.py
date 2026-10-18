@@ -38,6 +38,15 @@ class AgentModeTest(unittest.TestCase):
         self.assertEqual(r["overall_rating"]["basis"], "own reviews shrunk to rivals")
         self.assertAlmostEqual(r["recommendation_score"]["estimate"], round((20 * 10 + A.K * 8) / (20 + A.K), 2))
 
+    def test_persona_offsets_lower_a_trial_user(self):
+        r = A.rating_estimates(OWN["reviews"], RIVAL["reviews"])
+        A.personalize(r, {"role": "Project manager", "company_size": "30 people", "time_used": "trial"})
+        rec = r["recommendation_score"]
+        self.assertIn("time_used=I used a free trial", rec["persona_offsets"])
+        self.assertIn("size_fine=11-50 employees", rec["persona_offsets"])
+        self.assertLess(rec["persona_offsets"]["time_used=I used a free trial"], 0)
+        self.assertLess(rec["for_this_persona"], rec["estimate"])
+
     def test_rivals_only_when_product_has_no_reviews(self):
         r = A.rating_estimates([], RIVAL["reviews"])
         self.assertEqual((r["overall_rating"]["estimate"], r["overall_rating"]["basis"]), (4.0, "rivals only (no own reviews)"))

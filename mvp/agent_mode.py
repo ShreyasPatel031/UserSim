@@ -5,6 +5,10 @@ What it uses, and why (held-out results in experiments/human_experience/results/
   (heldout_bench: beat every rivals-only / people-like-them prior on all four Capterra and G2 held-out sets).
   With no own reviews, the rivals' average. Per-person factors (role, size, tenure, industry) and the model's own
   guess added nothing to ratings once the level was right (calibrate.py), so ratings are not personalised.
+- Persona adjustment: within-product offsets per role / company size / time using the product / industry, learned
+  across Capterra products (agent_mode_offsets.json, from personalize.py). Small but held out: it raised per-person
+  rank within a product (recommend Spearman 0.00 -> 0.13, ease 0.02 -> 0.10) and cut RMSE on 6 of 7 test sets.
+  Time using the product carries most of it: free-trial users recommend about 0.5 points lower than the product's mean.
 - Words (pros, cons, overall experience): a model writes them for this persona from the reviews of the most similar
   people, on the product itself and on its rivals, plus the rivals' complaint-topic rates (review-context handoff).
 All review data comes from live scrapes (mvp.review_context.live_reviews) of the product and its named rivals. If
@@ -17,6 +21,8 @@ import asyncio
 import json
 import re
 import time
+from functools import lru_cache
+from pathlib import Path
 from typing import Any
 
 from mvp import review_context as RC
@@ -88,6 +94,65 @@ def rating_estimates(own: list[dict], rivals: list[dict]) -> dict[str, dict[str,
                      "own_mean": round(sum(mine) / len(mine), 2) if mine else None,
                      "rivals_mean": round(prior, 2) if prior is not None else None}
     return out
+
+
+@lru_cache(maxsize=1)
+def _offsets() -> dict[str, Any]:
+    return json.loads((Path(__file__).with_name("agent_mode_offsets.json")).read_text())
+
+
+TENURE_ALIASES = {"trial": "I used a free trial", "free trial": "I used a free trial", "new": "Less than 6 months",
+                  "<6 months": "Less than 6 months", "6-12 months": "6-12 months", "1-2 years": "1-2 years", "2+ years": "2+ years"}
+
+
+def _size_band(v: str) -> str | None:
+    """'11-50', '11-50 employees', '30 people' -> Capterra's band; None if it can't be read."""
+    t = str(v or "").lower().replace(",", "")
+    if "self" in t:
+        return "Self-employed"
+    m = re.search(r"\d+", t)
+    if not m:
+        return None
+    n = int(m.group())
+    for hi, band in ((10, "1-10 employees"), (50, "11-50 employees"), (200, "51-200 employees"), (500, "201-500 employees"),
+                     (1000, "501-1,000 employees"), (5000, "1,001-5,000 employees"), (10000, "5,001-10,000 employees")):
+        if n <= hi:
+            return band
+    return "10,001+ employees"
+
+
+def persona_levels(persona: dict[str, Any]) -> dict[str, str]:
+    """The persona's factor levels as the offsets table names them (only the ones that could be read)."""
+    out = {}
+    fam = RS.role_family(persona.get("role") or "")
+    if fam != "unknown":
+        out["role_family"] = fam
+    if persona.get("company_size") and _size_band(persona["company_size"]):
+        out["size_fine"] = _size_band(persona["company_size"])
+    tu = str(persona.get("time_used") or "").strip()
+    if tu:
+        out["time_used"] = TENURE_ALIASES.get(tu.lower(), tu)
+    if persona.get("industry"):
+        out["industry"] = str(persona["industry"]).strip()
+    return out
+
+
+def personalize(ratings: dict[str, dict[str, Any]], persona: dict[str, Any]) -> None:
+    """Adds for_this_persona = estimate + weight * sum of the persona's within-product offsets (in place)."""
+    levels = persona_levels(persona)
+    for name, rec in ratings.items():
+        cfg = _offsets()["outputs"].get(name)
+        if rec.get("estimate") is None or not cfg:
+            continue
+        used = {}
+        for f, v in levels.items():
+            table = cfg["factors"].get(f, {})
+            key = next((k for k in table if k.lower() == v.lower()), None)
+            if key is not None:
+                used[f"{f}={key}"] = table[key]
+        lo, hi = OUT_SCALE[name]
+        rec["for_this_persona"] = round(min(hi, max(lo, rec["estimate"] + cfg["weight"] * sum(used.values()))), 2)
+        rec["persona_offsets"] = used
 
 
 def _similar(reviews: list[dict], persona: dict, k: int = SIMILAR) -> list[dict]:
@@ -176,6 +241,7 @@ async def predict_experience(*, product: str, url: str, persona: dict[str, Any],
         return {"mode": "agent", "status": "no_data", "pending": pending, "errors": errors,
                 "reason": f"no reviews found for {product}" + (f" or its rivals {rivals}" if rivals else "; name its competitors to use theirs")}
     ratings = rating_estimates(own, riv)
+    personalize(ratings, persona)
     ev = evidence_text(product, own, riv, persona)
     words: dict[str, Any] = {}
     if llm is None:
@@ -200,8 +266,9 @@ async def predict_experience(*, product: str, url: str, persona: dict[str, Any],
         "evidence": {"own_reviews": len(own), "rival_reviews": len(riv), "rivals": rivals, "rivals_source": rivals_source,
                      "rivals_with_reviews": sorted({x["product"] for x in riv}),
                      "rivals_without_reviews": missing, "still_scraping": pending, "errors": errors},
-        "how_to_read": ("Ratings set the expected LEVEL for users of this product (own recent reviews, shrunk to rivals); they "
-                        "are not personalised, because per-person factors did not improve held-out accuracy. Pros/cons are "
+        "how_to_read": ("ratings.*.estimate is the expected level for users of this product (own recent reviews, shrunk to "
+                        "rivals). for_this_persona adds small within-product offsets for this persona's role, company size, "
+                        "time using the product and industry (persona_offsets lists them). Pros/cons are "
                         "written for this persona from the most similar reviewers. Nothing here was observed in a browser; "
                         "use human mode (usersim_start_session) to see the product first-hand."),
     }

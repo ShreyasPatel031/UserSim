@@ -57,6 +57,19 @@ or the most recent (`own_recent`). Paired differences vs agent_full, with produc
   computes ratings from the data (result 2) instead of asking the model.
 - Spend: about $8 for both benches. The ledger now stands at $36.
 
+### 4. Per-person factors done right (`personalize.py`)
+
+Data and method:
+- The people-like-them averages compare segments *across* products. `personalize.py` instead learns each factor's offset
+  *within* products: the rating minus that product's mean, learned on other products and shrunk with k = 50.
+- The offsets are added to the own-review level, with the weight chosen on DEV products.
+
+Findings on TEST:
+- RMSE improved on 6 of 7 sets (by 0.3–1.4%); customer support was unchanged.
+- Within-product Spearman rose: recommend 0.00 → 0.13, ease 0.02 → 0.10, overall 0.04 → 0.09.
+- Time using the product dominates: a free-trial user recommends 0.53 lower, a 2+ year user 0.28 higher.
+- Exported to `mvp/agent_mode_offsets.json`; agent mode reports the result as `for_this_persona`.
+
 ## Agent mode (shipped in PR #86)
 
 - **Tool**: `usersim_predict_experience` in `mvp/sim_mcp/server.py`; logic in `mvp/agent_mode.py`.

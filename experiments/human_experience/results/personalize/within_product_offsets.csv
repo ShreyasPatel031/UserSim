@@ -1,0 +1,535 @@
+level,mean,count,source,output,factor
+consultant_freelance,0.039845322336830524,1242,capterra,ease_of_use_rating,role_family
+education_research_analysis,0.0129413949701575,2126,capterra,ease_of_use_rating,role_family
+executive_owner,-0.07884205738842254,9135,capterra,ease_of_use_rating,role_family
+finance_hr_legal,0.00941484049538215,2679,capterra,ease_of_use_rating,role_family
+general_team_mgmt,0.016010950599631625,5486,capterra,ease_of_use_rating,role_family
+healthcare_wellness,0.020526180780148895,800,capterra,ease_of_use_rating,role_family
+marketing_creative_content,0.0009166134413757345,6987,capterra,ease_of_use_rating,role_family
+operations_admin,0.02069698268210532,4066,capterra,ease_of_use_rating,role_family
+product_mgmt,-0.15192613645734387,330,capterra,ease_of_use_rating,role_family
+project_program_mgmt,0.013447830727781277,1605,capterra,ease_of_use_rating,role_family
+sales_customer,0.06282045218014527,4281,capterra,ease_of_use_rating,role_family
+software_it_engineering,0.04140660260301102,8150,capterra,ease_of_use_rating,role_family
+unknown,-0.016394222926831386,9434,capterra,ease_of_use_rating,role_family
+"1,001-5,000 employees",0.07866449890048065,3529,capterra,ease_of_use_rating,size_fine
+1-10 employees,-0.04072872474593885,12599,capterra,ease_of_use_rating,size_fine
+"10,001+ employees",0.0554573071614496,3090,capterra,ease_of_use_rating,size_fine
+11-50 employees,-0.017453026848383263,11150,capterra,ease_of_use_rating,size_fine
+201-500 employees,0.029680331224746836,4058,capterra,ease_of_use_rating,size_fine
+"5,001-10,000 employees",0.032290881636217635,1338,capterra,ease_of_use_rating,size_fine
+"501-1,000 employees",0.05454475548221401,3063,capterra,ease_of_use_rating,size_fine
+51-200 employees,0.030469742719395333,9298,capterra,ease_of_use_rating,size_fine
+Self-employed,-0.055269126585502516,7278,capterra,ease_of_use_rating,size_fine
+1-2 years,0.00767811954985997,14145,capterra,ease_of_use_rating,time_used
+2+ years,0.0923167098775065,18850,capterra,ease_of_use_rating,time_used
+6-12 months,-0.0344600647134167,10471,capterra,ease_of_use_rating,time_used
+I used a free trial,-0.12568646854632481,3274,capterra,ease_of_use_rating,time_used
+Less than 6 months,-0.11968743418235389,9229,capterra,ease_of_use_rating,time_used
+Accounting,0.014153892843114036,1338,capterra,ease_of_use_rating,industry
+Apparel & Fashion,-0.02685473482852345,593,capterra,ease_of_use_rating,industry
+Architecture & Planning,-0.033754909300374045,257,capterra,ease_of_use_rating,industry
+Arts and Crafts,-0.06344362393475886,466,capterra,ease_of_use_rating,industry
+Automotive,0.01650437416699269,843,capterra,ease_of_use_rating,industry
+Banking,0.05748538935452107,505,capterra,ease_of_use_rating,industry
+Biotechnology,-0.08660662709930882,230,capterra,ease_of_use_rating,industry
+Broadcast Media,-0.04010209579788629,270,capterra,ease_of_use_rating,industry
+Business Supplies and Equipment,-0.06667845638425601,229,capterra,ease_of_use_rating,industry
+Civil Engineering,0.10082278784796482,203,capterra,ease_of_use_rating,industry
+Computer & Network Security,0.013388419186190085,498,capterra,ease_of_use_rating,industry
+Computer Networking,0.01563312545886103,206,capterra,ease_of_use_rating,industry
+Computer Software,-0.027509483564774364,4616,capterra,ease_of_use_rating,industry
+Construction,-0.0096522475590338,1372,capterra,ease_of_use_rating,industry
+Consumer Goods,-0.04592816480245401,631,capterra,ease_of_use_rating,industry
+Consumer Services,0.06791099145038583,999,capterra,ease_of_use_rating,industry
+Cosmetics,0.0771157745216606,234,capterra,ease_of_use_rating,industry
+Design,0.017548489021820327,1145,capterra,ease_of_use_rating,industry
+E-Learning,-0.05828681025639666,1008,capterra,ease_of_use_rating,industry
+Education Management,0.05428786912973893,1981,capterra,ease_of_use_rating,industry
+Electrical/Electronic Manufacturing,0.010986101890501025,337,capterra,ease_of_use_rating,industry
+Entertainment,-0.12843362270135358,614,capterra,ease_of_use_rating,industry
+Events Services,-0.022352517726048144,307,capterra,ease_of_use_rating,industry
+Financial Services,-0.01257906338801078,1549,capterra,ease_of_use_rating,industry
+Food & Beverages,0.04629652511171331,635,capterra,ease_of_use_rating,industry
+Food Production,0.011399526276358292,201,capterra,ease_of_use_rating,industry
+Graphic Design,-0.010816553764304184,315,capterra,ease_of_use_rating,industry
+"Health, Wellness and Fitness",-0.005978703935984707,1646,capterra,ease_of_use_rating,industry
+Higher Education,-0.038670382117186056,483,capterra,ease_of_use_rating,industry
+Hospital & Health Care,0.07028644779311467,1358,capterra,ease_of_use_rating,industry
+Hospitality,-0.005654915096040082,585,capterra,ease_of_use_rating,industry
+Human Resources,-0.010097309316179363,445,capterra,ease_of_use_rating,industry
+Information Services,0.013174827813462946,309,capterra,ease_of_use_rating,industry
+Information Technology and Services,0.04801527722741251,5543,capterra,ease_of_use_rating,industry
+Insurance,0.05103033500130544,653,capterra,ease_of_use_rating,industry
+Internet,-0.07634895877357206,1060,capterra,ease_of_use_rating,industry
+Law Practice,-0.02064553388981797,222,capterra,ease_of_use_rating,industry
+Legal Services,-0.007684331643819437,349,capterra,ease_of_use_rating,industry
+"Leisure, Travel & Tourism",-0.02429506675070152,267,capterra,ease_of_use_rating,industry
+Logistics and Supply Chain,0.03592333685996211,304,capterra,ease_of_use_rating,industry
+Machinery,0.10346032411765721,203,capterra,ease_of_use_rating,industry
+Management Consulting,-0.0065240486367823085,589,capterra,ease_of_use_rating,industry
+Marketing and Advertising,-0.014456175570057978,3857,capterra,ease_of_use_rating,industry
+Mechanical or Industrial Engineering,0.015432160472936145,269,capterra,ease_of_use_rating,industry
+Media Production,-0.016956667237399234,382,capterra,ease_of_use_rating,industry
+Medical Practice,0.09798687998961433,261,capterra,ease_of_use_rating,industry
+Mental Health Care,-0.07841834176992567,223,capterra,ease_of_use_rating,industry
+Non-Profit Organization Management,-0.00867043342962441,1267,capterra,ease_of_use_rating,industry
+Oil & Energy,0.06516478634163592,227,capterra,ease_of_use_rating,industry
+Pharmaceuticals,0.036957215311660865,213,capterra,ease_of_use_rating,industry
+Photography,-0.006664981572426632,222,capterra,ease_of_use_rating,industry
+Professional Training & Coaching,-0.027963727829270504,260,capterra,ease_of_use_rating,industry
+Publishing,-0.05472848357051268,203,capterra,ease_of_use_rating,industry
+Real Estate,-0.01936762713610527,1028,capterra,ease_of_use_rating,industry
+Religious Institutions,-0.08927962242899823,251,capterra,ease_of_use_rating,industry
+Research,-0.04138195936694738,287,capterra,ease_of_use_rating,industry
+Retail,-0.030012617798335074,1756,capterra,ease_of_use_rating,industry
+Sports,0.01479545352340243,253,capterra,ease_of_use_rating,industry
+Staffing and Recruiting,0.026216752764196886,326,capterra,ease_of_use_rating,industry
+Telecommunications,0.06435964421322868,840,capterra,ease_of_use_rating,industry
+Transportation/Trucking/Railroad,0.013518544195560428,429,capterra,ease_of_use_rating,industry
+Wholesale,-0.0598808387741731,259,capterra,ease_of_use_rating,industry
+Writing and Editing,-0.053818174959593644,330,capterra,ease_of_use_rating,industry
+consultant_freelance,0.03133445398287599,1237,capterra,functionality_rating,role_family
+education_research_analysis,0.023751897606092573,2125,capterra,functionality_rating,role_family
+executive_owner,-0.03713595514299141,9116,capterra,functionality_rating,role_family
+finance_hr_legal,-0.017423158057915788,2672,capterra,functionality_rating,role_family
+general_team_mgmt,-0.0013305422890623733,5480,capterra,functionality_rating,role_family
+healthcare_wellness,0.0557930902964141,800,capterra,functionality_rating,role_family
+marketing_creative_content,-0.005823728132534184,6971,capterra,functionality_rating,role_family
+operations_admin,0.040714438375395644,4056,capterra,functionality_rating,role_family
+product_mgmt,-0.0077208047719041425,329,capterra,functionality_rating,role_family
+project_program_mgmt,-0.016091554900854305,1602,capterra,functionality_rating,role_family
+sales_customer,0.03267194908250445,4269,capterra,functionality_rating,role_family
+software_it_engineering,0.011547152857954568,8134,capterra,functionality_rating,role_family
+unknown,-0.0075733106034049195,9390,capterra,functionality_rating,role_family
+"1,001-5,000 employees",0.07140659453455718,3523,capterra,functionality_rating,size_fine
+1-10 employees,-0.01799630054934391,12586,capterra,functionality_rating,size_fine
+"10,001+ employees",0.012827470410395055,3088,capterra,functionality_rating,size_fine
+11-50 employees,-0.010296244825040265,11141,capterra,functionality_rating,size_fine
+201-500 employees,0.006472828043802597,4055,capterra,functionality_rating,size_fine
+"5,001-10,000 employees",0.011012477376756232,1337,capterra,functionality_rating,size_fine
+"501-1,000 employees",0.011139319763705939,3059,capterra,functionality_rating,size_fine
+51-200 employees,-0.0008944343924090344,9285,capterra,functionality_rating,size_fine
+Self-employed,-0.003818544783343513,7274,capterra,functionality_rating,size_fine
+1-2 years,0.0024986532613937283,14114,capterra,functionality_rating,time_used
+2+ years,0.0658241679541799,18850,capterra,functionality_rating,time_used
+6-12 months,-0.0297332696431179,10449,capterra,functionality_rating,time_used
+I used a free trial,-0.08462654377827303,3266,capterra,functionality_rating,time_used
+Less than 6 months,-0.07301953893825903,9218,capterra,functionality_rating,time_used
+Accounting,-0.02289212716198891,1337,capterra,functionality_rating,industry
+Apparel & Fashion,-0.004370701720005245,591,capterra,functionality_rating,industry
+Architecture & Planning,-0.0892276005107981,257,capterra,functionality_rating,industry
+Arts and Crafts,-0.08186548277927157,466,capterra,functionality_rating,industry
+Automotive,0.027766997998862064,843,capterra,functionality_rating,industry
+Banking,-0.008737254872386519,505,capterra,functionality_rating,industry
+Biotechnology,-0.0166255375221098,230,capterra,functionality_rating,industry
+Broadcast Media,-0.011399570066513003,269,capterra,functionality_rating,industry
+Business Supplies and Equipment,-0.052468412758275434,229,capterra,functionality_rating,industry
+Civil Engineering,-0.007753093665518552,203,capterra,functionality_rating,industry
+Computer & Network Security,-0.023617004600334283,498,capterra,functionality_rating,industry
+Computer Networking,0.10763644214371906,206,capterra,functionality_rating,industry
+Computer Software,-0.0421896726239191,4603,capterra,functionality_rating,industry
+Construction,-0.035985262563747886,1371,capterra,functionality_rating,industry
+Consumer Goods,-0.005570793273957557,631,capterra,functionality_rating,industry
+Consumer Services,0.07384428579087546,999,capterra,functionality_rating,industry
+Cosmetics,0.1473521638828019,234,capterra,functionality_rating,industry
+Design,0.021038928049920417,1145,capterra,functionality_rating,industry
+E-Learning,0.006750138447792713,1006,capterra,functionality_rating,industry
+Education Management,0.08720980264858494,1981,capterra,functionality_rating,industry
+Electrical/Electronic Manufacturing,-0.028533689081252263,337,capterra,functionality_rating,industry
+Entertainment,-0.06635387300785883,614,capterra,functionality_rating,industry
+Events Services,-0.07687299212979551,307,capterra,functionality_rating,industry
+Financial Services,-0.015720461460355842,1547,capterra,functionality_rating,industry
+Food & Beverages,-0.021165071540984255,635,capterra,functionality_rating,industry
+Food Production,-0.0005038106806532161,200,capterra,functionality_rating,industry
+Graphic Design,-0.05959407627030053,314,capterra,functionality_rating,industry
+"Health, Wellness and Fitness",0.03524959191339585,1646,capterra,functionality_rating,industry
+Higher Education,0.015844621010114638,482,capterra,functionality_rating,industry
+Hospital & Health Care,0.02366517607654952,1357,capterra,functionality_rating,industry
+Hospitality,0.008937606821928783,584,capterra,functionality_rating,industry
+Human Resources,-0.024521436763009438,445,capterra,functionality_rating,industry
+Information Services,-0.044487755135907865,309,capterra,functionality_rating,industry
+Information Technology and Services,0.019110380620127362,5532,capterra,functionality_rating,industry
+Insurance,0.005120613812447245,653,capterra,functionality_rating,industry
+Internet,-0.04454244031959051,1057,capterra,functionality_rating,industry
+Law Practice,0.12654062092417337,222,capterra,functionality_rating,industry
+Legal Services,-0.00997049728573123,349,capterra,functionality_rating,industry
+"Leisure, Travel & Tourism",0.015120688350543348,267,capterra,functionality_rating,industry
+Logistics and Supply Chain,0.07595394724545504,304,capterra,functionality_rating,industry
+Machinery,0.04452452370781969,203,capterra,functionality_rating,industry
+Management Consulting,-0.027867554597614336,586,capterra,functionality_rating,industry
+Marketing and Advertising,-0.01029602496986999,3850,capterra,functionality_rating,industry
+Mechanical or Industrial Engineering,-0.06397282380448828,269,capterra,functionality_rating,industry
+Media Production,0.03779186432278248,381,capterra,functionality_rating,industry
+Medical Practice,0.12428522403863311,261,capterra,functionality_rating,industry
+Mental Health Care,0.023921364224220733,223,capterra,functionality_rating,industry
+Non-Profit Organization Management,0.04366727681417519,1266,capterra,functionality_rating,industry
+Oil & Energy,0.003908762581207114,226,capterra,functionality_rating,industry
+Pharmaceuticals,0.10934601594306737,213,capterra,functionality_rating,industry
+Photography,0.038015388873840664,222,capterra,functionality_rating,industry
+Professional Training & Coaching,0.002075727948966072,258,capterra,functionality_rating,industry
+Publishing,-0.05609726047399019,203,capterra,functionality_rating,industry
+Real Estate,0.024277040559604578,1027,capterra,functionality_rating,industry
+Religious Institutions,0.0650335781399461,251,capterra,functionality_rating,industry
+Research,-0.015227587129010702,287,capterra,functionality_rating,industry
+Retail,-0.056487948572034624,1756,capterra,functionality_rating,industry
+Sports,0.0020385179155595944,253,capterra,functionality_rating,industry
+Staffing and Recruiting,0.025020115143929954,326,capterra,functionality_rating,industry
+Telecommunications,0.02602605909688957,840,capterra,functionality_rating,industry
+Transportation/Trucking/Railroad,-0.0036801237152191,429,capterra,functionality_rating,industry
+Wholesale,-0.05841279931413518,258,capterra,functionality_rating,industry
+Writing and Editing,0.03280175015633514,330,capterra,functionality_rating,industry
+consultant_freelance,0.046196473934185314,1247,capterra,overall_rating,role_family
+education_research_analysis,0.01717153037925146,2127,capterra,overall_rating,role_family
+executive_owner,-0.04642444552428124,9149,capterra,overall_rating,role_family
+finance_hr_legal,-0.011729605908573214,2701,capterra,overall_rating,role_family
+general_team_mgmt,0.00957950736630903,5491,capterra,overall_rating,role_family
+healthcare_wellness,0.07146698158094685,800,capterra,overall_rating,role_family
+marketing_creative_content,0.0019058427148491237,7011,capterra,overall_rating,role_family
+operations_admin,0.031991095392268694,4075,capterra,overall_rating,role_family
+product_mgmt,-0.055988728552660065,330,capterra,overall_rating,role_family
+project_program_mgmt,0.011663650610055719,1610,capterra,overall_rating,role_family
+sales_customer,0.038856145694375545,4293,capterra,overall_rating,role_family
+software_it_engineering,0.011232419070363505,8169,capterra,overall_rating,role_family
+unknown,-0.015628598310311114,9603,capterra,overall_rating,role_family
+"1,001-5,000 employees",0.06029471542701675,3543,capterra,overall_rating,size_fine
+1-10 employees,-0.02485376757287083,12625,capterra,overall_rating,size_fine
+"10,001+ employees",0.01641261180043553,3099,capterra,overall_rating,size_fine
+11-50 employees,-0.017844878861775118,11180,capterra,overall_rating,size_fine
+201-500 employees,0.007276737644523807,4072,capterra,overall_rating,size_fine
+"5,001-10,000 employees",0.0235091218052914,1343,capterra,overall_rating,size_fine
+"501-1,000 employees",0.024852813779089915,3078,capterra,overall_rating,size_fine
+51-200 employees,0.019772572457331442,9320,capterra,overall_rating,size_fine
+Self-employed,-0.012880467786605601,7288,capterra,overall_rating,size_fine
+1-2 years,0.006886761869749833,14147,capterra,overall_rating,time_used
+2+ years,0.06716821185862105,18850,capterra,overall_rating,time_used
+6-12 months,-0.01612976585670612,10471,capterra,overall_rating,time_used
+I used a free trial,-0.1201246112189007,3275,capterra,overall_rating,time_used
+Less than 6 months,-0.08155153240586427,9236,capterra,overall_rating,time_used
+Accounting,-0.003138820859555994,1347,capterra,overall_rating,industry
+Apparel & Fashion,0.00649305980052892,594,capterra,overall_rating,industry
+Architecture & Planning,-0.05602553242401672,257,capterra,overall_rating,industry
+Arts and Crafts,-0.041020898933171596,466,capterra,overall_rating,industry
+Automotive,0.010241757300585816,845,capterra,overall_rating,industry
+Banking,0.022437218138959204,505,capterra,overall_rating,industry
+Biotechnology,-0.03231295877428459,230,capterra,overall_rating,industry
+Broadcast Media,0.10468190646497881,271,capterra,overall_rating,industry
+Business Supplies and Equipment,-0.0654088995026578,230,capterra,overall_rating,industry
+Civil Engineering,0.05517028172712205,203,capterra,overall_rating,industry
+Computer & Network Security,-0.05819474838794051,499,capterra,overall_rating,industry
+Computer Networking,0.03897128834053919,206,capterra,overall_rating,industry
+Computer Software,-0.044916055763316975,4632,capterra,overall_rating,industry
+Construction,-0.05200406987335407,1373,capterra,overall_rating,industry
+Consumer Goods,-0.0034426670053728102,632,capterra,overall_rating,industry
+Consumer Services,0.09006953298272452,999,capterra,overall_rating,industry
+Cosmetics,0.08295255593064219,234,capterra,overall_rating,industry
+Design,0.018452910822259038,1147,capterra,overall_rating,industry
+E-Learning,0.007651528735617338,1008,capterra,overall_rating,industry
+Education Management,0.07120699987972202,1982,capterra,overall_rating,industry
+Electrical/Electronic Manufacturing,-0.04378708905543972,338,capterra,overall_rating,industry
+Entertainment,-0.0792994978456989,614,capterra,overall_rating,industry
+Events Services,-0.08120753060497495,307,capterra,overall_rating,industry
+Financial Services,-0.016812038765462018,1553,capterra,overall_rating,industry
+Food & Beverages,0.010420447940749266,636,capterra,overall_rating,industry
+Food Production,0.0628170496557083,201,capterra,overall_rating,industry
+Graphic Design,0.025475252116274126,315,capterra,overall_rating,industry
+"Health, Wellness and Fitness",0.03325423623316927,1648,capterra,overall_rating,industry
+Higher Education,-0.004616775258912281,483,capterra,overall_rating,industry
+Hospital & Health Care,0.026717903339124046,1358,capterra,overall_rating,industry
+Hospitality,0.0028952387510563483,585,capterra,overall_rating,industry
+Human Resources,0.004183968001511525,446,capterra,overall_rating,industry
+Information Services,-0.008790071936836119,309,capterra,overall_rating,industry
+Information Technology and Services,0.013486944961336698,5561,capterra,overall_rating,industry
+Insurance,0.001581724921387721,654,capterra,overall_rating,industry
+Internet,-0.029451585980888897,1067,capterra,overall_rating,industry
+Law Practice,0.06972921369910401,223,capterra,overall_rating,industry
+Legal Services,-0.0009914671963208448,351,capterra,overall_rating,industry
+"Leisure, Travel & Tourism",-0.08001374808584427,268,capterra,overall_rating,industry
+Logistics and Supply Chain,0.039703893486819464,307,capterra,overall_rating,industry
+Machinery,0.06359034852908975,203,capterra,overall_rating,industry
+Management Consulting,-0.014787210691084558,592,capterra,overall_rating,industry
+Marketing and Advertising,-0.0012002965100323547,3867,capterra,overall_rating,industry
+Mechanical or Industrial Engineering,-0.00497817736465679,272,capterra,overall_rating,industry
+Media Production,-0.022178080559601035,382,capterra,overall_rating,industry
+Medical Practice,0.05926788888953134,261,capterra,overall_rating,industry
+Mental Health Care,-0.07947721532955956,223,capterra,overall_rating,industry
+Music,-0.019482242865215695,201,capterra,overall_rating,industry
+Non-Profit Organization Management,0.03181601025650145,1268,capterra,overall_rating,industry
+Oil & Energy,0.06748363479438013,227,capterra,overall_rating,industry
+Pharmaceuticals,0.04643966495318625,215,capterra,overall_rating,industry
+Photography,-0.0030654813618780346,222,capterra,overall_rating,industry
+Professional Training & Coaching,-0.006570849824172932,260,capterra,overall_rating,industry
+Publishing,-0.05392577036210288,205,capterra,overall_rating,industry
+Real Estate,0.039043720461559336,1031,capterra,overall_rating,industry
+Religious Institutions,0.03856085629533582,252,capterra,overall_rating,industry
+Research,-0.021908619510446398,289,capterra,overall_rating,industry
+Retail,-0.028738519061599358,1759,capterra,overall_rating,industry
+Sports,0.05562587635838156,254,capterra,overall_rating,industry
+Staffing and Recruiting,0.03899684521026157,326,capterra,overall_rating,industry
+Telecommunications,0.049613855372009644,844,capterra,overall_rating,industry
+Transportation/Trucking/Railroad,0.01782282799118037,429,capterra,overall_rating,industry
+Wholesale,-0.07155179193561646,259,capterra,overall_rating,industry
+Writing and Editing,-0.005849346960579633,331,capterra,overall_rating,industry
+consultant_freelance,0.0626751036473093,983,capterra,value_for_money_rating,role_family
+education_research_analysis,0.03350123620718292,1600,capterra,value_for_money_rating,role_family
+executive_owner,-0.09164531461327896,7952,capterra,value_for_money_rating,role_family
+finance_hr_legal,0.026165867274703086,2258,capterra,value_for_money_rating,role_family
+general_team_mgmt,0.0015692282127759399,4535,capterra,value_for_money_rating,role_family
+healthcare_wellness,0.08669132669545437,633,capterra,value_for_money_rating,role_family
+marketing_creative_content,0.018920298838572717,5590,capterra,value_for_money_rating,role_family
+operations_admin,0.05916288976223863,3322,capterra,value_for_money_rating,role_family
+product_mgmt,-0.11328553050015794,233,capterra,value_for_money_rating,role_family
+project_program_mgmt,-0.014349076829713658,1249,capterra,value_for_money_rating,role_family
+sales_customer,0.0932655033262305,3379,capterra,value_for_money_rating,role_family
+software_it_engineering,0.008008330210422784,6403,capterra,value_for_money_rating,role_family
+unknown,-0.017407334723452145,7579,capterra,value_for_money_rating,role_family
+"1,001-5,000 employees",0.09826344435269543,2652,capterra,value_for_money_rating,size_fine
+1-10 employees,-0.03902671037474671,10781,capterra,value_for_money_rating,size_fine
+"10,001+ employees",0.0424276262050773,2363,capterra,value_for_money_rating,size_fine
+11-50 employees,-0.017936087346723088,9187,capterra,value_for_money_rating,size_fine
+201-500 employees,0.022639542806623524,3153,capterra,value_for_money_rating,size_fine
+"5,001-10,000 employees",0.0837243279657296,996,capterra,value_for_money_rating,size_fine
+"501-1,000 employees",0.05712174001799229,2292,capterra,value_for_money_rating,size_fine
+51-200 employees,0.014025995846428429,7531,capterra,value_for_money_rating,size_fine
+Self-employed,-0.034804539387939835,6119,capterra,value_for_money_rating,size_fine
+1-2 years,0.0020864395103665635,11528,capterra,value_for_money_rating,time_used
+2+ years,0.07175476951493463,15775,capterra,value_for_money_rating,time_used
+6-12 months,-0.009882683854015804,8310,capterra,value_for_money_rating,time_used
+I used a free trial,-0.17823514622530043,2609,capterra,value_for_money_rating,time_used
+Less than 6 months,-0.08193862477586837,7305,capterra,value_for_money_rating,time_used
+Accounting,-0.02561265267739599,1139,capterra,value_for_money_rating,industry
+Apparel & Fashion,0.017806751694079578,515,capterra,value_for_money_rating,industry
+Architecture & Planning,-0.11397206138068135,213,capterra,value_for_money_rating,industry
+Arts and Crafts,-0.0823843780045665,399,capterra,value_for_money_rating,industry
+Automotive,0.03216473822158772,695,capterra,value_for_money_rating,industry
+Banking,0.023832371693321537,381,capterra,value_for_money_rating,industry
+Broadcast Media,0.0068637875288665605,225,capterra,value_for_money_rating,industry
+Business Supplies and Equipment,-0.0683667633430159,202,capterra,value_for_money_rating,industry
+Computer & Network Security,-0.12187407601746114,413,capterra,value_for_money_rating,industry
+Computer Software,-0.03160985563768058,3446,capterra,value_for_money_rating,industry
+Construction,-0.02370135943825589,1217,capterra,value_for_money_rating,industry
+Consumer Goods,-0.000738131501586282,529,capterra,value_for_money_rating,industry
+Consumer Services,0.06605265103307353,841,capterra,value_for_money_rating,industry
+Design,-0.0029364104252456676,954,capterra,value_for_money_rating,industry
+E-Learning,0.02127948799512612,799,capterra,value_for_money_rating,industry
+Education Management,0.09809398793681132,1575,capterra,value_for_money_rating,industry
+Electrical/Electronic Manufacturing,-0.09233442332860567,276,capterra,value_for_money_rating,industry
+Entertainment,-0.1306833260431968,515,capterra,value_for_money_rating,industry
+Events Services,-0.01599456414845347,250,capterra,value_for_money_rating,industry
+Financial Services,0.025310053780925407,1230,capterra,value_for_money_rating,industry
+Food & Beverages,0.008591283041515484,529,capterra,value_for_money_rating,industry
+Graphic Design,0.004583939614421114,270,capterra,value_for_money_rating,industry
+"Health, Wellness and Fitness",0.028956790082507296,1375,capterra,value_for_money_rating,industry
+Higher Education,0.016710179807924733,353,capterra,value_for_money_rating,industry
+Hospital & Health Care,0.08674884103194976,1122,capterra,value_for_money_rating,industry
+Hospitality,0.014793247275597214,470,capterra,value_for_money_rating,industry
+Human Resources,-0.040573328057092406,349,capterra,value_for_money_rating,industry
+Information Services,-0.04356881336610631,261,capterra,value_for_money_rating,industry
+Information Technology and Services,0.02006334771751403,4371,capterra,value_for_money_rating,industry
+Insurance,0.05769015603440895,521,capterra,value_for_money_rating,industry
+Internet,-0.055495267319272804,786,capterra,value_for_money_rating,industry
+Legal Services,-0.0841938069535836,277,capterra,value_for_money_rating,industry
+"Leisure, Travel & Tourism",0.037245797835882534,206,capterra,value_for_money_rating,industry
+Logistics and Supply Chain,0.06832917169457287,249,capterra,value_for_money_rating,industry
+Management Consulting,-0.03281641119235361,468,capterra,value_for_money_rating,industry
+Marketing and Advertising,-0.020457855930200792,3128,capterra,value_for_money_rating,industry
+Mechanical or Industrial Engineering,-0.09152924643986987,208,capterra,value_for_money_rating,industry
+Media Production,-0.0846897729758867,301,capterra,value_for_money_rating,industry
+Medical Practice,0.06415091485975405,216,capterra,value_for_money_rating,industry
+Non-Profit Organization Management,0.06286804646085974,1050,capterra,value_for_money_rating,industry
+Professional Training & Coaching,0.00935742360125223,217,capterra,value_for_money_rating,industry
+Real Estate,0.08882673205105374,857,capterra,value_for_money_rating,industry
+Religious Institutions,0.1113944401691521,208,capterra,value_for_money_rating,industry
+Research,0.09167297467654843,208,capterra,value_for_money_rating,industry
+Retail,-0.0489174957409237,1480,capterra,value_for_money_rating,industry
+Sports,0.06197569965563496,205,capterra,value_for_money_rating,industry
+Staffing and Recruiting,0.07012397426569399,262,capterra,value_for_money_rating,industry
+Telecommunications,0.017209060513693586,678,capterra,value_for_money_rating,industry
+Transportation/Trucking/Railroad,-0.0005666656062236153,343,capterra,value_for_money_rating,industry
+Wholesale,-0.08958298634892986,226,capterra,value_for_money_rating,industry
+Writing and Editing,0.03562188915433179,264,capterra,value_for_money_rating,industry
+consultant_freelance,0.03445671437415303,950,capterra,customer_support_rating,role_family
+education_research_analysis,0.03222057997499931,1586,capterra,customer_support_rating,role_family
+executive_owner,-0.1020262834304211,7421,capterra,customer_support_rating,role_family
+finance_hr_legal,-0.006587345537853164,2254,capterra,customer_support_rating,role_family
+general_team_mgmt,-0.01128081437203451,4411,capterra,customer_support_rating,role_family
+healthcare_wellness,0.07655296395736483,602,capterra,customer_support_rating,role_family
+marketing_creative_content,0.01063617684657197,5346,capterra,customer_support_rating,role_family
+operations_admin,0.04648778833454973,3290,capterra,customer_support_rating,role_family
+product_mgmt,-0.12086045889026635,220,capterra,customer_support_rating,role_family
+project_program_mgmt,0.036543951269114784,1213,capterra,customer_support_rating,role_family
+sales_customer,0.07618485399184796,3450,capterra,customer_support_rating,role_family
+software_it_engineering,0.016645712611261534,6205,capterra,customer_support_rating,role_family
+unknown,0.012915166523108068,7600,capterra,customer_support_rating,role_family
+"1,001-5,000 employees",0.09044234749734122,2643,capterra,customer_support_rating,size_fine
+1-10 employees,-0.04572169222194395,10142,capterra,customer_support_rating,size_fine
+"10,001+ employees",0.04922665468690664,2378,capterra,customer_support_rating,size_fine
+11-50 employees,-0.03636199133033242,8960,capterra,customer_support_rating,size_fine
+201-500 employees,0.009294120986640666,3142,capterra,customer_support_rating,size_fine
+"5,001-10,000 employees",0.09401021799425037,1007,capterra,customer_support_rating,size_fine
+"501-1,000 employees",0.07023006191405023,2316,capterra,customer_support_rating,size_fine
+51-200 employees,0.004177014270408508,7470,capterra,customer_support_rating,size_fine
+Self-employed,-0.00414247657121214,5632,capterra,customer_support_rating,size_fine
+1-2 years,-0.004540014654185194,11243,capterra,customer_support_rating,time_used
+2+ years,0.035596623365495614,15093,capterra,customer_support_rating,time_used
+6-12 months,0.0012462670725662535,8136,capterra,customer_support_rating,time_used
+I used a free trial,-0.07906433448418117,2549,capterra,customer_support_rating,time_used
+Less than 6 months,-0.049586139450210086,7187,capterra,customer_support_rating,time_used
+Accounting,0.002320055610426483,1119,capterra,customer_support_rating,industry
+Apparel & Fashion,0.04278564409416335,506,capterra,customer_support_rating,industry
+Architecture & Planning,-0.10152198730679231,212,capterra,customer_support_rating,industry
+Arts and Crafts,-0.04669852375366619,375,capterra,customer_support_rating,industry
+Automotive,0.026553633964492028,696,capterra,customer_support_rating,industry
+Banking,0.04757935397099301,383,capterra,customer_support_rating,industry
+Broadcast Media,0.12058043228586095,221,capterra,customer_support_rating,industry
+Computer & Network Security,-0.06942476131116376,406,capterra,customer_support_rating,industry
+Computer Software,-0.08024883874225174,3347,capterra,customer_support_rating,industry
+Construction,-0.03219644744695768,1203,capterra,customer_support_rating,industry
+Consumer Goods,-0.005442861459657673,508,capterra,customer_support_rating,industry
+Consumer Services,0.07761215414845997,861,capterra,customer_support_rating,industry
+Design,0.011685592298981822,851,capterra,customer_support_rating,industry
+E-Learning,-0.02435326908059777,761,capterra,customer_support_rating,industry
+Education Management,0.11011783686207369,1549,capterra,customer_support_rating,industry
+Electrical/Electronic Manufacturing,-0.10283567550725059,275,capterra,customer_support_rating,industry
+Entertainment,-0.03854734321414407,483,capterra,customer_support_rating,industry
+Events Services,-0.12530515261615582,250,capterra,customer_support_rating,industry
+Financial Services,-0.04130113460942976,1219,capterra,customer_support_rating,industry
+Food & Beverages,0.0015145633370248315,518,capterra,customer_support_rating,industry
+Graphic Design,0.050570994510331056,246,capterra,customer_support_rating,industry
+"Health, Wellness and Fitness",0.03746905455531389,1324,capterra,customer_support_rating,industry
+Higher Education,0.05983941129794326,325,capterra,customer_support_rating,industry
+Hospital & Health Care,0.05475644816765129,1104,capterra,customer_support_rating,industry
+Hospitality,-0.01700938766940162,458,capterra,customer_support_rating,industry
+Human Resources,-0.03658573594125095,362,capterra,customer_support_rating,industry
+Information Services,-0.04384512146921899,247,capterra,customer_support_rating,industry
+Information Technology and Services,-0.0022852874348789683,4272,capterra,customer_support_rating,industry
+Insurance,0.08431237523500783,530,capterra,customer_support_rating,industry
+Internet,-0.010741871122236315,727,capterra,customer_support_rating,industry
+Legal Services,-0.017491280456385132,271,capterra,customer_support_rating,industry
+"Leisure, Travel & Tourism",-0.05849670648109893,201,capterra,customer_support_rating,industry
+Logistics and Supply Chain,0.046276324687285784,250,capterra,customer_support_rating,industry
+Management Consulting,-0.012485993810835351,467,capterra,customer_support_rating,industry
+Marketing and Advertising,-0.04461610948581028,2935,capterra,customer_support_rating,industry
+Mechanical or Industrial Engineering,-0.010800772190022363,211,capterra,customer_support_rating,industry
+Media Production,-0.039326809811710904,286,capterra,customer_support_rating,industry
+Medical Practice,0.09915175574662938,213,capterra,customer_support_rating,industry
+Non-Profit Organization Management,0.060332433150121566,1004,capterra,customer_support_rating,industry
+Professional Training & Coaching,0.02292762059779312,206,capterra,customer_support_rating,industry
+Real Estate,0.07643872802914592,835,capterra,customer_support_rating,industry
+Retail,-0.05184650814945935,1452,capterra,customer_support_rating,industry
+Staffing and Recruiting,0.0897060595122366,267,capterra,customer_support_rating,industry
+Telecommunications,0.038616801479955935,677,capterra,customer_support_rating,industry
+Transportation/Trucking/Railroad,-0.01405188526953857,335,capterra,customer_support_rating,industry
+Wholesale,-0.024958179293852644,220,capterra,customer_support_rating,industry
+Writing and Editing,0.06792288112896742,252,capterra,customer_support_rating,industry
+consultant_freelance,0.05738771819528021,1223,capterra,recommendation_score,role_family
+education_research_analysis,0.031529094160478194,2101,capterra,recommendation_score,role_family
+executive_owner,-0.08585977457937345,8774,capterra,recommendation_score,role_family
+finance_hr_legal,0.005366680894100835,2613,capterra,recommendation_score,role_family
+general_team_mgmt,0.012958763421442806,5395,capterra,recommendation_score,role_family
+healthcare_wellness,0.01506387688750029,795,capterra,recommendation_score,role_family
+marketing_creative_content,-0.008738451915200365,6871,capterra,recommendation_score,role_family
+operations_admin,0.06894182620252785,3997,capterra,recommendation_score,role_family
+product_mgmt,-0.16340848474080394,327,capterra,recommendation_score,role_family
+project_program_mgmt,0.01964082025310619,1581,capterra,recommendation_score,role_family
+sales_customer,0.0704047619579311,4214,capterra,recommendation_score,role_family
+software_it_engineering,0.06007954382122364,8082,capterra,recommendation_score,role_family
+unknown,-0.04996044756141165,9095,capterra,recommendation_score,role_family
+"1,001-5,000 employees",0.1963025625202781,3503,capterra,recommendation_score,size_fine
+1-10 employees,-0.08642795740115201,12314,capterra,recommendation_score,size_fine
+"10,001+ employees",0.16136971608516132,3074,capterra,recommendation_score,size_fine
+11-50 employees,-0.026033906793660033,10958,capterra,recommendation_score,size_fine
+201-500 employees,0.06380229143956355,4025,capterra,recommendation_score,size_fine
+"5,001-10,000 employees",0.07679742600049079,1331,capterra,recommendation_score,size_fine
+"501-1,000 employees",0.12656808972787303,3031,capterra,recommendation_score,size_fine
+51-200 employees,0.016896727829052393,9174,capterra,recommendation_score,size_fine
+Self-employed,-0.12463817067405712,7156,capterra,recommendation_score,size_fine
+1-2 years,0.002965349830521871,13917,capterra,recommendation_score,time_used
+2+ years,0.28370420405284746,18550,capterra,recommendation_score,time_used
+6-12 months,-0.118053417694922,10289,capterra,recommendation_score,time_used
+I used a free trial,-0.5273290272087928,3221,capterra,recommendation_score,time_used
+Less than 6 months,-0.2717987134992781,8960,capterra,recommendation_score,time_used
+Accounting,-0.12435927207460362,1308,capterra,recommendation_score,industry
+Apparel & Fashion,-0.09632752649779294,583,capterra,recommendation_score,industry
+Architecture & Planning,-0.20921851832943889,251,capterra,recommendation_score,industry
+Arts and Crafts,-0.15700558589329838,457,capterra,recommendation_score,industry
+Automotive,-0.1386664105141565,832,capterra,recommendation_score,industry
+Banking,0.028143229216658332,502,capterra,recommendation_score,industry
+Biotechnology,-0.1716597724721056,229,capterra,recommendation_score,industry
+Broadcast Media,0.2744164132626612,265,capterra,recommendation_score,industry
+Business Supplies and Equipment,-0.23313370302977104,225,capterra,recommendation_score,industry
+Civil Engineering,-0.03175122361303738,201,capterra,recommendation_score,industry
+Computer & Network Security,-0.14240800620460656,486,capterra,recommendation_score,industry
+Computer Networking,0.17805563743218839,202,capterra,recommendation_score,industry
+Computer Software,-0.03582168879200174,4536,capterra,recommendation_score,industry
+Construction,-0.03667292397961913,1338,capterra,recommendation_score,industry
+Consumer Goods,-0.03761682556701749,617,capterra,recommendation_score,industry
+Consumer Services,0.21724534917002902,984,capterra,recommendation_score,industry
+Cosmetics,0.034288669257220614,232,capterra,recommendation_score,industry
+Design,0.05989213010417052,1130,capterra,recommendation_score,industry
+E-Learning,-0.06316371710320219,994,capterra,recommendation_score,industry
+Education Management,0.13712979592277502,1967,capterra,recommendation_score,industry
+Electrical/Electronic Manufacturing,-0.11632402112182663,333,capterra,recommendation_score,industry
+Entertainment,-0.21314349102494395,604,capterra,recommendation_score,industry
+Events Services,0.04815642198886483,300,capterra,recommendation_score,industry
+Financial Services,-0.03315487270041882,1527,capterra,recommendation_score,industry
+Food & Beverages,-0.02394206402713459,626,capterra,recommendation_score,industry
+Food Production,0.11540133719773507,200,capterra,recommendation_score,industry
+Graphic Design,0.18809530553385662,311,capterra,recommendation_score,industry
+"Health, Wellness and Fitness",-0.01067673184052139,1621,capterra,recommendation_score,industry
+Higher Education,0.029496998813247025,478,capterra,recommendation_score,industry
+Hospital & Health Care,0.0496406408452094,1342,capterra,recommendation_score,industry
+Hospitality,0.01499300346787871,576,capterra,recommendation_score,industry
+Human Resources,0.03818541250728836,438,capterra,recommendation_score,industry
+Information Services,0.03319086750333804,304,capterra,recommendation_score,industry
+Information Technology and Services,0.09610875120832188,5496,capterra,recommendation_score,industry
+Insurance,0.14244116289930567,641,capterra,recommendation_score,industry
+Internet,-0.021641905033576433,1035,capterra,recommendation_score,industry
+Law Practice,-0.01850212343290993,221,capterra,recommendation_score,industry
+Legal Services,-0.02218710733747216,340,capterra,recommendation_score,industry
+"Leisure, Travel & Tourism",0.02034041991320747,258,capterra,recommendation_score,industry
+Logistics and Supply Chain,0.06784723749252,304,capterra,recommendation_score,industry
+Machinery,0.16753861794759187,201,capterra,recommendation_score,industry
+Management Consulting,0.01767711905653585,577,capterra,recommendation_score,industry
+Marketing and Advertising,-0.057089043863063994,3811,capterra,recommendation_score,industry
+Mechanical or Industrial Engineering,0.010029986506140835,264,capterra,recommendation_score,industry
+Media Production,-0.0019932705473262053,376,capterra,recommendation_score,industry
+Medical Practice,0.10387515997876959,259,capterra,recommendation_score,industry
+Mental Health Care,-0.12668231714349237,218,capterra,recommendation_score,industry
+Non-Profit Organization Management,0.025852609211470923,1254,capterra,recommendation_score,industry
+Oil & Energy,0.009525623615909844,226,capterra,recommendation_score,industry
+Pharmaceuticals,0.17899581213557914,209,capterra,recommendation_score,industry
+Photography,0.093989171156449,217,capterra,recommendation_score,industry
+Professional Training & Coaching,-0.10844250490789697,254,capterra,recommendation_score,industry
+Publishing,-0.2482072080136204,202,capterra,recommendation_score,industry
+Real Estate,0.06985247470290123,1007,capterra,recommendation_score,industry
+Religious Institutions,0.021800815668135704,250,capterra,recommendation_score,industry
+Research,-0.003984255607313627,286,capterra,recommendation_score,industry
+Retail,-0.05972999143700995,1713,capterra,recommendation_score,industry
+Sports,-0.25828247121380743,251,capterra,recommendation_score,industry
+Staffing and Recruiting,0.23570321598385643,325,capterra,recommendation_score,industry
+Telecommunications,0.19175717563404154,834,capterra,recommendation_score,industry
+Transportation/Trucking/Railroad,0.060576661683807924,422,capterra,recommendation_score,industry
+Wholesale,-0.005924059904639288,249,capterra,recommendation_score,industry
+Writing and Editing,-0.025824312753153104,327,capterra,recommendation_score,industry
+consultant_freelance,0.11142834948686357,1420,g2,overall_rating,role_family
+education_research_analysis,0.15020467702694207,1921,g2,overall_rating,role_family
+executive_owner,0.04744491642814217,6850,g2,overall_rating,role_family
+finance_hr_legal,0.109520669341708,2355,g2,overall_rating,role_family
+general_team_mgmt,0.09957745876001259,5453,g2,overall_rating,role_family
+healthcare_wellness,0.14247179214270117,701,g2,overall_rating,role_family
+marketing_creative_content,0.07447471705625822,5799,g2,overall_rating,role_family
+operations_admin,0.12922098516645175,4108,g2,overall_rating,role_family
+product_mgmt,0.015014128666340982,450,g2,overall_rating,role_family
+project_program_mgmt,0.12910288756630528,1908,g2,overall_rating,role_family
+sales_customer,0.13167319488140822,8083,g2,overall_rating,role_family
+software_it_engineering,0.15695031065601833,8993,g2,overall_rating,role_family
+unknown,-0.08680244737104333,61797,g2,overall_rating,role_family
+Enterprise (> 1000 emp.),0.011379736624930498,17744,g2,overall_rating,size3
+Mid-Market (51-1000 emp.),0.010375073064311053,39363,g2,overall_rating,size3
+Small-Business (50 or fewer emp.),-0.02082846918782155,45584,g2,overall_rating,size3
+Computer Software,0.10717946843714211,873,g2,overall_rating,industry
+Financial Services,0.08409830752481612,228,g2,overall_rating,industry
+Information Technology and Services,0.20371945318372944,1489,g2,overall_rating,industry
+Internet,-0.17501368725218697,247,g2,overall_rating,industry
+Marketing and Advertising,0.003446887043620324,602,g2,overall_rating,industry
