@@ -1,0 +1,135 @@
+{
+ "run_id": "case_b4bd3cce26__full__usersim",
+ "case_id": "case_b4bd3cce26",
+ "engine": "usersim",
+ "context": "full",
+ "status": "blocked_site_error",
+ "success_criteria_results": [
+  {
+   "criterion": "Three tickets are present",
+   "result": "met",
+   "step": 13
+  },
+  {
+   "criterion": "Both available views are inspected or unsupported views documented",
+   "result": "not_met",
+   "step": 20
+  }
+ ],
+ "observations": [
+  {
+   "step": 2,
+   "text": "The agent clicked on a div element labeled \"Home\"."
+  },
+  {
+   "step": 3,
+   "text": "A modal appeared asking to update timezone, which the agent closed by clicking \"Don't update\"."
+  },
+  {
+   "step": 4,
+   "text": "The agent clicked a button with aria-label \"Create task\"."
+  },
+  {
+   "step": 5,
+   "text": "The agent typed 'Demo Alpha' into a task name field."
+  },
+  {
+   "step": 6,
+   "text": "The agent clicked a button labeled \"Create Task\"."
+  },
+  {
+   "step": 7,
+   "text": "The agent clicked a button with aria-label \"Create task\"."
+  },
+  {
+   "step": 8,
+   "text": "The agent typed 'Demo Beta' into a task name field."
+  },
+  {
+   "step": 9,
+   "text": "The agent clicked a button labeled \"Create Task\"."
+  },
+  {
+   "step": 10,
+   "text": "The agent clicked a button with aria-label \"Create task\"."
+  },
+  {
+   "step": 11,
+   "text": "The agent clicked a button labeled \"Add Task\"."
+  },
+  {
+   "step": 12,
+   "text": "The agent typed 'Demo Gamma' into a task name field."
+  },
+  {
+   "step": 13,
+   "text": "The agent clicked a button labeled \"Create Task\"."
+  },
+  {
+   "step": 14,
+   "text": "The agent attempted to click an element with index 11360 but it was not available, indicating the page may have changed."
+  },
+  {
+   "step": 15,
+   "text": "The agent attempted to click an element with index 11360 again but it was still not available."
+  },
+  {
+   "step": 16,
+   "text": "The agent attempted to click an element with index 11360 for a third time but it was still not available."
+  },
+  {
+   "step": 17,
+   "text": "The agent clicked a 'cu-editable' element, which was identified as the 'Task List' tab."
+  },
+  {
+   "step": 18,
+   "text": "The agent clicked the 'cu-editable' element again, identified as the 'Task List' tab."
+  },
+  {
+   "step": 19,
+   "text": "The agent clicked the 'cu-editable' element for a third time, identified as the 'Task List' tab."
+  },
+  {
+   "step": 20,
+   "text": "The agent reported that three tickets were successfully created and inspected in the 'Task List' view, but the 'Workflow Board' view was inaccessible."
+  }
+ ],
+ "errors": [
+  {
+   "kind": "site_error",
+   "text": "The agent was unable to switch to the 'Workflow Board' view because the element was not available, indicating a potential site error or unexpected page change (steps 14-16)."
+  }
+ ],
+ "actions": 20,
+ "elapsed_seconds": 286.5,
+ "plan": "free plan of a fresh test account (unknown seen in run)",
+ "product_version_or_capture_date": "2026-10-18",
+ "environment_mismatches": [
+  "fresh test account with synthetic data; reviewer's historical version, plan, team and data unknown",
+  "short single-session run cannot recreate long tenure or team adoption"
+ ],
+ "trace_path": "results/execution/traces/case_b4bd3cce26__full__usersim.json",
+ "runner": {
+  "action_model": "gemini-2.5-flash-lite",
+  "max_steps": 20,
+  "max_actions_per_step": 2,
+  "wall_seconds": 300,
+  "backend": "browserbase",
+  "usage": {
+   "input_tokens": 445951,
+   "output_tokens": 4710,
+   "cost_usd": 0.04484703999999999
+  }
+ },
+ "judge": {
+  "model": "gemini-2.5-flash",
+  "model_version": "gemini-2.5-flash",
+  "usage": {
+   "input_tokens": 4107,
+   "output_tokens": 885,
+   "cost_usd": 0.003445,
+   "latency_seconds": 5.51
+  },
+  "status": "automated_provisional"
+ }
+}

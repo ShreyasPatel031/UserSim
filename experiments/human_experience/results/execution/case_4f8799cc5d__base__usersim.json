@@ -1,0 +1,25 @@
+{
+ "run_id": "case_4f8799cc5d__base__usersim",
+ "case_id": "case_4f8799cc5d",
+ "engine": "usersim",
+ "context": "base",
+ "status": "environment_failure",
+ "success_criteria_results": [],
+ "observations": [],
+ "errors": [
+  {
+   "kind": "inaccessible_account",
+   "text": "Account exists (created through the UserSim MCP) but the local runner cannot sign in: Asana's login page uses reCAPTCHA v3 Enterprise and requires an emailed magic link from a new browser"
+  }
+ ],
+ "actions": 0,
+ "elapsed_seconds": 0,
+ "plan": "no test account available",
+ "product_version_or_capture_date": "2026-10-18",
+ "environment_mismatches": [
+  "run not executed; no product observations"
+ ],
+ "trace_path": null,
+ "runner": null,
+ "judge": null
+}

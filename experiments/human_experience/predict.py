@@ -168,7 +168,8 @@ async def main() -> None:
     done = set()
     if out.exists():
         done = {(r["case_id"], r["condition"]) for r in map(json.loads, out.read_text().splitlines()) if r}
-    todo = [(c, cell) for cell in a.cells.split(",") for c in case_ids if (c, cell) not in done]
+    todo = [(c, cell) for cell in a.cells.split(",") for c in case_ids if (c, cell) not in done
+            and (not CELLS[cell]["engine"] or exec_record(c, CONTEXT[cell], CELLS[cell]["engine"]) is not None)]
     sem = asyncio.Semaphore(4)
     rows = await asyncio.gather(*(forecast(c, cell, sem) for c, cell in todo))
     with out.open("a") as f:

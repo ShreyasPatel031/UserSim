@@ -1,0 +1,118 @@
+{
+ "run_id": "case_b4bd3cce26__full__generic",
+ "case_id": "case_b4bd3cce26",
+ "engine": "generic",
+ "context": "full",
+ "status": "completed",
+ "success_criteria_results": [
+  {
+   "criterion": "Three tickets are present",
+   "result": "met",
+   "step": 12
+  },
+  {
+   "criterion": "Both available views are inspected or unsupported views documented",
+   "result": "met",
+   "step": 16
+  }
+ ],
+ "observations": [
+  {
+   "step": 1,
+   "text": "The agent clicked a 'Login' button, but the URL remained on the landing page, indicating the click did not navigate to the app."
+  },
+  {
+   "step": 2,
+   "text": "The agent directly navigated to 'https://app.clickup.com/' after the previous login attempt failed."
+  },
+  {
+   "step": 3,
+   "text": "The agent clicked a button with aria-label 'Create task'."
+  },
+  {
+   "step": 4,
+   "text": "The agent typed 'Demo Alpha' into an input field."
+  },
+  {
+   "step": 5,
+   "text": "The agent clicked a button labeled 'Create Task'."
+  },
+  {
+   "step": 6,
+   "text": "The agent clicked a button labeled 'Don't update', dismissing a prompt."
+  },
+  {
+   "step": 7,
+   "text": "The agent clicked a button with aria-label 'Create task'."
+  },
+  {
+   "step": 8,
+   "text": "The agent typed 'Demo Beta' into an input field."
+  },
+  {
+   "step": 9,
+   "text": "The agent clicked a button labeled 'Create Task'."
+  },
+  {
+   "step": 10,
+   "text": "The agent clicked a button with aria-label 'Create task'."
+  },
+  {
+   "step": 11,
+   "text": "The agent typed 'Demo Gamma' into an input field."
+  },
+  {
+   "step": 12,
+   "text": "The agent clicked a button labeled 'Create Task'."
+  },
+  {
+   "step": 13,
+   "text": "The agent clicked a 'Workflow Board' element with id 'cu-data-view-item__l'."
+  },
+  {
+   "step": 14,
+   "text": "The agent clicked a 'cu-editable' element."
+  },
+  {
+   "step": 15,
+   "text": "The agent clicked a button labeled 'Brain\u00b2' with aria-label 'Ask AI about this Bo'."
+  },
+  {
+   "step": 16,
+   "text": "The agent reported successful creation and inspection of three tickets in both list and board views."
+  }
+ ],
+ "errors": [],
+ "actions": 16,
+ "elapsed_seconds": 236.6,
+ "plan": "free plan of a fresh test account (unknown seen in run)",
+ "product_version_or_capture_date": "2026-10-18",
+ "environment_mismatches": [
+  "fresh test account with synthetic data; reviewer's historical version, plan, team and data unknown",
+  "short single-session run cannot recreate long tenure or team adoption"
+ ],
+ "trace_path": "results/execution/traces/case_b4bd3cce26__full__generic.json",
+ "runner": {
+  "action_model": "gemini-2.5-flash-lite",
+  "max_steps": 20,
+  "max_actions_per_step": 2,
+  "wall_seconds": 300,
+  "backend": "browserbase",
+  "usage": {
+   "input_tokens": 353388,
+   "output_tokens": 3887,
+   "cost_usd": 0.03557042
+  }
+ },
+ "judge": {
+  "model": "gemini-2.5-flash",
+  "model_version": "gemini-2.5-flash",
+  "usage": {
+   "input_tokens": 3669,
+   "output_tokens": 690,
+   "cost_usd": 0.002826,
+   "latency_seconds": 4.35
+  },
+  "status": "automated_provisional"
+ }
+}
