@@ -83,26 +83,59 @@ mcp = FastMCP(
 )
 
 
-def _owner(ctx: Context | None) -> str:
-    """Fingerprint of the caller's bearer token (already checked by _require_bearer). Sessions and studies belong
-    to the token that created them; with one shared token every caller is the same owner."""
-    import hashlib
+_TOKENS: list[str] = []  # bearer tokens configured at mount(); a valid one makes the caller a token owner
 
+
+def _headers(ctx: Context | None) -> tuple[dict[str, str], str]:
     try:
-        got = ctx.request_context.request.headers.get("authorization") or ""  # type: ignore[union-attr]
+        req = ctx.request_context.request  # type: ignore[union-attr]
+        client = getattr(req, "client", None)
+        return {k.lower(): v for k, v in req.headers.items()}, (getattr(client, "host", "") or "")
     except Exception:  # noqa: BLE001
-        got = ""
+        return {}, ""
+
+
+def _owner(ctx: Context | None) -> str:
+    """Who owns the sessions and studies this caller creates. A valid bearer token: a fingerprint of that token
+    (every holder of one shared token is the same owner). No token (the public, open endpoint): 'anon:' plus a
+    fingerprint of the client IP, so callers without a token see only what their own IP created, and the caps in
+    limits.json apply to them."""
+    import hashlib
+    import hmac
+
+    from mvp.sim_mcp import limits as L
+
+    if ctx is None:
+        return ""  # internal call, not a client request
+    headers, peer = _headers(ctx)
+    got = headers.get("authorization") or ""
     tok = got[7:].strip() if got.startswith("Bearer ") else ""
-    return hashlib.sha256(tok.encode()).hexdigest()[:16] if tok else ""
+    if tok and any(hmac.compare_digest(tok, t) for t in _TOKENS):
+        return hashlib.sha256(tok.encode()).hexdigest()[:16]
+    return "anon:" + hashlib.sha256(L.client_ip(headers, peer).encode()).hexdigest()[:16]
 
 
 def _client_id(ctx: Context | None) -> str:
-    try:
-        req = ctx.request_context.request  # type: ignore[union-attr]
-        fwd = (req.headers.get("x-forwarded-for") or "").split(",")[0].strip()
-        return fwd or (req.client.host if req.client else "")
-    except Exception:  # noqa: BLE001
-        return ""
+    from mvp.sim_mcp import limits as L
+
+    headers, peer = _headers(ctx)
+    return L.client_ip(headers, peer)
+
+
+def _spend(owner: str, what: str, *, session: bool = False, dry: bool = False) -> None:
+    """Charge the estimated cost of one step (or one session start) to a caller without a token.
+    Raises limits.CapExceeded with the message for the client when a daily cap is hit."""
+    from mvp.sim_mcp import limits as L
+
+    if not S.is_anon(owner):
+        return
+    usd = float(L.get("est_usd_per_session" if session else "est_usd_per_step"))
+    L.charge(owner, usd, what, dry=dry)
+
+
+def _cap_fail(exc: Exception) -> str:
+    return json.dumps({"error": str(exc), "limit": getattr(exc, "limit", ""),
+                       "limits_file": "https://github.com/ShreyasPatel031/UserSim/blob/main/mvp/sim_mcp/limits.json"})
 
 
 def _obs_content(sim: S.SimSession, obs: dict[str, Any], extra: dict[str, Any] | None = None) -> list[Any]:
@@ -235,11 +268,21 @@ async def usersim_start_session(
     they are, what they know, why they're here). Ask the human to approve the persona and task first.
     Returns session_id, watch_url (open it for the human), the persona, task, rules, and the first screenshot.
     """
+    from mvp.sim_mcp import limits as L
+
+    owner = _owner(ctx)
+    try:
+        _spend(owner, "a new browser session", session=True, dry=True)
+    except L.CapExceeded as exc:
+        return _cap_fail(exc)
     try:
         sim = await S.start_session(
             product_url=product_url, task=task, persona=persona, client=_client_id(ctx), study_id=study_id, cell_id=cell_id,
-            owner=_owner(ctx),
+            owner=owner,
         )
+        _spend(owner, "a new browser session", session=True)
+    except L.CapExceeded as exc:
+        return _cap_fail(exc)
     except S.SessionError as exc:
         return _fail(exc)
     except Exception as exc:  # noqa: BLE001
@@ -312,14 +355,20 @@ async def usersim_act(ctx: Context, session_id: str, action: dict[str, Any] | st
         if not isinstance(action, dict):
             return _fail(S.SessionError('action must be ONE object, e.g. {"type":"click","x":640,"y":400} or '
                                         '{"type":"type","text":"hello","x":640,"y":300}; put x, y, text inside it'))
+    from mvp.sim_mcp import limits as L
+
     try:
-        sim = S.get_session(session_id, _owner(ctx))
+        owner = _owner(ctx)
+        sim = S.get_session(session_id, owner)
+        _spend(owner, "one step")
         extra = None
         if str((action or {}).get("type")) in {"click", "key"}:
             await _refresh_v3_token(sim)
             extra = await _maybe_paid_presolve(sim)
         obs = await S.act(sim, action, thought)
         return _obs_content(sim, obs, {"captcha_presolve": extra} if extra else None)
+    except L.CapExceeded as exc:
+        return _cap_fail(exc)
     except S.SessionError as exc:
         return _fail(exc)
 
@@ -416,14 +465,28 @@ async def usersim_signup_identity(ctx: Context, session_id: str, no_plus: bool =
 
     from mvp.signup_tools import new_signup
 
+    from mvp.sim_mcp import limits as L
+
     try:
-        sim = S.get_session(session_id, _owner(ctx))
+        owner = _owner(ctx)
+        sim = S.get_session(session_id, owner)
+        shared_ok = not S.is_anon(owner) or bool(L.get("anon_allow_shared_aliases"))
+        if no_plus and not shared_ok:
+            # A dot-variant (or plain) address can be issued again to another session, which could then read this
+            # session's mail. Callers without a token only get unique +tag aliases.
+            raise S.SessionError("cap anon_allow_shared_aliases: no_plus addresses are not available without a token. "
+                                 "This site rejects '+' aliases, so finish with outcome 'blocked' and say so")
         if no_plus and sim.inbox is not None and "+" in sim.inbox.address:
             sim.inbox = None
         issued_now = sim.inbox is None
         if sim.inbox is None:
             tag = re.sub(r"[^a-z0-9]", "", _host(sim).split(".")[0])[:10] or "site"
-            sim.inbox, sim.identity = await asyncio.to_thread(new_signup, _host(sim), tag, None, dotted=bool(no_plus))
+            inbox, identity = await asyncio.to_thread(new_signup, _host(sim), tag, None, dotted=bool(no_plus))
+            if not shared_ok and "+" not in inbox.address:
+                # MVP_SIGNUP_PLAIN_HOSTS gives the bare inbox address, which every caller would share.
+                raise S.SessionError("cap anon_allow_shared_aliases: this site only gets the shared plain signup address, "
+                                     "which is not available without a token. Finish with outcome 'blocked'")
+            sim.inbox, sim.identity = inbox, identity
             sim.mail_since = time.time() - 30
             sim.row["signup_email"] = sim.inbox.address
         ident = {k: v for k, v in sim.identity.items() if k != "code"}
@@ -530,9 +593,16 @@ async def usersim_open_verification_link(ctx: Context, session_id: str, url: str
     Prefer link_number: 1 = the first link usersim_wait_for_verification_link returned (the best one), 2 = the second.
     Long tokens are easy to mistype; with link_number you never copy the URL.
     """
+    from mvp.sim_mcp import limits as L
+
     try:
-        sim = S.get_session(session_id, _owner(ctx))
+        owner = _owner(ctx)
+        sim = S.get_session(session_id, owner)
         url = resolve_mail_link(sim.mail_links, url, link_number)
+        try:
+            _spend(owner, "one step")
+        except L.CapExceeded as exc:
+            return _cap_fail(exc)
         opened = sim.row.setdefault("opened_links", [])
         if url in opened:
             raise S.SessionError("this link was already opened; continue on the page (it is the current page)")
@@ -565,6 +635,14 @@ async def usersim_open_verification_link(ctx: Context, session_id: str, url: str
         return _fail(exc)
 
 
+def _sms_allowed(owner: str) -> None:
+    from mvp.sim_mcp import limits as L
+
+    if S.is_anon(owner) and not L.get("anon_allow_sms"):
+        raise S.SessionError("cap anon_allow_sms: SMS verification is not available without a token. Finish with outcome "
+                             "'blocked' and say the site requires a phone number")
+
+
 @mcp.tool(structured_output=False)
 async def usersim_signup_phone(ctx: Context, session_id: str) -> str:
     """Phone number for an SMS step (only if the site insists on one). Then call usersim_wait_for_sms_code."""
@@ -572,7 +650,9 @@ async def usersim_signup_phone(ctx: Context, session_id: str) -> str:
     import time
 
     try:
-        sim = S.get_session(session_id, _owner(ctx))
+        owner = _owner(ctx)
+        sim = S.get_session(session_id, owner)
+        _sms_allowed(owner)
         from mvp.sms_provider import lease_number
 
         sim.sms_number = await asyncio.to_thread(lease_number, _host(sim))
@@ -588,7 +668,9 @@ async def usersim_wait_for_sms_code(ctx: Context, session_id: str, timeout_s: in
     import asyncio
 
     try:
-        sim = S.get_session(session_id, _owner(ctx))
+        owner = _owner(ctx)
+        sim = S.get_session(session_id, owner)
+        _sms_allowed(owner)
         if sim.sms_number is None:
             raise S.SessionError("call usersim_signup_phone first")
         from mvp.sms_provider import wait_for_sms
@@ -609,8 +691,15 @@ async def usersim_solve_captcha(ctx: Context, session_id: str) -> list[Any] | st
     """
     import os
 
+    from mvp.sim_mcp import limits as L
+
     try:
-        sim = S.get_session(session_id, _owner(ctx))
+        owner = _owner(ctx)
+        sim = S.get_session(session_id, owner)
+        try:
+            _spend(owner, "one step")
+        except L.CapExceeded as exc:
+            return _cap_fail(exc)
         from mvp import captcha as cap
 
         async with sim.lock:
@@ -869,7 +958,7 @@ async def _maybe_paid_presolve(sim: S.SimSession) -> dict | None:
 
     from mvp import captcha_spend as cs
 
-    if os.environ.get("MVP_MCP_PAID_CAPTCHA") != "1":
+    if os.environ.get("MVP_MCP_PAID_CAPTCHA") != "1" or not _paid_allowed(sim):
         return None
     host = (urlsplit(sim.product_url).hostname or "").removeprefix("www.")
     if host not in cs.paid_hosts() or int(sim.row.get("capsolver_tries") or 0) >= 2:
@@ -927,6 +1016,12 @@ async def _is_hcaptcha(page, info: dict) -> bool:
         return False
 
 
+def _paid_allowed(sim: S.SimSession) -> bool:
+    from mvp.sim_mcp import limits as L
+
+    return not S.is_anon(getattr(sim, "owner", "")) or bool(L.get("anon_allow_paid_captcha"))
+
+
 async def _paid_token(sim: S.SimSession, kind: str, info: dict) -> dict:
     """Approved paid path (MVP_MCP_PAID_CAPTCHA=1): one CapSolver token through the metered ledger, injected
     the way the site's own widget would deliver it. Spend caps live in mvp.captcha_spend."""
@@ -936,6 +1031,8 @@ async def _paid_token(sim: S.SimSession, kind: str, info: dict) -> dict:
     from mvp import captcha as cap
     from mvp import captcha_spend as cs
 
+    if not _paid_allowed(sim):
+        return {"ok": False, "detail": "cap anon_allow_paid_captcha: the paid captcha solver is not available without a token"}
     host = (urlsplit(sim.product_url).hostname or "").removeprefix("www.")
     if "turnstile" not in kind and await _is_hcaptcha(sim.page, info):
         # Oct 11 Chatwoot: invisible hCaptcha in recaptchacompat mode exposes grecaptcha + g-recaptcha-response, so it
@@ -998,9 +1095,10 @@ _STACK: AsyncExitStack | None = None
 
 
 def _client_token() -> str:
-    """Bearer token(s) clients must send on /mcp. MVP_MCP_TOKEN, or the file at MVP_MCP_TOKEN_FILE.
-    Several tokens (comma / whitespace separated) = separate callers; each sees only its own sessions and studies.
-    Empty = /mcp refuses every call (401) unless MVP_MCP_ALLOW_OPEN=1."""
+    """Bearer token(s) on /mcp. MVP_MCP_TOKEN, or the file at MVP_MCP_TOKEN_FILE. Several tokens (comma /
+    whitespace separated) = separate callers; each sees only its own sessions and studies.
+    Tokens are optional: since Oct 17 /mcp is open to anyone with the URL (limits.json allow_anonymous), and callers
+    without a token get the caps in limits.json. A valid token skips those caps."""
     tok = (os.environ.get("MVP_MCP_TOKEN") or "").strip()
     path = (os.environ.get("MVP_MCP_TOKEN_FILE") or "").strip()
     if not tok and path:
@@ -1013,13 +1111,17 @@ def _client_token() -> str:
 
 
 def _require_bearer(endpoint: Any, token: str | None) -> Any:
-    """ASGI wrapper: 401 unless 'Authorization: Bearer <token>' matches one of the tokens (constant-time)."""
+    """ASGI wrapper. No Authorization header: allowed when limits.json allow_anonymous is true (the caller is then
+    'anon' and capped), else 401. A bearer token that is sent must match one of the tokens (constant-time), else
+    401, so a client with a stale token finds out instead of silently running with the caps."""
     import hmac
     import re
 
-    tokens = [t for t in re.split(r"[\s,]+", token or "") if t]
-
     from starlette.responses import JSONResponse
+
+    from mvp.sim_mcp import limits as L
+
+    tokens = [t for t in re.split(r"[\s,]+", token or "") if t]
 
     class Guarded:  # a class instance, so Starlette's Route treats it as a raw ASGI app
         async def __call__(self, scope: Any, receive: Any, send: Any) -> None:
@@ -1028,13 +1130,20 @@ def _require_bearer(endpoint: Any, token: str | None) -> Any:
     async def guarded(scope: Any, receive: Any, send: Any) -> None:
         if scope.get("type") == "http":
             headers = {k.decode().lower(): v.decode() for k, v in scope.get("headers") or []}
-            got = headers.get("authorization", "")
-            sent = got[7:].strip() if got.startswith("Bearer ") else ""
-            ok = bool(sent) and any(hmac.compare_digest(sent, t) for t in tokens)
-            if not ok:
-                await JSONResponse({"error": "missing or wrong bearer token"}, status_code=401,
-                                   headers={"WWW-Authenticate": "Bearer"})(scope, receive, send)
-                return
+            got = headers.get("authorization", "").strip()
+            if not got:
+                if not L.get("allow_anonymous"):
+                    await JSONResponse({"error": "this UserSim server needs a bearer token right now (limits.json "
+                                                 "allow_anonymous is false)"}, status_code=401,
+                                       headers={"WWW-Authenticate": "Bearer"})(scope, receive, send)
+                    return
+            else:
+                sent = got[7:].strip() if got.startswith("Bearer ") else ""
+                if not (sent and any(hmac.compare_digest(sent, t) for t in tokens)):
+                    await JSONResponse({"error": "wrong bearer token (or remove the Authorization header: "
+                                                 "no token is needed)"}, status_code=401,
+                                       headers={"WWW-Authenticate": "Bearer"})(scope, receive, send)
+                    return
         await endpoint(scope, receive, send)
 
     return Guarded()
@@ -1042,25 +1151,32 @@ def _require_bearer(endpoint: Any, token: str | None) -> Any:
 
 def mount(app: Any) -> None:
     """Serve POST/GET /mcp from the FastAPI app and run the MCP session manager with it."""
+    import re
+
+    from starlette.responses import JSONResponse
     from starlette.routing import Route
+
+    from mvp.sim_mcp import limits as L
 
     inner = mcp.streamable_http_app()
     route = next(r for r in inner.routes if getattr(r, "path", "") == "/mcp")
-    endpoint = route.endpoint
     token = _client_token()
-    if token:
-        endpoint = _require_bearer(endpoint, token)
-    elif os.environ.get("MVP_MCP_ALLOW_OPEN") != "1":
-        # Fail closed: every /mcp call needs the bearer token. With no token configured nobody can call it
-        # (before Oct 11 an unset token meant an open endpoint). MVP_MCP_ALLOW_OPEN=1 is for local dev only.
-        endpoint = _require_bearer(endpoint, None)
+    _TOKENS[:] = [t for t in re.split(r"[\s,]+", token or "") if t]
+    endpoint = _require_bearer(route.endpoint, token)
     app.router.routes.insert(0, Route("/mcp", endpoint=endpoint, methods=["GET", "POST", "DELETE"]))
+
+    async def _limits(request: Any) -> Any:
+        return JSONResponse(L.snapshot())
+
+    app.router.routes.insert(0, Route("/api/mcp/limits", endpoint=_limits, methods=["GET"]))
+    L.load_bundled()
 
     @app.on_event("startup")
     async def _start_mcp() -> None:
         global _STACK
         _STACK = AsyncExitStack()
         await _STACK.enter_async_context(mcp.session_manager.run())
+        L.get("refresh_s")  # starts the first fetch of limits.json from main
 
     @app.on_event("shutdown")
     async def _stop_mcp() -> None:

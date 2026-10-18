@@ -1,4 +1,5 @@
-"""Oct 11: /mcp always needs the bearer token; the study view stays public by unguessable id, like the website.
+"""Oct 17: /mcp is open to anyone with the URL (limits.json allow_anonymous); a token that is sent must still be
+right. (Oct 11-17 it always needed the bearer token.) The study view stays public by unguessable id, like the website.
 
 Live check (read-only, Oct 11): https://usersim.vercel.app/api/studies/<random uuid> answers 404 "Study not found"
 without any auth, and the watch link handed to humans is /?study=<id>. So the study JSON is public by id on the
@@ -24,8 +25,9 @@ def _app(env: dict[str, str]):
     async def study(study_id: str):  # stands in for the website's public study view
         return {"id": study_id}
 
+    env = {"MVP_MCP_LIMITS_URL": "off", **env}
     with mock.patch.dict(os.environ, env, clear=False):
-        for k in ("MVP_MCP_TOKEN", "MVP_MCP_TOKEN_FILE", "MVP_MCP_ALLOW_OPEN"):
+        for k in ("MVP_MCP_TOKEN", "MVP_MCP_TOKEN_FILE", "MVP_MCP_ALLOW_OPEN", "MVP_MCP_ALLOW_ANONYMOUS"):
             if k not in env:
                 os.environ.pop(k, None)
         importlib.reload(SV)
@@ -39,23 +41,35 @@ HDR = {"Accept": "application/json, text/event-stream", "Content-Type": "applica
 
 
 class McpAuthTests(unittest.TestCase):
-    def test_no_token_and_wrong_token_rejected(self):
+    def test_wrong_token_rejected(self):
         c = _app({"MVP_MCP_TOKEN": "s3cret-token"})
-        self.assertEqual(c.post("/mcp", json=INIT, headers=HDR).status_code, 401)
         self.assertEqual(c.post("/mcp", json=INIT, headers={**HDR, "Authorization": "Bearer nope"}).status_code, 401)
         self.assertEqual(c.post("/mcp", json=INIT, headers={**HDR, "Authorization": "Basic s3cret-token"}).status_code, 401)
         self.assertEqual(c.get("/mcp", headers={"Authorization": "Bearer nope"}).status_code, 401)
-        self.assertEqual(c.delete("/mcp").status_code, 401)
+
+    def test_no_token_reaches_mcp_when_open(self):
+        with _app({"MVP_MCP_TOKEN": "s3cret-token"}) as c:
+            self.assertEqual(c.post("/mcp", json=INIT, headers=HDR).status_code, 200)
+        with _app({}) as c:  # no token configured at all: still open
+            self.assertEqual(c.post("/mcp", json=INIT, headers=HDR).status_code, 200)
+
+    def test_kill_switch_closes_it(self):
+        c = _app({"MVP_MCP_TOKEN": "s3cret-token"})
+        with mock.patch.dict(os.environ, {"MVP_MCP_ALLOW_ANONYMOUS": "false"}):  # read per request
+            r = c.post("/mcp", json=INIT, headers=HDR)
+        self.assertEqual(r.status_code, 401)
+        self.assertIn("allow_anonymous", r.text)
 
     def test_right_token_reaches_mcp(self):
         with _app({"MVP_MCP_TOKEN": "s3cret-token"}) as c:  # context runs startup (MCP session manager)
             r = c.post("/mcp", json=INIT, headers={**HDR, "Authorization": "Bearer s3cret-token"})
             self.assertEqual(r.status_code, 200)
 
-    def test_unset_token_fails_closed(self):
+    def test_limits_route(self):
         c = _app({})
-        self.assertEqual(c.post("/mcp", json=INIT, headers=HDR).status_code, 401)
-        self.assertEqual(c.post("/mcp", json=INIT, headers={**HDR, "Authorization": "Bearer "}).status_code, 401)
+        body = c.get("/api/mcp/limits").json()
+        self.assertEqual(body["values"]["anon_max_concurrent_sessions_per_ip"], 3)
+        self.assertTrue(body["source"].startswith("bundled"))
 
     def test_study_view_public_by_id_like_the_website(self):
         c = _app({"MVP_MCP_TOKEN": "s3cret-token"})
