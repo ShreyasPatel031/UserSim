@@ -47,7 +47,9 @@ def live_shape(r: dict) -> dict:
     return {"source": r["source"], "product": r["product"], "role": g("title") if r["source"] == "g2" else g("role_title"),
             "size": g("size_fine") or g("size3"), "industry": g("industry"), "time_used": g("time_used"),
             "rating": g("overall_rating"), "ease": g("ease_of_use_rating"), "nps": g("recommendation_score"),
-            "pros": g("pros"), "cons": g("cons"), "text": None}
+            "pros": g("pros"), "cons": g("cons"),
+            # Capterra's summary comment; for G2 the full review text (live scrapes return it as `text`)
+            "text": g("general_comments") if r["source"] == "capterra" else g("review_text")}
 
 
 def main() -> None:
@@ -56,6 +58,7 @@ def main() -> None:
     d["date"] = HB.frame().date.values
     cap = U.data().set_index(U.data().review_id.astype(str))
     d["role_title"] = d.rid.str[2:].map(cap.reviewer_job_title).where(d.source == "capterra")
+    d["general_comments"] = d.rid.str[2:].map(cap.general_comments).where(d.source == "capterra")
     pool = ThreadPoolExecutor(96)
 
     # people: Capterra (router_eval) and G2 (g2_merge), with their cards and extracted references (cache hits)
@@ -111,7 +114,7 @@ def main() -> None:
         A.personalize(ratings, per)
         url = RE.URLS.get(p["product"], "") if p["source"] == "capterra" else ""
         prompt = A.words_prompt(p["product"], url, per, refs[p["rid"]]["task"], A.evidence_text(p["product"], own, riv, per, ratings)[:14000])
-        rec = E.call_model("agent_mode_words_v2", FLASH, A.WORDS_SYSTEM, prompt, temperature=0.7, seed=1000, max_tokens=8192,
+        rec = E.call_model("agent_mode_words_v3", FLASH, A.WORDS_SYSTEM, prompt, temperature=0.7, seed=1000, max_tokens=8192,
                            thinking_budget=A.WORDS_THINKING, key_extra=p["rid"])
         words = rec.get("json") if isinstance(rec.get("json"), dict) else {}
         return p["rid"], {"ratings": ratings, "words": words, "rivals": top, "n_own": len(own)}

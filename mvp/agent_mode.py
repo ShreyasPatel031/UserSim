@@ -184,10 +184,13 @@ def _similar(reviews: list[dict], persona: dict, k: int = SIMILAR) -> list[dict]
 
 
 def _fmt(r: dict) -> str:
-    head = f"[{r.get('product') or '?'} | {r.get('source')}] role: {r.get('role') or '-'}; size: {r.get('size') or '-'}; rating: {r.get('rating') or '-'}"
-    if r.get("text"):
-        return head + f"\nReview: {RS.clean(r.get('text'))[:700]}"
-    return head + f"\nLiked: {RS.clean(r.get('pros'))[:400]}\nDisliked: {RS.clean(r.get('cons'))[:400]}"
+    """One review with every field that carries the reviewer's view (summary text included: it tested best for the
+    overall-experience output)."""
+    head = (f"[{r.get('product') or '?'} | {r.get('source')}] role: {r.get('role') or '-'}; size: {r.get('size') or '-'}; "
+            f"time used: {r.get('time_used') or '-'}; rating: {r.get('rating') or '-'}")
+    body = [f"{label}: {RS.clean(r.get(k))[:600]}" for k, label in (("pros", "Liked"), ("cons", "Disliked"), ("text", "Review"))
+            if RS.clean(r.get(k))]
+    return "\n".join([head] + body)
 
 
 def evidence_text(product: str, own: list[dict], rivals: list[dict], persona: dict,
@@ -209,7 +212,8 @@ def evidence_text(product: str, own: list[dict], rivals: list[dict], persona: di
         for k, rec in (ratings or {}).items():
             if rec.get("estimate") is not None and rec.get("n_own"):
                 lines.append(f"- {k}: last {rec['n_own']} reviews of this product average {rec['own_mean']:.2f}; "
-                             f"competitors {rec['rivals_mean'] if rec['rivals_mean'] is not None else 'n/a'}; combined estimate {rec['estimate']:.2f}")
+                             f"competitors {rec['rivals_mean'] if rec['rivals_mean'] is not None else 'n/a'}; combined estimate {rec['estimate']:.2f}"
+                             + (f"; for people like this person {rec['for_this_persona']:.2f}" if rec.get("for_this_persona") is not None else ""))
         parts.append(f"## This product's own earlier reviews (other people; {len(own)} available)\nRatings:\n" + "\n".join(lines)
                      + "\n\nMost similar earlier reviewers:\n" + "\n\n".join(_fmt(r) for r in _similar(own, persona)))
     return "\nData:\n" + "\n\n".join(parts) if parts else ""
