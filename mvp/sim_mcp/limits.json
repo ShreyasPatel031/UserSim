@@ -3,8 +3,8 @@
   "limits": {
     "refresh_s": {"value": 300, "about": "How often (seconds) the server re-reads this file from main. Minimum 30."},
     "allow_anonymous": {"value": true, "about": "true = anyone with the URL can call /mcp without a token. false = only callers with a bearer token (kill switch)."},
-    "max_sessions": {"value": 5, "about": "Browser sessions open at once across the whole server, all callers."},
-    "max_per_client": {"value": 2, "about": "Browser sessions open at once per client IP for callers that send a bearer token."},
+    "max_sessions": {"value": 10, "about": "Browser sessions open at once across the whole server, all callers."},
+    "max_per_client": {"value": 8, "about": "Browser sessions open at once per client IP for callers that send a bearer token (a study client runs cells in parallel)."},
     "anon_max_concurrent_sessions_per_ip": {"value": 3, "about": "Browser sessions open at once per client IP for callers without a token."},
     "anon_daily_usd_per_ip": {"value": 2.0, "about": "Estimated spend allowed per client IP per day (America/Los_Angeles day) for callers without a token. Estimated with the two est_usd_* rates below; real cost is not metered per call."},
     "anon_daily_usd_global": {"value": 10.0, "about": "Estimated spend allowed per day across ALL callers without a token, together."},

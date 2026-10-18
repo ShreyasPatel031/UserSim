@@ -220,8 +220,8 @@ If the file on main is broken (bad JSON, wrong types), the server keeps the last
 |---|---|---|
 | `allow_anonymous` | `true` | `false` = kill switch. Only callers with a valid bearer token get through; everyone else gets 401 |
 | `refresh_s` | 300 | How often the server re-reads the file from main (minimum 30) |
-| `max_sessions` | 5 | Browser sessions open at once on the whole server, all callers |
-| `max_per_client` | 2 | Open sessions per client IP for callers **with** a token |
+| `max_sessions` | 10 | Browser sessions open at once on the whole server, all callers |
+| `max_per_client` | 8 | Open sessions per client IP for callers **with** a token |
 | `anon_max_concurrent_sessions_per_ip` | 3 | Open sessions per client IP **without** a token |
 | `anon_daily_usd_per_ip` | 2.0 | Estimated $ per client IP per day without a token (day = America/Los_Angeles) |
 | `anon_daily_usd_global` | 10.0 | Estimated $ per day for **all** callers without a token, together |
@@ -253,8 +253,8 @@ When a cap is hit, the tool returns `{"error": "...", "limit": "<key>", "limits_
 | `cap anon_allow_sms` / `anon_allow_shared_aliases` / `anon_max_cells_per_study` | Not available without a token (see [Limits](#limits)) |
 | HTTP 404 on `usersim.vercel.app/mcp` | Wrong path, or the server is on an old build. Check `https://usersim.vercel.app/health` for `engine_version` |
 | `product_url must be a public URL …` | localhost, private IP or `.local`: use a public preview/staging URL |
-| `UserSim is at its simulated-user limit right now…` | 5 sessions are already open server-wide, so retry in a few minutes |
-| `this client already has the maximum number of open sessions…` | With a token: finish one of your 2 open sessions first |
+| `UserSim is at its simulated-user limit right now…` | `max_sessions` sessions are already open server-wide, so retry in a few minutes |
+| `this client already has the maximum number of open sessions…` | With a token: finish one of your open sessions first (`max_per_client`) |
 | `unknown session_id` / `unknown study_id` / `unknown cell_id` | Wrong ID, or the server restarted (sessions live in memory) |
 | `cell … was already run` | Each cell runs once |
 | `step limit reached` / `time budget used up; call usersim_finish` | Call `usersim_finish` |
