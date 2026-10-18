@@ -63,6 +63,9 @@ def signup_evidence(row: dict[str, Any]) -> str:
         # final screenshot comes after the run's own actions (server-recorded; typed secrets are masked upstream).
         lines.append(f"- Browser actions the server executed in this run, in order ({len(acts)}; the final screenshot "
                      "was taken after them): " + "; ".join(a[:80] for a in acts[-12:]))
+    if row.get("final_marks"):
+        # innerText drops strike-through and checkbox state; a "checked off" item looked unchanged (Oct 18 Dynalist t4).
+        lines.append("- Visual state the server read from the final page (CSS / checkbox state): " + "; ".join(row["final_marks"][:25]))
     urls = []
     for t in trace:
         u = str(t.get("url") or "")

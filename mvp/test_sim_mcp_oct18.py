@@ -198,3 +198,33 @@ def test_accounts_dir_prefers_dir_outside_app(tmp_path, monkeypatch):
     monkeypatch.setattr(S, "ACCOUNTS_DIR", None)
     monkeypatch.setenv("MVP_MCP_ACCOUNTS_DIR", "/proc/nope/x")
     assert S._accounts_dir() == S.MVP_RUNS_DIR / "_mcp_accounts"
+
+
+def test_select_described_with_option_and_judge_knows_groups(monkeypatch):
+    import mvp.e2e_ui_run as ui
+    from mvp import e2e2_gates
+
+    assert S.describe_action({"type": "select", "option": "Done", "field": "Column"}) == "select — 'Done' in 'Column'"
+    seen = {}
+    monkeypatch.setattr(ui, "gemini_vision_json", lambda prompt, png: seen.setdefault("p", prompt) and {"goal_reached": True})
+    e2e2_gates.judge_goal_screenshot(b"x" * 5000, task="mark it done", start_url="https://kanbanflow.com")
+    assert 'a date group such as "Today"' in seen["p"]
+
+
+def test_final_marks_reach_the_judge_and_prompt_reads_strikethrough(monkeypatch):
+    import mvp.e2e_ui_run as ui
+    from mvp import e2e2_gates
+    from mvp.sim_mcp.report import signup_evidence
+
+    ev = signup_evidence({"final_marks": ['struck through: "Research"'], "trace": []})
+    assert 'Visual state the server read from the final page (CSS / checkbox state): struck through: "Research"' in ev
+    assert "Visual state" not in signup_evidence({"trace": []})
+    seen = {}
+    monkeypatch.setattr(ui, "gemini_vision_json", lambda prompt, png: seen.setdefault("p", prompt) and {"goal_reached": True})
+    e2e2_gates.judge_goal_screenshot(b"x" * 5000, task="check off Research", start_url="https://dynalist.io")
+    assert "struck-through or greyed-out text instead of a ticked checkbox" in seen["p"]
+
+
+def test_marks_js_reads_wrapper_strike_and_done_classes():
+    js = S._MARKS_JS
+    assert "innerText" in js and "marked done by its class" in js and "taken.some" in js

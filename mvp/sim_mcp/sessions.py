@@ -958,6 +958,9 @@ def describe_action(action: dict[str, Any]) -> str:
         return f"navigate — {action.get('url')}"
     if kind == "wait":
         return f"wait — {action.get('ms')}ms"
+    if kind == "select":
+        field = f" in {str(action.get('field'))[:40]!r}" if action.get("field") else ""
+        return f"select — {str(action.get('option') or '')[:60]!r}{field}"
     if kind == "drag":
         return f"drag — ({action.get('x')}, {action.get('y')}) to ({action.get('to_x')}, {action.get('to_y')})"
     return kind
@@ -1880,6 +1883,45 @@ async def _page_text(page: Any) -> str:
         return ""
 
 
+_MARKS_JS = """() => {
+  // Done / checked state that innerText drops: struck-through text, ticked checkboxes (Oct 18 Dynalist "Check off").
+  const out = [], seen = new Set();
+  const vis = el => { const r = el.getBoundingClientRect(); return r.width > 0 && r.height > 0 && r.bottom > 0 && r.top < innerHeight; };
+  const add = (kind, t) => { t = (t || '').replace(/\\s+/g, ' ').trim().slice(0, 60); const k = kind + t;
+    if (t && !seen.has(k) && out.length < 25) { seen.add(k); out.push(kind + ': ' + JSON.stringify(t)); } };
+  // text-decoration is not inherited in computed style: the struck element is often a wrapper whose text sits in
+  // children (Dynalist rerun 6782d34e saw no mark for "Research"), so take the wrapper's innerText.
+  const done = /(^|[-_\\s])(checked|completed?|is-?done|done|finished|strike)([-_\\s]|$)/i;
+  const taken = [];
+  for (const el of document.querySelectorAll('body *')) {
+    if (out.length >= 25) break;
+    if (!vis(el) || taken.some(t => t.contains(el))) continue;
+    const txt = (el.innerText || '').trim();
+    if (!txt || txt.length > 120) continue;
+    const cs = getComputedStyle(el);
+    if ((cs.textDecorationLine || '').includes('line-through')) { add('struck through', txt); taken.push(el); continue; }
+    const cls = typeof el.className === 'string' ? el.className : '';
+    if (cls && done.test(cls) && !el.matches('input, button, a, label') && el.children.length <= 8) {
+      add('marked done by its class (' + cls.slice(0, 40) + ')', txt); taken.push(el);
+    }
+  }
+  for (const el of document.querySelectorAll('input[type=checkbox]:checked, [role=checkbox][aria-checked=true]')) {
+    if (!vis(el)) continue;
+    const lab = el.closest('label') || el.parentElement;
+    add('checked', el.getAttribute('aria-label') || (lab && lab.innerText) || '');
+  }
+  return out;
+}"""
+
+
+async def _page_marks(page: Any) -> list[str]:
+    try:
+        got = await page.evaluate(_MARKS_JS)
+        return [str(x)[:90] for x in got][:25] if isinstance(got, list) else []
+    except Exception:  # noqa: BLE001
+        return []
+
+
 async def _title(page: Any) -> str:
     try:
         return str(await page.title())[:200]
@@ -2278,6 +2320,7 @@ async def record_step(
     row["last_action"] = action_text
     row["final_url"] = redact_url(url)
     row["final_dom"] = text[:FINAL_DOM_CHARS]
+    row["final_marks"] = await _page_marks(page)
     row["final_screenshot_url"] = f"/api/studies/{study.id}/agents/{sim.agent_id}/screenshots/final.png"
     row["final_screenshot"] = row["final_screenshot_url"]
     row["page_url"] = row.get("page_url") or redact_url(url)
@@ -2332,6 +2375,7 @@ async def settle_final(sim: SimSession, max_s: float = 12.0) -> bool:
     asyncio.get_running_loop().create_task(upload_screenshot(sim.study.id, sim.agent_id, shots / "final.png"))
     sim.row["final_url"] = redact_url(sim.page.url)
     sim.row["final_dom"] = (await _page_text(sim.page))[:FINAL_DOM_CHARS]
+    sim.row["final_marks"] = await _page_marks(sim.page)
     sim.row["final_settle"] = "final frame re-taken after the page finished loading"
     return True
 
