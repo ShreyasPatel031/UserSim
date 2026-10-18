@@ -1,3 +1,5 @@
+> **Newer handoff: [HANDOFF_human_mode.md](HANDOFF_human_mode.md) (end of the 18 Oct night). Read that first.**
+
 # Handoff: overnight task (review-data mixtures, YC test, agent-mode MCP)
 
 Branch: `claude/modest-euler-6111ae` (repo ShreyasPatel031/UserSim). All research code is in `experiments/staged_context/`.

@@ -194,5 +194,19 @@
     "Squarespace",
     "BigCommerce",
     "WooCommerce"
+  ],
+  "Asana": [
+    "Monday.com",
+    "ClickUp",
+    "Basecamp"
+  ],
+  "LastPass": [
+    "1Password",
+    "Keeper Security",
+    "Bitwarden"
+  ],
+  "Zapier": [
+    "Workato",
+    "UiPath"
   ]
 }

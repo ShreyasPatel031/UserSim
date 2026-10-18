@@ -142,5 +142,38 @@
       "Templates",
       "Filtering/Views"
     ]
+  },
+  "Asana": {
+    "url": "https://asana.com/",
+    "persona": "an operations manager at a 60-person marketing agency",
+    "category": "Project Management",
+    "task": "I need to set up a new client project in Asana, adding key tasks for our design, content, and ad teams. I'll assign owners and due dates, then use custom fields to track project status and priority. Finally, I'll create a report to see all high-priority tasks across the project and reassign a few tasks to balance the workload.",
+    "core_job": "Manage a new client project with tasks and assignments.",
+    "features": [
+      "Custom Fields",
+      "Reporting"
+    ]
+  },
+  "LastPass": {
+    "url": "https://www.lastpass.com/",
+    "persona": "an office manager at a 25-person accounting firm who wants staff to stop reusing passwords",
+    "category": "Security",
+    "task": "I need to set up LastPass for our accounting firm to stop password reuse. I'll add logins for our main accounting software, bank portal, and HR system. Then, I want to organize these by creating a shared folder for the accounting team and setting up a secure note for our Wi-Fi password. Finally, I'll update the accounting software login with a new password and move it to a different folder to see how easy it is to manage.",
+    "core_job": "Securely store and manage critical business logins.",
+    "features": [
+      "Create and manage shared folders/vaults",
+      "Edit and reorganize existing entries"
+    ]
+  },
+  "Zapier": {
+    "url": "https://zapier.com/",
+    "persona": "an operations lead at a 30-person online store who copies data between tools by hand",
+    "category": null,
+    "task": "I need to automate some of our manual data transfers. I'll set up a Zap to automatically add new Shopify orders to a Google Sheet and then notify our fulfillment team in Slack. I'll create a few test orders to see it in action, then organize my Zaps with a folder and check the task history to troubleshoot any issues.",
+    "core_job": "Automate data transfer between Shopify, Google Sheets, and Slack.",
+    "features": [
+      "Organize Zaps with folders",
+      "Review task history for troubleshooting"
+    ]
   }
 }

@@ -557,6 +557,29 @@ def make_tasks() -> None:
     E.write_json(HOUT / "run_tasks.json", out)
 
 
+def pooled() -> None:
+    """Product-level eval over every product with a signed-in run in out/human_mode/runs_deep: free notes and the
+    bounded edit against context-only, with the interval from resampling PRODUCTS (their people share one run)."""
+    import numpy as np
+
+    by: dict = {}
+    for f in sorted((HOUT / "runs_deep").glob("*_deep_*.json")):
+        r = json.loads(f.read_text())
+        if r.get("signed_in") and r.get("reached_product") and r.get("product"):
+            by.setdefault(r["product"], []).append(r)
+    D = pd.concat([product_eval(prod, runs, "deepall") for prod, runs in by.items()], ignore_index=True)
+    D.to_csv(HOUT / "plist_all_deepall.csv", index=False)
+    rng = np.random.default_rng(0)
+    for m in ("cons_recall", "pros_recall"):
+        M = D.groupby(["product", "cond"])[m].mean().unstack()
+        for c in ("edit1F", "ctx+run"):
+            d = (M[c] - M["ctx"]).dropna()
+            bs = [rng.choice(d.values, len(d)).mean() for _ in range(5000)]
+            print(m, c, {k: round(v, 3) for k, v in d.items()}, "mean", round(d.mean(), 3),
+                  "95%", np.round(np.percentile(bs, [2.5, 97.5]), 3), f"{int((d > 0).sum())}/{len(d)} up")
+    print(f"spend ${E.spent_usd():.3f}")
+
+
 if __name__ == "__main__":
-    {"observability": observability, "basecamp": basecamp, "tasks": make_tasks, "oracle": oracle, "plist_basecamp_old": lambda: print(product_summary(product_eval(
+    {"observability": observability, "basecamp": basecamp, "tasks": make_tasks, "oracle": oracle, "pooled": pooled, "plist_basecamp_old": lambda: print(product_summary(product_eval(
     "Basecamp", [json.loads(p.read_text()) for p in sorted((HOUT / "runs").glob("*.json"))], "bench5")))}[sys.argv[1]]()

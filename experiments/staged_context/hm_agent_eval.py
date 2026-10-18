@@ -120,11 +120,27 @@ def evaluate(product: str) -> pd.DataFrame:
     return D
 
 
-if __name__ == "__main__":
-    out = pd.concat([evaluate(p) for p in sys.argv[1:]], ignore_index=True)
-    out.to_csv(H.HOUT / "agent_mode_plus_run.csv", index=False)
+def report(out: pd.DataFrame) -> None:
+    import numpy as np
+
+    rng = np.random.default_rng(0)
     cols = ["pros_recall", "cons_recall", "pros_covered", "cons_covered"]
     pd.set_option("display.width", 200)
     print(out.groupby(["product", "cond"])[cols].mean().round(3))
-    print(out.groupby("cond")[cols].mean().round(3))
+    for m in ("cons_recall", "pros_recall"):
+        M = out.groupby(["product", "cond"])[m].mean().unstack()
+        for c in ("human_free", "human_edit1F"):
+            d = (M[c] - M["agent"]).dropna()
+            bs = [rng.choice(d.values, len(d)).mean() for _ in range(5000)]
+            print(m, c, {k: round(v, 3) for k, v in d.items()}, "mean", round(d.mean(), 3),
+                  "95% (resampling products)", np.round(np.percentile(bs, [2.5, 97.5]), 3), f"{int((d > 0).sum())}/{len(d)} up")
+
+
+if __name__ == "__main__":
+    new = pd.concat([evaluate(p) for p in sys.argv[1:]], ignore_index=True)
+    f = H.HOUT / "agent_mode_plus_run.csv"
+    old = pd.read_csv(f) if f.exists() else pd.DataFrame(columns=new.columns)
+    out = pd.concat([old[~old["product"].isin(new["product"].unique())], new], ignore_index=True)  # re-running a product replaces it
+    out.to_csv(f, index=False)
+    report(out)
     print(f"spend ${E.spent_usd():.3f}")

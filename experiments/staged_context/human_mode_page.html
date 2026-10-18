@@ -1,0 +1,194 @@
+<title>UserSim Human Mode</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one column of findings, each opened by a small starburst mascot, evidence in quiet cards */
+:root{
+  --bg:#FBF8F5; --card:#FFFDFB; --ink:#26211D; --muted:#6E655D; --line:#ECE4DD;
+  --accent:#D9622B; --accent-soft:#F6DCCB; --good:#2F7D4F; --bad:#B2432F;
+  --display:"Fraunces", Georgia, "Times New Roman", serif;
+  --body:"Instrument Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#161311; --card:#1F1B18; --ink:#F2ECE6; --muted:#A79D94; --line:#302A25;
+  --accent:#F08A55; --accent-soft:#4A2E20; --good:#6CC592; --bad:#EE8A72; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#161311; --card:#1F1B18; --ink:#F2ECE6; --muted:#A79D94; --line:#302A25;
+  --accent:#F08A55; --accent-soft:#4A2E20; --good:#6CC592; --bad:#EE8A72; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 var(--body);margin:0}
+.wrap{max-width:980px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 40px}
+nav{display:flex;gap:18px;align-items:center;flex-wrap:wrap;padding-block:14px;border-bottom:1px solid var(--line)}
+nav b{font-family:var(--display);font-size:18px;display:flex;align-items:center;gap:8px}
+nav span{color:var(--muted);font-size:14px}nav .on{color:var(--accent);font-weight:600}
+.mascot{flex:none;display:inline-block}
+.mascot .body{fill:var(--accent)}.mascot .face{fill:var(--card)}.mascot .cheek{fill:var(--accent-soft)}
+@media (prefers-reduced-motion:no-preference){.hero .mascot{animation:bob 3.2s ease-in-out infinite}}
+@keyframes bob{50%{transform:translateY(-5px) rotate(6deg)}}
+.hero{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;padding-block:44px 24px}
+.hero>div{min-width:0}
+.pill{display:inline-block;font:12px var(--mono);padding:3px 10px;border:1px solid var(--line);border-radius:99px;color:var(--muted);margin-bottom:14px}
+h1{font-family:var(--display);font-size:clamp(28px,5vw,44px);line-height:1.08;letter-spacing:-.015em;margin:0 0 12px;text-wrap:balance}
+h1 em{font-style:normal;color:var(--accent)}
+.hero p{color:var(--muted);max-width:62ch;margin:0}
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin-top:22px}
+.step{border:1px dashed var(--line);border-radius:10px;padding:12px;font-size:13px;color:var(--muted)}
+.step b{display:block;color:var(--accent);font:600 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;margin-bottom:2px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:18px 0 30px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
+.kpi .n{font-family:var(--display);font-size:30px;font-weight:700;letter-spacing:-.02em;line-height:1.1}
+.kpi .n small{font:500 13px var(--body);color:var(--muted)}
+.kpi p{margin:6px 0 0;font-size:13px;color:var(--muted)}
+section{padding-block:22px;border-top:1px solid var(--line)}
+.sh{display:flex;gap:12px;align-items:center;margin-bottom:6px}
+h2{font-family:var(--display);font-size:24px;margin:0;text-wrap:balance;letter-spacing:-.01em}
+.lede{color:var(--muted);max-width:68ch;margin:0 0 16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
+.bars{display:grid;gap:8px}
+.bar{display:grid;grid-template-columns:minmax(120px,190px) 1fr 1fr;gap:10px;align-items:center;font-size:13px}
+.bar .lab{min-width:0}
+.track{position:relative;height:12px;background:var(--line);border-radius:6px;overflow:hidden}
+.fill{height:100%;background:var(--accent)}.fill.alt{background:var(--good)}
+.track span{position:absolute;right:6px;top:-2px;font:11px var(--mono);color:var(--ink)}
+.bar.head{color:var(--muted);font:600 11px var(--mono);letter-spacing:.05em;text-transform:uppercase}
+.scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:560px}
+th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-weight:500}
+td.n{text-align:right;font-variant-numeric:tabular-nums;font-family:var(--mono);white-space:nowrap}
+.up{color:var(--good);font-weight:600}.down{color:var(--bad);font-weight:600}
+.chip{display:inline-block;font:500 11px var(--mono);padding:2px 8px;border-radius:99px;white-space:nowrap}
+.chip.ok{background:color-mix(in srgb,var(--good) 18%,transparent);color:var(--good)}
+.chip.no{background:color-mix(in srgb,var(--bad) 16%,transparent);color:var(--bad)}
+.note{font-size:13px;color:var(--muted);margin:10px 0 0}
+.ask{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.ask .card b{font-family:var(--display);font-size:17px;display:block;margin-bottom:4px}
+.ask .card p{margin:0;font-size:13px;color:var(--muted)}
+code{font-family:var(--mono);font-size:12.5px}
+footer{color:var(--muted);font-size:12px;padding-top:24px;border-top:1px solid var(--line)}
+@media (max-width:560px){.hero{grid-template-columns:1fr}.hero .mascot{display:none}.bar{grid-template-columns:1fr}}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="buddy" viewBox="0 0 100 100">
+      <g class="body">
+        <path d="M50 4 L58 34 L88 22 L68 46 L96 58 L64 62 L74 92 L50 70 L26 92 L36 62 L4 58 L32 46 L12 22 L42 34 Z"/>
+      </g>
+      <circle class="face" cx="50" cy="50" r="17"/>
+      <circle cx="44" cy="48" r="2.6" fill="var(--ink)"/>
+      <circle cx="56" cy="48" r="2.6" fill="var(--ink)"/>
+      <path d="M45 55 Q50 59 55 55" stroke="var(--ink)" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+      <circle class="cheek" cx="40" cy="54" r="2.6"/><circle class="cheek" cx="60" cy="54" r="2.6"/>
+    </symbol>
+    <symbol id="buddy-think" viewBox="0 0 100 100">
+      <g class="body"><path d="M50 4 L58 34 L88 22 L68 46 L96 58 L64 62 L74 92 L50 70 L26 92 L36 62 L4 58 L32 46 L12 22 L42 34 Z"/></g>
+      <circle class="face" cx="50" cy="50" r="17"/>
+      <path d="M41 47 h6 M53 47 h6" stroke="var(--ink)" stroke-width="2.4" stroke-linecap="round"/>
+      <circle cx="50" cy="56" r="2.4" fill="var(--ink)"/>
+    </symbol>
+    <symbol id="buddy-oops" viewBox="0 0 100 100">
+      <g class="body"><path d="M50 4 L58 34 L88 22 L68 46 L96 58 L64 62 L74 92 L50 70 L26 92 L36 62 L4 58 L32 46 L12 22 L42 34 Z"/></g>
+      <circle class="face" cx="50" cy="50" r="17"/>
+      <path d="M41 45 l5 5 M46 45 l-5 5 M54 45 l5 5 M59 45 l-5 5" stroke="var(--ink)" stroke-width="2.2" stroke-linecap="round"/>
+      <path d="M45 58 Q50 54 55 58" stroke="var(--ink)" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="wrap">
+<nav>
+  <b><svg class="mascot" width="26" height="26" aria-hidden="true"><use href="#buddy"/></svg>UserSim</b>
+  <span>Agent mode</span><span class="on">Human mode</span><span>YC test</span>
+</nav>
+
+<header class="hero">
+  <div>
+    <span class="pill">MCP · usersim_plan_human_run → browser run → usersim_combine_human_run</span>
+    <h1>Send a simulated user through the <em>real product</em>, then predict what real users will say.</h1>
+    <p>Agent mode predicts each kind of user's ratings, likes and frustrations from review data. Human mode adds a simulated user who signs up and does the product's core job, and folds what it saw into that prediction in the amount that held up against real reviewers.</p>
+    <div class="flow">
+      <div class="step"><b>Plan</b>Pick the task from competitors' real complaints</div>
+      <div class="step"><b>Run</b>Sign up, do the core job with 3+ items, then two deeper features</div>
+      <div class="step"><b>Combine</b>Add the run's product facts; ratings stay agent mode's</div>
+      <div class="step"><b>Score</b>Against real reviewers held out of the evidence</div>
+    </div>
+  </div>
+  <svg class="mascot" width="150" height="150" aria-hidden="true"><use href="#buddy"/></svg>
+</header>
+
+<div class="kpis">
+  <div class="kpi"><div class="n">+4.6 <small>pts cons found</small></div><p>Product with its own reviews. 173 held-out reviewers but only 5 products and 6 runs; resampling products, 95% CI +0.1 to +8.3.</p></div>
+  <div class="kpi"><div class="n">+3.3 <small>pts cons found</small></div><p>New product, competitors only, at most one pro and one con changed. Up on 5 of 5 products; the rule was picked after seeing these same products.</p></div>
+  <div class="kpi"><div class="n">−1 <small>star</small></div><p>Run-based rating on one product (Basecamp: 3.5 predicted, 4.55 real). Ratings always come from agent mode.</p></div>
+  <div class="kpi"><div class="n">16 / 20 <small>YC startups</small></div><p>Get usable competitor data once rivals are named from review sites.</p></div>
+</div>
+
+<section>
+  <div class="sh"><svg class="mascot" width="40" height="40" aria-hidden="true"><use href="#buddy-think"/></svg><h2>What to ask the simulated user</h2></div>
+  <p class="lede">Review data already predicts onboarding and pricing complaints. It misses how the product feels in daily use. Share of 642 real frictions (420 Capterra reviewers) that the context-only agent predicted, and how many a first session can observe:</p>
+  <div class="card bars">
+    <div class="bar head"><span>Theme</span><span>Predicted from reviews</span><span>Observable in one session</span></div>
+    <div class="bar"><span class="lab">Pricing / cost</span><div class="track"><div class="fill" style="width:56%"></div><span>56%</span></div><div class="track"><div class="fill alt" style="width:67%"></div><span>67%</span></div></div>
+    <div class="bar"><span class="lab">Onboarding / learning curve</span><div class="track"><div class="fill" style="width:53%"></div><span>53%</span></div><div class="track"><div class="fill alt" style="width:85%"></div><span>85%</span></div></div>
+    <div class="bar"><span class="lab">UI / navigation</span><div class="track"><div class="fill" style="width:17%"></div><span>17%</span></div><div class="track"><div class="fill alt" style="width:96%"></div><span>96%</span></div></div>
+    <div class="bar"><span class="lab">Core feature missing or shallow</span><div class="track"><div class="fill" style="width:10%"></div><span>10%</span></div><div class="track"><div class="fill alt" style="width:72%"></div><span>72%</span></div></div>
+  </div>
+  <div class="ask" style="margin-top:14px">
+    <div class="card"><b>1 · Do the main job</b><p>End to end, with at least 3 realistic items, not one.</p></div>
+    <div class="card"><b>2 · Two deeper features</b><p>Views, custom fields, reports or automations: what users rely on after a few weeks.</p></div>
+    <div class="card"><b>3 · Edit what you made</b><p>Move, filter, reorganise or report on it. Skip tours and pricing pages.</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="sh"><svg class="mascot" width="40" height="40" aria-hidden="true"><use href="#buddy"/></svg><h2>How much the run should count</h2></div>
+  <p class="lede">Change in the share of real reviewers' cons and pros matched, against the same prediction without the run. Product-level lists for new products, per-person words for products with reviews.</p>
+  <div class="card scroll"><table>
+    <thead><tr><th>Run added on top of</th><th class="n">people</th><th class="n">cons</th><th class="n">pros</th><th>ratings</th></tr></thead>
+    <tbody>
+      <tr><td>Agent mode with the product's own reviews; words rewritten with the run's notes</td><td class="n">173</td><td class="n up">+0.046</td><td class="n">+0.004</td><td>kept from agent mode</td></tr>
+      <tr><td>Competitors only (new product); at most one pro and one con changed</td><td class="n">197 / 161</td><td class="n up">+0.033</td><td class="n">+0.008</td><td>kept from agent mode</td></tr>
+      <tr><td>Competitors only; run notes added freely</td><td class="n">197 / 161</td><td class="n down">−0.050</td><td class="n down">−0.071</td><td>not used</td></tr>
+      <tr><td>Basecamp, added to context: five onboarding-style runs vs one core-job run</td><td class="n">40</td><td class="n">−0.03 vs −0.01</td><td class="n">+0.17 vs +0.03</td><td>no clear difference; alone, the core-job run matches far more (cons 0.22 vs 0.01)</td></tr>
+    </tbody>
+  </table></div>
+  <p class="note">Products: Basecamp (2 runs), Bitwarden, Brevo, ClickUp, GetResponse. Judge: Gemini 2.5 Flash, counting only "same specific point" as a match. Only 5 products and 6 runs stand behind each row, so the interval across products is the honest one, and the rule for each case was chosen after seeing these same products. Established products the model may already know; no new startup has been scored.</p>
+</section>
+
+<section>
+  <div class="sh"><svg class="mascot" width="40" height="40" aria-hidden="true"><use href="#buddy-oops"/></svg><h2>Where sign-up stops a run</h2></div>
+  <p class="lede">12 anonymous runs through the public MCP. Half reached the product; the rest show what still needs a token or a server setting.</p>
+  <div class="card scroll"><table>
+    <thead><tr><th>Product</th><th>Reached the product</th><th>What happened</th></tr></thead>
+    <tbody>
+      <tr><td>Basecamp ×2</td><td><span class="chip ok">yes</span></td><td>9 + 8 product observations</td></tr>
+      <tr><td>Bitwarden</td><td><span class="chip ok">yes</span></td><td>Free organization limited to 2 users and 2 collections</td></tr>
+      <tr><td>ClickUp</td><td><span class="chip ok">yes</span></td><td>Sign-up and onboarding used about 25 of 39 steps</td></tr>
+      <tr><td>GetResponse</td><td><span class="chip ok">yes</span></td><td>Email, automation and segments sit inside a 21-item Tools menu</td></tr>
+      <tr><td>Brevo</td><td><span class="chip ok">yes</span></td><td>24 steps of sign-up; campaigns page never loaded</td></tr>
+      <tr><td>Zoho Desk, Wrike</td><td><span class="chip no">no</span></td><td>Reject <code>+</code> email aliases (no-plus addresses need a token)</td></tr>
+      <tr><td>Trello</td><td><span class="chip no">no</span></td><td>Sign-up spinner never finished</td></tr>
+      <tr><td>Klaviyo</td><td><span class="chip no">no</span></td><td>Image reCAPTCHA at login (paid solver is off without a token)</td></tr>
+      <tr><td>Teamwork.com</td><td><span class="chip no">no</span></td><td>Site refused the account after the phone step</td></tr>
+      <tr><td>Ecwid</td><td><span class="chip no">no</span></td><td>No free plan; runs never pay</td></tr>
+    </tbody>
+  </table></div>
+  <p class="note">The step limit is now 90 (was 40) in <code>mvp/sim_mcp/limits.json</code>.</p>
+</section>
+
+<section>
+  <div class="sh"><svg class="mascot" width="40" height="40" aria-hidden="true"><use href="#buddy-think"/></svg><h2>YC startups: is there competitor data?</h2></div>
+  <p class="lede">20 B2B startups from YC Spring and Summer 2026. Usable means at least one real competitor with 20+ reviews of the right product.</p>
+  <div class="card bars">
+    <div class="bar head"><span>Competitors from</span><span>Startups with usable data</span><span></span></div>
+    <div class="bar"><span class="lab">Study planner (2 picks)</span><div class="track"><div class="fill" style="width:50%"></div><span>10 / 20</span></div><span></span></div>
+    <div class="bar"><span class="lab">+ 6 review-site products</span><div class="track"><div class="fill alt" style="width:80%"></div><span>16 / 20</span></div><span></span></div>
+  </div>
+  <p class="note">Still none: Parasma (brain-cell compute), MusicArena (AI-music benchmark), transload (camera freight measurement; its rivals have no reviews) and Dock (no candidate judged a competitor). For these, human mode is the only first-hand source.</p>
+</section>
+
+<footer>Built from UserSim's held-out evaluations, 18 Oct 2026: <code>experiments/staged_context/HUMAN_MODE.md</code> and <code>YC_TEST.md</code> on main. MCP tools: <code>usersim_plan_human_run</code>, <code>usersim_combine_human_run</code>.</footer>
+</div>
