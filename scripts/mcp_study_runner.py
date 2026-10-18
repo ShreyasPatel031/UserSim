@@ -172,8 +172,10 @@ async def main() -> None:
     ap.add_argument("--out", default="results/mcp_studies")
     a = ap.parse_args()
     from anthropic import AnthropicVertex
+    from auth import vertex_credentials  # the repo's loader (file, base64 env or metadata server)
 
-    llm = AnthropicVertex(project_id=os.environ.get("GOOGLE_CLOUD_PROJECT", "project-amer-scs-sandbox"), region="global")
+    llm = AnthropicVertex(project_id=os.environ.get("GOOGLE_CLOUD_PROJECT", "project-amer-scs-sandbox"), region="global",
+                          credentials=vertex_credentials())
     root = Path(a.out)
     root.mkdir(parents=True, exist_ok=True)
     res = await asyncio.gather(*(run_study(p, a.parallel, a.max_turns, root, llm) for p in a.products))
