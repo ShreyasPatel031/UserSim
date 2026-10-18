@@ -2,7 +2,7 @@
 
 ## Morning summary
 
-Agent mode is in main as the MCP tool `usersim_predict_experience` (PRs #86–#91). Not deployed yet: the live server
+Agent mode is in main as the MCP tool `usersim_predict_experience` (PRs #86–#95; #95 adds the identity gate). Not deployed yet: the live server
 needs a redeploy and `APIFY_TOKEN`. Human mode (browser runs + combine) is session usersim-9c's, on
 `claude/modest-wozniak-p0bt3q`.
 
@@ -18,7 +18,7 @@ What adds accuracy on top of the plain context agent, by held-out eval (bold = w
 | Product's reviews on the *other* platform | worse | worse | – |
 | Named rivals' level vs global mean as prior | ≈ | ≈ | slightly worse |
 
-Branch `claude/zealous-knuth-4zbdb1`, PR https://github.com/ShreyasPatel031/UserSim/pull/86 (to main).
+Branch `claude/zealous-knuth-4zbdb1`; everything is merged to main through PR #95.
 Research code imports the review-context branch from `$CTX_ROOT` (default `/home/user/UserSim-ctx`):
 `git worktree add /home/user/UserSim-ctx origin/claude/modest-euler-6111ae`.
 
