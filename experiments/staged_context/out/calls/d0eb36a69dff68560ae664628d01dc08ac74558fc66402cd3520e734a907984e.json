@@ -1,0 +1,78 @@
+{
+  "stage": "usage_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "d0eb36a69dff68560ae664628d01dc08ac74558fc66402cd3520e734a907984e",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1255,
+  "output_tokens": 1520,
+  "cost_usd": 0.0041765000000000005,
+  "elapsed_s": 13.42,
+  "error": null,
+  "text": "{\n  \"role_family\": {\n    \"executive_owner\": 0.172,\n    \"project_program_mgmt\": 0.027,\n    \"product_mgmt\": 0.01,\n    \"healthcare_wellness\": 0.009,\n    \"software_it_engineering\": 0.205,\n    \"marketing_creative_content\": 0.116,\n    \"sales_customer\": 0.178,\n    \"operations_admin\": 0.064,\n    \"finance_hr_legal\": 0.032,\n    \"education_research_analysis\": 0.036,\n    \"consultant_freelance\": 0.028,\n    \"general_team_mgmt\": 0.123,\n    \"unknown\": 0.0\n  },\n  \"company_size\": {\n    \"Self-employed\": 0.082,\n    \"1-10 employees\": 0.206,\n    \"11-50 employees\": 0.249,\n    \"51-200 employees\": 0.185,\n    \"201-500 employees\": 0.082,\n    \"501-1,000 employees\": 0.063,\n    \"1,001-5,000 employees\": 0.065,\n    \"5,001-10,000 employees\": 0.021,\n    \"10,001+ employees\": 0.047\n  },\n  \"industry\": {\n    \"Information Technology and Services\": 0.124,\n    \"Computer Software\": 0.126,\n    \"Marketing and Advertising\": 0.052,\n    \"Education Management\": 0.03,\n    \"Retail\": 0.037,\n    \"Health, Wellness and Fitness\": 0.017,\n    \"Financial Services\": 0.026,\n    \"Construction\": 0.013,\n    \"Hospital & Health Care\": 0.017,\n    \"Accounting\": 0.02,\n    \"Non-Profit Organization Management\": 0.009,\n    \"Design\": 0.011,\n    \"Internet\": 0.034,\n    \"Real Estate\": 0.016,\n    \"E-Learning\": 0.017,\n    \"Other\": 0.452\n  },\n  \"time_used\": {\n    \"I used a free trial\": 0.108,\n    \"Less than 6 months\": 0.188,\n    \"6-12 months\": 0.213,\n    \"1-2 years\": 0.246,\n    \"2+ years\": 0.246\n  },\n  \"switched_share\": 0.108,\n  \"top_prior_tools\": [\n    \"Zendesk Suite\",\n    \"Freshdesk\",\n    \"Zoho Desk\",\n    \"Intercom\",\n    \"Help Scout\"\n  ]\n}",
+  "json": {
+    "role_family": {
+      "executive_owner": 0.172,
+      "project_program_mgmt": 0.027,
+      "product_mgmt": 0.01,
+      "healthcare_wellness": 0.009,
+      "software_it_engineering": 0.205,
+      "marketing_creative_content": 0.116,
+      "sales_customer": 0.178,
+      "operations_admin": 0.064,
+      "finance_hr_legal": 0.032,
+      "education_research_analysis": 0.036,
+      "consultant_freelance": 0.028,
+      "general_team_mgmt": 0.123,
+      "unknown": 0.0
+    },
+    "company_size": {
+      "Self-employed": 0.082,
+      "1-10 employees": 0.206,
+      "11-50 employees": 0.249,
+      "51-200 employees": 0.185,
+      "201-500 employees": 0.082,
+      "501-1,000 employees": 0.063,
+      "1,001-5,000 employees": 0.065,
+      "5,001-10,000 employees": 0.021,
+      "10,001+ employees": 0.047
+    },
+    "industry": {
+      "Information Technology and Services": 0.124,
+      "Computer Software": 0.126,
+      "Marketing and Advertising": 0.052,
+      "Education Management": 0.03,
+      "Retail": 0.037,
+      "Health, Wellness and Fitness": 0.017,
+      "Financial Services": 0.026,
+      "Construction": 0.013,
+      "Hospital & Health Care": 0.017,
+      "Accounting": 0.02,
+      "Non-Profit Organization Management": 0.009,
+      "Design": 0.011,
+      "Internet": 0.034,
+      "Real Estate": 0.016,
+      "E-Learning": 0.017,
+      "Other": 0.452
+    },
+    "time_used": {
+      "I used a free trial": 0.108,
+      "Less than 6 months": 0.188,
+      "6-12 months": 0.213,
+      "1-2 years": 0.246,
+      "2+ years": 0.246
+    },
+    "switched_share": 0.108,
+    "top_prior_tools": [
+      "Zendesk Suite",
+      "Freshdesk",
+      "Zoho Desk",
+      "Intercom",
+      "Help Scout"
+    ]
+  },
+  "ts": "2026-10-18T03:42:50.963410+00:00"
+}

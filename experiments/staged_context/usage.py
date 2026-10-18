@@ -37,7 +37,9 @@ URLS = {
     "BigCommerce": "https://www.bigcommerce.com/", "Smartsheet": "https://www.smartsheet.com/",
     "Freshdesk": "https://www.freshdesk.com/",
 }  # Domo (405), Sage Intacct (403), Insightly (403) block automated requests and were dropped
-SETUPS = {"U0": [], "U1": ["D"], "U2": ["D", "O"], "U3": ["D", "O", "C"], "U4": ["D", "C"]}
+SETUPS = {"U0": [], "U1": ["D"], "U2": ["D", "O"], "U3": ["D", "O", "C"], "U4": ["D", "C"],
+          "U5": ["S"], "U6": ["D", "S"]}  # S = counted user mix of same-category competitors
+E.PACK_HEADINGS["S"] = "Measured user mix of same-category competitor products (counted from their reviews)"
 SEED = 42
 SIZE_BANDS = ["Self-employed", "1-10 employees", "11-50 employees", "51-200 employees", "201-500 employees",
               "501-1,000 employees", "1,001-5,000 employees", "5,001-10,000 employees", "10,001+ employees"]
@@ -134,12 +136,17 @@ def main() -> None:
         seed = f"{p} is a {cat[p]} software product."
         pk = {"M": {"items": [{"id": f"M:{p}", "text": f"Product: {p}. {seed}"}]}, "D": D, "C": {"items": citems}}
         pk["O"] = E.onet_pack(p, D, seed)
+        peer_all = df[(df.product_category_group == cat[p]) & (df.product_name != p)]
+        peer_mix = distributions(peer_all, industries)
+        rounded = {k: ({kk: round(vv, 3) for kk, vv in v.items()} if isinstance(v, dict) else
+                       (round(v, 3) if isinstance(v, float) else v)) for k, v in peer_mix.items()}
+        pk["S"] = {"items": [{"id": "S:category", "text": (
+            f"{len(peer_all)} reviews of {', '.join(sorted(peer_all.product_name.unique()))}: " + json.dumps(rounded))}]}
         for k, v in pk.items():
             E.write_json(UPACKS / p / f"{k}.json", v)
         actual = distributions(df[df.product_name == p], industries)
-        peer_all = df[(df.product_category_group == cat[p]) & (df.product_name != p)]
         bl = {"BASE_all_other_products": distributions(df[df.product_name != p], industries),
-              "BASE_category_competitors": distributions(peer_all, industries),
+              "BASE_category_competitors": peer_mix,
               "BASE_20_competitor_reviews": distributions(df[df.review_id.isin([x["review_id"] for x in citems])], industries)}
         for name, d in bl.items():
             rows.append({"product": p, "setup": name, **score(d, actual)})

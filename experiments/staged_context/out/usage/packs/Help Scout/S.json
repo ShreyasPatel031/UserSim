@@ -1,0 +1,8 @@
+{
+  "items": [
+    {
+      "id": "S:category",
+      "text": "5000 reviews of Freshdesk, Intercom, LiveAgent, Zendesk Suite, Zoho Desk: {\"role_family\": {\"executive_owner\": 0.184, \"project_program_mgmt\": 0.026, \"product_mgmt\": 0.009, \"healthcare_wellness\": 0.008, \"software_it_engineering\": 0.194, \"marketing_creative_content\": 0.115, \"sales_customer\": 0.173, \"operations_admin\": 0.068, \"finance_hr_legal\": 0.035, \"education_research_analysis\": 0.034, \"consultant_freelance\": 0.027, \"general_team_mgmt\": 0.127}, \"company_size\": {\"Self-employed\": 0.084, \"1-10 employees\": 0.217, \"11-50 employees\": 0.247, \"51-200 employees\": 0.181, \"201-500 employees\": 0.075, \"501-1,000 employees\": 0.06, \"1,001-5,000 employees\": 0.06, \"5,001-10,000 employees\": 0.023, \"10,001+ employees\": 0.053}, \"industry\": {\"Information Technology and Services\": 0.128, \"Computer Software\": 0.11, \"Marketing and Advertising\": 0.054, \"Education Management\": 0.03, \"Retail\": 0.04, \"Health, Wellness and Fitness\": 0.017, \"Financial Services\": 0.026, \"Construction\": 0.015, \"Hospital & Health Care\": 0.018, \"Accounting\": 0.02, \"Non-Profit Organization Management\": 0.009, \"Design\": 0.01, \"Internet\": 0.031, \"Real Estate\": 0.017, \"E-Learning\": 0.017, \"Other\": 0.458}, \"time_used\": {\"I used a free trial\": 0.128, \"Less than 6 months\": 0.194, \"6-12 months\": 0.208, \"1-2 years\": 0.235, \"2+ years\": 0.235}, \"switched_share\": 0.121, \"top_prior_tools\": [\"Zendesk Suite\", \"Freshdesk\", \"Zoho Desk\", \"LiveChat\", \"LiveAgent\"]}"
+    }
+  ]
+}

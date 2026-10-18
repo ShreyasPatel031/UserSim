@@ -1,0 +1,78 @@
+{
+  "stage": "usage_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "cc221bdd6662bb340a6145826294012c087c73a62795a201aea3876820b0e86b",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2528,
+  "output_tokens": 1502,
+  "cost_usd": 0.0045134,
+  "elapsed_s": 16.1,
+  "error": null,
+  "text": "{\n  \"role_family\": {\n    \"executive_owner\": 0.12,\n    \"project_program_mgmt\": 0.03,\n    \"product_mgmt\": 0.005,\n    \"healthcare_wellness\": 0.04,\n    \"software_it_engineering\": 0.1,\n    \"marketing_creative_content\": 0.07,\n    \"sales_customer\": 0.1,\n    \"operations_admin\": 0.13,\n    \"finance_hr_legal\": 0.25,\n    \"education_research_analysis\": 0.03,\n    \"consultant_freelance\": 0.02,\n    \"general_team_mgmt\": 0.105,\n    \"unknown\": 0.0\n  },\n  \"company_size\": {\n    \"Self-employed\": 0.01,\n    \"1-10 employees\": 0.04,\n    \"11-50 employees\": 0.15,\n    \"51-200 employees\": 0.35,\n    \"201-500 employees\": 0.25,\n    \"501-1,000 employees\": 0.1,\n    \"1,001-5,000 employees\": 0.07,\n    \"5,001-10,000 employees\": 0.02,\n    \"10,001+ employees\": 0.01\n  },\n  \"industry\": {\n    \"Information Technology and Services\": 0.1,\n    \"Computer Software\": 0.07,\n    \"Marketing and Advertising\": 0.06,\n    \"Education Management\": 0.03,\n    \"Retail\": 0.03,\n    \"Health, Wellness and Fitness\": 0.05,\n    \"Financial Services\": 0.05,\n    \"Construction\": 0.02,\n    \"Hospital & Health Care\": 0.05,\n    \"Accounting\": 0.03,\n    \"Non-Profit Organization Management\": 0.03,\n    \"Design\": 0.01,\n    \"Internet\": 0.02,\n    \"Real Estate\": 0.02,\n    \"E-Learning\": 0.01,\n    \"Other\": 0.41\n  },\n  \"time_used\": {\n    \"I used a free trial\": 0.02,\n    \"Less than 6 months\": 0.28,\n    \"6-12 months\": 0.22,\n    \"1-2 years\": 0.25,\n    \"2+ years\": 0.23\n  },\n  \"switched_share\": 0.18,\n  \"top_prior_tools\": [\n    \"ADP Workforce Now\",\n    \"Paychex Flex\",\n    \"Paylocity\",\n    \"Gusto\",\n    \"BambooHR\"\n  ]\n}",
+  "json": {
+    "role_family": {
+      "executive_owner": 0.12,
+      "project_program_mgmt": 0.03,
+      "product_mgmt": 0.005,
+      "healthcare_wellness": 0.04,
+      "software_it_engineering": 0.1,
+      "marketing_creative_content": 0.07,
+      "sales_customer": 0.1,
+      "operations_admin": 0.13,
+      "finance_hr_legal": 0.25,
+      "education_research_analysis": 0.03,
+      "consultant_freelance": 0.02,
+      "general_team_mgmt": 0.105,
+      "unknown": 0.0
+    },
+    "company_size": {
+      "Self-employed": 0.01,
+      "1-10 employees": 0.04,
+      "11-50 employees": 0.15,
+      "51-200 employees": 0.35,
+      "201-500 employees": 0.25,
+      "501-1,000 employees": 0.1,
+      "1,001-5,000 employees": 0.07,
+      "5,001-10,000 employees": 0.02,
+      "10,001+ employees": 0.01
+    },
+    "industry": {
+      "Information Technology and Services": 0.1,
+      "Computer Software": 0.07,
+      "Marketing and Advertising": 0.06,
+      "Education Management": 0.03,
+      "Retail": 0.03,
+      "Health, Wellness and Fitness": 0.05,
+      "Financial Services": 0.05,
+      "Construction": 0.02,
+      "Hospital & Health Care": 0.05,
+      "Accounting": 0.03,
+      "Non-Profit Organization Management": 0.03,
+      "Design": 0.01,
+      "Internet": 0.02,
+      "Real Estate": 0.02,
+      "E-Learning": 0.01,
+      "Other": 0.41
+    },
+    "time_used": {
+      "I used a free trial": 0.02,
+      "Less than 6 months": 0.28,
+      "6-12 months": 0.22,
+      "1-2 years": 0.25,
+      "2+ years": 0.23
+    },
+    "switched_share": 0.18,
+    "top_prior_tools": [
+      "ADP Workforce Now",
+      "Paychex Flex",
+      "Paylocity",
+      "Gusto",
+      "BambooHR"
+    ]
+  },
+  "ts": "2026-10-18T03:42:53.528962+00:00"
+}

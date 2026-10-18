@@ -1,0 +1,78 @@
+{
+  "stage": "usage_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "dbca0fbe7b08b6bc73c249806e35f80caad8b80b84cae83f5dd6a5e3a441e336",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 2669,
+  "output_tokens": 1521,
+  "cost_usd": 0.0046032,
+  "elapsed_s": 13.52,
+  "error": null,
+  "text": "{\n \"role_family\": {\n  \"executive_owner\": 0.12,\n  \"project_program_mgmt\": 0.04,\n  \"product_mgmt\": 0.025,\n  \"healthcare_wellness\": 0.005,\n  \"software_it_engineering\": 0.25,\n  \"marketing_creative_content\": 0.1,\n  \"sales_customer\": 0.06,\n  \"operations_admin\": 0.06,\n  \"finance_hr_legal\": 0.05,\n  \"education_research_analysis\": 0.11,\n  \"consultant_freelance\": 0.045,\n  \"general_team_mgmt\": 0.13,\n  \"unknown\": 0.005\n },\n \"company_size\": {\n  \"Self-employed\": 0.05,\n  \"1-10 employees\": 0.08,\n  \"11-50 employees\": 0.1,\n  \"51-200 employees\": 0.15,\n  \"201-500 employees\": 0.1,\n  \"501-1,000 employees\": 0.1,\n  \"1,001-5,000 employees\": 0.15,\n  \"5,001-10,000 employees\": 0.07,\n  \"10,001+ employees\": 0.2\n },\n \"industry\": {\n  \"Information Technology and Services\": 0.15,\n  \"Computer Software\": 0.12,\n  \"Marketing and Advertising\": 0.04,\n  \"Education Management\": 0.02,\n  \"Retail\": 0.03,\n  \"Health, Wellness and Fitness\": 0.015,\n  \"Financial Services\": 0.05,\n  \"Construction\": 0.01,\n  \"Hospital & Health Care\": 0.015,\n  \"Accounting\": 0.01,\n  \"Non-Profit Organization Management\": 0.005,\n  \"Design\": 0.01,\n  \"Internet\": 0.05,\n  \"Real Estate\": 0.01,\n  \"E-Learning\": 0.01,\n  \"Other\": 0.445\n },\n \"time_used\": {\n  \"I used a free trial\": 0.05,\n  \"Less than 6 months\": 0.15,\n  \"6-12 months\": 0.2,\n  \"1-2 years\": 0.28,\n  \"2+ years\": 0.32\n },\n \"switched_share\": 0.11,\n \"top_prior_tools\": [\n  \"Microsoft Excel\",\n  \"Tableau\",\n  \"Microsoft Power BI\",\n  \"Google Data Studio\",\n  \"Qlik Sense\"\n ]\n}",
+  "json": {
+    "role_family": {
+      "executive_owner": 0.12,
+      "project_program_mgmt": 0.04,
+      "product_mgmt": 0.025,
+      "healthcare_wellness": 0.005,
+      "software_it_engineering": 0.25,
+      "marketing_creative_content": 0.1,
+      "sales_customer": 0.06,
+      "operations_admin": 0.06,
+      "finance_hr_legal": 0.05,
+      "education_research_analysis": 0.11,
+      "consultant_freelance": 0.045,
+      "general_team_mgmt": 0.13,
+      "unknown": 0.005
+    },
+    "company_size": {
+      "Self-employed": 0.05,
+      "1-10 employees": 0.08,
+      "11-50 employees": 0.1,
+      "51-200 employees": 0.15,
+      "201-500 employees": 0.1,
+      "501-1,000 employees": 0.1,
+      "1,001-5,000 employees": 0.15,
+      "5,001-10,000 employees": 0.07,
+      "10,001+ employees": 0.2
+    },
+    "industry": {
+      "Information Technology and Services": 0.15,
+      "Computer Software": 0.12,
+      "Marketing and Advertising": 0.04,
+      "Education Management": 0.02,
+      "Retail": 0.03,
+      "Health, Wellness and Fitness": 0.015,
+      "Financial Services": 0.05,
+      "Construction": 0.01,
+      "Hospital & Health Care": 0.015,
+      "Accounting": 0.01,
+      "Non-Profit Organization Management": 0.005,
+      "Design": 0.01,
+      "Internet": 0.05,
+      "Real Estate": 0.01,
+      "E-Learning": 0.01,
+      "Other": 0.445
+    },
+    "time_used": {
+      "I used a free trial": 0.05,
+      "Less than 6 months": 0.15,
+      "6-12 months": 0.2,
+      "1-2 years": 0.28,
+      "2+ years": 0.32
+    },
+    "switched_share": 0.11,
+    "top_prior_tools": [
+      "Microsoft Excel",
+      "Tableau",
+      "Microsoft Power BI",
+      "Google Data Studio",
+      "Qlik Sense"
+    ]
+  },
+  "ts": "2026-10-18T03:42:50.994180+00:00"
+}

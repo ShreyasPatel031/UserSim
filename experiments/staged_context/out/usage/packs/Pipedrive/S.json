@@ -1,0 +1,8 @@
+{
+  "items": [
+    {
+      "id": "S:category",
+      "text": "4279 reviews of Freshsales, HubSpot CRM, Insightly, Salesforce Sales Cloud, Zoho CRM: {\"role_family\": {\"executive_owner\": 0.214, \"project_program_mgmt\": 0.027, \"product_mgmt\": 0.007, \"healthcare_wellness\": 0.01, \"software_it_engineering\": 0.105, \"marketing_creative_content\": 0.131, \"sales_customer\": 0.213, \"operations_admin\": 0.086, \"finance_hr_legal\": 0.03, \"education_research_analysis\": 0.021, \"consultant_freelance\": 0.026, \"general_team_mgmt\": 0.13}, \"company_size\": {\"Self-employed\": 0.078, \"1-10 employees\": 0.25, \"11-50 employees\": 0.256, \"51-200 employees\": 0.177, \"201-500 employees\": 0.064, \"501-1,000 employees\": 0.053, \"1,001-5,000 employees\": 0.06, \"5,001-10,000 employees\": 0.021, \"10,001+ employees\": 0.041}, \"industry\": {\"Information Technology and Services\": 0.106, \"Computer Software\": 0.076, \"Marketing and Advertising\": 0.075, \"Education Management\": 0.024, \"Retail\": 0.022, \"Health, Wellness and Fitness\": 0.02, \"Financial Services\": 0.036, \"Construction\": 0.025, \"Hospital & Health Care\": 0.019, \"Accounting\": 0.022, \"Non-Profit Organization Management\": 0.012, \"Design\": 0.009, \"Internet\": 0.015, \"Real Estate\": 0.027, \"E-Learning\": 0.018, \"Other\": 0.494}, \"time_used\": {\"I used a free trial\": 0.087, \"Less than 6 months\": 0.198, \"6-12 months\": 0.213, \"1-2 years\": 0.245, \"2+ years\": 0.257}, \"switched_share\": 0.128, \"top_prior_tools\": [\"Salesforce Sales Cloud\", \"HubSpot CRM\", \"Pipedrive\", \"Zoho CRM\", \"Microsoft Excel\"]}"
+    }
+  ]
+}

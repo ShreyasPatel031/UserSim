@@ -1,0 +1,78 @@
+{
+  "stage": "usage_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "0426909ffb1148b9ad501bd7ab13fd20c4d7837abb0430c8619fa8a98e60bc84",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1598,
+  "output_tokens": 1595,
+  "cost_usd": 0.004466899999999999,
+  "elapsed_s": 13.13,
+  "error": null,
+  "text": "{\n  \"role_family\": {\n    \"executive_owner\": 0.28,\n    \"project_program_mgmt\": 0.02,\n    \"product_mgmt\": 0.003,\n    \"healthcare_wellness\": 0.015,\n    \"software_it_engineering\": 0.06,\n    \"marketing_creative_content\": 0.3,\n    \"sales_customer\": 0.07,\n    \"operations_admin\": 0.08,\n    \"finance_hr_legal\": 0.015,\n    \"education_research_analysis\": 0.02,\n    \"consultant_freelance\": 0.04,\n    \"general_team_mgmt\": 0.097,\n    \"unknown\": 0.0\n  },\n  \"company_size\": {\n    \"Self-employed\": 0.19,\n    \"1-10 employees\": 0.32,\n    \"11-50 employees\": 0.21,\n    \"51-200 employees\": 0.12,\n    \"201-500 employees\": 0.05,\n    \"501-1,000 employees\": 0.035,\n    \"1,001-5,000 employees\": 0.035,\n    \"5,001-10,000 employees\": 0.008,\n    \"10,001+ employees\": 0.022\n  },\n  \"industry\": {\n    \"Information Technology and Services\": 0.05,\n    \"Computer Software\": 0.075,\n    \"Marketing and Advertising\": 0.13,\n    \"Education Management\": 0.03,\n    \"Retail\": 0.045,\n    \"Health, Wellness and Fitness\": 0.05,\n    \"Financial Services\": 0.018,\n    \"Construction\": 0.01,\n    \"Hospital & Health Care\": 0.01,\n    \"Accounting\": 0.009,\n    \"Non-Profit Organization Management\": 0.04,\n    \"Design\": 0.015,\n    \"Internet\": 0.02,\n    \"Real Estate\": 0.02,\n    \"E-Learning\": 0.02,\n    \"Other\": 0.438\n  },\n  \"time_used\": {\n    \"I used a free trial\": 0.04,\n    \"Less than 6 months\": 0.17,\n    \"6-12 months\": 0.2,\n    \"1-2 years\": 0.24,\n    \"2+ years\": 0.35\n  },\n  \"switched_share\": 0.18,\n  \"top_prior_tools\": [\n    \"Mailchimp\",\n    \"Constant Contact\",\n    \"HubSpot Marketing Hub\",\n    \"ActiveCampaign\",\n    \"MailerLite\"\n  ]\n}",
+  "json": {
+    "role_family": {
+      "executive_owner": 0.28,
+      "project_program_mgmt": 0.02,
+      "product_mgmt": 0.003,
+      "healthcare_wellness": 0.015,
+      "software_it_engineering": 0.06,
+      "marketing_creative_content": 0.3,
+      "sales_customer": 0.07,
+      "operations_admin": 0.08,
+      "finance_hr_legal": 0.015,
+      "education_research_analysis": 0.02,
+      "consultant_freelance": 0.04,
+      "general_team_mgmt": 0.097,
+      "unknown": 0.0
+    },
+    "company_size": {
+      "Self-employed": 0.19,
+      "1-10 employees": 0.32,
+      "11-50 employees": 0.21,
+      "51-200 employees": 0.12,
+      "201-500 employees": 0.05,
+      "501-1,000 employees": 0.035,
+      "1,001-5,000 employees": 0.035,
+      "5,001-10,000 employees": 0.008,
+      "10,001+ employees": 0.022
+    },
+    "industry": {
+      "Information Technology and Services": 0.05,
+      "Computer Software": 0.075,
+      "Marketing and Advertising": 0.13,
+      "Education Management": 0.03,
+      "Retail": 0.045,
+      "Health, Wellness and Fitness": 0.05,
+      "Financial Services": 0.018,
+      "Construction": 0.01,
+      "Hospital & Health Care": 0.01,
+      "Accounting": 0.009,
+      "Non-Profit Organization Management": 0.04,
+      "Design": 0.015,
+      "Internet": 0.02,
+      "Real Estate": 0.02,
+      "E-Learning": 0.02,
+      "Other": 0.438
+    },
+    "time_used": {
+      "I used a free trial": 0.04,
+      "Less than 6 months": 0.17,
+      "6-12 months": 0.2,
+      "1-2 years": 0.24,
+      "2+ years": 0.35
+    },
+    "switched_share": 0.18,
+    "top_prior_tools": [
+      "Mailchimp",
+      "Constant Contact",
+      "HubSpot Marketing Hub",
+      "ActiveCampaign",
+      "MailerLite"
+    ]
+  },
+  "ts": "2026-10-18T03:42:50.704225+00:00"
+}

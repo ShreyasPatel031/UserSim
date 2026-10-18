@@ -1,0 +1,8 @@
+{
+  "items": [
+    {
+      "id": "S:category",
+      "text": "8000 reviews of Asana, ClickUp, Jira, Notion, Smartsheet, Trello, Wrike, monday.com AI Work Platform: {\"role_family\": {\"executive_owner\": 0.152, \"project_program_mgmt\": 0.071, \"product_mgmt\": 0.009, \"healthcare_wellness\": 0.016, \"software_it_engineering\": 0.177, \"marketing_creative_content\": 0.177, \"sales_customer\": 0.062, \"operations_admin\": 0.094, \"finance_hr_legal\": 0.05, \"education_research_analysis\": 0.043, \"consultant_freelance\": 0.022, \"general_team_mgmt\": 0.128}, \"company_size\": {\"Self-employed\": 0.116, \"1-10 employees\": 0.202, \"11-50 employees\": 0.216, \"51-200 employees\": 0.166, \"201-500 employees\": 0.077, \"501-1,000 employees\": 0.053, \"1,001-5,000 employees\": 0.085, \"5,001-10,000 employees\": 0.026, \"10,001+ employees\": 0.058}, \"industry\": {\"Information Technology and Services\": 0.111, \"Computer Software\": 0.072, \"Marketing and Advertising\": 0.089, \"Education Management\": 0.05, \"Retail\": 0.024, \"Health, Wellness and Fitness\": 0.025, \"Financial Services\": 0.028, \"Construction\": 0.031, \"Hospital & Health Care\": 0.028, \"Accounting\": 0.018, \"Non-Profit Organization Management\": 0.028, \"Design\": 0.024, \"Internet\": 0.013, \"Real Estate\": 0.017, \"E-Learning\": 0.019, \"Other\": 0.424}, \"time_used\": {\"I used a free trial\": 0.053, \"Less than 6 months\": 0.138, \"6-12 months\": 0.192, \"1-2 years\": 0.293, \"2+ years\": 0.325}, \"switched_share\": 0.192, \"top_prior_tools\": [\"Trello\", \"Asana\", \"monday.com AI Work Platform\", \"ClickUp\", \"Jira\"]}"
+    }
+  ]
+}

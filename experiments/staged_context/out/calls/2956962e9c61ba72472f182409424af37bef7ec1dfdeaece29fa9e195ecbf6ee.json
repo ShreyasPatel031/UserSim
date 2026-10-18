@@ -1,0 +1,78 @@
+{
+  "stage": "usage_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "2956962e9c61ba72472f182409424af37bef7ec1dfdeaece29fa9e195ecbf6ee",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 1268,
+  "output_tokens": 1477,
+  "cost_usd": 0.0040729,
+  "elapsed_s": 12.99,
+  "error": null,
+  "text": "{\n  \"role_family\": {\n    \"executive_owner\": 0.16,\n    \"project_program_mgmt\": 0.065,\n    \"product_mgmt\": 0.009,\n    \"healthcare_wellness\": 0.016,\n    \"software_it_engineering\": 0.174,\n    \"marketing_creative_content\": 0.185,\n    \"sales_customer\": 0.061,\n    \"operations_admin\": 0.09,\n    \"finance_hr_legal\": 0.046,\n    \"education_research_analysis\": 0.041,\n    \"consultant_freelance\": 0.022,\n    \"general_team_mgmt\": 0.13,\n    \"unknown\": 0.0\n  },\n  \"company_size\": {\n    \"Self-employed\": 0.124,\n    \"1-10 employees\": 0.212,\n    \"11-50 employees\": 0.22,\n    \"51-200 employees\": 0.164,\n    \"201-500 employees\": 0.075,\n    \"501-1,000 employees\": 0.051,\n    \"1,001-5,000 employees\": 0.079,\n    \"5,001-10,000 employees\": 0.023,\n    \"10,001+ employees\": 0.05\n  },\n  \"industry\": {\n    \"Information Technology and Services\": 0.112,\n    \"Computer Software\": 0.073,\n    \"Marketing and Advertising\": 0.092,\n    \"Education Management\": 0.048,\n    \"Retail\": 0.023,\n    \"Health, Wellness and Fitness\": 0.025,\n    \"Financial Services\": 0.025,\n    \"Construction\": 0.028,\n    \"Hospital & Health Care\": 0.023,\n    \"Accounting\": 0.018,\n    \"Non-Profit Organization Management\": 0.03,\n    \"Design\": 0.024,\n    \"Internet\": 0.014,\n    \"Real Estate\": 0.018,\n    \"E-Learning\": 0.019,\n    \"Other\": 0.428\n  },\n  \"time_used\": {\n    \"I used a free trial\": 0.057,\n    \"Less than 6 months\": 0.144,\n    \"6-12 months\": 0.194,\n    \"1-2 years\": 0.283,\n    \"2+ years\": 0.322\n  },\n  \"switched_share\": 0.181,\n  \"top_prior_tools\": [\n    \"Trello\",\n    \"Asana\",\n    \"monday.com AI Work Platform\",\n    \"Jira\",\n    \"ClickUp\"\n  ]\n}",
+  "json": {
+    "role_family": {
+      "executive_owner": 0.16,
+      "project_program_mgmt": 0.065,
+      "product_mgmt": 0.009,
+      "healthcare_wellness": 0.016,
+      "software_it_engineering": 0.174,
+      "marketing_creative_content": 0.185,
+      "sales_customer": 0.061,
+      "operations_admin": 0.09,
+      "finance_hr_legal": 0.046,
+      "education_research_analysis": 0.041,
+      "consultant_freelance": 0.022,
+      "general_team_mgmt": 0.13,
+      "unknown": 0.0
+    },
+    "company_size": {
+      "Self-employed": 0.124,
+      "1-10 employees": 0.212,
+      "11-50 employees": 0.22,
+      "51-200 employees": 0.164,
+      "201-500 employees": 0.075,
+      "501-1,000 employees": 0.051,
+      "1,001-5,000 employees": 0.079,
+      "5,001-10,000 employees": 0.023,
+      "10,001+ employees": 0.05
+    },
+    "industry": {
+      "Information Technology and Services": 0.112,
+      "Computer Software": 0.073,
+      "Marketing and Advertising": 0.092,
+      "Education Management": 0.048,
+      "Retail": 0.023,
+      "Health, Wellness and Fitness": 0.025,
+      "Financial Services": 0.025,
+      "Construction": 0.028,
+      "Hospital & Health Care": 0.023,
+      "Accounting": 0.018,
+      "Non-Profit Organization Management": 0.03,
+      "Design": 0.024,
+      "Internet": 0.014,
+      "Real Estate": 0.018,
+      "E-Learning": 0.019,
+      "Other": 0.428
+    },
+    "time_used": {
+      "I used a free trial": 0.057,
+      "Less than 6 months": 0.144,
+      "6-12 months": 0.194,
+      "1-2 years": 0.283,
+      "2+ years": 0.322
+    },
+    "switched_share": 0.181,
+    "top_prior_tools": [
+      "Trello",
+      "Asana",
+      "monday.com AI Work Platform",
+      "Jira",
+      "ClickUp"
+    ]
+  },
+  "ts": "2026-10-18T03:42:50.626672+00:00"
+}

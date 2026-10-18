@@ -1,0 +1,78 @@
+{
+  "stage": "usage_predict",
+  "model": "gemini-2.5-flash",
+  "provider": "vertex",
+  "request_hash": "276ab7f8577785b54faeb93c47bc10c36b0451587e23e09e45858de86fb373d3",
+  "temperature": 0.7,
+  "seed": 1000,
+  "max_tokens": 8192,
+  "thinking_budget": 1024,
+  "input_tokens": 3033,
+  "output_tokens": 1591,
+  "cost_usd": 0.0048874,
+  "elapsed_s": 12.62,
+  "error": null,
+  "text": "{\n  \"role_family\": {\n    \"executive_owner\": 0.17,\n    \"project_program_mgmt\": 0.02,\n    \"product_mgmt\": 0.005,\n    \"healthcare_wellness\": 0.005,\n    \"software_it_engineering\": 0.08,\n    \"marketing_creative_content\": 0.1,\n    \"sales_customer\": 0.35,\n    \"operations_admin\": 0.07,\n    \"finance_hr_legal\": 0.02,\n    \"education_research_analysis\": 0.01,\n    \"consultant_freelance\": 0.04,\n    \"general_team_mgmt\": 0.13,\n    \"unknown\": 0.0\n  },\n  \"company_size\": {\n    \"Self-employed\": 0.08,\n    \"1-10 employees\": 0.3,\n    \"11-50 employees\": 0.28,\n    \"51-200 employees\": 0.15,\n    \"201-500 employees\": 0.06,\n    \"501-1,000 employees\": 0.04,\n    \"1,001-5,000 employees\": 0.05,\n    \"5,001-10,000 employees\": 0.02,\n    \"10,001+ employees\": 0.02\n  },\n  \"industry\": {\n    \"Information Technology and Services\": 0.11,\n    \"Computer Software\": 0.08,\n    \"Marketing and Advertising\": 0.08,\n    \"Education Management\": 0.02,\n    \"Retail\": 0.02,\n    \"Health, Wellness and Fitness\": 0.02,\n    \"Financial Services\": 0.04,\n    \"Construction\": 0.03,\n    \"Hospital & Health Care\": 0.01,\n    \"Accounting\": 0.02,\n    \"Non-Profit Organization Management\": 0.01,\n    \"Design\": 0.01,\n    \"Internet\": 0.02,\n    \"Real Estate\": 0.03,\n    \"E-Learning\": 0.02,\n    \"Other\": 0.48\n  },\n  \"time_used\": {\n    \"I used a free trial\": 0.09,\n    \"Less than 6 months\": 0.2,\n    \"6-12 months\": 0.22,\n    \"1-2 years\": 0.25,\n    \"2+ years\": 0.24\n  },\n  \"switched_share\": 0.15,\n  \"top_prior_tools\": [\n    \"Microsoft Excel\",\n    \"HubSpot CRM\",\n    \"Salesforce Sales Cloud\",\n    \"Zoho CRM\",\n    \"Freshsales\"\n  ]\n}",
+  "json": {
+    "role_family": {
+      "executive_owner": 0.17,
+      "project_program_mgmt": 0.02,
+      "product_mgmt": 0.005,
+      "healthcare_wellness": 0.005,
+      "software_it_engineering": 0.08,
+      "marketing_creative_content": 0.1,
+      "sales_customer": 0.35,
+      "operations_admin": 0.07,
+      "finance_hr_legal": 0.02,
+      "education_research_analysis": 0.01,
+      "consultant_freelance": 0.04,
+      "general_team_mgmt": 0.13,
+      "unknown": 0.0
+    },
+    "company_size": {
+      "Self-employed": 0.08,
+      "1-10 employees": 0.3,
+      "11-50 employees": 0.28,
+      "51-200 employees": 0.15,
+      "201-500 employees": 0.06,
+      "501-1,000 employees": 0.04,
+      "1,001-5,000 employees": 0.05,
+      "5,001-10,000 employees": 0.02,
+      "10,001+ employees": 0.02
+    },
+    "industry": {
+      "Information Technology and Services": 0.11,
+      "Computer Software": 0.08,
+      "Marketing and Advertising": 0.08,
+      "Education Management": 0.02,
+      "Retail": 0.02,
+      "Health, Wellness and Fitness": 0.02,
+      "Financial Services": 0.04,
+      "Construction": 0.03,
+      "Hospital & Health Care": 0.01,
+      "Accounting": 0.02,
+      "Non-Profit Organization Management": 0.01,
+      "Design": 0.01,
+      "Internet": 0.02,
+      "Real Estate": 0.03,
+      "E-Learning": 0.02,
+      "Other": 0.48
+    },
+    "time_used": {
+      "I used a free trial": 0.09,
+      "Less than 6 months": 0.2,
+      "6-12 months": 0.22,
+      "1-2 years": 0.25,
+      "2+ years": 0.24
+    },
+    "switched_share": 0.15,
+    "top_prior_tools": [
+      "Microsoft Excel",
+      "HubSpot CRM",
+      "Salesforce Sales Cloud",
+      "Zoho CRM",
+      "Freshsales"
+    ]
+  },
+  "ts": "2026-10-18T03:42:50.041512+00:00"
+}

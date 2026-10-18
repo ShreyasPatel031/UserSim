@@ -1,0 +1,8 @@
+{
+  "items": [
+    {
+      "id": "S:category",
+      "text": "4226 reviews of Freshdesk, Help Scout, Intercom, Zendesk Suite, Zoho Desk: {\"role_family\": {\"executive_owner\": 0.172, \"project_program_mgmt\": 0.027, \"product_mgmt\": 0.01, \"healthcare_wellness\": 0.009, \"software_it_engineering\": 0.205, \"marketing_creative_content\": 0.116, \"sales_customer\": 0.178, \"operations_admin\": 0.064, \"finance_hr_legal\": 0.032, \"education_research_analysis\": 0.036, \"consultant_freelance\": 0.028, \"general_team_mgmt\": 0.123}, \"company_size\": {\"Self-employed\": 0.082, \"1-10 employees\": 0.206, \"11-50 employees\": 0.249, \"51-200 employees\": 0.185, \"201-500 employees\": 0.082, \"501-1,000 employees\": 0.063, \"1,001-5,000 employees\": 0.065, \"5,001-10,000 employees\": 0.021, \"10,001+ employees\": 0.047}, \"industry\": {\"Information Technology and Services\": 0.124, \"Computer Software\": 0.126, \"Marketing and Advertising\": 0.052, \"Education Management\": 0.03, \"Retail\": 0.037, \"Health, Wellness and Fitness\": 0.017, \"Financial Services\": 0.026, \"Construction\": 0.013, \"Hospital & Health Care\": 0.017, \"Accounting\": 0.02, \"Non-Profit Organization Management\": 0.009, \"Design\": 0.011, \"Internet\": 0.034, \"Real Estate\": 0.016, \"E-Learning\": 0.017, \"Other\": 0.452}, \"time_used\": {\"I used a free trial\": 0.108, \"Less than 6 months\": 0.188, \"6-12 months\": 0.213, \"1-2 years\": 0.246, \"2+ years\": 0.246}, \"switched_share\": 0.108, \"top_prior_tools\": [\"Zendesk Suite\", \"Freshdesk\", \"Zoho Desk\", \"LiveAgent\", \"Intercom\"]}"
+    }
+  ]
+}
