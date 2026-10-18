@@ -1,5 +1,5 @@
 {
-  "_about": "Caps for the public UserSim MCP server (/mcp). Anyone can change them: edit this file and merge the PR to main. The running server re-reads this file from main on GitHub every refresh_s seconds (default 300), so no redeploy and no env vars are needed. Only 'value' is read; 'about' explains it. Env vars named MVP_MCP_<KEY in upper case> override a value on one server if set (optional). See docs/mcp/README.md#limits.",
+  "_about": "Runtime settings for the public UserSim MCP server (/mcp). Anyone can change them: edit this file and merge the PR to main. The running server re-reads this file from main on GitHub every refresh_s seconds (default 300), so no redeploy and no env vars are needed. Only 'value' is read; 'about' explains cost/risk. Env vars named MVP_MCP_<KEY in upper case> override a value on one server if set (optional). See docs/mcp/CONFIG.md.",
   "limits": {
     "refresh_s": {
       "value": 300,
@@ -11,7 +11,7 @@
     },
     "max_sessions": {
       "value": 10,
-      "about": "Browser sessions open at once across the whole server, all callers."
+      "about": "Browser sessions open at once across the whole server, all callers. Higher = more Browserbase cost and RAM."
     },
     "max_per_client": {
       "value": 8,
@@ -21,9 +21,41 @@
       "value": 3,
       "about": "Browser sessions open at once per client IP for callers without a token."
     },
+    "max_steps": {
+      "value": 90,
+      "about": "Browser actions (usersim_act, open_verification_link, solve_captcha) allowed per session before usersim_finish is required. Higher = longer runs and more Browserbase + model cost (each step is charged est_usd_per_step against anonymous budgets)."
+    },
+    "budget_s": {
+      "value": 900,
+      "about": "Wall-clock seconds per browser session (15 minutes). Higher = longer Browserbase sessions and higher spend."
+    },
+    "idle_s": {
+      "value": 300,
+      "about": "Seconds without a tool call before the server closes an idle browser session (5 minutes)."
+    },
+    "max_cells": {
+      "value": 108,
+      "about": "Maximum runs (persona x task x site) in one study for any caller. 108 = full e2e (6 x 6 x 3). Lower only for smoke tests."
+    },
+    "wait_max_s": {
+      "value": 50,
+      "about": "Upper bound (seconds) on usersim_wait_for_verification_code/link and usersim_wait_for_sms_code per call. Agents should call again; higher = longer tool calls and more server wait time."
+    },
+    "paid_captcha": {
+      "value": false,
+      "about": "Master switch for the paid CapSolver path on this server. When true, approved hosts may buy tokens (metered in captcha_spend.py; typically ~$0.002-0.01 per solve). Callers without a token still need anon_allow_paid_captcha true. Requires MVP_CAPTCHA_API_KEY in server env (not in this file)."
+    },
+    "probe_sites": {
+      "value": true,
+      "about": "When true, usersim_start_session refuses product URLs whose TLS certificate is invalid or host does not resolve. false skips the check (faster starts; may waste a browser on dead hosts)."
+    },
+    "bb_proxies": {
+      "value": true,
+      "about": "When true, Browserbase sessions use residential proxies (higher success on signup flows; higher Browserbase cost). false uses cheaper datacenter routing."
+    },
     "anon_daily_usd_per_ip": {
       "value": 6.0,
-      "about": "Estimated spend allowed per client IP per day (America/Los_Angeles day) for callers without a token. Estimated with the two est_usd_* rates below; real cost is not metered per call."
+      "about": "Estimated spend allowed per client IP per day (America/Los_Angeles day) for callers without a token. Estimated with the est_usd_* rates below; real cost is not metered per call."
     },
     "anon_daily_usd_global": {
       "value": 20.0,
@@ -35,7 +67,7 @@
     },
     "est_usd_per_step": {
       "value": 0.01,
-      "about": "Budget units charged per browser step (usersim_act, usersim_open_verification_link, usersim_solve_captcha). An assumption, not a measured cost. A full 40-step session = 0.10 + 40 x 0.01 = 0.50."
+      "about": "Budget units charged per browser step (usersim_act, usersim_open_verification_link, usersim_solve_captcha). An assumption, not a measured cost. A full 90-step session = 0.10 + 90 x 0.01 = 1.00."
     },
     "est_usd_per_prediction": {
       "value": 0.6,
@@ -109,11 +141,11 @@
     },
     "anon_allow_paid_captcha": {
       "value": false,
-      "about": "Let callers without a token trigger the paid captcha solver (CapSolver)."
+      "about": "When paid_captcha is true: let callers WITHOUT a bearer token trigger CapSolver (~$0.002-0.01 per solve, metered). false = only token callers may use paid solving. Free Browserbase/audio/v3 refresh paths are unaffected."
     },
     "anon_allow_shared_aliases": {
       "value": false,
-      "about": "Let callers without a token get no_plus (dot-variant) or plain signup addresses. Those can repeat across sessions, so another caller could see the mail. Keep false: callers without a token only get unique +tag aliases."
+      "about": "Let callers without a token use no_plus (Gmail dot-variant) or plain shared signup addresses. Those addresses can repeat across sessions, so another anonymous caller could read the same inbox and steal verification codes. false = anonymous callers only get unique usersim.signups+<tag>@gmail.com aliases (safe default)."
     }
   }
 }

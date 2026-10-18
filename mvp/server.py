@@ -16,6 +16,9 @@ import json
 from datetime import datetime, timezone
 
 from mvp.paths import MVP_RUNS_DIR
+from mvp.secrets_store import install as _install_secrets
+
+_install_secrets()
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))

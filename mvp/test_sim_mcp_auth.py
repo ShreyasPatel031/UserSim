@@ -68,7 +68,10 @@ class McpAuthTests(unittest.TestCase):
     def test_limits_route(self):
         c = _app({})
         body = c.get("/api/mcp/limits").json()
+        self.assertEqual(body["values"]["max_steps"], 90)
         self.assertEqual(body["values"]["anon_max_concurrent_sessions_per_ip"], 3)
+        self.assertIn("value_sources", body)
+        self.assertIn("secrets", body)
         self.assertTrue(body["source"].startswith("bundled"))
 
     def test_study_view_public_by_id_like_the_website(self):
