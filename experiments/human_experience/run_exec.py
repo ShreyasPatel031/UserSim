@@ -44,8 +44,8 @@ import browser_use  # noqa: E402
 
 from mvp.browser_agent import run_browser_agent  # noqa: E402
 
-MAX_STEPS = 20  # browser-use takes up to 2 actions per step -> <= 40 actions
-WALL_S = 300
+MAX_STEPS = 40  # 20 left 9 of 16 ClickUp runs at the cap before the task was observed (runs ~1 action per step)
+WALL_S = 600
 STUDY_ID = "hx_" + datetime.now(timezone.utc).strftime("%Y%m%d")
 
 _OrigAgent = browser_use.Agent
@@ -358,7 +358,14 @@ async def main() -> None:
             if a.blocked:
                 write_blocked(cases[t["case_id"]], context, engine, a.blocked)
                 continue
-            await one_run(cases[t["case_id"]], t, context, engine)
+            rec = await one_run(cases[t["case_id"]], t, context, engine)
+            if rec["status"] == "runner_failure":
+                # One retry for a run where the test agent broke down; a second failure stands (no observations).
+                keep = HERE / "results" / "archive_runner_failure"
+                keep.mkdir(parents=True, exist_ok=True)
+                (EXEC / f"{key}.json").rename(keep / f"{key}.json")
+                (EXEC / "traces" / f"{key}.json").rename(keep / f"{key}.trace.json")
+                await one_run(cases[t["case_id"]], t, context, engine)
 
 
 if __name__ == "__main__":
