@@ -110,6 +110,18 @@ seeing results. If the new products contradict the earlier ones, say so.
 - `out/calls/` (the model-call cache, 24k files) is not tracked; it is in history at commit `9ce3a7d`
   (`git checkout 9ce3a7d -- experiments/staged_context/out/calls`). Without it, re-running costs model calls again.
 
+## Haiku cost warning (found 18 Oct, after the fact)
+
+`scripts/mcp_study_runner.py` drives each simulated user with Claude Haiku 4.5 on Vertex through the repo's service-account
+key. On 18 Oct it ran from 21:15 to about 23:56 UTC (2:15 to 5:00 PM PT) and Google Cloud billing showed $297.91 of Haiku
+by 4:44 PM PT, about $127 an hour, with a rough total near $330 once it stopped. About 6,300 model turns were recorded in
+the final study alone, so a full 108-cell study costs roughly $250 (about $0.04 per turn). The earlier "$100-150 for five
+studies" was a guess made without metering and was about 8-10x too low. Failed restarts added to it.
+The runner now meters usage and refuses to continue past `--max-usd` (default $50). Pass a higher cap on purpose, and
+tell the user the expected cost first. Cheaper options not yet tried: keep one screenshot instead of two, a lower turn cap,
+or a Gemini Flash driver. Studies must also not be interrupted by pushes to `main` (the server restarts), because every
+restart wastes the Haiku spend of the cells in flight.
+
 ## Environment
 
 `mcp` 2.x is installed system-wide and breaks the server code. Use a venv:

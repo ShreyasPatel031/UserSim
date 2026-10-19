@@ -83,10 +83,28 @@ async def listing(what: str, *args):
             return await (s.list_tools() if what == "tools" else s.get_prompt(*args))
 
 
+SPENT = [0.0]  # Haiku USD this run (all cells), from the usage the API returns
+CAP = [float("inf")]
+PRICE_IN, PRICE_OUT = 1.0 / 1e6, 5.0 / 1e6  # Claude Haiku 4.5 on Vertex, USD per token
+
+
+class BudgetExceeded(RuntimeError):
+    pass
+
+
+def _usd(resp) -> float:
+    u = getattr(resp, "usage", None)
+    return (getattr(u, "input_tokens", 0) or 0) * PRICE_IN + (getattr(u, "output_tokens", 0) or 0) * PRICE_OUT
+
+
 async def ask_model(llm, **kw):
+    if SPENT[0] >= CAP[0]:
+        raise BudgetExceeded(f"spend cap ${CAP[0]:.2f} reached (${SPENT[0]:.2f} spent)")
     for k in range(8):  # Vertex rate limits and overloads show up as exceptions under 10 parallel cells
         try:
-            return await asyncio.to_thread(llm.messages.create, **kw)
+            resp = await asyncio.to_thread(llm.messages.create, **kw)
+            SPENT[0] += _usd(resp)
+            return resp
         except Exception as exc:  # noqa: BLE001
             if k == 7:
                 raise RuntimeError(f"model: {_leaf(exc)}") from None
@@ -131,7 +149,11 @@ async def run_cell(study_id: str, cell: dict, max_turns: int, out: Path, llm) ->
         for i, j in imgs[:-2]:  # keep the 2 newest screenshots
             b = msgs[i]["content"][j]
             b["content"] = [x for x in b["content"] if x.get("type") != "image"] + [{"type": "text", "text": "[older screenshot removed]"}]
-        resp = await ask_model(llm, model=MODEL, max_tokens=1024, system=system, tools=atools, messages=msgs)
+        try:
+            resp = await ask_model(llm, model=MODEL, max_tokens=1024, system=system, tools=atools, messages=msgs)
+        except BudgetExceeded:
+            break  # the session is finished as gave_up below
+        log["usd"] = round(log.get("usd", 0.0) + _usd(resp), 4)
         msgs.append({"role": "assistant", "content": [b.model_dump(exclude_none=True) for b in resp.content]})
         uses = [b for b in resp.content if b.type == "tool_use"]
         if not uses:
@@ -168,7 +190,7 @@ async def run_cell(study_id: str, cell: dict, max_turns: int, out: Path, llm) ->
         if finished:
             break
     if not finished:
-        res = await tool("usersim_finish", {"session_id": sid, "outcome": "gave_up", "notes": f"Runner hit its {max_turns}-turn cap."})
+        res = await tool("usersim_finish", {"session_id": sid, "outcome": "gave_up", "notes": "Runner spend cap reached." if SPENT[0] >= CAP[0] else f"Runner hit its {max_turns}-turn cap."})
         log["finish"] = _text(res)[:1500]
     if log.get("finish", "").startswith("Error executing tool") or '"finished": false' in log.get("finish", ""):
         log["error"] = "finish rejected: " + log["finish"][:300]
@@ -210,7 +232,7 @@ async def run_study(product_url: str, parallel: int, max_turns: int, root: Path,
                 return res
             finally:
                 done[0] += 1
-                print(f"[{product_url}] {done[0]}/{len(todo)} cells ended", flush=True)
+                print(f"[{product_url}] {done[0]}/{len(todo)} cells ended, Haiku spent ${SPENT[0]:.2f} of ${CAP[0]:.2f} cap", flush=True)
     logs = await asyncio.gather(*(one(c) for c in todo))
     report = ""
     for _ in range(20):  # the server writes the report after the last cell
@@ -233,6 +255,8 @@ async def main() -> None:
     ap.add_argument("--parallel", type=int, default=8, help="cells at once per study")
     ap.add_argument("--max-turns", type=int, default=90)
     ap.add_argument("--out", default="results/mcp_studies")
+    ap.add_argument("--max-usd", type=float, default=50.0,
+                    help="stop the Haiku drivers when this much has been spent (a full 108-cell study cost about $250 on 18 Oct)")
     ap.add_argument("--resume", metavar="STUDY_ID", help="continue a study whose runner died: runs the cells without a saved record")
     ap.add_argument("--smoke", nargs=2, metavar=("PERSONA", "TASK"),
                     help="one session (no study) on the first product: checks the driver without a 108-cell study")
@@ -242,6 +266,8 @@ async def main() -> None:
 
     llm = AnthropicVertex(project_id=os.environ.get("GOOGLE_CLOUD_PROJECT", "project-amer-scs-sandbox"), region="global",
                           credentials=vertex_credentials())
+    CAP[0] = a.max_usd
+    print(f"Haiku spend cap ${a.max_usd:.2f} (measured about $0.04 per model turn; a full study is about 6,000 turns)", flush=True)
     root = Path(a.out)
     root.mkdir(parents=True, exist_ok=True)
     if a.smoke:
