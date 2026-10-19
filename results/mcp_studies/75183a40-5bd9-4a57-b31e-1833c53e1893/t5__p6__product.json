@@ -1,0 +1,117 @@
+{
+ "cell": {
+  "cell_id": "t5__p6__product",
+  "site": "https://www.smartsheet.com",
+  "site_name": "Product",
+  "persona_name": "Michael Brown",
+  "persona": "Michael manages product roadmaps and cross-functional teams. He needs a tool for agile planning and transparent communication.",
+  "task": "Compare enterprise plan features",
+  "status": "queued"
+ },
+ "steps": [
+  {
+   "turn": 0,
+   "tool": "usersim_observe",
+   "action": null
+  },
+  {
+   "turn": 1,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 2,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 3,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 4,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 5,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 6,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 7,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 8,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 9,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 10,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 11,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 12,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 13,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 14,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 15,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 16,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 17,
+   "tool": "usersim_act",
+   "action": "scroll"
+  },
+  {
+   "turn": 19,
+   "tool": "usersim_observe",
+   "action": null
+  },
+  {
+   "turn": 20,
+   "tool": "usersim_finish",
+   "action": null
+  }
+ ],
+ "started": 1792367582.6688113,
+ "session_id": "6ab132d70ef948958ebf8b232453fb0f",
+ "finish": "{\"study_id\": \"75183a40-5bd9-4a57-b31e-1833c53e1893\", \"cell_id\": \"t5__p6__product\", \"goal_reached\": true, \"proof_pass\": true, \"study_phase\": \"94/108 runs done \\u00b7 14 simulated users working\", \"next\": \"Done with this cell. The study report is written when the last cell finishes.\"}",
+ "seconds": 198
+}

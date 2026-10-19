@@ -1,0 +1,147 @@
+{
+ "cell": {
+  "cell_id": "t4__p6__competitor_1",
+  "site": "https://www.monday.com/",
+  "site_name": "Monday",
+  "persona_name": "Michael Brown",
+  "persona": "Michael manages product roadmaps and cross-functional teams. He needs a tool for agile planning and transparent communication.",
+  "task": "Set up a client onboarding template\n\nYou are evaluating the site https://www.monday.com/ only. Stay on that site; opening it is correct.",
+  "status": "queued"
+ },
+ "steps": [
+  {
+   "turn": 0,
+   "tool": "usersim_observe",
+   "action": null
+  },
+  {
+   "turn": 1,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 2,
+   "tool": "usersim_signup_identity",
+   "action": null
+  },
+  {
+   "turn": 3,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 4,
+   "tool": "usersim_act",
+   "action": "type"
+  },
+  {
+   "turn": 5,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 6,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 7,
+   "tool": "usersim_act",
+   "action": "type"
+  },
+  {
+   "turn": 8,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 9,
+   "tool": "usersim_act",
+   "action": "type"
+  },
+  {
+   "turn": 10,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 11,
+   "tool": "usersim_act",
+   "action": "type"
+  },
+  {
+   "turn": 12,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 13,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 14,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 15,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 16,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 17,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 18,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 19,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 20,
+   "tool": "usersim_act",
+   "action": "click"
+  },
+  {
+   "turn": 21,
+   "tool": "usersim_observe",
+   "action": null
+  },
+  {
+   "turn": 22,
+   "tool": "usersim_observe",
+   "action": null
+  },
+  {
+   "turn": 23,
+   "tool": "usersim_observe",
+   "action": null
+  },
+  {
+   "turn": 24,
+   "tool": "usersim_act",
+   "action": "wait"
+  },
+  {
+   "turn": 25,
+   "tool": "usersim_finish",
+   "action": null
+  }
+ ],
+ "started": 1792367582.5153234,
+ "session_id": "3119dc8f6a6849b88b6612160497b55d",
+ "finish": "{\"study_id\": \"75183a40-5bd9-4a57-b31e-1833c53e1893\", \"cell_id\": \"t4__p6__competitor_1\", \"goal_reached\": false, \"proof_pass\": true, \"study_phase\": \"98/108 runs done \\u00b7 10 simulated users working\", \"next\": \"Done with this cell. The study report is written when the last cell finishes.\"}",
+ "seconds": 202
+}

@@ -1,0 +1,12 @@
+{
+ "cell": {
+  "cell_id": "t4__p6__product",
+  "site": "https://www.smartsheet.com",
+  "site_name": "Product",
+  "persona_name": "Michael Brown",
+  "persona": "Michael manages product roadmaps and cross-functional teams. He needs a tool for agile planning and transparent communication.",
+  "task": "Set up a client onboarding template",
+  "status": "queued"
+ },
+ "error": "ConnectError: "
+}

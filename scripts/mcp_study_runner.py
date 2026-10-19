@@ -177,19 +177,26 @@ async def run_cell(study_id: str, cell: dict, max_turns: int, out: Path, llm) ->
     return log
 
 
-async def run_study(product_url: str, parallel: int, max_turns: int, root: Path, llm) -> dict:
-    st = await tool("usersim_start_study", {"product_url": product_url, "personas": [], "tasks": [], "competitors": []})
-    txt = _text(st)
-    try:
-        study = json.loads(txt)
-    except ValueError:
-        return {"product_url": product_url, "error": txt[:800]}
-    if "study_id" not in study:
-        return {"product_url": product_url, "error": txt[:800]}
-    out = root / study["study_id"]
-    out.mkdir(parents=True, exist_ok=True)
-    (out / "study.json").write_text(json.dumps(study, indent=1))
-    print(f"[{product_url}] study {study['study_id']} {len(study['cells'])} cells  watch {study.get('watch_url')}", flush=True)
+async def run_study(product_url: str, parallel: int, max_turns: int, root: Path, llm, resume: str = "") -> dict:
+    if resume:  # the runner died or was restarted: run only the cells that have no saved record
+        out = root / resume
+        study = json.loads((out / "study.json").read_text())
+        todo = [c for c in study["cells"] if not (out / f"{c['cell_id']}.json").exists()]
+        print(f"[{product_url}] resuming study {resume}: {len(todo)} of {len(study['cells'])} cells left", flush=True)
+    else:
+        st = await tool("usersim_start_study", {"product_url": product_url, "personas": [], "tasks": [], "competitors": []})
+        txt = _text(st)
+        try:
+            study = json.loads(txt)
+        except ValueError:
+            return {"product_url": product_url, "error": txt[:800]}
+        if "study_id" not in study:
+            return {"product_url": product_url, "error": txt[:800]}
+        out = root / study["study_id"]
+        out.mkdir(parents=True, exist_ok=True)
+        (out / "study.json").write_text(json.dumps(study, indent=1))
+        todo = study["cells"]
+        print(f"[{product_url}] study {study['study_id']} {len(todo)} cells  watch {study.get('watch_url')}", flush=True)
     sem = asyncio.Semaphore(parallel)
     done = [0]
 
@@ -203,8 +210,8 @@ async def run_study(product_url: str, parallel: int, max_turns: int, root: Path,
                 return res
             finally:
                 done[0] += 1
-                print(f"[{product_url}] {done[0]}/{len(study['cells'])} cells ended", flush=True)
-    logs = await asyncio.gather(*(one(c) for c in study["cells"]))
+                print(f"[{product_url}] {done[0]}/{len(todo)} cells ended", flush=True)
+    logs = await asyncio.gather(*(one(c) for c in todo))
     report = ""
     for _ in range(20):  # the server writes the report after the last cell
         report = _text(await tool("usersim_get_report", {"study_id": study["study_id"]}))
@@ -226,6 +233,7 @@ async def main() -> None:
     ap.add_argument("--parallel", type=int, default=8, help="cells at once per study")
     ap.add_argument("--max-turns", type=int, default=90)
     ap.add_argument("--out", default="results/mcp_studies")
+    ap.add_argument("--resume", metavar="STUDY_ID", help="continue a study whose runner died: runs the cells without a saved record")
     ap.add_argument("--smoke", nargs=2, metavar=("PERSONA", "TASK"),
                     help="one session (no study) on the first product: checks the driver without a 108-cell study")
     a = ap.parse_args()
@@ -242,7 +250,7 @@ async def main() -> None:
         print(json.dumps({k: log.get(k) for k in ("session_id", "error", "finish", "seconds")}, indent=1)[:2500])
         print("steps", len(log["steps"]))
         return
-    res = await asyncio.gather(*(run_study(p, a.parallel, a.max_turns, root, llm) for p in a.products))
+    res = await asyncio.gather(*(run_study(p, a.parallel, a.max_turns, root, llm, a.resume or "") for p in a.products))
     (root / f"run_{int(time.time())}.json").write_text(json.dumps(res, indent=1))
     print(json.dumps(res, indent=1))
 

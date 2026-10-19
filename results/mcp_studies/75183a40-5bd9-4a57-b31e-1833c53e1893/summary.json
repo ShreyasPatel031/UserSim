@@ -1,0 +1,19 @@
+{
+ "product_url": "https://www.smartsheet.com",
+ "study_id": "75183a40-5bd9-4a57-b31e-1833c53e1893",
+ "report_url": "https://atelier-sim.com/report?study=75183a40-5bd9-4a57-b31e-1833c53e1893",
+ "cells": 18,
+ "finished": 8,
+ "errors": [
+  "{\"error\": \"cell t6__p5__product was already run (status running)\"}",
+  "{\"error\": \"cell t6__p5__competitor_1 was already run (status running)\"}",
+  "{\"error\": \"cell t1__p6__product was already run (status running)\"}",
+  "{\"error\": \"cell t2__p6__product was already run (status running)\"}",
+  "{\"error\": \"cell t2__p6__competitor_1 was already run (status running)\"}",
+  "{\"error\": \"cell t2__p6__competitor_2 was already run (status running)\"}",
+  "{\"error\": \"cell t3__p6__product was already run (status running)\"}",
+  "{\"error\": \"cell t3__p6__competitor_1 was already run (status running)\"}",
+  "{\"error\": \"cell t3__p6__competitor_2 was already run (status running)\"}",
+  "{\"error\": \"cell t4__p6__product was already run (status running)\"}"
+ ]
+}
