@@ -1,16 +1,29 @@
 """Full e2e studies through the UserSim MCP (docs/E2E_TEST.md): target + 2 competitors, 6 personas, 6 tasks = 108 cells.
 
 Starts each study with usersim_start_study (empty personas/tasks/competitors are filled by the server's planner), then
-runs every cell as its own simulated user: Claude Haiku on Vertex gets the server's usersim_simulate_user prompt and
-the observe / act / finish tools (same loop as docs/mcp-test/clients/haiku_vertex_client.py). Cells run in parallel up
-to --parallel; a start refused because the server is at its session limit is retried. When every cell is done it
-fetches usersim_get_report and writes everything under --out.
+runs every cell as its own simulated user: Claude Haiku 4.5 on Vertex gets the server's usersim_simulate_user prompt and
+the observe / act / finish tools. Uses Anthropic prompt caching (system + tools + rolling last message), append-only
+history, spend caps, a 3-cell pilot per study, and bounded retries.
 
     PYTHONPATH=src:. python scripts/mcp_study_runner.py https://www.clockify.me https://kanbanflow.com https://dynalist.io \\
-        https://www.notion.com https://basecamp.com --parallel 8
+        --parallel 12 --max-usd 20 --max-cell-usd 0.5 --max-turns 40
+
+Cost (Haiku 4.5 list, with cache hits): about $0.002–0.005 per model turn and roughly $10–15 for a full 108-cell study
+when caps and caching behave as intended. Pilot mode (default) runs one cell per site first and aborts if the projected
+total would exceed --max-usd.
 
 MCP_CLIENT_TOKEN (optional) is sent as a bearer token; without it the anonymous caps in mvp/sim_mcp/limits.json apply
 (anon_max_cells_per_study must be >= 108 for a full study). Needs Vertex credentials for the Haiku driver.
+
+Flags:
+  --parallel (12)          Max concurrent cells per study
+  --max-turns (40)         Model turns per cell
+  --max-usd (20)           Stop the whole run when estimated model spend reaches this
+  --max-cell-usd (0.5)     Stop a single cell when its spend reaches this
+  --max-retries (50)       Total model+tool retries across the run, then stop
+  --no-pilot               Skip the 3-cell pilot and fan out immediately
+  --resume STUDY_ID        Continue cells without a saved JSON
+  --smoke PERSONA TASK     One session on the first product URL
 """
 
 from __future__ import annotations
@@ -18,21 +31,52 @@ from __future__ import annotations
 import argparse
 import asyncio
 import json
+import sys
 import os
 import time
 from pathlib import Path
+from typing import Any
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from mcp import ClientSession
 from mcp.client.streamable_http import streamablehttp_client
 
+from mcp_study_runner_lib import (
+    CONDENSE_AFTER_TURNS,
+    MAX_MODEL_ATTEMPTS,
+    MAX_TOOL_ATTEMPTS,
+    SpendGate,
+    TranscriptState,
+    backoff_seconds,
+    build_api_messages,
+    condense_messages,
+    is_retryable_error,
+    mcp_content_to_blocks,
+    pilot_cells_for_study,
+    pilot_should_abort,
+    prepare_system,
+    prepare_tools,
+    summarize_steps,
+    usage_cache_fields,
+)
+
 URL = os.environ.get("USERSIM_MCP_URL", "https://35-202-98-224.sslip.io/mcp")
 MODEL = os.environ.get("RUNNER_MODEL", "claude-haiku-4-5@20251001")
-# The simulated user needs the signup tools too: the server prompt (usersim_simulate_user) tells it to call
-# usersim_signup_identity and the verification wait/open tools, and a signup task cannot pass without them.
-SUB_TOOLS = {"usersim_observe", "usersim_act", "usersim_finish", "usersim_signup_identity",
-             "usersim_wait_for_verification_code", "usersim_wait_for_verification_link",
-             "usersim_open_verification_link", "usersim_solve_captcha", "usersim_signup_phone", "usersim_wait_for_sms_code"}
+SUB_TOOLS = {
+    "usersim_observe",
+    "usersim_act",
+    "usersim_finish",
+    "usersim_signup_identity",
+    "usersim_wait_for_verification_code",
+    "usersim_wait_for_verification_link",
+    "usersim_open_verification_link",
+    "usersim_solve_captcha",
+    "usersim_signup_phone",
+    "usersim_wait_for_sms_code",
+}
 BUSY = ("limit", "at capacity", "too many", "busy", "try again")
+STOP_NOTE = "stopped: runner spend cap"
 
 
 def _headers() -> dict:
@@ -44,36 +88,31 @@ def _text(res) -> str:
     return "".join(c.text for c in res.content if c.type == "text")
 
 
-def _blocks(res) -> list[dict]:
-    out = []
-    for c in res.content:
-        if c.type == "text":
-            out.append({"type": "text", "text": c.text})
-        elif c.type == "image":
-            out.append({"type": "image", "source": {"type": "base64", "media_type": c.mimeType, "data": c.data}})
-    return out or [{"type": "text", "text": "(empty)"}]
+def _blocks(res, *, include_image: bool = True) -> list[dict]:
+    return mcp_content_to_blocks(res.content, include_image=include_image)
 
 
 def _leaf(exc: BaseException) -> str:
-    """The real error inside anyio's ExceptionGroup wrappers."""
     while isinstance(exc, BaseExceptionGroup) and exc.exceptions:
         exc = exc.exceptions[0]
     return f"{type(exc).__name__}: {str(exc)[:300]}"
 
 
-async def tool(name: str, args: dict, retries: int = 6):
-    """One MCP call on its own connection (the server keeps no state per connection; a session is its session_id), so a
-    dropped connection costs one retry instead of the whole cell. Calls that act on the page use retries=1."""
+async def tool(name: str, args: dict, gate: SpendGate, retries: int = MAX_TOOL_ATTEMPTS):
     for k in range(retries):
+        if gate.over_cap():
+            raise RuntimeError(STOP_NOTE)
         try:
             async with streamablehttp_client(URL, headers=_headers(), timeout=120, sse_read_timeout=900) as (r, w, _):
                 async with ClientSession(r, w) as s:
                     await s.initialize()
                     return await s.call_tool(name, args)
-        except Exception as exc:  # noqa: BLE001 - includes ExceptionGroup; CancelledError is not caught
-            if k == retries - 1:
+        except Exception as exc:  # noqa: BLE001
+            if not is_retryable_error(exc) or k == retries - 1:
                 raise RuntimeError(f"{name}: {_leaf(exc)}") from None
-            await asyncio.sleep(min(60, 5 * 2 ** k))  # 5, 10, 20, 40, 60 s: rides out a server restart
+            if not gate.record_retry():
+                raise RuntimeError(gate.stop_reason or STOP_NOTE) from None
+            await asyncio.sleep(backoff_seconds(k, base=5.0))
 
 
 async def listing(what: str, *args):
@@ -83,23 +122,67 @@ async def listing(what: str, *args):
             return await (s.list_tools() if what == "tools" else s.get_prompt(*args))
 
 
-async def ask_model(llm, **kw):
-    for k in range(8):  # Vertex rate limits and overloads show up as exceptions under 10 parallel cells
+async def ask_model(llm, gate: SpendGate, system: list, atools: list, state: TranscriptState, log: dict):
+    api_msgs = build_api_messages(state)
+    last_cost = 0.0
+    for k in range(MAX_MODEL_ATTEMPTS):
+        if gate.over_cap():
+            raise RuntimeError(STOP_NOTE)
         try:
-            return await asyncio.to_thread(llm.messages.create, **kw)
+            resp = await asyncio.to_thread(
+                llm.messages.create,
+                model=MODEL,
+                max_tokens=1024,
+                system=system,
+                tools=atools,
+                messages=api_msgs,
+            )
+            last_cost = gate.record_usage(resp.usage)
+            cache = usage_cache_fields(resp.usage)
+            log.setdefault("cache_usage", []).append(cache)
+            log.setdefault("model_usd", 0.0)
+            log["model_usd"] = round(log["model_usd"] + last_cost, 6)
+            return resp
         except Exception as exc:  # noqa: BLE001
-            if k == 7:
+            if not is_retryable_error(exc) or k == MAX_MODEL_ATTEMPTS - 1:
                 raise RuntimeError(f"model: {_leaf(exc)}") from None
-            await asyncio.sleep(min(60, 2 ** (k + 1)))
+            if not gate.record_retry():
+                raise RuntimeError(gate.stop_reason or STOP_NOTE) from None
+            await asyncio.sleep(backoff_seconds(k))
+    raise RuntimeError("model: exhausted retries")
 
 
-async def run_cell(study_id: str, cell: dict, max_turns: int, out: Path, llm) -> dict:
-    log = {"cell": cell, "steps": [], "started": time.time()}
-    start = ({"study_id": study_id, "cell_id": cell["cell_id"]} if study_id else
-             {"product_url": cell["site"], "persona": cell["persona"], "task": cell["task"]})
+async def run_cell(
+    study_id: str,
+    cell: dict,
+    max_turns: int,
+    max_cell_usd: float,
+    out: Path,
+    llm,
+    gate: SpendGate,
+) -> dict:
+    log: dict[str, Any] = {"cell": cell, "steps": [], "started": time.time(), "model_usd": 0.0}
+    start = (
+        {"study_id": study_id, "cell_id": cell["cell_id"]}
+        if study_id
+        else {"product_url": cell["site"], "persona": cell["persona"], "task": cell["task"]}
+    )
     m: dict = {}
-    for attempt in range(60):  # wait for a free browser slot
-        meta = _text(await tool("usersim_start_session", start))
+    for attempt in range(60):
+        if gate.over_cap():
+            log["error"] = STOP_NOTE
+            log["finish"] = STOP_NOTE
+            (out / f"{cell['cell_id']}.json").write_text(json.dumps(log, indent=1))
+            return log
+        try:
+            meta = _text(await tool("usersim_start_session", start, gate))
+        except RuntimeError as exc:
+            if STOP_NOTE in str(exc) or gate.stop_reason:
+                log["error"] = gate.stop_reason or str(exc)
+                log["finish"] = STOP_NOTE
+                (out / f"{cell['cell_id']}.json").write_text(json.dumps(log, indent=1))
+                return log
+            raise
         try:
             m = json.loads(meta[meta.index("{"):]) if "{" in meta else {}
         except ValueError:
@@ -117,74 +200,157 @@ async def run_cell(study_id: str, cell: dict, max_turns: int, out: Path, llm) ->
     sid = m["session_id"]
     log["session_id"] = sid
     tools = (await listing("tools")).tools
-    prompt = await listing("prompt", "usersim_simulate_user", {"session_id": sid, "persona": cell.get("persona") or "",
-                                                              "task": cell.get("task") or ""})
-    system = "\n".join(x.content.text for x in prompt.messages if getattr(x.content, "text", None))
-    atools = [{"name": t.name, "description": (t.description or "")[:3000], "input_schema": t.inputSchema}
-              for t in tools if t.name in SUB_TOOLS]
-    msgs = [{"role": "user", "content": f"Begin. Your session_id is {sid}. Call usersim_observe first."}]
+    prompt = await listing(
+        "prompt",
+        "usersim_simulate_user",
+        {"session_id": sid, "persona": cell.get("persona") or "", "task": cell.get("task") or ""},
+    )
+    system_text = "\n".join(x.content.text for x in prompt.messages if getattr(x.content, "text", None))
+    system = prepare_system(system_text)
+    atools = prepare_tools(
+        [
+            {"name": t.name, "description": (t.description or "")[:3000], "input_schema": t.inputSchema}
+            for t in tools
+            if t.name in SUB_TOOLS
+        ]
+    )
+    state = TranscriptState()
+    state.append_user(f"Begin. Your session_id is {sid}. Call usersim_observe first.")
     finished = False
+    stop_cap = False
     for turn in range(max_turns):
-        imgs = [(i, j) for i, mm in enumerate(msgs) if isinstance(mm["content"], list)
-                for j, b in enumerate(mm["content"]) if b.get("type") == "tool_result"
-                and any(x.get("type") == "image" for x in b.get("content", []))]
-        for i, j in imgs[:-2]:  # keep the 2 newest screenshots
-            b = msgs[i]["content"][j]
-            b["content"] = [x for x in b["content"] if x.get("type") != "image"] + [{"type": "text", "text": "[older screenshot removed]"}]
-        resp = await ask_model(llm, model=MODEL, max_tokens=1024, system=system, tools=atools, messages=msgs)
-        msgs.append({"role": "assistant", "content": [b.model_dump(exclude_none=True) for b in resp.content]})
+        if gate.over_cap() or log["model_usd"] >= max_cell_usd:
+            stop_cap = True
+            break
+        if state.turn_count >= CONDENSE_AFTER_TURNS:
+            summary = summarize_steps(log["steps"])
+            state.messages = condense_messages(state.messages, summary)
+            state.turn_count = 0
+            state.latest_screenshot = None
+        resp = await ask_model(llm, gate, system, atools, state, log)
+        state.append_assistant([b.model_dump(exclude_none=True) for b in resp.content])
+        state.turn_count += 1
         uses = [b for b in resp.content if b.type == "tool_use"]
         if not uses:
-            msgs.append({"role": "user", "content": "Use a tool: observe, act, or finish."})
+            state.append_user("Use a tool: observe, act, or finish.")
             continue
-        results = []
         for u in uses:
             args = dict(u.input)
             args.setdefault("session_id", sid)
-            if u.name == "usersim_finish":  # the model often leaves out the required notes; the server then rejects the finish
+            if u.name == "usersim_finish":
                 args.setdefault("notes", "Finished by the simulated user.")
                 args.setdefault("outcome", "completed")
             a = args.get("action")
-            log["steps"].append({"turn": turn, "tool": u.name, "action": a if isinstance(a, (str, type(None))) else a.get("type")})
+            log["steps"].append(
+                {
+                    "turn": turn,
+                    "tool": u.name,
+                    "action": a if isinstance(a, (str, type(None))) else a.get("type"),
+                }
+            )
             try:
-                res = await tool(u.name, args, retries=5 if u.name == "usersim_observe" else 1)
+                res = await tool(u.name, args, gate, retries=MAX_TOOL_ATTEMPTS if u.name == "usersim_observe" else MAX_TOOL_ATTEMPTS)
                 txt = _text(res)
                 rejected = txt.startswith("Error executing tool")
-                nudged = False  # the server asks once to verify the signup email first: {"finished": false, "next": ...}
+                nudged = False
                 if u.name == "usersim_finish" and not rejected:
                     try:
                         nudged = json.loads(txt).get("finished") is False
                     except (ValueError, AttributeError):
                         pass
-                results.append({"type": "tool_result", "tool_use_id": u.id, "content": _blocks(res), **({"is_error": True} if rejected else {})})
-                if u.name == "usersim_finish" and not (rejected or nudged):  # a rejected or nudged finish leaves the session open
+                if u.name == "usersim_observe":
+                    state.append_observe_tool_result(u.id, res.content, is_error=rejected)
+                else:
+                    state.append_tool_result(u.id, _blocks(res, include_image=False), is_error=rejected)
+                if u.name == "usersim_finish" and not (rejected or nudged):
                     finished = True
-                    log["finish"] = _text(res)[:1500]
-            except Exception as exc:  # noqa: BLE001 - tell the model; it observes again instead of the cell dying
+                    log["finish"] = txt[:1500]
+            except RuntimeError as exc:
+                if STOP_NOTE in str(exc) or gate.stop_reason:
+                    stop_cap = True
+                    log["error"] = gate.stop_reason or str(exc)
+                    break
                 log.setdefault("tool_errors", []).append(str(exc)[:300])
-                results.append({"type": "tool_result", "tool_use_id": u.id, "is_error": True,
-                                "content": [{"type": "text", "text": f"{exc}. The action may or may not have happened: call usersim_observe."}]})
-        msgs.append({"role": "user", "content": results})
-        if finished:
+                state.append_tool_result(
+                    u.id,
+                    [
+                        {
+                            "type": "text",
+                            "text": f"{exc}. The action may or may not have happened: call usersim_observe.",
+                        }
+                    ],
+                    is_error=True,
+                )
+            except Exception as exc:  # noqa: BLE001
+                log.setdefault("tool_errors", []).append(str(exc)[:300])
+                state.append_tool_result(
+                    u.id,
+                    [
+                        {
+                            "type": "text",
+                            "text": f"{exc}. The action may or may not have happened: call usersim_observe.",
+                        }
+                    ],
+                    is_error=True,
+                )
+        if finished or stop_cap:
             break
-    if not finished:
-        res = await tool("usersim_finish", {"session_id": sid, "outcome": "gave_up", "notes": f"Runner hit its {max_turns}-turn cap."})
+    notes_extra = f" model_usd={log.get('model_usd', 0):.4f}"
+    if stop_cap:
+        notes = f"{STOP_NOTE}.{notes_extra}"
+        try:
+            res = await tool(
+                "usersim_finish",
+                {"session_id": sid, "outcome": "gave_up", "notes": notes},
+                gate,
+                retries=1,
+            )
+            log["finish"] = _text(res)[:1500]
+        except Exception:
+            log["finish"] = notes
+    elif not finished:
+        res = await tool(
+            "usersim_finish",
+            {
+                "session_id": sid,
+                "outcome": "gave_up",
+                "notes": f"Runner hit its {max_turns}-turn cap.{notes_extra}",
+            },
+            gate,
+        )
         log["finish"] = _text(res)[:1500]
     if log.get("finish", "").startswith("Error executing tool") or '"finished": false' in log.get("finish", ""):
         log["error"] = "finish rejected: " + log["finish"][:300]
     log["seconds"] = round(time.time() - log["started"])
+    log["total_runner_usd"] = round(gate.total_usd, 6)
     (out / f"{cell['cell_id']}.json").write_text(json.dumps(log, indent=1))
     return log
 
 
-async def run_study(product_url: str, parallel: int, max_turns: int, root: Path, llm, resume: str = "") -> dict:
-    if resume:  # the runner died or was restarted: run only the cells that have no saved record
+async def _spend_printer(gate: SpendGate, interval: float = 30.0) -> None:
+    while not gate.over_cap():
+        await asyncio.sleep(interval)
+        print(f"[spend] ${gate.total_usd:.4f} / ${gate.max_usd:.2f}  retries {gate.retries_used}/{gate.max_retries}", flush=True)
+
+
+async def run_study(
+    product_url: str,
+    parallel: int,
+    max_turns: int,
+    max_cell_usd: float,
+    root: Path,
+    llm,
+    gate: SpendGate,
+    resume: str = "",
+    no_pilot: bool = False,
+) -> dict:
+    if resume:
         out = root / resume
         study = json.loads((out / "study.json").read_text())
         todo = [c for c in study["cells"] if not (out / f"{c['cell_id']}.json").exists()]
         print(f"[{product_url}] resuming study {resume}: {len(todo)} of {len(study['cells'])} cells left", flush=True)
     else:
-        st = await tool("usersim_start_study", {"product_url": product_url, "personas": [], "tasks": [], "competitors": []})
+        st = await tool("usersim_start_study", {"product_url": product_url, "personas": [], "tasks": [], "competitors": []}, gate)
         txt = _text(st)
         try:
             study = json.loads(txt)
@@ -197,62 +363,184 @@ async def run_study(product_url: str, parallel: int, max_turns: int, root: Path,
         (out / "study.json").write_text(json.dumps(study, indent=1))
         todo = study["cells"]
         print(f"[{product_url}] study {study['study_id']} {len(todo)} cells  watch {study.get('watch_url')}", flush=True)
+
+    if gate.over_cap():
+        return {"product_url": product_url, "study_id": study["study_id"], "error": gate.stop_reason or STOP_NOTE}
+
+    pilot_done: set[str] = set()
+    if not resume and not no_pilot and todo:
+        pilots = pilot_cells_for_study(todo)
+        pilot_ids = {c["cell_id"] for c in pilots}
+        print(f"[{product_url}] pilot: {len(pilots)} cells (one per site)", flush=True)
+        pilot_logs = await _run_cells_parallel(
+            study, pilots, max_turns, max_cell_usd, out, llm, gate, parallel, product_url
+        )
+        pilot_done = pilot_ids
+        costs = [float(x.get("model_usd") or 0) for x in pilot_logs if not x.get("error")]
+        if costs:
+            mean = sum(costs) / len(costs)
+            abort, projected = pilot_should_abort(mean, len(study["cells"]), gate.max_usd)
+            print(
+                f"[{product_url}] pilot mean ${mean:.4f}/cell → projected ${projected:.2f} for {len(study['cells'])} cells "
+                f"(cap ${gate.max_usd:.2f})",
+                flush=True,
+            )
+            if abort:
+                msg = (
+                    f"Pilot projection ${projected:.2f} exceeds --max-usd ${gate.max_usd:.2f}. "
+                    "Tune caching/caps or pass --no-pilot to override."
+                )
+                print(f"[{product_url}] ABORT: {msg}", flush=True)
+                return {"product_url": product_url, "study_id": study["study_id"], "error": msg, "pilot_projected_usd": projected}
+        todo = [c for c in todo if c["cell_id"] not in pilot_done]
+
+    if todo and not gate.over_cap():
+        await _run_cells_parallel(study, todo, max_turns, max_cell_usd, out, llm, gate, parallel, product_url)
+
+    report = ""
+    for _ in range(20):
+        if gate.over_cap():
+            break
+        report = _text(await tool("usersim_get_report", {"study_id": study["study_id"]}, gate))
+        if "still being written" not in report.lower():
+            break
+        await asyncio.sleep(30)
+    (out / "report.md").write_text(report)
+    cell_files = list(out.glob("*.json"))
+    finished = sum(1 for p in cell_files if p.name not in ("study.json", "summary.json") and "error" not in p.name)
+    summary = {
+        "product_url": product_url,
+        "study_id": study["study_id"],
+        "report_url": study.get("report_url"),
+        "cells": len(study["cells"]),
+        "finished": finished,
+        "runner_total_usd": round(gate.total_usd, 6),
+        "errors": [],
+    }
+    (out / "summary.json").write_text(json.dumps(summary, indent=1))
+    print(f"[{product_url}] done  runner spend ${gate.total_usd:.4f}  report {study.get('report_url')}", flush=True)
+    return summary
+
+
+async def _run_cells_parallel(
+    study: dict,
+    cells: list[dict],
+    max_turns: int,
+    max_cell_usd: float,
+    out: Path,
+    llm,
+    gate: SpendGate,
+    parallel: int,
+    product_url: str,
+) -> list[dict]:
     sem = asyncio.Semaphore(parallel)
     done = [0]
+    tasks: list[asyncio.Task] = []
 
-    async def one(cell):
+    async def one(cell: dict) -> dict:
+        if gate.over_cap():
+            res = {"cell": cell, "error": gate.stop_reason or STOP_NOTE, "finish": STOP_NOTE}
+            (out / f"{cell['cell_id']}.json").write_text(json.dumps(res, indent=1))
+            return res
         async with sem:
+            if gate.over_cap():
+                res = {"cell": cell, "error": STOP_NOTE, "finish": STOP_NOTE}
+                (out / f"{cell['cell_id']}.json").write_text(json.dumps(res, indent=1))
+                return res
             try:
-                return await run_cell(study["study_id"], cell, max_turns, out, llm)
-            except Exception as exc:  # noqa: BLE001 - one cell's failure must not stop the study
+                return await run_cell(study["study_id"], cell, max_turns, max_cell_usd, out, llm, gate)
+            except Exception as exc:  # noqa: BLE001
                 res = {"cell": cell, "error": _leaf(exc)}
                 (out / f"{cell['cell_id']}.error.json").write_text(json.dumps(res, indent=1))
                 return res
             finally:
                 done[0] += 1
-                print(f"[{product_url}] {done[0]}/{len(todo)} cells ended", flush=True)
-    logs = await asyncio.gather(*(one(c) for c in todo))
-    report = ""
-    for _ in range(20):  # the server writes the report after the last cell
-        report = _text(await tool("usersim_get_report", {"study_id": study["study_id"]}))
-        if "still being written" not in report.lower():
+                print(f"[{product_url}] {done[0]}/{len(cells)} cells ended (batch)", flush=True)
+
+    async def cancel_when_capped() -> None:
+        while not gate.over_cap():
+            await asyncio.sleep(0.25)
+        for t in tasks:
+            if not t.done():
+                t.cancel()
+
+    watcher = asyncio.create_task(cancel_when_capped())
+    for c in cells:
+        if gate.over_cap():
             break
-        await asyncio.sleep(30)
-    (out / "report.md").write_text(report)
-    done = sum(1 for x in logs if x.get("finish"))
-    summary = {"product_url": product_url, "study_id": study["study_id"], "report_url": study.get("report_url"),
-               "cells": len(logs), "finished": done, "errors": [x.get("error") for x in logs if x.get("error")][:10]}
-    (out / "summary.json").write_text(json.dumps(summary, indent=1))
-    print(f"[{product_url}] done {done}/{len(logs)}  report {study.get('report_url')}", flush=True)
-    return summary
+        tasks.append(asyncio.create_task(one(c)))
+    try:
+        if tasks:
+            return list(await asyncio.gather(*tasks, return_exceptions=False))
+    finally:
+        watcher.cancel()
+    return []
 
 
 async def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("products", nargs="+")
-    ap.add_argument("--parallel", type=int, default=8, help="cells at once per study")
-    ap.add_argument("--max-turns", type=int, default=90)
+    ap.add_argument("--parallel", type=int, default=12, help="cells at once per study")
+    ap.add_argument("--max-turns", type=int, default=40)
+    ap.add_argument("--max-usd", type=float, default=20.0, help="stop the whole run at this model spend")
+    ap.add_argument("--max-cell-usd", type=float, default=0.5, help="stop a cell at this model spend")
+    ap.add_argument("--max-retries", type=int, default=50, help="total retries across model and MCP tools")
+    ap.add_argument("--no-pilot", action="store_true", help="skip 3-cell pilot and cost projection")
     ap.add_argument("--out", default="results/mcp_studies")
-    ap.add_argument("--resume", metavar="STUDY_ID", help="continue a study whose runner died: runs the cells without a saved record")
-    ap.add_argument("--smoke", nargs=2, metavar=("PERSONA", "TASK"),
-                    help="one session (no study) on the first product: checks the driver without a 108-cell study")
+    ap.add_argument("--resume", metavar="STUDY_ID", help="continue a study whose runner died")
+    ap.add_argument(
+        "--smoke",
+        nargs=2,
+        metavar=("PERSONA", "TASK"),
+        help="one session (no study) on the first product",
+    )
     a = ap.parse_args()
     from anthropic import AnthropicVertex
-    from auth import vertex_credentials  # the repo's loader (file, base64 env or metadata server)
+    from auth import vertex_credentials
 
-    llm = AnthropicVertex(project_id=os.environ.get("GOOGLE_CLOUD_PROJECT", "project-amer-scs-sandbox"), region="global",
-                          credentials=vertex_credentials())
+    llm = AnthropicVertex(
+        project_id=os.environ.get("GOOGLE_CLOUD_PROJECT", "[REDACTED]"),
+        region="global",
+        credentials=vertex_credentials(),
+    )
     root = Path(a.out)
     root.mkdir(parents=True, exist_ok=True)
-    if a.smoke:
-        cell = {"cell_id": f"smoke_{int(time.time())}", "site": a.products[0], "persona": a.smoke[0], "task": a.smoke[1]}
-        log = await run_cell("", cell, a.max_turns, root, llm)
-        print(json.dumps({k: log.get(k) for k in ("session_id", "error", "finish", "seconds")}, indent=1)[:2500])
-        print("steps", len(log["steps"]))
-        return
-    res = await asyncio.gather(*(run_study(p, a.parallel, a.max_turns, root, llm, a.resume or "") for p in a.products))
-    (root / f"run_{int(time.time())}.json").write_text(json.dumps(res, indent=1))
-    print(json.dumps(res, indent=1))
+    gate = SpendGate(max_usd=a.max_usd, max_retries=a.max_retries)
+    printer = asyncio.create_task(_spend_printer(gate))
+    try:
+        if a.smoke:
+            cell = {
+                "cell_id": f"smoke_{int(time.time())}",
+                "site": a.products[0],
+                "persona": a.smoke[0],
+                "task": a.smoke[1],
+            }
+            log = await run_cell("", cell, a.max_turns, a.max_cell_usd, root, llm, gate)
+            print(json.dumps({k: log.get(k) for k in ("session_id", "error", "finish", "seconds", "model_usd")}, indent=1)[:2500])
+            print("steps", len(log["steps"]))
+            return
+        res = await asyncio.gather(
+            *(
+                run_study(
+                    p,
+                    a.parallel,
+                    a.max_turns,
+                    a.max_cell_usd,
+                    root,
+                    llm,
+                    gate,
+                    a.resume or "",
+                    a.no_pilot,
+                )
+                for p in a.products
+            )
+        )
+        payload = {"studies": res, "runner_total_usd": round(gate.total_usd, 6), "retries_used": gate.retries_used}
+        (root / f"run_{int(time.time())}.json").write_text(json.dumps(payload, indent=1))
+        print(f"Runner total model spend: ${gate.total_usd:.4f}", flush=True)
+        print(json.dumps(res, indent=1))
+    finally:
+        printer.cancel()
 
 
 if __name__ == "__main__":

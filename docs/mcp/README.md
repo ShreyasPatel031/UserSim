@@ -363,6 +363,21 @@ Session timing and size (`max_steps`, `budget_s`, `idle_s`, `max_cells`, `paid_c
 
 When a cap is hit, the tool returns `{"error": "...", "limit": "<key>", "limits_file": "<link>"}`. Concurrent-session errors start with `cap anon_max_concurrent_sessions_per_ip`.
 
+## Client study runner (`scripts/mcp_study_runner.py`)
+
+For a full 108-cell study, run the repo runner against the public MCP URL (see `scripts/mcp_study_runner.py --help`). It drives each cell with **Claude Haiku 4.5 on Vertex**, prompt caching, and spend guards.
+
+| Flag | Default | Purpose |
+|---|---|---|
+| `--parallel` | 12 | Max concurrent cells per study |
+| `--max-turns` | 40 | Model turns per cell |
+| `--max-usd` | 20 | Stop the whole run at this model spend |
+| `--max-cell-usd` | 0.5 | Stop one cell at this model spend |
+| `--max-retries` | 50 | Total model + MCP tool retries, then stop |
+| `--no-pilot` | off | Skip the 3-cell pilot (one cell per site) |
+
+By default the runner runs a **pilot** (one cell per site), prints the projected cost for all cells, and **aborts** if the projection exceeds `--max-usd`. With caching and screenshot downsampling, expect about **$0.002–0.005 per model turn** and roughly **$10–15** for a full 108-cell study (Haiku list pricing; not server Browserbase/judge cost).
+
 ## Costs
 - Calling the MCP costs the client nothing beyond its own model tokens. Screenshots are the main token cost.
 - The server pays for Browserbase browser time (residential proxies plus built-in captcha solving, `MVP_MCP_BB_PROXIES`) and for judge/report model calls. The paid captcha solver is off by default. When it's on, every token is metered (`cost_usd` in the result) and capped server-side in `mvp/captcha_spend.py`. Paid solving needs `MVP_MCP_PAID_CAPTCHA=1` and a host allowlist; the code has no built-in list. `mvp/captcha_spend.py::paid_hosts()` reads the comma-separated `MVP_CAPTCHA_PAID_HOSTS` env var, plus the study's own sites unless `MVP_CAPTCHA_PAY_STUDY_SITES=0`. The VM test copy runs with `MVP_CAPTCHA_PAY_STUDY_SITES=0` and `MVP_CAPTCHA_PAID_HOSTS=typefully.com,app.upvoty.com,auth.featurebase.app,amplitude.com,app.amplitude.com` (amplitude.com and app.amplitude.com added Oct 12), with a `MVP_CAPTCHA_TOTAL_CAP_USD` cap and a `MVP_CAPTCHA_MIN_BALANCE_USD` floor.
