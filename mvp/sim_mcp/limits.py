@@ -38,6 +38,7 @@ DEFAULTS: dict[str, Any] = {
     "max_cells": 108,
     "wait_max_s": 50,
     "paid_captcha": True,
+    "study_shared_accounts": True,
     "paid_captcha_max_tries": 6,
     "paid_captcha_max_solves": 6,
     "captcha_max_calls_per_page": 6,

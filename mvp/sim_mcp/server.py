@@ -611,6 +611,56 @@ def _host(sim: S.SimSession) -> str:
     return (urlsplit(sim.product_url).hostname or "").removeprefix("www.")
 
 
+_STUDY_ACCOUNTS: dict[tuple[str, str], dict[str, Any]] = {}
+
+
+def _study_account_for(sim: S.SimSession, owner: str) -> str | None:
+    """One signup per site per study: later cells log in to the account the first cell created instead of signing up
+    again (Oct 23 Smartsheet: 29 signups from 36 cells hit one shared Gmail inbox, the site mailed one confirmation and
+    answered the rest with 500 / "already exists"). Returns the reuse reply for this cell, or None when this cell
+    should sign up itself (it then becomes the site's account owner). A cell whose owner ended without a verified
+    signup takes the account over, so one failed signup does not strand the rest."""
+    from mvp.sim_mcp import limits as L
+    from mvp.sim_mcp.report import signup_verified
+    from mvp.sim_mcp.sessions import registrable_domain
+
+    if not sim.matrix or not L.get("study_shared_accounts"):
+        return None
+    key = (sim.study.id, registrable_domain(_host(sim)))
+    entry = _STUDY_ACCOUNTS.get(key)
+    if not entry or entry["sid"] == sim.id:
+        return None
+    try:
+        prev = S.get_session(entry["sid"], owner)
+        entry["verified"] = entry["verified"] or signup_verified(prev.row)
+        alive = not prev.closed
+    except S.SessionError:
+        alive = False
+    if not entry["verified"] and not alive:
+        _STUDY_ACCOUNTS.pop(key, None)  # the owner never got an account: this cell signs up (and owns it) instead
+        return None
+    out = json.loads(_reuse_account(sim, entry["sid"], owner))
+    if entry["verified"]:
+        out["next"] = ("A verified account for this site already exists in this study: log in with this email and "
+                       "password. Do not sign up again. If the site emails a login code or link, read it with "
+                       "usersim_wait_for_verification_code / _link.")
+    else:
+        out["next"] = ("Another simulated user is creating this site's account right now (one signup per site per study). "
+                       "Try logging in with this email and password; if the site says there is no such account, wait about "
+                       "a minute (usersim_act wait) and try again. Do not sign up again.")
+    sim.row["shared_study_account"] = {"owner_cell": entry.get("cell"), "verified": bool(entry["verified"])}
+    return json.dumps(out)
+
+
+def _register_study_account(sim: S.SimSession) -> None:
+    from mvp.sim_mcp import limits as L
+    from mvp.sim_mcp.sessions import registrable_domain
+
+    if sim.matrix and L.get("study_shared_accounts"):
+        _STUDY_ACCOUNTS.setdefault((sim.study.id, registrable_domain(_host(sim))),
+                                   {"sid": sim.id, "cell": sim.agent_id, "verified": False})
+
+
 @mcp.tool(structured_output=False)
 async def usersim_signup_identity(ctx: Context, session_id: str, no_plus: bool = False, same_account_as: str = "") -> str:
     """Fresh, never-used email alias (a real inbox UserSim reads) plus password, name and username for signing up.
@@ -635,6 +685,10 @@ async def usersim_signup_identity(ctx: Context, session_id: str, no_plus: bool =
         sim = S.get_session(session_id, owner)
         if same_account_as:
             return _reuse_account(sim, same_account_as, owner)
+        if sim.inbox is None:
+            shared = _study_account_for(sim, owner)
+            if shared:
+                return shared
         shared_ok = not S.is_anon(owner) or bool(L.get("anon_allow_shared_aliases"))
         if no_plus and not shared_ok:
             # A dot-variant (or plain) address can be issued again to another session, which could then read this
@@ -655,6 +709,7 @@ async def usersim_signup_identity(ctx: Context, session_id: str, no_plus: bool =
             sim.mail_since = time.time() - 30
             sim.row["signup_email"] = sim.inbox.address
             S.save_account(sim)
+            _register_study_account(sim)
         ident = {k: v for k, v in sim.identity.items() if k != "code"}
         repeats = int(sim.row.get("identity_repeat_calls") or 0)
         if not issued_now:
@@ -1044,7 +1099,9 @@ async def usersim_solve_captcha(ctx: Context, session_id: str) -> list[Any] | st
             elif state.get("invisible") and not state.get("token_ready"):
                 result["note"] = ("invisible reCAPTCHA with no challenge on screen: there is nothing to solve. Do not call this "
                                   "again; fill any field with filled:false and submit")
-            if _paid_captcha_on() and state and not state.get("token_ready"):
+            if _paid_captcha_on() and state and (not state.get("token_ready") or state.get("challenge_open")):
+                # Oct 23 Smartsheet: an image grid was open while captcha_state said token_ready (a non-empty
+                # g-recaptcha-response field), so the paid solve never ran and agents clicked tiles for 90+ steps.
                 result["paid"] = await _paid_token_logged(sim, state.get("kind") or "", info or {}, "solve_captcha")
             await S._settle(sim.page)
             paid = result.get("paid")
@@ -1270,7 +1327,7 @@ async def _maybe_paid_presolve(sim: S.SimSession) -> dict | None:
         return None
     # a token in the field is not proof it works: the site may have just said the captcha failed (expired v3 token,
     # low score). Then pay for one even though the field is filled.
-    if state.get("token_ready") and not await _captcha_rejected(sim.page):
+    if state.get("token_ready") and not state.get("challenge_open") and not await _captcha_rejected(sim.page):
         return None
     # Loop 16 FeedBear: the rejection banner stays on ?captcha_failed=true, so the click on the agree checkbox and the
     # click on Register each bought a token on the same page. One paid token per page load: the marker dies on navigation.

@@ -192,3 +192,17 @@ def test_paid_v3_token_is_posted():
             return out
 
     assert asyncio.run(run()) == "PAIDTOKEN"
+
+
+def test_open_image_grid_is_paid_for_even_when_a_token_field_is_filled(monkeypatch):
+    """Oct 23 Smartsheet: challenge_open with token_ready true skipped the paid solve; agents clicked tiles for 90+ steps."""
+    from mvp.sim_mcp import sessions as S
+
+    SV, bought = _patch(monkeypatch, kind="recaptcha_v2", rejected=False)
+
+    async def state(page):
+        return {"kind": "recaptcha_v2", "token_ready": True, "challenge_open": True}
+
+    monkeypatch.setattr(S, "captcha_state", state)
+    assert asyncio.run(SV._maybe_paid_presolve(_Sim(_Page())))["ok"]
+    assert bought == ["recaptcha_v2"]

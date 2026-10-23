@@ -22,3 +22,21 @@ CAPTCHA steps); `traceback` in `*.error.json`; a gzip copy of the server's study
 
 Not changed: CAPTCHA behaviour. Options are a runner-side guard (finish as blocked after N CAPTCHA steps) or a server
 prompt change; both alter results, so they need a decision.
+
+## Live test and root causes (Oct 23, three fresh Smartsheet sessions through the public MCP)
+
+- **CAPTCHA:** all 3 sessions got an image grid right after the second Continue (one showed "Try again later: your computer
+  or network may be sending automated queries", i.e. the cloud browser's IP is flagged). `usersim_solve_captcha` reported
+  audio refused and never tried the paid solver: `captcha_state` said `token_ready: true` (a non-empty
+  g-recaptcha-response field) while `challenge_open: true`, and both the paid solve and the act-time presolve skip when a
+  token is ready. Fixed: an open challenge counts as unsolved.
+- **Plus alias:** Smartsheet answers "Invalid email address." to `+` addresses; the agents then use a dot-variant of the
+  shared inbox. 20 of 36 cells got as far as the confirm page (`provconfirm`), but only 1 confirmation mail arrived
+  (matched by exact dotted address, so matching works). Most likely Smartsheet treats all dot-variants of one Gmail as one
+  address (15 cells saw a 500, 9 "already exists"), so only one confirmation was ever sent. Not proven: the mail inbox
+  is not readable from here.
+- **Fix for the signup load:** `study_shared_accounts` (limits.json, default on): one signup per site per study. The first
+  cell creates the account; later cells of that study get it from `usersim_signup_identity` and log in. A cell whose owner
+  ended without a verified signup takes over.
+- Not tested live: the paid-solve fix and shared accounts need the server deployed (merge to main). Test plan after deploy:
+  run `scripts/mcp_study_runner.py <smartsheet> --smoke` and check `captcha_paid_log` in the study JSON.

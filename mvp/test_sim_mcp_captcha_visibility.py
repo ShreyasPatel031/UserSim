@@ -66,3 +66,45 @@ def test_image_challenge_guard_nudges_then_refuses():
         res = [asyncio.run(srv._image_challenge_guard(sim)) for _ in range(24)]
     assert res[10] is None and isinstance(res[11], dict) and "blocked" in res[11]["next"]
     assert isinstance(res[23], str) and res[23].startswith("captcha_stuck")
+
+
+def _cell(sid, cell, study="st1", url="https://www.smartsheet.com", inbox=None):
+    return SimpleNamespace(id=sid, study=SimpleNamespace(id=study), product_url=url, owner="o", cell_id=cell, matrix=True,
+                           agent_id=cell, row={}, closed=False, inbox=inbox,
+                           identity={"email": "a@gmail.com", "password": "pw"} if inbox else {}, mail_since=0.0)
+
+
+def test_study_shares_one_account_per_site(monkeypatch):
+    from mvp.sim_mcp import sessions as S
+
+    srv._STUDY_ACCOUNTS.clear()
+    a = _cell("sa", "t1__p1__product", inbox=SimpleNamespace(address="u.s.er@gmail.com"))
+    b = _cell("sb", "t2__p2__product")
+    other_site = _cell("sc", "t1__p1__competitor_1", url="https://asana.com")
+    monkeypatch.setitem(S.SESSIONS, "sa", a)
+    monkeypatch.setitem(S.SESSIONS, "sb", b)
+    srv._register_study_account(a)
+    assert srv._study_account_for(a, "o") is None  # the owner itself keeps its own identity
+    assert srv._study_account_for(other_site, "o") is None  # another site: its own signup
+
+    out = json.loads(srv._study_account_for(b, "o"))  # owner still working: pending note
+    assert out["reused_account"] and "right now" in out["next"] and b.row["shared_study_account"]["verified"] is False
+    assert b.inbox.address == "u.s.er@gmail.com"
+
+    b2 = _cell("sd", "t3__p3__product")
+    monkeypatch.setattr("mvp.sim_mcp.report.signup_verified", lambda row: True)
+    out = json.loads(srv._study_account_for(b2, "o"))
+    assert "verified account" in out["next"] and b2.row["shared_study_account"]["verified"] is True
+
+
+def test_failed_owner_hands_the_account_over(monkeypatch):
+    from mvp.sim_mcp import sessions as S
+
+    srv._STUDY_ACCOUNTS.clear()
+    a = _cell("sa2", "t1__p1__product", inbox=SimpleNamespace(address="u.s.er@gmail.com"))
+    a.closed = True  # owner ended without a verified signup
+    monkeypatch.setitem(S.SESSIONS, "sa2", a)
+    monkeypatch.setattr("mvp.sim_mcp.report.signup_verified", lambda row: False)
+    srv._register_study_account(a)
+    b = _cell("sb2", "t2__p2__product")
+    assert srv._study_account_for(b, "o") is None and ("st1", "smartsheet.com") not in srv._STUDY_ACCOUNTS

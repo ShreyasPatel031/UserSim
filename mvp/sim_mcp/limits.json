@@ -45,6 +45,10 @@
       "value": true,
       "about": "Master switch for the paid CapSolver path on this server. When true, approved hosts may buy tokens (metered in captcha_spend.py; typically ~$0.002-0.01 per solve). Callers without a token still need anon_allow_paid_captcha true. Requires MVP_CAPTCHA_API_KEY in server env (not in this file)."
     },
+    "study_shared_accounts": {
+      "value": true,
+      "about": "One signup per site per study: the first cell to call usersim_signup_identity creates the account, later cells of the same study on the same site get that account to log in with (as with same_account_as). A cell whose owner ended without a verified signup takes over. false = every cell signs up on its own (hundreds of signups against one product, and sites that treat Gmail dot-variants as one address answer with errors)."
+    },
     "paid_captcha_max_tries": {
       "value": 6,
       "about": "Paid CapSolver tokens one session may buy before an act-triggered presolve stops (was a fixed 2: the Oct 18 Smartsheet study had 13 of 24 stuck cells with no paid try and 3 that used both). Each token is about $0.001-0.003."
