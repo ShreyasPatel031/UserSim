@@ -730,7 +730,8 @@ async def usersim_signup_identity(ctx: Context, session_id: str, no_plus: bool =
             # session's mail. Callers without a token only get unique +tag aliases.
             raise S.SessionError("cap anon_allow_shared_aliases: no_plus addresses are not available without a token. "
                                  "This site rejects '+' aliases, so finish with outcome 'blocked' and say so")
-        if no_plus and sim.inbox is None and shared_ok:
+        if no_plus and shared_ok and not sim.row.get("login_email"):
+            # also when a '+' identity was already issued: the agent asks for no_plus after the site rejected it
             known = _host_registry_account(sim)
             if known:
                 return known

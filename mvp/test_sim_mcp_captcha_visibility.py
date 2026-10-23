@@ -174,3 +174,19 @@ def test_no_plus_request_logs_in_to_the_sites_known_account(tmp_path, monkeypatc
     assert out["reused_account"] and out["email"] == "users.ims.ignup.s@gmail.com" and "data region" in out["next"]
     assert sim.row["login_email"] == "users.ims.ignup.s@gmail.com"
     assert srv._host_registry_account(SimpleNamespace(product_url="https://asana.com", inbox=None, identity={}, mail_since=0.0, row={})) is None
+
+
+def test_registry_account_replaces_an_already_issued_plus_identity(tmp_path, monkeypatch):
+    """Smoke run 7: the agent got a '+' identity first, the site rejected it, no_plus then issued a NEW dot-variant
+    instead of the site's known account because the lookup only ran when no identity existed yet."""
+    from mvp import signup_inbox
+    from mvp.sim_mcp import sessions as S
+
+    monkeypatch.setattr(S, "ACCOUNTS_DIR", tmp_path)
+    S.save_host_account(SimpleNamespace(inbox=SimpleNamespace(address="users.ims.ignup.s@gmail.com"), identity={"email": "users.ims.ignup.s@gmail.com", "password": "pw"},
+                                        owner="o", product_url="https://www.smartsheet.com/"))
+    monkeypatch.setattr(signup_inbox.GmailAliasInbox, "for_address", classmethod(lambda cls, a: SimpleNamespace(address=a)))
+    sim = SimpleNamespace(product_url="https://www.smartsheet.com", inbox=SimpleNamespace(address="a+x@gmail.com"), identity={"email": "a+x@gmail.com"},
+                          mail_since=0.0, row={})
+    out = json.loads(srv._host_registry_account(sim))
+    assert out["email"] == "users.ims.ignup.s@gmail.com" and sim.inbox.address == "users.ims.ignup.s@gmail.com"
