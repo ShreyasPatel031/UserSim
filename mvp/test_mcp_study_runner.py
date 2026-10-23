@@ -161,3 +161,20 @@ def test_screenshot_is_not_injected_into_an_error_tool_result():
     st2.append_user("go")
     st2.append_tool_result("t2", [{"type": "text", "text": "ok"}])
     assert st2.inject_screenshot_for_api(st2.messages)[-1]["content"][0]["content"][-1]["type"] == "image"
+
+
+def test_screenshot_keeps_the_viewport_size_so_clicks_land():
+    import base64
+    import io
+    import sys
+    from pathlib import Path
+
+    from PIL import Image
+
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
+    from mcp_study_runner_lib import _downscale_image_b64
+
+    buf = io.BytesIO()
+    Image.new("RGB", (1280, 800), "white").save(buf, format="PNG")
+    out, _ = _downscale_image_b64(base64.b64encode(buf.getvalue()).decode(), "image/png")
+    assert Image.open(io.BytesIO(base64.b64decode(out))).size == (1280, 800)
