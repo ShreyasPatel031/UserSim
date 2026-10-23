@@ -328,6 +328,7 @@ async def usersim_start_session(
         return _fail(exc)
     except Exception as exc:  # noqa: BLE001
         return _fail(RuntimeError(f"could not open the browser: {exc}"))
+    _allow_paid_captcha_host(sim)
     try:
         obs = await S.observe(sim)
     except Exception as exc:  # noqa: BLE001
@@ -1449,6 +1450,19 @@ async def _paid_token(sim: S.SimSession, kind: str, info: dict) -> dict:
     cbs = injected.get("callbacks") if isinstance(injected, dict) else None
     return {"ok": True, "type": ctype, "invisible": invisible, "cost_usd": cost, "callbacks": cbs,
             "detail": "token injected; submit the form now"}
+
+
+def _allow_paid_captcha_host(sim: S.SimSession) -> None:
+    """The site under test may be paid for like the website driver's study sites (captcha_spend.allow_study_host). The
+    MCP never called it, so only hosts in MVP_CAPTCHA_PAID_HOSTS were solved: Oct 23 Smartsheet smoke run, ledger
+    reason host_not_paid, agent clicked image tiles until the spend cap. The per-site, total and balance caps still
+    apply; MVP_CAPTCHA_PAY_STUDY_SITES=0 keeps the allowlist-only behaviour."""
+    from mvp import captcha_spend as cs
+
+    try:
+        cs.allow_study_host(_host(sim))
+    except Exception:  # noqa: BLE001
+        pass
 
 
 async def _paid_token_logged(sim: S.SimSession, kind: str, info: dict, via: str) -> dict:

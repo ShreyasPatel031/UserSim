@@ -136,3 +136,19 @@ def test_dead_playwright_driver_is_restarted():
     S._PW = Old()
     asyncio.run(S._reset_playwright())
     assert S._PW is None and Old.stopped
+
+
+def test_mcp_session_host_becomes_a_paid_host(monkeypatch):
+    from mvp import captcha_spend as cs
+
+    monkeypatch.delenv("MVP_CAPTCHA_PAY_STUDY_SITES", raising=False)
+    monkeypatch.setenv("MVP_CAPTCHA_PAID_HOSTS", "")
+    cs._STUDY_HOSTS.discard("smartsheet.com")
+    sim = SimpleNamespace(product_url="https://www.smartsheet.com/")
+    assert "smartsheet.com" not in cs.paid_hosts()
+    srv._allow_paid_captcha_host(sim)
+    assert "smartsheet.com" in cs.paid_hosts()
+    monkeypatch.setenv("MVP_CAPTCHA_PAY_STUDY_SITES", "0")
+    cs._STUDY_HOSTS.discard("smartsheet.com")
+    srv._allow_paid_captcha_host(sim)
+    assert "smartsheet.com" not in cs.paid_hosts()

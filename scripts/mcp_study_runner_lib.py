@@ -19,7 +19,7 @@ HAIKU_USD_PER_MTOK: dict[str, float] = {
 
 MAX_MODEL_ATTEMPTS = 3
 MAX_TOOL_ATTEMPTS = 3
-SCREENSHOT_MAX_WIDTH = 1024
+SCREENSHOT_MAX_WIDTH = 1280  # the server's viewport width: the model clicks in the pixels it sees, so never scale below it (Oct 23: 1024 put clicks 20% off, 26 misses on "Accept All")
 SCREENSHOT_JPEG_QUALITY = 60
 CONDENSE_AFTER_TURNS = 40
 
