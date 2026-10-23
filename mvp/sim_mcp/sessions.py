@@ -316,6 +316,26 @@ async def _playwright() -> Any:
         return _PW
 
 
+async def _reset_playwright() -> None:
+    """Drop the cached Playwright driver. If its node process dies, every connect_over_cdp fails with "the handler is
+    closed" until the server restarts (Oct 23: all new sessions failed after a deploy). The next _playwright() starts a
+    fresh driver."""
+    global _PW
+    async with _PW_LOCK:
+        old, _PW = _PW, None
+    if old is not None:
+        try:
+            await asyncio.wait_for(old.stop(), timeout=10)
+        except Exception:  # noqa: BLE001
+            pass
+
+
+def _driver_dead(exc: BaseException) -> bool:
+    text = repr(exc).lower()
+    return any(k in text for k in ("handler is closed", "writeunixtransport", "connection closed", "target closed",
+                                   "driver", "broken pipe", "browser has been closed"))
+
+
 def same_owner(have: str | None, caller: str) -> bool:
     """Is the caller allowed to use what `have` created? Token callers: the same token fingerprint. Callers without
     a token: any caller without a token. Their key is a hash of the client IP, and many real clients (Cloudflare
@@ -795,7 +815,15 @@ async def _open_browser(sim: SimSession) -> None:
     sim.bb = await asyncio.to_thread(_create_bb, sim.study.id)
     ready = time.time()
     pw = await _playwright()
-    sim.browser = await pw.chromium.connect_over_cdp(sim.bb.connect_url)
+    try:
+        sim.browser = await pw.chromium.connect_over_cdp(sim.bb.connect_url)
+    except Exception as exc:  # noqa: BLE001
+        if not _driver_dead(exc):
+            raise
+        print(f"[mcp {sim.id[:8]}] playwright driver is dead ({exc!r}); restarting it", flush=True)
+        await _reset_playwright()
+        pw = await _playwright()
+        sim.browser = await pw.chromium.connect_over_cdp(sim.bb.connect_url)
     sim.context = sim.browser.contexts[0] if sim.browser.contexts else await sim.browser.new_context()
     sim.page = sim.context.pages[0] if sim.context.pages else await sim.context.new_page()
     sim.context.on("page", lambda p: setattr(sim, "new_page", p))
