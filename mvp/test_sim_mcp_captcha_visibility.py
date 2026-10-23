@@ -119,3 +119,20 @@ def test_mail_diagnostics_show_unmatched_mail(monkeypatch):
     monkeypatch.setattr(ec, "_recent_header_rows", lambda u, p, n: rows)
     out = ec.recent_mail_diagnostics("u", "p", "u.s.ersimsignu.ps@gmail.com", since=990.0)
     assert len(out) == 1 and out[0]["from"].startswith("Smartsheet") and out[0]["matched"] is False
+
+
+def test_dead_playwright_driver_is_restarted():
+    from mvp.sim_mcp import sessions as S
+
+    assert S._driver_dead(RuntimeError("BrowserType.connect_over_cdp: unable to perform operation on <WriteUnixTransport closed=True>; the handler is closed"))
+    assert not S._driver_dead(RuntimeError("net::ERR_NAME_NOT_RESOLVED"))
+
+    class Old:
+        stopped = False
+
+        async def stop(self):
+            Old.stopped = True
+
+    S._PW = Old()
+    asyncio.run(S._reset_playwright())
+    assert S._PW is None and Old.stopped
