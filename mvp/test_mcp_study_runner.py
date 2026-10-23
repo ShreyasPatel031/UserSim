@@ -130,3 +130,14 @@ class AppendOnlyHistoryTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+def test_stall_summary_counts_repeated_actions_and_captcha_steps():
+    import sys
+    from pathlib import Path
+
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
+    from mcp_study_runner import stall_summary
+
+    steps = [{"tool": "usersim_act", "action": "click", "url": "u", "captcha": "x"}] * 4 + [{"tool": "usersim_observe"}]
+    assert stall_summary(steps) == {"max_repeat_same_action_and_url": 4, "captcha_steps": 4}
