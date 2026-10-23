@@ -89,6 +89,10 @@ def _text(res) -> str:
     return "".join(c.text for c in res.content if c.type == "text")
 
 
+def _has_image(res) -> bool:
+    return any(getattr(c, "type", None) == "image" for c in getattr(res, "content", None) or [])
+
+
 def _blocks(res, *, include_image: bool = True) -> list[dict]:
     return mcp_content_to_blocks(res.content, include_image=include_image)
 
@@ -291,7 +295,10 @@ async def run_cell(
                         nudged = json.loads(txt).get("finished") is False
                     except (ValueError, AttributeError):
                         pass
-                if u.name == "usersim_observe":
+                if u.name == "usersim_observe" or _has_image(res):
+                    # every tool that returns a screenshot (act, solve_captcha, open_verification_link ...) refreshes
+                    # the one the model sees. Only observe did: after an act the model kept looking at the first
+                    # page and clicked "Accept All" 17 times (Oct 23 Smartsheet smoke runs).
                     state.append_observe_tool_result(u.id, res.content, is_error=rejected)
                 else:
                     state.append_tool_result(u.id, _blocks(res, include_image=False), is_error=rejected)
