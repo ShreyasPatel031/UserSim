@@ -72,7 +72,7 @@ Rules:
 - Don't navigate by guessing URLs; use the page like a person would. `navigate` exists for typing an address a person would actually know.
 - Stop when the task is done, when you're stuck, or when a real person in this persona would give up. Then call usersim_finish with outcome completed / gave_up / blocked and notes on what was hard or easy.
 - Need an account? Call usersim_signup_identity for a fresh email alias + password and sign up with EMAIL only (never Google/GitHub).
-  Then usersim_wait_for_verification_code or usersim_wait_for_verification_link (+ usersim_open_verification_link with link_number=1 for the first link). Captcha in the way: solve it like a person (click the checkbox, drag the slider, press_and_hold), or call usersim_solve_captcha.
+  Then usersim_wait_for_verification_code or usersim_wait_for_verification_link (+ usersim_open_verification_link with link_number=1 for the first link). Captcha in the way: click the checkbox, drag the slider or press_and_hold once like a person. If it opens an image grid ("select all squares with ..."), NEVER click tiles: call usersim_solve_captcha, then look at the page and continue. If the grid is still there after two calls, or an observation says captcha_stuck, call usersim_finish with outcome blocked.
   If the site asks for a username, workspace, team or subdomain name, use the username / workspace from usersim_signup_identity (they are unique; names you invent are often already taken by other simulated users).
   After signing up, always check for the verification email and open its link, even if the site already let you in: an unverified signup does not count.
   If verifying sends you to a login page, sign in with the SAME email and password from usersim_signup_identity; that is still your new account.
@@ -403,11 +403,22 @@ async def usersim_act(ctx: Context, session_id: str, action: dict[str, Any] | st
         sim = S.get_session(session_id, owner)
         _spend(owner, "one step")
         extra = None
+        stuck_note = None
         if str((action or {}).get("type")) in {"click", "key"}:
             await _refresh_v3_token(sim)
             extra = await _maybe_paid_presolve(sim)
+            stuck = await _image_challenge_guard(sim)
+            if isinstance(stuck, str):
+                return _fail(S.SessionError(stuck))
+            if stuck:
+                stuck_note = stuck
         obs = await S.act(sim, action, thought)
-        return _obs_content(sim, obs, {"captcha_presolve": extra} if extra else None)
+        notes = {}
+        if extra:
+            notes["captcha_presolve"] = extra
+        if stuck_note:
+            notes["captcha_stuck"] = stuck_note
+        return _obs_content(sim, obs, notes or None)
     except L.CapExceeded as exc:
         return _cap_fail(exc)
     except S.SessionError as exc:
@@ -600,6 +611,56 @@ def _host(sim: S.SimSession) -> str:
     return (urlsplit(sim.product_url).hostname or "").removeprefix("www.")
 
 
+_STUDY_ACCOUNTS: dict[tuple[str, str], dict[str, Any]] = {}
+
+
+def _study_account_for(sim: S.SimSession, owner: str) -> str | None:
+    """One signup per site per study: later cells log in to the account the first cell created instead of signing up
+    again (Oct 23 Smartsheet: 29 signups from 36 cells hit one shared Gmail inbox, the site mailed one confirmation and
+    answered the rest with 500 / "already exists"). Returns the reuse reply for this cell, or None when this cell
+    should sign up itself (it then becomes the site's account owner). A cell whose owner ended without a verified
+    signup takes the account over, so one failed signup does not strand the rest."""
+    from mvp.sim_mcp import limits as L
+    from mvp.sim_mcp.report import signup_verified
+    from mvp.sim_mcp.sessions import registrable_domain
+
+    if not getattr(sim, "matrix", False) or not L.get("study_shared_accounts"):
+        return None
+    key = (sim.study.id, registrable_domain(_host(sim)))
+    entry = _STUDY_ACCOUNTS.get(key)
+    if not entry or entry["sid"] == sim.id:
+        return None
+    try:
+        prev = S.get_session(entry["sid"], owner)
+        entry["verified"] = entry["verified"] or signup_verified(prev.row)
+        alive = not prev.closed
+    except S.SessionError:
+        alive = False
+    if not entry["verified"] and not alive:
+        _STUDY_ACCOUNTS.pop(key, None)  # the owner never got an account: this cell signs up (and owns it) instead
+        return None
+    out = json.loads(_reuse_account(sim, entry["sid"], owner))
+    if entry["verified"]:
+        out["next"] = ("A verified account for this site already exists in this study: log in with this email and "
+                       "password. Do not sign up again. If the site emails a login code or link, read it with "
+                       "usersim_wait_for_verification_code / _link.")
+    else:
+        out["next"] = ("Another simulated user is creating this site's account right now (one signup per site per study). "
+                       "Try logging in with this email and password; if the site says there is no such account, wait about "
+                       "a minute (usersim_act wait) and try again. Do not sign up again.")
+    sim.row["shared_study_account"] = {"owner_cell": entry.get("cell"), "verified": bool(entry["verified"])}
+    return json.dumps(out)
+
+
+def _register_study_account(sim: S.SimSession) -> None:
+    from mvp.sim_mcp import limits as L
+    from mvp.sim_mcp.sessions import registrable_domain
+
+    if getattr(sim, "matrix", False) and L.get("study_shared_accounts"):
+        _STUDY_ACCOUNTS.setdefault((sim.study.id, registrable_domain(_host(sim))),
+                                   {"sid": sim.id, "cell": sim.agent_id, "verified": False})
+
+
 @mcp.tool(structured_output=False)
 async def usersim_signup_identity(ctx: Context, session_id: str, no_plus: bool = False, same_account_as: str = "") -> str:
     """Fresh, never-used email alias (a real inbox UserSim reads) plus password, name and username for signing up.
@@ -624,6 +685,10 @@ async def usersim_signup_identity(ctx: Context, session_id: str, no_plus: bool =
         sim = S.get_session(session_id, owner)
         if same_account_as:
             return _reuse_account(sim, same_account_as, owner)
+        if sim.inbox is None:
+            shared = _study_account_for(sim, owner)
+            if shared:
+                return shared
         shared_ok = not S.is_anon(owner) or bool(L.get("anon_allow_shared_aliases"))
         if no_plus and not shared_ok:
             # A dot-variant (or plain) address can be issued again to another session, which could then read this
@@ -644,6 +709,7 @@ async def usersim_signup_identity(ctx: Context, session_id: str, no_plus: bool =
             sim.mail_since = time.time() - 30
             sim.row["signup_email"] = sim.inbox.address
             S.save_account(sim)
+            _register_study_account(sim)
         ident = {k: v for k, v in sim.identity.items() if k != "code"}
         repeats = int(sim.row.get("identity_repeat_calls") or 0)
         if not issued_now:
@@ -701,6 +767,7 @@ def _reuse_account(sim: S.SimSession, prev_id: str, owner: str) -> str:
 
 async def _wait(ctx: Context, session_id: str, timeout_s: int, want: str) -> str:
     import asyncio
+    import time
 
     from mvp.signup_tools import wait_mail
     from mvp.sim_mcp import limits as L
@@ -715,6 +782,16 @@ async def _wait(ctx: Context, session_id: str, timeout_s: int, want: str) -> str
         msg = await asyncio.to_thread(wait_mail, sim.inbox, _host(sim), since=sim.mail_since, timeout_s=t, seen=sim.mail_seen, want=want)
         sim.last_used = __import__("time").time()
         if not msg:
+            diag = getattr(sim.inbox, "diagnose", None)
+            if diag:
+                try:  # what the inbox did receive meanwhile, so a missing mail can be traced (mail to another address?)
+                    seen_mail = await asyncio.to_thread(diag, sim.mail_since)
+                except Exception as exc:  # noqa: BLE001
+                    seen_mail = [{"error": repr(exc)[:120]}]
+                dbg = sim.row.setdefault("mail_debug", [])
+                if len(dbg) < 10:
+                    dbg.append({"at": round(time.time()), "alias": sim.inbox.address, "waited_s": t, "want": want,
+                                "inbox_since_start": seen_mail})
             return json.dumps({"found": False, "note": f"no verification mail with a {want} yet (waited {t}s). Mail often takes "
                                "1-3 minutes: call this tool again. If several calls find nothing, check the form was "
                                "really submitted, or use the site's resend link"})
@@ -930,8 +1007,9 @@ async def usersim_wait_for_sms_code(ctx: Context, session_id: str, timeout_s: in
 async def usersim_solve_captcha(ctx: Context, session_id: str) -> list[Any] | str:
     """Try to get past a captcha on the current page (the same solver path the website driver uses).
 
-    Prefer solving it yourself first like a person (checkbox click, drag, press_and_hold). This tries the free
-    audio route for reCAPTCHA; a paid solver only runs when the server enables it (MVP_MCP_PAID_CAPTCHA=1).
+    Checkbox, slider and press-and-hold: try once like a person. Image grids: call this instead of clicking tiles.
+    It tries the free audio route, then the paid solver when the server enables it (limits.json paid_captcha). The reply
+    has captcha.paid with the ledger result and whether the page accepted the token.
     """
     import os
 
@@ -950,10 +1028,10 @@ async def usersim_solve_captcha(ctx: Context, session_id: str) -> list[Any] | st
             S._check_open(sim)
             calls = sim.row.setdefault("captcha_calls", {})
             calls[sim.page.url] = int(calls.get(sim.page.url) or 0) + 1
-            if calls[sim.page.url] > 3:
+            if calls[sim.page.url] > L_get("captcha_max_calls_per_page"):
                 obs = await S.record_step(sim, kind="captcha", action_text="captcha attempt (refused: repeated)",
                                           args={}, thought="I try to get past the captcha again.", error="")
-                return _obs_content(sim, obs, {"captcha": {"note": "already tried 3 times on this page; calling again will not "
+                return _obs_content(sim, obs, {"captcha": {"note": "already tried too many times on this page; calling again will not "
                                                "help. Wait, go back and retry the flow once, or finish with outcome 'blocked'."}})
             title = ""
             try:
@@ -1032,11 +1110,15 @@ async def usersim_solve_captcha(ctx: Context, session_id: str) -> list[Any] | st
             elif state.get("invisible") and not state.get("token_ready"):
                 result["note"] = ("invisible reCAPTCHA with no challenge on screen: there is nothing to solve. Do not call this "
                                   "again; fill any field with filled:false and submit")
-            if _paid_captcha_on() and state and not state.get("token_ready"):
-                result["paid"] = await _paid_token(sim, state.get("kind") or "", info or {})
+            if _paid_captcha_on() and state and (not state.get("token_ready") or state.get("challenge_open")):
+                # Oct 23 Smartsheet: an image grid was open while captcha_state said token_ready (a non-empty
+                # g-recaptcha-response field), so the paid solve never ran and agents clicked tiles for 90+ steps.
+                result["paid"] = await _paid_token_logged(sim, state.get("kind") or "", info or {}, "solve_captcha")
             await S._settle(sim.page)
+            paid = result.get("paid")
             obs = await S.record_step(sim, kind="captcha", action_text="captcha attempt",
-                                      args={}, thought="I try to get past the captcha.", error="")
+                                      args={"paid": json.loads(json.dumps(paid, default=str))} if paid else {},
+                                      thought="I try to get past the captcha.", error="")
         return _obs_content(sim, obs, {"captcha": json.loads(json.dumps(result, default=str))})
     except Exception as exc:  # noqa: BLE001
         return _fail(exc)
@@ -1196,6 +1278,48 @@ async def _captcha_rejected(page) -> bool:
     return bool(_CAPTCHA_FAILED_RE.search(text or ""))
 
 
+async def _image_challenge_guard(sim: S.SimSession) -> dict | str | None:
+    """While a reCAPTCHA image grid is open: buy a paid token (once per page load, up to the session cap) instead of
+    letting the agent click tiles, count the steps spent there, and tell it to finish as blocked past
+    limits.json captcha_stuck_steps (refuse further actions at twice that). Returns a note dict, a refusal
+    string, or None."""
+    from urllib.parse import urlsplit
+
+    from mvp import captcha_spend as cs
+
+    try:
+        open_ = await S.recaptcha_challenge_open(sim.page)
+    except Exception:  # noqa: BLE001
+        return None
+    if not open_:
+        sim.row["captcha_stuck_run"] = 0
+        return None
+    run = sim.row["captcha_stuck_run"] = int(sim.row.get("captcha_stuck_run") or 0) + 1
+    sim.row["captcha_challenge_steps"] = int(sim.row.get("captcha_challenge_steps") or 0) + 1
+    limit = L_get("captcha_stuck_steps")
+    host = (urlsplit(sim.product_url).hostname or "").removeprefix("www.")
+    if (_paid_captcha_on() and _paid_allowed(sim) and host in cs.paid_hosts()
+            and int(sim.row.get("capsolver_tries") or 0) < L_get("paid_captcha_max_tries")
+            and sim.row.get("signup_email") and run % 4 == 1):
+        # at steps 1, 5, 9 ... of one open grid, so a site that ignores the token does not eat the whole cap;
+        # bypasses the once-per-page-load marker: an open image grid means the earlier token did not clear it
+        sim.row["capsolver_tries"] = int(sim.row.get("capsolver_tries") or 0) + 1
+        from mvp import captcha as cap
+
+        out = await _paid_token_logged(sim, "recaptcha", await cap.detect_sitekey(sim.page) or {}, "act_image_challenge")
+        sim.row["captcha_last_paid"] = out
+    if not limit:
+        return None
+    if run >= 2 * limit:
+        return ("captcha_stuck: an image challenge has blocked this page for %d steps. Do not click more tiles. "
+                "Call usersim_finish with outcome 'blocked' and say a CAPTCHA stopped you." % run)
+    if run >= limit:
+        return {"steps_on_challenge": run,
+                "next": "A CAPTCHA image grid has been open for %d steps. Stop clicking tiles: call usersim_solve_captcha "
+                        "once more; if it is still there, call usersim_finish with outcome 'blocked'." % run}
+    return None
+
+
 async def _maybe_paid_presolve(sim: S.SimSession) -> dict | None:
     """Before a click on an approved paid host, if an invisible captcha has no token yet, get one first."""
     from urllib.parse import urlsplit
@@ -1205,7 +1329,7 @@ async def _maybe_paid_presolve(sim: S.SimSession) -> dict | None:
     if not _paid_captcha_on() or not _paid_allowed(sim):
         return None
     host = (urlsplit(sim.product_url).hostname or "").removeprefix("www.")
-    if host not in cs.paid_hosts() or int(sim.row.get("capsolver_tries") or 0) >= 2:
+    if host not in cs.paid_hosts() or int(sim.row.get("capsolver_tries") or 0) >= L_get("paid_captcha_max_tries"):
         return None
     if not sim.row.get("signup_email"):
         return None  # only once the signup form is being filled
@@ -1214,7 +1338,7 @@ async def _maybe_paid_presolve(sim: S.SimSession) -> dict | None:
         return None
     # a token in the field is not proof it works: the site may have just said the captcha failed (expired v3 token,
     # low score). Then pay for one even though the field is filled.
-    if state.get("token_ready") and not await _captcha_rejected(sim.page):
+    if state.get("token_ready") and not state.get("challenge_open") and not await _captcha_rejected(sim.page):
         return None
     # Loop 16 FeedBear: the rejection banner stays on ?captcha_failed=true, so the click on the agree checkbox and the
     # click on Register each bought a token on the same page. One paid token per page load: the marker dies on navigation.
@@ -1235,7 +1359,7 @@ async def _maybe_paid_presolve(sim: S.SimSession) -> dict | None:
     from mvp import captcha as cap
 
     try:
-        out = await _paid_token(sim, kind, await cap.detect_sitekey(sim.page) or {})
+        out = await _paid_token_logged(sim, kind, await cap.detect_sitekey(sim.page) or {}, "presolve")
         if isinstance(out, dict) and out.get("ok"):
             try:
                 await sim.page.evaluate("() => { window.__usersimPaidAt = Date.now(); }")
@@ -1325,6 +1449,49 @@ async def _paid_token(sim: S.SimSession, kind: str, info: dict) -> dict:
     cbs = injected.get("callbacks") if isinstance(injected, dict) else None
     return {"ok": True, "type": ctype, "invisible": invisible, "cost_usd": cost, "callbacks": cbs,
             "detail": "token injected; submit the form now"}
+
+
+async def _paid_token_logged(sim: S.SimSession, kind: str, info: dict, via: str) -> dict:
+    """_paid_token plus a per-attempt record for full visibility: what the ledger said (solved, cost, or the reason
+    it refused), and whether the page took the token (challenge closed, token in the field, rejection banner,
+    new url). Stored in sim.row["captcha_paid_log"], which lands in the study JSON next to capsolver_usd."""
+    import asyncio
+    import time
+
+    from mvp import captcha_spend as cs
+
+    cs.set_max_solves_per_attempt(L_get("paid_captcha_max_solves"))
+    n0 = cs.ledger_count()
+    url0 = getattr(sim.page, "url", "") or ""
+    t0 = time.time()
+    try:
+        out = await _paid_token(sim, kind, info)
+    except Exception as exc:  # noqa: BLE001
+        out = {"ok": False, "detail": f"exception: {exc!r}"[:200]}
+    after: dict[str, Any] = {}
+    if isinstance(out, dict) and out.get("ok"):
+        await asyncio.sleep(4)  # let the page react to the injected token and its callbacks
+        try:
+            st = await S.captcha_state(sim.page) or {}
+            after = {"challenge_open": bool(st.get("challenge_open")), "token_ready": bool(st.get("token_ready")),
+                     "rejected_banner": await _captcha_rejected(sim.page), "url_changed": getattr(sim.page, "url", "") != url0}
+            after["site_accepted"] = bool(after["url_changed"] or (not after["challenge_open"] and not after["rejected_banner"]))
+        except Exception as exc:  # noqa: BLE001
+            after = {"error": repr(exc)[:120]}
+    entry = {"ts": round(t0), "via": via, "url": url0[:200], "kind": kind, "result": out, "after": after,
+             "ledger": cs.events_since(n0), "seconds": round(time.time() - t0, 1)}
+    log = sim.row.setdefault("captcha_paid_log", [])
+    if len(log) < 40:
+        log.append(json.loads(json.dumps(entry, default=str)))
+    if isinstance(out, dict):
+        out = {**out, "after": after} if after else out
+    return out
+
+
+def L_get(key: str) -> int:
+    from mvp.sim_mcp import limits as L
+
+    return int(L.get(key))
 
 
 @mcp.prompt()

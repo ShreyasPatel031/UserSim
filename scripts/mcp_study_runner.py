@@ -34,6 +34,7 @@ import json
 import sys
 import os
 import time
+import traceback
 from pathlib import Path
 from typing import Any
 
@@ -95,7 +96,7 @@ def _blocks(res, *, include_image: bool = True) -> list[dict]:
 def _leaf(exc: BaseException) -> str:
     while isinstance(exc, BaseExceptionGroup) and exc.exceptions:
         exc = exc.exceptions[0]
-    return f"{type(exc).__name__}: {str(exc)[:300]}"
+    return f"{type(exc).__name__}: {str(exc)[:300] or repr(exc)[:300]}"
 
 
 async def tool(name: str, args: dict, gate: SpendGate, retries: int = MAX_TOOL_ATTEMPTS):
@@ -113,6 +114,36 @@ async def tool(name: str, args: dict, gate: SpendGate, retries: int = MAX_TOOL_A
             if not gate.record_retry():
                 raise RuntimeError(gate.stop_reason or STOP_NOTE) from None
             await asyncio.sleep(backoff_seconds(k, base=5.0))
+
+
+def _result_brief(txt: str, rejected: bool) -> dict:
+    """What the server said back, for debugging stuck cells: page url, captcha state, action error."""
+    out: dict[str, Any] = {"rejected": rejected}
+    try:
+        d = json.loads(txt[txt.index("{"):]) if "{" in txt else {}
+    except ValueError:
+        d = {}
+    if isinstance(d, dict):
+        for k in ("url", "step", "steps_left", "action_error", "note"):
+            if d.get(k):
+                out[k] = str(d[k])[:200]
+        if d.get("captcha"):
+            out["captcha"] = json.dumps(d["captcha"], default=str)[:200]
+    elif rejected:
+        out["error"] = txt[:200]
+    return out
+
+
+def stall_summary(steps: list[dict]) -> dict:
+    """Longest run of identical actions with no page change (a stuck cell), and how many steps saw a captcha."""
+    best = cur = 0
+    prev = None
+    for st in steps:
+        key = (st.get("action"), st.get("url"))
+        cur = cur + 1 if st.get("tool") == "usersim_act" and key == prev else 1
+        prev = key if st.get("tool") == "usersim_act" else None
+        best = max(best, cur)
+    return {"max_repeat_same_action_and_url": best, "captcha_steps": sum(1 for st in steps if st.get("captcha"))}
 
 
 async def listing(what: str, *args):
@@ -241,17 +272,19 @@ async def run_cell(
                 args.setdefault("notes", "Finished by the simulated user.")
                 args.setdefault("outcome", "completed")
             a = args.get("action")
-            log["steps"].append(
-                {
-                    "turn": turn,
-                    "tool": u.name,
-                    "action": a if isinstance(a, (str, type(None))) else a.get("type"),
-                }
-            )
+            step = {
+                "turn": turn,
+                "tool": u.name,
+                "action": a if isinstance(a, (str, type(None))) else a.get("type"),
+                "args": {k: (v if not isinstance(v, str) else v[:120]) for k, v in args.items() if k != "session_id"},
+                "thought": " ".join(b.text for b in resp.content if b.type == "text")[:300],
+            }
+            log["steps"].append(step)
             try:
                 res = await tool(u.name, args, gate, retries=MAX_TOOL_ATTEMPTS if u.name == "usersim_observe" else MAX_TOOL_ATTEMPTS)
                 txt = _text(res)
                 rejected = txt.startswith("Error executing tool")
+                step.update(_result_brief(txt, rejected))
                 nudged = False
                 if u.name == "usersim_finish" and not rejected:
                     try:
@@ -322,6 +355,7 @@ async def run_cell(
     if log.get("finish", "").startswith("Error executing tool") or '"finished": false' in log.get("finish", ""):
         log["error"] = "finish rejected: " + log["finish"][:300]
     log["seconds"] = round(time.time() - log["started"])
+    log["stall"] = stall_summary(log["steps"])
     log["total_runner_usd"] = round(gate.total_usd, 6)
     (out / f"{cell['cell_id']}.json").write_text(json.dumps(log, indent=1))
     return log
@@ -406,6 +440,7 @@ async def run_study(
             break
         await asyncio.sleep(30)
     (out / "report.md").write_text(report)
+    _save_server_study(out, study)
     cell_files = list(out.glob("*.json"))
     finished = sum(1 for p in cell_files if p.name not in ("study.json", "summary.json") and "error" not in p.name)
     summary = {
@@ -420,6 +455,21 @@ async def run_study(
     (out / "summary.json").write_text(json.dumps(summary, indent=1))
     print(f"[{product_url}] done  runner spend ${gate.total_usd:.4f}  report {study.get('report_url')}", flush=True)
     return summary
+
+
+def _save_server_study(out: Path, study: dict) -> None:
+    """The server keeps every step's thought, click args and screenshot url; keep a copy (gzip) with the runner logs."""
+    base = (study.get("report_url") or "").split("/report")[0]
+    if not base:
+        return
+    try:
+        import gzip
+        import urllib.request
+
+        with urllib.request.urlopen(f"{base}/api/studies/{study['study_id']}", timeout=120) as r:
+            (out / "server_study.json.gz").write_bytes(gzip.compress(r.read()))
+    except Exception as exc:  # noqa: BLE001
+        print(f"could not save the server's copy of the study: {_leaf(exc)}", flush=True)
 
 
 async def _run_cells_parallel(
@@ -450,7 +500,7 @@ async def _run_cells_parallel(
             try:
                 return await run_cell(study["study_id"], cell, max_turns, max_cell_usd, out, llm, gate)
             except Exception as exc:  # noqa: BLE001
-                res = {"cell": cell, "error": _leaf(exc)}
+                res = {"cell": cell, "error": _leaf(exc), "traceback": "".join(traceback.format_exception(exc))[-3000:]}
                 (out / f"{cell['cell_id']}.error.json").write_text(json.dumps(res, indent=1))
                 return res
             finally:

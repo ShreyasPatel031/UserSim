@@ -6,7 +6,7 @@ Hard caps, enforced before every ``createTask``:
 
 - $15 total (the other $5 of a $20 balance stays untouched)
 - $1.50 per site
-- 3 solves per signup attempt
+- 6 solves per signup attempt (MVP_CAPTCHA_MAX_SOLVES_PER_ATTEMPT; the Smartsheet study hit the old 3)
 - 2 signup attempts per site
 
 Only task types on CapSolver's published price list are sent. Arkose/FunCaptcha
@@ -37,7 +37,7 @@ PRICED_TASKS_USD: dict[str, float] = {
 
 TOTAL_CAP_USD = float(os.environ.get("MVP_CAPTCHA_TOTAL_CAP_USD") or 15.0)  # per ledger file
 PER_SITE_CAP_USD = 1.50
-MAX_SOLVES_PER_ATTEMPT = 3
+MAX_SOLVES_PER_ATTEMPT = int(os.environ.get("MVP_CAPTCHA_MAX_SOLVES_PER_ATTEMPT") or 6)  # one attempt = one session
 MAX_SIGNUP_ATTEMPTS = 2
 
 _LOCK = threading.Lock()
@@ -126,6 +126,22 @@ def _append(row: dict[str, Any]) -> None:
     with _LOCK:
         with path.open("a") as fh:
             fh.write(json.dumps(clean, sort_keys=True) + "\n")
+
+
+def set_max_solves_per_attempt(n: int) -> None:
+    """The MCP server sets this from limits.json (paid_captcha_max_solves)."""
+    global MAX_SOLVES_PER_ATTEMPT
+    MAX_SOLVES_PER_ATTEMPT = max(1, int(n))
+
+
+def ledger_count() -> int:
+    return len(_read_rows())
+
+
+def events_since(n: int) -> list[dict[str, Any]]:
+    """Ledger rows added after the first ``n`` (createTask, skip with its reason, balance), compact, for the trace."""
+    keep = ("event", "reason", "solved", "cost", "task_type", "captcha_type", "balance_after", "note", "attempt", "site")
+    return [{k: r[k] for k in keep if k in r} for r in _read_rows()[n:]][-8:]
 
 
 def signup_attempts(site: str) -> int:

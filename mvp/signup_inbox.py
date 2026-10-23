@@ -439,6 +439,11 @@ class GmailAliasInbox(Inbox):
         inbox.address = address
         return inbox
 
+    def diagnose(self, since: float) -> list[dict[str, Any]]:
+        from mvp.email_codes import recent_mail_diagnostics
+
+        return recent_mail_diagnostics(self.username, self.app_password, self.address, since=since)
+
     def messages(self, newer_than: float) -> list[dict[str, Any]]:
         from mvp.email_codes import _body_text, _decode, _msg_timestamp, messages_for_alias
 
