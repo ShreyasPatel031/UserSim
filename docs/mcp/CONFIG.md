@@ -42,6 +42,10 @@ Each row has a `value` (read at **use time** so hot reload applies without resta
 | `max_cells` | `108` | Max runs per study (108 = full e2e 6×6×3). |
 | `wait_max_s` | `50` | Max seconds per wait-tool call (mail/SMS); agents should retry. |
 | `paid_captcha` | `false` | **Master** paid CapSolver switch (~$0.002–0.01/solve when on). Needs API key in env. Token callers still need host allowlist in `captcha_spend.py` env. |
+| `paid_captcha_max_tries` | `6` | Paid tokens an `usersim_act` presolve or an open image grid may buy per session (was fixed at 2). |
+| `paid_captcha_max_solves` | `6` | CapSolver createTask calls per session in the ledger (was fixed at 3). Per-site $1.50 and total $15 caps still apply. |
+| `captcha_max_calls_per_page` | `6` | `usersim_solve_captcha` calls per URL before it refuses (was fixed at 3). |
+| `captcha_stuck_steps` | `12` | Steps with an image grid still open before the agent is told to finish `blocked`; refused at twice this. `0` = off. |
 | `probe_sites` | `true` | TLS/DNS check before opening a product URL. `false` = faster, may waste browsers. |
 | `bb_proxies` | `true` | Browserbase residential proxies (better signups, higher cost). |
 | `anon_daily_usd_per_ip` | `6.0` | Estimated $ budget per IP per day (no token). |

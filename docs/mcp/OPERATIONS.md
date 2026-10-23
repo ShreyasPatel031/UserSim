@@ -114,3 +114,14 @@ curl -s https://35-202-98-224.sslip.io/api/mcp/limits | jq .
 ## Who may do this
 
 Any collaborator on **ShreyasPatel031/UserSim** or anyone with **GCP Secret Manager + VM SSH** access to `project-amer-scs-sandbox` / `usersim-grokbot-web`. No single “bot operator” gate.
+
+
+## CAPTCHA visibility (Oct 23)
+
+Every paid CAPTCHA attempt is stored per session as `captcha_paid_log` (in the study JSON under `live_sessions`, and
+as `action_args.paid` on the trace step): the ledger rows it produced (`createTask` solved/cost, or `skip` with the
+reason: `host_not_paid`, `solve_attempt_cap`, `per_site_cap`, `total_cap`), and what the page did after the token
+(`challenge_open`, `token_ready`, `rejected_banner`, `url_changed`, `site_accepted`). `captcha_challenge_steps` counts
+steps spent with an image grid open. The raw ledger is `results/captcha_spend/ledger.jsonl` on the server unless
+`CAPTCHA_SPEND_LEDGER` points elsewhere; it is not in git and is lost when the disk is replaced, so set
+`CAPTCHA_SPEND_LEDGER=/var/lib/usersim/captcha_ledger.jsonl` (next to `mcp_accounts`) to keep it across deploys.

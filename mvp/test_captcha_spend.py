@@ -163,7 +163,9 @@ class SpendGateTests(unittest.TestCase):
         from mvp.captcha_spend import SpendCapError, begin_signup_attempt, record_task
 
         attempt = begin_signup_attempt("trello.com")
-        for i in range(3):
+        from mvp.captcha_spend import MAX_SOLVES_PER_ATTEMPT
+
+        for i in range(MAX_SOLVES_PER_ATTEMPT):
             record_task(
                 site="trello.com",
                 captcha_type="recaptcha_enterprise",

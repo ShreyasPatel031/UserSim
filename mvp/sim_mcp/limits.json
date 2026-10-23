@@ -45,6 +45,22 @@
       "value": true,
       "about": "Master switch for the paid CapSolver path on this server. When true, approved hosts may buy tokens (metered in captcha_spend.py; typically ~$0.002-0.01 per solve). Callers without a token still need anon_allow_paid_captcha true. Requires MVP_CAPTCHA_API_KEY in server env (not in this file)."
     },
+    "paid_captcha_max_tries": {
+      "value": 6,
+      "about": "Paid CapSolver tokens one session may buy before an act-triggered presolve stops (was a fixed 2: the Oct 18 Smartsheet study had 13 of 24 stuck cells with no paid try and 3 that used both). Each token is about $0.001-0.003."
+    },
+    "paid_captcha_max_solves": {
+      "value": 6,
+      "about": "Hard cap of CapSolver createTask calls per session (the ledger's per-attempt cap, was a fixed 3). The per-site ($1.50) and total ($15) USD caps in captcha_spend.py still apply."
+    },
+    "captcha_max_calls_per_page": {
+      "value": 6,
+      "about": "How many times usersim_solve_captcha may run on one URL before it refuses and tells the agent to finish as blocked (was a fixed 3)."
+    },
+    "captcha_stuck_steps": {
+      "value": 12,
+      "about": "Consecutive steps with a reCAPTCHA image challenge still open before the observation tells the agent to call usersim_finish with outcome 'blocked'; at twice this many, usersim_act refuses further actions on that page. 0 turns the guard off."
+    },
     "probe_sites": {
       "value": true,
       "about": "When true, usersim_start_session refuses product URLs whose TLS certificate is invalid or host does not resolve. false skips the check (faster starts; may waste a browser on dead hosts)."
