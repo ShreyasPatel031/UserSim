@@ -55,3 +55,15 @@ prompt change; both alter results, so they need a decision.
   one address, so later signups get no mail. Fix: a per-site account registry. `usersim_signup_identity(no_plus=true)` on a
   site that already holds this inbox's verified account returns that account to log in with (`save_host_account` /
   `load_host_account`, seeded by a verified signup finishing, or by `same_account_as`).
+
+## Result (Oct 23, builds up to 61f396ba7e89)
+
+| Run | Study | Outcome | Haiku $ | Paid CAPTCHA |
+|---|---|---|---|---|
+| Asana, fresh signup + email code (smoke) | `a8738b67` | signup verified, landed on a project page, judge goal reached, proof pass, 40 steps | 1.23 | 3 solves, all accepted, $0.009 |
+| Smartsheet (smoke 8) | `83aaf9cd` | reused the site's account via the registry, switched to the EU region, reached `app.smartsheet.eu/b/home`, 30 steps | 0.80 | 1 solve, accepted |
+| Smartsheet (smoke 9) | `45177f9c` | same, scored as a login run (no signup_email); judge: reached the workspace but "did not complete a new signup" because the task text says sign up | 0.74 | 1 solve, accepted |
+
+A brand-new Smartsheet signup is not possible from this inbox (every dot-variant is the one address that already holds the
+account); Asana and Monday (plus aliases) get genuine fresh signups. Cost: a cell costs about $0.75 to $1.25 in Haiku, so a
+108-cell study is roughly $80 to $135 before shared accounts shorten the signup part.
