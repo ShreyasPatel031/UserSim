@@ -187,6 +187,7 @@ def test_registry_account_replaces_an_already_issued_plus_identity(tmp_path, mon
                                         owner="o", product_url="https://www.smartsheet.com/"))
     monkeypatch.setattr(signup_inbox.GmailAliasInbox, "for_address", classmethod(lambda cls, a: SimpleNamespace(address=a)))
     sim = SimpleNamespace(product_url="https://www.smartsheet.com", inbox=SimpleNamespace(address="a+x@gmail.com"), identity={"email": "a+x@gmail.com"},
-                          mail_since=0.0, row={})
+                          mail_since=0.0, row={"signup_email": "a+x@gmail.com"})
     out = json.loads(srv._host_registry_account(sim))
     assert out["email"] == "users.ims.ignup.s@gmail.com" and sim.inbox.address == "users.ims.ignup.s@gmail.com"
+    assert "signup_email" not in sim.row  # report.py treats login_email without signup_email as a login run

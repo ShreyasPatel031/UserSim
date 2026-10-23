@@ -687,6 +687,7 @@ def _host_registry_account(sim: S.SimSession) -> str | None:
     sim.mail_since = time.time() - 30
     sim.row["login_email"] = inbox.address
     sim.row["reused_account_from"] = "host_registry"
+    sim.row.pop("signup_email", None)  # the '+' identity issued first was never used: this run is a login, not a signup
     ident = {k: v for k, v in sim.identity.items() if k != "code"}
     return json.dumps({**ident, "reused_account": True,
                        "next": "This site already has an account for the shared signup inbox (it treats dot-variants of one address "
@@ -799,6 +800,7 @@ def _reuse_account(sim: S.SimSession, prev_id: str, owner: str) -> str:
     # Not a signup: the report and proof must not ask this run for a verified fresh signup.
     sim.row["login_email"] = inbox.address
     sim.row["reused_account_from"] = from_id
+    sim.row.pop("signup_email", None)
     S.save_host_account(sim)  # a dot-variant account that works is the site's one account for this inbox
     ident = {k: v for k, v in sim.identity.items() if k != "code"}
     return json.dumps({**ident, "reused_account": True,
