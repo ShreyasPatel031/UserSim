@@ -178,3 +178,15 @@ def test_screenshot_keeps_the_viewport_size_so_clicks_land():
     Image.new("RGB", (1280, 800), "white").save(buf, format="PNG")
     out, _ = _downscale_image_b64(base64.b64encode(buf.getvalue()).decode(), "image/png")
     assert Image.open(io.BytesIO(base64.b64decode(out))).size == (1280, 800)
+
+
+def test_any_tool_result_with_an_image_refreshes_the_screenshot():
+    import sys
+    from pathlib import Path
+    from types import SimpleNamespace
+
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
+    from mcp_study_runner import _has_image
+
+    assert _has_image(SimpleNamespace(content=[SimpleNamespace(type="text", text="x"), SimpleNamespace(type="image", data="d")]))
+    assert not _has_image(SimpleNamespace(content=[SimpleNamespace(type="text", text="x")]))

@@ -455,6 +455,13 @@ async def usersim_finish(ctx: Context, session_id: str, outcome: str, notes: str
         })
     async with sim.lock:
         study = await finalize(sim, outcome=outcome, notes=notes)
+    try:
+        from mvp.sim_mcp.report import signup_verified as _sv
+
+        if not sim.row.get("login_email") and _sv(sim.row):
+            S.save_host_account(sim)
+    except Exception:  # noqa: BLE001
+        pass
     if sim.matrix:
         row = sim.row
         return json.dumps(
@@ -662,6 +669,33 @@ def _register_study_account(sim: S.SimSession) -> None:
                                    {"sid": sim.id, "cell": sim.agent_id, "verified": False})
 
 
+def _host_registry_account(sim: S.SimSession) -> str | None:
+    """no_plus on a site that already holds this inbox's account: log in to it instead of signing up again (a site that
+    treats dot-variants as one address ignores a second signup and sends no mail)."""
+    import time
+
+    saved = S.load_host_account(_host(sim))
+    if not saved:
+        return None
+    from mvp.signup_inbox import GmailAliasInbox
+
+    try:
+        inbox = GmailAliasInbox.for_address(str(saved["address"]))
+    except Exception:  # noqa: BLE001
+        return None
+    sim.inbox, sim.identity = inbox, dict(saved.get("identity") or {})
+    sim.mail_since = time.time() - 30
+    sim.row["login_email"] = inbox.address
+    sim.row["reused_account_from"] = "host_registry"
+    ident = {k: v for k, v in sim.identity.items() if k != "code"}
+    return json.dumps({**ident, "reused_account": True,
+                       "next": "This site already has an account for the shared signup inbox (it treats dot-variants of one address "
+                               "as the same, so a new signup would be ignored and no mail would come). Log in with this email and "
+                               "password instead of signing up. If it says no such account, pick the other data region on the "
+                               "sign-in page (North America / European Union / Australia). Login codes or links the site mails "
+                               "are read with usersim_wait_for_verification_code / _link."})
+
+
 @mcp.tool(structured_output=False)
 async def usersim_signup_identity(ctx: Context, session_id: str, no_plus: bool = False, same_account_as: str = "") -> str:
     """Fresh, never-used email alias (a real inbox UserSim reads) plus password, name and username for signing up.
@@ -696,6 +730,10 @@ async def usersim_signup_identity(ctx: Context, session_id: str, no_plus: bool =
             # session's mail. Callers without a token only get unique +tag aliases.
             raise S.SessionError("cap anon_allow_shared_aliases: no_plus addresses are not available without a token. "
                                  "This site rejects '+' aliases, so finish with outcome 'blocked' and say so")
+        if no_plus and sim.inbox is None and shared_ok:
+            known = _host_registry_account(sim)
+            if known:
+                return known
         if no_plus and sim.inbox is not None and "+" in sim.inbox.address:
             sim.inbox = None
         issued_now = sim.inbox is None
@@ -760,6 +798,7 @@ def _reuse_account(sim: S.SimSession, prev_id: str, owner: str) -> str:
     # Not a signup: the report and proof must not ask this run for a verified fresh signup.
     sim.row["login_email"] = inbox.address
     sim.row["reused_account_from"] = from_id
+    S.save_host_account(sim)  # a dot-variant account that works is the site's one account for this inbox
     ident = {k: v for k, v in sim.identity.items() if k != "code"}
     return json.dumps({**ident, "reused_account": True,
                        "next": "Log in with this email and password (not a new signup). If the site emails a login code "
