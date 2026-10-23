@@ -409,6 +409,47 @@ def save_account(sim: "SimSession") -> None:
         print(f"[sim_mcp] could not save account for reuse: {exc!r}", flush=True)
 
 
+def _host_account_file(host: str) -> Path:
+    import hashlib
+
+    return _accounts_dir() / ("host_" + hashlib.sha256(registrable_domain(host).encode()).hexdigest()[:32] + ".json")
+
+
+def save_host_account(sim: "SimSession") -> None:
+    """Remember the verified account a no-plus (dot-variant) signup created on this site.
+
+    Gmail delivers every dot-variant to one inbox and many sites treat them as ONE address, so the site can only ever hold
+    one account for it: Oct 23 Smartsheet answered later signups with 500 / "already exists" and never mailed again
+    (the first account lives in its EU data region). Later no_plus requests for the site get this account to log in to.
+    Same disk, mode 600 and 30-day expiry as save_account; keyed by site, not by session id."""
+    import json as _json
+
+    if sim.inbox is None or not sim.identity or "+" in sim.inbox.address:
+        return
+    try:
+        _accounts_dir().mkdir(parents=True, exist_ok=True)
+        path = _host_account_file(urlsplit(sim.product_url).hostname or "")
+        tmp = path.with_suffix(".tmp")
+        tmp.write_text(_json.dumps({"address": sim.inbox.address, "identity": dict(sim.identity), "owner": sim.owner,
+                                    "host": urlsplit(sim.product_url).hostname or "", "ts": time.time()}))
+        os.chmod(tmp, 0o600)
+        tmp.replace(path)
+    except OSError as exc:
+        print(f"[sim_mcp] could not save host account: {exc!r}", flush=True)
+
+
+def load_host_account(host: str) -> dict[str, Any] | None:
+    import json as _json
+
+    try:
+        data = _json.loads(_host_account_file(host).read_text())
+    except (OSError, ValueError):
+        return None
+    if not isinstance(data, dict) or time.time() - float(data.get("ts") or 0) > ACCOUNT_TTL_S:
+        return None
+    return data
+
+
 def load_account(session_id: str, owner: str | None) -> dict[str, Any] | None:
     """The saved account of an earlier (possibly pre-restart) session, or None. Same owner rule as get_session."""
     import json as _json

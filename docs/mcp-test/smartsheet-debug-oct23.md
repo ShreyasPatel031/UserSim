@@ -40,3 +40,18 @@ prompt change; both alter results, so they need a decision.
   ended without a verified signup takes over.
 - Not tested live: the paid-solve fix and shared accounts need the server deployed (merge to main). Test plan after deploy:
   run `scripts/mcp_study_runner.py <smartsheet> --smoke` and check `captcha_paid_log` in the study JSON.
+
+## Smoke runs 3 to 6 (Oct 23, through the runner; each fix found by the previous run's logs)
+
+- Run 3: 26 clicks on "Accept All" at the wrong spot. Runner downscaled screenshots to 1024 px, the browser is 1280: fixed (full width).
+- Run 4: `captcha_paid_log` said ledger `skip: host_not_paid`. The MCP never registered the site under test as a paid host
+  (`allow_study_host` was only called by the website driver): fixed in `usersim_start_session`.
+- Run 5: the model acted on the first page's screenshot for the whole run. The runner refreshed it only after `usersim_observe`:
+  fixed for every tool that returns an image.
+- Run 6: CAPTCHA fixed: 4 paid solves ($0.0008 each), every one `site_accepted: true`, account creation reached the
+  confirm page. `mail_debug` then showed the inbox received NO Smartsheet mail in 8 waits (only an unrelated Monday
+  marketing mail): not a matching problem. The shared Gmail already holds a Smartsheet account (study 75183a40, cell
+  t2__p1__product, verified through `app.smartsheet.eu`, i.e. the EU data region); Smartsheet treats all dot-variants as that
+  one address, so later signups get no mail. Fix: a per-site account registry. `usersim_signup_identity(no_plus=true)` on a
+  site that already holds this inbox's verified account returns that account to log in with (`save_host_account` /
+  `load_host_account`, seeded by a verified signup finishing, or by `same_account_as`).

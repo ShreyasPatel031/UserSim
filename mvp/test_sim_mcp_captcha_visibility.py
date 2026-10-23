@@ -152,3 +152,25 @@ def test_mcp_session_host_becomes_a_paid_host(monkeypatch):
     cs._STUDY_HOSTS.discard("smartsheet.com")
     srv._allow_paid_captcha_host(sim)
     assert "smartsheet.com" not in cs.paid_hosts()
+
+
+def test_no_plus_request_logs_in_to_the_sites_known_account(tmp_path, monkeypatch):
+    """Oct 23 Smartsheet: one inbox, one account. A later no_plus request gets that account, not another dot-variant."""
+    from mvp import signup_inbox
+    from mvp.sim_mcp import sessions as S
+
+    monkeypatch.setattr(S, "ACCOUNTS_DIR", tmp_path)
+    saved = SimpleNamespace(inbox=SimpleNamespace(address="users.ims.ignup.s@gmail.com"), identity={"email": "users.ims.ignup.s@gmail.com", "password": "pw"},
+                            owner="o", product_url="https://www.smartsheet.com/")
+    S.save_host_account(saved)
+    plus = SimpleNamespace(inbox=SimpleNamespace(address="a+b@gmail.com"), identity={"x": 1}, owner="o", product_url="https://asana.com")
+    S.save_host_account(plus)  # a plus alias is unique per signup: nothing to remember
+    assert S.load_host_account("asana.com") is None
+    assert S.load_host_account("app.smartsheet.com")["address"] == "users.ims.ignup.s@gmail.com"  # same registrable domain
+
+    monkeypatch.setattr(signup_inbox.GmailAliasInbox, "for_address", classmethod(lambda cls, a: SimpleNamespace(address=a)))
+    sim = SimpleNamespace(product_url="https://www.smartsheet.com", inbox=None, identity={}, mail_since=0.0, row={})
+    out = json.loads(srv._host_registry_account(sim))
+    assert out["reused_account"] and out["email"] == "users.ims.ignup.s@gmail.com" and "data region" in out["next"]
+    assert sim.row["login_email"] == "users.ims.ignup.s@gmail.com"
+    assert srv._host_registry_account(SimpleNamespace(product_url="https://asana.com", inbox=None, identity={}, mail_since=0.0, row={})) is None
