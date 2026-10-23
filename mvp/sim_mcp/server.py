@@ -624,7 +624,7 @@ def _study_account_for(sim: S.SimSession, owner: str) -> str | None:
     from mvp.sim_mcp.report import signup_verified
     from mvp.sim_mcp.sessions import registrable_domain
 
-    if not sim.matrix or not L.get("study_shared_accounts"):
+    if not getattr(sim, "matrix", False) or not L.get("study_shared_accounts"):
         return None
     key = (sim.study.id, registrable_domain(_host(sim)))
     entry = _STUDY_ACCOUNTS.get(key)
@@ -656,7 +656,7 @@ def _register_study_account(sim: S.SimSession) -> None:
     from mvp.sim_mcp import limits as L
     from mvp.sim_mcp.sessions import registrable_domain
 
-    if sim.matrix and L.get("study_shared_accounts"):
+    if getattr(sim, "matrix", False) and L.get("study_shared_accounts"):
         _STUDY_ACCOUNTS.setdefault((sim.study.id, registrable_domain(_host(sim))),
                                    {"sid": sim.id, "cell": sim.agent_id, "verified": False})
 
@@ -767,6 +767,7 @@ def _reuse_account(sim: S.SimSession, prev_id: str, owner: str) -> str:
 
 async def _wait(ctx: Context, session_id: str, timeout_s: int, want: str) -> str:
     import asyncio
+    import time
 
     from mvp.signup_tools import wait_mail
     from mvp.sim_mcp import limits as L
@@ -781,6 +782,16 @@ async def _wait(ctx: Context, session_id: str, timeout_s: int, want: str) -> str
         msg = await asyncio.to_thread(wait_mail, sim.inbox, _host(sim), since=sim.mail_since, timeout_s=t, seen=sim.mail_seen, want=want)
         sim.last_used = __import__("time").time()
         if not msg:
+            diag = getattr(sim.inbox, "diagnose", None)
+            if diag:
+                try:  # what the inbox did receive meanwhile, so a missing mail can be traced (mail to another address?)
+                    seen_mail = await asyncio.to_thread(diag, sim.mail_since)
+                except Exception as exc:  # noqa: BLE001
+                    seen_mail = [{"error": repr(exc)[:120]}]
+                dbg = sim.row.setdefault("mail_debug", [])
+                if len(dbg) < 10:
+                    dbg.append({"at": round(time.time()), "alias": sim.inbox.address, "waited_s": t, "want": want,
+                                "inbox_since_start": seen_mail})
             return json.dumps({"found": False, "note": f"no verification mail with a {want} yet (waited {t}s). Mail often takes "
                                "1-3 minutes: call this tool again. If several calls find nothing, check the form was "
                                "really submitted, or use the site's resend link"})

@@ -418,7 +418,7 @@ def _iter_recent_messages(
 _POLL_LOCK = threading.Lock()
 _POLL: dict[str, Any] = {"user": "", "ts": 0.0, "rows": [], "max_uid": 0}
 _BODIES: dict[bytes, email.message.Message] = {}
-_HEADER_FIELDS = "(TO CC DELIVERED-TO X-ORIGINAL-TO DATE MESSAGE-ID)"
+_HEADER_FIELDS = "(TO CC DELIVERED-TO X-ORIGINAL-TO DATE MESSAGE-ID FROM SUBJECT)"
 _UID_RE = re.compile(rb"UID (\d+)")
 
 
@@ -469,6 +469,8 @@ def _header_rows(con: imaplib.IMAP4_SSL, uids: list[bytes]) -> list[dict[str, An
                 "recipients": _recipients(hdr),
                 "ts": _msg_timestamp(hdr),
                 "id": hdr.get("Message-ID") or "",
+                "sender": _decode(hdr.get("From"))[:80],
+                "subject": _decode(hdr.get("Subject"))[:80],
             }
         )
     return rows
@@ -562,6 +564,20 @@ def messages_for_alias(
         return []
     _fetch_bodies(username, app_password, hits)
     return [_BODIES[u] for u in hits if u in _BODIES]
+
+
+def recent_mail_diagnostics(username: str, app_password: str, alias: str, *, since: float, limit: int = 12) -> list[dict[str, Any]]:
+    """Headers (never bodies) of mail that arrived since ``since``, with whether each one matched ``alias``. For a wait
+    that found nothing: shows whether the site mailed a different address (normalised dots, a plain inbox address)."""
+    out = []
+    for r in _recent_header_rows(username, app_password, 300):
+        if r.get("ts") is not None and r["ts"] < since - 30:
+            continue
+        out.append({"ts": r.get("ts"), "from": r.get("sender"), "subject": r.get("subject"),
+                    "to": (r.get("recipients") or "")[:120], "matched": _alias_match(r.get("recipients") or "", alias)})
+        if len(out) >= limit:
+            break
+    return out
 
 
 def _alias_match(recipients: str, alias: str) -> bool:

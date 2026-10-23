@@ -108,3 +108,14 @@ def test_failed_owner_hands_the_account_over(monkeypatch):
     srv._register_study_account(a)
     b = _cell("sb2", "t2__p2__product")
     assert srv._study_account_for(b, "o") is None and ("st1", "smartsheet.com") not in srv._STUDY_ACCOUNTS
+
+
+def test_mail_diagnostics_show_unmatched_mail(monkeypatch):
+    """A wait that finds nothing records what the inbox did receive: mail to a differently dotted address shows matched=False."""
+    from mvp import email_codes as ec
+
+    rows = [{"uid": b"2", "ts": 1000.0, "recipients": "usersimsignups@gmail.com", "sender": "Smartsheet <welcome@system.smartsheet.com>", "subject": "Confirm your email"},
+            {"uid": b"1", "ts": 10.0, "recipients": "old@x.com", "sender": "old", "subject": "old"}]
+    monkeypatch.setattr(ec, "_recent_header_rows", lambda u, p, n: rows)
+    out = ec.recent_mail_diagnostics("u", "p", "u.s.ersimsignu.ps@gmail.com", since=990.0)
+    assert len(out) == 1 and out[0]["from"].startswith("Smartsheet") and out[0]["matched"] is False
