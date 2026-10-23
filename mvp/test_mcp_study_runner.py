@@ -141,3 +141,23 @@ def test_stall_summary_counts_repeated_actions_and_captcha_steps():
 
     steps = [{"tool": "usersim_act", "action": "click", "url": "u", "captcha": "x"}] * 4 + [{"tool": "usersim_observe"}]
     assert stall_summary(steps) == {"max_repeat_same_action_and_url": 4, "captcha_steps": 4}
+
+
+def test_screenshot_is_not_injected_into_an_error_tool_result():
+    import sys
+    from pathlib import Path
+
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
+    from mcp_study_runner_lib import TranscriptState
+
+    st = TranscriptState()
+    st.latest_screenshot = {"type": "image", "source": {"type": "base64", "media_type": "image/png", "data": "x"}}
+    st.append_user("go")
+    st.append_tool_result("t1", [{"type": "text", "text": "Error executing tool"}], is_error=True)
+    api = st.inject_screenshot_for_api(st.messages)
+    assert all(b["type"] != "image" for b in api[-1]["content"][0]["content"])
+    st2 = TranscriptState()
+    st2.latest_screenshot = st.latest_screenshot
+    st2.append_user("go")
+    st2.append_tool_result("t2", [{"type": "text", "text": "ok"}])
+    assert st2.inject_screenshot_for_api(st2.messages)[-1]["content"][0]["content"][-1]["type"] == "image"

@@ -222,7 +222,8 @@ class TranscriptState:
                 if block.get("type") != "tool_result":
                     continue
                 content = list(block.get("content") or [])
-                if not any(x.get("type") == "image" for x in content):
+                # the API rejects images inside an is_error tool_result (Oct 23 smoke run, 400 at message 58)
+                if not block.get("is_error") and not any(x.get("type") == "image" for x in content):
                     content.append(copy.deepcopy(self.latest_screenshot))
                     block["content"] = content
                 return api
