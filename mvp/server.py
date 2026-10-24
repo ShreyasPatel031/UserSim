@@ -1246,6 +1246,70 @@ async def post_live_frame(request: Request):
     return {"ok": True, "screenshot_url": published.get("screenshot_url")}
 
 
+_DISCOVERY_DIR = MVP_RUNS_DIR / "discovery"
+_DISCOVERIES: dict = {}
+_DISCOVERY_TASKS: set = set()  # strong refs so running discoveries are not garbage-collected
+
+
+class DiscoveryRequest(BaseModel):
+    url: str = Field(..., min_length=3)
+    max_competitors: int = 2
+    task_count: int = 6
+    scrape_reviews: bool = True
+
+
+def _save_discovery(run) -> None:
+    try:
+        _DISCOVERY_DIR.mkdir(parents=True, exist_ok=True)
+        (_DISCOVERY_DIR / f"{run.id}.json").write_text(json.dumps(run.to_dict(), default=str))
+    except OSError:
+        pass
+
+
+@app.get("/discovery")
+async def discovery_page() -> FileResponse:
+    """Part 1 of a study: product URL -> competitors, real users, comparison tasks (with the agent's trace)."""
+    path = STATIC / "discovery.html"
+    if not path.is_file():
+        raise HTTPException(status_code=503, detail="Discovery page not bundled")
+    return FileResponse(path)
+
+
+@app.post("/api/discovery")
+async def start_discovery(body: DiscoveryRequest):
+    from mvp import discovery
+
+    run = discovery.new_run(body.url, max_competitors=body.max_competitors, task_count=body.task_count,
+                            scrape_reviews=body.scrape_reviews)
+    _DISCOVERIES[run.id] = run
+    agent = discovery.DiscoveryAgent(run, on_change=_save_discovery)
+    task = asyncio.create_task(agent.go())
+    _DISCOVERY_TASKS.add(task)
+    task.add_done_callback(_DISCOVERY_TASKS.discard)
+    return {"id": run.id}
+
+
+@app.get("/api/discovery")
+async def list_discoveries():
+    rows = []
+    for f in sorted(_DISCOVERY_DIR.glob("*.json"), key=lambda p: p.stat().st_mtime, reverse=True)[:30] if _DISCOVERY_DIR.is_dir() else []:
+        try:
+            d = json.loads(f.read_text())
+        except (OSError, ValueError):
+            continue
+        rows.append({"id": d["id"], "url": d["url"], "status": d["status"], "created_at": d["created_at"]})
+    return {"runs": rows}
+
+
+@app.get("/api/discovery/{run_id}")
+async def get_discovery(run_id: str):
+    if run_id in _DISCOVERIES:
+        return _DISCOVERIES[run_id].to_dict()
+    if re.fullmatch(r"[a-f0-9]{12}", run_id) and (_DISCOVERY_DIR / f"{run_id}.json").is_file():
+        return json.loads((_DISCOVERY_DIR / f"{run_id}.json").read_text())
+    raise HTTPException(status_code=404, detail="discovery run not found")
+
+
 @app.get("/health")
 async def health():
     from mvp.version import stamp
