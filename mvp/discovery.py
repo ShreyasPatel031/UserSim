@@ -23,6 +23,7 @@ says so.
 from __future__ import annotations
 
 import asyncio
+import contextvars
 import json
 import os
 import re
@@ -52,17 +53,26 @@ PH_TOKEN_URL = "https://api.producthunt.com/v2/oauth/token"
 _PH_MINTED: dict[str, str] = {}  # client id -> client-credentials access token
 
 
+# Credentials passed with one run (the /discovery form) override the server's for that run only. A ContextVar keeps
+# concurrent runs apart and reaches asyncio.to_thread workers; nothing here is stored on the run or written to disk.
+CREDENTIAL_NAMES = ("APIFY_TOKEN", "PH_TOKEN", "PH_CLIENT_ID", "PH_CLIENT_SECRET")
+_RUN_CREDS: contextvars.ContextVar[dict[str, str]] = contextvars.ContextVar("discovery_creds", default={})
+
+
+def _cred(name: str) -> str:
+    return (_RUN_CREDS.get().get(name) or os.environ.get(name) or "").strip()
+
+
 def ph_configured() -> bool:
-    env = os.environ.get
-    return bool((env("PH_TOKEN") or "").strip() or ((env("PH_CLIENT_ID") or "").strip() and (env("PH_CLIENT_SECRET") or "").strip()))
+    return bool(_cred("PH_TOKEN") or (_cred("PH_CLIENT_ID") and _cred("PH_CLIENT_SECRET")))
 
 
 async def ph_bearer() -> str:
     """PH_TOKEN (developer token), else a public-scope token minted from PH_CLIENT_ID + PH_CLIENT_SECRET."""
-    token = (os.environ.get("PH_TOKEN") or "").strip()
+    token = _cred("PH_TOKEN")
     if token:
         return token
-    cid, secret = (os.environ.get("PH_CLIENT_ID") or "").strip(), (os.environ.get("PH_CLIENT_SECRET") or "").strip()
+    cid, secret = _cred("PH_CLIENT_ID"), _cred("PH_CLIENT_SECRET")
     if not (cid and secret):
         raise RuntimeError("set PH_TOKEN, or PH_CLIENT_ID and PH_CLIENT_SECRET")
     if cid not in _PH_MINTED:
@@ -182,7 +192,7 @@ def google_search_many(queries: list[str], limit: int = 8) -> dict[str, list[dic
     from mvp import review_context
 
     out: dict[str, list[dict[str, str]]] = {q: [] for q in queries}
-    token = review_context.apify_token()
+    token = apify_token()
     if not token or not queries:
         return out
     items = review_context._apify_run(GOOGLE_ACTOR, {"queries": "\n".join(queries), "resultsPerPage": 10,
@@ -215,7 +225,7 @@ async def web_search_many(queries: list[str], *, limit: int = 8) -> dict[str, li
         if apify_token():
             return await asyncio.to_thread(google_search_many, queries, limit)
     except Exception as exc:  # noqa: BLE001 - fall back to DuckDuckGo
-        print(f"[discovery] google search failed: {exc!r}"[:300], flush=True)
+        print(_redact(f"[discovery] google search failed: {exc!r}")[:300], flush=True)
     rows = await asyncio.gather(*(ddg_search(q, limit) for q in queries), return_exceptions=True)
     return {q: (r if isinstance(r, list) else []) for q, r in zip(queries, rows)}
 
@@ -274,7 +284,7 @@ async def ph_topics(query: str, first: int = 3) -> list[dict[str, Any]]:
 def apify_token() -> str | None:
     from mvp import review_context
 
-    return review_context.apify_token()
+    return _RUN_CREDS.get().get("APIFY_TOKEN") or review_context.apify_token()
 
 
 # Each platform's reviews come from its exact page found on Google. Actors checked live (Oct 2026):
@@ -324,7 +334,7 @@ def review_page(rows: list[dict[str, str]], platform: str, name: str) -> tuple[s
 def _redact(msg: str) -> str:
     from mvp import review_context
 
-    tok = review_context.apify_token() or ""
+    tok = apify_token() or ""
     return re.sub(r"apify_api_[A-Za-z0-9]+", "<redacted>", review_context._redact(msg, tok) if tok else msg)
 
 
@@ -332,7 +342,7 @@ def scrape_review_page(platform: str, url: str) -> list[dict[str, Any]]:
     """Reviews from one exact G2 / Capterra / Product Hunt page via Apify (blocking), cached per URL."""
     from mvp import review_context
 
-    token = review_context.apify_token()
+    token = apify_token()
     if not token:
         raise RuntimeError("APIFY_TOKEN missing")
     cache = review_context._APIFY_CACHE / f"page2-{_slug(url)}.json"
@@ -408,8 +418,9 @@ class DiscoveryAgent:
     """Runs one discovery. Sources are attributes so tests (and dry runs) can replace them."""
 
     def __init__(self, run: Discovery, *, llm: LLM | None = None,
-                 on_change: Callable[[Discovery], None] | None = None):
+                 on_change: Callable[[Discovery], None] | None = None, credentials: dict[str, str] | None = None):
         self.run = run
+        self._credentials = {k: v.strip() for k, v in (credentials or {}).items() if k in CREDENTIAL_NAMES and v and v.strip()}
         self.trace = Trace(run, on_change)
         self.llm = llm or _default_llm
         self.fetch_html = fetch_html
@@ -733,6 +744,7 @@ Return JSON:
                                                  for s in sorted({u["source"] for u in reviewers if u.get("source")})}}}
 
     async def go(self) -> Discovery:
+        _RUN_CREDS.set(self._credentials)  # this task's context only
         try:
             self.run.result = await self.execute()
             self.run.status = "done"

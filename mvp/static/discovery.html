@@ -51,6 +51,9 @@
     .quote { font-size:13px; margin:6px 0; padding-left:8px; border-left:2px solid #ccc; }
     .gaps { border-color:#f1c4bf; background:#fdf3f2; margin-top:12px; }
     .gaps h3 { color:var(--red); }
+    details.keys { flex-basis:100%; font-size:14px; }
+    details.keys label { margin:6px 12px 0 0; display:inline-flex; }
+    details.keys input { padding:6px 8px; border:1px solid #d0d0d0; border-radius:var(--r); font:inherit; width:220px; }
     .filters { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px; }
     .filters button { background:#eee; color:var(--text); padding:4px 10px; font-weight:500; font-size:13px; }
     .filters button.on { background:var(--text); color:#fff; }
@@ -64,9 +67,17 @@
     <input type="text" id="url" placeholder="https://yourproduct.com" required />
     <label>competitors <input type="number" id="nc" value="2" min="1" max="5" /></label>
     <label>tasks <input type="number" id="nt" value="6" min="1" max="12" /></label>
-    <label><input type="checkbox" id="rv" checked /> G2/Capterra reviews (1–4 min)</label>
+    <label><input type="checkbox" id="rv" checked /> G2 / Capterra / Product Hunt reviews (2–4 min)</label>
     <button id="go">Discover</button>
     <select id="past"><option value="">Past runs…</option></select>
+    <details class="keys"><summary>Data source keys <span class="muted small" id="keystate"></span></summary>
+      <p class="muted small">Used for your runs only: sent with each run, never saved on the server or shown in results.
+        Remembered in this browser. Leave empty to use the server's own keys.</p>
+      <label>Apify token <input type="password" id="k_apify" autocomplete="off" /></label>
+      <label>Product Hunt token <input type="password" id="k_ph" autocomplete="off" /></label>
+      <label>PH client id <input type="password" id="k_phid" autocomplete="off" /></label>
+      <label>PH client secret <input type="password" id="k_phsec" autocomplete="off" /></label>
+    </details>
   </form>
   <div class="status" id="status"></div>
   <div class="tabs">
@@ -92,10 +103,29 @@ $("#f").onsubmit = async (e) => {
   e.preventDefault();
   $("#go").disabled = true;
   const r = await fetch("/api/discovery", { method: "POST", headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ url: $("#url").value, max_competitors: +$("#nc").value, task_count: +$("#nt").value, scrape_reviews: $("#rv").checked }) });
+    body: JSON.stringify({ url: $("#url").value, max_competitors: +$("#nc").value, task_count: +$("#nt").value, scrape_reviews: $("#rv").checked,
+      ...saveKeys() }) });
   const { id } = await r.json();
   open(id);
 };
+const KEYS = { k_apify: "apify_token", k_ph: "ph_token", k_phid: "ph_client_id", k_phsec: "ph_client_secret" };
+function saveKeys() {
+  const out = {};
+  for (const [id, field] of Object.entries(KEYS)) {
+    out[field] = $("#" + id).value.trim();
+    try { localStorage.setItem("discovery_" + field, out[field]); } catch (e) {}
+  }
+  showKeyState();
+  return out;
+}
+function showKeyState() {
+  const n = Object.keys(KEYS).filter((id) => $("#" + id).value.trim()).length;
+  $("#keystate").textContent = n ? `(${n} set in this browser)` : "(using the server's keys)";
+}
+for (const [id, field] of Object.entries(KEYS)) {
+  try { $("#" + id).value = localStorage.getItem("discovery_" + field) || ""; } catch (e) {}
+}
+showKeyState();
 $("#past").onchange = (e) => e.target.value && open(e.target.value);
 
 async function loadPast() {

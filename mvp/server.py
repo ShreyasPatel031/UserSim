@@ -1256,6 +1256,11 @@ class DiscoveryRequest(BaseModel):
     max_competitors: int = 2
     task_count: int = 6
     scrape_reviews: bool = True
+    # Optional per-run keys (used for this run only, never stored or echoed); the server's own secrets otherwise.
+    apify_token: str = ""
+    ph_token: str = ""
+    ph_client_id: str = ""
+    ph_client_secret: str = ""
 
 
 def _save_discovery(run) -> None:
@@ -1282,7 +1287,9 @@ async def start_discovery(body: DiscoveryRequest):
     run = discovery.new_run(body.url, max_competitors=body.max_competitors, task_count=body.task_count,
                             scrape_reviews=body.scrape_reviews)
     _DISCOVERIES[run.id] = run
-    agent = discovery.DiscoveryAgent(run, on_change=_save_discovery)
+    agent = discovery.DiscoveryAgent(run, on_change=_save_discovery, credentials={
+        "APIFY_TOKEN": body.apify_token, "PH_TOKEN": body.ph_token,
+        "PH_CLIENT_ID": body.ph_client_id, "PH_CLIENT_SECRET": body.ph_client_secret})
     task = asyncio.create_task(agent.go())
     _DISCOVERY_TASKS.add(task)
     task.add_done_callback(_DISCOVERY_TASKS.discard)
