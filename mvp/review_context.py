@@ -87,7 +87,7 @@ def _apify_run(actor: str, payload: dict[str, Any], token: str, wait_s: float = 
         data = run.json()["data"]
         deadline = time.monotonic() + wait_s
         while data["status"] in {"READY", "RUNNING"} and time.monotonic() < deadline:
-            time.sleep(5)
+            time.sleep(2)
             data = requests.get(f"https://api.apify.com/v2/actor-runs/{data['id']}", params={"token": token}, timeout=30).json()["data"]
     if data["status"] != "SUCCEEDED":
         raise RuntimeError(f"{actor} run {data['id']} ended {data['status']}")

@@ -1,9 +1,10 @@
 """Part 1 of a study: discovery. Product URL in; competitors, real users and comparison tasks out.
 
-Nothing here opens a browser or runs a simulated user. Every web page used is one Google returned (Apify
-google-search-scraper, batched); nothing is reached by guessing a URL or slug. Steps, in order:
+Nothing here opens a browser or runs a simulated user. Every web page used is one Google returned (Gemini's Google
+Search grounding on Vertex, queries in parallel); nothing is reached by guessing a URL or slug. Apify only scrapes
+review pages. Steps, in order:
 
-1. Read the product's own site (homepage plus up to two about/pricing/features pages) and search the web for it.
+1. Read the product's own site (homepage plus up to two about/pricing/features pages).
 2. One LLM call turns that into a product profile (what it is, who it is for, search keywords).
 3. Gather competitor candidates: web searches ("<name> alternatives", ...) and similar Product Hunt launches (API:
    top posts in the topics that match the product).
@@ -15,7 +16,7 @@ google-search-scraper, batched); nothing is reached by guessing a URL or slug. S
 6. One LLM call writes user segments (grounded in those users) and tasks to run on the product and every competitor.
 
 Every step is recorded in a trace (what was asked, how long it took, what came back) so the /discovery page can show
-what the agent searched and retrieved. Secrets: APIFY_TOKEN (search and scrapes) and PH_TOKEN, or PH_CLIENT_ID +
+what the agent searched and retrieved. Secrets: APIFY_TOKEN (review scrapes) and PH_TOKEN, or PH_CLIENT_ID +
 PH_CLIENT_SECRET (Product Hunt API, same names as scripts/ph_crawl.py); a missing one skips that source, and the trace
 says so.
 """
@@ -246,28 +247,48 @@ def parse_ddg(html: str, limit: int) -> list[dict[str, str]]:
     return out
 
 
-GOOGLE_ACTOR = "apify~google-search-scraper"
+SEARCH_CONCURRENCY = int(os.environ.get("MVP_DISCOVERY_SEARCH_CONCURRENCY", "8"))
+_SEARCH_GATE: asyncio.Semaphore | None = None
 
 
-def google_search_many(queries: list[str], limit: int = 8) -> dict[str, list[dict[str, str]]]:
-    """Google results for several queries in ONE Apify run (blocking, ~15-40 s). Needs APIFY_TOKEN."""
-    from mvp import review_context
+async def _resolve(client: httpx.AsyncClient, uri: str) -> str:
+    """Grounding links are vertexaisearch.cloud.google.com redirects; the Location header is the real page."""
+    if "grounding-api-redirect" not in uri:
+        return uri
+    try:
+        r = await client.get(uri, follow_redirects=False)
+        return r.headers.get("location") or uri
+    except httpx.HTTPError:
+        return uri
 
-    out: dict[str, list[dict[str, str]]] = {q: [] for q in queries}
-    token = apify_token()
-    if not token or not queries:
-        return out
-    items = review_context._apify_run(GOOGLE_ACTOR, {"queries": "\n".join(queries), "resultsPerPage": 10,
-                                                     "maxPagesPerQuery": 1, "countryCode": "us", "languageCode": "en"},
-                                      token, wait_s=180.0)
-    for item in items:
-        term = (item.get("searchQuery") or {}).get("term")
-        if term not in out:
-            continue
-        out[term] += [{"title": (r.get("title") or "")[:140], "url": r.get("url") or "",
-                       "snippet": (r.get("description") or "")[:300], "engine": "google"}
-                      for r in (item.get("organicResults") or []) if (r.get("url") or "").startswith("http")]
-    return {q: rows[:limit] for q, rows in out.items()}
+
+async def google_search(query: str, limit: int = 8) -> list[dict[str, str]]:
+    """Google results through Gemini's Google Search grounding on Vertex (the LLM this repo already uses): one call,
+    a few seconds, no extra key and no Apify. Returns the pages Google returned for the query."""
+    from auth import cached_vertex_credentials, vertex_credentials
+    from capability.gemini_config import _endpoint, gemini_model
+
+    global _SEARCH_GATE
+    if _SEARCH_GATE is None:
+        _SEARCH_GATE = asyncio.Semaphore(SEARCH_CONCURRENCY)
+    payload = {"contents": [{"role": "user", "parts": [{"text":
+                   f"Run exactly this Google search and list every result you get, with its URL:\n{query}"}]}],
+               "tools": [{"googleSearch": {}}], "generationConfig": {"temperature": 0}}
+    async with _SEARCH_GATE:
+        creds = cached_vertex_credentials() or await asyncio.to_thread(vertex_credentials)
+        async with httpx.AsyncClient(timeout=60.0) as client:
+            r = await client.post(_endpoint(gemini_model()), json=payload,
+                                  headers={"Authorization": f"Bearer {creds.token}", "Content-Type": "application/json"})
+            r.raise_for_status()
+            meta = ((r.json().get("candidates") or [{}])[0].get("groundingMetadata") or {})
+            chunks = [c["web"] for c in meta.get("groundingChunks") or [] if (c.get("web") or {}).get("uri")]
+            urls = await asyncio.gather(*(_resolve(client, c["uri"]) for c in chunks))
+    rows, seen = [], set()
+    for c, url in zip(chunks, urls):
+        if url.startswith("http") and url not in seen:
+            seen.add(url)
+            rows.append({"title": (c.get("title") or "")[:140], "url": url, "snippet": "", "engine": "google"})
+    return rows[:limit]
 
 
 async def ddg_search(query: str, limit: int = 8) -> list[dict[str, str]]:
@@ -281,15 +302,19 @@ async def ddg_search(query: str, limit: int = 8) -> list[dict[str, str]]:
 
 
 async def web_search_many(queries: list[str], *, limit: int = 8) -> dict[str, list[dict[str, str]]]:
-    """Google via Apify (one run for all queries). DuckDuckGo only when Google is unavailable (no APIFY_TOKEN or the
-    run failed), never to second-guess an empty Google answer."""
-    try:
-        if apify_token():
-            return await asyncio.to_thread(google_search_many, queries, limit)
-    except Exception as exc:  # noqa: BLE001 - fall back to DuckDuckGo
-        print(_redact(f"[discovery] google search failed: {exc!r}")[:300], flush=True)
-    rows = await asyncio.gather(*(ddg_search(q, limit) for q in queries), return_exceptions=True)
-    return {q: (r if isinstance(r, list) else []) for q, r in zip(queries, rows)}
+    """Every query searched on Google (Gemini grounding) at the same time; DuckDuckGo only for a query whose Google
+    call failed."""
+    async def one(q: str) -> list[dict[str, str]]:
+        try:
+            return await google_search(q, limit)
+        except Exception as exc:  # noqa: BLE001 - fall back to DuckDuckGo for this query
+            print(f"[discovery] google search failed for {q!r}: {exc!r}"[:300], flush=True)
+        try:
+            return await ddg_search(q, limit)
+        except httpx.HTTPError:
+            return []
+    rows = await asyncio.gather(*(one(q) for q in queries))
+    return dict(zip(queries, rows))
 
 
 async def web_search(query: str, *, limit: int = 8) -> list[dict[str, str]]:
@@ -511,7 +536,7 @@ class DiscoveryAgent:
     async def _search_many(self, queries: list[str]) -> dict[str, list[dict[str, str]]]:
         """One batched search; one trace step per query."""
         queries = list(dict.fromkeys(queries))
-        steps = {q: self.trace.start("search", f"Web search: {q}", {"query": q, "engine": "google (apify)"}) for q in queries}
+        steps = {q: self.trace.start("search", f"Web search: {q}", {"query": q, "engine": "google (gemini grounding)"}) for q in queries}
         try:
             got = await self.web_search_many(queries)
         except Exception as exc:
@@ -783,15 +808,18 @@ Return JSON:
 
     async def execute(self) -> dict[str, Any]:
         host = registrable_host(self.run.url)
-        site, about = await asyncio.gather(self.read_site(), self._search(f"what is {host}"))
-        prof = await self.profile(site, about)
+        site = await self.read_site()
+        prof = await self.profile(site, [])
         name = prof.get("name") or host
+        # The product's own reviewers are searched and scraped while its competitors are still being found.
+        own_users = asyncio.create_task(self.users_for([name]))
         queries = [f"{name} alternatives", f"{name} competitors"] + [f"best {t}" for t in (prof.get("search_terms") or [])[:2]]
         found, ph = await asyncio.gather(self._search_many(queries), self.product_hunt(prof))
         web = [r for q in queries for r in found.get(q) or []]
         candidates = await self.pick(prof, web, ph)
         comps, rest = await self.keep_live(candidates, str(prof.get("category") or ""))
-        users = await self.users_for([name] + [c["name"] for c in comps])
+        rival_users = await self.users_for([c["name"] for c in comps]) if comps else []
+        users = await own_users + rival_users
         if len(users) < MIN_REVIEWS and rest:
             # Too few reviews of the product and its competitors: add the next-closest similar products' users.
             users += await self.users_for([c["name"] for c in rest[:2]])

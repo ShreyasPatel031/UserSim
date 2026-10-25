@@ -192,6 +192,40 @@ class RunTest(unittest.TestCase):
         self.assertNotIn("ph-run-key", dumped)
 
 
+class GoogleSearchTest(unittest.TestCase):
+    def test_grounding_links_are_resolved_to_real_pages_and_failures_fall_back_to_ddg(self):
+        import types
+        import httpx
+
+        body = {"candidates": [{"groundingMetadata": {"groundingChunks": [
+            {"web": {"uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AAA", "title": "g2.com"}},
+            {"web": {"uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/BBB", "title": "g2.com"}},
+            {"web": {"uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AAA", "title": "g2.com"}}]}}]}
+        where = {"AAA": "https://www.g2.com/products/vimeo/reviews", "BBB": "https://www.g2.com/products/vimeo-ott/reviews"}
+
+        async def post(self, url, json=None, headers=None):
+            assert json["tools"] == [{"googleSearch": {}}]
+            return httpx.Response(200, json=body, request=httpx.Request("POST", url))
+
+        async def get(self, url, follow_redirects=True):
+            return httpx.Response(302, headers={"location": where[url.rsplit("/", 1)[1]]}, request=httpx.Request("GET", url))
+
+        creds = types.SimpleNamespace(token="t")
+        with mock.patch.object(httpx.AsyncClient, "post", post), mock.patch.object(httpx.AsyncClient, "get", get), \
+                mock.patch("auth.cached_vertex_credentials", return_value=creds), \
+                mock.patch("capability.gemini_config._endpoint", return_value="https://vertex.invalid"):
+            rows = asyncio.run(D.google_search("site:g2.com Vimeo reviews"))
+        self.assertEqual([r["url"] for r in rows], [where["AAA"], where["BBB"]])  # resolved and de-duplicated
+
+        async def boom(q, limit=8):
+            raise RuntimeError("vertex down")
+
+        async def ddg(q, limit=8):
+            return [{"title": "x", "url": "https://x.com", "snippet": "", "engine": "duckduckgo"}]
+        with mock.patch.object(D, "google_search", boom), mock.patch.object(D, "ddg_search", ddg):
+            self.assertEqual(asyncio.run(D.web_search_many(["q"]))["q"][0]["engine"], "duckduckgo")
+
+
 class SavedKeysTest(unittest.TestCase):
     def setUp(self):
         import tempfile

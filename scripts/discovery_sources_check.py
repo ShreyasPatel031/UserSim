@@ -1,7 +1,7 @@
 """Check discovery's data sources with real credentials, without the LLM.
 
 Runs the agent's own user-collection step (mvp/discovery.py DiscoveryAgent.users_for) for a product and its
-competitors: one batched Google search (site:g2.com / site:capterra.com / site:producthunt.com), then the exact
+competitors: Google searches (site:g2.com / site:capterra.com / site:producthunt.com), then the exact
 review page found on each site, scraped by URL. Prints every trace step and the counts; never
 prints credentials.
 
