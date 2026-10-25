@@ -26,7 +26,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 import commenters as K
 from vote_sim import load, D, R
 
-TRAIN = ("2026-09-01", "2026-10-12")
+TRAIN = ("2026-03-01", "2026-10-12")
 TEST = ("2026-10-13", "2026-10-24")
 PAIR = ["hunter", "team", "recip", "cocm", "topic", "text", "prior"]
 PERS = ["p_age", "p_rate", "p_follow", "p_maker"]
@@ -43,10 +43,10 @@ def people(files, L, id2i):
             listed = len(p.get("voted_recent") or [])
             tot = int(p.get("upvotes_total") or listed)
             joined = (p.get("joined") or "2026-01-01")[:10]
-            cover = max(joined, "2026-01-01") if tot <= listed else min(L.day[i] for i in idx)
+            cover = max(joined, "2026-01-01") if 0 < tot <= listed else min(L.day[i] for i in idx)  # total 0 = not shown
             age = max(1, (pd.Timestamp("2026-10-25") - pd.Timestamp(joined)).days)
             P[p["username"]] = {"ups": idx, "cover": cover, "p_age": np.log1p(age), "p_rate": np.log1p(tot / age * 30),
-                                "p_follow": np.log1p(int(p.get("followings") or 0)), "p_maker": float(p.get("is_maker") in (True, "True"))}
+                                "p_follow": np.log1p(max(0, int(p.get("followings") or 0))), "p_maker": float(p.get("is_maker") in (True, "True"))}
     return P
 
 
@@ -102,9 +102,14 @@ def main(files):
                     supp[x] += 1
                 else:
                     circle[x] += 1
-            if p["cover"] > d:
+            test = d >= TEST[0]
+            if test and p["cover"] > d:
                 continue
-            label = {i for i in p["ups"] if L.day[i] == d}
+            label = {i for i in p["ups"] if L.day[i] == d and d >= p["cover"]}
+            if not test:  # training: only days the person picked something; comments count as picks (complete history)
+                label |= {i for dt, i in cms[u] if dt == d and L.day[i] == d}
+                if not label:
+                    continue
             tn = tv / (np.linalg.norm(tv) + 1e-9); xn = xv / (np.linalg.norm(xv) + 1e-9)
             cov_days = max(1, (pd.Timestamp(d) - pd.Timestamp(p["cover"])).days)
             act = (len(vd) + 1) / (cov_days + 2); per = (n_up + 1) / (len(vd) + 1)
