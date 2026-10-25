@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UserSim — Discovery</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root { --bg:#fff; --card:#f6f6f6; --border:#e6e6e6; --text:#151515; --muted:#6b6b6b;
+            --green:#0f7a4c; --yellow:#a15c07; --red:#b42318; --blue:#1d4ed8; --r:8px; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: Inter, system-ui, sans-serif; color:var(--text); background:var(--bg); line-height:1.5; }
+    header { display:flex; align-items:center; gap:12px; padding:14px 20px; border-bottom:1px solid var(--border); }
+    header a { color:inherit; text-decoration:none; font-weight:700; }
+    header span { color:var(--muted); }
+    main { max-width:1200px; margin:0 auto; padding:20px 16px 60px; }
+    form { display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
+    input[type=text] { flex:1 1 320px; padding:10px 12px; border:1px solid #d0d0d0; border-radius:var(--r); font:inherit; }
+    input[type=number] { width:56px; padding:8px; border:1px solid #d0d0d0; border-radius:var(--r); font:inherit; }
+    label { color:var(--muted); font-size:14px; display:flex; gap:6px; align-items:center; }
+    button { padding:10px 16px; border:0; border-radius:var(--r); background:var(--text); color:#fff; font:inherit; font-weight:600; cursor:pointer; }
+    button:disabled { opacity:.5; cursor:default; }
+    select { padding:8px; border:1px solid #d0d0d0; border-radius:var(--r); font:inherit; max-width:100%; }
+    .status { margin:14px 0; color:var(--muted); font-size:14px; }
+    .tabs { display:flex; gap:4px; border-bottom:1px solid var(--border); margin-top:8px; }
+    .tabs button { background:none; color:var(--muted); border-radius:0; border-bottom:2px solid transparent; padding:8px 12px; }
+    .tabs button.on { color:var(--text); border-bottom-color:var(--text); }
+    .pane { display:none; padding-top:16px; } .pane.on { display:block; }
+    h2 { font-size:18px; margin:26px 0 10px; } h2 small { color:var(--muted); font-weight:400; font-size:14px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:12px; }
+    .card { background:var(--card); border:1px solid var(--border); border-radius:var(--r); padding:14px; }
+    .card h3 { margin:0 0 4px; font-size:16px; } .card p { margin:4px 0; font-size:14px; }
+    .muted { color:var(--muted); } .small { font-size:13px; }
+    .tag { display:inline-block; font-size:12px; padding:1px 8px; border-radius:99px; background:#e9e9e9; margin:2px 4px 2px 0; }
+    .tag.g2 { background:#ffe8dd; } .tag.capterra { background:#dde9ff; } .tag.producthunt { background:#ffe2d6; }
+    .tag.trustradius, .tag.gartner { background:#e4f4e4; }
+    ul.tight { margin:4px 0; padding-left:18px; font-size:14px; }
+    .task { border-left:3px solid var(--text); }
+    table { width:100%; border-collapse:collapse; font-size:13px; }
+    th, td { text-align:left; padding:6px 8px; border-bottom:1px solid var(--border); vertical-align:top; }
+    th { color:var(--muted); font-weight:500; }
+    .step { border:1px solid var(--border); border-radius:var(--r); margin-bottom:6px; }
+    .step summary { list-style:none; cursor:pointer; padding:8px 12px; display:flex; gap:10px; align-items:baseline; flex-wrap:wrap; }
+    .step summary::-webkit-details-marker { display:none; }
+    .kind { font-size:11px; text-transform:uppercase; letter-spacing:.04em; padding:1px 6px; border-radius:4px; background:#eee; min-width:86px; text-align:center; }
+    .k-llm { background:#ede9fe; } .k-search { background:#e0f2fe; } .k-producthunt { background:#ffe2d6; }
+    .k-reviews { background:#fef3c7; } .k-fetch { background:#e5e7eb; } .k-probe { background:#dcfce7; }
+    .st-running { color:var(--blue); } .st-done { color:var(--green); } .st-error { color:var(--red); } .st-skipped { color:var(--yellow); }
+    .step .title { font-weight:600; font-size:14px; } .step .sum { color:var(--muted); font-size:13px; flex-basis:100%; padding-left:96px; }
+    .step pre { margin:0; padding:10px 12px; background:#fafafa; border-top:1px solid var(--border); font-size:12px; max-height:420px; overflow:auto; white-space:pre-wrap; word-break:break-word; }
+    .quote { font-size:13px; margin:6px 0; padding-left:8px; border-left:2px solid #ccc; }
+    .filters { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px; }
+    .filters button { background:#eee; color:var(--text); padding:4px 10px; font-weight:500; font-size:13px; }
+    .filters button.on { background:var(--text); color:#fff; }
+    @media (max-width:600px) { .step .sum { padding-left:0; } }
+  </style>
+</head>
+<body>
+<header><a href="/">UserSim</a><span>Discovery · part 1: competitors, users, tasks</span></header>
+<main>
+  <form id="f">
+    <input type="text" id="url" placeholder="https://yourproduct.com" required />
+    <label>competitors <input type="number" id="nc" value="2" min="1" max="5" /></label>
+    <label>tasks <input type="number" id="nt" value="6" min="1" max="12" /></label>
+    <label><input type="checkbox" id="rv" checked /> G2/Capterra reviews (1–4 min)</label>
+    <button id="go">Discover</button>
+    <select id="past"><option value="">Past runs…</option></select>
+  </form>
+  <div class="status" id="status"></div>
+  <div class="tabs">
+    <button data-tab="result" class="on">Result (what the user sees)</button>
+    <button data-tab="trace">Agent trace (what was searched &amp; retrieved)</button>
+    <button data-tab="users">Real users <span id="ucount"></span></button>
+  </div>
+  <section class="pane on" id="result"></section>
+  <section class="pane" id="trace"></section>
+  <section class="pane" id="users"></section>
+</main>
+<script>
+const $ = (s) => document.querySelector(s);
+const esc = (v) => String(v ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+let timer = null, current = null, userFilter = "all";
+
+document.querySelectorAll(".tabs button").forEach((b) => b.onclick = () => {
+  document.querySelectorAll(".tabs button").forEach((x) => x.classList.toggle("on", x === b));
+  document.querySelectorAll(".pane").forEach((p) => p.classList.toggle("on", p.id === b.dataset.tab));
+});
+
+$("#f").onsubmit = async (e) => {
+  e.preventDefault();
+  $("#go").disabled = true;
+  const r = await fetch("/api/discovery", { method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ url: $("#url").value, max_competitors: +$("#nc").value, task_count: +$("#nt").value, scrape_reviews: $("#rv").checked }) });
+  const { id } = await r.json();
+  open(id);
+};
+$("#past").onchange = (e) => e.target.value && open(e.target.value);
+
+async function loadPast() {
+  const { runs } = await (await fetch("/api/discovery")).json();
+  $("#past").innerHTML = '<option value="">Past runs…</option>' + runs.map((r) =>
+    `<option value="${r.id}">${esc(r.url)} · ${r.status} · ${new Date(r.created_at * 1000).toLocaleString()}</option>`).join("");
+}
+
+function open(id) {
+  history.replaceState(null, "", "?id=" + id);
+  clearTimeout(timer);
+  const tick = async () => {
+    const r = await fetch("/api/discovery/" + id);
+    if (!r.ok) { $("#status").textContent = "Run not found"; $("#go").disabled = false; return; }
+    current = await r.json();
+    render(current);
+    if (current.status === "running") timer = setTimeout(tick, 1500);
+    else { $("#go").disabled = false; loadPast(); }
+  };
+  tick();
+}
+
+function render(d) {
+  const secs = Math.round(((d.finished_at || Date.now() / 1000) - d.created_at));
+  const running = d.steps.filter((s) => s.status === "running").map((s) => s.title);
+  $("#status").innerHTML = d.status === "running"
+    ? `Running ${secs}s · ${esc(running.join(" · ") || "…")}`
+    : d.status === "error" ? `<span class="st-error">Failed after ${secs}s: ${esc(d.error)}</span>` : `Done in ${secs}s · ${d.steps.length} steps`;
+  $("#url").value ||= d.url;
+  renderTrace(d.steps);
+  renderResult(d.result);
+  renderUsers(d.result);
+}
+
+function renderTrace(steps) {
+  const open = new Set([...document.querySelectorAll("#trace details[open]")].map((x) => x.dataset.id));
+  $("#trace").innerHTML = steps.map((s) => `
+    <details class="step" data-id="${s.id}" ${open.has(String(s.id)) ? "open" : ""}>
+      <summary><span class="kind k-${s.kind}">${s.kind}</span><span class="title">${esc(s.title)}</span>
+        <span class="st-${s.status} small">${s.status}${s.ms != null ? " · " + (s.ms / 1000).toFixed(1) + "s" : ""}</span>
+        ${s.summary ? `<span class="sum">${esc(s.summary)}</span>` : ""}</summary>
+      ${s.input ? `<pre><b>Input</b>\n${esc(typeof s.input === "string" ? s.input : JSON.stringify(s.input, null, 2))}</pre>` : ""}
+      ${s.data != null ? `<pre><b>Retrieved</b>\n${esc(JSON.stringify(s.data, null, 2))}</pre>` : ""}
+    </details>`).join("") || '<p class="muted">No steps yet.</p>';
+}
+
+function userLine(u) {
+  const who = [u.name, u.role, u.size, u.industry].filter(Boolean).join(" · ") || "anonymous";
+  return `<div class="quote"><span class="tag ${esc(u.source)}">${esc(u.source)}</span><b>${esc(who)}</b>
+    <span class="muted">on ${esc(u.product)}${u.rating ? " · " + esc(u.rating) + "★" : ""}</span><br>${esc((u.text || "").slice(0, 260))}</div>`;
+}
+
+function renderResult(r) {
+  if (!r) { $("#result").innerHTML = '<p class="muted">The result appears here when the agent finishes. Watch the Agent trace tab meanwhile.</p>'; return; }
+  const p = r.product, users = r.users || [];
+  const c = r.counts || {};
+  $("#result").innerHTML = `
+    <div class="card"><h3>${esc(p.name)} <span class="muted small">${esc(p.category || "")}</span></h3>
+      <p>${esc(p.one_liner)}</p><p class="muted small">${esc(p.what_they_do)}</p>
+      ${(p.target_users || []).map((t) => `<span class="tag">${esc(t)}</span>`).join("")}
+      <p class="muted small">Evidence: ${c.web_results || 0} web results · ${c.ph_launches || 0} Product Hunt launches · ${c.ph_commenters || 0} PH commenters · ${c.reviews || 0} reviews
+      ${Object.entries(c.reviews_by_source || {}).map(([k, v]) => `(${esc(k)} ${v})`).join(" ")}</p></div>
+
+    <h2>Competitors <small>tested side by side with ${esc(p.name)}</small></h2>
+    <div class="grid">${(r.competitors || []).map((x) => `
+      <div class="card"><h3>${esc(x.name)}</h3><p><a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.url)}</a></p>
+        <p>${esc(x.why)}</p><span class="tag">${esc(x.overlap || "")}</span><span class="tag">from ${esc(x.source || "")}</span></div>`).join("") || '<p class="muted">No live competitors found.</p>'}</div>
+    ${(r.similar_products || []).length ? `<p class="muted small">Also considered: ${r.similar_products.map((x) => esc(x.name)).join(", ")}</p>` : ""}
+
+    <h2>Who will test it <small>segments built from ${users.length} real users</small></h2>
+    <div class="grid">${(r.segments || []).map((s) => `
+      <div class="card"><h3>${esc(s.name)} <span class="muted small">${esc(s.share || "")}</span></h3><p>${esc(s.who)}</p>
+        ${s.jobs?.length ? `<p class="small"><b>Needs</b></p><ul class="tight">${s.jobs.map((j) => `<li>${esc(j)}</li>`).join("")}</ul>` : ""}
+        ${s.pains?.length ? `<p class="small"><b>Pains</b></p><ul class="tight">${s.pains.map((j) => `<li>${esc(j)}</li>`).join("")}</ul>` : ""}
+        ${(s.evidence || []).slice(0, 3).map((id) => users[+String(id).replace(/\D/g, "")]).filter(Boolean).map(userLine).join("")}
+      </div>`).join("")}</div>
+
+    <h2>Tasks to run <small>on ${esc(p.name)} and every competitor</small></h2>
+    <div class="grid">${(r.tasks || []).map((t) => `
+      <div class="card task"><h3>${esc(t.title)}</h3><p>${esc(t.prompt)}</p>
+        <p class="small"><b>Done when:</b> ${esc(t.done_when)}</p><p class="small muted">${esc(t.why)}</p>
+        <span class="tag">${esc(t.kind || "")}</span><span class="tag">${esc((r.segments || []).find((s) => s.id === t.segment_id)?.name || t.segment_id || "")}</span></div>`).join("")}</div>`;
+}
+
+function renderUsers(r) {
+  const users = (r && r.users) || [];
+  $("#ucount").textContent = users.length ? `(${users.length})` : "";
+  const sources = ["all", ...new Set(users.map((u) => u.source))];
+  const products = [...new Set(users.map((u) => u.product))];
+  const shown = users.map((u, i) => [u, i]).filter(([u]) => userFilter === "all" || u.source === userFilter || u.product === userFilter);
+  $("#users").innerHTML = users.length ? `
+    <div class="filters">${[...sources, ...products].map((s) => `<button class="${s === userFilter ? "on" : ""}" data-f="${esc(s)}">${esc(s)}</button>`).join("")}</div>
+    <table><tr><th>id</th><th>source</th><th>product</th><th>who</th><th>rating</th><th>what they said</th></tr>
+    ${shown.map(([u, i]) => `<tr><td>u${i}</td><td><span class="tag ${esc(u.source)}">${esc(u.source)}</span></td><td>${esc(u.product)}</td>
+      <td>${esc([u.name, u.role, u.size, u.industry].filter(Boolean).join(" · ") || "—")}</td><td>${esc(u.rating ?? "")}</td>
+      <td>${esc(u.text)}</td></tr>`).join("")}</table>` : '<p class="muted">No users retrieved yet.</p>';
+  document.querySelectorAll("#users .filters button").forEach((b) => b.onclick = () => { userFilter = b.dataset.f; renderUsers(current.result); });
+}
+
+loadPast();
+const qid = new URLSearchParams(location.search).get("id");
+if (qid) open(qid);
+</script>
+</body>
+</html>
