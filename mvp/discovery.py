@@ -722,7 +722,8 @@ Return JSON:
   "overlap": "direct|partial|adjacent", "source": "most_compared|web|producthunt"}}]}}""")
         return [c for c in (out.get("candidates") or []) if c.get("name") and c.get("url")]
 
-    async def keep_live(self, candidates: list[dict[str, Any]], category: str) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    async def keep_live(self, candidates: list[dict[str, Any]], category: str,
+                        compared: list[dict[str, str]] | None = None) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
         """(chosen competitors, the remaining candidates as similar products). A homepage is taken from Google results
         for '<name> <category>', never from the LLM alone; candidates Google cannot place, or whose site is down, are dropped."""
         from mvp.competitor_urls import _NON_PRODUCT_HOSTS
@@ -748,8 +749,13 @@ Return JSON:
             hosts = list(first_url)
             brand = _slug(c["name"]).replace("-", "")
             llm_host = registrable_host(c["url"])
+            researched = next((x.get("homepage") for x in compared or [] if _same_name(x.get("name") or "", c["name"])), "")
             if llm_host in hosts:
                 url, how = first_url[llm_host], "the LLM's site is in the Google results"
+            elif researched and registrable_host(researched) == llm_host:
+                # Google-researched most-compared list gives the same site (e.g. Adobe XD on adobe.com, where the
+                # homepage search only returned a look-alike domain)
+                url, how = _norm_url(researched), "the site the Google-researched most-compared list gives"
             else:
                 match = next((h for h in hosts if brand and brand in h.replace("-", "").replace(".", "")), None)
                 if not match:
@@ -883,7 +889,7 @@ Return JSON:
                                                    self.compared_products(prof))
         web = [r for q in queries for r in found.get(q) or []]
         candidates = await self.pick(prof, web, ph, compared)
-        comps, rest = await self.keep_live(candidates, str(prof.get("category") or ""))
+        comps, rest = await self.keep_live(candidates, str(prof.get("category") or ""), compared)
         rival_users = await self.users_for([c["name"] for c in comps]) if comps else []
         users = await own_users + rival_users
         if len(users) < MIN_REVIEWS and rest:
