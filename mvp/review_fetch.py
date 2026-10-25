@@ -115,6 +115,8 @@ def _proxy_settings(proxy: str | None) -> dict[str, str] | None:
 
 
 _DISPLAY_LOCK = threading.Lock()
+_DISPLAY = ":77"
+_XVFB: subprocess.Popen | None = None
 
 
 def ensure_display() -> str:
@@ -122,17 +124,22 @@ def ensure_display() -> str:
     with _DISPLAY_LOCK:
         if sys.platform != "linux":  # macOS / Windows: browsers open real windows, no X server needed
             return "native"
-        if os.environ.get("DISPLAY"):
+        global _XVFB
+        if _XVFB is not None and _XVFB.poll() is None:
+            return _DISPLAY
+        if os.environ.get("DISPLAY") and _XVFB is None:
             return os.environ["DISPLAY"]
         if not shutil.which("Xvfb"):
             subprocess.run(["apt-get", "install", "-y", "-q", "xvfb"], capture_output=True, timeout=300)
         if not shutil.which("Xvfb"):
             return ""
-        subprocess.Popen(["Xvfb", ":99", "-screen", "0", "1366x900x24", "-nolisten", "tcp"],
-                         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
+        # Own display number: Camoufox's headless="virtual" starts (and stops) its own Xvfb, which took :99 down
+        # under the other headed browsers.
+        _XVFB = subprocess.Popen(["Xvfb", _DISPLAY, "-screen", "0", "1366x900x24", "-nolisten", "tcp"],
+                                 stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
         time.sleep(1.5)
-        os.environ["DISPLAY"] = ":99"
-        return ":99"
+        os.environ["DISPLAY"] = _DISPLAY
+        return _DISPLAY
 
 
 def browser_fetch(url: str, proxy: str | None, *, wait_s: float = 30.0, headed: bool = False) -> tuple[int, str]:
@@ -222,11 +229,31 @@ def camoufox_fetch(url: str, proxy: str | None, *, wait_s: float = 30.0) -> tupl
         return _load(browser.new_page(), url, wait_s)
 
 
+def rotation(url: str, proxy: str, attempts: int = 8) -> dict[str, Any]:
+    """Chrome-fingerprint fetch repeated through a rotating proxy (a new exit IP per request): how many attempts get
+    the real page. Cloudflare judges IPs, so one blocked attempt says little."""
+    results = []
+    for _ in range(attempts):
+        t = time.time()
+        try:
+            r = _summary(*fetch(url, proxy, impersonate="chrome", timeout=30), t)
+        except Exception as exc:  # noqa: BLE001
+            r = {"error": re.sub(r"//[^@\s/]+@", "//<redacted>@", repr(exc))[:120]}
+        results.append(r)
+        if r.get("status") == 200 and not r.get("challenge"):
+            break
+    passed = [i for i, r in enumerate(results) if r.get("status") == 200 and not r.get("challenge")]
+    return {"attempts": len(results), "passed_on_attempt": passed[0] + 1 if passed else None,
+            "statuses": [r.get("status") or r.get("error") for r in results]}
+
+
 def probe(url: str, proxy: str | None) -> dict[str, Any]:
     """What each fetch method gets for one review URL, with and without the proxy."""
     if not allowed(url):
         raise ValueError(f"only https review pages on {', '.join(ALLOWED_HOSTS)}")
     out: dict[str, Any] = {"url": url, "proxy": bool(proxy)}
+    if proxy:
+        out["chrome_fingerprint_rotating_ips"] = rotation(url, proxy)
     tries = [("chrome_fingerprint_via_proxy", proxy, "chrome"), ("plain_via_proxy", proxy, None)] if proxy else []
     tries.append(("chrome_fingerprint_direct", None, "chrome"))
     setup = ensure_browser()

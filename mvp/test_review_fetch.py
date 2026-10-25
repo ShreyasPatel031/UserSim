@@ -32,6 +32,12 @@ class ReviewFetchTest(unittest.TestCase):
         self.assertTrue(out["chrome_fingerprint_direct"]["challenge"])
         self.assertNotIn("secret", str(out))
 
+    def test_rotation_stops_at_first_ip_that_gets_through(self):
+        calls = iter([(403, "<title>Just a moment...</title>"), (200, "<title>Shortcut Reviews</title>" + "x" * 30000)])
+        with mock.patch.object(F, "fetch", lambda *a, **k: next(calls)):
+            out = F.rotation("https://www.capterra.com/p/1/X/reviews/", "http://u:p@gw.example.com:823")
+        self.assertEqual((out["attempts"], out["passed_on_attempt"], out["statuses"]), (2, 2, [403, 200]))
+
 
 if __name__ == "__main__":
     unittest.main()
