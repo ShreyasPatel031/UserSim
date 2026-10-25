@@ -1,4 +1,4 @@
 variant,day@3,day@5,day@10,week@3,week@5,week@10,day@5 95% CI,rho_day
 A: current model,59,70,78,61,57,53,65–74,0.693
-B: + new pre-launch data,60,69,76,44,43,55,64–73,0.69
-C: + launch-day audience (upper bound),68,78,82,72,60,60,74–83,0.777
+B: + new pre-launch data,60,69,77,33,40,57,65–73,0.692
+C: + launch-day audience (upper bound),69,79,82,67,53,60,74–83,0.775

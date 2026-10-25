@@ -65,6 +65,7 @@ def features():
     # --- commenters and their segments
     prof = {p["username"]: p for p in jl(f"{D}/ph_profiles.jsonl.gz")}
     seg = {s["username"]: (s["labels"] or {}) for s in jl(f"{D}/segments.jsonl")}
+    PX = {x["handle"].lower(): (x.get("profile") or {}) for x in jl(f"{D}/commenter_x.jsonl.gz")}  # commenters' own X
     cm = K.load_comments()
     team = {}  # makers + hunter: their own (often scheduled, pre-launch) comments are not audience
     import glob
@@ -98,6 +99,9 @@ def features():
             put(r.id, p + "maker_share", np.mean([bool(x.get("is_maker")) for x in ps]), tag)
             put(r.id, p + "has_linkedin_share", np.mean([any(l["kind"] == "linkedin" for l in x["links"]) for x in ps]), tag)
             put(r.id, p + "has_x_share", np.mean([bool(x.get("twitter")) for x in ps]), tag)
+            xf = [num((PX.get((x.get("twitter") or "").lower().lstrip("@")) or {}).get("followers")) for x in ps]
+            put(r.id, p + "x_followers_sum_log", np.log1p(np.nansum(xf)) if np.isfinite(xf).any() else 0.0, tag)
+            put(r.id, p + "x_followers_max_log", np.log1p(np.nanmax(xf)) if np.isfinite(xf).any() else 0.0, tag)
             yrs = [2026 - int(str(x.get("created") or "2026")[:4]) for x in ps]
             put(r.id, p + "account_age_median", float(np.median(yrs)), tag)
     # --- X: makers' and company posts in the 14 days before launch (counts are clean; engagement totals are today's)
