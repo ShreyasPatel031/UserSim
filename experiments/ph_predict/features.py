@@ -5,12 +5,15 @@ historical (maker / hunter track record, topic and look-alike history) only look
 
 Groups:
   launch   PH listing as submitted: topics, tagline/description, media, links, launch hour, weekday, day's field size
-  people   hunter and makers: followers, account age, self-hunt, headline words
+  people   hunter and makers: account age, self-hunt, Twitter linked, headline words
+  followers  hunter and maker follower counts -- TODAY's counts, so they include followers won by the launch itself
+           (possible leak); reported separately and left out of the headline model
   history  makers' and hunter's earlier launches in the data, topic track record, look-alike earlier launches
   site     the homepage (Apify crawl): domain, size, social proof / pricing / open-source words
   llm      Gemini's read of the listing + homepage (llm_scores.py)
   hn       Hacker News stories linking the domain before launch day (external.py)
   domain   age of the product's domain on launch day (RDAP, external.py)
+  github   GitHub-hosted products: stars before launch day, repo age (external.py)
 """
 
 from __future__ import annotations
@@ -57,6 +60,9 @@ def load_posts() -> pd.DataFrame:
     for f in sorted((CACHE / "ph_days").glob("*.json")):
         day = json.loads(f.read_text())
         n_featured = len(day["edges"])
+        # Ranks are final only if fetched after the PT day closed (live days are collected mid-day).
+        closed = datetime.fromisoformat(day["fetched_at"]) >= datetime.fromisoformat(day["day"]).replace(
+            tzinfo=PT) + pd.Timedelta(days=1)
         for e in day["edges"]:
             n = e["node"]
             t = _ts(n["featuredAt"] or n["createdAt"])
@@ -65,7 +71,7 @@ def load_posts() -> pd.DataFrame:
             makers = n.get("makers") or []
             hunter = n.get("user") or {}
             rows.append({
-                "id": n["id"], "name": n["name"], "slug": n["slug"], "day": day["day"], "tagline": n["tagline"] or "",
+                "id": n["id"], "name": n["name"], "slug": n["slug"], "day": day["day"], "complete": closed, "tagline": n["tagline"] or "",
                 "description": n["description"] or "", "topics": topics, "website": n["website"],
                 "dailyRank": n["dailyRank"], "weeklyRank": n["weeklyRank"], "monthlyRank": n["monthlyRank"],
                 "votes": n["votesCount"],
@@ -86,7 +92,8 @@ def load_posts() -> pd.DataFrame:
     # PH weekly leaderboard weeks run Monday-Sunday; monthly by calendar month.
     df["week"] = (df.date - pd.to_timedelta(df.date.dt.weekday, unit="D")).dt.strftime("%Y-%m-%d")
     df["month"] = df.date.dt.strftime("%Y-%m")
-    return df.drop_duplicates("id").reset_index(drop=True)
+    # The API returns each day in PH's ranking order; shuffle so ties in any score can't be broken by the answer.
+    return df.drop_duplicates("id").sample(frac=1, random_state=0).reset_index(drop=True)
 
 
 def launch_features(df: pd.DataFrame) -> pd.DataFrame:
@@ -120,9 +127,6 @@ def _age_days(created: str | None, day: pd.Timestamp) -> float:
 def people_features(df: pd.DataFrame) -> pd.DataFrame:
     f = pd.DataFrame(index=df.index)
     f["people_n_makers"] = df.makers.str.len()
-    f["people_hunter_followers_log"] = np.log1p(df.hunter_followers.fillna(0))
-    f["people_maker_followers_max_log"] = df.maker_followers.apply(lambda x: math.log1p(max(x) if x else 0))
-    f["people_maker_followers_sum_log"] = df.maker_followers.apply(lambda x: math.log1p(sum(x)))
     f["people_self_hunted"] = [int(h in ms) for h, ms in zip(df.hunter, df.makers)]
     f["people_hunter_age_days"] = [_age_days(c, d) for c, d in zip(df.hunter_created, df.date)]
     f["people_maker_age_max_days"] = [max([_age_days(c, d) for c in cs if c] or [np.nan]) for cs, d in
@@ -132,6 +136,14 @@ def people_features(df: pd.DataFrame) -> pd.DataFrame:
     h = df.maker_headlines.str.lower()
     f["people_founder_headline"] = h.str.contains(r"founder|ceo", regex=True).astype(int)
     f["people_yc_headline"] = h.str.contains(r"\byc\b|y combinator|\(s2\d|\(w2\d|\(f2\d|\(x2\d", regex=True).astype(int)
+    return f
+
+
+def follower_features(df: pd.DataFrame) -> pd.DataFrame:
+    f = pd.DataFrame(index=df.index)
+    f["followers_hunter_log"] = np.log1p(df.hunter_followers.fillna(0))
+    f["followers_maker_max_log"] = df.maker_followers.apply(lambda x: math.log1p(max(x) if x else 0))
+    f["followers_maker_sum_log"] = df.maker_followers.apply(lambda x: math.log1p(sum(x)))
     return f
 
 
@@ -241,8 +253,10 @@ def optional(name: str, df: pd.DataFrame) -> pd.DataFrame:
 
 def build() -> tuple[pd.DataFrame, pd.DataFrame, dict[str, list[str]]]:
     df = load_posts()
-    parts = {"launch": launch_features(df), "people": people_features(df), "history": history_features(df),
-             "site": site_features(df), "llm": optional("llm", df), "hn": optional("hn", df), "domain": optional("domain", df)}
+    parts = {"launch": launch_features(df), "people": people_features(df), "followers": follower_features(df),
+             "history": history_features(df),
+             "site": site_features(df), "llm": optional("llm", df), "hn": optional("hn", df), "domain": optional("domain", df),
+             "github": optional("github", df)}
     groups = {g: list(p.columns) for g, p in parts.items()}
     X = pd.concat(parts.values(), axis=1).apply(pd.to_numeric, errors="coerce")
     return df, X, groups

@@ -1,0 +1,2210 @@
+{
+ "n_launches": 3933,
+ "days": [
+  "2026-03-01",
+  "2026-10-24"
+ ],
+ "test_months": [
+  "2026-05",
+  "2026-06",
+  "2026-07",
+  "2026-08",
+  "2026-09",
+  "2026-10"
+ ],
+ "groups": {
+  "launch": 62,
+  "people": 8,
+  "history": 11,
+  "site": 22,
+  "llm": 10,
+  "hn": 4,
+  "domain": 2,
+  "github": 1
+ },
+ "coverage": {
+  "site_loaded": 0.877,
+  "llm_scored": 0.905,
+  "hn_story_before_launch": 0.292,
+  "domain_age_known": 0.655,
+  "github_repo": 0.0,
+  "maker_launched_before": 0.405
+ },
+ "full": {
+  "day@3": {
+   "recall": 0.595,
+   "random": 0.181,
+   "lists": 148
+  },
+  "day@5": {
+   "recall": 0.649,
+   "random": 0.252,
+   "lists": 131
+  },
+  "day@10": {
+   "recall": 0.726,
+   "random": 0.365,
+   "lists": 77
+  },
+  "week@3": {
+   "recall": 0.444,
+   "random": 0.022,
+   "lists": 21
+  },
+  "week@5": {
+   "recall": 0.467,
+   "random": 0.037,
+   "lists": 21
+  },
+  "week@10": {
+   "recall": 0.524,
+   "random": 0.074,
+   "lists": 21
+  },
+  "month@3": {
+   "recall": 0.467,
+   "random": 0.008,
+   "lists": 5
+  },
+  "month@5": {
+   "recall": 0.36,
+   "random": 0.014,
+   "lists": 5
+  },
+  "month@10": {
+   "recall": 0.36,
+   "random": 0.028,
+   "lists": 5
+  }
+ },
+ "full_with_followers": {
+  "day@3": {
+   "recall": 0.606,
+   "random": 0.181,
+   "lists": 148
+  },
+  "day@5": {
+   "recall": 0.672,
+   "random": 0.252,
+   "lists": 131
+  },
+  "day@10": {
+   "recall": 0.758,
+   "random": 0.365,
+   "lists": 77
+  },
+  "week@3": {
+   "recall": 0.397,
+   "random": 0.022,
+   "lists": 21
+  },
+  "week@5": {
+   "recall": 0.448,
+   "random": 0.037,
+   "lists": 21
+  },
+  "week@10": {
+   "recall": 0.538,
+   "random": 0.074,
+   "lists": 21
+  },
+  "month@3": {
+   "recall": 0.4,
+   "random": 0.008,
+   "lists": 5
+  },
+  "month@5": {
+   "recall": 0.4,
+   "random": 0.014,
+   "lists": 5
+  },
+  "month@10": {
+   "recall": 0.38,
+   "random": 0.028,
+   "lists": 5
+  }
+ },
+ "spearman_day": 0.604,
+ "baselines": {
+  "followers today (hunter+makers; leaky)": {
+   "day@3": {
+    "recall": 0.45,
+    "random": 0.181,
+    "lists": 148
+   },
+   "day@5": {
+    "recall": 0.58,
+    "random": 0.252,
+    "lists": 131
+   },
+   "day@10": {
+    "recall": 0.705,
+    "random": 0.365,
+    "lists": 77
+   },
+   "week@3": {
+    "recall": 0.079,
+    "random": 0.022,
+    "lists": 21
+   },
+   "week@5": {
+    "recall": 0.171,
+    "random": 0.037,
+    "lists": 21
+   },
+   "week@10": {
+    "recall": 0.295,
+    "random": 0.074,
+    "lists": 21
+   },
+   "month@3": {
+    "recall": 0.0,
+    "random": 0.008,
+    "lists": 5
+   },
+   "month@5": {
+    "recall": 0.04,
+    "random": 0.014,
+    "lists": 5
+   },
+   "month@10": {
+    "recall": 0.12,
+    "random": 0.028,
+    "lists": 5
+   }
+  },
+  "llm p_top5 alone": {
+   "day@3": {
+    "recall": 0.256,
+    "random": 0.179,
+    "lists": 130
+   },
+   "day@5": {
+    "recall": 0.395,
+    "random": 0.255,
+    "lists": 117
+   },
+   "day@10": {
+    "recall": 0.5,
+    "random": 0.36,
+    "lists": 66
+   },
+   "week@3": {
+    "recall": 0.019,
+    "random": 0.022,
+    "lists": 18
+   },
+   "week@5": {
+    "recall": 0.022,
+    "random": 0.037,
+    "lists": 18
+   },
+   "week@10": {
+    "recall": 0.1,
+    "random": 0.073,
+    "lists": 18
+   },
+   "month@3": {
+    "recall": 0.0,
+    "random": 0.006,
+    "lists": 4
+   },
+   "month@5": {
+    "recall": 0.0,
+    "random": 0.01,
+    "lists": 4
+   },
+   "month@10": {
+    "recall": 0.0,
+    "random": 0.019,
+    "lists": 4
+   }
+  },
+  "look-alike earlier launches": {
+   "day@3": {
+    "recall": 0.302,
+    "random": 0.181,
+    "lists": 148
+   },
+   "day@5": {
+    "recall": 0.374,
+    "random": 0.252,
+    "lists": 131
+   },
+   "day@10": {
+    "recall": 0.457,
+    "random": 0.365,
+    "lists": 77
+   },
+   "week@3": {
+    "recall": 0.016,
+    "random": 0.022,
+    "lists": 21
+   },
+   "week@5": {
+    "recall": 0.067,
+    "random": 0.037,
+    "lists": 21
+   },
+   "week@10": {
+    "recall": 0.152,
+    "random": 0.074,
+    "lists": 21
+   },
+   "month@3": {
+    "recall": 0.0,
+    "random": 0.008,
+    "lists": 5
+   },
+   "month@5": {
+    "recall": 0.04,
+    "random": 0.014,
+    "lists": 5
+   },
+   "month@10": {
+    "recall": 0.02,
+    "random": 0.028,
+    "lists": 5
+   }
+  }
+ },
+ "only": {
+  "launch": {
+   "day@3": {
+    "recall": 0.363,
+    "random": 0.181,
+    "lists": 148
+   },
+   "day@5": {
+    "recall": 0.447,
+    "random": 0.252,
+    "lists": 131
+   },
+   "day@10": {
+    "recall": 0.516,
+    "random": 0.365,
+    "lists": 77
+   },
+   "week@3": {
+    "recall": 0.032,
+    "random": 0.022,
+    "lists": 21
+   },
+   "week@5": {
+    "recall": 0.105,
+    "random": 0.037,
+    "lists": 21
+   },
+   "week@10": {
+    "recall": 0.195,
+    "random": 0.074,
+    "lists": 21
+   },
+   "month@3": {
+    "recall": 0.067,
+    "random": 0.008,
+    "lists": 5
+   },
+   "month@5": {
+    "recall": 0.08,
+    "random": 0.014,
+    "lists": 5
+   },
+   "month@10": {
+    "recall": 0.06,
+    "random": 0.028,
+    "lists": 5
+   }
+  },
+  "people": {
+   "day@3": {
+    "recall": 0.482,
+    "random": 0.181,
+    "lists": 148
+   },
+   "day@5": {
+    "recall": 0.58,
+    "random": 0.252,
+    "lists": 131
+   },
+   "day@10": {
+    "recall": 0.677,
+    "random": 0.365,
+    "lists": 77
+   },
+   "week@3": {
+    "recall": 0.397,
+    "random": 0.022,
+    "lists": 21
+   },
+   "week@5": {
+    "recall": 0.352,
+    "random": 0.037,
+    "lists": 21
+   },
+   "week@10": {
+    "recall": 0.357,
+    "random": 0.074,
+    "lists": 21
+   },
+   "month@3": {
+    "recall": 0.267,
+    "random": 0.008,
+    "lists": 5
+   },
+   "month@5": {
+    "recall": 0.28,
+    "random": 0.014,
+    "lists": 5
+   },
+   "month@10": {
+    "recall": 0.32,
+    "random": 0.028,
+    "lists": 5
+   }
+  },
+  "history": {
+   "day@3": {
+    "recall": 0.471,
+    "random": 0.181,
+    "lists": 148
+   },
+   "day@5": {
+    "recall": 0.62,
+    "random": 0.252,
+    "lists": 131
+   },
+   "day@10": {
+    "recall": 0.701,
+    "random": 0.365,
+    "lists": 77
+   },
+   "week@3": {
+    "recall": 0.095,
+    "random": 0.022,
+    "lists": 21
+   },
+   "week@5": {
+    "recall": 0.171,
+    "random": 0.037,
+    "lists": 21
+   },
+   "week@10": {
+    "recall": 0.295,
+    "random": 0.074,
+    "lists": 21
+   },
+   "month@3": {
+    "recall": 0.0,
+    "random": 0.008,
+    "lists": 5
+   },
+   "month@5": {
+    "recall": 0.08,
+    "random": 0.014,
+    "lists": 5
+   },
+   "month@10": {
+    "recall": 0.12,
+    "random": 0.028,
+    "lists": 5
+   }
+  },
+  "site": {
+   "day@3": {
+    "recall": 0.324,
+    "random": 0.181,
+    "lists": 148
+   },
+   "day@5": {
+    "recall": 0.412,
+    "random": 0.252,
+    "lists": 131
+   },
+   "day@10": {
+    "recall": 0.486,
+    "random": 0.365,
+    "lists": 77
+   },
+   "week@3": {
+    "recall": 0.032,
+    "random": 0.022,
+    "lists": 21
+   },
+   "week@5": {
+    "recall": 0.086,
+    "random": 0.037,
+    "lists": 21
+   },
+   "week@10": {
+    "recall": 0.2,
+    "random": 0.074,
+    "lists": 21
+   },
+   "month@3": {
+    "recall": 0.0,
+    "random": 0.008,
+    "lists": 5
+   },
+   "month@5": {
+    "recall": 0.04,
+    "random": 0.014,
+    "lists": 5
+   },
+   "month@10": {
+    "recall": 0.06,
+    "random": 0.028,
+    "lists": 5
+   }
+  },
+  "llm": {
+   "day@3": {
+    "recall": 0.291,
+    "random": 0.181,
+    "lists": 148
+   },
+   "day@5": {
+    "recall": 0.397,
+    "random": 0.252,
+    "lists": 131
+   },
+   "day@10": {
+    "recall": 0.492,
+    "random": 0.365,
+    "lists": 77
+   },
+   "week@3": {
+    "recall": 0.016,
+    "random": 0.022,
+    "lists": 21
+   },
+   "week@5": {
+    "recall": 0.067,
+    "random": 0.037,
+    "lists": 21
+   },
+   "week@10": {
+    "recall": 0.124,
+    "random": 0.074,
+    "lists": 21
+   },
+   "month@3": {
+    "recall": 0.0,
+    "random": 0.008,
+    "lists": 5
+   },
+   "month@5": {
+    "recall": 0.04,
+    "random": 0.014,
+    "lists": 5
+   },
+   "month@10": {
+    "recall": 0.04,
+    "random": 0.028,
+    "lists": 5
+   }
+  },
+  "hn": {
+   "day@3": {
+    "recall": 0.248,
+    "random": 0.181,
+    "lists": 148
+   },
+   "day@5": {
+    "recall": 0.35,
+    "random": 0.252,
+    "lists": 131
+   },
+   "day@10": {
+    "recall": 0.435,
+    "random": 0.365,
+    "lists": 77
+   },
+   "week@3": {
+    "recall": 0.016,
+    "random": 0.022,
+    "lists": 21
+   },
+   "week@5": {
+    "recall": 0.048,
+    "random": 0.037,
+    "lists": 21
+   },
+   "week@10": {
+    "recall": 0.086,
+    "random": 0.074,
+    "lists": 21
+   },
+   "month@3": {
+    "recall": 0.0,
+    "random": 0.008,
+    "lists": 5
+   },
+   "month@5": {
+    "recall": 0.04,
+    "random": 0.014,
+    "lists": 5
+   },
+   "month@10": {
+    "recall": 0.06,
+    "random": 0.028,
+    "lists": 5
+   }
+  },
+  "domain": {
+   "day@3": {
+    "recall": 0.277,
+    "random": 0.181,
+    "lists": 148
+   },
+   "day@5": {
+    "recall": 0.353,
+    "random": 0.252,
+    "lists": 131
+   },
+   "day@10": {
+    "recall": 0.461,
+    "random": 0.365,
+    "lists": 77
+   },
+   "week@3": {
+    "recall": 0.048,
+    "random": 0.022,
+    "lists": 21
+   },
+   "week@5": {
+    "recall": 0.076,
+    "random": 0.037,
+    "lists": 21
+   },
+   "week@10": {
+    "recall": 0.124,
+    "random": 0.074,
+    "lists": 21
+   },
+   "month@3": {
+    "recall": 0.0,
+    "random": 0.008,
+    "lists": 5
+   },
+   "month@5": {
+    "recall": 0.04,
+    "random": 0.014,
+    "lists": 5
+   },
+   "month@10": {
+    "recall": 0.06,
+    "random": 0.028,
+    "lists": 5
+   }
+  },
+  "github": {
+   "day@3": {
+    "recall": 0.194,
+    "random": 0.181,
+    "lists": 148
+   },
+   "day@5": {
+    "recall": 0.25,
+    "random": 0.252,
+    "lists": 131
+   },
+   "day@10": {
+    "recall": 0.356,
+    "random": 0.365,
+    "lists": 77
+   },
+   "week@3": {
+    "recall": 0.016,
+    "random": 0.022,
+    "lists": 21
+   },
+   "week@5": {
+    "recall": 0.019,
+    "random": 0.037,
+    "lists": 21
+   },
+   "week@10": {
+    "recall": 0.067,
+    "random": 0.074,
+    "lists": 21
+   },
+   "month@3": {
+    "recall": 0.0,
+    "random": 0.008,
+    "lists": 5
+   },
+   "month@5": {
+    "recall": 0.04,
+    "random": 0.014,
+    "lists": 5
+   },
+   "month@10": {
+    "recall": 0.04,
+    "random": 0.028,
+    "lists": 5
+   }
+  }
+ },
+ "without": {
+  "launch": {
+   "day@3": {
+    "recall": 0.608,
+    "random": 0.181,
+    "lists": 148
+   },
+   "day@5": {
+    "recall": 0.652,
+    "random": 0.252,
+    "lists": 131
+   },
+   "day@10": {
+    "recall": 0.713,
+    "random": 0.365,
+    "lists": 77
+   },
+   "week@3": {
+    "recall": 0.429,
+    "random": 0.022,
+    "lists": 21
+   },
+   "week@5": {
+    "recall": 0.476,
+    "random": 0.037,
+    "lists": 21
+   },
+   "week@10": {
+    "recall": 0.519,
+    "random": 0.074,
+    "lists": 21
+   },
+   "month@3": {
+    "recall": 0.4,
+    "random": 0.008,
+    "lists": 5
+   },
+   "month@5": {
+    "recall": 0.4,
+    "random": 0.014,
+    "lists": 5
+   },
+   "month@10": {
+    "recall": 0.4,
+    "random": 0.028,
+    "lists": 5
+   }
+  },
+  "people": {
+   "day@3": {
+    "recall": 0.547,
+    "random": 0.181,
+    "lists": 148
+   },
+   "day@5": {
+    "recall": 0.629,
+    "random": 0.252,
+    "lists": 131
+   },
+   "day@10": {
+    "recall": 0.723,
+    "random": 0.365,
+    "lists": 77
+   },
+   "week@3": {
+    "recall": 0.159,
+    "random": 0.022,
+    "lists": 21
+   },
+   "week@5": {
+    "recall": 0.238,
+    "random": 0.037,
+    "lists": 21
+   },
+   "week@10": {
+    "recall": 0.348,
+    "random": 0.074,
+    "lists": 21
+   },
+   "month@3": {
+    "recall": 0.067,
+    "random": 0.008,
+    "lists": 5
+   },
+   "month@5": {
+    "recall": 0.08,
+    "random": 0.014,
+    "lists": 5
+   },
+   "month@10": {
+    "recall": 0.1,
+    "random": 0.028,
+    "lists": 5
+   }
+  },
+  "history": {
+   "day@3": {
+    "recall": 0.547,
+    "random": 0.181,
+    "lists": 148
+   },
+   "day@5": {
+    "recall": 0.6,
+    "random": 0.252,
+    "lists": 131
+   },
+   "day@10": {
+    "recall": 0.701,
+    "random": 0.365,
+    "lists": 77
+   },
+   "week@3": {
+    "recall": 0.286,
+    "random": 0.022,
+    "lists": 21
+   },
+   "week@5": {
+    "recall": 0.314,
+    "random": 0.037,
+    "lists": 21
+   },
+   "week@10": {
+    "recall": 0.395,
+    "random": 0.074,
+    "lists": 21
+   },
+   "month@3": {
+    "recall": 0.067,
+    "random": 0.008,
+    "lists": 5
+   },
+   "month@5": {
+    "recall": 0.24,
+    "random": 0.014,
+    "lists": 5
+   },
+   "month@10": {
+    "recall": 0.24,
+    "random": 0.028,
+    "lists": 5
+   }
+  },
+  "site": {
+   "day@3": {
+    "recall": 0.619,
+    "random": 0.181,
+    "lists": 148
+   },
+   "day@5": {
+    "recall": 0.652,
+    "random": 0.252,
+    "lists": 131
+   },
+   "day@10": {
+    "recall": 0.714,
+    "random": 0.365,
+    "lists": 77
+   },
+   "week@3": {
+    "recall": 0.429,
+    "random": 0.022,
+    "lists": 21
+   },
+   "week@5": {
+    "recall": 0.495,
+    "random": 0.037,
+    "lists": 21
+   },
+   "week@10": {
+    "recall": 0.538,
+    "random": 0.074,
+    "lists": 21
+   },
+   "month@3": {
+    "recall": 0.4,
+    "random": 0.008,
+    "lists": 5
+   },
+   "month@5": {
+    "recall": 0.4,
+    "random": 0.014,
+    "lists": 5
+   },
+   "month@10": {
+    "recall": 0.36,
+    "random": 0.028,
+    "lists": 5
+   }
+  },
+  "llm": {
+   "day@3": {
+    "recall": 0.597,
+    "random": 0.181,
+    "lists": 148
+   },
+   "day@5": {
+    "recall": 0.647,
+    "random": 0.252,
+    "lists": 131
+   },
+   "day@10": {
+    "recall": 0.721,
+    "random": 0.365,
+    "lists": 77
+   },
+   "week@3": {
+    "recall": 0.444,
+    "random": 0.022,
+    "lists": 21
+   },
+   "week@5": {
+    "recall": 0.467,
+    "random": 0.037,
+    "lists": 21
+   },
+   "week@10": {
+    "recall": 0.514,
+    "random": 0.074,
+    "lists": 21
+   },
+   "month@3": {
+    "recall": 0.4,
+    "random": 0.008,
+    "lists": 5
+   },
+   "month@5": {
+    "recall": 0.44,
+    "random": 0.014,
+    "lists": 5
+   },
+   "month@10": {
+    "recall": 0.34,
+    "random": 0.028,
+    "lists": 5
+   }
+  },
+  "hn": {
+   "day@3": {
+    "recall": 0.615,
+    "random": 0.181,
+    "lists": 148
+   },
+   "day@5": {
+    "recall": 0.652,
+    "random": 0.252,
+    "lists": 131
+   },
+   "day@10": {
+    "recall": 0.721,
+    "random": 0.365,
+    "lists": 77
+   },
+   "week@3": {
+    "recall": 0.444,
+    "random": 0.022,
+    "lists": 21
+   },
+   "week@5": {
+    "recall": 0.467,
+    "random": 0.037,
+    "lists": 21
+   },
+   "week@10": {
+    "recall": 0.533,
+    "random": 0.074,
+    "lists": 21
+   },
+   "month@3": {
+    "recall": 0.333,
+    "random": 0.008,
+    "lists": 5
+   },
+   "month@5": {
+    "recall": 0.4,
+    "random": 0.014,
+    "lists": 5
+   },
+   "month@10": {
+    "recall": 0.34,
+    "random": 0.028,
+    "lists": 5
+   }
+  },
+  "domain": {
+   "day@3": {
+    "recall": 0.597,
+    "random": 0.181,
+    "lists": 148
+   },
+   "day@5": {
+    "recall": 0.652,
+    "random": 0.252,
+    "lists": 131
+   },
+   "day@10": {
+    "recall": 0.722,
+    "random": 0.365,
+    "lists": 77
+   },
+   "week@3": {
+    "recall": 0.413,
+    "random": 0.022,
+    "lists": 21
+   },
+   "week@5": {
+    "recall": 0.467,
+    "random": 0.037,
+    "lists": 21
+   },
+   "week@10": {
+    "recall": 0.538,
+    "random": 0.074,
+    "lists": 21
+   },
+   "month@3": {
+    "recall": 0.4,
+    "random": 0.008,
+    "lists": 5
+   },
+   "month@5": {
+    "recall": 0.4,
+    "random": 0.014,
+    "lists": 5
+   },
+   "month@10": {
+    "recall": 0.38,
+    "random": 0.028,
+    "lists": 5
+   }
+  },
+  "github": {
+   "day@3": {
+    "recall": 0.599,
+    "random": 0.181,
+    "lists": 148
+   },
+   "day@5": {
+    "recall": 0.653,
+    "random": 0.252,
+    "lists": 131
+   },
+   "day@10": {
+    "recall": 0.719,
+    "random": 0.365,
+    "lists": 77
+   },
+   "week@3": {
+    "recall": 0.444,
+    "random": 0.022,
+    "lists": 21
+   },
+   "week@5": {
+    "recall": 0.467,
+    "random": 0.037,
+    "lists": 21
+   },
+   "week@10": {
+    "recall": 0.529,
+    "random": 0.074,
+    "lists": 21
+   },
+   "month@3": {
+    "recall": 0.467,
+    "random": 0.008,
+    "lists": 5
+   },
+   "month@5": {
+    "recall": 0.4,
+    "random": 0.014,
+    "lists": 5
+   },
+   "month@10": {
+    "recall": 0.36,
+    "random": 0.028,
+    "lists": 5
+   }
+  }
+ },
+ "only_by_family": {
+  "Developer": {
+   "launch": {
+    "recall": 0.16,
+    "random": 0.084,
+    "lists": 20
+   },
+   "people": {
+    "recall": 0.3,
+    "random": 0.084,
+    "lists": 20
+   },
+   "history": {
+    "recall": 0.35,
+    "random": 0.084,
+    "lists": 20
+   },
+   "site": {
+    "recall": 0.18,
+    "random": 0.084,
+    "lists": 20
+   },
+   "llm": {
+    "recall": 0.13,
+    "random": 0.084,
+    "lists": 20
+   },
+   "hn": {
+    "recall": 0.07,
+    "random": 0.084,
+    "lists": 20
+   },
+   "domain": {
+    "recall": 0.13,
+    "random": 0.084,
+    "lists": 20
+   },
+   "github": {
+    "recall": 0.05,
+    "random": 0.084,
+    "lists": 20
+   }
+  },
+  "Other": {
+   "launch": {
+    "recall": 0.467,
+    "random": 0.286,
+    "lists": 3
+   },
+   "people": {
+    "recall": 0.533,
+    "random": 0.286,
+    "lists": 3
+   },
+   "history": {
+    "recall": 0.6,
+    "random": 0.286,
+    "lists": 3
+   },
+   "site": {
+    "recall": 0.467,
+    "random": 0.286,
+    "lists": 3
+   },
+   "llm": {
+    "recall": 0.4,
+    "random": 0.286,
+    "lists": 3
+   },
+   "hn": {
+    "recall": 0.533,
+    "random": 0.286,
+    "lists": 3
+   },
+   "domain": {
+    "recall": 0.267,
+    "random": 0.286,
+    "lists": 3
+   },
+   "github": {
+    "recall": 0.267,
+    "random": 0.286,
+    "lists": 3
+   }
+  },
+  "AI": {
+   "launch": {
+    "recall": 0.278,
+    "random": 0.126,
+    "lists": 18
+   },
+   "people": {
+    "recall": 0.478,
+    "random": 0.126,
+    "lists": 18
+   },
+   "history": {
+    "recall": 0.322,
+    "random": 0.126,
+    "lists": 18
+   },
+   "site": {
+    "recall": 0.2,
+    "random": 0.126,
+    "lists": 18
+   },
+   "llm": {
+    "recall": 0.178,
+    "random": 0.126,
+    "lists": 18
+   },
+   "hn": {
+    "recall": 0.133,
+    "random": 0.126,
+    "lists": 18
+   },
+   "domain": {
+    "recall": 0.156,
+    "random": 0.126,
+    "lists": 18
+   },
+   "github": {
+    "recall": 0.122,
+    "random": 0.126,
+    "lists": 18
+   }
+  },
+  "Design": {
+   "launch": null,
+   "people": null,
+   "history": null,
+   "site": null,
+   "llm": null,
+   "hn": null,
+   "domain": null,
+   "github": null
+  },
+  "Consumer": {
+   "launch": null,
+   "people": null,
+   "history": null,
+   "site": null,
+   "llm": null,
+   "hn": null,
+   "domain": null,
+   "github": null
+  },
+  "Productivity": {
+   "launch": {
+    "recall": 0.333,
+    "random": 0.225,
+    "lists": 6
+   },
+   "people": {
+    "recall": 0.3,
+    "random": 0.225,
+    "lists": 6
+   },
+   "history": {
+    "recall": 0.333,
+    "random": 0.225,
+    "lists": 6
+   },
+   "site": {
+    "recall": 0.267,
+    "random": 0.225,
+    "lists": 6
+   },
+   "llm": {
+    "recall": 0.3,
+    "random": 0.225,
+    "lists": 6
+   },
+   "hn": {
+    "recall": 0.2,
+    "random": 0.225,
+    "lists": 6
+   },
+   "domain": {
+    "recall": 0.267,
+    "random": 0.225,
+    "lists": 6
+   },
+   "github": {
+    "recall": 0.233,
+    "random": 0.225,
+    "lists": 6
+   }
+  },
+  "Marketing & Sales": {
+   "launch": null,
+   "people": null,
+   "history": null,
+   "site": null,
+   "llm": null,
+   "hn": null,
+   "domain": null,
+   "github": null
+  },
+  "(all types)": {
+   "launch": {
+    "recall": 0.105,
+    "random": 0.037,
+    "lists": 21
+   },
+   "people": {
+    "recall": 0.352,
+    "random": 0.037,
+    "lists": 21
+   },
+   "history": {
+    "recall": 0.171,
+    "random": 0.037,
+    "lists": 21
+   },
+   "site": {
+    "recall": 0.086,
+    "random": 0.037,
+    "lists": 21
+   },
+   "llm": {
+    "recall": 0.067,
+    "random": 0.037,
+    "lists": 21
+   },
+   "hn": {
+    "recall": 0.048,
+    "random": 0.037,
+    "lists": 21
+   },
+   "domain": {
+    "recall": 0.076,
+    "random": 0.037,
+    "lists": 21
+   },
+   "github": {
+    "recall": 0.019,
+    "random": 0.037,
+    "lists": 21
+   }
+  }
+ },
+ "factors_by_family": {
+  "(all types)": {
+   "n": 3933,
+   "top": {
+    "people_self_hunted": -0.467,
+    "people_hunter_age_days": 0.46,
+    "hist_hunter_prior_hunts": 0.397,
+    "people_n_makers": 0.362,
+    "launch_n_featured_day": -0.34,
+    "people_hunter_twitter": 0.317,
+    "llm_maker_credibility": 0.309,
+    "hist_hunter_prior_top10_rate": 0.3,
+    "hist_maker_is_repeat": 0.286,
+    "llm_p_top5": 0.272
+   }
+  },
+  "AI": {
+   "n": 1157,
+   "top": {
+    "people_hunter_age_days": 0.456,
+    "people_self_hunted": -0.454,
+    "hist_hunter_prior_hunts": 0.452,
+    "people_n_makers": 0.377,
+    "people_hunter_twitter": 0.322,
+    "launch_n_featured_day": -0.307,
+    "launch_n_links": 0.291,
+    "hist_hunter_prior_top10_rate": 0.283,
+    "llm_maker_credibility": 0.262,
+    "llm_p_top5": 0.259
+   }
+  },
+  "Consumer": {
+   "n": 143,
+   "top": {
+    "people_self_hunted": -0.357,
+    "launch_n_featured_day": -0.286,
+    "launch_n_links": 0.282,
+    "hist_maker_prior_launches": 0.274,
+    "hist_maker_is_repeat": 0.269,
+    "people_n_makers": 0.211,
+    "site_w_testimonial": -0.203,
+    "llm_p_top5": 0.199,
+    "launch_weekend": 0.193,
+    "llm_broad_appeal": 0.192
+   }
+  },
+  "Design": {
+   "n": 160,
+   "top": {
+    "launch_n_featured_day": -0.417,
+    "llm_p_top5": 0.364,
+    "launch_n_links": 0.362,
+    "launch_link_twitter": 0.346,
+    "llm_demo_wow": 0.321,
+    "people_hunter_age_days": 0.287,
+    "llm_maker_credibility": 0.25,
+    "llm_broad_appeal": 0.239,
+    "hist_hunter_prior_hunts": 0.202,
+    "launch_topic_vercel_day": -0.198
+   }
+  },
+  "Developer": {
+   "n": 1723,
+   "top": {
+    "people_self_hunted": -0.486,
+    "people_hunter_age_days": 0.463,
+    "hist_hunter_prior_hunts": 0.406,
+    "launch_n_featured_day": -0.37,
+    "people_n_makers": 0.369,
+    "people_hunter_twitter": 0.339,
+    "hist_maker_is_repeat": 0.316,
+    "llm_maker_credibility": 0.313,
+    "hist_hunter_prior_top10_rate": 0.287,
+    "hist_maker_prior_launches": 0.279
+   }
+  },
+  "Marketing & Sales": {
+   "n": 121,
+   "top": {
+    "people_self_hunted": -0.412,
+    "people_hunter_age_days": 0.377,
+    "hist_hunter_prior_hunts": 0.35,
+    "people_n_makers": 0.338,
+    "launch_n_media": 0.324,
+    "hist_maker_is_repeat": 0.31,
+    "llm_polish": 0.305,
+    "llm_p_top5": 0.303,
+    "launch_n_featured_day": -0.294,
+    "site_w_social_proof": 0.27
+   }
+  },
+  "Other": {
+   "n": 245,
+   "top": {
+    "hist_hunter_prior_hunts": 0.402,
+    "hist_hunter_prior_top10_rate": 0.386,
+    "people_hunter_age_days": 0.362,
+    "people_self_hunted": -0.338,
+    "launch_n_featured_day": -0.314,
+    "llm_broad_appeal": 0.291,
+    "llm_p_top5": 0.266,
+    "site_is_subdomain": -0.264,
+    "llm_maker_credibility": 0.263,
+    "launch_topic_ios": -0.25
+   }
+  },
+  "Productivity": {
+   "n": 384,
+   "top": {
+    "launch_n_featured_day": -0.377,
+    "hist_hunter_prior_top10_rate": 0.359,
+    "people_self_hunted": -0.255,
+    "people_hunter_age_days": 0.233,
+    "people_hunter_twitter": 0.196,
+    "people_n_makers": 0.192,
+    "launch_topic_vercel_day": -0.183,
+    "launch_topic_openai_day": -0.178,
+    "hist_maker_is_repeat": 0.166,
+    "launch_link_twitter": 0.156
+   }
+  }
+ },
+ "topics": {
+  "Artificial Intelligence": {
+   "day@3": {
+    "recall": 0.664,
+    "random": 0.268,
+    "lists": 123
+   },
+   "day@5": {
+    "recall": 0.711,
+    "random": 0.35,
+    "lists": 88
+   },
+   "day@10": {
+    "recall": 0.725,
+    "random": 0.393,
+    "lists": 16
+   },
+   "week@3": {
+    "recall": 0.483,
+    "random": 0.041,
+    "lists": 20
+   },
+   "week@5": {
+    "recall": 0.48,
+    "random": 0.068,
+    "lists": 20
+   },
+   "week@10": {
+    "recall": 0.605,
+    "random": 0.136,
+    "lists": 20
+   },
+   "month@3": {
+    "recall": 0.467,
+    "random": 0.016,
+    "lists": 5
+   },
+   "month@5": {
+    "recall": 0.36,
+    "random": 0.026,
+    "lists": 5
+   },
+   "month@10": {
+    "recall": 0.42,
+    "random": 0.052,
+    "lists": 5
+   }
+  },
+  "Productivity": {
+   "day@3": {
+    "recall": 0.652,
+    "random": 0.337,
+    "lists": 90
+   },
+   "day@5": {
+    "recall": 0.635,
+    "random": 0.421,
+    "lists": 40
+   },
+   "day@10": {
+    "recall": 0.567,
+    "random": 0.435,
+    "lists": 3
+   },
+   "week@3": {
+    "recall": 0.544,
+    "random": 0.065,
+    "lists": 19
+   },
+   "week@5": {
+    "recall": 0.747,
+    "random": 0.108,
+    "lists": 19
+   },
+   "week@10": {
+    "recall": 0.689,
+    "random": 0.217,
+    "lists": 19
+   },
+   "month@3": {
+    "recall": 0.4,
+    "random": 0.025,
+    "lists": 5
+   },
+   "month@5": {
+    "recall": 0.56,
+    "random": 0.041,
+    "lists": 5
+   },
+   "month@10": {
+    "recall": 0.6,
+    "random": 0.082,
+    "lists": 5
+   }
+  },
+  "Developer Tools": {
+   "day@3": {
+    "recall": 0.727,
+    "random": 0.352,
+    "lists": 88
+   },
+   "day@5": {
+    "recall": 0.706,
+    "random": 0.403,
+    "lists": 34
+   },
+   "day@10": {
+    "recall": 0.6,
+    "random": 0.38,
+    "lists": 3
+   },
+   "week@3": {
+    "recall": 0.396,
+    "random": 0.063,
+    "lists": 16
+   },
+   "week@5": {
+    "recall": 0.575,
+    "random": 0.104,
+    "lists": 16
+   },
+   "week@10": {
+    "recall": 0.694,
+    "random": 0.209,
+    "lists": 16
+   },
+   "month@3": {
+    "recall": 0.333,
+    "random": 0.027,
+    "lists": 5
+   },
+   "month@5": {
+    "recall": 0.4,
+    "random": 0.045,
+    "lists": 5
+   },
+   "month@10": {
+    "recall": 0.58,
+    "random": 0.09,
+    "lists": 5
+   }
+  },
+  "GitHub": {
+   "day@3": {
+    "recall": 0.581,
+    "random": 0.378,
+    "lists": 31
+   },
+   "day@5": {
+    "recall": 0.56,
+    "random": 0.42,
+    "lists": 10
+   },
+   "day@10": {
+    "recall": 0.4,
+    "random": 0.4,
+    "lists": 1
+   },
+   "week@3": {
+    "recall": 0.533,
+    "random": 0.11,
+    "lists": 10
+   },
+   "week@5": {
+    "recall": 0.72,
+    "random": 0.183,
+    "lists": 10
+   },
+   "week@10": {
+    "recall": 0.712,
+    "random": 0.31,
+    "lists": 8
+   },
+   "month@3": {
+    "recall": 0.467,
+    "random": 0.054,
+    "lists": 5
+   },
+   "month@5": {
+    "recall": 0.68,
+    "random": 0.09,
+    "lists": 5
+   },
+   "month@10": {
+    "recall": 0.62,
+    "random": 0.18,
+    "lists": 5
+   }
+  },
+  "Open Source": {
+   "day@3": {
+    "recall": 0.649,
+    "random": 0.38,
+    "lists": 19
+   },
+   "day@5": {
+    "recall": 0.733,
+    "random": 0.452,
+    "lists": 3
+   },
+   "week@3": {
+    "recall": 0.633,
+    "random": 0.144,
+    "lists": 10
+   },
+   "week@5": {
+    "recall": 0.72,
+    "random": 0.24,
+    "lists": 10
+   },
+   "week@10": {
+    "recall": 0.7,
+    "random": 0.333,
+    "lists": 5
+   },
+   "month@3": {
+    "recall": 0.267,
+    "random": 0.069,
+    "lists": 5
+   },
+   "month@5": {
+    "recall": 0.64,
+    "random": 0.116,
+    "lists": 5
+   },
+   "month@10": {
+    "recall": 0.6,
+    "random": 0.157,
+    "lists": 4
+   }
+  },
+  "Mac": {
+   "day@3": {
+    "recall": 0.524,
+    "random": 0.426,
+    "lists": 7
+   },
+   "day@5": {
+    "recall": 0.4,
+    "random": 0.5,
+    "lists": 1
+   },
+   "week@3": {
+    "recall": 0.417,
+    "random": 0.125,
+    "lists": 4
+   },
+   "week@5": {
+    "recall": 0.35,
+    "random": 0.208,
+    "lists": 4
+   },
+   "week@10": {
+    "recall": 0.333,
+    "random": 0.316,
+    "lists": 3
+   },
+   "month@3": {
+    "recall": 0.467,
+    "random": 0.101,
+    "lists": 5
+   },
+   "month@5": {
+    "recall": 0.56,
+    "random": 0.168,
+    "lists": 5
+   },
+   "month@10": {
+    "recall": 0.575,
+    "random": 0.211,
+    "lists": 4
+   }
+  },
+  "SaaS": {
+   "day@3": {
+    "recall": 0.583,
+    "random": 0.423,
+    "lists": 4
+   },
+   "week@3": {
+    "recall": 0.167,
+    "random": 0.135,
+    "lists": 2
+   },
+   "week@5": {
+    "recall": 0.5,
+    "random": 0.225,
+    "lists": 2
+   },
+   "week@10": {
+    "recall": 0.7,
+    "random": 0.45,
+    "lists": 2
+   },
+   "month@3": {
+    "recall": 0.533,
+    "random": 0.102,
+    "lists": 5
+   },
+   "month@5": {
+    "recall": 0.64,
+    "random": 0.17,
+    "lists": 5
+   },
+   "month@10": {
+    "recall": 0.675,
+    "random": 0.217,
+    "lists": 4
+   }
+  },
+  "Design Tools": {
+   "day@3": {
+    "recall": 0.444,
+    "random": 0.435,
+    "lists": 3
+   },
+   "week@3": {
+    "recall": 0.778,
+    "random": 0.261,
+    "lists": 3
+   },
+   "week@5": {
+    "recall": 0.7,
+    "random": 0.374,
+    "lists": 2
+   },
+   "month@3": {
+    "recall": 0.733,
+    "random": 0.128,
+    "lists": 5
+   },
+   "month@5": {
+    "recall": 0.55,
+    "random": 0.128,
+    "lists": 4
+   },
+   "month@10": {
+    "recall": 0.7,
+    "random": 0.256,
+    "lists": 4
+   }
+  },
+  "Marketing": {
+   "day@3": {
+    "recall": 1.0,
+    "random": 0.5,
+    "lists": 1
+   },
+   "week@3": {
+    "recall": 0.667,
+    "random": 0.194,
+    "lists": 2
+   },
+   "week@5": {
+    "recall": 0.8,
+    "random": 0.323,
+    "lists": 2
+   },
+   "month@3": {
+    "recall": 0.4,
+    "random": 0.147,
+    "lists": 5
+   },
+   "month@5": {
+    "recall": 0.4,
+    "random": 0.128,
+    "lists": 4
+   },
+   "month@10": {
+    "recall": 0.6,
+    "random": 0.256,
+    "lists": 4
+   }
+  },
+  "Menu Bar Apps": {
+   "day@3": {
+    "recall": 0.667,
+    "random": 0.5,
+    "lists": 1
+   },
+   "week@3": {
+    "recall": 0.667,
+    "random": 0.158,
+    "lists": 1
+   },
+   "week@5": {
+    "recall": 0.4,
+    "random": 0.263,
+    "lists": 1
+   },
+   "month@3": {
+    "recall": 0.533,
+    "random": 0.174,
+    "lists": 5
+   },
+   "month@5": {
+    "recall": 0.45,
+    "random": 0.183,
+    "lists": 4
+   },
+   "month@10": {
+    "recall": 0.55,
+    "random": 0.366,
+    "lists": 4
+   }
+  },
+  "API": {
+   "month@3": {
+    "recall": 0.533,
+    "random": 0.136,
+    "lists": 5
+   },
+   "month@5": {
+    "recall": 0.52,
+    "random": 0.226,
+    "lists": 5
+   },
+   "month@10": {
+    "recall": 0.65,
+    "random": 0.358,
+    "lists": 4
+   }
+  },
+  "Vercel Day": {
+   "day@3": {
+    "recall": 0.889,
+    "random": 0.075,
+    "lists": 3
+   },
+   "day@5": {
+    "recall": 0.6,
+    "random": 0.126,
+    "lists": 3
+   },
+   "day@10": {
+    "recall": 0.667,
+    "random": 0.252,
+    "lists": 3
+   },
+   "month@3": {
+    "recall": 0.778,
+    "random": 0.074,
+    "lists": 3
+   },
+   "month@5": {
+    "recall": 0.667,
+    "random": 0.123,
+    "lists": 3
+   },
+   "month@10": {
+    "recall": 0.7,
+    "random": 0.245,
+    "lists": 3
+   }
+  },
+  "OpenAI Day": {
+   "day@3": {
+    "recall": 0.833,
+    "random": 0.047,
+    "lists": 2
+   },
+   "day@5": {
+    "recall": 0.6,
+    "random": 0.078,
+    "lists": 2
+   },
+   "day@10": {
+    "recall": 0.75,
+    "random": 0.157,
+    "lists": 2
+   },
+   "month@3": {
+    "recall": 0.667,
+    "random": 0.046,
+    "lists": 2
+   },
+   "month@5": {
+    "recall": 0.7,
+    "random": 0.077,
+    "lists": 2
+   },
+   "month@10": {
+    "recall": 0.8,
+    "random": 0.155,
+    "lists": 2
+   }
+  },
+  "Tech": {
+   "month@3": {
+    "recall": 0.4,
+    "random": 0.164,
+    "lists": 5
+   },
+   "month@5": {
+    "recall": 0.45,
+    "random": 0.202,
+    "lists": 4
+   },
+   "month@10": {
+    "recall": 0.667,
+    "random": 0.363,
+    "lists": 3
+   }
+  },
+  "iOS": {
+   "day@3": {
+    "recall": 0.667,
+    "random": 0.429,
+    "lists": 1
+   },
+   "month@3": {
+    "recall": 0.833,
+    "random": 0.159,
+    "lists": 4
+   },
+   "month@5": {
+    "recall": 0.7,
+    "random": 0.265,
+    "lists": 4
+   },
+   "month@10": {
+    "recall": 0.8,
+    "random": 0.396,
+    "lists": 2
+   }
+  }
+ },
+ "importance": {
+  "top_features": {
+   "hist_hunter_prior_top10_rate": 0.1344,
+   "people_n_makers": 0.1133,
+   "launch_n_featured_day": 0.0942,
+   "hist_hunter_prior_hunts": 0.0774,
+   "people_hunter_age_days": 0.0371,
+   "hist_maker_prior_launches": 0.0291,
+   "site_w_ai": 0.0259,
+   "llm_p_top5": 0.0247,
+   "launch_n_links": 0.0204,
+   "hist_maker_prior_top10_rate": 0.0202,
+   "llm_broad_appeal": 0.02,
+   "people_maker_age_max_days": 0.0183,
+   "domain_age_days": 0.0178,
+   "site_words_log": 0.0174,
+   "hist_topic_top10_rate_max": 0.0162,
+   "people_self_hunted": 0.016,
+   "launch_weekday": 0.0153,
+   "hist_lookalike_similarity": 0.0144,
+   "launch_n_media": 0.0136,
+   "hist_maker_prior_best_rank": 0.0135,
+   "hist_topic_top10_rate_mean": 0.013,
+   "llm_clarity": 0.0119,
+   "launch_desc_words": 0.0101,
+   "hist_lookalike_top10_rate": 0.0098,
+   "llm_dev_audience": 0.0089,
+   "hist_lookalike_top3_rate": 0.0084,
+   "launch_has_video": 0.0079,
+   "site_title_words": 0.0077,
+   "site_w_api": 0.0072,
+   "launch_link_twitter": 0.0071
+  },
+  "group_share": {
+   "history": 0.34,
+   "launch": 0.23,
+   "people": 0.201,
+   "site": 0.102,
+   "llm": 0.09,
+   "domain": 0.019,
+   "hn": 0.019,
+   "github": 0.0
+  },
+  "group_share_by_family": {
+   "AI": {
+    "domain": 0.022,
+    "github": 0.0,
+    "history": 0.351,
+    "hn": 0.02,
+    "launch": 0.213,
+    "llm": 0.093,
+    "people": 0.201,
+    "site": 0.098
+   },
+   "Consumer": {
+    "domain": 0.019,
+    "github": 0.0,
+    "history": 0.314,
+    "hn": 0.017,
+    "launch": 0.248,
+    "llm": 0.093,
+    "people": 0.211,
+    "site": 0.098
+   },
+   "Design": {
+    "domain": 0.022,
+    "github": 0.0,
+    "history": 0.309,
+    "hn": 0.018,
+    "launch": 0.244,
+    "llm": 0.102,
+    "people": 0.206,
+    "site": 0.1
+   },
+   "Developer": {
+    "domain": 0.017,
+    "github": 0.0,
+    "history": 0.343,
+    "hn": 0.019,
+    "launch": 0.232,
+    "llm": 0.085,
+    "people": 0.2,
+    "site": 0.105
+   },
+   "Marketing & Sales": {
+    "domain": 0.018,
+    "github": 0.0,
+    "history": 0.323,
+    "hn": 0.016,
+    "launch": 0.255,
+    "llm": 0.094,
+    "people": 0.189,
+    "site": 0.106
+   },
+   "Other": {
+    "domain": 0.021,
+    "github": 0.0,
+    "history": 0.335,
+    "hn": 0.02,
+    "launch": 0.222,
+    "llm": 0.095,
+    "people": 0.206,
+    "site": 0.102
+   },
+   "Productivity": {
+    "domain": 0.018,
+    "github": 0.0,
+    "history": 0.318,
+    "hn": 0.015,
+    "launch": 0.259,
+    "llm": 0.087,
+    "people": 0.198,
+    "site": 0.106
+   }
+  },
+  "top_features_by_family": {
+   "Other": {
+    "hist_hunter_prior_top10_rate": 0.1289,
+    "people_n_makers": 0.1109,
+    "launch_n_featured_day": 0.0932,
+    "hist_hunter_prior_hunts": 0.0743,
+    "people_hunter_age_days": 0.0388,
+    "hist_maker_prior_launches": 0.0275,
+    "site_w_ai": 0.0269,
+    "llm_p_top5": 0.0244
+   },
+   "AI": {
+    "hist_hunter_prior_top10_rate": 0.1499,
+    "people_n_makers": 0.1197,
+    "launch_n_featured_day": 0.0897,
+    "hist_hunter_prior_hunts": 0.0865,
+    "people_hunter_age_days": 0.0389,
+    "hist_maker_prior_launches": 0.0335,
+    "llm_p_top5": 0.0284,
+    "site_w_ai": 0.025
+   },
+   "Productivity": {
+    "hist_hunter_prior_top10_rate": 0.1075,
+    "launch_n_featured_day": 0.1035,
+    "people_n_makers": 0.0983,
+    "hist_hunter_prior_hunts": 0.0615,
+    "people_hunter_age_days": 0.0365,
+    "site_w_ai": 0.0248,
+    "hist_maker_prior_launches": 0.0238,
+    "llm_p_top5": 0.0207
+   },
+   "Consumer": {
+    "hist_hunter_prior_top10_rate": 0.1135,
+    "people_n_makers": 0.1124,
+    "launch_n_featured_day": 0.1124,
+    "hist_hunter_prior_hunts": 0.0591,
+    "people_hunter_age_days": 0.042,
+    "site_w_ai": 0.0269,
+    "hist_maker_prior_launches": 0.0245,
+    "hist_topic_top10_rate_max": 0.0206
+   },
+   "Developer": {
+    "hist_hunter_prior_top10_rate": 0.1355,
+    "people_n_makers": 0.1138,
+    "launch_n_featured_day": 0.0923,
+    "hist_hunter_prior_hunts": 0.0792,
+    "people_hunter_age_days": 0.0352,
+    "hist_maker_prior_launches": 0.0287,
+    "site_w_ai": 0.0266,
+    "llm_p_top5": 0.0234
+   },
+   "Marketing & Sales": {
+    "hist_hunter_prior_top10_rate": 0.1285,
+    "people_n_makers": 0.1031,
+    "launch_n_featured_day": 0.1027,
+    "hist_hunter_prior_hunts": 0.0719,
+    "people_hunter_age_days": 0.0378,
+    "hist_maker_prior_launches": 0.0293,
+    "site_w_ai": 0.0234,
+    "llm_p_top5": 0.0229
+   },
+   "Design": {
+    "hist_hunter_prior_top10_rate": 0.1149,
+    "people_n_makers": 0.1112,
+    "launch_n_featured_day": 0.1008,
+    "hist_hunter_prior_hunts": 0.0611,
+    "people_hunter_age_days": 0.039,
+    "llm_p_top5": 0.0299,
+    "site_w_ai": 0.0252,
+    "hist_maker_prior_launches": 0.0228
+   }
+  },
+  "family_counts": {
+   "Developer": 1439,
+   "AI": 941,
+   "Productivity": 325,
+   "Other": 208,
+   "Design": 144,
+   "Consumer": 129,
+   "Marketing & Sales": 103
+  }
+ },
+ "current_lists": {
+  "yesterday": {
+   "period": "2026-10-24",
+   "n_launches": 14,
+   "actual_top10": [
+    "zCAD AI",
+    "myPip",
+    "1Password for Agents",
+    "AgentValley",
+    "Canva Craft",
+    "LinkIntel",
+    "Many Displays",
+    "Penta",
+    "Byter",
+    "Basedash Scheduled CSV Exports"
+   ],
+   "predicted_top10": [
+    "zCAD AI",
+    "1Password for Agents",
+    "myPip",
+    "LinkIntel",
+    "Canva Craft",
+    "sideOS.ai",
+    "Many Displays",
+    "Basedash Scheduled CSV Exports",
+    "Byter",
+    "AgentValley"
+   ],
+   "recall@3": 1.0,
+   "recall@5": 0.8,
+   "recall@10": 0.9
+  },
+  "last_week": {
+   "period": "2026-10-12",
+   "n_launches": 203,
+   "actual_top10": [
+    "Pancake",
+    "Jockey by TwelveLabs",
+    "Inferock",
+    "Articos MCP",
+    "Talanoa",
+    "Harness by Autonomous",
+    "OpenCode 2.0",
+    "Google EmbeddingGemma 2",
+    "Inbox Zero",
+    "NitroStack"
+   ],
+   "predicted_top10": [
+    "Pancake",
+    "NitroStack",
+    "Jockey by TwelveLabs",
+    "Articos MCP",
+    "Navige",
+    "Notion: Context for your agents",
+    "MentionBird",
+    "Talanoa",
+    "Confidence by Spotify ",
+    "Ancher 2.0"
+   ],
+   "recall@3": 0.6666666666666666,
+   "recall@5": 0.6,
+   "recall@10": 0.5
+  },
+  "last_month": {
+   "period": "2026-09",
+   "n_launches": 708,
+   "actual_top10": [
+    "Ami AI",
+    "tiun.",
+    "CREEM 2.0",
+    "Clueso MCP",
+    "Mastra Factory",
+    "Jev",
+    "Voiskey",
+    "Switch",
+    "Naoma AI Demo Agent V2",
+    "Kilo Code for JetBrains"
+   ],
+   "predicted_top10": [
+    "CREEM 2.0",
+    "Ami AI",
+    "MCP Connectors by Databox",
+    "Hemory",
+    "Weave Router 2.0",
+    "Clueso MCP",
+    "Humalike - AI NPC",
+    "tiun.",
+    "Monid",
+    "Pexo"
+   ],
+   "recall@3": 0.6666666666666666,
+   "recall@5": 0.4,
+   "recall@10": 0.4
+  }
+ }
+}

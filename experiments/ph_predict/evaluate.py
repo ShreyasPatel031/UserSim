@@ -85,8 +85,9 @@ def recall_lists(df: pd.DataFrame, score: pd.Series, topic: str | None = None, c
                 rec.append(len(actual & pred) / k)
                 rnd.append(k / len(g))
             if rec:
+                boot = np.random.default_rng(0).choice(rec, (1000, len(rec))).mean(axis=1)
                 out[f"{period}@{k}"] = {"recall": round(float(np.mean(rec)), 3), "random": round(float(np.mean(rnd)), 3),
-                                        "lists": len(rec)}
+                                        "lists": len(rec), "ci95": [round(float(x), 3) for x in np.percentile(boot, [2.5, 97.5])]}
     return out
 
 
@@ -115,10 +116,29 @@ def shap_by(df: pd.DataFrame, X: pd.DataFrame, cols: list[str], groups: dict, mo
             "top_features_by_family": top_by_family, "family_counts": fam.value_counts().to_dict()}
 
 
+def factors_by_family(df: pd.DataFrame, X: pd.DataFrame, fam: pd.Series, cols: list[str]) -> dict:
+    """Spearman correlation of each feature with log votes inside the same week, per product type: which factors
+    go with doing well, and whether that differs by type."""
+    y = np.log1p(df.votes)
+    y = y - y.groupby(df.week).transform("mean")
+    out = {}
+    for f in ["(all types)"] + sorted(fam.unique()):
+        m = np.ones(len(df), bool) if f == "(all types)" else (fam == f).to_numpy()
+        xs = X.loc[m, cols]
+        xs = xs - xs.groupby(df.week[m]).transform("mean")
+        c = xs.corrwith(y[m], method="spearman").dropna()
+        out[f] = {"n": int(m.sum()), "top": c.reindex(c.abs().sort_values(ascending=False).index).head(10).round(3).to_dict()}
+    return out
+
+
 def main() -> None:
     OUT.mkdir(exist_ok=True)
     df, X, groups = F.build()
+    keep = df.complete.to_numpy()  # drop live (unfinished) days
+    df, X = df[keep].reset_index(drop=True), X[keep].reset_index(drop=True)
     groups = {g: c for g, c in groups.items() if c}
+    with_followers = [c for cs in groups.values() for c in cs]
+    groups.pop("followers")  # headline model: no follower counts (today's counts include the launch's own effect)
     all_cols = [c for cs in groups.values() for c in cs]
     months = sorted(df.month.unique())
     test_months = [m for m in months if (df.month < m).sum() >= 200]
@@ -127,15 +147,26 @@ def main() -> None:
     print(f"{len(df)} launches {df.day.min()}..{last_day}; test months {test_months}; complete {complete}", flush=True)
 
     res: dict = {"n_launches": len(df), "days": [df.day.min(), last_day], "test_months": test_months,
-                 "groups": {g: len(c) for g, c in groups.items()}}
+                 "groups": {g: len(c) for g, c in groups.items()},
+                 "coverage": {k: round(float(v), 3) for k, v in {
+                     "site_loaded": (X.get("site_ok", 0) == 1).mean(),
+                     "llm_scored": X.get("llm_novelty", np.nan * 0).notna().mean() if "llm_novelty" in X else 0,
+                     "hn_story_before_launch": (X.get("hn_stories", 0) > 0).mean(),
+                     "domain_age_known": X.get("domain_age_days", np.nan * 0).notna().mean() if "domain_age_days" in X else 0,
+                     "github_repo": (X.get("github_repo_found", 0) == 1).mean(),
+                     "maker_launched_before": (X.hist_maker_prior_launches > 0).mean()}.items()}}
     full = backtest(df, X, all_cols, test_months)
     res["full"] = recall_lists(df, full, complete_months=complete)
+    res["full_with_followers"] = recall_lists(df, backtest(df, X, with_followers, test_months),
+                                              complete_months=complete)
     test = full.notna()
+    res["by_month"] = {m: {k: v["recall"] for k, v in recall_lists(df[df.month == m], full[df.month == m]).items()
+                           if k.startswith(("day", "week"))} for m in test_months}
     res["spearman_day"] = round(float(df[test].assign(s=full).groupby("day").apply(
         lambda g: g.s.corr(-g.dailyRank, method="spearman")).mean()), 3)
 
     # Baselines (no model): single heuristics
-    base = {"followers (hunter+makers)": X.people_hunter_followers_log + X.people_maker_followers_sum_log}
+    base = {"followers today (hunter+makers; leaky)": X.followers_hunter_log + X.followers_maker_sum_log}
     if "llm_p_top5" in X:
         base["llm p_top5 alone"] = X.llm_p_top5
     if "hist_lookalike_top10_rate" in X:
@@ -144,11 +175,20 @@ def main() -> None:
 
     # Source ablations
     res["only"], res["without"] = {}, {}
+    fam = df.topics.apply(family)
+    by_family: dict = defaultdict(dict)
     for g, cs in groups.items():
-        res["only"][g] = recall_lists(df, backtest(df, X, cs, test_months), complete_months=complete)
+        only = backtest(df, X, cs, test_months)
+        res["only"][g] = recall_lists(df, only, complete_months=complete)
+        for f in fam.unique():  # each source alone, ranking a type's launches against each other per week
+            by_family[f][g] = recall_lists(df[fam == f], only[fam == f], complete_months=complete).get("week@5")
         rest = [c for c in all_cols if c not in cs]
         res["without"][g] = recall_lists(df, backtest(df, X, rest, test_months), complete_months=complete)
         print("ablation", g, res["only"][g].get("day@5"), res["without"][g].get("day@5"), flush=True)
+
+    by_family["(all types)"] = {g: r.get("week@5") for g, r in res["only"].items()}
+    res["only_by_family"] = by_family
+    res["factors_by_family"] = factors_by_family(df, X, fam, all_cols)
 
     # Topic lists
     topic_counts = pd.Series([t for ts in df[test].topics for t in ts]).value_counts()

@@ -23,7 +23,7 @@ import features as F  # noqa: E402
 def main(day: str) -> None:
     df, X, groups = F.build()
     cols = [c for cs in groups.values() for c in cs]
-    train, test = (df.day < day).to_numpy(), (df.day == day).to_numpy()
+    train, test = ((df.day < day) & df.complete).to_numpy(), (df.day == day).to_numpy()
     pred, _ = E.fit_predict(X[cols], np.log1p(df.votes), train, test)
     out = df[test][["id", "name", "tagline", "topics"]].assign(score=pred).sort_values("score", ascending=False)
     out.insert(0, "predicted_rank", range(1, len(out) + 1))

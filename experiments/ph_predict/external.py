@@ -2,6 +2,7 @@
 
   hn.jsonl      Hacker News stories linking the domain (or GitHub repo) posted BEFORE the launch day (Algolia API)
   domain.jsonl  domain registration date (RDAP), as age in days on launch day
+  github.jsonl  for GitHub-hosted products: stars given BEFORE launch day (timestamped stargazers) and repo age
 
 Ids already on disk are skipped.
 
@@ -50,6 +51,39 @@ def hn(term: str, before_ts: int) -> dict:
             "comments_sum": sum(h.get("num_comments") or 0 for h in hits)}
 
 
+def github(repo: str, day: datetime) -> dict:
+    """Stars before `day` by binary search over the stargazer pages (oldest first, 100 per page)."""
+    import os
+    h = {"Authorization": f"Bearer {os.environ['GH_TOKEN']}"} if os.environ.get("GH_TOKEN") else {}
+    meta = requests.get(f"https://api.github.com/repos/{repo}", headers=h, timeout=30)
+    if not meta.ok:
+        return {"repo_found": 0}
+    m = meta.json()
+    created = datetime.fromisoformat(m["created_at"].replace("Z", "+00:00"))
+    total = m.get("stargazers_count") or 0
+    hs = {**h, "Accept": "application/vnd.github.star+json"}
+
+    def page(p: int) -> list[datetime]:
+        r = requests.get(f"https://api.github.com/repos/{repo}/stargazers", headers=hs, timeout=30,
+                         params={"per_page": 100, "page": p})
+        return [datetime.fromisoformat(x["starred_at"].replace("Z", "+00:00")) for x in r.json()] if r.ok else []
+
+    lo, hi, before = 1, min(400, (total + 99) // 100), 0  # the API serves at most 400 pages
+    while lo <= hi:
+        mid = (lo + hi) // 2
+        ts = page(mid)
+        if not ts:
+            break
+        n = sum(t < day for t in ts)
+        if n == len(ts):
+            before, lo = (mid - 1) * 100 + n, mid + 1
+        else:
+            before = max(before, (mid - 1) * 100 + n)
+            hi = mid - 1
+    return {"repo_found": 1, "stars_before_log": __import__("math").log1p(before),
+            "repo_age_days": (day - created).days}
+
+
 def rdap(domain: str) -> str | None:
     r = requests.get(f"https://rdap.org/domain/{domain}", timeout=30)
     if not r.ok:
@@ -63,7 +97,7 @@ def rdap(domain: str) -> str | None:
 def main() -> None:
     df = F.load_posts()
     web = {p.stem: json.loads(p.read_text()) for p in (F.CACHE / "web").glob("*.json")}
-    outs = {k: F.CACHE / f"{k}.jsonl" for k in ("hn", "domain")}
+    outs = {k: F.CACHE / f"{k}.jsonl" for k in ("hn", "domain", "github")}
     done = {k: {json.loads(l)["id"] for l in p.read_text().splitlines()} if p.exists() else set()
             for k, p in outs.items()}
     lock = threading.Lock()
@@ -92,6 +126,10 @@ def main() -> None:
                     regd = regd.replace(tzinfo=timezone.utc)
                 age = (day - regd).days if regd else None
                 write("domain", {"id": r["id"], "age_days": age, "own_domain": int(bool(domain))})
+            if r["id"] not in done["github"]:
+                repo = term if term.startswith("github.com/") and term.count("/") == 2 else ""
+                write("github", {"id": r["id"], **(github(repo.split("github.com/")[1], day) if repo else
+                                                   {"repo_found": 0})})
         except Exception as e:  # one bad lookup must not stop the run
             print(r["id"], type(e).__name__, str(e)[:100], flush=True)
 
