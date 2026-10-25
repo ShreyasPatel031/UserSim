@@ -70,8 +70,16 @@ def sticky_proxy(proxy: str, slot: int) -> str:
 
 
 def _capsolver_proxy(proxy: str) -> str:
+    """CapSolver rejects gateway hostnames ("dynamic DNS"), so the gateway is given by IP address."""
+    import socket
+
     u = urlparse(proxy)
-    return f"{u.hostname}:{u.port}:{unquote(u.username or '')}:{unquote(u.password or '')}"
+    host = u.hostname or ""
+    try:
+        host = socket.gethostbyname(host)
+    except OSError:
+        pass
+    return f"{host}:{u.port}:{unquote(u.username or '')}:{unquote(u.password or '')}"
 
 
 def capsolver_solve(task: dict[str, Any], *, wait_s: float = 120.0) -> dict[str, Any]:
