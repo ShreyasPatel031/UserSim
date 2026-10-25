@@ -72,9 +72,27 @@ judgment of the product beat random on their own, but add about nothing once you
 ## 5. What this means for UserSim
 
 PH votes mostly measure **distribution** (who hunts, team size, track record), not product quality. A simulator
-that judges the product (like the LLM/website features here) adds about 1 point on top. To use PH as an eval for
-UserSim, score the simulator on the part the network doesn't explain: the residual of this model, or comparisons
-between launches with similar hunter/team profiles. Design tools are where product judgment already shows up.
+that judges the product (like the LLM/website features here) adds about 1 point on top.
+
+The product signal is real but small. `residual.py` fits a "who launched it" model (launch + people + history),
+takes what it can't explain (actual minus predicted log votes, out of sample, de-meaned by week), and checks
+whether judging the product predicts that leftover (Spearman, 4,878 launches):
+
+| | Gemini top-5 odds | broad appeal | novelty | demo appeal |
+|---|---|---|---|---|
+| All types | +0.10 | +0.08 | +0.06 | +0.05 |
+| Developer | +0.12 | +0.10 | | |
+| Productivity | +0.10 | | +0.14 | +0.08 |
+| Consumer | | | +0.19 | |
+| Design | +0.09 | +0.10 | | +0.13 |
+
+At this sample size these are not chance, but they are too weak to move the top-k lists (adding product features
+to the network model: day@5 0.64 → 0.65, week@10 0.56 → 0.52, both noise).
+
+**Proposed UserSim eval:** predict the residual, i.e. which launches do better or worse than their team and hunter
+predict. A simulator that actually uses the product should beat Gemini's +0.10 on it. The target is in
+`out/residual.json`'s method and `out/predictions.csv`; Developer and Productivity tools, where the signal is
+clearest, are the place to start.
 
 ## 6. Live test and how to check it
 

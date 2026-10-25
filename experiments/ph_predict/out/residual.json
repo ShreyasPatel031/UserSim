@@ -1,0 +1,108 @@
+{
+ "recall_network_only": {
+  "day@3": 0.615,
+  "day@5": 0.641,
+  "day@10": 0.696,
+  "week@3": 0.452,
+  "week@5": 0.564,
+  "week@10": 0.557
+ },
+ "recall_network_plus_product": {
+  "day@3": 0.582,
+  "day@5": 0.652,
+  "day@10": 0.702,
+  "week@3": 0.405,
+  "week@5": 0.536,
+  "week@10": 0.521
+ },
+ "residual_corr": {
+  "(all types)": {
+   "n": 4878,
+   "top": {
+    "llm_p_top5": 0.1,
+    "llm_broad_appeal": 0.08,
+    "llm_dev_audience": 0.064,
+    "llm_novelty": 0.057,
+    "site_w_open_source": 0.053,
+    "llm_demo_wow": 0.05
+   }
+  },
+  "AI": {
+   "n": 1344,
+   "top": {
+    "llm_p_top5": 0.107,
+    "llm_broad_appeal": 0.087,
+    "site_w_backed": 0.064,
+    "llm_demo_wow": 0.054,
+    "site_w_pricing": -0.052,
+    "llm_novelty": 0.052
+   }
+  },
+  "Consumer": {
+   "n": 175,
+   "top": {
+    "llm_novelty": 0.194,
+    "site_w_backed": -0.134,
+    "llm_polish": -0.111,
+    "site_w_open_source": -0.09,
+    "site_w_enterprise": -0.088,
+    "site_w_download": -0.088
+   }
+  },
+  "Design": {
+   "n": 211,
+   "top": {
+    "site_w_pricing": 0.173,
+    "site_w_social_proof": 0.129,
+    "llm_demo_wow": 0.129,
+    "llm_brand_known": -0.125,
+    "llm_broad_appeal": 0.098,
+    "llm_p_top5": 0.088
+   }
+  },
+  "Developer": {
+   "n": 2006,
+   "top": {
+    "llm_p_top5": 0.124,
+    "llm_broad_appeal": 0.102,
+    "site_is_subdomain": -0.075,
+    "site_w_ai": 0.064,
+    "llm_brand_known": 0.056,
+    "llm_maker_credibility": 0.053
+   }
+  },
+  "Marketing & Sales": {
+   "n": 172,
+   "top": {
+    "site_tld_ai": 0.198,
+    "site_tld_com": -0.171,
+    "site_is_appstore": -0.159,
+    "site_w_enterprise": 0.135,
+    "site_w_social_proof": 0.132,
+    "site_is_subdomain": -0.132
+   }
+  },
+  "Other": {
+   "n": 513,
+   "top": {
+    "llm_broad_appeal": 0.176,
+    "llm_maker_credibility": -0.162,
+    "llm_clarity": 0.14,
+    "site_w_social_proof": -0.136,
+    "site_w_enterprise": -0.126,
+    "site_w_ai": -0.12
+   }
+  },
+  "Productivity": {
+   "n": 457,
+   "top": {
+    "llm_novelty": 0.141,
+    "llm_p_top5": 0.104,
+    "site_tld_ai": -0.101,
+    "site_w_social_proof": -0.1,
+    "llm_brand_known": -0.087,
+    "llm_demo_wow": 0.08
+   }
+  }
+ }
+}

@@ -15,6 +15,7 @@ Products, overall and per topic — without using the launch's own votes, commen
 | Outside signals | `external.py` | HN stories linking the domain before launch day (Algolia), domain age (RDAP), GitHub stars before launch day | free |
 | Features | `features.py` | groups: launch, people, followers, history, site, llm, hn, domain, github | — |
 | Backtest | `evaluate.py` → `report.py` | expanding window by month, LightGBM on log votes, recall@k per list | — |
+| Residual | `residual.py` | does judging the product predict votes the team/hunter model misses? | — |
 | Live | `predict_live.py <day>` | today's launches, model trained on all earlier days | — |
 
 `run_all.sh` runs the enrichment steps (GitHub links: `crawl_sites.py 2025-01-01 Github`) and the backtest; each step skips work already on disk (`cache/`, gitignored).
