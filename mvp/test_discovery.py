@@ -118,7 +118,7 @@ class RunTest(unittest.TestCase):
         async def probe(url):
             return (False, "dns") if "dead" in url else (True, url.rstrip("/") + "/")
 
-        def scrape(platform, url):
+        def scrape(platform, url, product=""):
             scraped.append(url)
             return (reviews or {}).get(url, [])
 
