@@ -113,9 +113,10 @@ def _slug(name: str) -> str:
 
 
 def _same_product(found: str | None, wanted: str) -> bool:
-    """Capterra's search returns its best match even when it is a different product."""
+    """Capterra's search returns its best match even when it is a different product. A vendor prefix is the same
+    product ('Atlassian Jira' for 'Jira')."""
     f, w = _slug(found or ""), _slug(wanted)
-    return bool(f) and (f == w or f.startswith(w + "-") or w.startswith(f + "-"))
+    return bool(f) and (f == w or f.startswith(w + "-") or w.startswith(f + "-") or f.endswith("-" + w))
 
 
 def _cache_path(product_name: str) -> Path:

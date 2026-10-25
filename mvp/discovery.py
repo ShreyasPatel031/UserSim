@@ -1,20 +1,23 @@
 """Part 1 of a study: discovery. Product URL in; competitors, real users and comparison tasks out.
 
-Nothing here opens a browser or runs a simulated user. Steps, in order:
+Nothing here opens a browser or runs a simulated user. Every web page used is one Google returned (Apify
+google-search-scraper, batched); nothing is reached by guessing a URL or slug. Steps, in order:
 
 1. Read the product's own site (homepage plus up to two about/pricing/features pages) and search the web for it.
 2. One LLM call turns that into a product profile (what it is, who it is for, search keywords).
-3. Gather competitor candidates: web searches ("<name> alternatives", ...) and Product Hunt (the product's own post,
-   its topics, and the top posts in those topics).
-4. One LLM call picks the closest competitors from those candidates; their homepages are probed and dead ones dropped.
-5. Real users: Product Hunt commenters (name, headline, comment) on the product's and competitors' posts, and G2 /
-   Capterra reviewers via Apify (role, company size, industry, rating, pros/cons). When the product and its picked
-   competitors have few reviews, the next-closest similar products are scraped too.
+3. Gather competitor candidates: web searches ("<name> alternatives", ...) and similar Product Hunt launches (API:
+   top posts in the topics that match the product).
+4. One LLM call picks the closest competitors; each homepage must appear in Google results for "<name> <category>",
+   and is probed live.
+5. Real users: for the product and each competitor, Google site:g2.com / site:capterra.com / site:producthunt.com
+   finds its exact review pages; each page is scraped by URL (G2 and Capterra reviewers with job titles, Product
+   Hunt reviewers with headlines). With few reviews, the next-closest similar products are scraped too.
 6. One LLM call writes user segments (grounded in those users) and tasks to run on the product and every competitor.
 
 Every step is recorded in a trace (what was asked, how long it took, what came back) so the /discovery page can show
-what the agent searched and retrieved. Secrets: PH_TOKEN, or PH_CLIENT_ID + PH_CLIENT_SECRET (Product Hunt API v2;
-same names as scripts/ph_crawl.py, see docs/producthunt/README.md) and APIFY_TOKEN (see mvp.review_context); a missing token skips that source and the trace says so.
+what the agent searched and retrieved. Secrets: APIFY_TOKEN (search and scrapes) and PH_TOKEN, or PH_CLIENT_ID +
+PH_CLIENT_SECRET (Product Hunt API, same names as scripts/ph_crawl.py); a missing one skips that source, and the trace
+says so.
 """
 
 from __future__ import annotations
@@ -174,29 +177,28 @@ def parse_ddg(html: str, limit: int) -> list[dict[str, str]]:
 GOOGLE_ACTOR = "apify~google-search-scraper"
 
 
-def google_search(query: str, limit: int = 8) -> list[dict[str, str]]:
-    """Google results via Apify (blocking, ~10-30 s). Needs APIFY_TOKEN."""
+def google_search_many(queries: list[str], limit: int = 8) -> dict[str, list[dict[str, str]]]:
+    """Google results for several queries in ONE Apify run (blocking, ~15-40 s). Needs APIFY_TOKEN."""
     from mvp import review_context
 
+    out: dict[str, list[dict[str, str]]] = {q: [] for q in queries}
     token = review_context.apify_token()
-    if not token:
-        return []
-    items = review_context._apify_run(GOOGLE_ACTOR, {"queries": query, "resultsPerPage": 10, "maxPagesPerQuery": 1,
-                                                     "countryCode": "us", "languageCode": "en"}, token, wait_s=120.0)
-    rows = [{"title": (r.get("title") or "")[:140], "url": r.get("url") or "", "snippet": (r.get("description") or "")[:300],
-             "engine": "google"} for item in items for r in (item.get("organicResults") or [])]
-    return [r for r in rows if r["url"].startswith("http")][:limit]
+    if not token or not queries:
+        return out
+    items = review_context._apify_run(GOOGLE_ACTOR, {"queries": "\n".join(queries), "resultsPerPage": 10,
+                                                     "maxPagesPerQuery": 1, "countryCode": "us", "languageCode": "en"},
+                                      token, wait_s=180.0)
+    for item in items:
+        term = (item.get("searchQuery") or {}).get("term")
+        if term not in out:
+            continue
+        out[term] += [{"title": (r.get("title") or "")[:140], "url": r.get("url") or "",
+                       "snippet": (r.get("description") or "")[:300], "engine": "google"}
+                      for r in (item.get("organicResults") or []) if (r.get("url") or "").startswith("http")]
+    return {q: rows[:limit] for q, rows in out.items()}
 
 
-async def web_search(query: str, *, limit: int = 8) -> list[dict[str, str]]:
-    """Google via Apify when APIFY_TOKEN is set; otherwise (or if that fails) keyless DuckDuckGo HTML."""
-    try:
-        rows = await asyncio.to_thread(google_search, query, limit)
-    except Exception as exc:  # noqa: BLE001 - fall back to DuckDuckGo
-        print(f"[discovery] google search failed: {exc!r}"[:300], flush=True)
-        rows = []
-    if rows:
-        return rows
+async def ddg_search(query: str, limit: int = 8) -> list[dict[str, str]]:
     async with httpx.AsyncClient(timeout=12.0, follow_redirects=True, headers={"User-Agent": _UA}) as client:
         r = await client.get(f"https://html.duckduckgo.com/html/?q={quote_plus(query)}")
     # 202 = DuckDuckGo's bot check (seen from some cloud IPs): no results rather than a parse of the challenge page
@@ -206,10 +208,24 @@ async def web_search(query: str, *, limit: int = 8) -> list[dict[str, str]]:
     return rows
 
 
+async def web_search_many(queries: list[str], *, limit: int = 8) -> dict[str, list[dict[str, str]]]:
+    """Google via Apify (one run for all queries). DuckDuckGo only when Google is unavailable (no APIFY_TOKEN or the
+    run failed), never to second-guess an empty Google answer."""
+    try:
+        if apify_token():
+            return await asyncio.to_thread(google_search_many, queries, limit)
+    except Exception as exc:  # noqa: BLE001 - fall back to DuckDuckGo
+        print(f"[discovery] google search failed: {exc!r}"[:300], flush=True)
+    rows = await asyncio.gather(*(ddg_search(q, limit) for q in queries), return_exceptions=True)
+    return {q: (r if isinstance(r, list) else []) for q, r in zip(queries, rows)}
+
+
+async def web_search(query: str, *, limit: int = 8) -> list[dict[str, str]]:
+    return (await web_search_many([query], limit=limit))[query]
+
+
 _PH_POST_FIELDS = """name slug tagline description url website votesCount commentsCount reviewsCount reviewsRating
   topics(first: 6) { edges { node { name slug } } }"""
-_PH_COMMENTS = """comments(first: 20, order: VOTES_COUNT) { edges { node { body votesCount createdAt
-  user { name username headline } } } }"""
 
 
 async def ph_query(query: str, variables: dict[str, Any] | None = None) -> dict[str, Any]:
@@ -235,34 +251,12 @@ def _ph_post(node: dict[str, Any]) -> dict[str, Any]:
     return out
 
 
-def _redacted(v: Any) -> bool:
-    return not v or "redacted" in str(v).lower()
-
-
-def _ph_users(node: dict[str, Any], product: str) -> list[dict[str, Any]]:
-    """Commenters on a post. Product Hunt redacts other users' names for most API tokens; the comment stays."""
-    users = []
-    for c in _edges(node.get("comments")):
-        u = c.get("user") or {}
-        body = _clean_text(c.get("body") or "")
-        if len(body) < 25:
-            continue
-        users.append({"source": "producthunt", "product": product,
-                      "name": None if _redacted(u.get("name")) else u.get("name"),
-                      "role": None if _redacted(u.get("headline")) else u.get("headline"),
-                      "username": None if _redacted(u.get("username")) else u.get("username"),
-                      "text": body[:600], "votes": c.get("votesCount")})
-    return users
-
-
 def _slug(name: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", (name or "").lower()).strip("-")
 
 
-async def ph_post_by_slug(slug: str) -> dict[str, Any] | None:
-    data = await ph_query(f"query($slug: String!) {{ post(slug: $slug) {{ {_PH_POST_FIELDS} {_PH_COMMENTS} }} }}",
-                          {"slug": slug})
-    return data.get("post")
+# Topics too broad to say anything about similar products.
+GENERIC_PH_TOPICS = frozenset({"tech", "technology", "web-app", "android", "iphone", "mac", "windows", "chrome-extensions"})
 
 
 async def ph_topic_posts(topic: str, first: int = 15) -> list[dict[str, Any]]:
@@ -283,17 +277,96 @@ def apify_token() -> str | None:
     return review_context.apify_token()
 
 
-def fetch_reviews(name: str) -> dict[str, Any]:
-    """G2 + Capterra (+ TrustRadius, Gartner) reviews of one product via Apify, cached per product."""
+# Each platform's reviews come from its exact page found on Google. Actors checked live (Oct 2026):
+# zen-studio takes a G2 URL directly and returns job titles (it also auto-finds other platforms by name: dropped);
+# trakk takes Capterra product URLs as {"url": ...}; eiv takes a Product Hunt /products/<slug>/reviews URL.
+G2_ACTOR = "zen-studio~software-review-scraper"
+CAPTERRA_ACTOR = "trakk~capterra-reviews-scraper"
+PH_REVIEWS_ACTOR = "eiv~producthunt-reviews-scraper"
+REVIEW_ACTORS = {"g2": G2_ACTOR, "capterra": CAPTERRA_ACTOR, "producthunt": PH_REVIEWS_ACTOR}
+PLATFORM_LABEL = {"g2": "G2", "capterra": "Capterra", "producthunt": "Product Hunt"}
+_PAGE_RES = {"g2": re.compile(r"g2\.com/products/([a-z0-9-]+)", re.I),
+             "capterra": re.compile(r"capterra\.com/p/(\d+)/([A-Za-z0-9_-]+)", re.I),
+             "producthunt": re.compile(r"producthunt\.com/products/([a-z0-9-]+)", re.I)}
+REVIEWS_PER_SITE = 50
+
+
+def page_query(platform: str, name: str) -> str:
+    return f"site:{platform}.com {name} reviews"
+
+
+def _same_name(found: str, wanted: str) -> bool:
+    """Exact product name, a vendor prefix ('atlassian-jira') or a numbered duplicate slug ('linear-2'); never a
+    longer different product ('jira-service-management', 'linear-agent')."""
+    f, w = _slug(found), _slug(wanted)
+    return bool(f) and (f == w or f.endswith("-" + w) or bool(re.fullmatch(re.escape(w) + r"-\d+", f)))
+
+
+def review_page(rows: list[dict[str, str]], platform: str, name: str) -> tuple[str | None, str]:
+    """The product's own G2 / Capterra / Product Hunt page from search results (first whose name matches), and why."""
+    seen = []
+    for r in rows:
+        url = r.get("url") or ""
+        m = _PAGE_RES[platform].search(url)
+        if not m:
+            continue
+        page_name = m.group(2) if platform == "capterra" else m.group(1)
+        if _same_name(page_name, name):
+            canon = {"g2": lambda: f"https://www.g2.com/products/{m.group(1).lower()}/reviews",
+                     "capterra": lambda: f"https://www.capterra.com/p/{m.group(1)}/{m.group(2)}/",
+                     "producthunt": lambda: f"https://www.producthunt.com/products/{m.group(1).lower()}/reviews"}[platform]()
+            return canon, f"matched {url}"
+        seen.append(page_name)
+    return None, (f"{platform} pages in the results are for other products: {sorted(set(seen))[:8]}" if seen
+                  else f"no {platform} product page in the search results")
+
+
+def _redact(msg: str) -> str:
     from mvp import review_context
 
-    return review_context.live_reviews(name)
+    tok = review_context.apify_token() or ""
+    return re.sub(r"apify_api_[A-Za-z0-9]+", "<redacted>", review_context._redact(msg, tok) if tok else msg)
+
+
+def scrape_review_page(platform: str, url: str) -> list[dict[str, Any]]:
+    """Reviews from one exact G2 / Capterra / Product Hunt page via Apify (blocking), cached per URL."""
+    from mvp import review_context
+
+    token = review_context.apify_token()
+    if not token:
+        raise RuntimeError("APIFY_TOKEN missing")
+    cache = review_context._APIFY_CACHE / f"page2-{_slug(url)}.json"
+    if cache.is_file():
+        return json.loads(cache.read_text())
+    if platform == "g2":
+        items = review_context._apify_run(G2_ACTOR, {"query": url, "platforms": ["g2", "capterra"], "maxResults": 100,
+                                                     "sort": "most_recent", "starRatings": []}, token, wait_s=900.0)
+        rows = [review_context._all_in_one_item(x) for x in items if x.get("platform") == "g2"]
+    elif platform == "capterra":
+        items = review_context._apify_run(CAPTERRA_ACTOR, {"productUrls": [{"url": url}], "maxReviewsPerProduct": REVIEWS_PER_SITE,
+                                                           "maxItems": REVIEWS_PER_SITE, "includeProductAggregate": False}, token)
+        rows = [{"source": "capterra", "product": r.get("productName") or "", "role": r.get("reviewerJobTitle"),
+                 "size": r.get("reviewerCompanySize"), "industry": r.get("reviewerIndustry"),
+                 "time_used": r.get("timeUsedProduct"), "rating": r.get("overallRating"), "pros": r.get("pros"),
+                 "cons": r.get("cons"), "date": r.get("publishedDate")} for r in items]
+    else:
+        items = review_context._apify_run(PH_REVIEWS_ACTOR, {"startUrls": [{"url": url}],
+                                                             "maxReviewsPerProduct": REVIEWS_PER_SITE}, token, wait_s=600.0)
+        rows = [{"source": "producthunt", "product": r.get("productName") or "", "name": r.get("reviewerName"),
+                 "role": r.get("reviewerHeadline"), "rating": r.get("overallRating"),
+                 "text": " / ".join(str(x) for x in (r.get("overallExperience"), r.get("positiveFeedback") and f"Liked: {r['positiveFeedback']}",
+                                                     r.get("negativeFeedback") and f"Disliked: {r['negativeFeedback']}",
+                                                     r.get("alternativesFeedback") and f"Vs alternatives: {r['alternativesFeedback']}") if x),
+                 "date": (r.get("createdAt") or "")[:10], "review_type": r.get("reviewType")} for r in items]
+    review_context._APIFY_CACHE.mkdir(parents=True, exist_ok=True)
+    cache.write_text(json.dumps(rows))
+    return rows
 
 
 def _reviewer(r: dict[str, Any]) -> dict[str, Any]:
     text = r.get("text") or " / ".join(x for x in (r.get("pros") and f"Liked: {r['pros']}",
                                                    r.get("cons") and f"Disliked: {r['cons']}") if x)
-    return {"source": r.get("source"), "product": r.get("product"), "role": r.get("role"), "size": r.get("size"),
+    return {"source": r.get("source"), "product": r.get("product"), "name": r.get("name"), "role": r.get("role"), "size": r.get("size"),
             "industry": r.get("industry"), "rating": r.get("rating"), "time_used": r.get("time_used"),
             "text": _clean_text(str(text or ""))[:600], "date": r.get("date")}
 
@@ -340,12 +413,11 @@ class DiscoveryAgent:
         self.trace = Trace(run, on_change)
         self.llm = llm or _default_llm
         self.fetch_html = fetch_html
-        self.web_search = web_search
-        self.ph_post_by_slug = ph_post_by_slug
+        self.web_search_many = web_search_many
         self.ph_topic_posts = ph_topic_posts
         self.ph_topics = ph_topics
         self.ph_configured = ph_configured
-        self.fetch_reviews = fetch_reviews
+        self.scrape_review_page = scrape_review_page
         self.apify_token = apify_token
         self.probe = _probe
 
@@ -359,16 +431,24 @@ class DiscoveryAgent:
         self.trace.end(step, "done", ", ".join(f"{k}: {len(v) if isinstance(v, list) else 1}" for k, v in out.items()), out)
         return out
 
-    async def _search(self, query: str) -> list[dict[str, str]]:
-        step = self.trace.start("search", f"Web search: {query}", {"query": query, "engine": "google (apify), else duckduckgo"})
+    async def _search_many(self, queries: list[str]) -> dict[str, list[dict[str, str]]]:
+        """One batched search; one trace step per query."""
+        queries = list(dict.fromkeys(queries))
+        steps = {q: self.trace.start("search", f"Web search: {q}", {"query": q, "engine": "google (apify)"}) for q in queries}
         try:
-            rows = await self.web_search(query)
+            got = await self.web_search_many(queries)
         except Exception as exc:
-            self.trace.end(step, "error", repr(exc)[:300])
-            return []
-        engines = sorted({r.get("engine") or "?" for r in rows})
-        self.trace.end(step, "done", f"{len(rows)} results" + (f" ({', '.join(engines)})" if rows else ""), rows)
-        return rows
+            for st in steps.values():
+                self.trace.end(st, "error", repr(exc)[:300])
+            return {q: [] for q in queries}
+        for q, st in steps.items():
+            rows = got.get(q) or []
+            engines = sorted({r.get("engine") or "?" for r in rows})
+            self.trace.end(st, "done", f"{len(rows)} results" + (f" ({', '.join(engines)})" if rows else ""), rows)
+        return {q: got.get(q) or [] for q in queries}
+
+    async def _search(self, query: str) -> list[dict[str, str]]:
+        return (await self._search_many([query]))[query]
 
     # 1. the product's own site
     async def read_site(self) -> dict[str, Any]:
@@ -419,34 +499,19 @@ Return JSON:
   "ph_topics": ["2-3 Product Hunt topic names this fits, e.g. 'Productivity', 'Developer Tools'"]}}""")
 
     # 3. candidates
-    async def product_hunt(self, profile: dict[str, Any]) -> tuple[dict[str, Any] | None, list[dict[str, Any]]]:
-        """The product's own PH post (if any) and the top posts in its topics."""
+    async def product_hunt(self, profile: dict[str, Any]) -> list[dict[str, Any]]:
+        """Similar Product Hunt launches: top posts in the topics that match the product (API topics search)."""
         if not self.ph_configured():
-            s = self.trace.start("producthunt", "Product Hunt")
+            s = self.trace.start("producthunt", "Product Hunt launches")
             self.trace.end(s, "skipped", "PH_TOKEN (or PH_CLIENT_ID + PH_CLIENT_SECRET) is not set")
-            return None, []
-        own = None
-        for slug in dict.fromkeys([_slug(profile.get("name", "")), _slug(registrable_host(self.run.url).split(".")[0])]):
-            if not slug:
-                continue
-            s = self.trace.start("producthunt", f"Product Hunt post '{slug}'", {"query": "post(slug)", "slug": slug})
-            try:
-                node = await self.ph_post_by_slug(slug)
-            except Exception as exc:
-                self.trace.end(s, "error", repr(exc)[:300])
-                continue
-            if node:
-                own = node
-                self.trace.end(s, "done", f"found: {node.get('name')} — {node.get('tagline')} ({node.get('votesCount')} votes)", _ph_post(node))
-                break
-            self.trace.end(s, "done", "no post with this slug")
-        topics = list((_ph_post(own)["topics"] if own else []))
-        for name in profile.get("ph_topics") or []:
+            return []
+        topics: list[str] = []
+        for q in profile.get("ph_topics") or []:
             if len(topics) >= 3:
                 break
-            s = self.trace.start("producthunt", f"Product Hunt topic search '{name}'", {"query": "topics(query)", "q": name})
+            s = self.trace.start("producthunt", f"Product Hunt topic search '{q}'", {"query": "topics(query)", "q": q})
             try:
-                found = await self.ph_topics(name)
+                found = [t for t in await self.ph_topics(q) if t["slug"] not in GENERIC_PH_TOPICS]
                 self.trace.end(s, "done", ", ".join(t["slug"] for t in found) or "no topics", found)
                 topics += [t["slug"] for t in found[:1] if t["slug"] not in topics]
             except Exception as exc:
@@ -460,12 +525,12 @@ Return JSON:
                 posts += rows
             except Exception as exc:
                 self.trace.end(s, "error", repr(exc)[:300])
-        seen, uniq = {_slug(profile.get("name", ""))}, []
+        seen, uniq = {_slug(profile.get("name") or "")}, []
         for p in posts:
             if p["slug"] not in seen:
                 seen.add(p["slug"])
                 uniq.append(p)
-        return own, uniq
+        return uniq
 
     # 4. pick competitors
     async def pick(self, profile: dict[str, Any], web: list[dict[str, str]], ph: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -492,87 +557,93 @@ user. Prefer candidates named in the evidence above; you may add a well-known di
 
 Return JSON:
 {{"candidates": [{{"name": "...", "url": "https://their-homepage", "why": "one sentence: what overlaps and how they differ",
-  "overlap": "direct|partial|adjacent", "source": "web|producthunt|model_knowledge", "ph_slug": "slug if from Product Hunt, else ''",
-  "review_name": "name as listed on G2/Capterra"}}]}}""")
+  "overlap": "direct|partial|adjacent", "source": "web|producthunt|model_knowledge"}}]}}""")
         return [c for c in (out.get("candidates") or []) if c.get("name") and c.get("url")]
 
-    async def keep_live(self, candidates: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
-        """(chosen live competitors, the unprobed remaining candidates as similar products); dead ones are dropped."""
-        chosen, rest = [], []
-        step = self.trace.start("probe", "Check competitor homepages are live", {"urls": [c["url"] for c in candidates]})
-        checks = []
-        for c in candidates:
+    async def keep_live(self, candidates: list[dict[str, Any]], category: str) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+        """(chosen competitors, the remaining candidates as similar products). A homepage is taken from Google results
+        for '<name> <category>', never from the LLM alone; candidates Google cannot place, or whose site is down, are dropped."""
+        from mvp.competitor_urls import _NON_PRODUCT_HOSTS
+
+        cands = [c for c in candidates if not same_site(c["url"], self.run.url)]
+        q_of = {c["name"]: f"{c['name']} {category}".strip() for c in cands}
+        found = await self._search_many(list(q_of.values()))
+        chosen, rest, checks = [], [], []
+        step = self.trace.start("probe", "Confirm competitor homepages on Google and check they are live",
+                                {"candidates": [{"name": c["name"], "llm_url": c["url"]} for c in cands]})
+        for c in cands:
+            first_url: dict[str, str] = {}  # host -> its result URL closest to a homepage (fewest path segments)
+            for r in found.get(q_of[c["name"]]) or []:
+                h = registrable_host(r["url"])
+                if not h or any(h == b or h.endswith("." + b) for b in _NON_PRODUCT_HOSTS):
+                    continue
+                depth = len([x for x in urlparse(r["url"]).path.split("/") if x])
+                if h not in first_url or depth < len([x for x in urlparse(first_url[h]).path.split("/") if x]):
+                    first_url[h] = r["url"]
+            hosts = list(first_url)
+            brand = _slug(c["name"]).replace("-", "")
+            llm_host = registrable_host(c["url"])
+            if llm_host in hosts:
+                url, how = first_url[llm_host], "the LLM's site is in the Google results"
+            else:
+                match = next((h for h in hosts if brand and brand in h.replace("-", "").replace(".", "")), None)
+                if not match:
+                    checks.append({"name": c["name"], "ok": False, "why": f"no homepage in Google results (hosts: {hosts[:5]})"})
+                    continue
+                url, how = first_url[match], f"Google result host contains '{brand}'"
             if len(chosen) >= self.run.max_competitors:
-                rest.append(c)
-                continue
-            if same_site(c["url"], self.run.url):
-                checks.append({"name": c["name"], "url": c["url"], "ok": False, "why": "same site as the product"})
+                rest.append(c | {"url": url})
                 continue
             try:
-                ok, info = await self.probe(_norm_url(c["url"]))
+                ok, info = await self.probe(url)
             except Exception as exc:
                 ok, info = False, repr(exc)[:200]
-            checks.append({"name": c["name"], "url": c["url"], "ok": ok, "why": "" if ok else info})
+            checks.append({"name": c["name"], "url": url, "how": how, "ok": ok, "why": "" if ok else info})
             if ok:
                 chosen.append(c | {"url": info})
-        self.trace.end(step, "done", f"{len(chosen)} live: " + ", ".join(c["name"] for c in chosen), checks)
+        self.trace.end(step, "done", f"{len(chosen)} confirmed and live: " + ", ".join(c["name"] for c in chosen), checks)
         return chosen, rest
 
     # 5. users
-    async def ph_users(self, own: dict[str, Any] | None, profile: dict[str, Any], comps: list[dict[str, Any]]) -> list[dict[str, Any]]:
-        if not self.ph_configured():
+    async def users_for(self, names: list[str]) -> list[dict[str, Any]]:
+        """Real users of each product: G2, Capterra and Product Hunt reviewers, each scraped from the product's exact
+        page on that site as found by one batched Google search (site:<platform>.com <name> reviews)."""
+        if not (self.run.scrape_reviews and self.apify_token()):
+            if not any(st.title == "G2 / Capterra / Product Hunt reviews" for st in self.run.steps):
+                s = self.trace.start("reviews", "G2 / Capterra / Product Hunt reviews")
+                self.trace.end(s, "skipped", "turned off for this run" if not self.run.scrape_reviews else "APIFY_TOKEN is not set")
             return []
-        users = _ph_users(own, profile.get("name") or "") if own else []
-        for c in comps:
-            slug = c.get("ph_slug") or _slug(c["name"])
-            s = self.trace.start("producthunt", f"Product Hunt comments on '{slug}'", {"query": "post(slug).comments", "slug": slug})
-            try:
-                node = await self.ph_post_by_slug(slug)
-            except Exception as exc:
-                self.trace.end(s, "error", repr(exc)[:300])
-                continue
-            got = _ph_users(node, c["name"]) if node else []
-            self.trace.end(s, "done", f"{len(got)} commenters" if node else "no post with this slug", got)
-            users += got
-        return users
+        platforms = ("g2", "capterra", "producthunt")
+        found = await self._search_many([page_query(p, n) for n in names for p in platforms])
+        # Google's results for one query vary between runs (seen: a run returning unrelated producthunt.com pages for
+        # 'Linear'), so a query with no matching page is searched once more.
+        missed = [page_query(p, n) for n in names for p in platforms if not review_page(found.get(page_query(p, n)) or [], p, n)[0]]
+        if missed:
+            again = await self._search_many(missed)
+            found.update({q: rows for q, rows in again.items() if rows})
 
-    async def reviews(self, names: list[str], backups: list[str]) -> list[dict[str, Any]]:
-        if not self.run.scrape_reviews:
-            s = self.trace.start("reviews", "G2 / Capterra reviews")
-            self.trace.end(s, "skipped", "turned off for this run")
-            return []
-        if not self.apify_token():
-            s = self.trace.start("reviews", "G2 / Capterra reviews")
-            self.trace.end(s, "skipped", "APIFY_TOKEN is not set")
-            return []
-
-        async def one(name: str) -> list[dict[str, Any]]:
-            s = self.trace.start("reviews", f"G2 / Capterra reviews of {name}",
-                                 {"actor": "apify zen-studio~software-review-scraper", "query": name,
-                                  "platforms": ["g2", "capterra", "trustradius", "gartner"]})
+        async def scrape(name: str, platform: str) -> list[dict[str, Any]]:
+            url, why = review_page(found.get(page_query(platform, name)) or [], platform, name)
+            s = self.trace.start("reviews", f"{PLATFORM_LABEL[platform]} reviews of {name}",
+                                 {"page": url, "how": why, "actor": REVIEW_ACTORS[platform]})
+            if not url:
+                self.trace.end(s, "error", why)
+                return []
             try:
-                got = await asyncio.wait_for(asyncio.to_thread(self.fetch_reviews, name), REVIEW_WAIT_S)
+                got = await asyncio.wait_for(asyncio.to_thread(self.scrape_review_page, platform, url), REVIEW_WAIT_S)
             except asyncio.TimeoutError:
                 self.trace.end(s, "error", f"still scraping after {REVIEW_WAIT_S:.0f}s (keeps running; cached for next run)")
                 return []
             except Exception as exc:
-                self.trace.end(s, "error", repr(exc)[:300])
+                self.trace.end(s, "error", _redact(repr(exc))[:300])
                 return []
-            rows = [_reviewer(r) for r in got.get("reviews") or []]
-            by = {}
-            for r in rows:
-                by[r["source"]] = by.get(r["source"], 0) + 1
-            note = "; ".join(got.get("errors") or [])
+            rows = [_reviewer(r | {"product": name}) for r in got]
             self.trace.end(s, "done" if rows else "error",
-                           (f"{len(rows)} reviews (" + ", ".join(f"{k} {v}" for k, v in by.items()) + ")" if rows else "no reviews")
-                           + (f" — {note}" if note else ""), rows)
+                           f"{len(rows)} reviews from {url}, {sum(1 for r in rows if r['role'])} with a job title or headline"
+                           if rows else f"no reviews on {url}", rows)
             return rows
 
-        out = [r for rows in await asyncio.gather(*(one(n) for n in names)) for r in rows]
-        if len(out) < MIN_REVIEWS and backups:
-            # Too few reviews of the product and its picked rivals: use the next-closest similar products' users.
-            out += [r for rows in await asyncio.gather(*(one(n) for n in backups[:2])) for r in rows]
-        return out
+        return [u for rows in await asyncio.gather(*(scrape(n, p) for n in names for p in platforms)) for u in rows]
 
     # 6. segments + tasks
     async def synthesize(self, profile: dict[str, Any], comps: list[dict[str, Any]], users: list[dict[str, Any]]) -> dict[str, Any]:
@@ -612,7 +683,7 @@ Return JSON:
             "Write user segments and comparison tasks",
             "You output valid JSON only. Segments must be grounded in the real users supplied; tasks must be doable on every site.",
             f"""{head}
-REAL USERS (Product Hunt commenters and G2/Capterra reviewers of this product, its competitors, or similar products):
+REAL USERS (G2, Capterra and Product Hunt reviewers of this product, its competitors, or similar products):
 {sample}
 
 1. Group the real users above into 2-6 user segments. Every segment must cite at least two users by id, and its jobs
@@ -639,25 +710,24 @@ Return JSON:
         prof = await self.profile(site, about)
         name = prof.get("name") or host
         queries = [f"{name} alternatives", f"{name} competitors"] + [f"best {t}" for t in (prof.get("search_terms") or [])[:2]]
-        web_rows, (own, ph) = await asyncio.gather(
-            asyncio.gather(*(self._search(q) for q in queries)), self.product_hunt(prof))
-        web = [r for rows in web_rows for r in rows]
+        found, ph = await asyncio.gather(self._search_many(queries), self.product_hunt(prof))
+        web = [r for q in queries for r in found.get(q) or []]
         candidates = await self.pick(prof, web, ph)
-        comps, rest = await self.keep_live(candidates)
-        ph_people, reviewers = await asyncio.gather(
-            self.ph_users(own, prof, comps),
-            self.reviews([name] + [c.get("review_name") or c["name"] for c in comps],
-                         [c.get("review_name") or c["name"] for c in rest]))
-        users = reviewers + ph_people
+        comps, rest = await self.keep_live(candidates, str(prof.get("category") or ""))
+        users = await self.users_for([name] + [c["name"] for c in comps])
+        if len(users) < MIN_REVIEWS and rest:
+            # Too few reviews of the product and its competitors: add the next-closest similar products' users.
+            users += await self.users_for([c["name"] for c in rest[:2]])
+        reviewers = [u for u in users if u["source"] != "producthunt"]
+        ph_people = [u for u in users if u["source"] == "producthunt"]
         out = await self.synthesize(prof, comps, users)
         # Sources that gave nothing, and why: shown at the top of the result so 0 users is never silent.
         gaps = [{"source": s.title, "status": s.status, "why": s.summary} for s in self.run.steps
                 if s.kind in {"producthunt", "reviews"} and s.status in {"skipped", "error"}]
-        return {"product": prof | {"url": self.run.url,
-                                   "producthunt": _ph_post(own) if own else None},
+        return {"product": prof | {"url": self.run.url},
                 "competitors": comps, "similar_products": rest,
                 "users": users, "segments": out["segments"], "tasks": out["tasks"], "source_gaps": gaps,
-                "counts": {"web_results": len(web), "ph_launches": len(ph), "ph_commenters": len(ph_people),
+                "counts": {"web_results": len(web), "ph_launches": len(ph), "ph_reviewers": len(ph_people),
                            "reviews": len(reviewers),
                            "reviews_by_source": {s: sum(1 for u in reviewers if u["source"] == s)
                                                  for s in sorted({u["source"] for u in reviewers if u.get("source")})}}}
