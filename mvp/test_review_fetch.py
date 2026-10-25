@@ -113,6 +113,7 @@ class LadderTest(unittest.TestCase):
         self.assertEqual(F.tier_cost("vm_camoufox", 10**6), 0.0)
         self.assertAlmostEqual(F.tier_cost("residential_camoufox", 2 * 10**6), 0.002)
         self.assertEqual(F.tier_cost("apify_unblocker", 0), F.UNBLOCKER_USD_PER_PAGE)
+        self.assertEqual(F.tier_cost("apify_unblocker", 0, ok=False), 0.0)  # failed Unblocker requests aren't billed
 
 
 if __name__ == "__main__":
