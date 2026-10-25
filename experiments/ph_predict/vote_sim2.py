@@ -16,7 +16,7 @@ Pair features, all dated before the launch day:
   prior            the current launch model's within-day percentile (leak-free rolling folds)
   p_*              person traits (account age, total upvotes rate, followings, maker) — interact with launch traits
 Output: results/vote_sim2.csv"""
-import glob, gzip, json, os, sys
+import glob, gzip, json, multiprocessing as mp, os, sys
 from collections import Counter, defaultdict
 import numpy as np, pandas as pd
 import lightgbm as lgb
@@ -30,6 +30,7 @@ TRAIN = ("2026-03-01", "2026-10-12")
 TEST = ("2026-10-13", "2026-10-24")
 PAIR = ["hunter", "team", "recip", "cocm", "f_hunter", "f_team", "topic", "text", "prior"]
 PERS = ["p_age", "p_rate", "p_follow", "p_maker"]
+COLS = ["dn", "launch", "person", "hunter", "team", "recip", "cocm", "topic", "text", "prior"] + PERS + ["act", "per", "y"]
 
 
 def people(files, L, id2i):
@@ -48,6 +49,54 @@ def people(files, L, id2i):
             P[p["username"]] = {"ups": idx, "cover": cover, "p_age": np.log1p(age), "p_rate": np.log1p(tot / age * 30),
                                 "p_follow": np.log1p(max(0, int(p.get("followings") or 0))), "p_maker": float(p.get("is_maker") in (True, "True"))}
     return P
+
+
+G = {}  # shared with worker processes (fork)
+
+
+def person_rows(u):
+    """All (person, launch) feature rows for one person, walking days in order and using only events before each day."""
+    L, Ltop, emb, topics, Pp, cms, on, built, days, day_idx, name_ix, day_n = (G[k] for k in (
+        "L", "Ltop", "emb", "topics", "Pp", "cms", "on", "built", "days", "day_idx", "name_ix", "day_n"))
+    Lday, Lhun, Lmk, Lteam = list(L.day), list(L.hunter), list(L.makers), list(L.team)
+    Lpri = L.prior.fillna(0.5).tolist()
+    rows = []
+    p = Pp[u]
+    ev = sorted([(Lday[i], "up", i) for i in p["ups"]] + [(dt, "cm", i) for dt, i in cms[u]]
+                + [(dt, "sup", c) for i in built[u] for dt, c in on[i]]
+                + [(max(dt, dt2), "cir", c) for dt, i in cms[u] for dt2, c in on[i] if c != u])
+    hun, mk, supp, circle, vd = Counter(), Counter(), Counter(), Counter(), Counter()
+    tv = np.zeros(len(topics)); xv = np.zeros(64); n_up = 0; e = 0
+    for d in days:
+        while e < len(ev) and ev[e][0] < d:
+            dt, kind, x = ev[e]; e += 1
+            if kind in ("up", "cm"):
+                hun[Lhun[x]] += 1; mk.update(Lmk[x]); tv += Ltop[x]; xv += emb[x]
+                if kind == "up" and dt >= p["cover"]:
+                    n_up += 1; vd[dt] += 1
+            elif kind == "sup":
+                supp[x] += 1
+            else:
+                circle[x] += 1
+        test = d >= TEST[0]
+        if test and p["cover"] > d:
+            continue
+        label = {i for i in p["ups"] if Lday[i] == d and d >= p["cover"]}
+        if not test:  # training: only days the person picked something; comments count as picks (complete history)
+            label |= {i for dt, i in cms[u] if dt == d and Lday[i] == d}
+            if not label:
+                continue
+        tn = tv / (np.linalg.norm(tv) + 1e-9); xn = xv / (np.linalg.norm(xv) + 1e-9)
+        cov_days = max(1, (pd.Timestamp(d) - pd.Timestamp(p["cover"])).days)
+        act = (len(vd) + 1) / (cov_days + 2); per = (n_up + 1) / (len(vd) + 1)
+        di = day_idx[d]; ui = name_ix[u]; dn = day_n[d]
+        rows.append(np.array([(dn, i, ui, np.log1p(hun[Lhun[i]]), np.log1p(sum(mk[m] for m in Lmk[i])),
+                               np.log1p(sum(supp[m] for m in Lteam[i])), np.log1p(sum(circle[m] for m in Lteam[i])),
+                               float(Ltop[i] @ tn / (np.linalg.norm(Ltop[i]) + 1e-9)), float(emb[i] @ xn),
+                               Lpri[i],
+                               p["p_age"], p["p_rate"], p["p_follow"], p["p_maker"], act, per, int(i in label))
+                              for i in di], np.float32))
+    return np.concatenate(rows) if rows else np.zeros((0, len(COLS)), np.float32)
 
 
 def main(files):
@@ -88,48 +137,23 @@ def main(files):
             if m in Pp:
                 built[m].append(i)
     days = sorted(L.day[(L.day >= TRAIN[0]) & (L.day <= TEST[1])].unique())
-    day_idx = {d: np.where(L.day.values == d)[0] for d in days}
-    rows = []; name_ix = {u: k for k, u in enumerate(names)}; day_n = {d: k for k, d in enumerate(days)}
-    for u in names:  # walk each person's days in order, adding only events dated before the day
-        p = Pp[u]
-        ev = sorted([(L.day[i], "up", i) for i in p["ups"]] + [(dt, "cm", i) for dt, i in cms[u]]
-                    + [(dt, "sup", c) for i in built[u] for dt, c in on[i]]
-                    + [(max(dt, dt2), "cir", c) for dt, i in cms[u] for dt2, c in on[i] if c != u])
-        hun, mk, supp, circle, vd = Counter(), Counter(), Counter(), Counter(), Counter()
-        tv = np.zeros(len(topics)); xv = np.zeros(64); n_up = 0; e = 0
-        for d in days:
-            while e < len(ev) and ev[e][0] < d:
-                dt, kind, x = ev[e]; e += 1
-                if kind in ("up", "cm"):
-                    hun[L.hunter[x]] += 1; mk.update(L.makers[x]); tv += Ltop[x]; xv += emb[x]
-                    if kind == "up" and dt >= p["cover"]:
-                        n_up += 1; vd[dt] += 1
-                elif kind == "sup":
-                    supp[x] += 1
-                else:
-                    circle[x] += 1
-            test = d >= TEST[0]
-            if test and p["cover"] > d:
-                continue
-            label = {i for i in p["ups"] if L.day[i] == d and d >= p["cover"]}
-            if not test:  # training: only days the person picked something; comments count as picks (complete history)
-                label |= {i for dt, i in cms[u] if dt == d and L.day[i] == d}
-                if not label:
-                    continue
-            tn = tv / (np.linalg.norm(tv) + 1e-9); xn = xv / (np.linalg.norm(xv) + 1e-9)
-            cov_days = max(1, (pd.Timestamp(d) - pd.Timestamp(p["cover"])).days)
-            act = (len(vd) + 1) / (cov_days + 2); per = (n_up + 1) / (len(vd) + 1)
-            di = day_idx[d]; ui = name_ix[u]; dn = day_n[d]; fo = follows[u]
-            rows.append(np.array([(dn, i, ui, np.log1p(hun[L.hunter[i]]), np.log1p(sum(mk[m] for m in L.makers[i])),
-                                   np.log1p(sum(supp[m] for m in L.team[i])), np.log1p(sum(circle[m] for m in L.team[i])),
-                                   float(L.hunter[i] in fo), float(len(L.makers[i] & fo)),
-                                   float(Ltop[i] @ tn / (np.linalg.norm(Ltop[i]) + 1e-9)), float(emb[i] @ xn),
-                                   L.prior[i] if pd.notna(L.prior[i]) else 0.5,
-                                   p["p_age"], p["p_rate"], p["p_follow"], p["p_maker"], act, per, int(i in label))
-                                  for i in di], np.float32))
-    X = pd.DataFrame(np.concatenate(rows), columns=["dn", "launch", "person"] + PAIR + PERS + ["act", "per", "y"]); del rows
+    cache = f"{D}/vote_sim_rows.npy"
+    if os.path.exists(cache):  # person histories are built once and saved; later runs only retrain/score
+        Xa = np.load(cache); print("loaded cached rows", Xa.shape, flush=True)
+    else:
+        G.update(L=L, Ltop=Ltop, emb=emb, topics=topics, Pp=Pp, cms=cms, on=on, built=built, days=days,
+                 day_idx={d: np.where(L.day.values == d)[0] for d in days}, name_ix={u: k for k, u in enumerate(names)},
+                 day_n={d: k for k, d in enumerate(days)})
+        with mp.get_context("fork").Pool(os.cpu_count()) as pool:
+            Xa = np.concatenate(list(pool.imap(person_rows, names, chunksize=50)))
+        np.save(cache, Xa)
+    X = pd.DataFrame(Xa, columns=COLS); del Xa
     X["launch"] = X.launch.astype(int); X["g"] = X.person.astype(np.int64) * 1000 + X.dn.astype(np.int64)
     X["day"] = np.array(days)[X.dn.astype(int)]
+    pu = np.array(names)[X.person.astype(int)]  # follow features (not cached: added as the following data grows)
+    hl, ml = list(L.hunter), list(L.makers)
+    X["f_hunter"] = [float(hl[i] in follows[u]) for u, i in zip(pu, X.launch)]
+    X["f_team"] = [float(len(ml[i] & follows[u])) for u, i in zip(pu, X.launch)]
     gy = X.groupby("g").y.transform("sum"); A = X[gy > 0]
     tr = A[A.day <= TRAIN[1]].sort_values("g"); te = X[X.day >= TEST[0]].copy()
     print("pairs:", len(X), "voting person-days train:", tr.g.nunique(), "test pairs:", len(te), flush=True)
