@@ -4,7 +4,7 @@ Comments are timestamped, so "comments in the first hour / two hours" can be reb
 they would have looked that morning. One query per 20 featured launches of a day (~100 rate-limit points). Writes
 cache/early_days/<day>.json; days on disk are skipped; newest first.
 
-    PH_TOKEN=... python experiments/ph_predict/collect_early.py 2025-10-01 2026-10-24
+    PH_TOKEN=... python experiments/ph_longitudinal/collect_early.py 2025-10-01 2026-10-24
 """
 
 from __future__ import annotations

@@ -4,7 +4,7 @@ The model sees only what a visitor would see before voting: name, tagline, descr
 text with Product Hunt badges removed. Never votes, ranks or comments. Appends to cache/llm.jsonl; ids already
 there are skipped.
 
-    GOOGLE_APPLICATION_CREDENTIALS=... python experiments/ph_predict/llm_scores.py
+    GOOGLE_APPLICATION_CREDENTIALS=... python experiments/ph_longitudinal/llm_scores.py
 """
 
 from __future__ import annotations

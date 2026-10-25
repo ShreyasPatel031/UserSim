@@ -5,7 +5,7 @@ until:<day after>", latest first, at most MAX_ITEMS tweets. Only tweets from 24 
 kept, and leaderboard tweets ("top 3 on Product Hunt", vote counts) are dropped, so nothing reflects the result.
 Shared hosts (github.io, vercel.app, ...) are skipped. Writes cache/x/<id>.json; stops at MAX_TWEETS in total.
 
-    APIFY_TOKEN=... python experiments/ph_predict/x_buzz.py
+    APIFY_TOKEN=... python experiments/ph_longitudinal/x_buzz.py
 """
 
 from __future__ import annotations

@@ -82,7 +82,7 @@ reach well above 0.8; monthly top 10 out of ~700 launches stays hardest.
 ## 6. Live test
 
 `out/live_2026-10-25.csv` (4:30 AM PT) and `out/live_2026-10-25_v2.csv` (5:51 AM PT) rank today's 13 launches
-before results. After midnight PT: `python experiments/ph_predict/score_live.py 2026-10-25 [_v2]`.
+before results. After midnight PT: `python experiments/ph_longitudinal/score_live.py 2026-10-25 [_v2]`.
 
 ## Limits
 

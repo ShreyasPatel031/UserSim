@@ -7,7 +7,7 @@ is PH's own dailyRank / weeklyRank / monthlyRank. Random guessing gets about k /
 Also: source ablations (each group alone, all minus one), baselines, SHAP importance per feature, group and
 product type. Writes out/metrics.json, out/report.md, out/predictions.csv.
 
-    python experiments/ph_predict/evaluate.py
+    python experiments/ph_longitudinal/evaluate.py
 """
 
 from __future__ import annotations

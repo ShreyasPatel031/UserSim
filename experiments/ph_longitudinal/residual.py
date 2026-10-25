@@ -5,7 +5,7 @@ votes minus its out-of-sample prediction. Then: Spearman of each product-judgmen
 the residual, inside the same week, overall and per product type; and recall gain from adding them.
 Writes out/residual.json.
 
-    python experiments/ph_predict/residual.py
+    python experiments/ph_longitudinal/residual.py
 """
 
 from __future__ import annotations

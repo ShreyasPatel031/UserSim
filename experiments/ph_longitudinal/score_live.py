@@ -3,7 +3,7 @@
 Re-fetches the day (collect_ph.py) if it was fetched before the day closed, so ranks are final, then prints
 recall@3/5/10 of out/live_<day><suffix>.csv.
 
-    python experiments/ph_predict/score_live.py 2026-10-25 [_v2]
+    python experiments/ph_longitudinal/score_live.py 2026-10-25 [_v2]
 """
 
 from __future__ import annotations

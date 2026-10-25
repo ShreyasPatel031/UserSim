@@ -4,7 +4,7 @@ PH's API only gives producthunt.com/r/<code> links, which Cloudflare blocks for 
 on Apify with US residential IPs (cheerio, no browser, depth 0). Batches run in parallel; posts already on disk are
 skipped, so it can be re-run as more days are collected.
 
-    APIFY_TOKEN=... python experiments/ph_predict/crawl_sites.py [first_day] [Website|Github]
+    APIFY_TOKEN=... python experiments/ph_longitudinal/crawl_sites.py [first_day] [Website|Github]
 """
 
 from __future__ import annotations

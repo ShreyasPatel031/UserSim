@@ -7,7 +7,7 @@ by a model trained only on earlier months. Selection metric: mean of day@5 and w
   3. Optional average with a per-day LambdaRank model.
 Writes out/optimize.json.
 
-    python experiments/ph_predict/optimize.py
+    python experiments/ph_longitudinal/optimize.py
 """
 
 from __future__ import annotations

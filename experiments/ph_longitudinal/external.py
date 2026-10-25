@@ -8,7 +8,7 @@
 
 Ids already on disk are skipped.
 
-    python experiments/ph_predict/external.py
+    python experiments/ph_longitudinal/external.py
 """
 
 from __future__ import annotations

@@ -4,7 +4,7 @@ Uses the day's featured launches already collected (collect_ph.py <day> <day>), 
 a model trained on every earlier day. Saves out/live_<day>.csv (ranked) with the time it was made, so it can be
 scored once PH's day closes.
 
-    python experiments/ph_predict/predict_live.py 2026-10-25
+    python experiments/ph_longitudinal/predict_live.py 2026-10-25
 """
 
 from __future__ import annotations

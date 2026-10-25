@@ -1,6 +1,6 @@
 """Turn out/metrics.json into out/report.md (tables for recall@k, sources, factors, product types, current lists).
 
-    python experiments/ph_predict/report.py
+    python experiments/ph_longitudinal/report.py
 """
 
 from __future__ import annotations

@@ -1,9 +1,9 @@
-# Predicting Product Hunt's Top Products lists
+# Product Hunt top lists over time (longitudinal predictor)
 
 **Goal:** predict which launches appear on PH's homepage lists — Yesterday's, Last Week's and Last Month's Top
 Products, overall and per topic — without using the launch's own votes, comments or ranks.
 
-**Results:** [`FINDINGS.md`](FINDINGS.md) (summary) and [`out/report.md`](out/report.md) (recall@3/5/10 per list, sources, factors, product types, topic lists).
+**Results:** [`FINDINGS.md`](FINDINGS.md) (summary), [`out/report.md`](out/report.md), and [`COLLAB.md`](COLLAB.md) (comparison with the breadth agent on `claude/cool-volta-l5nuo4`) (recall@3/5/10 per list, sources, factors, product types, topic lists).
 
 ## Pipeline
 
