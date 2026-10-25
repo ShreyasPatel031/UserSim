@@ -1,0 +1,4 @@
+model,day@3,day@5,day@10,week@3,week@5,week@10,month@3,month@5,month@10,day@5 CI
+URL + competitors only,35,49,64,8,12,20,8,5,6,46–52
+Full model (with hunter/makers),60,69,77,43,52,53,21,20,31,66–71
+Random,20,32,48,2,2,8,0,0,0,29–36
