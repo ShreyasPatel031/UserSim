@@ -66,8 +66,14 @@ def features():
     prof = {p["username"]: p for p in jl(f"{D}/ph_profiles.jsonl.gz")}
     seg = {s["username"]: (s["labels"] or {}) for s in jl(f"{D}/segments.jsonl")}
     cm = K.load_comments()
+    team = {}  # makers + hunter: their own (often scheduled, pre-launch) comments are not audience
+    import glob
+    for f in glob.glob(f"{D}/days/2026-09-*.json") + glob.glob(f"{D}/days/2026-10-*.json"):
+        for p in json.load(open(f)):
+            team[p["id"]] = {m["username"] for m in p.get("makers") or []} | {(p.get("user") or {}).get("username")}
     for _, r in df.iterrows():
-        rows = [c for c in (cm.get(r.slug) or {}).get("rows", []) if c["username"] and c["username"] in prof]
+        rows = [c for c in (cm.get(r.slug) or {}).get("rows", [])
+                if c["username"] and c["username"] in prof and c["username"] not in team.get(r.id, set())]
         pre = [c for c in rows if (c["created"] or "")[:10] < r.day]
         for tag, sub in (("post", rows), ("pre", pre)):
             users = list(dict.fromkeys(c["username"] for c in sub))
@@ -152,9 +158,15 @@ def score(df, tags):
             q1, q2 = sub[f].quantile([1 / 3, 2 / 3])
             hi, lo = sub.top5[sub[f] > q2].mean(), sub.top5[sub[f] <= q1].mean()
         rho = np.nanmean([spearmanr(g[f], g.real_pct)[0] for _, g in sub.groupby("day") if len(g) > 5 and g[f].nunique() > 1])
-        res = np.nanmean([spearmanr(g[f], g.resid)[0] for _, g in sub.groupby("day") if len(g) > 5 and g[f].nunique() > 1])
+        rs = np.array([spearmanr(g[f], g.resid)[0] for _, g in sub.groupby("day") if len(g) > 5 and g[f].nunique() > 1])
+        rs = rs[np.isfinite(rs)]
+        res = rs.mean() if len(rs) else np.nan
+        b = np.random.default_rng(0).choice(rs, (2000, len(rs))).mean(1) if len(rs) > 1 else np.array([np.nan])
+        ci = (np.percentile(b, 2.5), np.percentile(b, 97.5))
         out.append({"feature": f, "when": tag, "coverage": round(ok.mean(), 2), "top5_high": round(hi, 3),
-                    "top5_low": round(lo, 3), "rho": round(rho, 3), "resid": round(res, 3)})
+                    "top5_low": round(lo, 3), "rho": round(rho, 3), "resid": round(res, 3),
+                    "resid_lo": round(ci[0], 3), "resid_hi": round(ci[1], 3), "days": len(rs),
+                    "significant": bool(len(rs) >= 15 and (ci[0] > 0 or ci[1] < 0))})
     return pd.DataFrame(out).sort_values("resid", key=lambda s: -s.abs())
 
 
@@ -164,4 +176,7 @@ if __name__ == "__main__":
     s.to_csv(f"{R}/signal.csv", index=False)
     df.to_csv(f"{D}/signal_features.csv", index=False)
     pd.set_option("display.width", 200)
-    print(s.head(45).to_string(index=False))
+    print("significant (95% interval excludes 0, >=15 days):")
+    print(s[s.significant].to_string(index=False))
+    print("\nselected sources:")
+    print(s[s.feature.str.match(r"^(comp_|li_|x_|seg_post_n_people|seg_pre_n_people)")].to_string(index=False))
