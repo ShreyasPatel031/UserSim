@@ -18,10 +18,11 @@ async def main():
             "/home/agent/php/li_profile", headless=False, proxy=PROXY, viewport={"width": 1280, "height": 760},
             locale="en-US", args=["--window-size=1280,800", "--window-position=0,0",
                                   "--disable-blink-features=AutomationControlled",
-                                  "--remote-debugging-port=9222", "--remote-debugging-address=127.0.0.1"],
+                                  "--remote-debugging-port=9222", "--remote-debugging-address=127.0.0.1",
+                                  "--disable-gpu", "--disable-features=TouchpadOverscrollHistoryNavigation"],
             ignore_default_args=["--enable-automation"])  # Google refuses sign-in in browsers flagged as automated
         page = ctx.pages[0] if ctx.pages else await ctx.new_page()
-        await page.goto("https://www.linkedin.com/login", wait_until="domcontentloaded", timeout=90000)
+        await page.goto("https://accounts.google.com/", wait_until="domcontentloaded", timeout=90000)
         print("open:", page.url, flush=True)
         await asyncio.Event().wait()  # stay open until stopped
 
