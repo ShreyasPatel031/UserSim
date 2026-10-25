@@ -367,11 +367,15 @@ def page_query(platform: str, name: str) -> str:
     return f"site:{platform}.com {name} reviews"
 
 
+# Edition suffixes a product's own listing can carry (Capterra lists Vimeo as 'Vimeo-Pro', G2 has 'dailymotion-pro').
+_EDITION = r"(?:\d+|pro|business|enterprise|teams?|app|software|platform|cloud|online|hq)"
+
+
 def _same_name(found: str, wanted: str) -> bool:
-    """Exact product name, a vendor prefix ('atlassian-jira') or a numbered duplicate slug ('linear-2'); never a
-    longer different product ('jira-service-management', 'linear-agent')."""
+    """Exact product name, a vendor prefix ('atlassian-jira'), or an edition / numbered slug ('vimeo-pro', 'linear-2');
+    never a longer different product ('jira-service-management', 'youtube-live', 'linear-agent')."""
     f, w = _slug(found), _slug(wanted)
-    return bool(f) and (f == w or f.endswith("-" + w) or bool(re.fullmatch(re.escape(w) + r"-\d+", f)))
+    return bool(f) and (f == w or f.endswith("-" + w) or bool(re.fullmatch(re.escape(w) + "-" + _EDITION, f)))
 
 
 def review_page(rows: list[dict[str, str]], platform: str, name: str) -> tuple[str | None, str]:
