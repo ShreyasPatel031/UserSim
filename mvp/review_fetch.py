@@ -253,6 +253,26 @@ def camoufox_fetch(url: str, proxy: str | None, *, wait_s: float = 30.0) -> tupl
         return _load(browser.new_page(), url, wait_s)
 
 
+def is_clean(status: int, html: str) -> bool:
+    """The real page, not a bot challenge or error."""
+    return status == 200 and not _summary(status, html, time.time())["challenge"]
+
+
+def fetch_with_retries(url: str, proxy: str | None, *, attempts: int = 3, timeout: float = 90.0) -> tuple[int, str]:
+    """Chrome-fingerprint fetch, retried (a rotating or unblocking proxy picks another route each time). Measured on
+    the Apify Unblocker, Oct 2026: G2 200 first try in 23-40 s; Capterra timed out twice at 30-45 s, then 200."""
+    last: tuple[int, str] = (0, "")
+    for _ in range(attempts):
+        try:
+            last = fetch(url, proxy, impersonate="chrome", timeout=timeout)
+        except Exception as exc:  # noqa: BLE001 - next attempt
+            last = (0, re.sub(r"//[^@\s/]+@", "//<redacted>@", repr(exc))[:300])
+            continue
+        if is_clean(*last):
+            return last
+    return last
+
+
 def exit_country(proxy: str) -> dict[str, Any]:
     """Country and network of the proxy's current exit IP (ipinfo.io), to check country targeting."""
     try:

@@ -1349,6 +1349,33 @@ async def probe_review_page(body: ReviewProbe):
     return await asyncio.to_thread(run)
 
 
+class ReviewSample(BaseModel):
+    url: str
+    proxy: str = "apify_unblocker"
+    current_apify_token: str
+
+
+@app.post("/api/discovery/sample")
+async def sample_review_page(body: ReviewSample):
+    """One review page's HTML (G2 / Capterra / Product Hunt only), for writing parsers against the real page. Needs
+    the saved Apify token as proof: fetches through the paid proxies are not open to anyone."""
+    import secrets as _secrets
+
+    from mvp import discovery, review_fetch
+
+    if not review_fetch.allowed(body.url):
+        raise HTTPException(status_code=400, detail="only https review pages on producthunt.com, g2.com, capterra.com")
+    if not _secrets.compare_digest(body.current_apify_token or "", discovery.apify_token() or "\0"):
+        raise HTTPException(status_code=403, detail="send the saved Apify token")
+
+    def run():
+        proxy = {"apify_unblocker": lambda: review_fetch.apify_proxy("UNBLOCKER")}.get(
+            body.proxy, lambda: discovery.proxy_url() or None)()
+        status, html = review_fetch.fetch_with_retries(body.url, proxy)
+        return {"status": status, "html": html}
+    return await asyncio.to_thread(run)
+
+
 @app.get("/api/discovery")
 async def list_discoveries():
     rows = []
