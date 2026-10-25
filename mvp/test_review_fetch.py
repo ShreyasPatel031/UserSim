@@ -98,6 +98,17 @@ class LadderTest(unittest.TestCase):
             self.assertEqual(F.ladder_fetch("https://www.trustradius.com/products/x/reviews", None)[2], "vm_camoufox")
         self.assertNotIn(("trustradius.com", "vm"), F._BLOCKED)
 
+    def test_localised_and_mid_size_challenge_pages_are_not_passes(self):
+        cf = "<title>Трохи зачекайте…</title>" + "<script src='/cdn-cgi/challenge-platform/x'></script>" + "x" * 28000
+        self.assertFalse(F.is_clean(200, cf))
+        self.assertFalse(F.is_clean(200, "<title>Один момент…</title>" + "x" * 28000))
+        self.assertTrue(F.is_clean(200, "<title>Asana Reviews</title><script>datadome</script>" + "x" * 300_000))
+
+    def test_residential_is_pinned_to_us_exits(self):
+        self.assertEqual(F.us_exit("http://u:p@gw.dataimpulse.com:823"), "http://u__cr.us:p@gw.dataimpulse.com:823")
+        self.assertEqual(F.us_exit("http://u__cr.de:p@gw.dataimpulse.com:823"), "http://u__cr.de:p@gw.dataimpulse.com:823")
+        self.assertEqual(F.us_exit("http://u:p@other.example:8000"), "http://u:p@other.example:8000")
+
     def test_costs(self):
         self.assertEqual(F.tier_cost("vm_camoufox", 10**6), 0.0)
         self.assertAlmostEqual(F.tier_cost("residential_camoufox", 2 * 10**6), 0.002)
