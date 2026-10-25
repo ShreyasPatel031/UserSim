@@ -247,7 +247,9 @@ def parse_ddg(html: str, limit: int) -> list[dict[str, str]]:
     return out
 
 
-SEARCH_CONCURRENCY = int(os.environ.get("MVP_DISCOVERY_SEARCH_CONCURRENCY", "8"))
+SEARCH_CONCURRENCY = int(os.environ.get("MVP_DISCOVERY_SEARCH_CONCURRENCY", "16"))
+# gemini-2.5-flash-lite runs the search but returns no grounding links (checked Oct 2026); 2.5 Flash returns them.
+SEARCH_MODEL = os.environ.get("MVP_DISCOVERY_SEARCH_MODEL", "gemini-2.5-flash")
 _SEARCH_GATE: asyncio.Semaphore | None = None
 
 
@@ -266,7 +268,7 @@ async def google_search(query: str, limit: int = 8) -> list[dict[str, str]]:
     """Google results through Gemini's Google Search grounding on Vertex (the LLM this repo already uses): one call,
     a few seconds, no extra key and no Apify. Returns the pages Google returned for the query."""
     from auth import cached_vertex_credentials, vertex_credentials
-    from capability.gemini_config import _endpoint, gemini_model
+    from capability.gemini_config import _endpoint
 
     global _SEARCH_GATE
     if _SEARCH_GATE is None:
@@ -277,7 +279,7 @@ async def google_search(query: str, limit: int = 8) -> list[dict[str, str]]:
     async with _SEARCH_GATE:
         creds = cached_vertex_credentials() or await asyncio.to_thread(vertex_credentials)
         async with httpx.AsyncClient(timeout=60.0) as client:
-            r = await client.post(_endpoint(gemini_model()), json=payload,
+            r = await client.post(_endpoint(SEARCH_MODEL), json=payload,
                                   headers={"Authorization": f"Bearer {creds.token}", "Content-Type": "application/json"})
             r.raise_for_status()
             meta = ((r.json().get("candidates") or [{}])[0].get("groundingMetadata") or {})
@@ -302,9 +304,14 @@ async def ddg_search(query: str, limit: int = 8) -> list[dict[str, str]]:
 
 
 async def web_search_many(queries: list[str], *, limit: int = 8) -> dict[str, list[dict[str, str]]]:
-    """Every query searched on Google (Gemini grounding) at the same time; DuckDuckGo only for a query whose Google
-    call failed."""
+    """Every query at the same time. 'site:' queries go to DuckDuckGo (Gemini's search drops the site: operator);
+    the rest to Google via Gemini grounding, with DuckDuckGo only if that call fails."""
     async def one(q: str) -> list[dict[str, str]]:
+        if q.startswith("site:"):
+            try:
+                return await ddg_search(q, limit)
+            except httpx.HTTPError:
+                return []
         try:
             return await google_search(q, limit)
         except Exception as exc:  # noqa: BLE001 - fall back to DuckDuckGo for this query
@@ -388,8 +395,11 @@ _PAGE_RES = {"g2": re.compile(r"g2\.com/products/([a-z0-9-]+)", re.I),
 REVIEWS_PER_SITE = 50
 
 
-def page_query(platform: str, name: str) -> str:
-    return f"site:{platform}.com {name} reviews"
+def page_queries(platform: str, name: str) -> list[str]:
+    """Searches that find a product's page on one review site. Gemini's Google search returns only a handful of
+    sources per query, and the two phrasings find different pages (Oct 2026: each ~half of 12 pages, together 8/12),
+    so all are run at once and merged; the site: query goes to DuckDuckGo."""
+    return [f"{name} reviews on {PLATFORM_LABEL[platform]}", f"{name} reviews {platform}.com", f"site:{platform}.com {name} reviews"]
 
 
 # Edition suffixes a product's own listing can carry (Capterra lists Vimeo as 'Vimeo-Pro', G2 has 'dailymotion-pro').
@@ -716,16 +726,13 @@ Return JSON:
                 self.trace.end(s, "skipped", "turned off for this run" if not self.run.scrape_reviews else "APIFY_TOKEN is not set")
             return []
         platforms = ("g2", "capterra", "producthunt")
-        found = await self._search_many([page_query(p, n) for n in names for p in platforms])
-        # Google's results for one query vary between runs (seen: a run returning unrelated producthunt.com pages for
-        # 'Linear'), so a query with no matching page is searched once more.
-        missed = [page_query(p, n) for n in names for p in platforms if not review_page(found.get(page_query(p, n)) or [], p, n)[0]]
-        if missed:
-            again = await self._search_many(missed)
-            found.update({q: rows for q, rows in again.items() if rows})
+        found = await self._search_many([q for n in names for p in platforms for q in page_queries(p, n)])
+
+        def rows_for(platform: str, name: str) -> list[dict[str, str]]:
+            return [r for q in page_queries(platform, name) for r in found.get(q) or []]
 
         async def scrape(name: str, platform: str) -> list[dict[str, Any]]:
-            url, why = review_page(found.get(page_query(platform, name)) or [], platform, name)
+            url, why = review_page(rows_for(platform, name), platform, name)
             s = self.trace.start("reviews", f"{PLATFORM_LABEL[platform]} reviews of {name}",
                                  {"page": url, "how": why, "actor": REVIEW_ACTORS[platform]})
             if not url:

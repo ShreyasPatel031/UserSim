@@ -144,7 +144,7 @@ class RunTest(unittest.TestCase):
         self.assertNotIn("site:g2.com Monday reviews", searched)  # 40 reviews: no extra similar products
         self.assertEqual(r["counts"]["reviews"], 40)
         self.assertEqual(r["counts"]["ph_reviewers"], 1)  # Asana's Product Hunt page, found via its producthunt.com URL
-        self.assertEqual(searched.count("site:g2.com Acme Boards reviews"), 2)  # no matching page: searched once more
+        self.assertTrue({"Acme Boards reviews on G2", "Acme Boards reviews g2.com", "site:g2.com Acme Boards reviews"} <= set(searched))
         self.assertEqual(r["users"][0]["text"], "Liked: easy / Disliked: slow")
         self.assertEqual(r["users"][0]["product"], "Trello")
         self.assertIn("[u0] (g2 / Trello) role: Designer", log[-1])
