@@ -119,6 +119,13 @@
       <thead><tr><th class="num" data-field="rank">Predicted</th><th data-field="product">Product</th><th data-field="tagline">Tagline</th><th class="num" data-field="hunter_followers">Hunter's PH followers</th></tr></thead><tbody></tbody></table></div></div>
   </section>
 
+  <section class="ph-sec" id="forecast-week">
+    <h2>Forward test: this week's list (Oct 19–25)</h2>
+    <p>What the front page will show tomorrow as "Last Week's Top Products", predicted by the weekly-list model trained only on launches before Oct 19. Today's launches have no result yet.</p>
+    <div class="ph-card"><div class="ph-scroll"><table id="fcw" data-source="forecast_week" data-row-key="id">
+      <thead><tr><th class="num" data-field="rank">Predicted</th><th data-field="product">Product</th><th data-field="day">Day</th><th class="num" data-field="hunter_followers">Hunter's PH followers</th><th class="num" data-field="real_rank_so_far">Real weekly rank so far</th></tr></thead><tbody></tbody></table></div></div>
+  </section>
+
   <section class="ph-sec" id="lists">
     <h2>The three front-page lists as of Oct 25</h2>
     <p>Each predicted by a model trained only on months before it. Green: in both the real and the predicted top 10.</p>
@@ -248,6 +255,13 @@
       const tb = ft2.querySelector("tbody"); tb.innerHTML = "";
       fc.data.forEach((r) => { const tr = document.createElement("tr"); tr.dataset.key = r.id;
         [["rank", "num"], ["product", ""], ["tagline", "miss"], ["hunter_followers", "num"]].forEach(([f, c]) => { const td = document.createElement("td"); if (c) td.className = c; td.textContent = f === "hunter_followers" ? d3.format(",")(r[f]) : r[f]; tr.appendChild(td); });
+        tb.appendChild(tr); });
+    }
+    const fw = dash.data("forecast_week"), fwt = document.getElementById("fcw");
+    if (fw.status === "ok") {
+      const tb = fwt.querySelector("tbody"); tb.innerHTML = "";
+      fw.data.forEach((r) => { const tr = document.createElement("tr"); tr.dataset.key = r.id;
+        [["rank", "num"], ["product", r.real_rank_so_far != null && r.real_rank_so_far <= 10 ? "hit" : ""], ["day", "miss"], ["hunter_followers", "num"], ["real_rank_so_far", "num"]].forEach(([f, c]) => { const td = document.createElement("td"); if (c) td.className = c; td.textContent = f === "hunter_followers" ? d3.format(",")(r[f]) : (f === "day" ? d3.utcFormat("%b %-d")(new Date(r[f])) : (r[f] == null ? "not in yet" : r[f])); tr.appendChild(td); });
         tb.appendChild(tr); });
     }
     const nl = dash.data("named_lists"), nb = document.getElementById("named");

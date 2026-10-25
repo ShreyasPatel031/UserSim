@@ -131,9 +131,10 @@ for t, r in sorted(m.get("_by_type", {}).items(), key=lambda kv: -kv[1]["n"]):
       f"{(r['spearman_within_type_day'] or float('nan')):.2f} |")
 w("")
 fc = sorted(f for f in os.listdir(R) if f.startswith("forecast_"))
-if fc:
-    w("## Forward test: " + open(f"{R}/{fc[-1]}").read().split("\n", 1)[0].lstrip("# ") + "\n")
-    w(open(f"{R}/{fc[-1]}").read().split("\n", 1)[1])
+for f in fc:
+    txt = open(f"{R}/{f}").read()
+    w("## Forward test: " + txt.split("\n", 1)[0].lstrip("# ") + "\n")
+    w(txt.split("\n", 1)[1])
 w("## Data coverage\n")
 w(f"- Homepage: Wayback snapshot from before launch {pct(meta['sites_wayback'])}, live site {pct(meta['sites_live'])}, "
   f"none found {pct(meta['sites_none'])}")
