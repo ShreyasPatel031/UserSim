@@ -80,11 +80,67 @@ Tabs: **About, Forums, Activity, Upvotes, Hunted (`/submitted`), Collections, St
   Collections (lists + products), About-page maker launches. Activity/Upvotes have more pages (cursor) but the paging
   query hash hasn't been found (browser scroll didn't trigger it; full-text queries refused).
 
+## Profile extraction: finished for one person (update, Oct 25 evening)
+
+The longitudinal agent (branch `claude/eager-pasteur-jffjnl`, folder `experiments/ph_longitudinal/` for its own
+forecasting work) picked up this folder after you ran out and finished the one-person extraction. This folder is
+copied onto that branch unchanged apart from the files below.
+
+**Result for `alchemist_studio`, every tab complete as far as Product Hunt shows it** (founder spot-checked it):
+
+| Tab | Product Hunt shows | Pulled |
+|---|---|---|
+| About | header, 90 badges, links | all (`parse_prof.py`) |
+| Activity | 100s | **2,119 events, Feb 2016 – Oct 2026** (2,107 comments with text, 9 launches, 3 threads) |
+| Upvotes | 100s | **196**, back to Mesh LLM (Apr 3 2026) = the oldest the page offers (it shows ~6 months, not all 2,516) |
+| Hunted | 7 | 7 |
+| Collections | 3 (116 products) | 115 (awesome 20, for later 93, Jekyll 2) |
+| Stacks | says 10 | 4 — the page itself only shows 4, even fully scrolled |
+| Reviews | 15 | 15 (product, stars, date, text, pros/cons, alternatives) |
+| Forums | 37 joined | 37 joined + **223 forum posts in 217 threads** (title, forum, their text) |
+| GitHub / LinkedIn / X | linked from profile | GitHub API (107 repos, events, orgs); your LinkedIn pilot record; your fxtwitter record |
+
+**How (what finally worked):**
+- **Server-rendered tab pages** give the first ~20 of each list (`vmfetch.py` on `/@u`, `/@u/{forums,activity,
+  upvotes,submitted,collections,stacks,reviews,followers,following}`; `/@u/made` is a 404 — made launches are on the
+  About page as `makerPosts`).
+- **The rest only loads by scrolling.** `vm_scroll.py` opens the page in headless Chromium through the residential
+  proxy and scrolls to the bottom until nothing new loads, recording the JSON the page fetches. Activity took 118
+  scrolls (106 extra pages); upvotes 15. Run as `sudo HOME=/root /opt/usersim/venv/bin/python vm_scroll.py 2 < urls`.
+  Scroll each collection's own page too: `/@u/collections/<slug>` (slugs are in the collections tab's `path` field).
+- **Do not call `frontend/graphql` with rebuilt query hashes to page through histories.** The hashes can be
+  reproduced (sha256 of `stripIgnoredCharacters(print(addTypename(doc)))`, which matches `ph_comments.py`'s hash), but
+  this session's safety check blocked using them as getting around the site's limits. Browser scrolling is the
+  accepted route.
+- **Forum posts come from activity, not the forums tab.** The forums tab's thread objects carry no titles or the
+  person's comments (`viewerComments` is the logged-in viewer). Activity events whose subject is a comment on a
+  `DiscussionThread` carry the thread title and their text; the forum name is joined from the forums tab by thread id.
+- `build_profile.py` assembles everything (no network): pages + scroll outputs + GitHub/LinkedIn/X files → profile
+  JSON and a readable Markdown listing every item. `vm_profile_all.py` is the page-only parser (first ~20 per tab).
+
+**Files (person-level data — VM only, not in git):** `~agent/php/one_raw_pages.jsonl.gz` (tab pages),
+`one_scroll.jsonl` + `one_coll.jsonl` + `one_more.jsonl` (scroll outputs), `one_github.json`, `one_li.json`,
+`one_x.jsonl`, and the built profile `one_full_alchemist_studio.json.gz`. Rebuild:
+`python build_profile.py alchemist_studio --pages one_raw_pages.jsonl.gz --scroll <the three, gzipped> --github
+one_github.json --linkedin one_li.json --x one_x.jsonl --out p.json --md p.md`.
+
+**Known gaps for this person:** 6 of 10 stacked products are not shown anywhere public; upvotes before Apr 2026 are
+not offered; 22 of 223 forum posts have no forum name (thread not in the forums tab); X posts not pulled (profile
+only; 16 posts exist); LinkedIn is your pilot's record, not re-pulled.
+
+**Cost/time per person:** about 10–15 minutes of scrolling (activity dominates) plus ~10 page loads; one collection
+page returned 403 once and worked on retry. 4,143 people serially is days — batch, retry 403s, and measure on ~20
+first.
+
+**Still running on the VM when this was written:** your `vm_profile_tabs.py` job (`tabs_out.jsonl`) and the
+LinkedIn browser signed in to the founder's account (`vm_li_browser.py`; stop with `sudo pkill -f vm_li_browser`
+and `sudo rm -rf ~agent/php/li_profile` when the founder says so).
+
 ## Next steps (in order)
 
-1. **Extract every tab for one person first** (`alchemist_studio`, André J — self-linked X @EonPilot, LinkedIn
-   pilot) and show the founder the complete profile; then run for all 4,143 commenters. A generic extractor for the
-   missing tabs was drafted but not run (the founder interrupted to ask for this handover).
+1. ~~Extract every tab for one person first~~ **Done for `alchemist_studio` (Oct 25, by the longitudinal agent) and
+   checked with the founder** — see "Profile extraction: finished for one person" below. Next: a batch of ~20 people
+   to measure time and blocks, then all 4,143 commenters.
 2. Re-parse all profiles with `parse_prof.py` (VM: `prof_parsed2.jsonl` already done) and finish `tabs_out.jsonl`.
 3. Run `segments2.py` (labels each person from all sources: PH profile, tabs, X, LinkedIn where available). Check one
    person, then all.
