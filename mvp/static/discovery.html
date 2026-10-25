@@ -156,7 +156,7 @@ function renderResult(r) {
     <div class="card"><h3>${esc(p.name)} <span class="muted small">${esc(p.category || "")}</span></h3>
       <p>${esc(p.one_liner)}</p><p class="muted small">${esc(p.what_they_do)}</p>
       ${(p.target_users || []).map((t) => `<span class="tag">${esc(t)}</span>`).join("")}
-      <p class="muted small">Evidence: ${c.web_results || 0} web results · ${c.ph_launches || 0} Product Hunt launches · ${c.ph_commenters || 0} PH commenters · ${c.reviews || 0} reviews
+      <p class="muted small">Evidence: ${c.web_results || 0} web results · ${c.ph_launches || 0} Product Hunt launches · ${c.ph_reviewers || 0} Product Hunt reviewers · ${c.reviews || 0} reviews
       ${Object.entries(c.reviews_by_source || {}).map(([k, v]) => `(${esc(k)} ${v})`).join(" ")}</p></div>
     ${(r.source_gaps || []).length ? `<div class="card gaps"><h3>Missing data</h3>
       ${r.source_gaps.map((g) => `<p class="small"><b>${esc(g.source)}</b> ${esc(g.status)}: ${esc(g.why)}</p>`).join("")}</div>` : ""}
@@ -168,7 +168,7 @@ function renderResult(r) {
     ${(r.similar_products || []).length ? `<p class="muted small">Also considered: ${r.similar_products.map((x) => esc(x.name)).join(", ")}</p>` : ""}
 
     <h2>Who will test it <small>segments built from ${users.length} real users</small></h2>
-    ${users.length ? "" : '<p class="st-error">No user segments: 0 real users were retrieved (see Missing data above). Segments are only built from real Product Hunt commenters and G2/Capterra reviewers.</p>'}
+    ${users.length ? "" : '<p class="st-error">No user segments: 0 real users were retrieved (see Missing data above). Segments are only built from real G2, Capterra and Product Hunt reviewers.</p>'}
     <div class="grid">${(r.segments || []).map((s) => `
       <div class="card"><h3>${esc(s.name)} <span class="muted small">${esc(s.share || "")}</span></h3><p>${esc(s.who)}</p>
         ${s.jobs?.length ? `<p class="small"><b>Needs</b></p><ul class="tight">${s.jobs.map((j) => `<li>${esc(j)}</li>`).join("")}</ul>` : ""}

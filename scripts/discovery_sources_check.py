@@ -1,12 +1,11 @@
 """Check discovery's data sources with real credentials, without the LLM.
 
 Runs the agent's own user-collection step (mvp/discovery.py DiscoveryAgent.users_for) for a product and its
-competitors: one batched Google search (site:producthunt.com / site:g2.com / site:capterra.com), the exact pages
-found there, Product Hunt commenters and G2 / Capterra reviewers. Prints every trace step and the counts; never
+competitors: one batched Google search (site:g2.com / site:capterra.com / site:producthunt.com), then the exact
+review page found on each site, scraped by URL. Prints every trace step and the counts; never
 prints credentials.
 
-    python scripts/discovery_sources_check.py --about "issue tracking and sprint planning for software teams" \
-        --product Linear --competitors Jira Shortcut
+    python scripts/discovery_sources_check.py --product Linear --competitors Jira Shortcut
 """
 
 from __future__ import annotations
@@ -26,11 +25,10 @@ async def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--product", required=True)
     ap.add_argument("--competitors", nargs="*", default=[])
-    ap.add_argument("--about", required=True, help="what the product does; used to reject same-name Product Hunt posts")
     a = ap.parse_args()
     run = D.new_run("https://example.invalid")
     agent = D.DiscoveryAgent(run, llm=lambda _m: None)
-    users = await agent.users_for([(n, a.about) for n in [a.product, *a.competitors]], {})
+    users = await agent.users_for([a.product, *a.competitors])
     for st in run.steps:
         print(f"[{st.kind:11}] {st.status:7} {st.title}\n              {st.summary}")
     per: dict[str, dict[str, int]] = {}

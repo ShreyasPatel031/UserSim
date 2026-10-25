@@ -5,22 +5,33 @@ Code: [`mvp/discovery.py`](../mvp/discovery.py). Test page: **`/discovery`** on 
 
 ## What it does
 
-1. **Reads the product's site** — homepage plus up to two about/pricing/features pages — and web-searches `what is <host>`.
+Every page it uses is one Google returned (Apify `google-search-scraper`, batched per phase). Nothing is reached by
+guessing a URL or a slug.
+
+1. **Reads the product's site** — homepage plus up to two about/pricing/features pages — and searches `what is <host>`.
 2. **Profiles the product** (LLM): name, one-liner, category, target users, features, search terms, Product Hunt topics.
-3. **Gathers competitor candidates**
-   - Web search: `<name> alternatives`, `<name> competitors`, `best <search term>` — Google via Apify
-     (`apify~google-search-scraper`) when `APIFY_TOKEN` is set, else DuckDuckGo HTML (often bot-checked from cloud IPs).
-   - Product Hunt API v2: the product's own post, its topics (or topics matching the profile), top posts in those topics.
-4. **Picks competitors** (LLM), probes their homepages, drops dead ones. Unpicked live candidates are "similar products".
-5. **Collects real users**
-   - Product Hunt commenters (headline + comment) on the product's and competitors' posts. PH redacts most user names.
-   - G2 / Capterra (+ TrustRadius, Gartner) reviewers via Apify `zen-studio~software-review-scraper`
-     (reuses `mvp/review_context.py`, cached in `cache/apify/`). Under 30 reviews → the next two similar products are scraped too.
+3. **Gathers competitor candidates:** Google `<name> alternatives`, `<name> competitors`, `best <search term>`, plus
+   similar Product Hunt launches (API: top posts in the topics matching the product).
+4. **Picks competitors** (LLM). Each homepage must appear in Google results for `<name> <category>`, then is probed live.
+5. **Collects real users.** For the product and each competitor, Google `site:g2.com|capterra.com|producthunt.com
+   <name> reviews` finds its exact page; the name must match (`jira`, `atlassian-jira`, `linear-2` yes;
+   `jira-service-management` no). Each page is scraped by URL:
+
+   | Site | Apify actor | Who you get |
+   |---|---|---|
+   | G2 | `zen-studio~software-review-scraper` (URL input; its other-platform rows dropped) | job title, size, industry, rating, review |
+   | Capterra | `trakk~capterra-reviews-scraper` (`productUrls: [{url}]`) | job title, size, industry, rating, pros/cons |
+   | Product Hunt | `eiv~producthunt-reviews-scraper` (`/products/<slug>/reviews`) | name, headline, rating, review |
+
+   Under 30 users → the next two similar products are scraped too. Scrapes are cached per URL in `cache/apify/`.
 6. **Writes segments and tasks** (LLM). Segments come only from the real users retrieved: each must cite users by id,
    and any segment citing no retrieved user is dropped. With 0 users there are no segments, only tasks from the
    product's features, and the result's `source_gaps` (shown as "Missing data") says which source gave nothing and why.
 
 Every step is in the run's `steps` trace: input, duration, summary and the raw data retrieved.
+
+Check the sources with real credentials, without the LLM:
+`python scripts/discovery_sources_check.py --product Linear --competitors Jira Shortcut`
 
 ## API
 
