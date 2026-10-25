@@ -1301,6 +1301,7 @@ class DiscoveryKeys(BaseModel):
     ph_token: str = ""
     ph_client_id: str = ""
     ph_client_secret: str = ""
+    proxy_url: str = ""
     current_apify_token: str = ""
 
 
@@ -1317,11 +1318,27 @@ async def save_discovery_keys(body: DiscoveryKeys):
     from mvp import discovery
 
     ok, msg = discovery.save_keys({"APIFY_TOKEN": body.apify_token, "PH_TOKEN": body.ph_token,
-                                   "PH_CLIENT_ID": body.ph_client_id, "PH_CLIENT_SECRET": body.ph_client_secret},
+                                   "PH_CLIENT_ID": body.ph_client_id, "PH_CLIENT_SECRET": body.ph_client_secret,
+                                   "PROXY_URL": body.proxy_url},
                                   body.current_apify_token)
     if not ok:
         raise HTTPException(status_code=403, detail=msg)
     return {"ok": True, "keys": discovery.keys_status()}
+
+
+class ReviewProbe(BaseModel):
+    url: str
+
+
+@app.post("/api/discovery/probe")
+async def probe_review_page(body: ReviewProbe):
+    """Can review pages be fetched in-house? Status / title / size / bot-challenge per method, for one G2, Capterra or
+    Product Hunt URL, through the saved residential proxy. Never returns page content or the proxy."""
+    from mvp import discovery, review_fetch
+
+    if not review_fetch.allowed(body.url):
+        raise HTTPException(status_code=400, detail="only https review pages on producthunt.com, g2.com, capterra.com")
+    return await asyncio.to_thread(review_fetch.probe, body.url, discovery.proxy_url() or None)
 
 
 @app.get("/api/discovery")

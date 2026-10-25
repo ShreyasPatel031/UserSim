@@ -58,7 +58,12 @@ _PH_MINTED: dict[str, str] = {}  # client id -> client-credentials access token
 
 # Credentials passed with one run (the /discovery form) override the server's for that run only. A ContextVar keeps
 # concurrent runs apart and reaches asyncio.to_thread workers; nothing here is stored on the run or written to disk.
-CREDENTIAL_NAMES = ("APIFY_TOKEN", "PH_TOKEN", "PH_CLIENT_ID", "PH_CLIENT_SECRET")
+CREDENTIAL_NAMES = ("APIFY_TOKEN", "PH_TOKEN", "PH_CLIENT_ID", "PH_CLIENT_SECRET", "PROXY_URL")
+
+
+def proxy_url() -> str:
+    """Residential proxy for fetching review pages in-house (mvp.review_fetch); '' when not set."""
+    return _cred("PROXY_URL")
 _RUN_CREDS: contextvars.ContextVar[dict[str, str]] = contextvars.ContextVar("discovery_creds", default={})
 
 
