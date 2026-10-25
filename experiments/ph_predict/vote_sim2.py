@@ -28,7 +28,7 @@ from vote_sim import load, D, R
 
 TRAIN = ("2026-03-01", "2026-10-12")
 TEST = ("2026-10-13", "2026-10-24")
-PAIR = ["hunter", "team", "recip", "cocm", "topic", "text", "prior"]
+PAIR = ["hunter", "team", "recip", "cocm", "f_hunter", "f_team", "topic", "text", "prior"]
 PERS = ["p_age", "p_rate", "p_follow", "p_maker"]
 
 
@@ -62,6 +62,12 @@ def main(files):
         for t in ts:
             Ltop[i, tix[t]] = 1
     Pp = people(files, L, id2i); names = sorted(Pp); print("people:", len(names), flush=True)
+    # who each person follows (first page, up to 20). Read today, not dated: a follow may come after the upvote.
+    follows = defaultdict(set)
+    if os.path.exists(f"{D}/ph_following.jsonl.gz"):
+        for l in gzip.open(f"{D}/ph_following.jsonl.gz", "rt"):
+            r = json.loads(l)
+            follows[r["username"]] = {x for x, _ in r.get("following") or []}
     cm = K.load_comments()
     cms = defaultdict(list)   # u -> [(date, launch)] u's comments (not on own launches)
     on = defaultdict(list)    # launch -> [(date, commenter)] all non-team comments
@@ -113,9 +119,10 @@ def main(files):
             tn = tv / (np.linalg.norm(tv) + 1e-9); xn = xv / (np.linalg.norm(xv) + 1e-9)
             cov_days = max(1, (pd.Timestamp(d) - pd.Timestamp(p["cover"])).days)
             act = (len(vd) + 1) / (cov_days + 2); per = (n_up + 1) / (len(vd) + 1)
-            di = day_idx[d]; ui = name_ix[u]; dn = day_n[d]
+            di = day_idx[d]; ui = name_ix[u]; dn = day_n[d]; fo = follows[u]
             rows.append(np.array([(dn, i, ui, np.log1p(hun[L.hunter[i]]), np.log1p(sum(mk[m] for m in L.makers[i])),
                                    np.log1p(sum(supp[m] for m in L.team[i])), np.log1p(sum(circle[m] for m in L.team[i])),
+                                   float(L.hunter[i] in fo), float(len(L.makers[i] & fo)),
                                    float(Ltop[i] @ tn / (np.linalg.norm(Ltop[i]) + 1e-9)), float(emb[i] @ xn),
                                    L.prior[i] if pd.notna(L.prior[i]) else 0.5,
                                    p["p_age"], p["p_rate"], p["p_follow"], p["p_maker"], act, per, int(i in label))
