@@ -22,13 +22,29 @@ Production runs of asana.com and notion.com (before the fixes below were deploye
   CapSolver cannot help G2 on DataImpulse IPs.
 - **Fetch ladder** (`review_fetch.ladder_fetch`, used for every review page): cheapest route that gets the real
   page: `vm` (free) -> `vm_camoufox` (free, slower) -> `residential` (DataImpulse ~$1/GB; ~70 KB brotli per page,
-  ~$0.00007) -> `residential_camoufox` -> `apify_unblocker` (~$1.5 per 1,000 requests). A route that hit a bot wall
-  is skipped for that site for 6 h (`MVP_FETCH_BLOCK_TTL_S`). The trace says which route(s) were used and the cost.
+  ~$0.00007) -> `apify_unblocker` (~$1.5 per 1,000 requests) -> `residential_camoufox` (a browser load is ~2.6 MB
+  even without images, ~$0.0027: dearer than the Unblocker, so last). A route that hit a bot wall is skipped for that
+  site for 6 h (`MVP_FETCH_BLOCK_TTL_S`). The trace says which route(s) were used and the cost.
 - **10 review sites allowed** for the probe: G2, Capterra, Gartner Peer Insights, TrustRadius, SourceForge,
   Trustpilot, Product Hunt, GetApp, AlternativeTo, Slashdot. Parsers exist for G2, Capterra, Product Hunt only.
   `POST /api/discovery/probe {"url": ..., "proxy": "ladder"}` runs every route and reports pass, time, wire KB and
-  $/page. From a Claude container's IP (plain curl): only Capterra and GetApp load; the rest are Cloudflare /
-  DataDome walls. VM results: not run yet (needs deploy).
+  $/page.
+- **Ladder probe on the VM, Asana's page on each site** (curl routes; Camoufox routes crashed on a meter bug, fixed
+  in the next PR, re-probe below):
+
+  | Site | VM | Residential | Unblocker | Cheapest |
+  |---|---|---|---|---|
+  | GetApp | pass | pass | pass (33 s) | VM, free |
+  | TrustRadius | pass | pass | pass (33 s) | VM, free |
+  | Product Hunt | 403 | pass, 56 KB | pass | residential, $0.00006 |
+  | Gartner Peer Insights | 403 | pass, 58 KB | pass | residential, $0.00006 |
+  | AlternativeTo | 403 | pass, 60 KB | pass | residential, $0.00006 |
+  | G2 | 403 (DataDome) | 403 | pass (22 s) | Unblocker, $0.0015 |
+  | Capterra | 403 (Cloudflare) | 403 | pass (57 s) | Unblocker |
+  | Slashdot | 403 | 403 | pass (24 s) | Unblocker |
+  | SourceForge | 403 | 403 | pass (4 s) | Unblocker |
+  | Trustpilot | 403 | 403 | pass (14 s) | Unblocker |
+
 - Pre-existing failing test: `test_grounding_links_are_resolved_to_real_pages_and_failures_fall_back_to_ddg`.
 
 ## Earlier (Oct 25 2026, 06:50 UTC)

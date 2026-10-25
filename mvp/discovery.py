@@ -475,7 +475,7 @@ CACHE_DAYS = float(os.environ.get("MVP_DISCOVERY_REVIEW_CACHE_DAYS", "30"))
 
 def scrape_inhouse(platform: str, url: str, product: str) -> tuple[list[dict[str, Any]], str]:
     """Reviews parsed in-house from the product's review pages, each page fetched by the cheapest route that gets
-    through (review_fetch.ladder_fetch: VM, VM + Camoufox, residential, residential + Camoufox, Apify Unblocker);
+    through (review_fetch.ladder_fetch: VM, VM + Camoufox, residential, Apify Unblocker, residential + Camoufox);
     ([], why) when the site has no parser yet or nothing parsed."""
     from mvp import review_fetch, review_parsers
 
