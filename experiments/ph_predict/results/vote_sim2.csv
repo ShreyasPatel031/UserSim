@@ -1,5 +1,5 @@
 score,day@3,day@5,day@10,rho
 current model,56,63,74,0.676
-simulated: taste+network,42,57,69,0.505
-simulated: taste+network+launch prior,56,58,74,0.677
+simulated: taste+network,44,58,67,0.492
+simulated: taste+network+launch prior,53,63,74,0.668
 ceiling: sample's real upvotes,86,85,84,0.846
