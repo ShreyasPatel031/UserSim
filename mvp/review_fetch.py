@@ -11,9 +11,12 @@ challenge was served), so the approach can be measured on the real sites before 
 from __future__ import annotations
 
 import re
+import subprocess
+import sys
+import threading
 import time
 from typing import Any
-from urllib.parse import urlparse
+from urllib.parse import unquote, urlparse
 
 # Only review pages on these sites: the probe must not become an open proxy.
 ALLOWED_HOSTS = ("producthunt.com", "g2.com", "capterra.com")
@@ -54,6 +57,89 @@ def fetch(url: str, proxy: str | None, *, impersonate: str | None = "chrome", ti
         return r.status_code, r.text or ""
 
 
+# G2 (DataDome) and Capterra (Cloudflare) want a real browser that runs their JavaScript checks. The VM's deploy
+# script is installed once and does not update from the repo, so Chromium is installed by the app on first use.
+_BROWSER_LOCK = threading.Lock()
+_BROWSER_STATE: dict[str, Any] = {}
+_UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) "
+       "Chrome/131.0.0.0 Safari/537.36")
+_HIDE_AUTOMATION = """
+Object.defineProperty(navigator, 'webdriver', {get: () => undefined});
+Object.defineProperty(navigator, 'languages', {get: () => ['en-US', 'en']});
+Object.defineProperty(navigator, 'plugins', {get: () => [1, 2, 3, 4, 5]});
+window.chrome = window.chrome || {runtime: {}};
+"""
+
+
+def ensure_browser() -> dict[str, Any]:
+    """Make sure Playwright's Chromium is installed (once per process). {ok, how, error}."""
+    with _BROWSER_LOCK:
+        if _BROWSER_STATE.get("ok"):
+            return dict(_BROWSER_STATE)
+        from playwright.sync_api import sync_playwright
+
+        def launches() -> str:
+            try:
+                with sync_playwright() as pw:
+                    pw.chromium.launch(headless=True).close()
+                return ""
+            except Exception as exc:  # noqa: BLE001
+                return repr(exc)[:300]
+        err = launches()
+        if not err:
+            _BROWSER_STATE.update(ok=True, how="already installed")
+            return dict(_BROWSER_STATE)
+        steps = []
+        for cmd in ([sys.executable, "-m", "playwright", "install", "--with-deps", "chromium"],
+                    [sys.executable, "-m", "playwright", "install", "chromium"]):
+            r = subprocess.run(cmd, capture_output=True, text=True, timeout=600)
+            steps.append(f"{' '.join(cmd[3:])}: exit {r.returncode} {(r.stderr or r.stdout)[-200:]}")
+            err = launches()
+            if not err:
+                _BROWSER_STATE.update(ok=True, how="installed: " + steps[-1][:80])
+                return dict(_BROWSER_STATE)
+        _BROWSER_STATE.update(ok=False, how="; ".join(steps)[-400:], error=err)
+        return dict(_BROWSER_STATE)
+
+
+def _proxy_settings(proxy: str | None) -> dict[str, str] | None:
+    if not proxy:
+        return None
+    u = urlparse(proxy)
+    out = {"server": f"{u.scheme}://{u.hostname}:{u.port}"}
+    if u.username:
+        out.update(username=unquote(u.username), password=unquote(u.password or ""))
+    return out
+
+
+def browser_fetch(url: str, proxy: str | None, *, wait_s: float = 30.0) -> tuple[int, str]:
+    """Load a page in headless Chromium (through the proxy), waiting for a bot challenge to clear. Images, fonts and
+    media are not downloaded (proxy traffic is paid per GB)."""
+    from playwright.sync_api import sync_playwright
+
+    with sync_playwright() as pw:
+        browser = pw.chromium.launch(headless=True, proxy=_proxy_settings(proxy),
+                                     args=["--disable-blink-features=AutomationControlled"])
+        try:
+            ctx = browser.new_context(user_agent=_UA, locale="en-US", viewport={"width": 1366, "height": 900},
+                                      timezone_id="America/New_York")
+            ctx.add_init_script(_HIDE_AUTOMATION)
+            ctx.route("**/*", lambda route: route.abort() if route.request.resource_type in {"image", "media", "font"}
+                      else route.continue_())
+            page = ctx.new_page()
+            resp = page.goto(url, wait_until="domcontentloaded", timeout=60000)
+            status = resp.status if resp else 0
+            deadline = time.time() + wait_s
+            while time.time() < deadline:  # challenge pages reload themselves into the real page once passed
+                html = page.content()
+                if not _CHALLENGE_RE.search(page.title() or "") and len(html) > 20000:
+                    return 200 if status in (403, 429, 503) else status, html
+                page.wait_for_timeout(1500)
+            return status, page.content()
+        finally:
+            browser.close()
+
+
 def probe(url: str, proxy: str | None) -> dict[str, Any]:
     """What each fetch method gets for one review URL, with and without the proxy."""
     if not allowed(url):
@@ -61,10 +147,14 @@ def probe(url: str, proxy: str | None) -> dict[str, Any]:
     out: dict[str, Any] = {"url": url, "proxy": bool(proxy)}
     tries = [("chrome_fingerprint_via_proxy", proxy, "chrome"), ("plain_via_proxy", proxy, None)] if proxy else []
     tries.append(("chrome_fingerprint_direct", None, "chrome"))
+    setup = ensure_browser()
+    out["browser_setup"] = setup
+    if setup.get("ok"):
+        tries.insert(0, ("browser_via_proxy" if proxy else "browser_direct", proxy, "browser"))
     for name, px, imp in tries:
         t = time.time()
         try:
-            status, html = fetch(url, px, impersonate=imp)
+            status, html = browser_fetch(url, px) if imp == "browser" else fetch(url, px, impersonate=imp)
             out[name] = _summary(status, html, t)
         except Exception as exc:  # noqa: BLE001 - reported, not raised
             msg = re.sub(r"//[^@\s/]+@", "//<redacted>@", repr(exc))  # proxy errors can echo user:pass

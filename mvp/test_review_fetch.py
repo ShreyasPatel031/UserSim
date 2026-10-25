@@ -25,7 +25,7 @@ class ReviewFetchTest(unittest.TestCase):
             if proxy:
                 raise RuntimeError("Failed to connect via http://user:secret@gw.example.com:823")
             return 403, "<title>Just a moment...</title>"
-        with mock.patch.object(F, "fetch", fake):
+        with mock.patch.object(F, "fetch", fake), mock.patch.object(F, "ensure_browser", return_value={"ok": False}):
             out = F.probe("https://www.producthunt.com/products/linear/reviews", "http://user:secret@gw.example.com:823")
         self.assertEqual((out["chrome_fingerprint_via_proxy"]["status"], out["chrome_fingerprint_via_proxy"]["challenge"]), (200, False))
         self.assertTrue(out["chrome_fingerprint_direct"]["challenge"])
