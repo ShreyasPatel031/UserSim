@@ -469,16 +469,62 @@ def _redact(msg: str) -> str:
     return re.sub(r"apify_api_[A-Za-z0-9]+", "<redacted>", review_context._redact(msg, tok) if tok else msg)
 
 
-def scrape_review_page(platform: str, url: str) -> list[dict[str, Any]]:
-    """Reviews from one exact G2 / Capterra / Product Hunt page via Apify (blocking), cached per URL."""
+CACHE_DAYS = float(os.environ.get("MVP_DISCOVERY_REVIEW_CACHE_DAYS", "30"))
+
+
+def _inhouse_proxy(platform: str) -> str | None:
+    """G2 and Capterra block residential proxies and stealth browsers alike; Apify's Unblocker gets through (~$0.001 a
+    page, Oct 2026). Product Hunt passes on the residential proxy with a Chrome fingerprint."""
+    from mvp import review_fetch
+
+    if platform == "producthunt" and proxy_url():
+        return proxy_url()
+    return review_fetch.apify_proxy("UNBLOCKER")
+
+
+def scrape_inhouse(platform: str, url: str, product: str) -> tuple[list[dict[str, Any]], str]:
+    """Reviews parsed in-house from the product's review pages; ([], why) when the site has no parser yet or nothing
+    parsed."""
+    from mvp import review_fetch, review_parsers
+
+    if platform not in review_parsers.PARSERS:
+        return [], f"no in-house parser for {platform} yet"
+    proxy = _inhouse_proxy(platform)
+    rows, info = review_parsers.collect(platform, url, product, lambda u: review_fetch.fetch_with_retries(u, proxy))
+    via = "in-house via " + ("Apify Unblocker" if review_fetch._intercepting(proxy) else "residential proxy")
+    return [r | {"via": via} for r in rows], f"{via}: {info['pages']} page(s), statuses {info['statuses']}"
+
+
+def scrape_review_page(platform: str, url: str, product: str = "") -> list[dict[str, Any]]:
+    """Reviews from one exact G2 / Capterra / Product Hunt page (blocking), cached per URL for CACHE_DAYS. In-house
+    parsing first; the Apify actor only when that returns nothing."""
     from mvp import review_context
 
     token = apify_token()
     if not token:
         raise RuntimeError("APIFY_TOKEN missing")
     cache = review_context._APIFY_CACHE / f"page2-{_slug(url)}.json"
-    if cache.is_file():
+    if cache.is_file() and time.time() - cache.stat().st_mtime < CACHE_DAYS * 86400:
         return json.loads(cache.read_text())
+    rows: list[dict[str, Any]] = []
+    try:
+        rows, _why = scrape_inhouse(platform, url, product)
+    except Exception as exc:  # noqa: BLE001 - fall back to the actor
+        print(_redact(f"[discovery] in-house {platform} scrape failed: {exc!r}")[:300], flush=True)
+    if rows:
+        review_context._APIFY_CACHE.mkdir(parents=True, exist_ok=True)
+        cache.write_text(json.dumps(rows))
+        return rows
+    rows = _scrape_with_actor(platform, url, token)
+    review_context._APIFY_CACHE.mkdir(parents=True, exist_ok=True)
+    cache.write_text(json.dumps(rows))
+    return rows
+
+
+def _scrape_with_actor(platform: str, url: str, token: str) -> list[dict[str, Any]]:
+    """The Apify scraper actors (fallback)."""
+    from mvp import review_context
+
     if platform == "g2":
         items = review_context._apify_run(G2_ACTOR, {"query": url, "platforms": ["g2", "capterra"], "maxResults": 100,
                                                      "sort": "most_recent", "starRatings": []}, token, wait_s=900.0)
@@ -499,9 +545,7 @@ def scrape_review_page(platform: str, url: str) -> list[dict[str, Any]]:
                                                      r.get("negativeFeedback") and f"Disliked: {r['negativeFeedback']}",
                                                      r.get("alternativesFeedback") and f"Vs alternatives: {r['alternativesFeedback']}") if x),
                  "date": (r.get("createdAt") or "")[:10], "review_type": r.get("reviewType")} for r in items]
-    review_context._APIFY_CACHE.mkdir(parents=True, exist_ok=True)
-    cache.write_text(json.dumps(rows))
-    return rows
+    return [r | {"via": "Apify actor"} for r in rows]
 
 
 def _reviewer(r: dict[str, Any]) -> dict[str, Any]:
@@ -808,7 +852,7 @@ Return JSON:
                 self.trace.end(s, "error", why)
                 return []
             try:
-                got = await asyncio.wait_for(asyncio.to_thread(self.scrape_review_page, platform, url), REVIEW_WAIT_S)
+                got = await asyncio.wait_for(asyncio.to_thread(self.scrape_review_page, platform, url, name), REVIEW_WAIT_S)
             except asyncio.TimeoutError:
                 self.trace.end(s, "error", f"still scraping after {REVIEW_WAIT_S:.0f}s (keeps running; cached for next run)")
                 return []
@@ -816,8 +860,9 @@ Return JSON:
                 self.trace.end(s, "error", _redact(repr(exc))[:300])
                 return []
             rows = [_reviewer(r | {"product": name}) for r in got]
+            via = (got[0].get("via") if got else "") or "Apify actor"
             self.trace.end(s, "done" if rows else "error",
-                           f"{len(rows)} reviews from {url}, {sum(1 for r in rows if r['role'])} with a job title or headline"
+                           f"{len(rows)} reviews from {url} ({via}), {sum(1 for r in rows if r['role'])} with a job title or headline"
                            if rows else f"no reviews on {url}", rows)
             return rows
 
