@@ -96,7 +96,7 @@ target for every launch; Developer and Productivity tools, where the signal is c
 ## 6. Live test and how to check it
 
 `out/live_2026-10-25.csv` ranks today's 13 featured launches, saved at 4:30 AM PT (before results);
-`out/live_2026-10-25_v2.csv` is the final model's ranking, saved at 5:52 AM PT. After midnight PT run
+`out/live_2026-10-25_v2.csv` is the final model's ranking, saved at 5:51 AM PT. After midnight PT run
 `python experiments/ph_predict/score_live.py 2026-10-25` (add `_v2` for the second). Predicted top 3 (v2): Llama
 Windows, Moli by Lexmount, Openstatus Incident Management.
 
