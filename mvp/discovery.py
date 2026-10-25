@@ -427,8 +427,9 @@ def page_queries(platform: str, name: str) -> list[str]:
     return [f"{name} reviews on {PLATFORM_LABEL[platform]}", f"{name} reviews {platform}.com", f"site:{platform}.com {name} reviews"]
 
 
-# Edition suffixes a product's own listing can carry (Capterra lists Vimeo as 'Vimeo-Pro', G2 has 'dailymotion-pro').
-_EDITION = r"(?:\d+|pro|business|enterprise|teams?|app|software|platform|cloud|online|hq)"
+# Edition suffixes a product's own listing can carry (Capterra lists Vimeo as 'Vimeo-Pro' and Asana as 'Asana-PM',
+# G2 has 'dailymotion-pro').
+_EDITION = r"(?:\d+|pro|pm|business|enterprise|teams?|app|software|platform|cloud|online|hq)"
 
 
 def retry_query(platform: str, name: str) -> str:
@@ -472,27 +473,32 @@ def _redact(msg: str) -> str:
 CACHE_DAYS = float(os.environ.get("MVP_DISCOVERY_REVIEW_CACHE_DAYS", "30"))
 
 
-def _inhouse_proxy(platform: str) -> str | None:
-    """G2 and Capterra block residential proxies and stealth browsers alike; Apify's Unblocker gets through (~$0.001 a
-    page, Oct 2026). Product Hunt passes on the residential proxy with a Chrome fingerprint."""
-    from mvp import review_fetch
-
-    if platform == "producthunt" and proxy_url():
-        return proxy_url()
-    return review_fetch.apify_proxy("UNBLOCKER")
-
-
 def scrape_inhouse(platform: str, url: str, product: str) -> tuple[list[dict[str, Any]], str]:
-    """Reviews parsed in-house from the product's review pages; ([], why) when the site has no parser yet or nothing
-    parsed."""
+    """Reviews parsed in-house from the product's review pages, each page fetched by the cheapest route that gets
+    through (review_fetch.ladder_fetch: VM, VM + Camoufox, residential, residential + Camoufox, Apify Unblocker);
+    ([], why) when the site has no parser yet or nothing parsed."""
     from mvp import review_fetch, review_parsers
 
     if platform not in review_parsers.PARSERS:
         return [], f"no in-house parser for {platform} yet"
-    proxy = _inhouse_proxy(platform)
-    rows, info = review_parsers.collect(platform, url, product, lambda u: review_fetch.fetch_with_retries(u, proxy))
-    via = "in-house via " + ("Apify Unblocker" if review_fetch._intercepting(proxy) else "residential proxy")
-    return [r | {"via": via} for r in rows], f"{via}: {info['pages']} page(s), statuses {info['statuses']}"
+    routes: list[str] = []
+    usd = 0.0
+
+    def fetch_page(u: str) -> tuple[int, str]:
+        nonlocal usd
+        status, html, route, tried = review_fetch.ladder_fetch(u, proxy_url())
+        usd += sum(t.get("usd", 0) for t in tried)
+        if route and route not in routes:
+            routes.append(route)
+        return status, html
+
+    rows, info = review_parsers.collect(platform, url, product, fetch_page)
+    via = "in-house via " + (" + ".join(_ROUTE_LABEL.get(r, r) for r in routes) or "nothing")
+    return [r | {"via": via} for r in rows], f"{via}: {info['pages']} page(s), statuses {info['statuses']}, ${usd:.4f}"
+
+
+_ROUTE_LABEL = {"vm": "VM", "vm_camoufox": "VM + Camoufox", "residential": "residential proxy",
+                "residential_camoufox": "residential proxy + Camoufox", "apify_unblocker": "Apify Unblocker"}
 
 
 def scrape_review_page(platform: str, url: str, product: str = "") -> list[dict[str, Any]]:
@@ -508,7 +514,8 @@ def scrape_review_page(platform: str, url: str, product: str = "") -> list[dict[
         return json.loads(cache.read_text())
     rows: list[dict[str, Any]] = []
     try:
-        rows, _why = scrape_inhouse(platform, url, product)
+        rows, why = scrape_inhouse(platform, url, product)
+        print(f"[discovery] {platform} {url}: {why}", flush=True)
     except Exception as exc:  # noqa: BLE001 - fall back to the actor
         print(_redact(f"[discovery] in-house {platform} scrape failed: {exc!r}")[:300], flush=True)
     if rows:

@@ -51,12 +51,57 @@ class ReviewFetchTest(unittest.TestCase):
         self.assertFalse(F._intercepting("http://u:p@gw.dataimpulse.com:823"))
 
     def test_own_unblocker_helpers(self):
-        self.assertEqual(F.sticky_proxy("http://u:p@gw.dataimpulse.com:823", 3), "http://u__cr.us:p@gw.dataimpulse.com:10003")
-        self.assertEqual(F.sticky_proxy("http://u__cr.us:p@gw.dataimpulse.com:823", 1), "http://u__cr.us:p@gw.dataimpulse.com:10001")
+        dns = ("gw.dataimpulse.com", [], ["64.34.81.89", "64.34.81.65"])
+        with mock.patch("socket.gethostbyname_ex", return_value=dns):  # pinned to one IP: CapSolver rejects round-robin DNS
+            self.assertEqual(F.sticky_proxy("http://u:p@gw.dataimpulse.com:823", 3), "http://u__cr.us:p@64.34.81.65:10003")
+            self.assertEqual(F.sticky_proxy("http://u__cr.us:p@gw.dataimpulse.com:823", 1), "http://u__cr.us:p@64.34.81.65:10001")
+        with mock.patch("socket.gethostbyname_ex", side_effect=OSError):
+            self.assertEqual(F.sticky_proxy("http://u:p@gw.dataimpulse.com:823", 2), "http://u__cr.us:p@gw.dataimpulse.com:10002")
         with mock.patch("socket.gethostbyname", return_value="1.2.3.4"):
             self.assertEqual(F._capsolver_proxy("http://u:p@gw.dataimpulse.com:10001"), "1.2.3.4:10001:u:p")
         self.assertEqual(F._cookie_header({"cookies": {"cf_clearance": "x"}}), "cf_clearance=x")
         self.assertEqual(F._cookie_header({"cookie": "datadome=abc; Max-Age=31536000; Domain=.g2.com"}), "datadome=abc")
+
+
+class LadderTest(unittest.TestCase):
+    REAL = (200, "<title>Reviews</title>" + "x" * 30000)
+    WALL = (403, "<title>Just a moment...</title>")
+
+    def setUp(self):
+        F._BLOCKED.clear()
+
+    def test_cheapest_route_that_passes_and_blocked_routes_are_skipped_next_time(self):
+        calls = []
+
+        def fake(tier, url, residential, meter=None):
+            calls.append(tier)
+            if meter is not None:
+                meter["bytes"] = 70_000
+            return self.REAL if tier == "residential" else self.WALL
+        with mock.patch.object(F, "tier_fetch", side_effect=fake):
+            status, _, route, tried = F.ladder_fetch("https://www.capterra.com/p/1/X/reviews/", "http://u:p@gw:823")
+            self.assertEqual((status, route, calls), (200, "residential", ["vm", "vm_camoufox", "residential"]))
+            self.assertAlmostEqual(tried[-1]["usd"], 0.00007)
+            calls.clear()
+            F.ladder_fetch("https://www.capterra.com/p/1/X/reviews/?page=2", "http://u:p@gw:823")
+            self.assertEqual(calls, ["residential"])  # VM routes hit a wall on this site a moment ago
+            calls.clear()
+            F.ladder_fetch("https://www.g2.com/products/x/reviews", None)  # other site; no residential proxy saved
+            self.assertEqual(calls, ["vm", "vm_camoufox", "apify_unblocker"])
+
+    def test_errors_and_timeouts_fall_through_without_blocking_the_route(self):
+        def fake(tier, url, residential, meter=None):
+            if tier == "vm":
+                raise TimeoutError("slow")
+            return self.REAL
+        with mock.patch.object(F, "tier_fetch", side_effect=fake):
+            self.assertEqual(F.ladder_fetch("https://www.trustradius.com/products/x/reviews", None)[2], "vm_camoufox")
+        self.assertNotIn(("trustradius.com", "vm"), F._BLOCKED)
+
+    def test_costs(self):
+        self.assertEqual(F.tier_cost("vm_camoufox", 10**6), 0.0)
+        self.assertAlmostEqual(F.tier_cost("residential_camoufox", 2 * 10**6), 0.002)
+        self.assertEqual(F.tier_cost("apify_unblocker", 0), F.UNBLOCKER_USD_PER_PAGE)
 
 
 if __name__ == "__main__":

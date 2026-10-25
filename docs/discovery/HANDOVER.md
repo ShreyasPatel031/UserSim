@@ -3,7 +3,35 @@
 Product URL in → competitors, real users (G2 / Capterra / Product Hunt reviewers), user segments and comparison tasks
 out. Live at **https://35-202-98-224.sslip.io/discovery**. Design notes: [docs/DISCOVERY.md](../DISCOVERY.md).
 
-## Latest (Oct 25 2026, 06:50 UTC) — read this first
+## Latest (Oct 25 2026, later) — end-to-end check results
+
+Production runs of asana.com and notion.com (before the fixes below were deployed):
+
+- **Product Hunt:** in-house via residential proxy for all 6 products (36–50 reviews each).
+- **G2:** in-house via Apify Unblocker, but **10 reviews only** (page 1); Notion, Obsidian, Coda and Monday.com were
+  "still scraping after 75s". Probe of `g2.com/products/asana/reviews?page=2` through the Unblocker: five 30 s
+  timeouts, then 200; another try 502. `collect` stopped at the first failed page. **Fix:** skip a failed page, stop
+  after two failures in a row (`review_parsers.collect`).
+- **Capterra: never in-house.** Discovery passes the product root (`/p/<id>/<name>/`), which has no review cards, so
+  every Capterra scrape fell back to the Apify actor (and that result is now cached 30 days per page URL). **Fix:**
+  `collect` reads `/p/<id>/<name>/reviews/` (`capterra_reviews_url`); checked live, Asana-PM: 50 reviews, 2 pages.
+- **Asana-PM:** `pm` added to `_EDITION`.
+- **Own unblocker (probe):** Capterra: CapSolver refused the proxy, `ERROR_INVALID_TASK_DATA ... proxy host uses
+  dynamic DNS` (`gw.dataimpulse.com` resolves to 3 IPs). **Fix:** `sticky_proxy` pins the gateway to one IP; re-probe
+  after deploy. G2: all 3 sticky DataImpulse US IPs answered DataDome `t=bv` (IP banned), so no captcha to solve:
+  CapSolver cannot help G2 on DataImpulse IPs.
+- **Fetch ladder** (`review_fetch.ladder_fetch`, used for every review page): cheapest route that gets the real
+  page: `vm` (free) -> `vm_camoufox` (free, slower) -> `residential` (DataImpulse ~$1/GB; ~70 KB brotli per page,
+  ~$0.00007) -> `residential_camoufox` -> `apify_unblocker` (~$1.5 per 1,000 requests). A route that hit a bot wall
+  is skipped for that site for 6 h (`MVP_FETCH_BLOCK_TTL_S`). The trace says which route(s) were used and the cost.
+- **10 review sites allowed** for the probe: G2, Capterra, Gartner Peer Insights, TrustRadius, SourceForge,
+  Trustpilot, Product Hunt, GetApp, AlternativeTo, Slashdot. Parsers exist for G2, Capterra, Product Hunt only.
+  `POST /api/discovery/probe {"url": ..., "proxy": "ladder"}` runs every route and reports pass, time, wire KB and
+  $/page. From a Claude container's IP (plain curl): only Capterra and GetApp load; the rest are Cloudflare /
+  DataDome walls. VM results: not run yet (needs deploy).
+- Pre-existing failing test: `test_grounding_links_are_resolved_to_real_pages_and_failures_fall_back_to_ddg`.
+
+## Earlier (Oct 25 2026, 06:50 UTC)
 
 - **Reviews are scraped in-house now** (`mvp/review_parsers.py`, PR #133, live): G2 and Capterra pages are fetched
   through **Apify's Unblocker proxy** (~$0.001/page) and parsed in-house; Product Hunt through the DataImpulse
