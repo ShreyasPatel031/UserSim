@@ -152,6 +152,37 @@ def g2_next(url: str, page_no: int) -> str:
     return f"{url.split('?')[0]}?page={page_no}"
 
 
+# ---------------------------------------------------------------- Product Hunt
+
+_DECODER = json.JSONDecoder()
+
+
+def parse_producthunt(page: str, product: str = "") -> list[dict[str, Any]]:
+    """DetailedReview objects embedded as JSON in a producthunt.com/products/<slug>/reviews page (~20 per page)."""
+    found: dict[str, dict[str, Any]] = {}
+    for m in re.finditer(r'\{"__typename":"DetailedReview",', page):
+        try:
+            obj, _ = _DECODER.raw_decode(page, m.start())
+        except ValueError:
+            continue
+        user = obj.get("user") or {}
+        parts = [(obj.get("overallExperience"), ""), (obj.get("positiveFeedback"), "Liked: "),
+                 (obj.get("negativeFeedback"), "Disliked: "), (obj.get("alternativesFeedback"), "Vs alternatives: ")]
+        text = " / ".join(f"{label}{_html.unescape(str(v))}" for v, label in parts if v)
+        if not obj.get("id") or not text or not user:
+            continue
+        found[str(obj["id"])] = {"source": "producthunt", "product": product, "name": user.get("name"),
+                                 "role": user.get("headline") or None, "rating": obj.get("overallRating"),
+                                 "text": text, "pros": obj.get("positiveFeedback"), "cons": obj.get("negativeFeedback"),
+                                 "date": (obj.get("createdAt") or "")[:10], "review_type": obj.get("reviewType"),
+                                 "title": str(obj["id"])}
+    return list(found.values())
+
+
+def producthunt_next(url: str, page_no: int) -> str:
+    return f"{url.split('?')[0]}?page={page_no}"
+
+
 # ---------------------------------------------------------------- helpers shared by the JSON-LD based parsers
 
 def json_ld(page: str) -> list[Any]:
@@ -166,7 +197,8 @@ def json_ld(page: str) -> list[Any]:
 
 # ---------------------------------------------------------------- collecting a product's reviews across pages
 
-PARSERS: dict[str, tuple[Any, Any]] = {"capterra": (parse_capterra, capterra_next), "g2": (parse_g2, g2_next)}
+PARSERS: dict[str, tuple[Any, Any]] = {"capterra": (parse_capterra, capterra_next), "g2": (parse_g2, g2_next),
+                                       "producthunt": (parse_producthunt, producthunt_next)}
 
 
 def collect(platform: str, url: str, product: str, fetch_page: Any, *, want: int = PER_PRODUCT,

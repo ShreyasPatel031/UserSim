@@ -37,5 +37,14 @@ class G2Test(unittest.TestCase):
         self.assertTrue(all(r["size"] and r["rating"] and r["pros"] for r in rows))
 
 
+class ProductHuntTest(unittest.TestCase):
+    def test_parses_embedded_review_objects_once_each(self):
+        rows = P.parse_producthunt((FIX / "producthunt_linear_p1.html").read_text(), "Linear")
+        self.assertEqual(len(rows), 22)
+        dominik = next(r for r in rows if r["name"] == "Dominik Müller")
+        self.assertEqual((dominik["role"], dominik["rating"], dominik["date"]), ("Co-Founder | CTO", 5, "2026-10-20"))
+        self.assertTrue(dominik["text"].startswith("Vs alternatives: It's fast enough"))
+
+
 if __name__ == "__main__":
     unittest.main()
