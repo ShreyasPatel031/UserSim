@@ -120,6 +120,8 @@ _DISPLAY_LOCK = threading.Lock()
 def ensure_display() -> str:
     """A virtual X display for headed Chromium (Xvfb on :99, installed with apt if missing). '' when unavailable."""
     with _DISPLAY_LOCK:
+        if sys.platform != "linux":  # macOS / Windows: browsers open real windows, no X server needed
+            return "native"
         if os.environ.get("DISPLAY"):
             return os.environ["DISPLAY"]
         if not shutil.which("Xvfb"):
@@ -215,7 +217,7 @@ def camoufox_fetch(url: str, proxy: str | None, *, wait_s: float = 30.0) -> tupl
     follow the proxy's exit IP (geoip)."""
     from camoufox.sync_api import Camoufox
 
-    with Camoufox(headless="virtual", proxy=_proxy_settings(proxy), geoip=bool(proxy), block_images=True,
+    with Camoufox(headless="virtual" if sys.platform == "linux" else False, proxy=_proxy_settings(proxy), geoip=bool(proxy), block_images=True,
                   humanize=True, os=["windows", "macos"]) as browser:
         return _load(browser.new_page(), url, wait_s)
 
