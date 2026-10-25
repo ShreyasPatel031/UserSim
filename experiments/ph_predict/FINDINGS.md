@@ -90,9 +90,8 @@ At this sample size these are not chance, but they are too weak to move the top-
 to the network model: day@5 0.64 → 0.65, week@10 0.56 → 0.52, both noise).
 
 **Proposed UserSim eval:** predict the residual, i.e. which launches do better or worse than their team and hunter
-predict. A simulator that actually uses the product should beat Gemini's +0.10 on it. The target is in
-`out/residual.json`'s method and `out/predictions.csv`; Developer and Productivity tools, where the signal is
-clearest, are the place to start.
+predict. A simulator that actually uses the product should beat Gemini's +0.10 on it. `residual.py` computes the
+target for every launch; Developer and Productivity tools, where the signal is clearest, are the place to start.
 
 ## 6. Live test and how to check it
 
