@@ -148,6 +148,18 @@ for f in fc:
     txt = open(f"{R}/{f}").read()
     w("## Forward test: " + txt.split("\n", 1)[0].lstrip("# ") + "\n")
     w(txt.split("\n", 1)[1])
+if os.path.exists(f"{R}/snapshot_vs_live.json"):
+    sv = json.load(open(f"{R}/snapshot_vs_live.json"))
+    w("## Launch-day homepage (Wayback snapshot) vs today's live site\n")
+    w(f"September–October launches with a Wayback capture from before launch day: {sv['n_launches']} launches over "
+      f"{sv['n_days']} days. Median word overlap between the two versions: {pct(sv['word_overlap_snapshot_vs_live_median'])}. "
+      "A homepage-only model, cross-validated by day, predicting each launch's votes relative to its day "
+      "(rank correlation within a day):\n")
+    w("| Homepage version | Page structure features | Page words |")
+    w("|---|---|---|")
+    for v in ("snapshot", "live"):
+        w(f"| {v} | {sv[v]['homepage_structure_spearman']:.2f} | {sv[v]['homepage_words_spearman']:.2f} |")
+    w("")
 w("## Data coverage\n")
 w(f"- Homepage: Wayback snapshot from before launch {pct(meta['sites_wayback'])}, live site {pct(meta['sites_live'])}, "
   f"none found {pct(meta['sites_none'])}")

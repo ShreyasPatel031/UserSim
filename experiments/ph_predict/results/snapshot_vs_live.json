@@ -1,0 +1,13 @@
+{
+ "n_launches": 186,
+ "n_days": 31,
+ "snapshot": {
+  "homepage_structure_spearman": 0.21,
+  "homepage_words_spearman": 0.095
+ },
+ "live": {
+  "homepage_structure_spearman": 0.23,
+  "homepage_words_spearman": 0.119
+ },
+ "word_overlap_snapshot_vs_live_median": 0.543
+}

@@ -55,9 +55,11 @@ New finished days come in with `python3 collect_ph.py <from> <to>`; then rerun `
   is done (early in the day).
 - **Weekly / monthly list models** compare a launch with the rest of its week / month, so they assume the period's
   launches are known (their votes are not used).
-- **Homepages are mostly the live site.** The Wayback Machine banned the VM's IP after a burst of requests and
-  web.archive.org is unreachable from the container, so launch-day snapshots are rare; the archive.org
-  availability API still says whether a site was archived before launch.
+- **Homepages are mostly the live site.** The Wayback Machine banned the VM's IP for a while after a burst of
+  requests, and web.archive.org is unreachable from the container. A slow pass (`wayback_snap.py`, ~1 request/s)
+  later fetched pre-launch snapshots for 693 September–October launches; 186 had one. On those, homepage features
+  predict about equally weakly from the snapshot and from the live site (`snapshot_vs_live.py`), so using the live
+  site does not change the finding that the homepage adds little.
 - **Not used:** GitHub stars (the container's GitHub token only reaches this repo), LinkedIn (999), Reddit
   (blocked; its API keys are not readable by this service account), Google/DataForSEO search (secrets not
   readable), producthunt.com pages (403; scraping them through proxies was ruled out).

@@ -221,6 +221,15 @@ Same backtest, split by test months: early months had 2–5 months of history to
 
 Against the ranks so far (Oct 19–24 final, Oct 25 still open): top 3/5/10 hits 1/3, 2/5, 6/10.
 
+## Launch-day homepage (Wayback snapshot) vs today's live site
+
+September–October launches with a Wayback capture from before launch day: 186 launches over 31 days. Median word overlap between the two versions: 54%. A homepage-only model, cross-validated by day, predicting each launch's votes relative to its day (rank correlation within a day):
+
+| Homepage version | Page structure features | Page words |
+|---|---|---|
+| snapshot | 0.21 | 0.10 |
+| live | 0.23 | 0.12 |
+
 ## Data coverage
 
 - Homepage: Wayback snapshot from before launch 0%, live site 63%, none found 37%
