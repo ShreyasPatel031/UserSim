@@ -181,10 +181,13 @@ def ensure_tool(name: str) -> dict[str, Any]:
     with _BROWSER_LOCK:
         if name in _TOOLS:
             return _TOOLS[name]
-        cmd = {"patchright": [sys.executable, "-m", "patchright", "install", "chromium"],
-               "camoufox": [sys.executable, "-m", "camoufox", "fetch"]}[name]
+        cmds = {"patchright": [[sys.executable, "-m", "patchright", "install", "chromium"]],
+                # Camoufox is Firefox: its system libraries (GTK etc.) are not on a server that only ran Chromium.
+                "camoufox": [[sys.executable, "-m", "playwright", "install-deps", "firefox"],
+                             [sys.executable, "-m", "camoufox", "fetch"]]}[name]
         try:
-            r = subprocess.run(cmd, capture_output=True, text=True, timeout=900)
+            for cmd in cmds:
+                r = subprocess.run(cmd, capture_output=True, text=True, timeout=900)
             _TOOLS[name] = {"ok": r.returncode == 0, "how": (r.stderr or r.stdout)[-200:]}
         except Exception as exc:  # noqa: BLE001
             _TOOLS[name] = {"ok": False, "how": repr(exc)[:200]}
@@ -228,26 +231,40 @@ def probe(url: str, proxy: str | None) -> dict[str, Any]:
     out["browser_setup"] = setup
     via = "via_proxy" if proxy else "direct"
     stealth = []
-    for tool in ("camoufox", "patchright"):
+    for tool in ("patchright", "camoufox"):
         out[f"{tool}_setup"] = ensure_tool(tool)
         if out[f"{tool}_setup"]["ok"]:
             stealth.append((f"{tool}_{via}", proxy, tool))
     if setup.get("ok"):
         stealth += [(f"headed_chromium_{via}", proxy, "headed"), (f"headless_chromium_{via}", proxy, "browser")]
     tries[:0] = stealth
+
+    def run(imp: str, px: str | None) -> tuple[int, str]:
+        if imp in ("browser", "headed"):
+            return browser_fetch(url, px, headed=imp == "headed")
+        if imp == "patchright":
+            return patchright_fetch(url, px)
+        if imp == "camoufox":
+            return camoufox_fetch(url, px)
+        return fetch(url, px, impersonate=imp)
+
     for name, px, imp in tries:
         t = time.time()
-        try:
-            if imp in ("browser", "headed"):
-                status, html = browser_fetch(url, px, headed=imp == "headed")
-            elif imp == "patchright":
-                status, html = patchright_fetch(url, px)
-            elif imp == "camoufox":
-                status, html = camoufox_fetch(url, px)
-            else:
-                status, html = fetch(url, px, impersonate=imp)
-            out[name] = _summary(status, html, t)
-        except Exception as exc:  # noqa: BLE001 - reported, not raised
-            msg = re.sub(r"//[^@\s/]+@", "//<redacted>@", repr(exc))  # proxy errors can echo user:pass
-            out[name] = {"error": msg[:300], "ms": int((time.time() - t) * 1000)}
+        box: dict[str, Any] = {}
+
+        def work(imp=imp, px=px, box=box):
+            try:
+                box["r"] = run(imp, px)
+            except Exception as exc:  # noqa: BLE001 - reported, not raised
+                box["e"] = exc
+        # Each method in its own thread: a browser that fails to start can leave an event loop behind, which made
+        # every Playwright call after it fail ("Sync API inside the asyncio loop").
+        th = threading.Thread(target=work, daemon=True)
+        th.start()
+        th.join(240)
+        if "r" in box:
+            out[name] = _summary(*box["r"], t)
+        else:
+            msg = re.sub(r"//[^@\s/]+@", "//<redacted>@", repr(box.get("e", "timed out after 240 s")))
+            out[name] = {"error": msg[:900], "ms": int((time.time() - t) * 1000)}
     return out
