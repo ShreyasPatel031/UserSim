@@ -75,6 +75,13 @@ class ParseTest(unittest.TestCase):
                 {"url": "https://www.producthunt.com/products/linear"}]
         self.assertEqual(D.ph_slugs_from_results(rows), ["linear-2-0", "linear-asks", "linear"])
 
+    def test_review_page_takes_the_matching_product_only(self):
+        rows = [{"url": "https://www.g2.com/products/acme-anvils/reviews"}, {"url": "https://www.g2.com/products/jira/reviews?x=1"}]
+        self.assertEqual(D.review_page(rows, "g2", "Jira")[0], "https://www.g2.com/products/jira/reviews")
+        self.assertEqual(D.review_page(rows[:1], "g2", "Jira")[0], None)
+        cap = [{"url": "https://www.capterra.com/p/19319/JIRA/reviews/"}]
+        self.assertEqual(D.review_page(cap, "capterra", "Jira")[0], "https://www.capterra.com/p/19319/JIRA/")
+
     def test_ph_post_must_share_name_and_subject(self):
         iot = {"name": "Shortcut", "tagline": "Siri for the Internet of Things", "description": ""}
         real = {"name": "Shortcut", "tagline": "Project management for software teams", "description": "Stories and sprints"}
@@ -85,20 +92,35 @@ class ParseTest(unittest.TestCase):
 
 
 class RunTest(unittest.TestCase):
+    HOMES = {"Trello": "trello.com", "Asana": "asana.com", "DeadCo": "dead.example", "Monday": "monday.com"}
+
     def _agent(self, *, ph=True, apify=True, reviews=None):
         run = D.new_run("acme.io", max_competitors=2, task_count=1)
-        log = []
+        log, searched, scraped = [], [], []
         a = D.DiscoveryAgent(run, llm=fake_llm(log))
 
         async def fetch(url):
             return 200, url, HOME
 
-        async def search(q):
+        def one(q):
             if q == "site:producthunt.com Asana":
-                return [{"title": "Asana", "url": "https://www.producthunt.com/products/asana/launches/asana-3", "snippet": ""}]
-            if q.startswith("site:producthunt.com"):
+                return [{"title": "Asana", "url": "https://www.producthunt.com/products/asana/launches/asana-3"}]
+            if q == "site:g2.com Trello reviews":
+                return [{"title": "Trello reviews", "url": "https://www.g2.com/products/trello/reviews?page=2"}]
+            if q == "site:capterra.com Trello reviews":
+                return [{"title": "Trello", "url": "https://www.capterra.com/p/72290/Trello/reviews/"}]
+            if q == "site:g2.com Acme Boards reviews":
+                return [{"title": "Acme Anvils", "url": "https://www.g2.com/products/acme-anvils/reviews"}]
+            if q.startswith("site:"):
                 return []
+            for name, host in self.HOMES.items():
+                if q.startswith(name + " "):
+                    return [{"title": name, "url": f"https://www.{host}/"}, {"title": "x", "url": "https://www.g2.com/compare"}]
             return [{"title": f"{q} result", "url": "https://g2.com/x", "snippet": "Trello, Asana"}]
+
+        async def search_many(qs):
+            searched.extend(qs)
+            return {q: one(q) for q in qs}
 
         async def post(slug):
             return {"name": "Asana", "slug": "asana-3", "tagline": "Plan and track tasks on boards", "topics": {"edges": []},
@@ -114,50 +136,53 @@ class RunTest(unittest.TestCase):
         async def probe(url):
             return (False, "dns") if "dead" in url else (True, url.rstrip("/") + "/")
 
-        a.fetch_html, a.web_search, a.ph_post_by_slug, a.ph_topics, a.ph_topic_posts, a.probe = fetch, search, post, topics, topic_posts, probe
+        def scrape(platform, url):
+            scraped.append(url)
+            return (reviews or {}).get(url, [])
+
+        a.fetch_html, a.web_search_many, a.ph_post_by_slug, a.ph_topics, a.ph_topic_posts, a.probe = \
+            fetch, search_many, post, topics, topic_posts, probe
         a.ph_configured = lambda: ph
         a.apify_token = lambda: "tok" if apify else None
-        scraped = []
+        a.scrape_review_page = scrape
+        return a, log, searched, scraped
 
-        def fetch_reviews(name):
-            scraped.append(name)
-            return (reviews or {}).get(name, {"reviews": [], "errors": []})
-        a.fetch_reviews = fetch_reviews
-        return a, log, scraped
-
-    def test_full_run_picks_live_rivals_and_collects_users(self):
-        rows = [{"source": "g2", "product": "Trello", "role": "Designer", "rating": 4, "pros": "easy", "cons": "slow"}] * 40
-        a, log, scraped = self._agent(reviews={"Trello": {"reviews": rows, "errors": []}})
+    def test_full_run_takes_every_page_from_search(self):
+        rows = [{"source": "g2", "role": "Designer", "rating": 4, "pros": "easy", "cons": "slow"}] * 40
+        a, log, searched, scraped = self._agent(reviews={"https://www.g2.com/products/trello/reviews": rows})
         run = asyncio.run(a.go())
         self.assertEqual(run.status, "done", run.error)
         r = run.result
-        self.assertEqual([c["name"] for c in r["competitors"]], ["Trello", "Asana"])  # itself skipped, DeadCo dropped
+        self.assertEqual([c["name"] for c in r["competitors"]], ["Trello", "Asana"])  # itself skipped, DeadCo dead
         self.assertEqual(r["competitors"][1]["url"], "https://asana.com/")
-        self.assertEqual(sorted(scraped), ["Acme Boards", "Asana", "Trello"])  # 40 reviews: no extra similar products
+        # exact pages from the search results, canonicalised; nothing scraped by guessed name
+        self.assertEqual(sorted(scraped), ["https://www.capterra.com/p/72290/Trello/", "https://www.g2.com/products/trello/reviews"])
+        self.assertNotIn("site:g2.com Monday reviews", searched)  # 40 reviews: no extra similar products
         self.assertEqual(r["counts"]["reviews"], 40)
-        self.assertEqual(r["counts"]["ph_commenters"], 1)
+        self.assertEqual(r["counts"]["ph_commenters"], 1)  # Asana's post, found via its producthunt.com URL
         self.assertEqual(r["users"][0]["text"], "Liked: easy / Disliked: slow")
-        self.assertEqual(r["tasks"][0]["title"], "Create a board")
-        kinds = {s.kind for s in run.steps}
-        self.assertTrue({"fetch", "search", "llm", "producthunt", "probe", "reviews"} <= kinds)
+        self.assertEqual(r["users"][0]["product"], "Trello")
         self.assertIn("[u0] (g2 / Trello) role: Designer", log[-1])
         self.assertEqual([(g["name"], g["evidence"]) for g in r["segments"]], [("Team leads", ["u0", "u1"])])  # u999 backs nothing
-        self.assertEqual([g["source"] for g in r["source_gaps"]],
-                         ["G2 / Capterra reviews of Acme Boards", "G2 / Capterra reviews of Asana"])  # no reviews found
+        gaps = {g["source"]: g["why"] for g in r["source_gaps"]}
+        self.assertIn("other products: ['acme-anvils']", gaps["G2 reviews of Acme Boards"])
+        self.assertEqual(gaps["Capterra reviews of Asana"], "no capterra product page in the search results")
 
     def test_few_reviews_pull_in_similar_products(self):
-        a, _, scraped = self._agent()
+        a, _, searched, _ = self._agent()
         run = asyncio.run(a.go())
         self.assertEqual(run.status, "done", run.error)
-        self.assertEqual(scraped[3:], ["Monday"])  # DeadCo is dead, not a similar product
+        self.assertIn("site:g2.com Monday reviews", searched)
+        self.assertNotIn("site:g2.com DeadCo reviews", searched)  # dead site: not a similar product
 
     def test_missing_tokens_skip_sources_and_still_finish(self):
-        a, log, scraped = self._agent(ph=False, apify=False)
+        a, log, searched, scraped = self._agent(ph=False, apify=False)
         run = asyncio.run(a.go())
         self.assertEqual(run.status, "done", run.error)
         skipped = [s.summary for s in run.steps if s.status == "skipped"]
         self.assertEqual(skipped, ["PH_TOKEN (or PH_CLIENT_ID + PH_CLIENT_SECRET) is not set", "APIFY_TOKEN is not set"])
         self.assertEqual(scraped, [])
+        self.assertFalse([q for q in searched if q.startswith("site:")])
         self.assertIn("No real users were retrieved, so write no user segments", log[-1])
         self.assertEqual(run.result["segments"], [])  # the fake LLM returns segments anyway: they are not kept
         self.assertEqual(run.result["tasks"][0]["title"], "Create a board")
