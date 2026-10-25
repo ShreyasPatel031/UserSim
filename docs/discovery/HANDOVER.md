@@ -3,7 +3,30 @@
 Product URL in → competitors, real users (G2 / Capterra / Product Hunt reviewers), user segments and comparison tasks
 out. Live at **https://35-202-98-224.sslip.io/discovery**. Design notes: [docs/DISCOVERY.md](../DISCOVERY.md).
 
-## Where things stand (Oct 25 2026)
+## Latest (Oct 25 2026, 06:50 UTC) — read this first
+
+- **Reviews are scraped in-house now** (`mvp/review_parsers.py`, PR #133, live): G2 and Capterra pages are fetched
+  through **Apify's Unblocker proxy** (~$0.001/page) and parsed in-house; Product Hunt through the DataImpulse
+  residential proxy. The Apify scraper actors are only a fallback when nothing parses. Reviews cached 30 days.
+- **Measured:** stealth browsers (headless/headed Chromium, Patchright, Camoufox) + DataImpulse or Apify residential
+  IPs (US-only too) are **blocked** by G2 (DataDome) and Capterra (Cloudflare). Only Apify's Unblocker gets through.
+  Capterra pages also load from a Claude cloud container's IP directly.
+- **In progress when the session ended:** an end-to-end production run on asana.com (Product Hunt in-house: 50
+  reviews; Capterra page match missed "Asana-PM"; G2 still scraping). Re-run asana.com / notion.com on
+  `/discovery` and check each "reviews" trace line says "in-house via ...".
+- **Own-unblocker prototype** (`review_fetch.own_unblock`, on branch `claude/funny-euler-li5h0f`, commit d31db63, not
+  merged): sticky DataImpulse US IP (ports 10000-20000) + CapSolver (`AntiCloudflareTask` for Capterra,
+  `DatadomeSliderTask` for G2), clearance cookie reused. **Untested.** Test after merging:
+  `curl -XPOST https://35-202-98-224.sslip.io/api/discovery/probe -H 'content-type: application/json' -d '{"url":"https://www.capterra.com/p/160498/Shortcut/reviews/","proxy":"own_unblocker"}'`
+  (also a G2 URL). Needs `CAPSOLVER_API_KEY` on the server (present). Output shows each step and whether the solve
+  cleared the challenge.
+- **Known gaps:** G2 paging via the Unblocker can 502 (fewer than 50 G2 reviews); Capterra name match rejects
+  listings like "Asana-PM" (add `pm` to `_EDITION` in `mvp/discovery.py`).
+- **Probe/sample tools:** `POST /api/discovery/probe {url, proxy: saved|apify_unblocker|apify_residential|own_unblocker,
+  browsers}`; `POST /api/discovery/sample {url, proxy, current_apify_token}` returns a page's HTML (token-gated).
+- **Rotate** the DataImpulse password, Apify, Product Hunt and G2 tokens (pasted in chat).
+
+## Where things stood earlier (Oct 25 2026)
 
 | Piece | State |
 |---|---|
