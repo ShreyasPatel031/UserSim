@@ -87,6 +87,8 @@ def build(include_today=False):
     wbav = _jl("ext_wb.jsonl")
     cmf = json.load(open(f"{D}/cm_features.json")) if os.path.exists(f"{D}/cm_features.json") else {}
     audf = json.load(open(f"{D}/aud_features.json")) if os.path.exists(f"{D}/aud_features.json") else {}
+    for k, v in (json.load(open(f"{D}/aud2_features.json")) if os.path.exists(f"{D}/aud2_features.json") else {}).items():
+        audf.setdefault(k, {}).update(v)
     import external as E
     files = sorted(glob.glob(f"{D}/days/*.json")) + (sorted(glob.glob(f"{D}/today/*.json")) if include_today else [])
     for fn in files:

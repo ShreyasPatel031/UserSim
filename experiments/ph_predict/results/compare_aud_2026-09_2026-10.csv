@@ -1,0 +1,4 @@
+model,day@3,day@5,day@10,day@5 CI,week@3,week@5,week@10,month@3,month@5,month@10,rho
+Current model,59,70,78,65–74,61,70,52,50,40,60,0.6931849731692632
++ predicted audience (step 1),61,71,78,67–75,67,67,53,33,50,65,0.7040368231929418
++ audience with person snapshots (step 2),61,69,78,65–73,67,67,53,33,50,65,0.6988020642999899

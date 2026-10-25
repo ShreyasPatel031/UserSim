@@ -136,7 +136,7 @@ def run(sample_neg=0.03, seed=0):
                             "aud_likely": int((p > 0.2).sum()), "aud_team_exp": float(p[team_mask].sum()),
                             "aud_max": float(p.max()), "aud_active_pool": int(len(active))}
             came = {users[u] for u in active} & labels[i]
-            if came:  # of the people who actually came, how many were in our top 100 for this launch?
+            if came and d >= "2026-09":  # same period as step 2 for a like-for-like comparison  # of the people who actually came, how many were in our top 100 for this launch?
                 top = {users[active[k]] for k in np.argsort(-p)[:100]}
                 person_hits.append(len(came & top) / len(came))
     json.dump(out, open(f"{D}/aud_features.json", "w"))
