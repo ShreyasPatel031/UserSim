@@ -18,6 +18,7 @@ class ReviewContextTest(unittest.TestCase):
         self.assertTrue(R._same_product("Zoho CRM", "Zoho"))
         self.assertFalse(R._same_product("MapBusinessOnline", "Linear"))
         self.assertFalse(R._same_product(None, "Linear"))
+        self.assertTrue(R._same_product("Atlassian Jira", "Jira"))
 
     def test_disabled_returns_empty(self):
         with mock.patch.dict(os.environ, {"MVP_REVIEW_CONTEXT": "0"}):

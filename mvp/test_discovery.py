@@ -68,6 +68,21 @@ class ParseTest(unittest.TestCase):
         with mock.patch.dict(os.environ, {"PH_TOKEN": "", "PH_CLIENT_ID": "id", "PH_CLIENT_SECRET": ""}):
             self.assertFalse(D.ph_configured())
 
+    def test_ph_slugs_come_from_search_urls_in_rank_order(self):
+        rows = [{"url": "https://www.producthunt.com/products/linear/launches/linear-2-0"},
+                {"url": "https://www.producthunt.com/posts/linear-asks"},
+                {"url": "https://g2.com/products/linear"},
+                {"url": "https://www.producthunt.com/products/linear"}]
+        self.assertEqual(D.ph_slugs_from_results(rows), ["linear-2-0", "linear-asks", "linear"])
+
+    def test_ph_post_must_share_name_and_subject(self):
+        iot = {"name": "Shortcut", "tagline": "Siri for the Internet of Things", "description": ""}
+        real = {"name": "Shortcut", "tagline": "Project management for software teams", "description": "Stories and sprints"}
+        about = "issue tracking and project planning with sprints for engineering teams"
+        self.assertFalse(D.ph_post_matches(iot, "Shortcut", about)[0])
+        self.assertTrue(D.ph_post_matches(real, "Shortcut", about)[0])
+        self.assertFalse(D.ph_post_matches(real, "Linear", about)[0])
+
 
 class RunTest(unittest.TestCase):
     def _agent(self, *, ph=True, apify=True, reviews=None):
@@ -79,12 +94,16 @@ class RunTest(unittest.TestCase):
             return 200, url, HOME
 
         async def search(q):
+            if q == "site:producthunt.com Asana":
+                return [{"title": "Asana", "url": "https://www.producthunt.com/products/asana/launches/asana-3", "snippet": ""}]
+            if q.startswith("site:producthunt.com"):
+                return []
             return [{"title": f"{q} result", "url": "https://g2.com/x", "snippet": "Trello, Asana"}]
 
         async def post(slug):
-            return {"name": "Asana", "slug": "asana", "tagline": "t", "topics": {"edges": []},
+            return {"name": "Asana", "slug": "asana-3", "tagline": "Plan and track tasks on boards", "topics": {"edges": []},
                     "comments": {"edges": [{"node": {"body": "We moved our whole agency to it last year.", "user": {"headline": "Ops lead"}}}]}} \
-                if slug == "asana" else None
+                if slug == "asana-3" else None
 
         async def topics(q):
             return [{"name": "Productivity", "slug": "productivity"}]

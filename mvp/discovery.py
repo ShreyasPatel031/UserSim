@@ -259,6 +259,46 @@ def _slug(name: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", (name or "").lower()).strip("-")
 
 
+_PH_SLUG_RES = (re.compile(r"producthunt\.com/posts/([a-z0-9-]+)", re.I),
+                re.compile(r"producthunt\.com/products/[a-z0-9-]+/launches/([a-z0-9-]+)", re.I),
+                re.compile(r"producthunt\.com/products/([a-z0-9-]+)", re.I))
+# Topics too broad to say anything about similar products.
+GENERIC_PH_TOPICS = frozenset({"tech", "technology", "web-app", "android", "iphone", "mac", "windows", "chrome-extensions"})
+_STOP = frozenset("""with your that this from more they their them have what into just than make made best free tool tools
+platform team teams work works product products help helps build easy simple every using based like over about which will
+most also only other such when where while across into each your youre need needs want wants within without software
+online powered allows lets used uses makes better faster world first""".split())
+
+
+def ph_slugs_from_results(rows: list[dict[str, str]]) -> list[str]:
+    """Product Hunt post slugs in search-rank order, from /posts/<slug>, /products/<p>/launches/<slug>, /products/<slug>."""
+    found = []
+    for r in rows:
+        url = r.get("url") or ""
+        for rx in _PH_SLUG_RES:
+            m = rx.search(url)
+            if m:
+                found.append(m.group(1).lower())
+                break
+    return list(dict.fromkeys(found))
+
+
+def _words(text: str) -> set[str]:
+    return {w for w in re.findall(r"[a-z]{4,}", (text or "").lower()) if w not in _STOP}
+
+
+def ph_post_matches(node: dict[str, Any], name: str, context: str) -> tuple[bool, str]:
+    """Same name AND the launch copy shares words with what we know of the product. Product Hunt has many products
+    with the same name (slug 'shortcut' is a 2014 IoT launch, not the issue tracker)."""
+    found, want = _slug(node.get("name") or ""), _slug(name)
+    if not (found == want or found.startswith(want + "-") or want.startswith(found + "-")):
+        return False, f"named '{node.get('name')}', not '{name}'"
+    overlap = _words(f"{node.get('tagline')} {node.get('description')}") & _words(context)
+    if not overlap:
+        return False, f"'{node.get('tagline')}' shares no words with the product"
+    return True, "copy mentions " + ", ".join(sorted(overlap)[:6])
+
+
 async def ph_post_by_slug(slug: str) -> dict[str, Any] | None:
     data = await ph_query(f"query($slug: String!) {{ post(slug: $slug) {{ {_PH_POST_FIELDS} {_PH_COMMENTS} }} }}",
                           {"slug": slug})
@@ -419,34 +459,53 @@ Return JSON:
   "ph_topics": ["2-3 Product Hunt topic names this fits, e.g. 'Productivity', 'Developer Tools'"]}}""")
 
     # 3. candidates
+    async def find_ph_post(self, name: str, context: str) -> dict[str, Any] | None:
+        """This product's Product Hunt post. The API has no search, so slugs come only from Google results for
+        site:producthunt.com (never guessed from the name); each candidate must pass ph_post_matches."""
+        rows = await self._search(f"site:producthunt.com {name}")
+        slugs = ph_slugs_from_results(rows)[:5]
+        if not slugs:
+            s = self.trace.start("producthunt", f"Product Hunt post for {name}")
+            self.trace.end(s, "done", "no producthunt.com result in the search: no post")
+            return None
+        for slug in slugs:
+            s = self.trace.start("producthunt", f"Product Hunt post '{slug}' for {name}", {"query": "post(slug)", "slug": slug})
+            try:
+                node = await self.ph_post_by_slug(slug)
+            except Exception as exc:
+                self.trace.end(s, "error", repr(exc)[:300])
+                continue
+            if not node:
+                self.trace.end(s, "done", "no post with this slug")
+                continue
+            ok, why = ph_post_matches(node, name, context)
+            if ok:
+                self.trace.end(s, "done", f"match: {node.get('name')} — {node.get('tagline')} ({node.get('votesCount')} votes); {why}",
+                               _ph_post(node) | {"commenters": len(_ph_users(node, name))})
+                return node
+            self.trace.end(s, "done", f"rejected: {why}", _ph_post(node))
+        return None
+
+    def _context(self, profile: dict[str, Any], extra: str = "") -> str:
+        return " ".join([extra, str(profile.get("one_liner") or ""), str(profile.get("what_they_do") or ""),
+                         str(profile.get("category") or ""), " ".join(profile.get("key_features") or []),
+                         " ".join(profile.get("target_users") or [])])
+
     async def product_hunt(self, profile: dict[str, Any]) -> tuple[dict[str, Any] | None, list[dict[str, Any]]]:
         """The product's own PH post (if any) and the top posts in its topics."""
         if not self.ph_configured():
             s = self.trace.start("producthunt", "Product Hunt")
             self.trace.end(s, "skipped", "PH_TOKEN (or PH_CLIENT_ID + PH_CLIENT_SECRET) is not set")
             return None, []
-        own = None
-        for slug in dict.fromkeys([_slug(profile.get("name", "")), _slug(registrable_host(self.run.url).split(".")[0])]):
-            if not slug:
-                continue
-            s = self.trace.start("producthunt", f"Product Hunt post '{slug}'", {"query": "post(slug)", "slug": slug})
-            try:
-                node = await self.ph_post_by_slug(slug)
-            except Exception as exc:
-                self.trace.end(s, "error", repr(exc)[:300])
-                continue
-            if node:
-                own = node
-                self.trace.end(s, "done", f"found: {node.get('name')} — {node.get('tagline')} ({node.get('votesCount')} votes)", _ph_post(node))
-                break
-            self.trace.end(s, "done", "no post with this slug")
-        topics = list((_ph_post(own)["topics"] if own else []))
-        for name in profile.get("ph_topics") or []:
+        name = profile.get("name") or registrable_host(self.run.url)
+        own = await self.find_ph_post(name, self._context(profile))
+        topics = [t for t in (_ph_post(own)["topics"] if own else []) if t not in GENERIC_PH_TOPICS]
+        for q in profile.get("ph_topics") or []:
             if len(topics) >= 3:
                 break
-            s = self.trace.start("producthunt", f"Product Hunt topic search '{name}'", {"query": "topics(query)", "q": name})
+            s = self.trace.start("producthunt", f"Product Hunt topic search '{q}'", {"query": "topics(query)", "q": q})
             try:
-                found = await self.ph_topics(name)
+                found = [t for t in await self.ph_topics(q) if t["slug"] not in GENERIC_PH_TOPICS]
                 self.trace.end(s, "done", ", ".join(t["slug"] for t in found) or "no topics", found)
                 topics += [t["slug"] for t in found[:1] if t["slug"] not in topics]
             except Exception as exc:
@@ -460,7 +519,7 @@ Return JSON:
                 posts += rows
             except Exception as exc:
                 self.trace.end(s, "error", repr(exc)[:300])
-        seen, uniq = {_slug(profile.get("name", ""))}, []
+        seen, uniq = {_slug(name), _ph_post(own)["slug"] if own else ""}, []
         for p in posts:
             if p["slug"] not in seen:
                 seen.add(p["slug"])
@@ -520,20 +579,14 @@ Return JSON:
 
     # 5. users
     async def ph_users(self, own: dict[str, Any] | None, profile: dict[str, Any], comps: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        """Commenters on the product's and each competitor's own Product Hunt post (names/headlines are mostly redacted)."""
         if not self.ph_configured():
             return []
         users = _ph_users(own, profile.get("name") or "") if own else []
         for c in comps:
-            slug = c.get("ph_slug") or _slug(c["name"])
-            s = self.trace.start("producthunt", f"Product Hunt comments on '{slug}'", {"query": "post(slug).comments", "slug": slug})
-            try:
-                node = await self.ph_post_by_slug(slug)
-            except Exception as exc:
-                self.trace.end(s, "error", repr(exc)[:300])
-                continue
-            got = _ph_users(node, c["name"]) if node else []
-            self.trace.end(s, "done", f"{len(got)} commenters" if node else "no post with this slug", got)
-            users += got
+            node = await self.find_ph_post(c["name"], self._context(profile, str(c.get("why") or "")))
+            c["producthunt"] = _ph_post(node) if node else None
+            users += _ph_users(node, c["name"]) if node else []
         return users
 
     async def reviews(self, names: list[str], backups: list[str]) -> list[dict[str, Any]]:
