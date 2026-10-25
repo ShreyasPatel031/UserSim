@@ -189,5 +189,33 @@ class RunTest(unittest.TestCase):
         self.assertNotIn("ph-run-key", dumped)
 
 
+class SavedKeysTest(unittest.TestCase):
+    def setUp(self):
+        import tempfile
+        self.dir = tempfile.TemporaryDirectory()
+        self.addCleanup(self.dir.cleanup)
+        D._KEYS_FILE = None
+        patcher = mock.patch.dict(os.environ, {"MVP_DISCOVERY_KEYS_FILE": os.path.join(self.dir.name, "keys.json"),
+                                               "APIFY_TOKEN": "", "PH_TOKEN": "", "PH_CLIENT_ID": "", "PH_CLIENT_SECRET": ""})
+        patcher.start()
+        self.addCleanup(patcher.stop)
+        self.addCleanup(setattr, D, "_KEYS_FILE", None)
+        p2 = mock.patch("mvp.review_context.apify_token", return_value=None)
+        p2.start()
+        self.addCleanup(p2.stop)
+
+    def test_saved_keys_are_used_and_only_replaceable_with_the_current_apify_key(self):
+        self.assertFalse(D.keys_status()["APIFY_TOKEN"]["present"])
+        self.assertEqual(D.save_keys({"APIFY_TOKEN": "apify_api_A", "PH_TOKEN": "ph1", "BOGUS": "x"}), (True, "saved"))
+        self.assertEqual(oct(os.stat(D.keys_file()).st_mode & 0o777), "0o600")
+        self.assertEqual((D.apify_token(), D.ph_configured()), ("apify_api_A", True))
+        self.assertEqual(D.keys_status()["PH_TOKEN"], {"present": True, "source": "saved"})
+        self.assertNotIn("apify_api_A", json.dumps(D.keys_status()))
+        self.assertFalse(D.save_keys({"APIFY_TOKEN": "attacker"})[0])
+        self.assertFalse(D.save_keys({"APIFY_TOKEN": "attacker"}, "wrong")[0])
+        self.assertTrue(D.save_keys({"APIFY_TOKEN": "apify_api_B"}, "apify_api_A")[0])
+        self.assertEqual(D.stored_keys(), {"APIFY_TOKEN": "apify_api_B", "PH_TOKEN": "ph1"})
+
+
 if __name__ == "__main__":
     unittest.main()

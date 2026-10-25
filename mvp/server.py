@@ -1296,6 +1296,34 @@ async def start_discovery(body: DiscoveryRequest):
     return {"id": run.id}
 
 
+class DiscoveryKeys(BaseModel):
+    apify_token: str = ""
+    ph_token: str = ""
+    ph_client_id: str = ""
+    ph_client_secret: str = ""
+    current_apify_token: str = ""
+
+
+@app.get("/api/discovery/keys")
+async def discovery_keys_status():
+    """Which data source keys discovery runs use, and from where. Never the values."""
+    from mvp import discovery
+
+    return {"keys": discovery.keys_status()}
+
+
+@app.post("/api/discovery/keys")
+async def save_discovery_keys(body: DiscoveryKeys):
+    from mvp import discovery
+
+    ok, msg = discovery.save_keys({"APIFY_TOKEN": body.apify_token, "PH_TOKEN": body.ph_token,
+                                   "PH_CLIENT_ID": body.ph_client_id, "PH_CLIENT_SECRET": body.ph_client_secret},
+                                  body.current_apify_token)
+    if not ok:
+        raise HTTPException(status_code=403, detail=msg)
+    return {"ok": True, "keys": discovery.keys_status()}
+
+
 @app.get("/api/discovery")
 async def list_discoveries():
     rows = []

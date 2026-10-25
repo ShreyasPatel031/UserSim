@@ -31,6 +31,7 @@ import time
 import uuid
 from dataclasses import asdict, dataclass, field
 from html import unescape
+from pathlib import Path
 from typing import Any, Awaitable, Callable
 from urllib.parse import quote_plus, urljoin, urlparse
 
@@ -59,8 +60,69 @@ CREDENTIAL_NAMES = ("APIFY_TOKEN", "PH_TOKEN", "PH_CLIENT_ID", "PH_CLIENT_SECRET
 _RUN_CREDS: contextvars.ContextVar[dict[str, str]] = contextvars.ContextVar("discovery_creds", default={})
 
 
+# Keys saved once through the /discovery page (POST /api/discovery/keys), for servers whose Secret Manager lacks them.
+# Outside the app directory (each deploy replaces /opt/usersim/app); falls back to the runs dir where /var/lib is not
+# writable. Never returned by any endpoint: keys_status() reports presence only.
+_KEYS_FILE: Path | None = None
+
+
+def keys_file() -> Path:
+    global _KEYS_FILE
+    if _KEYS_FILE is None:
+        from mvp.paths import MVP_RUNS_DIR
+
+        env = os.environ.get("MVP_DISCOVERY_KEYS_FILE")
+        for cand in ([Path(env)] if env else [Path("/var/lib/usersim/discovery_keys.json"), MVP_RUNS_DIR / "_discovery_keys.json"]):
+            try:
+                cand.parent.mkdir(parents=True, exist_ok=True)
+                if os.access(cand.parent, os.W_OK):
+                    _KEYS_FILE = cand
+                    break
+            except OSError:
+                continue
+        else:
+            _KEYS_FILE = MVP_RUNS_DIR / "_discovery_keys.json"
+    return _KEYS_FILE
+
+
+def stored_keys() -> dict[str, str]:
+    try:
+        data = json.loads(keys_file().read_text())
+    except (OSError, ValueError):
+        return {}
+    return {k: str(v).strip() for k, v in data.items() if k in CREDENTIAL_NAMES and str(v or "").strip()}
+
+
+def save_keys(new: dict[str, str], current_apify: str = "") -> tuple[bool, str]:
+    """Save keys on the server. Once an Apify key is stored, replacing anything needs that key (proof of ownership)."""
+    old = stored_keys()
+    if old.get("APIFY_TOKEN") and (current_apify or "").strip() != old["APIFY_TOKEN"]:
+        return False, "keys are already saved; to replace them, also send the currently saved Apify token"
+    merged = old | {k: v.strip() for k, v in new.items() if k in CREDENTIAL_NAMES and v and v.strip()}
+    path = keys_file()
+    tmp = path.with_suffix(".tmp")
+    fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+    with os.fdopen(fd, "w") as f:
+        json.dump(merged, f)
+    os.replace(tmp, path)
+    return True, "saved"
+
+
+def keys_status() -> dict[str, dict[str, Any]]:
+    """Which keys a run would use and from where (never the values)."""
+    from mvp import review_context
+
+    stored = stored_keys()
+    out = {}
+    for name in CREDENTIAL_NAMES:
+        env = (os.environ.get(name) or "").strip() or (review_context.apify_token() if name == "APIFY_TOKEN" else "")
+        out[name] = {"present": bool(stored.get(name) or env), "source": "saved" if stored.get(name) else ("server" if env else "missing")}
+    return out
+
+
 def _cred(name: str) -> str:
-    return (_RUN_CREDS.get().get(name) or os.environ.get(name) or "").strip()
+    """Per-run key, else the key saved through the page, else the server's environment / Secret Manager."""
+    return (_RUN_CREDS.get().get(name) or stored_keys().get(name) or os.environ.get(name) or "").strip()
 
 
 def ph_configured() -> bool:
@@ -284,7 +346,7 @@ async def ph_topics(query: str, first: int = 3) -> list[dict[str, Any]]:
 def apify_token() -> str | None:
     from mvp import review_context
 
-    return _RUN_CREDS.get().get("APIFY_TOKEN") or review_context.apify_token()
+    return _RUN_CREDS.get().get("APIFY_TOKEN") or stored_keys().get("APIFY_TOKEN") or review_context.apify_token()
 
 
 # Each platform's reviews come from its exact page found on Google. Actors checked live (Oct 2026):
