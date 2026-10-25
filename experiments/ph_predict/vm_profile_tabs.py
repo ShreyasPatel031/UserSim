@@ -45,13 +45,21 @@ def stacks(h):
 
 
 def reviews(h):
+    """Each review the person wrote: the reviewed product (short product ref inside the review), rating, date, text."""
+    starts = [m.start() for m in re.finditer(r'"__typename":"DetailedReview","id":"\d+"', h)] + [len(h)]
     out = []
-    for m in re.finditer(r'"__typename":"DetailedReview","id":"(\d+)"', h):
-        seg = h[m.start(): m.start() + 4000]
+    for a, b in zip(starts, starts[1:]):
+        seg = h[a: min(b, a + 8000)]
         g = lambda k: (re.search(k, seg) or [None, None])[1]
-        out.append({"review_id": m.group(1), "rating": g(r'"overallRating":(\d+)'), "type": g(r'"reviewType":"([^"]+)"'),
-                    "created": g(r'"createdAt":"([^"]+)"'),
-                    "product_slug": (re.search(r'/products/([a-z0-9-]+)/reviews\?review=' + m.group(1), h) or [None, None])[1]})
+        prod = re.search(r'"followProduct":\{"__typename":"Product","id":"(\d+)",[^}]*?"slug":"([^"]+)","name":"((?:[^"\\]|\\.)*)"', seg)
+        txt = g(r'"overallExperience":"((?:[^"\\]|\\.)*)"')
+        tags = lambda key: re.findall(r'"name":"([^"]+)","type":"(?:Positive|Negative)"', (seg.split('"' + key + '":', 1) + [""])[1].split("],", 1)[0])
+        alts = re.findall(r'"slug":"([^"]+)"', (seg.split('"alternativeProducts":', 1) + [""])[1].split("],", 1)[0])
+        out.append({"review_id": g(r'"id":"(\d+)"'), "rating": g(r'"overallRating":(\d+)'), "type": g(r'"reviewType":"([^"]+)"'),
+                    "created": g(r'"createdAt":"([^"]+)"'), "product_id": prod.group(1) if prod else None,
+                    "product_slug": prod.group(2) if prod else None, "product_name": prod.group(3) if prod else None,
+                    "from_launch": g(r'"fromPost":\{"__typename":"Post","slug":"([^"]+)"'),
+                    "pros": tags("selectedPros"), "cons": tags("selectedCons"), "alternatives": alts, "text": (txt or "")[:600]})
     return list({x["review_id"]: x for x in out}.values())
 
 
