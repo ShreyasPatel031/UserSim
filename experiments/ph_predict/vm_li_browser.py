@@ -7,7 +7,9 @@ from playwright.async_api import async_playwright
 
 P = open("/home/agent/php/proxy.txt").read().strip().replace("//auto:", "//groups-RESIDENTIAL,country-US:")
 u = urlparse(P)
-PROXY = {"server": f"http://{u.hostname}:{u.port}", "username": u.username, "password": u.password}
+PROXY = {"server": f"http://{u.hostname}:{u.port}", "username": u.username, "password": u.password,
+         # Apify's residential group refuses Google domains, so Google sign-in goes out directly from the VM
+         "bypass": "*.google.com,google.com,*.gstatic.com,*.googleapis.com,*.googleusercontent.com,*.youtube.com"}
 
 
 async def main():
@@ -15,7 +17,8 @@ async def main():
         ctx = await p.chromium.launch_persistent_context(
             "/home/agent/php/li_profile", headless=False, proxy=PROXY, viewport={"width": 1280, "height": 760},
             locale="en-US", args=["--window-size=1280,800", "--window-position=0,0",
-                                  "--disable-blink-features=AutomationControlled"],
+                                  "--disable-blink-features=AutomationControlled",
+                                  "--remote-debugging-port=9222", "--remote-debugging-address=127.0.0.1"],
             ignore_default_args=["--enable-automation"])  # Google refuses sign-in in browsers flagged as automated
         page = ctx.pages[0] if ctx.pages else await ctx.new_page()
         await page.goto("https://www.linkedin.com/login", wait_until="domcontentloaded", timeout=90000)
