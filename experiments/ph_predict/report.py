@@ -7,7 +7,7 @@ m = json.load(open(f"{R}/metrics.json"))
 p = pd.read_csv(f"{R}/predictions.csv")
 L = []
 w = L.append
-NAMES = {"pred": "Full model (all sources)", "pred_rank_day": "Full model, ranking objective", "pred_random": "A. Random",
+NAMES = {"pred_week_model": "Weekly-list model", "pred_month_model": "Monthly-list model", "pred_blend": "Full model, blend of both objectives", "pred": "Full model (all sources)", "pred_rank_day": "Full model, ranking objective", "pred_random": "A. Random",
          "pred_llm_pitch": "B. LLM, pitch only", "pred_llm_site": "C. LLM, pitch + homepage",
          "pred_ph_only": "D. PH audience/metadata only", "pred_with_maker_followers": "Full + maker followers (leaky)"}
 SRC = {"ph": "PH audience & metadata (hunter, makers, media)", "hist": "Hunter/maker track record on PH",
@@ -39,7 +39,7 @@ w(f"Test months: {', '.join(meta['test_months'])}, each predicted by a model tra
 w("## Recall@k (share of the real top k that the predicted top k contains), 95% CI over lists\n")
 w("| Method | Day @3 | Day @5 | Day @10 | Week @3 | Week @5 | Week @10 | Month @3 | Month @5 | Month @10 |")
 w("|---|" + "---|" * 9)
-for k in ["pred", "pred_rank_day", "pred_ph_only", "pred_llm_site", "pred_llm_pitch", "pred_random", "pred_with_maker_followers"]:
+for k in ["pred", "pred_week_model", "pred_month_model", "pred_blend", "pred_rank_day", "pred_ph_only", "pred_llm_site", "pred_llm_pitch", "pred_random", "pred_with_maker_followers"]:
     if k in m:
         w(f"| {NAMES[k]} | " + " | ".join(row(k)) + " |")
 w("")
@@ -95,6 +95,13 @@ for title, sub, col in (("Yesterday's Top Products (Oct 24)", p[p.day == "2026-1
         a, b = real.iloc[i], pred.iloc[i]
         w(f"| {i + 1} | {a['name']}{' ✓' if a.id in set(pred.id) else ''} | {b['name']} (actual #{int(b[col])}) |")
     w("")
+w("## Accuracy by product type\n")
+w("| Type | Launches | Real day-top-5 launches | Share the model had in its day top 5 | Rank correlation within type |")
+w("|---|---|---|---|---|")
+for t, r in sorted(m.get("_by_type", {}).items(), key=lambda kv: -kv[1]["n"]):
+    w(f"| {t} | {r['n']} | {r['n_top5']} | {pct(r['recall_of_type_in_day_top5'])} | "
+      f"{(r['spearman_within_type_day'] or float('nan')):.2f} |")
+w("")
 w("## Data coverage\n")
 w(f"- Homepage: Wayback snapshot from before launch {pct(meta['sites_wayback'])}, live site {pct(meta['sites_live'])}, "
   f"none found {pct(meta['sites_none'])}")

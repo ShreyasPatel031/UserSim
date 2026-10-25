@@ -1,372 +1,516 @@
 topic,period,k,score,recall,n_lists
-Artificial Intelligence,day,3,pred,0.5416666666666666,24
-Artificial Intelligence,day,3,pred_random,0.13888888888888887,24
-Artificial Intelligence,day,3,pred_llm_pitch,0.2916666666666667,24
-Artificial Intelligence,day,3,pred_ph_only,0.6944444444444443,24
-Artificial Intelligence,day,5,pred,0.7217391304347827,23
-Artificial Intelligence,day,5,pred_random,0.2695652173913044,23
-Artificial Intelligence,day,5,pred_llm_pitch,0.41739130434782606,23
-Artificial Intelligence,day,5,pred_ph_only,0.7304347826086959,23
-Artificial Intelligence,day,10,pred,0.7818181818181817,22
-Artificial Intelligence,day,10,pred_random,0.6000000000000001,22
-Artificial Intelligence,day,10,pred_llm_pitch,0.7045454545454545,22
-Artificial Intelligence,day,10,pred_ph_only,0.7909090909090909,22
-Artificial Intelligence,week,3,pred,0.5,2
-Artificial Intelligence,week,3,pred_random,0.0,2
-Artificial Intelligence,week,3,pred_llm_pitch,0.16666666666666666,2
-Artificial Intelligence,week,3,pred_ph_only,0.5,2
-Artificial Intelligence,week,5,pred,0.5,2
-Artificial Intelligence,week,5,pred_random,0.0,2
-Artificial Intelligence,week,5,pred_llm_pitch,0.2,2
-Artificial Intelligence,week,5,pred_ph_only,0.5,2
-Artificial Intelligence,week,10,pred,0.4,2
-Artificial Intelligence,week,10,pred_random,0.1,2
-Artificial Intelligence,week,10,pred_llm_pitch,0.25,2
-Artificial Intelligence,week,10,pred_ph_only,0.65,2
-Artificial Intelligence,mon,3,pred,0.6666666666666666,1
-Artificial Intelligence,mon,3,pred_random,0.0,1
-Artificial Intelligence,mon,3,pred_llm_pitch,0.0,1
-Artificial Intelligence,mon,3,pred_ph_only,0.3333333333333333,1
-Artificial Intelligence,mon,5,pred,0.4,1
-Artificial Intelligence,mon,5,pred_random,0.0,1
-Artificial Intelligence,mon,5,pred_llm_pitch,0.0,1
-Artificial Intelligence,mon,5,pred_ph_only,0.2,1
-Artificial Intelligence,mon,10,pred,0.4,1
-Artificial Intelligence,mon,10,pred_random,0.0,1
-Artificial Intelligence,mon,10,pred_llm_pitch,0.1,1
-Artificial Intelligence,mon,10,pred_ph_only,0.4,1
-Developer Tools,day,3,pred,0.736111111111111,24
-Developer Tools,day,3,pred_random,0.3055555555555555,24
-Developer Tools,day,3,pred_llm_pitch,0.4861111111111111,24
-Developer Tools,day,3,pred_ph_only,0.75,24
-Developer Tools,day,5,pred,0.7826086956521741,23
-Developer Tools,day,5,pred_random,0.5043478260869566,23
-Developer Tools,day,5,pred_llm_pitch,0.6260869565217392,23
-Developer Tools,day,5,pred_ph_only,0.8,23
-Developer Tools,day,10,pred,0.8714285714285717,14
-Developer Tools,day,10,pred_random,0.7785714285714286,14
-Developer Tools,day,10,pred_llm_pitch,0.8285714285714286,14
-Developer Tools,day,10,pred_ph_only,0.8500000000000002,14
-Developer Tools,week,3,pred,0.3333333333333333,2
-Developer Tools,week,3,pred_random,0.0,2
-Developer Tools,week,3,pred_llm_pitch,0.16666666666666666,2
-Developer Tools,week,3,pred_ph_only,0.3333333333333333,2
-Developer Tools,week,5,pred,0.30000000000000004,2
-Developer Tools,week,5,pred_random,0.0,2
-Developer Tools,week,5,pred_llm_pitch,0.30000000000000004,2
-Developer Tools,week,5,pred_ph_only,0.5,2
-Developer Tools,week,10,pred,0.7,2
-Developer Tools,week,10,pred_random,0.05,2
-Developer Tools,week,10,pred_llm_pitch,0.30000000000000004,2
-Developer Tools,week,10,pred_ph_only,0.75,2
-Developer Tools,mon,3,pred,0.3333333333333333,1
-Developer Tools,mon,3,pred_random,0.0,1
-Developer Tools,mon,3,pred_llm_pitch,0.0,1
-Developer Tools,mon,3,pred_ph_only,0.3333333333333333,1
-Developer Tools,mon,5,pred,0.2,1
-Developer Tools,mon,5,pred_random,0.0,1
-Developer Tools,mon,5,pred_llm_pitch,0.2,1
-Developer Tools,mon,5,pred_ph_only,0.4,1
-Developer Tools,mon,10,pred,0.4,1
-Developer Tools,mon,10,pred_random,0.0,1
-Developer Tools,mon,10,pred_llm_pitch,0.3,1
-Developer Tools,mon,10,pred_ph_only,0.5,1
-Productivity,day,3,pred,0.736111111111111,24
-Productivity,day,3,pred_random,0.375,24
-Productivity,day,3,pred_llm_pitch,0.4861111111111111,24
-Productivity,day,3,pred_ph_only,0.736111111111111,24
-Productivity,day,5,pred,0.7636363636363637,22
-Productivity,day,5,pred_random,0.509090909090909,22
-Productivity,day,5,pred_llm_pitch,0.6181818181818182,22
-Productivity,day,5,pred_ph_only,0.7181818181818184,22
-Productivity,day,10,pred,0.8866666666666667,15
-Productivity,day,10,pred_random,0.8400000000000001,15
-Productivity,day,10,pred_llm_pitch,0.8800000000000001,15
-Productivity,day,10,pred_ph_only,0.9000000000000001,15
-Productivity,week,3,pred,0.5,2
-Productivity,week,3,pred_random,0.0,2
-Productivity,week,3,pred_llm_pitch,0.0,2
-Productivity,week,3,pred_ph_only,0.8333333333333333,2
-Productivity,week,5,pred,0.5,2
-Productivity,week,5,pred_random,0.0,2
-Productivity,week,5,pred_llm_pitch,0.1,2
-Productivity,week,5,pred_ph_only,0.6000000000000001,2
-Productivity,week,10,pred,0.6499999999999999,2
-Productivity,week,10,pred_random,0.1,2
-Productivity,week,10,pred_llm_pitch,0.25,2
-Productivity,week,10,pred_ph_only,0.75,2
-Productivity,mon,3,pred,0.0,1
-Productivity,mon,3,pred_random,0.0,1
-Productivity,mon,3,pred_llm_pitch,0.0,1
-Productivity,mon,3,pred_ph_only,0.0,1
-Productivity,mon,5,pred,0.4,1
-Productivity,mon,5,pred_random,0.0,1
-Productivity,mon,5,pred_llm_pitch,0.0,1
-Productivity,mon,5,pred_ph_only,0.4,1
-Productivity,mon,10,pred,0.6,1
-Productivity,mon,10,pred_random,0.0,1
-Productivity,mon,10,pred_llm_pitch,0.1,1
-Productivity,mon,10,pred_ph_only,0.8,1
-GitHub,day,3,pred,0.6969696969696969,22
-GitHub,day,3,pred_random,0.4545454545454545,22
-GitHub,day,3,pred_llm_pitch,0.6666666666666667,22
-GitHub,day,3,pred_ph_only,0.6515151515151515,22
-GitHub,day,5,pred,0.7625,16
-GitHub,day,5,pred_random,0.6375000000000001,16
-GitHub,day,5,pred_llm_pitch,0.8,16
-GitHub,day,5,pred_ph_only,0.7250000000000001,16
-GitHub,day,10,pred,0.9666666666666667,6
-GitHub,day,10,pred_random,0.9666666666666667,6
-GitHub,day,10,pred_llm_pitch,0.9666666666666667,6
-GitHub,day,10,pred_ph_only,0.9666666666666667,6
-GitHub,week,3,pred,0.3333333333333333,2
-GitHub,week,3,pred_random,0.0,2
-GitHub,week,3,pred_llm_pitch,0.3333333333333333,2
-GitHub,week,3,pred_ph_only,0.5,2
-GitHub,week,5,pred,0.7,2
-GitHub,week,5,pred_random,0.2,2
-GitHub,week,5,pred_llm_pitch,0.6,2
-GitHub,week,5,pred_ph_only,0.7,2
-GitHub,week,10,pred,0.7,2
-GitHub,week,10,pred_random,0.3,2
-GitHub,week,10,pred_llm_pitch,0.4,2
-GitHub,week,10,pred_ph_only,0.6499999999999999,2
-GitHub,mon,3,pred,0.3333333333333333,1
-GitHub,mon,3,pred_random,0.0,1
-GitHub,mon,3,pred_llm_pitch,0.6666666666666666,1
-GitHub,mon,3,pred_ph_only,0.6666666666666666,1
-GitHub,mon,5,pred,0.4,1
-GitHub,mon,5,pred_random,0.0,1
-GitHub,mon,5,pred_llm_pitch,0.4,1
-GitHub,mon,5,pred_ph_only,0.4,1
-GitHub,mon,10,pred,0.4,1
-GitHub,mon,10,pred_random,0.0,1
-GitHub,mon,10,pred_llm_pitch,0.4,1
-GitHub,mon,10,pred_ph_only,0.6,1
-Open Source,day,3,pred,0.7037037037037037,18
-Open Source,day,3,pred_random,0.4444444444444444,18
-Open Source,day,3,pred_llm_pitch,0.611111111111111,18
-Open Source,day,3,pred_ph_only,0.7037037037037037,18
-Open Source,day,5,pred,0.7466666666666667,15
-Open Source,day,5,pred_random,0.6799999999999999,15
-Open Source,day,5,pred_llm_pitch,0.7733333333333334,15
-Open Source,day,5,pred_ph_only,0.7866666666666667,15
-Open Source,day,10,pred,1.0,1
-Open Source,day,10,pred_random,1.0,1
-Open Source,day,10,pred_llm_pitch,1.0,1
-Open Source,day,10,pred_ph_only,1.0,1
-Open Source,week,3,pred,0.3333333333333333,2
-Open Source,week,3,pred_random,0.3333333333333333,2
-Open Source,week,3,pred_llm_pitch,0.16666666666666666,2
-Open Source,week,3,pred_ph_only,0.5,2
-Open Source,week,5,pred,0.6,2
-Open Source,week,5,pred_random,0.2,2
-Open Source,week,5,pred_llm_pitch,0.4,2
-Open Source,week,5,pred_ph_only,0.7,2
-Open Source,week,10,pred,0.75,2
-Open Source,week,10,pred_random,0.25,2
-Open Source,week,10,pred_llm_pitch,0.55,2
-Open Source,week,10,pred_ph_only,0.8,2
-Open Source,mon,3,pred,0.3333333333333333,1
-Open Source,mon,3,pred_random,0.0,1
-Open Source,mon,3,pred_llm_pitch,0.3333333333333333,1
-Open Source,mon,3,pred_ph_only,0.3333333333333333,1
-Open Source,mon,5,pred,0.6,1
-Open Source,mon,5,pred_random,0.2,1
-Open Source,mon,5,pred_llm_pitch,0.4,1
-Open Source,mon,5,pred_ph_only,0.4,1
-Open Source,mon,10,pred,0.5,1
-Open Source,mon,10,pred_random,0.1,1
-Open Source,mon,10,pred_llm_pitch,0.4,1
-Open Source,mon,10,pred_ph_only,0.7,1
-Mac,day,3,pred,0.7999999999999999,15
-Mac,day,3,pred_random,0.7333333333333332,15
-Mac,day,3,pred_llm_pitch,0.711111111111111,15
-Mac,day,3,pred_ph_only,0.7555555555555553,15
-Mac,day,5,pred,0.76,5
-Mac,day,5,pred_random,0.72,5
-Mac,day,5,pred_llm_pitch,0.8,5
-Mac,day,5,pred_ph_only,0.8400000000000001,5
+Artificial Intelligence,day,3,pred,0.7206572769953052,142
+Artificial Intelligence,day,3,pred_random,0.34037558685446007,142
+Artificial Intelligence,day,3,pred_llm_pitch,0.4107981220657277,142
+Artificial Intelligence,day,3,pred_ph_only,0.7230046948356806,142
+Artificial Intelligence,day,5,pred,0.7688524590163934,122
+Artificial Intelligence,day,5,pred_random,0.43442622950819676,122
+Artificial Intelligence,day,5,pred_llm_pitch,0.5278688524590165,122
+Artificial Intelligence,day,5,pred_ph_only,0.7704918032786884,122
+Artificial Intelligence,day,10,pred,0.857831325301205,83
+Artificial Intelligence,day,10,pred_random,0.6819277108433736,83
+Artificial Intelligence,day,10,pred_llm_pitch,0.7481927710843372,83
+Artificial Intelligence,day,10,pred_ph_only,0.8566265060240965,83
+Artificial Intelligence,week,3,pred,0.4912280701754385,19
+Artificial Intelligence,week,3,pred_random,0.017543859649122806,19
+Artificial Intelligence,week,3,pred_llm_pitch,0.05263157894736842,19
+Artificial Intelligence,week,3,pred_ph_only,0.47368421052631576,19
+Artificial Intelligence,week,5,pred,0.5052631578947369,19
+Artificial Intelligence,week,5,pred_random,0.05263157894736842,19
+Artificial Intelligence,week,5,pred_llm_pitch,0.15789473684210525,19
+Artificial Intelligence,week,5,pred_ph_only,0.5684210526315789,19
+Artificial Intelligence,week,10,pred,0.5894736842105263,19
+Artificial Intelligence,week,10,pred_random,0.1105263157894737,19
+Artificial Intelligence,week,10,pred_llm_pitch,0.22631578947368425,19
+Artificial Intelligence,week,10,pred_ph_only,0.6210526315789473,19
+Artificial Intelligence,mon,3,pred,0.3333333333333333,5
+Artificial Intelligence,mon,3,pred_random,0.0,5
+Artificial Intelligence,mon,3,pred_llm_pitch,0.0,5
+Artificial Intelligence,mon,3,pred_ph_only,0.3333333333333333,5
+Artificial Intelligence,mon,5,pred,0.24000000000000005,5
+Artificial Intelligence,mon,5,pred_random,0.0,5
+Artificial Intelligence,mon,5,pred_llm_pitch,0.04,5
+Artificial Intelligence,mon,5,pred_ph_only,0.24000000000000005,5
+Artificial Intelligence,mon,10,pred,0.4,5
+Artificial Intelligence,mon,10,pred_random,0.0,5
+Artificial Intelligence,mon,10,pred_llm_pitch,0.12000000000000002,5
+Artificial Intelligence,mon,10,pred_ph_only,0.31999999999999995,5
+Productivity,day,3,pred,0.7566137566137567,126
+Productivity,day,3,pred_random,0.4603174603174603,126
+Productivity,day,3,pred_llm_pitch,0.5978835978835978,126
+Productivity,day,3,pred_ph_only,0.7566137566137567,126
+Productivity,day,5,pred,0.8134615384615385,104
+Productivity,day,5,pred_random,0.6192307692307693,104
+Productivity,day,5,pred_llm_pitch,0.7173076923076922,104
+Productivity,day,5,pred_ph_only,0.8038461538461538,104
+Productivity,day,10,pred,0.882051282051282,39
+Productivity,day,10,pred_random,0.8282051282051281,39
+Productivity,day,10,pred_llm_pitch,0.864102564102564,39
+Productivity,day,10,pred_ph_only,0.8846153846153846,39
+Productivity,week,3,pred,0.5925925925925926,18
+Productivity,week,3,pred_random,0.07407407407407407,18
+Productivity,week,3,pred_llm_pitch,0.16666666666666666,18
+Productivity,week,3,pred_ph_only,0.5925925925925926,18
+Productivity,week,5,pred,0.6777777777777777,18
+Productivity,week,5,pred_random,0.12222222222222223,18
+Productivity,week,5,pred_llm_pitch,0.21111111111111114,18
+Productivity,week,5,pred_ph_only,0.6777777777777777,18
+Productivity,week,10,pred,0.6833333333333332,18
+Productivity,week,10,pred_random,0.22222222222222227,18
+Productivity,week,10,pred_llm_pitch,0.3611111111111111,18
+Productivity,week,10,pred_ph_only,0.7055555555555555,18
+Productivity,mon,3,pred,0.2,5
+Productivity,mon,3,pred_random,0.0,5
+Productivity,mon,3,pred_llm_pitch,0.13333333333333333,5
+Productivity,mon,3,pred_ph_only,0.2,5
+Productivity,mon,5,pred,0.43999999999999995,5
+Productivity,mon,5,pred_random,0.0,5
+Productivity,mon,5,pred_llm_pitch,0.12000000000000002,5
+Productivity,mon,5,pred_ph_only,0.27999999999999997,5
+Productivity,mon,10,pred,0.5800000000000001,5
+Productivity,mon,10,pred_random,0.1,5
+Productivity,mon,10,pred_llm_pitch,0.18000000000000002,5
+Productivity,mon,10,pred_ph_only,0.6199999999999999,5
+Developer Tools,day,3,pred,0.7851239669421488,121
+Developer Tools,day,3,pred_random,0.44903581267217635,121
+Developer Tools,day,3,pred_llm_pitch,0.5757575757575758,121
+Developer Tools,day,3,pred_ph_only,0.7768595041322314,121
+Developer Tools,day,5,pred,0.842857142857143,98
+Developer Tools,day,5,pred_random,0.6285714285714286,98
+Developer Tools,day,5,pred_llm_pitch,0.7000000000000001,98
+Developer Tools,day,5,pred_ph_only,0.8367346938775511,98
+Developer Tools,day,10,pred,0.875,32
+Developer Tools,day,10,pred_random,0.778125,32
+Developer Tools,day,10,pred_llm_pitch,0.825,32
+Developer Tools,day,10,pred_ph_only,0.8968750000000001,32
+Developer Tools,week,3,pred,0.44444444444444436,15
+Developer Tools,week,3,pred_random,0.02222222222222222,15
+Developer Tools,week,3,pred_llm_pitch,0.13333333333333333,15
+Developer Tools,week,3,pred_ph_only,0.5333333333333333,15
+Developer Tools,week,5,pred,0.5866666666666667,15
+Developer Tools,week,5,pred_random,0.10666666666666667,15
+Developer Tools,week,5,pred_llm_pitch,0.21333333333333335,15
+Developer Tools,week,5,pred_ph_only,0.6,15
+Developer Tools,week,10,pred,0.6733333333333332,15
+Developer Tools,week,10,pred_random,0.21333333333333337,15
+Developer Tools,week,10,pred_llm_pitch,0.37333333333333335,15
+Developer Tools,week,10,pred_ph_only,0.64,15
+Developer Tools,mon,3,pred,0.2,5
+Developer Tools,mon,3,pred_random,0.0,5
+Developer Tools,mon,3,pred_llm_pitch,0.06666666666666667,5
+Developer Tools,mon,3,pred_ph_only,0.2,5
+Developer Tools,mon,5,pred,0.44000000000000006,5
+Developer Tools,mon,5,pred_random,0.0,5
+Developer Tools,mon,5,pred_llm_pitch,0.12000000000000002,5
+Developer Tools,mon,5,pred_ph_only,0.36,5
+Developer Tools,mon,10,pred,0.5,5
+Developer Tools,mon,10,pred_random,0.04,5
+Developer Tools,mon,10,pred_llm_pitch,0.16,5
+Developer Tools,mon,10,pred_ph_only,0.58,5
+GitHub,day,3,pred,0.8106995884773663,81
+GitHub,day,3,pred_random,0.6378600823045267,81
+GitHub,day,3,pred_llm_pitch,0.7489711934156378,81
+GitHub,day,3,pred_ph_only,0.7942386831275722,81
+GitHub,day,5,pred,0.8195121951219513,41
+GitHub,day,5,pred_random,0.702439024390244,41
+GitHub,day,5,pred_llm_pitch,0.7902439024390243,41
+GitHub,day,5,pred_ph_only,0.8048780487804879,41
+GitHub,day,10,pred,0.86,10
+GitHub,day,10,pred_random,0.8099999999999999,10
+GitHub,day,10,pred_llm_pitch,0.82,10
+GitHub,day,10,pred_ph_only,0.8699999999999999,10
+GitHub,week,3,pred,0.5,10
+GitHub,week,3,pred_random,0.2,10
+GitHub,week,3,pred_llm_pitch,0.33333333333333337,10
+GitHub,week,3,pred_ph_only,0.5333333333333333,10
+GitHub,week,5,pred,0.6399999999999999,10
+GitHub,week,5,pred_random,0.24000000000000005,10
+GitHub,week,5,pred_llm_pitch,0.45999999999999996,10
+GitHub,week,5,pred_ph_only,0.7,10
+GitHub,week,10,pred,0.76,10
+GitHub,week,10,pred_random,0.37,10
+GitHub,week,10,pred_llm_pitch,0.53,10
+GitHub,week,10,pred_ph_only,0.7500000000000001,10
+GitHub,mon,3,pred,0.5333333333333333,5
+GitHub,mon,3,pred_random,0.0,5
+GitHub,mon,3,pred_llm_pitch,0.13333333333333333,5
+GitHub,mon,3,pred_ph_only,0.5333333333333333,5
+GitHub,mon,5,pred,0.56,5
+GitHub,mon,5,pred_random,0.0,5
+GitHub,mon,5,pred_llm_pitch,0.2,5
+GitHub,mon,5,pred_ph_only,0.6,5
+GitHub,mon,10,pred,0.66,5
+GitHub,mon,10,pred_random,0.13999999999999999,5
+GitHub,mon,10,pred_llm_pitch,0.27999999999999997,5
+GitHub,mon,10,pred_ph_only,0.6599999999999999,5
+Open Source,day,3,pred,0.8214285714285714,56
+Open Source,day,3,pred_random,0.6904761904761905,56
+Open Source,day,3,pred_llm_pitch,0.75,56
+Open Source,day,3,pred_ph_only,0.8214285714285714,56
+Open Source,day,5,pred,0.85,28
+Open Source,day,5,pred_random,0.7500000000000001,28
+Open Source,day,5,pred_llm_pitch,0.7714285714285716,28
+Open Source,day,5,pred_ph_only,0.8571428571428571,28
+Open Source,day,10,pred,0.9,3
+Open Source,day,10,pred_random,0.9,3
+Open Source,day,10,pred_llm_pitch,0.9,3
+Open Source,day,10,pred_ph_only,0.9333333333333332,3
+Open Source,week,3,pred,0.7037037037037037,9
+Open Source,week,3,pred_random,0.14814814814814814,9
+Open Source,week,3,pred_llm_pitch,0.3703703703703704,9
+Open Source,week,3,pred_ph_only,0.6296296296296295,9
+Open Source,week,5,pred,0.6444444444444444,9
+Open Source,week,5,pred_random,0.24444444444444446,9
+Open Source,week,5,pred_llm_pitch,0.4,9
+Open Source,week,5,pred_ph_only,0.6666666666666665,9
+Open Source,week,10,pred,0.8111111111111111,9
+Open Source,week,10,pred_random,0.5111111111111111,9
+Open Source,week,10,pred_llm_pitch,0.6111111111111112,9
+Open Source,week,10,pred_ph_only,0.8,9
+Open Source,mon,3,pred,0.3333333333333333,5
+Open Source,mon,3,pred_random,0.0,5
+Open Source,mon,3,pred_llm_pitch,0.06666666666666667,5
+Open Source,mon,3,pred_ph_only,0.39999999999999997,5
+Open Source,mon,5,pred,0.6000000000000001,5
+Open Source,mon,5,pred_random,0.0,5
+Open Source,mon,5,pred_llm_pitch,0.27999999999999997,5
+Open Source,mon,5,pred_ph_only,0.56,5
+Open Source,mon,10,pred,0.64,5
+Open Source,mon,10,pred_random,0.1,5
+Open Source,mon,10,pred_llm_pitch,0.34,5
+Open Source,mon,10,pred_ph_only,0.6,5
+Mac,day,3,pred,0.8015873015873014,42
+Mac,day,3,pred_random,0.7619047619047619,42
+Mac,day,3,pred_llm_pitch,0.7777777777777777,42
+Mac,day,3,pred_ph_only,0.8095238095238095,42
+Mac,day,5,pred,0.8363636363636364,11
+Mac,day,5,pred_random,0.8363636363636363,11
+Mac,day,5,pred_llm_pitch,0.8,11
+Mac,day,5,pred_ph_only,0.8545454545454546,11
 Mac,day,10,pred,1.0,1
 Mac,day,10,pred_random,1.0,1
 Mac,day,10,pred_llm_pitch,1.0,1
 Mac,day,10,pred_ph_only,1.0,1
-Mac,week,3,pred,0.6666666666666666,1
-Mac,week,3,pred_random,0.6666666666666666,1
-Mac,week,3,pred_llm_pitch,0.3333333333333333,1
-Mac,week,3,pred_ph_only,0.6666666666666666,1
-Mac,week,5,pred,0.4,1
-Mac,week,5,pred_random,0.4,1
-Mac,week,5,pred_llm_pitch,0.6,1
-Mac,week,5,pred_ph_only,0.4,1
-Mac,week,10,pred,0.5,1
-Mac,week,10,pred_random,0.4,1
-Mac,week,10,pred_llm_pitch,0.5,1
-Mac,week,10,pred_ph_only,0.5,1
-Mac,mon,3,pred,0.6666666666666666,1
-Mac,mon,3,pred_random,0.3333333333333333,1
-Mac,mon,3,pred_llm_pitch,0.3333333333333333,1
-Mac,mon,3,pred_ph_only,0.6666666666666666,1
-Mac,mon,5,pred,0.6,1
-Mac,mon,5,pred_random,0.2,1
-Mac,mon,5,pred_llm_pitch,0.2,1
-Mac,mon,5,pred_ph_only,0.6,1
-Mac,mon,10,pred,0.5,1
-Mac,mon,10,pred_random,0.3,1
-Mac,mon,10,pred_llm_pitch,0.1,1
-Mac,mon,10,pred_ph_only,0.6,1
-Marketing,day,3,pred,0.8666666666666666,5
-Marketing,day,3,pred_random,0.8,5
-Marketing,day,3,pred_llm_pitch,0.7333333333333333,5
-Marketing,day,3,pred_ph_only,0.8666666666666666,5
-Marketing,day,5,pred,1.0,2
-Marketing,day,5,pred_random,1.0,2
-Marketing,day,5,pred_llm_pitch,1.0,2
-Marketing,day,5,pred_ph_only,1.0,2
-Marketing,day,10,pred,,0
-Marketing,day,10,pred_random,,0
-Marketing,day,10,pred_llm_pitch,,0
-Marketing,day,10,pred_ph_only,,0
-Marketing,week,3,pred,0.6666666666666666,1
-Marketing,week,3,pred_random,0.6666666666666666,1
-Marketing,week,3,pred_llm_pitch,0.6666666666666666,1
-Marketing,week,3,pred_ph_only,0.6666666666666666,1
-Marketing,week,5,pred,0.6,1
-Marketing,week,5,pred_random,0.4,1
-Marketing,week,5,pred_llm_pitch,0.4,1
-Marketing,week,5,pred_ph_only,0.6,1
-Marketing,week,10,pred,0.9,1
-Marketing,week,10,pred_random,0.6,1
-Marketing,week,10,pred_llm_pitch,0.8,1
-Marketing,week,10,pred_ph_only,1.0,1
-Marketing,mon,3,pred,0.6666666666666666,1
-Marketing,mon,3,pred_random,0.3333333333333333,1
-Marketing,mon,3,pred_llm_pitch,0.3333333333333333,1
-Marketing,mon,3,pred_ph_only,0.6666666666666666,1
-Marketing,mon,5,pred,0.4,1
-Marketing,mon,5,pred_random,0.4,1
-Marketing,mon,5,pred_llm_pitch,0.6,1
-Marketing,mon,5,pred_ph_only,0.4,1
-Marketing,mon,10,pred,0.5,1
-Marketing,mon,10,pred_random,0.3,1
-Marketing,mon,10,pred_llm_pitch,0.3,1
-Marketing,mon,10,pred_ph_only,0.5,1
-Design Tools,day,3,pred,0.9523809523809524,7
-Design Tools,day,3,pred_random,0.9047619047619048,7
-Design Tools,day,3,pred_llm_pitch,0.9047619047619048,7
-Design Tools,day,3,pred_ph_only,0.8571428571428571,7
-Design Tools,day,5,pred,,0
-Design Tools,day,5,pred_random,,0
-Design Tools,day,5,pred_llm_pitch,,0
-Design Tools,day,5,pred_ph_only,,0
-Design Tools,day,10,pred,,0
-Design Tools,day,10,pred_random,,0
-Design Tools,day,10,pred_llm_pitch,,0
-Design Tools,day,10,pred_ph_only,,0
-Design Tools,week,3,pred,0.6666666666666666,1
-Design Tools,week,3,pred_random,0.0,1
-Design Tools,week,3,pred_llm_pitch,0.6666666666666666,1
-Design Tools,week,3,pred_ph_only,0.6666666666666666,1
-Design Tools,week,5,pred,0.4,1
-Design Tools,week,5,pred_random,0.6,1
-Design Tools,week,5,pred_llm_pitch,0.6,1
-Design Tools,week,5,pred_ph_only,0.4,1
-Design Tools,week,10,pred,0.7,1
-Design Tools,week,10,pred_random,0.6,1
-Design Tools,week,10,pred_llm_pitch,0.5,1
-Design Tools,week,10,pred_ph_only,0.7,1
-Design Tools,mon,3,pred,0.6666666666666666,1
-Design Tools,mon,3,pred_random,0.0,1
-Design Tools,mon,3,pred_llm_pitch,0.0,1
-Design Tools,mon,3,pred_ph_only,0.3333333333333333,1
-Design Tools,mon,5,pred,0.4,1
-Design Tools,mon,5,pred_random,0.2,1
-Design Tools,mon,5,pred_llm_pitch,0.4,1
-Design Tools,mon,5,pred_ph_only,0.6,1
-Design Tools,mon,10,pred,0.9,1
-Design Tools,mon,10,pred_random,0.2,1
-Design Tools,mon,10,pred_llm_pitch,0.5,1
-Design Tools,mon,10,pred_ph_only,0.9,1
-Menu Bar Apps,day,3,pred,0.8333333333333333,8
-Menu Bar Apps,day,3,pred_random,0.7916666666666666,8
-Menu Bar Apps,day,3,pred_llm_pitch,0.8333333333333333,8
-Menu Bar Apps,day,3,pred_ph_only,0.875,8
-Menu Bar Apps,day,5,pred,1.0,1
-Menu Bar Apps,day,5,pred_random,0.8,1
-Menu Bar Apps,day,5,pred_llm_pitch,1.0,1
-Menu Bar Apps,day,5,pred_ph_only,0.8,1
-Menu Bar Apps,day,10,pred,,0
-Menu Bar Apps,day,10,pred_random,,0
-Menu Bar Apps,day,10,pred_llm_pitch,,0
-Menu Bar Apps,day,10,pred_ph_only,,0
-Menu Bar Apps,week,3,pred,,0
-Menu Bar Apps,week,3,pred_random,,0
-Menu Bar Apps,week,3,pred_llm_pitch,,0
-Menu Bar Apps,week,3,pred_ph_only,,0
-Menu Bar Apps,week,5,pred,,0
-Menu Bar Apps,week,5,pred_random,,0
-Menu Bar Apps,week,5,pred_llm_pitch,,0
-Menu Bar Apps,week,5,pred_ph_only,,0
-Menu Bar Apps,week,10,pred,,0
-Menu Bar Apps,week,10,pred_random,,0
-Menu Bar Apps,week,10,pred_llm_pitch,,0
-Menu Bar Apps,week,10,pred_ph_only,,0
-Menu Bar Apps,mon,3,pred,0.3333333333333333,1
-Menu Bar Apps,mon,3,pred_random,0.3333333333333333,1
-Menu Bar Apps,mon,3,pred_llm_pitch,0.0,1
-Menu Bar Apps,mon,3,pred_ph_only,0.3333333333333333,1
-Menu Bar Apps,mon,5,pred,0.6,1
-Menu Bar Apps,mon,5,pred_random,0.2,1
-Menu Bar Apps,mon,5,pred_llm_pitch,0.2,1
-Menu Bar Apps,mon,5,pred_ph_only,0.4,1
-Menu Bar Apps,mon,10,pred,0.5,1
-Menu Bar Apps,mon,10,pred_random,0.1,1
-Menu Bar Apps,mon,10,pred_llm_pitch,0.2,1
-Menu Bar Apps,mon,10,pred_ph_only,0.6,1
-SaaS,day,3,pred,0.9333333333333332,5
-SaaS,day,3,pred_random,1.0,5
-SaaS,day,3,pred_llm_pitch,0.9333333333333332,5
-SaaS,day,3,pred_ph_only,0.9333333333333332,5
-SaaS,day,5,pred,1.0,1
-SaaS,day,5,pred_random,1.0,1
-SaaS,day,5,pred_llm_pitch,1.0,1
-SaaS,day,5,pred_ph_only,1.0,1
+Mac,week,3,pred,0.49999999999999994,4
+Mac,week,3,pred_random,0.16666666666666666,4
+Mac,week,3,pred_llm_pitch,0.16666666666666666,4
+Mac,week,3,pred_ph_only,0.49999999999999994,4
+Mac,week,5,pred,0.5,4
+Mac,week,5,pred_random,0.4,4
+Mac,week,5,pred_llm_pitch,0.30000000000000004,4
+Mac,week,5,pred_ph_only,0.35000000000000003,4
+Mac,week,10,pred,0.575,4
+Mac,week,10,pred_random,0.4,4
+Mac,week,10,pred_llm_pitch,0.44999999999999996,4
+Mac,week,10,pred_ph_only,0.65,4
+Mac,mon,3,pred,0.4666666666666666,5
+Mac,mon,3,pred_random,0.13333333333333333,5
+Mac,mon,3,pred_llm_pitch,0.13333333333333333,5
+Mac,mon,3,pred_ph_only,0.5333333333333333,5
+Mac,mon,5,pred,0.48,5
+Mac,mon,5,pred_random,0.12000000000000002,5
+Mac,mon,5,pred_llm_pitch,0.24,5
+Mac,mon,5,pred_ph_only,0.52,5
+Mac,mon,10,pred,0.6199999999999999,5
+Mac,mon,10,pred_random,0.26,5
+Mac,mon,10,pred_llm_pitch,0.38,5
+Mac,mon,10,pred_ph_only,0.6399999999999999,5
+SaaS,day,3,pred,0.9411764705882353,34
+SaaS,day,3,pred_random,0.8823529411764706,34
+SaaS,day,3,pred_llm_pitch,0.9215686274509803,34
+SaaS,day,3,pred_ph_only,0.9411764705882353,34
+SaaS,day,5,pred,0.911111111111111,9
+SaaS,day,5,pred_random,0.8888888888888888,9
+SaaS,day,5,pred_llm_pitch,0.911111111111111,9
+SaaS,day,5,pred_ph_only,0.911111111111111,9
 SaaS,day,10,pred,,0
 SaaS,day,10,pred_random,,0
 SaaS,day,10,pred_llm_pitch,,0
 SaaS,day,10,pred_ph_only,,0
-SaaS,week,3,pred,,0
-SaaS,week,3,pred_random,,0
-SaaS,week,3,pred_llm_pitch,,0
-SaaS,week,3,pred_ph_only,,0
-SaaS,week,5,pred,,0
-SaaS,week,5,pred_random,,0
-SaaS,week,5,pred_llm_pitch,,0
-SaaS,week,5,pred_ph_only,,0
-SaaS,week,10,pred,,0
-SaaS,week,10,pred_random,,0
-SaaS,week,10,pred_llm_pitch,,0
-SaaS,week,10,pred_ph_only,,0
-SaaS,mon,3,pred,0.3333333333333333,1
-SaaS,mon,3,pred_random,0.3333333333333333,1
-SaaS,mon,3,pred_llm_pitch,0.0,1
-SaaS,mon,3,pred_ph_only,0.6666666666666666,1
-SaaS,mon,5,pred,0.2,1
-SaaS,mon,5,pred_random,0.2,1
-SaaS,mon,5,pred_llm_pitch,0.0,1
-SaaS,mon,5,pred_ph_only,0.4,1
-SaaS,mon,10,pred,0.5,1
-SaaS,mon,10,pred_random,0.4,1
-SaaS,mon,10,pred_llm_pitch,0.5,1
-SaaS,mon,10,pred_ph_only,0.4,1
-iOS,day,3,pred,1.0,4
-iOS,day,3,pred_random,1.0,4
-iOS,day,3,pred_llm_pitch,1.0,4
-iOS,day,3,pred_ph_only,1.0,4
-iOS,day,5,pred,,0
-iOS,day,5,pred_random,,0
-iOS,day,5,pred_llm_pitch,,0
-iOS,day,5,pred_ph_only,,0
+SaaS,week,3,pred,0.3333333333333333,2
+SaaS,week,3,pred_random,0.16666666666666666,2
+SaaS,week,3,pred_llm_pitch,0.3333333333333333,2
+SaaS,week,3,pred_ph_only,0.3333333333333333,2
+SaaS,week,5,pred,0.5,2
+SaaS,week,5,pred_random,0.2,2
+SaaS,week,5,pred_llm_pitch,0.4,2
+SaaS,week,5,pred_ph_only,0.4,2
+SaaS,week,10,pred,0.75,2
+SaaS,week,10,pred_random,0.4,2
+SaaS,week,10,pred_llm_pitch,0.65,2
+SaaS,week,10,pred_ph_only,0.8,2
+SaaS,mon,3,pred,0.26666666666666666,5
+SaaS,mon,3,pred_random,0.0,5
+SaaS,mon,3,pred_llm_pitch,0.13333333333333333,5
+SaaS,mon,3,pred_ph_only,0.6,5
+SaaS,mon,5,pred,0.5199999999999999,5
+SaaS,mon,5,pred_random,0.12000000000000002,5
+SaaS,mon,5,pred_llm_pitch,0.16,5
+SaaS,mon,5,pred_ph_only,0.6,5
+SaaS,mon,10,pred,0.6799999999999999,5
+SaaS,mon,10,pred_random,0.22000000000000003,5
+SaaS,mon,10,pred_llm_pitch,0.34,5
+SaaS,mon,10,pred_ph_only,0.62,5
+Design Tools,day,3,pred,0.8974358974358974,26
+Design Tools,day,3,pred_random,0.8333333333333333,26
+Design Tools,day,3,pred_llm_pitch,0.8076923076923077,26
+Design Tools,day,3,pred_ph_only,0.9102564102564101,26
+Design Tools,day,5,pred,0.85,4
+Design Tools,day,5,pred_random,0.8,4
+Design Tools,day,5,pred_llm_pitch,0.8500000000000001,4
+Design Tools,day,5,pred_ph_only,0.85,4
+Design Tools,day,10,pred,,0
+Design Tools,day,10,pred_random,,0
+Design Tools,day,10,pred_llm_pitch,,0
+Design Tools,day,10,pred_ph_only,,0
+Design Tools,week,3,pred,0.7777777777777777,3
+Design Tools,week,3,pred_random,0.3333333333333333,3
+Design Tools,week,3,pred_llm_pitch,0.5555555555555555,3
+Design Tools,week,3,pred_ph_only,0.6666666666666666,3
+Design Tools,week,5,pred,0.8666666666666667,3
+Design Tools,week,5,pred_random,0.5333333333333333,3
+Design Tools,week,5,pred_llm_pitch,0.7333333333333334,3
+Design Tools,week,5,pred_ph_only,0.8666666666666667,3
+Design Tools,week,10,pred,0.8,2
+Design Tools,week,10,pred_random,0.8,2
+Design Tools,week,10,pred_llm_pitch,0.7,2
+Design Tools,week,10,pred_ph_only,0.85,2
+Design Tools,mon,3,pred,0.6666666666666666,5
+Design Tools,mon,3,pred_random,0.0,5
+Design Tools,mon,3,pred_llm_pitch,0.2,5
+Design Tools,mon,3,pred_ph_only,0.6,5
+Design Tools,mon,5,pred,0.6,5
+Design Tools,mon,5,pred_random,0.12000000000000002,5
+Design Tools,mon,5,pred_llm_pitch,0.44000000000000006,5
+Design Tools,mon,5,pred_ph_only,0.56,5
+Design Tools,mon,10,pred,0.76,5
+Design Tools,mon,10,pred_random,0.24,5
+Design Tools,mon,10,pred_llm_pitch,0.5599999999999999,5
+Design Tools,mon,10,pred_ph_only,0.8,5
+Marketing,day,3,pred,0.96,25
+Marketing,day,3,pred_random,0.88,25
+Marketing,day,3,pred_llm_pitch,0.9333333333333332,25
+Marketing,day,3,pred_ph_only,0.96,25
+Marketing,day,5,pred,1.0,5
+Marketing,day,5,pred_random,0.96,5
+Marketing,day,5,pred_llm_pitch,1.0,5
+Marketing,day,5,pred_ph_only,1.0,5
+Marketing,day,10,pred,,0
+Marketing,day,10,pred_random,,0
+Marketing,day,10,pred_llm_pitch,,0
+Marketing,day,10,pred_ph_only,,0
+Marketing,week,3,pred,0.6666666666666666,2
+Marketing,week,3,pred_random,0.6666666666666666,2
+Marketing,week,3,pred_llm_pitch,0.5,2
+Marketing,week,3,pred_ph_only,0.6666666666666666,2
+Marketing,week,5,pred,0.8,2
+Marketing,week,5,pred_random,0.5,2
+Marketing,week,5,pred_llm_pitch,0.5,2
+Marketing,week,5,pred_ph_only,0.7,2
+Marketing,week,10,pred,0.8500000000000001,2
+Marketing,week,10,pred_random,0.6,2
+Marketing,week,10,pred_llm_pitch,0.7,2
+Marketing,week,10,pred_ph_only,0.8500000000000001,2
+Marketing,mon,3,pred,0.4666666666666666,5
+Marketing,mon,3,pred_random,0.06666666666666667,5
+Marketing,mon,3,pred_llm_pitch,0.06666666666666667,5
+Marketing,mon,3,pred_ph_only,0.5333333333333333,5
+Marketing,mon,5,pred,0.56,5
+Marketing,mon,5,pred_random,0.12000000000000002,5
+Marketing,mon,5,pred_llm_pitch,0.16,5
+Marketing,mon,5,pred_ph_only,0.5599999999999999,5
+Marketing,mon,10,pred,0.68,5
+Marketing,mon,10,pred_random,0.24000000000000005,5
+Marketing,mon,10,pred_llm_pitch,0.36000000000000004,5
+Marketing,mon,10,pred_ph_only,0.64,5
+Menu Bar Apps,day,3,pred,0.8771929824561402,19
+Menu Bar Apps,day,3,pred_random,0.8596491228070174,19
+Menu Bar Apps,day,3,pred_llm_pitch,0.8947368421052632,19
+Menu Bar Apps,day,3,pred_ph_only,0.8771929824561402,19
+Menu Bar Apps,day,5,pred,1.0,2
+Menu Bar Apps,day,5,pred_random,0.9,2
+Menu Bar Apps,day,5,pred_llm_pitch,1.0,2
+Menu Bar Apps,day,5,pred_ph_only,0.9,2
+Menu Bar Apps,day,10,pred,,0
+Menu Bar Apps,day,10,pred_random,,0
+Menu Bar Apps,day,10,pred_llm_pitch,,0
+Menu Bar Apps,day,10,pred_ph_only,,0
+Menu Bar Apps,week,3,pred,0.6666666666666666,1
+Menu Bar Apps,week,3,pred_random,0.3333333333333333,1
+Menu Bar Apps,week,3,pred_llm_pitch,0.3333333333333333,1
+Menu Bar Apps,week,3,pred_ph_only,0.6666666666666666,1
+Menu Bar Apps,week,5,pred,0.6,1
+Menu Bar Apps,week,5,pred_random,0.2,1
+Menu Bar Apps,week,5,pred_llm_pitch,0.2,1
+Menu Bar Apps,week,5,pred_ph_only,0.6,1
+Menu Bar Apps,week,10,pred,0.6,1
+Menu Bar Apps,week,10,pred_random,0.4,1
+Menu Bar Apps,week,10,pred_llm_pitch,0.6,1
+Menu Bar Apps,week,10,pred_ph_only,0.6,1
+Menu Bar Apps,mon,3,pred,0.3333333333333333,5
+Menu Bar Apps,mon,3,pred_random,0.2,5
+Menu Bar Apps,mon,3,pred_llm_pitch,0.13333333333333333,5
+Menu Bar Apps,mon,3,pred_ph_only,0.3333333333333333,5
+Menu Bar Apps,mon,5,pred,0.6,5
+Menu Bar Apps,mon,5,pred_random,0.16,5
+Menu Bar Apps,mon,5,pred_llm_pitch,0.24,5
+Menu Bar Apps,mon,5,pred_ph_only,0.52,5
+Menu Bar Apps,mon,10,pred,0.62,5
+Menu Bar Apps,mon,10,pred_random,0.33999999999999997,5
+Menu Bar Apps,mon,10,pred_llm_pitch,0.44000000000000006,5
+Menu Bar Apps,mon,10,pred_ph_only,0.58,5
+Vercel Day,day,3,pred,0.7777777777777777,3
+Vercel Day,day,3,pred_random,0.0,3
+Vercel Day,day,3,pred_llm_pitch,0.2222222222222222,3
+Vercel Day,day,3,pred_ph_only,0.7777777777777777,3
+Vercel Day,day,5,pred,0.7999999999999999,3
+Vercel Day,day,5,pred_random,0.06666666666666667,3
+Vercel Day,day,5,pred_llm_pitch,0.26666666666666666,3
+Vercel Day,day,5,pred_ph_only,0.6,3
+Vercel Day,day,10,pred,0.7666666666666666,3
+Vercel Day,day,10,pred_random,0.13333333333333333,3
+Vercel Day,day,10,pred_llm_pitch,0.3333333333333333,3
+Vercel Day,day,10,pred_ph_only,0.6,3
+Vercel Day,week,3,pred,,0
+Vercel Day,week,3,pred_random,,0
+Vercel Day,week,3,pred_llm_pitch,,0
+Vercel Day,week,3,pred_ph_only,,0
+Vercel Day,week,5,pred,,0
+Vercel Day,week,5,pred_random,,0
+Vercel Day,week,5,pred_llm_pitch,,0
+Vercel Day,week,5,pred_ph_only,,0
+Vercel Day,week,10,pred,,0
+Vercel Day,week,10,pred_random,,0
+Vercel Day,week,10,pred_llm_pitch,,0
+Vercel Day,week,10,pred_ph_only,,0
+Vercel Day,mon,3,pred,0.7777777777777777,3
+Vercel Day,mon,3,pred_random,0.1111111111111111,3
+Vercel Day,mon,3,pred_llm_pitch,0.1111111111111111,3
+Vercel Day,mon,3,pred_ph_only,0.7777777777777777,3
+Vercel Day,mon,5,pred,0.7333333333333334,3
+Vercel Day,mon,5,pred_random,0.06666666666666667,3
+Vercel Day,mon,5,pred_llm_pitch,0.26666666666666666,3
+Vercel Day,mon,5,pred_ph_only,0.6666666666666666,3
+Vercel Day,mon,10,pred,0.7666666666666666,3
+Vercel Day,mon,10,pred_random,0.16666666666666666,3
+Vercel Day,mon,10,pred_llm_pitch,0.4000000000000001,3
+Vercel Day,mon,10,pred_ph_only,0.6333333333333333,3
+API,day,3,pred,1.0,10
+API,day,3,pred_random,0.9,10
+API,day,3,pred_llm_pitch,0.9333333333333332,10
+API,day,3,pred_ph_only,1.0,10
+API,day,5,pred,1.0,1
+API,day,5,pred_random,1.0,1
+API,day,5,pred_llm_pitch,1.0,1
+API,day,5,pred_ph_only,1.0,1
+API,day,10,pred,,0
+API,day,10,pred_random,,0
+API,day,10,pred_llm_pitch,,0
+API,day,10,pred_ph_only,,0
+API,week,3,pred,,0
+API,week,3,pred_random,,0
+API,week,3,pred_llm_pitch,,0
+API,week,3,pred_ph_only,,0
+API,week,5,pred,,0
+API,week,5,pred_random,,0
+API,week,5,pred_llm_pitch,,0
+API,week,5,pred_ph_only,,0
+API,week,10,pred,,0
+API,week,10,pred_random,,0
+API,week,10,pred_llm_pitch,,0
+API,week,10,pred_ph_only,,0
+API,mon,3,pred,0.7333333333333333,5
+API,mon,3,pred_random,0.0,5
+API,mon,3,pred_llm_pitch,0.13333333333333333,5
+API,mon,3,pred_ph_only,0.5999999999999999,5
+API,mon,5,pred,0.64,5
+API,mon,5,pred_random,0.04,5
+API,mon,5,pred_llm_pitch,0.24,5
+API,mon,5,pred_ph_only,0.6399999999999999,5
+API,mon,10,pred,0.7799999999999999,5
+API,mon,10,pred_random,0.15999999999999998,5
+API,mon,10,pred_llm_pitch,0.44000000000000006,5
+API,mon,10,pred_ph_only,0.74,5
+OpenAI Day,day,3,pred,0.6666666666666666,2
+OpenAI Day,day,3,pred_random,0.16666666666666666,2
+OpenAI Day,day,3,pred_llm_pitch,0.16666666666666666,2
+OpenAI Day,day,3,pred_ph_only,0.8333333333333333,2
+OpenAI Day,day,5,pred,0.7,2
+OpenAI Day,day,5,pred_random,0.1,2
+OpenAI Day,day,5,pred_llm_pitch,0.1,2
+OpenAI Day,day,5,pred_ph_only,0.7,2
+OpenAI Day,day,10,pred,0.75,2
+OpenAI Day,day,10,pred_random,0.15000000000000002,2
+OpenAI Day,day,10,pred_llm_pitch,0.2,2
+OpenAI Day,day,10,pred_ph_only,0.75,2
+OpenAI Day,week,3,pred,,0
+OpenAI Day,week,3,pred_random,,0
+OpenAI Day,week,3,pred_llm_pitch,,0
+OpenAI Day,week,3,pred_ph_only,,0
+OpenAI Day,week,5,pred,,0
+OpenAI Day,week,5,pred_random,,0
+OpenAI Day,week,5,pred_llm_pitch,,0
+OpenAI Day,week,5,pred_ph_only,,0
+OpenAI Day,week,10,pred,,0
+OpenAI Day,week,10,pred_random,,0
+OpenAI Day,week,10,pred_llm_pitch,,0
+OpenAI Day,week,10,pred_ph_only,,0
+OpenAI Day,mon,3,pred,0.8333333333333333,2
+OpenAI Day,mon,3,pred_random,0.16666666666666666,2
+OpenAI Day,mon,3,pred_llm_pitch,0.16666666666666666,2
+OpenAI Day,mon,3,pred_ph_only,0.8333333333333333,2
+OpenAI Day,mon,5,pred,0.8,2
+OpenAI Day,mon,5,pred_random,0.1,2
+OpenAI Day,mon,5,pred_llm_pitch,0.1,2
+OpenAI Day,mon,5,pred_ph_only,0.8,2
+OpenAI Day,mon,10,pred,0.8,2
+OpenAI Day,mon,10,pred_random,0.15000000000000002,2
+OpenAI Day,mon,10,pred_llm_pitch,0.15000000000000002,2
+OpenAI Day,mon,10,pred_ph_only,0.8,2
+Tech,day,3,pred,0.9259259259259258,9
+Tech,day,3,pred_random,0.8518518518518519,9
+Tech,day,3,pred_llm_pitch,0.8888888888888888,9
+Tech,day,3,pred_ph_only,0.8888888888888888,9
+Tech,day,5,pred,1.0,2
+Tech,day,5,pred_random,1.0,2
+Tech,day,5,pred_llm_pitch,1.0,2
+Tech,day,5,pred_ph_only,1.0,2
+Tech,day,10,pred,,0
+Tech,day,10,pred_random,,0
+Tech,day,10,pred_llm_pitch,,0
+Tech,day,10,pred_ph_only,,0
+Tech,week,3,pred,,0
+Tech,week,3,pred_random,,0
+Tech,week,3,pred_llm_pitch,,0
+Tech,week,3,pred_ph_only,,0
+Tech,week,5,pred,,0
+Tech,week,5,pred_random,,0
+Tech,week,5,pred_llm_pitch,,0
+Tech,week,5,pred_ph_only,,0
+Tech,week,10,pred,,0
+Tech,week,10,pred_random,,0
+Tech,week,10,pred_llm_pitch,,0
+Tech,week,10,pred_ph_only,,0
+Tech,mon,3,pred,0.4666666666666666,5
+Tech,mon,3,pred_random,0.26666666666666666,5
+Tech,mon,3,pred_llm_pitch,0.2,5
+Tech,mon,3,pred_ph_only,0.39999999999999997,5
+Tech,mon,5,pred,0.6799999999999999,5
+Tech,mon,5,pred_random,0.24,5
+Tech,mon,5,pred_llm_pitch,0.28,5
+Tech,mon,5,pred_ph_only,0.48,5
+Tech,mon,10,pred,0.76,5
+Tech,mon,10,pred_random,0.4,5
+Tech,mon,10,pred_llm_pitch,0.6,5
+Tech,mon,10,pred_ph_only,0.8,5
+iOS,day,3,pred,0.9090909090909091,11
+iOS,day,3,pred_random,1.0,11
+iOS,day,3,pred_llm_pitch,0.9393939393939393,11
+iOS,day,3,pred_ph_only,0.9090909090909091,11
+iOS,day,5,pred,0.9,2
+iOS,day,5,pred_random,0.8,2
+iOS,day,5,pred_llm_pitch,0.9,2
+iOS,day,5,pred_ph_only,0.8,2
 iOS,day,10,pred,,0
 iOS,day,10,pred_random,,0
 iOS,day,10,pred_llm_pitch,,0
@@ -383,159 +527,15 @@ iOS,week,10,pred,,0
 iOS,week,10,pred_random,,0
 iOS,week,10,pred_llm_pitch,,0
 iOS,week,10,pred_ph_only,,0
-iOS,mon,3,pred,0.6666666666666666,1
-iOS,mon,3,pred_random,0.0,1
-iOS,mon,3,pred_llm_pitch,0.3333333333333333,1
-iOS,mon,3,pred_ph_only,0.6666666666666666,1
-iOS,mon,5,pred,0.4,1
-iOS,mon,5,pred_random,0.0,1
-iOS,mon,5,pred_llm_pitch,0.4,1
-iOS,mon,5,pred_ph_only,0.4,1
-iOS,mon,10,pred,0.4,1
-iOS,mon,10,pred_random,0.2,1
-iOS,mon,10,pred_llm_pitch,0.5,1
-iOS,mon,10,pred_ph_only,0.4,1
-Android,day,3,pred,0.7777777777777777,3
-Android,day,3,pred_random,0.7777777777777777,3
-Android,day,3,pred_llm_pitch,0.6666666666666666,3
-Android,day,3,pred_ph_only,0.7777777777777777,3
-Android,day,5,pred,1.0,1
-Android,day,5,pred_random,1.0,1
-Android,day,5,pred_llm_pitch,1.0,1
-Android,day,5,pred_ph_only,1.0,1
-Android,day,10,pred,,0
-Android,day,10,pred_random,,0
-Android,day,10,pred_llm_pitch,,0
-Android,day,10,pred_ph_only,,0
-Android,week,3,pred,,0
-Android,week,3,pred_random,,0
-Android,week,3,pred_llm_pitch,,0
-Android,week,3,pred_ph_only,,0
-Android,week,5,pred,,0
-Android,week,5,pred_random,,0
-Android,week,5,pred_llm_pitch,,0
-Android,week,5,pred_ph_only,,0
-Android,week,10,pred,,0
-Android,week,10,pred_random,,0
-Android,week,10,pred_llm_pitch,,0
-Android,week,10,pred_ph_only,,0
-Android,mon,3,pred,0.3333333333333333,1
-Android,mon,3,pred_random,0.0,1
-Android,mon,3,pred_llm_pitch,0.3333333333333333,1
-Android,mon,3,pred_ph_only,0.0,1
-Android,mon,5,pred,0.6,1
-Android,mon,5,pred_random,0.2,1
-Android,mon,5,pred_llm_pitch,0.4,1
-Android,mon,5,pred_ph_only,0.6,1
-Android,mon,10,pred,0.5,1
-Android,mon,10,pred_random,0.3,1
-Android,mon,10,pred_llm_pitch,0.4,1
-Android,mon,10,pred_ph_only,0.6,1
-Privacy,day,3,pred,0.8888888888888888,3
-Privacy,day,3,pred_random,0.7777777777777778,3
-Privacy,day,3,pred_llm_pitch,0.8888888888888888,3
-Privacy,day,3,pred_ph_only,0.8888888888888888,3
-Privacy,day,5,pred,1.0,1
-Privacy,day,5,pred_random,1.0,1
-Privacy,day,5,pred_llm_pitch,1.0,1
-Privacy,day,5,pred_ph_only,1.0,1
-Privacy,day,10,pred,,0
-Privacy,day,10,pred_random,,0
-Privacy,day,10,pred_llm_pitch,,0
-Privacy,day,10,pred_ph_only,,0
-Privacy,week,3,pred,,0
-Privacy,week,3,pred_random,,0
-Privacy,week,3,pred_llm_pitch,,0
-Privacy,week,3,pred_ph_only,,0
-Privacy,week,5,pred,,0
-Privacy,week,5,pred_random,,0
-Privacy,week,5,pred_llm_pitch,,0
-Privacy,week,5,pred_ph_only,,0
-Privacy,week,10,pred,,0
-Privacy,week,10,pred_random,,0
-Privacy,week,10,pred_llm_pitch,,0
-Privacy,week,10,pred_ph_only,,0
-Privacy,mon,3,pred,0.3333333333333333,1
-Privacy,mon,3,pred_random,0.0,1
-Privacy,mon,3,pred_llm_pitch,0.3333333333333333,1
-Privacy,mon,3,pred_ph_only,0.6666666666666666,1
-Privacy,mon,5,pred,0.6,1
-Privacy,mon,5,pred_random,0.0,1
-Privacy,mon,5,pred_llm_pitch,0.4,1
-Privacy,mon,5,pred_ph_only,0.8,1
-Privacy,mon,10,pred,0.8,1
-Privacy,mon,10,pred_random,0.3,1
-Privacy,mon,10,pred_llm_pitch,0.5,1
-Privacy,mon,10,pred_ph_only,0.7,1
-Video,day,3,pred,1.0,2
-Video,day,3,pred_random,1.0,2
-Video,day,3,pred_llm_pitch,1.0,2
-Video,day,3,pred_ph_only,1.0,2
-Video,day,5,pred,,0
-Video,day,5,pred_random,,0
-Video,day,5,pred_llm_pitch,,0
-Video,day,5,pred_ph_only,,0
-Video,day,10,pred,,0
-Video,day,10,pred_random,,0
-Video,day,10,pred_llm_pitch,,0
-Video,day,10,pred_ph_only,,0
-Video,week,3,pred,0.6666666666666666,1
-Video,week,3,pred_random,0.3333333333333333,1
-Video,week,3,pred_llm_pitch,0.6666666666666666,1
-Video,week,3,pred_ph_only,0.6666666666666666,1
-Video,week,5,pred,0.8,1
-Video,week,5,pred_random,0.6,1
-Video,week,5,pred_llm_pitch,0.6,1
-Video,week,5,pred_ph_only,0.8,1
-Video,week,10,pred,1.0,1
-Video,week,10,pred_random,1.0,1
-Video,week,10,pred_llm_pitch,1.0,1
-Video,week,10,pred_ph_only,1.0,1
-Video,mon,3,pred,0.3333333333333333,1
-Video,mon,3,pred_random,0.0,1
-Video,mon,3,pred_llm_pitch,0.3333333333333333,1
-Video,mon,3,pred_ph_only,0.6666666666666666,1
-Video,mon,5,pred,0.4,1
-Video,mon,5,pred_random,0.2,1
-Video,mon,5,pred_llm_pitch,0.2,1
-Video,mon,5,pred_ph_only,0.6,1
-Video,mon,10,pred,0.8,1
-Video,mon,10,pred_random,0.5,1
-Video,mon,10,pred_llm_pitch,0.5,1
-Video,mon,10,pred_ph_only,0.8,1
-Google Cloud Run,day,3,pred,0.6666666666666666,1
-Google Cloud Run,day,3,pred_random,0.0,1
-Google Cloud Run,day,3,pred_llm_pitch,0.3333333333333333,1
-Google Cloud Run,day,3,pred_ph_only,0.6666666666666666,1
-Google Cloud Run,day,5,pred,0.8,1
-Google Cloud Run,day,5,pred_random,0.2,1
-Google Cloud Run,day,5,pred_llm_pitch,0.4,1
-Google Cloud Run,day,5,pred_ph_only,0.8,1
-Google Cloud Run,day,10,pred,0.7,1
-Google Cloud Run,day,10,pred_random,0.4,1
-Google Cloud Run,day,10,pred_llm_pitch,0.4,1
-Google Cloud Run,day,10,pred_ph_only,0.6,1
-Google Cloud Run,week,3,pred,,0
-Google Cloud Run,week,3,pred_random,,0
-Google Cloud Run,week,3,pred_llm_pitch,,0
-Google Cloud Run,week,3,pred_ph_only,,0
-Google Cloud Run,week,5,pred,,0
-Google Cloud Run,week,5,pred_random,,0
-Google Cloud Run,week,5,pred_llm_pitch,,0
-Google Cloud Run,week,5,pred_ph_only,,0
-Google Cloud Run,week,10,pred,,0
-Google Cloud Run,week,10,pred_random,,0
-Google Cloud Run,week,10,pred_llm_pitch,,0
-Google Cloud Run,week,10,pred_ph_only,,0
-Google Cloud Run,mon,3,pred,0.6666666666666666,1
-Google Cloud Run,mon,3,pred_random,0.0,1
-Google Cloud Run,mon,3,pred_llm_pitch,0.3333333333333333,1
-Google Cloud Run,mon,3,pred_ph_only,0.6666666666666666,1
-Google Cloud Run,mon,5,pred,0.8,1
-Google Cloud Run,mon,5,pred_random,0.2,1
-Google Cloud Run,mon,5,pred_llm_pitch,0.4,1
-Google Cloud Run,mon,5,pred_ph_only,0.8,1
-Google Cloud Run,mon,10,pred,0.7,1
-Google Cloud Run,mon,10,pred_random,0.4,1
-Google Cloud Run,mon,10,pred_llm_pitch,0.4,1
-Google Cloud Run,mon,10,pred_ph_only,0.6,1
+iOS,mon,3,pred,0.7333333333333333,5
+iOS,mon,3,pred_random,0.13333333333333333,5
+iOS,mon,3,pred_llm_pitch,0.39999999999999997,5
+iOS,mon,3,pred_ph_only,0.7333333333333333,5
+iOS,mon,5,pred,0.6399999999999999,5
+iOS,mon,5,pred_random,0.24,5
+iOS,mon,5,pred_llm_pitch,0.48,5
+iOS,mon,5,pred_ph_only,0.64,5
+iOS,mon,10,pred,0.72,5
+iOS,mon,10,pred_random,0.48,5
+iOS,mon,10,pred_llm_pitch,0.62,5
+iOS,mon,10,pred_ph_only,0.7,5

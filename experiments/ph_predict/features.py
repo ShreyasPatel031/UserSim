@@ -79,14 +79,17 @@ def web_feats(rec):
     return f, txt
 
 
-def build():
+def build(include_today=False):
     rows, sites = [], _jl("sites.jsonl", "id")
+    sites.update(_jl("sites_today.jsonl", "id"))
     xs, rd, hn = _jl("ext_x.jsonl"), _jl("ext_rdap.jsonl"), _jl("ext_hn.jsonl")
     llm = _jl("llm.jsonl", "id")
     wbav = _jl("ext_wb.jsonl")
     import external as E
-    for fn in sorted(glob.glob(f"{D}/days/*.json")):
+    files = sorted(glob.glob(f"{D}/days/*.json")) + (sorted(glob.glob(f"{D}/today/*.json")) if include_today else [])
+    for fn in files:
         day = os.path.basename(fn)[:10]
+        is_today = "/today/" in fn
         posts = json.load(open(fn))
         for p in posts:
             t = _ts(p["featuredAt"] or p["createdAt"])
@@ -97,7 +100,9 @@ def build():
                  "description": p.get("description") or "", "topics": topics,
                  "votes": p["votesCount"], "comments": p["commentsCount"], "dailyRank": p["dailyRank"],
                  "weeklyRank": p["weeklyRank"], "monthlyRank": p["monthlyRank"],
-                 "hunter_id": hunter.get("id"), "maker_ids": [m["id"] for m in mk]}
+                 "hunter_id": hunter.get("id"), "maker_ids": [m["id"] for m in mk], "is_today": is_today}
+            if is_today:  # results not final: never a label, never history
+                r.update(votes=np.nan, comments=np.nan, dailyRank=np.nan, weeklyRank=np.nan, monthlyRank=np.nan)
             mf = [m.get("followersCount") or 0 for m in mk]
             r.update({
                 "ph_hunter_followers": math.log1p(hunter.get("followersCount") or 0),
@@ -163,6 +168,7 @@ def build():
             rows.append(r)
     df = pd.DataFrame(rows)
     df = add_history(df)
+    df["ph_hunter_n_same_day"] = df.groupby(["day", "hunter_id"]).id.transform("count")
     for c in ["ph_hunter_followers", "ph_hunter_age_d", "ph_n_makers", "ph_n_media", "x_hunter_followers",
               "x_maker_max_followers", "x_company_followers", "hist_hunter_rel", "hist_maker_rel_max",
               "dom_age_d", "web_text_words"]:

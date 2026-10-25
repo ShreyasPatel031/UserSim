@@ -1,0 +1,260 @@
+<style>
+.ph { display: grid; gap: var(--cds-gap-xl); font-family: var(--font-anthropic-sans); }
+.ph-head h1 { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); margin: 0; text-wrap: balance; }
+.ph-head p { margin: var(--cds-gap-sm) 0 0; max-width: 62ch; color: var(--color-fg); line-height: 1.5; }
+.ph-head .ph-sub { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); }
+.ph-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr)); gap: var(--cds-gap-md); }
+.ph-tile, .ph-card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); min-width: 0; }
+.ph-tile .ph-big { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); font-variant-numeric: tabular-nums; }
+.ph-tile .ph-lab { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); }
+.ph-tile .ph-ci { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; }
+.ph-sec { display: grid; gap: var(--cds-gap-md); }
+.ph-sec > h2 { font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); margin: 0; }
+.ph-sec > p { margin: 0; color: var(--color-fg-muted); max-width: 70ch; line-height: 1.5; }
+.ph-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); gap: var(--cds-gap-md); }
+.ph-card h3 { font-size: var(--cds-font-size-body); font-weight: var(--cds-font-weight-medium); margin: 0 0 var(--cds-gap-xs); }
+.ph-card .ph-note { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); margin: 0 0 var(--cds-gap-sm); }
+.ph-chart { position: relative; min-height: 12rem; }
+.ph-tip { position: absolute; pointer-events: none; background: var(--cds-surface-popover); border: 1px solid var(--cds-border); border-radius: var(--cds-radius); box-shadow: var(--cds-shadow-popover); padding: var(--cds-pad-xs) var(--cds-pad-sm); font-size: var(--cds-font-size-caption); white-space: nowrap; }
+.ph-tip .ph-tip-h { color: var(--cds-text-secondary); }
+.ph-k { display: inline-flex; gap: var(--cds-gap-xs); }
+.ph-k button { font: inherit; font-size: var(--cds-font-size-caption); padding: var(--cds-pad-xs) var(--cds-pad-sm); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: var(--color-bg); color: var(--color-fg); cursor: pointer; }
+.ph-k button[aria-pressed="true"] { background: var(--color-fg); color: var(--color-bg); }
+.ph-k button:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 2px; }
+.ph-scroll { overflow-x: auto; }
+.ph table { border-collapse: collapse; width: 100%; font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; }
+.ph th, .ph td { text-align: left; padding: var(--cds-pad-xs) var(--cds-pad-sm); border-bottom: 1px solid var(--color-border-line); }
+.ph th { color: var(--color-fg-muted); font-weight: var(--cds-font-weight-medium); }
+.ph td.num, .ph th.num { text-align: right; }
+.ph .hit { color: var(--color-ok); }
+.ph .miss { color: var(--color-fg-muted); }
+[data-dash-source-state=empty] { color: transparent; }
+[data-dash-source-state=refreshing] { opacity: .5; transition: opacity var(--cds-dur-slow); }
+.ph-fail { display: flex; align-items: center; justify-content: center; gap: var(--cds-gap-xs); color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); min-height: inherit; }
+.ph-fail::before { content: ""; width: .375rem; height: .375rem; border-radius: 50%; background: var(--color-bad); }
+</style>
+
+<div class="ph">
+  <header class="ph-head" id="top">
+    <h1>Product Hunt top-list predictor</h1>
+    <p>Backtest over <b data-source="meta" data-field="days" data-row="0">—</b> daily lists,
+      <b data-source="meta" data-field="weeks" data-row="0">—</b> weekly lists and
+      <b data-source="meta" data-field="months" data-row="0">—</b> monthly lists
+      (<span data-source="meta" data-field="first_month" data-row="0">—</span> to
+      <span data-source="meta" data-field="last_month" data-row="0">—</span>). Each month is predicted by a model trained only on earlier months,
+      and no launch's own votes, comments or ranks are used. Who posts the launch (the hunter's audience and track record) carries most of the signal;
+      the pitch, homepage and LLM judgements add little on top.</p>
+    <p class="ph-sub">Recall@k = share of the real top k that the predicted top k contains, averaged over lists; ranges are 95% bootstrap intervals.</p>
+  </header>
+
+  <section class="ph-tiles" aria-label="Headline accuracy">
+    <div class="ph-tile"><div class="ph-lab">Daily list, top 3</div>
+      <div class="ph-big"><span data-source="recall" data-field="recall" data-where="id=pred%7CDaily%7C3">—</span>%</div>
+      <div class="ph-ci"><span data-source="recall" data-field="lo" data-where="id=pred%7CDaily%7C3">—</span>–<span data-source="recall" data-field="hi" data-where="id=pred%7CDaily%7C3">—</span>% · random <span data-source="recall" data-field="recall" data-where="id=pred_random%7CDaily%7C3">—</span>%</div></div>
+    <div class="ph-tile"><div class="ph-lab">Daily list, top 5</div>
+      <div class="ph-big"><span data-source="recall" data-field="recall" data-where="id=pred%7CDaily%7C5">—</span>%</div>
+      <div class="ph-ci"><span data-source="recall" data-field="lo" data-where="id=pred%7CDaily%7C5">—</span>–<span data-source="recall" data-field="hi" data-where="id=pred%7CDaily%7C5">—</span>% · random <span data-source="recall" data-field="recall" data-where="id=pred_random%7CDaily%7C5">—</span>%</div></div>
+    <div class="ph-tile"><div class="ph-lab">Daily list, top 10</div>
+      <div class="ph-big"><span data-source="recall" data-field="recall" data-where="id=pred%7CDaily%7C10">—</span>%</div>
+      <div class="ph-ci"><span data-source="recall" data-field="lo" data-where="id=pred%7CDaily%7C10">—</span>–<span data-source="recall" data-field="hi" data-where="id=pred%7CDaily%7C10">—</span>% · random <span data-source="recall" data-field="recall" data-where="id=pred_random%7CDaily%7C10">—</span>%</div></div>
+    <div class="ph-tile"><div class="ph-lab">Weekly list, top 10 (weekly-list model)</div>
+      <div class="ph-big"><span data-source="recall" data-field="recall" data-where="id=pred_week_model%7CWeekly%7C10">—</span>%</div>
+      <div class="ph-ci"><span data-source="recall" data-field="lo" data-where="id=pred_week_model%7CWeekly%7C10">—</span>–<span data-source="recall" data-field="hi" data-where="id=pred_week_model%7CWeekly%7C10">—</span>% · random <span data-source="recall" data-field="recall" data-where="id=pred_random%7CWeekly%7C10">—</span>%</div></div>
+    <div class="ph-tile"><div class="ph-lab">Monthly list, top 10 (monthly-list model)</div>
+      <div class="ph-big"><span data-source="recall" data-field="recall" data-where="id=pred_month_model%7CMonthly%7C10">—</span>%</div>
+      <div class="ph-ci"><span data-source="recall" data-field="lo" data-where="id=pred_month_model%7CMonthly%7C10">—</span>–<span data-source="recall" data-field="hi" data-where="id=pred_month_model%7CMonthly%7C10">—</span>% · random <span data-source="recall" data-field="recall" data-where="id=pred_random%7CMonthly%7C10">—</span>%</div></div>
+  </section>
+
+  <section class="ph-sec" id="accuracy">
+    <h2>Recall@k by list and method</h2>
+    <p>A: random. B: the LLM reads only the pitch. C: the LLM also reads the homepage. D: Product Hunt audience and metadata only. The full model adds every other source. The weekly and monthly list models are trained on "finished in the week's top 10 / month's top 20".</p>
+    <div class="ph-k" role="group" aria-label="k">
+      <button type="button" id="k3" data-k="3" aria-pressed="false">Top 3</button>
+      <button type="button" id="k5" data-k="5" aria-pressed="true">Top 5</button>
+      <button type="button" id="k10" data-k="10" aria-pressed="false">Top 10</button>
+    </div>
+    <div class="ph-grid">
+      <div class="ph-card"><h3>Daily lists</h3><p class="ph-note">"Yesterday's Top Products"</p><div class="ph-chart" id="rc-Daily" data-source="recall"></div></div>
+      <div class="ph-card"><h3>Weekly lists</h3><p class="ph-note">"Last Week's Top Products"</p><div class="ph-chart" id="rc-Weekly" data-source="recall"></div></div>
+      <div class="ph-card"><h3>Monthly lists</h3><p class="ph-note">"Last Month's Top Products"; few lists, wide ranges</p><div class="ph-chart" id="rc-Monthly" data-source="recall"></div></div>
+    </div>
+  </section>
+
+  <section class="ph-sec" id="sources">
+    <h2>Which sources predict</h2>
+    <p>Left: a model given only that source, scored on the daily top 5. Right: how much the full model loses on the daily top 5 when that source is removed.</p>
+    <div class="ph-card"><div class="ph-chart" id="src-chart" data-source="sources"></div></div>
+  </section>
+
+  <section class="ph-sec" id="factors">
+    <h2>Which factors matter</h2>
+    <p>How often a launch finishes in its day's top 5 when a factor is high (top third, or yes) versus low (bottom third, or no), across all collected launches. Descriptive, not a backtest.</p>
+    <div class="ph-card"><div class="ph-chart" id="fac-chart" data-source="factors"></div></div>
+    <div class="ph-card"><h3>How the factors change across product types</h3>
+      <p class="ph-note">Top-5 rate when high divided by when low, per type (blank where a type has too few launches; above 1 helps, below 1 hurts)</p>
+      <div class="ph-scroll"><table id="fac-type" data-source="factors" data-row-key="factor">
+        <thead><tr><th data-field="factor">Factor</th><th class="num" data-field="ai">AI</th><th class="num" data-field="dev">Dev</th><th class="num" data-field="productivity">Productivity</th><th class="num" data-field="design">Design</th><th class="num" data-field="marketing">Marketing</th><th class="num" data-field="consumer">Consumer</th><th class="num" data-field="other">Other</th></tr></thead>
+        <tbody></tbody></table></div></div>
+    <div class="ph-card"><h3>Share of the model's decision by source, per product type</h3>
+      <p class="ph-note">Mean absolute contribution to the prediction, as a share of the total</p>
+      <div class="ph-scroll"><table id="imp-type" data-source="importance_by_type" data-row-key="type"><thead></thead><tbody></tbody></table></div></div>
+  </section>
+
+  <section class="ph-sec" id="types">
+    <h2>Accuracy by product type and topic</h2>
+    <div class="ph-grid">
+      <div class="ph-card"><h3>By product type</h3><p class="ph-note">Of each type's real daily top-5 launches, the share the model had in its daily top 5</p>
+        <div class="ph-scroll"><table id="bytype" data-source="by_type" data-row-key="type">
+          <thead><tr><th data-field="type">Type</th><th class="num" data-field="launches">Launches</th><th class="num" data-field="real_top5">Real top 5</th><th class="num" data-field="caught">Caught %</th><th class="num" data-field="rank_corr">Rank corr.</th></tr></thead><tbody></tbody></table></div></div>
+      <div class="ph-card"><h3>Topic lists, top 5</h3><p class="ph-note">Top 5 by votes among a topic's launches; model vs random, recall %</p>
+        <div class="ph-scroll"><table id="topics" data-source="topic_lists" data-row-key="topic">
+          <thead><tr><th data-field="topic">Topic</th><th class="num" data-field="day_model">Day</th><th class="num" data-field="day_random">rand.</th><th class="num" data-field="week_model">Week</th><th class="num" data-field="week_random">rand.</th><th class="num" data-field="month_model">Month</th><th class="num" data-field="month_random">rand.</th></tr></thead><tbody></tbody></table></div></div>
+    </div>
+  </section>
+
+  <section class="ph-sec" id="lists">
+    <h2>The three front-page lists as of Oct 25</h2>
+    <p>Each predicted by a model trained only on months before it. Green: in both the real and the predicted top 10.</p>
+    <div class="ph-grid" id="named"></div>
+  </section>
+</div>
+
+<script>
+(function () {
+  let K = 5;
+  const methods = ["Full model", "Weekly-list model", "Monthly-list model", "D · PH audience only", "C · LLM reads homepage", "B · LLM reads pitch", "A · Random"];
+  const fmtPct = (v) => v == null ? "–" : v + "%";
+  const fail = (el, id) => { const s = dash.data(id).status; if (s === "error" || s === "missing") { el.innerHTML = ""; const d = document.createElement("div"); d.className = "ph-fail"; d.textContent = "Failed to load"; el.appendChild(d); return true; } return false; };
+
+  function tipFor(box) {
+    let t = box.querySelector(".ph-tip");
+    if (!t) { t = document.createElement("div"); t.className = "ph-tip"; t.hidden = true; box.appendChild(t); }
+    return t;
+  }
+  function showTip(box, tip, ev, head, line) {
+    tip.innerHTML = ""; const h = document.createElement("div"); h.className = "ph-tip-h"; h.textContent = head; tip.appendChild(h);
+    const l = document.createElement("div"); l.textContent = line; tip.appendChild(l); tip.hidden = false;
+    const r = box.getBoundingClientRect(); let x = ev.clientX - r.left + 12, y = ev.clientY - r.top + 12;
+    x = Math.min(x, box.clientWidth - tip.offsetWidth - 4); tip.style.left = Math.max(0, x) + "px"; tip.style.top = y + "px";
+  }
+
+  function hbars(box, rows, label, value, opts) {
+    box.querySelectorAll("svg").forEach((s) => s.remove());
+    const W = Math.max(260, box.clientWidth), rowH = 26;
+    const svg = d3.select(box).append("svg").attr("width", "100%");
+    const probe = svg.append("text").attr("font-size", "var(--cds-font-size-caption)");
+    let lw = 0; rows.forEach((r) => { probe.text(label(r)); lw = Math.max(lw, probe.node().getComputedTextLength()); }); probe.remove();
+    lw = Math.min(lw + 8, W * 0.45);
+    const m = { l: lw, r: 44, t: 18, b: 6 }, H = m.t + rows.length * rowH + m.b;
+    svg.attr("viewBox", `0 0 ${W} ${H}`);
+    const x = d3.scaleLinear(opts.domain, [m.l, W - m.r]);
+    const y = d3.scaleBand(rows.map(label), [m.t, H - m.b]).padding(0.3);
+    svg.append("g").selectAll("line").data(x.ticks(4)).join("line").attr("x1", (d) => x(d)).attr("x2", (d) => x(d)).attr("y1", m.t - 4).attr("y2", H - m.b).attr("stroke", "var(--cds-chart-grid)");
+    svg.append("g").selectAll("text").data(x.ticks(4)).join("text").attr("x", (d) => x(d)).attr("y", 10).attr("text-anchor", "middle").attr("font-size", "var(--cds-font-size-caption)").attr("fill", "var(--color-fg-muted)").text((d) => opts.tick(d));
+    if (opts.domain[0] < 0) svg.append("line").attr("x1", x(0)).attr("x2", x(0)).attr("y1", m.t - 4).attr("y2", H - m.b).attr("stroke", "var(--cds-chart-axis)");
+    const tip = tipFor(box);
+    const g = svg.append("g").selectAll("g").data(rows).join("g");
+    g.append("text").attr("x", m.l - 8).attr("y", (r) => y(label(r)) + y.bandwidth() / 2).attr("dy", "0.35em").attr("text-anchor", "end").attr("font-size", "var(--cds-font-size-caption)").attr("fill", "var(--color-fg)").text(label);
+    g.append("rect").attr("x", (r) => x(Math.min(0, value(r)))).attr("y", (r) => y(label(r))).attr("height", y.bandwidth()).attr("rx", 4)
+      .attr("width", (r) => Math.max(1, Math.abs(x(value(r)) - x(0)))).attr("fill", (r) => opts.color(r))
+      .on("mousemove", (ev, r) => showTip(box, tip, ev, label(r), opts.tip(r))).on("mouseleave", () => { tip.hidden = true; });
+    if (opts.ci) g.append("line").attr("x1", (r) => x(opts.ci(r)[0])).attr("x2", (r) => x(opts.ci(r)[1])).attr("y1", (r) => y(label(r)) + y.bandwidth() / 2).attr("y2", (r) => y(label(r)) + y.bandwidth() / 2).attr("stroke", "var(--color-fg)").attr("stroke-width", 1.5).attr("opacity", (r) => opts.ci(r)[0] == null ? 0 : 0.7);
+    g.append("text").attr("x", (r) => x(Math.max(0, value(r))) + 4).attr("y", (r) => y(label(r)) + y.bandwidth() / 2).attr("dy", "0.35em").attr("font-size", "var(--cds-font-size-caption)").attr("fill", "var(--color-fg-muted)").text((r) => opts.end(r));
+  }
+
+  function fillTable(tbl, rows, cells) {
+    const tb = tbl.querySelector("tbody"); tb.innerHTML = "";
+    rows.forEach((r) => { const tr = document.createElement("tr"); cells.forEach(([f, cls, fmt]) => { const td = document.createElement("td"); if (cls) td.className = cls; td.textContent = fmt ? fmt(r[f], r) : (r[f] == null ? "" : r[f]); tr.appendChild(td); }); tb.appendChild(tr); });
+  }
+
+  document.querySelectorAll(".ph-k button").forEach((b) => b.addEventListener("click", () => {
+    K = +b.dataset.k; document.querySelectorAll(".ph-k button").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); draw();
+  }));
+
+  function draw() {
+    const rec = dash.data("recall");
+    ["Daily", "Weekly", "Monthly"].forEach((L) => {
+      const box = document.getElementById("rc-" + L);
+      if (fail(box, "recall") || rec.status !== "ok") return;
+      const rows = methods.map((mm) => rec.data.find((r) => r.method === mm && r.list === L && +r.k === K)).filter((r) => r && r.recall != null);
+      hbars(box, rows, (r) => r.method, (r) => +r.recall, { domain: [0, 100], tick: (d) => d + "%",
+        color: (r) => r.method === "A · Random" ? "var(--cds-chart-muted)" : (r.method.startsWith("Full") || r.method.endsWith("list model")) ? dash.colors[0] : dash.colors[1],
+        ci: (r) => [r.lo, r.hi], end: (r) => r.recall + "%",
+        tip: (r) => `${r.recall}% (${fmtPct(r.lo)}–${fmtPct(r.hi)}) over ${r.n_lists ?? "–"} lists` });
+    });
+    const src = dash.data("sources"), sb = document.getElementById("src-chart");
+    if (!fail(sb, "sources") && src.status === "ok") {
+      sb.querySelectorAll("svg").forEach((s) => s.remove());
+      const half = document.createElement("div"); half.style.display = "grid"; half.style.gridTemplateColumns = "repeat(auto-fit, minmax(min(100%, 18rem), 1fr))"; half.style.gap = "var(--cds-gap-md)";
+      sb.querySelectorAll("div:not(.ph-tip)").forEach((d) => d.remove()); sb.appendChild(half);
+      const a = document.createElement("div"), b = document.createElement("div"); a.className = b.className = "ph-chart"; half.append(a, b);
+      hbars(a, src.data, (r) => r.source, (r) => +r.alone_day5, { domain: [0, 100], tick: (d) => d + "%", color: () => dash.colors[0], end: (r) => r.alone_day5 + "%", tip: (r) => `alone: ${r.alone_day5}% of daily top 5 · rank corr. ${r.alone_spearman ?? "–"}` });
+      const lo = Math.min(-1, d3.min(src.data, (r) => +r.drop_day5_change)), hi = Math.max(1, d3.max(src.data, (r) => +r.drop_day5_change));
+      hbars(b, src.data, (r) => r.source, (r) => +r.drop_day5_change, { domain: [lo - 1, hi + 1], tick: (d) => (d > 0 ? "+" : "") + d, color: (r) => +r.drop_day5_change < 0 ? dash.colors[0] : "var(--cds-chart-muted)", end: (r) => (r.drop_day5_change > 0 ? "+" : "") + r.drop_day5_change + " pts", tip: (r) => `without it: ${(r.drop_day5_change > 0 ? "+" : "") + r.drop_day5_change} pts on daily top 5` });
+    }
+    const fac = dash.data("factors"), fb = document.getElementById("fac-chart");
+    if (!fail(fb, "factors") && fac.status === "ok") {
+      fb.querySelectorAll("svg").forEach((s) => s.remove());
+      const rows = fac.data.slice();
+      const W = Math.max(280, fb.clientWidth), rowH = 22;
+      const svg = d3.select(fb).append("svg").attr("width", "100%");
+      const probe = svg.append("text").attr("font-size", "var(--cds-font-size-caption)"); let lw = 0;
+      rows.forEach((r) => { probe.text(r.factor); lw = Math.max(lw, probe.node().getComputedTextLength()); }); probe.remove();
+      lw = Math.min(lw + 8, W * 0.45);
+      const m = { l: lw, r: 16, t: 22, b: 6 }, H = m.t + rows.length * rowH + m.b;
+      svg.attr("viewBox", `0 0 ${W} ${H}`);
+      const x = d3.scaleLinear([0, Math.max(60, d3.max(rows, (r) => Math.max(r.high, r.low)))], [m.l, W - m.r]);
+      const y = d3.scalePoint(rows.map((r) => r.factor), [m.t + rowH / 2, H - m.b - rowH / 2]);
+      svg.append("g").selectAll("line").data(x.ticks(5)).join("line").attr("x1", (d) => x(d)).attr("x2", (d) => x(d)).attr("y1", m.t - 6).attr("y2", H - m.b).attr("stroke", "var(--cds-chart-grid)");
+      svg.append("g").selectAll("text").data(x.ticks(5)).join("text").attr("x", (d) => x(d)).attr("y", 12).attr("text-anchor", "middle").attr("font-size", "var(--cds-font-size-caption)").attr("fill", "var(--color-fg-muted)").text((d) => d + "%");
+      const tip = tipFor(fb);
+      const g = svg.append("g").selectAll("g").data(rows).join("g").on("mousemove", (ev, r) => showTip(fb, tip, ev, r.factor, `top 5 on ${r.high}% of days when high, ${r.low}% when low (${d3.format(",")(r.n)} launches)`)).on("mouseleave", () => { tip.hidden = true; });
+      g.append("rect").attr("x", m.l).attr("width", W - m.l - m.r).attr("y", (r) => y(r.factor) - rowH / 2).attr("height", rowH).attr("fill", "transparent");
+      g.append("text").attr("x", m.l - 8).attr("y", (r) => y(r.factor)).attr("dy", "0.35em").attr("text-anchor", "end").attr("font-size", "var(--cds-font-size-caption)").attr("fill", "var(--color-fg)").text((r) => r.factor);
+      g.append("line").attr("x1", (r) => x(r.low)).attr("x2", (r) => x(r.high)).attr("y1", (r) => y(r.factor)).attr("y2", (r) => y(r.factor)).attr("stroke", "var(--cds-chart-muted)").attr("stroke-width", 2).attr("stroke-linecap", "round");
+      g.append("circle").attr("cx", (r) => x(r.low)).attr("cy", (r) => y(r.factor)).attr("r", 4).attr("fill", "var(--cds-chart-muted)");
+      g.append("circle").attr("cx", (r) => x(r.high)).attr("cy", (r) => y(r.factor)).attr("r", 4.5).attr("fill", (r) => r.high >= r.low ? dash.colors[0] : "var(--cds-chart-status-critical)");
+      const lg = svg.append("g").attr("font-size", "var(--cds-font-size-caption)").attr("fill", "var(--color-fg-muted)");
+      lg.append("circle").attr("cx", W - m.r - 150).attr("cy", 8).attr("r", 4).attr("fill", "var(--cds-chart-muted)");
+      lg.append("text").attr("x", W - m.r - 142).attr("y", 8).attr("dy", "0.35em").text("low");
+      lg.append("circle").attr("cx", W - m.r - 100).attr("cy", 8).attr("r", 4.5).attr("fill", dash.colors[0]);
+      lg.append("text").attr("x", W - m.r - 92).attr("y", 8).attr("dy", "0.35em").text("high");
+      const ft = document.getElementById("fac-type");
+      const ratio = (v) => v == null ? "" : (v >= 10 ? "≥10×" : v.toFixed(1) + "×");
+      fillTable(ft, fac.data, [["factor"], ["ai", "num", ratio], ["dev", "num", ratio], ["productivity", "num", ratio], ["design", "num", ratio], ["marketing", "num", ratio], ["consumer", "num", ratio], ["other", "num", ratio]]);
+    }
+    const imp = dash.data("importance_by_type"), it = document.getElementById("imp-type");
+    if (imp.status === "ok" && imp.data.length) {
+      const colsI = (imp.columns || Object.keys(imp.data[0])).filter((c) => c !== "type");
+      const th = it.querySelector("thead"); th.innerHTML = ""; const tr = document.createElement("tr");
+      ["type"].concat(colsI).forEach((c) => { const h = document.createElement("th"); h.dataset.field = c; if (c !== "type") h.className = "num"; h.textContent = c === "type" ? "Type" : c; tr.appendChild(h); });
+      th.appendChild(tr);
+      fillTable(it, imp.data, [["type"]].concat(colsI.map((c) => [c, "num", (v) => v == null ? "" : v + "%"])));
+    }
+    const bt = dash.data("by_type");
+    if (bt.status === "ok") fillTable(document.getElementById("bytype"), bt.data, [["type"], ["launches", "num", (v) => d3.format(",")(v)], ["real_top5", "num"], ["caught", "num", (v) => v == null ? "" : v + "%"], ["rank_corr", "num", (v) => v == null ? "" : (+v).toFixed(2)]]);
+    const tl = dash.data("topic_lists");
+    const p = (v) => v == null ? "" : v + "%";
+    if (tl.status === "ok") fillTable(document.getElementById("topics"), tl.data, [["topic"], ["day_model", "num", p], ["day_random", "num miss", p], ["week_model", "num", p], ["week_random", "num miss", p], ["month_model", "num", p], ["month_random", "num miss", p]]);
+    const nl = dash.data("named_lists"), nb = document.getElementById("named");
+    if (nl.status === "ok") {
+      nb.innerHTML = "";
+      [...new Set(nl.data.map((r) => r.list))].forEach((L) => {
+        const rows = nl.data.filter((r) => r.list === L);
+        const hits = rows.filter((r) => r.predicted_hit).length;
+        const card = document.createElement("div"); card.className = "ph-card";
+        const h = document.createElement("h3"); h.textContent = L; card.appendChild(h);
+        const n = document.createElement("p"); n.className = "ph-note"; n.textContent = `${hits} of the real top ${rows.length} predicted`; card.appendChild(n);
+        const wrap = document.createElement("div"); wrap.className = "ph-scroll";
+        const t = document.createElement("table"); t.dataset.source = "named_lists"; t.dataset.rowKey = "list,position";
+        t.innerHTML = '<thead><tr><th class="num" data-field="position">#</th><th data-field="actual">Actual</th><th data-field="predicted">Predicted</th><th class="num" data-field="predicted_actual_rank">Its real rank</th></tr></thead><tbody></tbody>';
+        rows.forEach((r) => { const tr = document.createElement("tr"); tr.dataset.key = encodeURIComponent(r.list) + "," + r.position;
+          [["position", "num"], ["actual", r.actual_predicted ? "hit" : ""], ["predicted", r.predicted_hit ? "hit" : "miss"], ["predicted_actual_rank", "num"]].forEach(([f, c]) => { const td = document.createElement("td"); if (c) td.className = c; td.textContent = r[f]; tr.appendChild(td); });
+          t.querySelector("tbody").appendChild(tr); });
+        wrap.appendChild(t); card.appendChild(wrap); nb.appendChild(card);
+      });
+    }
+  }
+  dash.onData(draw);
+})();
+</script>

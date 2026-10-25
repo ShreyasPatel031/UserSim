@@ -52,7 +52,11 @@ def run(test_months):
         te["pred"], mdl, c = M.fit_predict(tr, te, M.SOURCES)
         te["pred_random"] = np.random.default_rng(0).random(len(te))
         te["pred_rank_day"] = M.fit_rank(tr, te, M.SOURCES)
+        te["pred_week_model"] = M.fit_list_clf(tr, te, "week", "weeklyRank", 10)
+        te["pred_month_model"] = M.fit_list_clf(tr, te, "mon", "monthlyRank", 20)
         te["pred_ph_only"] = M.fit_predict(tr, te, ["ph"])[0]
+        z = lambda v: (v - v.mean()) / (v.std() + 1e-9)
+        te["pred_blend"] = z(te.pred) + z(te.groupby("day").pred_rank_day.transform(lambda v: v - v.mean()))
         M.INCLUDE_LEAKY = True
         te["pred_with_maker_followers"] = M.fit_predict(tr, te, M.SOURCES)[0]
         M.INCLUDE_LEAKY = False
@@ -71,7 +75,8 @@ def run(test_months):
     te = pd.concat(allte)
     scores = [c for c in te.columns if c.startswith("pred")]
     res = {s: M.evaluate(te, s, with_ci=s in ("pred", "pred_random", "pred_ph_only", "pred_llm_pitch",
-                                              "pred_llm_site", "pred_rank_day")) for s in scores}
+                                              "pred_llm_site", "pred_rank_day", "pred_week_model", "pred_month_model",
+                                              "pred_blend")) for s in scores}
     # memorised share
     res["_meta"] = {"n_test": int(len(te)), "test_months": sorted(te.mon.unique().tolist()),
                     "n_days": int(te.day.nunique()), "n_weeks": int(te.week.nunique()),
@@ -107,6 +112,19 @@ def run(test_months):
         sub = te[te[src] == 1]
         res["_meta"][f"spearman_day_{src}"] = float(np.nanmean([M.spearmanr(g.pred, -g.dailyRank)[0]
                                                                 for _, g in sub.groupby("day") if len(g) > 4]))
+    # accuracy by product type: within-day rank correlation among that type's launches, and how often a type's
+    # real top-5 launches were in the predicted top 5 of the whole day
+    bt = {}
+    for t in te.ptype.unique():
+        sp = [M.spearmanr(g.pred, -g.dailyRank)[0] for _, g in te[te.ptype == t].groupby("day") if len(g) >= 4]
+        hits = []
+        for _, g in te.groupby("day"):
+            top = g.nsmallest(5, "dailyRank"); pt = set(g.nlargest(5, "pred").id)
+            hits += [i in pt for i in top[top.ptype == t].id]
+        bt[t] = {"spearman_within_type_day": float(np.nanmean(sp)) if sp else None,
+                 "recall_of_type_in_day_top5": float(np.mean(hits)) if hits else None, "n_top5": len(hits),
+                 "n": int((te.ptype == t).sum())}
+    res["_by_type"] = bt
     te.drop(columns=["web_text", "description"]).to_csv(f"{OUT}/predictions.csv", index=False)
     json.dump(res, open(f"{OUT}/metrics.json", "w"), indent=1, default=float)
     return res

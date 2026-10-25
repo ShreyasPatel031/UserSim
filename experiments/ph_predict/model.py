@@ -100,6 +100,24 @@ def fit_rank(tr, te, sources, seed=0):
     return m.predict(te[c])
 
 
+PERIOD_FEATS = ["ph_hunter_followers", "hist_hunter_rel", "x_hunter_followers", "llm_brand", "ph_n_makers", "txt_ridge"]
+
+
+def fit_list_clf(tr, te, period, rank_col, top):
+    """Classifier for 'finished in the period's top N' (week: top 10, month: top 20), with each launch's standing
+    on key signals within its week/month. Assumes the period's launches are known (their votes are not used)."""
+    c = cols(tr, SOURCES)
+    tr, te = tr.copy(), te.copy()
+    for d in (tr, te):
+        for f in PERIOD_FEATS:
+            if f in d:
+                d[f"per_{f}"] = d.groupby(period)[f].rank(pct=True)
+    cw = c + [f"per_{f}" for f in PERIOD_FEATS if f in tr]
+    clf = lgb.LGBMClassifier(n_estimators=400, learning_rate=0.03, num_leaves=15, min_child_samples=20, subsample=0.8,
+                             subsample_freq=1, colsample_bytree=0.8, random_state=0, verbose=-1)
+    return clf.fit(tr[cw], (tr[rank_col] <= top).astype(int)).predict_proba(te[cw])[:, 1]
+
+
 def recall_at(df, group, rank_col, k, score="pred", per_list=False):
     """Mean over groups of |predicted top-k ∩ actual top-k| / k. Actual top-k = PH's rank field (or votes)."""
     vals = []
