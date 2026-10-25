@@ -1,0 +1,4 @@
+data/
+*.log
+results/predictions.csv
+__pycache__/

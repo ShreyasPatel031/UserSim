@@ -1,0 +1,103 @@
+"""results/REPORT.md from results/metrics.json, predictions.csv, importance_*.csv, topic_lists.csv."""
+import json, os
+import numpy as np, pandas as pd
+
+R = os.path.join(os.path.dirname(os.path.abspath(__file__)), "results")
+m = json.load(open(f"{R}/metrics.json"))
+p = pd.read_csv(f"{R}/predictions.csv")
+L = []
+w = L.append
+NAMES = {"pred": "Full model (all sources)", "pred_rank_day": "Full model, ranking objective", "pred_random": "A. Random",
+         "pred_llm_pitch": "B. LLM, pitch only", "pred_llm_site": "C. LLM, pitch + homepage",
+         "pred_ph_only": "D. PH audience/metadata only", "pred_with_maker_followers": "Full + maker followers (leaky)"}
+SRC = {"ph": "PH audience & metadata (hunter, makers, media)", "hist": "Hunter/maker track record on PH",
+       "txt": "Pitch text (name, tagline, description)", "web": "Homepage content", "dom": "Domain (age, TLD, archive history)",
+       "x": "X/Twitter audience", "hn": "Hacker News before launch", "comp": "Similar earlier PH launches",
+       "topic": "Topic priors", "llm": "LLM judgement"}
+
+
+def pct(x):
+    return "–" if x is None or (isinstance(x, float) and np.isnan(x)) else f"{100 * x:.0f}%"
+
+
+def row(key):
+    r = m[key]
+    cells = []
+    for per in ("day", "week", "mon"):
+        for k in (3, 5, 10):
+            v = r.get(f"{per if per != 'mon' else 'month'}@{k}")
+            c = r.get(f"{per}@{k}_ci")
+            cells.append(pct(v) + (f" ({pct(c[0])}–{pct(c[1])})" if c and not np.isnan(c[0]) else ""))
+    return cells
+
+
+meta = m["_meta"]
+w("# Product Hunt top-list predictor: backtest\n")
+w(f"Test months: {', '.join(meta['test_months'])}, each predicted by a model trained only on earlier launches. "
+  f"{meta['n_test']} launches, {meta['n_days']} daily lists, {meta['n_weeks']} weekly lists. "
+  "No vote, comment or rank field of the launch itself is used as an input.\n")
+w("## Recall@k (share of the real top k that the predicted top k contains), 95% CI over lists\n")
+w("| Method | Day @3 | Day @5 | Day @10 | Week @3 | Week @5 | Week @10 | Month @3 | Month @5 | Month @10 |")
+w("|---|" + "---|" * 9)
+for k in ["pred", "pred_rank_day", "pred_ph_only", "pred_llm_site", "pred_llm_pitch", "pred_random", "pred_with_maker_followers"]:
+    if k in m:
+        w(f"| {NAMES[k]} | " + " | ".join(row(k)) + " |")
+w("")
+w("## Which sources predict (recall@5 on daily lists, and rank correlation within a day)\n")
+w("| Source | Alone: day@5 | Alone: Spearman | Full minus source: day@5 | Change vs full |")
+w("|---|---|---|---|---|")
+full = m["pred"]["day@5"]
+for s, name in SRC.items():
+    if f"pred_only_{s}" in m:
+        o, d = m[f"pred_only_{s}"], m[f"pred_drop_{s}"]
+        w(f"| {name} | {pct(o['day@5'])} | {o['spearman_day']:.2f} | {pct(d['day@5'])} | {100 * (d['day@5'] - full):+.0f} pts |")
+w("")
+imp = pd.read_csv(f"{R}/importance_by_type.csv", index_col=0)
+w("## Share of the model's decision by source, per product type\n")
+w("| Type | " + " | ".join(imp.columns) + " |")
+w("|---|" + "---|" * len(imp.columns))
+for t, r in imp.iterrows():
+    w(f"| {t} | " + " | ".join(pct(v) for v in r.values) + " |")
+w("")
+fi = pd.read_csv(f"{R}/importance_features.csv", index_col=0).iloc[:, 0]
+w("## Top factors (mean |contribution| to predicted log votes)\n")
+for f, v in fi.head(20).items():
+    w(f"- `{f}`: {v:.3f}")
+w("")
+ft = pd.read_csv(f"{R}/importance_features_by_type.csv", index_col=0)
+w("## Top 5 factors per product type\n")
+for t in ft.columns:
+    w(f"- **{t}**: " + ", ".join(f"`{f}`" for f in ft[t].sort_values(ascending=False).head(5).index))
+w("")
+tl = pd.read_csv(f"{R}/topic_lists.csv")
+w("## Topic lists (top k by votes within a topic), recall@5\n")
+piv = tl[(tl.k == 5)].pivot_table(index="topic", columns=["period", "score"], values="recall")
+w("| Topic | Day: model | Day: random | Week: model | Week: random | Month: model | Month: random |")
+w("|---|---|---|---|---|---|---|")
+for t, r in piv.iterrows():
+    w(f"| {t} | " + " | ".join(pct(r.get((per, s))) for per in ("day", "week", "mon") for s in ("pred", "pred_random")) + " |")
+w("")
+# the three front-page lists
+w("## The three front-page lists (as of Oct 25), model trained only on earlier months\n")
+p["day"] = p.day.astype(str)
+for title, sub, col in (("Yesterday's Top Products (Oct 24)", p[p.day == "2026-10-24"], "dailyRank"),
+                        ("Last Week's Top Products (Oct 12–18)", p[p.week == "2026-W42"], "weeklyRank"),
+                        ("Last Month's Top Products (September)", p[p.mon == "2026-09"], "monthlyRank")):
+    if not len(sub):
+        continue
+    real = sub.nsmallest(10, col)
+    pred = sub.nlargest(10, "pred")
+    hit = {k: len(set(real.head(k).id) & set(pred.head(k).id)) for k in (3, 5, 10)}
+    w(f"### {title}: {len(sub)} launches; hits in top 3/5/10: {hit[3]}/3, {hit[5]}/5, {hit[10]}/10\n")
+    w("| # | Actual | Predicted |")
+    w("|---|---|---|")
+    for i in range(10):
+        a, b = real.iloc[i], pred.iloc[i]
+        w(f"| {i + 1} | {a['name']}{' ✓' if a.id in set(pred.id) else ''} | {b['name']} (actual #{int(b[col])}) |")
+    w("")
+w("## Data coverage\n")
+w(f"- Homepage: Wayback snapshot from before launch {pct(meta['sites_wayback'])}, live site {pct(meta['sites_live'])}, "
+  f"none found {pct(meta['sites_none'])}")
+w(f"- Products the LLM said it recognised (dropped): {meta['dropped_known']}")
+open(f"{R}/REPORT.md", "w").write("\n".join(L))
+print("\n".join(L)[:3000])
