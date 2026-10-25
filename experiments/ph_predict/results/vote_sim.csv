@@ -1,0 +1,5 @@
+score,day@3,day@5,day@10,rho
+current model (prior),60,62,73,0.67
+"simulated votes: person model, no launch prior",30,40,59,0.342
+simulated votes: person model + launch prior,47,62,73,0.667
+after the fact: sample's real upvotes (ceiling),80,86,83,0.825
