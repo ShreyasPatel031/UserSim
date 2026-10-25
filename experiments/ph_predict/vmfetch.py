@@ -11,12 +11,12 @@ lock = threading.Lock()
 
 
 def one(url):
-    rec = {"url": url, "status": 0, "route": "", "html": ""}
+    rec = {"url": url, "status": 0, "route": "", "final_url": "", "html": ""}
     for name, px in ROUTES:
         for _ in range(2):
             try:
                 r = R.get(url, impersonate="chrome", proxies={"https": px, "http": px}, timeout=60)
-                rec.update(status=r.status_code, route=name)
+                rec.update(status=r.status_code, route=name, final_url=str(r.url))
                 if r.status_code == 200:
                     rec["html"] = r.text
                     break

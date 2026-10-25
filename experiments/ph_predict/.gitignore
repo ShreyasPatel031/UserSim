@@ -4,3 +4,4 @@ results/predictions.csv
 __pycache__/
 run*.log
 results/predictions_*.csv
+competitors.log
