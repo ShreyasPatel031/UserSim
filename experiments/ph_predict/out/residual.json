@@ -1,107 +1,107 @@
 {
  "recall_network_only": {
-  "day@3": 0.615,
-  "day@5": 0.641,
-  "day@10": 0.696,
-  "week@3": 0.452,
-  "week@5": 0.564,
-  "week@10": 0.557
+  "day@3": 0.657,
+  "day@5": 0.676,
+  "day@10": 0.721,
+  "week@3": 0.5,
+  "week@5": 0.58,
+  "week@10": 0.585
  },
  "recall_network_plus_product": {
-  "day@3": 0.582,
-  "day@5": 0.652,
-  "day@10": 0.702,
-  "week@3": 0.405,
-  "week@5": 0.536,
-  "week@10": 0.521
+  "day@3": 0.619,
+  "day@5": 0.676,
+  "day@10": 0.729,
+  "week@3": 0.433,
+  "week@5": 0.59,
+  "week@10": 0.54
  },
  "residual_corr": {
   "(all types)": {
-   "n": 4878,
+   "n": 3152,
    "top": {
-    "llm_p_top5": 0.1,
-    "llm_broad_appeal": 0.08,
-    "llm_dev_audience": 0.064,
-    "llm_novelty": 0.057,
-    "site_w_open_source": 0.053,
-    "llm_demo_wow": 0.05
+    "llm_p_top5": 0.079,
+    "llm_broad_appeal": 0.054,
+    "llm_dev_audience": 0.043,
+    "llm_had_site": 0.034,
+    "llm_novelty": 0.031,
+    "site_w_open_source": 0.03
    }
   },
   "AI": {
-   "n": 1344,
+   "n": 902,
    "top": {
-    "llm_p_top5": 0.107,
-    "llm_broad_appeal": 0.087,
-    "site_w_backed": 0.064,
-    "llm_demo_wow": 0.054,
-    "site_w_pricing": -0.052,
-    "llm_novelty": 0.052
+    "llm_p_top5": 0.097,
+    "site_ok": 0.083,
+    "site_w_waitlist": 0.081,
+    "llm_broad_appeal": 0.059,
+    "site_w_social_proof": 0.052,
+    "site_w_testimonial": 0.049
    }
   },
   "Consumer": {
-   "n": 175,
+   "n": 124,
    "top": {
-    "llm_novelty": 0.194,
-    "site_w_backed": -0.134,
-    "llm_polish": -0.111,
-    "site_w_open_source": -0.09,
-    "site_w_enterprise": -0.088,
-    "site_w_download": -0.088
+    "site_w_backed": -0.159,
+    "llm_novelty": 0.135,
+    "site_w_waitlist": 0.114,
+    "site_w_testimonial": -0.103,
+    "llm_dev_audience": 0.102,
+    "site_en": 0.101
    }
   },
   "Design": {
-   "n": 211,
+   "n": 139,
    "top": {
-    "site_w_pricing": 0.173,
-    "site_w_social_proof": 0.129,
-    "llm_demo_wow": 0.129,
-    "llm_brand_known": -0.125,
-    "llm_broad_appeal": 0.098,
-    "llm_p_top5": 0.088
+    "llm_demo_wow": 0.232,
+    "site_w_pricing": 0.192,
+    "llm_p_top5": 0.153,
+    "llm_broad_appeal": 0.138,
+    "site_w_social_proof": 0.125,
+    "site_w_enterprise": -0.095
    }
   },
   "Developer": {
-   "n": 2006,
+   "n": 1377,
    "top": {
-    "llm_p_top5": 0.124,
-    "llm_broad_appeal": 0.102,
-    "site_is_subdomain": -0.075,
-    "site_w_ai": 0.064,
-    "llm_brand_known": 0.056,
-    "llm_maker_credibility": 0.053
+    "llm_p_top5": 0.115,
+    "llm_broad_appeal": 0.099,
+    "llm_brand_known": 0.061,
+    "llm_had_site": 0.056,
+    "llm_maker_credibility": 0.047,
+    "site_is_github": -0.042
    }
   },
   "Marketing & Sales": {
-   "n": 172,
+   "n": 97,
    "top": {
-    "site_tld_ai": 0.198,
-    "site_tld_com": -0.171,
-    "site_is_appstore": -0.159,
-    "site_w_enterprise": 0.135,
-    "site_w_social_proof": 0.132,
-    "site_is_subdomain": -0.132
+    "site_tld_ai": 0.272,
+    "site_tld_com": -0.225,
+    "site_w_enterprise": 0.174,
+    "site_w_social_proof": 0.147,
+    "site_w_free": 0.142,
+    "site_w_waitlist": 0.118
    }
   },
   "Other": {
-   "n": 513,
+   "n": 200,
    "top": {
-    "llm_broad_appeal": 0.176,
-    "llm_maker_credibility": -0.162,
-    "llm_clarity": 0.14,
-    "site_w_social_proof": -0.136,
-    "site_w_enterprise": -0.126,
-    "site_w_ai": -0.12
+    "site_w_api": -0.144,
+    "site_ok": -0.135,
+    "site_tld_io": 0.133,
+    "site_w_waitlist": -0.126,
+    "site_w_backed": -0.126,
+    "llm_demo_wow": -0.117
    }
   },
   "Productivity": {
-   "n": 457,
+   "n": 313,
    "top": {
-    "llm_novelty": 0.141,
-    "llm_p_top5": 0.104,
-    "site_tld_ai": -0.101,
-    "site_w_social_proof": -0.1,
-    "llm_brand_known": -0.087,
-    "llm_demo_wow": 0.08
+    "site_tld_ai": -0.149,
+    "site_w_backed": 0.125,
+    "llm_novelty": 0.095,
+    "site_is_github": -0.079,
+    "site_w_social_proof": -0.076,
+    "llm_maker_credibility": -0.073
    }
   }
  }

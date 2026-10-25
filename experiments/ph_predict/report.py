@@ -46,7 +46,7 @@ def main() -> None:
         f"{k} {v['ci95'][0]:.2f}-{v['ci95'][1]:.2f} (n={v['lists']})" for k, v in m["full"].items()) + ".", "",
           "Week and month results rest on few lists, so differences of a few points between rows below are noise.", "",
           f"Mean Spearman correlation with the daily order: {m['spearman_day']}", "",
-          "Per test month (each month's model learned only from earlier months; April and May are partly collected):", "",
+          "Per test month (each month's model learned only from earlier months):", "",
           "| month | day@3 | day@5 | day@10 | week@5 | week@10 |", "|---|---|---|---|---|---|"]
     L += [f"| {mo} | " + " | ".join(f"{r.get(k, float('nan')):.2f}" for k in ("day@3", "day@5", "day@10", "week@5", "week@10"))
           + " |" for mo, r in m.get("by_month", {}).items()]

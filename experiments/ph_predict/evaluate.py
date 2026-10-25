@@ -27,7 +27,7 @@ import features as F  # noqa: E402
 OUT = F.HERE / "out"
 KS = (3, 5, 10)
 PERIODS = {"day": ("day", "dailyRank"), "week": ("week", "weeklyRank"), "month": ("month", "monthlyRank")}
-FIRST_TEST_MONTH = "2026-04"  # earlier months are training history only
+FIRST_TEST_MONTH = "2026-06"  # earlier months are training history only (early PH comment data starts 2026-03-22)
 # Models compared. Pre-launch: known before 00:01 PT. First 4 hours: adds PH comments, X and HN from launch to +4 h.
 PRE = ["launch", "people", "history"]
 CONFIGS = {"pre-launch": PRE,
