@@ -1,152 +1,191 @@
 # Product Hunt top-list predictor: backtest
 
-Test months: 2026-09, 2026-10, each predicted by a model trained only on earlier launches. 1458 launches, 54 daily lists, 8 weekly lists. No vote, comment or rank field of the launch itself is used as an input.
+Test months: 2026-03, 2026-04, 2026-05, 2026-06, 2026-07, 2026-08, 2026-09, 2026-10, each predicted by a model trained only on earlier launches. 5758 launches, 238 daily lists, 35 weekly lists. No vote, comment or rank field of the launch itself is used as an input.
+
+## Key findings
+
+1. **Daily list (Yesterday's Top Products): the model finds 59% of the real top 3, 68% of the top 5 and 78% of the top 10** (random: 20% / 32% / 48%).
+2. **Weekly list: 55% / 54% / 52%** at top 3/5/10 with the weekly-list model (random 8% at top 10). **Monthly list: 25% / 38% / 40%** with the monthly-list model (only 8 monthly lists, so wide ranges). Weekly and monthly lists are harder because they compare launches across days: even a perfect within-day order gets only about half of a week's top 3, so these lists depend on predicting how big a day's winner gets.
+3. **Who posts the launch matters most.** Product Hunt audience and metadata alone find 67% of the daily top 5; the hunter's and makers' track record alone 63%; X audience 53%; pitch text 45%; LLM judgements 43%; homepage 38%; Hacker News and domain age are near random (32%). Removing the PH audience source costs the most; removing any other source changes the full model by a point or less, so they carry little that the audience features do not already have.
+4. **Reading the product barely helps.** An LLM ranking each day's launches from the pitch finds 42% of the top 5, and with the homepage 39%, against 32% random. In the plan's terms: D is best and B/C are only slightly above chance, so Product Hunt votes mostly measure distribution (the hunter's audience and record), not the product. A product-quality simulator should not be judged on raw PH votes without controlling for who posted the launch.
+5. **Strongest single factors** (daily top-5 rate, high vs low): hunter's PH followers (top third 45% vs bottom third 1%); hunter's past top-5 rate (63% vs 8%); hunter account age (37% vs 7%); number of makers (46% vs 12%); LLM pitch score (37% vs 10%); weekend launch (45% vs 18%, fewer competitors). **Self-hunted launches finish top 5 9% of the time, others 34%.**
+6. **Across product types** the hunter's audience dominates everywhere, but least in marketing and 'other' launches. There the pitch (LLM score), the makers' own record and gallery quality count for more; in productivity the hunter's past record counts most after audience; in consumer apps, hunter account age. The model is most accurate on AI launches (74% of their daily top-5 finishes caught) and least on productivity (47%).
+7. **Leakage checks.** Maker follower counts are today's values (makers gain followers after a top launch), so they are left out; adding them back changes little. The LLM (training data older than every launch) recognised no product.
 
 ## Recall@k (share of the real top k that the predicted top k contains), 95% CI over lists
 
 | Method | Day @3 | Day @5 | Day @10 | Week @3 | Week @5 | Week @10 | Month @3 | Month @5 | Month @10 |
 |---|---|---|---|---|---|---|---|---|---|
-| Full model (all sources) | 58% (52%–64%) | 68% (63%–73%) | 77% (75%–80%) | 56% (39%–78%) | 53% (37%–67%) | 55% (47%–63%) | 33% (33%–33%) | 30% (20%–40%) | 35% (30%–40%) |
-| Full model, ranking objective | 58% (52%–64%) | 67% (61%–72%) | 77% (74%–79%) | 50% (39%–61%) | 53% (43%–67%) | 57% (52%–63%) | 33% (33%–33%) | 40% (20%–60%) | 40% (40%–40%) |
-| D. PH audience/metadata only | 55% (50%–60%) | 65% (60%–69%) | 77% (73%–80%) | 56% (44%–67%) | 57% (43%–70%) | 57% (47%–67%) | 50% (33%–67%) | 30% (20%–40%) | 35% (30%–40%) |
-| C. LLM, pitch + homepage | 15% (10%–21%) | 27% (22%–33%) | 48% (42%–53%) | 0% (0%–0%) | 0% (0%–0%) | 2% (0%–5%) | 0% (0%–0%) | 0% (0%–0%) | 0% (0%–0%) |
-| B. LLM, pitch only | 22% (17%–29%) | 35% (30%–40%) | 55% (50%–60%) | 0% (0%–0%) | 0% (0%–0%) | 7% (0%–17%) | 0% (0%–0%) | 0% (0%–0%) | 0% (0%–0%) |
-| A. Random | 15% (10%–20%) | 23% (17%–29%) | 45% (39%–51%) | 11% (0%–22%) | 7% (0%–13%) | 7% (3%–10%) | 0% (0%–0%) | 0% (0%–0%) | 0% (0%–0%) |
-| Full + maker followers (leaky) | 61% | 68% | 77% | 56% | 57% | 52% | 67% | 40% | 35% |
+| Full model (all sources) | 59% (56%–62%) | 68% (66%–71%) | 78% (76%–79%) | 41% (31%–51%) | 50% (44%–55%) | 55% (51%–59%) | 12% (0%–29%) | 18% (8%–28%) | 28% (21%–34%) |
+| Weekly-list model | 55% (52%–58%) | 64% (61%–66%) | 75% (73%–77%) | 55% (47%–62%) | 54% (49%–59%) | 52% (48%–58%) | 25% (12%–42%) | 35% (28%–43%) | 41% (31%–52%) |
+| Monthly-list model | 54% (51%–57%) | 62% (59%–65%) | 72% (70%–74%) | 49% (40%–59%) | 52% (46%–58%) | 51% (46%–56%) | 25% (17%–33%) | 38% (23%–52%) | 40% (31%–49%) |
+| Full model, blend of both objectives | 60% (57%–63%) | 69% (66%–71%) | 77% (75%–79%) | 49% (40%–59%) | 54% (49%–58%) | 56% (53%–60%) | 25% (8%–46%) | 25% (15%–35%) | 38% (29%–46%) |
+| Full model, ranking objective | 58% (55%–61%) | 68% (65%–70%) | 76% (74%–78%) | 51% (41%–61%) | 57% (53%–61%) | 55% (51%–58%) | 21% (4%–38%) | 22% (10%–38%) | 36% (28%–45%) |
+| D. PH audience/metadata only | 57% (54%–60%) | 67% (64%–70%) | 76% (74%–78%) | 42% (32%–53%) | 53% (48%–58%) | 55% (52%–60%) | 21% (4%–38%) | 23% (12%–33%) | 30% (22%–39%) |
+| C. LLM, pitch + homepage | 24% (21%–27%) | 39% (36%–43%) | 56% (53%–59%) | 2% (0%–5%) | 4% (1%–8%) | 9% (6%–12%) | 0% (0%–0%) | 0% (0%–0%) | 1% (0%–4%) |
+| B. LLM, pitch only | 25% (22%–28%) | 42% (38%–45%) | 59% (56%–62%) | 1% (0%–3%) | 5% (1%–9%) | 11% (7%–14%) | 0% (0%–0%) | 0% (0%–0%) | 1% (0%–4%) |
+| A. Random | 20% (17%–23%) | 32% (29%–36%) | 48% (44%–51%) | 2% (0%–5%) | 2% (1%–5%) | 8% (5%–11%) | 0% (0%–0%) | 0% (0%–0%) | 0% (0%–0%) |
+| Full + maker followers (leaky) | 58% | 69% | 78% | 44% | 52% | 57% | 21% | 30% | 34% |
 
 ## Which sources predict (recall@5 on daily lists, and rank correlation within a day)
 
 | Source | Alone: day@5 | Alone: Spearman | Full minus source: day@5 | Change vs full |
 |---|---|---|---|---|
-| PH audience & metadata (hunter, makers, media) | 65% | 0.66 | 56% | -12 pts |
-| Hunter/maker track record on PH | 57% | 0.54 | 66% | -3 pts |
-| Pitch text (name, tagline, description) | 39% | 0.30 | 67% | -1 pts |
-| Homepage content | 24% | -0.10 | 68% | -0 pts |
-| Domain (age, TLD, archive history) | 23% | nan | 68% | +0 pts |
-| X/Twitter audience | 49% | 0.36 | 67% | -1 pts |
-| Hacker News before launch | 23% | nan | 68% | +0 pts |
-| Similar earlier PH launches | 33% | 0.13 | 67% | -1 pts |
-| Topic priors | 39% | 0.23 | 67% | -1 pts |
-| LLM judgement | 30% | 0.25 | 68% | -0 pts |
+| PH audience & metadata (hunter, makers, media) | 67% | 0.66 | 65% | -3 pts |
+| Hunter/maker track record on PH | 63% | 0.56 | 67% | -1 pts |
+| Pitch text (name, tagline, description) | 45% | 0.33 | 69% | +1 pts |
+| Homepage content | 38% | 0.13 | 68% | +0 pts |
+| Domain (age, TLD, archive history) | 32% | 0.06 | 68% | +0 pts |
+| X/Twitter audience | 53% | 0.35 | 68% | +0 pts |
+| Hacker News before launch | 33% | 0.02 | 68% | +0 pts |
+| Similar earlier PH launches | 40% | 0.21 | 69% | +1 pts |
+| Topic priors | 42% | 0.24 | 68% | +0 pts |
+| LLM judgement | 43% | 0.31 | 68% | -0 pts |
 
 ## Share of the model's decision by source, per product type
 
 | Type | comp | dom | hist | hn | llm | ph | topic | txt | web | x |
 |---|---|---|---|---|---|---|---|---|---|---|
-| ai | 2% | 0% | 11% | 0% | 5% | 69% | 5% | 1% | 3% | 4% |
-| consumer | 2% | 0% | 9% | 0% | 6% | 66% | 9% | 1% | 3% | 5% |
-| design | 2% | 0% | 10% | 0% | 5% | 67% | 7% | 1% | 3% | 4% |
-| dev | 2% | 0% | 9% | 0% | 5% | 68% | 7% | 1% | 3% | 4% |
-| marketing | 2% | 0% | 11% | 0% | 5% | 64% | 10% | 1% | 2% | 5% |
-| other | 2% | 0% | 9% | 0% | 6% | 68% | 7% | 1% | 2% | 5% |
-| productivity | 2% | 0% | 7% | 0% | 5% | 67% | 9% | 1% | 3% | 5% |
+| ai | 2% | 2% | 13% | 0% | 6% | 61% | 4% | 3% | 4% | 4% |
+| consumer | 1% | 2% | 11% | 0% | 8% | 64% | 4% | 2% | 4% | 4% |
+| design | 2% | 2% | 11% | 0% | 7% | 63% | 4% | 3% | 4% | 4% |
+| dev | 2% | 2% | 12% | 1% | 6% | 63% | 4% | 2% | 4% | 4% |
+| marketing | 2% | 2% | 12% | 0% | 5% | 58% | 8% | 3% | 5% | 4% |
+| other | 2% | 2% | 11% | 0% | 9% | 63% | 4% | 2% | 4% | 3% |
+| productivity | 2% | 2% | 11% | 1% | 6% | 64% | 4% | 2% | 4% | 4% |
 
 ## Top factors (mean |contribution| to predicted log votes)
 
-- `ph_hunter_followers`: 0.238
-- `ph_day_n_launches`: 0.075
-- `ph_dayrank_ph_hunter_followers`: 0.056
-- `ph_dayrank_ph_n_makers`: 0.054
-- `llm_pitch`: 0.044
-- `topic_prior_mean`: 0.034
-- `hist_hunter_rel`: 0.032
-- `ph_n_makers`: 0.028
-- `web_dayrank_web_text_words`: 0.025
-- `ph_hunter_age_d`: 0.023
-- `ph_maker_min_age_d`: 0.021
-- `ph_dayrank_ph_n_media`: 0.019
-- `comp_nn_mean`: 0.015
+- `ph_hunter_followers`: 0.144
+- `ph_day_n_launches`: 0.085
+- `ph_dayrank_ph_hunter_followers`: 0.080
+- `ph_dayrank_ph_n_makers`: 0.051
+- `ph_n_makers`: 0.050
+- `hist_hunter_rel`: 0.043
+- `llm_pitch`: 0.037
+- `ph_maker_min_age_d`: 0.028
+- `hist_hunter_top5`: 0.027
+- `ph_maker_max_age_d`: 0.027
+- `txt_ridge`: 0.026
+- `topic_prior_mean`: 0.022
+- `llm_site`: 0.022
+- `ph_month`: 0.021
+- `ph_hunter_age_d`: 0.019
 - `ph_name_len`: 0.015
-- `ph_dayrank_ph_hunter_age_d`: 0.015
-- `x_dayrank_x_hunter_followers`: 0.013
-- `hist_maker_top5`: 0.013
-- `x_dayrank_x_maker_max_followers`: 0.013
-- `txt_ridge`: 0.012
+- `x_dayrank_x_hunter_followers`: 0.014
 - `hist_dayrank_hist_hunter_rel`: 0.012
+- `ph_weekday`: 0.011
+- `ph_tagline_len`: 0.010
 
 ## Top 5 factors per product type
 
-- **ai**: `ph_hunter_followers`, `ph_day_n_launches`, `ph_dayrank_ph_n_makers`, `ph_dayrank_ph_hunter_followers`, `llm_pitch`
-- **consumer**: `ph_hunter_followers`, `ph_day_n_launches`, `topic_prior_mean`, `llm_pitch`, `ph_dayrank_ph_hunter_followers`
-- **design**: `ph_hunter_followers`, `ph_day_n_launches`, `ph_dayrank_ph_hunter_followers`, `ph_dayrank_ph_n_makers`, `llm_pitch`
-- **dev**: `ph_hunter_followers`, `ph_day_n_launches`, `ph_dayrank_ph_hunter_followers`, `ph_dayrank_ph_n_makers`, `llm_pitch`
-- **marketing**: `ph_hunter_followers`, `ph_day_n_launches`, `topic_prior_mean`, `ph_dayrank_ph_hunter_followers`, `ph_dayrank_ph_n_makers`
-- **other**: `ph_hunter_followers`, `ph_day_n_launches`, `ph_dayrank_ph_n_makers`, `ph_dayrank_ph_hunter_followers`, `llm_pitch`
-- **productivity**: `ph_hunter_followers`, `ph_day_n_launches`, `ph_dayrank_ph_hunter_followers`, `topic_prior_mean`, `llm_pitch`
+- **ai**: `ph_hunter_followers`, `ph_dayrank_ph_hunter_followers`, `ph_day_n_launches`, `ph_dayrank_ph_n_makers`, `ph_n_makers`
+- **consumer**: `ph_hunter_followers`, `ph_day_n_launches`, `ph_dayrank_ph_hunter_followers`, `ph_n_makers`, `ph_dayrank_ph_n_makers`
+- **design**: `ph_hunter_followers`, `ph_day_n_launches`, `ph_dayrank_ph_hunter_followers`, `ph_dayrank_ph_n_makers`, `ph_n_makers`
+- **dev**: `ph_hunter_followers`, `ph_day_n_launches`, `ph_dayrank_ph_hunter_followers`, `ph_n_makers`, `ph_dayrank_ph_n_makers`
+- **marketing**: `ph_hunter_followers`, `ph_dayrank_ph_hunter_followers`, `ph_day_n_launches`, `topic_prior_mean`, `ph_dayrank_ph_n_makers`
+- **other**: `ph_hunter_followers`, `ph_day_n_launches`, `ph_dayrank_ph_hunter_followers`, `ph_dayrank_ph_n_makers`, `llm_pitch`
+- **productivity**: `ph_hunter_followers`, `ph_day_n_launches`, `ph_dayrank_ph_hunter_followers`, `ph_n_makers`, `ph_dayrank_ph_n_makers`
 
 ## Topic lists (top k by votes within a topic), recall@5
 
 | Topic | Day: model | Day: random | Week: model | Week: random | Month: model | Month: random |
 |---|---|---|---|---|---|---|
-| API | – | – | – | – | 50% | 20% |
-| Android | 100% | 100% | – | – | 70% | 10% |
-| Artificial Intelligence | 76% | 38% | 47% | 13% | 30% | 0% |
-| Design Tools | 90% | 80% | 70% | 40% | 60% | 10% |
-| Developer Tools | 82% | 56% | 48% | 12% | 40% | 0% |
-| GitHub | 76% | 68% | 60% | 10% | 50% | 0% |
-| Mac | 80% | 82% | 47% | 20% | 40% | 20% |
-| Marketing | 100% | 95% | 80% | 70% | 50% | 50% |
-| Menu Bar Apps | 80% | 80% | 60% | 20% | 60% | 20% |
-| Open Source | 81% | 76% | 64% | 24% | 50% | 10% |
-| OpenAI Day | 40% | 20% | – | – | 40% | 20% |
-| Productivity | 78% | 61% | 70% | 7% | 40% | 0% |
-| SaaS | 80% | 90% | 40% | 20% | 40% | 20% |
-| Video | 100% | 100% | 80% | 40% | 60% | 30% |
-| iOS | 100% | 100% | – | – | 40% | 10% |
+| API | 100% | 100% | – | – | 55% | 15% |
+| Artificial Intelligence | 76% | 45% | 51% | 5% | 28% | 0% |
+| Design Tools | 90% | 90% | 80% | 45% | 60% | 20% |
+| Developer Tools | 83% | 63% | 52% | 11% | 35% | 0% |
+| GitHub | 86% | 77% | 64% | 23% | 48% | 2% |
+| Mac | 85% | 82% | 45% | 15% | 55% | 5% |
+| Marketing | 98% | 96% | 73% | 53% | 57% | 10% |
+| Menu Bar Apps | 100% | 90% | 40% | 20% | 62% | 20% |
+| Open Source | 87% | 77% | 71% | 29% | 57% | 5% |
+| Productivity | 81% | 62% | 66% | 11% | 30% | 8% |
+| SaaS | 94% | 90% | 53% | 20% | 55% | 10% |
+| Tech | 93% | 93% | – | – | 60% | 20% |
+| Vercel Day | 60% | 16% | – | – | 60% | 20% |
+| Video | 100% | 100% | 80% | 60% | 73% | 38% |
+| iOS | 90% | 90% | – | – | 60% | 25% |
 
 ## The three front-page lists (as of Oct 25), model trained only on earlier months
 
-### Yesterday's Top Products (Oct 24): 14 launches; hits in top 3/5/10: 3/3, 3/5, 7/10
+### Yesterday's Top Products (Oct 24), full model: 14 launches; hits in top 3/5/10: 2/3, 4/5, 7/10
 
 | # | Actual | Predicted |
 |---|---|---|
-| 1 | zCAD AI ✓ | zCAD AI (actual #1) |
-| 2 | myPip ✓ | myPip (actual #2) |
-| 3 | 1Password for Agents ✓ | 1Password for Agents (actual #3) |
-| 4 | AgentValley | sideOS.ai (actual #11) |
-| 5 | Canva Craft ✓ | LinkIntel (actual #6) |
-| 6 | LinkIntel ✓ | Canva Craft (actual #5) |
-| 7 | Many Displays ✓ | Many Displays (actual #7) |
+| 1 | zCAD AI ✓ | myPip (actual #2) |
+| 2 | myPip ✓ | zCAD AI (actual #1) |
+| 3 | 1Password for Agents ✓ | LinkIntel (actual #6) |
+| 4 | AgentValley ✓ | Canva Craft (actual #5) |
+| 5 | Canva Craft ✓ | 1Password for Agents (actual #3) |
+| 6 | LinkIntel ✓ | sideOS.ai (actual #11) |
+| 7 | Many Displays | AgentValley (actual #4) |
 | 8 | Penta | Shedi (actual #14) |
 | 9 | Byter | River Writer (actual #12) |
 | 10 | Basedash Scheduled CSV Exports ✓ | Basedash Scheduled CSV Exports (actual #10) |
 
-### Last Week's Top Products (Oct 12–18): 203 launches; hits in top 3/5/10: 1/3, 3/5, 5/10
+### Last Week's Top Products (Oct 12–18), weekly-list model: 203 launches; hits in top 3/5/10: 1/3, 4/5, 5/10
 
 | # | Actual | Predicted |
 |---|---|---|
 | 1 | Pancake ✓ | Pancake (actual #1) |
-| 2 | Jockey by TwelveLabs ✓ | NitroStack (actual #10) |
-| 3 | Inferock | Articos MCP (actual #4) |
+| 2 | Jockey by TwelveLabs ✓ | Articos MCP (actual #4) |
+| 3 | Inferock | Agent Vault (actual #177) |
 | 4 | Articos MCP ✓ | Jockey by TwelveLabs (actual #2) |
-| 5 | Talanoa | guilds.run (actual #25) |
-| 6 | Harness by Autonomous | Krea 3 (actual #134) |
-| 7 | OpenCode 2.0 | Tiden (actual #19) |
-| 8 | Google EmbeddingGemma 2 | MentionBird (actual #33) |
-| 9 | Inbox Zero ✓ | Inbox Zero (actual #9) |
-| 10 | NitroStack ✓ | AdAnt 2.0 (actual #27) |
+| 5 | Talanoa ✓ | Talanoa (actual #5) |
+| 6 | Harness by Autonomous | NitroStack (actual #10) |
+| 7 | OpenCode 2.0 | AdAnt 2.0 (actual #27) |
+| 8 | Google EmbeddingGemma 2 | Tiden (actual #19) |
+| 9 | Inbox Zero | SignWith (actual #17) |
+| 10 | NitroStack ✓ | Kai (actual #21) |
 
-### Last Month's Top Products (September): 708 launches; hits in top 3/5/10: 1/3, 1/5, 3/10
+### Last Month's Top Products (September), monthly-list model: 708 launches; hits in top 3/5/10: 1/3, 3/5, 5/10
 
 | # | Actual | Predicted |
 |---|---|---|
-| 1 | Ami AI ✓ | Hemory (actual #37) |
-| 2 | tiun. | Ami AI (actual #1) |
-| 3 | CREEM 2.0 ✓ | Monid (actual #16) |
-| 4 | Clueso MCP ✓ | Pexo (actual #35) |
-| 5 | Mastra Factory | Youkti  (actual #44) |
-| 6 | Jev | CREEM 2.0 (actual #3) |
-| 7 | Voiskey | GPT-6 Astra (actual #11) |
-| 8 | Switch | Clueso MCP (actual #4) |
-| 9 | Naoma AI Demo Agent V2 | RankControl (actual #231) |
-| 10 | Kilo Code for JetBrains | Superset Mobile (actual #12) |
+| 1 | Ami AI | Pexo (actual #35) |
+| 2 | tiun. | CREEM 2.0 (actual #3) |
+| 3 | CREEM 2.0 ✓ | Mastra Factory (actual #5) |
+| 4 | Clueso MCP ✓ | Clueso MCP (actual #4) |
+| 5 | Mastra Factory ✓ | iFixAi (actual #30) |
+| 6 | Jev | Switch (actual #8) |
+| 7 | Voiskey | Kilo Code for JetBrains (actual #10) |
+| 8 | Switch ✓ | Superset Mobile (actual #12) |
+| 9 | Naoma AI Demo Agent V2 | PR Lens by Coldtea.ai (actual #49) |
+| 10 | Kilo Code for JetBrains ✓ | Weave Router 2.0 (actual #50) |
 
 ## Accuracy by product type
 
 | Type | Launches | Real day-top-5 launches | Share the model had in its day top 5 | Rank correlation within type |
 |---|---|---|---|---|
+| ai | 2910 | 792 | 74% | 0.69 |
+| dev | 956 | 170 | 54% | 0.60 |
+| other | 765 | 59 | 58% | 0.55 |
+| productivity | 595 | 72 | 47% | 0.50 |
+| consumer | 188 | 29 | 69% | 0.61 |
+| design | 173 | 25 | 76% | 0.40 |
+| marketing | 171 | 43 | 67% | 0.50 |
+
+## Forward test: Forecast for 2026-10-25 (made before results; 13 featured launches at fetch time)
+
+
+| Predicted rank | Product | Tagline | Hunter PH followers |
+|---|---|---|---|
+| 1 | Moli by Lexmount | The fastest headless browser for agents and harnesses | 146076 |
+| 2 | AgentGrid.io | Shared workspace for humans and agents | 241 |
+| 3 | Llama Windows | One local AI server for all your Windows apps | 10952 |
+| 4 | git-flow-next | Your favorite Git workflow. Reimagined. | 104145 |
+| 5 | Openstatus Incident Management | Incident management for small teams | 104145 |
+| 6 | How It Spread | See how anything went viral, from the first post | 84 |
+| 7 | Papermark Data Rooms | Secure data rooms your AI agents can run. Live in < 60 sec. | 693 |
+| 8 | Badgey | Your iPhone becomes a name badge that faces the room | 61 |
+| 9 | pawl | a tiny mac focus timer you start by pulling a paw | 29 |
+| 10 | MRRaudit | Understand why your MRR differs and get a number you trust | 23 |
+| 11 | Clips by Plastic | Lyric video ads for every part of your song, on the beat | 9 |
+| 12 | Specsight | Product observability for teams shipping fast with AI | 5 |
+| 13 | Yourcast 2.0 | AI summaries with tap-to-jump timestamps, right in Telegram | 6 |
 
 ## Data coverage
 
-- Homepage: Wayback snapshot from before launch 0%, live site 30%, none found 70%
+- Homepage: Wayback snapshot from before launch 0%, live site 63%, none found 37%
 - Products the LLM said it recognised (dropped): 0

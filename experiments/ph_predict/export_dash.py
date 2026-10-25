@@ -63,14 +63,14 @@ json.dump(sorted([{"topic": t, "day_model": P2(r.get(("day", "pred"))), "day_ran
 p = pd.read_csv(f"{R}/predictions.csv")
 p["day"] = p.day.astype(str)
 named = []
-for lab, sub, col in (("Yesterday (Oct 24)", p[p.day == "2026-10-24"], "dailyRank"),
-                      ("Last week (Oct 12–18)", p[p.week == "2026-W42"], "weeklyRank"),
-                      ("Last month (September)", p[p.mon == "2026-09"], "monthlyRank")):
-    real, pred = sub.nsmallest(10, col), sub.nlargest(10, "pred")
+for lab, sub, col, sc in (("Yesterday (Oct 24)", p[p.day == "2026-10-24"], "dailyRank", "pred"),
+                      ("Last week (Oct 12–18)", p[p.week == "2026-W42"], "weeklyRank", "pred_week_model"),
+                      ("Last month (September)", p[p.mon == "2026-09"], "monthlyRank", "pred_month_model")):
+    real, pred = sub.nsmallest(10, col), sub.nlargest(10, sc)
     rset, pset = set(real.id), set(pred.id)
     for i in range(min(10, len(sub))):
         a, b = real.iloc[i], pred.iloc[i]
-        named.append({"list": lab, "position": i + 1, "actual": a["name"], "actual_predicted": bool(a.id in pset),
+        named.append({"list": lab, "launches": int(len(sub)), "position": i + 1, "actual": a["name"], "actual_predicted": bool(a.id in pset),
                       "predicted": b["name"], "predicted_actual_rank": int(b[col]), "predicted_hit": bool(b.id in rset)})
 json.dump(named, open(f"{O}/named_lists.json", "w"))
 meta = m["_meta"]

@@ -25,4 +25,8 @@ L = [f"# Forecast for {day} (made before results; {len(te)} featured launches at
 for i, (_, r) in enumerate(te.iterrows()):
     L.append(f"| {i + 1} | {r['name']} | {r.tagline} | {int(np.expm1(r.ph_hunter_followers))} |")
 open(f"{RN.OUT}/forecast_{day}.md", "w").write("\n".join(L) + "\n")
+import json, os
+os.makedirs(f"{RN.OUT}/dash", exist_ok=True)
+json.dump([{"rank": i + 1, "product": r["name"], "tagline": r.tagline, "hunter_followers": int(np.expm1(r.ph_hunter_followers)),
+            "id": r.id} for i, (_, r) in enumerate(te.iterrows())], open(f"{RN.OUT}/dash/forecast.json", "w"))
 print("\n".join(L))

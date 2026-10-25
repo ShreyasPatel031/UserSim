@@ -36,6 +36,34 @@ w("# Product Hunt top-list predictor: backtest\n")
 w(f"Test months: {', '.join(meta['test_months'])}, each predicted by a model trained only on earlier launches. "
   f"{meta['n_test']} launches, {meta['n_days']} daily lists, {meta['n_weeks']} weekly lists. "
   "No vote, comment or rank field of the launch itself is used as an input.\n")
+F = lambda key, per, k: pct(m[key].get(f"{per}@{k}"))
+w("## Key findings\n")
+w(f"1. **Daily list (Yesterday's Top Products): the model finds {F('pred','day',3)} of the real top 3, {F('pred','day',5)} of the top 5 "
+  f"and {F('pred','day',10)} of the top 10** (random: {F('pred_random','day',3)} / {F('pred_random','day',5)} / {F('pred_random','day',10)}).")
+w(f"2. **Weekly list: {F('pred_week_model','week',3)} / {F('pred_week_model','week',5)} / {F('pred_week_model','week',10)}** at top 3/5/10 "
+  f"with the weekly-list model (random {F('pred_random','week',10)} at top 10). **Monthly list: {F('pred_month_model','month',3)} / "
+  f"{F('pred_month_model','month',5)} / {F('pred_month_model','month',10)}** with the monthly-list model (only 8 monthly lists, so wide ranges). "
+  "Weekly and monthly lists are harder because they compare launches across days: even a perfect within-day order gets only about half of a "
+  "week's top 3, so these lists depend on predicting how big a day's winner gets.")
+w("3. **Who posts the launch matters most.** Product Hunt audience and metadata alone find "
+  f"{pct(m['pred_only_ph']['day@5'])} of the daily top 5; the hunter's and makers' track record alone {pct(m['pred_only_hist']['day@5'])}; "
+  f"X audience {pct(m['pred_only_x']['day@5'])}; pitch text {pct(m['pred_only_txt']['day@5'])}; LLM judgements {pct(m['pred_only_llm']['day@5'])}; "
+  f"homepage {pct(m['pred_only_web']['day@5'])}; Hacker News and domain age are near random ({pct(m['pred_random']['day@5'])}). "
+  "Removing the PH audience source costs the most; removing any other source changes the full model by a point or less, so they "
+  "carry little that the audience features do not already have.")
+w(f"4. **Reading the product barely helps.** An LLM ranking each day's launches from the pitch finds {pct(m['pred_llm_pitch']['day@5'])} of the "
+  f"top 5, and with the homepage {pct(m['pred_llm_site']['day@5'])}, against {pct(m['pred_random']['day@5'])} random. In the plan's terms: D is "
+  "best and B/C are only slightly above chance, so Product Hunt votes mostly measure distribution (the hunter's audience and record), "
+  "not the product. A product-quality simulator should not be judged on raw PH votes without controlling for who posted the launch.")
+w("5. **Strongest single factors** (daily top-5 rate, high vs low): hunter's PH followers (top third 45% vs bottom third 1%); hunter's "
+  "past top-5 rate (63% vs 8%); hunter account age (37% vs 7%); number of makers (46% vs 12%); LLM pitch score (37% vs 10%); "
+  "weekend launch (45% vs 18%, fewer competitors). **Self-hunted launches finish top 5 9% of the time, others 34%.**")
+w("6. **Across product types** the hunter's audience dominates everywhere, but least in marketing and 'other' launches. There the "
+  "pitch (LLM score), the makers' own record and gallery quality count for more; in productivity the hunter's past record "
+  "counts most after audience; in consumer apps, hunter account age. The model is most accurate on AI launches (74% of their daily "
+  "top-5 finishes caught) and least on productivity (47%).")
+w("7. **Leakage checks.** Maker follower counts are today's values (makers gain followers after a top launch), so they are left "
+  "out; adding them back changes little. The LLM (training data older than every launch) recognised no product.\n")
 w("## Recall@k (share of the real top k that the predicted top k contains), 95% CI over lists\n")
 w("| Method | Day @3 | Day @5 | Day @10 | Week @3 | Week @5 | Week @10 | Month @3 | Month @5 | Month @10 |")
 w("|---|" + "---|" * 9)
@@ -80,13 +108,13 @@ w("")
 # the three front-page lists
 w("## The three front-page lists (as of Oct 25), model trained only on earlier months\n")
 p["day"] = p.day.astype(str)
-for title, sub, col in (("Yesterday's Top Products (Oct 24)", p[p.day == "2026-10-24"], "dailyRank"),
-                        ("Last Week's Top Products (Oct 12–18)", p[p.week == "2026-W42"], "weeklyRank"),
-                        ("Last Month's Top Products (September)", p[p.mon == "2026-09"], "monthlyRank")):
+for title, sub, col, sc in (("Yesterday's Top Products (Oct 24), full model", p[p.day == "2026-10-24"], "dailyRank", "pred"),
+                        ("Last Week's Top Products (Oct 12–18), weekly-list model", p[p.week == "2026-W42"], "weeklyRank", "pred_week_model"),
+                        ("Last Month's Top Products (September), monthly-list model", p[p.mon == "2026-09"], "monthlyRank", "pred_month_model")):
     if not len(sub):
         continue
     real = sub.nsmallest(10, col)
-    pred = sub.nlargest(10, "pred")
+    pred = sub.nlargest(10, sc)
     hit = {k: len(set(real.head(k).id) & set(pred.head(k).id)) for k in (3, 5, 10)}
     w(f"### {title}: {len(sub)} launches; hits in top 3/5/10: {hit[3]}/3, {hit[5]}/5, {hit[10]}/10\n")
     w("| # | Actual | Predicted |")
@@ -102,6 +130,10 @@ for t, r in sorted(m.get("_by_type", {}).items(), key=lambda kv: -kv[1]["n"]):
     w(f"| {t} | {r['n']} | {r['n_top5']} | {pct(r['recall_of_type_in_day_top5'])} | "
       f"{(r['spearman_within_type_day'] or float('nan')):.2f} |")
 w("")
+fc = sorted(f for f in os.listdir(R) if f.startswith("forecast_"))
+if fc:
+    w("## Forward test: " + open(f"{R}/{fc[-1]}").read().split("\n", 1)[0].lstrip("# ") + "\n")
+    w(open(f"{R}/{fc[-1]}").read().split("\n", 1)[1])
 w("## Data coverage\n")
 w(f"- Homepage: Wayback snapshot from before launch {pct(meta['sites_wayback'])}, live site {pct(meta['sites_live'])}, "
   f"none found {pct(meta['sites_none'])}")
