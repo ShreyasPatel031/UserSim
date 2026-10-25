@@ -49,6 +49,124 @@ def _intercepting(proxy: str | None) -> bool:
     return bool(proxy) and "unblocker" in proxy.lower()
 
 
+# ---------------------------------------------------------------- our own unblocker (prototype)
+#
+# What a commercial unblocker does, in its smallest form: a sticky residential IP (DataImpulse ports 10000-20000 keep
+# one IP for ~30 min), the bot challenge solved once on that IP by CapSolver (Cloudflare: AntiCloudflareTask ->
+# cf_clearance; DataDome: DatadomeSliderTask -> datadome cookie), then the clearance cookie and user agent reused
+# for the following requests from the same IP.
+
+_CAPSOLVER = "https://api.capsolver.com"
+_DD_RE = re.compile(r"var\s+dd\s*=\s*(\{.*?\})", re.S)
+
+
+def sticky_proxy(proxy: str, slot: int) -> str:
+    """The same DataImpulse login on sticky port 10000+slot (one exit IP per port for ~30 min), US exits."""
+    u = urlparse(proxy)
+    user = u.username or ""
+    if "__cr." not in user:
+        user += "__cr.us"
+    return f"{u.scheme}://{user}:{u.password}@{u.hostname}:{10000 + slot % 10000}"
+
+
+def _capsolver_proxy(proxy: str) -> str:
+    u = urlparse(proxy)
+    return f"{u.hostname}:{u.port}:{unquote(u.username or '')}:{unquote(u.password or '')}"
+
+
+def capsolver_solve(task: dict[str, Any], *, wait_s: float = 120.0) -> dict[str, Any]:
+    """One CapSolver task (CAPSOLVER_API_KEY), polled until ready. Returns the solution dict."""
+    import requests
+
+    key = (os.environ.get("CAPSOLVER_API_KEY") or "").strip()
+    if not key:
+        raise RuntimeError("CAPSOLVER_API_KEY missing")
+    r = requests.post(f"{_CAPSOLVER}/createTask", json={"clientKey": key, "task": task}, timeout=30).json()
+    if r.get("errorId"):
+        raise RuntimeError(f"capsolver createTask: {r.get('errorCode')} {r.get('errorDescription')}")
+    if r.get("status") == "ready":
+        return r.get("solution") or {}
+    task_id = r.get("taskId")
+    if not task_id:
+        raise RuntimeError(f"capsolver createTask returned no taskId: {str(r)[:150]}")
+    deadline = time.time() + wait_s
+    while time.time() < deadline:
+        time.sleep(3)
+        r = requests.post(f"{_CAPSOLVER}/getTaskResult", json={"clientKey": key, "taskId": task_id}, timeout=30).json()
+        if r.get("errorId"):
+            raise RuntimeError(f"capsolver getTaskResult: {r.get('errorCode')} {r.get('errorDescription')}")
+        if r.get("status") == "ready":
+            return r.get("solution") or {}
+    raise RuntimeError("capsolver: no solution in time")
+
+
+def _cookie_header(solution: dict[str, Any]) -> str:
+    """CapSolver returns cookies as a dict, a list of {name, value}, or a 'a=b; c=d' string."""
+    c = solution.get("cookies") or solution.get("cookie") or {}
+    if isinstance(c, dict):
+        return "; ".join(f"{k}={v}" for k, v in c.items())
+    if isinstance(c, list):
+        return "; ".join(f"{x.get('name')}={x.get('value')}" for x in c if isinstance(x, dict))
+    return str(c).split(";")[0] if "datadome=" in str(c) else str(c)
+
+
+def own_unblock(url: str, proxy: str, *, slots: tuple[int, ...] = (1, 2, 3)) -> dict[str, Any]:
+    """Fetch url through our own unblocker: try a few sticky IPs; on a Cloudflare or DataDome challenge, solve it
+    with CapSolver on that IP and refetch with the clearance cookie. Reports each step (never the cookie)."""
+    from curl_cffi import requests as creq
+
+    steps: list[dict[str, Any]] = []
+    for slot in slots:
+        px = sticky_proxy(proxy, slot)
+        proxies = {"http": px, "https": px}
+        t = time.time()
+        try:
+            r = creq.get(url, impersonate="chrome", proxies=proxies, timeout=45)
+        except Exception as exc:  # noqa: BLE001
+            steps.append({"slot": slot, "error": re.sub(r"//[^@\s/]+@", "//<redacted>@", repr(exc))[:150]})
+            continue
+        s0 = _summary(r.status_code, r.text, t)
+        step: dict[str, Any] = {"slot": slot, "first": s0}
+        if not s0["challenge"]:
+            steps.append(step)
+            return {"ok": True, "status": r.status_code, "html": r.text, "steps": steps}
+        try:
+            dd = _DD_RE.search(r.text)
+            if dd:  # DataDome (G2)
+                import json as _json
+
+                info = _json.loads(dd.group(1).replace("'", '"'))
+                if info.get("t") == "bv":
+                    step["solve"] = "DataDome banned this IP (t=bv); next IP"
+                    steps.append(step)
+                    continue
+                cid = r.cookies.get("datadome") or ""
+                captcha_url = (f"https://{info.get('host', 'geo.captcha-delivery.com')}/captcha/?initialCid={info.get('cid')}"
+                               f"&hash={info.get('hsh')}&cid={cid}&t={info.get('t')}&referer={url}&s={info.get('s')}"
+                               f"&e={info.get('e', '')}")
+                ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+                sol = capsolver_solve({"type": "DatadomeSliderTask", "websiteURL": url, "captchaUrl": captcha_url,
+                                       "userAgent": ua, "proxy": _capsolver_proxy(px)})
+            else:  # Cloudflare (Capterra)
+                ua = None
+                sol = capsolver_solve({"type": "AntiCloudflareTask", "websiteURL": url, "proxy": _capsolver_proxy(px)})
+                ua = sol.get("userAgent")
+            step["solution_keys"] = sorted(sol.keys())
+            headers = {"Cookie": _cookie_header(sol), "Accept-Language": "en-US,en;q=0.9"}
+            if ua or sol.get("userAgent"):
+                headers["User-Agent"] = sol.get("userAgent") or ua
+            t = time.time()
+            r2 = creq.get(url, impersonate="chrome", proxies=proxies, headers=headers, timeout=45)
+            step["after_solve"] = _summary(r2.status_code, r2.text, t)
+            steps.append(step)
+            if not step["after_solve"]["challenge"]:
+                return {"ok": True, "status": r2.status_code, "html": r2.text, "steps": steps}
+        except Exception as exc:  # noqa: BLE001
+            step["solve_error"] = re.sub(r"//[^@\s/]+@", "//<redacted>@", repr(exc))[:200]
+            steps.append(step)
+    return {"ok": False, "status": 0, "html": "", "steps": steps}
+
+
 def apify_proxy(group: str, country: str = "US") -> str:
     """Apify Proxy URL for one group (UNBLOCKER, RESIDENTIAL), built from the saved Apify token."""
     import requests

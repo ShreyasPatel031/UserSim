@@ -50,6 +50,13 @@ class ReviewFetchTest(unittest.TestCase):
         self.assertTrue(F._intercepting("http://groups-UNBLOCKER:pw@proxy.apify.com:8000"))
         self.assertFalse(F._intercepting("http://u:p@gw.dataimpulse.com:823"))
 
+    def test_own_unblocker_helpers(self):
+        self.assertEqual(F.sticky_proxy("http://u:p@gw.dataimpulse.com:823", 3), "http://u__cr.us:p@gw.dataimpulse.com:10003")
+        self.assertEqual(F.sticky_proxy("http://u__cr.us:p@gw.dataimpulse.com:823", 1), "http://u__cr.us:p@gw.dataimpulse.com:10001")
+        self.assertEqual(F._capsolver_proxy("http://u:p@gw.dataimpulse.com:10001"), "gw.dataimpulse.com:10001:u:p")
+        self.assertEqual(F._cookie_header({"cookies": {"cf_clearance": "x"}}), "cf_clearance=x")
+        self.assertEqual(F._cookie_header({"cookie": "datadome=abc; Max-Age=31536000; Domain=.g2.com"}), "datadome=abc")
+
 
 if __name__ == "__main__":
     unittest.main()
