@@ -1342,6 +1342,14 @@ async def probe_review_page(body: ReviewProbe):
     if not review_fetch.allowed(body.url):
         raise HTTPException(status_code=400, detail="only https review pages on producthunt.com, g2.com, capterra.com")
     def run():
+        import time
+
+        if body.proxy == "own_unblocker":  # sticky DataImpulse IP + CapSolver (prototype)
+            if not discovery.proxy_url():
+                raise HTTPException(status_code=400, detail="no saved PROXY_URL")
+            got = review_fetch.own_unblock(body.url, discovery.proxy_url())
+            return {"url": body.url, "proxy_kind": body.proxy, "ok": got["ok"], "steps": got["steps"],
+                    "final": review_fetch._summary(got["status"], got["html"], time.time()) if got["ok"] else None}
         proxy = {"apify_unblocker": lambda: review_fetch.apify_proxy("UNBLOCKER"),
                  "apify_residential": lambda: review_fetch.apify_proxy("RESIDENTIAL")}.get(
             body.proxy, lambda: discovery.proxy_url() or None)()
