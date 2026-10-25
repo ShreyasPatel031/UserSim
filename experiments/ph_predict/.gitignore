@@ -5,3 +5,4 @@ __pycache__/
 run*.log
 results/predictions_*.csv
 competitors.log
+segments.log
