@@ -138,6 +138,22 @@ def features():
         put(r.id, "comp_li_followers_max_log", np.log1p(np.nanmax(cli)) if np.isfinite(cli).any() else np.nan, "pre")
         put(r.id, "comp_x_followers_max_log", np.log1p(np.nanmax(cxf)) if np.isfinite(cxf).any() else np.nan, "pre")
         put(r.id, "comp_x_followers_sum_log", np.log1p(np.nansum(cxf)) if np.isfinite(cxf).any() else np.nan, "pre")
+    # --- competitor users (their Product Hunt reviews) and whether this launch fixes their complaints
+    REV = {r["competitor"].lower(): r["reviews"] for r in jl(f"{D}/competitor_reviews.jsonl.gz")}
+    FIT = json.load(open(f"{D}/complaint_fit.json")) if os.path.exists(f"{D}/complaint_fit.json") else {}
+    for _, r in df.iterrows():
+        revs = [x for c in C.get(r.id, []) for x in REV.get(c["name"].strip().lower(), [])]
+        rat = [x["rating"] for x in revs if isinstance(x.get("rating"), (int, float))]
+        roles = " ".join((x.get("role") or "").lower() for x in revs)
+        put(r.id, "rev_comp_n_log", np.log1p(len(revs)), "pre")
+        put(r.id, "rev_comp_n_competitors_reviewed", sum(bool(REV.get(c["name"].strip().lower())) for c in C.get(r.id, [])), "pre")
+        put(r.id, "rev_comp_rating_mean", float(np.mean(rat)) if rat else np.nan, "pre")
+        put(r.id, "rev_comp_low_share", float(np.mean([x <= 3 for x in rat])) if rat else np.nan, "pre")
+        put(r.id, "rev_comp_founder_share", roles.count("founder") / max(len(revs), 1) if revs else np.nan, "pre")
+        put(r.id, "rev_comp_engineer_share", (roles.count("engineer") + roles.count("developer")) / max(len(revs), 1) if revs else np.nan, "pre")
+        f = FIT.get(r.id) or {}
+        for k in ("fixes_complaints", "differentiation", "demand"):
+            put(r.id, f"fit_{k}", num(f.get(k)), "pre")
     F = pd.DataFrame.from_dict(feats, orient="index")
     df = df.join(F, on="id")
     return df, tags
@@ -183,4 +199,4 @@ if __name__ == "__main__":
     print("significant (95% interval excludes 0, >=15 days):")
     print(s[s.significant].to_string(index=False))
     print("\nselected sources:")
-    print(s[s.feature.str.match(r"^(comp_|li_|x_|seg_post_n_people|seg_pre_n_people)")].to_string(index=False))
+    print(s[s.feature.str.match(r"^(comp_|li_|x_|rev_|fit_|seg_post_n_people|seg_pre_n_people)")].to_string(index=False))
