@@ -4,7 +4,7 @@ Test months: 2026-03, 2026-04, 2026-05, 2026-06, 2026-07, 2026-08, 2026-09, 2026
 
 ## Key findings
 
-1. **Daily list (Yesterday's Top Products): the model finds 59% of the real top 3, 68% of the top 5 and 78% of the top 10** (random: 20% / 32% / 48%).
+1. **Daily list (Yesterday's Top Products): the model finds 59% of the real top 3, 68% of the top 5 and 78% of the top 10** (random: 20% / 32% / 48%). Accuracy rises as history accumulates: the July–October test months, with 6+ months to learn from, score higher on every list (table below).
 2. **Weekly list: 55% / 54% / 52%** at top 3/5/10 with the weekly-list model (random 8% at top 10). **Monthly list: 25% / 38% / 40%** with the monthly-list model (only 8 monthly lists, so wide ranges). Weekly and monthly lists are harder because they compare launches across days: even a perfect within-day order gets only about half of a week's top 3, so these lists depend on predicting how big a day's winner gets.
 3. **Who posts the launch matters most.** Product Hunt audience and metadata alone find 67% of the daily top 5; the hunter's and makers' track record alone 63%; X audience 53%; pitch text 45%; LLM judgements 43%; homepage 38%; Hacker News and domain age are near random (32%). Removing the PH audience source costs the most; removing any other source changes the full model by a point or less, so they carry little that the audience features do not already have.
 4. **Reading the product barely helps.** An LLM ranking each day's launches from the pitch finds 42% of the top 5, and with the homepage 39%, against 32% random. In the plan's terms: D is best and B/C are only slightly above chance, so Product Hunt votes mostly measure distribution (the hunter's audience and record), not the product. A product-quality simulator should not be judged on raw PH votes without controlling for who posted the launch.
@@ -26,6 +26,19 @@ Test months: 2026-03, 2026-04, 2026-05, 2026-06, 2026-07, 2026-08, 2026-09, 2026
 | B. LLM, pitch only | 25% (22%–28%) | 42% (38%–45%) | 59% (56%–62%) | 1% (0%–3%) | 5% (1%–9%) | 11% (7%–14%) | 0% (0%–0%) | 0% (0%–0%) | 1% (0%–4%) |
 | A. Random | 20% (17%–23%) | 32% (29%–36%) | 48% (44%–51%) | 2% (0%–5%) | 2% (1%–5%) | 8% (5%–11%) | 0% (0%–0%) | 0% (0%–0%) | 0% (0%–0%) |
 | Full + maker followers (leaky) | 58% | 69% | 78% | 44% | 52% | 57% | 21% | 30% | 34% |
+
+## Accuracy grows with training history
+
+Same backtest, split by test months: early months had 2–5 months of history to learn from, later ones 6–9.
+
+| Test months | List | Model | Top 3 | Top 5 | Top 10 |
+|---|---|---|---|---|---|
+| Mar–Jun | day | Full model | 54% | 66% | 75% |
+| Mar–Jun | week | Weekly-list model | 55% | 51% | 48% |
+| Mar–Jun | mon | Monthly-list model | 25% | 35% | 35% |
+| Jul–Oct | day | Full model | 64% | 70% | 81% |
+| Jul–Oct | week | Weekly-list model | 56% | 56% | 56% |
+| Jul–Oct | mon | Monthly-list model | 25% | 40% | 45% |
 
 ## Which sources predict (recall@5 on daily lists, and rank correlation within a day)
 

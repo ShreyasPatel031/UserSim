@@ -25,6 +25,15 @@ Products**, and the same lists per topic) **without using any launch's own votes
 `sync.sh` and `ext_loop.sh` keep the VM resolver, the outside-signal lookups and the LLM scoring caught up while
 collection runs. Data lives in `data/` (not committed: homepage HTML is large).
 
+## Daily use
+
+```bash
+./forecast_today.sh 2026-10-26        # today's launches -> results/forecast_2026-10-26.md
+python3 forecast_week.py 2026-W44     # this week's list, from a model trained before the week
+```
+
+New finished days come in with `python3 collect_ph.py <from> <to>`; then rerun `run.py` to refresh the backtest.
+
 ## Backtest design
 
 - **Rolling origin by month.** Test month M is predicted by models trained only on launches before M.

@@ -39,7 +39,9 @@ w(f"Test months: {', '.join(meta['test_months'])}, each predicted by a model tra
 F = lambda key, per, k: pct(m[key].get(f"{per}@{k}"))
 w("## Key findings\n")
 w(f"1. **Daily list (Yesterday's Top Products): the model finds {F('pred','day',3)} of the real top 3, {F('pred','day',5)} of the top 5 "
-  f"and {F('pred','day',10)} of the top 10** (random: {F('pred_random','day',3)} / {F('pred_random','day',5)} / {F('pred_random','day',10)}).")
+  f"and {F('pred','day',10)} of the top 10** (random: {F('pred_random','day',3)} / {F('pred_random','day',5)} / {F('pred_random','day',10)}). "
+  "Accuracy rises as history accumulates: the July–October test months, with 6+ months to learn from, score higher on every list "
+  "(table below).")
 w(f"2. **Weekly list: {F('pred_week_model','week',3)} / {F('pred_week_model','week',5)} / {F('pred_week_model','week',10)}** at top 3/5/10 "
   f"with the weekly-list model (random {F('pred_random','week',10)} at top 10). **Monthly list: {F('pred_month_model','month',3)} / "
   f"{F('pred_month_model','month',5)} / {F('pred_month_model','month',10)}** with the monthly-list model (only 8 monthly lists, so wide ranges). "
@@ -70,6 +72,17 @@ w("|---|" + "---|" * 9)
 for k in ["pred", "pred_week_model", "pred_month_model", "pred_blend", "pred_rank_day", "pred_ph_only", "pred_llm_site", "pred_llm_pitch", "pred_random", "pred_with_maker_followers"]:
     if k in m:
         w(f"| {NAMES[k]} | " + " | ".join(row(k)) + " |")
+w("")
+import model as MM
+w("## Accuracy grows with training history\n")
+w("Same backtest, split by test months: early months had 2–5 months of history to learn from, later ones 6–9.\n")
+w("| Test months | List | Model | Top 3 | Top 5 | Top 10 |")
+w("|---|---|---|---|---|---|")
+for lab, ms in (("Mar–Jun", ["2026-03", "2026-04", "2026-05", "2026-06"]), ("Jul–Oct", ["2026-07", "2026-08", "2026-09", "2026-10"])):
+    q = p[p.mon.isin(ms)]
+    for per, col, sc, nm in (("day", "dailyRank", "pred", "Full model"), ("week", "weeklyRank", "pred_week_model", "Weekly-list model"),
+                             ("mon", "monthlyRank", "pred_month_model", "Monthly-list model")):
+        w(f"| {lab} | {per} | {nm} | " + " | ".join(pct(MM.recall_at(q, per, col, k, sc)[0]) for k in (3, 5, 10)) + " |")
 w("")
 w("## Which sources predict (recall@5 on daily lists, and rank correlation within a day)\n")
 w("| Source | Alone: day@5 | Alone: Spearman | Full minus source: day@5 | Change vs full |")
