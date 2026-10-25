@@ -23,10 +23,18 @@ from urllib.parse import unquote, urlparse
 # Only review pages on these sites: the probe must not become an open proxy.
 ALLOWED_HOSTS = ("producthunt.com", "g2.com", "capterra.com", "gartner.com", "trustradius.com", "sourceforge.net",
                  "trustpilot.com", "getapp.com", "alternativeto.net", "slashdot.org")
-# Cloudflare localises its challenge title to the visitor's language ("Un instant…" from a French exit IP).
+# Cloudflare localises its challenge title to the visitor's language ("Un instant…" from a French exit IP,
+# "Трохи зачекайте…" from a Ukrainian one).
 _CHALLENGE_RE = re.compile(r"just a moment|performing security verification|cf-chl|challenge-platform|captcha-delivery|"
                            r"datadome|access denied|attention required|please enable js|un instant|einen moment|"
-                           r"un momento|um momento|even geduld|chwileczk|одну минуту|しばらくお待ち", re.I)
+                           r"un momento|um momento|un attimo|even geduld|chwileczk|одну минуту|один момент|зачекайте|"
+                           r"chvíli|bir dakika|しばらくお待ち|请稍候|請稍候|잠시만", re.I)
+# A challenge page is small (6-30 KB); real review pages are 300 KB+, and may mention 'datadome' in their scripts.
+_SMALL = 100_000
+
+
+def _is_challenge(title: str, html: str) -> bool:
+    return bool(_CHALLENGE_RE.search(title or "") or (len(html or "") < _SMALL and _CHALLENGE_RE.search((html or "")[:20000])))
 
 
 def allowed(url: str) -> bool:
@@ -37,10 +45,8 @@ def allowed(url: str) -> bool:
 def _summary(status: int, html: str, started: float) -> dict[str, Any]:
     title = re.search(r"(?is)<title[^>]*>(.*?)</title>", html or "")
     title_text = re.sub(r"\s+", " ", title.group(1)).strip()[:120] if title else ""
-    head = (html or "")[:20000]
     return {"status": status, "title": title_text, "kb": round(len(html or "") / 1024),
-            "challenge": bool(status in (403, 429, 503) or _CHALLENGE_RE.search(title_text) or
-                              (len(html or "") < 20000 and _CHALLENGE_RE.search(head))),
+            "challenge": bool(status in (403, 429, 503) or _is_challenge(title_text, html)),
             "ms": int((time.time() - started) * 1000)}
 
 
@@ -338,7 +344,7 @@ def _load(page: Any, url: str, wait_s: float) -> tuple[int, str]:
     deadline = time.time() + wait_s
     while time.time() < deadline:
         html = page.content()
-        if not _CHALLENGE_RE.search(page.title() or "") and len(html) > 20000:
+        if not _is_challenge(page.title() or "", html) and len(html) > 20000:
             return 200 if status in (403, 429, 503) else status, html
         page.wait_for_timeout(1500)
     return status, page.content()
@@ -434,12 +440,11 @@ def fetch_with_retries(url: str, proxy: str | None, *, attempts: int = 3, timeou
 # ---------------------------------------------------------------- the fetch ladder: cheapest route that gets through
 #
 # Free first, paid last (prices Oct 2026): the VM's own IP costs nothing; DataImpulse residential is ~$1/GB billed on
-# wire bytes (a review page over curl is ~60-80 KB brotli, ~$0.00007); Apify's Unblocker is ~$1.5 per 1,000 requests
-# whatever the size. A browser load is ~2.6 MB even without images, fonts and media (Capterra, Oct 2026: 94
-# requests), ~$0.0027 on the residential proxy, dearer than the Unblocker, so that route is the last resort. A route
-# a site blocked is skipped for that site for BLOCK_TTL_S, so later pages and runs go straight to the one that works.
+# wire bytes (measured on the VM, Oct 2026: a review page over curl is 55-85 KB brotli, ~$0.00006; in Camoufox
+# without images 0.8-1.2 MB, ~$0.001); Apify's Unblocker is ~$1.5 per 1,000 requests whatever the size. A route a
+# site blocked is skipped for that site for BLOCK_TTL_S, so later pages and runs go straight to the one that works.
 
-TIERS = ("vm", "vm_camoufox", "residential", "apify_unblocker", "residential_camoufox")
+TIERS = ("vm", "vm_camoufox", "residential", "residential_camoufox", "apify_unblocker")
 RESIDENTIAL_USD_PER_GB = float(os.environ.get("MVP_RESIDENTIAL_USD_PER_GB", "1.0"))
 UNBLOCKER_USD_PER_PAGE = float(os.environ.get("MVP_UNBLOCKER_USD_PER_PAGE", "0.0015"))
 BLOCK_TTL_S = float(os.environ.get("MVP_FETCH_BLOCK_TTL_S", str(6 * 3600)))
@@ -460,10 +465,20 @@ def tier_cost(tier: str, wire_bytes: int) -> float:
     return UNBLOCKER_USD_PER_PAGE if tier == "apify_unblocker" else 0.0
 
 
+def us_exit(proxy: str) -> str:
+    """A DataImpulse login pinned to US exit IPs (otherwise any country: Cloudflare then answers in Ukrainian and the
+    sites serve local pages)."""
+    u = urlparse(proxy)
+    if "dataimpulse" not in (u.hostname or "") or "__cr." in (u.username or ""):
+        return proxy
+    return proxy.replace(f"//{u.username}:", f"//{u.username}__cr.us:", 1)
+
+
 def tier_fetch(tier: str, url: str, residential: str | None, *, meter: dict[str, Any] | None = None) -> tuple[int, str]:
     """One fetch by one ladder route."""
     if tier in ("residential", "residential_camoufox") and not residential:
         raise RuntimeError("no residential proxy saved")
+    residential = us_exit(residential) if residential else residential
     if tier == "vm":
         return fetch(url, None, timeout=45, meter=meter)
     if tier == "residential":

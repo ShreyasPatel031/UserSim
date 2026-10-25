@@ -22,28 +22,28 @@ Production runs of asana.com and notion.com (before the fixes below were deploye
   CapSolver cannot help G2 on DataImpulse IPs.
 - **Fetch ladder** (`review_fetch.ladder_fetch`, used for every review page): cheapest route that gets the real
   page: `vm` (free) -> `vm_camoufox` (free, slower) -> `residential` (DataImpulse ~$1/GB; ~70 KB brotli per page,
-  ~$0.00007) -> `apify_unblocker` (~$1.5 per 1,000 requests) -> `residential_camoufox` (a browser load is ~2.6 MB
-  even without images, ~$0.0027: dearer than the Unblocker, so last). A route that hit a bot wall is skipped for that
-  site for 6 h (`MVP_FETCH_BLOCK_TTL_S`). The trace says which route(s) were used and the cost.
+  ~$0.00006) -> `residential_camoufox` (0.8-1.2 MB in Camoufox without images, ~$0.001) -> `apify_unblocker`
+  (~$1.5 per 1,000 requests). Residential routes are pinned to US exits (`us_exit`). A route that hit a bot wall is
+  skipped for that site for 6 h (`MVP_FETCH_BLOCK_TTL_S`). The trace says which route(s) were used and the cost.
 - **10 review sites allowed** for the probe: G2, Capterra, Gartner Peer Insights, TrustRadius, SourceForge,
   Trustpilot, Product Hunt, GetApp, AlternativeTo, Slashdot. Parsers exist for G2, Capterra, Product Hunt only.
   `POST /api/discovery/probe {"url": ..., "proxy": "ladder"}` runs every route and reports pass, time, wire KB and
   $/page.
-- **Ladder probe on the VM, Asana's page on each site** (curl routes; Camoufox routes crashed on a meter bug, fixed
-  in the next PR, re-probe below):
+- **Ladder probe on the VM, Asana's page on each site** (Oct 25, 07:55 UTC; residential exits were not yet pinned
+  to the US, and localised Cloudflare pages "Трохи зачекайте…" were miscounted as passes: both fixed since):
 
-  | Site | VM | Residential | Unblocker | Cheapest |
-  |---|---|---|---|---|
-  | GetApp | pass | pass | pass (33 s) | VM, free |
-  | TrustRadius | pass | pass | pass (33 s) | VM, free |
-  | Product Hunt | 403 | pass, 56 KB | pass | residential, $0.00006 |
-  | Gartner Peer Insights | 403 | pass, 58 KB | pass | residential, $0.00006 |
-  | AlternativeTo | 403 | pass, 60 KB | pass | residential, $0.00006 |
-  | G2 | 403 (DataDome) | 403 | pass (22 s) | Unblocker, $0.0015 |
-  | Capterra | 403 (Cloudflare) | 403 | pass (57 s) | Unblocker |
-  | Slashdot | 403 | 403 | pass (24 s) | Unblocker |
-  | SourceForge | 403 | 403 | pass (4 s) | Unblocker |
-  | Trustpilot | 403 | 403 | pass (14 s) | Unblocker |
+  | Site | VM | VM + Camoufox | Residential | Residential + Camoufox | Unblocker | Cheapest |
+  |---|---|---|---|---|---|---|
+  | GetApp | pass | pass (139 s) | pass | pass, 773 KB | pass | VM, free |
+  | TrustRadius | pass | pass (131 s) | pass | CF challenge | pass | VM, free |
+  | Trustpilot | 403 | **pass (16 s)** | 403 | timeout | pass | VM + Camoufox, free |
+  | Product Hunt | 403 | CF challenge | pass, 55 KB | pass, 1.15 MB | pass | residential, $0.00006 |
+  | AlternativeTo | 403 | CF challenge | pass, 59 KB | pass, 882 KB | pass | residential, $0.00006 |
+  | Gartner Peer Insights | 403 | CF challenge | pass in run 1, 403 in run 2 | error | pass (2 s) | residential or Unblocker |
+  | G2 | 403 | DataDome | 403 | DataDome | pass (67 s) | Unblocker, $0.0015 |
+  | Capterra | 403 | CF challenge | 403 | CF challenge (non-US exit) | pass (38 s) | Unblocker |
+  | Slashdot | 403 | CF challenge | 403 | CF challenge (non-US exit) | pass (51 s) | Unblocker |
+  | SourceForge | 403 | CF challenge | 403 | CF challenge (non-US exit) | pass (42 s) | Unblocker |
 
 - Pre-existing failing test: `test_grounding_links_are_resolved_to_real_pages_and_failures_fall_back_to_ddg`.
 
