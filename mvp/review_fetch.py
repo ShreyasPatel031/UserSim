@@ -21,7 +21,8 @@ from typing import Any
 from urllib.parse import unquote, urlparse
 
 # Only review pages on these sites: the probe must not become an open proxy.
-ALLOWED_HOSTS = ("producthunt.com", "g2.com", "capterra.com")
+ALLOWED_HOSTS = ("producthunt.com", "g2.com", "capterra.com", "gartner.com", "trustradius.com", "sourceforge.net",
+                 "trustpilot.com", "getapp.com", "alternativeto.net", "slashdot.org")
 # Cloudflare localises its challenge title to the visitor's language ("Un instant…" from a French exit IP).
 _CHALLENGE_RE = re.compile(r"just a moment|performing security verification|cf-chl|challenge-platform|captcha-delivery|"
                            r"datadome|access denied|attention required|please enable js|un instant|einen moment|"
@@ -191,13 +192,17 @@ def apify_proxy(group: str, country: str = "US") -> str:
     return f"http://{user}:{pw}@proxy.apify.com:8000"
 
 
-def fetch(url: str, proxy: str | None, *, impersonate: str | None = "chrome", timeout: float = 45.0) -> tuple[int, str]:
-    """GET one page. impersonate=None uses a plain client (for comparison)."""
+def fetch(url: str, proxy: str | None, *, impersonate: str | None = "chrome", timeout: float = 45.0,
+          meter: dict[str, Any] | None = None) -> tuple[int, str]:
+    """GET one page. impersonate=None uses a plain client (for comparison). meter gets the bytes on the wire (what a
+    proxy bills: compressed, headers included)."""
     if impersonate:
         from curl_cffi import requests as creq
 
         r = creq.get(url, impersonate=impersonate, proxies={"http": proxy, "https": proxy} if proxy else None,
                      timeout=timeout, headers={"Accept-Language": "en-US,en;q=0.9"}, verify=not _intercepting(proxy))
+        if meter is not None:
+            meter["bytes"] = meter.get("bytes", 0) + r.download_size + r.header_size + r.request_size + r.upload_size
         return r.status_code, r.text or ""
     import httpx
 
@@ -370,14 +375,32 @@ def patchright_fetch(url: str, proxy: str | None, *, wait_s: float = 30.0) -> tu
             browser.close()
 
 
-def camoufox_fetch(url: str, proxy: str | None, *, wait_s: float = 30.0) -> tuple[int, str]:
+def camoufox_fetch(url: str, proxy: str | None, *, wait_s: float = 30.0,
+                   meter: dict[str, Any] | None = None) -> tuple[int, str]:
     """Camoufox: Firefox with fingerprints spoofed at the C++ level, on its own virtual display; locale and timezone
-    follow the proxy's exit IP (geoip)."""
+    follow the proxy's exit IP (geoip). Images, fonts and media are not downloaded. meter gets the bytes transferred
+    (every request's headers and encoded body)."""
     from camoufox.sync_api import Camoufox
 
     with Camoufox(headless="virtual" if sys.platform == "linux" else False, proxy=_proxy_settings(proxy), geoip=bool(proxy), block_images=True,
                   humanize=True, os=["windows", "macos"]) as browser:
-        return _load(browser.new_page(), url, wait_s)
+        page = browser.new_page()
+        page.route("**/*", lambda route: route.abort() if route.request.resource_type in {"image", "media", "font"}
+                   else route.continue_())
+        done: list[Any] = []
+        page.on("requestfinished", done.append)
+        got = _load(page, url, wait_s)
+        if meter is not None:
+            total = 0
+            for req in done:
+                try:
+                    z = req.sizes()
+                    total += sum(max(0, z.get(k, 0)) for k in ("requestHeadersSize", "requestBodySize",
+                                                               "responseHeadersSize", "responseBodySize"))
+                except Exception:  # noqa: BLE001 - page already gone
+                    continue
+            meter["bytes"] = meter.get("bytes", 0) + total
+        return got
 
 
 def is_clean(status: int, html: str) -> bool:
@@ -398,6 +421,121 @@ def fetch_with_retries(url: str, proxy: str | None, *, attempts: int = 3, timeou
         if is_clean(*last):
             return last
     return last
+
+
+# ---------------------------------------------------------------- the fetch ladder: cheapest route that gets through
+#
+# Free first, paid last (prices Oct 2026): the VM's own IP costs nothing; DataImpulse residential is ~$1/GB billed on
+# wire bytes (a review page over curl is ~70 KB brotli, a browser load several times that); Apify's Unblocker is
+# ~$1.5 per 1,000 requests whatever the size. A route a site blocked is skipped for that site for BLOCK_TTL_S, so
+# later pages and runs go straight to the route that works.
+
+TIERS = ("vm", "vm_camoufox", "residential", "residential_camoufox", "apify_unblocker")
+RESIDENTIAL_USD_PER_GB = float(os.environ.get("MVP_RESIDENTIAL_USD_PER_GB", "1.0"))
+UNBLOCKER_USD_PER_PAGE = float(os.environ.get("MVP_UNBLOCKER_USD_PER_PAGE", "0.0015"))
+BLOCK_TTL_S = float(os.environ.get("MVP_FETCH_BLOCK_TTL_S", str(6 * 3600)))
+_BLOCKED: dict[tuple[str, str], float] = {}
+_BLOCKED_LOCK = threading.Lock()
+_BROWSERS = threading.BoundedSemaphore(2)  # Camoufox is ~300-500 MB each; discovery scrapes 9 pages at once
+
+
+def _site(url: str) -> str:
+    host = (urlparse(url).hostname or "").lower()
+    return next((h for h in ALLOWED_HOSTS if host == h or host.endswith("." + h)), host)
+
+
+def tier_cost(tier: str, wire_bytes: int) -> float:
+    """US dollars one fetch cost."""
+    if tier.startswith("residential"):
+        return wire_bytes / 1e9 * RESIDENTIAL_USD_PER_GB
+    return UNBLOCKER_USD_PER_PAGE if tier == "apify_unblocker" else 0.0
+
+
+def tier_fetch(tier: str, url: str, residential: str | None, *, meter: dict[str, Any] | None = None) -> tuple[int, str]:
+    """One fetch by one ladder route."""
+    if tier in ("residential", "residential_camoufox") and not residential:
+        raise RuntimeError("no residential proxy saved")
+    if tier == "vm":
+        return fetch(url, None, timeout=45, meter=meter)
+    if tier == "residential":
+        return fetch(url, residential, timeout=45, meter=meter)
+    if tier == "apify_unblocker":
+        return fetch_with_retries(url, apify_proxy("UNBLOCKER"))
+    if not ensure_tool("camoufox")["ok"]:
+        raise RuntimeError(f"camoufox unavailable: {ensure_tool('camoufox')['how'][-120:]}")
+    box: dict[str, Any] = {}
+
+    def work() -> None:
+        try:
+            box["r"] = camoufox_fetch(url, residential if tier == "residential_camoufox" else None, meter=meter)
+        except Exception as exc:  # noqa: BLE001 - re-raised below
+            box["e"] = exc
+    with _BROWSERS:  # own thread: a browser that failed leaves an event loop behind in its thread (see probe())
+        th = threading.Thread(target=work, daemon=True)
+        th.start()
+        th.join(180)
+    if "e" in box:
+        raise box["e"]
+    if "r" not in box:
+        raise TimeoutError("camoufox: no page in 180 s")
+    return box["r"]
+
+
+def ladder_fetch(url: str, residential: str | None, *, tiers: tuple[str, ...] = TIERS) -> tuple[int, str, str, list[dict[str, Any]]]:
+    """The page by the cheapest route that gets the real page: (status, html, route, attempts). Routes the site
+    blocked recently are skipped; route '' when none got through."""
+    site = _site(url)
+    tried: list[dict[str, Any]] = []
+    last: tuple[int, str] = (0, "")
+    for tier in tiers:
+        with _BLOCKED_LOCK:
+            if time.time() - _BLOCKED.get((site, tier), 0) < BLOCK_TTL_S:
+                continue
+        if tier.startswith("residential") and not residential:
+            continue
+        t, meter = time.time(), {}
+        try:
+            last = tier_fetch(tier, url, residential, meter=meter)
+        except Exception as exc:  # noqa: BLE001 - next route
+            tried.append({"route": tier, "error": re.sub(r"//[^@\s/]+@", "//<redacted>@", repr(exc))[:200]})
+            continue
+        row = _summary(*last, t) | {"route": tier, "usd": round(tier_cost(tier, meter.get("bytes", 0)), 6)}
+        tried.append(row)
+        if is_clean(*last):
+            return last[0], last[1], tier, tried
+        if row["challenge"]:  # a bot wall (not a timeout or 404): don't knock on it again for a while
+            with _BLOCKED_LOCK:
+                _BLOCKED[(site, tier)] = time.time()
+    return last[0], last[1], "", tried
+
+
+def ladder_probe(url: str, residential: str | None) -> dict[str, Any]:
+    """Every ladder route for one URL, whether each passes, its time, wire size and cost per page."""
+    if not allowed(url):
+        raise ValueError(f"only https review pages on {', '.join(ALLOWED_HOSTS)}")
+    out: dict[str, Any] = {"url": url, "routes": {}}
+    for tier in TIERS:
+        t, meter, box = time.time(), {}, {}
+
+        def work(tier=tier, meter=meter, box=box):
+            try:
+                box["r"] = tier_fetch(tier, url, residential, meter=meter)
+            except Exception as exc:  # noqa: BLE001 - reported
+                box["e"] = exc
+        th = threading.Thread(target=work, daemon=True)  # own thread: see probe()
+        th.start()
+        th.join(300)
+        if "r" in box:
+            row = _summary(*box["r"], t)
+            row |= {"pass": is_clean(*box["r"]), "wire_kb": round(meter.get("bytes", 0) / 1024),
+                    "usd_per_page": round(tier_cost(tier, meter.get("bytes", 0)), 6)}
+        else:
+            row = {"pass": False, "error": re.sub(r"//[^@\s/]+@", "//<redacted>@",
+                                                  repr(box.get("e", "timed out after 300 s")))[:300],
+                   "ms": int((time.time() - t) * 1000)}
+        out["routes"][tier] = row
+    out["cheapest_pass"] = next((k for k in TIERS if out["routes"][k].get("pass")), None)
+    return out
 
 
 def exit_country(proxy: str) -> dict[str, Any]:

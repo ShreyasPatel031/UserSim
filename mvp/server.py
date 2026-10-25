@@ -1328,7 +1328,8 @@ async def save_discovery_keys(body: DiscoveryKeys):
 
 class ReviewProbe(BaseModel):
     url: str
-    # saved = the saved PROXY_URL; apify_unblocker / apify_residential = Apify Proxy groups via the saved Apify token
+    # saved = the saved PROXY_URL; apify_unblocker / apify_residential = Apify Proxy groups via the saved Apify token;
+    # ladder = every review_fetch.TIERS route (VM, VM + Camoufox, residential, residential + Camoufox, Unblocker)
     proxy: str = "saved"
     browsers: bool = True
 
@@ -1340,10 +1341,12 @@ async def probe_review_page(body: ReviewProbe):
     from mvp import discovery, review_fetch
 
     if not review_fetch.allowed(body.url):
-        raise HTTPException(status_code=400, detail="only https review pages on producthunt.com, g2.com, capterra.com")
+        raise HTTPException(status_code=400, detail="only https review pages on " + ", ".join(review_fetch.ALLOWED_HOSTS))
     def run():
         import time
 
+        if body.proxy == "ladder":  # every fetch route, cheapest first: which passes, time, bytes, cost per page
+            return review_fetch.ladder_probe(body.url, discovery.proxy_url() or None)
         if body.proxy == "own_unblocker":  # sticky DataImpulse IP + CapSolver (prototype)
             if not discovery.proxy_url():
                 raise HTTPException(status_code=400, detail="no saved PROXY_URL")
@@ -1372,7 +1375,7 @@ async def sample_review_page(body: ReviewSample):
     from mvp import discovery, review_fetch
 
     if not review_fetch.allowed(body.url):
-        raise HTTPException(status_code=400, detail="only https review pages on producthunt.com, g2.com, capterra.com")
+        raise HTTPException(status_code=400, detail="only https review pages on " + ", ".join(review_fetch.ALLOWED_HOSTS))
     if not _secrets.compare_digest(body.current_apify_token or "", discovery.apify_token() or "\0"):
         raise HTTPException(status_code=403, detail="send the saved Apify token")
 

@@ -20,8 +20,15 @@ Production runs of asana.com and notion.com (before the fixes below were deploye
   dynamic DNS` (`gw.dataimpulse.com` resolves to 3 IPs). **Fix:** `sticky_proxy` pins the gateway to one IP; re-probe
   after deploy. G2: all 3 sticky DataImpulse US IPs answered DataDome `t=bv` (IP banned), so no captcha to solve:
   CapSolver cannot help G2 on DataImpulse IPs.
-- **All three sites now go through the Apify Unblocker** (`_inhouse_proxy`): Product Hunt probed 200 first try,
-  2-4 s, 851 KB. DataImpulse is no longer used for review scraping (only by the own-unblocker prototype).
+- **Fetch ladder** (`review_fetch.ladder_fetch`, used for every review page): cheapest route that gets the real
+  page: `vm` (free) -> `vm_camoufox` (free, slower) -> `residential` (DataImpulse ~$1/GB; ~70 KB brotli per page,
+  ~$0.00007) -> `residential_camoufox` -> `apify_unblocker` (~$1.5 per 1,000 requests). A route that hit a bot wall
+  is skipped for that site for 6 h (`MVP_FETCH_BLOCK_TTL_S`). The trace says which route(s) were used and the cost.
+- **10 review sites allowed** for the probe: G2, Capterra, Gartner Peer Insights, TrustRadius, SourceForge,
+  Trustpilot, Product Hunt, GetApp, AlternativeTo, Slashdot. Parsers exist for G2, Capterra, Product Hunt only.
+  `POST /api/discovery/probe {"url": ..., "proxy": "ladder"}` runs every route and reports pass, time, wire KB and
+  $/page. From a Claude container's IP (plain curl): only Capterra and GetApp load; the rest are Cloudflare /
+  DataDome walls. VM results: not run yet (needs deploy).
 - Pre-existing failing test: `test_grounding_links_are_resolved_to_real_pages_and_failures_fall_back_to_ddg`.
 
 ## Earlier (Oct 25 2026, 06:50 UTC)
