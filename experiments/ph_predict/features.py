@@ -86,6 +86,7 @@ def build(include_today=False):
     llm = _jl("llm.jsonl", "id")
     wbav = _jl("ext_wb.jsonl")
     cmf = json.load(open(f"{D}/cm_features.json")) if os.path.exists(f"{D}/cm_features.json") else {}
+    audf = json.load(open(f"{D}/aud_features.json")) if os.path.exists(f"{D}/aud_features.json") else {}
     import external as E
     files = sorted(glob.glob(f"{D}/days/*.json")) + (sorted(glob.glob(f"{D}/today/*.json")) if include_today else [])
     for fn in files:
@@ -167,6 +168,7 @@ def build(include_today=False):
                 if k.startswith("llm_"):
                     r[k] = v
             r.update(cmf.get(p["id"], {}))  # cm_: commenter network (commenters.py), pre-launch comments only
+            r.update(audf.get(p["id"], {}))  # aud_: predicted audience from people's history (audience.py)
             rows.append(r)
     df = pd.DataFrame(rows)
     df = add_history(df)
