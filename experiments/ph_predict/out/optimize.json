@@ -1,0 +1,375 @@
+{
+ "validation": [
+  "2026-06",
+  "2026-07"
+ ],
+ "test": [
+  "2026-08",
+  "2026-09",
+  "2026-10"
+ ],
+ "selection_log": [
+  {
+   "step": 1,
+   "trials": {
+    "launch": 0.354,
+    "people": 0.54,
+    "history": 0.472,
+    "site": 0.314,
+    "llm": 0.258,
+    "hn": 0.245,
+    "domain": 0.245,
+    "hn_day": 0.18,
+    "github": 0.185,
+    "product": 0.228,
+    "yc": 0.248,
+    "early": 0.577,
+    "x": 0.23
+   },
+   "picked": "early"
+  },
+  {
+   "step": 2,
+   "trials": {
+    "launch": 0.56,
+    "people": 0.629,
+    "history": 0.636,
+    "site": 0.605,
+    "llm": 0.585,
+    "hn": 0.567,
+    "domain": 0.556,
+    "hn_day": 0.571,
+    "github": 0.575,
+    "product": 0.607,
+    "yc": 0.577,
+    "x": 0.571
+   },
+   "picked": "history"
+  },
+  {
+   "step": 3,
+   "trials": {
+    "launch": 0.637,
+    "people": 0.654,
+    "site": 0.639,
+    "llm": 0.625,
+    "hn": 0.646,
+    "domain": 0.631,
+    "hn_day": 0.644,
+    "github": 0.629,
+    "product": 0.633,
+    "yc": 0.633,
+    "x": 0.621
+   },
+   "picked": "people"
+  },
+  {
+   "step": 4,
+   "trials": {
+    "launch": 0.667,
+    "site": 0.669,
+    "llm": 0.676,
+    "hn": 0.652,
+    "domain": 0.654,
+    "hn_day": 0.671,
+    "github": 0.657,
+    "product": 0.665,
+    "yc": 0.674,
+    "x": 0.655
+   },
+   "picked": "llm"
+  },
+  {
+   "step": 5,
+   "trials": {
+    "launch": 0.654,
+    "site": 0.682,
+    "hn": 0.686,
+    "domain": 0.669,
+    "hn_day": 0.671,
+    "github": 0.671,
+    "product": 0.658,
+    "yc": 0.669,
+    "x": 0.669
+   },
+   "picked": "hn"
+  },
+  {
+   "step": 6,
+   "trials": {
+    "launch": 0.655,
+    "site": 0.676,
+    "domain": 0.676,
+    "hn_day": 0.68,
+    "github": 0.682,
+    "product": 0.671,
+    "yc": 0.676,
+    "x": 0.68
+   },
+   "picked": "github"
+  }
+ ],
+ "chosen_groups": [
+  "early",
+  "history",
+  "people",
+  "llm",
+  "hn"
+ ],
+ "params": {
+  "num_leaves": 7,
+  "n_estimators": 800
+ },
+ "blend_with_lambdarank": false,
+ "test_results": {
+  "pre-launch (previous)": {
+   "day@3": {
+    "recall": 0.639,
+    "random": 0.159,
+    "lists": 84,
+    "ci95": [
+     0.587,
+     0.687
+    ]
+   },
+   "day@5": {
+    "recall": 0.67,
+    "random": 0.245,
+    "lists": 80,
+    "ci95": [
+     0.635,
+     0.707
+    ]
+   },
+   "day@10": {
+    "recall": 0.71,
+    "random": 0.356,
+    "lists": 48,
+    "ci95": [
+     0.677,
+     0.742
+    ]
+   },
+   "week@3": {
+    "recall": 0.576,
+    "random": 0.02,
+    "lists": 11,
+    "ci95": [
+     0.485,
+     0.667
+    ]
+   },
+   "week@5": {
+    "recall": 0.582,
+    "random": 0.033,
+    "lists": 11,
+    "ci95": [
+     0.491,
+     0.673
+    ]
+   },
+   "week@10": {
+    "recall": 0.6,
+    "random": 0.066,
+    "lists": 11,
+    "ci95": [
+     0.545,
+     0.655
+    ]
+   },
+   "month@3": {
+    "recall": 0.5,
+    "random": 0.005,
+    "lists": 2,
+    "ci95": [
+     0.333,
+     0.667
+    ]
+   },
+   "month@5": {
+    "recall": 0.3,
+    "random": 0.008,
+    "lists": 2,
+    "ci95": [
+     0.2,
+     0.4
+    ]
+   },
+   "month@10": {
+    "recall": 0.35,
+    "random": 0.016,
+    "lists": 2,
+    "ci95": [
+     0.2,
+     0.5
+    ]
+   }
+  },
+  "first 4 hours (previous headline)": {
+   "day@3": {
+    "recall": 0.643,
+    "random": 0.159,
+    "lists": 84,
+    "ci95": [
+     0.599,
+     0.69
+    ]
+   },
+   "day@5": {
+    "recall": 0.7,
+    "random": 0.245,
+    "lists": 80,
+    "ci95": [
+     0.665,
+     0.735
+    ]
+   },
+   "day@10": {
+    "recall": 0.748,
+    "random": 0.356,
+    "lists": 48,
+    "ci95": [
+     0.713,
+     0.779
+    ]
+   },
+   "week@3": {
+    "recall": 0.636,
+    "random": 0.02,
+    "lists": 11,
+    "ci95": [
+     0.515,
+     0.727
+    ]
+   },
+   "week@5": {
+    "recall": 0.673,
+    "random": 0.033,
+    "lists": 11,
+    "ci95": [
+     0.582,
+     0.764
+    ]
+   },
+   "week@10": {
+    "recall": 0.627,
+    "random": 0.066,
+    "lists": 11,
+    "ci95": [
+     0.545,
+     0.709
+    ]
+   },
+   "month@3": {
+    "recall": 0.333,
+    "random": 0.005,
+    "lists": 2,
+    "ci95": [
+     0.0,
+     0.667
+    ]
+   },
+   "month@5": {
+    "recall": 0.4,
+    "random": 0.008,
+    "lists": 2,
+    "ci95": [
+     0.2,
+     0.6
+    ]
+   },
+   "month@10": {
+    "recall": 0.5,
+    "random": 0.016,
+    "lists": 2,
+    "ci95": [
+     0.5,
+     0.5
+    ]
+   }
+  },
+  "optimized": {
+   "day@3": {
+    "recall": 0.639,
+    "random": 0.159,
+    "lists": 84,
+    "ci95": [
+     0.591,
+     0.69
+    ]
+   },
+   "day@5": {
+    "recall": 0.713,
+    "random": 0.245,
+    "lists": 80,
+    "ci95": [
+     0.677,
+     0.747
+    ]
+   },
+   "day@10": {
+    "recall": 0.76,
+    "random": 0.356,
+    "lists": 48,
+    "ci95": [
+     0.727,
+     0.794
+    ]
+   },
+   "week@3": {
+    "recall": 0.636,
+    "random": 0.02,
+    "lists": 11,
+    "ci95": [
+     0.485,
+     0.758
+    ]
+   },
+   "week@5": {
+    "recall": 0.618,
+    "random": 0.033,
+    "lists": 11,
+    "ci95": [
+     0.545,
+     0.691
+    ]
+   },
+   "week@10": {
+    "recall": 0.618,
+    "random": 0.066,
+    "lists": 11,
+    "ci95": [
+     0.536,
+     0.7
+    ]
+   },
+   "month@3": {
+    "recall": 0.333,
+    "random": 0.005,
+    "lists": 2,
+    "ci95": [
+     0.0,
+     0.667
+    ]
+   },
+   "month@5": {
+    "recall": 0.5,
+    "random": 0.008,
+    "lists": 2,
+    "ci95": [
+     0.2,
+     0.8
+    ]
+   },
+   "month@10": {
+    "recall": 0.55,
+    "random": 0.016,
+    "lists": 2,
+    "ci95": [
+     0.5,
+     0.6
+    ]
+   }
+  }
+ }
+}
