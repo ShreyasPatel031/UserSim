@@ -73,6 +73,8 @@ class ParseTest(unittest.TestCase):
                          "https://www.g2.com/products/linear-2/reviews")
         self.assertEqual(D.review_page([{"url": "https://www.capterra.com/p/1/Vimeo-Pro/"}], "capterra", "Vimeo")[0],
                          "https://www.capterra.com/p/1/Vimeo-Pro/")
+        self.assertEqual(D.review_page([{"url": "https://www.capterra.com/p/120725/Asana-PM/"}], "capterra", "Asana")[0],
+                         "https://www.capterra.com/p/120725/Asana-PM/")
         self.assertIsNone(D.review_page([{"url": "https://www.g2.com/products/youtube-live/reviews"}], "g2", "YouTube")[0])
         ph = [{"url": "https://www.producthunt.com/products/linear-agent"}, {"url": "https://www.producthunt.com/products/linear/reviews"}]
         self.assertEqual(D.review_page(ph, "producthunt", "Linear")[0], "https://www.producthunt.com/products/linear/reviews")

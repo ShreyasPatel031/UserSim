@@ -51,8 +51,12 @@ class ReviewFetchTest(unittest.TestCase):
         self.assertFalse(F._intercepting("http://u:p@gw.dataimpulse.com:823"))
 
     def test_own_unblocker_helpers(self):
-        self.assertEqual(F.sticky_proxy("http://u:p@gw.dataimpulse.com:823", 3), "http://u__cr.us:p@gw.dataimpulse.com:10003")
-        self.assertEqual(F.sticky_proxy("http://u__cr.us:p@gw.dataimpulse.com:823", 1), "http://u__cr.us:p@gw.dataimpulse.com:10001")
+        dns = ("gw.dataimpulse.com", [], ["64.34.81.89", "64.34.81.65"])
+        with mock.patch("socket.gethostbyname_ex", return_value=dns):  # pinned to one IP: CapSolver rejects round-robin DNS
+            self.assertEqual(F.sticky_proxy("http://u:p@gw.dataimpulse.com:823", 3), "http://u__cr.us:p@64.34.81.65:10003")
+            self.assertEqual(F.sticky_proxy("http://u__cr.us:p@gw.dataimpulse.com:823", 1), "http://u__cr.us:p@64.34.81.65:10001")
+        with mock.patch("socket.gethostbyname_ex", side_effect=OSError):
+            self.assertEqual(F.sticky_proxy("http://u:p@gw.dataimpulse.com:823", 2), "http://u__cr.us:p@gw.dataimpulse.com:10002")
         self.assertEqual(F._capsolver_proxy("http://u:p@gw.dataimpulse.com:10001"), "gw.dataimpulse.com:10001:u:p")
         self.assertEqual(F._cookie_header({"cookies": {"cf_clearance": "x"}}), "cf_clearance=x")
         self.assertEqual(F._cookie_header({"cookie": "datadome=abc; Max-Age=31536000; Domain=.g2.com"}), "datadome=abc")

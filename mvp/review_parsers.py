@@ -95,9 +95,15 @@ def parse_capterra(page: str, product: str = "") -> list[dict[str, Any]]:
     return out
 
 
+def capterra_reviews_url(url: str) -> str:
+    """The /reviews/ page of a Capterra listing: discovery passes the product root (/p/<id>/<name>/), which shows a few
+    review snippets but no review cards."""
+    m = re.match(r"(https?://(?:www\.)?capterra\.com/p/\d+/[^/?#]+)", url)
+    return f"{m.group(1)}/reviews/" if m else url
+
+
 def capterra_next(url: str, page_no: int) -> str:
-    base = url.split("?")[0]
-    return f"{base}?page={page_no}"
+    return f"{capterra_reviews_url(url.split('?')[0])}?page={page_no}"
 
 
 # ---------------------------------------------------------------- G2
@@ -203,13 +209,15 @@ PARSERS: dict[str, tuple[Any, Any]] = {"capterra": (parse_capterra, capterra_nex
 
 def collect(platform: str, url: str, product: str, fetch_page: Any, *, want: int = PER_PRODUCT,
             max_pages: int = 6) -> tuple[list[dict[str, Any]], dict[str, Any]]:
-    """Fetch and parse pages of one product's reviews until `want` reviews (or a page adds nothing).
+    """Fetch and parse pages of one product's reviews until `want` reviews, a page that loads but adds nothing, or two
+    failed pages in a row (G2 paging through the Apify Unblocker times out or 502s now and then, Oct 2026).
     fetch_page(url) -> (status, html). Returns (reviews, {pages, statuses})."""
     parse, next_url = PARSERS[platform]
     reviews: list[dict[str, Any]] = []
     seen: set[tuple] = set()
     statuses = []
-    page_url = url
+    page_url = capterra_reviews_url(url) if platform == "capterra" else url
+    failures = 0
     for page_no in range(1, max_pages + 1):
         status, page = fetch_page(page_url)
         statuses.append(status)
@@ -218,7 +226,8 @@ def collect(platform: str, url: str, product: str, fetch_page: Any, *, want: int
         for r in fresh:
             seen.add((r.get("name"), r.get("title"), r.get("date"), (r.get("text") or r.get("pros") or "")[:60]))
         reviews += fresh
-        if len(reviews) >= want or not fresh:
+        failures = failures + 1 if not rows else 0
+        if len(reviews) >= want or (rows and not fresh) or failures >= 2:
             break
         page_url = next_url(url, page_no + 1)
     return reviews[:want], {"pages": len(statuses), "statuses": statuses}

@@ -427,8 +427,9 @@ def page_queries(platform: str, name: str) -> list[str]:
     return [f"{name} reviews on {PLATFORM_LABEL[platform]}", f"{name} reviews {platform}.com", f"site:{platform}.com {name} reviews"]
 
 
-# Edition suffixes a product's own listing can carry (Capterra lists Vimeo as 'Vimeo-Pro', G2 has 'dailymotion-pro').
-_EDITION = r"(?:\d+|pro|business|enterprise|teams?|app|software|platform|cloud|online|hq)"
+# Edition suffixes a product's own listing can carry (Capterra lists Vimeo as 'Vimeo-Pro' and Asana as 'Asana-PM',
+# G2 has 'dailymotion-pro').
+_EDITION = r"(?:\d+|pro|pm|business|enterprise|teams?|app|software|platform|cloud|online|hq)"
 
 
 def retry_query(platform: str, name: str) -> str:

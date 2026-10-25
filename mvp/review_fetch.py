@@ -61,12 +61,21 @@ _DD_RE = re.compile(r"var\s+dd\s*=\s*(\{.*?\})", re.S)
 
 
 def sticky_proxy(proxy: str, slot: int) -> str:
-    """The same DataImpulse login on sticky port 10000+slot (one exit IP per port for ~30 min), US exits."""
+    """The same DataImpulse login on sticky port 10000+slot (one exit IP per port for ~30 min), US exits. The gateway
+    host is pinned to one of its IPs: CapSolver refuses round-robin DNS hosts like gw.dataimpulse.com (Oct 2026:
+    ERROR_INVALID_TASK_DATA 'proxy host uses dynamic DNS'), and our fetch and its solve must share the exit."""
+    import socket
+
     u = urlparse(proxy)
     user = u.username or ""
     if "__cr." not in user:
         user += "__cr.us"
-    return f"{u.scheme}://{user}:{u.password}@{u.hostname}:{10000 + slot % 10000}"
+    host = u.hostname or ""
+    try:
+        host = sorted(socket.gethostbyname_ex(host)[2])[0]
+    except (OSError, IndexError):
+        pass
+    return f"{u.scheme}://{user}:{u.password}@{host}:{10000 + slot % 10000}"
 
 
 def _capsolver_proxy(proxy: str) -> str:
