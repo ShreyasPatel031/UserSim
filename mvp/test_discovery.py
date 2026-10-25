@@ -172,6 +172,22 @@ class RunTest(unittest.TestCase):
         self.assertEqual(run.result["tasks"][0]["segment_id"], "")  # no segment to point at
         self.assertEqual([g["status"] for g in run.result["source_gaps"]], ["skipped", "skipped"])
 
+    def test_run_keys_are_used_for_that_run_only_and_never_saved(self):
+        a, _, _, _ = self._agent(apify=True, ph=True)
+        a.apify_token, a.ph_configured = D.apify_token, D.ph_configured  # the real credential lookups
+        seen = []
+        a.web_search_many = (lambda orig: (lambda qs: (seen.append((D.apify_token(), D.ph_configured())), orig(qs))[1]))(a.web_search_many)
+        a._credentials = {"APIFY_TOKEN": "apify_api_RUNKEY123", "PH_TOKEN": "ph-run-key"}
+        with mock.patch.dict(os.environ, {"APIFY_TOKEN": "", "PH_TOKEN": "", "PH_CLIENT_ID": "", "PH_CLIENT_SECRET": ""}), \
+                mock.patch("mvp.review_context.apify_token", return_value=None):
+            run = asyncio.run(a.go())
+            self.assertIsNone(D.apify_token())  # outside the run: the server's (none here)
+        self.assertEqual(run.status, "done", run.error)
+        self.assertEqual(seen[0], ("apify_api_RUNKEY123", True))
+        dumped = json.dumps(run.to_dict(), default=str)
+        self.assertNotIn("RUNKEY123", dumped)
+        self.assertNotIn("ph-run-key", dumped)
+
 
 if __name__ == "__main__":
     unittest.main()
