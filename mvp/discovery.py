@@ -297,6 +297,22 @@ async def google_search(query: str, limit: int = 8, model: str | None = None) ->
     return rows[:limit]
 
 
+async def grounded_answer(prompt: str, model: str | None = None) -> str:
+    """Gemini's answer to a question it researches with Google Search (text; grounding is not JSON-mode compatible)."""
+    from auth import cached_vertex_credentials, vertex_credentials
+    from capability.gemini_config import _endpoint
+
+    payload = {"contents": [{"role": "user", "parts": [{"text": prompt}]}], "tools": [{"googleSearch": {}}],
+               "generationConfig": {"temperature": 0}}
+    creds = cached_vertex_credentials() or await asyncio.to_thread(vertex_credentials)
+    async with httpx.AsyncClient(timeout=90.0) as client:
+        r = await client.post(_endpoint(model or SEARCH_MODEL), json=payload,
+                              headers={"Authorization": f"Bearer {creds.token}", "Content-Type": "application/json"})
+        r.raise_for_status()
+    cand = (r.json().get("candidates") or [{}])[0]
+    return "".join(p.get("text", "") for p in (cand.get("content") or {}).get("parts") or [])
+
+
 async def ddg_search(query: str, limit: int = 8) -> list[dict[str, str]]:
     async with httpx.AsyncClient(timeout=12.0, follow_redirects=True, headers={"User-Agent": _UA}) as client:
         r = await client.get(f"https://html.duckduckgo.com/html/?q={quote_plus(query)}")
@@ -418,7 +434,8 @@ def _same_name(found: str, wanted: str) -> bool:
     """Exact product name, a vendor prefix ('atlassian-jira'), or an edition / numbered slug ('vimeo-pro', 'linear-2');
     never a longer different product ('jira-service-management', 'youtube-live', 'linear-agent')."""
     f, w = _slug(found), _slug(wanted)
-    return bool(f) and (f == w or f.endswith("-" + w) or bool(re.fullmatch(re.escape(w) + "-" + _EDITION, f)))
+    return bool(f) and (f == w or f.replace("-", "") == w.replace("-", "") or f.endswith("-" + w)
+                        or bool(re.fullmatch(re.escape(w) + "-" + _EDITION, f)))
 
 
 def review_page(rows: list[dict[str, str]], platform: str, name: str) -> tuple[str | None, str]:
@@ -534,6 +551,7 @@ class DiscoveryAgent:
         self.llm = llm or _default_llm
         self.fetch_html = fetch_html
         self.web_search_many = web_search_many
+        self.grounded_answer = grounded_answer
         self.ph_topic_posts = ph_topic_posts
         self.ph_topics = ph_topics
         self.ph_configured = ph_configured
@@ -654,8 +672,27 @@ Return JSON:
                 uniq.append(p)
         return uniq
 
+    async def compared_products(self, profile: dict[str, Any]) -> list[dict[str, str]]:
+        """The products buyers most often compare this one with, per Gemini researching "<name> alternatives" and
+        "<name> vs" pages with Google Search."""
+        name, cat = profile.get("name") or registrable_host(self.run.url), profile.get("category") or ""
+        prompt = (f'Use Google Search. Which products do buyers most often compare {name} ({cat}) with, according to '
+                  f'current "{name} alternatives" and "{name} vs" pages on the web? Return JSON only: '
+                  '{"competitors":[{"name":"...","homepage":"https://..."}]} with the 8 most-cited direct competitors, '
+                  'most cited first.')
+        s = self.trace.start("search", f"Most-compared products for {name}", {"engine": f"{SEARCH_MODEL} + Google Search", "prompt": prompt})
+        try:
+            rows = [c for c in (_json(await self.grounded_answer(prompt)).get("competitors") or []) if c.get("name")]
+        except Exception as exc:
+            self.trace.end(s, "error", repr(exc)[:300])
+            return []
+        self.trace.end(s, "done", ", ".join(c["name"] for c in rows), rows)
+        return rows
+
     # 4. pick competitors
-    async def pick(self, profile: dict[str, Any], web: list[dict[str, str]], ph: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    async def pick(self, profile: dict[str, Any], web: list[dict[str, str]], ph: list[dict[str, Any]],
+                   compared: list[dict[str, str]] | None = None) -> list[dict[str, Any]]:
+        cmp_txt = "\n".join(f"- {c['name']} ({c.get('homepage') or '?'})" for c in compared or []) or "(none)"
         web_txt = "\n".join(f"- {r['title']} ({r['url']}): {r['snippet']}" for r in web[:30]) or "(none)"
         ph_txt = "\n".join(f"- {p['name']} [slug {p['slug']}]: {p['tagline']} ({p['votesCount']} votes; topics {', '.join(p['topics'][:3])})"
                            for p in ph[:40]) or "(none)"
@@ -667,19 +704,22 @@ Return JSON:
 Category: {profile.get('category')}. For: {', '.join(profile.get('target_users') or [])}.
 Key features: {', '.join(profile.get('key_features') or [])}
 
+PRODUCTS BUYERS MOST OFTEN COMPARE IT WITH (Google-researched; the main evidence):
+{cmp_txt}
+
 WEB SEARCH RESULTS (alternatives / competitors pages):
 {web_txt}
 
-SIMILAR PRODUCT HUNT LAUNCHES:
+RECENT PRODUCT HUNT LAUNCHES IN ITS TOPICS (supplementary: mostly new, small products):
 {ph_txt}
 
-Rank up to {want + 4} products a buyer of {profile.get('name')} would seriously compare it with: same job, same kind of
-user. Prefer candidates named in the evidence above; you may add a well-known direct competitor the evidence missed
-(set source to "model_knowledge"). Never list {profile.get('name')} itself, review sites, or listicles.
+Rank up to {want + 4} established products a buyer of {profile.get('name')} would seriously compare it with: same job,
+same kind of user. Take them from the most-compared list first, best first. Use a Product Hunt launch only if it is a
+direct, established competitor. Never list {profile.get('name')} itself, review sites, or listicles.
 
 Return JSON:
 {{"candidates": [{{"name": "...", "url": "https://their-homepage", "why": "one sentence: what overlaps and how they differ",
-  "overlap": "direct|partial|adjacent", "source": "web|producthunt|model_knowledge"}}]}}""")
+  "overlap": "direct|partial|adjacent", "source": "most_compared|web|producthunt"}}]}}""")
         return [c for c in (out.get("candidates") or []) if c.get("name") and c.get("url")]
 
     async def keep_live(self, candidates: list[dict[str, Any]], category: str) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
@@ -839,9 +879,10 @@ Return JSON:
         # The product's own reviewers are searched and scraped while its competitors are still being found.
         own_users = asyncio.create_task(self.users_for([name]))
         queries = [f"{name} alternatives", f"{name} competitors"] + [f"best {t}" for t in (prof.get("search_terms") or [])[:2]]
-        found, ph = await asyncio.gather(self._search_many(queries), self.product_hunt(prof))
+        found, ph, compared = await asyncio.gather(self._search_many(queries), self.product_hunt(prof),
+                                                   self.compared_products(prof))
         web = [r for q in queries for r in found.get(q) or []]
-        candidates = await self.pick(prof, web, ph)
+        candidates = await self.pick(prof, web, ph, compared)
         comps, rest = await self.keep_live(candidates, str(prof.get("category") or ""))
         rival_users = await self.users_for([c["name"] for c in comps]) if comps else []
         users = await own_users + rival_users

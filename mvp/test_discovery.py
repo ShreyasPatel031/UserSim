@@ -123,6 +123,9 @@ class RunTest(unittest.TestCase):
             return (reviews or {}).get(url, [])
 
         a.fetch_html, a.web_search_many, a.ph_topics, a.ph_topic_posts, a.probe = fetch, search_many, topics, topic_posts, probe
+        async def grounded(prompt, model=None):
+            return '{"competitors": [{"name": "Trello", "homepage": "https://trello.com"}]}'
+        a.grounded_answer = grounded
         a.ph_configured = lambda: ph
         a.apify_token = lambda: "tok" if apify else None
         a.scrape_review_page = scrape
@@ -148,6 +151,8 @@ class RunTest(unittest.TestCase):
         self.assertEqual(r["users"][0]["text"], "Liked: easy / Disliked: slow")
         self.assertEqual(r["users"][0]["product"], "Trello")
         self.assertIn("[u0] (g2 / Trello) role: Designer", log[-1])
+        self.assertIn("PRODUCTS BUYERS MOST OFTEN COMPARE IT WITH (Google-researched; the main evidence):\n- Trello (https://trello.com)",
+                      next(p for p in log if '"candidates"' in p))
         self.assertEqual([(g["name"], g["evidence"]) for g in r["segments"]], [("Team leads", ["u0", "u1"])])  # u999 backs nothing
         gaps = {g["source"]: g["why"] for g in r["source_gaps"]}
         self.assertIn("other products: ['acme-anvils']", gaps["G2 reviews of Acme Boards"])
