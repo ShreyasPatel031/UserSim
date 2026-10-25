@@ -2,7 +2,8 @@
 
   hn.jsonl      Hacker News stories linking the domain (or GitHub repo) posted BEFORE the launch day (Algolia API)
   domain.jsonl  domain registration date (RDAP), as age in days on launch day
-  github.jsonl  for GitHub-hosted products: stars given BEFORE launch day (timestamped stargazers) and repo age
+  github.jsonl  for products with a GitHub repo (main site or PH's GitHub link, crawl_sites.py ... Github): stars
+                given BEFORE launch day (timestamped stargazers) and repo age
 
 Ids already on disk are skipped.
 
@@ -97,6 +98,7 @@ def rdap(domain: str) -> str | None:
 def main() -> None:
     df = F.load_posts()
     web = {p.stem: json.loads(p.read_text()) for p in (F.CACHE / "web").glob("*.json")}
+    gh_links = {p.stem: json.loads(p.read_text()).get("loaded_url") for p in (F.CACHE / "web_github").glob("*.json")}
     outs = {k: F.CACHE / f"{k}.jsonl" for k in ("hn", "domain", "github")}
     done = {k: {json.loads(l)["id"] for l in p.read_text().splitlines()} if p.exists() else set()
             for k, p in outs.items()}
@@ -127,7 +129,8 @@ def main() -> None:
                 age = (day - regd).days if regd else None
                 write("domain", {"id": r["id"], "age_days": age, "own_domain": int(bool(domain))})
             if r["id"] not in done["github"]:
-                repo = term if term.startswith("github.com/") and term.count("/") == 2 else ""
+                gl, _ = target(gh_links.get(r["id"]) or "")
+                repo = next((t for t in (term, gl) if t.startswith("github.com/") and t.count("/") == 2), "")
                 write("github", {"id": r["id"], **(github(repo.split("github.com/")[1], day) if repo else
                                                    {"repo_found": 0})})
         except Exception as e:  # one bad lookup must not stop the run

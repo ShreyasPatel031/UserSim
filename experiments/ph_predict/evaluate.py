@@ -27,6 +27,7 @@ import features as F  # noqa: E402
 OUT = F.HERE / "out"
 KS = (3, 5, 10)
 PERIODS = {"day": ("day", "dailyRank"), "week": ("week", "weeklyRank"), "month": ("month", "monthlyRank")}
+FIRST_TEST_MONTH = "2026-04"  # earlier months are training history only
 PARAMS = dict(n_estimators=500, learning_rate=0.03, num_leaves=15, min_child_samples=20, subsample=0.8,
               subsample_freq=1, colsample_bytree=0.7, reg_lambda=1.0, verbose=-1)
 # Product types for "how factors change": first matching family wins.
@@ -141,7 +142,7 @@ def main() -> None:
     groups.pop("followers")  # headline model: no follower counts (today's counts include the launch's own effect)
     all_cols = [c for cs in groups.values() for c in cs]
     months = sorted(df.month.unique())
-    test_months = [m for m in months if (df.month < m).sum() >= 200]
+    test_months = [m for m in months if m >= FIRST_TEST_MONTH and (df.month < m).sum() >= 200]
     last_day = df.day.max()
     complete = [m for m in test_months if m < last_day[:7]]
     print(f"{len(df)} launches {df.day.min()}..{last_day}; test months {test_months}; complete {complete}", flush=True)

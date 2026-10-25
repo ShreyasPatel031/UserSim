@@ -4,7 +4,7 @@ Per Pacific day: every featured launch (paged, 20 per page) with topics, media, 
 candidate set, chosen by PH before any votes (on Oct 23 the day's top 20 by ranking were all featured). Labels
 (dailyRank / weeklyRank / monthlyRank / votes) are stored next to the metadata but are never used as features. Days already on disk are skipped, so the script can be re-run.
 
-    PH_TOKEN=... python experiments/ph_predict/collect_ph.py 2026-03-01 2026-10-24
+    PH_TOKEN=... python experiments/ph_predict/collect_ph.py 2025-10-01 2026-10-24
 """
 
 from __future__ import annotations

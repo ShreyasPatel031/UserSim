@@ -4,7 +4,7 @@ PH's API only gives producthunt.com/r/<code> links, which Cloudflare blocks for 
 on Apify with US residential IPs (cheerio, no browser, depth 0). Batches run in parallel; posts already on disk are
 skipped, so it can be re-run as more days are collected.
 
-    APIFY_TOKEN=... python experiments/ph_predict/crawl_sites.py [first_day]
+    APIFY_TOKEN=... python experiments/ph_predict/crawl_sites.py [first_day] [Website|Github]
 """
 
 from __future__ import annotations
@@ -29,7 +29,8 @@ def _code(url: str) -> str:
     return url.split("/r/")[1].split("?")[0] if "/r/" in (url or "") else ""
 
 
-def todo(first_day: str) -> list[tuple[str, str]]:
+def todo(first_day: str, link: str = "Website") -> list[tuple[str, str]]:
+    """(post id, redirect code) for each launch's main website, or for its first product link of type `link`."""
     done = {p.stem for p in WEB.glob("*.json")}
     out = []
     for f in sorted(DAYS.glob("*.json")):
@@ -37,7 +38,10 @@ def todo(first_day: str) -> list[tuple[str, str]]:
             continue
         for e in json.loads(f.read_text())["edges"]:
             n = e["node"]
-            code = _code(n.get("website"))
+            if link == "Website":
+                code = _code(n.get("website"))
+            else:
+                code = next((_code(l["url"]) for l in n.get("productLinks") or [] if l["type"] == link), "")
             if code and n["id"] not in done:
                 out.append((n["id"], code))
     return out
@@ -75,9 +79,13 @@ def run_batch(batch: list[tuple[str, str]]) -> int:
     return len(seen)
 
 
-def main(first_day: str = "2026-01-01") -> None:
+def main(first_day: str = "2026-01-01", link: str = "Website") -> None:
+    """link="Github" crawls each launch's GitHub link into cache/web_github instead."""
+    global WEB
+    if link != "Website":
+        WEB = HERE / "cache" / f"web_{link.lower()}"
     WEB.mkdir(parents=True, exist_ok=True)
-    work = todo(first_day)
+    work = todo(first_day, link)
     print(f"{len(work)} sites to crawl", flush=True)
     batches = [work[i:i + BATCH] for i in range(0, len(work), BATCH)]
     with ThreadPoolExecutor(PARALLEL) as ex:
@@ -85,4 +93,4 @@ def main(first_day: str = "2026-01-01") -> None:
 
 
 if __name__ == "__main__":
-    main(*sys.argv[1:2])
+    main(*sys.argv[1:3])

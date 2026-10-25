@@ -3,7 +3,7 @@
 **Goal:** predict which launches appear on PH's homepage lists — Yesterday's, Last Week's and Last Month's Top
 Products, overall and per topic — without using the launch's own votes, comments or ranks.
 
-**Results:** [`out/report.md`](out/report.md) (recall@3/5/10 per list, sources, factors, product types, topic lists).
+**Results:** [`FINDINGS.md`](FINDINGS.md) (summary) and [`out/report.md`](out/report.md) (recall@3/5/10 per list, sources, factors, product types, topic lists).
 
 ## Pipeline
 
@@ -17,7 +17,7 @@ Products, overall and per topic — without using the launch's own votes, commen
 | Backtest | `evaluate.py` → `report.py` | expanding window by month, LightGBM on log votes, recall@k per list | — |
 | Live | `predict_live.py <day>` | today's launches, model trained on all earlier days | — |
 
-`run_all.sh` runs the enrichment steps and the backtest; each step skips work already on disk (`cache/`, gitignored).
+`run_all.sh` runs the enrichment steps (GitHub links: `crawl_sites.py 2025-01-01 Github`) and the backtest; each step skips work already on disk (`cache/`, gitignored).
 
 Credentials (env): `PH_TOKEN` (or `PH_CLIENT_ID` + `PH_CLIENT_SECRET`), `APIFY_TOKEN`,
 `GOOGLE_APPLICATION_CREDENTIALS` (Vertex), optional `GH_TOKEN`.

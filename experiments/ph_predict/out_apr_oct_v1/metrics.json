@@ -1,0 +1,3581 @@
+{
+ "n_launches": 5554,
+ "days": [
+  "2026-03-01",
+  "2026-10-24"
+ ],
+ "test_months": [
+  "2026-04",
+  "2026-05",
+  "2026-06",
+  "2026-07",
+  "2026-08",
+  "2026-09",
+  "2026-10"
+ ],
+ "groups": {
+  "launch": 62,
+  "people": 8,
+  "history": 11,
+  "site": 22,
+  "llm": 10,
+  "hn": 4,
+  "domain": 2,
+  "github": 1
+ },
+ "coverage": {
+  "site_loaded": 0.949,
+  "llm_scored": 0.994,
+  "hn_story_before_launch": 0.313,
+  "domain_age_known": 0.711,
+  "github_repo": 0.0,
+  "maker_launched_before": 0.407
+ },
+ "full": {
+  "day@3": {
+   "recall": 0.603,
+   "random": 0.173,
+   "lists": 200,
+   "ci95": [
+    0.573,
+    0.633
+   ]
+  },
+  "day@5": {
+   "recall": 0.643,
+   "random": 0.236,
+   "lists": 177,
+   "ci95": [
+    0.615,
+    0.672
+   ]
+  },
+  "day@10": {
+   "recall": 0.695,
+   "random": 0.34,
+   "lists": 111,
+   "ci95": [
+    0.67,
+    0.719
+   ]
+  },
+  "week@3": {
+   "recall": 0.405,
+   "random": 0.02,
+   "lists": 28,
+   "ci95": [
+    0.333,
+    0.476
+   ]
+  },
+  "week@5": {
+   "recall": 0.521,
+   "random": 0.034,
+   "lists": 28,
+   "ci95": [
+    0.464,
+    0.579
+   ]
+  },
+  "week@10": {
+   "recall": 0.514,
+   "random": 0.068,
+   "lists": 28,
+   "ci95": [
+    0.471,
+    0.554
+   ]
+  },
+  "month@3": {
+   "recall": 0.167,
+   "random": 0.005,
+   "lists": 6,
+   "ci95": [
+    0.056,
+    0.278
+   ]
+  },
+  "month@5": {
+   "recall": 0.267,
+   "random": 0.008,
+   "lists": 6,
+   "ci95": [
+    0.2,
+    0.333
+   ]
+  },
+  "month@10": {
+   "recall": 0.283,
+   "random": 0.015,
+   "lists": 6,
+   "ci95": [
+    0.2,
+    0.367
+   ]
+  }
+ },
+ "full_with_followers": {
+  "day@3": {
+   "recall": 0.602,
+   "random": 0.173,
+   "lists": 200,
+   "ci95": [
+    0.572,
+    0.63
+   ]
+  },
+  "day@5": {
+   "recall": 0.66,
+   "random": 0.236,
+   "lists": 177,
+   "ci95": [
+    0.635,
+    0.686
+   ]
+  },
+  "day@10": {
+   "recall": 0.733,
+   "random": 0.34,
+   "lists": 111,
+   "ci95": [
+    0.711,
+    0.756
+   ]
+  },
+  "week@3": {
+   "recall": 0.393,
+   "random": 0.02,
+   "lists": 28,
+   "ci95": [
+    0.333,
+    0.452
+   ]
+  },
+  "week@5": {
+   "recall": 0.514,
+   "random": 0.034,
+   "lists": 28,
+   "ci95": [
+    0.457,
+    0.571
+   ]
+  },
+  "week@10": {
+   "recall": 0.536,
+   "random": 0.068,
+   "lists": 28,
+   "ci95": [
+    0.486,
+    0.586
+   ]
+  },
+  "month@3": {
+   "recall": 0.278,
+   "random": 0.005,
+   "lists": 6,
+   "ci95": [
+    0.111,
+    0.444
+   ]
+  },
+  "month@5": {
+   "recall": 0.4,
+   "random": 0.008,
+   "lists": 6,
+   "ci95": [
+    0.233,
+    0.6
+   ]
+  },
+  "month@10": {
+   "recall": 0.417,
+   "random": 0.015,
+   "lists": 6,
+   "ci95": [
+    0.3,
+    0.55
+   ]
+  }
+ },
+ "by_month": {
+  "2026-04": {
+   "day@3": 0.467,
+   "day@5": 0.504,
+   "day@10": 0.6,
+   "week@3": 0.333,
+   "week@5": 0.4,
+   "week@10": 0.367
+  },
+  "2026-05": {
+   "day@3": 0.563,
+   "day@5": 0.608,
+   "day@10": 0.706,
+   "week@3": 0.417,
+   "week@5": 0.55,
+   "week@10": 0.55
+  },
+  "2026-06": {
+   "day@3": 0.679,
+   "day@5": 0.709,
+   "day@10": 0.736,
+   "week@3": 0.5,
+   "week@5": 0.6,
+   "week@10": 0.55
+  },
+  "2026-07": {
+   "day@3": 0.678,
+   "day@5": 0.675,
+   "day@10": 0.736,
+   "week@3": 0.222,
+   "week@5": 0.467,
+   "week@10": 0.567
+  },
+  "2026-08": {
+   "day@3": 0.611,
+   "day@5": 0.671,
+   "day@10": 0.685,
+   "week@3": 0.333,
+   "week@5": 0.5,
+   "week@10": 0.5
+  },
+  "2026-09": {
+   "day@3": 0.578,
+   "day@5": 0.671,
+   "day@10": 0.713,
+   "week@3": 0.556,
+   "week@5": 0.6,
+   "week@10": 0.533
+  },
+  "2026-10": {
+   "day@3": 0.667,
+   "day@5": 0.675,
+   "day@10": 0.725,
+   "week@3": 0.667,
+   "week@5": 0.6,
+   "week@10": 0.45
+  }
+ },
+ "spearman_day": 0.606,
+ "baselines": {
+  "followers today (hunter+makers; leaky)": {
+   "day@3": {
+    "recall": 0.437,
+    "random": 0.173,
+    "lists": 200,
+    "ci95": [
+     0.405,
+     0.473
+    ]
+   },
+   "day@5": {
+    "recall": 0.563,
+    "random": 0.236,
+    "lists": 177,
+    "ci95": [
+     0.533,
+     0.591
+    ]
+   },
+   "day@10": {
+    "recall": 0.677,
+    "random": 0.34,
+    "lists": 111,
+    "ci95": [
+     0.654,
+     0.701
+    ]
+   },
+   "week@3": {
+    "recall": 0.071,
+    "random": 0.02,
+    "lists": 28,
+    "ci95": [
+     0.012,
+     0.131
+    ]
+   },
+   "week@5": {
+    "recall": 0.143,
+    "random": 0.034,
+    "lists": 28,
+    "ci95": [
+     0.093,
+     0.2
+    ]
+   },
+   "week@10": {
+    "recall": 0.279,
+    "random": 0.068,
+    "lists": 28,
+    "ci95": [
+     0.229,
+     0.332
+    ]
+   },
+   "month@3": {
+    "recall": 0.056,
+    "random": 0.005,
+    "lists": 6,
+    "ci95": [
+     0.0,
+     0.167
+    ]
+   },
+   "month@5": {
+    "recall": 0.067,
+    "random": 0.008,
+    "lists": 6,
+    "ci95": [
+     0.0,
+     0.133
+    ]
+   },
+   "month@10": {
+    "recall": 0.083,
+    "random": 0.015,
+    "lists": 6,
+    "ci95": [
+     0.033,
+     0.133
+    ]
+   }
+  },
+  "llm p_top5 alone": {
+   "day@3": {
+    "recall": 0.278,
+    "random": 0.173,
+    "lists": 200,
+    "ci95": [
+     0.248,
+     0.31
+    ]
+   },
+   "day@5": {
+    "recall": 0.38,
+    "random": 0.236,
+    "lists": 177,
+    "ci95": [
+     0.35,
+     0.408
+    ]
+   },
+   "day@10": {
+    "recall": 0.476,
+    "random": 0.34,
+    "lists": 111,
+    "ci95": [
+     0.452,
+     0.501
+    ]
+   },
+   "week@3": {
+    "recall": 0.012,
+    "random": 0.02,
+    "lists": 28,
+    "ci95": [
+     0.0,
+     0.036
+    ]
+   },
+   "week@5": {
+    "recall": 0.043,
+    "random": 0.034,
+    "lists": 28,
+    "ci95": [
+     0.014,
+     0.086
+    ]
+   },
+   "week@10": {
+    "recall": 0.096,
+    "random": 0.068,
+    "lists": 28,
+    "ci95": [
+     0.068,
+     0.125
+    ]
+   },
+   "month@3": {
+    "recall": 0.0,
+    "random": 0.005,
+    "lists": 6,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "month@5": {
+    "recall": 0.0,
+    "random": 0.008,
+    "lists": 6,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "month@10": {
+    "recall": 0.017,
+    "random": 0.015,
+    "lists": 6,
+    "ci95": [
+     0.0,
+     0.05
+    ]
+   }
+  },
+  "look-alike earlier launches": {
+   "day@3": {
+    "recall": 0.288,
+    "random": 0.173,
+    "lists": 200,
+    "ci95": [
+     0.253,
+     0.327
+    ]
+   },
+   "day@5": {
+    "recall": 0.38,
+    "random": 0.236,
+    "lists": 177,
+    "ci95": [
+     0.348,
+     0.414
+    ]
+   },
+   "day@10": {
+    "recall": 0.475,
+    "random": 0.34,
+    "lists": 111,
+    "ci95": [
+     0.448,
+     0.504
+    ]
+   },
+   "week@3": {
+    "recall": 0.036,
+    "random": 0.02,
+    "lists": 28,
+    "ci95": [
+     0.0,
+     0.083
+    ]
+   },
+   "week@5": {
+    "recall": 0.086,
+    "random": 0.034,
+    "lists": 28,
+    "ci95": [
+     0.05,
+     0.121
+    ]
+   },
+   "week@10": {
+    "recall": 0.132,
+    "random": 0.068,
+    "lists": 28,
+    "ci95": [
+     0.1,
+     0.171
+    ]
+   },
+   "month@3": {
+    "recall": 0.0,
+    "random": 0.005,
+    "lists": 6,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "month@5": {
+    "recall": 0.0,
+    "random": 0.008,
+    "lists": 6,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "month@10": {
+    "recall": 0.033,
+    "random": 0.015,
+    "lists": 6,
+    "ci95": [
+     0.0,
+     0.067
+    ]
+   }
+  }
+ },
+ "only": {
+  "launch": {
+   "day@3": {
+    "recall": 0.333,
+    "random": 0.173,
+    "lists": 200,
+    "ci95": [
+     0.298,
+     0.368
+    ]
+   },
+   "day@5": {
+    "recall": 0.427,
+    "random": 0.236,
+    "lists": 177,
+    "ci95": [
+     0.395,
+     0.461
+    ]
+   },
+   "day@10": {
+    "recall": 0.51,
+    "random": 0.34,
+    "lists": 111,
+    "ci95": [
+     0.483,
+     0.538
+    ]
+   },
+   "week@3": {
+    "recall": 0.036,
+    "random": 0.02,
+    "lists": 28,
+    "ci95": [
+     0.0,
+     0.071
+    ]
+   },
+   "week@5": {
+    "recall": 0.1,
+    "random": 0.034,
+    "lists": 28,
+    "ci95": [
+     0.05,
+     0.15
+    ]
+   },
+   "week@10": {
+    "recall": 0.186,
+    "random": 0.068,
+    "lists": 28,
+    "ci95": [
+     0.143,
+     0.229
+    ]
+   },
+   "month@3": {
+    "recall": 0.0,
+    "random": 0.005,
+    "lists": 6,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "month@5": {
+    "recall": 0.0,
+    "random": 0.008,
+    "lists": 6,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "month@10": {
+    "recall": 0.017,
+    "random": 0.015,
+    "lists": 6,
+    "ci95": [
+     0.0,
+     0.05
+    ]
+   }
+  },
+  "people": {
+   "day@3": {
+    "recall": 0.475,
+    "random": 0.173,
+    "lists": 200,
+    "ci95": [
+     0.443,
+     0.512
+    ]
+   },
+   "day@5": {
+    "recall": 0.563,
+    "random": 0.236,
+    "lists": 177,
+    "ci95": [
+     0.533,
+     0.594
+    ]
+   },
+   "day@10": {
+    "recall": 0.658,
+    "random": 0.34,
+    "lists": 111,
+    "ci95": [
+     0.63,
+     0.683
+    ]
+   },
+   "week@3": {
+    "recall": 0.298,
+    "random": 0.02,
+    "lists": 28,
+    "ci95": [
+     0.226,
+     0.369
+    ]
+   },
+   "week@5": {
+    "recall": 0.336,
+    "random": 0.034,
+    "lists": 28,
+    "ci95": [
+     0.271,
+     0.407
+    ]
+   },
+   "week@10": {
+    "recall": 0.368,
+    "random": 0.068,
+    "lists": 28,
+    "ci95": [
+     0.321,
+     0.414
+    ]
+   },
+   "month@3": {
+    "recall": 0.278,
+    "random": 0.005,
+    "lists": 6,
+    "ci95": [
+     0.167,
+     0.333
+    ]
+   },
+   "month@5": {
+    "recall": 0.267,
+    "random": 0.008,
+    "lists": 6,
+    "ci95": [
+     0.2,
+     0.333
+    ]
+   },
+   "month@10": {
+    "recall": 0.267,
+    "random": 0.015,
+    "lists": 6,
+    "ci95": [
+     0.217,
+     0.333
+    ]
+   }
+  },
+  "history": {
+   "day@3": {
+    "recall": 0.432,
+    "random": 0.173,
+    "lists": 200,
+    "ci95": [
+     0.397,
+     0.467
+    ]
+   },
+   "day@5": {
+    "recall": 0.577,
+    "random": 0.236,
+    "lists": 177,
+    "ci95": [
+     0.549,
+     0.605
+    ]
+   },
+   "day@10": {
+    "recall": 0.681,
+    "random": 0.34,
+    "lists": 111,
+    "ci95": [
+     0.656,
+     0.705
+    ]
+   },
+   "week@3": {
+    "recall": 0.048,
+    "random": 0.02,
+    "lists": 28,
+    "ci95": [
+     0.012,
+     0.095
+    ]
+   },
+   "week@5": {
+    "recall": 0.086,
+    "random": 0.034,
+    "lists": 28,
+    "ci95": [
+     0.043,
+     0.136
+    ]
+   },
+   "week@10": {
+    "recall": 0.25,
+    "random": 0.068,
+    "lists": 28,
+    "ci95": [
+     0.207,
+     0.296
+    ]
+   },
+   "month@3": {
+    "recall": 0.0,
+    "random": 0.005,
+    "lists": 6,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "month@5": {
+    "recall": 0.033,
+    "random": 0.008,
+    "lists": 6,
+    "ci95": [
+     0.0,
+     0.1
+    ]
+   },
+   "month@10": {
+    "recall": 0.05,
+    "random": 0.015,
+    "lists": 6,
+    "ci95": [
+     0.017,
+     0.083
+    ]
+   }
+  },
+  "site": {
+   "day@3": {
+    "recall": 0.312,
+    "random": 0.173,
+    "lists": 200,
+    "ci95": [
+     0.277,
+     0.348
+    ]
+   },
+   "day@5": {
+    "recall": 0.383,
+    "random": 0.236,
+    "lists": 177,
+    "ci95": [
+     0.354,
+     0.415
+    ]
+   },
+   "day@10": {
+    "recall": 0.471,
+    "random": 0.34,
+    "lists": 111,
+    "ci95": [
+     0.444,
+     0.498
+    ]
+   },
+   "week@3": {
+    "recall": 0.06,
+    "random": 0.02,
+    "lists": 28,
+    "ci95": [
+     0.012,
+     0.107
+    ]
+   },
+   "week@5": {
+    "recall": 0.093,
+    "random": 0.034,
+    "lists": 28,
+    "ci95": [
+     0.05,
+     0.136
+    ]
+   },
+   "week@10": {
+    "recall": 0.186,
+    "random": 0.068,
+    "lists": 28,
+    "ci95": [
+     0.146,
+     0.221
+    ]
+   },
+   "month@3": {
+    "recall": 0.0,
+    "random": 0.005,
+    "lists": 6,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "month@5": {
+    "recall": 0.0,
+    "random": 0.008,
+    "lists": 6,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "month@10": {
+    "recall": 0.067,
+    "random": 0.015,
+    "lists": 6,
+    "ci95": [
+     0.033,
+     0.1
+    ]
+   }
+  },
+  "llm": {
+   "day@3": {
+    "recall": 0.315,
+    "random": 0.173,
+    "lists": 200,
+    "ci95": [
+     0.283,
+     0.347
+    ]
+   },
+   "day@5": {
+    "recall": 0.395,
+    "random": 0.236,
+    "lists": 177,
+    "ci95": [
+     0.367,
+     0.426
+    ]
+   },
+   "day@10": {
+    "recall": 0.503,
+    "random": 0.34,
+    "lists": 111,
+    "ci95": [
+     0.479,
+     0.527
+    ]
+   },
+   "week@3": {
+    "recall": 0.012,
+    "random": 0.02,
+    "lists": 28,
+    "ci95": [
+     0.0,
+     0.036
+    ]
+   },
+   "week@5": {
+    "recall": 0.064,
+    "random": 0.034,
+    "lists": 28,
+    "ci95": [
+     0.029,
+     0.1
+    ]
+   },
+   "week@10": {
+    "recall": 0.118,
+    "random": 0.068,
+    "lists": 28,
+    "ci95": [
+     0.093,
+     0.143
+    ]
+   },
+   "month@3": {
+    "recall": 0.0,
+    "random": 0.005,
+    "lists": 6,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "month@5": {
+    "recall": 0.0,
+    "random": 0.008,
+    "lists": 6,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "month@10": {
+    "recall": 0.017,
+    "random": 0.015,
+    "lists": 6,
+    "ci95": [
+     0.0,
+     0.05
+    ]
+   }
+  },
+  "hn": {
+   "day@3": {
+    "recall": 0.275,
+    "random": 0.173,
+    "lists": 200,
+    "ci95": [
+     0.24,
+     0.312
+    ]
+   },
+   "day@5": {
+    "recall": 0.351,
+    "random": 0.236,
+    "lists": 177,
+    "ci95": [
+     0.324,
+     0.381
+    ]
+   },
+   "day@10": {
+    "recall": 0.458,
+    "random": 0.34,
+    "lists": 111,
+    "ci95": [
+     0.43,
+     0.487
+    ]
+   },
+   "week@3": {
+    "recall": 0.024,
+    "random": 0.02,
+    "lists": 28,
+    "ci95": [
+     0.0,
+     0.06
+    ]
+   },
+   "week@5": {
+    "recall": 0.057,
+    "random": 0.034,
+    "lists": 28,
+    "ci95": [
+     0.021,
+     0.1
+    ]
+   },
+   "week@10": {
+    "recall": 0.086,
+    "random": 0.068,
+    "lists": 28,
+    "ci95": [
+     0.054,
+     0.125
+    ]
+   },
+   "month@3": {
+    "recall": 0.0,
+    "random": 0.005,
+    "lists": 6,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "month@5": {
+    "recall": 0.0,
+    "random": 0.008,
+    "lists": 6,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "month@10": {
+    "recall": 0.017,
+    "random": 0.015,
+    "lists": 6,
+    "ci95": [
+     0.0,
+     0.05
+    ]
+   }
+  },
+  "domain": {
+   "day@3": {
+    "recall": 0.257,
+    "random": 0.173,
+    "lists": 200,
+    "ci95": [
+     0.225,
+     0.29
+    ]
+   },
+   "day@5": {
+    "recall": 0.34,
+    "random": 0.236,
+    "lists": 177,
+    "ci95": [
+     0.312,
+     0.371
+    ]
+   },
+   "day@10": {
+    "recall": 0.425,
+    "random": 0.34,
+    "lists": 111,
+    "ci95": [
+     0.395,
+     0.456
+    ]
+   },
+   "week@3": {
+    "recall": 0.048,
+    "random": 0.02,
+    "lists": 28,
+    "ci95": [
+     0.012,
+     0.095
+    ]
+   },
+   "week@5": {
+    "recall": 0.057,
+    "random": 0.034,
+    "lists": 28,
+    "ci95": [
+     0.021,
+     0.093
+    ]
+   },
+   "week@10": {
+    "recall": 0.121,
+    "random": 0.068,
+    "lists": 28,
+    "ci95": [
+     0.089,
+     0.157
+    ]
+   },
+   "month@3": {
+    "recall": 0.0,
+    "random": 0.005,
+    "lists": 6,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "month@5": {
+    "recall": 0.0,
+    "random": 0.008,
+    "lists": 6,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "month@10": {
+    "recall": 0.0,
+    "random": 0.015,
+    "lists": 6,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   }
+  },
+  "github": {
+   "day@3": {
+    "recall": 0.183,
+    "random": 0.173,
+    "lists": 200,
+    "ci95": [
+     0.155,
+     0.213
+    ]
+   },
+   "day@5": {
+    "recall": 0.243,
+    "random": 0.236,
+    "lists": 177,
+    "ci95": [
+     0.216,
+     0.27
+    ]
+   },
+   "day@10": {
+    "recall": 0.349,
+    "random": 0.34,
+    "lists": 111,
+    "ci95": [
+     0.322,
+     0.379
+    ]
+   },
+   "week@3": {
+    "recall": 0.012,
+    "random": 0.02,
+    "lists": 28,
+    "ci95": [
+     0.0,
+     0.036
+    ]
+   },
+   "week@5": {
+    "recall": 0.029,
+    "random": 0.034,
+    "lists": 28,
+    "ci95": [
+     0.007,
+     0.057
+    ]
+   },
+   "week@10": {
+    "recall": 0.046,
+    "random": 0.068,
+    "lists": 28,
+    "ci95": [
+     0.025,
+     0.068
+    ]
+   },
+   "month@3": {
+    "recall": 0.0,
+    "random": 0.005,
+    "lists": 6,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "month@5": {
+    "recall": 0.033,
+    "random": 0.008,
+    "lists": 6,
+    "ci95": [
+     0.0,
+     0.1
+    ]
+   },
+   "month@10": {
+    "recall": 0.05,
+    "random": 0.015,
+    "lists": 6,
+    "ci95": [
+     0.0,
+     0.117
+    ]
+   }
+  }
+ },
+ "without": {
+  "launch": {
+   "day@3": {
+    "recall": 0.59,
+    "random": 0.173,
+    "lists": 200,
+    "ci95": [
+     0.56,
+     0.62
+    ]
+   },
+   "day@5": {
+    "recall": 0.632,
+    "random": 0.236,
+    "lists": 177,
+    "ci95": [
+     0.605,
+     0.661
+    ]
+   },
+   "day@10": {
+    "recall": 0.683,
+    "random": 0.34,
+    "lists": 111,
+    "ci95": [
+     0.659,
+     0.707
+    ]
+   },
+   "week@3": {
+    "recall": 0.429,
+    "random": 0.02,
+    "lists": 28,
+    "ci95": [
+     0.345,
+     0.512
+    ]
+   },
+   "week@5": {
+    "recall": 0.493,
+    "random": 0.034,
+    "lists": 28,
+    "ci95": [
+     0.429,
+     0.557
+    ]
+   },
+   "week@10": {
+    "recall": 0.532,
+    "random": 0.068,
+    "lists": 28,
+    "ci95": [
+     0.486,
+     0.575
+    ]
+   },
+   "month@3": {
+    "recall": 0.389,
+    "random": 0.005,
+    "lists": 6,
+    "ci95": [
+     0.111,
+     0.667
+    ]
+   },
+   "month@5": {
+    "recall": 0.367,
+    "random": 0.008,
+    "lists": 6,
+    "ci95": [
+     0.2,
+     0.567
+    ]
+   },
+   "month@10": {
+    "recall": 0.333,
+    "random": 0.015,
+    "lists": 6,
+    "ci95": [
+     0.25,
+     0.45
+    ]
+   }
+  },
+  "people": {
+   "day@3": {
+    "recall": 0.51,
+    "random": 0.173,
+    "lists": 200,
+    "ci95": [
+     0.478,
+     0.545
+    ]
+   },
+   "day@5": {
+    "recall": 0.6,
+    "random": 0.236,
+    "lists": 177,
+    "ci95": [
+     0.569,
+     0.632
+    ]
+   },
+   "day@10": {
+    "recall": 0.688,
+    "random": 0.34,
+    "lists": 111,
+    "ci95": [
+     0.666,
+     0.711
+    ]
+   },
+   "week@3": {
+    "recall": 0.119,
+    "random": 0.02,
+    "lists": 28,
+    "ci95": [
+     0.071,
+     0.179
+    ]
+   },
+   "week@5": {
+    "recall": 0.2,
+    "random": 0.034,
+    "lists": 28,
+    "ci95": [
+     0.136,
+     0.271
+    ]
+   },
+   "week@10": {
+    "recall": 0.325,
+    "random": 0.068,
+    "lists": 28,
+    "ci95": [
+     0.282,
+     0.371
+    ]
+   },
+   "month@3": {
+    "recall": 0.0,
+    "random": 0.005,
+    "lists": 6,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "month@5": {
+    "recall": 0.033,
+    "random": 0.008,
+    "lists": 6,
+    "ci95": [
+     0.0,
+     0.1
+    ]
+   },
+   "month@10": {
+    "recall": 0.117,
+    "random": 0.015,
+    "lists": 6,
+    "ci95": [
+     0.05,
+     0.183
+    ]
+   }
+  },
+  "history": {
+   "day@3": {
+    "recall": 0.517,
+    "random": 0.173,
+    "lists": 200,
+    "ci95": [
+     0.482,
+     0.55
+    ]
+   },
+   "day@5": {
+    "recall": 0.58,
+    "random": 0.236,
+    "lists": 177,
+    "ci95": [
+     0.553,
+     0.608
+    ]
+   },
+   "day@10": {
+    "recall": 0.682,
+    "random": 0.34,
+    "lists": 111,
+    "ci95": [
+     0.657,
+     0.705
+    ]
+   },
+   "week@3": {
+    "recall": 0.25,
+    "random": 0.02,
+    "lists": 28,
+    "ci95": [
+     0.179,
+     0.333
+    ]
+   },
+   "week@5": {
+    "recall": 0.35,
+    "random": 0.034,
+    "lists": 28,
+    "ci95": [
+     0.286,
+     0.414
+    ]
+   },
+   "week@10": {
+    "recall": 0.425,
+    "random": 0.068,
+    "lists": 28,
+    "ci95": [
+     0.379,
+     0.475
+    ]
+   },
+   "month@3": {
+    "recall": 0.111,
+    "random": 0.005,
+    "lists": 6,
+    "ci95": [
+     0.0,
+     0.222
+    ]
+   },
+   "month@5": {
+    "recall": 0.167,
+    "random": 0.008,
+    "lists": 6,
+    "ci95": [
+     0.067,
+     0.267
+    ]
+   },
+   "month@10": {
+    "recall": 0.233,
+    "random": 0.015,
+    "lists": 6,
+    "ci95": [
+     0.133,
+     0.367
+    ]
+   }
+  },
+  "site": {
+   "day@3": {
+    "recall": 0.602,
+    "random": 0.173,
+    "lists": 200,
+    "ci95": [
+     0.573,
+     0.635
+    ]
+   },
+   "day@5": {
+    "recall": 0.64,
+    "random": 0.236,
+    "lists": 177,
+    "ci95": [
+     0.611,
+     0.669
+    ]
+   },
+   "day@10": {
+    "recall": 0.695,
+    "random": 0.34,
+    "lists": 111,
+    "ci95": [
+     0.67,
+     0.718
+    ]
+   },
+   "week@3": {
+    "recall": 0.429,
+    "random": 0.02,
+    "lists": 28,
+    "ci95": [
+     0.345,
+     0.512
+    ]
+   },
+   "week@5": {
+    "recall": 0.521,
+    "random": 0.034,
+    "lists": 28,
+    "ci95": [
+     0.464,
+     0.579
+    ]
+   },
+   "week@10": {
+    "recall": 0.529,
+    "random": 0.068,
+    "lists": 28,
+    "ci95": [
+     0.486,
+     0.571
+    ]
+   },
+   "month@3": {
+    "recall": 0.222,
+    "random": 0.005,
+    "lists": 6,
+    "ci95": [
+     0.056,
+     0.389
+    ]
+   },
+   "month@5": {
+    "recall": 0.3,
+    "random": 0.008,
+    "lists": 6,
+    "ci95": [
+     0.2,
+     0.433
+    ]
+   },
+   "month@10": {
+    "recall": 0.283,
+    "random": 0.015,
+    "lists": 6,
+    "ci95": [
+     0.2,
+     0.35
+    ]
+   }
+  },
+  "llm": {
+   "day@3": {
+    "recall": 0.593,
+    "random": 0.173,
+    "lists": 200,
+    "ci95": [
+     0.565,
+     0.623
+    ]
+   },
+   "day@5": {
+    "recall": 0.634,
+    "random": 0.236,
+    "lists": 177,
+    "ci95": [
+     0.606,
+     0.666
+    ]
+   },
+   "day@10": {
+    "recall": 0.695,
+    "random": 0.34,
+    "lists": 111,
+    "ci95": [
+     0.672,
+     0.72
+    ]
+   },
+   "week@3": {
+    "recall": 0.405,
+    "random": 0.02,
+    "lists": 28,
+    "ci95": [
+     0.31,
+     0.5
+    ]
+   },
+   "week@5": {
+    "recall": 0.493,
+    "random": 0.034,
+    "lists": 28,
+    "ci95": [
+     0.436,
+     0.55
+    ]
+   },
+   "week@10": {
+    "recall": 0.529,
+    "random": 0.068,
+    "lists": 28,
+    "ci95": [
+     0.471,
+     0.582
+    ]
+   },
+   "month@3": {
+    "recall": 0.167,
+    "random": 0.005,
+    "lists": 6,
+    "ci95": [
+     0.056,
+     0.278
+    ]
+   },
+   "month@5": {
+    "recall": 0.3,
+    "random": 0.008,
+    "lists": 6,
+    "ci95": [
+     0.133,
+     0.5
+    ]
+   },
+   "month@10": {
+    "recall": 0.3,
+    "random": 0.015,
+    "lists": 6,
+    "ci95": [
+     0.25,
+     0.35
+    ]
+   }
+  },
+  "hn": {
+   "day@3": {
+    "recall": 0.585,
+    "random": 0.173,
+    "lists": 200,
+    "ci95": [
+     0.555,
+     0.618
+    ]
+   },
+   "day@5": {
+    "recall": 0.637,
+    "random": 0.236,
+    "lists": 177,
+    "ci95": [
+     0.61,
+     0.668
+    ]
+   },
+   "day@10": {
+    "recall": 0.688,
+    "random": 0.34,
+    "lists": 111,
+    "ci95": [
+     0.662,
+     0.713
+    ]
+   },
+   "week@3": {
+    "recall": 0.44,
+    "random": 0.02,
+    "lists": 28,
+    "ci95": [
+     0.369,
+     0.512
+    ]
+   },
+   "week@5": {
+    "recall": 0.5,
+    "random": 0.034,
+    "lists": 28,
+    "ci95": [
+     0.443,
+     0.557
+    ]
+   },
+   "week@10": {
+    "recall": 0.507,
+    "random": 0.068,
+    "lists": 28,
+    "ci95": [
+     0.454,
+     0.557
+    ]
+   },
+   "month@3": {
+    "recall": 0.167,
+    "random": 0.005,
+    "lists": 6,
+    "ci95": [
+     0.056,
+     0.278
+    ]
+   },
+   "month@5": {
+    "recall": 0.267,
+    "random": 0.008,
+    "lists": 6,
+    "ci95": [
+     0.133,
+     0.367
+    ]
+   },
+   "month@10": {
+    "recall": 0.333,
+    "random": 0.015,
+    "lists": 6,
+    "ci95": [
+     0.267,
+     0.417
+    ]
+   }
+  },
+  "domain": {
+   "day@3": {
+    "recall": 0.603,
+    "random": 0.173,
+    "lists": 200,
+    "ci95": [
+     0.577,
+     0.635
+    ]
+   },
+   "day@5": {
+    "recall": 0.637,
+    "random": 0.236,
+    "lists": 177,
+    "ci95": [
+     0.611,
+     0.667
+    ]
+   },
+   "day@10": {
+    "recall": 0.69,
+    "random": 0.34,
+    "lists": 111,
+    "ci95": [
+     0.664,
+     0.714
+    ]
+   },
+   "week@3": {
+    "recall": 0.417,
+    "random": 0.02,
+    "lists": 28,
+    "ci95": [
+     0.333,
+     0.5
+    ]
+   },
+   "week@5": {
+    "recall": 0.5,
+    "random": 0.034,
+    "lists": 28,
+    "ci95": [
+     0.443,
+     0.557
+    ]
+   },
+   "week@10": {
+    "recall": 0.514,
+    "random": 0.068,
+    "lists": 28,
+    "ci95": [
+     0.475,
+     0.55
+    ]
+   },
+   "month@3": {
+    "recall": 0.222,
+    "random": 0.005,
+    "lists": 6,
+    "ci95": [
+     0.056,
+     0.389
+    ]
+   },
+   "month@5": {
+    "recall": 0.333,
+    "random": 0.008,
+    "lists": 6,
+    "ci95": [
+     0.133,
+     0.533
+    ]
+   },
+   "month@10": {
+    "recall": 0.333,
+    "random": 0.015,
+    "lists": 6,
+    "ci95": [
+     0.233,
+     0.433
+    ]
+   }
+  },
+  "github": {
+   "day@3": {
+    "recall": 0.597,
+    "random": 0.173,
+    "lists": 200,
+    "ci95": [
+     0.567,
+     0.627
+    ]
+   },
+   "day@5": {
+    "recall": 0.629,
+    "random": 0.236,
+    "lists": 177,
+    "ci95": [
+     0.602,
+     0.659
+    ]
+   },
+   "day@10": {
+    "recall": 0.689,
+    "random": 0.34,
+    "lists": 111,
+    "ci95": [
+     0.663,
+     0.715
+    ]
+   },
+   "week@3": {
+    "recall": 0.417,
+    "random": 0.02,
+    "lists": 28,
+    "ci95": [
+     0.321,
+     0.512
+    ]
+   },
+   "week@5": {
+    "recall": 0.5,
+    "random": 0.034,
+    "lists": 28,
+    "ci95": [
+     0.45,
+     0.557
+    ]
+   },
+   "week@10": {
+    "recall": 0.518,
+    "random": 0.068,
+    "lists": 28,
+    "ci95": [
+     0.461,
+     0.572
+    ]
+   },
+   "month@3": {
+    "recall": 0.222,
+    "random": 0.005,
+    "lists": 6,
+    "ci95": [
+     0.056,
+     0.389
+    ]
+   },
+   "month@5": {
+    "recall": 0.333,
+    "random": 0.008,
+    "lists": 6,
+    "ci95": [
+     0.233,
+     0.467
+    ]
+   },
+   "month@10": {
+    "recall": 0.333,
+    "random": 0.015,
+    "lists": 6,
+    "ci95": [
+     0.217,
+     0.467
+    ]
+   }
+  }
+ },
+ "only_by_family": {
+  "Developer": {
+   "launch": {
+    "recall": 0.193,
+    "random": 0.081,
+    "lists": 27,
+    "ci95": [
+     0.148,
+     0.237
+    ]
+   },
+   "people": {
+    "recall": 0.311,
+    "random": 0.081,
+    "lists": 27,
+    "ci95": [
+     0.244,
+     0.385
+    ]
+   },
+   "history": {
+    "recall": 0.326,
+    "random": 0.081,
+    "lists": 27,
+    "ci95": [
+     0.259,
+     0.4
+    ]
+   },
+   "site": {
+    "recall": 0.237,
+    "random": 0.081,
+    "lists": 27,
+    "ci95": [
+     0.178,
+     0.296
+    ]
+   },
+   "llm": {
+    "recall": 0.163,
+    "random": 0.081,
+    "lists": 27,
+    "ci95": [
+     0.104,
+     0.222
+    ]
+   },
+   "hn": {
+    "recall": 0.111,
+    "random": 0.081,
+    "lists": 27,
+    "ci95": [
+     0.059,
+     0.178
+    ]
+   },
+   "domain": {
+    "recall": 0.148,
+    "random": 0.081,
+    "lists": 27,
+    "ci95": [
+     0.096,
+     0.2
+    ]
+   },
+   "github": {
+    "recall": 0.044,
+    "random": 0.081,
+    "lists": 27,
+    "ci95": [
+     0.007,
+     0.089
+    ]
+   }
+  },
+  "AI": {
+   "launch": {
+    "recall": 0.2,
+    "random": 0.118,
+    "lists": 24,
+    "ci95": [
+     0.133,
+     0.258
+    ]
+   },
+   "people": {
+    "recall": 0.467,
+    "random": 0.118,
+    "lists": 24,
+    "ci95": [
+     0.4,
+     0.542
+    ]
+   },
+   "history": {
+    "recall": 0.283,
+    "random": 0.118,
+    "lists": 24,
+    "ci95": [
+     0.216,
+     0.358
+    ]
+   },
+   "site": {
+    "recall": 0.167,
+    "random": 0.118,
+    "lists": 24,
+    "ci95": [
+     0.108,
+     0.225
+    ]
+   },
+   "llm": {
+    "recall": 0.175,
+    "random": 0.118,
+    "lists": 24,
+    "ci95": [
+     0.108,
+     0.25
+    ]
+   },
+   "hn": {
+    "recall": 0.125,
+    "random": 0.118,
+    "lists": 24,
+    "ci95": [
+     0.067,
+     0.192
+    ]
+   },
+   "domain": {
+    "recall": 0.167,
+    "random": 0.118,
+    "lists": 24,
+    "ci95": [
+     0.1,
+     0.233
+    ]
+   },
+   "github": {
+    "recall": 0.142,
+    "random": 0.118,
+    "lists": 24,
+    "ci95": [
+     0.083,
+     0.208
+    ]
+   }
+  },
+  "Marketing & Sales": {
+   "launch": null,
+   "people": null,
+   "history": null,
+   "site": null,
+   "llm": null,
+   "hn": null,
+   "domain": null,
+   "github": null
+  },
+  "Other": {
+   "launch": {
+    "recall": 0.4,
+    "random": 0.286,
+    "lists": 3,
+    "ci95": [
+     0.4,
+     0.4
+    ]
+   },
+   "people": {
+    "recall": 0.6,
+    "random": 0.286,
+    "lists": 3,
+    "ci95": [
+     0.4,
+     0.8
+    ]
+   },
+   "history": {
+    "recall": 0.667,
+    "random": 0.286,
+    "lists": 3,
+    "ci95": [
+     0.6,
+     0.8
+    ]
+   },
+   "site": {
+    "recall": 0.267,
+    "random": 0.286,
+    "lists": 3,
+    "ci95": [
+     0.0,
+     0.6
+    ]
+   },
+   "llm": {
+    "recall": 0.467,
+    "random": 0.286,
+    "lists": 3,
+    "ci95": [
+     0.4,
+     0.6
+    ]
+   },
+   "hn": {
+    "recall": 0.667,
+    "random": 0.286,
+    "lists": 3,
+    "ci95": [
+     0.6,
+     0.8
+    ]
+   },
+   "domain": {
+    "recall": 0.333,
+    "random": 0.286,
+    "lists": 3,
+    "ci95": [
+     0.0,
+     0.6
+    ]
+   },
+   "github": {
+    "recall": 0.4,
+    "random": 0.286,
+    "lists": 3,
+    "ci95": [
+     0.4,
+     0.4
+    ]
+   }
+  },
+  "Productivity": {
+   "launch": {
+    "recall": 0.343,
+    "random": 0.224,
+    "lists": 7,
+    "ci95": [
+     0.229,
+     0.514
+    ]
+   },
+   "people": {
+    "recall": 0.371,
+    "random": 0.224,
+    "lists": 7,
+    "ci95": [
+     0.2,
+     0.486
+    ]
+   },
+   "history": {
+    "recall": 0.371,
+    "random": 0.224,
+    "lists": 7,
+    "ci95": [
+     0.2,
+     0.486
+    ]
+   },
+   "site": {
+    "recall": 0.343,
+    "random": 0.224,
+    "lists": 7,
+    "ci95": [
+     0.2,
+     0.486
+    ]
+   },
+   "llm": {
+    "recall": 0.286,
+    "random": 0.224,
+    "lists": 7,
+    "ci95": [
+     0.171,
+     0.371
+    ]
+   },
+   "hn": {
+    "recall": 0.286,
+    "random": 0.224,
+    "lists": 7,
+    "ci95": [
+     0.171,
+     0.429
+    ]
+   },
+   "domain": {
+    "recall": 0.343,
+    "random": 0.224,
+    "lists": 7,
+    "ci95": [
+     0.2,
+     0.486
+    ]
+   },
+   "github": {
+    "recall": 0.257,
+    "random": 0.224,
+    "lists": 7,
+    "ci95": [
+     0.086,
+     0.457
+    ]
+   }
+  },
+  "Consumer": {
+   "launch": null,
+   "people": null,
+   "history": null,
+   "site": null,
+   "llm": null,
+   "hn": null,
+   "domain": null,
+   "github": null
+  },
+  "Design": {
+   "launch": null,
+   "people": null,
+   "history": null,
+   "site": null,
+   "llm": null,
+   "hn": null,
+   "domain": null,
+   "github": null
+  },
+  "(all types)": {
+   "launch": {
+    "recall": 0.1,
+    "random": 0.034,
+    "lists": 28,
+    "ci95": [
+     0.05,
+     0.15
+    ]
+   },
+   "people": {
+    "recall": 0.336,
+    "random": 0.034,
+    "lists": 28,
+    "ci95": [
+     0.271,
+     0.407
+    ]
+   },
+   "history": {
+    "recall": 0.086,
+    "random": 0.034,
+    "lists": 28,
+    "ci95": [
+     0.043,
+     0.136
+    ]
+   },
+   "site": {
+    "recall": 0.093,
+    "random": 0.034,
+    "lists": 28,
+    "ci95": [
+     0.05,
+     0.136
+    ]
+   },
+   "llm": {
+    "recall": 0.064,
+    "random": 0.034,
+    "lists": 28,
+    "ci95": [
+     0.029,
+     0.1
+    ]
+   },
+   "hn": {
+    "recall": 0.057,
+    "random": 0.034,
+    "lists": 28,
+    "ci95": [
+     0.021,
+     0.1
+    ]
+   },
+   "domain": {
+    "recall": 0.057,
+    "random": 0.034,
+    "lists": 28,
+    "ci95": [
+     0.021,
+     0.093
+    ]
+   },
+   "github": {
+    "recall": 0.029,
+    "random": 0.034,
+    "lists": 28,
+    "ci95": [
+     0.007,
+     0.057
+    ]
+   }
+  }
+ },
+ "factors_by_family": {
+  "(all types)": {
+   "n": 5554,
+   "top": {
+    "hist_hunter_prior_top10_rate": 0.432,
+    "people_self_hunted": -0.431,
+    "people_hunter_age_days": 0.4,
+    "people_n_makers": 0.361,
+    "hist_hunter_prior_hunts": 0.326,
+    "launch_n_featured_day": -0.319,
+    "hist_maker_is_repeat": 0.298,
+    "llm_maker_credibility": 0.285,
+    "llm_p_top5": 0.28,
+    "people_hunter_twitter": 0.28
+   }
+  },
+  "AI": {
+   "n": 1573,
+   "top": {
+    "people_hunter_age_days": 0.446,
+    "people_self_hunted": -0.443,
+    "hist_hunter_prior_hunts": 0.433,
+    "people_n_makers": 0.367,
+    "hist_hunter_prior_top10_rate": 0.3,
+    "people_hunter_twitter": 0.293,
+    "launch_n_links": 0.289,
+    "llm_maker_credibility": 0.268,
+    "launch_n_featured_day": -0.268,
+    "llm_p_top5": 0.264
+   }
+  },
+  "Consumer": {
+   "n": 189,
+   "top": {
+    "people_self_hunted": -0.324,
+    "hist_maker_is_repeat": 0.3,
+    "hist_maker_prior_launches": 0.276,
+    "launch_n_featured_day": -0.259,
+    "launch_n_links": 0.251,
+    "people_n_makers": 0.225,
+    "people_hunter_age_days": 0.207,
+    "hist_hunter_prior_top10_rate": 0.165,
+    "people_hunter_twitter": 0.164,
+    "launch_t_api": -0.164
+   }
+  },
+  "Design": {
+   "n": 228,
+   "top": {
+    "llm_p_top5": 0.41,
+    "launch_n_featured_day": -0.365,
+    "people_hunter_age_days": 0.331,
+    "launch_n_links": 0.29,
+    "llm_maker_credibility": 0.282,
+    "llm_demo_wow": 0.275,
+    "hist_hunter_prior_hunts": 0.273,
+    "launch_link_twitter": 0.271,
+    "people_self_hunted": -0.249,
+    "people_maker_age_max_days": 0.23
+   }
+  },
+  "Developer": {
+   "n": 2302,
+   "top": {
+    "people_self_hunted": -0.472,
+    "people_hunter_age_days": 0.452,
+    "hist_hunter_prior_hunts": 0.421,
+    "people_n_makers": 0.349,
+    "launch_n_featured_day": -0.328,
+    "people_hunter_twitter": 0.327,
+    "hist_hunter_prior_top10_rate": 0.32,
+    "llm_maker_credibility": 0.319,
+    "hist_maker_is_repeat": 0.308,
+    "hist_maker_prior_launches": 0.289
+   }
+  },
+  "Marketing & Sales": {
+   "n": 191,
+   "top": {
+    "hist_hunter_prior_top10_rate": 0.394,
+    "people_n_makers": 0.345,
+    "people_hunter_age_days": 0.311,
+    "people_self_hunted": -0.3,
+    "hist_maker_is_repeat": 0.285,
+    "launch_n_media": 0.243,
+    "hist_hunter_prior_hunts": 0.236,
+    "hist_maker_prior_launches": 0.226,
+    "llm_maker_credibility": 0.224,
+    "hist_maker_prior_best_rank": -0.222
+   }
+  },
+  "Other": {
+   "n": 553,
+   "top": {
+    "launch_n_featured_day": -0.324,
+    "llm_broad_appeal": 0.316,
+    "hist_hunter_prior_top10_rate": 0.292,
+    "launch_hour": 0.26,
+    "people_n_makers": 0.244,
+    "site_is_subdomain": -0.23,
+    "launch_n_media": 0.228,
+    "llm_p_top5": 0.222,
+    "launch_topic_ios": -0.22,
+    "people_self_hunted": -0.207
+   }
+  },
+  "Productivity": {
+   "n": 518,
+   "top": {
+    "launch_n_featured_day": -0.318,
+    "hist_hunter_prior_top10_rate": 0.307,
+    "people_self_hunted": -0.273,
+    "people_hunter_age_days": 0.238,
+    "people_n_makers": 0.218,
+    "people_hunter_twitter": 0.198,
+    "hist_lookalike_top3_rate": 0.181,
+    "hist_maker_is_repeat": 0.179,
+    "hist_maker_prior_launches": 0.175,
+    "launch_link_twitter": 0.17
+   }
+  }
+ },
+ "topics": {
+  "Artificial Intelligence": {
+   "day@3": {
+    "recall": 0.663,
+    "random": 0.26,
+    "lists": 168,
+    "ci95": [
+     0.627,
+     0.7
+    ]
+   },
+   "day@5": {
+    "recall": 0.69,
+    "random": 0.34,
+    "lists": 122,
+    "ci95": [
+     0.657,
+     0.718
+    ]
+   },
+   "day@10": {
+    "recall": 0.729,
+    "random": 0.417,
+    "lists": 28,
+    "ci95": [
+     0.686,
+     0.771
+    ]
+   },
+   "week@3": {
+    "recall": 0.444,
+    "random": 0.039,
+    "lists": 27,
+    "ci95": [
+     0.37,
+     0.519
+    ]
+   },
+   "week@5": {
+    "recall": 0.504,
+    "random": 0.065,
+    "lists": 27,
+    "ci95": [
+     0.444,
+     0.57
+    ]
+   },
+   "week@10": {
+    "recall": 0.559,
+    "random": 0.13,
+    "lists": 27,
+    "ci95": [
+     0.507,
+     0.611
+    ]
+   },
+   "month@3": {
+    "recall": 0.222,
+    "random": 0.009,
+    "lists": 6,
+    "ci95": [
+     0.111,
+     0.333
+    ]
+   },
+   "month@5": {
+    "recall": 0.333,
+    "random": 0.015,
+    "lists": 6,
+    "ci95": [
+     0.233,
+     0.467
+    ]
+   },
+   "month@10": {
+    "recall": 0.383,
+    "random": 0.03,
+    "lists": 6,
+    "ci95": [
+     0.3,
+     0.45
+    ]
+   }
+  },
+  "Productivity": {
+   "day@3": {
+    "recall": 0.669,
+    "random": 0.334,
+    "lists": 126,
+    "ci95": [
+     0.63,
+     0.706
+    ]
+   },
+   "day@5": {
+    "recall": 0.643,
+    "random": 0.409,
+    "lists": 56,
+    "ci95": [
+     0.596,
+     0.689
+    ]
+   },
+   "day@10": {
+    "recall": 0.633,
+    "random": 0.435,
+    "lists": 3,
+    "ci95": [
+     0.5,
+     0.7
+    ]
+   },
+   "week@3": {
+    "recall": 0.6,
+    "random": 0.063,
+    "lists": 25,
+    "ci95": [
+     0.52,
+     0.68
+    ]
+   },
+   "week@5": {
+    "recall": 0.672,
+    "random": 0.104,
+    "lists": 25,
+    "ci95": [
+     0.608,
+     0.728
+    ]
+   },
+   "week@10": {
+    "recall": 0.696,
+    "random": 0.209,
+    "lists": 25,
+    "ci95": [
+     0.644,
+     0.748
+    ]
+   },
+   "month@3": {
+    "recall": 0.5,
+    "random": 0.014,
+    "lists": 6,
+    "ci95": [
+     0.389,
+     0.611
+    ]
+   },
+   "month@5": {
+    "recall": 0.5,
+    "random": 0.024,
+    "lists": 6,
+    "ci95": [
+     0.433,
+     0.567
+    ]
+   },
+   "month@10": {
+    "recall": 0.583,
+    "random": 0.048,
+    "lists": 6,
+    "ci95": [
+     0.533,
+     0.633
+    ]
+   }
+  },
+  "Developer Tools": {
+   "day@3": {
+    "recall": 0.705,
+    "random": 0.347,
+    "lists": 123,
+    "ci95": [
+     0.661,
+     0.751
+    ]
+   },
+   "day@5": {
+    "recall": 0.664,
+    "random": 0.402,
+    "lists": 50,
+    "ci95": [
+     0.612,
+     0.712
+    ]
+   },
+   "day@10": {
+    "recall": 0.6,
+    "random": 0.38,
+    "lists": 3,
+    "ci95": [
+     0.5,
+     0.7
+    ]
+   },
+   "week@3": {
+    "recall": 0.464,
+    "random": 0.061,
+    "lists": 23,
+    "ci95": [
+     0.348,
+     0.58
+    ]
+   },
+   "week@5": {
+    "recall": 0.557,
+    "random": 0.102,
+    "lists": 23,
+    "ci95": [
+     0.47,
+     0.643
+    ]
+   },
+   "week@10": {
+    "recall": 0.661,
+    "random": 0.204,
+    "lists": 23,
+    "ci95": [
+     0.596,
+     0.717
+    ]
+   },
+   "month@3": {
+    "recall": 0.278,
+    "random": 0.015,
+    "lists": 6,
+    "ci95": [
+     0.111,
+     0.444
+    ]
+   },
+   "month@5": {
+    "recall": 0.433,
+    "random": 0.026,
+    "lists": 6,
+    "ci95": [
+     0.333,
+     0.533
+    ]
+   },
+   "month@10": {
+    "recall": 0.483,
+    "random": 0.052,
+    "lists": 6,
+    "ci95": [
+     0.35,
+     0.6
+    ]
+   }
+  },
+  "GitHub": {
+   "day@3": {
+    "recall": 0.614,
+    "random": 0.384,
+    "lists": 44,
+    "ci95": [
+     0.53,
+     0.697
+    ]
+   },
+   "day@5": {
+    "recall": 0.557,
+    "random": 0.423,
+    "lists": 14,
+    "ci95": [
+     0.457,
+     0.657
+    ]
+   },
+   "day@10": {
+    "recall": 0.6,
+    "random": 0.4,
+    "lists": 1,
+    "ci95": [
+     0.6,
+     0.6
+    ]
+   },
+   "week@3": {
+    "recall": 0.5,
+    "random": 0.107,
+    "lists": 16,
+    "ci95": [
+     0.396,
+     0.604
+    ]
+   },
+   "week@5": {
+    "recall": 0.625,
+    "random": 0.178,
+    "lists": 16,
+    "ci95": [
+     0.562,
+     0.688
+    ]
+   },
+   "week@10": {
+    "recall": 0.671,
+    "random": 0.322,
+    "lists": 14,
+    "ci95": [
+     0.6,
+     0.736
+    ]
+   },
+   "month@3": {
+    "recall": 0.333,
+    "random": 0.03,
+    "lists": 6,
+    "ci95": [
+     0.111,
+     0.556
+    ]
+   },
+   "month@5": {
+    "recall": 0.533,
+    "random": 0.049,
+    "lists": 6,
+    "ci95": [
+     0.333,
+     0.733
+    ]
+   },
+   "month@10": {
+    "recall": 0.567,
+    "random": 0.099,
+    "lists": 6,
+    "ci95": [
+     0.467,
+     0.667
+    ]
+   }
+  },
+  "Open Source": {
+   "day@3": {
+    "recall": 0.587,
+    "random": 0.377,
+    "lists": 25,
+    "ci95": [
+     0.493,
+     0.68
+    ]
+   },
+   "day@5": {
+    "recall": 0.65,
+    "random": 0.453,
+    "lists": 4,
+    "ci95": [
+     0.45,
+     0.9
+    ]
+   },
+   "week@3": {
+    "recall": 0.615,
+    "random": 0.143,
+    "lists": 13,
+    "ci95": [
+     0.487,
+     0.718
+    ]
+   },
+   "week@5": {
+    "recall": 0.723,
+    "random": 0.238,
+    "lists": 13,
+    "ci95": [
+     0.646,
+     0.8
+    ]
+   },
+   "week@10": {
+    "recall": 0.7,
+    "random": 0.347,
+    "lists": 7,
+    "ci95": [
+     0.643,
+     0.757
+    ]
+   },
+   "month@3": {
+    "recall": 0.444,
+    "random": 0.042,
+    "lists": 6,
+    "ci95": [
+     0.222,
+     0.667
+    ]
+   },
+   "month@5": {
+    "recall": 0.633,
+    "random": 0.071,
+    "lists": 6,
+    "ci95": [
+     0.467,
+     0.767
+    ]
+   },
+   "month@10": {
+    "recall": 0.6,
+    "random": 0.142,
+    "lists": 6,
+    "ci95": [
+     0.5,
+     0.717
+    ]
+   }
+  },
+  "Mac": {
+   "day@3": {
+    "recall": 0.5,
+    "random": 0.441,
+    "lists": 10,
+    "ci95": [
+     0.367,
+     0.633
+    ]
+   },
+   "day@5": {
+    "recall": 0.4,
+    "random": 0.5,
+    "lists": 1,
+    "ci95": [
+     0.4,
+     0.4
+    ]
+   },
+   "week@3": {
+    "recall": 0.417,
+    "random": 0.125,
+    "lists": 4,
+    "ci95": [
+     0.0,
+     0.833
+    ]
+   },
+   "week@5": {
+    "recall": 0.35,
+    "random": 0.208,
+    "lists": 4,
+    "ci95": [
+     0.1,
+     0.55
+    ]
+   },
+   "week@10": {
+    "recall": 0.333,
+    "random": 0.316,
+    "lists": 3,
+    "ci95": [
+     0.2,
+     0.4
+    ]
+   },
+   "month@3": {
+    "recall": 0.5,
+    "random": 0.065,
+    "lists": 6,
+    "ci95": [
+     0.278,
+     0.667
+    ]
+   },
+   "month@5": {
+    "recall": 0.567,
+    "random": 0.108,
+    "lists": 6,
+    "ci95": [
+     0.367,
+     0.733
+    ]
+   },
+   "month@10": {
+    "recall": 0.583,
+    "random": 0.215,
+    "lists": 6,
+    "ci95": [
+     0.45,
+     0.733
+    ]
+   }
+  },
+  "SaaS": {
+   "day@3": {
+    "recall": 0.722,
+    "random": 0.428,
+    "lists": 6,
+    "ci95": [
+     0.556,
+     0.889
+    ]
+   },
+   "week@3": {
+    "recall": 0.222,
+    "random": 0.132,
+    "lists": 3,
+    "ci95": [
+     0.0,
+     0.333
+    ]
+   },
+   "week@5": {
+    "recall": 0.467,
+    "random": 0.219,
+    "lists": 3,
+    "ci95": [
+     0.4,
+     0.6
+    ]
+   },
+   "week@10": {
+    "recall": 0.733,
+    "random": 0.439,
+    "lists": 3,
+    "ci95": [
+     0.7,
+     0.8
+    ]
+   },
+   "month@3": {
+    "recall": 0.5,
+    "random": 0.062,
+    "lists": 6,
+    "ci95": [
+     0.389,
+     0.611
+    ]
+   },
+   "month@5": {
+    "recall": 0.467,
+    "random": 0.103,
+    "lists": 6,
+    "ci95": [
+     0.4,
+     0.533
+    ]
+   },
+   "month@10": {
+    "recall": 0.683,
+    "random": 0.206,
+    "lists": 6,
+    "ci95": [
+     0.6,
+     0.767
+    ]
+   }
+  },
+  "Marketing": {
+   "day@3": {
+    "recall": 0.667,
+    "random": 0.5,
+    "lists": 2,
+    "ci95": [
+     0.667,
+     0.667
+    ]
+   },
+   "week@3": {
+    "recall": 0.778,
+    "random": 0.22,
+    "lists": 3,
+    "ci95": [
+     0.667,
+     1.0
+    ]
+   },
+   "week@5": {
+    "recall": 0.733,
+    "random": 0.367,
+    "lists": 3,
+    "ci95": [
+     0.6,
+     0.8
+    ]
+   },
+   "month@3": {
+    "recall": 0.278,
+    "random": 0.071,
+    "lists": 6,
+    "ci95": [
+     0.111,
+     0.444
+    ]
+   },
+   "month@5": {
+    "recall": 0.433,
+    "random": 0.118,
+    "lists": 6,
+    "ci95": [
+     0.4,
+     0.5
+    ]
+   },
+   "month@10": {
+    "recall": 0.633,
+    "random": 0.235,
+    "lists": 6,
+    "ci95": [
+     0.5,
+     0.767
+    ]
+   }
+  },
+  "Design Tools": {
+   "day@3": {
+    "recall": 0.667,
+    "random": 0.42,
+    "lists": 4,
+    "ci95": [
+     0.417,
+     0.917
+    ]
+   },
+   "week@3": {
+    "recall": 0.667,
+    "random": 0.264,
+    "lists": 4,
+    "ci95": [
+     0.5,
+     0.917
+    ]
+   },
+   "week@5": {
+    "recall": 0.667,
+    "random": 0.401,
+    "lists": 3,
+    "ci95": [
+     0.6,
+     0.8
+    ]
+   },
+   "month@3": {
+    "recall": 0.667,
+    "random": 0.071,
+    "lists": 6,
+    "ci95": [
+     0.5,
+     0.833
+    ]
+   },
+   "month@5": {
+    "recall": 0.533,
+    "random": 0.118,
+    "lists": 6,
+    "ci95": [
+     0.433,
+     0.667
+    ]
+   },
+   "month@10": {
+    "recall": 0.633,
+    "random": 0.235,
+    "lists": 6,
+    "ci95": [
+     0.55,
+     0.717
+    ]
+   }
+  },
+  "API": {
+   "month@3": {
+    "recall": 0.444,
+    "random": 0.099,
+    "lists": 6,
+    "ci95": [
+     0.222,
+     0.611
+    ]
+   },
+   "month@5": {
+    "recall": 0.5,
+    "random": 0.164,
+    "lists": 6,
+    "ci95": [
+     0.267,
+     0.667
+    ]
+   },
+   "month@10": {
+    "recall": 0.617,
+    "random": 0.329,
+    "lists": 6,
+    "ci95": [
+     0.5,
+     0.733
+    ]
+   }
+  },
+  "Menu Bar Apps": {
+   "day@3": {
+    "recall": 0.667,
+    "random": 0.5,
+    "lists": 1,
+    "ci95": [
+     0.667,
+     0.667
+    ]
+   },
+   "week@3": {
+    "recall": 0.667,
+    "random": 0.158,
+    "lists": 1,
+    "ci95": [
+     0.667,
+     0.667
+    ]
+   },
+   "week@5": {
+    "recall": 0.4,
+    "random": 0.263,
+    "lists": 1,
+    "ci95": [
+     0.4,
+     0.4
+    ]
+   },
+   "month@3": {
+    "recall": 0.444,
+    "random": 0.112,
+    "lists": 6,
+    "ci95": [
+     0.167,
+     0.724
+    ]
+   },
+   "month@5": {
+    "recall": 0.467,
+    "random": 0.186,
+    "lists": 6,
+    "ci95": [
+     0.366,
+     0.567
+    ]
+   },
+   "month@10": {
+    "recall": 0.583,
+    "random": 0.372,
+    "lists": 6,
+    "ci95": [
+     0.517,
+     0.667
+    ]
+   }
+  },
+  "Tech": {
+   "day@3": {
+    "recall": 0.667,
+    "random": 0.5,
+    "lists": 1,
+    "ci95": [
+     0.667,
+     0.667
+    ]
+   },
+   "month@3": {
+    "recall": 0.5,
+    "random": 0.111,
+    "lists": 6,
+    "ci95": [
+     0.389,
+     0.611
+    ]
+   },
+   "month@5": {
+    "recall": 0.567,
+    "random": 0.185,
+    "lists": 6,
+    "ci95": [
+     0.467,
+     0.667
+    ]
+   },
+   "month@10": {
+    "recall": 0.62,
+    "random": 0.338,
+    "lists": 5,
+    "ci95": [
+     0.54,
+     0.68
+    ]
+   }
+  },
+  "Vercel Day": {
+   "day@3": {
+    "recall": 0.733,
+    "random": 0.101,
+    "lists": 5,
+    "ci95": [
+     0.533,
+     0.933
+    ]
+   },
+   "day@5": {
+    "recall": 0.68,
+    "random": 0.169,
+    "lists": 5,
+    "ci95": [
+     0.56,
+     0.8
+    ]
+   },
+   "day@10": {
+    "recall": 0.7,
+    "random": 0.338,
+    "lists": 5,
+    "ci95": [
+     0.58,
+     0.82
+    ]
+   },
+   "month@3": {
+    "recall": 0.733,
+    "random": 0.096,
+    "lists": 5,
+    "ci95": [
+     0.533,
+     0.933
+    ]
+   },
+   "month@5": {
+    "recall": 0.72,
+    "random": 0.161,
+    "lists": 5,
+    "ci95": [
+     0.56,
+     0.8
+    ]
+   },
+   "month@10": {
+    "recall": 0.7,
+    "random": 0.321,
+    "lists": 5,
+    "ci95": [
+     0.62,
+     0.78
+    ]
+   }
+  },
+  "iOS": {
+   "day@3": {
+    "recall": 0.667,
+    "random": 0.429,
+    "lists": 1,
+    "ci95": [
+     0.667,
+     0.667
+    ]
+   },
+   "month@3": {
+    "recall": 0.611,
+    "random": 0.183,
+    "lists": 6,
+    "ci95": [
+     0.389,
+     0.833
+    ]
+   },
+   "month@5": {
+    "recall": 0.64,
+    "random": 0.255,
+    "lists": 5,
+    "ci95": [
+     0.48,
+     0.76
+    ]
+   },
+   "month@10": {
+    "recall": 0.733,
+    "random": 0.409,
+    "lists": 3,
+    "ci95": [
+     0.6,
+     0.8
+    ]
+   }
+  },
+  "Video": {
+   "week@3": {
+    "recall": 0.667,
+    "random": 0.3,
+    "lists": 1,
+    "ci95": [
+     0.667,
+     0.667
+    ]
+   },
+   "week@5": {
+    "recall": 0.8,
+    "random": 0.5,
+    "lists": 1,
+    "ci95": [
+     0.8,
+     0.8
+    ]
+   },
+   "month@3": {
+    "recall": 0.611,
+    "random": 0.169,
+    "lists": 6,
+    "ci95": [
+     0.5,
+     0.667
+    ]
+   },
+   "month@5": {
+    "recall": 0.667,
+    "random": 0.281,
+    "lists": 6,
+    "ci95": [
+     0.6,
+     0.733
+    ]
+   },
+   "month@10": {
+    "recall": 0.75,
+    "random": 0.381,
+    "lists": 2,
+    "ci95": [
+     0.7,
+     0.8
+    ]
+   }
+  }
+ },
+ "importance": {
+  "top_features": {
+   "hist_hunter_prior_top10_rate": 0.1427,
+   "people_n_makers": 0.1306,
+   "launch_n_featured_day": 0.095,
+   "hist_hunter_prior_hunts": 0.0484,
+   "people_hunter_age_days": 0.0355,
+   "hist_maker_prior_launches": 0.0322,
+   "llm_p_top5": 0.0268,
+   "hist_maker_prior_top10_rate": 0.0249,
+   "people_maker_age_max_days": 0.024,
+   "llm_broad_appeal": 0.0239,
+   "launch_weekday": 0.0197,
+   "domain_age_days": 0.0197,
+   "site_w_ai": 0.0176,
+   "launch_n_links": 0.0164,
+   "hist_topic_top10_rate_mean": 0.0154,
+   "site_words_log": 0.0138,
+   "hist_lookalike_similarity": 0.0137,
+   "launch_link_twitter": 0.0135,
+   "hist_topic_top10_rate_max": 0.013,
+   "hist_lookalike_top3_rate": 0.0125,
+   "launch_n_media": 0.0125,
+   "hist_lookalike_top10_rate": 0.0118,
+   "hist_maker_prior_best_rank": 0.0116,
+   "launch_desc_words": 0.0111,
+   "llm_clarity": 0.01,
+   "hn_comments_sum": 0.0097,
+   "hn_stories": 0.0096,
+   "people_maker_twitter": 0.008,
+   "llm_dev_audience": 0.0079,
+   "site_w_api": 0.0075
+  },
+  "group_share": {
+   "history": 0.326,
+   "launch": 0.228,
+   "people": 0.214,
+   "site": 0.097,
+   "llm": 0.088,
+   "hn": 0.028,
+   "domain": 0.02,
+   "github": 0.0
+  },
+  "group_share_by_family": {
+   "AI": {
+    "domain": 0.022,
+    "github": 0.0,
+    "history": 0.341,
+    "hn": 0.029,
+    "launch": 0.21,
+    "llm": 0.09,
+    "people": 0.216,
+    "site": 0.093
+   },
+   "Consumer": {
+    "domain": 0.017,
+    "github": 0.0,
+    "history": 0.307,
+    "hn": 0.024,
+    "launch": 0.25,
+    "llm": 0.09,
+    "people": 0.222,
+    "site": 0.09
+   },
+   "Design": {
+    "domain": 0.022,
+    "github": 0.0,
+    "history": 0.303,
+    "hn": 0.027,
+    "launch": 0.241,
+    "llm": 0.094,
+    "people": 0.218,
+    "site": 0.096
+   },
+   "Developer": {
+    "domain": 0.018,
+    "github": 0.0,
+    "history": 0.332,
+    "hn": 0.029,
+    "launch": 0.227,
+    "llm": 0.081,
+    "people": 0.214,
+    "site": 0.099
+   },
+   "Marketing & Sales": {
+    "domain": 0.02,
+    "github": 0.0,
+    "history": 0.318,
+    "hn": 0.023,
+    "launch": 0.25,
+    "llm": 0.095,
+    "people": 0.193,
+    "site": 0.102
+   },
+   "Other": {
+    "domain": 0.024,
+    "github": 0.0,
+    "history": 0.301,
+    "hn": 0.027,
+    "launch": 0.24,
+    "llm": 0.101,
+    "people": 0.209,
+    "site": 0.099
+   },
+   "Productivity": {
+    "domain": 0.018,
+    "github": 0.0,
+    "history": 0.305,
+    "hn": 0.023,
+    "launch": 0.253,
+    "llm": 0.085,
+    "people": 0.218,
+    "site": 0.099
+   }
+  },
+  "top_features_by_family": {
+   "Developer": {
+    "hist_hunter_prior_top10_rate": 0.1455,
+    "people_n_makers": 0.1308,
+    "launch_n_featured_day": 0.0925,
+    "hist_hunter_prior_hunts": 0.0496,
+    "people_hunter_age_days": 0.0344,
+    "hist_maker_prior_launches": 0.0316,
+    "llm_p_top5": 0.0259,
+    "hist_maker_prior_top10_rate": 0.025
+   },
+   "AI": {
+    "hist_hunter_prior_top10_rate": 0.1614,
+    "people_n_makers": 0.1401,
+    "launch_n_featured_day": 0.0895,
+    "hist_hunter_prior_hunts": 0.0535,
+    "people_hunter_age_days": 0.0372,
+    "hist_maker_prior_launches": 0.0369,
+    "llm_p_top5": 0.0307,
+    "hist_maker_prior_top10_rate": 0.0276
+   },
+   "Other": {
+    "hist_hunter_prior_top10_rate": 0.1298,
+    "people_n_makers": 0.1263,
+    "launch_n_featured_day": 0.1055,
+    "hist_hunter_prior_hunts": 0.0475,
+    "people_hunter_age_days": 0.0337,
+    "llm_broad_appeal": 0.0308,
+    "people_maker_age_max_days": 0.0285,
+    "hist_maker_prior_launches": 0.0276
+   },
+   "Marketing & Sales": {
+    "hist_hunter_prior_top10_rate": 0.137,
+    "people_n_makers": 0.1158,
+    "launch_n_featured_day": 0.0932,
+    "hist_hunter_prior_hunts": 0.0473,
+    "people_hunter_age_days": 0.0355,
+    "hist_maker_prior_launches": 0.0321,
+    "llm_broad_appeal": 0.0269,
+    "llm_p_top5": 0.0258
+   },
+   "Design": {
+    "people_n_makers": 0.1251,
+    "hist_hunter_prior_top10_rate": 0.1249,
+    "launch_n_featured_day": 0.0988,
+    "hist_hunter_prior_hunts": 0.0415,
+    "people_hunter_age_days": 0.0386,
+    "hist_maker_prior_launches": 0.0289,
+    "llm_p_top5": 0.0288,
+    "people_maker_age_max_days": 0.0256
+   },
+   "Productivity": {
+    "people_n_makers": 0.117,
+    "hist_hunter_prior_top10_rate": 0.1103,
+    "launch_n_featured_day": 0.1027,
+    "hist_hunter_prior_hunts": 0.0363,
+    "people_hunter_age_days": 0.0356,
+    "hist_maker_prior_launches": 0.0284,
+    "hist_maker_prior_top10_rate": 0.022,
+    "llm_broad_appeal": 0.0217
+   },
+   "Consumer": {
+    "people_n_makers": 0.1239,
+    "hist_hunter_prior_top10_rate": 0.1173,
+    "launch_n_featured_day": 0.1124,
+    "hist_hunter_prior_hunts": 0.038,
+    "people_hunter_age_days": 0.0372,
+    "hist_maker_prior_launches": 0.0307,
+    "llm_broad_appeal": 0.0234,
+    "llm_p_top5": 0.0223
+   }
+  },
+  "family_counts": {
+   "Developer": 2006,
+   "AI": 1344,
+   "Other": 513,
+   "Productivity": 457,
+   "Design": 211,
+   "Consumer": 175,
+   "Marketing & Sales": 172
+  }
+ },
+ "current_lists": {
+  "yesterday": {
+   "period": "2026-10-24",
+   "n_launches": 14,
+   "actual_top10": [
+    "zCAD AI",
+    "myPip",
+    "1Password for Agents",
+    "AgentValley",
+    "Canva Craft",
+    "LinkIntel",
+    "Many Displays",
+    "Penta",
+    "Byter",
+    "Basedash Scheduled CSV Exports"
+   ],
+   "predicted_top10": [
+    "zCAD AI",
+    "myPip",
+    "1Password for Agents",
+    "LinkIntel",
+    "Canva Craft",
+    "sideOS.ai",
+    "Shedi",
+    "River Writer",
+    "Many Displays",
+    "AgentValley"
+   ],
+   "recall@3": 1.0,
+   "recall@5": 0.8,
+   "recall@10": 0.7
+  },
+  "last_week": {
+   "period": "2026-10-12",
+   "n_launches": 203,
+   "actual_top10": [
+    "Pancake",
+    "Jockey by TwelveLabs",
+    "Inferock",
+    "Articos MCP",
+    "Talanoa",
+    "Harness by Autonomous",
+    "OpenCode 2.0",
+    "Google EmbeddingGemma 2",
+    "Inbox Zero",
+    "NitroStack"
+   ],
+   "predicted_top10": [
+    "Pancake",
+    "NitroStack",
+    "Jockey by TwelveLabs",
+    "Articos MCP",
+    "Talanoa",
+    "Confidence by Spotify ",
+    "Agent Vault",
+    "MentionBird",
+    "Ancher 2.0",
+    "OpenMuse"
+   ],
+   "recall@3": 0.6666666666666666,
+   "recall@5": 0.8,
+   "recall@10": 0.5
+  },
+  "last_month": {
+   "period": "2026-09",
+   "n_launches": 708,
+   "actual_top10": [
+    "Ami AI",
+    "tiun.",
+    "CREEM 2.0",
+    "Clueso MCP",
+    "Mastra Factory",
+    "Jev",
+    "Voiskey",
+    "Switch",
+    "Naoma AI Demo Agent V2",
+    "Kilo Code for JetBrains"
+   ],
+   "predicted_top10": [
+    "CREEM 2.0",
+    "Clueso MCP",
+    "MCP Connectors by Databox",
+    "Hemory",
+    "Weave Router 2.0",
+    "tiun.",
+    "Pexo",
+    "Ami AI",
+    "Schol\u00e9 Learn by Building",
+    "Humalike - AI NPC"
+   ],
+   "recall@3": 0.3333333333333333,
+   "recall@5": 0.4,
+   "recall@10": 0.4
+  }
+ }
+}
