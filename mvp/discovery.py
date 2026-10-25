@@ -13,8 +13,8 @@ Nothing here opens a browser or runs a simulated user. Steps, in order:
 6. One LLM call writes user segments (grounded in those users) and tasks to run on the product and every competitor.
 
 Every step is recorded in a trace (what was asked, how long it took, what came back) so the /discovery page can show
-what the agent searched and retrieved. Secrets: PRODUCT_HUNT_TOKEN (Product Hunt API v2 developer token) and
-APIFY_TOKEN (see mvp.review_context); a missing token skips that source and the trace says so.
+what the agent searched and retrieved. Secrets: PH_TOKEN, or PH_CLIENT_ID + PH_CLIENT_SECRET (Product Hunt API v2;
+same names as scripts/ph_crawl.py, see docs/producthunt/README.md) and APIFY_TOKEN (see mvp.review_context); a missing token skips that source and the trace says so.
 """
 
 from __future__ import annotations
@@ -45,8 +45,30 @@ MIN_REVIEWS = 30
 REVIEW_WAIT_S = float(os.environ.get("MVP_DISCOVERY_REVIEW_WAIT_S", "240"))
 
 
-def ph_token() -> str | None:
-    return (os.environ.get("PRODUCT_HUNT_TOKEN") or "").strip() or None
+PH_TOKEN_URL = "https://api.producthunt.com/v2/oauth/token"
+_PH_MINTED: dict[str, str] = {}  # client id -> client-credentials access token
+
+
+def ph_configured() -> bool:
+    env = os.environ.get
+    return bool((env("PH_TOKEN") or "").strip() or ((env("PH_CLIENT_ID") or "").strip() and (env("PH_CLIENT_SECRET") or "").strip()))
+
+
+async def ph_bearer() -> str:
+    """PH_TOKEN (developer token), else a public-scope token minted from PH_CLIENT_ID + PH_CLIENT_SECRET."""
+    token = (os.environ.get("PH_TOKEN") or "").strip()
+    if token:
+        return token
+    cid, secret = (os.environ.get("PH_CLIENT_ID") or "").strip(), (os.environ.get("PH_CLIENT_SECRET") or "").strip()
+    if not (cid and secret):
+        raise RuntimeError("set PH_TOKEN, or PH_CLIENT_ID and PH_CLIENT_SECRET")
+    if cid not in _PH_MINTED:
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            r = await client.post(PH_TOKEN_URL, json={"client_id": cid, "client_secret": secret,
+                                                      "grant_type": "client_credentials"})
+            r.raise_for_status()
+            _PH_MINTED[cid] = r.json()["access_token"]
+    return _PH_MINTED[cid]
 
 
 @dataclass
@@ -191,9 +213,7 @@ _PH_COMMENTS = """comments(first: 20, order: VOTES_COUNT) { edges { node { body 
 
 
 async def ph_query(query: str, variables: dict[str, Any] | None = None) -> dict[str, Any]:
-    token = ph_token()
-    if not token:
-        raise RuntimeError("PRODUCT_HUNT_TOKEN missing")
+    token = await ph_bearer()
     async with httpx.AsyncClient(timeout=20.0) as client:
         r = await client.post(PH_ENDPOINT, json={"query": query, "variables": variables or {}},
                               headers={"Authorization": f"Bearer {token}", "Accept": "application/json"})
@@ -324,7 +344,7 @@ class DiscoveryAgent:
         self.ph_post_by_slug = ph_post_by_slug
         self.ph_topic_posts = ph_topic_posts
         self.ph_topics = ph_topics
-        self.ph_token = ph_token
+        self.ph_configured = ph_configured
         self.fetch_reviews = fetch_reviews
         self.apify_token = apify_token
         self.probe = _probe
@@ -401,9 +421,9 @@ Return JSON:
     # 3. candidates
     async def product_hunt(self, profile: dict[str, Any]) -> tuple[dict[str, Any] | None, list[dict[str, Any]]]:
         """The product's own PH post (if any) and the top posts in its topics."""
-        if not self.ph_token():
+        if not self.ph_configured():
             s = self.trace.start("producthunt", "Product Hunt")
-            self.trace.end(s, "skipped", "PRODUCT_HUNT_TOKEN is not set")
+            self.trace.end(s, "skipped", "PH_TOKEN (or PH_CLIENT_ID + PH_CLIENT_SECRET) is not set")
             return None, []
         own = None
         for slug in dict.fromkeys([_slug(profile.get("name", "")), _slug(registrable_host(self.run.url).split(".")[0])]):
@@ -500,7 +520,7 @@ Return JSON:
 
     # 5. users
     async def ph_users(self, own: dict[str, Any] | None, profile: dict[str, Any], comps: list[dict[str, Any]]) -> list[dict[str, Any]]:
-        if not self.ph_token():
+        if not self.ph_configured():
             return []
         users = _ph_users(own, profile.get("name") or "") if own else []
         for c in comps:
@@ -556,37 +576,62 @@ Return JSON:
 
     # 6. segments + tasks
     async def synthesize(self, profile: dict[str, Any], comps: list[dict[str, Any]], users: list[dict[str, Any]]) -> dict[str, Any]:
+        """Segments come only from the real users retrieved: with none, there are no segments (never invented)."""
         def line(i: int, u: dict[str, Any]) -> str:
             who = "; ".join(f"{k}: {u[k]}" for k in ("role", "size", "industry", "rating") if u.get(k))
             return f"[u{i}] ({u['source']} / {u['product']}) {who or 'no profile'}\n    {u['text'][:350]}"
-        sample = "\n".join(line(i, u) for i, u in enumerate(users[:80])) or "(no real users were retrieved)"
+        shown = users[:80]
+        sample = "\n".join(line(i, u) for i, u in enumerate(shown))
         sites = "\n".join(f"- {c['name']} ({c['url']}): {c.get('why', '')}" for c in comps) or "(no competitors)"
-        return await self._ask(
-            "Write user segments and comparison tasks",
-            "You output valid JSON only. Segments must be grounded in the real users supplied; tasks must be doable on every site.",
-            f"""The product: {profile.get('name')} ({self.run.url}) — {profile.get('one_liner')}
+        head = f"""The product: {profile.get('name')} ({self.run.url}) — {profile.get('one_liner')}
 What it does: {profile.get('what_they_do')}
 Key features: {', '.join(profile.get('key_features') or [])}
 
 COMPETITORS IT WILL BE TESTED AGAINST:
 {sites}
+"""
+        task_rules = f"""Write exactly {self.run.task_count} tasks to run on {profile.get('name')} AND on every competitor, so the sites
+can be compared. Each task is a real job this kind of product is used for, phrased so it makes sense on any of the sites
+(never name a site-specific button). Say what done looks like. Mix first-run tasks (sign up, onboarding, first core
+action) with core-job tasks"""
+        task_shape = """"tasks": [{"id": "t1", "title": "short name", "prompt": "the task as given to a user, works on every site",
+   "segment_id": "s1 or ''", "done_when": "what success looks like", "why": "what comparing the sites on this shows",
+   "kind": "first_run|core_job|pain_probe", "evidence": ["user ids whose words motivated this task, if any"]}]"""
+        if not shown:
+            out = await self._ask(
+                "Write comparison tasks (no real users retrieved, so no segments)",
+                "You output valid JSON only. Tasks must be doable on every site and based on the product's real features.",
+                f"""{head}
+No real users were retrieved, so write no user segments and do not describe any users.
+{task_rules}, based only on the features above. Leave segment_id empty.
 
+Return JSON:
+{{{task_shape}}}""")
+            return {"segments": [], "tasks": [t | {"segment_id": ""} for t in out.get("tasks") or []]}
+        out = await self._ask(
+            "Write user segments and comparison tasks",
+            "You output valid JSON only. Segments must be grounded in the real users supplied; tasks must be doable on every site.",
+            f"""{head}
 REAL USERS (Product Hunt commenters and G2/Capterra reviewers of this product, its competitors, or similar products):
 {sample}
 
-1. Group the real users into 3-6 user segments that would evaluate {profile.get('name')}. Base each segment on users
-   above and cite them by id. If no users were retrieved, infer segments from the product's target users and say so.
-2. Write exactly {self.run.task_count} tasks to run on {profile.get('name')} AND on every competitor, so the sites can be
-   compared. Each task is a real job one segment hires this kind of product for, phrased so it makes sense on any of
-   the sites (never name a site-specific button). Say what done looks like. Mix first-run tasks (sign up, onboarding,
-   first core action) with core-job tasks and one or two tasks that probe a pain the real users complained about.
+1. Group the real users above into 2-6 user segments. Every segment must cite at least two users by id, and its jobs
+   and pains must come from what those users said. Do not add segments that no user above supports.
+2. {task_rules}, and one or two tasks that probe a pain the real users complained about.
 
 Return JSON:
 {{"segments": [{{"id": "s1", "name": "short label", "who": "role, company size, context", "jobs": ["what they need done"],
-   "pains": ["what frustrates them, from the reviews"], "evidence": ["u3", "u17"], "share": "rough share of users above, e.g. 30%"}}],
-  "tasks": [{{"id": "t1", "title": "short name", "prompt": "the task as given to a user, works on every site",
-   "segment_id": "s1", "done_when": "what success looks like", "why": "what comparing the sites on this shows",
-   "kind": "first_run|core_job|pain_probe"}}]}}""")
+   "pains": ["what frustrates them, from the reviews"], "evidence": ["u3", "u17"], "share": "share of the users above, e.g. 30%"}}],
+  {task_shape}}}""")
+        segments = []
+        for seg in out.get("segments") or []:
+            ids = [f"u{n}" for n in (int(m) for e in seg.get("evidence") or [] for m in re.findall(r"\d+", str(e)))
+                   if n < len(shown)]
+            if ids:  # a segment no retrieved user backs is dropped
+                segments.append(seg | {"evidence": list(dict.fromkeys(ids))})
+        kept = {seg.get("id") for seg in segments}
+        tasks = [t if t.get("segment_id") in kept else t | {"segment_id": ""} for t in out.get("tasks") or []]
+        return {"segments": segments, "tasks": tasks}
 
     async def execute(self) -> dict[str, Any]:
         host = registrable_host(self.run.url)
@@ -605,10 +650,13 @@ Return JSON:
                          [c.get("review_name") or c["name"] for c in rest]))
         users = reviewers + ph_people
         out = await self.synthesize(prof, comps, users)
+        # Sources that gave nothing, and why: shown at the top of the result so 0 users is never silent.
+        gaps = [{"source": s.title, "status": s.status, "why": s.summary} for s in self.run.steps
+                if s.kind in {"producthunt", "reviews"} and s.status in {"skipped", "error"}]
         return {"product": prof | {"url": self.run.url,
                                    "producthunt": _ph_post(own) if own else None},
                 "competitors": comps, "similar_products": rest,
-                "users": users, "segments": out.get("segments") or [], "tasks": out.get("tasks") or [],
+                "users": users, "segments": out["segments"], "tasks": out["tasks"], "source_gaps": gaps,
                 "counts": {"web_results": len(web), "ph_launches": len(ph), "ph_commenters": len(ph_people),
                            "reviews": len(reviewers),
                            "reviews_by_source": {s: sum(1 for u in reviewers if u["source"] == s)
