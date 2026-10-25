@@ -48,7 +48,8 @@ _UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTM
 _SUBPAGE_RE = re.compile(r"/(about|pricing|features|product|how-it-works|customers|solutions)(/|$)", re.I)
 # Enough reviews to describe users without scraping more similar products.
 MIN_REVIEWS = 30
-REVIEW_WAIT_S = float(os.environ.get("MVP_DISCOVERY_REVIEW_WAIT_S", "240"))
+# A slower scrape keeps running in the background and is cached for the next run.
+REVIEW_WAIT_S = float(os.environ.get("MVP_DISCOVERY_REVIEW_WAIT_S", "75"))
 
 
 PH_TOKEN_URL = "https://api.producthunt.com/v2/oauth/token"
@@ -248,8 +249,11 @@ def parse_ddg(html: str, limit: int) -> list[dict[str, str]]:
 
 
 SEARCH_CONCURRENCY = int(os.environ.get("MVP_DISCOVERY_SEARCH_CONCURRENCY", "16"))
-# gemini-2.5-flash-lite runs the search but returns no grounding links (checked Oct 2026); 2.5 Flash returns them.
+# Grounded-search benchmark, Oct 2026 (8 homepages + 12 review pages; real Google found 17/20): 2.5 Pro 15/20 in
+# 11 s, 3.1 Pro preview 13/20 in 36 s, 2.5 Flash 10/20, 3 Flash preview 10/20; 2.5 Flash-Lite returns no links.
+# Flash first (fast); Pro only for what Flash did not find.
 SEARCH_MODEL = os.environ.get("MVP_DISCOVERY_SEARCH_MODEL", "gemini-2.5-flash")
+SEARCH_FALLBACK_MODEL = os.environ.get("MVP_DISCOVERY_SEARCH_FALLBACK_MODEL", "gemini-2.5-pro")
 _SEARCH_GATE: asyncio.Semaphore | None = None
 
 
@@ -264,7 +268,7 @@ async def _resolve(client: httpx.AsyncClient, uri: str) -> str:
         return uri
 
 
-async def google_search(query: str, limit: int = 8) -> list[dict[str, str]]:
+async def google_search(query: str, limit: int = 8, model: str | None = None) -> list[dict[str, str]]:
     """Google results through Gemini's Google Search grounding on Vertex (the LLM this repo already uses): one call,
     a few seconds, no extra key and no Apify. Returns the pages Google returned for the query."""
     from auth import cached_vertex_credentials, vertex_credentials
@@ -279,7 +283,7 @@ async def google_search(query: str, limit: int = 8) -> list[dict[str, str]]:
     async with _SEARCH_GATE:
         creds = cached_vertex_credentials() or await asyncio.to_thread(vertex_credentials)
         async with httpx.AsyncClient(timeout=60.0) as client:
-            r = await client.post(_endpoint(SEARCH_MODEL), json=payload,
+            r = await client.post(_endpoint(model or SEARCH_MODEL), json=payload,
                                   headers={"Authorization": f"Bearer {creds.token}", "Content-Type": "application/json"})
             r.raise_for_status()
             meta = ((r.json().get("candidates") or [{}])[0].get("groundingMetadata") or {})
@@ -303,7 +307,7 @@ async def ddg_search(query: str, limit: int = 8) -> list[dict[str, str]]:
     return rows
 
 
-async def web_search_many(queries: list[str], *, limit: int = 8) -> dict[str, list[dict[str, str]]]:
+async def web_search_many(queries: list[str], *, limit: int = 8, model: str | None = None) -> dict[str, list[dict[str, str]]]:
     """Every query at the same time. 'site:' queries go to DuckDuckGo (Gemini's search drops the site: operator);
     the rest to Google via Gemini grounding, with DuckDuckGo only if that call fails."""
     async def one(q: str) -> list[dict[str, str]]:
@@ -313,7 +317,7 @@ async def web_search_many(queries: list[str], *, limit: int = 8) -> dict[str, li
             except httpx.HTTPError:
                 return []
         try:
-            return await google_search(q, limit)
+            return await google_search(q, limit, model)
         except Exception as exc:  # noqa: BLE001 - fall back to DuckDuckGo for this query
             print(f"[discovery] google search failed for {q!r}: {exc!r}"[:300], flush=True)
         try:
@@ -404,6 +408,10 @@ def page_queries(platform: str, name: str) -> list[str]:
 
 # Edition suffixes a product's own listing can carry (Capterra lists Vimeo as 'Vimeo-Pro', G2 has 'dailymotion-pro').
 _EDITION = r"(?:\d+|pro|business|enterprise|teams?|app|software|platform|cloud|online|hq)"
+
+
+def retry_query(platform: str, name: str) -> str:
+    return f"{PLATFORM_LABEL[platform]} {name} reviews page"
 
 
 def _same_name(found: str, wanted: str) -> bool:
@@ -543,12 +551,14 @@ class DiscoveryAgent:
         self.trace.end(step, "done", ", ".join(f"{k}: {len(v) if isinstance(v, list) else 1}" for k, v in out.items()), out)
         return out
 
-    async def _search_many(self, queries: list[str]) -> dict[str, list[dict[str, str]]]:
-        """One batched search; one trace step per query."""
+    async def _search_many(self, queries: list[str], model: str | None = None) -> dict[str, list[dict[str, str]]]:
+        """Queries searched at the same time; one trace step per query."""
         queries = list(dict.fromkeys(queries))
-        steps = {q: self.trace.start("search", f"Web search: {q}", {"query": q, "engine": "google (gemini grounding)"}) for q in queries}
+        engine = f"google via {model or SEARCH_MODEL} grounding (site: queries: duckduckgo)"
+        steps = {q: self.trace.start("search", f"Web search{' (' + model + ')' if model else ''}: {q}", {"query": q, "engine": engine})
+                 for q in queries}
         try:
-            got = await self.web_search_many(queries)
+            got = await self.web_search_many(queries, model=model)
         except Exception as exc:
             for st in steps.values():
                 self.trace.end(st, "error", repr(exc)[:300])
@@ -678,8 +688,11 @@ Return JSON:
         from mvp.competitor_urls import _NON_PRODUCT_HOSTS
 
         cands = [c for c in candidates if not same_site(c["url"], self.run.url)]
-        q_of = {c["name"]: f"{c['name']} {category}".strip() for c in cands}
+        q_of = {c["name"]: f"{c['name']} official website" for c in cands}
         found = await self._search_many(list(q_of.values()))
+        bare = [q for q in q_of.values() if not found.get(q)]
+        if bare:  # Flash answered from memory with no links: ask Pro
+            found.update({q: rows for q, rows in (await self._search_many(bare, model=SEARCH_FALLBACK_MODEL)).items() if rows})
         chosen, rest, checks = [], [], []
         step = self.trace.start("probe", "Confirm competitor homepages on Google and check they are live",
                                 {"candidates": [{"name": c["name"], "llm_url": c["url"]} for c in cands]})
@@ -727,9 +740,14 @@ Return JSON:
             return []
         platforms = ("g2", "capterra", "producthunt")
         found = await self._search_many([q for n in names for p in platforms for q in page_queries(p, n)])
+        # Gemini's search sometimes answers from memory with no links; pages Flash missed are searched again with Pro.
+        missed = [(p, n) for n in names for p in platforms
+                  if not review_page([r for q in page_queries(p, n) for r in found.get(q) or []], p, n)[0]]
+        if missed:
+            found.update(await self._search_many([retry_query(p, n) for p, n in missed], model=SEARCH_FALLBACK_MODEL))
 
         def rows_for(platform: str, name: str) -> list[dict[str, str]]:
-            return [r for q in page_queries(platform, name) for r in found.get(q) or []]
+            return [r for q in [*page_queries(platform, name), retry_query(platform, name)] for r in found.get(q) or []]
 
         async def scrape(name: str, platform: str) -> list[dict[str, Any]]:
             url, why = review_page(rows_for(platform, name), platform, name)

@@ -105,7 +105,7 @@ class RunTest(unittest.TestCase):
                     return [{"title": name, "url": f"https://www.{host}/"}, {"title": "x", "url": "https://www.g2.com/compare"}]
             return [{"title": f"{q} result", "url": "https://g2.com/x", "snippet": "Trello, Asana"}]
 
-        async def search_many(qs):
+        async def search_many(qs, model=None):
             searched.extend(qs)
             return {q: one(q) for q in qs}
 
@@ -179,7 +179,7 @@ class RunTest(unittest.TestCase):
         a, _, _, _ = self._agent(apify=True, ph=True)
         a.apify_token, a.ph_configured = D.apify_token, D.ph_configured  # the real credential lookups
         seen = []
-        a.web_search_many = (lambda orig: (lambda qs: (seen.append((D.apify_token(), D.ph_configured())), orig(qs))[1]))(a.web_search_many)
+        a.web_search_many = (lambda orig: (lambda qs, **kw: (seen.append((D.apify_token(), D.ph_configured())), orig(qs, **kw))[1]))(a.web_search_many)
         a._credentials = {"APIFY_TOKEN": "apify_api_RUNKEY123", "PH_TOKEN": "ph-run-key"}
         with mock.patch.dict(os.environ, {"APIFY_TOKEN": "", "PH_TOKEN": "", "PH_CLIENT_ID": "", "PH_CLIENT_SECRET": ""}), \
                 mock.patch("mvp.review_context.apify_token", return_value=None):
@@ -217,7 +217,7 @@ class GoogleSearchTest(unittest.TestCase):
             rows = asyncio.run(D.google_search("site:g2.com Vimeo reviews"))
         self.assertEqual([r["url"] for r in rows], [where["AAA"], where["BBB"]])  # resolved and de-duplicated
 
-        async def boom(q, limit=8):
+        async def boom(q, limit=8, model=None):
             raise RuntimeError("vertex down")
 
         async def ddg(q, limit=8):
