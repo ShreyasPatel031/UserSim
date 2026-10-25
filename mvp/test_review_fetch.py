@@ -26,11 +26,14 @@ class ReviewFetchTest(unittest.TestCase):
                 raise RuntimeError("Failed to connect via http://user:secret@gw.example.com:823")
             return 403, "<title>Just a moment...</title>"
         with mock.patch.object(F, "fetch", fake), mock.patch.object(F, "ensure_browser", return_value={"ok": False}), \
-                mock.patch.object(F, "ensure_tool", return_value={"ok": False}):
+                mock.patch.object(F, "ensure_tool", return_value={"ok": False}), \
+                mock.patch.object(F, "exit_country", return_value={"country": "US"}), \
+                mock.patch.object(F, "rotation", return_value={}):
             out = F.probe("https://www.producthunt.com/products/linear/reviews", "http://user:secret@gw.example.com:823")
         self.assertEqual((out["chrome_fingerprint_via_proxy"]["status"], out["chrome_fingerprint_via_proxy"]["challenge"]), (200, False))
         self.assertTrue(out["chrome_fingerprint_direct"]["challenge"])
         self.assertNotIn("secret", str(out))
+        self.assertTrue(F._summary(200, "<title>Un instant…</title>" + "x" * 30000, 0)["challenge"])
 
     def test_rotation_stops_at_first_ip_that_gets_through(self):
         calls = iter([(403, "<title>Just a moment...</title>"), (200, "<title>Shortcut Reviews</title>" + "x" * 30000)])

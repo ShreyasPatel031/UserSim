@@ -22,8 +22,10 @@ from urllib.parse import unquote, urlparse
 
 # Only review pages on these sites: the probe must not become an open proxy.
 ALLOWED_HOSTS = ("producthunt.com", "g2.com", "capterra.com")
+# Cloudflare localises its challenge title to the visitor's language ("Un instant…" from a French exit IP).
 _CHALLENGE_RE = re.compile(r"just a moment|performing security verification|cf-chl|challenge-platform|captcha-delivery|"
-                           r"datadome|access denied|attention required|please enable js", re.I)
+                           r"datadome|access denied|attention required|please enable js|un instant|einen moment|"
+                           r"un momento|um momento|even geduld|chwileczk|одну минуту|しばらくお待ち", re.I)
 
 
 def allowed(url: str) -> bool:
@@ -229,6 +231,17 @@ def camoufox_fetch(url: str, proxy: str | None, *, wait_s: float = 30.0) -> tupl
         return _load(browser.new_page(), url, wait_s)
 
 
+def exit_country(proxy: str) -> dict[str, Any]:
+    """Country and network of the proxy's current exit IP (ipinfo.io), to check country targeting."""
+    try:
+        from curl_cffi import requests as creq
+
+        d = creq.get("https://ipinfo.io/json", proxies={"http": proxy, "https": proxy}, timeout=20).json()
+        return {"country": d.get("country"), "org": d.get("org")}
+    except Exception as exc:  # noqa: BLE001
+        return {"error": re.sub(r"//[^@\s/]+@", "//<redacted>@", repr(exc))[:120]}
+
+
 def rotation(url: str, proxy: str, attempts: int = 8) -> dict[str, Any]:
     """Chrome-fingerprint fetch repeated through a rotating proxy (a new exit IP per request): how many attempts get
     the real page. Cloudflare judges IPs, so one blocked attempt says little."""
@@ -253,6 +266,7 @@ def probe(url: str, proxy: str | None) -> dict[str, Any]:
         raise ValueError(f"only https review pages on {', '.join(ALLOWED_HOSTS)}")
     out: dict[str, Any] = {"url": url, "proxy": bool(proxy)}
     if proxy:
+        out["proxy_exit"] = exit_country(proxy)
         out["chrome_fingerprint_rotating_ips"] = rotation(url, proxy)
     tries = [("chrome_fingerprint_via_proxy", proxy, "chrome"), ("plain_via_proxy", proxy, None)] if proxy else []
     tries.append(("chrome_fingerprint_direct", None, "chrome"))
