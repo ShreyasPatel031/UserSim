@@ -85,6 +85,7 @@ def build(include_today=False):
     xs, rd, hn = _jl("ext_x.jsonl"), _jl("ext_rdap.jsonl"), _jl("ext_hn.jsonl")
     llm = _jl("llm.jsonl", "id")
     wbav = _jl("ext_wb.jsonl")
+    cmf = json.load(open(f"{D}/cm_features.json")) if os.path.exists(f"{D}/cm_features.json") else {}
     import external as E
     files = sorted(glob.glob(f"{D}/days/*.json")) + (sorted(glob.glob(f"{D}/today/*.json")) if include_today else [])
     for fn in files:
@@ -165,6 +166,7 @@ def build(include_today=False):
             for k, v in l.items():
                 if k.startswith("llm_"):
                     r[k] = v
+            r.update(cmf.get(p["id"], {}))  # cm_: commenter network (commenters.py), pre-launch comments only
             rows.append(r)
     df = pd.DataFrame(rows)
     df = add_history(df)

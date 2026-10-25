@@ -10,7 +10,7 @@ from sklearn.neighbors import NearestNeighbors
 import features as F
 
 warnings.filterwarnings("ignore")
-SOURCES = ["ph", "hist", "txt", "web", "dom", "x", "hn", "comp", "topic", "llm"]
+SOURCES = ["ph", "hist", "txt", "web", "dom", "x", "hn", "comp", "topic", "llm", "cm"]
 KS = (3, 5, 10)
 
 

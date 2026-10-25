@@ -13,7 +13,7 @@ NAMES = {"pred_week_model": "Weekly-list model", "pred_month_model": "Monthly-li
 SRC = {"ph": "PH audience & metadata (hunter, makers, media)", "hist": "Hunter/maker track record on PH",
        "txt": "Pitch text (name, tagline, description)", "web": "Homepage content", "dom": "Domain (age, TLD, archive history)",
        "x": "X/Twitter audience", "hn": "Hacker News before launch", "comp": "Similar earlier PH launches",
-       "topic": "Topic priors", "llm": "LLM judgement"}
+       "topic": "Topic priors", "llm": "LLM judgement", "cm": "Commenter network (competitor users, makers' community)"}
 
 
 def pct(x):

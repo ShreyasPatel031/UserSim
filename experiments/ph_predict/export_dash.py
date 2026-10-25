@@ -25,7 +25,7 @@ json.dump(rows, open(f"{O}/recall.json", "w"))
 SRC = {"ph": "PH audience & metadata", "hist": "Hunter & maker track record", "txt": "Pitch text",
        "web": "Homepage content", "dom": "Domain & archive history", "x": "X / Twitter audience",
        "hn": "Hacker News before launch", "comp": "Similar earlier launches", "topic": "Topic priors",
-       "llm": "LLM judgements"}
+       "llm": "LLM judgements", "cm": "Commenter network"}
 full = m["pred"]
 sp = lambda x: None if x is None or np.isnan(x) else round(float(x), 2)
 src = [{"source": n, "alone_day5": int(round(100 * m[f"pred_only_{s}"]["day@5"])),
