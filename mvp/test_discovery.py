@@ -105,7 +105,7 @@ class RunTest(unittest.TestCase):
                     return [{"title": name, "url": f"https://www.{host}/"}, {"title": "x", "url": "https://www.g2.com/compare"}]
             return [{"title": f"{q} result", "url": "https://g2.com/x", "snippet": "Trello, Asana"}]
 
-        async def search_many(qs):
+        async def search_many(qs, model=None):
             searched.extend(qs)
             return {q: one(q) for q in qs}
 
@@ -123,6 +123,9 @@ class RunTest(unittest.TestCase):
             return (reviews or {}).get(url, [])
 
         a.fetch_html, a.web_search_many, a.ph_topics, a.ph_topic_posts, a.probe = fetch, search_many, topics, topic_posts, probe
+        async def grounded(prompt, model=None):
+            return '{"competitors": [{"name": "Trello", "homepage": "https://trello.com"}]}'
+        a.grounded_answer = grounded
         a.ph_configured = lambda: ph
         a.apify_token = lambda: "tok" if apify else None
         a.scrape_review_page = scrape
@@ -144,10 +147,12 @@ class RunTest(unittest.TestCase):
         self.assertNotIn("site:g2.com Monday reviews", searched)  # 40 reviews: no extra similar products
         self.assertEqual(r["counts"]["reviews"], 40)
         self.assertEqual(r["counts"]["ph_reviewers"], 1)  # Asana's Product Hunt page, found via its producthunt.com URL
-        self.assertEqual(searched.count("site:g2.com Acme Boards reviews"), 2)  # no matching page: searched once more
+        self.assertTrue({"Acme Boards reviews on G2", "Acme Boards reviews g2.com", "site:g2.com Acme Boards reviews"} <= set(searched))
         self.assertEqual(r["users"][0]["text"], "Liked: easy / Disliked: slow")
         self.assertEqual(r["users"][0]["product"], "Trello")
         self.assertIn("[u0] (g2 / Trello) role: Designer", log[-1])
+        self.assertIn("PRODUCTS BUYERS MOST OFTEN COMPARE IT WITH (Google-researched; the main evidence):\n- Trello (https://trello.com)",
+                      next(p for p in log if '"candidates"' in p))
         self.assertEqual([(g["name"], g["evidence"]) for g in r["segments"]], [("Team leads", ["u0", "u1"])])  # u999 backs nothing
         gaps = {g["source"]: g["why"] for g in r["source_gaps"]}
         self.assertIn("other products: ['acme-anvils']", gaps["G2 reviews of Acme Boards"])
@@ -179,7 +184,7 @@ class RunTest(unittest.TestCase):
         a, _, _, _ = self._agent(apify=True, ph=True)
         a.apify_token, a.ph_configured = D.apify_token, D.ph_configured  # the real credential lookups
         seen = []
-        a.web_search_many = (lambda orig: (lambda qs: (seen.append((D.apify_token(), D.ph_configured())), orig(qs))[1]))(a.web_search_many)
+        a.web_search_many = (lambda orig: (lambda qs, **kw: (seen.append((D.apify_token(), D.ph_configured())), orig(qs, **kw))[1]))(a.web_search_many)
         a._credentials = {"APIFY_TOKEN": "apify_api_RUNKEY123", "PH_TOKEN": "ph-run-key"}
         with mock.patch.dict(os.environ, {"APIFY_TOKEN": "", "PH_TOKEN": "", "PH_CLIENT_ID": "", "PH_CLIENT_SECRET": ""}), \
                 mock.patch("mvp.review_context.apify_token", return_value=None):
@@ -190,6 +195,40 @@ class RunTest(unittest.TestCase):
         dumped = json.dumps(run.to_dict(), default=str)
         self.assertNotIn("RUNKEY123", dumped)
         self.assertNotIn("ph-run-key", dumped)
+
+
+class GoogleSearchTest(unittest.TestCase):
+    def test_grounding_links_are_resolved_to_real_pages_and_failures_fall_back_to_ddg(self):
+        import types
+        import httpx
+
+        body = {"candidates": [{"groundingMetadata": {"groundingChunks": [
+            {"web": {"uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AAA", "title": "g2.com"}},
+            {"web": {"uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/BBB", "title": "g2.com"}},
+            {"web": {"uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AAA", "title": "g2.com"}}]}}]}
+        where = {"AAA": "https://www.g2.com/products/vimeo/reviews", "BBB": "https://www.g2.com/products/vimeo-ott/reviews"}
+
+        async def post(self, url, json=None, headers=None):
+            assert json["tools"] == [{"googleSearch": {}}]
+            return httpx.Response(200, json=body, request=httpx.Request("POST", url))
+
+        async def get(self, url, follow_redirects=True):
+            return httpx.Response(302, headers={"location": where[url.rsplit("/", 1)[1]]}, request=httpx.Request("GET", url))
+
+        creds = types.SimpleNamespace(token="t")
+        with mock.patch.object(httpx.AsyncClient, "post", post), mock.patch.object(httpx.AsyncClient, "get", get), \
+                mock.patch("auth.cached_vertex_credentials", return_value=creds), \
+                mock.patch("capability.gemini_config._endpoint", return_value="https://vertex.invalid"):
+            rows = asyncio.run(D.google_search("site:g2.com Vimeo reviews"))
+        self.assertEqual([r["url"] for r in rows], [where["AAA"], where["BBB"]])  # resolved and de-duplicated
+
+        async def boom(q, limit=8, model=None):
+            raise RuntimeError("vertex down")
+
+        async def ddg(q, limit=8):
+            return [{"title": "x", "url": "https://x.com", "snippet": "", "engine": "duckduckgo"}]
+        with mock.patch.object(D, "google_search", boom), mock.patch.object(D, "ddg_search", ddg):
+            self.assertEqual(asyncio.run(D.web_search_many(["q"]))["q"][0]["engine"], "duckduckgo")
 
 
 class SavedKeysTest(unittest.TestCase):

@@ -5,10 +5,11 @@ Code: [`mvp/discovery.py`](../mvp/discovery.py). Test page: **`/discovery`** on 
 
 ## What it does
 
-Every page it uses is one Google returned (Apify `google-search-scraper`, batched per phase). Nothing is reached by
-guessing a URL or a slug.
+Every page it uses is one Google returned (Gemini's Google Search grounding on Vertex, all queries in parallel;
+DuckDuckGo only if a Google call fails). Apify is used only to scrape review pages. Nothing is reached by guessing a
+URL or a slug.
 
-1. **Reads the product's site** — homepage plus up to two about/pricing/features pages — and searches `what is <host>`.
+1. **Reads the product's site** — homepage plus up to two about/pricing/features pages.
 2. **Profiles the product** (LLM): name, one-liner, category, target users, features, search terms, Product Hunt topics.
 3. **Gathers competitor candidates:** Google `<name> alternatives`, `<name> competitors`, `best <search term>`, plus
    similar Product Hunt launches (API: top posts in the topics matching the product).
