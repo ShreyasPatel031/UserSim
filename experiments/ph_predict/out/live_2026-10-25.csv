@@ -1,0 +1,14 @@
+predicted_rank,id,name,tagline,topics,score,predicted_at
+1,1290875,Llama Windows,One local AI server for all your Windows apps,"['Open Source', 'Artificial Intelligence', 'GitHub', 'Development']",5.338917580464414,2026-10-25T04:30:22-07:00
+2,1283538,Openstatus Incident Management,Incident management for small teams,"['Open Source', 'Developer Tools', 'GitHub']",5.252397077254567,2026-10-25T04:30:22-07:00
+3,1278600,Moli by Lexmount,The fastest headless browser for agents and harnesses,"['Productivity', 'Developer Tools', 'Artificial Intelligence']",5.19571799228873,2026-10-25T04:30:22-07:00
+4,1291942,AgentGrid.io,Shared workspace for humans and agents,"['Artificial Intelligence', 'Maker Tools', 'Vibe coding']",5.065060174116967,2026-10-25T04:30:22-07:00
+5,1285452,git-flow-next,Your favorite Git workflow. Reimagined.,"['Open Source', 'Software Engineering', 'Developer Tools', 'GitHub']",5.031531453326739,2026-10-25T04:30:22-07:00
+6,1291620,Papermark Data Rooms,Secure data rooms your AI agents can run. Live in < 60 sec.,['Productivity'],4.9407723917383235,2026-10-25T04:30:22-07:00
+7,1286064,How It Spread,"See how anything went viral, from the first post","['Social Media', 'Analytics', 'Marketing']",4.891844899789066,2026-10-25T04:30:22-07:00
+8,1289061,MRRaudit,Understand why your MRR differs and get a number you trust,"['Analytics', 'Payments', 'SaaS']",4.788168078745353,2026-10-25T04:30:22-07:00
+9,1273641,Badgey,Your iPhone becomes a name badge that faces the room,"['iOS', 'Productivity', 'Events']",4.6456224966664434,2026-10-25T04:30:22-07:00
+10,1287264,pawl,a tiny mac focus timer you start by pulling a paw,"['Mac', 'Productivity', 'Menu Bar Apps']",4.6262202624588555,2026-10-25T04:30:22-07:00
+11,1291438,Yourcast 2.0,"AI summaries with tap-to-jump timestamps, right in Telegram","['Open Source', 'Artificial Intelligence', 'GitHub', 'Audio']",4.510629127695234,2026-10-25T04:30:22-07:00
+12,1283600,Clips by Plastic,"Lyric video ads for every part of your song, on the beat","['Mac', 'Music', 'Marketing']",4.505943573503007,2026-10-25T04:30:22-07:00
+13,1284558,Specsight,Product observability for teams shipping fast with AI,"['Productivity', 'SaaS', 'Artificial Intelligence']",4.505771997881223,2026-10-25T04:30:22-07:00

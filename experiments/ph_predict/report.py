@@ -32,7 +32,9 @@ def main() -> None:
          f"{m['n_launches']} featured launches, {m['days'][0]} to {m['days'][1]}. Each test month is predicted by a "
          f"model trained only on earlier months (test months: {', '.join(m['test_months'])}). No votes, comments or "
          "ranks of the launch itself are used as inputs.", "",
-         "Recall@k = share of PH's actual top k that we put in our top k. In brackets: what random picking gets.", "",
+         "Recall@k = share of PH's actual top k that we put in our top k. In brackets: what random picking gets. A list "
+         "counts only when it has at least 2k launches (days with fewer than 20 featured launches are left out of "
+         "day@10).", "",
          "Data coverage (share of launches with each signal): " + ", ".join(
              f"{k.replace('_', ' ')} {v:.0%}" for k, v in m.get("coverage", {}).items()) + ".", "",
          "## Overall lists", ""]
@@ -42,7 +44,7 @@ def main() -> None:
         f"{k} {v['ci95'][0]:.2f}-{v['ci95'][1]:.2f} (n={v['lists']})" for k, v in m["full"].items()) + ".", "",
           "Week and month results rest on few lists, so differences of a few points between rows below are noise.", "",
           f"Mean Spearman correlation with the daily order: {m['spearman_day']}", "",
-          "Per test month (model trained on earlier months only; June's model only had March to learn from):", "",
+          "Per test month (each month's model learned only from earlier months; April and May are partly collected):", "",
           "| month | day@3 | day@5 | day@10 | week@5 | week@10 |", "|---|---|---|---|---|---|"]
     L += [f"| {mo} | " + " | ".join(f"{r.get(k, float('nan')):.2f}" for k in ("day@3", "day@5", "day@10", "week@5", "week@10"))
           + " |" for mo, r in m.get("by_month", {}).items()]
