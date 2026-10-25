@@ -32,11 +32,18 @@ DEFAULT_URLS = [
 
 
 def main() -> None:
+    if any(a in ("-h", "--help") for a in sys.argv[1:]):
+        print(__doc__)
+        return
     urls = sys.argv[1:] or DEFAULT_URLS
     proxy = (os.environ.get("PROXY_URL") or "").strip() or None
     print(f"proxy: {'yes' if proxy else 'no (direct from this machine)'}\n")
     for url in urls:
-        out = F.probe(url, proxy)
+        try:
+            out = F.probe(url, proxy)
+        except ValueError as exc:
+            print(f"== {url}\n  skipped: {exc}\n")
+            continue
         print("==", url)
         for k, v in out.items():
             if k in ("url", "proxy"):
