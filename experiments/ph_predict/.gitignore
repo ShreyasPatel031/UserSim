@@ -2,3 +2,4 @@ data/
 *.log
 results/predictions.csv
 __pycache__/
+run*.log
