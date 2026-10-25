@@ -20,6 +20,8 @@ Production runs of asana.com and notion.com (before the fixes below were deploye
   dynamic DNS` (`gw.dataimpulse.com` resolves to 3 IPs). **Fix:** `sticky_proxy` pins the gateway to one IP; re-probe
   after deploy. G2: all 3 sticky DataImpulse US IPs answered DataDome `t=bv` (IP banned), so no captcha to solve:
   CapSolver cannot help G2 on DataImpulse IPs.
+- **All three sites now go through the Apify Unblocker** (`_inhouse_proxy`): Product Hunt probed 200 first try,
+  2-4 s, 851 KB. DataImpulse is no longer used for review scraping (only by the own-unblocker prototype).
 - Pre-existing failing test: `test_grounding_links_are_resolved_to_real_pages_and_failures_fall_back_to_ddg`.
 
 ## Earlier (Oct 25 2026, 06:50 UTC)

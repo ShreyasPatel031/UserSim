@@ -474,12 +474,10 @@ CACHE_DAYS = float(os.environ.get("MVP_DISCOVERY_REVIEW_CACHE_DAYS", "30"))
 
 
 def _inhouse_proxy(platform: str) -> str | None:
-    """G2 and Capterra block residential proxies and stealth browsers alike; Apify's Unblocker gets through (~$0.001 a
-    page, Oct 2026). Product Hunt passes on the residential proxy with a Chrome fingerprint."""
+    """Apify's Unblocker for every site (~$0.001 a page, Oct 2026): G2 and Capterra block residential proxies and
+    stealth browsers alike; Product Hunt passes on it too (200 first try, 2-4 s), so one proxy covers all three."""
     from mvp import review_fetch
 
-    if platform == "producthunt" and proxy_url():
-        return proxy_url()
     return review_fetch.apify_proxy("UNBLOCKER")
 
 
