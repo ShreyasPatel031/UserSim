@@ -38,8 +38,10 @@ def main() -> None:
          "Data coverage (share of launches with each signal): " + ", ".join(
              f"{k.replace('_', ' ')} {v:.0%}" for k, v in m.get("coverage", {}).items()) + ".", "",
          "## Overall lists", ""]
-    L += table({"model (headline: no follower counts)": m["full"],
-                "model + today's follower counts (may leak)": m["full_with_followers"]}, CELLS, with_random=True)
+    L += table(m["configs"], CELLS, with_random=True)
+    L += ["", f"Headline model below: **{m['headline']}**. Pre-launch = known before 00:01 PT launch (listing, team, "
+          "hunter, track records). First 4 hours adds PH comments, X posts and HN stories from launch to +4 h "
+          "(never votes or ranks)."]
     L += ["", "95% confidence intervals (bootstrap over lists) and number of lists, headline model: " + "; ".join(
         f"{k} {v['ci95'][0]:.2f}-{v['ci95'][1]:.2f} (n={v['lists']})" for k, v in m["full"].items()) + ".", "",
           "Week and month results rest on few lists, so differences of a few points between rows below are noise.", "",
@@ -54,7 +56,7 @@ def main() -> None:
     keys = ["day@5", "day@10", "week@10", "month@10"]
     L += ["Each source alone:", ""] + table(m["only"], keys)
     L += ["", "All sources minus one (a drop below the full model = that source adds information):", ""]
-    L += table({"(full model)": m["full"], **{f"without {g}": r for g, r in m["without"].items()}}, keys)
+    L += table({"(headline model)": m["full"], **{f"without {g}": r for g, r in m["without"].items()}}, keys)
     imp = m["importance"]
     L += ["", "## Which factors matter (mean |SHAP| on held-out launches)", "", "Share of the model's attribution by source:", "",
           "| source | share |", "|---|---|"] + [f"| {g} | {v:.0%} |" for g, v in imp["group_share"].items()]

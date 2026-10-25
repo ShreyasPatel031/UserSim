@@ -2,6 +2,7 @@
 
   hn.jsonl      Hacker News stories linking the domain (or GitHub repo) posted BEFORE the launch day (Algolia API)
   domain.jsonl  domain registration date (RDAP), as age in days on launch day
+  hn_day.jsonl  HN stories linking the domain posted from launch to 4 h after (points are today's)
   github.jsonl  for products with a GitHub repo (main site or PH's GitHub link, crawl_sites.py ... Github): stars
                 given BEFORE launch day (timestamped stargazers) and repo age
 
@@ -42,10 +43,10 @@ def target(url: str) -> tuple[str, str]:
     return reg, reg
 
 
-def hn(term: str, before_ts: int) -> dict:
+def hn(term: str, before_ts: int, after_ts: int = 0) -> dict:
     r = requests.get("https://hn.algolia.com/api/v1/search", timeout=30, params={
         "query": term, "restrictSearchableAttributes": "url", "tags": "story", "hitsPerPage": 50,
-        "numericFilters": f"created_at_i<{before_ts}"}).json()
+        "numericFilters": f"created_at_i<{before_ts},created_at_i>={after_ts}"}).json()
     hits = [h for h in r.get("hits", []) if term in (h.get("url") or "").lower()]
     pts = [h.get("points") or 0 for h in hits]
     return {"stories": len(hits), "points_sum": sum(pts), "points_max": max(pts, default=0),
@@ -99,7 +100,7 @@ def main() -> None:
     df = F.load_posts()
     web = {p.stem: json.loads(p.read_text()) for p in (F.CACHE / "web").glob("*.json")}
     gh_links = {p.stem: json.loads(p.read_text()).get("loaded_url") for p in (F.CACHE / "web_github").glob("*.json")}
-    outs = {k: F.CACHE / f"{k}.jsonl" for k in ("hn", "domain", "github")}
+    outs = {k: F.CACHE / f"{k}.jsonl" for k in ("hn", "domain", "github", "hn_day")}
     done = {k: {json.loads(l)["id"] for l in p.read_text().splitlines()} if p.exists() else set()
             for k, p in outs.items()}
     lock = threading.Lock()
@@ -119,6 +120,10 @@ def main() -> None:
             if r["id"] not in done["hn"]:
                 write("hn", {"id": r["id"], **(hn(term, int(day.timestamp())) if term else
                                                {"stories": 0, "points_sum": 0, "points_max": 0, "comments_sum": 0})})
+            if r["id"] not in done["hn_day"]:
+                launch = int(datetime.fromisoformat(r["day"]).replace(hour=7, tzinfo=timezone.utc).timestamp())
+                write("hn_day", {"id": r["id"], **(hn(term, launch + 4 * 3600, launch) if term else
+                                                   {"stories": 0, "points_sum": 0, "points_max": 0, "comments_sum": 0})})
             if r["id"] not in done["domain"]:
                 if domain and domain not in reg_cache:
                     reg_cache[domain] = rdap(domain)

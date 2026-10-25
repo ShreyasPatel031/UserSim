@@ -28,6 +28,13 @@ OUT = F.HERE / "out"
 KS = (3, 5, 10)
 PERIODS = {"day": ("day", "dailyRank"), "week": ("week", "weeklyRank"), "month": ("month", "monthlyRank")}
 FIRST_TEST_MONTH = "2026-04"  # earlier months are training history only
+# Models compared. Pre-launch: known before 00:01 PT. First 4 hours: adds PH comments, X and HN from launch to +4 h.
+PRE = ["launch", "people", "history"]
+CONFIGS = {"pre-launch": PRE,
+           "pre-launch + all other pre-launch data": PRE + ["site", "llm", "hn", "domain", "github", "product", "yc"],
+           "first 4 hours": PRE + ["early", "x", "hn_day"],
+           "first 4 hours + follower counts (may leak)": PRE + ["early", "x", "hn_day", "followers"]}
+HEADLINE = "first 4 hours"
 PARAMS = dict(n_estimators=500, learning_rate=0.03, num_leaves=15, min_child_samples=20, subsample=0.8,
               subsample_freq=1, colsample_bytree=0.7, reg_lambda=1.0, verbose=-1)
 # Product types for "how factors change": first matching family wins.
@@ -138,9 +145,10 @@ def main() -> None:
     keep = df.complete.to_numpy()  # drop live (unfinished) days
     df, X = df[keep].reset_index(drop=True), X[keep].reset_index(drop=True)
     groups = {g: c for g, c in groups.items() if c}
-    with_followers = [c for cs in groups.values() for c in cs]
-    groups.pop("followers")  # headline model: no follower counts (today's counts include the launch's own effect)
-    all_cols = [c for cs in groups.values() for c in cs]
+    cols_of = lambda gs: [c for g in gs if g in groups for c in groups[g]]  # noqa: E731
+    configs = {name: cols_of(gs) for name, gs in CONFIGS.items()}
+    all_cols = configs[HEADLINE]
+    groups.pop("followers")  # today's counts include the launch's own effect: only in the "+ follower counts" model
     months = sorted(df.month.unique())
     test_months = [m for m in months if m >= FIRST_TEST_MONTH and (df.month < m).sum() >= 200]
     last_day = df.day.max()
@@ -156,10 +164,15 @@ def main() -> None:
                      "domain_age_known": X.get("domain_age_days", np.nan * 0).notna().mean() if "domain_age_days" in X else 0,
                      "github_repo": (X.get("github_repo_found", 0) == 1).mean(),
                      "maker_launched_before": (X.hist_maker_prior_launches > 0).mean()}.items()}}
-    full = backtest(df, X, all_cols, test_months)
-    res["full"] = recall_lists(df, full, complete_months=complete)
-    res["full_with_followers"] = recall_lists(df, backtest(df, X, with_followers, test_months),
-                                              complete_months=complete)
+    res["headline"] = HEADLINE
+    res["configs"] = {}
+    for name, cols in configs.items():
+        score = backtest(df, X, cols, test_months)
+        res["configs"][name] = recall_lists(df, score, complete_months=complete)
+        if name == HEADLINE:
+            full = score
+        print("config", name, res["configs"][name].get("day@5"), flush=True)
+    res["full"] = res["configs"][HEADLINE]
     test = full.notna()
     res["by_month"] = {m: {k: v["recall"] for k, v in recall_lists(df[df.month == m], full[df.month == m]).items()
                            if k.startswith(("day", "week"))} for m in test_months}
@@ -170,6 +183,8 @@ def main() -> None:
     base = {"followers today (hunter+makers; leaky)": X.followers_hunter_log + X.followers_maker_sum_log}
     if "llm_p_top5" in X:
         base["llm p_top5 alone"] = X.llm_p_top5
+    if "early_comments_4h" in X:
+        base["PH comments in first 4 h alone"] = X.early_comments_4h + np.random.default_rng(0).random(len(X)) * 1e-3
     if "hist_lookalike_top10_rate" in X:
         base["look-alike earlier launches"] = X.hist_lookalike_top10_rate
     res["baselines"] = {k: recall_lists(df, v.where(test), complete_months=complete) for k, v in base.items()}
@@ -183,9 +198,10 @@ def main() -> None:
         res["only"][g] = recall_lists(df, only, complete_months=complete)
         for f in fam.unique():  # each source alone, ranking a type's launches against each other per week
             by_family[f][g] = recall_lists(df[fam == f], only[fam == f], complete_months=complete).get("week@5")
-        rest = [c for c in all_cols if c not in cs]
-        res["without"][g] = recall_lists(df, backtest(df, X, rest, test_months), complete_months=complete)
-        print("ablation", g, res["only"][g].get("day@5"), res["without"][g].get("day@5"), flush=True)
+        if g in CONFIGS[HEADLINE]:
+            rest = [c for c in all_cols if c not in cs]
+            res["without"][g] = recall_lists(df, backtest(df, X, rest, test_months), complete_months=complete)
+        print("ablation", g, res["only"][g].get("day@5"), res["without"].get(g, {}).get("day@5"), flush=True)
 
     by_family["(all types)"] = {g: r.get("week@5") for g, r in res["only"].items()}
     res["only_by_family"] = by_family

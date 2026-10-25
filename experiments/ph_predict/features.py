@@ -14,6 +14,12 @@ Groups:
   hn       Hacker News stories linking the domain before launch day (external.py)
   domain   age of the product's domain on launch day (RDAP, external.py)
   github   GitHub-hosted products: stars before launch day, repo age (external.py)
+  product  the same product's earlier PH launches (matched by website domain): count, best and last daily rank
+  yc       Y Combinator company with the same domain: batch age, team size (yc-oss directory)
+  early    PH comments in the launch's first 1 / 2 / 4 hours and before launch, distinct commenters
+           (collect_early.py) -- early launch-day signal, not available before launch
+  hn_day   HN stories linking the domain in the launch's first 4 hours (external.py)
+  x        tweets linking the product's domain from 24 h before to 4 h after launch (x_buzz.py)
 """
 
 from __future__ import annotations
@@ -240,6 +246,101 @@ def site_features(df: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(rows, index=df.index)
 
 
+def _domain(pid: str, web: dict) -> str:
+    import external as X  # noqa: PLC0415 -- avoids a circular import at module load
+
+    return X.target((web.get(pid) or {}).get("loaded_url") or "")[1]
+
+
+def product_features(df: pd.DataFrame, web: dict) -> pd.DataFrame:
+    """Earlier launches of the same product: same registrable domain, strictly earlier day."""
+    dom = pd.Series([_domain(i, web) for i in df.id], index=df.index)
+    shared = {"canva.com", "google.com", "microsoft.com"}  # big multi-product domains still count
+    rows = []
+    by_dom = defaultdict(list)
+    for i in df.sort_values("date").index:
+        by_dom[dom[i]].append(i)
+    for i in df.index:
+        d = dom[i]
+        prev = [j for j in by_dom.get(d, []) if d and df.date[j] < df.date[i]] if d not in ("",) else []
+        ranks = [df.dailyRank[j] if pd.notna(df.dailyRank[j]) else 999 for j in prev]
+        rows.append({"product_prior_launches": len(prev),
+                     "product_prior_best_rank": min(ranks) if ranks else np.nan,
+                     "product_prior_top10_rate": np.mean([r <= 10 for r in ranks]) if ranks else np.nan,
+                     "product_last_rank": ranks[-1] if ranks else np.nan,
+                     "product_days_since_last": (df.date[i] - df.date[prev[-1]]).days if prev else np.nan,
+                     "product_name_version": int(bool(re.search(r"\b(\d+\.\d+|v\d+|2\.0|3\.0)\b", df.name[i]))),
+                     "product_big_domain": int(d in shared)})
+    return pd.DataFrame(rows, index=df.index)
+
+
+def yc_features(df: pd.DataFrame, web: dict) -> pd.DataFrame:
+    path = CACHE / "yc.json"
+    if not path.exists():
+        return pd.DataFrame(index=df.index)
+    import external as X  # noqa: PLC0415
+
+    yc = {}
+    for c in json.loads(path.read_text()):
+        d = X.target(c.get("website") or "")[1]
+        if d:
+            yc[d] = c
+    rows = []
+    for i in df.index:
+        c = yc.get(_domain(df.id[i], web))
+        if not c:
+            rows.append({"yc_company": 0})
+            continue
+        m = re.search(r"(Winter|Spring|Summer|Fall) (\d{4})", c.get("batch") or "")
+        season = {"Winter": 1, "Spring": 4, "Summer": 6, "Fall": 9}
+        batch = pd.Timestamp(int(m.group(2)), season[m.group(1)], 1) if m else None
+        rows.append({"yc_company": 1, "yc_batch_age_days": (df.date[i] - batch).days if batch is not None else np.nan,
+                     "yc_team_size_log": math.log1p(c.get("team_size") or 0)})
+    return pd.DataFrame(rows, index=df.index)
+
+
+def early_features(df: pd.DataFrame) -> pd.DataFrame:
+    rec = {}
+    for f in (CACHE / "early_days").glob("*.json"):
+        rec.update(json.loads(f.read_text())["posts"])
+    rows = []
+    for pid, makers in zip(df.id, df.makers):
+        r = rec.get(pid)
+        if not r:
+            rows.append({})
+            continue
+        t0 = _ts(r["t0"])
+        ts = [(_ts(c["createdAt"]) - t0).total_seconds() / 3600 for c in r["comments"]]
+        users = [c.get("userId") for c in r["comments"]]
+        early2 = [u for u, h in zip(users, ts) if 0 <= h <= 2]
+        rows.append({"early_prelaunch_comments": sum(h < 0 for h in ts),
+                     "early_comments_1h": sum(0 <= h <= 1 for h in ts),
+                     "early_comments_2h": len(early2),
+                     "early_comments_4h": sum(0 <= h <= 4 for h in ts),
+                     "early_commenters_2h": len(set(early2)),
+                     "early_first_comment_min": min([h * 60 for h in ts if h >= 0], default=np.nan),
+                     # Only the first 20 comments are fetched: for busy launches, how fast the 20th came is the signal.
+                     "early_hours_to_20th": (sorted(ts)[19] if len(ts) >= 20 and sorted(ts)[19] <= 4 else np.nan),
+                     "early_hit_20_by_4h": int(len(ts) >= 20 and sorted(ts)[19] <= 4)})
+    return pd.DataFrame(rows, index=df.index)
+
+
+def x_features(df: pd.DataFrame) -> pd.DataFrame:
+    rows = []
+    for pid in df.id:
+        p = CACHE / "x" / f"{pid}.json"
+        r = json.loads(p.read_text()) if p.exists() else None
+        if not r or not r.get("searched"):
+            rows.append({"x_searched": 0 if r else np.nan})
+            continue
+        tw = r["tweets"]
+        fol = [t["followers"] or 0 for t in tw]
+        rows.append({"x_searched": 1, "x_tweets": len(tw), "x_prelaunch_tweets": sum(t["prelaunch"] for t in tw),
+                     "x_authors": len({t["author"] for t in tw}), "x_followers_sum_log": math.log1p(sum(fol)),
+                     "x_followers_max_log": math.log1p(max(fol, default=0)), "x_capped": int(r.get("capped", False))})
+    return pd.DataFrame(rows, index=df.index)
+
+
 def optional(name: str, df: pd.DataFrame) -> pd.DataFrame:
     path = CACHE / f"{name}.jsonl"
     if not path.exists():
@@ -256,7 +357,11 @@ def build() -> tuple[pd.DataFrame, pd.DataFrame, dict[str, list[str]]]:
     parts = {"launch": launch_features(df), "people": people_features(df), "followers": follower_features(df),
              "history": history_features(df),
              "site": site_features(df), "llm": optional("llm", df), "hn": optional("hn", df), "domain": optional("domain", df),
+             "hn_day": optional("hn_day", df),
              "github": optional("github", df)}
+    web = {p.stem: json.loads(p.read_text()) for p in (CACHE / "web").glob("*.json")}
+    parts |= {"product": product_features(df, web), "yc": yc_features(df, web), "early": early_features(df),
+              "x": x_features(df)}
     groups = {g: list(p.columns) for g, p in parts.items()}
     X = pd.concat(parts.values(), axis=1).apply(pd.to_numeric, errors="coerce")
     return df, X, groups
