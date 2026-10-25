@@ -71,12 +71,14 @@
     <button id="go">Discover</button>
     <select id="past"><option value="">Past runs…</option></select>
     <details class="keys"><summary>Data source keys <span class="muted small" id="keystate"></span></summary>
-      <p class="muted small">Used for your runs only: sent with each run, never saved on the server or shown in results.
-        Remembered in this browser. Leave empty to use the server's own keys.</p>
+      <p class="muted small">Saved once on the server and used for every run. Never shown again after saving.
+        To replace saved keys, also enter the currently saved Apify token.</p>
       <label>Apify token <input type="password" id="k_apify" autocomplete="off" /></label>
       <label>Product Hunt token <input type="password" id="k_ph" autocomplete="off" /></label>
       <label>PH client id <input type="password" id="k_phid" autocomplete="off" /></label>
       <label>PH client secret <input type="password" id="k_phsec" autocomplete="off" /></label>
+      <label>Current Apify token (only to replace) <input type="password" id="k_cur" autocomplete="off" /></label>
+      <button type="button" id="savekeys">Save on server</button> <span class="small" id="savemsg"></span>
     </details>
   </form>
   <div class="status" id="status"></div>
@@ -103,28 +105,29 @@ $("#f").onsubmit = async (e) => {
   e.preventDefault();
   $("#go").disabled = true;
   const r = await fetch("/api/discovery", { method: "POST", headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ url: $("#url").value, max_competitors: +$("#nc").value, task_count: +$("#nt").value, scrape_reviews: $("#rv").checked,
-      ...saveKeys() }) });
+    body: JSON.stringify({ url: $("#url").value, max_competitors: +$("#nc").value, task_count: +$("#nt").value, scrape_reviews: $("#rv").checked }) });
   const { id } = await r.json();
   open(id);
 };
-const KEYS = { k_apify: "apify_token", k_ph: "ph_token", k_phid: "ph_client_id", k_phsec: "ph_client_secret" };
-function saveKeys() {
-  const out = {};
-  for (const [id, field] of Object.entries(KEYS)) {
-    out[field] = $("#" + id).value.trim();
-    try { localStorage.setItem("discovery_" + field, out[field]); } catch (e) {}
-  }
+const KEYS = { k_apify: "apify_token", k_ph: "ph_token", k_phid: "ph_client_id", k_phsec: "ph_client_secret", k_cur: "current_apify_token" };
+async function showKeyState() {
+  try {
+    const { keys } = await (await fetch("/api/discovery/keys")).json();
+    const missing = Object.entries(keys).filter(([, v]) => !v.present).map(([k]) => k);
+    $("#keystate").textContent = missing.length ? `(missing on server: ${missing.join(", ")})` : "(all set on server)";
+    $("#keystate").className = missing.length ? "small st-error" : "small st-done";
+  } catch (e) { $("#keystate").textContent = ""; }
+}
+$("#savekeys").onclick = async () => {
+  const body = {};
+  for (const [id, field] of Object.entries(KEYS)) body[field] = $("#" + id).value.trim();
+  const r = await fetch("/api/discovery/keys", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+  const d = await r.json();
+  $("#savemsg").textContent = r.ok ? "Saved." : (d.detail || "Not saved");
+  $("#savemsg").className = r.ok ? "small st-done" : "small st-error";
+  if (r.ok) Object.keys(KEYS).forEach((id) => { $("#" + id).value = ""; });
   showKeyState();
-  return out;
-}
-function showKeyState() {
-  const n = Object.keys(KEYS).filter((id) => $("#" + id).value.trim()).length;
-  $("#keystate").textContent = n ? `(${n} set in this browser)` : "(using the server's keys)";
-}
-for (const [id, field] of Object.entries(KEYS)) {
-  try { $("#" + id).value = localStorage.getItem("discovery_" + field) || ""; } catch (e) {}
-}
+};
 showKeyState();
 $("#past").onchange = (e) => e.target.value && open(e.target.value);
 
