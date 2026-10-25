@@ -3,6 +3,9 @@
 Product URL in → competitors, real users (G2 / Capterra / Product Hunt reviewers), user segments and comparison tasks
 out. Live at **https://35-202-98-224.sslip.io/discovery**. Design notes: [docs/DISCOVERY.md](../DISCOVERY.md).
 
+**Fetching review pages: read [FETCH_LADDER.md](FETCH_LADDER.md)** — the routes, the ladder, what works per site
+(10 sites, measured on the VM) and the open items.
+
 ## Latest (Oct 25 2026, later) — end-to-end check results
 
 Production runs of asana.com and notion.com (before the fixes below were deployed):

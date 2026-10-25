@@ -458,11 +458,12 @@ def _site(url: str) -> str:
     return next((h for h in ALLOWED_HOSTS if host == h or host.endswith("." + h)), host)
 
 
-def tier_cost(tier: str, wire_bytes: int) -> float:
-    """US dollars one fetch cost."""
+def tier_cost(tier: str, wire_bytes: int, *, ok: bool = True) -> float:
+    """US dollars one fetch cost. Residential bills every byte, blocked or not; the Unblocker bills successful
+    requests only (Apify docs, Oct 2026)."""
     if tier.startswith("residential"):
         return wire_bytes / 1e9 * RESIDENTIAL_USD_PER_GB
-    return UNBLOCKER_USD_PER_PAGE if tier == "apify_unblocker" else 0.0
+    return UNBLOCKER_USD_PER_PAGE if tier == "apify_unblocker" and ok else 0.0
 
 
 def us_exit(proxy: str) -> str:
@@ -523,7 +524,7 @@ def ladder_fetch(url: str, residential: str | None, *, tiers: tuple[str, ...] = 
         except Exception as exc:  # noqa: BLE001 - next route
             tried.append({"route": tier, "error": re.sub(r"//[^@\s/]+@", "//<redacted>@", repr(exc))[:200]})
             continue
-        row = _summary(*last, t) | {"route": tier, "usd": round(tier_cost(tier, meter.get("bytes", 0)), 6)}
+        row = _summary(*last, t) | {"route": tier, "usd": round(tier_cost(tier, meter.get("bytes", 0), ok=is_clean(*last)), 6)}
         tried.append(row)
         if is_clean(*last):
             return last[0], last[1], tier, tried
@@ -552,7 +553,7 @@ def ladder_probe(url: str, residential: str | None) -> dict[str, Any]:
         if "r" in box:
             row = _summary(*box["r"], t)
             row |= {"pass": is_clean(*box["r"]), "wire_kb": round(meter.get("bytes", 0) / 1024),
-                    "usd_per_page": round(tier_cost(tier, meter.get("bytes", 0)), 6)}
+                    "usd_per_page": round(tier_cost(tier, meter.get("bytes", 0), ok=is_clean(*box["r"])), 6)}
         else:
             row = {"pass": False, "error": re.sub(r"//[^@\s/]+@", "//<redacted>@",
                                                   repr(box.get("e", "timed out after 300 s")))[:300],
