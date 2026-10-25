@@ -41,6 +41,15 @@ class ReviewFetchTest(unittest.TestCase):
             out = F.rotation("https://www.capterra.com/p/1/X/reviews/", "http://u:p@gw.example.com:823")
         self.assertEqual((out["attempts"], out["passed_on_attempt"], out["statuses"]), (2, 2, [403, 200]))
 
+    def test_apify_proxy_urls_and_cert_relaxation_only_for_unblocker(self):
+        resp = mock.Mock()
+        resp.json.return_value = {"data": {"proxy": {"password": "pw"}}}
+        with mock.patch("mvp.discovery.apify_token", return_value="tok"), mock.patch("requests.get", return_value=resp):
+            self.assertEqual(F.apify_proxy("UNBLOCKER"), "http://groups-UNBLOCKER:pw@proxy.apify.com:8000")
+            self.assertEqual(F.apify_proxy("RESIDENTIAL"), "http://groups-RESIDENTIAL,country-US:pw@proxy.apify.com:8000")
+        self.assertTrue(F._intercepting("http://groups-UNBLOCKER:pw@proxy.apify.com:8000"))
+        self.assertFalse(F._intercepting("http://u:p@gw.dataimpulse.com:823"))
+
 
 if __name__ == "__main__":
     unittest.main()
