@@ -99,3 +99,15 @@ Tabs: **About, Forums, Activity, Upvotes, Hunted (`/submitted`), Collections, St
 - Dashboard (private): https://claude.ai/artifact/2CTRzYqdFh7Q44fDZJjZ5E (data from the Mar–Oct backtest; not yet
   updated with the Sep–Oct source tests).
 - Branch `claude/cool-volta-l5nuo4` (no PR opened).
+
+## Person data saved (Oct 25) — don't re-fetch, the founder can't pay for repeats
+
+| What | Container `data/` | VM backup `~agent/php/backup_people/` |
+|---|---|---|
+| Profiles, 4,143 Sep–Oct commenters (fixed parser) | `ph_profiles2.jsonl.gz` | `prof_parsed2.jsonl` |
+| Profiles, other 16,528 commenters | `ph_profiles_rest.jsonl.gz` | `prof_parsed_rest.jsonl` |
+| Stacks/Reviews/Activity tabs, 16,536 people | `ph_tabs_rest.jsonl.gz` | `tabs_out_rest.jsonl.gz` |
+| Who each person follows (first 20 + total), 18,349 people | `ph_following.jsonl.gz` | `following.jsonl` (parsed only; raw pages not kept) |
+
+Notes: a profile page lists only the latest ~8 upvotes; `upvotes_total` reads 0 for 80% of people (not shown, not zero).
+Following pages: `parse_following.py` (pipe `vmfetch.py` output through it). Simulator: `vote_sim2.py`.
