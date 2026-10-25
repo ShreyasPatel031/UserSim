@@ -43,17 +43,38 @@ def _summary(status: int, html: str, started: float) -> dict[str, Any]:
             "ms": int((time.time() - started) * 1000)}
 
 
+def _intercepting(proxy: str | None) -> bool:
+    """Unblocking proxies (Apify's UNBLOCKER group) decrypt and re-encrypt HTTPS themselves, so their certificate is
+    not the site's; certificate checks are relaxed for those proxies only."""
+    return bool(proxy) and "unblocker" in proxy.lower()
+
+
+def apify_proxy(group: str, country: str = "US") -> str:
+    """Apify Proxy URL for one group (UNBLOCKER, RESIDENTIAL), built from the saved Apify token."""
+    import requests
+
+    from mvp import discovery
+
+    token = discovery.apify_token()
+    if not token:
+        raise RuntimeError("APIFY_TOKEN missing")
+    pw = requests.get("https://api.apify.com/v2/users/me", headers={"Authorization": f"Bearer {token}"},
+                      timeout=20).json()["data"]["proxy"]["password"]
+    user = f"groups-{group}" + (f",country-{country}" if country and group != "UNBLOCKER" else "")
+    return f"http://{user}:{pw}@proxy.apify.com:8000"
+
+
 def fetch(url: str, proxy: str | None, *, impersonate: str | None = "chrome", timeout: float = 45.0) -> tuple[int, str]:
     """GET one page. impersonate=None uses a plain client (for comparison)."""
     if impersonate:
         from curl_cffi import requests as creq
 
         r = creq.get(url, impersonate=impersonate, proxies={"http": proxy, "https": proxy} if proxy else None,
-                     timeout=timeout, headers={"Accept-Language": "en-US,en;q=0.9"})
+                     timeout=timeout, headers={"Accept-Language": "en-US,en;q=0.9"}, verify=not _intercepting(proxy))
         return r.status_code, r.text or ""
     import httpx
 
-    with httpx.Client(proxy=proxy, timeout=timeout, follow_redirects=True,
+    with httpx.Client(proxy=proxy, timeout=timeout, follow_redirects=True, verify=not _intercepting(proxy),
                       headers={"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
                                              "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
                                "Accept-Language": "en-US,en;q=0.9"}) as c:
@@ -160,7 +181,7 @@ def browser_fetch(url: str, proxy: str | None, *, wait_s: float = 30.0, headed: 
                                     "timezone_id": "America/New_York"}
             if not headed:
                 opts["user_agent"] = _UA
-            ctx = browser.new_context(**opts)
+            ctx = browser.new_context(**opts, ignore_https_errors=_intercepting(proxy))
             if not headed:
                 ctx.add_init_script(_HIDE_AUTOMATION)
             ctx.route("**/*", lambda route: route.abort() if route.request.resource_type in {"image", "media", "font"}
@@ -215,7 +236,8 @@ def patchright_fetch(url: str, proxy: str | None, *, wait_s: float = 30.0) -> tu
     with sync_playwright() as pw:
         browser = pw.chromium.launch(headless=False, proxy=_proxy_settings(proxy))
         try:
-            ctx = browser.new_context(locale="en-US", timezone_id="America/New_York", no_viewport=True)
+            ctx = browser.new_context(locale="en-US", timezone_id="America/New_York", no_viewport=True,
+                                      ignore_https_errors=_intercepting(proxy))
             return _load(ctx.new_page(), url, wait_s)
         finally:
             browser.close()
@@ -260,7 +282,7 @@ def rotation(url: str, proxy: str, attempts: int = 8) -> dict[str, Any]:
             "statuses": [r.get("status") or r.get("error") for r in results]}
 
 
-def probe(url: str, proxy: str | None) -> dict[str, Any]:
+def probe(url: str, proxy: str | None, *, browsers: bool = True) -> dict[str, Any]:
     """What each fetch method gets for one review URL, with and without the proxy."""
     if not allowed(url):
         raise ValueError(f"only https review pages on {', '.join(ALLOWED_HOSTS)}")
@@ -270,11 +292,15 @@ def probe(url: str, proxy: str | None) -> dict[str, Any]:
         out["chrome_fingerprint_rotating_ips"] = rotation(url, proxy)
     tries = [("chrome_fingerprint_via_proxy", proxy, "chrome"), ("plain_via_proxy", proxy, None)] if proxy else []
     tries.append(("chrome_fingerprint_direct", None, "chrome"))
-    setup = ensure_browser()
+    if not browsers:
+        tries = [t for t in tries if t[1]]  # proxy-only, no browsers: the quick check for a new proxy
+        setup: dict[str, Any] = {"ok": False, "how": "browsers skipped"}
+    else:
+        setup = ensure_browser()
     out["browser_setup"] = setup
     via = "via_proxy" if proxy else "direct"
     stealth = []
-    for tool in ("patchright", "camoufox"):
+    for tool in ("patchright", "camoufox") if browsers else ():
         out[f"{tool}_setup"] = ensure_tool(tool)
         if out[f"{tool}_setup"]["ok"]:
             stealth.append((f"{tool}_{via}", proxy, tool))

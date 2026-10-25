@@ -1328,6 +1328,9 @@ async def save_discovery_keys(body: DiscoveryKeys):
 
 class ReviewProbe(BaseModel):
     url: str
+    # saved = the saved PROXY_URL; apify_unblocker / apify_residential = Apify Proxy groups via the saved Apify token
+    proxy: str = "saved"
+    browsers: bool = True
 
 
 @app.post("/api/discovery/probe")
@@ -1338,7 +1341,12 @@ async def probe_review_page(body: ReviewProbe):
 
     if not review_fetch.allowed(body.url):
         raise HTTPException(status_code=400, detail="only https review pages on producthunt.com, g2.com, capterra.com")
-    return await asyncio.to_thread(review_fetch.probe, body.url, discovery.proxy_url() or None)
+    def run():
+        proxy = {"apify_unblocker": lambda: review_fetch.apify_proxy("UNBLOCKER"),
+                 "apify_residential": lambda: review_fetch.apify_proxy("RESIDENTIAL")}.get(
+            body.proxy, lambda: discovery.proxy_url() or None)()
+        return review_fetch.probe(body.url, proxy, browsers=body.browsers) | {"proxy_kind": body.proxy}
+    return await asyncio.to_thread(run)
 
 
 @app.get("/api/discovery")
