@@ -396,7 +396,7 @@ def camoufox_fetch(url: str, proxy: str | None, *, wait_s: float = 30.0,
         page.route("**/*", lambda route: route.abort() if route.request.resource_type in {"image", "media", "font"}
                    else route.continue_())
         done: list[Any] = []
-        page.on("requestfinished", done.append)
+        page.on("requestfinished", lambda req: done.append(req))  # Playwright tags its handlers: no bound builtins
         got = _load(page, url, wait_s)
         if meter is not None:
             total = 0
@@ -434,11 +434,12 @@ def fetch_with_retries(url: str, proxy: str | None, *, attempts: int = 3, timeou
 # ---------------------------------------------------------------- the fetch ladder: cheapest route that gets through
 #
 # Free first, paid last (prices Oct 2026): the VM's own IP costs nothing; DataImpulse residential is ~$1/GB billed on
-# wire bytes (a review page over curl is ~70 KB brotli, a browser load several times that); Apify's Unblocker is
-# ~$1.5 per 1,000 requests whatever the size. A route a site blocked is skipped for that site for BLOCK_TTL_S, so
-# later pages and runs go straight to the route that works.
+# wire bytes (a review page over curl is ~60-80 KB brotli, ~$0.00007); Apify's Unblocker is ~$1.5 per 1,000 requests
+# whatever the size. A browser load is ~2.6 MB even without images, fonts and media (Capterra, Oct 2026: 94
+# requests), ~$0.0027 on the residential proxy, dearer than the Unblocker, so that route is the last resort. A route
+# a site blocked is skipped for that site for BLOCK_TTL_S, so later pages and runs go straight to the one that works.
 
-TIERS = ("vm", "vm_camoufox", "residential", "residential_camoufox", "apify_unblocker")
+TIERS = ("vm", "vm_camoufox", "residential", "apify_unblocker", "residential_camoufox")
 RESIDENTIAL_USD_PER_GB = float(os.environ.get("MVP_RESIDENTIAL_USD_PER_GB", "1.0"))
 UNBLOCKER_USD_PER_PAGE = float(os.environ.get("MVP_UNBLOCKER_USD_PER_PAGE", "0.0015"))
 BLOCK_TTL_S = float(os.environ.get("MVP_FETCH_BLOCK_TTL_S", str(6 * 3600)))

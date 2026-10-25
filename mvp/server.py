@@ -1329,7 +1329,7 @@ async def save_discovery_keys(body: DiscoveryKeys):
 class ReviewProbe(BaseModel):
     url: str
     # saved = the saved PROXY_URL; apify_unblocker / apify_residential = Apify Proxy groups via the saved Apify token;
-    # ladder = every review_fetch.TIERS route (VM, VM + Camoufox, residential, residential + Camoufox, Unblocker)
+    # ladder = every review_fetch.TIERS route (VM, VM + Camoufox, residential, Unblocker, residential + Camoufox)
     proxy: str = "saved"
     browsers: bool = True
 
