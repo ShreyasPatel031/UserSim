@@ -1,18 +1,23 @@
 """Backtest: current model vs current model + one or more new sources (by feature prefix), same folds and scoring.
 usage: python compare_src.py rec [aud ...] [--months 2026-09 2026-10]"""
-import sys
+import glob, multiprocessing as mp, os, pickle, sys
+os.environ.setdefault("LGB_THREADS", "1")  # folds run in parallel, one thread each
 import pandas as pd
 import features as F, model as M, run as RN
 
-args = sys.argv[1:]
-months = args[args.index("--months") + 1:] if "--months" in args else ["2026-03", "2026-04", "2026-05", "2026-06", "2026-07", "2026-08", "2026-09", "2026-10"]
-new = [a for a in (args[:args.index("--months")] if "--months" in args else args)]
-df = RN.load_llm(F.build()); df = df[~df.known]
-variants = {"Current model": M.SOURCES, **{f"+ {s}": M.SOURCES + [s] for s in new}}
-if len(new) > 1:
-    variants["+ " + " + ".join(new)] = M.SOURCES + new
-parts = []
-for m, tr, te in RN.folds(df, months):
+
+def build_cached():
+    """F.build() takes ~50 s; reuse it until any input file in data/ (top level) changes."""
+    stamp = max(os.path.getmtime(p) for p in glob.glob("data/*.json*") + glob.glob("data/days/*.json") + ["features.py"])
+    path = "data/build_cache.pkl"
+    if os.path.exists(path) and os.path.getmtime(path) > stamp:
+        return pickle.load(open(path, "rb"))
+    df = RN.load_llm(F.build()); pickle.dump(df, open(path, "wb"))
+    return df
+
+
+def run_fold(a):
+    m, tr, te = a
     tr, te = M.add_fold_feats(tr, te); te = te.copy()
     for name, src in variants.items():
         te["d|" + name] = M.fit_predict(tr, te, src)[0]
@@ -20,7 +25,19 @@ for m, tr, te in RN.folds(df, months):
         te["w|" + name] = M.fit_list_clf(tr, te, "week", "weeklyRank", 10)
         te["m|" + name] = M.fit_list_clf(tr, te, "mon", "monthlyRank", 20)
         M.SOURCES = keep
-    parts.append(te); print(m, flush=True)
+    print(m, flush=True)
+    return te
+
+
+args = sys.argv[1:]
+months = args[args.index("--months") + 1:] if "--months" in args else ["2026-03", "2026-04", "2026-05", "2026-06", "2026-07", "2026-08", "2026-09", "2026-10"]
+new = [a for a in (args[:args.index("--months")] if "--months" in args else args) if not a.startswith("--")]
+df = build_cached(); df = df[~df.known]
+variants = {"Current model": M.SOURCES, **({} if "--combined-only" in args else {f"+ {s}": M.SOURCES + [s] for s in new})}
+if len(new) > 1:
+    variants["+ " + " + ".join(new)] = M.SOURCES + new
+with mp.get_context("fork").Pool(os.cpu_count()) as pool:
+    parts = pool.map(run_fold, list(RN.folds(df, months)))
 te = pd.concat(parts)
 rows = []
 for name in variants:

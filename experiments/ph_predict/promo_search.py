@@ -50,6 +50,19 @@ def launches():
                "cx": h.get("company_x") or "", "mx": ", ".join(h.get("makers_x") or [])}
 
 
+def launches_range(a, b):
+    """Launches between days a..b from the PH day files; site = resolved domain from the backtest table."""
+    import pandas as pd
+    dom = pd.read_csv(f"{os.path.dirname(D)}/results/predictions.csv", usecols=["id", "domain"])
+    dom = dict(zip(dom.id.astype(str), dom.domain.fillna("")))
+    for f in sorted(os.listdir(f"{D}/days")):
+        if a <= f[:10] <= b:
+            for p in json.load(open(f"{D}/days/{f}")):
+                yield {"id": p["id"], "day": f[:10], "name": p["name"], "tagline": p["tagline"], "site": dom.get(p["id"], ""),
+                       "makers": ", ".join((m.get("name") or m["username"]) for m in (p.get("makers") or [])[:5]),
+                       "cx": "", "mx": ""}
+
+
 def one(x):
     body = {"contents": [{"role": "user", "parts": [{"text": PROMPT.format(**x)}]}], "tools": [{"googleSearch": {}}],
             "generationConfig": {"temperature": 0}}
@@ -83,7 +96,8 @@ def main():
     n = int(sys.argv[1]) if len(sys.argv) > 1 else 10**9
     th = int(sys.argv[2]) if len(sys.argv) > 2 else 24
     done = {json.loads(l)["id"] for l in open(OUT)} if os.path.exists(OUT) else set()
-    todo = [x for x in launches() if x["id"] not in done][:n]
+    src = launches_range(*os.environ["RANGE"].split(":")) if os.environ.get("RANGE") else launches()
+    todo = [x for x in src if x["id"] not in done][:n]
     print("launches", len(todo), flush=True)
     with ThreadPoolExecutor(th) as ex:
         list(ex.map(one, todo))

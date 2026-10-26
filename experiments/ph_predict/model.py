@@ -1,6 +1,7 @@
 """Rolling-origin backtest: for each test month M, train on every launch before M, predict M.
 Prediction = expected log votes (comparable across days, so it can rank day, week and month lists).
 Scores recall@k against PH's own dailyRank / weeklyRank / monthlyRank and per-topic lists."""
+import os
 import json, sys, warnings
 import numpy as np, pandas as pd, lightgbm as lgb
 from scipy.stats import spearmanr
@@ -10,6 +11,7 @@ from sklearn.neighbors import NearestNeighbors
 import features as F
 
 warnings.filterwarnings("ignore")
+N_JOBS = int(os.environ.get("LGB_THREADS", "4"))  # 1 inside parallel folds: oversubscribed threads are very slow
 SOURCES = ["ph", "hist", "txt", "web", "dom", "x", "hn", "comp", "topic", "llm", "cm"]
 KS = (3, 5, 10)
 
@@ -84,7 +86,7 @@ def fit_predict(tr, te, sources, seed=0):
         return np.random.default_rng(seed).random(len(te)), None, c
     m = lgb.LGBMRegressor(n_estimators=400, learning_rate=0.03, num_leaves=15, min_child_samples=20,
                           subsample=0.8, subsample_freq=1, colsample_bytree=0.8, reg_lambda=1.0,
-                          random_state=seed, verbose=-1)
+                          random_state=seed, verbose=-1, n_jobs=N_JOBS)
     m.fit(tr[c], tr.logv)
     return m.predict(te[c]), m, c
 
@@ -95,7 +97,7 @@ def fit_rank(tr, te, sources, seed=0):
     tr = tr.sort_values("day")
     rel = np.clip(11 - tr.dailyRank.values, 0, 10)
     m = lgb.LGBMRanker(n_estimators=300, learning_rate=0.03, num_leaves=15, min_child_samples=20, subsample=0.8,
-                       subsample_freq=1, colsample_bytree=0.8, random_state=seed, verbose=-1)
+                       subsample_freq=1, colsample_bytree=0.8, random_state=seed, verbose=-1, n_jobs=N_JOBS)
     m.fit(tr[c], rel, group=tr.groupby("day", sort=False).size().loc[tr.day.unique()].values)
     return m.predict(te[c])
 
@@ -114,7 +116,7 @@ def fit_list_clf(tr, te, period, rank_col, top):
                 d[f"per_{f}"] = d.groupby(period)[f].rank(pct=True)
     cw = c + [f"per_{f}" for f in PERIOD_FEATS if f in tr]
     clf = lgb.LGBMClassifier(n_estimators=400, learning_rate=0.03, num_leaves=15, min_child_samples=20, subsample=0.8,
-                             subsample_freq=1, colsample_bytree=0.8, random_state=0, verbose=-1)
+                             subsample_freq=1, colsample_bytree=0.8, random_state=0, verbose=-1, n_jobs=N_JOBS)
     return clf.fit(tr[cw], (tr[rank_col] <= top).astype(int)).predict_proba(te[cw])[:, 1]
 
 
