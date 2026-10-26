@@ -148,19 +148,30 @@ def main(files):
         G.update(L=L, Ltop=Ltop, emb=emb, topics=topics, Pp=Pp, cms=cms, on=on, built=built, days=days,
                  day_idx={d: np.where(L.day.values == d)[0] for d in days}, name_ix={u: k for k, u in enumerate(names)},
                  day_n={d: k for k, d in enumerate(days)})
-        with mp.get_context("fork").Pool(os.cpu_count()) as pool:
-            Xa = np.concatenate(list(pool.imap(person_rows, names, chunksize=50)))
-        np.save(cache, Xa)
-    X = pd.DataFrame(Xa, columns=COLS); del Xa
-    X["launch"] = X.launch.astype(int); X["g"] = X.person.astype(np.int64) * 1000 + X.dn.astype(np.int64)
-    X["day"] = np.array(days)[X.dn.astype(int)]
-    pu = np.array(names)[X.person.astype(int)]  # follow features (not cached: added as the following data grows)
-    hl, ml = list(L.hunter), list(L.makers)
-    X["f_hunter"] = [float(hl[i] in follows[u]) for u, i in zip(pu, X.launch)]
-    X["f_team"] = [float(len(ml[i] & follows[u])) for u, i in zip(pu, X.launch)]
-    gy = X.groupby("g").y.transform("sum"); A = X[gy > 0]
-    tr = A[A.day <= TRAIN[1]].sort_values("g"); te = X[X.day >= TEST[0]].copy()
-    print("pairs:", len(X), "voting person-days train:", tr.g.nunique(), "test pairs:", len(te), flush=True)
+        with mp.get_context("fork").Pool(os.cpu_count()) as pool, open(cache + ".raw", "wb") as fh:
+            for a in pool.imap(person_rows, names, chunksize=50):  # stream to disk: rows don't all sit in memory twice
+                a.astype(np.float32).tofile(fh)
+        Xa = np.fromfile(cache + ".raw", np.float32).reshape(-1, len(COLS)); np.save(cache, Xa); os.remove(cache + ".raw")
+    X = pd.DataFrame(Xa, columns=COLS, copy=False); del Xa
+    X["launch"] = X.launch.astype(np.int32); X["person"] = X.person.astype(np.int32); X["dn"] = X.dn.astype(np.int16)
+    X["g"] = X.person.astype(np.int64) * 1000 + X.dn
+    # follow features (not cached: added as the following data grows). Vectorised via (person, launch) keys.
+    nix = {u: k for k, u in enumerate(names)}; fol_of = defaultdict(list)  # followed username -> sample people following
+    for u, fs in follows.items():
+        if u in nix:
+            for f in fs:
+                fol_of[f].append(nix[u])
+    def keys(get):  # int64 keys person*100000+launch, counting repeats (a person following 2 builders counts 2)
+        return np.array([p * 100000 + i for i in range(len(L)) for x in get(i) for p in fol_of.get(x, ())], np.int64)
+    rk = X.person.values.astype(np.int64) * 100000 + X.launch.values
+    hk = keys(lambda i: [L.hunter[i]] if L.hunter[i] else []); mkk = keys(lambda i: L.makers[i])
+    X["f_hunter"] = np.isin(rk, hk).astype(np.float32)
+    uk, cnt = np.unique(mkk, return_counts=True); pos = np.searchsorted(uk, rk).clip(0, max(len(uk) - 1, 0))
+    X["f_team"] = np.where(len(uk) and True, (uk[pos] == rk) * cnt[pos], 0).astype(np.float32) if len(uk) else 0.0
+    del rk
+    d_tr, d_te = sum(d <= TRAIN[1] for d in days) - 1, days.index(min(d for d in days if d >= TEST[0]))
+    tr = X[X.dn <= d_tr].sort_values("g"); te = X[X.dn >= d_te].copy(); del X
+    print("voting person-days train:", tr.g.nunique(), "test pairs:", len(te), flush=True)
     out, res = {}, []
     for name, cols in (("taste+network", PAIR[:-1] + PERS), ("taste+network+launch prior", PAIR + PERS)):
         m = lgb.LGBMRanker(n_estimators=300, learning_rate=0.05, num_leaves=15, min_child_samples=50, verbose=-1)

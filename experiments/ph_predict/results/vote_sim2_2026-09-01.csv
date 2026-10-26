@@ -1,0 +1,9 @@
+score,day@3,day@5,day@10,rho
+current model,59,70,78,0.693
+simulated: taste+network,43,60,71,0.493
+simulated: taste+network | top1 picks,45,59,72,0.474
+simulated: taste+network | top3 picks,42,56,69,0.459
+simulated: taste+network+launch prior,56,67,77,0.645
+simulated: taste+network+launch prior | top1 picks,56,62,73,0.552
+simulated: taste+network+launch prior | top3 picks,57,66,74,0.59
+ceiling: sample's real upvotes,81,85,83,0.814
