@@ -177,6 +177,7 @@ def main(files):
         m = lgb.LGBMRanker(n_estimators=300, learning_rate=0.05, num_leaves=15, min_child_samples=50, verbose=-1)
         m.fit(tr[cols], tr.y, group=tr.groupby("g", sort=False).size().loc[tr.g.unique()].values)
         te["s"] = m.predict(te[cols])
+        te[f"s{len(out)}"] = te.s.astype(np.float32)  # saved below for the launch-day simulation
         te["share"] = np.exp(te.s - te.groupby("g").s.transform("max")); te["share"] /= te.groupby("g").share.transform("sum")
         te["ev"] = te.share * te.act * te.per
         Ta = te[te.groupby("g").y.transform("sum") > 0]
@@ -188,6 +189,8 @@ def main(files):
             L[f"sim|{name} | top{k} picks"] = L.index.map(te[te.r <= k].assign(w=lambda x: x.act * x.per).groupby("launch").w.sum())
         out[name] = {"person_top3_hit": round(float(np.mean(hits)), 3),
                      "importance": dict(zip(cols, m.booster_.feature_importance("gain").round().astype(int).tolist()))}
+    keep = ["dn", "launch", "person", "s0", "s1", "act", "per", "y", "hunter", "team", "recip", "f_hunter", "f_team", "prior"]
+    np.savez(f"{D}/vote_sim_scores_{TEST[0]}.npz", days=np.array(days), **{c: te[c].values for c in keep})
     T = L[(L.day >= TEST[0]) & (L.day <= TEST[1])].copy()
     T["sample_real"] = T.id.map(Counter(L.id[i] for u in names for i in Pp[u]["ups"]))
     for name, col in [("current model", "pred"), *[(f"simulated: {c[4:]}", c) for c in L.columns if c.startswith("sim|")],
