@@ -1,0 +1,6 @@
+model,week@3,week@5,week@10,mon@3,mon@5,mon@10
+current (day model),43,51,53,21,20,31
+current (week/month model),51,57,53,33,35,40
+predicted votes only,47,56,53,21,32,40
+per-k classifier,48,56,53,21,32,44
+per-k + stage 1 (size of win),56,61,56,17,28,49
