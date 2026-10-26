@@ -6,7 +6,7 @@ import multiprocessing as mp, os, sys
 os.environ.setdefault("LGB_THREADS", "1")
 import numpy as np, pandas as pd, lightgbm as lgb
 import model as M, run as RN
-from compare_src import build_cached
+from buildcache import build_cached
 
 EXTRA = [a for a in sys.argv[1:] if not a.startswith("--")] or ["fol", "seg", "promo"]
 SRC = M.SOURCES + EXTRA

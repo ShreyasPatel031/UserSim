@@ -1,0 +1,36 @@
+context,bucket,n,miss_rate
+hunter followers (log) quartile,0,299,0.29
+hunter followers (log) quartile,1,299,0.33
+hunter followers (log) quartile,2,298,0.27
+hunter followers (log) quartile,3,299,0.29
+self-posted,0.0,1069,0.3
+self-posted,1.0,126,0.27
+weekday (0=Mon),0,167,0.28
+weekday (0=Mon),1,174,0.34
+weekday (0=Mon),2,170,0.33
+weekday (0=Mon),3,170,0.32
+weekday (0=Mon),4,170,0.31
+weekday (0=Mon),5,170,0.25
+weekday (0=Mon),6,174,0.24
+launches that day,0,299,0.2
+launches that day,1,299,0.32
+launches that day,2,298,0.29
+launches that day,3,299,0.38
+model's rank,1.0,239,0.06
+model's rank,2.0,239,0.26
+model's rank,3.0,239,0.32
+model's rank,4.0,239,0.4
+model's rank,5.0,239,0.44
+poster's launches same day,1.0,790,0.25
+poster's launches same day,2.0,270,0.36
+poster's launches same day,3.0,70,0.34
+poster's launches same day,4.0,29,0.34
+poster's launches same day,5.0,31,0.58
+month,2026-03,155,0.33
+month,2026-04,150,0.39
+month,2026-05,155,0.25
+month,2026-06,150,0.27
+month,2026-07,155,0.23
+month,2026-08,155,0.28
+month,2026-09,150,0.29
+month,2026-10,125,0.33
