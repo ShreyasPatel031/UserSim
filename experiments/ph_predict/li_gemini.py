@@ -1,7 +1,7 @@
 """LinkedIn headline/role/company/location for people who link their LinkedIn on Product Hunt, read from Google
 search results through Gemini with Google Search grounding (Vertex, our GCP project). 10 people per request.
 usage: python li_gemini.py [max_people] [threads]   -> appends to data/li_search.jsonl (skips people already done)"""
-import ast, gzip, json, os, re, subprocess, sys, threading
+import ast, gzip, json, os, re, subprocess, sys, threading, time
 from concurrent.futures import ThreadPoolExecutor
 import requests
 
@@ -39,10 +39,15 @@ def batch(b):
     text = PROMPT + "\n".join(f"{i}. {x['url']} (name on Product Hunt: {x['ph_name']})" for i, x in enumerate(b))
     body = {"contents": [{"role": "user", "parts": [{"text": text}]}], "tools": [{"googleSearch": {}}],
             "generationConfig": {"temperature": 0}}
-    for attempt in range(4):
-        r = requests.post(URL, json=body, headers={"Authorization": f"Bearer {token(attempt > 0)}"}, timeout=180)
+    for attempt in range(5):
+        try:
+            r = requests.post(URL, json=body, headers={"Authorization": f"Bearer {token(attempt > 0)}"}, timeout=120)
+        except requests.RequestException:
+            continue
         if r.status_code == 200:
             break
+        print("status", r.status_code, r.text[:150].replace("\n", " "), flush=True)
+        time.sleep(10 * (attempt + 1))
     else:
         return
     if not ((r.json().get("candidates") or [{}])[0].get("content")):
