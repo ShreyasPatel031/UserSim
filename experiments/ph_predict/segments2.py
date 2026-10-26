@@ -48,14 +48,20 @@ def jl(path):
 
 
 def load():
-    prof = {p["username"]: p for p in jl(f"{D}/ph_profiles2.jsonl.gz")}
-    tabs = {t["username"]: t for t in jl(f"{D}/profile_tabs.jsonl.gz")}
-    X = {x["handle"].lower(): (x.get("profile") or {}) for x in jl(f"{D}/commenter_x.jsonl.gz")}
+    prof = {p["username"]: p for f in ("ph_profiles_rest", "ph_profiles2") for p in jl(f"{D}/{f}.jsonl.gz")}
+    tabs = {t["username"]: t for f in ("ph_tabs_rest", "profile_tabs") for t in jl(f"{D}/{f}.jsonl.gz")}
+    X = {x["handle"].lower(): (x.get("profile") or {}) for f in ("x_people", "commenter_x")
+         for x in jl(f"{D}/{f}.jsonl.gz") if x.get("profile")}
     LI = {r["ph"]: r.get("sections") or {} for r in jl(f"{D}/linkedin_pilot.jsonl.gz")}
-    return prof, tabs, X, LI
+    LS = {}  # LinkedIn as shown in Google results (li_gemini.py), first pass then retry
+    for f in ("li_search.jsonl", "li_search_retry.jsonl"):
+        for r in jl(f"{D}/{f}"):
+            if r.get("found"):
+                LS[r["username"]] = r
+    return prof, tabs, X, LI, LS
 
 
-def evidence(u, prof, tabs, X, LI):
+def evidence(u, prof, tabs, X, LI, LS):
     p, t = prof.get(u, {}), tabs.get(u, {}) or {}
     x = X.get((p.get("twitter") or "").lower(), {})
     li = {k: (v or "").split("More profiles for you")[0] for k, v in LI.get(u, {}).items()}  # drop LinkedIn's sidebar
@@ -69,6 +75,10 @@ def evidence(u, prof, tabs, X, LI):
              f"reviews written: {'; '.join(revs)}"]
     if x:
         parts.append(f"X bio: {(x.get('description') or '')[:160]}; X location: {x.get('location') or ''}; X followers {x.get('followers')}")
+    ls = LS.get(u)
+    if ls:
+        parts.append("LinkedIn (search result): " + "; ".join(f"{k}: {ls.get(k)}" for k in
+                                                            ("headline", "role", "company", "location", "education") if ls.get(k)))
     if li:
         parts.append(f"LinkedIn profile: {(li.get('main') or '')[:600]}")
         parts.append(f"LinkedIn experience: {(li.get('experience') or '')[:700]}")
@@ -76,8 +86,33 @@ def evidence(u, prof, tabs, X, LI):
     return "\n  ".join(parts)
 
 
+GURL = ("https://aiplatform.googleapis.com/v1/projects/project-amer-scs-sandbox/locations/global/publishers/google/"
+        "models/gemini-2.5-flash:generateContent")
+TOK = {}
+
+
+def gemini(prompt, max_tokens):
+    """Gemini Flash on Vertex (cheaper than Claude for bulk labeling); JSON out."""
+    import subprocess, time, requests
+    body = {"contents": [{"role": "user", "parts": [{"text": prompt}]}],
+            "generationConfig": {"temperature": 0, "maxOutputTokens": max_tokens, "responseMimeType": "application/json",
+                                 "thinkingConfig": {"thinkingBudget": 0}}}
+    for a in range(5):
+        if a or "v" not in TOK:
+            TOK["v"] = subprocess.run(["gcloud", "auth", "print-access-token"], capture_output=True, text=True).stdout.strip()
+        try:
+            r = requests.post(GURL, json=body, headers={"Authorization": f"Bearer {TOK['v']}"}, timeout=180)
+            if r.status_code == 200:
+                c = (r.json().get("candidates") or [{}])[0]
+                return "".join(p.get("text", "") for p in (c.get("content") or {}).get("parts", []))
+        except Exception:  # noqa: BLE001
+            pass
+        time.sleep(5 * (a + 1))
+    return ""
+
+
 def batch(rows):
-    txt = llm.call(PROMPT.format(items="\n\n".join(rows)), max_tokens=170 * len(rows) + 400)
+    txt = gemini(PROMPT.format(items="\n\n".join(rows)), max_tokens=200 * len(rows) + 400)
     m = re.search(r"\{.*\}", txt, re.S)
     try:
         return json.loads(m.group(0))
@@ -98,18 +133,18 @@ def stats(p, t):
 
 if __name__ == "__main__":
     only = sys.argv[2:]  # optional usernames (e.g. a single person to check)
-    prof, tabs, X, LI = load()
+    prof, tabs, X, LI, LS = load()
     users = only or sorted(prof)
     done = set() if only else ({json.loads(l)["username"] for l in open(OUT)} if os.path.exists(OUT) else set())
     users = [u for u in users if u not in done]
-    ev = {u: evidence(u, prof, tabs, X, LI) for u in users}
+    ev = {u: evidence(u, prof, tabs, X, LI, LS) for u in users}
     chunks = [users[i:i + 20] for i in range(0, len(users), 20)]
     with open(OUT if not only else f"{D}/segments2_check.jsonl", "a" if not only else "w") as f, \
-            ThreadPoolExecutor(int(sys.argv[1]) if len(sys.argv) > 1 else 5) as ex:
+            ThreadPoolExecutor(int(sys.argv[1]) if len(sys.argv) > 1 else 16) as ex:
         for ch, res in zip(chunks, ex.map(lambda c: batch([ev[u] for u in c]), chunks)):
             for u in ch:
                 f.write(json.dumps({"username": u, "labels": res.get(u), "stats": stats(prof.get(u, {}), tabs.get(u)),
-                                    "sources": {"linkedin": u in LI, "x": bool(X.get((prof.get(u, {}).get("twitter") or "").lower())),
+                                    "sources": {"linkedin": u in LI or u in LS, "x": bool(X.get((prof.get(u, {}).get("twitter") or "").lower())),
                                                 "tabs": u in tabs}}) + "\n")
             f.flush()
     print("done", len(users))

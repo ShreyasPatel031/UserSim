@@ -6,7 +6,9 @@ from concurrent.futures import ThreadPoolExecutor
 import requests
 
 D = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
-OUT = f"{D}/li_search.jsonl"
+RETRY = os.environ.get("RETRY") == "1"  # second pass: people not found, smaller batches
+OUT = f"{D}/li_search_retry.jsonl" if RETRY else f"{D}/li_search.jsonl"
+BS = 3 if RETRY else 10
 URL = ("https://aiplatform.googleapis.com/v1/projects/project-amer-scs-sandbox/locations/global/publishers/google/"
        "models/gemini-2.5-flash:generateContent")
 PROMPT = ("Search Google for each LinkedIn profile below. Report only what the search results show (the LinkedIn result "
@@ -70,8 +72,12 @@ def main():
     n = int(sys.argv[1]) if len(sys.argv) > 1 else 10**9
     th = int(sys.argv[2]) if len(sys.argv) > 2 else 8
     done = {json.loads(l)["username"] for l in open(OUT)} if os.path.exists(OUT) else set()
-    todo = [p for p in people() if p["username"] not in done][:n]
-    bs = [todo[i:i + 10] for i in range(0, len(todo), 10)]
+    todo = [p for p in people() if p["username"] not in done]
+    if RETRY:
+        miss = {json.loads(l)["username"] for l in open(f"{D}/li_search.jsonl") if not json.loads(l).get("found")}
+        todo = [p for p in todo if p["username"] in miss]
+    todo = todo[:n]
+    bs = [todo[i:i + BS] for i in range(0, len(todo), BS)]
     print("people", len(todo), "requests", len(bs), flush=True)
     with ThreadPoolExecutor(th) as ex:
         list(ex.map(batch, bs))
