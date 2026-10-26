@@ -1,0 +1,16 @@
+feature,rho_vs_error,ci,significant,days,nonzero_share
+promo_cov_press,-0.092,-0.141–-0.043,True,53,0.2
+promo_cov,-0.09,-0.147–-0.038,True,54,0.71
+promo_funding,-0.085,-0.148–-0.026,True,51,0.19
+promo_posts,-0.072,-0.142–-0.001,True,54,0.58
+promo_posts_x,-0.071,-0.137–-0.009,True,49,0.09
+promo_founder_x,-0.063,-0.123–-0.002,True,51,0.13
+promo_company_li,-0.062,-0.133–0.010,False,28,0.03
+promo_cov_reddit,-0.058,-0.109–-0.006,True,52,0.17
+promo_founder_li,-0.052,-0.115–0.013,False,27,0.03
+promo_posts_launch,-0.05,-0.114–0.014,False,54,0.36
+promo_posts_li,-0.026,-0.092–0.047,False,22,0.02
+promo_posts_founder,0.018,-0.044–0.084,False,53,0.37
+promo_n_sources,0.009,-0.055–0.065,False,54,0.55
+promo_reactions,-0.008,-0.072–0.053,False,51,0.14
+promo_cov_hn,0.002,-0.063–0.066,False,42,0.08
