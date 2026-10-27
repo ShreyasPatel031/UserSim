@@ -59,6 +59,21 @@ def build():
         PT = Pi @ LT; PT /= PT.sum(1, keepdims=True) + 1e-9
         PE = Pi @ LE; PE /= np.linalg.norm(PE, axis=1, keepdims=True) + 1e-9
         PM = (Pi @ LM).tocsr()
+        age = (pd.Timestamp(start) - pd.to_datetime(Eb.lday[ok])).dt.days.values
+        Pd = sparse.csr_matrix((0.5 ** (age / 30.0), (Eb.person[ok].map(pix), it_k[ok].astype(int))), shape=(NP, len(I)))
+        PD = Pd @ LE; PD /= np.linalg.norm(PD, axis=1, keepdims=True) + 1e-9          # recency-weighted taste
+        rec = Eb[ok & (Eb.lday >= (pd.Timestamp(start) - pd.Timedelta(days=60)).strftime("%Y-%m-%d"))]
+        Pr = sparse.csr_matrix((np.ones(len(rec), np.float32), (rec.person.map(pix), rec.item.map(iix).astype(int))), shape=(NP, len(I)))
+        PMr = (Pr @ LM).tocsr()                                                           # team backing, last 60 days
+        # category upvote rate: picks per topic / launches of that topic shown on the person's active days
+        k0 = dix.get(min((d for d in days if d >= start), default=days[-1]), len(days))
+        Aact = sparse.csr_matrix(A[:, :k0])
+        DT = np.zeros((k0, len(topics)), np.float32)
+        for dd, g in I[I.day < start].groupby("day").groups.items():
+            if dd in dix and dix[dd] < k0:
+                DT[dix[dd]] = LT[list(g)].sum(0)
+        expo = Aact @ DT
+        CR = (Pi @ LT + 5 * 0.05) / (expo + 5)   # smoothed toward a 5% rate
         Lm = I[I.day.str[:7] == m]
         if not len(Lm):
             continue
@@ -66,15 +81,18 @@ def build():
         topic = PT @ LT[ks].T / (LT[ks].sum(1) + 1e-9)            # people x launches
         mean = PE @ LE[ks].T
         backed = np.log1p((PM @ LM[ks].T).toarray())
+        decay = PD @ LE[ks].T
+        brec = np.log1p((PMr @ LM[ks].T).toarray())
+        catr = CR @ LT[ks].T / (LT[ks].sum(1) + 1e-9)
+        FE = [topic, mean, backed, decay, brec, catr]; TASTE = [0, 1, 3, 5]
         # appeal: logistic on the previous month's active person-days (fit from this month's snapshot of last month is a
         # leak, so the model fitted at the end of the previous iteration is used; first month gets none)
         have = prev_fit is not None
-        feats = lambda t, mn, b: np.stack([t.ravel(), mn.ravel(), b.ravel()], 1)
         if have:
-            coef, b0 = prev_fit
-            z_all = coef[0] * topic + coef[1] * mean + coef[2] * backed + b0
-            z_taste = coef[0] * topic + coef[1] * mean + b0
-            p_all, p_taste = 1 / (1 + np.exp(-z_all)), 1 / (1 + np.exp(-z_taste))
+            X = np.stack([f.ravel() for f in FE], 1)
+            p_all = prev_fit.predict_proba(X)[:, 1].reshape(topic.shape)
+            Xt = X.copy(); Xt[:, [2, 4]] = 0
+            p_taste = prev_fit.predict_proba(Xt)[:, 1].reshape(topic.shape)
         # fit this month's appeal on this month's active person-days (used next month)
         real = E[(E.date == E.lday) & (E.lday.str[:7] == m)]
         Xs, ys = [], []
@@ -87,17 +105,19 @@ def build():
             sub = act_u[np.random.default_rng(0).permutation(len(act_u))[:300]]
             picked = set(zip(real[real.date == d].person.map(pix), real[real.date == d].item))
             for j, c in zip(idx, cols_d):
-                Xs.append(feats(topic[sub, c], mean[sub, c], backed[sub, c]))
+                Xs.append(np.stack([f[sub, c] for f in FE], 1))
                 ys.append(np.array([(u, I.id[j]) in picked for u in sub], int))
         if Xs:
-            lr = LogisticRegression(max_iter=1000).fit(np.concatenate(Xs), np.concatenate(ys))
-            prev_fit = (lr.coef_[0], lr.intercept_[0])
+            import lightgbm as lgb
+            prev_fit = lgb.LGBMClassifier(n_estimators=200, learning_rate=0.05, num_leaves=15, min_child_samples=100,
+                                          verbose=-1).fit(np.concatenate(Xs), np.concatenate(ys))
         for c, j in enumerate(ks):
             d = I.day[j]; w = w_on(d)
             row = {"id": I.id[j], "reach_ties": float(w @ (backed[:, c] > 0)),
                    "taste_top": float(w[np.argsort(-(topic[:, c] + mean[:, c]))[:200]].sum())}
             if have:
-                row.update(ev_all=float(w @ p_all[:, c]), ev_taste=float(w @ p_taste[:, c]))
+                row.update(ev_all=float(w @ p_all[:, c]), ev_taste=float(w @ p_taste[:, c]),
+                           fans=float(np.sort(w * p_all[:, c])[-100:].sum()), day_mass=float(w.sum()))
                 row["ev_ties"] = row["ev_all"] - row["ev_taste"]
             out.append(row)
         print(m, len(ks), "launches", flush=True)
@@ -110,7 +130,7 @@ def eval_():
     T = T[T.groupby("day").id.transform("count") >= 5]
     groups = (("day", "dailyRank"), ("week", "weeklyRank"), ("mon", "monthlyRank"))
     res = {"launches": int(len(T)), "window": [T.day.min(), T.day.max()]}
-    for col in ["ev_all", "ev_taste", "ev_ties", "reach_ties", "taste_top"]:
+    for col in ["ev_all", "ev_taste", "ev_ties", "reach_ties", "taste_top", "fans"]:
         for g, rc in groups:
             T["pb"] = T.groupby(g).base.rank(pct=True); T["px"] = T.groupby(g)[col].rank(pct=True)
             blend = pd.Series(index=T.index, dtype=float)
@@ -124,6 +144,22 @@ def eval_():
                 res.setdefault(f"{g}@{k}", {})["baseline"] = round(100 * H.recall(T, "base", group=g, col=rc, k=k), 1)
                 res[f"{g}@{k}"][f"{col} alone"] = round(100 * H.recall(T, col, group=g, col=rc, k=k), 1)
                 res[f"{g}@{k}"][f"+ {col}"] = round(100 * H.recall(T, "blend", group=g, col=rc, k=k), 1)
+    # second stage: LightGBM on log votes from base + population sums, trained on earlier months only
+    import lightgbm as lgb
+    F2 = ["base", "ev_all", "ev_taste", "ev_ties", "reach_ties", "taste_top", "fans", "day_mass"]
+    for c in F2[1:]:
+        T[c + "_dr"] = T.groupby("day")[c].rank(pct=True)
+    F2 += [c + "_dr" for c in F2[1:]]
+    T["stack"] = np.nan
+    for m0 in sorted(T.mon.unique())[2:]:
+        tr, te = T[T.mon < m0], T[T.mon == m0]
+        mdl = lgb.LGBMRegressor(n_estimators=300, learning_rate=0.03, num_leaves=7, min_child_samples=30, verbose=-1)
+        T.loc[te.index, "stack"] = mdl.fit(tr[F2], np.log1p(tr.votes)).predict(te[F2])
+    S = T.dropna(subset=["stack"])
+    for g, rc in groups:
+        for k in H.KS:
+            res.setdefault(f"{g}@{k}", {})["baseline (stack months)"] = round(100 * H.recall(S, "base", group=g, col=rc, k=k), 1)
+            res[f"{g}@{k}"]["stacked: base + population sums"] = round(100 * H.recall(S, "stack", group=g, col=rc, k=k), 1)
     json.dump(res, open(f"{HERE}/reports/agg.json", "w"), indent=1)
     print(pd.DataFrame({k: v for k, v in res.items() if "@" in k}).T.to_string())
 
