@@ -144,7 +144,8 @@ def main(files):
         Xa = np.load(cache); print("loaded cached rows", Xa.shape, flush=True)
     else:
         Z = np.load(f"{D}/emb.npz"); li = {x: k for k, x in enumerate(Z["launch_ids"])}
-        G.update(BE=Z["launch"][[li[x] for x in L.id]], PE=dict(zip(Z["people"], Z["person"])))
+        BE = np.vstack([Z["launch"], np.zeros((1, Z["launch"].shape[1]), np.float32)])  # launches newer than the embeddings -> zero vector
+        G.update(BE=BE[[li.get(x, len(BE) - 1) for x in L.id]], PE=dict(zip(Z["people"], Z["person"])))
         G.update(L=L, Ltop=Ltop, emb=emb, topics=topics, Pp=Pp, cms=cms, on=on, built=built, days=days,
                  day_idx={d: np.where(L.day.values == d)[0] for d in days}, name_ix={u: k for k, u in enumerate(names)},
                  day_n={d: k for k, d in enumerate(days)})
