@@ -101,6 +101,14 @@ def build2():
         for m in t:
             if m:
                 built[m].append(it)
+    sup_of = {}   # every launch shown on day d launches on d, so "earlier team launches" is fixed per launch
+    for x in set(D.id):
+        sup = set()
+        for m in team[x]:
+            for it in built.get(m, ()):
+                if day[it] < day[x]:
+                    sup |= by_item.get(it, set())
+        sup_of[x] = sup
     hist = ev[ev.person.isin(set(D.person))].groupby("person").apply(lambda g: list(zip(g.day, g.item)), include_groups=False).to_dict()
     cols = {c: np.zeros(len(D)) for c in ("cat_rate_max", "cat_rate_mean", "cat_prior", "cat_rank", "cat_n", "team_comm")}
     for g, idx in D.groupby("g").indices.items():
@@ -124,12 +132,9 @@ def build2():
             cols["cat_rate_max"][j] = max(r); cols["cat_rate_mean"][j] = float(np.mean(r))
             cols["cat_prior"][j] = max((prior.get(t, pm) for t in ts), default=pm)
             cols["cat_rank"][j] = crank.get(x, 30); cols["cat_n"][j] = cn.get(x, 30)
-            sup = set()
-            for m in team[x]:
-                for it in built.get(m, ()):
-                    if day[it] < d:
-                        sup |= by_item.get(it, set())
-            cols["team_comm"][j] = np.log1p(sum(min(co.get(v, 0), 5) for v in sup))
+            sx = sup_of[x]
+            cols["team_comm"][j] = np.log1p(sum(min(c, 5) for v, c in co.items() if v in sx) if len(co) < len(sx)
+                                            else sum(min(co.get(v, 0), 5) for v in sx))
     for c, v in cols.items():
         D[c] = v
     for c in ("cat_rate_max", "cat_rate_mean", "team_comm"):
