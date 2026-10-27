@@ -13,7 +13,8 @@ from . import store, choice
 from .persona import CACHE, card, gemini
 
 V2 = os.environ.get("TASTE_V2") == "1"  # v2: the card also shows the person's own past choices (picked vs skipped)
-OUT = f"{CACHE}/taste_v2_ratings.jsonl" if V2 else f"{CACHE}/taste_ratings.jsonl"
+V3 = os.environ.get("TASTE_V3") == "1"  # v3: the v1 card + the person's own comment texts (best in the evidence screen)
+OUT = f"{CACHE}/taste_v3_ratings.jsonl" if V3 else f"{CACHE}/taste_v2_ratings.jsonl" if V2 else f"{CACHE}/taste_ratings.jsonl"
 PROMPT = """Rate how well each Product Hunt launch below fits THIS person's own interests and work, from 1 (irrelevant
 to them) to 5 (exactly what they care about). Judge only fit with the person: ignore who made it and how popular it is.
 Use the whole scale; most launches are a poor fit for any one person.
@@ -44,6 +45,11 @@ def run(n=1500, threads=50, seed=0):
     day = dict(zip(I.id, I.day)); names = {r.id: f"{r.name}: {r.tagline}" for r in I.itertuples()}
     real = E[(E.item.map(day) == E.date) & E.date.between("2026-09-01", "2026-10-24")]
     pdict = P.set_index("person").to_dict("index"); X = x_posts()
+    slug2name = {r.slug: f"{r.name}: {r.tagline}" for r in I.itertuples()}
+    Cg = {}
+    if V3:
+        C = pd.read_parquet(f"{store.OUT}/comment_text.parquet").sort_values("date")
+        Cg = C.groupby("person").apply(lambda g: list(zip(g.date, g.slug, g.text)), include_groups=False).to_dict()
     Es = E[E.item.isin(day)].sort_values("date")
     hist = Es.groupby("person").apply(lambda g: list(zip(g.date, g.item)), include_groups=False).to_dict()
     pds = sorted({(u, d) for u, d in zip(real.person, real.date) if u in pdict})
@@ -68,12 +74,16 @@ def run(n=1500, threads=50, seed=0):
         c = card(p, list(range(len(h))), {k: names[it] for k, it in enumerate(h)}, d)
         if isinstance(p.get("x_bio"), str) and p["x_bio"]:
             c += f" | X bio: {p['x_bio'][:160]}"
-        posts = [q for q in X.get(str(p.get("twitter") or "").lower(), []) if (q.get("created_at") or "9") < d][:3]
+        posts = [] if V3 else [q for q in X.get(str(p.get("twitter") or "").lower(), []) if (q.get("created_at") or "9") < d][:3]
         if posts:
             c += " | recent X posts: " + " / ".join((q.get("text") or "")[:120].replace("\n", " ") for q in posts)
-        revs = [f"{r[0]} {r[1]}/5" for r in json.loads(p["reviews"]) if r[2] and r[2] < d][:5] if isinstance(p.get("reviews"), str) else []
+        revs = [f"{r[0]} {r[1]}/5" for r in json.loads(p["reviews"]) if r[2] and r[2] < d][:5] if (isinstance(p.get("reviews"), str) and not V3) else []
         if revs:
             c += " | reviewed: " + ", ".join(revs)
+        if V3:
+            cs = [(dt, sl, t) for dt, sl, t in Cg.get(u, []) if dt < d][-5:]
+            if cs:
+                c += " | their comments: " + " / ".join(f"on {slug2name.get(sl, sl)[:40]}: \"{t[:160]}\"" for dt, sl, t in cs)
         if V2:  # few-shot: up to 3 earlier days this person was active, what they upvoted and some launches they skipped
             ex = []
             r2 = random.Random(hash((u, d)) & 0xFFFF)
@@ -127,12 +137,12 @@ def compare():
         for l in open(path):
             r = json.loads(l); R[r["person"] + "|" + r["day"]] = r["ratings"]
         return R
-    R1, R2 = load(f"{CACHE}/taste_ratings.jsonl"), load(f"{CACHE}/taste_v2_ratings.jsonl")
-    D = choice.rows(); D = D[D.g.isin(set(R1) & set(R2))].copy()
-    for k, R in (("p1", R1), ("p2", R2)):
+    R1, R2, R3 = load(f"{CACHE}/taste_ratings.jsonl"), load(f"{CACHE}/taste_v2_ratings.jsonl"), load(f"{CACHE}/taste_v3_ratings.jsonl")
+    D = choice.rows(); D = D[D.g.isin(set(R1) & set(R2) & set(R3))].copy()
+    for k, R in (("p1", R1), ("p2", R2), ("p3", R3)):
         D[k] = [R[g].get(i, np.nan) for g, i in zip(D.g, D.id)]
-    D = D.dropna(subset=["p1", "p2"])
-    for k in ("p1", "p2"):
+    D = D.dropna(subset=["p1", "p2", "p3"])
+    for k in ("p1", "p2", "p3"):
         D[k] = D.groupby("g")[k].rank(pct=True)
     tr, te = D[D.day < "2026-10-01"], D[D.day >= "2026-10-01"]
     small = tr[tr.g.isin(pd.Series(tr.g.unique()).sample(1500, random_state=0))]
@@ -143,6 +153,8 @@ def compare():
     rows = []
     for nm, c in [("popularity + relationships + simple taste", base), ("+ persona v1", base + ["p1"]),
                   ("+ persona v2 (past choices)", base + ["p2"]), ("+ both personas", base + ["p1", "p2"]),
+                  ("+ persona v3 (comments)", base + ["p3"]), ("+ all three personas", base + ["p1", "p2", "p3"]),
+                  ("persona v3 alone", ["p3"]),
                   ("persona v1 alone", ["p1"]), ("persona v2 alone", ["p2"])]:
         for tn, t in (("small", small), ("full", tr)):
             hit, auc = choice.person_metrics(te, gbm(t, c))
