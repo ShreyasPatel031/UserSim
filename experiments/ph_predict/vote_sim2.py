@@ -190,7 +190,8 @@ def main(files):
         out[name] = {"person_top3_hit": round(float(np.mean(hits)), 3),
                      "importance": dict(zip(cols, m.booster_.feature_importance("gain").round().astype(int).tolist()))}
     keep = ["dn", "launch", "person", "s0", "s1", "act", "per", "y", "hunter", "team", "recip", "f_hunter", "f_team", "prior"]
-    np.savez(f"{D}/vote_sim_scores_{TEST[0]}.npz", days=np.array(days), **{c: te[c].values for c in keep})
+    np.savez(f"{D}/vote_sim_scores_{TEST[0]}.npz", days=np.array(days),
+             launch_id=L.id.values[te.launch.values.astype(int)].astype(str), **{c: te[c].values for c in keep})
     T = L[(L.day >= TEST[0]) & (L.day <= TEST[1])].copy()
     T["sample_real"] = T.id.map(Counter(L.id[i] for u in names for i in Pp[u]["ups"]))
     for name, col in [("current model", "pred"), *[(f"simulated: {c[4:]}", c) for c in L.columns if c.startswith("sim|")],

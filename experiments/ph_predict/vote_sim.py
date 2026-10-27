@@ -40,7 +40,7 @@ def load():
                       "makers": {m["username"] for m in p.get("makers") or []},
                       "topics": [e["node"]["name"] for e in p["topics"]["edges"]],
                       "text": f"{p['name']}. {p['tagline']}. {p.get('description') or ''}"})
-    L = pd.DataFrame(L).sort_values("day").reset_index(drop=True)
+    L = pd.DataFrame(L).sort_values(["day", "id"], kind="stable").reset_index(drop=True)
     pred = pd.read_csv(f"{R}/predictions.csv", usecols=["id", "pred"]); pred["id"] = pred.id.astype(str)
     L = L.merge(pred, on="id", how="left")
     L["prior"] = L.groupby("day").pred.rank(pct=True)  # within-day percentile of the current model's score
