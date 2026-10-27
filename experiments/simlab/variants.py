@@ -18,7 +18,11 @@ from .taste import PROMPT, x_posts
 CONFIGS = {"v1": set(), "c": {"comments"}, "c10": {"comments10"}, "c+r": {"comments", "reviews"},
            "c+r+b": {"comments", "reviews", "built"}, "c+x": {"comments", "xposts"}, "c+ch": {"comments", "choices"},
            "c+r+ch": {"comments", "reviews", "choices"}, "everything": {"comments10", "reviews", "built", "xposts", "history", "choices"},
-           "c_noprofile": {"comments", "noprofile"}, "best4": {"comments", "reviews", "choices", "built"}}
+           "c_noprofile": {"comments", "noprofile"}, "best4": {"comments", "reviews", "choices", "built"},
+           # retrieval: the person's past comments / backed launches most related to today's line-up (not just the latest)
+           "c_ret": {"comments_ret", "history_ret"},
+           # ensemble members: a second Gemini sample of the comments card, and Claude on the same card
+           "c_s2": {"comments"}, "c_claude": {"comments", "claude"}}
 VARIANTS = list(CONFIGS)
 lock = threading.Lock()
 
@@ -40,6 +44,11 @@ def run(threads=16, only=None, full=False):
     Cg = C.groupby("person").apply(lambda g: list(zip(g.date, g.slug, g.text)), include_groups=False).to_dict()
     Rv = pd.read_parquet(f"{store.OUT}/review_text.parquet").sort_values("date")
     Rg = Rv.groupby("person").apply(lambda g: list(zip(g.date, g["product"], g.rating, g.pros, g.cons)), include_groups=False).to_dict()
+    import numpy as np
+    Zl = np.load(f"{store.RAW}/emb.npz"); lix = {x: k for k, x in enumerate(Zl["launch_ids"])}; LE = Zl["launch"]
+    CV = np.load(f"{store.OUT}/comment_vecs.npy") if os.path.exists(f"{store.OUT}/comment_vecs.npy") else None
+    Cfull = pd.read_parquet(f"{store.OUT}/comment_text.parquet")
+    Cidx = Cfull.reset_index().groupby("person").apply(lambda g: list(zip(g.date, g.slug, g.text, g["index"])), include_groups=False).to_dict()
     built = {}
     for r in I.itertuples():
         for u in set(json.loads(r.makers)) | {r.poster}:
@@ -67,6 +76,19 @@ def run(threads=16, only=None, full=False):
 
     def extra(kind, u, d, p, h):
         ev = CONFIGS[kind]; out = []
+        if "comments_ret" in ev and CV is not None:
+            L = LE[[lix[x] for x in lineups[d] if x in lix]]
+            cs = [x for x in Cidx.get(u, []) if x[0] < d]
+            if cs and len(L):
+                sim = (CV[[x[3] for x in cs]].astype(np.float32) @ L.T).max(1)
+                top = [cs[j] for j in np.argsort(-sim)[:5]]
+                out.append("their comments most related to today's launches: " + " / ".join(f"on {slug2name.get(s2, s2)[:40]}: \"{t[:160]}\"" for _, s2, t, _ in top))
+        if "history_ret" in ev and h:
+            L = LE[[lix[x] for x in lineups[d] if x in lix]]
+            hh = [i for i in h if i in lix]
+            if hh and len(L):
+                sim = (LE[[lix[i] for i in hh]] @ L.T).max(1)
+                out.append("launches they backed most related to today's: " + "; ".join(names[hh[j]] for j in np.argsort(-sim)[:6]))
         if ev & {"comments", "comments10"}:
             cs = [(dt, s, t) for dt, s, t in Cg.get(u, []) if dt < d][-(10 if "comments10" in ev else 5):]
             if cs:
@@ -100,7 +122,13 @@ def run(threads=16, only=None, full=False):
         h = [it for dt, it in hist.get(u, []) if dt < d]
         base_card = "" if "noprofile" in CONFIGS[kind] else card(p, list(range(len(h))), {k: names[it] for k, it in enumerate(h)}, d)
         c = (base_card + extra(kind, u, d, p, h)).strip(" |") or "no information"
-        txt = gemini(PROMPT.format(card=c, lineup="\n".join(f"{k + 1}. {names[x]}" for k, x in enumerate(line)), n=len(line)))
+        prompt = PROMPT.format(card=c, lineup="\n".join(f"{k + 1}. {names[x]}" for k, x in enumerate(line)), n=len(line))
+        if "claude" in CONFIGS[kind]:
+            sys.path.insert(0, os.path.join(os.path.dirname(store.RAW), ""))
+            import llm
+            txt = llm.call(prompt, max_tokens=400)
+        else:
+            txt = gemini(prompt)
         try:
             rt = [float(v) for v in json.loads(re.search(r"\{.*\}", txt, re.S).group(0))["ratings"]]
         except Exception:  # noqa: BLE001
