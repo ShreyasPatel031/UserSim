@@ -213,11 +213,8 @@ class BudgetTest(GateCase):
                 mock.patch.object(ladder, "ensure_tool", return_value={"ok": True}), \
                 mock.patch.dict(os.environ, {"FETCH_BUDGET_USD": "5.0"}):
             ladder._BLOCKED[("producthunt.com", "vm_camoufox")] = __import__("time").time()
-            gate.SCROLL_ESTIMATE_USD["residential_camoufox"] = 0.001
-            try:
+            with mock.patch.dict(gate.SCROLL_ESTIMATE_USD, {"residential_chromium": 0.001}):
                 fetchgate.fetch("https://www.producthunt.com/@a/upvotes", scroll=True, creds_override={"PROXY_URL": RESI})
-            finally:
-                gate.SCROLL_ESTIMATE_USD["residential_camoufox"] = 0.05
         self.assertEqual(stops, [False, True])
 
 
