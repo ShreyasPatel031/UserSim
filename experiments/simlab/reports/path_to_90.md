@@ -76,7 +76,7 @@ The browser scroll of full histories for the screening sample is running. It wil
 | Personas from own comments | comments (have) | +5.8 pts (45.2 → 51.0 without follows) | ~$1 Gemini per 17k person-days | yes |
 | Collaborative filtering on teams | upvote histories (have) | +0.7–1.2 pts | free | yes |
 | Upvote reciprocity (team upvoted the person's launch) | upvote lists of makers and people | +0.8–1.1 pts at today's 5% coverage | first pages ~$0.0003 each | yes |
-| Deeper upvote histories (scroll) | full ~6-month lists | +2.2 pts with follows, +2.0 without (58.5 → 60.5; 51.8 → 53.8), on 2,562 heavy users. Almost all from better labels; ranking accuracy +0.002 | ~$0.003 / person | yes |
+| Deeper upvote histories (scroll) | full ~6-month lists | +2.2 pts with follows, +2.7 without (58.5 → 60.7; 51.8 → 54.5), on 3,448 heavy users. Almost all from better labels; ranking accuracy +0.002 | ~$0.003 / person | yes |
 | Follow lists | follows (undated) | +6.9 pts, partly leakage until dated | ~$0.0003 / page; dating needs weekly snapshots | if dated |
 | Early read: comments in the first 3 h | launch-day comments | **+4.3–5.3 pts** | ~$0.0003 / page | no (3 h in) |
 | Perfect final popularity (upper bound) | n/a | +7–8 pts | n/a | no |
@@ -84,9 +84,9 @@ The browser scroll of full histories for the screening sample is running. It wil
 
 ## 5b. Full histories, measured (Oct 27, `v2_compare.json`)
 - Same 8,315 Oct person-days, same model.
-- With follows: 58.5% → 60.5%. Without follows: 51.8% → 53.8%.
-- Scoring the old predictions against the fuller labels already gives 60.7% / 54.7%. So the gain is measurement, not new signal.
-- About 1,000 holdout heavy users are still not scrolled: the DataImpulse traffic ran out.
+- With follows: 58.5% → **60.7%**. Without follows: 51.8% → **54.5%**. This is the new baseline to beat.
+- Scoring the old predictions against the fuller labels already gives 60.9% / 54.9%. So the gain is measurement, not new signal.
+- The holdout is now complete except 66 people Cloudflare blocked.
 
 ## 6. Plan to reach 90% (person level)
 

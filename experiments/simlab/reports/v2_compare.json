@@ -25,44 +25,44 @@
   "follows": false,
   "data": "v1 features, v2 labels",
   "all": {
-   "top3_hit": 0.547,
-   "auc": 0.809,
+   "top3_hit": 0.549,
+   "auc": 0.81,
    "person_days": 8315,
-   "picks_per_day": 1.64
+   "picks_per_day": 1.65
   },
   "scrolled people": {
-   "top3_hit": 0.554,
-   "auc": 0.806,
+   "top3_hit": 0.555,
+   "auc": 0.807,
    "person_days": 5311,
    "picks_per_day": 1.82
   },
   "others": {
-   "top3_hit": 0.535,
+   "top3_hit": 0.538,
    "auc": 0.816,
    "person_days": 3004,
-   "picks_per_day": 1.33
+   "picks_per_day": 1.35
   }
  },
  {
   "follows": false,
   "data": "v2",
   "all": {
-   "top3_hit": 0.538,
+   "top3_hit": 0.545,
    "auc": 0.809,
    "person_days": 8315,
-   "picks_per_day": 1.64
+   "picks_per_day": 1.65
   },
   "scrolled people": {
-   "top3_hit": 0.536,
-   "auc": 0.804,
+   "top3_hit": 0.544,
+   "auc": 0.805,
    "person_days": 5311,
    "picks_per_day": 1.82
   },
   "others": {
-   "top3_hit": 0.541,
-   "auc": 0.818,
+   "top3_hit": 0.548,
+   "auc": 0.816,
    "person_days": 3004,
-   "picks_per_day": 1.33
+   "picks_per_day": 1.35
   }
  },
  {
@@ -91,36 +91,36 @@
   "follows": true,
   "data": "v1 features, v2 labels",
   "all": {
-   "top3_hit": 0.607,
-   "auc": 0.833,
+   "top3_hit": 0.609,
+   "auc": 0.834,
    "person_days": 8315,
-   "picks_per_day": 1.64
+   "picks_per_day": 1.65
   },
   "scrolled people": {
-   "top3_hit": 0.569,
+   "top3_hit": 0.571,
    "auc": 0.813,
    "person_days": 5311,
    "picks_per_day": 1.82
   },
   "others": {
-   "top3_hit": 0.674,
+   "top3_hit": 0.677,
    "auc": 0.87,
    "person_days": 3004,
-   "picks_per_day": 1.33
+   "picks_per_day": 1.35
   }
  },
  {
   "follows": true,
   "data": "v2",
   "all": {
-   "top3_hit": 0.605,
-   "auc": 0.836,
+   "top3_hit": 0.607,
+   "auc": 0.835,
    "person_days": 8315,
-   "picks_per_day": 1.64
+   "picks_per_day": 1.65
   },
   "scrolled people": {
-   "top3_hit": 0.561,
-   "auc": 0.816,
+   "top3_hit": 0.563,
+   "auc": 0.814,
    "person_days": 5311,
    "picks_per_day": 1.82
   },
@@ -128,7 +128,7 @@
    "top3_hit": 0.685,
    "auc": 0.872,
    "person_days": 3004,
-   "picks_per_day": 1.33
+   "picks_per_day": 1.35
   }
  }
 ]

@@ -14,16 +14,16 @@ Person-level top-3 hit = the person's real upvote is in our top 3 for them, on d
 Pre-launch gain tonight: **+2.0 points** (57.5 → 59.5). With a 3-hour early read: +5.5 points.
 
 **Full upvote histories (Oct 27 morning).**
-- What was pulled: complete histories for 2,562 heavy users (1,747 holdout + 815 sample people). Dated upvotes in the data went from 77k to 220k.
+- What was pulled: complete histories for 3,448 heavy users (2,633 holdout + 815 sample). The last 886 were added in the afternoon, back to Sep 1 only. Dated upvotes in the data went from 77k to 226k. 66 holdout people stayed blocked.
 - Scored on the same 8,315 Oct person-days, same model (popularity + relationships + simple taste + personas + collaborative filtering):
 
 | Data | Top-3 hit | Ranking accuracy | Without follows: hit / accuracy |
 |---|---|---|---|
 | Before (page-1 histories) | 58.5% | 0.834 | 51.8% / 0.807 |
-| Same predictions, full labels | 60.7% | 0.833 | 54.7% / 0.809 |
-| Full histories used for features and labels | 60.5% | 0.836 | 53.8% / 0.809 |
+| Same predictions, full labels | 60.9% | 0.834 | 54.9% / 0.810 |
+| **Full histories used for features and labels (new baseline)** | **60.7%** | 0.835 | **54.5%** / 0.809 |
 
-- Full histories add **2–3 points**, almost all from measuring picks more completely (1.41 → 1.64 picks per day). More past backing data barely changes ranking accuracy.
+- Full histories add **2–3 points**, almost all from measuring picks more completely (1.41 → 1.65 picks per day). More past backing data barely changes ranking accuracy.
 - So deeper histories are worth it for honest scoring, not as a new signal.
 - Source: `v2_compare.py` → `v2_compare.json`.
 
@@ -32,7 +32,7 @@ Pre-launch gain tonight: **+2.0 points** (57.5 → 59.5). With a 3-hour early re
 | Provider | Spent | What |
 |---|---|---|
 | Apify | $3.04 | LinkedIn: pilot $0.06, then 744 profiles |
-| DataImpulse | ~$9.0 (counted bytes; **account traffic ran out at ~09:47**: proxy returns `407 TRAFFIC_EXHAUSTED`) | profile pages $1.64, follow re-check $0.11, maker upvote pages $0.41, sample scroll $2.51, holdout scroll $5.46 |
+| DataImpulse | ~$13.9 (counted bytes) | profile pages $1.64, follow re-check $0.11, maker upvote pages $0.41, sample scroll $2.51, holdout scroll $5.46. Traffic ran out at ~09:47; after the top-up: pilots $0.16, last 886 people $4.66 |
 | GCP | ~$1–3 Gemini + $3.8 scraper machine | persona variants; temporary 16-core machine for the scroll (deleted; idle ~6 h because a restart delayed deletion) |
 | Free | $0 | X posts, GitHub |
 
