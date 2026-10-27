@@ -18,7 +18,7 @@ from .taste import PROMPT, x_posts
 CONFIGS = {"v1": set(), "c": {"comments"}, "c10": {"comments10"}, "c+r": {"comments", "reviews"},
            "c+r+b": {"comments", "reviews", "built"}, "c+x": {"comments", "xposts"}, "c+ch": {"comments", "choices"},
            "c+r+ch": {"comments", "reviews", "choices"}, "everything": {"comments10", "reviews", "built", "xposts", "history", "choices"},
-           "c_noprofile": {"comments", "noprofile"}}
+           "c_noprofile": {"comments", "noprofile"}, "best4": {"comments", "reviews", "choices", "built"}}
 VARIANTS = list(CONFIGS)
 lock = threading.Lock()
 
@@ -31,7 +31,7 @@ def sample(seed=1, n=1000):
     return rng.sample([k for k in keys if k[1] < "2026-10-01"], n) + rng.sample([k for k in keys if k[1] >= "2026-10-01"], n)
 
 
-def run(threads=16):
+def run(threads=16, only=None, full=False):
     P, I, E = store.load()
     day = dict(zip(I.id, I.day)); names = {r.id: f"{r.name}: {r.tagline}" for r in I.itertuples()}
     slug2name = {r.slug: f"{r.name}: {r.tagline}" for r in I.itertuples()}
@@ -49,7 +49,16 @@ def run(threads=16):
     lineups = {}
     for i, dd in day.items():
         lineups.setdefault(dd, []).append(i)
-    S = sample()
+    if full:  # every person-day already rated by v1 (all Sep-Oct active person-days)
+        S = sorted({(json.loads(l)["person"], json.loads(l)["day"]) for l in open(f"{CACHE}/taste_ratings.jsonl")})
+    else:
+        S = sample()
+    out_name = (lambda k: f"{CACHE}/taste_{k}_full.jsonl") if full else (lambda k: f"{CACHE}/variant_{k}.jsonl")
+    kinds = [only] if only else VARIANTS
+    done = set()
+    for k in kinds:
+        if os.path.exists(out_name(k)):
+            done |= {(k, json.loads(l)["person"], json.loads(l)["day"]) for l in open(out_name(k))}
 
     picked = E[E.item.map(day) == E.date].groupby(["person", "date"]).item.apply(list).to_dict()
     past_days = {}
@@ -97,12 +106,12 @@ def run(threads=16):
         except Exception:  # noqa: BLE001
             rt = []
         if len(rt) == len(line):
-            with lock, open(f"{CACHE}/variant_{kind}.jsonl", "a") as f:
+            with lock, open(out_name(kind), "a") as f:
                 f.write(json.dumps({"person": u, "day": d, "ratings": dict(zip(line, rt))}) + "\n")
 
-    jobs = [(k, s) for k in VARIANTS for s in S]
+    jobs = [(k, s) for k in kinds for s in S if (k, *s) not in done]
     print("requests", len(jobs), flush=True)
-    with ThreadPoolExecutor(threads * len(VARIANTS)) as ex:
+    with ThreadPoolExecutor(threads * len(kinds)) as ex:
         list(ex.map(one, jobs))
 
 
@@ -136,4 +145,9 @@ def score():
 
 
 if __name__ == "__main__":
-    run(int(sys.argv[2]) if len(sys.argv) > 2 else 16) if sys.argv[1] == "run" else score()
+    if sys.argv[1] == "run":
+        run(int(sys.argv[2]) if len(sys.argv) > 2 else 16)
+    elif sys.argv[1] == "full":   # python -m simlab.variants full <config> [threads]
+        run(int(sys.argv[3]) if len(sys.argv) > 3 else 96, only=sys.argv[2], full=True)
+    else:
+        score()

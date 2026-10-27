@@ -138,11 +138,12 @@ def compare():
             r = json.loads(l); R[r["person"] + "|" + r["day"]] = r["ratings"]
         return R
     R1, R2, R3 = load(f"{CACHE}/taste_ratings.jsonl"), load(f"{CACHE}/taste_v2_ratings.jsonl"), load(f"{CACHE}/taste_v3_ratings.jsonl")
-    D = choice.rows(); D = D[D.g.isin(set(R1) & set(R2) & set(R3))].copy()
-    for k, R in (("p1", R1), ("p2", R2), ("p3", R3)):
+    R4 = load(f"{CACHE}/taste_best4_full.jsonl")
+    D = choice.rows(); D = D[D.g.isin(set(R1) & set(R2) & set(R3) & set(R4))].copy()
+    for k, R in (("p1", R1), ("p2", R2), ("p3", R3), ("p4", R4)):
         D[k] = [R[g].get(i, np.nan) for g, i in zip(D.g, D.id)]
-    D = D.dropna(subset=["p1", "p2", "p3"])
-    for k in ("p1", "p2", "p3"):
+    D = D.dropna(subset=["p1", "p2", "p3", "p4"])
+    for k in ("p1", "p2", "p3", "p4"):
         D[k] = D.groupby("g")[k].rank(pct=True)
     tr, te = D[D.day < "2026-10-01"], D[D.day >= "2026-10-01"]
     small = tr[tr.g.isin(pd.Series(tr.g.unique()).sample(1500, random_state=0))]
@@ -155,6 +156,8 @@ def compare():
                   ("+ persona v2 (past choices)", base + ["p2"]), ("+ both personas", base + ["p1", "p2"]),
                   ("+ persona v3 (comments)", base + ["p3"]), ("+ all three personas", base + ["p1", "p2", "p3"]),
                   ("persona v3 alone", ["p3"]),
+                  ("+ persona v4 (comments, reviews, past choices, built)", base + ["p4"]), ("persona v4 alone", ["p4"]),
+                  ("+ all four personas", base + ["p1", "p2", "p3", "p4"]),
                   ("persona v1 alone", ["p1"]), ("persona v2 alone", ["p2"])]:
         for tn, t in (("small", small), ("full", tr)):
             hit, auc = choice.person_metrics(te, gbm(t, c))
