@@ -22,7 +22,10 @@ CONFIGS = {"v1": set(), "c": {"comments"}, "c10": {"comments10"}, "c+r": {"comme
            # retrieval: the person's past comments / backed launches most related to today's line-up (not just the latest)
            "c_ret": {"comments_ret", "history_ret"},
            # ensemble members: a second Gemini sample of the comments card, and Claude on the same card
-           "c_s2": {"comments"}, "c_claude": {"comments", "claude"}}
+           "c_s2": {"comments"}, "c_claude": {"comments", "claude"},
+           # Phase 1 sources: full LinkedIn, Product Hunt activity texts (forum posts / comments), collections
+           "rich": {"comments", "built", "li_full", "activity", "collections"}, "c+li": {"comments", "li_full"},
+           "c+act": {"comments", "activity"}}
 VARIANTS = list(CONFIGS)
 lock = threading.Lock()
 
@@ -49,6 +52,22 @@ def run(threads=16, only=None, full=False):
     CV = np.load(f"{store.OUT}/comment_vecs.npy") if os.path.exists(f"{store.OUT}/comment_vecs.npy") else None
     Cfull = pd.read_parquet(f"{store.OUT}/comment_vec_text.parquet") if os.path.exists(f"{store.OUT}/comment_vec_text.parquet") else pd.read_parquet(f"{store.OUT}/comment_text.parquet")
     Cidx = Cfull.reset_index().groupby("person").apply(lambda g: list(zip(g.date, g.slug, g.text, g["index"])), include_groups=False).to_dict()
+    RAWD = store.RAW
+    LIF = {}
+    if os.path.exists(f"{RAWD}/li_apify.jsonl"):
+        for l in open(f"{RAWD}/li_apify.jsonl"):
+            r = json.loads(l)
+            if r.get("u"):
+                LIF[r["u"]] = r["profile"]
+    TABS = {}
+    if os.path.exists(f"{RAWD}/sample_tabs.jsonl"):
+        for l in open(f"{RAWD}/sample_tabs.jsonl"):
+            r = json.loads(l); TABS[(r["username"], r["tab"])] = r["items"]
+
+    def li_text(p):  # LinkedIn is read today: undated
+        exp = "; ".join(f"{e.get('position') or e.get('title') or ''} at {e.get('companyName') or ''}" for e in (p.get("experience") or [])[:4])
+        edu = "; ".join(f"{e.get('schoolName') or e.get('title') or ''}" for e in (p.get("education") or [])[:2])
+        return f"LinkedIn: {str(p.get('headline') or '')[:120]} | about: {str(p.get('about') or '')[:240]} | experience: {exp[:300]} | education: {edu[:120]}"
     built = {}
     for r in I.itertuples():
         for u in set(json.loads(r.makers)) | {r.poster}:
@@ -93,6 +112,16 @@ def run(threads=16, only=None, full=False):
             cs = [(dt, s, t) for dt, s, t in Cg.get(u, []) if dt < d][-(10 if "comments10" in ev else 5):]
             if cs:
                 out.append("their comments: " + " / ".join(f"on {slug2name.get(s, s)[:40]}: \"{t[:160]}\"" for dt, s, t in cs))
+        if "li_full" in ev and u in LIF:
+            out.append(li_text(LIF[u]))
+        if "activity" in ev:
+            acts = [a for a in TABS.get((u, "activity"), []) if a.get("text") and (a.get("occurred") or "9")[:10] < d][:6]
+            if acts:
+                out.append("their recent Product Hunt activity: " + " / ".join(f"{a.get('type')}: \"{a['text'][:140]}\"" for a in acts))
+        if "collections" in ev:
+            cols = TABS.get((u, "collections"), [])
+            if cols:  # collection contents are undated
+                out.append("their collections: " + "; ".join(f"{c.get('name')}: {', '.join((c.get('products') or [])[:6])}" for c in cols[:4]))
         if "xposts" in ev:
             ps = [q for q in X.get(str(p.get("twitter") or "").lower(), []) if (q.get("created_at") or "9") < d][:10]
             if ps:

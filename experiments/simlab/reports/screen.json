@@ -1,0 +1,134 @@
+[
+ {
+  "undated_follows": false,
+  "model": "base",
+  "top3_hit": 0.443,
+  "auc": 0.755
+ },
+ {
+  "undated_follows": false,
+  "model": "base+cf",
+  "top3_hit": 0.45,
+  "auc": 0.758
+ },
+ {
+  "undated_follows": false,
+  "model": "base+cf+rel",
+  "top3_hit": 0.445,
+  "auc": 0.758
+ },
+ {
+  "undated_follows": false,
+  "model": "base+cf+rel+v1",
+  "top3_hit": 0.439,
+  "auc": 0.764
+ },
+ {
+  "undated_follows": false,
+  "model": "base+cf+rel+c",
+  "top3_hit": 0.485,
+  "auc": 0.783
+ },
+ {
+  "undated_follows": false,
+  "model": "base+cf+rel+c+r+b",
+  "top3_hit": 0.483,
+  "auc": 0.786
+ },
+ {
+  "undated_follows": false,
+  "model": "base+cf+rel+c+li",
+  "top3_hit": 0.476,
+  "auc": 0.785
+ },
+ {
+  "undated_follows": false,
+  "model": "base+cf+rel+c+act",
+  "top3_hit": 0.477,
+  "auc": 0.784
+ },
+ {
+  "undated_follows": false,
+  "model": "base+cf+rel+rich",
+  "top3_hit": 0.44,
+  "auc": 0.777
+ },
+ {
+  "undated_follows": false,
+  "model": "base+cf+rel+c_ret",
+  "top3_hit": 0.477,
+  "auc": 0.783
+ },
+ {
+  "undated_follows": false,
+  "model": "base+cf+rel+all personas",
+  "top3_hit": 0.472,
+  "auc": 0.782
+ },
+ {
+  "undated_follows": true,
+  "model": "base",
+  "top3_hit": 0.52,
+  "auc": 0.794
+ },
+ {
+  "undated_follows": true,
+  "model": "base+cf",
+  "top3_hit": 0.531,
+  "auc": 0.793
+ },
+ {
+  "undated_follows": true,
+  "model": "base+cf+rel",
+  "top3_hit": 0.535,
+  "auc": 0.795
+ },
+ {
+  "undated_follows": true,
+  "model": "base+cf+rel+v1",
+  "top3_hit": 0.526,
+  "auc": 0.8
+ },
+ {
+  "undated_follows": true,
+  "model": "base+cf+rel+c",
+  "top3_hit": 0.547,
+  "auc": 0.816
+ },
+ {
+  "undated_follows": true,
+  "model": "base+cf+rel+c+r+b",
+  "top3_hit": 0.557,
+  "auc": 0.821
+ },
+ {
+  "undated_follows": true,
+  "model": "base+cf+rel+c+li",
+  "top3_hit": 0.536,
+  "auc": 0.82
+ },
+ {
+  "undated_follows": true,
+  "model": "base+cf+rel+c+act",
+  "top3_hit": 0.556,
+  "auc": 0.818
+ },
+ {
+  "undated_follows": true,
+  "model": "base+cf+rel+rich",
+  "top3_hit": 0.534,
+  "auc": 0.812
+ },
+ {
+  "undated_follows": true,
+  "model": "base+cf+rel+c_ret",
+  "top3_hit": 0.555,
+  "auc": 0.82
+ },
+ {
+  "undated_follows": true,
+  "model": "base+cf+rel+all personas",
+  "top3_hit": 0.54,
+  "auc": 0.818
+ }
+]

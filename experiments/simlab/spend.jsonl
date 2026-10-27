@@ -1,0 +1,5 @@
+{"t":"start","provider":"all","usd":0}
+{"t":"li_pilot","provider":"apify","usd":0.06}
+{"t":"pages_sample","provider":"dataimpulse","usd":1.64,"note":"upper bound: decoded bytes; 6316 pages"}
+{"t":"linkedin_sample","provider":"apify","usd":2.98,"note":"744 profiles x $0.004"}
+{"t":"x_sample","provider":"free","usd":0}
