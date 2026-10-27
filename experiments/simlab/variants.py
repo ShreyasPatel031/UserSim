@@ -47,7 +47,7 @@ def run(threads=16, only=None, full=False):
     import numpy as np
     Zl = np.load(f"{store.RAW}/emb.npz"); lix = {x: k for k, x in enumerate(Zl["launch_ids"])}; LE = Zl["launch"]
     CV = np.load(f"{store.OUT}/comment_vecs.npy") if os.path.exists(f"{store.OUT}/comment_vecs.npy") else None
-    Cfull = pd.read_parquet(f"{store.OUT}/comment_text.parquet")
+    Cfull = pd.read_parquet(f"{store.OUT}/comment_vec_text.parquet") if os.path.exists(f"{store.OUT}/comment_vec_text.parquet") else pd.read_parquet(f"{store.OUT}/comment_text.parquet")
     Cidx = Cfull.reset_index().groupby("person").apply(lambda g: list(zip(g.date, g.slug, g.text, g["index"])), include_groups=False).to_dict()
     built = {}
     for r in I.itertuples():
