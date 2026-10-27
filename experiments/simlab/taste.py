@@ -12,7 +12,8 @@ from sklearn.linear_model import LogisticRegression
 from . import store, choice
 from .persona import CACHE, card, gemini
 
-OUT = f"{CACHE}/taste_ratings.jsonl"
+V2 = os.environ.get("TASTE_V2") == "1"  # v2: the card also shows the person's own past choices (picked vs skipped)
+OUT = f"{CACHE}/taste_v2_ratings.jsonl" if V2 else f"{CACHE}/taste_ratings.jsonl"
 PROMPT = """Rate how well each Product Hunt launch below fits THIS person's own interests and work, from 1 (irrelevant
 to them) to 5 (exactly what they care about). Judge only fit with the person: ignore who made it and how popular it is.
 Use the whole scale; most launches are a poor fit for any one person.
@@ -47,7 +48,15 @@ def run(n=1500, threads=50, seed=0):
     hist = Es.groupby("person").apply(lambda g: list(zip(g.date, g.item)), include_groups=False).to_dict()
     pds = sorted({(u, d) for u, d in zip(real.person, real.date) if u in pdict})
     rng = random.Random(seed)
-    pick = rng.sample([x for x in pds if x[1] < "2026-10-01"], n) + rng.sample([x for x in pds if x[1] >= "2026-10-01"], n)
+    sep = [x for x in pds if x[1] < "2026-10-01"]; octo = [x for x in pds if x[1] >= "2026-10-01"]
+    pick = rng.sample(sep, min(n, len(sep))) + rng.sample(octo, min(n, len(octo)))
+    by_day = {}
+    for i, dd in day.items():
+        by_day.setdefault(dd, []).append(i)
+    picked = E[E.item.map(day) == E.date].groupby(["person", "date"]).item.apply(list).to_dict()
+    past_days = {}
+    for (u0, d0) in picked:
+        past_days.setdefault(u0, []).append(d0)
     done = {(json.loads(l)["person"], json.loads(l)["day"]) for l in open(OUT)} if os.path.exists(OUT) else set()
     pick = [x for x in pick if x not in done]
     lineups = {d: sorted(i for i, dd in day.items() if dd == d) for d in {d for _, d in pick}}
@@ -65,6 +74,15 @@ def run(n=1500, threads=50, seed=0):
         revs = [f"{r[0]} {r[1]}/5" for r in json.loads(p["reviews"]) if r[2] and r[2] < d][:5] if isinstance(p.get("reviews"), str) else []
         if revs:
             c += " | reviewed: " + ", ".join(revs)
+        if V2:  # few-shot: up to 3 earlier days this person was active, what they upvoted and some launches they skipped
+            ex = []
+            r2 = random.Random(hash((u, d)) & 0xFFFF)
+            for d0 in sorted(x for x in past_days.get(u, []) if x < d)[-3:]:
+                up = picked[(u, d0)]; sk = [i for i in by_day.get(d0, []) if i not in up]
+                ex.append(f"on {d0} upvoted: " + "; ".join(names[i] for i in up[:3]) + " | skipped: " +
+                          "; ".join(names[i] for i in r2.sample(sk, min(4, len(sk)))))
+            if ex:
+                c += "\nTheir past choices (learn their taste from these): " + " || ".join(ex)
         txt = gemini(PROMPT.format(card=c, lineup="\n".join(f"{k + 1}. {names[x]}" for k, x in enumerate(line)), n=len(line)))
         try:
             rt = [float(v) for v in json.loads(re.search(r"\{.*\}", txt, re.S).group(0))["ratings"]]
@@ -101,8 +119,41 @@ def score():
     print(pd.DataFrame(rows).to_string(index=False))
 
 
+def compare():
+    """v1 vs v2 personas, small vs full training data, linear vs trees; same Oct test person-days for all."""
+    import lightgbm as lgb
+    def load(path):
+        R = {}
+        for l in open(path):
+            r = json.loads(l); R[r["person"] + "|" + r["day"]] = r["ratings"]
+        return R
+    R1, R2 = load(f"{CACHE}/taste_ratings.jsonl"), load(f"{CACHE}/taste_v2_ratings.jsonl")
+    D = choice.rows(); D = D[D.g.isin(set(R1) & set(R2))].copy()
+    for k, R in (("p1", R1), ("p2", R2)):
+        D[k] = [R[g].get(i, np.nan) for g, i in zip(D.g, D.id)]
+    D = D.dropna(subset=["p1", "p2"])
+    for k in ("p1", "p2"):
+        D[k] = D.groupby("g")[k].rank(pct=True)
+    tr, te = D[D.day < "2026-10-01"], D[D.day >= "2026-10-01"]
+    small = tr[tr.g.isin(pd.Series(tr.g.unique()).sample(1500, random_state=0))]
+    print(f"person-days: train {tr.g.nunique()} (small {small.g.nunique()}), test {te.g.nunique()}")
+    base = ["pop", "follow", "backed", "topic", "meaning"]
+    def gbm(t, c):
+        return lgb.LGBMClassifier(n_estimators=300, learning_rate=0.05, num_leaves=15, min_child_samples=50, verbose=-1).fit(t[c], t.y).predict_proba(te[c])[:, 1]
+    rows = []
+    for nm, c in [("popularity + relationships + simple taste", base), ("+ persona v1", base + ["p1"]),
+                  ("+ persona v2 (past choices)", base + ["p2"]), ("+ both personas", base + ["p1", "p2"]),
+                  ("persona v1 alone", ["p1"]), ("persona v2 alone", ["p2"])]:
+        for tn, t in (("small", small), ("full", tr)):
+            hit, auc = choice.person_metrics(te, gbm(t, c))
+            rows.append({"model": nm, "train": tn, "top-3 hit": f"{hit:.1%}", "AUC": round(auc, 3)})
+    print(pd.DataFrame(rows).pivot(index="model", columns="train", values=["AUC", "top-3 hit"]).to_string())
+
+
 if __name__ == "__main__":
     if sys.argv[1] == "run":
         run(int(sys.argv[2]) if len(sys.argv) > 2 else 1500, int(sys.argv[3]) if len(sys.argv) > 3 else 50)
+    elif sys.argv[1] == "compare":
+        compare()
     else:
         score()
