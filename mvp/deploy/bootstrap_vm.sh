@@ -19,8 +19,11 @@ APP_ROOT="${USERSIM_APP_ROOT:-/opt/usersim/app}"
 BIN_DIR="${USERSIM_BIN_DIR:-/opt/usersim/bin}"
 STATE_DIR="${USERSIM_STATE_DIR:-/var/lib/usersim}"
 
+# Fetch credentials (Apify token, residential proxy) are not migrated: they live only in the fetch gateway's file
+# (/etc/fetchgate/credentials.env, src/fetchgate/deploy/install_vm.sh), never in Secret Manager, which every VM user
+# can reach through the metadata server.
 SECRET_VARS=(
-  GMAIL_APP_PASSWORD BROWSERBASE_API_KEY MVP_CAPTCHA_API_KEY CAPSOLVER_API_KEY APIFY_TOKEN
+  GMAIL_APP_PASSWORD BROWSERBASE_API_KEY MVP_CAPTCHA_API_KEY CAPSOLVER_API_KEY
   MVP_SMS_PHONE MVP_OWNER_PHONE MVP_NTFY_SMS_TOPIC MVP_NTFY_TOKEN MVP_SMS_API_KEY MVP_MCP_TOKEN
   MVP_TEXTVERIFIED_API_KEY
 )

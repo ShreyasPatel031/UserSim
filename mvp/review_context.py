@@ -2,7 +2,8 @@
 
 Production uses ONLY live scrapes of the rivals named in the study plan (Apify zen-studio/software-review-scraper:
 G2, Capterra, TrustRadius and Gartner in one call; MVP_REVIEW_SCRAPER=legacy uses trakk/capterra-reviews-scraper and
-automation-lab/g2-scraper instead. APIFY_TOKEN, or the token file at ~/.config/apify/token). The FreshCrawl snapshots in
+automation-lab/g2-scraper instead. Runs go through the fetch gateway (fetchgate.run_actor), which holds the Apify token
+and runs actors only with ALLOW_APIFY=1, under a $ cap per product). The FreshCrawl snapshots in
 experiments/staged_context are research data covering arbitrary products and are never used here.
 
 From the scraped reviews it builds what tested best in experiments/staged_context (see HANDOFF_review_context.md):
@@ -19,7 +20,6 @@ import os
 import re
 import sys
 import threading
-import time
 from pathlib import Path
 from typing import Any
 
@@ -38,9 +38,6 @@ ALL_IN_ONE_MAX = 100  # the actor's minimum maxResults
 G2_ACTOR = "automation-lab~g2-scraper"
 CAPTERRA_ACTOR = "trakk~capterra-reviews-scraper"
 PER_SITE = 50
-# Apify account caps: 16 GB actor memory, 5 concurrent runs. Exceeding either returns HTTP 402 ("Payment Required").
-_RUN_SLOTS = threading.BoundedSemaphore(int(os.environ.get("MVP_APIFY_MAX_RUNS", "3")))
-_RUN_MEMORY_MB = {"trakk~capterra-reviews-scraper": 2048, "automation-lab~g2-scraper": 256}
 
 
 def scraper() -> str:
@@ -67,34 +64,21 @@ def enabled() -> bool:
 
 
 def apify_token() -> str | None:
-    tok = os.environ.get("APIFY_TOKEN", "").strip()
-    if tok:
-        return tok
-    f = Path.home() / ".config" / "apify" / "token"
-    return f.read_text().strip() if f.is_file() else None
+    """The Apify token the gateway would use (for this process), None when there is none."""
+    from fetchgate import creds
+
+    return creds.apify_token() or None
 
 
-def _apify_run(actor: str, payload: dict[str, Any], token: str, wait_s: float = 300.0) -> list[dict[str, Any]]:
-    """Start a run, poll it, return its dataset items (sync endpoints are dropped by long-lived proxies).
+def _apify_run(actor: str, payload: dict[str, Any], token: str | None, wait_s: float = 300.0,
+               job: str = "study-reviews") -> list[dict[str, Any]]:
+    """One actor run through the gateway (fetchgate.run_actor): logged, priced and capped per job. token: a key the
+    user passed for this run, else the gateway's own."""
+    import fetchgate
+    from fetchgate import creds
 
-    Runs are capped (_RUN_SLOTS) and given explicit memory so parallel scrapes stay under the account limits."""
-    with _RUN_SLOTS:
-        params = {"token": token}
-        if actor in _RUN_MEMORY_MB:
-            params["memory"] = _RUN_MEMORY_MB[actor]
-        run = requests.post(f"https://api.apify.com/v2/acts/{actor}/runs", params=params, json=payload, timeout=60)
-        run.raise_for_status()
-        data = run.json()["data"]
-        deadline = time.monotonic() + wait_s
-        while data["status"] in {"READY", "RUNNING"} and time.monotonic() < deadline:
-            time.sleep(2)
-            data = requests.get(f"https://api.apify.com/v2/actor-runs/{data['id']}", params={"token": token}, timeout=30).json()["data"]
-    if data["status"] != "SUCCEEDED":
-        raise RuntimeError(f"{actor} run {data['id']} ended {data['status']}")
-    items = requests.get(f"https://api.apify.com/v2/datasets/{data['defaultDatasetId']}/items",
-                         params={"token": token, "clean": "true"}, timeout=60)
-    items.raise_for_status()
-    return items.json()
+    return fetchgate.run_actor(actor, payload, job=job, wait_s=wait_s,
+                               creds_override={creds.APIFY: token} if token else None)
 
 
 # automation-lab/g2-scraper companySegment ids, decoded by joining review ids with zen-studio/g2-reviews-scraper
@@ -135,8 +119,11 @@ def prefetch(names: list[str]) -> None:
     """Start live scrapes for rivals in the background (one per name); never blocks a study."""
     if not enabled():
         return
-    if not apify_token():
-        print("[review_context] APIFY_TOKEN missing: no competitor reviews will be scraped", flush=True)
+    from fetchgate.gate import apify_allowed
+
+    if not apify_token() or not apify_allowed():
+        print("[review_context] no Apify token, or ALLOW_APIFY is not 1: no competitor reviews will be scraped",
+              flush=True)
         return
     for n in names:
         if not n or cached_live_reviews(n) is not None:
@@ -160,8 +147,9 @@ def live_reviews(product_name: str, *, per_site: int = PER_SITE) -> dict[str, An
     and read the cache."""
     token = apify_token()
     if not token:
-        raise RuntimeError("APIFY_TOKEN missing")
+        raise RuntimeError("no Apify token")
     cache = _cache_path(product_name)
+    job = f"reviews-{_slug(product_name)}"
     if cache.is_file():
         return json.loads(cache.read_text())
     reviews: list[dict[str, Any]] = []
@@ -170,7 +158,7 @@ def live_reviews(product_name: str, *, per_site: int = PER_SITE) -> dict[str, An
         try:
             items = _apify_run(ALL_IN_ONE_ACTOR, {"query": product_name, "platforms": ALL_IN_ONE_PLATFORMS,
                                                   "maxResults": max(ALL_IN_ONE_MAX, per_site), "sort": "most_recent",
-                                                  "starRatings": []}, token, wait_s=900.0)
+                                                  "starRatings": []}, token, wait_s=900.0, job=job)
             reviews = [_all_in_one_item(x) for x in items]
         except (requests.RequestException, KeyError, ValueError, RuntimeError) as exc:
             errors.append(_redact(f"{ALL_IN_ONE_ACTOR}: {exc!r}", token))
@@ -178,7 +166,7 @@ def live_reviews(product_name: str, *, per_site: int = PER_SITE) -> dict[str, An
     try:
         for r in _apify_run(CAPTERRA_ACTOR, {"searchQueries": [product_name], "maxProductsPerQuery": 1,
                                              "maxReviewsPerProduct": per_site, "maxItems": per_site,
-                                             "includeProductAggregate": False}, token):
+                                             "includeProductAggregate": False}, token, job=job):
             reviews.append({"source": "capterra", "product": r.get("productName") or "",
                             "role": r.get("reviewerJobTitle"), "size": r.get("reviewerCompanySize"),
                             "industry": r.get("reviewerIndustry"), "time_used": r.get("timeUsedProduct"),
@@ -187,7 +175,7 @@ def live_reviews(product_name: str, *, per_site: int = PER_SITE) -> dict[str, An
     except (requests.RequestException, KeyError, ValueError, RuntimeError) as exc:
         errors.append(_redact(f"capterra: {exc!r}", token))
     try:
-        for r in _apify_run(G2_ACTOR, {"mode": "product_reviews", "productUrls": [_slug(product_name)], "maxReviews": per_site}, token):
+        for r in _apify_run(G2_ACTOR, {"mode": "product_reviews", "productUrls": [_slug(product_name)], "maxReviews": per_site}, token, job=job):
             # G2 scraper fields (checked Oct 2026): no job title; companySegment/industry are numeric ids; loveTheme/
             # hateTheme are one-word tags, not text; easeOfUse is 1-7; switchedFromOtherProduct is yes/no. The full
             # review lives in reviewText, so that is the evidence; there is no separate dislikes text to count.

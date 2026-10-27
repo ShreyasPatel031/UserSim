@@ -1,4 +1,4 @@
-"""Parse G2 / Capterra / Product Hunt review pages (fetched in-house via mvp.review_fetch) into the review schema the
+"""Parse G2 / Capterra / Product Hunt review pages (fetched in-house via fetchgate) into the review schema the
 Apify actors produced (mvp.review_context): source, product, role, size, industry, time_used, rating, pros, cons,
 text, date (plus name where the site shows it).
 

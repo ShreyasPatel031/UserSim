@@ -1,11 +1,13 @@
-"""In-house fetching of G2 / Capterra / Product Hunt review pages (to replace Apify), through a residential proxy.
+"""The fetch routes and the ladder (cheapest route that gets the real page). Part of the fetch gateway: call
+fetchgate.fetch(), not these functions, so every fetch is logged, priced and held to the job's budget.
 
-Product Hunt (Cloudflare) and G2 (DataDome) block data-centre IPs outright, so pages go through PROXY_URL (a rotating
-residential proxy, e.g. DataImpulse) when it is set. curl_cffi sends Chrome's TLS/HTTP2 fingerprint, which plain
-HTTP clients do not; no browser is needed when the protection lets that through.
+Product Hunt (Cloudflare) and G2 (DataDome) block data-centre IPs outright, so pages go through the residential proxy
+(DataImpulse) when the VM's own IP is blocked. curl_cffi sends Chrome's TLS/HTTP2 fingerprint, which plain HTTP
+clients do not; no browser is needed when the protection lets that through.
 
 probe() reports, for one review URL, what each way of fetching gets back (status, title, size, whether a bot
 challenge was served), so the approach can be measured on the real sites before parsers are built on it.
+Routes, prices and per-site results: docs/discovery/FETCH_LADDER.md.
 """
 
 from __future__ import annotations
@@ -34,6 +36,8 @@ _SMALL = 100_000
 
 
 def _is_challenge(title: str, html: str) -> bool:
+    if (html or "").lstrip()[:1] in ("{", "["):  # a JSON API answer: its text may say 'captcha' without being a wall
+        return False
     return bool(_CHALLENGE_RE.search(title or "") or (len(html or "") < _SMALL and _CHALLENGE_RE.search((html or "")[:20000])))
 
 
@@ -191,13 +195,13 @@ def own_unblock(url: str, proxy: str, *, slots: tuple[int, ...] = (1, 2, 3)) -> 
     return {"ok": False, "status": 0, "html": "", "steps": steps}
 
 
-def apify_proxy(group: str, country: str = "US") -> str:
-    """Apify Proxy URL for one group (UNBLOCKER, RESIDENTIAL), built from the saved Apify token."""
+def apify_proxy(group: str, country: str = "US", token: str | None = None) -> str:
+    """Apify Proxy URL for one group (UNBLOCKER, RESIDENTIAL), built from the Apify token."""
     import requests
 
-    from mvp import discovery
+    from fetchgate import creds
 
-    token = discovery.apify_token()
+    token = token or creds.apify_token()
     if not token:
         raise RuntimeError("APIFY_TOKEN missing")
     pw = requests.get("https://api.apify.com/v2/users/me", headers={"Authorization": f"Bearer {token}"},
@@ -217,6 +221,7 @@ def fetch(url: str, proxy: str | None, *, impersonate: str | None = "chrome", ti
                      timeout=timeout, headers={"Accept-Language": "en-US,en;q=0.9"}, verify=not _intercepting(proxy))
         if meter is not None:
             meter["bytes"] = meter.get("bytes", 0) + r.download_size + r.header_size + r.request_size + r.upload_size
+            meter["final_url"] = str(r.url)
         return r.status_code, r.text or ""
     import httpx
 
@@ -405,6 +410,7 @@ def camoufox_fetch(url: str, proxy: str | None, *, wait_s: float = 30.0,
         page.on("requestfinished", lambda req: done.append(req))  # Playwright tags its handlers: no bound builtins
         got = _load(page, url, wait_s)
         if meter is not None:
+            meter["final_url"] = page.url
             total = 0
             for req in done:
                 try:
@@ -439,14 +445,16 @@ def fetch_with_retries(url: str, proxy: str | None, *, attempts: int = 3, timeou
 
 # ---------------------------------------------------------------- the fetch ladder: cheapest route that gets through
 #
-# Free first, paid last (prices Oct 2026): the VM's own IP costs nothing; DataImpulse residential is ~$1/GB billed on
-# wire bytes (measured on the VM, Oct 2026: a review page over curl is 55-85 KB brotli, ~$0.00006; in Camoufox
-# without images 0.8-1.2 MB, ~$0.001); Apify's Unblocker is ~$1.5 per 1,000 requests whatever the size. A route a
-# site blocked is skipped for that site for BLOCK_TTL_S, so later pages and runs go straight to the one that works.
+# The ladder itself runs in fetchgate.gate.fetch, with the budget and the log. Free first, paid last (prices Oct 2026):
+# the VM's own IP costs nothing; DataImpulse residential is ~$1/GB billed on wire bytes (measured on the VM, Oct 2026:
+# a review page over curl is 55-85 KB brotli, ~$0.00006; in Camoufox without images 0.8-1.2 MB, ~$0.001); Apify's
+# Unblocker is ~$1.5 per 1,000 requests whatever the size, Apify's residential proxy ~$8/GB. A route a site blocked is
+# skipped for that site for BLOCK_TTL_S, so later pages and runs go straight to the one that works.
 
 TIERS = ("vm", "vm_camoufox", "residential", "residential_camoufox", "apify_unblocker")
 RESIDENTIAL_USD_PER_GB = float(os.environ.get("MVP_RESIDENTIAL_USD_PER_GB", "1.0"))
 UNBLOCKER_USD_PER_PAGE = float(os.environ.get("MVP_UNBLOCKER_USD_PER_PAGE", "0.0015"))
+APIFY_RESIDENTIAL_USD_PER_GB = float(os.environ.get("MVP_APIFY_RESIDENTIAL_USD_PER_GB", "8.0"))
 BLOCK_TTL_S = float(os.environ.get("MVP_FETCH_BLOCK_TTL_S", str(6 * 3600)))
 _BLOCKED: dict[tuple[str, str], float] = {}
 _BLOCKED_LOCK = threading.Lock()
@@ -463,6 +471,8 @@ def tier_cost(tier: str, wire_bytes: int, *, ok: bool = True) -> float:
     requests only (Apify docs, Oct 2026)."""
     if tier.startswith("residential"):
         return wire_bytes / 1e9 * RESIDENTIAL_USD_PER_GB
+    if tier.startswith("apify_residential"):
+        return wire_bytes / 1e9 * APIFY_RESIDENTIAL_USD_PER_GB
     return UNBLOCKER_USD_PER_PAGE if tier == "apify_unblocker" and ok else 0.0
 
 
@@ -475,7 +485,8 @@ def us_exit(proxy: str) -> str:
     return proxy.replace(f"//{u.username}:", f"//{u.username}__cr.us:", 1)
 
 
-def tier_fetch(tier: str, url: str, residential: str | None, *, meter: dict[str, Any] | None = None) -> tuple[int, str]:
+def tier_fetch(tier: str, url: str, residential: str | None, *, meter: dict[str, Any] | None = None,
+               apify_token: str | None = None) -> tuple[int, str]:
     """One fetch by one ladder route."""
     if tier in ("residential", "residential_camoufox") and not residential:
         raise RuntimeError("no residential proxy saved")
@@ -485,7 +496,7 @@ def tier_fetch(tier: str, url: str, residential: str | None, *, meter: dict[str,
     if tier == "residential":
         return fetch(url, residential, timeout=45, meter=meter)
     if tier == "apify_unblocker":
-        return fetch_with_retries(url, apify_proxy("UNBLOCKER"))
+        return fetch_with_retries(url, apify_proxy("UNBLOCKER", token=apify_token))
     if not ensure_tool("camoufox")["ok"]:
         raise RuntimeError(f"camoufox unavailable: {ensure_tool('camoufox')['how'][-120:]}")
     box: dict[str, Any] = {}
@@ -506,45 +517,18 @@ def tier_fetch(tier: str, url: str, residential: str | None, *, meter: dict[str,
     return box["r"]
 
 
-def ladder_fetch(url: str, residential: str | None, *, tiers: tuple[str, ...] = TIERS) -> tuple[int, str, str, list[dict[str, Any]]]:
-    """The page by the cheapest route that gets the real page: (status, html, route, attempts). Routes the site
-    blocked recently are skipped; route '' when none got through."""
-    site = _site(url)
-    tried: list[dict[str, Any]] = []
-    last: tuple[int, str] = (0, "")
-    for tier in tiers:
-        with _BLOCKED_LOCK:
-            if time.time() - _BLOCKED.get((site, tier), 0) < BLOCK_TTL_S:
-                continue
-        if tier.startswith("residential") and not residential:
-            continue
-        t, meter = time.time(), {}
-        try:
-            last = tier_fetch(tier, url, residential, meter=meter)
-        except Exception as exc:  # noqa: BLE001 - next route
-            tried.append({"route": tier, "error": re.sub(r"//[^@\s/]+@", "//<redacted>@", repr(exc))[:200]})
-            continue
-        row = _summary(*last, t) | {"route": tier, "usd": round(tier_cost(tier, meter.get("bytes", 0), ok=is_clean(*last)), 6)}
-        tried.append(row)
-        if is_clean(*last):
-            return last[0], last[1], tier, tried
-        if row["challenge"]:  # a bot wall (not a timeout or 404): don't knock on it again for a while
-            with _BLOCKED_LOCK:
-                _BLOCKED[(site, tier)] = time.time()
-    return last[0], last[1], "", tried
-
-
-def ladder_probe(url: str, residential: str | None) -> dict[str, Any]:
+def ladder_probe(url: str, residential: str | None, *, tiers: tuple[str, ...] = TIERS,
+                 apify_token: str | None = None) -> dict[str, Any]:
     """Every ladder route for one URL, whether each passes, its time, wire size and cost per page."""
     if not allowed(url):
         raise ValueError(f"only https review pages on {', '.join(ALLOWED_HOSTS)}")
     out: dict[str, Any] = {"url": url, "routes": {}}
-    for tier in TIERS:
+    for tier in tiers:
         t, meter, box = time.time(), {}, {}
 
         def work(tier=tier, meter=meter, box=box):
             try:
-                box["r"] = tier_fetch(tier, url, residential, meter=meter)
+                box["r"] = tier_fetch(tier, url, residential, meter=meter, apify_token=apify_token)
             except Exception as exc:  # noqa: BLE001 - reported
                 box["e"] = exc
         th = threading.Thread(target=work, daemon=True)  # own thread: see probe()
@@ -559,7 +543,7 @@ def ladder_probe(url: str, residential: str | None) -> dict[str, Any]:
                                                   repr(box.get("e", "timed out after 300 s")))[:300],
                    "ms": int((time.time() - t) * 1000)}
         out["routes"][tier] = row
-    out["cheapest_pass"] = next((k for k in TIERS if out["routes"][k].get("pass")), None)
+    out["cheapest_pass"] = next((k for k in tiers if out["routes"][k].get("pass")), None)
     return out
 
 

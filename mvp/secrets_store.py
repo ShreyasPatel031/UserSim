@@ -27,7 +27,8 @@ SECRET_VARS: tuple[str, ...] = (
     "BROWSERBASE_API_KEY",
     "MVP_CAPTCHA_API_KEY",
     "CAPSOLVER_API_KEY",
-    "APIFY_TOKEN",
+    # The Apify token and the residential proxy are not loaded here: only the fetch gateway reads them
+    # (src/fetchgate/creds.py, /etc/fetchgate/credentials.env on the VM).
     "PH_TOKEN",
     "PH_CLIENT_ID",
     "PH_CLIENT_SECRET",
@@ -45,7 +46,6 @@ _ABOUT: dict[str, str] = {
     "BROWSERBASE_API_KEY": "Browserbase API key for cloud browsers (MCP and website studies).",
     "MVP_CAPTCHA_API_KEY": "CapSolver (or compatible) API key for paid captcha tokens.",
     "CAPSOLVER_API_KEY": "Alias some tools use for the same CapSolver key as MVP_CAPTCHA_API_KEY.",
-    "APIFY_TOKEN": "Apify token for live review scrapes in usersim_predict_experience.",
     "PH_TOKEN": "Product Hunt API v2 developer token (discovery, scripts/ph_crawl.py). Preferred over the client pair.",
     "PH_CLIENT_ID": "Product Hunt application client id; with PH_CLIENT_SECRET mints a public-scope token.",
     "PH_CLIENT_SECRET": "Product Hunt application client secret (pairs with PH_CLIENT_ID).",

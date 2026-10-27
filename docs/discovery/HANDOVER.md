@@ -23,7 +23,7 @@ Production runs of asana.com and notion.com (before the fixes below were deploye
   dynamic DNS` (`gw.dataimpulse.com` resolves to 3 IPs). **Fix:** `sticky_proxy` pins the gateway to one IP; re-probe
   after deploy. G2: all 3 sticky DataImpulse US IPs answered DataDome `t=bv` (IP banned), so no captcha to solve:
   CapSolver cannot help G2 on DataImpulse IPs.
-- **Fetch ladder** (`review_fetch.ladder_fetch`, used for every review page): cheapest route that gets the real
+- **Fetch ladder** (`fetchgate.fetch`, used for every review page): cheapest route that gets the real
   page: `vm` (free) -> `vm_camoufox` (free, slower) -> `residential` (DataImpulse ~$1/GB; ~70 KB brotli per page,
   ~$0.00006) -> `residential_camoufox` (0.8-1.2 MB in Camoufox without images, ~$0.001) -> `apify_unblocker`
   (~$1.5 per 1,000 requests). Residential routes are pinned to US exits (`us_exit`). A route that hit a bot wall is
@@ -61,7 +61,7 @@ Production runs of asana.com and notion.com (before the fixes below were deploye
 - **In progress when the session ended:** an end-to-end production run on asana.com (Product Hunt in-house: 50
   reviews; Capterra page match missed "Asana-PM"; G2 still scraping). Re-run asana.com / notion.com on
   `/discovery` and check each "reviews" trace line says "in-house via ...".
-- **Own-unblocker prototype** (`review_fetch.own_unblock`, on branch `claude/funny-euler-li5h0f`, commit d31db63, not
+- **Own-unblocker prototype** (`fetchgate.ladder.own_unblock`, on branch `claude/funny-euler-li5h0f`, commit d31db63, not
   merged): sticky DataImpulse US IP (ports 10000-20000) + CapSolver (`AntiCloudflareTask` for Capterra,
   `DatadomeSliderTask` for G2), clearance cookie reused. **Untested.** Test after merging:
   `curl -XPOST https://35-202-98-224.sslip.io/api/discovery/probe -H 'content-type: application/json' -d '{"url":"https://www.capterra.com/p/160498/Shortcut/reviews/","proxy":"own_unblocker"}'`
@@ -116,7 +116,7 @@ python -m patchright install chromium
 python -m camoufox fetch          # Camoufox 0.4.11: newer releases have no published browser build
 
 python scripts/review_fetch_probe.py                                   # direct, your home IP
-PROXY_URL='http://USER:PASS@gw.dataimpulse.com:823' python scripts/review_fetch_probe.py   # via the proxy
+PYTHONPATH=src python scripts/review_fetch_probe.py   # via the gateway's residential proxy, if this machine has one
 python scripts/review_fetch_probe.py https://www.g2.com/products/notion/reviews            # any review URL
 ```
 
@@ -124,7 +124,7 @@ Each method prints `PASS` (200, no bot challenge) or `blocked`, with status, tit
 open briefly for the headed methods. Proxy credentials are in the DataImpulse dashboard (Proxy Access); they were
 pasted into a chat, so regenerate them.
 
-Methods, in `mvp/review_fetch.py`:
+Methods, in `src/fetchgate/ladder.py`:
 
 - `patchright_*`: Patchright (Chromium with automation leaks patched), headed.
 - `headed_chromium_*`: Playwright Chromium, headed, no UA override or injected scripts.
@@ -163,14 +163,14 @@ If the server's startup hooks fail on missing study dependencies (Browserbase et
 clears `app.router.on_startup` before `uvicorn.run(app)`.
 
 Checks without the LLM: `python scripts/discovery_sources_check.py --product Linear --competitors Jira Shortcut`.
-Tests: `PYTHONPATH=src python -m pytest mvp/test_discovery.py mvp/test_review_fetch.py`.
+Tests: `PYTHONPATH=src python -m pytest mvp/test_discovery.py src/fetchgate`.
 
 ## Files
 
 | File | What |
 |---|---|
 | `mvp/discovery.py` | The agent: site read, search, competitor pick, review pages, segments and tasks, trace, saved keys |
-| `mvp/review_fetch.py` | In-house fetch methods and `probe()` |
+| `src/fetchgate/` | The fetch gateway: routes, ladder, budget, log, `probe()` (see FETCH_LADDER.md) |
 | `mvp/static/discovery.html` | The page (result, agent trace, real users, keys) |
 | `mvp/server.py` | `/discovery`, `/api/discovery*` (runs, keys, probe) |
 | `scripts/review_fetch_probe.py` | Local probe runner |

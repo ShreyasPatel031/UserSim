@@ -1,0 +1,17 @@
+name: fetchgate
+on:
+  push:
+  pull_request:
+jobs:
+  scan-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pytest requests
+      - name: No direct proxy or Apify use outside src/fetchgate
+        run: PYTHONPATH=src python -m fetchgate scan
+      - name: Gateway tests (ladder order, Apify gating, budget cap, scan)
+        run: PYTHONPATH=src python -m pytest -q src/fetchgate

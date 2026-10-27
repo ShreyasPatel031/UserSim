@@ -1,0 +1,27 @@
+# The fetch gateway (src/fetchgate) as a localhost service. Runs as the `fetchgate` system user, the only user that
+# can read /etc/fetchgate/credentials.env. Installed by src/fetchgate/deploy/install_vm.sh.
+[Unit]
+Description=UserSim fetch gateway (localhost:8765)
+After=network-online.target
+
+[Service]
+User=fetchgate
+Group=fetchgate
+WorkingDirectory=/var/lib/fetchgate
+Environment=HOME=/var/lib/fetchgate PYTHONPATH=/opt/fetchgate/src PYTHONUNBUFFERED=1
+Environment=FETCHGATE_CREDENTIALS=/etc/fetchgate/credentials.env FETCHGATE_LOG=/var/log/fetchgate/fetches.jsonl
+# Caps no caller can raise: per job (callers ask with FETCH_BUDGET_USD, default 5) and per day across all jobs.
+Environment=FETCHGATE_MAX_JOB_USD=50 FETCHGATE_DAILY_USD=25 FETCHGATE_APIFY=1
+EnvironmentFile=-/etc/fetchgate/limits.env
+ExecStart=/opt/usersim/venv/bin/python -m fetchgate serve
+Restart=always
+RestartSec=3
+UMask=0022
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+ReadWritePaths=/var/lib/fetchgate /var/log/fetchgate
+
+[Install]
+WantedBy=multi-user.target

@@ -1,28 +1,28 @@
 """Which way of fetching G2 / Capterra / Product Hunt review pages gets past their bot protection, from this machine.
 
-Runs every method in mvp/review_fetch.py (Patchright, headed Chromium, headless Chromium, Camoufox, curl_cffi with a
-Chrome fingerprint, a plain client) on each URL, through PROXY_URL when it is set and directly, and prints status /
-title / size / whether a bot challenge was served. Never prints page content or the proxy.
+Runs every method in src/fetchgate/ladder.py (Patchright, headed Chromium, headless Chromium, Camoufox, curl_cffi with
+a Chrome fingerprint, a plain client) on each URL, through the gateway's residential proxy when this machine has one
+(src/fetchgate/creds.py) and directly, and prints status / title / size / whether a bot challenge was served. Never
+prints page content or the proxy. Costs are logged by the gateway under job probe-<date>.
 
 One-time setup (see docs/discovery/HANDOVER.md):
     pip install curl_cffi httpx playwright patchright "camoufox[geoip]==0.4.11"
     python -m playwright install chromium && python -m patchright install chromium && python -m camoufox fetch
 
-    python scripts/review_fetch_probe.py                      # default URLs, direct from this machine
-    PROXY_URL='http://user:pass@gw.dataimpulse.com:823' python scripts/review_fetch_probe.py
-    python scripts/review_fetch_probe.py https://www.g2.com/products/notion/reviews
+    PYTHONPATH=src python scripts/review_fetch_probe.py                      # default URLs
+    PYTHONPATH=src python scripts/review_fetch_probe.py https://www.g2.com/products/notion/reviews
 """
 
 from __future__ import annotations
 
 import json
-import os
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from mvp import review_fetch as F  # noqa: E402
+import fetchgate  # noqa: E402
+from fetchgate import creds  # noqa: E402
 
 DEFAULT_URLS = [
     "https://www.g2.com/products/linear/reviews",
@@ -36,11 +36,10 @@ def main() -> None:
         print(__doc__)
         return
     urls = sys.argv[1:] or DEFAULT_URLS
-    proxy = (os.environ.get("PROXY_URL") or "").strip() or None
-    print(f"proxy: {'yes' if proxy else 'no (direct from this machine)'}\n")
+    print(f"residential proxy: {'yes' if creds.residential() else 'no (direct from this machine)'}\n")
     for url in urls:
         try:
-            out = F.probe(url, proxy)
+            out = fetchgate.probe(url, kind="saved")
         except ValueError as exc:
             print(f"== {url}\n  skipped: {exc}\n")
             continue

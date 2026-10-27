@@ -1,11 +1,12 @@
-"""In-house review page probe: allowed hosts only, challenge detection, proxy credentials never echoed."""
+"""The fetch routes (fetchgate.ladder): allowed probe hosts, challenge detection, proxy credentials never echoed.
+The ladder order, Apify gating and budget are tested in test_gate.py."""
 
 from __future__ import annotations
 
 import unittest
 from unittest import mock
 
-from mvp import review_fetch as F
+from fetchgate import ladder as F
 
 
 class ReviewFetchTest(unittest.TestCase):
@@ -44,7 +45,7 @@ class ReviewFetchTest(unittest.TestCase):
     def test_apify_proxy_urls_and_cert_relaxation_only_for_unblocker(self):
         resp = mock.Mock()
         resp.json.return_value = {"data": {"proxy": {"password": "pw"}}}
-        with mock.patch("mvp.discovery.apify_token", return_value="tok"), mock.patch("requests.get", return_value=resp):
+        with mock.patch("fetchgate.creds.apify_token", return_value="tok"), mock.patch("requests.get", return_value=resp):
             self.assertEqual(F.apify_proxy("UNBLOCKER"), "http://groups-UNBLOCKER:pw@proxy.apify.com:8000")
             self.assertEqual(F.apify_proxy("RESIDENTIAL"), "http://groups-RESIDENTIAL,country-US:pw@proxy.apify.com:8000")
         self.assertTrue(F._intercepting("http://groups-UNBLOCKER:pw@proxy.apify.com:8000"))
@@ -70,39 +71,12 @@ class LadderTest(unittest.TestCase):
     def setUp(self):
         F._BLOCKED.clear()
 
-    def test_cheapest_route_that_passes_and_blocked_routes_are_skipped_next_time(self):
-        calls = []
-
-        def fake(tier, url, residential, meter=None):
-            calls.append(tier)
-            if meter is not None:
-                meter["bytes"] = 70_000
-            return self.REAL if tier == "residential" else self.WALL
-        with mock.patch.object(F, "tier_fetch", side_effect=fake):
-            status, _, route, tried = F.ladder_fetch("https://www.capterra.com/p/1/X/reviews/", "http://u:p@gw:823")
-            self.assertEqual((status, route, calls), (200, "residential", ["vm", "vm_camoufox", "residential"]))
-            self.assertAlmostEqual(tried[-1]["usd"], 0.00007)
-            calls.clear()
-            F.ladder_fetch("https://www.capterra.com/p/1/X/reviews/?page=2", "http://u:p@gw:823")
-            self.assertEqual(calls, ["residential"])  # VM routes hit a wall on this site a moment ago
-            calls.clear()
-            F.ladder_fetch("https://www.g2.com/products/x/reviews", None)  # other site; no residential proxy saved
-            self.assertEqual(calls, ["vm", "vm_camoufox", "apify_unblocker"])
-
-    def test_errors_and_timeouts_fall_through_without_blocking_the_route(self):
-        def fake(tier, url, residential, meter=None):
-            if tier == "vm":
-                raise TimeoutError("slow")
-            return self.REAL
-        with mock.patch.object(F, "tier_fetch", side_effect=fake):
-            self.assertEqual(F.ladder_fetch("https://www.trustradius.com/products/x/reviews", None)[2], "vm_camoufox")
-        self.assertNotIn(("trustradius.com", "vm"), F._BLOCKED)
-
     def test_localised_and_mid_size_challenge_pages_are_not_passes(self):
         cf = "<title>Трохи зачекайте…</title>" + "<script src='/cdn-cgi/challenge-platform/x'></script>" + "x" * 28000
         self.assertFalse(F.is_clean(200, cf))
         self.assertFalse(F.is_clean(200, "<title>Один момент…</title>" + "x" * 28000))
         self.assertTrue(F.is_clean(200, "<title>Asana Reviews</title><script>datadome</script>" + "x" * 300_000))
+        self.assertTrue(F.is_clean(200, '{"text": "solve the captcha, just a moment"}'))  # JSON API answers aren't walls
 
     def test_residential_is_pinned_to_us_exits(self):
         self.assertEqual(F.us_exit("http://u:p@gw.dataimpulse.com:823"), "http://u__cr.us:p@gw.dataimpulse.com:823")
@@ -114,6 +88,7 @@ class LadderTest(unittest.TestCase):
         self.assertAlmostEqual(F.tier_cost("residential_camoufox", 2 * 10**6), 0.002)
         self.assertEqual(F.tier_cost("apify_unblocker", 0), F.UNBLOCKER_USD_PER_PAGE)
         self.assertEqual(F.tier_cost("apify_unblocker", 0, ok=False), 0.0)  # failed Unblocker requests aren't billed
+        self.assertAlmostEqual(F.tier_cost("apify_residential_camoufox", 10**6), 0.008)
 
 
 if __name__ == "__main__":

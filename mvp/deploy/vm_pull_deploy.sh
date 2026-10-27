@@ -69,5 +69,12 @@ if [ -f "$ENV_FILE" ]; then
 fi
 
 systemctl restart "$SERVICE"
+# The fetch gateway runs from its own copy (src/fetchgate/deploy/install_vm.sh) as the fetchgate user.
+if [ -d /opt/fetchgate/src/fetchgate ] && [ -d "$STAGE/src/fetchgate" ]; then
+  rsync -a --delete --exclude '__pycache__' --exclude 'test_*.py' "$STAGE/src/fetchgate/" /opt/fetchgate/src/fetchgate/
+  install -m 644 "$STAGE/src/fetchgate/deploy/fetchgate.service" /etc/systemd/system/fetchgate.service
+  systemctl daemon-reload
+  systemctl restart fetchgate.service || log "fetchgate restart failed"
+fi
 echo "$SHA" > "$SHA_FILE"
 log "deployed $SHORT; build.txt and $SERVICE restarted"

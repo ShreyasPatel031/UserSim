@@ -102,8 +102,9 @@ seeing results. If the new products contradict the earlier ones, say so.
 - **The Apify key was pasted into chat twice. Rotate it** and store it as `APIFY_TOKEN` in the environment secrets. It
   was never written to a file or the repo (GitGuardian shows neutral; the branch history was grepped clean).
 - This session's safety check blocked saving the key to a file or passing it to Python, so scraping went through
-  `hm/apify_scrape.sh` (curl only; `T=<key> bash hm/apify_scrape.sh names.txt cache/live`, 4 runs at once, retries,
-  writes `cache/live/<slug>.json`). Python reads `cache/live/` through `live.py` and `mvp/review_context.py`.
+  `hm/apify_scrape.sh` (curl only). That script is gone: scrapes now go through the fetch gateway
+  (`ALLOW_APIFY=1 FETCH_JOB=<name> python hm/apify_scrape.py names.txt cache/live`, 4 runs at once, writes
+  `cache/live/<slug>.json`; see AGENTS.md). Python reads `cache/live/` through `live.py` and `mvp/review_context.py`.
 - **Raw scrapes are gitignored and die with the container.** `data/live_cache.tar.gz` (173 products, reviewer names
   removed) is committed: `mkdir -p cache && tar xzf data/live_cache.tar.gz -C cache` restores `cache/live/`. Scrapes
   after this archive are not in it. `hm_agent_eval.py`, `yc_test.py` and the pooled eval need `cache/live/`.

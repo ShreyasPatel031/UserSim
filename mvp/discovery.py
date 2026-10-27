@@ -18,7 +18,9 @@ review pages. Steps, in order:
 Every step is recorded in a trace (what was asked, how long it took, what came back) so the /discovery page can show
 what the agent searched and retrieved. Secrets: APIFY_TOKEN (review scrapes) and PH_TOKEN, or PH_CLIENT_ID +
 PH_CLIENT_SECRET (Product Hunt API, same names as scripts/ph_crawl.py); a missing one skips that source, and the trace
-says so.
+says so. Review pages and Apify actors go through the fetch gateway (fetchgate), one job per run: it reads the fetch
+credentials itself (a run's own keys are handed to it as overrides), logs each fetch's route and cost, and stops the
+run at its budget.
 """
 
 from __future__ import annotations
@@ -61,10 +63,15 @@ _PH_MINTED: dict[str, str] = {}  # client id -> client-credentials access token
 CREDENTIAL_NAMES = ("APIFY_TOKEN", "PH_TOKEN", "PH_CLIENT_ID", "PH_CLIENT_SECRET", "PROXY_URL")
 
 
-def proxy_url() -> str:
-    """Residential proxy for fetching review pages in-house (mvp.review_fetch); '' when not set."""
-    return _cred("PROXY_URL")
 _RUN_CREDS: contextvars.ContextVar[dict[str, str]] = contextvars.ContextVar("discovery_creds", default={})
+_RUN_JOB: contextvars.ContextVar[str | None] = contextvars.ContextVar("discovery_job", default=None)
+
+
+def fetch_overrides() -> dict[str, str] | None:
+    """The fetch keys (Apify token, residential proxy) this run's user passed, for fetchgate; None = the gateway's own."""
+    from fetchgate import creds
+
+    return {k: v for k, v in _RUN_CREDS.get().items() if k in creds.NAMES and v} or None
 
 
 # Keys saved once through the /discovery page (POST /api/discovery/keys), for servers whose Secret Manager lacks them.
@@ -117,12 +124,12 @@ def save_keys(new: dict[str, str], current_apify: str = "") -> tuple[bool, str]:
 
 def keys_status() -> dict[str, dict[str, Any]]:
     """Which keys a run would use and from where (never the values)."""
-    from mvp import review_context
+    from fetchgate import creds as fetchgate_creds
 
     stored = stored_keys()
     out = {}
     for name in CREDENTIAL_NAMES:
-        env = (os.environ.get(name) or "").strip() or (review_context.apify_token() if name == "APIFY_TOKEN" else "")
+        env = fetchgate_creds.get(name) if name in fetchgate_creds.NAMES else (os.environ.get(name) or "").strip()
         out[name] = {"present": bool(stored.get(name) or env), "source": "saved" if stored.get(name) else ("server" if env else "missing")}
     return out
 
@@ -401,9 +408,10 @@ async def ph_topics(query: str, first: int = 3) -> list[dict[str, Any]]:
 
 
 def apify_token() -> str | None:
-    from mvp import review_context
+    """The Apify token this run's fetches would use (the run's own, else the gateway's), None when there is none."""
+    from fetchgate import creds
 
-    return _RUN_CREDS.get().get("APIFY_TOKEN") or stored_keys().get("APIFY_TOKEN") or review_context.apify_token()
+    return creds.apify_token(fetch_overrides()) or None
 
 
 # Each platform's reviews come from its exact page found on Google. Actors checked live (Oct 2026):
@@ -475,9 +483,10 @@ CACHE_DAYS = float(os.environ.get("MVP_DISCOVERY_REVIEW_CACHE_DAYS", "30"))
 
 def scrape_inhouse(platform: str, url: str, product: str) -> tuple[list[dict[str, Any]], str]:
     """Reviews parsed in-house from the product's review pages, each page fetched by the cheapest route that gets
-    through (review_fetch.ladder_fetch: VM, VM + Camoufox, residential, Apify Unblocker, residential + Camoufox);
-    ([], why) when the site has no parser yet or nothing parsed."""
-    from mvp import review_fetch, review_parsers
+    through (fetchgate.fetch: VM, VM + Camoufox, residential, residential + Camoufox, then the Apify Unblocker when
+    ALLOW_APIFY=1); ([], why) when the site has no parser yet or nothing parsed."""
+    import fetchgate
+    from mvp import review_parsers
 
     if platform not in review_parsers.PARSERS:
         return [], f"no in-house parser for {platform} yet"
@@ -486,11 +495,11 @@ def scrape_inhouse(platform: str, url: str, product: str) -> tuple[list[dict[str
 
     def fetch_page(u: str) -> tuple[int, str]:
         nonlocal usd
-        status, html, route, tried = review_fetch.ladder_fetch(u, proxy_url())
-        usd += sum(t.get("usd", 0) for t in tried)
-        if route and route not in routes:
-            routes.append(route)
-        return status, html
+        got = fetchgate.fetch(u, job=_RUN_JOB.get(), creds_override=fetch_overrides())
+        usd += got["usd"]
+        if got["route"] and got["route"] not in routes:
+            routes.append(got["route"])
+        return got["status"], got["html"]
 
     rows, info = review_parsers.collect(platform, url, product, fetch_page)
     via = "in-house via " + (" + ".join(_ROUTE_LABEL.get(r, r) for r in routes) or "nothing")
@@ -512,10 +521,14 @@ def scrape_review_page(platform: str, url: str, product: str = "") -> list[dict[
     cache = review_context._APIFY_CACHE / f"page2-{_slug(url)}.json"
     if cache.is_file() and time.time() - cache.stat().st_mtime < CACHE_DAYS * 86400:
         return json.loads(cache.read_text())
+    from fetchgate import BudgetExceeded
+
     rows: list[dict[str, Any]] = []
     try:
         rows, why = scrape_inhouse(platform, url, product)
         print(f"[discovery] {platform} {url}: {why}", flush=True)
+    except BudgetExceeded:  # the run's budget is spent: no actor either
+        raise
     except Exception as exc:  # noqa: BLE001 - fall back to the actor
         print(_redact(f"[discovery] in-house {platform} scrape failed: {exc!r}")[:300], flush=True)
     if rows:
@@ -532,20 +545,23 @@ def _scrape_with_actor(platform: str, url: str, token: str) -> list[dict[str, An
     """The Apify scraper actors (fallback)."""
     from mvp import review_context
 
+    job = _RUN_JOB.get() or "discovery-actors"
     if platform == "g2":
         items = review_context._apify_run(G2_ACTOR, {"query": url, "platforms": ["g2", "capterra"], "maxResults": 100,
-                                                     "sort": "most_recent", "starRatings": []}, token, wait_s=900.0)
+                                                     "sort": "most_recent", "starRatings": []}, token, wait_s=900.0,
+                                          job=job)
         rows = [review_context._all_in_one_item(x) for x in items if x.get("platform") == "g2"]
     elif platform == "capterra":
         items = review_context._apify_run(CAPTERRA_ACTOR, {"productUrls": [{"url": url}], "maxReviewsPerProduct": REVIEWS_PER_SITE,
-                                                           "maxItems": REVIEWS_PER_SITE, "includeProductAggregate": False}, token)
+                                                           "maxItems": REVIEWS_PER_SITE, "includeProductAggregate": False}, token, job=job)
         rows = [{"source": "capterra", "product": r.get("productName") or "", "role": r.get("reviewerJobTitle"),
                  "size": r.get("reviewerCompanySize"), "industry": r.get("reviewerIndustry"),
                  "time_used": r.get("timeUsedProduct"), "rating": r.get("overallRating"), "pros": r.get("pros"),
                  "cons": r.get("cons"), "date": r.get("publishedDate")} for r in items]
     else:
         items = review_context._apify_run(PH_REVIEWS_ACTOR, {"startUrls": [{"url": url}],
-                                                             "maxReviewsPerProduct": REVIEWS_PER_SITE}, token, wait_s=600.0)
+                                                             "maxReviewsPerProduct": REVIEWS_PER_SITE}, token, wait_s=600.0,
+                                          job=job)
         rows = [{"source": "producthunt", "product": r.get("productName") or "", "name": r.get("reviewerName"),
                  "role": r.get("reviewerHeadline"), "rating": r.get("overallRating"),
                  "text": " / ".join(str(x) for x in (r.get("overallExperience"), r.get("positiveFeedback") and f"Liked: {r['positiveFeedback']}",
@@ -968,6 +984,7 @@ Return JSON:
 
     async def go(self) -> Discovery:
         _RUN_CREDS.set(self._credentials)  # this task's context only
+        _RUN_JOB.set(f"discovery-{self.run.id}")  # one fetch budget per run
         try:
             self.run.result = await self.execute()
             self.run.status = "done"

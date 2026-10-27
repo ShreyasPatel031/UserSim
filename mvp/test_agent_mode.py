@@ -193,7 +193,7 @@ class AgentModeTest(unittest.TestCase):
         with mock.patch.object(RC, "apify_token", return_value=None), mock.patch.object(RC, "prefetch") as pf:
             out, _ = _run()
         self.assertEqual(out["status"], "no_data")
-        self.assertIn("APIFY_TOKEN", out["reason"])
+        self.assertIn("no Apify token", out["reason"])
         pf.assert_not_called()
 
     def test_no_reviews_anywhere_is_no_data(self):

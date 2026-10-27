@@ -489,7 +489,7 @@ async def predict_experience(*, product: str, url: str, persona: dict[str, Any],
     if not RC.enabled():
         return {"mode": "agent", "status": "disabled", "reason": "MVP_REVIEW_CONTEXT=0"}
     if not RC.apify_token():
-        return {"mode": "agent", "status": "no_data", "reason": "APIFY_TOKEN is not set on the server, so no reviews can be scraped"}
+        return {"mode": "agent", "status": "no_data", "reason": "the server has no Apify token, so no reviews can be scraped"}
     if not rivals and url:
         try:
             rivals = await (discover or discover_rivals)(url)

@@ -31,24 +31,24 @@ class SecretsStoreTests(unittest.TestCase):
     def test_file_fallback_sets_env_and_snapshot(self):
         path = os.environ["USERSIM_ENV_FILE"]
         with open(path, "w") as f:
-            f.write("APIFY_TOKEN=from-file\n")
+            f.write("PH_TOKEN=from-file\n")
         S.refresh_now()
-        self.assertEqual(os.environ.get("APIFY_TOKEN"), "from-file")
+        self.assertEqual(os.environ.get("PH_TOKEN"), "from-file")
         snap = S.snapshot()
-        self.assertTrue(snap["secrets"]["APIFY_TOKEN"]["present"])
-        self.assertEqual(snap["secrets"]["APIFY_TOKEN"]["source"], "file")
+        self.assertTrue(snap["secrets"]["PH_TOKEN"]["present"])
+        self.assertEqual(snap["secrets"]["PH_TOKEN"]["source"], "file")
         self.assertNotIn("from-file", str(snap))
 
     def test_gsm_wins_over_file_when_enabled(self):
         path = os.environ["USERSIM_ENV_FILE"]
         with open(path, "w") as f:
-            f.write("APIFY_TOKEN=from-file\n")
+            f.write("PH_TOKEN=from-file\n")
 
         def fake_gsm(var: str) -> str | None:
-            return "from-gsm" if var == "APIFY_TOKEN" else None
+            return "from-gsm" if var == "PH_TOKEN" else None
 
         with mock.patch.dict(os.environ, {"USERSIM_SECRETS_OFF": "0"}, clear=False):
             with mock.patch("mvp.secrets_store._fetch_gsm", side_effect=fake_gsm):
                 S.refresh_now()
-            self.assertEqual(os.environ.get("APIFY_TOKEN"), "from-gsm")
-            self.assertEqual(S.snapshot()["secrets"]["APIFY_TOKEN"]["source"], "secret_manager")
+            self.assertEqual(os.environ.get("PH_TOKEN"), "from-gsm")
+            self.assertEqual(S.snapshot()["secrets"]["PH_TOKEN"]["source"], "secret_manager")

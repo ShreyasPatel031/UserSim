@@ -1328,62 +1328,58 @@ async def save_discovery_keys(body: DiscoveryKeys):
 
 class ReviewProbe(BaseModel):
     url: str
-    # saved = the saved PROXY_URL; apify_unblocker / apify_residential = Apify Proxy groups via the saved Apify token;
-    # ladder = every review_fetch.TIERS route (VM, VM + Camoufox, residential, Unblocker, residential + Camoufox)
+    # saved = the residential proxy; apify_unblocker / apify_residential = Apify Proxy groups (need ALLOW_APIFY=1);
+    # ladder = every fetchgate route (VM, VM + Camoufox, residential, residential + Camoufox, Unblocker);
+    # own_unblocker = sticky residential IP + CapSolver (prototype)
     proxy: str = "saved"
     browsers: bool = True
 
 
 @app.post("/api/discovery/probe")
 async def probe_review_page(body: ReviewProbe):
-    """Can review pages be fetched in-house? Status / title / size / bot-challenge per method, for one G2, Capterra or
-    Product Hunt URL, through the saved residential proxy. Never returns page content or the proxy."""
-    from mvp import discovery, review_fetch
+    """Can review pages be fetched in-house? Status / title / size / bot-challenge per method, for one review URL,
+    through the fetch gateway (costs logged under job 'probe'). Never returns page content or the proxy."""
+    import fetchgate
+    from fetchgate import ladder
 
-    if not review_fetch.allowed(body.url):
-        raise HTTPException(status_code=400, detail="only https review pages on " + ", ".join(review_fetch.ALLOWED_HOSTS))
+    if not ladder.allowed(body.url):
+        raise HTTPException(status_code=400, detail="only https review pages on " + ", ".join(ladder.ALLOWED_HOSTS))
+
     def run():
-        import time
-
-        if body.proxy == "ladder":  # every fetch route, cheapest first: which passes, time, bytes, cost per page
-            return review_fetch.ladder_probe(body.url, discovery.proxy_url() or None)
-        if body.proxy == "own_unblocker":  # sticky DataImpulse IP + CapSolver (prototype)
-            if not discovery.proxy_url():
-                raise HTTPException(status_code=400, detail="no saved PROXY_URL")
-            got = review_fetch.own_unblock(body.url, discovery.proxy_url())
-            return {"url": body.url, "proxy_kind": body.proxy, "ok": got["ok"], "steps": got["steps"],
-                    "final": review_fetch._summary(got["status"], got["html"], time.time()) if got["ok"] else None}
-        proxy = {"apify_unblocker": lambda: review_fetch.apify_proxy("UNBLOCKER"),
-                 "apify_residential": lambda: review_fetch.apify_proxy("RESIDENTIAL")}.get(
-            body.proxy, lambda: discovery.proxy_url() or None)()
-        return review_fetch.probe(body.url, proxy, browsers=body.browsers) | {"proxy_kind": body.proxy}
+        try:
+            return fetchgate.probe(body.url, kind=body.proxy, browsers=body.browsers)
+        except (fetchgate.ApifyNotAllowed, fetchgate.BudgetExceeded) as exc:
+            raise HTTPException(status_code=403, detail=str(exc)) from None
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from None
     return await asyncio.to_thread(run)
 
 
 class ReviewSample(BaseModel):
     url: str
-    proxy: str = "apify_unblocker"
     current_apify_token: str
 
 
 @app.post("/api/discovery/sample")
 async def sample_review_page(body: ReviewSample):
-    """One review page's HTML (G2 / Capterra / Product Hunt only), for writing parsers against the real page. Needs
-    the saved Apify token as proof: fetches through the paid proxies are not open to anyone."""
+    """One review page's HTML (the review sites only), for writing parsers against the real page, fetched by the
+    gateway's ladder. Needs the saved Apify token as proof: fetches through the paid proxies are not open to anyone."""
     import secrets as _secrets
 
-    from mvp import discovery, review_fetch
+    import fetchgate
+    from fetchgate import ladder
+    from mvp import discovery
 
-    if not review_fetch.allowed(body.url):
-        raise HTTPException(status_code=400, detail="only https review pages on " + ", ".join(review_fetch.ALLOWED_HOSTS))
+    if not ladder.allowed(body.url):
+        raise HTTPException(status_code=400, detail="only https review pages on " + ", ".join(ladder.ALLOWED_HOSTS))
     if not _secrets.compare_digest(body.current_apify_token or "", discovery.apify_token() or "\0"):
         raise HTTPException(status_code=403, detail="send the saved Apify token")
 
     def run():
-        proxy = {"apify_unblocker": lambda: review_fetch.apify_proxy("UNBLOCKER")}.get(
-            body.proxy, lambda: discovery.proxy_url() or None)()
-        status, html = review_fetch.fetch_with_retries(body.url, proxy)
-        return {"status": status, "html": html}
+        try:
+            return fetchgate.sample(body.url)
+        except fetchgate.BudgetExceeded as exc:
+            raise HTTPException(status_code=403, detail=str(exc)) from None
     return await asyncio.to_thread(run)
 
 

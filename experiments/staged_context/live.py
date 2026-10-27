@@ -4,7 +4,8 @@
     frame(name)             -> those reviews in corpus.py's schema (source "live", site = platform)
     named_competitors(...)  -> the product's direct competitors, named by the model from its page (cached call)
 
-Token: APIFY_TOKEN, or ~/.config/apify/token. A failed run raises; nothing is substituted.
+Runs go through the fetch gateway (fetchgate.run_actor: ALLOW_APIFY=1, job budget FETCH_BUDGET_USD); this file never
+sees the Apify token. A failed run raises; nothing is substituted.
 """
 
 from __future__ import annotations
@@ -19,10 +20,11 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-import requests
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
 import experiment as E  # noqa: E402
+import fetchgate  # noqa: E402
 
 ACTOR = "zen-studio~software-review-scraper"
 LIVE = E.CACHE / "live"
@@ -30,53 +32,31 @@ MAX_RESULTS = 100  # the actor's minimum
 _SLOTS = threading.BoundedSemaphore(4)  # account: 5 concurrent runs, 16 GB
 
 
-def token() -> str:
-    tok = os.environ.get("APIFY_TOKEN", "").strip()
-    if not tok:
-        f = Path.home() / ".config" / "apify" / "token"
-        tok = f.read_text().strip() if f.is_file() else ""
-    if not tok:
-        raise RuntimeError("APIFY_TOKEN missing")
-    return tok
-
-
 def slug(name: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")
-
-
-def _redact(msg: str, tok: str) -> str:
-    return re.sub(r"token=[^&\s')\"]+", "token=<redacted>", msg.replace(tok, "<redacted>"))
 
 
 def scrape(name: str, *, wait_s: float = 900.0) -> list[dict]:
     dest = LIVE / f"{slug(name)}.json"
     if dest.is_file():
         return json.loads(dest.read_text())["items"]
-    tok = token()
     payload = {"query": name, "platforms": ["g2", "capterra", "trustradius", "gartner"], "maxResults": MAX_RESULTS,
                "sort": "most_recent", "starRatings": []}
+    run: dict = {}
     with _SLOTS:
         for attempt in range(4):
             try:
-                r = requests.post(f"https://api.apify.com/v2/acts/{ACTOR}/runs", params={"token": tok}, json=payload, timeout=60)
-                r.raise_for_status()
-                run = r.json()["data"]
-                deadline = time.monotonic() + wait_s
-                while run["status"] in {"READY", "RUNNING"} and time.monotonic() < deadline:
-                    time.sleep(10)
-                    run = requests.get(f"https://api.apify.com/v2/actor-runs/{run['id']}", params={"token": tok},
-                                       timeout=30).json()["data"]
+                items = fetchgate.run_actor(ACTOR, payload, job=os.environ.get("FETCH_JOB") or "staged-context-live",
+                                            wait_s=wait_s, estimate_usd=0.6, info=run)
                 break
-            except requests.RequestException as exc:  # proxy resets; 402 = memory cap (too many parallel runs)
-                if attempt == 3:
-                    raise RuntimeError(_redact(f"{name}: {exc!r}", tok)) from None
+            except (fetchgate.BudgetExceeded, fetchgate.ApifyNotAllowed):
+                raise
+            except RuntimeError as exc:  # proxy resets; 402 = memory cap (too many parallel runs)
+                if attempt == 3 or "ended" in str(exc):
+                    raise RuntimeError(f"{name}: {exc}") from None
                 time.sleep(15 * (attempt + 1))
-    if run["status"] != "SUCCEEDED":
-        raise RuntimeError(f"{name}: run {run['id']} ended {run['status']}")
-    items = requests.get(f"https://api.apify.com/v2/datasets/{run['defaultDatasetId']}/items",
-                         params={"token": tok, "clean": "true"}, timeout=120).json()
     dest.parent.mkdir(parents=True, exist_ok=True)
-    dest.write_text(json.dumps({"query": name, "run_id": run["id"], "usd": run.get("usageTotalUsd"),
+    dest.write_text(json.dumps({"query": name, "run_id": run.get("run_id"), "usd": run.get("usd"),
                                 "ts": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "items": items}))
     return items
 

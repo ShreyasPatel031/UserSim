@@ -82,7 +82,7 @@ The VM service account needs **Secret Manager Secret Accessor** on these secrets
 | `BROWSERBASE_API_KEY` | Browserbase API key (MCP + website browsers) |
 | `MVP_CAPTCHA_API_KEY` | CapSolver / paid captcha API key |
 | `CAPSOLVER_API_KEY` | Alias used by some code paths for the same key |
-| `APIFY_TOKEN` | Apify token for `usersim_predict_experience` scrapes |
+| ~~`APIFY_TOKEN`~~ | Not in Secret Manager (every VM user can reach it via the metadata server): the Apify token and the residential proxy live only in the fetch gateway's `/etc/fetchgate/credentials.env` (`docs/discovery/FETCH_LADDER.md`) |
 | `MVP_SMS_PHONE` | Owner phone (E.164) used for SMS verification |
 | `MVP_OWNER_PHONE` | Optional owner phone metadata |
 | `MVP_NTFY_SMS_TOPIC` | ntfy topic where the phone forwards SMS (sensitive) |

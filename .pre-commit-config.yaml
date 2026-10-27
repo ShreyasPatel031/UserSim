@@ -1,0 +1,9 @@
+# For the pre-commit framework (https://pre-commit.com). Without it: git config core.hooksPath .githooks
+repos:
+  - repo: local
+    hooks:
+      - id: fetchgate-scan
+        name: no direct proxy / Apify use outside src/fetchgate (AGENTS.md)
+        entry: env PYTHONPATH=src python3 -m fetchgate scan --staged
+        language: system
+        pass_filenames: true
