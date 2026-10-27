@@ -1,0 +1,202 @@
+{
+ "all person-days | no follows | baseline": {
+  "person_days": 8315,
+  "top3_hit": 0.56,
+  "auc": 0.813,
+  "gain_pts": 0.0,
+  "ci95": [
+   0.0,
+   0.0
+  ]
+ },
+ "all person-days | no follows | + early read 3 h": {
+  "person_days": 8315,
+  "top3_hit": 0.592,
+  "auc": 0.82,
+  "gain_pts": 3.2,
+  "ci95": [
+   2.3,
+   4.2
+  ]
+ },
+ "all person-days | follows | baseline": {
+  "person_days": 8315,
+  "top3_hit": 0.624,
+  "auc": 0.838,
+  "gain_pts": 0.0,
+  "ci95": [
+   0.0,
+   0.0
+  ]
+ },
+ "all person-days | follows | + early read 3 h": {
+  "person_days": 8315,
+  "top3_hit": 0.656,
+  "auc": 0.846,
+  "gain_pts": 3.3,
+  "ci95": [
+   2.4,
+   4.2
+  ]
+ },
+ "usual visit time known | no follows | baseline": {
+  "person_days": 6821,
+  "top3_hit": 0.555,
+  "auc": 0.813,
+  "gain_pts": 0.0,
+  "ci95": [
+   0.0,
+   0.0
+  ]
+ },
+ "usual visit time known | no follows | + early read 3 h": {
+  "person_days": 6821,
+  "top3_hit": 0.616,
+  "auc": 0.823,
+  "gain_pts": 6.1,
+  "ci95": [
+   5.0,
+   7.2
+  ]
+ },
+ "usual visit time known | no follows | + page at usual visit time": {
+  "person_days": 6821,
+  "top3_hit": 0.622,
+  "auc": 0.827,
+  "gain_pts": 6.7,
+  "ci95": [
+   5.6,
+   7.6
+  ]
+ },
+ "usual visit time known | no follows | + both": {
+  "person_days": 6821,
+  "top3_hit": 0.628,
+  "auc": 0.827,
+  "gain_pts": 7.3,
+  "ci95": [
+   6.2,
+   8.4
+  ]
+ },
+ "usual visit time known | follows | baseline": {
+  "person_days": 6821,
+  "top3_hit": 0.581,
+  "auc": 0.825,
+  "gain_pts": 0.0,
+  "ci95": [
+   0.0,
+   0.0
+  ]
+ },
+ "usual visit time known | follows | + early read 3 h": {
+  "person_days": 6821,
+  "top3_hit": 0.633,
+  "auc": 0.833,
+  "gain_pts": 5.2,
+  "ci95": [
+   4.3,
+   6.3
+  ]
+ },
+ "usual visit time known | follows | + page at usual visit time": {
+  "person_days": 6821,
+  "top3_hit": 0.64,
+  "auc": 0.838,
+  "gain_pts": 5.9,
+  "ci95": [
+   4.9,
+   6.9
+  ]
+ },
+ "usual visit time known | follows | + both": {
+  "person_days": 6821,
+  "top3_hit": 0.644,
+  "auc": 0.838,
+  "gain_pts": 6.3,
+  "ci95": [
+   5.3,
+   7.4
+  ]
+ },
+ "commented that day (actual visit, not knowable ahead) | no follows | baseline": {
+  "person_days": 2608,
+  "top3_hit": 0.61,
+  "auc": 0.807,
+  "gain_pts": 0.0,
+  "ci95": [
+   0.0,
+   0.0
+  ]
+ },
+ "commented that day (actual visit, not knowable ahead) | no follows | + early read 3 h": {
+  "person_days": 2608,
+  "top3_hit": 0.633,
+  "auc": 0.82,
+  "gain_pts": 2.3,
+  "ci95": [
+   0.7,
+   3.7
+  ]
+ },
+ "commented that day (actual visit, not knowable ahead) | no follows | + page at actual visit": {
+  "person_days": 2608,
+  "top3_hit": 0.679,
+  "auc": 0.833,
+  "gain_pts": 6.9,
+  "ci95": [
+   5.3,
+   8.4
+  ]
+ },
+ "commented that day (actual visit, not knowable ahead) | no follows | + both": {
+  "person_days": 2608,
+  "top3_hit": 0.675,
+  "auc": 0.835,
+  "gain_pts": 6.5,
+  "ci95": [
+   4.9,
+   7.9
+  ]
+ },
+ "commented that day (actual visit, not knowable ahead) | follows | baseline": {
+  "person_days": 2608,
+  "top3_hit": 0.796,
+  "auc": 0.876,
+  "gain_pts": 0.0,
+  "ci95": [
+   0.0,
+   0.0
+  ]
+ },
+ "commented that day (actual visit, not knowable ahead) | follows | + early read 3 h": {
+  "person_days": 2608,
+  "top3_hit": 0.816,
+  "auc": 0.886,
+  "gain_pts": 2.0,
+  "ci95": [
+   0.9,
+   3.1
+  ]
+ },
+ "commented that day (actual visit, not knowable ahead) | follows | + page at actual visit": {
+  "person_days": 2608,
+  "top3_hit": 0.834,
+  "auc": 0.892,
+  "gain_pts": 3.9,
+  "ci95": [
+   2.8,
+   4.9
+  ]
+ },
+ "commented that day (actual visit, not knowable ahead) | follows | + both": {
+  "person_days": 2608,
+  "top3_hit": 0.837,
+  "auc": 0.894,
+  "gain_pts": 4.1,
+  "ci95": [
+   3.0,
+   5.2
+  ]
+ }
+}

@@ -125,3 +125,18 @@ The browser scroll of full histories for the screening sample is running. It wil
 
 - Token counts come from Vertex countTokens on 200 real examples (`ft_cost.py` → `ft_cost.json`).
 - Prices come from the Vertex pricing page, fetched Oct 27. Tuned models on the global endpoint are billed at the base model's prediction price.
+
+## 8. Launch-day view, measured (`visit.py` → `visit.json`, Oct 27 evening)
+"What the person saw" is approximated by each launch's comment count at a given moment, others' comments only. A visit time comes from the person's first comment that day.
+
+| Test days | Model | No follows | With follows |
+|---|---|---|---|
+| All 8,315 | baseline (incl. sequence) | 56.0% | 62.4% |
+| All 8,315 | + early read at 3 h | **59.2%** (+3.2, 2.3–4.2) | **65.6%** (+3.3, 2.4–4.2) |
+| 6,821 with a usual visit time (79%) | + page at the person's usual visit time | +6.7 (5.6–7.6) | +5.9 (4.9–6.9) |
+| same | + both | 62.8% (+7.3) | 64.4% (+6.3) |
+| 2,608 that commented (actual visit, not knowable ahead) | + page at actual visit | 67.9% (+6.9) | 83.7% (+3.9) |
+
+- A first version showed +10 points for the early read. That came from a bug: the count subtracted the person's own later comments. After the fix it is +2.3 on those days.
+- The usual visit time adds only ~1 point over the fixed 3 h early read. Most of its gain is simply more launch-day data, because usual visits come later in the day.
+- **The best measured so far: ~66% with 3 h of launch-day data, 62.4% before launch.** None of the measured signals gets near 90% for everyone. The best subgroup (people who comment and are followed) reaches 84%, but only with their actual visit time, which can't be known ahead.
