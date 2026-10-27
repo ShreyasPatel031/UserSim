@@ -10,3 +10,4 @@
 {"t":"scroll_sample_final","provider":"dataimpulse","usd":1.31,"note":"sample scroll total 2.51 GB (1.20 logged earlier); 815/1008 ok, rest failed when traffic ran out"}
 {"t":"scroll_full_holdout","provider":"dataimpulse","usd":5.46,"note":"5.46 GB decoded bytes; 1,747/2,755 people ok; DataImpulse returned 407 TRAFFIC_EXHAUSTED from ~09:47"}
 {"t":"scrape_vm","provider":"gcp","usd":3.8,"note":"e2-standard-16 09:00-15:55 (idle after 09:49 because a container restart delayed deletion)"}
+{"t":"lean_scroll_pilots","provider":"dataimpulse","usd":0.16,"note":"45 people across 3 pilots; shared browser blocked 16/20, so per-person browsers kept; early stop at Sep 1 saves little (first load ~4 MB)"}
