@@ -28,3 +28,7 @@ An experiment is one file in `experiments/` with `NAME`, `UNDATED` (inputs that 
 - Every input must be known before launch day. Inputs read "now" (follows, segments, LinkedIn) go in `UNDATED`.
 - Compare against the baseline on the same launches; a gain counts only if its interval clears the baseline's.
 - Person-level data is research-only; ongoing pipelines use segment counts.
+
+## Person-level results (Oct holdout)
+- Start here: [reports/overnight_summary.md](reports/overnight_summary.md) (scores, spend, what to pay for) and [reports/path_to_90.md](reports/path_to_90.md) (what it takes to reach 90% top-3 hit).
+- Scripts: `choice.py` (person rows and metrics), `path90.py` (miss buckets and oracle), `phase2.py` (collaborative filtering), `rel.py` (new relationship signals), `screen.py` (screening sample), `best_now.py` (full-holdout winners).
