@@ -7,6 +7,8 @@ from curl_cffi import requests as R
 
 P = open(os.path.expanduser("~/php/proxy.txt")).read().strip()
 ROUTES = [("dc", P), ("resi", P.replace("//auto:", "//groups-RESIDENTIAL,country-US:"))]
+if os.environ.get("RESI_ONLY") == "1":  # residential IPs only: blocks fall on rotating IPs, never the datacenter pool
+    ROUTES = ROUTES[1:]
 lock = threading.Lock()
 
 
