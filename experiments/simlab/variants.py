@@ -14,11 +14,16 @@ from . import store, choice
 from .persona import CACHE, card, gemini
 from .taste import PROMPT, x_posts
 
-VARIANTS = ["comments", "xposts", "reviews", "built", "history", "all"]
+# config name -> evidence added to the card (v1 profile card unless "noprofile")
+CONFIGS = {"v1": set(), "c": {"comments"}, "c10": {"comments10"}, "c+r": {"comments", "reviews"},
+           "c+r+b": {"comments", "reviews", "built"}, "c+x": {"comments", "xposts"}, "c+ch": {"comments", "choices"},
+           "c+r+ch": {"comments", "reviews", "choices"}, "everything": {"comments10", "reviews", "built", "xposts", "history", "choices"},
+           "c_noprofile": {"comments", "noprofile"}}
+VARIANTS = list(CONFIGS)
 lock = threading.Lock()
 
 
-def sample(seed=1, n=600):
+def sample(seed=1, n=1000):
     R = {}
     for l in open(f"{CACHE}/taste_ratings.jsonl"):
         r = json.loads(l); R[(r["person"], r["day"])] = 1
@@ -46,34 +51,46 @@ def run(threads=16):
         lineups.setdefault(dd, []).append(i)
     S = sample()
 
+    picked = E[E.item.map(day) == E.date].groupby(["person", "date"]).item.apply(list).to_dict()
+    past_days = {}
+    for (u0, d0) in picked:
+        past_days.setdefault(u0, []).append(d0)
+
     def extra(kind, u, d, p, h):
-        out = []
-        if kind in ("comments", "all"):
-            cs = [(dt, s, t) for dt, s, t in Cg.get(u, []) if dt < d][-5:]
+        ev = CONFIGS[kind]; out = []
+        if ev & {"comments", "comments10"}:
+            cs = [(dt, s, t) for dt, s, t in Cg.get(u, []) if dt < d][-(10 if "comments10" in ev else 5):]
             if cs:
                 out.append("their comments: " + " / ".join(f"on {slug2name.get(s, s)[:40]}: \"{t[:160]}\"" for dt, s, t in cs))
-        if kind in ("xposts", "all"):
+        if "xposts" in ev:
             ps = [q for q in X.get(str(p.get("twitter") or "").lower(), []) if (q.get("created_at") or "9") < d][:10]
             if ps:
                 out.append("recent X posts: " + " / ".join((q.get("text") or "")[:120].replace("\n", " ") for q in ps))
-        if kind in ("reviews", "all"):
+        if "reviews" in ev:
             rv = [x for x in Rg.get(u, []) if x[0] < d][-5:]
             if rv:
                 out.append("reviews written: " + "; ".join(f"{x[1]} {x[2]}/5 (likes: {x[3][:80]}; dislikes: {x[4][:60]})" for x in rv))
-        if kind in ("built", "all"):
+        if "built" in ev:
             b = [n for dt, n in built.get(u, []) if dt < d][-5:]
             if b:
                 out.append("products they built or posted: " + "; ".join(b))
-        if kind in ("history", "all"):
-            if len(h) > 6:
-                out.append("more launches they backed: " + "; ".join(names[i] for i in h[-15:-6]))
+        if "history" in ev and len(h) > 6:
+            out.append("more launches they backed: " + "; ".join(names[i] for i in h[-15:-6]))
+        if "choices" in ev:
+            r2 = random.Random(hash((u, d)) & 0xFFFF); ex = []
+            for d0 in sorted(x for x in past_days.get(u, []) if x < d)[-3:]:
+                up = picked[(u, d0)]; sk = [i for i in lineups.get(d0, []) if i not in up]
+                ex.append(f"on {d0} upvoted: " + "; ".join(names[i] for i in up[:3]) + " | skipped: " + "; ".join(names[i] for i in r2.sample(sk, min(4, len(sk)))))
+            if ex:
+                out.append("their past choices: " + " || ".join(ex))
         return (" | " + " | ".join(out)) if out else ""
 
     def one(args):
         kind, (u, d) = args
         p = pdict[u]; line = sorted(lineups[d])
         h = [it for dt, it in hist.get(u, []) if dt < d]
-        c = card(p, list(range(len(h))), {k: names[it] for k, it in enumerate(h)}, d) + extra(kind, u, d, p, h)
+        base_card = "" if "noprofile" in CONFIGS[kind] else card(p, list(range(len(h))), {k: names[it] for k, it in enumerate(h)}, d)
+        c = (base_card + extra(kind, u, d, p, h)).strip(" |") or "no information"
         txt = gemini(PROMPT.format(card=c, lineup="\n".join(f"{k + 1}. {names[x]}" for k, x in enumerate(line)), n=len(line)))
         try:
             rt = [float(v) for v in json.loads(re.search(r"\{.*\}", txt, re.S).group(0))["ratings"]]
@@ -97,7 +114,7 @@ def score():
             for l in open(path):
                 r = json.loads(l); R[r["person"] + "|" + r["day"]] = r["ratings"]
         return R
-    Rs = {"v1": load(f"{CACHE}/taste_ratings.jsonl"), **{k: load(f"{CACHE}/variant_{k}.jsonl") for k in VARIANTS}}
+    Rs = {k: load(f"{CACHE}/variant_{k}.jsonl") for k in VARIANTS}
     S = {u + "|" + d for u, d in sample()}
     D = choice.rows(); D = D[D.g.isin(S)].copy()
     for k, R in Rs.items():
@@ -105,12 +122,13 @@ def score():
         D[k] = D.groupby("g")[k].rank(pct=True)
     tr, te = D[D.day < "2026-10-01"], D[D.day >= "2026-10-01"]
     base = ["pop", "follow", "backed", "topic", "meaning"]
+    keep = te.dropna(subset=VARIANTS).g.unique(); te = te[te.g.isin(keep)]   # same test person-days for every config
     def gbm(c):
         t = tr.dropna(subset=c); e = te.dropna(subset=c)
         p = lgb.LGBMClassifier(n_estimators=200, learning_rate=0.05, num_leaves=7, min_child_samples=40, verbose=-1).fit(t[c], t.y).predict_proba(e[c])[:, 1]
         return choice.person_metrics(e, p)
     rows = [{"variant": "no persona", "alone AUC": None, "with factors AUC": round(gbm(base)[1], 3)}]
-    for k in ["v1"] + VARIANTS:
+    for k in VARIANTS:
         if D[k].notna().any():
             rows.append({"variant": k, "alone AUC": round(gbm([k])[1], 3), "with factors AUC": round(gbm(base + [k])[1], 3),
                          "rated": int(te.dropna(subset=[k]).g.nunique())})
