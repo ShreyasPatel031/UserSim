@@ -1,4 +1,5 @@
-"""Browser loads for the gateway: Camoufox opens the page (waiting out a bot challenge), optionally scrolls to the bottom
+"""Browser loads for the gateway: Camoufox (or headless Chromium, engine="chromium") opens the page (waiting out a bot
+challenge), optionally scrolls to the bottom
 the way a person would (clicking "Load more" buttons) until nothing new loads, and records the page's XHR / fetch
 JSON responses. Images, fonts and media are not downloaded. Every byte is metered, and stop() is asked after each
 scroll so a job's budget can end a long scroll early.
@@ -6,8 +7,9 @@ scroll so a job's budget can end a long scroll early.
 
 from __future__ import annotations
 
+import contextlib
 import sys
-from typing import Any, Callable
+from typing import Any, Callable, Iterator
 from urllib.parse import urlparse
 
 from fetchgate import ladder
@@ -15,6 +17,31 @@ from fetchgate import ladder
 MORE_BUTTONS = ("Load more", "Show more", "See more", "View more", "See more comments", "Show more comments")
 MAX_SCROLLS, PATIENCE, SCROLL_WAIT_MS = 400, 6, 1800
 MAX_BODY = 2_000_000  # per recorded response
+# Chromium's context as vm_scroll_di_chromium.py used it: through DataImpulse it got Product Hunt profile pages where
+# Camoufox mostly got Cloudflare's 403 (VM, Oct 27 2026).
+CHROME_UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) "
+             "Chrome/131.0.0.0 Safari/537.36")
+
+
+@contextlib.contextmanager
+def _page(engine: str, proxy: str | None) -> Iterator[Any]:
+    if engine == "chromium":
+        from playwright.sync_api import sync_playwright
+
+        with sync_playwright() as pw:
+            browser = pw.chromium.launch(headless=True, proxy=ladder._proxy_settings(proxy))
+            try:
+                ctx = browser.new_context(user_agent=CHROME_UA, locale="en-US", viewport={"width": 1280, "height": 1600},
+                                          ignore_https_errors=ladder._intercepting(proxy))
+                yield ctx.new_page()
+            finally:
+                browser.close()
+        return
+    from camoufox.sync_api import Camoufox
+
+    with Camoufox(headless="virtual" if sys.platform == "linux" else False, proxy=ladder._proxy_settings(proxy),
+                  geoip=bool(proxy), block_images=True, humanize=True, os=["windows", "macos"]) as browser:
+        yield browser.new_page()
 
 
 def _registrable(host: str) -> str:
@@ -23,11 +50,9 @@ def _registrable(host: str) -> str:
 
 def load(url: str, proxy: str | None, *, scroll: bool = False, meter: dict[str, Any] | None = None,
          stop: Callable[[int], bool] | None = None, max_scrolls: int = MAX_SCROLLS, wait_s: float = 30.0,
-         capture: str | None = None) -> dict[str, Any]:
+         capture: str | None = None, engine: str = "camoufox") -> dict[str, Any]:
     """{status, html, final_url, scrolls, responses: [{url, method, status, op, body}]}. capture: substring a response
     URL must contain to be recorded (default: the page's own site). meter['bytes'] gets the bytes transferred."""
-    from camoufox.sync_api import Camoufox
-
     meter = meter if meter is not None else {}
     meter.setdefault("bytes", 0)
     site = _registrable(urlparse(url).hostname or "")
@@ -69,9 +94,7 @@ def load(url: str, proxy: str | None, *, scroll: bool = False, meter: dict[str, 
             out["responses"].append(item)
         done["read"] = len(seen)
 
-    with Camoufox(headless="virtual" if sys.platform == "linux" else False, proxy=ladder._proxy_settings(proxy),
-                  geoip=bool(proxy), block_images=True, humanize=True, os=["windows", "macos"]) as browser:
-        page = browser.new_page()
+    with _page(engine, proxy) as page:
         page.route("**/*", lambda route: route.abort() if route.request.resource_type in {"image", "media", "font"}
                    else route.continue_())
         page.on("requestfinished", lambda req: finished.append(req))  # Playwright tags its handlers: no bound builtins

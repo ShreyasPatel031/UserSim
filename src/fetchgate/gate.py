@@ -2,9 +2,11 @@
 
 Routes, cheapest first (prices in docs/discovery/FETCH_LADDER.md):
   page mode     vm -> vm_camoufox -> residential -> residential_camoufox -> apify_unblocker
-  browser mode  vm_camoufox -> residential_camoufox -> apify_residential_camoufox   (also scroll=True)
+  browser mode  vm_camoufox -> residential_camoufox -> residential_chromium -> apify_residential_camoufox
+                (also scroll=True)
 The first route that gets the real page (HTTP 200, not a bot challenge) wins; a route a site walled off is skipped
-for that site for a while (ladder.BLOCK_TTL_S). Apify routes run only when every other route of the mode was tried
+for that site for a while (ladder.BLOCK_TTL_S): at once on the VM's own IP, after WALLS_TO_BLOCK walls in a row on
+the rotating residential / Apify IPs (one exit IP's 403 says little about the next). Apify routes run only when every other route of the mode was tried
 (or is known blocked / has no credentials) for this URL without a page, AND Apify is allowed (ALLOW_APIFY=1).
 
 Each attempt is logged with its route, bytes and estimated $ (ledger), and a job stops with BudgetExceeded before
@@ -24,13 +26,15 @@ from fetchgate import creds, ladder
 from fetchgate.ledger import BudgetExceeded, default_job, job_cap, ledger
 
 PAGE_ROUTES = ("vm", "vm_camoufox", "residential", "residential_camoufox", "apify_unblocker")
-BROWSER_ROUTES = ("vm_camoufox", "residential_camoufox", "apify_residential_camoufox")
+BROWSER_ROUTES = ("vm_camoufox", "residential_camoufox", "residential_chromium", "apify_residential_camoufox")
 APIFY_ROUTES = frozenset({"apify_unblocker", "apify_residential_camoufox"})
-RESIDENTIAL_ROUTES = frozenset({"residential", "residential_camoufox"})
+RESIDENTIAL_ROUTES = frozenset({"residential", "residential_camoufox", "residential_chromium"})
+WALLS_TO_BLOCK = {"vm": 1, "vm_camoufox": 1}  # other routes rotate their exit IP: 3 walls in a row
+_WALLS: dict[tuple[str, str], int] = {}
 # Worst-case $ one attempt can cost, reserved against the budget before it runs (measured costs replace these).
-ESTIMATE_USD = {"vm": 0.0, "vm_camoufox": 0.0, "residential": 0.0005, "residential_camoufox": 0.004,
+ESTIMATE_USD = {"vm": 0.0, "vm_camoufox": 0.0, "residential": 0.0005, "residential_camoufox": 0.004, "residential_chromium": 0.004,
                 "apify_unblocker": ladder.UNBLOCKER_USD_PER_PAGE, "apify_residential_camoufox": 0.03}
-SCROLL_ESTIMATE_USD = {"residential_camoufox": 0.05, "apify_residential_camoufox": 0.4}
+SCROLL_ESTIMATE_USD = {"residential_camoufox": 0.05, "residential_chromium": 0.05, "apify_residential_camoufox": 0.4}
 FINAL_STATUSES = frozenset({404, 410})  # the site says the page does not exist: dearer routes would say the same
 BROWSER_TIMEOUT_S = 180.0
 SCROLL_TIMEOUT_S = 1200.0
@@ -133,12 +137,16 @@ def run_ladder(url: str, *, browser: bool, scroll: bool, cap: float, job: str, a
         if got:
             out |= {k: v for k, v in got.items() if k not in ("bytes",)}
         if ok or (got and got["status"] in FINAL_STATUSES and not row.get("challenge")):
+            with ladder._BLOCKED_LOCK:
+                _WALLS.pop((site, route), None)
             out["route"] = route  # the real page, or the site's own definite answer that it has none
             return out
         if row.get("challenge") and row.get("status") != 429:  # a bot wall (not a rate limit, timeout or 404):
-            # don't knock on it again for a while
-            with ladder._BLOCKED_LOCK:
-                ladder._BLOCKED[(site, route)] = time.time()
+            with ladder._BLOCKED_LOCK:  # don't knock on it again for a while
+                _WALLS[(site, route)] = _WALLS.get((site, route), 0) + 1
+                if _WALLS[(site, route)] >= WALLS_TO_BLOCK.get(route, 3):
+                    ladder._BLOCKED[(site, route)] = time.time()
+                    _WALLS.pop((site, route), None)
     out["job_usd"] = round(led.spent(job), 6)
     return out
 
@@ -151,7 +159,7 @@ def _attempt(route: str, url: str, residential: str, token: str, *, browser: boo
         return {"status": status, "html": html, "final_url": meter.get("final_url") or url}
     from fetchgate import browser as B
 
-    proxy = (ladder.us_exit(residential) if route == "residential_camoufox" else
+    proxy = (ladder.us_exit(residential) if route in ("residential_camoufox", "residential_chromium") else
              ladder.apify_proxy("RESIDENTIAL", token=token) if route == "apify_residential_camoufox" else None)
     led = ledger()
 
@@ -160,13 +168,14 @@ def _attempt(route: str, url: str, residential: str, token: str, *, browser: boo
         cost = ladder.tier_cost(route, nbytes)
         return cost > reserved and led.spent(job) + cost > cap
 
-    if not ladder.ensure_tool("camoufox")["ok"]:
+    engine = "chromium" if route.endswith("_chromium") else "camoufox"
+    if engine == "camoufox" and not ladder.ensure_tool("camoufox")["ok"]:
         raise RuntimeError(f"camoufox unavailable: {ladder.ensure_tool('camoufox')['how'][-120:]}")
     box: dict[str, Any] = {}
 
     def work() -> None:
         try:
-            kw: dict[str, Any] = {"scroll": scroll, "meter": meter, "stop": over, "capture": capture}
+            kw: dict[str, Any] = {"scroll": scroll, "meter": meter, "stop": over, "capture": capture, "engine": engine}
             if max_scrolls:
                 kw["max_scrolls"] = max_scrolls
             box["r"] = B.load(url, proxy, **kw)

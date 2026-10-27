@@ -24,6 +24,7 @@ RESI = "http://u:p@gw.example.com:823"
 class GateCase(unittest.TestCase):
     def setUp(self):
         ladder._BLOCKED.clear()
+        gate._WALLS.clear()
         self.tmp = tempfile.TemporaryDirectory()
         self.log = Path(self.tmp.name) / "fetches.jsonl"
         L.set_ledger(L.Ledger(self.log))
@@ -108,6 +109,28 @@ class LadderOrderTest(GateCase):
                 mock.patch.object(ladder, "ensure_tool", return_value={"ok": True}):
             out = fetchgate.fetch("https://www.producthunt.com/@a/upvotes", scroll=True, creds_override={"PROXY_URL": RESI})
         self.assertEqual((out["route"], out["usd"], out["scrolls"], seen), ("vm_camoufox", 0.0, 3, [(None, True)]))
+
+
+    def test_scroll_falls_back_to_residential_chromium_and_rotating_ips_need_three_walls(self):
+        engines = []
+
+        def load(url, proxy, **kw):
+            engines.append((kw["engine"], bool(proxy)))
+            kw["meter"]["bytes"] = 1_000_000
+            if kw["engine"] == "chromium":
+                return {"status": 200, "html": REAL[1], "final_url": url, "scrolls": 5, "responses": []}
+            return {"status": 403, "html": WALL[1], "final_url": url, "scrolls": 0, "responses": []}
+        with mock.patch("fetchgate.browser.load", side_effect=load), \
+                mock.patch.object(ladder, "ensure_tool", return_value={"ok": True}):
+            for i in range(3):
+                out = fetchgate.fetch(f"https://www.producthunt.com/@u{i}/upvotes", scroll=True,
+                                      creds_override={"PROXY_URL": RESI})
+                self.assertEqual(out["route"], "residential_chromium")
+        self.assertEqual(engines[:3], [("camoufox", False), ("camoufox", True), ("chromium", True)])
+        # the VM IP is walled after one 403; residential Camoufox only after its third in a row
+        self.assertEqual([e for e in engines if e == ("camoufox", True)], [("camoufox", True)] * 3)
+        self.assertIn(("producthunt.com", "residential_camoufox"), ladder._BLOCKED)
+        self.assertEqual(engines.count(("camoufox", False)), 1)
 
 
 class ApifyGateTest(GateCase):

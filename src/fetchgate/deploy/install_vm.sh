@@ -43,6 +43,7 @@ fi
 
 # Camoufox's browser for the fetchgate user (its own HOME); needs Firefox's system libraries (already on the VM).
 sudo -u fetchgate HOME=/var/lib/fetchgate "$VENV_PY" -m camoufox fetch >/dev/null 2>&1 || log "camoufox fetch failed (browser routes off)"
+sudo -u fetchgate HOME=/var/lib/fetchgate "$VENV_PY" -m playwright install chromium >/dev/null 2>&1 || log "chromium install failed"
 
 install -m 644 "$SRC/deploy/fetchgate.service" /etc/systemd/system/fetchgate.service
 systemctl daemon-reload
