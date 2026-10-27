@@ -140,3 +140,19 @@ The browser scroll of full histories for the screening sample is running. It wil
 - A first version showed +10 points for the early read. That came from a bug: the count subtracted the person's own later comments. After the fix it is +2.3 on those days.
 - The usual visit time adds only ~1 point over the fixed 3 h early read. Most of its gain is simply more launch-day data, because usual visits come later in the day.
 - **The best measured so far: ~66% with 3 h of launch-day data, 62.4% before launch.** None of the measured signals gets near 90% for everyone. The best subgroup (people who comment and are followed) reaches 84%, but only with their actual visit time, which can't be known ahead.
+
+## 9. Targets 70 / 80 / 90% (top 3 / 5 / 10), before launch only (Oct 27 night, `push.py`)
+
+| Model (Oct holdout, 8,315 person-days) | Top 3 | Top 5 | Top 10 |
+|---|---|---|---|
+| Best before launch, no follows | 56.0% | 68.9% | 86.2% |
+| + category features (rate per category, rank within category) | 56.2% | 69.6% | 86.1% |
+| + closeness to the team's community | 55.3% | 68.2% | 85.6% |
+| Bigger trees | 54.0% | 67.7% | 85.5% |
+| Strategy check only (launch-day data): + 12 h of comments | 62.2% | 74.7% | 86.5% |
+| **Upper bound: perfect final launch rank, no follows** | **64.7%** | **76.2%** | **88.9%** |
+| Upper bound: perfect final launch rank + follows | 69.8% | 81.4% | 91.9% |
+
+- Without follow lists the targets cannot be reached, even with a perfect launch-level model.
+- With follows they are just reachable, but only with near-perfect launch prediction.
+- The follow lists cannot be dated from their order. Position vs. first interaction with the maker gives a median Spearman correlation of 0.11 over 1,130 complete lists.
