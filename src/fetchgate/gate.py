@@ -2,8 +2,9 @@
 
 Routes, cheapest first (prices in docs/discovery/FETCH_LADDER.md):
   page mode     vm -> vm_camoufox -> residential -> residential_camoufox -> apify_unblocker
-  browser mode  vm_camoufox -> residential_camoufox -> residential_chromium -> apify_residential_camoufox
-                (also scroll=True)
+  browser mode  vm_camoufox -> residential_chromium -> residential_camoufox -> apify_residential_camoufox
+                (also scroll=True). Through DataImpulse, Chromium comes first: on Product Hunt profile pages
+                (Oct 27 2026) Camoufox mostly got 403s, and its 200s never loaded more items while scrolling.
 The first route that gets the real page (HTTP 200, not a bot challenge) wins; a route a site walled off is skipped
 for that site for a while (ladder.BLOCK_TTL_S): at once on the VM's own IP, after WALLS_TO_BLOCK walls in a row on
 the rotating residential / Apify IPs (one exit IP's 403 says little about the next). Apify routes run only when every other route of the mode was tried
@@ -26,7 +27,7 @@ from fetchgate import creds, ladder
 from fetchgate.ledger import BudgetExceeded, default_job, job_cap, ledger
 
 PAGE_ROUTES = ("vm", "vm_camoufox", "residential", "residential_camoufox", "apify_unblocker")
-BROWSER_ROUTES = ("vm_camoufox", "residential_camoufox", "residential_chromium", "apify_residential_camoufox")
+BROWSER_ROUTES = ("vm_camoufox", "residential_chromium", "residential_camoufox", "apify_residential_camoufox")
 APIFY_ROUTES = frozenset({"apify_unblocker", "apify_residential_camoufox"})
 RESIDENTIAL_ROUTES = frozenset({"residential", "residential_camoufox", "residential_chromium"})
 WALLS_TO_BLOCK = {"vm": 1, "vm_camoufox": 1}  # other routes rotate their exit IP: 3 walls in a row
