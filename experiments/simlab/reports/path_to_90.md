@@ -43,6 +43,20 @@ Current model by how completely we see the person's upvotes:
 
 The browser scroll of full histories for the screening sample is running. It will show how much of the heavy-user gap is missing labels and how much is real behaviour.
 
+## 3b. Complete histories, same predictions (321 heavy users already scrolled, 994 Oct person-days)
+- Picks per day: 1.42 with the visible labels, **1.81 with the full history**.
+- Top-3 hit with the same predictions: 50.3% → **54.1%**. Ranking accuracy: 0.809 → 0.810.
+- So missing labels explain about 4 points for heavy users. The rest of their gap is real behaviour: they upvote broadly.
+
+## 3c. Tonight's best person model (full Oct holdout, 8,761 person-days)
+
+| Model | Top-3 hit | Ranking accuracy | Without follows: hit | Without follows: accuracy |
+|---|---|---|---|---|
+| Popularity + relationships + simple taste | 53.0% | 0.803 | 45.2% | 0.774 |
+| + personas | 57.5% | 0.833 | 51.0% | 0.805 |
+| **+ collaborative filtering on teams** | **58.7%** | 0.834 | **51.7%** | 0.806 |
+| + embedding interactions | 57.7% | 0.832 | 51.3% | 0.807 |
+
 ## 4. Data value measured tonight (screening sample, 1,579 people)
 
 | Source | Coverage | Gain | Cost |

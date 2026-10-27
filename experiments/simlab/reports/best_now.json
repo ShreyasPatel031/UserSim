@@ -1,0 +1,50 @@
+[
+ {
+  "follows": false,
+  "model": "base",
+  "top3_hit": 0.452,
+  "auc": 0.774
+ },
+ {
+  "follows": false,
+  "model": "+personas",
+  "top3_hit": 0.51,
+  "auc": 0.805
+ },
+ {
+  "follows": false,
+  "model": "+personas+cf",
+  "top3_hit": 0.517,
+  "auc": 0.806
+ },
+ {
+  "follows": false,
+  "model": "+personas+cf+two-tower",
+  "top3_hit": 0.513,
+  "auc": 0.807
+ },
+ {
+  "follows": true,
+  "model": "base",
+  "top3_hit": 0.53,
+  "auc": 0.803
+ },
+ {
+  "follows": true,
+  "model": "+personas",
+  "top3_hit": 0.575,
+  "auc": 0.833
+ },
+ {
+  "follows": true,
+  "model": "+personas+cf",
+  "top3_hit": 0.587,
+  "auc": 0.834
+ },
+ {
+  "follows": true,
+  "model": "+personas+cf+two-tower",
+  "top3_hit": 0.577,
+  "auc": 0.832
+ }
+]
