@@ -69,12 +69,38 @@ The browser scroll of full histories for the screening sample is running. It wil
 | Followers / hunted / X mentions as ties | 6% / 8% / 1% of person-days | ~0 | ~$0.0003 / page |
 | X posts | 17% | ~0 | free |
 
-## 5. Concrete plan to 90% (draft, finalised after the scroll)
+## 5. Measured levers (full Oct holdout unless noted)
 
-1. **Fix measurement:** full upvote histories for everyone in the test set (scroll, DataImpulse ~$0.001–0.003 per person). If labels are the gap, this alone moves measured hit a lot.
-2. **Better popularity ordering** (bucket A, up to 24 points): the launch-level model is the lever. The person model inherits its errors.
-3. **Dated relationships** (bucket B, 8 points):
-   - Snapshot follow lists going forward so follows can be dated (they can't be dated from past pages).
-   - Build the co-commenting and reply graph from comment threads.
-4. **Taste** (bucket C, 5 points): personas built from the person's own comments, and collaborative filtering.
-5. **The remaining ~10–15%** has no public pre-launch signal. It would need launch-day data: who the team pings and posts to, and the intraday page order.
+| Lever | Data needed | Measured gain, top-3 hit | Cost | Before launch? |
+|---|---|---|---|---|
+| Personas from own comments | comments (have) | +5.8 pts (45.2 → 51.0 without follows) | ~$1 Gemini per 17k person-days | yes |
+| Collaborative filtering on teams | upvote histories (have) | +0.7–1.2 pts | free | yes |
+| Upvote reciprocity (team upvoted the person's launch) | upvote lists of makers and people | +0.8–1.1 pts at today's 5% coverage | first pages ~$0.0003 each | yes |
+| Deeper upvote histories (scroll) | full ~6-month lists | 3.2× more backing ties; measured hit +5.5 pts on heavy users (labels), no accuracy change | ≤ $0.003 / person, ~1 min / person / browser | yes |
+| Follow lists | follows (undated) | +6.9 pts, partly leakage until dated | ~$0.0003 / page; dating needs weekly snapshots | if dated |
+| Early read: comments in the first 3 h | launch-day comments | **+4.3–5.3 pts** | ~$0.0003 / page | no (3 h in) |
+| Perfect final popularity (upper bound) | n/a | +7–8 pts | n/a | no |
+| Full LinkedIn, activity text, collections, X | pulled tonight | ~0 | $0.004 / profile LinkedIn | yes |
+
+## 6. Plan to reach 90% (person level)
+
+**Honest projection with everything above:**
+- About **63%** today with follows and an early read.
+- About **68–72%** after full histories, the reciprocity graph and dated follows.
+- The oracle says public signals contain enough to reach about 90–93%. But even perfect popularity only adds 7–8 points, because the model can't yet pick *which* of the day's leaders each person chooses. Inside the top 5, personal signals add only 1.5 points over rank order.
+
+**What closes the last ~20 points:**
+1. **What each person actually sees, and when.** Their visit time (from comment timestamps) and the homepage order at that moment.
+   - Start collecting now: homepage snapshots every 15 minutes (~100 pages a day, ~$0.03/day via DataImpulse).
+   - Needs ~4–6 weeks before it can be tested.
+   - This is an early read, not pre-launch.
+2. **Complete relationship graph, dated.**
+   - Deep upvote histories for all ~14k people and makers (≤ $42 DataImpulse, ~1 day with 4 browsers).
+   - Weekly follow-list snapshots to date follows (~$5/week).
+   - Reply graph from comment threads (free, have).
+3. **A person-level choice model trained on all of it.** The tree ranker plus comment personas tonight; a fine-tuned model once the data is complete. Fine-tuning price is not confirmed; get a quote first.
+4. **Measure on complete labels only.** Report hit separately for people with complete histories: today 73% for people with ≤ 8 upvotes.
+
+**Decision for the founder:**
+- Strictly before launch, the realistic ceiling is about 70–75%.
+- **90% needs the launch-day view:** visit time and page order, plus early comments. Collecting that starts now and needs several weeks of data before it can be tested.
