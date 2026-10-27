@@ -13,7 +13,7 @@ import pandas as pd
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 RAW = os.path.join(os.path.dirname(HERE), "ph_predict", "data")
-OUT = os.path.join(HERE, "data")
+OUT = os.path.join(HERE, os.environ.get("SIMLAB_DATA", "data"))  # data_v2 = store rebuilt with fuller upvote histories
 UNDATED = ["seg", "li_headline", "li_company", "li_location", "x_bio", "x_followers", "follows"]
 
 
@@ -63,6 +63,17 @@ def build_people():
         x = X.get((p.get("twitter") or "").lower())
         if x:
             p.update(x_bio=(x.get("description") or "")[:300], x_followers=x.get("followers"))
+    # more upvotes: the Upvotes tab's first page (20) and browser-scrolled histories (~6 months), merged, newest first
+    extra = {}
+    for f in ("upvotes_pages.jsonl.gz", "scroll_upvotes.jsonl.gz", "scroll_sample.jsonl.gz"):
+        for r in jl(f"{RAW}/{f}"):
+            if r.get("upvotes"):
+                extra.setdefault(r["username"], []).extend(r["upvotes"])
+            if r.get("votes_total") is not None and r["username"] in P:
+                P[r["username"]]["upvotes_total"] = r["votes_total"]
+    for u, ids in extra.items():
+        if u in P:
+            P[u]["voted_recent"] = list(dict.fromkeys(P[u]["voted_recent"] + ids))
     for r in jl(f"{RAW}/ph_following.jsonl.gz"):
         if r["username"] in P:
             P[r["username"]]["follows"] = [u for u, _ in r.get("following") or []]

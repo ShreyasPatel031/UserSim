@@ -1,0 +1,36 @@
+{
+ "follows_used": true,
+ "test_person_days": 8315,
+ "current_top3_hit": 0.5747444377630788,
+ "missed_days": 3536,
+ "missed_day_best_bucket": {
+  "A popular": 0.576,
+  "B connected": 0.19,
+  "C taste": 0.118,
+  "D unexplained": 0.116
+ },
+ "missed_picks_bucket": {
+  "A popular": 0.514,
+  "B connected": 0.192,
+  "D unexplained": 0.16,
+  "C taste": 0.134
+ },
+ "oracle_curve": [
+  [
+   "current model",
+   0.575
+  ],
+  [
+   "+ perfect A popular",
+   0.819
+  ],
+  [
+   "+ perfect B connected",
+   0.9
+  ],
+  [
+   "+ perfect C taste",
+   0.951
+  ]
+ ]
+}

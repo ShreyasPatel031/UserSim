@@ -30,4 +30,4 @@ for l in sys.stdin:
     for i in ids:
         if i not in seen:
             seen.add(i); out.append(i)
-    print(json.dumps({"username": u, "status": r.get("status"), "scrolls": r.get("scrolls"), "error": r.get("error"), "upvotes": out}), flush=True)
+    print(json.dumps({"username": u, "status": r.get("status"), "scrolls": r.get("scrolls"), "error": r.get("error"), "bytes": r.get("bytes", 0), "upvotes": out}), flush=True)
