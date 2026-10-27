@@ -6,3 +6,4 @@
 {"t":"refollow_test","provider":"dataimpulse","usd":0.11}
 {"t":"maker_upvote_pages","provider":"dataimpulse","usd":0.41}
 {"t":"scroll_sample_partial","provider":"dataimpulse","usd":1.20,"note":"421 people, 1.20 GB at ~$1/GB; running"}
+{"t":"caps_raised","provider":"all","usd":0,"note":"user: Apify cap $30, DataImpulse cap $30 (GCP $50 unchanged)"}

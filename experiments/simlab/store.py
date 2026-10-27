@@ -65,7 +65,7 @@ def build_people():
             p.update(x_bio=(x.get("description") or "")[:300], x_followers=x.get("followers"))
     # more upvotes: the Upvotes tab's first page (20) and browser-scrolled histories (~6 months), merged, newest first
     extra = {}
-    for f in ("upvotes_pages.jsonl.gz", "scroll_upvotes.jsonl.gz", "scroll_sample.jsonl.gz"):
+    for f in ("upvotes_pages.jsonl.gz", "scroll_upvotes.jsonl.gz", "scroll_sample.jsonl.gz", "scroll_full.jsonl.gz"):
         for r in jl(f"{RAW}/{f}"):
             if r.get("upvotes"):
                 extra.setdefault(r["username"], []).extend(r["upvotes"])
