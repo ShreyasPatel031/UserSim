@@ -1,0 +1,26 @@
+[
+ {
+  "follows": false,
+  "model": "baseline (v2)",
+  "top3_hit": 0.545,
+  "auc": 0.809
+ },
+ {
+  "follows": false,
+  "model": "+ sequence",
+  "top3_hit": 0.56,
+  "auc": 0.813
+ },
+ {
+  "follows": true,
+  "model": "baseline (v2)",
+  "top3_hit": 0.607,
+  "auc": 0.835
+ },
+ {
+  "follows": true,
+  "model": "+ sequence",
+  "top3_hit": 0.624,
+  "auc": 0.838
+ }
+]

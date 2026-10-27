@@ -1,0 +1,24 @@
+{
+ "sample": 200,
+ "sep_active_person_days": 18595,
+ "tokens_per_example_mean": 769,
+ "tokens_per_example_p90": 1109,
+ "dataset_tokens": 14290443,
+ "cost_usd_by_epochs": {
+  "gemini-2.5-flash-lite": {
+   "1": 21.44,
+   "3": 64.31,
+   "5": 107.18
+  },
+  "gemini-2.5-flash": {
+   "1": 71.45,
+   "3": 214.36,
+   "5": 357.26
+  },
+  "gemini-3.5-flash": {
+   "1": 142.9,
+   "3": 428.71,
+   "5": 714.52
+  }
+ }
+}

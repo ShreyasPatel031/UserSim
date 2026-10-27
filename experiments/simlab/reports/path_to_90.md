@@ -110,3 +110,18 @@ The browser scroll of full histories for the screening sample is running. It wil
 **Decision for the founder:**
 - Strictly before launch, the realistic ceiling is about 70–75%.
 - **90% needs the launch-day view:** visit time and page order, plus early comments. Collecting that starts now and needs several weeks of data before it can be tested.
+
+## 7. Plan from here (Oct 27 evening; each number is measured unless marked *not measured*)
+
+**New baseline: 62.4% top-3 hit (56.0% without follows).**
+- This is the sequence signals on top of the v2 baseline (60.7% / 54.5%): recent picks, recency-weighted taste, closest past pick and team backed in the last 30 days.
+- Measured gain: +1.7 points (95% interval 1.0–2.2) with follows, +1.4 (0.8–2.1) without. Source: `seq.py` → `seq.json`.
+
+| Step | Cost (measured) | Expected gain |
+|---|---|---|
+| 1. Fine-tuned Gemini 2.5 Flash-Lite on Sep choices: pilot with 3,000 examples × 3 epochs | Training 3,000 × 769 tokens × 3 × $1.50/M = **$10.40**. Scoring 8,315 Oct person-days × 769 tokens × $0.10/M = **$0.64** | *not measured*: this is the test |
+| 1b. Full fine-tune: 18,595 examples × 3 epochs, 14.3M tokens | **$64** (1 epoch: $21) | only if the pilot gains |
+| 2. Homepage snapshots every 15 min (what each person sees, and when) | *not measured*: the test fetch was stopped by the safety check (bot-protection rule); needs the user's permission | the measured "popular picks" bucket is worth up to 24 points (oracle) |
+
+- Token counts come from Vertex countTokens on 200 real examples (`ft_cost.py` → `ft_cost.json`).
+- Prices come from the Vertex pricing page, fetched Oct 27. Tuned models on the global endpoint are billed at the base model's prediction price.
