@@ -1,0 +1,114 @@
+[
+ {
+  "follows": false,
+  "features": "base",
+  "model": "trees",
+  "top3_hit": 0.455,
+  "auc": 0.775
+ },
+ {
+  "follows": false,
+  "features": "base",
+  "model": "ranker",
+  "top3_hit": 0.456,
+  "auc": 0.775
+ },
+ {
+  "follows": false,
+  "features": "base+persona",
+  "model": "trees",
+  "top3_hit": 0.509,
+  "auc": 0.806
+ },
+ {
+  "follows": false,
+  "features": "base+persona",
+  "model": "ranker",
+  "top3_hit": 0.504,
+  "auc": 0.808
+ },
+ {
+  "follows": false,
+  "features": "base+cf",
+  "model": "trees",
+  "top3_hit": 0.47,
+  "auc": 0.777
+ },
+ {
+  "follows": false,
+  "features": "base+cf",
+  "model": "ranker",
+  "top3_hit": 0.473,
+  "auc": 0.778
+ },
+ {
+  "follows": false,
+  "features": "base+persona+cf",
+  "model": "trees",
+  "top3_hit": 0.514,
+  "auc": 0.806
+ },
+ {
+  "follows": false,
+  "features": "base+persona+cf",
+  "model": "ranker",
+  "top3_hit": 0.519,
+  "auc": 0.81
+ },
+ {
+  "follows": true,
+  "features": "base",
+  "model": "trees",
+  "top3_hit": 0.53,
+  "auc": 0.804
+ },
+ {
+  "follows": true,
+  "features": "base",
+  "model": "ranker",
+  "top3_hit": 0.523,
+  "auc": 0.806
+ },
+ {
+  "follows": true,
+  "features": "base+persona",
+  "model": "trees",
+  "top3_hit": 0.574,
+  "auc": 0.833
+ },
+ {
+  "follows": true,
+  "features": "base+persona",
+  "model": "ranker",
+  "top3_hit": 0.57,
+  "auc": 0.834
+ },
+ {
+  "follows": true,
+  "features": "base+cf",
+  "model": "trees",
+  "top3_hit": 0.551,
+  "auc": 0.806
+ },
+ {
+  "follows": true,
+  "features": "base+cf",
+  "model": "ranker",
+  "top3_hit": 0.541,
+  "auc": 0.81
+ },
+ {
+  "follows": true,
+  "features": "base+persona+cf",
+  "model": "trees",
+  "top3_hit": 0.587,
+  "auc": 0.834
+ },
+ {
+  "follows": true,
+  "features": "base+persona+cf",
+  "model": "ranker",
+  "top3_hit": 0.582,
+  "auc": 0.838
+ }
+]
