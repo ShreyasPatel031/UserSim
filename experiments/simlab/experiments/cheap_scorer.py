@@ -9,7 +9,7 @@ UNDATED = ["follow lists read today", "segment-based person traits"]
 
 def scores():
     ph = os.path.join(os.path.dirname(__file__), "..", "..", "ph_predict", "data")
-    Z = np.load(os.path.join(ph, "vote_sim_scores_2026-09-01.npz"))
+    Z = np.load(os.path.join(ph, "vote_sim_scores_2026-09-01.npz"), allow_pickle=True)  # our own file
     L = pd.read_parquet(os.path.join(os.path.dirname(__file__), "..", "data", "items.parquet"))
     lid = Z["launch_id"]  # launch id per row (saved by vote_sim2 since the stable-order fix)
     out = {}
