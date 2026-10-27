@@ -19,6 +19,7 @@ import subprocess
 import sys
 import threading
 import time
+from pathlib import Path
 from typing import Any
 from urllib.parse import unquote, urlparse
 
@@ -363,6 +364,11 @@ def ensure_tool(name: str) -> dict[str, Any]:
     (anti-fingerprint Firefox, pinned to 0.4.11 whose browser builds are published)."""
     with _BROWSER_LOCK:
         if name in _TOOLS:
+            return _TOOLS[name]
+        # Already downloaded for this user (the gateway's own user can't write the shared venv, so it can't re-run
+        # the installer; its browser is fetched once by install_vm.sh).
+        if name == "camoufox" and (Path.home() / ".cache" / "camoufox" / "version.json").is_file():
+            _TOOLS[name] = {"ok": True, "how": "already downloaded"}
             return _TOOLS[name]
         cmds = {"patchright": [[sys.executable, "-m", "patchright", "install", "chromium"]],
                 # Camoufox is Firefox: its system libraries (GTK etc.) are not on a server that only ran Chromium.
