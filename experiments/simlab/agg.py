@@ -50,6 +50,7 @@ def build():
     def w_on(d):
         k = dix[d]; return (C[:, k] - C[:, max(k - 30, 0)]) / 30.0
     out, prev_fit = [], None
+    APP_ids, APP, APT, APD = [], [], [], []   # per launch: exposure-weighted appeal of every person (for the tastemaker model)
     for m in MONTHS:
         start = m + "-01"
         Eb = E[E.lday < start]
@@ -116,12 +117,17 @@ def build():
             row = {"id": I.id[j], "reach_ties": float(w @ (backed[:, c] > 0)),
                    "taste_top": float(w[np.argsort(-(topic[:, c] + mean[:, c]))[:200]].sum())}
             if have:
+                APP_ids.append(I.id[j]); APP.append((w * p_all[:, c]).astype(np.float16))
+                APT.append(p_taste[:, c].astype(np.float16)); APD.append(decay[:, c].astype(np.float16))
                 row.update(ev_all=float(w @ p_all[:, c]), ev_taste=float(w @ p_taste[:, c]),
                            fans=float(np.sort(w * p_all[:, c])[-100:].sum()), day_mass=float(w.sum()))
                 row["ev_ties"] = row["ev_all"] - row["ev_taste"]
             out.append(row)
         print(m, len(ks), "launches", flush=True)
     pd.DataFrame(out).to_parquet(OUTP); print("saved", len(out))
+    np.savez_compressed(OUTP.replace(".parquet", "_appeal.npz"), ids=np.array(APP_ids), appeal=np.stack(APP), people=np.array(people))
+    np.savez_compressed(OUTP.replace(".parquet", "_taste.npz"), ids=np.array(APP_ids), taste=np.stack(APT), decay=np.stack(APD),
+                        w=np.stack([w_on(day[i]) for i in APP_ids]).astype(np.float16))
 
 
 def eval_():

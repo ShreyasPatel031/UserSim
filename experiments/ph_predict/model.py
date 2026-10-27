@@ -116,7 +116,7 @@ def fit_list_clf(tr, te, period, rank_col, top):
                 d[f"per_{f}"] = d.groupby(period)[f].rank(pct=True)
     cw = c + [f"per_{f}" for f in PERIOD_FEATS if f in tr]
     clf = lgb.LGBMClassifier(n_estimators=400, learning_rate=0.03, num_leaves=15, min_child_samples=20, subsample=0.8,
-                             subsample_freq=1, colsample_bytree=0.8, random_state=0, verbose=-1, n_jobs=N_JOBS)
+                             subsample_freq=1, colsample_bytree=0.8, random_state=int(os.environ.get("LIST_SEED", 0)), verbose=-1, n_jobs=N_JOBS)
     return clf.fit(tr[cw], (tr[rank_col] <= top).astype(int)).predict_proba(te[cw])[:, 1]
 
 

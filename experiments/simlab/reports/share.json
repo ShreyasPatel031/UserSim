@@ -1,0 +1,139 @@
+{
+ "experiment": "person_choice_share",
+ "time": "2026-10-27T22:36:22",
+ "git": "3b4d791",
+ "launches": 1458,
+ "days": 54,
+ "window": [
+  "2026-09-01",
+  "2026-10-24"
+ ],
+ "table": [
+  {
+   "score": "baseline",
+   "day@3": 63.0,
+   "day@5": 70.4,
+   "day@10": 80.2
+  },
+  {
+   "score": "with_popularity__T1.0 alone",
+   "day@3": 54.9,
+   "day@5": 65.9,
+   "day@10": 75.0
+  },
+  {
+   "score": "baseline + with_popularity__T1.0",
+   "day@3": 63.0,
+   "day@5": 70.0,
+   "day@10": 80.0
+  },
+  {
+   "score": "with_popularity__T0.3 alone",
+   "day@3": 54.9,
+   "day@5": 65.2,
+   "day@10": 71.0
+  },
+  {
+   "score": "baseline + with_popularity__T0.3",
+   "day@3": 63.0,
+   "day@5": 70.0,
+   "day@10": 80.2
+  },
+  {
+   "score": "personal_only__T1.0 alone",
+   "day@3": 42.0,
+   "day@5": 55.9,
+   "day@10": 69.8
+  },
+  {
+   "score": "baseline + personal_only__T1.0",
+   "day@3": 63.0,
+   "day@5": 70.4,
+   "day@10": 80.2
+  },
+  {
+   "score": "personal_only__T0.3 alone",
+   "day@3": 40.7,
+   "day@5": 55.2,
+   "day@10": 68.3
+  },
+  {
+   "score": "baseline + personal_only__T0.3",
+   "day@3": 63.6,
+   "day@5": 70.7,
+   "day@10": 80.0
+  }
+ ],
+ "residual": {
+  "with_popularity__T1.0": {
+   "rho_vs_error": -0.28424131715973,
+   "ci": [
+    -0.33074019645398417,
+    -0.23906479672221606
+   ],
+   "weights": [
+    0,
+    0.2,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ]
+  },
+  "with_popularity__T0.3": {
+   "rho_vs_error": -0.16919448066195203,
+   "ci": [
+    -0.2197910511630436,
+    -0.11753979449706513
+   ],
+   "weights": [
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0,
+    0.1,
+    0.1
+   ]
+  },
+  "personal_only__T1.0": {
+   "rho_vs_error": -0.17298608020013367,
+   "ci": [
+    -0.2213428245156625,
+    -0.12639380740007883
+   ],
+   "weights": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ]
+  },
+  "personal_only__T0.3": {
+   "rho_vs_error": -0.13883627295204454,
+   "ci": [
+    -0.19110829306496022,
+    -0.08534553968476402
+   ],
+   "weights": [
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1
+   ]
+  }
+ },
+ "undated": [],
+ "notes": "Sep<->Oct cross-fitted person model; active people only (launch-day knowledge)"
+}

@@ -156,3 +156,21 @@ The browser scroll of full histories for the screening sample is running. It wil
 - Without follow lists the targets cannot be reached, even with a perfect launch-level model.
 - With follows they are just reachable, but only with near-perfect launch prediction.
 - The follow lists cannot be dated from their order. Position vs. first interaction with the maker gives a median Spearman correlation of 0.11 over 1,130 complete lists.
+
+## 10. Launch prediction with person-level signals (Oct 27–28, `agg.py`, `share.py`, `tastemakers.py`, `ph_predict/robust_src.py`)
+Launch model (Mar–Oct, rolling by month), daily / weekly / monthly lists. Every person-level signal is dated before the launch.
+
+| Approach | Result |
+|---|---|
+| Sum over 20.7k people of activity × like-probability (blend) | 0 gain on day / week / month |
+| The same, as a second-stage model | worse on daily lists; mixed on weekly |
+| The day's launches compete for each person (choice shares; uses who was active that day) | 0 gain |
+| Tastemakers: ridge model of which people's taste predicts launch-model errors | weight 0 in every month |
+| Person sums as inputs to the launch model, 5 variants | daily 0; weekly ±1 |
+| **Taste sums as inputs, 5 seeds** | **monthly +2.5 / +2.5 / +1.2 (better in 2/0, 4/0 and 5/1 of 8 months); weekly about 0** |
+| 5 other ways to sum taste (most-matched people, share, recency, top end, fans) | about 0 or negative |
+
+- **Why:** the population sums predict our own people's votes worse than the launch model does (within-day correlation 0.44 vs 0.69).
+- The sums mostly repeat the social signals the launch model already has.
+- Upper bound: our people's *real* upvotes would rank daily lists at about 91%. The gap is in predicting those votes before launch, not in how they are summed.
+- The 32-core experiment machine cut each launch backtest from 28 min to 1 min, and a 6-variant × 5-seed check to 4 min.
