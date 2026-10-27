@@ -1,0 +1,134 @@
+[
+ {
+  "follows": false,
+  "data": "v1",
+  "all": {
+   "top3_hit": 0.518,
+   "auc": 0.807,
+   "person_days": 8315,
+   "picks_per_day": 1.41
+  },
+  "scrolled people": {
+   "top3_hit": 0.512,
+   "auc": 0.803,
+   "person_days": 5311,
+   "picks_per_day": 1.5
+  },
+  "others": {
+   "top3_hit": 0.528,
+   "auc": 0.813,
+   "person_days": 3004,
+   "picks_per_day": 1.27
+  }
+ },
+ {
+  "follows": false,
+  "data": "v1 features, v2 labels",
+  "all": {
+   "top3_hit": 0.547,
+   "auc": 0.809,
+   "person_days": 8315,
+   "picks_per_day": 1.64
+  },
+  "scrolled people": {
+   "top3_hit": 0.554,
+   "auc": 0.806,
+   "person_days": 5311,
+   "picks_per_day": 1.82
+  },
+  "others": {
+   "top3_hit": 0.535,
+   "auc": 0.816,
+   "person_days": 3004,
+   "picks_per_day": 1.33
+  }
+ },
+ {
+  "follows": false,
+  "data": "v2",
+  "all": {
+   "top3_hit": 0.538,
+   "auc": 0.809,
+   "person_days": 8315,
+   "picks_per_day": 1.64
+  },
+  "scrolled people": {
+   "top3_hit": 0.536,
+   "auc": 0.804,
+   "person_days": 5311,
+   "picks_per_day": 1.82
+  },
+  "others": {
+   "top3_hit": 0.541,
+   "auc": 0.818,
+   "person_days": 3004,
+   "picks_per_day": 1.33
+  }
+ },
+ {
+  "follows": true,
+  "data": "v1",
+  "all": {
+   "top3_hit": 0.585,
+   "auc": 0.834,
+   "person_days": 8315,
+   "picks_per_day": 1.41
+  },
+  "scrolled people": {
+   "top3_hit": 0.539,
+   "auc": 0.813,
+   "person_days": 5311,
+   "picks_per_day": 1.5
+  },
+  "others": {
+   "top3_hit": 0.668,
+   "auc": 0.871,
+   "person_days": 3004,
+   "picks_per_day": 1.27
+  }
+ },
+ {
+  "follows": true,
+  "data": "v1 features, v2 labels",
+  "all": {
+   "top3_hit": 0.607,
+   "auc": 0.833,
+   "person_days": 8315,
+   "picks_per_day": 1.64
+  },
+  "scrolled people": {
+   "top3_hit": 0.569,
+   "auc": 0.813,
+   "person_days": 5311,
+   "picks_per_day": 1.82
+  },
+  "others": {
+   "top3_hit": 0.674,
+   "auc": 0.87,
+   "person_days": 3004,
+   "picks_per_day": 1.33
+  }
+ },
+ {
+  "follows": true,
+  "data": "v2",
+  "all": {
+   "top3_hit": 0.605,
+   "auc": 0.836,
+   "person_days": 8315,
+   "picks_per_day": 1.64
+  },
+  "scrolled people": {
+   "top3_hit": 0.561,
+   "auc": 0.816,
+   "person_days": 5311,
+   "picks_per_day": 1.82
+  },
+  "others": {
+   "top3_hit": 0.685,
+   "auc": 0.872,
+   "person_days": 3004,
+   "picks_per_day": 1.33
+  }
+ }
+]

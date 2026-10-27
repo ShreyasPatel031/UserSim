@@ -13,13 +13,27 @@ Person-level top-3 hit = the person's real upvote is in our top 3 for them, on d
 
 Pre-launch gain tonight: **+2.0 points** (57.5 → 59.5). With a 3-hour early read: +5.5 points.
 
-## Spend by provider (caps: GCP $50, DataImpulse $20, Apify $10)
+**Full upvote histories (Oct 27 morning).**
+- What was pulled: complete histories for 2,562 heavy users (1,747 holdout + 815 sample people). Dated upvotes in the data went from 77k to 220k.
+- Scored on the same 8,315 Oct person-days, same model (popularity + relationships + simple taste + personas + collaborative filtering):
+
+| Data | Top-3 hit | Ranking accuracy | Without follows: hit / accuracy |
+|---|---|---|---|
+| Before (page-1 histories) | 58.5% | 0.834 | 51.8% / 0.807 |
+| Same predictions, full labels | 60.7% | 0.833 | 54.7% / 0.809 |
+| Full histories used for features and labels | 60.5% | 0.836 | 53.8% / 0.809 |
+
+- Full histories add **2–3 points**, almost all from measuring picks more completely (1.41 → 1.64 picks per day). More past backing data barely changes ranking accuracy.
+- So deeper histories are worth it for honest scoring, not as a new signal.
+- Source: `v2_compare.py` → `v2_compare.json`.
+
+## Spend by provider (caps: GCP $50, DataImpulse $30, Apify $30 — raised Oct 27)
 
 | Provider | Spent | What |
 |---|---|---|
 | Apify | $3.04 | LinkedIn: pilot $0.06, then 744 profiles |
-| DataImpulse | ~$2.2 + scroll (~$1.2 so far, ~$2.9 at the end) | profile pages $1.64, follow re-check $0.11, maker upvote pages $0.41, full-history scroll for 1,008 people |
-| GCP (Gemini) | ~$1–3 | persona variants on the screening sample |
+| DataImpulse | ~$9.0 (counted bytes; **account traffic ran out at ~09:47**: proxy returns `407 TRAFFIC_EXHAUSTED`) | profile pages $1.64, follow re-check $0.11, maker upvote pages $0.41, sample scroll $2.51, holdout scroll $5.46 |
+| GCP | ~$1–3 Gemini + $3.8 scraper machine | persona variants; temporary 16-core machine for the scroll (deleted; idle ~6 h because a restart delayed deletion) |
 | Free | $0 | X posts, GitHub |
 
 ## What is worth paying for on the full backtest
@@ -28,7 +42,7 @@ Pre-launch gain tonight: **+2.0 points** (57.5 → 59.5). With a 3-hour early re
 |---|---|
 | Personas from the person's own comments (~$1 Gemini per 17k person-days) | Full LinkedIn |
 | Collaborative filtering on teams (free) | Activity text, collections |
-| Deep upvote histories for everyone (≤ $0.003 / person): fixes labels, 3.2× more ties | X posts, GitHub |
+| Deep upvote histories (~$0.003 / person): +2–3 pts, mostly better labels | X posts, GitHub |
 | Maker upvote lists for reciprocity (~$0.0003 / page) | Followers / hunted as ties (too rare) |
 | Homepage snapshots every 15 min, from today (~$0.03 / day) | Retrieval, ensembles, two-tower embeddings, ranker vs trees |
 
