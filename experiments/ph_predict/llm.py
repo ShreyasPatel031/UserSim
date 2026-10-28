@@ -2,7 +2,10 @@
   pitch — name, tagline, description, topics          -> llm_pitch
   site  — the same + launch-day homepage text excerpt  -> llm_site
 Also asks whether it recognises the product (memorisation check) -> llm_known.
-Claude Sonnet 4.5 on Vertex (training data predates every launch here). Cached per day in data/llm_<mode>/."""
+Claude Sonnet 4.5 on Vertex (training data predates every launch here). Cached per day in data/llm_<mode>/.
+LLM_PROVIDER=gemini uses Gemini 2.5 Flash with the same prompts and caches in data/llm_<mode>_gemini/ (read by run.py
+when LLM_PROVIDER=gemini), so the two can be backtested side by side. SKIP_CLAUDE=1 makes Claude calls return nothing
+(the day's llm_ inputs stay empty) instead of calling Claude."""
 import json, os, re, subprocess, sys, time, threading
 from concurrent.futures import ThreadPoolExecutor
 import urllib.request
@@ -12,6 +15,11 @@ D = F.D
 MODEL = "claude-sonnet-4-5"
 URL = (f"https://aiplatform.googleapis.com/v1/projects/project-amer-scs-sandbox/locations/global/publishers/"
        f"anthropic/models/{MODEL}:rawPredict")
+PROVIDER = os.environ.get("LLM_PROVIDER", "claude")
+SUFFIX = "_gemini" if PROVIDER == "gemini" else ""
+GEMINI = ("https://aiplatform.googleapis.com/v1/projects/project-amer-scs-sandbox/locations/global/publishers/google/"
+          "models/gemini-2.5-flash:generateContent")
+USAGE = {"in": 0, "out": 0}
 _tok = {"t": "", "at": 0}
 _lk = threading.Lock()
 
@@ -25,6 +33,11 @@ def token():
 
 
 def call(prompt, max_tokens=4000):
+    if PROVIDER == "gemini":
+        return gemini_call(prompt, max_tokens)
+    if os.environ.get("SKIP_CLAUDE") == "1":
+        print("SKIP_CLAUDE=1: no Claude call", flush=True)
+        return ""
     body = {"anthropic_version": "vertex-2023-10-16", "max_tokens": max_tokens, "temperature": 0,
             "messages": [{"role": "user", "content": prompt}]}
     for i in range(6):
@@ -35,6 +48,24 @@ def call(prompt, max_tokens=4000):
                 return json.load(r)["content"][0]["text"]
         except Exception as e:  # noqa: BLE001
             print("llm retry", i, str(e)[:120], flush=True); time.sleep(5 * (i + 1))
+    return ""
+
+
+def gemini_call(prompt, max_tokens):
+    body = {"contents": [{"role": "user", "parts": [{"text": prompt}]}],
+            "generationConfig": {"temperature": 0, "maxOutputTokens": max_tokens, "responseMimeType": "application/json",
+                                 "thinkingConfig": {"thinkingBudget": 0}}}
+    for i in range(6):
+        try:
+            req = urllib.request.Request(GEMINI, json.dumps(body).encode(),
+                                         {"Authorization": "Bearer " + token(), "Content-Type": "application/json"})
+            with urllib.request.urlopen(req, timeout=300) as r:
+                j = json.load(r); u = j.get("usageMetadata", {})
+                with _lk:
+                    USAGE["in"] += u.get("promptTokenCount", 0); USAGE["out"] += u.get("candidatesTokenCount", 0)
+                return "".join(p.get("text", "") for p in j["candidates"][0]["content"]["parts"])
+        except Exception as e:  # noqa: BLE001
+            print("gemini retry", i, str(e)[:120], flush=True); time.sleep(5 * (i + 1))
     return ""
 
 
@@ -67,7 +98,7 @@ def item(r, mode):
 
 
 def run_day(day, g, mode):
-    out = f"{D}/llm_{mode}/{day}.json"
+    out = f"{D}/llm_{mode}{SUFFIX}/{day}.json"
     if os.path.exists(out):
         return
     if mode == "brand":
@@ -93,7 +124,7 @@ def run_day(day, g, mode):
 
 if __name__ == "__main__":
     mode = sys.argv[1]
-    os.makedirs(f"{D}/llm_{mode}", exist_ok=True)
+    os.makedirs(f"{D}/llm_{mode}{SUFFIX}", exist_ok=True)
     df = F.build()
     days = sorted(df.day.unique(), reverse=True)
     if mode in ("site", "brand"):  # only days whose websites have been resolved (unresolved counts as resolved-without-site)
@@ -101,3 +132,5 @@ if __name__ == "__main__":
         days = [d for d in days if df[df.day == d].id.isin(seen).mean() > 0.95]
     with ThreadPoolExecutor(int(sys.argv[2]) if len(sys.argv) > 2 else 4) as ex:
         list(ex.map(lambda d: run_day(d, df[df.day == d], mode), days))
+    if PROVIDER == "gemini":
+        print("gemini tokens", USAGE, "usd", round(USAGE["in"] / 1e6 * 0.30 + USAGE["out"] / 1e6 * 2.50, 3), flush=True)

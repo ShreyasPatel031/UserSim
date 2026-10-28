@@ -14,7 +14,7 @@ GROUPS = {"ai": ["Artificial Intelligence"], "dev": ["Developer Tools", "GitHub"
 
 def load_llm(df):
     for mode in ("pitch", "site", "brand"):
-        d = F.D + f"/llm_{mode}"
+        d = F.D + f"/llm_{mode}" + ("_gemini" if os.environ.get("LLM_PROVIDER") == "gemini" else "")
         sc, kn = {}, {}
         if os.path.isdir(d):
             for fn in os.listdir(d):
