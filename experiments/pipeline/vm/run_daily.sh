@@ -7,7 +7,8 @@
 set -u
 export PATH=/opt/exp/bin:$PATH
 export PH_TOKEN=$(python3 -c "import json; print(json.load(open('/var/lib/usersim/discovery_keys.json'))['PH_TOKEN'])")
-export SKIP_CLAUDE=${SKIP_CLAUDE:-1}
+export SKIP_CLAUDE=1           # never call Claude
+export LLM_PROVIDER=gemini     # launch-text scores from Gemini (backtest Oct 28: equal or better than Claude)
 BUCKET=gs://usersim-bakeoff-347838016394/usersim_sim
 cd /home/agent/w/experiments
 LOG=/home/agent/w/logs/daily_$(date -u +%Y%m%dT%H%M).log; mkdir -p /home/agent/w/logs
