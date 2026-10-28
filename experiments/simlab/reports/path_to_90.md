@@ -174,3 +174,10 @@ Launch model (Mar–Oct, rolling by month), daily / weekly / monthly lists. Ever
 - The sums mostly repeat the social signals the launch model already has.
 - Upper bound: our people's *real* upvotes would rank daily lists at about 91%. The gap is in predicting those votes before launch, not in how they are summed.
 - The 32-core experiment machine cut each launch backtest from 28 min to 1 min, and a 6-variant × 5-seed check to 4 min.
+
+## 11. Why person and launch predictions don't add up (Oct 28)
+- **The "~91% upper bound" ranks launches by our people's REAL upvotes** (16% of the outcome). It shows that the people matter, not that a model of them can reach 90%.
+- **Person level** (Oct, no follows): popularity only 54.4% top 3; person signals only 47.6%; both 56.2%. The signals are strong alone, but they overlap with popularity almost entirely.
+- **Launch level:** the summed person signal correlates 0.53 with real votes, and **0.61 with the launch model itself**. The launch model correlates 0.71 with real votes.
+- **The leftover** (after removing what the launch model knows) vs what the launch model misses: +0.04 over 54 days (95% interval −0.01 to +0.10). Blend weight 0, so no daily gain. This holds even when the test knows who was active that day.
+- **Conclusion:** the person models carry almost no information the launch model lacks. Launch gains need person-level information the launch model cannot see. The one exception is monthly taste (§10).
