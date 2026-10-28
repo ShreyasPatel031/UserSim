@@ -198,3 +198,23 @@ Launch model (Mar–Oct, rolling by month), daily / weekly / monthly lists. Ever
 | mon@10 | 48.3 | −2.3 | +2.0 | +0.7 | +0.7 | +2.7 (5/2) |
 
 **Conclusion:** no meaningful gain on daily or weekly lists. Monthly moves by a few points both ways and is not consistent across variants. The person model's population sums add no reliable information to the launch model.
+
+## 13. Simulation-only benchmark and the person-data split (Oct 28, `simbench.py`, `robust_src.py`)
+
+**Simulation only**, Jul–Oct; settings fitted on Apr–Jun only (S=4 slots, tau=25, v0=0.5, beta=1):
+
+| Top 3 / 5 / 10 | Daily | Weekly | Monthly |
+|---|---|---|---|
+| simulation: exposure + dated ties + herding | 45.7 / 58.4 / 72.0 | 6.7 / 10.7 / 22.0 | 0 / 5 / 5 |
+| simulation without herding | 45.1 / 58.4 / 71.2 | 6.7 / 10.7 / 20.0 | 0 / 5 / 5 |
+| non-simulation launch model | 64.9 / 72.4 / 81.7 | 48.9 / 56.0 / 49.3 | 16.7 / 30.0 / 47.5 |
+| random | 16.1 / 32.1 / 50.4 | 2.2 / 1.3 / 3.3 | 0 / 0 / 0 |
+
+**Split** (5 seeds, Mar–Oct): removing the four person-derived groups (`fol_`, `seg_`, `cm_`, `rec_`) costs about 2 pts daily, about 5 weekly and 11 on monthly top 10. Adding the simulation's votes back recovers almost none of it.
+
+**One group at a time:**
+- `fol_` (follow lists) carries nearly all of it: weekly −3.6 / −2.1, monthly −7.5 / −5.5 / −6.2.
+- `seg_` hurts monthly lists (+6.0 on month@5 when removed).
+- `cm_` and `rec_` are worth about 0–2.
+
+**Caution:** the follow lists are undated (read Oct 25). Makers gain followers after a big launch, so part of this value may be leakage. Test: is `fol_`'s value larger for older launches?
