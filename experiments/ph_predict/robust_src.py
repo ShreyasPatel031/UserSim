@@ -1,6 +1,6 @@
 """Robustness of a source's daily/weekly/monthly gain: current model vs + source, over 5 seeds of the list classifiers,
 per month and per week (each fold x seed x variant in parallel).  usage: python robust_src.py aga"""
-import multiprocessing as mp, os, sys
+import multiprocessing as mp, os, re, sys
 os.environ.setdefault("LGB_THREADS", "1")
 import numpy as np, pandas as pd
 import model as M, run as RN
@@ -28,7 +28,12 @@ def job(a):
 def main(srcs):
     df = build_cached(); df = df[~df.known]
     folds = list(RN.folds(df, ["2026-03", "2026-04", "2026-05", "2026-06", "2026-07", "2026-08", "2026-09", "2026-10"]))
-    vs = [("current", BASE)] + [(f"+ {s}", BASE + s.split("+")) for s in srcs]   # "aud+aga" = both added
+    def spec(s):   # "aud+aga" adds both; "-fol-seg+sim" removes fol and seg, then adds sim
+        out = list(BASE)
+        for op, name in re.findall(r"([+-])([a-z0-9]+)", s if s[0] in "+-" else "+" + s):
+            out = out + [name] if op == "+" else [x for x in out if x != name]
+        return out
+    vs = [("current", BASE)] + [(s if s[0] in "+-" else f"+ {s}", spec(s)) for s in srcs]
     jobs = [(m, tr, te, s, n, v) for (m, tr, te) in folds for s in range(5) for n, v in vs]
     with mp.get_context("fork").Pool(os.cpu_count()) as pool:
         R = pd.DataFrame([r for rows in pool.map(job, jobs) for r in rows])
@@ -36,7 +41,7 @@ def main(srcs):
     # paired difference per list (week / month), averaged over seeds; share of lists where the source is better
     D = R.groupby(["list", "key", "variant"]).recall.mean().unstack()
     for s in srcs:
-        d = (D[f"+ {s}"] - D["current"])
+        d = (D[s if s[0] in "+-" else f"+ {s}"] - D["current"])
         P[f"gain {s}"] = d.groupby(level=0).mean().mul(100).round(1)
         P[f"better/worse {s}"] = d.groupby(level=0).apply(lambda x: f"{(x > 0).sum()}/{(x < 0).sum()}")
     print(P.to_string())

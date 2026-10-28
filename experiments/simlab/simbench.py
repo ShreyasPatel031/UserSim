@@ -117,8 +117,26 @@ def fit(days):
     print(json.dumps({k: v for k, v in R.items() if k != "top_fits"}, indent=1, default=str))
 
 
+def export(days):
+    """Per-launch simulated votes with the fitted settings -> ph_predict/data/sim_features.json (a launch-model input)."""
+    best = json.load(open(f"{HERE}/reports/simbench.json"))["best_settings"]
+    th = (int(best["S"]), float(best["tau"]), float(best["v0"]), float(best["beta"]))
+    out = {}
+    for d, dv in days.items():
+        sim, flat = simulate(dv, *th), simulate(dv, 1, 1e9, 1.0, 0.0)
+        tot = sum(sim.values()) or 1.0
+        r = {x: k + 1 for k, x in enumerate(sorted(sim, key=lambda x: -sim[x]))}
+        for x in sim:
+            out[str(x)] = {"sim_votes": float(sim[x]), "sim_votes_flat": float(flat[x]), "sim_share": float(sim[x] / tot),
+                           "sim_rank": float(r[x])}
+    json.dump(out, open(os.path.join(PS.store.RAW, "sim_features.json"), "w"))
+    print("exported", len(out))
+
+
 if __name__ == "__main__":
-    if sys.argv[1] == "rows":
+    if sys.argv[1] == "export":
+        export(load_days())
+    elif sys.argv[1] == "rows":
         build_rows(int(sys.argv[2]) if len(sys.argv) > 2 else os.cpu_count())
     else:
         fit(load_days())
