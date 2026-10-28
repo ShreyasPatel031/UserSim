@@ -13,17 +13,25 @@ GROUPS = {"ai": ["Artificial Intelligence"], "dev": ["Developer Tools", "GitHub"
 
 
 def load_llm(df):
+    """LLM scores from Claude (default) or Gemini (LLM_PROVIDER=gemini). "known" (the model says it remembers this
+    launch, so it is dropped from tests) is the union of both models' flags, so both are tested on the same launches."""
+    gem = os.environ.get("LLM_PROVIDER") == "gemini"
+    known = set()
     for mode in ("pitch", "site", "brand"):
-        d = F.D + f"/llm_{mode}" + ("_gemini" if os.environ.get("LLM_PROVIDER") == "gemini" else "")
-        sc, kn = {}, {}
-        if os.path.isdir(d):
-            for fn in os.listdir(d):
+        sc = {}
+        for suffix in ("", "_gemini"):
+            d = F.D + f"/llm_{mode}{suffix}"
+            for fn in os.listdir(d) if os.path.isdir(d) else []:
                 for k, v in json.load(open(f"{d}/{fn}")).items():
                     if isinstance(v, dict):
-                        sc[k], kn[k] = v.get("score"), v.get("known")
+                        if v.get("known"):
+                            known.add(k)
+                        if (suffix == "_gemini") == gem:
+                            sc[k] = v.get("score")
+                    elif mode == "brand" and (suffix == "_gemini") == gem:
+                        sc[k] = v
         df[f"llm_{mode}"] = df.id.map(sc).astype(float)
-        if mode == "pitch":
-            df["known"] = df.id.map(kn).fillna(False).astype(bool)
+    df["known"] = df.id.isin(known)
     return df
 
 
