@@ -42,10 +42,26 @@ Needs `gcloud` auth with read access to the bucket, plus `pip install duckdb pan
 | `fetch_state` (snapshot) | person, source | what we last fetched about a person | person, source (upvotes_page1, upvotes_scroll, follows, profile, profile_tabs, activity_tabs, linkedin, segments), last_fetched, status, items, newest_item (newest upvoted launch id seen), complete, back_to |
 | `launch_state` (snapshot) | launch_id, source | what we last fetched about a launch | launch_id, slug, source (comments, site), last_fetched, items |
 | `forecasts` (log) | — | a prediction made before results | forecast_date, model, predicted_rank, name, launch_id, made_on |
-| `backtests` (log) | — | one held-out backtest score | run_file, run_on, variant, list (day@3 ...), recall, seeds, months |
+| `backtests` (log) | — | one held-out backtest score | run_file (monthly_<date> for the twice-weekly test), run_on, variant (simulation only / launch only / both / current), list (day@3 ...), recall, seeds, months, lists (how many lists were scored) |
 | `persona_ratings` (log) | — | a persona's 1–5 fit rating of a launch | person, day, launch_id, design, rating |
 | `spend` (log) | — | money spent on a step | step, provider, usd, note, logged_on |
 | `pipeline_runs` (log) | — | one step of the daily pipeline | run_date, step, status, items, bytes, usd, seconds |
+| `daily_scores` (log) | — | yesterday's forecast vs the final daily ranks | day, model, k, hit, recall |
+
+## Daily pipeline
+
+Machine `usersim-pipeline` (e2-standard-4, us-central1-a). The resource policy `usersim-daily-start` starts it at
+07:05 UTC; at boot `pipeline/vm/run_daily.sh` runs, then the machine powers off:
+
+1. `python -m pipeline.daily` — launches, forecast, ranks, comments, people, personas, score, raw (each step's status,
+   items, bytes and $ go to `pipeline_runs`; money to `spend`).
+2. `python -m pipeline.backtest` — Mondays and Thursdays: retrain and score the last two months (5 seeds), as three
+   numbers: simulation only, launch only, both.
+3. `python -m pipeline.dash_export` — small JSON files to `<bucket>/dash/` for the pipeline dashboard; a daily scheduled
+   session uploads them.
+
+Fetches go through `pipeline/fetch.py` (direct, then the DataImpulse residential proxy; never Apify) and only for what
+is new (`pipeline/incremental.py`).
 
 ## Raw backup
 

@@ -130,6 +130,7 @@ if __name__ == "__main__":
     if mode in ("site", "brand"):  # only days whose websites have been resolved (unresolved counts as resolved-without-site)
         seen = set(F._jl("sites.jsonl", "id"))
         days = [d for d in days if df[df.day == d].id.isin(seen).mean() > 0.95]
+    days = days[:int(os.environ.get("LIMIT_DAYS", len(days)))]   # pilot on the newest days first
     with ThreadPoolExecutor(int(sys.argv[2]) if len(sys.argv) > 2 else 4) as ex:
         list(ex.map(lambda d: run_day(d, df[df.day == d], mode), days))
     if PROVIDER == "gemini":

@@ -27,7 +27,8 @@ def job(a):
 
 def main(srcs):
     df = build_cached(); df = df[~df.known]
-    folds = list(RN.folds(df, ["2026-03", "2026-04", "2026-05", "2026-06", "2026-07", "2026-08", "2026-09", "2026-10"]))
+    months = os.environ.get("MONTHS", "2026-03,2026-04,2026-05,2026-06,2026-07,2026-08,2026-09,2026-10").split(",")
+    folds = list(RN.folds(df, months))
     def spec(s):   # "aud+aga" adds both; "-fol-seg+sim" removes fol and seg, then adds sim
         out = [] if s[0] == "=" else list(BASE)        # "=sc" = that source alone
         for op, name in re.findall(r"([+=-])([a-z0-9]+)", s if s[0] in "+-=" else "+" + s):
@@ -37,6 +38,8 @@ def main(srcs):
     jobs = [(m, tr, te, s, n, v) for (m, tr, te) in folds for s in range(5) for n, v in vs]
     with mp.get_context("fork").Pool(os.cpu_count()) as pool:
         R = pd.DataFrame([r for rows in pool.map(job, jobs) for r in rows])
+    if os.environ.get("OUT"):
+        R.to_csv(os.environ["OUT"].replace(".csv", "_lists.csv"), index=False)   # per list, for callers that filter lists
     P = R.groupby(["list", "variant"]).recall.mean().unstack().mul(100).round(1)
     # paired difference per list (week / month), averaged over seeds; share of lists where the source is better
     D = R.groupby(["list", "key", "variant"]).recall.mean().unstack()
@@ -45,7 +48,7 @@ def main(srcs):
         P[f"gain {s}"] = d.groupby(level=0).mean().mul(100).round(1)
         P[f"better/worse {s}"] = d.groupby(level=0).apply(lambda x: f"{(x > 0).sum()}/{(x < 0).sum()}")
     print(P.to_string())
-    P.to_csv(f"results/robust_{'_'.join(srcs)}.csv")
+    P.to_csv(os.environ.get("OUT") or f"results/robust_{'_'.join(srcs)}.csv")
 
 
 if __name__ == "__main__":

@@ -20,6 +20,8 @@ sys.path.insert(0, PH)
 PERSONA_CAP = int(os.environ.get("PERSONA_CAP", "6000"))      # person-days rated per day (cost cap: ~$0.80)
 PERSON_CAP = int(os.environ.get("PERSON_CAP", "8000"))        # pages per day for people (cost cap: ~$2.40)
 RUNS = []
+VM_USD_PER_HOUR = 0.134      # e2-standard-4 on demand, us-central1 (the pipeline machine)
+BOOT_SECONDS = 180           # boot, wait, upload and shutdown around the steps
 
 
 def pacific_today():
@@ -250,6 +252,8 @@ def main(argv):
                 con = W.connect(do_sync=False)                  # later steps see what earlier steps wrote
     if not dry:
         W.write("pipeline_runs", pd.DataFrame(RUNS))
+        secs = sum(r["seconds"] for r in RUNS) + BOOT_SECONDS
+        log_spend(d, "machine", {"gcp_vm": round(secs / 3600 * VM_USD_PER_HOUR, 4)}, dry)
 
 
 if __name__ == "__main__":
