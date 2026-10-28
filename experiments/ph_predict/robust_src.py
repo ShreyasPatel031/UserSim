@@ -1,4 +1,4 @@
-"""Robustness of a source's weekly/monthly gain: current model vs + source, over 5 seeds of the list classifiers,
+"""Robustness of a source's daily/weekly/monthly gain: current model vs + source, over 5 seeds of the list classifiers,
 per month and per week (each fold x seed x variant in parallel).  usage: python robust_src.py aga"""
 import multiprocessing as mp, os, sys
 os.environ.setdefault("LGB_THREADS", "1")
@@ -13,12 +13,13 @@ def job(a):
     m, tr, te, seed, name, src = a
     os.environ["LIST_SEED"] = str(seed)
     tr, te = M.add_fold_feats(tr, te); te = te.copy()
+    te["d"] = M.fit_predict(tr, te, src, seed=seed)[0]
     M.SOURCES = src
     te["w"] = M.fit_list_clf(tr, te, "week", "weeklyRank", 10)
     te["m"] = M.fit_list_clf(tr, te, "mon", "monthlyRank", 20)
     rows = []
     for k in (3, 5, 10):
-        for per, col, s in (("week", "weeklyRank", "w"), ("mon", "monthlyRank", "m")):
+        for per, col, s in (("day", "dailyRank", "d"), ("week", "weeklyRank", "w"), ("mon", "monthlyRank", "m")):
             for key, v in zip(sorted(te[per].unique()), M.recall_at(te, per, col, k, s, per_list=True)):
                 rows.append({"variant": name, "seed": seed, "list": f"{per}@{k}", "key": key, "recall": v})
     return rows
@@ -27,7 +28,7 @@ def job(a):
 def main(srcs):
     df = build_cached(); df = df[~df.known]
     folds = list(RN.folds(df, ["2026-03", "2026-04", "2026-05", "2026-06", "2026-07", "2026-08", "2026-09", "2026-10"]))
-    vs = [("current", BASE)] + [(f"+ {s}", BASE + [s]) for s in srcs]
+    vs = [("current", BASE)] + [(f"+ {s}", BASE + s.split("+")) for s in srcs]   # "aud+aga" = both added
     jobs = [(m, tr, te, s, n, v) for (m, tr, te) in folds for s in range(5) for n, v in vs]
     with mp.get_context("fork").Pool(os.cpu_count()) as pool:
         R = pd.DataFrame([r for rows in pool.map(job, jobs) for r in rows])
