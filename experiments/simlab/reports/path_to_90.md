@@ -218,3 +218,16 @@ Launch model (Mar–Oct, rolling by month), daily / weekly / monthly lists. Ever
 - `cm_` and `rec_` are worth about 0–2.
 
 **Caution:** the follow lists are undated (read Oct 25). Makers gain followers after a big launch, so part of this value may be leakage. Test: is `fol_`'s value larger for older launches?
+
+## 14. simcore matches the launch model on daily lists (Oct 28, `experiments/simcore`)
+All person-derived launch-model inputs were moved into simcore's Product Hunt adapter (audiences by channel over all 20.7k people, pre-launch commenters, similar launches' audiences, team support activity, audience segments, simulated votes). 5 seeds, Mar–Oct:
+
+| Top 3 / 5 / 10 | Best launch model | Launch inputs only | Simcore alone (model on its outputs) | Launch inputs + simcore |
+|---|---|---|---|---|
+| Daily | 61.5 / 69.9 / 79.5 | 59.5 / 68.3 / 77.8 | 55.5 / 67.7 / 76.3 | 61.6 / 70.0 / 79.2 |
+| Weekly | 54.8 / 58.1 / 52.1 | 49.8 / 53.5 / 52.4 | 51.5 / 56.0 / 48.6 | 51.9 / 58.0 / 51.9 |
+| Monthly | 23.3 / 36.0 / 48.3 | 23.3 / 33.0 / 37.3 | 15.8 / 27.0 / 40.1 | 19.1 / 29.5 / 44.0 |
+
+- **Attribution, daily top 3** (skill above random ~16): 82% from either side, 13% only from launch inputs, 5% only from simcore. Simcore alone gets 87% of the skill.
+- **Not matched yet:** weekly top 3 (−2.9) and monthly. The previous version (fewer outputs) got monthly 25.8 / 35.5 / 45.8. There are only 8 monthly lists.
+- **Dated only:** simcore without the undated follow lists gives daily 60.0 / 68.3 / 77.2.
