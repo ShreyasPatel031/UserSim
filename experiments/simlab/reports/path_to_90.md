@@ -181,3 +181,20 @@ Launch model (Mar–Oct, rolling by month), daily / weekly / monthly lists. Ever
 - **Launch level:** the summed person signal correlates 0.53 with real votes, and **0.61 with the launch model itself**. The launch model correlates 0.71 with real votes.
 - **The leftover** (after removing what the launch model knows) vs what the launch model misses: +0.04 over 54 days (95% interval −0.01 to +0.10). Blend weight 0, so no daily gain. This holds even when the test knows who was active that day.
 - **Conclusion:** the person models carry almost no information the launch model lacks. Launch gains need person-level information the launch model cannot see. The one exception is monthly taste (§10).
+
+## 12. Trained person model applied to everyone, added inside the launch model (Oct 28, `popscore.py`)
+- **Person model:** retrained each month on the previous month's active people. Personal signals only: past backing, topic, meaning, people-like-you backing, sequence, category.
+- **Scoring:** the model scored all ~20k people active in the prior 30 days on every launch, Apr–Oct (5,082 launches), and the scores were summed per launch (`psn_`).
+- **Test:** `psn_` was added inside the launch model, alone and together with the existing audience estimates (`aud_`, `aud2_`) and the taste sums (`aga_`). 5 seeds, 8 months; gain in points (lists better / worse).
+
+| List | Launch model | + psn | + aud | + aud2 | + psn + aud + aud2 | + all four |
+|---|---|---|---|---|---|---|
+| day@3 | 61.5 | −0.4 (23/31) | −0.2 | −0.1 | −0.4 | −0.7 |
+| day@5 | 69.9 | +0.2 | −0.1 | 0.0 | 0.0 | +0.3 |
+| day@10 | 79.5 | 0.0 | +0.1 | 0.0 | +0.1 | +0.2 |
+| week@5 | 58.1 | +1.0 (5/0) | −0.1 | 0.0 | +0.3 | +0.1 |
+| mon@3 | 23.3 | −2.5 | +0.8 | +4.2 (3/1) | 0.0 | +1.7 |
+| mon@5 | 36.0 | −3.0 | +1.0 | +2.5 (5/2) | +3.0 (6/2) | +1.0 |
+| mon@10 | 48.3 | −2.3 | +2.0 | +0.7 | +0.7 | +2.7 (5/2) |
+
+**Conclusion:** no meaningful gain on daily or weekly lists. Monthly moves by a few points both ways and is not consistent across variants. The person model's population sums add no reliable information to the launch model.
