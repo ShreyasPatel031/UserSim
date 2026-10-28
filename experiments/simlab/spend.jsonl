@@ -12,3 +12,4 @@
 {"t":"scrape_vm","provider":"gcp","usd":3.8,"note":"e2-standard-16 09:00-15:55 (idle after 09:49 because a container restart delayed deletion)"}
 {"t":"lean_scroll_pilots","provider":"dataimpulse","usd":0.16,"note":"45 people across 3 pilots; shared browser blocked 16/20, so per-person browsers kept; early stop at Sep 1 saves little (first load ~4 MB)"}
 {"t":"scroll_left","provider":"dataimpulse","usd":4.66,"note":"remaining holdout people back to Sep 1 on the main VM; 886/953 ok, 66 blocked (403)"}
+{"t":"persona_lab","provider":"gcp","usd":1.80,"note":"9,426 Gemini calls (rate/pick3/summary x Flash/Flash-Lite), measured tokens"}
