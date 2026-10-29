@@ -87,7 +87,7 @@ def build(include_today=False):
     wbav = _jl("ext_wb.jsonl")
     cmf = json.load(open(f"{D}/cm_features.json")) if os.path.exists(f"{D}/cm_features.json") else {}
     audf = json.load(open(f"{D}/aud_features.json")) if os.path.exists(f"{D}/aud_features.json") else {}
-    for extra in ("aud2_features.json", "recip_features.json", "fol_features.json", "seg_features.json", "promo_features.json", "ctx_features.json", "agg_features.json", "agt_features.json", "aga_features.json", "pss_features.json", "ptr_features.json", "tka_features.json", "tkb_features.json", "tkc_features.json", "tkd_features.json", "tke_features.json", "psn_features.json", "sim_features.json", "sc_features.json", "scd_features.json", "ps_features.json"):  # step-2 audience, reciprocity (rec_), sample followers (fol_)
+    for extra in ("aud2_features.json", "recip_features.json", "fol_features.json", "seg_features.json", "promo_features.json", "ctx_features.json", "agg_features.json", "agt_features.json", "aga_features.json", "pss_features.json", "ptr_features.json", "tka_features.json", "tkb_features.json", "tkc_features.json", "tkd_features.json", "tke_features.json", "psn_features.json", "sim_features.json", "sc_features.json", "scd_features.json", "ps_features.json", "vs_features.json"):  # step-2 audience, reciprocity (rec_), sample followers (fol_)
         for k, v in (json.load(open(f"{D}/{extra}")) if os.path.exists(f"{D}/{extra}") else {}).items():
             audf.setdefault(k, {}).update(v)
     import external as E
