@@ -17,6 +17,7 @@ import rank as R
 import store as S
 import top10 as T
 
+TARGET = 100   # the day's top 100 is the main list; 30 and 10 reported too
 MONTHS = ["2026-05", "2026-06", "2026-07", "2026-08", "2026-09"]
 p = T.stories()
 p = p[p.day < "2026-10-01"].reset_index(drop=True)
@@ -72,11 +73,17 @@ for m in MONTHS:
     for name, cols in V.items():
         trm = tr & (p.month >= START).to_numpy()
         c = lgb.LGBMClassifier(**{**T.GBM, "scale_pos_weight": 5})
-        c.fit(F[trm][cols].assign(text_score=oof[trm[tr]]), (rk[trm] <= 30).astype(int))
+        c.fit(F[trm][cols].assign(text_score=oof[trm[tr]]), (rk[trm] <= TARGET).astype(int))
         res[name] = c.predict_proba(F[te][cols].assign(text_score=txt))[:, 1]
     out.append(pd.DataFrame(res))
     print(m, flush=True)
 P = pd.concat(out, ignore_index=True).dropna()
 print("test days", P.day.nunique())
+rows = []
 for name in V:
-    print(name, {k: R.boot(T.day_hits(P, name, k, rng)) for k in (10, 30)})
+    r = {k: R.boot(T.day_hits(P, name, k, rng)) for k in (100, 30, 10)}
+    rows += [{"kind": "ladder", "variant": name, "k": k, "recall": v[0], "lo": v[1], "hi": v[2],
+              "test": f"{MONTHS[0]}..{MONTHS[-1]}", "days": int(P.day.nunique()), "made_on": S.now()} for k, v in r.items()]
+    print(name, r, flush=True)
+print("random", {k: round(float(np.mean([k / len(g) for _, g in P.groupby("day")])), 3) for k in (100, 30, 10)})
+S.write("hn_scores", pd.DataFrame(rows))
