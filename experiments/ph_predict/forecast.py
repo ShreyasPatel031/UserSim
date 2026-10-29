@@ -15,10 +15,10 @@ df = df[~df.known]
 tr, te = df[~df.is_today], df[df.is_today & (df.day == day)]
 tr, te = M.add_fold_feats(tr, te)
 te = te.copy()
-te["pred"] = M.fit_predict(tr, te, M.SOURCES)[0]
-te["rank_score"] = M.fit_rank(tr, te, M.SOURCES)
-z = lambda v: (v - v.mean()) / (v.std() + 1e-9)
-te["score"] = z(te.pred) + z(te.rank_score)
+src, dropped = M.live_sources(tr, te, M.LIVE_SOURCES)
+print("sources", src, "dropped (empty today, filled in training):", dropped, flush=True)
+te["pred"] = M.fit_predict(tr, te, src)[0]   # the configuration the backtest scores (liveexp.py / pipeline.backtest)
+te["score"] = te.pred
 te = te.sort_values("score", ascending=False)
 L = [f"# Forecast for {day} (made before results; {len(te)} featured launches at fetch time)\n",
      "| Predicted rank | Product | Tagline | Hunter PH followers |", "|---|---|---|---|"]

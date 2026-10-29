@@ -2,7 +2,7 @@
 Only posts/coverage dated before launch day count. Then a residual test like signal_test.py: does each feature explain
 what the current model gets wrong (within-day Spearman with real-minus-predicted percentile, bootstrap 95% CI)?
 Output: data/promo_features.json, results/promo_signal.csv"""
-import json, os, re
+import json, os, re, sys
 import numpy as np, pandas as pd
 from scipy.stats import spearmanr
 
@@ -64,6 +64,8 @@ def main():
         r = json.loads(l)
         rows[r["id"]] = feats(r)
     json.dump(rows, open(f"{D}/promo_features.json", "w"))
+    if "--test" not in sys.argv:     # the daily forecast only needs the features
+        return
     P = pd.read_csv(f"{R}/predictions.csv", usecols=["id", "day", "dailyRank", "pred"]); P["id"] = P.id.astype(str)
     F = pd.DataFrame.from_dict(rows, orient="index"); F.index.name = "id"
     P = P.merge(F.reset_index(), on="id", how="inner")

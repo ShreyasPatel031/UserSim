@@ -13,6 +13,12 @@ FIELDS = {"role": ["founder_exec", "engineer", "marketing_growth", "investor", "
           "buyer_type": ["enterprise_buyer", "team_lead_buyer", "developer_adopter", "individual_prosumer"]}
 
 
+def day_files():
+    """Finished days, plus live "today" files for days not finished yet (the live forecast's rows)."""
+    days = sorted(glob.glob(f"{D}/days/*.json")); have = {os.path.basename(f) for f in days}
+    return days + [f for f in sorted(glob.glob(f"{D}/today/*.json")) if os.path.basename(f) not in have]
+
+
 def main():
     seg = {}
     for l in open(f"{D}/segments2.jsonl"):
@@ -25,7 +31,7 @@ def main():
         for u, _ in r.get("following") or []:
             fans[u].add(r["username"])
     out = {}
-    for fn in sorted(glob.glob(f"{D}/days/*.json")):
+    for fn in day_files():
         for p in json.load(open(fn)):
             team = ({m["username"] for m in p.get("makers") or []} | {(p.get("user") or {}).get("username")}) - {None}
             F = [seg[u] for u in set().union(*[fans.get(m, set()) for m in team]) if u in seg] if team else []

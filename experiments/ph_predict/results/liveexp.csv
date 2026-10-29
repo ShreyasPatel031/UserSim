@@ -1,0 +1,13 @@
+variant,3,5,10
+drop,59.1,67.9,76.9
+drop+busy,58.7,68.1,76.9
+drop+cm,58.9,67.9,77.0
+drop+fol,59.8,69.1,78.7
+drop+hn,59.3,68.5,76.9
+drop+promo,60.2,67.9,77.1
+drop+rec,58.8,68.1,77.3
+drop+seg,60.6,68.9,78.4
+drop+seg+fol+promo+busy,61.3,69.3,78.9
+full,61.1,69.6,79.1
+live,42.5,55.3,68.7
+live_sources_only_daily,58.2,68.0,77.1

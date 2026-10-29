@@ -76,7 +76,10 @@ with open(out, "a") as f:
         if p["id"] not in done:
             p["_date"] = d; R.one(p, f)
 PY
-python3 external.py x && python3 forecast.py {d}'''], cwd=PH, check=True)
+python3 external.py x
+python3 fol_features.py > /dev/null && python3 seg_features.py > /dev/null
+TODAY={d} python3 promo_search.py 99 8 && python3 promo_features.py
+python3 forecast.py {d}'''], cwd=PH, check=True)
     import re
     rows = []
     name2id = {p["name"].strip(): str(p["id"]) for p in json.load(open(f"{RAW}/today/{d}.json"))}

@@ -1,9 +1,9 @@
 """Twice-weekly backward monthly test (Mondays and Thursdays, after the daily run): retrain on everything before each
 test month and score the last two months, 5 seeds, with the three numbers we report:
-  simulation only  (=sc)                  what the user simulation alone predicts
-  launch only      (-fol-seg-cm-rec)       launch facts, no person data
-  both             (-fol-seg-cm-rec+sc)    launch facts + simulation
-  current          the daily forecast model
+  simulation only  (=sc)                     what the user simulation alone predicts
+  launch only      (-cm-rec-hn-fol-seg)       launch facts, no person data
+  both             (-cm-rec-hn-fol-seg+sc)    launch facts + simulation
+  current          (-cm-rec-hn)               the live daily forecast (only inputs that exist at forecast time)
 Only "simulation only" is claimed as the simulation's accuracy. Weekly and monthly lists count only once they have ended.
 Writes the backtests table (run_file monthly_<date>) and the machine time to spend.
 usage: python -m pipeline.backtest [YYYY-MM-DD] [--force]"""
@@ -13,7 +13,8 @@ from . import warehouse as W
 
 EXP = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); PH = os.path.join(EXP, "ph_predict")
 DAYS = (0, 3)                        # Monday, Thursday
-VARIANTS = {"=sc": "simulation only", "-fol-seg-cm-rec": "launch only", "-fol-seg-cm-rec+sc": "both", "current": "current"}
+VARIANTS = {"=sc": "simulation only", "-cm-rec-hn-fol-seg": "launch only", "-cm-rec-hn-fol-seg+sc": "both",
+            "-cm-rec-hn": "current"}   # current = the live forecast's inputs (model.LIVE_SOURCES)
 USD_PER_HOUR = float(os.environ.get("VM_USD_PER_HOUR", "0.134"))   # e2-standard-4 on demand, us-central1
 
 
@@ -28,7 +29,7 @@ def main(argv):
     if dt.date.fromisoformat(d).weekday() not in DAYS and "--force" not in argv:
         print("not a backtest day"); return
     ms, out, t0 = months(d), f"{PH}/results/monthly_{d}.csv", time.time()
-    subprocess.run(["python3", "robust_src.py", *[v for v in VARIANTS if v != "current"]], cwd=PH, check=True,
+    subprocess.run(["python3", "robust_src.py", *VARIANTS], cwd=PH, check=True,
                    env={**os.environ, "MONTHS": ",".join(ms), "OUT": out})
     secs = time.time() - t0
     R = pd.read_csv(out.replace(".csv", "_lists.csv"), dtype={"key": str})

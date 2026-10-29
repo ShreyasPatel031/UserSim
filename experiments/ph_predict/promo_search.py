@@ -2,7 +2,8 @@
 For each Sep–Oct launch: posts by the founders / company on LinkedIn and X (and elsewhere) about the product or its
 Product Hunt launch, dated BEFORE launch day; founders' and company's LinkedIn/X follower counts as shown; earlier
 coverage (press, Hacker News, Reddit, newsletters). Only items with a date before launch day count as pre-launch.
-usage: python promo_search.py [max_launches] [threads] -> appends data/promo_search.jsonl (skips done)"""
+usage: python promo_search.py [max_launches] [threads] -> appends data/promo_search.jsonl (skips done)
+       TODAY=YYYY-MM-DD python promo_search.py   (live: today's launches at forecast time; 1,500 searches/day are free)"""
 import json, os, re, subprocess, sys, threading, time
 from concurrent.futures import ThreadPoolExecutor
 import requests
@@ -32,6 +33,11 @@ TOK = {}
 
 
 def token(refresh=False):
+    with lock:   # threads start together: one gcloud call, not eight racing ones
+        return _token(refresh)
+
+
+def _token(refresh):
     if refresh or "v" not in TOK:
         TOK["v"] = subprocess.run(["gcloud", "auth", "print-access-token"], capture_output=True, text=True).stdout.strip()
     return TOK["v"]
@@ -48,6 +54,20 @@ def launches():
         yield {"id": h["id"], "day": h["day"], "name": h["name"], "tagline": makers.get(h["id"] + "_t", ""),
                "site": (h.get("site_url") or "").split("?")[0], "makers": ", ".join(makers.get(h["id"], [])[:5]),
                "cx": h.get("company_x") or "", "mx": ", ".join(h.get("makers_x") or [])}
+
+
+def launches_today(day):
+    """Today's launches at forecast time (live): site from sites_today.jsonl, X handles from the makers' profiles."""
+    site = {}
+    if os.path.exists(f"{D}/sites_today.jsonl"):
+        for l in open(f"{D}/sites_today.jsonl"):
+            r = json.loads(l)
+            site[str(r.get("id"))] = r.get("domain") or r.get("url") or ""
+    for p in json.load(open(f"{D}/today/{day}.json")):
+        mk = p.get("makers") or []
+        yield {"id": p["id"], "day": day, "name": p["name"], "tagline": p["tagline"], "site": site.get(str(p["id"]), ""),
+               "makers": ", ".join((m.get("name") or m["username"]) for m in mk[:5]), "cx": "",
+               "mx": ", ".join(m["twitterUsername"] for m in mk[:5] if m.get("twitterUsername"))}
 
 
 def launches_range(a, b):
@@ -96,7 +116,8 @@ def main():
     n = int(sys.argv[1]) if len(sys.argv) > 1 else 10**9
     th = int(sys.argv[2]) if len(sys.argv) > 2 else 24
     done = {json.loads(l)["id"] for l in open(OUT)} if os.path.exists(OUT) else set()
-    src = launches_range(*os.environ["RANGE"].split(":")) if os.environ.get("RANGE") else launches()
+    src = (launches_today(os.environ["TODAY"]) if os.environ.get("TODAY") else
+           launches_range(*os.environ["RANGE"].split(":")) if os.environ.get("RANGE") else launches())
     todo = [x for x in src if x["id"] not in done][:n]
     print("launches", len(todo), flush=True)
     with ThreadPoolExecutor(th) as ex:

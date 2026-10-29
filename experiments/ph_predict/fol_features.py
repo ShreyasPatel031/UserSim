@@ -9,6 +9,12 @@ import numpy as np, pandas as pd
 D = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 
 
+def day_files():
+    """Finished days, plus live "today" files for days not finished yet (the live forecast's rows)."""
+    days = sorted(glob.glob(f"{D}/days/*.json")); have = {os.path.basename(f) for f in days}
+    return days + [f for f in sorted(glob.glob(f"{D}/today/*.json")) if os.path.basename(f) not in have]
+
+
 def main():
     fol = Counter(); fans = defaultdict(set)  # username -> sampled people who follow them
     for l in gzip.open(f"{D}/ph_following.jsonl.gz", "rt"):
@@ -20,7 +26,7 @@ def main():
     backed = defaultdict(set)  # team member -> people who commented on their launches (with date)
     slug_team = {}
     rows = []
-    for fn in sorted(glob.glob(f"{D}/days/*.json")):
+    for fn in day_files():
         day = os.path.basename(fn)[:10]
         for p in json.load(open(fn)):
             rows.append({"id": p["id"], "day": day, "hunter": (p.get("user") or {}).get("username"),

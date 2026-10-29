@@ -5,6 +5,8 @@
 #   3. pipeline.dash_export  dashboard files to gs://.../usersim_sim/dash/ (a daily scheduled session uploads them)
 # A file /home/agent/w/KEEP_ON stops the shutdown (for debugging).
 set -u
+# A file /home/agent/w/SKIP_NEXT skips one boot's run (for maintenance), then is removed.
+if [ -f /home/agent/w/SKIP_NEXT ]; then rm -f /home/agent/w/SKIP_NEXT; exit 0; fi
 export PATH=/opt/exp/bin:$PATH
 export PH_TOKEN=$(python3 -c "import json; print(json.load(open('/var/lib/usersim/discovery_keys.json'))['PH_TOKEN'])")
 export SKIP_CLAUDE=1           # never call Claude

@@ -15,7 +15,7 @@ D = F.D
 MODEL = "claude-sonnet-4-5"
 URL = (f"https://aiplatform.googleapis.com/v1/projects/project-amer-scs-sandbox/locations/global/publishers/"
        f"anthropic/models/{MODEL}:rawPredict")
-PROVIDER = os.environ.get("LLM_PROVIDER", "claude")
+PROVIDER = os.environ.get("LLM_PROVIDER", "gemini")   # Claude only with LLM_PROVIDER=claude and ALLOW_CLAUDE=1
 SUFFIX = "_gemini" if PROVIDER == "gemini" else ""
 GEMINI = ("https://aiplatform.googleapis.com/v1/projects/project-amer-scs-sandbox/locations/global/publishers/google/"
           "models/gemini-2.5-flash:generateContent")
@@ -35,8 +35,8 @@ def token():
 def call(prompt, max_tokens=4000):
     if PROVIDER == "gemini":
         return gemini_call(prompt, max_tokens)
-    if os.environ.get("SKIP_CLAUDE") == "1":
-        print("SKIP_CLAUDE=1: no Claude call", flush=True)
+    if os.environ.get("ALLOW_CLAUDE") != "1":
+        print("no Claude call (set ALLOW_CLAUDE=1 to allow)", flush=True)
         return ""
     body = {"anthropic_version": "vertex-2023-10-16", "max_tokens": max_tokens, "temperature": 0,
             "messages": [{"role": "user", "content": prompt}]}

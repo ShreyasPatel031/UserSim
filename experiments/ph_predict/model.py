@@ -75,6 +75,24 @@ LEAKY = {"ph_maker_max_followers", "ph_maker_sum_followers"}
 INCLUDE_LEAKY = False
 
 
+# The daily forecast may only use inputs that exist at forecast time. These are computed offline or read after launch,
+# so they are empty on live rows (measured Oct 25-28); trained-on-but-empty-live cost 61 -> 42% daily top 3 (liveexp.py).
+LIVE_EMPTY = ["cm", "rec", "hn"]   # fol, seg, busy, promo are computed at forecast time (pipeline.daily forecast step)
+LIVE_SOURCES = [s for s in SOURCES + ["fol", "seg", "promo", "rec", "busy"] if s not in LIVE_EMPTY]
+
+
+def live_sources(tr, te, sources, tol=0.25):
+    """Drop any source whose inputs are much emptier on today's rows than on the last 30 days of training rows."""
+    recent = tr[tr.day >= sorted(tr.day.unique())[-30]]
+    empty = lambda d, c: float((d[c].isna() | (d[c] == 0)).mean())
+    keep, dropped = [], {}
+    for s in sources:
+        c = cols(tr, [s])
+        gap = np.mean([empty(te, x) - empty(recent, x) for x in c]) if c else 0.0
+        (dropped.__setitem__(s, round(gap, 2)) if gap > tol else keep.append(s))
+    return keep, dropped
+
+
 def cols(df, sources):
     return [c for c in df.columns if c.split("_")[0] in sources and c not in ("web_text",)
             and df[c].dtype != object and (INCLUDE_LEAKY or c not in LEAKY)]
