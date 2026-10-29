@@ -78,7 +78,9 @@ INCLUDE_LEAKY = False
 # The daily forecast may only use inputs that exist at forecast time. These are computed offline or read after launch,
 # so they are empty on live rows (measured Oct 25-28); trained-on-but-empty-live cost 61 -> 42% daily top 3 (liveexp.py).
 LIVE_EMPTY = ["cm", "rec", "hn"]   # fol, seg, busy, promo are computed at forecast time (pipeline.daily forecast step)
-LIVE_SOURCES = [s for s in SOURCES + ["fol", "seg", "promo", "rec", "busy"] if s not in LIVE_EMPTY]
+# website and domain inputs: often missing live, and the model is better without them (tune.py: +0.7 top 3 on fresh seeds)
+LIVE_SOURCES = [s for s in SOURCES + ["fol", "seg", "promo", "rec", "busy"] if s not in LIVE_EMPTY + ["web", "dom"]]
+LIVE_PARAMS = dict(colsample_bytree=0.5)
 
 
 def live_sources(tr, te, sources, tol=0.25):
@@ -98,12 +100,12 @@ def cols(df, sources):
             and df[c].dtype != object and (INCLUDE_LEAKY or c not in LEAKY)]
 
 
-def fit_predict(tr, te, sources, seed=0):
+def fit_predict(tr, te, sources, seed=0, **kw):
     c = cols(tr, sources)
     if not c:
         return np.random.default_rng(seed).random(len(te)), None, c
-    m = lgb.LGBMRegressor(n_estimators=400, learning_rate=0.03, num_leaves=15, min_child_samples=20,
-                          subsample=0.8, subsample_freq=1, colsample_bytree=0.8, reg_lambda=1.0,
+    m = lgb.LGBMRegressor(**{**dict(n_estimators=400, learning_rate=0.03, num_leaves=15, min_child_samples=20,
+                                    subsample=0.8, subsample_freq=1, colsample_bytree=0.8, reg_lambda=1.0), **kw},
                           random_state=seed, verbose=-1, n_jobs=N_JOBS)
     m.fit(tr[c], tr.logv)
     return m.predict(te[c]), m, c

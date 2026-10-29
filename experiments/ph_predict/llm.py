@@ -9,6 +9,7 @@ when LLM_PROVIDER=gemini), so the two can be backtested side by side. SKIP_CLAUD
 import json, os, re, subprocess, sys, time, threading
 from concurrent.futures import ThreadPoolExecutor
 import urllib.request
+import numpy as np, pandas as pd
 import features as F
 
 D = F.D
@@ -90,8 +91,19 @@ in its niche, 3 = widely known brand (e.g. Notion, Figma, OpenAI). Judge the com
 Reply with JSON only: {{"<id>": <0-3>, ...}}"""
 
 
+def facts(r):
+    """What is known about the team before launch (all inputs the daily model also has)."""
+    n = lambda c: int(np.expm1(r[c])) if c in r and pd.notna(r[c]) else "?"
+    return (f"\n  team: {int(r.ph_n_makers) if pd.notna(r.ph_n_makers) else '?'} makers; "
+            f"{'self-hunted' if r.ph_self_hunted == 1 else 'hunted by someone else'}; hunter PH followers {n('ph_hunter_followers')}; "
+            f"top maker PH followers {n('ph_maker_max_followers')}; top maker X followers {n('x_maker_max_followers')}; "
+            f"company X followers {n('x_company_followers')}; makers' earlier PH launches {int(r.hist_maker_n) if pd.notna(r.hist_maker_n) else 0}")
+
+
 def item(r, mode):
     s = f"[{r.id}] {r['name']} — {r.tagline}\n  topics: {', '.join(r.topics)}\n  description: {r.description[:400]}"
+    if mode == "full":
+        s += facts(r) + f"\n  homepage: {(r.web_text or '')[:300]}"
     if mode == "site":
         s += f"\n  homepage ({'launch-day snapshot' if r.web_src_wayback else 'current site' if r.web_src_live else 'unavailable'}): {(r.web_text or '')[:700]}"
     return s
@@ -110,7 +122,8 @@ def run_day(day, g, mode):
         except Exception:  # noqa: BLE001
             print("bad json", day, txt[:200], flush=True); return
         json.dump(res, open(out, "w")); print(mode, day, len(res), flush=True); return
-    basis = "the pitch (name, tagline, description, topics)" if mode == "pitch" else "the pitch and the homepage text"
+    basis = {"pitch": "the pitch (name, tagline, description, topics)", "site": "the pitch and the homepage text",
+             "full": "everything shown: the pitch, the homepage, and the team's reach before launch"}[mode]
     txt = call(PROMPT.format(n=len(g), day=day, basis=basis, items="\n".join(item(r, mode) for _, r in g.iterrows())),
                max_tokens=60 * len(g) + 500)
     m = re.search(r"\{.*\}", txt, re.S)

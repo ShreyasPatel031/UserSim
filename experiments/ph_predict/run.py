@@ -17,7 +17,7 @@ def load_llm(df):
     launch, so it is dropped from tests) is the union of both models' flags, so both are tested on the same launches."""
     gem = os.environ.get("LLM_PROVIDER", "gemini") == "gemini"
     known = set()
-    for mode in ("pitch", "site", "brand"):
+    for mode in ("pitch", "site", "brand", "full"):
         sc = {}
         for suffix in ("", "_gemini"):
             d = F.D + f"/llm_{mode}{suffix}"

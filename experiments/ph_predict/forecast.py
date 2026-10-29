@@ -8,7 +8,7 @@ import llm
 
 day = sys.argv[1]
 df0 = F.build(include_today=True)
-for mode in ("pitch", "site", "brand"):  # same blind LLM judgements as the backtest rows get
+for mode in ("pitch", "site", "brand", "full"):  # same blind LLM judgements as the backtest rows get
     llm.run_day(day, df0[df0.day == day], mode)
 df = RN.load_llm(df0)
 df = df[~df.known]
@@ -18,7 +18,7 @@ te = te.copy()
 src, dropped = M.live_sources(tr, te, M.LIVE_SOURCES)
 print("sources", src, "dropped (empty today, filled in training):", dropped, flush=True)
 # the configuration the backtest scores (liveexp.py / pipeline.backtest), averaged over 5 seeds (+0.6 daily top 3)
-te["pred"] = np.mean([M.fit_predict(tr, te, src, seed=s)[0] for s in range(5)], axis=0)
+te["pred"] = np.mean([M.fit_predict(tr, te, src, seed=s, **M.LIVE_PARAMS)[0] for s in range(5)], axis=0)
 te["score"] = te.pred
 te = te.sort_values("score", ascending=False)
 L = [f"# Forecast for {day} (made before results; {len(te)} featured launches at fetch time)\n",

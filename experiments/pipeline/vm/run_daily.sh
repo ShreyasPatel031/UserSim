@@ -5,8 +5,10 @@
 #   3. pipeline.dash_export  dashboard files to gs://.../usersim_sim/dash/ (a daily scheduled session uploads them)
 # A file /home/agent/w/KEEP_ON stops the shutdown (for debugging).
 set -u
-# A file /home/agent/w/SKIP_NEXT skips one boot's run (for maintenance), then is removed.
-if [ -f /home/agent/w/SKIP_NEXT ]; then rm -f /home/agent/w/SKIP_NEXT; exit 0; fi
+# Maintenance: instance metadata skip-run=1 (settable while the machine is off) skips the run and keeps the machine on:
+#   gcloud compute instances add-metadata usersim-pipeline --zone us-central1-a --metadata skip-run=1   (remove-metadata --keys skip-run after)
+SKIP=$(curl -s -m 5 -H Metadata-Flavor:Google http://metadata.google.internal/computeMetadata/v1/instance/attributes/skip-run)
+if [ "$SKIP" = "1" ]; then exit 0; fi
 export PATH=/opt/exp/bin:$PATH
 export PH_TOKEN=$(python3 -c "import json; print(json.load(open('/var/lib/usersim/discovery_keys.json'))['PH_TOKEN'])")
 export SKIP_CLAUDE=1           # never call Claude
