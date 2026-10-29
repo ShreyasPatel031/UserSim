@@ -38,8 +38,10 @@ def features(p: pd.DataFrame) -> pd.DataFrame:
     t = pd.to_datetime(p.created_at_i, unit="s", utc=True)
     f = pd.DataFrame(index=p.index)
     f["hour"], f["dow"] = t.dt.hour, t.dt.dayofweek
-    f["day_n"] = p.groupby("day").post_id.transform("size")
-    f["hour_n"] = p.groupby([p.day, t.dt.hour]).post_id.transform("size")
+    # posts in the 24 h / 1 h before this one: known at post time, and the same for a past day and a live one
+    ts = p.created_at_i.to_numpy()
+    f["day_n"] = np.arange(len(p)) - np.searchsorted(ts, ts - 86400)
+    f["hour_n"] = np.arange(len(p)) - np.searchsorted(ts, ts - 3600)
     title = p.title.fillna("").str.replace(r"^Show HN:\s*", "", regex=True)
     f["title_len"], f["title_words"] = title.str.len(), title.str.split().str.len()
     for k, rx in {"open_source": r"open.?source", "ai": r"\b(ai|llm|gpt|claude|gemini|agent)s?\b", "free": r"\bfree\b",
