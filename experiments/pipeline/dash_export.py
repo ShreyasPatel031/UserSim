@@ -41,7 +41,7 @@ def export(out):
     data["forecast"] = rows(con, """SELECT forecast_date, predicted_rank, name FROM forecasts
                                     WHERE forecast_date = (SELECT max(forecast_date) FROM forecasts) AND predicted_rank <= 10
                                     ORDER BY predicted_rank""")
-    data["backtests"] = rows(con, """SELECT run_on, run_file, variant, list, recall FROM backtests
+    data["backtests"] = rows(con, """SELECT run_on, run_file, variant, list, recall, lists FROM backtests
                                      WHERE run_file LIKE 'monthly_%' ORDER BY run_on, list, variant""")
     for k, v in data.items():
         json.dump(v, open(f"{out}/{k}.json", "w"))
