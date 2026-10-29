@@ -18,8 +18,11 @@ def activity(con):
     return {k: g.groupby("person").date.apply(lambda s: np.sort(s.values)) for k, g in E.groupby("kind")}
 
 
+GAP = int(os.environ.get("GAP_DAYS", "0"))   # leakage check: leave out the last GAP days before the launch
+
+
 def count_before(arrs, people, day, days):
-    d1, d0 = np.datetime64(day), np.datetime64(day) - np.timedelta64(days, "D")
+    d1 = np.datetime64(day) - np.timedelta64(GAP, "D"); d0 = d1 - np.timedelta64(days, "D")
     return np.array([(lambda a: np.searchsorted(a, d1) - np.searchsorted(a, d0))(arrs.get(u, np.array([], "datetime64[ns]"))) for u in people])
 
 
@@ -52,6 +55,7 @@ def main():
         tr = pd.concat([tr[tr.y], neg])
         clf = lgb.LGBMClassifier(n_estimators=300, learning_rate=0.05, num_leaves=31, min_child_samples=100, verbose=-1, n_jobs=32)
         clf.fit(tr[FEATS], tr.y)
+        print(m, "gain", dict(zip(FEATS, clf.booster_.feature_importance("gain").round())), flush=True)
         te = te.assign(s=clf.predict_proba(te[FEATS])[:, 1], px=te.p * te.w)
         for x, g in te.groupby("id"):
             k = int(g.y.sum())
@@ -63,7 +67,7 @@ def main():
         print(m, {k: round(float(np.mean(v)), 3) for k, v in res.items()}, flush=True)
     out = {"share_of_real_commenters_in_top100": {k: round(float(np.mean(v)), 3) for k, v in res.items()},
            "auc": {k: round(float(np.mean(v)), 3) for k, v in auc.items()}, "launches": len(res["trained"])}
-    json.dump(out, open(f"{HERE}/reports/commenter_model.json", "w"), indent=1)
+    json.dump(out, open(f"{HERE}/reports/commenter_model{'_gap' + str(GAP) if GAP else ''}.json", "w"), indent=1)
     print(json.dumps(out, indent=1))
 
 
