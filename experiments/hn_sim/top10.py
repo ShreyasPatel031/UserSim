@@ -12,6 +12,7 @@ domain's and author's earlier stories, hour, day volume). Rolling monthly backte
 from __future__ import annotations
 
 import json
+import re
 import sys
 
 import lightgbm as lgb
@@ -36,8 +37,71 @@ def stories() -> pd.DataFrame:
     return p
 
 
+LAG = 2 * 86400   # a story's points / top-10 status count as known only once it is 2 days old (final)
+STOP = set("with from that this your what when have will about into than they their them just over more like show "
+           "tell does using used make made built here been were after before first new how why the and for are you "
+           "can its not".split())
+
+
+def hist(key: pd.Series, t: np.ndarray, val: np.ndarray, top: np.ndarray, name: str) -> dict:
+    """Per row: earlier rows with the same key that are at least LAG old: count, mean and max of val, top-10 rate."""
+    n, mean, mx, rate = np.zeros(len(t)), np.full(len(t), np.nan), np.full(len(t), np.nan), np.full(len(t), np.nan)
+    df = pd.DataFrame({"k": key.to_numpy(), "t": t, "v": val, "top": top, "i": np.arange(len(t))}).dropna(subset=["k"])
+    for _, g in df.groupby("k", sort=False):
+        if len(g) < 2:
+            continue
+        tt, v, tp, ii = g.t.to_numpy(), g.v.to_numpy(), g.top.to_numpy(), g.i.to_numpy()   # rows are time-sorted
+        j = np.searchsorted(tt, tt - LAG)          # rows [0, j) are old enough
+        cs, ct, cm = np.concatenate([[0], np.cumsum(v)]), np.concatenate([[0], np.cumsum(tp)]), np.maximum.accumulate(v)
+        ok = j > 0
+        n[ii] = j
+        mean[ii[ok]] = cs[j[ok]] / j[ok]
+        rate[ii[ok]] = ct[j[ok]] / j[ok]
+        mx[ii[ok]] = cm[j[ok] - 1]
+    return {f"{name}_n": n, f"{name}_mean": mean, f"{name}_max": mx, f"{name}_top10_rate": rate}
+
+
+def burst(p: pd.DataFrame, host: pd.Series) -> dict:
+    """News-right-now signals from submissions only (no votes): same URL / domain / title words in the hours before."""
+    from collections import defaultdict, deque
+    t = p.created_at_i.to_numpy()
+    url = p.url.fillna("").str.replace(r"^https?://(www\.)?", "", regex=True).str.rstrip("/").to_numpy()
+    words = [{w for w in re.findall(r"[a-z0-9][a-z0-9.\-]{3,}", s.lower()) if w not in STOP}
+             for s in p.title.fillna("")]
+    seen_url, by_host, by_word = defaultdict(list), defaultdict(deque), defaultdict(deque)
+    same_url, host6, word6 = np.zeros(len(t)), np.zeros(len(t)), np.zeros(len(t))
+    for i in range(len(t)):
+        if url[i]:
+            same_url[i] = sum(1 for x in seen_url[url[i]] if x > t[i] - 7 * 86400)
+            seen_url[url[i]].append(t[i])
+        h = host.iat[i]
+        if h:
+            q = by_host[h]
+            while q and q[0] <= t[i] - 6 * 3600:
+                q.popleft()
+            host6[i] = len(q)
+            q.append(t[i])
+        best = 0
+        for w in words[i]:
+            q = by_word[w]
+            while q and q[0] <= t[i] - 6 * 3600:
+                q.popleft()
+            best = max(best, len(q)) if len(q) < 40 else best   # very common words carry no news signal
+            q.append(t[i])
+        word6[i] = best
+    return {"same_url_7d": same_url, "same_host_6h": host6, "same_word_6h": word6}
+
+
 def feats(p: pd.DataFrame) -> pd.DataFrame:
-    f = R.features(p)
+    from urllib.parse import urlparse
+    f = R.features(p).drop(columns=[c for c in R.features(p.head(1)).columns if c.startswith(("author_prev", "domain_prev"))])
+    host = p.url.fillna("").map(lambda u: urlparse(u).netloc.lower().removeprefix("www."))
+    full = host + "/" + p.url.fillna("").map(lambda u: (urlparse(u).path.split("/") + ["", ""])[1])
+    key = host.where(~host.isin(["github.com", "gitlab.com", "medium.com", "substack.com", "youtube.com"]), full)
+    t, y = p.created_at_i.to_numpy(), np.log1p(p.points.to_numpy())
+    top = (p.groupby("day").points.rank(ascending=False, method="first") <= 10).astype(float).to_numpy()
+    f = f.assign(**hist(p.author, t, y, top, "author"), **hist(key.where(key != "/", None), t, y, top, "domain"),
+                 **burst(p, host))
     t = p.title.fillna("")
     f["show_hn"] = t.str.startswith("Show HN").astype(int)
     f["ask_hn"] = t.str.startswith(("Ask HN", "Tell HN")).astype(int)
