@@ -1,0 +1,15 @@
+{
+ "launches": 4055,
+ "known_commenters": 24368,
+ "share_of_real_commenters_in_top100": {
+  "model": 0.096,
+  "activity": 0.179,
+  "model_x_activity": 0.201,
+  "random": 0.02
+ },
+ "auc": {
+  "model": 0.646,
+  "activity": 0.77,
+  "model_x_activity": 0.8
+ }
+}

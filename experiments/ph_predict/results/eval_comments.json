@@ -1,0 +1,66 @@
+{
+ "launches": 1208,
+ "comments": 26723,
+ "mix": {
+  "question": {
+   "real_mean": 0.254,
+   "rank_corr": 0.023,
+   "error_pred": 0.139,
+   "error_baseline": 0.122
+  },
+  "bug": {
+   "real_mean": 0.022,
+   "rank_corr": 0.046,
+   "error_pred": 0.051,
+   "error_baseline": 0.036
+  },
+  "pricing": {
+   "real_mean": 0.022,
+   "rank_corr": 0.136,
+   "error_pred": 0.111,
+   "error_baseline": 0.036
+  },
+  "comparison": {
+   "real_mean": 0.068,
+   "rank_corr": 0.178,
+   "error_pred": 0.098,
+   "error_baseline": 0.071
+  },
+  "privacy": {
+   "real_mean": 0.017,
+   "rank_corr": 0.309,
+   "error_pred": 0.054,
+   "error_baseline": 0.029
+  },
+  "confusion": {
+   "real_mean": 0.021,
+   "rank_corr": -0.003,
+   "error_pred": 0.06,
+   "error_baseline": 0.034
+  },
+  "praise": {
+   "real_mean": 0.252,
+   "rank_corr": 0.019,
+   "error_pred": 0.177,
+   "error_baseline": 0.173
+  },
+  "other": {
+   "real_mean": 0.343,
+   "rank_corr": 0.034,
+   "error_pred": 0.297,
+   "error_baseline": 0.184
+  }
+ },
+ "competitors": {
+  "launches_with_named_products": 954,
+  "predicted_hits_one": 0.399,
+  "baseline_same_topic_other_launch": 0.082
+ },
+ "questions": {
+  "real_questions": 6111,
+  "mean_best_similarity": 0.673,
+  "baseline": 0.622,
+  "share_close_0.8": 0.038,
+  "baseline_share_close_0.8": 0.002
+ }
+}

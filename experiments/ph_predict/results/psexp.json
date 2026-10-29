@@ -1,0 +1,281 @@
+{
+ "launches_with_scores": 1549,
+ "days": 87,
+ "alone_rank_corr": {
+  "ps_n_images": 0.106,
+  "ps_has_first_comment": -0.116,
+  "ps_name": 0.106,
+  "ps_tagline": 0.046,
+  "ps_description": 0.046,
+  "ps_category_fit": 0.057,
+  "ps_logo": 0.048,
+  "ps_gallery": 0.094,
+  "ps_video": 0.121,
+  "ps_first_comment": -0.029,
+  "ps_website": -0.051,
+  "ps_links": -0.041,
+  "ps_clarity": -0.001,
+  "ps_novelty": 0.127,
+  "ps_usefulness": 0.07,
+  "ps_audience_breadth": 0.193,
+  "ps_credibility": 0.079,
+  "ps_visual_polish": 0.114,
+  "ps_problem_urgency": 0.07,
+  "ps_wow": 0.149,
+  "ps_top5_chance": 0.234,
+  "ps_mix_question": 0.02,
+  "ps_mix_bug": -0.005,
+  "ps_mix_pricing": 0.075,
+  "ps_mix_comparison": 0.07,
+  "ps_mix_privacy": 0.009,
+  "ps_mix_confusion": -0.014,
+  "ps_mix_praise": -0.082,
+  "ps_mix_other": -0.075
+ },
+ "top3_5_10": {
+  "live": [
+   50.0,
+   65.7,
+   80.4
+  ],
+  "live+ps": [
+   51.2,
+   66.4,
+   80.4
+  ]
+ },
+ "elements": {
+  "ps_n_images": {
+   "gain_share_pct": 0.02,
+   "loss_if_removed_top3_5_10": [
+    -1.2,
+    0.0,
+    0.4
+   ]
+  },
+  "ps_has_first_comment": {
+   "gain_share_pct": 0.0,
+   "loss_if_removed_top3_5_10": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  "ps_name": {
+   "gain_share_pct": 0.02,
+   "loss_if_removed_top3_5_10": [
+    -1.2,
+    0.0,
+    0.4
+   ]
+  },
+  "ps_tagline": {
+   "gain_share_pct": 0.06,
+   "loss_if_removed_top3_5_10": [
+    -1.2,
+    -0.7,
+    0.4
+   ]
+  },
+  "ps_description": {
+   "gain_share_pct": 0.06,
+   "loss_if_removed_top3_5_10": [
+    0.0,
+    0.0,
+    0.4
+   ]
+  },
+  "ps_category_fit": {
+   "gain_share_pct": 0.01,
+   "loss_if_removed_top3_5_10": [
+    1.2,
+    0.0,
+    0.4
+   ]
+  },
+  "ps_logo": {
+   "gain_share_pct": 0.28,
+   "loss_if_removed_top3_5_10": [
+    0.0,
+    0.0,
+    0.4
+   ]
+  },
+  "ps_gallery": {
+   "gain_share_pct": 0.09,
+   "loss_if_removed_top3_5_10": [
+    -1.2,
+    0.0,
+    0.4
+   ]
+  },
+  "ps_video": {
+   "gain_share_pct": 0.13,
+   "loss_if_removed_top3_5_10": [
+    0.0,
+    -0.7,
+    0.0
+   ]
+  },
+  "ps_first_comment": {
+   "gain_share_pct": 0.15,
+   "loss_if_removed_top3_5_10": [
+    -1.2,
+    -0.7,
+    0.4
+   ]
+  },
+  "ps_website": {
+   "gain_share_pct": 0.29,
+   "loss_if_removed_top3_5_10": [
+    0.0,
+    -0.7,
+    0.4
+   ]
+  },
+  "ps_links": {
+   "gain_share_pct": 0.15,
+   "loss_if_removed_top3_5_10": [
+    -1.2,
+    -0.7,
+    0.0
+   ]
+  },
+  "ps_clarity": {
+   "gain_share_pct": 0.25,
+   "loss_if_removed_top3_5_10": [
+    -1.2,
+    -0.7,
+    0.4
+   ]
+  },
+  "ps_novelty": {
+   "gain_share_pct": 0.13,
+   "loss_if_removed_top3_5_10": [
+    -1.2,
+    0.0,
+    0.4
+   ]
+  },
+  "ps_usefulness": {
+   "gain_share_pct": 0.14,
+   "loss_if_removed_top3_5_10": [
+    0.0,
+    0.0,
+    0.4
+   ]
+  },
+  "ps_audience_breadth": {
+   "gain_share_pct": 0.17,
+   "loss_if_removed_top3_5_10": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  "ps_credibility": {
+   "gain_share_pct": 0.05,
+   "loss_if_removed_top3_5_10": [
+    -1.2,
+    -0.7,
+    0.0
+   ]
+  },
+  "ps_visual_polish": {
+   "gain_share_pct": 0.13,
+   "loss_if_removed_top3_5_10": [
+    -1.2,
+    -0.7,
+    0.0
+   ]
+  },
+  "ps_problem_urgency": {
+   "gain_share_pct": 0.23,
+   "loss_if_removed_top3_5_10": [
+    -1.2,
+    -1.5,
+    0.4
+   ]
+  },
+  "ps_wow": {
+   "gain_share_pct": 0.09,
+   "loss_if_removed_top3_5_10": [
+    -1.2,
+    0.0,
+    0.4
+   ]
+  },
+  "ps_top5_chance": {
+   "gain_share_pct": 0.48,
+   "loss_if_removed_top3_5_10": [
+    1.2,
+    -0.7,
+    0.8
+   ]
+  },
+  "ps_mix_question": {
+   "gain_share_pct": 0.24,
+   "loss_if_removed_top3_5_10": [
+    0.0,
+    -0.7,
+    0.4
+   ]
+  },
+  "ps_mix_bug": {
+   "gain_share_pct": 0.01,
+   "loss_if_removed_top3_5_10": [
+    0.0,
+    -1.5,
+    0.0
+   ]
+  },
+  "ps_mix_pricing": {
+   "gain_share_pct": 0.11,
+   "loss_if_removed_top3_5_10": [
+    0.0,
+    -0.7,
+    0.8
+   ]
+  },
+  "ps_mix_comparison": {
+   "gain_share_pct": 0.2,
+   "loss_if_removed_top3_5_10": [
+    1.2,
+    -2.2,
+    0.4
+   ]
+  },
+  "ps_mix_privacy": {
+   "gain_share_pct": 0.04,
+   "loss_if_removed_top3_5_10": [
+    0.0,
+    -1.5,
+    -0.4
+   ]
+  },
+  "ps_mix_confusion": {
+   "gain_share_pct": 0.2,
+   "loss_if_removed_top3_5_10": [
+    -1.2,
+    0.0,
+    0.0
+   ]
+  },
+  "ps_mix_praise": {
+   "gain_share_pct": 0.18,
+   "loss_if_removed_top3_5_10": [
+    -1.2,
+    -0.7,
+    -0.4
+   ]
+  },
+  "ps_mix_other": {
+   "gain_share_pct": 0.01,
+   "loss_if_removed_top3_5_10": [
+    0.0,
+    -0.7,
+    -0.4
+   ]
+  }
+ }
+}

@@ -1,0 +1,753 @@
+{
+ "inputs_per_group": {
+  "fixed": 67,
+  "page": 58,
+  "day": 5,
+  "effort": 29
+ },
+ "page_inputs": [
+  "ph_n_media",
+  "ph_has_video",
+  "ph_n_topics",
+  "ph_desc_len",
+  "ph_tagline_len",
+  "ph_name_len",
+  "ps_n_images",
+  "ps_has_first_comment",
+  "ps_name",
+  "ps_tagline",
+  "ps_description",
+  "ps_category_fit",
+  "ps_logo",
+  "ps_gallery",
+  "ps_video",
+  "ps_first_comment",
+  "ps_website",
+  "ps_links",
+  "ps_clarity",
+  "ps_novelty",
+  "ps_usefulness",
+  "ps_audience_breadth",
+  "ps_credibility",
+  "ps_visual_polish",
+  "ps_problem_urgency",
+  "ps_wow",
+  "ps_top5_chance",
+  "ps_mix_question",
+  "ps_mix_bug",
+  "ps_mix_pricing",
+  "ps_mix_comparison",
+  "ps_mix_privacy",
+  "ps_mix_confusion",
+  "ps_mix_praise",
+  "ps_mix_other",
+  "vs_hook",
+  "vs_problem_shown",
+  "vs_product_working",
+  "vs_clarity",
+  "vs_pacing",
+  "vs_production",
+  "vs_voice_or_captions",
+  "vs_length_fit",
+  "vs_call_to_action",
+  "vs_wow",
+  "vs_length_seconds",
+  "vs_shows_real_ui",
+  "vs_founder_on_camera",
+  "vs_unwatchable",
+  "ph_dayrank_ph_n_media",
+  "llm_pitch",
+  "llm_site",
+  "llm_full",
+  "txt_ridge",
+  "topic_prior_max",
+  "topic_prior_mean",
+  "topic_is_ai",
+  "topic_is_dev"
+ ],
+ "day_inputs": [
+  "ph_weekday",
+  "ph_day_n_launches",
+  "ph_month",
+  "busy_same_day",
+  "busy_7d"
+ ],
+ "effort_inputs": [
+  "ph_hunter_followers",
+  "ph_self_hunted",
+  "ph_hunter_age_d",
+  "x_hunter_followers",
+  "fol_hunter",
+  "promo_posts",
+  "promo_posts_launch",
+  "promo_posts_li",
+  "promo_posts_x",
+  "promo_posts_founder",
+  "promo_reactions",
+  "promo_cov",
+  "promo_cov_press",
+  "promo_cov_hn",
+  "promo_cov_reddit",
+  "promo_n_sources",
+  "promo_founder_li",
+  "promo_company_li",
+  "promo_founder_x",
+  "promo_funding",
+  "promo_company_age",
+  "hist_hunter_n",
+  "hist_hunter_rel",
+  "hist_hunter_top5",
+  "ph_hunter_n_same_day",
+  "ph_dayrank_ph_hunter_followers",
+  "ph_dayrank_ph_hunter_age_d",
+  "x_dayrank_x_hunter_followers",
+  "hist_dayrank_hist_hunter_rel"
+ ],
+ "ranking_top3_5_10": {
+  "fixed": [
+   59.8,
+   69.4,
+   77.9
+  ],
+  "fixed+page": [
+   61.1,
+   69.4,
+   77.9
+  ],
+  "fixed+day": [
+   60.1,
+   69.3,
+   78.4
+  ],
+  "fixed+effort": [
+   61.2,
+   69.5,
+   78.6
+  ],
+  "all": [
+   62.5,
+   69.7,
+   79.6
+  ]
+ },
+ "predicted_lift_vs_real_over_performance": {
+  "page": {
+   "corr": 0.226,
+   "ci95": [
+    0.191,
+    0.259
+   ],
+   "days": 218
+  },
+  "day": {
+   "corr": 0.205,
+   "ci95": [
+    0.172,
+    0.239
+   ],
+   "days": 218
+  },
+  "effort": {
+   "corr": 0.24,
+   "ci95": [
+    0.208,
+    0.272
+   ],
+   "days": 218
+  }
+ },
+ "each_input_vs_over_performance": {
+  "ph_weekday": {
+   "corr": -0.343,
+   "ci95": [
+    -0.586,
+    -0.112
+   ],
+   "days": 5
+  },
+  "hist_hunter_top5": {
+   "corr": -0.323,
+   "ci95": [
+    -0.323,
+    -0.323
+   ],
+   "days": 1
+  },
+  "hist_hunter_rel": {
+   "corr": -0.167,
+   "ci95": [
+    -0.167,
+    -0.167
+   ],
+   "days": 1
+  },
+  "hist_dayrank_hist_hunter_rel": {
+   "corr": -0.167,
+   "ci95": [
+    -0.167,
+    -0.167
+   ],
+   "days": 1
+  },
+  "ph_name_len": {
+   "corr": -0.091,
+   "ci95": [
+    -0.123,
+    -0.061
+   ],
+   "days": 218
+  },
+  "ph_hunter_age_d": {
+   "corr": -0.09,
+   "ci95": [
+    -0.126,
+    -0.055
+   ],
+   "days": 218
+  },
+  "ph_dayrank_ph_hunter_age_d": {
+   "corr": -0.09,
+   "ci95": [
+    -0.126,
+    -0.055
+   ],
+   "days": 218
+  },
+  "llm_pitch": {
+   "corr": 0.085,
+   "ci95": [
+    0.052,
+    0.119
+   ],
+   "days": 217
+  },
+  "ph_n_topics": {
+   "corr": 0.081,
+   "ci95": [
+    0.049,
+    0.115
+   ],
+   "days": 217
+  },
+  "fol_hunter": {
+   "corr": -0.08,
+   "ci95": [
+    -0.114,
+    -0.048
+   ],
+   "days": 218
+  },
+  "busy_same_day": {
+   "corr": -0.07,
+   "ci95": [
+    -0.115,
+    -0.028
+   ],
+   "days": 171
+  },
+  "ph_hunter_n_same_day": {
+   "corr": -0.07,
+   "ci95": [
+    -0.115,
+    -0.028
+   ],
+   "days": 171
+  },
+  "ps_name": {
+   "corr": 0.067,
+   "ci95": [
+    0.037,
+    0.093
+   ],
+   "days": 218
+  },
+  "ps_website": {
+   "corr": 0.067,
+   "ci95": [
+    0.036,
+    0.103
+   ],
+   "days": 217
+  },
+  "ph_n_media": {
+   "corr": 0.066,
+   "ci95": [
+    0.034,
+    0.099
+   ],
+   "days": 218
+  },
+  "ph_dayrank_ph_n_media": {
+   "corr": 0.066,
+   "ci95": [
+    0.034,
+    0.099
+   ],
+   "days": 218
+  },
+  "ps_mix_question": {
+   "corr": -0.058,
+   "ci95": [
+    -0.086,
+    -0.028
+   ],
+   "days": 218
+  },
+  "hist_hunter_n": {
+   "corr": -0.056,
+   "ci95": [
+    -0.093,
+    -0.021
+   ],
+   "days": 218
+  },
+  "promo_cov_hn": {
+   "corr": 0.055,
+   "ci95": [
+    0.019,
+    0.091
+   ],
+   "days": 161
+  },
+  "ps_tagline": {
+   "corr": 0.049,
+   "ci95": [
+    0.019,
+    0.079
+   ],
+   "days": 218
+  },
+  "ph_self_hunted": {
+   "corr": 0.049,
+   "ci95": [
+    0.015,
+    0.082
+   ],
+   "days": 217
+  },
+  "ps_logo": {
+   "corr": 0.046,
+   "ci95": [
+    -0.032,
+    0.126
+   ],
+   "days": 27
+  },
+  "ps_top5_chance": {
+   "corr": 0.045,
+   "ci95": [
+    0.014,
+    0.077
+   ],
+   "days": 218
+  },
+  "promo_reactions": {
+   "corr": 0.043,
+   "ci95": [
+    0.011,
+    0.075
+   ],
+   "days": 187
+  },
+  "x_hunter_followers": {
+   "corr": -0.042,
+   "ci95": [
+    -0.077,
+    -0.006
+   ],
+   "days": 218
+  },
+  "x_dayrank_x_hunter_followers": {
+   "corr": -0.042,
+   "ci95": [
+    -0.077,
+    -0.006
+   ],
+   "days": 218
+  },
+  "promo_posts_founder": {
+   "corr": 0.041,
+   "ci95": [
+    0.01,
+    0.069
+   ],
+   "days": 215
+  },
+  "ps_video": {
+   "corr": 0.039,
+   "ci95": [
+    0.006,
+    0.07
+   ],
+   "days": 218
+  },
+  "busy_7d": {
+   "corr": -0.039,
+   "ci95": [
+    -0.078,
+    -0.005
+   ],
+   "days": 218
+  },
+  "ph_has_video": {
+   "corr": 0.036,
+   "ci95": [
+    0.005,
+    0.07
+   ],
+   "days": 217
+  },
+  "ps_wow": {
+   "corr": 0.036,
+   "ci95": [
+    0.0,
+    0.07
+   ],
+   "days": 218
+  },
+  "ps_links": {
+   "corr": 0.034,
+   "ci95": [
+    -0.036,
+    0.109
+   ],
+   "days": 31
+  },
+  "ps_audience_breadth": {
+   "corr": 0.034,
+   "ci95": [
+    0.003,
+    0.067
+   ],
+   "days": 217
+  },
+  "ps_category_fit": {
+   "corr": 0.033,
+   "ci95": [
+    0.002,
+    0.063
+   ],
+   "days": 216
+  },
+  "ps_mix_praise": {
+   "corr": 0.029,
+   "ci95": [
+    0.0,
+    0.058
+   ],
+   "days": 218
+  },
+  "llm_full": {
+   "corr": -0.029,
+   "ci95": [
+    -0.069,
+    0.007
+   ],
+   "days": 218
+  },
+  "ph_hunter_followers": {
+   "corr": -0.029,
+   "ci95": [
+    -0.065,
+    0.005
+   ],
+   "days": 218
+  },
+  "ph_dayrank_ph_hunter_followers": {
+   "corr": -0.029,
+   "ci95": [
+    -0.065,
+    0.005
+   ],
+   "days": 218
+  },
+  "ps_clarity": {
+   "corr": 0.027,
+   "ci95": [
+    -0.002,
+    0.056
+   ],
+   "days": 218
+  },
+  "ph_tagline_len": {
+   "corr": -0.026,
+   "ci95": [
+    -0.06,
+    0.009
+   ],
+   "days": 218
+  },
+  "ps_mix_confusion": {
+   "corr": -0.026,
+   "ci95": [
+    -0.058,
+    0.008
+   ],
+   "days": 212
+  },
+  "ps_description": {
+   "corr": 0.025,
+   "ci95": [
+    -0.004,
+    0.055
+   ],
+   "days": 218
+  },
+  "ps_mix_bug": {
+   "corr": 0.024,
+   "ci95": [
+    -0.011,
+    0.058
+   ],
+   "days": 181
+  },
+  "ps_novelty": {
+   "corr": 0.023,
+   "ci95": [
+    -0.012,
+    0.055
+   ],
+   "days": 218
+  },
+  "promo_posts_li": {
+   "corr": -0.023,
+   "ci95": [
+    -0.071,
+    0.021
+   ],
+   "days": 69
+  },
+  "promo_founder_li": {
+   "corr": -0.021,
+   "ci95": [
+    -0.067,
+    0.026
+   ],
+   "days": 103
+  },
+  "ps_first_comment": {
+   "corr": 0.02,
+   "ci95": [
+    -0.017,
+    0.059
+   ],
+   "days": 217
+  },
+  "ps_usefulness": {
+   "corr": 0.018,
+   "ci95": [
+    -0.013,
+    0.045
+   ],
+   "days": 217
+  },
+  "ps_problem_urgency": {
+   "corr": 0.018,
+   "ci95": [
+    -0.012,
+    0.047
+   ],
+   "days": 218
+  },
+  "ps_n_images": {
+   "corr": -0.017,
+   "ci95": [
+    -0.098,
+    0.066
+   ],
+   "days": 26
+  },
+  "promo_company_li": {
+   "corr": -0.017,
+   "ci95": [
+    -0.061,
+    0.022
+   ],
+   "days": 119
+  },
+  "llm_site": {
+   "corr": 0.016,
+   "ci95": [
+    -0.018,
+    0.049
+   ],
+   "days": 216
+  },
+  "promo_cov_press": {
+   "corr": -0.016,
+   "ci95": [
+    -0.051,
+    0.017
+   ],
+   "days": 214
+  },
+  "promo_funding": {
+   "corr": -0.016,
+   "ci95": [
+    -0.052,
+    0.019
+   ],
+   "days": 209
+  },
+  "ps_mix_pricing": {
+   "corr": -0.014,
+   "ci95": [
+    -0.046,
+    0.018
+   ],
+   "days": 218
+  },
+  "ps_mix_comparison": {
+   "corr": 0.014,
+   "ci95": [
+    -0.018,
+    0.047
+   ],
+   "days": 218
+  },
+  "promo_n_sources": {
+   "corr": -0.013,
+   "ci95": [
+    -0.044,
+    0.021
+   ],
+   "days": 216
+  },
+  "ps_has_first_comment": {
+   "corr": 0.011,
+   "ci95": [
+    -0.025,
+    0.05
+   ],
+   "days": 198
+  },
+  "ps_mix_privacy": {
+   "corr": 0.01,
+   "ci95": [
+    -0.023,
+    0.04
+   ],
+   "days": 216
+  },
+  "ps_visual_polish": {
+   "corr": 0.009,
+   "ci95": [
+    -0.02,
+    0.037
+   ],
+   "days": 218
+  },
+  "ph_desc_len": {
+   "corr": 0.006,
+   "ci95": [
+    -0.025,
+    0.037
+   ],
+   "days": 218
+  },
+  "promo_posts": {
+   "corr": 0.006,
+   "ci95": [
+    -0.022,
+    0.034
+   ],
+   "days": 216
+  },
+  "ps_gallery": {
+   "corr": 0.004,
+   "ci95": [
+    -0.078,
+    0.08
+   ],
+   "days": 28
+  },
+  "ps_mix_other": {
+   "corr": -0.004,
+   "ci95": [
+    -0.038,
+    0.03
+   ],
+   "days": 175
+  },
+  "ps_credibility": {
+   "corr": 0.003,
+   "ci95": [
+    -0.029,
+    0.033
+   ],
+   "days": 218
+  },
+  "promo_posts_x": {
+   "corr": 0.003,
+   "ci95": [
+    -0.038,
+    0.042
+   ],
+   "days": 162
+  },
+  "txt_ridge": {
+   "corr": -0.001,
+   "ci95": [
+    -0.034,
+    0.031
+   ],
+   "days": 218
+  },
+  "ph_day_n_launches": {
+   "corr": NaN,
+   "ci95": [
+    NaN,
+    NaN
+   ],
+   "days": 0
+  },
+  "ph_month": {
+   "corr": NaN,
+   "ci95": [
+    NaN,
+    NaN
+   ],
+   "days": 0
+  },
+  "promo_cov": {
+   "corr": -0.002,
+   "ci95": [
+    -0.036,
+    0.032
+   ],
+   "days": 216
+  },
+  "promo_posts_launch": {
+   "corr": -0.001,
+   "ci95": [
+    -0.03,
+    0.028
+   ],
+   "days": 216
+  },
+  "promo_cov_reddit": {
+   "corr": -0.001,
+   "ci95": [
+    -0.033,
+    0.03
+   ],
+   "days": 205
+  },
+  "promo_founder_x": {
+   "corr": -0.001,
+   "ci95": [
+    -0.038,
+    0.035
+   ],
+   "days": 191
+  },
+  "promo_company_age": {
+   "corr": NaN,
+   "ci95": [
+    NaN,
+    NaN
+   ],
+   "days": 0
+  }
+ }
+}

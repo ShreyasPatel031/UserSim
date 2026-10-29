@@ -1,0 +1,13 @@
+{
+ "share_of_real_commenters_in_top100": {
+  "trained": 0.577,
+  "model_x_activity": 0.203,
+  "activity": 0.186
+ },
+ "auc": {
+  "trained": 0.931,
+  "model_x_activity": 0.803,
+  "activity": 0.774
+ },
+ "launches": 3283
+}
