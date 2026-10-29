@@ -11,7 +11,7 @@ import numpy as np, pandas as pd, lightgbm as lgb
 import model as M, run as RN
 from buildcache import build_cached
 
-BASE = M.SOURCES + ["fol", "seg", "promo", "rec", "busy"]
+BASE = M.LIVE_SOURCES if os.environ.get("LIVE") else M.SOURCES + ["fol", "seg", "promo", "rec", "busy"]
 MONTHS = ["2026-03", "2026-04", "2026-05", "2026-06", "2026-07", "2026-08", "2026-09", "2026-10"]
 KEYF = ["ph_hunter_followers", "ph_maker_max_followers", "hist_hunter_rel", "hist_maker_rel_max", "x_maker_max_followers",
         "x_company_followers", "llm_brand", "llm_pitch", "ph_n_makers", "txt_ridge", "fol_team", "rec_c30", "cm_pre_users"]
@@ -68,7 +68,11 @@ def main():
                 rows.append({"variant": v, "seed": s, "k": k, "recall": np.mean(vals)})
     R = pd.DataFrame(rows).groupby(["variant", "k"]).recall.agg(["mean", "std"]).mul(100).round(1).unstack()
     print(R.sort_values(("mean", 3), ascending=False).to_string())
-    R.to_csv("results/dayexp.csv"); T.to_parquet("results/dayexp_preds.parquet")
+    tag = "_live" if os.environ.get("LIVE") else ""
+    R.to_csv(f"results/dayexp{tag}.csv"); T.to_parquet(f"results/dayexp{tag}_preds.parquet")
+    A = T.groupby(["id", "day", "dailyRank"], as_index=False)[V].mean()     # 5-seed average, as the live forecast does
+    print("5-seed average:", {v: [round(100 * np.mean(M.recall_at(A, "day", "dailyRank", k, v, per_list=True)), 1) for k in (3, 5, 10)]
+                              for v in ("reg", "clf5", "blend_reg_clf5", "blend_reg_clf3", "blend_reg_rank")})
 
 
 if __name__ == "__main__":
