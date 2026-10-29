@@ -130,3 +130,29 @@ def backtest(first: str = "2025-08") -> pd.DataFrame:
 
 if __name__ == "__main__":
     backtest(sys.argv[1] if len(sys.argv) > 1 else "2025-08")
+
+
+def forecast(day: str, k: int = 10) -> pd.DataFrame:
+    """Rank `day`'s posts so far with a model trained on every post with final points (3+ days old)."""
+    p = posts()
+    F = features(p)
+    y = np.log1p(p.points.to_numpy())
+    tr = (p.created_at_i < pd.Timestamp.now(tz="UTC").timestamp() - 3 * 86400).to_numpy()
+    te = (p.day == day).to_numpy()
+    tf = TfidfVectorizer(min_df=5, ngram_range=(1, 2), sublinear_tf=True)
+    doc = p.title.fillna("") + " " + p.text.fillna("").str[:300]
+    Xt = tf.fit_transform(doc[tr])
+    folds = np.arange(tr.sum()) % 5
+    oof = np.zeros(tr.sum())
+    for f_ in range(5):
+        oof[folds == f_] = Ridge(alpha=3.0).fit(Xt[folds != f_], y[tr][folds != f_]).predict(Xt[folds == f_])
+    txt = Ridge(alpha=3.0).fit(Xt, y[tr]).predict(tf.transform(doc[te]))
+    gbm = lgb.LGBMRegressor(n_estimators=400, learning_rate=0.03, num_leaves=31, min_child_samples=40, subsample=0.8,
+                            subsample_freq=1, colsample_bytree=0.8, verbose=-1, random_state=0)
+    gbm.fit(F[tr].assign(text_score=oof), y[tr])
+    out = p[te][["post_id", "created_at", "title", "url", "points"]].assign(
+        score=gbm.predict(F[te].assign(text_score=txt))).sort_values("score", ascending=False)
+    S.write("hn_scores", out.head(k).assign(kind="forecast", model="post_only_v1", forecast_day=day,
+                                            rank=range(1, min(k, len(out)) + 1), made_on=S.now())
+            [["kind", "model", "forecast_day", "rank", "post_id", "title", "score", "made_on"]])
+    return out
