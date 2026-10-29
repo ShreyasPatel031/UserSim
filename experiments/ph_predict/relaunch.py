@@ -40,7 +40,7 @@ def interval(hits):
 def main():
     df = pickle.load(open(f"{D}/build_cache.pkl", "rb"))
     P = pd.read_parquet("results/ctrl_preds.parquet")
-    df = df.merge(P[["id", "fixed", "fixed+page", "fixed+day", "fixed+effort", "all"]], on="id")
+    df = df.merge(P[["id", "fixed", "fixed+page", "fixed+day", "fixed+effort", "all"]], on="id").drop(columns=["logv"], errors="ignore").merge(P[["id", "logv"]], on="id")
     df = df[df.dailyRank.notna()].copy()
     df["pct"] = df.groupby("day").dailyRank.rank(pct=True, ascending=False)      # 1 = top of the day
     df["prod"] = df.domain.fillna("").str.lower().str.replace(r"^www\.", "", regex=True)
@@ -71,6 +71,16 @@ def main():
         hits.append(later_better_pred == r); why.append(v.get("why"))
     res["gemini"] = interval(hits); res["gemini_n"] = len(hits)
     res["later_did_better_share"] = round(100 * np.mean(real), 1)
+    # fairer target: which launch beat its own expected result (real log votes minus the fixed-inputs prediction),
+    # so the day's competition and the team's growth between launches are taken out
+    beat = [(b["logv"] - b["fixed"]) > (a["logv"] - a["fixed"]) for a, b in pairs]
+    pick2 = lambda f: [(f(b) - f(a) > 0) == r for (a, b), r in zip(pairs, beat)]
+    res["vs_expected"] = {"later_beat_expected_share": round(100 * np.mean(beat), 1),
+                          "changeable": interval(pick2(lambda r: r["all"] - r["fixed"])),
+                          "page_only": interval(pick2(lambda r: r["fixed+page"] - r["fixed"])),
+                          "day_only": interval(pick2(lambda r: r["fixed+day"] - r["fixed"])),
+                          "effort_only": interval(pick2(lambda r: r["fixed+effort"] - r["fixed"])),
+                          "gemini": interval([h == (bt == r) for h, bt, r in zip(hits, beat, real)]) if len(hits) == len(pairs) else None}
     json.dump(res, open("results/relaunch.json", "w"), indent=1)
     print(json.dumps(res, indent=1)); print("gemini usage", llm.USAGE)
 
