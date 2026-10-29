@@ -57,6 +57,7 @@ def job(a):
     for g in ("page", "day", "effort"):
         out[f"fixed+{g}"] = fit(tr, te, by["fixed"] + by[g], seed)
     out["all"] = fit(tr, te, cols, seed)
+    out["txt_ridge"] = te["txt_ridge"].values if "txt_ridge" in te else np.nan   # made per fold
     return pd.DataFrame(out), by
 
 
@@ -76,8 +77,8 @@ def main():
     with mp.get_context("fork").Pool(os.cpu_count()) as pool:
         out = pool.map(job, jobs)
     P = pd.concat([o[0] for o in out]); by = out[0][1]
-    V = [c for c in P.columns if c not in ("id", "seed")]
-    A = P.groupby("id")[V].mean().reset_index().merge(df, on="id")
+    V = [c for c in P.columns if c not in ("id", "seed", "txt_ridge")]
+    A = P.groupby("id")[V + ["txt_ridge"]].mean().reset_index().merge(df, on="id")
     A = A[A.dailyRank.notna()]
     A[["id", "day", "dailyRank", "logv"] + V].to_parquet("results/ctrl_preds.parquet")
     res = {"inputs_per_group": {g: len(v) for g, v in by.items()}, "page_inputs": by["page"], "day_inputs": by["day"], "effort_inputs": by["effort"]}
@@ -89,7 +90,7 @@ def main():
         res["predicted_lift_vs_real_over_performance"][g] = dict(zip(("corr", "ci95", "days"), boot_corr(A, f"lift_{g}", "resid")))
     single = {}
     for c in by["page"] + by["day"] + by["effort"]:
-        if A[c].notna().mean() > 0.2:
+        if c in A and A[c].notna().mean() > 0.2:
             single[c] = dict(zip(("corr", "ci95", "days"), boot_corr(A, c, "resid")))
     res["each_input_vs_over_performance"] = dict(sorted(single.items(), key=lambda kv: -abs(kv[1]["corr"])))
     json.dump(res, open("results/ctrl.json", "w"), indent=1)
