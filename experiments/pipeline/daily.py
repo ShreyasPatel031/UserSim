@@ -65,6 +65,35 @@ def s_launches(d, con, dry):
     return {"items": len(L)}
 
 
+def snap_fields(t, tagline=None):
+    """This product's fields on its page (the page also lists other products: anchor on the one launching today)."""
+    import re
+    m = re.search(r'"launchingToday":true\},"tagline":"(?:[^"\\]|\\.)*","followersCount":(\d+)', t)
+    fol = int(m.group(1)) if m else None
+    b = re.search(r'"reviewsCount":(\d+),"followersCount":%s,"isTopProduct":(true|false),"founderDetailedReviewsCount":\d+,'
+                  r'"firstLaunch":(true|false)' % (fol if fol is not None else r"\d+"), t)
+    return {"product_followers": fol, "product_reviews": int(b.group(1)) if b else None,
+            "top_product": b.group(2) == "true" if b else None, "first_launch": b.group(3) == "true" if b else None}
+
+
+@step("snap")
+def s_snap(d, con, dry):
+    """Product pages of today's launches at forecast time: product followers (people who asked to be notified, plus
+    earlier fans), reviews, first launch or not. Not dated in the past, so collected going forward only; the model may use
+    it once enough days exist to backtest it. Votes and comments on the page are launch-day results: never stored."""
+    P = json.load(open(f"{RAW}/today/{d}.json"))
+    recs = F.get_many([f"https://www.producthunt.com/posts/{p['slug']}" for p in P], threads=8)
+    rows = []
+    for p, r in zip(P, recs):
+        rows.append({"launch_id": str(p["id"]), "day": d, "observed_at": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+                     **snap_fields(r["body"], p["tagline"]), "status": r["status"], "route": r["route"]})
+    usd, nbytes = F.cost(recs)
+    if not dry:
+        W.write("launch_snapshots", pd.DataFrame(rows))
+    log_spend(d, "snap", usd, dry)
+    return {"items": sum(r["product_followers"] is not None for r in rows), "bytes": nbytes, "usd": sum(usd.values())}
+
+
 @step("forecast")
 def s_forecast(d, con, dry):
     subprocess.run(["bash", "-c", f'''NO_WB=1 python3 - {d} <<'PY'
@@ -241,7 +270,7 @@ def s_raw(d, con, dry):
     return {"items": len(files)}
 
 
-STEPS = [s_launches, s_forecast, s_ranks, s_comments, s_people, s_personas, s_score, s_raw]
+STEPS = [s_launches, s_snap, s_forecast, s_ranks, s_comments, s_people, s_personas, s_score, s_raw]
 
 
 def main(argv):

@@ -46,6 +46,7 @@ Needs `gcloud` auth with read access to the bucket, plus `pip install duckdb pan
 | `persona_ratings` (log) | — | a persona's 1–5 fit rating of a launch | person, day, launch_id, design, rating |
 | `spend` (log) | — | money spent on a step | step, provider, usd, note, logged_on |
 | `pipeline_runs` (log) | — | one step of the daily pipeline | run_date, step, status, items, bytes, usd, seconds |
+| `launch_snapshots` (log) | — | a launch's product page at forecast time (launch day, ~07:10 UTC) | launch_id, day, observed_at, product_followers, product_reviews, top_product, first_launch, status, route |
 | `daily_scores` (log) | — | yesterday's forecast vs the final daily ranks | day, model, k, hit, recall |
 
 ## Daily pipeline
@@ -53,7 +54,7 @@ Needs `gcloud` auth with read access to the bucket, plus `pip install duckdb pan
 Machine `usersim-pipeline` (e2-standard-4, us-central1-a). The resource policy `usersim-daily-start` starts it at
 07:05 UTC; at boot `pipeline/vm/run_daily.sh` runs, then the machine powers off:
 
-1. `python -m pipeline.daily` — launches, forecast, ranks, comments, people, personas, score, raw (each step's status,
+1. `python -m pipeline.daily` — launches, snap (product pages at forecast time), forecast, ranks, comments, people, personas, score, raw (each step's status,
    items, bytes and $ go to `pipeline_runs`; money to `spend`).
 2. `python -m pipeline.backtest` — Mondays and Thursdays: retrain and score the last two months (5 seeds), as three
    numbers: simulation only, launch only, both.

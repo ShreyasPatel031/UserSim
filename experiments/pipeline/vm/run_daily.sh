@@ -14,7 +14,7 @@ export LLM_PROVIDER=gemini     # launch-text scores from Gemini (backtest Oct 28
 BUCKET=gs://usersim-bakeoff-347838016394/usersim_sim
 cd /home/agent/w/experiments
 LOG=/home/agent/w/logs/daily_$(date -u +%Y%m%dT%H%M).log; mkdir -p /home/agent/w/logs
-STEPS=${STEPS:-launches,forecast,ranks,comments,people,personas,score,raw}
+STEPS=${STEPS:-launches,snap,forecast,ranks,comments,people,personas,score,raw}
 timeout 3h python3 -m pipeline.daily --only=$STEPS > "$LOG" 2>&1
 timeout 2h python3 -m pipeline.backtest >> "$LOG" 2>&1
 python3 -m pipeline.dash_export /tmp/usersim_dash >> "$LOG" 2>&1 && gsutil -q -m cp /tmp/usersim_dash/*.json $BUCKET/dash/
