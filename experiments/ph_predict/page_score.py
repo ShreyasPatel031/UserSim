@@ -95,7 +95,7 @@ def call(parts):
 
 
 def one(x, p, media, first, web, lock):
-    m = media.get(x, {})
+    m = media.get(x) or {"media": [{"type": t["type"]} for t in p.get("media") or []]}   # no API assets: media types only
     imgs, labels = [], []
     if (m.get("thumbnail") or {}).get("url"):
         imgs.append(image(m["thumbnail"]["url"])); labels.append("logo")
@@ -116,7 +116,7 @@ def one(x, p, media, first, web, lock):
         res = json.loads(re.search(r"\{.*\}", txt, re.S).group(0))
     except Exception:  # noqa: BLE001
         return
-    rec = {"id": x, "day": p["day"], "n_images": len(keep), "has_first_comment": p["slug"] in first, "result": res}
+    rec = {"id": x, "day": p["day"], "n_images": len(keep), "images_fetched": x in media, "has_first_comment": p["slug"] in first, "result": res}
     with lock, open(OUT, "a") as f:
         f.write(json.dumps(rec) + "\n")
 
@@ -151,7 +151,7 @@ def main(limit, threads):
             if r.get("html"):
                 web[str(r["id"])] = text(r["html"])[:2000]
     done = {json.loads(l)["id"] for l in open(OUT)} if os.path.exists(OUT) else set()
-    todo = sorted([x for x in rows if x not in done and x in media], key=lambda x: rows[x]["day"], reverse=True)[:limit]
+    todo = sorted([x for x in rows if x not in done], key=lambda x: rows[x]["day"], reverse=True)[:limit]   # images where the API gave them
     print("launches", len(todo), "with first comment", sum(rows[x]["slug"] in first for x in todo), flush=True)
     lock = threading.Lock()
     with ThreadPoolExecutor(threads) as ex:
