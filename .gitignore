@@ -44,3 +44,4 @@ experiments/human_experience/results_own_bench*.log
 experiments/human_experience/results_own_bench_agent_mode*.log
 experiments/human_experience/results_own_bench_*.log
 experiments/staged_context/hm/shots/
+experiments/hn_sim/out/
