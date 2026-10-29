@@ -1,7 +1,7 @@
 """Launch-page assets from the official Product Hunt API (no page scraping): logo (thumbnail), gallery images, video
 link, product links (social / company). 25 launches per request by id; resumable.
-usage: PH_TOKEN=... python page_media.py -> data/page_media.jsonl"""
-import glob, json, os, time, urllib.request
+usage: PH_TOKEN=... python page_media.py -> data/page_media.jsonl (stops at the first rate-limit reply; the daily run resumes it)"""
+import glob, json, os, time, urllib.error, urllib.request
 
 D = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 OUT = f"{D}/page_media.jsonl"
@@ -20,12 +20,16 @@ def query(batch):
     q = "query{" + " ".join(f"p{i}: post(id:\"{x}\"){{{FIELDS}}}" for i, x in enumerate(batch)) + "}"
     req = urllib.request.Request("https://api.producthunt.com/v2/api/graphql", json.dumps({"query": q}).encode(),
                                  {"Authorization": "Bearer " + os.environ["PH_TOKEN"], "Content-Type": "application/json"})
-    for a in range(5):
+    for a in range(3):
         try:
             with urllib.request.urlopen(req, timeout=60) as r:
                 return json.load(r).get("data") or {}
-        except Exception as e:  # noqa: BLE001  (rate limit: back off)
-            print("retry", a, str(e)[:100], flush=True); time.sleep(30 * (a + 1))
+        except urllib.error.HTTPError as e:
+            if e.code == 429:              # API rate limit: stop for today, the daily run resumes tomorrow
+                return None
+            print("retry", a, e.code, flush=True); time.sleep(10)
+        except Exception as e:  # noqa: BLE001
+            print("retry", a, str(e)[:100], flush=True); time.sleep(10)
     return {}
 
 
@@ -35,7 +39,10 @@ def main():
     print("launches", len(todo), flush=True)
     with open(OUT, "a") as f:
         for k in range(0, len(todo), 25):
-            for v in query(todo[k:k + 25]).values():
+            got = query(todo[k:k + 25])
+            if got is None:
+                print("rate limited after", k, "launches; stopping", flush=True); break
+            for v in got.values():
                 if v:
                     f.write(json.dumps(v) + "\n")
             if k % 500 == 0:
