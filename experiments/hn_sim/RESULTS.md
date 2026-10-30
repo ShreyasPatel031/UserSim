@@ -19,6 +19,22 @@ top 10 1.1%.
 | + favorites taste (partial: HN blocked most favorites fetches) | 51.4% | 48.4% | 35.2% |
 | + people2: early commenters' account age, new accounts, comment speed, record on this domain | 51.5% | 48.7% | 35.2% |
 | + domain popularity (Tranco top-1M rank) | 51.6% | 48.6% | 34.8% |
+| + submitter reach (HN profile links, account age) | 51.5% | 48.5% | 34.6% |
+| + on Lobsters before HN | 51.5% | 48.5% | 33.9% |
+
+**Forecast made later in the story's life (late bloomers):** a story scored once it is 2 / 4 / 8 hours old, with its
+comments in that window:
+
+| Forecast age | top 100 | top 30 | top 10 |
+|---|---|---|---|
+| 60 min | 51.2% | 48.7% | 35.9% |
+| 2 h | 62.4% | 56.9% | 41.8% |
+| 4 h | 69.9% | 65.8% | 51.1% |
+| 8 h | **73.7%** | **71.8%** | **57.3%** |
+
+Model variants (60 min): topic-specific early-commenter records +0.0; a per-day ranker instead of a classifier: being
+re-tested (an earlier run used an acceleration block that leaked the outcome: stories never commented on were filled
+differently from stories commented on later; those numbers are discarded).
 
 **Event level (Sep 2026, best model):** of each day's real top 10, the model's top 10 contains 36% (by event: the
 same news under any submission; 35% exact), its top 30 63%, its top 100 81%.
@@ -36,8 +52,9 @@ favorites taste (+0.0), Gemini reading titles (worse than the text model; droppe
 |---|---|---|
 | Michael Taylor (every.to): persona votes | 1,000 personas built from real commenters' comments vote on headlines; balanced front page vs not | 53% accuracy, AUC 0.57 (3 days: 55 / 54 / 51%; he reported 60% on one day). 100 vs 1,000 personas: no difference. $2.91. **Same ballots, our post-only model: 69% accuracy, AUC 0.76; adding the persona votes lowers it (66%, 0.72)** |
 | Philipp Dubach: RoBERTa title model (HF, MIT) | P(>=100 points) from the title | running |
-| Szabo & Huberman (2010): early votes | rank by log upvotes at 30 / 60 min (Quality News minute data) | data fetching |
-| Quality News / Stoddard: upvote rate | upvotes / expected upvotes at the ranks shown | data fetching |
+| Szabo & Huberman (2010): early votes | rank by upvotes at 30 / 60 min (Quality News minute data, which goes back to mid-2025) | **best single signal.** Sep 20-30 (11 days): upvotes at 60 min alone 57.2% / 51.5% / 47.3% (top 100 / 30 / 10) vs our 60-min model 51.9% / 48.5% / 36.4%. Trained combination: running |
+| Quality News / Stoddard: upvote rate | upvotes / expected upvotes at the ranks shown | weak alone: 39.7% / 23.9% / 20.9% |
+| Lerman & Hogg (2010): early votes + site design | adjusts early votes for where the story was shown | covered by the Quality News rank and expected-upvote inputs in the trained combination |
 | OpenPipe: HN reward model | LLM on title + URL + article text | weights not released; their article text ends Nov 2024 (no overlap with test months) |
 
 ## Data per person (what we know about each HN user)
