@@ -20,7 +20,7 @@ STEPS=${STEPS:-launches,snap,forecast,ranks,comments,people,personas,score,raw}
 timeout 3h python3 -m pipeline.daily --only=$STEPS > "$LOG" 2>&1
 timeout 2h python3 -m pipeline.backtest >> "$LOG" 2>&1
 python3 -m pipeline.dash_export /tmp/usersim_dash >> "$LOG" 2>&1 && gsutil -q -m cp /tmp/usersim_dash/*.json $BUCKET/dash/
-# backfill launch-page assets (logo, gallery, video links) through the official API until its rate limit
-(cd ph_predict && timeout 30m python3 page_media.py >> "$LOG" 2>&1; gsutil -q cp data/page_media.jsonl $BUCKET/raw/ph_api/page_media.jsonl)
+# backfill launch-page assets (logo, gallery, video links) through the official API, waiting out up to 8 rate-limit windows
+(cd ph_predict && PM_WAIT_ROUNDS=8 timeout 150m python3 page_media.py >> "$LOG" 2>&1; gsutil -q cp data/page_media.jsonl $BUCKET/raw/ph_api/page_media.jsonl)
 gsutil -q cp "$LOG" $BUCKET/logs/
 [ -f /home/agent/w/KEEP_ON ] || sudo shutdown -h now

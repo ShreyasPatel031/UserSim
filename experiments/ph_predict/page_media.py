@@ -1,6 +1,7 @@
 """Launch-page assets from the official Product Hunt API (no page scraping): logo (thumbnail), gallery images, video
 link, product links (social / company). 25 launches per request by id; resumable.
-usage: PH_TOKEN=... python page_media.py -> data/page_media.jsonl (stops at the first rate-limit reply; the daily run resumes it)"""
+usage: PH_TOKEN=... python page_media.py -> data/page_media.jsonl. On a rate-limit reply it waits for the next 15-minute
+quota window, up to PM_WAIT_ROUNDS times (default 0: stop; the daily run resumes it)."""
 import glob, json, os, time, urllib.error, urllib.request
 
 D = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
@@ -37,9 +38,13 @@ def main():
     done = {json.loads(l)["id"] for l in open(OUT)} if os.path.exists(OUT) else set()
     todo = [x for x in ids() if x not in done]
     print("launches", len(todo), flush=True)
+    waits = int(os.environ.get("PM_WAIT_ROUNDS", "0"))
     with open(OUT, "a") as f:
         for k in range(0, len(todo), 25):
             got = query(todo[k:k + 25])
+            while got is None and waits > 0:   # wait for the next 15-minute quota window, then retry the same batch
+                waits -= 1; print("rate limited after", k, "launches; waiting 15 min", flush=True); f.flush(); time.sleep(15 * 60)
+                got = query(todo[k:k + 25])
             if got is None:
                 print("rate limited after", k, "launches; stopping", flush=True); break
             for v in got.values():

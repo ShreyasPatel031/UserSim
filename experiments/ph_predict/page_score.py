@@ -8,7 +8,7 @@ from concurrent.futures import ThreadPoolExecutor
 import llm   # token(), PRICE-free Gemini endpoint and usage counter live there
 
 D = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
-OUT = f"{D}/page_scores.jsonl"
+OUT = f"{D}/{os.environ.get('PS_OUT', 'page_scores.jsonl')}"   # PS_OUT=page_scores_v2.jsonl: re-score with sites and images
 MODEL = os.environ.get("PS_MODEL", "gemini-2.5-flash")
 URL = f"https://aiplatform.googleapis.com/v1/projects/project-amer-scs-sandbox/locations/global/publishers/google/models/{MODEL}:generateContent"
 USD = {"gemini-2.5-flash": (0.30, 2.50), "gemini-2.5-flash-lite": (0.10, 0.40)}[MODEL]
@@ -145,13 +145,15 @@ def main(limit, threads):
     teams = {p["slug"]: {m["username"] for m in p.get("makers") or []} | {(p.get("user") or {}).get("username")} for p in rows.values()}
     first = first_comments(teams)
     web = {}
-    if os.path.exists(f"{D}/sites.jsonl"):
-        for l in open(f"{D}/sites.jsonl"):
+    if os.path.exists(f"{D}/sites_text.jsonl"):   # fetch_sites.py (sites.jsonl itself holds URLs only)
+        for l in open(f"{D}/sites_text.jsonl"):
             r = json.loads(l)
-            if r.get("html"):
-                web[str(r["id"])] = text(r["html"])[:2000]
+            web[str(r["id"])] = r["text"][:2000]
     done = {json.loads(l)["id"] for l in open(OUT)} if os.path.exists(OUT) else set()
-    todo = sorted([x for x in rows if x not in done], key=lambda x: rows[x]["day"], reverse=True)[:limit]   # images where the API gave them
+    todo = sorted([x for x in rows if x not in done], key=lambda x: rows[x]["day"], reverse=True)   # images where the API gave them
+    if os.environ.get("PS_ONLY") == "new_data":   # only launches that now have images or website text
+        todo = [x for x in todo if x in media or x in web]
+    todo = todo[:limit]
     print("launches", len(todo), "with first comment", sum(rows[x]["slug"] in first for x in todo), flush=True)
     lock = threading.Lock()
     with ThreadPoolExecutor(threads) as ex:
