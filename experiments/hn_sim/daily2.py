@@ -27,6 +27,7 @@ TEST = ["2026-05", "2026-06", "2026-07", "2026-08", "2026-09"]
 WINDOW_H = 72
 L = pd.concat([pd.read_json(os.path.join(H.CACHE, f), lines=True, dtype={"day": str})
                for f in ("frontday.jsonl", "frontday_old.jsonl")]).drop_duplicates(["day", "rank"])
+L = L.sort_values("rank").drop_duplicates(["day", "post_id"])          # one entry per (day, story): its best place
 p = H.stories()
 p = p[p.month >= "2023-03"].reset_index(drop=True)
 y = np.log1p(p.points.to_numpy())
