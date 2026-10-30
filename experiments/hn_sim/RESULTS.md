@@ -18,6 +18,7 @@ top 10 1.1%.
 | + submitter as a commenter | **51.5%** (50.7–52.3) | 48.4% | 34.1% |
 | + favorites taste (partial: HN blocked most favorites fetches) | 51.4% | 48.4% | 35.2% |
 | + people2: early commenters' account age, new accounts, comment speed, record on this domain | 51.5% | 48.7% | 35.2% |
+| + domain popularity (Tranco top-1M rank) | 51.6% | 48.6% | 34.8% |
 
 Blocks that added nothing measurable: a crowd model (20,000 most active people, who would engage, tallied: +0.2),
 favorites taste (+0.0), Gemini reading titles (worse than the text model; dropped).
