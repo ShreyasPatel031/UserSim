@@ -46,3 +46,13 @@ The person-level simulation does not carry the page's effect to the launch; the 
 - Pool people cast 28% of real votes (39% for top-3 launches, 15% for rank 11+).
 - Real pool votes track real total votes: within-day rank correlation 0.92.
 - If each pool person's votes were known exactly, daily top-3 recall = 88.8%. The pool is big enough; the per-person prediction is the gap (simulation now 39.8).
+
+## Where the simulation loses accuracy (oracle_split.py, taste model, Aug 1–Oct 24, 85 days)
+| Launches ranked by | Daily top 3 | Top 5 |
+|---|---|---|
+| simulation (30-day population × model pick probability) | 41.6 | 54.8 |
+| model pick probability over the people who really voted that day (who shows up known) | 43.1 | 55.3 |
+| real picks of the 30-day population (what they pick known) | 91.4 | 92.9 |
+| real votes of all pool people | 91.4 | 95.5 |
+Knowing who shows up adds 1.5 points; knowing what they pick adds 50. The per-person pick model is the whole gap.
+Next: stronger pick models (pick_boost.py: more training people, bigger trees, LambdaRank).

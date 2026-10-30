@@ -1,0 +1,20 @@
+{
+ "days": 85,
+ "model": "/home/agent/w/experiments/simlab/cache/popscore_page_taste",
+ "sim": {
+  "top3": 41.6,
+  "top5": 54.8
+ },
+ "who_oracle": {
+  "top3": 43.1,
+  "top5": 55.3
+ },
+ "pop_picks": {
+  "top3": 91.4,
+  "top5": 92.9
+ },
+ "pool_votes": {
+  "top3": 91.4,
+  "top5": 95.5
+ }
+}
