@@ -6,9 +6,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "src"))
 from auth import vertex_credentials  # noqa: E402
 from google.cloud import compute_v1  # noqa: E402
 
-P, Z, NAME = "project-amer-scs-sandbox", "us-central1-b", "hn-sim-1"
+P, Z = "project-amer-scs-sandbox", "us-central1-b"
+NAME = sys.argv[1] if len(sys.argv) > 1 else "hn-sim-1"
+TYPE = sys.argv[2] if len(sys.argv) > 2 else "e2-highcpu-16"
 inst = compute_v1.Instance(
-    name=NAME, machine_type=f"zones/{Z}/machineTypes/e2-highcpu-16",
+    name=NAME, machine_type=f"zones/{Z}/machineTypes/{TYPE}",
     disks=[compute_v1.AttachedDisk(boot=True, auto_delete=True, initialize_params=compute_v1.AttachedDiskInitializeParams(
         source_image="projects/debian-cloud/global/images/family/debian-12", disk_size_gb=100))],
     network_interfaces=[compute_v1.NetworkInterface(network="global/networks/main-vpc", subnetwork="regions/us-central1/subnetworks/primary-subnet",
