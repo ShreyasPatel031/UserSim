@@ -76,6 +76,7 @@ def main(a: str, b: str) -> None:
     import top100 as H
     p = H.stories()
     p = p[(p.day >= a) & (p.day <= b)].sort_values("created_at_i", ascending=False)
+    p = p[p.points >= float(os.environ.get("QN_MIN_POINTS", "0"))]   # stories below ~5 final points never reach the list
     done = {json.loads(l)["post_id"] for l in open(OUT)} if os.path.exists(OUT) else set()
     todo = [(int(r.post_id), int(r.created_at_i)) for r in p.itertuples() if r.post_id not in done]
     print(len(todo), "stories", flush=True)
