@@ -74,6 +74,8 @@ for m in sorted(A.mon.unique())[1:]:
     out.append(te)
 T = pd.concat(out).rename(columns={"all": "launch only"}); T["first_time"] = T.id.map(first_time())
 P = list(V) + ["launch only"]; rng = np.random.default_rng(0)
+if os.environ.get("SAVE") == "1":   # per-launch predictions and the simulation's inputs, for worked examples
+    T[["id", "day", "dailyRank", "logv", "first_time"] + P + [c for c in T if c.startswith(("nsa_", "tpd_", "pst_"))]].to_parquet("results/newsim_preds.parquet")
 res = {"months_tested": sorted(T.mon.unique())}
 for name, flag in (("first-time teams", True), ("repeat teams", False)):
     S = T[T.first_time == flag]; r = {"launches": len(S)}
