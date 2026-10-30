@@ -53,10 +53,14 @@ ted = ted.assign(stage2=c2.predict_proba(ted[["stage1"] + qcols])[:, 1], sh60=np
 c3 = lgb.LGBMClassifier(n_estimators=300, learning_rate=0.03, num_leaves=15, min_child_samples=30, subsample=0.8,
                         subsample_freq=1, verbose=-1, random_state=0).fit(trd[qcols], (trd.rk <= 100).astype(int))
 ted = ted.assign(qn_only=c3.predict_proba(ted[qcols])[:, 1])
+c4 = lgb.LGBMClassifier(n_estimators=300, learning_rate=0.03, num_leaves=15, min_child_samples=20, subsample=0.8,
+                        subsample_freq=1, verbose=-1, random_state=0).fit(trd[["stage1"] + qcols], (trd.rk <= 30).astype(int))
+ted = ted.assign(stage2_top30=c4.predict_proba(ted[["stage1"] + qcols])[:, 1])
 rng = np.random.default_rng(0)
 rows = []
 for col, name in (("stage1", "ours 60 min"), ("sh60", "Szabo-Huberman: upvotes at 60 min"),
-                  ("qn_only", "early upvotes + rank model"), ("stage2", "ours 60 min + early upvotes (trained)")):
+                  ("qn_only", "early upvotes + rank model"), ("stage2", "ours 60 min + early upvotes (trained)"),
+                  ("stage2_top30", "ours 60 min + early upvotes (trained on top 30)")):
     r = {k: R.boot(T.day_hits(ted.assign(s=ted[col]), "s", k, rng)) for k in (100, 30, 10)}
     print(name, json.dumps(r), flush=True)
     rows += [{"kind": "qn_eval", "variant": name, "k": k, "recall": v[0], "lo": v[1], "hi": v[2],
