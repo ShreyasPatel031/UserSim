@@ -1,0 +1,22 @@
+{
+ "launches": 20,
+ "maker_posts": 142,
+ "repliers_pre": 72,
+ "repliers_launch_day": 47,
+ "voters": {
+  "n": 1433,
+  "replied_before_launch": 2,
+  "replied_on_launch_day": 2,
+  "either": 3,
+  "share_before": 0.0014,
+  "share_either": 0.0021
+ },
+ "control": {
+  "n": 1433,
+  "replied_before_launch": 0,
+  "replied_on_launch_day": 0,
+  "either": 0,
+  "share_before": 0.0,
+  "share_either": 0.0
+ }
+}

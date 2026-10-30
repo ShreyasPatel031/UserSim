@@ -195,3 +195,8 @@ Voter-side ties instead (reply / quote / repost / mention, either way, 60 days b
 | same-day control | 1,433 | 803 | 1 (0.12%) |
 Lift 8.9x, but rare: about 1% of voters. 6 of the 9 tied voters had not backed the team on Product Hunt before (new information). Likes are not visible without login.
 Upper bound: X handles for 43% of people × ~1% tied ≈ well under 1% of votes explained. Not worth scaling as an input.
+
+## Makers' side: who replied to the makers' X posts (x_makers.py; same 20 launches; fxtwitter conversation endpoint, no login)
+- Makers' own posts in the 60 days before launch and on launch day: 142. Distinct repliers: 72 before launch, 47 on launch day.
+- Real voters among them: 2 of 1,433 before launch (0.14%), 3 counting launch day (0.21%). Same-day control: 0.
+- These makers have small X audiences, and almost none of their Product Hunt voters reply to them publicly. Reposts and likes are not visible without login.
