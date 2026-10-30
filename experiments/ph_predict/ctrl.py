@@ -18,7 +18,7 @@ import model as M, run as RN
 from buildcache import build_cached
 
 MONTHS = ["2026-03", "2026-04", "2026-05", "2026-06", "2026-07", "2026-08", "2026-09", "2026-10"]
-PAGE_PREFIX = ("ps_", "vs_", "pf_", "txt_", "web_", "dom_", "llm_pitch", "llm_site", "llm_full", "topic_")
+PAGE_PREFIX = ("ps_", "vs_", "pf_", "upw_", "txt_", "web_", "dom_", "llm_pitch", "llm_site", "llm_full", "topic_")
 PAGE_COLS = {"ph_n_media", "ph_has_video", "ph_n_topics", "ph_desc_len", "ph_tagline_len", "ph_name_len", "ph_dayrank_ph_n_media",
              "web_dayrank_web_text_words", "dom_dayrank_dom_age_d"}
 DAY_COLS = {"ph_weekday", "ph_day_n_launches", "ph_month", "busy_same_day", "busy_7d"}
