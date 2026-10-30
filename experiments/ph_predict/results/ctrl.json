@@ -1,7 +1,7 @@
 {
  "inputs_per_group": {
   "fixed": 67,
-  "page": 58,
+  "page": 114,
   "day": 5,
   "effort": 29
  },
@@ -41,6 +41,62 @@
   "ps_mix_confusion",
   "ps_mix_praise",
   "ps_mix_other",
+  "pf_open_source",
+  "pf_free_plan",
+  "pf_free_trial",
+  "pf_paid_only",
+  "pf_launch_discount",
+  "pf_number_in_tagline",
+  "pf_ai_in_tagline",
+  "pf_problem_stated",
+  "pf_who_its_for_stated",
+  "pf_how_it_works_steps",
+  "pf_social_proof",
+  "pf_founder_story",
+  "pf_asks_for_feedback",
+  "pf_asks_for_upvotes",
+  "pf_emoji_in_first_comment",
+  "pf_mentions_competitor",
+  "pf_claims_speed",
+  "pf_claims_privacy",
+  "pf_integrations_listed",
+  "pf_relaunch_or_new_version",
+  "pf_waitlist_or_beta",
+  "pf_no_signup_needed",
+  "pf_mobile_app",
+  "pf_browser_extension",
+  "pf_mac_app",
+  "pf_developer_tool",
+  "pf_api_or_sdk",
+  "pf_agent",
+  "pf_consumer_product",
+  "pf_b2b_product",
+  "pf_hardware",
+  "pf_games_or_fun",
+  "pf_tagline_style_benefit",
+  "pf_tagline_style_feature",
+  "pf_tagline_style_category",
+  "pf_tagline_style_clever",
+  "pf_tagline_style_question",
+  "pf_tagline_style_other",
+  "pf_audience_developers",
+  "pf_audience_designers",
+  "pf_audience_marketers",
+  "pf_audience_founders",
+  "pf_audience_sales",
+  "pf_audience_consumers",
+  "pf_audience_students",
+  "pf_audience_creators",
+  "pf_audience_teams",
+  "pf_audience_other",
+  "pf_price_point_free",
+  "pf_price_point_under_10",
+  "pf_price_point_10_to_50",
+  "pf_price_point_over_50",
+  "pf_price_point_not_stated",
+  "pf_tagline_words",
+  "pf_first_comment_words",
+  "pf_features_listed",
   "vs_hook",
   "vs_problem_shown",
   "vs_product_working",
@@ -110,9 +166,9 @@
    77.9
   ],
   "fixed+page": [
-   61.1,
-   69.4,
-   77.9
+   61.8,
+   69.7,
+   78.3
   ],
   "fixed+day": [
    60.1,
@@ -125,17 +181,17 @@
    78.6
   ],
   "all": [
-   62.5,
-   69.7,
-   79.6
+   61.8,
+   69.6,
+   79.5
   ]
  },
  "predicted_lift_vs_real_over_performance": {
   "page": {
-   "corr": 0.226,
+   "corr": 0.233,
    "ci95": [
-    0.191,
-    0.259
+    0.199,
+    0.264
    ],
    "days": 218
   },
@@ -164,6 +220,262 @@
     -0.112
    ],
    "days": 5
+  },
+  "llm_pitch": {
+   "corr": 0.085,
+   "ci95": [
+    0.052,
+    0.119
+   ],
+   "days": 217
+  },
+  "pf_tagline_style_question": {
+   "corr": 0.066,
+   "ci95": [
+    -0.001,
+    0.129
+   ],
+   "days": 29
+  },
+  "ph_dayrank_ph_n_media": {
+   "corr": 0.066,
+   "ci95": [
+    0.034,
+    0.099
+   ],
+   "days": 218
+  },
+  "pf_price_point_not_stated": {
+   "corr": -0.051,
+   "ci95": [
+    -0.082,
+    -0.02
+   ],
+   "days": 217
+  },
+  "pf_audience_designers": {
+   "corr": 0.05,
+   "ci95": [
+    -0.003,
+    0.101
+   ],
+   "days": 43
+  },
+  "pf_price_point_free": {
+   "corr": 0.047,
+   "ci95": [
+    0.016,
+    0.079
+   ],
+   "days": 215
+  },
+  "llm_full": {
+   "corr": -0.029,
+   "ci95": [
+    -0.069,
+    0.007
+   ],
+   "days": 218
+  },
+  "pf_games_or_fun": {
+   "corr": 0.027,
+   "ci95": [
+    -0.007,
+    0.062
+   ],
+   "days": 158
+  },
+  "pf_audience_teams": {
+   "corr": -0.026,
+   "ci95": [
+    -0.056,
+    0.007
+   ],
+   "days": 186
+  },
+  "pf_tagline_style_clever": {
+   "corr": 0.023,
+   "ci95": [
+    -0.016,
+    0.064
+   ],
+   "days": 138
+  },
+  "pf_price_point_under_10": {
+   "corr": 0.021,
+   "ci95": [
+    -0.011,
+    0.054
+   ],
+   "days": 132
+  },
+  "pf_first_comment_words": {
+   "corr": 0.021,
+   "ci95": [
+    -0.018,
+    0.059
+   ],
+   "days": 217
+  },
+  "pf_features_listed": {
+   "corr": 0.02,
+   "ci95": [
+    -0.011,
+    0.048
+   ],
+   "days": 218
+  },
+  "pf_audience_founders": {
+   "corr": 0.018,
+   "ci95": [
+    -0.023,
+    0.059
+   ],
+   "days": 134
+  },
+  "pf_tagline_style_feature": {
+   "corr": -0.016,
+   "ci95": [
+    -0.052,
+    0.019
+   ],
+   "days": 218
+  },
+  "llm_site": {
+   "corr": 0.016,
+   "ci95": [
+    -0.018,
+    0.049
+   ],
+   "days": 216
+  },
+  "pf_price_point_10_to_50": {
+   "corr": -0.015,
+   "ci95": [
+    -0.052,
+    0.021
+   ],
+   "days": 93
+  },
+  "pf_tagline_style_other": {
+   "corr": 0.012,
+   "ci95": [
+    -0.081,
+    0.116
+   ],
+   "days": 10
+  },
+  "pf_audience_other": {
+   "corr": -0.012,
+   "ci95": [
+    -0.041,
+    0.017
+   ],
+   "days": 213
+  },
+  "pf_audience_creators": {
+   "corr": 0.011,
+   "ci95": [
+    -0.018,
+    0.04
+   ],
+   "days": 196
+  },
+  "pf_audience_students": {
+   "corr": 0.01,
+   "ci95": [
+    -0.034,
+    0.054
+   ],
+   "days": 70
+  },
+  "pf_tagline_words": {
+   "corr": 0.009,
+   "ci95": [
+    -0.022,
+    0.043
+   ],
+   "days": 218
+  },
+  "pf_tagline_style_benefit": {
+   "corr": 0.007,
+   "ci95": [
+    -0.026,
+    0.044
+   ],
+   "days": 218
+  },
+  "pf_audience_developers": {
+   "corr": 0.007,
+   "ci95": [
+    -0.025,
+    0.037
+   ],
+   "days": 218
+  },
+  "pf_audience_marketers": {
+   "corr": 0.005,
+   "ci95": [
+    -0.041,
+    0.049
+   ],
+   "days": 102
+  },
+  "pf_audience_consumers": {
+   "corr": -0.005,
+   "ci95": [
+    -0.032,
+    0.024
+   ],
+   "days": 199
+  },
+  "pf_price_point_over_50": {
+   "corr": -0.005,
+   "ci95": [
+    -0.063,
+    0.06
+   ],
+   "days": 52
+  },
+  "pf_audience_sales": {
+   "corr": 0.004,
+   "ci95": [
+    -0.048,
+    0.056
+   ],
+   "days": 73
+  },
+  "pf_tagline_style_category": {
+   "corr": -0.002,
+   "ci95": [
+    -0.041,
+    0.038
+   ],
+   "days": 143
+  },
+  "txt_ridge": {
+   "corr": -0.001,
+   "ci95": [
+    -0.034,
+    0.031
+   ],
+   "days": 218
+  },
+  "ph_day_n_launches": {
+   "corr": NaN,
+   "ci95": [
+    NaN,
+    NaN
+   ],
+   "days": 0
+  },
+  "ph_month": {
+   "corr": NaN,
+   "ci95": [
+    NaN,
+    NaN
+   ],
+   "days": 0
   },
   "hist_hunter_top5": {
    "corr": -0.323,
@@ -212,14 +524,6 @@
     -0.055
    ],
    "days": 218
-  },
-  "llm_pitch": {
-   "corr": 0.085,
-   "ci95": [
-    0.052,
-    0.119
-   ],
-   "days": 217
   },
   "ph_n_topics": {
    "corr": 0.081,
@@ -277,11 +581,11 @@
    ],
    "days": 218
   },
-  "ph_dayrank_ph_n_media": {
-   "corr": 0.066,
+  "pf_free_plan": {
+   "corr": 0.06,
    "ci95": [
-    0.034,
-    0.099
+    0.032,
+    0.092
    ],
    "days": 218
   },
@@ -308,6 +612,22 @@
     0.091
    ],
    "days": 161
+  },
+  "pf_mac_app": {
+   "corr": 0.054,
+   "ci95": [
+    0.025,
+    0.083
+   ],
+   "days": 213
+  },
+  "pf_open_source": {
+   "corr": 0.05,
+   "ci95": [
+    0.016,
+    0.082
+   ],
+   "days": 213
   },
   "ps_tagline": {
    "corr": 0.049,
@@ -373,6 +693,14 @@
    ],
    "days": 215
   },
+  "pf_mentions_competitor": {
+   "corr": 0.04,
+   "ci95": [
+    0.009,
+    0.069
+   ],
+   "days": 216
+  },
   "ps_video": {
    "corr": 0.039,
    "ci95": [
@@ -405,6 +733,22 @@
    ],
    "days": 218
   },
+  "pf_no_signup_needed": {
+   "corr": 0.036,
+   "ci95": [
+    0.004,
+    0.068
+   ],
+   "days": 212
+  },
+  "pf_b2b_product": {
+   "corr": -0.035,
+   "ci95": [
+    -0.066,
+    -0.003
+   ],
+   "days": 218
+  },
   "ps_links": {
    "corr": 0.034,
    "ci95": [
@@ -429,19 +773,43 @@
    ],
    "days": 216
   },
+  "pf_asks_for_upvotes": {
+   "corr": 0.03,
+   "ci95": [
+    -0.014,
+    0.072
+   ],
+   "days": 59
+  },
+  "pf_waitlist_or_beta": {
+   "corr": 0.03,
+   "ci95": [
+    -0.003,
+    0.063
+   ],
+   "days": 152
+  },
+  "pf_browser_extension": {
+   "corr": 0.03,
+   "ci95": [
+    -0.002,
+    0.06
+   ],
+   "days": 143
+  },
+  "pf_consumer_product": {
+   "corr": 0.03,
+   "ci95": [
+    -0.0,
+    0.06
+   ],
+   "days": 218
+  },
   "ps_mix_praise": {
    "corr": 0.029,
    "ci95": [
     0.0,
     0.058
-   ],
-   "days": 218
-  },
-  "llm_full": {
-   "corr": -0.029,
-   "ci95": [
-    -0.069,
-    0.007
    ],
    "days": 218
   },
@@ -461,6 +829,14 @@
    ],
    "days": 218
   },
+  "pf_emoji_in_first_comment": {
+   "corr": 0.028,
+   "ci95": [
+    -0.006,
+    0.058
+   ],
+   "days": 216
+  },
   "ps_clarity": {
    "corr": 0.027,
    "ci95": [
@@ -468,6 +844,30 @@
     0.056
    ],
    "days": 218
+  },
+  "pf_problem_stated": {
+   "corr": 0.027,
+   "ci95": [
+    -0.012,
+    0.065
+   ],
+   "days": 129
+  },
+  "pf_founder_story": {
+   "corr": 0.027,
+   "ci95": [
+    -0.007,
+    0.063
+   ],
+   "days": 216
+  },
+  "pf_claims_privacy": {
+   "corr": 0.027,
+   "ci95": [
+    -0.003,
+    0.057
+   ],
+   "days": 217
   },
   "ph_tagline_len": {
    "corr": -0.026,
@@ -484,6 +884,14 @@
     0.008
    ],
    "days": 212
+  },
+  "pf_hardware": {
+   "corr": -0.026,
+   "ci95": [
+    -0.066,
+    0.016
+   ],
+   "days": 101
   },
   "ps_description": {
    "corr": 0.025,
@@ -517,6 +925,14 @@
    ],
    "days": 69
   },
+  "pf_ai_in_tagline": {
+   "corr": -0.022,
+   "ci95": [
+    -0.054,
+    0.008
+   ],
+   "days": 218
+  },
   "promo_founder_li": {
    "corr": -0.021,
    "ci95": [
@@ -532,6 +948,22 @@
     0.059
    ],
    "days": 217
+  },
+  "pf_number_in_tagline": {
+   "corr": -0.019,
+   "ci95": [
+    -0.059,
+    0.021
+   ],
+   "days": 125
+  },
+  "pf_api_or_sdk": {
+   "corr": -0.019,
+   "ci95": [
+    -0.057,
+    0.014
+   ],
+   "days": 206
   },
   "ps_usefulness": {
    "corr": 0.018,
@@ -557,6 +989,14 @@
    ],
    "days": 26
   },
+  "pf_who_its_for_stated": {
+   "corr": -0.017,
+   "ci95": [
+    -0.045,
+    0.012
+   ],
+   "days": 199
+  },
   "promo_company_li": {
    "corr": -0.017,
    "ci95": [
@@ -565,13 +1005,13 @@
    ],
    "days": 119
   },
-  "llm_site": {
+  "pf_relaunch_or_new_version": {
    "corr": 0.016,
    "ci95": [
     -0.018,
-    0.049
+    0.05
    ],
-   "days": 216
+   "days": 197
   },
   "promo_cov_press": {
    "corr": -0.016,
@@ -589,6 +1029,14 @@
    ],
    "days": 209
   },
+  "pf_developer_tool": {
+   "corr": 0.015,
+   "ci95": [
+    -0.014,
+    0.045
+   ],
+   "days": 218
+  },
   "ps_mix_pricing": {
    "corr": -0.014,
    "ci95": [
@@ -605,6 +1053,14 @@
    ],
    "days": 218
   },
+  "pf_asks_for_feedback": {
+   "corr": -0.014,
+   "ci95": [
+    -0.05,
+    0.02
+   ],
+   "days": 217
+  },
   "promo_n_sources": {
    "corr": -0.013,
    "ci95": [
@@ -612,6 +1068,14 @@
     0.021
    ],
    "days": 216
+  },
+  "pf_social_proof": {
+   "corr": 0.012,
+   "ci95": [
+    -0.022,
+    0.046
+   ],
+   "days": 196
   },
   "ps_has_first_comment": {
    "corr": 0.011,
@@ -629,11 +1093,35 @@
    ],
    "days": 216
   },
+  "pf_how_it_works_steps": {
+   "corr": 0.01,
+   "ci95": [
+    -0.021,
+    0.04
+   ],
+   "days": 218
+  },
   "ps_visual_polish": {
    "corr": 0.009,
    "ci95": [
     -0.02,
     0.037
+   ],
+   "days": 218
+  },
+  "pf_integrations_listed": {
+   "corr": -0.007,
+   "ci95": [
+    -0.038,
+    0.023
+   ],
+   "days": 218
+  },
+  "pf_agent": {
+   "corr": 0.007,
+   "ci95": [
+    -0.026,
+    0.036
    ],
    "days": 218
   },
@@ -644,6 +1132,22 @@
     0.037
    ],
    "days": 218
+  },
+  "pf_paid_only": {
+   "corr": 0.006,
+   "ci95": [
+    -0.026,
+    0.034
+   ],
+   "days": 217
+  },
+  "pf_mobile_app": {
+   "corr": -0.006,
+   "ci95": [
+    -0.035,
+    0.025
+   ],
+   "days": 202
   },
   "promo_posts": {
    "corr": 0.006,
@@ -669,6 +1173,14 @@
    ],
    "days": 175
   },
+  "pf_launch_discount": {
+   "corr": -0.004,
+   "ci95": [
+    -0.037,
+    0.027
+   ],
+   "days": 157
+  },
   "ps_credibility": {
    "corr": 0.003,
    "ci95": [
@@ -676,6 +1188,14 @@
     0.033
    ],
    "days": 218
+  },
+  "pf_free_trial": {
+   "corr": 0.003,
+   "ci95": [
+    -0.026,
+    0.034
+   ],
+   "days": 183
   },
   "promo_posts_x": {
    "corr": 0.003,
@@ -685,29 +1205,13 @@
    ],
    "days": 162
   },
-  "txt_ridge": {
-   "corr": -0.001,
+  "pf_claims_speed": {
+   "corr": 0.002,
    "ci95": [
-    -0.034,
-    0.031
+    -0.032,
+    0.034
    ],
-   "days": 218
-  },
-  "ph_day_n_launches": {
-   "corr": NaN,
-   "ci95": [
-    NaN,
-    NaN
-   ],
-   "days": 0
-  },
-  "ph_month": {
-   "corr": NaN,
-   "ci95": [
-    NaN,
-    NaN
-   ],
-   "days": 0
+   "days": 215
   },
   "promo_cov": {
    "corr": -0.002,
