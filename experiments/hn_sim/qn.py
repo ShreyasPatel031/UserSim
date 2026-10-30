@@ -3,7 +3,8 @@ HN API every minute and its per-story stats page embeds the minute series (upvot
 ranksPlotData: time, ranks on the top/new/... pages). Coverage starts around mid-2025; stories that end with ~1-3
 points are mostly not kept (404).
 
-For every story on the given days (newest first): upvotes and best top-page rank at 15 / 30 / 60 minutes.
+For every story on the given days (newest first): upvotes, expected upvotes and best top-page rank at QN_AGES minutes
+(default 15 / 30 / 60; QN_AGES=15,30,60,120,240,480 QN_OUT=qn_long.jsonl for the front-page work).
 Polite: WORKERS threads, each pausing DELAY seconds after a request (~3 req/s). Appends to <cache>/qn_early.jsonl.
 
     python qn.py 2026-06-01 2026-09-30
@@ -21,7 +22,8 @@ import requests
 
 import store as S
 
-OUT = os.path.join(S.LOCAL, "qn_early.jsonl")
+OUT = os.path.join(S.LOCAL, os.environ.get("QN_OUT", "qn_early.jsonl"))
+AGES = [int(x) for x in os.environ.get("QN_AGES", "15,30,60").split(",")]   # minutes after posting
 DELAY = float(os.environ.get("QN_DELAY", "0.5"))
 WORKERS = int(os.environ.get("QN_WORKERS", "3"))   # ~3 requests/s in total: polite for a small volunteer site
 _s = requests.Session()
@@ -35,7 +37,7 @@ def parse(html: str, t0: int) -> dict:
     up = [(int(a), int(b), float(c)) for a, b, c in re.findall(r"\[(\d+),(\d+),([\d.eE+-]+)", m.group(1))] if m else []
     m = re.search(r"ranksPlotData = \[(.*?)\];", html, re.S)
     rk = [[int(x) for x in row.split(",")] for row in re.findall(r"\[(\d+(?:,\d+)+)\]", m.group(1))] if m else []
-    for a in (15, 30, 60):
+    for a in AGES:
         lim = t0 + a * 60
         u = [(v, e) for t, v, e in up if t <= lim]
         out[f"qn_up{a}"] = u[-1][0] if u else None
