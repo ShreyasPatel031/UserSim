@@ -40,7 +40,7 @@ def call(video, prompt):
             print("retry", a, e.code, msg, flush=True); time.sleep(5 * (a + 1))
         except Exception as e:  # noqa: BLE001
             print("retry", a, str(e)[:120], flush=True); time.sleep(5 * (a + 1))
-    return ""
+    return json.dumps({"error": "failed after retries"})   # recorded, so one bad video does not block the queue every run
 
 
 def youtube(u):
@@ -62,7 +62,7 @@ def main(limit, threads):
             if m.get("type") == "video" and v:
                 vids[str(r["id"])] = v; break
     done = {json.loads(l)["id"] for l in open(OUT)} if os.path.exists(OUT) else set()
-    todo = [x for x in vids if x not in done and x in names][:limit]
+    todo = sorted([x for x in vids if x not in done and x in names], key=lambda x: -int(x))[:limit]   # newest launches first
     print("videos", len(todo), "of", len(vids), "launches with a YouTube video", flush=True)
     lock = threading.Lock()
 
