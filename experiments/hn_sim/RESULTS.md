@@ -32,9 +32,17 @@ comments in that window:
 | 4 h | 69.9% | 65.8% | 51.1% |
 | 8 h | **73.7%** | **71.8%** | **57.3%** |
 
-Model variants (60 min): topic-specific early-commenter records +0.0; a per-day ranker instead of a classifier: being
-re-tested (an earlier run used an acceleration block that leaked the outcome: stories never commented on were filled
-differently from stories commented on later; those numbers are discarded).
+Model variants (60 min, same data):
+
+| Variant | top 100 | top 30 | top 10 |
+|---|---|---|---|
+| classifier (made the day's top 100) | **51.2%** | 48.7% | 35.9% |
+| per-day ranker (graded by rank) | 48.5% | **50.5%** | **40.2%** |
+| + comment acceleration (0-15 / 15-30 / 30-60 min) | +0.1 | +0.1 | -1.3 |
+| + topic-specific early-commenter records | +0.0 | -0.4 | +0.0 |
+
+Use the ranker for the top-10 / top-30 list and the classifier for the top 100. (An earlier acceleration run leaked
+the outcome: stories never commented on were filled differently from stories commented on later; discarded.)
 
 **Event level (Sep 2026, best model):** of each day's real top 10, the model's top 10 contains 36% (by event: the
 same news under any submission; 35% exact), its top 30 63%, its top 100 81%.
