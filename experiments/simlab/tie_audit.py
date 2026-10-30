@@ -40,14 +40,14 @@ def main(workers):
     with mp.get_context("fork").Pool(workers) as pool:
         R = [r for r in pool.map(day, days) if r is not None]
     S = pd.concat([r[0] for r in R]).merge(B[["id", "dailyRank"]].drop_duplicates("id"), on="id")
-    S.to_parquet(f"{HERE}/cache/tie_audit_launches.parquet")
+    S.to_parquet(f"{HERE}/cache/tie_audit_launches{'_makers' if os.environ.get('TEAM_MAKERS_ONLY') == '1' else ''}.parquet")
     tot = pd.DataFrame([r[1] for r in R]).sum()
     res = {"days": len(R), "share_of_picks_tied": round(float(tot.tied / tot.picks), 3), "share_follow": round(float(tot.follow / tot.picks), 3),
            "share_tied_or_follow": round(float(tot.tied_or_follow / tot.picks), 3)}
     for c in ("all", "tied", "untied", "tied_or_follow", "tie_people", "tie_weighted", "backed_weighted"):
         res[c] = {f"top{k}": round(100 * float(np.mean([len(set(g.nlargest(k, c).id) & set(g[g.dailyRank <= k].id)) / k
                                                        for _, g in S.groupby("day") if (g.dailyRank <= k).sum() == k])), 1) for k in (3, 5)}
-    json.dump(res, open(f"{HERE}/reports/tie_audit.json", "w"), indent=1)
+    json.dump(res, open(f"{HERE}/reports/tie_audit{'_makers' if os.environ.get('TEAM_MAKERS_ONLY') == '1' else ''}.json", "w"), indent=1)
     print(json.dumps(res, indent=1))
 
 

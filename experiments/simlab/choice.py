@@ -8,7 +8,7 @@ average within-day AUC (does the person's real upvote outrank the launches they 
 Launch level: expected votes = sum over people active in the last 30 days of P(active that day) x P(upvote),
 scored in the harness against the launch baseline (experiments/choice_votes.py reads cache/choice_votes.parquet).
 This is the bar the personas must beat, used as one more taste factor."""
-import json, sys
+import json, os, sys
 from collections import Counter
 import numpy as np, pandas as pd
 from sklearn.linear_model import LogisticRegression
@@ -22,7 +22,8 @@ FACTORS = {"popularity": ["pop"], "relationships": ["follow", "backed"], "taste"
 def rows(day_from="2026-09-01", day_to="2026-10-24", all_people=False):
     P, I, E = store.load()
     day = dict(zip(I.id, I.day)); topics = dict(zip(I.id, [json.loads(t) for t in I.topics]))
-    team = {r.id: set(json.loads(r.makers)) | {r.poster} for r in I.itertuples()}
+    makers_only = os.environ.get("TEAM_MAKERS_ONLY") == "1"   # ties to the makers only, not the hunter (a prolific hunter is "tied" to everyone)
+    team = {r.id: (set(json.loads(r.makers)) or {r.poster}) if makers_only else set(json.loads(r.makers)) | {r.poster} for r in I.itertuples()}
     fol = {r.person: set(json.loads(r.follows)) if isinstance(r.follows, str) else set() for r in P.itertuples()}
     B = harness.baseline(); B["pb"] = B.groupby("day").base.rank(pct=True); bp = dict(zip(B.id, B.pb))
     byday = B[B.day.between(day_from, day_to)].groupby("day").id.apply(list).to_dict()

@@ -21,7 +21,8 @@ def main():
     from buildcache import build_cached
     from ctrl import group
     import model as M
-    S = pd.read_parquet(f"{HERE}/cache/tie_audit_launches.parquet"); S["id"] = S.id.astype(str)
+    MK = os.environ.get("TEAM_MAKERS_ONLY") == "1"
+    S = pd.read_parquet(f"{HERE}/cache/tie_audit_launches{'_makers' if MK else ''}.parquet"); S["id"] = S.id.astype(str)
     df = build_cached(); df["id"] = df.id.astype(str)
     groups = os.environ.get("CONV_GROUPS", "page").split(",")   # page, or page,day (launch day is also the maker's choice)
     cols = [c for c in M.cols(df, M.LIVE_SOURCES + M.PAGE_SOURCES) if group(c) in groups and c not in os.environ.get("DROP", "").split(",")]
@@ -53,12 +54,12 @@ def main():
     bs = [np.mean(rng.choice(dd, len(dd))) for _ in range(2000)]
     res["poisson_minus_reach_top3"] = {"diff": round(100 * float(np.mean(dd)), 1), "ci95": [round(100 * float(np.percentile(bs, 2.5)), 1), round(100 * float(np.percentile(bs, 97.5)), 1)],
                                        "days_better_worse": [int(sum(x > 0 for x in dd)), int(sum(x < 0 for x in dd))]}
-    px = "tpc" if groups == ["page"] else "tpx" if os.environ.get("DROP") else "tpd"
+    px = ("tmc" if MK else "tpc") if groups == ["page"] else "tpx" if os.environ.get("DROP") else ("tmd" if MK else "tpd")
     json.dump({i: {px + "_poisson": float(a), px + "_reach": float(np.log(b + 0.5))} for i, a, b in zip(T.id, T["tie x page conv (poisson)"], T.tie_weighted)},
               open(f"{PH}/data/{px}_features.json", "w"))
     per = [spearmanr(g.conv_pred, g.conv).correlation for _, g in T.groupby("day") if len(g) >= 8]
     res["conv_pred_vs_real_conv_corr"] = round(float(np.nanmean(per)), 3)
-    json.dump(res, open(f"{HERE}/reports/tie_convert{'' if groups == ['page'] else '_' + '_'.join(groups)}{'_drop' if os.environ.get('DROP') else ''}.json", "w"), indent=1)
+    json.dump(res, open(f"{HERE}/reports/tie_convert{'' if groups == ['page'] else '_' + '_'.join(groups)}{'_drop' if os.environ.get('DROP') else ''}{'_makers' if MK else ''}.json", "w"), indent=1)
     print(json.dumps(res, indent=1))
 
 
