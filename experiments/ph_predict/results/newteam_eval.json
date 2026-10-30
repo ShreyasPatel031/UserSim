@@ -1,0 +1,49 @@
+{
+ "months_tested": [
+  "2026-07",
+  "2026-08",
+  "2026-09",
+  "2026-10"
+ ],
+ "first_time_teams_known": 2377,
+ "first-time teams": {
+  "launches": 1260,
+  "simulation only": {
+   "pairs": 60.4,
+   "groups3": 52.3,
+   "corr": 0.381
+  },
+  "launch only": {
+   "pairs": 68.5,
+   "groups3": 66.6,
+   "corr": 0.606
+  },
+  "both": {
+   "pairs": 66.4,
+   "groups3": 64.8,
+   "corr": 0.573
+  },
+  "n_pairs": 10310,
+  "n_groups3": 1055
+ },
+ "repeat teams": {
+  "launches": 1117,
+  "simulation only": {
+   "pairs": 69.5,
+   "groups3": 55.5,
+   "corr": 0.546
+  },
+  "launch only": {
+   "pairs": 79.8,
+   "groups3": 68.9,
+   "corr": 0.731
+  },
+  "both": {
+   "pairs": 78.1,
+   "groups3": 65.9,
+   "corr": 0.693
+  },
+  "n_pairs": 6239,
+  "n_groups3": 1082
+ }
+}

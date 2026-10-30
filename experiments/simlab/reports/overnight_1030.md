@@ -211,3 +211,10 @@ Upper bound: X handles for 43% of people × ~1% tied ≈ well under 1% of votes 
 | 100% (13–16k people) | 31.0% | 92.2 | 54.5% | 41.6 |
 Already past diminishing returns: the ceiling is flat above ~50%, and backer coverage is flat at ~54% from 10% of the pool up. The other ~46% of launches are teams with no earlier Product Hunt launch, so no pool size gives them backers.
 Ladder probe of a Product Hunt profile (/@user/upvotes): rungs 1–3 Cloudflare, rung 4 (Camoufox via DataImpulse) passes, $0.0021/page; Apify rung no response. Pool growth is now fetchable but not worth it by these numbers.
+
+## First-time vs repeat teams (newteam_eval.py, Jul–Oct, out of sample; first-time = no maker launched since Jan 2026, hunter not counted)
+| Within the same day, among… | Launches | Pairs (random 50) sim / launch / both | Groups of 3 (random 33) sim / launch / both | Rank corr. sim / launch / both |
+|---|---|---|---|---|
+| first-time teams | 1,260 | 60.4 / 68.5 / 66.4 | 52.3 / 66.6 / 64.8 | 0.38 / 0.61 / 0.57 |
+| repeat teams | 1,117 | 69.5 / 79.8 / 78.1 | 55.5 / 68.9 / 65.9 | 0.55 / 0.73 / 0.69 |
+First-time teams are 53% of launches and Atelier's target. The simulation is weakest there (8 points behind on pairs, 14 on groups of 3).
