@@ -189,6 +189,8 @@ def ladder(steps: list[str], neg_frac: float = 0.25) -> None:
     rows, cols = [], []
     for i, b in enumerate(steps):
         cols = cols + [b]
+        if os.environ.get("LADDER_LAST") and i < len(steps) - 1:   # score only the full set (base is scored elsewhere)
+            continue
         X = pd.concat([blocks[x] for x in cols], axis=1)
         res = []
         for m in TEST:
