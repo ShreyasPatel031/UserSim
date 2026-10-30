@@ -166,7 +166,7 @@ def build_people2(W: int = 60) -> None:
     print("people2 block built", f.shape, flush=True)
 
 
-BLOCK_FILES = {"people2": "f_people2","post": "f_post", "early15": "f_early15", "early30": "f_early30", "early60": "f_early60",
+BLOCK_FILES = {"reach": "f_reach", "reach_x": "f_reach_x", "lobsters": "f_lobsters", "tranco": "f_tranco", "favtaste": "f_favtaste", "people2": "f_people2","post": "f_post", "early15": "f_early15", "early30": "f_early30", "early60": "f_early60",
                "who15": "f_who15", "who30": "f_who30", "who60": "f_who60", "submitter": "f_submitter"}
 
 
