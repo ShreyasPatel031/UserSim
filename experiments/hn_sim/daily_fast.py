@@ -32,6 +32,16 @@ def fit_rank(df, cols, leaves=15, n=300):
                           label_gain=list(range(31))).fit(df[cols], lab, group=grp)
 
 
+def derived(D, t):
+    """HN's own ordering at T and how far its real rank sits from it (penalties / boosts), comments per point."""
+    g = (D[f"{t}_v_points"] - 1).clip(lower=0) / (D[f"{t}_age_h"] + 2) ** 1.8
+    D[f"{t}_gravity"] = g
+    D[f"{t}_gravity_rank"] = g.groupby(D.day).rank(ascending=False)
+    D[f"{t}_rank_resid"] = np.where(D[f"{t}_v_rank_now"] < 91, D[f"{t}_v_rank_now"] - D[f"{t}_gravity_rank"], 0)
+    D[f"{t}_c_per_pt"] = D[f"{t}_c_all"] / D[f"{t}_v_points"].clip(lower=1)
+    return [f"{t}_gravity", f"{t}_gravity_rank", f"{t}_rank_resid", f"{t}_c_per_pt"]
+
+
 def score(P, col):
     out = {}
     for k, n in ((30, 30), (10, 10), (10, 30)):
@@ -46,17 +56,23 @@ if __name__ == "__main__":
         vc = [f"{t}_{c}" for c in V]
         D[vc] = D[vc].fillna({f"{t}_v_points": 1, f"{t}_v_rank_now": 91, f"{t}_v_best_rank": 91, f"{t}_v_h_top30": 0,
                               f"{t}_v_h_top10": 0, f"{t}_v_gain3h": 0})
+        xc = derived(D, t)
         trd, ted = D[D.day < SPLIT], D[D.day >= SPLIT]
+        base = [f"{t}_stage1", f"{t}_age_h", "prev_list_rank", "posted_before_d"] + vc
         VARIANTS = {
             "stage1 (comments)": None,
             "+ votes/rank (stage 2)": [f"{t}_stage1"] + vc,
             "+ votes/rank + age, prev list": [f"{t}_stage1", f"{t}_age_h", "prev_list_rank", "posted_before_d"] + vc,
             "votes/rank only": vc + [f"{t}_age_h"],
+            "+ HN formula, penalty, comments/pt": base + xc,
+            "  same, deeper trees": (base + xc, 31, 600),
         }
         print(f"\n{t}: train days {trd.day.nunique()}, test days {ted.day.nunique()}")
         for name, cols in VARIANTS.items():
             if cols is None:
                 s = ted[f"{t}_stage1"]
+            elif isinstance(cols, tuple):
+                s = fit_rank(trd, cols[0], cols[1], cols[2]).predict(ted[cols[0]])
             else:
                 s = fit_rank(trd, cols).predict(ted[cols])
             print(f"  {name:32s}", json.dumps(score(ted.assign(s=s), "s")), flush=True)

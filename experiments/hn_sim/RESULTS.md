@@ -178,3 +178,15 @@ All June-August votes fetched (5+ final points; under 5 Quality News mostly has 
 | 12:00 UTC | 38.3% [35.2, 42.0] | 27.8% [21.7, 34.4] | 32.2% |
 | 18:00 UTC | 62.0% [59.4, 64.6] | 51.7% [46.7, 56.7] | 65.0% |
 | end of day | 81.9% [79.8, 83.7] | 76.7% [72.2, 81.1] | 94.4% |
+
+Where the misses come from (18 September test days, best variant, per day out of the real top 30):
+
+| forecast | found | not posted yet at T | ranked 31-60 by us | ranked below 60 |
+|---|---|---|---|---|
+| 12:00 UTC | 11.5 | 13.4 | 0.6 | 2.9 |
+| 18:00 UTC | 18.6 | 5.0 | 1.6 | 3.2 |
+| end of day | 24.6 | 0 | 3.4 | 0.4 |
+
+(The rest of each 30 are stories posted more than 72 h before the day ended, outside the candidate window.)
+HN's ranking formula at T, real rank minus formula rank (penalties), comments per point: no gain (18:00 61.7% vs
+62.0%; end of day 81.1% vs 81.9%); deeper trees: no gain.
