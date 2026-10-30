@@ -81,7 +81,7 @@ curl -XPOST https://35-202-98-224.sslip.io/api/discovery/probe -H 'content-type:
   -d '{"url":"https://www.trustpilot.com/review/asana.com","proxy":"ladder"}'
 ```
 
-Allowed hosts are the 10 sites above (`ALLOWED_HOSTS`). A ladder probe takes 2-8 min (two browser routes).
+Allowed hosts are the 10 sites above plus `x.com` (makers' follower lists, Product Hunt study) (`ALLOWED_HOSTS`). A ladder probe takes 2-8 min (two browser routes).
 **Run at most 2-3 at once**: 10 in parallel dropped 2 connections (curl 56).
 
 Other probe modes: `proxy: "saved" | "apify_unblocker" | "apify_residential"` (older per-method probe),

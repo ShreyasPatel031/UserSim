@@ -20,9 +20,9 @@ import time
 from typing import Any
 from urllib.parse import unquote, urlparse
 
-# Only review pages on these sites: the probe must not become an open proxy.
+# Only these sites: the probe must not become an open proxy. x.com: makers' follower lists (Product Hunt study).
 ALLOWED_HOSTS = ("producthunt.com", "g2.com", "capterra.com", "gartner.com", "trustradius.com", "sourceforge.net",
-                 "trustpilot.com", "getapp.com", "alternativeto.net", "slashdot.org")
+                 "trustpilot.com", "getapp.com", "alternativeto.net", "slashdot.org", "x.com")
 # Cloudflare localises its challenge title to the visitor's language ("Un instant…" from a French exit IP,
 # "Трохи зачекайте…" from a Ukrainian one).
 _CHALLENGE_RE = re.compile(r"just a moment|performing security verification|cf-chl|challenge-platform|captcha-delivery|"
