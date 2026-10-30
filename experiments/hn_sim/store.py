@@ -20,7 +20,7 @@ sys.path.insert(0, str(ROOT / "experiments"))
 BUCKET = "usersim-bakeoff-347838016394"
 PREFIX = "usersim_sim/tables"
 LOCAL = os.environ.get("USERSIM_CACHE", os.path.join(os.path.expanduser("~"), ".usersim_sim"))
-TABLES = ("hn_frontpage", "hn_early_points", "hn_posts", "hn_comments", "hn_people", "hn_snapshots", "sim_runs", "sim_comments", "judge_labels",
+TABLES = ("hn_frontpage", "hn_early_points", "hn_pool", "hn_posts", "hn_comments", "hn_people", "hn_snapshots", "sim_runs", "sim_comments", "judge_labels",
           "hn_scores", "spend")
 _client = None
 
