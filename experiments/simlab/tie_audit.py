@@ -34,12 +34,13 @@ def main(workers):
     PS.load()
     from . import harness
     B = harness.baseline()
-    days = sorted(x for x in B.day.unique() if "2026-08-01" <= x <= "2026-10-24")
+    days = sorted(x for x in B.day.unique() if os.environ.get("FROM", "2026-08-01") <= x <= "2026-10-24")
     for m in sorted({d[:7] for d in days}):
         G[m] = PS.fit_cf(PS.month_start(m, 1))
     with mp.get_context("fork").Pool(workers) as pool:
         R = [r for r in pool.map(day, days) if r is not None]
     S = pd.concat([r[0] for r in R]).merge(B[["id", "dailyRank"]].drop_duplicates("id"), on="id")
+    S.to_parquet(f"{HERE}/cache/tie_audit_launches.parquet")
     tot = pd.DataFrame([r[1] for r in R]).sum()
     res = {"days": len(R), "share_of_picks_tied": round(float(tot.tied / tot.picks), 3), "share_follow": round(float(tot.follow / tot.picks), 3),
            "share_tied_or_follow": round(float(tot.tied_or_follow / tot.picks), 3)}
