@@ -81,7 +81,7 @@ LIVE_EMPTY = ["cm", "rec", "hn"]   # fol, seg, busy, promo are computed at forec
 # website and domain inputs: often missing live, and the model is better without them (tune.py: +0.7 top 3 on fresh seeds)
 LIVE_SOURCES = [s for s in SOURCES + ["fol", "seg", "promo", "rec", "busy"] if s not in LIVE_EMPTY + ["web", "dom"]]
 # ps: Gemini's score of every launch-page element (page_score.py); added once backfilled and tested
-PAGE_SOURCES = ["ps", "vs"]   # vs: the launch video, watched by Gemini (video_score.py)
+PAGE_SOURCES = ["ps", "vs", "pf"]   # vs: the launch video, watched by Gemini (video_score.py)
 LIVE_PARAMS = dict(colsample_bytree=0.5)
 
 
