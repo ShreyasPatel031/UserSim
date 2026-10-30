@@ -45,6 +45,16 @@ def parse(html: str, t0: int) -> dict:
         # columns: time, raw rank, "Top" rank, "New" rank, "Best" rank, ...; 91 = not on that page
         r = [row[2] for row in rk if row[0] <= lim and len(row) > 2 and 0 < row[2] < 91]
         out[f"qn_toprank{a}"] = min(r) if r else None
+    # whole-day summary of the story's place on HN's front page ("Top" rank column, 91 = not on it): best rank and
+    # minutes in the top 30 / top 10 over its first 24 h, and the rank-weighted exposure (sum of 1/rank per minute)
+    day = [row for row in rk if row[0] <= t0 + 86400 and len(row) > 2]
+    tops = [row[2] for row in day if 0 < row[2] < 91]
+    out["qn_best_rank_24h"] = min(tops) if tops else None
+    out["qn_min_top30_24h"] = sum(1 for r in tops if r <= 30)
+    out["qn_min_top10_24h"] = sum(1 for r in tops if r <= 10)
+    out["qn_exposure_24h"] = round(sum(1 / r for r in tops), 2)
+    out["qn_first_top30_min"] = next(((row[0] - t0) // 60 for row in day if 0 < row[2] <= 30), None)
+    out["qn_up_24h"] = [v for t, v, e in up if t <= t0 + 86400][-1] if up else None
     out["qn_samples"] = len(up)
     return out
 
