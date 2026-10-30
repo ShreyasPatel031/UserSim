@@ -9,23 +9,11 @@ usage: python newteam_eval.py -> results/newteam_eval.json"""
 import glob, json
 import numpy as np, pandas as pd, lightgbm as lgb
 from scipy.stats import spearmanr
+from newteam_eval_lib import first_time
 
 
 def load(p):
     return pd.DataFrame.from_dict(json.load(open(f"data/{p}_features.json")), orient="index").rename_axis("id").reset_index()
-
-
-def first_time():
-    L = []
-    for f in sorted(glob.glob("data/days/*.json")):
-        for p in json.load(open(f)):
-            mk = [m.get("username") for m in p.get("makers") or [] if isinstance(m, dict)]   # makers only: a hunter posts for many teams
-            L.append((str(p["id"]), f[-15:-5], set(filter(None, mk))))
-    L.sort(key=lambda r: r[1]); seen, out = set(), {}
-    for i, d, team in L:
-        out[i] = not (team & seen) if team else None
-        seen |= team
-    return out
 
 
 C = pd.read_parquet("results/ctrl_preds.parquet"); C["id"] = C.id.astype(str)
