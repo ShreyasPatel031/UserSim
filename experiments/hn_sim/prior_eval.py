@@ -12,7 +12,7 @@ top-100 vs an equal random sample of the rest, predicted front page = top half b
 Every model variant in a comparison trains on the same window (TRAIN_FROM .. month before the test month), so the
 only difference is the feature.
 
-    python prior_eval.py dubach      # test 2026-05..09, train from 2026-01 (after Dubach's training data)
+    python prior_eval.py dubach      # test 2026-05..09, train from 2026-03 (after Dubach's training data)
     python prior_eval.py qn          # test 2026-09, train 2026-06..08 (Quality News coverage fetched)
 """
 from __future__ import annotations
@@ -90,7 +90,7 @@ def run(test: list[str], train_from: str, extra: pd.DataFrame, variants: dict, t
 if __name__ == "__main__":
     if sys.argv[1] == "dubach":
         d = pd.read_parquet(os.path.join(H.CACHE, "dubach.parquet"))
-        run(["2026-05", "2026-06", "2026-07", "2026-08", "2026-09"], "2026-01", d, {
+        run(["2026-05", "2026-06", "2026-07", "2026-08", "2026-09"], "2026-03", d, {
             "ours_post": (["post"], None), "dubach": ([], "dubach"), "ours_post+dubach": (["post", "dubach"], None),
             "ours_60": (["post", "early30", "who30", "early60", "who60"], None),
             "ours_60+dubach": (["post", "early30", "who30", "early60", "who60", "dubach"], None)}, "dubach")
