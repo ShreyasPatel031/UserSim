@@ -35,6 +35,8 @@ def call(video, prompt):
             msg = e.read().decode()[:200]
             if e.code == 400:                     # private / removed / unsupported video: record and move on
                 return json.dumps({"error": msg})
+            if e.code == 401:
+                llm.token(refresh=True)
             print("retry", a, e.code, msg, flush=True); time.sleep(5 * (a + 1))
         except Exception as e:  # noqa: BLE001
             print("retry", a, str(e)[:120], flush=True); time.sleep(5 * (a + 1))

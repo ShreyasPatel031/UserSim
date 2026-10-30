@@ -90,6 +90,8 @@ def call(parts):
                     USE["in"] += u.get("promptTokenCount", 0); USE["out"] += u.get("candidatesTokenCount", 0)
                 return "".join(p.get("text", "") for p in j["candidates"][0]["content"]["parts"])
         except Exception as e:  # noqa: BLE001
+            if getattr(e, "code", None) == 401:
+                llm.token(refresh=True)
             print("retry", a, str(e)[:120], flush=True); time.sleep(5 * (a + 1))
     return ""
 
