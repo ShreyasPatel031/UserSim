@@ -85,3 +85,86 @@ for col in [c.split("|")[0] for c in D.columns if c.endswith("|top30")]:
 Sm = pd.DataFrame(summ).sort_values("top30", ascending=False).round(3)
 print(Sm.to_string(index=False))
 S.write("hn_scores", Sm.assign(kind="list_rule", days=len(D), made_on=S.now()))
+
+
+# ---- learned rule: a ranker trained on some days to reproduce HN's list order on held-out days ----
+import lightgbm as lgb
+from scipy.optimize import minimize
+
+mrows, fcols = [], None
+for d, real in L.groupby("day"):
+    if d not in set(D.day):
+        continue
+    hd = Hr[Hr.day == d]
+    on_ids = set(hd[hd["rank"] <= 30].post_id)
+    pos = dict(zip(real.post_id, real["rank"]))
+    for pid, g in hd[hd.post_id.isin(on_ids)].groupby("post_id"):
+        g = g.sort_values("hour")
+        rk = np.full(24, 91.0)
+        pt = np.full(24, np.nan)
+        rk[g.hour.to_numpy()] = g["rank"].to_numpy()
+        pt[g.hour.to_numpy()] = g.points.to_numpy()
+        pt = pd.Series(pt).ffill().bfill().fillna(0).to_numpy()
+        f = {"day": d, "post_id": pid, "real_pos": pos.get(pid, 999)}
+        f.update({f"rank_h{h:02d}": rk[h] for h in range(24)})
+        f.update({f"pts_h{h:02d}": pt[h] for h in range(24)})
+        f.update(best_rank=rk.min(), hours_top30=(rk <= 30).sum(), hours_top10=(rk <= 10).sum(),
+                 exposure=(1 / rk[rk <= 30]).sum(), first_hour=int(np.argmax(rk <= 30)),
+                 last_hour=int(23 - np.argmax(rk[::-1] <= 30)), pts_end=pt[-1], pts_start=pt[0])
+        mrows.append(f)
+M = pd.DataFrame(mrows)
+fcols = [c for c in M.columns if c not in ("day", "post_id", "real_pos")]
+days = sorted(M.day.unique())
+print(f"\nlearned rule: {len(days)} days, {len(M)} (day, story) rows", flush=True)
+
+
+def eval_order(P, col):
+    t30, t10 = [], []
+    for _, g in P.groupby("day"):
+        o = g.sort_values(col, ascending=False).post_id.tolist()
+        r30 = set(g[g.real_pos <= 30].post_id)
+        r10 = set(g[g.real_pos <= 10].post_id)
+        t30.append(len(set(o[:30]) & r30) / max(len(r30), 1))
+        t10.append(len(set(o[:10]) & r10) / max(len(r10), 1))
+    return round(float(np.mean(t30)), 3), round(float(np.mean(t10)), 3)
+
+
+folds = np.array_split(np.array(days), min(5, len(days)))
+preds = []
+for k, test_days in enumerate(folds):          # leave-days-out cross-validation
+    tr, te = M[~M.day.isin(test_days)].sort_values("day"), M[M.day.isin(test_days)]
+    grp = tr.groupby("day", sort=False).size().to_numpy()
+    lab = np.clip(31 - tr.real_pos, 0, 30).astype(int)
+    rk_model = lgb.LGBMRanker(n_estimators=300, learning_rate=0.05, num_leaves=15, min_child_samples=10, verbose=-1,
+                              label_gain=list(range(31)))
+    rk_model.fit(tr[fcols], lab, group=grp)
+    preds.append(te.assign(learned=rk_model.predict(te[fcols])))
+P = pd.concat(preds)
+print("learned ranker (held-out days): real top30 / top10 found:", eval_order(P, "learned"), flush=True)
+imp = pd.Series(rk_model.booster_.feature_importance("gain"), index=fcols).sort_values(ascending=False)
+print("what it relies on (gain share):", (imp / imp.sum()).round(3).head(12).to_dict(), flush=True)
+
+# compact formula: score = sum_h w_h * (31 - rank_h)^a for rank_h <= 30, w_h = exp(b * h / 24); fit a, b on train folds
+R = M[[f"rank_h{h:02d}" for h in range(24)]].to_numpy()
+
+
+def formula(params, Rm):
+    a, b = params
+    v = np.where(Rm <= 30, (31 - np.minimum(Rm, 30)) ** a, 0.0)
+    return (v * np.exp(b * np.arange(24) / 24)).sum(1)
+
+
+def loss(params, idx):
+    S_ = pd.Series(formula(params, R[idx]), index=M.index[idx])
+    sub = M.loc[S_.index].assign(s=S_)
+    return -eval_order(sub, "s")[0]
+
+
+fp = []
+for test_days in folds:
+    tr_idx = np.flatnonzero(~M.day.isin(test_days).to_numpy())
+    best = min(((a, b) for a in (0.5, 1, 1.5, 2, 3) for b in (-2, -1, 0, 1, 2)), key=lambda x: loss(x, tr_idx))
+    te_idx = np.flatnonzero(M.day.isin(test_days).to_numpy())
+    fp.append(M.iloc[te_idx].assign(formula=formula(best, R[te_idx])))
+    print("  fold best (rank exponent a, later-hours weight b):", best, flush=True)
+print("compact formula (held-out days): real top30 / top10 found:", eval_order(pd.concat(fp), "formula"), flush=True)
