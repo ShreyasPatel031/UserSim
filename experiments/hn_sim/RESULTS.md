@@ -165,3 +165,7 @@ trained on 87 days, tested on 18 fully fetched September days (daily_fast.py 202
 | end of day | 65.9% / 59.4% | 82.2% / 76.7% | 94.4% |
 
 The 30-point cut uses final points (stories under 30 get the no-votes fill); leak_check.py measures its effect.
+
+Leak check (leak_check.py, same stage-2 model, September tested with real votes for every story, as a live forecast
+would see them): end of day unchanged (82.4% / 76.7%); 18:00 UTC top 30 59.8% (cut 62.2%); 12:00 UTC top 30 36.5%
+(cut 40.2%); top 10 unchanged at both. Honest numbers are the no-cut ones.
