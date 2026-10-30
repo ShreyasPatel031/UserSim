@@ -169,3 +169,12 @@ The 30-point cut uses final points (stories under 30 get the no-votes fill); lea
 Leak check (leak_check.py, same stage-2 model, September tested with real votes for every story, as a live forecast
 would see them): end of day unchanged (82.4% / 76.7%); 18:00 UTC top 30 59.8% (cut 62.2%); 12:00 UTC top 30 36.5%
 (cut 40.2%); top 10 unchanged at both. Honest numbers are the no-cut ones.
+
+All June-August votes fetched (5+ final points; under 5 Quality News mostly has no page): no 30-point cut, trained on
+87 summer days, tested on 18 fully fetched September days. Best variant (+ votes, rank, age, previous list):
+
+| forecast | real top 30 in our top 30 | real top 10 in our top 10 | real top 10 in our top 30 |
+|---|---|---|---|
+| 12:00 UTC | 38.3% [35.2, 42.0] | 27.8% [21.7, 34.4] | 32.2% |
+| 18:00 UTC | 62.0% [59.4, 64.6] | 51.7% [46.7, 56.7] | 65.0% |
+| end of day | 81.9% [79.8, 83.7] | 76.7% [72.2, 81.1] | 94.4% |
