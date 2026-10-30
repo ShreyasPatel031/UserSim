@@ -21,10 +21,12 @@ from .seq import features as seq_features
 HERE = os.path.dirname(os.path.abspath(__file__))
 PAGE = os.environ.get("PAGE") == "1"   # page-aware people: every launch-page input added to the person model
 TASTE = os.environ.get("TASTE") == "1"  # + each person's taste for page traits (page_taste.py), implies PAGE
+HERD = os.environ.get("HERD") == "1"    # + how popular the taste simulation's first pass made each launch that day (implies TASTE)
+TASTE = TASTE or HERD
 PAGE = PAGE or TASTE
-TAG = "page_taste" if TASTE else "page" if PAGE else ""
+TAG = "herd" if HERD else "page_taste" if TASTE else "page" if PAGE else ""
 WORK = os.path.join(HERE, "cache", "popscore_" + TAG if TAG else "popscore")
-PREFIX = "pst_" if TASTE else "psp_" if PAGE else "psn_"
+PREFIX = "psh_" if HERD else "pst_" if TASTE else "psp_" if PAGE else "psn_"
 MONTHS = ["2026-04", "2026-05", "2026-06", "2026-07", "2026-08", "2026-09", "2026-10"]
 FEATS = ["backed", "topic", "meaning", "cf_team", "nbr_team", "nbr_pop", "seq_last10", "seq_decay", "seq_nn", "team_recent",
          "cat_rate_max", "cat_rate_mean", "cat_prior", "cat_n"]
@@ -151,7 +153,25 @@ def page_cols(D):
     if TASTE:
         from .page_taste import add_taste
         D, tc = add_taste(D)
-    return D.join(T, on="id"), list(T.columns) + tc
+    hc = []
+    if HERD:   # simulated popularity, never real votes: first-pass simulation scores, ranked within the day
+        P1 = os.path.join(HERE, "cache", "popscore_page_taste")
+        H = []
+        for d in D.day.unique():
+            f = f"{P1}/day_{d}.parquet"
+            if os.path.exists(f):
+                h = pd.read_parquet(f)[["id", "day", "psn_ev", "psn_top1"]]
+                for c in ("psn_ev", "psn_top1"):
+                    h["herd_" + c[4:]] = h[c].rank(pct=True)
+                h["herd_rank"] = h.psn_ev.rank(ascending=False)
+                H.append(h[["id", "day", "herd_ev", "herd_top1", "herd_rank"]])
+        hc = ["herd_ev", "herd_top1", "herd_rank"]
+        if H:
+            H = pd.concat(H); H["id"] = H.id.astype(str); D = D.merge(H, on=["id", "day"], how="left")
+        else:
+            for c in hc:
+                D[c] = np.nan
+    return D.join(T, on="id"), list(T.columns) + tc + hc
 
 
 def train_month(m):

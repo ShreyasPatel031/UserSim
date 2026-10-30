@@ -56,3 +56,14 @@ The person-level simulation does not carry the page's effect to the launch; the 
 | real votes of all pool people | 91.4 | 95.5 |
 Knowing who shows up adds 1.5 points; knowing what they pick adds 50. The per-person pick model is the whole gap.
 Next: stronger pick models (pick_boost.py: more training people, bigger trees, LambdaRank).
+
+## Stronger pick models (pick_boost.py, 6 months, person + page + taste inputs)
+| Learner | Top-3 hit | AUC |
+|---|---|---|
+| base (300 people/day) | 49.1 | 0.695 |
+| 1,000 people/day | 49.2 | 0.697 |
+| bigger trees | 49.3 | 0.696 |
+| LambdaRank | 49.1 | 0.698 |
+| LambdaRank, bigger | 48.1 | 0.693 |
+Learner and data size are saturated; the inputs are the limit.
+Next: herding (Salganik; Hogg & Lerman). Each simulated person also sees how popular the simulation's first pass made each launch (never real votes): `HERD=1 popscore` → robust_src +psh =psh.
