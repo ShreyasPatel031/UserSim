@@ -22,6 +22,7 @@ import top10 as T
 import top100 as H
 
 TEST = ["2026-05", "2026-06", "2026-07", "2026-08", "2026-09"]
+WINDOW_H = int(os.environ.get("RL_WINDOW_H", "72"))   # the list holds stories up to ~2 days old: 72 h of candidates
 H.BLOCK_FILES.update({f"early{W}": f"f_early{W}" for W in (120, 240, 480)})
 fl = [pd.read_json(os.path.join(H.CACHE, f), lines=True) for f in ("frontday.jsonl", "frontday_old.jsonl")
       if os.path.exists(os.path.join(H.CACHE, f))]
@@ -36,7 +37,7 @@ rkp = p.groupby("day").points.rank(ascending=False, method="first").to_numpy()
 rows = []
 for d in sorted(L.day.unique()):
     t1 = pd.Timestamp(d, tz="UTC").timestamp() + 86400
-    idx = np.flatnonzero((p.created_at_i >= t1 - 1.5 * 86400).to_numpy() & (p.created_at_i < t1).to_numpy())
+    idx = np.flatnonzero((p.created_at_i >= t1 - WINDOW_H * 3600).to_numpy() & (p.created_at_i < t1).to_numpy())
     rows.append(pd.DataFrame({"day": d, "i": idx, "h_to_end": (t1 - p.created_at_i.to_numpy()[idx]) / 3600}))
 C = pd.concat(rows, ignore_index=True)
 real = L.set_index(["day", "post_id"])["rank"]
@@ -63,18 +64,25 @@ for age, cols in (("60 min", base), ("8 h", base + ["early120", "early240", "ear
         tr, te = (C.month < m).to_numpy(), (C.month == m).to_numpy()
         clf = lgb.LGBMClassifier(**{**H.GBM, "scale_pos_weight": 3})
         s_real = clf.fit(X[tr], (C.real_rank[tr] <= 30).astype(int)).predict_proba(X[te])[:, 1]
+        # per-day ranker on the real list (graded: real rank 1-30 -> 30..1)
+        o = np.argsort(C.day.to_numpy()[tr], kind="stable")
+        dtr = C.day.to_numpy()[tr][o]
+        grp = np.diff(np.flatnonzero(np.r_[True, dtr[1:] != dtr[:-1], True]))
+        lab = np.clip(31 - C.real_rank.to_numpy()[tr][o], 0, 30).astype(int)
+        rnk = lgb.LGBMRanker(**{**H.GBM, "n_estimators": 400}, label_gain=list(range(31)))
+        s_rank = rnk.fit(X[tr].iloc[o], lab, group=grp).predict(X[te])
         # points-trained baseline on the same rows (label: story's own day top 100 by points)
         lab_p = (rkp[C.i] <= 100).astype(int)
         s_pts = lgb.LGBMClassifier(**{**H.GBM, "scale_pos_weight": 2}).fit(X[tr], lab_p[tr]).predict_proba(X[te])[:, 1]
-        res.append(C[te][["day", "post_id", "real_rank"]].assign(s_real=s_real, s_pts=s_pts))
+        res.append(C[te][["day", "post_id", "real_rank"]].assign(s_real=s_real, s_pts=s_pts, s_rank=s_rank))
         print(age, m, flush=True)
     P = pd.concat(res, ignore_index=True)
-    for col in ("s_pts", "s_real"):
+    for col in ("s_pts", "s_real", "s_rank"):
         r = {}
         for k, n in ((10, 10), (10, 30), (10, 100), (30, 30), (30, 100)):
             v = [len(set(g[g.real_rank <= k].post_id) & set(g.nlargest(n, col).post_id)) / k for _, g in P.groupby("day")]
             r[f"real{k}_in_top{n}"] = R.boot(v)
-        name = f"{age}, trained on {'real list' if col == 's_real' else 'points'}"
+        name = f"{age}, {WINDOW_H} h window, " + {"s_pts": "trained on points", "s_real": "real list (classifier)", "s_rank": "real list (ranker)"}[col]
         print(name, json.dumps(r), flush=True)
         out_rows += [{"kind": "reallist", "variant": name, "metric": k, "value": v[0], "lo": v[1], "hi": v[2],
                       "days": int(P.day.nunique()), "made_on": S.now()} for k, v in r.items()]
