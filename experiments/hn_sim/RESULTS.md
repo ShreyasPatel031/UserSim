@@ -54,3 +54,13 @@ favorites taste (+0.0), Gemini reading titles (worse than the text model; droppe
 
 ## Spend (measured, logged to `spend`)
 Gemini ~$6 (persona votes $3.0, title test $1.4, judge/pilot $2), BigQuery < $0.1, VMs ~ $1/h.
+
+## Against HN's real daily list (news.ycombinator.com/front?day=D), Sep 2026, 30 days
+The real list is ordered by HN's ranking (time decay, penalties), not by points, and 21% of its top 30 were posted
+the day before. A perfect "top by final points" list matches only 47% of the real top 10 and 47% of the real top 30.
+
+| | real top 10 in model top 10 | in top 30 | in top 100 | real top 30 in model top 30 | in top 100 |
+|---|---|---|---|---|---|
+| 60-min model (trained on points) | 18.7% | 39.7% | 67.0% | 23.8% | 48.8% |
+
+Next: train on the real list itself (daily lists fetched back to Jan 2025).

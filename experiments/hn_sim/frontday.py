@@ -15,7 +15,7 @@ import requests
 
 import store as S
 
-OUT = os.path.join(S.LOCAL, "frontday.jsonl")
+OUT = os.path.join(S.LOCAL, os.environ.get("FRONTDAY_OUT", "frontday.jsonl"))
 _s = requests.Session()
 _s.headers.update({"User-Agent": "atelier-research (HN past front pages, 1 req / 5 s)"})
 
