@@ -27,7 +27,8 @@ WINDOW_H = 72
 OUT = os.path.join(H.CACHE, "daily_cache.parquet")
 
 L = pd.concat([pd.read_json(os.path.join(H.CACHE, f), lines=True, dtype={"day": str})
-               for f in ("frontday.jsonl", "frontday_old.jsonl")]).drop_duplicates(["day", "rank"])
+               for f in ("frontday.jsonl", "frontday_old.jsonl", "frontday_older.jsonl")
+               if os.path.exists(os.path.join(H.CACHE, f))]).drop_duplicates(["day", "rank"])
 L = L.sort_values("rank").drop_duplicates(["day", "post_id"])
 p = H.stories()
 p = p[p.month >= "2023-03"].reset_index(drop=True)
