@@ -27,7 +27,12 @@ def main(a, b, pages=4):
         if d.isoformat() not in done:
             rows = []
             for n in range(1, int(pages) + 1):
-                r = _s.get("https://news.ycombinator.com/front", params={"day": d.isoformat(), "p": n}, timeout=30)
+                try:
+                    r = _s.get("https://news.ycombinator.com/front", params={"day": d.isoformat(), "p": n}, timeout=30)
+                except requests.RequestException as exc:      # dropped connection: wait, then retry this day later
+                    print(d, "error", type(exc).__name__, flush=True)
+                    time.sleep(60)
+                    break
                 time.sleep(5)
                 if r.status_code != 200:
                     print(d, "status", r.status_code, flush=True)
