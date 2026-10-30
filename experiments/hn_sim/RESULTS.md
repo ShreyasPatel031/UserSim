@@ -25,7 +25,7 @@ favorites taste (+0.0), Gemini reading titles (worse than the text model; droppe
 
 | Method | What it is | Result here |
 |---|---|---|
-| Michael Taylor (every.to): persona votes | 1,000 personas built from real commenters' comments vote on headlines; balanced front page vs not | 53% accuracy, AUC 0.57 (3 days: 55 / 54 / 51%; he reported 60% on one day). 100 vs 1,000 personas: no difference. $2.91 |
+| Michael Taylor (every.to): persona votes | 1,000 personas built from real commenters' comments vote on headlines; balanced front page vs not | 53% accuracy, AUC 0.57 (3 days: 55 / 54 / 51%; he reported 60% on one day). 100 vs 1,000 personas: no difference. $2.91. **Same ballots, our post-only model: 69% accuracy, AUC 0.76; adding the persona votes lowers it (66%, 0.72)** |
 | Philipp Dubach: RoBERTa title model (HF, MIT) | P(>=100 points) from the title | running |
 | Szabo & Huberman (2010): early votes | rank by log upvotes at 30 / 60 min (Quality News minute data) | data fetching |
 | Quality News / Stoddard: upvote rate | upvotes / expected upvotes at the ranks shown | data fetching |
