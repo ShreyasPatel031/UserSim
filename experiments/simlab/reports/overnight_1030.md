@@ -156,3 +156,18 @@ Adding tpc to the full model: 66.3 → 66.3 (no gain).
 The gain is the hunter's load (busy_same_day, busy_7d). Reason: people who backed a prolific hunter's past launches count as "tied" to every launch that hunter posts, so the simulation over-counts reach for those launches; hunter load corrects that. Pre-launch data, no leak, but a reach-measurement fix rather than a page effect.
 
 Simulation only (robust_tpd.csv, Jun–Oct, live config): pst + tpd **50.4 / 64.1 / 73.4** (top 3/5/10) vs pst + tpc 46.7 / 59.1 / 72.0 vs no-page simulation 43.6 / 56.4 / 70.6. Full model + tpd: 66.3 → 66.4 (no gain; the launch model already has hunter load).
+
+## Correction: ties to makers only, hunter excluded (TEAM_MAKERS_ONLY=1, May–Oct, 177 days)
+- Share of pool picks to a team the person backed before: **51.5%** (not 72%; many "ties" were to the hunter).
+- Tied picks alone rank the day at **57.5%** top 3 (not 82.7%); untied picks 48.0%.
+- Reach × conversion: page only +0.5 (−3.2 to 4.4); page + day +4.4 (1.4 to 7.8).
+- Simulation only (robust_tm.csv): pst + makers-only conversion 47.7 / 49.3 (page / page+day) vs 50.4 with the original ties. Original kept.
+
+## Does the simulation predict the launch model's misses? (sim_resid.py, Jul–Oct, 116 days)
+Target = real log votes − out-of-sample launch model; inputs = simulation outputs only (30).
+| | Launch model | Launch + simulation fix | Diff 95% | Days better / worse |
+|---|---|---|---|---|
+| top 3 | 65.2 | 65.8 | −2.0 to 2.9 | 11 / 9 |
+| top 5 | 72.4 | 71.4 | −3.1 to 1.0 | 13 / 19 |
+| top 10 | 81.6 | 80.9 | −1.7 to 0.2 | 7 / 14 |
+Correlation of predicted with real misses: −0.048. The simulation carries no information the launch model lacks.

@@ -1,0 +1,47 @@
+{
+ "months": [
+  "2026-07",
+  "2026-08",
+  "2026-09",
+  "2026-10"
+ ],
+ "days": 116,
+ "sim_inputs": 30,
+ "miss_corr": -0.048,
+ "top3": {
+  "launch": 65.2,
+  "launch+sim": 65.8,
+  "diff_ci95": [
+   -2.0,
+   2.9
+  ],
+  "days_better_worse": [
+   11,
+   9
+  ]
+ },
+ "top5": {
+  "launch": 72.4,
+  "launch+sim": 71.4,
+  "diff_ci95": [
+   -3.1,
+   1.0
+  ],
+  "days_better_worse": [
+   13,
+   19
+  ]
+ },
+ "top10": {
+  "launch": 81.6,
+  "launch+sim": 80.9,
+  "diff_ci95": [
+   -1.7,
+   0.2
+  ],
+  "days_better_worse": [
+   7,
+   14
+  ]
+ }
+}
