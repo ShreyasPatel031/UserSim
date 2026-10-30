@@ -31,14 +31,29 @@ def main():
         tr, te = A[A.mon < m], A[A.mon == m].copy()
         preds = [lgb.LGBMRegressor(n_estimators=400, learning_rate=0.03, num_leaves=15, min_child_samples=30, subsample=0.8, subsample_freq=1,
                                    colsample_bytree=0.5, random_state=s, verbose=-1, n_jobs=8).fit(tr[cols], tr.conv).predict(te[cols]) for s in range(3)]
-        te["conv_pred"] = np.mean(preds, 0); out.append(te)
+        te["conv_pred"] = np.mean(preds, 0)
+        off_tr, off_te = np.log(tr.tie_weighted + 0.5).values, np.log(te.tie_weighted + 0.5).values
+        pp = []
+        for s in range(3):   # Poisson on tied votes with reach as a fixed offset: the page explains conversion only
+            b = lgb.train(dict(objective="poisson", learning_rate=0.03, num_leaves=15, min_data_in_leaf=30, bagging_fraction=0.8, bagging_freq=1,
+                               feature_fraction=0.5, seed=s, verbose=-1, num_threads=8),
+                          lgb.Dataset(tr[cols], tr.tied, init_score=off_tr), 400)
+            pp.append(b.predict(te[cols], raw_score=True))
+        te["tie x page conv (poisson)"] = off_te + np.mean(pp, 0); out.append(te)
     T = pd.concat(out)
     T["tie x page conv"] = np.log(T.tie_weighted + 0.5) + T.conv_pred
     T["page conv alone"] = T.conv_pred
     res = {"months_tested": sorted(T.mon.unique()), "days": int(T.day.nunique()), "page_inputs": len(cols)}
-    for c in ("tie_people", "tie_weighted", "tie x page conv", "page conv alone"):
+    for c in ("tie_people", "tie_weighted", "tie x page conv", "tie x page conv (poisson)", "page conv alone"):
         res[c] = {f"top{k}": round(100 * float(np.mean([len(set(g.nlargest(k, c).id) & set(g[g.dailyRank <= k].id)) / k
                                                        for _, g in T.groupby("day") if (g.dailyRank <= k).sum() == k])), 1) for k in (3, 5)}
+    rng = np.random.default_rng(0); hit = lambda g, c, k: len(set(g.nlargest(k, c).id) & set(g[g.dailyRank <= k].id)) / k
+    dd = [(hit(g, "tie x page conv (poisson)", 3) - hit(g, "tie_weighted", 3)) for _, g in T.groupby("day") if (g.dailyRank <= 3).sum() == 3]
+    bs = [np.mean(rng.choice(dd, len(dd))) for _ in range(2000)]
+    res["poisson_minus_reach_top3"] = {"diff": round(100 * float(np.mean(dd)), 1), "ci95": [round(100 * float(np.percentile(bs, 2.5)), 1), round(100 * float(np.percentile(bs, 97.5)), 1)],
+                                       "days_better_worse": [int(sum(x > 0 for x in dd)), int(sum(x < 0 for x in dd))]}
+    json.dump({i: {"tpc_poisson": float(a), "tpc_reach": float(np.log(b + 0.5))} for i, a, b in zip(T.id, T["tie x page conv (poisson)"], T.tie_weighted)},
+              open(f"{PH}/data/tpc_features.json", "w"))
     per = [spearmanr(g.conv_pred, g.conv).correlation for _, g in T.groupby("day") if len(g) >= 8]
     res["conv_pred_vs_real_conv_corr"] = round(float(np.nanmean(per)), 3)
     json.dump(res, open(f"{HERE}/reports/tie_convert.json", "w"), indent=1)

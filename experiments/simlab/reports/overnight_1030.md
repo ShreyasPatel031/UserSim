@@ -118,3 +118,13 @@ Top-3 hit 49.1 → 49.3, AUC 0.695 → 0.696. Covers ~1% of person-launch pairs;
 - So most of the 91% ceiling is reachable in principle from dated pre-launch ties. The open problem is which tied people show up and vote that day.
 - Known before launch, counting tied people per launch (no model) ranks the day at 39.6 top 3 / 54.8 top 5, about what the full simulation gets (41.6 / 54.8). The simulation is mostly counting the team's network.
 Next: reach × conversion (tie_convert.py): tied people × a page-only model of the share who vote, trained on earlier months. This is where the page should act.
+
+## Reach × page conversion (tie_convert.py; tie data May–Oct, tested Jun–Oct, 146 days, rolling monthly)
+| Launches ranked by | Day top 3 | Top 5 |
+|---|---|---|
+| tied people (simulated reach, known pre-launch) | 40.9 | 57.8 |
+| tied people weighted by activity | 40.5 | 57.7 |
+| reach + page-predicted log share (ratio target) | 35.4 | 50.9 |
+| **reach as Poisson offset + page explains conversion** | **44.1** | 57.2 |
+| page conversion alone | 13.1 | 24.0 |
+Page-predicted conversion vs real conversion within day: rank corr. 0.203. First place tonight where the page raises a simulation-based launch score (+3.6 top 3).
