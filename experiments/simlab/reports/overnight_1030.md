@@ -179,3 +179,9 @@ Correlation of predicted with real misses: −0.048. The simulation carries no i
 | same week | 1,754 | 62.3 | 72.3 | 71.7 | 33.3 |
 | same month | 2,015 | 63.9 | 73.1 | 71.6 | 33.3 |
 Pairs (random 50): simulation only 69.2 / 71.2 / 73.3, launch only 76.1 / 79.9 / 80.3, both 74.1 / 78.0 / 78.4 (day / week / month).
+
+## GitHub audience pilot (gh_pilot.py; 20 Sep–Oct launches; public API, VM IP)
+- Real voters with a GitHub link: 172; in the makers' GitHub followers: 1 (0.6%). Same-day control: 0 of 400.
+- Stargazers: GitHub now answers 401 without a token, so that half returned nothing (no token available here).
+- Coverage bound: only 713 of 20,671 Product Hunt people (3.4%) link GitHub, so GitHub can explain at most a few percent of voters. Not worth scaling.
+- X: 8,939 people (43%) link X. The X follower pilot (1,433 voters vs 1,433 same-day control, 20 launches) is ready but blocked by the permission classifier when run through the ladder on the production VM.
