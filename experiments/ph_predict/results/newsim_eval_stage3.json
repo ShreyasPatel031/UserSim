@@ -1,0 +1,91 @@
+{
+ "months_tested": [
+  "2026-07",
+  "2026-08",
+  "2026-09",
+  "2026-10"
+ ],
+ "first-time teams": {
+  "launches": 1260,
+  "sim+reach+audience": {
+   "pairs": 67.6,
+   "groups3": 66.2,
+   "corr": 0.58
+  },
+  "+day standing": {
+   "pairs": 68.4,
+   "groups3": 68.4,
+   "corr": 0.598
+  },
+  "+page": {
+   "pairs": 66.6,
+   "groups3": 64.5,
+   "corr": 0.545
+  },
+  "+day standing+page": {
+   "pairs": 68.6,
+   "groups3": 67.3,
+   "corr": 0.596
+  },
+  "launch only": {
+   "pairs": 68.5,
+   "groups3": 66.6,
+   "corr": 0.606
+  }
+ },
+ "repeat teams": {
+  "launches": 1117,
+  "sim+reach+audience": {
+   "pairs": 76.9,
+   "groups3": 66.5,
+   "corr": 0.673
+  },
+  "+day standing": {
+   "pairs": 77.1,
+   "groups3": 67.2,
+   "corr": 0.669
+  },
+  "+page": {
+   "pairs": 77.2,
+   "groups3": 66.5,
+   "corr": 0.684
+  },
+  "+day standing+page": {
+   "pairs": 77.6,
+   "groups3": 67.4,
+   "corr": 0.686
+  },
+  "launch only": {
+   "pairs": 79.8,
+   "groups3": 68.9,
+   "corr": 0.731
+  }
+ },
+ "all launches, daily top 3/5/10": {
+  "sim+reach+audience": [
+   58.6,
+   69.5,
+   80.0
+  ],
+  "+day standing": [
+   59.5,
+   70.2,
+   79.9
+  ],
+  "+page": [
+   60.6,
+   69.1,
+   80.3
+  ],
+  "+day standing+page": [
+   60.6,
+   70.3,
+   80.0
+  ],
+  "launch only": [
+   65.2,
+   72.4,
+   81.6
+  ]
+ }
+}

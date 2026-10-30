@@ -6,11 +6,18 @@ only (no launch-level inputs beyond the audience's size):
   sim+ties       + pool people tied through the hunter, the makers and the 5 nearest earlier competitors
   sim+reach      + outside audience: makers' and hunter's Product Hunt followers, makers' X followers
   sim+ties+reach both
+  STAGE=2 adds the rest of the audience, one block at a time on top of sim+reach (launch-model inputs that describe
+  the audience's size or warm-up, nothing about the page or text):
+    +record      the hunter's and makers' earlier launches (hist_: how they did, how many)
+    +promo       pre-launch promotion (promo_: posts, reactions, press / Reddit / HN coverage before launch day)
+    +poolfol     pool people who follow the team (fol_; follows are undated)
+    +x           X reach (x_maker_max_followers, x_company_followers)
+    +audience    all four
   launch only    ctrl.py launch model, all inputs
 Metrics: within day, among first-time teams / repeat teams: higher of 2, winner of 3, rank corr.; all launches:
 daily top 3 / 5 / 10.
 usage: python newsim_eval.py -> results/newsim_eval.json"""
-import glob, json
+import glob, json, os
 import numpy as np, pandas as pd, lightgbm as lgb
 from scipy.stats import spearmanr
 from newteam_eval_lib import first_time
@@ -28,6 +35,27 @@ base = [c for c in A if c.startswith(("pst_", "tpd_"))]
 ties = ["nsa_team_ties", "nsa_hunter_ties", "nsa_comp_ties", "nsa_active"]
 reach = ["nsa_ph_makers", "nsa_ph_hunter", "nsa_x_makers"]
 V = {"sim": base, "sim+ties": base + ties, "sim+reach": base + reach, "sim+ties+reach": base + ties + reach}
+if os.environ.get("STAGE") == "2":
+    from buildcache import build_cached
+    B = build_cached(); B["id"] = B.id.astype(str)
+    blocks = {"+record": [c for c in B if c.startswith("hist_")], "+promo": [c for c in B if c.startswith("promo_")],
+              "+poolfol": [c for c in B if c.startswith("fol_")], "+x": [c for c in ("x_maker_max_followers", "x_company_followers") if c in B]}
+    A = A.merge(B[["id"] + sorted({c for v in blocks.values() for c in v})], on="id", how="left")
+    V = {"sim+reach": base + reach}
+    for k, v in blocks.items():
+        V["sim+reach" + k] = base + reach + v
+    V["sim+reach+audience"] = base + reach + sorted({c for v in blocks.values() for c in v})
+    print({k: len(v) for k, v in blocks.items()}, flush=True)
+    if os.environ.get("STAGE3") == "1":   # standing in the day's line-up, and the page as a direct conversion input
+        from ctrl import group
+        import model as M
+        aud = V["sim+reach+audience"]
+        for c in aud:
+            A[c + "_dayr"] = A.groupby("day")[c].rank(pct=True)
+        page = [c for c in M.cols(B, M.LIVE_SOURCES + M.PAGE_SOURCES) if group(c) == "page"]
+        A = A.merge(B[["id"] + [c for c in page if c not in A]], on="id", how="left")
+        V = {"sim+reach+audience": aud, "+day standing": aud + [c + "_dayr" for c in aud], "+page": aud + page,
+             "+day standing+page": aud + [c + "_dayr" for c in aud] + page}
 A["mon"] = A.day.str[:7]; out = []
 for m in sorted(A.mon.unique())[1:]:
     tr, te = A[A.mon < m], A[A.mon == m].copy()
@@ -63,4 +91,4 @@ for name, flag in (("first-time teams", True), ("repeat teams", False)):
 hit = lambda g, c, k: len(set(g.nlargest(k, c).id) & set(g[g.dailyRank <= k].id)) / k
 res["all launches, daily top 3/5/10"] = {p: [round(100 * float(np.mean([hit(g, p, k) for _, g in T.groupby("day") if (g.dailyRank <= k).sum() == k])), 1)
                                               for k in (3, 5, 10)] for p in P}
-json.dump(res, open("results/newsim_eval.json", "w"), indent=1); print(json.dumps(res, indent=1))
+json.dump(res, open(f"results/newsim_eval{'_stage3' if os.environ.get('STAGE3') == '1' else '_stage2' if os.environ.get('STAGE') == '2' else ''}.json", "w"), indent=1); print(json.dumps(res, indent=1))

@@ -239,3 +239,22 @@ All launches, daily top 3/5/10: sim 52.9/63.8/74.1 → sim + reach **58.3**/67.6
 - Outside reach is what closes the gap on new products: within 1.4 points of the launch model on pairs, 3.2 on groups of 3.
 - Hunter and competitor ties add nothing measurable.
 - Caveat: follower counts in the backtest were fetched after launch for older days (the launch model has the same issue). Live forecasts use counts snapshotted at forecast time; a clean check needs the live record.
+
+## Matching the launch model (newsim_eval.py STAGE=2 / STAGE3=1; Jul–Oct, out of sample)
+Audience blocks on top of sim + reach (launch-model inputs that describe the audience's size or warm-up): track record (hist_), pre-launch promotion (promo_), pool followers (fol_, undated), X reach. Then each launch's standing in the day's line-up (within-day percentile of every simulation/audience input) and the page as a direct conversion input.
+| First-time teams | Higher of 2 | Winner of 3 | Rank corr. |
+|---|---|---|---|
+| sim + reach | 67.1 | 63.4 | 0.57 |
+| + full audience | 67.6 | 66.2 | 0.58 |
+| **+ day standing** | **68.4** | **68.4** | **0.60** |
+| + day standing + page | 68.6 | 67.3 | 0.60 |
+| launch model | 68.5 | 66.6 | 0.61 |
+
+| Repeat teams | Higher of 2 | Winner of 3 | Rank corr. |
+|---|---|---|---|
+| + full audience | 76.9 | 66.5 | 0.67 |
+| + day standing + page | 77.6 | 67.4 | 0.69 |
+| launch model | 79.8 | 68.9 | 0.73 |
+
+Daily top 3/5/10 (all launches): full audience 58.6/69.5/80.0; + day standing 59.5/70.2/79.9; + day standing + page **60.6/70.3/80.0**; launch model 65.2/72.4/81.6.
+First-time teams: matched (pairs 68.4 vs 68.5, groups of 3 68.4 vs 66.6). Repeat teams and the daily top 3 still trail by ~2–5 points.
