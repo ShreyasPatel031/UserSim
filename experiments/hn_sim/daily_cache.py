@@ -24,7 +24,7 @@ import top100 as H
 TIMES = {"t12": 12, "t18": 6, "eod": 0}       # name -> hours before the end of day D
 STAGE1_END = os.environ.get("STAGE1_END", "2026-09-01")
 WINDOW_H = 72
-VOTE_MIN_POINTS = float(os.environ.get("VOTE_MIN_POINTS", "30"))
+VOTE_MIN_POINTS = float(os.environ.get("VOTE_MIN_POINTS", "5"))
 OUT = os.path.join(H.CACHE, os.environ.get("DC_OUT", "daily_cache.parquet"))
 
 L = pd.concat([pd.read_json(os.path.join(H.CACHE, f), lines=True, dtype={"day": str})
@@ -78,7 +78,7 @@ print("comment features done", flush=True)
 
 # votes: Quality News hourly arrays -> matrices, gathered at each forecast time
 qfs = [os.path.join(H.CACHE, f) for f in ("qn_long3.jsonl", "qn_summer.jsonl", "qn_summer_b.jsonl",
-                                                 "qn_summer_c.jsonl", "qn_summer_d.jsonl") if os.path.exists(os.path.join(H.CACHE, f))]
+                                                 "qn_summer_c.jsonl", "qn_summer_d.jsonl", "qn_low1.jsonl", "qn_low2.jsonl", "qn_low3.jsonl") if os.path.exists(os.path.join(H.CACHE, f))]
 if qfs:
     q = pd.concat([pd.read_json(f, lines=True) for f in qfs], ignore_index=True)
     # the summer fetch skipped stories below VOTE_MIN_POINTS final points (no daily top 30 had fewer than 44): count them

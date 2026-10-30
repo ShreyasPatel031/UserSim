@@ -77,7 +77,11 @@ def main(a: str, b: str) -> None:
     p = H.stories()
     p = p[(p.day >= a) & (p.day <= b)].sort_values("created_at_i", ascending=False)
     p = p[p.points >= float(os.environ.get("QN_MIN_POINTS", "0"))]   # stories below ~5 final points never reach the list
-    done = {json.loads(l)["post_id"] for l in open(OUT)} if os.path.exists(OUT) else set()
+    p = p[p.points < float(os.environ.get("QN_MAX_POINTS", "inf"))]
+    done = set()
+    for f in [OUT] + [os.path.join(S.LOCAL, x) for x in os.environ.get("QN_SKIP", "").split(",") if x]:
+        if os.path.exists(f):                                        # QN_SKIP: other output files already holding stories
+            done |= {json.loads(l)["post_id"] for l in open(f)}
     todo = [(int(r.post_id), int(r.created_at_i)) for r in p.itertuples() if r.post_id not in done]
     print(len(todo), "stories", flush=True)
     t_start, lock = time.time(), threading.Lock()
