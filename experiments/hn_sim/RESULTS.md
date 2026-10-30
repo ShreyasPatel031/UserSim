@@ -136,3 +136,15 @@ commented early, submitter, the story's place on the previous day's list, and co
 
 For reference: knowing every story's exact final points reproduces 58% of the real top 30. Early forecasts are
 capped by stories not yet posted. Next: votes over the day (Quality News hourly upvotes and rank).
+
+## Daily list v3 = v2 + votes and HN rank over the day (Quality News hourly), Sep 23–30 (8 test days, 10 training days)
+
+| Forecast at | v2 (comments) | v3 (+ votes and rank) | HN's live rank at that moment only |
+|---|---|---|---|
+| end of day: real top 30 in our top 30 | 64.6% | **77.1%** (72.9–81.7) | 55.8% |
+| end of day: real top 10 in our top 10 | 53.7% | **66.2%** | 46.3% |
+| end of day: real top 10 in our top 30 | 83.8% | **93.8%** | 76.2% |
+| 18:00 UTC: real top 30 / top 10 | 51.7% / 36.2% | **55.8% / 50.0%** | 48.7% / 35.0% |
+| 12:00 UTC: real top 30 / top 10 | **40.4% / 26.3%** | 33.3% / 23.8% | 34.2% / 18.8% |
+
+Small sample (8 days); the 12:00 stage-2 overfits on 10 training days. Fetch continues back to Aug 29 (more training days).
