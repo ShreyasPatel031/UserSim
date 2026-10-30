@@ -20,6 +20,13 @@ top 10 1.1%.
 | + people2: early commenters' account age, new accounts, comment speed, record on this domain | 51.5% | 48.7% | 35.2% |
 | + domain popularity (Tranco top-1M rank) | 51.6% | 48.6% | 34.8% |
 
+**Event level (Sep 2026, best model):** of each day's real top 10, the model's top 10 contains 36% (by event: the
+same news under any submission; 35% exact), its top 30 63%, its top 100 81%.
+
+**Where it fails:** 60 of 300 real top-10 stories in Sep 2026 had zero comments in their first hour and took off
+later (".name Termination" 2,230 points, "Claude, change the 'Add to Cart' button to blue" 1,215, "Audacity 4.0"
+1,163). An hourly forecast with longer windows (2 / 4 / 8 h) is being tested for these late bloomers.
+
 Blocks that added nothing measurable: a crowd model (20,000 most active people, who would engage, tallied: +0.2),
 favorites taste (+0.0), Gemini reading titles (worse than the text model; dropped).
 

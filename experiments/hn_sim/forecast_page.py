@@ -46,7 +46,8 @@ def li(x):
     url = x["url"] or f"https://news.ycombinator.com/item?id={x['post_id']}"
     age = f"{x['age_min'] // 60}h {x['age_min'] % 60:02d}m old"
     pts = f" · {x['points_at_60']} pts at 60 min" if x.get("points_at_60") is not None else ""
-    model = {"post": "post only", "v30": "30-min data", "v60": "60-min data"}[x["model"]]
+    w = int(x["model"][1:]) if x["model"] != "post" else 0
+    model = "post only" if not w else (f"first {w} min" if w < 120 else f"first {w // 60} h")
     return (f"<li><span class=rk>{x['rank']}</span><div class=t><a href='{H.escape(url)}' target=_blank rel=noopener>"
             f"{H.escape(x['title'])}</a><div class=meta>{H.escape(x['host'] or 'news.ycombinator.com')} · {age}{pts}"
             f"<span class=chip>{model}</span></div></div><div class=odds>{x['p_top10']:.0%}"
@@ -58,9 +59,9 @@ def render(o: dict) -> str:
     today, yday = o["days"][days[-1]], o["days"][days[0]]
     B = {(b["variant"], b["k"]): b for b in o["board"]}
     rows = "".join(f"<tr><td>{name}</td>" + "".join(f"<td class=n>{B[(v, k)]['recall']:.1%}</td>" for k in (100, 30, 10)) + "</tr>"
-                   for v, name in (("post", "Post only (title, site, author, time)"),
-                                   ("v30", "+ first 30 min of comments, and who wrote them"),
-                                   ("v60", "+ first 60 min of comments, and who wrote them")))
+                   for v, name in [("post", "Post only (title, site, author, time)")] +
+                   [(f"v{w}", f"+ first {w if w < 120 else w // 60} {'min' if w < 120 else 'h'} of comments, and who wrote them")
+                    for w in (30, 60, 120, 240, 480)] if (v, 100) in B)
     rnd = o["model"]["random"]
     rows += "<tr><td>Random pick</td>" + "".join(f"<td class=n>{rnd[str(k)] if str(k) in rnd else rnd[k]:.1%}</td>" for k in (100, 30, 10)) + "</tr>"
     days_n = B[("v60", 100)]["days"]
@@ -78,7 +79,7 @@ Updated {o['made_on'][:16].replace('T', ' ')} UTC, hourly. Odds are calibrated o
 <p class=note>Share of each day's real top 100 / 30 / 10 stories that the forecast's own top 100 / 30 / 10 contains,
 averaged over {days_n} days ({o['model']['cal']}), with the model trained only on earlier days. A story is scored with
 the richest model its age allows: post-only until it is 35 minutes old, then its first 30 minutes of comments, then its
-first 60. Votes are never an input. Points at 60 minutes are recorded live and shown for reference; they become a
+first 60 minutes, 2, 4 and 8 hours (late bloomers). Votes are never an input. Points at 60 minutes are recorded live and shown for reference; they become a
 model input once a few weeks of them exist.</p></section>
 </div>"""
 

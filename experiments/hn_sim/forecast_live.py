@@ -6,6 +6,8 @@ input. Each story is scored by the model that matches how old it is:
   post   any age         title, domain / author records (2+ day old stories only), timing, volume
   v30    35+ min old      + comments in its first 30 min and each early commenter's past record
   v60    65+ min old      + the same for its first 60 min
+  v120 / v240 / v480      + the same for its first 2 / 4 / 8 hours (late bloomers: a fifth of Sep 2026's real top-10
+                          stories had no comments in their first hour)
 A story younger than a window never gets that window's features (no input emptier live than in training).
 Early points (hn_early_points, recorded live since Oct 30) have no history to train on yet; they are shown next to
 the forecast, and the scorer reports how a plain points-at-60-min ranking does, side by side.
@@ -56,6 +58,9 @@ GBM = dict(n_estimators=300, learning_rate=0.05, num_leaves=63, min_child_sample
 MODEL = os.path.join(C, "fl_model.pkl")
 GS = "usersim_sim/hn_jobs/forecast"
 DRY = bool(os.environ.get("FL_DRY"))                 # test runs: no warehouse / GCS writes
+WS = (30, 60, 120, 240, 480)                         # early windows, minutes
+MAXAGE = WS[-1] * 60
+VARIANTS = ["post"] + [f"v{w}" for w in WS]
 GRACE = 5 * 60                                       # Algolia indexing slack before a window counts as complete
 
 
@@ -117,24 +122,24 @@ def all_stories() -> pd.DataFrame:
 
 def bq_early_comments(born: pd.Series) -> pd.DataFrame:
     """BigQuery comments within 60 min of their story (only what the early blocks need); cached after the first read."""
-    path = os.path.join(C, "fl_bq_early.parquet")
+    path = os.path.join(C, "fl_bq_early8h.parquet")
     if os.path.exists(path):
         c = pd.read_parquet(path)
         c = c[c.story_id.isin(born.index)].copy()
         c["age"] = c.created_at_i - c.story_id.map(born).to_numpy()
-        return c[(c.age >= 0) & (c.age <= 3600)].reset_index(drop=True)
+        return c[(c.age >= 0) & (c.age <= MAXAGE)].reset_index(drop=True)
     c = pd.read_parquet(os.path.join(C, os.environ.get("FL_COMMENTS", "bq_comments.parquet")),
                         columns=["person", "created_at_i", "story_id", "top_level"])
     c = c[c.story_id.notna()]
     c["story_id"] = c.story_id.astype(np.int64)
     c = c[c.story_id.isin(born.index)]
     c["age"] = c.created_at_i - c.story_id.map(born).to_numpy()
-    c = c[(c.age >= 0) & (c.age <= 3600)].reset_index(drop=True)
+    c = c[(c.age >= 0) & (c.age <= MAXAGE)].reset_index(drop=True)
     c.drop(columns="age").to_parquet(path, index=False)
     return c
 
 
-def algolia_early(pid: int, born: int, window_s: int = 3600) -> list[dict]:
+def algolia_early(pid: int, born: int, window_s: int = MAXAGE) -> list[dict]:
     j = get(f"{ALGOLIA}/search", {"tags": f"comment,story_{pid}", "hitsPerPage": 1000,
                                   "numericFilters": f"created_at_i<={born + window_s}"})
     return [{"person": h["author"], "created_at_i": h["created_at_i"], "story_id": pid,
@@ -151,11 +156,11 @@ def recent_early_comments(p: pd.DataFrame, after_ts: int) -> pd.DataFrame:
     done = set(json.load(open(done_path))) if os.path.exists(done_path) else set()
     now = time.time()
     r = p[p.created_at_i > after_ts]
-    full = r[(now - r.created_at_i >= 3600 + GRACE) & ~r.post_id.isin(done)]
-    part = r[(now - r.created_at_i >= 1800 + GRACE) & (now - r.created_at_i < 3600 + GRACE)]
+    full = r[(now - r.created_at_i >= MAXAGE + GRACE) & ~r.post_id.isin(done)]
+    part = r[(now - r.created_at_i >= WS[0] * 60 + GRACE) & (now - r.created_at_i < MAXAGE + GRACE)]
     with ThreadPoolExecutor(8) as ex:
         got = list(ex.map(lambda x: algolia_early(int(x[0]), int(x[1])), zip(full.post_id, full.created_at_i)))
-        gp = list(ex.map(lambda x: algolia_early(int(x[0]), int(x[1]), 1800), zip(part.post_id, part.created_at_i)))
+        gp = list(ex.map(lambda x: algolia_early(int(x[0]), int(x[1]), int(now - x[1])), zip(part.post_id, part.created_at_i)))
     add = pd.DataFrame([x for xs in got for x in xs])
     if len(add):
         cache = pd.concat([cache, add], ignore_index=True)
@@ -167,7 +172,7 @@ def recent_early_comments(p: pd.DataFrame, after_ts: int) -> pd.DataFrame:
     out = out[out.story_id.isin(born.index)].copy()
     out["created_at_i"] = out.created_at_i.astype(np.int64)
     out["age"] = out.created_at_i - out.story_id.map(born).to_numpy()
-    return out[(out.age >= 0) & (out.age <= 3600)]
+    return out[(out.age >= 0) & (out.age <= MAXAGE)]
 
 
 # ---------------------------------------------------------------- feature blocks (same for training and live)
@@ -236,7 +241,7 @@ def train() -> None:
     c = bq_early_comments(born)
     h100, h10 = labels(p)
     blocks = {}
-    for W in (30, 60):
+    for W in WS:
         E = early_block(c, p.post_id, W)
         pairs = early_pairs(c, W, born, h100, h10)
         out = []
@@ -262,9 +267,11 @@ def train() -> None:
     txt_cal = ridge.predict(tf.transform(D[cal]))
     print("text model", f"{time.time() - t_start:.0f}s", flush=True)
     cols = {"post": list(F.columns)}
-    cols["v30"] = cols["post"] + list(blocks[30].columns)
-    cols["v60"] = cols["v30"] + list(blocks[60].columns)
-    X = pd.concat([F.reset_index(drop=True), blocks[30], blocks[60]], axis=1)
+    prev = "post"
+    for W in WS:
+        cols[f"v{W}"] = cols[prev] + list(blocks[W].columns)
+        prev = f"v{W}"
+    X = pd.concat([F.reset_index(drop=True)] + [blocks[W] for W in WS], axis=1)
     keep = (rk <= 100) | (np.random.default_rng(0).random(len(p)) < 0.25)
     models, iso, board = {}, {}, []
     rng = np.random.default_rng(0)
@@ -315,17 +322,19 @@ def forecast(M: dict) -> dict:
     final = p.created_at_i < now - 2 * 86400            # records use stories with final points only
     h100, h10 = labels(p[final])
     blocks = {}
-    for W in (30, 60):
+    for W in WS:
         pairs = early_pairs(c[c.story_id.isin(h100.index)], W, born, h100, h10)
         cur = c[c.story_id.isin(L.post_id) & (c.age <= W * 60)].drop_duplicates(["person", "story_id"])
         E = early_block(c[c.story_id.isin(L.post_id)], L.post_id, W)
         Wb = who_block(cur, person_records(pairs, now), L.post_id, W)
         blocks[W] = pd.concat([E, Wb], axis=1).reset_index(drop=True)
-    X = pd.concat([F.reset_index(drop=True), blocks[30], blocks[60]], axis=1)
+    X = pd.concat([F.reset_index(drop=True)] + [blocks[W] for W in WS], axis=1)
     X["text_score"] = M["ridge"].predict(M["tf"].transform(doc(L)))
-    variant = np.where(L.age_min * 60 >= 3600 + GRACE, "v60", np.where(L.age_min * 60 >= 1800 + GRACE, "v30", "post"))
+    variant = np.array(["post"] * len(L), dtype=object)
+    for W in WS:                                      # the richest window the story is old enough for
+        variant[(L.age_min * 60 >= W * 60 + GRACE).to_numpy()] = f"v{W}" 
     p100, p10 = np.zeros(len(L)), np.zeros(len(L))
-    for v in ("post", "v30", "v60"):
+    for v in VARIANTS:
         m = variant == v
         if m.any():
             s = M["models"][v].predict_proba(X[m][M["cols"][v] + ["text_score"]])[:, 1]
@@ -423,7 +432,7 @@ def page(out: dict, scores: pd.DataFrame) -> str:
     board = pd.DataFrame(out["board"])
     bt = "".join(f"<tr><td>{v}</td>" + "".join(
         f"<td>{board[(board.variant == v) & (board.k == k)].recall.iloc[0]:.1%}</td>" for k in (100, 30, 10)) + "</tr>"
-        for v in ("post", "v30", "v60"))
+        for v in VARIANTS)
     sc = ""
     if len(scores):
         sc = "".join(f"<tr><td>{r.forecast_day}</td><td>{r.recall_100:.0%}</td><td>{r.recall_10:.0%}</td></tr>"
