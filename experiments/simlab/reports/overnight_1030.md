@@ -111,3 +111,8 @@ Next: reciprocity (the team engaged with this person's own launches before; RECI
 
 ## Reciprocity (RECIP=1, pick_ablate_recip.json)
 Top-3 hit 49.1 → 49.3, AUC 0.695 → 0.696. Covers ~1% of person-launch pairs; not worth it alone.
+
+## Tie audit (tie_audit.py, Aug 1–Oct 24, 85 days, 30-day population)
+- 72% of the population's real picks go to a team the person backed (upvoted or commented) before, or that engaged with their launches. Follows add only 1 point (73%).
+- Real picks with a tie alone rank the day at 82.7% top 3; untied picks alone at 17.6%.
+- So most of the 91% ceiling is reachable in principle from dated pre-launch ties. The open problem is which tied people show up and vote that day.

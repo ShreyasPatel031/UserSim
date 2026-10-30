@@ -19,8 +19,8 @@ def day(d):
     D = PS.featurize(D, cf, PS.month_start(d[:7], 1))
     tie = (D.backed.values > 0) | (D.recip_team.values > 0)   # dated ties only (backed is a log count, not ranked)
     D["tie"] = tie; D["fol"] = D.follow > 0
-    D["wy"] = D.w * D.y
-    out = D.groupby("id").agg(all=("wy", "sum")).join(D[D.tie].groupby("id").wy.sum().rename("tied")) \
+    D["wy"] = D.w * D.y; D["wt"] = D.w * D.tie; D["wb"] = D.w * D.backed; D["nt"] = D.tie.astype(float)
+    out = D.groupby("id").agg(all=("wy", "sum"), tie_people=("nt", "sum"), tie_weighted=("wt", "sum"), backed_weighted=("wb", "sum")).join(D[D.tie].groupby("id").wy.sum().rename("tied")) \
            .join(D[~D.tie].groupby("id").wy.sum().rename("untied")).join(D[D.tie | D.fol].groupby("id").wy.sum().rename("tied_or_follow")).fillna(0)
     out["day"] = d
     st = {"picks": float(D.wy.sum()), "tied": float(D.wy[D.tie].sum()), "follow": float(D.wy[D.fol].sum()), "tied_or_follow": float(D.wy[D.tie | D.fol].sum())}
@@ -43,7 +43,7 @@ def main(workers):
     tot = pd.DataFrame([r[1] for r in R]).sum()
     res = {"days": len(R), "share_of_picks_tied": round(float(tot.tied / tot.picks), 3), "share_follow": round(float(tot.follow / tot.picks), 3),
            "share_tied_or_follow": round(float(tot.tied_or_follow / tot.picks), 3)}
-    for c in ("all", "tied", "untied", "tied_or_follow"):
+    for c in ("all", "tied", "untied", "tied_or_follow", "tie_people", "tie_weighted", "backed_weighted"):
         res[c] = {f"top{k}": round(100 * float(np.mean([len(set(g.nlargest(k, c).id) & set(g[g.dailyRank <= k].id)) / k
                                                        for _, g in S.groupby("day") if (g.dailyRank <= k).sum() == k])), 1) for k in (3, 5)}
     json.dump(res, open(f"{HERE}/reports/tie_audit.json", "w"), indent=1)
