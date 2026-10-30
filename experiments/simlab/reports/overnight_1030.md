@@ -93,3 +93,18 @@ Next: listwise Gemini picker (llm_pick.py: past upvotes + full line-up → 3 pic
 | taste person model (train Sep) | 50.1 |
 | Gemini picks the model also ranks top 6, then model | 50.5 |
 Content taste alone explains little of who picks what. Next: ablation of the person model's input groups (pick_boost.py ABLATE=1).
+
+## Which person data carries the signal (pick_ablate.json, 6 months, 300 people/day)
+| Inputs | Top-3 hit | AUC |
+|---|---|---|
+| all | 49.1 | 0.695 |
+| without team ties (backed, similar people backed the team, recent team) | 44.0 | 0.664 |
+| team ties only | 49.4 | 0.644 |
+| without sequence | 48.5 | 0.692 |
+| sequence only | 36.6 | 0.578 |
+| without category | 49.1 | 0.692 |
+| category only | 32.3 | 0.564 |
+| without content (topic, meaning, page, taste) | 45.9 | 0.667 |
+| content only | 42.9 | 0.657 |
+Ties to the launch team decide the top 3; content improves the rest of the ranking. Relationship data is the source to extend.
+Next: reciprocity (the team engaged with this person's own launches before; RECIP=1).

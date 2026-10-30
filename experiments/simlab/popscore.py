@@ -134,11 +134,49 @@ def cat_features(D, prior_cut):
     return D
 
 
+RECIP = os.environ.get("RECIP") == "1"   # + reciprocity: the launch team engaged with this person's own launches before
+if RECIP:
+    FEATS = FEATS + ["recip_team", "recip_n"]
+
+
+def recip_features(D):
+    """recip_team: upvotes/comments by the launch's team on launches this person made, before the day (log).
+    recip_n: how many distinct people engaged with this person's launches before the day (log; a maker's own reach)."""
+    g = load()
+    if "recip" not in G:
+        I, E = g["I"], g["E"]
+        made = defaultdict(list)
+        for r in I.itertuples():
+            for m in set(json.loads(r.makers)) | {r.poster}:
+                made[str(r.id)].append(m)
+        E2 = E.assign(item=E.item.astype(str)); E2 = E2[E2.item.isin(made)]
+        rec = defaultdict(list)   # maker -> [(date, engager)]
+        for it, who, dt in zip(E2.item, E2.person, E2.date):
+            for m in made[it]:
+                if m != who:
+                    rec[m].append((dt, who))
+        G["recip"] = {m: sorted(v) for m, v in rec.items()}
+    rec, team = G["recip"], g["team"]
+    rt, rn = [], []
+    cache = {}
+    for u, d, x in zip(D.person, D.day, D.id):
+        k = (u, d)
+        if k not in cache:
+            v = rec.get(u, [])
+            cache[k] = Counter(w for dt, w in v if dt < d)
+        c = cache[k]
+        rt.append(np.log1p(sum(c.get(m, 0) for m in team.get(x, ()))))
+        rn.append(np.log1p(len(c)))
+    D["recip_team"], D["recip_n"] = rt, rn
+    return D
+
+
 def featurize(D, cf, prior_cut):
     g = load()
     D = seq_features(D, g["I"], g["E"])
     D = apply_cf(D, cf)
-    return cat_features(D, prior_cut)
+    D = cat_features(D, prior_cut)
+    return recip_features(D) if RECIP else D
 
 
 # ---- phase A: per month, train the person model on the previous month
