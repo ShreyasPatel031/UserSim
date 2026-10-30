@@ -55,6 +55,18 @@ def parse(html: str, t0: int) -> dict:
     out["qn_exposure_24h"] = round(sum(1 / r for r in tops), 2)
     out["qn_first_top30_min"] = next(((row[0] - t0) // 60 for row in day if 0 < row[2] <= 30), None)
     out["qn_up_24h"] = [v for t, v, e in up if t <= t0 + 86400][-1] if up else None
+    # hourly snapshots for 36 h, on the UTC hour grid: top-page rank (91 = not on it) and upvotes at each hour
+    h0 = (t0 // 3600 + 1) * 3600
+    ranks, ups = {}, {}
+    for row in rk:
+        if row[0] < h0 + 36 * 3600 and len(row) > 2:
+            ranks[(row[0] - h0) // 3600] = row[2] if 0 < row[2] < 91 else 91      # last sample in each hour
+    for t, v, e in up:
+        if t < h0 + 36 * 3600:
+            ups[(t - h0) // 3600] = v
+    out["qn_hour0"] = h0
+    out["qn_rank_by_hour"] = [ranks.get(h, None) for h in range(36)]
+    out["qn_up_by_hour"] = [ups.get(h, None) for h in range(36)]
     out["qn_samples"] = len(up)
     return out
 
