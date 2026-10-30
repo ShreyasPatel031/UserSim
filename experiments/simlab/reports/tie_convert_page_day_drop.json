@@ -1,0 +1,43 @@
+{
+ "months_tested": [
+  "2026-06",
+  "2026-07",
+  "2026-08",
+  "2026-09",
+  "2026-10"
+ ],
+ "days": 146,
+ "page_inputs": 111,
+ "tie_people": {
+  "top3": 40.9,
+  "top5": 57.8
+ },
+ "tie_weighted": {
+  "top3": 40.5,
+  "top5": 57.7
+ },
+ "tie x page conv": {
+  "top3": 40.7,
+  "top5": 54.3
+ },
+ "tie x page conv (poisson)": {
+  "top3": 53.8,
+  "top5": 65.5
+ },
+ "page conv alone": {
+  "top3": 18.2,
+  "top5": 28.4
+ },
+ "poisson_minus_reach_top3": {
+  "diff": 13.3,
+  "ci95": [
+   9.0,
+   17.7
+  ],
+  "days_better_worse": [
+   63,
+   16
+  ]
+ },
+ "conv_pred_vs_real_conv_corr": 0.271
+}

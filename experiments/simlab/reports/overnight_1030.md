@@ -128,7 +128,7 @@ Next: reach × conversion (tie_convert.py): tied people × a page-only model of 
 | **reach as Poisson offset + page explains conversion** | **44.1** | 57.2 |
 | page conversion alone | 13.1 | 24.0 |
 Page-predicted conversion vs real conversion within day: rank corr. 0.203. First place tonight where the page raises a simulation-based launch score (+3.6 top 3).
-Paired over days, Poisson minus reach top 3: +3.6 (95% −1.1 to 8.5; better on 46 days, worse on 26). Not significant alone.
+Paired over days, Poisson minus reach top 3: +3.7 (95% −1.1 to 8.5; better on 46 days, worse on 26). Not significant alone.
 
 ## Best simulation-only score (robust_tpc*.csv; Jun–Oct, live config, simulation sources only)
 | Simulation sources | Day top 3 | Top 5 | Top 10 | Week top 3 |
@@ -145,3 +145,14 @@ Adding tpc to the full model: 66.3 → 66.3 (no gain).
 - Simulation only, the page now raises the score: 43.6 → 46.7 daily top 3 (+3.1), mostly through how much of the team's network the page converts (tpc), a little through taste.
 - Simulation + launch model: no gain over the launch model (66.3). Launch-level page inputs already carry this.
 - Where the rest is: 72% of pool picks go to previously backed teams; knowing which tied people vote would give 82.7%. The missing piece is who in a team's network shows up on the day, which pre-launch data barely predicts (who-shows-up oracle +1.5 only when using the model's picks; real picks +50).
+
+## Conversion model with launch-day inputs (tie_convert.py CONV_GROUPS=page,day; Jun–Oct, 146 days)
+| Conversion inputs | Day top 3 | Top 5 | Poisson minus reach, top 3 (95%) | Days better / worse |
+|---|---|---|---|---|
+| page | 44.1 | 57.2 | +3.7 (−1.1 to 8.5) | 46 / 26 |
+| page + day (weekday, launches that day, month, hunter's launches that day and prior 7 days) | **54.3** | **65.4** | **+13.8 (9.7 to 17.9)** | 65 / 16 |
+| page + day without hunter load | 44.1 | 57.1 | +3.7 (−0.9 to 8.3) | 45 / 29 |
+| page + day without weekday / launches / month | 53.8 | 65.5 | +13.3 (9.0 to 17.7) | 63 / 16 |
+The gain is the hunter's load (busy_same_day, busy_7d). Reason: people who backed a prolific hunter's past launches count as "tied" to every launch that hunter posts, so the simulation over-counts reach for those launches; hunter load corrects that. Pre-launch data, no leak, but a reach-measurement fix rather than a page effect.
+
+Simulation only (robust_tpd.csv, Jun–Oct, live config): pst + tpd **50.4 / 64.1 / 73.4** (top 3/5/10) vs pst + tpc 46.7 / 59.1 / 72.0 vs no-page simulation 43.6 / 56.4 / 70.6. Full model + tpd: 66.3 → 66.4 (no gain; the launch model already has hunter load).
