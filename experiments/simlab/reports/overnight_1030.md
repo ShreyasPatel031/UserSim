@@ -258,3 +258,14 @@ Audience blocks on top of sim + reach (launch-model inputs that describe the aud
 
 Daily top 3/5/10 (all launches): full audience 58.6/69.5/80.0; + day standing 59.5/70.2/79.9; + day standing + page **60.6/70.3/80.0**; launch model 65.2/72.4/81.6.
 First-time teams: matched (pairs 68.4 vs 68.5, groups of 3 68.4 vs 66.6). Repeat teams and the daily top 3 still trail by ~2–5 points.
+
+## What is left in the launch model (STAGE4: each remaining launch-model input group added to the best simulation)
+| Variant | First-time pairs / groups of 3 | Repeat pairs / groups of 3 | Daily top 3/5/10 |
+|---|---|---|---|
+| best simulation (audience + day standing + page) | 68.6 / 67.3 | 77.6 / 67.4 | 60.6 / 70.3 / 80.0 |
+| + ph_ (hunter followers, self-hunted, media counts…, 15) | 68.2 / 67.0 | 77.9 / 67.6 | 62.9 / 70.9 / 80.6 |
+| + seg_ (40) | 68.2 / 66.7 | 77.8 / 68.2 | 61.5 / 71.6 / 80.0 |
+| + x_ (8) | 67.8 / 65.8 | 77.6 / 67.7 | 60.3 / 71.4 / 80.4 |
+| + busy_ / llm_ | ≤ best | ≤ best | ≤ 60.6 |
+| launch model | 68.5 / 66.6 | 79.8 / 68.9 | 65.2 / 72.4 / 81.6 |
+No single remaining group closes the repeat-team gap; ph_ helps the daily top 3 most (+2.3). Each further block adds ≤ 2 points: diminishing returns.

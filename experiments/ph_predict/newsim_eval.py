@@ -56,6 +56,15 @@ if os.environ.get("STAGE") == "2":
         A = A.merge(B[["id"] + [c for c in page if c not in A]], on="id", how="left")
         V = {"sim+reach+audience": aud, "+day standing": aud + [c + "_dayr" for c in aud], "+page": aud + page,
              "+day standing+page": aud + [c + "_dayr" for c in aud] + page}
+        if os.environ.get("STAGE4") == "1":   # what is left in the launch model: each remaining input group on top
+            best = aud + [c + "_dayr" for c in aud] + page
+            rest = [c for c in M.cols(B, M.LIVE_SOURCES + M.PAGE_SOURCES) if c not in set(best)]
+            fams = {}
+            for c in rest:
+                fams.setdefault(c.split("_")[0], []).append(c)
+            A = A.merge(B[["id"] + [c for c in rest if c not in A]], on="id", how="left")
+            V = {"best": best, **{f"+{k} ({len(v)})": best + v for k, v in sorted(fams.items()) if len(v) >= 1}}
+            print({k: len(v) for k, v in fams.items()}, flush=True)
 A["mon"] = A.day.str[:7]; out = []
 for m in sorted(A.mon.unique())[1:]:
     tr, te = A[A.mon < m], A[A.mon == m].copy()
@@ -91,4 +100,4 @@ for name, flag in (("first-time teams", True), ("repeat teams", False)):
 hit = lambda g, c, k: len(set(g.nlargest(k, c).id) & set(g[g.dailyRank <= k].id)) / k
 res["all launches, daily top 3/5/10"] = {p: [round(100 * float(np.mean([hit(g, p, k) for _, g in T.groupby("day") if (g.dailyRank <= k).sum() == k])), 1)
                                               for k in (3, 5, 10)] for p in P}
-json.dump(res, open(f"results/newsim_eval{'_stage3' if os.environ.get('STAGE3') == '1' else '_stage2' if os.environ.get('STAGE') == '2' else ''}.json", "w"), indent=1); print(json.dumps(res, indent=1))
+json.dump(res, open(f"results/newsim_eval{'_stage4' if os.environ.get('STAGE4') == '1' else '_stage3' if os.environ.get('STAGE3') == '1' else '_stage2' if os.environ.get('STAGE') == '2' else ''}.json", "w"), indent=1); print(json.dumps(res, indent=1))
