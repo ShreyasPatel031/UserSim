@@ -200,3 +200,14 @@ Upper bound: X handles for 43% of people × ~1% tied ≈ well under 1% of votes 
 - Makers' own posts in the 60 days before launch and on launch day: 142. Distinct repliers: 72 before launch, 47 on launch day.
 - Real voters among them: 2 of 1,433 before launch (0.14%), 3 counting launch day (0.21%). Same-day control: 0.
 - These makers have small X audiences, and almost none of their Product Hunt voters reply to them publicly. Reposts and likes are not visible without login.
+
+## Does a bigger pool help? (subsample the people we have, Jun–Oct, 3,152 launches)
+| Pool | Share of real votes seen | Top 3 if their votes known | Launches with ≥1 earlier backer in pool | Top 3 by earlier-backer count |
+|---|---|---|---|---|
+| 10% | 2.9% | 84.4 | 53.2% | 43.0 |
+| 25% | 7.7% | 88.5 | 54.2% | 41.6 |
+| 50% | 15.3% | 90.6 | 54.4% | 42.1 |
+| 75% | 24.0% | 92.4 | 54.5% | 41.6 |
+| 100% (13–16k people) | 31.0% | 92.2 | 54.5% | 41.6 |
+Already past diminishing returns: the ceiling is flat above ~50%, and backer coverage is flat at ~54% from 10% of the pool up. The other ~46% of launches are teams with no earlier Product Hunt launch, so no pool size gives them backers.
+Ladder probe of a Product Hunt profile (/@user/upvotes): rungs 1–3 Cloudflare, rung 4 (Camoufox via DataImpulse) passes, $0.0021/page; Apify rung no response. Pool growth is now fetchable but not worth it by these numbers.
