@@ -108,3 +108,6 @@ Content taste alone explains little of who picks what. Next: ablation of the per
 | content only | 42.9 | 0.657 |
 Ties to the launch team decide the top 3; content improves the rest of the ranking. Relationship data is the source to extend.
 Next: reciprocity (the team engaged with this person's own launches before; RECIP=1).
+
+## Reciprocity (RECIP=1, pick_ablate_recip.json)
+Top-3 hit 49.1 → 49.3, AUC 0.695 → 0.696. Covers ~1% of person-launch pairs; not worth it alone.

@@ -1,0 +1,339 @@
+{
+ "summary": {
+  "base": {
+   "top3_hit": 49.3,
+   "auc": 0.696,
+   "months_better_than_base": 0
+  },
+  "-team": {
+   "top3_hit": 44.7,
+   "auc": 0.668,
+   "months_better_than_base": 0
+  },
+  "only team": {
+   "top3_hit": 49.4,
+   "auc": 0.644,
+   "months_better_than_base": 0
+  },
+  "-sequence": {
+   "top3_hit": 49.1,
+   "auc": 0.695,
+   "months_better_than_base": 1
+  },
+  "only sequence": {
+   "top3_hit": 36.6,
+   "auc": 0.578,
+   "months_better_than_base": 0
+  },
+  "-category": {
+   "top3_hit": 49.8,
+   "auc": 0.695,
+   "months_better_than_base": 3
+  },
+  "only category": {
+   "top3_hit": 32.3,
+   "auc": 0.564,
+   "months_better_than_base": 0
+  },
+  "-content": {
+   "top3_hit": 46.5,
+   "auc": 0.671,
+   "months_better_than_base": 0
+  },
+  "only content": {
+   "top3_hit": 42.9,
+   "auc": 0.657,
+   "months_better_than_base": 0
+  }
+ },
+ "months": [
+  {
+   "month": "2026-05",
+   "base": {
+    "top3_hit": 46.4,
+    "auc": 0.725,
+    "n": 6168
+   },
+   "-team": {
+    "top3_hit": 42.7,
+    "auc": 0.703,
+    "n": 6168
+   },
+   "only team": {
+    "top3_hit": 46.7,
+    "auc": 0.625,
+    "n": 6168
+   },
+   "-sequence": {
+    "top3_hit": 46.6,
+    "auc": 0.725,
+    "n": 6168
+   },
+   "only sequence": {
+    "top3_hit": 37.5,
+    "auc": 0.608,
+    "n": 6168
+   },
+   "-category": {
+    "top3_hit": 46.1,
+    "auc": 0.717,
+    "n": 6168
+   },
+   "only category": {
+    "top3_hit": 32.2,
+    "auc": 0.613,
+    "n": 6168
+   },
+   "-content": {
+    "top3_hit": 43.1,
+    "auc": 0.698,
+    "n": 6168
+   },
+   "only content": {
+    "top3_hit": 39.5,
+    "auc": 0.682,
+    "n": 6168
+   }
+  },
+  {
+   "month": "2026-06",
+   "base": {
+    "top3_hit": 46.6,
+    "auc": 0.665,
+    "n": 5973
+   },
+   "-team": {
+    "top3_hit": 46.4,
+    "auc": 0.656,
+    "n": 5973
+   },
+   "only team": {
+    "top3_hit": 47.8,
+    "auc": 0.595,
+    "n": 5973
+   },
+   "-sequence": {
+    "top3_hit": 46.3,
+    "auc": 0.662,
+    "n": 5973
+   },
+   "only sequence": {
+    "top3_hit": 40.7,
+    "auc": 0.581,
+    "n": 5973
+   },
+   "-category": {
+    "top3_hit": 48.4,
+    "auc": 0.669,
+    "n": 5973
+   },
+   "only category": {
+    "top3_hit": 32.3,
+    "auc": 0.562,
+    "n": 5973
+   },
+   "-content": {
+    "top3_hit": 44.6,
+    "auc": 0.64,
+    "n": 5973
+   },
+   "only content": {
+    "top3_hit": 44.3,
+    "auc": 0.642,
+    "n": 5973
+   }
+  },
+  {
+   "month": "2026-07",
+   "base": {
+    "top3_hit": 49.3,
+    "auc": 0.659,
+    "n": 6179
+   },
+   "-team": {
+    "top3_hit": 45.1,
+    "auc": 0.629,
+    "n": 6179
+   },
+   "only team": {
+    "top3_hit": 55.5,
+    "auc": 0.617,
+    "n": 6179
+   },
+   "-sequence": {
+    "top3_hit": 50.1,
+    "auc": 0.658,
+    "n": 6179
+   },
+   "only sequence": {
+    "top3_hit": 41.3,
+    "auc": 0.567,
+    "n": 6179
+   },
+   "-category": {
+    "top3_hit": 49.8,
+    "auc": 0.656,
+    "n": 6179
+   },
+   "only category": {
+    "top3_hit": 33.9,
+    "auc": 0.531,
+    "n": 6179
+   },
+   "-content": {
+    "top3_hit": 47.8,
+    "auc": 0.63,
+    "n": 6179
+   },
+   "only content": {
+    "top3_hit": 43.1,
+    "auc": 0.624,
+    "n": 6179
+   }
+  },
+  {
+   "month": "2026-08",
+   "base": {
+    "top3_hit": 53.7,
+    "auc": 0.694,
+    "n": 6189
+   },
+   "-team": {
+    "top3_hit": 47.0,
+    "auc": 0.666,
+    "n": 6189
+   },
+   "only team": {
+    "top3_hit": 51.9,
+    "auc": 0.661,
+    "n": 6189
+   },
+   "-sequence": {
+    "top3_hit": 53.1,
+    "auc": 0.693,
+    "n": 6189
+   },
+   "only sequence": {
+    "top3_hit": 37.4,
+    "auc": 0.578,
+    "n": 6189
+   },
+   "-category": {
+    "top3_hit": 55.0,
+    "auc": 0.697,
+    "n": 6189
+   },
+   "only category": {
+    "top3_hit": 33.2,
+    "auc": 0.544,
+    "n": 6189
+   },
+   "-content": {
+    "top3_hit": 50.9,
+    "auc": 0.674,
+    "n": 6189
+   },
+   "only content": {
+    "top3_hit": 48.3,
+    "auc": 0.668,
+    "n": 6189
+   }
+  },
+  {
+   "month": "2026-09",
+   "base": {
+    "top3_hit": 50.7,
+    "auc": 0.703,
+    "n": 5994
+   },
+   "-team": {
+    "top3_hit": 45.3,
+    "auc": 0.669,
+    "n": 5994
+   },
+   "only team": {
+    "top3_hit": 47.5,
+    "auc": 0.661,
+    "n": 5994
+   },
+   "-sequence": {
+    "top3_hit": 50.1,
+    "auc": 0.7,
+    "n": 5994
+   },
+   "only sequence": {
+    "top3_hit": 34.5,
+    "auc": 0.573,
+    "n": 5994
+   },
+   "-category": {
+    "top3_hit": 50.2,
+    "auc": 0.7,
+    "n": 5994
+   },
+   "only category": {
+    "top3_hit": 33.0,
+    "auc": 0.575,
+    "n": 5994
+   },
+   "-content": {
+    "top3_hit": 47.2,
+    "auc": 0.674,
+    "n": 5994
+   },
+   "only content": {
+    "top3_hit": 42.5,
+    "auc": 0.657,
+    "n": 5994
+   }
+  },
+  {
+   "month": "2026-10",
+   "base": {
+    "top3_hit": 48.9,
+    "auc": 0.732,
+    "n": 4994
+   },
+   "-team": {
+    "top3_hit": 41.5,
+    "auc": 0.686,
+    "n": 4994
+   },
+   "only team": {
+    "top3_hit": 46.9,
+    "auc": 0.704,
+    "n": 4994
+   },
+   "-sequence": {
+    "top3_hit": 48.6,
+    "auc": 0.733,
+    "n": 4994
+   },
+   "only sequence": {
+    "top3_hit": 28.4,
+    "auc": 0.563,
+    "n": 4994
+   },
+   "-category": {
+    "top3_hit": 49.1,
+    "auc": 0.733,
+    "n": 4994
+   },
+   "only category": {
+    "top3_hit": 29.4,
+    "auc": 0.558,
+    "n": 4994
+   },
+   "-content": {
+    "top3_hit": 45.4,
+    "auc": 0.71,
+    "n": 4994
+   },
+   "only content": {
+    "top3_hit": 39.7,
+    "auc": 0.668,
+    "n": 4994
+   }
+  }
+ ]
+}
