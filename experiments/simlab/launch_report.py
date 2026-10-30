@@ -4,7 +4,9 @@
      main reason for each person; then how many of them really voted.
   3. Likely commenters: upvote chance x the person's past share of comments; checked against real commenters.
   4. Page elements: Gemini's scores, the page facts with a measured effect (ctrl.py), and what is not scored.
-  5. What commenters will say: Gemini's predicted comment mix, questions and competitors vs the real comments' labels.
+  5. What commenters will say: Gemini's predicted comment mix and questions vs the real comments' labels.
+  6. Competitors on Product Hunt: the most similar earlier launches in our Product Hunt launch list (meaning of
+     name + tagline + description), not names typed by commenters.
 usage: TASTE=1 python -m simlab.launch_report <launch_id> -> reports/launch_<id>.json and .md"""
 import json, os, pickle, sys
 from collections import Counter
@@ -30,6 +32,11 @@ def reason(r, I, hist):
         past = [I.loc[i, "name"] for _, i in reversed(hist) if i in I.index][:2]
         return "similar to past upvotes: " + ", ".join(past)
     return "active on launch day, general interest"
+
+
+def store_raw():
+    from . import store
+    return store.RAW
 
 
 def main(x):
@@ -82,6 +89,16 @@ def main(x):
     out["comments"] = {"predicted_mix": res.get("comment_mix"), "real_mix": {k: round(v / n, 2) for k, v in real_mix.items()}, "real_comments": n,
                        "predicted_questions": res.get("questions"), "predicted_competitors": res.get("competitors"),
                        "real_named_products": sorted({p for l in labels for p in l.get("named") or []})}
+    Z = np.load(f"{store_raw()}/emb.npz"); ids = [str(i) for i in Z["launch_ids"]]; V = Z["launch"] / np.linalg.norm(Z["launch"], axis=1, keepdims=True)
+    k = ids.index(x); sim = V @ V[k]; seen, comp = {I.loc[x, "name"]}, []
+    for j in np.argsort(-sim):
+        i = ids[j]
+        if i in I.index and I.loc[i, "day"] < d and I.loc[i, "name"] not in seen:
+            seen.add(I.loc[i, "name"]); comp.append({"name": I.loc[i, "name"], "tagline": I.loc[i, "tagline"], "day": I.loc[i, "day"],
+                                                     "votes": int(I.loc[i, "out_votes"]), "similarity": round(float(sim[j]), 2)})
+        if len(comp) == 6:
+            break
+    out["competitors_on_PH"] = comp
     json.dump(out, open(f"{HERE}/reports/launch_{x}.json", "w"), indent=1, default=str)
     print(json.dumps(out, indent=1, default=str))
 
