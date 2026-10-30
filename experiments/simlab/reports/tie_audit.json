@@ -1,0 +1,34 @@
+{
+ "days": 177,
+ "share_of_picks_tied": 0.718,
+ "share_follow": 0.263,
+ "share_tied_or_follow": 0.736,
+ "all": {
+  "top3": 89.3,
+  "top5": 92.0
+ },
+ "tied": {
+  "top3": 81.1,
+  "top5": 83.0
+ },
+ "untied": {
+  "top3": 23.2,
+  "top5": 32.6
+ },
+ "tied_or_follow": {
+  "top3": 81.5,
+  "top5": 82.9
+ },
+ "tie_people": {
+  "top3": 40.0,
+  "top5": 56.6
+ },
+ "tie_weighted": {
+  "top3": 39.6,
+  "top5": 56.5
+ },
+ "backed_weighted": {
+  "top3": 41.3,
+  "top5": 55.4
+ }
+}
