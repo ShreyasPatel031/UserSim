@@ -10,6 +10,7 @@ Blocks (all known by the forecast time; votes are never inputs):
               test month): how often stories they commented on early made the day's top 100 / top 10, how many early
               comments they make; summed / maxed over the story's early commenters
   submitter   the submitter as a commenter: comments written before the post, early-comment record
+  people2     early commenters' account age, new accounts, usual comment speed, past record on this domain
 
     python top100.py build
     python top100.py ladder post early30 who30 early60 who60 submitter
@@ -122,7 +123,50 @@ def build() -> None:
     print("submitter block built", flush=True)
 
 
-BLOCK_FILES = {"post": "f_post", "early15": "f_early15", "early30": "f_early30", "early60": "f_early60",
+def build_people2(W: int = 60) -> None:
+    """More per-person data on each story's early commenters (first W minutes), all from before the story:
+    account age (HN profile), share of brand-new accounts, how fast each person usually comments (past median delay),
+    and each person's past early record on this story's domain."""
+    from urllib.parse import urlparse
+    p = stories()
+    c = comments()
+    born = pd.Series(p.created_at_i.to_numpy(), index=p.post_id)
+    host = pd.Series(p.url.fillna("").map(lambda u: urlparse(u).netloc.lower().removeprefix("www.")).to_numpy(),
+                     index=p.post_id)
+    c = c[c.story_id.isin(born.index)]
+    c["age"] = c.created_at_i - c.story_id.map(born).to_numpy()
+    e = c[(c.age >= 0) & (c.age <= W * 60)].sort_values("age").drop_duplicates(["person", "story_id"]).copy()
+    e["t"] = e.story_id.map(born).to_numpy()
+    e["host"] = e.story_id.map(host).to_numpy()
+    rk = p.groupby("day").points.rank(ascending=False, method="first")
+    e["h100"] = e.story_id.map(pd.Series((rk <= 100).to_numpy(), index=p.post_id)).astype(float).to_numpy()
+    prof = pd.read_parquet(os.path.join(CACHE, "hn_profiles.parquet")).set_index("person")
+    e["acct_days"] = (e.t - e.person.map(prof.created)) / 86400
+    out = []
+    for m in sorted(m for m in p.month.unique() if m >= "2023-03"):
+        t0 = month_t0(m)
+        past = e[(e.t < t0 - 2 * 86400) & (e.t >= t0 - 730 * 86400)]
+        lat = past.groupby("person").age.median()
+        prior = past.h100.mean()
+        ph = past.groupby(["person", "host"]).h100.agg(["sum", "count"])
+        ph_l = ((ph["sum"] + 3 * prior) / (ph["count"] + 3) / prior)
+        cur = e[e.story_id.isin(p.post_id[p.month == m])].copy()
+        cur["lat"] = cur.person.map(lat)
+        cur["fast"] = (cur.lat < 600).astype(float)
+        cur["dom_l"] = pd.Series(list(zip(cur.person, cur.host))).map(ph_l).fillna(1.0).to_numpy()
+        cur["dom_seen"] = pd.Series(list(zip(cur.person, cur.host))).map(ph["count"]).fillna(0).to_numpy()
+        g = cur.groupby("story_id")
+        out.append(pd.DataFrame({"p2_acct_days_med": g.acct_days.median(),
+                                 "p2_new_accts": g.acct_days.apply(lambda x: (x < 30).sum()),
+                                 "p2_lat_med": g.lat.median(), "p2_fast": g.fast.sum(),
+                                 "p2_dom_l_max": g.dom_l.max(), "p2_dom_l_sum": g.dom_l.sum(),
+                                 "p2_dom_regulars": g.dom_seen.apply(lambda x: (x >= 3).sum())}))
+    f = pd.concat(out).reindex(p.post_id).reset_index().rename(columns={"story_id": "post_id", "index": "post_id"})
+    f.to_parquet(os.path.join(CACHE, "f_people2.parquet"), index=False)
+    print("people2 block built", f.shape, flush=True)
+
+
+BLOCK_FILES = {"people2": "f_people2","post": "f_post", "early15": "f_early15", "early30": "f_early30", "early60": "f_early60",
                "who15": "f_who15", "who30": "f_who30", "who60": "f_who60", "submitter": "f_submitter"}
 
 
@@ -169,5 +213,7 @@ def ladder(steps: list[str], neg_frac: float = 0.25) -> None:
 if __name__ == "__main__":
     if sys.argv[1] == "build":
         build()
+    elif sys.argv[1] == "build_people2":
+        build_people2()
     else:
         ladder(sys.argv[2:])
