@@ -24,6 +24,7 @@ import top100 as H
 TIMES = {"t12": 12, "t18": 6, "eod": 0}       # name -> hours before the end of day D
 STAGE1_END = os.environ.get("STAGE1_END", "2026-09-01")
 WINDOW_H = 72
+VOTE_MIN_POINTS = float(os.environ.get("VOTE_MIN_POINTS", "30"))
 OUT = os.path.join(H.CACHE, "daily_cache.parquet")
 
 L = pd.concat([pd.read_json(os.path.join(H.CACHE, f), lines=True, dtype={"day": str})
@@ -76,12 +77,16 @@ for name, off in TIMES.items():
 print("comment features done", flush=True)
 
 # votes: Quality News hourly arrays -> matrices, gathered at each forecast time
-qfs = [os.path.join(H.CACHE, f) for f in ("qn_long3.jsonl", "qn_summer.jsonl") if os.path.exists(os.path.join(H.CACHE, f))]
+qfs = [os.path.join(H.CACHE, f) for f in ("qn_long3.jsonl", "qn_summer.jsonl", "qn_summer_b.jsonl",
+                                                 "qn_summer_c.jsonl") if os.path.exists(os.path.join(H.CACHE, f))]
 if qfs:
     q = pd.concat([pd.read_json(f, lines=True) for f in qfs], ignore_index=True)
-    # stories below 5 final points were skipped in the summer fetch (they never reach the list): count them as covered,
-    # with the no-votes fill (1 point, not on the page), as Quality News' own 404s are treated
-    fetched = set(q.post_id) | set(p.post_id[(p.points < 5).to_numpy()])
+    # the summer fetch skipped stories below VOTE_MIN_POINTS final points (no daily top 30 had fewer than 44): count them
+    # as covered and give them the no-votes fill (1 point, not on the page) on every day, September included, so train
+    # and test match. This uses final points, a small leak; VOTE_MIN_POINTS=0 measures it on fully fetched days.
+    lowp = set(p.post_id[(p.points < VOTE_MIN_POINTS).to_numpy()])
+    fetched = set(q.post_id) | lowp
+    q = q[~q.post_id.isin(lowp)]
     q = q[(q.status == 200) & q.qn_rank_by_hour.map(lambda x: isinstance(x, list))].drop_duplicates("post_id")
     qi = pd.Series(np.arange(len(q)), index=q.post_id)
     RK = np.array([[x if x is not None else 91 for x in r] for r in q.qn_rank_by_hour], float)
