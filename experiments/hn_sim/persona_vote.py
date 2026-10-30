@@ -72,7 +72,7 @@ def comment_texts(ids: list[int]) -> dict:
     from google.cloud import bigquery
     c = bigquery.Client(project="project-amer-scs-sandbox", credentials=vertex_credentials())
     job = c.query("SELECT id, text FROM `bigquery-public-data.hacker_news.full` WHERE id IN UNNEST(@ids)",
-                  job_config=bigquery.QueryJobConfig(query_parameters=[bigquery.ArrayQueryParameter("ids", "INT64", ids)]))
+                  job_config=bigquery.QueryJobConfig(query_parameters=[bigquery.ArrayQueryParameter("ids", "INT64", [int(i) for i in ids])]))
     df = job.result().to_dataframe()
     gb = (job.total_bytes_billed or 0) / 1e9
     S.spend("hn_bigquery_taylor", gb / 1000 * 6.25, f"{gb:.1f} GB comment texts for persona cards")
