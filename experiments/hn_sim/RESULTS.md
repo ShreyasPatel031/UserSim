@@ -148,3 +148,20 @@ capped by stories not yet posted. Next: votes over the day (Quality News hourly 
 | 12:00 UTC: real top 30 / top 10 | **40.4% / 26.3%** | 33.3% / 23.8% | 34.2% / 18.8% |
 
 Small sample (8 days); the 12:00 stage-2 overfits on 10 training days. Fetch continues back to Aug 29 (more training days).
+
+## Daily list: more list days, three months of votes (2026-10-30)
+
+More daily lists (2023-03..2024-12, 638 days, from news.ycombinator.com/front?day=) for the comment-only ranker, tested on
+153 days from 2026-05-01 (more_days.py): no gain. End of day real top 30 in our top 30 64.6% with vs 64.5% without;
+top 10 53.6% vs 53.3%; 12:00 and 18:00 UTC also within 1 point.
+
+Votes for June-August (Quality News, stories with 30+ final points; every daily top 30 this summer had 44+): stage 2
+trained on 87 days, tested on 18 fully fetched September days (daily_fast.py 2026-09-01).
+
+| forecast | comments only: top 30 / top 10 | + votes, rank, age, previous list: top 30 / top 10 | real top 10 in our top 30 |
+|---|---|---|---|
+| 12:00 UTC | 37.2% / 28.3% | 40.2% / 27.8% | 33.9% |
+| 18:00 UTC | 53.1% / 39.4% | 62.2% / 50.6% | 65.0% |
+| end of day | 65.9% / 59.4% | 82.2% / 76.7% | 94.4% |
+
+The 30-point cut uses final points (stories under 30 get the no-votes fill); leak_check.py measures its effect.

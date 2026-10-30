@@ -40,22 +40,23 @@ def score(P, col):
     return out
 
 
-for t in ("t12", "t18", "eod"):
-    D = C[C.day.isin(qdays) & (C[f"{t}_visible"] == 1)].copy()
-    vc = [f"{t}_{c}" for c in V]
-    D[vc] = D[vc].fillna({f"{t}_v_points": 1, f"{t}_v_rank_now": 91, f"{t}_v_best_rank": 91, f"{t}_v_h_top30": 0,
-                          f"{t}_v_h_top10": 0, f"{t}_v_gain3h": 0})
-    trd, ted = D[D.day < SPLIT], D[D.day >= SPLIT]
-    VARIANTS = {
-        "stage1 (comments)": None,
-        "+ votes/rank (stage 2)": [f"{t}_stage1"] + vc,
-        "+ votes/rank + age, prev list": [f"{t}_stage1", f"{t}_age_h", "prev_list_rank", "posted_before_d"] + vc,
-        "votes/rank only": vc + [f"{t}_age_h"],
-    }
-    print(f"\n{t}: train days {trd.day.nunique()}, test days {ted.day.nunique()}")
-    for name, cols in VARIANTS.items():
-        if cols is None:
-            s = ted[f"{t}_stage1"]
-        else:
-            s = fit_rank(trd, cols).predict(ted[cols])
-        print(f"  {name:32s}", json.dumps(score(ted.assign(s=s), "s")), flush=True)
+if __name__ == "__main__":
+    for t in ("t12", "t18", "eod"):
+        D = C[C.day.isin(qdays) & (C[f"{t}_visible"] == 1)].copy()
+        vc = [f"{t}_{c}" for c in V]
+        D[vc] = D[vc].fillna({f"{t}_v_points": 1, f"{t}_v_rank_now": 91, f"{t}_v_best_rank": 91, f"{t}_v_h_top30": 0,
+                              f"{t}_v_h_top10": 0, f"{t}_v_gain3h": 0})
+        trd, ted = D[D.day < SPLIT], D[D.day >= SPLIT]
+        VARIANTS = {
+            "stage1 (comments)": None,
+            "+ votes/rank (stage 2)": [f"{t}_stage1"] + vc,
+            "+ votes/rank + age, prev list": [f"{t}_stage1", f"{t}_age_h", "prev_list_rank", "posted_before_d"] + vc,
+            "votes/rank only": vc + [f"{t}_age_h"],
+        }
+        print(f"\n{t}: train days {trd.day.nunique()}, test days {ted.day.nunique()}")
+        for name, cols in VARIANTS.items():
+            if cols is None:
+                s = ted[f"{t}_stage1"]
+            else:
+                s = fit_rank(trd, cols).predict(ted[cols])
+            print(f"  {name:32s}", json.dumps(score(ted.assign(s=s), "s")), flush=True)
