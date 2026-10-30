@@ -20,6 +20,7 @@ import store as S  # noqa: E402
 Q = "usersim_sim/hn_jobs"
 PRE = """set -e
 export PYTHONPATH=$PWD/src PYTHONUNBUFFERED=1
+mkdir -p ~/.usersim_sim
 C=gs://usersim-bakeoff-347838016394/usersim_sim/hn_jobs/cache
 pull() { mkdir -p ~/.usersim_sim; for f in "$@"; do gsutil -q cp $C/$f ~/.usersim_sim/$f; done; }
 push() { for f in "$@"; do gsutil -q cp ~/.usersim_sim/$f $C/$f; done; }
