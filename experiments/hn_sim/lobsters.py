@@ -1,5 +1,5 @@
 """Was the story's URL on Lobsters before it was posted to HN? Lobsters' public JSON (lobste.rs/newest/page/N.json,
-25 stories a page, newest first), ~1 request/s. Uses only each Lobsters story's URL and creation time: never its
+25 stories a page, newest first), ~1 request / 2 s. Uses only each Lobsters story's URL and creation time: never its
 score (which grows after the HN post). Raw: <cache>/lobsters.jsonl. Block: f_lobsters.parquet.
 
     python lobsters.py fetch [stop_date=2022-12-01]
@@ -27,8 +27,9 @@ def norm(u):
 
 def fetch(stop="2022-12-01"):
     s = requests.Session()
-    s.headers.update({"User-Agent": "atelier-research (~1 req/s)"})
-    n, bad = 1, 0
+    s.headers.update({"User-Agent": "atelier-research (~1 req/2s)"})
+    have = sum(1 for _ in open(RAW)) if os.path.exists(RAW) else 0
+    n, bad = max(1, have // 25), 0          # resume near where an earlier run stopped
     with open(RAW, "a") as f:
         while True:
             try:
@@ -38,9 +39,9 @@ def fetch(stop="2022-12-01"):
                 items = None
             if not items:
                 bad += 1
-                if bad > 5:
+                if bad > 30:
                     break
-                time.sleep(10)
+                time.sleep(60)
                 continue
             bad = 0
             for it in items:
@@ -52,7 +53,7 @@ def fetch(stop="2022-12-01"):
             if last[:10] < stop:
                 break
             n += 1
-            time.sleep(1.0)
+            time.sleep(2.0)
     print("pages", n, flush=True)
 
 
