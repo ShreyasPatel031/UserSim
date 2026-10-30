@@ -4,7 +4,7 @@ ranksPlotData: time, ranks on the top/new/... pages). Coverage starts around mid
 points are mostly not kept (404).
 
 For every story on the given days (newest first): upvotes and best top-page rank at 15 / 30 / 60 minutes.
-Polite: one request every DELAY seconds. Appends to <cache>/qn_early.jsonl.
+Polite: WORKERS threads, each pausing DELAY seconds after a request (~3 req/s). Appends to <cache>/qn_early.jsonl.
 
     python qn.py 2026-06-01 2026-09-30
 """
@@ -12,7 +12,9 @@ import json
 import os
 import re
 import sys
+import threading
 import time
+from concurrent.futures import ThreadPoolExecutor
 
 import pandas as pd
 import requests
@@ -21,6 +23,7 @@ import store as S
 
 OUT = os.path.join(S.LOCAL, "qn_early.jsonl")
 DELAY = float(os.environ.get("QN_DELAY", "0.5"))
+WORKERS = int(os.environ.get("QN_WORKERS", "3"))   # ~3 requests/s in total: polite for a small volunteer site
 _s = requests.Session()
 _s.headers.update({"User-Agent": "atelier-research (HN early-vote backtest; ~2 req/s)"})
 
@@ -51,19 +54,22 @@ def main(a: str, b: str) -> None:
     done = {json.loads(l)["post_id"] for l in open(OUT)} if os.path.exists(OUT) else set()
     todo = [(int(r.post_id), int(r.created_at_i)) for r in p.itertuples() if r.post_id not in done]
     print(len(todo), "stories", flush=True)
-    t_start, nbytes = time.time(), 0
-    for i, (pid, t0) in enumerate(todo):
+    t_start, lock = time.time(), threading.Lock()
+
+    def one(job):
+        pid, t0 = job
         try:
-            r = _s.get(f"https://news.social-protocols.org/stats?id={pid}", timeout=30)
-            nbytes += len(r.content)
+            r = requests.get(f"https://news.social-protocols.org/stats?id={pid}", timeout=30, headers=_s.headers)
             rec = {"post_id": pid, "status": r.status_code, **(parse(r.text, t0) if r.status_code == 200 else {})}
         except requests.RequestException as exc:
             rec = {"post_id": pid, "status": -1, "error": str(exc)[:100]}
-        with open(OUT, "a") as f:
+        with lock, open(OUT, "a") as f:
             f.write(json.dumps(rec) + "\n")
-        if i % 1000 == 0:
-            print(i, f"{time.time() - t_start:.0f}s {nbytes / 1e9:.2f} GB", flush=True)
         time.sleep(DELAY)
+    with ThreadPoolExecutor(WORKERS) as ex:
+        for i, _ in enumerate(ex.map(one, todo)):
+            if i % 1000 == 0:
+                print(i, f"{time.time() - t_start:.0f}s", flush=True)
 
 
 if __name__ == "__main__":
