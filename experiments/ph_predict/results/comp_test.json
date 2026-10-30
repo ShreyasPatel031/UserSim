@@ -1,0 +1,44 @@
+{
+ "months_tested": [
+  "2026-07",
+  "2026-08",
+  "2026-09",
+  "2026-10"
+ ],
+ "launches": 2540,
+ "generic_topics_ignored": [
+  "Artificial Intelligence",
+  "Developer Tools",
+  "GitHub",
+  "Mac",
+  "Open Source",
+  "Productivity"
+ ],
+ "day": {
+  "groups_of_3": 714,
+  "simulation only (3)": 59.7,
+  "launch only (3)": 73.9,
+  "both (3)": 70.2,
+  "simulation only (pair)": 69.2,
+  "launch only (pair)": 76.1,
+  "both (pair)": 74.1
+ },
+ "week": {
+  "groups_of_3": 1754,
+  "simulation only (3)": 62.3,
+  "launch only (3)": 72.3,
+  "both (3)": 71.7,
+  "simulation only (pair)": 71.2,
+  "launch only (pair)": 79.9,
+  "both (pair)": 78.0
+ },
+ "mon": {
+  "groups_of_3": 2015,
+  "simulation only (3)": 63.9,
+  "launch only (3)": 73.1,
+  "both (3)": 71.6,
+  "simulation only (pair)": 73.3,
+  "launch only (pair)": 80.3,
+  "both (pair)": 78.4
+ }
+}

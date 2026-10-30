@@ -171,3 +171,11 @@ Target = real log votes − out-of-sample launch model; inputs = simulation outp
 | top 5 | 72.4 | 71.4 | −3.1 to 1.0 | 13 / 19 |
 | top 10 | 81.6 | 80.9 | −1.7 to 0.2 | 7 / 14 |
 Correlation of predicted with real misses: −0.048. The simulation carries no information the launch model lacks.
+
+## Which of 3 competitors gets the most votes? (comp_test.py, Jul–Oct, out of sample; competitors share a specific topic)
+| Window | Groups of 3 | Simulation only | Launch only | Both | Random |
+|---|---|---|---|---|---|
+| same day | 714 | 59.7 | 73.9 | 70.2 | 33.3 |
+| same week | 1,754 | 62.3 | 72.3 | 71.7 | 33.3 |
+| same month | 2,015 | 63.9 | 73.1 | 71.6 | 33.3 |
+Pairs (random 50): simulation only 69.2 / 71.2 / 73.3, launch only 76.1 / 79.9 / 80.3, both 74.1 / 78.0 / 78.4 (day / week / month).
