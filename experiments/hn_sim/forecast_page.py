@@ -80,7 +80,11 @@ Updated {o['made_on'][:16].replace('T', ' ')} UTC, hourly. Odds are calibrated o
 averaged over {days_n} days ({o['model']['cal']}), with the model trained only on earlier days. A story is scored with
 the richest model its age allows: post-only until it is 35 minutes old, then its first 30 minutes of comments, then its
 first 60 minutes, 2, 4 and 8 hours (late bloomers). Votes are never an input. Points at 60 minutes are recorded live and shown for reference; they become a
-model input once a few weeks of them exist.</p></section>
+model input once a few weeks of them exist.</p>
+<p class=note><b>Next:</b> on Sep 20-30 2026, ranking by upvotes at 60 minutes (third-party Quality News data,
+Szabo-Huberman approach) found 57% / 52% / 47% of the top 100 / 30 / 10, against 52% / 49% / 36% for the 60-minute
+comment model above. The live recorder now logs every new story's points and front-page rank at 15, 30 and 60
+minutes, so an early-points model follows once enough days are recorded.</p></section>
 </div>"""
 
 
