@@ -12,6 +12,8 @@ class ReviewFetchTest(unittest.TestCase):
     def test_only_https_review_sites(self):
         self.assertTrue(F.allowed("https://www.g2.com/products/linear/reviews"))
         self.assertTrue(F.allowed("https://www.producthunt.com/products/linear/reviews"))
+        self.assertTrue(F.allowed("https://x.com/levelsio/followers"))
+        self.assertFalse(F.allowed("https://evilx.com/"))
         self.assertFalse(F.allowed("http://www.g2.com/products/linear/reviews"))
         self.assertFalse(F.allowed("https://evil.com/?u=g2.com"))
         self.assertFalse(F.allowed("https://g2.com.evil.com/"))
