@@ -14,7 +14,8 @@ from . import choice, popscore as PS
 from .page_choice import page_table
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-MONTHS = ["2026-05", "2026-06", "2026-07", "2026-08", "2026-09", "2026-10"]
+MONTHS = os.environ.get("MONTHS", "2026-05,2026-06,2026-07,2026-08,2026-09,2026-10").split(",")
+PERSONA = os.environ.get("PERSONA") == "1"   # add the Gemini persona ratings (person x launch, Sep-Oct) as inputs
 G = {}
 
 
@@ -67,8 +68,18 @@ def month(m):
     T = page_table(); pc = list(T.columns)
     tr, tc = add_taste(tr); te, _ = add_taste(te)
     tr = tr.join(T, on="id"); te = te.join(T, on="id")
+    pr = []
+    if PERSONA:
+        from pipeline import warehouse as W
+        R = W.connect(do_sync=False).execute("SELECT person, day, launch_id AS id, design, rating FROM persona_ratings WHERE day >= '2026-08-01'").df()
+        R = R.pivot_table(index=["person", "day", "id"], columns="design", values="rating").add_prefix("pr_").reset_index()
+        pr = [c for c in R.columns if c.startswith("pr_")]
+        tr = tr.merge(R, on=["person", "day", "id"], how="left"); te = te.merge(R, on=["person", "day", "id"], how="left")
     out = {"month": m}
-    for name, cols in (("person", PS.FEATS), ("person+page", PS.FEATS + pc), ("person+page+taste", PS.FEATS + pc + tc)):
+    variants = [("person", PS.FEATS), ("person+page", PS.FEATS + pc), ("person+page+taste", PS.FEATS + pc + tc)]
+    if PERSONA:
+        variants += [("person+page+persona", PS.FEATS + pc + pr), ("all", PS.FEATS + pc + tc + pr)]
+    for name, cols in variants:
         mdl = lgb.LGBMClassifier(n_estimators=400, learning_rate=0.05, num_leaves=31, min_child_samples=50, colsample_bytree=0.5,
                                  verbose=-1, n_jobs=2).fit(tr[cols], tr.y)
         te["s_" + name] = mdl.predict_proba(te[cols])[:, 1]
@@ -76,7 +87,7 @@ def month(m):
             g = dict(zip(cols, mdl.booster_.feature_importance("gain")))
             out["taste_gain_share"] = round(sum(v for k, v in g.items() if k in tc) / sum(g.values()), 3)
             out["top_taste_inputs"] = sorted(((k, round(float(v))) for k, v in g.items() if k in tc), key=lambda kv: -kv[1])[:12]
-    for name in ("person", "person+page", "person+page+taste"):
+    for name in [v[0] for v in variants]:
         hit, auc = [], []
         for _, g in te.groupby(["person", "day"]):
             if g.y.sum() == 0 or g.y.all():
@@ -93,11 +104,11 @@ def main(workers):
     harness.baseline()
     with mp.get_context("fork").Pool(workers) as pool:
         res = pool.map(month, MONTHS)
-    names = ("person", "person+page", "person+page+taste")
+    names = [k for k in res[0] if isinstance(res[0][k], dict) and "auc" in res[0][k]]
     summ = {k: {"top3_hit": round(float(np.mean([r[k]["top3_hit"] for r in res])), 1),
                 "auc": round(float(np.mean([r[k]["auc"] for r in res])), 3)} for k in names}
     summ["months_taste_better_than_page"] = sum(r["person+page+taste"]["auc"] > r["person+page"]["auc"] for r in res)
-    json.dump({"summary": summ, "months": res}, open(f"{HERE}/reports/page_taste.json", "w"), indent=1)
+    json.dump({"summary": summ, "months": res}, open(f"{HERE}/reports/page_taste{'_persona' if PERSONA else ''}.json", "w"), indent=1)
     print(json.dumps(summ, indent=1))
 
 
