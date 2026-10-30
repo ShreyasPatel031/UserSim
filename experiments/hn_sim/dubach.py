@@ -26,16 +26,24 @@ def main(start: str) -> None:
     mdl = AutoModelForSequenceClassification.from_pretrained(REPO, subfolder="roberta").eval()
     p = H.stories()
     p = p[p.day >= start]
-    titles, out = p.title.fillna("").tolist(), []
+    path = os.path.join(S.LOCAL, "dubach_partial.parquet")          # resumable: VMs get stopped by others
+    done = pd.read_parquet(path) if os.path.exists(path) else pd.DataFrame(columns=["post_id", "dubach"])
+    p = p[~p.post_id.isin(done.post_id)]
+    titles, ids, out = p.title.fillna("").tolist(), p.post_id.to_numpy(), []
+    print(len(done), "already scored;", len(titles), "to go", flush=True)
     with torch.inference_mode():
         for i in range(0, len(titles), 256):
             x = tok(titles[i:i + 256], return_tensors="pt", truncation=True, max_length=128, padding=True)
-            out.append(torch.softmax(mdl(**x).logits, -1)[:, 1].numpy())
-            if i % 25600 == 0:
-                print(i, len(titles), flush=True)
-    pd.DataFrame({"post_id": p.post_id.to_numpy(), "dubach": np.concatenate(out)}).to_parquet(
-        os.path.join(S.LOCAL, "dubach.parquet"), index=False)
-    print("scored", len(titles))
+            out.append(pd.DataFrame({"post_id": ids[i:i + 256],
+                                     "dubach": torch.softmax(mdl(**x).logits, -1)[:, 1].numpy()}))
+            if (i // 256) % 100 == 99 or i + 256 >= len(titles):
+                done = pd.concat([done] + out, ignore_index=True)
+                out = []
+                done.to_parquet(path, index=False)
+                os.system(f"gsutil -q cp {path} gs://usersim-bakeoff-347838016394/usersim_sim/hn_jobs/cache/dubach_partial.parquet")
+                print(len(done), flush=True)
+    done.to_parquet(os.path.join(S.LOCAL, "dubach.parquet"), index=False)
+    print("scored", len(done))
 
 
 if __name__ == "__main__":
