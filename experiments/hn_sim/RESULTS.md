@@ -122,3 +122,17 @@ Next: train on the real list itself (daily lists fetched back to Jan 2025).
 hn-sim-1/2 were stopped four times (04:36, 08:43, 11:21 UTC, plus 08:16 for others) by a Cursor agent on another
 machine using the shared usersim-cloud-agent service account (audit log, per the PH session). A watchdog restarts
 them and requeues jobs; long jobs save every 5-15 minutes.
+
+## Daily list v2 (current best): HN's real daily list, 153 held-out days (May–Sep 2026)
+Per-day ranker on the real list; candidates posted in the 72 h before the end of the day; inputs: post block, who
+commented early, submitter, the story's place on the previous day's list, and comments up to the forecast time.
+
+| Forecast made at | real top 30 in our top 30 | real top 10 in our top 10 | real top 10 in our top 30 |
+|---|---|---|---|
+| 06:00 UTC | 21.2% | 16.3% | 18.9% |
+| 12:00 UTC | 32.1% | 24.6% | 29.6% |
+| 18:00 UTC | 54.6% | 42.2% | 65.9% |
+| end of day (before the list is published) | **65.8%** | **55.1%** | **87.8%** |
+
+For reference: knowing every story's exact final points reproduces 58% of the real top 30. Early forecasts are
+capped by stories not yet posted. Next: votes over the day (Quality News hourly upvotes and rank).
