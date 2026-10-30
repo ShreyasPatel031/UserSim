@@ -25,10 +25,10 @@ TIMES = {"t12": 12, "t18": 6, "eod": 0}       # name -> hours before the end of 
 STAGE1_END = os.environ.get("STAGE1_END", "2026-09-01")
 WINDOW_H = 72
 VOTE_MIN_POINTS = float(os.environ.get("VOTE_MIN_POINTS", "30"))
-OUT = os.path.join(H.CACHE, "daily_cache.parquet")
+OUT = os.path.join(H.CACHE, os.environ.get("DC_OUT", "daily_cache.parquet"))
 
 L = pd.concat([pd.read_json(os.path.join(H.CACHE, f), lines=True, dtype={"day": str})
-               for f in ("frontday.jsonl", "frontday_old.jsonl", "frontday_older.jsonl")
+               for f in ("frontday.jsonl", "frontday_old.jsonl") + (() if os.environ.get("NO_OLDER") else ("frontday_older.jsonl",))
                if os.path.exists(os.path.join(H.CACHE, f))]).drop_duplicates(["day", "rank"])
 L = L.sort_values("rank").drop_duplicates(["day", "post_id"])
 p = H.stories()
