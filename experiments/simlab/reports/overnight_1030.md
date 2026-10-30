@@ -75,3 +75,12 @@ Next: herding (Salganik; Hogg & Lerman). Each simulated person also sees how pop
 | taste + simulated popularity (psh) | 63.6 / 70.3 / 79.2 | 36.1 / 51.6 / 64.4 |
 Worse on the daily top 3; weekly/monthly lists improve (week top 3 21.7 → 30.0, month 10.5 → 14.3) but those have 21 weeks / 7 months. Not adopted.
 Next: Gemini persona ratings (largest person-level gain) tested at launch level over the rated people (persona_launch.py).
+
+## Persona ratings at launch level (persona_launch.py; train Sep, test Oct 1–24, rated people only, 6,876 person-days)
+| Simulation over rated people | Day top 3 | Top 5 |
+|---|---|---|
+| person + page + taste | 43.1 | 50.8 |
+| + Gemini persona ratings | 43.1 | 54.2 |
+| real picks of these people (ceiling) | 84.7 | 86.7 |
+Top 5 +3.4 on 24 days (small). ~290 rated people a day already give an 85% ceiling: more people is not the gap, predicting each one's picks is.
+Next: listwise Gemini picker (llm_pick.py: past upvotes + full line-up → 3 picks). Pilot 20 person-days, $0.007.

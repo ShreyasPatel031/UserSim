@@ -1,0 +1,18 @@
+{
+ "train_rows": 260785,
+ "test_rows": 217159,
+ "test_people_days": 6876,
+ "person+page+taste": {
+  "top3": 43.1,
+  "top5": 50.8
+ },
+ "+ persona": {
+  "top3": 43.1,
+  "top5": 54.2
+ },
+ "real picks (ceiling)": {
+  "top3": 84.7,
+  "top5": 86.7
+ },
+ "days": 24
+}
