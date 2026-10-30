@@ -78,7 +78,7 @@ print("comment features done", flush=True)
 
 # votes: Quality News hourly arrays -> matrices, gathered at each forecast time
 qfs = [os.path.join(H.CACHE, f) for f in ("qn_long3.jsonl", "qn_summer.jsonl", "qn_summer_b.jsonl",
-                                                 "qn_summer_c.jsonl") if os.path.exists(os.path.join(H.CACHE, f))]
+                                                 "qn_summer_c.jsonl", "qn_summer_d.jsonl") if os.path.exists(os.path.join(H.CACHE, f))]
 if qfs:
     q = pd.concat([pd.read_json(f, lines=True) for f in qfs], ignore_index=True)
     # the summer fetch skipped stories below VOTE_MIN_POINTS final points (no daily top 30 had fewer than 44): count them
