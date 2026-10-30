@@ -1,0 +1,91 @@
+{
+ "months_tested": [
+  "2026-07",
+  "2026-08",
+  "2026-09",
+  "2026-10"
+ ],
+ "first-time teams": {
+  "launches": 1260,
+  "sim": {
+   "pairs": 60.4,
+   "groups3": 52.3,
+   "corr": 0.381
+  },
+  "sim+ties": {
+   "pairs": 60.1,
+   "groups3": 51.7,
+   "corr": 0.375
+  },
+  "sim+reach": {
+   "pairs": 67.1,
+   "groups3": 63.4,
+   "corr": 0.57
+  },
+  "sim+ties+reach": {
+   "pairs": 67.0,
+   "groups3": 64.0,
+   "corr": 0.567
+  },
+  "launch only": {
+   "pairs": 68.5,
+   "groups3": 66.6,
+   "corr": 0.606
+  }
+ },
+ "repeat teams": {
+  "launches": 1117,
+  "sim": {
+   "pairs": 69.5,
+   "groups3": 55.5,
+   "corr": 0.546
+  },
+  "sim+ties": {
+   "pairs": 70.7,
+   "groups3": 58.0,
+   "corr": 0.566
+  },
+  "sim+reach": {
+   "pairs": 74.0,
+   "groups3": 62.8,
+   "corr": 0.633
+  },
+  "sim+ties+reach": {
+   "pairs": 74.1,
+   "groups3": 62.1,
+   "corr": 0.634
+  },
+  "launch only": {
+   "pairs": 79.8,
+   "groups3": 68.9,
+   "corr": 0.731
+  }
+ },
+ "all launches, daily top 3/5/10": {
+  "sim": [
+   52.9,
+   63.8,
+   74.1
+  ],
+  "sim+ties": [
+   52.3,
+   64.7,
+   75.3
+  ],
+  "sim+reach": [
+   58.3,
+   67.6,
+   77.2
+  ],
+  "sim+ties+reach": [
+   56.9,
+   67.9,
+   77.8
+  ],
+  "launch only": [
+   65.2,
+   72.4,
+   81.6
+  ]
+ }
+}

@@ -28,20 +28,28 @@ def main(wh):
             xf[r["handle"].lower()] = r["profile"].get("followers") or 0
     E = pd.concat([pd.read_parquet(f, columns=["person", "launch_id", "date"]) for f in glob.glob(f"{wh}/events/*.parquet")])
     E["launch_id"] = E.launch_id.astype(str)
-    by_launch = {i: g for i, g in E.groupby("launch_id")}
-    act = {u: sorted(g.date) for u, g in E.groupby("person")}
+    E = E.sort_values("date")
+    by_launch = {i: (list(g.date), list(g.person)) for i, g in E.groupby("launch_id")}   # sorted by date
+    by_date = {d: set(g.person) for d, g in E.groupby("date")}
+    dates = sorted(by_date)
+    act_cache = {}
 
-    def active(u, d):
-        a = act.get(u, []); cut = (pd.Timestamp(d) - pd.Timedelta(days=30)).strftime("%Y-%m-%d")
-        return bisect.bisect_left(a, d) - bisect.bisect_left(a, cut) > 0
+    def active_set(d):   # people with any event in the 30 days before d
+        if d not in act_cache:
+            cut = (pd.Timestamp(d) - pd.Timedelta(days=30)).strftime("%Y-%m-%d")
+            s = set()
+            for x in dates[bisect.bisect_left(dates, cut): bisect.bisect_left(dates, d)]:
+                s |= by_date[x]
+            act_cache[d] = s
+        return act_cache[d]
 
     def engaged(ids, d):
         out = set()
         for i in ids:
             g = by_launch.get(i)
-            if g is not None:
-                out |= set(g.person[g.date < d])
-        return {u for u in out if active(u, d)}
+            if g:
+                out.update(g[1][: bisect.bisect_left(g[0], d)])
+        return out & active_set(d)
     by_maker, by_hunter = defaultdict(list), defaultdict(list)
     for i, r in sorted(L.items(), key=lambda kv: kv[1]["day"]):
         for m in r["makers"]:
@@ -62,8 +70,7 @@ def main(wh):
             s = V @ V[zix[i]]; s[zday >= d] = -9
             comp = [zid[k] for k in np.argsort(-s)[:5]]
         if d not in days_active:
-            cut = (pd.Timestamp(d) - pd.Timedelta(days=30)).strftime("%Y-%m-%d")
-            days_active[d] = int(E[(E.date >= cut) & (E.date < d)].person.nunique())
+            days_active[d] = len(active_set(d))
         out[i] = {"nsa_team_ties": float(np.log1p(len(engaged(team_prev, d)))), "nsa_hunter_ties": float(np.log1p(len(engaged(hunt_prev, d)))),
                   "nsa_comp_ties": float(np.log1p(len(engaged(comp, d)))), "nsa_active": float(np.log1p(days_active[d])),
                   "nsa_ph_makers": float(np.log1p(sum(m.get("followersCount") or 0 for m in r["makers"]))),

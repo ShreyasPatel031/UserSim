@@ -218,3 +218,24 @@ Ladder probe of a Product Hunt profile (/@user/upvotes): rungs 1–3 Cloudflare,
 | first-time teams | 1,260 | 60.4 / 68.5 / 66.4 | 52.3 / 66.6 / 64.8 | 0.38 / 0.61 / 0.57 |
 | repeat teams | 1,117 | 69.5 / 79.8 / 78.1 | 55.5 / 68.9 / 65.9 | 0.55 / 0.73 / 0.69 |
 First-time teams are 53% of launches and Atelier's target. The simulation is weakest there (8 points behind on pairs, 14 on groups of 3).
+
+## Simulation for new products (newsim_audience.py + newsim_eval.py; Jul–Oct, out of sample, 3 seeds)
+Audience per launch, known before launch day: pool people tied through the hunter (34% of launches have any), the makers (41%), the 5 nearest earlier competitors (99.7%); outside reach = makers' and hunter's Product Hunt followers, makers' X followers (8.5% have it).
+| First-time teams (1,260 launches) | Higher of 2 | Winner of 3 | Rank corr. |
+|---|---|---|---|
+| sim (pst + tpd) | 60.4 | 52.3 | 0.38 |
+| sim + ties (hunter, makers, competitors) | 60.1 | 51.7 | 0.38 |
+| **sim + outside reach** | **67.1** | **63.4** | **0.57** |
+| sim + ties + reach | 67.0 | 64.0 | 0.57 |
+| launch model | 68.5 | 66.6 | 0.61 |
+
+| Repeat teams (1,117) | Higher of 2 | Winner of 3 | Rank corr. |
+|---|---|---|---|
+| sim | 69.5 | 55.5 | 0.55 |
+| sim + ties + reach | 74.1 | 62.1 | 0.63 |
+| launch model | 79.8 | 68.9 | 0.73 |
+
+All launches, daily top 3/5/10: sim 52.9/63.8/74.1 → sim + reach **58.3**/67.6/77.2 (sim + ties + reach 56.9/67.9/77.8); launch model 65.2/72.4/81.6.
+- Outside reach is what closes the gap on new products: within 1.4 points of the launch model on pairs, 3.2 on groups of 3.
+- Hunter and competitor ties add nothing measurable.
+- Caveat: follower counts in the backtest were fetched after launch for older days (the launch model has the same issue). Live forecasts use counts snapshotted at forecast time; a clean check needs the live record.
