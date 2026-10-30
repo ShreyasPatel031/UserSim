@@ -1,0 +1,27 @@
+{
+ "launches": 20,
+ "window_days": 60,
+ "voters": {
+  "n": 1433,
+  "fetched": 841,
+  "reached": 522,
+  "any": 9,
+  "reply": 7,
+  "quote": 3,
+  "repost": 5,
+  "mention": 2,
+  "share_with_x_tie_of_fetched": 0.0107
+ },
+ "control": {
+  "n": 1433,
+  "fetched": 803,
+  "reached": 496,
+  "any": 1,
+  "reply": 0,
+  "quote": 0,
+  "repost": 1,
+  "mention": 0,
+  "share_with_x_tie_of_fetched": 0.0012
+ },
+ "lift_voters_vs_control": 8.9
+}

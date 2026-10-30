@@ -185,3 +185,13 @@ Pairs (random 50): simulation only 69.2 / 71.2 / 73.3, launch only 76.1 / 79.9 /
 - Stargazers: GitHub now answers 401 without a token, so that half returned nothing (no token available here).
 - Coverage bound: only 713 of 20,671 Product Hunt people (3.4%) link GitHub, so GitHub can explain at most a few percent of voters. Not worth scaling.
 - X: 8,939 people (43%) link X. The X follower pilot (1,433 voters vs 1,433 same-day control, 20 launches) is ready but blocked by the permission classifier when run through the ladder on the production VM.
+
+## X ties pilot (x_pilot.py; 20 Sep–Oct launches; public posts via fxtwitter, no login, VM IP)
+X follower lists: every ladder rung returns X's logged-out page (200, ~27 KB, "X - The Everything App"); Apify Unblocker no response. Not fetchable without signing in.
+Voter-side ties instead (reply / quote / repost / mention, either way, 60 days before launch):
+| | People | With public posts | With an X tie to the makers |
+|---|---|---|---|
+| real voters | 1,433 | 841 | 9 (1.07%) |
+| same-day control | 1,433 | 803 | 1 (0.12%) |
+Lift 8.9x, but rare: about 1% of voters. 6 of the 9 tied voters had not backed the team on Product Hunt before (new information). Likes are not visible without login.
+Upper bound: X handles for 43% of people × ~1% tied ≈ well under 1% of votes explained. Not worth scaling as an input.
