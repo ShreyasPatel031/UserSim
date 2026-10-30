@@ -1,6 +1,6 @@
 """Run a shell job on hn-sim-1: package the code (experiments/hn_sim + src), upload it, queue the job, optionally wait.
 The job runs in a checkout where experiments/hn_sim and src sit as in the repo; the cache (~/.usersim_sim) on the VM
-is pulled from / pushed to gs://.../hn_jobs/cache/ with `pull` / `push` helpers available to the job.
+lives in the job's own folder ($USERSIM_CACHE), filled from / saved to gs://.../hn_jobs/cache/ with `pull` / `push`.
 
     python vm/submit.py <name> '<shell commands>' [--wait]
     python vm/submit.py --log <name>        # live or finished log
@@ -20,10 +20,11 @@ import store as S  # noqa: E402
 Q = "usersim_sim/hn_jobs"
 PRE = """set -e
 export PYTHONPATH=$PWD/src PYTHONUNBUFFERED=1
-mkdir -p ~/.usersim_sim
+export USERSIM_CACHE=$PWD/cache          # each job has its own cache: jobs on one VM never overwrite each other's files
+mkdir -p $USERSIM_CACHE
 C=gs://usersim-bakeoff-347838016394/usersim_sim/hn_jobs/cache
-pull() { mkdir -p ~/.usersim_sim; for f in "$@"; do gsutil -q cp $C/$f ~/.usersim_sim/$f; done; }
-push() { for f in "$@"; do gsutil -q cp ~/.usersim_sim/$f $C/$f; done; }
+pull() { for f in "$@"; do gsutil -q cp $C/$f $USERSIM_CACHE/$f; done; }
+push() { for f in "$@"; do gsutil -q cp $USERSIM_CACHE/$f $C/$f; done; }
 cd experiments/hn_sim
 """
 
