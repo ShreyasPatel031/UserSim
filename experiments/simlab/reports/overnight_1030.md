@@ -67,3 +67,11 @@ Next: stronger pick models (pick_boost.py: more training people, bigger trees, L
 | LambdaRank, bigger | 48.1 | 0.693 |
 Learner and data size are saturated; the inputs are the limit.
 Next: herding (Salganik; Hogg & Lerman). Each simulated person also sees how popular the simulation's first pass made each launch (never real votes): `HERD=1 popscore` → robust_src +psh =psh.
+
+## Herding (robust_psh.csv)
+| | Full model day top 3 / 5 / 10 | Simulation only |
+|---|---|---|
+| taste (pst) | 63.9 / 70.7 / 79.1 | 39.8 / 51.0 / 64.6 |
+| taste + simulated popularity (psh) | 63.6 / 70.3 / 79.2 | 36.1 / 51.6 / 64.4 |
+Worse on the daily top 3; weekly/monthly lists improve (week top 3 21.7 → 30.0, month 10.5 → 14.3) but those have 21 weeks / 7 months. Not adopted.
+Next: Gemini persona ratings (largest person-level gain) tested at launch level over the rated people (persona_launch.py).
