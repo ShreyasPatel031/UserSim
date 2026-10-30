@@ -178,13 +178,13 @@ def labels(p: pd.DataFrame) -> tuple[pd.Series, pd.Series]:
 
 
 def early_block(c: pd.DataFrame, ids, W: int) -> pd.DataFrame:
-    e = c[c.age <= W * 60]
+    e = c[c.age <= W * 60].astype({"top_level": int, "age": float})
     g = e.groupby("story_id")
     b = pd.DataFrame({f"e{W}_all": g.size(), f"e{W}_top": g.top_level.sum(), f"e{W}_people": g.person.nunique(),
                       f"e{W}_first_s": g.age.min()}).reindex(ids)
     b[[f"e{W}_all", f"e{W}_top", f"e{W}_people"]] = b[[f"e{W}_all", f"e{W}_top", f"e{W}_people"]].fillna(0)
     b[f"e{W}_first_s"] = b[f"e{W}_first_s"].fillna(W * 60 * 2)
-    return b
+    return b.astype(float)
 
 
 def person_records(pairs: pd.DataFrame, t0: int):
