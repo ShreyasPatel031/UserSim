@@ -183,10 +183,16 @@ def score_day(d):
     D = featurize(D, art["cf"], art["prior_cut"])
     D, pc = page_cols(D)
     D["p"] = art["model"].predict_proba(D[FEATS + pc])[:, 1]; D["wp"] = D.w * D.p
+    # choice-style: each person splits their expected picks over the day's line-up (relative taste, not activity)
+    by = D.groupby("person").p
+    D["ws"] = D.w * D.p / by.transform("sum") * by.transform("sum").clip(upper=3)
+    rk = by.rank(ascending=False, method="first")
+    D["w1"] = D.w * (rk == 1); D["w3"] = D.w * (rk <= 3)
     out = []
     for x, g in D.groupby("id"):
         out.append({"id": x, "day": d, "psn_ev": g.wp.sum(), "psn_fans": np.sort(g.wp.values)[-100:].sum(),
-                    "psn_ev_ties": g.wp[g.backed > 0].sum(), "psn_reach": g.w.sum(), "psn_pmax": g.p.max()})
+                    "psn_ev_ties": g.wp[g.backed > 0].sum(), "psn_reach": g.w.sum(), "psn_pmax": g.p.max(),
+                    "psn_share": g.ws.sum(), "psn_top1": g.w1.sum(), "psn_top3": g.w3.sum()})
     pd.DataFrame(out).to_parquet(path)
     return d, len(D)
 

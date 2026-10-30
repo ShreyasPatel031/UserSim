@@ -17,3 +17,15 @@ All tests are out of sample (train on earlier months, test on the next). No Clau
 
 ## Why person gains did not raise the launch score
 The launch score sums each person's pick probability. The page inputs shift those probabilities about equally for everyone, so the sum ranks launches the same as reach does. Taste differs by person, so it is the one direction that can change the sum. That is the single direction being finished now: taste-aware population simulation (`TASTE=1 python -m simlab.popscore`) → launch test (`robust_src.py +pst =pst`).
+
+## Taste-aware population simulation → launch score (Apr–Oct, live config)
+
+| Daily top 3 / 5 / 10 | Full model | Simulation only |
+|---|---|---|
+| current (no person sim with page) | 64.5 / 70.8 / 79.1 | — |
+| + person sim, no page (psn) | — | 38.5 / 51.8 / 64.3 |
+| + person sim with page (psp) | 63.8 / 70.3 / 79.2 | 37.1 / 50.6 / 64.4 |
+| + person sim with page + taste (pst) | 63.6 / 70.6 / 79.1 | **39.6** / 51.3 / 64.0 |
+
+Taste helps the simulation alone (+1.1 top-3 over no page, +2.5 over page only) but adds nothing to the full model.
+Next: choice-style aggregation (each person splits expected picks over the line-up; counts of people ranking it top 1 / top 3), so relative taste counts instead of raw activity.
