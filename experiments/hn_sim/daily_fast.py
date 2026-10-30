@@ -18,7 +18,7 @@ import top100 as H
 SPLIT = sys.argv[1] if len(sys.argv) > 1 else "2026-09-16"
 C = pd.read_parquet(os.path.join(H.CACHE, "daily_cache.parquet"))
 V = ["v_points", "v_rank_now", "v_best_rank", "v_h_top30", "v_h_top10", "v_gain3h"]
-cov = C[C.day >= "2026-08-01"].groupby("day").qn_fetched.mean()
+cov = C[C.day >= "2026-06-01"].groupby("day").qn_fetched.mean()
 qdays = set(cov[cov >= 0.98].index)
 print("days with full vote coverage:", len(qdays), min(qdays) if qdays else "", max(qdays) if qdays else "", flush=True)
 
