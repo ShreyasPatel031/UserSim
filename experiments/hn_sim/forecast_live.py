@@ -331,10 +331,11 @@ def forecast(M: dict) -> dict:
     X = pd.concat([F.reset_index(drop=True)] + [blocks[W] for W in WS], axis=1)
     X["text_score"] = M["ridge"].predict(M["tf"].transform(doc(L)))
     variant = np.array(["post"] * len(L), dtype=object)
-    for W in WS:                                      # the richest window the story is old enough for
-        variant[(L.age_min * 60 >= W * 60 + GRACE).to_numpy()] = f"v{W}" 
+    for W in WS:                                      # the richest window the story is old enough for (and the model has)
+        if f"v{W}" in M["models"]:
+            variant[(L.age_min * 60 >= W * 60 + GRACE).to_numpy()] = f"v{W}" 
     p100, p10 = np.zeros(len(L)), np.zeros(len(L))
-    for v in VARIANTS:
+    for v in [x for x in VARIANTS if x in M["models"]]:
         m = variant == v
         if m.any():
             s = M["models"][v].predict_proba(X[m][M["cols"][v] + ["text_score"]])[:, 1]
@@ -352,7 +353,8 @@ def forecast(M: dict) -> dict:
         g = L[L.day == d].sort_values(["p10", "p100"], ascending=False)
         g = g.assign(rank=np.arange(1, len(g) + 1))
         out["days"][d] = {"n_stories": int(len(g)), "complete": d != today.isoformat(),
-                          "top": [{"rank": int(r.rank), "post_id": int(r.post_id), "title": r.title, "url": r.url,
+                          "top": [{"rank": int(r.rank), "post_id": int(r.post_id), "title": r.title,
+                                   "url": r.url if isinstance(r.url, str) else None,
                                    "host": host_of(r.url), "age_min": round(float(r.age_min)), "model": r.variant,
                                    "p_top100": round(float(r.p100), 3), "p_top10": round(float(r.p10), 3),
                                    "points_at_30": None if pd.isna(r.pts_30) else int(r.pts_30),
@@ -432,7 +434,7 @@ def page(out: dict, scores: pd.DataFrame) -> str:
     board = pd.DataFrame(out["board"])
     bt = "".join(f"<tr><td>{v}</td>" + "".join(
         f"<td>{board[(board.variant == v) & (board.k == k)].recall.iloc[0]:.1%}</td>" for k in (100, 30, 10)) + "</tr>"
-        for v in VARIANTS)
+        for v in VARIANTS if (board.variant == v).any())
     sc = ""
     if len(scores):
         sc = "".join(f"<tr><td>{r.forecast_day}</td><td>{r.recall_100:.0%}</td><td>{r.recall_10:.0%}</td></tr>"
