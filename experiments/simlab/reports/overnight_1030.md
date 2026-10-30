@@ -29,3 +29,20 @@ The launch score sums each person's pick probability. The page inputs shift thos
 
 Taste helps the simulation alone (+1.1 top-3 over no page, +2.5 over page only) but adds nothing to the full model.
 Next: choice-style aggregation (each person splits expected picks over the line-up; counts of people ranking it top 1 / top 3), so relative taste counts instead of raw activity.
+
+## Choice-style aggregation (robust_pst2.csv)
+Simulation only daily top 3: 39.6 → 39.8. Full model 63.9 (current 64.5). No real change.
+
+## Does the simulated lift predict over-performance at fixed reach? (simlift.py, ctrl.py residual)
+| Input | Corr. with over-performance (95%) | Matched-reach pairs |
+|---|---|---|
+| page lift in the sim (psp − psn) | 0.042 (0.009–0.077) | 51.8% |
+| taste lift (pst − psp) | −0.044 (−0.074 to −0.014) | 49.2% |
+| pst_top1 (people ranking it first) | 0.038 (0.002–0.075) | 56.2% |
+| for comparison: page lift in the launch model (ctrl.py) | 0.233 (0.199–0.264) | 56.0% |
+The person-level simulation does not carry the page's effect to the launch; the launch-level page model does.
+
+## Ceiling (cover.py, Apr–Oct, 5,082 launches)
+- Pool people cast 28% of real votes (39% for top-3 launches, 15% for rank 11+).
+- Real pool votes track real total votes: within-day rank correlation 0.92.
+- If each pool person's votes were known exactly, daily top-3 recall = 88.8%. The pool is big enough; the per-person prediction is the gap (simulation now 39.8).
