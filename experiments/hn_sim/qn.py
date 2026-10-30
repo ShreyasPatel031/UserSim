@@ -28,13 +28,15 @@ _s.headers.update({"User-Agent": "atelier-research (HN early-vote backtest; ~2 r
 def parse(html: str, t0: int) -> dict:
     out = {}
     m = re.search(r"upvotesPlotData = \[(.*?)\];", html, re.S)
-    up = [(int(a), int(b)) for a, b in re.findall(r"\[(\d+),(\d+)", m.group(1))] if m else []
+    # upvotesPlotData rows: time, upvotes, expected upvotes (from the ranks it was shown at), ...
+    up = [(int(a), int(b), float(c)) for a, b, c in re.findall(r"\[(\d+),(\d+),([\d.eE+-]+)", m.group(1))] if m else []
     m = re.search(r"ranksPlotData = \[(.*?)\];", html, re.S)
     rk = [[int(x) for x in row.split(",")] for row in re.findall(r"\[(\d+(?:,\d+)+)\]", m.group(1))] if m else []
     for a in (15, 30, 60):
         lim = t0 + a * 60
-        u = [v for t, v in up if t <= lim]
-        out[f"qn_up{a}"] = u[-1] if u else None
+        u = [(v, e) for t, v, e in up if t <= lim]
+        out[f"qn_up{a}"] = u[-1][0] if u else None
+        out[f"qn_exp{a}"] = round(u[-1][1], 3) if u else None      # Quality News' upvote rate = upvotes / expected
         # columns: time, raw rank, "Top" rank, "New" rank, "Best" rank, ...; 91 = not on that page
         r = [row[2] for row in rk if row[0] <= lim and len(row) > 2 and 0 < row[2] < 91]
         out[f"qn_toprank{a}"] = min(r) if r else None
