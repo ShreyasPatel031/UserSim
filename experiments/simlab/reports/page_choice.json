@@ -1,0 +1,485 @@
+{
+ "summary": {
+  "person": {
+   "top3_hit": 47.4,
+   "auc": 0.674,
+   "person_days": 35498
+  },
+  "person+page": {
+   "top3_hit": 47.5,
+   "auc": 0.686,
+   "person_days": 35498
+  },
+  "months_better": 6
+ },
+ "months": [
+  {
+   "month": "2026-05",
+   "train_rows": 274066,
+   "test_person_days": 6177,
+   "page_gain_share": 0.485,
+   "top_page_inputs": [
+    [
+     "pf_first_comment_words",
+     8203
+    ],
+    [
+     "ps_audience_breadth",
+     5350
+    ],
+    [
+     "ps_visual_polish",
+     4168
+    ],
+    [
+     "pf_tagline_words",
+     3454
+    ],
+    [
+     "ps_problem_urgency",
+     3404
+    ],
+    [
+     "pf_features_listed",
+     3225
+    ],
+    [
+     "ps_website",
+     3155
+    ],
+    [
+     "pf_asks_for_feedback",
+     3154
+    ],
+    [
+     "ps_top5_chance",
+     3129
+    ],
+    [
+     "ps_video",
+     3061
+    ],
+    [
+     "ps_tagline",
+     2970
+    ],
+    [
+     "ps_name",
+     2769
+    ],
+    [
+     "pf_tagline_style_clever",
+     2292
+    ],
+    [
+     "ps_credibility",
+     2031
+    ],
+    [
+     "ps_novelty",
+     1859
+    ]
+   ],
+   "person": {
+    "top3_hit": 44.0,
+    "auc": 0.705,
+    "n": 6168
+   },
+   "person+page": {
+    "top3_hit": 44.7,
+    "auc": 0.716,
+    "n": 6168
+   }
+  },
+  {
+   "month": "2026-06",
+   "train_rows": 296166,
+   "test_person_days": 5987,
+   "page_gain_share": 0.418,
+   "top_page_inputs": [
+    [
+     "ps_top5_chance",
+     14060
+    ],
+    [
+     "ps_category_fit",
+     10344
+    ],
+    [
+     "pf_first_comment_words",
+     8551
+    ],
+    [
+     "ps_video",
+     4554
+    ],
+    [
+     "ps_website",
+     3718
+    ],
+    [
+     "pf_features_listed",
+     3615
+    ],
+    [
+     "pf_relaunch_or_new_version",
+     3331
+    ],
+    [
+     "ps_mix_praise",
+     3259
+    ],
+    [
+     "ps_mix_comparison",
+     3225
+    ],
+    [
+     "ps_has_first_comment",
+     2935
+    ],
+    [
+     "ps_visual_polish",
+     2892
+    ],
+    [
+     "pf_agent",
+     2680
+    ],
+    [
+     "ps_name",
+     2615
+    ],
+    [
+     "pf_audience_founders",
+     2527
+    ],
+    [
+     "ps_wow",
+     2494
+    ]
+   ],
+   "person": {
+    "top3_hit": 45.3,
+    "auc": 0.64,
+    "n": 5974
+   },
+   "person+page": {
+    "top3_hit": 45.5,
+    "auc": 0.66,
+    "n": 5974
+   }
+  },
+  {
+   "month": "2026-07",
+   "train_rows": 180891,
+   "test_person_days": 6200,
+   "page_gain_share": 0.436,
+   "top_page_inputs": [
+    [
+     "pf_first_comment_words",
+     8015
+    ],
+    [
+     "pf_tagline_words",
+     6537
+    ],
+    [
+     "ps_top5_chance",
+     5665
+    ],
+    [
+     "ps_website",
+     4792
+    ],
+    [
+     "pf_audience_founders",
+     3143
+    ],
+    [
+     "ps_visual_polish",
+     3142
+    ],
+    [
+     "pf_features_listed",
+     2844
+    ],
+    [
+     "ps_mix_question",
+     2699
+    ],
+    [
+     "ps_mix_praise",
+     2563
+    ],
+    [
+     "ps_video",
+     2544
+    ],
+    [
+     "pf_social_proof",
+     2534
+    ],
+    [
+     "pf_emoji_in_first_comment",
+     2473
+    ],
+    [
+     "pf_asks_for_feedback",
+     2144
+    ],
+    [
+     "ps_problem_urgency",
+     1892
+    ],
+    [
+     "ps_credibility",
+     1653
+    ]
+   ],
+   "person": {
+    "top3_hit": 47.6,
+    "auc": 0.629,
+    "n": 6178
+   },
+   "person+page": {
+    "top3_hit": 48.4,
+    "auc": 0.648,
+    "n": 6178
+   }
+  },
+  {
+   "month": "2026-08",
+   "train_rows": 159290,
+   "test_person_days": 6200,
+   "page_gain_share": 0.432,
+   "top_page_inputs": [
+    [
+     "pf_first_comment_words",
+     7093
+    ],
+    [
+     "ps_website",
+     4441
+    ],
+    [
+     "pf_features_listed",
+     3851
+    ],
+    [
+     "ps_credibility",
+     3498
+    ],
+    [
+     "pf_tagline_words",
+     3433
+    ],
+    [
+     "ps_video",
+     3373
+    ],
+    [
+     "pf_api_or_sdk",
+     2787
+    ],
+    [
+     "ps_category_fit",
+     2737
+    ],
+    [
+     "ps_audience_breadth",
+     2505
+    ],
+    [
+     "ps_mix_praise",
+     2396
+    ],
+    [
+     "ps_top5_chance",
+     2195
+    ],
+    [
+     "pf_who_its_for_stated",
+     2045
+    ],
+    [
+     "ps_clarity",
+     1934
+    ],
+    [
+     "ps_description",
+     1884
+    ],
+    [
+     "pf_audience_teams",
+     1819
+    ]
+   ],
+   "person": {
+    "top3_hit": 51.7,
+    "auc": 0.675,
+    "n": 6193
+   },
+   "person+page": {
+    "top3_hit": 51.3,
+    "auc": 0.683,
+    "n": 6193
+   }
+  },
+  {
+   "month": "2026-09",
+   "train_rows": 164950,
+   "test_person_days": 6000,
+   "page_gain_share": 0.435,
+   "top_page_inputs": [
+    [
+     "pf_first_comment_words",
+     6336
+    ],
+    [
+     "pf_audience_founders",
+     6271
+    ],
+    [
+     "ps_top5_chance",
+     4080
+    ],
+    [
+     "ps_wow",
+     3952
+    ],
+    [
+     "ps_problem_urgency",
+     3564
+    ],
+    [
+     "ps_mix_praise",
+     3422
+    ],
+    [
+     "ps_website",
+     3272
+    ],
+    [
+     "pf_features_listed",
+     3160
+    ],
+    [
+     "pf_tagline_words",
+     2861
+    ],
+    [
+     "ps_credibility",
+     2851
+    ],
+    [
+     "ps_first_comment",
+     2643
+    ],
+    [
+     "pf_social_proof",
+     2135
+    ],
+    [
+     "ps_visual_polish",
+     2118
+    ],
+    [
+     "pf_audience_marketers",
+     2068
+    ],
+    [
+     "ps_audience_breadth",
+     1892
+    ]
+   ],
+   "person": {
+    "top3_hit": 47.1,
+    "auc": 0.675,
+    "n": 5992
+   },
+   "person+page": {
+    "top3_hit": 47.7,
+    "auc": 0.689,
+    "n": 5992
+   }
+  },
+  {
+   "month": "2026-10",
+   "train_rows": 212309,
+   "test_person_days": 5000,
+   "page_gain_share": 0.412,
+   "top_page_inputs": [
+    [
+     "ps_credibility",
+     6272
+    ],
+    [
+     "ps_top5_chance",
+     5694
+    ],
+    [
+     "ps_mix_question",
+     4712
+    ],
+    [
+     "pf_tagline_words",
+     4449
+    ],
+    [
+     "pf_first_comment_words",
+     4412
+    ],
+    [
+     "pf_agent",
+     3890
+    ],
+    [
+     "pf_social_proof",
+     3487
+    ],
+    [
+     "ps_mix_praise",
+     3218
+    ],
+    [
+     "ps_problem_urgency",
+     3118
+    ],
+    [
+     "pf_audience_other",
+     2679
+    ],
+    [
+     "pf_founder_story",
+     2581
+    ],
+    [
+     "pf_asks_for_feedback",
+     2519
+    ],
+    [
+     "pf_audience_sales",
+     2517
+    ],
+    [
+     "ps_website",
+     2492
+    ],
+    [
+     "ps_video",
+     2382
+    ]
+   ],
+   "person": {
+    "top3_hit": 48.5,
+    "auc": 0.719,
+    "n": 4993
+   },
+   "person+page": {
+    "top3_hit": 47.3,
+    "auc": 0.723,
+    "n": 4993
+   }
+  }
+ ]
+}

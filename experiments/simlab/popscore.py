@@ -19,7 +19,9 @@ from . import store, choice
 from .seq import features as seq_features
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-WORK = os.path.join(HERE, "cache", "popscore")
+PAGE = os.environ.get("PAGE") == "1"   # page-aware people: every launch-page input added to the person model
+WORK = os.path.join(HERE, "cache", "popscore_page" if PAGE else "popscore")
+PREFIX = "psp_" if PAGE else "psn_"
 MONTHS = ["2026-04", "2026-05", "2026-06", "2026-07", "2026-08", "2026-09", "2026-10"]
 FEATS = ["backed", "topic", "meaning", "cf_team", "nbr_team", "nbr_pop", "seq_last10", "seq_decay", "seq_nn", "team_recent",
          "cat_rate_max", "cat_rate_mean", "cat_prior", "cat_n"]
@@ -135,6 +137,16 @@ def featurize(D, cf, prior_cut):
 
 
 # ---- phase A: per month, train the person model on the previous month
+def page_cols(D):
+    """Join the launch-page inputs (ps_ Gemini element scores, pf_ page facts, vs_ video) when PAGE is on."""
+    if not PAGE:
+        return D, []
+    from .page_choice import page_table
+    T = G.setdefault("page", page_table())
+    D = D.copy(); D["id"] = D.id.astype(str)
+    return D.join(T, on="id"), list(T.columns)
+
+
 def train_month(m):
     prev = month_start(m, 1)
     cf = fit_cf(prev)
@@ -146,7 +158,8 @@ def train_month(m):
     D = D[D.g.isin(keep)].copy()
     D = featurize(D, cf, prev)
     mdl = lgb.LGBMClassifier(n_estimators=300, learning_rate=0.05, num_leaves=15, min_child_samples=50, verbose=-1, n_jobs=1)
-    mdl.fit(D[FEATS], D.y)
+    D, pc = page_cols(D)
+    mdl.fit(D[FEATS + pc], D.y)
     pickle.dump({"model": mdl, "cf": cf, "prior_cut": prev}, open(f"{WORK}/model_{m}.pkl", "wb"))
     return m, len(D), float(D.y.mean())
 
@@ -161,7 +174,8 @@ def score_day(d):
     if not len(D):
         return d, 0
     D = featurize(D, art["cf"], art["prior_cut"])
-    D["p"] = art["model"].predict_proba(D[FEATS])[:, 1]; D["wp"] = D.w * D.p
+    D, pc = page_cols(D)
+    D["p"] = art["model"].predict_proba(D[FEATS + pc])[:, 1]; D["wp"] = D.w * D.p
     out = []
     for x, g in D.groupby("id"):
         out.append({"id": x, "day": d, "psn_ev": g.wp.sum(), "psn_fans": np.sort(g.wp.values)[-100:].sum(),
@@ -184,10 +198,11 @@ def main(workers):
             if k % 20 == 0:
                 print("scored", k, "of", len(days), r, flush=True)
     S = pd.concat([pd.read_parquet(f"{WORK}/day_{d}.parquet") for d in days if os.path.exists(f"{WORK}/day_{d}.parquet")])
-    S.to_parquet(os.path.join(HERE, "cache", "popscore.parquet"))
-    cols = [c for c in S.columns if c.startswith("psn_")]
+    S.to_parquet(os.path.join(HERE, "cache", "popscore_page.parquet" if PAGE else "popscore.parquet"))
+    S = S.rename(columns={c: PREFIX + c[4:] for c in S.columns if c.startswith("psn_")})
+    cols = [c for c in S.columns if c.startswith(PREFIX)]
     json.dump({str(r["id"]): {c: float(r[c]) for c in cols} for r in S.to_dict("records")},
-              open(os.path.join(store.RAW, "psn_features.json"), "w"))
+              open(os.path.join(store.RAW, PREFIX + "features.json"), "w"))
     print("saved", len(S), "launches")
 
 
