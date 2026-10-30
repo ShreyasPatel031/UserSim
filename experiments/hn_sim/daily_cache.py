@@ -75,10 +75,12 @@ for name, off in TIMES.items():
 print("comment features done", flush=True)
 
 # votes: Quality News hourly arrays -> matrices, gathered at each forecast time
-qf = os.path.join(H.CACHE, "qn_long3.jsonl")
-if os.path.exists(qf):
-    q = pd.read_json(qf, lines=True)
-    fetched = set(q.post_id)
+qfs = [os.path.join(H.CACHE, f) for f in ("qn_long3.jsonl", "qn_summer.jsonl") if os.path.exists(os.path.join(H.CACHE, f))]
+if qfs:
+    q = pd.concat([pd.read_json(f, lines=True) for f in qfs], ignore_index=True)
+    # stories below 5 final points were skipped in the summer fetch (they never reach the list): count them as covered,
+    # with the no-votes fill (1 point, not on the page), as Quality News' own 404s are treated
+    fetched = set(q.post_id) | set(p.post_id[(p.points < 5).to_numpy()])
     q = q[(q.status == 200) & q.qn_rank_by_hour.map(lambda x: isinstance(x, list))].drop_duplicates("post_id")
     qi = pd.Series(np.arange(len(q)), index=q.post_id)
     RK = np.array([[x if x is not None else 91 for x in r] for r in q.qn_rank_by_hour], float)
