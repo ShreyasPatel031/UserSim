@@ -67,7 +67,7 @@ def build():
     k = p.url.map(norm)
     lt = k.map(first)
     f = pd.DataFrame({"post_id": p.post_id})
-    before = (lt < p.created_at_i).to_numpy()
+    before = (lt.astype(float) < p.created_at_i.astype(float)).to_numpy()   # no Lobsters post -> NaN -> False
     f["lob_before"] = before.astype(int)
     f["lob_lead_h"] = np.where(before, (p.created_at_i - lt) / 3600, np.nan)
     f.to_parquet(os.path.join(S.LOCAL, "f_lobsters.parquet"), index=False)
