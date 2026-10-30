@@ -1,5 +1,5 @@
 """Live recorder (runs on hn-sim-1): the front page top 30 every 5 minutes, and every new story's points and comment
-count when it is 15, 30 and 60 minutes old (official Firebase API), and HN's second-chance pool every 10 minutes. Early points are the strongest live signal and
+count and top-list rank when it is 15, 30 and 60 minutes old (official Firebase API), and HN's second-chance pool every 10 minutes. Early points are the strongest live signal and
 exist nowhere historically, so they have to be recorded going forward. Tables: hn_frontpage, hn_early_points, hn_pool.
 
     python live.py
@@ -40,6 +40,7 @@ def main():
                 pl += pool()
                 last_pool = now
             ids = get(f"{FIREBASE}/newstories.json") or []
+            top = {x: i + 1 for i, x in enumerate(get(f"{FIREBASE}/topstories.json") or [])}   # rank on the top list
             with ThreadPoolExecutor(16) as ex:
                 items = list(ex.map(lambda i: get(f"{FIREBASE}/item/{i}.json") or {}, ids[:300]))
             for it in items:
@@ -51,7 +52,8 @@ def main():
                         seen.add((it["id"], a))
                         ep.append({"item_id": it["id"], "age_min": a, "observed_at": int(now), "age_s": int(age),
                                    "points": it.get("score"), "comments": it.get("descendants"), "title": it.get("title"),
-                                   "url": it.get("url"), "by": it.get("by"), "time": it["time"]})
+                                   "url": it.get("url"), "by": it.get("by"), "time": it["time"],
+                                   "toprank": min(top.get(it["id"], 91), 91)})   # 91 = not in the top 90 (as Quality News)
             if now - last_flush >= 1800:
                 S.write("hn_frontpage", pd.DataFrame(fp))
                 S.write("hn_early_points", pd.DataFrame(ep))
