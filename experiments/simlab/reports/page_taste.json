@@ -1,0 +1,433 @@
+{
+ "summary": {
+  "person": {
+   "top3_hit": 46.7,
+   "auc": 0.668
+  },
+  "person+page": {
+   "top3_hit": 47.0,
+   "auc": 0.681
+  },
+  "person+page+taste": {
+   "top3_hit": 48.8,
+   "auc": 0.692
+  },
+  "months_taste_better_than_page": 6
+ },
+ "months": [
+  {
+   "month": "2026-05",
+   "taste_gain_share": 0.355,
+   "top_taste_inputs": [
+    [
+     "taste_n",
+     6579
+    ],
+    [
+     "taste_dot",
+     5062
+    ],
+    [
+     "taste_cos",
+     4177
+    ],
+    [
+     "tx_pf_founder_story",
+     2430
+    ],
+    [
+     "tx_ps_audience_breadth",
+     2425
+    ],
+    [
+     "tx_pf_agent",
+     2111
+    ],
+    [
+     "tx_pf_features_listed",
+     2068
+    ],
+    [
+     "tx_pf_relaunch_or_new_version",
+     1941
+    ],
+    [
+     "tx_pf_ai_in_tagline",
+     1858
+    ],
+    [
+     "tx_ps_category_fit",
+     1763
+    ],
+    [
+     "tx_ps_n_images",
+     1756
+    ],
+    [
+     "tx_ps_top5_chance",
+     1738
+    ]
+   ],
+   "person": {
+    "top3_hit": 43.5,
+    "auc": 0.697,
+    "n": 6168
+   },
+   "person+page": {
+    "top3_hit": 44.6,
+    "auc": 0.712,
+    "n": 6168
+   },
+   "person+page+taste": {
+    "top3_hit": 46.3,
+    "auc": 0.726,
+    "n": 6168
+   }
+  },
+  {
+   "month": "2026-06",
+   "taste_gain_share": 0.304,
+   "top_taste_inputs": [
+    [
+     "taste_n",
+     9634
+    ],
+    [
+     "taste_cos",
+     8637
+    ],
+    [
+     "taste_dot",
+     4364
+    ],
+    [
+     "tx_pf_agent",
+     3794
+    ],
+    [
+     "tx_ps_mix_pricing",
+     3217
+    ],
+    [
+     "tx_pf_mac_app",
+     2367
+    ],
+    [
+     "tx_pf_ai_in_tagline",
+     2348
+    ],
+    [
+     "tx_pf_relaunch_or_new_version",
+     2253
+    ],
+    [
+     "tx_pf_audience_founders",
+     2243
+    ],
+    [
+     "tx_pf_founder_story",
+     2095
+    ],
+    [
+     "tx_pf_developer_tool",
+     2074
+    ],
+    [
+     "tx_ps_n_images",
+     2067
+    ]
+   ],
+   "person": {
+    "top3_hit": 45.2,
+    "auc": 0.639,
+    "n": 5974
+   },
+   "person+page": {
+    "top3_hit": 45.1,
+    "auc": 0.656,
+    "n": 5974
+   },
+   "person+page+taste": {
+    "top3_hit": 47.2,
+    "auc": 0.669,
+    "n": 5974
+   }
+  },
+  {
+   "month": "2026-07",
+   "taste_gain_share": 0.37,
+   "top_taste_inputs": [
+    [
+     "taste_n",
+     8677
+    ],
+    [
+     "taste_dot",
+     7673
+    ],
+    [
+     "taste_cos",
+     4819
+    ],
+    [
+     "tx_pf_agent",
+     2950
+    ],
+    [
+     "tx_ps_mix_pricing",
+     2759
+    ],
+    [
+     "tx_pf_audience_founders",
+     2356
+    ],
+    [
+     "tx_pf_b2b_product",
+     2135
+    ],
+    [
+     "tx_pf_price_point_not_stated",
+     1809
+    ],
+    [
+     "tx_pf_price_point_10_to_50",
+     1633
+    ],
+    [
+     "tx_pf_free_plan",
+     1617
+    ],
+    [
+     "tx_pf_audience_developers",
+     1563
+    ],
+    [
+     "tx_pf_features_listed",
+     1551
+    ]
+   ],
+   "person": {
+    "top3_hit": 47.2,
+    "auc": 0.624,
+    "n": 6178
+   },
+   "person+page": {
+    "top3_hit": 48.1,
+    "auc": 0.649,
+    "n": 6178
+   },
+   "person+page+taste": {
+    "top3_hit": 49.0,
+    "auc": 0.651,
+    "n": 6178
+   }
+  },
+  {
+   "month": "2026-08",
+   "taste_gain_share": 0.407,
+   "top_taste_inputs": [
+    [
+     "taste_n",
+     15097
+    ],
+    [
+     "taste_cos",
+     5093
+    ],
+    [
+     "taste_dot",
+     4747
+    ],
+    [
+     "tx_pf_audience_founders",
+     2435
+    ],
+    [
+     "tx_pf_agent",
+     2373
+    ],
+    [
+     "tx_pf_b2b_product",
+     2338
+    ],
+    [
+     "tx_ps_video",
+     2153
+    ],
+    [
+     "tx_ps_mix_pricing",
+     2027
+    ],
+    [
+     "tx_pf_claims_privacy",
+     2024
+    ],
+    [
+     "tx_pf_features_listed",
+     1934
+    ],
+    [
+     "tx_pf_audience_students",
+     1915
+    ],
+    [
+     "tx_ps_audience_breadth",
+     1884
+    ]
+   ],
+   "person": {
+    "top3_hit": 51.1,
+    "auc": 0.668,
+    "n": 6193
+   },
+   "person+page": {
+    "top3_hit": 51.1,
+    "auc": 0.673,
+    "n": 6193
+   },
+   "person+page+taste": {
+    "top3_hit": 52.2,
+    "auc": 0.685,
+    "n": 6193
+   }
+  },
+  {
+   "month": "2026-09",
+   "taste_gain_share": 0.426,
+   "top_taste_inputs": [
+    [
+     "taste_n",
+     14383
+    ],
+    [
+     "taste_cos",
+     11605
+    ],
+    [
+     "taste_dot",
+     6181
+    ],
+    [
+     "tx_ps_mix_pricing",
+     4082
+    ],
+    [
+     "tx_pf_audience_founders",
+     3277
+    ],
+    [
+     "tx_pf_ai_in_tagline",
+     3012
+    ],
+    [
+     "tx_pf_agent",
+     2732
+    ],
+    [
+     "tx_pf_b2b_product",
+     2706
+    ],
+    [
+     "tx_pf_price_point_not_stated",
+     2414
+    ],
+    [
+     "tx_pf_open_source",
+     2201
+    ],
+    [
+     "tx_ps_video",
+     2167
+    ],
+    [
+     "tx_ps_problem_urgency",
+     2123
+    ]
+   ],
+   "person": {
+    "top3_hit": 46.1,
+    "auc": 0.669,
+    "n": 5992
+   },
+   "person+page": {
+    "top3_hit": 46.8,
+    "auc": 0.678,
+    "n": 5992
+   },
+   "person+page+taste": {
+    "top3_hit": 50.2,
+    "auc": 0.692,
+    "n": 5992
+   }
+  },
+  {
+   "month": "2026-10",
+   "taste_gain_share": 0.403,
+   "top_taste_inputs": [
+    [
+     "taste_n",
+     18903
+    ],
+    [
+     "taste_dot",
+     11938
+    ],
+    [
+     "taste_cos",
+     5201
+    ],
+    [
+     "tx_pf_agent",
+     4457
+    ],
+    [
+     "tx_pf_audience_designers",
+     3108
+    ],
+    [
+     "tx_pf_social_proof",
+     3016
+    ],
+    [
+     "tx_pf_tagline_style_other",
+     2916
+    ],
+    [
+     "tx_pf_price_point_over_50",
+     2846
+    ],
+    [
+     "tx_pf_price_point_10_to_50",
+     2772
+    ],
+    [
+     "tx_pf_b2b_product",
+     2732
+    ],
+    [
+     "tx_ps_links",
+     2547
+    ],
+    [
+     "tx_pf_asks_for_upvotes",
+     2440
+    ]
+   ],
+   "person": {
+    "top3_hit": 47.3,
+    "auc": 0.714,
+    "n": 4993
+   },
+   "person+page": {
+    "top3_hit": 46.1,
+    "auc": 0.716,
+    "n": 4993
+   },
+   "person+page+taste": {
+    "top3_hit": 48.1,
+    "auc": 0.728,
+    "n": 4993
+   }
+  }
+ ]
+}

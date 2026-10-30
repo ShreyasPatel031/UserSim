@@ -20,8 +20,11 @@ from .seq import features as seq_features
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PAGE = os.environ.get("PAGE") == "1"   # page-aware people: every launch-page input added to the person model
-WORK = os.path.join(HERE, "cache", "popscore_page" if PAGE else "popscore")
-PREFIX = "psp_" if PAGE else "psn_"
+TASTE = os.environ.get("TASTE") == "1"  # + each person's taste for page traits (page_taste.py), implies PAGE
+PAGE = PAGE or TASTE
+TAG = "page_taste" if TASTE else "page" if PAGE else ""
+WORK = os.path.join(HERE, "cache", "popscore_" + TAG if TAG else "popscore")
+PREFIX = "pst_" if TASTE else "psp_" if PAGE else "psn_"
 MONTHS = ["2026-04", "2026-05", "2026-06", "2026-07", "2026-08", "2026-09", "2026-10"]
 FEATS = ["backed", "topic", "meaning", "cf_team", "nbr_team", "nbr_pop", "seq_last10", "seq_decay", "seq_nn", "team_recent",
          "cat_rate_max", "cat_rate_mean", "cat_prior", "cat_n"]
@@ -144,7 +147,11 @@ def page_cols(D):
     from .page_choice import page_table
     T = G.setdefault("page", page_table())
     D = D.copy(); D["id"] = D.id.astype(str)
-    return D.join(T, on="id"), list(T.columns)
+    tc = []
+    if TASTE:
+        from .page_taste import add_taste
+        D, tc = add_taste(D)
+    return D.join(T, on="id"), list(T.columns) + tc
 
 
 def train_month(m):
@@ -186,6 +193,9 @@ def score_day(d):
 
 def main(workers):
     os.makedirs(WORK, exist_ok=True); load()
+    if TASTE:
+        from .page_taste import traits
+        traits()   # build once before forking
     from . import harness
     harness.baseline()   # cache the launch model's predictions now: worker processes cannot start their own pools
     ctx = mp.get_context("fork")
@@ -198,7 +208,7 @@ def main(workers):
             if k % 20 == 0:
                 print("scored", k, "of", len(days), r, flush=True)
     S = pd.concat([pd.read_parquet(f"{WORK}/day_{d}.parquet") for d in days if os.path.exists(f"{WORK}/day_{d}.parquet")])
-    S.to_parquet(os.path.join(HERE, "cache", "popscore_page.parquet" if PAGE else "popscore.parquet"))
+    S.to_parquet(os.path.join(HERE, "cache", f"popscore_{TAG}.parquet" if TAG else "popscore.parquet"))
     S = S.rename(columns={c: PREFIX + c[4:] for c in S.columns if c.startswith("psn_")})
     cols = [c for c in S.columns if c.startswith(PREFIX)]
     json.dump({str(r["id"]): {c: float(r[c]) for c in cols} for r in S.to_dict("records")},

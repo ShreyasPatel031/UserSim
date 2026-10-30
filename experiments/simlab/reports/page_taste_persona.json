@@ -1,0 +1,185 @@
+{
+ "summary": {
+  "person": {
+   "top3_hit": 46.7,
+   "auc": 0.691
+  },
+  "person+page": {
+   "top3_hit": 46.6,
+   "auc": 0.699
+  },
+  "person+page+taste": {
+   "top3_hit": 49.2,
+   "auc": 0.71
+  },
+  "person+page+persona": {
+   "top3_hit": 48.4,
+   "auc": 0.708
+  },
+  "all": {
+   "top3_hit": 50.9,
+   "auc": 0.72
+  },
+  "months_taste_better_than_page": 2
+ },
+ "months": [
+  {
+   "month": "2026-09",
+   "taste_gain_share": 0.425,
+   "top_taste_inputs": [
+    [
+     "taste_n",
+     14458
+    ],
+    [
+     "taste_cos",
+     11607
+    ],
+    [
+     "taste_dot",
+     6167
+    ],
+    [
+     "tx_ps_mix_pricing",
+     4258
+    ],
+    [
+     "tx_pf_audience_founders",
+     3294
+    ],
+    [
+     "tx_pf_b2b_product",
+     2966
+    ],
+    [
+     "tx_pf_ai_in_tagline",
+     2745
+    ],
+    [
+     "tx_pf_agent",
+     2458
+    ],
+    [
+     "tx_ps_problem_urgency",
+     2181
+    ],
+    [
+     "tx_pf_audience_marketers",
+     2095
+    ],
+    [
+     "tx_pf_no_signup_needed",
+     2034
+    ],
+    [
+     "tx_pf_social_proof",
+     1949
+    ]
+   ],
+   "person": {
+    "top3_hit": 46.1,
+    "auc": 0.668,
+    "n": 5992
+   },
+   "person+page": {
+    "top3_hit": 46.3,
+    "auc": 0.679,
+    "n": 5992
+   },
+   "person+page+taste": {
+    "top3_hit": 49.4,
+    "auc": 0.691,
+    "n": 5992
+   },
+   "person+page+persona": {
+    "top3_hit": 46.3,
+    "auc": 0.679,
+    "n": 5992
+   },
+   "all": {
+    "top3_hit": 49.4,
+    "auc": 0.691,
+    "n": 5992
+   }
+  },
+  {
+   "month": "2026-10",
+   "taste_gain_share": 0.401,
+   "top_taste_inputs": [
+    [
+     "taste_n",
+     19191
+    ],
+    [
+     "taste_dot",
+     11704
+    ],
+    [
+     "taste_cos",
+     5163
+    ],
+    [
+     "tx_pf_agent",
+     4114
+    ],
+    [
+     "tx_pf_tagline_style_other",
+     3625
+    ],
+    [
+     "tx_pf_social_proof",
+     2943
+    ],
+    [
+     "tx_pf_audience_designers",
+     2870
+    ],
+    [
+     "tx_pf_b2b_product",
+     2760
+    ],
+    [
+     "tx_pf_price_point_10_to_50",
+     2760
+    ],
+    [
+     "tx_ps_links",
+     2759
+    ],
+    [
+     "tx_pf_price_point_over_50",
+     2576
+    ],
+    [
+     "tx_pf_asks_for_feedback",
+     2385
+    ]
+   ],
+   "person": {
+    "top3_hit": 47.3,
+    "auc": 0.713,
+    "n": 4993
+   },
+   "person+page": {
+    "top3_hit": 47.0,
+    "auc": 0.719,
+    "n": 4993
+   },
+   "person+page+taste": {
+    "top3_hit": 49.1,
+    "auc": 0.729,
+    "n": 4993
+   },
+   "person+page+persona": {
+    "top3_hit": 50.5,
+    "auc": 0.737,
+    "n": 4993
+   },
+   "all": {
+    "top3_hit": 52.4,
+    "auc": 0.749,
+    "n": 4993
+   }
+  }
+ ]
+}
