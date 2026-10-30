@@ -90,3 +90,35 @@ the day before. A perfect "top by final points" list matches only 47% of the rea
 | 60-min model (trained on points) | 18.7% | 39.7% | 67.0% | 23.8% | 48.8% |
 
 Next: train on the real list itself (daily lists fetched back to Jan 2025).
+
+## Trained on HN's real daily list (May–Sep 2026, 153 days; lists from Jan 2025)
+
+| Model | real top 10 in model top 10 | in top 30 | in top 100 | real top 30 in model top 30 |
+|---|---|---|---|---|
+| 60 min, trained on points | 15.8% | 38.7% | 65.1% | 25.2% |
+| **60 min, trained on the real list** | **30.3%** | **53.1%** | 68.2% | **38.1%** |
+| 8 h, trained on points | 29.0% | 63.1% | 86.7% | 39.5% |
+| **8 h, trained on the real list** | **50.2%** | **78.6%** | 87.2% | **62.1%** |
+
+## Early upvotes, trained combination (Quality News data; train Aug 22–Sep 15, test Sep 16–30, 15 days)
+
+| Method | top 100 | top 30 | top 10 |
+|---|---|---|---|
+| ours 60 min | 52.3% | 50.7% | 35.3% |
+| upvotes at 60 min alone (Szabo & Huberman) | 57.7% | 53.3% | 46.0% |
+| ours + early upvotes (trained for top 100) | **68.5%** | 55.6% | 40.0% |
+| ours + early upvotes (trained for top 30) | 62.6% | 55.6% | 45.3% |
+
+## Dubach's RoBERTa title model (test May–Sep 2026, trained from Mar 2026)
+
+| Method | AUC (>=100 pts) | top 100 | top 30 | top 10 |
+|---|---|---|---|---|
+| Dubach alone | 0.67 (he reported 0.685) | 19.1% | 10.3% | 6.1% |
+| ours post-only | 0.755 | 29.5% | 19.5% | 15.0% |
+| ours post-only + Dubach | 0.783 | 31.8% | 22.2% | 17.1% |
+| ours 60 min + Dubach | 0.878 | 51.7% | 49.2% | 34.9% |
+
+## Operations note
+hn-sim-1/2 were stopped four times (04:36, 08:43, 11:21 UTC, plus 08:16 for others) by a Cursor agent on another
+machine using the shared usersim-cloud-agent service account (audit log, per the PH session). A watchdog restarts
+them and requeues jobs; long jobs save every 5-15 minutes.
