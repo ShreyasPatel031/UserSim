@@ -54,7 +54,8 @@ def parse(html: str, t0: int) -> dict:
     out["qn_min_top10_24h"] = sum(1 for r in tops if r <= 10)
     out["qn_exposure_24h"] = round(sum(1 / r for r in tops), 2)
     out["qn_first_top30_min"] = next(((row[0] - t0) // 60 for row in day if 0 < row[2] <= 30), None)
-    out["qn_up_24h"] = [v for t, v, e in up if t <= t0 + 86400][-1] if up else None
+    u24 = [v for t, v, e in up if t <= t0 + 86400]
+    out["qn_up_24h"] = u24[-1] if u24 else None
     # hourly snapshots for 36 h, on the UTC hour grid: top-page rank (91 = not on it) and upvotes at each hour
     h0 = (t0 // 3600 + 1) * 3600
     ranks, ups = {}, {}
@@ -85,6 +86,8 @@ def main(a: str, b: str) -> None:
         try:
             r = requests.get(f"https://news.social-protocols.org/stats?id={pid}", timeout=30, headers=_s.headers)
             rec = {"post_id": pid, "status": r.status_code, **(parse(r.text, t0) if r.status_code == 200 else {})}
+        except (ValueError, IndexError) as exc:              # malformed page: record and move on
+            rec = {"post_id": pid, "status": -2, "error": f"parse: {exc}"[:100]}
         except requests.RequestException as exc:
             rec = {"post_id": pid, "status": -1, "error": str(exc)[:100]}
         with lock, open(OUT, "a") as f:
