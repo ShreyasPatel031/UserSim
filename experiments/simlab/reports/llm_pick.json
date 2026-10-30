@@ -1,0 +1,9 @@
+{
+ "gemini": 28.0,
+ "model": 50.1,
+ "random": 20.4,
+ "gemini+model": 50.5,
+ "person_days": 1500,
+ "gemini_answered": 1500,
+ "usd": 0.521
+}

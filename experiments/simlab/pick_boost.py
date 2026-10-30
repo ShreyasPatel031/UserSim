@@ -1,4 +1,5 @@
-"""Stronger per-person pick models on the page_taste.py test (same person, day and line-up; train previous month, test
+"""(ABLATE=1: which person data carries the signal: drop one input group at a time, 300 people/day classifier.)
+Stronger per-person pick models on the page_taste.py test (same person, day and line-up; train previous month, test
 next). All use person + page + taste inputs; they differ in training data and learner:
   base      LightGBM classifier, 300 people/day, 400 trees, 31 leaves (page_taste.py)
   more      same, 1,000 people/day
@@ -31,11 +32,23 @@ def month(m):
     te = PS.featurize(te, cf, prev); te, tc = add_taste(te); te = te.join(T, on="id")
     cols = PS.FEATS + pc + tc; out = {"month": m}
     trs = {}
-    for n in (300, 1000):
+    for n in ((300,) if os.environ.get("ABLATE") == "1" else (300, 1000)):
         tr = PS.featurize(sample(full, n), cf, prev); tr, _ = add_taste(tr); trs[n] = tr.join(T, on="id").sort_values(["g"])
-    specs = {"base": (300, "clf", 400, 31, 0.05), "more": (1000, "clf", 400, 31, 0.05), "big": (1000, "clf", 1200, 63, 0.03),
+    groups = {"team": ["backed", "cf_team", "nbr_team", "nbr_pop", "team_recent"], "sequence": [c for c in PS.FEATS if c.startswith("seq_")],
+              "category": [c for c in PS.FEATS if c.startswith("cat_")], "content": ["topic", "meaning"] + pc + tc}
+    if os.environ.get("ABLATE") == "1":
+        specs = {"base": (300, "clf", 400, 31, 0.05)}
+        for k, v in groups.items():
+            specs["-" + k] = specs["only " + k] = (300, "clf", 400, 31, 0.05)
+    else:
+      specs = {"base": (300, "clf", 400, 31, 0.05), "more": (1000, "clf", 400, 31, 0.05), "big": (1000, "clf", 1200, 63, 0.03),
              "rank": (1000, "rank", 400, 31, 0.05), "rank_big": (1000, "rank", 1200, 63, 0.03)}
     for name, (n, kind, nt, nl, lr) in specs.items():
+        cols = PS.FEATS + pc + tc
+        if name.startswith("-"):
+            cols = [c for c in cols if c not in groups[name[1:]]]
+        elif name.startswith("only "):
+            cols = groups[name[5:]]
         tr = trs[n]; kw = dict(n_estimators=nt, learning_rate=lr, num_leaves=nl, min_child_samples=50, colsample_bytree=0.5, verbose=-1, n_jobs=2)
         if kind == "clf":
             te["s_" + name] = lgb.LGBMClassifier(**kw).fit(tr[cols], tr.y).predict_proba(te[cols])[:, 1]
@@ -62,7 +75,7 @@ def main(workers):
     names = [k for k in res[0] if isinstance(res[0][k], dict)]
     summ = {k: {"top3_hit": round(float(np.mean([r[k]["top3_hit"] for r in res])), 1), "auc": round(float(np.mean([r[k]["auc"] for r in res])), 3),
                 "months_better_than_base": sum(r[k]["auc"] > r["base"]["auc"] for r in res)} for k in names}
-    json.dump({"summary": summ, "months": res}, open(f"{HERE}/reports/pick_boost.json", "w"), indent=1)
+    json.dump({"summary": summ, "months": res}, open(f"{HERE}/reports/pick_{'ablate' if os.environ.get('ABLATE') == '1' else 'boost'}.json", "w"), indent=1)
     print(json.dumps(summ, indent=1))
 
 

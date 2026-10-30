@@ -84,3 +84,12 @@ Next: Gemini persona ratings (largest person-level gain) tested at launch level 
 | real picks of these people (ceiling) | 84.7 | 86.7 |
 Top 5 +3.4 on 24 days (small). ~290 rated people a day already give an 85% ceiling: more people is not the gap, predicting each one's picks is.
 Next: listwise Gemini picker (llm_pick.py: past upvotes + full line-up → 3 picks). Pilot 20 person-days, $0.007.
+
+## Listwise Gemini picker (llm_pick.py; Oct 1–24, 1,500 real person-days, $0.52)
+| Top-3 hit (person's real pick among the 3) | |
+|---|---|
+| random 3 | 20.4 |
+| Gemini 2.5 Flash, past upvotes + line-up | 28.0 |
+| taste person model (train Sep) | 50.1 |
+| Gemini picks the model also ranks top 6, then model | 50.5 |
+Content taste alone explains little of who picks what. Next: ablation of the person model's input groups (pick_boost.py ABLATE=1).
