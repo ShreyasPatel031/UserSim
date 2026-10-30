@@ -1,0 +1,351 @@
+{
+ "launch": "1281583",
+ "name": "zCAD AI",
+ "tagline": "AI 3D that creates real parts, not just shapes",
+ "day": "2026-10-24",
+ "real_votes": 298,
+ "real_rank": 1,
+ "sim_rank": 13,
+ "launches_that_day": 14,
+ "sim_day_top5": [
+  [
+   "1Password for Agents",
+   3
+  ],
+  [
+   "LinkIntel",
+   6
+  ],
+  [
+   "myPip",
+   2
+  ],
+  [
+   "sideOS.ai",
+   11
+  ],
+  [
+   "Canva Craft",
+   5
+  ]
+ ],
+ "voters": [
+  {
+   "person": "galdayan",
+   "chance": 0.163,
+   "reason": "active on launch day, general interest",
+   "really_voted": false
+  },
+  {
+   "person": "iappsni",
+   "chance": 0.118,
+   "reason": "picks pages like this one",
+   "really_voted": false
+  },
+  {
+   "person": "swati_paliwal",
+   "chance": 0.115,
+   "reason": "backed this team before (1x)",
+   "really_voted": true
+  },
+  {
+   "person": "inagaraj",
+   "chance": 0.107,
+   "reason": "active on launch day, general interest",
+   "really_voted": true
+  },
+  {
+   "person": "zaczuo",
+   "chance": 0.094,
+   "reason": "active on launch day, general interest",
+   "really_voted": true
+  },
+  {
+   "person": "daniel_kopelke",
+   "chance": 0.091,
+   "reason": "picks pages like this one",
+   "really_voted": false
+  },
+  {
+   "person": "amytych",
+   "chance": 0.091,
+   "reason": "picks pages like this one",
+   "really_voted": false
+  },
+  {
+   "person": "trentwoodbury",
+   "chance": 0.091,
+   "reason": "picks pages like this one",
+   "really_voted": false
+  },
+  {
+   "person": "lapidus",
+   "chance": 0.091,
+   "reason": "picks pages like this one",
+   "really_voted": false
+  },
+  {
+   "person": "contech_founder",
+   "chance": 0.087,
+   "reason": "similar to past upvotes: Lea by LeanAIOS",
+   "really_voted": false
+  },
+  {
+   "person": "vinit_kumar24",
+   "chance": 0.084,
+   "reason": "picks pages like this one",
+   "really_voted": false
+  },
+  {
+   "person": "jayant24arora",
+   "chance": 0.081,
+   "reason": "active on launch day, general interest",
+   "really_voted": false
+  },
+  {
+   "person": "theo_gzd",
+   "chance": 0.07,
+   "reason": "active on launch day, general interest",
+   "really_voted": true
+  },
+  {
+   "person": "simona_o_neill3",
+   "chance": 0.069,
+   "reason": "backed this team before (1x)",
+   "really_voted": false
+  },
+  {
+   "person": "rejah",
+   "chance": 0.068,
+   "reason": "active on launch day, general interest",
+   "really_voted": false
+  },
+  {
+   "person": "nuseir_yassin1",
+   "chance": 0.067,
+   "reason": "active on launch day, general interest",
+   "really_voted": false
+  },
+  {
+   "person": "rogerklb",
+   "chance": 0.067,
+   "reason": "active on launch day, general interest",
+   "really_voted": false
+  },
+  {
+   "person": "artem_fedorovich",
+   "chance": 0.067,
+   "reason": "active on launch day, general interest",
+   "really_voted": false
+  },
+  {
+   "person": "mykyta_semenov_",
+   "chance": 0.067,
+   "reason": "backed this team before (1x)",
+   "really_voted": false
+  },
+  {
+   "person": "rugma_sasankan",
+   "chance": 0.067,
+   "reason": "active on launch day, general interest",
+   "really_voted": false
+  },
+  {
+   "person": "vt_vlad",
+   "chance": 0.067,
+   "reason": "similar to past upvotes: Velozity, Autonomyware",
+   "really_voted": false
+  },
+  {
+   "person": "bedri_keskin",
+   "chance": 0.066,
+   "reason": "similar to past upvotes: Asimov 1, Asimov 1",
+   "really_voted": false
+  },
+  {
+   "person": "ppatryk",
+   "chance": 0.066,
+   "reason": "similar to past upvotes: Asimov 1, Asimov 1",
+   "really_voted": false
+  },
+  {
+   "person": "emreckartal",
+   "chance": 0.066,
+   "reason": "similar to past upvotes: Asimov 1",
+   "really_voted": false
+  },
+  {
+   "person": "natal1e_c",
+   "chance": 0.066,
+   "reason": "upvotes this category a lot",
+   "really_voted": false
+  }
+ ],
+ "voter_check": {
+  "population": 4578,
+  "real_voters_in_population": 174,
+  "real_voters_total_in_our_data": 188,
+  "real_votes_on_PH": 298,
+  "hits_in_top25": 4,
+  "hits_in_top100": 14,
+  "share_of_real_voters_in_top100": 0.08,
+  "auc": 0.556
+ },
+ "commenters": [
+  {
+   "person": "galdayan",
+   "really_commented": false
+  },
+  {
+   "person": "curiouskitty",
+   "really_commented": false
+  },
+  {
+   "person": "e_p_johnson_esgenix",
+   "really_commented": false
+  },
+  {
+   "person": "oleksii_sekundant",
+   "really_commented": false
+  },
+  {
+   "person": "bengeekly",
+   "really_commented": false
+  },
+  {
+   "person": "amytych",
+   "really_commented": false
+  },
+  {
+   "person": "trentwoodbury",
+   "really_commented": false
+  },
+  {
+   "person": "protsenkoalexandra",
+   "really_commented": false
+  },
+  {
+   "person": "roy_kek",
+   "really_commented": false
+  },
+  {
+   "person": "rajendra_prajapat",
+   "really_commented": false
+  },
+  {
+   "person": "karimbenkeroum",
+   "really_commented": false
+  },
+  {
+   "person": "sara_ford_goog",
+   "really_commented": false
+  },
+  {
+   "person": "jean_bonnenfant_tinct",
+   "really_commented": false
+  },
+  {
+   "person": "vt_vlad",
+   "really_commented": false
+  },
+  {
+   "person": "alekseisharuk",
+   "really_commented": false
+  }
+ ],
+ "commenter_check": {
+  "real_commenters_in_population": 7,
+  "hits_in_top15": 0,
+  "hits_in_top100": 1
+ },
+ "elements": {
+  "name": 8,
+  "tagline": 9,
+  "description": 9,
+  "category_fit": 9,
+  "logo": 0,
+  "gallery": 0,
+  "video": 0,
+  "first_comment": 9,
+  "website": 7,
+  "links": 0
+ },
+ "overall": {
+  "clarity": 9,
+  "novelty": 9,
+  "usefulness": 8,
+  "audience_breadth": 7,
+  "credibility": 7,
+  "visual_polish": 6,
+  "problem_urgency": 8,
+  "wow": 8
+ },
+ "images_scored": 0,
+ "proven_facts": {
+  "free_plan": {
+   "has_it": true,
+   "measured_effect": "+0.06"
+  },
+  "mac_app": {
+   "has_it": false,
+   "measured_effect": "+0.05"
+  },
+  "open_source": {
+   "has_it": false,
+   "measured_effect": "+0.05"
+  },
+  "mentions_competitor": {
+   "has_it": true,
+   "measured_effect": "+0.04"
+  },
+  "no_signup_needed": {
+   "has_it": false,
+   "measured_effect": "+0.04"
+  },
+  "b2b_product": {
+   "has_it": true,
+   "measured_effect": "\u22120.035"
+  },
+  "price_point_not_stated": {
+   "has_it": true,
+   "measured_effect": "\u22120.05"
+  }
+ },
+ "comments": {
+  "predicted_mix": {
+   "question": 0.4,
+   "bug": 0.05,
+   "pricing": 0.1,
+   "comparison": 0.15,
+   "privacy": 0,
+   "confusion": 0.05,
+   "praise": 0.2,
+   "other": 0.05
+  },
+  "real_mix": {
+   "confusion": 0.32,
+   "question": 0.4,
+   "other": 0.04,
+   "comparison": 0.08,
+   "praise": 0.12,
+   "pricing": 0.04
+  },
+  "real_comments": 25,
+  "predicted_questions": [
+   "What kind of parts/assemblies does it handle best?",
+   "How does it compare to existing CAD software with AI plugins?",
+   "What are the limitations of the free plan?"
+  ],
+  "predicted_competitors": [
+   "Fusion 360",
+   "SolidWorks",
+   "Onshape",
+   "Midjourney (for 3D)",
+   "ChatGPT (for code-based CAD)"
+  ],
+  "real_named_products": [
+   "Isaac Sim",
+   "codex"
+  ]
+ }
+}
