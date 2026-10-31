@@ -21,7 +21,7 @@ import store as S
 import top10 as T
 import top100 as H
 
-TIMES = {"t12": 12, "t18": 6, "eod": 0}       # name -> hours before the end of day D
+TIMES = {"t12": 12, "t15": 9, "t18": 6, "t20": 4, "t21": 3, "t22": 2, "t23": 1, "eod": 0}   # name -> hours before end of D
 STAGE1_END = os.environ.get("STAGE1_END", "2026-09-01")
 WINDOW_H = 72
 VOTE_MIN_POINTS = float(os.environ.get("VOTE_MIN_POINTS", "5"))

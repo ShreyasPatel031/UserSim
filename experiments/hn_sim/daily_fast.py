@@ -51,7 +51,7 @@ def score(P, col):
 
 
 if __name__ == "__main__":
-    for t in ("t12", "t18", "eod"):
+    for t in ("t12", "t15", "t18", "t20", "t21", "t22", "t23", "eod"):
         D = C[C.day.isin(qdays) & (C[f"{t}_visible"] == 1)].copy()
         vc = [f"{t}_{c}" for c in V]
         D[vc] = D[vc].fillna({f"{t}_v_points": 1, f"{t}_v_rank_now": 91, f"{t}_v_best_rank": 91, f"{t}_v_h_top30": 0,
