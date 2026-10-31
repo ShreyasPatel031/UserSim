@@ -28,7 +28,8 @@ def load(p):
 
 
 C = pd.read_parquet("results/ctrl_preds.parquet"); C["id"] = C.id.astype(str)
-A = C[["id", "day", "dailyRank", "logv", "all"]].merge(load("pst"), on="id").merge(load("tpd"), on="id").merge(load("nsa"), on="id")
+SRC = os.environ.get("SIM_SRC", "pst")   # person-simulation source; psq = + presence + vector twins (simlab/presence.py)
+A = C[["id", "day", "dailyRank", "logv", "all"]].merge(load(SRC).rename(columns=lambda c: "pst_" + c[4:] if c.startswith(SRC + "_") else c), on="id").merge(load("tpd"), on="id").merge(load("nsa"), on="id")
 for c in [c for c in A if c.startswith("pst_") and not c.endswith("pmax")]:
     A[c] = np.log1p(A[c])
 base = [c for c in A if c.startswith(("pst_", "tpd_"))]
@@ -118,4 +119,4 @@ for name, flag in (("first-time teams", True), ("repeat teams", False)):
 hit = lambda g, c, k: len(set(g.nlargest(k, c).id) & set(g[g.dailyRank <= k].id)) / k
 res["all launches, daily top 3/5/10"] = {p: [round(100 * float(np.mean([hit(g, p, k) for _, g in T.groupby("day") if (g.dailyRank <= k).sum() == k])), 1)
                                               for k in (3, 5, 10)] for p in P}
-json.dump(res, open(f"results/newsim_eval{('_stage5s' if os.environ.get('CMP_SMALL') == '1' else '_stage5') if os.environ.get('STAGE5') == '1' else '_stage4' if os.environ.get('STAGE4') == '1' else '_stage3' if os.environ.get('STAGE3') == '1' else '_stage2' if os.environ.get('STAGE') == '2' else ''}.json", "w"), indent=1); print(json.dumps(res, indent=1))
+json.dump(res, open(f"results/newsim_eval{'' if SRC == 'pst' else '_' + SRC}{('_stage5s' if os.environ.get('CMP_SMALL') == '1' else '_stage5') if os.environ.get('STAGE5') == '1' else '_stage4' if os.environ.get('STAGE4') == '1' else '_stage3' if os.environ.get('STAGE3') == '1' else '_stage2' if os.environ.get('STAGE') == '2' else ''}.json", "w"), indent=1); print(json.dumps(res, indent=1))
