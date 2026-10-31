@@ -383,3 +383,7 @@ posting made a daily top 30, both did in 30 (1%); P(second wins | first won) 4.7
 points correlate 0.18. (HN discourages reposting a link that did well, which lowers "both won"; it does not explain
 losing links winning on a repost.) Content explains only part of the outcome at posting time; early exposure decides
 the rest.
+Same-link check, continued: the first posting's points predict whether the repost makes a daily top 30 with AUC 0.567
+(56,317 pairs); among first postings that flopped (< 10 points, where reposting is not discouraged; 48,912 pairs)
+the repost wins 4.0%, the base rate. The at-posting model (AUC 0.78-0.80) beats knowing the content's own past result
+because it also uses who posted, when, and the crowd.
