@@ -300,3 +300,5 @@ Each gap vs beating expected reach (cmp_eff.py, Mar–Oct, within-day corr., 95%
 - page better than competitors: audience breadth +0.055, website +0.044, Gemini top-5 chance +0.042, wow +0.039 (significant); other elements not
 - competitors' own votes: no effect (−0.008)
 Added to the simulation (Jul–Oct): all 78 inputs 60.9 → 60.6 daily top 3 (first-time groups of 3 65.4 → 64.8); fixed small groups chosen in advance: video gaps 61.2, summary 60.9, both 62.4 (first-time groups of 3 64.3). No consistent gain: the gaps are real but small and mostly overlap the page scores already in.
+Launch model with competitor gaps as page inputs (ctrl.py CMP=1, Mar–Oct, 5 seeds): fixed + page 62.3/69.0/78.4 → 62.2/69.7/78.6; all 63.7/70.3/79.6 → 62.3/70.9/79.7; page lift corr. 0.240 → 0.236. No gain. Kept without (ctrl.json); with is results/ctrl_cmp.json.
+Verdict: comparison with competitors has validity input by input (video gaps up to +0.088) and is useful to show a maker, but it does not add to either score; it overlaps the page scores already in. Competitor use per person (who already used a competitor) adds +1 point top-3 hit at person level.
