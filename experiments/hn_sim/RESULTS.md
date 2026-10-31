@@ -300,3 +300,17 @@ Predicted final points (out-of-fold regressor) as a classifier input: 18:00 65.8
 - LambdaRank on the top-30 cutoff (vs hybrid, paired by day): in/out-of-top-30 labels 18:00 -0.5 [-1.2, +0.1],
   21:00 +0.1; same truncated at 30: same; graded labels truncated at 30: -2.2 [-3.3, -1.2] / -1.8; truncated at 40:
   -0.9 / -0.7. The hybrid stays.
+
+18:00 round 4:
+- Still-to-come slots (real top 30 not posted / back by 18:00): 5.6 per day (sd 2.2, range 1-11), flat by weekday
+  (5.2-6.2). Predicting the day's count from the field at 18:00 is worse than the mean (MAE 2.25 vs 1.76). They are
+  posted 18:00-22:00 UTC (88%), from every kind of source (github.com 7%, openai.com 2%, arxiv.org 2%).
+- Hybrid at 18:00: recall of the full top 30 65.8%; recall on the achievable set (posted / back by 18:00) 81.9%.
+  Naming only 24 and leaving 6 "still to come" slots: precision 74.7% (vs 65.8% when naming 30); recall on the
+  achievable set 74.6%.
+- Ensembles of the hybrid's classifier and the lambdarank ranker (per-day percentile blend, 30/50/70% classifier):
+  18:00 -1.3 / -0.5 / +0.1; 21:00 -0.8 / -0.6 / -0.3; end of day +0.3 / +0.6 / +0.1 points vs the hybrid, all within
+  noise or worse. The hybrid stays.
+- GitHub star velocity: ghstars.py on hn-sim-1, hourly from 2026-10-31 (github.com links in HN stories of the last
+  48 h + github.com/trending; star count from the repo page) -> ghstars/<day>.jsonl. github.com is blocked from the
+  dev container, so it runs only on the VM; usable once enough days are recorded.
