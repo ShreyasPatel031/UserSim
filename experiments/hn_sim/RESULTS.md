@@ -387,3 +387,17 @@ Same-link check, continued: the first posting's points predict whether the repos
 (56,317 pairs); among first postings that flopped (< 10 points, where reposting is not discouraged; 48,912 pairs)
 the repost wins 4.0%, the base rate. The at-posting model (AUC 0.78-0.80) beats knowing the content's own past result
 because it also uses who posted, when, and the crowd.
+
+Individual v2 (twin_v2.py: one shared LightGBM over (person, story) pairs; trained on Jul-Aug, tested Sep 1 - Oct 14;
+2,879 people, 5.78M pairs; profiles from data before Jul 1). Median per-person AUC (share > 0.7), and the same within
+popularity bands (stories of similar final points: the "beyond popularity" number):
+
+| model | median AUC | within popularity bands |
+|---|---|---|
+| v1: mean taste | 0.577 (10%) | 0.579 (13%) |
+| v2: personal signals (closest past stories, domain / submitter history, presence) | 0.632 (20%) | 0.628 (23%) |
+| popularity only (final points) | 0.814 (92%) | 0.548 (5%) |
+| v2 + popularity | 0.828 (95%) | 0.635 (25%) |
+
+Personal signals carry real preference beyond popularity (0.63 within bands vs 0.55) and now add to popularity
+(0.828 vs 0.814). Below the 0.7 gate on personal signal alone.
