@@ -1,0 +1,125 @@
+{
+ "note": "Same username across parsers. ph_profiles/ph_profiles_rest carry user_id 606339 / name Wispr Flow (a non-owner object); ph_profiles2 carries the owner. Raw HTML/Apollo state was not saved by the pipeline, so the embedded-JSON snippet itself is not available; these parsed records are the closest evidence.",
+ "wispr_named_user_id_counts": {
+  "606339": 16364,
+  "109827": 393
+ },
+ "pairs": [
+  {
+   "justfred_ar": {
+    "ph_profiles_rest.jsonl.gz": {
+     "user_id": "606339",
+     "name": "Wispr Flow",
+     "headline": "Co-Founder & CEO, Art House",
+     "twitter": "justinteraction"
+    }
+   }
+  },
+  {
+   "medhaforcebewithyou": {
+    "ph_profiles_rest.jsonl.gz": {
+     "user_id": "606339",
+     "name": "Wispr Flow",
+     "headline": "Indie Builder. Ex-Meta PM. Ex Engineer.",
+     "twitter": "Ghatikesh"
+    }
+   }
+  },
+  {
+   "quser": {
+    "ph_profiles.jsonl.gz": {
+     "user_id": "606339",
+     "name": "Wispr Flow",
+     "headline": "Making",
+     "twitter": "quser"
+    },
+    "ph_profiles2.jsonl.gz": {
+     "user_id": "42797",
+     "name": "Sergey Kudryashov ✈️",
+     "headline": "Making",
+     "twitter": "quser"
+    }
+   }
+  },
+  {
+   "1cbyc": {
+    "ph_profiles.jsonl.gz": {
+     "user_id": "606339",
+     "name": "Wispr Flow",
+     "headline": "Software Engineer. Mathematician.",
+     "twitter": "1cbyc"
+    },
+    "ph_profiles2.jsonl.gz": {
+     "user_id": "9474276",
+     "name": "Isaac Emmanuel",
+     "headline": "Software Engineer. Mathematician.",
+     "twitter": "1cbyc"
+    }
+   }
+  },
+  {
+   "1067510683": {
+    "ph_profiles.jsonl.gz": {
+     "user_id": "606339",
+     "name": "Wispr Flow",
+     "headline": null,
+     "twitter": null
+    },
+    "ph_profiles2.jsonl.gz": {
+     "user_id": "10175019",
+     "name": "Ying",
+     "headline": null,
+     "twitter": null
+    }
+   }
+  },
+  {
+   "a_r48": {
+    "ph_profiles.jsonl.gz": {
+     "user_id": "606339",
+     "name": "Wispr Flow",
+     "headline": "Founder, engineer, advisor...",
+     "twitter": null
+    },
+    "ph_profiles2.jsonl.gz": {
+     "user_id": "9089487",
+     "name": "A R",
+     "headline": "Founder, engineer, advisor...",
+     "twitter": null
+    }
+   }
+  },
+  {
+   "_joseph_perla_": {
+    "ph_profiles.jsonl.gz": {
+     "user_id": "606339",
+     "name": "Wispr Flow",
+     "headline": "Founder",
+     "twitter": null
+    },
+    "ph_profiles2.jsonl.gz": {
+     "user_id": "9616842",
+     "name": "🎼 Joseph Perla 🎶 ",
+     "headline": "Founder",
+     "twitter": null
+    }
+   }
+  },
+  {
+   "aahan_sawhney1": {
+    "ph_profiles.jsonl.gz": {
+     "user_id": "606339",
+     "name": "Wispr Flow",
+     "headline": null,
+     "twitter": null
+    },
+    "ph_profiles2.jsonl.gz": {
+     "user_id": "5819352",
+     "name": "Aahan Sawhney",
+     "headline": null,
+     "twitter": null
+    }
+   }
+  }
+ ]
+}
