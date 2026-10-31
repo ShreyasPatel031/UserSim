@@ -290,3 +290,13 @@ Predicted final points (out-of-fold regressor) as a classifier input: 18:00 65.8
 - Training weight x2 on stories still rising (gaining votes in the last hour, or not yet on the page): -0.1 [-0.5, +0.4].
 - Training weight x2 on stories under 6 h old: +0.1 [-0.5, +0.7].
 - Author / domain priors: round 1, no gain.
+
+18:00 round 3:
+- The real top 30 not posted / back by 18:00: 5.6 per day (18.9%). Their links: github.com 0.37/day, openai.com
+  0.15, anthropic.com 0.11, arxiv.org 0.11, others under 0.1; 5% Show HN. Outside feeds caught 0.4/day of them before
+  18:00 (URL match). So cross-platform early signals can add at most ~1 point, and naming a not-yet-posted story means
+  picking it from thousands of repos / articles. GitHub star history: no backfill (trending archive blocked, GitHub API
+  blocked from this container); live only.
+- LambdaRank on the top-30 cutoff (vs hybrid, paired by day): in/out-of-top-30 labels 18:00 -0.5 [-1.2, +0.1],
+  21:00 +0.1; same truncated at 30: same; graded labels truncated at 30: -2.2 [-3.3, -1.2] / -1.8; truncated at 40:
+  -0.9 / -0.7. The hybrid stays.
