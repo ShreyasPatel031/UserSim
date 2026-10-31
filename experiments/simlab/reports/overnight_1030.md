@@ -306,3 +306,6 @@ Verdict: comparison with competitors has validity input by input (video gaps up 
 ## Raising the launch score: ranking objective (rank_launch.py, Mar–Oct, 239 days, 5 seeds, same inputs)
 regression 63.7/70.3/79.6; LambdaRank within day 64.3/70.5/79.0; average 64.0/70.8/79.5. Within noise.
 Where 90% would come from: knowing the pool's real picks gives 92% (pool-size curve), but pre-launch inputs explain only part of them; the rest follows the makers' private outreach (DMs, email, communities), which no public pre-launch source shows.
+
+## Model-settings sweep (rank_launch.py GRID=1, Mar–Oct, 239 days, 5 seeds, real websites)
+Daily top 3/5/10, regression / LambdaRank: base 62.3/70.7/79.2 / 63.3/70.1/78.6; deeper 63.2/70.3/79.2 / 63.7/70.1/78.5; shallow + more trees 62.2/70.2/79.7 / 63.2/70.6/78.4; fewer inputs per tree 63.6/70.5/79.5 / **64.4**/70.0/78.6; regularised 62.8/69.9/79.5 / 63.6/70.6/78.5. All within ~2 points: settings are not the limit.

@@ -1,0 +1,78 @@
+{
+ "base regression": [
+  62.3,
+  70.7,
+  79.2
+ ],
+ "base lambdarank": [
+  63.3,
+  70.1,
+  78.6
+ ],
+ "base average": [
+  62.6,
+  70.4,
+  79.1
+ ],
+ "days": 239,
+ "deeper regression": [
+  63.2,
+  70.3,
+  79.2
+ ],
+ "deeper lambdarank": [
+  63.7,
+  70.1,
+  78.5
+ ],
+ "deeper average": [
+  63.0,
+  70.0,
+  79.4
+ ],
+ "shallow_more regression": [
+  62.2,
+  70.2,
+  79.7
+ ],
+ "shallow_more lambdarank": [
+  63.2,
+  70.6,
+  78.4
+ ],
+ "shallow_more average": [
+  62.5,
+  70.3,
+  79.4
+ ],
+ "fewer_inputs regression": [
+  63.6,
+  70.5,
+  79.5
+ ],
+ "fewer_inputs lambdarank": [
+  64.4,
+  70.0,
+  78.6
+ ],
+ "fewer_inputs average": [
+  63.6,
+  70.3,
+  79.2
+ ],
+ "regularised regression": [
+  62.8,
+  69.9,
+  79.5
+ ],
+ "regularised lambdarank": [
+  63.6,
+  70.6,
+  78.5
+ ],
+ "regularised average": [
+  62.2,
+  71.1,
+  79.1
+ ]
+}
