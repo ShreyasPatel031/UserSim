@@ -16,7 +16,19 @@ import top100 as H
 SPLIT = sys.argv[1] if len(sys.argv) > 1 else "2026-09-01"
 TS = (sys.argv[2] if len(sys.argv) > 2 else "t12,t18,t21,eod").split(",")
 C = pd.read_parquet(os.path.join(H.CACHE, "daily_v4.parquet"))
-C["final_points"] = C.post_id.map(H.stories().set_index("post_id").points).fillna(1)
+P = H.stories().set_index("post_id")
+C["final_points"] = C.post_id.map(P.points).fillna(1)
+# domain history: how many of the domain's stories made a daily top 30 on days before D
+from urllib.parse import urlsplit
+dom = P.url.map(lambda u: urlsplit(u).netloc.lower().removeprefix("www.") if isinstance(u, str) and u else "self")
+C["domain"] = C.post_id.map(dom).fillna("self")
+Lf = pd.read_json(os.path.join(H.CACHE, "frontday.jsonl"), lines=True, dtype={"day": str})
+Lf = Lf[Lf["rank"] <= 30].drop_duplicates("post_id")
+Lf["domain"] = Lf.post_id.map(dom).fillna("self")
+prior = {}
+for d in sorted(C.day.unique()):
+    prior[d] = Lf[Lf.day < d].domain.value_counts()
+C["domain_hits_before"] = [prior[d].get(x, 0) for d, x in zip(C.day, C.domain)]
 VC = ("points", "rank_now", "gain30", "gain60", "best_rank_D", "slots_top30_D", "slots_top10_D", "exposure_D", "age_h",
       "h_since_first_page", "assigned", "reup")
 
@@ -53,13 +65,15 @@ for t in TS:
     D = pd.concat([D, rel(D, t)], axis=1)
     vc = [f"{t}_{c}" for c in VC]
     cc = [f"{t}_stage1", f"{t}_c_all", f"{t}_c_last3h", "text_score", "on_earlier_list"]
+    D[f"{t}_c_per_pt"] = D[f"{t}_c_all"] / D[f"{t}_points"].clip(lower=1)
+    xc = [f"{t}_c_per_pt", "domain_hits_before"]
     rc = [c for c in D.columns if c.startswith(f"{t}_rk_")]
     tr, te = D[D.day < SPLIT], D[D.day >= SPLIT]
     print(f"\n{t}: train {tr.day.nunique()} days, test {te.day.nunique()} days", flush=True)
     V = {
         "base (v4 + comments)": lambda: ranker(tr, vc + cc).predict(te[vc + cc]),
         "+ per-day relative ranks": lambda: ranker(tr, vc + cc + rc).predict(te[vc + cc + rc]),
-        "  bigger (800 trees, 31 leaves)": lambda: ranker(tr, vc + cc + rc, 800, 31).predict(te[vc + cc + rc]),
+        "+ comments/point, domain history": lambda: ranker(tr, vc + cc + xc).predict(te[vc + cc + xc]),
         "  binary top-30 classifier": lambda: lgb.LGBMClassifier(n_estimators=400, learning_rate=0.05, num_leaves=15,
                                                                    min_child_samples=10, subsample=0.8, subsample_freq=1,
                                                                    colsample_bytree=0.8, verbose=-1, random_state=0)
