@@ -18,7 +18,7 @@ for x in b.list_blobs(prefix="usersim_sim/hn_jobs/cache/forecast_daily/"):
     f = json.loads(x.download_as_text())
     F.append({"day": f["day"], "hour": f["made_at"][11:13], "top": [r["post_id"] for r in f["top"]]})
 for x in b.list_blobs(prefix="usersim_sim/hn_jobs/cache/listwatch/"):
-    L.append(pd.read_json(io.StringIO(x.download_as_text()), lines=True, dtype={"day": str}))
+    L.append(pd.read_json(io.StringIO(x.download_as_text()), lines=True, dtype={"day": str}, convert_dates=False))
 L = pd.concat(L) if L else pd.DataFrame(columns=["read_at", "day", "rank", "post_id"])
 rows = []
 for f in F:
