@@ -57,7 +57,8 @@ def main(x, n_people):
         D["d_" + e] = D.p - 1 / (1 + np.exp(-(logit - push)))   # change in pick chance from this element
     D = D.sort_values("p", ascending=False).reset_index(drop=True)
     voted = set(E[(E.item.astype(str) == x) & (E.kind == "upvote")].person)
-    ps = {json.loads(l)["id"]: json.loads(l) for l in open(f"{PH}/data/page_scores.jsonl")}.get(x, {})
+    ps = {json.loads(l)["id"]: json.loads(l) for l in open(f"{PH}/data/{os.environ.get('PS_OUT', 'page_scores_v2.jsonl')}")}.get(x, {})
+    vs = {json.loads(l)["id"]: json.loads(l) for l in open(f"{PH}/data/video_scores.jsonl")}.get(x, {})
     pr = {}
     try:
         from pipeline import warehouse as W
@@ -73,7 +74,8 @@ def main(x, n_people):
                        "gemini_persona": pr.get(r.person)})
     avg = {e: round(float(D["d_" + e].mean()), 4) for e in els if "d_" + e in D}
     out = {"launch": x, "name": I.loc[x, "name"], "tagline": I.loc[x, "tagline"], "day": d, "pool": len(D), "real_voters_in_pool": int(D.person.isin(voted).sum()),
-           "expected_votes_from_pool": round(float((D.w * D.p).sum()), 1), "gemini_page_output": ps.get("result"), "average_element_push": avg,
+           "expected_votes_from_pool": round(float((D.w * D.p).sum()), 1), "gemini_page_output": ps.get("result"), "images_seen": ps.get("n_images"),
+           "gemini_video_watched": vs.get("result"), "average_element_push": avg,
            "element_push_total_expected_votes": {e: round(float((D.w * D["d_" + e]).sum()), 2) for e in els if "d_" + e in D}, "people": people,
            "persona_ratings_for_launch": len(pr) if "_error" not in pr else pr["_error"]}
     json.dump(out, open(f"{HERE}/reports/element_sim_{x}.json", "w"), indent=1, default=str)
