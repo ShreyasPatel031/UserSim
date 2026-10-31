@@ -293,3 +293,10 @@ Correction: "only X" top-3 hits with few inputs are inflated by tie-breaking in 
 
 ## Guessed websites vs Product Hunt's own link (105-launch sample, route 4)
 Guess has the same main domain as the real link: "trusted" 12/27 (44%), strong name match 14/29 (48%), weak 2/26 (8%). Guesses often point at a maker's personal site or another product with a similar name. So every launch gets its real link: 6,431 queued newest first, ~330/hour until 06:40 UTC, then 3 h/day in the daily run (~1,000/day).
+
+## Competitor comparison (cmp_features.py: each page / video score minus the mean of the 5 nearest earlier competitors, launched ≥2 days before; competitors' votes)
+Each gap vs beating expected reach (cmp_eff.py, Mar–Oct, within-day corr., 95%):
+- video better than competitors: production +0.088, problem shown +0.081, hook +0.073, pacing +0.063, clarity +0.061, call to action +0.055, length fit +0.050, wow +0.048 (all significant)
+- page better than competitors: audience breadth +0.055, website +0.044, Gemini top-5 chance +0.042, wow +0.039 (significant); other elements not
+- competitors' own votes: no effect (−0.008)
+Added to the simulation (Jul–Oct): all 78 inputs 60.9 → 60.6 daily top 3 (first-time groups of 3 65.4 → 64.8); fixed small groups chosen in advance: video gaps 61.2, summary 60.9, both 62.4 (first-time groups of 3 64.3). No consistent gain: the gaps are real but small and mostly overlap the page scores already in.
