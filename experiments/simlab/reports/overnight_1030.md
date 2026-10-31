@@ -346,3 +346,33 @@ Every change is within ±2.3 points, under the ±3.5 noise on daily top 3. First
 **Verdict:** neither input adds signal on Product Hunt's pre-launch data. Presence can only matter when it is matched
 against when a launch's votes arrive. That needs the hourly snapshots, and it is a launch-day forecast (step 4,
 about Nov 14), not a pre-launch one. Twins repeat the existing taste inputs.
+
+## Relationship vs taste split of the person model (`rel_split.py`, Jul–Oct, 72,554 active person-days, 126,674 picks)
+| Pick label | Share of picks | Model has it in the person's top 3 |
+|---|---|---|
+| Tied (dated: backed the team before, or the team engaged with the person) | 63.4% | 44.1% |
+| Follows a team member on PH (undated) | 6.7% | 18.0% |
+| Untied | 29.9% | 9.9% |
+
+- **Person-day top-3 hit:** 47.7. Ranking dated-tie launches first gives 47.8. Ranking every known relationship first
+  gives 52.2.
+- **Why ranking ties first doesn't help:** a line-up holds a median of 9 tied launches out of about 30 (80% of
+  person-days have 4 or more). "Team" includes the hunter, and prolific hunters tie a person to many launches. The
+  model knows the ties but not which one the person acts on that day.
+- **By person-day:**
+
+  | Person-day picks | Share of person-days | Top-3 hit |
+  |---|---|---|
+  | All tied/follow | 64% | 53.0 |
+  | Mixed | 16% | 66.4 |
+  | All untied | 20% | 16.5 |
+
+- **"Acts on relationships" is a stable trait:** Jul–Aug vs Sep–Oct correlation 0.51 (1,038 people with 5+ picks in
+  each half).
+- **Trait vs later accuracy:** quartiles of the Jul–Aug trait sort Sep–Oct top-3 hit from 45.2 to 52.4, and the share
+  of untied picks from 35% to 20%.
+
+**Verdict:** the gap has two parts.
+1. **Tie strength, about 35 points of the missing hit on tied picks:** which of about 9 ties the person acts on. This
+   is solvable with data we already have.
+2. **Untied picks, 30% of picks at 9.9%:** taste or outreach we can't see. This is where X data would add.
