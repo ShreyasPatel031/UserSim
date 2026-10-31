@@ -290,3 +290,6 @@ Competitors of a launch = its 20 nearest earlier Product Hunt launches by meanin
 | competitor use alone | (tie artifact, see below) | 0.545 |
 Small but real; most of it is already in history / meaning similarity.
 Correction: "only X" top-3 hits with few inputs are inflated by tie-breaking in line-up order (≈ popularity order); "team ties only 49.4" is likely inflated too. AUC is unaffected (team only 0.644 stands). To fix: random tie-break in the top-3 hit.
+
+## Guessed websites vs Product Hunt's own link (105-launch sample, route 4)
+Guess has the same main domain as the real link: "trusted" 12/27 (44%), strong name match 14/29 (48%), weak 2/26 (8%). Guesses often point at a maker's personal site or another product with a similar name. So every launch gets its real link: 6,431 queued newest first, ~330/hour until 06:40 UTC, then 3 h/day in the daily run (~1,000/day).
