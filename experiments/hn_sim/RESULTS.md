@@ -314,3 +314,15 @@ Predicted final points (out-of-fold regressor) as a classifier input: 18:00 65.8
 - GitHub star velocity: ghstars.py on hn-sim-1, hourly from 2026-10-31 (github.com links in HN stories of the last
   48 h + github.com/trending; star count from the repo page) -> ghstars/<day>.jsonl. github.com is blocked from the
   dev container, so it runs only on the VM; usable once enough days are recorded.
+
+## Scoring as probabilities (top-30 classifier, 46 test days, stories that exist at T)
+
+| at | stories | made top 30 | AUC | avg precision | Brier (base rate) | naive "on top 30 now": precision / recall |
+|---|---|---|---|---|---|---|
+| 18:00 | 30,518 | 1,111 (3.6%) | 0.975 | 0.826 | 0.0129 (0.0351) | 50% / 61% |
+| 21:00 | 32,560 | 1,315 (4.0%) | 0.989 | 0.895 | 0.0107 (0.0388) | 60% / 62% |
+
+Calibration at 18:00 (forecast -> actual): 0.05 -> 0.07, 0.18 -> 0.19, 0.40 -> 0.36, 0.61 -> 0.51, 0.81 -> 0.66,
+0.98 -> 0.96: slightly overconfident between 0.5 and 0.9 (fixable with isotonic calibration on held-out days).
+Expected winners among existing stories per day (sum of probabilities): 22.9 vs 24.2 actual at 18:00; 27.2 vs 28.6 at
+21:00.
