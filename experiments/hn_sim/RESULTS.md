@@ -280,3 +280,4 @@ Second-chance pool and hourly list snapshots start 2026-10-30 / 10-31: they can 
 Hybrid vs ranker, paired by day: 18:00 +2.2 points [+1.3, +3.3], better on 21 days, worse on 3; 21:00 +1.8 [+0.9,
 +2.8], 22 better / 5 worse; end of day 86.8% vs 87.0% (no change). A top-40 label or rank-weighted classifier: no
 better. The 18:00 ceiling stays ~81% (share of the real top 30 posted / re-upped by then).
+Predicted final points (out-of-fold regressor) as a classifier input: 18:00 65.8% -> 65.8%, 21:00 80.2% -> 79.7%; no gain.
