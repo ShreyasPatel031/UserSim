@@ -5,7 +5,8 @@ mean (cmp_gap_<score>), so "4.5 while its competitors are 4.8" is a negative gap
   cmp_votes_mean / cmp_votes_max   log votes of the competitors
   cmp_beat_share                   share of competitors this launch beats on Gemini's overall top-5 chance
   cmp_sim_mean                     how close the competitors are (mean cosine)
-usage: python cmp_features.py -> data/cmp_features.json"""
+COMP_LIST=1: competitors from comp_lists.py (Gemini-named, validated better) instead of the 5 nearest by meaning.
+usage: [COMP_LIST=1] python cmp_features.py -> data/cmp_features.json"""
 import glob, json, os
 from datetime import date
 import numpy as np
@@ -23,13 +24,17 @@ def main():
     keys_vs = sorted({k for v in vs.values() for k, x in v.items() if isinstance(x, (int, float))})
     Z = np.load(f"{D}/emb.npz"); ids = [str(x) for x in Z["launch_ids"]]
     V = Z["launch"] / np.linalg.norm(Z["launch"], axis=1, keepdims=True)
-    od = np.array([date.fromisoformat(day[x]).toordinal() if x in day else 10**9 for x in ids])
+    od = np.array([date.fromisoformat(day[x]).toordinal() if x in day else 10**9 for x in ids]); ix = {x: k for k, x in enumerate(ids)}
+    LISTS = json.load(open(f"{D}/comp_lists.json")) if os.environ.get("COMP_LIST") == "1" else None
     out = {}
     for k, x in enumerate(ids):
         if x not in day:
             continue
         s = V @ V[k]; s[od > od[k] - 2] = -9          # competitors launched at least 2 days before
-        nb = [j for j in np.argsort(-s)[:5] if s[j] > -9]
+        if LISTS is not None:   # COMP_LIST=1: Gemini-named competitors (comp_lists.py), validated as better
+            nb = [ix[y] for y in LISTS.get(x, {}).get("ids", []) if y in ix and s[ix[y]] > -9]
+        else:
+            nb = [j for j in np.argsort(-s)[:5] if s[j] > -9]
         if not nb:
             continue
         c = [ids[j] for j in nb]; r = {"cmp_sim_mean": float(np.mean(s[nb])),
