@@ -244,3 +244,14 @@ v4 + comments (v4_cov.py 2026-09-01 ... 0.97); "visible" = share of the real top
 | end of day | 86.0% [84.7, 87.2] | 77.2% | 97.8% | 99.3% | 80.1% |
 
 Upvote-rate inputs: within noise. 18:00 is capped by the 19.5% of the real top 30 not yet posted / re-upped by then.
+
+After the full v4 run, on the same 46 test days (top 30 found): 30 vs 57 training days 77.7% vs 78.4% at 21:00 (more
+days add little); 5-seed average 78.9%; one ranker pooled over all forecast times 78.3% (64.3% at 18:00, 84.8% at end
+of day); front-page rank vs HN-formula rank gap (penalty signal) 79.1% at 21:00, 64.3% at 18:00, 86.5% at end of day.
+All within noise: with this data the model is saturated.
+
+Live: forecast_daily.py runs hourly on hn-sim-1 (forecast_daily/<day>/<HHMM>.json in the bucket); listwatch.py records
+each day's list every hour (listwatch/<day>.jsonl), so live forecasts can be scored against the real lists, and the
+"list at a fixed hour" target can be trained once enough days are recorded. HN's second-chance pool (hn_pool, every
+10 min): 35% of pool stories reached the front-page top 30, usually within minutes; ~4 per day made the daily top 30
+(Oct 30-31) - an input for the live 18:00 forecast, testable only going forward.
