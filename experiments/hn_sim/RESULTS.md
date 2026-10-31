@@ -401,3 +401,17 @@ popularity bands (stories of similar final points: the "beyond popularity" numbe
 
 Personal signals carry real preference beyond popularity (0.63 within bands vs 0.55) and now add to popularity
 (0.828 vs 0.814). Below the 0.7 gate on personal signal alone.
+
+Crowd v2 (crowd_v2.py): the individual v2 engagement model (personal signals only, trained on Jul-Aug pairs) run for
+the 6,000 most active commenters (profiles from data before Jul 1; 174 of them regular /new browsers) over every
+Jul 1 - Oct 14 post at posting time (106,210 posts; 57 min). At-posting classifier, test Sep 1 - Oct 14:
+
+| inputs | top 30 AUC | avg precision | winners in model's top 30 / day | top 100 | top 10 AUC |
+|---|---|---|---|---|---|
+| post features (baseline) | 0.782 | 0.169 | 21.5% | 39.1% | 0.789 |
+| best so far (+ past titles + embedding + crowd v1) | 0.798 | 0.168 | 20.8% | 41.7% | 0.804 |
+| + crowd v2 | 0.803 | 0.175 | 21.7% | 42.2% | 0.808 |
+| crowd v2 alone | 0.623 | 0.049 | 5.7% | 18.7% | 0.611 |
+
+Crowd v2 vs best so far, winners caught per day (paired): top 30 +0.9 points [-0.4, +2.3]; top 10 +0.1 [-1.7, +1.8].
+Within noise.
