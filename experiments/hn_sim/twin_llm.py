@@ -16,6 +16,7 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import roc_auc_score
 
+import emb_io
 import llm
 import top100 as H
 
@@ -32,8 +33,18 @@ p = H.stories().set_index("post_id")
 c = pd.read_parquet(os.path.join(H.CACHE, "bq_comments.parquet"), columns=["person", "story_id", "created_at_i"])
 c = c[c.person.isin(people) & (c.created_at_i < t_cut)].sort_values("created_at_i")
 hist = c.drop_duplicates(["person", "story_id"], keep="last").groupby("person").story_id.apply(lambda s: s.to_numpy()[-60:])
-E = pd.read_parquet(os.path.join(H.CACHE, "title_emb.parquet"))
-emb = dict(zip(E.post_id, E.emb))
+EMB, EI = emb_io.load()
+
+
+class _Emb(dict):
+    def __contains__(self, k):
+        return k in EI.index
+
+    def __getitem__(self, k):
+        return np.asarray(EMB[EI[k]], np.float32)
+
+
+emb = _Emb()
 
 SYSTEM = ("You simulate one specific Hacker News reader, described only by the stories they chose to comment on "
           "recently. Judge each new story as that person would: would they open it and comment? Use their topics, "

@@ -21,6 +21,7 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import roc_auc_score
 
+import emb_io
 import top100 as H
 
 N = int(sys.argv[1]) if len(sys.argv) > 1 else 3000
@@ -30,10 +31,7 @@ t_cut = pd.Timestamp(CUT, tz="UTC").timestamp()
 t_end = pd.Timestamp(END, tz="UTC").timestamp() + 86400
 rng = np.random.default_rng(0)
 
-E = pd.read_parquet(os.path.join(H.CACHE, "title_emb.parquet"))
-emb = np.stack(E.emb.to_numpy()).astype(np.float32)
-emb /= np.linalg.norm(emb, axis=1, keepdims=True) + 1e-9
-ei = pd.Series(np.arange(len(E)), index=E.post_id)
+emb, ei = emb_io.load()                                          # float16 memmap, unit length
 p = H.stories().set_index("post_id")
 c = pd.read_parquet(os.path.join(H.CACHE, "bq_comments.parquet"), columns=["person", "story_id", "created_at_i"])
 c = c[c.story_id.isin(ei.index)]
@@ -47,8 +45,10 @@ print(f"panel {len(panel)} people (180-day comments: median {act[panel].median()
 b = before[before.person.isin(panel)]
 pi = pd.Series(np.arange(len(panel)), index=panel)
 w = np.exp(-(t_cut - b.created_at_i.to_numpy()) / (180 * 86400) * np.log(2)).astype(np.float32)
+rp, rs = pi[b.person].to_numpy(), ei[b.story_id].to_numpy()
 taste = np.zeros((len(panel), emb.shape[1]), np.float32)
-np.add.at(taste, pi[b.person].to_numpy(), emb[ei[b.story_id].to_numpy()] * w[:, None])
+for k in range(0, len(rp), 300000):
+    np.add.at(taste, rp[k:k + 300000], np.asarray(emb[rs[k:k + 300000]], np.float32) * w[k:k + 300000, None])
 taste /= np.linalg.norm(taste, axis=1, keepdims=True) + 1e-9
 hour = np.full((len(panel), 24), 1.0, np.float32)
 rb = b[b.created_at_i >= t_cut - 180 * 86400]
@@ -79,7 +79,7 @@ for person, g in a.groupby("person"):
     y = np.r_[np.ones(len(pos)), np.zeros(len(neg))]
     sets.append(pd.DataFrame({"person": person, "story_id": ids, "y": y}))
     i = pi[person]
-    s_taste = emb[ei[ids].to_numpy()] @ taste[i]
+    s_taste = np.asarray(emb[ei[ids].to_numpy()], np.float32) @ taste[i]
     s_pop = pop[ids].to_numpy()
     s_both = pd.Series(s_taste).rank().to_numpy() + pd.Series(s_pop).rank().to_numpy()
     top6 = np.argsort(-hour[i])[:6]

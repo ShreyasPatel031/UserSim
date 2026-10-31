@@ -28,6 +28,7 @@ import pandas as pd
 from sklearn.decomposition import PCA
 from sklearn.metrics import average_precision_score, brier_score_loss, roc_auc_score
 
+import emb_io
 import top100 as H
 
 SNAP = sys.argv[1] if len(sys.argv) > 1 else "2026-06-30"
@@ -35,11 +36,17 @@ T_SNAP = pd.Timestamp(SNAP, tz="UTC").timestamp() + 86400
 OUT = os.path.join(H.CACHE, "audience_feats.parquet")
 
 p = H.stories()
-E = pd.read_parquet(os.path.join(H.CACHE, "title_emb.parquet"))
-emb = np.stack(E.emb.to_numpy()).astype(np.float32)
-emb /= np.linalg.norm(emb, axis=1, keepdims=True) + 1e-9
-ei = pd.Series(np.arange(len(E)), index=E.post_id)
+emb, ei = emb_io.load()                                          # float16 memmap, unit length
 print("embeddings", emb.shape, flush=True)
+
+
+def taste_of(rows_person, rows_story, weights, n_people):
+    """Weighted mean embedding per person, accumulated in chunks (never gathers all rows at once), unit length."""
+    T = np.zeros((n_people, emb.shape[1]), np.float32)
+    for i in range(0, len(rows_person), 300000):
+        sl = slice(i, i + 300000)
+        np.add.at(T, rows_person[sl], np.asarray(emb[rows_story[sl]], np.float32) * weights[sl, None])
+    return T / (np.linalg.norm(T, axis=1, keepdims=True) + 1e-9)
 
 # ---- people -----------------------------------------------------------------------------------------------------
 c = pd.read_parquet(os.path.join(H.CACHE, "bq_comments.parquet"), columns=["person", "story_id", "created_at_i"])
@@ -53,9 +60,7 @@ c = c[c.person.isin(people)]
 pi = pd.Series(np.arange(len(people)), index=people)
 print("people", len(people), "comments", len(c), flush=True)
 w = np.exp(-(T_SNAP - c.created_at_i.to_numpy()) / (180 * 86400) * np.log(2)).astype(np.float32)
-taste = np.zeros((len(people), emb.shape[1]), np.float32)
-np.add.at(taste, pi[c.person].to_numpy(), emb[ei[c.story_id].to_numpy()] * w[:, None])
-taste /= np.linalg.norm(taste, axis=1, keepdims=True) + 1e-9
+taste = taste_of(pi[c.person].to_numpy(), ei[c.story_id].to_numpy(), w, len(people))
 recent = c[c.created_at_i >= T_SNAP - 180 * 86400]
 rate = (recent.groupby("person").size().reindex(people).fillna(0) / 180).to_numpy(np.float32)
 hour = np.full((len(people), 24), 1.0, np.float32)                     # +1 smoothing
@@ -68,7 +73,8 @@ print(f"scouts (share of comments within 60 min of posting > 0.3): {(scout > 0.3
 past = p[(p.created_at_i < T_SNAP) & (p.points >= 3) & p.post_id.isin(ei.index)]
 L = pd.concat([pd.read_json(os.path.join(H.CACHE, f), lines=True, dtype={"day": str}) for f in ("frontday.jsonl", "frontday_old.jsonl")])
 top30 = set(L[L["rank"] <= 30].post_id)
-past_emb = emb[ei[past.post_id].to_numpy()]
+past_emb = np.asarray(emb[np.sort(ei[past.post_id].to_numpy())], np.float32)
+past = past.assign(_r=ei[past.post_id].to_numpy()).sort_values("_r")
 past_lp = np.log1p(past.points.to_numpy(np.float32))
 past_100 = (past.points.to_numpy() >= 100).astype(np.float32)
 past_t30 = past.post_id.isin(top30).to_numpy().astype(np.float32)
@@ -76,7 +82,7 @@ print("past stories for the content prior", len(past), flush=True)
 
 # ---- posts to score ----------------------------------------------------------------------------------------------
 q = p[(p.day >= "2026-07-01") & (p.day <= "2026-10-14") & p.post_id.isin(ei.index)].reset_index(drop=True)
-qe = emb[ei[q.post_id].to_numpy()]
+qe = np.asarray(emb[ei[q.post_id].to_numpy()], np.float32)
 qh = ((q.created_at_i // 3600) % 24).to_numpy()
 F = {k: np.zeros(len(q), np.float32) for k in ("aud_sum", "aud_cube", "aud_fans", "scout_sum", "scout_cube", "scout_fans",
                                                  "fans_any", "top50_sim", "knn_lp", "knn_100", "knn_t30", "knn_sim")}
