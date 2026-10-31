@@ -11,16 +11,15 @@ import os
 import numpy as np
 import pandas as pd
 
+import fine_io
 import top100 as H
 
 TIMES = {"t12": 12, "t15": 9, "t18": 6, "t20": 4, "t21": 3, "t22": 2, "t23": 1, "eod": 0}   # as daily_cache.py
 
 C = pd.read_parquet(os.path.join(H.CACHE, "daily_cache.parquet"))
-q = pd.concat([pd.read_json(os.path.join(H.CACHE, f), lines=True) for f in sorted(os.listdir(H.CACHE))
-               if f.startswith("qn_fine_") and f.endswith(".jsonl")], ignore_index=True)
+q_all, q = fine_io.load()
 p = H.stories()
-fetched = set(q.post_id) | set(p.post_id[(p.points < 5).to_numpy()])
-q = q[(q.status == 200) & q.qn_up_10m.map(lambda x: isinstance(x, list))].drop_duplicates("post_id")
+fetched = set(q_all.post_id) | set(p.post_id[(p.points < 5).to_numpy()])
 print("series", len(q), flush=True)
 RK = np.array([[x if x is not None else 91 for x in r] for r in q.qn_rank_10m], float)
 UP = pd.DataFrame(list(q.qn_up_10m), dtype=float).ffill(axis=1).fillna(1).to_numpy()

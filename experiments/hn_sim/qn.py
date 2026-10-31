@@ -84,6 +84,19 @@ def parse(html: str, t0: int) -> dict:
         out["qn_rank_10m"] = [fr.get(k) for k in range(216)]
         out["qn_up_10m"] = [fu.get(k) for k in range(216)]
         out["qn_exp_10m"] = [fe.get(k) for k in range(216)]
+        # after 36 h, up to 7 days: 10-minute slots where the story was on the front page (second-chance re-ups come
+        # back days later and HN lists them under the day they return): [slot, rank, upvotes, expected upvotes]
+        late = {}
+        for row in rk:
+            k = (row[0] - f0) // 600
+            if 216 <= k < 1008 and len(row) > 2 and 0 < row[2] < 91:
+                late[k] = [int(k), row[2], None, None]
+        for t, v, e in up:
+            k = (t - f0) // 600
+            if k in late:
+                late[k][2], late[k][3] = v, round(e, 2)
+        out["qn_late"] = [late[k] for k in sorted(late)]
+        out["qn_last_t"] = rk[-1][0] if rk else None
     return out
 
 
