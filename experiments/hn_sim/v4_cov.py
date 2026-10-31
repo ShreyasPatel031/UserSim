@@ -17,7 +17,8 @@ SPLIT = sys.argv[1] if len(sys.argv) > 1 else "2026-09-01"
 TS = (sys.argv[2] if len(sys.argv) > 2 else "t18,t21,eod").split(",")
 MIN_COV = float(sys.argv[3]) if len(sys.argv) > 3 else 0.98
 C = V.build("2026-07-06", "2026-10-16")
-got = set(fine_io.load()[0].post_id)
+q_all = fine_io.load()[0]
+got = set(q_all.post_id[q_all.status.isin([200, 404])])            # timeouts and 5xx do not count as fetched
 p = H.stories()
 p = p[p.points >= 5]
 ok = set()

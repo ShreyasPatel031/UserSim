@@ -109,7 +109,13 @@ def main(a: str, b: str) -> None:
     done = set()
     for f in [OUT] + [os.path.join(S.LOCAL, x) for x in os.environ.get("QN_SKIP", "").split(",") if x]:
         if os.path.exists(f):                                        # QN_SKIP: other output files already holding stories
-            done |= {json.loads(l)["post_id"] for l in open(f)}
+            for line in open(f):
+                try:
+                    rec = json.loads(line)
+                except ValueError:
+                    continue
+                if rec.get("status") in (200, 404) or not os.environ.get("QN_RETRY_ERRORS"):   # retry timeouts / 5xx
+                    done.add(rec["post_id"])
     todo = [(int(r.post_id), int(r.created_at_i)) for r in p.itertuples() if r.post_id not in done]
     print(len(todo), "stories", flush=True)
     t_start, lock = time.time(), threading.Lock()
@@ -117,7 +123,8 @@ def main(a: str, b: str) -> None:
     def one(job):
         pid, t0 = job
         try:
-            r = requests.get(f"https://news.social-protocols.org/stats?id={pid}", timeout=30, headers=_s.headers)
+            r = requests.get(f"https://news.social-protocols.org/stats?id={pid}", timeout=float(os.environ.get("QN_TIMEOUT", "30")),
+                             headers=_s.headers)
             rec = {"post_id": pid, "status": r.status_code, **(parse(r.text, t0) if r.status_code == 200 else {})}
         except (ValueError, IndexError) as exc:              # malformed page: record and move on
             rec = {"post_id": pid, "status": -2, "error": f"parse: {exc}"[:100]}
