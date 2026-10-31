@@ -171,12 +171,52 @@ def recip_features(D):
     return D
 
 
+COMP = os.environ.get("COMP") == "1"   # + did this person already use this launch's competitors (nearest earlier launches)
+if COMP:
+    FEATS = FEATS + ["comp_used5", "comp_n20", "comp_best"]
+
+
+def comp_features(D):
+    """Competitors of a launch = its 20 nearest earlier Product Hunt launches by meaning (name, tagline, description).
+    comp_used5: the person upvoted or commented on one of the 5 nearest before the day; comp_n20: how many of the 20;
+    comp_best: rank of the nearest one they used (21 = none)."""
+    g = load()
+    if "comp_nb" not in G:
+        Z = np.load(f"{store.RAW}/emb.npz"); ids = [str(x) for x in Z["launch_ids"]]
+        V = Z["launch"] / np.linalg.norm(Z["launch"], axis=1, keepdims=True)
+        day = {str(k): v for k, v in g["day"].items()}; zday = np.array([day.get(x, "9999") for x in ids])
+        G["comp_nb"] = (ids, V, zday, {x: k for k, x in enumerate(ids)}, {})
+        E = g["E"]; first = E.assign(item=E.item.astype(str)).groupby(["person", "item"]).date.min()
+        hist = {}
+        for (u, it), dt in first.items():
+            hist.setdefault(u, {})[it] = dt
+        G["comp_hist"] = hist
+    ids, V, zday, ix, cache = G["comp_nb"]; hist = G["comp_hist"]
+
+    def nb(x):
+        if x not in cache:
+            k = ix.get(x)
+            if k is None:
+                cache[x] = []
+            else:
+                s = V @ V[k]; s[zday >= zday[k]] = -9
+                cache[x] = [ids[j] for j in np.argsort(-s)[:20]]
+        return cache[x]
+    u5, n20, best = [], [], []
+    for u, d, x in zip(D.person, D.day, D.id.astype(str)):
+        h = hist.get(u, {}); used = [k for k, c in enumerate(nb(x)) if h.get(c, "9999") < d]
+        u5.append(float(any(k < 5 for k in used))); n20.append(float(len(used))); best.append(float(used[0] + 1) if used else 21.0)
+    D["comp_used5"], D["comp_n20"], D["comp_best"] = u5, n20, best
+    return D
+
+
 def featurize(D, cf, prior_cut):
     g = load()
     D = seq_features(D, g["I"], g["E"])
     D = apply_cf(D, cf)
     D = cat_features(D, prior_cut)
-    return recip_features(D) if RECIP else D
+    D = recip_features(D) if RECIP else D
+    return comp_features(D) if COMP else D
 
 
 # ---- phase A: per month, train the person model on the previous month

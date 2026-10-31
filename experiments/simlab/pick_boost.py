@@ -36,6 +36,8 @@ def month(m):
         tr = PS.featurize(sample(full, n), cf, prev); tr, _ = add_taste(tr); trs[n] = tr.join(T, on="id").sort_values(["g"])
     groups = {"team": ["backed", "cf_team", "nbr_team", "nbr_pop", "team_recent"], "sequence": [c for c in PS.FEATS if c.startswith("seq_")],
               "category": [c for c in PS.FEATS if c.startswith("cat_")], "content": ["topic", "meaning"] + pc + tc}
+    if PS.COMP:
+        groups["competitors"] = ["comp_used5", "comp_n20", "comp_best"]
     if os.environ.get("ABLATE") == "1":
         specs = {"base": (300, "clf", 400, 31, 0.05)}
         for k, v in groups.items():
