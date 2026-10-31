@@ -326,3 +326,20 @@ Calibration at 18:00 (forecast -> actual): 0.05 -> 0.07, 0.18 -> 0.19, 0.40 -> 0
 0.98 -> 0.96: slightly overconfident between 0.5 and 0.9 (fixable with isotonic calibration on held-out days).
 Expected winners among existing stories per day (sum of probabilities): 22.9 vs 24.2 actual at 18:00; 27.2 vs 28.6 at
 21:00.
+
+## Per-post forecast (per_post.py): a story is posted; at a fixed age, chance it makes its day's list top 30 / top 10
+
+Train: 61,947 stories posted Jul 1 - Aug 31; test: 44,263 posted Sep 1 - Oct 14. 3.0% of posts make a daily top 30,
+1.0% a top 10. "Flagged" = the model gives 50% or more.
+
+| age | top 30 AUC | top 30 avg precision | flagged | of flagged, made top 30 | winners flagged | top 10 AUC | top 10: of flagged, made it |
+|---|---|---|---|---|---|---|---|
+| at posting | 0.783 | 0.17 | 86 | 67% | 4% | 0.792 | 37% |
+| 15 min | 0.820 | 0.22 | 145 | 57% | 6% | 0.817 | 53% |
+| 30 min | 0.897 | 0.35 | 371 | 58% | 16% | 0.899 | 48% |
+| 1 h | 0.956 | 0.45 | 616 | 59% | 28% | 0.958 | 51% |
+| 2 h | 0.969 | 0.60 | 828 | 70% | 44% | 0.973 | 66% |
+| 4 h | 0.976 | 0.73 | 906 | 81% | 55% | 0.979 | 72% |
+
+Stories with no Quality News page (they end under ~5 points) get the no-votes fill after posting; at posting time no
+vote data is used.
