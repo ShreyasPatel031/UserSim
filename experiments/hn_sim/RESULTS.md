@@ -281,3 +281,12 @@ Hybrid vs ranker, paired by day: 18:00 +2.2 points [+1.3, +3.3], better on 21 da
 +2.8], 22 better / 5 worse; end of day 86.8% vs 87.0% (no change). A top-40 label or rank-weighted classifier: no
 better. The 18:00 ceiling stays ~81% (share of the real top 30 posted / re-upped by then).
 Predicted final points (out-of-fold regressor) as a classifier input: 18:00 65.8% -> 65.8%, 21:00 80.2% -> 79.7%; no gain.
+
+18:00 round 2 (v4_t18b.py, hybrid, paired by day vs hybrid):
+- Recall among stories already posted / back on the page: 18:00 81.9% (of 80.5% visible -> 65.8% overall); 21:00
+  84.2% (of 95.3% -> 80.2%).
+- Title similarity to earlier daily top-30 titles (TF-IDF cosine, nearest and top-5 mean, 60 earlier days): 18:00
+  -0.1 [-0.7, +0.5]; 21:00 -0.8 [-1.5, -0.1]. The title text score (TF-IDF ridge) was already an input.
+- Training weight x2 on stories still rising (gaining votes in the last hour, or not yet on the page): -0.1 [-0.5, +0.4].
+- Training weight x2 on stories under 6 h old: +0.1 [-0.5, +0.7].
+- Author / domain priors: round 1, no gain.
