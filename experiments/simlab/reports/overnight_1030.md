@@ -302,3 +302,7 @@ Each gap vs beating expected reach (cmp_eff.py, Mar–Oct, within-day corr., 95%
 Added to the simulation (Jul–Oct): all 78 inputs 60.9 → 60.6 daily top 3 (first-time groups of 3 65.4 → 64.8); fixed small groups chosen in advance: video gaps 61.2, summary 60.9, both 62.4 (first-time groups of 3 64.3). No consistent gain: the gaps are real but small and mostly overlap the page scores already in.
 Launch model with competitor gaps as page inputs (ctrl.py CMP=1, Mar–Oct, 5 seeds): fixed + page 62.3/69.0/78.4 → 62.2/69.7/78.6; all 63.7/70.3/79.6 → 62.3/70.9/79.7; page lift corr. 0.240 → 0.236. No gain. Kept without (ctrl.json); with is results/ctrl_cmp.json.
 Verdict: comparison with competitors has validity input by input (video gaps up to +0.088) and is useful to show a maker, but it does not add to either score; it overlaps the page scores already in. Competitor use per person (who already used a competitor) adds +1 point top-3 hit at person level.
+
+## Raising the launch score: ranking objective (rank_launch.py, Mar–Oct, 239 days, 5 seeds, same inputs)
+regression 63.7/70.3/79.6; LambdaRank within day 64.3/70.5/79.0; average 64.0/70.8/79.5. Within noise.
+Where 90% would come from: knowing the pool's real picks gives 92% (pool-size curve), but pre-launch inputs explain only part of them; the rest follows the makers' private outreach (DMs, email, communities), which no public pre-launch source shows.
