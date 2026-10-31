@@ -16,9 +16,9 @@ import rank as R
 import top100 as H
 
 SPLIT = sys.argv[1] if len(sys.argv) > 1 else "2026-09-16"
-C = pd.read_parquet(os.path.join(H.CACHE, "daily_cache.parquet"))
+C = pd.read_parquet(os.path.join(H.CACHE, os.environ.get("DC", "daily_cache.parquet")))
 V = ["v_points", "v_rank_now", "v_best_rank", "v_h_top30", "v_h_top10", "v_gain3h"]
-cov = C[C.day >= "2026-06-01"].groupby("day").qn_fetched.mean()
+cov = C[C.day >= "2026-06-01"].groupby("day")[os.environ.get("COV", "qn_fetched")].mean()
 qdays = set(cov[cov >= 0.98].index)
 print("days with full vote coverage:", len(qdays), min(qdays) if qdays else "", max(qdays) if qdays else "", flush=True)
 
@@ -67,6 +67,14 @@ if __name__ == "__main__":
             "+ HN formula, penalty, comments/pt": base + xc,
             "  same, deeper trees": (base + xc, 31, 600),
         }
+        if f"{t}_f_points" in D:                                   # 10-minute inputs (fine_feats.py)
+            fc = [f"{t}_{c}" for c in ("f_points", "f_rank", "f_best_rank", "f_gain30", "f_gain60", "f_rate", "f_rate60",
+                                       "f_rank_change60")]
+            D[fc] = D[fc].fillna({f"{t}_f_points": 1, f"{t}_f_rank": 91, f"{t}_f_best_rank": 91, f"{t}_f_gain30": 0,
+                                  f"{t}_f_gain60": 0, f"{t}_f_rank_change60": 0})
+            trd, ted = D[D.day < SPLIT], D[D.day >= SPLIT]
+            VARIANTS["+ 10-minute votes"] = base + fc
+            VARIANTS["+ 10-minute votes, HN formula"] = base + fc + xc
         print(f"\n{t}: train days {trd.day.nunique()}, test days {ted.day.nunique()}")
         for name, cols in VARIANTS.items():
             if cols is None:
