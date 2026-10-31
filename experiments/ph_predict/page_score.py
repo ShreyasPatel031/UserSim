@@ -151,6 +151,15 @@ def main(limit, threads):
         for l in open(f"{D}/sites_text.jsonl"):
             r = json.loads(l)
             web[str(r["id"])] = r["text"][:2000]
+    PARKED = ("is for sale", "domain for sale", "buy this domain", "hugedomains", "parked")
+    for x, t in list(web.items()):   # name-based guesses that landed on a parked / for-sale page: no website
+        if any(k in t[:2000].lower() for k in PARKED):
+            del web[x]
+    if os.path.exists(f"{D}/sites_ph.jsonl"):   # the real site from Product Hunt's own link (pipeline/sites.py) wins
+        for l in open(f"{D}/sites_ph.jsonl"):
+            r = json.loads(l)
+            if r.get("text") and not r.get("parked"):
+                web[str(r["id"])] = r["text"][:2000]
     done = {json.loads(l)["id"] for l in open(OUT)} if os.path.exists(OUT) else set()
     todo = sorted([x for x in rows if x not in done], key=lambda x: rows[x]["day"], reverse=True)   # images where the API gave them
     if os.environ.get("PS_ONLY") == "new_data":   # only launches that now have images or website text
