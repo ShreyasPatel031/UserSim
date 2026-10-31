@@ -362,3 +362,24 @@ The twin beats popularity for 3.3% of people. Presence: 43% of held-out comments
 UTC hours (uniform 25%). Gate (median > 0.7 and beats popularity): not passed. LLM pilot cost: $0.058 (217 calls).
 Embeddings (embed.py, text-embedding-005, 803,523 titles): $1.371. Next: v2 shared engagement model with several
 personal signals, scored within popularity bands (twin_v2.py); crowd model (audience.py).
+
+## Crowd simulation at posting time (audience.py; train posts Jul-Aug, test Sep 1 - Oct 14, no votes)
+
+44,082 simulated readers (10+ comments in the 18 months before Jul 1; 2,916 regular /new browsers): taste from title
+embeddings, hour-of-day presence, /new-browsing share; per post at its posting hour: expected interested readers
+online, interested /new browsers, close fans; plus the outcomes of the 30 most similar past titles.
+
+| inputs | top 30 AUC | avg precision | winners in model's daily top 30 | in top 100 | top 10 AUC |
+|---|---|---|---|---|---|
+| post features (baseline) | 0.782 | 0.169 | 21.5% | 39.1% | 0.789 |
+| + 30 nearest past titles | 0.792 | 0.174 | 20.9% | 41.2% | 0.794 |
+| + title embedding | 0.796 | 0.171 | 21.5% | 41.3% | 0.797 |
+| + crowd simulation | 0.793 | 0.176 | 19.9% | 40.7% | 0.803 |
+| + crowd + embedding | 0.799 | 0.174 | 21.8% | 42.2% | 0.797 |
+| crowd simulation alone | 0.668 | 0.069 | 10.1% | 22.4% | 0.666 |
+
+Ceiling check - the same link posted twice (56,317 pairs, 2025-01..2026-10, >1 h apart): of 2,915 pairs where one
+posting made a daily top 30, both did in 30 (1%); P(second wins | first won) 4.7% vs 4.1% if the first lost; log
+points correlate 0.18. (HN discourages reposting a link that did well, which lowers "both won"; it does not explain
+losing links winning on a repost.) Content explains only part of the outcome at posting time; early exposure decides
+the rest.
