@@ -85,6 +85,14 @@ def browser_get(url, wait_s=30):
         return rec
     u = urlparse(PROXY)
     proxy = {"server": f"{u.scheme}://{u.hostname}:{u.port}", "username": unquote(u.username or ""), "password": unquote(u.password or "")}
+    try:
+        return _browser_page(url, rec, proxy, wait_s, Camoufox)
+    except Exception as e:  # noqa: BLE001 - a browser that fails to start or crashes: record it, never stop the batch
+        rec.update(status=-2, body=str(e)[:200])
+        return rec
+
+
+def _browser_page(url, rec, proxy, wait_s, Camoufox):
     with Camoufox(headless=True, proxy=proxy, geoip=True, block_images=True, os=["windows", "macos"]) as browser:
         page = browser.new_page()
         done = []
