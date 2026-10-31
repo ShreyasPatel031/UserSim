@@ -255,3 +255,11 @@ each day's list every hour (listwatch/<day>.jsonl), so live forecasts can be sco
 "list at a fixed hour" target can be trained once enough days are recorded. HN's second-chance pool (hn_pool, every
 10 min): 35% of pool stories reached the front-page top 30, usually within minutes; ~4 per day made the daily top 30
 (Oct 30-31) - an input for the live 18:00 forecast, testable only going forward.
+
+Outside feeds as inputs for stories already posted (Grok Bot backfill; URL seen on lobste.rs / Reddit / Techmeme /
+arXiv listing / RSS / X before T, count and number of sources; posting times only, counts read later are not used):
+18:00 UTC 64.1% vs 63.6%, 21:00 78.8% vs 78.4% - within noise. 23% of the real top 30 had a feed hit before 18:00, but
+so did 16% of all candidates.
+Early velocity (points gained in the last 30 / 60 min, Quality News upvote rate) is already in v4.
+Second-chance pool and hourly list snapshots start 2026-10-30 / 10-31: they can be tested only going forward
+(score_live.py scores each live forecast against the list once it settles).
