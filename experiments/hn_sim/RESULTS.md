@@ -343,3 +343,22 @@ Train: 61,947 stories posted Jul 1 - Aug 31; test: 44,263 posted Sep 1 - Oct 14.
 
 Stories with no Quality News page (they end under ~5 points) get the no-votes fill after posting; at posting time no
 vote data is used.
+
+## User simulation, Step 1: individual reliability (twin_test.py, twin_llm.py)
+
+Panel: the 3,000 most active commenters (180-day comments: median 225); twins built only from data before 2026-07-01.
+Held out Jul 1 - Oct 14: per person, the listed stories (daily list, rank <= 120) of days they were active; positives =
+stories they commented on, negatives = up to 20x the others. Per-person AUC, median over people:
+
+| model | people | median AUC | share > 0.7 |
+|---|---|---|---|
+| vector twin (recency-weighted mean title embedding of their stories) | 2,950 | 0.583 | 7.9% |
+| LLM twin (Gemini 2.5 Flash-Lite persona from their last 60 story titles; same items) | 197 | 0.540 | 13.2% |
+| vector twin on the same 197 people / items | 197 | 0.570 | 14.7% |
+| popularity only (story's final points; not known at posting) | 2,950 | 0.808 | 93.2% |
+| twin + popularity (rank average) | 2,950 | 0.761 | 83.7% |
+
+The twin beats popularity for 3.3% of people. Presence: 43% of held-out comments fall in the twin's 6 most active
+UTC hours (uniform 25%). Gate (median > 0.7 and beats popularity): not passed. LLM pilot cost: $0.058 (217 calls).
+Embeddings (embed.py, text-embedding-005, 803,523 titles): $1.371. Next: v2 shared engagement model with several
+personal signals, scored within popularity bands (twin_v2.py); crowd model (audience.py).
