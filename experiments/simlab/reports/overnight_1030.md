@@ -269,3 +269,14 @@ First-time teams: matched (pairs 68.4 vs 68.5, groups of 3 68.4 vs 66.6). Repeat
 | + busy_ / llm_ | ≤ best | ≤ best | ≤ 60.6 |
 | launch model | 68.5 / 66.6 | 79.8 / 68.9 | 65.2 / 72.4 / 81.6 |
 No single remaining group closes the repeat-team gap; ph_ helps the daily top 3 most (+2.3). Each further block adds ≤ 2 points: diminishing returns.
+
+## After fixing the page inputs (real images for every launch, website text, watched videos; coverage check passed)
+Launch model, Mar–Oct (ctrl.py): fixed + page 61.8 → 62.3, all inputs 61.8/69.6/79.5 → **63.7/70.3/79.6**; page lift vs over-performance 0.233 → 0.240.
+Newly measured page elements (corr. with beating expected reach): logo +0.049, gallery +0.047, images +0.053, visual polish +0.040 (all significant); video watched by Gemini: problem shown +0.095, pacing +0.087, hook +0.084, clarity +0.084 (significant).
+Simulation vs launch model, Jul–Oct:
+| | First-time pairs / groups of 3 | Repeat pairs / groups of 3 | Daily top 3/5/10 |
+|---|---|---|---|
+| simulation, before | 68.4 / 68.4 | 77.1 / 67.2 | 59.5 / 70.2 / 79.9 |
+| **simulation, now** | **68.6 / 66.5** | **77.2 / 66.9** | **61.2 / 70.2 / 80.1** |
+| launch model, now | 68.3 / 66.4 | 79.7 / 68.8 | 66.4 / 72.2 / 81.3 |
+Websites: the resolver guessed from the name (only 194 confirmed; 294 guesses are parked / for-sale pages, e.g. 1Password for Agents). The real site is only behind Product Hunt's own link, which rungs 1 and 3 cannot open (403).

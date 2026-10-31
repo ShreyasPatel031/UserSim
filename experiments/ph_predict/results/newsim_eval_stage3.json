@@ -8,84 +8,84 @@
  "first-time teams": {
   "launches": 1260,
   "sim+reach+audience": {
-   "pairs": 67.6,
-   "groups3": 66.2,
-   "corr": 0.58
+   "pairs": 68.4,
+   "groups3": 64.5,
+   "corr": 0.594
   },
   "+day standing": {
-   "pairs": 68.4,
-   "groups3": 68.4,
-   "corr": 0.598
+   "pairs": 68.6,
+   "groups3": 66.5,
+   "corr": 0.596
   },
   "+page": {
-   "pairs": 66.6,
-   "groups3": 64.5,
-   "corr": 0.545
+   "pairs": 67.7,
+   "groups3": 63.7,
+   "corr": 0.559
   },
   "+day standing+page": {
    "pairs": 68.6,
-   "groups3": 67.3,
-   "corr": 0.596
+   "groups3": 65.4,
+   "corr": 0.595
   },
   "launch only": {
-   "pairs": 68.5,
-   "groups3": 66.6,
-   "corr": 0.606
+   "pairs": 68.3,
+   "groups3": 66.4,
+   "corr": 0.604
   }
  },
  "repeat teams": {
   "launches": 1117,
   "sim+reach+audience": {
-   "pairs": 76.9,
-   "groups3": 66.5,
-   "corr": 0.673
-  },
-  "+day standing": {
    "pairs": 77.1,
    "groups3": 67.2,
-   "corr": 0.669
+   "corr": 0.676
+  },
+  "+day standing": {
+   "pairs": 77.2,
+   "groups3": 66.9,
+   "corr": 0.675
   },
   "+page": {
-   "pairs": 77.2,
+   "pairs": 77.1,
    "groups3": 66.5,
-   "corr": 0.684
+   "corr": 0.682
   },
   "+day standing+page": {
-   "pairs": 77.6,
+   "pairs": 77.2,
    "groups3": 67.4,
-   "corr": 0.686
+   "corr": 0.682
   },
   "launch only": {
-   "pairs": 79.8,
-   "groups3": 68.9,
-   "corr": 0.731
+   "pairs": 79.7,
+   "groups3": 68.8,
+   "corr": 0.726
   }
  },
  "all launches, daily top 3/5/10": {
   "sim+reach+audience": [
-   58.6,
-   69.5,
-   80.0
+   60.3,
+   69.1,
+   80.7
   ],
   "+day standing": [
-   59.5,
+   61.2,
    70.2,
-   79.9
+   80.1
   ],
   "+page": [
-   60.6,
-   69.1,
-   80.3
+   61.2,
+   70.7,
+   80.5
   ],
   "+day standing+page": [
-   60.6,
-   70.3,
-   80.0
+   60.9,
+   70.7,
+   80.5
   ],
   "launch only": [
-   65.2,
-   72.4,
-   81.6
+   66.4,
+   72.2,
+   81.3
   ]
  }
 }
