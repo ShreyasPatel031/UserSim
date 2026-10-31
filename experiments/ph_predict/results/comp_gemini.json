@@ -1,0 +1,16 @@
+{
+ "products_tested": 281,
+ "usd": 0.128,
+ "meaning": {
+  "share_of_alternatives_in_5": 13.8,
+  "at_least_one_in_5": 22.8
+ },
+ "rerank": {
+  "share_of_alternatives_in_5": 18.2,
+  "at_least_one_in_5": 29.2
+ },
+ "name": {
+  "share_of_alternatives_in_5": 28.6,
+  "at_least_one_in_5": 43.1
+ }
+}

@@ -1,0 +1,46 @@
+{
+ "reviewed products only": {
+  "products_tested": 281,
+  "catalogue": 619,
+  "meaning": {
+   "share_of_alternatives_in_top5": 22.7,
+   "in_top10": 27.7,
+   "in_top50": 46.5,
+   "at_least_one_in_top5": 35.9
+  },
+  "topics": {
+   "share_of_alternatives_in_top5": 5.9,
+   "in_top10": 9.0,
+   "in_top50": 21.5,
+   "at_least_one_in_top5": 12.1
+  },
+  "random": {
+   "share_of_alternatives_in_top5": 1.4,
+   "in_top10": 2.1,
+   "in_top50": 8.2,
+   "at_least_one_in_top5": 3.6
+  }
+ },
+ "plus all launches": {
+  "products_tested": 281,
+  "catalogue": 7121,
+  "meaning": {
+   "share_of_alternatives_in_top5": 12.3,
+   "in_top10": 15.9,
+   "in_top50": 23.8,
+   "at_least_one_in_top5": 20.6
+  },
+  "topics": {
+   "share_of_alternatives_in_top5": 2.2,
+   "in_top10": 3.7,
+   "in_top50": 7.3,
+   "at_least_one_in_top5": 3.9
+  },
+  "random": {
+   "share_of_alternatives_in_top5": 0.4,
+   "in_top10": 0.4,
+   "in_top50": 0.7,
+   "at_least_one_in_top5": 0.4
+  }
+ }
+}

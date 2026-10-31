@@ -80,3 +80,20 @@ the real websites).
 Real websites don't change accuracy. The website's own effect gets smaller once the site is the real one. That
 suggests the guessed-site score partly measured something else, such as a product having a domain that matches
 its name. The real-site text is also today's version of the site, not the site as it was on launch day.
+
+## Are the competitors right? Validation against Product Hunt's Alternatives (Oct 31)
+Answer key: alternatives chosen by real users in 1,059 Product Hunt reviews (372 products). Product texts from the
+official API (619 of 770 products found). 281 products had at least one alternative with text. The catalogue is
+those products plus all 6,694 launches, as in real use. `comp_validate.py`, `comp_gemini.py`.
+
+| Method | Real alternatives in the top 5 | At least one real alternative in the top 5 | Cost |
+|---|---|---|---|
+| Random | 0.4% | 0.4% | — |
+| Shared Product Hunt topics | 2.2% | 3.9% | — |
+| **Meaning similarity (used in every competitor result above)** | 12.3–13.8% | 20.6–22.8% | free |
+| Gemini re-ranks the 50 nearest by meaning | 18.2% | 29.2% | |
+| **Gemini names the main competitors (own knowledge)** | **28.6%** | **43.1%** | $0.13 for 281 products, both methods |
+
+The competitor lists behind sections 1–3 found only about 1 in 8 of the alternatives real users name. Gemini naming the
+competitors directly roughly doubles that. Real alternatives are often established products (VS Code, Bitwarden)
+that aren't recent launches, so a list built from launches alone misses them by construction.
