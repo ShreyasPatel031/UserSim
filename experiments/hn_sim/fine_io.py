@@ -11,7 +11,7 @@ import top100 as H
 def load():
     rows = []
     for f in sorted(os.listdir(H.CACHE)):
-        if f.startswith("qn_fine_") and f.endswith(".jsonl"):
+        if f.startswith(os.environ.get("FINE_PREFIX", "qn_full_")) and f.endswith(".jsonl"):
             for line in open(os.path.join(H.CACHE, f)):
                 try:
                     rows.append(json.loads(line))

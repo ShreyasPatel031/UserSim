@@ -6,25 +6,21 @@ end of day 80%.
 
 ## What we learned (2026-10-31)
 - Every story is on exactly one day's list (20,159 stories, all 120 ranks).
-- That day is the UTC day of HN's *displayed* time, which HN resets when it re-ups a story from the second-chance
-  pool. 15-20% of a day's top 30 are stories posted 2+ days earlier and re-upped.
+- That day is the UTC day the story first reached the front page, or its posting day if it got there within 30 min
+  (93.6% of list entries). 15-20% of a day's top 30 are stories posted 2+ days earlier that came back to the front
+  page (second-chance re-ups). HN's displayed time is not reset, so re-ups are seen only through rank history.
 - Order within a day follows points.
-- The rest of what we miss before ~20:00 UTC is stories not posted yet.
+- Before ~20:00 UTC most misses are stories not posted yet.
 
 ## Wanted, in order
-1. **Re-up events with times** (the biggest gap). From now on, every 1-2 min: news.ycombinator.com/ (and ?p=2,3),
-   /newest, /pool, /front; for each item: id, rank, points, displayed age text ("3 hours ago"), comment count,
-   fetched_at. A displayed age younger than the item's real age = re-upped; its new time = fetched_at - age.
-   Historical: any archive of HN front pages with displayed ages (archive.org snapshots of news.ycombinator.com,
-   2026-07-01..2026-10-16) would let us backtest this directly.
-2. **Outside feeds with first-seen times**, to anticipate stories before they reach HN: Techmeme, lobste.rs,
-   Reddit r/programming + r/technology (new + top), GitHub trending (daily), arXiv cs new listings, company engineering
-   blogs/press RSS, X posts from high-reach tech accounts. Fields: source, url, title, published_at (source time,
-   UTC), fetched_at, engagement counts at fetch time. Backfill 2026-07-01..2026-10-16 where the source has dated
-   history, then live.
-3. **HN rank + score every minute** (Firebase topstories/newstories/beststories + item score), from now on.
-4. Linked page metadata (domain, publish time, paywall) - low.
-5. Per-person data (GitHub/X/sites) - lowest; person-level data goes to the private bucket only.
+1. **Outside feeds with first-seen times** (in progress by the feeder), to anticipate stories before they reach HN:
+   Techmeme, lobste.rs, Reddit r/programming + r/technology, GitHub trending, arXiv cs, company blogs/press RSS,
+   X posts from high-reach tech accounts. Fields: source, url, title, published_at (source time, UTC), fetched_at,
+   engagement counts at fetch time. 2026-07-01..2026-10-16, then live.
+2. **HN ranks every minute, from now on**: news.ycombinator.com/ pages 1-3, /newest, /pool (id, rank, points,
+   comments, fetched_at). This is what tells us re-ups and momentum live.
+3. Linked page metadata (domain, publish time, paywall) - low.
+4. Per-person data (GitHub/X/sites) - lowest; person-level data goes to the private bucket only.
 
 ## Format and place
 JSONL, one row per item per read, gs://usersim-bakeoff-347838016394/usersim_sim/hn_jobs/cache/feeder/<source>/<YYYY-MM-DD>.jsonl
