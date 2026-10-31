@@ -222,3 +222,8 @@ Training on 120 days (to Sep 30) and testing October 1-16: no change (end of day
 - Outside feeds (Grok Bot backfill, 86,630 URLs): of the ~14 daily top-30 stories not yet posted at 12:00 UTC, 0.8/day
   had their URL in a feed before 12:00 (0.4/day at 18:00): feeds can add at most ~3 points at noon.
 - Model variants on the v4 table (relative ranks, binary classifier, bigger trees, points regressor): no gain.
+
+Early v4 with whole-life Quality News series (re-ups visible), 10 fully fetched test days (Sep 7-10, 22-27), trained
+on 15 fully fetched days: real top 30 in our top 30 at 21:00 UTC 80.3% [76.3, 83.7] (was 72.7% without re-ups), end
+of day 88.3% [86.3, 90.3] (was 79.6%); share of the real top 30 the model can see: 97% at 21:00, 100% at end of day
+(was 87% / 90%). 18:00 UTC 59-64%. Full run pending the rest of the fetch.
