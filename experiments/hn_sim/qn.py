@@ -69,6 +69,21 @@ def parse(html: str, t0: int) -> dict:
     out["qn_rank_by_hour"] = [ranks.get(h, None) for h in range(36)]
     out["qn_up_by_hour"] = [ups.get(h, None) for h in range(36)]
     out["qn_samples"] = len(up)
+    if os.environ.get("QN_FINE"):
+        # 10-minute snapshots for 36 h on the UTC 10-minute grid: top-page rank, upvotes, expected upvotes (last sample
+        # in each slot), so a forecast at any time sees the last minutes' momentum and upvote rate
+        f0 = (t0 // 600 + 1) * 600
+        fr, fu, fe = {}, {}, {}
+        for row in rk:
+            if row[0] < f0 + 216 * 600 and len(row) > 2:
+                fr[(row[0] - f0) // 600] = row[2] if 0 < row[2] < 91 else 91
+        for t, v, e in up:
+            if t < f0 + 216 * 600:
+                fu[(t - f0) // 600], fe[(t - f0) // 600] = v, round(e, 2)
+        out["qn_f0"] = f0
+        out["qn_rank_10m"] = [fr.get(k) for k in range(216)]
+        out["qn_up_10m"] = [fu.get(k) for k in range(216)]
+        out["qn_exp_10m"] = [fe.get(k) for k in range(216)]
     return out
 
 
