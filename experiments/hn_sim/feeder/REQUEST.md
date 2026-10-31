@@ -28,3 +28,25 @@ Each row: source, id/url, title, published_at (source time, UTC), fetched_at (UT
 Cutoff rule: a forecast at T uses only rows with published_at < T (and fetched_at < T for live use). Counts read today
 (karma, followers, likes) are usable only for live forecasts, never for past days.
 Never post, vote or comment on HN. Log every dollar to the warehouse spend table.
+
+## URGENT (2026-10-31 17:10 UTC): HN favorites for 4,786 people - please fetch fast, then verify
+
+Why: favorites are the closest public thing to a person's upvotes; they train each simulated user's taste. Our one VM
+gets throttled by HN (about 30 people per hour). You have a residential proxy and your own machine.
+
+- People: gs://usersim-bakeoff-347838016394/usersim_sim/hn_jobs/cache/feeder/requests/favs_people.csv (person, rank;
+  most active commenters first). Do them in rank order.
+- Pages: https://news.ycombinator.com/favorites?id=<person>&p=<n>, n = 1..10 (30 stories a page; stop at the first
+  page with no stories). Read-only. Never log in, vote, favorite or post. Spread requests over several proxy IPs,
+  about 1 request per second per IP; back off on 503 / "Sorry".
+- Output, one row per page, appended as you go:
+  gs://usersim-bakeoff-347838016394/usersim_sim/hn_jobs/cache/feeder/favs/favs_<part>.jsonl
+  {"person": str, "page": int, "story_ids": [int, ...], "fetched_at": "<UTC ISO>", "status": int}
+  ("story_ids" from the <tr class="athing" id="..."> rows, in page order). Person-level data: this private bucket only.
+- Verify before saying done, and put the numbers in feeder/favs/VERIFY.md:
+  1. people done / 4,786; pages done; share of pages that came back blocked or empty-by-error (should be < 1%);
+  2. re-fetch 50 random (person, page) pairs from a different IP and report how many match exactly;
+  3. 20 random people: count of favorites vs the "favorites" link on their profile page (if shown) or page count;
+  4. no duplicate (person, page) rows; every story_id is an integer that exists on HN (spot-check 50 via
+     https://hacker-news.firebaseio.com/v0/item/<id>.json).
+- Spend: log any proxy cost to the spend table. Tell us when the first 1,000 people are in.
