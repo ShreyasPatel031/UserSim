@@ -280,3 +280,13 @@ Simulation vs launch model, Jul–Oct:
 | **simulation, now** | **68.6 / 66.5** | **77.2 / 66.9** | **61.2 / 70.2 / 80.1** |
 | launch model, now | 68.3 / 66.4 | 79.7 / 68.8 | 66.4 / 72.2 / 81.3 |
 Websites: the resolver guessed from the name (only 194 confirmed; 294 guesses are parked / for-sale pages, e.g. 1Password for Agents). The real site is only behind Product Hunt's own link, which rungs 1 and 3 cannot open (403).
+
+## Competitor use per person (COMP=1, pick_boost ABLATE; 6 months)
+Competitors of a launch = its 20 nearest earlier Product Hunt launches by meaning. Raw: people who picked a launch had used one of its 5 nearest competitors 10.5% of the time vs 4.8% for launches they did not pick; ~5% of person-launch pairs have one.
+| Inputs | Top-3 hit | AUC |
+|---|---|---|
+| all, without competitor use | 49.0 | 0.697 |
+| all + competitor use | 50.0 | 0.699 (better in 4 of 6 months) |
+| competitor use alone | (tie artifact, see below) | 0.545 |
+Small but real; most of it is already in history / meaning similarity.
+Correction: "only X" top-3 hits with few inputs are inflated by tie-breaking in line-up order (≈ popularity order); "team ties only 49.4" is likely inflated too. AUC is unaffected (team only 0.644 stands). To fix: random tie-break in the top-3 hit.
