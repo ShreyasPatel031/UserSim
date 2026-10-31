@@ -4,7 +4,8 @@ the pilot), so the link is opened on route 4 (Camoufox through the DataImpulse p
 follows the redirect to the launch's site; the site's final URL and visible text (first 4,000 characters) are kept,
 and parked / for-sale pages flagged.
 Resumable; bytes and dollars per launch for the spend log.
-usage: python -m pipeline.sites [limit] [threads] -> ph_predict/data/sites_ph.jsonl"""
+usage: [SITES_IDS=ids.txt] python -m pipeline.sites [limit] [threads] -> ph_predict/data/sites_ph.jsonl
+(SITES_IDS: only the launches whose ids are listed, e.g. those without a trustworthy site)"""
 import glob, json, os, re, sys, threading
 from concurrent.futures import ThreadPoolExecutor
 from urllib.parse import urljoin
@@ -56,7 +57,8 @@ def main(limit=10**9, threads=2):   # browsers: at most a few at once
             if "producthunt.com/r/" in (p.get("website") or ""):
                 L[str(p["id"])] = p["website"].split("?")[0]
     done = {json.loads(l)["id"] for l in open(OUT)} if os.path.exists(OUT) else set()
-    todo = sorted((i for i in L if i not in done), key=lambda i: -int(i))[:limit]
+    only = set(open(os.environ["SITES_IDS"]).read().split()) if os.environ.get("SITES_IDS") else None   # fetch only these launches
+    todo = sorted((i for i in L if i not in done and (only is None or i in only)), key=lambda i: -int(i))[:limit]
     print("launches", len(todo), flush=True)
     lock = threading.Lock(); tot = {"ok": 0, "no_target": 0, "parked": 0, "ph_bytes": {"direct": 0, "dataimpulse": 0}}
 
