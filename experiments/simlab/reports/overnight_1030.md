@@ -309,3 +309,40 @@ Where 90% would come from: knowing the pool's real picks gives 92% (pool-size cu
 
 ## Model-settings sweep (rank_launch.py GRID=1, Mar–Oct, 239 days, 5 seeds, real websites)
 Daily top 3/5/10, regression / LambdaRank: base 62.3/70.7/79.2 / 63.3/70.1/78.6; deeper 63.2/70.3/79.2 / 63.7/70.1/78.5; shallow + more trees 62.2/70.2/79.7 / 63.2/70.6/78.4; fewer inputs per tree 63.6/70.5/79.5 / **64.4**/70.0/78.6; regularised 62.8/69.9/79.5 / 63.6/70.6/78.5. All within ~2 points: settings are not the limit.
+
+## Presence and vector twins (Oct 31, plan_presence_experiment.md steps 1–3)
+Inputs (`simlab/presence.py`, `PRESENCE=1 TWIN=1`):
+- **Presence:** share of a person's comments in 00–02 / 00–06 / 18–24 PT, from 102,128 timed comments by 20,683
+  people. 4,593 people have 5 or more comments; everyone else is unknown.
+- **Twin:** recency-weighted (half-life 60 days) mean embedding of the person's past picks. Its cosine to the launch
+  correlates 0.61 with the existing `meaning` input.
+- Both use data before the day only. The coverage gate passed.
+
+**Per person** (`pick_boost` ABLATE, Apr–Oct, 7 months):
+
+| | Top-3 hit | AUC |
+|---|---|---|
+| Base with both | 48.6 | 0.694 |
+| Without presence | 48.9 | 0.696 |
+| Without twins | 49.7 | 0.698 |
+| Before this experiment (no presence, no twins) | 49.0 | 0.697 |
+
+"Only presence" shows 65.9 at AUC 0.50: the tie-break artifact. Presence is one number per person, so it cannot
+reorder that person's line-up.
+
+**Launch level** (`newsim_eval` STAGE=2 STAGE3=1, Jul–Oct, same VM, `SIM_SRC=pst` vs `psq`), daily top 3/5/10:
+
+| | Current simulation (pst) | + presence + twins (psq) |
+|---|---|---|
+| sim + reach + audience | 60.3 / 69.1 / 80.7 | 60.3 / 70.0 / 80.1 |
+| + day standing | 61.2 / 70.2 / 80.1 | 59.5 / 70.3 / 80.5 |
+| + page | 60.1 / 70.2 / 80.7 | 62.4 / 70.2 / 80.5 |
+| + day standing + page | 60.3 / 70.9 / 79.7 | 61.5 / 70.2 / 80.0 |
+| Launch model | 65.8 / 72.9 / 80.8 | — |
+
+Every change is within ±2.3 points, under the ±3.5 noise on daily top 3. First-time teams, winner of 3: 64.5 → 66.2
+(sim + reach + audience), also noise.
+
+**Verdict:** neither input adds signal on Product Hunt's pre-launch data. Presence can only matter when it is matched
+against when a launch's votes arrive. That needs the hourly snapshots, and it is a launch-day forecast (step 4,
+about Nov 14), not a pre-launch one. Twins repeat the existing taste inputs.
