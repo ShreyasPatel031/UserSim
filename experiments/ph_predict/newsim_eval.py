@@ -65,6 +65,16 @@ if os.environ.get("STAGE") == "2":
             A = A.merge(B[["id"] + [c for c in rest if c not in A]], on="id", how="left")
             V = {"best": best, **{f"+{k} ({len(v)})": best + v for k, v in sorted(fams.items()) if len(v) >= 1}}
             print({k: len(v) for k, v in fams.items()}, flush=True)
+        if os.environ.get("STAGE5") == "1":   # comparison with competitors (cmp_features.py), for the simulation and the launch model
+            best = aud + [c + "_dayr" for c in aud] + page
+            C5 = pd.DataFrame.from_dict(json.load(open("data/cmp_features.json")), orient="index").rename_axis("id").reset_index()
+            cmp = [c for c in C5 if c.startswith("cmp_")]
+            A = A.merge(C5, on="id", how="left")
+            for c in cmp:
+                A[c + "_dayr"] = A.groupby("day")[c].rank(pct=True)
+            cmpr = cmp + [c + "_dayr" for c in cmp]
+            V = {"sim best": best, "sim best + competitors": best + cmpr, "launch pred + competitors": ["all"] + cmpr}
+            json.dump(cmp, open("results/cmp_inputs.json", "w"))
 A["mon"] = A.day.str[:7]; out = []
 for m in sorted(A.mon.unique())[1:]:
     tr, te = A[A.mon < m], A[A.mon == m].copy()
@@ -102,4 +112,4 @@ for name, flag in (("first-time teams", True), ("repeat teams", False)):
 hit = lambda g, c, k: len(set(g.nlargest(k, c).id) & set(g[g.dailyRank <= k].id)) / k
 res["all launches, daily top 3/5/10"] = {p: [round(100 * float(np.mean([hit(g, p, k) for _, g in T.groupby("day") if (g.dailyRank <= k).sum() == k])), 1)
                                               for k in (3, 5, 10)] for p in P}
-json.dump(res, open(f"results/newsim_eval{'_stage4' if os.environ.get('STAGE4') == '1' else '_stage3' if os.environ.get('STAGE3') == '1' else '_stage2' if os.environ.get('STAGE') == '2' else ''}.json", "w"), indent=1); print(json.dumps(res, indent=1))
+json.dump(res, open(f"results/newsim_eval{'_stage5' if os.environ.get('STAGE5') == '1' else '_stage4' if os.environ.get('STAGE4') == '1' else '_stage3' if os.environ.get('STAGE3') == '1' else '_stage2' if os.environ.get('STAGE') == '2' else ''}.json", "w"), indent=1); print(json.dumps(res, indent=1))
