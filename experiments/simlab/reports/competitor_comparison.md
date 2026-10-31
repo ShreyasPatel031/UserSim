@@ -97,3 +97,40 @@ those products plus all 6,694 launches, as in real use. `comp_validate.py`, `com
 The competitor lists behind sections 1–3 found only about 1 in 8 of the alternatives real users name. Gemini naming the
 competitors directly roughly doubles that. Real alternatives are often established products (VS Code, Bitwarden)
 that aren't recent launches, so a list built from launches alone misses them by construction.
+
+## Rerun on the validated competitor lists (`comp_lists.py`, COMP_LIST=1; 6,490 launches, $3.14)
+**Validity.** Many more gaps now significant (Mar–Oct, within-day corr. with beating expected reach):
+- top-5 chance +0.071 (was +0.042)
+- share of competitors beaten +0.063 (was +0.034, not significant)
+- images +0.062
+- usefulness +0.053
+- gallery +0.052
+- visual polish +0.052
+- wow +0.050
+- credibility +0.049
+- audience breadth +0.044
+- clarity +0.043
+- category fit +0.041
+- tagline +0.039
+- website +0.039
+- name +0.036
+- video: problem shown +0.083, hook +0.082, pacing +0.080, length fit +0.066, clarity +0.064, call to action +0.044
+
+Compared with the same page scores on their own, comparing against the right competitors is a valid signal for
+nearly every element.
+
+**Accuracy (Jul–Oct):**
+
+| | First-time teams: higher of 2 / winner of 3 | Repeat teams: higher of 2 / winner of 3 | Daily top 3 / 5 / 10 |
+|---|---|---|---|
+| Simulation, without | 68.7 / 64.7 | 77.4 / 67.9 | 60.3 / 70.9 / 79.7 |
+| + summary vs competitors | 68.9 / 65.8 | 77.5 / 68.2 | 61.2 / 70.9 / 79.9 |
+| + video + summary vs competitors | 68.5 / 65.6 | 77.6 / 68.0 | **61.5** / 71.0 / 80.2 |
+| Launch model | 68.4 / 66.7 | 79.5 / 68.7 | 65.8 / 72.9 / 80.8 |
+
+Launch model with the gaps as page inputs (Mar–Oct): all inputs 62.3/70.7/79.2 → 61.1/70.6/79.6; fixed + page
+61.2/69.8/78.6 → 61.6/69.6/78.3.
+
+**Verdict.** With the right competitors, the comparison is valid for almost every element, so it is worth showing a
+maker element by element. It moves the simulation up slightly (+1.2 daily top 3, +1 on first-time winner of 3), but
+that is within the ±3.5-point margin. It does not improve the launch model.

@@ -1,0 +1,40 @@
+launches with competitors: 5756
+cmp_sim_mean               +0.023 [-0.008, +0.056] days 238
+cmp_votes_mean             -0.013 [-0.050, +0.020] days 238
+cmp_votes_max              -0.024 [-0.060, +0.010] days 238
+cmp_gap_ps_audience_breadth +0.044 [+0.010, +0.079] days 238  *
+cmp_gap_ps_category_fit    +0.041 [+0.006, +0.077] days 238  *
+cmp_gap_ps_clarity         +0.043 [+0.009, +0.077] days 238  *
+cmp_gap_ps_credibility     +0.049 [+0.014, +0.082] days 238  *
+cmp_gap_ps_description     +0.012 [-0.023, +0.047] days 238
+cmp_gap_ps_first_comment   +0.022 [-0.009, +0.055] days 238
+cmp_gap_ps_gallery         +0.052 [+0.017, +0.082] days 238  *
+cmp_gap_ps_has_first_comment +0.015 [-0.021, +0.048] days 238
+cmp_gap_ps_links           +0.018 [-0.012, +0.050] days 238
+cmp_gap_ps_logo            +0.023 [-0.010, +0.053] days 238
+cmp_gap_ps_n_images        +0.062 [+0.030, +0.098] days 238  *
+cmp_gap_ps_name            +0.036 [+0.001, +0.072] days 238  *
+cmp_gap_ps_novelty         +0.030 [-0.006, +0.065] days 238
+cmp_gap_ps_problem_urgency +0.024 [-0.007, +0.057] days 238
+cmp_gap_ps_tagline         +0.039 [+0.005, +0.073] days 238  *
+cmp_gap_ps_top5_chance     +0.071 [+0.035, +0.106] days 238  *
+cmp_gap_ps_usefulness      +0.053 [+0.019, +0.085] days 238  *
+cmp_gap_ps_video           +0.018 [-0.017, +0.051] days 238
+cmp_gap_ps_visual_polish   +0.052 [+0.022, +0.084] days 238  *
+cmp_gap_ps_website         +0.039 [+0.006, +0.072] days 238  *
+cmp_gap_ps_wow             +0.050 [+0.016, +0.086] days 238  *
+cmp_beat_share             +0.063 [+0.032, +0.094] days 238  *
+cmp_gap_vs_call_to_action  +0.044 [+0.005, +0.085] days 213  *
+cmp_gap_vs_clarity         +0.064 [+0.016, +0.108] days 213  *
+cmp_gap_vs_founder_on_camera +0.038 [-0.011, +0.082] days 213
+cmp_gap_vs_hook            +0.082 [+0.041, +0.121] days 213  *
+cmp_gap_vs_length_fit      +0.066 [+0.023, +0.109] days 213  *
+cmp_gap_vs_length_seconds  -0.006 [-0.043, +0.032] days 213
+cmp_gap_vs_pacing          +0.080 [+0.034, +0.120] days 213  *
+cmp_gap_vs_problem_shown   +0.083 [+0.041, +0.124] days 213  *
+cmp_gap_vs_product_working +0.023 [-0.019, +0.069] days 213
+cmp_gap_vs_production      +0.085 [+0.045, +0.124] days 213  *
+cmp_gap_vs_shows_real_ui   +0.004 [-0.035, +0.045] days 172
+cmp_gap_vs_unwatchable     -0.005 [-0.047, +0.035] days 186
+cmp_gap_vs_voice_or_captions +0.031 [-0.013, +0.072] days 213
+cmp_gap_vs_wow             +0.062 [+0.016, +0.106] days 213  *
