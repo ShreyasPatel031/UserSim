@@ -115,3 +115,65 @@ def _browser_page(url, rec, proxy, wait_s, Camoufox):
             except Exception:  # noqa: BLE001
                 continue
     return rec
+
+
+class BrowserSession:
+    """Route 4 with one browser kept open for many pages (starting Camoufox is most of the CPU per page). Each page
+    opens in its own tab, which is closed after; the browser restarts after `restart_every` pages or on a crash.
+    Use one session per thread (Playwright's sync API is not thread-safe)."""
+
+    def __init__(self, wait_s=30, restart_every=40):
+        from urllib.parse import unquote
+        u = urlparse(PROXY) if PROXY else None
+        self.proxy = {"server": f"{u.scheme}://{u.hostname}:{u.port}", "username": unquote(u.username or ""),
+                      "password": unquote(u.password or "")} if u else None
+        self.wait_s, self.restart_every, self.cm, self.browser, self.n = wait_s, restart_every, None, None, 0
+
+    def _open(self):
+        from camoufox.sync_api import Camoufox
+        self.close()
+        self.cm = Camoufox(headless=True, proxy=self.proxy, geoip=True, block_images=True, os=["windows", "macos"])
+        self.browser = self.cm.__enter__(); self.n = 0
+
+    def close(self):
+        if self.cm is not None:
+            try:
+                self.cm.__exit__(None, None, None)
+            except Exception:  # noqa: BLE001
+                pass
+        self.cm = self.browser = None
+
+    def get(self, url):
+        rec = {"url": url, "final_url": None, "status": 0, "route": "dataimpulse_camoufox", "bytes": 0, "body": ""}
+        if not self.proxy:
+            return rec
+        try:
+            if self.browser is None or self.n >= self.restart_every:
+                self._open()
+            self.n += 1
+            page = self.browser.new_page(); done = []
+            page.on("requestfinished", lambda req: done.append(req))
+            try:
+                resp = page.goto(url, wait_until="domcontentloaded", timeout=60000)
+                status = resp.status if resp else 0
+                deadline = time.time() + self.wait_s   # as mvp/review_fetch._load: a challenge page turns into the real page by itself
+                while time.time() < deadline:
+                    if "Just a moment" not in (page.title() or "") and "producthunt.com/r/" not in page.url:
+                        status = 200 if status in (403, 429, 503) else status
+                        break
+                    page.wait_for_timeout(1500)
+                rec.update(status=status, final_url=page.url, body=page.content())
+            except Exception as e:  # noqa: BLE001
+                rec.update(status=-1, body=str(e)[:200])
+            for req in done:
+                try:
+                    z = req.sizes(); rec["bytes"] += sum(max(0, z.get(k, 0)) for k in ("requestHeadersSize", "requestBodySize", "responseHeadersSize", "responseBodySize"))
+                except Exception:  # noqa: BLE001
+                    continue
+            try:
+                page.close()
+            except Exception:  # noqa: BLE001
+                pass
+        except Exception as e:  # noqa: BLE001 - browser crashed or failed to start: record, restart next time
+            rec.update(status=-2, body=str(e)[:200]); self.close()
+        return rec

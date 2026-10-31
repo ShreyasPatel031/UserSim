@@ -62,8 +62,8 @@ def main(limit=10**9, threads=2):   # browsers: at most a few at once
     print("launches", len(todo), flush=True)
     lock = threading.Lock(); tot = {"ok": 0, "no_target": 0, "parked": 0, "ph_bytes": {"direct": 0, "dataimpulse": 0}}
 
-    def one(i):
-        b = F.browser_get(L[i])
+    def one(i, sess):
+        b = sess.get(L[i])
         rec = {"id": i, "ph_link": L[i], "route": b["route"], "status": b["status"], "url": None, "text": "", "parked": False, "bytes": b["bytes"]}
         if b["final_url"] and "producthunt.com" not in b["final_url"]:
             t = text(b["body"]); rec.update(url=b["final_url"], text=t, parked=bool(PARKED.search(t[:2000])))
@@ -71,8 +71,15 @@ def main(limit=10**9, threads=2):   # browsers: at most a few at once
             tot["ok" if rec["text"] else "no_target"] += 1; tot["parked"] += rec["parked"]
             tot["ph_bytes"]["dataimpulse"] += b["bytes"]
             f.write(json.dumps(rec) + "\n"); f.flush()
+    def worker(chunk):   # one browser per thread, kept open across launches
+        sess = F.BrowserSession()
+        try:
+            for i in chunk:
+                one(i, sess)
+        finally:
+            sess.close()
     with open(OUT, "a") as f, ThreadPoolExecutor(threads) as ex:
-        list(ex.map(one, todo))
+        list(ex.map(worker, [todo[k::threads] for k in range(threads)]))
     usd = round(tot["ph_bytes"]["dataimpulse"] / 1e9 * F.USD_PER_GB["dataimpulse"], 4)
     print(json.dumps({**tot, "dataimpulse_usd": usd}), flush=True)
     return {"items": tot["ok"], "bytes": sum(tot["ph_bytes"].values()), "usd": usd}

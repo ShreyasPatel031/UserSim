@@ -24,6 +24,6 @@ python3 -m pipeline.dash_export /tmp/usersim_dash >> "$LOG" 2>&1 && gsutil -q -m
 (cd ph_predict && PM_WAIT_ROUNDS=8 timeout 150m python3 page_media.py >> "$LOG" 2>&1; gsutil -q cp data/page_media.jsonl $BUCKET/raw/ph_api/page_media.jsonl)
 # real websites from Product Hunt's own link (route 4: Camoufox through DataImpulse), 3 h a day, every launch (name-based guesses
 # were right only 8-48% of the time on a 105-launch sample), newest first
-(SITES_IDS=$([ -f /home/agent/w/sites_need_ids.txt ] && echo /home/agent/w/sites_need_ids.txt) timeout 180m python3 -m pipeline.sites 100000 3 >> "$LOG" 2>&1; gsutil -q cp ph_predict/data/sites_ph.jsonl $BUCKET/raw/sites_ph.jsonl)
+(SITES_IDS=$([ -f /home/agent/w/sites_need_ids.txt ] && echo /home/agent/w/sites_need_ids.txt) timeout 180m python3 -m pipeline.sites 100000 6 >> "$LOG" 2>&1; gsutil -q cp ph_predict/data/sites_ph.jsonl $BUCKET/raw/sites_ph.jsonl)
 gsutil -q cp "$LOG" $BUCKET/logs/
 [ -f /home/agent/w/KEEP_ON ] || sudo shutdown -h now
