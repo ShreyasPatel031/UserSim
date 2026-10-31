@@ -64,6 +64,11 @@ for name, a in AGES.items():
         s = m.predict_proba(X[te])[:, 1]
         yt = y[te]
         hi = s >= 0.5
+        P = p[te].assign(s=s, y=yt)
+        cap = {k: np.mean([g.nlargest(k, "s").y.sum() / max(g.y.sum(), 1) for _, g in P.groupby("day")]) for k in (30, 60, 100)}
+        q_w = np.percentile(s[yt], [25, 50, 75])
+        print(f"  {name}, top {top}: winners' probability 25/50/75%: {q_w.round(2).tolist()}; losers' median {np.median(s[~yt]):.4f}; "
+              f"winners in the model's top 30 / 60 / 100 posts of their posting day: {cap[30]:.2f} / {cap[60]:.2f} / {cap[100]:.2f}", flush=True)
         rows.append({"age": name, "target": f"top {top}", "AUC": roc_auc_score(yt, s), "avg_precision": average_precision_score(yt, s),
                      "Brier": brier_score_loss(yt, s), "Brier_base": brier_score_loss(yt, np.full(len(yt), y[tr].mean())),
                      "flagged_>=50%": int(hi.sum()), "of_those_made_it": float(yt[hi].mean()) if hi.any() else np.nan,
