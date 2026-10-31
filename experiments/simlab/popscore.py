@@ -24,9 +24,13 @@ TASTE = os.environ.get("TASTE") == "1"  # + each person's taste for page traits 
 HERD = os.environ.get("HERD") == "1"    # + how popular the taste simulation's first pass made each launch that day (implies TASTE)
 TASTE = TASTE or HERD
 PAGE = PAGE or TASTE
+PRESENCE = os.environ.get("PRESENCE") == "1"   # + when the person is usually active (presence.py)
+TWIN = os.environ.get("TWIN") == "1"           # + vector twin: recency-weighted taste vector vs the launch (presence.py)
 TAG = "herd" if HERD else "page_taste" if TASTE else "page" if PAGE else ""
+if PRESENCE or TWIN:
+    TAG = (TAG + "_" if TAG else "") + ("pres" if PRESENCE else "") + ("twin" if TWIN else "")
 WORK = os.path.join(HERE, "cache", "popscore_" + TAG if TAG else "popscore")
-PREFIX = "psh_" if HERD else "pst_" if TASTE else "psp_" if PAGE else "psn_"
+PREFIX = "psq_" if (PRESENCE or TWIN) else "psh_" if HERD else "pst_" if TASTE else "psp_" if PAGE else "psn_"
 MONTHS = ["2026-04", "2026-05", "2026-06", "2026-07", "2026-08", "2026-09", "2026-10"]
 FEATS = ["backed", "topic", "meaning", "cf_team", "nbr_team", "nbr_pop", "seq_last10", "seq_decay", "seq_nn", "team_recent",
          "cat_rate_max", "cat_rate_mean", "cat_prior", "cat_n"]
@@ -139,6 +143,12 @@ if RECIP:
     FEATS = FEATS + ["recip_team", "recip_n"]
 
 
+if PRESENCE:
+    FEATS = FEATS + ["pres_early2", "pres_early6", "pres_late", "pres_n"]
+if TWIN:
+    FEATS = FEATS + ["twin_cos", "twin_rank"]
+
+
 def recip_features(D):
     """recip_team: upvotes/comments by the launch's team on launches this person made, before the day (log).
     recip_n: how many distinct people engaged with this person's launches before the day (log; a maker's own reach)."""
@@ -216,7 +226,12 @@ def featurize(D, cf, prior_cut):
     D = apply_cf(D, cf)
     D = cat_features(D, prior_cut)
     D = recip_features(D) if RECIP else D
-    return comp_features(D) if COMP else D
+    D = comp_features(D) if COMP else D
+    if PRESENCE or TWIN:
+        from . import presence
+        D = presence.add_presence(D) if PRESENCE else D
+        D = presence.add_twin(D) if TWIN else D
+    return D
 
 
 # ---- phase A: per month, train the person model on the previous month

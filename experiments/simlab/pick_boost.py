@@ -38,6 +38,10 @@ def month(m):
               "category": [c for c in PS.FEATS if c.startswith("cat_")], "content": ["topic", "meaning"] + pc + tc}
     if PS.COMP:
         groups["competitors"] = ["comp_used5", "comp_n20", "comp_best"]
+    if PS.PRESENCE:
+        groups["presence"] = ["pres_early2", "pres_early6", "pres_late", "pres_n"]
+    if PS.TWIN:
+        groups["twin"] = ["twin_cos", "twin_rank"]
     if os.environ.get("ABLATE") == "1":
         specs = {"base": (300, "clf", 400, 31, 0.05)}
         for k, v in groups.items():
