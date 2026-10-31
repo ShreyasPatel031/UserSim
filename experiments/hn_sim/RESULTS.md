@@ -227,3 +227,20 @@ Early v4 with whole-life Quality News series (re-ups visible), 10 fully fetched 
 on 15 fully fetched days: real top 30 in our top 30 at 21:00 UTC 80.3% [76.3, 83.7] (was 72.7% without re-ups), end
 of day 88.3% [86.3, 90.3] (was 79.6%); share of the real top 30 the model can see: 97% at 21:00, 100% at end of day
 (was 87% / 90%). 18:00 UTC 59-64%. Full run pending the rest of the fetch.
+
+### v4 full result (whole-life series, timeouts re-fetched; 57 train days Jul-Aug, 46 test days Sep 1 - Oct 16)
+
+v4 + comments (v4_cov.py 2026-09-01 ... 0.97); "visible" = share of the real top 30 posted / back on the page by T.
+
+| forecast (UTC) | real top 30 in our top 30 | real top 10 in top 10 | real top 10 in top 30 | visible | previous model |
+|---|---|---|---|---|---|
+| 12:00 | 41.4% [39.6, 43.3] | 27.0% | 30.2% | 52.4% | 35.1% |
+| 15:00 | 52.0% [49.7, 54.1] | 36.1% | 44.8% | 65.4% | 46.5% |
+| 18:00 | 64.1% [62.0, 66.2] | 52.2% | 65.7% | 80.5% | 59.9% |
+| 20:00 | 74.0% [72.2, 75.7] | 66.1% | 81.7% | 90.6% | 68.0% |
+| 21:00 | 78.5% [76.4, 80.4] | 68.7% | 88.9% | 95.3% | 73.5% |
+| 22:00 | 81.5% [79.6, 83.2] | 73.0% | 94.3% | 97.6% | 77.2% |
+| 23:00 | 84.9% [83.4, 86.2] | 76.5% | 97.2% | 99.0% | 78.6% |
+| end of day | 86.0% [84.7, 87.2] | 77.2% | 97.8% | 99.3% | 80.1% |
+
+Upvote-rate inputs: within noise. 18:00 is capped by the 19.5% of the real top 30 not yet posted / re-upped by then.
