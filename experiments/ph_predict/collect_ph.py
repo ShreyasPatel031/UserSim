@@ -50,6 +50,7 @@ def main(start, end):
                 if not p["pageInfo"]["hasNextPage"]:
                     break
                 cur = p["pageInfo"]["endCursor"]
+            seen = set(); nodes = [n for n in nodes if not (str(n["id"]) in seen or seen.add(str(n["id"])))]   # keep each launch once
             f.write_text(json.dumps(nodes))
             print(d, len(nodes), "remaining", rem, flush=True)
         d -= dt.timedelta(days=1)
