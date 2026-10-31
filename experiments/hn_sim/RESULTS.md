@@ -263,3 +263,20 @@ so did 16% of all candidates.
 Early velocity (points gained in the last 30 / 60 min, Quality News upvote rate) is already in v4.
 Second-chance pool and hourly list snapshots start 2026-10-30 / 10-31: they can be tested only going forward
 (score_live.py scores each live forecast against the list once it settles).
+
+### 18:00 iteration (v4_t18.py, v4_cls.py; 57 train / 46 test days, real top 30 found at 18:00 UTC)
+
+| try | 18:00 top 30 | 18:00 top 10 | 21:00 top 30 |
+|---|---|---|---|
+| v4 lambdarank (was current) | 63.6% | 51.5% | 78.4% |
+| + post hour / weekday / title | 63.5% | 52.6% | |
+| + submitter and domain history (past results only; karma read today would leak) | 64.1% | 51.3% | |
+| + who commented in the first 30 / 60 min | 64.1% | 52.4% | |
+| + all three | 63.7% | 52.0% | |
+| rank_xendcg objective | 40.9% | 41.5% | |
+| top-30 classifier | 65.8% | 40.0% | 80.2% |
+| **hybrid: classifier picks the 30, ranker orders them (now live)** | **65.8%** | **51.5%** | **80.2%** |
+
+Hybrid vs ranker, paired by day: 18:00 +2.2 points [+1.3, +3.3], better on 21 days, worse on 3; 21:00 +1.8 [+0.9,
++2.8], 22 better / 5 worse; end of day 86.8% vs 87.0% (no change). A top-40 label or rank-weighted classifier: no
+better. The 18:00 ceiling stays ~81% (share of the real top 30 posted / re-upped by then).

@@ -6,7 +6,8 @@
 
 Live inputs: candidates from Algolia (stories of the last 7 days with 5+ points; older than 72 h only if on HN's top 90
 now), their Quality News 10-minute series (qn.parse with QN_FINE), and the last 7 days' lists (a story on an earlier
-list cannot be on today's). The model for the forecast time nearest to now is used (votes/page inputs only).
+list cannot be on today's). The models for the forecast time nearest to now are used (votes/page inputs only):
+a top-30 classifier picks the 30, the ranker orders them (daily_v4.hybrid).
 """
 import json
 import os
@@ -39,7 +40,7 @@ def train():
     models = {}
     for t in V.TIMES:
         D = C[C[f"{t}_visible"] == 1]
-        models[t] = V.fit_rank(D, cols(t))
+        models[t] = (V.fit_rank(D, cols(t)), V.fit_top30(D, cols(t)))
         print("trained", t, D.day.nunique(), "days", flush=True)
     pickle.dump(models, open(MODELS, "wb"))
 
@@ -90,7 +91,9 @@ def now(top=30):
     V.features(C, S, name, np.full(len(C), T))
     C["on_earlier_list"] = C.post_id.isin(earlier_lists(day)).astype(np.int8)
     C = C[C[f"{name}_visible"] == 1].copy()
-    C["score"] = np.where(C.on_earlier_list == 1, -1e9, models[name].predict(C[cols(name)]))
+    ranker, top30 = models[name]
+    C["score"] = np.where(C.on_earlier_list == 1, -1e9, V.hybrid(C.day, top30.predict_proba(C[cols(name)])[:, 1],
+                                                                 ranker.predict(C[cols(name)])))
     C = C.merge(st[["post_id", "title", "url"]], on="post_id", how="left").sort_values("score", ascending=False)
     res = {"day": day.strftime("%Y-%m-%d"), "made_at": pd.Timestamp(T, unit="s").isoformat(), "model": name,
            "top": [{"rank": i + 1, "post_id": int(r.post_id), "title": r.title, "url": r.url,
