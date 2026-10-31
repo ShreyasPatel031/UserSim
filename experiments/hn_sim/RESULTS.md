@@ -190,3 +190,20 @@ Where the misses come from (18 September test days, best variant, per day out of
 (The rest of each 30 are stories posted more than 72 h before the day ended, outside the candidate window.)
 HN's ranking formula at T, real rank minus formula rank (penalties), comments per point: no gain (18:00 61.7% vs
 62.0%; end of day 81.1% vs 81.9%); deeper trees: no gain.
+
+Votes for Sep-Oct 16 added (136 fully fetched days). Stage 2 trained on 90 summer days, tested on 46 days
+(2026-09-01..10-16); best variant (+ votes, rank, age, previous list), by forecast time (2023-24 lists left out: no gain,
+and memory):
+
+| forecast (UTC) | real top 30 in our top 30 | real top 10 in our top 10 | real top 10 in our top 30 |
+|---|---|---|---|
+| 12:00 | 35.1% | 25.7% | 28.3% |
+| 15:00 | 46.5% | 33.0% | 42.0% |
+| 18:00 | 59.9% | 49.8% | 64.1% |
+| 20:00 | 68.0% | 60.9% | 78.7% |
+| 21:00 | 73.5% | 64.3% | 85.4% |
+| 22:00 | 77.2% | 70.2% | 92.2% |
+| 23:00 | 78.6% | 72.4% | 93.7% |
+| end of day | 80.1% | 74.1% | 95.0% |
+
+Training on 120 days (to Sep 30) and testing October 1-16: no change (end of day 81.5%, 18:00 59.4%).
