@@ -1,7 +1,8 @@
 """Each launch's real website, from Product Hunt's own link (producthunt.com/r/<code>, the launch's Website button),
-not guessed from the name. Step 1: ask the redirect where it points (no redirect followed), on the fetch ladder: the
-machine's IP first, then the DataImpulse residential proxy (Product Hunt blocks data-centre IPs). Step 2: fetch that
-site from the machine's own IP and keep its visible text (first 4,000 characters); flag parked / for-sale pages.
+not guessed from the name. Product Hunt blocks routes 1 and 3 of the fetch ladder on these links (403 on 20 of 20 in
+the pilot), so the link is opened on route 4 (Camoufox through the DataImpulse proxy, fetch.browser_get), which
+follows the redirect to the launch's site; the site's final URL and visible text (first 4,000 characters) are kept,
+and parked / for-sale pages flagged.
 Resumable; bytes and dollars per launch for the spend log.
 usage: python -m pipeline.sites [limit] [threads] -> ph_predict/data/sites_ph.jsonl"""
 import glob, json, os, re, sys, threading
@@ -48,7 +49,7 @@ def site_text(url):
         return url, -1, "", 0
 
 
-def main(limit=10**9, threads=8):
+def main(limit=10**9, threads=2):   # browsers: at most a few at once
     L = {}
     for f in sorted(glob.glob(f"{D}/days/*.json")) + sorted(glob.glob(f"{D}/today/*.json")):
         for p in json.load(open(f)):
@@ -60,14 +61,13 @@ def main(limit=10**9, threads=8):
     lock = threading.Lock(); tot = {"ok": 0, "no_target": 0, "parked": 0, "ph_bytes": {"direct": 0, "dataimpulse": 0}}
 
     def one(i):
-        w = where(L[i]); rec = {"id": i, "ph_link": L[i], "route": w["route"], "ph_status": w["status"], "url": w["target"], "text": "", "parked": False}
-        if w["target"] and "producthunt.com" not in w["target"]:
-            final, st, t, _ = site_text(w["target"])
-            rec.update(final_url=final, site_status=st, text=t, parked=bool(PARKED.search(t[:2000])))
+        b = F.browser_get(L[i])
+        rec = {"id": i, "ph_link": L[i], "route": b["route"], "status": b["status"], "url": None, "text": "", "parked": False, "bytes": b["bytes"]}
+        if b["final_url"] and "producthunt.com" not in b["final_url"]:
+            t = text(b["body"]); rec.update(url=b["final_url"], text=t, parked=bool(PARKED.search(t[:2000])))
         with lock:
             tot["ok" if rec["text"] else "no_target"] += 1; tot["parked"] += rec["parked"]
-            if w["route"]:
-                tot["ph_bytes"][w["route"]] += w["bytes"]
+            tot["ph_bytes"]["dataimpulse"] += b["bytes"]
             f.write(json.dumps(rec) + "\n"); f.flush()
     with open(OUT, "a") as f, ThreadPoolExecutor(threads) as ex:
         list(ex.map(one, todo))
@@ -77,4 +77,4 @@ def main(limit=10**9, threads=8):
 
 
 if __name__ == "__main__":
-    main(int(sys.argv[1]) if len(sys.argv) > 1 else 10**9, int(sys.argv[2]) if len(sys.argv) > 2 else 8)
+    main(int(sys.argv[1]) if len(sys.argv) > 1 else 10**9, int(sys.argv[2]) if len(sys.argv) > 2 else 2)
