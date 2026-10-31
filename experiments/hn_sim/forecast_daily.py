@@ -94,7 +94,7 @@ def now(top=30):
     C = C.merge(st[["post_id", "title", "url"]], on="post_id", how="left").sort_values("score", ascending=False)
     res = {"day": day.strftime("%Y-%m-%d"), "made_at": pd.Timestamp(T, unit="s").isoformat(), "model": name,
            "top": [{"rank": i + 1, "post_id": int(r.post_id), "title": r.title, "url": r.url,
-                    "points_now": float(r[f"{name}_points"]), "rank_now": float(r[f"{name}_rank_now"])}
+                    "points_now": float(getattr(r, f"{name}_points")), "rank_now": float(getattr(r, f"{name}_rank_now"))}
                    for i, r in enumerate(C.head(top).itertuples())]}
     os.makedirs(os.path.join(OUT, res["day"]), exist_ok=True)
     path = os.path.join(OUT, res["day"], pd.Timestamp(T, unit="s").strftime("%H%M") + ".json")
