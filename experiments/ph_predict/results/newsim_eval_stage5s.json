@@ -8,114 +8,114 @@
  "first-time teams": {
   "launches": 1260,
   "sim best": {
-   "pairs": 68.6,
-   "groups3": 65.4,
-   "corr": 0.595
+   "pairs": 68.7,
+   "groups3": 64.7,
+   "corr": 0.581
   },
   "sim + video vs competitors": {
    "pairs": 68.3,
-   "groups3": 64.5,
-   "corr": 0.582
+   "groups3": 65.5,
+   "corr": 0.575
   },
   "sim + summary vs competitors": {
-   "pairs": 68.4,
-   "groups3": 65.2,
-   "corr": 0.587
+   "pairs": 68.8,
+   "groups3": 66.2,
+   "corr": 0.575
   },
   "sim + both": {
-   "pairs": 68.8,
-   "groups3": 64.3,
-   "corr": 0.591
+   "pairs": 68.7,
+   "groups3": 64.7,
+   "corr": 0.58
   },
   "launch pred + video vs competitors": {
-   "pairs": 65.1,
-   "groups3": 59.9,
-   "corr": 0.514
+   "pairs": 65.5,
+   "groups3": 61.6,
+   "corr": 0.501
   },
   "launch pred + summary vs competitors": {
-   "pairs": 64.8,
-   "groups3": 59.6,
-   "corr": 0.531
+   "pairs": 65.6,
+   "groups3": 63.0,
+   "corr": 0.537
   },
   "launch only": {
-   "pairs": 68.3,
-   "groups3": 66.4,
-   "corr": 0.604
+   "pairs": 68.4,
+   "groups3": 66.7,
+   "corr": 0.594
   }
  },
  "repeat teams": {
   "launches": 1117,
   "sim best": {
-   "pairs": 77.2,
-   "groups3": 67.4,
+   "pairs": 77.4,
+   "groups3": 67.9,
    "corr": 0.682
   },
   "sim + video vs competitors": {
-   "pairs": 77.0,
-   "groups3": 66.2,
-   "corr": 0.678
+   "pairs": 77.3,
+   "groups3": 66.5,
+   "corr": 0.682
   },
   "sim + summary vs competitors": {
    "pairs": 77.2,
-   "groups3": 67.3,
-   "corr": 0.678
+   "groups3": 67.6,
+   "corr": 0.679
   },
   "sim + both": {
-   "pairs": 77.0,
-   "groups3": 66.8,
+   "pairs": 76.9,
+   "groups3": 67.1,
    "corr": 0.678
   },
   "launch pred + video vs competitors": {
-   "pairs": 77.4,
-   "groups3": 65.7,
-   "corr": 0.66
+   "pairs": 77.1,
+   "groups3": 65.0,
+   "corr": 0.649
   },
   "launch pred + summary vs competitors": {
-   "pairs": 78.6,
-   "groups3": 66.8,
-   "corr": 0.702
+   "pairs": 78.5,
+   "groups3": 67.2,
+   "corr": 0.698
   },
   "launch only": {
-   "pairs": 79.7,
-   "groups3": 68.8,
-   "corr": 0.726
+   "pairs": 79.5,
+   "groups3": 68.7,
+   "corr": 0.719
   }
  },
  "all launches, daily top 3/5/10": {
   "sim best": [
-   60.9,
-   70.7,
-   80.5
+   60.3,
+   70.9,
+   79.7
   ],
   "sim + video vs competitors": [
-   61.2,
-   70.3,
-   80.1
+   60.9,
+   70.2,
+   79.5
   ],
   "sim + summary vs competitors": [
    60.9,
    70.5,
-   80.2
+   79.9
   ],
   "sim + both": [
-   62.4,
-   70.7,
-   80.6
-  ],
-  "launch pred + video vs competitors": [
-   62.1,
-   70.0,
+   61.2,
+   70.5,
    80.3
   ],
+  "launch pred + video vs competitors": [
+   62.6,
+   69.8,
+   80.0
+  ],
   "launch pred + summary vs competitors": [
-   64.7,
-   70.3,
-   79.3
+   64.9,
+   70.2,
+   80.2
   ],
   "launch only": [
-   66.4,
-   72.2,
-   81.3
+   65.8,
+   72.9,
+   80.8
   ]
  }
 }

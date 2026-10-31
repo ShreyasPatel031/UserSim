@@ -1,0 +1,1369 @@
+{
+ "inputs_per_group": {
+  "fixed": 67,
+  "page": 114,
+  "day": 5,
+  "effort": 29
+ },
+ "page_inputs": [
+  "ph_n_media",
+  "ph_has_video",
+  "ph_n_topics",
+  "ph_desc_len",
+  "ph_tagline_len",
+  "ph_name_len",
+  "ps_n_images",
+  "ps_has_first_comment",
+  "ps_name",
+  "ps_tagline",
+  "ps_description",
+  "ps_category_fit",
+  "ps_logo",
+  "ps_gallery",
+  "ps_video",
+  "ps_first_comment",
+  "ps_website",
+  "ps_links",
+  "ps_clarity",
+  "ps_novelty",
+  "ps_usefulness",
+  "ps_audience_breadth",
+  "ps_credibility",
+  "ps_visual_polish",
+  "ps_problem_urgency",
+  "ps_wow",
+  "ps_top5_chance",
+  "ps_mix_question",
+  "ps_mix_bug",
+  "ps_mix_pricing",
+  "ps_mix_comparison",
+  "ps_mix_privacy",
+  "ps_mix_confusion",
+  "ps_mix_praise",
+  "ps_mix_other",
+  "pf_open_source",
+  "pf_free_plan",
+  "pf_free_trial",
+  "pf_paid_only",
+  "pf_launch_discount",
+  "pf_number_in_tagline",
+  "pf_ai_in_tagline",
+  "pf_problem_stated",
+  "pf_who_its_for_stated",
+  "pf_how_it_works_steps",
+  "pf_social_proof",
+  "pf_founder_story",
+  "pf_asks_for_feedback",
+  "pf_asks_for_upvotes",
+  "pf_emoji_in_first_comment",
+  "pf_mentions_competitor",
+  "pf_claims_speed",
+  "pf_claims_privacy",
+  "pf_integrations_listed",
+  "pf_relaunch_or_new_version",
+  "pf_waitlist_or_beta",
+  "pf_no_signup_needed",
+  "pf_mobile_app",
+  "pf_browser_extension",
+  "pf_mac_app",
+  "pf_developer_tool",
+  "pf_api_or_sdk",
+  "pf_agent",
+  "pf_consumer_product",
+  "pf_b2b_product",
+  "pf_hardware",
+  "pf_games_or_fun",
+  "pf_tagline_style_benefit",
+  "pf_tagline_style_feature",
+  "pf_tagline_style_category",
+  "pf_tagline_style_clever",
+  "pf_tagline_style_question",
+  "pf_tagline_style_other",
+  "pf_audience_developers",
+  "pf_audience_designers",
+  "pf_audience_marketers",
+  "pf_audience_founders",
+  "pf_audience_sales",
+  "pf_audience_consumers",
+  "pf_audience_students",
+  "pf_audience_creators",
+  "pf_audience_teams",
+  "pf_audience_other",
+  "pf_price_point_free",
+  "pf_price_point_under_10",
+  "pf_price_point_10_to_50",
+  "pf_price_point_over_50",
+  "pf_price_point_not_stated",
+  "pf_tagline_words",
+  "pf_first_comment_words",
+  "pf_features_listed",
+  "vs_hook",
+  "vs_problem_shown",
+  "vs_product_working",
+  "vs_clarity",
+  "vs_pacing",
+  "vs_production",
+  "vs_voice_or_captions",
+  "vs_length_fit",
+  "vs_call_to_action",
+  "vs_wow",
+  "vs_length_seconds",
+  "vs_shows_real_ui",
+  "vs_founder_on_camera",
+  "vs_unwatchable",
+  "ph_dayrank_ph_n_media",
+  "llm_pitch",
+  "llm_site",
+  "llm_full",
+  "txt_ridge",
+  "topic_prior_max",
+  "topic_prior_mean",
+  "topic_is_ai",
+  "topic_is_dev"
+ ],
+ "day_inputs": [
+  "ph_weekday",
+  "ph_day_n_launches",
+  "ph_month",
+  "busy_same_day",
+  "busy_7d"
+ ],
+ "effort_inputs": [
+  "ph_hunter_followers",
+  "ph_self_hunted",
+  "ph_hunter_age_d",
+  "x_hunter_followers",
+  "fol_hunter",
+  "promo_posts",
+  "promo_posts_launch",
+  "promo_posts_li",
+  "promo_posts_x",
+  "promo_posts_founder",
+  "promo_reactions",
+  "promo_cov",
+  "promo_cov_press",
+  "promo_cov_hn",
+  "promo_cov_reddit",
+  "promo_n_sources",
+  "promo_founder_li",
+  "promo_company_li",
+  "promo_founder_x",
+  "promo_funding",
+  "promo_company_age",
+  "hist_hunter_n",
+  "hist_hunter_rel",
+  "hist_hunter_top5",
+  "ph_hunter_n_same_day",
+  "ph_dayrank_ph_hunter_followers",
+  "ph_dayrank_ph_hunter_age_d",
+  "x_dayrank_x_hunter_followers",
+  "hist_dayrank_hist_hunter_rel"
+ ],
+ "ranking_top3_5_10": {
+  "fixed": [
+   59.7,
+   69.0,
+   77.8
+  ],
+  "fixed+page": [
+   62.3,
+   69.0,
+   78.4
+  ],
+  "fixed+day": [
+   60.3,
+   69.4,
+   78.5
+  ],
+  "fixed+effort": [
+   61.4,
+   69.4,
+   78.6
+  ],
+  "all": [
+   63.7,
+   70.3,
+   79.6
+  ]
+ },
+ "predicted_lift_vs_real_over_performance": {
+  "page": {
+   "corr": 0.24,
+   "ci95": [
+    0.206,
+    0.271
+   ],
+   "days": 218
+  },
+  "day": {
+   "corr": 0.201,
+   "ci95": [
+    0.167,
+    0.235
+   ],
+   "days": 218
+  },
+  "effort": {
+   "corr": 0.233,
+   "ci95": [
+    0.2,
+    0.265
+   ],
+   "days": 218
+  }
+ },
+ "each_input_vs_over_performance": {
+  "vs_production": {
+   "corr": 0.493,
+   "ci95": [
+    0.493,
+    0.493
+   ],
+   "days": 1
+  },
+  "vs_product_working": {
+   "corr": -0.393,
+   "ci95": [
+    -0.393,
+    -0.393
+   ],
+   "days": 1
+  },
+  "vs_call_to_action": {
+   "corr": 0.319,
+   "ci95": [
+    0.319,
+    0.319
+   ],
+   "days": 1
+  },
+  "vs_length_seconds": {
+   "corr": -0.259,
+   "ci95": [
+    -0.259,
+    -0.259
+   ],
+   "days": 1
+  },
+  "vs_pacing": {
+   "corr": 0.207,
+   "ci95": [
+    0.207,
+    0.207
+   ],
+   "days": 1
+  },
+  "vs_voice_or_captions": {
+   "corr": -0.141,
+   "ci95": [
+    -0.141,
+    -0.141
+   ],
+   "days": 1
+  },
+  "vs_hook": {
+   "corr": 0.139,
+   "ci95": [
+    0.139,
+    0.139
+   ],
+   "days": 1
+  },
+  "vs_clarity": {
+   "corr": 0.139,
+   "ci95": [
+    0.139,
+    0.139
+   ],
+   "days": 1
+  },
+  "vs_wow": {
+   "corr": 0.102,
+   "ci95": [
+    0.102,
+    0.102
+   ],
+   "days": 1
+  },
+  "llm_pitch": {
+   "corr": 0.085,
+   "ci95": [
+    0.052,
+    0.118
+   ],
+   "days": 217
+  },
+  "vs_problem_shown": {
+   "corr": 0.084,
+   "ci95": [
+    0.084,
+    0.084
+   ],
+   "days": 1
+  },
+  "ph_dayrank_ph_n_media": {
+   "corr": 0.066,
+   "ci95": [
+    0.032,
+    0.099
+   ],
+   "days": 218
+  },
+  "pf_audience_designers": {
+   "corr": 0.052,
+   "ci95": [
+    -0.001,
+    0.101
+   ],
+   "days": 43
+  },
+  "pf_price_point_not_stated": {
+   "corr": -0.049,
+   "ci95": [
+    -0.08,
+    -0.018
+   ],
+   "days": 217
+  },
+  "pf_price_point_free": {
+   "corr": 0.046,
+   "ci95": [
+    0.015,
+    0.077
+   ],
+   "days": 215
+  },
+  "vs_shows_real_ui": {
+   "corr": 0.044,
+   "ci95": [
+    0.044,
+    0.044
+   ],
+   "days": 1
+  },
+  "pf_audience_teams": {
+   "corr": -0.031,
+   "ci95": [
+    -0.061,
+    0.001
+   ],
+   "days": 186
+  },
+  "vs_founder_on_camera": {
+   "corr": 0.024,
+   "ci95": [
+    0.024,
+    0.024
+   ],
+   "days": 1
+  },
+  "pf_first_comment_words": {
+   "corr": 0.021,
+   "ci95": [
+    -0.019,
+    0.059
+   ],
+   "days": 217
+  },
+  "pf_price_point_under_10": {
+   "corr": 0.02,
+   "ci95": [
+    -0.012,
+    0.052
+   ],
+   "days": 132
+  },
+  "pf_features_listed": {
+   "corr": 0.019,
+   "ci95": [
+    -0.012,
+    0.047
+   ],
+   "days": 218
+  },
+  "pf_audience_founders": {
+   "corr": 0.017,
+   "ci95": [
+    -0.023,
+    0.059
+   ],
+   "days": 134
+  },
+  "pf_tagline_style_other": {
+   "corr": 0.015,
+   "ci95": [
+    -0.08,
+    0.122
+   ],
+   "days": 10
+  },
+  "llm_site": {
+   "corr": 0.015,
+   "ci95": [
+    -0.018,
+    0.049
+   ],
+   "days": 216
+  },
+  "pf_price_point_10_to_50": {
+   "corr": -0.014,
+   "ci95": [
+    -0.049,
+    0.023
+   ],
+   "days": 93
+  },
+  "pf_audience_creators": {
+   "corr": 0.012,
+   "ci95": [
+    -0.017,
+    0.041
+   ],
+   "days": 196
+  },
+  "pf_tagline_words": {
+   "corr": 0.012,
+   "ci95": [
+    -0.019,
+    0.045
+   ],
+   "days": 218
+  },
+  "pf_audience_students": {
+   "corr": 0.011,
+   "ci95": [
+    -0.034,
+    0.056
+   ],
+   "days": 70
+  },
+  "pf_audience_other": {
+   "corr": -0.011,
+   "ci95": [
+    -0.042,
+    0.019
+   ],
+   "days": 213
+  },
+  "vs_length_fit": {
+   "corr": -0.011,
+   "ci95": [
+    -0.011,
+    -0.011
+   ],
+   "days": 1
+  },
+  "pf_audience_developers": {
+   "corr": 0.008,
+   "ci95": [
+    -0.023,
+    0.038
+   ],
+   "days": 218
+  },
+  "pf_audience_marketers": {
+   "corr": 0.007,
+   "ci95": [
+    -0.038,
+    0.05
+   ],
+   "days": 102
+  },
+  "pf_audience_consumers": {
+   "corr": -0.006,
+   "ci95": [
+    -0.033,
+    0.024
+   ],
+   "days": 199
+  },
+  "pf_price_point_over_50": {
+   "corr": -0.006,
+   "ci95": [
+    -0.065,
+    0.059
+   ],
+   "days": 52
+  },
+  "pf_audience_sales": {
+   "corr": 0.002,
+   "ci95": [
+    -0.05,
+    0.054
+   ],
+   "days": 73
+  },
+  "vs_unwatchable": {
+   "corr": NaN,
+   "ci95": [
+    NaN,
+    NaN
+   ],
+   "days": 0
+  },
+  "ph_weekday": {
+   "corr": -0.343,
+   "ci95": [
+    -0.586,
+    -0.112
+   ],
+   "days": 5
+  },
+  "hist_hunter_top5": {
+   "corr": -0.323,
+   "ci95": [
+    -0.323,
+    -0.323
+   ],
+   "days": 1
+  },
+  "hist_hunter_rel": {
+   "corr": -0.167,
+   "ci95": [
+    -0.167,
+    -0.167
+   ],
+   "days": 1
+  },
+  "hist_dayrank_hist_hunter_rel": {
+   "corr": -0.167,
+   "ci95": [
+    -0.167,
+    -0.167
+   ],
+   "days": 1
+  },
+  "ph_name_len": {
+   "corr": -0.094,
+   "ci95": [
+    -0.126,
+    -0.064
+   ],
+   "days": 218
+  },
+  "ph_hunter_age_d": {
+   "corr": -0.09,
+   "ci95": [
+    -0.125,
+    -0.055
+   ],
+   "days": 218
+  },
+  "ph_dayrank_ph_hunter_age_d": {
+   "corr": -0.09,
+   "ci95": [
+    -0.125,
+    -0.055
+   ],
+   "days": 218
+  },
+  "ph_n_topics": {
+   "corr": 0.082,
+   "ci95": [
+    0.05,
+    0.116
+   ],
+   "days": 217
+  },
+  "fol_hunter": {
+   "corr": -0.081,
+   "ci95": [
+    -0.114,
+    -0.049
+   ],
+   "days": 218
+  },
+  "busy_same_day": {
+   "corr": -0.071,
+   "ci95": [
+    -0.116,
+    -0.029
+   ],
+   "days": 171
+  },
+  "ph_hunter_n_same_day": {
+   "corr": -0.071,
+   "ci95": [
+    -0.116,
+    -0.029
+   ],
+   "days": 171
+  },
+  "pf_tagline_style_question": {
+   "corr": 0.067,
+   "ci95": [
+    0.002,
+    0.129
+   ],
+   "days": 29
+  },
+  "ph_n_media": {
+   "corr": 0.066,
+   "ci95": [
+    0.032,
+    0.099
+   ],
+   "days": 218
+  },
+  "ps_name": {
+   "corr": 0.066,
+   "ci95": [
+    0.038,
+    0.093
+   ],
+   "days": 216
+  },
+  "ps_category_fit": {
+   "corr": 0.058,
+   "ci95": [
+    0.026,
+    0.088
+   ],
+   "days": 209
+  },
+  "ps_audience_breadth": {
+   "corr": 0.058,
+   "ci95": [
+    0.025,
+    0.089
+   ],
+   "days": 217
+  },
+  "pf_free_plan": {
+   "corr": 0.058,
+   "ci95": [
+    0.031,
+    0.09
+   ],
+   "days": 218
+  },
+  "hist_hunter_n": {
+   "corr": -0.058,
+   "ci95": [
+    -0.094,
+    -0.023
+   ],
+   "days": 218
+  },
+  "ps_mix_question": {
+   "corr": -0.054,
+   "ci95": [
+    -0.085,
+    -0.025
+   ],
+   "days": 217
+  },
+  "pf_mac_app": {
+   "corr": 0.054,
+   "ci95": [
+    0.025,
+    0.083
+   ],
+   "days": 213
+  },
+  "promo_cov_hn": {
+   "corr": 0.054,
+   "ci95": [
+    0.018,
+    0.09
+   ],
+   "days": 161
+  },
+  "ps_n_images": {
+   "corr": 0.053,
+   "ci95": [
+    0.017,
+    0.091
+   ],
+   "days": 213
+  },
+  "ph_self_hunted": {
+   "corr": 0.052,
+   "ci95": [
+    0.018,
+    0.085
+   ],
+   "days": 217
+  },
+  "pf_open_source": {
+   "corr": 0.05,
+   "ci95": [
+    0.016,
+    0.082
+   ],
+   "days": 213
+  },
+  "ps_logo": {
+   "corr": 0.049,
+   "ci95": [
+    0.018,
+    0.078
+   ],
+   "days": 216
+  },
+  "ps_gallery": {
+   "corr": 0.047,
+   "ci95": [
+    0.011,
+    0.079
+   ],
+   "days": 217
+  },
+  "ps_wow": {
+   "corr": 0.046,
+   "ci95": [
+    0.01,
+    0.081
+   ],
+   "days": 217
+  },
+  "ps_tagline": {
+   "corr": 0.044,
+   "ci95": [
+    0.013,
+    0.073
+   ],
+   "days": 217
+  },
+  "ps_top5_chance": {
+   "corr": 0.044,
+   "ci95": [
+    0.008,
+    0.078
+   ],
+   "days": 217
+  },
+  "x_hunter_followers": {
+   "corr": -0.044,
+   "ci95": [
+    -0.08,
+    -0.007
+   ],
+   "days": 218
+  },
+  "x_dayrank_x_hunter_followers": {
+   "corr": -0.044,
+   "ci95": [
+    -0.08,
+    -0.007
+   ],
+   "days": 218
+  },
+  "promo_posts_founder": {
+   "corr": 0.043,
+   "ci95": [
+    0.012,
+    0.071
+   ],
+   "days": 215
+  },
+  "pf_mentions_competitor": {
+   "corr": 0.042,
+   "ci95": [
+    0.011,
+    0.071
+   ],
+   "days": 216
+  },
+  "promo_reactions": {
+   "corr": 0.042,
+   "ci95": [
+    0.01,
+    0.075
+   ],
+   "days": 187
+  },
+  "ps_clarity": {
+   "corr": 0.041,
+   "ci95": [
+    0.007,
+    0.073
+   ],
+   "days": 217
+  },
+  "busy_7d": {
+   "corr": -0.041,
+   "ci95": [
+    -0.08,
+    -0.006
+   ],
+   "days": 218
+  },
+  "ps_visual_polish": {
+   "corr": 0.04,
+   "ci95": [
+    0.005,
+    0.073
+   ],
+   "days": 217
+  },
+  "ps_website": {
+   "corr": 0.039,
+   "ci95": [
+    0.006,
+    0.073
+   ],
+   "days": 217
+  },
+  "pf_b2b_product": {
+   "corr": -0.037,
+   "ci95": [
+    -0.069,
+    -0.004
+   ],
+   "days": 218
+  },
+  "pf_no_signup_needed": {
+   "corr": 0.036,
+   "ci95": [
+    0.004,
+    0.068
+   ],
+   "days": 212
+  },
+  "ph_has_video": {
+   "corr": 0.035,
+   "ci95": [
+    0.004,
+    0.069
+   ],
+   "days": 217
+  },
+  "ps_mix_bug": {
+   "corr": 0.033,
+   "ci95": [
+    -0.008,
+    0.074
+   ],
+   "days": 153
+  },
+  "ps_mix_pricing": {
+   "corr": -0.033,
+   "ci95": [
+    -0.067,
+    0.001
+   ],
+   "days": 217
+  },
+  "pf_emoji_in_first_comment": {
+   "corr": 0.033,
+   "ci95": [
+    -0.002,
+    0.063
+   ],
+   "days": 216
+  },
+  "ps_mix_comparison": {
+   "corr": 0.032,
+   "ci95": [
+    0.001,
+    0.063
+   ],
+   "days": 217
+  },
+  "pf_consumer_product": {
+   "corr": 0.032,
+   "ci95": [
+    0.001,
+    0.063
+   ],
+   "days": 218
+  },
+  "pf_asks_for_upvotes": {
+   "corr": 0.031,
+   "ci95": [
+    -0.013,
+    0.074
+   ],
+   "days": 59
+  },
+  "pf_waitlist_or_beta": {
+   "corr": 0.03,
+   "ci95": [
+    -0.002,
+    0.063
+   ],
+   "days": 152
+  },
+  "pf_browser_extension": {
+   "corr": 0.03,
+   "ci95": [
+    -0.002,
+    0.061
+   ],
+   "days": 143
+  },
+  "pf_games_or_fun": {
+   "corr": 0.03,
+   "ci95": [
+    -0.004,
+    0.066
+   ],
+   "days": 158
+  },
+  "llm_full": {
+   "corr": -0.03,
+   "ci95": [
+    -0.07,
+    0.006
+   ],
+   "days": 218
+  },
+  "ph_dayrank_ph_hunter_followers": {
+   "corr": -0.03,
+   "ci95": [
+    -0.066,
+    0.004
+   ],
+   "days": 218
+  },
+  "promo_founder_li": {
+   "corr": -0.022,
+   "ci95": [
+    -0.069,
+    0.024
+   ],
+   "days": 103
+  },
+  "promo_funding": {
+   "corr": -0.019,
+   "ci95": [
+    -0.055,
+    0.016
+   ],
+   "days": 209
+  },
+  "promo_company_li": {
+   "corr": -0.017,
+   "ci95": [
+    -0.061,
+    0.022
+   ],
+   "days": 119
+  },
+  "promo_n_sources": {
+   "corr": -0.013,
+   "ci95": [
+    -0.044,
+    0.021
+   ],
+   "days": 216
+  },
+  "txt_ridge": {
+   "corr": -0.0,
+   "ci95": [
+    -0.034,
+    0.032
+   ],
+   "days": 218
+  },
+  "ph_day_n_launches": {
+   "corr": NaN,
+   "ci95": [
+    NaN,
+    NaN
+   ],
+   "days": 0
+  },
+  "ph_month": {
+   "corr": NaN,
+   "ci95": [
+    NaN,
+    NaN
+   ],
+   "days": 0
+  },
+  "ph_hunter_followers": {
+   "corr": -0.03,
+   "ci95": [
+    -0.066,
+    0.004
+   ],
+   "days": 218
+  },
+  "ps_novelty": {
+   "corr": 0.029,
+   "ci95": [
+    -0.007,
+    0.063
+   ],
+   "days": 216
+  },
+  "pf_founder_story": {
+   "corr": 0.029,
+   "ci95": [
+    -0.005,
+    0.066
+   ],
+   "days": 216
+  },
+  "pf_problem_stated": {
+   "corr": 0.028,
+   "ci95": [
+    -0.01,
+    0.067
+   ],
+   "days": 129
+  },
+  "pf_claims_privacy": {
+   "corr": 0.028,
+   "ci95": [
+    -0.002,
+    0.057
+   ],
+   "days": 217
+  },
+  "pf_hardware": {
+   "corr": -0.027,
+   "ci95": [
+    -0.068,
+    0.016
+   ],
+   "days": 101
+  },
+  "ps_first_comment": {
+   "corr": 0.026,
+   "ci95": [
+    -0.01,
+    0.065
+   ],
+   "days": 216
+  },
+  "ph_tagline_len": {
+   "corr": -0.025,
+   "ci95": [
+    -0.058,
+    0.009
+   ],
+   "days": 218
+  },
+  "ps_mix_praise": {
+   "corr": 0.024,
+   "ci95": [
+    -0.006,
+    0.053
+   ],
+   "days": 217
+  },
+  "pf_tagline_style_clever": {
+   "corr": 0.024,
+   "ci95": [
+    -0.016,
+    0.066
+   ],
+   "days": 138
+  },
+  "ps_links": {
+   "corr": 0.023,
+   "ci95": [
+    -0.009,
+    0.054
+   ],
+   "days": 217
+  },
+  "pf_ai_in_tagline": {
+   "corr": -0.021,
+   "ci95": [
+    -0.053,
+    0.009
+   ],
+   "days": 218
+  },
+  "pf_number_in_tagline": {
+   "corr": -0.02,
+   "ci95": [
+    -0.06,
+    0.019
+   ],
+   "days": 125
+  },
+  "ps_video": {
+   "corr": 0.019,
+   "ci95": [
+    -0.01,
+    0.05
+   ],
+   "days": 217
+  },
+  "ps_problem_urgency": {
+   "corr": 0.019,
+   "ci95": [
+    -0.012,
+    0.046
+   ],
+   "days": 217
+  },
+  "pf_api_or_sdk": {
+   "corr": -0.019,
+   "ci95": [
+    -0.056,
+    0.015
+   ],
+   "days": 206
+  },
+  "pf_who_its_for_stated": {
+   "corr": -0.018,
+   "ci95": [
+    -0.048,
+    0.011
+   ],
+   "days": 199
+  },
+  "promo_posts_li": {
+   "corr": -0.018,
+   "ci95": [
+    -0.063,
+    0.026
+   ],
+   "days": 69
+  },
+  "ps_description": {
+   "corr": 0.017,
+   "ci95": [
+    -0.015,
+    0.045
+   ],
+   "days": 217
+  },
+  "ps_usefulness": {
+   "corr": 0.017,
+   "ci95": [
+    -0.014,
+    0.043
+   ],
+   "days": 217
+  },
+  "pf_developer_tool": {
+   "corr": 0.016,
+   "ci95": [
+    -0.013,
+    0.046
+   ],
+   "days": 218
+  },
+  "promo_cov_press": {
+   "corr": -0.016,
+   "ci95": [
+    -0.051,
+    0.017
+   ],
+   "days": 214
+  },
+  "pf_relaunch_or_new_version": {
+   "corr": 0.015,
+   "ci95": [
+    -0.019,
+    0.049
+   ],
+   "days": 197
+  },
+  "ps_mix_confusion": {
+   "corr": -0.014,
+   "ci95": [
+    -0.051,
+    0.023
+   ],
+   "days": 205
+  },
+  "pf_asks_for_feedback": {
+   "corr": -0.014,
+   "ci95": [
+    -0.05,
+    0.019
+   ],
+   "days": 217
+  },
+  "pf_tagline_style_feature": {
+   "corr": -0.014,
+   "ci95": [
+    -0.05,
+    0.021
+   ],
+   "days": 218
+  },
+  "ps_credibility": {
+   "corr": 0.011,
+   "ci95": [
+    -0.023,
+    0.045
+   ],
+   "days": 214
+  },
+  "pf_social_proof": {
+   "corr": 0.011,
+   "ci95": [
+    -0.024,
+    0.045
+   ],
+   "days": 196
+  },
+  "ps_has_first_comment": {
+   "corr": 0.01,
+   "ci95": [
+    -0.031,
+    0.049
+   ],
+   "days": 197
+  },
+  "pf_how_it_works_steps": {
+   "corr": 0.008,
+   "ci95": [
+    -0.023,
+    0.037
+   ],
+   "days": 218
+  },
+  "pf_integrations_listed": {
+   "corr": -0.008,
+   "ci95": [
+    -0.039,
+    0.022
+   ],
+   "days": 218
+  },
+  "pf_agent": {
+   "corr": 0.008,
+   "ci95": [
+    -0.025,
+    0.037
+   ],
+   "days": 218
+  },
+  "ph_desc_len": {
+   "corr": 0.007,
+   "ci95": [
+    -0.025,
+    0.038
+   ],
+   "days": 218
+  },
+  "ps_mix_privacy": {
+   "corr": 0.006,
+   "ci95": [
+    -0.024,
+    0.038
+   ],
+   "days": 215
+  },
+  "pf_mobile_app": {
+   "corr": -0.006,
+   "ci95": [
+    -0.035,
+    0.025
+   ],
+   "days": 202
+  },
+  "ps_mix_other": {
+   "corr": 0.005,
+   "ci95": [
+    -0.03,
+    0.038
+   ],
+   "days": 169
+  },
+  "pf_paid_only": {
+   "corr": 0.005,
+   "ci95": [
+    -0.028,
+    0.034
+   ],
+   "days": 217
+  },
+  "pf_launch_discount": {
+   "corr": -0.005,
+   "ci95": [
+    -0.038,
+    0.027
+   ],
+   "days": 157
+  },
+  "promo_posts": {
+   "corr": 0.005,
+   "ci95": [
+    -0.023,
+    0.033
+   ],
+   "days": 216
+  },
+  "pf_free_trial": {
+   "corr": 0.003,
+   "ci95": [
+    -0.027,
+    0.034
+   ],
+   "days": 183
+  },
+  "pf_tagline_style_benefit": {
+   "corr": 0.003,
+   "ci95": [
+    -0.03,
+    0.041
+   ],
+   "days": 218
+  },
+  "promo_cov": {
+   "corr": -0.003,
+   "ci95": [
+    -0.036,
+    0.03
+   ],
+   "days": 216
+  },
+  "promo_posts_launch": {
+   "corr": -0.002,
+   "ci95": [
+    -0.031,
+    0.028
+   ],
+   "days": 216
+  },
+  "promo_posts_x": {
+   "corr": 0.002,
+   "ci95": [
+    -0.038,
+    0.041
+   ],
+   "days": 162
+  },
+  "pf_claims_speed": {
+   "corr": 0.001,
+   "ci95": [
+    -0.033,
+    0.034
+   ],
+   "days": 215
+  },
+  "pf_tagline_style_category": {
+   "corr": -0.001,
+   "ci95": [
+    -0.041,
+    0.038
+   ],
+   "days": 143
+  },
+  "promo_cov_reddit": {
+   "corr": -0.001,
+   "ci95": [
+    -0.034,
+    0.03
+   ],
+   "days": 205
+  },
+  "promo_founder_x": {
+   "corr": -0.0,
+   "ci95": [
+    -0.038,
+    0.035
+   ],
+   "days": 191
+  },
+  "promo_company_age": {
+   "corr": NaN,
+   "ci95": [
+    NaN,
+    NaN
+   ],
+   "days": 0
+  }
+ }
+}
