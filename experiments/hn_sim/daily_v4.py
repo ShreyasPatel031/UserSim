@@ -30,7 +30,7 @@ TIMES = {"t12": 12, "t15": 9, "t18": 6, "t20": 4, "t21": 3, "t22": 2, "t23": 1, 
 NS = 1008                                                      # 10-minute slots: 7 days
 WIN = 144 + 1                                                  # slots in one day (+1 edge)
 VC = ("points", "rank_now", "gain30", "gain60", "best_rank_D", "slots_top30_D", "slots_top10_D", "exposure_D", "age_h",
-      "h_since_first_page", "assigned", "reup")
+      "h_since_first_page", "assigned", "reup", "rate", "rate60", "pts_per_h_page")
 
 
 def series(q: pd.DataFrame, born: np.ndarray) -> dict:
@@ -40,18 +40,21 @@ def series(q: pd.DataFrame, born: np.ndarray) -> dict:
     RK = np.full((n, NS), 91, np.float32)
     UP = np.full((n, NS), np.nan, np.float32)
     RK[:, :216] = np.array([[x if x is not None else 91 for x in r] for r in q.qn_rank_10m], np.float32)
+    EX = np.full((n, NS), np.nan, np.float32)                      # Quality News' expected upvotes (accumulated)
     UP[:, :216] = pd.DataFrame(list(q.qn_up_10m), dtype=float).to_numpy()
+    EX[:, :216] = pd.DataFrame(list(q.qn_exp_10m), dtype=float).to_numpy()
     for r, late in enumerate(q.qn_late if "qn_late" in q else [None] * n):
         if isinstance(late, list):
-            for k, rk, up, _ in late:
-                RK[r, k], UP[r, k] = rk, up
+            for k, rk, up, ex in late:
+                RK[r, k], UP[r, k], EX[r, k] = rk, up, ex
     UP = pd.DataFrame(UP).ffill(axis=1).fillna(1).to_numpy(np.float32)
+    EX = pd.DataFrame(EX).ffill(axis=1).fillna(0).to_numpy(np.float32)
     F0 = q.qn_f0.to_numpy().astype(float)
     on = RK <= 90
     k_first = np.where(on.any(1), on.argmax(1), -1)
     t_first = np.where(k_first >= 0, F0 + 600 * (k_first + 1), np.nan)   # end of the first on-page slot
     reup = (t_first - born) > 1800
-    return {"RK": RK, "UP": UP, "F0": F0, "on": on, "born": born, "t_first": t_first, "reup": reup,
+    return {"RK": RK, "UP": UP, "EX": EX, "F0": F0, "on": on, "born": born, "t_first": t_first, "reup": reup,
             "t_assign": np.where(reup, t_first, born), "post_id": q.post_id.to_numpy()}
 
 
@@ -97,6 +100,13 @@ def features(C: pd.DataFrame, S: dict, name: str, T: np.ndarray) -> None:
     # assignment day so far: 1 = D, -1 = earlier day, 0 = not yet on the page (still open)
     f["assigned"] = np.where(~seen, 0, np.where(S["t_assign"][r] >= C.t0.to_numpy(), 1, -1))
     f["reup"] = np.where(seen, S["reup"][r].astype(float), 0)
+    # Quality News' upvote rate: upvotes / upvotes expected at the ranks shown (overall and last hour); placement-free
+    ex = np.where(kT > 0, S["EX"][r, last], 0)
+    ex60 = ex - np.where(kT > 6, S["EX"][r, np.maximum(kT - 7, 0)], 0)
+    with np.errstate(divide="ignore", invalid="ignore"):
+        f["rate"] = np.where(ex > 0.5, f["points"] / ex, np.nan)
+        f["rate60"] = np.where(ex60 > 0.5, f["gain60"] / ex60, np.nan)
+        f["pts_per_h_page"] = np.where(seen, f["points"] / np.maximum(f["h_since_first_page"], 0.17), np.nan)
     f["visible"] = ((born[r] < T) & ((C.t1.to_numpy() - born[r] <= 72 * 3600) | ((rkD < 91).sum(1) > 0))).astype(np.int8)
     for k_, v in f.items():
         C[f"{name}_{k_}"] = v
