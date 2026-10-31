@@ -207,3 +207,18 @@ and memory):
 | end of day | 80.1% | 74.1% | 95.0% |
 
 Training on 120 days (to Sep 30) and testing October 1-16: no change (end of day 81.5%, 18:00 59.4%).
+
+## How HN builds the daily list (2026-10-31, list_rule.py and checks)
+
+- Every story is on exactly one day's list: 20,159 listed stories, all 120 ranks, 0 on two days.
+- The day: the UTC day the story first reached the front page (rank <= 90 on Quality News), or its posting day if it
+  got there within 30 min: 93.6% of list entries (posting day alone: 86.5%; shifted day boundaries are worse).
+- 15-20% of a day's top 30 were posted 2+ days earlier: second-chance re-ups that return days later. HN's API, item
+  page and list page all show the original time, so re-ups are seen only through rank history.
+- Order within the day: not points alone (a 1,160-point story at #5 below 685). With list membership known: final
+  points 79% of the top 30 (rank corr 0.89), points with a comments penalty 81%, a ranker on final points + comments
+  + front-page history 90% (5-fold by day). So ~90% is the practical ceiling even at end of day.
+- No simple rule from the day's front-page ranks works: exposure 55%, time in top 10 60%, points gained 56%.
+- Outside feeds (Grok Bot backfill, 86,630 URLs): of the ~14 daily top-30 stories not yet posted at 12:00 UTC, 0.8/day
+  had their URL in a feed before 12:00 (0.4/day at 18:00): feeds can add at most ~3 points at noon.
+- Model variants on the v4 table (relative ranks, binary classifier, bigger trees, points regressor): no gain.
