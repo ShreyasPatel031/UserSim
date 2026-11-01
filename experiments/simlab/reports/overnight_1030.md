@@ -418,3 +418,12 @@ about Nov 14), not a pre-launch one. Twins repeat the existing taste inputs.
   4. New step `simforecast` in `pipeline/daily.py`, off by default at first (not in `STEPS`), so it cannot break the
      run until it has passed one dry run on the VM.
   Data (store, `ph_predict/data`) lives only on the VMs, so nothing can be built or tested from here.
+
+### Nov 1 run check (18:35 UTC, after GCP sign-in)
+- Run started 15:17 UTC: all 9 steps `ok`; no Traceback, 407 or 403. 19 launches, forecast 20 rows.
+- Instance schedule: `usersim-daily-start-pt` (00:05 PT). Recorder stops at 07:55 UTC, so the VM is off before 08:05 UTC.
+- **Two recorders are running**, from the 14:07 and 15:17 starts, so from 16:00 UTC each hourly snapshot is written
+  twice (38 rows for 19 launches). Left alone: stopping the older one would let its `run_daily.sh` shut the VM down
+  now. Anything that reads `vote_snapshots` for Nov 1 must dedupe on (`launch_id`, `at`). The first snapshot is
+  14:07 UTC (hour 7), so Nov 1 has no hours 0–6: not a clean day for the launch-day model.
+- No Grok Bot leaderboard read for Nov 1 in `raw/`, so `list_check` was skipped.
