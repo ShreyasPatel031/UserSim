@@ -545,3 +545,26 @@ base queued.
 
 The existing domain/author record is the one input that matters (-2.0 without it). The new levers each add +0.5 to +0.8,
 none significant, and together +0.1: at posting, the model is at its noise floor with these inputs.
+
+### Simulated early votes at posting (caught.py simvotes)
+Simulated audience (who is on /new at that hour: taste, ties; crowd v1/v2, tie network, day fit) -> predicted points /
+best rank at 15 / 60 min (out-of-fold). Spearman with the real values on the test posts: points 0.050 (15 min), 0.222
+(60 min); best rank 0.023 / 0.122. Added at posting: 21.2%, -0.2 [-1.4, +1.2].
+
+### More training history (caught.py history; same test posts; vs post features trained Jul-Aug, 19.7%)
+| Trained from | posts / winners | post | post + real-list record |
+|---|---|---|---|
+| 2026-07-01 | 61,947 / 1,860 | 19.7% [17.6, 21.7] | 21.0% (+1.4 [+0.2, +2.6]) |
+| 2026-01-01 | 247,817 / 7,276 | 20.7% (+1.1 [-0.8, +2.8]) | 21.4% (+1.7 [+0.1, +3.4]) |
+| 2025-01-15 | 538,880 / 17,804 | 21.6% (+2.0 [+0.0, +4.0]) | **22.6% [20.5, 24.8] (+2.9 [+1.1, +4.8])** |
+More history plus the real-list record is the first at-posting gain: 22.6%, above the current 21.4% (which also uses
+similar titles, embedding, crowd, trained Jul-Aug only).
+
+### Reading the linked page (pagejudge.py; pilot Sep 15-16, 2,283 posts, 67 winners; Gemini 2.5 Flash, $1.168 logged)
+Fetch (plain HTTPS from the cloud container): page read 65.5%, 403 18.8%, thin 4.7%, text post 3.7%, 429 2.3%, other
+5%. Judged 100% (title-only when the page wasn't read). AUC for winners: judge's front-page probability 0.607 (base
+0.792); novelty 0.571, depth 0.593, title match 0.594, HN fit 0.602. Winner rate by kind: postmortem 8.0%, tutorial
+6.5%, deep dive 5.6%, research 3.4%, launch 3.2%, news 3.0%, opinion 2.4%, Show HN product 1.0%.
+Caught on the pilot days: base 16.4%; judge alone 11.9%; rank blend 50/50 14.9%; weight chosen leave-one-day-out:
+20.5% -> 12.8% and 14.3% -> 14.3%. As a blend, the judge does not add to the base; untested as a model input (needs
+the training period judged: ~106k posts, ~$75 Flash / ~$25 Flash-Lite).
