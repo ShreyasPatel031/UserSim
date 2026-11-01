@@ -568,3 +568,8 @@ Fetch (plain HTTPS from the cloud container): page read 65.5%, 403 18.8%, thin 4
 Caught on the pilot days: base 16.4%; judge alone 11.9%; rank blend 50/50 14.9%; weight chosen leave-one-day-out:
 20.5% -> 12.8% and 14.3% -> 14.3%. As a blend, the judge does not add to the base; untested as a model input (needs
 the training period judged: ~106k posts, ~$75 Flash / ~$25 Flash-Lite).
+
+### Competition at the posting minute (caught.py comp; base 21.4%)
+/new rivals in the 15 / 30 / 60 min before (count, content prior, title score) +0.2 [-0.8, +1.4]; rivals' strength
+by our own at-posting score (out-of-fold) and this post's rank among them -0.1 [-1.7, +1.4]; /new traffic (site-wide
+comments in the previous 60 min, vs the same hour in the previous 4 weeks) +0.1 [-1.3, +1.5]; all +0.4 [-1.3, +2.1].

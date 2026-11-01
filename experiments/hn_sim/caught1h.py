@@ -143,7 +143,7 @@ if __name__ == "__main__":
     from sklearn.metrics import roc_auc_score
     X = pd.concat([V, CV, MX], axis=1)
     has = Q.post_id.isin(q_by_id).to_numpy().astype(int)
-    small = (V.points <= 4).to_numpy()
+    small = (V.points <= 4).to_numpy() if "points" in V else np.ones(len(V), bool)
     m = lgb.LGBMClassifier(n_estimators=200, verbose=-1).fit(X[C.fit & small], has[C.fit & small])
     print(f"leak check: AUC telling a real from an imputed series among posts with <= 4 points at {a} min "
           f"(0.5 = no leak): {roc_auc_score(has[C.te & small], m.predict_proba(X[C.te & small])[:, 1]):.3f}", flush=True)
