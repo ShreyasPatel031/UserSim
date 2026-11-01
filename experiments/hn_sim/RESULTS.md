@@ -418,3 +418,18 @@ Within noise.
 /new competition at posting time (competition.py: number and at-posting strength of posts made 15 / 30 / 60 min
 before, and where the post ranks among them; nothing after the post): top 30 AUC 0.795 vs 0.803; winners caught per
 day +0.0 [-1.0, +1.1] points (top 30), +0.1 [-1.1, +1.5] (top 10). No gain.
+
+## Calibrated odds per post (odds.py): P(daily top 30), fit Jul 1 - Aug 15, isotonic on Aug 16-31, test Sep 1 - Oct 14
+
+| age | top 30 AUC | Brier (base rate 0.0290) | top 10 AUC |
+|---|---|---|---|
+| at posting | 0.796 | 0.0270 | 0.791 |
+| 15 min | 0.824 | 0.0260 | 0.810 |
+| 30 min | 0.898 | 0.0233 | 0.891 |
+| 1 h | 0.956 | 0.0206 | 0.951 |
+| 2 h | 0.969 | 0.0174 | 0.958 |
+
+Calibration at posting (forecast -> happened, posts): <1%: 0.4% -> 0.5% (15,980); 1-3%: 1.7% -> 1.8% (14,066);
+3-10%: 5.3% -> 5.3% (12,428); 10-30%: 16.3% -> 15.1% (1,574); 30-50%: 42.7% -> 38.8% (183). At 1 h: 3-10%: 6.1% ->
+8.5%; 50-70%: 52.6% -> 49.2% (535); 70-90%: 77.1% -> 66.9% (254); 90%+: 95.9% -> 79.2% (77): slightly overconfident
+at the top, well calibrated below 50%. Full table: <cache>/odds_calibration.csv.
