@@ -1,8 +1,8 @@
 """North star: Caught at posting. Each post is scored at its posting moment with only what is known then (title, URL,
 submitter, time, its domain / author record, outside signals before posting; no votes or comments of the post).
-For each list day D, rank the posts posted on D (UTC) by that score; Caught = |our top 30 of D's posts ∩ D's real
-daily top 30| / 30. Holdout Sep 1 - Oct 14; model fit on posts Jul 1 - Aug 31; 95% bootstrap interval over days.
-Ceiling: the share of D's real top 30 that was posted on D (re-ups of earlier posts cannot be caught this way).
+Winners = posts that made any daily top 30 (any day). Flag as many test posts as there are winners (highest scores
+across the test period); Caught = winners flagged / all winners (ceiling 100%; re-ups count at their posting time).
+Holdout: posts Sep 1 - Oct 14; model fit on posts Jul 1 - Aug 31; 95% bootstrap interval resampling posting days.
 Extras (labelled as including early votes): the same ranking with each post's score at 15 min / 1 h / 3 h of age.
 Input sets (levers) are scored with and without, paired by day.
 
@@ -41,18 +41,36 @@ fit, te = (Q.day < "2026-09-01").to_numpy(), (Q.day >= "2026-09-01").to_numpy()
 
 
 def caught(scores):
-    """Per day: our top 30 of the day's posts vs the real top 30 of that day's list."""
+    """North star (user, 2026-11-01): every test post judged once at its posting moment; winners = posts that made any
+    daily top 30; flag as many posts as there are winners (highest at-posting scores across the test period).
+    Returns per posting day: (winners flagged, winners)."""
     T = Q[te].assign(s=scores)
-    out = {}
-    for d, g in T.groupby("day"):
-        if d in real.index:
-            out[d] = len(set(g.nlargest(30, "s").post_id) & real[d]) / 30
-    return pd.Series(out)
+    k = int(T.y.sum())
+    T["flag"] = T.s.rank(ascending=False, method="first") <= k
+    g = T.groupby("day")
+    return pd.DataFrame({"hit": g.apply(lambda x: int((x.flag & (x.y == 1)).sum())), "n": g.y.sum()})
 
 
-def ci(x):
-    b = [rng.choice(x, len(x)).mean() for _ in range(2000)]
-    return f"{x.mean():.1%} [{np.percentile(b, 2.5):.1%}, {np.percentile(b, 97.5):.1%}]"
+def boot_idx(n):
+    return [rng.integers(0, n, n) for _ in range(2000)]
+
+
+BOOT = None
+
+
+def ci(c):
+    """Caught = winners flagged / winners; 95% interval resampling posting days."""
+    global BOOT
+    BOOT = BOOT or boot_idx(len(c))
+    h, n = c.hit.to_numpy(), c.n.to_numpy()
+    b = [h[i].sum() / n[i].sum() for i in BOOT]
+    return f"{h.sum() / n.sum():.1%} [{np.percentile(b, 2.5):.1%}, {np.percentile(b, 97.5):.1%}]"
+
+
+def diff(c, ref):
+    h, n, h0 = c.hit.to_numpy(), c.n.to_numpy(), ref.hit.to_numpy()
+    b = [(h[i].sum() - h0[i].sum()) / n[i].sum() for i in BOOT]
+    return f"{(h.sum() - h0.sum()) / n.sum():+.1%} [{np.percentile(b, 2.5):+.1%}, {np.percentile(b, 97.5):+.1%}]"
 
 
 def model(cols, extra=None):
@@ -76,13 +94,11 @@ def levers():
     OLD_SUB = [c for c in POST if c.startswith("b_sub_")]
     full = POST + KNN + EMB + CROWD
     base = caught(model(full))
-    print(f"current at posting: {ci(base.to_numpy())}", flush=True)
+    print(f"current at posting: {ci(base)}", flush=True)
 
     def vs(name, cols, ref, ref_s):
         s = caught(model(cols))
-        d = (s - ref_s).to_numpy()
-        b = [rng.choice(d, len(d)).mean() for _ in range(2000)]
-        print(f"  {name:62s} {ci(s.to_numpy())}  difference {d.mean():+.1%} [{np.percentile(b, 2.5):+.1%}, {np.percentile(b, 97.5):+.1%}]", flush=True)
+        print(f"  {name:62s} {ci(s)}  difference {diff(s, ref_s)}", flush=True)
         return s
     print("1. submitter history and network", flush=True)
     vs("without submitter history (b_sub_*, b_author_*)", [c for c in full if c not in OLD_SUB + OLD_REC[:4]], "current", base)
@@ -103,19 +119,17 @@ def levers():
 if __name__ == "__main__" and "levers" in sys.argv[1:]:
     levers()
 elif __name__ == "__main__":
-    ceil = pd.Series({d: len(set(Q[te & (Q.day == d).to_numpy()].post_id) & real[d]) / 30 for d in sorted(set(Q.day[te])) if d in real.index})
-    print(f"holdout days {len(ceil)}; ceiling (share of the real top 30 posted that day): {ci(ceil.to_numpy())}", flush=True)
-    base = caught(model(POST + KNN + EMB + CROWD))
-    print(f"Caught at posting (post + domain/author record + similar titles + embedding + crowd): {ci(base.to_numpy())}", flush=True)
+    full = POST + KNN + EMB + CROWD
+    base = caught(model(full))
+    print(f"test posts {te.sum()}, winners {int(base.n.sum())} over {len(base)} posting days; flags = winners", flush=True)
+    print(f"Caught at posting: {ci(base)}  (random flags: {base.n.sum() / te.sum():.1%})", flush=True)
     for name, cols in (("post features only", POST), ("+ similar past titles", POST + KNN), ("+ embedding", POST + KNN + EMB)):
         s = caught(model(cols))
-        d = (s - base).to_numpy()
-        print(f"  {name:28s} {ci(s.to_numpy())}  vs full {d.mean():+.1%}", flush=True)
-    # extras including early votes (each post scored at that age; same daily ranking)
+        print(f"  {name:28s} {ci(s)}  vs full {diff(s, base)}", flush=True)
     _, qs = fine_io.load()
     q_by_id = {r.post_id: {"qn_f0": r.qn_f0, "qn_rank_10m": r.qn_rank_10m, "qn_up_10m": r.qn_up_10m, "qn_exp_10m": r.qn_exp_10m}
                for r in qs.itertuples()}
     V = OL.vote_feats(Q, q_by_id, [15, 60, 180])
     for a, label in ((15, "15 min"), (60, "1 h"), (180, "3 h")):
-        s = caught(model(POST + KNN + EMB + CROWD, V[a]))
-        print(f"Caught at {label} (includes the post's early votes): {ci(s.to_numpy())}", flush=True)
+        s = caught(model(full, V[a]))
+        print(f"Caught at {label} (includes the post's early votes): {ci(s)}", flush=True)

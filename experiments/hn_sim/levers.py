@@ -58,11 +58,11 @@ def prior_record(p, key, hit30, hit10, best, q_ids, prefix):
 
 def record(p, q_ids):
     L = OL.lists().sort_values("rank").drop_duplicates("post_id").set_index("post_id")["rank"]
-    rk = p.post_id.map(L)
+    rk = p.post_id.map(L).astype(float).fillna(999)
     known = p.day >= "2025-01-01"                     # lists start 2025-01; earlier posts don't count as "missed"
     hit30 = ((rk <= 30) & known).astype(int).to_numpy()
     hit10 = ((rk <= 10) & known).astype(int).to_numpy()
-    best = rk.fillna(999).to_numpy()
+    best = rk.to_numpy()
     p = p.assign(dom=p.url.map(host), site=p.url.map(site))
     p.loc[p.day < "2025-01-01", ["dom", "site", "author"]] = None   # record window = list window
     out = None
@@ -116,7 +116,7 @@ def dayfit(p, q):
     H6 = (M @ SE)                                                         # per hour: comment-weighted sum of story vectors
     cs = np.vstack([np.zeros((1, 768), np.float32), np.cumsum(H6, 0)])
     def window(h, w):
-        v = cs[h] - cs[max(h - w, 0)]
+        v = cs[h] - cs[np.maximum(h - w, 0)]
         return v / (np.linalg.norm(v, axis=-1, keepdims=True) + 1e-9)
     L = OL.lists()
     top30 = L[L["rank"] <= 30].groupby("day").post_id.apply(list)
