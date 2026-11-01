@@ -427,3 +427,21 @@ about Nov 14), not a pre-launch one. Twins repeat the existing taste inputs.
   now. Anything that reads `vote_snapshots` for Nov 1 must dedupe on (`launch_id`, `at`). The first snapshot is
   14:07 UTC (hour 7), so Nov 1 has no hours 0–6: not a clean day for the launch-day model.
 - No Grok Bot leaderboard read for Nov 1 in `raw/`, so `list_check` was skipped.
+
+### Nov 1 evening (PH ops agent)
+- **Upvote feed down since Oct 30.** Every `upvotes_page1` fetch has been 403 (170 / 98 / 66 pages on Oct 30 / 31 /
+  Nov 1), while the `people` step reported `ok` with 0 items. Warehouse upvotes end on Oct 29; comments are still
+  current. Test on 3 pages: VM IP 403, DataImpulse 403, Camoufox via DataImpulse 200 but a 30 KB shell with 0 upvotes
+  parsed. Per the ladder rule, nothing further was tried. Grok Bot's signed-in browser sees the pages, so its fetch of the
+  300 most active people is filed (`raw/requests/upvote_refresh_priority.txt`). Loader: `pipeline.load_signed_in`.
+- **Fail-loud steps** (not yet deployed): `launches`, `comments`, `people` and `sites` now report `failed` when they
+  fetch nothing or most pages are blocked.
+- **Leaderboard cross-check:** every API launch is in Grok Bot's "all" reads (Nov 1 19/19, Oct 31 22/22). The "all" tab
+  can't be cut by rank, because one non-featured launch is inside the top 19 / 22. Asked for the featured tab
+  (mailbox `20261101T1855_ph-agent_leaderboard-featured-flag`).
+- **Product Hunt "Similar Products" vs reviewers' alternatives** (`comp_validate_ph.py`):
+  - Preview, recent 300 launches, 16 answer-key products: 31.0% of real alternatives in the top 5 (95% CI 12.9–50.7);
+    at least one in the top 5 for 50.0% (25.0–75.0).
+  - Reference: Gemini naming 28.6 / 43.1 (281 products); meaning similarity 13.8 / 22.8.
+  - 52.5% of list entries are someone's reviewed alternative, so the answer key may be partly circular.
+  - Full run when all 6,668 lists land.
