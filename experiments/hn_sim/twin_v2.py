@@ -13,6 +13,8 @@ Per (person, story):
 Scored per person (AUC, median over people), and within popularity bands (stories of similar final points), which is
 the honest "does personal taste add anything" number.
 
+    Favorites (favs_load.py; undated, so only stories posted before CUT): fav_sim_max / top5 / mean, fav_dom_n, n_favs.
+
     python twin_v2.py [n=3000]
 """
 import os
@@ -61,6 +63,14 @@ rb = b[b.created_at_i >= t_cut - 180 * 86400]
 np.add.at(hour, (pi[rb.person].to_numpy(), ((rb.created_at_i // 3600) % 24).to_numpy()), 1)
 hour /= hour.sum(1, keepdims=True)
 
+# favorites (undated: only stories posted before CUT, as a taste profile)
+import favs_load
+_bp = pd.Series(p.created_at_i.to_numpy(), index=p.index)
+FAV = {k: v[(_bp.reindex(v).to_numpy() < t_cut) & np.isin(v, ei.index.to_numpy())] for k, v in favs_load.load().items() if k in pi.index}
+FAV = {k: v for k, v in FAV.items() if len(v)}
+fav_dom = {k: pd.Series(dom.reindex(v).to_numpy()).value_counts() for k, v in FAV.items()}
+print("panel people with pre-cut favorites", len(FAV), flush=True)
+
 # candidates: listed stories of the days the person engaged (as twin_test.py)
 L = pd.read_json(os.path.join(H.CACHE, "frontday.jsonl"), lines=True, dtype={"day": str})
 L = L[(L.day >= CUT) & (L.day <= END) & L.post_id.isin(ei.index)].drop_duplicates("post_id")
@@ -84,6 +94,15 @@ for person, g in a.groupby("person"):
     sims = S @ hist.T if len(hist) else np.zeros((len(ids), 1), np.float32)
     srt = np.sort(sims, axis=1)
     d_ = dom.reindex(ids).fillna("self").to_numpy()
+    fv = FAV.get(person)
+    if fv is not None:
+        FS = S @ np.asarray(emb[ei[fv].to_numpy()], np.float32).T
+        FS.sort(axis=1)
+        fmax, ftop5, fmean = FS[:, -1], FS[:, -5:].mean(1), FS.mean(1)
+        fdn = fav_dom[person].reindex(d_).fillna(0).to_numpy()
+    else:
+        fmax = ftop5 = fmean = np.full(len(ids), np.nan, np.float32)
+        fdn = np.zeros(len(ids))
     au = p.author.reindex(ids).to_numpy()
     rows.append(pd.DataFrame({
         "person": person, "story_id": ids, "y": np.r_[np.ones(len(pos)), np.zeros(len(neg))],
@@ -91,7 +110,9 @@ for person, g in a.groupby("person"):
         "dom_n": [dom_n.get((person, x), 0) for x in d_],
         "auth_n": [auth_n.get((person, x), 0) for x in au],
         "hour_p": hour[i, ((p.created_at_i.reindex(ids).to_numpy() // 3600) % 24).astype(int)],
-        "pop_final": np.log1p(p.points.reindex(ids).fillna(1).to_numpy())}))
+        "pop_final": np.log1p(p.points.reindex(ids).fillna(1).to_numpy()),
+        "fav_sim_max": fmax, "fav_sim_top5": ftop5, "fav_sim_mean": fmean, "fav_dom_n": fdn,
+        "n_favs": 0 if fv is None else len(fv)}))
 D = pd.concat(rows, ignore_index=True)
 D["dom_share"] = D.dom_n / D.person.map(tot).to_numpy()
 D["pop_band"] = pd.qcut(D.pop_final.rank(method="first"), 10, labels=False)
@@ -107,8 +128,10 @@ def fit(cols):
     return m.fit(tr[cols], tr.y).predict_proba(te[cols])[:, 1]
 
 
-def per_person(s, within_band=False):
+def per_person(s, within_band=False, only=None):
     t = te.assign(s=s)
+    if only is not None:
+        t = t[only]
     out = []
     for _, g in t.groupby("person"):
         if within_band:
@@ -120,11 +143,17 @@ def per_person(s, within_band=False):
     return np.median(out), np.mean(np.array(out) > 0.7), len(out)
 
 
+FAVC = ["fav_sim_max", "fav_sim_top5", "fav_sim_mean", "fav_dom_n", "n_favs"]
 runs = {"v1: mean taste only": te.sim_mean.to_numpy(), "v2: personal signals (model)": fit(PERS),
-        "popularity only (final points)": te.pop_final.to_numpy(), "v2 + popularity (model)": fit(PERS + ["pop_final"])}
+        "v2 + favorites": fit(PERS + FAVC),
+        "popularity only (final points)": te.pop_final.to_numpy(), "v2 + popularity (model)": fit(PERS + ["pop_final"]),
+        "v2 + favorites + popularity": fit(PERS + FAVC + ["pop_final"])}
 print(f"test: {te.person.nunique()} people, Sep 1 - Oct 14")
 for name, s in runs.items():
     med, share, n = per_person(s)
     medb, shareb, nb = per_person(s, True)
     print(f"  {name:32s} median AUC {med:.3f} (>0.7: {share:.0%}) | within popularity bands {medb:.3f} (>0.7: {shareb:.0%})", flush=True)
+    m10, s10, n10 = per_person(s, False, (te.n_favs >= 10).to_numpy())
+    b10, _, _ = per_person(s, True, (te.n_favs >= 10).to_numpy())
+    print(f"  {'':32s} people with 10+ favorites ({n10}): median AUC {m10:.3f} | within bands {b10:.3f}", flush=True)
 D.to_parquet(os.path.join(H.CACHE, "twin_v2_pairs.parquet"), index=False)
