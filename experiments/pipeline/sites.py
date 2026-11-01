@@ -81,8 +81,10 @@ def main(limit=10**9, threads=2):   # browsers: at most a few at once
     with open(OUT, "a") as f, ThreadPoolExecutor(threads) as ex:
         list(ex.map(worker, [todo[k::threads] for k in range(threads)]))
     usd = round(tot["ph_bytes"]["dataimpulse"] / 1e9 * F.USD_PER_GB["dataimpulse"], 4)
-    print(json.dumps({**tot, "dataimpulse_usd": usd}), flush=True)
-    return {"items": tot["ok"], "bytes": sum(tot["ph_bytes"].values()), "usd": usd}
+    n = tot["ok"] + tot["no_target"]
+    status = f"failed: 0 of {n} links reached a website" if n >= 10 and tot["ok"] == 0 else "ok"   # fetched nothing: never "ok"
+    print(json.dumps({**tot, "dataimpulse_usd": usd, "status": status}), flush=True)
+    return {"items": tot["ok"], "bytes": sum(tot["ph_bytes"].values()), "usd": usd, "status": status}
 
 
 if __name__ == "__main__":

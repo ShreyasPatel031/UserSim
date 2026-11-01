@@ -63,7 +63,7 @@ def s_launches(d, con, dry):
     L = day_rows(d); L[["daily_rank", "weekly_rank", "monthly_rank", "votes"]] = None   # not final: never stored as outcomes
     if not dry:
         W.write("launches", L)
-    return {"items": len(L)}
+    return {"items": len(L), **({} if len(L) else {"status": "failed: 0 launches fetched for today"})}
 
 
 def snap_fields(t, tagline=None):
@@ -144,13 +144,14 @@ def s_comments(d, con, dry):
     plan = INC.plan(con, d); slugs = plan["comments"]
     recs = F.get_many([PC.url(s) for s in slugs], threads=8)
     sid = dict(con.execute("SELECT slug, id FROM launches").fetchall())
-    rows, st = [], []
+    rows, st, bad = [], [], 0
     with gzip.open(f"{RAW}/comments/page_daily_{d}.jsonl.gz", "wt") as f:
         for s, r in zip(slugs, recs):
             f.write(json.dumps({"url": r["url"], "status": r["status"], "route": r["route"], "html": r["body"]}) + "\n")
             try:
                 info, cr = PC.parse(json.loads(r["body"]))
             except Exception:  # noqa: BLE001
+                bad += 1
                 continue
             rows += [dict(c, slug=s) for c in cr]; st.append({"launch_id": sid.get(s), "slug": s, "source": "comments", "last_fetched": d, "items": len(cr)})
     team = {r[0]: set(json.loads(r[1])) | {r[2]} for r in con.execute("SELECT slug, makers, poster FROM launches WHERE day = ?", [INC.days_before(d, 1)]).fetchall()}
@@ -164,7 +165,10 @@ def s_comments(d, con, dry):
         W.write("events", C.assign(kind="comment", date_quality="exact")[["person", "launch_id", "date", "kind", "date_quality"]])
         W.write("launch_state", pd.DataFrame(st))
     log_spend(d, "comments", usd, dry)
-    return {"items": len(C), "bytes": nbytes, "usd": sum(usd.values())}
+    out = {"items": len(C), "bytes": nbytes, "usd": sum(usd.values())}
+    if slugs and bad / len(slugs) > 0.5:   # blocked or unparseable pages: never "ok"
+        out["status"] = f"failed: {bad} of {len(slugs)} comment pages blocked or unparseable"
+    return out
 
 
 def log_spend(d, what, usd, dry):
