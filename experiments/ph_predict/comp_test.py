@@ -13,7 +13,10 @@ import numpy as np, pandas as pd, lightgbm as lgb
 def load(p):
     return pd.DataFrame.from_dict(json.load(open(f"data/{p}_features.json")), orient="index").rename_axis("id").reset_index()
 C = pd.read_parquet("results/ctrl_preds.parquet"); C["id"] = C.id.astype(str)
-A = C[["id", "day", "dailyRank", "logv", "all"]].merge(load("pst"), on="id").merge(load("tpd"), on="id")
+import os
+SRC = os.environ.get("SIM_SRC", "pst"); NOPAGE = os.environ.get("NOPAGE") == "1"   # as newsim_eval.py
+A = C[["id", "day", "dailyRank", "logv", "all"]].merge(load(SRC).rename(columns=lambda c: "pst_" + c[4:] if c.startswith(SRC + "_") else c), on="id")
+A = A if NOPAGE else A.merge(load("tpd"), on="id")
 for c in [c for c in A if c.startswith("pst_") and not c.endswith("pmax")]:
     A[c] = np.log1p(A[c])
 sc = [c for c in A if c.startswith(("pst_", "tpd_"))]
@@ -60,4 +63,4 @@ for win in ("day", "week", "mon"):
                     pair[p].append((a[p] > b[p]) == (a.logv > b.logv))
     res[win] = {"groups_of_3": len(trip[P[0]]), **{f"{p} (3)": round(100 * float(np.mean(trip[p])), 1) for p in P},
                 **{f"{p} (pair)": round(100 * float(np.mean(pair[p])), 1) for p in P}}
-json.dump(res, open("results/comp_test.json", "w"), indent=1); print(json.dumps(res, indent=1))
+json.dump(res, open(f"results/comp_test{'' if SRC == 'pst' else '_' + SRC}{'_nopage' if NOPAGE else ''}.json", "w"), indent=1); print(json.dumps(res, indent=1))
