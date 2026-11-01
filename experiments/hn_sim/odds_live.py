@@ -35,7 +35,7 @@ import top10 as T
 import top100 as H
 
 MODEL = os.path.join(H.CACHE, "odds_live.pkl")
-AGES = {"at posting": 0, "15 min": 15, "30 min": 30, "1 h": 60, "2 h": 120}
+AGES = {"at posting": 0, "15 min": 15, "30 min": 30, "1 h": 60, "2 h": 120, "3 h": 180}
 KNN = ["knn_lp", "knn_100", "knn_t30", "knn_sim"]
 VOTES = ["points", "rank_now", "best_rank", "gain30", "rate"]
 
@@ -111,8 +111,20 @@ def train():
                                    subsample_freq=1, colsample_bytree=0.8, verbose=-1, random_state=0).fit(X[fit], y[fit])
             iso = IsotonicRegression(out_of_bounds="clip", y_min=0, y_max=1).fit(m.predict_proba(X[cal])[:, 1], y[cal])
             s = iso.predict(m.predict_proba(X[te])[:, 1])
+            sc = iso.predict(m.predict_proba(X[cal])[:, 1])
+            # live "will make it" threshold: max F1 on the calibration days, then applied unchanged to the test days
+            grid = np.unique(np.round(sc, 4))
+            f1 = [2 * ((sc >= g) & y[cal]).sum() / max((sc >= g).sum() + y[cal].sum(), 1) for g in grid]
+            thr = float(grid[int(np.argmax(f1))])
+            call = s >= thr
+            prec = float(y[te][call].mean()) if call.any() else float("nan")
+            rec = float(call[y[te]].mean())
+            dec = pd.DataFrame({"p": s, "y": y[te]}).assign(d=lambda d: pd.qcut(d.p.rank(method="first"), 10, labels=False))
+            dec = dec.groupby("d").agg(predicted=("p", "mean"), realized=("y", "mean"))
             models[(a, top)] = (m, iso, list(X.columns))
-            report.append({"age": name, "top": top, "AUC": round(roc_auc_score(y[te], s), 3),
+            report.append({"age": name, "top": top, "AUC": round(roc_auc_score(y[te], s), 3), "threshold": round(thr, 3),
+                           "precision": round(prec, 3), "recall": round(rec, 3), "flagged": int(call.sum()),
+                           "deciles_pred": dec.predicted.round(4).tolist(), "deciles_real": dec.realized.round(4).tolist(),
                            "Brier": round(brier_score_loss(y[te], s), 4), "base_Brier": round(brier_score_loss(y[te], np.full(te.sum(), y[fit].mean())), 4),
                            "mean_forecast": round(float(s.mean()), 4), "actual": round(float(y[te].mean()), 4)})
             print(json.dumps(report[-1]), flush=True)
