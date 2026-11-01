@@ -611,3 +611,12 @@ curve + who +0.0 (none significant).
 Winners on the front page (top 30) by 1 h: 48.5% (non-winners: 2.95%, 1,265 posts); by 3 h 66.9% (4.22%, 1,814); by
 24 h 80.5% (4.80%, 2,063). Half the winners are not yet visible on the front page at 1 h: for them the 1 h
 checkpoint is the at-posting / /new problem (plus second-chance re-ups later).
+
+### Checkpoint 1 split: where the misses are (seg1h.py; rank-only + curve + comments + who + history score, 47.6%)
+| At 1 h | posts | winners | flagged | winners caught |
+|---|---|---|---|---|
+| on the front page | 1,907 | 642 | 1,136 | 569 (89%) |
+| not yet on the front page | 42,356 | 681 | 187 | 61 (9%) |
+Separate models for the two groups: 46.3%, -1.4 [-2.6, -0.1] vs one model. Checkpoint 1 is decided by the 681 winners
+still on /new at 1 h; for them the honest backtest has no vote counts (QN series exist only for 5+ point posts), so
+their /new votes in the first hour are the missing input (hn_minute live; a Jul-Oct /newest archive if one exists).
