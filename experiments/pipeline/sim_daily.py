@@ -50,7 +50,7 @@ def embeddings(I):
         m = SentenceTransformer("BAAI/bge-small-en-v1.5", device="cpu")
         txt = [f"{r.name}. {r.tagline}. {(r.description or '')[:600]}" for r in new.itertuples()]
         V = m.encode(txt, batch_size=64, normalize_embeddings=True, show_progress_bar=False).astype(np.float32)
-        Z["launch_ids"] = np.concatenate([Z["launch_ids"].astype(str), new.id.values.astype(str)])
+        Z["launch_ids"] = np.array([str(x) for x in Z["launch_ids"]] + [str(x) for x in new.id], dtype=str)
         Z["launch"] = np.vstack([Z["launch"], V])
         np.savez(os.path.join(LIVE, "emb.npz"), **Z)
     return len(new)
