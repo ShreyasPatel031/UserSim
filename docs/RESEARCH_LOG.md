@@ -36,3 +36,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 2026-11-01 20:25 UTC: Grok Bot: embedding install done on usersim-pipeline (torch 2.15.0+cpu, sentence-transformers 6.2.0, bge-small warmed, 37 GB free); nothing stopped. Deploy waits for "bundle complete".
 - 2026-11-01 20:30 UTC: User: HN north star is the per-post likelihood of making the daily top 30, not daily-list recall. RESEARCH_PROGRAM.md updated; target number pending the user.
 - 2026-11-01 20:40 UTC: Grok Bot delivered upvotes with exact launch identity (route 4, no Apify, no login): top 300 done (298 OK, 5,960 rows, all with post_id/post_slug) in raw/ph_upvotes_full/; full 20,947 pool filling, ETA ~21:00 UTC. PH agent to dry-run, load, and refresh tie features before the deploy.
+- 2026-11-01 20:45 UTC: User: HN north star = Caught (recall of the daily top 30; 30 calls/day so recall = precision), target 100%, at posting / 15 min / 1 h / 3 h.
