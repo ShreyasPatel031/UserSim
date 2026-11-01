@@ -620,3 +620,14 @@ checkpoint is the at-posting / /new problem (plus second-chance re-ups later).
 Separate models for the two groups: 46.3%, -1.4 [-2.6, -0.1] vs one model. Checkpoint 1 is decided by the 681 winners
 still on /new at 1 h; for them the honest backtest has no vote counts (QN series exist only for 5+ point posts), so
 their /new votes in the first hour are the missing input (hn_minute live; a Jul-Oct /newest archive if one exists).
+
+### Honest early votes from Wayback /newest (wb_caught.py; Grok Bot raw/hn_early_votes, partial: Oct parse 43%)
+Verified: page created_at = BigQuery for 100% of rows (within 60 s); early score <= final points 99.99%. Snapshot
+coverage does not depend on the outcome (test posts 64.4% vs winners 65.5% with one by 15 min).
+| Checkpoint | test | without early votes | with | difference |
+|---|---|---|---|---|
+| 15 min | A: train Jul-Sep (4.9% with a snapshot), test Oct 2-14 (12,788 posts, 388 winners) | 25.5% | 26.0% | +0.5 [-1.6, +2.7] |
+| 15 min | B: train Jul 1-Oct 8, test Oct 9-14 (5,817 / 180) | 27.2% | 29.4% | +2.2 [-2.2, +6.3] |
+| 1 h | A | 45.6% | 45.6% | +0.0 [-1.8, +1.7] |
+| 1 h | B | 48.9% | 48.3% | -0.6 [-2.4, +1.2] |
+Base = at-posting inputs + history score + front-page rank + comments. To rerun when the October parse completes.

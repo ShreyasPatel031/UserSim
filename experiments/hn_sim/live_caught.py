@@ -20,19 +20,27 @@ import pandas as pd
 import store as S
 
 DIR = os.path.join(S.LOCAL, "hn_minute")
+SOURCES = {"box": "usersim_sim/hn_jobs/cache/feeder/hn_minute/",          # Grok Bot's box (gaps)
+           "vm": "usersim_sim/hn_jobs/cache/feeder/vm/hn_minute/"}        # always-on recorder VM (systemd + watchdog)
 rng = np.random.default_rng(0)
 
 
 def load_minute():
     b = S._bucket()
-    os.makedirs(DIR, exist_ok=True)
-    for x in b.list_blobs(prefix="usersim_sim/hn_jobs/cache/feeder/hn_minute/"):
-        dst = os.path.join(DIR, x.name.split("/")[-1])
-        if not os.path.exists(dst) or os.path.getsize(dst) != x.size:
-            x.download_to_filename(dst)
+    files = []
+    for src, pre in SOURCES.items():
+        os.makedirs(os.path.join(DIR, src), exist_ok=True)
+        for x in b.list_blobs(prefix=pre):
+            name = x.name.split("/")[-1]
+            if not (name.startswith("20") and name.endswith(".jsonl")):
+                continue
+            dst = os.path.join(DIR, src, name)
+            if not os.path.exists(dst) or os.path.getsize(dst) != x.size:
+                x.download_to_filename(dst)
+            files.append(dst)
     rows = []
-    for f in sorted(os.listdir(DIR)):
-        for line in open(os.path.join(DIR, f)):
+    for f in sorted(files):
+        for line in open(f):
             try:
                 r = json.loads(line)
             except ValueError:
@@ -40,6 +48,8 @@ def load_minute():
             rows.append((r["id"], r["list"], r["page"], r["rank"], r.get("points"), r.get("comments"), r["fetched_at"]))
     M = pd.DataFrame(rows, columns=["id", "list", "page", "rank", "points", "comments", "t"])
     M["t"] = (pd.to_datetime(M.t, utc=True) - pd.Timestamp(0, tz="UTC")) // pd.Timedelta(seconds=1)
+    # union of box + VM copies: one row per (list, page, id, minute of the read)
+    M = M.assign(_m=M.t // 60).drop_duplicates(["list", "page", "id", "_m"]).drop(columns="_m")
     M["pos"] = (M.page - 1) * 30 + M["rank"]
     return M
 
