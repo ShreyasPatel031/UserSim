@@ -26,15 +26,16 @@ TASTE = TASTE or HERD
 PAGE = PAGE or TASTE
 PRESENCE = os.environ.get("PRESENCE") == "1"   # + when the person is usually active (presence.py)
 TWIN = os.environ.get("TWIN") == "1"           # + vector twin: recency-weighted taste vector vs the launch (presence.py)
-TIE = os.environ.get("TIE") == "1"             # + tie strength: makers vs hunter, recency, comments, share of history (tie_features)
+TIE2 = os.environ.get("TIE2") == "1"           # + tie extensions: return rate to the team, team turnout, recency decay (implies TIE)
+TIE = os.environ.get("TIE") == "1" or TIE2     # + tie strength: makers vs hunter, recency, comments, share of history (tie_features)
 LAG = int(os.environ.get("UPV_LAG", "0"))      # live-data test: hide upvotes from the LAG days before each scored day (comments kept)
 TAG = "herd" if HERD else "page_taste" if TASTE else "page" if PAGE else ""
 if PRESENCE or TWIN or TIE:
-    TAG = (TAG + "_" if TAG else "") + ("pres" if PRESENCE else "") + ("twin" if TWIN else "") + ("tie" if TIE else "")
+    TAG = (TAG + "_" if TAG else "") + ("pres" if PRESENCE else "") + ("twin" if TWIN else "") + ("tie2" if TIE2 else "tie" if TIE else "")
 if LAG:
     TAG += f"_lag{LAG}"
 WORK = os.path.join(HERE, "cache", "popscore_" + TAG if TAG else "popscore")
-PREFIX = f"pl{LAG}_" if LAG else "psr_" if TIE else "psq_" if (PRESENCE or TWIN) else "psh_" if HERD else "pst_" if TASTE else "psp_" if PAGE else "psn_"
+PREFIX = f"pl{LAG}{'x' if TIE2 else ''}_" if LAG else "psx_" if TIE2 else "psr_" if TIE else "psq_" if (PRESENCE or TWIN) else "psh_" if HERD else "pst_" if TASTE else "psp_" if PAGE else "psn_"
 MONTHS = ["2026-04", "2026-05", "2026-06", "2026-07", "2026-08", "2026-09", "2026-10"]
 FEATS = ["backed", "topic", "meaning", "cf_team", "nbr_team", "nbr_pop", "seq_last10", "seq_decay", "seq_nn", "team_recent",
          "cat_rate_max", "cat_rate_mean", "cat_prior", "cat_n"]
@@ -152,6 +153,9 @@ if PRESENCE:
 if TWIN:
     FEATS = FEATS + ["twin_cos", "twin_rank"]
 TIE_COLS = ["tie_maker", "tie_hunter", "tie_maker_comments", "tie_makers_n", "tie_days", "tie_share", "tie_mutual", "tie_rank", "tie_rel_rank"]
+TIE2_COLS = ["tie_return_mk", "tie_opps_mk", "tie_return_hu", "tie_opps_hu", "team_turnout_mk", "team_turnout_hu", "team_backers_mk", "tie_decay"]
+if TIE2:
+    TIE_COLS = TIE_COLS + TIE2_COLS
 if TIE:
     FEATS = FEATS + TIE_COLS
 
@@ -225,7 +229,85 @@ def tie_features(D):
     D["tie_rank"] = gp.tie_maker.rank(ascending=False, method="average")
     D["_s"] = D.tie_maker - 0.3 * np.minimum(D.tie_days, 360) / 30
     D["tie_rel_rank"] = D.groupby(["person", "day"])._s.rank(ascending=False, method="average")
-    return D.drop(columns="_s")
+    D = D.drop(columns="_s")
+    return tie2_features(D) if TIE2 else D
+
+
+def tie2_features(D):
+    """Tie extensions (agenda item 2), all from actions before the day. Computed separately for the makers (_mk: launches
+    made by any of this launch's makers) and the hunter (_hu: launches hunted by this launch's hunter, when not a maker),
+    because a prolific hunter has hundreds of launches and swamps the makers' signal.
+      tie_return_*    of the team's launches after the person first engaged with that team, the share the person engaged
+                      with again (NaN if the person never engaged or the team has not launched since)
+      tie_opps_*      how many such later launches there were (log)
+      team_turnout_*  for the team as a whole: across its past launches in order, the share of earlier backers who came
+                      back to each next launch (NaN with fewer than 2 past launches)
+      team_backers_mk log count of distinct people who ever engaged with the makers' past launches
+      Makers listed on more than 30 launches (platform or agency accounts) are left out of the makers' team.
+      tie_decay       recency-weighted engagement with the makers' launches, each action weighted exp(-age / 60 days)"""
+    g = load()
+    if "tie_made" not in G:
+        made, hunted = defaultdict(list), defaultdict(list)
+        for r in g["I"].itertuples():
+            ms = set(json.loads(r.makers)) - {""}
+            for m in ms:
+                made[m].append(r.id)
+            if r.poster and r.poster not in ms:
+                hunted[r.poster].append(r.id)
+        G["tie_made"] = (made, hunted)
+        E = g["E"]; Es = E[E.item.isin(G["tie_mk"])]
+        G["tie_backers"] = {it: (np.array(q.date.values, dtype=object), np.array(q.person.values, dtype=object)) for it, q in Es.groupby("item")}
+        G["tie_c2"] = ({}, {})
+    (made, hunted), backers, day = G["tie_made"], G["tie_backers"], g["day"]
+    H, mk, hu = G["tie_hist"], G["tie_mk"], G["tie_hu"]
+    cu, cx = G["tie_c2"]
+
+    def team_l(x, d):
+        ms = mk.get(x, set()); p = hu.get(x)
+        # makers listed on more than 30 launches act like hunters (platform or agency accounts): left out of the makers' team
+        lm = sorted({l for m in ms if len(made.get(m, ())) <= 30 for l in made.get(m, ()) if day.get(l, "9") < d}, key=lambda l: day[l])
+        lh = sorted({l for l in hunted.get(p, ()) if day.get(l, "9") < d}, key=lambda l: day[l]) if p and p not in ms else []
+        return lm, lh
+
+    def turnout(L, d):
+        seen, num, den = set(), 0, 0
+        for l in L:
+            b = backers.get(l)
+            B = set(b[1][b[0] < d]) if b is not None else set()
+            den += len(seen); num += len(B & seen); seen |= B
+        return (num / den if den else np.nan), len(seen)
+
+    def ret(L, eng):
+        f = min((day[l] for l in L if l in eng), default=None)
+        opps = [l for l in L if f is not None and day[l] > f]
+        return (sum(l in eng for l in opps) / len(opps) if opps else np.nan), np.log1p(len(opps))
+    out = {c: [] for c in TIE2_COLS}
+    for u, d, x in zip(D.person, D.day, D.id):
+        if x not in cx:
+            lm, lh = team_l(x, d); tm, nm = turnout(lm, d); th, _ = turnout(lh, d)
+            cx[x] = (lm, lh, tm, th, np.log1p(nm))
+        k = (u, d)
+        if k not in cu:
+            if len(cu) > 200000:
+                cu.clear()
+            h = H.get(u)
+            if h is None:
+                cu[k] = (set(), Counter())
+            else:
+                n = int(np.searchsorted(h[0], d)); age = (np.datetime64(d) - np.array(h[0][:n], dtype=object).astype("datetime64[D]")).astype(int)
+                dec = Counter()
+                for it, a in zip(h[1][:n], age):
+                    for m in mk.get(it, ()):
+                        dec[m] += float(np.exp(-a / 60))
+                cu[k] = (set(h[1][:n]), dec)
+        eng, dec = cu[k]
+        lm, lh, tm, th, nb = cx[x]
+        rm, om = ret(lm, eng); rh, oh = ret(lh, eng)
+        for c, v in zip(TIE2_COLS, (rm, om, rh, oh, tm, th, nb, sum(dec[m] for m in mk.get(x, ())))):
+            out[c].append(v)
+    for c, v in out.items():
+        D[c] = v
+    return D
 
 
 def recip_features(D):
@@ -372,7 +454,7 @@ def lag_view(d):
     E = G.setdefault("E_full", g["E"])
     cut = (pd.Timestamp(d) - pd.Timedelta(days=LAG)).strftime("%Y-%m-%d")
     G["E"] = E[(E.kind != "upvote") | (E.date < cut) | (E.date >= d)]
-    for k in ("tie_hist", "tie_mk", "tie_hu", "tie_eng", "recip", "comp_nb", "comp_hist"):
+    for k in ("tie_hist", "tie_mk", "tie_hu", "tie_eng", "recip", "comp_nb", "comp_hist", "tie_made", "tie_backers", "tie_c2"):
         G.pop(k, None)
     if TASTE:
         from . import page_taste
