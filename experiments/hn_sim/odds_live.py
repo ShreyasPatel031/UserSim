@@ -165,6 +165,12 @@ def score(rows: pd.DataFrame, now: float | None = None) -> pd.DataFrame:
     F.columns = [f"b_{c}" for c in F.columns]
     F["post_id"] = allp.post_id.to_numpy()
     X = rows[["post_id"]].merge(F, on="post_id", how="left")
+    # submitter as a commenter (as top100.build): comments before the post, days since their first comment
+    cc = H.comments()[["person", "created_at_i"]]
+    cc = cc[cc.person.isin(set(rows.author.dropna()))]
+    X["b_sub_comments_before"] = [int((cc.person.eq(a) & (cc.created_at_i < t)).sum()) for a, t in zip(rows.author, rows.created_at_i)]
+    first = cc.groupby("person").created_at_i.min()
+    X["b_sub_days_since_first_comment"] = [(t - first[a]) / 86400 if a in first.index else -1 for a, t in zip(rows.author, rows.created_at_i)]
     X["text_live"] = M["ridge"].predict(M["tfidf"].transform(doc(rows.reset_index(drop=True))))
     E = embed((rows.title.fillna("") + " (" + rows.url.map(lambda u: urlsplit(u).netloc.lower().removeprefix("www.") if u else "") + ")").tolist())
     Z = M["pca"].transform(E)
