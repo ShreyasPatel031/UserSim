@@ -84,3 +84,20 @@ with AUC 0.567, and a repost of a flop wins 4.0% of the time, the base rate. Ear
 - Gemini: ~$6 (persona votes, title test, judges), LLM twin pilot $0.058, title embeddings $1.371.
 - VMs: small e2-standard-2 now.
 - Everything is within the approved budgets.
+
+## Cross-domain: content taste vs ties (person level)
+
+Metric, same as Product Hunt: per person-day in the held-out period, the model ranks the day's candidates for the
+person; a hit if one of its top 3 picks is one the person engaged with (HN: commented on; PH: picked). The random
+baseline is 1 - C(n - k, 3) / C(n, 3) per person-day, averaged. 95% intervals bootstrap over person-days.
+
+| | Hacker News (this work; 60,451 person-days, Sep 1 - Oct 14) | Product Hunt (orchestrator, as reported) |
+|---|---|---|
+| content taste | 29.7% [29.3, 30.1] (vector taste + domain history + favorites) | vector twins 48.6 vs 49.7 without (no help) |
+| ties | 17.2% [16.9, 17.5] (to the submitter: comments on their stories, replies, reciprocity, recency, share, rank that day) | 54.2 vs 50.4 without (better in all 6 months) |
+| both | 30.2% [29.8, 30.6] | |
+| random | 14.1% | |
+| popularity (final size; not known at posting) | 49.8% [49.3, 50.1]; all three 55.5% [55.1, 55.9] | |
+
+**Finding:** the person model has to learn the mix per domain. On HN, content taste carries the signal and ties add
+only +0.5 points. On Product Hunt, ties beat taste.
