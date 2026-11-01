@@ -48,7 +48,10 @@ def baseline():
             B = pd.concat(pool.map(_fold, list(RN.folds(df, MONTHS))))
     finally:
         os.chdir(cwd)
-    os.makedirs(CACHE, exist_ok=True); B["id"] = B.id.astype(str); B.to_parquet(path)
+    from atomicio import atomic_path
+    os.makedirs(CACHE, exist_ok=True); B["id"] = B.id.astype(str)
+    with atomic_path(path) as tmp:   # parallel runs read this while another writes it
+        B.to_parquet(tmp)
     return B
 
 

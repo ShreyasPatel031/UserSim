@@ -18,6 +18,9 @@ from sklearn.decomposition import TruncatedSVD
 from . import store, choice
 from .seq import features as seq_features
 
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "ph_predict"))
+from atomicio import atomic_path   # model_/day_ files gate resumes via os.path.exists; features.json is read by other runs
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 PAGE = os.environ.get("PAGE") == "1"   # page-aware people: every launch-page input added to the person model
 TASTE = os.environ.get("TASTE") == "1"  # + each person's taste for page traits (page_taste.py), implies PAGE
@@ -444,7 +447,8 @@ def train_month(m):
     mdl = lgb.LGBMClassifier(n_estimators=300, learning_rate=0.05, num_leaves=15, min_child_samples=50, verbose=-1, n_jobs=1)
     D, pc = page_cols(D)
     mdl.fit(D[FEATS + pc], D.y)
-    pickle.dump({"model": mdl, "cf": cf, "prior_cut": prev}, open(f"{WORK}/model_{m}.pkl", "wb"))
+    with atomic_path(f"{WORK}/model_{m}.pkl") as tmp, open(tmp, "wb") as f:
+        pickle.dump({"model": mdl, "cf": cf, "prior_cut": prev}, f)
     return m, len(D), float(D.y.mean())
 
 
@@ -493,7 +497,8 @@ def score_day(d):
     O = pd.DataFrame(out)
     if os.environ.get("SEG") == "1":   # simulated picks per person segment, for the panel reweighting (simlab/panel.py)
         O = O.merge(segment_sums(D), on="id", how="left")
-    O.to_parquet(path)
+    with atomic_path(path) as tmp:
+        O.to_parquet(tmp)
     return d, len(D)
 
 
@@ -534,11 +539,12 @@ def main(workers):
             if k % 20 == 0:
                 print("scored", k, "of", len(days), r, flush=True)
     S = pd.concat([pd.read_parquet(f"{WORK}/day_{d}.parquet") for d in days if os.path.exists(f"{WORK}/day_{d}.parquet")])
-    S.to_parquet(os.path.join(HERE, "cache", f"popscore_{TAG}.parquet" if TAG else "popscore.parquet"))
+    with atomic_path(os.path.join(HERE, "cache", f"popscore_{TAG}.parquet" if TAG else "popscore.parquet")) as tmp:
+        S.to_parquet(tmp)
     S = S.rename(columns={c: PREFIX + c[4:] for c in S.columns if c.startswith("psn_")})
     cols = [c for c in S.columns if c.startswith(PREFIX)]
-    json.dump({str(r["id"]): {c: float(r[c]) for c in cols} for r in S.to_dict("records")},
-              open(os.path.join(store.RAW, PREFIX + "features.json"), "w"))
+    with atomic_path(os.path.join(store.RAW, PREFIX + "features.json")) as tmp, open(tmp, "w") as f:
+        json.dump({str(r["id"]): {c: float(r[c]) for c in cols} for r in S.to_dict("records")}, f)
     print("saved", len(S), "launches")
 
 
