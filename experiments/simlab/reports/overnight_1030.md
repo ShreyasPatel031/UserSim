@@ -445,3 +445,17 @@ about Nov 14), not a pre-launch one. Twins repeat the existing taste inputs.
   - Reference: Gemini naming 28.6 / 43.1 (281 products); meaning similarity 13.8 / 22.8.
   - 52.5% of list entries are someone's reviewed alternative, so the answer key may be partly circular.
   - Full run when all 6,668 lists land.
+
+## Tie extensions, person level (Nov 1, `popscore.py` TIE2=1, `pick_boost` ABLATE, May–Oct)
+- **New inputs, all dated before the day.** Makers and hunter are computed separately; makers listed on more than 30
+  launches are treated like hunters.
+  - Return rate: of the team's launches after the person first engaged with it, the share they engaged with again.
+  - Number of such chances.
+  - Team turnout: the share of earlier backers who come back to each next launch.
+  - Team backer count.
+  - Engagement with the makers' launches, weighted by recency (60-day half-weight scale, `exp(-age/60)`).
+- **Per person:** top-3 hit **55.8 vs 54.0** without the extensions (AUC 0.728 vs 0.716). Better in **6 of 6 months**:
+  +0.6, +0.7, +3.6, +1.8, +2.5, +1.4. Mean +1.8, 95% interval over months +0.6 to +2.9.
+  - With tie strength removed as well: 49.9.
+  - Before tie strength: 50.4.
+- Launch-level run (`SIM_SRC=psx` vs `psr`, paired bootstrap) is in progress.
