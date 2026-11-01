@@ -41,6 +41,7 @@ freq = Counter(t for ts in T.topics for t in ts); generic = {t for t, _ in freq.
 T["spec"] = T.topics.map(lambda ts: [t for t in ts if t not in generic])
 rng = np.random.default_rng(0); P = ["simulation only", "launch only", "both"]
 res = {"months_tested": sorted(T.mon.unique()), "launches": len(T), "generic_topics_ignored": sorted(generic)}
+G = []   # one row per group of 3, for day-clustered paired bootstraps (comp_boot.py)
 for win in ("day", "week", "mon"):
     trip, pair = {p: [] for p in P}, {p: [] for p in P}
     for _, g in T.groupby(win):
@@ -56,6 +57,8 @@ for win in ("day", "week", "mon"):
             if grp.logv.nunique() < 3:
                 continue
             win_id = grp.logv.idxmax()
+            G.append({"win": win, "key": "|".join(grp.id.astype(str)), "day": g.loc[i, "day"],
+                      **{p: bool(grp[p].idxmax() == win_id) for p in P}})
             for p in P:
                 trip[p].append(grp[p].idxmax() == win_id)
                 a, b = g.loc[i], g.loc[js[0]]
@@ -63,4 +66,5 @@ for win in ("day", "week", "mon"):
                     pair[p].append((a[p] > b[p]) == (a.logv > b.logv))
     res[win] = {"groups_of_3": len(trip[P[0]]), **{f"{p} (3)": round(100 * float(np.mean(trip[p])), 1) for p in P},
                 **{f"{p} (pair)": round(100 * float(np.mean(pair[p])), 1) for p in P}}
+pd.DataFrame(G).to_parquet(f"results/comp_groups{'' if SRC == 'pst' else '_' + SRC}{'_nopage' if NOPAGE else ''}.parquet")
 json.dump(res, open(f"results/comp_test{'' if SRC == 'pst' else '_' + SRC}{'_nopage' if NOPAGE else ''}.json", "w"), indent=1); print(json.dumps(res, indent=1))
