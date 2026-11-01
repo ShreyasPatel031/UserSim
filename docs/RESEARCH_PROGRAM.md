@@ -13,10 +13,11 @@ Socrates, OSIM-8B.
 1. **Product Hunt agent:** first, show that adding competitors makes the simulation score more predictive. Then reach
    **90% accuracy on daily top 3, 5 and 10.** Now (pre-launch, Jul–Oct): simulation 62.6 / 71.2 / 79.7, launch model
    65.8 / 72.9 / 80.8. Pre-launch and launch-day forecasts are reported apart, and both are driven to 90.
-2. **Hacker News agent:** **Caught** = of the posts that actually made the daily top 30, the share we said would make it.
-   Each day we call exactly 30 posts (our top 30 by predicted probability), so Caught also equals the share of our
-   calls that were right. Measured at posting, 15 min, 1 h and 3 h after posting. **Target: 100%.** Now: being
-   re-scored by the HN agent (AUC 0.794 at posting, 0.956 at 1 h, as a footnote).
+2. **Hacker News agent:** **Caught at posting.** Each post is scored at the moment it is posted, using only what is
+   known then (title, link, submitter, time; no votes yet). Rank the day's posts by those scores; Caught = how many of
+   the real daily top 30 are in our top 30. **Target: 100%.** Now: being scored by the HN agent. Time-of-day recall
+   (picking the list at 12:00 / 18:00 / 21:00 UTC) is retired: it mostly measures which posts exist yet. Scores at
+   15 min / 1 h after posting are extras (they include the post's early votes), not the north star.
 
 Supporting measures (they serve the north stars, they are not targets of their own): person-level pick accuracy
 (top-3 hit 54.2 now, random 20) and whether simulated reactions match real comments and reviews. They tell us where
