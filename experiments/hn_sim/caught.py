@@ -231,8 +231,12 @@ elif __name__ == "__main__":
     print(f"series coverage: test posts {has[te].mean():.1%}, test winners {has[te & (Q.y == 1).to_numpy()].mean():.1%}", flush=True)
     for a, label in ((15, "15 min"), (60, "1 h"), (180, "3 h")):
         out = []
-        for how in ("const", "ramp"):
-            Vh = honest(V[a], a, ids, how)
+        for how in ("rank-only", "const", "ramp"):
+            Vh = honest(V[a], a, ids, "const")
+            if how == "rank-only":                     # points dropped: a post ending < 5 points is truly off the front page
+                Vh = Vh[["rank_now", "best_rank"]]
+            else:
+                Vh = honest(V[a], a, ids, how)
             s = caught(model(full, Vh))
             lk = lgb.LGBMClassifier(n_estimators=200, verbose=-1).fit(Vh[fit], has[fit])
             auc = roc_auc_score(has[te], lk.predict_proba(Vh[te])[:, 1])
