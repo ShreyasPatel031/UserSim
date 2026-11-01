@@ -28,10 +28,13 @@ def plan(con, d):
                      ON s.launch_id = l.id WHERE l.day = '{days_before(d, 1)}' AND s.launch_id IS NULL""").slug.tolist()
     active = q(f"""SELECT DISTINCT person FROM events WHERE date >= '{days_before(d, 30)}' AND date < '{d}'""").person
     known = set(q("SELECT person FROM people").person)
-    st = q("SELECT person, last_fetched FROM fetch_state WHERE source = 'upvotes_page1'").set_index("person").last_fetched
+    # last SUCCESSFUL page: a blocked fetch (403) must not make a person look fresh (Oct 30 - Nov 1 outage)
+    from .warehouse import LOCAL
+    st = q(f"""SELECT person, max(last_fetched) AS last_fetched FROM read_parquet('{LOCAL}/fetch_state/*.parquet', union_by_name=true)
+              WHERE source IN ('upvotes_page1', 'upvotes_signed_in') AND CAST(status AS VARCHAR) = '200' GROUP BY 1""").set_index("person").last_fetched
     lastc = q(f"SELECT person, max(date) AS c FROM comments WHERE date < '{d}' GROUP BY 1").set_index("person").c
     stale = days_before(d, STALE_DAYS)
-    refresh = [u for u in active if u in known and (st.get(u, "0") < stale or lastc.get(u, "0") > st.get(u, "0"))]
+    refresh = [u for u in active if u in known and (st.get(u, "0") <= stale or lastc.get(u, "0") > st.get(u, "0"))]   # 7 days old counts
     follows = list(active) if dt.date.fromisoformat(d).weekday() == FOLLOW_WEEKDAY else []
     return {"comments": comments, "refresh_upvotes": refresh, "follows": follows, "known": known}
 
