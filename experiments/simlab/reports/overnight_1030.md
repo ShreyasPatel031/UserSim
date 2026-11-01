@@ -399,3 +399,22 @@ about Nov 14), not a pre-launch one. Twins repeat the existing taste inputs.
 - **+ competitor gaps on top:** 61.5–62.4 top 3, so they add nothing beyond tie strength.
 - **First-time teams, higher of 2 / winner of 3:** 68.8 / 66.4 (launch model 68.4 / 66.7).
 - **New best simulation-only:** 62.6 / 71.2 / 79.7. The launch model is 65.8 / 72.9 / 80.8.
+
+## PH ops agent, Nov 1 (session start, 18:20 UTC): blocked on GCP access
+- This container has no GCP credentials (`gcloud auth list`: none), so the VMs, the bucket and the run check are out
+  of reach. Reported to the orchestrator.
+- **Nov 2 start, at risk:** DST ended Nov 1. `run_daily.sh` stops the recorder at 23:55 PST = **07:55 UTC**. If the
+  instance schedule is still `usersim-daily-start` (07:05 UTC), the VM is still running at 07:05, the start does
+  nothing, and Nov 2 is skipped. It is safe only if `usersim-daily-start-pt` (00:05 America/Los_Angeles = 08:05 UTC)
+  is attached (`docs/handoff/grokbot_ph_pipeline.md` item 1). Asked the orchestrator to have Grok Bot check this.
+- **Agenda 1 (tie strength into the daily forecast), plan:** the daily forecast (`ph_predict/forecast.py`) is the
+  launch model only; the simulation is backtest-only. To add it:
+  1. `simlab/popscore.py`: make `MONTHS` and the `<= 2026-10-24` cut-off follow the run date, and add a one-day
+     mode. It trains the current month's person model on the previous month and scores today's line-up with
+     `TASTE=1 TIE=1 RECIP=1`, giving today's `psr_` rows.
+  2. The store, embeddings and `harness.baseline()` must include today's launches (an incremental rebuild).
+  3. `ph_predict/sim_forecast.py`: the newsim "+day standing+page" model, trained on every finished day's `psr` rows
+     and predicting today. Written to `forecasts` as model `simulation`; `s_score` then scores both models.
+  4. New step `simforecast` in `pipeline/daily.py`, off by default at first (not in `STEPS`), so it cannot break the
+     run until it has passed one dry run on the VM.
+  Data (store, `ph_predict/data`) lives only on the VMs, so nothing can be built or tested from here.
