@@ -19,7 +19,7 @@ Socrates, OSIM-8B.
 
    | Stage | Judged at | Now (per post, Sep 1 – Oct 14, 1,323 winners) | Target |
    |---|---|---|---|
-   | 1 | 1 h after posting | 45.9% [42.1, 49.4] (rank only; leak-free) | 80% |
+   | 1 | 1 h after posting | 47.2% [43.7, 50.6] (rank only + pre-Jul history score) | 80% |
    | 2 | 15 min after posting | 24.7% [22.6, 26.9] (rank only; leak-free) | 80% |
    | 3 | At posting, no votes yet | 23.2% [21.2, 25.3] (Jul-Aug + 2025+ models blended; random 3.0%) | 80% |
 
