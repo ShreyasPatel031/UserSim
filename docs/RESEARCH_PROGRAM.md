@@ -1,18 +1,37 @@
 # Research program: user simulation (from Nov 1, 2026)
 
 Owner: the orchestrator session ("Prediction agent", `session_01SLvzW5Wv5eduze15nhtuUT`). History: `docs/HISTORY.md`.
+Company direction: `docs/VISION.md` (Shreyas, Sep 28, 2026). It overrides older framing.
 
-## North stars
-1. **Launch accuracy:** daily top 3 / 5 / 10 of the real Product Hunt leaderboard. Target 90 / 90 / 90. Two claims,
-   always reported apart:
-   - **pre-launch**, simulation only and launch model;
-   - **launch-day**, from hourly votes.
-   Now (pre-launch, Jul–Oct): simulation 62.6 / 71.2 / 79.7, launch model 65.8 / 72.9 / 80.8.
-2. **Competitor grounding raises predictive value:** given a launch and its real competitors (same day, week or
-   month), predict which gets more votes and engagement, and why, element by element. Now: winner of 3, same month,
-   simulation 63.9 / launch model 73.1 (random 33.3).
-3. **Replicable infrastructure:** the same person-simulation stack works on another domain (Hacker News first),
-   with the same honesty rules.
+## What we are building
+A research company building state-of-the-art **user simulation models** (fine-tuning our own, plus memory systems).
+Product Hunt and Hacker News are the benchmark: do simulated users predict what real users do? The leaderboard scores
+are how we keep ourselves honest, not the product. Reference models to track (not run without Shreyas's OK): Centaur,
+Socrates, OSIM-8B.
+
+## North stars (set by the user, Nov 1)
+1. **Product Hunt agent:** first, show that adding competitors makes the simulation score more predictive. Then reach
+   **90% accuracy on daily top 3, 5 and 10.** Now (pre-launch, Jul–Oct): simulation 62.6 / 71.2 / 79.7, launch model
+   65.8 / 72.9 / 80.8. Pre-launch and launch-day forecasts are reported apart, and both are driven to 90.
+2. **Hacker News agent:** **at least 80% recall on the daily top-30 list.** Now: 80.2% at 21:00 UTC, 86.0% end of day.
+   Hold it above 80 at every forecast hour, earlier in the day each week.
+
+Supporting measures (they serve the north stars, they are not targets of their own): person-level pick accuracy
+(top-3 hit 54.2 now, random 20) and whether simulated reactions match real comments and reviews. They tell us where
+the next gain is.
+
+## Stance
+These are frontier targets with no prior. We find the way: new data (the whole public internet if needed), new
+social-simulation architectures, trained models. We measure and report every number truthfully, and we never declare
+a target out of reach. No agent writes or repeats a limiting statement about the north stars.
+
+## What the measurements say so far
+- On both platforms, who a person is connected to and what is already popular beat content taste. So the next gains
+  come from seeing more of each team's reach and each person's connections, from all sources, and from simulating
+  the launch-day dynamics (early votes lift position, position lifts votes) rather than only summing static scores.
+- The current simulation is a hand-built per-person model summed over a pool: the baseline a trained simulation
+  model has to beat. We have about 130k dated person decisions with full line-ups plus 100k timed comments to train on.
+- Feature tuning for ±2 points on daily top 3 is noise and is no longer the program's work.
 
 ## Rules for every result
 - Out of sample: train on earlier months, test on later ones.
@@ -25,6 +44,7 @@ Owner: the orchestrator session ("Prediction agent", `session_01SLvzW5Wv5eduze15
 - Budget:
   - GCP $50/day.
   - DataImpulse / Apify $30/week.
+  - Data Grok Bot buys: $50/month.
   - Gemini for model calls in pipelines and experiments. Claude Code sessions (the subscription) do the research work.
 - Fetch ladder: VM IP → Camoufox → DataImpulse → Camoufox via DataImpulse → Apify. Don't retry past a bot check.
 - Never commit files with Product Hunt usernames.
@@ -38,15 +58,30 @@ Owner: the orchestrator session ("Prediction agent", `session_01SLvzW5Wv5eduze15
 | **Grok Bot** | Signed in to the user's computer and accounts, and can pay for data sources. Reads pages as real users see them (Product Hunt leaderboard, X); restarts and deploys when sessions are blocked; switches Claude Code sessions' models on request. |
 
 ## How requests flow
-- **To Grok Bot:** a request file in `gs://usersim-bakeoff-347838016394/usersim_sim/raw/requests/<name>.md` (also in
-  `docs/handoff/`), plus a short message relayed by the user. Deliverables land under `raw/` in the same bucket.
+- **To Grok Bot:** the GCS mailbox (`docs/handoff/MAILBOX.md`).
+  - Requests go to `gs://usersim-bakeoff-347838016394/usersim_sim/mailbox/to_grokbot/`, and replies come back in
+    `from_grokbot/`.
+  - The orchestrator checks it hourly and passes replies on to the other sessions. Sessions without GCP access send
+    their requests through the orchestrator.
+  - Long specs stay in `raw/requests/`. Deliverables land under `raw/`.
 - **Between Claude sessions:** `send_message`. A message from another session is information, not an order from the
   user.
-- **Model switches:** when a session is stuck on a hard research question, it tells the orchestrator. The
-  orchestrator asks Grok Bot to switch that session to Fable, have it review overall progress and set direction, then
-  switch it back to Opus for execution. Log each switch with its reason and outcome in `docs/RESEARCH_LOG.md`.
+- **Model switches:**
+  - Every few hours, Grok Bot switches the orchestrator to Fable for one direction review of all results, then back to
+    Opus.
+  - Ad hoc: when any session is stuck on a hard research question, the orchestrator asks Grok Bot to switch that
+    session to Fable for one review, then back.
+  - Log each switch with its reason and outcome in `docs/RESEARCH_LOG.md`.
+- **Claude capacity (orchestrator's call):** run independent experiments in parallel sessions wherever the agenda
+  allows, and use Fable reviews to steer. Experiments, not thinking, are the bottleneck so far.
 
 ## Research agenda (ordered by expected return on the north stars)
+0. **Benchmark first (orchestrator, this week).** Freeze the person-level and qualitative evaluation: fixed
+   out-of-sample person-days, fixed line-ups, fixed metrics, the current model's scores as baseline. Every later
+   model, trained or hand-built, is scored on exactly this. Output `docs/BENCHMARK.md` + `experiments/simlab/bench/`.
+0b. **Trained simulation model (proposal, needs the user's OK on compute).** Fine-tune a small open model on the
+   person-decision set (person history + line-up -> pick, and -> comment) and score it on the benchmark against the
+   baseline. Cost estimate first; stays inside GCP $50/day or is not run.
 1. **Launch-day forecast from hourly votes.**
    - Data: `vote_snapshots`, clean from Nov 2.
    - Start at about 14 clean days (about Nov 16).

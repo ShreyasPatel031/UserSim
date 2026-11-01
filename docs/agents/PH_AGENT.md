@@ -13,7 +13,7 @@ when you are blocked, finish an agenda item, or hit a question where a stronger 
 ## Machines (GCP project `project-amer-scs-sandbox`)
 | VM | Zone | Use |
 |---|---|---|
-| `usersim-pipeline` (e2-standard-4) | us-central1-a | Daily pipeline. An instance schedule (`usersim-daily-start-pt`) starts it at 00:05 PT (08:05 UTC in winter, 07:05 UTC in summer). On boot, `@reboot sleep 60 && /home/agent/w/run_daily.sh` runs the day, then the hourly vote recorder until 23:55 PT, then shuts the VM down. Code in `/home/agent/w/experiments`; logs in `/home/agent/w/logs/daily_<UTC>.log` (+ `_hourly.log`). |
+| `usersim-pipeline` (e2-standard-4) | us-central1-a | Daily pipeline. The instance policy `usersim-daily-start-pt` starts it at 00:05 Pacific (08:05 UTC in PST, 07:05 in PDT). On boot, `@reboot sleep 60 && /home/agent/w/run_daily.sh` runs the day, then the hourly vote recorder until 23:55 PT, then shuts the VM down. Code in `/home/agent/w/experiments`; logs in `/home/agent/w/logs/daily_<UTC>.log` (+ `_hourly.log`). |
 | `usersim-exp-1` (e2-standard-32) | us-central1-b | Experiments. Start it when needed and stop it when done (about $1.5/h). Code in `~/w/experiments`; Python `/opt/exp/bin/python3`; `SIMLAB_DATA=data_v2`. |
 
 Access (once per container): `gcloud compute ssh agent@<vm> --zone <zone> --tunnel-through-iap` sets up a key.
@@ -33,7 +33,7 @@ Then `ssh -p 2225 -i ~/.ssh/google_compute_engine agent@localhost`. Deploy code 
   read by `run_daily.sh`.
 - If a permission check blocks a restart or deploy, don't retry. Message the orchestrator; Grok Bot does it.
 
-## Daily routine (after the run, about 00:47 PT)
+## Daily routine (after the run starts, 00:47 PT)
 1. **Check the run.** The VM should be RUNNING (hourly recorder) or TERMINATED after 07:00 UTC the next day.
    - Check the newest log: every step `"status": "ok"`.
    - Check for no Traceback, 407 or 403.
