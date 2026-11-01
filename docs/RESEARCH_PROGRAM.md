@@ -9,25 +9,28 @@ Product Hunt and Hacker News are the benchmark: do simulated users predict what 
 are how we keep ourselves honest, not the product. Reference models to track (not run without Shreyas's OK): Centaur,
 Socrates, OSIM-8B.
 
-## North stars (as set with the user, Nov 1)
-1. **Product Hunt agent:** first, show that competitor grounding makes the simulation score more predictive; then 90%
-   accuracy on daily top 3 / 5 / 10. Two claims, always reported apart: **pre-launch** and **launch-day** (from hourly
-   votes). Now, pre-launch (Jul–Oct): simulation 62.6 / 71.2 / 79.7, launch model 65.8 / 72.9 / 80.8.
-2. **Hacker News agent:** at least 80% recall on the daily top-30 list. Now: 80.2% at 21:00 UTC, 86.0% end of day.
-3. **Simulation quality (the research core, serves VISION.md):**
-   - **Person level:** given a real person and the day's line-up, does the simulated person pick what they picked?
-     Now: top-3 hit 54.2 (random 20).
-   - **Qualitative:** do simulated users' reactions to each page element match what real users say (launch comments,
-     7,768 Product Hunt reviews)? Not measured yet.
-   - **Transfer:** the same stack and metrics on both domains.
+## North stars (set by the user, Nov 1)
+1. **Product Hunt agent:** first, show that adding competitors makes the simulation score more predictive. Then reach
+   **90% accuracy on daily top 3, 5 and 10.** Now (pre-launch, Jul–Oct): simulation 62.6 / 71.2 / 79.7, launch model
+   65.8 / 72.9 / 80.8. Pre-launch and launch-day forecasts are reported apart, and both are driven to 90.
+2. **Hacker News agent:** **at least 80% recall on the daily top-30 list.** Now: 80.2% at 21:00 UTC, 86.0% end of day.
+   Hold it above 80 at every forecast hour, earlier in the day each week.
 
-## What the measurements say so far (big picture)
-- On both platforms, who a person is connected to and what is already popular beat content taste. Leaderboards are
-  largely distribution games; the pre-launch ceiling from public data is about 65–70 on top 3 unless the makers'
-  off-platform outreach can be seen. The X test with Grok Bot settles whether it can.
-- The current simulation is a hand-built per-person model summed over a pool. It is the **baseline** a trained
-  simulation model has to beat, on the person-level and qualitative metrics above. We have about 130k dated,
-  out-of-sample person decisions with full line-ups, plus 100k timed comments: a training and evaluation set.
+Supporting measures (they serve the north stars, they are not targets of their own): person-level pick accuracy
+(top-3 hit 54.2 now, random 20) and whether simulated reactions match real comments and reviews. They tell us where
+the next gain is.
+
+## Stance
+These are frontier targets with no prior. We find the way: new data (the whole public internet if needed), new
+social-simulation architectures, trained models. We measure and report every number truthfully, and we never declare
+a target out of reach. No agent writes or repeats a limiting statement about the north stars.
+
+## What the measurements say so far
+- On both platforms, who a person is connected to and what is already popular beat content taste. So the next gains
+  come from seeing more of each team's reach and each person's connections, from all sources, and from simulating
+  the launch-day dynamics (early votes lift position, position lifts votes) rather than only summing static scores.
+- The current simulation is a hand-built per-person model summed over a pool: the baseline a trained simulation
+  model has to beat. We have about 130k dated person decisions with full line-ups plus 100k timed comments to train on.
 - Feature tuning for ±2 points on daily top 3 is noise and is no longer the program's work.
 
 ## Rules for every result
