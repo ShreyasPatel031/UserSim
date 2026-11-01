@@ -544,3 +544,22 @@ Setup:
   launch level, where the launch-level model leans on audience and reach (most votes come from outside the pool).
 - **Caveat:** the psn files date from Oct 28 (older code). A clean psn rebuild with today's code and data
   (`TAG_SUFFIX=v2 PREFIX=psn2_`) is running; the psn rows will be replaced when it finishes.
+
+### Winner of 3 competitors, no-page sources (`comp_test.py NOPAGE=1 SIM_SRC=…`, May–Oct, 4,149 launches)
+"Simulation only" here is the simulation's own launch score: no audience or reach inputs, unlike the newsim "+day
+standing" model above.
+
+| Winner of 3 (pair) | Same day (1,404 groups) | Same week (2,945) | Same month (3,351) |
+|---|---|---|---|
+| psn (no tie strength) | 52.4 (62.7) | 55.9 (67.3) | 54.9 (64.9) |
+| pnr (+ tie strength) | 58.8 (67.5) | 58.4 (68.7) | 58.6 (68.3) |
+| pnx (+ extensions) | 57.8 (67.3) | 59.4 (69.3) | 59.6 (70.1) |
+| Launch model | 71.2 (77.7) | 72.9 (79.3) | 71.3 (78.8) |
+| Launch model + pnx | 68.9 | 71.8 | 69.7 |
+
+- **Tie strength vs none:** +6.4 / +2.5 / +3.7. As a rough guide, the interval for a difference is ±3.7 (day),
+  ±2.5 (week) and ±2.4 (month). That treats groups as independent; they overlap, so the real intervals are wider.
+  A day-clustered paired bootstrap is still to do.
+- **Extensions vs tie strength:** −1.0 / +1.0 / +1.0, noise.
+- **Reading:** on its own, the simulation picks competitor winners better with tie strength. Once audience inputs are
+  added (newsim), the gain disappears, which matches the pool-level result.
