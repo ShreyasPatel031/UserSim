@@ -578,3 +578,12 @@ comments in the previous 60 min, vs the same hour in the previous 4 weeks) +0.1 
 Every 2025+ title now embedded (embed.py EMB_FILL_FROM=2025-01-01: 167,390 titles, $0.278 logged; the old 3+ points /
 comment filter made a missing embedding reveal the outcome). Trained from 2025-01-15 (1,200 trees, 63 leaves): post +
 real-list record 22.4% [20.4, 24.5]; + title embedding (PCA 64) 22.4% [20.2, 24.9], +0.1 [-1.3, +1.7].
+
+### Checkpoint 3 (at posting): blend of the two models (blend_hist.py)
+Rank average of the Jul-Aug model (post + similar titles + embedding + crowd; 21.4%) and the 2025+ history model
+(post + real-list record + embedding; 22.4%), weight fixed at 50/50 in advance: **23.2% [21.2, 25.3], +1.8 [+0.4, +3.2]**
+vs the Jul-Aug model (reference only, chosen on test: 0.3 -> 23.1%, 0.7 -> 22.9%).
+
+## North star as of 2026-11-01 (Shreyas): per-post Caught at three checkpoints
+Checkpoint 1 = 1 h after posting (focus, to 80%), 2 = 15 min, 3 = at posting. Current: 1 h 45.9% [42.1, 49.4]
+(rank only), 15 min 24.7% [22.6, 26.9] (rank only), at posting 23.2% [21.2, 25.3].
