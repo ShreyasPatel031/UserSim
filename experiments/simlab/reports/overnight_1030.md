@@ -482,3 +482,39 @@ about Nov 14), not a pre-launch one. Twins repeat the existing taste inputs.
   - 102,012 items are launches from before our launch table starts (Jan 1, 2026).
   - Upvotes per day now: Oct 28 1,055, Oct 29 1,260, Oct 30 1,263, Oct 31 936, Nov 1 678. The usual level was about
     1,500–1,800 per day; page 1 covers only the 20 newest upvotes per person.
+
+## Tie strength in the live (no-page) simulation: launch-level deltas (Nov 1)
+Setup:
+- `newsim_eval.py NOPAGE=1 STAGE=2 STAGE3=1`, "+day standing": simulation + outside reach + audience blocks + day
+  standing, no page or text inputs. This is the configuration deployed in the daily pipeline (`sim_forecast.py`).
+- Rolling monthly, May–Oct, 3 seeds.
+- Paired bootstrap over days (`paired_boot.py`, 10,000 resamples).
+- Simulation sources, all without page inputs: `psn` (no tie strength), `pnr` (tie strength), `pnx` (tie strength +
+  extensions).
+
+| Simulation-only, daily top 3 / 5 / 10 | Top 3 / 5 / 10 |
+|---|---|
+| psn (no tie strength) | 59.8 / 71.2 / 79.3 |
+| pnr (+ tie strength) | 59.2 / 70.8 / 79.8 |
+| pnx (+ tie strength + extensions) | 59.8 / 70.6 / 79.3 |
+| Launch model, same launches | 65.5 / 73.9 / 81.2 |
+
+| Paired, B − A | Top 3 (95% CI) | Top 5 | Top 10 |
+|---|---|---|---|
+| pnr − psn | −0.6 (−2.7 to +1.5) | −0.4 (−1.8 to +1.1) | +0.4 (−0.2 to +1.2) |
+| pnx − psn | −0.0 (−2.1 to +2.1) | −0.6 (−1.9 to +0.7) | −0.0 (−0.7 to +0.7) |
+| pnx − pnr | +0.6 (−1.5 to +2.7) | −0.2 (−1.6 to +1.2) | −0.4 (−1.1 to +0.2) |
+
+- **First-time teams** (higher of 2 / winner of 3): psn 67.1 / 66.6, pnr 67.5 / 65.9, pnx 67.1 / 65.4. Launch model
+  68.5 / 67.2.
+- **Why nothing moves.** The simulation inputs differ across sources (`ev` correlation 0.81–0.86 per month). Yet from
+  June on, the final predictions correlate 0.99+, and in Sep and Oct the top 3 are identical. Without page inputs, the
+  launch-level model takes almost everything from the audience and reach inputs, and the person simulation adds little
+  on top.
+- **Verdict:**
+  - Per person, tie strength and the extensions help: +1.8, better in 6 of 6 months.
+  - At launch level in the live configuration, none of it shows (all intervals span 0).
+  - In the page-aware configuration the earlier gain was +2.3 (−0.3 to +4.9). That is still borderline; the `psx`
+    re-run is in progress.
+  - The daily simulation forecast is deployed as a separately scored, tracked forecast. No accuracy gain over `psn`
+    is expected from it.
