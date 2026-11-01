@@ -13,15 +13,21 @@ def _stamp():
     return max(os.path.getmtime(p) for p in paths if os.path.exists(p))
 
 
+def cache_path():
+    """The pickle build_cached() reads and writes for the current LLM_PROVIDER (absolute path)."""
+    gem = os.environ.get("LLM_PROVIDER", "gemini") == "gemini"
+    return os.path.join(F.D, "build_cache" + ("_gemini" if gem else "") + ".pkl")
+
+
 def build_cached():
     """F.build() takes ~50 s; reuse it until one of its inputs changes. The pickle is written to a temp file and renamed into
     place, so a concurrent reader sees either the old cache or the new one, never a partial file."""
-    path = "data/build_cache" + ("_gemini" if os.environ.get("LLM_PROVIDER", "gemini") == "gemini" else "") + ".pkl"
+    path = cache_path()
     if os.path.exists(path) and os.path.getmtime(path) > _stamp():
         with open(path, "rb") as f:
             return pickle.load(f)
     df = RN.load_llm(F.build())
-    fd, tmp = tempfile.mkstemp(dir=os.path.dirname(path) or ".", prefix=os.path.basename(path) + ".", suffix=".tmp")
+    fd, tmp = tempfile.mkstemp(dir=os.path.dirname(path), prefix=os.path.basename(path) + ".", suffix=".tmp")
     try:
         with os.fdopen(fd, "wb") as f:
             pickle.dump(df, f)
