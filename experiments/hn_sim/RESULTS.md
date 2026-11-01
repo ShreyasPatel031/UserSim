@@ -433,3 +433,17 @@ Calibration at posting (forecast -> happened, posts): <1%: 0.4% -> 0.5% (15,980)
 3-10%: 5.3% -> 5.3% (12,428); 10-30%: 16.3% -> 15.1% (1,574); 30-50%: 42.7% -> 38.8% (183). At 1 h: 3-10%: 6.1% ->
 8.5%; 50-70%: 52.6% -> 49.2% (535); 70-90%: 77.1% -> 66.9% (254); 90%+: 95.9% -> 79.2% (77): slightly overconfident
 at the top, well calibrated below 50%. Full table: <cache>/odds_calibration.csv.
+
+Individual model + favorites (Grok Bot fetch; pagination bug means only each person's first 30 favorites were
+collected: 40,446 unique; 21,947 of stories posted before Jul 1; 1,682 of the 3,000 panel people have some).
+Median per-person AUC, Sep 1 - Oct 14 (all 2,879 people | the 487 with 10+ favorites):
+
+| model | all | within popularity bands | 10+ favorites | 10+, within bands |
+|---|---|---|---|---|
+| v2 personal signals | 0.632 | 0.628 | 0.623 | 0.625 |
+| v2 + favorites | 0.640 | 0.635 | 0.653 | 0.651 |
+| v2 + popularity | 0.828 | 0.635 | 0.828 | 0.627 |
+| v2 + favorites + popularity | 0.830 | 0.644 | 0.838 | 0.658 |
+
+Favorites help most where there are enough of them (+3 points for people with 10+, +1 overall). Full pages 2-10
+requested from the feeder.
