@@ -11,6 +11,8 @@ spend table. Evaluation on the pilot days: AUC of the judge for winners; and Cau
 at-posting score vs the base blended with the judge (rank average, weight picked leave-one-day-out).
 
     python pagejudge.py [days=2026-09-15,2026-09-16]
+    PJ_MODEL=lite python pagejudge.py 2026-07-01,2026-10-14 --range     # full run (needs the user's OK: ~$25)
+Page text is cached in <cache>/page_text.jsonl (the pilot's first run did not keep it).
 """
 import html
 import json
@@ -28,7 +30,19 @@ import store as S
 import top100 as H
 
 DAYS = (sys.argv[1] if len(sys.argv) > 1 else "2026-09-15,2026-09-16").split(",")
-OUT = os.path.join(H.CACHE, "pagejudge.jsonl")
+if len(DAYS) == 2 and DAYS[0] > "2000" and "--range" in sys.argv:          # pagejudge.py 2026-07-01,2026-10-14 --range
+    DAYS = [d.strftime("%Y-%m-%d") for d in pd.date_range(DAYS[0], DAYS[1])]
+MODEL = {"flash": "gemini-2.5-flash", "lite": "gemini-2.5-flash-lite"}[os.environ.get("PJ_MODEL", "flash")]
+OUT = os.path.join(H.CACHE, "pagejudge.jsonl" if MODEL.endswith("flash") else "pagejudge_lite.jsonl")
+PAGES = os.path.join(H.CACHE, "page_text.jsonl")      # fetched page text, kept so a later run never refetches
+_pages, _plock = {}, __import__("threading").Lock()
+if os.path.exists(PAGES):
+    for _x in open(PAGES):
+        try:
+            _r = json.loads(_x)
+            _pages[_r["post_id"]] = (_r["fetch"], _r["text"])
+        except ValueError:
+            pass
 UA = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"}
 SYSTEM = ("You are a long-time Hacker News reader who knows what the front page upvotes: novel technical work, "
           "deep write-ups, surprising results, honest postmortems, useful launches; and what it ignores: marketing, "
@@ -68,13 +82,25 @@ def page_text(url):
     return ("ok" if len(t) > 200 else "thin"), t[:6000]
 
 
+def cached_page(row):
+    """Fetch once per post; blocked / failed fetches (403 etc.) are kept as missing and never retried."""
+    if row.post_id in _pages:
+        return _pages[row.post_id]
+    st, text = page_text(row.url)
+    with _plock:
+        _pages[row.post_id] = (st, text)
+        with open(PAGES, "a") as f:
+            f.write(json.dumps({"post_id": int(row.post_id), "fetch": st, "text": text}) + "\n")
+    return st, text
+
+
 def judge(row):
     if isinstance(row.url, str) and row.url:
-        st, text = page_text(row.url)
+        st, text = cached_page(row)
     else:
         st, text = "self", html.unescape(re.sub(r"<[^>]+>", " ", row.text or ""))[:6000]
     j = llm.call("hn_pagejudge", PROMPT.format(title=row.title, url=row.url or "(text post)", text=text),
-                 system=SYSTEM, model=llm.FLASH, max_tokens=400)
+                 system=SYSTEM, model=MODEL, max_tokens=400)
     return {"post_id": int(row.post_id), "fetch": st, "chars": len(text), **{k: v for k, v in j.items() if k != "_usd"}}
 
 
@@ -91,7 +117,7 @@ def run(days):
             f.write(json.dumps(r) + "\n")
             if i % 200 == 0:
                 print(i, f"${llm.spent():.3f}", flush=True)
-    usd = llm.flush_spend("hn_sim.pagejudge", f"pilot {','.join(days)}: {len(todo)} posts")
+    usd = llm.flush_spend("hn_sim.pagejudge", f"{MODEL} {days[0]}..{days[-1]}: {len(todo)} posts")
     print(f"spent ${usd:.3f} for {len(todo)} posts", flush=True)
 
 
@@ -138,4 +164,5 @@ def evaluate(days):
 
 if __name__ == "__main__":
     run(DAYS)
-    evaluate(DAYS)
+    if "--range" not in sys.argv:
+        evaluate(DAYS)
