@@ -14,6 +14,13 @@ import numpy as np, pandas as pd
 
 D = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 
+# Optional per-launch feature files merged into build(); anything else in data/ (e.g. simlab popscore pn*/pl*/psx_features.json)
+# is not read here, so buildcache.py ignores it when deciding whether the build cache is stale.
+EXTRA = ("aud2_features.json", "recip_features.json", "fol_features.json", "seg_features.json", "promo_features.json", "ctx_features.json", "agg_features.json", "agt_features.json", "aga_features.json", "pss_features.json", "ptr_features.json", "tka_features.json", "tkb_features.json", "tkc_features.json", "tkd_features.json", "tke_features.json", "psn_features.json", "sim_features.json", "sc_features.json", "scd_features.json", "ps_features.json", "vs_features.json", "pf_features.json", "psp_features.json", "pst_features.json", "psh_features.json", "psq_features.json", "tpc_features.json", "tpd_features.json", "cmp_features.json", "tmc_features.json", "tmd_features.json", "upw_features.json")
+# Every top-level data/ file build() reads (days/*.json is read too).
+INPUTS = ("sites.jsonl", "sites_today.jsonl", "ext_x.jsonl", "ext_rdap.jsonl", "ext_hn.jsonl", "llm.jsonl", "ext_wb.jsonl",
+          "cm_features.json", "aud_features.json") + EXTRA
+
 
 def _jl(name, key="key"):
     f = f"{D}/{name}"
@@ -87,7 +94,7 @@ def build(include_today=False):
     wbav = _jl("ext_wb.jsonl")
     cmf = json.load(open(f"{D}/cm_features.json")) if os.path.exists(f"{D}/cm_features.json") else {}
     audf = json.load(open(f"{D}/aud_features.json")) if os.path.exists(f"{D}/aud_features.json") else {}
-    for extra in ("aud2_features.json", "recip_features.json", "fol_features.json", "seg_features.json", "promo_features.json", "ctx_features.json", "agg_features.json", "agt_features.json", "aga_features.json", "pss_features.json", "ptr_features.json", "tka_features.json", "tkb_features.json", "tkc_features.json", "tkd_features.json", "tke_features.json", "psn_features.json", "sim_features.json", "sc_features.json", "scd_features.json", "ps_features.json", "vs_features.json", "pf_features.json", "psp_features.json", "pst_features.json", "psh_features.json", "psq_features.json", "tpc_features.json", "tpd_features.json", "cmp_features.json", "tmc_features.json", "tmd_features.json", "upw_features.json"):  # step-2 audience, reciprocity (rec_), sample followers (fol_)
+    for extra in EXTRA:  # step-2 audience, reciprocity (rec_), sample followers (fol_)
         for k, v in (json.load(open(f"{D}/{extra}")) if os.path.exists(f"{D}/{extra}") else {}).items():
             audf.setdefault(k, {}).update(v)
     import external as E
