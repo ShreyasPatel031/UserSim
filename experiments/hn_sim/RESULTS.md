@@ -464,3 +464,17 @@ Same models as odds.py without the crowd inputs (no measurable gain, need the pe
 P(top 30): AUC 0.794 at posting, 0.827 at 15 min, 0.900 at 30 min, 0.956 at 1 h, 0.968 at 2 h; mean forecast 2.98%
 vs 2.99% actual at posting. Post features use the same code as training (top10.feats on full history + new posts;
 matches the training features for 99.3-100% of values).
+
+Person-level pick accuracy (person_top3.py; research-program metric, same as Product Hunt): per person-day (60,451,
+Sep 1 - Oct 14), rank that day's candidate stories for the person; hit if a top-3 pick is one they commented on.
+Ties now include days since the last interaction and the tie's rank among the person's options that day.
+
+| model | top-3 hit | 95% CI | random |
+|---|---|---|---|
+| content taste (+ favorites) | 29.7% | [29.3, 30.1] | 14.1% |
+| ties to the submitter | 17.2% | [16.9, 17.5] | 14.1% |
+| content + ties | 30.2% | [29.8, 30.6] | 14.1% |
+| popularity (final points; not known at posting) | 49.8% | [49.3, 50.1] | 14.1% |
+| content + ties + popularity | 55.5% | [55.1, 55.9] | 14.1% |
+
+On HN, content taste beats ties (opposite of Product Hunt); ties add +0.5 points on top of content.
