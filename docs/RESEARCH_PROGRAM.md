@@ -13,8 +13,11 @@ Socrates, OSIM-8B.
 1. **Product Hunt agent:** first, show that adding competitors makes the simulation score more predictive. Then reach
    **90% accuracy on daily top 3, 5 and 10.** Now (pre-launch, Jul–Oct): simulation 62.6 / 71.2 / 79.7, launch model
    65.8 / 72.9 / 80.8. Pre-launch and launch-day forecasts are reported apart, and both are driven to 90.
-2. **Hacker News agent:** **at least 80% recall on the daily top-30 list.** Now: 80.2% at 21:00 UTC, 86.0% end of day.
-   Hold it above 80 at every forecast hour, earlier in the day each week.
+2. **Hacker News agent:** **predict whether a given post will make the daily top 30** (per post, calibrated
+   probability). Scored at posting time and at 15 min / 1 h / 3 h after: AUC, precision and recall of the "will make
+   it" call, and calibration (a 30% forecast comes true 30% of the time). Now: AUC 0.794 at posting, 0.956 at 1 h,
+   calibrated at posting. The daily-list recall (80.2% at 21:00 UTC, 86.0% end of day) is kept as a supporting measure.
+   Target number to be confirmed with the user.
 
 Supporting measures (they serve the north stars, they are not targets of their own): person-level pick accuracy
 (top-3 hit 54.2 now, random 20) and whether simulated reactions match real comments and reviews. They tell us where
