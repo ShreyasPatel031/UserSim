@@ -38,6 +38,9 @@ MODEL = os.path.join(H.CACHE, "odds_live.pkl")
 AGES = {"at posting": 0, "15 min": 15, "30 min": 30, "1 h": 60, "2 h": 120, "3 h": 180}
 KNN = ["knn_lp", "knn_100", "knn_t30", "knn_sim"]
 VOTES = ["points", "rank_now", "best_rank", "gain30", "rate"]
+# Model inputs after posting: front-page rank only. Training series exist only for posts that ended with 5+ points, so
+# point counts leak the outcome (caught.py honest); a post without a series (or not yet on Quality News) is rank 91.
+RANKV = ["rank_now", "best_rank"]
 
 
 def lists():
@@ -104,7 +107,7 @@ def train():
     V = vote_feats(Q, q_by_id, [a for a in AGES.values() if a > 0])
     models, report = {}, []
     for name, a in AGES.items():
-        X = Q[BASE] if a == 0 else pd.concat([Q[BASE], V[a]], axis=1)
+        X = Q[BASE] if a == 0 else pd.concat([Q[BASE], V[a][RANKV]], axis=1)
         for top in (30, 10):
             y = (Q.list_rank <= top).to_numpy()
             m = lgb.LGBMClassifier(n_estimators=600, learning_rate=0.03, num_leaves=31, min_child_samples=30, subsample=0.8,
@@ -227,7 +230,7 @@ def score(rows: pd.DataFrame, now: float | None = None) -> pd.DataFrame:
             m, iso, cols = M["models"][(a, top)]
             x = X.iloc[[i]].copy()
             if a > 0:
-                for c in VOTES:
+                for c in RANKV:
                     x[c] = V[a][c].iat[i]
             row[f"p_top{top}"] = float(iso.predict(m.predict_proba(x[cols])[:, 1])[0])
         out.append(row)
