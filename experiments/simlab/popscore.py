@@ -490,8 +490,31 @@ def score_day(d):
         out.append({"id": x, "day": d, "psn_ev": g.wp.sum(), "psn_fans": np.sort(g.wp.values)[-100:].sum(),
                     "psn_ev_ties": g.wp[g.backed > 0].sum(), "psn_reach": g.w.sum(), "psn_pmax": g.p.max(),
                     "psn_share": g.ws.sum(), "psn_top1": g.w1.sum(), "psn_top3": g.w3.sum()})
-    pd.DataFrame(out).to_parquet(path)
+    O = pd.DataFrame(out)
+    if os.environ.get("SEG") == "1":   # simulated picks per person segment, for the panel reweighting (simlab/panel.py)
+        O = O.merge(segment_sums(D), on="id", how="left")
+    O.to_parquet(path)
     return d, len(D)
+
+
+def segment_sums(D):
+    """Per launch, sum of w x p within 54 person segments: activity tercile (w) x tie type (makers' launches backed /
+    hunter's launches backed / none) x maker or not x Product Hunt followers (<10, 10-99, 100+). Traits are known before
+    the day (followers and maker flag are as fetched, the same footing as the rest of the store)."""
+    g = load(); P = g["P"]
+    pm = dict(zip(P.person, P.is_maker.fillna(False).astype(bool))) if "is_maker" in P else {}
+    pf = dict(zip(P.person, P.followers.fillna(0))) if "followers" in P else {}
+    act = pd.cut(D.w, [-1, 2 / 30, 6 / 30, 99], labels=[0, 1, 2]).astype(int)
+    tm = D["tie_maker"] if "tie_maker" in D else D.backed
+    th = D["tie_hunter"] if "tie_hunter" in D else pd.Series(0.0, index=D.index)
+    tie = np.where(tm > 0, 0, np.where(th > 0, 1, 2))
+    mk = D.person.map(pm).fillna(False).astype(int)
+    fo = pd.cut(D.person.map(pf).fillna(0), [-1, 9, 99, 1e12], labels=[0, 1, 2]).astype(int)
+    seg = act.values * 18 + tie * 6 + mk.values * 3 + fo.values
+    T = pd.DataFrame({"id": D.id.values, "seg": seg, "wp": D.wp.values})
+    S = T.pivot_table(index="id", columns="seg", values="wp", aggfunc="sum", fill_value=0.0)
+    S.columns = [f"seg_{int(c)}" for c in S.columns]
+    return S.reset_index()
 
 
 def main(workers):
