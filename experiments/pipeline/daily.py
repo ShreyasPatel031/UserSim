@@ -244,6 +244,17 @@ def s_people(d, con, dry):
     return out
 
 
+@step("ph_upvotes")
+def s_ph_upvotes(d, con, dry):
+    """Upvote pages fetched by Grok Bot's team (raw/ph_upvotes/), merged into events like the people step's own pages."""
+    from . import load_signed_in as LS
+    out = LS.load_ph(d, dry)
+    res = {"items": out["new_events"]}
+    if out["records"] and out["ok_pages"] / out["records"] < 0.5:
+        res["status"] = f"failed: {out['ok_pages']} of {out['records']} delivered pages ok"
+    return res
+
+
 @step("personas")
 def s_personas(d, con, dry):
     """Comment persona x today's line-up, Gemini Flash-Lite (the design that won persona_lab), for active people."""
@@ -317,7 +328,7 @@ def s_raw(d, con, dry):
     return {"items": len(files)}
 
 
-STEPS = [s_launches, s_list_check, s_snap, s_forecast, s_simforecast, s_ranks, s_comments, s_people, s_personas, s_score, s_raw]
+STEPS = [s_launches, s_list_check, s_snap, s_forecast, s_simforecast, s_ranks, s_comments, s_people, s_ph_upvotes, s_personas, s_score, s_raw]
 
 
 def main(argv):

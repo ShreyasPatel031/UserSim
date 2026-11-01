@@ -4,7 +4,8 @@ row (kind upvote, date = the launch day, date_quality launch_day, as every other
 date because the page shows it only roughly). Rows already in `events` (person x launch) are skipped, so re-running is
 safe. One `fetch_state` row per person (source upvotes_signed_in) records the fetch. Slugs that match no launch are
 counted and written to a local file for checking; they are never guessed.
-usage: python -m pipeline.load_signed_in <date | local .jsonl> [--dry]"""
+usage: python -m pipeline.load_signed_in <date | local .jsonl> [--dry]
+       python -m pipeline.load_signed_in <date> --ph [--dry]   (raw/ph_upvotes/, post ids; also the daily step ph_upvotes)"""
 import json, os, subprocess, sys
 import pandas as pd
 from . import warehouse as W
@@ -58,5 +59,40 @@ def load(day, dry=False):
     return out
 
 
+DONE = os.path.expanduser("~/w/ph_upvotes_loaded.txt")   # files already merged (re-merging is safe, only slower)
+
+
+def load_ph(d, dry=False):
+    """Grok Bot's team's upvote-page fetches (raw/ph_upvotes/<date>_*.jsonl, parse_upvotes.py records with post ids)
+    for every file dated up to day d that is not merged yet: incremental.merge_upvotes, so only new person x launch
+    pairs are added, plus fetch_state rows. -> counts for the run log."""
+    from . import incremental as INC
+    ls = subprocess.run(["gsutil", "ls", f"{W.BUCKET}/raw/ph_upvotes/*.jsonl"], capture_output=True, text=True).stdout.split()
+    done = set(open(DONE).read().split()) if os.path.exists(DONE) else set()
+    todo = [f for f in sorted(ls) if f not in done and os.path.basename(f)[:10] <= d]
+    out = {"files": len(todo), "records": 0, "ok_pages": 0, "new_events": 0, "people_deeper": 0}
+    if not todo:
+        return out
+    con = W.connect()
+    for f in todo:
+        recs = [json.loads(l) for l in subprocess.run(["gsutil", "cat", f], capture_output=True, text=True, check=True).stdout.splitlines() if l.strip()]
+        recs = [r for r in recs if r.get("username")]
+        ev, st, deeper = INC.merge_upvotes(con, recs, os.path.basename(f)[:10])
+        out["records"] += len(recs); out["ok_pages"] += sum(r.get("status") == 200 for r in recs)
+        out["new_events"] += len(ev); out["people_deeper"] += len(deeper)
+        if not dry:
+            if len(ev):
+                W.write("events", ev)
+            if len(st):
+                W.write("fetch_state", st)
+            with open(DONE, "a") as g:
+                g.write(f + "\n")
+    print(json.dumps({"ph_upvotes": out, "dry": dry}))
+    return out
+
+
 if __name__ == "__main__":
-    load(sys.argv[1], dry="--dry" in sys.argv)
+    if "--ph" in sys.argv:
+        load_ph(sys.argv[1], dry="--dry" in sys.argv)
+    else:
+        load(sys.argv[1], dry="--dry" in sys.argv)
