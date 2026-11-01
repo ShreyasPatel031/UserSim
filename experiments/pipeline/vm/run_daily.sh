@@ -1,10 +1,10 @@
 #!/bin/bash
-# Daily pipeline: runs at boot (the instance schedule starts this machine at 07:05 UTC), then powers the machine off.
+# Daily pipeline: runs at boot (the instance schedule usersim-daily-start-pt starts this machine at 00:05 Pacific), then powers the machine off.
 #   1. pipeline.daily      launches, forecast, ranks, comments, people, personas, score, raw
 #   2. pipeline.backtest   Mondays and Thursdays: backward test of the last two months
 #   3. pipeline.dash_export  dashboard files to gs://.../usersim_sim/dash/ (a daily scheduled session uploads them)
 #   4. pipeline.hourly     in the background all day: hourly vote snapshots of today's launches; the machine stays on
-#                          until 06:55 UTC, just before the next scheduled start
+#                          until 23:55 Pacific, just before the next scheduled start (00:05 Pacific)
 # A file /home/agent/w/KEEP_ON stops the shutdown (for debugging).
 set -u
 # Maintenance: instance metadata skip-run=1 (settable while the machine is off) skips the run and keeps the machine on:
@@ -26,7 +26,9 @@ BUCKET=gs://usersim-bakeoff-347838016394/usersim_sim
 cd /home/agent/w/experiments
 LOG=/home/agent/w/logs/daily_$(date -u +%Y%m%dT%H%M).log; mkdir -p /home/agent/w/logs
 # hourly vote snapshots of today's launches (launch-day forecast), alongside every step below, until just before the next run
-(timeout 24h python3 -m pipeline.hourly --until 06:55 >> "${LOG%.log}_hourly.log" 2>&1; gsutil -q cp ph_predict/data/vote_snapshots/*.jsonl $BUCKET/raw/vote_snapshots/) &
+# stop at 23:55 Pacific (06:55 UTC in PDT, 07:55 UTC in PST), 10 minutes before the 00:05 Pacific scheduled start
+UNTIL=$(python3 -c "import datetime as dt; from zoneinfo import ZoneInfo; n = dt.datetime.now(ZoneInfo('America/Los_Angeles')); print(n.replace(hour=23, minute=55, second=0, microsecond=0).astimezone(dt.timezone.utc).strftime('%H:%M'))")
+(timeout 24h python3 -m pipeline.hourly --until $UNTIL >> "${LOG%.log}_hourly.log" 2>&1; gsutil -q cp ph_predict/data/vote_snapshots/*.jsonl $BUCKET/raw/vote_snapshots/) &
 HOURLY=$!
 STEPS=${STEPS:-launches,snap,forecast,ranks,comments,people,personas,score,raw}
 timeout 3h python3 -m pipeline.daily --only=$STEPS > "$LOG" 2>&1
