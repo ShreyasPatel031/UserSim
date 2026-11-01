@@ -31,4 +31,6 @@ Budget for data you buy: **$50/month**. Scope: Product Hunt and Hacker News only
    pairs will be at `raw/requests/x_follow_pairs.json` (it contains Product Hunt usernames, so GCS only). Output
    `raw/x/follow_checks.jsonl`: `{"person_x": ..., "maker_x": ..., "follows": true|false|null, "fetched_at": ...}`.
    Use `null` with an `"error"` field when the list is hidden or capped.
-4. **X launch-post engagement** (`raw/requests/grokbot_x_audience_spec.md`, item 1), as pacing allows.
+4. **HN favorites re-fetch** for the HN agent: pages 2–10 returned page 1 again for 795 people. The details are in
+   `feeder/REQUEST.md` on branch `claude/hn-showhn-sim`.
+5. **X launch-post engagement** (`raw/requests/grokbot_x_audience_spec.md`, item 1), as pacing allows.
