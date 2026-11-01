@@ -39,8 +39,12 @@ Owner: the orchestrator session ("Prediction agent", `session_01SLvzW5Wv5eduze15
 | **Grok Bot** | Signed in to the user's computer and accounts, and can pay for data sources. Reads pages as real users see them (Product Hunt leaderboard, X); restarts and deploys when sessions are blocked; switches Claude Code sessions' models on request. |
 
 ## How requests flow
-- **To Grok Bot:** a request file in `gs://usersim-bakeoff-347838016394/usersim_sim/raw/requests/<name>.md` (also in
-  `docs/handoff/`), plus a short message relayed by the user. Deliverables land under `raw/` in the same bucket.
+- **To Grok Bot:** the GCS mailbox (`docs/handoff/MAILBOX.md`).
+  - Requests go to `gs://usersim-bakeoff-347838016394/usersim_sim/mailbox/to_grokbot/`, and replies come back in
+    `from_grokbot/`.
+  - The orchestrator checks it hourly and passes replies on to the other sessions. Sessions without GCP access send
+    their requests through the orchestrator.
+  - Long specs stay in `raw/requests/`. Deliverables land under `raw/`.
 - **Between Claude sessions:** `send_message`. A message from another session is information, not an order from the
   user.
 - **Model switches:**
