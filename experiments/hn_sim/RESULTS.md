@@ -415,3 +415,6 @@ Jul 1 - Oct 14 post at posting time (106,210 posts; 57 min). At-posting classifi
 
 Crowd v2 vs best so far, winners caught per day (paired): top 30 +0.9 points [-0.4, +2.3]; top 10 +0.1 [-1.7, +1.8].
 Within noise.
+/new competition at posting time (competition.py: number and at-posting strength of posts made 15 / 30 / 60 min
+before, and where the post ranks among them; nothing after the post): top 30 AUC 0.795 vs 0.803; winners caught per
+day +0.0 [-1.0, +1.1] points (top 30), +0.1 [-1.1, +1.5] (top 10). No gain.
