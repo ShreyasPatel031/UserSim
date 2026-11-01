@@ -22,8 +22,9 @@ Budget for data you buy: **$50/month**. Scope: Product Hunt and Hacker News only
 
 ## Standing asks (in priority order)
 1. **Daily leaderboard reads** (`raw/requests/grokbot_leaderboard.md`): 00:20 PT and 23:50 PT each day.
-2. **Pipeline machine:** if `usersim-pipeline` (us-central1-a) is still RUNNING at 06:55 UTC, stop it, so the 07:05 UTC
-   schedule can start the day's run. Restarts and deploys that a session's permission check blocks also come to you.
+2. **Pipeline machine:** it records hourly votes until 23:55 PT and then shuts down. If `usersim-pipeline`
+   (us-central1-a) is still RUNNING at 00:02 PT, stop it, so the 00:05 PT schedule (`usersim-daily-start-pt`) can start
+   the day's run. Restarts and deploys that a session's permission check blocks also come to you.
    The session will tell you the exact command.
 3. **X go/no-go sample** (replaces the full follow-list pull for now). For 200 (October voter, that launch's maker) pairs
    and 200 (active non-voter that day, same maker) pairs, record whether the person follows the maker on X. The list of
