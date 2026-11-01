@@ -27,11 +27,14 @@ PAGE = PAGE or TASTE
 PRESENCE = os.environ.get("PRESENCE") == "1"   # + when the person is usually active (presence.py)
 TWIN = os.environ.get("TWIN") == "1"           # + vector twin: recency-weighted taste vector vs the launch (presence.py)
 TIE = os.environ.get("TIE") == "1"             # + tie strength: makers vs hunter, recency, comments, share of history (tie_features)
+LAG = int(os.environ.get("UPV_LAG", "0"))      # live-data test: hide upvotes from the LAG days before each scored day (comments kept)
 TAG = "herd" if HERD else "page_taste" if TASTE else "page" if PAGE else ""
 if PRESENCE or TWIN or TIE:
     TAG = (TAG + "_" if TAG else "") + ("pres" if PRESENCE else "") + ("twin" if TWIN else "") + ("tie" if TIE else "")
+if LAG:
+    TAG += f"_lag{LAG}"
 WORK = os.path.join(HERE, "cache", "popscore_" + TAG if TAG else "popscore")
-PREFIX = "psr_" if TIE else "psq_" if (PRESENCE or TWIN) else "psh_" if HERD else "pst_" if TASTE else "psp_" if PAGE else "psn_"
+PREFIX = f"pl{LAG}_" if LAG else "psr_" if TIE else "psq_" if (PRESENCE or TWIN) else "psh_" if HERD else "pst_" if TASTE else "psp_" if PAGE else "psn_"
 MONTHS = ["2026-04", "2026-05", "2026-06", "2026-07", "2026-08", "2026-09", "2026-10"]
 FEATS = ["backed", "topic", "meaning", "cf_team", "nbr_team", "nbr_pop", "seq_last10", "seq_decay", "seq_nn", "team_recent",
          "cat_rate_max", "cat_rate_mean", "cat_prior", "cat_n"]
@@ -361,11 +364,31 @@ def train_month(m):
     return m, len(D), float(D.y.mean())
 
 
+def lag_view(d):
+    """UPV_LAG: what a live run would see on day d when upvote pages are refreshed only every LAG days. Upvotes dated in
+    [d - LAG, d) are dropped from every feature (ties, history, activity weights, taste); comments are kept (they arrive
+    daily); day-d events stay for the labels. Person models are trained on complete earlier months, as they would be live."""
+    g = load()
+    E = G.setdefault("E_full", g["E"])
+    cut = (pd.Timestamp(d) - pd.Timedelta(days=LAG)).strftime("%Y-%m-%d")
+    G["E"] = E[(E.kind != "upvote") | (E.date < cut) | (E.date >= d)]
+    for k in ("tie_hist", "tie_mk", "tie_hu", "tie_eng", "recip", "comp_nb", "comp_hist"):
+        G.pop(k, None)
+    if TASTE:
+        from . import page_taste
+        page_taste.traits()
+        Z = page_taste.G["Z"]; Ev = G["E"][G["E"].item.astype(str).isin(Z.index)].copy(); Ev["item"] = Ev.item.astype(str)
+        page_taste.G["hist"] = {u: (q.date.values, q.item.values) for u, q in Ev.sort_values("date").groupby("person")}
+    store.load = lambda: (G["P"], G["I"], G["E"])   # choice.rows reads the store itself
+
+
 # ---- phase B: per day, score the population and sum per launch
 def score_day(d):
     path = f"{WORK}/day_{d}.parquet"
     if os.path.exists(path):
         return d, -1
+    if LAG:
+        lag_view(d)
     art = pickle.load(open(f"{WORK}/model_{d[:7]}.pkl", "rb"))
     D = choice.rows(day_from=d, day_to=d, all_people=True)
     if not len(D):

@@ -25,7 +25,8 @@ BOOT_SECONDS = 180           # boot, wait, upload and shutdown around the steps
 
 
 def pacific_today():
-    return (dt.datetime.now(dt.timezone.utc) - dt.timedelta(hours=7)).date().isoformat()
+    from zoneinfo import ZoneInfo
+    return dt.datetime.now(ZoneInfo("America/Los_Angeles")).date().isoformat()
 
 
 def step(name):
@@ -34,7 +35,7 @@ def step(name):
             t0 = time.time(); rec = {"run_date": d, "step": name, "status": "ok", "items": 0, "bytes": 0, "usd": 0.0}
             try:
                 out = fn(d, con, dry) or {}
-                rec.update({k: out[k] for k in ("items", "bytes", "usd") if k in out})
+                rec.update({k: out[k] for k in ("items", "bytes", "usd", "status") if k in out})
             except Exception as e:  # noqa: BLE001
                 rec.update(status=f"error: {str(e)[:300]}")
             rec["seconds"] = round(time.time() - t0, 1); RUNS.append(rec)
@@ -195,7 +196,12 @@ def s_people(d, con, dry):
             W.write("people", pd.DataFrame({"person": newp, "first_seen": d}))
     json.dump(deeper, open(f"/tmp/deeper_{d}.json", "w"))   # scrolled later, stop-at-known (rare)
     usd, nbytes = F.cost(recs_u + recs_f); log_spend(d, "people", usd, dry)
-    return {"items": len(ev) + len(fo), "bytes": nbytes, "usd": sum(usd.values())}
+    out = {"items": len(ev) + len(fo), "bytes": nbytes, "usd": sum(usd.values())}
+    # a blocked fetch must not pass as "ok" (Oct 30 - Nov 1: every upvote page was 403 and the step still said ok)
+    recs = recs_u + recs_f; bad = sum(r["status"] != 200 for r in recs)
+    if recs and bad / len(recs) > 0.5:
+        out["status"] = f"failed: {bad} of {len(recs)} pages blocked or errored (status != 200)"
+    return out
 
 
 @step("personas")
