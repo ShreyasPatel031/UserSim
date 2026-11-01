@@ -53,7 +53,7 @@ def main(argv):
     if "--until" not in argv:
         snapshot(); return
     hh, mm = map(int, argv[argv.index("--until") + 1].split(":"))
-    now = dt.datetime.now(dt.timezone.utc)   # UTC: the machine must be off before the 07:05 UTC scheduled start
+    now = dt.datetime.now(dt.timezone.utc)   # UTC: the machine must be off before the 00:05 Pacific scheduled start
     stop = now.replace(hour=hh, minute=mm, second=0, microsecond=0)
     if stop <= now:
         stop += dt.timedelta(days=1)
