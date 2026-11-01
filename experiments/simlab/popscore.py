@@ -34,8 +34,9 @@ if PRESENCE or TWIN or TIE:
     TAG = (TAG + "_" if TAG else "") + ("pres" if PRESENCE else "") + ("twin" if TWIN else "") + ("tie2" if TIE2 else "tie" if TIE else "")
 if LAG:
     TAG += f"_lag{LAG}"
+TAG += os.environ.get("TAG_SUFFIX", "")   # a separate cache and output for a re-run of an existing configuration
 WORK = os.path.join(HERE, "cache", "popscore_" + TAG if TAG else "popscore")
-PREFIX = f"pl{LAG}{'x' if TIE2 else ''}_" if LAG else ("pnx_" if TIE2 else "pnr_") if (TIE and not PAGE) else "psx_" if TIE2 else "psr_" if TIE else "psq_" if (PRESENCE or TWIN) else "psh_" if HERD else "pst_" if TASTE else "psp_" if PAGE else "psn_"
+PREFIX = os.environ.get("PREFIX") or (f"pl{LAG}{'x' if TIE2 else ''}_" if LAG else ("pnx_" if TIE2 else "pnr_") if (TIE and not PAGE) else "psx_" if TIE2 else "psr_" if TIE else "psq_" if (PRESENCE or TWIN) else "psh_" if HERD else "pst_" if TASTE else "psp_" if PAGE else "psn_")
 MONTHS = ["2026-04", "2026-05", "2026-06", "2026-07", "2026-08", "2026-09", "2026-10"]
 TRAIN_EXTRA = [m for m in os.environ.get("TRAIN_EXTRA", "").split(",") if m]   # e.g. 2026-11: a model trained on Oct for the live pipeline
 FEATS = ["backed", "topic", "meaning", "cf_team", "nbr_team", "nbr_pop", "seq_last10", "seq_decay", "seq_nn", "team_recent",

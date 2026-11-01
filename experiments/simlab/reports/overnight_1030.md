@@ -518,3 +518,29 @@ Setup:
     re-run is in progress.
   - The daily simulation forecast is deployed as a separately scored, tracked forecast. No accuracy gain over `psn`
     is expected from it.
+
+## Does the person-level gain reach the pool's own votes? (`simlab/pool_check.py`, Apr–Oct, 207 days)
+Setup:
+- Per launch: the simulation's expected pool picks (`ev` = sum of weight × p over people active in the 30 days before;
+  `fans` = the same over the 100 most likely).
+- Compared with the real number of pool people who upvoted or commented on launch day.
+- Within-day Spearman correlation, and the top-3 hit of "most pool votes". Paired bootstrap over days.
+- No page inputs. Each month is scored by a model trained on the previous month.
+
+| | Spearman (ev / fans) | Pool top-3 hit (ev / fans) |
+|---|---|---|
+| psn (no tie strength; files from Oct 28) | 0.450 / 0.462 | 42.7 / 43.0 |
+| pnr (+ tie strength) | 0.478 / 0.488 | 46.1 / 46.5 |
+| pnx (+ extensions) | 0.488 / 0.495 | 45.2 / 46.9 |
+
+| Paired | Spearman, ev (95% CI) | Top-3 hit, fans (95% CI) |
+|---|---|---|
+| pnr − psn | +0.028 (+0.009 to +0.047) | +3.5 (+0.5 to +6.8) |
+| pnx − psn | +0.038 (+0.017 to +0.062) | +3.9 (+0.6 to +7.1) |
+| pnx − pnr | +0.010 (−0.008 to +0.028) | +0.3 (−2.7 to +3.4) |
+
+- **Reading:** tie strength makes the simulation better at the pool's own votes: about +3.5 points on the pool top 3,
+  with intervals excluding 0. The extensions add nothing beyond tie strength at this level. The gain disappears at
+  launch level, where the launch-level model leans on audience and reach (most votes come from outside the pool).
+- **Caveat:** the psn files date from Oct 28 (older code). A clean psn rebuild with today's code and data
+  (`TAG_SUFFIX=v2 PREFIX=psn2_`) is running; the psn rows will be replaced when it finishes.
