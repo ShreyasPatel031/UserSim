@@ -50,3 +50,13 @@ gets throttled by HN (about 30 people per hour). You have a residential proxy an
   4. no duplicate (person, page) rows; every story_id is an integer that exists on HN (spot-check 50 via
      https://hacker-news.firebaseio.com/v0/item/<id>.json).
 - Spend: log any proxy cost to the spend table. Tell us when the first 1,000 people are in.
+
+## Favorites: pagination bug (found 2026-11-01 by the hn_sim agent) - please re-fetch pages 2-10
+
+In feeder/favs/*.jsonl, for all 795 people with 3+ pages, every page holds the same story ids as page 1 (e.g.
+lcnPylGDnU4H9OF pages 1-4 all start 46816357, 46345549, 45937302). So the 251,999 ids are 40,446 unique; only the
+first 30 favorites per person were collected. Likely cause: the page parameter was dropped. HN's own "More" link on
+https://news.ycombinator.com/favorites?id=<person> is the reliable way to the next page - follow it rather than
+building the URL. Check before re-running: page 2 differs from page 1 for a person with 60+ favorites.
+Verification to add: for 20 people, page n's first id must not appear on page n-1.
+Please re-fetch pages 2..10 for those 795 people into feeder/favs/favs_p2_<part>.jsonl, same row format.
