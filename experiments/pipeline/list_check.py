@@ -42,9 +42,9 @@ def main(day, path=None):
     return len(miss)
 
 
-def refetch(day):
+def refetch(day, write=True):
     """Page the day again in both API orders and add any launch the first pass missed to data/today/<day>.json
-    (on Oct 31 one ordering repeated 2 launches and missed 2). Returns the names added."""
+    (on Oct 31 one ordering repeated 2 launches and missed 2). Returns the names added (write=False: only reports them)."""
     sys.path.insert(0, PH)
     import collect_ph as C, datetime as dt
     from zoneinfo import ZoneInfo
@@ -62,7 +62,7 @@ def refetch(day):
             if not p["pageInfo"]["hasNextPage"]:
                 break
             cur = p["pageInfo"]["endCursor"]
-    if added:
+    if added and write:
         json.dump(api, open(f, "w"))
     return added
 
