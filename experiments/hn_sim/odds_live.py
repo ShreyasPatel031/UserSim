@@ -195,11 +195,18 @@ def score(rows: pd.DataFrame, now: float | None = None) -> pd.DataFrame:
     if any(a > 0 for a in reached):
         import qn
         os.environ["QN_FINE"] = "1"
-        for pid, born in zip(rows.post_id, rows.created_at_i):
-            if pid > 0:
+        from concurrent.futures import ThreadPoolExecutor
+
+        def one(job):
+            pid, born = job
+            try:
                 r = requests.get(f"https://news.social-protocols.org/stats?id={pid}", timeout=150, headers=qn._s.headers)
-                if r.status_code == 200:
-                    q_by_id[pid] = qn.parse(r.text, int(born))
+                return pid, (qn.parse(r.text, int(born)) if r.status_code == 200 else None)
+            except requests.RequestException:
+                return pid, None
+        jobs = [(pid, born) for pid, born, a in zip(rows.post_id, rows.created_at_i, reached) if pid > 0 and a > 0]
+        with ThreadPoolExecutor(4) as ex:
+            q_by_id = {pid: s for pid, s in ex.map(one, jobs) if s is not None}
     V = vote_feats(rows.reset_index(drop=True), q_by_id, sorted({a for a in reached if a > 0}))
     out = []
     for i, a in enumerate(reached):
@@ -215,9 +222,28 @@ def score(rows: pd.DataFrame, now: float | None = None) -> pd.DataFrame:
     return pd.DataFrame(out)
 
 
+def recent(hours=3):
+    """Score every story posted in the last `hours` at the age it has reached; one JSON per run for live scoring
+    (score_live.py) -> <cache>/odds_live/<day>/<HHMM>.json and the bucket."""
+    import store as S
+    now = time.time()
+    r = requests.get("https://hn.algolia.com/api/v1/search_by_date", timeout=30, params={
+        "tags": "story", "hitsPerPage": 1000, "numericFilters": f"created_at_i>={int(now - hours * 3600)}"}).json()
+    rows = pd.DataFrame([{"post_id": int(h["objectID"]), "title": h.get("title"), "url": h.get("url") or "", "author": h.get("author"),
+                          "created_at_i": h["created_at_i"], "text": h.get("story_text") or ""} for h in r.get("hits", [])])
+    out = score(rows, now)
+    day, hm = time.strftime("%Y-%m-%d", time.gmtime(now)), time.strftime("%H%M", time.gmtime(now))
+    path = os.path.join(H.CACHE, "odds_live", day, f"{hm}.json")
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    out.assign(made_at=int(now)).to_json(path, orient="records")
+    S._bucket().blob(f"usersim_sim/hn_jobs/cache/odds_live/{day}/{hm}.json").upload_from_filename(path)
+    print(len(out), "posts scored ->", path, flush=True)
+    print(out.sort_values("p_top30", ascending=False).head(10).to_string(index=False), flush=True)
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("cmd", choices=["train", "score"])
+    ap.add_argument("cmd", choices=["train", "score", "recent"])
     ap.add_argument("--title")
     ap.add_argument("--url", default="")
     ap.add_argument("--author", default="")
@@ -226,6 +252,8 @@ def main():
     a = ap.parse_args()
     if a.cmd == "train":
         return train()
+    if a.cmd == "recent":
+        return recent()
     if a.id:
         it = requests.get(f"https://hacker-news.firebaseio.com/v0/item/{a.id}.json", timeout=30).json()
         rows = pd.DataFrame([{"post_id": a.id, "title": it.get("title"), "url": it.get("url") or "", "author": it.get("by"),
@@ -235,7 +263,7 @@ def main():
         rows = pd.DataFrame([{"post_id": -1, "title": a.title, "url": a.url, "author": a.author or None, "created_at_i": t, "text": ""}])
     r = score(rows)
     for x in r.itertuples():
-        print(f"{x.title}\n  at {x.age}: P(daily top 30) {x.p_top30:.1%}   P(top 10) {x.p_top10:.1%}")
+        print(f"{x.title}\n  {x.age}: P(daily top 30) {x.p_top30:.1%}   P(top 10) {x.p_top10:.1%}")
 
 
 if __name__ == "__main__":
