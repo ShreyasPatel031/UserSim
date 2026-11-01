@@ -15,7 +15,7 @@ Socrates, OSIM-8B.
    65.8 / 72.9 / 80.8. Pre-launch and launch-day forecasts are reported apart, and both are driven to 90.
 2. **Hacker News agent:** **Caught at posting.** Each post is scored at the moment it is posted, using only what is
    known then (title, link, submitter, time; no votes yet). Rank the day's posts by those scores; Caught = how many of
-   the real daily top 30 are in our top 30. **Target: 100%.** Now: being scored by the HN agent. Time-of-day recall
+   the real daily top 30 are in our top 30. **Target: 100%.** Now: 14.4% [12.5, 16.3] (about 4 of 30), Sep 1 – Oct 14. Time-of-day recall
    (picking the list at 12:00 / 18:00 / 21:00 UTC) is retired: it mostly measures which posts exist yet. Scores at
    15 min / 1 h after posting are extras (they include the post's early votes), not the north star.
 
