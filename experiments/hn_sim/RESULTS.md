@@ -573,3 +573,8 @@ the training period judged: ~106k posts, ~$75 Flash / ~$25 Flash-Lite).
 /new rivals in the 15 / 30 / 60 min before (count, content prior, title score) +0.2 [-0.8, +1.4]; rivals' strength
 by our own at-posting score (out-of-fold) and this post's rank among them -0.1 [-1.7, +1.4]; /new traffic (site-wide
 comments in the previous 60 min, vs the same hour in the previous 4 weeks) +0.1 [-1.3, +1.5]; all +0.4 [-1.3, +2.1].
+
+### 2025+ training with title embeddings (caught.py history2)
+Every 2025+ title now embedded (embed.py EMB_FILL_FROM=2025-01-01: 167,390 titles, $0.278 logged; the old 3+ points /
+comment filter made a missing embedding reveal the outcome). Trained from 2025-01-15 (1,200 trees, 63 leaves): post +
+real-list record 22.4% [20.4, 24.5]; + title embedding (PCA 64) 22.4% [20.2, 24.9], +0.1 [-1.3, +1.7].
