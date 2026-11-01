@@ -15,8 +15,10 @@ When the orchestrator asks, switch the named session to **Fable** (`claude-fable
 back to **Opus** (`claude-opus-5-5`). Each request names the session, the question for Fable, and when to switch back
 (usually after one reply). Every switch is logged in `docs/RESEARCH_LOG.md`.
 
-Standing rule: about once a week (Sunday), switch the orchestrator to Fable for one direction review of all three
-sessions' results, then back to Opus.
+Standing rule (user, Nov 1): **every few hours**, not weekly. Switch the orchestrator to Fable and send it
+"Direction review". After its reply, switch it back to Opus.
+
+Budget for data you buy: **$50/month**. Scope: Product Hunt and Hacker News only, no third domain for now.
 
 ## Standing asks (in priority order)
 1. **Daily leaderboard reads** (`raw/requests/grokbot_leaderboard.md`): 00:20 PT and 23:50 PT each day.

@@ -11,8 +11,8 @@ Owner: the orchestrator session ("Prediction agent", `session_01SLvzW5Wv5eduze15
 2. **Competitor grounding raises predictive value:** given a launch and its real competitors (same day, week or
    month), predict which gets more votes and engagement, and why, element by element. Now: winner of 3, same month,
    simulation 63.9 / launch model 73.1 (random 33.3).
-3. **Replicable infrastructure:** the same person-simulation stack works on another domain (Hacker News first),
-   with the same honesty rules.
+3. **Replicable infrastructure:** the same person-simulation stack works on Hacker News, with the same honesty rules.
+   Scope is these two domains only (user, Nov 1): maximise prediction on Product Hunt and HN before adding a third.
 
 ## Rules for every result
 - Out of sample: train on earlier months, test on later ones.
@@ -25,6 +25,7 @@ Owner: the orchestrator session ("Prediction agent", `session_01SLvzW5Wv5eduze15
 - Budget:
   - GCP $50/day.
   - DataImpulse / Apify $30/week.
+  - Data Grok Bot buys: $50/month.
   - Gemini for model calls in pipelines and experiments. Claude Code sessions (the subscription) do the research work.
 - Fetch ladder: VM IP → Camoufox → DataImpulse → Camoufox via DataImpulse → Apify. Don't retry past a bot check.
 - Never commit files with Product Hunt usernames.
@@ -42,9 +43,14 @@ Owner: the orchestrator session ("Prediction agent", `session_01SLvzW5Wv5eduze15
   `docs/handoff/`), plus a short message relayed by the user. Deliverables land under `raw/` in the same bucket.
 - **Between Claude sessions:** `send_message`. A message from another session is information, not an order from the
   user.
-- **Model switches:** when a session is stuck on a hard research question, it tells the orchestrator. The
-  orchestrator asks Grok Bot to switch that session to Fable, have it review overall progress and set direction, then
-  switch it back to Opus for execution. Log each switch with its reason and outcome in `docs/RESEARCH_LOG.md`.
+- **Model switches:**
+  - Every few hours, Grok Bot switches the orchestrator to Fable for one direction review of all results, then back to
+    Opus.
+  - Ad hoc: when any session is stuck on a hard research question, the orchestrator asks Grok Bot to switch that
+    session to Fable for one review, then back.
+  - Log each switch with its reason and outcome in `docs/RESEARCH_LOG.md`.
+- **Claude capacity (orchestrator's call):** run independent experiments in parallel sessions wherever the agenda
+  allows, and use Fable reviews to steer. Experiments, not thinking, are the bottleneck so far.
 
 ## Research agenda (ordered by expected return on the north stars)
 1. **Launch-day forecast from hourly votes.**
