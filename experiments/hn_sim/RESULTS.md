@@ -503,3 +503,30 @@ day D, rank the posts posted on D; Caught = share of D's real daily top 30 in ou
 | extra, includes early votes: at 15 min | 19.3% [17.3, 21.5] |
 | extra, includes early votes: at 1 h | 41.0% [38.3, 43.6] |
 | extra, includes early votes: at 3 h | 53.7% [50.5, 56.5] |
+
+## North star redefined per post (user, 2026-11-01): Caught = winners flagged / winners
+
+Every test post judged once at a fixed age; winners = posts that made any daily top 30; flags = as many posts as
+winners (highest scores over Sep 1 - Oct 14); 95% interval resampling posting days. 44,263 posts, 1,323 winners,
+44 days; random flags 3.0%.
+
+**Leak found and fixed in the vote-age numbers.** Quality News series were fetched only for posts that ended with 5+
+points (qn.py QN_MIN_POINTS): 23.6% of test posts, 99.5% of winners. A missing series revealed the outcome.
+Honest base = rank only (a post ending < 5 points is truly off the front page); point counts dropped. Leak check =
+AUC of telling real from imputed series from the vote inputs (0.5 = none; rank-only above 0.5 is real front-page
+signal).
+
+| Age | rank-only (headline) | const 1 pt | ramp to final | series-only (outcome-selected) |
+|---|---|---|---|---|
+| at posting | 21.4% [19.3, 23.4] | | | |
+| 15 min | 24.7% [22.6, 26.9] (leak 0.521) | 28.9% (0.667) | 30.3% (0.878) | 36.2% |
+| 1 h | 45.9% [42.1, 49.4] (leak 0.654) | 48.5% (0.942) | 47.9% (0.954) | 48.6% |
+| 3 h | 61.0% [57.7, 64.3] (leak 0.726) | 61.2% (0.966) | 61.5% (0.853) | 62.5% |
+
+Earlier vote-age numbers (Caught day-matched 19.3 / 41.0 / 53.7%; odds_live AUC 0.82 at 15 min, 0.96 at 1 h) used
+points with the same leak; treat them as upper bounds. Clean live test: live_caught.py (hn_minute, no selection),
+from Nov 4; hn_minute ran only ~10 of its first 42.5 h (feeder asked to fix).
+
+Stage-1 levers on the const base (caught1h.py; 48.5%): curve -0.3, comments -0.2, who comments early -0.9, HN
+mechanics -0.8, outside feeds in the first hour -0.6, all +0.2 [-1.3, +1.8]: none helps. Rerun on the rank-only
+base queued.
