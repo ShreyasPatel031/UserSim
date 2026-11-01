@@ -474,3 +474,11 @@ about Nov 14), not a pre-launch one. Twins repeat the existing taste inputs.
   - Limit: page 1 does not reach back to Oct 29 for 34 of 298 heavy upvoters (`has_more`). The full pool (20,947) is
     being fetched.
   - The signed-in file (product slugs) stays unloaded: it matched only 143 of 3,765 rows exactly.
+- **Full pool loaded (21:15 UTC).** `upvotes_page1_full.jsonl`: page 1 for 20,934 of 20,947 people (13 failed), 227,105
+  rows.
+  - Check: 99.9% of page-1 items from launches on or before each person's newest known upvote were already known
+    (121,055 items).
+  - 4,193 new upvotes, on top of the top 300's 3,241.
+  - 102,012 items are launches from before our launch table starts (Jan 1, 2026).
+  - Upvotes per day now: Oct 28 1,055, Oct 29 1,260, Oct 30 1,263, Oct 31 936, Nov 1 678. The usual level was about
+    1,500–1,800 per day; page 1 covers only the 20 newest upvotes per person.
