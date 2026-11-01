@@ -38,6 +38,10 @@ def month(m):
               "category": [c for c in PS.FEATS if c.startswith("cat_")], "content": ["topic", "meaning"] + pc + tc}
     if PS.COMP:
         groups["competitors"] = ["comp_used5", "comp_n20", "comp_best"]
+    if PS.TIE:
+        groups["tie strength"] = PS.TIE_COLS
+    if PS.RECIP:
+        groups["reciprocity"] = ["recip_team", "recip_n"]
     if PS.PRESENCE:
         groups["presence"] = ["pres_early2", "pres_early6", "pres_late", "pres_n"]
     if PS.TWIN:

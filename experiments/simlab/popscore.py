@@ -26,11 +26,12 @@ TASTE = TASTE or HERD
 PAGE = PAGE or TASTE
 PRESENCE = os.environ.get("PRESENCE") == "1"   # + when the person is usually active (presence.py)
 TWIN = os.environ.get("TWIN") == "1"           # + vector twin: recency-weighted taste vector vs the launch (presence.py)
+TIE = os.environ.get("TIE") == "1"             # + tie strength: makers vs hunter, recency, comments, share of history (tie_features)
 TAG = "herd" if HERD else "page_taste" if TASTE else "page" if PAGE else ""
-if PRESENCE or TWIN:
-    TAG = (TAG + "_" if TAG else "") + ("pres" if PRESENCE else "") + ("twin" if TWIN else "")
+if PRESENCE or TWIN or TIE:
+    TAG = (TAG + "_" if TAG else "") + ("pres" if PRESENCE else "") + ("twin" if TWIN else "") + ("tie" if TIE else "")
 WORK = os.path.join(HERE, "cache", "popscore_" + TAG if TAG else "popscore")
-PREFIX = "psq_" if (PRESENCE or TWIN) else "psh_" if HERD else "pst_" if TASTE else "psp_" if PAGE else "psn_"
+PREFIX = "psr_" if TIE else "psq_" if (PRESENCE or TWIN) else "psh_" if HERD else "pst_" if TASTE else "psp_" if PAGE else "psn_"
 MONTHS = ["2026-04", "2026-05", "2026-06", "2026-07", "2026-08", "2026-09", "2026-10"]
 FEATS = ["backed", "topic", "meaning", "cf_team", "nbr_team", "nbr_pop", "seq_last10", "seq_decay", "seq_nn", "team_recent",
          "cat_rate_max", "cat_rate_mean", "cat_prior", "cat_n"]
@@ -147,6 +148,81 @@ if PRESENCE:
     FEATS = FEATS + ["pres_early2", "pres_early6", "pres_late", "pres_n"]
 if TWIN:
     FEATS = FEATS + ["twin_cos", "twin_rank"]
+TIE_COLS = ["tie_maker", "tie_hunter", "tie_maker_comments", "tie_makers_n", "tie_days", "tie_share", "tie_mutual", "tie_rank", "tie_rel_rank"]
+if TIE:
+    FEATS = FEATS + TIE_COLS
+
+
+def tie_features(D):
+    """Tie strength, all from the person's actions before the day (rel_split.py: a line-up holds ~9 tied launches; the
+    model knew a tie existed but not which one the person acts on).
+      tie_maker           log count of the person's past upvotes/comments on launches MADE by this launch's makers
+      tie_hunter          log count on launches HUNTED by this launch's hunter (when the hunter is not a maker)
+      tie_maker_comments  log count of past comments on the makers' launches (a stronger act than an upvote)
+      tie_makers_n        how many of this launch's makers the person has backed
+      tie_days            days since the person last engaged with a maker's launch (999 = never)
+      tie_share           share of the person's past actions that went to these makers
+      tie_mutual          both ways: tie_maker x log(1 + the makers' engagement with the person's own launches)
+      tie_rank            standing of tie_maker within the person's line-up that day (1 = strongest)
+      tie_rel_rank        standing of tie_maker - 0.3 x tie_days/30 within the line-up (strong and recent first)"""
+    g = load()
+    if "tie_hist" not in G:
+        I, E = g["I"], g["E"]
+        mk = {r.id: set(json.loads(r.makers)) - {""} for r in I.itertuples()}
+        hu = {r.id: r.poster for r in I.itertuples()}
+        Es = E[E.item.isin(mk)].sort_values("date")
+        G["tie_hist"] = {u: (gg.date.values, gg.item.values, (gg.kind == "comment").values) for u, gg in Es.groupby("person")}
+        G["tie_mk"], G["tie_hu"] = mk, hu
+        made = defaultdict(list)
+        for x, ms in mk.items():
+            for m in ms:
+                made[m].append(x)
+        eng = defaultdict(list)   # person -> [(date, engager)] on the person's own launches
+        own = E[E.item.isin(mk)]
+        for it, who, dt in zip(own.item, own.person, own.date):
+            for m in mk.get(it, ()):
+                if m != who:
+                    eng[m].append((dt, who))
+        G["tie_eng"] = eng
+    H, mk, hu, eng = G["tie_hist"], G["tie_mk"], G["tie_hu"], G["tie_eng"]
+    cache = {}
+    out = {c: [] for c in TIE_COLS[:7]}
+    for u, d, x in zip(D.person, D.day, D.id):
+        k = (u, d)
+        if k not in cache:
+            h = H.get(u)
+            cm, cc, ch, last = Counter(), Counter(), Counter(), {}
+            tot = 0
+            if h is not None:
+                n = int(np.searchsorted(h[0], d)); tot = n
+                for dt, it, isc in zip(h[0][:n], h[1][:n], h[2][:n]):
+                    for m in mk.get(it, ()):
+                        cm[m] += 1; last[m] = dt
+                        if isc:
+                            cc[m] += 1
+                    p = hu.get(it)
+                    if p and p not in mk.get(it, ()):
+                        ch[p] += 1
+            back = Counter(w for dt, w in eng.get(u, []) if dt < d)
+            cache[k] = (cm, cc, ch, last, tot, back, pd.Timestamp(d))
+        cm, cc, ch, last, tot, back, td = cache[k]
+        ms = mk.get(x, set()); p = hu.get(x)
+        a = sum(cm[m] for m in ms)
+        out["tie_maker"].append(np.log1p(a))
+        out["tie_hunter"].append(np.log1p(ch[p]) if p and p not in ms else 0.0)
+        out["tie_maker_comments"].append(np.log1p(sum(cc[m] for m in ms)))
+        out["tie_makers_n"].append(float(sum(cm[m] > 0 for m in ms)))
+        ls = [last[m] for m in ms if m in last]
+        out["tie_days"].append(float((td - pd.Timestamp(max(ls))).days) if ls else 999.0)
+        out["tie_share"].append(a / tot if tot else 0.0)
+        out["tie_mutual"].append(np.log1p(a) * np.log1p(sum(back[m] for m in ms)))
+    for c, v in out.items():
+        D[c] = v
+    gp = D.groupby(["person", "day"])
+    D["tie_rank"] = gp.tie_maker.rank(ascending=False, method="average")
+    D["_s"] = D.tie_maker - 0.3 * np.minimum(D.tie_days, 360) / 30
+    D["tie_rel_rank"] = D.groupby(["person", "day"])._s.rank(ascending=False, method="average")
+    return D.drop(columns="_s")
 
 
 def recip_features(D):
@@ -227,6 +303,7 @@ def featurize(D, cf, prior_cut):
     D = cat_features(D, prior_cut)
     D = recip_features(D) if RECIP else D
     D = comp_features(D) if COMP else D
+    D = tie_features(D) if TIE else D
     if PRESENCE or TWIN:
         from . import presence
         D = presence.add_presence(D) if PRESENCE else D
