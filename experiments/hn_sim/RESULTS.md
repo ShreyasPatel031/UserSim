@@ -447,3 +447,20 @@ Median per-person AUC, Sep 1 - Oct 14 (all 2,879 people | the 487 with 10+ favor
 
 Favorites help most where there are enough of them (+3 points for people with 10+, +1 overall). Full pages 2-10
 requested from the feeder.
+
+## Tie strength (ties.py; Product Hunt finding: who you know beats content taste). Ties before Jul 1 from 2025+ comments
+and 6.5M reply edges (replies_bq.py, BigQuery 2.1 GB, $0.013).
+
+Individual (median per-person AUC | within popularity bands; 2,879 people, Sep 1 - Oct 14): content taste (+ favorites)
+0.638 | 0.629; ties to the submitter (commented on their stories / replied to them / reciprocity / share of history)
+0.512 | 0.517; content + ties 0.641 | 0.635; + popularity 0.830 | 0.643. 24% of (person, story) pairs have any tie
+(27% of engaged pairs).
+At posting (submitter's tie network: tied people, their presence at the posting hour, /new browsers among them,
+reciprocal ties; 73% of posts have one): top 30 AUC 0.799 vs 0.803; winners caught per day -0.9 [-2.3, +0.5] points;
+top 10 +0.2 [-1.8, +2.2]. On HN, unlike Product Hunt, ties add nothing measurable.
+
+## Single-post odds tool (odds_live.py)
+Same models as odds.py without the crowd inputs (no measurable gain, need the person panel). Test Sep 1 - Oct 14,
+P(top 30): AUC 0.794 at posting, 0.827 at 15 min, 0.900 at 30 min, 0.956 at 1 h, 0.968 at 2 h; mean forecast 2.98%
+vs 2.99% actual at posting. Post features use the same code as training (top10.feats on full history + new posts;
+matches the training features for 99.3-100% of values).
