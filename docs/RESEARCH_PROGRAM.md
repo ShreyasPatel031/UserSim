@@ -1,18 +1,34 @@
 # Research program: user simulation (from Nov 1, 2026)
 
 Owner: the orchestrator session ("Prediction agent", `session_01SLvzW5Wv5eduze15nhtuUT`). History: `docs/HISTORY.md`.
+Company direction: `docs/VISION.md` (Shreyas, Sep 28, 2026). It overrides older framing.
 
-## North stars
-1. **Launch accuracy:** daily top 3 / 5 / 10 of the real Product Hunt leaderboard. Target 90 / 90 / 90. Two claims,
-   always reported apart:
-   - **pre-launch**, simulation only and launch model;
-   - **launch-day**, from hourly votes.
-   Now (pre-launch, Jul–Oct): simulation 62.6 / 71.2 / 79.7, launch model 65.8 / 72.9 / 80.8.
-2. **Competitor grounding raises predictive value:** given a launch and its real competitors (same day, week or
-   month), predict which gets more votes and engagement, and why, element by element. Now: winner of 3, same month,
-   simulation 63.9 / launch model 73.1 (random 33.3).
-3. **Replicable infrastructure:** the same person-simulation stack works on Hacker News, with the same honesty rules.
-   Scope is these two domains only (user, Nov 1): maximise prediction on Product Hunt and HN before adding a third.
+## What we are building
+A research company building state-of-the-art **user simulation models** (fine-tuning our own, plus memory systems).
+Product Hunt and Hacker News are the benchmark: do simulated users predict what real users do? The leaderboard scores
+are how we keep ourselves honest, not the product. Reference models to track (not run without Shreyas's OK): Centaur,
+Socrates, OSIM-8B.
+
+## North stars (as set with the user, Nov 1)
+1. **Product Hunt agent:** first, show that competitor grounding makes the simulation score more predictive; then 90%
+   accuracy on daily top 3 / 5 / 10. Two claims, always reported apart: **pre-launch** and **launch-day** (from hourly
+   votes). Now, pre-launch (Jul–Oct): simulation 62.6 / 71.2 / 79.7, launch model 65.8 / 72.9 / 80.8.
+2. **Hacker News agent:** at least 80% recall on the daily top-30 list. Now: 80.2% at 21:00 UTC, 86.0% end of day.
+3. **Simulation quality (the research core, serves VISION.md):**
+   - **Person level:** given a real person and the day's line-up, does the simulated person pick what they picked?
+     Now: top-3 hit 54.2 (random 20).
+   - **Qualitative:** do simulated users' reactions to each page element match what real users say (launch comments,
+     7,768 Product Hunt reviews)? Not measured yet.
+   - **Transfer:** the same stack and metrics on both domains.
+
+## What the measurements say so far (big picture)
+- On both platforms, who a person is connected to and what is already popular beat content taste. Leaderboards are
+  largely distribution games; the pre-launch ceiling from public data is about 65–70 on top 3 unless the makers'
+  off-platform outreach can be seen. The X test with Grok Bot settles whether it can.
+- The current simulation is a hand-built per-person model summed over a pool. It is the **baseline** a trained
+  simulation model has to beat, on the person-level and qualitative metrics above. We have about 130k dated,
+  out-of-sample person decisions with full line-ups, plus 100k timed comments: a training and evaluation set.
+- Feature tuning for ±2 points on daily top 3 is noise and is no longer the program's work.
 
 ## Rules for every result
 - Out of sample: train on earlier months, test on later ones.
@@ -57,6 +73,12 @@ Owner: the orchestrator session ("Prediction agent", `session_01SLvzW5Wv5eduze15
   allows, and use Fable reviews to steer. Experiments, not thinking, are the bottleneck so far.
 
 ## Research agenda (ordered by expected return on the north stars)
+0. **Benchmark first (orchestrator, this week).** Freeze the person-level and qualitative evaluation: fixed
+   out-of-sample person-days, fixed line-ups, fixed metrics, the current model's scores as baseline. Every later
+   model, trained or hand-built, is scored on exactly this. Output `docs/BENCHMARK.md` + `experiments/simlab/bench/`.
+0b. **Trained simulation model (proposal, needs the user's OK on compute).** Fine-tune a small open model on the
+   person-decision set (person history + line-up -> pick, and -> comment) and score it on the benchmark against the
+   baseline. Cost estimate first; stays inside GCP $50/day or is not run.
 1. **Launch-day forecast from hourly votes.**
    - Data: `vote_snapshots`, clean from Nov 2.
    - Start at about 14 clean days (about Nov 16).
