@@ -18,7 +18,7 @@ python3 -c "import sentence_transformers" 2>/dev/null || {
 mkdir -p /tmp/deploy_$TAG $W/backup_$TAG && cd /tmp/deploy_$TAG
 gsutil -q cp $SRC/code.tar . && tar tf code.tar > files.txt
 # back up the files that exist now (new files have nothing to back up); fail loudly if the backup fails
-(cd $X && sed 's#^experiments/##' /tmp/deploy_$TAG/files.txt | while read -r f; do [ -f "$f" ] && echo "$f"; done > /tmp/deploy_$TAG/existing.txt
+(cd $X && sed 's#^experiments/##' /tmp/deploy_$TAG/files.txt | while read -r f; do if [ -f "$f" ]; then echo "$f"; fi; done > /tmp/deploy_$TAG/existing.txt
  tar cf $W/backup_$TAG/before.tar -T /tmp/deploy_$TAG/existing.txt)
 echo "backed up $(wc -l < /tmp/deploy_$TAG/existing.txt) files to $W/backup_$TAG/before.tar"
 cp $W/run_daily.sh $W/backup_$TAG/run_daily.sh
