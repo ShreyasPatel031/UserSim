@@ -24,6 +24,8 @@ PROJ = os.environ.get("GOOGLE_CLOUD_PROJECT", "project-amer-scs-sandbox")
 URL = f"https://us-central1-aiplatform.googleapis.com/v1/projects/{PROJ}/locations/us-central1/publishers/google/models/{MODEL}:predict"
 OUT = os.path.join(H.CACHE, "title_emb.parquet")
 PART = os.path.join(H.CACHE, "title_emb_parts")
+FILL_FROM = os.environ.get("EMB_FILL_FROM")       # also embed every remaining story posted since this day (no outcome filter)
+PART_FILL = os.path.join(H.CACHE, "title_emb_parts_fill")
 
 
 def domain(u):
@@ -34,9 +36,14 @@ def main():
     p = H.stories()
     c = pd.read_parquet(os.path.join(H.CACHE, "bq_comments.parquet"), columns=["story_id"]).story_id.value_counts()
     keep = p[(p.points >= 3) | (p.day >= "2026-07-01") | p.post_id.isin(c.index)].reset_index(drop=True)
+    part = PART
+    if FILL_FROM:                                  # the 3+ points / comment filter selects on the outcome: fill the rest
+        have = set(np.load(os.path.join(H.CACHE, "title_emb_ids.npy")))
+        keep = p[(p.day >= FILL_FROM) & ~p.post_id.isin(have)].sort_values("post_id").reset_index(drop=True)
+        part = PART_FILL
     keep["text"] = keep.title.fillna("") + " (" + keep.url.map(domain) + ")"
-    os.makedirs(PART, exist_ok=True)
-    done = {int(f.split(".")[0]) for f in os.listdir(PART)}
+    os.makedirs(part, exist_ok=True)
+    done = {int(f.split(".")[0]) for f in os.listdir(part)}
     chunks = [(i, keep.iloc[i:i + 250]) for i in range(0, len(keep), 250) if i not in done]
     print(len(keep), "stories;", len(chunks), "chunks to embed", flush=True)
     cred = vertex_credentials()
@@ -62,7 +69,7 @@ def main():
             return 0
         pr = r.json()["predictions"]
         E = np.array([x["embeddings"]["values"] for x in pr], np.float32)
-        pd.DataFrame({"post_id": df.post_id.to_numpy(), "emb": list(E)}).to_parquet(os.path.join(PART, f"{i}.parquet"))
+        pd.DataFrame({"post_id": df.post_id.to_numpy(), "emb": list(E)}).to_parquet(os.path.join(part, f"{i}.parquet"))
         return int(df.text.str.len().sum())
 
     with ThreadPoolExecutor(4) as ex:
@@ -74,7 +81,8 @@ def main():
     if chars[0]:
         S.spend("hn_sim.embed", usd, f"{MODEL}: {chars[0]} chars, {len(chunks)} requests")
     print(f"embedded {chars[0]} chars, ${usd:.3f}", flush=True)
-    parts = [pd.read_parquet(os.path.join(PART, f)) for f in sorted(os.listdir(PART), key=lambda s: int(s.split(".")[0]))]
+    parts = [pd.read_parquet(os.path.join(d, f)) for d in (PART, PART_FILL) if os.path.isdir(d)
+             for f in sorted(os.listdir(d), key=lambda s: int(s.split(".")[0]))]
     E = pd.concat(parts, ignore_index=True)
     E.to_parquet(OUT)
     print("saved", OUT, E.shape, flush=True)

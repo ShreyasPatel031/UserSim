@@ -230,6 +230,49 @@ def comp():
         print(f"  {name:52s} {ci(s)}  difference {diff(s, base)}", flush=True)
 
 
+def history2():
+    """Train from 2025-01-15 with post features + real-list record + title embedding (PCA 64; every post embedded,
+    embed.py EMB_FILL_FROM, so missing embeddings don't reveal the outcome). Same test posts and metric."""
+    import levers as LV
+    import emb_io
+    from sklearn.decomposition import PCA
+    pa = H.stories()
+    pa = pa[(pa.day >= "2025-01-15") & (pa.day <= "2026-10-14")].reset_index(drop=True)
+    R = LV.record(H.stories(), set(pa.post_id))
+    Bh = pd.read_parquet(os.path.join(H.CACHE, "daily_cache.parquet"))[["post_id", "text_score"] + bcols].drop_duplicates("post_id")
+    Qh = pa[["post_id", "day"]].merge(Bh, on="post_id", how="left").merge(R, on="post_id", how="left")
+    Qh["y"] = Qh.post_id.isin(set(L[L["rank"] <= 30].post_id)).astype(int)
+    emb, ei = emb_io.load()
+    print(f"embedding coverage 2025+: {Qh.post_id.isin(ei.index).mean():.1%}", flush=True)
+    rows = ei.reindex(Qh.post_id).to_numpy()
+    has = ~np.isnan(rows)
+    tr_rows = np.where(has & (Qh.day < "2026-09-01").to_numpy())[0]
+    samp = np.sort(rng.choice(tr_rows, min(100000, len(tr_rows)), replace=False))
+    pca = PCA(64, random_state=0).fit(np.asarray(emb[np.sort(rows[samp].astype(int))], np.float32))
+    Z = np.full((len(Qh), 64), np.nan, np.float32)
+    idx = np.where(has)[0]
+    for i in range(0, len(idx), 50000):
+        j = idx[i:i + 50000]
+        r = rows[j].astype(int)
+        o = np.argsort(r)
+        z = pca.transform(np.asarray(emb[r[o]], np.float32))
+        Z[j[o]] = z
+    PC = [f"pc{k}" for k in range(64)]
+    Qh = pd.concat([Qh, pd.DataFrame(Z, columns=PC)], axis=1)
+    REC = [c for c in R.columns if c != "post_id"]
+    Xte = Qh.set_index("post_id").reindex(Q.post_id[te])
+    tr_ = Qh[Qh.day < "2026-09-01"]
+    ref = None
+    for name, cols in (("post + real-list record", POST + REC), ("+ title embedding", POST + REC + PC)):
+        m = lgb.LGBMClassifier(n_estimators=1200, learning_rate=0.03, num_leaves=63, min_child_samples=50, subsample=0.8,
+                               subsample_freq=1, colsample_bytree=0.8, verbose=-1, random_state=0).fit(tr_[cols], tr_.y)
+        sc = m.predict_proba(Xte[cols])[:, 1]
+        s = caught(sc)
+        ref = s if ref is None else ref
+        print(f"  train from 2025-01-15, {name:28s} {ci(s)}  vs post + record {diff(s, ref)}", flush=True)
+    np.save(os.path.join(H.CACHE, "caught_hist2_test_scores.npy"), sc)
+
+
 def history():
     """More training history: post features + real-list record, trained on posts from 2025-01-15 / 2026-01-01 /
     2026-07-01 up to Aug 31 (the lists start 2025-01). Same test posts and metric."""
@@ -254,7 +297,9 @@ def history():
             print(f"  train from {start} ({len(tr_)} posts, {int(tr_.y.sum())} winners), {name:24s} {ci(s)}  vs first {diff(s, ref)}", flush=True)
 
 
-if __name__ == "__main__" and "comp" in sys.argv[1:]:
+if __name__ == "__main__" and "history2" in sys.argv[1:]:
+    history2()
+elif __name__ == "__main__" and "comp" in sys.argv[1:]:
     comp()
 elif __name__ == "__main__" and "history" in sys.argv[1:]:
     history()
