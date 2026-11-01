@@ -162,7 +162,7 @@ def simvotes():
     full = POST + KNN + EMB + CROWD
     base = caught(model(full))
     print(f"current at posting: {ci(base)}", flush=True)
-    for inputs_name, X_cols in (("simulated audience only", SIM), ("simulated audience + post", full + SIM)):
+    for inputs_name, X_cols in (("simulated audience only", SIM), ("simulated audience + post", list(dict.fromkeys(full + SIM)))):
         preds = {}
         for a in (15, 60):
             for tgt in ("points", "best_rank"):
