@@ -19,8 +19,8 @@ Socrates, OSIM-8B.
 
    | Stage | Judged at | Now (per post, Sep 1 – Oct 14, 1,323 winners) | Target |
    |---|---|---|---|
-   | 1 | 1 h after posting | 48.5%, withdrawn: leak, re-scoring | 80% |
-   | 2 | 15 min after posting | 27.7%, withdrawn: leak, re-scoring | 80% |
+   | 1 | 1 h after posting | 45.9% [42.1, 49.4] (rank only; leak-free) | 80% |
+   | 2 | 15 min after posting | 24.7% [22.6, 26.9] (rank only; leak-free) | 80% |
    | 3 | At posting, no votes yet | 21.4% [19.3, 23.4] (random 3.0%) | 80% |
 
 Supporting measures (they serve the north stars, they are not targets of their own): person-level pick accuracy
