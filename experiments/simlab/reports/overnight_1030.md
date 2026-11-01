@@ -459,3 +459,9 @@ about Nov 14), not a pre-launch one. Twins repeat the existing taste inputs.
   - With tie strength removed as well: 49.9.
   - Before tie strength: 50.4.
 - Launch-level run (`SIM_SRC=psx` vs `psr`, paired bootstrap) is in progress.
+- **list_check on the featured reads (Nov 1, 19:15 UTC):**
+  - Oct 31 (final): API 22, featured page 22, no launch missing or repeated.
+  - Nov 1 (read at 11:15 PT): API 19, featured page 17, none missing from the API.
+  - The 2 extra in the API are Fluent 2 and Hamdori, ranks 18 and 19 on the "all" tab, both `featuredAt` 07:01 UTC.
+    The featured read probably stopped before the bottom of the list, or the page was still updating. To check
+    against tonight's final read.
