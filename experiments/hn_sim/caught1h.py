@@ -26,6 +26,7 @@ import odds_live as OL
 import top100 as H
 
 A_MIN = int(os.environ.get("AGE_MIN", "60"))
+RANK_ONLY = os.environ.get("RANK_ONLY") == "1"        # honest base: no point counts (they leak via QN selection)
 CUT = pd.Timestamp("2026-07-01", tz="UTC").timestamp()
 Q = C.Q
 full = C.POST + C.KNN + C.EMB + C.CROWD
@@ -131,6 +132,11 @@ if __name__ == "__main__":
     CV = curve(a)
     CM, WHO = comments(a)
     MX = mech(CV, a)
+    if RANK_ONLY:
+        V = V[["rank_now", "best_rank"]]
+        CV = CV[[c for c in CV.columns if not c.startswith("cv_p") and c != "cv_acc"]]
+        MX = MX[["mx_rank_resid"]].assign(mx_rank_resid=CV[f"cv_r{a}"])     # gravity needs points: keep rank only
+        print("RANK_ONLY: point counts dropped from all inputs", flush=True)
     OT = outside(a)
     # leak check: can the vote inputs tell a real series from an imputed one, among posts with <= 4 points by now?
     import lightgbm as lgb
