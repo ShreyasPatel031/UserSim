@@ -17,11 +17,11 @@ Socrates, OSIM-8B.
    top 30; we flag as many posts as there are winners (about 30 a day); Caught = winners flagged / all winners.
    Staged targets, each to **80%** before the next becomes the focus:
 
-   | Stage | Judged at | Now (day-matched, re-scoring per post) | Target |
+   | Stage | Judged at | Now (per post, Sep 1 – Oct 14, 1,323 winners) | Target |
    |---|---|---|---|
-   | 1 | 1 h after posting | 41.0% | 80% |
-   | 2 | 15 min after posting | 19.3% | 80% |
-   | 3 | At posting, no votes yet | 14.4% (per post, quick model: 11.2%) | 80% |
+   | 1 | 1 h after posting | 48.5% [45.3, 52.0] | 80% |
+   | 2 | 15 min after posting | 27.7% [25.9, 29.7] | 80% |
+   | 3 | At posting, no votes yet | 21.4% [19.3, 23.4] (random 3.0%) | 80% |
 
 Supporting measures (they serve the north stars, they are not targets of their own): person-level pick accuracy
 (top-3 hit 54.2 now, random 20) and whether simulated reactions match real comments and reviews. They tell us where
