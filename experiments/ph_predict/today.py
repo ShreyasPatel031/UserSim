@@ -1,13 +1,15 @@
 """Fetch the launches featured on a given (current) day into data/today/<date>.json — same fields as the
 collector; their votes are not final and are never used as inputs."""
 import json, os, sys, datetime as dt
+from zoneinfo import ZoneInfo
 import collect_ph as C
 
+PT = ZoneInfo("America/Los_Angeles")   # Product Hunt's day: 00:00 Pacific, -07:00 in PDT and -08:00 in PST
 d = dt.date.fromisoformat(sys.argv[1])
-a, b = f"{d}T00:00:00-07:00", f"{d + dt.timedelta(days=1)}T00:00:00-07:00"
+a = dt.datetime.combine(d, dt.time(0), PT).isoformat(); b = dt.datetime.combine(d + dt.timedelta(days=1), dt.time(0), PT).isoformat()
 nodes, cur = [], None
 while True:
-    p, rem = C.gql({"a": a, "b": b, "c": cur})
+    p, rem = C.gql({"a": a, "b": b, "c": cur}, C.Q_NEWEST)   # RANKING shifts while paging a live day
     nodes += [e["node"] for e in p["edges"]]
     if not p["pageInfo"]["hasNextPage"]:
         break

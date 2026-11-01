@@ -12,11 +12,14 @@ makers{id username name headline followersCount twitterUsername websiteUrl creat
 user{id username name headline followersCount twitterUsername createdAt}"""
 Q = """query($a:DateTime!,$b:DateTime!,$c:String){ posts(first:20, after:$c, featured:true, postedAfter:$a,
 postedBefore:$b, order:RANKING){ totalCount pageInfo{hasNextPage endCursor} edges{node{%s}}}}""" % FIELDS
+# During a live day the ranking changes between pages, so RANKING paging repeats some launches and skips others
+# (Oct 31: SKI and Specsight twice, Godwit and AwaitIO missing). NEWEST is a stable order for live days.
+Q_NEWEST = Q.replace("order:RANKING", "order:NEWEST")
 
 
-def gql(variables):
+def gql(variables, query=None):
     while True:
-        req = urllib.request.Request(URL, json.dumps({"query": Q, "variables": variables}).encode(),
+        req = urllib.request.Request(URL, json.dumps({"query": query or Q, "variables": variables}).encode(),
                                      {"Authorization": "Bearer " + os.environ["PH_TOKEN"],
                                       "Content-Type": "application/json", "Accept": "application/json"})
         try:

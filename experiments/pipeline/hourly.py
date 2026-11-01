@@ -29,7 +29,7 @@ def snapshot():
     a, b = start.isoformat(), end.isoformat()
     nodes, cur, seen = [], None, set()
     while True:
-        p, rem = C.gql({"a": a, "b": b, "c": cur})
+        p, rem = C.gql({"a": a, "b": b, "c": cur}, C.Q_NEWEST)   # stable order while votes change
         for e in p["edges"]:
             n = e["node"]
             if str(n["id"]) not in seen:   # the list can shift while paging: keep each launch once
