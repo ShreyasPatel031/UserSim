@@ -183,6 +183,53 @@ def simvotes():
         print(f"  + expected early votes from {inputs_name:28s} {ci(s)}  difference {diff(s, base)}", flush=True)
 
 
+def comp():
+    """Competition at the posting minute: posts on /new in the 15 / 30 / 60 min before (count, content prior, title
+    score; competition.py), their strength by our own at-posting score (out-of-fold on the fit period) and where this
+    post ranks among them, and /new traffic (site-wide comments in the previous 60 min, vs the same hour's 4-week mean)."""
+    global Q
+    Cf = pd.read_parquet(os.path.join(H.CACHE, "competition_feats.parquet"))
+    Q = Q.merge(Cf, on="post_id", how="left")
+    full = POST + KNN + EMB + CROWD
+    base = caught(model(full))
+    print(f"current at posting: {ci(base)}", flush=True)
+    # own at-posting score for every post (out-of-fold on the fit period)
+    days = np.array(sorted(set(Q.day[fit])))
+    fold = Q.day.map(pd.Series(np.arange(len(days)) * 5 // len(days), index=days)).to_numpy()
+    sc = np.full(len(Q), np.nan)
+    prm = dict(n_estimators=600, learning_rate=0.03, num_leaves=31, min_child_samples=30, subsample=0.8,
+               subsample_freq=1, colsample_bytree=0.8, verbose=-1, random_state=0)
+    for f in range(5):
+        m = lgb.LGBMClassifier(**prm).fit(Q.loc[fit & (fold != f), full], Q.y[fit & (fold != f)])
+        sc[fit & (fold == f)] = m.predict_proba(Q.loc[fit & (fold == f), full])[:, 1]
+    sc[te] = lgb.LGBMClassifier(**prm).fit(Q.loc[fit, full], Q.y[fit]).predict_proba(Q.loc[te, full])[:, 1]
+    o = np.argsort(Q.created_at_i.to_numpy(), kind="stable")
+    t, s_ = Q.created_at_i.to_numpy()[o], sc[o]
+    cs = np.r_[0, np.cumsum(s_)]
+    feats = {}
+    for m_ in (15, 30, 60):
+        lo = np.searchsorted(t, t - m_ * 60)
+        hi = np.arange(len(t))
+        n = hi - lo
+        feats[f"cs{m_}_mean"] = np.where(n > 0, (cs[hi] - cs[lo]) / np.maximum(n, 1), np.nan)
+    lo = np.searchsorted(t, t - 1800)
+    feats["cs30_max"] = [s_[a:b].max() if b > a else np.nan for a, b in zip(lo, range(len(t)))]
+    feats["cs30_own_rank"] = [(s_[a:b] > s_[b]).sum() if b > a else 0 for a, b in zip(lo, range(len(t)))]
+    c = pd.read_parquet(os.path.join(H.CACHE, "bq_comments.parquet"), columns=["created_at_i"]).created_at_i.to_numpy()
+    c.sort()
+    n60 = np.searchsorted(c, t) - np.searchsorted(c, t - 3600)
+    wk = np.mean([np.searchsorted(c, t - k * 7 * 86400) - np.searchsorted(c, t - k * 7 * 86400 - 3600) for k in (1, 2, 3, 4)], axis=0)
+    feats["traffic60"], feats["traffic_vs_usual"] = n60, n60 / np.maximum(wk, 1)
+    F = pd.DataFrame(feats)
+    F.index = Q.index[o]
+    F = F.sort_index()
+    COMP = [c_ for c_ in Cf.columns if c_ != "post_id"]
+    for name, X in (("+ /new competition (count, content prior)", Q[COMP]), ("+ competitors' strength by our score", F.drop(columns=["traffic60", "traffic_vs_usual"])),
+                    ("+ /new traffic (site comments, previous 60 min)", F[["traffic60", "traffic_vs_usual"]]), ("+ all competition", pd.concat([Q[COMP], F], axis=1))):
+        s = caught(model(full, X))
+        print(f"  {name:52s} {ci(s)}  difference {diff(s, base)}", flush=True)
+
+
 def history():
     """More training history: post features + real-list record, trained on posts from 2025-01-15 / 2026-01-01 /
     2026-07-01 up to Aug 31 (the lists start 2025-01). Same test posts and metric."""
@@ -207,7 +254,9 @@ def history():
             print(f"  train from {start} ({len(tr_)} posts, {int(tr_.y.sum())} winners), {name:24s} {ci(s)}  vs first {diff(s, ref)}", flush=True)
 
 
-if __name__ == "__main__" and "history" in sys.argv[1:]:
+if __name__ == "__main__" and "comp" in sys.argv[1:]:
+    comp()
+elif __name__ == "__main__" and "history" in sys.argv[1:]:
     history()
 elif __name__ == "__main__" and "levers" in sys.argv[1:]:
     levers()
