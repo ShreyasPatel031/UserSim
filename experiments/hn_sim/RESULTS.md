@@ -530,3 +530,18 @@ from Nov 4; hn_minute ran only ~10 of its first 42.5 h (feeder asked to fix).
 Stage-1 levers on the const base (caught1h.py; 48.5%): curve -0.3, comments -0.2, who comments early -0.9, HN
 mechanics -0.8, outside feeds in the first hour -0.6, all +0.2 [-1.3, +1.8]: none helps. Rerun on the rank-only
 base queued.
+
+### At-posting levers (caught.py levers; base 21.4% [19.3, 23.4]; paired by day)
+
+| Lever | Caught | with vs without |
+|---|---|---|
+| without submitter history (b_sub_*, b_author_*) | 20.9% | -0.5 [-1.9, +0.9] |
+| + submitter tie network (ties.py) | 21.0% | -0.4 [-1.8, +1.1] |
+| without any domain / author record | 19.3% | **-2.0 [-3.5, -0.5]** |
+| + record on the real daily list (domain, site, author) | 22.0% | +0.6 [-0.8, +2.1] |
+| + outside feeds before posting (own link seen, domain buzz; 6.0% of posts, 10.4% of winners) | 21.9% | +0.5 [-0.8, +1.8] |
+| + day fit (6 h comment topics, previous 2 days' top 30, nearest post) | 22.1% | +0.8 [-0.7, +2.0] |
+| + all four | 21.5% | +0.1 [-1.6, +1.7] |
+
+The existing domain/author record is the one input that matters (-2.0 without it). The new levers each add +0.5 to +0.8,
+none significant, and together +0.1: at posting, the model is at its noise floor with these inputs.
