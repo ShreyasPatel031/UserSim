@@ -465,3 +465,12 @@ about Nov 14), not a pre-launch one. Twins repeat the existing taste inputs.
   - The 2 extra in the API are Fluent 2 and Hamdori, ranks 18 and 19 on the "all" tab, both `featuredAt` 07:01 UTC.
     The featured read probably stopped before the bottom of the list, or the page was still updating. To check
     against tonight's final read.
+- **Upvotes restored (top 300, Nov 1, 20:05 UTC).** Grok Bot's team fetched page 1 (the 20 newest upvotes) through route 4,
+  with a `post_id` on every row: `raw/ph_upvotes_full/upvotes_page1_top300.jsonl`, 298 of 300 people (2 still 403).
+  - Check: 98.9% of page-1 items from launches on or before the person's newest known upvote were already in
+    `events` (2,729 items).
+  - Loaded 3,241 new upvotes (`pipeline.load_signed_in upvotes_page1_top300 --full`). Upvotes per day now: Oct 30 584,
+    Oct 31 562, Nov 1 418.
+  - Limit: page 1 does not reach back to Oct 29 for 34 of 298 heavy upvoters (`has_more`). The full pool (20,947) is
+    being fetched.
+  - The signed-in file (product slugs) stays unloaded: it matched only 143 of 3,765 rows exactly.
