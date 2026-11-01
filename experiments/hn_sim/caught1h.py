@@ -38,9 +38,9 @@ def curve(a):
     rows = []
     for pid, born, fp in zip(Q.post_id, Q.created_at_i, Q.points.astype(float)):
         s = by.get(pid)
-        # no series = the post ended with < 5 points (series were fetched only for 5+): impute a small ramp so a
-        # missing series does not reveal the outcome (see caught.honest)
-        r = {f"cv_p{m}": 1 + (fp - 1) * min(1.0, m / 60) for m in steps} | {f"cv_r{m}": 91 for m in steps}
+        # no series = the post ended with < 5 points (series were fetched only for 5+): constant 1 point, off the
+        # front page, at every age (outcome-free; see caught.honest)
+        r = {f"cv_p{m}": 1.0 for m in steps} | {f"cv_r{m}": 91 for m in steps}
         r |= {"cv_front_min": 999.0, "cv_top10_min": 999.0, "cv_n_front": 0}
         if s is not None:
             up = pd.Series(s.qn_up_10m, dtype=float).ffill().fillna(1).to_numpy()
