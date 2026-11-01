@@ -480,7 +480,7 @@ Ties now include days since the last interaction and the tie's rank among the pe
 On HN, content taste beats ties (opposite of Product Hunt); ties add +0.5 points on top of content.
 
 18:00 round 5 (v4_t18c.py): the per-post content signals in the daily hybrid (paired by day vs hybrid 65.8% / 80.2%):
-similar past titles 18:00 -0.7 [-1.5, +0.1], 21:00 -0.7 [-1.4, +0.1]; + embedding -0.7 / -0.7; crowd v1 + v2
+similar past titles 18:00 -0.6 [-1.2, +0.0], 21:00 -0.7 [-1.4, +0.1]; + embedding -0.7 / -0.7; crowd v1 + v2
 -0.6 / -0.1; all -0.7 / -0.6 points. No gain: by 18:00 the votes carry what the content signals know.
 
 Live per-post odds: odds_live.py recent runs hourly at :35 on hn-sim-1 (every story of the last 3 h at the age it has
