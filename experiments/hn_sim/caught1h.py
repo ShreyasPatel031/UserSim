@@ -158,6 +158,6 @@ if __name__ == "__main__":
         print(f"  + {name:10s} {C.ci(s)}  difference {C.diff(s, base)}", flush=True)
     s = C.caught(C.model(full, pd.concat([V] + list(sets.values()), axis=1)))
     print(f"  + all       {C.ci(s)}  difference {C.diff(s, base)}", flush=True)
-    s2 = C.caught(C.model(full, pd.concat([V, CV, CM, WHO], axis=1)))
-    print(f"  + curve, comments, who  {C.ci(s2)}  difference {C.diff(s2, base)}", flush=True)
+    s2 = C.caught(C.model(full, pd.concat([V, CV, WHO], axis=1)))
+    print(f"  + curve, who  {C.ci(s2)}  difference {C.diff(s2, base)}", flush=True)
     pd.concat([Q[["post_id"]], V, CV, CM, WHO, MX, OT], axis=1).to_parquet(os.path.join(H.CACHE, f"caught{a}_feats.parquet"), index=False)

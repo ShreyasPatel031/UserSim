@@ -587,3 +587,15 @@ vs the Jul-Aug model (reference only, chosen on test: 0.3 -> 23.1%, 0.7 -> 22.9%
 ## North star as of 2026-11-01 (Shreyas): per-post Caught at three checkpoints
 Checkpoint 1 = 1 h after posting (focus, to 80%), 2 = 15 min, 3 = at posting. Current: 1 h 45.9% [42.1, 49.4]
 (rank only), 15 min 24.7% [22.6, 26.9] (rank only), at posting 23.2% [21.2, 25.3].
+
+### Checkpoint 1 levers on the honest (rank-only) base (RANK_ONLY=1 caught1h.py; base 45.9% [42.1, 49.4])
+Leak check (real vs imputed series from the rank inputs): AUC 0.654 (front-page presence; real signal).
+| Lever | Caught at 1 h | with vs without |
+|---|---|---|
+| + rank curve (rank every 10 min, front-page entry time, minutes on it, trend) | 46.7% | +0.8 [-0.1, +1.8] |
+| + comments (count by 15 / 30 / 60 min, last 20 min, commenters, first delay) | 46.4% | +0.5 [-0.5, +1.5] |
+| + who comments early (commenters' record before Jul 1; proven scouts) | 47.0% | **+1.1 [+0.2, +2.2]** |
+| + HN mechanics (rank) | 46.4% | +0.5 [-0.4, +1.5] |
+| + outside feeds in the first hour | 46.1% | +0.2 [-0.7, +1.3] |
+| + all | 46.3% | +0.5 [-0.6, +1.7] |
+| + curve, comments, who | 46.2% | +0.3 [-0.5, +1.2] |
