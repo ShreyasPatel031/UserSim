@@ -8,7 +8,7 @@ the day is final), predicting today.
 usage: python sim_forecast.py <YYYY-MM-DD>   -> results/sim_forecast_<day>.md, results/dash/sim_forecast.json"""
 import glob, gzip, json, math, os, sys
 import numpy as np, pandas as pd, lightgbm as lgb
-import features as F
+import features as F, run as RN
 
 D = "data"
 LIVE = os.environ.get("SIM_LIVE", f"{D}/sim_live")   # live simulation rows (pipeline.sim_daily)
@@ -43,7 +43,7 @@ def sim_rows(day):
 
 
 def main(day):
-    B = F.build(include_today=True); B["id"] = B.id.astype(str)
+    B = RN.load_llm(F.build(include_today=True)); B["id"] = B.id.astype(str)   # as forecast.py: drop "known" launches
     B = B[~B.known]
     blocks = [c for c in B if c.startswith(("hist_", "promo_", "fol_"))] + [c for c in ("x_maker_max_followers", "x_company_followers") if c in B]
     A = B[["id", "day", "is_today", "logv"] + blocks].merge(sim_rows(day), on="id").merge(reach(day), on="id", how="left")
