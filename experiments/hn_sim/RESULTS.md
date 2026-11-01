@@ -599,3 +599,15 @@ Leak check (real vs imputed series from the rank inputs): AUC 0.654 (front-page 
 | + outside feeds in the first hour | 46.1% | +0.2 [-0.7, +1.3] |
 | + all | 46.3% | +0.5 [-0.6, +1.7] |
 | + curve, comments, who | 46.2% | +0.3 [-0.5, +1.2] |
+
+### History score as an input (caught.py hist_prior; history model trained 2025-01-15 .. 2026-06-30 only)
+At posting: history model alone 22.4% (+1.0 [-0.7, +2.9] vs the Jul-Aug model); as an input to the Jul-Aug model
+21.9% (+0.5 [-0.8, +1.9]). The 50/50 blend (23.2%) stays the best at posting.
+Checkpoint 1 (rank-only + history score; HIST=1 RANK_ONLY=1 caught1h.py): **47.2% [43.7, 50.6]** (was 45.9%).
+Levers on top: curve +0.3, comments +0.4, who -0.2, mechanics +0.6, outside +0.8 [-0.1, +1.8], all +0.4,
+curve + who +0.0 (none significant).
+
+### What the 1 h checkpoint sees (test winners, Quality News series; 99.5% of winners have one)
+Winners on the front page (top 30) by 1 h: 48.5% (non-winners: 2.95%, 1,265 posts); by 3 h 66.9% (4.22%, 1,814); by
+24 h 80.5% (4.80%, 2,063). Half the winners are not yet visible on the front page at 1 h: for them the 1 h
+checkpoint is the at-posting / /new problem (plus second-chance re-ups later).
