@@ -116,8 +116,79 @@ def levers():
           f"among real top 30 {(Q[te & (Q.y == 1).to_numpy()].fd_n > 0).mean():.1%}", flush=True)
 
 
-if __name__ == "__main__" and "levers" in sys.argv[1:]:
+def simvotes():
+    """Person simulation -> expected early votes, used at posting. Stage 1 predicts the post's points and best rank at
+    15 / 60 min from what is known at posting: the simulated audience (crowd v1/v2: /new browsers and readers online at
+    that hour, their taste vs the title), the submitter's tie network, the day's topic fit, plus post features.
+    Out-of-fold on the fit period (5 blocks of days), fit-period model for the test. Stage 2 adds the predicted early
+    votes to the at-posting classifier; Caught with and without, paired by day."""
+    global Q
+    from scipy.stats import spearmanr
+    Lv = pd.read_parquet(os.path.join(H.CACHE, "caught_levers.parquet"))
+    T = pd.read_parquet(os.path.join(H.CACHE, "tie_post_feats.parquet"))
+    Q = Q.merge(Lv, on="post_id", how="left").merge(T, on="post_id", how="left")
+    SIM = CROWD + [c for c in T.columns if c != "post_id"] + [c for c in Lv.columns if c.startswith("af_")]
+    _, qs = fine_io.load()
+    q_by_id = {r.post_id: {"qn_f0": r.qn_f0, "qn_rank_10m": r.qn_rank_10m, "qn_up_10m": r.qn_up_10m, "qn_exp_10m": r.qn_exp_10m}
+               for r in qs.itertuples()}
+    V = OL.vote_feats(Q, q_by_id, [15, 60])
+    days = np.array(sorted(set(Q.day[fit])))
+    block = pd.Series(np.arange(len(days)) * 5 // len(days), index=days)
+    fold = Q.day.map(block).to_numpy()
+    full = POST + KNN + EMB + CROWD
+    base = caught(model(full))
+    print(f"current at posting: {ci(base)}", flush=True)
+    for inputs_name, X_cols in (("simulated audience only", SIM), ("simulated audience + post", full + SIM)):
+        preds = {}
+        for a in (15, 60):
+            for tgt in ("points", "best_rank"):
+                y = np.log1p(V[a][tgt].to_numpy()) if tgt == "points" else -np.log1p(V[a][tgt].fillna(999).to_numpy())
+                ok = ~np.isnan(y)
+                pr = np.full(len(Q), np.nan)
+                reg = dict(n_estimators=400, learning_rate=0.05, num_leaves=31, min_child_samples=30, subsample=0.8,
+                           subsample_freq=1, colsample_bytree=0.8, verbose=-1, random_state=0)
+                for f in range(5):
+                    tr_ = fit & ok & (fold != f)
+                    pr[fit & (fold == f)] = lgb.LGBMRegressor(**reg).fit(Q.loc[tr_, X_cols], y[tr_]).predict(Q.loc[fit & (fold == f), X_cols])
+                pr[te] = lgb.LGBMRegressor(**reg).fit(Q.loc[fit & ok, X_cols], y[fit & ok]).predict(Q.loc[te, X_cols])
+                m_ = te & ok
+                print(f"  [{inputs_name}] predicted {tgt} at {a} min vs real (test, Spearman): {spearmanr(pr[m_], y[m_])[0]:.3f}", flush=True)
+                preds[f"sim_{tgt}_{a}"] = pr
+        P = pd.DataFrame(preds, index=Q.index)
+        s = caught(model(full, P))
+        print(f"  + expected early votes from {inputs_name:28s} {ci(s)}  difference {diff(s, base)}", flush=True)
+
+
+def history():
+    """More training history: post features + real-list record, trained on posts from 2025-01-15 / 2026-01-01 /
+    2026-07-01 up to Aug 31 (the lists start 2025-01). Same test posts and metric."""
+    import levers as LV
+    pa = H.stories()
+    pa = pa[(pa.day >= "2025-01-15") & (pa.day <= "2026-10-14")].reset_index(drop=True)
+    R = LV.record(H.stories(), set(pa.post_id))
+    Bh = pd.read_parquet(os.path.join(H.CACHE, "daily_cache.parquet"))[["post_id", "text_score"] + bcols].drop_duplicates("post_id")
+    Qh = pa[["post_id", "day"]].merge(Bh, on="post_id", how="left").merge(R, on="post_id", how="left")
+    Qh["y"] = Qh.post_id.isin(set(L[L["rank"] <= 30].post_id)).astype(int)
+    REC = [c for c in R.columns if c != "post_id"]
+    test_ids = Q.post_id[te]
+    Xte = Qh.set_index("post_id").reindex(test_ids)
+    ref = None
+    for start in ("2026-07-01", "2026-01-01", "2025-01-15"):
+        for name, cols in (("post", POST), ("post + real-list record", POST + REC)):
+            tr_ = Qh[(Qh.day >= start) & (Qh.day < "2026-09-01")]
+            m = lgb.LGBMClassifier(n_estimators=800, learning_rate=0.03, num_leaves=63, min_child_samples=50, subsample=0.8,
+                                   subsample_freq=1, colsample_bytree=0.8, verbose=-1, random_state=0).fit(tr_[cols], tr_.y)
+            s = caught(m.predict_proba(Xte[cols])[:, 1])
+            ref = s if ref is None else ref
+            print(f"  train from {start} ({len(tr_)} posts, {int(tr_.y.sum())} winners), {name:24s} {ci(s)}  vs first {diff(s, ref)}", flush=True)
+
+
+if __name__ == "__main__" and "history" in sys.argv[1:]:
+    history()
+elif __name__ == "__main__" and "levers" in sys.argv[1:]:
     levers()
+elif __name__ == "__main__" and "simvotes" in sys.argv[1:]:
+    simvotes()
 elif __name__ == "__main__":
     full = POST + KNN + EMB + CROWD
     base = caught(model(full))
