@@ -5,7 +5,7 @@
                                 active (commented elsewhere in last 30 days), new accounts (joined < 30 days before)
   Swap circles                  people the team supported AND who supported the team (mutual), active in last 7/30 days
 Output: data/ctx_features.json"""
-import bisect, glob, gzip, json, os, pickle
+import bisect, glob, gzip, json, os
 from collections import defaultdict
 import numpy as np, pandas as pd
 import commenters as K
@@ -61,7 +61,8 @@ def main():
                      "ctx_mutual_active30": sum(active(u, d30) for u in mutual)}
     C = pd.DataFrame.from_dict(out, orient="index")
     # standing in the day's field and poster spread (needs the main table's inputs)
-    df = pickle.load(open(f"{D}/build_cache.pkl", "rb")).drop_duplicates("id").set_index("id")
+    from buildcache import build_cached
+    df = build_cached().drop_duplicates("id").set_index("id")
     df = df.join(C, how="left")
     for f in STRONG + ["ctx_mutual_active7", "ctx_pre_regulars"]:
         if f in df:

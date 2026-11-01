@@ -2,12 +2,12 @@
 For each input: how often 'the launch with more of it' wins the pair (AUC; 0.5 = no help), plus a model on all input
 differences (5-fold by day). Uses the all-sources model scores (results/pred_all_sources.csv).
 Output: results/tiebreak.csv"""
-import pickle
 import numpy as np, pandas as pd, lightgbm as lgb
 from sklearn.metrics import roc_auc_score
 from sklearn.model_selection import GroupKFold
+from buildcache import build_cached
 
-df = pickle.load(open("data/build_cache.pkl", "rb"))
+df = build_cached()
 P = pd.read_csv("results/pred_all_sources.csv"); P["id"] = P.id.astype(str)
 df = df.merge(P, on="id")
 df["prank"] = df.groupby("day").pred.rank(ascending=False, method="first")
