@@ -16,8 +16,10 @@ def norm(s):
 
 
 def leaderboard(day, path=None):
-    if path is None:
+    if path is None:   # the featured tab (Grok Bot's <day>_<HHMM>PT_featured.json) when there is one, else the newest read
         names = subprocess.run(["gsutil", "ls", f"{BUCKET}/raw/leaderboard/{day}_*.json"], capture_output=True, text=True).stdout.split()
+        feat = [n for n in names if n.endswith("_featured.json")]
+        names = feat or names
         if not names:
             return None
         path = os.path.join(PH, "data", "leaderboard", os.path.basename(sorted(names)[-1]))
@@ -37,8 +39,51 @@ def main(day, path=None):
     miss = [x for x in lb["launches"] if norm(x.get("slug")) not in have and norm(x.get("name")) not in have]
     print(json.dumps({"day": day, "api": len(ids), "leaderboard": len(lb["launches"]), "complete": lb.get("complete"),
                       "missing_from_api": [(x.get("name"), x.get("votes")) for x in miss], "repeated_in_api": sorted(set(dup))}))
-    return 1 if miss else 0
+    return len(miss)
+
+
+def refetch(day):
+    """Page the day again in both API orders and add any launch the first pass missed to data/today/<day>.json
+    (on Oct 31 one ordering repeated 2 launches and missed 2). Returns the names added."""
+    sys.path.insert(0, PH)
+    import collect_ph as C, datetime as dt
+    from zoneinfo import ZoneInfo
+    PT = ZoneInfo("America/Los_Angeles"); d = dt.date.fromisoformat(day)
+    a = dt.datetime.combine(d, dt.time(0), PT).isoformat(); b = dt.datetime.combine(d + dt.timedelta(days=1), dt.time(0), PT).isoformat()
+    f = os.path.join(PH, "data", "today", f"{day}.json"); api = json.load(open(f)); have = {str(n["id"]) for n in api}
+    added = []
+    for q in (C.Q, C.Q_NEWEST):
+        cur = None
+        while True:
+            p, _ = C.gql({"a": a, "b": b, "c": cur}, q)
+            for e in p["edges"]:
+                if str(e["node"]["id"]) not in have:
+                    api.append(e["node"]); have.add(str(e["node"]["id"])); added.append(e["node"]["name"])
+            if not p["pageInfo"]["hasNextPage"]:
+                break
+            cur = p["pageInfo"]["endCursor"]
+    if added:
+        json.dump(api, open(f, "w"))
+    return added
+
+
+def step(day):
+    """For pipeline.daily: check today's list against today's featured read if there is one yet, else yesterday's list
+    against yesterday's newest read. Missing launches today: page the day again and add them. -> dict for the run log."""
+    import datetime as dt
+    y = (dt.date.fromisoformat(day) - dt.timedelta(days=1)).isoformat()
+    for d in (day, y):
+        if not os.path.exists(os.path.join(PH, "data", "today", f"{d}.json")) or leaderboard(d) is None:
+            continue
+        miss = main(d)
+        out = {"checked_day": d, "missing": int(miss)}
+        if miss and d == day:
+            out["added"] = refetch(d)
+            miss = main(d)
+        out["status"] = f"failed: featured launches missing from the API list for {d}" if miss else "ok"
+        return out
+    return {"checked_day": None, "status": "ok"}
 
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1], sys.argv[2] if len(sys.argv) > 2 else None))
+    sys.exit(1 if main(sys.argv[1], sys.argv[2] if len(sys.argv) > 2 else None) else 0)

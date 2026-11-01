@@ -77,6 +77,19 @@ def snap_fields(t, tagline=None):
             "top_product": b.group(2) == "true" if b else None, "first_launch": b.group(3) == "true" if b else None}
 
 
+@step("list_check")
+def s_list_check(d, con, dry):
+    """Today's API list vs Grok Bot's newest featured leaderboard read (today's if it exists yet, else yesterday's).
+    A featured launch missing today: the day is paged again in both orders and the launch added before the forecast."""
+    from . import list_check as LC
+    out = LC.step(d)
+    if out.get("added") and not dry:
+        L = day_rows(d); L[["daily_rank", "weekly_rank", "monthly_rank", "votes"]] = None
+        W.write("launches", L)
+    print(json.dumps({"list_check": out}), flush=True)
+    return {"items": out.get("missing", 0), "status": out["status"]}
+
+
 @step("snap")
 def s_snap(d, con, dry):
     """Product pages of today's launches at forecast time: product followers (people who asked to be notified, plus
@@ -121,6 +134,29 @@ python3 forecast.py {d}'''], cwd=PH, check=True)
     if not dry:
         W.write("forecasts", pd.DataFrame(rows))
     return {"items": len(rows)}
+
+
+@step("simforecast")
+def s_simforecast(d, con, dry):
+    """Simulation-only forecast: the person simulation scored live (pipeline.sim_daily), then the launch-level
+    simulation model (ph_predict/sim_forecast.py). Written to `forecasts` as model "simulation"."""
+    from . import sim_daily
+    log = sim_daily.run(d)
+    subprocess.run(["python3", "sim_forecast.py", d], cwd=PH, check=True)
+    import re
+    name2id = {p["name"].strip(): str(p["id"]) for p in json.load(open(f"{RAW}/today/{d}.json"))}
+    rows = []
+    for l in open(f"{PH}/results/sim_forecast_{d}.md"):
+        m = re.match(r"\|\s*(\d+)\s*\|\s*(.+?)\s*\|", l)
+        if m:
+            rows.append({"forecast_date": d, "model": "simulation", "predicted_rank": int(m.group(1)), "name": m.group(2),
+                         "launch_id": name2id.get(m.group(2).strip()), "made_on": d})
+    if not dry and rows:
+        W.write("forecasts", pd.DataFrame(rows))
+    out = {"items": len(rows)}
+    if log["launches_scored"] < log["launches_today"]:
+        out["status"] = f"failed: simulation scored {log['launches_scored']} of {log['launches_today']} launches"
+    return out
 
 
 @step("ranks")
@@ -258,13 +294,14 @@ def s_personas(d, con, dry):
 def s_score(d, con, dry):
     """Yesterday's forecast vs its final daily ranks (daily rank is final the next day)."""
     y = INC.days_before(d, 1)
-    T = con.execute(f"""SELECT f.predicted_rank, l.daily_rank FROM forecasts f JOIN launches l ON l.id = f.launch_id
+    T = con.execute(f"""SELECT f.model, f.predicted_rank, l.daily_rank FROM forecasts f JOIN launches l ON l.id = f.launch_id
                         WHERE f.forecast_date = '{y}' AND l.daily_rank IS NOT NULL""").df()
     if not len(T):
         return {"items": 0}
-    rows = [{"day": y, "model": "launch_model", "k": k,
-             "hit": int(((T.predicted_rank <= k) & (T.daily_rank <= k)).sum()), "recall": ((T.predicted_rank <= k) & (T.daily_rank <= k)).sum() / k}
-            for k in (3, 5, 10)]
+    T = T.drop_duplicates(["model", "daily_rank"])   # one row per launch and model if a forecast was written twice
+    rows = [{"day": y, "model": mdl, "k": k,
+             "hit": int(((g.predicted_rank <= k) & (g.daily_rank <= k)).sum()), "recall": ((g.predicted_rank <= k) & (g.daily_rank <= k)).sum() / k}
+            for mdl, g in T.groupby("model") for k in (3, 5, 10)]
     if not dry:
         W.write("daily_scores", pd.DataFrame(rows))
     return {"items": len(rows)}
@@ -280,7 +317,7 @@ def s_raw(d, con, dry):
     return {"items": len(files)}
 
 
-STEPS = [s_launches, s_snap, s_forecast, s_ranks, s_comments, s_people, s_personas, s_score, s_raw]
+STEPS = [s_launches, s_list_check, s_snap, s_forecast, s_simforecast, s_ranks, s_comments, s_people, s_personas, s_score, s_raw]
 
 
 def main(argv):

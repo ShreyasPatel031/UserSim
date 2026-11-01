@@ -35,8 +35,9 @@ if PRESENCE or TWIN or TIE:
 if LAG:
     TAG += f"_lag{LAG}"
 WORK = os.path.join(HERE, "cache", "popscore_" + TAG if TAG else "popscore")
-PREFIX = f"pl{LAG}{'x' if TIE2 else ''}_" if LAG else "psx_" if TIE2 else "psr_" if TIE else "psq_" if (PRESENCE or TWIN) else "psh_" if HERD else "pst_" if TASTE else "psp_" if PAGE else "psn_"
+PREFIX = f"pl{LAG}{'x' if TIE2 else ''}_" if LAG else ("pnx_" if TIE2 else "pnr_") if (TIE and not PAGE) else "psx_" if TIE2 else "psr_" if TIE else "psq_" if (PRESENCE or TWIN) else "psh_" if HERD else "pst_" if TASTE else "psp_" if PAGE else "psn_"
 MONTHS = ["2026-04", "2026-05", "2026-06", "2026-07", "2026-08", "2026-09", "2026-10"]
+TRAIN_EXTRA = [m for m in os.environ.get("TRAIN_EXTRA", "").split(",") if m]   # e.g. 2026-11: a model trained on Oct for the live pipeline
 FEATS = ["backed", "topic", "meaning", "cf_team", "nbr_team", "nbr_pop", "seq_last10", "seq_decay", "seq_nn", "team_recent",
          "cat_rate_max", "cat_rate_mean", "cat_prior", "cat_n"]
 G = {}   # loaded once per process (fork shares it)
@@ -501,7 +502,7 @@ def main(workers):
     harness.baseline()   # cache the launch model's predictions now: worker processes cannot start their own pools
     ctx = mp.get_context("fork")
     with ctx.Pool(min(workers, len(MONTHS))) as pool:
-        for r in pool.imap_unordered(train_month, [m for m in MONTHS if not os.path.exists(f"{WORK}/model_{m}.pkl")]):
+        for r in pool.imap_unordered(train_month, [m for m in MONTHS + TRAIN_EXTRA if not os.path.exists(f"{WORK}/model_{m}.pkl")]):
             print("trained", r, flush=True)
     days = sorted(d for d in G["lineup"] if d[:7] in MONTHS and d <= "2026-10-24")
     with ctx.Pool(workers) as pool:

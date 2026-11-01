@@ -5,7 +5,8 @@ Each file is one dataset of the dashboard; a daily scheduled session uploads the
   totals.json     rows in each table now
   spend.json      $ per day and provider from the daily steps and backtests
   scores.json     yesterday's forecast vs the final daily ranks (share of the real top k we had in our top k)
-  forecast.json   the latest daily forecast (top 10)
+  forecast.json   the latest daily forecast (top 10), launch model
+  sim_forecast.json  the latest simulation-only forecast (top 10)
   backtests.json  the twice-weekly backward monthly test, one row per run, list and variant
 usage: python -m pipeline.dash_export [out_dir]"""
 import json, os, sys
@@ -38,9 +39,11 @@ def export(out):
                                  WHERE step LIKE 'daily_%' OR step LIKE 'backtest%' GROUP BY 1, 2 ORDER BY 1, 2""")
     data["scores"] = rows(con, "SELECT day, model, k, hit, round(100 * recall, 1) AS recall FROM daily_scores ORDER BY day, k") \
         if "daily_scores" in have else []
-    data["forecast"] = rows(con, """SELECT forecast_date, predicted_rank, name FROM forecasts
-                                    WHERE forecast_date = (SELECT max(forecast_date) FROM forecasts) AND predicted_rank <= 10
-                                    ORDER BY predicted_rank""")
+    for key, mdl in (("forecast", "launch_model"), ("sim_forecast", "simulation")):   # one dataset per model, same columns
+        data[key] = rows(con, f"""SELECT DISTINCT forecast_date, predicted_rank, name FROM forecasts
+                                  WHERE model = '{mdl}' AND predicted_rank <= 10
+                                    AND forecast_date = (SELECT max(forecast_date) FROM forecasts WHERE model = '{mdl}')
+                                  ORDER BY predicted_rank""")
     data["backtests"] = rows(con, """SELECT run_on, run_file, variant, list, recall, lists FROM backtests
                                      WHERE run_file LIKE 'monthly_%' ORDER BY run_on, list, variant""")
     for k, v in data.items():
