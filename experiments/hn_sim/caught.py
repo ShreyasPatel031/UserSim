@@ -40,11 +40,13 @@ Q["y"] = Q.post_id.isin(set(L[L["rank"] <= 30].post_id)).astype(int)     # made 
 fit, te = (Q.day < "2026-09-01").to_numpy(), (Q.day >= "2026-09-01").to_numpy()
 
 
-def caught(scores):
+def caught(scores, mask=None):
     """North star (user, 2026-11-01): every test post judged once at its posting moment; winners = posts that made any
     daily top 30; flag as many posts as there are winners (highest at-posting scores across the test period).
     Returns per posting day: (winners flagged, winners)."""
     T = Q[te].assign(s=scores)
+    if mask is not None:                                   # mask over the test rows (series-only sensitivity)
+        T = T[mask]
     k = int(T.y.sum())
     T["flag"] = T.s.rank(ascending=False, method="first") <= k
     g = T.groupby("day")
@@ -73,14 +75,16 @@ def diff(c, ref):
     return f"{(h.sum() - h0.sum()) / n.sum():+.1%} [{np.percentile(b, 2.5):+.1%}, {np.percentile(b, 97.5):+.1%}]"
 
 
-def honest(V, a, ids, how="ramp"):
+def honest(V, a, ids, how="const"):
     """Quality News series were fetched only for posts that ended with 5+ points, so a missing series reveals the
-    outcome. Make posts without a series look like real small posts: votes at age a imputed from the final points
-    (all < 5): "ramp" = 1 + (final - 1) * min(1, a / 60); "max" = the final points (an upper bound); rank 91 (not on
-    the front page). The exposure-based rate (only in series) is dropped for everyone."""
+    outcome. Posts without a series get votes at age a imputed as: "const" (headline, outcome-free) 1 point at every
+    age; "ramp" 1 + (final - 1) * min(1, a / 60) (final < 5; uses the outcome, sensitivity only); "max" the final
+    points. Always rank 91 (not on the front page). The exposure-based rate (only in series) is dropped for everyone."""
     V = V.drop(columns=[c for c in ("rate",) if c in V]).copy()
     miss = ~Q.post_id.isin(ids).to_numpy()
     fp = Q.points.to_numpy(float)
+    if how == "const":
+        fp = np.ones_like(fp)
     imp = 1 + (fp - 1) * min(1.0, a / 60) if how == "ramp" else fp
     imp30 = 1 + (fp - 1) * min(1.0, max(a - 30, 0) / 60) if how == "ramp" else fp
     V.loc[miss, "points"] = imp[miss]
@@ -89,8 +93,12 @@ def honest(V, a, ids, how="ramp"):
     return V
 
 
-def model(cols, extra=None):
+def model(cols, extra=None, rows=None):
     X = Q[cols] if extra is None else pd.concat([Q[cols], extra], axis=1)
+    if rows is not None:                                   # train only on these rows (series-only sensitivity)
+        m = lgb.LGBMClassifier(n_estimators=600, learning_rate=0.03, num_leaves=31, min_child_samples=30, subsample=0.8,
+                               subsample_freq=1, colsample_bytree=0.8, verbose=-1, random_state=0).fit(X[fit & rows], Q.y[fit & rows])
+        return m.predict_proba(X[te])[:, 1]
     m = lgb.LGBMClassifier(n_estimators=600, learning_rate=0.03, num_leaves=31, min_child_samples=30, subsample=0.8,
                            subsample_freq=1, colsample_bytree=0.8, verbose=-1, random_state=0).fit(X[fit], Q.y[fit])
     return m.predict_proba(X[te])[:, 1]
@@ -218,9 +226,17 @@ elif __name__ == "__main__":
                for r in qs.itertuples()}
     V = OL.vote_feats(Q, q_by_id, [15, 60, 180])
     ids = set(q_by_id)
+    from sklearn.metrics import roc_auc_score
+    has = Q.post_id.isin(ids).to_numpy()
+    print(f"series coverage: test posts {has[te].mean():.1%}, test winners {has[te & (Q.y == 1).to_numpy()].mean():.1%}", flush=True)
     for a, label in ((15, "15 min"), (60, "1 h"), (180, "3 h")):
-        s = caught(model(full, V[a]))
-        h1 = caught(model(full, honest(V[a], a, ids)))
-        h2 = caught(model(full, honest(V[a], a, ids, "max")))
-        print(f"Caught at {label} (includes the post's early votes): leaky (missing series) {ci(s)}; "
-              f"honest ramp {ci(h1)}; honest max {ci(h2)}", flush=True)
+        out = []
+        for how in ("const", "ramp"):
+            Vh = honest(V[a], a, ids, how)
+            s = caught(model(full, Vh))
+            lk = lgb.LGBMClassifier(n_estimators=200, verbose=-1).fit(Vh[fit], has[fit])
+            auc = roc_auc_score(has[te], lk.predict_proba(Vh[te])[:, 1])
+            out.append(f"{how} imputation {ci(s)} (leak check AUC {auc:.3f})")
+        so = caught(model(full, V[a].drop(columns="rate"), rows=has), mask=has[te])
+        out.append(f"series-only {ci(so)}")
+        print(f"Caught at {label}: " + "; ".join(out), flush=True)
