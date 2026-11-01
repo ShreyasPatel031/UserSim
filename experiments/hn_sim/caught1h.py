@@ -28,8 +28,11 @@ import top100 as H
 A_MIN = int(os.environ.get("AGE_MIN", "60"))
 RANK_ONLY = os.environ.get("RANK_ONLY") == "1"        # honest base: no point counts (they leak via QN selection)
 CUT = pd.Timestamp("2026-07-01", tz="UTC").timestamp()
-Q = C.Q
 full = C.POST + C.KNN + C.EMB + C.CROWD
+if os.environ.get("HIST") == "1":                    # add the history model's at-posting score (caught.py hist_prior)
+    C.Q = C.Q.merge(pd.read_parquet(os.path.join(H.CACHE, "hist_prior.parquet")), on="post_id", how="left")
+    full = full + ["hist_prior"]
+Q = C.Q
 
 
 def curve(a):

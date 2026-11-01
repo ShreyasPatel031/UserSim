@@ -273,6 +273,49 @@ def history2():
     np.save(os.path.join(H.CACHE, "caught_hist2_test_scores.npy"), sc)
 
 
+def hist_prior():
+    """History score as an input: a model on posts 2025-01-15 .. 2026-06-30 only (post + real-list record + embedding),
+    applied to every Jul-Oct post, so the score is out-of-sample for both the fit and test periods. Saved to
+    <cache>/hist_prior.parquet; then Caught at posting with and without it as an input (stacking)."""
+    global Q
+    import levers as LV
+    import emb_io
+    from sklearn.decomposition import PCA
+    pa = H.stories()
+    pa = pa[(pa.day >= "2025-01-15") & (pa.day <= "2026-10-14")].reset_index(drop=True)
+    R = LV.record(H.stories(), set(pa.post_id))
+    Bh = pd.read_parquet(os.path.join(H.CACHE, "daily_cache.parquet"))[["post_id", "text_score"] + bcols].drop_duplicates("post_id")
+    Qh = pa[["post_id", "day"]].merge(Bh, on="post_id", how="left").merge(R, on="post_id", how="left")
+    Qh["y"] = Qh.post_id.isin(set(L[L["rank"] <= 30].post_id)).astype(int)
+    emb, ei = emb_io.load()
+    rows = ei.reindex(Qh.post_id).to_numpy()
+    pre = (Qh.day < "2026-07-01").to_numpy()
+    samp = np.sort(rng.choice(np.where(pre & ~np.isnan(rows))[0], 100000, replace=False))
+    pca = PCA(64, random_state=0).fit(np.asarray(emb[np.sort(rows[samp].astype(int))], np.float32))
+    Z = np.full((len(Qh), 64), np.nan, np.float32)
+    idx = np.where(~np.isnan(rows))[0]
+    for i in range(0, len(idx), 50000):
+        j = idx[i:i + 50000]
+        r = rows[j].astype(int)
+        o = np.argsort(r)
+        Z[j[o]] = pca.transform(np.asarray(emb[r[o]], np.float32))
+    PC = [f"pc{k}" for k in range(64)]
+    Qh = pd.concat([Qh, pd.DataFrame(Z, columns=PC)], axis=1)
+    cols = POST + [c for c in R.columns if c != "post_id"] + PC
+    m = lgb.LGBMClassifier(n_estimators=1200, learning_rate=0.03, num_leaves=63, min_child_samples=50, subsample=0.8,
+                           subsample_freq=1, colsample_bytree=0.8, verbose=-1, random_state=0).fit(Qh.loc[pre, cols], Qh.y[pre])
+    out = Qh.loc[~pre, ["post_id"]].assign(hist_prior=m.predict_proba(Qh.loc[~pre, cols])[:, 1])
+    out.to_parquet(os.path.join(H.CACHE, "hist_prior.parquet"), index=False)
+    Q = Q.merge(out, on="post_id", how="left")
+    full = POST + KNN + EMB + CROWD
+    base = caught(model(full))
+    print(f"current at posting (Jul-Aug model): {ci(base)}", flush=True)
+    s = caught(Q.hist_prior[te].to_numpy())
+    print(f"  history model alone (trained to Jun 30): {ci(s)}  vs current {diff(s, base)}", flush=True)
+    s = caught(model(full + ["hist_prior"]))
+    print(f"  + history score as an input: {ci(s)}  vs current {diff(s, base)}", flush=True)
+
+
 def history():
     """More training history: post features + real-list record, trained on posts from 2025-01-15 / 2026-01-01 /
     2026-07-01 up to Aug 31 (the lists start 2025-01). Same test posts and metric."""
@@ -297,7 +340,9 @@ def history():
             print(f"  train from {start} ({len(tr_)} posts, {int(tr_.y.sum())} winners), {name:24s} {ci(s)}  vs first {diff(s, ref)}", flush=True)
 
 
-if __name__ == "__main__" and "history2" in sys.argv[1:]:
+if __name__ == "__main__" and "hist_prior" in sys.argv[1:]:
+    hist_prior()
+elif __name__ == "__main__" and "history2" in sys.argv[1:]:
     history2()
 elif __name__ == "__main__" and "comp" in sys.argv[1:]:
     comp()
