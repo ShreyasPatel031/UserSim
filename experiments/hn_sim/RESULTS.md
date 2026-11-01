@@ -486,3 +486,20 @@ similar past titles 18:00 -0.6 [-1.2, +0.0], 21:00 -0.7 [-1.4, +0.1]; + embeddin
 Live per-post odds: odds_live.py recent runs hourly at :35 on hn-sim-1 (every story of the last 3 h at the age it has
 reached) -> odds_live/<day>/<HHMM>.json in the bucket; first run 2026-11-01 19:25 UTC, 155 posts, VM memory 0.9 of
 7.9 GB. Scored against settled lists from Nov 3.
+
+## North star: Caught at posting (caught.py) - set by the user 2026-11-01
+
+Each post scored at its posting moment with only what is known then (no votes or comments of the post). For each list
+day D, rank the posts posted on D; Caught = share of D's real daily top 30 in our top 30. Holdout Sep 1 - Oct 14
+(44 days), fit on posts Jul 1 - Aug 31; 95% bootstrap intervals over days.
+
+| | Caught |
+|---|---|
+| ceiling: share of D's real top 30 posted on D (others are earlier posts / re-ups) | 67.2% [64.2, 70.2] |
+| **at posting** (post features, domain / author record, similar past titles, embedding, crowd) | **14.4% [12.5, 16.3]** |
+| post features only | 14.2% [12.6, 15.9] |
+| + similar past titles | 14.4% [12.6, 16.2] |
+| + embedding | 14.5% [12.7, 16.3] |
+| extra, includes early votes: at 15 min | 19.3% [17.3, 21.5] |
+| extra, includes early votes: at 1 h | 41.0% [38.3, 43.6] |
+| extra, includes early votes: at 3 h | 53.7% [50.5, 56.5] |
