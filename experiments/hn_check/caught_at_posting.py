@@ -72,3 +72,12 @@ for c in ("caught_same_day", "caught_3day_window", "ceiling_same_day"):
     print(f"{c:22s} {100*R[c].mean():5.1f}%  95% [{100*np.percentile(bs,2.5):.1f}, {100*np.percentile(bs,97.5):.1f}]  days {len(R)}")
 imp = pd.Series(m.feature_importances_, F).sort_values(ascending=False).head(10); print(imp.to_string())
 R.to_csv(os.path.join(D, "caught_at_posting_days.csv"), index=False)
+
+# Per-post definition (no day matching): every test post judged once, at its posting moment. Winners = test posts
+# that made any daily top 30. We flag as many posts as there are winners (about 30 a day), highest at-posting scores.
+W = s[te]; n_win = int(W.y.sum()); flagged = W.nlargest(n_win, "p")
+caught = flagged.y.sum() / n_win
+by_day = W.assign(flag=W.post_id.isin(flagged.post_id)).groupby("day").apply(lambda g: (g.flag & (g.y == 1)).sum() / max(g.y.sum(), 1), include_groups=False)
+bs = [rng.choice(by_day.values, len(by_day)).mean() for _ in range(4000)]
+print(f"PER-POST caught at posting: {100*caught:.1f}%  ({int(flagged.y.sum())} of {n_win} winners; {n_win/len(by_day):.1f} winners/day)  "
+      f"day-mean {100*by_day.mean():.1f}% 95% [{100*np.percentile(bs,2.5):.1f}, {100*np.percentile(bs,97.5):.1f}]")
