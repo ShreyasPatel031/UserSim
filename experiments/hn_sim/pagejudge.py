@@ -112,10 +112,10 @@ def run(days):
         done = {json.loads(x)["post_id"] for x in open(OUT)}
     todo = [r for r in q.itertuples() if r.post_id not in done]
     print(f"{len(q)} posts on {days}, {len(todo)} to judge", flush=True)
-    with ThreadPoolExecutor(16) as ex, open(OUT, "a") as f:
+    with ThreadPoolExecutor(int(os.environ.get("PJ_THREADS", "16"))) as ex, open(OUT, "a") as f:
         for i, r in enumerate(ex.map(judge, todo)):
             f.write(json.dumps(r) + "\n")
-            if i % 200 == 0:
+            if i % 2000 == 0:
                 print(i, f"${llm.spent():.3f}", flush=True)
     usd = llm.flush_spend("hn_sim.pagejudge", f"{MODEL} {days[0]}..{days[-1]}: {len(todo)} posts")
     print(f"spent ${usd:.3f} for {len(todo)} posts", flush=True)
