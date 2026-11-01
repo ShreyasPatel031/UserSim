@@ -376,3 +376,26 @@ about Nov 14), not a pre-launch one. Twins repeat the existing taste inputs.
 1. **Tie strength, about 35 points of the missing hit on tied picks:** which of about 9 ties the person acts on. This
    is solvable with data we already have.
 2. **Untied picks, 30% of picks at 9.9%:** taste or outreach we can't see. This is where X data would add.
+
+## Tie strength (Nov 1, `popscore.py` TIE=1)
+- **Inputs:** the line-up already showed which launches a person is tied to (a median of 9 per day). These inputs say
+  which tie is strong: ties to the makers and ties to the hunter counted separately, comments on the makers' launches,
+  how many of the makers the person backed, days since the last engagement, share of the person's history, both-way
+  ties, and the tie's standing in the person's line-up. On one day, the hunter tie alone had AUC 0.65 vs 0.59 for the
+  maker tie.
+- **Per person** (`pick_boost` ABLATE, TIE=1 RECIP=1): top-3 hit **54.2 vs 50.4 without tie strength** (AUC 0.718 vs
+  0.701). It is better in all 6 months tested (+3.0 to +4.8). The previous best person model was 49.0 / 0.697. This is
+  the first clear person-level gain.
+- **Launch level** (Jul–Oct, `SIM_SRC=psr`): daily top 3/5/10 rose in all four setups. The best setup (+ day standing
+  + page) went from 60.3 / 70.9 / 79.7 to **62.6 / 71.2 / 79.7**. Paired bootstrap over 116 days:
+
+  | | Change | 95% CI |
+  |---|---|---|
+  | Top 3 | +2.3 | −0.3 to +4.9 |
+  | Top 5 | +0.3 | −1.2 to +2.1 |
+  | Top 10 | −0.1 | −1.0 to +0.8 |
+
+  Borderline on top 3, none on top 5 or 10.
+- **+ competitor gaps on top:** 61.5–62.4 top 3, so they add nothing beyond tie strength.
+- **First-time teams, higher of 2 / winner of 3:** 68.8 / 66.4 (launch model 68.4 / 66.7).
+- **New best simulation-only:** 62.6 / 71.2 / 79.7. The launch model is 65.8 / 72.9 / 80.8.
