@@ -27,6 +27,7 @@ import top100 as H
 CUT, CUT2, END = "2026-07-01", "2026-09-01", "2026-10-14"
 t_cut = pd.Timestamp(CUT, tz="UTC").timestamp()
 rng = np.random.default_rng(0)
+POST_ONLY = os.environ.get("TIES_POST_ONLY") == "1"         # only build and save the per-post tie network (for caught.py)
 p = H.stories().set_index("post_id")
 author = p.author
 
@@ -58,39 +59,40 @@ def tie_feats(persons, subs):
 
 
 # ---- 1. individual ----------------------------------------------------------------------------------------------
-D = pd.read_parquet(os.path.join(H.CACHE, "twin_v2_pairs.parquet"))
-D = pd.concat([D.reset_index(drop=True), tie_feats(D.person.to_numpy(), author.reindex(D.story_id).to_numpy())], axis=1)
-TIE = ["t_cmt", "t_rep", "t_back", "t_share"]
-CONTENT = ["sim_mean", "sim_max", "sim_top5", "dom_share", "dom_n", "hour_p"] + [x for x in D.columns if x.startswith("fav_")] + (["n_favs"] if "n_favs" in D else [])
-tr, te = D[D.day < CUT2], D[D.day >= CUT2]
-print(f"pairs with any tie to the submitter: {(D[TIE[:3]].sum(1) > 0).mean():.2%}; among engaged pairs: {(D[D.y == 1][TIE[:3]].sum(1) > 0).mean():.2%}", flush=True)
+if not POST_ONLY:
+    D = pd.read_parquet(os.path.join(H.CACHE, "twin_v2_pairs.parquet"))
+    D = pd.concat([D.reset_index(drop=True), tie_feats(D.person.to_numpy(), author.reindex(D.story_id).to_numpy())], axis=1)
+    TIE = ["t_cmt", "t_rep", "t_back", "t_share"]
+    CONTENT = ["sim_mean", "sim_max", "sim_top5", "dom_share", "dom_n", "hour_p"] + [x for x in D.columns if x.startswith("fav_")] + (["n_favs"] if "n_favs" in D else [])
+    tr, te = D[D.day < CUT2], D[D.day >= CUT2]
+    print(f"pairs with any tie to the submitter: {(D[TIE[:3]].sum(1) > 0).mean():.2%}; among engaged pairs: {(D[D.y == 1][TIE[:3]].sum(1) > 0).mean():.2%}", flush=True)
 
 
-def fit(cols):
-    m = lgb.LGBMClassifier(n_estimators=400, learning_rate=0.05, num_leaves=31, min_child_samples=50, subsample=0.8,
-                           subsample_freq=1, colsample_bytree=0.8, verbose=-1, random_state=0)
-    return m.fit(tr[cols], tr.y).predict_proba(te[cols])[:, 1]
+    def fit(cols):
+        m = lgb.LGBMClassifier(n_estimators=400, learning_rate=0.05, num_leaves=31, min_child_samples=50, subsample=0.8,
+                               subsample_freq=1, colsample_bytree=0.8, verbose=-1, random_state=0)
+        return m.fit(tr[cols], tr.y).predict_proba(te[cols])[:, 1]
 
 
-def per_person(s, band=False):
-    t = te.assign(s=s)
-    out = []
-    for _, g in t.groupby("person"):
-        if band:
-            v = [roc_auc_score(h.y, h.s) for _, h in g.groupby("pop_band") if h.y.nunique() == 2 and len(h) >= 10]
-            if v:
-                out.append(np.mean(v))
-        elif g.y.nunique() == 2:
-            out.append(roc_auc_score(g.y, g.s))
-    return np.median(out)
+    def per_person(s, band=False):
+        t = te.assign(s=s)
+        out = []
+        for _, g in t.groupby("person"):
+            if band:
+                v = [roc_auc_score(h.y, h.s) for _, h in g.groupby("pop_band") if h.y.nunique() == 2 and len(h) >= 10]
+                if v:
+                    out.append(np.mean(v))
+            elif g.y.nunique() == 2:
+                out.append(roc_auc_score(g.y, g.s))
+        return np.median(out)
 
 
-print("individual (median per-person AUC | within popularity bands):", flush=True)
-for name, cols in (("content taste (+ favorites)", CONTENT), ("ties to the submitter (old: auth_n only)", ["auth_n"]),
-                   ("ties to the submitter (new)", TIE + ["auth_n"]), ("content + ties", CONTENT + TIE + ["auth_n"]),
-                   ("content + ties + popularity", CONTENT + TIE + ["auth_n", "pop_final"])):
-    s = fit(cols)
-    print(f"  {name:42s} {per_person(s):.3f} | {per_person(s, True):.3f}", flush=True)
+    print("individual (median per-person AUC | within popularity bands):", flush=True)
+    for name, cols in (("content taste (+ favorites)", CONTENT), ("ties to the submitter (old: auth_n only)", ["auth_n"]),
+                       ("ties to the submitter (new)", TIE + ["auth_n"]), ("content + ties", CONTENT + TIE + ["auth_n"]),
+                       ("content + ties + popularity", CONTENT + TIE + ["auth_n", "pop_final"])):
+        s = fit(cols)
+        print(f"  {name:42s} {per_person(s):.3f} | {per_person(s, True):.3f}", flush=True)
 
 # ---- 2. at posting ----------------------------------------------------------------------------------------------
 cm = pd.read_parquet(os.path.join(H.CACHE, "bq_comments.parquet"), columns=["person", "story_id", "created_at_i"])
@@ -121,6 +123,9 @@ for pid, s, h in zip(q.post_id, q.author, q.h):
 T = pd.DataFrame(rows, columns=["post_id", "tie_n", "tie_present_w", "tie_scouts", "tie_recip", "tie_max", "tie_present"])
 TIES = [x for x in T.columns if x != "post_id"]
 print(f"posts with any tie network: {(T.tie_n > 0).mean():.1%}", flush=True)
+T.to_parquet(os.path.join(H.CACHE, "tie_post_feats.parquet"), index=False)
+if POST_ONLY:
+    raise SystemExit
 
 A = pd.read_parquet(os.path.join(H.CACHE, "audience_feats.parquet"))
 B = pd.read_parquet(os.path.join(H.CACHE, "daily_cache.parquet"))

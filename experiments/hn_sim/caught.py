@@ -6,7 +6,8 @@ Ceiling: the share of D's real top 30 that was posted on D (re-ups of earlier po
 Extras (labelled as including early votes): the same ranking with each post's score at 15 min / 1 h / 3 h of age.
 Input sets (levers) are scored with and without, paired by day.
 
-    python caught.py [lever ...]      # default: the current at-posting inputs; levers: feeds
+    python caught.py            # the current at-posting inputs, ceiling, extras
+    python caught.py levers     # each lever with and without (needs levers.py and TIES_POST_ONLY=1 ties.py)
 """
 import json
 import os
@@ -61,7 +62,47 @@ def model(cols, extra=None):
     return m.predict_proba(X[te])[:, 1]
 
 
-if __name__ == "__main__":
+def levers():
+    """Each lever with and without, paired by day, on top of the current at-posting inputs."""
+    global Q
+    Lv = pd.read_parquet(os.path.join(H.CACHE, "caught_levers.parquet"))
+    T = pd.read_parquet(os.path.join(H.CACHE, "tie_post_feats.parquet"))
+    Q = Q.merge(Lv, on="post_id", how="left").merge(T, on="post_id", how="left")
+    REC = [c for c in Lv.columns if c.startswith(("rd_", "rs_", "ra_"))]
+    FEED = [c for c in Lv.columns if c.startswith("fd_")]
+    FIT = [c for c in Lv.columns if c.startswith("af_")]
+    TIES = [c for c in T.columns if c != "post_id"]
+    OLD_REC = [c for c in POST if c.startswith(("b_author_", "b_domain_"))]
+    OLD_SUB = [c for c in POST if c.startswith("b_sub_")]
+    full = POST + KNN + EMB + CROWD
+    base = caught(model(full))
+    print(f"current at posting: {ci(base.to_numpy())}", flush=True)
+
+    def vs(name, cols, ref, ref_s):
+        s = caught(model(cols))
+        d = (s - ref_s).to_numpy()
+        b = [rng.choice(d, len(d)).mean() for _ in range(2000)]
+        print(f"  {name:62s} {ci(s.to_numpy())}  difference {d.mean():+.1%} [{np.percentile(b, 2.5):+.1%}, {np.percentile(b, 97.5):+.1%}]", flush=True)
+        return s
+    print("1. submitter history and network", flush=True)
+    vs("without submitter history (b_sub_*, b_author_*)", [c for c in full if c not in OLD_SUB + OLD_REC[:4]], "current", base)
+    vs("+ tie network (ties.py)", full + TIES, "current", base)
+    print("2. domain and author track record", flush=True)
+    vs("without any domain / author record", [c for c in full if c not in OLD_REC], "current", base)
+    vs("+ record on the real daily list (domain, site, author)", full + REC, "current", base)
+    print("3. outside feeds before posting", flush=True)
+    vs("+ feeds (own link seen before posting, domain buzz)", full + FEED, "current", base)
+    print("4. title / topic fit with that day's audience", flush=True)
+    vs("+ day fit (6 h comment topics, previous 2 days' top 30, nearest post)", full + FIT, "current", base)
+    print("all levers", flush=True)
+    vs("+ all four", full + TIES + REC + FEED + FIT, "current", base)
+    print(f"feeds coverage: posts with own link in a feed before posting {(Q[te].fd_n > 0).mean():.1%}; "
+          f"among real top 30 {(Q[te & (Q.y == 1).to_numpy()].fd_n > 0).mean():.1%}", flush=True)
+
+
+if __name__ == "__main__" and "levers" in sys.argv[1:]:
+    levers()
+elif __name__ == "__main__":
     ceil = pd.Series({d: len(set(Q[te & (Q.day == d).to_numpy()].post_id) & real[d]) / 30 for d in sorted(set(Q.day[te])) if d in real.index})
     print(f"holdout days {len(ceil)}; ceiling (share of the real top 30 posted that day): {ci(ceil.to_numpy())}", flush=True)
     base = caught(model(POST + KNN + EMB + CROWD))
