@@ -73,6 +73,22 @@ def diff(c, ref):
     return f"{(h.sum() - h0.sum()) / n.sum():+.1%} [{np.percentile(b, 2.5):+.1%}, {np.percentile(b, 97.5):+.1%}]"
 
 
+def honest(V, a, ids, how="ramp"):
+    """Quality News series were fetched only for posts that ended with 5+ points, so a missing series reveals the
+    outcome. Make posts without a series look like real small posts: votes at age a imputed from the final points
+    (all < 5): "ramp" = 1 + (final - 1) * min(1, a / 60); "max" = the final points (an upper bound); rank 91 (not on
+    the front page). The exposure-based rate (only in series) is dropped for everyone."""
+    V = V.drop(columns=[c for c in ("rate",) if c in V]).copy()
+    miss = ~Q.post_id.isin(ids).to_numpy()
+    fp = Q.points.to_numpy(float)
+    imp = 1 + (fp - 1) * min(1.0, a / 60) if how == "ramp" else fp
+    imp30 = 1 + (fp - 1) * min(1.0, max(a - 30, 0) / 60) if how == "ramp" else fp
+    V.loc[miss, "points"] = imp[miss]
+    V.loc[miss, "rank_now"], V.loc[miss, "best_rank"] = 91, 91
+    V.loc[miss, "gain30"] = (imp - imp30)[miss]
+    return V
+
+
 def model(cols, extra=None):
     X = Q[cols] if extra is None else pd.concat([Q[cols], extra], axis=1)
     m = lgb.LGBMClassifier(n_estimators=600, learning_rate=0.03, num_leaves=31, min_child_samples=30, subsample=0.8,
@@ -201,6 +217,10 @@ elif __name__ == "__main__":
     q_by_id = {r.post_id: {"qn_f0": r.qn_f0, "qn_rank_10m": r.qn_rank_10m, "qn_up_10m": r.qn_up_10m, "qn_exp_10m": r.qn_exp_10m}
                for r in qs.itertuples()}
     V = OL.vote_feats(Q, q_by_id, [15, 60, 180])
+    ids = set(q_by_id)
     for a, label in ((15, "15 min"), (60, "1 h"), (180, "3 h")):
         s = caught(model(full, V[a]))
-        print(f"Caught at {label} (includes the post's early votes): {ci(s)}", flush=True)
+        h1 = caught(model(full, honest(V[a], a, ids)))
+        h2 = caught(model(full, honest(V[a], a, ids, "max")))
+        print(f"Caught at {label} (includes the post's early votes): leaky (missing series) {ci(s)}; "
+              f"honest ramp {ci(h1)}; honest max {ci(h2)}", flush=True)
