@@ -563,3 +563,67 @@ standing" model above.
 - **Extensions vs tie strength:** −1.0 / +1.0 / +1.0, noise.
 - **Reading:** on its own, the simulation picks competitor winners better with tie strength. Once audience inputs are
   added (newsim), the gain disappears, which matches the pool-level result.
+
+## Nov 1, 23:55 UTC: full set — clean baseline, day-clustered winner of 3, degradation, page-aware extensions, panel
+All runs are out of sample, with paired bootstraps over days and 95% intervals. Winner of 3 is now resampled by day
+(`comp_boot.py`; groups matched exactly across sources).
+
+**Corrections to earlier entries today.** psn is now rebuilt with today's code and data as `psn2`; the old psn files
+were from Oct 28. With the clean baseline:
+- Pool check: tie strength vs none, pool top-3 hit (fans) +2.7 (−0.3 to +6.0); the earlier "+3.5, excludes 0" was
+  against the old psn. Spearman is still clearly better: +0.030 (+0.012 to +0.048).
+- Winner of 3, no page, simulation only: the earlier "+6.4 / +2.5 / +3.7" was against the old psn and used an unpaired
+  rough interval. The clean, day-clustered numbers are in the table below.
+
+### Launch level, daily top 3 / 5 / 10 (simulation only unless marked)
+| Configuration | Top 3 / 5 / 10 |
+|---|---|
+| No page, psn2 (no tie strength) | 60.3 / 71.3 / 79.4 |
+| No page, pnr (+ tie) | 59.2 / 70.8 / 79.8 (top 3 vs psn2 −1.1, −3.4 to +1.1) |
+| No page, pnx (+ tie + extensions; deployed) | 59.8 / 70.6 / 79.3 (top 3 vs psn2 −0.6, −2.7 to +1.5) |
+| Page, pst | 60.3 / 70.9 / 79.7 |
+| Page, psr (+ tie) | 62.6 / 71.2 / 79.7 |
+| Page, psx (+ tie + extensions) | 61.5 / 70.5 / 80.2 (top 3 vs psr −1.1, −3.2 to +0.9; vs pst +1.1, −1.4 to +4.0) |
+| Page, psr with the last 3 / 7 / 14 days of upvotes hidden | 62.6 / 62.6 / 61.8 on top 3 (vs psr +0.0 / −0.0 / −0.9; all CIs within ±3) |
+| Panel (pool reweighted, no model on top) | 47.7 / 59.9 / 69.3 (May–Oct) |
+| Launch model (Jul–Oct / May–Oct) | 65.8 / 72.9 / 80.8 / 65.5 / 73.9 / 81.2 |
+
+**Best simulation vs launch model, same launches (paired):**
+- psr: top 3 −3.2 (−7.5 to +0.9); top 5 −1.7 (−4.3 to +0.9); top 10 −1.1 (−2.4 to +0.2).
+- psx: top 3 −4.3 (−8.9 to −0.0).
+- pnx (no page): top 3 −5.7 (−9.4 to −1.9).
+
+### Winner of 3, day-clustered (day / week / month)
+| B − A | Day | Week | Month |
+|---|---|---|---|
+| No page: pnr − psn2 | +2.5 (−0.3 to +5.7) | +0.5 (−1.6 to +2.5) | +2.7 (+1.0 to +4.4) |
+| No page: pnx − psn2 | +1.6 (−2.7 to +5.8) | +1.5 (−0.4 to +3.4) | +3.7 (+1.7 to +5.6) |
+| No page: pnx − pnr | −0.9 (−5.0 to +2.7) | +1.0 (−1.0 to +3.1) | +1.0 (−0.8 to +2.8) |
+| Page: psr − pst | +0.6 (−4.7 to +5.3) | +1.5 (−0.5 to +3.5) | +2.1 (+0.5 to +3.8) |
+| Page: psx − psr | +1.3 (−3.2 to +5.3) | +0.6 (−0.9 to +2.1) | +1.7 (+0.0 to +3.4) |
+| psx simulation − launch model | −9.7 (−15.4 to −4.8) | −8.7 (−11.0 to −6.3) | −7.7 (−9.8 to −5.5) |
+| psx launch model + simulation − launch model | −0.4 (−3.5 to +3.0) | +0.3 (−1.0 to +1.7) | −2.0 (−3.5 to −0.5) |
+
+Levels: psx simulation 62.7 / 63.6 / 65.4. Launch model 72.4 / 72.2 / 73.1.
+
+### Panel reweighting (`panel.py`, pnr + SEG=1, 54 trait cells, NNLS weights fitted on earlier months)
+- **Panel:** 47.7 / 59.9 / 69.3. That is below the raw pool sum (48.5 / 61.5 / 71.3; top 10 −2.0, −3.1 to −0.9) and
+  far below the launch model (top 3 −17.8, −21.8 to −13.8).
+- **Blend with the launch model:** worse than the launch model alone (top 3 −6.5, −10.0 to −3.1).
+- **Winner of 3:** panel 58.7 / 57.7 / 59.7; launch model 71.1 / 70.6 / 73.8.
+- **Weights:** only 8–11 of 54 cells get weight. The largest is low-activity, untied, non-maker people with 100+
+  followers.
+- **Reading:** the pool's simulated picks, rescaled by trait alone, cannot reproduce launch totals. The audience the
+  launch model sees (makers' and hunter's followers, X, promotion) is not represented by any pool cell. A pure-panel
+  forecast needs those outside audiences in the panel itself, not only pool reweighting.
+
+### Verdict
+- **No simulation variant beats the launch model** on daily top 3/5/10 or winner of 3.
+- **Closest:** page-aware psr, top 3 −3.2 (−7.5 to +0.9); top 10 −1.1 (−2.4 to +0.2).
+- **Launch model + simulation:** ties the launch model on winner of 3 (day −0.4, week +0.3) and is −2.0 on month.
+- **Tie strength:**
+  - Helps the simulation itself: person level +1.8 (6/6 months); pool Spearman +0.03; winner of 3 by month +2.7 to
+    +3.7, intervals excluding 0.
+  - Does not move launch-level daily top-k.
+- **Hidden upvotes:** hiding up to 14 days costs nothing measurable at launch level. So the Oct 30–Nov 1 upvote outage
+  did not hurt the forecasts.
