@@ -59,6 +59,8 @@ def settled_lists():
 
 def main():
     M = load_minute()
+    cov = M.assign(day=pd.to_datetime(M.t, unit="s", utc=True).dt.strftime("%Y-%m-%d")).groupby(["day", "list"]).t.nunique().unstack()
+    print("hn_minute coverage (minutes read per UTC day, of 1,440):\n" + cov.to_string(), flush=True)
     new = M[M.list == "newest"].sort_values("t")
     first = new.drop_duplicates("id")
     first = first[(first.pos <= 5) & (first.t >= M.t.min() + 600)]
