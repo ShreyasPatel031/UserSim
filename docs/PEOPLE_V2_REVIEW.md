@@ -222,3 +222,28 @@ Rows dated `upper_bound` are the only truthful way to date these captures; do no
 Runs still to do by someone with bucket access (this session has none), in order: merge the incremental people parts into `t/`; re-fetch the 281
 events-only people into `raw/ph_profiles2_refetch2/`; copy `file_dates.example.json` to `work/file_dates.json`; rebuild with `--out v3b`; validate.
 Send back `build_report.json`, `validation_v3.json`, and the hand-check output for `constanza_hasselmann`, `mswulinski`, `sarthakmalhotra`.
+
+## people_v3 results as committed (57d330f1) and the X-handle audit summary
+
+**Checked against the committed files** (`docs/people_v3_results/`): `build_report.json` and `validation_v3.json` match what Grok Bot reported -
+persons 20,945, handles 46,688, profiles 26,588, events 316,913, refetch 16,521 used / 7 gone / 0 retry, 281 events-only, 29 pass and 1 fail.
+This is a read of Data Feeder's output; I have not recomputed it from the raw data.
+
+- **That run used the old validator** (`bbb10429`), so the one failure is the old strict `no_wispr_in_ph_text`, already replaced by the scoped check. The rerun with `cfbe8d62` is still needed to confirm.
+- **Stats consistent with the earlier review:** 312 X field/link conflicts (same as the `tables_v2` run), 44 rows demoted for shared X handles
+  (about 21 handles x 2-3 people, matching the 21 shared handles found before), 48 extra self-links demoted.
+- **Re-fetch list is 274, not 281 (derived).** 20,945 - 20,671 = 274 new persons. The other 7 of the 281 events-only persons are the 7 deleted (404)
+  users, who already existed and have events but no profile. Re-fetch the 274; the 7 will 404 again.
+- **README quirk:** the input list says `ev/*.parquet - 0 files, 1273205 bytes`, which is a listing error (316,913 events were read).
+- **Dates:** `file_dates.json` was not used, hence handles dated 0.779 and profiles 0.621; expect higher with the upper-bound dates.
+
+**X-handle audit, reported by Grok Bot (labeled file not on the branch; I have not seen it):** 72 match (55 high, 17 medium), 13 mismatch
+(12 company or product accounts, 1 reassigned handle `@soodadityab`), 15 unsure (9 suspended, 6 not found). The counts add up (72 + 13 + 15 = 100;
+55 + 17 = 72; 9 + 6 = 15). The 9 suspended handles are a cluster of fake-looking PH profiles with Turkish names, and 8 similar non-suspended
+handles were labelled match/medium on the name alone, so they are suspect. Reading, assuming those counts: only 55 of 100 handles are high-confidence
+matches (about 64 if the 8 name-only matches are dropped from the 72), and about 12% are company or product accounts. The labels come from an
+automated draft, not a human, and "match on name alone" is not ground truth.
+
+**Needed to decide the X rule:** commit `x_handle_audit_100_labeled.csv` and its README to the branch (e.g. `docs/people_v2_results/`). I want to
+split the labels by `source` (`ph_self_link` 0.95 vs `ph_twitter_field` 0.8), since the question is whether the free-text link or PH's
+`twitterUsername` is the more reliable handle, and the 8 suspect cluster rows need excluding from that comparison. Until then the rule is unchanged.
