@@ -56,7 +56,7 @@ def fit_glm(tr, te, pool, ps):
     def tens(D):
         z = torch.tensor(((D[zc] - mz) / sz).fillna(0).clip(-5, 5).values, dtype=torch.float64)
         w = torch.tensor(((D[wc] - mw) / sw).fillna(0).clip(-5, 5).values, dtype=torch.float64)
-        n = torch.tensor(np.expm1(D[list(AUD.values())].fillna(0).clip(lower=0, upper=17).values) / 1000.0, dtype=torch.float64)   # the build stores log1p counts
+        n = torch.tensor(np.expm1(D[list(AUD.values())].fillna(0).clip(lower=0, upper=14).values) / 1000.0, dtype=torch.float64)   # the build stores log1p counts
         s = torch.tensor(D[pool].fillna(0).clip(lower=0).values if pool else np.zeros(len(D)), dtype=torch.float64)
         return z, w, n, s
     z, w, n, s = tens(tr); y = torch.tensor(tr.votes.values, dtype=torch.float64)
@@ -66,7 +66,7 @@ def fit_glm(tr, te, pool, ps):
          "b": torch.zeros(w.shape[1], dtype=torch.float64, requires_grad=True)}
 
     def mu(z, w, n, s):
-        aud = (n * torch.exp(P["c"] + z @ P["t"].T)).sum(1)
+        aud = (n * torch.exp((P["c"] + z @ P["t"].T).clamp(-12, 2))).sum(1)   # conversion at most e^2 = 7 votes per 1k
         return torch.nn.functional.softplus(P["a"]) * s + aud + torch.exp(P["b0"] + w @ P["b"]) + 1e-6
     opt = torch.optim.LBFGS(list(P.values()), lr=0.5, max_iter=500, line_search_fn="strong_wolfe")
 
