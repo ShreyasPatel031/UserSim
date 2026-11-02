@@ -93,6 +93,25 @@ def honest(V, a, ids, how="const"):
     return V
 
 
+def pairwise(scores, ref=None, T=None):
+    """Decision metric (orchestrator, 2026-11-02): pairwise accuracy = chance a winner outscores a non-winner posted the
+    same day (within-day AUC), averaged over days; 95% interval resampling days; with ref, the paired difference."""
+    from sklearn.metrics import roc_auc_score
+    T = (Q[te][["day", "y"]] if T is None else T[["day", "y"]]).assign(s=scores)
+    if ref is not None:
+        T = T.assign(r=ref)
+    a, b = [], []
+    for _, g in T.groupby("day"):
+        if g.y.nunique() == 2:
+            a.append(roc_auc_score(g.y, g.s))
+            b.append(roc_auc_score(g.y, g.r) if ref is not None else 0)
+    a, b = np.array(a), np.array(b)
+    d = a - b if ref is not None else a
+    bs = [d[rng.integers(0, len(d), len(d))].mean() for _ in range(2000)]
+    f = "+.3f" if ref is not None else ".3f"
+    return f"{d.mean():{f}} [{np.percentile(bs, 2.5):{f}}, {np.percentile(bs, 97.5):{f}}]"
+
+
 def model(cols, extra=None, rows=None):
     X = Q[cols] if extra is None else pd.concat([Q[cols], extra], axis=1)
     if rows is not None:                                   # train only on these rows (series-only sensitivity)

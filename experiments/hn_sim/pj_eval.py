@@ -40,6 +40,7 @@ def main():
     s1 = C.model(full + PJ)
     b0, b1 = C.caught(s0), C.caught(s1)
     print(f"checkpoint 3, Jul-Aug model: without judge {C.ci(b0)}; with {C.ci(b1)}; difference {C.diff(b1, b0)}", flush=True)
+    print(f"   pairwise accuracy: without {C.pairwise(s0)}; with {C.pairwise(s1)}; difference {C.pairwise(s1, s0)}", flush=True)
     h = np.load(os.path.join(H.CACHE, "caught_hist2_test_scores.npy"))
     rk = lambda x: pd.Series(x).rank(pct=True).to_numpy()
     c0, c1 = C.caught(0.5 * rk(s0) + 0.5 * rk(h)), C.caught(0.5 * rk(s1) + 0.5 * rk(h))
