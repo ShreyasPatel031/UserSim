@@ -11,8 +11,12 @@ Socrates, OSIM-8B.
 
 ## North stars (set by the user; these two only)
 1. **Product Hunt: 90% on top 3 / 5 / 10** of the real leaderboard: **daily, weekly or monthly**, whichever we reach
-   first. Pre-launch and launch-day forecasts are reported apart. Launch model now (Mar–Oct): daily 65.5 / 73.9 / 81.2;
-   weekly and monthly to be re-scored with today's models (Oct 25 report: weekly 52 / 57 / 53, monthly 33 / 35 / 40).
+   first. Pre-launch and launch-day forecasts are reported apart.
+   - Pre-launch (Mar–Oct): launch model daily 65.8 / 72.9 / 80.8; weekly 51.0 / 55.0 / 56.7; monthly too few lists.
+   - **Launch-day, daily, from archived intraday votes (Jul–Oct, Wayback, verified):** hours 4–8: 85.1 / 95.2 / 91.8;
+     hours 8–12: **93.1 / 95.2 / 96.2**; hours 12–24: 96.7 / 97.3 / 97.8. Top 5 and 10 pass 90 from about hour 4–8;
+     top 3 from about hour 11. Votes are hidden on the page for the first 4 hours.
+
 2. **Hacker News: Caught per post, 80%.** Every post judged once; winners are posts that ever make a daily top 30; we
    flag as many as there are winners; Caught = winners flagged / winners. Measured at 1 h, 15 min and at posting
    (push 1 h first). Now: 47.2% / 24.7% / 23.2%.
