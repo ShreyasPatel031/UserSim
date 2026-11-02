@@ -11,9 +11,11 @@ reply / quote is dated before the cutoff (engager_created_at, else the X snowfla
 time and are dropped; like / impression / reply counts were read at fetch time (after launch) and are not used.
 Control: the honest launch model calibrated per day. Day terms are constant within a day, so the control's daily ranking
 is the honest launch model's. Treatment: log mu = log mu_honest + a_day + b . x (Poisson, day fixed effects, small ridge on
-b), fitted leave-one-day-out on the covered launches of every other day, then the held-out day is ranked by log mu_honest
-+ b . x. Launches not covered by the gate keep x = 0 and do not enter any fit.
-  (A) full days (every launch with X handles covered): daily top 3 / 5 / 10 vs the control, paired by day
+b), fitted FORWARD ONLY: for each test day, on the covered launches of strictly earlier days (at least MIN_TRAIN_DAYS days
+and MIN_TRAIN_LAUNCHES launches), then the test day is ranked by log mu_honest + b . x. Days without enough history are
+not scored. Launches not covered by the gate keep x = 0 and do not enter any fit.
+  (A) full days (every launch with X handles covered): daily top 3 / 5 / 10 vs the control, paired by day, also by month;
+      weekly top 3 / 5 / 10 on weeks whose days are all full and scored (Monday-Sunday)
   (B) covered subsets: days with >= 3 covered launches, top 3 among the covered launches (real order by votes)
   plus a diagnostic: within-day Spearman of each x with the honest model's residual, covered launches.
 Decision rule fixed before any run: X adds daily value iff (A) on >= 10 full days gives daily top 3 vs the control with a
@@ -33,6 +35,7 @@ FILES = {"posts.jsonl": f"{B}/raw/x/prelaunch_posts.jsonl", "engagers.jsonl": f"
          "dm_gate.json": f"{B}/raw/x/prelaunch_wip/dm_gate.json", "honest_preds.parquet": f"{B}/tmp/e5/honest/honest_preds.parquet",
          "inputs.tgz": f"{B}/tmp/e5/xtest/inputs.tgz"}
 MIN_FULL_DAYS = 10
+MIN_TRAIN_DAYS, MIN_TRAIN_LAUNCHES = 5, 30
 PT = ZoneInfo("America/Los_Angeles")
 
 
@@ -141,9 +144,9 @@ def main(cache):
     C = T[T.covered & T.has_x]                      # launches whose X inputs are known
     eval_days = sorted(set(C.day))
     T["s_ctrl"] = T.honest; T["s_x"] = T.honest; coef = {}
-    for d in eval_days:                              # leave one day out
-        tr = C[C.day != d]
-        if tr.day.nunique() < 2 or len(tr) < 10:
+    for d in eval_days:                              # forward only: fit on strictly earlier days
+        tr = C[C.day < d]
+        if tr.day.nunique() < MIN_TRAIN_DAYS or len(tr) < MIN_TRAIN_LAUNCHES:
             continue
         b = fit_b(tr, cols); coef[d] = [round(float(v), 4) for v in b]
         m = (T.day == d) & T.covered & T.has_x
@@ -155,6 +158,19 @@ def main(cache):
         rows = [(hit(g, "s_x", k, "votes") - hit(g, "s_ctrl", k, "votes")) for d, g in T.groupby("day") if d in full_days and d in coef and len(g) >= k]
         A[f"daily_top{k}"] = paired(rows, rng)
     res["A_full_days"] = {"days": sorted(d for d in full_days if d in coef), **A}
+    scored_full = [d for d in sorted(full_days) if d in coef]
+    T["week"] = pd.to_datetime(T.day).dt.strftime("%G-W%V"); T["mon"] = T.day.str[:7]
+    res["A_by_month"] = {m: {f"daily_top{k}": [round(100 * float(np.mean([hit(g, "s_x", k) for d, g in T[T.mon == m].groupby("day") if d in scored_full and len(g) >= k])), 1),
+                                                round(100 * float(np.mean([hit(g, "s_ctrl", k) for d, g in T[T.mon == m].groupby("day") if d in scored_full and len(g) >= k])), 1)]
+                             for k in (3, 5, 10)} | {"days": sum(d[:7] == m for d in scored_full)}
+                         for m in sorted({d[:7] for d in scored_full})}
+    days_of_week = T.groupby("week").day.apply(lambda s: set(s))
+    full_weeks = [w for w, ds in days_of_week.items() if ds and all(x in scored_full for x in ds)]
+    W = {}
+    for k in (3, 5, 10):
+        rows = [(hit(g, "s_x", k) - hit(g, "s_ctrl", k)) for w, g in T.groupby("week") if w in full_weeks and len(g) >= k]
+        W[f"weekly_top{k}"] = paired(rows, rng)
+    res["A_full_weeks"] = {"weeks": full_weeks, **W}
     # (B) covered subsets
     Bk = {}
     for k in (3, 5):
@@ -164,7 +180,7 @@ def main(cache):
     # diagnostic
     C2 = C.assign(resid=np.log1p(C.votes) - C.honest)
     res["diagnostic_spearman_with_residual"] = {c: round(float(np.nanmean([spearmanr(g[c], g.resid).correlation for _, g in C2.groupby("day") if len(g) >= 3 and g[c].nunique() > 1])), 3) for c in cols} if len(C2) else None
-    res["coef_leave_one_day_out"] = coef
+    res["coef_forward"] = coef
     n_full = len(res["A_full_days"]["days"])
     top3 = res["A_full_days"]["daily_top3"]
     res["verdict"] = (f"insufficient data: {n_full} full days (need {MIN_FULL_DAYS}); (B) is an early read only" if n_full < MIN_FULL_DAYS else
