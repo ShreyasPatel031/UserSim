@@ -176,9 +176,39 @@ def main():
     json.dump(out, open(path, "w"), indent=1)
 
 
+def export_atposting(hist=False):
+    """For E5's simulator: the deployed odds tool's at-posting P(top 30) for every live post since the recorder
+    started (hn_jobs/cache/live_atposting/<day>.parquet: post_id, p_top30, made_at), and with hist=True for every
+    Sep 1 - Oct 14 post (atposting_hist.parquet; the odds model was fit on Jul 1 - Aug 15 + isotonic on Aug 16-31,
+    so these are out-of-sample)."""
+    import store as S
+    b = S._bucket()
+    M = LC.load_minute()
+    P = OL.recent_history()
+    P = P[P.created_at_i >= int(M.t.min())].reset_index(drop=True)
+    P["day"] = pd.to_datetime(P.created_at_i, unit="s", utc=True).dt.strftime("%Y-%m-%d")
+    P["p_top30"] = odds_at_posting(P)
+    now = int(time.time())
+    for d, g in P.groupby("day"):
+        f = os.path.join(H.CACHE, f"live_atposting_{d}.parquet")
+        g[["post_id", "p_top30"]].assign(made_at=now).to_parquet(f, index=False)
+        b.blob(f"usersim_sim/hn_jobs/cache/live_atposting/{d}.parquet").upload_from_filename(f)
+        print(f"live_atposting/{d}.parquet: {len(g)} posts", flush=True)
+    if hist:
+        p = H.stories()
+        Hh = p[(p.day >= "2026-09-01") & (p.day <= "2026-10-14")].reset_index(drop=True)
+        Hh["p_top30"] = odds_at_posting(Hh)
+        f = os.path.join(H.CACHE, "atposting_hist.parquet")
+        Hh[["post_id", "day", "p_top30"]].to_parquet(f, index=False)
+        b.blob("usersim_sim/hn_jobs/cache/atposting_hist.parquet").upload_from_filename(f)
+        print(f"atposting_hist.parquet: {len(Hh)} posts", flush=True)
+
+
 if __name__ == "__main__":
     import sys
     if len(sys.argv) > 2 and sys.argv[1] == "odds":
         odds_batch(sys.argv[2])
+    elif len(sys.argv) > 1 and sys.argv[1] == "export":
+        export_atposting(hist="hist" in sys.argv)
     else:
         main()
