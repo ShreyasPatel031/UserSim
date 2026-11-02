@@ -13,7 +13,18 @@ Each worker runs one browser (reused across people, so JS/CSS are cached); a cha
 opens a fresh one (new residential exit IP), with backoff 5/15/45 s, 3 attempts per person."""
 import argparse, datetime, json, os, random, re, signal, sys, time
 from multiprocessing import Process, Queue
-from urllib.parse import urlparse
+from urllib.parse import unquote, urlparse
+
+def _redact(s):
+    """Error text goes into out_*.jsonl and the job log, which are uploaded to the bucket: never let the proxy URL, user name or password through."""
+    p = os.environ.get("PROXY_URL", "")
+    u = urlparse(p) if p else None
+    secrets = [p, u.username if u else None, u.password if u else None]
+    secrets += [unquote(x) for x in secrets if x]
+    for x in sorted({x for x in secrets if x and len(x) >= 4}, key=len, reverse=True):
+        s = s.replace(x, "<redacted>")
+    return s
+
 
 KEY = re.compile(r'"votedPosts":\{"__typename":"PostConnection","edges":')
 USD_PER_GB = 1.0
@@ -141,7 +152,7 @@ def worker(wid, q_in, out_path, lock_path):
                     try:
                         r = fetch_one(pg, name); rec.pop("err", None); rec.update(r)
                     except Exception as e:  # noqa: BLE001
-                        rec.update(status=-1, err=str(e)[:200])
+                        rec.update(status=-1, err=_redact(str(e))[:200])
                     signal.alarm(0)
                     if rec["status"] in (200, 404) or rec["attempts"] >= 3:
                         rec.update(wire_bytes=meter["b"] - b0, secs=round(time.time() - t0, 1),
@@ -157,7 +168,7 @@ def worker(wid, q_in, out_path, lock_path):
                     break   # fresh browser = fresh residential exit IP
         except Exception as e:  # noqa: BLE001
             berr += 1
-            print(wid, "browser err", str(e)[:200], flush=True)
+            print(wid, "browser err", _redact(str(e))[:200], flush=True)
             if berr > 20:
                 return
             time.sleep(10)

@@ -52,10 +52,11 @@ Delete the VMs afterwards.
   over the last 7 days (written by `summarize_daily.py` after every run) and starts no VM when under $0.02 is left. The per-run caps `--max-usd` are then
   set to 30% (upvotes, at most $0.3) and 70% (following, at most $4) of what is left, so a run can never spend more than the week has left.
   Caveat: a run whose `summarize_daily.py` never executed leaves no ledger entry and is under-counted; always run the summary after the VM.
-- **The proxy credential is not in instance metadata.** Metadata carries only the secret's name (`proxy_secret=usersim-PROXY_URL`, `secret_project`); the VM reads the value with
-  `gcloud secrets versions access` at start-up and writes `FAILED_NO_PROXY_SECRET` and shuts down if it cannot, with no silent fallback. **Untested and needs one-time setup by someone with IAM rights:**
-  the secret `usersim-PROXY_URL` must exist in `project-amer-scs-sandbox` (the other `usersim-*` secrets are managed by `mvp/secrets_store.py`), and the VMs' service account needs
-  `roles/secretmanager.secretAccessor` on it. The VM is created with `--scopes=cloud-platform` (needed for Secret Manager; access is then limited by IAM, not by scope).
+- **The proxy credential is not in instance metadata.** Metadata carries only names and paths (`proxy_secret`, `secret_project`, `proxy_gcs`). `proxy_env.sh` (`load_proxy`) sets `PROXY_URL` on the VM from
+  Secret Manager (`usersim-PROXY_URL`) if that gives a value, else from the private object `gs://usersim-bakeoff-347838016394/usersim_sim/secrets/proxy_url.txt` (one line, an http(s) URL). If neither works the VM writes
+  `FAILED_NO_PROXY` and shuts down; there is no other fallback. The value is never printed: the readers' stderr is discarded, the loader says only which source it used, and `fetch_upvotes.py` redacts the proxy URL,
+  user and password from any error text before it reaches `out_*.jsonl` or the job log (both uploaded to the bucket).
+  **Trade-off of the GCS object:** anyone with read access to that bucket prefix can read the credential, which is wider than a Secret Manager secret; restrict the object (or the `secrets/` prefix) to the VM service account and the people who need it.
   The credential has also appeared in chat and still needs rotating.
-- Tests: `python -m pytest experiments/pipeline/ph_upvotes/test_weekly_budget.py` (the cap arithmetic). The shell gate was checked with stubbed `gsutil`/`gcloud`:
-  with $0.01 left it exits 3 and calls nothing; with $0.50 left it creates the VM with `max_usd_up=0.15,max_usd_fol=0.35`. The Secret Manager read and the real VM run are not tested here.
+- Tests: `python -m pytest experiments/pipeline/ph_upvotes` (10 tests: the cap arithmetic, the loader with stubbed `gcloud`/`gsutil` including that the value is never printed, and the redaction). The shell gate was checked with stubbed `gsutil`/`gcloud`:
+  with $0.01 left it exits 3 and calls nothing; with $0.50 left it creates the VM with `max_usd_up=0.15,max_usd_fol=0.35`. The real Secret Manager read, the real GCS read and a real VM run are not tested here.

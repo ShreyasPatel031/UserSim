@@ -1,16 +1,15 @@
 #!/bin/bash
 # Daily people refresh runner (VM startup script). Metadata: work (gs:// dir with fetch_upvotes.py, upvotes.txt, following.txt),
-# proxy_secret + secret_project (the PROXY_URL is read from Secret Manager, never from metadata), workers, max_usd_up, max_usd_fol. Phases: ftest (5 people, following) -> upvotes -> following. Writes DONE / FAILED to $W.
+# proxy_secret + secret_project + proxy_gcs (PROXY_URL is read from Secret Manager, else from the private GCS object; never from metadata), workers, max_usd_up, max_usd_fol. Phases: ftest (5 people, following) -> upvotes -> following. Writes DONE / FAILED to $W.
 exec > /var/log/job.log 2>&1
 md(){ curl -s -H Metadata-Flavor:Google http://metadata/computeMetadata/v1/instance/attributes/$1; }
 W=$(md work); NW=$(md workers); MU=$(md max_usd_up); MF=$(md max_usd_fol)
-PROXY_URL=$(gcloud secrets versions access latest --secret="$(md proxy_secret)" --project="$(md secret_project)" 2>/dev/null)
-if [ -z "$PROXY_URL" ]; then echo FAILED_NO_PROXY_SECRET | gsutil -q cp - $W/FAILED; gsutil -q cp /var/log/job.log $W/; shutdown -h now; exit 1; fi
-export PROXY_URL
 ( while sleep 60; do gsutil -q cp /var/log/job.log $W/progress.log; gsutil -q cp /job/out_*.jsonl $W/ 2>/dev/null; done ) &
 apt-get -qq update; apt-get -qq install -y python3-pip xvfb >/dev/null
 pip install -q --break-system-packages "camoufox[geoip]==0.4.11" playwright && python3 -m playwright install-deps firefox >/dev/null && python3 -m camoufox fetch >/dev/null
-mkdir -p /job && cd /job && gsutil -q cp $W/fetch_upvotes.py $W/upvotes.txt $W/following.txt .
+mkdir -p /job && cd /job && gsutil -q cp $W/fetch_upvotes.py $W/proxy_env.sh $W/upvotes.txt $W/following.txt .
+. ./proxy_env.sh
+load_proxy "$(md proxy_secret)" "$(md secret_project)" "$(md proxy_gcs)" || { echo FAILED_NO_PROXY | gsutil -q cp - $W/FAILED; gsutil -q cp /var/log/job.log $W/; shutdown -h now; exit 1; }
 for p in ftest upvotes following; do gsutil -q cp $W/out_$p.jsonl . 2>/dev/null; done   # resume
 IF=$(ip route | awk '/default/{print $5;exit}'); R0=$(cat /sys/class/net/$IF/statistics/rx_bytes); T0=$(cat /sys/class/net/$IF/statistics/tx_bytes)
 export PHUP_MODE=light
