@@ -1315,3 +1315,6 @@ The ctrl.py `all` model, same folds and LightGBM, 5 seeds. Leak groups dropped c
   - Waits until 14 clean days exist.
 - **Pipeline:** the `raw` step now also uploads `results/forecast_<d>.parquet` (the honest prior in log votes) and `data/sim_live/pnx_<d>.json` (popscore's live outputs). A new `earlyshock` step runs the gated backtest daily and writes `backtests` rows once ready. Not deployed yet.
 - **Expectation:** E0's random-sample oracle gives 83 daily top 3, and Wayback captures +10.5 by hour 8. Real early votes are skewed, so the shock (control) arm should land well above 64.4 by hour 4–8. The open question is whether popscore's arm beats the control.
+- **Deployed and verified (Nov 2, 15:06 UTC):** 20261102_b4.
+  - Contents: the early-shock step (`earlyshock` between score and raw, idle until 14 clean days from Nov 3), pipeline/snapshots.py, s_raw uploading the honest forecast parquet and pnx_<d>.json.
+  - On the VM: md5s match; run_daily.sh has score,earlyshock,raw; backup at ~/w/backup_20261102_b4/; one hourly recorder, untouched.
