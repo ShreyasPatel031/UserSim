@@ -257,3 +257,9 @@ Model switches, direction reviews and agenda changes, newest last.
     - E5: frozen E1 v2 vs the same control.
 - 11:33 UTC E5: daily gain withdrawn (pool/audience has no established daily value). Weekly top 5 +3.2 = day rescaling alone. Weekly top 3 extra from pool/audience needs a 10-min paired run (E5 asking Shreyas). Main open lever for weekly: day-level calibration (PH agent).
 - 11:34 UTC: mailbox checked. Only routine HN recorder updates and the pna deploy reply (already verified). X full-days request waits on the user's $20 top-up approval; no follow-up needed.
+- 11:35 UTC PH day-level calibration of the launch model (commit 81c0b50); daily order unchanged.
+  - Weekly top 3: May–Oct 49.3 → 53.3 (+4.0 [0.0, +9.3], 25 weeks, never worse by month); Jul–Oct +5.9 [0.0, +11.8].
+  - Weekly top 5: +1.6. Weekly top 10: 0.
+  - Monthly: too few lists, don't ship.
+  - Plan: shadow weekly forecast; ship after ~6 live weeks agree.
+  - Grok Bot asked again to stage the bundle without Shreyas; held.
