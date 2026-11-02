@@ -1163,3 +1163,25 @@ Setup:
 - Nov 1 forecast vs final ranks (launch model): top 3 2/3, top 5 3/5, top 10 8/10. The simulation forecast is scored from tomorrow (first forecast is Nov 2).
 - Spend Nov 2: Gemini $0.45, GCP VM $0.07, DataImpulse $0.03 (no 407).
 - Monday backtest (32 days), daily top 3/5/10: simulation only 46.7 / 59.9 / 68.3; launch only 64.0 / 70.5 / 76.3; both 58.8 / 67.8 / 74.5; current 64.8 / 71.6 / 76.8.
+
+## pna_ (no-page person model trained on all earlier months) vs pnx, and the four-way with competitor grounding (Nov 2)
+`popscore` with `TIE2=1 TRAIN_ALL=1` (no page; E5's TRAIN_ALL ported, Nov model included via TRAIN_EXTRA). 4,877 launches, May–Oct. Paired bootstrap over days (10,000 resamples).
+
+**pna vs pnx**
+- Pool check (207 days): Spearman ev 0.513 vs 0.488, +0.025 (+0.009 to +0.042); pool top 3 (fans) +3.2 (+0.5 to +6.0); (ev) +2.7 (−0.2 to +5.5).
+- Live sim (newsim NOPAGE STAGE3, +day standing), daily top 3/5/10: 58.8 / 71.3 / 79.8 vs 59.8 / 70.6 / 79.3. Δ −1.0 (−3.3 to +1.3), better in 4 of 6 months (May −4.6, Sep −4.4) / +0.7 (−0.7 to +2.1) / +0.4 (−0.4 to +1.2).
+- Launch model + pna vs + pnx: +0.6 / +0.5 / +0.6, all intervals span 0.
+- Reading: better on the pool's votes, equal within noise at launch level.
+
+**Four-way, launch model + inputs** (`ph_predict/lm_plus.py`; 3,977 launches, Jun–Oct, 176 days; competitor grounding = PH Similar Products gaps, cmp_features_ph, present for 46.7% of launches). Every variant refits a small model on the launch prediction, so "refit alone" is the control.
+
+| Daily top 3 / 5 / 10 | Score | vs refit alone (top 3 / 5 / 10) |
+|---|---|---|
+| launch model (raw) | 66.7 / 73.5 / 81.0 | |
+| refit alone | 66.1 / 74.1 / 80.4 | |
+| + competitor grounding | 65.0 / 72.7 / 79.8 | −1.1 (−3.4 to +1.1) / −1.4 (−3.0 to +0.2) / −0.6 (−1.5 to +0.3) |
+| + pna | 64.6 / 72.7 / 80.4 | −1.5 (−4.4 to +1.3) / −1.4 (−3.2 to +0.3) / −0.0 (−1.0 to +1.1) |
+| + both | 65.0 / 72.8 / 80.6 | −1.1 (−4.0 to +1.7) / −1.2 (−3.1 to +0.6) / +0.1 (−1.0 to +1.2) |
+
+- None of the inputs beats the control; all intervals span 0 except vs the raw launch model on top 10 (+ competitors −1.2, −2.2 to −0.2).
+- The pre-launch headline stays the raw launch model: 66.7 / 73.5 / 81.0.
