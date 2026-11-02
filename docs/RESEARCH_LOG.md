@@ -322,3 +322,9 @@ Model switches, direction reviews and agenda changes, newest last.
   - Day calibration is the only honest gain (weekly top 3 +5.3 [+1.3, +10.7]).
   - The daily board needs new pre-launch shock data: at-launch follower counts (3–4 weeks), X engagement full days
     (the $20 top-up), makers' outreach.
+- 12:48 UTC: mailbox checked.
+  - shadow and shadow2 deploy replies: shadow2 is live.
+  - Proxy secret for PR #144: Grok Bot's SA lacks secretmanager create. Not ours to act on.
+  - Budget at 04:37 PT: $4.35 so far; ~$19 projected on today's metered Vertex, so ~$30 headroom. Research VMs are
+    idle; none are needed right now.
+  - HN Fable review request: no reply yet.
