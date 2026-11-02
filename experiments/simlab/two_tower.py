@@ -29,6 +29,7 @@ TRAIN_MONTHS = ["2026-03", "2026-04", "2026-05", "2026-06", "2026-07", "2026-08"
 TEST_MONTHS = os.environ.get("MONTHS", "2026-05,2026-06,2026-07,2026-08,2026-09,2026-10").split(",")
 TRAIN = os.environ.get("TRAIN", "all")        # all | prev
 WIDE = os.environ.get("WIDE") == "1"          # bias MLP sees every hand feature, not only tie strength
+ATT = os.environ.get("ATT") == "1"            # target attention: the person tower also pools the history with the candidate launch as the query
 TAG = os.environ.get("TAG", "")
 EPOCHS = int(os.environ.get("EPOCHS", "40"))
 LOSS = os.environ.get("LOSS", "both")       # both | bce | list
@@ -139,6 +140,8 @@ def make_net(data, n_bias):
             s.kind = nn.Embedding(2, 8); s.age = nn.Embedding(len(AGE_EDGES) + 2, 16, padding_idx=0)
             s.hproj = nn.Linear(D + 8 + 16, D); s.query = nn.Parameter(torch.randn(D) * 0.1)
             s.person = nn.Sequential(nn.Linear(D + 2, 128), nn.ReLU(), nn.Linear(128, D))
+            if ATT:
+                s.tq = nn.Linear(D, D); s.person_t = nn.Sequential(nn.Linear(3 * D + 2, 128), nn.ReLU(), nn.Linear(128, D))
             s.bias = nn.Sequential(nn.Linear(n_bias, 64), nn.ReLU(), nn.Linear(64, 1))
             s.b0 = nn.Parameter(torch.zeros(1))
             s.register_buffer("T_team", torch.from_numpy(data.team)); s.register_buffer("T_topic", torch.from_numpy(data.topic))
@@ -158,14 +161,22 @@ def make_net(data, n_bias):
             a = (h @ s.query).masked_fill(~valid, -1e9); a = torch.softmax(a, -1) * valid.any(-1, keepdim=True).float()
             pooled = (a.unsqueeze(-1) * h).sum(-2)
             x = torch.cat([pooled, torch.log1p(nh).unsqueeze(-1), (nh > 0).float().unsqueeze(-1)], -1)
+            s._h, s._valid, s._nh = h, valid, nh
             return s.person(x)
 
-        def forward(s, pv, lv, bias_x):
+        def forward(s, pv, lv, bias_x, pi=None):
+            if ATT:   # pool the history again with the candidate as the query, per row
+                h, valid, nh = s._h[pi], s._valid[pi], s._nh[pi]
+                a = (h @ s.tq(lv).unsqueeze(-1)).squeeze(-1) / D ** 0.5
+                a = torch.softmax(a.masked_fill(~valid, -1e9), -1) * valid.any(-1, keepdim=True).float()
+                pt = (a.unsqueeze(-1) * h).sum(-2)
+                x = torch.cat([pv, pt, pt * lv, torch.log1p(nh).unsqueeze(-1), (nh > 0).float().unsqueeze(-1)], -1)
+                pv = s.person_t(x)
             return (pv * lv).sum(-1) / D ** 0.5 + s.bias(bias_x).squeeze(-1) + s.b0
     return Net()
 
 
-def batches(R, data, bias_cols, order, bs=256):
+def batches(R, data, bias_cols, order, bs=128 if ATT else 256):
     """Yield one batch per `bs` person-days: tensors for the rows of those person-days."""
     import torch
     g = R.g.values; gi = R.gi.values; items = R.ii.values; y = R.y.values.astype(np.float32); X = R[bias_cols].values.astype(np.float32)
@@ -209,7 +220,7 @@ def fit_predict(train, test, data, bias_cols, seed=0, log=print):
         with torch.set_grad_enabled(train_mode):
             for it, kd, ag, nh, pi, items, X, y, idx in batches(R, data, bias_cols, order):
                 pv = net.enc_person(it, kd, ag, nh); lv = net.enc_launch(items)
-                logits = net(pv[pi], lv, X); loss = group_loss(logits, y, pi, len(it))
+                logits = net(pv[pi], lv, X, pi); loss = group_loss(logits, y, pi, len(it))
                 if train_mode:
                     opt.zero_grad(); loss.backward(); torch.nn.utils.clip_grad_norm_(net.parameters(), 5.0); opt.step()
                 tot += float(loss.detach()) * len(y); n += len(y); out[idx] = logits.detach().numpy()
@@ -245,7 +256,7 @@ def predict(net, art, R, data):
     out = np.zeros(len(R), np.float32)
     with torch.no_grad():
         for it, kd, ag, nh, pi, items, X, y, idx in batches(R, data, bc, np.sort(R.gi.unique())):
-            out[idx] = net(net.enc_person(it, kd, ag, nh)[pi], net.enc_launch(items), X).numpy()
+            out[idx] = net(net.enc_person(it, kd, ag, nh)[pi], net.enc_launch(items), X, pi).numpy()
     return 1 / (1 + np.exp(-out.astype(np.float64)))
 
 
@@ -329,6 +340,8 @@ def month(m):
     torch.save(art, f"{TT}/net_{m}{TAG}.pt")
     te = te.drop(columns=["gi", "ii"]).merge(te_full[["g", "id", "s_tt"]], on=["g", "id"], how="left")
     out["tt_train_seconds"] = round(time.time() - t0)
+    if "s_gbm_all" in te:   # hybrid: mean of the trained model's and the hand model's probabilities
+        te["s_ens"] = (te.s_tt + te.s_gbm_all) / 2; te_full["s_ens"] = (te_full.s_tt + te_full.s_gbm_all) / 2
     # --- scores
     models = [c for c in te.columns if c.startswith("s_")]
     P = {c: person_scores(te, c).set_index("g") for c in models}
@@ -338,8 +351,9 @@ def month(m):
         out[c] = {"top3_hit": round(100 * float(P[c].hit.mean()), 1), "auc": round(float(P[c].auc.mean()), 3), "n": len(P[c]),
                   "pool_spearman": round(float(Q[c].spearman.mean()), 3), "pool_top3": round(100 * float(Q[c].top3.mean()), 1), "days": len(Q[c])}
         if c != "s_tt":
-            d = P["s_tt"].merge(P[c], left_index=True, right_index=True, suffixes=("", "_b")); q = Q["s_tt"].merge(Q[c], left_index=True, right_index=True, suffixes=("", "_b"))
-            out[c]["tt_minus"] = {"top3_hit": [round(100 * v, 1) for v in ci(d.hit - d.hit_b, rb)], "auc": ci(d.auc - d.auc_b, rb),
+            ref = "s_ens" if c == "s_gbm_all" and "s_ens" in P else "s_tt"
+            d = P[ref].merge(P[c], left_index=True, right_index=True, suffixes=("", "_b")); q = Q[ref].merge(Q[c], left_index=True, right_index=True, suffixes=("", "_b"))
+            out[c]["ens_minus" if ref == "s_ens" else "tt_minus"] = {"top3_hit": [round(100 * v, 1) for v in ci(d.hit - d.hit_b, rb)], "auc": ci(d.auc - d.auc_b, rb),
                                   "pool_spearman": ci(q.spearman - q.spearman_b, rb), "pool_top3": [round(100 * v, 1) for v in ci(q.top3 - q.top3_b, rb)]}
     os.makedirs(f"{TT}/scores", exist_ok=True)
     te[["person", "day", "id", "y"] + models].to_parquet(f"{TT}/scores/{m}{TAG}.parquet")
@@ -357,6 +371,8 @@ def run(workers):
         summ[c] = {k: round(float(np.mean([r[c][k] for r in res])), 3 if k in ("auc", "pool_spearman") else 1) for k in ("top3_hit", "auc", "pool_spearman", "pool_top3")}
         if c != "s_tt":
             summ[c]["months_tt_better"] = {k: sum(r["s_tt"][k] > r[c][k] for r in res) for k in ("top3_hit", "auc", "pool_spearman")}
+        if c not in ("s_tt", "s_ens") and "s_ens" in models:
+            summ[c]["months_ens_better"] = {k: sum(r["s_ens"][k] > r[c][k] for r in res) for k in ("top3_hit", "auc", "pool_spearman")}
     # pooled paired intervals over all test person-days / days (from the saved scores)
     S = pd.concat([pd.read_parquet(f"{TT}/scores/{m}{TAG}.parquet") for m in TEST_MONTHS]); S["g"] = S.person + "|" + S.day
     F = pd.concat([pd.read_parquet(f"{TT}/scores/{m}{TAG}_full.parquet") for m in TEST_MONTHS])
@@ -365,10 +381,11 @@ def run(workers):
     for c in models:
         if c == "s_tt":
             continue
-        d = P["s_tt"].merge(P[c], left_index=True, right_index=True, suffixes=("", "_b")); q = Q["s_tt"].merge(Q[c], left_index=True, right_index=True, suffixes=("", "_b"))
-        summ[c]["tt_minus_pooled"] = {"top3_hit": [round(100 * v, 1) for v in ci(d.hit - d.hit_b, rb)], "auc": ci(d.auc - d.auc_b, rb),
-                                      "pool_spearman": ci(q.spearman - q.spearman_b, rb), "pool_top3": [round(100 * v, 1) for v in ci(q.top3 - q.top3_b, rb)]}
-    res_out = {"config": {"train": TRAIN, "wide": WIDE, "loss": LOSS, "epochs": EPOCHS, "patience": PATIENCE, "dim": D, "hlen": HLEN}, "summary": summ, "months": res}
+        for ref in [r for r in ("s_tt", "s_ens") if r in models and r != c]:
+            d = P[ref].merge(P[c], left_index=True, right_index=True, suffixes=("", "_b")); q = Q[ref].merge(Q[c], left_index=True, right_index=True, suffixes=("", "_b"))
+            summ[c][ref[2:] + "_minus_pooled"] = {"top3_hit": [round(100 * v, 1) for v in ci(d.hit - d.hit_b, rb)], "auc": ci(d.auc - d.auc_b, rb),
+                                                  "pool_spearman": ci(q.spearman - q.spearman_b, rb), "pool_top3": [round(100 * v, 1) for v in ci(q.top3 - q.top3_b, rb)]}
+    res_out = {"config": {"train": TRAIN, "wide": WIDE, "att": ATT, "loss": LOSS, "epochs": EPOCHS, "patience": PATIENCE, "dim": D, "hlen": HLEN}, "summary": summ, "months": res}
     json.dump(res_out, open(f"{HERE}/reports/two_tower{TAG}.json", "w"), indent=1)
     print(json.dumps(summ, indent=1))
 
