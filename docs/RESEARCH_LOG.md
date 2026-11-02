@@ -369,3 +369,9 @@ Model switches, direction reviews and agenda changes, newest last.
 - 14:47 UTC HN direction A on the Oct archive: 15-min Caught 29.6% [25.4, 33.4] (+4.1 vs base 25.5); exposure alone +1.3 [−1.0, +3.7] over votes + who (coarse ~10-min Wayback exposure). Live per-minute test from ~Nov 5.
 - 15:17 UTC Grok Bot X capacity decision: no extra X accounts. The paid twitterapi key covers the Jul–Sep backfill (~1,148 handle windows, ~9.2k reads, ~$5.80; ~64% of launches have a handle). Free public X stays with HN. E5 owns the X go/no-go on full days as they land.
 - 15:18 UTC b4 deployed 15:06 and verified (early_shock ready=false, 0/14). The Nov 3 run is the first with pna_, the honest forecast, at_launch, the daycal shadow, the people delivery and earlyshock.
+- 15:31 UTC: mailbox checked.
+  - $20 twitterapi top-up landed (2M credits). fd_run is working the fetch order at 1 req/5.5 s; $0.26 spent so far.
+    Full days: Oct 5, Oct 25.
+  - GitHub token is being created in the browser, for hn-sim-1:/home/agent/.gh_token. HN agent told.
+  - b4 deploy reply: done.
+  - Asked Grok Bot to extend dm_gate.json to Jul–Sep.
