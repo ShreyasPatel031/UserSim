@@ -10,7 +10,7 @@ import frontsim as F
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 
-def main(D=30):
+def main(D=30, stage="1"):
     import __main__; __main__.Model = F.Model
     Mo = pickle.load(open(os.path.join(F.CACHE, "frontsim_model.pkl"), "rb"))
     s = F.load_stories(); s["z"] = 0.0; sc, a0 = F.early(s); xw = F.newest_exposure(s, a0)
@@ -26,8 +26,12 @@ def main(D=30):
     sb = pd.cut(np.nan_to_num(sct, nan=0), [-1, 0.5, 1, 2, 3, 1e9], labels=["none", "1", "2", "3", "4+"])
     grid0 = Mo.grid.copy(); res = {"days": test, "posts": len(T), "real_reach": round(float(y.mean()), 4),
                                    "real_by_score": {str(k): round(float(y[sb == k].mean()), 3) for k in sb.categories}, "fits": []}
-    for tau, kappa, c in itertools.product((0.3, 0.6, 1.0), (0.05, 0.2, 1.0), (0.15, 0.25, 0.4)):
-        Mo.tau, Mo.kappa, Mo.grid = tau, kappa, grid0 * c
+    G = (itertools.product((0.3, 0.6, 1.0), (0.05, 0.2, 1.0), (0.15, 0.25, 0.4), (0.0,)) if stage == "1" else
+         itertools.product((0.3, 0.6), (0.2,), (0.08, 0.15, 0.25), (0.5, 1.0)))   # stage 2: dispersion
+    if stage == "2":
+        prev = json.load(open(os.path.join(HERE, "out", "calib_fit.json"))); res["fits"] = prev["fits"]
+    for tau, kappa, c, sig in G:
+        Mo.tau, Mo.kappa, Mo.grid, Mo.sigma = tau, kappa, grid0 * c, sig
         r = np.zeros(len(T))
         for d in test:
             m = (T.day == d).to_numpy()
@@ -35,7 +39,7 @@ def main(D=30):
             r[m] = Mo.last_top30
         pr = np.clip((r * D + 0.5) / (D + 1), 1e-3, 1 - 1e-3)
         ll = float(np.sum(y * np.log(pr) + (1 - y) * np.log(1 - pr)))
-        f = {"tau": tau, "kappa": kappa, "c": c, "loglik": round(ll, 1), "reach_sim": round(float(r.mean()), 4),
+        f = {"tau": tau, "kappa": kappa, "c": c, "sigma": sig, "loglik": round(ll, 1), "reach_sim": round(float(r.mean()), 4),
              "sim_by_score": {str(k): round(float(r[sb == k].mean()), 3) for k in sb.categories}}
         res["fits"].append(f); print(f, flush=True)
     res["best"] = max(res["fits"], key=lambda f: f["loglik"])
@@ -43,4 +47,4 @@ def main(D=30):
 
 
 if __name__ == "__main__":
-    main()
+    main(stage=sys.argv[1] if len(sys.argv) > 1 else "1")

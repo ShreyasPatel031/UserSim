@@ -153,6 +153,8 @@ def simulate(Mo, born, score, a0, xw, CE, CA, CR, wday_class, test_day, pool, th
     post = pri[None, :] * (poisson.pmf(np.round(v0)[:, None].astype(int), np.clip((Mo.kappa * E0l * scale)[:, None], 1e-9, None) * Mo.grid[None, :]) + 1e-300) ** Mo.tau
     post /= post.sum(1, keepdims=True); cdf = np.cumsum(post, 1)
     q = Mo.grid[np.minimum((cdf[:, None, :] < rng.random((n, D))[:, :, None]).sum(2), len(Mo.grid) - 1)] * scale[:, None]
+    if getattr(Mo, "sigma", 0):
+        q = q * np.exp(Mo.sigma * rng.standard_normal(q.shape))
     pen = np.exp(rng.choice(Mo.pen, (n, D)))
     td = pd.Timestamp(test_day)
     dd = rng.choice(len(pool), (n, D))
@@ -197,7 +199,7 @@ def main(D=200):
     Mo.b = 0.0; Mo.fit_early(s, sc_, a0_, xw_, "2026-10-12"); print("tempering (QN likelihood)", Mo.early_log, flush=True)
     # outcome calibration (calib_fit.py, Oct 2-9: real top-30 reach per post) replaces the QN-likelihood tempering
     cf = json.load(open(os.path.join(HERE, "out", "calib_fit.json")))["best"]
-    Mo.tau, Mo.kappa = cf["tau"], cf["kappa"]; Mo.grid = Mo.grid * cf["c"]; print("outcome calibration", cf, flush=True)
+    Mo.tau, Mo.kappa = cf["tau"], cf["kappa"]; Mo.grid = Mo.grid * cf["c"]; Mo.sigma = cf.get("sigma", 0.0); print("outcome calibration", cf, flush=True)
     M = load_minute()
     new = M[M.list == "newest"].sort_values("t")
     first = new.drop_duplicates("id")

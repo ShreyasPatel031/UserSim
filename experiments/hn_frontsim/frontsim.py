@@ -222,7 +222,7 @@ class Model:
                            "prior_mean_q": float((w * self.grid).sum()), "b_at_posting": self.b}
         return self
 
-    tau, kappa = 1.0, 1.0
+    tau, kappa, sigma = 1.0, 1.0, 0.0     # sigma: per-draw lognormal factor on the post's future quality (dispersion)
 
     def early_E(self, born, a0, xw):
         """exposure behind the early votes: /newest page-1 position-weighted minutes x the hour's traffic when known,
@@ -283,6 +283,8 @@ class Model:
         cdf = np.cumsum(post, 1)
         u = rng.random((n, D))
         q = self.grid[np.minimum((cdf[:, None, :] < u[:, :, None]).sum(2), len(self.grid) - 1)] * scale[:, None]
+        if getattr(self, "sigma", 0):
+            q = q * np.exp(getattr(self, "sigma", 0) * rng.standard_normal(q.shape))
         pen = np.exp(rng.choice(self.pen, (n, D)))
         # earlier front-page days of the same class
         td = pd.Timestamp(test_day)
