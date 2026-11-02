@@ -359,3 +359,8 @@ Model switches, direction reviews and agenda changes, newest last.
     Reported beside the per-post headline, not as it (the headline judges 15 min after the original posting).
   - At-posting ensemble: +0.6 [−0.4, +1.7]. No change.
   - Direction A switches on ~Nov 5; direction C after ~2 weeks of /pool labels.
+- 14:40 UTC User approved the $20 twitterapi top-up and the GitHub token.
+  - Sent to Grok Bot: GitHub token (public read only) as a file on hn-sim-1, with only the path reported.
+  - Top-up: only for what free quota can't do, whole days first.
+  - Scale free daily capacity: more accounts/keys within each provider's terms.
+  - Rule from the user: paid top-ups come once or twice a month. Never spend them on what free routes can do.
