@@ -6,7 +6,8 @@ BigQuery's for 100% of rows (within 60 s); early score <= final points for 99.99
 Inputs at age a (each post judged once, a minutes after posting):
   at posting   post features, similar titles, embedding, crowd, history score (hist_prior: trained to Jun 30)
   honest       rank on the front page so far (Quality News; a post ending < 5 points is truly off it), comments by a
-  early votes  the latest /newest snapshot at or before a: score, rank on /newest, comments, its age, votes per minute;
+  early votes  the latest /newest snapshot at or before a: score, rank on /newest, comments, its age, votes per minute,
+               best /news rank seen in Wayback captures of /news p1-3;
                none = no snapshot yet (a Wayback timing accident, not the outcome)
 Two tests, each with and without early votes, paired by day, flags = winners in the test set:
   A  train Jul 1 - Sep 30 (6-10% of posts have a snapshot), test Oct 2-14 (dense captures)
@@ -28,11 +29,17 @@ import top100 as H
 
 rng = np.random.default_rng(0)
 EV = os.path.join(H.CACHE, "early_votes", "early_snapshots.jsonl")
+_cov = __import__("json").load(open(os.path.join(H.CACHE, "early_votes", "coverage_oct_daily.json")))
+GOOD = {d for d, v in _cov.items() if v.get("pct_lt60", 0) >= 90}
 
 
 def early(Q, a):
-    E = pd.read_json(EV, lines=True, convert_dates=False)
-    E = E[(E.page == "newest") & (E.age_min <= a) & (E.age_min >= 0)].sort_values("age_min")
+    A = pd.read_json(EV, lines=True, convert_dates=False)
+    A = A[(A.age_min <= a) & (A.age_min >= 0)]
+    E = A[A.page == "newest"].sort_values("age_min")
+    off = {"news": 0, "news_p2": 30, "news_p3": 60}
+    F = A[A.page.isin(off)]
+    front = (F["rank"] + F.page.map(off)).groupby(F.item_id).min()      # best /news rank seen by age a (Wayback)
     last = E.drop_duplicates("item_id", keep="last").set_index("item_id")
     out = pd.DataFrame(index=Q.index)
     m = Q.post_id.map(last.score)
@@ -42,6 +49,7 @@ def early(Q, a):
     out["ev_comments"] = Q.post_id.map(last.comments)
     out["ev_age"] = Q.post_id.map(last.age_min)
     out["ev_rate"] = (out.ev_score - 1) / out.ev_age.clip(lower=1)
+    out["ev_front_best"] = Q.post_id.map(front)
     return out
 
 
@@ -94,11 +102,13 @@ def main():
             cov = E.ev_has[te]
             s0 = lgb.LGBMClassifier(**prm).fit(X0[tr], Q.y[tr]).predict_proba(X0[te])[:, 1]
             s1 = lgb.LGBMClassifier(**prm).fit(X1[tr], Q.y[tr]).predict_proba(X1[te])[:, 1]
-            c0, c1 = caught_on(T, s0), caught_on(T, s1)
             print(f"{label} | {name}: test posts {te.sum()}, winners {int(T.y.sum())}; with a /newest snapshot by {label}: "
                   f"posts {cov.mean():.1%}, winners {cov[(T.y == 1).to_numpy()].mean():.1%}; training posts with one "
                   f"{E.ev_has[tr].mean():.1%}", flush=True)
-            print(f"   without early votes {ci2(c0)}; with early votes {ci2(c1)}; difference {ci2(c1, c0)}", flush=True)
+            for sub, keep in (("all days", np.ones(len(T), bool)), ("days with 90%+ /newest coverage", T.day.isin(GOOD).to_numpy())):
+                c0, c1 = caught_on(T[keep], s0[keep]), caught_on(T[keep], s1[keep])
+                print(f"   {sub} ({T[keep].day.nunique()} days, {int(T.y[keep].sum())} winners): without early votes {ci2(c0)}; "
+                      f"with {ci2(c1)}; difference {ci2(c1, c0)}", flush=True)
 
 
 if __name__ == "__main__":
