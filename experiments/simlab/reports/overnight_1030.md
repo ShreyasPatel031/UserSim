@@ -924,3 +924,19 @@ simulation + predicted shock, Jun–Oct, daily top 3 / 5 / 10. The launch model 
 - **Reading:** the inputs in hand are close to exhausted for the shock, at about 0.50. The remaining signal is
   outside the data: makers' outreach (X engagement, queued), the competitor audiences (pilot running), and the
   launch-day votes, which from hour 4 already give daily top 5/10 above 90.
+
+## Duplicated launches across two day files: cause and fix (Nov 2)
+- **Cause:** Product Hunt's API filters the day window on when a post was *created*. A post created on day d but
+  featured at 00:00 PT on d + 1 came back for d as well: 204 launches on Apr 27/28 and May 4/5, 6/7, 10/11, 13/14.
+- **Second bug:** `collect_ph.py` hardcoded −07:00 for every day after Mar 8. That is an hour off in PST since Nov 1,
+  and the pipeline's `ranks` step re-collects the last 30 days with it every night.
+- **Fix** (commit `c70b625`): zoneinfo window, plus a featuredAt-Pacific-day filter (`collect_ph.on_day`) in
+  `collect_ph`, `today.py` and `list_check.refetch`.
+- **Repairs:** `dedupe_days.py` for the 5 files (backups kept), and `pipeline.fix_launch_days` for the 204 warehouse
+  launch rows on the wrong day. The 1,269 upvote events for those launches stay dated a day early (append-only log).
+- **Pipeline:** bundle `20261102_window`; Shreyas approved routing it through the orchestrator to Grok Bot, before the
+  00:05 PT run on Nov 2.
+- **Experiment VM:** the repair of the day files, store, build cache and ctrl, with before/after baselines, waits
+  until the other sessions' jobs there finish.
+- **Footnote for earlier numbers:** every backtest in this log before Nov 2 includes the 204 launches twice (on 10
+  days; on the earlier day they are an extra copy of the next day's launches). The before/after table will follow here.
