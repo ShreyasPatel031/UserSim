@@ -42,6 +42,9 @@ def main(d: str, refetch: str | None, events_glob: str | None) -> int:
         check(f"{name}_unknown_dates_are_null", unk.observed_on.isna().all())
         fetched = df[df.observed_on_quality == "fetched"]
         check(f"{name}_fetched_dates_valid", fetched.observed_on.notna().all() and fetched.observed_on.map(lambda s: bool(re.fullmatch(r"\d{4}-\d{2}-\d{2}", str(s)))).all())
+        ub = df[df.observed_on_quality == "upper_bound"]
+        check(f"{name}_upper_bound_dates_valid", ub.observed_on.notna().all() and ub.observed_on.map(lambda s: bool(re.fullmatch(r"\d{4}-\d{2}-\d{2}", str(s)))).all())
+        check(f"{name}_quality_values_known", df.observed_on_quality.isin(["fetched", "upper_bound", "unknown"]).all())
         res[f"{name}_dated_share"] = {"ok": True, "detail": round(float((df.observed_on_quality == "fetched").mean()), 3)}
     ph = Pr[Pr.platform == "producthunt"]
     ex = ph.extra.fillna("{}").map(json.loads)

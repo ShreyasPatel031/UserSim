@@ -204,3 +204,21 @@ a failure). `validate_v3.py --refetch` takes a glob for the same reason.
 5. Dates: print the key list of one `ph_profiles2` record and the GCS creation times (`gcloud storage ls -l`) of `ph_profiles2`, `x_people`,
    `x_posts`, `li_apify`, so the 21-38% undated rows can be given a `file_date` quality instead of null.
 6. Still a human job: fill `label_personal_or_company_or_wrong` in `x_handle_audit_100.csv`.
+
+### Dating the legacy rows (Oct 28 upper bound), and what is still to run
+
+Reported by Grok Bot: `ph_profiles2` records have no `fetched_at` (keys: about, badges, badges_total, collections, community_rank_year,
+current_product, followers, followings, headline, hunted, is_maker, joined, links, name, products_made, reviews_count, stacks_count, twitter,
+upvotes_total, user_id, username, verified, visit_streak_days, voted_recent). GCS creation times under `raw/ph_predict_data/` are all 2026-10-28
+13:41-13:42 UTC (`li_apify`, `ph_profiles2`, `x_people`, `x_posts`), which looks like one bulk upload.
+
+`build_v3.py` now reads an optional `root/file_dates.json` (example: `experiments/people_v2/file_dates.example.json`) and gives rows without
+their own date that file's upload date with `observed_on_quality='upper_bound'`. This direction is safe for as-of use: the true fetch was at or
+before the upload, so a time-split feature that requires `observed_on < D` can only lose data, never leak it. Quality values are now
+`fetched` (own `fetched_at`; re-fetched PH rows), `upper_bound` (`ph_profiles2`, X profiles, LinkedIn Apify profiles) and `unknown` (null:
+the LinkedIn search rows, profile tabs). Tested on a synthetic fixture; `validate_v3.py` checks the three values and the date format.
+Rows dated `upper_bound` are the only truthful way to date these captures; do not present them as exact fetch times.
+
+Runs still to do by someone with bucket access (this session has none), in order: merge the incremental people parts into `t/`; re-fetch the 281
+events-only people into `raw/ph_profiles2_refetch2/`; copy `file_dates.example.json` to `work/file_dates.json`; rebuild with `--out v3b`; validate.
+Send back `build_report.json`, `validation_v3.json`, and the hand-check output for `constanza_hasselmann`, `mswulinski`, `sarthakmalhotra`.

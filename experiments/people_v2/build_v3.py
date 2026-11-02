@@ -15,7 +15,8 @@ Changes against build_v2.py (numbers refer to the fix list):
  3. v1 `segments` are NOT carried over (they were built from poisoned LinkedIn text). Rebuild from the re-fetch before use.
  4. Own handles come only from links whose `kind` matches the platform; the first-listed link is primary (not alphabetical), later ones
     get confidence 0.5; an X handle claimed by several people is demoted to 0.5 for all of them and their posts are not attributed.
- 5. observed_on is the row's own fetched_at; where that is unknown it is null with observed_on_quality='unknown', never the build date.
+ 5. observed_on is the row's own fetched_at ('fetched'); else the capture file's upload date from root/file_dates.json as an upper bound
+    ('upper_bound'); else null ('unknown'). Never the build date.
  6. ph_user_id keeps numeric ids only (legacy UUIDs become null); every PH profile records parser_version.
 Not done here, needs a human or a model: personal-vs-company labelling of X handles (see x_handle_audit_100.csv) and rebuilding segments.
 """
@@ -127,6 +128,7 @@ def main(root: str, out: str) -> dict:
                 retry.add(u)
     gone -= set(rf)
     retry -= set(rf) | gone
+    FD = json.load(open("file_dates.json")) if os.path.exists("file_dates.json") else {}  # {"ph_profiles2": "2026-10-28", ...}
     tabs = {r["username"]: r for r in jl(R + "profile_tabs.jsonl.gz") if r.get("username")}
     parts = sorted(glob.glob("t/people*.parquet") + glob.glob("t/people/*.parquet"))  # initial + incremental parts (tables/people)
     v1 = pd.concat([pd.read_parquet(f) for f in parts])
@@ -160,9 +162,11 @@ def main(root: str, out: str) -> dict:
     persons, handles, profiles = [], [], []
     stats = collections.Counter()
 
+    cur_q = ["unknown"]  # date quality of the person being processed (set in the loop)
+
     def H(pid, plat, h, url, src, conf, note=None, obs=None):
         handles.append(dict(person_id=pid, platform=plat, handle=h, url=url, source=src, confidence=conf, note=note,
-                            observed_on=obs, observed_on_quality="fetched" if obs else "unknown"))
+                            observed_on=obs, observed_on_quality=cur_q[0] if obs else "unknown"))
 
     for u in users:
         pid = "ph:" + u
@@ -173,7 +177,17 @@ def main(root: str, out: str) -> dict:
         poisoned = (not g) and bool(o) and (o.get("user_id") in POISON_ID or o.get("name") in POISON_NAMES)
         ph_name = None if poisoned else base.get("name")
         ph_uid = None if poisoned else numeric_id(base.get("user_id"))  # fix 6: legacy UUIDs -> null
-        obs = day(g.get("fetched_at") or g.get("observed_on")) if (u in rf and g) else None  # fix 5
+        # fix 5: a re-fetched row has its own fetched_at; a ph_profiles2 row has none, so the capture file's upload date is used as an
+        # UPPER BOUND on the fetch date (safe for as-of use: it can only exclude data too early, never leak); else undated
+        if u in rf:
+            obs, oq = day(g.get("fetched_at") or g.get("observed_on")), "fetched"
+        elif u in p2 and FD.get("ph_profiles2"):
+            obs, oq = FD["ph_profiles2"], "upper_bound"
+        else:
+            obs, oq = None, "unknown"
+        if not obs:
+            oq = "unknown"
+        cur_q[0] = oq
         has_profile = bool(base) and u not in gone
         links, seen = [], set()
         for l in (base.get("links") or []) + (o.get("links") or []):
@@ -213,7 +227,8 @@ def main(root: str, out: str) -> dict:
         if x_primary and x_primary in X and X[x_primary].get("profile"):
             xp = X[x_primary]["profile"]
             xname = xp.get("name")
-            profiles.append(dict(person_id=pid, platform="x", handle=x_primary, observed_on=None, observed_on_quality="unknown",
+            profiles.append(dict(person_id=pid, platform="x", handle=x_primary, observed_on=FD.get("x_people"),
+                                 observed_on_quality="upper_bound" if FD.get("x_people") else "unknown",
                                  source="raw/x_people", name=xp.get("name"), bio=xp.get("description"), location=xp.get("location") or None,
                                  website=xp.get("website"), joined=xp.get("joined"), followers=xp.get("followers"), following=xp.get("following"),
                                  post_count=xp.get("tweets"), likes_count=xp.get("likes"), media_count=xp.get("media_count"),
@@ -239,8 +254,8 @@ def main(root: str, out: str) -> dict:
         if la and (la.get("publicIdentifier") or "").lower() in set(own["linkedin"]) | ({li_slug} if li_slug else set()):
             cp = la.get("currentPosition") or [{}]
             cp = cp[0] if cp else {}
-            profiles.append(dict(person_id=pid, platform="linkedin", handle=(la.get("publicIdentifier") or "").lower(), observed_on=None,
-                                 observed_on_quality="unknown", source="raw/li_apify",
+            profiles.append(dict(person_id=pid, platform="linkedin", handle=(la.get("publicIdentifier") or "").lower(), observed_on=FD.get("li_apify"),
+                                 observed_on_quality="upper_bound" if FD.get("li_apify") else "unknown", source="raw/li_apify",
                                  name=" ".join(x for x in (la.get("firstName"), la.get("lastName")) if x), bio=la.get("about"),
                                  location=(la.get("location") or {}).get("linkedinText"), website=json.dumps(la.get("websites")),
                                  joined=la.get("registeredAt"), followers=la.get("followerCount"), following=None, post_count=None,
@@ -267,7 +282,7 @@ def main(root: str, out: str) -> dict:
             return g.get(k) if g else None
         if has_profile:
             profiles.append(dict(
-                person_id=pid, platform="producthunt", handle=u, observed_on=obs, observed_on_quality="fetched" if obs else "unknown",
+                person_id=pid, platform="producthunt", handle=u, observed_on=obs, observed_on_quality=oq,
                 source={"refetch-2026-11": "raw/ph_profiles2_refetch", "ph_profiles2": "raw/ph_profiles2"}.get(parser, "raw/ph_profiles(+rest)"),
                 name=ph_name, bio=base.get("about") or (v["about"] if v is not None else None), location=None, website=None,
                 joined=g2("joined") or (v["joined"] if v is not None else None), followers=base.get("followers"), following=base.get("followings"),
