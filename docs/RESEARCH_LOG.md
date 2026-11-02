@@ -305,3 +305,9 @@ Model switches, direction reviews and agenda changes, newest last.
   - Next (orchestrator): off-HN spread signals before posting + 15 min: GitHub star timestamps, Reddit/Lobsters
     posts of the same URL, then X mentions via Grok Bot.
 - 12:24 UTC HN off-HN signals: Reddit/Lobsters/Techmeme/arXiv/RSS/X-sample test running (wb_outside.py). GitHub stargazer timing blocked: no token on hn-sim-1. My mailbox request for a token was blocked by my permission check; left to the user.
+- 12:27 UTC Honest baseline final (commit adf5e98). Undated promo_ also dropped.
+  - Daily, May–Oct: 64.4/70.4/76.9. Weekly: 45.3/54.4/55.2.
+  - Day calibration on honest: weekly top 3 +4.0 [0, +8.0]. It holds.
+  - E1 v2's audiences were leaky. Honest E1 adds nothing beyond day calibration.
+  - The live model and the shadow use the dropped inputs. Bundle 3 (honest model, at_launch step, e1v2 shadow off) goes
+    to Shreyas.

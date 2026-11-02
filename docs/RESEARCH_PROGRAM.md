@@ -15,15 +15,17 @@ Socrates, OSIM-8B.
    from launch to end of day, never reported as north-star progress.
    - **Honest pre-launch baseline (Nov 2, honest.py):** launch model with every post-launch input dropped. That means
      follower counts read after launch, plus follow lists read Oct 25 (undated; people follow makers after a good launch).
-     - Daily top 3/5/10: May–Oct 64.4 / 70.5 / 77.0; Jul–Oct 65.0 / 69.6 / 77.5.
-     - Lower bound if the promo reaction counts are also leaky: 62.7 / 70.6 / 77.2.
+     - Also dropped: undated promo_ fields (reactions, founder/company follower counts, funding, company age). Kept:
+       dated pre-launch posts.
+     - Daily top 3/5/10: May–Oct 64.4 / 70.4 / 76.9; Jul–Oct 64.7 / 69.6 / 77.5.
+     - Weekly: May–Oct 45.3 / 54.4 / 55.2 (25 weeks); Jul–Oct 49.0 / 55.0 / 54.7.
+     - Monthly: May–Oct 20.0 / 36.7 / 40.0 (5–6 lists, too few).
      - Live launch model, Oct 27–Nov 1 (6 days): 61.1 / 70.0 / 81.7.
-     - Weekly and monthly honest baselines: pending.
      - All north-star numbers are quoted against this baseline.
    - Superseded (leaky; follow lists and late follower counts): daily 65.5–66.7 / 73.2–73.5 / 81.0–81.4; weekly
      47.1–49.3 / 53.8–56.0 / 56.7–58.3.
-   - Candidates in shadow from Nov 3: day-level calibration (weekly top 3 +4.0 to +5.3 on the leaky baseline) and E1 v2
-     (weekly top 5 +3.2). Both are being re-checked against the honest baseline.
+   - On the honest baseline: day-level calibration weekly top 3 +4.0 [0.0, +8.0] (never worse by month), top 5 +1.6;
+     ships as a shadow. E1 v2 adds nothing beyond it once its leaky audience inputs are removed.
    - **Launch-day, daily, from archived intraday votes (Jul–Oct, Wayback, verified):** hours 4–8: 85.1 / 95.2 / 91.8;
      hours 8–12: **93.1 / 95.2 / 96.2**; hours 12–24: 96.7 / 97.3 / 97.8. Top 5 and 10 pass 90 from about hour 4–8;
      top 3 from about hour 11. Votes are hidden on the page for the first 4 hours.
