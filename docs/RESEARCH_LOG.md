@@ -304,3 +304,4 @@ Model switches, direction reviews and agenda changes, newest last.
   - Late-riser model: no gain (Caught at 15 min 28.1%, −0.3).
   - Next (orchestrator): off-HN spread signals before posting + 15 min: GitHub star timestamps, Reddit/Lobsters
     posts of the same URL, then X mentions via Grok Bot.
+- 12:24 UTC HN off-HN signals: Reddit/Lobsters/Techmeme/arXiv/RSS/X-sample test running (wb_outside.py). GitHub stargazer timing blocked: no token on hn-sim-1. My mailbox request for a token was blocked by my permission check; left to the user.
