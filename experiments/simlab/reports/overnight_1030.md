@@ -724,3 +724,31 @@ day's mean removed.
   2. Pre-launch gains have to predict the shock itself (direction B: makers' outside audiences, promotion, team
      turnout as a launch-level input). Better person models of the pool cannot.
   3. For the generative vote model (orchestrator's E1), the shock term is the component to model first.
+
+## North star (Shreyas, Nov 2): 90% top 3 / 5 / 10 on the daily, weekly or monthly leaderboard. Re-scored Nov 2 (`lists_score.py`, Jul–Oct)
+| Leaderboard (lists) | Launch model | Best simulation (psr, + day standing + page) | Simulation, no page (pnx, deployed) |
+|---|---|---|---|
+| Daily (116 / 116 / 101) | **65.8 / 72.9 / 80.8** | 62.6 / 71.2 / 79.7 | 58.0 / 70.2 / 79.6 |
+| Weekly (17 / 16 / 15) | 51.0 / 55.0 / 56.7 | 33.3 / 38.8 / 46.0 | 31.4 / 38.8 / 44.7 |
+| Monthly (3 / 4 / 4) | 55.6 / 50.0 / 57.5 | 0.0 / 30.0 / 35.0 | 22.2 / 30.0 / 42.5 |
+
+Simulation − launch model, top 3: daily −3.2 (−7.5 to +1.1); weekly −17.6 (−33.3 to −2.0); monthly −55.6 on 3 lists.
+The simulation's best configuration uses within-day standing and per-day line-up inputs, which do not compare across
+days, so it falls apart on weekly and monthly lists. Monthly has 3–4 test lists, so its numbers are anecdotal.
+
+**Early signal across boards** (E0's random 10% of pool voters, ~3.5% of votes; 20 splits; optimistic proxy):
+
+| | Daily | Weekly | Monthly |
+|---|---|---|---|
+| Launch model | 65.5 / 73.0 / 80.9 | 51.0 / 55.0 / 56.7 | 55.6 / 50.0 / 57.5 |
+| 10% pool sample | 82.6 / 85.8 / 80.8 | 51.5 / 64.1 / 72.1 | 40.0 / 54.0 / 48.1 |
+| Rank blend of both | 80.6 / 85.5 / 84.7 | 60.6 / 61.8 / 69.7 | 45.6 / 52.5 / 50.9 |
+
+**Where we are against 90:**
+- **Daily is closest:** the launch model is 24 / 17 / 9 points away pre-launch. With an early-vote signal the proxy
+  reaches 80–86, about 4–10 points away.
+- **Weekly gap:** cross-day calibration. A pool sample ranks within a day well but not across days, because pool size
+  and day strength vary.
+- **Monthly:** too few lists to steer by.
+- **Next:** the daily launch-day forecast from real early comments (and from Nov 9, hourly votes), then cross-day
+  calibration of vote totals for weekly.
