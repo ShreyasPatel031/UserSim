@@ -273,3 +273,9 @@ Model switches, direction reviews and agenda changes, newest last.
 - 12:06 UTC Competitor grounding vs the day-calibrated control (commit 9d99024; coverage 46.6% / 56.0%).
   - Daily top 5: −1.2 [−2.0, −0.6]. Weekly top 3: −4.0 [−9.3, 0.0]. Hurts or does nothing on every list.
   - Kept out of the forecast. It stays an internal tool.
+- 12:12 UTC E5 pool-concentration test, over the day-calibrated control: rejected. Daily top 3 +0.2 [−1.7, +2.1];
+  log-lik −0.32 (overfits). Every pool aggregate stays within ±1 on daily top 3.
+- Direction (orchestrator): the daily board needs new pre-launch information about the launch-day shock, not more
+  person-score aggregates. Asked the PH agent to start honest at-launch snapshots (00:05 PT) of makers' and hunter's
+  PH and X follower counts. These were strong in E5's run but leaky there; they need ~3–4 weeks to test.
+  - Pending: X full days (the $20 top-up).
