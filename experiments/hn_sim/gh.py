@@ -18,9 +18,13 @@ import requests
 
 import store as S
 
-TOK = open(os.environ["GH_TOKEN_FILE"]).read().strip()
-H = {"Authorization": f"Bearer {TOK}", "Accept": "application/vnd.github.star+json", "X-GitHub-Api-Version": "2022-11-28"}
-OUT = os.path.join(S.LOCAL, "gh_repos.jsonl")
+_tf = os.environ.get("GH_TOKEN_FILE", "")
+TOK = open(_tf).read().strip() if _tf and os.path.exists(_tf) else ""      # unauthenticated (60 req/h) if no token
+H = {"Accept": "application/vnd.github.star+json", "X-GitHub-Api-Version": "2022-11-28"}
+if TOK:
+    H["Authorization"] = f"Bearer {TOK}"
+OUT = os.path.join(S.LOCAL, os.environ.get("GH_OUT", "gh_repos.jsonl"))
+LIMIT = int(os.environ.get("GH_LIMIT", "0"))       # only the newest N stories (a test run)
 lock = threading.Lock()
 _s = requests.Session()
 
@@ -86,8 +90,10 @@ def main(since="2025-06-01"):
         done = {json.loads(l)["post_id"] for l in open(OUT)}
     rows = [(r.repo, int(r.created_at_i), int(r.post_id)) for r in s.sort_values("created_at_i", ascending=False).itertuples()
             if r.post_id not in done]
-    print(len(rows), "stories to fetch", flush=True)
-    with ThreadPoolExecutor(12) as ex:
+    if LIMIT:
+        rows = rows[:LIMIT]
+    print(len(rows), "stories to fetch", "(token)" if TOK else "(no token: 60 requests / hour)", flush=True)
+    with ThreadPoolExecutor(12 if TOK else 1) as ex:
         for i, _ in enumerate(ex.map(one, rows)):
             if i % 1000 == 0:
                 print(i, time.strftime("%H:%M"), flush=True)
