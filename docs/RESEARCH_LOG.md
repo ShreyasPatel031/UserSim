@@ -183,3 +183,4 @@ Model switches, direction reviews and agenda changes, newest last.
   - Person level, 65 tied pairs: 32.3% [21, 44] voted vs 0.9% (34x).
   - Launch level, leave-one-day-out among covered launches: delta 0 (identical rankings). Turnout vs residual within ±0.10.
   - The real test needs full days, which arrive with the top-up.
+- 08:41 UTC Grok Bot: X gate 121 covered (63 with posts), ceiling ~130 until g8/9/11/12. PH agent asked to re-run, count full days. Top-up request followed up (finish today, cap $10).
