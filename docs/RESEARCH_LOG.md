@@ -461,3 +461,6 @@ Model switches, direction reviews and agenda changes, newest last.
 - 21:46 UTC Filed to Grok Bot (free routes): 2145 full at-launch state daily from Nov 3 (post, maker/hunter/product pages, external counts); 2146 pre-launch campaign sweep Jul–Oct then daily (Reddit, IH, HN, Bluesky, RSS, LinkedIn public, X free) + HN signed-in voter visibility check.
 - 21:50 UTC Filed 2150: price (no spend) historical HN per-minute vote series Jul–Sep 2026 and 2025 (Track HN, Quality News, others), for the 15-min model's Sep coverage gap and the HN simulator.
 - 21:45 UTC PH agent: voter/follower loaders ready (pipeline/voters.py; events dated to launch day, new people queued for the daily fetch; dated_follows table; poolmetrics from complete voter lists). Output shape added to request 2140.
+- 21:46 UTC E5 HN simulator v1 (Oct 2–14): 22.2% vs wb15 29.6% (−7.5); blends −1.0 to −2.3. Tempering chose weight 0
+  for early /newest votes because exposure was front-page only (a /newest post has ~0 exposure, so its votes are
+  unexplainable). Next: /newest exposure in the likelihood, the real front page at t+15, hour-specific arrival rates.
