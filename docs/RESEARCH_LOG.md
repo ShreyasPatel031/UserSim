@@ -329,3 +329,12 @@ Model switches, direction reviews and agenda changes, newest last.
     idle; none are needed right now.
   - HN Fable review request: no reply yet.
 - 13:07 UTC Bundle 3 deployed 13:02 and verified (md5s; at_launch_followers 558 rows Oct 25–Nov 2; daycal shadow on, e1v2 off). Nov 3 is the first honest live run. PR #144 proxy-secret item: not ours; left to its owner.
+- 13:10 UTC HN Fable review done; HN agent back on Opus. Directions:
+  1. Vote speed relative to exposure from the per-minute recorder (from ~Nov 5).
+  2. A second 15-min check at re-up time (/pool entry or return to the front).
+  3. Predict moderators' /pool picks.
+  - Fable's estimate for these: ~40–45% at 15 min. The rest of the way to 80% needs further directions.
+  - Data Feeder asked for /pool reads every 5 min and an Oct /pool backfill.
+- 13:10 UTC Parallel experiment (Grok Bot asked, ~$30/day unused): E5 on exp-2, competitor outcomes as a demand prior.
+  Similar products' earlier PH results (votes, rank, recency, crowding) on top of the honest model + day calibration.
+  Fixed rule: daily top 3 CI above 0.
