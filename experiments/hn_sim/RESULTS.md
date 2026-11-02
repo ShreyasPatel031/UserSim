@@ -806,3 +806,16 @@ before, posting hour.
 | exposure vs votes + who, paired | +1.3 [-1.0, +3.7] | +0.7 [-1.9, +3.1] |
 Direction A adds about +1 point on the archive, not significant on its own (Wayback captures every ~10 min give a coarse
 exposure; the live recorder reads /newest every minute). Live test from Nov 5.
+
+### Directions B and C on the October backtest (wb_reup.py; Oct 2-14 forward daily retrain, 388 winners)
+Exposure event = front-page arrival or return (Quality News rank <= 90) 3+ h after posting after 3+ h off it, from the
+10-minute rank series (series exist for 5+ point posts only: a few non-winning events are missing, small optimistic bias
+for B). Jul-Oct: 2,552 posts (2.4%) had one, 19.4% of them won; median 5.7 h after posting. Oct 2-14 winners with an
+event: late risers 69/145, re-ups 10/62 (the series cover ~36 h, so most re-ups return after it ends), fast 13/181.
+| Caught at 15 min, Oct 2-14 | Caught | vs posting clock | fast / late / re-up caught |
+|---|---|---|---|
+| posting clock (votes + who + exposure) | 29.6% [25.6, 33.5] | | 74 / 30 / 11 |
+| **B: exposure clock** (also judged 15 min after the event; beside the headline) | **35.6% [33.0, 38.3]** | **+5.9 [+2.3, +10.1]** | 71 / 57 / 10 |
+| C: + predicted second-chance return (per-post rule) | 26.8% | -2.8 [-4.8, -0.8] | 69 / 26 / 9 |
+B nearly doubles the late risers caught (30 -> 57): judged 15 min after they reach the front page. C as built hurts.
+Next for B: extend events past 36 h with Quality News late samples (re-ups), and the live /pool events.
