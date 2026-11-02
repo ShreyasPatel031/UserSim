@@ -73,6 +73,36 @@ def minute_feats(P, Mi, a, new_reads):
     return out.reset_index(drop=True)
 
 
+def reup_clock(P, Mi, t_last, a=15, gap_h=3):
+    """Direction B: an exposure event = the post's first /pool sighting, or a front-page sighting 3+ h after posting
+    after 3+ h off the front page (a second-chance return). The post is judged again a minutes after its first event:
+    points gained since the event, best front-page position and minutes on it in [event, event + a]."""
+    ev = {}
+    pool = Mi[Mi.list == "pool"].groupby("id").t.min()
+    for pid, t in pool.items():
+        ev[pid] = t
+    fr = Mi[Mi.list == "front"].sort_values("t")
+    for pid, g in fr.groupby("id"):
+        t, born = g.t.to_numpy(), g.created_at_i.iat[0]
+        prev = np.r_[born, t[:-1]]
+        ret = t[(t - born >= gap_h * 3600) & (t - prev >= gap_h * 3600)]
+        if len(ret):
+            ev[pid] = min(ev.get(pid, np.inf), ret[0])
+    E = pd.DataFrame({"id": list(ev), "t_ev": list(ev.values())})
+    E = E[E.t_ev + a * 60 <= t_last]
+    w = Mi.merge(E, on="id")
+    before = w[w.t <= w.t_ev].sort_values("t").groupby("id").points.last()
+    win = w[(w.t >= w.t_ev) & (w.t <= w.t_ev + a * 60)]
+    out = pd.DataFrame(index=P.post_id)
+    out["ev"] = out.index.isin(E.id).astype(int)
+    out["ev_h"] = ((E.set_index("id").t_ev - P.set_index("post_id").created_at_i) / 3600).reindex(out.index)
+    out["ev_gain"] = (win.groupby("id").points.max() - before.reindex(win.id.unique()).fillna(win.groupby("id").points.min())).reindex(out.index)
+    wf = win[win.list == "front"]
+    out["ev_front_best"] = wf.groupby("id").pos.min().reindex(out.index).fillna(999)
+    out["ev_front_min"] = wf.groupby("id").t.nunique().reindex(out.index).fillna(0)
+    return out.reset_index(drop=True)
+
+
 def caught_line(T, name, out):
     k = int(T.y.sum())
     if k == 0:
@@ -156,7 +186,21 @@ def main():
         for name, sc in scores.items():
             caught_line(T.assign(s=sc), f"{age} min | all posts | {name}", out)
             caught_line(T[seen].assign(s=sc[seen]), f"{age} min | seen only | {name}", out)
-    feats = pd.concat([P[["post_id", "day", "y", "p_post"]].reset_index(drop=True)] +
+    # direction B: re-up clock (judged 15 min after the first /pool sighting or second-chance return to the front page)
+    RC = reup_clock(P, Mi, t_last)
+    cohort = RC.ev.to_numpy() == 1
+    T = P[["day", "y"]].reset_index(drop=True)
+    ev_score = RC.ev_gain.fillna(0).to_numpy() + 3 * (RC.ev_front_best.to_numpy() < 999) + RC.ev_front_min.to_numpy() * 0.01
+    print(f"Re-up clock (direction B): posts with an exposure event {int(cohort.sum())} (median {np.nanmedian(RC.ev_h):.1f} h "
+          f"after posting), winners among them {int(T.y[cohort].sum())} of {int(T.y.sum())}", flush=True)
+    if cohort.any():
+        caught_line(T[cohort].assign(s=ev_score[cohort]), "re-up clock | event cohort | gain + front page 15 min after the event", out)
+        F15 = F[15].iloc[keep_idx].reset_index(drop=True)
+        v15 = F15.pts.to_numpy() + 3 * (F15.front_best.to_numpy() < 999) + F15.cm.to_numpy() * 1e-3
+        both = np.maximum(rk(v15), np.where(cohort, rk(np.where(cohort, ev_score, -1)), 0))
+        caught_line(T.assign(s=v15), "15 min | all posts | posting clock only (votes + front page)", out)
+        caught_line(T.assign(s=both), "15 min | all posts | posting clock + re-up clock (best of the two)", out)
+    feats = pd.concat([P[["post_id", "day", "y", "p_post"]].reset_index(drop=True), RC.add_prefix("rc_")] +
                       [F[a].iloc[keep_idx].reset_index(drop=True).add_prefix(f"m{a}_") for a in AGES], axis=1)
     feats.to_parquet(os.path.join(os.path.dirname(__file__), "out", "live_minute_feats.parquet"), index=False)
     print(json.dumps(out["days"]), flush=True)
