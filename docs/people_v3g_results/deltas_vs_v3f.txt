@@ -1,0 +1,17 @@
+persons 20947 20947 0
+  identical_ex_ts: False
+handles 46998 46998 0
+  identical_ex_ts: True
+profiles 26401 26401 0
+  identical_ex_ts: True
+events 310200 310200 0
+  identical: True
+promoted x profiles 29
+observed_on  observed_on_quality
+2026-11-02   fetched                29
+v3f same rows:
+observed_on  observed_on_quality
+2026-10-28   upper_bound            29
+profiles with changed observed_on: 3015
+null-aware observed_on changes: {'x': 29}
+persons null-aware col diffs: {'built_at': 20947}
