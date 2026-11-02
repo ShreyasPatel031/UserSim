@@ -505,3 +505,10 @@ Model switches, direction reviews and agenda changes, newest last.
 - 23:41 UTC C1 result (PH agent, vs honest day-calibrated 62.7/70.4/76.6): stars + downloads are a real honest per-launch signal (new stars in 30 days 0.165 [0.05, 0.28], downloads 0.27–0.32, Holm-pass) but cover 5.7% of launches; boards within noise. Filed 2345 (C2): dated user-base measures for the other 94% via Wayback (domain age/capture counts, store rating counts, Chrome Web Store users, Discord/Slack/subreddit sizes, newsletter subscribers) + Google Trends. Free, backtestable.
 - 23:51 UTC C2 targets exported (tmp/ph_ops/c2_targets.json: 3,660 domains; 195 App Store, 106 Play, 48 Chrome, 184 Discord, 41 subreddit, 26 newsletter, 426 earlier PH product pages) and reader ready (c2_user_base.py; drops rows on/after launch day; Holm gate across sources; states the reference). Targets path added to request 2345. A1 crawl ~1 h left.
 - 23:55 UTC User: yes to standing approvals 1 (agents fetch free public APIs from their own VMs) and 2 (shadow/recording bundles deploy after PH-agent verification; paid data ≤$30/week without per-item approval). Written into RESEARCH_PROGRAM.md.
+- 00:00 UTC Nov 3, work moved onto the agents' own VMs under the standing approvals:
+  - PH agent (exp-1): C2 dated user-base fetch + scoring; dated feature store as a second track; bundle 5 split
+    (poolscore under rule 2, llm_full filter to Shreyas).
+  - E5 (exp-2): PH pre-launch campaign sweep Jul–Oct (Reddit, HN Algolia, Bluesky, RSS), gate then boards.
+  - HN agent (hn-sim-1): Wayback /newest Jul–Dec 2025, in parallel with Data Feeder's Jan–Jun.
+  - Grok Bot (0000): drop C2 and the sweep from Data Feeder; keep signed-in routes (visibility pilot first, at-launch
+    capture, HN visibility, people refresh); run in parallel.
