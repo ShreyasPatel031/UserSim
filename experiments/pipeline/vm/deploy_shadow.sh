@@ -25,7 +25,7 @@ for m in e1v2 daycal; do
 done
 cd $X && python3 -c "
 import pipeline.daily as D, json
-assert 'shadow' in D.STEPS if hasattr(D, 'STEPS') else True
+assert 'shadow' in [s.__name__ for s in D.STEPS], 'shadow step not registered'
 for m in ('e1v2', 'daycal'):
     meta = json.load(open(f'ph_predict/data/shadow/{m}/meta.json')); print(m, len(meta['models']), 'models')
 print('imports ok')"

@@ -441,7 +441,7 @@ def s_raw(d, con, dry):
     return {"items": len(files)}
 
 
-STEPS = [s_launches, s_list_check, s_snap, s_forecast, s_simforecast, s_ranks, s_comments, s_people, s_ph_upvotes, s_personas, s_score, s_raw]
+STEPS = [s_launches, s_list_check, s_snap, s_forecast, s_simforecast, s_shadow, s_ranks, s_comments, s_people, s_ph_upvotes, s_personas, s_score, s_raw]
 
 
 def main(argv):
