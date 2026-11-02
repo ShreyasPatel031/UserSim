@@ -27,7 +27,8 @@ for i, (_, r) in enumerate(te.iterrows()):
     L.append(f"| {i + 1} | {r['name']} | {r.tagline} | {int(np.expm1(r.ph_hunter_followers))} |")
 open(f"{RN.OUT}/forecast_{day}.md", "w").write("\n".join(L) + "\n")
 # the launch model's raw prediction (log votes) per launch: the offset for shadow forecasts (pipeline.daily s_shadow)
-te[["id", "day", "pred"]].assign(id=te.id.astype(str)).to_parquet(f"{RN.OUT}/forecast_{day}.parquet")
+AUD = ["ph_hunter_followers", "x_maker_sum_followers", "x_company_followers", "promo_reactions", "promo_posts"]   # E1 v2's audience inputs
+te[["id", "day", "pred"] + [c for c in AUD if c in te]].assign(id=te.id.astype(str)).to_parquet(f"{RN.OUT}/forecast_{day}.parquet")
 import json, os
 os.makedirs(f"{RN.OUT}/dash", exist_ok=True)
 json.dump([{"rank": i + 1, "product": r["name"], "tagline": r.tagline, "hunter_followers": int(np.expm1(r.ph_hunter_followers)),

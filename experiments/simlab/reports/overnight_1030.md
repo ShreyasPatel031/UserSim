@@ -1186,3 +1186,19 @@ Setup:
 - None of the inputs beats the control; all intervals span 0 except vs the raw launch model on top 10 (+ competitors −1.2, −2.2 to −0.2).
 - The pre-launch headline stays the raw launch model: 66.7 / 73.5 / 81.0.
 - **Deployed Nov 2, 11:06 UTC (Grok Bot), verified by PH ops:** bundle 20261102_pna. Model and pnx_features md5 match the bundle, 4,877 entries; popscore has TRAIN_ALL; backup at ~/w/backup_20261102_pna/before.tar; recorder untouched. The live simulation uses the pna_ model from the Nov 3 run.
+
+## Independent re-check of E5's E1 v2 (offset model) (Nov 2, `ph_predict/e1_check.py`)
+Rebuilt from my own inputs (ctrl_preds `all` as the Poisson offset, pna_ ev/reach, five audience inputs from build_cached, day terms) with E5's feature list, not E5's code. Rolling monthly, May–Oct, 5 seeds, 3,977 launches, 177 days, 25 weeks. Paired bootstrap over lists. Control: the same offset model with day terms only (day_n, weekday, day_lm_sum). That control cannot reorder a day; it only rescales days against each other.
+
+| | Launch model | Offset control | E1 v2 | E1 v2 − launch model | E1 v2 − control |
+|---|---|---|---|---|---|
+| Daily top 3 | 66.7 | 66.7 | 65.9 | −0.8 (−2.7 to +1.1), 2/6 months | −0.8 |
+| Daily top 5 | 73.5 | 73.5 | 73.2 | −0.3 (−1.6 to +0.9) | −0.3 |
+| Daily top 10 | 81.0 | 81.0 | 80.7 | −0.3 (−1.0 to +0.4) | −0.3 |
+| Weekly top 3 | 49.3 | **54.7** | 49.3 | −0.0 (−5.3 to +5.3) | −5.3 (−13.3 to +2.7) |
+| Weekly top 5 | 56.0 | **59.2** | 57.6 | +1.6 (−1.6 to +4.8) | −1.6 |
+| Weekly top 10 | 58.3 | 58.3 | 55.7 | −2.6 (−4.8 to −0.4) | −2.6 |
+
+- **Not reproduced.** E5 reports daily top 3 +1.3 (−0.4 to +3.0) and weekly top 3 +5.3 / top 5 +3.2. My rebuild gets −0.8 daily and 0 / +1.6 / −2.6 weekly. Possible reasons: hyperparameters, E5 training from April, or different audience columns.
+- **Where a weekly gain can come from:** the day-terms-only control gives weekly top 3 +5.4 and top 5 +3.2 over the launch model on its own. That matches E5's weekly gains in size. So most of the weekly lift likely comes from rescaling days (busy vs quiet days, weekday), not from the pool or audiences. This is a cheap fix to test directly on the launch model: a day-level calibration for weekly and monthly lists. Only 25 weeks, so it needs confirming.
+- The shadow slot is still worth running: live days are the clean test.
