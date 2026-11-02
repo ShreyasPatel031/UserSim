@@ -73,6 +73,12 @@ def main(d: str, refetch: str | None, events_glob: str | None) -> int:
           int((hi.groupby("person_id").handle.nunique() > 1).sum()))
     check("no_shared_confident_x_handle", not (hi.groupby("handle").person_id.nunique() > 1).any(),
           int((hi.groupby("handle").person_id.nunique() > 1).sum()))
+    field_only = H[(H.platform == "x") & (H.source == "ph_twitter_field") & (H.confidence >= 0.2)]
+    check("field_only_x_handles_below_threshold", (field_only.confidence < 0.8).all(), int((field_only.confidence >= 0.8).sum()))
+    xp_rows = Pr[Pr.platform == "x"][["person_id", "handle"]]
+    ok_pairs = set(zip(hi.person_id, hi.handle))
+    check("x_profiles_only_for_confident_handles", all(p in ok_pairs for p in zip(xp_rows.person_id, xp_rows.handle)),
+          int(sum(p not in ok_pairs for p in zip(xp_rows.person_id, xp_rows.handle))))
     xe = E[E.platform == "x"]
     owner = dict(zip(hi.handle, hi.person_id))
     check("x_events_only_for_confident_handles", xe.person_id.isin(set(hi.person_id)).all())

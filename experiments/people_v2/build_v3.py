@@ -18,6 +18,7 @@ Changes against build_v2.py (numbers refer to the fix list):
  5. observed_on is the row's own fetched_at ('fetched'); else the capture file's upload date from root/file_dates.json as an upper bound
     ('upper_bound'); else null ('unknown'). Never the build date.
  6. ph_user_id keeps numeric ids only (legacy UUIDs become null); every PH profile records parser_version.
+ 7. A handle from PH's twitter field alone is stored at confidence 0.6 (below the 0.8 threshold) with no X profile or posts.
 Not done here, needs a human or a model: personal-vs-company labelling of X handles (see x_handle_audit_100.csv) and rebuilding segments.
 """
 from __future__ import annotations
@@ -38,6 +39,9 @@ import pandas as pd
 NOW = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 POISON_ID = {"606339", "109827"}
 POISON_NAMES = {"Wispr Flow", "Lovable"}
+# An X handle that comes only from PH's `twitter` field (no own link) is unvalidated: in the 100-row audit 9 of 14 decided rows matched,
+# against 55 of 63 for own links. Below the 0.8 threshold downstream agents use, it gets no X profile and no X posts attached.
+FIELD_ONLY_CONF = 0.6
 KIND_PLAT = {"twitter": "x", "linkedin": "linkedin", "github": "github"}
 MISSING: list[str] = []
 
@@ -226,8 +230,10 @@ def main(root: str, out: str) -> dict:
                 H(pid, "x", tw, "https://x.com/" + tw, "ph_twitter_field", 0.2, "conflicts with self link; not used", obs)
                 stats["x_field_conflict"] += 1
             else:
-                H(pid, "x", tw, "https://x.com/" + tw, "ph_twitter_field", 0.8, obs=obs)
-        x_primary = own["x"][0] if own["x"] else tw
+                H(pid, "x", tw, "https://x.com/" + tw, "ph_twitter_field", FIELD_ONLY_CONF,
+                  "PH twitter field only, no own link; unvalidated (audit: 9/14 decided matched)", obs)
+                stats["x_field_only_below_threshold"] += 1
+        x_primary = own["x"][0] if own["x"] else None  # field-only handles get no X profile or posts
         xname = None
         if x_primary and x_primary in X and X[x_primary].get("profile"):
             xp = X[x_primary]["profile"]

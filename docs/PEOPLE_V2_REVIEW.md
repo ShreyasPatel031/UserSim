@@ -304,3 +304,19 @@ What this supports and what it does not:
   features, not just from this comparison.
 - **A cheap automatic company filter does not work.** Tested on the labels: `namesim(PH display name, X name)` at 0.5 would drop 26 of 72 true matches to catch
   10 of 13 mismatches, and the 3 company accounts that share the person's name pass at any threshold. A usable filter needs the X bio or a model, and labels beyond 100.
+
+## Decision: field-only X handles below 0.8 (Shreyas, Nov 2) and the conflict sampler
+
+**Implemented** in `build_v3.py` / `validate_v3.py`, tested on a synthetic fixture only (not yet on the real data):
+- An X handle that comes only from PH's `twitter` field (no own link) is stored at confidence **0.6** (was 0.8) with the note
+  "PH twitter field only, no own link; unvalidated". It is a policy call based on the 100-row audit (9 of 14 decided matched, against 55 of 63 for own
+  links), which is thin evidence, so the setting is a constant (`FIELD_ONLY_CONF`) to revisit when more labels exist.
+- Those handles also get **no X profile row and no X posts**; otherwise a downstream agent filtering on 0.8 would still receive their X data through
+  the profile and event tables. Own-link handles are unchanged (0.95, profile and posts kept). Own-link-versus-field conflicts stay at 0.2.
+- Two new checks, `field_only_x_handles_below_threshold` and `x_profiles_only_for_confident_handles`. Effect on the real data: the ~1,588 field-only X handles
+  leave the confident set, so `x_hi_conf` people will drop by about that many (expect, not measured). The name-similarity filter stays out, as decided.
+
+**Conflict sampler:** `experiments/people_v2/sample_conflicts.py --dir work/v3c --n 50 --out work/out/x_conflict_audit_50.csv` draws a seeded sample of
+people whose own link and PH field name different X handles (about 316 in v3b) with both handles, the PH name, headline and bio side by side, and an empty
+`label_link_field_both_neither_unsure` column. Tested on a synthetic dataset. After about 50 labels: if link is right in clearly more cases than field, keep
+the 0.95/0.2 rule; if it is close to even, both should be kept at a middle confidence; if the field wins, swap them.
