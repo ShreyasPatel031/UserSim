@@ -819,3 +819,12 @@ event: late risers 69/145, re-ups 10/62 (the series cover ~36 h, so most re-ups 
 | C: + predicted second-chance return (per-post rule) | 26.8% | -2.8 [-4.8, -0.8] | 69 / 26 / 9 |
 B nearly doubles the late risers caught (30 -> 57): judged 15 min after they reach the front page. C as built hurts.
 Next for B: extend events past 36 h with Quality News late samples (re-ups), and the live /pool events.
+
+### 15-min model variance (wb15_seeds.py; votes + who + exposure, Oct 2-14 forward retrain)
+Single model 29.6% [25.6, 33.5]; 5-seed average 29.1% (-0.5 [-2.6, +1.3]); 5 seeds slower + regularised 28.1%
+(-1.5 [-4.5, +1.6]). The model is not limited by its own variance.
+
+### GitHub (in progress)
+starred_at is admin-only on GitHub since July 2026, so Data Feeder pulls daily new-star counts per repo
+(raw/github_stargazers/star_history_*.jsonl; 9,662 repos). wb_gh.py uses the days before the posting day only (1 / 7 /
+30 days, acceleration, repo age); to run when the pull lands.
