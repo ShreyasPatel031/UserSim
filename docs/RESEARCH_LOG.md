@@ -200,3 +200,10 @@ Model switches, direction reviews and agenda changes, newest last.
 - PH conclusion across E5, psg_, psa_ and X turnout so far: person-level models improve pool votes but not the board.
   The board error is the per-launch surge, and none of the in-hand pre-launch data predicts it. Open lever: full-day X
   data (request 0845), then other audience channels for the ~50% of launches without X.
+- 09:34 UTC: mailbox checked.
+  - X full days: ph_gate.py day-matched. 59 covered, full days only Oct 25. Free twitterapi credit ~exhausted; the $20
+    top-up waits on Shreyas's card approval (asked).
+  - PH people step: the failures were weekly follows (4,371) + 49 upvote refreshes. Upvotes are 97.4% covered by Data
+    Feeder's delivery. Agreed: daily upvote refresh by Data Feeder (≤$0.6/week); follows parked.
+  - Data Feeder: promoted X posts (539) and people_v3f.
+  - HN recorder: second v5 fallback window 08:53.
