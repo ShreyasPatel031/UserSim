@@ -89,8 +89,27 @@ def features(H, T):
     return pd.DataFrame(rows, columns=["id"] + COLS)
 
 
+def own_days(days_dir):
+    """Our own launch files (Jan 2026 on) as history rows in the same schema, so a team's history covers the crawl
+    (2024-2025) and our data alike. votesCount here is the final count of an earlier launch: known before a later one."""
+    rows, seen = [], set()
+    for f in sorted(glob.glob(os.path.join(days_dir, "days", "*.json"))):
+        for p in json.load(open(f)):
+            if str(p["id"]) in seen:
+                continue
+            seen.add(str(p["id"]))
+            base = {"post_id": str(p["id"]), "featuredAt": p.get("featuredAt"), "createdAt": p.get("createdAt"),
+                    "votesCount": p.get("votesCount"), "dailyRank": p.get("dailyRank")}
+            for role, u in [("maker", m.get("username")) for m in (p.get("makers") or []) if isinstance(m, dict)] + [("hunter", (p.get("user") or {}).get("username"))]:
+                if u and u != "[REDACTED]":
+                    rows.append({"username": u, "role": role, **base})
+    return pd.DataFrame(rows)
+
+
 def main(path, days_dir="data"):
     H = read_jsonl(path)
+    if os.environ.get("OWN_DAYS", "1") == "1":   # add our own Jan-Oct 2026 launches as history (dedup by post id)
+        O = own_days(days_dir); H = pd.concat([H, O[~O.post_id.isin(set(H.post_id.astype(str)))]], ignore_index=True)
     print(f"history rows {len(H)}, users {H.username.nunique() if 'username' in H else '?'}", flush=True)
     F = features(H, teams(days_dir))
     print(f"launches with a fetched team {len(F)}; with earlier posts {int((F.a1_n > 0).sum())}", flush=True)
