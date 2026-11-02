@@ -298,8 +298,8 @@ What this supports and what it does not:
   so downstream agents using `>= 0.8` get own links only. Not implemented.
 - **It does not test the conflict rule.** The 312-316 conflicts (own link and PH field disagree) are demoted to 0.2 and are not in this sample. The only evidence
   is one anecdote, `ph:subhh`, where the self-link matched. To decide the rule, label about 50 random conflict cases.
-- **Company accounts are real**: 13 of 100 handles are company, product or brand accounts (10 labelled with a name-similar-looking mismatch such as
-  `ph:baronnotary`, `ph:davidee`, `ph:shuaiguan`, which scored name similarity 1.0), and 1 handle was reassigned (`@soodadityab`). Own links include them.
+- **Company accounts are real**: the `label_personal_or_company_or_wrong` column has 13 `company` and 1 `wrong` (reassigned handle `@soodadityab`). Three of the company
+  accounts carry the person's own name (`ph:baronnotary`, `ph:davidee`, `ph:shuaiguan`, name similarity 1.0). Own links include these accounts.
 - **The suspended cluster** (9 suspended, plus 8 name-only matches) is likely a sockpuppet group. It should be flagged and excluded from X-derived training
   features, not just from this comparison.
 - **A cheap automatic company filter does not work.** Tested on the labels: `namesim(PH display name, X name)` at 0.5 would drop 26 of 72 true matches to catch
