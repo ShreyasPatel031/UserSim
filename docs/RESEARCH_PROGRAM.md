@@ -26,6 +26,8 @@ Socrates, OSIM-8B.
      47.1–49.3 / 53.8–56.0 / 56.7–58.3.
    - On the honest baseline: day-level calibration weekly top 3 +4.0 [0.0, +8.0] (never worse by month), top 5 +1.6;
      ships as a shadow. E1 v2 adds nothing beyond it once its leaky audience inputs are removed.
+   - Tested on honest inputs, no daily gain: person models, E1, competitor page gaps and outcomes, pre-launch X
+     engagement (NO-GO on 16 full days). Next: at-launch follower snapshots (from Oct 25; test ~Nov 20), PH Fable review.
    - **Launch-day, daily, from archived intraday votes (Jul–Oct, Wayback, verified):** hours 4–8: 85.1 / 95.2 / 91.8;
      hours 8–12: **93.1 / 95.2 / 96.2**; hours 12–24: 96.7 / 97.3 / 97.8. Top 5 and 10 pass 90 from about hour 4–8;
      top 3 from about hour 11. Votes are hidden on the page for the first 4 hours.

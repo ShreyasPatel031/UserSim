@@ -402,3 +402,8 @@ Model switches, direction reviews and agenda changes, newest last.
   - Jul–Sep isn't fetched and needs new credit. No more spend without Shreyas.
   - E5 asked to run the go/no-go on the 16 days now.
   - Lesson: price a paid run from a measured pilot (cost per full day), not from read estimates.
+- 18:36 UTC X pre-launch go/no-go: NO-GO (E5, x_prelaunch_e1.md; 16 full Oct days, 13 scored).
+  - Daily top 3 +0.0 (0/13/0); top 5 −3.1.
+  - Engagers vs residual Spearman −0.03.
+  - Pre-launch X engagement carries no within-day shock signal. The hourly re-run is stopped.
+  - Requested a PH Fable direction review via Grok Bot (20261102T1840).
