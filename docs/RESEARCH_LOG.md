@@ -207,3 +207,4 @@ Model switches, direction reviews and agenda changes, newest last.
     Feeder's delivery. Proposal (daily upvote refresh by Data Feeder, ≤$0.6/week; follows parked) NOT sent: my permission check blocked it; left to the user.
   - Data Feeder: promoted X posts (539) and people_v3f.
   - HN recorder: second v5 fallback window 08:53.
+- 10:05 UTC Grok Bot: daily upvote refresh approved, Data Feeder setting it up (~700 pages/day). PH agent tasked: after pna_, launch model ± competitor grounding ± pna_, daily top 3/5/10, paired.
