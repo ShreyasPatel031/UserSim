@@ -1,0 +1,124 @@
+{
+ "persons_unique": {
+  "ok": true,
+  "detail": null
+ },
+ "no_orphan_events": {
+  "ok": true,
+  "detail": 0
+ },
+ "no_orphan_handles_profiles": {
+  "ok": true,
+  "detail": null
+ },
+ "no_duplicate_events": {
+  "ok": true,
+  "detail": null
+ },
+ "no_null_event_ts": {
+  "ok": true,
+  "detail": null
+ },
+ "all_source_event_people_in_persons": {
+  "ok": true,
+  "detail": 0
+ },
+ "handles_unknown_dates_are_null": {
+  "ok": true,
+  "detail": null
+ },
+ "handles_fetched_dates_valid": {
+  "ok": true,
+  "detail": null
+ },
+ "handles_dated_share": {
+  "ok": true,
+  "detail": 0.779
+ },
+ "profiles_unknown_dates_are_null": {
+  "ok": true,
+  "detail": null
+ },
+ "profiles_fetched_dates_valid": {
+  "ok": true,
+  "detail": null
+ },
+ "profiles_dated_share": {
+  "ok": true,
+  "detail": 0.621
+ },
+ "no_uuid_ph_user_id": {
+  "ok": true,
+  "detail": null
+ },
+ "ph_user_id_numeric_or_null": {
+  "ok": true,
+  "detail": null
+ },
+ "parser_version_recorded": {
+  "ok": true,
+  "detail": null
+ },
+ "no_segments_carried": {
+  "ok": true,
+  "detail": null
+ },
+ "no_poison_names": {
+  "ok": true,
+  "detail": null
+ },
+ "no_wispr_in_ph_text": {
+  "ok": false,
+  "detail": 2
+ },
+ "linkedin_rows_mentioning_wispr": {
+  "ok": true,
+  "detail": [
+   "ph:constanza_hasselmann"
+  ]
+ },
+ "one_confident_x_handle_per_person": {
+  "ok": true,
+  "detail": 0
+ },
+ "no_shared_confident_x_handle": {
+  "ok": true,
+  "detail": 0
+ },
+ "x_events_only_for_confident_handles": {
+  "ok": true,
+  "detail": null
+ },
+ "x_self_link_urls_on_platform": {
+  "ok": true,
+  "detail": null
+ },
+ "github_self_link_urls_on_platform": {
+  "ok": true,
+  "detail": null
+ },
+ "linkedin_self_link_urls_on_platform": {
+  "ok": true,
+  "detail": null
+ },
+ "gone_have_no_profile": {
+  "ok": true,
+  "detail": 7
+ },
+ "has_profile_matches_profiles": {
+  "ok": true,
+  "detail": null
+ },
+ "display_name_null": {
+  "ok": true,
+  "detail": 280
+ },
+ "every_good_refetch_row_used": {
+  "ok": true,
+  "detail": 0
+ },
+ "refetch_profiles_have_numeric_id_name_joined": {
+  "ok": true,
+  "detail": null
+ }
+}
