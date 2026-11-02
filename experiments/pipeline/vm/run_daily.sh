@@ -34,7 +34,7 @@ LOG=/home/agent/w/logs/daily_$(date -u +%Y%m%dT%H%M).log; mkdir -p /home/agent/w
 UNTIL=$(python3 -c "import datetime as dt; from zoneinfo import ZoneInfo; n = dt.datetime.now(ZoneInfo('America/Los_Angeles')); print(n.replace(hour=23, minute=55, second=0, microsecond=0).astimezone(dt.timezone.utc).strftime('%H:%M'))")
 (timeout 24h python3 -m pipeline.hourly --until $UNTIL >> "${LOG%.log}_hourly.log" 2>&1; gsutil -q cp ph_predict/data/vote_snapshots/*.jsonl $BUCKET/raw/vote_snapshots/) &
 HOURLY=$!
-STEPS=${STEPS:-launches,list_check,snap,forecast,simforecast,ranks,comments,people,ph_upvotes,personas,score,raw}
+STEPS=${STEPS:-launches,list_check,snap,forecast,simforecast,shadow,ranks,comments,people,ph_upvotes,personas,score,raw}
 timeout 3h python3 -m pipeline.daily --only=$STEPS > "$LOG" 2>&1
 timeout 2h python3 -m pipeline.backtest >> "$LOG" 2>&1
 python3 -m pipeline.dash_export /tmp/usersim_dash >> "$LOG" 2>&1 && gsutil -q -m cp /tmp/usersim_dash/*.json $BUCKET/dash/

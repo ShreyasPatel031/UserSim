@@ -160,6 +160,38 @@ def s_simforecast(d, con, dry):
     return out
 
 
+SHADOW = os.path.join(PH, "data", "shadow")   # shadow forecasts: <SHADOW>/<name>/predict.py, run next to the live ones
+
+
+@step("shadow")
+def s_shadow(d, con, dry):
+    """Shadow forecasts, scored daily like the others (s_score) but not published: each installed
+    <SHADOW>/<name>/predict.py (SHADOW_MODELS, comma-separated) is run in its own process as
+    `python3 predict.py <day>` and prints JSON lines {"launch_id", "score"} (higher = more votes) for the day's line-up.
+    Written to `forecasts` as model "shadow_<name>". A model that is not installed is skipped; one that fails, covers
+    under 90% of the line-up, or prints nothing fails the step loudly."""
+    lineup = {str(p["id"]): p["name"] for p in json.load(open(f"{RAW}/today/{d}.json"))}
+    out, bad = {"items": 0}, []
+    for name in [n for n in os.environ.get("SHADOW_MODELS", "e1v2").split(",") if n]:
+        path = os.path.join(SHADOW, name)
+        if not os.path.exists(os.path.join(path, "predict.py")):
+            out[name] = "not installed"; continue
+        r = subprocess.run(["python3", "predict.py", d], cwd=path, capture_output=True, text=True, timeout=3600)
+        rows = [json.loads(l) for l in r.stdout.splitlines() if l.strip().startswith("{")] if r.returncode == 0 else []
+        got = {str(x["launch_id"]): float(x["score"]) for x in rows if str(x.get("launch_id")) in lineup}
+        if r.returncode or len(got) < 0.9 * len(lineup):
+            bad.append(f"{name}: exit {r.returncode}, {len(got)} of {len(lineup)} launches ({r.stderr.strip()[-200:]})"); continue
+        rank = sorted(got, key=lambda x: -got[x])
+        F_ = pd.DataFrame([{"forecast_date": d, "model": f"shadow_{name}", "predicted_rank": i + 1, "name": lineup[x],
+                            "launch_id": x, "made_on": d} for i, x in enumerate(rank)])
+        if not dry:
+            W.write("forecasts", F_)
+        out["items"] += len(F_); out[name] = len(F_)
+    if bad:
+        out["status"] = "failed: " + "; ".join(bad)
+    return out
+
+
 @step("ranks")
 def s_ranks(d, con, dry):
     import collect_ph as C
