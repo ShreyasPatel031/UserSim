@@ -458,3 +458,4 @@ Model switches, direction reviews and agenda changes, newest last.
   llm_full added to the honest filter (1dc0f8a). Honest page model from the 00:05 snapshots queued as a shadow (~30 d).
 - 21:34 UTC: mailbox checked, no new replies. HN star pull 8,559/9,662 (ETA ~22:06 UTC), PH pass after. A1 crawl streaming to raw/ph_team_history/. No follow-ups due.
 - 21:40 UTC User: never assume a source is unavailable; ask Grok Bot/Data Feeder (signed-in view). Filed 20261102T2140: are upvoter lists, maker/hunter/product follower lists and redacted maker names visible signed in? Pilot + cost. Rule added to RESEARCH_PROGRAM.md.
+- 21:46 UTC Filed to Grok Bot (free routes): 2145 full at-launch state daily from Nov 3 (post, maker/hunter/product pages, external counts); 2146 pre-launch campaign sweep Jul–Oct then daily (Reddit, IH, HN, Bluesky, RSS, LinkedIn public, X free) + HN signed-in voter visibility check.
