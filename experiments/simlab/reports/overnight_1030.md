@@ -627,3 +627,21 @@ Levels: psx simulation 62.7 / 63.6 / 65.4. Launch model 72.4 / 72.2 / 73.1.
   - Does not move launch-level daily top-k.
 - **Hidden upvotes:** hiding up to 14 days costs nothing measurable at launch level. So the Oct 30–Nov 1 upvote outage
   did not hurt the forecasts.
+
+## Product Hunt "Similar Products" vs reviewers' alternatives, full file (Nov 2, `comp_validate_ph.py`)
+`raw/ph_alternatives/similar_products_all.jsonl`: 6,668 launches, 5,846 product lists.
+| Competitor source | Real alternatives in top 5 | At least one in top 5 | Products |
+|---|---|---|---|
+| **Product Hunt Similar Products** | **45.8** (95% CI 39.4–52.2) | **68.7** (61.2–76.2) | 147 |
+| Gemini naming (`comp_gemini.py`) | 28.6 | 43.1 | 281 |
+| Gemini rerank of nearest by meaning | 18.2 | 29.2 | 281 |
+| Meaning similarity | 13.8 | 22.8 | 281 |
+
+- **Coverage:** the answer key covers 147 products with a Product Hunt list. Only 115 of the 281 used for the Gemini
+  numbers have one, so the sets overlap but are not the same. A same-product comparison needs Gemini's per-product
+  results, which were not saved.
+- **Circularity:** 54.7% of Product Hunt's list entries are someone's reviewed alternative. Product Hunt may build these
+  lists from reviewers' alternatives, which would make this answer key partly circular. The with-vs-without simulation
+  test (competitor step 1, launch-time-safe lists only) is the test that counts.
+- **Verdict:** validates as the strongest competitor source by this measure, with the circularity caveat. Next is
+  merged lists in `cmp_features.py`, held until the direction review lands.
