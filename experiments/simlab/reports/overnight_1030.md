@@ -1087,3 +1087,12 @@ Results:
   Engagement counts were read at fetch time, so day-0 posts can't count as pre-launch.
 - **Reading:** X engagement with the launch post marks real voters strongly. As a pre-launch input it needs posts
   before launch day: teasers, "launching tomorrow". Those are rare in this batch.
+
+## Pre-launch X ties, first partial batch (Nov 2)
+
+Data: Data Feeder's first partial batch (790 pre-launch posts, 183 engager rows, 83 team handles). Coverage counts a launch only when one of its team handles was fetched for that launch's day (fixed from a looser rule that counted 976 launches).
+
+- Covered launches: 68. Engager rows matched to PH people: 19.
+- Person level: 8 X-tied person-launch pairs. 75% voted on the launch (95% CI 45–100%), against 0.0% on the same day's other launches (placebo). The direction is right, but n=8 is far too small to rely on.
+- Launch level (pre-launch, weekly roll): top 3 is 61.9 for both the launch model and the model with X ties. Not readable yet: there are too few covered launches to train on, and only one weekly line was captured before exp-1 was stopped.
+- Next: re-run as batches land. If the person-level lift holds at n≥100 pairs, add an X-tie input to the person model (TIE) and test top 3/5/10 at launch level.

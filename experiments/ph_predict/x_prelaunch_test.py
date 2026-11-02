@@ -45,13 +45,17 @@ def main(posts_p, eng_p, pool_p):
         for p in json.load(open(f)):
             hs = {(m.get("twitterUsername") or "").lower() for m in (p.get("makers") or []) if isinstance(m, dict)} | {((p.get("user") or {}).get("twitterUsername") or "").lower()}
             team[str(p["id"])] = hs - {""}
-    fetched = {(r.get("handle") or "").lower() for r in posts}
-    post_at = {str(r.get("post_id")): (r.get("post_at") or "")[:10] for r in posts}
+    # coverage is per (handle, launch day): each handle's posts cover the 30 days before its assigned launch only
+    fetched_days = defaultdict(set)
+    for r in posts:
+        fetched_days[(r.get("handle") or "").lower()].add((r.get("launch_day") or "")[:10])
+    fetched = set(fetched_days)
+    post_at = {str(r.get("post_id")): (r.get("post_at") or r.get("posted_at") or "")[:10] for r in posts}
     ev = defaultdict(list)   # team handle -> [(date, engager ph person)]
     n_match = 0
     for r in eng:
         u = x2ph.get((r.get("user") or "").lower().lstrip("@")); h = (r.get("handle") or "").lower()
-        d = (r.get("post_at") or post_at.get(str(r.get("post_id")), ""))[:10]
+        d = (r.get("post_at") or r.get("posted_at") or post_at.get(str(r.get("post_id")), ""))[:10]
         if u and h and d:
             ev[h].append((d, u)); n_match += 1
     day = dict(zip(I.id, I.day))
@@ -60,7 +64,7 @@ def main(posts_p, eng_p, pool_p):
     res = {"posts": len(posts), "engager_rows": len(eng), "engager_rows_matched_to_PH": n_match, "handles_with_posts": len(fetched)}
     rows, hit, n, ph_hit, ph_n = [], 0, 0, 0, 0
     for x, d in day.items():
-        hs = team.get(x, set()) & fetched
+        hs = {h for h in team.get(x, set()) & fetched if d in fetched_days[h]}
         if not hs:
             continue
         lo = (pd.Timestamp(d) - pd.Timedelta(days=30)).strftime("%Y-%m-%d"); tied = defaultdict(float); allu = set()
