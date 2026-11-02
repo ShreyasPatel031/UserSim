@@ -158,3 +158,6 @@ Model switches, direction reviews and agenda changes, newest last.
     - Default compute SA (our exp VMs, hn-sim-1): ~$5-10/day.
     - Reported to the user; no change made.
   - Data Feeder: x_lookup.json, 632 handles checked. Passed to the PH agent.
+- 07:40 UTC PH X re-run (commit 4fb07ad): 51 covered launches (gate from state.json), not yet 100. Person level, 42
+  X-tied pairs: 45.2% [30, 60] voted vs 1.2% other same-day launches (37x). Turnout vs launch-model residual, within-day
+  Spearman over 7 days: distinct engagers +0.04, per post +0.03, X-tied PH people +0.11. Asked Grok Bot to fix the flags.
