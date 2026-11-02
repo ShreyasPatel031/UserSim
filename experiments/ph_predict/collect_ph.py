@@ -17,6 +17,22 @@ postedBefore:$b, order:RANKING){ totalCount pageInfo{hasNextPage endCursor} edge
 Q_NEWEST = Q.replace("order:RANKING", "order:NEWEST")
 
 
+def on_day(nodes, d):
+    """Keep the launches featured on Pacific day d. The API window filters on when a post was created, so a post
+    created on d but scheduled for 00:00 PT on d + 1 came back for d as well (204 launches in Apr-May sat in two files)."""
+    from zoneinfo import ZoneInfo
+    PT = ZoneInfo("America/Los_Angeles")
+    keep = lambda n: not n.get("featuredAt") or dt.datetime.fromisoformat(n["featuredAt"].replace("Z", "+00:00")).astimezone(PT).date() == d
+    return [n for n in nodes if keep(n)]
+
+
+def window(d):
+    """[00:00 PT on d, 00:00 PT on d + 1) as ISO strings, with the right offset on both sides of DST."""
+    from zoneinfo import ZoneInfo
+    PT = ZoneInfo("America/Los_Angeles")
+    return (dt.datetime.combine(d, dt.time(0), PT).isoformat(), dt.datetime.combine(d + dt.timedelta(days=1), dt.time(0), PT).isoformat())
+
+
 def gql(variables, query=None):
     while True:
         req = urllib.request.Request(URL, json.dumps({"query": query or Q, "variables": variables}).encode(),
@@ -43,9 +59,7 @@ def main(start, end):
     while d >= start:
         f = OUT / f"{d}.json"
         if not f.exists():
-            a, b = f"{d}T00:00:00-07:00", f"{d + dt.timedelta(days=1)}T00:00:00-07:00"
-            if d < dt.date(2026, 3, 8):  # PST before DST
-                a, b = a.replace("-07:00", "-08:00"), b.replace("-07:00", "-08:00")
+            a, b = window(d)
             nodes, cur = [], None
             while True:
                 p, rem = gql({"a": a, "b": b, "c": cur})
@@ -54,6 +68,7 @@ def main(start, end):
                     break
                 cur = p["pageInfo"]["endCursor"]
             seen = set(); nodes = [n for n in nodes if not (str(n["id"]) in seen or seen.add(str(n["id"])))]   # keep each launch once
+            nodes = on_day(nodes, d)
             f.write_text(json.dumps(nodes))
             print(d, len(nodes), "remaining", rem, flush=True)
         d -= dt.timedelta(days=1)

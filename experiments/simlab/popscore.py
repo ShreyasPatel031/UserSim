@@ -355,7 +355,9 @@ if COMP:
 def comp_features(D):
     """Competitors of a launch = its 20 nearest earlier Product Hunt launches by meaning (name, tagline, description).
     comp_used5: the person upvoted or commented on one of the 5 nearest before the day; comp_n20: how many of the 20;
-    comp_best: rank of the nearest one they used (21 = none)."""
+    comp_best: rank of the nearest one they used (21 = none).
+    COMP_SRC=ph: the same three from Product Hunt's Similar Products (any earlier launch of a listed product; best =
+    list position 1-5), NaN where the launch has no launch-time-safe list."""
     g = load()
     if "comp_nb" not in G:
         Z = np.load(f"{store.RAW}/emb.npz"); ids = [str(x) for x in Z["launch_ids"]]
@@ -368,6 +370,18 @@ def comp_features(D):
             hist.setdefault(u, {})[it] = dt
         G["comp_hist"] = hist
     ids, V, zday, ix, cache = G["comp_nb"]; hist = G["comp_hist"]
+    if os.environ.get("COMP_SRC") == "ph":   # Product Hunt's Similar Products (ph_comp_lists.py), launch-time-safe lists only
+        if "comp_ph" not in G:
+            G["comp_ph"] = json.load(open(os.path.join(store.RAW, "ph_comp_lists.json")))
+        PH = G["comp_ph"]; u5, n20, best = [], [], []
+        for u, d, x in zip(D.person, D.day, D.id.astype(str)):
+            r = PH.get(x)
+            if not r or not r["safe"]:
+                u5.append(np.nan); n20.append(np.nan); best.append(np.nan); continue
+            h = hist.get(u, {}); used = [p for i, p in zip(r["all_ids"], r["pos"]) if h.get(i, "9999") < d]
+            u5.append(float(bool(used))); n20.append(float(len(used))); best.append(float(min(used)) if used else 21.0)
+        D["comp_used5"], D["comp_n20"], D["comp_best"] = u5, n20, best
+        return D
 
     def nb(x):
         if x not in cache:

@@ -64,6 +64,14 @@ Machine `usersim-pipeline` (e2-standard-4, us-central1-a). The resource policy `
 Fetches go through `pipeline/fetch.py` (direct, then the DataImpulse residential proxy; never Apify) and only for what
 is new (`pipeline/incremental.py`).
 
+## Known data issues
+- `vote_snapshots`, Nov 1 2026: two recorders ran from 15:00 to 04:00 UTC, so those hours have two rows per launch in
+  the warehouse table (append-only). Read it as one row per (`launch_id`, UTC hour): keep the first. The raw file
+  `raw/vote_snapshots/2026-11-01.jsonl` is already deduplicated. From Nov 2, `run_daily.sh` takes a lock and
+  `pipeline.hourly` writes at most one snapshot per hour.
+- `launches`: 204 launches from Apr 27 - May 13 were stored on the day before their featuredAt day; corrected rows were
+  appended Nov 2 (`pipeline.fix_launch_days`). Their 1,269 upvote events in `events` stay dated a day early.
+
 ## Raw backup
 
 `raw/ph_predict_data/` (every raw fetch: launch days, comment pages, profiles, follow lists, upvote pages and scrolls,

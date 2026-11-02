@@ -72,7 +72,7 @@ if os.environ.get("STAGE") == "2":
             print({k: len(v) for k, v in fams.items()}, flush=True)
         if os.environ.get("STAGE5") == "1":   # comparison with competitors (cmp_features.py), for the simulation and the launch model
             best = aud + [c + "_dayr" for c in aud] + page
-            C5 = pd.DataFrame.from_dict(json.load(open("data/cmp_features.json")), orient="index").rename_axis("id").reset_index()
+            C5 = pd.DataFrame.from_dict(json.load(open(os.environ.get("CMP_FILE", "data/cmp_features.json"))), orient="index").rename_axis("id").reset_index()
             cmp = [c for c in C5 if c.startswith("cmp_")]
             A = A.merge(C5, on="id", how="left")
             for c in cmp:
@@ -124,4 +124,4 @@ for name, flag in (("first-time teams", True), ("repeat teams", False)):
 hit = lambda g, c, k: len(set(g.nlargest(k, c).id) & set(g[g.dailyRank <= k].id)) / k
 res["all launches, daily top 3/5/10"] = {p: [round(100 * float(np.mean([hit(g, p, k) for _, g in T.groupby("day") if (g.dailyRank <= k).sum() == k])), 1)
                                               for k in (3, 5, 10)] for p in P}
-json.dump(res, open(f"results/newsim_eval{'' if SRC == 'pst' else '_' + SRC}{'_nopage' if NOPAGE else ''}{('_stage5s' if os.environ.get('CMP_SMALL') == '1' else '_stage5') if os.environ.get('STAGE5') == '1' else '_stage4' if os.environ.get('STAGE4') == '1' else '_stage3' if os.environ.get('STAGE3') == '1' else '_stage2' if os.environ.get('STAGE') == '2' else ''}.json", "w"), indent=1); print(json.dumps(res, indent=1))
+json.dump(res, open(f"results/newsim_eval{'' if SRC == 'pst' else '_' + SRC}{'_nopage' if NOPAGE else ''}{os.environ.get('OUT_TAG', '')}{('_stage5s' if os.environ.get('CMP_SMALL') == '1' else '_stage5') if os.environ.get('STAGE5') == '1' else '_stage4' if os.environ.get('STAGE4') == '1' else '_stage3' if os.environ.get('STAGE3') == '1' else '_stage2' if os.environ.get('STAGE') == '2' else ''}.json", "w"), indent=1); print(json.dumps(res, indent=1))

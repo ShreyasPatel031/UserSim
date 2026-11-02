@@ -544,3 +544,484 @@ Setup:
   launch level, where the launch-level model leans on audience and reach (most votes come from outside the pool).
 - **Caveat:** the psn files date from Oct 28 (older code). A clean psn rebuild with today's code and data
   (`TAG_SUFFIX=v2 PREFIX=psn2_`) is running; the psn rows will be replaced when it finishes.
+
+### Winner of 3 competitors, no-page sources (`comp_test.py NOPAGE=1 SIM_SRC=…`, May–Oct, 4,149 launches)
+"Simulation only" here is the simulation's own launch score: no audience or reach inputs, unlike the newsim "+day
+standing" model above.
+
+| Winner of 3 (pair) | Same day (1,404 groups) | Same week (2,945) | Same month (3,351) |
+|---|---|---|---|
+| psn (no tie strength) | 52.4 (62.7) | 55.9 (67.3) | 54.9 (64.9) |
+| pnr (+ tie strength) | 58.8 (67.5) | 58.4 (68.7) | 58.6 (68.3) |
+| pnx (+ extensions) | 57.8 (67.3) | 59.4 (69.3) | 59.6 (70.1) |
+| Launch model | 71.2 (77.7) | 72.9 (79.3) | 71.3 (78.8) |
+| Launch model + pnx | 68.9 | 71.8 | 69.7 |
+
+- **Tie strength vs none:** +6.4 / +2.5 / +3.7. As a rough guide, the interval for a difference is ±3.7 (day),
+  ±2.5 (week) and ±2.4 (month). That treats groups as independent; they overlap, so the real intervals are wider.
+  A day-clustered paired bootstrap is still to do.
+- **Extensions vs tie strength:** −1.0 / +1.0 / +1.0, noise.
+- **Reading:** on its own, the simulation picks competitor winners better with tie strength. Once audience inputs are
+  added (newsim), the gain disappears, which matches the pool-level result.
+
+## Nov 1, 23:55 UTC: full set — clean baseline, day-clustered winner of 3, degradation, page-aware extensions, panel
+All runs are out of sample, with paired bootstraps over days and 95% intervals. Winner of 3 is now resampled by day
+(`comp_boot.py`; groups matched exactly across sources).
+
+**Corrections to earlier entries today.** psn is now rebuilt with today's code and data as `psn2`; the old psn files
+were from Oct 28. With the clean baseline:
+- Pool check: tie strength vs none, pool top-3 hit (fans) +2.7 (−0.3 to +6.0); the earlier "+3.5, excludes 0" was
+  against the old psn. Spearman is still clearly better: +0.030 (+0.012 to +0.048).
+- Winner of 3, no page, simulation only: the earlier "+6.4 / +2.5 / +3.7" was against the old psn and used an unpaired
+  rough interval. The clean, day-clustered numbers are in the table below.
+
+### Launch level, daily top 3 / 5 / 10 (simulation only unless marked)
+| Configuration | Top 3 / 5 / 10 |
+|---|---|
+| No page, psn2 (no tie strength) | 60.3 / 71.3 / 79.4 |
+| No page, pnr (+ tie) | 59.2 / 70.8 / 79.8 (top 3 vs psn2 −1.1, −3.4 to +1.1) |
+| No page, pnx (+ tie + extensions; deployed) | 59.8 / 70.6 / 79.3 (top 3 vs psn2 −0.6, −2.7 to +1.5) |
+| Page, pst | 60.3 / 70.9 / 79.7 |
+| Page, psr (+ tie) | 62.6 / 71.2 / 79.7 |
+| Page, psx (+ tie + extensions) | 61.5 / 70.5 / 80.2 (top 3 vs psr −1.1, −3.2 to +0.9; vs pst +1.1, −1.4 to +4.0) |
+| Page, psr with the last 3 / 7 / 14 days of upvotes hidden | 62.6 / 62.6 / 61.8 on top 3 (vs psr +0.0 / −0.0 / −0.9; all CIs within ±3) |
+| Panel (pool reweighted, no model on top) | 47.7 / 59.9 / 69.3 (May–Oct) |
+| Launch model (Jul–Oct / May–Oct) | 65.8 / 72.9 / 80.8 / 65.5 / 73.9 / 81.2 |
+
+**Best simulation vs launch model, same launches (paired):**
+- psr: top 3 −3.2 (−7.5 to +0.9); top 5 −1.7 (−4.3 to +0.9); top 10 −1.1 (−2.4 to +0.2).
+- psx: top 3 −4.3 (−8.9 to −0.0).
+- pnx (no page): top 3 −5.7 (−9.4 to −1.9).
+
+### Winner of 3, day-clustered (day / week / month)
+| B − A | Day | Week | Month |
+|---|---|---|---|
+| No page: pnr − psn2 | +2.5 (−0.3 to +5.7) | +0.5 (−1.6 to +2.5) | +2.7 (+1.0 to +4.4) |
+| No page: pnx − psn2 | +1.6 (−2.7 to +5.8) | +1.5 (−0.4 to +3.4) | +3.7 (+1.7 to +5.6) |
+| No page: pnx − pnr | −0.9 (−5.0 to +2.7) | +1.0 (−1.0 to +3.1) | +1.0 (−0.8 to +2.8) |
+| Page: psr − pst | +0.6 (−4.7 to +5.3) | +1.5 (−0.5 to +3.5) | +2.1 (+0.5 to +3.8) |
+| Page: psx − psr | +1.3 (−3.2 to +5.3) | +0.6 (−0.9 to +2.1) | +1.7 (+0.0 to +3.4) |
+| psx simulation − launch model | −9.7 (−15.4 to −4.8) | −8.7 (−11.0 to −6.3) | −7.7 (−9.8 to −5.5) |
+| psx launch model + simulation − launch model | −0.4 (−3.5 to +3.0) | +0.3 (−1.0 to +1.7) | −2.0 (−3.5 to −0.5) |
+
+Levels: psx simulation 62.7 / 63.6 / 65.4. Launch model 72.4 / 72.2 / 73.1.
+
+### Panel reweighting (`panel.py`, pnr + SEG=1, 54 trait cells, NNLS weights fitted on earlier months)
+- **Panel:** 47.7 / 59.9 / 69.3. That is below the raw pool sum (48.5 / 61.5 / 71.3; top 10 −2.0, −3.1 to −0.9) and
+  far below the launch model (top 3 −17.8, −21.8 to −13.8).
+- **Blend with the launch model:** worse than the launch model alone (top 3 −6.5, −10.0 to −3.1).
+- **Winner of 3:** panel 58.7 / 57.7 / 59.7; launch model 71.1 / 70.6 / 73.8.
+- **Weights:** only 8–11 of 54 cells get weight. The largest is low-activity, untied, non-maker people with 100+
+  followers.
+- **Reading:** the pool's simulated picks, rescaled by trait alone, cannot reproduce launch totals. The audience the
+  launch model sees (makers' and hunter's followers, X, promotion) is not represented by any pool cell. A pure-panel
+  forecast needs those outside audiences in the panel itself, not only pool reweighting.
+
+### Verdict
+- **No simulation variant beats the launch model** on daily top 3/5/10 or winner of 3.
+- **Closest:** page-aware psr, top 3 −3.2 (−7.5 to +0.9); top 10 −1.1 (−2.4 to +0.2).
+- **Launch model + simulation:** ties the launch model on winner of 3 (day −0.4, week +0.3) and is −2.0 on month.
+- **Tie strength:**
+  - Helps the simulation itself: person level +1.8 (6/6 months); pool Spearman +0.03; winner of 3 by month +2.7 to
+    +3.7, intervals excluding 0.
+  - Does not move launch-level daily top-k.
+- **Hidden upvotes:** hiding up to 14 days costs nothing measurable at launch level. So the Oct 30–Nov 1 upvote outage
+  did not hurt the forecasts.
+
+## Product Hunt "Similar Products" vs reviewers' alternatives, full file (Nov 2, `comp_validate_ph.py`)
+`raw/ph_alternatives/similar_products_all.jsonl`: 6,668 launches, 5,846 product lists.
+| Competitor source | Real alternatives in top 5 | At least one in top 5 | Products |
+|---|---|---|---|
+| **Product Hunt Similar Products** | **45.8** (95% CI 39.4–52.2) | **68.7** (61.2–76.2) | 147 |
+| Gemini naming (`comp_gemini.py`) | 28.6 | 43.1 | 281 |
+| Gemini rerank of nearest by meaning | 18.2 | 29.2 | 281 |
+| Meaning similarity | 13.8 | 22.8 | 281 |
+
+- **Coverage:** the answer key covers 147 products with a Product Hunt list. Only 115 of the 281 used for the Gemini
+  numbers have one, so the sets overlap but are not the same. A same-product comparison needs Gemini's per-product
+  results, which were not saved.
+- **Circularity:** 54.7% of Product Hunt's list entries are someone's reviewed alternative. Product Hunt may build these
+  lists from reviewers' alternatives, which would make this answer key partly circular. The with-vs-without simulation
+  test (competitor step 1, launch-time-safe lists only) is the test that counts.
+- **Verdict:** validates as the strongest competitor source by this measure, with the circularity caveat. Next is
+  merged lists in `cmp_features.py`, held until the direction review lands.
+
+## Competitor grounding with Product Hunt's Similar Products: with vs without (Nov 2, at Shreyas's request)
+**Lists** (`ph_comp_lists.py`):
+- PH Similar Products mapped to our launches.
+- A list is launch-time-safe when no listed product first launches in our data on or after the launch: 3,609 of 6,475
+  launches.
+- Only 38% of listed products ever launched in our data (from Jan 1). The rest are established products, so a safe
+  list averages 1.3 competitor launches with known votes (meaning-based lists: 5).
+
+**Person level** (`pick_boost` ABLATE, TASTE=1 TIE=1 COMP=1, May–Oct): "used a competitor" (any earlier launch of a
+listed product), with vs without.
+
+| Lists | Top-3 hit with / without | Δ (95% over months) | AUC Δ (95%) |
+|---|---|---|---|
+| Meaning (20 nearest) | 54.2 / 54.1 | +0.12 (−0.30 to +0.53), 3/6 months | +0.0017 (+0.0003 to +0.0030) |
+| PH Similar Products | 54.3 / 54.1 | +0.18 (−0.57 to +0.93), 2/6 months | +0.0023 (+0.0006 to +0.0041) |
+| PH − meaning, both with | +0.07 | | +0.0007 (4/6 months) |
+
+- Competitor use alone (no other inputs): AUC 0.545 with meaning lists, 0.511 with PH lists. The PH lists are NaN for
+  the 44% of launches without a safe list.
+- On Oct 31, before tie strength, competitor use added +1.0 top-3 hit. With tie strength in the model it adds +0.1 to
+  +0.2: most of it was the same people (team ties overlap with competitor users).
+
+**Launch level** (newsim STAGE5 on psr, + competitor gaps; `pair_score.py`, Jul–Oct, day-clustered):
+
+| Δ, sim + gaps − sim | Top 3 | Pairwise | Competitor pairs | Winner of 3, day / week / month |
+|---|---|---|---|---|
+| Meaning lists | −0.3 (−2.6 to +2.0) | −0.4 (−0.9 to +0.1) | +0.6 (−0.5 to +1.7) | +0.8 / −0.1 / +0.6 |
+| Gemini lists | −0.6 (−3.2 to +2.0) | −0.1 (−0.5 to +0.2) | +0.3 (−0.8 to +1.6) | −1.1 / +0.5 / −0.2 |
+| PH lists | +0.9 (−1.4 to +3.2) | −0.3 (−0.7 to +0.1) | +0.3 (−0.6 to +1.3) | −1.7 (−3.2 to −0.1) / +0.0 / +1.0 (+0.0 to +2.0) |
+
+The "launch model + gaps" rows (−1 to −4) are not a clean test: they refit a small model on the launch prediction,
+so they are not reported as an effect.
+
+**Verdict:**
+- Competitor grounding with the 3×-more-accurate PH lists does not raise predictive value at launch level on any
+  metric.
+- At person level it adds AUC +0.002 (interval excludes 0) and no top-3 hit.
+- The limit is coverage: 62% of listed competitors never launched in our data, so neither their votes nor their
+  audiences are visible.
+- Next step for this north-star clause: use the PH lists to bring in those competitors' audiences (their PH followers
+  and reviewers, who are real people with dated activity). Otherwise grounding stays limited to the 38% we can see.
+
+## E0: where the simulation's error lives (Nov 2, `simlab/e0_shock.py`, pnr, Apr–Oct, 5,081 launches)
+**1. Overdispersion.** Per launch, real pool voters R vs the simulation's expected pool picks S, log ratio with the
+day's mean removed.
+- Observed variance: 0.588.
+- Expected if each person's error were independent (≈ Poisson around S): 0.056.
+- So **90.5% of the error is a shock shared by a launch's whole audience**, not noise in individual people.
+- The simulation ranks the pool's own votes at Spearman 0.478 within day.
+
+**2. Early-sample oracle** (Jul–Oct, 20 random splits, day-clustered paired intervals).
+- Setup: a random 10% of each launch's real pool voters is revealed, as a stand-in for early votes.
+- Scale: the pool casts 35% of all votes, so this is about 3.5% of a launch's votes. A median launch has 26 pool
+  voters, a top-3 launch 158.
+
+| Predictor | Spearman, held-out pool votes | Daily top 3 / 5 / 10 (final rank) |
+|---|---|---|
+| Simulation only (no launch-day data) | 0.486 | 49.4 / 61.9 / 72.0 |
+| 10% sample only | 0.745 | 83.0 / 86.0 / 81.8 |
+| Simulation × shock from the sample (shrinkage a = 1, fitted Apr–Jun) | 0.747 | 83.3 / 86.0 / 82.0 |
+
+- Shock-corrected − simulation: top 3 +33.9 (+29.8 to +37.9); top 5 +24.1 (+20.6 to +27.6); top 10 +10.0 (+8.0 to
+  +12.2).
+- Shock-corrected − sample: top 3 +0.3 (−0.2 to +0.7). Once a sample of real voters is known, the simulation adds
+  nothing to the ranking.
+
+**Reading:**
+- The gap between the simulation and the real ranking is almost entirely a per-launch shock (makers' outreach,
+  launch-day momentum).
+- A small sample of who actually showed up reveals it: 3.5% of votes gives 83% daily top 3.
+- Caveat: the oracle sample is random across the whole day. Real early votes are not random (they lean to the
+  team's network) and come before the late surge, so this is an optimistic proxy for hour-1/2 votes.
+- Implications:
+  1. The launch-day forecast (direction A) is where the largest gain is, and the comment-trajectory backtest (E1 in
+     the PH review) should run next with real early comments instead of a random sample.
+  2. Pre-launch gains have to predict the shock itself (direction B: makers' outside audiences, promotion, team
+     turnout as a launch-level input). Better person models of the pool cannot.
+  3. For the generative vote model (orchestrator's E1), the shock term is the component to model first.
+
+## North star (Shreyas, Nov 2): 90% top 3 / 5 / 10 on the daily, weekly or monthly leaderboard. Re-scored Nov 2 (`lists_score.py`, Jul–Oct)
+| Leaderboard (lists) | Launch model | Best simulation (psr, + day standing + page) | Simulation, no page (pnx, deployed) |
+|---|---|---|---|
+| Daily (116 / 116 / 101) | **65.8 / 72.9 / 80.8** | 62.6 / 71.2 / 79.7 | 58.0 / 70.2 / 79.6 |
+| Weekly (17 / 16 / 15) | 51.0 / 55.0 / 56.7 | 33.3 / 38.8 / 46.0 | 31.4 / 38.8 / 44.7 |
+| Monthly (3 / 4 / 4) | 55.6 / 50.0 / 57.5 | 0.0 / 30.0 / 35.0 | 22.2 / 30.0 / 42.5 |
+
+Simulation − launch model, top 3: daily −3.2 (−7.5 to +1.1); weekly −17.6 (−33.3 to −2.0); monthly −55.6 on 3 lists.
+The simulation's best configuration uses within-day standing and per-day line-up inputs, which do not compare across
+days, so it falls apart on weekly and monthly lists. Monthly has 3–4 test lists, so its numbers are anecdotal.
+
+**Early signal across boards** (E0's random 10% of pool voters, ~3.5% of votes; 20 splits; optimistic proxy):
+
+| | Daily | Weekly | Monthly |
+|---|---|---|---|
+| Launch model | 65.5 / 73.0 / 80.9 | 51.0 / 55.0 / 56.7 | 55.6 / 50.0 / 57.5 |
+| 10% pool sample | 82.6 / 85.8 / 80.8 | 51.5 / 64.1 / 72.1 | 40.0 / 54.0 / 48.1 |
+| Rank blend of both | 80.6 / 85.5 / 84.7 | 60.6 / 61.8 / 69.7 | 45.6 / 52.5 / 50.9 |
+
+**Where we are against 90:**
+- **Daily is closest:** the launch model is 24 / 17 / 9 points away pre-launch. With an early-vote signal the proxy
+  reaches 80–86, about 4–10 points away.
+- **Weekly gap:** cross-day calibration. A pool sample ranks within a day well but not across days, because pool size
+  and day strength vary.
+- **Monthly:** too few lists to steer by.
+- **Next:** the daily launch-day forecast from real early comments (and from Nov 9, hourly votes), then cross-day
+  calibration of vote totals for weekly.
+
+## Launch-day forecast from real early comments (Nov 2, `launchday.py` + `lists_score.py`, May–Oct)
+Setup:
+- Prior: the pre-launch launch model.
+- Readings at hour h after 00:00 PT: non-team comments, distinct commenters, team comments, how established the
+  commenters are, and the day's standing and share. Only comments posted before h are used.
+- LightGBM on final log votes, rolling monthly, 3 seeds. 102,128 timed comments.
+- Share of launches with at least one comment by hour: 1h 33%, 2h 48%, 4h 61%, 8h 72%, 12h 77%.
+
+| Top 3 / 5 / 10 (Δ top 3 vs hour 0, 95% CI) | Daily (175 days) | Weekly (25 / 25 / 21 weeks) | Monthly (5–6 lists) |
+|---|---|---|---|
+| Hour 0: launch model | 65.3 / 73.9 / 81.2 | 50.7 / 57.6 / 57.6 | 46.7 / 46.7 / 51.7 |
+| Hour 1 | 65.9 / 73.7 / 80.9 (+0.6, −2.3 to +3.4) | 49.3 / 62.4 / 60.0 | 20.0 / 43.3 / 45.0 |
+| Hour 2 | 70.1 / 74.2 / 81.2 (+4.8, +1.7 to +8.0) | 48.0 / 59.2 / 62.4 | 40.0 / 50.0 / 48.3 |
+| Hour 4 | 70.5 / 74.6 / 81.7 (+5.1, +1.9 to +8.4) | 56.0 / 61.6 / 59.5 | 46.7 / 43.3 / 55.0 |
+| Hour 8 | 72.4 / 77.8 / 82.8 (+7.0, +3.6 to +10.3) | 58.7 / 63.2 / 63.3 | 26.7 / 43.3 / 53.3 |
+| Hour 12 | **74.1 / 78.9 / 82.7** (+8.8, +5.1 to +12.4) | 57.3 / 62.4 / 65.2 | 33.3 / 53.3 / 55.0 |
+| Comments only at hour 4 (no prior) | 57.3 / 64.6 / 69.1 | 38.7 / 41.6 / 47.1 | 6.7 / 36.7 / 35.0 |
+
+- **Daily:** real early comments add +4.8 on top 3 by hour 2 and +8.8 by hour 12, with intervals excluding 0. Top 5
+  reaches +5.0 and top 10 +1.4 by hour 12. These are the first launch-day gains on real data.
+- **Weekly:** +5 to +8 on top 3 from hour 4, with intervals spanning 0 (25 weeks). Top 10 is +7.6 (+1.0 to +14.3) at
+  hour 12.
+- **Monthly:** 5–6 lists, noise.
+- **Compared with E0's random sample** (83 / 86 / 82 daily): comments are sparse early, so they read the shock far
+  more weakly than votes would. A top-3 launch has about 158 pool voters but only a few comments by hour 2.
+- **Next:** the same model on hourly vote snapshots (Nov 2 onward; 7 days by Nov 9), side by side with this comment
+  curve. If votes behave like E0's sample, daily top 3 crosses 80 within the first hours.
+
+## Predicting the shock before launch (Nov 2, `simlab/shock_model.py`, pnr pool simulation)
+**Target:** the per-launch shock from E0, log((real pool voters + 1) / (simulated pool picks + 1)), with the day's mean
+removed.
+
+**Stage 1: shock from pre-launch inputs only**
+- Inputs: the launch model's inputs plus new launch-level turnout features.
+- Method: rolling monthly, May–Oct, 3 seeds.
+- Within-day Spearman with the real shock: **0.49**. R² 0.009, because the shock has heavy tails across days; within
+  day the ranking is what counts.
+- Loss in Spearman when each group is dropped:
+
+  | Group | Loss |
+  |---|---|
+  | `ph_` audience counts (makers' and hunter's followers, team size) | 0.054 |
+  | `pf_` page facts | 0.033 |
+  | `seg_` follower segments | 0.015 |
+  | `hist_` track record | 0.015 |
+  | `llm_` | 0.015 |
+  | `ps_` page scores | 0.013 |
+  | `fol_` pool follows | 0.011 |
+  | turnout (new) | 0.011 |
+  | `x_` | 0.010 |
+  | `promo_` | 0.006 |
+  | `vs_` video | 0.004 |
+
+- Data note: stage 1 had 5,181 rows for 5,081 launches (duplicated IDs from a merge). The stage-2 file is unique
+  (3,152 launches). To fix on the next run.
+
+**Stage 2: forecast built from the simulation, Jun–Oct, top 3 / 5 / 10**
+
+| | Daily (145 / 145 / 121) | Weekly (21 / 21 / 19) | Monthly (4–5) |
+|---|---|---|---|
+| Launch model | 65.3 / 73.1 / 81.5 | 49.2 / 57.1 / 56.8 | 58.3 / 52.0 / 52.0 |
+| Simulation alone (pool picks, no audience inputs) | 45.3 / 58.3 / 69.5 | 11.1 / 19.0 / 23.7 | 8.3 / 4.0 / 12.0 |
+| Simulation + predicted shock | 59.1 / 69.0 / 75.6 | 47.6 / 44.8 / 50.5 | 16.7 / 44.0 / 38.0 |
+| Simulation + true shock (ceiling) | **86.4 / 93.1 / 90.1** | 44.4 / 58.1 / 73.2 | 16.7 / 36.0 / 38.0 |
+
+- Predicted shock adds +13.8 to the simulation on daily top 3. It stays 6.2 below the launch model (−9.9 to −2.5).
+  The shock model draws on the launch model's inputs, so this row is not a simulation-only result.
+- **Ceiling:** with the shock known, daily top 5 is 93.1 and top 10 is 90.1, both above the target; top 3 is 86.4.
+  So predicting the shock is the whole problem on the daily board.
+- **Weekly ceiling is low** (44 / 58 / 73) because the shock here has the day's mean removed. Weekly needs a cross-day
+  version (the day-level shock, plus line-up strength).
+- **Where the shock signal is today:** audience counts first, then page facts, then track record. Turnout and X add a
+  little each. The pre-launch inputs explain the shock's within-day ranking at 0.49. Closing the rest needs inputs
+  that see the makers' outreach: X engagement (sample Nov 3), newsletters and communities, the competitor audiences
+  (data spec filed), and from Nov 9 the hour-1/2 votes as the launch-day reading.
+
+## Shock model, re-run: duplicates fixed, day-level shock added for weekly (Nov 2)
+**Duplicates:**
+- 204 launches sat in two consecutive `data/days` files: Apr 27/28, May 4/5, 6/7, 10/11, 13/14. The earlier file's
+  window took in the next day's 00:00 PDT launches; every case matches `featuredAt` on exactly one of the two days.
+- In `shock_model.py` each launch is now kept once, on its `featuredAt` (PT) day. 204 rows dropped from the simulation
+  files, the build cache and the launch-model predictions alike.
+- Upstream, the same duplicates are in the store and every backtest built from `data/days`. That fix is queued
+  separately; numbers in this log before this entry include them (204 rows on 10 days).
+
+**Shock prediction:**
+- Within-day shock: Spearman 0.504 (was 0.49 with duplicates). Largest losses when dropped: `ph_` 0.055, `seg_` 0.028,
+  `pf_` 0.028, `hist_` 0.017, `ps_` 0.016.
+- **Day-level shock** (the day's pool turnout vs the simulation; 177 days): predicted from line-up size, active pool
+  size, line-up strength by the prior and weekday at **Spearman 0.475**. Spread: 0.317 across days vs 0.758 within day.
+
+**Forecasts, Jun–Oct, top 3 / 5 / 10:**
+
+| | Daily (145 / 145 / 121) | Weekly (21 / 21 / 19) | Monthly (4–5) |
+|---|---|---|---|
+| Launch model | 65.3 / 73.1 / 81.5 | 49.2 / 57.1 / 56.8 | 58.3 / 52.0 / 52.0 |
+| Sim + predicted shock (within day) | 57.2 / 69.0 / 76.0 | 46.0 / 47.6 / 50.5 | 25.0 / 32.0 / 38.0 |
+| Sim + predicted shock, cross-day | 57.2 / 69.5 / 76.7 | **52.4** / 49.5 / 50.0 | 33.3 / 44.0 / 44.0 |
+| Ceiling: sim + true shock (within day) | 86.0 / 92.6 / 90.2 | 44.4 / 60.0 / 73.7 | 33.3 / 44.0 / 36.0 |
+| Ceiling: sim + true shock, cross-day | **89.7 / 94.3 / 90.2** | 52.4 / 68.6 / 80.5 | 33.3 / 48.0 / 52.0 |
+
+- **Weekly:** the cross-day version lifts weekly top 3 from 46.0 to 52.4 (+3.2 vs the launch model, −6.3 to +12.7)
+  but not top 5 or top 10.
+- **Even the true pool shock caps weekly at 52 / 69 / 81.** The pool casts about 35% of votes. Ranking across days
+  depends on the other 65%, whose size varies by day and launch in ways pool turnout doesn't track.
+- **Daily:** the cross-day ceiling is 89.7 / 94.3 / 90.2, so knowing the pool shock is enough on the daily board.
+- **Next for weekly:** model the shock on *total* votes (the launch model's residual, raw and by day) and predict it
+  the same way, because the cross-day signal is in the outside-pool votes. Hour-1/2 vote snapshots (Nov 9) read it
+  directly.
+
+## Launch-day forecast from real intraday votes: Wayback homepage captures (Nov 2, `wayback_launchday.py`, Jul–Oct)
+**Data:** `raw/ph_homepage_archive/parsed.jsonl` (Data Feeder). 467 homepage captures on 71 days, at random hours,
+showing that day's posts with votes at capture time; plus archived daily leaderboard pages for 82 days (near-final).
+
+**Verification** (the archive ends Oct 28, before the hourly snapshots start on Oct 31, so the check is against our
+stored finals):
+- Leaderboard pages vs our final votes: median ratio 1.00; 60% within 5%.
+- Top 3 on the page matches our stored daily rank on 95.5% of days.
+- launchDayScore of past days vs our finals: median 0.973.
+- **Votes are hidden for the first 4 hours.** Every post shows 0 votes in captures before hour 4 (852 + 970 rows);
+  from hour 4 every post has a count.
+
+**Backtest:** the latest capture per day in each bucket of hours since 00:00 PT. Daily top 3 / 5 / 10 against the
+final rank, with a bootstrap over days.
+
+| Hours (days) | Votes at capture | Pre-launch prior | Equal-rank blend − prior, top 3 |
+|---|---|---|---|
+| 0–2 (16) | 27.1 / 35.0 / 50.0 (votes hidden) | 60.4 / 68.8 / 75.0 | 0.0 |
+| 2–4 (18) | 24.1 / 35.6 / 52.2 (votes hidden) | 57.4 / 67.8 / 77.8 | 0.0 |
+| **4–8 (29; median 6.2 h)** | **85.1 (78.2–92.0) / 95.2 (91.7–97.9) / 91.8 (88.9–94.6)** | 60.9 / 72.4 / 79.6 | +21.8 (+16.1 to +27.6) |
+| **8–12 (29; median 11.3 h)** | **93.1 (87.4–97.7) / 95.2 (91.7–97.9) / 96.2 (93.8–98.3)** | 60.9 / 71.0 / 76.7 | +18.4 |
+| 12–24 (51; median 21.7 h) | 96.7 / 97.3 / 97.8 | 61.4 / 70.6 / 80.2 | +20.3 |
+
+**Reading (launch-day claim, reported apart from pre-launch):**
+- From the moment Product Hunt shows votes (hour 4), the votes alone give daily top 5 and top 10 above 90. Top 3 is
+  85 at a median 6 h and 93 at a median 11 h.
+- The equal-weight blend with the prior is worse than votes alone after hour 4. The prior only matters before votes
+  are visible.
+- Caveats: 29 days per bucket and one capture per day, at random hours. `votes` falls back to `latestScore` when the
+  displayed count is absent.
+- **Open question:** do our API snapshots see votes in hours 0–4, when the page hides them? Nov 1's recorder started at
+  hour 7. The Nov 2 run (from 00:05 PT) will answer it.
+
+## Pushing the pre-launch shock predictor with data in hand (Nov 2, `simlab/shock_extra.py`, May–Oct, deduped)
+**Persistence:** for launches whose makers have 2+ earlier launches in our data, the makers' mean past shock vs the
+current shock has Spearman **0.44** (170 launches). For the hunter's earlier hunted launches it is **0.17** (1,350
+launches). Surges persist, especially for makers, but few launches have repeat makers in the data.
+
+**Blocks added cumulatively.** Gate: within-day Spearman of the predicted vs real shock, paired over days. Stage 2:
+simulation + predicted shock, Jun–Oct, daily top 3 / 5 / 10. The launch model on the same days scores
+65.3 / 73.1 / 81.5.
+
+| Step | Stage-1 Spearman | Δ vs previous (95% CI) | Daily top 3 / 5 / 10 | Top 3 vs launch model |
+|---|---|---|---|---|
+| Base: launch inputs + turnout | 0.489 | | 56.1 / 67.0 / 75.5 | −9.2 (−12.9 to −5.7) |
+| + team surge history (12 inputs) | **0.500** | **+0.011 (+0.002 to +0.021)** | 57.7 / 68.4 / 76.6 | −7.6 (−11.3 to −3.9) |
+| + competitor and topic appetite (7) | 0.498 | −0.002 (−0.010 to +0.007) | 58.4 / 69.4 / 76.9 | −6.9 (−10.6 to −3.2) |
+| + day context (4) | 0.494 | −0.004 (−0.012 to +0.004) | 58.4 / 69.2 / 76.1 | −6.9 |
+| + warm-up (3) | 0.503 | +0.009 (−0.004 to +0.022); vs base +0.014 (+0.000 to +0.029) | 57.7 / 67.6 / 77.5 | −7.6 |
+
+- **Passes the gate:** team surge history only (+0.011, interval excluding 0).
+- **No gain:** competitor and topic appetite, and day context.
+- **Warm-up:** borderline. Post lead time is always 0 in our data (createdAt equals featuredAt), so that input
+  carries nothing.
+- **Coming-soon follower counts don't exist:** Product Hunt removed coming-soon pages in Aug 2025 (Grok Bot), so
+  that candidate is dropped.
+- **Stage 2:** +1.6 to +2.3 on daily top 3 over the base step, inside the noise. The simulation + predicted shock is
+  still 6.9–7.6 below the launch model.
+- **Reading:** the inputs in hand are close to exhausted for the shock, at about 0.50. The remaining signal is
+  outside the data: makers' outreach (X engagement, queued), the competitor audiences (pilot running), and the
+  launch-day votes, which from hour 4 already give daily top 5/10 above 90.
+
+## Duplicated launches across two day files: cause and fix (Nov 2)
+- **Cause:** Product Hunt's API filters the day window on when a post was *created*. A post created on day d but
+  featured at 00:00 PT on d + 1 came back for d as well: 204 launches on Apr 27/28 and May 4/5, 6/7, 10/11, 13/14.
+- **Second bug:** `collect_ph.py` hardcoded −07:00 for every day after Mar 8. That is an hour off in PST since Nov 1,
+  and the pipeline's `ranks` step re-collects the last 30 days with it every night.
+- **Fix** (commit `c70b625`): zoneinfo window, plus a featuredAt-Pacific-day filter (`collect_ph.on_day`) in
+  `collect_ph`, `today.py` and `list_check.refetch`.
+- **Repairs:** `dedupe_days.py` for the 5 files (backups kept), and `pipeline.fix_launch_days` for the 204 warehouse
+  launch rows on the wrong day. The 1,269 upvote events for those launches stay dated a day early (append-only log).
+- **Pipeline:** bundle `20261102_window`; Shreyas approved routing it through the orchestrator to Grok Bot, before the
+  00:05 PT run on Nov 2.
+- **Experiment VM:** the repair of the day files, store, build cache and ctrl, with before/after baselines, waits
+  until the other sessions' jobs there finish.
+- **Footnote for earlier numbers:** every backtest in this log before Nov 2 includes the 204 launches twice (on 10
+  days; on the earlier day they are an extra copy of the next day's launches). The before/after table will follow here.
+- **Deploy verified (Nov 2, 04:00 UTC):**
+  - Grok Bot deployed `20261102_window` at 03:51 UTC; its reply is in `mailbox/from_grokbot/20261102_window_deploy.reply.md`.
+  - The md5 of all 5 files on the VM matches the repo.
+  - Nov 2's window is 00:00−08:00 to 00:00−08:00.
+  - Re-run dry checks: 0 day files to change, 0 launches in two files, 0 warehouse rows on the wrong day.
+  - The 5 original files are in `data/days_backup_dedupe/`.
+- **Duplicate recorders:** the Nov 1 runs from 14:07 (PID 47209) and 15:17 (62578) are both still recording, until
+  07:55 UTC. Stopping the older one was refused by my permission check.
+  - Safe order if done: TERM the older run's main shell 47209 first, so it can't reach its shutdown line; then its
+    recorder (47218 → 47220 → 47222).
+  - Prevention, commit `4f908e9`, bundle `20261102_lock`: `run_daily.sh` takes an exclusive lock
+    (`flock -n`, inherited by the recorder), so a second start exits. `hourly.py` writes at most one snapshot per UTC
+    hour per day (file lock + existing-hour check). Both tested.
+
+## Second push on the surge predictor: total-vote target and unused inputs (Nov 2, `simlab/shock_extra2.py`, May–Oct)
+**Coverage of the new inputs** (share of launches):
+- total-surge history, makers: 11.0%; hunter: 30.8%;
+- pool-shock history, makers: 8.7%;
+- Wayback velocity history: 12.5%;
+- makers' X posts in the 7 days before launch: 5.1%.
+
+**Persistence of the total-vote surge** (final log votes minus the launch model): makers with 2+ earlier launches
+Spearman 0.248 (223 launches); hunter 0.02 (1,583).
+
+| Step (cumulative) | Pool-shock target: Spearman, Δ (95% CI) | Total-surge target: Spearman, Δ (95% CI) |
+|---|---|---|
+| Base (launch inputs + turnout + pool history) | 0.501 | 0.007 |
+| + total-surge history | 0.499, −0.002 (−0.008 to +0.005) | 0.005, −0.002 (−0.022 to +0.018) |
+| + Wayback velocity history | 0.499, −0.000 (−0.005 to +0.005) | −0.005, −0.009 (−0.019 to −0.000) |
+| + makers' X posts | 0.495, −0.004 (−0.010 to +0.001) | −0.002, +0.003 (−0.009 to +0.014) |
+
+**Stage 2, daily top 3 / 5 / 10, Jun–Oct.** The launch model scores 65.3 / 73.1 / 81.5.
+
+| | Top 3 / 5 / 10 | Top 3 vs launch model (95% CI) |
+|---|---|---|
+| Sim + predicted pool shock, base | 57.5 / 69.0 / 76.0 | −7.8 (−12.0 to −3.9) |
+| Sim + predicted pool shock, all blocks | 57.0 / 70.5 / 76.0 | −8.3 (−12.2 to −4.1) |
+| Launch model + predicted total surge, base | 66.4 / 72.0 / 81.0 | +1.1 (−1.1 to +3.4) |
+| Launch model + predicted total surge, all blocks | 65.7 / 72.3 / 81.8 | +0.5 (−1.6 to +2.5) |
+
+**Verdict:**
+- No block passes the gate on either target.
+- The total-vote surge is unpredictable from pre-launch inputs (Spearman ≈ 0.0). It is by construction what the
+  launch model can't explain from those same inputs. Team history of it persists for repeat makers (0.25), but they
+  are 4% of launches, too few to move the day-level metric.
+- X posts cover only 5% of launches.
+- Pre-launch daily top 3 / 5 / 10 does not move (launch model + surge within ±1.1).
+- The pre-launch inputs in hand are exhausted. The next pre-launch signal has to be new data about the makers'
+  outreach, with wider coverage: the X engagement sample (queued), and the competitor-audience reviewers (pilot
+  running, nothing delivered yet).
+- The launch-day route already clears 90 on daily top 5 / 10 from hour 4 (Wayback votes).
+- **Duplicate recorders fixed (Nov 2, 04:25 UTC):**
+  - Grok Bot deployed `20261102_lock` and stopped the older run (PID 47209); 62578 is kept.
+  - Verified: VM files match the repo, the live `run_daily.sh` has the lock, and a helper holds the lock until 62578
+    exits. The shutdown line is intact.
+  - The doubling covered every hour from 15:00 to 04:00 UTC (38 rows instead of 19).
+  - The local `2026-11-01.jsonl` is deduplicated to one row per launch and hour: 285 rows, 19 per hour; the original
+    is kept as `.bak_dupes`.
+  - The warehouse `vote_snapshots` rows stay doubled (append-only). The read rule is documented in
+    `pipeline/DATA.md`.
+
+## Baselines re-scored on deduplicated data (Nov 2, 04:40 UTC)
+**Repair on exp-1:**
+- `dedupe_days.py`: 5 day files, 204 launches removed.
+- `simlab.fix_store_days`: 204 store items moved to their featuredAt day, and their 1,266 upvote events re-dated.
+- Build cache rebuilt; `ctrl.py` re-run (5 seeds, Mar–Oct).
+- Launch-model predictions: 5,564 rows for 5,564 launches; before, 5,768 rows.
+
+**Launch model, top 3 / 5 / 10, before → after** (scored against the corrected ranks):
+
+| Board | Mar–Oct before | Mar–Oct after | Jul–Oct before | Jul–Oct after (paired Δ, 95% CI) |
+|---|---|---|---|---|
+| Daily | 62.6 / 71.1 / 79.3 | 63.4 / 71.4 / 79.5 | 65.5 / 73.0 / 80.9 | **65.5 / 73.2 / 81.4** (top 3 +0.0, −1.7 to +1.7; top 10 +0.5, +0.1 to +1.0) |
+| Weekly | 50.5 / 53.9 / 55.7 | 49.5 / 52.7 / 55.5 | 51.0 / 55.0 / 56.7 | 47.1 / 53.8 / 56.7 (top 3 −3.9, −9.8 to +0.0) |
+| Monthly | 38.1 / 40.0 / 46.2 | 28.6 / 37.5 / 45.0 | 55.6 / 50.0 / 57.5 | 44.4 / 50.0 / 52.5 (3–4 lists) |
+
+**Reading:**
+- Daily is unchanged within noise.
+- The weekly and monthly moves fall inside their wide intervals (17 weeks, 3–4 months). They also include a small
+  data refresh since the Oct 31 run: PR #143's `ctx_features` (288 values changed).
+- **Footnote for every earlier number in this log:** earlier numbers include the 204 duplicates. Daily headlines stand
+  (Jul–Oct 65.5 / 73.2 / 81.4 now vs 65.8 / 72.9 / 80.8 quoted). Weekly and monthly baselines are now 47.1 / 53.8 /
+  56.7 and 44.4 / 50.0 / 52.5 (Jul–Oct).
+- Simulation runs (popscore day files) were not rescored. They still hold the 204 extra rows; analyses since
+  `shock_model` drop them with `dedupe()`.

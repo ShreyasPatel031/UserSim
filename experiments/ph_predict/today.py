@@ -15,6 +15,7 @@ while True:
         break
     cur = p["pageInfo"]["endCursor"]
 seen = set(); nodes = [n for n in nodes if not (str(n["id"]) in seen or seen.add(str(n["id"])))]   # the list can shift while paging: keep each launch once
+nodes = C.on_day(nodes, d)   # featured on this Pacific day only (the API window is on creation time)
 os.makedirs(os.path.join(os.path.dirname(C.OUT), "today"), exist_ok=True)
 json.dump(nodes, open(os.path.join(os.path.dirname(C.OUT), "today", f"{d}.json"), "w"))
 print(d, len(nodes), "remaining", rem)
