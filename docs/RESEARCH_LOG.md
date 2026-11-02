@@ -84,3 +84,12 @@ Model switches, direction reviews and agenda changes, newest last.
 - 2026-11-02 14:10 UTC: Competitor outcomes as a demand prior (Grok Bot; simlab/cmp_outcomes.py, report experiments/simlab/reports/cmp_outcomes.md). PH Similar Products' earlier PH launches (best daily rank, settled votes, recency, count, crowding) over the honest day-calibrated control, May-Oct, 5 seeds, paired; coverage 68.8% with an earlier competitor launch. Daily top 3/5/10 -1.1 [-3.0, +0.8] / -0.3 / -0.1 (months 2/1/3), weekly top 3 -2.7 [-9.3, +4.0], log-lik -0.43 [-0.67, -0.20]. Fails the rule (CI above 0).
 - 2026-11-02 15:40 UTC: Pre-launch X ties as a person-model input (simlab/x_tie_pool.py, report experiments/simlab/reports/x_tie_pool.md; Grok Bot, October covered launches). 71 covered launches, 16 with X-tied pool people (190). Person level: X-tied people vote on their launch at 22.5% [8.6, 39.5] vs 1.65% on the same day's other launches (+20.9 [+6.7, +38.0], ratio 13.7). Pool level (8 days): within-day Spearman with real pool votes 0.307 -> 0.307, gain 0.000; pool and final top 3 unchanged. Rule failed: about 12 tied people per launch add about one expected vote.
 - 2026-11-02 18:40 UTC: X pre-launch go/no-go (simlab/x_prelaunch_e1.py, report experiments/simlab/reports/x_prelaunch_e1.md): 16 full Oct days, 235 covered launches; forward-only Poisson correction (dated posts, dated engagers) over the honest day-calibrated control, 13 scored days. Daily top 3 +0.0 [0.0, 0.0] (0/13/0), top 5 -3.1 [-7.7, +0.0] (0/11/2), top 10 +0.0; no full week; within-day Spearman with the honest residual ~0. NO-GO by the rule fixed beforehand. Hourly re-run stopped.
+
+## 2026-11-02: HN front-page dynamics simulator, Caught at 15 min (E5 agent; experiments/hn_frontsim/)
+- **Simulator.** A quality prior conditioned on the at-posting score, a tempered /newest early-vote likelihood, exposure by rank x hour from Quality News, a replayed front page from earlier days, and 24 h Monte Carlo with 200 draws.
+- **Test.** Oct 2-14: 12,788 posts, 388 winners. The simulator catches 22.7% [17.3, 29.1], against 29.6% [25.6, 33.7] for wb15: -7.0 [-10.8, -3.0].
+- **Blends with wb15.** Equal: -2.3 [-5.2, +0.5]. Forward: -1.6 [-6.2, +1.6].
+- **Over the at-posting score alone:** +1.0 [-1.6, +4.3].
+- **Early votes.** Their weight is about 0 without /newest exposure, and small (tau 0.05-0.1) with it.
+- **Real front page.** Not testable on October: the bucket's Quality News series cover too few ranks.
+- **Verdict.** It does not beat wb15. Next is the live hn_minute front page.

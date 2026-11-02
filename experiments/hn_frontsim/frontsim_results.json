@@ -1,0 +1,305 @@
+{
+ "train": {
+  "stories": 79762,
+  "with_qn_series": 20864,
+  "slots": 12288,
+  "prior_mean_q": 1.0548830780204812,
+  "b_at_posting": 1.0
+ },
+ "test_posts": 12788,
+ "winners": 388,
+ "draws": 200,
+ "snapshot_coverage": 0.856,
+ "calibration": {
+  "sum_p_sim": 1177.0,
+  "winners": 388
+ },
+ "caught_15min": {
+  "at-posting score alone": [
+   0.2165,
+   [
+    0.1775,
+    0.2569
+   ]
+  ],
+  "15-min score alone": [
+   0.116,
+   [
+    0.0812,
+    0.1504
+   ]
+  ],
+  "simulator, flat prior": [
+   0.116,
+   [
+    0.0799,
+    0.1575
+   ]
+  ],
+  "simulator, at-posting prior": [
+   0.2268,
+   [
+    0.1725,
+    0.2911
+   ]
+  ],
+  "simulator, real front page at 15 min": [
+   0.2139,
+   [
+    0.126,
+    0.3219
+   ]
+  ]
+ },
+ "simulator_vs_at_posting": [
+  0.0103,
+  [
+   -0.0162,
+   0.0433
+  ]
+ ],
+ "real_front_vs_replayed_front": [
+  -0.0129,
+  [
+   -0.0769,
+   0.0568
+  ]
+ ],
+ "at_posting_inputs": 127,
+ "early_fit_by_day": {
+  "2026-09-30": {
+   "posts": 4169,
+   "with_newest_exposure": 2846,
+   "tau": 0.05,
+   "kappa": 0.02,
+   "ll_gain_vs_no_early_votes": 4.4,
+   "ll_gain_vs_untempered": 450.6
+  },
+  "2026-10-01": {
+   "posts": 4255,
+   "with_newest_exposure": 2913,
+   "tau": 0.05,
+   "kappa": 0.02,
+   "ll_gain_vs_no_early_votes": 4.6,
+   "ll_gain_vs_untempered": 458.2
+  },
+  "2026-10-02": {
+   "posts": 5250,
+   "with_newest_exposure": 3687,
+   "tau": 0.05,
+   "kappa": 0.02,
+   "ll_gain_vs_no_early_votes": 7.2,
+   "ll_gain_vs_untempered": 483.0
+  },
+  "2026-10-03": {
+   "posts": 5927,
+   "with_newest_exposure": 4225,
+   "tau": 0.05,
+   "kappa": 0.02,
+   "ll_gain_vs_no_early_votes": 8.4,
+   "ll_gain_vs_untempered": 541.8
+  },
+  "2026-10-04": {
+   "posts": 6637,
+   "with_newest_exposure": 4796,
+   "tau": 0.05,
+   "kappa": 0.02,
+   "ll_gain_vs_no_early_votes": 8.9,
+   "ll_gain_vs_untempered": 587.2
+  },
+  "2026-10-05": {
+   "posts": 7585,
+   "with_newest_exposure": 5551,
+   "tau": 0.05,
+   "kappa": 0.02,
+   "ll_gain_vs_no_early_votes": 13.2,
+   "ll_gain_vs_untempered": 658.4
+  },
+  "2026-10-06": {
+   "posts": 8274,
+   "with_newest_exposure": 6161,
+   "tau": 0.05,
+   "kappa": 0.02,
+   "ll_gain_vs_no_early_votes": 14.4,
+   "ll_gain_vs_untempered": 757.5
+  },
+  "2026-10-07": {
+   "posts": 9317,
+   "with_newest_exposure": 6988,
+   "tau": 0.05,
+   "kappa": 0.02,
+   "ll_gain_vs_no_early_votes": 10.5,
+   "ll_gain_vs_untempered": 1006.3
+  },
+  "2026-10-08": {
+   "posts": 10439,
+   "with_newest_exposure": 7868,
+   "tau": 0.05,
+   "kappa": 0.02,
+   "ll_gain_vs_no_early_votes": 17.6,
+   "ll_gain_vs_untempered": 1241.6
+  },
+  "2026-10-09": {
+   "posts": 11353,
+   "with_newest_exposure": 8600,
+   "tau": 0.05,
+   "kappa": 0.02,
+   "ll_gain_vs_no_early_votes": 18.9,
+   "ll_gain_vs_untempered": 1375.3
+  },
+  "2026-10-10": {
+   "posts": 12029,
+   "with_newest_exposure": 9154,
+   "tau": 0.05,
+   "kappa": 0.02,
+   "ll_gain_vs_no_early_votes": 24.3,
+   "ll_gain_vs_untempered": 2040.1
+  },
+  "2026-10-11": {
+   "posts": 12737,
+   "with_newest_exposure": 9719,
+   "tau": 0.05,
+   "kappa": 0.02,
+   "ll_gain_vs_no_early_votes": 34.5,
+   "ll_gain_vs_untempered": 3560.0
+  },
+  "2026-10-12": {
+   "posts": 13787,
+   "with_newest_exposure": 10571,
+   "tau": 0.1,
+   "kappa": 0.02,
+   "ll_gain_vs_no_early_votes": 56.1,
+   "ll_gain_vs_untempered": 5284.0
+  }
+ },
+ "replay_pool_days": {
+  "0": 58,
+  "1": 14
+ },
+ "real_front_days": {
+  "days": [
+   "2026-10-02",
+   "2026-10-03",
+   "2026-10-04",
+   "2026-10-06",
+   "2026-10-07",
+   "2026-10-08",
+   "2026-10-09"
+  ],
+  "winners": 215,
+  "replayed front": [
+   0.2233,
+   [
+    0.161,
+    0.287
+   ]
+  ],
+  "real front": [
+   0.214,
+   [
+    0.1463,
+    0.2885
+   ]
+  ],
+  "real - replayed": [
+   -0.0093,
+   [
+    -0.0655,
+    0.0735
+   ]
+  ],
+  "at-posting alone": [
+   0.2233,
+   [
+    0.165,
+    0.2736
+   ]
+  ]
+ },
+ "reach_top30_within_24h": {
+  "real": 0.0604,
+  "replayed front": 0.14,
+  "real front": 0.5543,
+  "among real winners": {
+   "real": 0.6082,
+   "replayed front": 0.337,
+   "real front": 0.668
+  }
+ },
+ "vs_wb15": {
+  "wb15 (+ votes + who + exposure)": [
+   0.2964,
+   [
+    0.2564,
+    0.3366
+   ]
+  ],
+  "simulator alone - wb15": [
+   -0.0696,
+   [
+    -0.1075,
+    -0.0298
+   ]
+  ],
+  "wb15 + simulator, equal logit blend": [
+   0.2732,
+   [
+    0.2236,
+    0.3334
+   ]
+  ],
+  "  minus wb15": [
+   -0.0232,
+   [
+    -0.0521,
+    0.0052
+   ]
+  ],
+  "wb15 + simulator, forward blend": [
+   0.2809,
+   [
+    0.2255,
+    0.3359
+   ]
+  ],
+  "  minus wb15 ": [
+   -0.0155,
+   [
+    -0.0619,
+    0.0155
+   ]
+  ],
+  "90%+ coverage days": {
+   "days": 10,
+   "winners": 287,
+   "wb15": [
+    0.2997,
+    [
+     0.2409,
+     0.3542
+    ]
+   ],
+   "simulator": [
+    0.2439,
+    [
+     0.1738,
+     0.3169
+    ]
+   ],
+   "equal blend - wb15": [
+    -0.0244,
+    [
+     -0.0588,
+     0.0032
+    ]
+   ],
+   "forward blend - wb15": [
+    -0.0244,
+    [
+     -0.0816,
+     0.0174
+    ]
+   ]
+  }
+ }
+}
