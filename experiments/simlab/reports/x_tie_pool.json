@@ -1,0 +1,130 @@
+{
+ "gate": {
+  "day_matched_covered": 71,
+  "day_matched_covered_with_posts": 43,
+  "launches_with_x": 359,
+  "launches": 762,
+  "full_days": [
+   "2026-10-05",
+   "2026-10-23",
+   "2026-10-25"
+  ]
+ },
+ "covered_launches": 71,
+ "covered_with_xtied_pool_people": 16,
+ "xtied_pool_people_total": 190,
+ "person_level": {
+  "vote_rate_on_own_launch": [
+   0.2254,
+   [
+    0.086,
+    0.3947
+   ],
+   16
+  ],
+  "vote_rate_on_same_day_other_launches": [
+   0.0165,
+   [
+    0.0073,
+    0.0275
+   ],
+   16
+  ],
+  "difference": [
+   0.2089,
+   [
+    0.0673,
+    0.3801
+   ],
+   16
+  ],
+  "rate_ratio": 13.7
+ },
+ "pool_level": {
+  "days": 8,
+  "launches": 65,
+  "lambda_forward_by_day": {
+   "2026-10-07": 0.016,
+   "2026-10-08": 0.031,
+   "2026-10-10": 0.058,
+   "2026-10-14": 0.07,
+   "2026-10-20": 0.076,
+   "2026-10-22": 0.076,
+   "2026-10-23": 0.076,
+   "2026-10-24": 0.101
+  },
+  "spearman_S": [
+   0.3066,
+   [
+    -0.1747,
+    0.7335
+   ],
+   8
+  ],
+  "spearman_S_plus_xtied": [
+   0.3066,
+   [
+    -0.1714,
+    0.7334
+   ],
+   8
+  ],
+  "spearman_gain": [
+   0.0,
+   [
+    0.0,
+    0.0
+   ],
+   8
+  ],
+  "pool_top3_S": [
+   0.7917,
+   [
+    0.625,
+    0.9583
+   ],
+   8
+  ],
+  "pool_top3_Sx": [
+   0.7917,
+   [
+    0.625,
+    0.9583
+   ],
+   8
+  ],
+  "pool_top3_gain": [
+   0.0,
+   [
+    0.0,
+    0.0
+   ],
+   8
+  ],
+  "final_top3_among_covered_S": [
+   0.875,
+   [
+    0.7083,
+    1.0
+   ],
+   8
+  ],
+  "final_top3_among_covered_Sx": [
+   0.875,
+   [
+    0.7083,
+    1.0
+   ],
+   8
+  ],
+  "final_top3_gain": [
+   0.0,
+   [
+    0.0,
+    0.0
+   ],
+   8
+  ]
+ },
+ "verdict": "X tie does not improve the pool simulation (Spearman gain interval not above 0)"
+}
