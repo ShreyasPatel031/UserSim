@@ -311,3 +311,4 @@ Model switches, direction reviews and agenda changes, newest last.
   - E1 v2's audiences were leaky. Honest E1 adds nothing beyond day calibration.
   - The live model and the shadow use the dropped inputs. Bundle 3 (honest model, at_launch step, e1v2 shadow off) goes
     to Shreyas.
+- 12:28 UTC E5 accepts the leakage note: the shadow_e1v2 package is invalid (4 leaky inputs). If shadow2 deploys as is, shadow_e1v2 rows are ignored; bundle 3 switches it off. Honest E1 retrain waits for Shreyas.
