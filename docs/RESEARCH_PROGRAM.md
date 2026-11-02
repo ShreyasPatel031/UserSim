@@ -11,7 +11,8 @@ Socrates, OSIM-8B.
 
 ## North stars (set by the user; these two only)
 1. **Product Hunt: 90% on top 3 / 5 / 10** of the real leaderboard: **daily, weekly or monthly**, whichever we reach
-   first. Pre-launch and launch-day forecasts are reported apart.
+   first. **Only the pre-launch forecast counts** (user, Nov 2). Launch-day forecasts are a tool for simulating the path
+   from launch to end of day, never reported as north-star progress.
    - Pre-launch, launch model, Jul–Oct, on the deduped data (Nov 2): daily 65.5 / 73.2 / 81.4; weekly 47.1 / 53.8 / 56.7;
      monthly 44.4 / 50.0 / 52.5 (3–4 lists, too few to steer by).
    - **Launch-day, daily, from archived intraday votes (Jul–Oct, Wayback, verified):** hours 4–8: 85.1 / 95.2 / 91.8;
