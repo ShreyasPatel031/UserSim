@@ -1332,3 +1332,12 @@ Same code, same pool simulation (popscore_tie), same folds (rolling monthly, Jun
 - **Day-level shock** (day terms only): 0.509 in both runs, unaffected.
 - **Reading:** about a fifth of the published shock predictability came from inputs that partly read the outcome. "Inputs exhausted at 0.50" was a leaky ceiling. Honest predictability is 0.395, so there is more unexplained shock than thought, and the signal that is left leans on track record (hist_) and turnout. That supports the review's directions A (the team's full history) and B (the audience as of day−1).
 - Stage 2 of this script compares against the leaky launch model (`ctrl_preds`), so it isn't reported here.
+
+## C1, downloads part: npm / PyPI downloads before launch (Nov 2, `ph_predict/c1_user_base.py`, Data Feeder's raw/pkg_downloads/)
+- **Own packages only:** sites also link libraries they use, and the biggest "packages" were zod, openai, npm, @stripe/stripe-js and @tiptap/react, which would swamp a max. A repo or package is kept only if a name token (≥3 chars) is shared with the launch's name, slug or website domain: 558 of 1,060 repos and packages kept. PyPI series start around May (pypistats keeps about 180 days); npm goes back to 2015.
+- **Coverage:** 96 launches (1.7%) have an own package with downloads before launch day.
+- **Gate (honest residual, pooled over covered launches, Holm-corrected):** downloads in the 7 / 30 / 90 days before launch: Spearman 0.31 / 0.34 / 0.32 (95% CI about 0.13 to 0.50), all pass. A launch whose package already has users beats the honest forecast.
+- **Boards** (honest day-calibrated control vs + downloads):
+  - The trees can't use 96 rows (100 per leaf), so a forward-fitted linear arm was added for sparse inputs.
+  - Daily top 3 / 5 / 10: +0.4 / −0.2 / +0.1; weekly 0.0 / −0.8 / 0.0; monthly 0. All within noise.
+- **Reading:** real signal per launch, but 1.7% coverage can't move a board. Stars (about 9% of launches link an own repo) are the larger test; Data Feeder's star pass is due ~23:00–00:00 UTC. userbase_eval.py now has the linear arm for sparse inputs.

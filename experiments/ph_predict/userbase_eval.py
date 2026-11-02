@@ -98,6 +98,20 @@ def fit_boards(A, cols, seeds=5, start="2026-05"):
                                      lgb.Dataset(tr[cs], tr.y, init_score=np.log(tr.mu0)), num_boost_round=200).predict(te[cs], raw_score=True)
                            for s in range(seeds)], 0)
             te[name] = raw + np.log(te.mu0)
+        # linear arm for sparse inputs (the trees need 100 rows a leaf): the control plus a ridge fit of the honest
+        # residual on the inputs (NaN -> 0, with the has_ flag), fitted on covered launches of earlier months only
+        X = [c for c in cols]
+        trc = tr[tr[X[-1]] > 0] if X and X[-1].startswith("has_") else tr
+        if len(trc) >= 20:
+            Z = np.c_[np.ones(len(trc)), trc[X].fillna(0).values]; mu, sd = Z.mean(0), Z.std(0) + 1e-9; mu[0], sd[0] = 0, 1
+            Zs = (Z - mu) / sd; w = np.linalg.solve(Zs.T @ Zs + 5.0 * np.eye(Zs.shape[1]), Zs.T @ (trc.logv - trc.honest).values)
+            Zt = (np.c_[np.ones(len(te)), te[X].fillna(0).values] - mu) / sd
+            adj = Zt @ w
+            if X and X[-1].startswith("has_"):
+                adj = np.where(te[X[-1]].values > 0, adj, 0.0)
+            te["linear"] = te["control"] + adj
+        else:
+            te["linear"] = te["control"]
         out.append(te)
     return pd.concat(out)
 
@@ -111,10 +125,11 @@ def boards(T, rng):
     res = {}; wk_mon = T.groupby("week").day.min().str[:7]
     for key in ("day", "week", "mon"):
         for k in (3, 5, 10):
-            a, b = per_list(T, "control", key, k), per_list(T, "test", key, k)
-            ks = a.index.intersection(b.index); d = (b[ks] - a[ks]) * 100
+            a, b, c = per_list(T, "control", key, k), per_list(T, "test", key, k), per_list(T, "linear", key, k)
+            ks = a.index.intersection(b.index); d = (b[ks] - a[ks]) * 100; dl = (c[ks] - a[ks]) * 100
             line = {"control": round(100 * float(a[ks].mean()), 1) if len(ks) else None,
-                    "with inputs": round(100 * float(b[ks].mean()), 1) if len(ks) else None, "delta": boot(d.values, rng)}
+                    "with inputs": round(100 * float(b[ks].mean()), 1) if len(ks) else None, "delta": boot(d.values, rng),
+                    "linear": round(100 * float(c[ks].mean()), 1) if len(ks) else None, "delta linear": boot(dl.values, rng)}
             month = pd.Series([wk_mon[x] if key == "week" else str(x)[:7] for x in ks], index=ks)
             line["by month"] = {m: round(float(v), 1) for m, v in d.groupby(month.values).mean().items()} if len(ks) else {}
             res[f"{key} top{k}"] = line
