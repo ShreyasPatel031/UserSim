@@ -828,3 +828,17 @@ Single model 29.6% [25.6, 33.5]; 5-seed average 29.1% (-0.5 [-2.6, +1.3]); 5 see
 starred_at is admin-only on GitHub since July 2026, so Data Feeder pulls daily new-star counts per repo
 (raw/github_stargazers/star_history_*.jsonl; 9,662 repos). wb_gh.py uses the days before the posting day only (1 / 7 /
 30 days, acceleration, repo age); to run when the pull lands.
+
+### Why 15 min is 24.7% over Sep 1 - Oct 14 but 29.6% on Oct 2-14 (gap15.py), and the fix
+Not the dates: the headline model catches Sep 1-30 25.5% (228/895) and Oct 1-14 23.1% (99/428). The gap is inputs and
+setup: the Oct 2-14 tests add Wayback /newest votes (a snapshot by 15 min for 5.4% of Sep posts vs 79.2% of Oct 1-14),
+who commented, exposure, history score and page judge, retrain daily on the newest days, and flag within Oct only.
+Fix = give the full-period model every 15-min input that exists for the period (train Jul-Aug, test Sep 1 - Oct 14):
+| 15-min model, Sep 1 - Oct 14 | Caught | vs headline | Sep / Oct 1-14 | fast / late / re-up |
+|---|---|---|---|---|
+| headline (at posting + front rank) | 24.7% [22.6, 26.9] | | 25.5% / 23.1% | 194 / 93 / 40 |
+| + comments + who by 15 min | 24.9% | +0.2 [-1.3, +1.6] | 24.8% / 25.0% | 193 / 92 / 44 |
+| + history score + page judge | 25.3% | +0.6 [-1.5, +2.7] | 24.0% / 28.0% | 195 / 101 / 39 |
+| **+ Wayback votes + exposure (where captured)** | **26.5% [24.4, 28.7]** | **+1.8 [+0.0, +3.6]** | 26.8% / 25.9% | 216 / 90 / 45 |
+New full-period 15-min headline: 26.5%. The rest of the gap to 29.6% is daily retraining on the newest days and
+within-October flagging; with dense early votes for every day (live recorder) the full model applies everywhere.
