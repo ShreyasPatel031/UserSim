@@ -1,6 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "ignoreCommand": "[ \"$VERCEL_ENV\" = production ] && exit 1; [ -z \"$VERCEL_GIT_PREVIOUS_SHA\" ] && exit 1; if git diff --quiet \"$VERCEL_GIT_PREVIOUS_SHA\" HEAD -- api mvp src public vercel.json .vercelignore requirements.txt requirements-vercel.txt pyproject.toml; then exit 0; else exit 1; fi",
+  "ignoreCommand": "bash scripts/vercel_ignore.sh",
   "rewrites": [
     {
       "source": "/atelier/(.*)",

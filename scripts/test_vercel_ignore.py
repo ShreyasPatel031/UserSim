@@ -7,7 +7,14 @@ import subprocess
 
 import pytest
 
-CMD = json.loads((pathlib.Path(__file__).resolve().parents[1] / "vercel.json").read_text())["ignoreCommand"]
+ROOT = pathlib.Path(__file__).resolve().parents[1]
+CMD = json.loads((ROOT / "vercel.json").read_text())["ignoreCommand"]
+SCRIPT = ROOT / "scripts" / "vercel_ignore.sh"
+
+
+def test_ignore_command_fits_vercels_256_character_limit_and_points_at_the_script():
+    # Vercel rejects the whole deployment otherwise ("ignoreCommand should NOT be longer than 256 characters"; a 272-character version did)
+    assert len(CMD) <= 256 and CMD == "bash scripts/vercel_ignore.sh" and SCRIPT.is_file()
 
 
 def sh(cwd, *args, env=None):
@@ -18,6 +25,8 @@ def sh(cwd, *args, env=None):
 def repo(tmp_path):
     sh(tmp_path, "git", "init", "-q")
     sh(tmp_path, "git", "config", "user.email", "t@t"); sh(tmp_path, "git", "config", "user.name", "t")
+    (tmp_path / "scripts").mkdir()
+    (tmp_path / "scripts" / "vercel_ignore.sh").write_text(SCRIPT.read_text())  # the real script, as it sits in the repo on Vercel
     for f in ("api/index.py", "mvp/server.py", "docs/a.md", "experiments/x.py", "scripts/s.py"):
         (tmp_path / f).parent.mkdir(parents=True, exist_ok=True)
         (tmp_path / f).write_text("1")
