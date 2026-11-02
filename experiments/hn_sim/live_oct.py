@@ -77,12 +77,13 @@ def odds_batch(tmp):
     path = os.path.join(H.CACHE, "odds_at_posting.parquet")
     P = pd.read_parquet(tmp)
     out = []
-    for i in range(0, len(P), 3000):
-        R = P.iloc[i:i + 3000].reset_index(drop=True)
+    for i in range(0, len(P), 1000):
+        R = P.iloc[i:i + 1000].reset_index(drop=True)
         R = R.assign(url=R.url.fillna(""), title=R.title.fillna(""), text=R.text.fillna(""))
         S = OL.score(R, now=0)
         out.append(S[["post_id", "p_top30"]].rename(columns={"p_top30": "p_post"}))
-        print(f"   odds at posting: {min(i + 3000, len(P))}/{len(P)}", flush=True)
+        print(f"   odds at posting: {min(i + 1000, len(P))}/{len(P)}", flush=True)
+        pd.concat(out).to_parquet(path + ".partial", index=False)
     new = pd.concat(out)
     if os.path.exists(path):
         new = pd.concat([pd.read_parquet(path), new]).drop_duplicates("post_id", keep="last")
