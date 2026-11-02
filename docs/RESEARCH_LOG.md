@@ -439,3 +439,5 @@ Model switches, direction reviews and agenda changes, newest last.
       15 min.
     - HN agent scores live Nov 2 per-minute data now (not Nov 5).
     - PH: A1 team history needs Shreyas's OK; stars land tonight.
+- 21:10 UTC Model switch: orchestrator on Fable for a direction review at the user's request.
+  Output: docs/reviews/2026-11-02_direction_review_fable2.md. Asked the PH agent to check page-input fetch dates.
