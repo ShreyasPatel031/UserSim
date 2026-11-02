@@ -184,3 +184,9 @@ Model switches, direction reviews and agenda changes, newest last.
   - Launch level, leave-one-day-out among covered launches: delta 0 (identical rankings). Turnout vs residual within ±0.10.
   - The real test needs full days, which arrive with the top-up.
 - 08:41 UTC Grok Bot: X gate 121 covered (63 with posts), ceiling ~130 until g8/9/11/12. PH agent asked to re-run, count full days. Top-up request followed up (finish today, cap $10).
+- 08:44 UTC PH X re-run (commit ab9804b).
+  - 64 day-matched covered launches. Grok Bot's 121 counted serial makers' launches whose windows belong to another day.
+  - Person level, 90 pairs: 32.2% [22.6, 41.9] vs 1.0% (31x).
+  - Launch level among covered launches: identical. 0 full days.
+  - Filed request 20261102T0845_x_prelaunch_fulldays: fix ph_gate.py day matching; fetch 10 whole launch days per
+    (handle, launch) pair, top-up allowed (cap $10).
