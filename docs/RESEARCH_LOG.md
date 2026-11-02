@@ -204,6 +204,6 @@ Model switches, direction reviews and agenda changes, newest last.
   - X full days: ph_gate.py day-matched. 59 covered, full days only Oct 25. Free twitterapi credit ~exhausted; the $20
     top-up waits on Shreyas's card approval (asked).
   - PH people step: the failures were weekly follows (4,371) + 49 upvote refreshes. Upvotes are 97.4% covered by Data
-    Feeder's delivery. Agreed: daily upvote refresh by Data Feeder (≤$0.6/week); follows parked.
+    Feeder's delivery. Proposal (daily upvote refresh by Data Feeder, ≤$0.6/week; follows parked) NOT sent: my permission check blocked it; left to the user.
   - Data Feeder: promoted X posts (539) and people_v3f.
   - HN recorder: second v5 fallback window 08:53.
