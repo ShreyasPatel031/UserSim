@@ -44,7 +44,8 @@ def baseline():
         path = os.path.join(CACHE, "baseline.parquet")
         if os.path.exists(path) and os.path.getmtime(path) > stamp:
             return pd.read_parquet(path)
-        with mp.get_context("fork").Pool(os.cpu_count()) as pool:
+        workers = int(os.environ.get("BASELINE_WORKERS") or os.cpu_count())   # cap it on a shared VM (e.g. 8)
+        with mp.get_context("fork").Pool(workers) as pool:
             B = pd.concat(pool.map(_fold, list(RN.folds(df, MONTHS))))
     finally:
         os.chdir(cwd)
