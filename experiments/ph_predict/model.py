@@ -83,7 +83,7 @@ PROMO_UNDATED = {"promo_reactions", "promo_founder_li", "promo_company_li", "pro
 
 
 def honest_drop(c):
-    return "follower" in c or c.startswith(("fol_", "seg_")) or c in PROMO_UNDATED
+    return "follower" in c or c.startswith(("fol_", "seg_")) or c in PROMO_UNDATED or c == "llm_full"   # llm_full's prompt carries follower counts
 
 
 # The daily forecast may only use inputs that exist at forecast time. These are computed offline or read after launch,
