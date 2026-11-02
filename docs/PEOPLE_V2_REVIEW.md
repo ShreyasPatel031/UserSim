@@ -76,21 +76,66 @@ When it finishes, require all of these on the new rows, not only "no poisoned na
 - Verify Grok Bot's numbers: needs a read-only bucket credential (not available in this session).
 - Whether the 'Wispr' LinkedIn rows are "almost always employees" and whether "most Google rows trace to poisoning": unresolved; the evidence (a check of 104 of 302 Google rows) is too thin.
 
-## Update, Nov 2: results of the read-only checks (NOT YET VERIFIED)
+## Update, Nov 2: results of the read-only checks
 
-Everything in this section is **reported by Grok Bot**. The files (`people_v2_checks_final_only.json`, `x_handle_audit_100.csv`,
-`orphan_event_person_ids.csv`) were not on this branch when this was written, and the reviewer cannot read the bucket (401).
-Nothing below has been checked against the files.
+**Source and what "checked" means here.** `docs/people_v2_results/` (commit `de1d1b87`, from Data Feeder, who ran
+`scripts/people_v2_checks.py` against the bucket). I read the committed files and cross-checked them against each other and against
+the earlier PR #142 files. I did **not** recompute anything from the raw bucket data (still no bucket access), so "checked" means
+consistent and plausible, not independently reproduced. The earlier counts for claims 1-5 (poisoned names, 4,208 searches, 329
+mismatches, 13,615 links) are not in this JSON; they remain "reported by Grok Bot" and match the PR's own `count_claims_output.json`.
+The audit sheet `x_handle_audit_100.csv` has no human labels yet (0 of 100).
 
-| Item | Reported by Grok Bot | Note |
+### A. Re-fetch of `ph_profiles_rest`: checked
+
+| Item | Result |
+|---|---|
+| Coverage | 16,528 records, 16,528 unique usernames, `rest_people` = 16,528, 0 missing, 0 extra, 0 duplicates. |
+| Status | 200: 16,518; 404: 7; -1: 2; 403: 1. The 7 are deleted users to drop; the 2 + 1 are the 3 to retry. |
+| Acceptance rule | 10 rows fail, exactly the 10 non-200 rows. All 16,518 others have a numeric `user_id`, a name and a `joined`. |
+| Poison | 0 poisoned ids or names; no `user_id` shared by two usernames; 0 UUID ids. |
+| Old non-poisoned fields | Agreement with the old parse: headline 99.87% (15,166 pairs), followings 99.13%, is_maker 99.91%, followers 95.42% (expected drift over time), **twitter 100% (5,374 pairs)**. |
+| Fetch date | present on 100% of rows. |
+
+Gate met: rebuild v2 from the re-fetch for the 16,518 good rows. Remaining gaps:
+- **No parser version** is recorded (all 16,528 are `None`). Add one before the next fetch.
+- 329 rows have `name` equal to the username. That may be normal (people who never set a display name); I did not check it, and the number coincides with the 329 twitter mismatches, so confirm it is not an artifact.
+- The old `ph_profiles_rest` twitter field agreed 100% with the re-fetch. The 329 field-vs-link mismatches are therefore **PH data inconsistency, not parser damage**, which settles the open question under claim 4 (which side is right is still unknown).
+
+### B. `tables_v2` as built Oct 30-31: checked
+
+| Check | Result | Effect on my earlier review |
 |---|---|---|
-| Re-fetch of `ph_profiles_rest` | 16,518 good, 10 failed (7 deleted users to drop, 3 being retried), cost about $1 | 16,518 + 10 = 16,528, which matches the expected total. |
-| Poisoned names / duplicate ids in the re-fetch | none | Still needs `rows_failing_acceptance` (numeric `user_id`, real `name`, non-null `joined`) and `rest_people = 16,528`. |
-| Orphan events in `tables_v2` | 541 events point to persons missing from `persons`, from 167 person ids; top id `ph:jcbuilds` with 56 events | Cause unknown. To check: PH users dropped by the poisoned-profile filter, versus people outside the 20,671 (HN or other sources). |
-| Which run is valid | `people_v2_checks_final_only.json` (the shard copies blank section A) | – |
+| Size | persons 20,671; handles 46,397; profiles 26,600; events 309,328 (PH 277,733, X 31,595) | – |
+| Keys | persons unique; no duplicate event keys; no null `ts`; no null X `event_id` | the null-id concern is unfounded |
+| Foreign keys | handles and profiles: 0 orphans; **events: 541 whose `person_id` is not in `persons`** | confirmed gap (see below) |
+| `observed_on` | **every handle and profile row = 2026-10-31** | confirms the temporal-leakage issue |
+| `ph_user_id` | 4,252 numeric, **2,918 UUID**, 13,501 null | confirms mixed id spaces; the re-fetch fixes it |
+| `display_name` | 11,681 null (56.5%), 0 poisoned | as expected |
+| X handles at confidence >= 0.8 | 8,930 people; **35 have more than one**; **21 handles are shared by 2-3 people** | `validate_v2.py` reported "0 issues", so it missed both |
+| X handle sources | 7,689 from own links (0.95); 1,588 from the PH field (0.2-0.8); 312 demoted | 312 confirmed; the 329 vs 312 gap is still unexplained |
+| Wispr leakage | **502** profile `extra` rows mention Wispr, of which **486 are `segments`**; also 9 names and 6 bios; the 1 LinkedIn row is `ph:constanza_hasselmann` | the segments contamination is far larger than the README's "1 LinkedIn row" |
+| GitHub slug check | `github_url_with_repo_path` = 0 | **uninformative**: the builder constructs the URL from the slug, so a repo path can never appear |
 
-To close this out, after the files land on the branch:
-1. Check section A against the acceptance rule and `rest_people`.
-2. Classify the 167 orphan ids and decide whether events for real PH users were silently dropped.
-3. Compare the empty-field counts with `validation.json`.
-4. Change "reported by Grok Bot" to "verified" only where the file supports it.
+Reading of the Wispr numbers: a segment mentioning Wispr is not proof of poisoning (a few people really work there), but 486 is
+far above that. Together with the 879 'Wispr Flow' LinkedIn companies, it strongly suggests v1 `segments` were built from poisoned text.
+Treat `segments` as contaminated until rebuilt.
+
+### Orphan events: 541 events, 167 persons, from `orphan_event_person_ids.csv` (checked)
+
+- The CSV sums to 541 events over 167 ids, as the JSON says. All are PH events from `tables/events`; none are X or HN.
+- Top ids: `ph:jcbuilds` 56, `ph:vijayanandkailash` 23, `ph:dahvid_nessaiver` 21, `ph:freyam7` 21, `ph:upasana_sahu` 21.
+- They look like ordinary PH usernames. They are not in `persons` because `build_v2.py` builds the person list from the profile
+  captures plus v1 `people` (`users = old | p2 | v1.index`), so a person with events but no captured profile is missing.
+  **That cause is inferred from the code; the CSV alone does not prove it.**
+- Size: 541 of 309,328 events (0.17%). Dropping them is small in volume but silently loses these people's whole history.
+
+### Fixes added or changed by these results
+1. Rebuild v2 from the re-fetch (16,518 good rows) and drop the 7 deleted users; retry the 3.
+2. Build `persons` from the union of **events**, profiles and v1, with `has_profile=false` where there is no capture, and add the
+   167 ids; re-fetch their profiles (167 pages, trivial cost).
+3. Rebuild `segments` from the re-fetched profiles, or drop them; 486 mention Wispr.
+4. Resolve the 35 multi-X people and 21 shared handles by link `kind` and a personal-vs-company label before attributing posts.
+5. Stamp the real fetch date (the re-fetch rows already have `fetched_at`) and add a parser version.
+6. Label the 100-row audit sheet. As a crude hint only: 17 of the 100 handles share no 4-character run with the person's name or
+   username, which suggests company or unrelated accounts. This is not a verdict.
+7. Extend `validate_v2.py` with the orphan-event, multi-handle, shared-handle and Wispr-in-segments checks above.
