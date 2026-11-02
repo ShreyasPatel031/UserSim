@@ -7,7 +7,7 @@ Staged Nov 2, branch `claude/fetch-ladder-handover` (PR #141). Local files only:
 | File | What |
 |---|---|
 | `run_build.sh` | One reproducible build: checks inputs, runs the tests, builds with the adopted flags, validates, lists the promotions, compares with the previous build |
-| `build_v3.py`, `validate_v3.py` | The builder and its 42 checks (same logic as the v3g build, `b02e9649`; no code change since) |
+| `build_v3.py`, `validate_v3.py` | The builder and its 41 checks (same logic as the v3g build, `b02e9649`; no code change since) |
 | `compare_builds.py` | Rows, stats, events by platform/kind, changed handle rows and profile date quality between two builds |
 | `promoted_margin.py` | The people whose X handle was promoted by the dead-link fallback, with PH name, X name, similarity, lowest first (the hand-check list) |
 | `test_build_v3.py`, `test_run_build.py` | 13 tests on a synthetic dataset |
