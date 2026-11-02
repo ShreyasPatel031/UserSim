@@ -487,3 +487,4 @@ Model switches, direction reviews and agenda changes, newest last.
   reported at 17:40 was the bug and is withdrawn (honest Wayback votes + exposure give +0.7, n.s.). Oct 2–14: 29.6%
   (votes + who + volume + hour). Exposure clock: 34.5% [31.5, 37.7], +6.4 [+2.2, +10.5], holds. RESEARCH_PROGRAM.md
   corrected. Day's net on HN: 15 min unchanged at 24.7 (full period); +1.2 on Oct 2–14 (28.4 → 29.6).
+- 22:54 UTC E5 live simulator interim (Nov 2, 877 posts, 100% read by 15 min, 86% with the real front page at t+15): calibration off (ΣP ~105 vs ~25–30 winners). Cause: the QN-likelihood fit leaves early votes inert, while real top-30 reach by 15-min score is steep (1 pt 4.0%, 2 pts 11.5%, 3 pts 15.1%, 4+ pts 35.5%). That is the QN selection artifact on the outcome side. Refit now by outcome likelihood on Oct 2–9; Caught once lists settle (~Nov 6).
