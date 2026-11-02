@@ -737,3 +737,14 @@ list could settle; listwatch2 retries pages and re-reads the 3 previous days (de
 Seen-within-15-min subset (orchestrator's request; flags = winners in the subset; 15 winners seen: Oct 31 11, Nov 1 4):
 votes at 15 min 26.7% (4/15); odds at posting 6.7%; blend 6.7%. Coverage per day: Oct 31 41.7% of posts seen,
 Nov 1 53.2%; recorder minutes front / newest / pool: Oct 31 930 / 306 / 307, Nov 1 1,445 / 606 / 321.
+
+### Where the 15-min misses are (wb15.py diagnose; Oct 2-14, + votes + who, 28.4%)
+| Winner type | caught at 15 min | with a /newest snapshot by 15 min | latest score median | >= 3 points | >= 5 points | on the front page by 15 min |
+|---|---|---|---|---|---|---|
+| fast (front page by 1 h, listed that day / next) | 71/181 (39%) | 156 | 2 | 34.6% | 17.9% | 14.7% |
+| late riser | 25/145 (17%) | 132 | 1 | 12.1% | 2.3% | 0% |
+| re-up (2+ days later) | 14/62 (23%) | 55 | 1 | 3.6% | 0% | 0% |
+| non-winners | - | 10,607 | 1 | 7.2% | 1.2% | 0.4% |
+Snapshot age median 10-11 min (Wayback captures every ~10 min), so the votes seen are ~4 min short of 15.
+Late risers and re-ups (53% of winners) look like non-winners on /newest at 15 min (median 1 point; 12% / 4% with
+3+ vs 7% of non-winners). Fast winners do separate (35% with 3+), but 763 non-winners also have 3+ points by then.
