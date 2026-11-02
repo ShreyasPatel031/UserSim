@@ -94,3 +94,33 @@ pnx_<day>.json` (pool), and the five audience columns, read from the forecast fi
 `features.build(include_today=True)`. Self-test (`simlab/e1v2_pkg_test.py`, Oct 20 staged in the live layout): 33 of 33
 launches scored, identical to the in-code prediction (max difference 0.0) both with the columns in the forecast file
 and through the fallback; about 2 s without the fallback.
+
+## E1 v2 against the day-terms-only control (Nov 2; `simlab/e1v2_vs_day.py`, `reports/e1v2_vs_day.json`)
+Control: the launch-model offset + day terms only (the launch model calibrated per day: it rescales whole days and
+cannot reorder launches within a day). Same frozen setup (May–Oct, 176 days, 25 weeks, 5 seeds), paired.
+
+| | Daily top 3 / 5 / 10 | Weekly top 3 / 5 / 10 | Log-lik / launch |
+|---|---|---|---|
+| Launch model alone | 66.7 / 73.5 / 81.0 | 49.3 / 56.0 / 58.3 | −12.128 |
+| Day-only control | 66.7 / 73.5 / 81.0 | 54.7 / 56.0 / 57.4 | **−12.009** |
+| E1 v2 (live inputs, frozen) | 68.0 / 73.2 / 81.3 | 54.7 / 59.2 / 58.3 | −12.031 |
+
+| Paired | Daily top 3 | Top 5 | Top 10 | Weekly top 3 | Top 5 | Top 10 | Log-lik |
+|---|---|---|---|---|---|---|---|
+| control − launch model | 0 (identical ranking) | 0 | 0 | **+5.3 [+1.3, +10.7]** | −0.0 [−2.4, +2.4] | −0.9 [−3.0, +1.3] | **+0.31 [+0.09, +0.52]** |
+| E1 v2 − control | +1.3 [−0.4, +3.0] | −0.3 [−1.4, +0.7] | +0.3 [−0.3, +1.0] | +0.0 [−5.3, +5.3] | **+3.2 [+0.8, +6.4]** | +0.9 [−0.9, +2.6] | −0.13 [−0.37, +0.13] |
+| E1 v2 at learning rate 0.05 − control | +0.0 [−1.9, +1.9] | −0.1 | +0.1 | +1.3 | **+4.0 [+0.8, +7.2]** | +0.9 | −0.61 [−0.96, −0.25] |
+| E1 v2 at 31 leaves − control | +0.8 [−0.9, +2.5] | −0.3 | +0.3 | +0.0 | **+3.2 [+0.8, +6.4]** | +0.4 | −0.33 [−0.62, −0.05] |
+
+E1 v2 − control on daily top 3, by month: 4 better, 2 tied, 0 worse (frozen settings); 2 / 1 / 3 at learning rate 0.05.
+
+**Verdict.**
+- Weekly top 3: the whole lift (+5.3) is day calibration. It does not survive against the control (+0.0 [−5.3, +5.3]).
+- Weekly top 5: +3.2 [+0.8, +6.4] survives day calibration, at every setting tried. This is the only measured gain from
+  the pool and audience part.
+- Daily: no established gain. The result moves with the LightGBM settings (+1.3, +0.8, 0.0, all spanning 0), which is
+  consistent with the PH agent's independent rebuild (−0.8 [−2.7, +1.1]).
+- Log-likelihood: the day-only control is the best total-vote model (+0.31 [+0.09, +0.52] vs the launch model); adding
+  the pool and audiences does not improve it (−0.13 [−0.37, +0.13]).
+- Practical: day-level calibration of the launch model is a cheap, measured weekly gain on its own; the E1 v2 shadow adds
+  weekly top 5 on top. The pool component has not yet shown value beyond the launch model.
