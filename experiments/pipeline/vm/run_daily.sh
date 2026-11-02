@@ -11,6 +11,10 @@ set -u
 #   gcloud compute instances add-metadata usersim-pipeline --zone us-central1-a --metadata skip-run=1   (remove-metadata --keys skip-run after)
 SKIP=$(curl -s -m 5 -H Metadata-Flavor:Google http://metadata.google.internal/computeMetadata/v1/instance/attributes/skip-run)
 if [ "$SKIP" = "1" ]; then exit 0; fi
+# One run at a time. On Nov 1 the day was started twice (14:07 and 15:17 UTC), so two hourly recorders wrote every snapshot
+# twice. The lock is inherited by the background recorder, so it is held until the day's recording ends.
+exec 9>/tmp/usersim_run_daily.lock
+if ! flock -n 9; then echo "run_daily.sh is already running; exiting" >&2; exit 0; fi
 # Product Hunt's day starts at 00:00 Pacific: 07:00 UTC in summer, 08:00 UTC in winter. The schedule is 07:05 UTC, so in
 # winter the machine boots at 23:05 Pacific: wait for the new day (00:05 Pacific) before fetching and forecasting.
 WAIT=$(python3 -c "

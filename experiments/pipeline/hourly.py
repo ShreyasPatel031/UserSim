@@ -22,9 +22,22 @@ def pacific_day(now):
 
 
 def snapshot():
+    import fcntl
+    now = dt.datetime.now(dt.timezone.utc); d = pacific_day(now)
+    os.makedirs(f"{PH}/data/vote_snapshots", exist_ok=True)
+    with open(f"{PH}/data/vote_snapshots/.lock", "w") as lk:   # one snapshot per hour even if two recorders run
+        fcntl.flock(lk, fcntl.LOCK_EX)
+        path = f"{PH}/data/vote_snapshots/{d}.jsonl"
+        hour = now.strftime("%Y-%m-%dT%H")
+        if os.path.exists(path) and any(l.startswith('{"day"') and f'"at": "{hour}' in l for l in open(path)):
+            print(now.strftime("%Y-%m-%dT%H:%M:%SZ"), d, "snapshot for this hour already written; skipped", flush=True)
+            return
+        _snapshot(now, d)
+
+
+def _snapshot(now, d):
     import collect_ph as C
     from . import warehouse as W
-    now = dt.datetime.now(dt.timezone.utc); d = pacific_day(now)
     start = dt.datetime.combine(d, dt.time(0), PT); end = dt.datetime.combine(d + dt.timedelta(days=1), dt.time(0), PT)
     a, b = start.isoformat(), end.isoformat()
     nodes, cur, seen = [], None, set()
