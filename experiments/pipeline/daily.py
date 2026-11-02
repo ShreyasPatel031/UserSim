@@ -8,7 +8,8 @@ Steps, each logged to the warehouse's pipeline_runs (items, bytes, dollars, seco
                commented since; follow lists weekly (Mondays) -> events, follows, fetch_state, people
   6 personas   today's line-up rated by each active person's comment persona (Gemini Flash-Lite) -> persona_ratings
   7 score      yesterday's forecast against its final daily ranks -> daily_scores
-  8 raw        today's raw files copied to the bucket (raw/<source>/<date>/)
+  8 earlyshock the early-vote shock backtest (ph_predict/early_shock.py) once 14 clean days exist -> backtests
+  9 raw        today's raw files copied to the bucket (raw/<source>/<date>/)
 usage: python -m pipeline.daily [YYYY-MM-DD] [--only step,step] [--dry-run]   (date = Pacific day; default today)"""
 import datetime as dt, gzip, json, os, subprocess, sys, time
 import pandas as pd
@@ -441,9 +442,24 @@ def weekly_scores(d, con):
     return rows
 
 
+@step("earlyshock")
+def s_earlyshock(d, con, dry):
+    """Early-vote shock correction backtest (ph_predict/early_shock.py). Until 14 clean days exist it only reports how
+    many there are (status ok); from then on it writes its results to `backtests` (run_file early_shock_<date>)."""
+    r = subprocess.run(["python3", "early_shock.py"] + ([] if dry else ["--write"]), cwd=PH, capture_output=True, text=True,
+                       timeout=1800)
+    st = next((json.loads(l)["early_shock"] for l in r.stdout.splitlines() if l.startswith('{"early_shock"')), None)
+    if r.returncode or st is None:
+        return {"status": f"failed: exit {r.returncode} ({r.stderr.strip()[-200:]})"}
+    print(json.dumps({"earlyshock": {k: st[k] for k in ("ready", "clean_days", "needed", "first", "last")}}), flush=True)
+    return {"items": st["clean_days"]}
+
+
 @step("raw")
 def s_raw(d, con, dry):
-    files = [f"{RAW}/today/{d}.json", f"{RAW}/comments/page_daily_{d}.jsonl.gz", f"{PH}/results/forecast_{d}.md"]
+    files = [f"{RAW}/today/{d}.json", f"{RAW}/comments/page_daily_{d}.jsonl.gz", f"{PH}/results/forecast_{d}.md",
+             f"{PH}/results/forecast_{d}.parquet",          # the honest prior in log votes (early_shock.py reads it)
+             f"{RAW}/sim_live/pnx_{d}.json"]                # popscore's live outputs (early_shock.py reads them)
     files = [f for f in files if os.path.exists(f)]
     if not dry:
         for f in files:
@@ -451,7 +467,7 @@ def s_raw(d, con, dry):
     return {"items": len(files)}
 
 
-STEPS = [s_launches, s_at_launch, s_list_check, s_snap, s_forecast, s_simforecast, s_shadow, s_ranks, s_comments, s_people, s_ph_upvotes, s_personas, s_score, s_raw]
+STEPS = [s_launches, s_at_launch, s_list_check, s_snap, s_forecast, s_simforecast, s_shadow, s_ranks, s_comments, s_people, s_ph_upvotes, s_personas, s_score, s_earlyshock, s_raw]
 
 
 def main(argv):

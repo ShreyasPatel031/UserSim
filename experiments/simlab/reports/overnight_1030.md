@@ -1282,3 +1282,36 @@ The ctrl.py `all` model, same folds and LightGBM, 5 seeds. Leak groups dropped c
   - On the VM: all 7 md5s match; the STEPS line includes at_launch and shadow; one hourly recorder, untouched.
   - at_launch_followers backfilled: 558 rows, Oct 25–Nov 2, 13–31 launches a day, no null counts.
   - Nov 3 is the first run on the honest live forecast; its scores compare with the honest backtest (64.4 / 70.4 / 76.9).
+
+## Verdict: does popscore add daily top-3 lift over the honest, day-calibrated baseline? (Nov 2, PR 143 session)
+**No measurable lift, and none expected from more of the same.**
+- **The bar:** day calibration moves a day's launches together, so the daily order is the honest launch model's: **64.4 daily top 3 (May–Oct)**.
+- **Every logged popscore-on-top-of-the-launch-model test sits at about 0 on daily top 3:**
+
+| Test | Daily top 3, Δ vs launch model (95% CI) |
+|---|---|
+| Launch model + simulation correction (`sim_resid`, Jul–Oct) | +0.6 (−2.0 to +2.9) |
+| Launch model + pna_ ev/reach + day terms (E1 rebuild) | −0.8 (−2.7 to +1.1) |
+| E5 pool concentration over the day-calibrated control | +0.2 (−1.7 to +2.1) |
+| Launch model + simulation, winner of 3 by day (psx) | −0.4 (−3.5 to +3.0) |
+
+- **Alone it is below the baseline:** psr −3.2, psg live −5.3.
+- **Its gains stay inside the simulation:** psg +3.7 over pnx; tie strength at person and pool level.
+- **Residual check:** the correlation of the simulation's predicted launch-model misses with the real ones is −0.048 (`sim_resid`). (The near-0 residual from `ai_pitch_score`, −0.015 on the new baseline, is a different score.)
+- **Caveat:** apart from E5's test, these ran against the published baseline (66.5). A direct psg + day terms re-test against the honest baseline is worth one run; expect ±2.
+- **Why it is stuck:** E0 puts 90.5% of the simulation's error in a per-launch shock shared by the whole audience. No pre-launch person data sees that shock.
+
+## Next experiment: early-vote shock correction on `vote_snapshots`, with popscore predicting the early share (planned Nov 2, ready about Nov 16)
+- **Data limit found while building it:** `vote_snapshots` stores counts per launch per hour (votes, comments, rank), not voters, and upvote times are not public (`events` dates every upvote to the launch day). So the planned "weight each early voter by popscore's likelihood of voting" cannot be built.
+- **Counts version (built instead):** early votes lean to the team's network, so the expected share of a launch's votes that arrive by hour H should depend on its audience. popscore's tie outputs (pnx_ev_ties / pnx_ev, reach, pmax) predict that share.
+  - Shock: log early votes minus their expected value given the honest prior.
+  - Control: expected value from the prior alone.
+  - Test: the prior plus popscore's tie features.
+  - Forecast: prior + fitted weight × shock.
+- **Code:** `ph_predict/early_shock.py`.
+  - Clean days: honest prior (from Nov 3), a snapshot near each cutoff, line-up coverage, final ranks.
+  - Leave-one-day-out fits; cutoffs H = 1, 2, 3, 4, 6, 8, 12.
+  - Daily top 3/5/10 with paired bootstrap over days: prior, votes alone, shock (control), shock + popscore.
+  - Waits until 14 clean days exist.
+- **Pipeline:** the `raw` step now also uploads `results/forecast_<d>.parquet` (the honest prior in log votes) and `data/sim_live/pnx_<d>.json` (popscore's live outputs). A new `earlyshock` step runs the gated backtest daily and writes `backtests` rows once ready. Not deployed yet.
+- **Expectation:** E0's random-sample oracle gives 83 daily top 3, and Wayback captures +10.5 by hour 8. Real early votes are skewed, so the shock (control) arm should land well above 64.4 by hour 4–8. The open question is whether popscore's arm beats the control.
