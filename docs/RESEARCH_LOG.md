@@ -286,3 +286,10 @@ Model switches, direction reviews and agenda changes, newest last.
   - Leak confirmed: later reads are higher for 25/26 makers.
   - PH agent is building at_launch_followers.
   - Asked: does the launch-model baseline use late-read inputs? If so, rescore it honestly.
+- 12:17 UTC HN live pipeline with per-minute vote features is built (live15.py).
+  - Provisional, 2 days / 40 winners, all posts | seen only:
+    - 1 h, votes + front page: 32.5% | 39.4%.
+    - 15 min, votes: 15.0% | 20.0%.
+  - Coverage: 15 min 48% of posts (Nov 2 is the first full always-on day); 1 h 77%.
+  - Oct archive misses at 15 min: late risers caught 17% and re-ups 23%, together 53% of winners.
+  - Directions sent to the HN agent: /pool membership as a live re-up signal; a dedicated late-riser model.
