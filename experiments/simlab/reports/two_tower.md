@@ -133,7 +133,8 @@ Paired against `psg_` over days (95% interval):
 
 ## Next levers for the trained model
 1. Regularisation (the hold-out loss stalls while the training loss falls): dropout, weight decay, a lower learning
-   rate, a smaller dimension, listwise-only loss. One-month sweep (September) below.
+   rate, a smaller dimension, listwise-only loss. Not run: the net's gain does not survive the pool sum, so tuning it
+   alone will not move the leaderboard (orchestrator's call, Nov 2).
 2. Several seeds averaged: ensembling helped once already, and seeds are free.
 3. Train the net on the residual of GBM all (boosting the hand model), not on its own: the net only has to learn what
    the hand model misses.
