@@ -79,3 +79,37 @@ The HN agent confirmed the pandas-3 timestamp bug in wb15's exposure features, w
 Against the fixed "+ votes + who + exposure" column (28.1%), the forward blend is -0.8 [-2.8, +1.1] and the equal blend -1.6 [-3.9, +0.8]. No interval is above 0, so the simulator adds nothing measurable yet.
 
 Next: the v2 fit on Quality News per-minute series (raw/hn_qn_series/, being pulled by Data Feeder). They give /new rank per minute, which is the missing /newest exposure denominator. Arrival rates will be fitted on the covered set (3+ points); coverage is outcome-correlated, so it must not be used as an input when scoring.
+
+## Live-page simulator on hn_minute (Nov 2 onward): calibration first
+
+`live_frontsim.py` judges every post at 15 min using the real pages, read live:
+- latest points by t + 15;
+- /newest p1-2 position-weighted minutes;
+- /news p1-3 at t + 15, with effective scores by rank interpolated over all 90 positions;
+- birth times from the HN API.
+Arrivals come from replayed Jul-Sep days. Labels are settled listwatch lists, as in live_caught.py. Nov 2 is the first full feed day (877 posts so far), and its lists settle around Nov 6. There is no live at-posting score yet, so the prior is flat (requested from the HN agent).
+
+### Calibration, step by step
+
+1. **As built** (October model, QN-likelihood tempering). Sum of P on Nov 2 was 102 to 141 against ~25-30 winners a day. On posts with 12 h+, simulated top-30 reach was 22-27% against 5.2% real, and simulated 24 h points averaged ~245 against 11.
+   - First bug: unread front ranks counted as empty, so a 1-point post started near rank 1. Fixed by interpolating all 90 ranks, with a replay fallback when fewer than 60 are read.
+   - The overshoot stayed after the fix. Its cause is the flat quality prior: median q is 0.7 because the low tail is barely identified.
+2. **Training check** (Sep, prior only; `calib_reach.py`). Simulated reach is 11.6% against 6.4% real. A global q scale of c ≈ 0.6 matches both reach and 24 h points.
+3. **Early votes on outcome data** (Oct 2-9 weekdays, dense snapshots). Real reach by 15-min score:
+
+   | 15-min score | none | 1 | 2 | 3 | 4+ |
+   |---|---|---|---|---|---|
+   | real reach | 7.2% | 4.0% | 11.5% | 15.1% | 35.5% |
+   | simulated, QN-likelihood tempering (tau ≈ 0.1) | 13-15% | 13-15% | 13-15% | 13-15% | 13-15% |
+   | simulated, outcome calibration | 2.4% | 0.9% | 10.3% | 30.5% | 60.7% |
+
+   The tempering fitted by QN predictive likelihood, which only sees posts ending with 5+ points, leaves early votes almost inert. The outcome data say they matter a lot. This is the selection effect the orchestrator suspected.
+4. **Outcome calibration** (`calib_fit.py`): tau, kappa and c chosen by the per-post binomial log-likelihood of real reach on Oct 2-9. Best fit: tau 0.3, kappa 0.2, c 0.25. Overall reach is 5.5% against 7.0% real, but the response to early votes is now too steep (see the last row above). Real outcomes are noisier than the simulated rank feedback allows.
+5. **Live Nov 2 with the outcome calibration.** Sum of P is 28.5 (isotonic) and 26.8 (day threshold), against an expected ~25-30 winners: right in aggregate. On the 194 posts with 12 h+:
+   - Simulated reach is 15.1% against 5.2% real (10 posts). Posts with 1 point are matched (2.3% against 2.1%); posts with 2 points or more are overshot.
+   - On reaching the top 30, the simulator ranks worse than the raw 15-min score: AUC 0.64 against 0.72.
+
+Next:
+- Add per-post dispersion (overdispersed votes, or late quality only partly tied to early quality) to fix the steep response.
+- Use the live at-posting prior.
+- Report Caught once the Nov 2 lists settle.

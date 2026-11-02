@@ -1,0 +1,26 @@
+{
+ "made_at": 1793660261,
+ "feed_end_utc": "2026-11-02 22:52:11",
+ "full_days": [
+  "2026-11-02"
+ ],
+ "posts": 879,
+ "draws": 200,
+ "inputs": {
+  "snapshot_by_15min": 1.0,
+  "front_page_80plus_ranks": 0.675,
+  "real_front_used (60+ ranks)": 0.862,
+  "at_posting_score": 0.0,
+  "prior": "flat (no at-posting score yet)",
+  "early_votes_and_scale": "outcome-calibrated on Oct 2-9 (calib_fit.py)"
+ },
+ "calibration_24h": {
+  "2026-11-02": {
+   "sum_P_isotonic": 28.5,
+   "sum_P_day_threshold": 26.8,
+   "winners_so_far": 0,
+   "lists_settled": false
+  }
+ },
+ "caught": "no posting day has its 4 list days settled yet"
+}

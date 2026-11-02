@@ -1,0 +1,51 @@
+{
+ "test_days": [
+  "2026-09-01",
+  "2026-09-02",
+  "2026-09-03",
+  "2026-09-04",
+  "2026-09-07",
+  "2026-09-08"
+ ],
+ "pool_days": 32,
+ "tempering": {
+  "2026-08-31": {
+   "posts": 2522,
+   "with_newest_exposure": 1695,
+   "tau": 0.1,
+   "kappa": 0.02,
+   "ll_gain_vs_no_early_votes": 17.0,
+   "ll_gain_vs_untempered": 342.3
+  }
+ },
+ "real": {
+  "posts": 6628,
+  "reach": 0.0644,
+  "mean_log1p_p24": 1.415
+ },
+ "c=1.0": {
+  "reach_sim": 0.1164,
+  "mean_log1p_p24_sim": 1.812,
+  "reach_sim_among_real_reachers": 0.1205
+ },
+ "c=0.7": {
+  "reach_sim": 0.0755,
+  "mean_log1p_p24_sim": 1.455,
+  "reach_sim_among_real_reachers": 0.0731
+ },
+ "c=0.5": {
+  "reach_sim": 0.0489,
+  "mean_log1p_p24_sim": 1.217,
+  "reach_sim_among_real_reachers": 0.0496
+ },
+ "c=0.35": {
+  "reach_sim": 0.0314,
+  "mean_log1p_p24_sim": 1.049,
+  "reach_sim_among_real_reachers": 0.0333
+ },
+ "c=0.25": {
+  "reach_sim": 0.0199,
+  "mean_log1p_p24_sim": 0.936,
+  "reach_sim_among_real_reachers": 0.0222
+ }
+}
