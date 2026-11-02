@@ -75,3 +75,22 @@ When it finishes, require all of these on the new rows, not only "no poisoned na
 ## Open
 - Verify Grok Bot's numbers: needs a read-only bucket credential (not available in this session).
 - Whether the 'Wispr' LinkedIn rows are "almost always employees" and whether "most Google rows trace to poisoning": unresolved; the evidence (a check of 104 of 302 Google rows) is too thin.
+
+## Update, Nov 2: results of the read-only checks (NOT YET VERIFIED)
+
+Everything in this section is **reported by Grok Bot**. The files (`people_v2_checks_final_only.json`, `x_handle_audit_100.csv`,
+`orphan_event_person_ids.csv`) were not on this branch when this was written, and the reviewer cannot read the bucket (401).
+Nothing below has been checked against the files.
+
+| Item | Reported by Grok Bot | Note |
+|---|---|---|
+| Re-fetch of `ph_profiles_rest` | 16,518 good, 10 failed (7 deleted users to drop, 3 being retried), cost about $1 | 16,518 + 10 = 16,528, which matches the expected total. |
+| Poisoned names / duplicate ids in the re-fetch | none | Still needs `rows_failing_acceptance` (numeric `user_id`, real `name`, non-null `joined`) and `rest_people = 16,528`. |
+| Orphan events in `tables_v2` | 541 events point to persons missing from `persons`, from 167 person ids; top id `ph:jcbuilds` with 56 events | Cause unknown. To check: PH users dropped by the poisoned-profile filter, versus people outside the 20,671 (HN or other sources). |
+| Which run is valid | `people_v2_checks_final_only.json` (the shard copies blank section A) | – |
+
+To close this out, after the files land on the branch:
+1. Check section A against the acceptance rule and `rest_people`.
+2. Classify the 167 orphan ids and decide whether events for real PH users were silently dropped.
+3. Compare the empty-field counts with `validation.json`.
+4. Change "reported by Grok Bot" to "verified" only where the file supports it.
