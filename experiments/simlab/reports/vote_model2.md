@@ -1,5 +1,9 @@
 # E1 v2: the vote model contains the launch model (Nov 2, 2026; Shreyas approved the run)
 
+> **Correction (Nov 2, 11:30 UTC, follow-up below):** the audience inputs of "off" included the makers' Product Hunt
+> follower count, which is not a live launch-model input (fetched after launch: leaky). Without it, with live inputs
+> only, daily top 3 is +1.3 [−0.4, +3.0] (4 of 6 months better, 2 tied), not +1.7 [+0.2, +3.2]; the weekly gains hold.
+
 Code: `simlab/vote_model2.py`. Pre-launch only. Poisson LightGBM on final votes, rolling monthly (train on every earlier
 month, test the next; May–Oct, 3,977 launches, 176 days for daily top 3/5, 144 for top 10, 25 weeks), 3 seeds.
 - **Launch model alone:** ctrl.py `all` (out of sample), as a Poisson mean `expm1(all)` rescaled on the training months.
@@ -61,3 +65,32 @@ interaction is where the gain sits; the pool on its own adds nothing measurable 
 2. Per-maker conversion with more history: the full upvote histories of past launches, and a prior from similar makers
    (topic, follower size), rather than residuals that exist only from March.
 3. X engagers as their own audience as coverage grows; launch-day shock terms only in the launch-day forecast.
+
+## Follow-up (Shreyas approved): frozen confirmation and the shadow package
+`simlab/vote_model2_confirm.py` (`reports/vote_model2_confirm.json`): every variant frozen, 5 LightGBM seeds fitted
+separately and averaged, same launches (May–Oct, 176 days, 25 weeks). Paired against the launch model alone.
+
+| Variant | Daily top 3 / 5 / 10 | Daily top 3 vs LM | Months better (top 3) | Seed spread, top 3 | Weekly top 3 / 5 / 10 vs LM | Log-lik vs LM |
+|---|---|---|---|---|---|---|
+| Launch model alone | 66.7 / 73.5 / 81.0 | | | | | |
+| off, `psa_` (as reported; leaky input) | 68.4 / 72.8 / 81.5 | +1.7 [+0.2, +3.2] | 5 of 6 | 68.0–68.8 (sd 0.28) | +2.7 / **+4.0** / −0.9 | +0.15 [−0.21, +0.52] |
+| off, `pna_` (leaky input) | 68.4 / 73.5 / 81.3 | +1.7 [+0.4, +3.2] | 5 of 6, 1 tied | 67.8–68.2 | +4.0 / **+4.8** / +0.0 | +0.26 [−0.07, +0.61] |
+| **offlive, `pna_` (live inputs only: packaged)** | **68.0 / 73.2 / 81.3** | +1.3 [−0.4, +3.0] | 4 of 6, 2 tied | 67.6–68.2 (sd 0.20) | **+5.3 [+1.3, +10.7]** / **+3.2 [+0.8, +6.4]** / +0.0 | +0.18 [−0.14, +0.52] |
+| offlive, `psa_` | 68.2 / 72.8 / 81.2 | +1.5 [+0.0, +3.0] | 4 of 6, 2 tied | 68.0–68.4 | +5.3 / +4.0 / −1.3 | +0.04 [−0.33, +0.43] |
+| offset + pool + day only, `pna_` | 66.5 / 73.2 / 81.6 | −0.2 [−1.3, +0.9] | 1 of 6, 4 tied | 66.1–66.7 | **+8.0 [+2.7, +13.3]** / +3.2 / +0.4 | +0.24 [−0.08, +0.58] |
+
+- The result is stable across seeds (spread under 1 point) and month by month: the live-only variant is better or tied
+  in every month on daily top 3.
+- With live inputs only, daily top 3 is a likely gain but its interval spans 0; weekly top 3 and top 5 gains exclude 0.
+- The page-free pool `pna_` loses nothing against `psa_` here.
+- A fresh out-of-sample tail (Nov 1–2) is not possible on these inputs: the launch model's backtest predictions and the
+  pool features end on Oct 24. The live shadow forecast is that test.
+
+**Shadow package** (`simlab/e1v2_package.py`, in `gs://usersim-bakeoff-347838016394/usersim_sim/tmp/e5/e1v2/`): the
+live-only variant with `pna_`, trained on Apr 1–Oct 24 (4,876 launches), 5 boosters + `meta.json` + `predict.py` for the
+pipeline's shadow slot (`python3 predict.py <day>` from `ph_predict/data/shadow/e1v2/`, JSON lines
+`{"launch_id", "score"}`, score = log expected votes). Inputs: `results/forecast_<day>.parquet` (offset), `data/sim_live/
+pnx_<day>.json` (pool), and the five audience columns, read from the forecast file if present, otherwise rebuilt with
+`features.build(include_today=True)`. Self-test (`simlab/e1v2_pkg_test.py`, Oct 20 staged in the live layout): 33 of 33
+launches scored, identical to the in-code prediction (max difference 0.0) both with the columns in the forecast file
+and through the fallback; about 2 s without the fallback.
