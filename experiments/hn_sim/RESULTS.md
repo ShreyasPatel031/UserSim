@@ -687,3 +687,23 @@ Held-out pairs: the winning posting scored higher in **51.8%** (chance 50%). As 
 -0.1 [-1.4, +1.3]; blend -0.4 [-1.5, +0.7]; the context score alone catches 2.8%.
 Given the link, nothing known at posting (moment, title wording, submitter) separates the posting that won from the
 one that flopped.
+
+## Direction (Shreyas, 2026-11-02): push checkpoint 2 (15 min) with honest early votes; at posting = calibrated probability (odds tool)
+
+### Predicted 15-min state chained in (wb_chain.py; train <= Oct 8, test Oct 9-14)
+Predicting the 15-min /newest score from at-posting inputs: Spearman 0.220 (4,437 test posts); on /news by 15 min: -0.019.
+| Checkpoint | days | without | with predicted 15-min state | difference |
+|---|---|---|---|---|
+| at posting | all 6 (180 winners) | 18.3% | 22.2% | +3.9 [-1.5, +9.4] |
+| at posting | 4 days 90%+ coverage (114) | 18.4% | 25.4% | **+7.0 [+1.7, +12.2]** |
+| 1 h (with early votes) | all 6 | 48.9% | 48.9% | +0.0 [-1.6, +1.6] |
+| 1 h | 4 days 90%+ | 47.4% | 48.2% | +0.9 [+0.0, +2.3] |
+Small test (4-6 days); being confirmed on Oct 2-14 with a forward daily retrain (wb15.py).
+
+### Odds tool, honest (odds_live.py: after posting, front-page rank only; retrained, deployed as oddsloop2)
+Test Sep 1 - Oct 14, P(top 30): AUC at posting 0.79, 15 min 0.803, 3 h 0.926; calibration at 15 min: forecast 3.00%
+vs actual 2.99%. At posting is reported as this calibrated probability (Shreyas).
+
+### Person-level top-3 with the full favorites (decision tool only)
+Content taste + favorites: top-3 hit 29.7% [29.3, 30.1] (random 14.1%), unchanged by pages 2-10; the rest of the run was
+killed by the container restart.
