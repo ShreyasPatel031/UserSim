@@ -39,10 +39,12 @@ def load_history():
     Hh = pd.concat(hist, ignore_index=True) if hist else pd.DataFrame(columns=["repo", "date", "stars"])
     Hh["repo"] = Hh.repo.str.lower()
     Hh["date"] = pd.to_datetime(Hh.date).dt.strftime("%Y-%m-%d")
+    Hh = Hh.drop_duplicates(["repo", "date"], keep="last")         # a second fetcher ran ~1 min: ~19 repos twice
     st = os.path.join(d, "repo_status.jsonl")
     Rs = pd.read_json(st, lines=True) if os.path.exists(st) else pd.DataFrame(columns=["repo"])
     if len(Rs):
         Rs["repo"] = Rs.repo.str.lower()
+        Rs = Rs.drop_duplicates("repo", keep="last")
     return Hh, Rs
 
 
@@ -85,7 +87,7 @@ def main():
     vis60 = (OL.vote_feats(Q, qb, [60])[60].best_rank <= 30).to_numpy()
     C1.Q = Q
     CM, WHO = C1.comments(15)
-    base = pd.concat([Q[AT], R, CM[["cm_n", "cm_people", "cm_first"]], W15.votes15(Q), WHO, W15.expo15(Q)], axis=1)
+    base = pd.concat([Q[AT], R, CM[["cm_n", "cm_people", "cm_first"]], W15.votes15(Q), WHO], axis=1)   # votes + who (28.4%)
     G = gh_feats(Q)
     L = OL.lists()
     first = L[L["rank"] <= 30].groupby("post_id").day.min()
@@ -106,7 +108,7 @@ def main():
         s1[te] = lgb.LGBMClassifier(**W15.PRM).fit(X1[tr], y[tr]).predict_proba(X1[te])[:, 1]
     T = Q[sel][["post_id", "day", "y"]].reset_index(drop=True)
     c0, c1 = W.caught_on(T, s0[sel]), W.caught_on(T, s1[sel])
-    print(f"Caught at 15 min, Oct 2-14: votes + who + exposure {W.ci2(c0)}; + GitHub stars {W.ci2(c1)}; difference {W.ci2(c1, c0)}", flush=True)
+    print(f"Caught at 15 min, Oct 2-14: votes + who {W.ci2(c0)}; + GitHub stars {W.ci2(c1)}; difference {W.ci2(c1, c0)}", flush=True)
     g = has[sel]
     if g.any() and T.y[g].sum() > 0:
         c0g, c1g = W.caught_on(T[g], s0[sel][g]), W.caught_on(T[g], s1[sel][g])
