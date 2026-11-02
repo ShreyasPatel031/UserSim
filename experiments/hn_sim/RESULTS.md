@@ -861,3 +861,8 @@ hour. Fixed (pushed). Rerun, Oct 2-14, 388 winners:
 Exposure from Wayback captures (~10 min apart) adds nothing; the earlier gain was posting volume and hour. Results that
 used expo15 are being rerun: gap15 (26.5%), wb_reup (35.6% exposure clock), wb_gh, wb15_seeds; live_oct had the
 same bug (no result had been reported). Live per-minute exposure (direction A) is still tested from Nov 5.
+Reruns after the fix:
+- gap15 (full period, Sep 1 - Oct 14): + Wayback votes + exposure 25.4% [23.2, 27.7], +0.7 [-1.2, +2.5] vs the 24.7%
+  headline (was 26.5%, +1.8 with empty exposure). No step is significant: **the full-period 15-min headline stays 24.7%**.
+- wb_reup (Oct 2-14): posting clock (votes + who + exposure) 28.1%; **B, exposure clock 34.5% [31.5, 37.7], +6.4
+  [+2.2, +10.5]** (late risers 27 -> 53 of 145); C -0.5 [-3.3, +1.9].
