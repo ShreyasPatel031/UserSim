@@ -12,7 +12,8 @@ Socrates, OSIM-8B.
 ## North stars (set by the user; these two only)
 1. **Product Hunt: 90% on top 3 / 5 / 10** of the real leaderboard: **daily, weekly or monthly**, whichever we reach
    first. Pre-launch and launch-day forecasts are reported apart.
-   - Pre-launch (Mar–Oct): launch model daily 65.8 / 72.9 / 80.8; weekly 51.0 / 55.0 / 56.7; monthly too few lists.
+   - Pre-launch, launch model, Jul–Oct, on the deduped data (Nov 2): daily 65.5 / 73.2 / 81.4; weekly 47.1 / 53.8 / 56.7;
+     monthly 44.4 / 50.0 / 52.5 (3–4 lists, too few to steer by).
    - **Launch-day, daily, from archived intraday votes (Jul–Oct, Wayback, verified):** hours 4–8: 85.1 / 95.2 / 91.8;
      hours 8–12: **93.1 / 95.2 / 96.2**; hours 12–24: 96.7 / 97.3 / 97.8. Top 5 and 10 pass 90 from about hour 4–8;
      top 3 from about hour 11. Votes are hidden on the page for the first 4 hours.
