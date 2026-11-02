@@ -828,3 +828,37 @@ removed.
   little each. The pre-launch inputs explain the shock's within-day ranking at 0.49. Closing the rest needs inputs
   that see the makers' outreach: X engagement (sample Nov 3), newsletters and communities, the competitor audiences
   (data spec filed), and from Nov 9 the hour-1/2 votes as the launch-day reading.
+
+## Shock model, re-run: duplicates fixed, day-level shock added for weekly (Nov 2)
+**Duplicates:**
+- 204 launches sat in two consecutive `data/days` files: Apr 27/28, May 4/5, 6/7, 10/11, 13/14. The earlier file's
+  window took in the next day's 00:00 PDT launches; every case matches `featuredAt` on exactly one of the two days.
+- In `shock_model.py` each launch is now kept once, on its `featuredAt` (PT) day. 204 rows dropped from the simulation
+  files, the build cache and the launch-model predictions alike.
+- Upstream, the same duplicates are in the store and every backtest built from `data/days`. That fix is queued
+  separately; numbers in this log before this entry include them (204 rows on 10 days).
+
+**Shock prediction:**
+- Within-day shock: Spearman 0.504 (was 0.49 with duplicates). Largest losses when dropped: `ph_` 0.055, `seg_` 0.028,
+  `pf_` 0.028, `hist_` 0.017, `ps_` 0.016.
+- **Day-level shock** (the day's pool turnout vs the simulation; 177 days): predicted from line-up size, active pool
+  size, line-up strength by the prior and weekday at **Spearman 0.475**. Spread: 0.317 across days vs 0.758 within day.
+
+**Forecasts, Jun–Oct, top 3 / 5 / 10:**
+
+| | Daily (145 / 145 / 121) | Weekly (21 / 21 / 19) | Monthly (4–5) |
+|---|---|---|---|
+| Launch model | 65.3 / 73.1 / 81.5 | 49.2 / 57.1 / 56.8 | 58.3 / 52.0 / 52.0 |
+| Sim + predicted shock (within day) | 57.2 / 69.0 / 76.0 | 46.0 / 47.6 / 50.5 | 25.0 / 32.0 / 38.0 |
+| Sim + predicted shock, cross-day | 57.2 / 69.5 / 76.7 | **52.4** / 49.5 / 50.0 | 33.3 / 44.0 / 44.0 |
+| Ceiling: sim + true shock (within day) | 86.0 / 92.6 / 90.2 | 44.4 / 60.0 / 73.7 | 33.3 / 44.0 / 36.0 |
+| Ceiling: sim + true shock, cross-day | **89.7 / 94.3 / 90.2** | 52.4 / 68.6 / 80.5 | 33.3 / 48.0 / 52.0 |
+
+- **Weekly:** the cross-day version lifts weekly top 3 from 46.0 to 52.4 (+3.2 vs the launch model, −6.3 to +12.7)
+  but not top 5 or top 10.
+- **Even the true pool shock caps weekly at 52 / 69 / 81.** The pool casts about 35% of votes. Ranking across days
+  depends on the other 65%, whose size varies by day and launch in ways pool turnout doesn't track.
+- **Daily:** the cross-day ceiling is 89.7 / 94.3 / 90.2, so knowing the pool shock is enough on the daily board.
+- **Next for weekly:** model the shock on *total* votes (the launch model's residual, raw and by day) and predict it
+  the same way, because the cross-day signal is in the outside-pool votes. Hour-1/2 vote snapshots (Nov 9) read it
+  directly.
