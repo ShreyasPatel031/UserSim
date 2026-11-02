@@ -416,3 +416,4 @@ Model switches, direction reviews and agenda changes, newest last.
   - A1 data request filed by the PH agent. C1 request filed by me (20261102T1855): add PH repos to the stargazer
     history run, plus npm/PyPI download series, free routes only.
 - 19:34 UTC: mailbox checked, no new replies. Follow-ups added to A1 (PH team history) and C1 (PH repos/npm/PyPI). Removed my PH Fable review request (the review was already done in the PH session).
+- 20:19 UTC PH agent: A1/C1 scripts ready (commit d6eb63b; userbase_eval.py, a1_team_history.py, c1_user_base.py). Gate is residual Spearman with Holm correction; a1_ inputs must beat team size. Each runs in ~10 min. The orchestrator pings when raw/ph_team_history/ or raw/github_stargazers/ (PH tag) + raw/pkg_downloads/ land.
