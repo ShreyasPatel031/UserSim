@@ -773,3 +773,10 @@ Slow starts (<= 2 points at the latest /newest snapshot by 15 min, off the front
 the 145 late risers, and 119 of the 181 fast winners. Among slow starts, flags = 129: general 15-min model catches 15
 late risers, the late-riser model 14. Blended in for slow starts: Caught at 15 min 28.1% (weight 0.25), -0.3
 [-2.7, +1.9]; 27.8% (0.5), -0.5 [-3.9, +2.3] vs 28.4%. A dedicated model does not find late risers any better.
+
+### Outside traction by posting + 15 min (wb_outside.py; feeds backfill; Oct 2-14 forward retrain)
+Own link seen outside HN before posting + 15 min: fast winners 27/181 (15%), late risers 15/145 (10%), re-ups 10/62 (16%),
+non-winners 756/12,400 (6%). Mentions by source on Oct 2-14 posts: Reddit 343, lobste.rs 285, Techmeme 113, arXiv 64,
+RSS 33, X 13, GitHub trending 8. Caught at 15 min: 28.4% -> 28.4%, +0.0 [-2.2, +2.3] (90%+ days -0.3 [-2.8, +2.1]);
+caught by type fast 71 -> 70, late 25 -> 29, re-ups 14 -> 11. GitHub stargazer timing not run: api.github.com
+returns 403 from the dev container and no token is available here (needs hn-sim-1 + a token).
