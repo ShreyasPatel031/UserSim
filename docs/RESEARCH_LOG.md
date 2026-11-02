@@ -248,3 +248,10 @@ Model switches, direction reviews and agenda changes, newest last.
     - pna_ is as good as psa_.
   - Package for the shadow slot: tmp/e5/e1v2/. Passed to the PH agent, with the 5-column forecast parquet request.
   - Weekly is the solid gain; daily needs the live days.
+- 11:32 UTC PH agent re-check of E1 v2 (independent rebuild, 177 days/25 weeks):
+  - Daily top 3: −0.8 [−2.7, +1.1]. E5's +1.3 is not reproduced.
+  - A day-terms-only control gives weekly top 3 +5.4 / top 5 +3.2 by itself. So the weekly gain is day rescaling, not
+    the pool or audiences.
+  - Tasks:
+    - PH agent: day-level calibration of the launch model for the weekly/monthly boards.
+    - E5: frozen E1 v2 vs the same control.
