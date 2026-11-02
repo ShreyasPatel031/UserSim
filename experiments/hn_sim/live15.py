@@ -27,13 +27,19 @@ rng = np.random.default_rng(0)
 
 
 AGES = (15, 60)
-MIN_DAYS_MODEL = 5          # a model trained on recorder data (leave-one-day-out) once this many posting days exist
+MIN_DAYS_MODEL = int(os.environ.get("LIVE_MIN_DAYS", "5"))   # leave-one-day-out model on recorder data from this many posting days
 
 
-def minute_feats(P, Mi, a):
+EXPO = ["expo_share", "expo_min", "expo_w", "vpe", "vpe_w", "vol_before30", "hour"]   # direction A (exposure)
+
+
+def minute_feats(P, Mi, a, new_reads):
     """Per-minute vote features at age a (minutes): points and comments, when the 2nd / 3rd / 5th vote was first seen,
     votes per minute, front page (/news p1-3) entry time, best position and minutes on it, last /newest position and
-    how fast the post is pushed down /newest."""
+    how fast the post is pushed down /newest.
+    Exposure (direction A, DIRECTION_REVIEW_2026-11-02.md): share of the recorder's /newest reads in [0, a] that showed
+    the post on /newest page 1, estimated minutes there, position-weighted minutes (1 / sqrt(position)), votes per
+    exposure-minute (plain and weighted), posts submitted in the 30 min before, posting hour (UTC)."""
     w = Mi[(Mi.age >= 0) & (Mi.age <= a)].sort_values("t")
     g = w.groupby("id")
     out = pd.DataFrame(index=P.post_id)
@@ -52,6 +58,18 @@ def minute_feats(P, Mi, a):
     out["new_pos"] = lastn.pos.reindex(out.index)
     out["new_push"] = (lastn.pos / lastn.age.clip(lower=1)).reindex(out.index)
     out["new_seen_min"] = nw.groupby("id").t.nunique().reindex(out.index).fillna(0)
+    born = P.set_index("post_id").created_at_i
+    n_reads = (np.searchsorted(new_reads, born.to_numpy() + a * 60, side="right") - np.searchsorted(new_reads, born.to_numpy()))
+    out["new_reads"] = n_reads
+    out["expo_share"] = (out.new_seen_min / np.maximum(n_reads, 1)).where(n_reads > 0)
+    out["expo_min"] = out.expo_share * a
+    pw = nw.assign(wt=1 / np.sqrt(nw.pos.clip(lower=1))).groupby("id").wt.sum().reindex(out.index).fillna(0)
+    out["expo_w"] = (pw / np.maximum(n_reads, 1) * a).where(n_reads > 0)
+    out["vpe"] = (out.pts - 1) / out.expo_min.clip(lower=0.5)
+    out["vpe_w"] = (out.pts - 1) / out.expo_w.clip(lower=0.5)
+    ct = np.sort(born.to_numpy())
+    out["vol_before30"] = np.searchsorted(ct, born.to_numpy()) - np.searchsorted(ct, born.to_numpy() - 1800)
+    out["hour"] = (born.to_numpy() // 3600) % 24
     return out.reset_index(drop=True)
 
 
@@ -80,7 +98,8 @@ def main():
     # per-minute inputs at 15 min and 1 h (recorder sightings at or before created + age)
     Mi = M[M.id.isin(set(P.post_id))].merge(P[["post_id", "created_at_i"]].rename(columns={"post_id": "id"}), on="id")
     Mi["age"] = (Mi.t - Mi.created_at_i) / 60
-    F = {age: minute_feats(P, Mi, age) for age in AGES}
+    new_reads = np.sort(M[M.list == "newest"].t.unique())
+    F = {age: minute_feats(P, Mi, age, new_reads) for age in AGES}
     P["seen15"] = F[15].seen.to_numpy().astype(bool)
     P["seen60"] = F[60].seen.to_numpy().astype(bool)
     P["pts15"], P["cm15"] = F[15].pts.to_numpy(), F[15].cm.to_numpy()
@@ -122,12 +141,14 @@ def main():
         if len(days) >= MIN_DAYS_MODEL:                  # model on the recorder's own data, leave one posting day out
             import lightgbm as lgb
             X = pd.concat([Fa.drop(columns=["seen"]), pd.Series(odds, name="p_post")], axis=1)
-            sm = np.zeros(len(T))
-            for d in days:
-                te = (T.day == d).to_numpy()
-                sm[te] = lgb.LGBMClassifier(n_estimators=300, learning_rate=0.05, num_leaves=15, min_child_samples=20,
-                                            verbose=-1, random_state=0).fit(X[~te], T.y[~te]).predict_proba(X[te])[:, 1]
-            scores["model (per-minute + odds, leave one day out)"] = sm
+            for mname, cols in (("model, no exposure inputs", [c for c in X.columns if c not in EXPO]),
+                                ("model + exposure (direction A)", list(X.columns))):
+                sm = np.zeros(len(T))
+                for d in days:                           # leave one posting day out
+                    te = (T.day == d).to_numpy()
+                    sm[te] = lgb.LGBMClassifier(n_estimators=300, learning_rate=0.05, num_leaves=15, min_child_samples=20,
+                                                verbose=-1, random_state=0).fit(X.loc[~te, cols], T.y[~te]).predict_proba(X.loc[te, cols])[:, 1]
+                scores[mname] = sm
         else:
             print(f"   [model on per-minute features: needs {MIN_DAYS_MODEL} posting days, have {len(days)}]", flush=True)
         print(f"Caught at {label}: seen by the recorder within {age} min: {seen.mean():.1%} of posts, "
