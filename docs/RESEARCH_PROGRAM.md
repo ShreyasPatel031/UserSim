@@ -75,6 +75,16 @@ a target out of reach. No agent writes or repeats a limiting statement about the
     what free quota can't do in time, never for work a free route can do.
   - Gemini for model calls in pipelines and experiments. Claude Code sessions (the subscription) do the research work.
 - Fetch ladder: VM IP → Camoufox → DataImpulse → Camoufox via DataImpulse → Apify. Don't retry past a bot check.
+- **Standing approvals (Shreyas, Nov 2, 23:55 UTC):**
+  1. **Free public APIs, fetched by the research agents from their own VMs, need no approval.** Covered: Wayback CDX and
+     captures, GitHub REST, npm, PyPI, Reddit public JSON, HN Algolia/Firebase, Bluesky public API, RSS, Google Trends,
+     app-store lookup endpoints. Conditions: no login, no proxy, no bot-check route, polite pacing, honour 429s, no
+     usernames committed. Signed-in and bot-checked routes stay with Grok Bot / Data Feeder.
+  2. **Pipeline bundles that only add shadow forecasts, scoring steps or new recording, and don't change the headline
+     forecast, deploy without a per-bundle approval** once the PH agent has verified them on the VM (md5s, step order,
+     imports, rollback). Anything that changes the headline forecast still needs Shreyas.
+  3. **Paid data up to $30/week in total needs no per-item approval**, priced from a measured pilot first and logged in
+     the spend file. Above that, ask.
 - Never commit files with Product Hunt usernames.
 - Never state that a data source is unavailable until Grok Bot / Data Feeder have checked it in the signed-in user
   view and reported what is visible (user, Nov 2).
