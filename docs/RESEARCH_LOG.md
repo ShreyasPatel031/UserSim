@@ -338,3 +338,8 @@ Model switches, direction reviews and agenda changes, newest last.
 - 13:10 UTC Parallel experiment (Grok Bot asked, ~$30/day unused): E5 on exp-2, competitor outcomes as a demand prior.
   Similar products' earlier PH results (votes, rank, recency, crowding) on top of the honest model + day calibration.
   Fixed rule: daily top 3 CI above 0.
+- 13:45 UTC E5 X pre-launch test on the honest model (x_prelaunch_e1.py).
+  - 60 covered launches, 1 full day. Daily top 3 +0.0; insufficient data.
+  - Fixed rule: ≥10 full days, then daily top 3 CI above 0.
+  - Re-runs daily at 21:23 UTC. The $20 top-up is still the bottleneck.
+  - Retrain on at-launch follower counts scheduled for Nov 20.
