@@ -4,6 +4,7 @@ Variants (rolling monthly, train on every earlier month, test the next; the same
   off|pna      the same with the page-free pool pna_ (what the pipeline has at 00:05 PT)
   shadow|pna   launch-model offset + pool (pna_) + day term, no audiences: every input is in the 00:05 contract
                (forecast_<day>.parquet, sim_live/pnx_<day>.json)
+  offlive|*    off without the makers' PH follower count, which is not a live launch-model input (fetched after launch)
 Each is fitted with 5 LightGBM seeds separately (spread) and as their mean. Scores against the launch model alone:
 daily and weekly top 3/5/10 and log-likelihood, paired by day / week (10,000 resamples), and month by month (wins of 6).
 Also reports how far the inputs reach (for a fresh out-of-sample tail).
@@ -14,6 +15,7 @@ from . import vote_model2 as V
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SEEDS = range(5)
+LIVE_AUD = [c for c in V.AUD if c != "ph_maker_sum_followers"]
 
 
 def fit_seed(tr, te, feats, mono, seed):
@@ -30,10 +32,12 @@ def main():
     A["week"] = pd.to_datetime(A.day).dt.strftime("%G-W%V")
     D = {s: V.maker_terms(V.day_terms(A.copy(), s), s).sort_values("id").reset_index(drop=True) for s in ("psa", "pna")}
     variants = {"off|psa": ("psa", ["psa_ev"] + V.AUD + V.DAY), "off|pna": ("pna", ["pna_ev"] + V.AUD + V.DAY),
-                "shadow|pna": ("pna", ["pna_ev"] + V.DAY)}
+                "shadow|pna": ("pna", ["pna_ev"] + V.DAY),
+                # live inputs only: the makers' PH follower count is not a live launch-model input (fetched after launch, leaky)
+                "offlive|pna": ("pna", ["pna_ev"] + LIVE_AUD + V.DAY), "offlive|psa": ("psa", ["psa_ev"] + LIVE_AUD + V.DAY)}
     months = sorted(A.mon.unique()); T = None
     for name, (src, feats) in variants.items():
-        X = D[src]; mono = set([f"{src}_ev"] + V.AUD); parts = []
+        X = D[src]; mono = set([f"{src}_ev"] + V.AUD); parts = []   # only the inputs in feats are constrained
         for m in months[1:]:
             tr, te = X[X.mon < m], X[X.mon == m].copy()
             c = tr.votes.sum() / np.expm1(tr["all"]).sum(); te["mu_lm"] = np.expm1(te["all"]).clip(lower=0.5) * c
