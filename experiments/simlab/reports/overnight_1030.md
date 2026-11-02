@@ -1341,3 +1341,22 @@ Same code, same pool simulation (popscore_tie), same folds (rolling monthly, Jun
   - The trees can't use 96 rows (100 per leaf), so a forward-fitted linear arm was added for sparse inputs.
   - Daily top 3 / 5 / 10: +0.4 / −0.2 / +0.1; weekly 0.0 / −0.8 / 0.0; monthly 0. All within noise.
 - **Reading:** real signal per launch, but 1.7% coverage can't move a board. Stars (about 9% of launches link an own repo) are the larger test; Data Feeder's star pass is due ~23:00–00:00 UTC. userbase_eval.py now has the linear arm for sparse inputs.
+
+## Page inputs: honesty check and sensitivity (Nov 2, orchestrator's Fable review; `honest.py PAGE_SENS=1`)
+**Where the page inputs come from, for backtest launches:**
+- pf_ (page facts), ps_ (page scores), llm_pitch read name, tagline, description, topics and media from `data/days/` (API). Those files were fetched a **median 88 days after launch** (1–182), so post-launch edits to the description or media can be in them. The maker's first comment comes from the timed comments (posted at launch; edits possible).
+- Website text (ps_website, ps_links, llm_site, llm_full) uses the live site fetched around Oct 30 where no day-before Wayback snapshot exists. **1.6% of those sites (106 of 6,569) show "Product of the Day", "featured on Product Hunt" or similar wording.**
+- llm_full's prompt includes follower counts, including the makers' PH counts that the model itself excludes as leaky.
+- So the page inputs are not honest by construction.
+
+**Sensitivity, daily top 3 / 5 / 10, paired vs honest (64.4 / 70.4 / 76.9, May–Oct):**
+
+| Dropped from honest | May–Oct | Δ (95% CI) top 3 / 5 / 10 | Jul–Oct |
+|---|---|---|---|
+| Web- and follower-derived page inputs (llm_full, llm_site, ps_website, ps_links) | 63.5 / 70.2 / 77.4 | −0.9 (−2.8, +0.9) / −0.2 / +0.6 | 64.4 / 69.4 / 78.0 |
+| All page groups (pf_, ps_, vs_, llm_; 103 inputs) | 61.4 / 68.5 / 76.5 | **−3.0 (−5.1, −0.9)** / −1.9 (−3.5, −0.3) / −0.4 | 62.1 / 69.6 / 77.3 |
+| **The live forecast's own set** (no pf_ / ps_ / vs_, no llm_full) | **62.7 / 70.4 / 76.6** | −1.7 (−4.1, +0.8) / 0.0 / −0.3 | 64.4 / 69.6 / 77.1 |
+
+- The web-derived and follower-derived page inputs don't inflate the baseline (all within noise). Page content as a whole carries real ranking signal (−3.0 when dropped). Edits made after launch can't be separated from it in the backtest.
+- The live forecast doesn't use pf_ / ps_ / vs_, so the **baseline comparable with live scores is 62.7 / 70.4 / 76.6** (May–Oct). The page-aware honest model, 64.4 / 70.4 / 76.9, is an upper reference.
+- Going forward: `data/today/<day>.json` holds the name, tagline, description and media as fetched at 00:05 PT, so honest page snapshots accrue from Oct 25. llm_full should join the honest filter (its prompt carries follower counts).
