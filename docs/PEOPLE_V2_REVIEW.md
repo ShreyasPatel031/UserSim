@@ -166,3 +166,41 @@ To run on the real data (Data Feeder, read-only inputs; output to a new director
 python experiments/people_v2/build_v3.py --root work --out v2b
 python experiments/people_v2/validate_v3.py --dir work/v2b --refetch work/raw/ph_profiles2_refetch/profiles.jsonl.gz --events 'work/ev/*.parquet'
 ```
+
+## Real-data run of build_v3 / validate_v3 (Nov 2) and follow-up
+
+**Reported by Grok Bot** (Data Feeder ran `bbb10429` unmodified; outputs in `gs://…/raw/people_v3/`, which I cannot read): build exit 0;
+persons 20,945, handles 46,688, profiles 26,588, events 316,913; re-fetch used 16,521, gone 7; 281 events-only persons; validate 29 pass,
+1 fail; `no_orphan_events` 0 (was 541); `display_name` null for 280 (was 11,681); handles dated 0.779, profiles 0.621.
+My read of these numbers (arithmetic and logic only, not the files): 16,521 + 7 = 16,528, so the 3 retries succeeded; the events are now
+7,585 above the earlier build (316,913 vs 309,328) while the people table is only the initial 2026-10-28 file, which explains why the
+events-only persons rose from 167 to 281.
+
+**Decision on the failed check.** The failure was `no_wispr_in_ph_text` on `ph:mswulinski` ("I lead growth at Wispr Flow…") and
+`ph:sarthakmalhotra`, reported as genuine re-fetched bios. I agree the check was too strict, but I did not simply allow all re-fetch bios.
+It is now `no_wispr_in_ph_text_on_suspect_rows`: a Wispr mention fails only on a row the old parser could have written (legacy parser, a
+poisoned id 606339/109827, or a poisoned name). Clean fixed-parser rows are listed under `wispr_bios_on_clean_fixed_rows` for a hand
+check, and a new `no_poisoned_ph_user_id` check was added. Tested on a synthetic fixture: the genuine bio passes, a poisoned legacy row with
+a Wispr bio still fails. I have not read the two real bios; "genuine" rests on the reporter.
+
+**Builder changes (also synthetic-tested):** `build_v3.py` now merges all `tables/people` parts (`t/people*.parquet` or
+`t/people/*.parquet`, newest `updated_at` per person) and reads every `raw/ph_profiles2_refetch*/profiles.jsonl*` file (a 200 beats a 404 beats
+a failure). `validate_v3.py --refetch` takes a glob for the same reason.
+
+**Next runs requested (read-only unless stated):**
+1. Merge the 6 later incremental `tables/people` parts into `t/` (the run used only `initial-2026-10-28`), keeping the `ev/*.parquet` set unchanged.
+2. Re-fetch profiles for the 281 events-only people (output `raw/ph_profiles2_refetch2/profiles.jsonl.gz`, same fetcher; about $0.02 at the
+   ~$1 per 16.5k pages measured for the first re-fetch, which is my arithmetic, not a quote).
+3. Rebuild and validate with the new globs: `build_v3.py --root work --out v3b`, then
+   `validate_v3.py --dir work/v3b --refetch 'work/raw/ph_profiles2_refetch*/profiles.jsonl.gz' --events 'work/ev/*.parquet'`. Expected: events-only
+   persons and null `display_name` near zero, all other checks pass.
+4. Hand check, printing PH headline/bio and LinkedIn `extra` for `ph:constanza_hasselmann`, `ph:mswulinski`, `ph:sarthakmalhotra`:
+   ```python
+   import pandas as pd, json
+   Pr = pd.read_parquet("work/v3b/profiles.parquet")
+   for u in ["constanza_hasselmann", "mswulinski", "sarthakmalhotra"]:
+       print(Pr[Pr.person_id == "ph:" + u][["platform", "source", "name", "bio", "extra"]].to_string(max_colwidth=300))
+   ```
+5. Dates: print the key list of one `ph_profiles2` record and the GCS creation times (`gcloud storage ls -l`) of `ph_profiles2`, `x_people`,
+   `x_posts`, `li_apify`, so the 21-38% undated rows can be given a `file_date` quality instead of null.
+6. Still a human job: fill `label_personal_or_company_or_wrong` in `x_handle_audit_100.csv`.

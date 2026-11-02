@@ -2,10 +2,10 @@
 
 Run from a directory that holds the inputs (same layout as build_v2.py; paths are relative to --root):
     raw/ph_profiles.jsonl.gz  raw/ph_profiles_rest.jsonl.gz  raw/ph_profiles2.jsonl.gz
-    raw/ph_profiles2_refetch/profiles.jsonl.gz   (the Nov 2 re-fetch; status 200 rows are used)
+    raw/ph_profiles2_refetch*/profiles.jsonl.gz   (the re-fetches; status 200 rows are used, later files win)
     raw/profile_tabs.jsonl.gz  raw/x_people.jsonl.gz  raw/x_posts.jsonl.gz
     li/li_search.jsonl  li/li_search_retry.jsonl  li/li_apify.jsonl
-    t/people.parquet    ev/*.parquet   (tables/events)
+    t/people*.parquet or t/people/*.parquet (all tables/people parts)    ev/*.parquet   (tables/events)
     python build_v3.py --root work --out v2b        # writes work/v2b/{persons,handles,profiles,events}.parquet + build_report.json
 
 Changes against build_v2.py (numbers refer to the fix list):
@@ -113,19 +113,26 @@ def main(root: str, out: str) -> dict:
     for r in jl(R + "ph_profiles2.jsonl.gz"):
         if r.get("username"):
             p2[r["username"]] = r
-    rf, gone, retry = {}, set(), set()  # fix 1
-    for r in jl(R + "ph_profiles2_refetch/profiles.jsonl.gz"):
-        u = r.get("username")
-        if not u:
-            continue
-        if str(r.get("status")) == "200" and numeric_id(r.get("user_id")) and r.get("name") and r.get("name") not in POISON_NAMES:
-            rf[u] = r
-        elif str(r.get("status")) == "404":
-            gone.add(u)
-        else:
-            retry.add(u)
+    rf, gone, retry = {}, set(), set()  # fix 1; every raw/ph_profiles2_refetch*/profiles.jsonl* file, 200 beats 404 beats other
+    for fn in sorted(glob.glob(R + "ph_profiles2_refetch*/profiles.jsonl*")):
+        for r in jl(fn):
+            u = r.get("username")
+            if not u:
+                continue
+            if str(r.get("status")) == "200" and numeric_id(r.get("user_id")) and r.get("name") and r.get("name") not in POISON_NAMES:
+                rf[u] = r
+            elif str(r.get("status")) == "404":
+                gone.add(u)
+            else:
+                retry.add(u)
+    gone -= set(rf)
+    retry -= set(rf) | gone
     tabs = {r["username"]: r for r in jl(R + "profile_tabs.jsonl.gz") if r.get("username")}
-    v1 = pd.read_parquet("t/people.parquet").set_index("person")
+    parts = sorted(glob.glob("t/people*.parquet") + glob.glob("t/people/*.parquet"))  # initial + incremental parts (tables/people)
+    v1 = pd.concat([pd.read_parquet(f) for f in parts])
+    if "updated_at" in v1:
+        v1 = v1.sort_values("updated_at")
+    v1 = v1.drop_duplicates("person", keep="last").set_index("person")
     E = pd.concat([pd.read_parquet(f) for f in sorted(glob.glob("ev/*.parquet"))]).drop_duplicates(["person", "launch_id", "date", "kind"])
     event_users = set(E.person.astype(str))
     users = sorted(set(old) | set(p2) | set(rf) | gone | retry | set(v1.index) | event_users)  # fix 2
@@ -323,7 +330,7 @@ def main(root: str, out: str) -> dict:
     ev["event_id"] = ev["event_id"].astype("string")
     for name, df in (("persons", P), ("handles", Hd), ("profiles", Pr), ("events", ev)):
         df.to_parquet(f"{out}/{name}.parquet", index=False)
-    report = dict(rows=dict(persons=len(P), handles=len(Hd), profiles=len(Pr), events=len(ev)), refetch=dict(used=len(rf), gone=len(gone), retry=len(retry)),
+    report = dict(people_parts=len(parts), rows=dict(persons=len(P), handles=len(Hd), profiles=len(Pr), events=len(ev)), refetch=dict(used=len(rf), gone=len(gone), retry=len(retry)),
                   persons_with_events_only=int(((~P.has_profile) & P.in_events).sum()), stats=dict(stats), missing_inputs=sorted(set(MISSING)),
                   segments="dropped (not carried over from v1)", built_at=NOW)
     json.dump(report, open(f"{out}/build_report.json", "w"), indent=1)

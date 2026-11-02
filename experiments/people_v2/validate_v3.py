@@ -1,6 +1,6 @@
 """Checks for build_v3.py output. Unlike validate_v2.py, every check here can fail on data the builder did not construct itself:
 run it on the output directory; exit code 1 if any check fails.
-    python validate_v3.py --dir work/v2b [--refetch work/raw/ph_profiles2_refetch/profiles.jsonl.gz] [--events 'work/ev/*.parquet']
+    python validate_v3.py --dir work/v2b [--refetch 'work/raw/ph_profiles2_refetch*/profiles.jsonl.gz'] [--events 'work/ev/*.parquet']
 """
 from __future__ import annotations
 
@@ -51,8 +51,14 @@ def main(d: str, refetch: str | None, events_glob: str | None) -> int:
     check("parser_version_recorded", ex.map(lambda e: bool(e.get("parser_version"))).all())
     check("no_segments_carried", not ex.map(lambda e: "segments" in e).any())
     check("no_poison_names", not P.display_name.isin(POISON_NAMES).any() and not Pr.name.isin(POISON_NAMES).any())
-    check("no_wispr_in_ph_text", not Pr[Pr.platform == "producthunt"].bio.fillna("").str.contains("Wispr", case=False).any(),
-          int(Pr[Pr.platform == "producthunt"].bio.fillna("").str.contains("Wispr", case=False).sum()))
+    # A bio may genuinely say "I lead growth at Wispr Flow". It is poison only on a row the old parser could have written:
+    # legacy parser, a poisoned id, or a poisoned name. Fixed-parser rows with a clean id and name are listed, not failed.
+    bio = ph.bio.fillna("").str.contains("Wispr", case=False)
+    fixed = ex.map(lambda e: e.get("parser_version") in ("refetch-2026-11", "ph_profiles2"))
+    clean = ids.map(lambda v: str(v).isdigit() and str(v) not in ("606339", "109827")) & ~ph.name.isin(POISON_NAMES)
+    check("no_wispr_in_ph_text_on_suspect_rows", not (bio & ~(fixed & clean)).any(), int((bio & ~(fixed & clean)).sum()))
+    res["wispr_bios_on_clean_fixed_rows"] = {"ok": True, "detail": ph[bio & fixed & clean].person_id.tolist()[:50]}  # read by hand
+    check("no_poisoned_ph_user_id", not ids.map(lambda v: str(v) in ("606339", "109827")).any())
     li = Pr[(Pr.platform == "linkedin") & Pr.extra.fillna("").str.contains("Wispr", case=False)]
     res["linkedin_rows_mentioning_wispr"] = {"ok": True, "detail": li.person_id.tolist()[:20]}  # inspect by hand; may be legitimate
     # X handles
@@ -73,12 +79,14 @@ def main(d: str, refetch: str | None, events_glob: str | None) -> int:
     check("has_profile_matches_profiles", set(P[P.has_profile].person_id) == set(ph.person_id))
     res["display_name_null"] = {"ok": True, "detail": int(P.display_name.isna().sum())}
     # the re-fetch must be what the profiles came from
-    if refetch and os.path.exists(refetch):
+    files = sorted(glob.glob(refetch)) if refetch else []  # --refetch is a glob: every re-fetch file the builder read
+    if files:
         rf = {}
-        for line in gzip.open(refetch, "rt"):
-            r = json.loads(line)
-            if str(r.get("status")) == "200":
-                rf[r["username"]] = r
+        for fn in files:
+            for line in gzip.open(fn, "rt"):
+                r = json.loads(line)
+                if str(r.get("status")) == "200":
+                    rf[r["username"]] = r
         got = P[P.profile_parser == "refetch-2026-11"]
         check("every_good_refetch_row_used", set(got.ph_username) == set(rf), len(set(rf) ^ set(got.ph_username)))
         bad = ph[ph.person_id.isin(got.person_id)]
