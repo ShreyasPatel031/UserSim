@@ -364,3 +364,4 @@ Model switches, direction reviews and agenda changes, newest last.
   - Top-up: only for what free quota can't do, whole days first.
   - Scale free daily capacity: more accounts/keys within each provider's terms.
   - Rule from the user: paid top-ups come once or twice a month. Never spend them on what free routes can do.
+- 14:37 UTC Bundle 4 (early-shock step, s_raw uploads, snapshots.py) approved by Shreyas in the PH agent's session and staged (deploy/20261102_b4). VM check: ready=false, clean_days 0/14.
