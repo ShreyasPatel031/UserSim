@@ -279,3 +279,10 @@ Model switches, direction reviews and agenda changes, newest last.
   person-score aggregates. Asked the PH agent to start honest at-launch snapshots (00:05 PT) of makers' and hunter's
   PH and X follower counts. These were strong in E5's run but leaky there; they need ~3–4 weeks to test.
   - Pending: X full days (the $20 top-up).
+- 12:16 UTC Shadow deploy failed its check and was rolled back. Two bugs (fixed, commit 0014d2c). Restaged as
+  20261102_shadow2, same approved content.
+- At-launch follower counts are free: data/today/<day>.json (00:05 PT) has makers' and hunter's followersCount and
+  twitterUsername. Archived from Oct 28, on the VM from Oct 25.
+  - Leak confirmed: later reads are higher for 25/26 makers.
+  - PH agent is building at_launch_followers.
+  - Asked: does the launch-model baseline use late-read inputs? If so, rescore it honestly.
