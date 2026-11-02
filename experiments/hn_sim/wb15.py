@@ -8,7 +8,8 @@ Inputs at 15 min:
   votes    every /newest snapshot by 15 min: latest score, its age, votes per minute, best score, snapshots seen,
            rank on /newest (how fast it is being pushed down = posting volume), best /news rank (Wayback)
   who      who commented in the first 15 min: their record before Jul 1 (caught1h.comments)
-  chain    predicted 15-min score from at-posting inputs (wb_chain idea), fit within each training window
+  ties     early commenters' ties to the submitter, their activity, newcomers (who_deep)
+  chain    predicted 15-min score from at-posting inputs (CHAIN=1; did not add)
 Reported per variant: Caught over all days and over 90%+ coverage days, paired by day vs base.
 
     python wb15.py
@@ -28,6 +29,7 @@ import top100 as H
 import wb_caught as W
 
 A_MIN = 15
+CHAIN = os.environ.get("CHAIN") == "1"            # the chained prediction did not add (+1.3 [-1.7, +4.2]); off by default
 PRM = dict(n_estimators=500, learning_rate=0.03, num_leaves=31, min_child_samples=30, subsample=0.8, subsample_freq=1,
            colsample_bytree=0.8, verbose=-1, random_state=0)
 
@@ -55,6 +57,32 @@ def votes15(Q):
     return out
 
 
+def who_deep(Q, a=A_MIN):
+    """Who commented in the first a minutes, beyond their scout record: their ties to the submitter before Jul 1
+    (comments on the submitter's stories since 2025), their overall activity before Jul 1, newcomers."""
+    cut = pd.Timestamp("2026-07-01", tz="UTC").timestamp()
+    p = H.stories().set_index("post_id")
+    c = pd.read_parquet(os.path.join(H.CACHE, "bq_comments.parquet"), columns=["person", "story_id", "created_at_i"])
+    old = c[(c.created_at_i < cut) & (c.created_at_i >= pd.Timestamp("2025-01-01", tz="UTC").timestamp())]
+    old = old.assign(sub=old.story_id.map(p.author).to_numpy())
+    tie = old.groupby(["person", "sub"]).size()
+    act = old.groupby("person").size()
+    born = Q.set_index("post_id").created_at_i
+    e = c[c.story_id.isin(born.index)]
+    lat = e.created_at_i - e.story_id.map(born).to_numpy()
+    e = e[(lat >= 0) & (lat < a * 60)].drop_duplicates(["person", "story_id"])
+    e = e.assign(sub=e.story_id.map(p.author).to_numpy())
+    e = e[e.person != e["sub"]]
+    e["tie"] = tie.reindex(pd.MultiIndex.from_frame(e[["person", "sub"]])).fillna(0).to_numpy()
+    e["act"] = act.reindex(e.person).fillna(0).to_numpy()
+    g = e.groupby("story_id")
+    D = pd.DataFrame({"wd_n": g.size(), "wd_tied": g.tie.apply(lambda x: (x > 0).sum()), "wd_tie_sum": g.tie.sum(),
+                      "wd_act_mean": g.act.mean(), "wd_act_max": g.act.max(), "wd_new": g.act.apply(lambda x: (x == 0).sum())})
+    D = D.reindex(Q.post_id)
+    D.index = Q.index
+    return D.fillna({"wd_n": 0, "wd_tied": 0, "wd_tie_sum": 0, "wd_new": 0})
+
+
 def main():
     Q = C.Q.merge(pd.read_parquet(os.path.join(H.CACHE, "hist_prior.parquet")), on="post_id", how="left")
     Q = Q.merge(pj_eval.judge_feats(), on="post_id", how="left")
@@ -68,14 +96,19 @@ def main():
     V = votes15(Q)
     y_s = np.log1p(V.v_score.where(V.v_age >= 10))                      # chain target: score at 10-15 min
     base = pd.concat([Q[AT], R, CM[["cm_n", "cm_people", "cm_first"]]], axis=1)
-    variants = {"base": base, "+ votes": pd.concat([base, V], axis=1), "+ votes + who": pd.concat([base, V, WHO], axis=1)}
+    WD = who_deep(Q)
+    variants = {"base": base, "+ votes": pd.concat([base, V], axis=1), "+ votes + who": pd.concat([base, V, WHO], axis=1),
+                "+ votes + who + ties/activity": pd.concat([base, V, WHO, WD], axis=1)}
     days = sorted(d for d in Q.day.unique() if "2026-10-02" <= d <= "2026-10-14")
-    scores = {k: np.full(len(Q), np.nan) for k in list(variants) + ["+ votes + who + chain"]}
+    scores = {k: np.full(len(Q), np.nan) for k in list(variants) + (["+ votes + who + chain"] if CHAIN else [])}
     for d in days:
         tr = (Q.day <= (pd.Timestamp(d) - pd.Timedelta(days=2)).strftime("%Y-%m-%d")).to_numpy()
         te = (Q.day == d).to_numpy()
         for k, X in variants.items():
             scores[k][te] = lgb.LGBMClassifier(**PRM).fit(X[tr], Q.y[tr]).predict_proba(X[te])[:, 1]
+        if not CHAIN:
+            print(f"  {d}: trained on {int(tr.sum())} posts", flush=True)
+            continue
         # chain: predicted 15-min score from at-posting inputs, out-of-fold inside the training window
         ok = tr & y_s.notna().to_numpy()
         pr = np.full(len(Q), np.nan)
