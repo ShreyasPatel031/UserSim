@@ -1025,3 +1025,40 @@ Spearman 0.248 (223 launches); hunter 0.02 (1,583).
   56.7 and 44.4 / 50.0 / 52.5 (Jul–Oct).
 - Simulation runs (popscore day files) were not rescored. They still hold the 204 extra rows; analyses since
   `shock_model` drop them with `dedupe()`.
+
+## Launch-day votes on all boards, and earlier daily reads (Nov 2, `wayback_boards.py`)
+Setup:
+- Inputs: Wayback homepage captures (votes hidden before hour 4) + non-team comments + the pre-launch prior.
+- LightGBM on final log votes, trained on earlier months; tested Aug–Oct.
+- Launches whose day has no capture before the cutoff fall back to prior + comments.
+- Capture coverage is partial: 29% of launches by hour 8, 40% by 12, 55% by 24. No week and no month is fully
+  captured.
+
+**Test 1: rank by predicted final votes at cutoff H, top 3 / 5 / 10 (Δ vs prior, 95% CI)**
+
+| Board (lists) | Prior | H = 8 | H = 12 | H = 24 |
+|---|---|---|---|---|
+| Daily (86 / 86 / 78) | 62.8 / 70.7 / 79.9 | 73.3 / 78.8 / 83.8 (top 3 +10.5, +6.2 to +14.7) | 76.4 / 80.0 / 84.9 (+13.6, +8.5 to +18.6) | 83.3 / 84.9 / 88.1 (+20.5, +15.1 to +26.4) |
+| Weekly (12) | 50.0 / 55.0 / 55.8 | 52.8 / 53.3 / 63.3 | 58.3 / 56.7 / 63.3 | **63.9 / 66.7 / 72.5** (top 10 +16.7, +11.7 to +21.7; top 3 +13.9, −2.8 to +30.6) |
+| Monthly (2–3) | 50.0 / 46.7 / 50.0 | noise | noise | noise |
+
+Daily numbers here mix captured and uncaptured days. On captured days alone, votes give about 95 or more from hour 8
+(previous section).
+
+**Test 2: early daily reads**
+
+| H (days) | Prior | + comments | + comments + first votes | Votes alone |
+|---|---|---|---|---|
+| 2 (86) | 62.8 / 70.7 / 79.9 | 65.9 / 70.7 / 80.4 (top 3 +3.1, −1.6 to +8.1) | same, votes hidden | — |
+| 4 (86) | 62.8 / 70.7 / 79.9 | 67.4 / 72.1 / 80.3 (top 3 +4.7, −0.0 to +9.3) | same, votes hidden | — |
+| 6 (18 captured days) | 51.9 / 67.8 / 78.8 | 61.1 / 70.0 / 80.0 | 68.5 / 85.6 / 89.4 | **83.3 / 96.7 / 91.2** (top 3 +31.5, +18.5 to +42.6) |
+
+**Reading:**
+- Before hour 4, comments add 3 to 5 points on top 3. The first visible votes then dominate.
+- At hour 6, votes alone give 83 / 97 / 91 on 18 days. The fitted blend is worse than votes alone: too few captured
+  days to learn the weights, so the prior pulls it down. Top 3 does not pass 90 before hour 11 on this data.
+- Weekly gains with launch-day votes: top 10 +16.7 at H = 24, interval excluding 0. That is with only 53% of each
+  week's launches captured; full hourly coverage (our live snapshots) is the real test.
+- **Next:**
+  - Whether the API exposes votes before hour 4. The Nov 2 run answers it.
+  - The same model on live hourly snapshots: full coverage, every launch, every hour, from Nov 2.
