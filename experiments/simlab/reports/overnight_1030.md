@@ -1232,3 +1232,19 @@ Same offset Poisson model; the control is day terms only (the day-calibrated wee
 | Weekly top 10 | −1.3 (−2.6 to 0.0) | −1.3 (−3.3 to 0.0) |
 
 - **Verdict:** competitor grounding hurts or does nothing on every list. Daily top 5 is worse with the interval excluding 0, and it cancels the day calibration's weekly top-3 gain. Keep it out of the forecast. Same conclusion as the earlier tests, now against the stronger control.
+
+## Honesty check of the launch-model baseline (Nov 2, `ph_predict/honest.py`)
+The ctrl.py `all` model, same folds and LightGBM, 5 seeds. Leak groups dropped cumulatively. 5,564 launches, 239 days. Daily top 3 / 5 / 10, paired bootstrap over days vs `all`.
+
+| Variant (inputs dropped) | May–Oct | Jul–Oct |
+|---|---|---|
+| all (published baseline) | 66.5 / 73.6 / 81.0 | 65.5 / 73.2 / 81.4 |
+| − followers (9: PH hunter, X maker / hunter / company counts + day ranks) | 66.5 / 73.0 / 80.7 (0.0 / −0.6 / −0.3, all span 0) | 65.8 / 72.3 / 80.8 |
+| − … follows (fol_, seg_: 46 inputs from follow lists read Oct 25, undated) | **64.4 / 70.5 / 77.0** (−2.1 [−4.9, +0.8] / −3.1 [−5.2, −1.0] / −4.0 [−5.4, −2.7]) | **65.0 / 69.6 / 77.5** (−0.6 / −3.6 / −3.8) |
+| − … promo (16: reaction counts read at fetch; also funding / company age) | 62.7 / 70.6 / 77.2 (−3.8 [−6.8, −0.9] / −2.9 / −3.8) | 63.0 / 69.6 / 77.7 |
+| − … x_profile (3) | 62.5 / 70.3 / 77.1 | 63.0 / 69.9 / 77.9 |
+
+- **Yes, the baseline uses post-launch inputs.** Follower counts barely matter (the makers' PH counts weren't model inputs; the hunter's and the X counts move it by ≤0.6). The real leak is **fol_ / seg_**: who follows the team and their segments, from follow lists read Oct 25, undated. People follow makers after a good launch, so for past launches these partly encode the outcome. Dropping them costs −3 to −4 on top 5/10.
+- **Honest pre-launch baseline** (followers + follows dropped): **May–Oct 64.4 / 70.5 / 77.0; Jul–Oct 65.0 / 69.6 / 77.5.** If promo reaction counts are leaky too: 62.7 / 70.6 / 77.2 (lower bound).
+- **Live check** (launch model, live daily scores Oct 27–Nov 1, 6 days): 61.1 / 70.0 / 81.7. That's consistent with the honest numbers, but 6 days give about ±25 points on top 3, so it can't separate them yet.
+- **Consequence:** north-star numbers should be quoted against the honest baseline. Live, fol_ uses follow lists read before the launch (Oct 25), so it is stale but not leaky; its backtest value is overstated. Next: an honest fol_ needs follow snapshots taken before each launch. Data Feeder's daily following fetch (from Nov 2) provides this going forward.
