@@ -209,3 +209,10 @@ Model switches, direction reviews and agenda changes, newest last.
   - HN recorder: second v5 fallback window 08:53.
 - 10:05 UTC Grok Bot: daily upvote refresh approved, Data Feeder setting it up (~700 pages/day). PH agent tasked: after pna_, launch model ± competitor grounding ± pna_, daily top 3/5/10, paired.
 - 10:06 UTC E5 (user request): building E1 generative vote model v1 (simlab/vote_model.py, claude/person-model-v2, exp-2), pool component psx_ vs psa_ (+ pna_), scored daily/weekly top 3/5/10 vs the launch model.
+- 10:20 UTC PH pna_ (no-page, all months; commit 3adab89).
+  - Pool: Spearman +0.025, pool top 3 +3.2.
+  - Sim vs pnx: −1.0 / +0.7 / +0.4, within noise. Ships.
+- Four-way, Jun–Oct, 176 days (competitor gaps cover 46.7%):
+  - Raw launch model 66.7/73.5/81.0; refit alone 66.1/74.1/80.4.
+  - + competitors 65.0/72.7/79.8; + pna 64.6/72.7/80.4; + both 65.0/72.8/80.6.
+  - All within noise vs refit. No change to the pre-launch headline.
