@@ -1157,3 +1157,9 @@ Setup:
 - Turnout vs residual: engagers −0.03, X-tied PH people −0.03, 48 h tease +0.03 (noise ±0.15).
 - Reading so far: X engagement strongly marks *who* votes, but at launch level it hasn't shown any turnout signal beyond the launch model.
 - Full-day coverage: 0 of 25 October days have every launch covered. Launches with no maker or hunter X handle (about half) count as real zeros. Fetch order sent to Grok Bot (launch ids only, gs://…/tmp/ph_ops/x_fetch_order.json): 19 open launches would complete Oct 25, 5, 10, 23 and 24. Most open launches need a fresh window ending on their own launch day.
+
+## Daily check, Nov 2 (run 00:10 PT)
+- Steps: all ok except `people`, which failed: 4,420 of 4,420 profile pages blocked (status != 200). Profile pages have returned 0 items since Oct 30; the step now reports that as a failure. list_check for Nov 1: 0 missing. 17 launches at 00:10 PT; launch-model and simulation forecasts both written.
+- Nov 1 forecast vs final ranks (launch model): top 3 2/3, top 5 3/5, top 10 8/10. The simulation forecast is scored from tomorrow (first forecast is Nov 2).
+- Spend Nov 2: Gemini $0.45, GCP VM $0.07, DataImpulse $0.03 (no 407).
+- Monday backtest (32 days), daily top 3/5/10: simulation only 46.7 / 59.9 / 68.3; launch only 64.0 / 70.5 / 76.3; both 58.8 / 67.8 / 74.5; current 64.8 / 71.6 / 76.8.
