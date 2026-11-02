@@ -1276,3 +1276,9 @@ The ctrl.py `all` model, same folds and LightGBM, 5 seeds. Leak groups dropped c
 - The live simulation forecast used makers' and hunter's PH followers (nsa_ reach), fol_, X follower counts and all of promo_.
 - shadow_e1v2's inputs include three follower counts and promo_reactions.
 - Fixed in code, not deployed: model.py `HONEST=1` by default (the honest column filter in `cols`, for training and live alike), and sim_forecast.py applies the same filter and drops nsa_ reach. shadow_daycal inherits whatever the live launch model uses. shadow_e1v2 needs an honest retrain (audience = dated promo posts plus at-launch follower counts once those accumulate), or it should stay off.
+- **Deployed and verified (Nov 2):**
+  - 20261102_shadow2, 12:31 UTC: the shadow step, weekly scoring, the people step reading Data Feeder's delivery.
+  - 20261102_b3, 13:02 UTC: honest model.py (HONEST=1) and sim_forecast.py, the at_launch step, shadow default daycal (E1 v2 off).
+  - On the VM: all 7 md5s match; the STEPS line includes at_launch and shadow; one hourly recorder, untouched.
+  - at_launch_followers backfilled: 558 rows, Oct 25–Nov 2, 13–31 launches a day, no null counts.
+  - Nov 3 is the first run on the honest live forecast; its scores compare with the honest backtest (64.4 / 70.4 / 76.9).
