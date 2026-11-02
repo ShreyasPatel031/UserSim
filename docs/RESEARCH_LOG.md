@@ -478,3 +478,7 @@ Model switches, direction reviews and agenda changes, newest last.
 - HN agent's caution, accepted: a Quality News page exists only for stories that ended ≥3 points, so it isn't known at
   15 min and can't be a Caught input (fills leaked at AUC 0.67–0.88 before). QN is for E5's dynamics only. Request 2240
   reordered: Wayback /newest 2025 first.
+- 22:41 UTC E5 HN simulator round 2 (/newest exposure, hour rates, POST inputs): 22.7% vs wb15 29.6% (−7.0); blends
+  −1.6 to −2.3; over at-posting alone +1.0. Calibration off (ΣP 1,177 vs 388 winners). The archive can't reconstruct
+  the front page. Stopped on October. Next: live-page simulator on hn_minute (scores from ~Nov 5–6), and test whether
+  the weak per-vote weight is a QN selection artifact on the outcome-independent Wayback 2025 archive.
