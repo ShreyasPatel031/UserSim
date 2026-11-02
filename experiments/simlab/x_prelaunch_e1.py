@@ -158,6 +158,11 @@ def main(cache):
         rows = [(hit(g, "s_x", k, "votes") - hit(g, "s_ctrl", k, "votes")) for d, g in T.groupby("day") if d in full_days and d in coef and len(g) >= k]
         A[f"daily_top{k}"] = paired(rows, rng)
     res["A_full_days"] = {"days": sorted(d for d in full_days if d in coef), **A}
+    res["A_per_day"] = {d: {f"top{k}": [hit(g, "s_x", k), hit(g, "s_ctrl", k)] for k in (3, 5, 10) if len(g) >= k} | {"launches": int(len(g))}
+                        for d, g in T.groupby("day") if d in full_days and d in coef}
+    res["A_wins_ties_losses"] = {f"top{k}": [sum(v[f"top{k}"][0] > v[f"top{k}"][1] for v in res["A_per_day"].values() if f"top{k}" in v),
+                                             sum(v[f"top{k}"][0] == v[f"top{k}"][1] for v in res["A_per_day"].values() if f"top{k}" in v),
+                                             sum(v[f"top{k}"][0] < v[f"top{k}"][1] for v in res["A_per_day"].values() if f"top{k}" in v)] for k in (3, 5, 10)}
     scored_full = [d for d in sorted(full_days) if d in coef]
     T["week"] = pd.to_datetime(T.day).dt.strftime("%G-W%V"); T["mon"] = T.day.str[:7]
     res["A_by_month"] = {m: {f"daily_top{k}": [round(100 * float(np.mean([hit(g, "s_x", k) for d, g in T[T.mon == m].groupby("day") if d in scored_full and len(g) >= k])), 1),
