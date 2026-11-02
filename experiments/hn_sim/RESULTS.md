@@ -719,3 +719,5 @@ For each posting day Oct 2-14: train Jul 1 .. d-2, score day d at 15 min. 12,788
 | + votes + who + predicted 15-min score | 26.8%, +1.3 [-1.7, +4.2] | 27.9%, +1.7 [-1.1, +5.3] |
 Early votes plus who commented early is the first significant gain at 15 min. The chained prediction does not add on
 top (its +7.0 at posting on Oct 9-14 was a 4-day result).
+Early commenters' ties to the submitter / activity / newcomers on top of votes + who: 28.4% (+2.8 [+0.5, +5.2] vs base;
++0.0 vs votes + who). No extra gain.
