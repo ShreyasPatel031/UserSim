@@ -316,3 +316,4 @@ Model switches, direction reviews and agenda changes, newest last.
   - Caught at 15 min: 28.4% → 28.4% (+0.0 [−2.2, +2.3]).
   - Late risers are seen outside HN 10% of the time vs 6% of non-winners. No X spec.
   - Requested a Fable direction review for the HN agent via Grok Bot (20261102T1235_hn_fable_review).
+- 12:40 UTC shadow2 deployed 12:31 (verified). Bundle 3 (honest model, at_launch + backfill, E1 v2 shadow off) approved by Shreyas in the PH agent's session and staged (deploy/20261102_b3). The Nov 3 run is the first honest live forecast if b3 deploys before 00:05 PT.
