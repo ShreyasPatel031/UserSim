@@ -46,7 +46,7 @@ a target out of reach. No agent writes or repeats a limiting statement about the
 - Coverage gate (`ph_predict/coverage_check.py`) before any scoring run.
 - Results go to `experiments/simlab/reports/` with the commit.
 - Budget:
-  - GCP $50/day.
+  - GCP $50/day, and spend it: one VM per research session (exp-1 PH agent, exp-2 E5, hn-sim-1 HN agent), stopped when idle; Grok Bot writes a daily spend readout to raw/spend/. Sessions never share a VM.
   - DataImpulse / Apify $30/week.
   - Data Grok Bot buys: $50/month.
   - Gemini for model calls in pipelines and experiments. Claude Code sessions (the subscription) do the research work.
