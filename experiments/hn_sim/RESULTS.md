@@ -657,3 +657,20 @@ winners), the winners' latest /newest score (median age 38 min) is median 2 vs 1
 0.608 (votes per minute), 0.505 (comments). Where the 681 test winners not on the front page at 1 h land: on the list of
 their posting day 42%, the next day 25%, 2+ days later (re-ups) 32%. Winners on the front page by 1 h: 93% / 7% / 0%.
 Half the winners look like flops in their first hour; they are late risers and second-chance re-ups.
+
+### Winner types at posting (wintypes.py; test 641 fast / 461 late risers / 221 second-chance re-ups)
+| At posting | Caught | vs |
+|---|---|---|
+| a current Jul-Aug model | 21.4% [19.3, 23.4] | |
+| b a + type record (domain / site / author: same-day, next-day, re-up wins) | 22.3% | +0.9 [-0.4, +2.4] vs a |
+| c one model per type, summed | 19.8% | -1.6 [-3.2, +0.2] vs a |
+| b blended with the 2025+ model | 23.0% | -0.2 [-1.5, +1.1] vs best (23.2%) |
+| c blended with the 2025+ model | 22.4% | -0.8 [-1.9, +0.4] vs best |
+Caught by type (a): fast 140/641 (22%), late 100/461 (22%), re-up 43/221 (19%); c + history: 147 / 110 / 40. The
+at-posting model already catches each kind at about the same rate; separating them does not help.
+
+### Same link, posted again (2025-01-15 .. 2026-10-14; URLs normalised; postings 1+ day apart)
+55,575 URLs posted 2+ times (136,498 posts). Win rate (any daily top 30): all posts 3.28%, reposted URLs 3.03%.
+57,243 consecutive pairs: P(second wins | first won) 10.3% (n 611; HN blocks many recent dupes); P(second wins |
+first lost) 3.9%; P(first won | second wins) 2.8% (n 2,273): of the repostings that won, 97% had flopped before
+with the same link. At posting the link's content is the same both times; what differed was the moment and who posted.
