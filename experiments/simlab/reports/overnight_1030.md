@@ -862,3 +862,36 @@ removed.
 - **Next for weekly:** model the shock on *total* votes (the launch model's residual, raw and by day) and predict it
   the same way, because the cross-day signal is in the outside-pool votes. Hour-1/2 vote snapshots (Nov 9) read it
   directly.
+
+## Launch-day forecast from real intraday votes: Wayback homepage captures (Nov 2, `wayback_launchday.py`, Jul–Oct)
+**Data:** `raw/ph_homepage_archive/parsed.jsonl` (Data Feeder). 467 homepage captures on 71 days, at random hours,
+showing that day's posts with votes at capture time; plus archived daily leaderboard pages for 82 days (near-final).
+
+**Verification** (the archive ends Oct 28, before the hourly snapshots start on Oct 31, so the check is against our
+stored finals):
+- Leaderboard pages vs our final votes: median ratio 1.00; 60% within 5%.
+- Top 3 on the page matches our stored daily rank on 95.5% of days.
+- launchDayScore of past days vs our finals: median 0.973.
+- **Votes are hidden for the first 4 hours.** Every post shows 0 votes in captures before hour 4 (852 + 970 rows);
+  from hour 4 every post has a count.
+
+**Backtest:** the latest capture per day in each bucket of hours since 00:00 PT. Daily top 3 / 5 / 10 against the
+final rank, with a bootstrap over days.
+
+| Hours (days) | Votes at capture | Pre-launch prior | Equal-rank blend − prior, top 3 |
+|---|---|---|---|
+| 0–2 (16) | 27.1 / 35.0 / 50.0 (votes hidden) | 60.4 / 68.8 / 75.0 | 0.0 |
+| 2–4 (18) | 24.1 / 35.6 / 52.2 (votes hidden) | 57.4 / 67.8 / 77.8 | 0.0 |
+| **4–8 (29; median 6.2 h)** | **85.1 (78.2–92.0) / 95.2 (91.7–97.9) / 91.8 (88.9–94.6)** | 60.9 / 72.4 / 79.6 | +21.8 (+16.1 to +27.6) |
+| **8–12 (29; median 11.3 h)** | **93.1 (87.4–97.7) / 95.2 (91.7–97.9) / 96.2 (93.8–98.3)** | 60.9 / 71.0 / 76.7 | +18.4 |
+| 12–24 (51; median 21.7 h) | 96.7 / 97.3 / 97.8 | 61.4 / 70.6 / 80.2 | +20.3 |
+
+**Reading (launch-day claim, reported apart from pre-launch):**
+- From the moment Product Hunt shows votes (hour 4), the votes alone give daily top 5 and top 10 above 90. Top 3 is
+  85 at a median 6 h and 93 at a median 11 h.
+- The equal-weight blend with the prior is worse than votes alone after hour 4. The prior only matters before votes
+  are visible.
+- Caveats: 29 days per bucket and one capture per day, at random hours. `votes` falls back to `latestScore` when the
+  displayed count is absent.
+- **Open question:** do our API snapshots see votes in hours 0–4, when the page hides them? Nov 1's recorder started at
+  hour 7. The Nov 2 run (from 00:05 PT) will answer it.
