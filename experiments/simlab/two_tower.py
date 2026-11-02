@@ -35,6 +35,9 @@ EPOCHS = int(os.environ.get("EPOCHS", "40"))
 LOSS = os.environ.get("LOSS", "both")       # both | bce | list
 PATIENCE = int(os.environ.get("PATIENCE", "3"))
 D = int(os.environ.get("DIM", "64"))
+DROP = float(os.environ.get("DROPOUT", "0"))
+WD = float(os.environ.get("WD", "1e-5"))
+LR = float(os.environ.get("LR", "1e-3"))
 HLEN = 64
 AGE_EDGES = np.array([1, 2, 4, 8, 15, 30, 60, 120, 240, 480])
 
@@ -136,13 +139,13 @@ def make_net(data, n_bias):
             s.team = nn.Embedding(data.n_team, 32, padding_idx=0); s.topic = nn.Embedding(data.n_topic, 16, padding_idx=0)
             s.emb = nn.Linear(384, 64); s.page = nn.Sequential(nn.Linear(data.n_page, 64), nn.ReLU())
             s.wday = nn.Embedding(7, 8)
-            s.launch = nn.Sequential(nn.Linear(32 + 16 + 64 + 64 + 8 + 1, 128), nn.ReLU(), nn.Linear(128, D))
+            s.launch = nn.Sequential(nn.Dropout(DROP), nn.Linear(32 + 16 + 64 + 64 + 8 + 1, 128), nn.ReLU(), nn.Dropout(DROP), nn.Linear(128, D))
             s.kind = nn.Embedding(2, 8); s.age = nn.Embedding(len(AGE_EDGES) + 2, 16, padding_idx=0)
             s.hproj = nn.Linear(D + 8 + 16, D); s.query = nn.Parameter(torch.randn(D) * 0.1)
-            s.person = nn.Sequential(nn.Linear(D + 2, 128), nn.ReLU(), nn.Linear(128, D))
+            s.person = nn.Sequential(nn.Linear(D + 2, 128), nn.ReLU(), nn.Dropout(DROP), nn.Linear(128, D))
             if ATT:
                 s.tq = nn.Linear(D, D); s.person_t = nn.Sequential(nn.Linear(3 * D + 2, 128), nn.ReLU(), nn.Linear(128, D))
-            s.bias = nn.Sequential(nn.Linear(n_bias, 64), nn.ReLU(), nn.Linear(64, 1))
+            s.bias = nn.Sequential(nn.Linear(n_bias, 64), nn.ReLU(), nn.Dropout(DROP), nn.Linear(64, 1))
             s.b0 = nn.Parameter(torch.zeros(1))
             s.register_buffer("T_team", torch.from_numpy(data.team)); s.register_buffer("T_topic", torch.from_numpy(data.topic))
             s.register_buffer("T_emb", torch.from_numpy(data.emb)); s.register_buffer("T_page", torch.from_numpy(data.page))
@@ -206,7 +209,7 @@ def group_loss(logits, y, pi, n_groups):
 def fit_predict(train, test, data, bias_cols, seed=0, log=print):
     import torch
     torch.manual_seed(seed); np.random.seed(seed)
-    net = make_net(data, len(bias_cols)); opt = torch.optim.AdamW(net.parameters(), lr=1e-3, weight_decay=1e-5)
+    net = make_net(data, len(bias_cols)); opt = torch.optim.AdamW(net.parameters(), lr=LR, weight_decay=WD)
     rng = np.random.default_rng(seed)
     groups = train.gi.unique(); rng.shuffle(groups); nval = max(200, len(groups) // 10)
     val, trn = groups[:nval], groups[nval:]
@@ -385,7 +388,7 @@ def run(workers):
             d = P[ref].merge(P[c], left_index=True, right_index=True, suffixes=("", "_b")); q = Q[ref].merge(Q[c], left_index=True, right_index=True, suffixes=("", "_b"))
             summ[c][ref[2:] + "_minus_pooled"] = {"top3_hit": [round(100 * v, 1) for v in ci(d.hit - d.hit_b, rb)], "auc": ci(d.auc - d.auc_b, rb),
                                                   "pool_spearman": ci(q.spearman - q.spearman_b, rb), "pool_top3": [round(100 * v, 1) for v in ci(q.top3 - q.top3_b, rb)]}
-    res_out = {"config": {"train": TRAIN, "wide": WIDE, "att": ATT, "loss": LOSS, "epochs": EPOCHS, "patience": PATIENCE, "dim": D, "hlen": HLEN}, "summary": summ, "months": res}
+    res_out = {"config": {"train": TRAIN, "wide": WIDE, "att": ATT, "loss": LOSS, "epochs": EPOCHS, "patience": PATIENCE, "dim": D, "hlen": HLEN, "dropout": DROP, "wd": WD, "lr": LR}, "summary": summ, "months": res}
     json.dump(res_out, open(f"{HERE}/reports/two_tower{TAG}.json", "w"), indent=1)
     print(json.dumps(summ, indent=1))
 
