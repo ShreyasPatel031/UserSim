@@ -349,3 +349,8 @@ Model switches, direction reviews and agenda changes, newest last.
     captures), so the re-up work is live-only. Passed to the HN agent.
   - people_v2 v3h build (PR #141 stream) passed 41/41, no change vs v3g. Not ours to act on.
   - E5's competitor experiment waits for a go-ahead in its own session.
+- 14:17 UTC E5 competitor outcomes (cmp_outcomes.md): fails.
+  - 68.8% coverage.
+  - Daily top 3: −1.1 [−3.0, +0.8].
+  - Log-lik: −0.43 (overfits).
+  - Competitor grounding, as outcomes or page gaps, doesn't help the pre-launch daily ranking. It stays an internal tool.
