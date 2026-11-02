@@ -428,3 +428,14 @@ Model switches, direction reviews and agenda changes, newest last.
   - Boards: within ±0.8 (coverage too small).
   - Stars (~9% own repos) land ~23:00–00:00 UTC.
   - The A1 fetch on usersim-pipeline waits for Shreyas's OK in the PH session (production VM + production PH key).
+- 20:45 UTC Pace reset after the user's feedback (one day: PH daily 0, HN +1–2).
+  - Diagnosis:
+    - Too many small refits of the same inputs.
+    - Serial waiting on data and approvals.
+    - Idle VMs and budget.
+    - The leak audit came last.
+  - Changes:
+    - E5 builds an HN front-page dynamics simulator: vote arrival by exposure + the rank formula, Monte Carlo from
+      15 min.
+    - HN agent scores live Nov 2 per-minute data now (not Nov 5).
+    - PH: A1 team history needs Shreyas's OK; stars land tonight.
