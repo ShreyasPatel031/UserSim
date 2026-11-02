@@ -391,3 +391,4 @@ Model switches, direction reviews and agenda changes, newest last.
     ETA ~21:00 UTC); no token needed.
   - HN agent told to use the prior-day counts only (the posting day would leak).
 - 17:15 UTC X go/no-go hourly: 77 covered launches, full days Oct 5/23/24/25. 3 scored days, daily top 3 +11.1 [0, +33.3] = one extra hit. Insufficient (3 of 10 days needed).
+- 17:20 UTC Sent Grok Bot the full-days fetch list (20261102T1720_x_fulldays_list.json, from dm_gate open_by_day). 43 open launches complete Oct 10/22/18/3/12/2, giving 10 full days. All 251 open launches complete Oct 1–25. ~$0.35 for the first 10 days, ~$2 for all of October at the measured rate.
