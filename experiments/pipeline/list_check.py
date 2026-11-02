@@ -56,7 +56,8 @@ def refetch(day, write=True):
         cur = None
         while True:
             p, _ = C.gql({"a": a, "b": b, "c": cur}, q)
-            for e in p["edges"]:
+            for e in C.on_day([e["node"] for e in p["edges"]], d):
+                e = {"node": e}
                 if str(e["node"]["id"]) not in have:
                     api.append(e["node"]); have.add(str(e["node"]["id"])); added.append(e["node"]["name"])
             if not p["pageInfo"]["hasNextPage"]:
