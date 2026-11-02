@@ -312,3 +312,7 @@ Model switches, direction reviews and agenda changes, newest last.
   - The live model and the shadow use the dropped inputs. Bundle 3 (honest model, at_launch step, e1v2 shadow off) goes
     to Shreyas.
 - 12:28 UTC E5 accepts the leakage note: the shadow_e1v2 package is invalid (4 leaky inputs). If shadow2 deploys as is, shadow_e1v2 rows are ignored; bundle 3 switches it off. Honest E1 retrain waits for Shreyas.
+- 12:31 UTC HN outside traction (Reddit/Lobsters/Techmeme/arXiv/RSS/X sample) before posting + 15 min.
+  - Caught at 15 min: 28.4% → 28.4% (+0.0 [−2.2, +2.3]).
+  - Late risers are seen outside HN 10% of the time vs 6% of non-winners. No X spec.
+  - Requested a Fable direction review for the HN agent via Grok Bot (20261102T1235_hn_fable_review).
