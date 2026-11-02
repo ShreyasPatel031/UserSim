@@ -394,12 +394,32 @@ def run(workers):
 
 
 # ---------------------------------------------------------------- stage 4: launch-level features from the whole population (as popscore phase B)
-POP = os.path.join(TT, "pop" + TAG)
+
+
+ENS = os.environ.get("ENS") == "1"   # features: score with the mean of the net and the all-months LightGBM (the s_ens column)
+POP = os.path.join(TT, "pop" + TAG + ("_ens" if ENS else ""))
+
+
+def gbm_all(m):
+    """The all-months LightGBM of month m exactly as month() fits it: the same seeded samples drawn in the same order."""
+    import lightgbm as lgb
+    prev = TRAIN_MONTHS[TRAIN_MONTHS.index(m) - 1] if m in TRAIN_MONTHS else "2026-09"
+    months = [M for M in TRAIN_MONTHS if M < m]
+    rng = np.random.default_rng(0)
+    te_full = load_rows(m, "test"); sample(te_full, 200, rng)
+    hand = [c for c in te_full.columns if c not in ("person", "day", "id", "y", "w", "g")]
+    trs = {M: load_rows(M, "train") for M in months}
+    sample(trs[prev], 300, rng)
+    tr_all = pd.concat([sample(t, 300, rng) for t in trs.values()])
+    kw = dict(n_estimators=400, learning_rate=0.05, num_leaves=31, min_child_samples=50, colsample_bytree=0.5, verbose=-1, n_jobs=4)
+    return lgb.LGBMClassifier(**kw).fit(tr_all[hand], tr_all.y), hand
 
 
 def score_day(d):
     """Everyone active in the 30 days before d (weight = share of those days active), scored on every launch of d with
-    the month's net (trained on months before d's month), summed per launch exactly as popscore.score_day."""
+    the month's net (trained on months before d's month), summed per launch exactly as popscore.score_day. With ENS=1
+    the score is the mean of the net and the month's all-months LightGBM on the full hand features (collaborative
+    filtering and category priors cut at the start of the previous month, as the test tables are)."""
     import torch
     from . import choice, popscore as PS
     path = f"{POP}/day_{d}.parquet"
@@ -411,8 +431,20 @@ def score_day(d):
     D = choice.rows(day_from=d, day_to=d, all_people=True)
     if not len(D):
         return d, 0
-    D = PS.tie_features(D); D["id"] = D.id.astype(str)
-    D["p"] = predict(net, art, D, data); D["wp"] = D.w * D.p
+    if ENS:
+        cut = PS.month_start(d[:7], 1)
+        D = PS.featurize(D, G["cf"][d[:7]], cut); D, _ = PS.page_cols(D)
+    else:
+        D = PS.tie_features(D)
+    D["id"] = D.id.astype(str)
+    D["p_tt"] = predict(net, art, D, data)
+    if ENS:
+        mdl, hand = G["gbm"][d[:7]]
+        D["p_gbm"] = mdl.predict_proba(D[hand].astype(np.float32))[:, 1]
+        D["p"] = (D.p_tt + D.p_gbm) / 2
+    else:
+        D["p"] = D.p_tt
+    D["wp"] = D.w * D.p
     by = D.groupby("person").p
     D["ws"] = D.w * D.p / by.transform("sum") * by.transform("sum").clip(upper=3)
     rk = by.rank(ascending=False, method="first")
@@ -421,7 +453,8 @@ def score_day(d):
     for x, g in D.groupby("id"):
         out.append({"id": x, "day": d, "psn_ev": g.wp.sum(), "psn_fans": np.sort(g.wp.values)[-100:].sum(),
                     "psn_ev_ties": g.wp[g.backed > 0].sum(), "psn_reach": g.w.sum(), "psn_pmax": g.p.max(),
-                    "psn_share": g.ws.sum(), "psn_top1": g.w1.sum(), "psn_top3": g.w3.sum()})
+                    "psn_share": g.ws.sum(), "psn_top1": g.w1.sum(), "psn_top3": g.w3.sum(),
+                    "tt_ev": (g.w * g.p_tt).sum(), "gbm_ev": (g.w * g.p_gbm).sum() if ENS else np.nan})
     pd.DataFrame(out).to_parquet(path)
     return d, len(D)
 
@@ -433,17 +466,22 @@ def features(workers):
     """psv_features.json: the two-tower's launch-level features in the psr_features.json format, for every day whose
     month has a trained net (run first). Day files land in cache/tt/pop/day_<d>.parquet (pool_check.py can read them)."""
     from . import popscore as PS, store, harness
-    assert not WIDE, "features: the population pass computes tie features only (WIDE=0 nets)"
+    assert ENS or not WIDE, "features: without ENS the population pass computes tie features only (WIDE=0 nets)"
     os.makedirs(POP, exist_ok=True); PS.load(); harness.baseline()
     from .page_taste import traits
     traits(); G["data"] = Data()
     nets = {f[4:11] for f in os.listdir(TT) if f.startswith("net_") and f.endswith(TAG + ".pt")}
     days = sorted(d for d in PS.G["lineup"] if d[:7] in nets and d <= "2026-10-24")
+    if ENS:   # fitted once in the parent, shared by the forked workers
+        G["cf"] = {M: PS.fit_cf(PS.month_start(M, 1)) for M in sorted(nets)}
+        G["gbm"] = {M: gbm_all(M) for M in sorted(nets)}
+        print("fitted cf and all-months LightGBM for", sorted(nets), flush=True)
     with mp.get_context("fork").Pool(workers) as pool:
         for k, r in enumerate(pool.imap_unordered(score_day, days)):
             if k % 20 == 0:
                 print("scored", k, "of", len(days), r, flush=True)
     S = pd.concat([pd.read_parquet(f"{POP}/day_{d}.parquet") for d in days if os.path.exists(f"{POP}/day_{d}.parquet")])
+    S.to_parquet(f"{POP}.parquet")
     S = S.rename(columns={c: "psv_" + c[4:] for c in S.columns if c.startswith("psn_")})
     cols = [c for c in S.columns if c.startswith("psv_")]
     json.dump({str(r["id"]): {c: float(r[c]) for c in cols} for r in S.to_dict("records")}, open(os.path.join(store.RAW, "psv_features.json"), "w"))
