@@ -953,3 +953,41 @@ simulation + predicted shock, Jun–Oct, daily top 3 / 5 / 10. The launch model 
   - Prevention, commit `4f908e9`, bundle `20261102_lock`: `run_daily.sh` takes an exclusive lock
     (`flock -n`, inherited by the recorder), so a second start exits. `hourly.py` writes at most one snapshot per UTC
     hour per day (file lock + existing-hour check). Both tested.
+
+## Second push on the surge predictor: total-vote target and unused inputs (Nov 2, `simlab/shock_extra2.py`, May–Oct)
+**Coverage of the new inputs** (share of launches):
+- total-surge history, makers: 11.0%; hunter: 30.8%;
+- pool-shock history, makers: 8.7%;
+- Wayback velocity history: 12.5%;
+- makers' X posts in the 7 days before launch: 5.1%.
+
+**Persistence of the total-vote surge** (final log votes minus the launch model): makers with 2+ earlier launches
+Spearman 0.248 (223 launches); hunter 0.02 (1,583).
+
+| Step (cumulative) | Pool-shock target: Spearman, Δ (95% CI) | Total-surge target: Spearman, Δ (95% CI) |
+|---|---|---|
+| Base (launch inputs + turnout + pool history) | 0.501 | 0.007 |
+| + total-surge history | 0.499, −0.002 (−0.008 to +0.005) | 0.005, −0.002 (−0.022 to +0.018) |
+| + Wayback velocity history | 0.499, −0.000 (−0.005 to +0.005) | −0.005, −0.009 (−0.019 to −0.000) |
+| + makers' X posts | 0.495, −0.004 (−0.010 to +0.001) | −0.002, +0.003 (−0.009 to +0.014) |
+
+**Stage 2, daily top 3 / 5 / 10, Jun–Oct.** The launch model scores 65.3 / 73.1 / 81.5.
+
+| | Top 3 / 5 / 10 | Top 3 vs launch model (95% CI) |
+|---|---|---|
+| Sim + predicted pool shock, base | 57.5 / 69.0 / 76.0 | −7.8 (−12.0 to −3.9) |
+| Sim + predicted pool shock, all blocks | 57.0 / 70.5 / 76.0 | −8.3 (−12.2 to −4.1) |
+| Launch model + predicted total surge, base | 66.4 / 72.0 / 81.0 | +1.1 (−1.1 to +3.4) |
+| Launch model + predicted total surge, all blocks | 65.7 / 72.3 / 81.8 | +0.5 (−1.6 to +2.5) |
+
+**Verdict:**
+- No block passes the gate on either target.
+- The total-vote surge is unpredictable from pre-launch inputs (Spearman ≈ 0.0). It is by construction what the
+  launch model can't explain from those same inputs. Team history of it persists for repeat makers (0.25), but they
+  are 4% of launches, too few to move the day-level metric.
+- X posts cover only 5% of launches.
+- Pre-launch daily top 3 / 5 / 10 does not move (launch model + surge within ±1.1).
+- The pre-launch inputs in hand are exhausted. The next pre-launch signal has to be new data about the makers'
+  outreach, with wider coverage: the X engagement sample (queued), and the competitor-audience reviewers (pilot
+  running, nothing delivered yet).
+- The launch-day route already clears 90 on daily top 5 / 10 from hour 4 (Wayback votes).
