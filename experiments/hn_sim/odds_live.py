@@ -200,12 +200,17 @@ def score(rows: pd.DataFrame, now: float | None = None) -> pd.DataFrame:
     past = P[P.post_id.isin(ei.index) & (P.points >= 3)]
     past = past.assign(_r=ei[past.post_id].to_numpy()).sort_values("_r")
     PE = np.asarray(emb[past._r.to_numpy()], np.float32)
-    S = E @ PE.T
-    k = np.argpartition(-S, 30, axis=1)[:, :30]
+    k, ks = [], []
+    for i in range(0, len(E), 100):                     # in chunks: rows x past titles does not fit in memory at once
+        S = E[i:i + 100] @ PE.T
+        kk = np.argpartition(-S, 30, axis=1)[:, :30]
+        k.append(kk)
+        ks.append(np.take_along_axis(S, kk, 1).mean(1))
+    k, ksim = (np.vstack(k), np.concatenate(ks)) if k else (np.zeros((0, 30), int), np.zeros(0))
     lp = np.log1p(past.points.to_numpy(np.float32))
     t30 = past.post_id.isin(set(lists().query("rank <= 30").post_id)).to_numpy().astype(np.float32)
     X["knn_lp"], X["knn_100"] = lp[k].mean(1), (past.points.to_numpy()[k] >= 100).mean(1)
-    X["knn_t30"], X["knn_sim"] = t30[k].mean(1), np.take_along_axis(S, k, 1).mean(1)
+    X["knn_t30"], X["knn_sim"] = t30[k].mean(1), ksim
     # votes so far, for posts already up (Quality News series)
     age_min = (now - rows.created_at_i.to_numpy()) / 60
     reached = [max([a for a in AGES.values() if a <= m] or [0]) if pid > 0 else 0 for m, pid in zip(age_min, rows.post_id)]
