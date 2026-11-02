@@ -279,3 +279,28 @@ new check fails when a cell is set to "NaN". **Not yet run on the real data**, s
 **Next run (Data Feeder):** rebuild as v3c with the current branch (the `NaN` fix) and the same inputs, validate, and send back (1) the count of
 `"NaN"` strings per profile column in v3b (`(Pr[c]=="NaN").sum()`), (2) the v3c validation, (3) the events count by `platform, kind` for v3 versus v3b.
 Still open: the X-handle rule (needs the labeled audit CSV on the branch), real labels, and segments.
+
+## X-handle audit: checked against the labeled file (`docs/x_handle_audit_labeled/`, commit eaf1e8ae)
+
+The CSV matches its README and Grok Bot's summary: 100 rows, match 72 (55 high, 17 med), mismatch 13, unsure 15 (9 suspended, 6 not found).
+Labels are one automated pass by rule plus manual review, not double-checked, so this is draft evidence. My split by source (computed from the CSV):
+
+| Rows | Source | n | match | mismatch | unsure | match among decided |
+|---|---|---|---|---|---|---|
+| all | own PH link (0.95) | 84 | 63 | 8 | 13 | 63 / 71 = 89% |
+| all | PH `twitter` field only (0.8) | 16 | 9 | 5 | 2 | 9 / 14 = 64% |
+| without suspended and the 8 suspect-cluster handles | own PH link | 67 | 55 | 8 | 4 | 55 / 63 = 87% |
+| same | PH `twitter` field only | 16 | 9 | 5 | 2 | 9 / 14 = 64% |
+
+What this supports and what it does not:
+- **Own links are more reliable than the field-only handles** (87-89% against 64% of decided rows). The field-only group is small (14 decided), so
+  its interval is wide (roughly 40-85%). Suggestion, a policy call: give field-only handles a confidence below the 0.8 threshold until validated,
+  so downstream agents using `>= 0.8` get own links only. Not implemented.
+- **It does not test the conflict rule.** The 312-316 conflicts (own link and PH field disagree) are demoted to 0.2 and are not in this sample. The only evidence
+  is one anecdote, `ph:subhh`, where the self-link matched. To decide the rule, label about 50 random conflict cases.
+- **Company accounts are real**: 13 of 100 handles are company, product or brand accounts (10 labelled with a name-similar-looking mismatch such as
+  `ph:baronnotary`, `ph:davidee`, `ph:shuaiguan`, which scored name similarity 1.0), and 1 handle was reassigned (`@soodadityab`). Own links include them.
+- **The suspended cluster** (9 suspended, plus 8 name-only matches) is likely a sockpuppet group. It should be flagged and excluded from X-derived training
+  features, not just from this comparison.
+- **A cheap automatic company filter does not work.** Tested on the labels: `namesim(PH display name, X name)` at 0.5 would drop 26 of 72 true matches to catch
+  10 of 13 mismatches, and the 3 company accounts that share the person's name pass at any threshold. A usable filter needs the X bio or a model, and labels beyond 100.
