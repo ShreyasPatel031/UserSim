@@ -1122,3 +1122,9 @@ Setup:
 - psg is a clear simulation upgrade: +10 points on the pool's own top 3, and +3.7 on daily top 3 for the live simulation forecast. It should go into the next bundle (popscore train_month on all earlier months).
 - It does not improve the headline pre-launch forecast. The launch model alone is still best, and adding any simulation inputs to it doesn't help.
 - psv adds nothing over psg.
+
+## Pre-launch X engagers: leakage filter and turnout inputs, coverage check (Nov 2, 07:15 UTC)
+- Leakage: engager rows are kept only when their own post (snowflake time of engager_post_id) is before 00:00 PT on launch day. Of 2,698 rows: 1,243 reposts dropped (no time), 92 replies or quotes dropped (posted after launch start).
+- Coverage gate: a handle-day counts only when its posts are complete and every post with any engagement has its engagers fetched. Now: 17 handle-days, **16 covered launches** (727 complete posts still lack engager lists).
+- Added turnout inputs (distinct pre-launch X engagers, engagers per post, posts) and their no-fit within-day Spearman with the launch model's residual (the shock). Only 4 days have 3+ covered launches, so these numbers mean nothing yet.
+- Launch-level top 3/5/10 vs the launch model is not run yet. It runs once there are ≥100 covered launches, then again with each batch.

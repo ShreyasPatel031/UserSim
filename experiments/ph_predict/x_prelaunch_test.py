@@ -11,12 +11,20 @@ profile `twitter` field. A person is X-tied to a launch if they engaged with a p
    model's prediction plus these, trained on every earlier day, tested week by week (the X data exists only around
    the covered launches, so a monthly roll has nothing to train on). Daily top 3/5/10 vs the launch model, paired
    over days, on all days and on covered launches only (days with at least 3 covered launches, ranked among them).
+Leakage: reply search has no end time, so only engager rows whose own post (engager_post_id, an X snowflake:
+ms = (id >> 22) + 1288834974657) is dated before 00:00 PT on the launch day are kept. Reposts carry no post id or
+time, so they are dropped (counted in the output).
+Coverage: a (handle, launch day) counts only when all its posts are fetched (posts_complete) and every post with any
+reposts, quotes or replies has its engagers fetched; a launch is covered if one of its team handles is.
+3. Turnout (aimed at the per-launch shock): distinct pre-launch engagers (all X users, not only PH people), engagers per
+   post, and posts; within-day Spearman with the launch model's residual (final log votes minus prediction), no fitting.
 usage: SIMLAB_DATA=data_v2 python x_prelaunch_test.py <prelaunch_posts.jsonl> <prelaunch_engagers.jsonl> <x_handles_pool.json>"""
 import glob, json, os, sys
 from collections import defaultdict
 import numpy as np, pandas as pd, lightgbm as lgb
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 from simlab import store
+from scipy.stats import spearmanr
 
 
 def jl(p):
@@ -46,22 +54,37 @@ def main(posts_p, eng_p, pool_p):
             hs = {(m.get("twitterUsername") or "").lower() for m in (p.get("makers") or []) if isinstance(m, dict)} | {((p.get("user") or {}).get("twitterUsername") or "").lower()}
             team[str(p["id"])] = hs - {""}
     # coverage is per (handle, launch day): each handle's posts cover the 30 days before its assigned launch only
-    fetched_days = defaultdict(set)
+    hp = defaultdict(list)
     for r in posts:
-        fetched_days[(r.get("handle") or "").lower()].add((r.get("launch_day") or "")[:10])
+        hp[((r.get("handle") or "").lower(), (r.get("launch_day") or "")[:10])].append(r)
+    engaged = lambda r: sum(r.get(c) or 0 for c in ("repost_count", "quote_count", "reply_count")) > 0
+    fetched_days = defaultdict(set)
+    for (h, ld), v in hp.items():
+        if all(r.get("posts_complete", True) for r in v) and all(r.get("engagers_fetched", True) for r in v if engaged(r)):
+            fetched_days[h].add(ld)
     fetched = set(fetched_days)
     post_at = {str(r.get("post_id")): (r.get("post_at") or r.get("posted_at") or "")[:10] for r in posts}
+    post_ld = {str(r.get("post_id")): (r.get("launch_day") or "")[:10] for r in posts}
     ev = defaultdict(list)   # team handle -> [(date, engager ph person)]
-    n_match = 0
+    xu = defaultdict(set)    # (team handle, launch day) -> distinct X engagers, pre-launch
+    n_match, n_repost, n_late = 0, 0, 0
     for r in eng:
-        u = x2ph.get((r.get("user") or "").lower().lstrip("@")); h = (r.get("handle") or "").lower()
+        h, ld, eid = (r.get("handle") or "").lower(), post_ld.get(str(r.get("post_id")), ""), r.get("engager_post_id")
+        if not eid:
+            n_repost += 1; continue
+        cut = pd.Timestamp(ld).tz_localize("America/Los_Angeles").value // 10**6 if ld else 0
+        if ((int(eid) >> 22) + 1288834974657) >= cut:
+            n_late += 1; continue
+        xu[(h, ld)].add((r.get("user") or "").lower().lstrip("@"))
+        u = x2ph.get((r.get("user") or "").lower().lstrip("@"))
         d = (r.get("post_at") or r.get("posted_at") or post_at.get(str(r.get("post_id")), ""))[:10]
         if u and h and d:
             ev[h].append((d, u)); n_match += 1
     day = dict(zip(I.id, I.day))
     Ev = E.assign(item=E.item.astype(str)); Ev = Ev[Ev.item.map(day) == Ev.date]
     votes = Ev.groupby("person").item.apply(set).to_dict(); lineup = I.groupby("day").id.apply(set).to_dict()
-    res = {"posts": len(posts), "engager_rows": len(eng), "engager_rows_matched_to_PH": n_match, "handles_with_posts": len(fetched)}
+    res = {"posts": len(posts), "engager_rows": len(eng), "engager_rows_matched_to_PH": n_match, "complete_handle_days": sum(map(len, fetched_days.values())),
+           "engager_rows_dropped": {"repost_no_time": n_repost, "after_launch_start": n_late}}
     rows, hit, n, ph_hit, ph_n = [], 0, 0, 0, 0
     for x, d in day.items():
         hs = {h for h in team.get(x, set()) & fetched if d in fetched_days[h]}
@@ -75,7 +98,9 @@ def main(posts_p, eng_p, pool_p):
         for u in tied:
             v = votes.get(u, set()); hit += x in v; n += 1
             o = lineup.get(d, set()) - {x}; ph_hit += len(v & o); ph_n += len(o)
-        rows.append({"id": x, "xt_pool": np.log1p(len(tied)), "xt_w": float(sum(tied.values())), "xt_cov": 1.0})
+        users = set().union(*[xu.get((h, d), set()) for h in hs]); npost = sum(len(hp[(h, d)]) for h in hs)
+        rows.append({"id": x, "xt_pool": np.log1p(len(tied)), "xt_w": float(sum(tied.values())), "xt_cov": 1.0,
+                     "xe_users": np.log1p(len(users)), "xe_per_post": len(users) / max(npost, 1), "xe_posts": np.log1p(npost)})
     res["covered_launches"] = len(rows)
     res["person_level"] = {"tied_person_launch_pairs": n, "share_voted": round(hit / n, 3) if n else None,
                            "placebo_share_other_launches_same_day": round(ph_hit / ph_n, 4) if ph_n else None,
@@ -84,10 +109,15 @@ def main(posts_p, eng_p, pool_p):
         s = hit / n; se = np.sqrt(s * (1 - s) / n); res["person_level"]["share_ci95"] = [round(max(0, s - 1.96 * se), 3), round(min(1, s + 1.96 * se), 3)]
     # launch level
     C = pd.read_parquet("results/ctrl_preds.parquet"); C["id"] = C.id.astype(str); C = C.drop_duplicates("id")
-    A = C[["id", "day", "logv", "all"]].merge(I[["id", "out_dailyRank"]], on="id").merge(pd.DataFrame(rows, columns=["id", "xt_pool", "xt_w", "xt_cov"]), on="id", how="left")
+    A = C[["id", "day", "logv", "all"]].merge(I[["id", "out_dailyRank"]], on="id").merge(pd.DataFrame(rows, columns=["id", "xt_pool", "xt_w", "xt_cov", "xe_users", "xe_per_post", "xe_posts"]), on="id", how="left")
     A["xt_cov"] = A.xt_cov.fillna(0.0)
+    X = ["all", "xt_pool", "xt_w", "xt_cov", "xe_users", "xe_per_post", "xe_posts"]
     cov_days = sorted(A[A.xt_cov > 0].day.unique())
-    if len(rows) < 50 or not cov_days:
+    Ac = A[A.xt_cov > 0].assign(resid=lambda f: f.logv - f["all"])
+    res["turnout_vs_shock"] = {c: round(float(np.nanmean([spearmanr(g[c], g.resid).correlation for _, g in Ac.groupby("day") if len(g) >= 3 and g[c].nunique() > 1])), 3)
+                               if len(Ac) else None for c in ("xe_users", "xe_per_post", "xe_posts", "xt_pool")}
+    res["turnout_vs_shock"]["covered_days_with_3plus"] = int((Ac.groupby("day").size() >= 3).sum()) if len(Ac) else 0
+    if len(rows) < 100 or not cov_days:
         res["launch_level"] = f"not measurable yet ({len(rows)} covered launches)"
     else:
         A["week"] = pd.to_datetime(A.day).dt.strftime("%G-W%V"); out = []
@@ -96,7 +126,7 @@ def main(posts_p, eng_p, pool_p):
             if tr.xt_cov.sum() < 30:
                 continue
             te["x"] = np.mean([lgb.LGBMRegressor(n_estimators=200, learning_rate=0.03, num_leaves=7, min_child_samples=20, random_state=s, verbose=-1)
-                               .fit(tr[["all", "xt_pool", "xt_w", "xt_cov"]], tr.logv).predict(te[["all", "xt_pool", "xt_w", "xt_cov"]]) for s in range(3)], 0)
+                               .fit(tr[X], tr.logv).predict(te[X]) for s in range(3)], 0)
             out.append(te)
         if not out:
             res["launch_level"] = "not measurable yet (too few covered launches in earlier weeks to train on)"
