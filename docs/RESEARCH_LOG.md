@@ -192,3 +192,11 @@ Model switches, direction reviews and agenda changes, newest last.
     (handle, launch) pair, top-up allowed (cap $10).
 - 08:47 UTC PH agent fetch order (tmp/ph_ops/x_fetch_order.json): 19 launches complete 5 days (Oct 5/10/23/24/25); added to the full-days request. ~50% of launches have no X handle.
 - 08:52 UTC PH daily Nov 2: pipeline ok (one run, lock works) except people step (PH profiles 0 since Oct 30). Nov 1 forecast top 3 2/3, top 5 3/5, top 10 8/10. Monday backtest launch-only 64.0/70.5/76.3. Spend $0.55. Asked Grok Bot whether the existing upvotes delivery covers profiles, else park.
+- 09:21 UTC E5 TRAIN_ALL (psa_), launch model, 4,876 launches, May–Oct, 176 days:
+  - Launch model alone: 66.7/73.5/81.0. + psa_: −1.3/−0.5/−0.9.
+  - Sim: +0.9/+0.0/+0.2 (CI spans 0).
+  - Pool top 3: +3.2 [+0.6, +5.8].
+  - No change on the north star. exp-1 and exp-2 stopped.
+- PH conclusion across E5, psg_, psa_ and X turnout so far: person-level models improve pool votes but not the board.
+  The board error is the per-launch surge, and none of the in-hand pre-launch data predicts it. Open lever: full-day X
+  data (request 0845), then other audience channels for the ~50% of launches without X.
