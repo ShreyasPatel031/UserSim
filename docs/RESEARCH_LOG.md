@@ -375,3 +375,9 @@ Model switches, direction reviews and agenda changes, newest last.
   - GitHub token is being created in the browser, for hn-sim-1:/home/agent/.gh_token. HN agent told.
   - b4 deploy reply: done.
   - Asked Grok Bot to extend dm_gate.json to Jul–Sep.
+- 15:34 UTC HN October backtest (388 winners).
+  - Headline (15 min after posting): 29.6%, unchanged.
+  - B, exposure clock (a second 15-min check after a front-page arrival/return 3+ h later): 35.6% [33.0, 38.3],
+    +5.9 [+2.3, +10.1]. Late risers caught 30 → 57/145. Reported beside the headline, not as it.
+  - C (predicted /pool return as an input): −2.8. Dropped.
+  - gh.py ready for the token.
