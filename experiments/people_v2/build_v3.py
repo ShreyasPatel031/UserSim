@@ -6,7 +6,7 @@ Run from a directory that holds the inputs (same layout as build_v2.py; paths ar
     raw/profile_tabs.jsonl.gz  raw/x_people.jsonl.gz  raw/x_posts.jsonl.gz
     li/li_search.jsonl  li/li_search_retry.jsonl  li/li_apify.jsonl
     t/people*.parquet or t/people/*.parquet (all tables/people parts)    ev/*.parquet   (tables/events)
-    python build_v3.py --root work --out v2b        # writes work/v2b/{persons,handles,profiles,events}.parquet + build_report.json
+    python build_v3.py --root work --out v2b [--x-fallback --x-lookup x_lookup.json]        # writes work/v2b/{persons,handles,profiles,events}.parquet + build_report.json
 
 Changes against build_v2.py (numbers refer to the fix list):
  1. Re-fetch rows (status 200, numeric user_id, name) replace every legacy/poisoned PH row. 404 users are marked gone (kept as
@@ -18,7 +18,7 @@ Changes against build_v2.py (numbers refer to the fix list):
  5. observed_on is the row's own fetched_at ('fetched'); else the capture file's upload date from root/file_dates.json as an upper bound
     ('upper_bound'); else null ('unknown'). Never the build date.
  6. ph_user_id keeps numeric ids only (legacy UUIDs become null); every PH profile records parser_version.
- 8. Optional root/x_lookup.json lets a live twitter-field handle replace a dead own-link handle (see XL below).
+ 8. Opt-in --x-fallback (with root/x_lookup.json): a live twitter-field handle replaces a dead own-link handle (see XL below).
  7. A handle from PH's twitter field alone is stored at confidence 0.6 (below the 0.8 threshold) with no X profile or posts.
 Not done here, needs a human or a model: personal-vs-company labelling of X handles (see x_handle_audit_100.csv) and rebuilding segments.
 """
@@ -111,7 +111,7 @@ def numeric_id(v):
     return s if s.isdigit() else None
 
 
-def main(root: str, out: str) -> dict:
+def main(root: str, out: str, x_fallback: bool = False, x_fallback_sim: float = 0.5, x_lookup: str = "x_lookup.json") -> dict:
     os.chdir(root)
     os.makedirs(out, exist_ok=True)
     R = "raw/"
@@ -139,11 +139,15 @@ def main(root: str, out: str) -> dict:
     gone -= set(rf)
     retry -= set(rf) | gone
     FD = json.load(open("file_dates.json")) if os.path.exists("file_dates.json") else {}  # {"ph_profiles2": "2026-10-28", ...}
-    # Optional x_lookup.json {handle_lower: {"exists": bool, "name": str}} from a read-only X lookup of the conflict handles. Without it the
-    # own-link-wins rule is unchanged. With it: if the own-link handle does not resolve on X while PH's twitter field does, with a name that
+    # Opt-in (--x-fallback) with x_lookup.json {handle_lower: {"exists": bool, "name": str}} from a read-only X lookup of the conflict handles.
+    # Off by default: the own-link-wins rule is unchanged. On: if the own-link handle does not resolve on X while PH's twitter field does, with a name that
     # matches the PH name (similarity >= 0.5), the field is used (0.8) and the dead link is demoted (0.2). On 50 hand-labelled conflicts this
     # fixed 12 of the 14 cases where the field was right with 0 wrong flips; it is in-sample, so treat it as provisional.
-    XL = json.load(open("x_lookup.json")) if os.path.exists("x_lookup.json") else {}
+    XL = {}
+    if x_fallback:  # explicit opt-in (--x-fallback); a missing lookup file is an error, never a silent skip
+        if not os.path.exists(x_lookup):
+            raise FileNotFoundError(f"--x-fallback needs {x_lookup} under {root} (handle -> {{exists, name}})")
+        XL = json.load(open(x_lookup))
     tabs = {r["username"]: r for r in jl(R + "profile_tabs.jsonl.gz") if r.get("username")}
     parts = sorted(glob.glob("t/people*.parquet") + glob.glob("t/people/*.parquet"))  # initial + incremental parts (tables/people)
     v1 = pd.concat([pd.read_parquet(f) for f in parts])
@@ -227,7 +231,7 @@ def main(root: str, out: str) -> dict:
         if XL and tw and own["x"] and tw not in own["x"]:
             lk, fk = XL.get(own["x"][0]), XL.get(tw)
             promote = bool(lk and fk and lk.get("exists") is False and fk.get("exists") is True and ph_name
-                           and namesim(fk.get("name"), ph_name) >= 0.5)
+                           and namesim(fk.get("name"), ph_name) >= x_fallback_sim)
         base_url = {"x": "https://x.com/", "linkedin": "https://www.linkedin.com/in/", "github": "https://github.com/"}
         for plat in own:
             for i, s in enumerate(own[plat]):
@@ -385,5 +389,8 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--root", default=".")
     ap.add_argument("--out", default="v2b")
+    ap.add_argument("--x-fallback", action="store_true", help="use the PH twitter field when the own-link handle is dead on X (needs --x-lookup)")
+    ap.add_argument("--x-fallback-sim", type=float, default=0.5, help="minimum name similarity between the X name and the PH name")
+    ap.add_argument("--x-lookup", default="x_lookup.json", help="handle -> {exists, name}, relative to --root")
     a = ap.parse_args()
-    main(a.root, a.out)
+    main(a.root, a.out, a.x_fallback, a.x_fallback_sim, a.x_lookup)

@@ -356,3 +356,26 @@ python experiments/people_v2/sample_conflicts.py --dir work/v3d --out work/out/x
 then resolve every handle in `x_lookup_handles.txt` (about 630, roughly 26 lookups of 25 handles) with the same read-only X users lookup used for the audit, write
 `x_lookup.json` as above into the build root, rebuild, and validate. Decision for Shreyas: adopt the fallback after that run, or keep own-link-wins. I would adopt it only
 if a fresh, non-overlapping sample of about 30 conflicts agrees, since the evidence so far is in-sample.
+
+## Fallback wired behind a flag (decision: adopt, gated on a fresh ~30-conflict sample)
+
+Decision (Shreyas, Nov 2): adopt the dead-own-link fallback (use PH's twitter field when the own-link handle does not resolve on X and the field handle does,
+with name similarity >= 0.5), **only after** a fresh, non-overlapping sample of about 30 conflicts agrees. Until then it is off.
+
+`build_v3.py` now has an explicit switch:
+```bash
+python experiments/people_v2/build_v3.py --root work --out v3e                                              # default: own-link-wins, unchanged
+python experiments/people_v2/build_v3.py --root work --out v3e --x-fallback --x-lookup x_lookup.json          # adopted rule (threshold: --x-fallback-sim 0.5)
+```
+- **Off by default**, even when `x_lookup.json` is present in the build folder (a change from the earlier version, where the file alone switched it on).
+- With the flag on and no lookup file the build **fails** with an error. There is no silent skip.
+- `x_lookup.json` format: `{handle_lowercase: {"exists": true|false, "name": "X display name"}}` for every handle in `x_lookup_handles.txt`.
+
+**Tests:** `experiments/people_v2/test_build_v3.py` (10 tests, `python -m pytest experiments/people_v2/test_build_v3.py`, needs pandas and pyarrow; synthetic data only). It covers
+off-by-default with a lookup file present; the flag flipping only the qualifying dead-link person (a live link, a name mismatch and an unlooked-up field stay as they were);
+the similarity threshold; the missing-file error; field-only handles at 0.6 with no X profile or posts; first-listed link as primary and wrong-kind links not becoming handles;
+a poisoned legacy row repaired by the re-fetch and an event-only person kept; no "NaN" text; and `validate_v3.py` passing in both modes.
+The tests can fail: setting the field-only confidence to 0.8 failed 3 tests, and making the fallback default to on failed the off-by-default test (the code was restored; 10 of 10 pass).
+
+**To adopt it** once the ~30-label sample agrees: rebuild with `--x-fallback --x-lookup x_lookup.json`, run `validate_v3.py`, and compare `stats.x_field_promoted_dead_link` in
+`build_report.json` with the number of dead-link conflicts in the lookup (the first 50-row sample suggests about 24% of conflicts). Pending from Data Feeder: `x_lookup.json` (~630 handles) and the 30-conflict labels.
