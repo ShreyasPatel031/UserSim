@@ -92,6 +92,11 @@ def namesim(a, b):
     return round(max(difflib.SequenceMatcher(None, a, b).ratio(), tok), 3)
 
 
+def nn(x):
+    """float NaN (a missing v1 value) -> None; json.dumps(nan) would otherwise store the text 'NaN'."""
+    return None if isinstance(x, float) and x != x else x
+
+
 def day(v):
     return str(v)[:10] if v else None
 
@@ -284,11 +289,11 @@ def main(root: str, out: str) -> dict:
             profiles.append(dict(
                 person_id=pid, platform="producthunt", handle=u, observed_on=obs, observed_on_quality=oq,
                 source={"refetch-2026-11": "raw/ph_profiles2_refetch", "ph_profiles2": "raw/ph_profiles2"}.get(parser, "raw/ph_profiles(+rest)"),
-                name=ph_name, bio=base.get("about") or (v["about"] if v is not None else None), location=None, website=None,
-                joined=g2("joined") or (v["joined"] if v is not None else None), followers=base.get("followers"), following=base.get("followings"),
+                name=ph_name, bio=base.get("about") or (nn(v["about"]) if v is not None else None), location=None, website=None,
+                joined=g2("joined") or (nn(v["joined"]) if v is not None else None), followers=base.get("followers"), following=base.get("followings"),
                 post_count=None, likes_count=None, media_count=None, verified=g2("verified"), protected=None,
                 extra=json.dumps(dict(parser_version=parser, ph_user_id=ph_uid, headline=base.get("headline"), is_maker=base.get("is_maker"),
-                                      upvotes_total=g2("upvotes_total") if fixed else (None if v is None else v["upvotes_total"]),
+                                      upvotes_total=g2("upvotes_total") if fixed else (None if v is None else nn(v["upvotes_total"])),
                                       products_made=g2("products_made"), hunted=g2("hunted"), collections=g2("collections"),
                                       reviews_count=g2("reviews_count"), stacks_count=g2("stacks_count"), visit_streak_days=g2("visit_streak_days"),
                                       community_rank_year=g2("community_rank_year"), current_product=g2("current_product"),
@@ -297,7 +302,7 @@ def main(root: str, out: str) -> dict:
         persons.append(dict(person_id=pid, display_name=ph_name or xname, ph_username=u,
                             ph_name_poisoned_in_v1=bool(poisoned or (u in LS and LS[u].get("ph_name") in POISON_NAMES)),
                             has_profile=has_profile, gone=u in gone, retry_pending=u in retry, in_events=u in event_users,
-                            profile_parser=parser, first_seen=(None if v is None else v["first_seen"]), built_at=NOW))
+                            profile_parser=parser, first_seen=(None if v is None else nn(v["first_seen"])), built_at=NOW))
 
     P = pd.DataFrame(persons)
     Hd = pd.DataFrame(handles).drop_duplicates(["person_id", "platform", "handle", "url", "source"])
@@ -316,7 +321,7 @@ def main(root: str, out: str) -> dict:
     for c in ["followers", "following", "post_count", "likes_count", "media_count"]:
         Pr[c] = pd.to_numeric(Pr[c], errors="coerce")
     for c in ["name", "bio", "location", "website", "extra", "handle"]:
-        Pr[c] = Pr[c].map(lambda x: x if (x is None or isinstance(x, str)) else json.dumps(x, default=str))
+        Pr[c] = Pr[c].map(lambda x: nn(x) if (nn(x) is None or isinstance(x, str)) else json.dumps(x, default=str))
     for c in ["verified", "protected"]:
         Pr[c] = Pr[c].astype("boolean")
     Pr["joined"] = Pr["joined"].astype("string")

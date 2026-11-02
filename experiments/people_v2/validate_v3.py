@@ -52,6 +52,9 @@ def main(d: str, refetch: str | None, events_glob: str | None) -> int:
     check("no_uuid_ph_user_id", not ids.map(lambda v: bool(UUID.match(str(v)))).any())
     check("ph_user_id_numeric_or_null", ids.map(lambda v: pd.isna(v) or str(v).isdigit()).all())
     check("parser_version_recorded", ex.map(lambda e: bool(e.get("parser_version"))).all())
+    bad_text = {c: int((Pr[c] == "NaN").sum()) for c in ("name", "bio", "location", "website", "handle", "extra")}
+    check("no_literal_NaN_text", not any(bad_text.values()), bad_text)  # a missing value must be null, not the string 'NaN'
+    check("extra_json_has_no_bare_NaN", not Pr.extra.fillna("").str.contains(r"\bNaN\b", regex=True).any())
     check("no_segments_carried", not ex.map(lambda e: "segments" in e).any())
     check("no_poison_names", not P.display_name.isin(POISON_NAMES).any() and not Pr.name.isin(POISON_NAMES).any())
     # A bio may genuinely say "I lead growth at Wispr Flow". It is poison only on a row the old parser could have written:

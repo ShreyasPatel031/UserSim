@@ -247,3 +247,35 @@ automated draft, not a human, and "match on name alone" is not ground truth.
 **Needed to decide the X rule:** commit `x_handle_audit_100_labeled.csv` and its README to the branch (e.g. `docs/people_v2_results/`). I want to
 split the labels by `source` (`ph_self_link` 0.95 vs `ph_twitter_field` 0.8), since the question is whether the free-text link or PH's
 `twitterUsername` is the more reliable handle, and the 8 suspect cluster rows need excluding from that comparison. Until then the rule is unchanged.
+
+## people_v3b results (eb644776): checked, one real bug found
+
+**Checked against the committed files** (`docs/people_v3b_results/`; still not recomputed from raw data). Build report and `validation_v3.json` agree
+with the README: 36 of 36 checks pass; persons 20,947, handles 46,998, profiles 26,861, events 316,910; re-fetch used 16,794 / gone 7 / retry 1.
+The arithmetic holds: 16,521 + 273 = 16,794; 273 + 7 + 1 = 281 re-fetched; events-only persons 8 = 7 gone + 1 retry; handle dates
+36,933 + 10,051 + 14 = 46,998 and profile dates 16,794 + 7,081 + 2,986 = 26,861. Null display names went 280 to 9. The earlier derivation that only
+274 of the 281 needed a re-fetch is consistent with the result (273 ok + 1 error; the 7 known-deleted users 404'd again).
+
+**Hand check: resolved.** From `handcheck.txt`: `ph:mswulinski` ("I lead growth at Wispr Flow…", numeric id, joined 2017) and
+`ph:sarthakmalhotra` ("Now I'm at Wispr Flow as an AI Agent Engineer…") are genuine re-fetched bios of real Wispr employees.
+`ph:constanza_hasselmann`'s LinkedIn row is tied to her own PH link (`li_search_url_matches_self_link`) and lists Wispr Flow among her roles. So the
+earlier Wispr flags were not poison, and the scoped check (`no_wispr_in_ph_text_on_suspect_rows` = 0) is the right design.
+
+**Bug found in the output: missing values stored as the text "NaN".** `handcheck.txt` shows `bio: 'NaN'` on constanza's LinkedIn row and `location: 'NaN'` on
+mswulinski's PH row, while other cells are real nulls. Cause (build_v3 line 319, inherited from build_v2): a missing v1 value (`about`, `joined`) arrives as a
+float NaN and `json.dumps(nan)` turns it into the string `"NaN"`. All 36 checks passed anyway because none looked for it. Impact is unmeasured: any text
+feature built from `bio`/`location` would read "NaN" as content. Fixed in the builder (`nn()` helper on every v1 read and in the string normalisation)
+and two checks were added: `no_literal_NaN_text` and `extra_json_has_no_bare_NaN`. Tested on a synthetic fixture (a v1 NaN now gives null), and the
+new check fails when a cell is set to "NaN". **Not yet run on the real data**, so the v3b parquet still contains the bad strings.
+
+**Two smaller points, both unverified:**
+- Events fell 316,913 to 316,910. The README says "after dedup with merged people parts", which cannot be right: event dedup uses only the events
+  files. A more likely cause (my inference) is that two more X handle rows became shared (44 to 46 demoted), so 3 X posts lost their owner.
+  Check: PH events should be identical between v3 and v3b and only X posts should differ.
+- The re-fetch is labelled route 4 (Camoufox), but 21 MB over 281 pages is about 75 KB per page, which matches route 3 (curl via residential, 55-85 KB) and
+  the first re-fetch's ~$0.00006 per page, not a browser load (0.4-1.8 MB measured). Cost is negligible either way (about $0.05 total as reported), but the
+  route label in the run notes is probably wrong.
+
+**Next run (Data Feeder):** rebuild as v3c with the current branch (the `NaN` fix) and the same inputs, validate, and send back (1) the count of
+`"NaN"` strings per profile column in v3b (`(Pr[c]=="NaN").sum()`), (2) the v3c validation, (3) the events count by `platform, kind` for v3 versus v3b.
+Still open: the X-handle rule (needs the labeled audit CSV on the branch), real labels, and segments.
