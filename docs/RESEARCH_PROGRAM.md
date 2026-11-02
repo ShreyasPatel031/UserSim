@@ -9,23 +9,16 @@ Product Hunt and Hacker News are the benchmark: do simulated users predict what 
 are how we keep ourselves honest, not the product. Reference models to track (not run without Shreyas's OK): Centaur,
 Socrates, OSIM-8B.
 
-## North stars (set by the user, Nov 1)
-1. **Product Hunt agent:** first, show that adding competitors makes the simulation score more predictive. Then reach
-   **90% accuracy on daily top 3, 5 and 10.** Now (pre-launch, Jul–Oct): simulation 62.6 / 71.2 / 79.7, launch model
-   65.8 / 72.9 / 80.8. Pre-launch and launch-day forecasts are reported apart, and both are driven to 90.
-2. **Hacker News agent:** **Caught**, per post. Every post is judged once; a winner is a post that ever makes a daily
-   top 30; we flag as many posts as there are winners (about 30 a day); Caught = winners flagged / all winners.
-   Staged targets, each to **80%** before the next becomes the focus:
+## North stars (set by the user; these two only)
+1. **Product Hunt: 90% on top 3 / 5 / 10** of the real leaderboard: **daily, weekly or monthly**, whichever we reach
+   first. Pre-launch and launch-day forecasts are reported apart. Launch model now (Mar–Oct): daily 65.5 / 73.9 / 81.2;
+   weekly and monthly to be re-scored with today's models (Oct 25 report: weekly 52 / 57 / 53, monthly 33 / 35 / 40).
+2. **Hacker News: Caught per post, 80%.** Every post judged once; winners are posts that ever make a daily top 30; we
+   flag as many as there are winners; Caught = winners flagged / winners. Measured at 1 h, 15 min and at posting
+   (push 1 h first). Now: 47.2% / 24.7% / 23.2%.
 
-   | Stage | Judged at | Now (per post, Sep 1 – Oct 14, 1,323 winners) | Target |
-   |---|---|---|---|
-   | 1 | 1 h after posting | 47.2% [43.7, 50.6] (rank only + pre-Jul history score) | 80% |
-   | 2 | 15 min after posting | 24.7% [22.6, 26.9] (rank only; leak-free) | 80% |
-   | 3 | At posting, no votes yet | 23.2% [21.2, 25.3] (Jul-Aug + 2025+ models blended; random 3.0%) | 80% |
-
-Supporting measures (they serve the north stars, they are not targets of their own): person-level pick accuracy
-(top-3 hit 54.2 now, random 20) and whether simulated reactions match real comments and reviews. They tell us where
-the next gain is.
+Everything else (competitor grounding, person-level accuracy, pairwise and competitor-pair accuracy, pool-vote
+correlation) is an internal tool: used to decide what to build, never reported as progress.
 
 ## Stance
 These are frontier targets with no prior. We find the way: new data (the whole public internet if needed), new
