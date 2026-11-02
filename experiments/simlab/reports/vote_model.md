@@ -11,7 +11,7 @@ next; tested May–Oct, 3,977 launches, 177 days):
   every audience size), 3 seeds.
 
 Pool component: none, `psx_` (current person model), `psa_` (same, trained on every earlier month), `pna_` (no-page, all months:
-what the daily pipeline deploys, from `deploy/20261102_pna`). Audience sizes are as fetched (undated), the same inputs the launch
+staged for the daily pipeline, awaiting Shreyas's go-ahead; from `deploy/20261102_pna`). Audience sizes are as fetched (undated), the same inputs the launch
 model uses. X engagers are not in yet (about 64 launches covered); follower counts stand in. Scoring as the PH agent's
 `lists_score.py` / `sim_src_score.py`: top-k on Product Hunt's real ranks, paired bootstrap over lists, 10,000 resamples.
 
@@ -22,7 +22,7 @@ model uses. X engagers are not in yet (about 64 launches covered); follower coun
 | E1 gbm, no pool | 55.1 | 67.2 | 76.2 |
 | E1 gbm + `psx_` (current) | 58.0 | 67.6 | 76.3 |
 | E1 gbm + `psa_` | 57.8 | 68.4 | 77.0 |
-| E1 gbm + `pna_` (deployed) | 54.7 | 66.9 | 76.3 |
+| E1 gbm + `pna_` (staged for the pipeline) | 54.7 | 66.9 | 76.3 |
 | E1 glm + `psx_` | 55.5 | 64.8 | 72.1 |
 | E1 glm + `psa_` | 53.6 | 65.8 | 72.9 |
 | E1 glm + `pna_` | 52.5 | 64.4 | 73.8 |
@@ -61,7 +61,7 @@ gbm + `psa_` − gbm + `psx_`: +5.3 [+0.0, +12.0] / +0.0 [−5.6, +5.6] / +3.5 [
   points; here it adds them.
 - **`psa_` vs the current `psx_`:** better total-vote likelihood (+0.39 [+0.10, +0.68]) and weekly top 10 (+3.5 [+0.4, +6.5]);
   daily top 3/5/10 −0.2 / +0.8 / +0.7, all intervals spanning 0.
-- **The deployed `pna_` (no page) is the weakest pool source here:** daily top 3 −3.2 [−5.5, −0.9] vs `psx_`. The page
+- **The staged `pna_` (no page) is the weakest pool source here:** daily top 3 −3.2 [−5.5, −0.9] vs `psx_`. The page
   matters for the pool component.
 - **E1 v1 is well below the launch model:** −8.9 daily top 3, and −30 on weekly. v1 has six audience inputs and a few
   conversion modifiers; the launch model has ~500 inputs. The weekly gap says the per-day level is poorly calibrated:
