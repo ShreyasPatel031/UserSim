@@ -415,3 +415,4 @@ Model switches, direction reviews and agenda changes, newest last.
   - Experiment zero: honest shock predictability is 0.395 vs 0.504 leaky. hist_ and turnout carry more weight.
   - A1 data request filed by the PH agent. C1 request filed by me (20261102T1855): add PH repos to the stargazer
     history run, plus npm/PyPI download series, free routes only.
+- 19:34 UTC: mailbox checked, no new replies. Follow-ups added to A1 (PH team history) and C1 (PH repos/npm/PyPI). Removed my PH Fable review request (the review was already done in the PH session).
