@@ -105,7 +105,7 @@ def archive():
     Q = Q.assign(y=Q.post_id.isin(win).astype(int))
     P = p[p.post_id.isin(Q.post_id)][["post_id", "title", "url", "author", "created_at_i", "text"]].reset_index(drop=True)
     A = pd.read_json(os.path.join(H.CACHE, "early_votes", "early_snapshots.jsonl"), lines=True, convert_dates=False)
-    A["t"] = pd.to_datetime(A.capture_ts.astype(str), format="%Y%m%d%H%M%S", utc=True).astype("int64") // 10**9
+    A["t"] = (pd.to_datetime(A.capture_ts.astype(str), format="%Y%m%d%H%M%S", utc=True) - pd.Timestamp(0, tz="UTC")) // pd.Timedelta(seconds=1)
     off = {"news": 0, "news_p2": 30, "news_p3": 60}
     A = A[A.page.isin(["newest"] + list(off))]
     S = pd.DataFrame({"id": A.item_id, "t": A.t, "list": np.where(A.page == "newest", "newest", "front"),

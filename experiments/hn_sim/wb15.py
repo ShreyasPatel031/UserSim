@@ -64,7 +64,8 @@ def expo15(Q, a=A_MIN):
     submitted in the 30 min before; posting hour. Only the captures' times and what they showed: no outcome."""
     A = pd.read_json(W.EV, lines=True, convert_dates=False)
     N = A[A.page == "newest"]
-    caps = np.sort(pd.to_datetime(N.capture_ts.astype(str), format="%Y%m%d%H%M%S", utc=True).astype("int64").unique() // 10**9)
+    ts = pd.to_datetime(N.capture_ts.astype(str), format="%Y%m%d%H%M%S", utc=True)
+    caps = np.sort(((ts - pd.Timestamp(0, tz="UTC")) // pd.Timedelta(seconds=1)).unique())   # epoch seconds (pandas 3: us)
     N = N[(N.age_min >= 0) & (N.age_min <= a)]
     born = Q.created_at_i.to_numpy()
     n_caps = np.searchsorted(caps, born + a * 60, side="right") - np.searchsorted(caps, born)
