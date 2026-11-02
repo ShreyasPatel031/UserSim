@@ -171,3 +171,10 @@ Model switches, direction reviews and agenda changes, newest last.
 - 08:12 UTC E5 session resumed by the user: popscore TRAIN_ALL=1 (psa_) vs psx_ on daily top 3/5/10, on exp-2.
   It briefly started exp-1 read-only (08:06-08:12) to copy code. Pointed it to the PH agent's psg_ result (ca74041)
   and asked for the launch model + psa_ vs the launch model alone as well as the sim.
+- 08:34 UTC: mailbox checked.
+  - HN recorder v5 first 2 h: /newest p1 119/120, 1 fallback window, 0 restarts.
+  - Nov 2 so far: /newest p1 506/509 min (99.4%).
+  - X gate (PH rule): 90 launches covered (58 with no pre-launch posts), strict 28. 229 launches still have posts open.
+  - No repost time on any route.
+  - Asked Grok Bot to finish the open launches today on the twitterapi top-up (cap $10, within the $50/month).
+  - PH agent asked to run the launch-level test on the 90 now.
