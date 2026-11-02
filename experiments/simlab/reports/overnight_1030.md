@@ -940,3 +940,16 @@ simulation + predicted shock, Jun–Oct, daily top 3 / 5 / 10. The launch model 
   until the other sessions' jobs there finish.
 - **Footnote for earlier numbers:** every backtest in this log before Nov 2 includes the 204 launches twice (on 10
   days; on the earlier day they are an extra copy of the next day's launches). The before/after table will follow here.
+- **Deploy verified (Nov 2, 04:00 UTC):**
+  - Grok Bot deployed `20261102_window` at 03:51 UTC; its reply is in `mailbox/from_grokbot/20261102_window_deploy.reply.md`.
+  - The md5 of all 5 files on the VM matches the repo.
+  - Nov 2's window is 00:00−08:00 to 00:00−08:00.
+  - Re-run dry checks: 0 day files to change, 0 launches in two files, 0 warehouse rows on the wrong day.
+  - The 5 original files are in `data/days_backup_dedupe/`.
+- **Duplicate recorders:** the Nov 1 runs from 14:07 (PID 47209) and 15:17 (62578) are both still recording, until
+  07:55 UTC. Stopping the older one was refused by my permission check.
+  - Safe order if done: TERM the older run's main shell 47209 first, so it can't reach its shutdown line; then its
+    recorder (47218 → 47220 → 47222).
+  - Prevention, commit `4f908e9`, bundle `20261102_lock`: `run_daily.sh` takes an exclusive lock
+    (`flock -n`, inherited by the recorder), so a second start exits. `hourly.py` writes at most one snapshot per UTC
+    hour per day (file lock + existing-hour check). Both tested.
