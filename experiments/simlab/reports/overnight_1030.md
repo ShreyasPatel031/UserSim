@@ -1248,3 +1248,31 @@ The ctrl.py `all` model, same folds and LightGBM, 5 seeds. Leak groups dropped c
 - **Honest pre-launch baseline** (followers + follows dropped): **May–Oct 64.4 / 70.5 / 77.0; Jul–Oct 65.0 / 69.6 / 77.5.** If promo reaction counts are leaky too: 62.7 / 70.6 / 77.2 (lower bound).
 - **Live check** (launch model, live daily scores Oct 27–Nov 1, 6 days): 61.1 / 70.0 / 81.7. That's consistent with the honest numbers, but 6 days give about ±25 points on top 3, so it can't separate them yet.
 - **Consequence:** north-star numbers should be quoted against the honest baseline. Live, fol_ uses follow lists read before the launch (Oct 25), so it is stale but not leaky; its backtest value is overstated. Next: an honest fol_ needs follow snapshots taken before each launch. Data Feeder's daily following fetch (from Nov 2) provides this going forward.
+
+## Honest baseline fixed, and the day calibration / E1 re-checks against it (Nov 2)
+**promo_ split** (`promo_features.py`): kept = posts and coverage dated before launch (promo_posts*, promo_cov*). Dropped = values read at fetch, undated (promo_reactions, founder/company LinkedIn and X followers, funding, company age, n_sources).
+
+**Honest pre-launch baseline** (honest.py "honest": no follower counts, no fol_ / seg_, no undated promo_; ctrl LightGBM, 5 seeds; this is the reference from now on):
+
+| | May–Oct | Jul–Oct |
+|---|---|---|
+| Daily top 3 / 5 / 10 | **64.4 / 70.4 / 76.9** (published 66.5 / 73.6 / 81.0) | 64.7 / 69.6 / 77.5 |
+| Weekly top 3 / 5 / 10 (25 / 17 weeks) | **45.3 / 54.4 / 55.2** (published 49.3 / 56.0 / 57.8) | 49.0 / 55.0 / 54.7 |
+| Monthly top 3 / 5 / 10 (5–6 / 3–4 months) | **20.0 / 36.7 / 40.0** (published 33.3 / 43.3 / 48.3) | 33.3 / 35.0 / 42.5 |
+
+**Day calibration on the honest model** (offset = honest prediction):
+- Weekly top 3: 45.3 → 49.3, +4.0 (0.0 to +8.0), never worse in any month; Jul–Oct +3.9 (0.0 to +9.8).
+- Weekly top 5: +1.6 (0.0 to +4.0); weekly top 10: 0.0.
+- Monthly: 0.0 / −6.7 / −1.7 (6 lists). Still not for monthly.
+- The weekly gain holds on the honest baseline.
+
+**E1 v2 on the honest model:**
+- With E5's audience inputs (three follower counts and promo_reactions, all read later, so not honest), for reference only: daily −0.2 / +0.5 / +1.0; weekly +4.0 / +2.4 / +2.2 vs the launch model; −1.3 / +0.8 / +2.2 vs the day-terms control.
+- Honest E1 (audience = promo_posts only): daily −1.3 (−3.4 to +0.8) / −0.3 / −0.3. Weekly top 3 +9.3 (+4.0 to +16.0) vs the launch model, but +4.0 (−2.7 to +10.7) vs the day-terms control; weekly top 5 −1.6.
+- Beyond day calibration, E1 adds nothing measurable.
+
+**Live and shadows vs the honest set:**
+- The live launch-model forecast used every dropped input.
+- The live simulation forecast used makers' and hunter's PH followers (nsa_ reach), fol_, X follower counts and all of promo_.
+- shadow_e1v2's inputs include three follower counts and promo_reactions.
+- Fixed in code, not deployed: model.py `HONEST=1` by default (the honest column filter in `cols`, for training and live alike), and sim_forecast.py applies the same filter and drops nsa_ reach. shadow_daycal inherits whatever the live launch model uses. shadow_e1v2 needs an honest retrain (audience = dated promo posts plus at-launch follower counts once those accumulate), or it should stay off.

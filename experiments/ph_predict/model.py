@@ -73,6 +73,17 @@ def add_fold_feats(tr, te):
 # headline model, kept in the "leaky" variant to show how much they would inflate the score.
 LEAKY = {"ph_maker_max_followers", "ph_maker_sum_followers"}
 INCLUDE_LEAKY = False
+# Honest pre-launch set (honest.py, Nov 2): for past launches these were read after launch day, so the backtest overstated
+# them: every follower count (PH data/days re-reads, later X fetches) and inputs derived from them, the follow-list
+# inputs (fol_, seg_: lists read Oct 25, undated), and promo_ values read at fetch (reactions, company facts, sources).
+# HONEST=1 (default) drops them in training and live alike, so live scores are comparable with the honest backtest.
+HONEST = os.environ.get("HONEST", "1") == "1"
+PROMO_UNDATED = {"promo_reactions", "promo_founder_li", "promo_company_li", "promo_founder_x", "promo_funding", "promo_company_age",
+                 "promo_n_sources"}
+
+
+def honest_drop(c):
+    return "follower" in c or c.startswith(("fol_", "seg_")) or c in PROMO_UNDATED
 
 
 # The daily forecast may only use inputs that exist at forecast time. These are computed offline or read after launch,
@@ -99,7 +110,7 @@ def live_sources(tr, te, sources, tol=0.25):
 
 def cols(df, sources):
     return [c for c in df.columns if c.split("_")[0] in sources and c not in ("web_text",)
-            and df[c].dtype != object and (INCLUDE_LEAKY or c not in LEAKY)]
+            and df[c].dtype != object and (INCLUDE_LEAKY or c not in LEAKY) and not (HONEST and honest_drop(c))]
 
 
 def fit_predict(tr, te, sources, seed=0, **kw):

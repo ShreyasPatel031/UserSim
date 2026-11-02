@@ -219,6 +219,70 @@
    "x_maker_max_followers",
    "x_maker_sum_followers",
    "x_n_makers_with_x"
+  ],
+  "honest": [
+   "fol_active30",
+   "fol_any",
+   "fol_hunter",
+   "fol_loyal",
+   "fol_team",
+   "fol_team_max",
+   "ph_dayrank_ph_hunter_followers",
+   "ph_hunter_followers",
+   "promo_company_age",
+   "promo_company_li",
+   "promo_founder_li",
+   "promo_founder_x",
+   "promo_funding",
+   "promo_n_sources",
+   "promo_reactions",
+   "seg_buyer_type_developer_adopter",
+   "seg_buyer_type_developer_adopter_share",
+   "seg_buyer_type_enterprise_buyer",
+   "seg_buyer_type_enterprise_buyer_share",
+   "seg_buyer_type_individual_prosumer",
+   "seg_buyer_type_individual_prosumer_share",
+   "seg_buyer_type_team_lead_buyer",
+   "seg_buyer_type_team_lead_buyer_share",
+   "seg_company_type_agency_consulting",
+   "seg_company_type_agency_consulting_share",
+   "seg_company_type_big_tech",
+   "seg_company_type_big_tech_share",
+   "seg_company_type_enterprise",
+   "seg_company_type_enterprise_share",
+   "seg_company_type_own_startup",
+   "seg_company_type_own_startup_share",
+   "seg_n",
+   "seg_role_creator",
+   "seg_role_creator_share",
+   "seg_role_designer",
+   "seg_role_designer_share",
+   "seg_role_engineer",
+   "seg_role_engineer_share",
+   "seg_role_founder_exec",
+   "seg_role_founder_exec_share",
+   "seg_role_investor",
+   "seg_role_investor_share",
+   "seg_role_marketing_growth",
+   "seg_role_marketing_growth_share",
+   "seg_role_product",
+   "seg_role_product_share",
+   "seg_seniority_founder_c_level",
+   "seg_seniority_founder_c_level_share",
+   "seg_seniority_senior_lead",
+   "seg_seniority_senior_lead_share",
+   "seg_tech_level_builds_software",
+   "seg_tech_level_builds_software_share",
+   "seg_tech_level_non_technical",
+   "seg_tech_level_non_technical_share",
+   "seg_us_share",
+   "x_company_followers",
+   "x_dayrank_x_company_followers",
+   "x_dayrank_x_hunter_followers",
+   "x_dayrank_x_maker_max_followers",
+   "x_hunter_followers",
+   "x_maker_max_followers",
+   "x_maker_sum_followers"
   ]
  },
  "May-Oct": {
@@ -255,6 +319,14 @@
      -7.0,
      -0.9
     ]
+   ],
+   "honest": [
+    64.4,
+    -2.1,
+    [
+     -4.9,
+     0.8
+    ]
    ]
   },
   "top5": {
@@ -271,7 +343,7 @@
     70.5,
     -3.1,
     [
-     -5.2,
+     -5.1,
      -1.0
     ]
    ],
@@ -288,6 +360,14 @@
     -3.3,
     [
      -5.5,
+     -1.1
+    ]
+   ],
+   "honest": [
+    70.4,
+    -3.2,
+    [
+     -5.2,
      -1.0
     ]
    ]
@@ -314,7 +394,7 @@
     77.2,
     -3.8,
     [
-     -5.1,
+     -5.0,
      -2.6
     ]
    ],
@@ -325,7 +405,75 @@
      -5.2,
      -2.6
     ]
+   ],
+   "honest": [
+    76.9,
+    -4.1,
+    [
+     -5.6,
+     -2.8
+    ]
    ]
+  },
+  "week top3": {
+   "all": 49.3,
+   "honest": 45.3,
+   "delta": -4.0,
+   "ci95": [
+    -14.7,
+    6.7
+   ],
+   "lists": 25
+  },
+  "week top5": {
+   "all": 56.0,
+   "honest": 54.4,
+   "delta": -1.6,
+   "ci95": [
+    -6.4,
+    2.4
+   ],
+   "lists": 25
+  },
+  "week top10": {
+   "all": 57.8,
+   "honest": 55.2,
+   "delta": -2.6,
+   "ci95": [
+    -5.7,
+    0.4
+   ],
+   "lists": 23
+  },
+  "mon top3": {
+   "all": 33.3,
+   "honest": 20.0,
+   "delta": -13.3,
+   "ci95": [
+    -26.7,
+    0.0
+   ],
+   "lists": 5
+  },
+  "mon top5": {
+   "all": 43.3,
+   "honest": 36.7,
+   "delta": -6.7,
+   "ci95": [
+    -23.3,
+    6.7
+   ],
+   "lists": 6
+  },
+  "mon top10": {
+   "all": 48.3,
+   "honest": 40.0,
+   "delta": -8.3,
+   "ci95": [
+    -21.7,
+    3.3
+   ],
+   "lists": 6
   }
  },
  "Jul-Oct": {
@@ -359,8 +507,16 @@
     63.0,
     -2.6,
     [
-     -6.0,
+     -6.3,
      0.9
+    ]
+   ],
+   "honest": [
+    64.7,
+    -0.9,
+    [
+     -4.3,
+     2.3
     ]
    ]
   },
@@ -386,7 +542,7 @@
     69.6,
     -3.6,
     [
-     -6.2,
+     -6.0,
      -1.2
     ]
    ],
@@ -396,6 +552,14 @@
     [
      -5.6,
      -0.9
+    ]
+   ],
+   "honest": [
+    69.6,
+    -3.6,
+    [
+     -6.0,
+     -1.2
     ]
    ]
   },
@@ -429,10 +593,78 @@
     77.9,
     -3.4,
     [
-     -4.7,
+     -4.8,
      -2.1
     ]
+   ],
+   "honest": [
+    77.5,
+    -3.9,
+    [
+     -5.4,
+     -2.5
+    ]
    ]
+  },
+  "week top3": {
+   "all": 47.1,
+   "honest": 49.0,
+   "delta": 2.0,
+   "ci95": [
+    -9.8,
+    13.7
+   ],
+   "lists": 17
+  },
+  "week top5": {
+   "all": 53.8,
+   "honest": 55.0,
+   "delta": 1.2,
+   "ci95": [
+    -3.8,
+    6.2
+   ],
+   "lists": 16
+  },
+  "week top10": {
+   "all": 56.7,
+   "honest": 54.7,
+   "delta": -2.0,
+   "ci95": [
+    -6.0,
+    2.0
+   ],
+   "lists": 15
+  },
+  "mon top3": {
+   "all": 44.4,
+   "honest": 33.3,
+   "delta": -11.1,
+   "ci95": [
+    -33.3,
+    0.0
+   ],
+   "lists": 3
+  },
+  "mon top5": {
+   "all": 50.0,
+   "honest": 35.0,
+   "delta": -15.0,
+   "ci95": [
+    -30.0,
+    0.0
+   ],
+   "lists": 4
+  },
+  "mon top10": {
+   "all": 52.5,
+   "honest": 42.5,
+   "delta": -10.0,
+   "ci95": [
+    -25.0,
+    5.0
+   ],
+   "lists": 4
   }
  },
  "all months": {
@@ -450,7 +682,7 @@
     61.7,
     -1.7,
     [
-     -4.4,
+     -4.2,
      0.8
     ]
    ],
@@ -459,7 +691,7 @@
     -3.1,
     [
      -5.8,
-     -0.4
+     -0.6
     ]
    ],
    "- ... x_profile": [
@@ -469,6 +701,14 @@
      -5.9,
      -0.6
     ]
+   ],
+   "honest": [
+    61.7,
+    -1.7,
+    [
+     -4.2,
+     0.8
+    ]
    ]
   },
   "top5": {
@@ -477,7 +717,7 @@
     71.3,
     -0.1,
     [
-     -1.0,
+     -0.9,
      0.8
     ]
    ],
@@ -485,7 +725,7 @@
     68.3,
     -3.1,
     [
-     -4.9,
+     -5.0,
      -1.4
     ]
    ],
@@ -493,7 +733,7 @@
     68.1,
     -3.3,
     [
-     -5.1,
+     -5.2,
      -1.4
     ]
    ],
@@ -504,6 +744,14 @@
      -5.7,
      -1.6
     ]
+   ],
+   "honest": [
+    68.1,
+    -3.3,
+    [
+     -5.2,
+     -1.4
+    ]
    ]
   },
   "top10": {
@@ -513,7 +761,7 @@
     -0.2,
     [
      -0.8,
-     0.5
+     0.4
     ]
    ],
    "- ... follows": [
@@ -536,10 +784,78 @@
     75.6,
     -4.0,
     [
+     -5.2,
+     -2.7
+    ]
+   ],
+   "honest": [
+    75.6,
+    -4.0,
+    [
      -5.3,
-     -2.8
+     -2.7
     ]
    ]
+  },
+  "week top3": {
+   "all": 49.5,
+   "honest": 45.5,
+   "delta": -4.0,
+   "ci95": [
+    -13.1,
+    5.1
+   ],
+   "lists": 33
+  },
+  "week top5": {
+   "all": 52.7,
+   "honest": 53.9,
+   "delta": 1.2,
+   "ci95": [
+    -3.0,
+    5.5
+   ],
+   "lists": 33
+  },
+  "week top10": {
+   "all": 55.5,
+   "honest": 53.2,
+   "delta": -2.3,
+   "ci95": [
+    -5.2,
+    0.6
+   ],
+   "lists": 31
+  },
+  "mon top3": {
+   "all": 28.6,
+   "honest": 14.3,
+   "delta": -14.3,
+   "ci95": [
+    -28.6,
+    -4.8
+   ],
+   "lists": 7
+  },
+  "mon top5": {
+   "all": 37.5,
+   "honest": 30.0,
+   "delta": -7.5,
+   "ci95": [
+    -20.0,
+    5.0
+   ],
+   "lists": 8
+  },
+  "mon top10": {
+   "all": 45.0,
+   "honest": 36.2,
+   "delta": -8.8,
+   "ci95": [
+    -18.8,
+    1.3
+   ],
+   "lists": 8
   }
  }
 }

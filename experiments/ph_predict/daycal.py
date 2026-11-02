@@ -36,6 +36,9 @@ def boot(a, b, rng):
 def main():
     P, I, E = store.load(); I = I.assign(id=I.id.astype(str))
     C = pd.read_parquet("results/ctrl_preds.parquet"); C["id"] = C.id.astype(str); C = C.drop_duplicates("id")
+    if os.environ.get("OFFSET"):   # e.g. results/honest_preds.parquet:honest, the honest launch model in place of ctrl `all`
+        f, col = os.environ["OFFSET"].split(":"); O = pd.read_parquet(f); O["id"] = O.id.astype(str)
+        C = C.drop(columns="all").merge(O[["id", col]].rename(columns={col: "all"}), on="id")
     A = C[["id", "day", "logv", "all"]].merge(I[["id"] + list(RANK.values())], on="id")
     A["mu0"] = np.expm1(A["all"]).clip(lower=0.5); A["y"] = np.expm1(A.logv).clip(lower=0)
     D = A.groupby("day").agg(day_n=("id", "size"), day_lm_sum=("mu0", "sum"), real=("y", "sum")).sort_index()
@@ -83,7 +86,7 @@ def main():
         if xc:
             r["coverage (launches with the extra inputs)"] = round(float(U[xc[0]].notna().mean()), 3)
         res[win] = r
-    json.dump(res, open(f"results/daycal{'_' + EXTRA if EXTRA else ''}.json", "w"), indent=1)
+    json.dump(res, open(f"results/daycal{'_' + EXTRA if EXTRA else ''}{'_' + os.environ['OFFSET'].split(':')[1] if os.environ.get('OFFSET') else ''}.json", "w"), indent=1)
     print(json.dumps(res, indent=1))
 
 

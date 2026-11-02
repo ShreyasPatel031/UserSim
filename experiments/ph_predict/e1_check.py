@@ -15,6 +15,8 @@ from simlab import store
 from buildcache import build_cached
 
 AUD = ["ph_hunter_followers", "x_maker_sum_followers", "x_company_followers", "promo_reactions", "promo_posts"]
+if os.environ.get("E1_HONEST") == "1":   # only the audience inputs the honest baseline keeps (follower counts and reactions were read later)
+    AUD = ["promo_posts"]
 RANK = {"day": "out_dailyRank", "week": "out_weeklyRank"}
 
 
@@ -31,6 +33,9 @@ def boot(a, b, rng):
 def main(sim):
     P, I, E = store.load(); I = I.assign(id=I.id.astype(str))
     C = pd.read_parquet("results/ctrl_preds.parquet"); C["id"] = C.id.astype(str); C = C.drop_duplicates("id")
+    if os.environ.get("OFFSET"):   # e.g. results/honest_preds.parquet:honest, the honest launch model in place of ctrl `all`
+        f, col = os.environ["OFFSET"].split(":"); O = pd.read_parquet(f); O["id"] = O.id.astype(str)
+        C = C.drop(columns="all").merge(O[["id", col]].rename(columns={col: "all"}), on="id")
     S = pd.DataFrame.from_dict(json.load(open(f"data/{sim}_features.json")), orient="index").rename_axis("id").reset_index()
     B = build_cached(); B["id"] = B.id.astype(str); B = B.drop_duplicates("id")
     A = (C[["id", "day", "logv", "all"]].merge(I[["id"] + list(RANK.values())], on="id")
@@ -65,7 +70,7 @@ def main(sim):
                                     "E1 v2": round(100 * float(e1.mean()), 1), "E1 v2 vs launch model": boot(lm, e1, rng),
                                     "E1 v2 vs control": boot(ctl, e1, rng),
                                     "months E1 v2 > launch model": (int(((e1 - lm).groupby(e1.index.str[:7]).mean() > 0).sum()) if key == "day" else None)}
-    json.dump(res, open(f"results/e1_check_{sim}.json", "w"), indent=1)
+    json.dump(res, open(f"results/e1_check_{sim}{'_' + os.environ['OFFSET'].split(':')[1] if os.environ.get('OFFSET') else ''}.json", "w"), indent=1)
     print(json.dumps(res, indent=1))
 
 
