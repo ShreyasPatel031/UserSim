@@ -1148,3 +1148,11 @@ Setup:
 - **Launch level:** leave-one-day-out ridge on the launch prediction plus a fixed turnout set (engagers, per post, posts, X-tied PH people, 48 h tease), ranked among the covered launches on 7 days. Top 3 is 90.5 vs 90.5, top 5 80.0 vs 80.0: identical rankings, delta 0. With ~7 covered launches a day the task is too easy to tell anything, and there are 0 fully covered days, so this can't speak to the real board yet.
 - Turnout vs shock (within-day Spearman with the residual): all between −0.10 and +0.09, inside ±0.15 noise.
 - Re-run when the twitterapi top-up closes the 229 open launches; that should give full days.
+
+## Pre-launch X, refreshed build (08:36 files, Grok Bot reports 121 covered): reconciliation and re-run (Nov 2)
+- **Why 121 vs 64.** Both rules mark the same 86 handle-days as fully fetched. Grok Bot's ph_gate.py counts a launch as covered when all its handles are done, *on any day*. But each handle's posts were fetched only for the 30 days before its one assigned launch. 76 of the launches it credits fall on a different day from that window (serial makers and hunters), so their pre-launch window wasn't fetched. Under the day-matched rule there are **64 covered launches** (57 with every handle done, 7 with some). That stays below 100 until g8/g9/g11/g12 page.
+- Leakage filter: dropped 1,280 reposts (no time) and 121 replies or quotes after launch start (snowflake time; every reply and quote row has engager_post_id).
+- **Person level:** 90 tied pairs; 32.2% voted (95% CI 22.6–41.9%) vs 1.0% placebo, a 31× lift. Stable across the last three runs.
+- **Launch level** (leave-one-day-out ridge, launch prediction + fixed turnout set, ranked among covered launches, 9 days): top 3 77.8 vs 77.8, top 5 82.5 vs 82.5, identical rankings. The turnout weights are too small to change any order. 0 fully covered days.
+- Turnout vs residual: engagers −0.03, X-tied PH people −0.03, 48 h tease +0.03 (noise ±0.15).
+- Reading so far: X engagement strongly marks *who* votes, but at launch level it hasn't shown any turnout signal beyond the launch model.
