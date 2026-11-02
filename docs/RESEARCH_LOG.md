@@ -417,3 +417,8 @@ Model switches, direction reviews and agenda changes, newest last.
     history run, plus npm/PyPI download series, free routes only.
 - 19:34 UTC: mailbox checked, no new replies. Follow-ups added to A1 (PH team history) and C1 (PH repos/npm/PyPI). Removed my PH Fable review request (the review was already done in the PH session).
 - 20:19 UTC PH agent: A1/C1 scripts ready (commit d6eb63b; userbase_eval.py, a1_team_history.py, c1_user_base.py). Gate is residual Spearman with Holm correction; a1_ inputs must beat team size. Each runs in ~10 min. The orchestrator pings when raw/ph_team_history/ or raw/github_stargazers/ (PH tag) + raw/pkg_downloads/ land.
+- 20:33 UTC: mailbox checked.
+  - A1: Data Feeder is blocked (no PH token; profiles 403). Grok Bot decided the PH agent fetches it on
+    usersim-pipeline with the existing key (madePosts/submittedPosts, 4,635 people). PH agent told.
+  - C1: npm/PyPI downloads landed (42,699 rows; npm 105/113, PyPI 32/34, PyPI from ~May only).
+  - GitHub HN pass 7,231/9,662; the PH star pass follows, ETA ~23:00–00:00 UTC.
