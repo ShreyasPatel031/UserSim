@@ -149,3 +149,12 @@ Model switches, direction reviews and agenda changes, newest last.
 - 07:07 UTC PH X pre-launch test built (commit 29870da): leakage filter drops 1,243 reposts (no time) and 92 post-launch
   replies/quotes; 16 launches pass the gate (needs 100). Asked Grok Bot to prioritise engager lists for the 727 complete
   posts and to add repost time if the route has it.
+- 07:36 UTC: mailbox checked.
+  - X pre-launch: 2,515 posts, 152 launches complete per Grok Bot (rest needs tomorrow's X quota). PH agent pinged to re-run the gate and the test.
+  - HN recorder v5 interim: 0 restarts, 1 fallback window (06:30-06:46). Full 2-hour report due after 07:39.
+  - Vertex 7-day breakdown (draft): ~$57/day estimated.
+    - usersim-cloud-agent SA, gemini-2.5-flash: ~$30-40/day, likely fm-gate0-spot-watchdog / seed VMs. Not a research session.
+    - A human user's Claude calls on Vertex: ~$13/day.
+    - Default compute SA (our exp VMs, hn-sim-1): ~$5-10/day.
+    - Reported to the user; no change made.
+  - Data Feeder: x_lookup.json, 632 handles checked. Passed to the PH agent.
