@@ -9,7 +9,9 @@ together and the daily order cannot change:
   trail_lm7      the same days' launch-model totals (so the model can learn how far off the level runs)
 Rolling monthly (train on earlier months, from Apr), 5 seeds. Weekly / monthly top 3/5/10 vs the launch model, paired
 bootstrap over lists (10,000), wins per month (weekly lists by the month of their Monday), on May-Oct and Jul-Oct.
-usage: SIMLAB_DATA=data_v2 python daycal.py -> results/daycal.json"""
+EXTRA=<file in data/> (e.g. cmp_features_ph): also fit day terms + that file's inputs (NaN where missing) and report it
+against the day-calibrated control, on daily and weekly lists, with the file's coverage.
+usage: SIMLAB_DATA=data_v2 [EXTRA=cmp_features_ph] python daycal.py -> results/daycal[_<EXTRA>].json"""
 import json, os, sys
 import numpy as np, pandas as pd, lightgbm as lgb
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
@@ -41,6 +43,10 @@ def main():
     D["trail_real7"] = D.real.shift(2).rolling(7, min_periods=3).mean()
     D["trail_lm7"] = D.day_lm_sum.shift(2).rolling(7, min_periods=3).mean()
     A = A.merge(D[COLS], left_on="day", right_index=True)
+    EXTRA = os.environ.get("EXTRA"); xc = []
+    if EXTRA:
+        K = pd.DataFrame.from_dict(json.load(open(f"data/{EXTRA}.json")), orient="index").rename_axis("id").reset_index()
+        xc = [c for c in K if c != "id"]; A = A.merge(K, on="id", how="left")
     A["week"] = pd.to_datetime(A.day).dt.strftime("%G-W%V"); A["mon"] = A.day.str[:7]
     A["wmon"] = (pd.to_datetime(A.day) - pd.to_timedelta(pd.to_datetime(A.day).dt.weekday, unit="D")).dt.strftime("%Y-%m")
     out = []
@@ -48,11 +54,13 @@ def main():
         if m < "2026-05":
             continue
         tr, te = A[A.mon < m], A[A.mon == m].copy()
-        raw = np.mean([lgb.train({"objective": "poisson", "learning_rate": 0.03, "num_leaves": 7, "min_data_in_leaf": 100, "feature_fraction": 1.0,
-                                  "bagging_fraction": 0.8, "bagging_freq": 1, "seed": s, "verbose": -1, "num_threads": 8},
-                                 lgb.Dataset(tr[COLS], tr.y, init_score=np.log(tr.mu0)), num_boost_round=200).predict(te[COLS], raw_score=True)
-                       for s in range(5)], 0)
-        te["cal"] = raw + np.log(te.mu0); out.append(te)
+        for name, cols in (("cal", COLS), ("cal_x", COLS + xc)) if xc else (("cal", COLS),):
+            raw = np.mean([lgb.train({"objective": "poisson", "learning_rate": 0.03, "num_leaves": 7, "min_data_in_leaf": 100, "feature_fraction": 1.0,
+                                      "bagging_fraction": 0.8, "bagging_freq": 1, "seed": s, "verbose": -1, "num_threads": 8},
+                                     lgb.Dataset(tr[cols], tr.y, init_score=np.log(tr.mu0)), num_boost_round=200).predict(te[cols], raw_score=True)
+                           for s in range(5)], 0)
+            te[name] = raw + np.log(te.mu0)
+        out.append(te)
     T = pd.concat(out); rng = np.random.default_rng(0)
     wmon = T.groupby("week").wmon.first()
     res = {"launches": len(T), "days": int(T.day.nunique()), "inputs": COLS}
@@ -67,9 +75,15 @@ def main():
                     line["by month (Monday)"] = {m_: round(100 * float(v), 1) for m_, v in dm.items()}
                 if key == "mon":
                     line["by month"] = {m_: round(100 * float(b[m_] - a[m_]), 1) for m_ in b.index}
+                if xc:
+                    c2 = per_list(U, "cal_x", key, k)
+                    line[f"day-calibrated + {EXTRA}"] = round(100 * float(c2.mean()), 1)
+                    line["extra vs day-calibrated"] = boot(b, c2, rng); line["extra vs launch model"] = boot(a, c2, rng)
                 r[f"{key} top{k}"] = line
+        if xc:
+            r["coverage (launches with the extra inputs)"] = round(float(U[xc[0]].notna().mean()), 3)
         res[win] = r
-    json.dump(res, open("results/daycal.json", "w"), indent=1)
+    json.dump(res, open(f"results/daycal{'_' + EXTRA if EXTRA else ''}.json", "w"), indent=1)
     print(json.dumps(res, indent=1))
 
 

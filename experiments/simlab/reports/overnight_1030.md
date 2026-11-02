@@ -1218,3 +1218,17 @@ Poisson LightGBM, with the launch model's expected votes as the offset and day t
 - **Weekly:** a consistent, never-negative gain on top 3 (+4 to +6) and top 5 (+1 to +2). The interval lower bounds sit at 0, and there are only 25 weeks.
 - **Monthly:** only 5–6 lists, so it can't be judged. Top 3 is worse in 2 months (one launch each). Don't ship for monthly.
 - **Recommendation:** run it as a shadow weekly forecast next to the launch model; it costs nothing, since it reuses the forecast's own predictions. Ship it for weekly once about 6 more live weeks agree. It doesn't touch the daily board.
+
+## Competitor grounding against the day-calibrated control (Nov 2, `daycal.py EXTRA=cmp_features_ph`)
+Same offset Poisson model; the control is day terms only (the day-calibrated weekly forecast). The test adds the PH Similar Products competitor gaps (cmp_features_ph), which can reorder within a day. Coverage: 46.6% of launches May–Oct, 56.0% Jul–Oct. Paired bootstrap over lists.
+
+| Δ, + competitors − day-calibrated | May–Oct | Jul–Oct |
+|---|---|---|
+| Daily top 3 | −0.2 (−1.5 to +0.9) | −0.3 (−1.7 to +1.1) |
+| Daily top 5 | **−1.2 (−2.0 to −0.6)** | **−1.2 (−2.2 to −0.3)** |
+| Daily top 10 | −0.1 (−0.5 to +0.4) | −0.1 (−0.8 to +0.5) |
+| Weekly top 3 | −4.0 (−9.3 to 0.0), 25 weeks | −3.9 (−9.8 to 0.0), 17 weeks |
+| Weekly top 5 | −0.8 (−2.4 to 0.0) | 0.0 |
+| Weekly top 10 | −1.3 (−2.6 to 0.0) | −1.3 (−3.3 to 0.0) |
+
+- **Verdict:** competitor grounding hurts or does nothing on every list. Daily top 5 is worse with the interval excluding 0, and it cancels the day calibration's weekly top-3 gain. Keep it out of the forecast. Same conclusion as the earlier tests, now against the stronger control.
