@@ -1,6 +1,7 @@
 """GitHub signals for stories that link a repo, as of the moment the story was posted:
   repo age, stars before the post (stargazer list with starred_at; binary search over pages for big repos),
-  stars in the 7 days before the post (pre-launch buzz), owner is an organisation.
+  stars in the 7 days and 24 h before the post (pre-launch buzz), stars in the first 15 min after posting (velocity
+  at checkpoint 2), owner is an organisation.
 Newest stories first. Token from $GH_TOKEN_FILE (never stored or logged). Appends rows to <cache>/gh_repos.jsonl.
 
     python gh.py [since=2025-06-01]
@@ -52,7 +53,7 @@ def stars_before(repo, total, t):
     iso = lambda x: pd.Timestamp(x["starred_at"]).timestamp()  # noqa: E731
     last = min((total + 99) // 100, 400)
     if last == 0:
-        return 0, 0
+        return 0, 0, 0, 0
     lo, hi = 1, last
     while lo < hi:                      # first page whose last star is at/after t
         mid = (lo + hi) // 2
@@ -62,11 +63,16 @@ def stars_before(repo, total, t):
         else:
             hi = mid
     pg = page(repo, lo)
-    before = (lo - 1) * 100 + sum(1 for x in pg if iso(x) < t)
-    week = sum(1 for x in pg if t - 7 * 86400 <= iso(x) < t)
+    ts = [iso(x) for x in pg]
+    if ts and ts[-1] < t + 900 and lo < last:                 # the first 15 min after posting may run onto the next page
+        ts += [iso(x) for x in page(repo, lo + 1)]
+    before = (lo - 1) * 100 + sum(1 for x in ts if x < t)
+    week = sum(1 for x in ts if t - 7 * 86400 <= x < t)
+    day = sum(1 for x in ts if t - 86400 <= x < t)
+    after15 = sum(1 for x in ts if t <= x < t + 900)
     if total > 40000 and lo == last:
         before = -1                     # beyond GitHub's 400-page window: unknown
-    return before, week
+    return before, week, day, after15
 
 
 def one(row):
@@ -74,9 +80,10 @@ def one(row):
     info = gh(f"https://api.github.com/repos/{repo}")
     rec = {"post_id": pid, "repo": repo, "ok": info is not None}
     if info:
-        b, w = stars_before(repo, info.get("stargazers_count", 0), t)
+        b, w, dd, a15 = stars_before(repo, info.get("stargazers_count", 0), t)
         rec.update(repo_age_days=(t - pd.Timestamp(info["created_at"]).timestamp()) / 86400, stars_before=b,
-                   stars_week_before=w, org=int((info.get("owner") or {}).get("type") == "Organization"))
+                   stars_week_before=w, stars_day_before=dd, stars_15min_after=a15,
+                   org=int((info.get("owner") or {}).get("type") == "Organization"))
     with lock, open(OUT, "a") as f:
         f.write(json.dumps(rec) + "\n")
 
