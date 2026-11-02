@@ -1,8 +1,8 @@
 {
- "run_at": "2026-11-02T17:15Z",
+ "run_at": "2026-11-02T17:53Z",
  "gate": {
-  "day_matched_covered": 77,
-  "day_matched_covered_with_posts": 46,
+  "day_matched_covered": 85,
+  "day_matched_covered_with_posts": 52,
   "launches_with_x": 359,
   "launches": 762,
   "full_days": [
@@ -68,7 +68,7 @@
  },
  "B_covered_subsets": {
   "days": 5,
-  "launches": 77,
+  "launches": 85,
   "top3_among_covered": [
    6.7,
    [
@@ -83,33 +83,33 @@
     0.0,
     0.0
    ],
-   3
+   4
   ]
  },
  "diagnostic_spearman_with_residual": {
-  "lx_posts": 0.042,
-  "lx_engagers": 0.104
+  "lx_posts": -0.043,
+  "lx_engagers": 0.058
  },
  "coef_forward": {
   "2026-10-20": [
-   -0.0676,
-   0.0346
+   -0.067,
+   0.0341
   ],
   "2026-10-22": [
-   -0.0762,
-   0.039
+   -0.0756,
+   0.0385
   ],
   "2026-10-23": [
-   -0.0742,
-   0.0418
+   -0.1099,
+   0.0645
   ],
   "2026-10-24": [
-   -0.0648,
-   0.0439
+   -0.0919,
+   0.0605
   ],
   "2026-10-25": [
-   -0.075,
-   0.0499
+   -0.0885,
+   0.0597
   ]
  },
  "verdict": "insufficient data: 3 full days (need 10); (B) is an early read only"
