@@ -895,3 +895,32 @@ final rank, with a bootstrap over days.
   displayed count is absent.
 - **Open question:** do our API snapshots see votes in hours 0–4, when the page hides them? Nov 1's recorder started at
   hour 7. The Nov 2 run (from 00:05 PT) will answer it.
+
+## Pushing the pre-launch shock predictor with data in hand (Nov 2, `simlab/shock_extra.py`, May–Oct, deduped)
+**Persistence:** for launches whose makers have 2+ earlier launches in our data, the makers' mean past shock vs the
+current shock has Spearman **0.44** (170 launches). For the hunter's earlier hunted launches it is **0.17** (1,350
+launches). Surges persist, especially for makers, but few launches have repeat makers in the data.
+
+**Blocks added cumulatively.** Gate: within-day Spearman of the predicted vs real shock, paired over days. Stage 2:
+simulation + predicted shock, Jun–Oct, daily top 3 / 5 / 10. The launch model on the same days scores
+65.3 / 73.1 / 81.5.
+
+| Step | Stage-1 Spearman | Δ vs previous (95% CI) | Daily top 3 / 5 / 10 | Top 3 vs launch model |
+|---|---|---|---|---|
+| Base: launch inputs + turnout | 0.489 | | 56.1 / 67.0 / 75.5 | −9.2 (−12.9 to −5.7) |
+| + team surge history (12 inputs) | **0.500** | **+0.011 (+0.002 to +0.021)** | 57.7 / 68.4 / 76.6 | −7.6 (−11.3 to −3.9) |
+| + competitor and topic appetite (7) | 0.498 | −0.002 (−0.010 to +0.007) | 58.4 / 69.4 / 76.9 | −6.9 (−10.6 to −3.2) |
+| + day context (4) | 0.494 | −0.004 (−0.012 to +0.004) | 58.4 / 69.2 / 76.1 | −6.9 |
+| + warm-up (3) | 0.503 | +0.009 (−0.004 to +0.022); vs base +0.014 (+0.000 to +0.029) | 57.7 / 67.6 / 77.5 | −7.6 |
+
+- **Passes the gate:** team surge history only (+0.011, interval excluding 0).
+- **No gain:** competitor and topic appetite, and day context.
+- **Warm-up:** borderline. Post lead time is always 0 in our data (createdAt equals featuredAt), so that input
+  carries nothing.
+- **Coming-soon follower counts don't exist:** Product Hunt removed coming-soon pages in Aug 2025 (Grok Bot), so
+  that candidate is dropped.
+- **Stage 2:** +1.6 to +2.3 on daily top 3 over the base step, inside the noise. The simulation + predicted shock is
+  still 6.9–7.6 below the launch model.
+- **Reading:** the inputs in hand are close to exhausted for the shock, at about 0.50. The remaining signal is
+  outside the data: makers' outreach (X engagement, queued), the competitor audiences (pilot running), and the
+  launch-day votes, which from hour 4 already give daily top 5/10 above 90.
