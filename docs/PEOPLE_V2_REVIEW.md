@@ -467,3 +467,19 @@ labelling segments (dropped), and the personal-versus-company question for X han
 (1) it belongs in its own PR; (2) `PROXY_URL` is passed as instance metadata (`--metadata=...proxy="$PROXY_URL"`), which anyone with read access to the VM or project can see, so use Secret Manager at runtime instead,
 and the proxy password is already on the rotation list; (3) `run_daily.sh` is proposed as a daily routine with caps of $0.3 (upvotes) and $4.0 (following) per run, up to about $130 a month if it runs every day,
 which needs explicit approval; (4) volume and the sites' terms: anonymous residential-proxy scraping of PH profile pages at daily scale is a different level from the low-volume, cached use assumed in the ladder docs.
+
+## Housekeeping and the 53-promotion hand check (partial)
+
+- **ph_upvotes moved out.** The daily-refresh commit is reverted from this branch (`8634b865`, a revert commit, history not rewritten) and lives in draft PR #144 (`claude/ph-upvotes-daily`) with the
+  $1/week cap and Secret Manager read. Grok Bot will create the `usersim-PROXY_URL` secret and grant the compute service account access.
+- **#144's failing check is not a code failure.** The only failing status is Vercel: "Deployment rate limited - retry in 24 hours" (a build-rate limit on the Vercel account; #141 passed the same check at 10:04, #144 hit the limit
+  at 11:37). The PR touches only `experiments/pipeline/ph_upvotes/`, nothing Vercel deploys, and GitGuardian passed. No code change fixes it and an empty commit to retrigger is not allowed, so it clears when the limit lifts.
+  Optional, not done: an `ignoreCommand` in `vercel.json` so PRs touching only docs, experiments or scripts do not spend deployments; that changes deployment config for the whole repo, so it needs Shreyas.
+- **Promotions: 15 of 53 checked, all correct.** Joining `promoted_x_handles.csv` to the two labeled conflict sets gives 15 promoted people with a PH display name and a hand label, and the label is
+  "the twitter field is right" for every one (names such as Charlie Clark / Charlie Clark, Giacomo Melzi, Om Gupta, Omar Ghandour; the weakest is `ph:cushmachine`, "Charles C." versus "Charles Cushing", similarity 0.75). These are the same
+  rows that built the gate, so they are in-sample.
+- **The other 38 cannot be scored by name from the repo**: the committed promotion list has the X name but not the PH display name, which lives in `persons.parquet`. Still needed: Data Feeder runs the
+  `promoted_name_margin.csv` script from the v3e/v3f section on the current build and commits the CSV. A weak stand-in (similarity between the PH *username* and the X name or handle, which is not a name) suggests glancing first at:
+  `ph:typefoweb` to `mmiszy` (0 followers), `ph:worklab` to `thedeepflux` (X name "Deepak", 3,338 followers), `ph:anvevoice` to `adarshknt1` ("Adarsh Kant"), `ph:greenparrotnow` to `simonfounder`, `ph:slyfirefox` to `peterfox`.
+  These are where to look first, not evidence of error: a username such as `worklab` is a product name, so the proxy says nothing about it.
+- Other facts from the list: 1 of the 53 is protected, and 22 of the 53 people had X posts attached in v3e.
