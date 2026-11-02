@@ -343,3 +343,9 @@ Model switches, direction reviews and agenda changes, newest last.
   - Fixed rule: ≥10 full days, then daily top 3 CI above 0.
   - Re-runs daily at 21:23 UTC. The $20 top-up is still the bottleneck.
   - Retrain on at-launch follower counts scheduled for Nov 20.
+- 14:15 UTC: mailbox checked.
+  - b3 deploy reply: done.
+  - HN recorder v6 live 12:43: /pool every 5 min, ~1.95 req/min. The Wayback /pool backfill for Oct is impossible (no
+    captures), so the re-up work is live-only. Passed to the HN agent.
+  - people_v2 v3h build (PR #141 stream) passed 41/41, no change vs v3g. Not ours to act on.
+  - E5's competitor experiment waits for a go-ahead in its own session.
