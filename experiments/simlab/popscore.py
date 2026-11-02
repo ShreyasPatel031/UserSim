@@ -18,6 +18,9 @@ from sklearn.decomposition import TruncatedSVD
 from . import store, choice
 from .seq import features as seq_features
 
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "ph_predict"))
+from atomicio import atomic_path   # model_/day_ files gate resumes via os.path.exists; features.json is read by other runs
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 PAGE = os.environ.get("PAGE") == "1"   # page-aware people: every launch-page input added to the person model
 TASTE = os.environ.get("TASTE") == "1"  # + each person's taste for page traits (page_taste.py), implies PAGE
@@ -26,13 +29,19 @@ TASTE = TASTE or HERD
 PAGE = PAGE or TASTE
 PRESENCE = os.environ.get("PRESENCE") == "1"   # + when the person is usually active (presence.py)
 TWIN = os.environ.get("TWIN") == "1"           # + vector twin: recency-weighted taste vector vs the launch (presence.py)
-TIE = os.environ.get("TIE") == "1"             # + tie strength: makers vs hunter, recency, comments, share of history (tie_features)
+TIE2 = os.environ.get("TIE2") == "1"           # + tie extensions: return rate to the team, team turnout, recency decay (implies TIE)
+TIE = os.environ.get("TIE") == "1" or TIE2     # + tie strength: makers vs hunter, recency, comments, share of history (tie_features)
+LAG = int(os.environ.get("UPV_LAG", "0"))      # live-data test: hide upvotes from the LAG days before each scored day (comments kept)
 TAG = "herd" if HERD else "page_taste" if TASTE else "page" if PAGE else ""
 if PRESENCE or TWIN or TIE:
-    TAG = (TAG + "_" if TAG else "") + ("pres" if PRESENCE else "") + ("twin" if TWIN else "") + ("tie" if TIE else "")
+    TAG = (TAG + "_" if TAG else "") + ("pres" if PRESENCE else "") + ("twin" if TWIN else "") + ("tie2" if TIE2 else "tie" if TIE else "")
+if LAG:
+    TAG += f"_lag{LAG}"
+TAG += os.environ.get("TAG_SUFFIX", "")   # a separate cache and output for a re-run of an existing configuration
 WORK = os.path.join(HERE, "cache", "popscore_" + TAG if TAG else "popscore")
-PREFIX = "psr_" if TIE else "psq_" if (PRESENCE or TWIN) else "psh_" if HERD else "pst_" if TASTE else "psp_" if PAGE else "psn_"
+PREFIX = os.environ.get("PREFIX") or (f"pl{LAG}{'x' if TIE2 else ''}_" if LAG else ("pnx_" if TIE2 else "pnr_") if (TIE and not PAGE) else "psx_" if TIE2 else "psr_" if TIE else "psq_" if (PRESENCE or TWIN) else "psh_" if HERD else "pst_" if TASTE else "psp_" if PAGE else "psn_")
 MONTHS = ["2026-04", "2026-05", "2026-06", "2026-07", "2026-08", "2026-09", "2026-10"]
+TRAIN_EXTRA = [m for m in os.environ.get("TRAIN_EXTRA", "").split(",") if m]   # e.g. 2026-11: a model trained on Oct for the live pipeline
 FEATS = ["backed", "topic", "meaning", "cf_team", "nbr_team", "nbr_pop", "seq_last10", "seq_decay", "seq_nn", "team_recent",
          "cat_rate_max", "cat_rate_mean", "cat_prior", "cat_n"]
 G = {}   # loaded once per process (fork shares it)
@@ -149,6 +158,9 @@ if PRESENCE:
 if TWIN:
     FEATS = FEATS + ["twin_cos", "twin_rank"]
 TIE_COLS = ["tie_maker", "tie_hunter", "tie_maker_comments", "tie_makers_n", "tie_days", "tie_share", "tie_mutual", "tie_rank", "tie_rel_rank"]
+TIE2_COLS = ["tie_return_mk", "tie_opps_mk", "tie_return_hu", "tie_opps_hu", "team_turnout_mk", "team_turnout_hu", "team_backers_mk", "tie_decay"]
+if TIE2:
+    TIE_COLS = TIE_COLS + TIE2_COLS
 if TIE:
     FEATS = FEATS + TIE_COLS
 
@@ -222,7 +234,85 @@ def tie_features(D):
     D["tie_rank"] = gp.tie_maker.rank(ascending=False, method="average")
     D["_s"] = D.tie_maker - 0.3 * np.minimum(D.tie_days, 360) / 30
     D["tie_rel_rank"] = D.groupby(["person", "day"])._s.rank(ascending=False, method="average")
-    return D.drop(columns="_s")
+    D = D.drop(columns="_s")
+    return tie2_features(D) if TIE2 else D
+
+
+def tie2_features(D):
+    """Tie extensions (agenda item 2), all from actions before the day. Computed separately for the makers (_mk: launches
+    made by any of this launch's makers) and the hunter (_hu: launches hunted by this launch's hunter, when not a maker),
+    because a prolific hunter has hundreds of launches and swamps the makers' signal.
+      tie_return_*    of the team's launches after the person first engaged with that team, the share the person engaged
+                      with again (NaN if the person never engaged or the team has not launched since)
+      tie_opps_*      how many such later launches there were (log)
+      team_turnout_*  for the team as a whole: across its past launches in order, the share of earlier backers who came
+                      back to each next launch (NaN with fewer than 2 past launches)
+      team_backers_mk log count of distinct people who ever engaged with the makers' past launches
+      Makers listed on more than 30 launches (platform or agency accounts) are left out of the makers' team.
+      tie_decay       recency-weighted engagement with the makers' launches, each action weighted exp(-age / 60 days)"""
+    g = load()
+    if "tie_made" not in G:
+        made, hunted = defaultdict(list), defaultdict(list)
+        for r in g["I"].itertuples():
+            ms = set(json.loads(r.makers)) - {""}
+            for m in ms:
+                made[m].append(r.id)
+            if r.poster and r.poster not in ms:
+                hunted[r.poster].append(r.id)
+        G["tie_made"] = (made, hunted)
+        E = g["E"]; Es = E[E.item.isin(G["tie_mk"])]
+        G["tie_backers"] = {it: (np.array(q.date.values, dtype=object), np.array(q.person.values, dtype=object)) for it, q in Es.groupby("item")}
+        G["tie_c2"] = ({}, {})
+    (made, hunted), backers, day = G["tie_made"], G["tie_backers"], g["day"]
+    H, mk, hu = G["tie_hist"], G["tie_mk"], G["tie_hu"]
+    cu, cx = G["tie_c2"]
+
+    def team_l(x, d):
+        ms = mk.get(x, set()); p = hu.get(x)
+        # makers listed on more than 30 launches act like hunters (platform or agency accounts): left out of the makers' team
+        lm = sorted({l for m in ms if len(made.get(m, ())) <= 30 for l in made.get(m, ()) if day.get(l, "9") < d}, key=lambda l: day[l])
+        lh = sorted({l for l in hunted.get(p, ()) if day.get(l, "9") < d}, key=lambda l: day[l]) if p and p not in ms else []
+        return lm, lh
+
+    def turnout(L, d):
+        seen, num, den = set(), 0, 0
+        for l in L:
+            b = backers.get(l)
+            B = set(b[1][b[0] < d]) if b is not None else set()
+            den += len(seen); num += len(B & seen); seen |= B
+        return (num / den if den else np.nan), len(seen)
+
+    def ret(L, eng):
+        f = min((day[l] for l in L if l in eng), default=None)
+        opps = [l for l in L if f is not None and day[l] > f]
+        return (sum(l in eng for l in opps) / len(opps) if opps else np.nan), np.log1p(len(opps))
+    out = {c: [] for c in TIE2_COLS}
+    for u, d, x in zip(D.person, D.day, D.id):
+        if x not in cx:
+            lm, lh = team_l(x, d); tm, nm = turnout(lm, d); th, _ = turnout(lh, d)
+            cx[x] = (lm, lh, tm, th, np.log1p(nm))
+        k = (u, d)
+        if k not in cu:
+            if len(cu) > 200000:
+                cu.clear()
+            h = H.get(u)
+            if h is None:
+                cu[k] = (set(), Counter())
+            else:
+                n = int(np.searchsorted(h[0], d)); age = (np.datetime64(d) - np.array(h[0][:n], dtype=object).astype("datetime64[D]")).astype(int)
+                dec = Counter()
+                for it, a in zip(h[1][:n], age):
+                    for m in mk.get(it, ()):
+                        dec[m] += float(np.exp(-a / 60))
+                cu[k] = (set(h[1][:n]), dec)
+        eng, dec = cu[k]
+        lm, lh, tm, th, nb = cx[x]
+        rm, om = ret(lm, eng); rh, oh = ret(lh, eng)
+        for c, v in zip(TIE2_COLS, (rm, om, rh, oh, tm, th, nb, sum(dec[m] for m in mk.get(x, ())))):
+            out[c].append(v)
+    for c, v in out.items():
+        D[c] = v
+    return D
 
 
 def recip_features(D):
@@ -357,8 +447,27 @@ def train_month(m):
     mdl = lgb.LGBMClassifier(n_estimators=300, learning_rate=0.05, num_leaves=15, min_child_samples=50, verbose=-1, n_jobs=1)
     D, pc = page_cols(D)
     mdl.fit(D[FEATS + pc], D.y)
-    pickle.dump({"model": mdl, "cf": cf, "prior_cut": prev}, open(f"{WORK}/model_{m}.pkl", "wb"))
+    with atomic_path(f"{WORK}/model_{m}.pkl") as tmp, open(tmp, "wb") as f:
+        pickle.dump({"model": mdl, "cf": cf, "prior_cut": prev}, f)
     return m, len(D), float(D.y.mean())
+
+
+def lag_view(d):
+    """UPV_LAG: what a live run would see on day d when upvote pages are refreshed only every LAG days. Upvotes dated in
+    [d - LAG, d) are dropped from every feature (ties, history, activity weights, taste); comments are kept (they arrive
+    daily); day-d events stay for the labels. Person models are trained on complete earlier months, as they would be live."""
+    g = load()
+    E = G.setdefault("E_full", g["E"])
+    cut = (pd.Timestamp(d) - pd.Timedelta(days=LAG)).strftime("%Y-%m-%d")
+    G["E"] = E[(E.kind != "upvote") | (E.date < cut) | (E.date >= d)]
+    for k in ("tie_hist", "tie_mk", "tie_hu", "tie_eng", "recip", "comp_nb", "comp_hist", "tie_made", "tie_backers", "tie_c2"):
+        G.pop(k, None)
+    if TASTE:
+        from . import page_taste
+        page_taste.traits()
+        Z = page_taste.G["Z"]; Ev = G["E"][G["E"].item.astype(str).isin(Z.index)].copy(); Ev["item"] = Ev.item.astype(str)
+        page_taste.G["hist"] = {u: (q.date.values, q.item.values) for u, q in Ev.sort_values("date").groupby("person")}
+    store.load = lambda: (G["P"], G["I"], G["E"])   # choice.rows reads the store itself
 
 
 # ---- phase B: per day, score the population and sum per launch
@@ -366,6 +475,8 @@ def score_day(d):
     path = f"{WORK}/day_{d}.parquet"
     if os.path.exists(path):
         return d, -1
+    if LAG:
+        lag_view(d)
     art = pickle.load(open(f"{WORK}/model_{d[:7]}.pkl", "rb"))
     D = choice.rows(day_from=d, day_to=d, all_people=True)
     if not len(D):
@@ -383,8 +494,32 @@ def score_day(d):
         out.append({"id": x, "day": d, "psn_ev": g.wp.sum(), "psn_fans": np.sort(g.wp.values)[-100:].sum(),
                     "psn_ev_ties": g.wp[g.backed > 0].sum(), "psn_reach": g.w.sum(), "psn_pmax": g.p.max(),
                     "psn_share": g.ws.sum(), "psn_top1": g.w1.sum(), "psn_top3": g.w3.sum()})
-    pd.DataFrame(out).to_parquet(path)
+    O = pd.DataFrame(out)
+    if os.environ.get("SEG") == "1":   # simulated picks per person segment, for the panel reweighting (simlab/panel.py)
+        O = O.merge(segment_sums(D), on="id", how="left")
+    with atomic_path(path) as tmp:
+        O.to_parquet(tmp)
     return d, len(D)
+
+
+def segment_sums(D):
+    """Per launch, sum of w x p within 54 person segments: activity tercile (w) x tie type (makers' launches backed /
+    hunter's launches backed / none) x maker or not x Product Hunt followers (<10, 10-99, 100+). Traits are known before
+    the day (followers and maker flag are as fetched, the same footing as the rest of the store)."""
+    g = load(); P = g["P"]
+    pm = dict(zip(P.person, P.is_maker.fillna(False).astype(bool))) if "is_maker" in P else {}
+    pf = dict(zip(P.person, P.followers.fillna(0))) if "followers" in P else {}
+    act = pd.cut(D.w, [-1, 2 / 30, 6 / 30, 99], labels=[0, 1, 2]).astype(int)
+    tm = D["tie_maker"] if "tie_maker" in D else D.backed
+    th = D["tie_hunter"] if "tie_hunter" in D else pd.Series(0.0, index=D.index)
+    tie = np.where(tm > 0, 0, np.where(th > 0, 1, 2))
+    mk = D.person.map(pm).fillna(False).astype(int)
+    fo = pd.cut(D.person.map(pf).fillna(0), [-1, 9, 99, 1e12], labels=[0, 1, 2]).astype(int)
+    seg = act.values * 18 + tie * 6 + mk.values * 3 + fo.values
+    T = pd.DataFrame({"id": D.id.values, "seg": seg, "wp": D.wp.values})
+    S = T.pivot_table(index="id", columns="seg", values="wp", aggfunc="sum", fill_value=0.0)
+    S.columns = [f"seg_{int(c)}" for c in S.columns]
+    return S.reset_index()
 
 
 def main(workers):
@@ -396,7 +531,7 @@ def main(workers):
     harness.baseline()   # cache the launch model's predictions now: worker processes cannot start their own pools
     ctx = mp.get_context("fork")
     with ctx.Pool(min(workers, len(MONTHS))) as pool:
-        for r in pool.imap_unordered(train_month, [m for m in MONTHS if not os.path.exists(f"{WORK}/model_{m}.pkl")]):
+        for r in pool.imap_unordered(train_month, [m for m in MONTHS + TRAIN_EXTRA if not os.path.exists(f"{WORK}/model_{m}.pkl")]):
             print("trained", r, flush=True)
     days = sorted(d for d in G["lineup"] if d[:7] in MONTHS and d <= "2026-10-24")
     with ctx.Pool(workers) as pool:
@@ -404,11 +539,12 @@ def main(workers):
             if k % 20 == 0:
                 print("scored", k, "of", len(days), r, flush=True)
     S = pd.concat([pd.read_parquet(f"{WORK}/day_{d}.parquet") for d in days if os.path.exists(f"{WORK}/day_{d}.parquet")])
-    S.to_parquet(os.path.join(HERE, "cache", f"popscore_{TAG}.parquet" if TAG else "popscore.parquet"))
+    with atomic_path(os.path.join(HERE, "cache", f"popscore_{TAG}.parquet" if TAG else "popscore.parquet")) as tmp:
+        S.to_parquet(tmp)
     S = S.rename(columns={c: PREFIX + c[4:] for c in S.columns if c.startswith("psn_")})
     cols = [c for c in S.columns if c.startswith(PREFIX)]
-    json.dump({str(r["id"]): {c: float(r[c]) for c in cols} for r in S.to_dict("records")},
-              open(os.path.join(store.RAW, PREFIX + "features.json"), "w"))
+    with atomic_path(os.path.join(store.RAW, PREFIX + "features.json")) as tmp, open(tmp, "w") as f:
+        json.dump({str(r["id"]): {c: float(r[c]) for c in cols} for r in S.to_dict("records")}, f)
     print("saved", len(S), "launches")
 
 

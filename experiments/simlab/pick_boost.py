@@ -40,6 +40,8 @@ def month(m):
         groups["competitors"] = ["comp_used5", "comp_n20", "comp_best"]
     if PS.TIE:
         groups["tie strength"] = PS.TIE_COLS
+    if PS.TIE2:
+        groups["tie extensions"] = PS.TIE2_COLS
     if PS.RECIP:
         groups["reciprocity"] = ["recip_team", "recip_n"]
     if PS.PRESENCE:
@@ -85,7 +87,7 @@ def main(workers):
     names = [k for k in res[0] if isinstance(res[0][k], dict)]
     summ = {k: {"top3_hit": round(float(np.mean([r[k]["top3_hit"] for r in res])), 1), "auc": round(float(np.mean([r[k]["auc"] for r in res])), 3),
                 "months_better_than_base": sum(r[k]["auc"] > r["base"]["auc"] for r in res)} for k in names}
-    json.dump({"summary": summ, "months": res}, open(f"{HERE}/reports/pick_{'ablate' if os.environ.get('ABLATE') == '1' else 'boost'}.json", "w"), indent=1)
+    json.dump({"summary": summ, "months": res}, open(f"{HERE}/reports/pick_{'ablate' if os.environ.get('ABLATE') == '1' else 'boost'}{'_tie2' if PS.TIE2 else ''}{('_comp_' + os.environ.get('COMP_SRC', 'meaning')) if PS.COMP else ''}.json", "w"), indent=1)
     print(json.dumps(summ, indent=1))
 
 
