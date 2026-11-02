@@ -500,3 +500,4 @@ Model switches, direction reviews and agenda changes, newest last.
   - Free pulls (2240) running: Wayback /newest 2025 (ETA Nov 4 17:00 UTC, January ~01:40), then QN Sep–Oct 14 (~Nov 5
     14:00), Jul–Aug (~Nov 7). No denser outcome-independent /newest source exists for Sep 2026.
   - Visibility pilot (2140) report still pending. A1 crawl at 2.8 MB.
+- 23:40 UTC Follow-up added to 2140 (visibility pilot, 'now' priority, 90 min, no report): asked for the upvoter-list answer first.
