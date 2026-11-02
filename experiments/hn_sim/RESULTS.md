@@ -842,3 +842,9 @@ Fix = give the full-period model every 15-min input that exists for the period (
 | **+ Wayback votes + exposure (where captured)** | **26.5% [24.4, 28.7]** | **+1.8 [+0.0, +3.6]** | 26.8% / 25.9% | 216 / 90 / 45 |
 New full-period 15-min headline: 26.5%. The rest of the gap to 29.6% is daily retraining on the newest days and
 within-October flagging; with dense early votes for every day (live recorder) the full model applies everywhere.
+
+### GitHub star history as a 15-min input (wb_gh.py; PARTIAL pull: 8,229 / 9,662 repos, smallest repos first)
+Daily new-star counts (GitHub made starred_at admin-only in July 2026); days before the posting day only. With star
+data on Oct 2-14: winners fast 2/181, late 3/145, re-up 1/62; non-winners 1,126. Caught at 15 min 29.6% -> 28.4%,
+-1.3 [-2.9, +0.5]; GitHub-linked posts only (1,132, 6 winners): 1/6 -> 2/6. Rerun when the pull completes (the big
+repos come last).
