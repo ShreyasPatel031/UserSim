@@ -426,7 +426,9 @@ def score_day(d):
     if os.path.exists(path):
         return d, -1
     torch.set_num_threads(2)
-    data = G.setdefault("data", Data())
+    if "data" not in G:
+        G["data"] = Data()
+    data = G["data"]
     net, art = load_net(d[:7], data)
     D = choice.rows(day_from=d, day_to=d, all_people=True)
     if not len(D):
@@ -444,18 +446,21 @@ def score_day(d):
         D["p"] = (D.p_tt + D.p_gbm) / 2
     else:
         D["p"] = D.p_tt
-    D["wp"] = D.w * D.p
-    by = D.groupby("person").p
-    D["ws"] = D.w * D.p / by.transform("sum") * by.transform("sum").clip(upper=3)
-    rk = by.rank(ascending=False, method="first")
-    D["w1"] = D.w * (rk == 1); D["w3"] = D.w * (rk <= 3)
-    out = []
-    for x, g in D.groupby("id"):
-        out.append({"id": x, "day": d, "psn_ev": g.wp.sum(), "psn_fans": np.sort(g.wp.values)[-100:].sum(),
-                    "psn_ev_ties": g.wp[g.backed > 0].sum(), "psn_reach": g.w.sum(), "psn_pmax": g.p.max(),
-                    "psn_share": g.ws.sum(), "psn_top1": g.w1.sum(), "psn_top3": g.w3.sum(),
-                    "tt_ev": (g.w * g.p_tt).sum(), "gbm_ev": (g.w * g.p_gbm).sum() if ENS else np.nan})
-    pd.DataFrame(out).to_parquet(path)
+    scores = {"psn": "p", "gbm": "p_gbm", "tt": "p_tt"} if ENS else {"psn": "p", "tt": "p_tt"}
+    agg = {}
+    for pre, col in scores.items():   # popscore.score_day's aggregates, once per score
+        p = D[col]; wp = D.w * p; by = p.groupby(D.person)
+        ws = wp / by.transform("sum") * by.transform("sum").clip(upper=3)
+        rk = by.rank(ascending=False, method="first")
+        T = pd.DataFrame({"id": D.id.values, "wp": wp.values, "p": p.values, "w": D.w.values, "ws": ws.values,
+                          "w1": (D.w * (rk == 1)).values, "w3": (D.w * (rk <= 3)).values, "tie": (D.backed > 0).values})
+        g = T.groupby("id")
+        agg[pre] = pd.DataFrame({f"{pre}_ev": g.wp.sum(), f"{pre}_fans": g.wp.apply(lambda v: np.sort(v.values)[-100:].sum()),
+                                 f"{pre}_ev_ties": T[T.tie].groupby("id").wp.sum().reindex(g.wp.sum().index, fill_value=0.0),
+                                 f"{pre}_reach": g.w.sum(), f"{pre}_pmax": g.p.max(), f"{pre}_share": g.ws.sum(),
+                                 f"{pre}_top1": g.w1.sum(), f"{pre}_top3": g.w3.sum()})
+    O = pd.concat(agg.values(), axis=1).reset_index().rename(columns={"index": "id"}); O["day"] = d
+    O.to_parquet(path)
     return d, len(D)
 
 
@@ -472,6 +477,8 @@ def features(workers):
     traits(); G["data"] = Data()
     nets = {f[4:11] for f in os.listdir(TT) if f.startswith("net_") and f.endswith(TAG + ".pt")}
     days = sorted(d for d in PS.G["lineup"] if d[:7] in nets and d <= "2026-10-24")
+    if os.environ.get("FEAT_DAYS"):   # a subset, for timing
+        days = [d for d in days if d in os.environ["FEAT_DAYS"].split(",")]; nets = {d[:7] for d in days}
     if ENS:   # fitted once in the parent, shared by the forked workers
         G["cf"] = {M: PS.fit_cf(PS.month_start(M, 1)) for M in sorted(nets)}
         G["gbm"] = {M: gbm_all(M) for M in sorted(nets)}
@@ -482,9 +489,11 @@ def features(workers):
                 print("scored", k, "of", len(days), r, flush=True)
     S = pd.concat([pd.read_parquet(f"{POP}/day_{d}.parquet") for d in days if os.path.exists(f"{POP}/day_{d}.parquet")])
     S.to_parquet(f"{POP}.parquet")
-    S = S.rename(columns={c: "psv_" + c[4:] for c in S.columns if c.startswith("psn_")})
-    cols = [c for c in S.columns if c.startswith("psv_")]
-    json.dump({str(r["id"]): {c: float(r[c]) for c in cols} for r in S.to_dict("records")}, open(os.path.join(store.RAW, "psv_features.json"), "w"))
+    # psv_ = the model scored (the ensemble with ENS=1, else the net); psg_ = the all-months LightGBM alone (ENS=1)
+    for src, pre in (("psn", "psv"),) + ((("gbm", "psg"),) if ENS else ()):
+        cols = [c for c in S.columns if c.startswith(src + "_")]
+        json.dump({str(r["id"]): {pre + c[len(src):]: float(r[c]) for c in cols} for r in S.to_dict("records")},
+                  open(os.path.join(store.RAW, f"{pre}_features.json"), "w"))
     print("saved", len(S), "launches", "months", sorted(nets))
 
 
