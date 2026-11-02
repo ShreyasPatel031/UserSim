@@ -99,3 +99,5 @@ new information; everything else has been shown to be the same surface.
 - Adding features to the launch-level GBM and reading ±2 on daily top 3.
 - Calling sim-plus-audience-counts "the simulation".
 - Reweighting the pool to stand in for audiences it does not contain.
+
+_Companion review: the PH agent's own Fable review of the same day, docs/reviews/2026-11-02_direction_review_ph.md on claude/ph-ops-agent. Merged plan: PH E0 (error decomposition + shock oracle) first, then E1 here; the launch-day forecast directions are the same; evaluation agreed._
