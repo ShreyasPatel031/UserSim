@@ -452,3 +452,7 @@ Model switches, direction reviews and agenda changes, newest last.
   all page groups −3.0 [−5.1, −0.9]. Reference set to the live forecast's honest input set: daily 62.7/70.4/76.6
   (May–Oct). 64.4 stays as the page-aware upper reference. llm_full joins the honest filter next bundle; honest page
   snapshots accrue from Oct 25 (data/today). A1 crawl 80/731 days.
+- 21:23 UTC Pool-model compounding plan (PH agent), approved: who voted on day d is complete only ~d+7 (upvote pages
+  are refreshed weekly), so pool Spearman is scored at d−7 (honest) with a labelled d−1 provisional. Offline first read
+  Oct 25–31 tonight. Weekly shadow retrain with dated-follow ties on exp-1, promoted after 4+ weeks if it beats pna_.
+  llm_full added to the honest filter (1dc0f8a). Honest page model from the 00:05 snapshots queued as a shadow (~30 d).
