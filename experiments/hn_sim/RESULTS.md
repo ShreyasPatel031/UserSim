@@ -721,3 +721,16 @@ Early votes plus who commented early is the first significant gain at 15 min. Th
 top (its +7.0 at posting on Oct 9-14 was a 4-day result).
 Early commenters' ties to the submitter / activity / newcomers on top of votes + who: 28.4% (+2.8 [+0.5, +5.2] vs base;
 +0.0 vs votes + who). No extra gain.
+
+### Live, PROVISIONAL: Caught at 15 min (live15.py, run 2026-11-02 ~09:30 UTC)
+Posts Oct 31 02:13 - Nov 1 (1,388; Algolia), labels = any daily top 30 so far (latest complete top-30 read per list day;
+no list day settled yet): 40 winners (Oct 31: 25, Nov 1: 15). Seen by the recorder within 15 min: 47.8% (Oct 31 41.7%,
+Nov 1 53.2%; /newest read about every other minute before the always-on VM).
+| Score at 15 min (flags = 40) | Caught |
+|---|---|
+| votes at 15 min (recorder) | 15.0% [8.0, 26.7] (6/40) |
+| odds tool at posting | 10.0% [0.0, 16.0] (4/40) |
+| blend 50/50 | 10.0% [6.7, 12.0] (4/40) |
+Two days, 40 winners: far too few to read; re-scored daily as lists settle (daily task 00:47 UTC).
+Fixes found on the way: listwatch reads were missing pages (HN refusals) and never re-read a day after the next, so no
+list could settle; listwatch2 retries pages and re-reads the 3 previous days (deployed; history backed up and kept).
