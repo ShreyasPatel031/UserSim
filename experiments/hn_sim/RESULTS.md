@@ -631,3 +631,9 @@ coverage does not depend on the outcome (test posts 64.4% vs winners 65.5% with 
 | 1 h | A | 45.6% | 45.6% | +0.0 [-1.8, +1.7] |
 | 1 h | B | 48.9% | 48.3% | -0.6 [-2.4, +1.2] |
 Base = at-posting inputs + history score + front-page rank + comments. To rerun when the October parse completes.
+
+### Individual twins with the full favorites (pages 2-10; 146,216 unique favorites, 3,422 people; twin_v2.py)
+2,879 people, Sep 1 - Oct 14, median per-person AUC | within popularity bands: v2 personal signals 0.632 | 0.628;
+v2 + favorites **0.642 | 0.633** (page-1 favorites: 0.640 | 0.635); people with 10+ favorites (618): 0.658 | 0.649
+(page-1: 0.653). Popularity alone 0.814; v2 + favorites + popularity 0.830 | 0.645. The full favorites add +0.002
+overall, +0.005 for heavy favoriters.
