@@ -146,3 +146,6 @@ Model switches, direction reviews and agenda changes, newest last.
   through the per-launch shock (E0: 90.5% of error), so the next lever is turnout data: pre-launch X engagers.
 - 07:05 UTC HN live split: seen-in-15-min subset 15 winners, votes 26.7% (4/15); coverage Oct 31 41.7%, Nov 1 53.2%
   (/newest read 306 and 606 minutes of 1,440). Per-minute v5 coverage applies from Nov 2.
+- 07:07 UTC PH X pre-launch test built (commit 29870da): leakage filter drops 1,243 reposts (no time) and 92 post-launch
+  replies/quotes; 16 launches pass the gate (needs 100). Asked Grok Bot to prioritise engager lists for the 727 complete
+  posts and to add repost time if the route has it.
