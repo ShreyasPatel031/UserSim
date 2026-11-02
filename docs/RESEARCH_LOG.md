@@ -407,3 +407,11 @@ Model switches, direction reviews and agenda changes, newest last.
   - Engagers vs residual Spearman −0.03.
   - Pre-launch X engagement carries no within-day shock signal. The hourly re-run is stopped.
   - Requested a PH Fable direction review via Grok Bot (20261102T1840).
+- 18:53 UTC PH Fable review 2 (docs/reviews/2026-11-02_direction_review_ph_honest.md on claude/ph-ops-agent).
+  - Stop scoring person-model variants and launch-model refits on the daily board.
+  - The gate is within-day residual Spearman, then daily top-k.
+  - Directions: A the team's full PH history (API); B honest audience as of day−1 (accruing, ~30 live days); C dated
+    user base (GitHub stars before launch, npm/PyPI downloads).
+  - Experiment zero: honest shock predictability is 0.395 vs 0.504 leaky. hist_ and turnout carry more weight.
+  - A1 data request filed by the PH agent. C1 request filed by me (20261102T1855): add PH repos to the stargazer
+    history run, plus npm/PyPI download series, free routes only.
