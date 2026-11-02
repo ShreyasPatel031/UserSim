@@ -780,3 +780,11 @@ non-winners 756/12,400 (6%). Mentions by source on Oct 2-14 posts: Reddit 343, l
 RSS 33, X 13, GitHub trending 8. Caught at 15 min: 28.4% -> 28.4%, +0.0 [-2.2, +2.3] (90%+ days -0.3 [-2.8, +2.1]);
 caught by type fast 71 -> 70, late 25 -> 29, re-ups 14 -> 11. GitHub stargazer timing not run: api.github.com
 returns 403 from the dev container and no token is available here (needs hn-sim-1 + a token).
+
+### Re-up clock (direction B; live15.py; PROVISIONAL, posts Oct 31 - Nov 1, 38 winners so far)
+Exposure event = first /pool sighting, or a front-page return 3+ h after posting after 3+ h off it; median 4.8 h after
+posting. 41 posts had one; 12 of the 38 winners are among them. Judged 15 min after the event (points gained, front
+page): 5/12 of the cohort's winners flagged (flags = 12). 15-min Caught, all posts: posting clock only 15.8% (6/38);
+posting clock + re-up clock (each post at its stronger clock; being in /pool itself ranks the post high) 28.9% (11/38).
+Two days; /pool read every 5 min only since Nov 2 12:43 UTC (recorder v6). Wayback has no /pool history for October
+(one capture, an HN block page), so B and C are live-only.
