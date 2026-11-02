@@ -144,3 +144,5 @@ Model switches, direction reviews and agenda changes, newest last.
 - Pre-launch headline: launch model alone 66.4/73.2/81.9 on this window; + psg −0.9/−1.0/−1.2. Unchanged.
 - Decision: psg ships in the next bundle as the sim's person model; psv dropped. The pre-launch headline moves only
   through the per-launch shock (E0: 90.5% of error), so the next lever is turnout data: pre-launch X engagers.
+- 07:05 UTC HN live split: seen-in-15-min subset 15 winners, votes 26.7% (4/15); coverage Oct 31 41.7%, Nov 1 53.2%
+  (/newest read 306 and 606 minutes of 1,440). Per-minute v5 coverage applies from Nov 2.
