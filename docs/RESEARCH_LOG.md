@@ -263,3 +263,9 @@ Model switches, direction reviews and agenda changes, newest last.
   - Monthly: too few lists, don't ship.
   - Plan: shadow weekly forecast; ship after ~6 live weeks agree.
   - Grok Bot asked again to stage the bundle without Shreyas; held.
+- 11:39 UTC E5: E1 v2 vs the day-only control (176 days / 25 weeks, 5 seeds, paired).
+  - Day calibration alone, vs the launch model: weekly top 3 +5.3 [+1.3, +10.7]; log-lik +0.31 [+0.09, +0.52].
+  - E1 v2 over day calibration:
+    - Weekly top 5 +3.2 [+0.8, +6.4], at every setting. This is the only measured gain from pool + audiences.
+    - Daily gain: none (a settings effect).
+  - Both shadows are in the pending bundle (5056c7f), which waits on Shreyas.
