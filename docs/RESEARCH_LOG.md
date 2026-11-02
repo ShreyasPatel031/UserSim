@@ -381,3 +381,7 @@ Model switches, direction reviews and agenda changes, newest last.
     +5.9 [+2.3, +10.1]. Late risers caught 30 → 57/145. Reported beside the headline, not as it.
   - C (predicted /pool return as an input): −2.8. Dropped.
   - gh.py ready for the token.
+- 16:23 UTC E5 X ties in the person model (x_tie_pool.md), Oct, 71 covered launches.
+  - Person level: tied people voted 22.5% vs 1.65% (13.7x).
+  - Pool level: Spearman gain 0.000. Only ~12 tied pool people per launch, about +1 expected vote.
+  - X's chance is the non-pool engagers (the launch-level x_prelaunch_e1 test, waiting for 10 full days).
