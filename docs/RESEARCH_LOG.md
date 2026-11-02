@@ -491,3 +491,12 @@ Model switches, direction reviews and agenda changes, newest last.
 - 22:58 UTC E5 live simulator round 2: outcome-calibrated fit fixes aggregate calibration (ΣP 27–29 vs ~25–30 winners) but overshoots 2+ point posts; ranks top-30 reach worse than the raw 15-min score (AUC 0.64 vs 0.72). The QN-selection artifact is confirmed on the outcome side (QN fit leaves early votes inert; outcomes need tau ≈ 0.3). Stop rule set: after dispersion + at-posting prior, if AUC still trails the raw score, fold the calibrated reach table into wb15 and stop the standalone simulator. Live Caught for Nov 2 settles Nov 8.
 - 23:02 UTC E5 stop-rule step 1 (dispersion): on Oct 2–9 the simulator ties the raw 15-min score (AUC 0.656 vs 0.648, diff +0.008, CI spans 0); the earlier 0.64 vs 0.72 was 10 live reachers, noise. Step 2 (at-posting prior) waits on the HN agent's atposting_hist.parquet; then the rule applies. Selection finding written up (f2fbcd13).
 - 23:05 UTC HN star pull unchanged at 9,491/9,662 since 22:39 (large-repo tail or stall); PH pass not started. Asked Grok Bot (2305) for status and to start the PH pass in parallel. A1 crawl at 2.4 MB.
+- 23:33 UTC: mailbox checked.
+  - GitHub stars done: HN 9,662 repos (1.16M rows; ~19 repos duplicated, dedupe), PH 732 repos (176k rows). PH agent
+    asked to run C1; HN agent to run wb_gh.
+  - At-launch capture (2145): built, pilot passed on Nov 2's 17 launches (55 people, 100% fetched), ~$0.10/day. First
+    real run Nov 3 08:10 UTC. Page shows unredacted maker names and anonymous follower lists (~20/page). Filed 2340:
+    daily X-count routine, /r/ redirect resolution, restart safety, page follower lists to the end (≤500).
+  - Free pulls (2240) running: Wayback /newest 2025 (ETA Nov 4 17:00 UTC, January ~01:40), then QN Sep–Oct 14 (~Nov 5
+    14:00), Jul–Aug (~Nov 7). No denser outcome-independent /newest source exists for Sep 2026.
+  - Visibility pilot (2140) report still pending. A1 crawl at 2.8 MB.
