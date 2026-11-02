@@ -788,3 +788,9 @@ page): 5/12 of the cohort's winners flagged (flags = 12). 15-min Caught, all pos
 posting clock + re-up clock (each post at its stronger clock; being in /pool itself ranks the post high) 28.9% (11/38).
 Two days; /pool read every 5 min only since Nov 2 12:43 UTC (recorder v6). Wayback has no /pool history for October
 (one capture, an HN block page), so B and C are live-only.
+
+### At-posting ensemble of the small levers (ens_post.py; equal rank weights fixed in advance)
+Members: Jul-Aug 21.4%, 2025+ history 22.4%, + page judge 22.1%, + type record 22.3%, one model with every input 22.4%.
+vs the current best (Jul-Aug + history, 23.2%): Jul-Aug + history + judge + type 23.1% (-0.2 [-1.1, +0.9]);
+history + judge + type 23.8% (+0.6 [-0.4, +1.7]); all + history 22.8% (-0.5); all five 23.3% (+0.1). No ensemble beats
+the current best significantly; at posting stays 23.2% (reported as the odds tool's calibrated probability).
