@@ -36,9 +36,10 @@ gb = sum((r.get("wire_bytes") or 0) for R in (U, F) for r in R.values()) / 1e9
 nic = [l for l in open(f"{tmp}/job.log") if l.startswith("NIC")] if os.path.exists(f"{tmp}/job.log") else []
 S = dict(date=D, upvotes_people=len(U), upvotes_status=stat(U), upvote_rows=len(up), following_people=len(F), following_status=stat(F),
          follow_rows=len(fo), wire_GB=round(gb, 4), usd_proxy=round(gb * 1.0, 3), nic=nic[-1].strip() if nic else None)
+open(f"{tmp}/spend.json", "w").write(json.dumps(dict(date=D, usd=S["usd_proxy"])))  # ledger entry read by weekly_budget.py
 open(f"{tmp}/README.md", "w").write(f"""# PH people daily refresh {D} (DRAFT, needs the PH agent's verification)
 Fetch-ladder route 4 (Camoufox via DataImpulse residential, PHUP_MODE=light), anonymous, read-only, no Apify. Code: experiments/pipeline/ph_upvotes
-(fetch_upvotes.py with PHUP_PAGE=upvotes|following, vm_daily.sh, make_lists.py, summarize_daily.py) on claude/fetch-ladder-handover. One VM, deleted after.
+(fetch_upvotes.py with PHUP_PAGE=upvotes|following, vm_daily.sh, make_lists.py, summarize_daily.py) on claude/ph-upvotes-daily. One VM, deleted after.
 Lists (make_lists.py, same rules as pipeline/incremental.plan): upvotes = new commenters + active people stale > 7 d or commented since;
 following = new commenters + all active people on Mondays. Inputs: work/upvotes.txt, work/following.txt.
 
@@ -53,5 +54,5 @@ Files:
 
 Status: {json.dumps(S)}
 """)
-subprocess.run(f"gsutil -q cp {tmp}/upvotes_page1.jsonl {tmp}/following_page1.jsonl {tmp}/fetch_state_rows.jsonl {tmp}/README.md {O}/", shell=True)
+subprocess.run(f"gsutil -q cp {tmp}/upvotes_page1.jsonl {tmp}/following_page1.jsonl {tmp}/fetch_state_rows.jsonl {tmp}/README.md {tmp}/spend.json {O}/", shell=True)
 print(json.dumps(S))
