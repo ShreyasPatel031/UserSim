@@ -1025,3 +1025,260 @@ Spearman 0.248 (223 launches); hunter 0.02 (1,583).
   56.7 and 44.4 / 50.0 / 52.5 (Jul–Oct).
 - Simulation runs (popscore day files) were not rescored. They still hold the 204 extra rows; analyses since
   `shock_model` drop them with `dedupe()`.
+
+## Launch-day votes on all boards, and earlier daily reads (Nov 2, `wayback_boards.py`)
+Setup:
+- Inputs: Wayback homepage captures (votes hidden before hour 4) + non-team comments + the pre-launch prior.
+- LightGBM on final log votes, trained on earlier months; tested Aug–Oct.
+- Launches whose day has no capture before the cutoff fall back to prior + comments.
+- Capture coverage is partial: 29% of launches by hour 8, 40% by 12, 55% by 24. No week and no month is fully
+  captured.
+
+**Test 1: rank by predicted final votes at cutoff H, top 3 / 5 / 10 (Δ vs prior, 95% CI)**
+
+| Board (lists) | Prior | H = 8 | H = 12 | H = 24 |
+|---|---|---|---|---|
+| Daily (86 / 86 / 78) | 62.8 / 70.7 / 79.9 | 73.3 / 78.8 / 83.8 (top 3 +10.5, +6.2 to +14.7) | 76.4 / 80.0 / 84.9 (+13.6, +8.5 to +18.6) | 83.3 / 84.9 / 88.1 (+20.5, +15.1 to +26.4) |
+| Weekly (12) | 50.0 / 55.0 / 55.8 | 52.8 / 53.3 / 63.3 | 58.3 / 56.7 / 63.3 | **63.9 / 66.7 / 72.5** (top 10 +16.7, +11.7 to +21.7; top 3 +13.9, −2.8 to +30.6) |
+| Monthly (2–3) | 50.0 / 46.7 / 50.0 | noise | noise | noise |
+
+Daily numbers here mix captured and uncaptured days. On captured days alone, votes give about 95 or more from hour 8
+(previous section).
+
+**Test 2: early daily reads**
+
+| H (days) | Prior | + comments | + comments + first votes | Votes alone |
+|---|---|---|---|---|
+| 2 (86) | 62.8 / 70.7 / 79.9 | 65.9 / 70.7 / 80.4 (top 3 +3.1, −1.6 to +8.1) | same, votes hidden | — |
+| 4 (86) | 62.8 / 70.7 / 79.9 | 67.4 / 72.1 / 80.3 (top 3 +4.7, −0.0 to +9.3) | same, votes hidden | — |
+| 6 (18 captured days) | 51.9 / 67.8 / 78.8 | 61.1 / 70.0 / 80.0 | 68.5 / 85.6 / 89.4 | **83.3 / 96.7 / 91.2** (top 3 +31.5, +18.5 to +42.6) |
+
+**Reading:**
+- Before hour 4, comments add 3 to 5 points on top 3. The first visible votes then dominate.
+- At hour 6, votes alone give 83 / 97 / 91 on 18 days. The fitted blend is worse than votes alone: too few captured
+  days to learn the weights, so the prior pulls it down. Top 3 does not pass 90 before hour 11 on this data.
+- Weekly gains with launch-day votes: top 10 +16.7 at H = 24, interval excluding 0. That is with only 53% of each
+  week's launches captured; full hourly coverage (our live snapshots) is the real test.
+- **Next:**
+  - Whether the API exposes votes before hour 4. The Nov 2 run answers it.
+  - The same model on live hourly snapshots: full coverage, every launch, every hour, from Nov 2.
+
+## Pre-launch only (Shreyas, Nov 2: launch-day forecasts don't count toward the north star; launch-day work is a tool)
+### Early trajectory as an extra training target (`trajectory_target.py`, Aug–Oct)
+Setup:
+- Target: early speed = log votes at a Wayback capture (hours 4–12) minus log hours, within day; 1,045 past launches.
+- Learned from the launch-model inputs only (pre-launch), trained on earlier months.
+
+Results:
+- **The launch model already predicts held-out early speed better** (within-day Spearman 0.686) than a model trained on
+  early speed itself (0.619).
+- Rank blend of the two vs the launch model, daily top 3 / 5 / 10: 62.4 / 71.2 / 79.2 vs 65.1 / 71.6 / 80.5 (top 3
+  −2.7, −6.6 to +1.2).
+- Weekly (12 weeks): top 5 −13.3 (−20.0 to −5.0).
+- The stacked variant produced no scores: the trajectory data starts in July, so its first test month had no
+  training rows.
+- **Verdict:** no gain. The early trajectory carries no information the pre-launch inputs lack.
+
+### X launch-post engagement, PARTIAL (`x_engagement_test.py`; Oct 1–25, engagers for 22 launches)
+- Of 33 X engagers (reposters, quoters, repliers) matched to Product Hunt people by the profile's X handle, **66.7%
+  voted on that launch** (95% CI 50.6–82.8%). The same people voted on each other launch that day at 1.4%: a 47× lift.
+- 37.9% of October voters have an X handle on their profile.
+- Pre-launch use: only 27 posts on 21 launches are dated before 00:00 PT on launch day, so it is not measurable yet.
+  Engagement counts were read at fetch time, so day-0 posts can't count as pre-launch.
+- **Reading:** X engagement with the launch post marks real voters strongly. As a pre-launch input it needs posts
+  before launch day: teasers, "launching tomorrow". Those are rare in this batch.
+
+## Pre-launch X ties, first partial batch (Nov 2)
+
+Data: Data Feeder's first partial batch (790 pre-launch posts, 183 engager rows, 83 team handles). Coverage counts a launch only when one of its team handles was fetched for that launch's day (fixed from a looser rule that counted 976 launches).
+
+- Covered launches: 68. Engager rows matched to PH people: 19.
+- Person level: 8 X-tied person-launch pairs. 75% voted on the launch (95% CI 45–100%), against 0.0% on the same day's other launches (placebo). The direction is right, but n=8 is far too small to rely on.
+- Launch level (pre-launch, weekly roll): top 3 is 61.9 for both the launch model and the model with X ties. Not readable yet: there are too few covered launches to train on, and only one weekly line was captured before exp-1 was stopped.
+- Next: re-run as batches land. If the person-level lift holds at n≥100 pairs, add an X-tie input to the person model (TIE) and test top 3/5/10 at launch level.
+
+## E5 person model trained on all earlier months (psg_) and the attention-net blend (psv_) (Nov 2)
+Setup:
+- All sources restricted to the same 3,977 launches (May–Oct, 177 days; tested Jun–Oct). Every model was trained only on earlier months.
+- Paired bootstrap over days (10,000 resamples).
+- Script: `ph_predict/sim_src_score.py` (pool check; launch model + simulation). `newsim_eval.py NOPAGE=1 STAGE=2 STAGE3=1` with "+day standing" is the live configuration; `pxg`/`png` are pnx/psn2 cut to the same launches.
+
+**Pool check (simulation only):** within-day Spearman with real pool votes, and the hit rate on the pool's own top 3.
+
+| | Spearman ev | Pool top 3 (ev) | vs pnx, Spearman | vs pnx, top 3 |
+|---|---|---|---|---|
+| pnx | 0.507 | 47.6 | | |
+| **psg** | **0.581** | **58.0** | +0.074 (+0.050 to +0.099) | **+10.4 (+7.0 to +13.9)** |
+| psv | 0.580 | 58.2 | +0.073 (+0.048 to +0.098) | +10.5 (+6.8 to +14.3) |
+| psr | 0.538 | 52.5 | +0.031 (+0.007 to +0.056) | +4.9 (+1.1 to +8.5) |
+| psn2 | 0.459 | 44.8 | −0.048 | −2.8 |
+
+**Launch level, pre-launch daily top 3/5/10.**
+- Live configuration (simulation + reach + audience + day standing, no page), psg − pnx: top 3 **+3.7 (+0.9 to +6.4)**, better in 4 of 5 months; top 5 +0.8 (−0.7 to +2.3); top 10 +0.2 (−0.7 to +1.2). psv − pnx: +1.6 / +0.8 / −0.7, all intervals span 0.
+- That live model is still below the launch model alone: psg 61.1 / 70.6 / 80.1 vs 66.4 / 73.2 / 81.9. Top 3 −5.3 (−9.0 to −1.6).
+- Launch model + simulation inputs: no source beats the launch model alone. Launch model + psg: −0.9 (−3.9 to +2.1) / −1.0 (−2.6 to +0.7) / −1.2 (−2.3 to −0.2). Launch model + pnx: −3.0 / −2.5 / −1.0. psg is the least harmful (vs pnx: +2.1 (−0.9 to +5.3) / +1.5 / −0.2).
+
+**Verdict:**
+- psg is a clear simulation upgrade: +10 points on the pool's own top 3, and +3.7 on daily top 3 for the live simulation forecast. It should go into the next bundle (popscore train_month on all earlier months).
+- It does not improve the headline pre-launch forecast. The launch model alone is still best, and adding any simulation inputs to it doesn't help.
+- psv adds nothing over psg.
+
+## Pre-launch X engagers: leakage filter and turnout inputs, coverage check (Nov 2, 07:15 UTC)
+- Leakage: engager rows are kept only when their own post (snowflake time of engager_post_id) is before 00:00 PT on launch day. Of 2,698 rows: 1,243 reposts dropped (no time), 92 replies or quotes dropped (posted after launch start).
+- Coverage gate: a handle-day counts only when its posts are complete and every post with any engagement has its engagers fetched. Now: 17 handle-days, **16 covered launches** (727 complete posts still lack engager lists).
+- Added turnout inputs (distinct pre-launch X engagers, engagers per post, posts) and their no-fit within-day Spearman with the launch model's residual (the shock). Only 4 days have 3+ covered launches, so these numbers mean nothing yet.
+- Launch-level top 3/5/10 vs the launch model is not run yet. It runs once there are ≥100 covered launches, then again with each batch.
+
+## Pre-launch X engagers, re-run at 07:07 UTC files (Nov 2)
+- Coverage gate: the posts_complete / engagers_fetched flags in the output files lag the fetch job. The gate now comes from the job's state.json (`XGATE`): groups fully paged, launch day Oct 5–23 (Oct 1 / g5 lists still queued), and no open engager list or reply batch. That gives 67 handle-days, which map to **51 covered launches** in the store; Grok Bot counts 152 by its own rule. Dead handles from raw/x_lookup/x_lookup.json (188 not found, 6 suspended) are dropped before matching (`XLOOKUP`).
+- Leakage filter: dropped 1,243 reposts (no time) and 100 replies or quotes posted after 00:00 PT on launch day.
+- **Person level:** 42 X-tied person-launch pairs (replied to or quoted a team post in the 30 days before launch). 45.2% voted on the launch (95% CI 30–60%), vs 1.2% on the same day's other launches: a 37× lift. This is the first person-level signal with real n.
+- **Turnout vs shock** (within-day Spearman with the launch model's residual, 7 days with 3+ covered launches): distinct engagers +0.04, per post +0.03, posts −0.05, X-tied PH people +0.11. No sign of a turnout signal yet; too few days to say more.
+- Launch-level top 3/5/10 is still not run (51 < 100 covered launches). It needs tomorrow's X quota (g8/9/11/12 posts, 316 lists).
+- **Extra turnout inputs (orchestrator's list), same 51 launches and 7 days.** Within-day Spearman with the launch-model residual:
+  - impressions / likes / reposts on team posts, last 7 days: −0.07 / −0.08 / −0.10; last 30 days: −0.02 / +0.02 / −0.07.
+  - last 48 h: post count −0.09; tease (text mentions producthunt / launching / tomorrow) +0.09.
+  - With about 7 launches a day over 7 days, one standard error is roughly ±0.15, so none of these differ from 0.
+  - Caveat: like, impression and repost counts are read at fetch time (Nov 2), so they include engagement after launch. A positive result would have needed a leakage check; a null one doesn't.
+
+## Pre-launch X, re-run at 08:22 UTC files: first launch-level read (Nov 2)
+- Gate: built from state.json (groups fully paged, no open list or reply batch). Zero-post handles are kept as real zeros unless x_lookup marks them not found or suspended. x_lookup covers PH-pool handles, so 43 of 48 zero-post maker handles are absent from it and are kept. Result: 86 handle-days → **53 covered launches in the store** (Grok Bot reports 90; its launch count rule differs). No day has every launch covered.
+- Leakage filter: dropped 1,280 reposts (no time) and 121 replies or quotes posted after launch start.
+- **Person level:** 65 tied pairs; 32.3% voted (95% CI 21–44%) vs 0.9% placebo, a 34× lift.
+- **Launch level:** leave-one-day-out ridge on the launch prediction plus a fixed turnout set (engagers, per post, posts, X-tied PH people, 48 h tease), ranked among the covered launches on 7 days. Top 3 is 90.5 vs 90.5, top 5 80.0 vs 80.0: identical rankings, delta 0. With ~7 covered launches a day the task is too easy to tell anything, and there are 0 fully covered days, so this can't speak to the real board yet.
+- Turnout vs shock (within-day Spearman with the residual): all between −0.10 and +0.09, inside ±0.15 noise.
+- Re-run when the twitterapi top-up closes the 229 open launches; that should give full days.
+
+## Pre-launch X, refreshed build (08:36 files, Grok Bot reports 121 covered): reconciliation and re-run (Nov 2)
+- **Why 121 vs 64.** Both rules mark the same 86 handle-days as fully fetched. Grok Bot's ph_gate.py counts a launch as covered when all its handles are done, *on any day*. But each handle's posts were fetched only for the 30 days before its one assigned launch. 76 of the launches it credits fall on a different day from that window (serial makers and hunters), so their pre-launch window wasn't fetched. Under the day-matched rule there are **64 covered launches** (57 with every handle done, 7 with some). That stays below 100 until g8/g9/g11/g12 page.
+- Leakage filter: dropped 1,280 reposts (no time) and 121 replies or quotes after launch start (snowflake time; every reply and quote row has engager_post_id).
+- **Person level:** 90 tied pairs; 32.2% voted (95% CI 22.6–41.9%) vs 1.0% placebo, a 31× lift. Stable across the last three runs.
+- **Launch level** (leave-one-day-out ridge, launch prediction + fixed turnout set, ranked among covered launches, 9 days): top 3 77.8 vs 77.8, top 5 82.5 vs 82.5, identical rankings. The turnout weights are too small to change any order. 0 fully covered days.
+- Turnout vs residual: engagers −0.03, X-tied PH people −0.03, 48 h tease +0.03 (noise ±0.15).
+- Reading so far: X engagement strongly marks *who* votes, but at launch level it hasn't shown any turnout signal beyond the launch model.
+- Full-day coverage: 0 of 25 October days have every launch covered. Launches with no maker or hunter X handle (about half) count as real zeros. Fetch order sent to Grok Bot (launch ids only, gs://…/tmp/ph_ops/x_fetch_order.json): 19 open launches would complete Oct 25, 5, 10, 23 and 24. Most open launches need a fresh window ending on their own launch day.
+
+## Daily check, Nov 2 (run 00:10 PT)
+- Steps: all ok except `people`, which failed: 4,420 of 4,420 profile pages blocked (status != 200). Profile pages have returned 0 items since Oct 30; the step now reports that as a failure. list_check for Nov 1: 0 missing. 17 launches at 00:10 PT; launch-model and simulation forecasts both written.
+- Nov 1 forecast vs final ranks (launch model): top 3 2/3, top 5 3/5, top 10 8/10. The simulation forecast is scored from tomorrow (first forecast is Nov 2).
+- Spend Nov 2: Gemini $0.45, GCP VM $0.07, DataImpulse $0.03 (no 407).
+- Monday backtest (32 days), daily top 3/5/10: simulation only 46.7 / 59.9 / 68.3; launch only 64.0 / 70.5 / 76.3; both 58.8 / 67.8 / 74.5; current 64.8 / 71.6 / 76.8.
+
+## pna_ (no-page person model trained on all earlier months) vs pnx, and the four-way with competitor grounding (Nov 2)
+`popscore` with `TIE2=1 TRAIN_ALL=1` (no page; E5's TRAIN_ALL ported, Nov model included via TRAIN_EXTRA). 4,877 launches, May–Oct. Paired bootstrap over days (10,000 resamples).
+
+**pna vs pnx**
+- Pool check (207 days): Spearman ev 0.513 vs 0.488, +0.025 (+0.009 to +0.042); pool top 3 (fans) +3.2 (+0.5 to +6.0); (ev) +2.7 (−0.2 to +5.5).
+- Live sim (newsim NOPAGE STAGE3, +day standing), daily top 3/5/10: 58.8 / 71.3 / 79.8 vs 59.8 / 70.6 / 79.3. Δ −1.0 (−3.3 to +1.3), better in 4 of 6 months (May −4.6, Sep −4.4) / +0.7 (−0.7 to +2.1) / +0.4 (−0.4 to +1.2).
+- Launch model + pna vs + pnx: +0.6 / +0.5 / +0.6, all intervals span 0.
+- Reading: better on the pool's votes, equal within noise at launch level.
+
+**Four-way, launch model + inputs** (`ph_predict/lm_plus.py`; 3,977 launches, Jun–Oct, 176 days; competitor grounding = PH Similar Products gaps, cmp_features_ph, present for 46.7% of launches). Every variant refits a small model on the launch prediction, so "refit alone" is the control.
+
+| Daily top 3 / 5 / 10 | Score | vs refit alone (top 3 / 5 / 10) |
+|---|---|---|
+| launch model (raw) | 66.7 / 73.5 / 81.0 | |
+| refit alone | 66.1 / 74.1 / 80.4 | |
+| + competitor grounding | 65.0 / 72.7 / 79.8 | −1.1 (−3.4 to +1.1) / −1.4 (−3.0 to +0.2) / −0.6 (−1.5 to +0.3) |
+| + pna | 64.6 / 72.7 / 80.4 | −1.5 (−4.4 to +1.3) / −1.4 (−3.2 to +0.3) / −0.0 (−1.0 to +1.1) |
+| + both | 65.0 / 72.8 / 80.6 | −1.1 (−4.0 to +1.7) / −1.2 (−3.1 to +0.6) / +0.1 (−1.0 to +1.2) |
+
+- None of the inputs beats the control; all intervals span 0 except vs the raw launch model on top 10 (+ competitors −1.2, −2.2 to −0.2).
+- The pre-launch headline stays the raw launch model: 66.7 / 73.5 / 81.0.
+- **Deployed Nov 2, 11:06 UTC (Grok Bot), verified by PH ops:** bundle 20261102_pna. Model and pnx_features md5 match the bundle, 4,877 entries; popscore has TRAIN_ALL; backup at ~/w/backup_20261102_pna/before.tar; recorder untouched. The live simulation uses the pna_ model from the Nov 3 run.
+
+## Independent re-check of E5's E1 v2 (offset model) (Nov 2, `ph_predict/e1_check.py`)
+Rebuilt from my own inputs (ctrl_preds `all` as the Poisson offset, pna_ ev/reach, five audience inputs from build_cached, day terms) with E5's feature list, not E5's code. Rolling monthly, May–Oct, 5 seeds, 3,977 launches, 177 days, 25 weeks. Paired bootstrap over lists. Control: the same offset model with day terms only (day_n, weekday, day_lm_sum). That control cannot reorder a day; it only rescales days against each other.
+
+| | Launch model | Offset control | E1 v2 | E1 v2 − launch model | E1 v2 − control |
+|---|---|---|---|---|---|
+| Daily top 3 | 66.7 | 66.7 | 65.9 | −0.8 (−2.7 to +1.1), 2/6 months | −0.8 |
+| Daily top 5 | 73.5 | 73.5 | 73.2 | −0.3 (−1.6 to +0.9) | −0.3 |
+| Daily top 10 | 81.0 | 81.0 | 80.7 | −0.3 (−1.0 to +0.4) | −0.3 |
+| Weekly top 3 | 49.3 | **54.7** | 49.3 | −0.0 (−5.3 to +5.3) | −5.3 (−13.3 to +2.7) |
+| Weekly top 5 | 56.0 | **59.2** | 57.6 | +1.6 (−1.6 to +4.8) | −1.6 |
+| Weekly top 10 | 58.3 | 58.3 | 55.7 | −2.6 (−4.8 to −0.4) | −2.6 |
+
+- **Not reproduced.** E5 reports daily top 3 +1.3 (−0.4 to +3.0) and weekly top 3 +5.3 / top 5 +3.2. My rebuild gets −0.8 daily and 0 / +1.6 / −2.6 weekly. Possible reasons: hyperparameters, E5 training from April, or different audience columns.
+- **Where a weekly gain can come from:** the day-terms-only control gives weekly top 3 +5.4 and top 5 +3.2 over the launch model on its own. That matches E5's weekly gains in size. So most of the weekly lift likely comes from rescaling days (busy vs quiet days, weekday), not from the pool or audiences. This is a cheap fix to test directly on the launch model: a day-level calibration for weekly and monthly lists. Only 25 weeks, so it needs confirming.
+- The shadow slot is still worth running: live days are the clean test.
+
+## Day-level calibration of the launch model, weekly and monthly boards (Nov 2, `ph_predict/daycal.py`)
+Poisson LightGBM, with the launch model's expected votes as the offset and day terms only: weekday, line-up size, the line-up's total predicted votes, and the 7-day trailing real and predicted totals (ending 2 days before, so final by then). A day's launches move together, so the daily order is unchanged (daily Δ = 0, as it must be). Rolling monthly, 5 seeds, paired bootstrap over lists.
+
+| | May–Oct: launch model → calibrated | Δ (95% CI) | Jul–Oct Δ |
+|---|---|---|---|
+| Weekly top 3 | 49.3 → 53.3 | +4.0 (0.0 to +9.3), 25 weeks; never worse in any month (0 / 0 / +8.3 / +6.7 / +8.3 / 0) | +5.9 (0.0 to +11.8), 17 weeks |
+| Weekly top 5 | 56.0 → 57.6 | +1.6 (0.0 to +4.0) | +1.2 (0.0 to +3.7) |
+| Weekly top 10 | 57.8 → 57.8 | 0.0 (−1.7 to +1.7) | +0.7 (−1.3 to +2.7) |
+| Monthly top 3 | 33.3 → 20.0 | −13.3 (−26.7 to 0.0), 5 months | −22.2, 3 months |
+| Monthly top 5 | 43.3 → 46.7 | +3.3 (−6.7 to +13.3), 6 months | 0.0 |
+| Monthly top 10 | 48.3 → 51.7 | +3.3 (0.0 to +6.7) | +2.5 |
+
+- **Weekly:** a consistent, never-negative gain on top 3 (+4 to +6) and top 5 (+1 to +2). The interval lower bounds sit at 0, and there are only 25 weeks.
+- **Monthly:** only 5–6 lists, so it can't be judged. Top 3 is worse in 2 months (one launch each). Don't ship for monthly.
+- **Recommendation:** run it as a shadow weekly forecast next to the launch model; it costs nothing, since it reuses the forecast's own predictions. Ship it for weekly once about 6 more live weeks agree. It doesn't touch the daily board.
+
+## Competitor grounding against the day-calibrated control (Nov 2, `daycal.py EXTRA=cmp_features_ph`)
+Same offset Poisson model; the control is day terms only (the day-calibrated weekly forecast). The test adds the PH Similar Products competitor gaps (cmp_features_ph), which can reorder within a day. Coverage: 46.6% of launches May–Oct, 56.0% Jul–Oct. Paired bootstrap over lists.
+
+| Δ, + competitors − day-calibrated | May–Oct | Jul–Oct |
+|---|---|---|
+| Daily top 3 | −0.2 (−1.5 to +0.9) | −0.3 (−1.7 to +1.1) |
+| Daily top 5 | **−1.2 (−2.0 to −0.6)** | **−1.2 (−2.2 to −0.3)** |
+| Daily top 10 | −0.1 (−0.5 to +0.4) | −0.1 (−0.8 to +0.5) |
+| Weekly top 3 | −4.0 (−9.3 to 0.0), 25 weeks | −3.9 (−9.8 to 0.0), 17 weeks |
+| Weekly top 5 | −0.8 (−2.4 to 0.0) | 0.0 |
+| Weekly top 10 | −1.3 (−2.6 to 0.0) | −1.3 (−3.3 to 0.0) |
+
+- **Verdict:** competitor grounding hurts or does nothing on every list. Daily top 5 is worse with the interval excluding 0, and it cancels the day calibration's weekly top-3 gain. Keep it out of the forecast. Same conclusion as the earlier tests, now against the stronger control.
+
+## Honesty check of the launch-model baseline (Nov 2, `ph_predict/honest.py`)
+The ctrl.py `all` model, same folds and LightGBM, 5 seeds. Leak groups dropped cumulatively. 5,564 launches, 239 days. Daily top 3 / 5 / 10, paired bootstrap over days vs `all`.
+
+| Variant (inputs dropped) | May–Oct | Jul–Oct |
+|---|---|---|
+| all (published baseline) | 66.5 / 73.6 / 81.0 | 65.5 / 73.2 / 81.4 |
+| − followers (9: PH hunter, X maker / hunter / company counts + day ranks) | 66.5 / 73.0 / 80.7 (0.0 / −0.6 / −0.3, all span 0) | 65.8 / 72.3 / 80.8 |
+| − … follows (fol_, seg_: 46 inputs from follow lists read Oct 25, undated) | **64.4 / 70.5 / 77.0** (−2.1 [−4.9, +0.8] / −3.1 [−5.2, −1.0] / −4.0 [−5.4, −2.7]) | **65.0 / 69.6 / 77.5** (−0.6 / −3.6 / −3.8) |
+| − … promo (16: reaction counts read at fetch; also funding / company age) | 62.7 / 70.6 / 77.2 (−3.8 [−6.8, −0.9] / −2.9 / −3.8) | 63.0 / 69.6 / 77.7 |
+| − … x_profile (3) | 62.5 / 70.3 / 77.1 | 63.0 / 69.9 / 77.9 |
+
+- **Yes, the baseline uses post-launch inputs.** Follower counts barely matter (the makers' PH counts weren't model inputs; the hunter's and the X counts move it by ≤0.6). The real leak is **fol_ / seg_**: who follows the team and their segments, from follow lists read Oct 25, undated. People follow makers after a good launch, so for past launches these partly encode the outcome. Dropping them costs −3 to −4 on top 5/10.
+- **Honest pre-launch baseline** (followers + follows dropped): **May–Oct 64.4 / 70.5 / 77.0; Jul–Oct 65.0 / 69.6 / 77.5.** If promo reaction counts are leaky too: 62.7 / 70.6 / 77.2 (lower bound).
+- **Live check** (launch model, live daily scores Oct 27–Nov 1, 6 days): 61.1 / 70.0 / 81.7. That's consistent with the honest numbers, but 6 days give about ±25 points on top 3, so it can't separate them yet.
+- **Consequence:** north-star numbers should be quoted against the honest baseline. Live, fol_ uses follow lists read before the launch (Oct 25), so it is stale but not leaky; its backtest value is overstated. Next: an honest fol_ needs follow snapshots taken before each launch. Data Feeder's daily following fetch (from Nov 2) provides this going forward.
+
+## Honest baseline fixed, and the day calibration / E1 re-checks against it (Nov 2)
+**promo_ split** (`promo_features.py`): kept = posts and coverage dated before launch (promo_posts*, promo_cov*). Dropped = values read at fetch, undated (promo_reactions, founder/company LinkedIn and X followers, funding, company age, n_sources).
+
+**Honest pre-launch baseline** (honest.py "honest": no follower counts, no fol_ / seg_, no undated promo_; ctrl LightGBM, 5 seeds; this is the reference from now on):
+
+| | May–Oct | Jul–Oct |
+|---|---|---|
+| Daily top 3 / 5 / 10 | **64.4 / 70.4 / 76.9** (published 66.5 / 73.6 / 81.0) | 64.7 / 69.6 / 77.5 |
+| Weekly top 3 / 5 / 10 (25 / 17 weeks) | **45.3 / 54.4 / 55.2** (published 49.3 / 56.0 / 57.8) | 49.0 / 55.0 / 54.7 |
+| Monthly top 3 / 5 / 10 (5–6 / 3–4 months) | **20.0 / 36.7 / 40.0** (published 33.3 / 43.3 / 48.3) | 33.3 / 35.0 / 42.5 |
+
+**Day calibration on the honest model** (offset = honest prediction):
+- Weekly top 3: 45.3 → 49.3, +4.0 (0.0 to +8.0), never worse in any month; Jul–Oct +3.9 (0.0 to +9.8).
+- Weekly top 5: +1.6 (0.0 to +4.0); weekly top 10: 0.0.
+- Monthly: 0.0 / −6.7 / −1.7 (6 lists). Still not for monthly.
+- The weekly gain holds on the honest baseline.
+
+**E1 v2 on the honest model:**
+- With E5's audience inputs (three follower counts and promo_reactions, all read later, so not honest), for reference only: daily −0.2 / +0.5 / +1.0; weekly +4.0 / +2.4 / +2.2 vs the launch model; −1.3 / +0.8 / +2.2 vs the day-terms control.
+- Honest E1 (audience = promo_posts only): daily −1.3 (−3.4 to +0.8) / −0.3 / −0.3. Weekly top 3 +9.3 (+4.0 to +16.0) vs the launch model, but +4.0 (−2.7 to +10.7) vs the day-terms control; weekly top 5 −1.6.
+- Beyond day calibration, E1 adds nothing measurable.
+
+**Live and shadows vs the honest set:**
+- The live launch-model forecast used every dropped input.
+- The live simulation forecast used makers' and hunter's PH followers (nsa_ reach), fol_, X follower counts and all of promo_.
+- shadow_e1v2's inputs include three follower counts and promo_reactions.
+- Fixed in code, not deployed: model.py `HONEST=1` by default (the honest column filter in `cols`, for training and live alike), and sim_forecast.py applies the same filter and drops nsa_ reach. shadow_daycal inherits whatever the live launch model uses. shadow_e1v2 needs an honest retrain (audience = dated promo posts plus at-launch follower counts once those accumulate), or it should stay off.
+- **Deployed and verified (Nov 2):**
+  - 20261102_shadow2, 12:31 UTC: the shadow step, weekly scoring, the people step reading Data Feeder's delivery.
+  - 20261102_b3, 13:02 UTC: honest model.py (HONEST=1) and sim_forecast.py, the at_launch step, shadow default daycal (E1 v2 off).
+  - On the VM: all 7 md5s match; the STEPS line includes at_launch and shadow; one hourly recorder, untouched.
+  - at_launch_followers backfilled: 558 rows, Oct 25–Nov 2, 13–31 launches a day, no null counts.
+  - Nov 3 is the first run on the honest live forecast; its scores compare with the honest backtest (64.4 / 70.4 / 76.9).

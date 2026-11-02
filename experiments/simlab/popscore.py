@@ -37,10 +37,16 @@ if PRESENCE or TWIN or TIE:
     TAG = (TAG + "_" if TAG else "") + ("pres" if PRESENCE else "") + ("twin" if TWIN else "") + ("tie2" if TIE2 else "tie" if TIE else "")
 if LAG:
     TAG += f"_lag{LAG}"
+TRAIN_ALL = os.environ.get("TRAIN_ALL") == "1"   # each month's person model trained on every earlier month from TRAIN_FROM, not only the previous one
+TRAIN_FROM = os.environ.get("TRAIN_FROM", "2026-03")
+if TRAIN_ALL:
+    TAG += "_trainall"
 TAG += os.environ.get("TAG_SUFFIX", "")   # a separate cache and output for a re-run of an existing configuration
 WORK = os.path.join(HERE, "cache", "popscore_" + TAG if TAG else "popscore")
 PREFIX = os.environ.get("PREFIX") or (f"pl{LAG}{'x' if TIE2 else ''}_" if LAG else ("pnx_" if TIE2 else "pnr_") if (TIE and not PAGE) else "psx_" if TIE2 else "psr_" if TIE else "psq_" if (PRESENCE or TWIN) else "psh_" if HERD else "pst_" if TASTE else "psp_" if PAGE else "psn_")
 MONTHS = ["2026-04", "2026-05", "2026-06", "2026-07", "2026-08", "2026-09", "2026-10"]
+if TRAIN_ALL and not os.environ.get("PREFIX"):   # psx_ -> psa_, pnx_ -> pna_ (three letters: newsim_eval reads SRC + "_")
+    PREFIX = PREFIX[:2] + "a_"
 TRAIN_EXTRA = [m for m in os.environ.get("TRAIN_EXTRA", "").split(",") if m]   # e.g. 2026-11: a model trained on Oct for the live pipeline
 FEATS = ["backed", "topic", "meaning", "cf_team", "nbr_team", "nbr_pop", "seq_last10", "seq_decay", "seq_nn", "team_recent",
          "cat_rate_max", "cat_rate_mean", "cat_prior", "cat_n"]
@@ -448,18 +454,50 @@ def page_cols(D):
     return D.join(T, on="id"), list(T.columns) + tc + hc
 
 
-def train_month(m):
-    prev = month_start(m, 1)
-    cf = fit_cf(prev)
-    D = choice.rows(day_from=prev, day_to=month_end(prev[:7]))
+def train_rows(M):
+    """One month's training rows: up to 300 active people a day (seed 0), featurized with collaborative filtering and
+    category priors cut at the month's start; the same rows the previous-month model trains on when M is that month.
+    TRAIN_ALL caches them per month (train_<M>.parquet), shared by every later month's model."""
+    path = f"{WORK}/train_{M}.parquet"
+    if TRAIN_ALL and os.path.exists(path):
+        return pd.read_parquet(path)
+    cut = month_start(M, 0)
+    D = choice.rows(day_from=cut, day_to=month_end(M))
     rng = np.random.default_rng(0)
     keep = set()
     for d, g in D.groupby("day"):
         ppl = list(g.person.unique()); keep |= {u + "|" + d for u in rng.permutation(ppl)[:300]}
     D = D[D.g.isin(keep)].copy()
-    D = featurize(D, cf, prev)
-    mdl = lgb.LGBMClassifier(n_estimators=300, learning_rate=0.05, num_leaves=15, min_child_samples=50, verbose=-1, n_jobs=1)
+    D = featurize(D, fit_cf(cut), cut)
     D, pc = page_cols(D)
+    D = D[["person", "day", "id", "y"] + FEATS + pc].reset_index(drop=True)
+    if TRAIN_ALL:
+        with atomic_path(path) as tmp:
+            D.to_parquet(tmp)
+    return D
+
+
+def _train_rows_n(M):
+    return M, len(train_rows(M))
+
+
+def train_months(m):
+    """Months whose rows train month m's model: the previous month, or with TRAIN_ALL every month from TRAIN_FROM on."""
+    prev = month_start(m, 1)[:7]
+    if not TRAIN_ALL:
+        return [prev]
+    out, M = [], TRAIN_FROM
+    while M <= prev:
+        out.append(M); M = month_start(M, -1)[:7]
+    return out
+
+
+def train_month(m):
+    prev = month_start(m, 1)
+    cf = fit_cf(prev)
+    D = pd.concat([train_rows(M) for M in train_months(m)], ignore_index=True)
+    mdl = lgb.LGBMClassifier(n_estimators=300, learning_rate=0.05, num_leaves=15, min_child_samples=50, verbose=-1, n_jobs=1)
+    pc = [c for c in D.columns if c not in ["person", "day", "id", "y"] + FEATS]
     mdl.fit(D[FEATS + pc], D.y)
     with atomic_path(f"{WORK}/model_{m}.pkl") as tmp, open(tmp, "wb") as f:
         pickle.dump({"model": mdl, "cf": cf, "prior_cut": prev}, f)
@@ -544,6 +582,12 @@ def main(workers):
     from . import harness
     harness.baseline()   # cache the launch model's predictions now: worker processes cannot start their own pools
     ctx = mp.get_context("fork")
+    todo = [m for m in MONTHS + TRAIN_EXTRA if not os.path.exists(f"{WORK}/model_{m}.pkl")]
+    if TRAIN_ALL:   # each month's training rows once, in parallel, before the models that share them
+        need = sorted({M for m in todo for M in train_months(m) if not os.path.exists(f"{WORK}/train_{M}.parquet")})
+        with ctx.Pool(max(1, min(workers, len(need)))) as pool:
+            for M, n in pool.imap_unordered(_train_rows_n, need):
+                print("training rows", M, n, flush=True)
     with ctx.Pool(min(workers, len(MONTHS))) as pool:
         for r in pool.imap_unordered(train_month, [m for m in MONTHS + TRAIN_EXTRA if not os.path.exists(f"{WORK}/model_{m}.pkl")]):
             print("trained", r, flush=True)

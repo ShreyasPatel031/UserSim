@@ -12,6 +12,7 @@ Steps, each logged to the warehouse's pipeline_runs (items, bytes, dollars, seco
 usage: python -m pipeline.daily [YYYY-MM-DD] [--only step,step] [--dry-run]   (date = Pacific day; default today)"""
 import datetime as dt, gzip, json, os, subprocess, sys, time
 import pandas as pd
+from collections import defaultdict
 from . import warehouse as W, fetch as F, incremental as INC
 
 EXP = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -75,6 +76,16 @@ def snap_fields(t, tagline=None):
                   r'"firstLaunch":(true|false)' % (fol if fol is not None else r"\d+"), t)
     return {"product_followers": fol, "product_reviews": int(b.group(1)) if b else None,
             "top_product": b.group(2) == "true" if b else None, "first_launch": b.group(3) == "true" if b else None}
+
+
+@step("at_launch")
+def s_at_launch(d, con, dry):
+    """Makers' and hunter's PH follower counts as read at 00:05 PT (pipeline.at_launch), before votes: honest inputs."""
+    from . import at_launch as AL
+    R = AL.rows(d)
+    if not dry and len(R):
+        W.write("at_launch_followers", R)
+    return {"items": len(R)} if len(R) else {"items": 0, "status": f"failed: no data/today/{d}.json"}
 
 
 @step("list_check")
@@ -159,6 +170,40 @@ def s_simforecast(d, con, dry):
     return out
 
 
+SHADOW = os.path.join(PH, "data", "shadow")   # shadow forecasts: <SHADOW>/<name>/predict.py, run next to the live ones
+
+
+@step("shadow")
+def s_shadow(d, con, dry):
+    """Shadow forecasts, scored daily like the others (s_score) but not published: each installed
+    <SHADOW>/<name>/predict.py (SHADOW_MODELS, comma-separated) is run in its own process as
+    `python3 predict.py <day>` and prints JSON lines {"launch_id", "score"} (higher = more votes) for the day's line-up.
+    Written to `forecasts` as model "shadow_<name>". A model that is not installed is skipped; one that fails, covers
+    under 90% of the line-up, or prints nothing fails the step loudly."""
+    lineup = {str(p["id"]): p["name"] for p in json.load(open(f"{RAW}/today/{d}.json"))}
+    out, bad = {"items": 0}, []
+    for name in [n for n in os.environ.get("SHADOW_MODELS", "daycal").split(",") if n]:
+        path = os.path.join(SHADOW, name)
+        if not os.path.exists(os.path.join(path, "predict.py")):
+            out[name] = "not installed"; continue
+        r = subprocess.run(["python3", "predict.py", d], cwd=path, capture_output=True, text=True, timeout=3600)
+        rows = [json.loads(l) for l in r.stdout.splitlines() if l.strip().startswith("{")] if r.returncode == 0 else []
+        got = {str(x["launch_id"]): float(x["score"]) for x in rows if str(x.get("launch_id")) in lineup}
+        if r.returncode or len(got) < 0.9 * len(lineup):
+            bad.append(f"{name}: exit {r.returncode}, {len(got)} of {len(lineup)} launches ({r.stderr.strip()[-200:]})"); continue
+        rank = sorted(got, key=lambda x: -got[x])
+        if not dry:   # the scores themselves, for the weekly board (comparable across days)
+            pd.DataFrame({"id": list(got), "day": d, "score": list(got.values())}).to_parquet(f"{PH}/results/shadow_{name}_{d}.parquet")
+        F_ = pd.DataFrame([{"forecast_date": d, "model": f"shadow_{name}", "predicted_rank": i + 1, "name": lineup[x],
+                            "launch_id": x, "made_on": d} for i, x in enumerate(rank)])
+        if not dry:
+            W.write("forecasts", F_)
+        out["items"] += len(F_); out[name] = len(F_)
+    if bad:
+        out["status"] = "failed: " + "; ".join(bad)
+    return out
+
+
 @step("ranks")
 def s_ranks(d, con, dry):
     import collect_ph as C
@@ -213,8 +258,59 @@ def log_spend(d, what, usd, dry):
         W.write("spend", pd.DataFrame(rows))
 
 
+PEOPLE_BUCKET = "gs://usersim-bakeoff-347838016394/usersim_sim/raw/ph_people_daily"
+
+
+def people_delivery(d):
+    """Data Feeder's daily people refresh (raw/ph_people_daily/<day>/, about 10:00 UTC): the newest folder dated d or the
+    day before (this run starts at 00:05 PT, before that day's delivery). Returns (day, upvote records, follow records)
+    in parse_upvotes.py / parse_following.py form, with each person's fetch status; (None, [], []) if neither exists."""
+    for day in (d, INC.days_before(d, 1)):
+        base = f"{PEOPLE_BUCKET}/{day}"
+        got = subprocess.run(["gsutil", "-q", "cat", f"{base}/fetch_state_rows.jsonl"], capture_output=True, text=True)
+        if got.returncode or not got.stdout.strip():
+            continue
+        st = [json.loads(l) for l in got.stdout.splitlines() if l.strip()]
+        read = lambda f: [json.loads(l) for l in subprocess.run(["gsutil", "-q", "cat", f"{base}/{f}"], capture_output=True, text=True,
+                                                                 check=True).stdout.splitlines() if l.strip()]
+        ups, fol = defaultdict(list), defaultdict(list)
+        for r in sorted(read("upvotes_page1.jsonl"), key=lambda r: r.get("position") or 0):
+            ups[r["username"]].append(r)
+        for r in sorted(read("following_page1.jsonl"), key=lambda r: r.get("position") or 0):
+            fol[r["username"]].append(r)
+        U = [{"username": r["person"], "status": r["status"], "upvotes": [str(x["post_id"]) for x in ups.get(r["person"], [])],
+              "has_more": any(x.get("has_more") for x in ups.get(r["person"], [])) or not r.get("complete", False)}
+             for r in st if r["source"] == "upvotes_page1"]
+        Fo = [{"username": r["person"], "status": r["status"], "following": [[x["followee"], x.get("followee_followers")] for x in fol.get(r["person"], [])],
+               "has_more": any(x.get("has_more") for x in fol.get(r["person"], []))}
+              for r in st if r["source"] == "follows"]
+        return day, U, Fo
+    return None, [], []
+
+
 @step("people")
 def s_people(d, con, dry):
+    """New commenters' and stale people's upvote and following pages. Default (PEOPLE_SRC=delivery): read Data Feeder's
+    daily refresh; fails loudly when no folder is there or most of its fetches failed. PEOPLE_SRC=fetch: fetch here."""
+    if os.environ.get("PEOPLE_SRC", "delivery") == "delivery":
+        day, U, Fo = people_delivery(d)
+        if day is None:
+            return {"items": 0, "status": f"failed: no Data Feeder people delivery for {d} or the day before ({PEOPLE_BUCKET})"}
+        ev, st_u, deeper = INC.merge_upvotes(con, U, day)
+        fo, st_f = INC.merge_follows(con, Fo, day)
+        newp = json.load(open(f"/tmp/new_people_{d}.json")) if os.path.exists(f"/tmp/new_people_{d}.json") else []
+        if not dry:
+            for t, df in (("events", ev), ("fetch_state", st_u), ("follows", fo), ("fetch_state", st_f)):
+                if len(df):
+                    W.write(t, df)
+            if newp:
+                W.write("people", pd.DataFrame({"person": newp, "first_seen": d}))
+        json.dump(deeper, open(f"/tmp/deeper_{d}.json", "w"))
+        recs = U + Fo; bad = sum(r["status"] != 200 for r in recs)
+        out = {"items": len(ev) + len(fo), "delivery_day": day, "people": len(recs)}
+        if not recs or bad / len(recs) > 0.5:
+            out["status"] = f"failed: delivery {day} has {bad} of {len(recs)} fetches not ok"
+        return out
     import importlib.util
     plan = INC.plan(con, d)
     newp = json.load(open(f"/tmp/new_people_{d}.json")) if os.path.exists(f"/tmp/new_people_{d}.json") else []
@@ -313,9 +409,36 @@ def s_score(d, con, dry):
     rows = [{"day": y, "model": mdl, "k": k,
              "hit": int(((g.predicted_rank <= k) & (g.daily_rank <= k)).sum()), "recall": ((g.predicted_rank <= k) & (g.daily_rank <= k)).sum() / k}
             for mdl, g in T.groupby("model") for k in (3, 5, 10)]
+    rows += weekly_scores(d, con)
     if not dry:
         W.write("daily_scores", pd.DataFrame(rows))
     return {"items": len(rows)}
+
+
+def weekly_scores(d, con):
+    """On the run two days after a week ends (Tuesday), that ISO week's board vs each model's scores summed over its
+    seven days: the launch model (results/forecast_<day>.parquet pred) and every shadow (results/shadow_<name>_<day>.parquet).
+    Rows go to daily_scores with day = the week's Sunday and model "weekly:<model>". A model missing a day is skipped."""
+    sun = dt.date.fromisoformat(d) - dt.timedelta(days=2)
+    if sun.weekday() != 6:
+        return []
+    days = [(sun - dt.timedelta(days=k)).isoformat() for k in range(6, -1, -1)]
+    L = con.execute(f"SELECT id, weekly_rank FROM launches WHERE day::VARCHAR IN ({','.join(repr(x) for x in days)}) AND weekly_rank IS NOT NULL").df()
+    L["id"] = L.id.astype(str)
+    files = {"launch_model": [f"{PH}/results/forecast_{x}.parquet" for x in days]}
+    for name in [n for n in os.environ.get("SHADOW_MODELS", "daycal").split(",") if n]:
+        files[f"shadow_{name}"] = [f"{PH}/results/shadow_{name}_{x}.parquet" for x in days]
+    rows = []
+    for mdl, fs in files.items():
+        if not all(os.path.exists(f) for f in fs):
+            continue
+        S = pd.concat([pd.read_parquet(f) for f in fs]); S["id"] = S.id.astype(str)
+        S = S.rename(columns={"pred": "score"}).merge(L, on="id")
+        for k in (3, 5, 10):
+            if (S.weekly_rank <= k).sum() == k:
+                hit = len(set(S.nlargest(k, "score").id) & set(S[S.weekly_rank <= k].id))
+                rows.append({"day": sun.isoformat(), "model": f"weekly:{mdl}", "k": k, "hit": hit, "recall": hit / k})
+    return rows
 
 
 @step("raw")
@@ -328,7 +451,7 @@ def s_raw(d, con, dry):
     return {"items": len(files)}
 
 
-STEPS = [s_launches, s_list_check, s_snap, s_forecast, s_simforecast, s_ranks, s_comments, s_people, s_ph_upvotes, s_personas, s_score, s_raw]
+STEPS = [s_launches, s_at_launch, s_list_check, s_snap, s_forecast, s_simforecast, s_shadow, s_ranks, s_comments, s_people, s_ph_upvotes, s_personas, s_score, s_raw]
 
 
 def main(argv):

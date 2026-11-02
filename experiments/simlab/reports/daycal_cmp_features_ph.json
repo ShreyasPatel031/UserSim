@@ -1,0 +1,622 @@
+{
+ "launches": 3989,
+ "days": 178,
+ "inputs": [
+  "day_wd",
+  "day_n",
+  "day_lm_sum",
+  "trail_real7",
+  "trail_lm7"
+ ],
+ "May-Oct": {
+  "day top3": {
+   "launch model": 66.5,
+   "calibrated": 66.5,
+   "delta": [
+    0.0,
+    [
+     0.0,
+     0.0
+    ],
+    177
+   ],
+   "day-calibrated + cmp_features_ph": 66.3,
+   "extra vs day-calibrated": [
+    -0.2,
+    [
+     -1.5,
+     0.9
+    ],
+    177
+   ],
+   "extra vs launch model": [
+    -0.2,
+    [
+     -1.3,
+     1.1
+    ],
+    177
+   ]
+  },
+  "day top5": {
+   "launch model": 73.6,
+   "calibrated": 73.6,
+   "delta": [
+    0.0,
+    [
+     0.0,
+     0.0
+    ],
+    177
+   ],
+   "day-calibrated + cmp_features_ph": 72.3,
+   "extra vs day-calibrated": [
+    -1.2,
+    [
+     -2.0,
+     -0.6
+    ],
+    177
+   ],
+   "extra vs launch model": [
+    -1.2,
+    [
+     -2.0,
+     -0.5
+    ],
+    177
+   ]
+  },
+  "day top10": {
+   "launch model": 81.0,
+   "calibrated": 81.0,
+   "delta": [
+    0.0,
+    [
+     0.0,
+     0.0
+    ],
+    145
+   ],
+   "day-calibrated + cmp_features_ph": 81.0,
+   "extra vs day-calibrated": [
+    -0.1,
+    [
+     -0.5,
+     0.4
+    ],
+    145
+   ],
+   "extra vs launch model": [
+    -0.1,
+    [
+     -0.6,
+     0.3
+    ],
+    145
+   ]
+  },
+  "week top3": {
+   "launch model": 49.3,
+   "calibrated": 53.3,
+   "delta": [
+    4.0,
+    [
+     0.0,
+     8.0
+    ],
+    25
+   ],
+   "by month (Monday)": {
+    "2026-05": 0.0,
+    "2026-06": 0.0,
+    "2026-07": 8.3,
+    "2026-08": 6.7,
+    "2026-09": 8.3,
+    "2026-10": 0.0
+   },
+   "day-calibrated + cmp_features_ph": 49.3,
+   "extra vs day-calibrated": [
+    -4.0,
+    [
+     -9.3,
+     0.0
+    ],
+    25
+   ],
+   "extra vs launch model": [
+    0.0,
+    [
+     -4.0,
+     4.0
+    ],
+    25
+   ]
+  },
+  "week top5": {
+   "launch model": 56.0,
+   "calibrated": 57.6,
+   "delta": [
+    1.6,
+    [
+     0.0,
+     4.0
+    ],
+    25
+   ],
+   "by month (Monday)": {
+    "2026-05": 0.0,
+    "2026-06": 4.0,
+    "2026-07": 0.0,
+    "2026-08": 0.0,
+    "2026-09": 5.0,
+    "2026-10": 0.0
+   },
+   "day-calibrated + cmp_features_ph": 56.8,
+   "extra vs day-calibrated": [
+    -0.8,
+    [
+     -2.4,
+     0.0
+    ],
+    25
+   ],
+   "extra vs launch model": [
+    0.8,
+    [
+     0.0,
+     2.4
+    ],
+    25
+   ]
+  },
+  "week top10": {
+   "launch model": 57.8,
+   "calibrated": 57.8,
+   "delta": [
+    0.0,
+    [
+     -1.7,
+     1.7
+    ],
+    23
+   ],
+   "by month (Monday)": {
+    "2026-05": -2.5,
+    "2026-06": 0.0,
+    "2026-07": -3.3,
+    "2026-08": 0.0,
+    "2026-09": 2.5,
+    "2026-10": 3.3
+   },
+   "day-calibrated + cmp_features_ph": 56.5,
+   "extra vs day-calibrated": [
+    -1.3,
+    [
+     -2.6,
+     0.0
+    ],
+    23
+   ],
+   "extra vs launch model": [
+    -1.3,
+    [
+     -2.6,
+     0.0
+    ],
+    23
+   ]
+  },
+  "mon top3": {
+   "launch model": 33.3,
+   "calibrated": 20.0,
+   "delta": [
+    -13.3,
+    [
+     -26.7,
+     0.0
+    ],
+    5
+   ],
+   "by month": {
+    "2026-05": 0.0,
+    "2026-06": 0.0,
+    "2026-07": -33.3,
+    "2026-09": -33.3,
+    "2026-10": 0.0
+   },
+   "day-calibrated + cmp_features_ph": 33.3,
+   "extra vs day-calibrated": [
+    13.3,
+    [
+     0.0,
+     26.7
+    ],
+    5
+   ],
+   "extra vs launch model": [
+    0.0,
+    [
+     -20.0,
+     20.0
+    ],
+    5
+   ]
+  },
+  "mon top5": {
+   "launch model": 43.3,
+   "calibrated": 46.7,
+   "delta": [
+    3.3,
+    [
+     -6.7,
+     13.3
+    ],
+    6
+   ],
+   "by month": {
+    "2026-05": 20.0,
+    "2026-06": 0.0,
+    "2026-07": 0.0,
+    "2026-08": 20.0,
+    "2026-09": -20.0,
+    "2026-10": 0.0
+   },
+   "day-calibrated + cmp_features_ph": 43.3,
+   "extra vs day-calibrated": [
+    -3.3,
+    [
+     -13.3,
+     6.7
+    ],
+    6
+   ],
+   "extra vs launch model": [
+    -0.0,
+    [
+     -10.0,
+     10.0
+    ],
+    6
+   ]
+  },
+  "mon top10": {
+   "launch model": 48.3,
+   "calibrated": 51.7,
+   "delta": [
+    3.3,
+    [
+     0.0,
+     6.7
+    ],
+    6
+   ],
+   "by month": {
+    "2026-05": 10.0,
+    "2026-06": 0.0,
+    "2026-07": 0.0,
+    "2026-08": 0.0,
+    "2026-09": 10.0,
+    "2026-10": 0.0
+   },
+   "day-calibrated + cmp_features_ph": 50.0,
+   "extra vs day-calibrated": [
+    -1.7,
+    [
+     -5.0,
+     0.0
+    ],
+    6
+   ],
+   "extra vs launch model": [
+    1.7,
+    [
+     0.0,
+     5.0
+    ],
+    6
+   ]
+  },
+  "coverage (launches with the extra inputs)": 0.466
+ },
+ "Jul-Oct": {
+  "day top3": {
+   "launch model": 65.5,
+   "calibrated": 65.5,
+   "delta": [
+    0.0,
+    [
+     0.0,
+     0.0
+    ],
+    117
+   ],
+   "day-calibrated + cmp_features_ph": 65.2,
+   "extra vs day-calibrated": [
+    -0.3,
+    [
+     -1.7,
+     1.1
+    ],
+    117
+   ],
+   "extra vs launch model": [
+    -0.3,
+    [
+     -1.7,
+     1.1
+    ],
+    117
+   ]
+  },
+  "day top5": {
+   "launch model": 73.2,
+   "calibrated": 73.2,
+   "delta": [
+    0.0,
+    [
+     0.0,
+     0.0
+    ],
+    117
+   ],
+   "day-calibrated + cmp_features_ph": 72.0,
+   "extra vs day-calibrated": [
+    -1.2,
+    [
+     -2.2,
+     -0.3
+    ],
+    117
+   ],
+   "extra vs launch model": [
+    -1.2,
+    [
+     -2.2,
+     -0.3
+    ],
+    117
+   ]
+  },
+  "day top10": {
+   "launch model": 81.4,
+   "calibrated": 81.4,
+   "delta": [
+    0.0,
+    [
+     0.0,
+     0.0
+    ],
+    102
+   ],
+   "day-calibrated + cmp_features_ph": 81.3,
+   "extra vs day-calibrated": [
+    -0.1,
+    [
+     -0.8,
+     0.5
+    ],
+    102
+   ],
+   "extra vs launch model": [
+    -0.1,
+    [
+     -0.7,
+     0.5
+    ],
+    102
+   ]
+  },
+  "week top3": {
+   "launch model": 47.1,
+   "calibrated": 52.9,
+   "delta": [
+    5.9,
+    [
+     0.0,
+     11.8
+    ],
+    17
+   ],
+   "by month (Monday)": {
+    "2026-06": 0.0,
+    "2026-07": 8.3,
+    "2026-08": 6.7,
+    "2026-09": 8.3,
+    "2026-10": 0.0
+   },
+   "day-calibrated + cmp_features_ph": 49.0,
+   "extra vs day-calibrated": [
+    -3.9,
+    [
+     -9.8,
+     0.0
+    ],
+    17
+   ],
+   "extra vs launch model": [
+    2.0,
+    [
+     0.0,
+     5.9
+    ],
+    17
+   ]
+  },
+  "week top5": {
+   "launch model": 53.8,
+   "calibrated": 55.0,
+   "delta": [
+    1.2,
+    [
+     0.0,
+     3.7
+    ],
+    16
+   ],
+   "by month (Monday)": {
+    "2026-07": 0.0,
+    "2026-08": 0.0,
+    "2026-09": 5.0,
+    "2026-10": 0.0
+   },
+   "day-calibrated + cmp_features_ph": 55.0,
+   "extra vs day-calibrated": [
+    0.0,
+    [
+     0.0,
+     0.0
+    ],
+    16
+   ],
+   "extra vs launch model": [
+    1.2,
+    [
+     0.0,
+     3.7
+    ],
+    16
+   ]
+  },
+  "week top10": {
+   "launch model": 56.7,
+   "calibrated": 57.3,
+   "delta": [
+    0.7,
+    [
+     -1.3,
+     2.7
+    ],
+    15
+   ],
+   "by month (Monday)": {
+    "2026-07": -3.3,
+    "2026-08": 0.0,
+    "2026-09": 2.5,
+    "2026-10": 3.3
+   },
+   "day-calibrated + cmp_features_ph": 56.0,
+   "extra vs day-calibrated": [
+    -1.3,
+    [
+     -3.3,
+     0.0
+    ],
+    15
+   ],
+   "extra vs launch model": [
+    -0.7,
+    [
+     -2.0,
+     0.0
+    ],
+    15
+   ]
+  },
+  "mon top3": {
+   "launch model": 44.4,
+   "calibrated": 22.2,
+   "delta": [
+    -22.2,
+    [
+     -33.3,
+     0.0
+    ],
+    3
+   ],
+   "by month": {
+    "2026-07": -33.3,
+    "2026-09": -33.3,
+    "2026-10": 0.0
+   },
+   "day-calibrated + cmp_features_ph": 33.3,
+   "extra vs day-calibrated": [
+    11.1,
+    [
+     0.0,
+     33.3
+    ],
+    3
+   ],
+   "extra vs launch model": [
+    -11.1,
+    [
+     -33.3,
+     0.0
+    ],
+    3
+   ]
+  },
+  "mon top5": {
+   "launch model": 50.0,
+   "calibrated": 50.0,
+   "delta": [
+    0.0,
+    [
+     -15.0,
+     15.0
+    ],
+    4
+   ],
+   "by month": {
+    "2026-07": 0.0,
+    "2026-08": 20.0,
+    "2026-09": -20.0,
+    "2026-10": 0.0
+   },
+   "day-calibrated + cmp_features_ph": 45.0,
+   "extra vs day-calibrated": [
+    -5.0,
+    [
+     -20.0,
+     10.0
+    ],
+    4
+   ],
+   "extra vs launch model": [
+    -5.0,
+    [
+     -15.0,
+     0.0
+    ],
+    4
+   ]
+  },
+  "mon top10": {
+   "launch model": 52.5,
+   "calibrated": 55.0,
+   "delta": [
+    2.5,
+    [
+     0.0,
+     7.5
+    ],
+    4
+   ],
+   "by month": {
+    "2026-07": 0.0,
+    "2026-08": 0.0,
+    "2026-09": 10.0,
+    "2026-10": 0.0
+   },
+   "day-calibrated + cmp_features_ph": 55.0,
+   "extra vs day-calibrated": [
+    0.0,
+    [
+     0.0,
+     0.0
+    ],
+    4
+   ],
+   "extra vs launch model": [
+    2.5,
+    [
+     0.0,
+     7.5
+    ],
+    4
+   ]
+  },
+  "coverage (launches with the extra inputs)": 0.56
+ }
+}

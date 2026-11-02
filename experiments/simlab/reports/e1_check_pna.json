@@ -1,0 +1,152 @@
+{
+ "sim": "pna",
+ "launches": 3977,
+ "days": 177,
+ "months_tested": [
+  "2026-05",
+  "2026-06",
+  "2026-07",
+  "2026-08",
+  "2026-09",
+  "2026-10"
+ ],
+ "audience_inputs": [
+  "ph_hunter_followers",
+  "x_maker_sum_followers",
+  "x_company_followers",
+  "promo_reactions",
+  "promo_posts"
+ ],
+ "day top3": {
+  "launch model": 66.7,
+  "offset control": 66.7,
+  "E1 v2": 65.9,
+  "E1 v2 vs launch model": [
+   -0.8,
+   [
+    -2.7,
+    1.1
+   ],
+   176
+  ],
+  "E1 v2 vs control": [
+   -0.8,
+   [
+    -2.7,
+    1.1
+   ],
+   176
+  ],
+  "months E1 v2 > launch model": 2
+ },
+ "day top5": {
+  "launch model": 73.5,
+  "offset control": 73.5,
+  "E1 v2": 73.2,
+  "E1 v2 vs launch model": [
+   -0.3,
+   [
+    -1.6,
+    0.9
+   ],
+   176
+  ],
+  "E1 v2 vs control": [
+   -0.3,
+   [
+    -1.5,
+    0.9
+   ],
+   176
+  ],
+  "months E1 v2 > launch model": 1
+ },
+ "day top10": {
+  "launch model": 81.0,
+  "offset control": 81.0,
+  "E1 v2": 80.7,
+  "E1 v2 vs launch model": [
+   -0.3,
+   [
+    -1.0,
+    0.4
+   ],
+   144
+  ],
+  "E1 v2 vs control": [
+   -0.3,
+   [
+    -1.0,
+    0.3
+   ],
+   144
+  ],
+  "months E1 v2 > launch model": 3
+ },
+ "week top3": {
+  "launch model": 49.3,
+  "offset control": 54.7,
+  "E1 v2": 49.3,
+  "E1 v2 vs launch model": [
+   -0.0,
+   [
+    -5.3,
+    5.3
+   ],
+   25
+  ],
+  "E1 v2 vs control": [
+   -5.3,
+   [
+    -13.3,
+    2.7
+   ],
+   25
+  ],
+  "months E1 v2 > launch model": null
+ },
+ "week top5": {
+  "launch model": 56.0,
+  "offset control": 59.2,
+  "E1 v2": 57.6,
+  "E1 v2 vs launch model": [
+   1.6,
+   [
+    -1.6,
+    4.8
+   ],
+   25
+  ],
+  "E1 v2 vs control": [
+   -1.6,
+   [
+    -5.6,
+    2.4
+   ],
+   25
+  ],
+  "months E1 v2 > launch model": null
+ },
+ "week top10": {
+  "launch model": 58.3,
+  "offset control": 58.3,
+  "E1 v2": 55.7,
+  "E1 v2 vs launch model": [
+   -2.6,
+   [
+    -4.8,
+    -0.4
+   ],
+   23
+  ],
+  "E1 v2 vs control": [
+   -2.6,
+   [
+    -4.8,
+    -0.4
+   ],
+   23
+  ],
+  "months E1 v2 > launch model": null
+ }
+}
