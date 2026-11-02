@@ -12,6 +12,7 @@ Steps, each logged to the warehouse's pipeline_runs (items, bytes, dollars, seco
 usage: python -m pipeline.daily [YYYY-MM-DD] [--only step,step] [--dry-run]   (date = Pacific day; default today)"""
 import datetime as dt, gzip, json, os, subprocess, sys, time
 import pandas as pd
+from collections import defaultdict
 from . import warehouse as W, fetch as F, incremental as INC
 
 EXP = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -213,8 +214,59 @@ def log_spend(d, what, usd, dry):
         W.write("spend", pd.DataFrame(rows))
 
 
+PEOPLE_BUCKET = "gs://usersim-bakeoff-347838016394/usersim_sim/raw/ph_people_daily"
+
+
+def people_delivery(d):
+    """Data Feeder's daily people refresh (raw/ph_people_daily/<day>/, about 10:00 UTC): the newest folder dated d or the
+    day before (this run starts at 00:05 PT, before that day's delivery). Returns (day, upvote records, follow records)
+    in parse_upvotes.py / parse_following.py form, with each person's fetch status; (None, [], []) if neither exists."""
+    for day in (d, INC.days_before(d, 1)):
+        base = f"{PEOPLE_BUCKET}/{day}"
+        got = subprocess.run(["gsutil", "-q", "cat", f"{base}/fetch_state_rows.jsonl"], capture_output=True, text=True)
+        if got.returncode or not got.stdout.strip():
+            continue
+        st = [json.loads(l) for l in got.stdout.splitlines() if l.strip()]
+        read = lambda f: [json.loads(l) for l in subprocess.run(["gsutil", "-q", "cat", f"{base}/{f}"], capture_output=True, text=True,
+                                                                 check=True).stdout.splitlines() if l.strip()]
+        ups, fol = defaultdict(list), defaultdict(list)
+        for r in sorted(read("upvotes_page1.jsonl"), key=lambda r: r.get("position") or 0):
+            ups[r["username"]].append(r)
+        for r in sorted(read("following_page1.jsonl"), key=lambda r: r.get("position") or 0):
+            fol[r["username"]].append(r)
+        U = [{"username": r["person"], "status": r["status"], "upvotes": [str(x["post_id"]) for x in ups.get(r["person"], [])],
+              "has_more": any(x.get("has_more") for x in ups.get(r["person"], [])) or not r.get("complete", False)}
+             for r in st if r["source"] == "upvotes_page1"]
+        Fo = [{"username": r["person"], "status": r["status"], "following": [[x["followee"], x.get("followee_followers")] for x in fol.get(r["person"], [])],
+               "has_more": any(x.get("has_more") for x in fol.get(r["person"], []))}
+              for r in st if r["source"] == "follows"]
+        return day, U, Fo
+    return None, [], []
+
+
 @step("people")
 def s_people(d, con, dry):
+    """New commenters' and stale people's upvote and following pages. Default (PEOPLE_SRC=delivery): read Data Feeder's
+    daily refresh; fails loudly when no folder is there or most of its fetches failed. PEOPLE_SRC=fetch: fetch here."""
+    if os.environ.get("PEOPLE_SRC", "delivery") == "delivery":
+        day, U, Fo = people_delivery(d)
+        if day is None:
+            return {"items": 0, "status": f"failed: no Data Feeder people delivery for {d} or the day before ({PEOPLE_BUCKET})"}
+        ev, st_u, deeper = INC.merge_upvotes(con, U, day)
+        fo, st_f = INC.merge_follows(con, Fo, day)
+        newp = json.load(open(f"/tmp/new_people_{d}.json")) if os.path.exists(f"/tmp/new_people_{d}.json") else []
+        if not dry:
+            for t, df in (("events", ev), ("fetch_state", st_u), ("follows", fo), ("fetch_state", st_f)):
+                if len(df):
+                    W.write(t, df)
+            if newp:
+                W.write("people", pd.DataFrame({"person": newp, "first_seen": d}))
+        json.dump(deeper, open(f"/tmp/deeper_{d}.json", "w"))
+        recs = U + Fo; bad = sum(r["status"] != 200 for r in recs)
+        out = {"items": len(ev) + len(fo), "delivery_day": day, "people": len(recs)}
+        if not recs or bad / len(recs) > 0.5:
+            out["status"] = f"failed: delivery {day} has {bad} of {len(recs)} fetches not ok"
+        return out
     import importlib.util
     plan = INC.plan(con, d)
     newp = json.load(open(f"/tmp/new_people_{d}.json")) if os.path.exists(f"/tmp/new_people_{d}.json") else []
