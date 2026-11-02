@@ -328,3 +328,4 @@ Model switches, direction reviews and agenda changes, newest last.
   - Budget at 04:37 PT: $4.35 so far; ~$19 projected on today's metered Vertex, so ~$30 headroom. Research VMs are
     idle; none are needed right now.
   - HN Fable review request: no reply yet.
+- 13:07 UTC Bundle 3 deployed 13:02 and verified (md5s; at_launch_followers 558 rows Oct 25–Nov 2; daycal shadow on, e1v2 off). Nov 3 is the first honest live run. PR #144 proxy-secret item: not ours; left to its owner.
