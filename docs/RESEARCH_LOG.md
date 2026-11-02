@@ -394,3 +394,11 @@ Model switches, direction reviews and agenda changes, newest last.
 - 17:20 UTC Sent Grok Bot the full-days fetch list (20261102T1720_x_fulldays_list.json, from dm_gate open_by_day). 43 open launches complete Oct 10/22/18/3/12/2, giving 10 full days. All 251 open launches complete Oct 1–25. ~$0.35 for the first 10 days, ~$2 for all of October at the measured rate.
 - 17:37 UTC: mailbox checked. X fetch pace raised to ~1 req/s (16:36); asked for 5–10 parallel workers in the full-days order (same cost). The GitHub star-count run continues on the box.
 - 17:40 UTC HN full-period (Sep 1–Oct 14) 15-min Caught 26.5% [24.4, 28.7] (was 24.7%) with every 15-min input available (Wayback votes + exposure where captured; +1.8 [0.0, +3.6]). The gap to Oct 2–14's 29.6% is input coverage (Wayback votes: 5% of Sep posts vs 79% of Oct) plus daily retraining.
+- 18:34 UTC: mailbox checked.
+  - X paid run: 16 full Oct days (235 covered launches). The $20 credit was exhausted at 18:31:53; $20.43 spent
+    (8,865 calls, ~$0.42 over).
+  - Cost per window was far above the estimates (Grok Bot's $5.80 for Jul–Sep; my $0.35 for 10 days). The engager
+    sub-calls dominate.
+  - Jul–Sep isn't fetched and needs new credit. No more spend without Shreyas.
+  - E5 asked to run the go/no-go on the 16 days now.
+  - Lesson: price a paid run from a measured pilot (cost per full day), not from read estimates.
