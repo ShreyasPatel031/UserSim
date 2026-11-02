@@ -1156,3 +1156,4 @@ Setup:
 - **Launch level** (leave-one-day-out ridge, launch prediction + fixed turnout set, ranked among covered launches, 9 days): top 3 77.8 vs 77.8, top 5 82.5 vs 82.5, identical rankings. The turnout weights are too small to change any order. 0 fully covered days.
 - Turnout vs residual: engagers −0.03, X-tied PH people −0.03, 48 h tease +0.03 (noise ±0.15).
 - Reading so far: X engagement strongly marks *who* votes, but at launch level it hasn't shown any turnout signal beyond the launch model.
+- Full-day coverage: 0 of 25 October days have every launch covered. Launches with no maker or hunter X handle (about half) count as real zeros. Fetch order sent to Grok Bot (launch ids only, gs://…/tmp/ph_ops/x_fetch_order.json): 19 open launches would complete Oct 25, 5, 10, 23 and 24. Most open launches need a fresh window ending on their own launch day.
