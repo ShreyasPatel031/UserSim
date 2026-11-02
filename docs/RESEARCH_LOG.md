@@ -422,3 +422,9 @@ Model switches, direction reviews and agenda changes, newest last.
     usersim-pipeline with the existing key (madePosts/submittedPosts, 4,635 people). PH agent told.
   - C1: npm/PyPI downloads landed (42,699 rows; npm 105/113, PyPI 32/34, PyPI from ~May only).
   - GitHub HN pass 7,231/9,662; the PH star pass follows, ETA ~23:00–00:00 UTC.
+- 20:37 UTC C1 downloads (PH agent).
+  - Own packages only (name-matched): 96 launches (1.7%).
+  - Gate: pooled residual Spearman 0.31–0.34 (CI ~0.13 to 0.50), passes Holm. A real per-launch signal.
+  - Boards: within ±0.8 (coverage too small).
+  - Stars (~9% own repos) land ~23:00–00:00 UTC.
+  - The A1 fetch on usersim-pipeline waits for Shreyas's OK in the PH session (production VM + production PH key).
