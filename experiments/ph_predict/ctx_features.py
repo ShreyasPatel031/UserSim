@@ -62,7 +62,8 @@ def main():
     C = pd.DataFrame.from_dict(out, orient="index")
     # standing in the day's field and poster spread (needs the main table's inputs)
     from buildcache import build_cached
-    df = build_cached().drop_duplicates("id").set_index("id")
+    B = build_cached()   # already holds the previous ctx_features.json (features.py merges it); recompute those columns from scratch
+    df = B.drop(columns=[c for c in B.columns if c.startswith("ctx_")]).drop_duplicates("id").set_index("id")
     df = df.join(C, how="left")
     for f in STRONG + ["ctx_mutual_active7", "ctx_pre_regulars"]:
         if f in df:
@@ -73,7 +74,9 @@ def main():
     df["ctx_hunter_rank_today"] = df.groupby([df.day, hk]).ph_maker_max_followers.rank(ascending=False, method="first")
     cols = [c for c in df.columns if c.startswith("ctx_")]
     res = {i: {c: (None if pd.isna(v) else float(v)) for c, v in row.items()} for i, row in df[cols].iterrows()}
-    json.dump(res, open(f"{D}/ctx_features.json", "w"))
+    from atomicio import atomic_path   # a build input: parallel build_cached() calls may read it mid-write
+    with atomic_path(f"{D}/ctx_features.json") as tmp, open(tmp, "w") as f:
+        json.dump(res, f)
     print(len(res), len(cols)); print(df[cols].describe().T[["mean", "50%", "max"]].round(2).head(12))
 
 
