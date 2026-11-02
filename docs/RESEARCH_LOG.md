@@ -178,3 +178,8 @@ Model switches, direction reviews and agenda changes, newest last.
   - No repost time on any route.
   - Asked Grok Bot to finish the open launches today on the twitterapi top-up (cap $10, within the $50/month).
   - PH agent asked to run the launch-level test on the 90 now.
+- 08:38 UTC PH X re-run on 08:22 files (commit 70dd223).
+  - Coverage: 53 covered launches in the store, 0 full days.
+  - Person level, 65 tied pairs: 32.3% [21, 44] voted vs 0.9% (34x).
+  - Launch level, leave-one-day-out among covered launches: delta 0 (identical rankings). Turnout vs residual within ±0.10.
+  - The real test needs full days, which arrive with the top-up.
