@@ -113,3 +113,28 @@ Next:
 - Add per-post dispersion (overdispersed votes, or late quality only partly tied to early quality) to fix the steep response.
 - Use the live at-posting prior.
 - Report Caught once the Nov 2 lists settle.
+
+## Selection finding: QN-based fits under-weight early votes (applies to everything built on QN)
+
+Quality News series exist only for posts that ended with 5+ points. Fitting how much early votes say about later votes by predictive likelihood on that set gives a small weight:
+- tau = 0 without a /newest denominator;
+- tau 0.05-0.2 with one.
+
+On outcome data the picture is different. Oct 2-9 weekdays, 4,524 posts, all with an outcome-independent Wayback /newest snapshot by 15 min:
+- Real top-30 reach rises from 4.0% (1 point) to 35.5% (4+ points).
+- With the QN-fitted weight, the simulator's reach is flat across those bins at 13-15%.
+- Fitting the same likelihood by the per-post binomial likelihood of real reach instead gives tau ≈ 0.3, with a steep response.
+
+So "early votes carry little per vote" was largely an artifact of the QN selection, which compresses the variance of q. The direct check on unselected data (Wayback /newest 2025, raw/hn_early_votes_2025/) will be run when it lands.
+
+## Decision-rule runs (orchestrator): Oct 2-9 top-30 reach AUC, simulator vs raw 15-min score
+
+Rule: if, after per-post dispersion and the at-posting prior, the simulator still does not rank top-30 reach above the raw 15-min score, stop the standalone simulator. Instead hand the HN agent the outcome-calibrated reach table and the vote-arrival model. Results: `calib_auc_*_results.json`. The interval resamples days.
+
+| step | params | simulated reach | AUC simulator | AUC 15-min score | difference |
+|---|---|---|---|---|---|
+| outcome calibration, no dispersion | tau 0.3, kappa 0.2, c 0.25 | 5.6% | 0.656 [0.612, 0.687] | 0.648 [0.617, 0.683] | +0.008 [-0.045, +0.070] |
+| step 1: + per-post dispersion (sigma 1.0) | tau 0.3, kappa 0.2, c 0.25 | 7.4% | 0.656 [0.620, 0.692] | 0.648 | +0.008 [-0.032, +0.044] |
+| step 2: + at-posting prior | pending (atposting_hist.parquet) | | | | |
+
+Real reach on these days is 7.0%. Dispersion improves the reach log-likelihood (-1140.5 against -1150.7) and the overall level, but not the ranking. The 0.64 against 0.72 quoted earlier came from 194 live Nov 2 posts with only 10 reachers, and was noisy.
