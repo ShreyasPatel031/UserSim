@@ -456,3 +456,4 @@ Model switches, direction reviews and agenda changes, newest last.
   are refreshed weekly), so pool Spearman is scored at d−7 (honest) with a labelled d−1 provisional. Offline first read
   Oct 25–31 tonight. Weekly shadow retrain with dated-follow ties on exp-1, promoted after 4+ weeks if it beats pna_.
   llm_full added to the honest filter (1dc0f8a). Honest page model from the 00:05 snapshots queued as a shadow (~30 d).
+- 21:34 UTC: mailbox checked, no new replies. HN star pull 8,559/9,662 (ETA ~22:06 UTC), PH pass after. A1 crawl streaming to raw/ph_team_history/. No follow-ups due.
