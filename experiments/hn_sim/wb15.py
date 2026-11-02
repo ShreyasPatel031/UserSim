@@ -130,6 +130,34 @@ def main():
         for k in list(scores)[1:]:
             c = W.caught_on(T[keep], scores[k][sel][keep])
             print(f"   {k:24s} {W.ci2(c)}  vs base {W.ci2(c, b)}", flush=True)
+    pd.DataFrame({"post_id": T.post_id.to_numpy(), **{k: v[sel] for k, v in scores.items()}}).to_parquet(
+        os.path.join(H.CACHE, "wb15_scores.parquet"), index=False)
+    diagnose(Q, T, scores["+ votes + who"][sel], V[sel], R[sel], qb)
+
+
+def diagnose(Q, T, s, V, R, qb):
+    """Where the 15-min misses are: winner type (fast = on the front page by 1 h and listed the posting day or the
+    next; late riser; re-up 2+ days later), and what fast winners look like on /newest at 15 min."""
+    L = OL.lists()
+    first = L[L["rank"] <= 30].groupby("post_id").day.min()
+    lag = (pd.to_datetime(T.post_id.map(first)) - pd.to_datetime(T.day)).dt.days.to_numpy()
+    sub = Q[Q.post_id.isin(T.post_id)].set_index("post_id").reindex(T.post_id).reset_index()
+    vis60 = (OL.vote_feats(sub, qb, [60])[60].best_rank <= 30).to_numpy()
+    y = T.y.to_numpy()
+    kind = np.where(y == 0, "none", np.where(lag >= 2, "reup", np.where(vis60, "fast", "late")))
+    k = int(y.sum())
+    flag = pd.Series(s).rank(ascending=False, method="first").to_numpy() <= k
+    print("15 min, + votes + who, caught by winner type: " + ", ".join(
+        f"{t} {int((flag & (kind == t)).sum())}/{int((kind == t).sum())}" for t in ("fast", "late", "reup")), flush=True)
+    has = V.v_has.to_numpy() == 1
+    for t in ("fast", "late", "reup", "none"):
+        m = (kind == t) & has
+        if m.any():
+            sc = V.v_score.to_numpy()[m]
+            print(f"   {t:5s} with a snapshot by 15 min: {m.sum():5d}; score at the latest snapshot median {np.median(sc):.0f}, "
+                  f"share >= 3 points {(sc >= 3).mean():.1%}, >= 5 {(sc >= 5).mean():.1%}; snapshot age median "
+                  f"{np.median(V.v_age.to_numpy()[m]):.1f} min; on /news by 15 min {(V.v_front.to_numpy()[m] < 999).mean():.1%}; "
+                  f"front rank by 15 min (QN) {(R.best_rank.to_numpy()[m] <= 30).mean():.1%}", flush=True)
 
 
 if __name__ == "__main__":
