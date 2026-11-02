@@ -168,3 +168,6 @@ Model switches, direction reviews and agenda changes, newest last.
   - 48-h posts: −0.09.
   - Tease: +0.09.
   - SE ±0.15. All within 0. Re-run at 100+ launches.
+- 08:12 UTC E5 session resumed by the user: popscore TRAIN_ALL=1 (psa_) vs psx_ on daily top 3/5/10, on exp-2.
+  It briefly started exp-1 read-only (08:06-08:12) to copy code. Pointed it to the PH agent's psg_ result (ca74041)
+  and asked for the launch model + psa_ vs the launch model alone as well as the sim.
