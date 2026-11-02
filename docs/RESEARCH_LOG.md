@@ -222,3 +222,9 @@ Model switches, direction reviews and agenda changes, newest last.
   - Inside E1 the pool helps: +2.8 top 3; log-lik +0.91/launch.
   - psa_ is the best pool source; pna_ is weaker (−3.2 top 3 vs psx_).
   - Next, v2: launch-model inputs as conversion modifiers + day total; per-maker/hunter conversion with a first-timer prior.
+- 10:33 UTC: mailbox checked.
+  - Data Feeder PH people daily refresh is live: upvotes plus following for 4,333 active people, 99.7% ok, ~$0.17/day,
+    raw/ph_people_daily/<day>/, ~10:00 UTC daily, VM deleted after. Passed to the PH agent for the bundle.
+  - HN recorder: /newest p1 Nov 2 602/605 min (99.5%), 11 fallback windows today.
+  - Budget readout (01:35 PT): ours ~$47.7/day on today's metered Vertex. exp-1 is the biggest VM ($1.07/h); it's
+    stopped now, and no exp VM is running.
