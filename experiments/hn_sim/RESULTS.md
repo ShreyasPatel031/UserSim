@@ -637,3 +637,23 @@ Base = at-posting inputs + history score + front-page rank + comments. To rerun 
 v2 + favorites **0.642 | 0.633** (page-1 favorites: 0.640 | 0.635); people with 10+ favorites (618): 0.658 | 0.649
 (page-1: 0.653). Popularity alone 0.814; v2 + favorites + popularity 0.830 | 0.645. The full favorites add +0.002
 overall, +0.005 for heavy favoriters.
+
+## Status 2026-11-02 02:50 UTC - Caught per post (north star 80%): 1 h 47.2% [43.7, 50.6]; 15 min 24.7% [22.6, 26.9]; at posting 23.2% [21.2, 25.3]
+
+### Page judge as an input (pagejudge.py full run: 106,210 posts, Gemini 2.5 Flash-Lite, $13.543 logged; pj_eval.py)
+Judged 99.9%; page read 62.8%. At posting: Jul-Aug model 21.4% -> 22.1%, +0.8 [-0.4, +1.9]; 50/50 blend 23.2% -> 23.1%,
+-0.1 [-1.1, +1.0]. 1 h (rank + history score + who): 47.0% -> 47.5%, +0.5 [-0.7, +1.6].
+
+### Honest early votes, complete October /newest archive (wb_caught.py; Oct 2-16 coverage 93-98% except Oct 6, 13, 14, 15)
+| Checkpoint | test | all days | 90%+ coverage days |
+|---|---|---|---|
+| 15 min | A: train Jul-Sep, test Oct 2-14 (388 winners) | 25.5 -> 28.4, +2.8 [-0.5, +6.4] | 26.1 -> 29.3, +3.1 [-0.7, +7.1] |
+| 15 min | B: train <= Oct 8, test Oct 9-14 (180) | 27.2 -> 27.2, +0.0 [-2.4, +3.0] | 29.8 -> 29.8, +0.0 [-3.9, +3.2] |
+| 1 h | A | 45.6 -> 45.6, +0.0 [-1.6, +1.5] | 46.3 -> 46.0, -0.3 [-2.4, +1.7] |
+| 1 h | B | 48.9 -> 47.8, -1.1 [-2.5, +0.0] | 47.4 -> 46.5, -0.9 [-2.3, +0.0] |
+
+Why /newest votes do not move 1 h: among Oct 2-14 posts not on the front page by 1 h (10,890 with a snapshot, 193
+winners), the winners' latest /newest score (median age 38 min) is median 2 vs 1 for the rest; AUC 0.615 (score),
+0.608 (votes per minute), 0.505 (comments). Where the 681 test winners not on the front page at 1 h land: on the list of
+their posting day 42%, the next day 25%, 2+ days later (re-ups) 32%. Winners on the front page by 1 h: 93% / 7% / 0%.
+Half the winners look like flops in their first hour; they are late risers and second-chance re-ups.
