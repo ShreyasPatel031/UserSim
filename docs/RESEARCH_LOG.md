@@ -442,3 +442,8 @@ Model switches, direction reviews and agenda changes, newest last.
 - 21:10 UTC Model switch: orchestrator on Fable for a direction review at the user's request.
   Output: docs/reviews/2026-11-02_direction_review_fable2.md. Asked the PH agent to check page-input fetch dates.
 - 21:11 UTC A1 team-history fetch running on usersim-pipeline (Shreyas approved in the PH session). Route: per-day featured-post crawl 2024–2025 (madePosts returns 0 for other users); ~40% of maker usernames are redacted and skipped. Paced under the API limit, pauses around the recorder's minute, stops by 07:30 UTC. ETA 01:00–04:00 UTC.
+- 21:20 UTC User: "shouldn't the person model improve every day?" Answer: yes, from the honest dated data (follower
+  snapshots Oct 25, dated follows Nov 2). The pool alone, modelled perfectly, gives 89.7 daily top 3 (E0), so the
+  observed population is enough; the blockers are 65% unseen voters (populations, not people), the shared per-launch
+  term (needs ties, not better individuals), and dated ties being ~1 week old. Standing metric: pool Spearman per live
+  day (0.587 now; 0.745 ≈ 83 daily top 3). PH agent asked for a rolling retrain on dated follows + daily pool Spearman.
