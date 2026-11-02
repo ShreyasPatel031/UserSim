@@ -320,3 +320,39 @@ What this supports and what it does not:
 people whose own link and PH field name different X handles (about 316 in v3b) with both handles, the PH name, headline and bio side by side, and an empty
 `label_link_field_both_neither_unsure` column. Tested on a synthetic dataset. After about 50 labels: if link is right in clearly more cases than field, keep
 the 0.95/0.2 rule; if it is close to even, both should be kept at a middle confidence; if the field wins, swap them.
+
+## people_v3d and the 50 labeled X-field conflicts: checked
+
+**people_v3d (`docs/people_v3d_results/`), checked against the committed files.** 40 of 40 checks pass. The numbers are internally consistent:
+events 51,353 + 234,066 + 23,670 = 309,089; X posts 31,491 to 23,670 is exactly -7,821; handles unchanged at 46,998 (only confidences moved);
+the 1,294 field-only X handles are all at 0.6 (1,291 were at 0.8, 3 at 0.5); profiles 26,861 to 26,358 (-503, the field-only handles that had an X profile).
+The same files show the v3b NaN bug was widespread, which I could not size before: in v3b `location` was the text "NaN" in 23,901 of 26,861 profile rows,
+`bio` in 3,263, `name` in 139, and 2,283 `extra` cells. v3c and v3d have 0. Not recomputed from raw data.
+
+**Conflict labels (`docs/x_handle_conflict_labeled/`), checked from the CSV.** 50 conflicts; the correct handle is the self-link in 24, the twitter field in 14, neither in 9,
+both in 3 (sums to 50). In 12 of the 14 field-correct rows the self-link does not resolve on X; in 2 it does (people with two accounts). So "the self-link is dead
+and the field is right" holds for 12 of 50 (24%), not 14 of 50 (28%); the other 2 are live-link cases. 19 of the 50 self-links do not resolve at all.
+One labeler pass; "not found" cannot tell a rename from a deletion.
+
+**The suggested fallback works on these labels, in-sample.** Rule: when the self-link handle does not resolve on X, the twitter field does, and the X name matches the PH name
+(similarity >= 0.5), use the field. Scored against the labels (a pick is right if it equals the correct handle or the correct handle is "both"; 9 "neither" rows cannot be fixed):
+
+| Rule | right | wrong | neither |
+|---|---|---|---|
+| always self-link (current) | 27 | 14 | 9 |
+| always twitter field | 17 | 24 | 9 |
+| **fallback (name >= 0.5)** | **39** | **2** | 9 |
+
+All 12 flips are correct; the 2 wrong are the live-link two-account cases. This is in-sample (the same 50 rows motivated the rule) and small, so it is provisional.
+
+**Implemented, opt-in, synthetic-tested only.** `build_v3.py` reads an optional `root/x_lookup.json` (`{handle_lower: {"exists": bool, "name": str}}`). Without it, behaviour is unchanged.
+With it, a qualifying conflict gets the field handle at 0.8 (`source=ph_twitter_field_live_fallback`) with its X profile and posts, and the dead link is demoted to 0.2.
+New check: `fallback_handles_confident_and_replace_a_dead_link`. Fixture: only the dead-link person changed; a live-link person, a name-mismatch person and a person with no field lookup were untouched.
+
+**To use it (needs X lookups, which only Data Feeder can run):**
+```bash
+python experiments/people_v2/sample_conflicts.py --dir work/v3d --out work/out/x_conflict_audit_50.csv --lookup-list work/out/x_lookup_handles.txt
+```
+then resolve every handle in `x_lookup_handles.txt` (about 630, roughly 26 lookups of 25 handles) with the same read-only X users lookup used for the audit, write
+`x_lookup.json` as above into the build root, rebuild, and validate. Decision for Shreyas: adopt the fallback after that run, or keep own-link-wins. I would adopt it only
+if a fresh, non-overlapping sample of about 30 conflicts agrees, since the evidence so far is in-sample.

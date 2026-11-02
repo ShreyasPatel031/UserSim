@@ -18,6 +18,7 @@ Changes against build_v2.py (numbers refer to the fix list):
  5. observed_on is the row's own fetched_at ('fetched'); else the capture file's upload date from root/file_dates.json as an upper bound
     ('upper_bound'); else null ('unknown'). Never the build date.
  6. ph_user_id keeps numeric ids only (legacy UUIDs become null); every PH profile records parser_version.
+ 8. Optional root/x_lookup.json lets a live twitter-field handle replace a dead own-link handle (see XL below).
  7. A handle from PH's twitter field alone is stored at confidence 0.6 (below the 0.8 threshold) with no X profile or posts.
 Not done here, needs a human or a model: personal-vs-company labelling of X handles (see x_handle_audit_100.csv) and rebuilding segments.
 """
@@ -138,6 +139,11 @@ def main(root: str, out: str) -> dict:
     gone -= set(rf)
     retry -= set(rf) | gone
     FD = json.load(open("file_dates.json")) if os.path.exists("file_dates.json") else {}  # {"ph_profiles2": "2026-10-28", ...}
+    # Optional x_lookup.json {handle_lower: {"exists": bool, "name": str}} from a read-only X lookup of the conflict handles. Without it the
+    # own-link-wins rule is unchanged. With it: if the own-link handle does not resolve on X while PH's twitter field does, with a name that
+    # matches the PH name (similarity >= 0.5), the field is used (0.8) and the dead link is demoted (0.2). On 50 hand-labelled conflicts this
+    # fixed 12 of the 14 cases where the field was right with 0 wrong flips; it is in-sample, so treat it as provisional.
+    XL = json.load(open("x_lookup.json")) if os.path.exists("x_lookup.json") else {}
     tabs = {r["username"]: r for r in jl(R + "profile_tabs.jsonl.gz") if r.get("username")}
     parts = sorted(glob.glob("t/people*.parquet") + glob.glob("t/people/*.parquet"))  # initial + incremental parts (tables/people)
     v1 = pd.concat([pd.read_parquet(f) for f in parts])
@@ -215,25 +221,36 @@ def main(root: str, out: str) -> dict:
                     own[plat].append(s)
             else:
                 H(pid, k, None, url, "ph_self_link", 0.95, obs=obs)
+        tw = base.get("twitter") or (v1.loc[u, "twitter"] if u in v1.index else None)
+        tw = tw.lower().lstrip("@") if isinstance(tw, str) and tw else None
+        promote = False
+        if XL and tw and own["x"] and tw not in own["x"]:
+            lk, fk = XL.get(own["x"][0]), XL.get(tw)
+            promote = bool(lk and fk and lk.get("exists") is False and fk.get("exists") is True and ph_name
+                           and namesim(fk.get("name"), ph_name) >= 0.5)
         base_url = {"x": "https://x.com/", "linkedin": "https://www.linkedin.com/in/", "github": "https://github.com/"}
         for plat in own:
             for i, s in enumerate(own[plat]):
-                if i == 0:
+                if i == 0 and plat == "x" and promote:
+                    H(pid, plat, s, base_url[plat] + s, "ph_self_link", 0.2, "own-link handle not found on X; PH twitter field used instead", obs)
+                elif i == 0:
                     H(pid, plat, s, base_url[plat] + s, "ph_self_link", 0.95, obs=obs)
                 else:
                     H(pid, plat, s, base_url[plat] + s, "ph_self_link_extra", 0.5, "not the first listed link of this kind", obs)
                     stats["extra_self_link_demoted"] += 1
-        tw = base.get("twitter") or (v1.loc[u, "twitter"] if u in v1.index else None)
-        tw = tw.lower().lstrip("@") if isinstance(tw, str) and tw else None
         if tw and tw not in own["x"]:
-            if own["x"]:
+            if own["x"] and promote:
+                H(pid, "x", tw, "https://x.com/" + tw, "ph_twitter_field_live_fallback", 0.8,
+                  "own-link handle not found on X; PH twitter field resolves with a matching name", obs)
+                stats["x_field_promoted_dead_link"] += 1
+            elif own["x"]:
                 H(pid, "x", tw, "https://x.com/" + tw, "ph_twitter_field", 0.2, "conflicts with self link; not used", obs)
                 stats["x_field_conflict"] += 1
             else:
                 H(pid, "x", tw, "https://x.com/" + tw, "ph_twitter_field", FIELD_ONLY_CONF,
                   "PH twitter field only, no own link; unvalidated (audit: 9/14 decided matched)", obs)
                 stats["x_field_only_below_threshold"] += 1
-        x_primary = own["x"][0] if own["x"] else None  # field-only handles get no X profile or posts
+        x_primary = tw if promote else (own["x"][0] if own["x"] else None)  # field-only handles get no X profile or posts
         xname = None
         if x_primary and x_primary in X and X[x_primary].get("profile"):
             xp = X[x_primary]["profile"]

@@ -83,6 +83,9 @@ def main(d: str, refetch: str | None, events_glob: str | None) -> int:
     owner = dict(zip(hi.handle, hi.person_id))
     check("x_events_only_for_confident_handles", xe.person_id.isin(set(hi.person_id)).all())
     # own-link handles must come from a link of the matching kind: ph_self_link x/github/linkedin rows need a url on that platform
+    fb = H[H.source == "ph_twitter_field_live_fallback"]
+    check("fallback_handles_confident_and_replace_a_dead_link", (fb.confidence == 0.8).all() and fb.person_id.isin(
+        set(H[(H.source == "ph_self_link") & (H.platform == "x") & (H.confidence < 0.5)].person_id)).all(), len(fb))
     for plat, dom in (("x", ("x.com", "twitter.com")), ("github", ("github.com",)), ("linkedin", ("linkedin.com",))):
         r = H[(H.platform == plat) & H.source.isin(["ph_self_link", "ph_self_link_extra"])]
         check(f"{plat}_self_link_urls_on_platform", r.url.fillna("").map(lambda u: any(x in u for x in dom)).all())
