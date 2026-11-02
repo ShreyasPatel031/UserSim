@@ -441,3 +441,4 @@ Model switches, direction reviews and agenda changes, newest last.
     - PH: A1 team history needs Shreyas's OK; stars land tonight.
 - 21:10 UTC Model switch: orchestrator on Fable for a direction review at the user's request.
   Output: docs/reviews/2026-11-02_direction_review_fable2.md. Asked the PH agent to check page-input fetch dates.
+- 21:11 UTC A1 team-history fetch running on usersim-pipeline (Shreyas approved in the PH session). Route: per-day featured-post crawl 2024–2025 (madePosts returns 0 for other users); ~40% of maker usernames are redacted and skipped. Paced under the API limit, pauses around the recorder's minute, stops by 07:30 UTC. ETA 01:00–04:00 UTC.
