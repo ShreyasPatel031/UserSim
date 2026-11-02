@@ -57,6 +57,34 @@ def votes15(Q):
     return out
 
 
+def expo15(Q, a=A_MIN):
+    """Direction A on the October archive: exposure on /newest page 1 in the first a minutes from Wayback captures.
+    Of the captures of /newest in [posting, posting + a], the share that showed the post (page 1 = the 30 newest),
+    position-weighted (1 / sqrt(rank)); estimated minutes there; votes per exposure-minute (plain and weighted); posts
+    submitted in the 30 min before; posting hour. Only the captures' times and what they showed: no outcome."""
+    A = pd.read_json(W.EV, lines=True, convert_dates=False)
+    N = A[A.page == "newest"]
+    caps = np.sort(pd.to_datetime(N.capture_ts.astype(str), format="%Y%m%d%H%M%S", utc=True).astype("int64").unique() // 10**9)
+    N = N[(N.age_min >= 0) & (N.age_min <= a)]
+    born = Q.created_at_i.to_numpy()
+    n_caps = np.searchsorted(caps, born + a * 60, side="right") - np.searchsorted(caps, born)
+    g = N.groupby("item_id")
+    seen = Q.post_id.map(g.size()).fillna(0).to_numpy()
+    wsum = Q.post_id.map(N.assign(w=1 / np.sqrt(N["rank"].clip(lower=1))).groupby("item_id").w.sum()).fillna(0).to_numpy()
+    last_score = Q.post_id.map(N.sort_values("age_min").drop_duplicates("item_id", keep="last").set_index("item_id").score)
+    out = pd.DataFrame(index=Q.index)
+    out["x_caps"] = n_caps
+    out["x_share"] = np.where(n_caps > 0, seen / np.maximum(n_caps, 1), np.nan)
+    out["x_min"] = out.x_share * a
+    out["x_w"] = np.where(n_caps > 0, wsum / np.maximum(n_caps, 1) * a, np.nan)
+    out["x_vpe"] = (last_score - 1) / out.x_min.clip(lower=0.5)
+    out["x_vpe_w"] = (last_score - 1) / out.x_w.clip(lower=0.5)
+    ct = np.sort(born)
+    out["x_vol30"] = np.searchsorted(ct, born) - np.searchsorted(ct, born - 1800)
+    out["x_hour"] = (born // 3600) % 24
+    return out
+
+
 def who_deep(Q, a=A_MIN):
     """Who commented in the first a minutes, beyond their scout record: their ties to the submitter before Jul 1
     (comments on the submitter's stories since 2025), their overall activity before Jul 1, newcomers."""
@@ -97,8 +125,10 @@ def main():
     y_s = np.log1p(V.v_score.where(V.v_age >= 10))                      # chain target: score at 10-15 min
     base = pd.concat([Q[AT], R, CM[["cm_n", "cm_people", "cm_first"]]], axis=1)
     WD = who_deep(Q)
+    XP = expo15(Q)
     variants = {"base": base, "+ votes": pd.concat([base, V], axis=1), "+ votes + who": pd.concat([base, V, WHO], axis=1),
-                "+ votes + who + ties/activity": pd.concat([base, V, WHO, WD], axis=1)}
+                "+ votes + who + ties/activity": pd.concat([base, V, WHO, WD], axis=1),
+                "+ votes + who + exposure (direction A)": pd.concat([base, V, WHO, XP], axis=1)}
     days = sorted(d for d in Q.day.unique() if "2026-10-02" <= d <= "2026-10-14")
     scores = {k: np.full(len(Q), np.nan) for k in list(variants) + (["+ votes + who + chain"] if CHAIN else [])}
     for d in days:
@@ -130,6 +160,9 @@ def main():
         for k in list(scores)[1:]:
             c = W.caught_on(T[keep], scores[k][sel][keep])
             print(f"   {k:24s} {W.ci2(c)}  vs base {W.ci2(c, b)}", flush=True)
+        ref = W.caught_on(T[keep], scores["+ votes + who"][sel][keep])
+        xp = W.caught_on(T[keep], scores["+ votes + who + exposure (direction A)"][sel][keep])
+        print(f"   direction A: exposure vs votes + who, paired: {W.ci2(xp, ref)}", flush=True)
     pd.DataFrame({"post_id": T.post_id.to_numpy(), **{k: v[sel] for k, v in scores.items()}}).to_parquet(
         os.path.join(H.CACHE, "wb15_scores.parquet"), index=False)
     diagnose(Q, T, scores["+ votes + who"][sel], V[sel], R[sel], qb)
