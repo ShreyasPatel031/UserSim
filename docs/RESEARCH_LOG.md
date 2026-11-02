@@ -482,3 +482,4 @@ Model switches, direction reviews and agenda changes, newest last.
   −1.6 to −2.3; over at-posting alone +1.0. Calibration off (ΣP 1,177 vs 388 winners). The archive can't reconstruct
   the front page. Stopped on October. Next: live-page simulator on hn_minute (scores from ~Nov 5–6), and test whether
   the weak per-vote weight is a QN selection artifact on the outcome-independent Wayback 2025 archive.
+- 22:43 UTC E5 re-paired vs the corrected wb15 reference (votes + who, 28.4%): simulator alone −5.7; forward blend +0.3 [−1.9, +2.4]. No interval above 0. Verdict stands. v2 arrival fit on the QN Sep series when it lands (CPU, no VM).
