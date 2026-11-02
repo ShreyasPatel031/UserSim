@@ -442,6 +442,39 @@ def weekly_scores(d, con):
     return rows
 
 
+@step("poolscore")
+def s_poolscore(d, con, dry):
+    """The person model's daily metric: for the launches of day d-7 (complete: a person's upvotes are seen only when
+    their upvote page is next read, and the daily refresh reaches stale people within about 7 days) and of day d-1
+    (provisional, labelled), the within-day Spearman of the live pool simulation's expected pool picks
+    (data/sim_live/pnx_<day>.json, pnx_ev) with the real number of pool people who upvoted or commented on each launch,
+    and the share of each launch's final votes cast by pool people. -> warehouse table pool_scores."""
+    from scipy.stats import spearmanr
+    rows = []
+    for lag, label in ((7, "complete"), (1, "provisional")):
+        day = INC.days_before(d, lag)
+        f = os.path.join(RAW, "sim_live", f"pnx_{day}.json")
+        if not os.path.exists(f):
+            continue
+        S = json.load(open(f))
+        R = con.execute(f"""SELECT l.id::VARCHAR AS id, l.votes, count(DISTINCT e.person) AS pool
+                            FROM launches l LEFT JOIN events e ON e.launch_id::VARCHAR = l.id::VARCHAR AND e.kind IN ('upvote', 'comment')
+                            WHERE l.day::VARCHAR = '{day}' GROUP BY 1, 2""").df()
+        R["ev"] = R.id.map(lambda x: (S.get(x) or {}).get("pnx_ev"))
+        R = R[R.ev.notna()]
+        if len(R) < 5:
+            continue
+        rho = spearmanr(R.ev, R.pool).correlation
+        share = (R.pool / R.votes.where(R.votes > 0)).mean()
+        rows.append({"day": day, "scored_on": d, "status": label, "model": "pnx", "launches": len(R), "pool_spearman": float(rho),
+                     "pool_share_of_votes": float(share) if pd.notna(share) else None, "pool_voters": int(R.pool.sum())})
+    if rows and not dry:
+        W.write("pool_scores", pd.DataFrame(rows))
+    for r in rows:
+        print(json.dumps({"poolscore": r}), flush=True)
+    return {"items": len(rows)}
+
+
 @step("earlyshock")
 def s_earlyshock(d, con, dry):
     """Early-vote shock correction backtest (ph_predict/early_shock.py). Until 14 clean days exist it only reports how
@@ -467,7 +500,7 @@ def s_raw(d, con, dry):
     return {"items": len(files)}
 
 
-STEPS = [s_launches, s_at_launch, s_list_check, s_snap, s_forecast, s_simforecast, s_shadow, s_ranks, s_comments, s_people, s_ph_upvotes, s_personas, s_score, s_earlyshock, s_raw]
+STEPS = [s_launches, s_at_launch, s_list_check, s_snap, s_forecast, s_simforecast, s_shadow, s_ranks, s_comments, s_people, s_ph_upvotes, s_personas, s_score, s_poolscore, s_earlyshock, s_raw]
 
 
 def main(argv):
