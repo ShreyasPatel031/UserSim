@@ -57,7 +57,9 @@ def root(tmp_path, monkeypatch):
         mk("holly", "Holly Ng", "holly_f", []),
         mk("erin", "Erin Oh", None, [L("twitter", "https://x.com/b_first"), L("twitter", "https://x.com/a_second"),
                                      L("website", "https://x.com/acme_co")])])
-    _w(r / "raw/x_people.jsonl.gz", [_prof(h) for h in ("alice_x", "dana_dead", "dana_live", "holly_f", "b_first")])
+    late = _prof("dana_live") | {"fetched_at": "2026-11-02T08:50:00Z"}  # a later scrape appended after the base capture
+    _w(r / "raw/x_people.jsonl.gz", [_prof(h) for h in ("alice_x", "dana_dead", "holly_f", "b_first")] + [late])
+    (r / "file_dates.json").write_text(json.dumps({"x_people": "2026-10-28"}))
     (r / "raw/x_posts.jsonl.gz").write_bytes(gzip.compress(b""))
     users = ["alice", "dana", "fay", "gus", "holly", "erin"]
     pd.DataFrame({"person": users, "twitter": None, "about": [float("nan")] * 6, "joined": None, "upvotes_total": None,
@@ -144,3 +146,10 @@ def test_validator_passes_on_both_modes(root, flag):
     _build(root, out, x_fallback=flag)
     rc = V.main(str(root / out), str(root / "raw/ph_profiles2_refetch*/profiles.jsonl.gz"), str(root / "ev/*.parquet"))
     assert rc == 0
+
+
+def test_x_profile_rows_use_their_own_fetch_date_not_the_older_file_date(root):
+    T = _build(root, "d", x_fallback=True)
+    xp = T["profiles"][T["profiles"].platform == "x"].set_index("handle")
+    assert (xp.loc["dana_live", "observed_on"], xp.loc["dana_live", "observed_on_quality"]) == ("2026-11-02", "fetched")
+    assert (xp.loc["alice_x", "observed_on"], xp.loc["alice_x", "observed_on_quality"]) == ("2026-10-28", "upper_bound")

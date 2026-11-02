@@ -259,8 +259,11 @@ def main(root: str, out: str, x_fallback: bool = False, x_fallback_sim: float = 
         if x_primary and x_primary in X and X[x_primary].get("profile"):
             xp = X[x_primary]["profile"]
             xname = xp.get("name")
-            profiles.append(dict(person_id=pid, platform="x", handle=x_primary, observed_on=FD.get("x_people"),
-                                 observed_on_quality="upper_bound" if FD.get("x_people") else "unknown",
+            # a row scraped later than the base capture carries its own `fetched_at`; the file's upload date is only an upper bound for
+            # rows without one (stamping a later scrape with the earlier file date would claim it was fetched before it was)
+            xday = day(X[x_primary].get("fetched_at") or xp.get("fetched_at"))
+            profiles.append(dict(person_id=pid, platform="x", handle=x_primary, observed_on=xday or FD.get("x_people"),
+                                 observed_on_quality="fetched" if xday else ("upper_bound" if FD.get("x_people") else "unknown"),
                                  source="raw/x_people", name=xp.get("name"), bio=xp.get("description"), location=xp.get("location") or None,
                                  website=xp.get("website"), joined=xp.get("joined"), followers=xp.get("followers"), following=xp.get("following"),
                                  post_count=xp.get("tweets"), likes_count=xp.get("likes"), media_count=xp.get("media_count"),

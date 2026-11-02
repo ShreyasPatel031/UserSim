@@ -416,3 +416,33 @@ handles at confidence >= 0.8 by source, X profile rows, and X posts by platform.
 and posts change only where `x_people` / `x_posts` hold data for the field handle, which they may not (those handles were looked up, not scraped). If posts for promoted handles are missing,
 the next step is scraping those ~50 accounts, not changing the rule.
 The pooled label rate (15 of 80) predicts about 59 promotions of 316 conflicts; 53 is in line.
+
+## people_v3e / v3f (98224e7c, 2014ae52): checked
+
+**Checked against the committed files** (`docs/people_v3e_results/`, `docs/people_v3f_results/`; not recomputed from raw data). v3f: 41 of 41 checks pass; `x_field_promoted_dead_link` 53 in
+both v3e and v3f, as predicted from the lookup. Arithmetic: events 51,353 + 234,066 + 24,781 = 310,200; X posts 24,242 to 24,781 is exactly +539; profiles 26,384 to 26,401 is +17,
+and Data Feeder's explanation (12 of the 29 scraped handles already had a profile, which the later shard row replaces; 12 + 17 = 29) matches how the builder loads X rows (a later row for the
+same handle wins). v3e: 53 promoted, 42 appear in the X inputs, 22 people gained 572 X events; the 31 promoted accounts with no posts were then scraped for v3f (30 rows, 539 posts).
+Persons and handles are unchanged (20,947 / 46,998). The two shard files are not in the folder although the README says they are, so I could not inspect them.
+
+**Problem found: dates on the 29 newly scraped X profiles.** The builder stamped every X profile row with `file_dates.json` `x_people` = 2026-10-28 as an *upper bound*. The 29 shard
+profiles were scraped on Nov 2, after that date, so the label claims they were fetched no later than Oct 28, which is false and breaks the as-of guarantee (the label says a profile
+existed on a day it did not). Fixed in `build_v3.py`: an X row's own `fetched_at` (top level or inside `profile`) is used with quality `fetched`; the file date stays the upper bound only
+for rows without one. New test `test_x_profile_rows_use_their_own_fetch_date_not_the_older_file_date` (11 tests pass; it fails when the fix is removed).
+**Needed:** the shard profile rows need a `fetched_at` (or tell me the scrape date and I will add it to the loader), then rebuild as v3g. The posts are unaffected: their date is the tweet's own `created_at`.
+
+**Open risk: the 53 promotions have not been reviewed one by one.** The gate's measured record is 15 of 15 correct over 80 labels, which only bounds precision at roughly 80% from below, so a handful of the 53 could
+be wrong-person promotions, and 539 posts from 30 promoted accounts are now attached to people. `promoted_x_handles.csv` has the X name but not the PH name, so I cannot re-score the margins from it.
+Request: from v3f, list the 53 promoted people with PH display name, X name and name similarity, lowest first, and hand-check those below 0.75:
+```python
+import pandas as pd, importlib.util
+b = importlib.util.module_from_spec(s := importlib.util.spec_from_file_location("b", "experiments/people_v2/build_v3.py")); s.loader.exec_module(b)
+H = pd.read_parquet("v3f/handles.parquet"); P = pd.read_parquet("v3f/persons.parquet"); Pr = pd.read_parquet("v3f/profiles.parquet")
+f = H[H.source == "ph_twitter_field_live_fallback"][["person_id", "handle"]].merge(P[["person_id", "display_name"]], on="person_id")
+x = Pr[Pr.platform == "x"][["person_id", "handle", "name"]].rename(columns={"name": "x_name"})
+f = f.merge(x, on=["person_id", "handle"], how="left"); f["sim"] = [b.namesim(a, c) for a, c in zip(f.display_name, f.x_name)]
+f.sort_values("sim").to_csv("promoted_name_margin.csv", index=False)
+```
+(Promoted handles without an X profile have no `x_name` there; take the name from `x_lookup.json`.)
+
+**Use of v3f:** usable now for work that does not depend on dates of X profile rows. For any time-split use, exclude the 29 shard profiles until v3g, or wait for it. The 53 promotions stay "adopted, provisional" until the margin list is reviewed.
