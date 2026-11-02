@@ -991,3 +991,12 @@ Spearman 0.248 (223 launches); hunter 0.02 (1,583).
   outreach, with wider coverage: the X engagement sample (queued), and the competitor-audience reviewers (pilot
   running, nothing delivered yet).
 - The launch-day route already clears 90 on daily top 5 / 10 from hour 4 (Wayback votes).
+- **Duplicate recorders fixed (Nov 2, 04:25 UTC):**
+  - Grok Bot deployed `20261102_lock` and stopped the older run (PID 47209); 62578 is kept.
+  - Verified: VM files match the repo, the live `run_daily.sh` has the lock, and a helper holds the lock until 62578
+    exits. The shutdown line is intact.
+  - The doubling covered every hour from 15:00 to 04:00 UTC (38 rows instead of 19).
+  - The local `2026-11-01.jsonl` is deduplicated to one row per launch and hour: 285 rows, 19 per hour; the original
+    is kept as `.bak_dupes`.
+  - The warehouse `vote_snapshots` rows stay doubled (append-only). The read rule is documented in
+    `pipeline/DATA.md`.
