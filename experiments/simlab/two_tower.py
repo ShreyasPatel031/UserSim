@@ -30,7 +30,9 @@ TEST_MONTHS = os.environ.get("MONTHS", "2026-05,2026-06,2026-07,2026-08,2026-09,
 TRAIN = os.environ.get("TRAIN", "all")        # all | prev
 WIDE = os.environ.get("WIDE") == "1"          # bias MLP sees every hand feature, not only tie strength
 TAG = os.environ.get("TAG", "")
-EPOCHS = int(os.environ.get("EPOCHS", "8"))
+EPOCHS = int(os.environ.get("EPOCHS", "40"))
+LOSS = os.environ.get("LOSS", "both")       # both | bce | list
+PATIENCE = int(os.environ.get("PATIENCE", "3"))
 D = int(os.environ.get("DIM", "64"))
 HLEN = 64
 AGE_EDGES = np.array([1, 2, 4, 8, 15, 30, 60, 120, 240, 480])
@@ -187,7 +189,7 @@ def group_loss(logits, y, pi, n_groups):
     lse = lse + torch.log(torch.zeros(n_groups).scatter_add(0, pi, torch.exp(neg - lse[pi])).clamp(min=1e-9))
     pos = y > 0
     lw = F.softplus(lse[pi][pos] - logits[pos]).mean() if pos.any() else logits.sum() * 0
-    return bce + lw
+    return bce if LOSS == "bce" else lw if LOSS == "list" else bce + lw
 
 
 def fit_predict(train, test, data, bias_cols, seed=0, log=print):
@@ -221,7 +223,7 @@ def fit_predict(train, test, data, bias_cols, seed=0, log=print):
             best, bad = vl, 0; best_state = {k: v.clone() for k, v in net.state_dict().items()}
         else:
             bad += 1
-            if bad >= 2:
+            if bad >= PATIENCE:
                 break
     net.load_state_dict(best_state)
     _, s = run(test, np.sort(test.gi.unique()), False)
@@ -336,7 +338,7 @@ def month(m):
         out[c] = {"top3_hit": round(100 * float(P[c].hit.mean()), 1), "auc": round(float(P[c].auc.mean()), 3), "n": len(P[c]),
                   "pool_spearman": round(float(Q[c].spearman.mean()), 3), "pool_top3": round(100 * float(Q[c].top3.mean()), 1), "days": len(Q[c])}
         if c != "s_tt":
-            d = P["s_tt"].join(P[c], rsuffix="_b"); q = Q["s_tt"].join(Q[c], rsuffix="_b")
+            d = P["s_tt"].merge(P[c], left_index=True, right_index=True, suffixes=("", "_b")); q = Q["s_tt"].merge(Q[c], left_index=True, right_index=True, suffixes=("", "_b"))
             out[c]["tt_minus"] = {"top3_hit": [round(100 * v, 1) for v in ci(d.hit - d.hit_b, rb)], "auc": ci(d.auc - d.auc_b, rb),
                                   "pool_spearman": ci(q.spearman - q.spearman_b, rb), "pool_top3": [round(100 * v, 1) for v in ci(q.top3 - q.top3_b, rb)]}
     os.makedirs(f"{TT}/scores", exist_ok=True)
@@ -363,10 +365,10 @@ def run(workers):
     for c in models:
         if c == "s_tt":
             continue
-        d = P["s_tt"].join(P[c], rsuffix="_b"); q = Q["s_tt"].join(Q[c], rsuffix="_b")
+        d = P["s_tt"].merge(P[c], left_index=True, right_index=True, suffixes=("", "_b")); q = Q["s_tt"].merge(Q[c], left_index=True, right_index=True, suffixes=("", "_b"))
         summ[c]["tt_minus_pooled"] = {"top3_hit": [round(100 * v, 1) for v in ci(d.hit - d.hit_b, rb)], "auc": ci(d.auc - d.auc_b, rb),
                                       "pool_spearman": ci(q.spearman - q.spearman_b, rb), "pool_top3": [round(100 * v, 1) for v in ci(q.top3 - q.top3_b, rb)]}
-    res_out = {"config": {"train": TRAIN, "wide": WIDE, "epochs": EPOCHS, "dim": D, "hlen": HLEN}, "summary": summ, "months": res}
+    res_out = {"config": {"train": TRAIN, "wide": WIDE, "loss": LOSS, "epochs": EPOCHS, "patience": PATIENCE, "dim": D, "hlen": HLEN}, "summary": summ, "months": res}
     json.dump(res_out, open(f"{HERE}/reports/two_tower{TAG}.json", "w"), indent=1)
     print(json.dumps(summ, indent=1))
 
