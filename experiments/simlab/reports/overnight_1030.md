@@ -1318,3 +1318,17 @@ The ctrl.py `all` model, same folds and LightGBM, 5 seeds. Leak groups dropped c
 - **Deployed and verified (Nov 2, 15:06 UTC):** 20261102_b4.
   - Contents: the early-shock step (`earlyshock` between score and raw, idle until 14 clean days from Nov 3), pipeline/snapshots.py, s_raw uploading the honest forecast parquet and pnx_<d>.json.
   - On the VM: md5s match; run_daily.sh has score,earlyshock,raw; backup at ~/w/backup_20261102_b4/; one hourly recorder, untouched.
+
+## Experiment zero: how predictable is the launch shock from honest pre-launch inputs? (Nov 2, `simlab/shock_model.py` stage 1, `HONEST=0` vs `HONEST=1`)
+Same code, same pool simulation (popscore_tie), same folds (rolling monthly, Jun–Oct tested, 3,152 launches, 146 days). The only change: model.py's honest filter (no follower counts, no fol_ / seg_, no undated promo_). Within-day Spearman of the predicted vs real pool shock, paired over days (10,000 resamples).
+
+| | Within-day Spearman | By month (Jun / Jul / Aug / Sep / Oct) |
+|---|---|---|
+| Leaky inputs (as published) | 0.504 | 0.550 / 0.490 / 0.545 / 0.443 / 0.488 |
+| **Honest inputs** | **0.395** | 0.404 / 0.465 / 0.399 / 0.356 / 0.335 |
+| Honest − leaky | **−0.109 (−0.142 to −0.078)**, lower in 5 of 5 months | |
+
+- **Drop-one losses, honest run:** ph_ 0.053 (team size, media, hunter account age; follower counts are gone), pf_ page facts 0.034, hist_ 0.020, llm_ 0.019, turnout 0.018, vs_ video 0.014, x_ 0.013, ps_ 0.013. hist_ and turnout matter more once the leaky groups are gone (0.001 → 0.020; turnout first appears).
+- **Day-level shock** (day terms only): 0.509 in both runs, unaffected.
+- **Reading:** about a fifth of the published shock predictability came from inputs that partly read the outcome. "Inputs exhausted at 0.50" was a leaky ceiling. Honest predictability is 0.395, so there is more unexplained shock than thought, and the signal that is left leans on track record (hist_) and turnout. That supports the review's directions A (the team's full history) and B (the audience as of day−1).
+- Stage 2 of this script compares against the leaky launch model (`ctrl_preds`), so it isn't reported here.
