@@ -1,5 +1,17 @@
 # E1 v1: generative vote model with the pool as one audience (Nov 2, 2026)
 
+> **Leakage note (Nov 2, 12:30 UTC, from PH ops):** in the backtest, all follower counts (PH and X, with their day ranks
+> and ctx_ derivatives), fol_* / seg_*, and several promo_ fields (promo_reactions, promo_founder_li, promo_company_li,
+> promo_founder_x, promo_funding, promo_company_age, promo_n_sources) were read after launch day and partly encode the
+> outcome. The launch model's backtest predictions (ctrl `all`, the offset used here) include them, and E1 v2's "live"
+> audiences include four of them (ph_hunter_followers, x_maker_sum_followers, x_company_followers, promo_reactions).
+> Absolute levels here are therefore optimistic. PH ops' rebuild on the honest offset (results/honest_preds.parquet,
+> `honest`; model.py honest_drop(), commit adf5e98 on claude/ph-ops-agent) with promo_posts as the only audience gives
+> daily top 3/5/10 −1.3 / −0.3 / −0.3 and weekly gains no larger than the day-terms-only control. The E1 v2 shadow package
+> was trained on the leaky backtest values; its live inputs are at-launch counts, so its live scores will not match this
+> backtest. Honest inputs: promo_posts*, promo_cov*, hist_*, the pool (pna_), page and day inputs; at-launch follower counts
+> once 3–4 weeks of them exist.
+
 Code: `simlab/vote_model.py`. Pre-launch only (Shreyas, Nov 2). Votes of launch i are modelled as a sum of audiences:
 `mu_i = a * S_i + sum_k size_ik * conv_k(z_i) + browse_i`, where S is the simulation's expected pool picks, the audience sizes are the
 makers' and hunter's Product Hunt followers, the makers' and company X followers and pre-launch promotion reactions, the

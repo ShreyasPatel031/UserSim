@@ -1,5 +1,17 @@
 # E1 v2: the vote model contains the launch model (Nov 2, 2026; Shreyas approved the run)
 
+> **Leakage note (Nov 2, 12:30 UTC, from PH ops):** in the backtest, all follower counts (PH and X, with their day ranks
+> and ctx_ derivatives), fol_* / seg_*, and several promo_ fields (promo_reactions, promo_founder_li, promo_company_li,
+> promo_founder_x, promo_funding, promo_company_age, promo_n_sources) were read after launch day and partly encode the
+> outcome. The launch model's backtest predictions (ctrl `all`, the offset used here) include them, and E1 v2's "live"
+> audiences include four of them (ph_hunter_followers, x_maker_sum_followers, x_company_followers, promo_reactions).
+> Absolute levels here are therefore optimistic. PH ops' rebuild on the honest offset (results/honest_preds.parquet,
+> `honest`; model.py honest_drop(), commit adf5e98 on claude/ph-ops-agent) with promo_posts as the only audience gives
+> daily top 3/5/10 −1.3 / −0.3 / −0.3 and weekly gains no larger than the day-terms-only control. The E1 v2 shadow package
+> was trained on the leaky backtest values; its live inputs are at-launch counts, so its live scores will not match this
+> backtest. Honest inputs: promo_posts*, promo_cov*, hist_*, the pool (pna_), page and day inputs; at-launch follower counts
+> once 3–4 weeks of them exist.
+
 > **Correction (Nov 2, 11:30 UTC, follow-up below):** the audience inputs of "off" included the makers' Product Hunt
 > follower count, which is not a live launch-model input (fetched after launch: leaky). Without it, with live inputs
 > only, daily top 3 is +1.3 [−0.4, +3.0] (4 of 6 months better, 2 tied), not +1.7 [+0.2, +3.2]; the weekly gains hold.
