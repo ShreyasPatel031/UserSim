@@ -190,3 +190,4 @@ Model switches, direction reviews and agenda changes, newest last.
   - Launch level among covered launches: identical. 0 full days.
   - Filed request 20261102T0845_x_prelaunch_fulldays: fix ph_gate.py day matching; fetch 10 whole launch days per
     (handle, launch) pair, top-up allowed (cap $10).
+- 08:47 UTC PH agent fetch order (tmp/ph_ops/x_fetch_order.json): 19 launches complete 5 days (Oct 5/10/23/24/25); added to the full-days request. ~50% of launches have no X handle.
