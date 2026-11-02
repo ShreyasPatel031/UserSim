@@ -472,3 +472,9 @@ Model switches, direction reviews and agenda changes, newest last.
     Wayback /newest is dense in 2025 (64% of 10-min slots). No paid source needed.
   - Filed 2240: polite Quality News pull (Sep 1–Oct 14 first, then Jul–Aug) and Wayback /newest 2025. $0.
   - HN stars 9,022/9,662; PH pass not started. A1 crawl streaming (1.35 MB so far).
+- 22:36 UTC HN correction (found by E5): the Wayback exposure features were NaN (pandas timestamp bug). Fixed. Exposure
+  adds −0.3 over votes + who; the Oct 2–14 29.6% stands but is votes + who + volume + hour. The 26.5% headline, the
+  35.6% exposure clock, wb_gh and live_oct are being rerun.
+- HN agent's caution, accepted: a Quality News page exists only for stories that ended ≥3 points, so it isn't known at
+  15 min and can't be a Caught input (fills leaked at AUC 0.67–0.88 before). QN is for E5's dynamics only. Request 2240
+  reordered: Wayback /newest 2025 first.
