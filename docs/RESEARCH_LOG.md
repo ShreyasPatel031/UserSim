@@ -483,3 +483,7 @@ Model switches, direction reviews and agenda changes, newest last.
   the front page. Stopped on October. Next: live-page simulator on hn_minute (scores from ~Nov 5–6), and test whether
   the weak per-vote weight is a QN selection artifact on the outcome-independent Wayback 2025 archive.
 - 22:43 UTC E5 re-paired vs the corrected wb15 reference (votes + who, 28.4%): simulator alone −5.7; forward blend +0.3 [−1.9, +2.4]. No interval above 0. Verdict stands. v2 arrival fit on the QN Sep series when it lands (CPU, no VM).
+- 22:46 UTC HN reruns after the exposure fix: the full-period 15-min headline is 24.7% [22.6, 26.9] again; the 26.5%
+  reported at 17:40 was the bug and is withdrawn (honest Wayback votes + exposure give +0.7, n.s.). Oct 2–14: 29.6%
+  (votes + who + volume + hour). Exposure clock: 34.5% [31.5, 37.7], +6.4 [+2.2, +10.5], holds. RESEARCH_PROGRAM.md
+  corrected. Day's net on HN: 15 min unchanged at 24.7 (full period); +1.2 on Oct 2–14 (28.4 → 29.6).
