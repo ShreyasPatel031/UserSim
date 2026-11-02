@@ -1,0 +1,451 @@
+{
+ "launches": 3977,
+ "days": 177,
+ "months_tested": [
+  "2026-05",
+  "2026-06",
+  "2026-07",
+  "2026-08",
+  "2026-09",
+  "2026-10"
+ ],
+ "page_scores_used": [
+  "ps_n_images",
+  "ps_has_first_comment",
+  "ps_name",
+  "ps_tagline",
+  "ps_description",
+  "ps_category_fit",
+  "ps_logo",
+  "ps_gallery"
+ ],
+ "scores": {
+  "launch model alone": {
+   "top3": 66.7,
+   "top5": 73.5,
+   "top10": 81.0
+  },
+  "glm_none": {
+   "top3": 47.5,
+   "top3_vs_launch_model": [
+    -19.1,
+    [
+     -23.5,
+     -14.6
+    ],
+    176
+   ],
+   "top3_vs_glm_psx": [
+    -8.0,
+    [
+     -11.4,
+     -4.7
+    ],
+    176
+   ],
+   "top5": 61.6,
+   "top5_vs_launch_model": [
+    -11.9,
+    [
+     -15.1,
+     -8.9
+    ],
+    176
+   ],
+   "top5_vs_glm_psx": [
+    -3.2,
+    [
+     -5.6,
+     -0.9
+    ],
+    176
+   ],
+   "top10": 67.9,
+   "top10_vs_launch_model": [
+    -13.1,
+    [
+     -15.2,
+     -11.0
+    ],
+    144
+   ],
+   "top10_vs_glm_psx": [
+    -4.2,
+    [
+     -5.8,
+     -2.6
+    ],
+    144
+   ],
+   "loglik_per_launch": -33.08
+  },
+  "glm_psx": {
+   "top3": 55.5,
+   "top3_vs_launch_model": [
+    -11.2,
+    [
+     -15.2,
+     -7.0
+    ],
+    176
+   ],
+   "top5": 64.8,
+   "top5_vs_launch_model": [
+    -8.8,
+    [
+     -11.6,
+     -5.9
+    ],
+    176
+   ],
+   "top10": 72.1,
+   "top10_vs_launch_model": [
+    -8.9,
+    [
+     -10.7,
+     -7.2
+    ],
+    144
+   ],
+   "loglik_per_launch": -25.123
+  },
+  "glm_psa": {
+   "top3": 53.6,
+   "top3_vs_launch_model": [
+    -13.1,
+    [
+     -16.9,
+     -9.5
+    ],
+    176
+   ],
+   "top3_vs_glm_psx": [
+    -1.9,
+    [
+     -4.5,
+     0.8
+    ],
+    176
+   ],
+   "top5": 65.8,
+   "top5_vs_launch_model": [
+    -7.7,
+    [
+     -10.5,
+     -5.1
+    ],
+    176
+   ],
+   "top5_vs_glm_psx": [
+    1.0,
+    [
+     -0.7,
+     2.7
+    ],
+    176
+   ],
+   "top10": 72.9,
+   "top10_vs_launch_model": [
+    -8.1,
+    [
+     -9.8,
+     -6.5
+    ],
+    144
+   ],
+   "top10_vs_glm_psx": [
+    0.8,
+    [
+     -0.4,
+     2.1
+    ],
+    144
+   ],
+   "loglik_per_launch": -24.199
+  },
+  "glm_pna": {
+   "top3": 52.5,
+   "top3_vs_launch_model": [
+    -14.2,
+    [
+     -18.2,
+     -10.4
+    ],
+    176
+   ],
+   "top3_vs_glm_psx": [
+    -3.0,
+    [
+     -5.9,
+     -0.2
+    ],
+    176
+   ],
+   "top5": 64.4,
+   "top5_vs_launch_model": [
+    -9.1,
+    [
+     -11.8,
+     -6.4
+    ],
+    176
+   ],
+   "top5_vs_glm_psx": [
+    -0.3,
+    [
+     -2.5,
+     1.8
+    ],
+    176
+   ],
+   "top10": 73.8,
+   "top10_vs_launch_model": [
+    -7.2,
+    [
+     -8.8,
+     -5.6
+    ],
+    144
+   ],
+   "top10_vs_glm_psx": [
+    1.7,
+    [
+     0.4,
+     3.1
+    ],
+    144
+   ],
+   "loglik_per_launch": -25.974
+  },
+  "gbm_none": {
+   "top3": 55.1,
+   "top3_vs_launch_model": [
+    -11.6,
+    [
+     -15.7,
+     -7.6
+    ],
+    176
+   ],
+   "top3_vs_gbm_psx": [
+    -2.8,
+    [
+     -5.3,
+     -0.4
+    ],
+    176
+   ],
+   "top5": 67.2,
+   "top5_vs_launch_model": [
+    -6.4,
+    [
+     -8.8,
+     -4.0
+    ],
+    176
+   ],
+   "top5_vs_gbm_psx": [
+    -0.5,
+    [
+     -1.8,
+     0.9
+    ],
+    176
+   ],
+   "top10": 76.2,
+   "top10_vs_launch_model": [
+    -4.8,
+    [
+     -6.1,
+     -3.4
+    ],
+    144
+   ],
+   "top10_vs_gbm_psx": [
+    -0.1,
+    [
+     -1.0,
+     0.8
+    ],
+    144
+   ],
+   "loglik_per_launch": -18.3
+  },
+  "gbm_psx": {
+   "top3": 58.0,
+   "top3_vs_launch_model": [
+    -8.7,
+    [
+     -12.5,
+     -4.9
+    ],
+    176
+   ],
+   "top5": 67.6,
+   "top5_vs_launch_model": [
+    -5.9,
+    [
+     -8.2,
+     -3.6
+    ],
+    176
+   ],
+   "top10": 76.3,
+   "top10_vs_launch_model": [
+    -4.7,
+    [
+     -6.2,
+     -3.1
+    ],
+    144
+   ],
+   "loglik_per_launch": -17.537
+  },
+  "gbm_psa": {
+   "top3": 57.8,
+   "top3_vs_launch_model": [
+    -8.9,
+    [
+     -12.7,
+     -5.3
+    ],
+    176
+   ],
+   "top3_vs_gbm_psx": [
+    -0.2,
+    [
+     -2.5,
+     2.1
+    ],
+    176
+   ],
+   "top5": 68.4,
+   "top5_vs_launch_model": [
+    -5.1,
+    [
+     -7.5,
+     -2.6
+    ],
+    176
+   ],
+   "top5_vs_gbm_psx": [
+    0.8,
+    [
+     -0.6,
+     2.3
+    ],
+    176
+   ],
+   "top10": 77.0,
+   "top10_vs_launch_model": [
+    -4.0,
+    [
+     -5.4,
+     -2.5
+    ],
+    144
+   ],
+   "top10_vs_gbm_psx": [
+    0.7,
+    [
+     -0.1,
+     1.5
+    ],
+    144
+   ],
+   "loglik_per_launch": -17.046
+  },
+  "gbm_pna": {
+   "top3": 54.7,
+   "top3_vs_launch_model": [
+    -11.9,
+    [
+     -15.7,
+     -8.3
+    ],
+    176
+   ],
+   "top3_vs_gbm_psx": [
+    -3.2,
+    [
+     -5.5,
+     -0.9
+    ],
+    176
+   ],
+   "top5": 66.9,
+   "top5_vs_launch_model": [
+    -6.6,
+    [
+     -9.0,
+     -4.2
+    ],
+    176
+   ],
+   "top5_vs_gbm_psx": [
+    -0.7,
+    [
+     -2.0,
+     0.7
+    ],
+    176
+   ],
+   "top10": 76.3,
+   "top10_vs_launch_model": [
+    -4.7,
+    [
+     -6.1,
+     -3.2
+    ],
+    144
+   ],
+   "top10_vs_gbm_psx": [
+    -0.0,
+    [
+     -0.7,
+     0.7
+    ],
+    144
+   ],
+   "loglik_per_launch": -17.805
+  }
+ },
+ "glm_rates_last_month": {
+  "2026-10 glm_none": {
+   "pool_a": 0.6931,
+   "conv_maker_ph_per_1k": 0.2094,
+   "conv_hunter_ph_per_1k": 0.2745,
+   "conv_maker_x_per_1k": 0.0043,
+   "conv_company_x_per_1k": 0.0288,
+   "conv_promo_per_1k": 0.0816,
+   "browse_base": 122.3672
+  },
+  "2026-10 glm_psx": {
+   "pool_a": 1.2688,
+   "conv_maker_ph_per_1k": 0.2595,
+   "conv_hunter_ph_per_1k": 0.1866,
+   "conv_maker_x_per_1k": 0.0245,
+   "conv_company_x_per_1k": 0.0531,
+   "conv_promo_per_1k": 0.0453,
+   "browse_base": 88.5917
+  },
+  "2026-10 glm_psa": {
+   "pool_a": 1.4892,
+   "conv_maker_ph_per_1k": 0.2881,
+   "conv_hunter_ph_per_1k": 0.1956,
+   "conv_maker_x_per_1k": 0.0175,
+   "conv_company_x_per_1k": 0.0429,
+   "conv_promo_per_1k": 0.0501,
+   "browse_base": 81.5267
+  },
+  "2026-10 glm_pna": {
+   "pool_a": 1.3196,
+   "conv_maker_ph_per_1k": 0.1723,
+   "conv_hunter_ph_per_1k": 0.2032,
+   "conv_maker_x_per_1k": 0.0033,
+   "conv_company_x_per_1k": 0.0229,
+   "conv_promo_per_1k": 0.0772,
+   "browse_base": 83.9968
+  }
+ }
+}
