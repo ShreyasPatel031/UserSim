@@ -270,3 +270,6 @@ Model switches, direction reviews and agenda changes, newest last.
     - Daily gain: none (a settings effect).
   - Both shadows are in the pending bundle (5056c7f), which waits on Shreyas.
 - 12:04 UTC Shadow bundle 20261102_shadow staged by the PH agent on Shreyas's approval (in its session); request mailbox/to_grokbot/20261102_shadow_deploy.md. Shadows e1v2 + daycal live from the Nov 3 run if deployed before 00:05 PT.
+- 12:06 UTC Competitor grounding vs the day-calibrated control (commit 9d99024; coverage 46.6% / 56.0%).
+  - Daily top 5: −1.2 [−2.0, −0.6]. Weekly top 3: −4.0 [−9.3, 0.0]. Hurts or does nothing on every list.
+  - Kept out of the forecast. It stays an internal tool.
