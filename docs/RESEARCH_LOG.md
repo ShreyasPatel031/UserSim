@@ -126,3 +126,13 @@ Model switches, direction reviews and agenda changes, newest last.
 - 06:33 UTC: mailbox checked. Recorder v5 deployed 05:38 UTC (~1.6 req/min, 15-min backoff); v4 had 3 fallback windows in 3.5 h, /newest p1 ~100%. Pre-launch X engagers: 450 posts, 137 engager rows so far; 42 launches complete; ~650 calls for all of Oct 1-25, about one more day of budget. Both in progress; no follow-ups due.
 - 06:53 UTC: E5 hand-off: psg_ (all-months hand model) and psv_ (ensemble with net) launch features in usersim_sim/tmp/e5/features/. Sim-only, pool sum: psg_ 55.4/63.7/73.5, pool Spearman 0.587; psv_ weaker (top 5 -2.3 [-4.5,-0.1]); net alone 46.4/54.0/67.8. The net's person-level edge does not survive pooling. Sweep skipped; E5 writes its final report and stops exp-2. psg_ passed to the PH agent for pre-launch top 3/5/10.
 - 06:55 UTC: E5 closed. exp-2 stopped 06:58 UTC. Final report experiments/simlab/reports/two_tower.md on claude/person-model-v2. Infra lessons: fork after LightGBM/torch in the parent deadlocks OpenMP (use spawn workers); waiters that pgrep for a pattern in their own command line never fire.
+
+## 2026-11-02 07:00 UTC
+- HN live, provisional, Caught at 15 min (Oct 31–Nov 1, 1,388 posts, 40 winners, no list day settled): votes at 15 min
+  15.0% [8.0, 26.7]; odds tool 10.0%; blend 10.0%. The recorder saw only 47.8% of posts inside 15 min (before the
+  always-on v5 recorder), so the live number is capped by coverage, not the model. Recorder fixes by the HN agent:
+  listwatch2 retries refused pages and re-reads the 3 previous days so lists settle. Re-scored daily 00:47 UTC.
+- PH agent scoring E5's psg_/psv_ on pre-launch daily top 3/5/10 (exp-1 started 06:54).
+- Pre-launch X engagers growing (prelaunch_engagers.jsonl 678 KB at 06:57); PH agent re-scores per batch.
+- Spend readout 22:41 PT Nov 1: $35.32 so far; Vertex metered project-wide $15.75 (7-day avg $50.52/day) is the
+  largest line. exp-2 stopped 06:58 UTC.
