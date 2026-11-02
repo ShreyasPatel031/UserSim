@@ -446,3 +446,24 @@ f.sort_values("sim").to_csv("promoted_name_margin.csv", index=False)
 (Promoted handles without an X profile have no `x_name` there; take the name from `x_lookup.json`.)
 
 **Use of v3f:** usable now for work that does not depend on dates of X profile rows. For any time-split use, exclude the 29 shard profiles until v3g, or wait for it. The 53 promotions stay "adopted, provisional" until the margin list is reviewed.
+
+## people_v3g (f88add97): checked
+
+**Checked against the committed files** (`docs/people_v3g_results/`; not recomputed from raw data). v3g keeps the v3f counts (persons 20,947, handles 46,998, profiles 26,401, events 310,200;
+`build_report.json` identical apart from `built_at`), 41 of 41 checks pass, and `validation_v3.json` equals v3f's except `profiles_dated_share` 0.636 to 0.637, which is exactly the 29 rows that
+moved from `upper_bound` to `fetched` (29 / 26,401 = 0.0011). The events table is identical to v3f. The delta file shows the only data change: the 29 promoted X profiles go from
+`observed_on 2026-10-28 (upper_bound)` to `2026-11-02 (fetched)`. (The "3,015 profiles with changed observed_on" line is a raw null-versus-null comparison artefact; the null-aware count is 29.)
+The builder code used is `b02e9649`, my fix, and Data Feeder reports its 11 tests pass.
+
+**One remaining wrinkle, minor:** the shard rows have no per-row time, so all 29 get the shard's GCS upload time (2026-11-02T08:48:35Z), recorded as `fetched_at_source=shard_upload_time`. The scrape ran
+about 08:40-08:48Z, so the stamp is at most about 8 minutes late. That errs in the safe direction for as-of use, but the quality label says `fetched` where it is strictly an upper bound at the minute level;
+immaterial at day granularity.
+
+**Verdict:** v3g supersedes v3f and is the current best build. The date problem I found is fixed. Still open from before: the hand-check of the 53 promotions by name margin (script in the v3e/v3f section),
+labelling segments (dropped), and the personal-versus-company question for X handles.
+
+**Unrelated code on this branch.** Commit `8e641102` (Grok Bot, "ph_upvotes: following mode ... daily people refresh runner") adds 8 files under `experiments/pipeline/ph_upvotes/`: a route-4 scraper of PH
+`/@user/upvotes` and `/following` pages and scripts that create a GCE VM, run it, and delete it. It is not part of this review and sits in a docs PR; I only skimmed it. Things for Shreyas to decide:
+(1) it belongs in its own PR; (2) `PROXY_URL` is passed as instance metadata (`--metadata=...proxy="$PROXY_URL"`), which anyone with read access to the VM or project can see, so use Secret Manager at runtime instead,
+and the proxy password is already on the rotation list; (3) `run_daily.sh` is proposed as a daily routine with caps of $0.3 (upvotes) and $4.0 (following) per run, up to about $130 a month if it runs every day,
+which needs explicit approval; (4) volume and the sites' terms: anonymous residential-proxy scraping of PH profile pages at daily scale is a different level from the low-volume, cached use assumed in the ladder docs.
