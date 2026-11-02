@@ -49,8 +49,11 @@ def main():
     # provisional labels
     L = pd.concat([pd.read_json(__import__("io").StringIO(x.download_as_text()), lines=True, dtype={"day": str}, convert_dates=False)
                    for x in LC.S._bucket().list_blobs(prefix="usersim_sim/hn_jobs/cache/listwatch/")])
-    latest = L.sort_values("read_at").groupby("day").read_at.max()
-    top = {d: set(g[(g.read_at == latest[d]) & (g["rank"] <= 30)].post_id) for d, g in L.groupby("day")}
+    # reads sometimes miss pages (HN refuses some requests): use each day's latest read that has the whole top 30
+    full = L[L["rank"] <= 30].groupby(["day", "read_at"]).size()
+    full = full[full >= 30].reset_index()
+    latest = full.groupby("day").read_at.max()
+    top = {d: set(L[(L.day == d) & (L.read_at == latest[d]) & (L["rank"] <= 30)].post_id) for d in latest.index}
     settled = {d for d in latest.index if latest[d] >= pd.Timestamp(d, tz="UTC").timestamp() + 86400 + 48 * 3600}
     days_after = lambda d: [(pd.Timestamp(d) + pd.Timedelta(days=k)).strftime("%Y-%m-%d") for k in range(4)]
     P["y"] = [int(any(pid in top.get(x, ()) for x in days_after(d))) for pid, d in zip(P.post_id, P.day)]
