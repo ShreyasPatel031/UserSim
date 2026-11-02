@@ -317,3 +317,8 @@ Model switches, direction reviews and agenda changes, newest last.
   - Late risers are seen outside HN 10% of the time vs 6% of non-winners. No X spec.
   - Requested a Fable direction review for the HN agent via Grok Bot (20261102T1235_hn_fable_review).
 - 12:40 UTC shadow2 deployed 12:31 (verified). Bundle 3 (honest model, at_launch + backfill, E1 v2 shadow off) approved by Shreyas in the PH agent's session and staged (deploy/20261102_b3). The Nov 3 run is the first honest live forecast if b3 deploys before 00:05 PT.
+- 12:45 UTC E5 honest E1 retrain (e1_honest.md): nothing adds daily value over day calibration.
+  - + pool: −1.3; + all honest inputs: −1.7.
+  - Day calibration is the only honest gain (weekly top 3 +5.3 [+1.3, +10.7]).
+  - The daily board needs new pre-launch shock data: at-launch follower counts (3–4 weeks), X engagement full days
+    (the $20 top-up), makers' outreach.
