@@ -59,32 +59,36 @@ def feats_from_sightings(P, S, reads, a=15):
 
 
 def odds_at_posting(P):
-    """The odds tool's at-posting P(top 30), cached per post (run in its own process: python live_oct.py odds <file>)."""
+    """The odds tool's at-posting P(top 30), cached per post. Each batch of 1,000 runs in a fresh process
+    (python live_oct.py odds <file>): memory grows across OL.score calls inside one process."""
+    import subprocess
+    import sys
     path = os.path.join(H.CACHE, "odds_at_posting.parquet")
-    have = pd.read_parquet(path) if os.path.exists(path) else pd.DataFrame(columns=["post_id", "p_post"])
-    todo = P[~P.post_id.isin(have.post_id)]
-    if len(todo):
+    part = path + ".partial"
+    if os.path.exists(part):                          # keep work from an interrupted run
+        old = pd.read_parquet(part)
+        if os.path.exists(path):
+            old = pd.concat([pd.read_parquet(path), old])
+        old.drop_duplicates("post_id", keep="last").to_parquet(path, index=False)
+        os.remove(part)
+    while True:
+        have = pd.read_parquet(path) if os.path.exists(path) else pd.DataFrame(columns=["post_id", "p_post"])
+        todo = P[~P.post_id.isin(have.post_id)]
+        if todo.empty:
+            break
         tmp = os.path.join(H.CACHE, "odds_todo.parquet")
-        todo[["post_id", "title", "url", "author", "created_at_i", "text"]].to_parquet(tmp, index=False)
-        import subprocess
-        import sys
+        todo.head(1000)[["post_id", "title", "url", "author", "created_at_i", "text"]].to_parquet(tmp, index=False)
         subprocess.run([sys.executable, "-W", "ignore", __file__, "odds", tmp], check=True)
-        have = pd.read_parquet(path)
+        print(f"   odds at posting: {len(todo) - min(1000, len(todo))} left", flush=True)
+    have = pd.read_parquet(path)
     return P.post_id.map(have.drop_duplicates("post_id").set_index("post_id").p_post).to_numpy()
 
 
 def odds_batch(tmp):
     path = os.path.join(H.CACHE, "odds_at_posting.parquet")
-    P = pd.read_parquet(tmp)
-    out = []
-    for i in range(0, len(P), 1000):
-        R = P.iloc[i:i + 1000].reset_index(drop=True)
-        R = R.assign(url=R.url.fillna(""), title=R.title.fillna(""), text=R.text.fillna(""))
-        S = OL.score(R, now=0)
-        out.append(S[["post_id", "p_top30"]].rename(columns={"p_top30": "p_post"}))
-        print(f"   odds at posting: {min(i + 1000, len(P))}/{len(P)}", flush=True)
-        pd.concat(out).to_parquet(path + ".partial", index=False)
-    new = pd.concat(out)
+    R = pd.read_parquet(tmp).reset_index(drop=True)
+    R = R.assign(url=R.url.fillna(""), title=R.title.fillna(""), text=R.text.fillna(""))
+    new = OL.score(R, now=0)[["post_id", "p_top30"]].rename(columns={"p_top30": "p_post"})
     if os.path.exists(path):
         new = pd.concat([pd.read_parquet(path), new]).drop_duplicates("post_id", keep="last")
     new.to_parquet(path, index=False)
