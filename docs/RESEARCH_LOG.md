@@ -228,3 +228,12 @@ Model switches, direction reviews and agenda changes, newest last.
   - HN recorder: /newest p1 Nov 2 602/605 min (99.5%), 11 fallback windows today.
   - Budget readout (01:35 PT): ours ~$47.7/day on today's metered Vertex. exp-1 is the biggest VM ($1.07/h); it's
     stopped now, and no exp VM is running.
+- 10:47 UTC E1 v2 (E5, vote_model2.md on claude/person-model-v2). This is the first pre-launch gain over the launch model.
+  "off" = the launch model as an offset + a Poisson LightGBM correction (pool psa_, audiences, day term).
+  May–Oct, paired:
+  - Daily: 68.4/72.6/81.5 vs 66.7/73.5/81.0 (top 3 +1.7 [+0.2, +3.2]).
+  - Weekly: 53.3/60.0/57.8 vs 49.3/56.0/58.3 (top 5 +4.0 [+0.8, +7.2]).
+  - The gain comes from the day term. Per-maker conversion hurt (−2.1). 8 variants were compared, so confirm.
+  - Next:
+    - E5: month-by-month, 5 seeds, the pna_ pool, then package for the pipeline.
+    - PH agent: shadow-forecast slot, scored live from Nov 3.
