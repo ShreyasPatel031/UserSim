@@ -26,6 +26,10 @@ def need(df, cols, what):
 def honest():
     H = pd.read_parquet(os.environ.get("HONEST_PREDS", "results/honest_preds.parquet"))
     need(H, NEED_H, "honest predictions")
+    col = os.environ.get("HONEST_COL", "honest")   # "honest - live set": the live forecast's honest inputs (the reference, 62.7 / 70.4 / 76.6)
+    if col != "honest":
+        need(H, [col], "honest predictions")
+        H = H.drop(columns="honest").rename(columns={col: "honest"})
     H = H[NEED_H].copy(); H["id"] = H.id.astype(str)
     return H.drop_duplicates("id")
 

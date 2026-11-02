@@ -1360,3 +1360,27 @@ Same code, same pool simulation (popscore_tie), same folds (rolling monthly, Jun
 - The web-derived and follower-derived page inputs don't inflate the baseline (all within noise). Page content as a whole carries real ranking signal (−3.0 when dropped). Edits made after launch can't be separated from it in the backtest.
 - The live forecast doesn't use pf_ / ps_ / vs_, so the **baseline comparable with live scores is 62.7 / 70.4 / 76.6** (May–Oct). The page-aware honest model, 64.4 / 70.4 / 76.9, is an upper reference.
 - Going forward: `data/today/<day>.json` holds the name, tagline, description and media as fetched at 00:05 PT, so honest page snapshots accrue from Oct 25. llm_full should join the honest filter (its prompt carries follower counts).
+
+## C1: the product's existing user base before launch, GitHub stars + npm/PyPI downloads (Nov 2, `ph_predict/c1_user_base.py`)
+**Reference: the live forecast's honest set, day-calibrated (62.7 / 70.4 / 76.6 daily, May–Oct).** Data: Data Feeder's star history (raw/github_stargazers/star_history_ph_0000.jsonl: 732 repos, daily new stars from /stargazers/history; per-user star times are no longer public) and raw/pkg_downloads/ (draft). Only own repos and packages (a name token shared with the launch) are kept: 558 of 1,060. Every count is strictly before the launch's Pacific day.
+
+- **Coverage:** 255 launches with stars before launch and 96 with downloads; 5.7% of launches have either. By month: May 7.2%, Jun 8.0%, Jul 7.2%, Aug 9.8%, Sep 6.4%, Oct 9.4%.
+- **Gate** (Spearman with the honest residual, Holm-corrected across the 6 inputs). Within-day can't be read: only 11 days have 5+ covered launches.
+
+  | Input | Pooled over covered launches (95% CI) | Holm p |
+  |---|---|---|
+  | Stars as of day−1 | 0.117 (0.002, 0.226), 250 launches | 0.09 |
+  | **New stars in the 30 days before** | **0.165 (0.047, 0.277)** | **0.02, passes** |
+  | Repo age | 0.007 | 0.91 |
+  | **Downloads 7 / 30 / 90 days before** | **0.27 / 0.32 / 0.30** (CI ~0.10–0.49), 95 launches | **≤ 0.02, pass** |
+
+- **Boards**, control (62.7 / 70.4 / 76.6 daily; weekly 50.7 / 54.4 / 55.2; monthly 13.3 / 26.7 / 33.3) vs + C1, paired:
+
+  | | Trees | Linear arm |
+  |---|---|---|
+  | Daily | −0.2 / −0.2 / −0.1 | −0.4 / 0.0 / +0.1 |
+  | Weekly | −1.3 / −0.8 / +0.4 | 0.0 / 0.0 / 0.0 |
+  | Monthly | 0 / 0 / 0 | 0 / 0 / +1.7 |
+
+  All within noise.
+- **Reading:** a launch whose product already has users (recent stars, package downloads) beats the honest forecast, a real per-launch signal (+0.16 to +0.32). At 5.7% coverage it can't move a board, though. C1 is a valid input to keep (honest, dated), not a route to 90. Wider coverage would need other dated user-base records: Chrome Web Store and app-store counts via Wayback, Discord member counts, newsletter subscribers.
