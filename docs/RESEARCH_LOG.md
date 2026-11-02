@@ -256,3 +256,4 @@ Model switches, direction reviews and agenda changes, newest last.
     - PH agent: day-level calibration of the launch model for the weekly/monthly boards.
     - E5: frozen E1 v2 vs the same control.
 - 11:33 UTC E5: daily gain withdrawn (pool/audience has no established daily value). Weekly top 5 +3.2 = day rescaling alone. Weekly top 3 extra from pool/audience needs a 10-min paired run (E5 asking Shreyas). Main open lever for weekly: day-level calibration (PH agent).
+- 11:34 UTC: mailbox checked. Only routine HN recorder updates and the pna deploy reply (already verified). X full-days request waits on the user's $20 top-up approval; no follow-up needed.
