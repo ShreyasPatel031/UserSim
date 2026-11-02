@@ -13,8 +13,17 @@ Socrates, OSIM-8B.
 1. **Product Hunt: 90% on top 3 / 5 / 10** of the real leaderboard: **daily, weekly or monthly**, whichever we reach
    first. **Only the pre-launch forecast counts** (user, Nov 2). Launch-day forecasts are a tool for simulating the path
    from launch to end of day, never reported as north-star progress.
-   - Pre-launch, launch model, Jul–Oct, on the deduped data (Nov 2): daily 65.5 / 73.2 / 81.4; weekly 47.1 / 53.8 / 56.7;
-     monthly 44.4 / 50.0 / 52.5 (3–4 lists, too few to steer by).
+   - **Honest pre-launch baseline (Nov 2, honest.py):** launch model with every post-launch input dropped. That means
+     follower counts read after launch, plus follow lists read Oct 25 (undated; people follow makers after a good launch).
+     - Daily top 3/5/10: May–Oct 64.4 / 70.5 / 77.0; Jul–Oct 65.0 / 69.6 / 77.5.
+     - Lower bound if the promo reaction counts are also leaky: 62.7 / 70.6 / 77.2.
+     - Live launch model, Oct 27–Nov 1 (6 days): 61.1 / 70.0 / 81.7.
+     - Weekly and monthly honest baselines: pending.
+     - All north-star numbers are quoted against this baseline.
+   - Superseded (leaky; follow lists and late follower counts): daily 65.5–66.7 / 73.2–73.5 / 81.0–81.4; weekly
+     47.1–49.3 / 53.8–56.0 / 56.7–58.3.
+   - Candidates in shadow from Nov 3: day-level calibration (weekly top 3 +4.0 to +5.3 on the leaky baseline) and E1 v2
+     (weekly top 5 +3.2). Both are being re-checked against the honest baseline.
    - **Launch-day, daily, from archived intraday votes (Jul–Oct, Wayback, verified):** hours 4–8: 85.1 / 95.2 / 91.8;
      hours 8–12: **93.1 / 95.2 / 96.2**; hours 12–24: 96.7 / 97.3 / 97.8. Top 5 and 10 pass 90 from about hour 4–8;
      top 3 from about hour 11. Votes are hidden on the page for the first 4 hours.

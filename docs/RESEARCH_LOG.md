@@ -293,3 +293,9 @@ Model switches, direction reviews and agenda changes, newest last.
   - Coverage: 15 min 48% of posts (Nov 2 is the first full always-on day); 1 h 77%.
   - Oct archive misses at 15 min: late risers caught 17% and re-ups 23%, together 53% of winners.
   - Directions sent to the HN agent: /pool membership as a live re-up signal; a dedicated late-riser model.
+- 12:21 UTC HONESTY CHECK (PH agent, honest.py): the launch-model baseline used post-launch inputs.
+  - Late follower counts: small effect.
+  - Undated follow lists read Oct 25 (fol_/seg_): −2.1 / −3.1 / −4.0.
+  - Honest pre-launch daily baseline: May–Oct 64.4/70.5/77.0; Jul–Oct 65.0/69.6/77.5 (was 66.5/73.6/81.0).
+  - Live Oct 27–Nov 1: 61.1/70.0/81.7 (6 days).
+  - RESEARCH_PROGRAM.md updated. Day calibration and E1 being re-run against the honest baseline.
