@@ -1,5 +1,7 @@
 # Direction review, Nov 2, 2026 (Fable, at Shreyas's request)
 
+Companion review (orchestrator session, same day): `docs/reviews/2026-11-02_direction_review.md` on `claude/cool-volta-l5nuo4`. Merged plan: E0 first, then the generative vote model (E1 there).
+
 Scope: the Product Hunt work against north star 1 (competitor grounding raises predictive value; then 90% daily top
 3 / 5 / 10). Sources: `docs/HISTORY.md`, `experiments/simlab/reports/overnight_1030.md` (Nov 1 sections),
 `path_to_90.md`. Every number below is from those logs.
