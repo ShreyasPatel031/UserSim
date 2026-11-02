@@ -687,3 +687,40 @@ so they are not reported as an effect.
   audiences are visible.
 - Next step for this north-star clause: use the PH lists to bring in those competitors' audiences (their PH followers
   and reviewers, who are real people with dated activity). Otherwise grounding stays limited to the 38% we can see.
+
+## E0: where the simulation's error lives (Nov 2, `simlab/e0_shock.py`, pnr, Apr–Oct, 5,081 launches)
+**1. Overdispersion.** Per launch, real pool voters R vs the simulation's expected pool picks S, log ratio with the
+day's mean removed.
+- Observed variance: 0.588.
+- Expected if each person's error were independent (≈ Poisson around S): 0.056.
+- So **90.5% of the error is a shock shared by a launch's whole audience**, not noise in individual people.
+- The simulation ranks the pool's own votes at Spearman 0.478 within day.
+
+**2. Early-sample oracle** (Jul–Oct, 20 random splits, day-clustered paired intervals).
+- Setup: a random 10% of each launch's real pool voters is revealed, as a stand-in for early votes.
+- Scale: the pool casts 35% of all votes, so this is about 3.5% of a launch's votes. A median launch has 26 pool
+  voters, a top-3 launch 158.
+
+| Predictor | Spearman, held-out pool votes | Daily top 3 / 5 / 10 (final rank) |
+|---|---|---|
+| Simulation only (no launch-day data) | 0.486 | 49.4 / 61.9 / 72.0 |
+| 10% sample only | 0.745 | 83.0 / 86.0 / 81.8 |
+| Simulation × shock from the sample (shrinkage a = 1, fitted Apr–Jun) | 0.747 | 83.3 / 86.0 / 82.0 |
+
+- Shock-corrected − simulation: top 3 +33.9 (+29.8 to +37.9); top 5 +24.1 (+20.6 to +27.6); top 10 +10.0 (+8.0 to
+  +12.2).
+- Shock-corrected − sample: top 3 +0.3 (−0.2 to +0.7). Once a sample of real voters is known, the simulation adds
+  nothing to the ranking.
+
+**Reading:**
+- The gap between the simulation and the real ranking is almost entirely a per-launch shock (makers' outreach,
+  launch-day momentum).
+- A small sample of who actually showed up reveals it: 3.5% of votes gives 83% daily top 3.
+- Caveat: the oracle sample is random across the whole day. Real early votes are not random (they lean to the
+  team's network) and come before the late surge, so this is an optimistic proxy for hour-1/2 votes.
+- Implications:
+  1. The launch-day forecast (direction A) is where the largest gain is, and the comment-trajectory backtest (E1 in
+     the PH review) should run next with real early comments instead of a random sample.
+  2. Pre-launch gains have to predict the shock itself (direction B: makers' outside audiences, promotion, team
+     turnout as a launch-level input). Better person models of the pool cannot.
+  3. For the generative vote model (orchestrator's E1), the shock term is the component to model first.
