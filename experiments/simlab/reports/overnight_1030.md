@@ -780,3 +780,51 @@ Setup:
   more weakly than votes would. A top-3 launch has about 158 pool voters but only a few comments by hour 2.
 - **Next:** the same model on hourly vote snapshots (Nov 2 onward; 7 days by Nov 9), side by side with this comment
   curve. If votes behave like E0's sample, daily top 3 crosses 80 within the first hours.
+
+## Predicting the shock before launch (Nov 2, `simlab/shock_model.py`, pnr pool simulation)
+**Target:** the per-launch shock from E0, log((real pool voters + 1) / (simulated pool picks + 1)), with the day's mean
+removed.
+
+**Stage 1: shock from pre-launch inputs only**
+- Inputs: the launch model's inputs plus new launch-level turnout features.
+- Method: rolling monthly, May–Oct, 3 seeds.
+- Within-day Spearman with the real shock: **0.49**. R² 0.009, because the shock has heavy tails across days; within
+  day the ranking is what counts.
+- Loss in Spearman when each group is dropped:
+
+  | Group | Loss |
+  |---|---|
+  | `ph_` audience counts (makers' and hunter's followers, team size) | 0.054 |
+  | `pf_` page facts | 0.033 |
+  | `seg_` follower segments | 0.015 |
+  | `hist_` track record | 0.015 |
+  | `llm_` | 0.015 |
+  | `ps_` page scores | 0.013 |
+  | `fol_` pool follows | 0.011 |
+  | turnout (new) | 0.011 |
+  | `x_` | 0.010 |
+  | `promo_` | 0.006 |
+  | `vs_` video | 0.004 |
+
+- Data note: stage 1 had 5,181 rows for 5,081 launches (duplicated IDs from a merge). The stage-2 file is unique
+  (3,152 launches). To fix on the next run.
+
+**Stage 2: forecast built from the simulation, Jun–Oct, top 3 / 5 / 10**
+
+| | Daily (145 / 145 / 121) | Weekly (21 / 21 / 19) | Monthly (4–5) |
+|---|---|---|---|
+| Launch model | 65.3 / 73.1 / 81.5 | 49.2 / 57.1 / 56.8 | 58.3 / 52.0 / 52.0 |
+| Simulation alone (pool picks, no audience inputs) | 45.3 / 58.3 / 69.5 | 11.1 / 19.0 / 23.7 | 8.3 / 4.0 / 12.0 |
+| Simulation + predicted shock | 59.1 / 69.0 / 75.6 | 47.6 / 44.8 / 50.5 | 16.7 / 44.0 / 38.0 |
+| Simulation + true shock (ceiling) | **86.4 / 93.1 / 90.1** | 44.4 / 58.1 / 73.2 | 16.7 / 36.0 / 38.0 |
+
+- Predicted shock adds +13.8 to the simulation on daily top 3. It stays 6.2 below the launch model (−9.9 to −2.5).
+  The shock model draws on the launch model's inputs, so this row is not a simulation-only result.
+- **Ceiling:** with the shock known, daily top 5 is 93.1 and top 10 is 90.1, both above the target; top 3 is 86.4.
+  So predicting the shock is the whole problem on the daily board.
+- **Weekly ceiling is low** (44 / 58 / 73) because the shock here has the day's mean removed. Weekly needs a cross-day
+  version (the day-level shock, plus line-up strength).
+- **Where the shock signal is today:** audience counts first, then page facts, then track record. Turnout and X add a
+  little each. The pre-launch inputs explain the shock's within-day ranking at 0.49. Closing the rest needs inputs
+  that see the makers' outreach: X engagement (sample Nov 3), newsletters and communities, the competitor audiences
+  (data spec filed), and from Nov 9 the hour-1/2 votes as the launch-day reading.
