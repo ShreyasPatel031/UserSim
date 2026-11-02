@@ -191,3 +191,4 @@ Model switches, direction reviews and agenda changes, newest last.
   - Filed request 20261102T0845_x_prelaunch_fulldays: fix ph_gate.py day matching; fetch 10 whole launch days per
     (handle, launch) pair, top-up allowed (cap $10).
 - 08:47 UTC PH agent fetch order (tmp/ph_ops/x_fetch_order.json): 19 launches complete 5 days (Oct 5/10/23/24/25); added to the full-days request. ~50% of launches have no X handle.
+- 08:52 UTC PH daily Nov 2: pipeline ok (one run, lock works) except people step (PH profiles 0 since Oct 30). Nov 1 forecast top 3 2/3, top 5 3/5, top 10 8/10. Monday backtest launch-only 64.0/70.5/76.3. Spend $0.55. Asked Grok Bot whether the existing upvotes delivery covers profiles, else park.
