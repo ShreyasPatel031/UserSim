@@ -120,7 +120,7 @@ Quality News series exist only for posts that ended with 5+ points. Fitting how 
 - tau = 0 without a /newest denominator;
 - tau 0.05-0.2 with one.
 
-On outcome data the picture is different. Oct 2-9 weekdays, 4,524 posts, all with an outcome-independent Wayback /newest snapshot by 15 min:
+On outcome data the picture is different. Oct 2-9 weekdays, 4,474 posts, all with an outcome-independent Wayback /newest snapshot by 15 min:
 - Real top-30 reach rises from 4.0% (1 point) to 35.5% (4+ points).
 - With the QN-fitted weight, the simulator's reach is flat across those bins at 13-15%.
 - Fitting the same likelihood by the per-post binomial likelihood of real reach instead gives tau ≈ 0.3, with a steep response.
