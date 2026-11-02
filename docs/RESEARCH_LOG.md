@@ -216,3 +216,9 @@ Model switches, direction reviews and agenda changes, newest last.
   - Raw launch model 66.7/73.5/81.0; refit alone 66.1/74.1/80.4.
   - + competitors 65.0/72.7/79.8; + pna 64.6/72.7/80.4; + both 65.0/72.8/80.6.
   - All within noise vs refit. No change to the pre-launch headline.
+- 10:29 UTC E1 v1 (E5, vote_model.py, claude/person-model-v2), pre-launch, May–Oct, 3,977 launches.
+  - Daily, E1 + psa_: 57.8/68.4/77.0. Launch model alone: 66.7/73.5/81.0 (−8.9 top 3).
+  - Weekly: 18.7/25.6/42.2 vs 49.3/56.0/58.3.
+  - Inside E1 the pool helps: +2.8 top 3; log-lik +0.91/launch.
+  - psa_ is the best pool source; pna_ is weaker (−3.2 top 3 vs psx_).
+  - Next, v2: launch-model inputs as conversion modifiers + day total; per-maker/hunter conversion with a first-timer prior.
