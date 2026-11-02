@@ -848,3 +848,16 @@ Daily new-star counts (GitHub made starred_at admin-only in July 2026); days bef
 data on Oct 2-14: winners fast 2/181, late 3/145, re-up 1/62; non-winners 1,126. Caught at 15 min 29.6% -> 28.4%,
 -1.3 [-2.9, +0.5]; GitHub-linked posts only (1,132, 6 winners): 1/6 -> 2/6. Rerun when the pull completes (the big
 repos come last).
+
+### CORRECTION (2026-11-02 ~23:00 UTC): exposure inputs were empty (pandas 3 timestamp bug; found by E5)
+wb15.expo15 converted capture times with astype("int64") // 10**9, which under pandas 3 gives microseconds / 1e9, so no
+capture fell in any post's window: x_caps = 0 and every exposure input was NaN except posts-in-the-30-min-before and
+hour. Fixed (pushed). Rerun, Oct 2-14, 388 winners:
+| Caught at 15 min | all days | 90%+ coverage days |
+|---|---|---|
+| + votes + who | 28.4% [23.6, 33.0] | 29.3% |
+| + votes + who + exposure (fixed) | 28.1% [24.1, 32.5], -0.3 [-1.7, +1.3] vs votes + who | 29.3%, +0.0 [-1.4, +1.5] |
+| + votes + who + posts in the 30 min before + hour (what the earlier "29.6%" actually used) | 29.6% [25.4, 33.4], +1.3 [-1.0, +3.7] | 30.0% |
+Exposure from Wayback captures (~10 min apart) adds nothing; the earlier gain was posting volume and hour. Results that
+used expo15 are being rerun: gap15 (26.5%), wb_reup (35.6% exposure clock), wb_gh, wb15_seeds; live_oct had the
+same bug (no result had been reported). Live per-minute exposure (direction A) is still tested from Nov 5.
