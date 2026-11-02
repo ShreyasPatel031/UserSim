@@ -269,3 +269,4 @@ Model switches, direction reviews and agenda changes, newest last.
     - Weekly top 5 +3.2 [+0.8, +6.4], at every setting. This is the only measured gain from pool + audiences.
     - Daily gain: none (a settings effect).
   - Both shadows are in the pending bundle (5056c7f), which waits on Shreyas.
+- 12:04 UTC Shadow bundle 20261102_shadow staged by the PH agent on Shreyas's approval (in its session); request mailbox/to_grokbot/20261102_shadow_deploy.md. Shadows e1v2 + daycal live from the Nov 3 run if deployed before 00:05 PT.
