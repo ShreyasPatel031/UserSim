@@ -1185,3 +1185,4 @@ Setup:
 
 - None of the inputs beats the control; all intervals span 0 except vs the raw launch model on top 10 (+ competitors −1.2, −2.2 to −0.2).
 - The pre-launch headline stays the raw launch model: 66.7 / 73.5 / 81.0.
+- **Deployed Nov 2, 11:06 UTC (Grok Bot), verified by PH ops:** bundle 20261102_pna. Model and pnx_features md5 match the bundle, 4,877 entries; popscore has TRAIN_ALL; backup at ~/w/backup_20261102_pna/before.tar; recorder untouched. The live simulation uses the pna_ model from the Nov 3 run.
