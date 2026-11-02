@@ -748,3 +748,17 @@ Nov 1 53.2%; recorder minutes front / newest / pool: Oct 31 930 / 306 / 307, Nov
 Snapshot age median 10-11 min (Wayback captures every ~10 min), so the votes seen are ~4 min short of 15.
 Late risers and re-ups (53% of winners) look like non-winners on /newest at 15 min (median 1 point; 12% / 4% with
 3+ vs 7% of non-winners). Fast winners do separate (35% with 3+), but 763 non-winners also have 3+ points by then.
+
+### Live pipeline with per-minute vote features (live15.py; PROVISIONAL, posts Oct 31 02:13 - Nov 1, 40 winners so far)
+Per-minute features at 15 min and 1 h: points, comments, minute of the 2nd / 3rd / 5th vote, votes per minute, front-page
+entry time / best position / minutes on it, last /newest position and push-down rate. Saved each run
+(out/live_minute_feats.parquet); a leave-one-day-out model on them + the at-posting odds switches on at 5 posting days.
+| Live, provisional | all posts | seen by the recorder only |
+|---|---|---|
+| 1 h, votes + front page | 32.5% [24.0, 46.7] (13/40) | 39.4% (13/33 seen) |
+| 1 h, odds at posting | 10.0% | 9.1% |
+| 1 h, blend 50/50 | 27.5% | 30.3% |
+| 15 min, votes + front page | 15.0% [8.0, 26.7] (6/40) | 20.0% (3/15 seen) |
+| 15 min, odds at posting | 10.0% | 6.7% |
+Coverage: seen within 1 h 77.4% of posts (Oct 31 80.6%, Nov 1 74.6%), 33/40 winners; within 15 min 47.8%, 15/40.
+Recorder minutes Nov 2: front 1,807 / newest 830 (always-on VM). Two days, 40 winners: too few to read.
