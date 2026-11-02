@@ -18,8 +18,10 @@ Socrates, OSIM-8B.
      top 3 from about hour 11. Votes are hidden on the page for the first 4 hours.
 
 2. **Hacker News: Caught per post, 80%.** Every post judged once; winners are posts that ever make a daily top 30; we
-   flag as many as there are winners; Caught = winners flagged / winners. Measured at 1 h, 15 min and at posting
-   (push 1 h first). Now: 47.2% / 24.7% / 23.2%.
+   flag as many as there are winners; Caught = winners flagged / winners. **Push the 15-minute checkpoint** (user,
+   Nov 2), using honest early votes from the October /newest archive and live hn_minute; 1 h is also reported.
+   At posting is reported as a calibrated probability from the odds tool, not an 80% catch target.
+   Now: 1 h 47.2%, 15 min 24.7%, at posting 23.2%.
 
 Everything else (competitor grounding, person-level accuracy, pairwise and competitor-pair accuracy, pool-vote
 correlation) is an internal tool: used to decide what to build, never reported as progress.
