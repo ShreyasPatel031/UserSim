@@ -1062,3 +1062,28 @@ Daily numbers here mix captured and uncaptured days. On captured days alone, vot
 - **Next:**
   - Whether the API exposes votes before hour 4. The Nov 2 run answers it.
   - The same model on live hourly snapshots: full coverage, every launch, every hour, from Nov 2.
+
+## Pre-launch only (Shreyas, Nov 2: launch-day forecasts don't count toward the north star; launch-day work is a tool)
+### Early trajectory as an extra training target (`trajectory_target.py`, Aug–Oct)
+Setup:
+- Target: early speed = log votes at a Wayback capture (hours 4–12) minus log hours, within day; 1,045 past launches.
+- Learned from the launch-model inputs only (pre-launch), trained on earlier months.
+
+Results:
+- **The launch model already predicts held-out early speed better** (within-day Spearman 0.686) than a model trained on
+  early speed itself (0.619).
+- Rank blend of the two vs the launch model, daily top 3 / 5 / 10: 62.4 / 71.2 / 79.2 vs 65.1 / 71.6 / 80.5 (top 3
+  −2.7, −6.6 to +1.2).
+- Weekly (12 weeks): top 5 −13.3 (−20.0 to −5.0).
+- The stacked variant produced no scores: the trajectory data starts in July, so its first test month had no
+  training rows.
+- **Verdict:** no gain. The early trajectory carries no information the pre-launch inputs lack.
+
+### X launch-post engagement, PARTIAL (`x_engagement_test.py`; Oct 1–25, engagers for 22 launches)
+- Of 33 X engagers (reposters, quoters, repliers) matched to Product Hunt people by the profile's X handle, **66.7%
+  voted on that launch** (95% CI 50.6–82.8%). The same people voted on each other launch that day at 1.4%: a 47× lift.
+- 37.9% of October voters have an X handle on their profile.
+- Pre-launch use: only 27 posts on 21 launches are dated before 00:00 PT on launch day, so it is not measurable yet.
+  Engagement counts were read at fetch time, so day-0 posts can't count as pre-launch.
+- **Reading:** X engagement with the launch post marks real voters strongly. As a pre-launch input it needs posts
+  before launch day: teasers, "launching tomorrow". Those are rare in this batch.
