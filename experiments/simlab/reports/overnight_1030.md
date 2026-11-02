@@ -1000,3 +1000,28 @@ Spearman 0.248 (223 launches); hunter 0.02 (1,583).
     is kept as `.bak_dupes`.
   - The warehouse `vote_snapshots` rows stay doubled (append-only). The read rule is documented in
     `pipeline/DATA.md`.
+
+## Baselines re-scored on deduplicated data (Nov 2, 04:40 UTC)
+**Repair on exp-1:**
+- `dedupe_days.py`: 5 day files, 204 launches removed.
+- `simlab.fix_store_days`: 204 store items moved to their featuredAt day, and their 1,266 upvote events re-dated.
+- Build cache rebuilt; `ctrl.py` re-run (5 seeds, Mar–Oct).
+- Launch-model predictions: 5,564 rows for 5,564 launches; before, 5,768 rows.
+
+**Launch model, top 3 / 5 / 10, before → after** (scored against the corrected ranks):
+
+| Board | Mar–Oct before | Mar–Oct after | Jul–Oct before | Jul–Oct after (paired Δ, 95% CI) |
+|---|---|---|---|---|
+| Daily | 62.6 / 71.1 / 79.3 | 63.4 / 71.4 / 79.5 | 65.5 / 73.0 / 80.9 | **65.5 / 73.2 / 81.4** (top 3 +0.0, −1.7 to +1.7; top 10 +0.5, +0.1 to +1.0) |
+| Weekly | 50.5 / 53.9 / 55.7 | 49.5 / 52.7 / 55.5 | 51.0 / 55.0 / 56.7 | 47.1 / 53.8 / 56.7 (top 3 −3.9, −9.8 to +0.0) |
+| Monthly | 38.1 / 40.0 / 46.2 | 28.6 / 37.5 / 45.0 | 55.6 / 50.0 / 57.5 | 44.4 / 50.0 / 52.5 (3–4 lists) |
+
+**Reading:**
+- Daily is unchanged within noise.
+- The weekly and monthly moves fall inside their wide intervals (17 weeks, 3–4 months). They also include a small
+  data refresh since the Oct 31 run: PR #143's `ctx_features` (288 values changed).
+- **Footnote for every earlier number in this log:** earlier numbers include the 204 duplicates. Daily headlines stand
+  (Jul–Oct 65.5 / 73.2 / 81.4 now vs 65.8 / 72.9 / 80.8 quoted). Weekly and monthly baselines are now 47.1 / 53.8 /
+  56.7 and 44.4 / 50.0 / 52.5 (Jul–Oct).
+- Simulation runs (popscore day files) were not rescored. They still hold the 204 extra rows; analyses since
+  `shock_model` drop them with `dedupe()`.
