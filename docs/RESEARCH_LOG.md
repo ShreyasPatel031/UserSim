@@ -501,3 +501,4 @@ Model switches, direction reviews and agenda changes, newest last.
     14:00), Jul–Aug (~Nov 7). No denser outcome-independent /newest source exists for Sep 2026.
   - Visibility pilot (2140) report still pending. A1 crawl at 2.8 MB.
 - 23:40 UTC Follow-up added to 2140 (visibility pilot, 'now' priority, 90 min, no report): asked for the upvoter-list answer first.
+- 23:36 UTC HN GitHub stars, first rerun (near-complete files, Oct 2–14): 28.1% → 29.1%, +1.0 [−0.5, +2.4]; on GitHub-linked posts 4/28 → 7/28 winners. Final run on deduped files, prior-day counts, vs 28.4%, queued behind live_oct and the E5 export. HN agent declines the QN-reconstructed Sep score for Caught (fills the low tail from final scores); builds the 2025+ 15-min training set as Wayback months land.
