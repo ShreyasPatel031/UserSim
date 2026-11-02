@@ -62,6 +62,14 @@ def main(posts_p, eng_p, pool_p):
     for (h, ld), v in hp.items():
         if all(r.get("posts_complete", True) for r in v) and all(r.get("engagers_fetched", True) for r in v if engaged(r)):
             fetched_days[h].add(ld)
+    if os.environ.get("XGATE"):   # explicit complete (handle, launch day) list from the fetch job's state (flags in the files lag)
+        fetched_days = defaultdict(set)
+        for h, ld in json.load(open(os.environ["XGATE"])):
+            fetched_days[h.lower()].add(ld[:10])
+    if os.environ.get("XLOOKUP"):  # drop handles X reports as not found or suspended
+        LK = json.load(open(os.environ["XLOOKUP"]))
+        dead = {k.lower() for k, v in LK.items() if isinstance(v, dict) and (v.get("status") or ("ok" if v.get("exists", True) else "")) not in ("ok", "exists", "active")}
+        x2ph = {k: v for k, v in x2ph.items() if k not in dead}
     fetched = set(fetched_days)
     post_at = {str(r.get("post_id")): (r.get("post_at") or r.get("posted_at") or "")[:10] for r in posts}
     post_ld = {str(r.get("post_id")): (r.get("launch_day") or "")[:10] for r in posts}

@@ -1128,3 +1128,10 @@ Setup:
 - Coverage gate: a handle-day counts only when its posts are complete and every post with any engagement has its engagers fetched. Now: 17 handle-days, **16 covered launches** (727 complete posts still lack engager lists).
 - Added turnout inputs (distinct pre-launch X engagers, engagers per post, posts) and their no-fit within-day Spearman with the launch model's residual (the shock). Only 4 days have 3+ covered launches, so these numbers mean nothing yet.
 - Launch-level top 3/5/10 vs the launch model is not run yet. It runs once there are ≥100 covered launches, then again with each batch.
+
+## Pre-launch X engagers, re-run at 07:07 UTC files (Nov 2)
+- Coverage gate: the posts_complete / engagers_fetched flags in the output files lag the fetch job. The gate now comes from the job's state.json (`XGATE`): groups fully paged, launch day Oct 5–23 (Oct 1 / g5 lists still queued), and no open engager list or reply batch. That gives 67 handle-days, which map to **51 covered launches** in the store; Grok Bot counts 152 by its own rule. Dead handles from raw/x_lookup/x_lookup.json (188 not found, 6 suspended) are dropped before matching (`XLOOKUP`).
+- Leakage filter: dropped 1,243 reposts (no time) and 100 replies or quotes posted after 00:00 PT on launch day.
+- **Person level:** 42 X-tied person-launch pairs (replied to or quoted a team post in the 30 days before launch). 45.2% voted on the launch (95% CI 30–60%), vs 1.2% on the same day's other launches: a 37× lift. This is the first person-level signal with real n.
+- **Turnout vs shock** (within-day Spearman with the launch model's residual, 7 days with 3+ covered launches): distinct engagers +0.04, per post +0.03, posts −0.05, X-tied PH people +0.11. No sign of a turnout signal yet; too few days to say more.
+- Launch-level top 3/5/10 is still not run (51 < 100 covered launches). It needs tomorrow's X quota (g8/9/11/12 posts, 316 lists).
