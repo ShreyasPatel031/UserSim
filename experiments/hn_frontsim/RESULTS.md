@@ -65,3 +65,17 @@ Code: `frontsim.py`. Numbers: `frontsim_results.json`.
 - Run the real-front-page variant on live hn_minute, which has the full front page every minute, for Nov 2 onward once the lists settle.
 - Calibrate the reach of the top 30, for example with a per-day threshold for the list.
 - Add the wb15 inputs (who commented, exposure) as quality-prior conditioning.
+
+## Re-paired against the corrected wb15 (Nov 2, later)
+
+The HN agent confirmed the pandas-3 timestamp bug in wb15's exposure features, which had all been NaN. The earlier 29.6% "exposure" column was in effect votes + who commented + posting volume + hour. After the fix, the clean reference is "+ votes + who": 28.4% [23.8, 33.0]. The simulator scores below are the same saved scores as above; this is `frontsim_vs_wb15_fixed.json`.
+
+| vs "+ votes + who" (28.4%) | all days | 90%+ coverage days |
+|---|---|---|
+| simulator alone | -5.7 [-9.3, -1.5] | -4.9 [-9.7, -0.3] |
+| equal logit blend | -1.3 [-3.5, +1.2] | -1.7 [-5.1, +1.8] |
+| forward blend | **+0.3 [-1.9, +2.4]** | -0.7 [-3.0, +1.3] |
+
+Against the fixed "+ votes + who + exposure" column (28.1%), the forward blend is -0.8 [-2.8, +1.1] and the equal blend -1.6 [-3.9, +0.8]. No interval is above 0, so the simulator adds nothing measurable yet.
+
+Next: the v2 fit on Quality News per-minute series (raw/hn_qn_series/, being pulled by Data Feeder). They give /new rank per minute, which is the missing /newest exposure denominator. Arrival rates will be fitted on the covered set (3+ points); coverage is outcome-correlated, so it must not be used as an input when scoring.
