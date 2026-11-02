@@ -26,22 +26,64 @@ import odds_live as OL
 rng = np.random.default_rng(0)
 
 
+AGES = (15, 60)
+MIN_DAYS_MODEL = 5          # a model trained on recorder data (leave-one-day-out) once this many posting days exist
+
+
+def minute_feats(P, Mi, a):
+    """Per-minute vote features at age a (minutes): points and comments, when the 2nd / 3rd / 5th vote was first seen,
+    votes per minute, front page (/news p1-3) entry time, best position and minutes on it, last /newest position and
+    how fast the post is pushed down /newest."""
+    w = Mi[(Mi.age >= 0) & (Mi.age <= a)].sort_values("t")
+    g = w.groupby("id")
+    out = pd.DataFrame(index=P.post_id)
+    out["seen"] = out.index.isin(g.size().index).astype(int)
+    out["pts"] = g.points.max().reindex(out.index).fillna(1)
+    out["cm"] = g.comments.max().reindex(out.index).fillna(0)
+    for k in (2, 3, 5):
+        out[f"t{k}"] = w[w.points >= k].groupby("id").age.min().reindex(out.index).fillna(a + 30)
+    out["rate"] = (out.pts - 1) / a
+    fr = w[w.list == "front"]
+    out["front_t"] = fr.groupby("id").age.min().reindex(out.index).fillna(a + 30)
+    out["front_best"] = fr.groupby("id").pos.min().reindex(out.index).fillna(999)
+    out["front_min"] = fr.groupby("id").t.nunique().reindex(out.index).fillna(0)
+    nw = w[w.list == "newest"]
+    lastn = nw.drop_duplicates("id", keep="last").set_index("id")
+    out["new_pos"] = lastn.pos.reindex(out.index)
+    out["new_push"] = (lastn.pos / lastn.age.clip(lower=1)).reindex(out.index)
+    out["new_seen_min"] = nw.groupby("id").t.nunique().reindex(out.index).fillna(0)
+    return out.reset_index(drop=True)
+
+
+def caught_line(T, name, out):
+    k = int(T.y.sum())
+    if k == 0:
+        return
+    T = T.assign(flag=T.s.rank(ascending=False, method="first") <= k)
+    per = T.groupby("day").apply(lambda x: pd.Series({"hit": int((x.flag & (x.y == 1)).sum()), "n": int(x.y.sum())}))
+    h, n = per.hit.to_numpy(), per.n.to_numpy()
+    bs = [h[i].sum() / max(n[i].sum(), 1) for i in (rng.integers(0, len(per), len(per)) for _ in range(2000))]
+    res = f"{h.sum() / max(n.sum(), 1):.1%} [{np.percentile(bs, 2.5):.1%}, {np.percentile(bs, 97.5):.1%}]"
+    out[name] = res
+    print(f"   {name:44s} {res}  (by day: " + ", ".join(f"{d} {a}/{b}" for d, a, b in zip(per.index, h, n)) + ")", flush=True)
+
+
 def main():
     M = LC.load_minute()
     cov = M.assign(day=pd.to_datetime(M.t, unit="s", utc=True).dt.strftime("%Y-%m-%d")).groupby(["day", "list"]).t.nunique().unstack()
     print("recorder minutes read per UTC day:\n" + cov.to_string(), flush=True)
     t_start, t_last = int(M.t.min()), int(M.t.max())
     P = OL.recent_history()
-    P = P[(P.created_at_i >= t_start) & (P.created_at_i <= t_last - 15 * 60)].reset_index(drop=True)
+    P = P[(P.created_at_i >= t_start) & (P.created_at_i <= t_last - 60 * 60)].reset_index(drop=True)
     P["day"] = pd.to_datetime(P.created_at_i, unit="s", utc=True).dt.strftime("%Y-%m-%d")
-    # inputs at 15 min
+    P = P[P.day < time.strftime("%Y-%m-%d", time.gmtime())].reset_index(drop=True)     # only posting days already over
+    # per-minute inputs at 15 min and 1 h (recorder sightings at or before created + age)
     Mi = M[M.id.isin(set(P.post_id))].merge(P[["post_id", "created_at_i"]].rename(columns={"post_id": "id"}), on="id")
-    w = Mi[(Mi.t >= Mi.created_at_i) & (Mi.t <= Mi.created_at_i + 15 * 60)].sort_values("t")
-    last = w.drop_duplicates("id", keep="last").set_index("id")
-    P["seen15"] = P.post_id.isin(last.index)
-    P["pts15"] = P.post_id.map(w.groupby("id").points.max()).fillna(1)
-    P["cm15"] = P.post_id.map(w.groupby("id").comments.max()).fillna(0)
-    P["front15"] = P.post_id.map(w[w.list == "front"].groupby("id").pos.min()).fillna(999)
+    Mi["age"] = (Mi.t - Mi.created_at_i) / 60
+    F = {age: minute_feats(P, Mi, age) for age in AGES}
+    P["seen15"] = F[15].seen.to_numpy().astype(bool)
+    P["seen60"] = F[60].seen.to_numpy().astype(bool)
+    P["pts15"], P["cm15"] = F[15].pts.to_numpy(), F[15].cm.to_numpy()
     # at-posting odds (deployed model), in batches
     S = OL.score(P[["post_id", "title", "url", "author", "created_at_i", "text"]].reset_index(drop=True), now=0)
     S = S.drop_duplicates("post_id").set_index("post_id")
@@ -59,31 +101,43 @@ def main():
     P["y"] = [int(any(pid in top.get(x, ()) for x in days_after(d))) for pid, d in zip(P.post_id, P.day)]
     P["lists_read"] = [sum(x in top for x in days_after(d)) for d in P.day]
     P["lists_settled"] = [sum(x in settled for x in days_after(d)) for d in P.day]
-    P = P[P.day < time.strftime("%Y-%m-%d", time.gmtime())]                # only posting days already over
     out = {"made_at": int(time.time()), "provisional": True, "posts": int(len(P)), "winners_so_far": int(P.y.sum()),
            "seen_by_15min": round(float(P.seen15.mean()), 3), "days": {}}
-    rk = lambda s: s.rank(pct=True)
-    scores = {"votes at 15 min": P.pts15 + P.cm15 * 1e-3, "at-posting odds": P.p_post.fillna(0),
-              "blend 50/50": 0.5 * rk(P.pts15 + P.cm15 * 1e-3) + 0.5 * rk(P.p_post.fillna(0))}
+    rk = lambda x: pd.Series(np.asarray(x, float)).rank(pct=True).to_numpy()
     for d, g in P.groupby("day"):
         out["days"][d] = {"posts": int(len(g)), "winners_so_far": int(g.y.sum()), "seen_by_15min": round(float(g.seen15.mean()), 3),
-                          "winners_seen_by_15min": int((g.seen15 & (g.y == 1)).sum()),
+                          "winners_seen_by_15min": int((g.seen15 & (g.y == 1)).sum()), "seen_by_1h": round(float(g.seen60.mean()), 3),
+                          "winners_seen_by_1h": int((g.seen60 & (g.y == 1)).sum()),
                           "list_days_read": int(g.lists_read.iat[0]), "list_days_settled": int(g.lists_settled.iat[0])}
-    print(f"PROVISIONAL live Caught at 15 min: {len(P)} posts, {int(P.y.sum())} winners so far, posting days "
-          f"{sorted(P.day.unique())}; seen by the recorder within 15 min: {P.seen15.mean():.1%}", flush=True)
-    for name, s in [(n, (s, None)) for n, s in scores.items()] + [(n + " | seen within 15 min only", (s, P.seen15.to_numpy())) for n, s in scores.items()]:
-        s, keep = s
-        T = P.assign(s=s.to_numpy())
-        if keep is not None:
-            T = T[keep]
-        k = int(T.y.sum())
-        T["flag"] = T.s.rank(ascending=False, method="first") <= k
-        per = T.groupby("day").apply(lambda x: pd.Series({"hit": int((x.flag & (x.y == 1)).sum()), "n": int(x.y.sum())}))
-        h, n = per.hit.to_numpy(), per.n.to_numpy()
-        bs = [h[i].sum() / max(n[i].sum(), 1) for i in (rng.integers(0, len(per), len(per)) for _ in range(2000))]
-        res = f"{h.sum() / max(n.sum(), 1):.1%} [{np.percentile(bs, 2.5):.1%}, {np.percentile(bs, 97.5):.1%}]"
-        out[name] = res
-        print(f"   {name:18s} {res}  (by day: " + ", ".join(f"{d} {a}/{b}" for d, a, b in zip(per.index, h, n)) + ")", flush=True)
+    keep_idx = P.index.to_numpy()
+    days = sorted(P.day.unique())
+    print(f"PROVISIONAL live Caught: {len(P)} posts, {int(P.y.sum())} winners so far, posting days {days}", flush=True)
+    for age, label in ((60, "1 h (checkpoint 1)"), (15, "15 min (checkpoint 2)")):
+        Fa = F[age].iloc[keep_idx].reset_index(drop=True)
+        T = P[["day", "y"]].reset_index(drop=True)
+        seen = Fa.seen.to_numpy() == 1
+        votes = Fa.pts.to_numpy() + 3 * (Fa.front_best.to_numpy() < 999) + Fa.cm.to_numpy() * 1e-3
+        odds = P.p_post.fillna(0).to_numpy()
+        scores = {"votes (+ front page)": votes, "at-posting odds": odds, "blend 50/50": 0.5 * rk(votes) + 0.5 * rk(odds)}
+        if len(days) >= MIN_DAYS_MODEL:                  # model on the recorder's own data, leave one posting day out
+            import lightgbm as lgb
+            X = pd.concat([Fa.drop(columns=["seen"]), pd.Series(odds, name="p_post")], axis=1)
+            sm = np.zeros(len(T))
+            for d in days:
+                te = (T.day == d).to_numpy()
+                sm[te] = lgb.LGBMClassifier(n_estimators=300, learning_rate=0.05, num_leaves=15, min_child_samples=20,
+                                            verbose=-1, random_state=0).fit(X[~te], T.y[~te]).predict_proba(X[te])[:, 1]
+            scores["model (per-minute + odds, leave one day out)"] = sm
+        else:
+            print(f"   [model on per-minute features: needs {MIN_DAYS_MODEL} posting days, have {len(days)}]", flush=True)
+        print(f"Caught at {label}: seen by the recorder within {age} min: {seen.mean():.1%} of posts, "
+              f"{int((seen & (T.y == 1).to_numpy()).sum())}/{int(T.y.sum())} winners", flush=True)
+        for name, sc in scores.items():
+            caught_line(T.assign(s=sc), f"{age} min | all posts | {name}", out)
+            caught_line(T[seen].assign(s=sc[seen]), f"{age} min | seen only | {name}", out)
+    feats = pd.concat([P[["post_id", "day", "y", "p_post"]].reset_index(drop=True)] +
+                      [F[a].iloc[keep_idx].reset_index(drop=True).add_prefix(f"m{a}_") for a in AGES], axis=1)
+    feats.to_parquet(os.path.join(os.path.dirname(__file__), "out", "live_minute_feats.parquet"), index=False)
     print(json.dumps(out["days"]), flush=True)
     path = os.path.join(os.path.dirname(__file__), "out", f"live15_{time.strftime('%Y-%m-%d', time.gmtime())}.json")
     json.dump(out, open(path, "w"), indent=1)
