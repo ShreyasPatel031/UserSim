@@ -161,3 +161,10 @@ Model switches, direction reviews and agenda changes, newest last.
 - 07:40 UTC PH X re-run (commit 4fb07ad): 51 covered launches (gate from state.json), not yet 100. Person level, 42
   X-tied pairs: 45.2% [30, 60] voted vs 1.2% other same-day launches (37x). Turnout vs launch-model residual, within-day
   Spearman over 7 days: distinct engagers +0.04, per post +0.03, X-tied PH people +0.11. Asked Grok Bot to fix the flags.
+- 07:42 UTC PH extra X turnout inputs, 51 launches (commit 6d48466). Within-day Spearman with the launch-model
+  residual:
+  - 7-day reach: −0.07 to −0.10.
+  - 30-day reach: −0.07 to +0.02.
+  - 48-h posts: −0.09.
+  - Tease: +0.09.
+  - SE ±0.15. All within 0. Re-run at 100+ launches.
