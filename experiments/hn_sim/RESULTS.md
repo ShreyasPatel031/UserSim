@@ -794,3 +794,15 @@ Members: Jul-Aug 21.4%, 2025+ history 22.4%, + page judge 22.1%, + type record 2
 vs the current best (Jul-Aug + history, 23.2%): Jul-Aug + history + judge + type 23.1% (-0.2 [-1.1, +0.9]);
 history + judge + type 23.8% (+0.6 [-0.4, +1.7]); all + history 22.8% (-0.5); all five 23.3% (+0.1). No ensemble beats
 the current best significantly; at posting stays 23.2% (reported as the odds tool's calibrated probability).
+
+### Direction A on the October archive (wb15.py; exposure on /newest page 1 from Wayback captures; forward daily retrain)
+Exposure inputs at 15 min: share of /newest captures in the first 15 min that showed the post (and position-weighted,
+1/sqrt(rank)), estimated minutes on page 1, votes per exposure-minute (plain, weighted), posts submitted in the 30 min
+before, posting hour.
+| Caught at 15 min | all 13 days (388 winners) | 10 days 90%+ coverage (287) |
+|---|---|---|
+| + votes + who | 28.4% [23.6, 33.0] | 29.3% |
+| **+ votes + who + exposure** | **29.6% [25.4, 33.4]** (+4.1 [+1.1, +7.4] vs base) | 30.0% (+3.8 [+1.3, +7.0]) |
+| exposure vs votes + who, paired | +1.3 [-1.0, +3.7] | +0.7 [-1.9, +3.1] |
+Direction A adds about +1 point on the archive, not significant on its own (Wayback captures every ~10 min give a coarse
+exposure; the live recorder reads /newest every minute). Live test from Nov 5.
