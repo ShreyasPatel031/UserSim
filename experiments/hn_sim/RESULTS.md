@@ -762,3 +762,14 @@ entry time / best position / minutes on it, last /newest position and push-down 
 | 15 min, odds at posting | 10.0% | 6.7% |
 Coverage: seen within 1 h 77.4% of posts (Oct 31 80.6%, Nov 1 74.6%), 33/40 winners; within 15 min 47.8%, 15/40.
 Recorder minutes Nov 2: front 1,807 / newest 830 (always-on VM). Two days, 40 winners: too few to read.
+
+### Re-ups and the second-chance pool (live recorder, Oct 31 - Nov 2; provisional labels)
+52 posts seen in /pool: 30.8% made a daily top 30 (vs ~3% of all posts). Re-up winners in reach: 8 of 10 passed through
+/pool. First seen in /pool a median 22.9 h after posting (10th-90th percentile 2.9-32.6 h): not a 15-min input; the
+re-up-clock view (re-ups judged 15 min after entering /pool) goes into the live readout once enough days settle.
+
+### Late-riser model at 15 min (wb_late.py; Oct 2-14 forward daily retrain)
+Slow starts (<= 2 points at the latest /newest snapshot by 15 min, off the front page): 11,934 of 12,788 posts; 129 of
+the 145 late risers, and 119 of the 181 fast winners. Among slow starts, flags = 129: general 15-min model catches 15
+late risers, the late-riser model 14. Blended in for slow starts: Caught at 15 min 28.1% (weight 0.25), -0.3
+[-2.7, +1.9]; 27.8% (0.5), -0.5 [-3.9, +2.3] vs 28.4%. A dedicated model does not find late risers any better.
