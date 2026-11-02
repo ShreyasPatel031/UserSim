@@ -63,5 +63,45 @@ GBM all is the same hand model trained on every earlier month instead of the pre
 +0.037]). This is a one-line change in `popscore.train_month` (train on Mar..m−1, 300 people a day each) and lifts
 `psr_`/`pnx_` for E1 directly.
 
-## Runs B and C
-(pending)
+## Runs B and C: richer two-towers, and the ensemble
+Pooled over May–Oct (top-3 / AUC / pool Spearman / pool top-3):
+| Model | Run | Result |
+|---|---|---|
+| wide two-tower (every hand feature in the head) | B | 52.3 / 0.709 / 0.490 / 48.0 |
+| target-attention two-tower | C | 53.9 / 0.713 / 0.502 / 50.6 |
+| ensemble: wide + GBM all | B | 57.8 / 0.742 / 0.582 / 55.1 |
+| **ensemble: target attention + GBM all** | C | **59.0 / 0.745 / 0.586 / 58.4** |
+
+Paired differences (95% interval; months better on top-3):
+| Comparison | Top-3 | AUC | Pool Spearman | Pool top-3 | Months |
+|---|---|---|---|---|---|
+| wide − GBM prev | −3.6 [−4.1, −3.0] | −0.018 [−0.021, −0.016] | −0.074 [−0.107, −0.040] | −7.1 [−10.9, −3.4] | 0 of 6 |
+| target attention − GBM prev | −2.1 [−2.6, −1.5] | −0.015 [−0.018, −0.012] | −0.063 [−0.094, −0.032] | −4.7 [−8.6, −0.9] | 1 of 6 |
+| ensemble (C) − GBM prev | **+3.0 [+2.6, +3.5]** | **+0.017 [+0.015, +0.019]** | +0.021 [−0.001, +0.044] | +3.2 [−0.0, +6.6] | **6 of 6** |
+| ensemble (C) − GBM all | **+0.6 [+0.2, +0.9]** | **+0.003 [+0.001, +0.004]** | +0.001 [−0.018, +0.021] | +0.9 [−2.2, +4.1] | 4 of 6 |
+| ensemble (B) − GBM all | −0.6 [−0.9, −0.2] | −0.000 [−0.002, +0.001] | −0.003 [−0.024, +0.019] | −2.2 [−5.1, +0.6] | 2 of 6 |
+
+Per month, ensemble (C) vs GBM all, top-3: May 56.2 vs 53.5, Jun 56.4 vs 56.0, Jul 58.1 vs 58.4, Aug 62.6 vs 64.0,
+Sep 60.7 vs 59.2, Oct 60.1 vs 59.6.
+
+- Target attention (pooling the history with the candidate launch as the query) is the best net: +1.1 top-3 over the
+  plain two-tower (53.9 vs 52.8). Feeding every hand feature to the head (wide) makes the net worse (52.3): it learns
+  the hand signal less well than LightGBM does and crowds out the history towers.
+- The net is wrong in different places from the hand model: averaging the two beats either alone. The ensemble is the
+  best person model measured so far: 59.0 / 0.745, against the published 55.8 / 0.728.
+- At pool level (votes summed over the day's people) the net adds nothing beyond GBM all: +0.001 [−0.018, +0.021].
+
+## Verdict
+- **The trained person model beats the hand-built one only as a partner, not alone.** Alone, every two-tower variant
+  loses to the baseline (−2.1 to −3.6 top-3). Averaged with the hand model, it beats the published baseline by +3.0
+  [+2.6, +3.5] in 6 of 6 months, and beats the stronger all-months hand model by +0.6 [+0.2, +0.9].
+- **Most of the person-level gain is training on more months** (+2.5 of the +3.0), which needs no neural model.
+- What decides the north star is the leaderboard. Both candidates go to the PH agent as launch-level inputs for daily
+  top 3/5/10: `psv_` (the ensemble) and `psg_` (GBM all alone), in `psr_features.json` format.
+
+## Next levers for the trained model
+1. Regularisation (the hold-out loss stalls while the training loss falls): dropout, weight decay, a lower learning
+   rate, a smaller dimension. Queued as a one-month sweep (September).
+2. Several seeds averaged: ensembling helped once already, and seeds are free.
+3. Train the net on the residual of GBM all (boosting the hand model), not on its own: the net only has to learn what
+   the hand model misses.

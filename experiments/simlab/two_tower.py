@@ -479,10 +479,15 @@ def features(workers):
     days = sorted(d for d in PS.G["lineup"] if d[:7] in nets and d <= "2026-10-24")
     if os.environ.get("FEAT_DAYS"):   # a subset, for timing
         days = [d for d in days if d in os.environ["FEAT_DAYS"].split(",")]; nets = {d[:7] for d in days}
-    if ENS:   # fitted once in the parent, shared by the forked workers
-        G["cf"] = {M: PS.fit_cf(PS.month_start(M, 1)) for M in sorted(nets)}
-        G["gbm"] = {M: gbm_all(M) for M in sorted(nets)}
-        print("fitted cf and all-months LightGBM for", sorted(nets), flush=True)
+    if ENS:   # fitted in a separate process (LightGBM's OpenMP threads in a parent deadlock forked workers), loaded here
+        import pickle, subprocess
+        need = [M for M in sorted(nets) if not os.path.exists(f"{TT}/ens_{M}.pkl")]
+        if need:
+            subprocess.run([sys.executable, "-m", "simlab.two_tower", "prep", ",".join(need)], check=True)
+        G["cf"], G["gbm"] = {}, {}
+        for M in sorted(nets):
+            a = pickle.load(open(f"{TT}/ens_{M}.pkl", "rb")); G["cf"][M], G["gbm"][M] = a["cf"], (a["gbm"], a["hand"])
+        print("loaded cf and all-months LightGBM for", sorted(nets), flush=True)
     with mp.get_context("fork").Pool(workers) as pool:
         for k, r in enumerate(pool.imap_unordered(score_day, days)):
             if k % 20 == 0:
@@ -497,6 +502,21 @@ def features(workers):
     print("saved", len(S), "launches", "months", sorted(nets))
 
 
+def prep(months):
+    """For each month: the collaborative filter cut at the previous month's start and the all-months LightGBM, pickled."""
+    import pickle
+    from . import popscore as PS
+    PS.load()
+    for M in months.split(","):
+        mdl, hand = gbm_all(M)
+        pickle.dump({"cf": PS.fit_cf(PS.month_start(M, 1)), "gbm": mdl, "hand": hand}, open(f"{TT}/ens_{M}.pkl", "wb"))
+        print("prepared", M, flush=True)
+
+
 if __name__ == "__main__":
-    cmd = sys.argv[1]; w = int(sys.argv[2]) if len(sys.argv) > 2 else 8
-    {"build": build, "run": run, "features": features}[cmd](w)
+    cmd = sys.argv[1]
+    if cmd == "prep":
+        prep(sys.argv[2])
+    else:
+        w = int(sys.argv[2]) if len(sys.argv) > 2 else 8
+        {"build": build, "run": run, "features": features}[cmd](w)
