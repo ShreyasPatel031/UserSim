@@ -17,11 +17,9 @@ import lightgbm as lgb
 import numpy as np
 import pandas as pd
 
-import caught as C
 import live_caught as LC
 import odds_live as OL
 import top100 as H
-import wb_caught as W
 
 FEATS = ["p_post", "v_score", "v_age", "v_rate", "v_rank_new", "v_push", "v_comments", "v_front", "x_share", "x_w", "x_vpe",
          "x_vol30", "x_hour", "v_has"]
@@ -61,6 +59,37 @@ def feats_from_sightings(P, S, reads, a=15):
 
 
 def odds_at_posting(P):
+    """The odds tool's at-posting P(top 30), cached per post (run in its own process: python live_oct.py odds <file>)."""
+    path = os.path.join(H.CACHE, "odds_at_posting.parquet")
+    have = pd.read_parquet(path) if os.path.exists(path) else pd.DataFrame(columns=["post_id", "p_post"])
+    todo = P[~P.post_id.isin(have.post_id)]
+    if len(todo):
+        tmp = os.path.join(H.CACHE, "odds_todo.parquet")
+        todo[["post_id", "title", "url", "author", "created_at_i", "text"]].to_parquet(tmp, index=False)
+        import subprocess
+        import sys
+        subprocess.run([sys.executable, "-W", "ignore", __file__, "odds", tmp], check=True)
+        have = pd.read_parquet(path)
+    return P.post_id.map(have.drop_duplicates("post_id").set_index("post_id").p_post).to_numpy()
+
+
+def odds_batch(tmp):
+    path = os.path.join(H.CACHE, "odds_at_posting.parquet")
+    P = pd.read_parquet(tmp)
+    out = []
+    for i in range(0, len(P), 3000):
+        R = P.iloc[i:i + 3000].reset_index(drop=True)
+        R = R.assign(url=R.url.fillna(""), title=R.title.fillna(""), text=R.text.fillna(""))
+        S = OL.score(R, now=0)
+        out.append(S[["post_id", "p_top30"]].rename(columns={"p_top30": "p_post"}))
+        print(f"   odds at posting: {min(i + 3000, len(P))}/{len(P)}", flush=True)
+    new = pd.concat(out)
+    if os.path.exists(path):
+        new = pd.concat([pd.read_parquet(path), new]).drop_duplicates("post_id", keep="last")
+    new.to_parquet(path, index=False)
+
+
+def _unused(P):
     R = P[["post_id", "title", "url", "author", "created_at_i", "text"]].reset_index(drop=True)
     R = R.assign(url=R.url.fillna(""), title=R.title.fillna(""), text=R.text.fillna(""))
     S = OL.score(R, now=0)
@@ -69,9 +98,12 @@ def odds_at_posting(P):
 
 def archive():
     p = H.stories()
-    Q = C.Q[(C.Q.day >= "2026-10-02") & (C.Q.day <= "2026-10-14")][["post_id", "day", "y"]]
+    L = OL.lists()
+    win = set(L[L["rank"] <= 30].post_id)
+    Q = p[(p.day >= "2026-10-02") & (p.day <= "2026-10-14")][["post_id", "day"]]
+    Q = Q.assign(y=Q.post_id.isin(win).astype(int))
     P = p[p.post_id.isin(Q.post_id)][["post_id", "title", "url", "author", "created_at_i", "text"]].reset_index(drop=True)
-    A = pd.read_json(W.EV, lines=True, convert_dates=False)
+    A = pd.read_json(os.path.join(H.CACHE, "early_votes", "early_snapshots.jsonl"), lines=True, convert_dates=False)
     A["t"] = pd.to_datetime(A.capture_ts.astype(str), format="%Y%m%d%H%M%S", utc=True).astype("int64") // 10**9
     off = {"news": 0, "news_p2": 30, "news_p3": 60}
     A = A[A.page.isin(["newest"] + list(off))]
@@ -140,4 +172,8 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    import sys
+    if len(sys.argv) > 2 and sys.argv[1] == "odds":
+        odds_batch(sys.argv[2])
+    else:
+        main()
