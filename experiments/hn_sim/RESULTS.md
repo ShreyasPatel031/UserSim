@@ -674,3 +674,16 @@ at-posting model already catches each kind at about the same rate; separating th
 57,243 consecutive pairs: P(second wins | first won) 10.3% (n 611; HN blocks many recent dupes); P(second wins |
 first lost) 3.9%; P(first won | second wins) 2.8% (n 2,273): of the repostings that won, 97% had flopped before
 with the same link. At posting the link's content is the same both times; what differed was the moment and who posted.
+
+### Same link posted before, as an at-posting input (caught.py urlhist)
+15.6% of test posts (21.0% of test winners) had their link posted before. Jul-Aug model 21.4% -> 22.0%, +0.6 [-0.5, +1.7];
+blend 23.2% -> 22.9%, -0.3 [-1.4, +0.7].
+
+### Same-link pair model (pairs.py)
+Informative pairs (same URL, 1+ day apart, exactly one posting won): 2,189 to train (to Jun 30), 569 held out (Jul-Oct).
+LambdaRank on the moment (hour, weekday, volume, same host / words in 6 h), title (text score, length, words, question,
+Show / Ask HN) and submitter (HN record, comments before, account age, real-list record).
+Held-out pairs: the winning posting scored higher in **51.8%** (chance 50%). As an input at posting: Jul-Aug model
+-0.1 [-1.4, +1.3]; blend -0.4 [-1.5, +0.7]; the context score alone catches 2.8%.
+Given the link, nothing known at posting (moment, title wording, submitter) separates the posting that won from the
+one that flopped.
