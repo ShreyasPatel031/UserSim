@@ -78,6 +78,16 @@ def snap_fields(t, tagline=None):
             "top_product": b.group(2) == "true" if b else None, "first_launch": b.group(3) == "true" if b else None}
 
 
+@step("at_launch")
+def s_at_launch(d, con, dry):
+    """Makers' and hunter's PH follower counts as read at 00:05 PT (pipeline.at_launch), before votes: honest inputs."""
+    from . import at_launch as AL
+    R = AL.rows(d)
+    if not dry and len(R):
+        W.write("at_launch_followers", R)
+    return {"items": len(R)} if len(R) else {"items": 0, "status": f"failed: no data/today/{d}.json"}
+
+
 @step("list_check")
 def s_list_check(d, con, dry):
     """Today's API list vs Grok Bot's newest featured leaderboard read (today's if it exists yet, else yesterday's).
@@ -441,7 +451,7 @@ def s_raw(d, con, dry):
     return {"items": len(files)}
 
 
-STEPS = [s_launches, s_list_check, s_snap, s_forecast, s_simforecast, s_shadow, s_ranks, s_comments, s_people, s_ph_upvotes, s_personas, s_score, s_raw]
+STEPS = [s_launches, s_at_launch, s_list_check, s_snap, s_forecast, s_simforecast, s_shadow, s_ranks, s_comments, s_people, s_ph_upvotes, s_personas, s_score, s_raw]
 
 
 def main(argv):
