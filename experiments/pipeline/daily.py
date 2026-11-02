@@ -172,7 +172,7 @@ def s_shadow(d, con, dry):
     under 90% of the line-up, or prints nothing fails the step loudly."""
     lineup = {str(p["id"]): p["name"] for p in json.load(open(f"{RAW}/today/{d}.json"))}
     out, bad = {"items": 0}, []
-    for name in [n for n in os.environ.get("SHADOW_MODELS", "e1v2").split(",") if n]:
+    for name in [n for n in os.environ.get("SHADOW_MODELS", "e1v2,daycal").split(",") if n]:
         path = os.path.join(SHADOW, name)
         if not os.path.exists(os.path.join(path, "predict.py")):
             out[name] = "not installed"; continue
@@ -182,6 +182,8 @@ def s_shadow(d, con, dry):
         if r.returncode or len(got) < 0.9 * len(lineup):
             bad.append(f"{name}: exit {r.returncode}, {len(got)} of {len(lineup)} launches ({r.stderr.strip()[-200:]})"); continue
         rank = sorted(got, key=lambda x: -got[x])
+        if not dry:   # the scores themselves, for the weekly board (comparable across days)
+            pd.DataFrame({"id": list(got), "day": d, "score": list(got.values())}).to_parquet(f"{PH}/results/shadow_{name}_{d}.parquet")
         F_ = pd.DataFrame([{"forecast_date": d, "model": f"shadow_{name}", "predicted_rank": i + 1, "name": lineup[x],
                             "launch_id": x, "made_on": d} for i, x in enumerate(rank)])
         if not dry:
@@ -397,9 +399,36 @@ def s_score(d, con, dry):
     rows = [{"day": y, "model": mdl, "k": k,
              "hit": int(((g.predicted_rank <= k) & (g.daily_rank <= k)).sum()), "recall": ((g.predicted_rank <= k) & (g.daily_rank <= k)).sum() / k}
             for mdl, g in T.groupby("model") for k in (3, 5, 10)]
+    rows += weekly_scores(d, con)
     if not dry:
         W.write("daily_scores", pd.DataFrame(rows))
     return {"items": len(rows)}
+
+
+def weekly_scores(d, con):
+    """On the run two days after a week ends (Tuesday), that ISO week's board vs each model's scores summed over its
+    seven days: the launch model (results/forecast_<day>.parquet pred) and every shadow (results/shadow_<name>_<day>.parquet).
+    Rows go to daily_scores with day = the week's Sunday and model "weekly:<model>". A model missing a day is skipped."""
+    sun = dt.date.fromisoformat(d) - dt.timedelta(days=2)
+    if sun.weekday() != 6:
+        return []
+    days = [(sun - dt.timedelta(days=k)).isoformat() for k in range(6, -1, -1)]
+    L = con.execute(f"SELECT id, weekly_rank FROM launches WHERE day::VARCHAR IN ({','.join(repr(x) for x in days)}) AND weekly_rank IS NOT NULL").df()
+    L["id"] = L.id.astype(str)
+    files = {"launch_model": [f"{PH}/results/forecast_{x}.parquet" for x in days]}
+    for name in [n for n in os.environ.get("SHADOW_MODELS", "e1v2,daycal").split(",") if n]:
+        files[f"shadow_{name}"] = [f"{PH}/results/shadow_{name}_{x}.parquet" for x in days]
+    rows = []
+    for mdl, fs in files.items():
+        if not all(os.path.exists(f) for f in fs):
+            continue
+        S = pd.concat([pd.read_parquet(f) for f in fs]); S["id"] = S.id.astype(str)
+        S = S.rename(columns={"pred": "score"}).merge(L, on="id")
+        for k in (3, 5, 10):
+            if (S.weekly_rank <= k).sum() == k:
+                hit = len(set(S.nlargest(k, "score").id) & set(S[S.weekly_rank <= k].id))
+                rows.append({"day": sun.isoformat(), "model": f"weekly:{mdl}", "k": k, "hit": hit, "recall": hit / k})
+    return rows
 
 
 @step("raw")
