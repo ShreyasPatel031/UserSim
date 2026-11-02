@@ -1202,3 +1202,19 @@ Rebuilt from my own inputs (ctrl_preds `all` as the Poisson offset, pna_ ev/reac
 - **Not reproduced.** E5 reports daily top 3 +1.3 (−0.4 to +3.0) and weekly top 3 +5.3 / top 5 +3.2. My rebuild gets −0.8 daily and 0 / +1.6 / −2.6 weekly. Possible reasons: hyperparameters, E5 training from April, or different audience columns.
 - **Where a weekly gain can come from:** the day-terms-only control gives weekly top 3 +5.4 and top 5 +3.2 over the launch model on its own. That matches E5's weekly gains in size. So most of the weekly lift likely comes from rescaling days (busy vs quiet days, weekday), not from the pool or audiences. This is a cheap fix to test directly on the launch model: a day-level calibration for weekly and monthly lists. Only 25 weeks, so it needs confirming.
 - The shadow slot is still worth running: live days are the clean test.
+
+## Day-level calibration of the launch model, weekly and monthly boards (Nov 2, `ph_predict/daycal.py`)
+Poisson LightGBM, with the launch model's expected votes as the offset and day terms only: weekday, line-up size, the line-up's total predicted votes, and the 7-day trailing real and predicted totals (ending 2 days before, so final by then). A day's launches move together, so the daily order is unchanged (daily Δ = 0, as it must be). Rolling monthly, 5 seeds, paired bootstrap over lists.
+
+| | May–Oct: launch model → calibrated | Δ (95% CI) | Jul–Oct Δ |
+|---|---|---|---|
+| Weekly top 3 | 49.3 → 53.3 | +4.0 (0.0 to +9.3), 25 weeks; never worse in any month (0 / 0 / +8.3 / +6.7 / +8.3 / 0) | +5.9 (0.0 to +11.8), 17 weeks |
+| Weekly top 5 | 56.0 → 57.6 | +1.6 (0.0 to +4.0) | +1.2 (0.0 to +3.7) |
+| Weekly top 10 | 57.8 → 57.8 | 0.0 (−1.7 to +1.7) | +0.7 (−1.3 to +2.7) |
+| Monthly top 3 | 33.3 → 20.0 | −13.3 (−26.7 to 0.0), 5 months | −22.2, 3 months |
+| Monthly top 5 | 43.3 → 46.7 | +3.3 (−6.7 to +13.3), 6 months | 0.0 |
+| Monthly top 10 | 48.3 → 51.7 | +3.3 (0.0 to +6.7) | +2.5 |
+
+- **Weekly:** a consistent, never-negative gain on top 3 (+4 to +6) and top 5 (+1 to +2). The interval lower bounds sit at 0, and there are only 25 weeks.
+- **Monthly:** only 5–6 lists, so it can't be judged. Top 3 is worse in 2 months (one launch each). Don't ship for monthly.
+- **Recommendation:** run it as a shadow weekly forecast next to the launch model; it costs nothing, since it reuses the forecast's own predictions. Ship it for weekly once about 6 more live weeks agree. It doesn't touch the daily board.
