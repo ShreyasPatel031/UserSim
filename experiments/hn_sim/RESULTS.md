@@ -707,3 +707,15 @@ vs actual 2.99%. At posting is reported as this calibrated probability (Shreyas)
 ### Person-level top-3 with the full favorites (decision tool only)
 Content taste + favorites: top-3 hit 29.7% [29.3, 30.1] (random 14.1%), unchanged by pages 2-10; the rest of the run was
 killed by the container restart.
+
+### Checkpoint 2 (15 min) on the October archive, forward daily retrain (wb15.py)
+For each posting day Oct 2-14: train Jul 1 .. d-2, score day d at 15 min. 12,788 posts, 388 winners; 85.6% with a
+/newest snapshot by 15 min. Base = at-posting inputs (incl. history score, page judge) + front rank + comments by 15 min.
+| Caught at 15 min | all 13 days (388 winners) | 10 days with 90%+ coverage (287) |
+|---|---|---|
+| base | 25.5% [20.6, 30.3] | 26.1% [20.3, 31.5] |
+| + /newest votes (trajectory, push-down rate, /news rank) | 27.1%, +1.5 [-0.3, +3.3] | 28.2%, +2.1 [+0.6, +3.5] |
+| **+ votes + who commented in the first 15 min** | **28.4% [23.6, 33.0], +2.8 [+0.3, +5.3]** | **29.3%, +3.1 [+1.3, +5.3]** |
+| + votes + who + predicted 15-min score | 26.8%, +1.3 [-1.7, +4.2] | 27.9%, +1.7 [-1.1, +5.3] |
+Early votes plus who commented early is the first significant gain at 15 min. The chained prediction does not add on
+top (its +7.0 at posting on Oct 9-14 was a 4-day result).
