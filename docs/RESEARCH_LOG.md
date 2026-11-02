@@ -237,3 +237,7 @@ Model switches, direction reviews and agenda changes, newest last.
   - Next:
     - E5: month-by-month, 5 seeds, the pna_ pool, then package for the pipeline.
     - PH agent: shadow-forecast slot, scored live from Nov 3.
+- 11:08 UTC Bundle 20261102_pna deployed on usersim-pipeline (via the user and Grok Bot), verified by the PH agent:
+  md5s match, 4,877 entries, backup present. First live day: Nov 3.
+  - Rule kept: the shadow+people bundle is staged in deploy/ only after Shreyas approves it, because Grok Bot deploys
+    whatever appears there.
