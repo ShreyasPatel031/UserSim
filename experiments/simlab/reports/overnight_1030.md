@@ -1096,3 +1096,29 @@ Data: Data Feeder's first partial batch (790 pre-launch posts, 183 engager rows,
 - Person level: 8 X-tied person-launch pairs. 75% voted on the launch (95% CI 45–100%), against 0.0% on the same day's other launches (placebo). The direction is right, but n=8 is far too small to rely on.
 - Launch level (pre-launch, weekly roll): top 3 is 61.9 for both the launch model and the model with X ties. Not readable yet: there are too few covered launches to train on, and only one weekly line was captured before exp-1 was stopped.
 - Next: re-run as batches land. If the person-level lift holds at n≥100 pairs, add an X-tie input to the person model (TIE) and test top 3/5/10 at launch level.
+
+## E5 person model trained on all earlier months (psg_) and the attention-net blend (psv_) (Nov 2)
+Setup:
+- All sources restricted to the same 3,977 launches (May–Oct, 177 days; tested Jun–Oct). Every model was trained only on earlier months.
+- Paired bootstrap over days (10,000 resamples).
+- Script: `ph_predict/sim_src_score.py` (pool check; launch model + simulation). `newsim_eval.py NOPAGE=1 STAGE=2 STAGE3=1` with "+day standing" is the live configuration; `pxg`/`png` are pnx/psn2 cut to the same launches.
+
+**Pool check (simulation only):** within-day Spearman with real pool votes, and the hit rate on the pool's own top 3.
+
+| | Spearman ev | Pool top 3 (ev) | vs pnx, Spearman | vs pnx, top 3 |
+|---|---|---|---|---|
+| pnx | 0.507 | 47.6 | | |
+| **psg** | **0.581** | **58.0** | +0.074 (+0.050 to +0.099) | **+10.4 (+7.0 to +13.9)** |
+| psv | 0.580 | 58.2 | +0.073 (+0.048 to +0.098) | +10.5 (+6.8 to +14.3) |
+| psr | 0.538 | 52.5 | +0.031 (+0.007 to +0.056) | +4.9 (+1.1 to +8.5) |
+| psn2 | 0.459 | 44.8 | −0.048 | −2.8 |
+
+**Launch level, pre-launch daily top 3/5/10.**
+- Live configuration (simulation + reach + audience + day standing, no page), psg − pnx: top 3 **+3.7 (+0.9 to +6.4)**, better in 4 of 5 months; top 5 +0.8 (−0.7 to +2.3); top 10 +0.2 (−0.7 to +1.2). psv − pnx: +1.6 / +0.8 / −0.7, all intervals span 0.
+- That live model is still below the launch model alone: psg 61.1 / 70.6 / 80.1 vs 66.4 / 73.2 / 81.9. Top 3 −5.3 (−9.0 to −1.6).
+- Launch model + simulation inputs: no source beats the launch model alone. Launch model + psg: −0.9 (−3.9 to +2.1) / −1.0 (−2.6 to +0.7) / −1.2 (−2.3 to −0.2). Launch model + pnx: −3.0 / −2.5 / −1.0. psg is the least harmful (vs pnx: +2.1 (−0.9 to +5.3) / +1.5 / −0.2).
+
+**Verdict:**
+- psg is a clear simulation upgrade: +10 points on the pool's own top 3, and +3.7 on daily top 3 for the live simulation forecast. It should go into the next bundle (popscore train_month on all earlier months).
+- It does not improve the headline pre-launch forecast. The launch model alone is still best, and adding any simulation inputs to it doesn't help.
+- psv adds nothing over psg.
