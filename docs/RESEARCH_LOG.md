@@ -385,3 +385,8 @@ Model switches, direction reviews and agenda changes, newest last.
   - Person level: tied people voted 22.5% vs 1.65% (13.7x).
   - Pool level: Spearman gain 0.000. Only ~12 tied pool people per launch, about +1 expected vote.
   - X's chance is the non-pool engagers (the launch-level x_prelaunch_e1 test, waiting for 10 full days).
+- 16:36 UTC: mailbox checked.
+  - X full days: Oct 5, 23, 25. The Jul–Sep backfill starts after the Oct run and lands in dm_gate.json.
+  - GitHub: per-user stargazer lists are now restricted to admins. Switched to daily star counts per repo (9,662 repos,
+    ETA ~21:00 UTC); no token needed.
+  - HN agent told to use the prior-day counts only (the posting day would leak).
