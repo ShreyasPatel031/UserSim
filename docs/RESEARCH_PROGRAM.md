@@ -17,7 +17,12 @@ Socrates, OSIM-8B.
      follower counts read after launch, plus follow lists read Oct 25 (undated; people follow makers after a good launch).
      - Also dropped: undated promo_ fields (reactions, founder/company follower counts, funding, company age). Kept:
        dated pre-launch posts.
-     - Daily top 3/5/10: May–Oct 64.4 / 70.4 / 76.9; Jul–Oct 64.7 / 69.6 / 77.5.
+     - Page inputs (pf_, ps_, llm_, vs_) were read a median 88 days after launch (1–182) and 1.6% of sites carry
+       "Product of the Day" wording; they can't be proven honest in the backtest. So the **reference** is the live
+       forecast's own honest input set (no page groups, no llm_full):
+       **daily May–Oct 62.7 / 70.4 / 76.6; Jul–Oct 64.4 / 69.6 / 77.1.** Live scores compare with this.
+     - Page-aware upper reference (pages possibly edited after launch): 64.4 / 70.4 / 76.9. Page snapshots taken at
+       00:05 PT are honest by construction from Oct 25, so a page-aware honest model exists going forward.
      - Weekly: May–Oct 45.3 / 54.4 / 55.2 (25 weeks); Jul–Oct 49.0 / 55.0 / 54.7.
      - Monthly: May–Oct 20.0 / 36.7 / 40.0 (5–6 lists, too few).
      - Live launch model, Oct 27–Nov 1 (6 days): 61.1 / 70.0 / 81.7.

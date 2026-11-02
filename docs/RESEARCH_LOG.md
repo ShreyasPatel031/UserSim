@@ -447,3 +447,8 @@ Model switches, direction reviews and agenda changes, newest last.
   observed population is enough; the blockers are 65% unseen voters (populations, not people), the shared per-launch
   term (needs ties, not better individuals), and dated ties being ~1 week old. Standing metric: pool Spearman per live
   day (0.587 now; 0.745 ≈ 83 daily top 3). PH agent asked for a rolling retrain on dated follows + daily pool Spearman.
+- 21:22 UTC Page-input check (PH agent, commit 5ff3365): pf_/ps_/llm_ read a median 88 days after launch; 1.6% of
+  sites show PH badge wording; llm_full's prompt carries follower counts. Sensitivity: web/follower-derived −0.9 (noise);
+  all page groups −3.0 [−5.1, −0.9]. Reference set to the live forecast's honest input set: daily 62.7/70.4/76.6
+  (May–Oct). 64.4 stays as the page-aware upper reference. llm_full joins the honest filter next bundle; honest page
+  snapshots accrue from Oct 25 (data/today). A1 crawl 80/731 days.
