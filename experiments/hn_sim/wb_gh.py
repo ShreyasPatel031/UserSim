@@ -1,9 +1,9 @@
-"""GitHub traction as a 15-min input (orchestrator, 2026-11-02): for posts linking a github.com repo, from the
-stargazer list (starred_at; gh.py on hn-sim-1): repo age, stars before posting, in the 7 days / 24 h before, in the
-first 15 min after posting, owner is an organisation. Coverage among winners by type, then Caught at 15 min per post
+"""GitHub traction as a 15-min input (orchestrator, 2026-11-02): for posts linking a github.com repo, from Data Feeder's
+daily new-star counts (raw/github_stargazers/; starred_at is admin-only on GitHub since July 2026): stars on the day
+before, the 7 and 30 days before the posting day (never the posting day itself), acceleration, repo age. Coverage among winners by type, then Caught at 15 min per post
 with these inputs added to the current 15-min model (votes + who + exposure), Oct 2-14 forward daily retrain, paired.
 
-    python wb_gh.py      # needs <cache>/gh_repos.jsonl from the full gh.py run (since 2026-07-01)
+    python wb_gh.py      # downloads raw/github_stargazers/ (star_history_*.jsonl, repo_status.jsonl)
 """
 import os
 
@@ -20,18 +20,58 @@ import top100 as H
 import wb15 as W15
 import wb_caught as W
 
-GHC = ["gh_age_days", "gh_stars_before", "gh_week", "gh_day", "gh_after15", "gh_org", "gh_link"]
+GHC = ["gh_d1", "gh_d7", "gh_d30", "gh_accel", "gh_age_days", "gh_known", "gh_link"]
+RAW = "usersim_sim/raw/github_stargazers/"
+
+
+def load_history():
+    """Data Feeder's daily new-star counts (GitHub stopped showing starred_at to non-admins in July 2026):
+    star_history_*.jsonl rows {repo, date, stars}; repo_status.jsonl for created_at / gone."""
+    import json
+    import store as S
+    d = os.path.join(H.CACHE, "github_stargazers")
+    os.makedirs(d, exist_ok=True)
+    for x in S._bucket().list_blobs(prefix=RAW):
+        n = x.name.split("/")[-1]
+        if n.endswith(".jsonl") and (n.startswith("star_history_") or n == "repo_status.jsonl"):
+            x.download_to_filename(os.path.join(d, n))
+    hist = [pd.read_json(os.path.join(d, f), lines=True) for f in sorted(os.listdir(d)) if f.startswith("star_history_")]
+    Hh = pd.concat(hist, ignore_index=True) if hist else pd.DataFrame(columns=["repo", "date", "stars"])
+    Hh["repo"] = Hh.repo.str.lower()
+    Hh["date"] = pd.to_datetime(Hh.date).dt.strftime("%Y-%m-%d")
+    st = os.path.join(d, "repo_status.jsonl")
+    Rs = pd.read_json(st, lines=True) if os.path.exists(st) else pd.DataFrame(columns=["repo"])
+    if len(Rs):
+        Rs["repo"] = Rs.repo.str.lower()
+    return Hh, Rs
 
 
 def gh_feats(Q):
-    G = pd.read_json(os.path.join(H.CACHE, "gh_repos.jsonl"), lines=True).drop_duplicates("post_id", keep="last")
-    G = G[G.ok == True].set_index("post_id")                        # noqa: E712
-    out = pd.DataFrame(index=Q.index)
-    for c, src in (("gh_age_days", "repo_age_days"), ("gh_stars_before", "stars_before"), ("gh_week", "stars_week_before"),
-                   ("gh_day", "stars_day_before"), ("gh_after15", "stars_15min_after"), ("gh_org", "org")):
-        out[c] = Q.post_id.map(G[src]) if src in G else np.nan
-    out["gh_link"] = Q.url.fillna("").str.contains("github.com/").astype(int).to_numpy()
-    return out
+    """Per post (repo linked), from days strictly before the posting day (the posting day includes post-HN stars):
+    new stars the day before, in the 7 and 30 days before, acceleration (7-day rate minus the rate of days 8-30),
+    repo age at posting."""
+    Hh, Rs = load_history()
+    repo = Q.url.fillna("").str.extract(r"github\.com/([^/]+/[^/#?]+)")[0].str.lower().str.replace(r"\.git$", "", regex=True)
+    by = {r: g.set_index("date").stars for r, g in Hh.groupby("repo")}
+    created = {}
+    if len(Rs) and "created_at" in Rs:
+        created = dict(zip(Rs.repo, pd.to_datetime(Rs.created_at, utc=True, errors="coerce")))
+    rows = []
+    for r, day, t in zip(repo, Q.day, Q.created_at_i):
+        f = {c: np.nan for c in GHC}
+        f["gh_link"] = int(isinstance(r, str))
+        s = by.get(r) if isinstance(r, str) else None
+        if s is not None:
+            D = pd.Timestamp(day)
+            win = lambda a, b: float(s.reindex([(D - pd.Timedelta(days=k)).strftime("%Y-%m-%d") for k in range(a, b + 1)]).fillna(0).sum())
+            f["gh_d1"], f["gh_d7"], f["gh_d30"] = win(1, 1), win(1, 7), win(1, 30)
+            f["gh_accel"] = f["gh_d7"] / 7 - (f["gh_d30"] - f["gh_d7"]) / 23
+            f["gh_known"] = 1
+        c = created.get(r) if isinstance(r, str) else None
+        if c is not None and not pd.isna(c):
+            f["gh_age_days"] = (t - c.timestamp()) / 86400
+        rows.append(f)
+    return pd.DataFrame(rows, index=Q.index)
 
 
 def main():
@@ -54,7 +94,7 @@ def main():
     kind = np.where(y == 0, "none", np.where(lag >= 2, "reup", np.where(vis60, "fast", "late")))
     days = sorted(d for d in Q.day.unique() if "2026-10-02" <= d <= "2026-10-14")
     sel = Q.day.isin(days).to_numpy()
-    has = G.gh_stars_before.notna().to_numpy()
+    has = (G.gh_known == 1).to_numpy()
     print("posts with GitHub star data, Oct 2-14: " + ", ".join(
         f"{t} {int((has & sel & (kind == t)).sum())}/{int((sel & (kind == t)).sum())}" for t in ("fast", "late", "reup", "none")), flush=True)
     X1 = pd.concat([base, G], axis=1)
