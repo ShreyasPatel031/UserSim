@@ -354,3 +354,8 @@ Model switches, direction reviews and agenda changes, newest last.
   - Daily top 3: −1.1 [−3.0, +0.8].
   - Log-lik: −0.43 (overfits).
   - Competitor grounding, as outcomes or page gaps, doesn't help the pre-launch daily ranking. It stays an internal tool.
+- 14:23 UTC HN direction B (re-up clock), provisional, Oct 31–Nov 1, 38 winners.
+  - 15-min Caught: 15.8% → 28.9% when posts get a second 15-min check after a /pool sighting or a front return.
+    Reported beside the per-post headline, not as it (the headline judges 15 min after the original posting).
+  - At-posting ensemble: +0.6 [−0.4, +1.7]. No change.
+  - Direction A switches on ~Nov 5; direction C after ~2 weeks of /pool labels.
