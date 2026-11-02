@@ -241,3 +241,10 @@ Model switches, direction reviews and agenda changes, newest last.
   md5s match, 4,877 entries, backup present. First live day: Nov 3.
   - Rule kept: the shadow+people bundle is staged in deploy/ only after Shreyas approves it, because Grok Bot deploys
     whatever appears there.
+- 11:26 UTC E1 v2 correction (E5): the first run used the leaky makers' PH follower count.
+  - Live inputs only, frozen, 5 seeds:
+    - Daily: 68.0/73.2/81.3 vs 66.7/73.5/81.0. Top 3 +1.3 [−0.4, +3.0]; 4/6 months better, 2 tied.
+    - Weekly: top 3 +5.3 [+1.3, +10.7], top 5 +3.2 [+0.8, +6.4].
+    - pna_ is as good as psa_.
+  - Package for the shadow slot: tmp/e5/e1v2/. Passed to the PH agent, with the 5-column forecast parquet request.
+  - Weekly is the solid gain; daily needs the live days.
