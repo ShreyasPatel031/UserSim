@@ -390,3 +390,4 @@ Model switches, direction reviews and agenda changes, newest last.
   - GitHub: per-user stargazer lists are now restricted to admins. Switched to daily star counts per repo (9,662 repos,
     ETA ~21:00 UTC); no token needed.
   - HN agent told to use the prior-day counts only (the posting day would leak).
+- 17:15 UTC X go/no-go hourly: 77 covered launches, full days Oct 5/23/24/25. 3 scored days, daily top 3 +11.1 [0, +33.3] = one extra hit. Insufficient (3 of 10 days needed).
