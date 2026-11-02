@@ -335,6 +335,42 @@ def hist_prior():
     print(f"  + history score as an input: {ci(s)}  vs current {diff(s, base)}", flush=True)
 
 
+def urlhist():
+    """Same link posted before (known at posting): earlier postings of the normalised URL since 2023 (count, days since
+    the last, best / last points, whether any made a daily top 30 - only postings 2+ days earlier count for points and
+    wins, so their outcome is settled). At posting, with vs without; also blended with the 2025+ history model."""
+    global Q
+    import feeds_anticipate as FA
+    p = H.stories()
+    p = p.assign(key=p.url.map(FA.norm))
+    p = p[p.key.notna() & (p.key.str.len() > 8)].sort_values("created_at_i")
+    win = set(L[L["rank"] <= 30].post_id)
+    rows = []
+    for k, g in p.groupby("key"):
+        if len(g) < 2:
+            continue
+        t, pts, ids = g.created_at_i.to_numpy(), g.points.to_numpy(float), g.post_id.to_numpy()
+        w = np.isin(ids, list(win)).astype(int)
+        for i in range(1, len(g)):
+            settled = t[:i] <= t[i] - 2 * 86400
+            rows.append((ids[i], i, (t[i] - t[i - 1]) / 86400, pts[:i][settled].max() if settled.any() else np.nan,
+                         pts[:i][settled][-1] if settled.any() else np.nan, int(w[:i][settled].any()) if settled.any() else 0))
+    U = pd.DataFrame(rows, columns=["post_id", "uh_n", "uh_days_since", "uh_best_pts", "uh_last_pts", "uh_won"])
+    Q = Q.merge(U, on="post_id", how="left")
+    Q["uh_n"] = Q.uh_n.fillna(0)
+    UH = ["uh_n", "uh_days_since", "uh_best_pts", "uh_last_pts", "uh_won"]
+    print(f"test posts whose link was posted before: {(Q.uh_n[te] > 0).mean():.1%}; among test winners "
+          f"{(Q.uh_n[te & (Q.y == 1).to_numpy()] > 0).mean():.1%}", flush=True)
+    full = POST + KNN + EMB + CROWD
+    s0, s1 = model(full), model(full + UH)
+    a0, a1 = caught(s0), caught(s1)
+    print(f"Jul-Aug model: without {ci(a0)}; + same-link history {ci(a1)}; difference {diff(a1, a0)}", flush=True)
+    h = np.load(os.path.join(H.CACHE, "caught_hist2_test_scores.npy"))
+    rk = lambda x: pd.Series(x).rank(pct=True).to_numpy()
+    b0, b1 = caught(0.5 * rk(s0) + 0.5 * rk(h)), caught(0.5 * rk(s1) + 0.5 * rk(h))
+    print(f"blend with the 2025+ model: without {ci(b0)}; with {ci(b1)}; difference {diff(b1, b0)}", flush=True)
+
+
 def history():
     """More training history: post features + real-list record, trained on posts from 2025-01-15 / 2026-01-01 /
     2026-07-01 up to Aug 31 (the lists start 2025-01). Same test posts and metric."""
@@ -359,7 +395,9 @@ def history():
             print(f"  train from {start} ({len(tr_)} posts, {int(tr_.y.sum())} winners), {name:24s} {ci(s)}  vs first {diff(s, ref)}", flush=True)
 
 
-if __name__ == "__main__" and "hist_prior" in sys.argv[1:]:
+if __name__ == "__main__" and "urlhist" in sys.argv[1:]:
+    urlhist()
+elif __name__ == "__main__" and "hist_prior" in sys.argv[1:]:
     hist_prior()
 elif __name__ == "__main__" and "history2" in sys.argv[1:]:
     history2()
