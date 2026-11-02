@@ -136,3 +136,11 @@ Model switches, direction reviews and agenda changes, newest last.
 - Pre-launch X engagers growing (prelaunch_engagers.jsonl 678 KB at 06:57); PH agent re-scores per batch.
 - Spend readout 22:41 PT Nov 1: $35.32 so far; Vertex metered project-wide $15.75 (7-day avg $50.52/day) is the
   largest line. exp-2 stopped 06:58 UTC.
+
+## 2026-11-02 07:04 UTC — E5 person model scored at launch level (PH agent, commit ca74041 on claude/ph-ops-agent)
+- 3,977 launches, Jun–Oct test, 145 days, paired, 10k day resamples.
+- Pool: psg Spearman 0.581 vs pnx 0.507 (+0.074 [+0.050, +0.099]); pool top 3 58.0 vs 47.6 (+10.4 [+7.0, +13.9]).
+- Live sim, psg − pnx daily top 3/5/10: +3.7 [+0.9, +6.4] (4/5 months) / +0.8 / +0.2. Sim with psg 61.1/70.6/80.1.
+- Pre-launch headline: launch model alone 66.4/73.2/81.9 on this window; + psg −0.9/−1.0/−1.2. Unchanged.
+- Decision: psg ships in the next bundle as the sim's person model; psv dropped. The pre-launch headline moves only
+  through the per-launch shock (E0: 90.5% of error), so the next lever is turnout data: pre-launch X engagers.
