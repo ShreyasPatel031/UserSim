@@ -160,9 +160,12 @@ def embed(texts):
     import embed as EM
     cred = vertex_credentials()
     cred.refresh(google.auth.transport.requests.Request())
-    r = requests.post(EM.URL, headers={"Authorization": f"Bearer {cred.token}"}, timeout=60,
-                      json={"instances": [{"content": t[:2000], "task_type": "SEMANTIC_SIMILARITY"} for t in texts]})
-    E = np.array([x["embeddings"]["values"] for x in r.json()["predictions"]], np.float32)
+    out = []
+    for i in range(0, len(texts), 200):                 # Vertex takes at most 250 instances per request
+        r = requests.post(EM.URL, headers={"Authorization": f"Bearer {cred.token}"}, timeout=60,
+                          json={"instances": [{"content": t[:2000], "task_type": "SEMANTIC_SIMILARITY"} for t in texts[i:i + 200]]})
+        out.append(np.array([x["embeddings"]["values"] for x in r.json()["predictions"]], np.float32))
+    E = np.vstack(out) if out else np.zeros((0, 768), np.float32)
     return E / (np.linalg.norm(E, axis=1, keepdims=True) + 1e-9)
 
 
@@ -170,7 +173,7 @@ def score(rows: pd.DataFrame, now: float | None = None) -> pd.DataFrame:
     """rows: post_id (negative for drafts), title, url, author, created_at_i, text. Returns P(top 30 / top 10) at the
     latest age each post has reached by `now` (at posting for drafts / brand-new posts)."""
     M = pickle.load(open(MODEL, "rb"))
-    now = now or time.time()
+    now = time.time() if now is None else now           # now=0: score every row at posting
     hist = pd.concat([H.stories()[["post_id", "title", "url", "author", "points", "created_at_i", "text"]], recent_history()])
     hist = hist[~hist.post_id.isin(rows.post_id)]
     allp = pd.concat([hist, rows.assign(points=1)]).sort_values("created_at_i").reset_index(drop=True)

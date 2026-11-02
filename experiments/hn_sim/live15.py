@@ -43,10 +43,8 @@ def main():
     P["cm15"] = P.post_id.map(w.groupby("id").comments.max()).fillna(0)
     P["front15"] = P.post_id.map(w[w.list == "front"].groupby("id").pos.min()).fillna(999)
     # at-posting odds (deployed model), in batches
-    parts = []
-    for i in range(0, len(P), 200):
-        parts.append(OL.score(P.iloc[i:i + 200][["post_id", "title", "url", "author", "created_at_i", "text"]].reset_index(drop=True), now=0))
-    S = pd.concat(parts).drop_duplicates("post_id").set_index("post_id")
+    S = OL.score(P[["post_id", "title", "url", "author", "created_at_i", "text"]].reset_index(drop=True), now=0)
+    S = S.drop_duplicates("post_id").set_index("post_id")
     P["p_post"] = P.post_id.map(S.p_top30)
     # provisional labels
     L = pd.concat([pd.read_json(__import__("io").StringIO(x.download_as_text()), lines=True, dtype={"day": str}, convert_dates=False)
