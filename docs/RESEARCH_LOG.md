@@ -299,3 +299,8 @@ Model switches, direction reviews and agenda changes, newest last.
   - Honest pre-launch daily baseline: May–Oct 64.4/70.5/77.0; Jul–Oct 65.0/69.6/77.5 (was 66.5/73.6/81.0).
   - Live Oct 27–Nov 1: 61.1/70.0/81.7 (6 days).
   - RESEARCH_PROGRAM.md updated. Day calibration and E1 being re-run against the honest baseline.
+- 12:22 UTC HN: /pool is a strong re-up signal (30.8% of /pool posts make the top 30 vs ~3%; 8/10 re-up winners pass
+  through it), but it arrives a median 22.9 h after posting. Not usable at 15 min.
+  - Late-riser model: no gain (Caught at 15 min 28.1%, −0.3).
+  - Next (orchestrator): off-HN spread signals before posting + 15 min: GitHub star timestamps, Reddit/Lobsters
+    posts of the same URL, then X mentions via Grok Bot.
