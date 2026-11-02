@@ -126,7 +126,7 @@ def boards(T, col, rng, base=None):
     ll = pd.Series(poisson.logpmf(T.votes.round(), np.clip(T[col], 1e-6, None)), index=T.index)
     r["loglik"] = round(float(ll.mean()), 3)
     if base is not None:
-        llb = pd.Series(poisson.logpmf(T.votes.round(), np.clip(T["mu_lm"], 1e-6, None)), index=T.index)
+        llb = pd.Series(poisson.logpmf(T.votes.round(), np.clip(T[base], 1e-6, None)), index=T.index)
         d = (ll - llb).groupby(T.day).mean().values; bs = [d[rng.integers(0, len(d), len(d))].mean() for _ in range(10000)]
         r["loglik_vs_lm"] = [round(float(d.mean()), 3), [round(float(x), 3) for x in np.percentile(bs, [2.5, 97.5])], len(d)]
     return r
@@ -141,6 +141,9 @@ def main(srcs):
         D = maker_terms(day_terms(A.copy(), src), src); pool = f"{src}_ev"
         V = {"off": ([pool] + AUD + DAY, True), "off+maker": ([pool] + AUD + DAY + MAKER, True),
              "off+maker-pool": (AUD + DAY + MAKER, True), "full+maker": (sorted(set(lmc + [pool] + AUD + DAY + MAKER)), False)}
+        if os.environ.get("ABLATE") == "1":   # which part of "off" carries its gain over the launch model
+            V = {"off": ([pool] + AUD + DAY, True), "off-pool": (AUD + DAY, True), "off-day": ([pool] + AUD, True),
+                 "off-aud": ([pool] + DAY, True), "off day only": (DAY, True), "off pool only": ([pool], True)}
         months = sorted(D.mon.unique()); out = []
         for m in months[1:]:
             tr, te = D[D.mon < m], D[D.mon == m].copy()
@@ -157,8 +160,13 @@ def main(srcs):
     res["variants"]["launch model alone"] = boards(T, "mu_lm", rng)   # mu_lm ranks exactly as the launch model's own prediction
     for c in [c for c in T if c.startswith("mu_") and "|" in c]:
         res["variants"][c[3:]] = boards(T, c, rng, base="mu_lm")
-    T.drop(columns=["makers", "poster"]).to_parquet(os.path.join(PH, "results", f"vote_model2_{'_'.join(srcs)}.parquet"))
-    json.dump(res, open(os.path.join(HERE, "reports", f"vote_model2_{'_'.join(srcs)}.json"), "w"), indent=1)
+    tag = "_".join(srcs) + ("_ablate" if os.environ.get("ABLATE") == "1" else "")
+    if os.environ.get("ABLATE") == "1":   # each ablation paired against the full "off" variant, same days / weeks
+        for c in [c for c in T if c.startswith("mu_off") and "|" in c and not c.startswith("mu_off|")]:
+            ref = "mu_off|" + c.split("|")[1]
+            res["variants"][c[3:]]["vs_off"] = {k.replace("_vs_lm", ""): v for k, v in boards(T, c, rng, base=ref).items() if k.endswith("_vs_lm")}
+    T.drop(columns=["makers", "poster"]).to_parquet(os.path.join(PH, "results", f"vote_model2_{tag}.parquet"))
+    json.dump(res, open(os.path.join(HERE, "reports", f"vote_model2_{tag}.json"), "w"), indent=1)
     print(json.dumps(res, indent=1))
 
 
