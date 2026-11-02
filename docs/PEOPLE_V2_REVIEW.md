@@ -139,3 +139,30 @@ Treat `segments` as contaminated until rebuilt.
 6. Label the 100-row audit sheet. As a crude hint only: 17 of the 100 handles share no 4-character run with the person's name or
    username, which suggests company or unrelated accounts. This is not a verdict.
 7. Extend `validate_v2.py` with the orphan-event, multi-handle, shared-handle and Wispr-in-segments checks above.
+
+### Status of the fixes: implemented, tested on synthetic data only
+
+`experiments/people_v2/build_v3.py` and `validate_v3.py` implement fixes 1-5 of the list above (PR #142's files are untouched).
+**They have not been run on the real data**: this session has no bucket access, and the schema of
+`raw/ph_profiles2_refetch/profiles.jsonl.gz` beyond the fields in `people_v2_checks_final_only.json` (status, user_id, name, joined,
+headline, followers, followings, is_maker, twitter, fetched_at) is assumed to match `ph_profiles2`. Tested on an 8-person synthetic
+fixture (poisoned row repaired by the re-fetch, 404 user, retry user, event-only person, shared X handle, two X links, an x.com URL under a
+`website` link, legacy UUID id): all 30 checks pass. What the code does:
+
+| Fix | Implemented as |
+|---|---|
+| Rebuild from the re-fetch; drop the 7 deleted, retry 3 | Status-200 rows with numeric id and name replace legacy rows. 404 users stay as `persons` with `gone=true` and no profile (their events are real history); other failures get `retry_pending=true`. |
+| 541 orphan events | `persons` is the union of events, captures and v1 people, with `has_profile`, `in_events`, `profile_parser`. |
+| Contaminated `segments` | Not carried over. Rebuilding them from the re-fetched profiles needs a model run and is **not done**. |
+| Multiple / shared / wrong-kind X handles | Handles only from links of the matching kind; first-listed link is primary, later ones 0.5; an X handle claimed by several people is 0.5 for all, with no posts attributed. |
+| Build-date stamping | `observed_on` is the row's `fetched_at`, else null with `observed_on_quality='unknown'`. Only re-fetched PH rows are dated; everything else is honestly undated, so time-split use of those features needs the original capture dates. |
+| Mixed ids, parser version | Numeric `ph_user_id` only; `parser_version` stored per PH profile. |
+| Weak validator | `validate_v3.py`: 30 checks that can fail on real data (orphan events vs the source events, shared and multiple X handles, UUID ids, Wispr text, undated rows, re-fetch coverage); exit code 1 on failure. |
+
+Still open: personal-vs-company labelling of X handles, rebuilding `segments`, and real capture dates for the legacy rows.
+
+To run on the real data (Data Feeder, read-only inputs; output to a new directory, nothing in the bucket is overwritten):
+```bash
+python experiments/people_v2/build_v3.py --root work --out v2b
+python experiments/people_v2/validate_v3.py --dir work/v2b --refetch work/raw/ph_profiles2_refetch/profiles.jsonl.gz --events 'work/ev/*.parquet'
+```
