@@ -67,11 +67,15 @@ def main():
               "blend 50/50": 0.5 * rk(P.pts15 + P.cm15 * 1e-3) + 0.5 * rk(P.p_post.fillna(0))}
     for d, g in P.groupby("day"):
         out["days"][d] = {"posts": int(len(g)), "winners_so_far": int(g.y.sum()), "seen_by_15min": round(float(g.seen15.mean()), 3),
+                          "winners_seen_by_15min": int((g.seen15 & (g.y == 1)).sum()),
                           "list_days_read": int(g.lists_read.iat[0]), "list_days_settled": int(g.lists_settled.iat[0])}
     print(f"PROVISIONAL live Caught at 15 min: {len(P)} posts, {int(P.y.sum())} winners so far, posting days "
           f"{sorted(P.day.unique())}; seen by the recorder within 15 min: {P.seen15.mean():.1%}", flush=True)
-    for name, s in scores.items():
+    for name, s in [(n, (s, None)) for n, s in scores.items()] + [(n + " | seen within 15 min only", (s, P.seen15.to_numpy())) for n, s in scores.items()]:
+        s, keep = s
         T = P.assign(s=s.to_numpy())
+        if keep is not None:
+            T = T[keep]
         k = int(T.y.sum())
         T["flag"] = T.s.rank(ascending=False, method="first") <= k
         per = T.groupby("day").apply(lambda x: pd.Series({"hit": int((x.flag & (x.y == 1)).sum()), "n": int(x.y.sum())}))
