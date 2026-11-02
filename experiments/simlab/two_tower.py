@@ -467,6 +467,17 @@ def score_day(d):
 G = {}
 
 
+def init_worker(months):
+    import pickle
+    from . import popscore as PS, harness
+    from .page_taste import traits
+    PS.load(); harness.baseline(); traits(); G["data"] = Data()
+    if ENS:
+        G["cf"], G["gbm"] = {}, {}
+        for M in months:
+            a = pickle.load(open(f"{TT}/ens_{M}.pkl", "rb")); G["cf"][M], G["gbm"][M] = a["cf"], (a["gbm"], a["hand"])
+
+
 def features(workers):
     """psv_features.json: the two-tower's launch-level features in the psr_features.json format, for every day whose
     month has a trained net (run first). Day files land in cache/tt/pop/day_<d>.parquet (pool_check.py can read them)."""
@@ -474,21 +485,17 @@ def features(workers):
     assert ENS or not WIDE, "features: without ENS the population pass computes tie features only (WIDE=0 nets)"
     os.makedirs(POP, exist_ok=True); PS.load(); harness.baseline()
     from .page_taste import traits
-    traits(); G["data"] = Data()
     nets = {f[4:11] for f in os.listdir(TT) if f.startswith("net_") and f.endswith(TAG + ".pt")}
     days = sorted(d for d in PS.G["lineup"] if d[:7] in nets and d <= "2026-10-24")
     if os.environ.get("FEAT_DAYS"):   # a subset, for timing
         days = [d for d in days if d in os.environ["FEAT_DAYS"].split(",")]; nets = {d[:7] for d in days}
-    if ENS:   # fitted in a separate process (LightGBM's OpenMP threads in a parent deadlock forked workers), loaded here
-        import pickle, subprocess
+    if ENS:   # LightGBM + collaborative filter per month, fitted in a separate process and pickled
+        import subprocess
         need = [M for M in sorted(nets) if not os.path.exists(f"{TT}/ens_{M}.pkl")]
         if need:
             subprocess.run([sys.executable, "-m", "simlab.two_tower", "prep", ",".join(need)], check=True)
-        G["cf"], G["gbm"] = {}, {}
-        for M in sorted(nets):
-            a = pickle.load(open(f"{TT}/ens_{M}.pkl", "rb")); G["cf"][M], G["gbm"][M] = a["cf"], (a["gbm"], a["hand"])
-        print("loaded cf and all-months LightGBM for", sorted(nets), flush=True)
-    with mp.get_context("fork").Pool(workers) as pool:
+    # spawned workers, each loading its own state: OpenMP thread pools (torch, LightGBM) do not survive a fork
+    with mp.get_context("spawn").Pool(workers, initializer=init_worker, initargs=(sorted(nets),)) as pool:
         for k, r in enumerate(pool.imap_unordered(score_day, days)):
             if k % 20 == 0:
                 print("scored", k, "of", len(days), r, flush=True)
