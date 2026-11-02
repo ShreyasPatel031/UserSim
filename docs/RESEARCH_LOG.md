@@ -457,3 +457,4 @@ Model switches, direction reviews and agenda changes, newest last.
   Oct 25–31 tonight. Weekly shadow retrain with dated-follow ties on exp-1, promoted after 4+ weeks if it beats pna_.
   llm_full added to the honest filter (1dc0f8a). Honest page model from the 00:05 snapshots queued as a shadow (~30 d).
 - 21:34 UTC: mailbox checked, no new replies. HN star pull 8,559/9,662 (ETA ~22:06 UTC), PH pass after. A1 crawl streaming to raw/ph_team_history/. No follow-ups due.
+- 21:40 UTC User: never assume a source is unavailable; ask Grok Bot/Data Feeder (signed-in view). Filed 20261102T2140: are upvoter lists, maker/hunter/product follower lists and redacted maker names visible signed in? Pilot + cost. Rule added to RESEARCH_PROGRAM.md.

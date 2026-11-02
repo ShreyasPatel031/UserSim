@@ -76,6 +76,8 @@ a target out of reach. No agent writes or repeats a limiting statement about the
   - Gemini for model calls in pipelines and experiments. Claude Code sessions (the subscription) do the research work.
 - Fetch ladder: VM IP → Camoufox → DataImpulse → Camoufox via DataImpulse → Apify. Don't retry past a bot check.
 - Never commit files with Product Hunt usernames.
+- Never state that a data source is unavailable until Grok Bot / Data Feeder have checked it in the signed-in user
+  view and reported what is visible (user, Nov 2).
 
 ## Agents and roles
 | Agent | Role |
