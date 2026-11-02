@@ -645,3 +645,45 @@ Levels: psx simulation 62.7 / 63.6 / 65.4. Launch model 72.4 / 72.2 / 73.1.
   test (competitor step 1, launch-time-safe lists only) is the test that counts.
 - **Verdict:** validates as the strongest competitor source by this measure, with the circularity caveat. Next is
   merged lists in `cmp_features.py`, held until the direction review lands.
+
+## Competitor grounding with Product Hunt's Similar Products: with vs without (Nov 2, at Shreyas's request)
+**Lists** (`ph_comp_lists.py`):
+- PH Similar Products mapped to our launches.
+- A list is launch-time-safe when no listed product first launches in our data on or after the launch: 3,609 of 6,475
+  launches.
+- Only 38% of listed products ever launched in our data (from Jan 1). The rest are established products, so a safe
+  list averages 1.3 competitor launches with known votes (meaning-based lists: 5).
+
+**Person level** (`pick_boost` ABLATE, TASTE=1 TIE=1 COMP=1, May–Oct): "used a competitor" (any earlier launch of a
+listed product), with vs without.
+
+| Lists | Top-3 hit with / without | Δ (95% over months) | AUC Δ (95%) |
+|---|---|---|---|
+| Meaning (20 nearest) | 54.2 / 54.1 | +0.12 (−0.30 to +0.53), 3/6 months | +0.0017 (+0.0003 to +0.0030) |
+| PH Similar Products | 54.3 / 54.1 | +0.18 (−0.57 to +0.93), 2/6 months | +0.0023 (+0.0006 to +0.0041) |
+| PH − meaning, both with | +0.07 | | +0.0007 (4/6 months) |
+
+- Competitor use alone (no other inputs): AUC 0.545 with meaning lists, 0.511 with PH lists. The PH lists are NaN for
+  the 44% of launches without a safe list.
+- On Oct 31, before tie strength, competitor use added +1.0 top-3 hit. With tie strength in the model it adds +0.1 to
+  +0.2: most of it was the same people (team ties overlap with competitor users).
+
+**Launch level** (newsim STAGE5 on psr, + competitor gaps; `pair_score.py`, Jul–Oct, day-clustered):
+
+| Δ, sim + gaps − sim | Top 3 | Pairwise | Competitor pairs | Winner of 3, day / week / month |
+|---|---|---|---|---|
+| Meaning lists | −0.3 (−2.6 to +2.0) | −0.4 (−0.9 to +0.1) | +0.6 (−0.5 to +1.7) | +0.8 / −0.1 / +0.6 |
+| Gemini lists | −0.6 (−3.2 to +2.0) | −0.1 (−0.5 to +0.2) | +0.3 (−0.8 to +1.6) | −1.1 / +0.5 / −0.2 |
+| PH lists | +0.9 (−1.4 to +3.2) | −0.3 (−0.7 to +0.1) | +0.3 (−0.6 to +1.3) | −1.7 (−3.2 to −0.1) / +0.0 / +1.0 (+0.0 to +2.0) |
+
+The "launch model + gaps" rows (−1 to −4) are not a clean test: they refit a small model on the launch prediction,
+so they are not reported as an effect.
+
+**Verdict:**
+- Competitor grounding with the 3×-more-accurate PH lists does not raise predictive value at launch level on any
+  metric.
+- At person level it adds AUC +0.002 (interval excludes 0) and no top-3 hit.
+- The limit is coverage: 62% of listed competitors never launched in our data, so neither their votes nor their
+  audiences are visible.
+- Next step for this north-star clause: use the PH lists to bring in those competitors' audiences (their PH followers
+  and reviewers, who are real people with dated activity). Otherwise grounding stays limited to the 38% we can see.
