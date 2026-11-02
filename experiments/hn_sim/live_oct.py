@@ -61,7 +61,9 @@ def feats_from_sightings(P, S, reads, a=15):
 
 
 def odds_at_posting(P):
-    S = OL.score(P[["post_id", "title", "url", "author", "created_at_i", "text"]].reset_index(drop=True), now=0)
+    R = P[["post_id", "title", "url", "author", "created_at_i", "text"]].reset_index(drop=True)
+    R = R.assign(url=R.url.fillna(""), title=R.title.fillna(""), text=R.text.fillna(""))
+    S = OL.score(R, now=0)
     return P.post_id.map(S.drop_duplicates("post_id").set_index("post_id").p_top30).to_numpy()
 
 
