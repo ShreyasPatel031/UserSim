@@ -34,7 +34,7 @@ Socrates, OSIM-8B.
    flag as many as there are winners; Caught = winners flagged / winners. **Push the 15-minute checkpoint** (user,
    Nov 2), using honest early votes from the October /newest archive and live hn_minute; 1 h is also reported.
    At posting is reported as a calibrated probability from the odds tool, not an 80% catch target.
-   Now: 1 h 47.2%, 15 min 24.7% (Sep–Oct base); 15 min with /newest votes + early commenters 28.4% [23.6, 33.0]
+   Now: 1 h 47.2%, 15 min 26.5% [24.4, 28.7] (Sep 1–Oct 14, all available inputs; Oct 2–14 with daily retrain 29.6%), was 24.7%; 15 min with /newest votes + early commenters 28.4% [23.6, 33.0]
    on Oct 2–14 (forward daily retrain, +2.8 [+0.3, +5.3] vs 25.5% on the same days); at posting 23.2%.
 
 Everything else (competitor grounding, person-level accuracy, pairwise and competitor-pair accuracy, pool-vote
