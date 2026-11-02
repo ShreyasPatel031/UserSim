@@ -135,6 +135,23 @@ def main(posts_p, eng_p, pool_p):
     res["turnout_vs_shock"] = {c: round(float(np.nanmean([spearmanr(g[c], g.resid).correlation for _, g in Ac.groupby("day") if len(g) >= 3 and g[c].nunique() > 1])), 3)
                                if len(Ac) else None for c in [c for c in A if c.startswith(("xe_", "xr_", "x48_"))] + ["xt_pool"]}
     res["turnout_vs_shock"]["covered_days_with_3plus"] = int((Ac.groupby("day").size() >= 3).sum()) if len(Ac) else 0
+    if os.environ.get("XLODO") == "1":   # small n: leave-one-day-out over covered launches, ridge on the launch prediction + fixed turnout set
+        TX = ["xe_users", "xe_per_post", "xe_posts", "xt_pool", "x48_tease"]
+        Ac = Ac.copy(); Ac[TX] = Ac[TX].fillna(0.0); Ac["x"] = np.nan
+        for d in Ac.day.unique():
+            tr, te = Ac[Ac.day != d], Ac.day == d
+            M_ = np.c_[np.ones(len(tr)), tr[["all"] + TX].values]; mu, sd = M_.mean(0), M_.std(0) + 1e-9; mu[0], sd[0] = 0, 1
+            Z = (M_ - mu) / sd; w = np.linalg.solve(Z.T @ Z + 1.0 * np.eye(Z.shape[1]), Z.T @ tr.logv.values)
+            Ac.loc[te, "x"] = ((np.c_[np.ones(te.sum()), Ac.loc[te, ["all"] + TX].values] - mu) / sd) @ w
+        full_days = [d for d, g in A[A.day.isin(cov_days)].groupby("day") if (g.xt_cov > 0).all()]
+        rng = np.random.default_rng(0); L = {}
+        for name, U in (("days with 3+ covered launches (ranked among them)", Ac[Ac.groupby("day").id.transform("size") >= 3]),
+                        ("days where every launch is covered", Ac[Ac.day.isin(full_days)])):
+            U = U.assign(out_dailyRank=U.groupby("day").logv.rank(ascending=False, method="first"))   # rank among the covered launches
+            L[name] = {"days": int(U.day.nunique()), "launches": len(U)} | {f"top{k}": {"launch model": round(100 * float(topk(U, "all", k).mean()), 1) if len(topk(U, "all", k)) else None,
+                                  "with X turnout": round(100 * float(topk(U, "x", k).mean()), 1) if len(topk(U, "x", k)) else None,
+                                  "delta": boot(topk(U, "all", k), topk(U, "x", k), rng) if len(topk(U, "all", k)) else None} for k in (3, 5, 10)}
+        res["launch_level_lodo"] = L
     if len(rows) < 100 or not cov_days:
         res["launch_level"] = f"not measurable yet ({len(rows)} covered launches)"
     else:

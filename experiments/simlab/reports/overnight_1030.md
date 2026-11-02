@@ -1140,3 +1140,11 @@ Setup:
   - last 48 h: post count −0.09; tease (text mentions producthunt / launching / tomorrow) +0.09.
   - With about 7 launches a day over 7 days, one standard error is roughly ±0.15, so none of these differ from 0.
   - Caveat: like, impression and repost counts are read at fetch time (Nov 2), so they include engagement after launch. A positive result would have needed a leakage check; a null one doesn't.
+
+## Pre-launch X, re-run at 08:22 UTC files: first launch-level read (Nov 2)
+- Gate: built from state.json (groups fully paged, no open list or reply batch). Zero-post handles are kept as real zeros unless x_lookup marks them not found or suspended. x_lookup covers PH-pool handles, so 43 of 48 zero-post maker handles are absent from it and are kept. Result: 86 handle-days → **53 covered launches in the store** (Grok Bot reports 90; its launch count rule differs). No day has every launch covered.
+- Leakage filter: dropped 1,280 reposts (no time) and 121 replies or quotes posted after launch start.
+- **Person level:** 65 tied pairs; 32.3% voted (95% CI 21–44%) vs 0.9% placebo, a 34× lift.
+- **Launch level:** leave-one-day-out ridge on the launch prediction plus a fixed turnout set (engagers, per post, posts, X-tied PH people, 48 h tease), ranked among the covered launches on 7 days. Top 3 is 90.5 vs 90.5, top 5 80.0 vs 80.0: identical rankings, delta 0. With ~7 covered launches a day the task is too easy to tell anything, and there are 0 fully covered days, so this can't speak to the real board yet.
+- Turnout vs shock (within-day Spearman with the residual): all between −0.10 and +0.09, inside ±0.15 noise.
+- Re-run when the twitterapi top-up closes the 229 open launches; that should give full days.
