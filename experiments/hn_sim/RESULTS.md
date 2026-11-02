@@ -734,3 +734,6 @@ Nov 1 53.2%; /newest read about every other minute before the always-on VM).
 Two days, 40 winners: far too few to read; re-scored daily as lists settle (daily task 00:47 UTC).
 Fixes found on the way: listwatch reads were missing pages (HN refusals) and never re-read a day after the next, so no
 list could settle; listwatch2 retries pages and re-reads the 3 previous days (deployed; history backed up and kept).
+Seen-within-15-min subset (orchestrator's request; flags = winners in the subset; 15 winners seen: Oct 31 11, Nov 1 4):
+votes at 15 min 26.7% (4/15); odds at posting 6.7%; blend 6.7%. Coverage per day: Oct 31 41.7% of posts seen,
+Nov 1 53.2%; recorder minutes front / newest / pool: Oct 31 930 / 306 / 307, Nov 1 1,445 / 606 / 321.
