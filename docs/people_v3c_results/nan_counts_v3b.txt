@@ -1,0 +1,5 @@
+profiles,name,exact=139,contains=139
+profiles,bio,exact=3263,contains=3263
+profiles,location,exact=23901,contains=23901
+profiles,extra,exact=2283,contains=2283
+profiles.extra keys with NaN: {}

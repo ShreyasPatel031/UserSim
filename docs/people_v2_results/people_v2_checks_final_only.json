@@ -1,0 +1,326 @@
+{
+ "refetch": {
+  "files": {
+   "profiles.jsonl.gz": 16528
+  },
+  "records": 16528,
+  "status_values": [
+   [
+    "200",
+    16518
+   ],
+   [
+    "404",
+    7
+   ],
+   [
+    "-1",
+    2
+   ],
+   [
+    "403",
+    1
+   ]
+  ],
+  "unique_usernames": 16528,
+  "usernames_with_multiple_records": 0,
+  "rest_people": 16528,
+  "rest_missing_from_refetch": 0,
+  "refetch_not_in_rest": 0,
+  "missing_sample": [],
+  "old_vs_new_field_agreement_pct": {
+   "headline": 99.87,
+   "followers": 95.42,
+   "followings": 99.13,
+   "is_maker": 99.91,
+   "twitter": 100.0
+  },
+  "old_vs_new_pairs": {
+   "headline": 15166,
+   "followers": 16518,
+   "followings": 16518,
+   "is_maker": 16518,
+   "twitter": 5374
+  },
+  "user_id": {
+   "numeric": 16518,
+   "uuid": 0,
+   "null": 10,
+   "poison_ids": 0
+  },
+  "name": {
+   "null": 10,
+   "poison_names": 0,
+   "equals_username": 329
+  },
+  "joined_null": 10,
+  "joined_null_pct": 0.06,
+  "user_ids_shared_by_multiple_usernames": {},
+  "parser_version_values": [
+   [
+    "None",
+    16528
+   ]
+  ],
+  "fetched_at_present_pct": 100.0,
+  "overlap_with_ph_profiles2": 0,
+  "overlap_name_user_id_agree_pct": null,
+  "rows_failing_acceptance": 10,
+  "acceptance_rule": "numeric user_id AND non-empty name AND non-null joined AND name not Wispr Flow/Lovable"
+ },
+ "tables_v2": {
+  "rows": {
+   "persons": 20671,
+   "handles": 46397,
+   "profiles": 26600,
+   "events": 309328
+  },
+  "schema": {
+   "persons": {
+    "person_id": "str",
+    "display_name": "str",
+    "ph_username": "str",
+    "ph_name_poisoned_in_v1": "bool",
+    "first_seen": "string",
+    "built_at": "str"
+   },
+   "handles": {
+    "person_id": "str",
+    "platform": "str",
+    "handle": "str",
+    "url": "str",
+    "source": "str",
+    "confidence": "float64",
+    "note": "str",
+    "observed_on": "str"
+   },
+   "profiles": {
+    "person_id": "str",
+    "platform": "str",
+    "handle": "str",
+    "observed_on": "str",
+    "source": "str",
+    "name": "str",
+    "bio": "str",
+    "location": "str",
+    "website": "str",
+    "joined": "string",
+    "followers": "float64",
+    "following": "float64",
+    "post_count": "float64",
+    "likes_count": "float64",
+    "media_count": "float64",
+    "verified": "boolean",
+    "protected": "boolean",
+    "extra": "str"
+   },
+   "events": {
+    "person_id": "str",
+    "platform": "str",
+    "event_id": "string",
+    "ts": "str",
+    "ts_quality": "str",
+    "kind": "str",
+    "target_id": "str",
+    "text": "str",
+    "metrics": "str",
+    "source": "str"
+   }
+  },
+  "persons_unique": true,
+  "display_name_null": 11681,
+  "display_name_poisoned": 0,
+  "fk": {
+   "handles_not_in_persons": 0,
+   "profiles_not_in_persons": 0,
+   "events_not_in_persons": 541
+  },
+  "events_dup_keys": 0,
+  "events_null_ts": 0,
+  "events_ts_range": {
+   "producthunt": [
+    "2025-04-12",
+    "2026-10-29"
+   ],
+   "x": [
+    "2008-12-19",
+    "2026-10-26"
+   ]
+  },
+  "x_events_null_event_id": 0,
+  "observed_on_values": {
+   "handles": {
+    "2026-10-31": 46397
+   },
+   "profiles": {
+    "2026-10-31": 26600
+   }
+  },
+  "ph_user_id_format": {
+   "null": 13501,
+   "numeric": 4252,
+   "uuid": 2918
+  },
+  "x_hi_conf": {
+   "people": 8930,
+   "people_with_multiple": 35,
+   "handles_shared_by_multiple_people": 21
+  },
+  "x_shared_handle_top": {
+   "prateekjannu": 3,
+   "hireid_ai": 3,
+   "loquaai": 2,
+   "stevecaldwell": 2,
+   "pc4media": 2,
+   "abhinavramesh": 2,
+   "laurayyyang": 2,
+   "haita": 2,
+   "thomaspark_gg": 2,
+   "rene3zhang": 2,
+   "shavikatoch": 2,
+   "mauryaabhiranj1": 2,
+   "memmy_ai": 2,
+   "chagel": 2,
+   "astraforgeio": 2
+  },
+  "handles_by_source": [
+   {
+    "platform": "angellist",
+    "source": "ph_self_link",
+    "count": 1,
+    "min": 0.95,
+    "max": 0.95
+   },
+   {
+    "platform": "app_store",
+    "source": "ph_self_link",
+    "count": 93,
+    "min": 0.95,
+    "max": 0.95
+   },
+   {
+    "platform": "behance",
+    "source": "ph_self_link",
+    "count": 19,
+    "min": 0.95,
+    "max": 0.95
+   },
+   {
+    "platform": "dribbble",
+    "source": "ph_self_link",
+    "count": 20,
+    "min": 0.95,
+    "max": 0.95
+   },
+   {
+    "platform": "facebook",
+    "source": "ph_self_link",
+    "count": 97,
+    "min": 0.95,
+    "max": 0.95
+   },
+   {
+    "platform": "github",
+    "source": "ph_self_link",
+    "count": 719,
+    "min": 0.95,
+    "max": 0.95
+   },
+   {
+    "platform": "instagram",
+    "source": "ph_self_link",
+    "count": 331,
+    "min": 0.95,
+    "max": 0.95
+   },
+   {
+    "platform": "linkedin",
+    "source": "ph_self_link",
+    "count": 7089,
+    "min": 0.95,
+    "max": 0.95
+   },
+   {
+    "platform": "play_store",
+    "source": "ph_self_link",
+    "count": 24,
+    "min": 0.95,
+    "max": 0.95
+   },
+   {
+    "platform": "producthunt",
+    "source": "ph_username",
+    "count": 20671,
+    "min": 1.0,
+    "max": 1.0
+   },
+   {
+    "platform": "reddit",
+    "source": "ph_self_link",
+    "count": 40,
+    "min": 0.95,
+    "max": 0.95
+   },
+   {
+    "platform": "tiktok",
+    "source": "ph_self_link",
+    "count": 50,
+    "min": 0.95,
+    "max": 0.95
+   },
+   {
+    "platform": "vimeo",
+    "source": "ph_self_link",
+    "count": 1,
+    "min": 0.95,
+    "max": 0.95
+   },
+   {
+    "platform": "website",
+    "source": "ph_self_link",
+    "count": 7767,
+    "min": 0.95,
+    "max": 0.95
+   },
+   {
+    "platform": "x",
+    "source": "ph_self_link",
+    "count": 7689,
+    "min": 0.95,
+    "max": 0.95
+   },
+   {
+    "platform": "x",
+    "source": "ph_twitter_field",
+    "count": 1588,
+    "min": 0.2,
+    "max": 0.8
+   },
+   {
+    "platform": "youtube",
+    "source": "ph_self_link",
+    "count": 198,
+    "min": 0.95,
+    "max": 0.95
+   }
+  ],
+  "x_conflicts_demoted": 312,
+  "github_url_with_repo_path": 0,
+  "wispr_in_profiles_extra": 502,
+  "wispr_in_profiles_name": 9,
+  "wispr_in_profiles_bio": 6,
+  "linkedin_rows_mentioning_wispr": [
+   {
+    "person_id": "ph:constanza_hasselmann",
+    "source": "li_search_url_matches_self_link",
+    "name": "Constanza Hasselmann"
+   }
+  ],
+  "segments": {
+   "present": 20197,
+   "mentioning_wispr": 486
+  },
+  "ph_extended_fields_people": 4143,
+  "audit_csv": "x_handle_audit_100.csv (100 rows; label_personal_or_company_or_wrong to be filled by a human)"
+ }
+}

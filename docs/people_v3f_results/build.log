@@ -1,0 +1,25 @@
+{
+ "people_parts": 7,
+ "rows": {
+  "persons": 20947,
+  "handles": 46998,
+  "profiles": 26401,
+  "events": 310200
+ },
+ "refetch": {
+  "used": 16794,
+  "gone": 7,
+  "retry": 1
+ },
+ "persons_with_events_only": 8,
+ "stats": {
+  "x_field_conflict": 263,
+  "x_field_only_below_threshold": 1294,
+  "x_field_promoted_dead_link": 53,
+  "extra_self_link_demoted": 52,
+  "shared_x_handle_rows_demoted": 40
+ },
+ "missing_inputs": [],
+ "segments": "dropped (not carried over from v1)",
+ "built_at": "2026-11-02T08:49:38Z"
+}
