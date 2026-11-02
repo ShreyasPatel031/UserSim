@@ -379,3 +379,40 @@ The tests can fail: setting the field-only confidence to 0.8 failed 3 tests, and
 
 **To adopt it** once the ~30-label sample agrees: rebuild with `--x-fallback --x-lookup x_lookup.json`, run `validate_v3.py`, and compare `stats.x_field_promoted_dead_link` in
 `build_report.json` with the number of dead-link conflicts in the lookup (the first 50-row sample suggests about 24% of conflicts). Pending from Data Feeder: `x_lookup.json` (~630 handles) and the 30-conflict labels.
+
+## Fallback gate check on the fresh 30 labels, and the rebuild request (Nov 2)
+
+**Checked against the committed files** (`docs/x_lookup/`, `docs/x_handle_conflict_labeled2/`, commit 180d7819):
+- `x_lookup.json` has 632 handles, all lowercase keys: 438 exist (11 protected), 194 do not (188 `not_found`, 6 `suspended`); every existing account has a name. 438 + 188 + 6 = 632.
+- The 30 new labels tally as the README says: link 15, field 7, neither 5, both 2, unsure 1. None of the 30 person_ids is in the earlier 50.
+- Suspended accounts count as dead in the builder (`exists: false`), which is what we want for a self-link. `not_found` can also be a renamed account.
+
+**Scoring the rule with the builder's own `namesim` (a pick is right if it equals the correct handle or the answer is "both"):**
+
+| Set | rule | right | wrong | neither/unsure | promotions made | wrong-person promotions |
+|---|---|---|---|---|---|---|
+| new 30 (out of sample) | always self-link | 17 | 7 | 6 | – | – |
+| new 30 | fallback, name sim >= 0.5 | **20** | 4 | 6 | 3 (all correct) | **0** |
+| new 30 | fallback, no gate | 21 | 3 | 6 | 6 (4 correct) | **2** (`ph:ahmetsulek`, `ph:its_me_imad`) |
+| old 50 (in sample) | fallback, sim >= 0.5 | 39 | 2 | 9 | 12 (all correct) | 0 |
+| all 80 | fallback, sim >= 0.5 | 59 | 6 | 15 | 15, all correct | 0 |
+
+- **The gate stays at 0.5.** The ungated rule looks slightly better on "right", but my score treats "neither" rows as neutral, and that hides the real cost: an ungated promotion
+  that lands on a stranger attaches the stranger's X profile and posts to the person, while a dead self-link attaches nothing. Gated promotions: 15 of 15 correct over 80 labels
+  (3 of 3 out of sample), 0 wrong-person. The gate misses one correct case (`ph:amanj203`, name similarity 0.14), so recall on the dead-link cases is 3 of 4 out of sample.
+- Data Feeder's "fired on 6 rows, 4 right, 2 a different person" is the ungated count; I reproduce it. The README's remark that the gate should block the 2 is confirmed.
+- **Gate condition met, with thin evidence:** the fresh sample agrees in direction, but it contains only 3 promotions. A 15-of-15 record has a 95% lower bound of roughly 80% precision.
+  Adopted as decided; revisit if the rebuilt data shows more wrong-person cases.
+
+**Rebuild with the fallback on: not done by me (no bucket inputs).** Request for Data Feeder, same inputs as v3d, code at the current branch head:
+```bash
+python3 build_v3.py --root . --out v3e --x-fallback --x-lookup x_lookup.json
+python3 validate_v3.py --dir v3e --refetch 'raw/ph_profiles2_refetch*/profiles.jsonl.gz' --events 'ev/*.parquet'
+python3 -m pytest experiments/people_v2/test_build_v3.py -q     # optional, synthetic
+```
+Report: `build_report.json` (expect `x_field_promoted_dead_link` = 53, the count Data Feeder got on the earlier auto-on version with the same lookup and inputs; a different number means something changed,
+so investigate before using v3e), the validation output (expect all checks to pass, including `fallback_handles_confident_and_replace_a_dead_link`), and v3d versus v3e:
+handles at confidence >= 0.8 by source, X profile rows, and X posts by platform. Expected direction (not measured): about 53 persons swap their X handle; their X profile
+and posts change only where `x_people` / `x_posts` hold data for the field handle, which they may not (those handles were looked up, not scraped). If posts for promoted handles are missing,
+the next step is scraping those ~50 accounts, not changing the rule.
+The pooled label rate (15 of 80) predicts about 59 promotions of 316 conflicts; 53 is in line.
