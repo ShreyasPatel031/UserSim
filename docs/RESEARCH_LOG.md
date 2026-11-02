@@ -464,3 +464,11 @@ Model switches, direction reviews and agenda changes, newest last.
 - 21:46 UTC E5 HN simulator v1 (Oct 2–14): 22.2% vs wb15 29.6% (−7.5); blends −1.0 to −2.3. Tempering chose weight 0
   for early /newest votes because exposure was front-page only (a /newest post has ~0 exposure, so its votes are
   unexplainable). Next: /newest exposure in the likelihood, the real front page at t+15, hour-specific arrival rates.
+- 22:34 UTC: mailbox checked.
+  - All four asks (voters/followers visibility, at-launch state daily, campaign sweep + HN visibility, vote-series
+    pricing) accepted by Grok Bot and running at Data Feeder; visibility pilot started 22:10 on 3 Nov 1 launches.
+  - Pricing (2150, done): Quality News has free per-minute vote/rank series from minute 1 for every ≥5-point story
+    and ~75% of 3–4-point stories, Jul–Sep 2026 and 2025; Track HN free SQL (needs an account; Shreyas's call);
+    Wayback /newest is dense in 2025 (64% of 10-min slots). No paid source needed.
+  - Filed 2240: polite Quality News pull (Sep 1–Oct 14 first, then Jul–Aug) and Wayback /newest 2025. $0.
+  - HN stars 9,022/9,662; PH pass not started. A1 crawl streaming (1.35 MB so far).
