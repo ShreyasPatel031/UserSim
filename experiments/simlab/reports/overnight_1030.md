@@ -1135,3 +1135,8 @@ Setup:
 - **Person level:** 42 X-tied person-launch pairs (replied to or quoted a team post in the 30 days before launch). 45.2% voted on the launch (95% CI 30–60%), vs 1.2% on the same day's other launches: a 37× lift. This is the first person-level signal with real n.
 - **Turnout vs shock** (within-day Spearman with the launch model's residual, 7 days with 3+ covered launches): distinct engagers +0.04, per post +0.03, posts −0.05, X-tied PH people +0.11. No sign of a turnout signal yet; too few days to say more.
 - Launch-level top 3/5/10 is still not run (51 < 100 covered launches). It needs tomorrow's X quota (g8/9/11/12 posts, 316 lists).
+- **Extra turnout inputs (orchestrator's list), same 51 launches and 7 days.** Within-day Spearman with the launch-model residual:
+  - impressions / likes / reposts on team posts, last 7 days: −0.07 / −0.08 / −0.10; last 30 days: −0.02 / +0.02 / −0.07.
+  - last 48 h: post count −0.09; tease (text mentions producthunt / launching / tomorrow) +0.09.
+  - With about 7 launches a day over 7 days, one standard error is roughly ±0.15, so none of these differ from 0.
+  - Caveat: like, impression and repost counts are read at fetch time (Nov 2), so they include engagement after launch. A positive result would have needed a leakage check; a null one doesn't.

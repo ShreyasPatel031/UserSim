@@ -107,8 +107,18 @@ def main(posts_p, eng_p, pool_p):
             v = votes.get(u, set()); hit += x in v; n += 1
             o = lineup.get(d, set()) - {x}; ph_hit += len(v & o); ph_n += len(o)
         users = set().union(*[xu.get((h, d), set()) for h in hs]); npost = sum(len(hp[(h, d)]) for h in hs)
+        ps = [r for h in hs for r in hp[(h, d)]]; t0 = pd.Timestamp(d).tz_localize("America/Los_Angeles")
+        age = [(t0 - pd.Timestamp(r.get("posted_at"))).total_seconds() / 86400 if r.get("posted_at") else 99 for r in ps]
+        reach = {}
+        for w in (7, 30):   # counts are read at fetch time (after launch), so they include post-launch engagement
+            q = [r for r, a in zip(ps, age) if 0 <= a < w]
+            for c in ("impression_count", "like_count", "repost_count"):
+                reach[f"xr_{c.split('_')[0]}_{w}d"] = np.log1p(sum(r.get(c) or 0 for r in q))
+        q48 = [r for r, a in zip(ps, age) if 0 <= a < 2]
+        tease = any(any(t in (r.get("text") or "").lower() for t in ("producthunt", "product hunt", "launching", "tomorrow")) for r in q48)
         rows.append({"id": x, "xt_pool": np.log1p(len(tied)), "xt_w": float(sum(tied.values())), "xt_cov": 1.0,
-                     "xe_users": np.log1p(len(users)), "xe_per_post": len(users) / max(npost, 1), "xe_posts": np.log1p(npost)})
+                     "xe_users": np.log1p(len(users)), "xe_per_post": len(users) / max(npost, 1), "xe_posts": np.log1p(npost),
+                     **reach, "x48_posts": np.log1p(len(q48)), "x48_tease": float(tease)})
     res["covered_launches"] = len(rows)
     res["person_level"] = {"tied_person_launch_pairs": n, "share_voted": round(hit / n, 3) if n else None,
                            "placebo_share_other_launches_same_day": round(ph_hit / ph_n, 4) if ph_n else None,
@@ -117,13 +127,13 @@ def main(posts_p, eng_p, pool_p):
         s = hit / n; se = np.sqrt(s * (1 - s) / n); res["person_level"]["share_ci95"] = [round(max(0, s - 1.96 * se), 3), round(min(1, s + 1.96 * se), 3)]
     # launch level
     C = pd.read_parquet("results/ctrl_preds.parquet"); C["id"] = C.id.astype(str); C = C.drop_duplicates("id")
-    A = C[["id", "day", "logv", "all"]].merge(I[["id", "out_dailyRank"]], on="id").merge(pd.DataFrame(rows, columns=["id", "xt_pool", "xt_w", "xt_cov", "xe_users", "xe_per_post", "xe_posts"]), on="id", how="left")
+    A = C[["id", "day", "logv", "all"]].merge(I[["id", "out_dailyRank"]], on="id").merge(pd.DataFrame(rows), on="id", how="left")
     A["xt_cov"] = A.xt_cov.fillna(0.0)
     X = ["all", "xt_pool", "xt_w", "xt_cov", "xe_users", "xe_per_post", "xe_posts"]
     cov_days = sorted(A[A.xt_cov > 0].day.unique())
     Ac = A[A.xt_cov > 0].assign(resid=lambda f: f.logv - f["all"])
     res["turnout_vs_shock"] = {c: round(float(np.nanmean([spearmanr(g[c], g.resid).correlation for _, g in Ac.groupby("day") if len(g) >= 3 and g[c].nunique() > 1])), 3)
-                               if len(Ac) else None for c in ("xe_users", "xe_per_post", "xe_posts", "xt_pool")}
+                               if len(Ac) else None for c in [c for c in A if c.startswith(("xe_", "xr_", "x48_"))] + ["xt_pool"]}
     res["turnout_vs_shock"]["covered_days_with_3plus"] = int((Ac.groupby("day").size() >= 3).sum()) if len(Ac) else 0
     if len(rows) < 100 or not cov_days:
         res["launch_level"] = f"not measurable yet ({len(rows)} covered launches)"
