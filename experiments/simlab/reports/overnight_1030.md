@@ -752,3 +752,31 @@ days, so it falls apart on weekly and monthly lists. Monthly has 3–4 test list
 - **Monthly:** too few lists to steer by.
 - **Next:** the daily launch-day forecast from real early comments (and from Nov 9, hourly votes), then cross-day
   calibration of vote totals for weekly.
+
+## Launch-day forecast from real early comments (Nov 2, `launchday.py` + `lists_score.py`, May–Oct)
+Setup:
+- Prior: the pre-launch launch model.
+- Readings at hour h after 00:00 PT: non-team comments, distinct commenters, team comments, how established the
+  commenters are, and the day's standing and share. Only comments posted before h are used.
+- LightGBM on final log votes, rolling monthly, 3 seeds. 102,128 timed comments.
+- Share of launches with at least one comment by hour: 1h 33%, 2h 48%, 4h 61%, 8h 72%, 12h 77%.
+
+| Top 3 / 5 / 10 (Δ top 3 vs hour 0, 95% CI) | Daily (175 days) | Weekly (25 / 25 / 21 weeks) | Monthly (5–6 lists) |
+|---|---|---|---|
+| Hour 0: launch model | 65.3 / 73.9 / 81.2 | 50.7 / 57.6 / 57.6 | 46.7 / 46.7 / 51.7 |
+| Hour 1 | 65.9 / 73.7 / 80.9 (+0.6, −2.3 to +3.4) | 49.3 / 62.4 / 60.0 | 20.0 / 43.3 / 45.0 |
+| Hour 2 | 70.1 / 74.2 / 81.2 (+4.8, +1.7 to +8.0) | 48.0 / 59.2 / 62.4 | 40.0 / 50.0 / 48.3 |
+| Hour 4 | 70.5 / 74.6 / 81.7 (+5.1, +1.9 to +8.4) | 56.0 / 61.6 / 59.5 | 46.7 / 43.3 / 55.0 |
+| Hour 8 | 72.4 / 77.8 / 82.8 (+7.0, +3.6 to +10.3) | 58.7 / 63.2 / 63.3 | 26.7 / 43.3 / 53.3 |
+| Hour 12 | **74.1 / 78.9 / 82.7** (+8.8, +5.1 to +12.4) | 57.3 / 62.4 / 65.2 | 33.3 / 53.3 / 55.0 |
+| Comments only at hour 4 (no prior) | 57.3 / 64.6 / 69.1 | 38.7 / 41.6 / 47.1 | 6.7 / 36.7 / 35.0 |
+
+- **Daily:** real early comments add +4.8 on top 3 by hour 2 and +8.8 by hour 12, with intervals excluding 0. Top 5
+  reaches +5.0 and top 10 +1.4 by hour 12. These are the first launch-day gains on real data.
+- **Weekly:** +5 to +8 on top 3 from hour 4, with intervals spanning 0 (25 weeks). Top 10 is +7.6 (+1.0 to +14.3) at
+  hour 12.
+- **Monthly:** 5–6 lists, noise.
+- **Compared with E0's random sample** (83 / 86 / 82 daily): comments are sparse early, so they read the shock far
+  more weakly than votes would. A top-3 launch has about 158 pool voters but only a few comments by hour 2.
+- **Next:** the same model on hourly vote snapshots (Nov 2 onward; 7 days by Nov 9), side by side with this comment
+  curve. If votes behave like E0's sample, daily top 3 crosses 80 within the first hours.
