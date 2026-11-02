@@ -91,17 +91,57 @@ Sep 60.7 vs 59.2, Oct 60.1 vs 59.6.
   best person model measured so far: 59.0 / 0.745, against the published 55.8 / 0.728.
 - At pool level (votes summed over the day's people) the net adds nothing beyond GBM all: +0.001 [−0.018, +0.021].
 
+## Launch level: the pool sum (`psv_`, `psg_`)
+Each day's 30-day population (everyone active in the 30 days before, weighted by share of days active; 30–140k
+person-launch rows a day) scored by each month's models, summed per launch exactly as popscore phase B. Every model is
+trained only on months before the scored month. 177 days, 4,149 launches; 150 days have a complete real top 10.
+Simulation-only: launches ranked by the pool sum alone, no reach inputs (the launch model is the PH agent's, E1).
+
+| Pool sum from | Pool-vote Spearman | Pool top-3 | Daily top 3 | Top 5 | Top 10 |
+|---|---|---|---|---|---|
+| `psg_`: GBM all | **0.587** | **56.4** | **55.4** | **63.7** | **73.5** |
+| `psv_`: ensemble (C) | 0.578 | 55.8 | 55.0 | 61.4 | 73.1 |
+| net alone (C) | 0.490 | 47.1 | 46.4 | 54.0 | 67.8 |
+
+Paired against `psg_` over days (95% interval):
+| | Spearman | Pool top-3 | Top 3 | Top 5 | Top 10 |
+|---|---|---|---|---|---|
+| ensemble − GBM all | −0.008 [−0.024, +0.007] | −0.7 [−4.0, +2.7] | −0.4 [−3.8, +2.9] | −2.3 [−4.5, −0.1] | −0.4 [−1.9, +1.1] |
+| net − GBM all | −0.097 [−0.123, −0.070] | −9.3 [−13.6, −5.1] | −9.0 [−13.5, −4.3] | −9.7 [−13.0, −6.4] | −5.7 [−7.7, −3.7] |
+
+- The net's small person-level edge does not survive summing over the pool: the ensemble ties GBM all on pool votes
+  and loses 2.3 on top 5. The person-level test samples active people evenly; the pool sum is dominated by heavy,
+  well-tied people, where the hand ties already carry the signal.
+- `psg_` is the stronger launch-level input. Its pool-vote Spearman (0.587) is comparable in definition to the
+  log's 0.488 for `pnx_` (pool_check: Spearman of the summed expected picks with the pool's real votes, within day),
+  but on a different configuration (pnx has no page inputs, psg has page, taste and TIE2) and a slightly different
+  day filter (here at least 10 launches); the like-for-like comparison against the `psr_`/`psx_` day files is for the
+  PH agent, who has them.
+- Files (launch id → `_ev, _fans, _ev_ties, _reach, _pmax, _share, _top1, _top3`, the `psr_features.json` format):
+  `gs://usersim-bakeoff-347838016394/usersim_sim/tmp/e5/features/psg_features.json`, `.../psv_features.json`, and the
+  per-launch day rows `.../pop_att_ens.parquet`. Written by `two_tower features` with `ENS=1 ATT=1 TAG=_att`.
+
 ## Verdict
-- **The trained person model beats the hand-built one only as a partner, not alone.** Alone, every two-tower variant
-  loses to the baseline (−2.1 to −3.6 top-3). Averaged with the hand model, it beats the published baseline by +3.0
-  [+2.6, +3.5] in 6 of 6 months, and beats the stronger all-months hand model by +0.6 [+0.2, +0.9].
-- **Most of the person-level gain is training on more months** (+2.5 of the +3.0), which needs no neural model.
-- What decides the north star is the leaderboard. Both candidates go to the PH agent as launch-level inputs for daily
-  top 3/5/10: `psv_` (the ensemble) and `psg_` (GBM all alone), in `psr_features.json` format.
+- **Person level: the trained model beats the hand-built one only as a partner.** Alone, every two-tower variant
+  loses to the published baseline (−2.1 to −3.6 top-3). Averaged with the hand model, it beats the published baseline
+  by +3.0 [+2.6, +3.5] in 6 of 6 months, and the all-months hand model by +0.6 [+0.2, +0.9].
+- **Most of the gain is training the hand model on more months** (+2.5 [+2.1, +2.9] of the +3.0), which needs no
+  neural model. It also lifts the pool-vote Spearman (+0.021 [+0.005, +0.037] at person-day level).
+- **Launch level: the net adds nothing.** Summed over the pool, the ensemble ties the all-months hand model on pool
+  votes and daily top 3/10, and loses on top 5 (−2.3 [−4.5, −0.1]). `psg_` (all-months hand model) is the input to
+  test in the generative vote model (E1) on daily top 3/5/10; `psv_` is there for completeness.
 
 ## Next levers for the trained model
 1. Regularisation (the hold-out loss stalls while the training loss falls): dropout, weight decay, a lower learning
-   rate, a smaller dimension. Queued as a one-month sweep (September).
+   rate, a smaller dimension, listwise-only loss. One-month sweep (September) below.
 2. Several seeds averaged: ensembling helped once already, and seeds are free.
 3. Train the net on the residual of GBM all (boosting the hand model), not on its own: the net only has to learn what
    the hand model misses.
+4. Weight training toward the people who carry the pool sum (heavy, well-tied people), since that is where the
+   launch-level score is decided; the person-level test weights every active person-day equally.
+
+## Engineering notes
+- Fork-safety: a pool forked after LightGBM or torch has run in the parent deadlocks in OpenMP (py-spy: stuck in
+  `load_state_dict`). `two_tower features` fits per-month models in a separate `prep` process and uses spawned
+  workers that load their own state.
+- Waiters that `pgrep -f` for a pattern their own command line contains never fire; put waiters in a script file.
