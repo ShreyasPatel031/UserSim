@@ -103,6 +103,22 @@ def features(U, day):
     V = np.log1p(best.pivot_table(index="launch_id", columns="source", values="count", aggfunc="last").clip(lower=0))
     Ag = best.pivot_table(index="launch_id", columns="source", values="age", aggfunc="last")
     V.columns = [f"c2_{c}" for c in V.columns]; Ag.columns = [f"c2_{c}_age_d" for c in Ag.columns]
+    # one capture gives every metric of a person, so ages repeat across metrics: keep one age per role (from
+    # followers, filled from another metric where followers is missing); Holm counts inputs
+    import re
+    grp = {}
+    for c in Ag.columns:
+        m = re.match(r"(c2_.+?)_(followers|followings|points)_(maker|hunter)_age_d$", c)
+        grp.setdefault((m.group(1), m.group(3)) if m else (c, ""), []).append(c)
+    out = {}
+    for (src, role), cs in grp.items():
+        cs = sorted(cs, key=lambda c: (0 if "_followers_" in c else 1, c))
+        a = Ag[cs[0]].copy()
+        for c in cs[1:]:
+            a = a.fillna(Ag[c])
+        out[f"{src}_followers_{role}_age_d" if role else src] = a
+    dropped["age_inputs"] = f"{len(Ag.columns)} -> {len(out)}"
+    Ag = pd.DataFrame(out)
     return V.join(Ag).reset_index().rename(columns={"launch_id": "id"}), dropped
 
 

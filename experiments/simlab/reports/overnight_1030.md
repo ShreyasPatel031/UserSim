@@ -1526,3 +1526,12 @@ Nov 3 is day 0 (late capture, 0 rows): 0 of 1,144 rows pre-launch (strict) and 0
 Rerun on the X-filled version (10:40 UTC): 0 of 1,215 rows (71 X rows added), strict and relaxed.
 Rule confirmed by the orchestrator (10:05 UTC): all three conditions kept; relaxed variant stays labelled; bar 00:20 PT. Synthetic checks
 (5 cases, incl. a 104-min capture the old rule passed) all behave. From Nov 4 the capture is due by ~00:20 PT.
+
+## Wayback profiles: v1 plumbing dry run (2026-11-03 ~16:30 UTC; partial file, not a result)
+v1 partial: 2,806 rows, 513 launches, nearly all May (coverage 59% of May, <3% other months). Four variants ran end to
+end (both roles, both within 30 d, hunter-only, maker-only; SEEDS=1). As expected on this coverage: nothing passes the
+Holm gate and the daily boards don't move (62.7 / 70.4 / 76.6 vs honest live set). No conclusion until v2.
+Fixes found: (1) the file's as_of_date is the capture's UTC date; we date by capture_ts in Pacific time (204 v1 rows are
+captured the evening before launch PT but on launch day UTC: kept, as the 00:00 PT rule says); (2) capture_ts is
+Wayback's 14-digit form, parsed explicitly; (3) one capture gives all metrics of a person, so ages repeated 3x: now one
+age input per role (followers, filled from another metric), 6 -> 2 inputs for Holm.
