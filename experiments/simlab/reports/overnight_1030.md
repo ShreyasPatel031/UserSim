@@ -1688,3 +1688,6 @@ c2_targets.json took the file day. Audit: of 4,061 targets, it is the only one w
 and the only line-up-file entry that does. Fixed: c2_targets.json (bucket tmp/ph_ops) now Oct 31; c2_user_base
 launch_days() now takes the warehouse day where it differs (prints the corrections). One launch: the C2 domain and
 profile verdicts don't change.
+Instant inbox watcher started ~20:55 UTC with Shreyas's approval in this session (pinned md5 checked on start). Grok Bot's
+20:29 note (prefer one-off pulls; hooks on branch realtime-agent-msgs will replace the watcher) noted; switch when
+those hooks are live. The background run has a 2-h limit: restart via start_inbox.sh when it ends.
