@@ -1535,3 +1535,12 @@ Fixes found: (1) the file's as_of_date is the capture's UTC date; we date by cap
 captured the evening before launch PT but on launch day UTC: kept, as the 00:00 PT rule says); (2) capture_ts is
 Wayback's 14-digit form, parsed explicitly; (3) one capture gives all metrics of a person, so ages repeated 3x: now one
 age input per role (followers, filled from another metric), 6 -> 2 inputs for Holm.
+
+## Bundle 9 prepared, not deployed: llm_full leaves the headline forecast (needs Shreyas)
+model.py one line (1dc0f8a): honest_drop() adds llm_full (its prompt carries follower counts). Deployed model.py is
+the pre-change version (md5 3f816494); b9 is 379ff10a. Verified on usersim-pipeline (read-only, /tmp copies): with the
+real feature columns + LLM scores, live inputs 46 -> 45, only llm_full removed (filled for 99.3% of launches); imports
+and step order ok in a /tmp copy. pipeline/vm/deploy_b9.sh refuses inside 00:05-01:00 PT, checks both md5s, backs up.
+Reference backtest: honest.py now has "honest - live set + llm_full" (= the deployed forecast) next to "honest - live
+set" (62.7 / 70.4 / 76.6, = after b9), and VARIANTS / HONEST_OUT to run just those two without overwriting
+results/honest.*. To run on exp-1 when it is next started.
