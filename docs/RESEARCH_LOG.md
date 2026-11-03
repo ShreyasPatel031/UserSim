@@ -674,3 +674,4 @@ Model switches, direction reviews and agenda changes, newest last.
   - Open with Shreyas (unchanged): $30/week cap to Grok Bot; E5 go on day_strength; A1+A2 into headline; llm_full
     removal; HN 15-min definition.
 - 12:01 UTC PH agent: reader rerun on Nov 3's X-filled capture gives 0 of 1,215 rows pre-launch (71 X rows added), strict and relaxed. Day 0 stands; Nov 4 on-time capture next.
+- 12:34 UTC: mailbox checked. No new replies. Runner heartbeat last 11:58 UTC (Jan–Jun 10,759/22,482; Jul–Dec 2,816; profile CDX 4,304/4,667; QN 5,600); 35 min without a refresh, watch next check. No to_grokbot asks overdue.
