@@ -8,8 +8,8 @@ Reads raw/ph_at_launch/<day>/live/{posts,comments,board,people,products,coverage
   comments     usernames present and parseable; created_at <= fetched_at (+1 min) and on/after the day start - 1 day
   board        every snapshot's board lists every launch fetched in that snapshot, each with a position
   gaps         consecutive snapshot_ts more than 20 min apart (GAP_MIN), listed
-Output: one line "PASS|FAIL live capture <day>: ..." with counts, and a JSON status (STATUS_OUT, default
-results/live_capture_status.json). No usernames are printed or written: counts only.
+Output: one line "PASS|FAIL live capture <day>: ..." with counts, and a JSON status (STATUS_OUT, default per day
+results/live_capture_status_<day>.json). No usernames are printed or written: counts only.
 usage: python live_capture_check.py <day> [<live dir, default gs://.../raw/ph_at_launch/<day>/live>]"""
 import json, os, re, subprocess, sys, tempfile
 import pandas as pd
@@ -81,6 +81,12 @@ def check(day, T):
             if share < COVER:
                 low.append(f"{s:%H:%M}Z {share:.0%}")
         n["snapshots"] = len(snaps); n["launches"] = exp_n
+        key = ["snapshot_ts", "launch_id"] + (["source"] if "source" in P.columns else [])
+        dup = int(P.duplicated(key).sum())
+        if dup:
+            warn.append(f"posts: {dup} duplicate rows per (snapshot, launch, source)")
+        if "hide_votes_count" in P.columns and P.hide_votes_count.isna().all():
+            warn.append("posts: hide_votes_count empty on every row")
         if low:
             fail.append(f"{len(low)} snapshots under {COVER:.0%} fetched 200: {', '.join(low[:6])}")
         if "votes_at_fetch" in P.columns:
@@ -100,8 +106,13 @@ def check(day, T):
             if pos is None:
                 fail.append("board: no position column")
             Bt = B.assign(st=ts(B.snapshot_ts))
+            if "is_page_view" in Bt.columns:   # page=api_v2_ranking is the API's order, not what visitors see
+                n["board_api_rows"] = int((~Bt.is_page_view.fillna(False).astype(bool)).sum())
+                Bt = Bt[Bt.is_page_view.fillna(False).astype(bool)]
+                if not len(Bt):
+                    fail.append("board: no homepage / leaderboard page views (only the API ranking)")
             missing_board = 0
-            for s, g in P[P.ok].groupby("st"):
+            for s, g in (P[P.ok].groupby("st") if len(Bt) else []):
                 b = Bt[Bt.st == s]
                 have = set(b.slug.astype(str)) if pos is None else set(b[b[pos].notna()].slug.astype(str))
                 missing_board += len(set(g.slug.astype(str)) - have)
@@ -130,7 +141,7 @@ def check(day, T):
 
 def main(day, src=None):
     status, line, res = check(day, load(src or f"{BUCKET}/raw/ph_at_launch/{day}/live"))
-    out = os.environ.get("STATUS_OUT", os.path.join(os.path.dirname(os.path.abspath(__file__)), "results", "live_capture_status.json"))
+    out = os.environ.get("STATUS_OUT", os.path.join(os.path.dirname(os.path.abspath(__file__)), "results", f"live_capture_status_{day}.json"))
     os.makedirs(os.path.dirname(out), exist_ok=True)
     json.dump(res, open(out, "w"), indent=1)
     print(line)

@@ -1,0 +1,27 @@
+{
+ "day": "2026-11-03",
+ "status": "FAIL",
+ "counts": {
+  "posts": 114,
+  "board": 114,
+  "coverage": 3,
+  "snapshots": 2,
+  "launches": 38,
+  "vote_drops": 0,
+  "board_api_rows": 114,
+  "board_missing": 0
+ },
+ "fail": [
+  "posts: 38 rows with fetched_at more than 5 min from snapshot_ts",
+  "board: 38 rows with fetched_at more than 5 min from snapshot_ts",
+  "board: no homepage / leaderboard page views (only the API ranking)"
+ ],
+ "warn": [
+  "comments_ts.jsonl missing",
+  "people_ts.jsonl missing",
+  "products_ts.jsonl missing",
+  "posts: 38 duplicate rows per (snapshot, launch, source)",
+  "posts: hide_votes_count empty on every row"
+ ],
+ "checked_at": "2026-11-03T20:20:20Z"
+}
