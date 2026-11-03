@@ -35,6 +35,10 @@ Socrates, OSIM-8B.
      (A2) + existing user base (C1) on the honest day-calibrated model: daily top 3 64.6, **+1.9 [0.0, +3.8], never worse
      by month**; top 5 −0.6; top 10 +0.7 [0.0, +1.4]. Honest shock predictability 0.395 → 0.413 [+0.002, +0.035].
      Under the ±3.5 noise rule, so not claimed as a board gain; runs as shadow_honest_a2 from Nov 3.
+     **Nov 3, 23:40 UTC correction:** the store's pre-November "exact" comments are date-only (no time or zone). With the
+     safe bound (comment date ≤ launch day − 2), A2 alone gives daily top 3 +0.6 (−0.9, +2.1), down from +1.3; the gate
+     still passes (4 of 5, ρ 0.043–0.059). A2 is withdrawn as a board signal; exact-time reruns wait for the API comment
+     backfill (May 1 onward). The shadow switches to exact createdAt where available, day − 2 otherwise.
    - Tested on honest inputs, no daily gain: person models, E1, competitor page gaps and outcomes, pre-launch X
      engagement (NO-GO on 16 full days). Next: at-launch follower snapshots (from Oct 25; test ~Nov 20), PH Fable review.
    - **Launch-day, daily, from archived intraday votes (Jul–Oct, Wayback, verified):** hours 4–8: 85.1 / 95.2 / 91.8;
