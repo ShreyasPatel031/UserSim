@@ -998,3 +998,7 @@ P(top 10) is capped at P(top 30) in every version from 2026-11-03 13:09 UTC.
 Live swap done 2026-11-03 16:56 UTC (oddsloop3e): the large content model now feeds odds_live_content/ (base before);
 first run 301 posts, VM-wide peak memory 7.1 of 7.95 GB after scoring content first and freeing the model (the first
 attempt, content scored last, was killed for memory). Thin margin: if a run is killed, that hour has no content scores.
+Content-score cache (orchestrator's option b): each live post scored once (content_live.cached_logits); second hourly run
+179 cached / 96 computed, but VM-wide peak still 6.75 GB of 7.95 (> 6.5 GB threshold), so per the orchestrator's
+fallback hn-sim-1 was resized e2-standard-2 -> e2-standard-4 (16 GB, +$0.067/h) at 19:12 UTC Nov 3 (37 s down); the six
+running jobs (fdloop3, ghstars1, listwatch2, live5, oddsloop2, oddsloop3f) were requeued and verified running.
