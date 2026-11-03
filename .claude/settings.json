@@ -3,5 +3,10 @@
     "allow": [
       "Bash(gsutil cp * gs://usersim-bakeoff-347838016394/usersim_sim/mailbox/to_grokbot/*)"
     ]
+  },
+  "hooks": {
+    "PostToolUse": [{"matcher": "*", "hooks": [{"type": "command", "command": "bash \"$CLAUDE_PROJECT_DIR/tools/grok_inbox_hook.sh\" 2>/dev/null || true", "timeout": 10}]}],
+    "UserPromptSubmit": [{"hooks": [{"type": "command", "command": "bash \"$CLAUDE_PROJECT_DIR/tools/grok_inbox_hook.sh\" 2>/dev/null || true", "timeout": 10}]}],
+    "Stop": [{"hooks": [{"type": "command", "command": "bash \"$CLAUDE_PROJECT_DIR/tools/grok_wait.sh\"", "asyncRewake": true, "timeout": 3600}]}]
   }
 }
