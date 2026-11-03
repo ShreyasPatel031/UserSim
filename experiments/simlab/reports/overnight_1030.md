@@ -1575,3 +1575,7 @@ The bundle 9 block is already filed by the orchestrator (20261103T1800_SECURITY_
 Bundle 9 deploy request filed with Grok Bot by the orchestrator (to_grokbot/20261103T1810_ph_bundle9_llm_full.md), to
 deploy before 00:05 PT Nov 4. At the Nov 4 01:07 PT check: confirm ph_predict/model.py md5 379ff10a on the VM, a
 from_grokbot reply, and that the forecast step used 45 live inputs (no llm_full).
+**Bundle 9 deployed by Grok Bot (17:59 UTC) and verified by PH ops (~18:05 UTC):** ph_predict/model.py 379ff10a on the
+VM (backup ~/w/backup_b9/before.tar holds 3f816494); daily.py 27f0578d and run_daily.sh a94dea22 unchanged; with the
+deployed model, real feature columns + LLM scores give 45 live inputs, no llm_full. First forecast without it: Nov 4.
+Headline reference from now: honest live set 62.7 / 70.4 / 76.6 (the with/without backtest shows no difference).
