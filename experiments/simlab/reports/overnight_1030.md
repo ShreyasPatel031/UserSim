@@ -1523,5 +1523,6 @@ every launch until 12:00 UTC = 04:00 PT on Nov 2; comments are visible from the 
 before the first non-zero vote snapshot" alone would pass captures made hours into voting. Tightened (never looser):
 also fetched within 20 min of the launch start, and post activity counts (votes, comments at fetch) are never pre-launch.
 Nov 3 is day 0 (late capture, 0 rows): 0 of 1,144 rows pre-launch (strict) and 0 relaxed, as expected for 01:45 PT.
+Rerun on the X-filled version (10:40 UTC): 0 of 1,215 rows (71 X rows added), strict and relaxed.
 Rule confirmed by the orchestrator (10:05 UTC): all three conditions kept; relaxed variant stays labelled; bar 00:20 PT. Synthetic checks
 (5 cases, incl. a 104-min capture the old rule passed) all behave. From Nov 4 the capture is due by ~00:20 PT.
