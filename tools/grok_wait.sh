@@ -2,6 +2,7 @@
 # Stop hook (asyncRewake): wait while the session is idle; when an unread Grok Bot message arrives, print it to
 # stderr and exit 2, which wakes the model. Gives up silently after the hook timeout.
 INBOX_DIR=${GROK_INBOX_DIR:-/root/.usersim/grok_inbox}; mkdir -p "$INBOX_DIR"
+exec 8>"$INBOX_DIR/wait.lock"; flock -n 8 || exit 0   # one waiter at a time
 here=$(cd "$(dirname "$0")" && pwd)
 ( flock -n "$INBOX_DIR/watch.lock" true ) 2>/dev/null && setsid nohup bash "$here/grok_watch.sh" >/dev/null 2>&1 < /dev/null &
 while sleep 10; do
