@@ -1598,3 +1598,14 @@ Boards vs reference (Δ, 95% CI):
 Monthly: 5–6 lists, too few. Verdict on v1: a small real signal in followings, but no board gain; dated pre-launch
 follower counts add nothing beyond the honest model. v2 (resolved makers) to be run with the same config and
 reported side by side with the maker_source split.
+
+## A3 (reciprocity) step 1: coverage of dated pre-launch upvote histories (2026-11-03 ~19:00 UTC, counts only)
+May–Oct 4,134 launches (makers 4,049 people / 4,488 pairs; hunters 2,584 / 4,134); 98% have a member in the pool.
+- Strict (fetch reaching d−30): 100 launches (2.4%, Oct only). No complete upvotes_scroll; all 886 scrolls stop at
+  back_to 2026-09-01.
+- Observed (any team upvote dated in the 30 d before, other launches): 1,885 (45.6%); hunters 1,746, makers 1,002;
+  39–53% per month; median 7 upvotes.
+- Not honest as is: upvotes are dated to the upvoted launch's day (date_quality launch_day), the A2 upvote leak; and
+  without complete history a zero means "not seen". Needs cast-time dates: the daily refresh's first-seen dates (since
+  Oct 28; usable for launches from ~Nov 27) or a scroll pilot only if the page shows cast times. The comment half
+  (exact times) can run now.
