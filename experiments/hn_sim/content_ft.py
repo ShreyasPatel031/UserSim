@@ -62,6 +62,38 @@ def prep():
     print(f"{len(out)} posts, {int(out.y.sum())} winners, with page text {int((out.page != '').sum())}; uploaded", flush=True)
 
 
+def prep_author():
+    """(c) author history as text (orchestrator, 2026-11-03): for each post, its author's last 5 earlier titles from
+    posts made >= 2 days before (settled, so their points are known at posting), with points; adds column "auth" to
+    data.parquet (BigQuery stories from 2023, so 2025 posts have history too)."""
+    import store as S
+    CACHE = os.environ.get("USERSIM_CACHE", os.path.expanduser("~/.usersim_sim"))
+    st = pd.read_parquet(os.path.join(CACHE, "bq_stories.parquet"), columns=["post_id", "title", "author", "points", "created_at_i"])
+    st = st.dropna(subset=["author"]).drop_duplicates("post_id").sort_values("created_at_i")
+    f = os.path.join(CACHE, "content_ft_data.parquet")
+    if not os.path.exists(f):
+        S._bucket().get_blob(PFX + "data.parquet").download_to_filename(f)
+    D = pd.read_parquet(f)
+    want = st[st.post_id.isin(set(D.post_id))]
+    out = {}
+    wby = dict(tuple(want.groupby("author", sort=False)))
+    for a, g in st.groupby("author", sort=False):
+        w = wby.get(a)
+        if w is None or len(g) < 2:
+            continue
+        t, ti, pts = g.created_at_i.to_numpy(), g.title.fillna("").to_numpy(), g.points.fillna(0).astype(int).to_numpy()
+        for pid, born in zip(w.post_id, w.created_at_i):
+            j = np.searchsorted(t, born - 2 * 86400, side="right")
+            if j:
+                out[pid] = " | ".join(f"{ti[k]} ({pts[k]})" for k in range(max(0, j - 5), j)[::-1])
+    D["auth"] = D.post_id.map(out).fillna("")
+    D.to_parquet(f, index=False)
+    S._bucket().blob(PFX + "data.parquet").upload_from_filename(f)
+    S._bucket().blob(PFX + "content_ft.py").upload_from_filename(__file__)
+    print(f"author history for {int((D.auth != '').sum())} of {len(D)} posts ({(D.auth != '').mean():.1%}); "
+          f"winners with history {(D.auth[D.y == 1] != '').mean():.1%}", flush=True)
+
+
 STARTUP = r"""#!/bin/bash
 exec >> /var/log/cft.log 2>&1
 B=gs://%(bucket)s/%(pfx)s
@@ -193,6 +225,18 @@ def train():
         torch.cuda.empty_cache()
 
     plan = sys.argv[2] if len(sys.argv) > 2 else "base"
+    if plan == "next":                                        # orchestrator picks 2026-11-03 (c) then (b), base size
+        D["xa"] = D.x + " || earlier: " + D.auth
+        for name in ("jun30", "aug30"):                       # (c) same rows and cuts as the base model: paired
+            run(f"author_{name}", D[D.day <= CUTS[name]], D[D.day > CUTS[name]], "xa", 256)
+        # (b) out-of-fold content scores for 2025 rows (15-min model trained on 2025 + 2026): each 2025 quarter scored
+        # by a model trained on the other quarters + 2026 up to Jun 30 (never its own labels)
+        Q4 = [("2025-01-15", "2025-03-31"), ("2025-04-01", "2025-06-30"), ("2025-07-01", "2025-09-30"), ("2025-10-01", "2025-12-31")]
+        for k, (a, b) in enumerate(Q4):
+            fold = (D.day >= a) & (D.day <= b)
+            run(f"oof25_q{k + 1}", D[~fold & (D.day <= CUTS["jun30"])], D[fold], "x", 128)
+        print("DONE", flush=True)
+        return
     if plan == "deploy_large":                                # live odds tool: ModernBERT-large on every post <= Oct 14
         run("deploy_large", D, D.iloc[:0], "x", 128, epochs=2, bs=32, model=MODEL_L, lr=2e-5, save=True)
         m = AutoModelForSequenceClassification.from_pretrained("model_deploy_large", num_labels=1).to(dev)
@@ -325,4 +369,4 @@ def gate():
 
 
 if __name__ == "__main__":
-    {"prep": prep, "launch": launch, "train": train, "gate": gate}[sys.argv[1]]()
+    {"prep": prep, "prep_author": prep_author, "launch": launch, "train": train, "gate": gate}[sys.argv[1]]()
