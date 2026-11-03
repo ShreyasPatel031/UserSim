@@ -603,3 +603,9 @@ Model switches, direction reviews and agenda changes, newest last.
 - 04:35 UTC PH agent: dated_follows records resolution_days (7 while follows are read weekly); first_seen documented as an upper bound. wayback_profiles.jsonl scores via c2_user_base.py on landing.
 - 05:15 UTC E5 HN simulator, stop rule step 2: with the at-posting prior the simulator reaches AUC 0.712 vs the 15-min score's 0.648, but +0.006 over at-posting alone and −0.016 vs a plain rank-average; the prior was in-sample. Standalone simulator stopped. Handoff to the HN agent: calibrated reach table by 15-min score + vote-arrival model. Nov 8 Caught runs as a shadow. E5 idle pending Shreyas's go on the weekly magnitude model.
 - 05:16 UTC Correction: the at-posting prior used in the simulator's step 2 was out of sample (odds tool fit Jul 1–Aug 15, calibrated Aug 16–31), so the null (+0.006 over at-posting alone) is an honest test, not an upper bound. Decision unchanged.
+- 05:34 UTC: mailbox checked.
+  - Follows rota: built and tested (PHUP_FOLLOW_ROTA switch; active daily + rest weekly; ~$4/month + $0.63/pass), OFF
+    until Shreyas's $30/week cap reaches Grok Bot directly.
+  - Wayback on the box: Jan–Jun 27% (11.6/min), Jul–Dec 1% (7.6/min), profiles CDX 641/4,667; slower because the
+    three jobs share one polite worker set.
+  - Resolved makers: progress line unchanged at 1,074/2,349 since 04:26; asked for a refresh.
