@@ -166,3 +166,5 @@ The Oct 2-9 fit overlaps the HN agent's Oct 2-14 backtest, so the reach table an
 Best Sep fit: tau 0.3, kappa 0.05, c 0.25, sigma 0. A runner-up within 0.1 log-likelihood is tau 0.6, kappa 1.0, c 0.15. The Oct fit was tau 0.3, kappa 0.2, c 0.25, sigma 1.0.
 
 The real reach table is stable between months. The simulated table is still too steep, as it was in October.
+
+The HN agent tested the September reach table as a 15-min input to wb15's "+ votes + who" on Oct 2-14 (forward daily retrain, paired): 28.4% became 27.6%, a change of -0.8 [-3.1, +1.5]. There is no gain, because wb15 already sees the raw 15-min score. The handoff is closed (HN agent's reach15.py). The vote-arrival fit is kept for its live per-minute model.
