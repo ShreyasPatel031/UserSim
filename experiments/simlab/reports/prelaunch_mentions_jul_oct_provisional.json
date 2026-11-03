@@ -1,0 +1,686 @@
+{
+ "covered_months": [
+  "2026-07",
+  "2026-08",
+  "2026-09",
+  "2026-10"
+ ],
+ "draft_status": "Data Feeder sweep (draft until verified)",
+ "main (hn, reddit, bluesky, devto)": {
+  "mentions_in_window": 27512,
+  "coverage": {
+   "2026-07": {
+    "launches_in_model": 531,
+    "with_any_mention": 0.284,
+    "with_strong_mention": 0.136,
+    "with_ph_phrase": 0.019
+   },
+   "2026-08": {
+    "launches_in_model": 551,
+    "with_any_mention": 0.31,
+    "with_strong_mention": 0.162,
+    "with_ph_phrase": 0.02
+   },
+   "2026-09": {
+    "launches_in_model": 708,
+    "with_any_mention": 0.223,
+    "with_strong_mention": 0.097,
+    "with_ph_phrase": 0.003
+   },
+   "2026-10": {
+    "launches_in_model": 750,
+    "with_any_mention": 0.309,
+    "with_strong_mention": 0.145,
+    "with_ph_phrase": 0.013
+   }
+  },
+  "gate_residual_spearman_vs_honest": {
+   "pm_any_n": {
+    "mean_spearman": 0.0134,
+    "ci": [
+     -0.0331,
+     0.0608
+    ],
+    "days": 115,
+    "passes": false
+   },
+   "pm_strong_n": {
+    "mean_spearman": 0.0088,
+    "ci": [
+     -0.0362,
+     0.0533
+    ],
+    "days": 106,
+    "passes": false
+   },
+   "pm_any_authors": {
+    "mean_spearman": 0.0132,
+    "ci": [
+     -0.0327,
+     0.0609
+    ],
+    "days": 115,
+    "passes": false
+   },
+   "pm_strong_authors": {
+    "mean_spearman": 0.0086,
+    "ci": [
+     -0.0363,
+     0.0532
+    ],
+    "days": 106,
+    "passes": false
+   },
+   "pm_reach_max": {
+    "mean_spearman": 0.0139,
+    "ci": [
+     -0.0315,
+     0.0597
+    ],
+    "days": 111,
+    "passes": false
+   },
+   "pm_reach_sum": {
+    "mean_spearman": 0.0143,
+    "ci": [
+     -0.0302,
+     0.0588
+    ],
+    "days": 111,
+    "passes": false
+   },
+   "pm_ph_phrase": {
+    "mean_spearman": -0.0373,
+    "ci": [
+     -0.1216,
+     0.0471
+    ],
+    "days": 27,
+    "passes": false
+   },
+   "pm_hn_n": {
+    "mean_spearman": 0.0312,
+    "ci": [
+     -0.0137,
+     0.0769
+    ],
+    "days": 108,
+    "passes": false
+   },
+   "pm_reddit_n": {
+    "mean_spearman": 0.0209,
+    "ci": [
+     -0.038,
+     0.0806
+    ],
+    "days": 67,
+    "passes": false
+   },
+   "pm_bluesky_n": {
+    "mean_spearman": 0.0125,
+    "ci": [
+     -0.0333,
+     0.0583
+    ],
+    "days": 111,
+    "passes": false
+   },
+   "pm_devto_n": {
+    "mean_spearman": -0.0195,
+    "ci": [
+     -0.1108,
+     0.0701
+    ],
+    "days": 26,
+    "passes": false
+   }
+  },
+  "test_months": [
+   "2026-07",
+   "2026-08",
+   "2026-09",
+   "2026-10"
+  ],
+  "launches": 2540,
+  "days": 116,
+  "honest launch model alone": {
+   "daily_top3": 64.7,
+   "daily_top5": 69.7,
+   "daily_top10": 77.4,
+   "weekly_top3": 49.0,
+   "weekly_top5": 55.0,
+   "weekly_top10": 55.3,
+   "loglik": -12.948
+  },
+  "control": {
+   "daily_top3": 64.7,
+   "daily_top5": 69.7,
+   "daily_top10": 77.4,
+   "weekly_top3": 52.9,
+   "weekly_top5": 56.2,
+   "weekly_top10": 54.0,
+   "loglik": -13.079
+  },
+  "control + pm": {
+   "daily_top3": 64.7,
+   "daily_top5": 69.5,
+   "daily_top10": 77.1,
+   "weekly_top3": 52.9,
+   "weekly_top5": 56.2,
+   "weekly_top10": 55.3,
+   "loglik": -13.144
+  },
+  "vs_control": {
+   "daily_top3": [
+    -0.0,
+    [
+     -1.1,
+     1.1
+    ],
+    116
+   ],
+   "daily_top5": [
+    -0.2,
+    [
+     -1.0,
+     0.7
+    ],
+    116
+   ],
+   "daily_top10": [
+    -0.3,
+    [
+     -0.8,
+     0.2
+    ],
+    101
+   ],
+   "weekly_top3": [
+    0.0,
+    [
+     0.0,
+     0.0
+    ],
+    17
+   ],
+   "weekly_top5": [
+    0.0,
+    [
+     0.0,
+     0.0
+    ],
+    16
+   ],
+   "weekly_top10": [
+    1.3,
+    [
+     0.0,
+     3.3
+    ],
+    15
+   ],
+   "loglik": [
+    -0.059,
+    [
+     -0.161,
+     0.03
+    ],
+    116
+   ]
+  },
+  "by_month": {
+   "2026-07": {
+    "daily_top3": [
+     67.7,
+     67.7
+    ],
+    "daily_top5": [
+     75.5,
+     75.5
+    ],
+    "daily_top10": [
+     80.4,
+     80.4
+    ]
+   },
+   "2026-08": {
+    "daily_top3": [
+     67.7,
+     65.6
+    ],
+    "daily_top5": [
+     68.4,
+     69.0
+    ],
+    "daily_top10": [
+     78.5,
+     78.5
+    ]
+   },
+   "2026-09": {
+    "daily_top3": [
+     62.2,
+     63.3
+    ],
+    "daily_top5": [
+     67.3,
+     67.3
+    ],
+    "daily_top10": [
+     76.1,
+     76.1
+    ]
+   },
+   "2026-10": {
+    "daily_top3": [
+     59.7,
+     61.1
+    ],
+    "daily_top5": [
+     65.8,
+     65.8
+    ],
+    "daily_top10": [
+     73.5,
+     74.8
+    ]
+   }
+  },
+  "monthly [control + pm, control]": {
+   "monthly_top3": {
+    "2026-07": [
+     0.0,
+     0.0
+    ],
+    "2026-09": [
+     33.3,
+     33.3
+    ],
+    "2026-10": [
+     66.7,
+     66.7
+    ]
+   },
+   "monthly_top5": {
+    "2026-07": [
+     0.0,
+     0.0
+    ],
+    "2026-08": [
+     40.0,
+     40.0
+    ],
+    "2026-09": [
+     60.0,
+     60.0
+    ],
+    "2026-10": [
+     40.0,
+     40.0
+    ]
+   },
+   "monthly_top10": {
+    "2026-07": [
+     30.0,
+     30.0
+    ],
+    "2026-08": [
+     20.0,
+     20.0
+    ],
+    "2026-09": [
+     70.0,
+     70.0
+    ],
+    "2026-10": [
+     50.0,
+     50.0
+    ]
+   }
+  },
+  "note": "first covered month is trained on months without pm_ features (NaN): the model cannot use them there"
+ },
+ "+ x (Oct only, first page)": {
+  "mentions_in_window": 27621,
+  "coverage": {
+   "2026-07": {
+    "launches_in_model": 531,
+    "with_any_mention": 0.284,
+    "with_strong_mention": 0.136,
+    "with_ph_phrase": 0.019
+   },
+   "2026-08": {
+    "launches_in_model": 551,
+    "with_any_mention": 0.31,
+    "with_strong_mention": 0.162,
+    "with_ph_phrase": 0.02
+   },
+   "2026-09": {
+    "launches_in_model": 708,
+    "with_any_mention": 0.223,
+    "with_strong_mention": 0.097,
+    "with_ph_phrase": 0.003
+   },
+   "2026-10": {
+    "launches_in_model": 750,
+    "with_any_mention": 0.353,
+    "with_strong_mention": 0.204,
+    "with_ph_phrase": 0.077
+   }
+  },
+  "gate_residual_spearman_vs_honest": {
+   "pm_any_n": {
+    "mean_spearman": 0.0137,
+    "ci": [
+     -0.0322,
+     0.0614
+    ],
+    "days": 115,
+    "passes": false
+   },
+   "pm_strong_n": {
+    "mean_spearman": 0.0051,
+    "ci": [
+     -0.0393,
+     0.0497
+    ],
+    "days": 106,
+    "passes": false
+   },
+   "pm_any_authors": {
+    "mean_spearman": 0.0138,
+    "ci": [
+     -0.034,
+     0.0609
+    ],
+    "days": 115,
+    "passes": false
+   },
+   "pm_strong_authors": {
+    "mean_spearman": 0.0054,
+    "ci": [
+     -0.0386,
+     0.0502
+    ],
+    "days": 106,
+    "passes": false
+   },
+   "pm_reach_max": {
+    "mean_spearman": 0.017,
+    "ci": [
+     -0.0275,
+     0.0625
+    ],
+    "days": 111,
+    "passes": false
+   },
+   "pm_reach_sum": {
+    "mean_spearman": 0.0172,
+    "ci": [
+     -0.0274,
+     0.0618
+    ],
+    "days": 111,
+    "passes": false
+   },
+   "pm_ph_phrase": {
+    "mean_spearman": -0.0301,
+    "ci": [
+     -0.0936,
+     0.0353
+    ],
+    "days": 41,
+    "passes": false
+   },
+   "pm_hn_n": {
+    "mean_spearman": 0.0312,
+    "ci": [
+     -0.0147,
+     0.0775
+    ],
+    "days": 108,
+    "passes": false
+   },
+   "pm_reddit_n": {
+    "mean_spearman": 0.0209,
+    "ci": [
+     -0.0376,
+     0.0799
+    ],
+    "days": 67,
+    "passes": false
+   },
+   "pm_bluesky_n": {
+    "mean_spearman": 0.0125,
+    "ci": [
+     -0.0343,
+     0.0581
+    ],
+    "days": 111,
+    "passes": false
+   },
+   "pm_devto_n": {
+    "mean_spearman": -0.0195,
+    "ci": [
+     -0.1107,
+     0.0711
+    ],
+    "days": 26,
+    "passes": false
+   },
+   "pm_x_n": {
+    "mean_spearman": 0.0084,
+    "ci": [
+     -0.0705,
+     0.0878
+    ],
+    "days": 22,
+    "passes": false
+   }
+  },
+  "test_months": [
+   "2026-07",
+   "2026-08",
+   "2026-09",
+   "2026-10"
+  ],
+  "launches": 2540,
+  "days": 116,
+  "honest launch model alone": {
+   "daily_top3": 64.7,
+   "daily_top5": 69.7,
+   "daily_top10": 77.4,
+   "weekly_top3": 49.0,
+   "weekly_top5": 55.0,
+   "weekly_top10": 55.3,
+   "loglik": -12.948
+  },
+  "control": {
+   "daily_top3": 64.7,
+   "daily_top5": 69.7,
+   "daily_top10": 77.4,
+   "weekly_top3": 52.9,
+   "weekly_top5": 56.2,
+   "weekly_top10": 54.0,
+   "loglik": -13.079
+  },
+  "control + pm": {
+   "daily_top3": 64.7,
+   "daily_top5": 69.5,
+   "daily_top10": 77.0,
+   "weekly_top3": 52.9,
+   "weekly_top5": 56.2,
+   "weekly_top10": 56.0,
+   "loglik": -13.14
+  },
+  "vs_control": {
+   "daily_top3": [
+    -0.0,
+    [
+     -1.1,
+     1.1
+    ],
+    116
+   ],
+   "daily_top5": [
+    -0.2,
+    [
+     -1.0,
+     0.7
+    ],
+    116
+   ],
+   "daily_top10": [
+    -0.4,
+    [
+     -1.0,
+     0.1
+    ],
+    101
+   ],
+   "weekly_top3": [
+    0.0,
+    [
+     0.0,
+     0.0
+    ],
+    17
+   ],
+   "weekly_top5": [
+    0.0,
+    [
+     0.0,
+     0.0
+    ],
+    16
+   ],
+   "weekly_top10": [
+    2.0,
+    [
+     0.0,
+     4.0
+    ],
+    15
+   ],
+   "loglik": [
+    -0.053,
+    [
+     -0.156,
+     0.045
+    ],
+    116
+   ]
+  },
+  "by_month": {
+   "2026-07": {
+    "daily_top3": [
+     67.7,
+     67.7
+    ],
+    "daily_top5": [
+     75.5,
+     75.5
+    ],
+    "daily_top10": [
+     80.4,
+     80.4
+    ]
+   },
+   "2026-08": {
+    "daily_top3": [
+     67.7,
+     65.6
+    ],
+    "daily_top5": [
+     68.4,
+     69.0
+    ],
+    "daily_top10": [
+     78.1,
+     78.5
+    ]
+   },
+   "2026-09": {
+    "daily_top3": [
+     62.2,
+     63.3
+    ],
+    "daily_top5": [
+     67.3,
+     67.3
+    ],
+    "daily_top10": [
+     76.1,
+     76.1
+    ]
+   },
+   "2026-10": {
+    "daily_top3": [
+     59.7,
+     61.1
+    ],
+    "daily_top5": [
+     65.8,
+     65.8
+    ],
+    "daily_top10": [
+     73.5,
+     74.8
+    ]
+   }
+  },
+  "monthly [control + pm, control]": {
+   "monthly_top3": {
+    "2026-07": [
+     0.0,
+     0.0
+    ],
+    "2026-09": [
+     33.3,
+     33.3
+    ],
+    "2026-10": [
+     66.7,
+     66.7
+    ]
+   },
+   "monthly_top5": {
+    "2026-07": [
+     0.0,
+     0.0
+    ],
+    "2026-08": [
+     40.0,
+     40.0
+    ],
+    "2026-09": [
+     40.0,
+     60.0
+    ],
+    "2026-10": [
+     40.0,
+     40.0
+    ]
+   },
+   "monthly_top10": {
+    "2026-07": [
+     30.0,
+     30.0
+    ],
+    "2026-08": [
+     20.0,
+     20.0
+    ],
+    "2026-09": [
+     70.0,
+     70.0
+    ],
+    "2026-10": [
+     50.0,
+     50.0
+    ]
+   }
+  },
+  "note": "first covered month is trained on months without pm_ features (NaN): the model cannot use them there"
+ }
+}

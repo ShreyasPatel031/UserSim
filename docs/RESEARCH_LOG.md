@@ -111,3 +111,19 @@ Model switches, direction reviews and agenda changes, newest last.
   - September was trained without the features, so only October is a real test.
   - Adding X (Oct only) changes nothing.
 - **Verdict so far: no pass.** The full Jul-Oct run (4 months, with a proper forward fit) follows when Jul-Aug lands.
+
+## 2026-11-03: PH pre-launch campaign sweep, Jul-Oct (provisional; E5 agent)
+- **Fetch.** Jul-Aug fetched by the E5 agent on exp-2 (ph_sweep/sweep_jul_aug.py), using the same routes and match rules as Data Feeder's Sep-Oct sweep.
+  - Files: raw/ph_prelaunch_mentions/mentions_jul_aug_e5.jsonl and coverage_jul_aug_e5.json.
+  - Bluesky succeeded for 93% / 91% of Jul / Aug launches. A retry is running, and the run with every month at "done" follows.
+  - Bluesky's `domain:` operator now returns 400 when combined with since/until, so it queries the plain domain and requires the domain in the post's text or links.
+- **Coverage.** Any mention: Jul 28.4%, Aug 31.0%, Sep 22.3%, Oct 30.9%. Strong mention: 13.6%, 16.2%, 9.7%, 14.5%. "Product hunt" phrase: 0.3-2.0%.
+- **Gate** (per-day residual Spearman vs the honest launch model, 106-115 days). Nothing passes.
+  - Strong count +0.009 [-0.036, +0.053]; HN +0.031 [-0.014, +0.077]; Reddit +0.021 [-0.038, +0.081].
+  - Reach +0.014 [-0.030, +0.059]; "product hunt" phrase -0.037 [-0.122, +0.047].
+- **Boards vs the day-calibrated control** (2,540 launches, 116 days).
+  - Daily top 3: 0.0 [-1.1, +1.1]. Top 5: -0.2 [-1.0, +0.7]. Top 10: -0.3 [-0.8, +0.2].
+  - Weekly top 10: +1.3 [0.0, +3.3] over 15 weeks.
+  - Monthly: tied in every month and k except Sep top 5 with X.
+  - The Sep-Oct "near miss" (strong count +0.053) does not hold with 4 months.
+- **Verdict: NO-GO.** Dated pre-launch mentions on free routes add nothing over the honest model and the day calibration.

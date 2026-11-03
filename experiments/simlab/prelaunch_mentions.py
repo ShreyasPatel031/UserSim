@@ -24,8 +24,19 @@ MAIN = ["hn", "reddit", "bluesky", "devto"]
 STRONG = {"domain", "ph_link", "name+ph"}
 
 
+def _done(v, c):
+    s = v["channel_status"].get(c, "")
+    if s == "done":
+        return True
+    frac = float(os.environ.get("MIN_FRAC", "1.01"))      # provisional runs: accept a channel at >= MIN_FRAC of launches
+    try:
+        a, b = s.split("/"); return int(a) / int(b) >= frac
+    except ValueError:
+        return False
+
+
 def covered_months(cov):
-    return sorted(m for m, v in cov["months"].items() if all(v["channel_status"].get(c) == "done" for c in MAIN))
+    return sorted(m for m, v in cov["months"].items() if all(_done(v, c) for c in MAIN))
 
 
 def features(src, with_x=False):
@@ -87,7 +98,7 @@ def main(src, honest_path):
     cov = {"months": {}}
     for f in sorted(glob.glob(os.path.join(src, "coverage*.json"))):   # later files fill months the earlier left pending
         for m, v in json.load(open(f))["months"].items():
-            if m not in cov["months"] or all(v["channel_status"].get(c) == "done" for c in MAIN):
+            if m not in cov["months"] or all(_done(v, c) for c in MAIN):
                 cov["months"][m] = v
     months = covered_months(cov)
     D, promo, hist, page = EH.load(honest_path)
