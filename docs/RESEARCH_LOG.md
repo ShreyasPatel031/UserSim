@@ -620,3 +620,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 07:09 UTC HN 1 h with the content model as an input: 48.4% [45.0, 51.8], +1.1 [+0.0, +2.3] vs 47.2%; late risers
   45→60/461, re-ups 17→20, fast 563→560. Reach table not run (fitted on test days); E5 asked for a Sep-only refit.
   Scaling run (ModernBERT-large, early stopping) and a deploy model for the live tool running on a T4, ~$3, ~5 h.
+- 07:15 UTC E5 Sep-only refit of the HN handoff done (20 Sep weekdays; reach by 15-min score 3.9/10.7/19.6/35.5% for 1/2/3/4+ points, stable vs Oct). HN agent can run it honestly vs 28.4%. E5 idle pending Shreyas's go on the weekly magnitude model.
