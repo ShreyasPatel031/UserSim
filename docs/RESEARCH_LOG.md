@@ -723,3 +723,8 @@ Model switches, direction reviews and agenda changes, newest last.
 - 18:00 UTC Shreyas: route security/permission blocks to Grok Bot. Rule added to RESEARCH_PROGRAM.md, sent to the PH, HN and E5 agents; filed 20261103T1800_SECURITY_ALERTS_to_grokbot.md with alert 1 (bundle 9 deploy request blocked as Production Deploy).
 - 18:12 UTC Shreyas (orchestrator session): add the mailbox allow rule and file the deploy request. Added .claude/settings.json allow rule for gsutil cp to mailbox/to_grokbot/ (97b210b4). Filed 20261103T1810_ph_bundle9_llm_full.md (deploy before 00:05 PT; PH agent verifies at 01:07 PT).
 - 18:10 UTC Bundle 9 deployed by Grok Bot (17:59 UTC) and verified by the PH agent: live model.py 379ff10a (backup 3f816494), daily.py/run_daily.sh unchanged, recorder untouched, 45 live inputs, no llm_full. Nov 4 forecast is the first without it; headline reference 62.7/70.4/76.6.
+- 18:15 UTC E5 weekly magnitude dry run (60bf3d5b), gate registered beforehand (weekly top 3 vs daycal control 49.3, paired by week, CI > 0): no pass.
+  - Agreed arm (PH day level s_pred + launch-level rank-feedback curve fit on 2 clean snapshot days, Nov 2–3): +4.0 [−5.3, +12.0]; top 5 +2.4 [−2.4, +7.2]; top 10 −0.9; by month Jun +20, Aug +13, Sep −8, Oct −11.
+  - s_pred × prior shares, no curve: −2.7 [−6.7, 0.0] (matches the PH agent). Curve learned from backtest outcomes alone: rank-1 bonus 1.0–1.25, α 1 → no change, −2.7.
+  - Control day level + fitted curve: +9.3 [+2.7, +17.3], but the curve comes from 2 days after the backtest window (look-ahead) and only works with daycal's level → not honest evidence.
+  - Next: refit at 14 clean days (~Nov 16), scored forward on later days only. exp-2 stopped.
