@@ -573,3 +573,8 @@ Model switches, direction reviews and agenda changes, newest last.
   makers' pre-launch PH activity, stop old-data feature tests, feature store + live scoring for Nov 16; HN agent →
   content-model fine-tune (cost first, go if <$20), 2025 training set, /pool labels; Grok Bot → dated follows for the
   whole pool weekly (0345). Addendum in docs/reviews/2026-11-02_direction_review_fable2.md.
+- 03:42 UTC HN: GitHub stars final: +0.3 [−1.1, +1.6] at 15 min, no gain. Content model scoped: 598k stories 2025-01-15
+  → 2026-10-14, 19,127 winners; option (b) open encoder (ModernBERT/DeBERTa) + 1.5B LoRA on one L4 (~$2–4) chosen over
+  Gemini tuning ($35–50); starts in ~1.5 h after the E5 export. Wayback timing out from hn-sim-1 and the HN container
+  since ~23:59 UTC; wb25h2 has fetched nothing. Asked Grok Bot (0345) whether Data Feeder's half is stalled and
+  whether it's an outage or throttling.
