@@ -71,13 +71,13 @@ def resolve_commenters(C, idmap=None):
     if not bad.any():
         return C
     if idmap is None:
-        path = os.environ.get("ID_MAP")
-        if not path:
-            raise SystemExit(f"{int(bad.sum())} comments have only commenter_user_id: set ID_MAP to the id -> username map")
+        path = os.environ.get("ID_MAP", f"{BUCKET}/raw/population/user_id_map/user_id_map_20261103.jsonl")
         if path.startswith("gs://"):
             loc = os.path.join(tempfile.mkdtemp(prefix="idmap_"), os.path.basename(path))
             subprocess.run(["gsutil", "-q", "cp", path, loc], check=True); path = loc
         idmap = pd.read_parquet(path) if path.endswith(".parquet") else pd.read_json(path, lines=True, dtype=False)
+    if "last_seen" in idmap:   # renamed accounts: the current name is the one seen last
+        idmap = idmap.sort_values("last_seen").groupby(idmap.user_id.astype(str)).tail(1)
     m = dict(zip(idmap.user_id.astype(str), idmap.username.astype(str)))
     C = C.copy()
     C.loc[bad, "username"] = C.loc[bad, "commenter_user_id"].astype(str).map(m).fillna("")
