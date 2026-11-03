@@ -887,3 +887,6 @@ Caught at 15 min, Oct 2-14 (388 winners): votes + who 28.4% [23.8, 32.9]; + GitH
 web.archive.org (CDX and the home page) times out from hn-sim-1 and from this container since ~23:59 UTC Nov 2;
 HN's API answers from the VM. wb25h2 (Jul-Dec 2025 /newest) has fetched nothing. Replacement job wb25h2b waits for
 the old job to end, probes Wayback every 10 min for 24 h, and resumes the same fetch when it answers.
+Update 03:55 UTC: Wayback answers from Data Feeder's box (no 429s) but not from GCP: hn-sim-1 sees TCP timeouts only
+(no 403/429), so GCP source IPs are being dropped. Both jobs stopped (nothing fetched); Data Feeder takes Jul-Dec 2025
+onto its box, same output path. GitHub stars: closed lever.
