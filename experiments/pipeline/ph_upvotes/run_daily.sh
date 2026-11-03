@@ -9,8 +9,10 @@
 # ~$1.7/week route-4 total), the weekly cap defaults to $2.50 instead of $1 and the wait goes to 150 min. Off: behaviour unchanged.
 # usage: bash run_daily.sh [YYYY-MM-DD]   needs: /workspace/gcp-auth.sh
 set -u; D=${1:-$(date -u +%F)}; HERE=$(cd $(dirname $0) && pwd)
-export PHUP_FOLLOW_ROTA=${PHUP_FOLLOW_ROTA:-0}     # <- the switch (0 = off, 1 = whole-pool weekly rota)
-WAIT_MIN=90; if [ "$PHUP_FOLLOW_ROTA" = 1 ]; then export PHUP_WEEKLY_CAP_USD=${PHUP_WEEKLY_CAP_USD:-2.5}; WAIT_MIN=150; fi
+export PHUP_FOLLOW_ROTA=${PHUP_FOLLOW_ROTA:-1}     # <- the switch (1 = whole-pool weekly rota, ON since ask 20261103T1655; 0 = off)
+# Full schedule (ask 20261103T1740, inside Shreyas's $30/week paid-data cap): active daily + whole pool weekly, gate $6/week.
+# The $6 gate applies even if an older env passes a lower PHUP_WEEKLY_CAP_USD; set PHUP_WEEKLY_CAP_FORCE=<usd> to override.
+WAIT_MIN=90; if [ "$PHUP_FOLLOW_ROTA" = 1 ]; then export PHUP_WEEKLY_CAP_USD=${PHUP_WEEKLY_CAP_FORCE:-6}; export PHUP_ROTA_ACTIVE_DAILY=1; WAIT_MIN=150; fi
 source /workspace/gcp-auth.sh >/dev/null 2>&1
 B=gs://usersim-bakeoff-347838016394/usersim_sim; W=$B/raw/ph_people_daily/$D/work; VM=feeder-phdaily-$(echo $D | tr -d -)
 REM=$(python3 $HERE/weekly_budget.py $D $B/raw/ph_people_daily) || { echo "weekly budget exhausted (left: ${REM:-?} USD); no VM started"; exit 3; }
