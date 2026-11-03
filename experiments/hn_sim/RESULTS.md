@@ -931,3 +931,11 @@ re-ups (43 -> 51-52) and late risers (110 -> 116-121). **New at-posting headline
 
 **Caught at 15 min (Oct 2-14, 388 winners), content (cut Jun 30) as an input to votes + who:** 28.4% -> 29.1%,
 +0.8 [-2.7, +3.9]; late risers 25 -> 33, re-ups 14 -> 13, fast 71 -> 67. Not significant.
+
+**Caught at 1 h (Sep 1 - Oct 14, 1,323 winners), content (cut Jun 30) as an input to the 47.2% model (post + history
+score + rank only; cont1h.py):** **48.4% [45.0, 51.8], +1.1 [+0.0, +2.3]**, pairwise +0.012 [+0.009, +0.016]; late
+risers 45 -> 60 of 461, re-ups 17 -> 20 of 221, fast 563 -> 560 of 641.
+
+**Reach table (E5 handoff) at 15 min: not run.** It was fitted on Oct 2-9 outcomes, which are test days of the 15-min
+backtest (Oct 2-14), so as an input it would leak; an honest version (fitted on training days) is a step function of the
+15-min /newest score, which wb15 already gives the model directly.
