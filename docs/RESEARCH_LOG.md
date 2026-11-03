@@ -648,3 +648,4 @@ Model switches, direction reviews and agenda changes, newest last.
   capture runs ~01:00–01:40 PT (waits for raw/daily/<day>.json at ~00:30 PT), so most rows will fail the pre-launch rule.
   Filed 0915: trigger on a 00:06 PT upload of data/today/<day>.json and capture by ~00:20 PT. Day-1 output still absent.
 - 09:13 UTC Bundle 8 deployed (launches uploads the 00:05 PT line-up to raw/daily/<day>/today_0005.json at ~00:06 PT; first trigger Nov 4). Reader has a labelled relaxed variant for profile-level rows (within 60 min of launch start); the strict rule stays the headline. Data Feeder asked to switch the capture trigger and confirm before Nov 4 08:00 UTC.
+- 09:33 UTC: mailbox checked. Day-1 at-launch capture still absent (window 09:00–09:40); follow-up added to 0905. C2 small-source job queued behind the profile CDX. No other new replies.
