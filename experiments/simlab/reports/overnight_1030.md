@@ -1691,3 +1691,17 @@ profile verdicts don't change.
 Instant inbox watcher started ~20:55 UTC with Shreyas's approval in this session (pinned md5 checked on start). Grok Bot's
 20:29 note (prefer one-off pulls; hooks on branch realtime-agent-msgs will replace the watcher) noted; switch when
 those hooks are live. The background run has a 2-h limit: restart via start_inbox.sh when it ends.
+
+## Person model + follows (population agent's affinity inputs) — LEAKY upper bound, 2026-11-03 ~21:30 UTC
+Already in pnx (TIE/TIE2): upvoted / commented on the team's earlier launches (tie_maker, tie_maker_comments, return
+rate, recency). New: fol_team, fol_team_n (person follows a team member; warehouse follows, Oct 26 baseline + Nov 2
+page 1) and pre_comment_this (commented on this launch before its day). popscore TIE2=1 FOLLOW=all, Sep–Oct
+(models trained on Aug / Sep), vs pnx on the same 1,458 launches / 54 days. Leaky: the follow reads postdate these
+launches, so follows can come after the vote. An honest backtest is impossible (scored days end Oct 24; the first
+follow read is Oct 26).
+- Pool check (within-day Spearman with real pool turnout): ev 0.501 -> 0.514, Δ +0.013 (+0.003, +0.023); fans 0.518 ->
+  0.546, Δ +0.028 (+0.012, +0.047); pool top-3 hit unchanged (45.1 / 47.5).
+- Boards vs honest live set + day-calibrated control (person-model sums as inputs, Sep–Oct covered): pnx Δ daily top 3
+  −0.4 (−0.9, 0.0); pfa +0.6 (−0.4, +1.5); top 5 +0.3 (0.0, +0.8); top 10 0.0; weekly top 3 0.0.
+- Reading: even the leaky upper bound is small (+1.3 to +2.8 points of pool Spearman, nothing on the boards). The
+  honest live shadow (follows seen before d−1) is worth running for the record but is not urgent.

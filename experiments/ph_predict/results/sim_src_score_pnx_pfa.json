@@ -1,0 +1,143 @@
+{
+ "launches": 1458,
+ "days": 54,
+ "months": [
+  "2026-09",
+  "2026-10"
+ ],
+ "pool_check": {
+  "pnx": {
+   "spearman_ev": 0.501,
+   "spearman_fans": 0.518,
+   "pool_top3_ev": 45.1,
+   "pool_top3_fans": 47.5
+  },
+  "pfa": {
+   "spearman_ev": 0.514,
+   "spearman_fans": 0.546,
+   "pool_top3_ev": 45.1,
+   "pool_top3_fans": 47.5,
+   "spearman_ev_vs_pnx": [
+    0.013,
+    [
+     0.003,
+     0.023
+    ],
+    54
+   ],
+   "pool_top3_ev_vs_pnx": [
+    0.0,
+    [
+     -3.7,
+     3.7
+    ],
+    54
+   ],
+   "spearman_fans_vs_pnx": [
+    0.028,
+    [
+     0.012,
+     0.047
+    ],
+    54
+   ],
+   "pool_top3_fans_vs_pnx": [
+    0.0,
+    [
+     -4.3,
+     4.3
+    ],
+    54
+   ]
+  }
+ },
+ "launch_level_daily": {
+  "launch model alone": {
+   "top3": 63.9,
+   "top5": 70.0,
+   "top10": 76.5
+  },
+  "launch model + pnx": {
+   "top3": 59.7,
+   "top3_vs_launch_model": [
+    -4.2,
+    [
+     -9.7,
+     1.4
+    ],
+    24
+   ],
+   "top5": 65.8,
+   "top5_vs_launch_model": [
+    -4.2,
+    [
+     -9.2,
+     0.8
+    ],
+    24
+   ],
+   "top10": 75.2,
+   "top10_vs_launch_model": [
+    -1.3,
+    [
+     -3.9,
+     1.3
+    ],
+    23
+   ]
+  },
+  "launch model + pfa": {
+   "top3": 59.7,
+   "top3_vs_launch_model": [
+    -4.2,
+    [
+     -11.1,
+     2.8
+    ],
+    24
+   ],
+   "top3_vs_pnx": [
+    0.0,
+    [
+     -5.6,
+     5.6
+    ],
+    24
+   ],
+   "top5": 65.8,
+   "top5_vs_launch_model": [
+    -4.2,
+    [
+     -10.0,
+     1.7
+    ],
+    24
+   ],
+   "top5_vs_pnx": [
+    -0.0,
+    [
+     -5.0,
+     5.0
+    ],
+    24
+   ],
+   "top10": 73.0,
+   "top10_vs_launch_model": [
+    -3.5,
+    [
+     -7.0,
+     0.0
+    ],
+    23
+   ],
+   "top10_vs_pnx": [
+    -2.2,
+    [
+     -4.8,
+     0.4
+    ],
+    23
+   ]
+  }
+ }
+}
