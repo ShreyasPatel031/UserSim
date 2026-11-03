@@ -1462,3 +1462,15 @@ All within noise. The monthly top 10 is one list moving (Aug +20).
 - Together the honest inputs add to the shock prediction (interval above 0) and lean positive on daily top 3 (+1.9, lower bound 0.0, never worse by month), with top 10 +0.7 (lower bound 0.0).
 - That's below the ±3.5 noise rule for daily top 3, so not a claimed board gain. But it's the first honest bundle whose shock and top-3 intervals sit at or above 0.
 - Next: the A2 refinements (00:00 PT cut-off, 24 / 48 h windows, which launches the team commented on), and live recording of A2 from today. A2 needs only dated comments, so it's honest for every live launch.
+
+## A1 with resolved makers, first batch (Nov 3, `a1_team_history.py RESOLVED=…`)
+**Reference: the live honest set, day-calibrated (62.7 / 70.4 / 76.6 daily, May–Oct).** Data Feeder resolved 435 of 2,349 products with redacted makers (18.5%; 1,493 pages had no makers block anonymously, 415 were empty).
+
+- **Merge:** 860 history rows added; 412 launches' teams extended.
+- **Coverage:** launches with a team member's earlier launch, 3,343 → **3,355** of 6,540 (51.1% → 51.3%). The slope is small: about 0.03 launches with new history per resolved product. Most resolved makers' earlier launches weren't in the crawl window, or their teams were already covered.
+- **Gate:** mean relative votes 0.068 (0.024, 0.111), top-5 share 0.053 (0.008, 0.096); both pass, unchanged.
+- **A1 alone, daily:** +0.6 / +0.7 / +0.3, as before.
+- **Joint A1 + A2 + C1, daily top 3 / 5 / 10:** +1.1 (−0.8, +3.0) / −0.5 / +0.7 (−0.1, +1.4); by month May +7.5, Jun +2.3, Jul −1.1, Aug −1.1, Sep 0, Oct −1.3. Was +1.9 (0.0, +3.8). The ±1 swing from a small input change shows the top-3 effect isn't stable.
+- **Weekly:** −1.3 / 0 / −0.4. **Monthly:** +6.7 / +6.7 / +3.3.
+- **Honest shock model + A1 (resolved) + A2:** 0.415 vs 0.395, **+0.020 (+0.003, +0.037)**. This is the stable signal.
+- **Reading:** the resolved makers barely change coverage. The shock gain holds (+0.02, interval above 0). The board gain is fragile and isn't claimed.
