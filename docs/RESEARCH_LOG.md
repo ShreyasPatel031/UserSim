@@ -537,3 +537,11 @@ Model switches, direction reviews and agenda changes, newest last.
     check that rebuilt baselines are ≤ the blocklist numbers.
   - poolscore deploy waits for Shreyas to confirm the standing rule in the PH session.
 - 00:41 UTC Bundle 5 (poolscore step only) deployed under standing rule 2 (Shreyas confirmed in the PH session) and verified (md5s, STEPS …score,poolscore,earlyshock,raw; backup ~/w/backup_b5/). First complete d−7 pool row from Nov 9; provisional d−1 rows from tonight. llm_full filter waits for Shreyas.
+- 01:34 UTC: mailbox checked.
+  - ROI rerun on the honest score (Data Feeder, draft): seg_ claim withdrawn (honest CSV-only GBM 22.2/30.8/47.9;
+    add-ons ≈0 on daily top 3).
+  - Visibility item 4: makers ARE visible signed in on /products/<slug>/makers for 20/20 redacted launches; product
+    follower lists are not visible.
+  - Filed 0140: bulk-resolve redacted makers by product (signed-in, $0) to lift A1 coverage. PH agent told.
+  - NEEDS_HUMAN lists two notes the intake couldn't turn into jobs; both were already answered.
+  - A1 crawl at 5.75 MB, working back through early 2024.
