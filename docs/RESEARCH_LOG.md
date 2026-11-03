@@ -661,3 +661,15 @@ Model switches, direction reviews and agenda changes, newest last.
 - 10:36 UTC today_0005.json shape confirmed to Data Feeder (list of posts with slug). Nov 3 at-launch = day 0 (0/1,144 pre-launch). Nov 4 00:04 PT is the first on-time capture; PH daily check at 01:07 PT verifies it.
 - 11:34 UTC: mailbox checked. Nov 4 at-launch capture confirmed (00:04 PT wake, today_0005.json trigger, pages by 00:20 PT). HN signed-in visibility: no voter lists for anyone; /pool already public; only showdead ([dead] posts) is signed-in-only; passed to the HN agent for a call. Wayback: Jan–Jun 47%, Jul–Dec 10%, profile CDX 4,126/4,667.
 - 11:38 UTC HN showdead closed: 0 of 278 flagged non-winners (Oct 2–14, 15 min) are dead or deleted today, so a logged-in showdead recorder would remove no false flags.
+- 11:45 UTC: mailbox and agents checked.
+  - HN: content-score odds tool live on hn-sim-1 (first run 11:25 UTC, 104 posts, odds_live_content/; runs at :50, the
+    current tool at :35, same posts). Found a calibration defect in both versions: P(top 10) can exceed P(top 30)
+    because each threshold is calibrated separately; HN agent will enforce monotonicity. ModernBERT-large (Aug 30 cut)
+    still training; at-posting and 1 h Caught tests run on it automatically.
+  - Wayback (Data Feeder box, 4 polite workers, $0): Jan–Jun 2025 10,762/22,482 (7.4/min, ETA ~26 h); Jul–Dec
+    2,816/27,428 (3.6/min, ETA ~5 days; takes slots as the others finish); profile CDX 4,307/4,667; coverage report
+    writes itself when CDX ends, then the parse phase starts. Targets: 4,021 of 4,061 May–Oct launches, 8,690
+    person–launch pairs, 4,667 usernames; 4,033 redacted maker slots skipped (766 resolved makers can be added).
+  - PH agent: nothing new since 10:36 (Nov 4 01:07 PT check next).
+  - Open with Shreyas (unchanged): $30/week cap to Grok Bot; E5 go on day_strength; A1+A2 into headline; llm_full
+    removal; HN 15-min definition.
