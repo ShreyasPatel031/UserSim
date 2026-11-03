@@ -15,8 +15,10 @@ import content_ft as CF
 import store as S
 import top100 as H
 
-DIR = os.path.join(H.CACHE, "content_model_deploy_base")
-REF = os.path.join(H.CACHE, "content_ref.npy")
+SIZE = os.environ.get("CONTENT_MODEL", "base")       # "large": ModernBERT-large deploy model (CPU: 160 posts in 84 s on 2 vCPU)
+DIR = os.path.join(H.CACHE, f"content_model_deploy_{SIZE}")
+REF = os.path.join(H.CACHE, "content_ref.npy" if SIZE == "base" else f"content_ref_{SIZE}.npy")
+PRE = "" if SIZE == "base" else f"{SIZE}_"
 _M = {}
 
 
@@ -32,7 +34,7 @@ def _load():
         from transformers import AutoModelForSequenceClassification, AutoTokenizer
         if not os.path.exists(os.path.join(DIR, "config.json")):
             os.makedirs(DIR, exist_ok=True)
-            for x in S._bucket().list_blobs(prefix=CF.PFX + "model_deploy_base/"):
+            for x in S._bucket().list_blobs(prefix=CF.PFX + f"model_deploy_{SIZE}/"):
                 x.download_to_filename(os.path.join(DIR, x.name.split("/")[-1]))
         torch.set_num_threads(max(1, (os.cpu_count() or 2) - 1))
         _M["tok"] = AutoTokenizer.from_pretrained(DIR)
@@ -54,7 +56,7 @@ def logits(rows, bs=64):
 
 def ref():
     if not os.path.exists(REF):
-        x = S._bucket().get_blob(CF.PFX + "content_ref.npy")
+        x = S._bucket().get_blob(CF.PFX + os.path.basename(REF))
         if x is None:
             raise FileNotFoundError("content_ref.npy: run python content_live.py ref")
         x.download_to_filename(REF)
@@ -80,9 +82,9 @@ def build_ref():
 def train_pct(post_ids):
     """Training input for the odds tool: the cut-Jun-30 model's out-of-sample score, as a percentile within Jul 1 -
     Oct 14 (content_ft.py gate downloads content_scores_jun30.parquet)."""
-    f = os.path.join(H.CACHE, "content_scores_jun30.parquet")
+    f = os.path.join(H.CACHE, f"content_scores_{PRE}jun30.parquet")
     if not os.path.exists(f):
-        S._bucket().get_blob(CF.PFX + "scores_jun30.parquet").download_to_filename(f)
+        S._bucket().get_blob(CF.PFX + f"scores_{PRE}jun30.parquet").download_to_filename(f)
     sc = pd.read_parquet(f).drop_duplicates("post_id")
     R = np.sort(sc.s.to_numpy())
     v = pd.Series(post_ids).map(sc.set_index("post_id").s).to_numpy(float)

@@ -193,6 +193,16 @@ def train():
         torch.cuda.empty_cache()
 
     plan = sys.argv[2] if len(sys.argv) > 2 else "base"
+    if plan == "deploy_large":                                # live odds tool: ModernBERT-large on every post <= Oct 14
+        run("deploy_large", D, D.iloc[:0], "x", 128, epochs=2, bs=32, model=MODEL_L, lr=2e-5, save=True)
+        m = AutoModelForSequenceClassification.from_pretrained("model_deploy_large", num_labels=1).to(dev)
+        q = D[(D.day >= "2026-09-01") & (D.day <= "2026-10-14")].sample(5000, random_state=0)
+        R = np.sort(score(m, q, "x", 128))                     # percentile reference (content_live.py), on the GPU
+        np.save("content_ref_large.npy", R)
+        subprocess.run(["gcloud", "storage", "cp", "-q", "content_ref_large.npy", f"gs://{BUCKET}/{PFX}content_ref_large.npy"])
+        print(f"reference: {len(R)} posts, median logit {np.median(R):.3f}", flush=True)
+        print("DONE", flush=True)
+        return
     if plan == "large":                                       # orchestrator 2026-11-03: scale + deployable base model
         run("deploy_base", D, D.iloc[:0], "x", 128, save=True)          # all days <= Oct 14, for the live odds tool (CPU)
         for name, vstart in (("jun30", "2026-06-01"), ("aug30", "2026-08-01")):

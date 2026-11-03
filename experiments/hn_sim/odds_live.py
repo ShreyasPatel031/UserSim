@@ -35,7 +35,8 @@ import top10 as T
 import top100 as H
 
 CONTENT = os.environ.get("ODDS_CONTENT") == "1"     # content model score as an input (content_live.py); separate pkl
-MODEL = os.path.join(H.CACHE, "odds_live_content.pkl" if CONTENT else "odds_live.pkl")
+_SZ = os.environ.get("CONTENT_MODEL", "base")
+MODEL = os.path.join(H.CACHE, ("odds_live_content.pkl" if _SZ == "base" else f"odds_live_content_{_SZ}.pkl") if CONTENT else "odds_live.pkl")
 AGES = {"at posting": 0, "15 min": 15, "30 min": 30, "1 h": 60, "2 h": 120, "3 h": 180}
 KNN = ["knn_lp", "knn_100", "knn_t30", "knn_sim"]
 VOTES = ["points", "rank_now", "best_rank", "gain30", "rate"]
