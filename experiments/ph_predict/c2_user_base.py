@@ -40,6 +40,18 @@ def launch_days(days_dir="data"):
     for f in sorted(glob.glob(os.path.join(days_dir, "days", "*.json"))) + sorted(glob.glob(os.path.join(days_dir, "today", "*.json"))):
         for p in json.load(open(f)):
             day.setdefault(str(p["id"]), os.path.basename(f)[:10])
+    # a line-up file can list a launch PH later moves to another day (1284558 specsight-2: in today/2026-10-25.json,
+    # launched Oct 31); the warehouse launches table keeps the latest day, so it wins where reachable
+    try:
+        sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+        from pipeline import warehouse as W
+        wh = dict(W.query('SELECT id::VARCHAR, "day"::VARCHAR FROM launches').values.tolist())
+        fixed = {k: wh[k] for k in day if k in wh and wh[k] != day[k]}
+        day.update(fixed)
+        if fixed:
+            print(json.dumps({"launch_days_corrected_from_warehouse": fixed}), flush=True)
+    except Exception as e:  # noqa: BLE001  (no warehouse here: file days only)
+        print(json.dumps({"launch_days": f"file days only ({type(e).__name__})"}), flush=True)
     return day
 
 
