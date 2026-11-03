@@ -250,6 +250,9 @@ def score(rows: pd.DataFrame, now: float | None = None) -> pd.DataFrame:
                 for c in RANKV:
                     x[c] = V[a][c].iat[i]
             row[f"p_top{top}"] = float(iso.predict(m.predict_proba(x[cols])[:, 1])[0])
+        # top 10 and top 30 are calibrated separately, so P(top 10) can come out above P(top 30); a top-10 post is a
+        # top-30 post, so cap it (Shreyas, 2026-11-03)
+        row["p_top10"] = min(row["p_top10"], row["p_top30"])
         out.append(row)
     return pd.DataFrame(out)
 
