@@ -659,3 +659,4 @@ Model switches, direction reviews and agenda changes, newest last.
   - People refresh Nov 3: 131 upvote pages, 98.5% ok, $0.035; no follows (Tuesday; rota off).
   - Wayback: Jan–Jun 45%, Jul–Dec 9%, profile CDX 3,815/4,667.
 - 10:36 UTC today_0005.json shape confirmed to Data Feeder (list of posts with slug). Nov 3 at-launch = day 0 (0/1,144 pre-launch). Nov 4 00:04 PT is the first on-time capture; PH daily check at 01:07 PT verifies it.
+- 11:34 UTC: mailbox checked. Nov 4 at-launch capture confirmed (00:04 PT wake, today_0005.json trigger, pages by 00:20 PT). HN signed-in visibility: no voter lists for anyone; /pool already public; only showdead ([dead] posts) is signed-in-only; passed to the HN agent for a call. Wayback: Jan–Jun 47%, Jul–Dec 10%, profile CDX 4,126/4,667.
