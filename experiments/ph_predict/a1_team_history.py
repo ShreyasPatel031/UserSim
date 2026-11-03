@@ -98,7 +98,7 @@ def own_days(days_dir):
             if str(p["id"]) in seen:
                 continue
             seen.add(str(p["id"]))
-            base = {"post_id": str(p["id"]), "featuredAt": p.get("featuredAt"), "createdAt": p.get("createdAt"),
+            base = {"post_id": str(p["id"]), "slug": p.get("slug"), "featuredAt": p.get("featuredAt"), "createdAt": p.get("createdAt"),
                     "votesCount": p.get("votesCount"), "dailyRank": p.get("dailyRank")}
             for role, u in [("maker", m.get("username")) for m in (p.get("makers") or []) if isinstance(m, dict)] + [("hunter", (p.get("user") or {}).get("username"))]:
                 if u and u != "[REDACTED]":
@@ -110,8 +110,31 @@ def main(path, days_dir="data"):
     H = read_jsonl(path)
     if os.environ.get("OWN_DAYS", "1") == "1":   # add our own Jan-Oct 2026 launches as history (dedup by post id)
         O = own_days(days_dir); H = pd.concat([H, O[~O.post_id.isin(set(H.post_id.astype(str)))]], ignore_index=True)
+    T = teams(days_dir)
+    if os.environ.get("RESOLVED"):   # makers the API redacts, resolved from /products/<slug>/makers (Data Feeder), keyed by post slug
+        R = {}
+        for l in open(os.environ["RESOLVED"]):
+            r = json.loads(l)
+            hs = [m["handle"].lower() for m in (r.get("makers") or []) if m.get("handle")]
+            if hs and r.get("slug"):
+                R[r["slug"]] = hs
+        posts = H.drop_duplicates("post_id")[[c for c in ("post_id", "slug", "featuredAt", "createdAt", "votesCount", "dailyRank") if c in H]]
+        posts = posts[posts.slug.isin(R)] if "slug" in posts else posts.iloc[:0]
+        have = set(zip(H.username.str.lower(), H.post_id.astype(str)))
+        add = [{**p, "username": u, "role": "maker"} for p in posts.to_dict("records") for u in R[p["slug"]] if (u, str(p["post_id"])) not in have]
+        H = pd.concat([H, pd.DataFrame(add)], ignore_index=True)
+        slug = {}
+        for f in sorted(glob.glob(os.path.join(days_dir, "days", "*.json"))) + sorted(glob.glob(os.path.join(days_dir, "today", "*.json"))):
+            for p in json.load(open(f)):
+                slug.setdefault(str(p["id"]), p.get("slug"))
+        n_aug = 0
+        for lid, (d, mk, hu) in list(T.items()):
+            extra = set(R.get(slug.get(lid), [])) - mk
+            if extra:
+                T[lid] = (d, mk | extra, hu); n_aug += 1
+        print(f"resolved makers: {len(R)} products; {len(add)} history rows added; {n_aug} launches' teams extended", flush=True)
     print(f"history rows {len(H)}, users {H.username.nunique() if 'username' in H else '?'}", flush=True)
-    F = features(H, teams(days_dir))
+    F = features(H, T)
     print(f"launches with a fetched team {len(F)}; with earlier posts {int((F.a1_n > 0).sum())}", flush=True)
     return UE.evaluate(F, "a1", COLS, os.environ.get("OUT", "results/a1_team_history.json"))
 
