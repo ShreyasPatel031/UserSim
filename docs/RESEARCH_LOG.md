@@ -512,3 +512,11 @@ Model switches, direction reviews and agenda changes, newest last.
   - HN agent (hn-sim-1): Wayback /newest Jul–Dec 2025, in parallel with Data Feeder's Jan–Jun.
   - Grok Bot (0000): drop C2 and the sweep from Data Feeder; keep signed-in routes (visibility pilot first, at-launch
     capture, HN visibility, people refresh); run in parallel.
+- 00:09 UTC Nov 3. E5 PH campaign sweep, first read (Shreyas confirmed in E5's session). Data Feeder had already
+  finished Sep–Oct (HN Algolia, Reddit via Arctic Shift, Bluesky, dev.to, X Oct page 1); Jul–Aug still running, so E5
+  didn't duplicate.
+  - Coverage: any mention Sep 22% / Oct 31%; strong (domain, PH link, or name + "product hunt") 10% / 15%.
+  - Gate vs the honest residual: nothing passes. Strong-mention count +0.053 [−0.008, +0.111], just short.
+  - Boards vs day-calibrated: daily −0.6 / +0.4 / −0.2; weekly top 10 +2.9 [0, +5.7] (7 weeks).
+  - Reddit search 403 from GCP; Indie Hackers behind Cloudflare; LinkedIn not reachable.
+  - Rerun on Jul–Oct when Jul–Aug land.
