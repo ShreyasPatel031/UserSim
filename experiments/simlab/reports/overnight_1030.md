@@ -1515,3 +1515,12 @@ d6f4190c); backup ~/w/backup_b8/. Upload command tested on the VM (byte-identica
 real trigger: Nov 4 ~00:06 PT. A failed upload marks `launches` failed (the line-up itself is already written).
 Reader: labelled relaxed variant for profile-level sources (fetched within 60 min of the launch start; never post
 rows), pre_launch_relaxed on every row, RELAXED=1 to score it. Strict rule unchanged and remains the headline rule.
+
+## At-launch capture, first real day (2026-11-03) and a fix to the pre-launch rule
+Capture: 36 launches, 74 people, fetched 09:45–09:52 UTC (01:45 PT), ~1 h 45 min into voting. X counts still pending.
+Finding: PH hides vote counts for ~4 h, on the page (hide_votes_count, all 36) and in the API (vote_snapshots: 0 votes for
+every launch until 12:00 UTC = 04:00 PT on Nov 2; comments are visible from the first 00:06 PT snapshot). So "fetched
+before the first non-zero vote snapshot" alone would pass captures made hours into voting. Tightened (never looser):
+also fetched within 20 min of the launch start, and post activity counts (votes, comments at fetch) are never pre-launch.
+Nov 3 result: 0 of 1,144 rows pre-launch (strict) and 0 relaxed, as expected for a 01:45 PT capture. Synthetic checks
+(5 cases, incl. a 104-min capture the old rule passed) all behave. From Nov 4 the capture is due by ~00:20 PT.

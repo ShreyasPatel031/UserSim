@@ -2,14 +2,17 @@
 from pilot_2026-11-02 and raw/ph_at_launch/README.md) -> dated rows in the raw/ph_userbase schema, scored by
 c2_user_base.py with no new code.
 
-Pre-launch rule (orchestrator, Nov 3): a value is pre-launch only if it was fetched before the launch's first non-zero
-vote snapshot (warehouse vote_snapshots, hourly) and, for post rows, PH showed 0 votes at fetch. A launch with no
-non-zero snapshot yet is NOT pre-launch (unknown). Each row keeps its own fetch time (X counts are filled later than
-the page fetch, so they are judged on x_fetched_at).
+Pre-launch rule (strict; orchestrator, Nov 3, tightened after the first real day). A value is pre-launch only if all hold:
+  1. fetched within STRICT_MIN (20) min of the launch start (featured_at, else 00:01 PT);
+  2. fetched before the launch's first non-zero vote snapshot (warehouse vote_snapshots, hourly; no snapshot -> not);
+  3. not a post activity count (votes or comments at fetch), and for post rows PH did not show votes > 0.
+Rule 1 is needed because PH hides vote counts for ~4 h (on the page and in the API: shown as 0, hide_votes_count), so
+the first non-zero snapshot comes ~04:00 PT, hours after voting starts; rule 2 alone would pass late captures.
+Each row is judged on its own fetch time (X counts are filled later than the page fetch: x_fetched_at).
 as_of_date: c2 keeps only rows dated strictly before the launch day, so pre-launch rows get as_of_date = day - 1 and
 the rest get the launch day (c2 drops and counts them). fetched_at, first_vote_at and pre_launch are kept on every row.
-Note: the capture lands ~01:00-01:40 PT, after the 00:05 PT forecast; pre-launch here means "before votes moved", which
-is honest for research and for a later shadow, not for the 00:05 headline.
+Timing: Data Feeder's capture is due by ~00:20 PT from Nov 4 (trigger raw/daily/<day>/today_0005.json); a later capture
+fails rule 1. It still lands after the 00:05 forecast, so it serves research and a later shadow, not the 00:05 headline.
 Relaxed variant (orchestrator, Nov 3; report it labelled, never as the headline rule): for profile-level sources (not
 atl_post), a row fetched within RELAX_MIN (60) minutes of the launch's start (featured_at, else 00:01 PT) is
 pre_launch_relaxed; RELAXED=1 also dates those rows day - 1 for c2.
@@ -28,6 +31,8 @@ PROFILE = {"followers": "followers", "followings": "followings", "products_made"
            "upvotes_total": "upvotes_total", "reviews_count": "reviews", "badges_total": "badges", "visit_streak_days": "visit_streak"}
 RELAXED = os.environ.get("RELAXED") == "1"   # date relaxed-only rows as pre-launch too (report it labelled)
 RELAX_MIN = int(os.environ.get("RELAX_MIN", "60"))
+STRICT_MIN = int(os.environ.get("STRICT_MIN", "20"))   # the capture target is 00:20 PT
+ACTIVITY = {("atl_post", "votes"), ("atl_post", "comments")}
 EXT = {"x_free_quota": ("x", "followers"), "github_api": ("github", "stargazers_count")}
 
 
@@ -77,9 +82,13 @@ def rows_from(posts, products, makers, ext, fv):
 
     def row(lid, source, metric, value, fetched, extra_ok=True, **kw):
         t = fv.get(str(lid))
-        pre = bool(extra_ok and t is not None and fetched and ts(fetched) < ts(t))
-        # relaxed (labelled, profile-level sources only): fetched within RELAX_MIN of the launch's 00:01 PT start
         s0 = ts(start[str(lid)]) if start.get(str(lid)) else day0
+        # strict: before the first non-zero vote snapshot AND within STRICT_MIN of the launch start (PH hides vote
+        # counts for ~4 h, in the API too, so the snapshot alone would pass captures made hours into voting);
+        # activity counts read off the post (votes, comments) are never pre-launch
+        pre = bool(extra_ok and t is not None and fetched and ts(fetched) < ts(t)
+                   and ts(fetched) <= s0 + pd.Timedelta(minutes=STRICT_MIN) and (source, metric) not in ACTIVITY)
+        # relaxed (labelled, profile-level sources only): fetched within RELAX_MIN of the launch's 00:01 PT start
         rel = bool(source != "atl_post" and fetched and ts(fetched) <= s0 + pd.Timedelta(minutes=RELAX_MIN))
         use = (pre or rel) if RELAXED else pre
         return {"launch_id": str(lid), "source": source, "metric": metric, "as_of_date": prev if use else day,
@@ -90,7 +99,9 @@ def rows_from(posts, products, makers, ext, fv):
     for p in posts:
         if p["status"] != 200:
             continue
-        zero = p.get("votes_at_fetch") == 0
+        # PH hides vote counts early in the day (hide_votes_count: shown as 0), so the shown count only rules a row out
+        # when visible and > 0; the vote-snapshot timing is the rule
+        zero = bool(p.get("hide_votes_count")) or p.get("votes_at_fetch") == 0
         for k, m in POST.items():
             if isinstance(p.get(k), (int, float, bool)):
                 L.append(row(p["launch_id"], "atl_post", m, p[k], p["fetched_at"], zero))
