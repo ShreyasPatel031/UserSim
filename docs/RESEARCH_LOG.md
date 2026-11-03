@@ -567,3 +567,4 @@ Model switches, direction reviews and agenda changes, newest last.
   - Gate: nothing passes. Strong count +0.009 (the Sep–Oct +0.053 doesn't hold over 4 months).
   - Boards vs day-calibrated control: daily 0.0/−0.2/−0.3; weekly top 10 +1.3 [0, +3.3]; monthly tied.
   - Public pre-launch mentions on HN/Reddit/Bluesky/dev.to don't see the launch-day surge.
+- 03:34 UTC: mailbox checked. Only update: redacted-makers bulk pull in progress (2,349 targets). No follow-ups due.
