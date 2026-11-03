@@ -600,3 +600,4 @@ Model switches, direction reviews and agenda changes, newest last.
     (~$0.63 per full-pool read). Correction: active people's follows are read Mondays only today, so dated follows have
     weekly resolution; asked for daily reads of the active pool once confirmed.
   - Resolved makers 1,074/2,349.
+- 04:35 UTC PH agent: dated_follows records resolution_days (7 while follows are read weekly); first_seen documented as an upper bound. wayback_profiles.jsonl scores via c2_user_base.py on landing.
