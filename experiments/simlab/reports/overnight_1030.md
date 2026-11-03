@@ -1474,3 +1474,13 @@ All within noise. The monthly top 10 is one list moving (Aug +20).
 - **Weekly:** −1.3 / 0 / −0.4. **Monthly:** +6.7 / +6.7 / +3.3.
 - **Honest shock model + A1 (resolved) + A2:** 0.415 vs 0.395, **+0.020 (+0.003, +0.037)**. This is the stable signal.
 - **Reading:** the resolved makers barely change coverage. The shock gain holds (+0.02, interval above 0). The board gain is fragile and isn't claimed.
+
+## C2 source 1: domain Wayback captures before launch (2026-11-03 08:20 UTC)
+Reference: honest - live set (62.7 / 70.4 / 76.6 daily top 3/5/10, May–Oct). Inputs: distinct capture days of the launch's
+domain in the 90 / 365 days before launch day, and domain age (first-ever capture to day−1). Free CDX API from exp-1.
+Coverage 64.6% of all launches (88–91% per month May–Oct; Mar–Apr have no targets). No rows on or after launch day.
+- Gate: fails on all three (within-day Spearman −0.015 / −0.014 / −0.009, all CIs span 0; Holm p 1.0 / 1.0 / 0.34).
+- Boards (trees): daily top 3 −0.9 (−1.9 to 0.0), top 5 −0.1 (−0.6 to +0.3), top 10 −0.3 (−0.8 to +0.2).
+  Linear arm: −0.4 / −0.1 / +0.1, all spanning 0. Weekly and monthly unchanged within noise.
+- Verdict: null. Whether a domain is archived, and how often, says nothing about the shock beyond the honest model. Drop it.
+  Wayback profile captures (Data Feeder's wayback_profiles.jsonl) are scored separately when they land.
