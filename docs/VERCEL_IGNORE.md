@@ -23,6 +23,10 @@ so docs and experiment PRs hit the limit ("Deployment rate limited - retry in 24
   This pair matters: `.git` is about 265 MB here and a function bundle is limited to about 250 MB, so a bundled `.git` would fail a deployment. `test_vercelignore_keeps_git_for_the_ignore_step_and_the_function_excludes_it` fails if either half is undone.
 - The clone Vercel makes is shallow. If the last deployed commit is not in it, the script builds and says so (`vercel_ignore: last deployed commit ... is not in this (shallow) clone`).
 
+## Verified on Vercel (Nov 3, preview of PR #145)
+- Deployment `Bym9EN142`: the log shows `Running "bash scripts/vercel_ignore.sh"`, then `vercel_ignore: app files changed since 226d7dc: building`, then `Running "vercel build"`. So `.git` and the previous deployed commit were present in Vercel's clone, the diff worked, and the build ran for the right reason (`vercel.json`, `.vercelignore` and the script had changed). The 265 MB `.git` did not break the function bundle (Ready in about 37 s).
+- A docs-only push after that should show `vercel_ignore: nothing the app deploys changed since ...: skipping` and a canceled deployment. The result of that test is recorded in PR #145.
+
 ## Tests and how to check it on Vercel
 - `python -m pytest scripts/test_vercel_ignore.py` runs the script in a throwaway git repository (21 cases: non-app paths skip, app paths build, production and first deploys build, every error builds with a reason).
 - On Vercel, a skipped deployment shows as canceled/ignored and the log has a "Running Ignored Build Step" line; a build shows the normal build log. The script prints one line starting `vercel_ignore:` saying why it built or skipped; the deployment log is the only place that proves it ran.
