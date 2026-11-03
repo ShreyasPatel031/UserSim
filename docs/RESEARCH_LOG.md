@@ -562,3 +562,8 @@ Model switches, direction reviews and agenda changes, newest last.
   - Boards: daily +0.6/+0.7/+0.3 (CIs span 0), weekly ≈0, monthly top 10 +3.3/+5.0 on 6 lists. No board moves.
   - Next: rerun with resolved makers; add A1 to the honest shock model (0.395). C2 Wayback 25%, ETA ~07:30 UTC.
 - 03:09 UTC Honest shock model + A1: within-day Spearman 0.402 vs 0.395 (+0.007 [−0.009, +0.023]), 3/5 months better; within noise. shock_model.py takes EXTRA_FEATS so resolved-maker A1 and C2 drop in. Next: resolved makers (~4–5 h), C2 (~07:30).
+- 03:13 UTC E5 campaign sweep Jul–Oct, provisional: NO-GO.
+  - Coverage: any mention 22–31% per month; strong 10–16%; the "product hunt" phrase ≤2%.
+  - Gate: nothing passes. Strong count +0.009 (the Sep–Oct +0.053 doesn't hold over 4 months).
+  - Boards vs day-calibrated control: daily 0.0/−0.2/−0.3; weekly top 10 +1.3 [0, +3.3]; monthly tied.
+  - Public pre-launch mentions on HN/Reddit/Bluesky/dev.to don't see the launch-day surge.
