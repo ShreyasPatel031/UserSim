@@ -65,6 +65,10 @@ def s_launches(d, con, dry):
     L = day_rows(d); L[["daily_rank", "weekly_rank", "monthly_rank", "votes"]] = None   # not final: never stored as outcomes
     if not dry:
         W.write("launches", L)
+    if not dry and len(L):   # the trigger Data Feeder's at-launch capture watches (~00:06 PT; <d>.json itself lands ~00:30)
+        r = subprocess.run(["gsutil", "-q", "cp", f"{RAW}/today/{d}.json", f"{W.BUCKET}/raw/daily/{d}/today_0005.json"], check=False)
+        if r.returncode:
+            return {"items": len(L), "status": "failed: today_0005.json upload"}
     return {"items": len(L), **({} if len(L) else {"status": "failed: 0 launches fetched for today"})}
 
 
@@ -172,6 +176,7 @@ def s_simforecast(d, con, dry):
 
 
 SHADOW = os.path.join(PH, "data", "shadow")   # shadow forecasts: <SHADOW>/<name>/predict.py, run next to the live ones
+SHADOW_DEFAULT = "daycal,honest_a2"   # honest_a2: live offset + day terms + A1 team history + A2 team comments (bundle 6)
 
 
 @step("shadow")
@@ -183,7 +188,7 @@ def s_shadow(d, con, dry):
     under 90% of the line-up, or prints nothing fails the step loudly."""
     lineup = {str(p["id"]): p["name"] for p in json.load(open(f"{RAW}/today/{d}.json"))}
     out, bad = {"items": 0}, []
-    for name in [n for n in os.environ.get("SHADOW_MODELS", "daycal").split(",") if n]:
+    for name in [n for n in os.environ.get("SHADOW_MODELS", SHADOW_DEFAULT).split(",") if n]:
         path = os.path.join(SHADOW, name)
         if not os.path.exists(os.path.join(path, "predict.py")):
             out[name] = "not installed"; continue
@@ -407,8 +412,16 @@ def s_score(d, con, dry):
     if not len(T):
         return {"items": 0}
     T = T.drop_duplicates(["model", "daily_rank"])   # one row per launch and model if a forecast was written twice
+    # line-up gaps, so the honest treatment is visible: late_featured = launches on the final featured board that were
+    # not in the 00:05 PT line-up the forecast saw (they count as misses); late_in_top_k = those among the top k;
+    # dropped_from_featured = line-up launches with no final daily rank
+    lineup = set(con.execute(f"SELECT DISTINCT launch_id::VARCHAR FROM forecasts WHERE forecast_date = '{y}' AND model = 'launch_model'").df().iloc[:, 0])
+    fin = con.execute(f"SELECT id::VARCHAR AS id, daily_rank FROM launches WHERE day::VARCHAR = '{y}' AND daily_rank IS NOT NULL").df()
+    late = fin[~fin.id.isin(lineup)] if lineup else fin.iloc[:0]
+    dropped = len(lineup - set(fin.id))
     rows = [{"day": y, "model": mdl, "k": k,
-             "hit": int(((g.predicted_rank <= k) & (g.daily_rank <= k)).sum()), "recall": ((g.predicted_rank <= k) & (g.daily_rank <= k)).sum() / k}
+             "hit": int(((g.predicted_rank <= k) & (g.daily_rank <= k)).sum()), "recall": ((g.predicted_rank <= k) & (g.daily_rank <= k)).sum() / k,
+             "late_featured": len(late), "late_in_top_k": int((late.daily_rank <= k).sum()), "dropped_from_featured": dropped}
             for mdl, g in T.groupby("model") for k in (3, 5, 10)]
     rows += weekly_scores(d, con)
     if not dry:
@@ -427,7 +440,7 @@ def weekly_scores(d, con):
     L = con.execute(f"SELECT id, weekly_rank FROM launches WHERE day::VARCHAR IN ({','.join(repr(x) for x in days)}) AND weekly_rank IS NOT NULL").df()
     L["id"] = L.id.astype(str)
     files = {"launch_model": [f"{PH}/results/forecast_{x}.parquet" for x in days]}
-    for name in [n for n in os.environ.get("SHADOW_MODELS", "daycal").split(",") if n]:
+    for name in [n for n in os.environ.get("SHADOW_MODELS", SHADOW_DEFAULT).split(",") if n]:
         files[f"shadow_{name}"] = [f"{PH}/results/shadow_{name}_{x}.parquet" for x in days]
     rows = []
     for mdl, fs in files.items():
@@ -440,6 +453,39 @@ def weekly_scores(d, con):
                 hit = len(set(S.nlargest(k, "score").id) & set(S[S.weekly_rank <= k].id))
                 rows.append({"day": sun.isoformat(), "model": f"weekly:{mdl}", "k": k, "hit": hit, "recall": hit / k})
     return rows
+
+
+@step("poolscore")
+def s_poolscore(d, con, dry):
+    """The person model's daily metric: for the launches of day d-7 (complete: a person's upvotes are seen only when
+    their upvote page is next read, and the daily refresh reaches stale people within about 7 days) and of day d-1
+    (provisional, labelled), the within-day Spearman of the live pool simulation's expected pool picks
+    (data/sim_live/pnx_<day>.json, pnx_ev) with the real number of pool people who upvoted or commented on each launch,
+    and the share of each launch's final votes cast by pool people. -> warehouse table pool_scores."""
+    from scipy.stats import spearmanr
+    rows = []
+    for lag, label in ((7, "complete"), (1, "provisional")):
+        day = INC.days_before(d, lag)
+        f = os.path.join(RAW, "sim_live", f"pnx_{day}.json")
+        if not os.path.exists(f):
+            continue
+        S = json.load(open(f))
+        R = con.execute(f"""SELECT l.id::VARCHAR AS id, l.votes, count(DISTINCT e.person) AS pool
+                            FROM launches l LEFT JOIN events e ON e.launch_id::VARCHAR = l.id::VARCHAR AND e.kind IN ('upvote', 'comment')
+                            WHERE l.day::VARCHAR = '{day}' GROUP BY 1, 2""").df()
+        R["ev"] = R.id.map(lambda x: (S.get(x) or {}).get("pnx_ev"))
+        R = R[R.ev.notna()]
+        if len(R) < 5:
+            continue
+        rho = spearmanr(R.ev, R.pool).correlation if R.pool.nunique() > 1 and R.ev.nunique() > 1 else None   # none yet: no voters seen
+        share = (R.pool / R.votes.where(R.votes > 0)).mean()
+        rows.append({"day": day, "scored_on": d, "status": label, "model": "pnx", "launches": len(R), "pool_spearman": None if rho is None or pd.isna(rho) else float(rho),
+                     "pool_share_of_votes": float(share) if pd.notna(share) else None, "pool_voters": int(R.pool.sum())})
+    if rows and not dry:
+        W.write("pool_scores", pd.DataFrame(rows))
+    for r in rows:
+        print(json.dumps({"poolscore": r}), flush=True)
+    return {"items": len(rows)}
 
 
 @step("earlyshock")
@@ -467,7 +513,7 @@ def s_raw(d, con, dry):
     return {"items": len(files)}
 
 
-STEPS = [s_launches, s_at_launch, s_list_check, s_snap, s_forecast, s_simforecast, s_shadow, s_ranks, s_comments, s_people, s_ph_upvotes, s_personas, s_score, s_earlyshock, s_raw]
+STEPS = [s_launches, s_at_launch, s_list_check, s_snap, s_forecast, s_simforecast, s_shadow, s_ranks, s_comments, s_people, s_ph_upvotes, s_personas, s_score, s_poolscore, s_earlyshock, s_raw]
 
 
 def main(argv):

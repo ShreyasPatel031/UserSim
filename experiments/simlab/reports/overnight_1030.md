@@ -1318,3 +1318,211 @@ The ctrl.py `all` model, same folds and LightGBM, 5 seeds. Leak groups dropped c
 - **Deployed and verified (Nov 2, 15:06 UTC):** 20261102_b4.
   - Contents: the early-shock step (`earlyshock` between score and raw, idle until 14 clean days from Nov 3), pipeline/snapshots.py, s_raw uploading the honest forecast parquet and pnx_<d>.json.
   - On the VM: md5s match; run_daily.sh has score,earlyshock,raw; backup at ~/w/backup_20261102_b4/; one hourly recorder, untouched.
+
+## Experiment zero: how predictable is the launch shock from honest pre-launch inputs? (Nov 2, `simlab/shock_model.py` stage 1, `HONEST=0` vs `HONEST=1`)
+Same code, same pool simulation (popscore_tie), same folds (rolling monthly, Jun–Oct tested, 3,152 launches, 146 days). The only change: model.py's honest filter (no follower counts, no fol_ / seg_, no undated promo_). Within-day Spearman of the predicted vs real pool shock, paired over days (10,000 resamples).
+
+| | Within-day Spearman | By month (Jun / Jul / Aug / Sep / Oct) |
+|---|---|---|
+| Leaky inputs (as published) | 0.504 | 0.550 / 0.490 / 0.545 / 0.443 / 0.488 |
+| **Honest inputs** | **0.395** | 0.404 / 0.465 / 0.399 / 0.356 / 0.335 |
+| Honest − leaky | **−0.109 (−0.142 to −0.078)**, lower in 5 of 5 months | |
+
+- **Drop-one losses, honest run:** ph_ 0.053 (team size, media, hunter account age; follower counts are gone), pf_ page facts 0.034, hist_ 0.020, llm_ 0.019, turnout 0.018, vs_ video 0.014, x_ 0.013, ps_ 0.013. hist_ and turnout matter more once the leaky groups are gone (0.001 → 0.020; turnout first appears).
+- **Day-level shock** (day terms only): 0.509 in both runs, unaffected.
+- **Reading:** about a fifth of the published shock predictability came from inputs that partly read the outcome. "Inputs exhausted at 0.50" was a leaky ceiling. Honest predictability is 0.395, so there is more unexplained shock than thought, and the signal that is left leans on track record (hist_) and turnout. That supports the review's directions A (the team's full history) and B (the audience as of day−1).
+- Stage 2 of this script compares against the leaky launch model (`ctrl_preds`), so it isn't reported here.
+
+## C1, downloads part: npm / PyPI downloads before launch (Nov 2, `ph_predict/c1_user_base.py`, Data Feeder's raw/pkg_downloads/)
+- **Own packages only:** sites also link libraries they use, and the biggest "packages" were zod, openai, npm, @stripe/stripe-js and @tiptap/react, which would swamp a max. A repo or package is kept only if a name token (≥3 chars) is shared with the launch's name, slug or website domain: 558 of 1,060 repos and packages kept. PyPI series start around May (pypistats keeps about 180 days); npm goes back to 2015.
+- **Coverage:** 96 launches (1.7%) have an own package with downloads before launch day.
+- **Gate (honest residual, pooled over covered launches, Holm-corrected):** downloads in the 7 / 30 / 90 days before launch: Spearman 0.31 / 0.34 / 0.32 (95% CI about 0.13 to 0.50), all pass. A launch whose package already has users beats the honest forecast.
+- **Boards** (honest day-calibrated control vs + downloads):
+  - The trees can't use 96 rows (100 per leaf), so a forward-fitted linear arm was added for sparse inputs.
+  - Daily top 3 / 5 / 10: +0.4 / −0.2 / +0.1; weekly 0.0 / −0.8 / 0.0; monthly 0. All within noise.
+- **Reading:** real signal per launch, but 1.7% coverage can't move a board. Stars (about 9% of launches link an own repo) are the larger test; Data Feeder's star pass is due ~23:00–00:00 UTC. userbase_eval.py now has the linear arm for sparse inputs.
+
+## Page inputs: honesty check and sensitivity (Nov 2, orchestrator's Fable review; `honest.py PAGE_SENS=1`)
+**Where the page inputs come from, for backtest launches:**
+- pf_ (page facts), ps_ (page scores), llm_pitch read name, tagline, description, topics and media from `data/days/` (API). Those files were fetched a **median 88 days after launch** (1–182), so post-launch edits to the description or media can be in them. The maker's first comment comes from the timed comments (posted at launch; edits possible).
+- Website text (ps_website, ps_links, llm_site, llm_full) uses the live site fetched around Oct 30 where no day-before Wayback snapshot exists. **1.6% of those sites (106 of 6,569) show "Product of the Day", "featured on Product Hunt" or similar wording.**
+- llm_full's prompt includes follower counts, including the makers' PH counts that the model itself excludes as leaky.
+- So the page inputs are not honest by construction.
+
+**Sensitivity, daily top 3 / 5 / 10, paired vs honest (64.4 / 70.4 / 76.9, May–Oct):**
+
+| Dropped from honest | May–Oct | Δ (95% CI) top 3 / 5 / 10 | Jul–Oct |
+|---|---|---|---|
+| Web- and follower-derived page inputs (llm_full, llm_site, ps_website, ps_links) | 63.5 / 70.2 / 77.4 | −0.9 (−2.8, +0.9) / −0.2 / +0.6 | 64.4 / 69.4 / 78.0 |
+| All page groups (pf_, ps_, vs_, llm_; 103 inputs) | 61.4 / 68.5 / 76.5 | **−3.0 (−5.1, −0.9)** / −1.9 (−3.5, −0.3) / −0.4 | 62.1 / 69.6 / 77.3 |
+| **The live forecast's own set** (no pf_ / ps_ / vs_, no llm_full) | **62.7 / 70.4 / 76.6** | −1.7 (−4.1, +0.8) / 0.0 / −0.3 | 64.4 / 69.6 / 77.1 |
+
+- The web-derived and follower-derived page inputs don't inflate the baseline (all within noise). Page content as a whole carries real ranking signal (−3.0 when dropped). Edits made after launch can't be separated from it in the backtest.
+- The live forecast doesn't use pf_ / ps_ / vs_, so the **baseline comparable with live scores is 62.7 / 70.4 / 76.6** (May–Oct). The page-aware honest model, 64.4 / 70.4 / 76.9, is an upper reference.
+- Going forward: `data/today/<day>.json` holds the name, tagline, description and media as fetched at 00:05 PT, so honest page snapshots accrue from Oct 25. llm_full should join the honest filter (its prompt carries follower counts).
+
+## C1: the product's existing user base before launch, GitHub stars + npm/PyPI downloads (Nov 2, `ph_predict/c1_user_base.py`)
+**Reference: the live forecast's honest set, day-calibrated (62.7 / 70.4 / 76.6 daily, May–Oct).** Data: Data Feeder's star history (raw/github_stargazers/star_history_ph_0000.jsonl: 732 repos, daily new stars from /stargazers/history; per-user star times are no longer public) and raw/pkg_downloads/ (draft). Only own repos and packages (a name token shared with the launch) are kept: 558 of 1,060. Every count is strictly before the launch's Pacific day.
+
+- **Coverage:** 255 launches with stars before launch and 96 with downloads; 5.7% of launches have either. By month: May 7.2%, Jun 8.0%, Jul 7.2%, Aug 9.8%, Sep 6.4%, Oct 9.4%.
+- **Gate** (Spearman with the honest residual, Holm-corrected across the 6 inputs). Within-day can't be read: only 11 days have 5+ covered launches.
+
+  | Input | Pooled over covered launches (95% CI) | Holm p |
+  |---|---|---|
+  | Stars as of day−1 | 0.117 (0.002, 0.226), 250 launches | 0.09 |
+  | **New stars in the 30 days before** | **0.165 (0.047, 0.277)** | **0.02, passes** |
+  | Repo age | 0.007 | 0.91 |
+  | **Downloads 7 / 30 / 90 days before** | **0.27 / 0.32 / 0.30** (CI ~0.10–0.49), 95 launches | **≤ 0.02, pass** |
+
+- **Boards**, control (62.7 / 70.4 / 76.6 daily; weekly 50.7 / 54.4 / 55.2; monthly 13.3 / 26.7 / 33.3) vs + C1, paired:
+
+  | | Trees | Linear arm |
+  |---|---|---|
+  | Daily | −0.2 / −0.2 / −0.1 | −0.4 / 0.0 / +0.1 |
+  | Weekly | −1.3 / −0.8 / +0.4 | 0.0 / 0.0 / 0.0 |
+  | Monthly | 0 / 0 / 0 | 0 / 0 / +1.7 |
+
+  All within noise.
+- **Reading:** a launch whose product already has users (recent stars, package downloads) beats the honest forecast, a real per-launch signal (+0.16 to +0.32). At 5.7% coverage it can't move a board, though. C1 is a valid input to keep (honest, dated), not a route to 90. Wider coverage would need other dated user-base records: Chrome Web Store and app-store counts via Wayback, Discord member counts, newsletter subscribers.
+- **Deployed and verified (Nov 3, 00:40 UTC), bundle 5, scoring only (standing rule 2, confirmed by Shreyas in the PH ops session):** the `poolscore` step (pool Spearman and pool share of votes at d−7 complete and d−1 provisional → pool_scores). Dry-run in a /tmp copy on the VM first. Live md5s match the repo (daily.py 1a019b4f, run_daily.sh a94dea22); backup at ~/w/backup_b5/; recorder untouched. The `llm_full` honest filter (changes the headline forecast) waits for Shreyas.
+
+## A1: each team's full launch history as a pre-launch input (Nov 3, `ph_predict/a1_fetch.py` + `a1_team_history.py`)
+**Reference: the live forecast's honest set, day-calibrated (62.7 / 70.4 / 76.6 daily, May–Oct; weekly 50.7 / 54.4 / 55.2; monthly 13.3 / 26.7 / 33.3).**
+
+**Data:**
+- user.madePosts / submittedPosts return nothing for other users, so the history comes from a paced crawl of the featured-posts list per day for 2024–2025 on usersim-pipeline (approved by Shreyas): 731 days, 12,472 launches, 952 calls, finished 01:54 UTC.
+- Merged with our own Jan–Oct 2026 day files: 39,062 username–launch rows, 20,114 people.
+- [REDACTED] makers (about 40% from the API) are missing; Data Feeder is resolving them from /products/<slug>/makers.
+- Only launches dated strictly before each launch's day count.
+
+**Coverage:** 3,343 of 6,540 launches (51%) have a team member with an earlier launch. Before, our Jan+ files found repeat makers for 4–11%.
+
+**Gate** (Spearman with the honest residual, Holm across 8 inputs; team size is the reference column):
+
+| Input | Within day (95% CI) | Pooled (95% CI) | Holm p |
+|---|---|---|---|
+| **Mean log votes of earlier launches vs their month** | **0.067 (0.024, 0.110)** | **0.074 (0.035, 0.110)**, 2,878 launches | **0.008, passes** |
+| **Share of earlier launches in the daily top 5** | **0.053 (0.009, 0.096)** | **0.060 (0.023, 0.095)** | **0.049, passes** |
+| Max relative votes | 0.023 | −0.006 | 1.0 |
+| Count of earlier launches / made / days since / first-time | about 0 | about 0 | 1.0 |
+| Team size (reference) | −0.043 | −0.015 | 1.0 |
+
+How well a team's earlier launches did predicts where the honest forecast under-predicts, beyond team size. How many launches they had does not.
+
+**Boards** (control vs + A1, paired):
+
+| | Trees | Linear arm |
+|---|---|---|
+| Daily | +0.6 (−1.1, +2.3) / +0.7 (−0.6, +1.9) / +0.3 (−0.5, +1.2) | −1.7 / +0.6 / −0.2 |
+| Weekly | −1.3 / −0.8 / −0.4 | −1.3 / +0.8 / −1.3 |
+| Monthly (6 lists) | 0 / −3.3 / +3.3 | 0 / 0 / +5.0 (+1.7, +8.3) |
+
+All within noise. The monthly top 10 is one list moving (Aug +20).
+
+**Reading:**
+- A real honest signal at half the launches (within-day 0.07), but small: on top of the honest model, the daily board doesn't move beyond noise.
+- The team's track record mostly carries what the launch model already sees. The honest launch model already has hist_ from our Jan+ files.
+- Next: rerun with the resolved [REDACTED] makers (Data Feeder). Feed A1 into the shock model as a candidate input to see whether it raises honest shock predictability (0.395).
+- **A1 in the honest shock model** (`shock_model.py` stage 1, HONEST=1, EXTRA_FEATS = A1 inputs; Jun–Oct, 146 days): within-day Spearman with the real pool shock **0.402 vs 0.395** without A1, +0.007 (−0.009 to +0.023). Better in 3 of 5 months (Jun 0.404→0.393, Jul 0.465→0.479, Aug 0.399→0.416, Sep 0.356→0.380, Oct 0.335→0.321). Within noise: the team's earlier performance barely adds to the honest shock prediction, consistent with the board result. Rerun with resolved makers when they land.
+
+## A2: the team's own Product Hunt activity in the days before launch (Nov 3, `ph_predict/a2_team_activity.py`)
+**Reference: the live forecast's honest set, day-calibrated (62.7 / 70.4 / 76.6 daily, May–Oct).** Per launch, the makers' and hunter's events on other launches strictly before launch day, from the warehouse: events in the 7 / 14 days before, distinct launches touched, active members, days since the last event. Team size is in the honest model already.
+
+**Leak check:** upvotes are dated to the upvoted launch's day, not to when they were cast. A team upvoting older launches on its own launch day (reciprocal upvoting is common then) would count as "before". Comments carry their own date, so the comments-only run is the honest one.
+
+| | All events (upvotes + comments) | **Comments only (honest)** |
+|---|---|---|
+| Launches with team activity in the 14 days before | 2,740 | 1,322 |
+| Gate, within-day Spearman (95% CI), Holm | act14 0.079 (0.041, 0.117); launches14 0.081; all pass | **act7 0.058 (0.020, 0.096); act14 0.056; launches14 0.055; members 0.044; all pass** |
+| Daily top 3 / 5 / 10, Δ vs control | **+2.1 (+0.2, +4.0)** / −0.1 / +0.6 (0.0, +1.2) | **+1.3 (−0.2, +3.0)** / 0.0 / +0.1; top 3 better in 5 of 6 months, never worse |
+| Weekly top 3 / 5 / 10 | +1.3 / +0.8 / +1.7 | −4.0 (−9.3, +1.3) / −0.8 / +0.4 |
+| Monthly top 3 / 5 / 10 (5–6 lists) | +6.7 / 0 / +1.7 | +13.3 / +3.3 / +3.3 |
+
+**Reading:**
+- A team that has been active on Product Hunt in the two weeks before its launch (commenting on others' launches) beats the honest forecast.
+- It's the first honest pre-launch input whose daily top-3 effect leans positive in every month: +1.3, interval just touching 0.
+- The all-events version's +2.1 partly reflects upvotes cast on launch day, so it isn't claimed.
+- It is preparation behaviour (organised mobilisation), the shock's mechanism.
+- Next: comments at hour precision (the honest cut-off is 00:00 PT on launch day, not the calendar day); the team's upvotes once they're timed by the daily refresh; and A2 in the honest shock model.
+
+## Joint test of the honest small inputs, and A1 + A2 in the honest shock model (Nov 3, `ph_predict/joint_honest.py`, `shock_model.py EXTRA_FEATS`)
+**Reference: the live forecast's honest set, day-calibrated (62.7 / 70.4 / 76.6 daily, May–Oct).** Inputs: A1 (team history: mean relative votes, top-5 share, count, first-time), A2 comments only (team comments on other launches 7 / 14 days before, launches touched, active members, days since), C1 (stars, new stars, downloads). One model; paired by list.
+
+| | Trees | Linear arm |
+|---|---|---|
+| Daily top 3 | **64.6, +1.9 (0.0, +3.8)**; by month May +7.5, Jun +2.3, Jul 0, Aug +1.1, Sep 0, Oct 0 (never worse) | −0.2 |
+| Daily top 5 | 69.8, −0.6 (−1.8, +0.7) | −1.7 (−3.2, −0.3) |
+| Daily top 10 | 77.2, +0.7 (0.0, +1.4) | −0.3 |
+| Weekly top 3 / 5 / 10 | 0.0 / 0.0 / 0.0 | −1.3 / +1.6 / −1.7 |
+| Monthly top 3 / 5 / 10 (5–6 lists) | +6.7 / +6.7 / +3.3 | +6.7 / +3.3 / −1.7 |
+
+**Honest shock model** (stage 1, HONEST=1; Jun–Oct, 146 days), with A1 + A2: within-day Spearman **0.413 vs 0.395**, **+0.018 (+0.002, +0.035)**, better in 4 of 5 months (Jun 0.404→0.393, Jul 0.465→0.482, Aug 0.399→0.444, Sep 0.356→0.392, Oct 0.335→0.336). A1 alone was +0.007, so A2 carries most of it.
+
+**Reading:**
+- Together the honest inputs add to the shock prediction (interval above 0) and lean positive on daily top 3 (+1.9, lower bound 0.0, never worse by month), with top 10 +0.7 (lower bound 0.0).
+- That's below the ±3.5 noise rule for daily top 3, so not a claimed board gain. But it's the first honest bundle whose shock and top-3 intervals sit at or above 0.
+- Next: the A2 refinements (00:00 PT cut-off, 24 / 48 h windows, which launches the team commented on), and live recording of A2 from today. A2 needs only dated comments, so it's honest for every live launch.
+
+## A1 with resolved makers, first batch (Nov 3, `a1_team_history.py RESOLVED=…`)
+**Reference: the live honest set, day-calibrated (62.7 / 70.4 / 76.6 daily, May–Oct).** Data Feeder resolved 435 of 2,349 products with redacted makers (18.5%; 1,493 pages had no makers block anonymously, 415 were empty).
+
+- **Merge:** 860 history rows added; 412 launches' teams extended.
+- **Coverage:** launches with a team member's earlier launch, 3,343 → **3,355** of 6,540 (51.1% → 51.3%). The slope is small: about 0.03 launches with new history per resolved product. Most resolved makers' earlier launches weren't in the crawl window, or their teams were already covered.
+- **Gate:** mean relative votes 0.068 (0.024, 0.111), top-5 share 0.053 (0.008, 0.096); both pass, unchanged.
+- **A1 alone, daily:** +0.6 / +0.7 / +0.3, as before.
+- **Joint A1 + A2 + C1, daily top 3 / 5 / 10:** +1.1 (−0.8, +3.0) / −0.5 / +0.7 (−0.1, +1.4); by month May +7.5, Jun +2.3, Jul −1.1, Aug −1.1, Sep 0, Oct −1.3. Was +1.9 (0.0, +3.8). The ±1 swing from a small input change shows the top-3 effect isn't stable.
+- **Weekly:** −1.3 / 0 / −0.4. **Monthly:** +6.7 / +6.7 / +3.3.
+- **Honest shock model + A1 (resolved) + A2:** 0.415 vs 0.395, **+0.020 (+0.003, +0.037)**. This is the stable signal.
+- **Reading:** the resolved makers barely change coverage. The shock gain holds (+0.02, interval above 0). The board gain is fragile and isn't claimed.
+
+## C2 source 1: domain Wayback captures before launch (2026-11-03 08:20 UTC)
+Reference: honest - live set (62.7 / 70.4 / 76.6 daily top 3/5/10, May–Oct). Inputs: distinct capture days of the launch's
+domain in the 90 / 365 days before launch day, and domain age (first-ever capture to day−1). Free CDX API from exp-1.
+Coverage 64.6% of all launches (88–91% per month May–Oct; Mar–Apr have no targets). No rows on or after launch day.
+- Gate: fails on all three (within-day Spearman −0.015 / −0.014 / −0.009, all CIs span 0; Holm p 1.0 / 1.0 / 0.34).
+- Boards (trees): daily top 3 −0.9 (−1.9 to 0.0), top 5 −0.1 (−0.6 to +0.3), top 10 −0.3 (−0.8 to +0.2).
+  Linear arm: −0.4 / −0.1 / +0.1, all spanning 0. Weekly and monthly unchanged within noise.
+- Verdict: null. Whether a domain is archived, and how often, says nothing about the shock beyond the honest model. Drop it.
+  Wayback profile captures (Data Feeder's wayback_profiles.jsonl) are scored separately when they land.
+
+## Bundle 6 deployed: shadow_honest_a2 (2026-11-03 09:02 UTC, standing rule 2)
+Trial forecast only; headline unchanged. Live offset (forecast_<day>.parquet) + day terms + A1 team history + A2 team
+comments 7/14 d before. Package from bucket tmp/ph_ops/shadow_honest_a2/ into ph_predict/data/shadow/honest_a2/;
+daily.py SHADOW_DEFAULT = "daycal,honest_a2" (md5 e25d6237); run_daily.sh unchanged (a94dea22). Backup ~/w/backup_b6/.
+Checks: live test for 2026-11-03 in a /tmp copy (36/36 launches; A1 history for 14, A2 comments for 6); dry s_shadow
+from a /tmp copy of the pipeline ok (72 rows, nothing written); installed run identical. vs live forecast today:
+Spearman 0.995, top 3/5/10 identical. First real row: the Nov 4 run; scored Nov 5 as shadow_honest_a2.
+Rollback: tar xf ~/w/backup_b6/before.tar -C ~/w/experiments; rm -rf ~/w/experiments/ph_predict/data/shadow/honest_a2
+
+## Bundle 7 deployed: line-up gap counts in daily scores (2026-11-03 09:10 UTC, standing rule 2)
+`score` adds late_featured (final featured launches not in the 00:05 PT line-up; they count as misses), late_in_top_k
+and dropped_from_featured to each daily_scores row. Scoring only. daily.py md5 d6f4190c (was e25d6237); backup
+~/w/backup_b7/. Tested from a /tmp copy with writes stubbed: Nov 2 gives late_featured 1 (redu.cloud, rank 17),
+late_in_top_k 0 for k = 3/5/10, dropped 0, and unchanged hits (1/3, 4/5, 9/10). First real row: the Nov 4 run.
+redu.cloud: first in vote_snapshots at 10:00 UTC (not at 08:10 / 09:00), old post id, API featuredAt backdated to
+08:01Z -> featured late, not an API gap.
+
+## At-launch capture reader (ph_predict/at_launch_reader.py)
+raw/ph_at_launch/<day>/ -> ph_userbase rows (launch: post / product / product X and GitHub; people: PH profile counts,
+X / GitHub per maker and hunter). Pre-launch = fetched before the launch's first non-zero vote snapshot (and 0 votes
+shown, for post rows); otherwise dated to launch day so c2 drops it. Pilot (fetched ~10.5 h after votes started):
+0 of 715 rows pre-launch, as it should be. Synthetic checks pass (all four cases). c2_user_base reads both outputs.
+
+## Bundle 8 deployed: at-launch capture trigger (2026-11-03 09:13 UTC, standing rule 2)
+`launches` uploads data/today/<day>.json to raw/daily/<day>/today_0005.json right after the line-up read (~00:06 PT),
+for Data Feeder's capture to start on (VM at 00:05 PT, fetch by ~00:20). Recording only. daily.py md5 27f0578d (was
+d6f4190c); backup ~/w/backup_b8/. Upload command tested on the VM (byte-identical copy, test object removed). First
+real trigger: Nov 4 ~00:06 PT. A failed upload marks `launches` failed (the line-up itself is already written).
+Reader: labelled relaxed variant for profile-level sources (fetched within 60 min of the launch start; never post
+rows), pre_launch_relaxed on every row, RELAXED=1 to score it. Strict rule unchanged and remains the headline rule.
+
+## At-launch capture, first real day (2026-11-03) and a fix to the pre-launch rule
+Capture: 36 launches, 74 people, fetched 09:45–09:52 UTC (01:45 PT), ~1 h 45 min into voting. X counts still pending.
+Finding: PH hides vote counts for ~4 h, on the page (hide_votes_count, all 36) and in the API (vote_snapshots: 0 votes for
+every launch until 12:00 UTC = 04:00 PT on Nov 2; comments are visible from the first 00:06 PT snapshot). So "fetched
+before the first non-zero vote snapshot" alone would pass captures made hours into voting. Tightened (never looser):
+also fetched within 20 min of the launch start, and post activity counts (votes, comments at fetch) are never pre-launch.
+Nov 3 is day 0 (late capture, 0 rows): 0 of 1,144 rows pre-launch (strict) and 0 relaxed, as expected for 01:45 PT.
+Rerun on the X-filled version (10:40 UTC): 0 of 1,215 rows (71 X rows added), strict and relaxed.
+Rule confirmed by the orchestrator (10:05 UTC): all three conditions kept; relaxed variant stays labelled; bar 00:20 PT. Synthetic checks
+(5 cases, incl. a 104-min capture the old rule passed) all behave. From Nov 4 the capture is due by ~00:20 PT.

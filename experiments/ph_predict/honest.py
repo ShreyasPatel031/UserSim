@@ -37,6 +37,11 @@ def variants(cols):
         drop |= {c for c in cols if f(c)}
         V[f"- {name}" if name == "followers" else f"- ... {name}"] = [c for c in cols if c not in drop]
     V["honest"] = honest_cols(cols)
+    if os.environ.get("PAGE_SENS") == "1":   # page-input sensitivity (Nov 2): web / follower-derived page scores, then every page group
+        web = {"llm_full", "llm_site", "ps_website", "ps_links"}
+        V["honest - web-derived"] = [c for c in V["honest"] if c not in web]
+        V["honest - all page"] = [c for c in V["honest"] if not c.startswith(("pf_", "ps_", "vs_", "llm_"))]
+        V["honest - live set"] = [c for c in V["honest"] if c.split("_")[0] in M.LIVE_SOURCES and c != "llm_full"]
     return V
 
 
@@ -80,6 +85,11 @@ def main():
                 bs = [d[rng.integers(0, len(d), len(d))].mean() for _ in range(10000)]
                 line[v] = [round(100 * float(cur.mean()), 1), round(100 * float(d.mean()), 1), [round(100 * float(x), 1) for x in np.percentile(bs, [2.5, 97.5])]]
             r[f"top{k}"] = line
+        for v in [x for x in V if x.startswith("honest - ")]:   # sensitivity variants vs honest, daily
+            for k in (3, 5, 10):
+                base, cur = per_day(U, "honest", k), per_day(U, v, k); d = (cur - base).dropna().values
+                bs = [d[rng.integers(0, len(d), len(d))].mean() for _ in range(10000)]
+                r[f"{v} vs honest top{k}"] = [round(100 * float(cur.mean()), 1), round(100 * float(d.mean()), 1), [round(100 * float(x), 1) for x in np.percentile(bs, [2.5, 97.5])]]
         for key in ("week", "mon"):
             for k in (3, 5, 10):
                 base, cur = per_day(U, "all", k, key), per_day(U, "honest", k, key); d = (cur - base).dropna().values
