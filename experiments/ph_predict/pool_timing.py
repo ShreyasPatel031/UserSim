@@ -19,7 +19,8 @@ pool engagement predicts the shock about as well as whole-day pool engagement, t
 if only the whole-day measure does, the pool follows exposure.
 Power: reports per day the launches with >= 1 early comment and >= 1 early pool comment; with ~35 launches/day and
 rho ~0.4, about 10 days give a CI half-width near 0.1.
-Inputs (spec 20261103T1945): raw/ph_at_launch/<day>/live/comments_ts.jsonl (launch_id, comment_id, username,
+Inputs (spec 20261103T1945): raw/ph_at_launch/<day>/live/comments_ts.jsonl (launch_id, comment_id, username or
+commenter_user_id (API rows: user redacted; mapped with ID_MAP, the population agent's id -> username map),
 created_at, is_maker, is_hunter), posts_ts.jsonl (launch_id, featured_at, makers, hunter), optional
 raw/ph_people_daily/<day>/upvotes_4h/*.jsonl (username, launch_id | post_id, first_seen_lo, first_seen_hi).
 No usernames are written: counts only.
@@ -58,6 +59,31 @@ def names(v):
     return {str(v).lower()} - {"", "none", "nan"} if isinstance(v, str) else set()
 
 
+def resolve_commenters(C, idmap=None):
+    """API comments carry the real numeric commenter id (commenter_user_id) while the user object is redacted
+    (orchestrator, Nov 3 20:45 UTC). Fill username from the population agent's id -> username map (ID_MAP: a jsonl or
+    parquet with user_id, username) where it is missing or redacted. Rows that stay unresolved count as non-pool."""
+    if "commenter_user_id" not in C:
+        return C if "username" in C else C.assign(username="")
+    if "username" not in C:
+        C = C.assign(username="")
+    bad = C.username.isna() | C.username.astype(str).str.lower().isin(["", "nan", "none", "[redacted]"])
+    if not bad.any():
+        return C
+    if idmap is None:
+        path = os.environ.get("ID_MAP")
+        if not path:
+            raise SystemExit(f"{int(bad.sum())} comments have only commenter_user_id: set ID_MAP to the id -> username map")
+        if path.startswith("gs://"):
+            loc = os.path.join(tempfile.mkdtemp(prefix="idmap_"), os.path.basename(path))
+            subprocess.run(["gsutil", "-q", "cp", path, loc], check=True); path = loc
+        idmap = pd.read_parquet(path) if path.endswith(".parquet") else pd.read_json(path, lines=True, dtype=False)
+    m = dict(zip(idmap.user_id.astype(str), idmap.username.astype(str)))
+    C = C.copy()
+    C.loc[bad, "username"] = C.loc[bad, "commenter_user_id"].astype(str).map(m).fillna("")
+    return C
+
+
 def day_rows(day, C, P, U, Fc, pool, final):
     """Pure. One row per launch of the day: shock and early / whole-day pool engagement."""
     for df, cols, w in ((C, ["launch_id", "username", "created_at"], "comments_ts"), (P, ["launch_id"], "posts_ts"), (Fc, ["id", "pred"], "forecast")):
@@ -68,6 +94,7 @@ def day_rows(day, C, P, U, Fc, pool, final):
     day0 = pd.Timestamp(f"{day} 00:01", tz="America/Los_Angeles").tz_convert("UTC")
     start = {lid: (ts(r.featured_at) if "featured_at" in first and pd.notna(r.get("featured_at")) else day0) for lid, r in first.iterrows()}
     team = {lid: names(r.get("makers")) | names(r.get("hunter")) for lid, r in first.iterrows()}
+    C = resolve_commenters(C)
     C = C.assign(launch_id=C.launch_id.astype(str), u=C.username.astype(str).str.lower(), t=ts(C.created_at))
     if "comment_id" in C:
         C = C.drop_duplicates(["launch_id", "comment_id"])
