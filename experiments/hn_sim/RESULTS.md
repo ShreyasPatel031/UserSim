@@ -954,3 +954,7 @@ Live: the content version runs on hn-sim-1 alongside the current tool (oddsloop3
 odds_live_content/; the current tool keeps odds_live/ at :35), so live scoring compares the two on the same posts. Live
 content scores come from a ModernBERT-base trained on every post up to Oct 14 (CPU), as a percentile against its own
 scores on Sep 1 - Oct 14 posts.
+
+**Reach table at 15 min, September refit (E5 handoff `reach_table_by_15min_score_sep`, fitted Sep 1-30 only; reach15.py):**
+votes + who 28.4% -> 27.6% [24.3, 31.1], **-0.8 [-3.1, +1.5]**; fast 71 -> 67, late 25 -> 28, re-ups 14 -> 12. No gain
+(the model already has the 15-min /newest score itself). Closed.
