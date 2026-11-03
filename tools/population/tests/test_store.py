@@ -88,3 +88,16 @@ def test_revote_flagged_not_failed():
     ev = store.upvote_events(_reads(rows), IDS).set_index("target_id")
     assert ev.loc["A", "ts_quality"] == "order_conflict" and pd.isna(ev.loc["A", "ts_lo"])
     assert ev.loc["N", "ts_quality"] == "bounded"
+
+
+def test_verify_x_drop(tmp_path):
+    d = str(tmp_path)
+    pid = IDS("alice")
+    _write(d, "persons", [dict(person_id=pid, platform="x")])
+    ev = dict(person_id=pid, platform="x", kind="post", target_id="1", ts_lo="2026-10-01T00:00:00Z", ts_hi="2026-10-01T00:00:00Z",
+              ts_quality="exact", first_seen_at="2026-11-03T00:00:00Z", fetched_at="2026-11-03T00:00:00Z", source="s", extra={})
+    _write(d, "events", [ev])
+    assert store.verify_x_drop(d, {pid})[0]
+    assert not store.verify_x_drop(d, {IDS("bob")})[0]  # wrong key -> no join -> fail
+    _write(d, "events", [ev, ev])
+    assert not store.verify_x_drop(d, {pid})[0]          # duplicate

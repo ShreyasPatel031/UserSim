@@ -233,6 +233,45 @@ def pilot_upvote_reads(run_dir):
     return df
 
 
+# ---------- X drops from Grok Bot (raw/population_data/x*/<run>/{persons,events}.jsonl, already salted) ----------
+X_EVENT_COLS = ["person_id", "platform", "kind", "target_id", "ts_lo", "ts_hi", "ts_quality", "first_seen_at", "fetched_at", "source"]
+
+
+def verify_x_drop(run_dir, pool_ids):
+    """Returns (ok, report). Checks: schema, ids join the pool, events join persons, dedupe, exact times <= fetched_at."""
+    P = pd.DataFrame(read_jsonl(f"{run_dir}/persons.jsonl"))
+    E = pd.DataFrame(read_jsonl(f"{run_dir}/events.jsonl"))
+    r = {"persons": len(P), "events": len(E)}
+    r["missing_cols"] = [c for c in X_EVENT_COLS + ["extra"] if c not in E] if len(E) else []
+    r["persons_dup"] = int(P.person_id.duplicated().sum())
+    r["persons_not_in_pool"] = int((~P.person_id.isin(pool_ids)).sum())
+    if len(E):
+        r["events_not_in_persons"] = int((~E.person_id.isin(P.person_id)).sum())
+        r["events_dup"] = int(E.duplicated(["person_id", "target_id"]).sum())
+        lo, f = TS(E.ts_lo), TS(E.fetched_at)
+        r["bad_times"] = int((lo.isna() | (lo > f + pd.Timedelta(minutes=5)) | (E.ts_lo != E.ts_hi)).sum())
+        r["kinds"] = E.kind.value_counts().to_dict()
+    ok = not r["missing_cols"] and r["persons_dup"] == 0 and r["persons_not_in_pool"] == 0 and \
+        r.get("events_not_in_persons", 0) == 0 and r.get("events_dup", 0) == 0 and r.get("bad_times", 0) == 0
+    r["pass"] = ok
+    return ok, r
+
+
+def x_events(data_dir, pool_ids):
+    out, reps = [], {}
+    for d in sorted(glob.glob(f"{data_dir}/population_data/x*/*/")) + sorted(glob.glob(f"{data_dir}/population_data/x_pilot50/")):
+        if not os.path.exists(f"{d}/events.jsonl"):
+            continue
+        ok, rep = verify_x_drop(d, pool_ids)
+        reps[os.path.relpath(d, data_dir)] = rep
+        if not ok:
+            continue  # failed drops are reported, never loaded
+        E = pd.DataFrame(read_jsonl(f"{d}/events.jsonl"))
+        E["extra"] = E.extra.map(json.dumps)
+        out.append(E[X_EVENT_COLS + ["extra"]])
+    return (pd.concat(out, ignore_index=True) if out else pd.DataFrame()), reps
+
+
 # ---------- build ----------
 def build(data_dir, out_dir, salt):
     ids = Ids(salt)
@@ -250,6 +289,10 @@ def build(data_dir, out_dir, salt):
     persons = pd.read_parquet(f"{data_dir}/people_v3g/persons.parquet")
     ids_map = {u.lower(): ids(u) for u in persons.ph_username.dropna()}
     ev.append(comment_events_from_store(f"{data_dir}/people_v3g/events.parquet", ids_map))
+    xe, xrep = x_events(data_dir, set(ids_map.values()))
+    print("X drops:", json.dumps(xrep, default=str))
+    if len(xe):
+        ev.append(xe.drop_duplicates(["person_id", "target_id"]))
     events = pd.concat([e for e in ev if len(e)], ignore_index=True)
     events = events.drop_duplicates(["person_id", "kind", "target_id", "ts_lo", "source"])
     for c in ["ts_lo", "ts_hi", "first_seen_at", "fetched_at"]:
