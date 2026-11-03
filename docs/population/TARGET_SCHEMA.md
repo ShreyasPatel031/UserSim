@@ -54,3 +54,17 @@ Page cost range: $0.03/1k pages (Nov 1 light mode, 0.66 GB for 20,947 pages) to 
 | 7 | X posts last 30 d for active-pool handles | pre-launch mobilisation | ~50 posts/person | ~$7/1k people (est.) | blocked; needs Shreyas |
 | 8 | GitHub public events for self-linked handles (725) | dev activity rhythm | free API | $0 | population agent, own VM |
 Full pool for 1 + 1b: ~88–146 k pages, ~$3–39, 1–2 days at 60 pages/min; the pilot sets the real number.
+
+## Identity and scope decisions (orchestrator, Nov 3 20:00 UTC)
+- Model-facing ids: salted person_id only; v3g's `ph:<username>` ids are never used downstream.
+- Other platforms: only handles a person links from their own PH or X profile. Counts in v3g: LinkedIn handles 7,186 people
+  (all ph_self_link); LinkedIn profile rows 3,641 people = 655 from raw/li_apify (all 655 match a PH self-linked handle) +
+  2,986 `li_search_url_matches_self_link` (identity found by search, treated as inferred). Both LinkedIn profile sets are
+  outside PH/X and are excluded from the population store and anything a model reads; nothing deleted. GitHub: 725 people
+  self-linked (+8 extra links) → public events via the free API (rule: self-linked only).
+
+## Route budget (babysitter, raw/_babysitter/limits.md)
+PH route 4: ≤ 60 pages/min, one session, ≤ ~2,500 pages per PT day shared by all jobs; live capture first. Measured good-page
+costs: follows p1 $0.061/1k, upvotes p1 $0.27/1k (268 KB), post/profile ~$0.17/1k; a blocked load still costs ~$0.0024.
+At that budget the full pool for items 1 + 1b (~88–146 k pages) is 5–8 weeks unless the daily budget rises; the pilot decides
+whether larger page sizes or the JSON query cut that.
