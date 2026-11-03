@@ -906,3 +906,28 @@ Re-up clock: 84 posts with an exposure event (median 6.5 h after posting), 16 of
 those caught 15 min after the event. Per-minute model (direction A) switches on at 5 posting days (Nov 5).
 E5: atposting_hist.parquet (44,263 Sep 1 - Oct 14 posts, out of sample: odds tool fit Jul 1 - Aug 15, calibrated
 Aug 16-31) and live_atposting/ (Oct 31 - Nov 3) uploaded.
+
+### Content model at posting (content_ft.py; orchestrator's bet; run 2026-11-03)
+ModernBERT-base fine-tuned on title + domain + Show/Ask text (known at posting), label = ever in a daily top 30, every
+winner + 4 sampled non-winners per epoch, 2 epochs, one T4 (L4 stocked out). Trained only on days <= the cut; scored
+only later posts. Cost ~$1.75 GCE (~3.2 VM-hours incl. three failed starts).
+| model | train | test | AUC |
+|---|---|---|---|
+| cut Jun 30 | 489k posts (15,944 winners) | Jul 1 - Oct 14 | 0.813 |
+| cut Aug 30 | 552k | Sep 1 - Oct 14 | 0.816 |
+| cut Sep 30 | 584k | Oct 1 - 14 | 0.817 |
+| page text (title + domain + page), Jul-Aug only | 40k | Sep-Oct posts with a page | 0.717 vs 0.736 title-only, same rows |
+
+**Caught at posting (Sep 1 - Oct 14, 1,323 winners), paired vs the current 23.2% blend:**
+| score | Caught | vs 23.2% | late risers | re-ups | fast |
+|---|---|---|---|---|---|
+| current blend (Jul-Aug model + 2025+ history) | 23.2% [21.2, 25.3] | | 110/461 | 43/221 | 154/641 |
+| content model alone (cut Aug 30) | 23.9% [21.9, 26.0] | | 111/461 | 51/221 | 154/641 |
+| content (cut Jun 30) as an input to the Jul-Aug model, same 50/50 blend | 24.7% [22.2, 27.2] | +1.5 [+0.2, +2.9] | 121/461 | 43/221 | 163/641 |
+| **3-way rank blend, equal weights set in advance** | **25.4% [23.2, 27.6]** | **+2.2 [+0.4, +4.0]** | 116/461 | 52/221 | 168/641 |
+Content alone has pairwise accuracy 0.810 [0.797, 0.823] and matches the whole current blend on its own; it adds most on
+re-ups (43 -> 51-52) and late risers (110 -> 116-121). **New at-posting headline: 25.4%.** Page text does not help
+(trained on Jul-Aug only: 40k posts).
+
+**Caught at 15 min (Oct 2-14, 388 winners), content (cut Jun 30) as an input to votes + who:** 28.4% -> 29.1%,
++0.8 [-2.7, +3.9]; late risers 25 -> 33, re-ups 14 -> 13, fast 71 -> 67. Not significant.
