@@ -1572,3 +1572,6 @@ Procedure (orchestrator, 18:00 UTC, relaying Shreyas): when a permission or safe
 around it or wait in this session; file mailbox/to_grokbot/<UTC>_SECURITY_ph-agent_<topic>.md (what was blocked, the
 check's category, why it's needed, the exact unblock step for Shreyas), tell the orchestrator in one line, carry on.
 The bundle 9 block is already filed by the orchestrator (20261103T1800_SECURITY_ALERTS_to_grokbot.md).
+Bundle 9 deploy request filed with Grok Bot by the orchestrator (to_grokbot/20261103T1810_ph_bundle9_llm_full.md), to
+deploy before 00:05 PT Nov 4. At the Nov 4 01:07 PT check: confirm ph_predict/model.py md5 379ff10a on the VM, a
+from_grokbot reply, and that the forecast step used 45 live inputs (no llm_full).
