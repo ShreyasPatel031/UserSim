@@ -127,3 +127,8 @@ Model switches, direction reviews and agenda changes, newest last.
   - Monthly: tied in every month and k except Sep top 5 with X.
   - The Sep-Oct "near miss" (strong count +0.053) does not hold with 4 months.
 - **Verdict: NO-GO.** Dated pre-launch mentions on free routes add nothing over the honest model and the day calibration.
+- **Final (03:05-04:10 UTC).** The Bluesky retry failed on the same 87 Jul-Aug launches each time.
+  - Each one's first page succeeds, but deeper cursor pages error. They are broad names (Claude, anthropic.com, Sunrise, Cadence, ...).
+  - The AppView then started timing out from exp-2, so Bluesky fetching stopped there (polite use).
+  - The run above is therefore the final Jul-Oct result, with Bluesky at 93% / 91% of Jul / Aug launches. The fetcher now keeps first pages when a deeper page fails (ph_sweep/sweep_jul_aug.py), for a later top-up.
+  - Verdict unchanged: NO-GO.

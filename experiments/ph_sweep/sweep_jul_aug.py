@@ -14,6 +14,7 @@ SUBS = ["SideProject", "ProductHunt", "startups", "SaaS", "indiehackers", "Entre
 DEVTO_TAGS = ["producthunt", "showdev", "sideprojects", "startup", "buildinpublic", "launch", "saas", "indiehackers"]
 STOP = {"the", "a", "an", "and", "of", "for", "to", "in", "on", "by", "with", "ai", "app", "your", "my", "is", "at", "io", "pro", "2", "2.0", "3", "4", "5"}
 LAST = defaultdict(float)
+TRUNCATED = set()   # launches whose Bluesky search stopped at a failing later page
 
 
 def get(url, host, gap, tries=6):
@@ -103,8 +104,12 @@ def bluesky(l, out):
             if cur:
                 p["cursor"] = cur
             d = get("https://api.bsky.app/xrpc/app.bsky.feed.searchPosts?" + urllib.parse.urlencode(p), "bsky", 0.5)
-            if d is None:
-                ok = False; break
+            if d is None:      # a failing later page (deep cursor on broad terms) keeps the pages already read
+                if cur is None:
+                    ok = False
+                else:
+                    TRUNCATED.add(l["launch_id"])
+                break
             for po in d.get("posts", []):
                 rec = po.get("record", {}); text = rec.get("text", "")
                 for f in (rec.get("facets") or []):
