@@ -877,3 +877,13 @@ by 15 min, best /news position, exposure (fixed), volume, hour. Flags = winners 
 | **Nov 2** (first full always-on day) | 1,083 | 25 | 1 | **99.7%** | **24.0% (6/25)** | 24.0% | 16.0% | 28.0% |
 Nov 2 is the first day with near-full per-minute coverage; 25 winners so far and one list day read, so these are far
 too few to read. Re-scored daily.
+
+### GitHub star history, final (wb_gh.py on Data Feeder's dedup file; run 2026-11-03 ~02:45 UTC)
+Caught at 15 min, Oct 2-14 (388 winners): votes + who 28.4% [23.8, 32.9]; + GitHub stars 28.6% [23.7, 33.4],
+**+0.3 [-1.1, +1.6]**. Star data reaches few winners: fast 16/181, late 15/145, re-up 1/62. GitHub-linked posts only
+(1,348 posts, 32 winners): 18.8% -> 21.9%. GitHub stars stay out of the model.
+
+### Wayback outage (2026-11-03)
+web.archive.org (CDX and the home page) times out from hn-sim-1 and from this container since ~23:59 UTC Nov 2;
+HN's API answers from the VM. wb25h2 (Jul-Dec 2025 /newest) has fetched nothing. Replacement job wb25h2b waits for
+the old job to end, probes Wayback every 10 min for 24 h, and resumes the same fetch when it answers.

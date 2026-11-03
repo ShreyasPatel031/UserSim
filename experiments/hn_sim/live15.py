@@ -134,9 +134,8 @@ def main():
     P["seen60"] = F[60].seen.to_numpy().astype(bool)
     P["pts15"], P["cm15"] = F[15].pts.to_numpy(), F[15].cm.to_numpy()
     # at-posting odds (deployed model), in batches
-    S = OL.score(P[["post_id", "title", "url", "author", "created_at_i", "text"]].reset_index(drop=True), now=0)
-    S = S.drop_duplicates("post_id").set_index("post_id")
-    P["p_post"] = P.post_id.map(S.p_top30)
+    import live_oct                                  # cached, 1,000-post batches in fresh processes (one big OL.score call ran out of memory)
+    P["p_post"] = live_oct.odds_at_posting(P)
     # provisional labels
     L = pd.concat([pd.read_json(__import__("io").StringIO(x.download_as_text()), lines=True, dtype={"day": str}, convert_dates=False)
                    for x in LC.S._bucket().list_blobs(prefix="usersim_sim/hn_jobs/cache/listwatch/")])
