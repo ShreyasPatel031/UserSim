@@ -1705,3 +1705,18 @@ follow read is Oct 26).
   −0.4 (−0.9, 0.0); pfa +0.6 (−0.4, +1.5); top 5 +0.3 (0.0, +0.8); top 10 0.0; weekly top 3 0.0.
 - Reading: even the leaky upper bound is small (+1.3 to +2.8 points of pool Spearman, nothing on the boards). The
   honest live shadow (follows seen before d−1) is worth running for the record but is not urgent.
+
+## A2 / A3 under the date-only comment defect (orchestrator, Nov 3 23:55 UTC)
+The store's ~51k "exact-time" comments carry a date only (likely UTC; ts_quality=day), so `date < launch day` can let in
+a comment written just after 00:00 PT on launch day. Safe bound CUT_DAYS=1: only comments dated <= launch day − 2.
+Reference: honest live set (62.7 / 70.4 / 76.6), day-calibrated control, 5 seeds.
+- Inputs changed: 279 of 6,574 launches (act7/act14/days_since 279, launches14 272, active_members14 61); launches with
+  team comments in 14 d 1,322 -> 1,273.
+- A2 gate survives: 4 of 5 pass, ρ 0.043–0.059 (act7 0.059); a2_days_since now fails (Holm p 0.054).
+- A2 boards: daily top 3 +1.3 (−0.2, +3.0) -> +0.6 (−0.9, +2.1); top 5 −0.1; top 10 +0.2; weekly top 3 −4.0 both.
+  The +1.3 does not survive: withdrawn as a board signal.
+- A3 (safe bound): gate 5 of 6 pass (ρ 0.052–0.065); daily top 3 +0.8 (−0.8, +2.3), linear +0.6; weekly −2.7. Noise.
+- Withdrawn: any finer-than-a-day timing claim on pre-November store comments. Exact reruns wait for the API backfill
+  (raw/population_data/ph_comments/<day>/events_v2.jsonl, extended back to May).
+- Live shadow_honest_a2 (bundle 6) uses warehouse comments with `date < day`: apply the same day − 2 bound (or exact
+  times) in the next shadow update.
