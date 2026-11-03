@@ -21,6 +21,18 @@ MAX_AGE_D = int(os.environ.get("MAX_AGE_D", "0"))   # > 0: keep only values meas
 ROLES = {r for r in os.environ.get("ROLES", "").split(",") if r}   # e.g. "hunter" or "maker": per-person rows of that role only
 
 
+def capture_time(x):
+    """capture_ts as UTC timestamps: Wayback's 14-digit YYYYMMDDhhmmss, or ISO 8601. Unparseable -> loud failure."""
+    x = x.astype(str).str.strip()
+    wb = x.str.fullmatch(r"\d{14}")
+    t = pd.Series(pd.NaT, index=x.index, dtype="datetime64[ns, UTC]")
+    t[wb] = pd.to_datetime(x[wb], format="%Y%m%d%H%M%S", utc=True)
+    t[~wb] = pd.to_datetime(x[~wb], utc=True, errors="coerce", format="ISO8601")
+    if t.isna().any():
+        raise SystemExit(f"capture_ts: {int(t.isna().sum())} unparseable, e.g. {x[t.isna()].iloc[0]!r}")
+    return t
+
+
 def launch_days(days_dir="data"):
     day = {}
     for f in sorted(glob.glob(os.path.join(days_dir, "days", "*.json"))) + sorted(glob.glob(os.path.join(days_dir, "today", "*.json"))):
@@ -42,9 +54,10 @@ def read_rows(paths):
         U["source"] = U.source.astype(str) + U.metric.map(lambda m: f"_{m}" if isinstance(m, str) and m else "")
     if "count" not in U and "value" in U:
         U = U.rename(columns={"value": "count"})
-    if "as_of_date" not in U and "capture_ts" in U:   # Wayback profile rows: dated by the capture's Pacific day, so
+    if "capture_ts" in U:   # Wayback profile rows: dated by the capture's Pacific day (replacing any as_of_date), so
         # "as_of_date < launch day" is "captured strictly before 00:00 PT of the launch day"
-        U["as_of_date"] = pd.to_datetime(U.capture_ts, utc=True, errors="coerce").dt.tz_convert("America/Los_Angeles").dt.strftime("%Y-%m-%d")
+        U["capture_ts"] = capture_time(U.capture_ts)
+        U["as_of_date"] = U.capture_ts.dt.tz_convert("America/Los_Angeles").dt.strftime("%Y-%m-%d")
     n0 = len(U)
     U = U[pd.to_numeric(U.get("count"), errors="coerce").notna()] if "count" in U else U
     if len(U) < n0:
@@ -68,7 +81,7 @@ def features(U, day):
     # Feeder's age_days; otherwise whole days from as_of_date to the launch day
     if "capture_ts" in U:
         l0 = pd.to_datetime(U.lday).dt.tz_localize("America/Los_Angeles")
-        U["age"] = (l0 - pd.to_datetime(U.capture_ts, utc=True).dt.tz_convert("America/Los_Angeles")).dt.total_seconds() / 86400
+        U["age"] = (l0 - U.capture_ts.dt.tz_convert("America/Los_Angeles")).dt.total_seconds() / 86400
     else:
         U["age"] = (pd.to_datetime(U.lday) - pd.to_datetime(U.as_of_date)).dt.days.astype(float)
     if MAX_AGE_D > 0:
