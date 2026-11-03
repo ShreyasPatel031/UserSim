@@ -638,3 +638,8 @@ Model switches, direction reviews and agenda changes, newest last.
   First live row Nov 4, scored Nov 5. Nov 3 run ok except list_check (redu.cloud on the leaderboard, missing from the
   API list). Nov 2 forecast: launch model 1/3, 4/5, 9/10; sim 1/3, 3/5, 8/10. Spend ~$0.74.
 - 09:05 UTC Day-1 at-launch capture output not landed by 09:03 (expected ~08:50); asked Grok Bot for status (0905).
+- 09:05 UTC redu.cloud: featured ~1–2 h into Nov 2 with featuredAt backdated; finished 17th, so Nov 2 scores stand. A
+  late-featured launch is invisible to the pre-launch forecast and counts against us if it reaches the top 10; PH agent
+  adds late_featured / dropped_from_featured counts to score rows. First provisional pool Spearman row (Nov 2, scored
+  Nov 3): 0.36 on 17 launches, pool share 6.1% (votes not yet filled in; complete at d−7). Day-1 at-launch capture
+  still not landed at 09:10 (README window 09:00–09:40).
