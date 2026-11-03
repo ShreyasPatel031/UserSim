@@ -107,6 +107,10 @@ a target out of reach. No agent writes or repeats a limiting statement about the
   PH account may get blocked; one account only; once blocked, back off, never rotate IPs or accounts around it.
 - **Agents' urgent Grok Bot asks go through the orchestrator**, which POSTs to the webhook; the key is not shared across sessions.
   Revisit if an ask waits more than 30 minutes on the orchestrator.
+- **Collection ratchets to the limit (Shreyas, Nov 3, 21:20 UTC).** Each clean PT day raises the next day's route-4 page budget
+  x1.5 and the per-minute cap one step on alternate days; at the first block, back off to the last clean level x0.8, record the
+  edge in docs/babysitter/limits.md, resume after 2 clean days. Same for every source. Extra pages fund the next forward tier, then
+  the history pass. Every raw row keeps the username (GCS only) so repeats are caught; models read a deterministic salted id.
 - Never commit files with Product Hunt usernames.
 - Never state that a data source is unavailable until Grok Bot / Data Feeder have checked it in the signed-in user
   view and reported what is visible (user, Nov 2).
