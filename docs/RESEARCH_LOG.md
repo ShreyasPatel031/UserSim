@@ -609,3 +609,4 @@ Model switches, direction reviews and agenda changes, newest last.
   - Wayback on the box: Jan–Jun 27% (11.6/min), Jul–Dec 1% (7.6/min), profiles CDX 641/4,667; slower because the
     three jobs share one polite worker set.
   - Resolved makers: progress line unchanged at 1,074/2,349 since 04:26; asked for a refresh.
+- 05:41 UTC Wayback profile sample, 80 users: 79% any capture since 2025; 25% any capture before their first May–Oct launch; 10% within 90 days. Decision: accept any pre-launch capture with age as an input (follower count as a lower bound); per-launch coverage will be higher. C2 domains 2,450/3,660, ETA ~08:15.
