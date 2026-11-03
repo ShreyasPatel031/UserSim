@@ -30,7 +30,10 @@ def covered_months(cov):
 
 def features(src, with_x=False):
     L = pd.DataFrame(json.load(open(os.path.join(src, "launches.json"))))
-    M = pd.read_json(os.path.join(src, "mentions.jsonl"), lines=True, dtype={"launch_id": str}, convert_dates=False)
+    import glob   # Data Feeder's mentions.jsonl (Sep-Oct) plus mentions_jul_aug_e5.jsonl (E5 agent, Jul-Aug)
+    M = pd.concat([pd.read_json(f, lines=True, dtype={"launch_id": str}, convert_dates=False)
+                   for f in sorted(glob.glob(os.path.join(src, "mentions*.jsonl")))], ignore_index=True)
+    M = M.drop_duplicates(["launch_id", "url"])
     M = M.merge(L[["launch_id", "window_start", "window_end"]].astype(str), on="launch_id")
     t = pd.to_datetime(M.posted_at, utc=True, format="ISO8601")
     M = M[(t >= pd.to_datetime(M.window_start, utc=True)) & (t < pd.to_datetime(M.window_end, utc=True))]
@@ -80,7 +83,12 @@ def monthly(T, col, base):
 
 
 def main(src, honest_path):
-    cov = json.load(open(os.path.join(src, "coverage.json")))
+    import glob
+    cov = {"months": {}}
+    for f in sorted(glob.glob(os.path.join(src, "coverage*.json"))):   # later files fill months the earlier left pending
+        for m, v in json.load(open(f))["months"].items():
+            if m not in cov["months"] or all(v["channel_status"].get(c) == "done" for c in MAIN):
+                cov["months"][m] = v
     months = covered_months(cov)
     D, promo, hist, page = EH.load(honest_path)
     from . import store
