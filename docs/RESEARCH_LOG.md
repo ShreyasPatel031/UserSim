@@ -651,3 +651,10 @@ Model switches, direction reviews and agenda changes, newest last.
 - 09:33 UTC: mailbox checked. Day-1 at-launch capture still absent (window 09:00–09:40); follow-up added to 0905. C2 small-source job queued behind the profile CDX. No other new replies.
 - 10:04 UTC Day-1 at-launch capture landed late (09:45–09:52 UTC, 01:45 PT; 36 launches, 74 people). PH hides votes ~4 h on page and API, so the pre-launch rule is now: fetched within 20 min of launch start + snapshot rule + no activity counts. Nov 3: 0/1,144 rows pre-launch (expected). Bar for Data Feeder: 00:20 PT. PH daily check moved to 01:07 PT (user approved).
 - 10:08 UTC Follow-up on the HN signed-in visibility check (2146 B), 12 h without a report.
+- 10:34 UTC: mailbox checked.
+  - At-launch capture: the 08:10 loop never fired (a single long sleep overshot after a box clock jump); fixed to a 30-s
+    wall-clock poll. Catch-up ran 09:45–09:53 UTC (36 launches, 74 profiles, 874 follower rows, X filled; all post-vote,
+    dropped under the strict rule). Nov 4 fires at 00:04 PT on today_0005.json; VM warm; pages by ~00:20 PT. Data
+    Feeder needs the file shape confirmed (PH agent asked).
+  - People refresh Nov 3: 131 upvote pages, 98.5% ok, $0.035; no follows (Tuesday; rota off).
+  - Wayback: Jan–Jun 45%, Jul–Dec 9%, profile CDX 3,815/4,667.
