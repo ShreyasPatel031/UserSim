@@ -5,7 +5,8 @@ INBOX_DIR=${GROK_INBOX_DIR:-/root/.usersim/grok_inbox}; mkdir -p "$INBOX_DIR"
 here=$(cd "$(dirname "$0")" && pwd)
 ( flock -n "$INBOX_DIR/watch.lock" true ) 2>/dev/null && setsid nohup bash "$here/grok_watch.sh" >/dev/null 2>&1 < /dev/null &
 while sleep 10; do
-  off=$(cat "$INBOX_DIR/read.offset" 2>/dev/null || echo 0); total=$(wc -l < "$INBOX_DIR/inbox.jsonl" 2>/dev/null || echo 0)
+  off=$(cat "$INBOX_DIR/read.offset" 2>/dev/null || echo 0)
+  total=0; [ -f "$INBOX_DIR/inbox.jsonl" ] && total=$(wc -l < "$INBOX_DIR/inbox.jsonl")
   if [ "$total" -gt "$off" ]; then
     tail -n +"$((off+1))" "$INBOX_DIR/inbox.jsonl" | python3 -I -c '
 import json,sys

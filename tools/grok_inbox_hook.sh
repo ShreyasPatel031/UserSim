@@ -7,7 +7,7 @@ except Exception: print("PostToolUse")')
 here=$(cd "$(dirname "$0")" && pwd)
 ( flock -n "$INBOX_DIR/watch.lock" true ) 2>/dev/null && setsid nohup bash "$here/grok_watch.sh" >/dev/null 2>&1 < /dev/null &
 [ -s "$INBOX_DIR/inbox.jsonl" ] || exit 0
-off=$(cat "$INBOX_DIR/read.offset" 2>/dev/null || echo 0); total=$(wc -l < "$INBOX_DIR/inbox.jsonl")
+off=$(cat "$INBOX_DIR/read.offset" 2>/dev/null || echo 0); total=$(wc -l < "$INBOX_DIR/inbox.jsonl" 2>/dev/null || echo 0)
 [ "$total" -gt "$off" ] || exit 0
 tail -n +"$((off+1))" "$INBOX_DIR/inbox.jsonl" | python3 -I -c '
 import json,sys
