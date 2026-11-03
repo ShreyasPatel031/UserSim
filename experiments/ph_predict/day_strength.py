@@ -59,6 +59,19 @@ def day_table(A):
 XCOLS = [f"wd{w}" for w in range(7)] + ["hol", "to_hol", "since_hol", "log_n", "log_lm", "tr_real", "tr_lm", "tr_gap"]
 
 
+def leak_check(A, D, days, n=40, seed=0):
+    """Each day's inputs may use only votes final before it: recompute day d's row with every real total from d-1 on
+    hidden (votes of launches on days >= d-1 set to NaN) and assert XCOLS are unchanged."""
+    rng = np.random.default_rng(seed)
+    for d_ in map(str, rng.choice(sorted(days), min(n, len(days)), replace=False)):
+        cut = (pd.Timestamp(d_) - pd.Timedelta(days=1)).strftime("%Y-%m-%d")
+        with np.errstate(divide="ignore"):   # hidden days' targets are log(0); they are not inputs
+            Dm = day_table(A.assign(y=A.y.where(A.day < cut)))
+        a, b = D.loc[d_, XCOLS].astype(float), Dm.loc[d_, XCOLS].astype(float)
+        assert np.allclose(a.fillna(-9e9), b.fillna(-9e9)), f"leak: day {d_} inputs use votes from {cut} on: {(a - b)[a.ne(b)].to_dict()}"
+    return True
+
+
 def ridge(tr, te, y, cols, lam=5.0):
     X = tr[cols].fillna(tr[cols].mean()); Xt = te[cols].fillna(tr[cols].mean())
     mu, sd = X.mean(), X.std().replace(0, 1)
@@ -95,6 +108,10 @@ def main():
     T = T[T.day.isin([d_ for d_ in pred])].copy()
     T["strength"] = T.raw + T.day.map(D.s_pred)
     T["blend"] = T.control + T.day.map(D.blend_adj)
+    # pre-launch only: day inputs use votes final before each day (d-2 trailing), and each launch's weekly score is
+    # its own launch score + its day's predicted level (no realized total of any day, same week or not)
+    leak_check(A, D, list(pred))
+    assert np.allclose(T.strength - T.raw, T.day.map(D.s_pred)) and not np.allclose(T.strength, T.day.map(np.log(D.real.clip(lower=1))))
 
     # gate: day level, out of sample
     G = D.loc[[d_ for d_ in pred]].dropna(subset=["s", "s_pred", "s_control"])
@@ -108,7 +125,7 @@ def main():
         bs.append((rho(i, "s_pred"), rho(i, "s_control"), rho(i, "s_pred") - rho(i, "s_control")))
     bs = np.array(bs)
     ci = lambda k: [round(float(x), 3) for x in np.nanpercentile(bs[:, k], [2.5, 97.5])]
-    res = {"reference": os.environ.get("HONEST_COL", "honest") + " with the day-calibrated control (userbase_eval)",
+    res = {"leak_check": "passed (40 days: inputs unchanged with votes from d-1 on hidden)", "reference": os.environ.get("HONEST_COL", "honest") + " with the day-calibrated control (userbase_eval)",
            "days_tested": int(len(G)), "months_tested": sorted(T.mon.unique()),
            "gate": {"spearman_day_level_strength": [round(float(rho(days, "s_pred")), 3), ci(0)],
                     "spearman_day_level_control": [round(float(rho(days, "s_control")), 3), ci(1)],
