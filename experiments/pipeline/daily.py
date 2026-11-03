@@ -172,6 +172,7 @@ def s_simforecast(d, con, dry):
 
 
 SHADOW = os.path.join(PH, "data", "shadow")   # shadow forecasts: <SHADOW>/<name>/predict.py, run next to the live ones
+SHADOW_DEFAULT = "daycal,honest_a2"   # honest_a2: live offset + day terms + A1 team history + A2 team comments (bundle 6)
 
 
 @step("shadow")
@@ -183,7 +184,7 @@ def s_shadow(d, con, dry):
     under 90% of the line-up, or prints nothing fails the step loudly."""
     lineup = {str(p["id"]): p["name"] for p in json.load(open(f"{RAW}/today/{d}.json"))}
     out, bad = {"items": 0}, []
-    for name in [n for n in os.environ.get("SHADOW_MODELS", "daycal").split(",") if n]:
+    for name in [n for n in os.environ.get("SHADOW_MODELS", SHADOW_DEFAULT).split(",") if n]:
         path = os.path.join(SHADOW, name)
         if not os.path.exists(os.path.join(path, "predict.py")):
             out[name] = "not installed"; continue
@@ -427,7 +428,7 @@ def weekly_scores(d, con):
     L = con.execute(f"SELECT id, weekly_rank FROM launches WHERE day::VARCHAR IN ({','.join(repr(x) for x in days)}) AND weekly_rank IS NOT NULL").df()
     L["id"] = L.id.astype(str)
     files = {"launch_model": [f"{PH}/results/forecast_{x}.parquet" for x in days]}
-    for name in [n for n in os.environ.get("SHADOW_MODELS", "daycal").split(",") if n]:
+    for name in [n for n in os.environ.get("SHADOW_MODELS", SHADOW_DEFAULT).split(",") if n]:
         files[f"shadow_{name}"] = [f"{PH}/results/shadow_{name}_{x}.parquet" for x in days]
     rows = []
     for mdl, fs in files.items():
