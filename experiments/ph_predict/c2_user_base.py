@@ -31,6 +31,10 @@ def read_rows(paths):
     if not files:
         raise SystemExit(f"no *.jsonl in {paths}")
     U = pd.concat([pd.read_json(f, lines=True, dtype={"launch_id": str}) for f in files], ignore_index=True)
+    if "metric" in U:   # e.g. source=wayback_profile, metric=followers|followings|points -> wayback_profile_followers, ...
+        U["source"] = U.source.astype(str) + U.metric.map(lambda m: f"_{m}" if isinstance(m, str) and m else "")
+    if "count" not in U and "value" in U:
+        U = U.rename(columns={"value": "count"})
     UE.need(U, ["launch_id", "source", "as_of_date", "count"], "ph_userbase")
     return U
 
