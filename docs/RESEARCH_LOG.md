@@ -626,3 +626,4 @@ Model switches, direction reviews and agenda changes, newest last.
   stable; the robust signal is the honest shock: 0.415 vs 0.395, +0.020 [+0.003, +0.037]. Redacted-maker retry
   deprioritised with Grok Bot.
 - 07:30 UTC HN: Sep-fitted reach table at 15 min −0.8 [−3.1, +1.5], closed. Odds tool + content score (same protocol): AUC at posting 0.794→0.831, 15 min 0.803→0.840, 1 h 0.882→0.903; Brier improves. Live side-by-side (oddsloop3) on hn-sim-1. ModernBERT-large scaling run in progress.
+- 07:33 UTC: mailbox checked. Data Feeder diagnosing the no_makers_block case on 20 slugs (anonymous /products/<p>/makers does list teams with madePosts for 15/20); my 07:20 deprioritisation stands unless the fix is trivial. Profile coverage report not yet written. No follow-ups due.
