@@ -658,3 +658,4 @@ Model switches, direction reviews and agenda changes, newest last.
     Feeder needs the file shape confirmed (PH agent asked).
   - People refresh Nov 3: 131 upvote pages, 98.5% ok, $0.035; no follows (Tuesday; rota off).
   - Wayback: Jan–Jun 45%, Jul–Dec 9%, profile CDX 3,815/4,667.
+- 10:36 UTC today_0005.json shape confirmed to Data Feeder (list of posts with slug). Nov 3 at-launch = day 0 (0/1,144 pre-launch). Nov 4 00:04 PT is the first on-time capture; PH daily check at 01:07 PT verifies it.
