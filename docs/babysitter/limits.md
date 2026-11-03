@@ -43,6 +43,24 @@ Staged test after the live capture has run 2 h clean: 40 → 60 → 90 pages/min
 - 2026-11-03 20:55 UTC: PH route 4 re-blocked (probe 403, cf-ray a54e46be…) ~25 min after recovery, after only ~240 people-reader pages
   (20:40–20:49, ~25 pages/min, all 200). Recovery window was 20:10–20:51 (200 after challenge each time). Reading: the exit/fingerprint
   reputation had not reset; the second edge is ~15× lower than the first (~3,500 pages). Next: probe-only until clear, live capture first.
+  **Revised reading (Grok Bot 21:00 note):** the 20:55 403 was the probe's FIRST navigation on a fresh session right after a VM reset;
+  the reader's 240 pages on its established session were all 200. The 19:16 blocks were also first navigations of fresh sessions, and the
+  20:18 warm-up on a new port failed. Grok Bot logged 6 VM resets today (~20:05, 20:12, 20:37, 20:50, 20:58, 21:00 UTC), each a fresh
+  session. **Hypothesis: Cloudflare blocks fresh sessions; established sessions keep working. The binding constraint may be session
+  churn, not volume.**
+- 2026-11-03 20:59 UTC: Shreyas overrode the stop ("keep going"). full.py pulls today's 74 makers/hunters on ONE long-lived session
+  (port 10001), ~20/min rising to ~30, never above 40; warm-up 403 → wait 15 min, retry once, then stop; no rotation. Deploys now
+  self-reload without VM resets.
+
+## Test of the fresh-session hypothesis (run on every route-4 day until settled)
+Log every route-4 page with `session_id`, `session_age_s`, `nav_index` (1 = first navigation of that session) and status.
+1. One long-lived session; no VM resets; the probe runs inside that session instead of opening a new one.
+2. Compare 403 rates: first navigations vs navigations 2+, by session age bucket (<1 min, 1–10, 10–60, >60 min).
+3. Volume ramp inside the established session only (20 → 30 → 40 → 60 → 90 pages/min, 30 min per step), so volume and freshness are
+   measured separately.
+4. Verdict rules: if first-navigation 403s are ≫ later ones and later ones stay ~0% across the ramp, the operating rule becomes
+   "keep one warm session alive all day; never reset" and the daily ceiling is set by the ramp alone. If later navigations also fail
+   past some page count, that count is the volume edge.
 - 2026-11-03 19:16 UTC: PH route 4, Cloudflare 403 on all fresh sessions (full rota VM, then the live-capture VM at 19:32). Jobs stopped
   19:52 by Grok Bot/Data Feeder on the orchestrator's decision; one probe every 10 min. Recovery: pending.
 - 2026-11-03 20:01 UTC: fresh GCP VM in us-east1 (usersim-babysitter-probe, e2-micro, IP 104.196.53.204): Wayback CDX 3/3 HTTP 200 (0.5–2.7 s), captures 3/3 HTTP 302 to the nearest timestamp (0.2–0.9 s), no timeouts. So the timeouts are per-IP (hn-sim-1, the cloud session's egress), not all of GCP: a second polite worker set on a fresh GCP IP is possible.
