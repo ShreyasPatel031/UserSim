@@ -26,12 +26,13 @@ Two routes, two budgets:
 | P1 | Makers + hunter at launch (≤ featured_at + 20 min): profile counts (followers, following, points, made, hunted, reviews, badges), followers page 1, activity page 1, upvotes page 1 | once | route 4 | 320 | 592 |
 | P1 | Comments with username + ISO created_at + is_maker/is_hunter + parent_id, from the post page — **only if the API test above says no** | hourly day 1 (15-min for hours 0–4) | route 4 | 40×(16+20) = 1,440 | 2,032 |
 | P3 | Commenters of today's launches (first sight): profile counts, upvotes page 1, activity page 1; added to the pool (1958). Launch-day commenters are the mobilised people and grow the observed pool | once on first sight | route 4 | 500×3 = 1,500 | 3,532 |
+| P6a | Likely voters (~1,761: upvoted in last 7 d + makers/hunters of last 14 d): upvotes page 1, first-seen windows. Moved up (orchestrator 21:45: recent dated activity ρ 0.16–0.20 with turnout vs profile totals 0.02–0.07). Cadence grows with budget: 1 read/day → every 4 h → hourly | daily first | route 4 (cheapest page form) | 1,761 per read pass | 5,293 at 1 pass |
 | P2-lite | Makers + hunter: profile counts at +4 h and +24 h (the launch read is in P1); followers page 1 diff daily to day 7 | 2 reads + daily | route 4 | 80×2 + 80×7 = 720 | 4,252 |
 | P4 | Competitors: for each launch the top 5 Similar Products (raw/ph_alternatives) deduped (~150–200): product header counts, newest followers page 1 (diff), newest reviews page 1 with dates, latest launch votes | launch day, then weekly | route 4 | 200×4 = 800 | 5,052 |
 | P5 | Commenters, days 2–7: upvotes page 1 (first-seen) | daily | route 4 | ~3,000 | ~8,050 |
 | P6 | Pool likely-voters (~1,761) hourly + rest of active pool (~2,654) 4-hourly: upvotes page 1, first-seen windows (2010) | hourly / 4-hourly | **only on a route the edge test clears** (cheapest JSON route first) | ~42k + 16k | off budget |
 
-Order: P0, P1, P3, P2-lite, P4, P5, P6. At today's 2,500 pages: P0 + P1 in full (P1 with route-4 comments ~2,030), P3 partly
+Order (v3, 21:45 UTC): P0, P1, P3, P6a likely voters (passes added as budget allows), P2-lite, P4, P5, rest of P6; full-history pilot pages last. At today's 2,500 pages: P0 + P1 in full (P1 with route-4 comments ~2,030), P3 partly
 (first ~150 commenters). At 5k: through P4. At ~8k: P5. If the API returns comment authors (P0 test), P1 is ~590 and P0–P3 fit in 2.5k.
 Competitor history and full person history (all upvotes, all followers, all reviews) are backfill for the agents, not this feed.
 
