@@ -585,3 +585,8 @@ Model switches, direction reviews and agenda changes, newest last.
   signal yet to the mobilisation mechanism. Next: A2 in the shock model; joint A1+A2+C1 test; A2 live from today.
   Wayback profile coverage sample (80 users) running on exp-1 (shared rate limit with the domain pull).
 - 04:00 UTC Wayback: hn-sim-1 gets TCP timeouts (no 403/429); exp-1 reaches CDX fine (C2 1,675/3,660, ETA ~08:15). Per-IP drop. Split: C2 domains stay on exp-1; Data Feeder takes Jul–Dec 2025 and the profile-capture check (box).
+- 04:04 UTC Honest shock model + A1 + A2: 0.413 vs 0.395, +0.018 [+0.002, +0.035], 4/5 months (A2 carries it). Joint
+  A1 + A2 + C1 on the honest day-calibrated control: daily top 3 64.6, +1.9 [0.0, +3.8], never worse by month; top 5
+  −0.6; top 10 +0.7 [0, +1.4]; weekly 0; monthly +6.7/+6.7/+3.3 (5–6 lists). First honest bundle with a shock interval
+  above 0 and a top-3 interval at/above 0. Not claimed (±3.5 rule). Ships as shadow_honest_a2 under rule 2; adding to
+  the headline is Shreyas's call. RESEARCH_PROGRAM.md updated.

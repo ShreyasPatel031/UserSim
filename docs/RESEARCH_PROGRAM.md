@@ -31,6 +31,10 @@ Socrates, OSIM-8B.
      47.1–49.3 / 53.8–56.0 / 56.7–58.3.
    - On the honest baseline: day-level calibration weekly top 3 +4.0 [0.0, +8.0] (never worse by month), top 5 +1.6;
      ships as a shadow. E1 v2 adds nothing beyond it once its leaky audience inputs are removed.
+   - **Nov 3, 04:04 UTC, first honest pre-launch bundle:** team history (A1) + team pre-launch PH activity, comments only
+     (A2) + existing user base (C1) on the honest day-calibrated model: daily top 3 64.6, **+1.9 [0.0, +3.8], never worse
+     by month**; top 5 −0.6; top 10 +0.7 [0.0, +1.4]. Honest shock predictability 0.395 → 0.413 [+0.002, +0.035].
+     Under the ±3.5 noise rule, so not claimed as a board gain; runs as shadow_honest_a2 from Nov 3.
    - Tested on honest inputs, no daily gain: person models, E1, competitor page gaps and outcomes, pre-launch X
      engagement (NO-GO on 16 full days). Next: at-launch follower snapshots (from Oct 25; test ~Nov 20), PH Fable review.
    - **Launch-day, daily, from archived intraday votes (Jul–Oct, Wayback, verified):** hours 4–8: 85.1 / 95.2 / 91.8;
