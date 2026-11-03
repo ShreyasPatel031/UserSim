@@ -1634,3 +1634,7 @@ Team comments in 30 d: 1,610 of 6,574 launches (24%); with commented-on makers 1
 - Reading: no sign that new follows of a maker in the week mark a stronger launch (if anything weaker, not
   significant). Caveats: page 1 is newest-first, so absence on Oct 26 counts only for people with a complete baseline
   (the reliable rows); the window overlaps the launches, so many follows can come after the launch (not pre-launch).
+Process (orchestrator, 19:45 UTC): urgent asks for Grok Bot go to the orchestrator by send_message with subject
+"GROKBOT URGENT: <topic>" (it posts them to Grok Bot's webhook); non-urgent ones to mailbox/to_grokbot/. New peer: the
+data babysitter (session_01WkCrUQbiTbMDT5gLXh6qjb, branch claude/data-babysitter) verifies Data Feeder feeds and may
+ask about feed quality; answer it like the orchestrator. live_capture_check.py stays PH ops'.
