@@ -1,0 +1,22 @@
+# Throttling edges (babysitter, living table)
+
+Method: step the rate up in stages (×1.5 per stage, 30 min per stage), log 200 / 429 / 403 / captcha / empty-page / timeout
+per stage, find the first stage where errors rise, set the operating point just below it. Once a block is hit: honour
+Retry-After, back off, no IP or account rotation. One PH account only. Rows marked *measured* come from logs in the bucket;
+*planned* rows have not been stepped yet.
+
+| Source | Route | Safe rate (measured) | Edge rate | What the block looks like | Recovery time | Status |
+|---|---|---|---|---|---|---|
+| Product Hunt, anonymous pages (/@user, /upvotes, /following, /posts, /leaderboard) | route 4: Camoufox + one DataImpulse sticky residential session, US exit, temp GCP VM | 54–75 pages/min with 4 browsers for ≤15 min bursts: 750 pages 99.5% ok (17:14–17:28 UTC), 131 pages 98.5% ok (10:18); Feeder's noon-ET limit test 98–100% ok up to 80 pages/min; 1 worker at 9/min for 4.4 h: 0.17% 403 | not a rate edge alone: the block came at ~19:16 UTC after ~3,400 pages in the day (makers bulk 2,374 overnight + 131 + 750 + the scale test), with two VMs/sessions open at once and a browser-count step-up | Cloudflare 403 on every *first* navigation of a fresh browser, including the homepage; no cf clearance cookie; each blocked attempt still downloads ~2.4 MB (challenge assets) = $0.0024; one port (10011) got 1/5 through; leaderboard page 403 three times in 20 min | unknown yet; probe every 10 min from 19:52 UTC (`from_grokbot/ph_route4_block.status.md`); will be filled in when the probe clears | **measured, edge hit 2026-11-03** |
+| Product Hunt, signed-in box browser (Shreyas's account) | box Chrome, human-paced | not measured (3 profile reads on Nov 3 for the cast-time check, no block) | planned: Grok Bot tests a few human-paced loads before 23:30 PT as the fallback for the first snapshot | — | — | planned; this account may get blocked (Shreyas) |
+| Product Hunt API v2 (official) | pipeline key | 1,500 of 6,250 per 15 min reserved for team history; live v1 uses ~38 posts/min | 6,250 complexity per 15 min (documented) | 429 with reset header | window end | known, not stepped |
+| Wayback Machine (captures + CDX) | box IP, 4 workers, 1.5 s pause each | 23.6 captures/min aggregate now (Wayback latency ~10 s/capture, slowing since ~15:00 UTC); 53/min at 04:08–04:15; 15k+ captures today with 0×429, 0×403, 0.6% timeouts | not reached from the box; step plan 4 → 6 → 8 workers filed | from GCP VMs (hn-sim-1) and from this cloud session's egress: pure TCP/TLS timeouts (tunnel dies at 10 s, 39 B received), no HTTP status at all, while archive.org and the availability API answer | hn-sim-1 never recovered during Nov 3 (job moved to the box) | measured (box safe; cloud IPs blocked) |
+| GitHub REST / GraphQL | box gh login | ≤4,000 req/h self-cap, 22,776 requests in ~7 h, no 429 | 5,000/h authenticated (documented), 60/h unauthenticated per IP | 403 with X-RateLimit-Remaining 0 or 429 + Retry-After (secondary limit) | reset header (≤1 h) | known; this session's egress reports 15,000/h core, 10,000/h GraphQL (unused capacity) |
+| Quality News (news.social-protocols.org, volunteer-run) | box, 1 worker, ≥3.4 s | 7.7 pages/min realised (cap 17.6) over 19.7 h | not stepped on purpose (volunteer site); one 502 at 19:38 UTC → 30-min stop | 502 / 5xx | 30 min self-imposed | measured, not to be stepped |
+| X free quota (get_users_by_usernames) | agent session | 55 handles/day today | ~100 reads/month | 429 / quota exhausted | monthly reset | known |
+| HN Algolia / Firebase | any IP | not measured here | Algolia documents 10,000 req/h | 429 | window | planned if needed |
+
+## Log of edge events
+- 2026-11-03 19:16 UTC: PH route 4, Cloudflare 403 on all fresh sessions (full rota VM, then the live-capture VM at 19:32). Jobs stopped
+  19:52 by Grok Bot/Data Feeder on the orchestrator's decision; one probe every 10 min. Recovery: pending.
+- 2026-11-03 ~04:00 UTC: Wayback from hn-sim-1 (GCP) TCP timeouts; moved to the box. Cloud-session egress shows the same signature at 19:52 UTC.
