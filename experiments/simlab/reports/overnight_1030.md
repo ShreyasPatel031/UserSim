@@ -1667,3 +1667,12 @@ launch_day is a day early on 572 rows, a fixed −8 h offset in daylight time, a
 | maker, resolved | — → 3.8% (3–7%/month) | followings 0.087 | −0.6 (−1.3, 0.0) | 0.0 |
 Top 5 / 10 within ±1.0 everywhere (v2 both: top 5 −1.0 (−1.9, −0.1)). Verdict unchanged: followings carry a small
 real signal, no board gain; resolved makers add 2 points of maker coverage and nothing on the boards. Close C2-profiles.
+
+## Pool-share timing test written (ph_predict/pool_timing.py), and the 01:07 PT routine extended
+Votes are hidden ~4 h, so early pool share of votes is not readable in hours 1–2. The test uses early pool engagement
+(pool comments / share at 1, 2, 4 h after featured_at, team excluded; pool upvotes first seen in reads ending by +4 h)
+vs the final within-day shock, against the same for the whole day. Pool = first seen before the launch day. Reports n
+per day (power: ~10 days for CI ±0.1 at ρ ~0.4). Unit-tested on synthetic data. The daily routine (01:07 PT) now
+also runs the live-capture checker, the at-launch reader, the b6/b8/b9 checks, pool_timing, and reports the data
+babysitter's per-tier PASS/FAIL. Not started: mailbox/to_ph_ops "instant inbox" script (asked by Grok Bot; benign
+Pub/Sub pull, but a standing process fetched from a writable bucket) — waiting for the orchestrator's call.
