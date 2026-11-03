@@ -1,0 +1,352 @@
+{
+ "leak_check": "passed (40 days: inputs unchanged with votes from d-1 on hidden)",
+ "reference": "honest - live set with the day-calibrated control (userbase_eval)",
+ "days_tested": 178,
+ "months_tested": [
+  "2026-05",
+  "2026-06",
+  "2026-07",
+  "2026-08",
+  "2026-09",
+  "2026-10"
+ ],
+ "gate": {
+  "spearman_day_level_strength": [
+   0.583,
+   [
+    0.47,
+    0.677
+   ]
+  ],
+  "spearman_day_level_control": [
+   0.261,
+   [
+    0.114,
+    0.398
+   ]
+  ],
+  "strength_minus_control": [
+   0.322,
+   [
+    0.205,
+    0.44
+   ]
+  ],
+  "mae_day_level": {
+   "strength": 0.088,
+   "control": 0.109
+  }
+ },
+ "boards": {
+  "week top3": {
+   "lists": 25,
+   "control": 50.7,
+   "raw": 45.3,
+   "raw - control": [
+    -5.3333,
+    [
+     -10.6667,
+     -1.3333
+    ],
+    25
+   ],
+   "strength": 48.0,
+   "strength - control": [
+    -2.6667,
+    [
+     -9.3333,
+     4.0
+    ],
+    25
+   ],
+   "blend": 50.7,
+   "blend - control": [
+    0.0,
+    [
+     -5.3333,
+     5.3333
+    ],
+    25
+   ],
+   "strength - control by month": {
+    "2026-05": -8.3,
+    "2026-06": -6.7,
+    "2026-07": -0.0,
+    "2026-08": 6.7,
+    "2026-09": -8.3,
+    "2026-10": 0.0
+   }
+  },
+  "week top5": {
+   "lists": 25,
+   "control": 54.4,
+   "raw": 54.4,
+   "raw - control": [
+    -0.0,
+    [
+     -3.2,
+     3.2
+    ],
+    25
+   ],
+   "strength": 53.6,
+   "strength - control": [
+    -0.8,
+    [
+     -4.0,
+     1.6
+    ],
+    25
+   ],
+   "blend": 56.0,
+   "blend - control": [
+    1.6,
+    [
+     0.0,
+     4.0
+    ],
+    25
+   ],
+   "strength - control by month": {
+    "2026-05": -5.0,
+    "2026-06": 4.0,
+    "2026-07": -5.0,
+    "2026-08": 0.0,
+    "2026-09": 0.0,
+    "2026-10": 0.0
+   }
+  },
+  "week top10": {
+   "lists": 23,
+   "control": 55.2,
+   "raw": 54.8,
+   "raw - control": [
+    -0.4348,
+    [
+     -2.1739,
+     1.3043
+    ],
+    23
+   ],
+   "strength": 54.8,
+   "strength - control": [
+    -0.4348,
+    [
+     -1.7391,
+     0.8696
+    ],
+    23
+   ],
+   "blend": 54.8,
+   "blend - control": [
+    -0.4348,
+    [
+     -1.7391,
+     0.8696
+    ],
+    23
+   ],
+   "strength - control by month": {
+    "2026-05": 0.0,
+    "2026-06": -5.0,
+    "2026-07": 0.0,
+    "2026-08": 0.0,
+    "2026-09": 2.5,
+    "2026-10": 0.0
+   }
+  },
+  "mon top3": {
+   "lists": 5,
+   "control": 13.3,
+   "raw": 26.7,
+   "raw - control": [
+    13.3333,
+    [
+     0.0,
+     26.6667
+    ],
+    5
+   ],
+   "strength": 20.0,
+   "strength - control": [
+    6.6667,
+    [
+     0.0,
+     20.0
+    ],
+    5
+   ],
+   "blend": 20.0,
+   "blend - control": [
+    6.6667,
+    [
+     0.0,
+     20.0
+    ],
+    5
+   ],
+   "note": "too few lists for a conclusion"
+  },
+  "mon top5": {
+   "lists": 6,
+   "control": 26.7,
+   "raw": 30.0,
+   "raw - control": [
+    3.3333,
+    [
+     0.0,
+     10.0
+    ],
+    6
+   ],
+   "strength": 26.7,
+   "strength - control": [
+    0.0,
+    [
+     0.0,
+     0.0
+    ],
+    6
+   ],
+   "blend": 26.7,
+   "blend - control": [
+    0.0,
+    [
+     0.0,
+     0.0
+    ],
+    6
+   ],
+   "note": "too few lists for a conclusion"
+  },
+  "mon top10": {
+   "lists": 6,
+   "control": 33.3,
+   "raw": 36.7,
+   "raw - control": [
+    3.3333,
+    [
+     0.0,
+     6.6667
+    ],
+    6
+   ],
+   "strength": 33.3,
+   "strength - control": [
+    0.0,
+    [
+     -5.0,
+     5.0
+    ],
+    6
+   ],
+   "blend": 33.3,
+   "blend - control": [
+    0.0,
+    [
+     -5.0,
+     5.0
+    ],
+    6
+   ],
+   "note": "too few lists for a conclusion"
+  },
+  "day top3": {
+   "lists": 177,
+   "control": 62.7,
+   "raw": 62.7,
+   "raw - control": [
+    0.0,
+    [
+     0.0,
+     0.0
+    ],
+    177
+   ],
+   "strength": 62.7,
+   "strength - control": [
+    0.0,
+    [
+     0.0,
+     0.0
+    ],
+    177
+   ],
+   "blend": 62.7,
+   "blend - control": [
+    0.0,
+    [
+     0.0,
+     0.0
+    ],
+    177
+   ]
+  },
+  "day top5": {
+   "lists": 177,
+   "control": 70.4,
+   "raw": 70.4,
+   "raw - control": [
+    0.0,
+    [
+     0.0,
+     0.0
+    ],
+    177
+   ],
+   "strength": 70.4,
+   "strength - control": [
+    0.0,
+    [
+     0.0,
+     0.0
+    ],
+    177
+   ],
+   "blend": 70.4,
+   "blend - control": [
+    0.0,
+    [
+     0.0,
+     0.0
+    ],
+    177
+   ]
+  },
+  "day top10": {
+   "lists": 145,
+   "control": 76.6,
+   "raw": 76.6,
+   "raw - control": [
+    0.0,
+    [
+     0.0,
+     0.0
+    ],
+    145
+   ],
+   "strength": 76.6,
+   "strength - control": [
+    0.0,
+    [
+     0.0,
+     0.0
+    ],
+    145
+   ],
+   "blend": 76.6,
+   "blend - control": [
+    0.0,
+    [
+     0.0,
+     0.0
+    ],
+    145
+   ]
+  }
+ },
+ "day_predictions": {
+  "file": "results/day_strength_pred.parquet",
+  "days": 178
+ }
+}

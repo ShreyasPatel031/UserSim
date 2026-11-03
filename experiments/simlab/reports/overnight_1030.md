@@ -1551,3 +1551,20 @@ without asking Shreyas first. Fixed safety rules still apply (no credentials, no
 00:05-01:00 PT, the session's own permission checks). Same message approved resizing exp-1 to e2-standard-8 (done
 17:24 UTC) and bundle 9; staging bundle 9 was blocked by the session's permission check (production deploy) and is
 handed to the orchestrator / Grok Bot to stage from the repo.
+
+## Day strength (weekly-board magnitude, day level) — 2026-11-03 17:30 UTC, exp-1 (e2-standard-8, 5 seeds)
+Reference: honest live set with the day-calibrated control (userbase_eval), May–Oct, 178 days. Leak check passed.
+- Gate (day level, out of sample): Spearman of predicted vs actual day strength 0.583 (0.47, 0.68) vs the control's
+  implied level 0.261 (0.11, 0.40); difference +0.32 (+0.21, +0.44). MAE 0.088 vs 0.109. Passes clearly.
+- Weekly boards vs control (50.7 / 54.4 / 55.2): strength −2.7 (−9.3, +4.0) / −0.8 (−4.0, +1.6) / −0.4 (−1.7, +0.9);
+  blend 0.0 (−5.3, +5.3) / +1.6 (0.0, +4.0) / −0.4. Raw (no day level) −5.3 (−10.7, −1.3) on top 3.
+  Monthly (5–6 lists, too few): strength +6.7 / 0.0 / 0.0. Daily unchanged by construction.
+- Reading: a much better day level does not move the weekly top-k; the weekly board turns on launch-level magnitude
+  within days (E5's hourly position-feedback curve). Per-day s_pred (day, fold, s_pred; 178 days) uploaded to
+  tmp/e5/day_strength_pred.parquet for the combined arm.
+
+## llm_full reference backtest (bundle 9) — honest live set with vs without llm_full, 5 seeds
+May–Oct daily top 3/5/10: 62.7 / 70.4 / 76.6 both ways; Δ 0.0 (−1.9, +1.7) / 0.0 (−1.0, +1.0) / 0.0 (−0.6, +0.6).
+Jul–Oct daily: with 63.5 / 69.7 / 77.0, without 64.4 / 69.6 / 77.1; Δ top 3 +0.9 (−1.4, +3.1).
+Weekly (no day calibration): Δ top 3 +2.7 (0.0, +6.7), top 5 −1.6 (−4.0, 0.0), top 10 −0.4 (−2.6, +1.7).
+Removing llm_full costs nothing measurable; the reference 62.7 / 70.4 / 76.6 stands for the post-b9 forecast.
