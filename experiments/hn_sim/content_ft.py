@@ -28,6 +28,7 @@ CUTS = {"jun30": "2026-06-30", "aug30": "2026-08-30", "sep30": "2026-09-30"}
 FIRST, LAST = "2025-01-15", "2026-10-14"
 MODEL = "answerdotai/ModernBERT-base"
 NEG_PER_POS = 4
+MODEL_L = "answerdotai/ModernBERT-large"
 
 
 def clean(t):
@@ -66,7 +67,7 @@ exec >> /var/log/cft.log 2>&1
 B=gs://%(bucket)s/%(pfx)s
 [ -f /opt/cft/started ] && exit 0
 mkdir -p /opt/cft && cd /opt/cft && touch started
-shutdown -h +420                                  # hard stop after 7 h whatever happens
+shutdown -h +480                                  # hard stop after 8 h whatever happens
 (while true; do gcloud storage cp -q /opt/cft/train.log $B/train.log 2>/dev/null; gcloud storage cp -q /var/log/cft.log $B/startup.log; sleep 120; done) &
 gcloud storage cp -q $B/data.parquet $B/content_ft.py .
 for i in $(seq 60); do nvidia-smi && break; sleep 20; done
@@ -76,7 +77,7 @@ $PY -c "import torch" || $PY -m pip install -q torch
 $PY -m pip install -q "transformers>=4.48" pandas pyarrow scikit-learn
 $PY -m pip uninstall -y -q torchaudio torchvision      # preinstalled builds mismatch torch; transformers imports them if present
 $PY -c "import torch, transformers; print(torch.__version__, transformers.__version__, torch.cuda.is_available())"
-$PY content_ft.py train > train.log 2>&1
+$PY content_ft.py train %(plan)s > train.log 2>&1
 gcloud storage cp -q train.log $B/train.log; gcloud storage cp -q scores_*.parquet $B/
 gcloud storage cp -q /var/log/cft.log $B/startup.log
 echo deleting; gcloud storage cp -q /var/log/cft.log $B/startup.log; gcloud compute instances delete $(hostname) --zone %(zone)s --quiet
@@ -104,7 +105,7 @@ def launch(name="hn-cft-1", Z=None):
         scheduling=compute_v1.Scheduling(on_host_maintenance="TERMINATE", automatic_restart=False),
         metadata=compute_v1.Metadata(items=[
             compute_v1.Items(key="install-nvidia-driver", value="True"),
-            compute_v1.Items(key="startup-script", value=STARTUP % {"bucket": BUCKET, "pfx": PFX.rstrip("/"), "zone": Z})]),
+            compute_v1.Items(key="startup-script", value=STARTUP % {"bucket": BUCKET, "pfx": PFX.rstrip("/"), "zone": Z, "plan": os.environ.get("CFT_PLAN", "base")})]),
         labels={"owner": "hn-sim", "purpose": "content-ft"})
     op = compute_v1.InstancesClient(credentials=vertex_credentials()).insert(project=P, zone=Z, instance_resource=inst)
     op.result(timeout=300)
@@ -130,14 +131,29 @@ def train():
         for i in range(0, len(texts), bs):
             yield i, tok(texts[i:i + bs], truncation=True, max_length=maxlen, padding=True, return_tensors="pt").to(dev)
 
-    def run(name, tr, te, col, maxlen, epochs=2, bs=64):
+    def score(m, df, col, maxlen):
+        m.eval()
+        s = np.zeros(len(df), np.float32)
+        with torch.no_grad():
+            for i, enc in batches(df[col].tolist(), 256, maxlen):
+                with torch.autocast("cuda", dtype=dt):
+                    s[i:i + 256] = m(**enc).logits.squeeze(-1).float().cpu().numpy()
+        m.train()
+        return s
+
+    def run(name, tr, te, col, maxlen, epochs=2, bs=64, model=MODEL, lr=3e-5, val=None, save=False):
+        """val: rows inside the training window held out for early stopping (best epoch by AUC is kept)."""
         t0 = time.time()
         torch.manual_seed(0)
-        m = AutoModelForSequenceClassification.from_pretrained(MODEL, num_labels=1).to(dev)
-        opt = torch.optim.AdamW(m.parameters(), lr=3e-5, weight_decay=0.01)
+        if val is not None:
+            tr = tr[~tr.post_id.isin(set(val.post_id))]
+        m = AutoModelForSequenceClassification.from_pretrained(model, num_labels=1).to(dev)
+        opt = torch.optim.AdamW(m.parameters(), lr=lr, weight_decay=0.01)
+        best, best_state = -1.0, None
         pos, neg = np.where(tr.y.to_numpy() == 1)[0], np.where(tr.y.to_numpy() == 0)[0]
         nneg = min(len(neg), NEG_PER_POS * len(pos))               # every winner + a fresh sample of non-winners each epoch
         steps = epochs * ((len(pos) + nneg + bs - 1) // bs)
+        print(f"{name}: {model}, {len(tr)} training rows, {steps} steps max", flush=True)
         sch = get_linear_schedule_with_warmup(opt, int(0.05 * steps), steps)
         lossf = torch.nn.BCEWithLogitsLoss()
         m.train()
@@ -155,13 +171,20 @@ def train():
                 scaler.step(opt); scaler.update(); sch.step(); opt.zero_grad()
                 if k % 500 == 0:
                     print(f"{name} ep{ep} step {k}/{steps // epochs} loss {loss.item():.4f} {time.time() - t0:.0f}s", flush=True)
-        m.eval()
-        s = np.zeros(len(te), np.float32)
-        X = te[col].tolist()
-        with torch.no_grad():
-            for i, enc in batches(X, 256, maxlen):
-                with torch.autocast("cuda", dtype=dt):
-                    s[i:i + 256] = m(**enc).logits.squeeze(-1).float().cpu().numpy()
+            if val is not None:
+                va = roc_auc_score(val.y, score(m, val, col, maxlen))
+                print(f"{name} ep{ep} validation AUC {va:.4f}", flush=True)
+                if va > best:
+                    best, best_state = va, {k_: v.detach().to("cpu", copy=True) for k_, v in m.state_dict().items()}
+                elif ep >= 1:
+                    print(f"{name} early stop after epoch {ep}", flush=True)
+                    break
+        if best_state is not None:
+            m.load_state_dict(best_state)
+        if save:
+            m.save_pretrained(f"model_{name}"); tok.save_pretrained(f"model_{name}")
+            subprocess.run(["gcloud", "storage", "cp", "-r", "-q", f"model_{name}", f"gs://{BUCKET}/{PFX}"])
+        s = score(m, te, col, maxlen) if len(te) else np.zeros(0, np.float32)
         auc = roc_auc_score(te.y, s) if te.y.nunique() == 2 else float("nan")
         print(f"== {name}: train {len(tr)} ({int(tr.y.sum())} winners), test {len(te)}, AUC {auc:.4f}, {time.time() - t0:.0f}s", flush=True)
         te[["post_id", "day", "y"]].assign(s=s).to_parquet(f"scores_{name}.parquet", index=False)
@@ -169,6 +192,15 @@ def train():
         del m, opt
         torch.cuda.empty_cache()
 
+    plan = sys.argv[2] if len(sys.argv) > 2 else "base"
+    if plan == "large":                                       # orchestrator 2026-11-03: scale + deployable base model
+        run("deploy_base", D, D.iloc[:0], "x", 128, save=True)          # all days <= Oct 14, for the live odds tool (CPU)
+        for name, vstart in (("jun30", "2026-06-01"), ("aug30", "2026-08-01")):
+            tr = D[D.day <= CUTS[name]]
+            run(f"large_{name}", tr, D[D.day > CUTS[name]], "x", 128, epochs=3, bs=32, model=MODEL_L, lr=2e-5,
+                val=tr[tr.day >= vstart])
+        print("DONE", flush=True)
+        return
     for name in ("jun30", "aug30"):                          # priority order: these two feed both gates
         run(name, D[D.day <= CUTS[name]], D[D.day > CUTS[name]], "x", 128)
     P = D[(D.day >= "2026-07-01") & (D.page != "")].copy()
