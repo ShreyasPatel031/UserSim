@@ -10,6 +10,10 @@ snap() { { gsutil ls -l "$B/from_grokbot/" 2>/dev/null; gsutil ls -l "$B/to_clau
 while true; do
   snap > "$INBOX_DIR/now.txt"
   comm -13 "$INBOX_DIR/seen.txt" "$INBOX_DIR/now.txt" | while read -r ts url; do
+    # A file that is merely rewritten (e.g. an auto-regenerated in-progress reply) is delivered at most once per hour.
+    now_s=$(date +%s); last=$(awk -v u="$url" '$2==u{t=$1} END{print t+0}' "$INBOX_DIR/delivered.txt" 2>/dev/null)
+    [ $((now_s - ${last:-0})) -lt 3600 ] && continue
+    echo "$now_s $url" >> "$INBOX_DIR/delivered.txt"
     body=$(gsutil cat "$url" 2>/dev/null | head -c 2000)
     python3 -I -c 'import json,sys; print(json.dumps({"ts":sys.argv[1],"url":sys.argv[2],"body":sys.argv[3]}))' "$ts" "$url" "$body" >> "$INBOX_DIR/inbox.jsonl"
   done
