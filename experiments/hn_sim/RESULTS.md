@@ -1002,3 +1002,18 @@ Content-score cache (orchestrator's option b): each live post scored once (conte
 179 cached / 96 computed, but VM-wide peak still 6.75 GB of 7.95 (> 6.5 GB threshold), so per the orchestrator's
 fallback hn-sim-1 was resized e2-standard-2 -> e2-standard-4 (16 GB, +$0.067/h) at 19:12 UTC Nov 3 (37 s down); the six
 running jobs (fdloop3, ghstars1, listwatch2, live5, oddsloop2, oddsloop3f) were requeued and verified running.
+
+### Content model + author history as text ((c); content_ft.py plan "next", base size, 256 tokens; T4 ~$1.2)
+Input: title + domain + Show/Ask text + the author's last 5 titles from posts >= 2 days earlier, with their points
+(82.9% of posts, 90.7% of winners have some). Same rows and cuts as the base content model.
+Test AUC: cut Jun 30 0.818 (base 0.813), cut Aug 30 0.824 (base 0.816).
+| checkpoint | base content | + author history | author vs base content, paired |
+|---|---|---|---|
+| at posting, 3-way blend | 25.4% | 25.8% [23.5, 28.1] | **+0.4 [-1.0, +1.7]**, pairwise +0.000 [-0.002, +0.002] |
+| at posting, as an input | 24.7% | 24.0% | |
+| 15 min (posting clock, Oct 2-14, vs votes + who 28.4%) | 29.1% | 28.4%, +0.0 [-2.8, +2.6] | |
+| 1 h | 48.4% | 48.5%, +1.3 [+0.2, +2.4] vs 47.2% | |
+Higher AUC, no Caught gain: the author's track record is already in the at-posting blend (real-list record, history
+score). Per the orchestrator's rule (run large only if it clears at posting) no large author run. For reference, large
+vs base content at posting is +0.7 [-0.6, +1.9] paired (both clear the 23.2% baseline; auth_vs_base.py).
+(b) 2025 out-of-fold content scores: oof25_q1 AUC 0.789, q2-q4 running; used when the 2025 Wayback votes land.
