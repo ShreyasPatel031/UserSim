@@ -707,3 +707,4 @@ Model switches, direction reviews and agenda changes, newest last.
   5. HN 15-min headline stays on the posting clock (15 min after posting, 24.7% / 29.6%); exposure clock (34.5%) reported alongside, not as the headline.
   6. usersim-exp-1 to e2-standard-8 for the scorer while stopped.
 - 17:18 UTC HN agent: RESULTS.md opens with a Current headlines block (1 h 48.5%; 15 min posting clock 24.7% / 29.6%; at posting 26.1%); exposure clock 34.5% secondary only; a stray 28.4% 15-min headline corrected.
+- 17:20 UTC E5 needs Shreyas's own go in its session for day_strength (new scope). Reassigned the weekly magnitude model to the PH agent (idle until v2): day strength × honest launch score, scored on weekly/monthly top 3/5/10 vs the day-calibrated control.
