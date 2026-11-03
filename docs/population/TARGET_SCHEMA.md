@@ -68,3 +68,11 @@ PH route 4: ≤ 60 pages/min, one session, ≤ ~2,500 pages per PT day shared by
 costs: follows p1 $0.061/1k, upvotes p1 $0.27/1k (268 KB), post/profile ~$0.17/1k; a blocked load still costs ~$0.0024.
 At that budget the full pool for items 1 + 1b (~88–146 k pages) is 5–8 weeks unless the daily budget rises; the pilot decides
 whether larger page sizes or the JSON query cut that.
+
+## Priority order, revised (orchestrator agreed Nov 3 20:25 UTC)
+Evidence: tools/population/turnout_fields.py. Per-day Spearman with "voted for a launch featured that day" (Oct 15–31, ~19.5k
+people/day): comments last 7 d 0.20, upvotes last 7 d 0.19, last 30 d 0.16, profile totals 0.02–0.07, comments ever 0.02;
+follows of ≥1k-follower accounts 0.21 (read after, leaky). Recency, not depth, drives whether someone turns up.
+New order for route-4 pages: (2) forward first-seen reads ≥ (1b) Activity comments > (3) dated following > (1) full upvote
+history capped 500 > (4)–(5). Full history is for which launch a person votes for (affinity); that test is next.
+GitHub events: run by Grok Bot on its box (raw/population/github/20261103/), no population VM.
