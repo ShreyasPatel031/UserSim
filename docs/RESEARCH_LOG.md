@@ -546,3 +546,12 @@ Model switches, direction reviews and agenda changes, newest last.
   - NEEDS_HUMAN lists two notes the intake couldn't turn into jobs; both were already answered.
   - A1 crawl at 5.75 MB, working back through early 2024.
 - 01:40 UTC User decisions: paid data cap $30/week total (no per-item approval; priced from a pilot); Track HN sign-up approved. Filed 0140 to Grok Bot: account, outcome-independent coverage check, then a free pull of first-60-min snapshots Jul–Oct 2026.
+- 02:34 UTC: mailbox checked.
+  - Track HN: account made, but SQL needs an email to the founder; snapshots begin at the front page (same selection as
+    QN); ToS bans bulk export; maintenance stopped. Not usable for Caught. HN agent told.
+  - Redacted makers (0140): resolvable anonymously via /posts/<slug> on route 4, which carries the full maker list.
+    2,349 targets (631 A1 posts + 1,718 May–Nov launches); bulk pull ETA ~4–5 h.
+  - Paid cap $30/week relayed to Grok Bot.
+  - Wayback Jan–Jun 2025: 15% done, ETA ~19 h. QN running in parallel.
+  - A1 crawl reached 2024-01-01 (complete).
+  - NEEDS_HUMAN shows the auto-intake can't parse prose asks; handled by Data Feeder manually so far.
