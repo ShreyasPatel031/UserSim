@@ -19,7 +19,13 @@ import odds_live as OL
 import top100 as H
 
 a = 60
-sc = pd.read_parquet(os.path.join(H.CACHE, "content_scores_jun30.parquet")).drop_duplicates("post_id").set_index("post_id").s
+pre = os.environ.get("CONTENT_PREFIX", "")            # "large_" = the ModernBERT-large scores
+f = os.path.join(H.CACHE, f"content_scores_{pre}jun30.parquet")
+if not os.path.exists(f):
+    import store as S
+    S._bucket().get_blob(CF.PFX + f"scores_{pre}jun30.parquet").download_to_filename(f)
+print(f"content scores: {pre or 'base '}model, cut Jun 30", flush=True)
+sc = pd.read_parquet(f).drop_duplicates("post_id").set_index("post_id").s
 Q = C.Q
 _, qs = fine_io.load()
 qb = {r.post_id: {"qn_f0": r.qn_f0, "qn_rank_10m": r.qn_rank_10m, "qn_up_10m": r.qn_up_10m, "qn_exp_10m": r.qn_exp_10m}

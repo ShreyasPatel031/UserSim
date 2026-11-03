@@ -245,9 +245,11 @@ def gate():
     import wb_caught as W
     b = S._bucket()
     sc = {}
+    pre = os.environ.get("CONTENT_PREFIX", "")            # "large_" = the ModernBERT-large scores
+    print(f"content scores: {pre or 'base '}models", flush=True)
     for n in list(CUTS) + ["page_aug30", "pagectl_aug30"]:
-        f = os.path.join(H.CACHE, f"content_scores_{n}.parquet")
-        x = b.get_blob(PFX + f"scores_{n}.parquet")
+        f = os.path.join(H.CACHE, f"content_scores_{pre}{n}.parquet")
+        x = b.get_blob(PFX + f"scores_{pre}{n}.parquet")
         if x is not None:
             x.download_to_filename(f)
             sc[n] = pd.read_parquet(f).drop_duplicates("post_id").set_index("post_id").s
