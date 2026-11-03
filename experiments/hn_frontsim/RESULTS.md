@@ -152,3 +152,17 @@ The literal rule passes: the simulator scores 0.712 against 0.648 for the 15-min
 2. The vote-arrival model: exposure by rank x hour and off-front by age x hour, plus the outcome-fitted early-vote likelihood.
 
 The live simulator (live_frontsim.py) keeps running only as a shadow; its Nov 8 Caught for Nov 2 posts is reported as a shadow number, not a bet.
+
+### Handoff refit on September only (Nov 3, for the Oct 2-14 backtest)
+
+The Oct 2-9 fit overlaps the HN agent's Oct 2-14 backtest, so the reach table and early-vote likelihood were refit on September alone: 20 weekdays whose front page reconstructs, and 1,325 posts with a Wayback /newest snapshot by 15 min. Of those, 87 reached the top 30 (6.6%). Results are in `calib_fit_sep_results.json` and in `hn_handoff_e5.json` under `*_sep`.
+
+| 15-min score | 1 | 2 | 3 | 4+ |
+|---|---|---|---|---|
+| real reach, Sep | 3.9% | 10.7% | 19.6% | 35.5% |
+| real reach, Oct 2-9 | 4.0% | 11.5% | 15.1% | 35.5% |
+| simulated, Sep fit | 1.1% | 13.7% | 35.4% | 58.8% |
+
+Best Sep fit: tau 0.3, kappa 0.05, c 0.25, sigma 0. A runner-up within 0.1 log-likelihood is tau 0.6, kappa 1.0, c 0.15. The Oct fit was tau 0.3, kappa 0.2, c 0.25, sigma 1.0.
+
+The real reach table is stable between months. The simulated table is still too steep, as it was in October.

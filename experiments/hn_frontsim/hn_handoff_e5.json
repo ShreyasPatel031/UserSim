@@ -30,7 +30,8 @@
    "3": 0.332,
    "4+": 0.629
   },
-  "use": "as a feature for wb15 (or a per-day list-threshold P: multiply by the day's share of top-30 reachers that make the daily top 30)"
+  "use": "as a feature for wb15 (or a per-day list-threshold P: multiply by the day's share of top-30 reachers that make the daily top 30)",
+  "fit_window": "Oct 2-9 weekdays (4,474 posts; overlaps the Oct 2-14 backtest: do not use there)"
  },
  "arrival_model": {
   "units": "Quality News exposure (qn_exp_10m): expected upvotes per 10 min for a typical post",
@@ -405,7 +406,43 @@
    "future_dispersion_sigma": 1.0,
    "fitted_by": "per-post binomial likelihood of real top-30 reach, Oct 2-9 (calib_fit.py)",
    "note": "the QN predictive-likelihood fit gives tau 0.05-0.2: under-weights early votes (QN selection, 5+ point posts only)"
+  },
+  "early_votes_likelihood_sep": {
+   "tau": 0.3,
+   "kappa": 0.05,
+   "quality_scale_c": 0.25,
+   "future_dispersion_sigma": 0.0,
+   "fitted_by": "per-post binomial likelihood of real top-30 reach on the Sep window above (calib_fit.py, WINDOW=sep); unit constant k_new fitted on posts to Sep 30",
+   "runner_up_within_0.1_loglik": {
+    "tau": 0.6,
+    "kappa": 1.0,
+    "c": 0.15,
+    "sigma": 0.0
+   }
   }
  },
- "results": "experiments/hn_frontsim/RESULTS.md on branch claude/person-model-v2"
+ "results": "experiments/hn_frontsim/RESULTS.md on branch claude/person-model-v2",
+ "reach_table_by_15min_score_sep": {
+  "fit_window": "Sep 1-30 weekdays whose front page Quality News reconstructs (20 days), posts with an outcome-independent Wayback /newest snapshot by 15 min (1,325 posts, 87 reachers); no October day used",
+  "bins": [
+   "1",
+   "2",
+   "3",
+   "4+"
+  ],
+  "real_rate": {
+   "1": 0.039,
+   "2": 0.107,
+   "3": 0.196,
+   "4+": 0.355
+  },
+  "real_reach_overall": 0.0657,
+  "simulator_outcome_calibrated_rate": {
+   "1": 0.011,
+   "2": 0.137,
+   "3": 0.354,
+   "4+": 0.588
+  },
+  "note": "'none' (no snapshot) is not estimable in Sep: Wayback captured /newest only sparsely then, so a missing snapshot means a capture gap, not the outcome-related 'none' of October"
+ }
 }
