@@ -977,3 +977,11 @@ weights). Test AUC: cut Jun 30 0.815 (base 0.813), cut Aug 30 **0.825** (base 0.
 By type, large model: at posting (3-way) late risers 110 -> 122 of 461, re-ups 43 -> 50 of 221, fast 154 -> 173 of 641;
 15 min late 25 -> 33, re-ups 14 -> 15, fast 71 -> 69; 1 h late 45 -> 53, re-ups 17 -> 22, fast 563 -> 567.
 **Headlines: at posting 26.1%, 15 min 28.4% (content +1.8, not significant), 1 h 48.5%.**
+
+**Odds tool with the large content model** (odds_live.py, ODDS_CONTENT=1 CONTENT_MODEL=large; input = cut-Jun-30 large
+score as a percentile, out of sample; same protocol): AUC top 30 at posting 0.794 (no content) -> 0.831 (base) ->
+**0.836 (large)**, Brier 0.0263; 15 min 0.844; 1 h 0.905; 2 h 0.933; 3 h 0.940. CPU check on hn-sim-1 (2 vCPU):
+ModernBERT-large scores 160 posts in 84 s (an hourly run is 100-160 posts). Deploy model: ModernBERT-large on every post
+up to Oct 14 (2 epochs, as early stopping chose), reference = its scores on 5,000 Sep 1 - Oct 14 posts (GPU); live job
+oddsloop3d swaps in after a verified first run (odds_live_content/ switches from base to large at that run).
+P(top 10) is capped at P(top 30) in every version from 2026-11-03 13:09 UTC.
