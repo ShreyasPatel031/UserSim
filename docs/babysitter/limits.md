@@ -40,6 +40,9 @@ no burst above 60/min; ≤~2,500 route-4 pages per PT day across all jobs, live 
 Staged test after the live capture has run 2 h clean: 40 → 60 → 90 pages/min, 30 min per step, stop at >2% 403.
 
 ## Log of edge events
+- 2026-11-03 20:55 UTC: PH route 4 re-blocked (probe 403, cf-ray a54e46be…) ~25 min after recovery, after only ~240 people-reader pages
+  (20:40–20:49, ~25 pages/min, all 200). Recovery window was 20:10–20:51 (200 after challenge each time). Reading: the exit/fingerprint
+  reputation had not reset; the second edge is ~15× lower than the first (~3,500 pages). Next: probe-only until clear, live capture first.
 - 2026-11-03 19:16 UTC: PH route 4, Cloudflare 403 on all fresh sessions (full rota VM, then the live-capture VM at 19:32). Jobs stopped
   19:52 by Grok Bot/Data Feeder on the orchestrator's decision; one probe every 10 min. Recovery: pending.
 - 2026-11-03 20:01 UTC: fresh GCP VM in us-east1 (usersim-babysitter-probe, e2-micro, IP 104.196.53.204): Wayback CDX 3/3 HTTP 200 (0.5–2.7 s), captures 3/3 HTTP 302 to the nearest timestamp (0.2–0.9 s), no timeouts. So the timeouts are per-IP (hn-sim-1, the cloud session's egress), not all of GCP: a second polite worker set on a fresh GCP IP is possible.
