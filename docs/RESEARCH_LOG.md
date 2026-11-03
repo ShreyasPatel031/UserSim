@@ -686,3 +686,8 @@ Model switches, direction reviews and agenda changes, newest last.
 - 13:45 UTC HN: ModernBERT-large finished on hn-cft-1 (self-deleted after; nothing lost; Grok Bot's "stopped 08:39 UTC" was an earlier VM). Test AUC Jun 30 cut 0.815 (base 0.813), Aug 30 cut 0.825 (base 0.816). Paired Caught gate (at posting, 15 min, 1 h) running, due within the hour. QN-reconstructed 15-min scores rejected as an input (low-tail fill from final score is the selection leak); validation aid only.
 - 13:50 UTC PH agent: wayback_profiles scorer ready (c2_user_base.py): per-launch max over makers/hunter at the latest pre-launch capture, variants within-30-d, hunter-only, maker-only; gate then top-k vs 62.7/70.4/76.6; coverage by month. Asked it to compute age from capture_ts as Data Feeder does (night-before capture = 0 d, not 2 d).
 - 13:52 UTC PH agent: age aligned to age_days (fractional days from capture_ts; drives the age input and the 30-d cut).
+- 14:40 UTC: mailbox checked. Data Feeder accepted the resolved-makers extension: 1,300 new handles / 1,345 maker–launch pairs
+  (695 resolved rows had no May–Oct match); CDX ~50 min when a slot frees; then wayback_profiles_v2.jsonl for all pairs with
+  age_days, parse_route (json|text|unparsed|fetch_failed), maker_source (api|resolved), done marker wayback_profiles_v2_done.json.
+  v1 phase B streaming: 2,806 rows, 513 launches, 307 users. PH agent told: dry-run on v1, real runs on v2. Wayback Jan–Jun
+  11,897/22,482 (6.8/min), Jul–Dec 3,389; QN 6,400 fetched. HN large-model Caught gate still pending.
