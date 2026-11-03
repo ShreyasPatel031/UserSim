@@ -691,3 +691,4 @@ Model switches, direction reviews and agenda changes, newest last.
   age_days, parse_route (json|text|unparsed|fetch_failed), maker_source (api|resolved), done marker wayback_profiles_v2_done.json.
   v1 phase B streaming: 2,806 rows, 513 launches, 307 users. PH agent told: dry-run on v1, real runs on v2. Wayback Jan–Jun
   11,897/22,482 (6.8/min), Jul–Dec 3,389; QN 6,400 fetched. HN large-model Caught gate still pending.
+- 15:05 UTC HN: ModernBERT-large gates done. At posting 26.1% [23.9, 28.2], +2.9 [+1.4, +4.3] (base content model 25.4%); 1 h 48.5% [45.0, 52.1], +1.3 [+0.4, +2.2]; 15 min 30.2%, +1.8 n.s. Late risers 110→122/461, re-ups 43→50/221 at posting. ~$2.5 GCE. RESEARCH_PROGRAM.md updated. Told the HN agent: CPU-check the large model for the live odds tool and swap if it fits; size (not run) the next content axes (linked-page text, 2025 training set, author title history).
