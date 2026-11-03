@@ -1568,3 +1568,7 @@ May–Oct daily top 3/5/10: 62.7 / 70.4 / 76.6 both ways; Δ 0.0 (−1.9, +1.7) 
 Jul–Oct daily: with 63.5 / 69.7 / 77.0, without 64.4 / 69.6 / 77.1; Δ top 3 +0.9 (−1.4, +3.1).
 Weekly (no day calibration): Δ top 3 +2.7 (0.0, +6.7), top 5 −1.6 (−4.0, 0.0), top 10 −0.4 (−2.6, +1.7).
 Removing llm_full costs nothing measurable; the reference 62.7 / 70.4 / 76.6 stands for the post-b9 forecast.
+Procedure (orchestrator, 18:00 UTC, relaying Shreyas): when a permission or safety check blocks an action, don't work
+around it or wait in this session; file mailbox/to_grokbot/<UTC>_SECURITY_ph-agent_<topic>.md (what was blocked, the
+check's category, why it's needed, the exact unblock step for Shreyas), tell the orchestrator in one line, carry on.
+The bundle 9 block is already filed by the orchestrator (20261103T1800_SECURITY_ALERTS_to_grokbot.md).
