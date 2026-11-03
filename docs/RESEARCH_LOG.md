@@ -617,3 +617,6 @@ Model switches, direction reviews and agenda changes, newest last.
   28.4 → 29.1, +0.8 n.s. Page text hurt (0.717 vs 0.736). Next: into the live tool and the 1 h model; scale the model;
   content + 2025 early votes at 15 min. RESEARCH_PROGRAM.md updated.
 - 07:08 UTC Resolved makers landed: 435/2,349 (18.5%); 1,493 pages had no makers block anonymously, 415 empty. Asked Grok Bot to diagnose and retry (anonymous variant or signed-in at human pace, A1 posts first). PH agent to rerun A1/shock/bundle with the 435.
+- 07:09 UTC HN 1 h with the content model as an input: 48.4% [45.0, 51.8], +1.1 [+0.0, +2.3] vs 47.2%; late risers
+  45→60/461, re-ups 17→20, fast 563→560. Reach table not run (fitted on test days); E5 asked for a Sep-only refit.
+  Scaling run (ModernBERT-large, early stopping) and a deploy model for the live tool running on a T4, ~$3, ~5 h.

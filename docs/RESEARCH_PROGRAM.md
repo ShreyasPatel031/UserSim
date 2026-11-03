@@ -48,7 +48,7 @@ Socrates, OSIM-8B.
    Nov 3, 07:04 UTC: a content model (ModernBERT on title + domain + Show/Ask text, trained 2025+) lifts Caught at
    posting from 23.2% to **25.4% [23.2, 27.6], +2.2 [+0.4, +4.0]** (3-way rank blend, weights fixed in advance), with
    gains on late risers (110→116), re-ups (43→52) and fast winners (154→168). At 15 min +0.8, n.s. Cost ~$1.75.
-   Now: 1 h 47.2%, 15 min 24.7% [22.6, 26.9] (Sep 1–Oct 14; the 26.5% reported earlier on Nov 2 came from a bug and is withdrawn); Oct 2–14 with daily retrain 29.6% (votes + who + volume + hour); 15 min with /newest votes + early commenters 28.4% [23.6, 33.0]
+   Now: 1 h 48.4% [45.0, 51.8] (content model as an input, +1.1 [+0.0, +2.3], Nov 3), 15 min 24.7% [22.6, 26.9] (Sep 1–Oct 14; the 26.5% reported earlier on Nov 2 came from a bug and is withdrawn); Oct 2–14 with daily retrain 29.6% (votes + who + volume + hour); 15 min with /newest votes + early commenters 28.4% [23.6, 33.0]
    on Oct 2–14 (forward daily retrain, +2.8 [+0.3, +5.3] vs 25.5% on the same days); at posting 23.2%.
 
 Everything else (competitor grounding, person-level accuracy, pairwise and competitor-pair accuracy, pool-vote
