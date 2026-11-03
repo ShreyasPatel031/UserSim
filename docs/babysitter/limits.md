@@ -19,4 +19,5 @@ Retry-After, back off, no IP or account rotation. One PH account only. Rows mark
 ## Log of edge events
 - 2026-11-03 19:16 UTC: PH route 4, Cloudflare 403 on all fresh sessions (full rota VM, then the live-capture VM at 19:32). Jobs stopped
   19:52 by Grok Bot/Data Feeder on the orchestrator's decision; one probe every 10 min. Recovery: pending.
+- 2026-11-03 20:01 UTC: fresh GCP VM in us-east1 (usersim-babysitter-probe, e2-micro, IP 104.196.53.204): Wayback CDX 3/3 HTTP 200 (0.5–2.7 s), captures 3/3 HTTP 302 to the nearest timestamp (0.2–0.9 s), no timeouts. So the timeouts are per-IP (hn-sim-1, the cloud session's egress), not all of GCP: a second polite worker set on a fresh GCP IP is possible.
 - 2026-11-03 ~04:00 UTC: Wayback from hn-sim-1 (GCP) TCP timeouts; moved to the box. Cloud-session egress shows the same signature at 19:52 UTC.
