@@ -1,0 +1,297 @@
+"""Population person store: loaders, validation and build (population data agent).
+
+Inputs are raw rows keyed by username (GCS raw/ only). Output keys people on a salted person_id; usernames never leave raw/.
+Every event row: person_id, platform, kind, target_id, ts_lo, ts_hi, ts_quality, first_seen_at, fetched_at, source, extra.
+  ts_quality: exact (event carries its own time) | bounded (upvote: [lo, hi] from list order + reads) | snapshot (edge seen, time unknown)
+Upvote bounds: PH lists upvotes newest-vote-first and shows no cast time, so for position k in one read
+  lo = max(launched_at of items k..end)   (a vote can't precede its launch, and is newer than every older vote)
+  hi = earliest fetched_at of any read showing it;
+  and if an earlier read of the same person did not show it while showing a vote that is older in a later read, lo >= that read's fetched_at.
+
+Usage:
+  python tools/population/store.py build DATA_DIR OUT_DIR --salt-file SALT   # DATA_DIR laid out as in inventory.py
+  python tools/population/store.py validate-pilot DIR                         # raw/ph_population/<run>/ as declared by Data Feeder
+"""
+import argparse, glob, gzip, hashlib, json, os, sys
+from collections import defaultdict
+
+import pandas as pd
+
+TS = lambda s: pd.to_datetime(s, utc=True, errors="coerce", format="mixed")
+
+
+# ---------- ids ----------
+class Ids:
+    def __init__(self, salt: str):
+        self.salt = salt
+
+    def __call__(self, username, platform="producthunt"):
+        if username is None or (isinstance(username, float) and pd.isna(username)):
+            return None
+        u = str(username).strip().lstrip("@").lower()
+        return "p_" + hashlib.sha256(f"{self.salt}{platform}:{u}".encode()).hexdigest()[:16]
+
+
+def read_jsonl(path):
+    op = gzip.open if path.endswith(".gz") else open
+    with op(path, "rt") as f:
+        return [json.loads(l) for l in f if l.strip()]
+
+
+def rows_glob(pattern):
+    out = []
+    for p in sorted(glob.glob(pattern)):
+        out += read_jsonl(p)
+    return out
+
+
+# ---------- generic Apollo / GraphQL walker (for saved page JSON) ----------
+CONN_KEYS = {"votedPosts": "upvote", "followers": "follower", "following": "following", "followings": "following",
+             "comments": "comment", "activityItems": "activity", "activities": "activity", "reviews": "review",
+             "collections": "collection", "stacks": "stack", "madePosts": "made", "submittedPosts": "hunted"}
+
+
+def walk_connections(obj, path=()):
+    """Yield (key, connection) for every {..., "edges": [...]} under a known key, anywhere in the tree."""
+    if isinstance(obj, dict):
+        for k, v in obj.items():
+            if isinstance(v, dict) and isinstance(v.get("edges"), list) and k in CONN_KEYS:
+                yield k, v
+            yield from walk_connections(v, path + (k,))
+    elif isinstance(obj, list):
+        for v in obj:
+            yield from walk_connections(v, path)
+
+
+def parse_page_json(obj):
+    """Return {kind: {"nodes": [...], "has_more", "end_cursor"}} from a saved Apollo/GraphQL page."""
+    out = {}
+    for k, conn in walk_connections(obj):
+        kind = CONN_KEYS[k]
+        pi = conn.get("pageInfo") or {}
+        nodes = [e.get("node") for e in conn["edges"] if isinstance(e, dict) and isinstance(e.get("node"), dict)]
+        prev = out.get(kind)
+        if prev is None or len(nodes) > len(prev["nodes"]):  # Apollo caches can repeat a connection; keep the fullest
+            out[kind] = {"nodes": nodes, "has_more": pi.get("hasNextPage"), "end_cursor": pi.get("endCursor")}
+    return out
+
+
+# ---------- loaders: existing raw files ----------
+def load_upvote_reads(paths, source):
+    """Page-1 or paged upvote rows: username, position, post_id, launched_at, fetched_at -> list of reads."""
+    rows = []
+    for p in paths:
+        rows += [r for r in read_jsonl(p) if r.get("post_id")]
+    df = pd.DataFrame(rows)
+    if df.empty:
+        return df
+    df["source"] = source
+    return df
+
+
+def upvote_events(reads: pd.DataFrame, ids: Ids) -> pd.DataFrame:
+    """reads: rows with username, position, post_id, launched_at, fetched_at, (page_no). One read = (username, fetched_at run)."""
+    df = reads.copy()
+    df["launched"] = TS(df.launched_at)
+    df["fetched"] = TS(df.fetched_at)
+    df["page_no"] = df.get("page_no", pd.Series(1, index=df.index)).fillna(1).astype(int)
+    df["read_id"] = df.username.str.lower() + "|" + df.fetched.dt.floor("D").astype(str) + "|" + df.source
+    # global order within a read: page then position
+    df = df.sort_values(["read_id", "page_no", "position"])
+    df["rank"] = df.groupby("read_id").cumcount()
+    # lo within read = running max of launched over older items (reverse order)
+    df["lo"] = df.iloc[::-1].groupby("read_id")["launched"].cummax().iloc[::-1]
+    out = []
+    for user, g in df.groupby(df.username.str.lower()):
+        reads = sorted(g.read_id.unique(), key=lambda r: g[g.read_id == r].fetched.min())
+        first_seen, lo = {}, {}
+        for pid_, r in g.groupby("post_id"):
+            first_seen[pid_] = r.fetched.min()
+            lo[pid_] = r.lo.max()
+        # first-seen tightening across reads
+        seen_sets = [(g[g.read_id == r].fetched.min(), set(g[g.read_id == r].post_id),
+                      g[g.read_id == r].set_index("post_id")["rank"].to_dict()) for r in reads]
+        for i in range(1, len(seen_sets)):
+            t_prev, s_prev, _ = seen_sets[i - 1]
+            _, s_cur, rank_cur = seen_sets[i]
+            for post in s_cur - s_prev:
+                older = [p for p, rk in rank_cur.items() if rk > rank_cur[post]]
+                if any(p in s_prev for p in older):  # previous read reached past this vote's slot and didn't show it
+                    lo[post] = max(lo[post], t_prev) if pd.notna(lo[post]) else t_prev
+        pid = ids(user)
+        last = g.sort_values("fetched").groupby("post_id").last()
+        for post, r in last.iterrows():
+            # lo > hi: the list put this vote above a vote on a later launch although we saw it earlier -> a re-vote
+            # (unvote + upvote moves an item up). Keep first_seen as hi, drop lo, flag it.
+            conflict = pd.notna(lo[post]) and lo[post] > first_seen[post] + pd.Timedelta(minutes=1)
+            out.append(dict(person_id=pid, platform="producthunt", kind="upvote", target_id=str(post),
+                            ts_lo=pd.NaT if conflict else lo[post], ts_hi=first_seen[post],
+                            ts_quality="order_conflict" if conflict else "bounded",
+                            first_seen_at=first_seen[post], fetched_at=r.fetched, source=r.source,
+                            extra=json.dumps({"launched_at": str(r.launched)[:25]})))
+    return pd.DataFrame(out)
+
+
+def follow_events(rows, ids: Ids, kind, user_key, other_key, source):
+    """Edges seen in list reads: first_seen = earliest read showing the edge; time of follow unknown (snapshot)."""
+    df = pd.DataFrame(rows)
+    if df.empty:
+        return df
+    df = df[df[other_key].notna()]
+    df["fetched"] = TS(df.fetched_at)
+    g = df.groupby([df[user_key].str.lower(), df[other_key].str.lower()]).fetched.agg(["min", "max"]).reset_index()
+    return pd.DataFrame(dict(person_id=g[user_key].map(ids), platform="producthunt", kind=kind,
+                             target_id=g[other_key].map(ids), ts_lo=pd.NaT, ts_hi=g["min"], ts_quality="snapshot",
+                             first_seen_at=g["min"], fetched_at=g["max"], source=source, extra=None))
+
+
+def comment_events_from_store(events_parquet, ids_map):
+    """Exact-time comments from the v3g store (keyed 'ph:<username>'); re-keyed to salted ids."""
+    e = pd.read_parquet(events_parquet)
+    c = e[(e.platform == "producthunt") & (e.kind == "comment")].copy()
+    c["person_id"] = c.person_id.str.replace("^ph:", "", regex=True).map(ids_map)
+    t = TS(c.ts)
+    return pd.DataFrame(dict(person_id=c.person_id, platform="producthunt", kind="comment", target_id=c.target_id.astype(str),
+                             ts_lo=t, ts_hi=t, ts_quality="exact", first_seen_at=pd.NaT, fetched_at=pd.NaT,
+                             source="v3g:" + c.source, extra=None))
+
+
+# ---------- loaders: Data Feeder population runs (schema in 20261103T2000 reply, DRAFT) ----------
+COMMON = ["username", "tab", "page_no", "status", "fetched_at"]
+TAB_KEYS = {"profile": ["followers_count", "following_count"], "upvotes": ["post_ids", "has_more"],
+            "activity": ["items"], "reviews": ["items"], "collections": ["items"], "stacks": ["items"],
+            "made": ["hunted", "made"], "followers": ["users", "has_more"], "following": ["users", "has_more"]}
+
+
+def validate_pilot(run_dir, profiles=None):
+    """Checks a ph_population/<run>/ drop. Returns (ok, report dict). profiles: {username_lower: upvotes_total}."""
+    rep, ok = {}, True
+    tabs = {os.path.basename(p)[:-6]: read_jsonl(p) for p in glob.glob(f"{run_dir}/*.jsonl")}
+    if not tabs:
+        return False, {"error": "no tab files"}
+    for tab, rows in tabs.items():
+        r = {"rows": len(rows)}
+        miss = sum(1 for x in rows if any(k not in x for k in COMMON))
+        st = pd.Series([x.get("status") for x in rows]).value_counts().to_dict()
+        r["missing_common"], r["status"] = miss, {str(k): int(v) for k, v in st.items()}
+        good = [x for x in rows if x.get("status") == 200]
+        r["missing_payload"] = sum(1 for x in good if any(k not in x for k in TAB_KEYS.get(tab, [])))
+        bad_ts = 0
+        for x in good:
+            f = TS(x.get("fetched_at"))
+            if pd.isna(f):
+                bad_ts += 1
+            for it in x.get("items") or []:
+                c = TS(it.get("created_at")) if isinstance(it, dict) else pd.NaT
+                if isinstance(it, dict) and (pd.isna(c) or (pd.notna(f) and c > f + pd.Timedelta(minutes=5))):
+                    bad_ts += 1
+        r["bad_times"] = bad_ts
+        # paging continuity: page numbers contiguous per person; no duplicate items across pages
+        pages = defaultdict(list)
+        for x in good:
+            pages[x["username"].lower()].append(x)
+        gaps = dups = 0
+        for u, xs in pages.items():
+            nos = sorted(x.get("page_no", 1) for x in xs)
+            gaps += nos != list(range(1, len(nos) + 1))
+            if tab == "upvotes":
+                ids_ = [p for x in xs for p in (x.get("post_ids") or [])]
+                dups += len(ids_) - len(set(ids_))
+        r["people"], r["page_gaps"], r["dup_items"] = len(pages), gaps, dups
+        if tab == "upvotes" and profiles:
+            cov = []
+            for u, xs in pages.items():
+                tot = profiles.get(u)
+                n = len({p for x in xs for p in (x.get("post_ids") or [])})
+                last = max(xs, key=lambda x: x.get("page_no", 1))
+                if tot and not last.get("has_more"):
+                    cov.append(n / tot)
+            if cov:
+                s = pd.Series(cov)
+                r["complete_people_seen_vs_total_med"] = round(float(s.median()), 3)
+                r["complete_people_below_90pct"] = int((s < 0.9).sum())
+        r_ok = miss == 0 and r["missing_payload"] == 0 and bad_ts == 0 and gaps == 0 and dups == 0
+        r["pass"] = r_ok
+        ok &= r_ok
+        rep[tab] = r
+    return ok, rep
+
+
+def pilot_upvote_reads(run_dir):
+    """Flatten Data Feeder upvotes.jsonl pages into the read-row shape upvote_events() takes."""
+    rows = []
+    for x in read_jsonl(f"{run_dir}/upvotes.jsonl"):
+        if x.get("status") != 200:
+            continue
+        la = x.get("launched_at") or [None] * len(x.get("post_ids") or [])
+        for i, p in enumerate(x.get("post_ids") or [], 1):
+            rows.append(dict(username=x["username"], page_no=x.get("page_no", 1), position=i, post_id=str(p),
+                             launched_at=la[i - 1] if i - 1 < len(la) else None, fetched_at=x["fetched_at"]))
+    df = pd.DataFrame(rows)
+    if len(df):
+        df["source"] = "ph_population"
+    return df
+
+
+# ---------- build ----------
+def build(data_dir, out_dir, salt):
+    ids = Ids(salt)
+    os.makedirs(out_dir, exist_ok=True)
+    reads = pd.concat([
+        load_upvote_reads([f"{data_dir}/up/upvotes_page1_full.jsonl"], "ph_upvotes_full_p1"),
+        load_upvote_reads(sorted(glob.glob(f"{data_dir}/daily/*/upvotes_page1.jsonl")), "ph_people_daily_p1"),
+    ] + [pilot_upvote_reads(d) for d in sorted(glob.glob(f"{data_dir}/ph_population/*")) if os.path.exists(f"{d}/upvotes.jsonl")],
+        ignore_index=True)
+    ev = [upvote_events(reads, ids)]
+    fol = rows_glob(f"{data_dir}/daily/*/following_page1.jsonl") + rows_glob(f"{data_dir}/daily/pilot_following.jsonl")
+    ev.append(follow_events(fol, ids, "follows", "username", "followee", "ph_following_p1"))
+    fo = rows_glob(f"{data_dir}/ph_followers/*/*.jsonl")
+    ev.append(follow_events(fo, ids, "follows", "username", "of", "ph_followers_of_team"))
+    persons = pd.read_parquet(f"{data_dir}/people_v3g/persons.parquet")
+    ids_map = {u.lower(): ids(u) for u in persons.ph_username.dropna()}
+    ev.append(comment_events_from_store(f"{data_dir}/people_v3g/events.parquet", ids_map))
+    events = pd.concat([e for e in ev if len(e)], ignore_index=True)
+    events = events.drop_duplicates(["person_id", "kind", "target_id", "ts_lo", "source"])
+    for c in ["ts_lo", "ts_hi", "first_seen_at", "fetched_at"]:
+        events[c] = pd.to_datetime(events[c], utc=True)
+    pool = pd.DataFrame({"person_id": sorted(set(ids_map.values()))})
+    pool["in_pool"] = True
+    events.to_parquet(f"{out_dir}/events.parquet", index=False)
+    pool.to_parquet(f"{out_dir}/persons.parquet", index=False)
+    return events, pool
+
+
+def check_store(events, pool):
+    """Store-level validation (counts only)."""
+    c = {}
+    c["events"] = len(events)
+    key = ["person_id", "kind", "target_id", "source"]
+    c["dup_keys"] = int(events[events.ts_quality != "exact"].duplicated(key).sum()
+                        + events[events.ts_quality == "exact"].duplicated(key + ["ts_lo"]).sum())
+    c["upvote_order_conflicts"] = int((events.ts_quality == "order_conflict").sum())
+    up = events[events.kind == "upvote"]
+    c["upvote_lo_gt_hi"] = int((up.ts_lo > up.ts_hi + pd.Timedelta(minutes=1)).sum())
+    c["upvote_lo_missing"] = int((up.ts_lo.isna() & (up.ts_quality == "bounded")).sum())
+    c["null_person"] = int(events.person_id.isna().sum())
+    c["fetched_or_exact"] = float(((events.fetched_at.notna()) | (events.ts_quality == "exact")).mean())
+    c["pool_people_with_events"] = int(events.person_id.isin(pool.person_id).groupby(events.person_id).any().sum())
+    c["events_outside_pool_people"] = int((~events.person_id.isin(pool.person_id)).sum())
+    c["pass"] = c["dup_keys"] == 0 and c["upvote_lo_gt_hi"] == 0 and c["null_person"] == 0
+    return c
+
+
+if __name__ == "__main__":
+    ap = argparse.ArgumentParser()
+    ap.add_argument("cmd", choices=["build", "validate-pilot"])
+    ap.add_argument("paths", nargs="+")
+    ap.add_argument("--salt-file")
+    a = ap.parse_args()
+    if a.cmd == "build":
+        salt = open(a.salt_file).read().strip()
+        ev, pool = build(a.paths[0], a.paths[1], salt)
+        print(json.dumps(check_store(ev, pool), indent=1))
+        print(ev.groupby(["kind", "source", "ts_quality"]).agg(events=("person_id", "size"), people=("person_id", "nunique")).to_string())
+    else:
+        ok, rep = validate_pilot(a.paths[0])
+        print(json.dumps(rep, indent=1, default=str))
+        sys.exit(0 if ok else 1)
