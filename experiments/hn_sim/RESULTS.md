@@ -890,3 +890,19 @@ the old job to end, probes Wayback every 10 min for 24 h, and resumes the same f
 Update 03:55 UTC: Wayback answers from Data Feeder's box (no 429s) but not from GCP: hn-sim-1 sees TCP timeouts only
 (no 403/429), so GCP source IPs are being dropped. Both jobs stopped (nothing fetched); Data Feeder takes Jul-Dec 2025
 onto its box, same output path. GitHub stars: closed lever.
+
+### Live provisional readout (live15.py, run 2026-11-03 ~05:15 UTC; labels PROVISIONAL: Nov 2 has 1 list day read)
+Oct 31 - Nov 2 posting days, 2,471 posts, 66 winners so far. Flags = winners. Nov 2 is the first full always-on day
+(99.7% of posts seen by 15 min).
+| Checkpoint | score | all 3 days | Nov 2 |
+|---|---|---|---|
+| 1 h | votes + front page | 37.9% [20.0, 50.0] | 13/26 (50.0%) |
+| 1 h | blend with at-posting odds | 31.8% | 11/26 |
+| 15 min | votes + front page | 18.2% [4.0, 34.6] | **9/26 (34.6%)** |
+| 15 min | posting clock + re-up clock (direction B) | 24.2% [16.0, 33.3] | 7/26 |
+| 15 min | at-posting odds alone | 15.2% | 6/26 (23.1%) |
+| at posting | odds tool | 15.2% [0.0, 23.1] | 6/26 (23.1%) |
+Re-up clock: 84 posts with an exposure event (median 6.5 h after posting), 16 of 66 winners among them; 31.2% of
+those caught 15 min after the event. Per-minute model (direction A) switches on at 5 posting days (Nov 5).
+E5: atposting_hist.parquet (44,263 Sep 1 - Oct 14 posts, out of sample: odds tool fit Jul 1 - Aug 15, calibrated
+Aug 16-31) and live_atposting/ (Oct 31 - Nov 3) uploaded.
