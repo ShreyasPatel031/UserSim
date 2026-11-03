@@ -2,13 +2,13 @@
  "day": "2026-11-02",
  "status": "FAIL",
  "counts": {
-  "posts": 90,
-  "board": 90,
-  "coverage": 5,
-  "snapshots": 5,
+  "posts": 162,
+  "board": 162,
+  "coverage": 9,
+  "snapshots": 9,
   "launches": 18,
   "vote_drops": 0,
-  "board_api_rows": 90,
+  "board_api_rows": 162,
   "board_missing": 0
  },
  "fail": [
@@ -22,5 +22,5 @@
   "people_ts.jsonl missing",
   "products_ts.jsonl missing"
  ],
- "checked_at": "2026-11-03T21:18:01Z"
+ "checked_at": "2026-11-03T22:18:13Z"
 }
