@@ -1,7 +1,10 @@
 # Population data: target per-person schema, priority, cost (population data agent, 2026-11-03)
 Scope: public Product Hunt and X activity only (what a viewer sees; signed-in only where it shows the same public list deeper).
 Raw rows keyed by username live only in gs://usersim-bakeoff-347838016394/usersim_sim/raw/; the store the models read keys on
-`person_id = "p_" + sha256(salt + platform + ":" + lower(username))[:16]` (salt in raw/population/_salt, never in git). Reports: counts only.
+`person_id = "p_" + sha256(salt + "producthunt:" + lower(ph_username))[:16]`, hex, utf-8, salt = raw/population/_salt stripped of
+whitespace, username lowercased with any leading "@" removed. X accounts: same with the literal "x:" and the X username.
+Test vectors (with the real salt): "example_user" -> p_97eb5d57c445ef1f; X "example_user" -> p_2a9f6e09425fb3f2.
+Reference implementation: tools/population/store.py Ids. Reports: counts only.
 
 ## Inventory, Nov 3 (tools/population/inventory.py; pool 20,947)
 | Source | People | Items/person med / p90 | Days back med / p90 | Oldest | Dated |
