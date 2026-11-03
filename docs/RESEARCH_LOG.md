@@ -625,3 +625,4 @@ Model switches, direction reviews and agenda changes, newest last.
   remaining ~1,900 would add ~1 pt). Joint A1+A2+C1 daily top 3 +1.1 [−0.8, +3.0] (was +1.9), so the top-3 effect isn't
   stable; the robust signal is the honest shock: 0.415 vs 0.395, +0.020 [+0.003, +0.037]. Redacted-maker retry
   deprioritised with Grok Bot.
+- 07:30 UTC HN: Sep-fitted reach table at 15 min −0.8 [−3.1, +1.5], closed. Odds tool + content score (same protocol): AUC at posting 0.794→0.831, 15 min 0.803→0.840, 1 h 0.882→0.903; Brier improves. Live side-by-side (oddsloop3) on hn-sim-1. ModernBERT-large scaling run in progress.
