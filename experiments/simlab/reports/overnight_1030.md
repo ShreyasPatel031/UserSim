@@ -1638,3 +1638,18 @@ Process (orchestrator, 19:45 UTC): urgent asks for Grok Bot go to the orchestrat
 "GROKBOT URGENT: <topic>" (it posts them to Grok Bot's webhook); non-urgent ones to mailbox/to_grokbot/. New peer: the
 data babysitter (session_01WkCrUQbiTbMDT5gLXh6qjb, branch claude/data-babysitter) verifies Data Feeder feeds and may
 ask about feed quality; answer it like the orchestrator. live_capture_check.py stays PH ops'.
+
+## Is the shock inside our pool? (orchestrator priority test, 2026-11-03 ~19:45 UTC; data held, no fetch)
+Jul–Oct, honest live set, 2,552 launches / 117 days. Shock = within-day (log real − honest). Pool votes = distinct
+store people with a (launch-day-dated) upvote on the launch, a lower bound; pool share = pool votes / real votes.
+Pool share overall: mean 26.1%, median 23.1%.
+1. Shock vs pool share: within-day Spearman +0.41 (0.37, 0.45); pooled +0.45 (0.41, 0.49). High-shock launches have a
+   HIGHER pool share.
+2. Shock vs pool turnout (log1p pool votes): within-day +0.49 (0.46, 0.53); pooled +0.53 (0.50, 0.56); within-day R²
+   of shock on pool turnout 0.29 (0.26, 0.33).
+3. Pool share by final rank: 1–3 48.4% (46.9, 49.8; n 351; median pool votes 152 of 325); 4–10 31.1% (30.3, 31.9;
+   n 777); 11+ 18.0% (17.6, 18.4; n 1,424). By month: Jul 24.9%, Aug 26.4%, Sep 25.0%, Oct 27.9% (n 531–762).
+Reading: in the recorded data the shock is inside the pool. Caveats: (a) exposure: pool members are heavy daily users,
+so they may vote for launches because those launches sit high on the board (rank feedback), making pool share an
+effect of rising, not a cause; only vote timing separates them (the 15-min capture and 4-hour first-seen pilot give
+that); (b) selection: pool people were found through comments on these launches; (c) pool votes are a lower bound.
