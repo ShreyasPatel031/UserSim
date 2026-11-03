@@ -1609,3 +1609,15 @@ May–Oct 4,134 launches (makers 4,049 people / 4,488 pairs; hunters 2,584 / 4,1
   without complete history a zero means "not seen". Needs cast-time dates: the daily refresh's first-seen dates (since
   Oct 28; usable for launches from ~Nov 27) or a scroll pilot only if the page shows cast times. The comment half
   (exact times) can run now.
+
+## A3 (reciprocity), comment half — 2026-11-03 ~19:00 UTC, exp-1 e2-standard-8, 5 seeds
+Exact-time team comments on other launches before the launch's Pacific day; upvotes excluded (launch-day dated).
+Team comments in 30 d: 1,610 of 6,574 launches (24%); with commented-on makers 1,580. Reference: honest live set.
+- Gate (Holm): 5 of 6 pass, within-day ρ 0.054–0.065 (a3_makers_active30 0.065 (0.027, 0.104)); the active share
+  fails. Same size as A2 (0.056); the inputs overlap A2 (same comments).
+- A3 alone: daily top 3 +0.4 (−1.3, +2.1), linear +0.9 (−0.6, +2.4); top 5 −0.1; top 10 +0.1; weekly top 3 −2.7
+  (−9.3, +4.0); all noise.
+- Increment over A2 (A2's five inputs + A3's three "on whom" inputs): daily top 3 A2 +1.3 (−0.2, +3.0) ->
+  A2+A3 +1.5 (−0.2, +3.2); weekly top 3 −4.0 -> −5.3 (−12.0, 0.0). A3 adds nothing beyond A2.
+- Verdict: "on whom" the team comments carries no information beyond "how much" it comments. The upvote half needs
+  cast-time dates (daily refresh first-seen dates from Oct 28, or a scroll pilot if cast times exist).
