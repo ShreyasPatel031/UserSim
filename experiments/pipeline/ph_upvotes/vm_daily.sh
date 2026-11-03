@@ -13,9 +13,10 @@ load_proxy "$(md proxy_secret)" "$(md secret_project)" "$(md proxy_gcs)" || { ec
 for p in ftest upvotes following; do gsutil -q cp $W/out_$p.jsonl . 2>/dev/null; done   # resume
 IF=$(ip route | awk '/default/{print $5;exit}'); R0=$(cat /sys/class/net/$IF/statistics/rx_bytes); T0=$(cat /sys/class/net/$IF/statistics/tx_bytes)
 export PHUP_MODE=light
-head -5 following.txt > ftest.txt
-PHUP_PAGE=following python3 fetch_upvotes.py ftest.txt out_ftest.jsonl --workers 1 --max-usd 0.05
-OK=$(python3 -c "import json;print(sum(1 for l in open('out_ftest.jsonl') if json.loads(l).get('status')==200 and 'following' in json.loads(l)))")
+# smoke test: following page when there is a follows list (Mondays), else upvotes page (following.txt is empty on other days)
+if [ "$(grep -c . following.txt)" -ge 3 ]; then FP=following; head -5 following.txt > ftest.txt; else FP=upvotes; grep . upvotes.txt | head -5 > ftest.txt; fi
+PHUP_PAGE=$FP python3 fetch_upvotes.py ftest.txt out_ftest.jsonl --workers 1 --max-usd 0.05
+OK=$(python3 -c "import json;print(sum(1 for l in open('out_ftest.jsonl') if json.loads(l).get('status')==200 and ('following' in json.loads(l) or 'upvotes' in json.loads(l))))")
 echo "ftest ok=$OK"
 if [ "${OK:-0}" -lt 3 ]; then echo FAILED_FTEST | gsutil -q cp - $W/FAILED; gsutil -q cp out_ftest.jsonl /var/log/job.log $W/; shutdown -h now; fi
 PHUP_PAGE=upvotes   python3 fetch_upvotes.py upvotes.txt   out_upvotes.jsonl   --workers ${NW:-4} --max-usd ${MU:-0.5}
