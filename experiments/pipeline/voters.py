@@ -130,6 +130,10 @@ def dated_follows(Fl, have_first_seen):
     G = Fl.groupby(["username", "target_kind", "target"]).day.min().reset_index().rename(columns={"username": "person", "day": "first_seen"})
     G = G[[(p, k, t) not in have_first_seen for p, k, t in zip(G.person, G.target_kind, G.target)]]
     G["counts_from"] = (pd.to_datetime(G.first_seen) + pd.Timedelta(days=1)).dt.strftime("%Y-%m-%d")
+    # first_seen is an upper bound: lists are re-read every RESOLUTION_DAYS (Data Feeder reads follows weekly, on Mondays,
+    # until daily reads are confirmed), so the follow happened in (first_seen - resolution, first_seen]. counts_from stays
+    # honest; don't claim day-precise tie timing from it.
+    G["resolution_days"] = int(os.environ.get("RESOLUTION_DAYS", "7"))
     return G.reset_index(drop=True)
 
 
