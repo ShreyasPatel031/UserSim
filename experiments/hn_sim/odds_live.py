@@ -179,6 +179,11 @@ def score(rows: pd.DataFrame, now: float | None = None) -> pd.DataFrame:
     """rows: post_id (negative for drafts), title, url, author, created_at_i, text. Returns P(top 30 / top 10) at the
     latest age each post has reached by `now` (at posting for drafts / brand-new posts)."""
     M = pickle.load(open(MODEL, "rb"))
+    content = None
+    if any("content_pct" in v[2] for v in M["models"].values()):
+        import content_live                             # first, then freed: the large model + the title embeddings
+        content = content_live.pct(rows)                # together ran out of memory on the 8 GB VM
+        content_live.unload()
     now = time.time() if now is None else now           # now=0: score every row at posting
     hist = pd.concat([H.stories()[["post_id", "title", "url", "author", "points", "created_at_i", "text"]], recent_history()])
     hist = hist[~hist.post_id.isin(rows.post_id)]
@@ -218,9 +223,8 @@ def score(rows: pd.DataFrame, now: float | None = None) -> pd.DataFrame:
     t30 = past.post_id.isin(set(lists().query("rank <= 30").post_id)).to_numpy().astype(np.float32)
     X["knn_lp"], X["knn_100"] = lp[k].mean(1), (past.points.to_numpy()[k] >= 100).mean(1)
     X["knn_t30"], X["knn_sim"] = t30[k].mean(1), ksim
-    if any("content_pct" in v[2] for v in M["models"].values()):
-        import content_live
-        X["content_pct"] = content_live.pct(rows)
+    if content is not None:
+        X["content_pct"] = content
     # votes so far, for posts already up (Quality News series)
     age_min = (now - rows.created_at_i.to_numpy()) / 60
     reached = [max([a for a in AGES.values() if a <= m] or [0]) if pid > 0 else 0 for m, pid in zip(age_min, rows.post_id)]

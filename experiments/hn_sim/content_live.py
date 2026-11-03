@@ -42,12 +42,18 @@ def _load():
     return _M["tok"], _M["m"]
 
 
-def logits(rows, bs=64):
+def unload():
+    import gc
+    _M.clear()
+    gc.collect()
+
+
+def logits(rows, bs=16):
     import torch
     tok, m = _load()
     X = text(rows.reset_index(drop=True))
     out = np.zeros(len(X), np.float32)
-    with torch.no_grad():
+    with torch.inference_mode():
         for i in range(0, len(X), bs):
             enc = tok(X[i:i + bs], truncation=True, max_length=128, padding=True, return_tensors="pt")
             out[i:i + bs] = m(**enc).logits.squeeze(-1).numpy()
