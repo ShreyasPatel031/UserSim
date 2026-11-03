@@ -593,3 +593,10 @@ Model switches, direction reviews and agenda changes, newest last.
 - 04:05 UTC Wayback profile coverage sample (40 of 80 makers/hunters): 31 have any capture since 2025; 12 (30%) before their first May–Oct launch; 7 (17.5%) within the 90 days before. Per launch will be higher (several team members). Data Feeder runs the full check from the box.
 - 04:17 UTC shadow_honest_a2 trained and staged (commit 322adc5; launch model offset + day calibration + A1 + A2; C1 left out, identical without). Deploys as bundle 6 under rule 2 after the Nov 3 08:05 run writes forecast_<day>.parquet; first scored day Nov 4.
 - 04:17 UTC E5 campaign sweep Jul–Oct: FINAL NO-GO (Bluesky 91–93% of Jul–Aug launches; HN/Reddit/dev.to 100%). Report prelaunch_mentions_jul_oct.json. E5 assigned the weekly day-strength magnitude model build (dry run now; real fit at 14 clean snapshot days ~Nov 16), HN simulator step 2 first when the export lands.
+- 04:34 UTC: mailbox checked.
+  - Wayback: all three jobs on the box (Jan–Jun 25%, Jul–Dec started, profile CDX 137/4,667); hn-sim-1 was per-IP
+    blocked. C2 domains stay on exp-1.
+  - Follows rota: built but OFF pending Grok Bot's spend confirmation with Shreyas. Measured cost $0.03/1,000 pages
+    (~$0.63 per full-pool read). Correction: active people's follows are read Mondays only today, so dated follows have
+    weekly resolution; asked for daily reads of the active pool once confirmed.
+  - Resolved makers 1,074/2,349.
