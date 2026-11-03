@@ -939,3 +939,18 @@ risers 45 -> 60 of 461, re-ups 17 -> 20 of 221, fast 563 -> 560 of 641.
 **Reach table (E5 handoff) at 15 min: not run.** It was fitted on Oct 2-9 outcomes, which are test days of the 15-min
 backtest (Oct 2-14), so as an input it would leak; an honest version (fitted on training days) is a step function of the
 15-min /newest score, which wb15 already gives the model directly.
+
+**Odds tool with the content score (odds_live.py, ODDS_CONTENT=1; same protocol: fit Jul 1 - Aug 15, isotonic Aug 16-31,
+test Sep 1 - Oct 14; content input = cut-Jun-30 score as a percentile, out of sample for every row):**
+| age | AUC top 30, current -> + content | Brier top 30 | AUC top 10 |
+|---|---|---|---|
+| at posting | 0.794 -> **0.831** | 0.0271 -> 0.0263 (base 0.0290) | 0.789 -> 0.844 |
+| 15 min | 0.803 -> 0.840 | 0.0267 -> 0.0259 | 0.805 -> 0.850 |
+| 30 min | 0.842 -> 0.869 | 0.0247 -> 0.0243 | 0.849 -> 0.886 |
+| 1 h | 0.882 -> 0.903 | 0.0223 -> 0.0217 | 0.896 -> 0.919 |
+| 2 h | 0.914 -> 0.932 | 0.0188 -> 0.0183 | 0.932 -> 0.946 |
+| 3 h | 0.926 -> 0.940 | 0.0168 -> 0.0165 | 0.936 -> 0.948 |
+Live: the content version runs on hn-sim-1 alongside the current tool (oddsloop3, :50 past each hour, writes
+odds_live_content/; the current tool keeps odds_live/ at :35), so live scoring compares the two on the same posts. Live
+content scores come from a ModernBERT-base trained on every post up to Oct 14 (CPU), as a percentile against its own
+scores on Sep 1 - Oct 14 posts.
