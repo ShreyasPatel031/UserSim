@@ -866,3 +866,14 @@ Reruns after the fix:
   headline (was 26.5%, +1.8 with empty exposure). No step is significant: **the full-period 15-min headline stays 24.7%**.
 - wb_reup (Oct 2-14): posting clock (votes + who + exposure) 28.1%; **B, exposure clock 34.5% [31.5, 37.7], +6.4
   [+2.2, +10.5]** (late risers 27 -> 53 of 145); C -0.5 [-3.3, +1.9].
+
+### Live 15 min with an October-trained model (live_oct.py; PROVISIONAL labels; run 2026-11-03 ~02:00 UTC)
+Model trained on Oct 2-14 (Wayback /newest archive) with live-available inputs only: odds tool at posting, /newest votes
+by 15 min, best /news position, exposure (fixed), volume, hour. Flags = winners per posting day.
+| posting day | posts | winners so far | list days read | seen by 15 min | model, all | model, seen only | votes only | odds only |
+|---|---|---|---|---|---|---|---|---|
+| Oct 31 | 648 | 25 | 3 | 41.7% | 16.0% (4/25) | 8.3% (1/12) | 12.0% | 16.0% |
+| Nov 1 | 740 | 16 | 2 | 53.2% | 6.2% (1/16) | 16.7% (1/6) | 25.0% | 0.0% |
+| **Nov 2** (first full always-on day) | 1,083 | 25 | 1 | **99.7%** | **24.0% (6/25)** | 24.0% | 16.0% | 28.0% |
+Nov 2 is the first day with near-full per-minute coverage; 25 winners so far and one list day read, so these are far
+too few to read. Re-scored daily.
