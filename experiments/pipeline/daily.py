@@ -408,8 +408,16 @@ def s_score(d, con, dry):
     if not len(T):
         return {"items": 0}
     T = T.drop_duplicates(["model", "daily_rank"])   # one row per launch and model if a forecast was written twice
+    # line-up gaps, so the honest treatment is visible: late_featured = launches on the final featured board that were
+    # not in the 00:05 PT line-up the forecast saw (they count as misses); late_in_top_k = those among the top k;
+    # dropped_from_featured = line-up launches with no final daily rank
+    lineup = set(con.execute(f"SELECT DISTINCT launch_id::VARCHAR FROM forecasts WHERE forecast_date = '{y}' AND model = 'launch_model'").df().iloc[:, 0])
+    fin = con.execute(f"SELECT id::VARCHAR AS id, daily_rank FROM launches WHERE day::VARCHAR = '{y}' AND daily_rank IS NOT NULL").df()
+    late = fin[~fin.id.isin(lineup)] if lineup else fin.iloc[:0]
+    dropped = len(lineup - set(fin.id))
     rows = [{"day": y, "model": mdl, "k": k,
-             "hit": int(((g.predicted_rank <= k) & (g.daily_rank <= k)).sum()), "recall": ((g.predicted_rank <= k) & (g.daily_rank <= k)).sum() / k}
+             "hit": int(((g.predicted_rank <= k) & (g.daily_rank <= k)).sum()), "recall": ((g.predicted_rank <= k) & (g.daily_rank <= k)).sum() / k,
+             "late_featured": len(late), "late_in_top_k": int((late.daily_rank <= k).sum()), "dropped_from_featured": dropped}
             for mdl, g in T.groupby("model") for k in (3, 5, 10)]
     rows += weekly_scores(d, con)
     if not dry:
