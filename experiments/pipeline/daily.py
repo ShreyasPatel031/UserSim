@@ -65,6 +65,10 @@ def s_launches(d, con, dry):
     L = day_rows(d); L[["daily_rank", "weekly_rank", "monthly_rank", "votes"]] = None   # not final: never stored as outcomes
     if not dry:
         W.write("launches", L)
+    if not dry and len(L):   # the trigger Data Feeder's at-launch capture watches (~00:06 PT; <d>.json itself lands ~00:30)
+        r = subprocess.run(["gsutil", "-q", "cp", f"{RAW}/today/{d}.json", f"{W.BUCKET}/raw/daily/{d}/today_0005.json"], check=False)
+        if r.returncode:
+            return {"items": len(L), "status": "failed: today_0005.json upload"}
     return {"items": len(L), **({} if len(L) else {"status": "failed: 0 launches fetched for today"})}
 
 
