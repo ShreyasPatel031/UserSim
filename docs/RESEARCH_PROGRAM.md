@@ -101,6 +101,12 @@ a target out of reach. No agent writes or repeats a limiting statement about the
 - **Urgent asks to Grok Bot go through its webhook (Shreyas, Nov 3, 19:35 UTC), via tools/grokbot_post.sh**; the credentials
   file lives outside the repo and is never committed, printed or sent in a message. The GCS mailbox stays the written record:
   every webhook ask is also filed in to_grokbot/, and replies still land in from_grokbot/. Tested 19:37 UTC: HTTP 200.
+- **Data babysitter (Shreyas, Nov 3, 19:50 UTC):** session_01WkCrUQbiTbMDT5gLXh6qjb, branch claude/data-babysitter. Verifies every
+  Data Feeder feed daily (scorecard in raw/_babysitter/<day>/ and docs/babysitter/), measures throughput, speeds up and
+  parallelises collection, and finds each source's throttling edge in stages (limits in docs/babysitter/limits.md). The signed-in
+  PH account may get blocked; one account only; once blocked, back off, never rotate IPs or accounts around it.
+- **Agents' urgent Grok Bot asks go through the orchestrator**, which POSTs to the webhook; the key is not shared across sessions.
+  Revisit if an ask waits more than 30 minutes on the orchestrator.
 - Never commit files with Product Hunt usernames.
 - Never state that a data source is unavailable until Grok Bot / Data Feeder have checked it in the signed-in user
   view and reported what is visible (user, Nov 2).
