@@ -27,6 +27,7 @@ PFX = "usersim_sim/hn_jobs/cache/content_ft/"
 CUTS = {"jun30": "2026-06-30", "aug30": "2026-08-30", "sep30": "2026-09-30"}
 FIRST, LAST = "2025-01-15", "2026-10-14"
 MODEL = "answerdotai/ModernBERT-base"
+NEG_PER_POS = 4
 
 
 def clean(t):
@@ -120,7 +121,7 @@ def train():
     tok = AutoTokenizer.from_pretrained(MODEL)
     dev = "cuda"
     import subprocess
-    bf = torch.cuda.is_bf16_supported()                      # L4 yes; T4 no -> fp16 with loss scaling
+    bf = torch.cuda.get_device_capability(0)[0] >= 8           # L4 yes; T4 emulates bf16 (2.4 s/step) -> fp16 + loss scaling
     dt = torch.bfloat16 if bf else torch.float16
     scaler = torch.amp.GradScaler("cuda", enabled=not bf)
     print("GPU", torch.cuda.get_device_name(0), "bf16" if bf else "fp16", flush=True)
@@ -134,12 +135,15 @@ def train():
         torch.manual_seed(0)
         m = AutoModelForSequenceClassification.from_pretrained(MODEL, num_labels=1).to(dev)
         opt = torch.optim.AdamW(m.parameters(), lr=3e-5, weight_decay=0.01)
-        steps = epochs * ((len(tr) + bs - 1) // bs)
+        pos, neg = np.where(tr.y.to_numpy() == 1)[0], np.where(tr.y.to_numpy() == 0)[0]
+        nneg = min(len(neg), NEG_PER_POS * len(pos))               # every winner + a fresh sample of non-winners each epoch
+        steps = epochs * ((len(pos) + nneg + bs - 1) // bs)
         sch = get_linear_schedule_with_warmup(opt, int(0.05 * steps), steps)
         lossf = torch.nn.BCEWithLogitsLoss()
         m.train()
         for ep in range(epochs):
-            idx = np.random.default_rng(ep).permutation(len(tr))
+            rng = np.random.default_rng(ep)
+            idx = rng.permutation(np.concatenate([pos, rng.choice(neg, nneg, replace=False)]))
             X, y = tr[col].to_numpy()[idx].tolist(), torch.tensor(tr.y.to_numpy()[idx], dtype=torch.float32)
             for k, (i, enc) in enumerate(batches(X, bs, maxlen)):
                 with torch.autocast("cuda", dtype=dt):
