@@ -1653,3 +1653,17 @@ Reading: in the recorded data the shock is inside the pool. Caveats: (a) exposur
 so they may vote for launches because those launches sit high on the board (rank feedback), making pool share an
 effect of rising, not a cause; only vote timing separates them (the 15-min capture and 4-hour first-seen pilot give
 that); (b) selection: pool people were found through comments on these launches; (c) pool votes are a lower bound.
+
+## Wayback profiles v2 (with 1,300 resolved makers) vs v1 — 2026-11-03 ~20:20 UTC, same config, 5 seeds
+Reference: honest live set (62.7 / 70.4 / 76.6 daily; weekly 50.7 / 54.4 / 55.2). Dates from our launch table (v2's
+launch_day is a day early on 572 rows, a fixed −8 h offset in daylight time, and 6 days late on 12 rows: reported).
+| variant | coverage v1 → v2 | gate passes (v2) | Δ daily top 3 v1 → v2 | Δ weekly top 3 v1 → v2 |
+|---|---|---|---|---|
+| both roles | 42.3% → 42.7% | followings (hunter 0.072, maker 0.065), hunter age −0.065 | −0.8 → −0.4 (−1.9, +1.1) | 0.0 → 0.0 (−4.0, +4.0) |
+| both, ≤30 d | 26.5% → 26.7% | none | −0.8 → −0.9 (−2.4, +0.4) | +1.3 → −1.3 |
+| hunter only | 41.5% → 41.5% | followings, age | −1.3 → −1.3 (−2.8, 0.0) | +2.7 → +2.7 (0.0, +6.7) |
+| maker only | 25.7% → 27.9% | followings 0.065 | +0.4 → +0.2 (−1.5, +1.9) | −2.7 → −1.3 |
+| maker, api | — → 25.7% | followings 0.064 | +0.4 (−0.9, +1.7) | −2.7 (−6.7, 0.0) |
+| maker, resolved | — → 3.8% (3–7%/month) | followings 0.087 | −0.6 (−1.3, 0.0) | 0.0 |
+Top 5 / 10 within ±1.0 everywhere (v2 both: top 5 −1.0 (−1.9, −0.1)). Verdict unchanged: followings carry a small
+real signal, no board gain; resolved makers add 2 points of maker coverage and nothing on the boards. Close C2-profiles.
