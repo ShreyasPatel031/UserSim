@@ -1484,3 +1484,12 @@ Coverage 64.6% of all launches (88–91% per month May–Oct; Mar–Apr have no 
   Linear arm: −0.4 / −0.1 / +0.1, all spanning 0. Weekly and monthly unchanged within noise.
 - Verdict: null. Whether a domain is archived, and how often, says nothing about the shock beyond the honest model. Drop it.
   Wayback profile captures (Data Feeder's wayback_profiles.jsonl) are scored separately when they land.
+
+## Bundle 6 deployed: shadow_honest_a2 (2026-11-03 09:02 UTC, standing rule 2)
+Trial forecast only; headline unchanged. Live offset (forecast_<day>.parquet) + day terms + A1 team history + A2 team
+comments 7/14 d before. Package from bucket tmp/ph_ops/shadow_honest_a2/ into ph_predict/data/shadow/honest_a2/;
+daily.py SHADOW_DEFAULT = "daycal,honest_a2" (md5 e25d6237); run_daily.sh unchanged (a94dea22). Backup ~/w/backup_b6/.
+Checks: live test for 2026-11-03 in a /tmp copy (36/36 launches; A1 history for 14, A2 comments for 6); dry s_shadow
+from a /tmp copy of the pipeline ok (72 rows, nothing written); installed run identical. vs live forecast today:
+Spearman 0.995, top 3/5/10 identical. First real row: the Nov 4 run; scored Nov 5 as shadow_honest_a2.
+Rollback: tar xf ~/w/backup_b6/before.tar -C ~/w/experiments; rm -rf ~/w/experiments/ph_predict/data/shadow/honest_a2
