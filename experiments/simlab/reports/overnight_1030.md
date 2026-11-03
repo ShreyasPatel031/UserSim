@@ -1444,3 +1444,21 @@ All within noise. The monthly top 10 is one list moving (Aug +20).
 - The all-events version's +2.1 partly reflects upvotes cast on launch day, so it isn't claimed.
 - It is preparation behaviour (organised mobilisation), the shock's mechanism.
 - Next: comments at hour precision (the honest cut-off is 00:00 PT on launch day, not the calendar day); the team's upvotes once they're timed by the daily refresh; and A2 in the honest shock model.
+
+## Joint test of the honest small inputs, and A1 + A2 in the honest shock model (Nov 3, `ph_predict/joint_honest.py`, `shock_model.py EXTRA_FEATS`)
+**Reference: the live forecast's honest set, day-calibrated (62.7 / 70.4 / 76.6 daily, May–Oct).** Inputs: A1 (team history: mean relative votes, top-5 share, count, first-time), A2 comments only (team comments on other launches 7 / 14 days before, launches touched, active members, days since), C1 (stars, new stars, downloads). One model; paired by list.
+
+| | Trees | Linear arm |
+|---|---|---|
+| Daily top 3 | **64.6, +1.9 (0.0, +3.8)**; by month May +7.5, Jun +2.3, Jul 0, Aug +1.1, Sep 0, Oct 0 (never worse) | −0.2 |
+| Daily top 5 | 69.8, −0.6 (−1.8, +0.7) | −1.7 (−3.2, −0.3) |
+| Daily top 10 | 77.2, +0.7 (0.0, +1.4) | −0.3 |
+| Weekly top 3 / 5 / 10 | 0.0 / 0.0 / 0.0 | −1.3 / +1.6 / −1.7 |
+| Monthly top 3 / 5 / 10 (5–6 lists) | +6.7 / +6.7 / +3.3 | +6.7 / +3.3 / −1.7 |
+
+**Honest shock model** (stage 1, HONEST=1; Jun–Oct, 146 days), with A1 + A2: within-day Spearman **0.413 vs 0.395**, **+0.018 (+0.002, +0.035)**, better in 4 of 5 months (Jun 0.404→0.393, Jul 0.465→0.482, Aug 0.399→0.444, Sep 0.356→0.392, Oct 0.335→0.336). A1 alone was +0.007, so A2 carries most of it.
+
+**Reading:**
+- Together the honest inputs add to the shock prediction (interval above 0) and lean positive on daily top 3 (+1.9, lower bound 0.0, never worse by month), with top 10 +0.7 (lower bound 0.0).
+- That's below the ±3.5 noise rule for daily top 3, so not a claimed board gain. But it's the first honest bundle whose shock and top-3 intervals sit at or above 0.
+- Next: the A2 refinements (00:00 PT cut-off, 24 / 48 h windows, which launches the team commented on), and live recording of A2 from today. A2 needs only dated comments, so it's honest for every live launch.
