@@ -590,3 +590,4 @@ Model switches, direction reviews and agenda changes, newest last.
   −0.6; top 10 +0.7 [0, +1.4]; weekly 0; monthly +6.7/+6.7/+3.3 (5–6 lists). First honest bundle with a shock interval
   above 0 and a top-3 interval at/above 0. Not claimed (±3.5 rule). Ships as shadow_honest_a2 under rule 2; adding to
   the headline is Shreyas's call. RESEARCH_PROGRAM.md updated.
+- 04:05 UTC Wayback profile coverage sample (40 of 80 makers/hunters): 31 have any capture since 2025; 12 (30%) before their first May–Oct launch; 7 (17.5%) within the 90 days before. Per launch will be higher (several team members). Data Feeder runs the full check from the box.
