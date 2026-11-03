@@ -40,7 +40,9 @@ def prev(repo):
 
 def commit(repo, path):
     (repo / path).parent.mkdir(parents=True, exist_ok=True)
-    (repo / path).write_text("2"); sh(repo, "git", "add", "-A"); sh(repo, "git", "commit", "-qm", "c")
+    old = (repo / path).read_text() if (repo / path).exists() else ""
+    (repo / path).write_text(old + "\n# changed\n")  # append: the file under test may be the ignore script itself, which must stay runnable
+    sh(repo, "git", "add", "-A"); sh(repo, "git", "commit", "-qm", "c")
 
 
 def run(repo, env):
@@ -53,7 +55,7 @@ def test_non_app_changes_skip_the_preview_build(repo, path):
     assert run(repo, {"VERCEL_ENV": "preview", "VERCEL_GIT_PREVIOUS_SHA": p}) == 0
 
 
-@pytest.mark.parametrize("path", ["api/index.py", "mvp/server.py", "src/m.py", "public/i.html", "vercel.json", "requirements.txt", "requirements-vercel.txt"])
+@pytest.mark.parametrize("path", ["api/index.py", "mvp/server.py", "src/m.py", "public/i.html", "vercel.json", "requirements.txt", "requirements-vercel.txt", "scripts/vercel_ignore.sh"])
 def test_app_changes_build(repo, path):
     p = prev(repo); commit(repo, path)
     assert run(repo, {"VERCEL_ENV": "preview", "VERCEL_GIT_PREVIOUS_SHA": p}) == 1
