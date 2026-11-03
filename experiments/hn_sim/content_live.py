@@ -1,9 +1,9 @@
 """Content model score for live posts (content_ft.py deploy_base: ModernBERT-base trained on every post up to
-2026-10-14), on CPU. Returned as a percentile against a fixed reference (the deploy model's scores on Sep 1 - Oct 14
+2026-10-14), on CPU. Returned as a percentile against a fixed reference (the deploy model's scores on a 5,000-post sample of Sep 1 - Oct 14
 posts), so it is on the same scale as the training input of the odds tool (the cut-Jun-30 model's out-of-sample score
 as a percentile within Jul 1 - Oct 14).
 
-    python content_live.py ref      # once: reference distribution (44k posts, ~15 min on CPU), uploads content_ref.npy
+    python content_live.py ref      # once: reference distribution (5,000 posts on CPU), uploads content_ref.npy
 """
 import os
 import sys
@@ -69,7 +69,8 @@ def pct(rows):
 
 def build_ref():
     p = H.stories()
-    q = p[(p.day >= "2026-09-01") & (p.day <= "2026-10-14")].reset_index(drop=True)
+    q = p[(p.day >= "2026-09-01") & (p.day <= "2026-10-14")]
+    q = q.sample(min(5000, len(q)), random_state=0).reset_index(drop=True)      # a percentile map needs no more (CPU)
     s = np.sort(logits(q))
     np.save(REF, s)
     S._bucket().blob(CF.PFX + "content_ref.npy").upload_from_filename(REF)
