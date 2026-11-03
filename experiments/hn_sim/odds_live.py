@@ -265,10 +265,11 @@ def recent(hours=3):
                           "created_at_i": h["created_at_i"], "text": h.get("story_text") or ""} for h in r.get("hits", [])])
     out = score(rows, now)
     day, hm = time.strftime("%Y-%m-%d", time.gmtime(now)), time.strftime("%H%M", time.gmtime(now))
-    path = os.path.join(H.CACHE, "odds_live", day, f"{hm}.json")
+    sub = "odds_live_content" if CONTENT else "odds_live"     # content version runs alongside (live A/B), own folder
+    path = os.path.join(H.CACHE, sub, day, f"{hm}.json")
     os.makedirs(os.path.dirname(path), exist_ok=True)
     out.assign(made_at=int(now)).to_json(path, orient="records")
-    S._bucket().blob(f"usersim_sim/hn_jobs/cache/odds_live/{day}/{hm}.json").upload_from_filename(path)
+    S._bucket().blob(f"usersim_sim/hn_jobs/cache/{sub}/{day}/{hm}.json").upload_from_filename(path)
     print(len(out), "posts scored ->", path, flush=True)
     print(out.sort_values("p_top30", ascending=False).head(10).to_string(index=False), flush=True)
 
