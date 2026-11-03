@@ -66,17 +66,17 @@ B=gs://%(bucket)s/%(pfx)s
 [ -f /opt/cft/started ] && exit 0
 mkdir -p /opt/cft && cd /opt/cft && touch started
 shutdown -h +420                                  # hard stop after 7 h whatever happens
-(while true; do gsutil -q cp /opt/cft/train.log $B/train.log 2>/dev/null; gsutil -q cp /var/log/cft.log $B/startup.log; sleep 120; done) &
-gsutil -q cp $B/data.parquet $B/content_ft.py .
+(while true; do gcloud storage cp -q /opt/cft/train.log $B/train.log 2>/dev/null; gcloud storage cp -q /var/log/cft.log $B/startup.log; sleep 120; done) &
+gcloud storage cp -q $B/data.parquet $B/content_ft.py .
 for i in $(seq 60); do nvidia-smi && break; sleep 20; done
 PY=python3
 for p in /opt/conda/bin/python /opt/python/bin/python3 python3; do $p -c "import torch" 2>/dev/null && PY=$p && break; done
 $PY -c "import torch" || $PY -m pip install -q torch
 $PY -m pip install -q "transformers>=4.48" pandas pyarrow scikit-learn
 $PY content_ft.py train > train.log 2>&1
-gsutil -q cp train.log $B/train.log; gsutil -q cp scores_*.parquet $B/
-gsutil -q cp /var/log/cft.log $B/startup.log
-gcloud compute instances delete $(hostname) --zone %(zone)s --quiet
+gcloud storage cp -q train.log $B/train.log; gcloud storage cp -q scores_*.parquet $B/
+gcloud storage cp -q /var/log/cft.log $B/startup.log
+echo deleting; gcloud storage cp -q /var/log/cft.log $B/startup.log; gcloud compute instances delete $(hostname) --zone %(zone)s --quiet
 """
 
 
@@ -159,7 +159,7 @@ def train():
         auc = roc_auc_score(te.y, s) if te.y.nunique() == 2 else float("nan")
         print(f"== {name}: train {len(tr)} ({int(tr.y.sum())} winners), test {len(te)}, AUC {auc:.4f}, {time.time() - t0:.0f}s", flush=True)
         te[["post_id", "day", "y"]].assign(s=s).to_parquet(f"scores_{name}.parquet", index=False)
-        subprocess.run(["gsutil", "-q", "cp", f"scores_{name}.parquet", f"gs://{BUCKET}/{PFX}scores_{name}.parquet"])
+        subprocess.run(["gcloud", "storage", "cp", "-q", f"scores_{name}.parquet", f"gs://{BUCKET}/{PFX}scores_{name}.parquet"])
         del m, opt
         torch.cuda.empty_cache()
 
