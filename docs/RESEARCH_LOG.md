@@ -683,3 +683,4 @@ Model switches, direction reviews and agenda changes, newest last.
   unparsed rows. Runner heartbeat back (13:33). Wayback Jan–Jun 11,550/22,482 at 10.2/min (ETA ~18 h); Jul–Dec 3,223.
   QN part A done ~21:00 UTC. GCP budget: $9.66 by 04:36 PT, ~$46 projected at today's Vertex; exp-1 is the biggest line.
   Asked the HN agent to verify the ModernBERT-large run: the budget status says the hn-cft-1 T4 VM stopped at 01:39 PT.
+- 13:45 UTC HN: ModernBERT-large finished on hn-cft-1 (self-deleted after; nothing lost; Grok Bot's "stopped 08:39 UTC" was an earlier VM). Test AUC Jun 30 cut 0.815 (base 0.813), Aug 30 cut 0.825 (base 0.816). Paired Caught gate (at posting, 15 min, 1 h) running, due within the hour. QN-reconstructed 15-min scores rejected as an input (low-tail fill from final score is the selection leak); validation aid only.
