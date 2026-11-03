@@ -14,6 +14,8 @@ from simlab import store
 import userbase_eval as UE
 from a1_team_history import teams
 
+CUT_DAYS = int(os.environ.get("CUT_DAYS", "0"))   # store comments carry a date only (likely UTC, ts_quality=day): 1 = safe bound,
+# only comments dated at least 2 days before the launch day count (a UTC date can straddle 00:00 PT)
 COLS = ["a2_act7", "a2_act14", "a2_launches14", "a2_active_members14", "a2_days_since"]
 
 
@@ -32,13 +34,16 @@ def main():
         lo14 = str((pd.Timestamp(d) - pd.Timedelta(days=14)).date()); lo7 = str((pd.Timestamp(d) - pd.Timedelta(days=7)).date())
         lo60 = str((pd.Timestamp(d) - pd.Timedelta(days=60)).date())
         G = pd.concat([by[u] for u in mem]) if mem else E.iloc[:0]
-        G = G[(G.date < d) & (G.date >= lo60) & (G.item != lid)]
+        cut = str((pd.Timestamp(d) - pd.Timedelta(days=CUT_DAYS)).date())   # CUT_DAYS=1: dated <= launch day - 2
+        G = G[(G.date < cut) & (G.date >= lo60) & (G.item != lid)]
         g14 = G[G.date >= lo14]; g7 = G[G.date >= lo7]
         rows.append({"id": lid, "a2_act7": np.log1p(len(g7)), "a2_act14": np.log1p(len(g14)), "a2_launches14": np.log1p(g14.item.nunique()),
                      "a2_active_members14": float(g14.person.nunique()),
                      "a2_days_since": float((pd.Timestamp(d) - pd.Timestamp(G.date.max())).days) if len(G) else np.nan})
     F = pd.DataFrame(rows)
     print(f"launches {len(F)}; with any team activity in 14 days {int((F.a2_act14 > 0).sum())}", flush=True)
+    if os.environ.get("FEATS_OUT"):
+        F.to_parquet(os.environ["FEATS_OUT"], index=False)
     return UE.evaluate(F, "a2", COLS, os.environ.get("OUT", "results/a2_team_activity.json"))
 
 

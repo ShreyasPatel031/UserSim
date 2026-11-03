@@ -18,6 +18,8 @@ from simlab import store
 import userbase_eval as UE
 from a1_team_history import teams
 
+CUT_DAYS = int(os.environ.get("CUT_DAYS", "0"))   # store comments carry a date only (likely UTC, ts_quality=day): 1 = safe bound,
+# only comments dated at least 2 days before the launch day count (a UTC date can straddle 00:00 PT)
 COLS = ["a3_c7", "a3_c30", "a3_launches30", "a3_makers30", "a3_makers_active30", "a3_makers_active_share30"]
 
 
@@ -34,10 +36,11 @@ def features(E, T):
         team = (mk | {hu}) - {"", "[redacted]"}
         mem = [u for u in team if u in by]
         G = pd.concat([by[u] for u in mem]) if mem else E.iloc[:0]
-        G = G[(G.date < d) & (G.date >= lo30) & (G.item != lid)]
+        cut = str((pd.Timestamp(d) - pd.Timedelta(days=CUT_DAYS)).date())   # CUT_DAYS=1: dated <= launch day - 2
+        G = G[(G.date < cut) & (G.date >= lo30) & (G.item != lid)]
         g7 = G[G.date >= lo7]
         targets = set().union(*[makers_of.get(i, set()) for i in G.item.unique()]) - team if len(G) else set()
-        active = {m for m in targets if m in first.index and first[m] < d}
+        active = {m for m in targets if m in first.index and first[m] < cut}
         rows.append({"id": lid, "a3_c7": np.log1p(len(g7)), "a3_c30": np.log1p(len(G)), "a3_launches30": np.log1p(G.item.nunique()),
                      "a3_makers30": np.log1p(len(targets)), "a3_makers_active30": np.log1p(len(active)),
                      "a3_makers_active_share30": len(active) / len(targets) if targets else np.nan})
