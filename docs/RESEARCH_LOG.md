@@ -561,3 +561,4 @@ Model switches, direction reviews and agenda changes, newest last.
   - Gate passes: mean relative votes of earlier launches 0.067 [0.024, 0.110]; earlier top-5 share 0.053.
   - Boards: daily +0.6/+0.7/+0.3 (CIs span 0), weekly ≈0, monthly top 10 +3.3/+5.0 on 6 lists. No board moves.
   - Next: rerun with resolved makers; add A1 to the honest shock model (0.395). C2 Wayback 25%, ETA ~07:30 UTC.
+- 03:09 UTC Honest shock model + A1: within-day Spearman 0.402 vs 0.395 (+0.007 [−0.009, +0.023]), 3/5 months better; within noise. shock_model.py takes EXTRA_FEATS so resolved-maker A1 and C2 drop in. Next: resolved makers (~4–5 h), C2 (~07:30).
