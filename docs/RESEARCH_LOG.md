@@ -621,3 +621,7 @@ Model switches, direction reviews and agenda changes, newest last.
   45→60/461, re-ups 17→20, fast 563→560. Reach table not run (fitted on test days); E5 asked for a Sep-only refit.
   Scaling run (ModernBERT-large, early stopping) and a deploy model for the live tool running on a T4, ~$3, ~5 h.
 - 07:15 UTC E5 Sep-only refit of the HN handoff done (20 Sep weekdays; reach by 15-min score 3.9/10.7/19.6/35.5% for 1/2/3/4+ points, stable vs Oct). HN agent can run it honestly vs 28.4%. E5 idle pending Shreyas's go on the weekly magnitude model.
+- 07:19 UTC A1 with 435 resolved makers: coverage 51.1% → 51.3% (slope ~0.03 launches per resolved product; the
+  remaining ~1,900 would add ~1 pt). Joint A1+A2+C1 daily top 3 +1.1 [−0.8, +3.0] (was +1.9), so the top-3 effect isn't
+  stable; the robust signal is the honest shock: 0.415 vs 0.395, +0.020 [+0.003, +0.037]. Redacted-maker retry
+  deprioritised with Grok Bot.
