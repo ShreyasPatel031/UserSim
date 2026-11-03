@@ -132,3 +132,17 @@ Model switches, direction reviews and agenda changes, newest last.
   - The AppView then started timing out from exp-2, so Bluesky fetching stopped there (polite use).
   - The run above is therefore the final Jul-Oct result, with Bluesky at 93% / 91% of Jul / Aug launches. The fetcher now keeps first pages when a deeper page fails (ph_sweep/sweep_jul_aug.py), for a later top-up.
   - Verdict unchanged: NO-GO.
+
+## 2026-11-03: Weekly magnitude model, launch-level feedback curve, dry run (E5 agent; simlab/day_strength.py)
+- **Split (orchestrator).** The PH agent owns the day level (s_pred, out of sample); E5 owns the within-day position-feedback curve.
+- **Gate (registered before the runs).** Weekly top 3 vs the day-calibrated control (daycal.py, offset = honest), paired by week, 95% interval above 0.
+- **Curve.** Fitted on the deduped hourly vote_snapshots for the 2 clean days (Nov 2-3: 746 launch-hours). Hourly gain ~ exp(launch + f(rank) + g(4-hour block)).
+  - Rank 1 gets ~1.5x the exposure of ranks 2-20.
+  - Each day's line-up is simulated hour by hour (mean field), with quality = honest mu^alpha.
+- **Results**, May-Oct (25 weeks), weekly top 3 vs control:
+  - Control's own day level + fitted curve: +9.3 [+2.7, +17.3]. The flat curve gives +1.3 [-2.7, +6.7].
+  - The agreed setup, s_pred day level + fitted curve: +4.0 [-5.3, +12.0], **gate not passed**. By month: Jun +20, Aug +13.3, Sep -8.3, Oct -11.1.
+  - Honest curve fitted on training months instead of snapshots: rank-1 bonus 1.0-1.25 and alpha 1, so about no change; -2.7 [-6.7, 0.0]. With A2: -4.0 [-12.0, +2.7].
+  - s_pred x prior shares (no curve): -2.7 [-6.7, 0.0]. This matches the PH agent's -2.7.
+- **Reading.** The only positive arms use a curve fitted on 2 days after the backtest window (structural look-ahead) and are not robust to the day level. The backtest's own outcomes do not support a strong rank-1 feedback.
+- **Verdict: no pass on the dry run.** Refit the curve when 14 clean snapshot days exist (~Nov 16), then score forward on days after the fit.
