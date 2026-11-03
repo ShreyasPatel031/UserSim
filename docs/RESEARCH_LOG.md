@@ -584,3 +584,4 @@ Model switches, direction reviews and agenda changes, newest last.
   +1.3 [−0.2, +3.0], better in 5/6 months, never worse; top 5 0.0; top 10 +0.1. Weekly −4.0/−0.8/+0.4. Closest honest
   signal yet to the mobilisation mechanism. Next: A2 in the shock model; joint A1+A2+C1 test; A2 live from today.
   Wayback profile coverage sample (80 users) running on exp-1 (shared rate limit with the domain pull).
+- 04:00 UTC Wayback: hn-sim-1 gets TCP timeouts (no 403/429); exp-1 reaches CDX fine (C2 1,675/3,660, ETA ~08:15). Per-IP drop. Split: C2 domains stay on exp-1; Data Feeder takes Jul–Dec 2025 and the profile-capture check (box).
