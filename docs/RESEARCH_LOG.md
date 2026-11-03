@@ -579,3 +579,8 @@ Model switches, direction reviews and agenda changes, newest last.
   since ~23:59 UTC; wb25h2 has fetched nothing. Asked Grok Bot (0345) whether Data Feeder's half is stalled and
   whether it's an outage or throttling.
 - 03:48 UTC Wayback reachable from the box (Jan–Jun 2025 at 20%, 16.5/min) but not from GCP VMs. Asked Grok Bot to take Jul–Dec 2025 and the PH Wayback pulls (C2 domains, profile captures) onto the box; HN agent to stop wb25h2; PH agent to check/stop its CDX pull.
+- 03:56 UTC A2, team pre-launch PH activity (PH agent; comments only, honest; vs 62.7/70.4/76.6): 1,322 launches have
+  team comments on other launches in the 14 days before. Gate passes (act7 0.058 [0.020, 0.096], Holm-pass). Daily top 3
+  +1.3 [−0.2, +3.0], better in 5/6 months, never worse; top 5 0.0; top 10 +0.1. Weekly −4.0/−0.8/+0.4. Closest honest
+  signal yet to the mobilisation mechanism. Next: A2 in the shock model; joint A1+A2+C1 test; A2 live from today.
+  Wayback profile coverage sample (80 users) running on exp-1 (shared rate limit with the domain pull).
