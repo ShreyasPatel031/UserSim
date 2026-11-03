@@ -73,6 +73,8 @@ PY=python3
 for p in /opt/conda/bin/python /opt/python/bin/python3 python3; do $p -c "import torch" 2>/dev/null && PY=$p && break; done
 $PY -c "import torch" || $PY -m pip install -q torch
 $PY -m pip install -q "transformers>=4.48" pandas pyarrow scikit-learn
+$PY -m pip uninstall -y -q torchaudio torchvision      # preinstalled builds mismatch torch; transformers imports them if present
+$PY -c "import torch, transformers; print(torch.__version__, transformers.__version__, torch.cuda.is_available())"
 $PY content_ft.py train > train.log 2>&1
 gcloud storage cp -q train.log $B/train.log; gcloud storage cp -q scores_*.parquet $B/
 gcloud storage cp -q /var/log/cft.log $B/startup.log
