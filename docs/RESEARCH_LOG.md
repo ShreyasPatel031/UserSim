@@ -706,3 +706,4 @@ Model switches, direction reviews and agenda changes, newest last.
   4. llm_full (prompt carries follower counts, leaky): remove from the headline forecast via bundle; PH agent verifies, Grok Bot deploys outside 00:05–01:00 PT.
   5. HN 15-min headline stays on the posting clock (15 min after posting, 24.7% / 29.6%); exposure clock (34.5%) reported alongside, not as the headline.
   6. usersim-exp-1 to e2-standard-8 for the scorer while stopped.
+- 17:18 UTC HN agent: RESULTS.md opens with a Current headlines block (1 h 48.5%; 15 min posting clock 24.7% / 29.6%; at posting 26.1%); exposure clock 34.5% secondary only; a stray 28.4% 15-min headline corrected.
