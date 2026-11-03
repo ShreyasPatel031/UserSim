@@ -93,3 +93,21 @@ Model switches, direction reviews and agenda changes, newest last.
 - **Early votes.** Their weight is about 0 without /newest exposure, and small (tau 0.05-0.1) with it.
 - **Real front page.** Not testable on October: the bucket's Quality News series cover too few ranks.
 - **Verdict.** It does not beat wb15. Next is the live hn_minute front page.
+
+## 2026-11-03: PH pre-launch campaign sweep, scored on Sep-Oct (E5 agent; simlab/prelaunch_mentions.py)
+- **Data.** Data Feeder's free-route sweep (raw/ph_prelaunch_mentions/, still a draft). Channels: HN Algolia, Reddit via Arctic Shift (6 launch subreddits, posts only), Bluesky AppView and dev.to. X is first page per day, for Oct only.
+  - The window is the 7 days before launch day, strictly before 00:00 PT.
+  - LinkedIn, Indie Hackers, Medium and Substack are blocked on free routes (bot checks). Reddit's own search returns 403 to GCP.
+  - Only Sep and Oct are finished; Data Feeder is still fetching Jul-Aug.
+- **Coverage.** Share of launches with any mention: Sep 22.3%, Oct 30.9%. With a strong mention (domain, PH link, or name + "product hunt"): 9.7% and 14.5%. With a "product hunt" phrase: 0.3% and 1.3%.
+- **Gate** (per-day residual Spearman vs the honest launch model, 51-54 days). Nothing passes.
+  - Best: strong-mention count +0.053 [-0.008, +0.111], and strong-mention authors +0.053 [-0.008, +0.112].
+  - Reddit +0.060 [-0.027, +0.146] (19 days); HN +0.027 [-0.033, +0.086].
+  - Author reach and Bluesky are about 0.
+- **Boards vs the day-calibrated control** (1,458 launches).
+  - Daily top 3: -0.6 [-1.9, 0.0]. Top 5: +0.4 [0.0, +1.1]. Top 10: -0.2 [-0.6, 0.0].
+  - Weekly top 10: +2.9 [0.0, +5.7] over 7 weeks.
+  - Monthly: tied.
+  - September was trained without the features, so only October is a real test.
+  - Adding X (Oct only) changes nothing.
+- **Verdict so far: no pass.** The full Jul-Oct run (4 months, with a proper forward fit) follows when Jul-Aug lands.
