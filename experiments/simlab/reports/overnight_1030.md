@@ -1493,3 +1493,17 @@ Checks: live test for 2026-11-03 in a /tmp copy (36/36 launches; A1 history for 
 from a /tmp copy of the pipeline ok (72 rows, nothing written); installed run identical. vs live forecast today:
 Spearman 0.995, top 3/5/10 identical. First real row: the Nov 4 run; scored Nov 5 as shadow_honest_a2.
 Rollback: tar xf ~/w/backup_b6/before.tar -C ~/w/experiments; rm -rf ~/w/experiments/ph_predict/data/shadow/honest_a2
+
+## Bundle 7 deployed: line-up gap counts in daily scores (2026-11-03 09:10 UTC, standing rule 2)
+`score` adds late_featured (final featured launches not in the 00:05 PT line-up; they count as misses), late_in_top_k
+and dropped_from_featured to each daily_scores row. Scoring only. daily.py md5 d6f4190c (was e25d6237); backup
+~/w/backup_b7/. Tested from a /tmp copy with writes stubbed: Nov 2 gives late_featured 1 (redu.cloud, rank 17),
+late_in_top_k 0 for k = 3/5/10, dropped 0, and unchanged hits (1/3, 4/5, 9/10). First real row: the Nov 4 run.
+redu.cloud: first in vote_snapshots at 10:00 UTC (not at 08:10 / 09:00), old post id, API featuredAt backdated to
+08:01Z -> featured late, not an API gap.
+
+## At-launch capture reader (ph_predict/at_launch_reader.py)
+raw/ph_at_launch/<day>/ -> ph_userbase rows (launch: post / product / product X and GitHub; people: PH profile counts,
+X / GitHub per maker and hunter). Pre-launch = fetched before the launch's first non-zero vote snapshot (and 0 votes
+shown, for post rows); otherwise dated to launch day so c2 drops it. Pilot (fetched ~10.5 h after votes started):
+0 of 715 rows pre-launch, as it should be. Synthetic checks pass (all four cases). c2_user_base reads both outputs.
