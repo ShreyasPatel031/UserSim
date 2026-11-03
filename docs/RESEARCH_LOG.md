@@ -536,3 +536,4 @@ Model switches, direction reviews and agenda changes, newest last.
   - Dated feature store in parallel: (launch_id, feature, value, known_at, source), as-of reader at 00:00 PT; first
     check that rebuilt baselines are ≤ the blocklist numbers.
   - poolscore deploy waits for Shreyas to confirm the standing rule in the PH session.
+- 00:41 UTC Bundle 5 (poolscore step only) deployed under standing rule 2 (Shreyas confirmed in the PH session) and verified (md5s, STEPS …score,poolscore,earlyshock,raw; backup ~/w/backup_b5/). First complete d−7 pool row from Nov 9; provisional d−1 rows from tonight. llm_full filter waits for Shreyas.
