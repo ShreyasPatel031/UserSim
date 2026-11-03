@@ -64,8 +64,15 @@ def features(U, day):
     late = U.as_of_date >= U.lday
     dropped["on_or_after_launch_day"] = int(late.sum())
     U = U[~late].sort_values("as_of_date")
+    # age in days before launch: with capture_ts, (launch day 00:00 PT - capture_ts) in fractional days, as Data
+    # Feeder's age_days; otherwise whole days from as_of_date to the launch day
+    if "capture_ts" in U:
+        l0 = pd.to_datetime(U.lday).dt.tz_localize("America/Los_Angeles")
+        U["age"] = (l0 - pd.to_datetime(U.capture_ts, utc=True).dt.tz_convert("America/Los_Angeles")).dt.total_seconds() / 86400
+    else:
+        U["age"] = (pd.to_datetime(U.lday) - pd.to_datetime(U.as_of_date)).dt.days.astype(float)
     if MAX_AGE_D > 0:
-        old = (pd.to_datetime(U.lday) - pd.to_datetime(U.as_of_date)).dt.days > MAX_AGE_D
+        old = U.age > MAX_AGE_D
         dropped[f"older_than_{MAX_AGE_D}d"] = int(old.sum()); U = U[~old]
     who = next((c for c in ("username", "person", "user") if c in U), None)
     if who is None:   # one series per launch and source: the latest value before the day
@@ -79,7 +86,6 @@ def features(U, day):
     if "role" in U:
         U["source"] = U.source + "_" + U.role.astype(str).str.lower().map(lambda r: "hunter" if r.startswith("hunt") else "maker")
     last = U.groupby(["launch_id", "source", who]).tail(1).copy()
-    last["age"] = (pd.to_datetime(last.lday) - pd.to_datetime(last.as_of_date)).dt.days
     best = last.sort_values("count").groupby(["launch_id", "source"]).tail(1)
     V = np.log1p(best.pivot_table(index="launch_id", columns="source", values="count", aggfunc="last").clip(lower=0))
     Ag = best.pivot_table(index="launch_id", columns="source", values="age", aggfunc="last")
