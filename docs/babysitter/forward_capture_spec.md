@@ -44,3 +44,15 @@ snapshot: last snapshot, tiers run, pages used vs budget, $ today, next snapshot
 ## What the babysitter checks daily (scorecard)
 Per tier: rows vs planned, % 200, 403/429 count, first-snapshot lag vs featured_at (+20 min bar), gaps >20 min, fetched_at on
 every row, dupes, $ per 1,000 pages, budget used vs ceiling. Per-person completeness goes to the population agent's report.
+
+## Ratchet (Shreyas, 21:20 UTC: "constantly increasing the data we are extracting till the absolute limit")
+- Route-4 page budget per PT day starts at 2,500 and ratchets: after each clean PT day (no 403 on a fresh session, coverage ≥95%),
+  next day's budget ×1.5 (2.5k → 3.75k → 5.6k → 8.4k → 12.7k → …); per-minute cap one step up on alternate clean days (60 → 75 → 90 → 110 …).
+- First block: back off to the last clean level ×0.8, record the edge (pages that day, pages/min, time, block signature) in
+  docs/babysitter/limits.md, wait for recovery (probe), resume ratcheting after 2 clean days. No IP or account rotation.
+- Every extra page goes to the next unfunded tier (P3 → P2-lite → P4 → P5 → P6 likely-voter hourly reads), then to the population
+  agent's history pass.
+- The same ratchet applies to the PH API v2 loop (complexity budget per 15 min), X free quota, GitHub. Wayback is not this feed.
+- Every row of every feed keeps the PH username (GCS only) for dedupe; salted ids only in the model store.
+- coverage_ts / heartbeat add: budget_today, pages_used, tier_reached, clean_day (bool), next_day_budget.
+- Babysitter reports each day: budget, pages used, tier reached, errors, next budget.

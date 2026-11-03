@@ -33,6 +33,8 @@ first of a fresh session). It came ~1 h 50 min after the day's heaviest burst: ~
 the exit IP pool, not a per-minute rate edge we observed directly. Correction: the pilot ran at ~130/min, not the 54/min in the first
 scorecard (that number divided by VM wall time including setup).
 
+**Ratchet (Shreyas 21:20 UTC)**: the operating point below is a floor, not a cap. Each clean PT day: route-4 daily budget ×1.5, per-minute cap +1 step on alternate days; first block → last clean ×0.8, record here, resume after 2 clean days.
+
 **Provisional operating point for Nov 4** (until a staged test says otherwise): ≤60 pages/min, one VM, one sticky session, ≤2 browsers;
 no burst above 60/min; ≤~2,500 route-4 pages per PT day across all jobs, live capture first; stop the run at the first 403 on a fresh session.
 Staged test after the live capture has run 2 h clean: 40 → 60 → 90 pages/min, 30 min per step, stop at >2% 403.
