@@ -611,3 +611,8 @@ Model switches, direction reviews and agenda changes, newest last.
   - Resolved makers: progress line unchanged at 1,074/2,349 since 04:26; asked for a refresh.
 - 05:41 UTC Wayback profile sample, 80 users: 79% any capture since 2025; 25% any capture before their first May–Oct launch; 10% within 90 days. Decision: accept any pre-launch capture with age as an input (follower count as a lower bound); per-launch coverage will be higher. C2 domains 2,450/3,660, ETA ~08:15.
 - 06:34 UTC: mailbox checked. Resolved makers 2,007/2,349 (advancing; lands ~07:00). Profile coverage report not yet written. No new replies; no follow-ups due.
+- 07:04 UTC HN content model (ModernBERT-base, title + domain + Show/Ask text; 2025+ training; one T4, ~$1.75).
+  At posting, Sep 1–Oct 14: 3-way rank blend 25.4% [23.2, 27.6], +2.2 [+0.4, +4.0] vs 23.2%. Content alone 23.9%,
+  pairwise 0.810 (matches the whole current blend). Late risers 110→116, re-ups 43→52, fast 154→168. At 15 min
+  28.4 → 29.1, +0.8 n.s. Page text hurt (0.717 vs 0.736). Next: into the live tool and the 1 h model; scale the model;
+  content + 2025 early votes at 15 min. RESEARCH_PROGRAM.md updated.
