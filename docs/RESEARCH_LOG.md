@@ -529,3 +529,10 @@ Model switches, direction reviews and agenda changes, newest last.
     against the honest filter.
   - New free scrapers VM (usersim-scrapers-daily, ~$12/month).
   - A1 crawl 4.4 MB.
+- 00:36 UTC PH agent verified the ROI note: seg_post is built from launch commenters, including launch-day and later
+  comments, so the +38.9 is outcome leakage. Verdict posted (to_grokbot/20261103T0040Z_ph_ops_seg_verdict.md). Plan:
+  - C2 Wayback fetch on exp-1 (3,660 domains, ~6 h).
+  - A1 ~1 h left.
+  - Dated feature store in parallel: (launch_id, feature, value, known_at, source), as-of reader at 00:00 PT; first
+    check that rebuilt baselines are ≤ the blocklist numbers.
+  - poolscore deploy waits for Shreyas to confirm the standing rule in the PH session.
