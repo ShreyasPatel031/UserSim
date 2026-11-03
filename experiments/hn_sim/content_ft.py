@@ -101,7 +101,7 @@ def launch(name="hn-cft-1", Z=None):
         scheduling=compute_v1.Scheduling(on_host_maintenance="TERMINATE", automatic_restart=False),
         metadata=compute_v1.Metadata(items=[
             compute_v1.Items(key="install-nvidia-driver", value="True"),
-            compute_v1.Items(key="startup-script", value=STARTUP % {"bucket": BUCKET, "pfx": PFX, "zone": Z})]),
+            compute_v1.Items(key="startup-script", value=STARTUP % {"bucket": BUCKET, "pfx": PFX.rstrip("/"), "zone": Z})]),
         labels={"owner": "hn-sim", "purpose": "content-ft"})
     op = compute_v1.InstancesClient(credentials=vertex_credentials()).insert(project=P, zone=Z, instance_resource=inst)
     op.result(timeout=300)
