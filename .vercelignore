@@ -1,5 +1,4 @@
 .venv
-.git
 .vercel/cache
 mvp/runs
 contributions

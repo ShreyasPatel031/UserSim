@@ -79,3 +79,32 @@ def test_first_deploy_of_a_branch_builds(repo):
 def test_unknown_previous_sha_means_build_not_skip(repo):
     commit(repo, "docs/a.md")
     assert run(repo, {"VERCEL_ENV": "preview", "VERCEL_GIT_PREVIOUS_SHA": "0" * 40}) == 1
+
+
+# ---- the Nov 3 failure: .vercelignore deleted .git before the ignore step, so `git diff` died with "Not a git repository" and every push built
+
+def test_not_a_git_repository_builds_and_says_why(tmp_path):
+    (tmp_path / "scripts").mkdir(); (tmp_path / "scripts" / "vercel_ignore.sh").write_text(SCRIPT.read_text())
+    r = sh(tmp_path, "bash", "-c", CMD, env={"VERCEL_ENV": "preview", "VERCEL_GIT_PREVIOUS_SHA": "a" * 40})
+    assert r.returncode == 1 and ".git" in r.stderr and "no git repository" in r.stderr
+
+
+def test_previous_commit_missing_from_a_shallow_clone_builds_and_says_why(repo):
+    commit(repo, "docs/a.md")
+    r = sh(repo, "bash", "-c", CMD, env={"VERCEL_ENV": "preview", "VERCEL_GIT_PREVIOUS_SHA": "0" * 40})
+    assert r.returncode == 1 and "not in this" in r.stderr
+
+
+def test_the_build_log_explains_a_skip(repo):
+    p = prev(repo); commit(repo, "docs/a.md")
+    r = sh(repo, "bash", "-c", CMD, env={"VERCEL_ENV": "preview", "VERCEL_GIT_PREVIOUS_SHA": p})
+    assert r.returncode == 0 and "skipping" in r.stderr
+
+
+def test_vercelignore_keeps_git_for_the_ignore_step_and_the_function_excludes_it():
+    # Both halves are needed together: .git is ~265 MB, over the ~250 MB function limit, so it must never be bundled; and it must not be
+    # deleted before the ignore command runs, or the command cannot see what changed.
+    lines = [l.strip() for l in (ROOT / ".vercelignore").read_text().splitlines()]
+    assert ".git" not in lines and ".git/" not in lines and ".git/**" not in lines
+    exclude = json.loads((ROOT / "vercel.json").read_text())["functions"]["api/index.py"]["excludeFiles"]
+    assert ".git" in exclude

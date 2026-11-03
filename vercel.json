@@ -18,7 +18,7 @@
   "functions": {
     "api/index.py": {
       "maxDuration": 300,
-      "excludeFiles": "public/**"
+      "excludeFiles": "{public,.git}/**"
     }
   },
   "env": {
