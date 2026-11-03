@@ -963,3 +963,17 @@ votes + who 28.4% -> 27.6% [24.3, 31.1], **-0.8 [-3.1, +1.5]**; fast 71 -> 67, l
 15-min backtest Oct 2-14 (votes + who): 388 flags, 110 winners caught, 278 flagged non-winners. HN item API today: 0 of
 278 are dead, 0 deleted (today's state is an upper bound on what a 15-min recorder could see). A signed-in showdead
 recorder would remove no false flags. Closed.
+
+### Content model, ModernBERT-large (content_ft.py plan "large"; T4, ~4.5 VM-hours incl. the deploy model, ~$2.5)
+Up to 3 epochs, early stopping on the last month inside each cut (both stopped after epoch 2, keeping epoch 1's
+weights). Test AUC: cut Jun 30 0.815 (base 0.813), cut Aug 30 **0.825** (base 0.816). Gates rerun with CONTENT_PREFIX=large_
+(same protocol and baselines as the base model):
+| checkpoint | baseline | + base content model | **+ large content model** |
+|---|---|---|---|
+| at posting, 3-way blend (Sep 1 - Oct 14) | 23.2% | 25.4%, +2.2 [+0.4, +4.0] | **26.1% [23.9, 28.2], +2.9 [+1.4, +4.3]** |
+| at posting, content as an input | 23.2% | 24.7%, +1.5 [+0.2, +2.9] | 25.2%, +2.0 [+0.6, +3.6] |
+| 15 min, Oct 2-14 (votes + who + content) | 28.4% | 29.1%, +0.8 [-2.7, +3.9] | 30.2% [25.6, 34.7], +1.8 [-1.1, +4.8] |
+| 1 h (rank-only + history + content) | 47.2% | 48.4%, +1.1 [+0.0, +2.3] | **48.5% [45.0, 52.1], +1.3 [+0.4, +2.2]** |
+By type, large model: at posting (3-way) late risers 110 -> 122 of 461, re-ups 43 -> 50 of 221, fast 154 -> 173 of 641;
+15 min late 25 -> 33, re-ups 14 -> 15, fast 71 -> 69; 1 h late 45 -> 53, re-ups 17 -> 22, fast 563 -> 567.
+**Headlines: at posting 26.1%, 15 min 28.4% (content +1.8, not significant), 1 h 48.5%.**
