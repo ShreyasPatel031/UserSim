@@ -90,7 +90,10 @@ def main(snap_dir):
     res = {"gate": GATE}
     S = load_snapshots(snap_dir)
     f, g, info = feedback(S); res["feedback"] = info
-    if os.environ.get("FLAT"):          # control for the curve: no position feedback, shares = q / sum q
+    param = os.environ.get("CURVE") == "param"
+    if param:   # honest variant: no snapshots; f = log(b) at rank 1, 0 below; b and alpha chosen on the training months
+        res["variant"] = "parametric rank-1 bonus fitted on training months (no snapshots, no look-ahead)"
+    elif os.environ.get("FLAT"):          # control for the curve: no position feedback, shares = q / sum q
         f, g = np.zeros_like(f), np.zeros_like(g); res["variant"] = "flat feedback (power transform of the prior only)"
     else:
         res["variant"] = "fitted feedback curve"
@@ -112,6 +115,12 @@ def main(snap_dir):
     if os.environ.get("A2"):
         X2 = pd.read_parquet(os.environ["A2"]); X2["id"] = X2.id.astype(str)
         A = A.merge(X2[["id", "a2_act14"]], on="id", how="left"); A["a2"] = np.log1p(A.a2_act14.fillna(0)); a2c = "a2"
+    dl = os.environ.get("DAYLEVEL")      # the PH agent's out-of-sample day level: day, fold, s_pred (orchestrator split, Nov 3)
+    if dl:
+        SP = pd.read_parquet(dl)[["day", "s_pred"]]; A = A.merge(SP, on="day", how="left")
+        res["day_level"] = f"PH agent s_pred ({dl}); day total = sum(mu0) * exp(s_pred); {int(A.s_pred.notna().groupby(A.day).first().sum())} days"
+    else:
+        res["day_level"] = "day-calibrated control total (daycal.py terms)"
     A["week"] = pd.to_datetime(A.day).dt.strftime("%G-W%V"); A["mon"] = A.day.str[:7]
     # leak checks
     days = sorted(A.day.unique())
@@ -134,19 +143,27 @@ def main(snap_dir):
                                   for s in range(5)], 0)
         te["cal"] = raw(te) + np.log(te.mu0)
         tr["cal"] = raw(tr) + np.log(tr.mu0)                  # in-sample level for choosing alpha on the training months
+        def total(gd):
+            return float((gd.mu0 * np.exp(gd.s_pred)).sum()) if dl and gd.s_pred.notna().all() else float(np.exp(gd.cal).sum())
         best = None
-        for al in ALPHAS:
+        BONUS = (1.0, 1.25, 1.5, 2.0, 3.0) if param else (None,)
+        for al, bo in [(a_, b_) for a_ in ALPHAS for b_ in BONUS]:
+            if param:
+                f = np.zeros(20); f[0] = np.log(bo); g = np.zeros(24)
             for be in ((0.0, 0.1, 0.25, 0.5) if a2c else (0.0,)):
                 ll = 0.0
                 for d, gd in tr[tr.mon >= "2026-04"].groupby("day"):
-                    tot = np.exp(gd.cal).sum(); sh = shares(gd.mu0, f, g, al, np.exp(be * gd[a2c]) if a2c else None)
+                    tot = total(gd); sh = shares(gd.mu0, f, g, al, np.exp(be * gd[a2c]) if a2c else None)
                     lam = np.clip(tot * sh, 1e-6, None); ll += float(np.sum(gd.y * np.log(lam) - lam))
                 if best is None or ll > best[0]:
-                    best = (ll, al, be)
-        _, al, be = best; alphas[m] = {"alpha": al, "beta_a2": be}
+                    best = (ll, al, be, bo)
+        _, al, be, bo = best; alphas[m] = {"alpha": al, "beta_a2": be, "rank1_bonus": bo}
+        if param:
+            f = np.zeros(20); f[0] = np.log(bo); g = np.zeros(24)
         te["ds"] = 0.0
         for d, gd in te.groupby("day"):
-            te.loc[gd.index, "ds"] = np.log(np.exp(gd.cal).sum() * shares(gd.mu0, f, g, al, np.exp(be * gd[a2c]) if a2c else None))
+            te.loc[gd.index, "ds"] = np.log(total(gd) * shares(gd.mu0, f, g, al, np.exp(be * gd[a2c]) if a2c else None))
+            te.loc[gd.index, "dl_only"] = np.log(total(gd) * gd.mu0 / gd.mu0.sum())     # day level x prior shares (no curve)
         out.append(te); print("month", m, alphas[m], flush=True)
     T = pd.concat(out); rng = np.random.default_rng(0); res["alpha_by_month"] = alphas
     T["wmon"] = (pd.to_datetime(T.day) - pd.to_timedelta(pd.to_datetime(T.day).dt.weekday, unit="D")).dt.strftime("%Y-%m")
@@ -156,7 +173,9 @@ def main(snap_dir):
         for key in ("day", "week", "mon"):
             for k in (3, 5, 10):
                 a, b = per_list(U, "cal", key, k), per_list(U, "ds", key, k)
+                c_ = per_list(U, "dl_only", key, k)
                 line = {"day-calibrated control": round(100 * float(a.mean()), 1), "day strength": round(100 * float(b.mean()), 1), "delta": boot(a, b, rng),
+                        "day level x prior shares (no curve)": round(100 * float(c_.mean()), 1), "no-curve delta": boot(a, c_, rng),
                         "honest launch model": round(100 * float(per_list(U, "all", key, k).mean()), 1)}
                 if key == "week":
                     dm = (b - a).groupby(wmon.reindex(b.index).values).mean(); line["by month (Monday)"] = {m_: round(100 * float(v), 1) for m_, v in dm.items()}
@@ -167,7 +186,7 @@ def main(snap_dir):
         r["gate_passes"] = bool(g3[1] is not None and g3[1][0] > 0)
         res[win] = r
     os.makedirs("results", exist_ok=True)
-    json.dump(res, open(f"results/day_strength{'_flat' if os.environ.get('FLAT') else ''}.json", "w"), indent=1)
+    json.dump(res, open(f"results/day_strength{'_flat' if os.environ.get('FLAT') else ''}{'_spred' if dl else ''}{'_param' if param else ''}{'_a2' if a2c else ''}.json", "w"), indent=1)
     print(json.dumps(res, indent=1))
 
 
