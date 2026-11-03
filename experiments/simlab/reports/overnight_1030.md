@@ -1385,3 +1385,41 @@ Same code, same pool simulation (popscore_tie), same folds (rolling monthly, Jun
   All within noise.
 - **Reading:** a launch whose product already has users (recent stars, package downloads) beats the honest forecast, a real per-launch signal (+0.16 to +0.32). At 5.7% coverage it can't move a board, though. C1 is a valid input to keep (honest, dated), not a route to 90. Wider coverage would need other dated user-base records: Chrome Web Store and app-store counts via Wayback, Discord member counts, newsletter subscribers.
 - **Deployed and verified (Nov 3, 00:40 UTC), bundle 5, scoring only (standing rule 2, confirmed by Shreyas in the PH ops session):** the `poolscore` step (pool Spearman and pool share of votes at d−7 complete and d−1 provisional → pool_scores). Dry-run in a /tmp copy on the VM first. Live md5s match the repo (daily.py 1a019b4f, run_daily.sh a94dea22); backup at ~/w/backup_b5/; recorder untouched. The `llm_full` honest filter (changes the headline forecast) waits for Shreyas.
+
+## A1: each team's full launch history as a pre-launch input (Nov 3, `ph_predict/a1_fetch.py` + `a1_team_history.py`)
+**Reference: the live forecast's honest set, day-calibrated (62.7 / 70.4 / 76.6 daily, May–Oct; weekly 50.7 / 54.4 / 55.2; monthly 13.3 / 26.7 / 33.3).**
+
+**Data:**
+- user.madePosts / submittedPosts return nothing for other users, so the history comes from a paced crawl of the featured-posts list per day for 2024–2025 on usersim-pipeline (approved by Shreyas): 731 days, 12,472 launches, 952 calls, finished 01:54 UTC.
+- Merged with our own Jan–Oct 2026 day files: 39,062 username–launch rows, 20,114 people.
+- [REDACTED] makers (about 40% from the API) are missing; Data Feeder is resolving them from /products/<slug>/makers.
+- Only launches dated strictly before each launch's day count.
+
+**Coverage:** 3,343 of 6,540 launches (51%) have a team member with an earlier launch. Before, our Jan+ files found repeat makers for 4–11%.
+
+**Gate** (Spearman with the honest residual, Holm across 8 inputs; team size is the reference column):
+
+| Input | Within day (95% CI) | Pooled (95% CI) | Holm p |
+|---|---|---|---|
+| **Mean log votes of earlier launches vs their month** | **0.067 (0.024, 0.110)** | **0.074 (0.035, 0.110)**, 2,878 launches | **0.008, passes** |
+| **Share of earlier launches in the daily top 5** | **0.053 (0.009, 0.096)** | **0.060 (0.023, 0.095)** | **0.049, passes** |
+| Max relative votes | 0.023 | −0.006 | 1.0 |
+| Count of earlier launches / made / days since / first-time | about 0 | about 0 | 1.0 |
+| Team size (reference) | −0.043 | −0.015 | 1.0 |
+
+How well a team's earlier launches did predicts where the honest forecast under-predicts, beyond team size. How many launches they had does not.
+
+**Boards** (control vs + A1, paired):
+
+| | Trees | Linear arm |
+|---|---|---|
+| Daily | +0.6 (−1.1, +2.3) / +0.7 (−0.6, +1.9) / +0.3 (−0.5, +1.2) | −1.7 / +0.6 / −0.2 |
+| Weekly | −1.3 / −0.8 / −0.4 | −1.3 / +0.8 / −1.3 |
+| Monthly (6 lists) | 0 / −3.3 / +3.3 | 0 / 0 / +5.0 (+1.7, +8.3) |
+
+All within noise. The monthly top 10 is one list moving (Aug +20).
+
+**Reading:**
+- A real honest signal at half the launches (within-day 0.07), but small: on top of the honest model, the daily board doesn't move beyond noise.
+- The team's track record mostly carries what the launch model already sees. The honest launch model already has hist_ from our Jan+ files.
+- Next: rerun with the resolved [REDACTED] makers (Data Feeder). Feed A1 into the shock model as a candidate input to see whether it raises honest shock predictability (0.395).
