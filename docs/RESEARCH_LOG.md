@@ -675,3 +675,11 @@ Model switches, direction reviews and agenda changes, newest last.
     removal; HN 15-min definition.
 - 12:01 UTC PH agent: reader rerun on Nov 3's X-filled capture gives 0 of 1,215 rows pre-launch (71 X rows added), strict and relaxed. Day 0 stands; Nov 4 on-time capture next.
 - 12:34 UTC: mailbox checked. No new replies. Runner heartbeat last 11:58 UTC (Jan–Jun 10,759/22,482; Jul–Dec 2,816; profile CDX 4,304/4,667; QN 5,600); 35 min without a refresh, watch next check. No to_grokbot asks overdue.
+- 13:40 UTC: mailbox checked. Wayback profile coverage report landed (13:06Z): 2,378/4,061 May–Oct launches (58.6%) have a
+  maker or hunter profile captured before launch day (any maker 35.7%, hunter 57.4%); person–launch pairs 4,202/8,690;
+  latest pre-launch capture median 27 days old (p25/p75 3/175; 2,177 pairs within 30 d). Phase B parse started. Passed to
+  the PH agent with the scoring design (per-launch max, age, within-30-d variant, hunter-only vs maker-only, gate first,
+  coverage stated). Asked Data Feeder (1340) to add the 766 resolved makers to the same job and to emit age_days and
+  unparsed rows. Runner heartbeat back (13:33). Wayback Jan–Jun 11,550/22,482 at 10.2/min (ETA ~18 h); Jul–Dec 3,223.
+  QN part A done ~21:00 UTC. GCP budget: $9.66 by 04:36 PT, ~$46 projected at today's Vertex; exp-1 is the biggest line.
+  Asked the HN agent to verify the ModernBERT-large run: the budget status says the hn-cft-1 T4 VM stopped at 01:39 PT.
