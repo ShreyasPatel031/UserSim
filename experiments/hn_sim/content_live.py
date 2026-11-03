@@ -69,10 +69,32 @@ def ref():
     return np.load(REF)
 
 
+CACHE = os.path.join(H.CACHE, f"content_cache_{SIZE}.parquet")
+
+
+def cached_logits(rows):
+    """Content logit per row; each live post_id is scored once and kept (orchestrator, 2026-11-03: the score depends
+    only on title + domain + text, so the odds tool's 3-hour lookback reads the cache and only new posts hit the model).
+    Drafts (post_id <= 0) are never cached."""
+    rows = rows.reset_index(drop=True)
+    C = pd.read_parquet(CACHE) if os.path.exists(CACHE) else pd.DataFrame({"post_id": pd.Series(dtype="int64"), "logit": pd.Series(dtype="float32")})
+    have = C.drop_duplicates("post_id", keep="last").set_index("post_id").logit
+    out = np.array(rows.post_id.map(have), dtype=np.float32)          # writable copy
+    todo = np.isnan(out) | (rows.post_id.to_numpy() <= 0)
+    if todo.any():
+        out[todo] = logits(rows[todo])
+        new = rows[todo & (rows.post_id.to_numpy() > 0)]
+        if len(new):
+            add = pd.DataFrame({"post_id": new.post_id.astype("int64").to_numpy(), "logit": out[todo & (rows.post_id.to_numpy() > 0)]})
+            pd.concat([C, add], ignore_index=True).drop_duplicates("post_id", keep="last").to_parquet(CACHE, index=False)
+    print(f"content scores: {int((~todo).sum())} from cache, {int(todo.sum())} computed", flush=True)
+    return out
+
+
 def pct(rows):
     """Percentile of each post's content score against the reference (0..1)."""
     R = ref()
-    return np.searchsorted(R, logits(rows)) / len(R)
+    return np.searchsorted(R, cached_logits(rows)) / len(R)
 
 
 def build_ref():
