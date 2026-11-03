@@ -578,3 +578,4 @@ Model switches, direction reviews and agenda changes, newest last.
   Gemini tuning ($35–50); starts in ~1.5 h after the E5 export. Wayback timing out from hn-sim-1 and the HN container
   since ~23:59 UTC; wb25h2 has fetched nothing. Asked Grok Bot (0345) whether Data Feeder's half is stalled and
   whether it's an outage or throttling.
+- 03:48 UTC Wayback reachable from the box (Jan–Jun 2025 at 20%, 16.5/min) but not from GCP VMs. Asked Grok Bot to take Jul–Dec 2025 and the PH Wayback pulls (C2 domains, profile captures) onto the box; HN agent to stop wb25h2; PH agent to check/stop its CDX pull.
