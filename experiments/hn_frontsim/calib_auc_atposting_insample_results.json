@@ -1,0 +1,130 @@
+{
+ "label": "atposting_insample",
+ "days": [
+  "2026-10-02",
+  "2026-10-06",
+  "2026-10-07",
+  "2026-10-08"
+ ],
+ "posts": 4474,
+ "real_reach": 0.07,
+ "prior": "at-posting",
+ "configs": {
+  "stage 1 (no dispersion)": {
+   "params": {
+    "tau": 0.3,
+    "kappa": 0.2,
+    "c": 0.25
+   },
+   "reach_sim": 0.0652,
+   "auc": {
+    "sim": [
+     0.698,
+     [
+      0.669,
+      0.727
+     ]
+    ],
+    "score15": [
+     0.648,
+     [
+      0.617,
+      0.683
+     ]
+    ],
+    "sim - score15": [
+     0.05,
+     [
+      -0.001,
+      0.104
+     ]
+    ]
+   },
+   "vs_at_posting_alone": [
+    -0.01,
+    [
+     -0.049,
+     0.032
+    ]
+   ],
+   "vs_rank_average_atposting_score15": [
+    -0.031,
+    [
+     -0.087,
+     0.024
+    ]
+   ],
+   "auc_rank_average": 0.727
+  },
+  "stage 2 (dispersion)": {
+   "params": {
+    "tau": 0.3,
+    "kappa": 0.2,
+    "c": 0.25,
+    "sigma": 1.0
+   },
+   "reach_sim": 0.0829,
+   "auc": {
+    "sim": [
+     0.712,
+     [
+      0.683,
+      0.732
+     ]
+    ],
+    "score15": [
+     0.648,
+     [
+      0.617,
+      0.683
+     ]
+    ],
+    "sim - score15": [
+     0.064,
+     [
+      0.002,
+      0.106
+     ]
+    ]
+   },
+   "vs_at_posting_alone": [
+    0.006,
+    [
+     -0.024,
+     0.029
+    ]
+   ],
+   "vs_rank_average_atposting_score15": [
+    -0.016,
+    [
+     -0.071,
+     0.012
+    ]
+   ],
+   "auc_rank_average": 0.727
+  }
+ },
+ "at_posting_alone": {
+  "sim": [
+   0.705,
+   [
+    0.695,
+    0.715
+   ]
+  ],
+  "score15": [
+   0.648,
+   [
+    0.617,
+    0.683
+   ]
+  ],
+  "sim - score15": [
+   0.058,
+   [
+    0.023,
+    0.075
+   ]
+  ]
+ }
+}

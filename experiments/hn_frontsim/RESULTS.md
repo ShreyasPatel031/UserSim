@@ -135,6 +135,20 @@ Rule: if, after per-post dispersion and the at-posting prior, the simulator stil
 |---|---|---|---|---|---|
 | outcome calibration, no dispersion | tau 0.3, kappa 0.2, c 0.25 | 5.6% | 0.656 [0.612, 0.687] | 0.648 [0.617, 0.683] | +0.008 [-0.045, +0.070] |
 | step 1: + per-post dispersion (sigma 1.0) | tau 0.3, kappa 0.2, c 0.25 | 7.4% | 0.656 [0.620, 0.692] | 0.648 | +0.008 [-0.032, +0.044] |
-| step 2: + at-posting prior | pending (atposting_hist.parquet) | | | | |
+| step 2: + at-posting prior (in-sample, see below) | b 0.25, tau 0.3, kappa 0.2, c 0.25, sigma 1.0 | 8.3% | 0.712 [0.683, 0.732] | 0.648 | +0.064 [+0.002, +0.106] |
 
 Real reach on these days is 7.0%. Dispersion improves the reach log-likelihood (-1140.5 against -1150.7) and the overall level, but not the ranking. The 0.64 against 0.72 quoted earlier came from 194 live Nov 2 posts with only 10 reachers, and was noisy.
+
+### Step 2 and the decision (Nov 3, 05:20 UTC)
+
+The at-posting prior is the HN agent's odds-tool P(top 30) at posting (`atposting_hist.parquet`, Sep 1 - Oct 14). It is **in-sample** for October, because the tool's models were fit on all days, so step 2 is an upper bound. The prior was refit on Sep 1-30 (b = 0.25).
+
+The literal rule passes: the simulator scores 0.712 against 0.648 for the 15-min score, +0.064 [+0.002, +0.106]. But that comes from the prior. The simulator adds nothing over its own two inputs:
+- At-posting score alone: AUC 0.705 [0.695, 0.715]. The simulator minus it: +0.006 [-0.024, +0.029].
+- Unfitted rank-average of the at-posting score and the 15-min score: AUC 0.727. The simulator minus it: -0.016 [-0.071, +0.012].
+
+**Decision: the standalone simulator stops.** Handed to the HN agent (`hn_handoff_e5.json`, also at `hn_jobs/cache/e5_handoff/`):
+1. The outcome-calibrated reach table by 15-min score.
+2. The vote-arrival model: exposure by rank x hour and off-front by age x hour, plus the outcome-fitted early-vote likelihood.
+
+The live simulator (live_frontsim.py) keeps running only as a shadow; its Nov 8 Caught for Nov 2 posts is reported as a shadow number, not a bet.

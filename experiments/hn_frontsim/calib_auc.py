@@ -75,6 +75,13 @@ def main(label="dispersion", D=60):
             r[m] = Mo.last_top30
         res["configs"][name] = {"params": {k: f[k] for k in ("tau", "kappa", "c", "sigma") if k in f}, "reach_sim": round(float(r.mean()), 4),
                                 "auc": auc_ci(y, r + 1e-9 * rng.random(len(r)), ref, T.day.to_numpy(), rng)}
+        if zt is not None:   # does the simulator add over its own inputs?
+            from scipy.stats import rankdata
+            combo = rankdata(zt) + rankdata(ref)            # unfitted rank-average of at-posting score and 15-min score
+            rr = r + 1e-9 * rng.random(len(r))
+            res["configs"][name]["vs_at_posting_alone"] = auc_ci(y, rr, zt, T.day.to_numpy(), rng)["sim - score15"]
+            res["configs"][name]["vs_rank_average_atposting_score15"] = auc_ci(y, rr, combo, T.day.to_numpy(), rng)["sim - score15"]
+            res["configs"][name]["auc_rank_average"] = round(float(roc_auc_score(y, combo)), 3)
         print(name, res["configs"][name], flush=True)
     Mo.grid = grid0
     json.dump(res, open(os.path.join(HERE, "out", f"calib_auc_{label}.json"), "w"), indent=1); print(json.dumps(res, indent=1))
