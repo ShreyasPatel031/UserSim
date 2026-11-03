@@ -95,6 +95,9 @@ a target out of reach. No agent writes or repeats a limiting statement about the
      imports, rollback). Anything that changes the headline forecast still needs Shreyas.
   3. **Paid data up to $30/week in total needs no per-item approval**, priced from a measured pilot first and logged in
      the spend file. Above that, ask.
+- **Security and permission blocks go to Grok Bot (Shreyas, Nov 3, ~17:58 UTC).** Any agent blocked by a permission or
+  safety check files mailbox/to_grokbot/<UTC>_SECURITY_<agent>_<topic>.md (what was blocked, the check's category, why it is
+  needed, the exact unblock step) and carries on with other work. Grok Bot takes it to Shreyas. Nobody works around a block.
 - Never commit files with Product Hunt usernames.
 - Never state that a data source is unavailable until Grok Bot / Data Feeder have checked it in the signed-in user
   view and reported what is visible (user, Nov 2).
