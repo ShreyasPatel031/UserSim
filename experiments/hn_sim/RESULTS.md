@@ -6,6 +6,16 @@ bootstrap interval over days. Held out: May–Sep 2026 (153 days); each test mon
 on stories before it (history from Jan 2023, BigQuery public HN dataset). Random picks: top 100 10.6%, top 30 3.2%,
 top 10 1.1%.
 
+## Current headlines: Caught per post (north star 80% at each checkpoint; updated 2026-11-03 17:20 UTC)
+| checkpoint | headline | what it is |
+|---|---|---|
+| 1 h | **48.5% [45.0, 52.1]** (Sep 1 - Oct 14) | rank only + history score + content model (large) |
+| 15 min (posting clock: judged 15 min after posting) | **24.7% [22.6, 26.9]** Sep 1 - Oct 14; **29.6%** Oct 2 - 14 daily retrain | rank only (full period); votes + who + volume + hour (Oct 2-14) |
+| at posting | **26.1% [23.9, 28.2]** (Sep 1 - Oct 14) | 3-way rank blend: Jul-Aug model + 2025+ history + content model (large) |
+Secondary line, never the headline (orchestrator decision 2026-11-03 16:55 UTC): 15 min on the exposure clock (also
+judged 15 min after a front-page return or /pool entry; direction B) 34.5% [31.5, 37.7], Oct 2-14. Content model at
+15 min on the posting clock (Oct 2-14, vs votes + who 28.4%): 30.2%, +1.8 [-1.1, +4.8], not significant.
+
 ## Scoreboard (each row adds one block of data)
 
 | Data | top 100 | top 30 | top 10 |
@@ -976,7 +986,7 @@ weights). Test AUC: cut Jun 30 0.815 (base 0.813), cut Aug 30 **0.825** (base 0.
 | 1 h (rank-only + history + content) | 47.2% | 48.4%, +1.1 [+0.0, +2.3] | **48.5% [45.0, 52.1], +1.3 [+0.4, +2.2]** |
 By type, large model: at posting (3-way) late risers 110 -> 122 of 461, re-ups 43 -> 50 of 221, fast 154 -> 173 of 641;
 15 min late 25 -> 33, re-ups 14 -> 15, fast 71 -> 69; 1 h late 45 -> 53, re-ups 17 -> 22, fast 563 -> 567.
-**Headlines: at posting 26.1%, 15 min 28.4% (content +1.8, not significant), 1 h 48.5%.**
+**Headlines: at posting 26.1%, 1 h 48.5%; 15 min stays on the posting clock (24.7% Sep 1 - Oct 14, 29.6% Oct 2-14), content +1.8 n.s.**
 
 **Odds tool with the large content model** (odds_live.py, ODDS_CONTENT=1 CONTENT_MODEL=large; input = cut-Jun-30 large
 score as a percentile, out of sample; same protocol): AUC top 30 at posting 0.794 (no content) -> 0.831 (base) ->
