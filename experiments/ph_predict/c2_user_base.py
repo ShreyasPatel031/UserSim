@@ -10,7 +10,8 @@ features are recomputed if its inputs are given).
 Reference: HONEST_COL (default "honest - live set" with HONEST_PREDS, the live forecast's honest set; state it in reports).
 Wayback profile rows (username, role, launch_id, launch_day, capture_ts, age_days, metric, count, parse_route,
 capture_url) are read as is: as_of_date = the capture's Pacific day, source wayback_profile_<metric>, unparsed (null
-count) rows dropped and counted. MAX_AGE_D (e.g. 30) keeps only recent values; ROLES=hunter / maker scores one role.
+count) rows dropped and counted. MAX_AGE_D (e.g. 30) keeps only recent values; ROLES=hunter / maker scores one role; MAKER_SOURCE=api / resolved keeps
+makers from that source only (v2).
 usage: SIMLAB_DATA=data_v2 HONEST_PREDS=... python c2_user_base.py <raw/ph_userbase dir or files...> -> results/c2_user_base.json"""
 import glob, json, os, sys
 import numpy as np, pandas as pd
@@ -19,6 +20,7 @@ import userbase_eval as UE
 MIN_COVERED = int(os.environ.get("MIN_COVERED", "50"))
 MAX_AGE_D = int(os.environ.get("MAX_AGE_D", "0"))   # > 0: keep only values measured at most this many days before launch
 ROLES = {r for r in os.environ.get("ROLES", "").split(",") if r}   # e.g. "hunter" or "maker": per-person rows of that role only
+MAKER_SOURCE = os.environ.get("MAKER_SOURCE", "")   # "api" or "resolved": keep maker rows from that source only (v2 maker_source)
 
 
 def capture_time(x):
@@ -62,6 +64,11 @@ def read_rows(paths):
     U = U[pd.to_numeric(U.get("count"), errors="coerce").notna()] if "count" in U else U
     if len(U) < n0:
         print(json.dumps({"unparsed_rows_dropped": n0 - len(U)}), flush=True)
+    if MAKER_SOURCE:
+        if "maker_source" not in U:
+            raise SystemExit("MAKER_SOURCE set but the rows have no maker_source column")
+        mk = U.role.astype(str).str.lower().str.startswith("make")
+        U = U[~mk | (U.maker_source.astype(str) == MAKER_SOURCE)]
     if ROLES and "role" in U:   # maker-only / hunter-only variants
         U = U[U.role.astype(str).str.lower().map(lambda r: "hunter" if r.startswith("hunt") else "maker").isin(ROLES)]
     UE.need(U, ["launch_id", "source", "as_of_date", "count"], "ph_userbase")
