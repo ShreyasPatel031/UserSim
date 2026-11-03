@@ -995,3 +995,6 @@ ModernBERT-large scores 160 posts in 84 s (an hourly run is 100-160 posts). Depl
 up to Oct 14 (2 epochs, as early stopping chose), reference = its scores on 5,000 Sep 1 - Oct 14 posts (GPU); live job
 oddsloop3d swaps in after a verified first run (odds_live_content/ switches from base to large at that run).
 P(top 10) is capped at P(top 30) in every version from 2026-11-03 13:09 UTC.
+Live swap done 2026-11-03 16:56 UTC (oddsloop3e): the large content model now feeds odds_live_content/ (base before);
+first run 301 posts, VM-wide peak memory 7.1 of 7.95 GB after scoring content first and freeing the model (the first
+attempt, content scored last, was killed for memory). Thin margin: if a run is killed, that hour has no content scores.
