@@ -464,9 +464,9 @@ def s_poolscore(d, con, dry):
         R = R[R.ev.notna()]
         if len(R) < 5:
             continue
-        rho = spearmanr(R.ev, R.pool).correlation
+        rho = spearmanr(R.ev, R.pool).correlation if R.pool.nunique() > 1 and R.ev.nunique() > 1 else None   # none yet: no voters seen
         share = (R.pool / R.votes.where(R.votes > 0)).mean()
-        rows.append({"day": day, "scored_on": d, "status": label, "model": "pnx", "launches": len(R), "pool_spearman": float(rho),
+        rows.append({"day": day, "scored_on": d, "status": label, "model": "pnx", "launches": len(R), "pool_spearman": None if rho is None or pd.isna(rho) else float(rho),
                      "pool_share_of_votes": float(share) if pd.notna(share) else None, "pool_voters": int(R.pool.sum())})
     if rows and not dry:
         W.write("pool_scores", pd.DataFrame(rows))
