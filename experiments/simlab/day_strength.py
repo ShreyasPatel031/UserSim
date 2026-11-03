@@ -38,7 +38,13 @@ def load_snapshots(src):
     if P:
         S = pd.concat([S] + P, ignore_index=True)
     S = S.assign(launch_id=S.launch_id.astype(str), hour=S["at"].astype(str).str[:13])          # pipeline/snapshots.py dedupe
-    return S.sort_values("at").drop_duplicates(["launch_id", "hour"], keep="first").reset_index(drop=True)
+    S = S.sort_values("at").drop_duplicates(["launch_id", "hour"], keep="first").reset_index(drop=True)
+    if "fetched_at" in S:   # same correction as pipeline/snapshots.py (after 398f17b): reads > 2 min late shift hours_since_start
+        late = ((pd.to_datetime(S.fetched_at, utc=True, errors="coerce") - pd.to_datetime(S["at"], utc=True, errors="coerce"))
+                .dt.total_seconds() / 60).fillna(0)
+        S["late_min"] = late
+        S.loc[late > 2, "hours_since_start"] = S.loc[late > 2, "hours_since_start"].astype(float) + late[late > 2] / 60
+    return S
 
 
 def feedback(S, max_rank=20):
