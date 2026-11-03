@@ -98,6 +98,9 @@ a target out of reach. No agent writes or repeats a limiting statement about the
 - **Security and permission blocks go to Grok Bot (Shreyas, Nov 3, ~17:58 UTC).** Any agent blocked by a permission or
   safety check files mailbox/to_grokbot/<UTC>_SECURITY_<agent>_<topic>.md (what was blocked, the check's category, why it is
   needed, the exact unblock step) and carries on with other work. Grok Bot takes it to Shreyas. Nobody works around a block.
+- **Urgent asks to Grok Bot go through its webhook (Shreyas, Nov 3, 19:35 UTC), via tools/grokbot_post.sh**; the credentials
+  file lives outside the repo and is never committed, printed or sent in a message. The GCS mailbox stays the written record:
+  every webhook ask is also filed in to_grokbot/, and replies still land in from_grokbot/. Tested 19:37 UTC: HTTP 200.
 - Never commit files with Product Hunt usernames.
 - Never state that a data source is unavailable until Grok Bot / Data Feeder have checked it in the signed-in user
   view and reported what is visible (user, Nov 2).
