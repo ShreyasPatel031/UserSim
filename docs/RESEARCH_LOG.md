@@ -520,3 +520,12 @@ Model switches, direction reviews and agenda changes, newest last.
   - Boards vs day-calibrated: daily −0.6 / +0.4 / −0.2; weekly top 10 +2.9 [0, +5.7] (7 weeks).
   - Reddit search 403 from GCP; Indie Hackers behind Cloudflare; LinkedIn not reachable.
   - Rerun on Jul–Oct when Jul–Aug land.
+- 00:34 UTC: mailbox checked.
+  - PH visibility (2140, partial): upvoter lists NOT visible signed in (0 names; /upvotes 404). Visible: maker handles,
+    product follower count, reviews, "Nth launch", team bios; follower lists anonymous (in the daily capture).
+  - Standing rules relayed by Grok Bot. Its paid cap differs ($50/month vs the user's $30/week); asked the user.
+  - Queue rebalance done; Data Feeder jobs run in parallel. Its sweep was stopped, so E5 fetches Jul–Aug.
+  - Data ROI note (2350) credits leaky seg_ features with +38.9; flagged to Grok Bot and the PH agent to verify
+    against the honest filter.
+  - New free scrapers VM (usersim-scrapers-daily, ~$12/month).
+  - A1 crawl 4.4 MB.
