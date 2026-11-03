@@ -1579,3 +1579,22 @@ from_grokbot reply, and that the forecast step used 45 live inputs (no llm_full)
 VM (backup ~/w/backup_b9/before.tar holds 3f816494); daily.py 27f0578d and run_daily.sh a94dea22 unchanged; with the
 deployed model, real feature columns + LLM scores give 45 live inputs, no llm_full. First forecast without it: Nov 4.
 Headline reference from now: honest live set 62.7 / 70.4 / 76.6 (the with/without backtest shows no difference).
+
+## Wayback profiles, v1 final (api makers only) — 2026-11-03 ~18:55 UTC, exp-1 e2-standard-8, 5 seeds
+Reference: honest live set 62.7 / 70.4 / 76.6 daily (weekly control 50.7 / 54.4 / 55.2). Pre-launch = captured before
+00:00 PT of the launch day (6 launch-day rows dropped). Inputs per launch: max over makers and the hunter of followers,
+followings, points at the latest pre-launch capture, plus one age per role.
+Coverage (all launches / May–Oct by month): both roles 42.3% (May 70%, Jun–Oct 53–62%); within 30 d 26.5%;
+hunter 41.5%; maker 25.7% (34–38% each month).
+Gate (Holm): passes only for followings — hunter within-day ρ 0.072 (0.025, 0.119), maker 0.064 (0.008, 0.120);
+hunter capture age −0.065 (hunter-only run). Follower counts and points fail. Within 30 d: nothing passes.
+Boards vs reference (Δ, 95% CI):
+| variant | daily top 3 | top 5 | top 10 | weekly top 3 | top 5 | top 10 |
+|---|---|---|---|---|---|---|
+| both roles | −0.8 (−2.1, +0.6) | −0.8 (−1.7, 0.0) | 0.0 | 0.0 (−4.0, +4.0) | −0.8 | +0.4 |
+| both, ≤30 d | −0.8 (−2.1, +0.6) | −0.1 | +0.1 | +1.3 (−4.0, +8.0) | +0.8 | 0.0 |
+| hunter only | −1.3 (−2.8, 0.0) | −0.7 | +0.2 | +2.7 (0.0, +6.7) | +0.8 | +0.9 |
+| maker only | +0.4 (−0.9, +1.7) | −0.6 | +0.1 | −2.7 (−6.7, 0.0) | +0.8 | +0.9 (0.0, +2.2) |
+Monthly: 5–6 lists, too few. Verdict on v1: a small real signal in followings, but no board gain; dated pre-launch
+follower counts add nothing beyond the honest model. v2 (resolved makers) to be run with the same config and
+reported side by side with the maker_source split.
