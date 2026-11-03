@@ -19,7 +19,8 @@ pool engagement predicts the shock about as well as whole-day pool engagement, t
 if only the whole-day measure does, the pool follows exposure.
 Power: reports per day the launches with >= 1 early comment and >= 1 early pool comment; with ~35 launches/day and
 rho ~0.4, about 10 days give a CI half-width near 0.1.
-Inputs (spec 20261103T1945): raw/ph_at_launch/<day>/live/comments_ts.jsonl (launch_id, comment_id, username or
+Inputs (spec 20261103T1945): raw/ph_at_launch/<day>/api_comments/*.jsonl (API pulls, commenter_user_id) and
+raw/ph_at_launch/<day>/live/comments_ts.jsonl (launch_id, comment_id, username or
 commenter_user_id (API rows: user redacted; mapped with ID_MAP, the population agent's id -> username map),
 created_at, is_maker, is_hunter), posts_ts.jsonl (launch_id, featured_at, makers, hunter), optional
 raw/ph_people_daily/<day>/upvotes_4h/*.jsonl (username, launch_id | post_id, first_seen_lo, first_seen_hi).
@@ -44,7 +45,24 @@ def fetch(day):
     rd = lambda p: pd.read_json(p, lines=True, dtype=False) if os.path.exists(p) and os.path.getsize(p) else None
     ups = [pd.read_json(f, lines=True, dtype=False) for f in glob.glob(f"{d}/up/*.jsonl")]
     F = f"{d}/forecast_{day}.parquet"
-    return rd(f"{d}/comments_ts.jsonl"), rd(f"{d}/posts_ts.jsonl"), pd.concat(ups) if ups else None, pd.read_parquet(F) if os.path.exists(F) else None
+    return api_comments(day, rd(f"{d}/comments_ts.jsonl")), rd(f"{d}/posts_ts.jsonl"), pd.concat(ups) if ups else None, pd.read_parquet(F) if os.path.exists(F) else None
+
+
+def api_comments(day, C=None):
+    """API comment pulls (orchestrator, Nov 3 23:25 UTC): raw/ph_at_launch/<day>/api_comments/<tag>.jsonl, outside
+    live/, one file per hourly pull with post_id, comment_id, commenter_user_id, createdAt, parentId. Normalised to the
+    comments_ts shape (launch_id, comment_id, commenter_user_id, created_at) and appended to the page comments; the
+    caller dedupes by (launch_id, comment_id)."""
+    d = tempfile.mkdtemp(prefix=f"apic_{day}_")
+    subprocess.run(["gsutil", "-q", "-m", "cp", f"{BUCKET}/raw/ph_at_launch/{day}/api_comments/*.jsonl", d], capture_output=True)
+    parts = [pd.read_json(f, lines=True, dtype=False) for f in sorted(glob.glob(f"{d}/*.jsonl")) if os.path.getsize(f)]
+    if not parts:
+        return C
+    A = pd.concat(parts, ignore_index=True).rename(columns={"post_id": "launch_id", "createdAt": "created_at", "parentId": "parent_id"})
+    A = A[[c for c in ("launch_id", "comment_id", "commenter_user_id", "created_at", "parent_id", "snapshot_at") if c in A]]
+    A["username"] = ""   # filled from commenter_user_id by resolve_commenters (ID_MAP)
+    A = A.sort_values("snapshot_at").drop_duplicates(["launch_id", "comment_id"]) if "snapshot_at" in A else A.drop_duplicates(["launch_id", "comment_id"])
+    return A if C is None else pd.concat([C, A], ignore_index=True)
 
 
 def ts(x):

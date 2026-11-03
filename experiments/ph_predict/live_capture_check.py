@@ -11,7 +11,7 @@ Reads raw/ph_at_launch/<day>/live/{posts,comments,board,people,products,coverage
 Output: one line "PASS|FAIL live capture <day>: ..." with counts, and a JSON status (STATUS_OUT, default per day
 results/live_capture_status_<day>.json). No usernames are printed or written: counts only.
 usage: python live_capture_check.py <day> [<live dir, default gs://.../raw/ph_at_launch/<day>/live>]"""
-import json, os, re, subprocess, sys, tempfile
+import glob, json, os, re, subprocess, sys, tempfile
 import pandas as pd
 
 BUCKET = "gs://usersim-bakeoff-347838016394/usersim_sim"
@@ -133,14 +133,45 @@ def check(day, T):
                 fail.append(f"{msg}: {v}")
         if early:
             warn.append(f"comments: {early} created more than a day before the launch day (old threads?)")
+    A = T.get("api_comments")
+    if A is not None and len(A):   # API comment pulls (raw/ph_at_launch/<day>/api_comments/): ids, exact times
+        n["api_comments"] = int(A.drop_duplicates(["post_id", "comment_id"]).shape[0]) if {"post_id", "comment_id"} <= set(A.columns) else len(A)
+        miss = [c for c in ("post_id", "comment_id", "commenter_user_id", "createdAt", "snapshot_at") if c not in A.columns]
+        if miss:
+            fail.append(f"api_comments: missing columns {miss}")
+        else:
+            uid = A.commenter_user_id.astype(str)
+            no_id = int((~uid.str.fullmatch(r"\d+")).sum())
+            late = int((ts(A.createdAt) > ts(A.snapshot_at) + pd.Timedelta(minutes=1)).sum())
+            n["api_comments_no_user_id"] = no_id; n["api_comments_created_after_pull"] = late
+            if no_id:
+                fail.append(f"api_comments: {no_id} rows without a numeric commenter_user_id")
+            if late:
+                fail.append(f"api_comments: {late} rows created after their pull")
+    elif T.get("api_comments") is None:
+        warn.append("api_comments/ missing")
     status = "FAIL" if fail else "PASS"
     line = f"{status} live capture {day}: " + ", ".join(f"{k} {v}" for k, v in n.items()) + ("" if not fail else " | FAIL: " + "; ".join(fail)) + ("" if not warn else " | WARN: " + "; ".join(warn))
     return status, line, {"day": day, "status": status, "counts": n, "fail": fail, "warn": warn,
                           "checked_at": pd.Timestamp.now(tz="UTC").strftime("%Y-%m-%dT%H:%M:%SZ")}
 
 
+def load_api_comments(day, src=None):
+    """raw/ph_at_launch/<day>/api_comments/*.jsonl (outside live/), or <src>/../api_comments for a local copy."""
+    if src and not src.startswith("gs://"):
+        files = sorted(glob.glob(os.path.join(os.path.dirname(src.rstrip("/")), "api_comments", "*.jsonl")))
+    else:
+        d = tempfile.mkdtemp(prefix="apic_")
+        subprocess.run(["gsutil", "-q", "-m", "cp", f"{BUCKET}/raw/ph_at_launch/{day}/api_comments/*.jsonl", d], capture_output=True)
+        files = sorted(glob.glob(os.path.join(d, "*.jsonl")))
+    parts = [pd.read_json(f, lines=True, dtype=False) for f in files if os.path.getsize(f)]
+    return pd.concat(parts, ignore_index=True) if parts else None
+
+
 def main(day, src=None):
-    status, line, res = check(day, load(src or f"{BUCKET}/raw/ph_at_launch/{day}/live"))
+    T = load(src or f"{BUCKET}/raw/ph_at_launch/{day}/live")
+    T["api_comments"] = load_api_comments(day, src)
+    status, line, res = check(day, T)
     out = os.environ.get("STATUS_OUT", os.path.join(os.path.dirname(os.path.abspath(__file__)), "results", f"live_capture_status_{day}.json"))
     os.makedirs(os.path.dirname(out), exist_ok=True)
     json.dump(res, open(out, "w"), indent=1)
