@@ -616,3 +616,4 @@ Model switches, direction reviews and agenda changes, newest last.
   pairwise 0.810 (matches the whole current blend). Late risers 110→116, re-ups 43→52, fast 154→168. At 15 min
   28.4 → 29.1, +0.8 n.s. Page text hurt (0.717 vs 0.736). Next: into the live tool and the 1 h model; scale the model;
   content + 2025 early votes at 15 min. RESEARCH_PROGRAM.md updated.
+- 07:08 UTC Resolved makers landed: 435/2,349 (18.5%); 1,493 pages had no makers block anonymously, 415 empty. Asked Grok Bot to diagnose and retry (anonymous variant or signed-in at human pace, A1 posts first). PH agent to rerun A1/shock/bundle with the 435.
