@@ -591,3 +591,4 @@ Model switches, direction reviews and agenda changes, newest last.
   above 0 and a top-3 interval at/above 0. Not claimed (±3.5 rule). Ships as shadow_honest_a2 under rule 2; adding to
   the headline is Shreyas's call. RESEARCH_PROGRAM.md updated.
 - 04:05 UTC Wayback profile coverage sample (40 of 80 makers/hunters): 31 have any capture since 2025; 12 (30%) before their first May–Oct launch; 7 (17.5%) within the 90 days before. Per launch will be higher (several team members). Data Feeder runs the full check from the box.
+- 04:17 UTC shadow_honest_a2 trained and staged (commit 322adc5; launch model offset + day calibration + A1 + A2; C1 left out, identical without). Deploys as bundle 6 under rule 2 after the Nov 3 08:05 run writes forecast_<day>.parquet; first scored day Nov 4.
