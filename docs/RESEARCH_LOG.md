@@ -634,3 +634,6 @@ Model switches, direction reviews and agenda changes, newest last.
   - C2 small sources (stores, Chrome, Discord, subreddit, newsletter) picked up by Data Feeder on the box, low priority.
   - Wayback: Jan–Jun 37%, Jul–Dec 6%, profile CDX 2,606/4,667.
   - At-launch capture day-1 output not yet landed (expected ~08:50).
+- 09:02 UTC Bundle 6 deployed and verified (shadow_honest_a2; SHADOW_MODELS daycal,honest_a2; headline unchanged).
+  First live row Nov 4, scored Nov 5. Nov 3 run ok except list_check (redu.cloud on the leaderboard, missing from the
+  API list). Nov 2 forecast: launch model 1/3, 4/5, 9/10; sim 1/3, 3/5, 8/10. Spend ~$0.74.
