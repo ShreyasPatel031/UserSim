@@ -545,3 +545,4 @@ Model switches, direction reviews and agenda changes, newest last.
   - Filed 0140: bulk-resolve redacted makers by product (signed-in, $0) to lift A1 coverage. PH agent told.
   - NEEDS_HUMAN lists two notes the intake couldn't turn into jobs; both were already answered.
   - A1 crawl at 5.75 MB, working back through early 2024.
+- 01:40 UTC User decisions: paid data cap $30/week total (no per-item approval; priced from a pilot); Track HN sign-up approved. Filed 0140 to Grok Bot: account, outcome-independent coverage check, then a free pull of first-60-min snapshots Jul–Oct 2026.
