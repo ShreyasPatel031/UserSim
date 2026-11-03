@@ -31,11 +31,18 @@ def load_history():
     import store as S
     d = os.path.join(H.CACHE, "github_stargazers")
     os.makedirs(d, exist_ok=True)
-    for x in S._bucket().list_blobs(prefix=RAW):
+    b = S._bucket()
+    dedup = b.get_blob(RAW + "dedup/star_history_dedup.jsonl")      # Data Feeder's deduplicated history, if present
+    for x in b.list_blobs(prefix=RAW):
         n = x.name.split("/")[-1]
-        if n.endswith(".jsonl") and (n.startswith("star_history_") or n == "repo_status.jsonl"):
+        if "/dedup/" in x.name or not n.endswith(".jsonl"):
+            continue
+        if n == "repo_status.jsonl" or (dedup is None and n.startswith("star_history_")):
             x.download_to_filename(os.path.join(d, n))
-    hist = [pd.read_json(os.path.join(d, f), lines=True) for f in sorted(os.listdir(d)) if f.startswith("star_history_")]
+    if dedup is not None:
+        dedup.download_to_filename(os.path.join(d, "star_history_dedup.jsonl"))
+    files = ["star_history_dedup.jsonl"] if dedup is not None else sorted(f for f in os.listdir(d) if f.startswith("star_history_"))
+    hist = [pd.read_json(os.path.join(d, f), lines=True) for f in files]
     Hh = pd.concat(hist, ignore_index=True) if hist else pd.DataFrame(columns=["repo", "date", "stars"])
     Hh["repo"] = Hh.repo.str.lower()
     Hh["date"] = pd.to_datetime(Hh.date).dt.strftime("%Y-%m-%d")
