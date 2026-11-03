@@ -10,24 +10,33 @@ import frontsim as F
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 
-def main(D=30, stage="1"):
+def main(D=30, stage="1", window=os.environ.get("WINDOW", "oct")):
     import __main__; __main__.Model = F.Model
     Mo = pickle.load(open(os.path.join(F.CACHE, "frontsim_model.pkl"), "rb"))
     s = F.load_stories(); s["z"] = 0.0; sc, a0 = F.early(s); xw = F.newest_exposure(s, a0)
-    Mo.b = 0.0; Mo.fit_early(s, sc, a0, xw, "2026-10-12")          # sets k_new; tau/kappa overwritten below
+    Mo.b = 0.0; Mo.fit_early(s, sc, a0, xw, "2026-09-30" if window == "sep" else "2026-10-12")   # sets k_new; tau/kappa overwritten below
     qn, RK, EX, UP = F.load_qn()
     reach = pd.Series(np.nanmin(np.where(np.isnan(RK), 91, RK)[:, :F.H24], 1) <= 30, index=qn.post_id.to_numpy())
     okd = pd.Series(np.isfinite(Mo.ISO[:, 0]), index=pd.to_datetime(Mo.T0 + 600 * np.arange(len(Mo.ISO)), unit="s").strftime("%Y-%m-%d")).groupby(level=0).mean()
     good = [d for d in sorted(s.day.unique()) if okd.get(d, 0) >= 0.9 and okd.get(str((pd.Timestamp(d) + pd.Timedelta(days=1)).date()), 0) >= 0.9]
-    test = [d for d in good if "2026-10-02" <= d <= "2026-10-09" and pd.Timestamp(d).dayofweek < 5]
-    pool = [d for d in good if d < "2026-09-30" and pd.Timestamp(d).dayofweek < 5]
-    T = s[s.day.isin(test)].reset_index(drop=True); y = T.post_id.map(reach).fillna(False).astype(bool).to_numpy()
-    sct, a0t = F.early(T); xwt = F.newest_exposure(T, a0t)
+    if window == "sep":   # September only (no October test day): weekdays that reconstruct, posts with a /newest snapshot by 15 min
+        test = [d for d in good if "2026-09-01" <= d <= "2026-09-30" and pd.Timestamp(d).dayofweek < 5]
+        pool = [d for d in good if d >= "2026-07-15" and pd.Timestamp(d).dayofweek < 5]
+    else:
+        test = [d for d in good if "2026-10-02" <= d <= "2026-10-09" and pd.Timestamp(d).dayofweek < 5]
+        pool = [d for d in good if d < "2026-09-30" and pd.Timestamp(d).dayofweek < 5]
+    T = s[s.day.isin(test)].reset_index(drop=True)
+    sct, a0t = F.early(T)
+    if window == "sep":
+        T = T[np.isfinite(sct)].reset_index(drop=True); sct, a0t = F.early(T)
+    y = T.post_id.map(reach).fillna(False).astype(bool).to_numpy(); xwt = F.newest_exposure(T, a0t)
     sb = pd.cut(np.nan_to_num(sct, nan=0), [-1, 0.5, 1, 2, 3, 1e9], labels=["none", "1", "2", "3", "4+"])
     grid0 = Mo.grid.copy(); res = {"days": test, "posts": len(T), "real_reach": round(float(y.mean()), 4),
                                    "real_by_score": {str(k): round(float(y[sb == k].mean()), 3) for k in sb.categories}, "fits": []}
     G = (itertools.product((0.3, 0.6, 1.0), (0.05, 0.2, 1.0), (0.15, 0.25, 0.4), (0.0,)) if stage == "1" else
-         itertools.product((0.3, 0.6), (0.2,), (0.08, 0.15, 0.25), (0.5, 1.0)))   # stage 2: dispersion
+         itertools.product((0.3, 0.6), (0.2,), (0.08, 0.15, 0.25), (0.5, 1.0)) if stage == "2" else
+         itertools.product((0.3, 0.6, 1.0), (0.05, 0.2, 1.0), (0.15, 0.25, 0.4), (0.0, 1.0)))   # "all": both stages at once
+    res["window"] = window
     if stage == "2":
         prev = json.load(open(os.path.join(HERE, "out", "calib_fit.json"))); res["fits"] = prev["fits"]
     for tau, kappa, c, sig in G:
@@ -35,15 +44,17 @@ def main(D=30, stage="1"):
         r = np.zeros(len(T))
         for d in test:
             m = (T.day == d).to_numpy()
+            if not m.any():
+                continue
             Mo.simulate(T.created_at_i.to_numpy(float)[m], sct[m], a0t[m], 0, d, {0: [x for x in pool if x <= str((pd.Timestamp(d) - pd.Timedelta(days=3)).date())]}, D, xw=xwt[m])
-            r[m] = Mo.last_top30
+            r[m] = Mo.last_top30 if m.any() else r[m]
         pr = np.clip((r * D + 0.5) / (D + 1), 1e-3, 1 - 1e-3)
         ll = float(np.sum(y * np.log(pr) + (1 - y) * np.log(1 - pr)))
         f = {"tau": tau, "kappa": kappa, "c": c, "sigma": sig, "loglik": round(ll, 1), "reach_sim": round(float(r.mean()), 4),
              "sim_by_score": {str(k): round(float(r[sb == k].mean()), 3) for k in sb.categories}}
         res["fits"].append(f); print(f, flush=True)
     res["best"] = max(res["fits"], key=lambda f: f["loglik"])
-    json.dump(res, open(os.path.join(HERE, "out", "calib_fit.json"), "w"), indent=1); print("BEST", res["best"])
+    json.dump(res, open(os.path.join(HERE, "out", "calib_fit.json" if window == "oct" else f"calib_fit_{window}.json"), "w"), indent=1); print("BEST", res["best"])
 
 
 if __name__ == "__main__":
