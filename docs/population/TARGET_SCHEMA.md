@@ -76,3 +76,20 @@ follows of ≥1k-follower accounts 0.21 (read after, leaky). Recency, not depth,
 New order for route-4 pages: (2) forward first-seen reads ≥ (1b) Activity comments > (3) dated following > (1) full upvote
 history capped 500 > (4)–(5). Full history is for which launch a person votes for (affinity); that test is next.
 GitHub events: run by Grok Bot on its box (raw/population/github/20261103/), no population VM.
+
+## Which-launch test (affinity), Oct 1–25 (tools/population/affinity_fields.py)
+6,067 pool person-days with a vote; for each, every featured launch that day is scored. Within person-day AUC / coverage, and
+the pairwise conditional-logit coefficient (standardised) with final votes (LATE popularity) in the model:
+| Field | AUC | Coverage | Coef beyond popularity |
+|---|---|---|---|
+| final votes count (LATE, popularity) | 0.82 | 100% | 2.00 |
+| follows a team member (following p1 read Nov 2; LATE) | 0.64 | 63% | 0.88 |
+| upvoted the team's earlier launch (page-1 history) | 0.62 | 72% | 0.25 |
+| commented on the team's earlier launch | 0.60 | 33% | 0.21 |
+| commented on this launch before its day | 0.58 | 17% | 2.22 |
+| topic share of last-30-d upvotes | 0.55 | 68% | 0.12 |
+| a team member upvoted the person's own launch (reciprocity) | 0.51 | 3.5% | 0.54 |
+Reading: popularity dominates, but the follow graph and past votes for the same team add on top; topics add little.
+For collection: complete + dated following lists (3) and deeper upvote history (1) feed the which-launch side; reciprocity
+needs makers' own histories (low coverage now). Follows are read after the vote, so part of 0.88 may be follow-after-vote;
+dated follows (rota diffs) settle that.
