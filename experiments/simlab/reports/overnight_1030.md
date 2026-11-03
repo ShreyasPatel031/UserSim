@@ -1424,3 +1424,23 @@ All within noise. The monthly top 10 is one list moving (Aug +20).
 - The team's track record mostly carries what the launch model already sees. The honest launch model already has hist_ from our Jan+ files.
 - Next: rerun with the resolved [REDACTED] makers (Data Feeder). Feed A1 into the shock model as a candidate input to see whether it raises honest shock predictability (0.395).
 - **A1 in the honest shock model** (`shock_model.py` stage 1, HONEST=1, EXTRA_FEATS = A1 inputs; Jun–Oct, 146 days): within-day Spearman with the real pool shock **0.402 vs 0.395** without A1, +0.007 (−0.009 to +0.023). Better in 3 of 5 months (Jun 0.404→0.393, Jul 0.465→0.479, Aug 0.399→0.416, Sep 0.356→0.380, Oct 0.335→0.321). Within noise: the team's earlier performance barely adds to the honest shock prediction, consistent with the board result. Rerun with resolved makers when they land.
+
+## A2: the team's own Product Hunt activity in the days before launch (Nov 3, `ph_predict/a2_team_activity.py`)
+**Reference: the live forecast's honest set, day-calibrated (62.7 / 70.4 / 76.6 daily, May–Oct).** Per launch, the makers' and hunter's events on other launches strictly before launch day, from the warehouse: events in the 7 / 14 days before, distinct launches touched, active members, days since the last event. Team size is in the honest model already.
+
+**Leak check:** upvotes are dated to the upvoted launch's day, not to when they were cast. A team upvoting older launches on its own launch day (reciprocal upvoting is common then) would count as "before". Comments carry their own date, so the comments-only run is the honest one.
+
+| | All events (upvotes + comments) | **Comments only (honest)** |
+|---|---|---|
+| Launches with team activity in the 14 days before | 2,740 | 1,322 |
+| Gate, within-day Spearman (95% CI), Holm | act14 0.079 (0.041, 0.117); launches14 0.081; all pass | **act7 0.058 (0.020, 0.096); act14 0.056; launches14 0.055; members 0.044; all pass** |
+| Daily top 3 / 5 / 10, Δ vs control | **+2.1 (+0.2, +4.0)** / −0.1 / +0.6 (0.0, +1.2) | **+1.3 (−0.2, +3.0)** / 0.0 / +0.1; top 3 better in 5 of 6 months, never worse |
+| Weekly top 3 / 5 / 10 | +1.3 / +0.8 / +1.7 | −4.0 (−9.3, +1.3) / −0.8 / +0.4 |
+| Monthly top 3 / 5 / 10 (5–6 lists) | +6.7 / 0 / +1.7 | +13.3 / +3.3 / +3.3 |
+
+**Reading:**
+- A team that has been active on Product Hunt in the two weeks before its launch (commenting on others' launches) beats the honest forecast.
+- It's the first honest pre-launch input whose daily top-3 effect leans positive in every month: +1.3, interval just touching 0.
+- The all-events version's +2.1 partly reflects upvotes cast on launch day, so it isn't claimed.
+- It is preparation behaviour (organised mobilisation), the shock's mechanism.
+- Next: comments at hour precision (the honest cut-off is 00:00 PT on launch day, not the calendar day); the team's upvotes once they're timed by the daily refresh; and A2 in the honest shock model.
