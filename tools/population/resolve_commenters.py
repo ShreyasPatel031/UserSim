@@ -15,8 +15,11 @@ ids = []
 for f in files:
     for l in open(f):
         r = json.loads(l)
-        if r.get("commenter_user_id") is not None:
-            ids.append(str(r["commenter_user_id"]))
+        uid = r.get("commenter_user_id")
+        if uid is None and isinstance(r.get("extra"), dict):
+            uid = r["extra"].get("commenter_user_id")
+        if uid is not None:
+            ids.append(str(uid))
 s = pd.Series(ids, dtype=str)
 name = s.map(latest)
 inpool = name.isin(pool)

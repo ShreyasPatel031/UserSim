@@ -101,3 +101,19 @@ def test_verify_x_drop(tmp_path):
     assert not store.verify_x_drop(d, {IDS("bob")})[0]  # wrong key -> no join -> fail
     _write(d, "events", [ev, ev])
     assert not store.verify_x_drop(d, {pid})[0]          # duplicate
+
+
+def test_api_comments_dedupe_and_unresolved(tmp_path):
+    m = tmp_path / "map.jsonl"
+    m.write_text(json.dumps({"user_id": "1", "username": "alice", "last_seen": "x"}) + "\n")
+    live = tmp_path / "live.jsonl"
+    row = dict(snapshot_at="2026-11-03T23:00:00Z", post_id="P", comment_id="C1", commenter_user_id="1",
+               createdAt="2026-11-03T08:00:00Z", parentId=None, votesCount=1)
+    live.write_text(json.dumps(row) + "\n" + json.dumps({**row, "snapshot_at": "2026-11-03T23:15:00Z", "votesCount": 3}) + "\n"
+                    + json.dumps({**row, "comment_id": "C2", "commenter_user_id": "9"}) + "\n")
+    ev = store.api_comment_events([str(live)], IDS, str(m)).set_index(pd.Index(["C1", "C2"]))
+    assert len(ev) == 2
+    assert ev.loc["C1", "person_id"] == IDS("alice")
+    assert ev.loc["C1", "first_seen_at"] == pd.Timestamp("2026-11-03T23:00:00Z")
+    assert json.loads(ev.loc["C1", "extra"])["votes"] == 3
+    assert json.loads(ev.loc["C2", "extra"])["unresolved"] and ev.loc["C2", "person_id"] == IDS("9", "producthunt_uid")

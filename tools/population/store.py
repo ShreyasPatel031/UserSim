@@ -150,10 +150,45 @@ def comment_events_from_store(events_parquet, ids_map):
     e = pd.read_parquet(events_parquet)
     c = e[(e.platform == "producthunt") & (e.kind == "comment")].copy()
     c["person_id"] = c.person_id.str.replace("^ph:", "", regex=True).map(ids_map)
-    t = TS(c.ts)
+    t = TS(c.ts)  # v3g comment ts is a date only (YYYY-MM-DD), despite its "exact" label; timezone not recorded
     return pd.DataFrame(dict(person_id=c.person_id, platform="producthunt", kind="comment", target_id=c.target_id.astype(str),
-                             ts_lo=t, ts_hi=t, ts_quality="exact", first_seen_at=pd.NaT, fetched_at=pd.NaT,
-                             source="v3g:" + c.source, extra=None))
+                             ts_lo=t - pd.Timedelta(hours=12), ts_hi=t + pd.Timedelta(hours=36), ts_quality="day",
+                             first_seen_at=pd.NaT, fetched_at=pd.NaT, source="v3g:" + c.source, extra=None))
+
+
+def api_comment_events(paths, ids: Ids, id_map_path):
+    """PH API v2 comments with commenter_user_id (live snapshots and backfill). Exact createdAt; dedupe on comment_id;
+    first_seen = earliest snapshot. Unresolved ids get person_id from the numeric id (platform producthunt_uid) and
+    extra.unresolved = true, so they re-key once the id is resolved. Comment text is not carried into the store."""
+    m = pd.read_json(id_map_path, lines=True, dtype={"user_id": str})
+    latest = m.sort_values("last_seen").groupby("user_id").username.last()
+    rows = []
+    for p in paths:
+        for r in read_jsonl(p):
+            x = r.get("extra") if isinstance(r.get("extra"), dict) else {}
+            uid = r.get("commenter_user_id", x.get("commenter_user_id"))
+            cid = r.get("comment_id", x.get("comment_id"))
+            if uid is None or cid is None:
+                continue
+            rows.append(dict(uid=str(uid), comment_id=str(cid), post_id=str(r.get("post_id") or r.get("target_id")),
+                             created=r.get("createdAt") or r.get("ts_lo"), seen=r.get("snapshot_at") or r.get("fetched_at"),
+                             parent=r.get("parentId", x.get("parent_id")), votes=r.get("votesCount", x.get("votes")),
+                             featured=x.get("post_featured_at") is not None if x else None,
+                             src="ph_api_v2:live" if "snapshot_at" in r else "ph_api_v2:backfill"))
+    if not rows:
+        return pd.DataFrame()
+    df = pd.DataFrame(rows)
+    df["seen"] = TS(df.seen)
+    g = df.sort_values("seen").groupby("comment_id")
+    df = g.last().assign(first_seen=g.seen.min()).reset_index()
+    name = df.uid.map(latest)
+    df["person_id"] = [ids(n) if isinstance(n, str) else ids(u, "producthunt_uid") for n, u in zip(name, df.uid)]
+    t = TS(df.created)
+    extra = [json.dumps({"comment_id": c, "parent_id": p, "votes": v, "unresolved": not isinstance(n, str)})
+             for c, p, v, n in zip(df.comment_id, df.parent, df.votes, name)]
+    return pd.DataFrame(dict(person_id=df.person_id, platform="producthunt", kind="comment", target_id=df.post_id,
+                             ts_lo=t, ts_hi=t, ts_quality="exact", first_seen_at=df.first_seen, fetched_at=df.seen,
+                             source=df.src, extra=extra))
 
 
 # ---------- loaders: Data Feeder population runs (schema in 20261103T2000 reply, DRAFT) ----------
@@ -289,6 +324,17 @@ def build(data_dir, out_dir, salt):
     persons = pd.read_parquet(f"{data_dir}/people_v3g/persons.parquet")
     ids_map = {u.lower(): ids(u) for u in persons.ph_username.dropna()}
     ev.append(comment_events_from_store(f"{data_dir}/people_v3g/events.parquet", ids_map))
+    if os.path.exists(f"{data_dir}/user_id_map.jsonl"):
+        ac = api_comment_events(sorted(glob.glob(f"{data_dir}/api_comments/**/*.jsonl", recursive=True)) +
+                                sorted(glob.glob(f"{data_dir}/population_data/ph_comments/*/*.jsonl")), ids,
+                                f"{data_dir}/user_id_map.jsonl")
+        if len(ac):
+            # an exact API comment supersedes a day-dated v3g comment by the same person on the same launch that day
+            v3 = ev[-1]
+            key = set(zip(ac.person_id, ac.target_id, TS(ac.ts_lo).dt.date))
+            mid = (v3.ts_lo + pd.Timedelta(hours=12)).dt.date
+            ev[-1] = v3[[k not in key for k in zip(v3.person_id, v3.target_id, mid)]]
+            ev.append(ac)
     xe, xrep = x_events(data_dir, set(ids_map.values()))
     print("X drops:", json.dumps(xrep, default=str))
     if len(xe):
@@ -309,8 +355,8 @@ def check_store(events, pool):
     c = {}
     c["events"] = len(events)
     key = ["person_id", "kind", "target_id", "source"]
-    c["dup_keys"] = int(events[events.ts_quality != "exact"].duplicated(key).sum()
-                        + events[events.ts_quality == "exact"].duplicated(key + ["ts_lo"]).sum())
+    timed = events.ts_quality.isin(["exact", "day"])
+    c["dup_keys"] = int(events[~timed].duplicated(key).sum() + events[timed].duplicated(key + ["ts_lo"]).sum())
     c["upvote_order_conflicts"] = int((events.ts_quality == "order_conflict").sum())
     up = events[events.kind == "upvote"]
     c["upvote_lo_gt_hi"] = int((up.ts_lo > up.ts_hi + pd.Timedelta(minutes=1)).sum())
