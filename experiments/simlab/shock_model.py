@@ -105,12 +105,18 @@ def main(src):
     T = turnout(I, E)
     A = S[["id", "day", "lS", "shock", "raw", "dshock", "psn_reach", "psn_ev"]].merge(C[["id", "dailyRank", "logv", "all"]], on="id").merge(B[["id"] + inputs], on="id", how="left").merge(T, on="id", how="left")
     tcols = [c for c in T if c != "id"]
+    if os.environ.get("EXTRA_FEATS"):   # extra launch-level inputs (parquet: id + columns), e.g. A1 team history; one group named after the file
+        X = pd.read_parquet(os.environ["EXTRA_FEATS"]); X["id"] = X.id.astype(str)
+        xcols = [c for c in X if c != "id"]
+        A = A.merge(X, on="id", how="left")
     groups = defaultdict(list)
     for c in inputs:
         groups[c.split("_")[0]].append(c)
     groups = {k: v for k, v in groups.items() if len(v)}
     groups["turnout"] = tcols
     allc = inputs + tcols
+    if os.environ.get("EXTRA_FEATS"):
+        groups["extra"] = xcols; allc = allc + xcols
     A["mon"] = A.day.str[:7]; months = sorted(A.mon.unique())
     # stage 1: shock_hat, rolling monthly
     A["shock_hat"] = np.nan; abl = {g: np.full(len(A), np.nan) for g in groups}
