@@ -568,3 +568,8 @@ Model switches, direction reviews and agenda changes, newest last.
   - Boards vs day-calibrated control: daily 0.0/−0.2/−0.3; weekly top 10 +1.3 [0, +3.3]; monthly tied.
   - Public pre-launch mentions on HN/Reddit/Bluesky/dev.to don't see the launch-day surge.
 - 03:34 UTC: mailbox checked. Only update: redacted-makers bulk pull in progress (2,349 targets). No follow-ups due.
+- 03:45 UTC Fable (user asked how to move the bottleneck). Diagnosis: information, not throughput; eight honest
+  pre-launch tests null. Actions: PH agent → Wayback profile-capture backfill of at-launch audience (coverage check),
+  makers' pre-launch PH activity, stop old-data feature tests, feature store + live scoring for Nov 16; HN agent →
+  content-model fine-tune (cost first, go if <$20), 2025 training set, /pool labels; Grok Bot → dated follows for the
+  whole pool weekly (0345). Addendum in docs/reviews/2026-11-02_direction_review_fable2.md.

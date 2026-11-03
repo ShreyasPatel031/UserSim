@@ -80,3 +80,17 @@ What the direction still gets wrong:
 - Gate every candidate on within-day residual Spearman (176 days detect 0.05) before any top-k run.
 - One experiment per VM per north star, always running; queue the next before the current finishes.
 - Paid data only from a measured pilot (cost per full day), never from read estimates.
+
+## Addendum, Nov 3, 03:45 UTC (Fable): the bottleneck after eight nulls
+Throughput is fixed (parallel agents, standing approvals). What came back: every honest pre-launch proxy for the
+launch-day mobilisation is null (X engagement, cross-channel mentions, competitors, team history +0.007, user base at
+5.7% coverage). The bottleneck is information: the decisive number isn't public before launch, and the honest record of
+the nearest proxy (the team's PH audience) is 1–9 days old.
+Moves: (1) backfill at-launch audience via Wayback captures of maker/hunter profile pages dated before launch (coverage
+check first); (2) makers' own pre-launch PH activity from the warehouse; (3) stop re-testing pre-launch features on old
+data; build the feature store and live scoring for a clean Nov 16 read; extend dated follows to the whole pool weekly;
+(4) weekly board: day calibration live, day-strength magnitude model at 14 clean days.
+HN: a real content model (fine-tune on 2025+ title + page text → P(top 30)) as the thesis bet; 2025 Wayback training
+set; moderator-pick model at 2 weeks of /pool labels; the exposure-clock definition is the user's call.
+Expectation stated: the PH daily number moves from live days (mid-November) or the Wayback profile backfill, not from
+backtests on data we hold.
