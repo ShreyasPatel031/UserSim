@@ -16,6 +16,27 @@ Retry-After, back off, no IP or account rotation. One PH account only. Rows mark
 | X free quota (get_users_by_usernames) | agent session | 55 handles/day today | ~100 reads/month | 429 / quota exhausted | monthly reset | known |
 | HN Algolia / Firebase | any IP | not measured here | Algolia documents 10,000 req/h | 429 | window | planned if needed |
 
+## PH route 4: where it tipped on 2026-11-03 (orchestrator ask 19:49)
+| Window (UTC) | What ran on route 4 | VMs / sticky sessions | Pages | Peak pages/min | Result |
+|---|---|---|---|---|---|
+| 02:28–06:50 | makers bulk, 1 worker | 1 / 1 | 2,374 | ~9 | 99.7% ok (4×403) |
+| 09:45–09:53 | at-launch daily, 3 workers | 1 / 1 | ~220 | ~33 | 100% ok |
+| 10:18–10:20 | people upvotes, 4 workers | 1 / 1 | 131 | ~75 | 98.5% ok (1×403) |
+| 17:20–17:27 | follows-rota pilot, 4 workers | 1 / 1 | 750 | **130–137 for 5 min** (42, 71, 103, 137, 133, 135, 129 per minute) | 99.5% ok (2×403 in the 71/min minute) |
+| 17:27–19:11 | nothing found on route 4 | 0 | 0 | 0 | — |
+| 19:11–19:46 | full rota (scale.py, 2 browsers) + diag | 1 / 1 (ports 10007, 10011) | 14 + ~15 | <1 | every first navigation 403 from 19:16 |
+| 19:26– | live capture v1 (leaderboard page) | 1 / 1 (second VM) | a few | <1 | 403 at 19:32, 19:48, 19:50 |
+
+Reading: the block did not come from load at the moment it appeared (route 4 was idle 17:27–19:11, and the first blocked pages were the
+first of a fresh session). It came ~1 h 50 min after the day's heaviest burst: ~3,500 pages in the day, ending in 750 pages at
+~130/min for 5 min from one sticky session. Two VMs/sessions were open only after the block. So the edge is a reputation/volume edge on
+the exit IP pool, not a per-minute rate edge we observed directly. Correction: the pilot ran at ~130/min, not the 54/min in the first
+scorecard (that number divided by VM wall time including setup).
+
+**Provisional operating point for Nov 4** (until a staged test says otherwise): ≤60 pages/min, one VM, one sticky session, ≤2 browsers;
+no burst above 60/min; ≤~2,500 route-4 pages per PT day across all jobs, live capture first; stop the run at the first 403 on a fresh session.
+Staged test after the live capture has run 2 h clean: 40 → 60 → 90 pages/min, 30 min per step, stop at >2% 403.
+
 ## Log of edge events
 - 2026-11-03 19:16 UTC: PH route 4, Cloudflare 403 on all fresh sessions (full rota VM, then the live-capture VM at 19:32). Jobs stopped
   19:52 by Grok Bot/Data Feeder on the orchestrator's decision; one probe every 10 min. Recovery: pending.
