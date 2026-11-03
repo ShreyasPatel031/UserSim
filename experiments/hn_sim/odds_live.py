@@ -34,7 +34,8 @@ import emb_io
 import top10 as T
 import top100 as H
 
-MODEL = os.path.join(H.CACHE, "odds_live.pkl")
+CONTENT = os.environ.get("ODDS_CONTENT") == "1"     # content model score as an input (content_live.py); separate pkl
+MODEL = os.path.join(H.CACHE, "odds_live_content.pkl" if CONTENT else "odds_live.pkl")
 AGES = {"at posting": 0, "15 min": 15, "30 min": 30, "1 h": 60, "2 h": 120, "3 h": 180}
 KNN = ["knn_lp", "knn_100", "knn_t30", "knn_sim"]
 VOTES = ["points", "rank_now", "best_rank", "gain30", "rate"]
@@ -101,6 +102,10 @@ def train():
     Z = pd.DataFrame(pca.transform(E), columns=[f"pc{j}" for j in range(64)])
     Q = pd.concat([Q, Z], axis=1)
     BASE = ["text_live"] + bcols + KNN + list(Z.columns)
+    if CONTENT:
+        import content_live
+        Q["content_pct"] = content_live.train_pct(Q.post_id)      # cut-Jun-30 model: out of sample for every row here
+        BASE = BASE + ["content_pct"]
     _, qs = fine_io.load()
     q_by_id = {r.post_id: {"qn_f0": r.qn_f0, "qn_rank_10m": r.qn_rank_10m, "qn_up_10m": r.qn_up_10m, "qn_exp_10m": r.qn_exp_10m}
                for r in qs.itertuples()}
@@ -212,6 +217,9 @@ def score(rows: pd.DataFrame, now: float | None = None) -> pd.DataFrame:
     t30 = past.post_id.isin(set(lists().query("rank <= 30").post_id)).to_numpy().astype(np.float32)
     X["knn_lp"], X["knn_100"] = lp[k].mean(1), (past.points.to_numpy()[k] >= 100).mean(1)
     X["knn_t30"], X["knn_sim"] = t30[k].mean(1), ksim
+    if any("content_pct" in v[2] for v in M["models"].values()):
+        import content_live
+        X["content_pct"] = content_live.pct(rows)
     # votes so far, for posts already up (Quality News series)
     age_min = (now - rows.created_at_i.to_numpy()) / 60
     reached = [max([a for a in AGES.values() if a <= m] or [0]) if pid > 0 else 0 for m, pid in zip(age_min, rows.post_id)]
