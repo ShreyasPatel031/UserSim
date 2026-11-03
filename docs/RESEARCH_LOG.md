@@ -673,3 +673,4 @@ Model switches, direction reviews and agenda changes, newest last.
   - PH agent: nothing new since 10:36 (Nov 4 01:07 PT check next).
   - Open with Shreyas (unchanged): $30/week cap to Grok Bot; E5 go on day_strength; A1+A2 into headline; llm_full
     removal; HN 15-min definition.
+- 12:01 UTC PH agent: reader rerun on Nov 3's X-filled capture gives 0 of 1,215 rows pre-launch (71 X rows added), strict and relaxed. Day 0 stands; Nov 4 on-time capture next.
