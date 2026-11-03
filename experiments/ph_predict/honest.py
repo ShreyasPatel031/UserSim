@@ -87,6 +87,21 @@ def main():
     A = A[A.dailyRank.notna()]
     A.to_parquet(f"results/{OUT}_preds.parquet")
     rng = np.random.default_rng(0); res = {"launches": len(A), "days": int(A.day.nunique()), "dropped_columns": dropped}
+    if os.environ.get("VARIANTS"):   # filtered run: each variant vs the first one, paired by list, daily / weekly / monthly
+        for win, lo in (("May-Oct", "2026-05"), ("Jul-Oct", "2026-07")):
+            U = A[A.day >= lo]; r = {"base": V[0]}
+            for key in ("day", "week", "mon"):
+                for k in (3, 5, 10):
+                    base = per_day(U, V[0], k, key); line = {V[0]: round(100 * float(base.mean()), 1), "lists": int(len(base))}
+                    for v in V[1:]:
+                        cur = per_day(U, v, k, key); d = (cur - base).dropna().values
+                        bs = [d[rng.integers(0, len(d), len(d))].mean() for _ in range(10000)] if len(d) > 1 else [0]
+                        line[v] = [round(100 * float(cur.mean()), 1), round(100 * float(d.mean()), 1), [round(100 * float(x), 1) for x in np.percentile(bs, [2.5, 97.5])]]
+                    r[f"{key} top{k}"] = line
+            res[win] = r
+        json.dump(res, open(f"results/{OUT}.json", "w"), indent=1)
+        print(json.dumps({k: v for k, v in res.items() if k != "dropped_columns"}, indent=1))
+        return
     for win, lo in (("May-Oct", "2026-05"), ("Jul-Oct", "2026-07"), ("all months", "0")):
         U = A[A.day >= lo]; r = {}
         for k in (3, 5, 10):

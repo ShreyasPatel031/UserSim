@@ -27,6 +27,7 @@ import numpy as np, pandas as pd
 import userbase_eval as UE
 
 OUT = os.environ.get("OUT", "results/day_strength.json")
+PRED_OUT = os.environ.get("PRED_OUT", "results/day_strength_pred.parquet")   # day, s_pred, fold
 
 
 def holidays(days):
@@ -149,6 +150,10 @@ def main():
                 line["note"] = "too few lists for a conclusion"
             boards[f"{key} top{k}"] = line
     res["boards"] = boards
+    # out-of-sample per-day day level for E5's launch-level curve (combined arm later): fold = the test month (ridge fit
+    # on earlier months only). No launch or person data.
+    P_ = D.loc[[d_ for d_ in pred], ["mon", "s_pred"]].rename(columns={"mon": "fold"}).rename_axis("day").reset_index()
+    P_.to_parquet(PRED_OUT, index=False); res["day_predictions"] = {"file": PRED_OUT, "days": int(len(P_))}
     json.dump(res, open(OUT, "w"), indent=1)
     print(json.dumps(res, indent=1))
     return res
