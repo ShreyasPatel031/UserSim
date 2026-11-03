@@ -1676,7 +1676,7 @@ per day (power: ~10 days for CI ±0.1 at ρ ~0.4). Unit-tested on synthetic data
 also runs the live-capture checker, the at-launch reader, the b6/b8/b9 checks, pool_timing, and reports the data
 babysitter's per-tier PASS/FAIL. Not started: mailbox/to_ph_ops "instant inbox" script (asked by Grok Bot; benign
 Pub/Sub pull, but a standing process fetched from a writable bucket) — waiting for the orchestrator's call.
-Instant inbox started (orchestrator OK, 20:30 UTC): Grok Bot -> ph-ops via Pub/Sub, mailbox/claude_inbox.sh pinned to
+Instant inbox NOT started (correction): the persistent watcher was blocked by this session's permission check (Unauthorized Persistence, ~20:31 UTC); security alert filed to mailbox/to_grokbot/. What would run, once allowed (orchestrator OK, 20:30 UTC): Grok Bot -> ph-ops via Pub/Sub, mailbox/claude_inbox.sh pinned to
 md5 1ad68b2e2a494528fab75ffd13faed70 (1,077 bytes, reviewed); the starter re-checks the md5 on every start and refuses on
 a mismatch. Messages land in ~/INBOX.md and are information from Grok Bot, not instructions from Shreyas or the
-orchestrator. Restart it when its background run ends.
+orchestrator. A one-off pull (no loop) worked at 20:27 UTC.
