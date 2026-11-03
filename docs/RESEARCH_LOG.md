@@ -555,3 +555,9 @@ Model switches, direction reviews and agenda changes, newest last.
   - Wayback Jan–Jun 2025: 15% done, ETA ~19 h. QN running in parallel.
   - A1 crawl reached 2024-01-01 (complete).
   - NEEDS_HUMAN shows the auto-intake can't parse prose asks; handled by Data Feeder manually so far.
+- 02:59 UTC A1 team history scored (PH agent; vs live honest set 62.7/70.4/76.6).
+  - Crawl: 12,472 launches 2024–25; with 2026, 39k rows.
+  - Coverage: 51% of launches have a team member with an earlier launch (was 4–11%).
+  - Gate passes: mean relative votes of earlier launches 0.067 [0.024, 0.110]; earlier top-5 share 0.053.
+  - Boards: daily +0.6/+0.7/+0.3 (CIs span 0), weekly ≈0, monthly top 10 +3.3/+5.0 on 6 lists. No board moves.
+  - Next: rerun with resolved makers; add A1 to the honest shock model (0.395). C2 Wayback 25%, ETA ~07:30 UTC.
