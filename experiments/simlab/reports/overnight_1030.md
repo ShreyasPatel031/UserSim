@@ -1621,3 +1621,16 @@ Team comments in 30 d: 1,610 of 6,574 launches (24%); with commented-on makers 1
   A2+A3 +1.5 (−0.2, +3.2); weekly top 3 −4.0 -> −5.3 (−12.0, 0.0). A3 adds nothing beyond A2.
 - Verdict: "on whom" the team comments carries no information beyond "how much" it comments. The upvote half needs
   cast-time dates (daily refresh first-seen dates from Oct 28, or a scroll pilot if cast times exist).
+
+## Dated follows: Nov 2 page-1 read vs the Oct 26 baseline (orchestrator ask, 2026-11-03 ~19:25 UTC; counts only)
+- Nov 2 read: 3,900 people; 3,690 have a baseline read (observed_on 2026-10-26, the undated full read); 2,566 of those
+  had a complete baseline (raw fetch_state parts, follows, complete=True, fetched ≤ Oct 28).
+- New follows (on Nov 2 page 1, absent from the baseline; warehouse new_since_last): 472 people, 1,809 events.
+  Reliable subset (complete baseline): 171 people, 431 events. Dated to (Oct 26, Nov 2], about 7–8 days' resolution.
+- Pointing at makers of Oct 27–Nov 3 launches: 319 events / 80 launches (all); 93 / 42 (reliable).
+- Final daily ranks, Oct 27–Nov 2 (160 ranked launches):
+  all — with a new follow (79): median rank 13, top-5 share 17.7%, median votes 91; without (81): 10, 25.9%, 111;
+  Mann–Whitney p 0.11. Reliable — with (42): 16.5, 19.0%, 86; without (118): 11, 22.9%, 106; p 0.06.
+- Reading: no sign that new follows of a maker in the week mark a stronger launch (if anything weaker, not
+  significant). Caveats: page 1 is newest-first, so absence on Oct 26 counts only for people with a complete baseline
+  (the reliable rows); the window overlaps the launches, so many follows can come after the launch (not pre-launch).
