@@ -41,10 +41,12 @@ TRAIN_ALL = os.environ.get("TRAIN_ALL") == "1"   # each month's person model tra
 TRAIN_FROM = os.environ.get("TRAIN_FROM", "2026-03")
 if TRAIN_ALL:
     TAG += "_trainall"
+if os.environ.get("FOLLOW"):
+    TAG += "_fol" + os.environ["FOLLOW"]
 TAG += os.environ.get("TAG_SUFFIX", "")   # a separate cache and output for a re-run of an existing configuration
 WORK = os.path.join(HERE, "cache", "popscore_" + TAG if TAG else "popscore")
 PREFIX = os.environ.get("PREFIX") or (f"pl{LAG}{'x' if TIE2 else ''}_" if LAG else ("pnx_" if TIE2 else "pnr_") if (TIE and not PAGE) else "psx_" if TIE2 else "psr_" if TIE else "psq_" if (PRESENCE or TWIN) else "psh_" if HERD else "pst_" if TASTE else "psp_" if PAGE else "psn_")
-MONTHS = ["2026-04", "2026-05", "2026-06", "2026-07", "2026-08", "2026-09", "2026-10"]
+MONTHS = [m for m in os.environ.get("MONTHS", "2026-04,2026-05,2026-06,2026-07,2026-08,2026-09,2026-10").split(",") if m]
 if TRAIN_ALL and not os.environ.get("PREFIX"):   # psx_ -> psa_, pnx_ -> pna_ (three letters: newsim_eval reads SRC + "_")
     PREFIX = PREFIX[:2] + "a_"
 TRAIN_EXTRA = [m for m in os.environ.get("TRAIN_EXTRA", "").split(",") if m]   # e.g. 2026-11: a model trained on Oct for the live pipeline
@@ -169,6 +171,15 @@ if TIE2:
     TIE_COLS = TIE_COLS + TIE2_COLS
 if TIE:
     FEATS = FEATS + TIE_COLS
+# FOLLOW: does the person follow this launch's team, and did they comment on this launch before its day (population
+# agent's affinity test, Nov 3). FOLLOW=all: every follow read (Oct 26 undated baseline + Nov 2 page 1), so for launches
+# before the reads it may include follow-after-vote (LEAKY, an upper bound). FOLLOW=baseline: the Oct 26 read only;
+# honest only for launches after Oct 26, which the store's outcome window (to Oct 24) does not cover: for the backtest
+# it is as leaky as "all", minus the Nov 2 additions.
+FOLLOW = os.environ.get("FOLLOW", "")
+FOLLOW_COLS = ["fol_team", "fol_team_n", "pre_comment_this"]
+if FOLLOW:
+    FEATS = FEATS + FOLLOW_COLS
 
 
 def tie_features(D):
@@ -242,6 +253,28 @@ def tie_features(D):
     D["tie_rel_rank"] = D.groupby(["person", "day"])._s.rank(ascending=False, method="average")
     D = D.drop(columns="_s")
     return tie2_features(D) if TIE2 else D
+
+
+def follow_features(D):
+    """fol_team: 1 if the person follows any of this launch's makers or hunter (warehouse follows table; FOLLOW=all or
+    baseline, see above); fol_team_n: how many of them; pre_comment_this: 1 if the person commented on this launch on a
+    day before its launch day (exact-time comments)."""
+    g = load()
+    if "fol" not in G:
+        sys.path.insert(0, os.path.dirname(HERE))
+        from pipeline import warehouse as W
+        where = "" if FOLLOW == "all" else "WHERE observed_on = '2026-10-26'"
+        F = W.query(f"SELECT lower(person) AS p, lower(followee) AS f FROM follows {where}")
+        G["fol"] = F.groupby("p").f.apply(set).to_dict()
+        E = g["E"]; C = E[E.kind == "comment"]
+        dd = g["day"]
+        G["precom"] = {(str(u).lower(), x) for u, x, t in zip(C.person, C.item, C.date) if x in dd and str(t)[:10] < dd[x]}
+        G["team_lc"] = {x: {str(m).lower() for m in ms if m} for x, ms in g["team"].items()}
+    fol, pc, tm = G["fol"], G["precom"], G["team_lc"]
+    n = [len(fol.get(str(u).lower(), set()) & tm.get(x, set())) for u, x in zip(D.person, D.id)]
+    D["fol_team_n"] = np.array(n, dtype=float); D["fol_team"] = (D.fol_team_n > 0).astype(float)
+    D["pre_comment_this"] = [float((str(u).lower(), x) in pc) for u, x in zip(D.person, D.id)]
+    return D
 
 
 def tie2_features(D):
@@ -414,6 +447,7 @@ def featurize(D, cf, prior_cut):
     D = recip_features(D) if RECIP else D
     D = comp_features(D) if COMP else D
     D = tie_features(D) if TIE else D
+    D = follow_features(D) if FOLLOW else D
     if PRESENCE or TWIN:
         from . import presence
         D = presence.add_presence(D) if PRESENCE else D
