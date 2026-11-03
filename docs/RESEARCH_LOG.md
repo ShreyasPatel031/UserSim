@@ -643,3 +643,7 @@ Model switches, direction reviews and agenda changes, newest last.
   adds late_featured / dropped_from_featured counts to score rows. First provisional pool Spearman row (Nov 2, scored
   Nov 3): 0.36 on 17 launches, pool share 6.1% (votes not yet filled in; complete at d−7). Day-1 at-launch capture
   still not landed at 09:10 (README window 09:00–09:40).
+- 09:11 UTC Bundle 7 deployed (late_featured / late_in_top_k / dropped_from_featured counts in score rows). At-launch
+  reader built (at_launch_reader.py; pre-launch = fetched before the first non-zero vote snapshot). Caveat found: the
+  capture runs ~01:00–01:40 PT (waits for raw/daily/<day>.json at ~00:30 PT), so most rows will fail the pre-launch rule.
+  Filed 0915: trigger on a 00:06 PT upload of data/today/<day>.json and capture by ~00:20 PT. Day-1 output still absent.
