@@ -10,6 +10,9 @@ as_of_date: c2 keeps only rows dated strictly before the launch day, so pre-laun
 the rest get the launch day (c2 drops and counts them). fetched_at, first_vote_at and pre_launch are kept on every row.
 Note: the capture lands ~01:00-01:40 PT, after the 00:05 PT forecast; pre-launch here means "before votes moved", which
 is honest for research and for a later shadow, not for the 00:05 headline.
+Relaxed variant (orchestrator, Nov 3; report it labelled, never as the headline rule): for profile-level sources (not
+atl_post), a row fetched within RELAX_MIN (60) minutes of the launch's start (featured_at, else 00:01 PT) is
+pre_launch_relaxed; RELAXED=1 also dates those rows day - 1 for c2.
 
 Rows (JSON lines): launch_id, source, metric, as_of_date, count, fetched_at, first_vote_at, pre_launch
   + username, role for per-person rows (makers / hunters, and their X / GitHub counts).
@@ -23,6 +26,8 @@ POST = {"votes_at_fetch": "votes", "comments_count_at_fetch": "comments", "media
 PRODUCT = {"followers": "followers", "reviews_count": "reviews", "posts_count": "posts", "first_launch": "first_launch"}
 PROFILE = {"followers": "followers", "followings": "followings", "products_made": "products_made", "hunted": "hunted",
            "upvotes_total": "upvotes_total", "reviews_count": "reviews", "badges_total": "badges", "visit_streak_days": "visit_streak"}
+RELAXED = os.environ.get("RELAXED") == "1"   # date relaxed-only rows as pre-launch too (report it labelled)
+RELAX_MIN = int(os.environ.get("RELAX_MIN", "60"))
 EXT = {"x_free_quota": ("x", "followers"), "github_api": ("github", "stargazers_count")}
 
 
@@ -67,11 +72,19 @@ def rows_from(posts, products, makers, ext, fv):
     for p in products:
         slug2ids.setdefault(p["slug"], set()).update(map(str, p["launch_ids"]))
 
+    start = {str(p["launch_id"]): p.get("featured_at") or p.get("created_at") for p in posts}
+    day0 = pd.Timestamp(f"{day} 00:01", tz="America/Los_Angeles").tz_convert("UTC")
+
     def row(lid, source, metric, value, fetched, extra_ok=True, **kw):
         t = fv.get(str(lid))
         pre = bool(extra_ok and t is not None and fetched and ts(fetched) < ts(t))
-        return {"launch_id": str(lid), "source": source, "metric": metric, "as_of_date": prev if pre else day,
-                "count": float(value), "fetched_at": fetched, "first_vote_at": t, "pre_launch": pre, **kw}
+        # relaxed (labelled, profile-level sources only): fetched within RELAX_MIN of the launch's 00:01 PT start
+        s0 = ts(start[str(lid)]) if start.get(str(lid)) else day0
+        rel = bool(source != "atl_post" and fetched and ts(fetched) <= s0 + pd.Timedelta(minutes=RELAX_MIN))
+        use = (pre or rel) if RELAXED else pre
+        return {"launch_id": str(lid), "source": source, "metric": metric, "as_of_date": prev if use else day,
+                "count": float(value), "fetched_at": fetched, "first_vote_at": t, "pre_launch": pre,
+                "pre_launch_relaxed": rel, **kw}
 
     L, P = [], []
     for p in posts:
@@ -133,7 +146,8 @@ def main(src, out):
     rep = {"day": day, "launches": len(posts), "launches_with_first_vote": len(fv),
            "rows": len(D), "pre_launch_rows": int(D.pre_launch.sum()) if len(D) else 0,
            "launches_with_any_pre_launch_row": int(D[D.pre_launch].launch_id.nunique()) if len(D) else 0,
-           "by_source": D.groupby("source").pre_launch.agg(["size", "sum"]).astype(int).to_dict("index") if len(D) else {},
+           "relaxed": RELAXED, "relax_min": RELAX_MIN, "pre_launch_relaxed_rows": int(D.pre_launch_relaxed.sum()) if len(D) else 0,
+           "by_source": D.groupby("source").agg(rows=("pre_launch", "size"), pre=("pre_launch", "sum"), relaxed=("pre_launch_relaxed", "sum")).astype(int).to_dict("index") if len(D) else {},
            "capture_minus_first_vote_min": (D.assign(g=[(ts(a) - ts(b)).total_seconds() / 60 if a and b else None for a, b in zip(D.fetched_at, D.first_vote_at)])
                                            .groupby("source").g.median().round(1).to_dict()) if len(D) else {}}
     print(json.dumps(rep, indent=1, default=str))

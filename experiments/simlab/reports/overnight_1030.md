@@ -1507,3 +1507,11 @@ raw/ph_at_launch/<day>/ -> ph_userbase rows (launch: post / product / product X 
 X / GitHub per maker and hunter). Pre-launch = fetched before the launch's first non-zero vote snapshot (and 0 votes
 shown, for post rows); otherwise dated to launch day so c2 drops it. Pilot (fetched ~10.5 h after votes started):
 0 of 715 rows pre-launch, as it should be. Synthetic checks pass (all four cases). c2_user_base reads both outputs.
+
+## Bundle 8 deployed: at-launch capture trigger (2026-11-03 09:13 UTC, standing rule 2)
+`launches` uploads data/today/<day>.json to raw/daily/<day>/today_0005.json right after the line-up read (~00:06 PT),
+for Data Feeder's capture to start on (VM at 00:05 PT, fetch by ~00:20). Recording only. daily.py md5 27f0578d (was
+d6f4190c); backup ~/w/backup_b8/. Upload command tested on the VM (byte-identical copy, test object removed). First
+real trigger: Nov 4 ~00:06 PT. A failed upload marks `launches` failed (the line-up itself is already written).
+Reader: labelled relaxed variant for profile-level sources (fetched within 60 min of the launch start; never post
+rows), pre_launch_relaxed on every row, RELAXED=1 to score it. Strict rule unchanged and remains the headline rule.
