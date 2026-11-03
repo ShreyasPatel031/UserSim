@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gsutil cp * gs://usersim-bakeoff-347838016394/usersim_sim/mailbox/to_grokbot/*)"
+    ]
+  }
+}
