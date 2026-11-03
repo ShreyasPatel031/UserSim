@@ -1,0 +1,8 @@
+{
+  "hooks": {
+    "SessionStart": [{ "hooks": [{ "type": "command", "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/agent_msgs_watch.sh", "asyncRewake": true, "timeout": 3600 }] }],
+    "Stop":         [{ "hooks": [{ "type": "command", "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/agent_msgs_watch.sh", "asyncRewake": true, "timeout": 3600 }] }],
+    "PostToolBatch":    [{ "hooks": [{ "type": "command", "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/agent_msgs_drain.sh", "timeout": 10 }] }],
+    "UserPromptSubmit": [{ "hooks": [{ "type": "command", "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/agent_msgs_drain.sh", "timeout": 10 }] }]
+  }
+}
