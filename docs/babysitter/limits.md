@@ -194,3 +194,16 @@ Page-1 GraphQL reads only (upvotes/followers/following/activity rotating over 1,
 latency per batch > 1 s), so ~8,700/min is the single-page ceiling, not a Cloudflare limit. The per-IP request rate is not what
 blocked the people VMs (500–2,000 requests per session at far lower rates); that cause is still open (candidates: deep paging on one
 profile, HTML tab loads, session age). The binding limit is now cost: ~0.56 MB per full person ⇒ $6/week ≈ 9,800 full people/week.
+
+## Production c32 on feeder-babysitter-1, 2026-11-04 21:13–21:42 UTC (port 10006, US exit, pgql_test.py on ParGgPps)
+First real full-list run at 32 parallel. **Blocked at 28.8 min:** `SSR /@<handle> HTTP 403` (an HTML page fetch, not GraphQL).
+
+| People | People/min | Requests | Req/min | HTML fetches | MB total | MB/person | p50 / p95 latency | Errors | 429s |
+|---|---|---|---|---|---|---|---|---|---|
+| 469 | 16.3 | 20,023 | 695 | 556 | 287 | 0.61 | 0.15 / 0.96 s | 0 | 0 |
+
+- The block came after 20,023 requests, far past the 500–2,000-request mid-session blocks on the people VMs, and at 695
+  req/min (the lab ran 3,700+/min clean on page-1 GraphQL). It hit one of the 556 SSR HTML fetches (~19 HTML page loads/min,
+  one per person, for header counts missing from ProfileAboutPage). Working hypothesis: HTML page loads, not GraphQL volume,
+  are what Cloudflare scores. Next: take header counts from GraphQL only and keep HTML fetches near zero.
+- Stop rule followed: run stopped at the first block, no retry, no IP rotation.
