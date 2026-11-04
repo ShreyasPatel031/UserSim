@@ -1069,3 +1069,21 @@ Per-minute model (direction A) switches on at 5 posting days (tomorrow's run).
 | at posting (odds tool) | | **26.9% [23.5, 28.6]** | |
 All days (Oct 31 - Nov 3) alongside: 1 h 34.0%, 15 min 18.6%, at posting 15.5%. Note: the per-day counts printed by an
 all-days run (e.g. Nov 2 10/35) use flags spread over all days, so they are not a valid full-coverage number.
+
+### 15 min with 2025 Jan-Jun Wayback rows (+ content) (wb25_train.py; run 2026-11-04 ~02:30 UTC)
+Data check (Data Feeder's final Jan-Jun pull): 674,460 rows, 0 duplicates, 0 failed captures; 67.8% of Jan-Jun posts have
+a /newest snapshot by 15 min (Jan 55%, Feb 47%, Mar 68%, Apr-Jun 77-81%). **Outcome-independent**: snapshot-by-15-min
+rate 66.1-69.1% across every final-points band (1 point ... 200+), winners 67.3% vs all 67.8% (as October's archive).
+Model inputs (all known at 15 min, no "who"/history/QN rank: those would leak into 2025 rows): post features, title score,
+real-list record, title embedding (PCA 32), comments by 15 min, Wayback votes by 15 min, volume, hour; + content =
+content-model score as a percentile (2025 rows: out-of-fold quarter models; 2026: cut-Jun-30). Paired vs "2026 rows".
+| test | 2026 rows | + content | + 2025 rows | + 2025 rows + content |
+|---|---|---|---|---|
+| Oct 2-14 daily retrain (388 winners) | 23.5% [20.1, 26.9] | 27.6%, +4.1 [+0.5, +7.7] | **27.8%, +4.4 [+2.7, +6.1]** | 27.1%, +3.6 [+0.5, +6.8] |
+| Sep 1 - Oct 14, fit <= Aug 31 (1,323 winners) | 23.7% [21.6, 25.4] | 26.2%, +2.6 [+1.2, +3.9] | 24.9%, +1.3 [-0.5, +3.2] | **28.0% [25.5, 30.5], +4.4 [+2.3, +6.6]** |
+By type (Sep 1 - Oct 14, 2025 + content vs 2026 rows): fast 173 -> 198 of 641, late 97 -> 122 of 455, re-ups 43 -> 50 of
+221. 2025 rows on top of content: Oct +-0.5 [-3.6, +2.6], Sep-Oct +1.8 [-0.1, +3.9].
+Reading: 2025 rows and content each lift this model by ~4 points on Oct 2-14 but do not stack there; on the longer
+Sep 1 - Oct 14 test they stack (28.0%). This model has no who/history/QN-rank inputs, so it is not yet the headline
+model: the posting-clock headlines stay 24.7% (Sep 1 - Oct 14) and 29.6% (Oct 2-14) until the 2025 rows are combined
+with those inputs (needs who/history measured before each 2025 row). Jul-Dec 2025 lands in ~1 day; rerun then.
