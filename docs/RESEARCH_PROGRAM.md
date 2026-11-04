@@ -124,6 +124,9 @@ a target out of reach. No agent writes or repeats a limiting statement about the
   daily; it also shows how the pre-launch error resolves hour by hour. HN: the odds tool runs on hn_minute at 1–5 min cadence and the
   per-minute model trains on whatever posting days exist, retrained daily. Both are tools, labelled as such; the north stars stay
   pre-launch PH top-k and HN Caught at 15 min.
+- **Coverage dashboard:** https://claude.ai/artifact/WV14WeCEQQmV1PB8psDfit (people with every tab pulled by tier, per-tab
+  coverage, need list, route pages per job, live capture, X rollout). Datasets rebuilt by tools/coverage_dashboard.py in the
+  daily collection review; the babysitter's hourly raw/_babysitter/dashboard/latest.json feeds it as it comes online.
 - Never commit files with Product Hunt usernames.
 - Never state that a data source is unavailable until Grok Bot / Data Feeder have checked it in the signed-in user
   view and reported what is visible (user, Nov 2).
