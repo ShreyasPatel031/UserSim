@@ -1194,3 +1194,15 @@ live per-minute votes are not expected to lift 1 h on their own.
 domain record, title embedding: all known at posting. **Nothing visible in the first hour on HN separates future late
 risers and re-ups from the posts that never rise**; what separates them is known at posting. Levers for the 46 pts:
 better at-posting signals (content, history) and new information from outside HN (off-HN traction, requested).
+
+### At-posting candidates from the orchestrator (2026-11-04 16:25 UTC)
+1. **GitHub traction before posting** (gh_post.py; stars the day / 7 / 30 days before the posting day + repo age, Data
+   Feeder's daily star history; 9.3% of test posts, 6.7% of winners): in the headline 3-way blend 26.1% -> 25.2%,
+   **-0.9 [-1.8, +0.0]** (Sep 1 - Oct 14); Oct 2-14 +0.0 [-2.0, +2.1]. Flat: stopped. Reddit / Lobsters / Bluesky in the
+   72 h before posting: added to the Grok Bot backfill ask (to_grokbot/20261104T1635_...72h_before.md); tested when it lands.
+2. **LLM judge at posting**: already run at full scale (pagejudge.py, Gemini 2.5 Flash-Lite, 106,210 posts, $13.54:
+   front_page_prob from title + link + page text, title-only when the page was not read): at posting +0.8 [-0.4, +1.9]
+   as an input, -0.1 [-1.1, +1.0] in the blend; 1 h +0.5 [-0.7, +1.6]. A title + domain + text judge sees a subset of
+   that input: not re-run.
+3. **Competition at posting**: already run twice (competition.py +0.0 [-1.0, +1.1]; caught.py comp: rival count,
+   strength, rank among rivals, /new traffic +0.4 [-1.3, +2.1]). Closed.
