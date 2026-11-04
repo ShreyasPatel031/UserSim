@@ -176,3 +176,21 @@ opens per IP" vs "two simultaneous opens" can't be separated from this run. Long
 5. **Scale by IP (more sticky ports), not by browsers per VM.** Ports and exit IPs are Data Feeder's call (Shreyas's approvals).
 6. Persistent profiles give nothing (clearance not kept). fingerprint_preset clears but is slower; no benefit shown; optional.
 7. Uptime: stop at the first block; cool-down before a reopen on the same IP is still unmeasured.
+
+## Lab ramp 2026-11-04 20:01–20:19 UTC (port 10006, exit 95.134.135.111 AS5650 Verizon, one warm Camoufox page, signed out)
+Page-1 GraphQL reads only (upvotes/followers/following/activity rotating over 1,337 likely handles); no paging, no completeness check.
+3 min per step, back to back in ONE session. Raw: raw/_babysitter/lab/live3.out.
+
+| Parallel | Requests | Blocked | Per min | Load (4 vCPU) |
+|---|---|---|---|---|
+| 8 | 1,440 | 0 | 480 | 0.6 |
+| 16 | 2,848 | 0 | 949 | 1.2 |
+| 32 | 5,696 | 0 | 1,899 | 1.0 |
+| 64 | 11,264 | 0 | 3,755 | 0.7 |
+| 128 | 22,144 | 0 | 7,381 | 1.1 |
+| 256 | 26,112 | 0 | 8,704 | 2.0 |
+
+**No edge up to 256.** ~69.5k requests, ~740 MB (~$0.75) on one IP in 18 min, 0 blocks. 256 is client-bound (throughput flattens:
+latency per batch > 1 s), so ~8,700/min is the single-page ceiling, not a Cloudflare limit. The per-IP request rate is not what
+blocked the people VMs (500–2,000 requests per session at far lower rates); that cause is still open (candidates: deep paging on one
+profile, HTML tab loads, session age). The binding limit is now cost: ~0.56 MB per full person ⇒ $6/week ≈ 9,800 full people/week.
