@@ -335,6 +335,24 @@ def build(data_dir, out_dir, salt):
             mid = (v3.ts_lo + pd.Timedelta(hours=12)).dt.date
             ev[-1] = v3[[k not in key for k in zip(v3.person_id, v3.target_id, mid)]]
             ev.append(ac)
+    # full all-tab pulls (people_live/vm/*.json, people_live/boxbrowser/<user>/<user>_full.json)
+    import full_pull
+    up_times = {}
+    if os.path.exists(f"{data_dir}/people_live/_upload_times.json"):
+        up_times = json.load(open(f"{data_dir}/people_live/_upload_times.json"))
+    tab_rows = []
+    for fp in sorted(glob.glob(f"{data_dir}/people_live/vm/*.json")) + sorted(glob.glob(f"{data_dir}/people_live/boxbrowser/*/*_full.json")):
+        t_, e_ = full_pull.load_full(fp, ids, upload_time=up_times.get(os.path.relpath(fp, f"{data_dir}/people_live")))
+        tab_rows.append(t_)
+        if len(e_):
+            api_cids = set()
+            for e0 in ev:
+                if len(e0) and "source" in e0 and e0.source.astype(str).str.startswith("ph_api_v2").any():
+                    api_cids |= {json.loads(x).get("comment_id") for x in e0[e0.source.astype(str).str.startswith("ph_api_v2")].extra}
+            cid = e_.extra.map(lambda x: json.loads(x).get("comment_id") if isinstance(x, str) else None)
+            ev.append(e_[~((e_.kind == "comment") & cid.isin(api_cids - {None}))])
+    if tab_rows:
+        pd.concat(tab_rows, ignore_index=True).to_parquet(f"{out_dir}/tabs.parquet", index=False)
     xe, xrep = x_events(data_dir, set(ids_map.values()))
     print("X drops:", json.dumps(xrep, default=str))
     if len(xe):
@@ -354,9 +372,9 @@ def check_store(events, pool):
     """Store-level validation (counts only)."""
     c = {}
     c["events"] = len(events)
-    key = ["person_id", "kind", "target_id", "source"]
+    key = ["person_id", "kind", "target_id", "source", "ts_lo"]
     timed = events.ts_quality.isin(["exact", "day"])
-    c["dup_keys"] = int(events[~timed].duplicated(key).sum() + events[timed].duplicated(key + ["ts_lo"]).sum())
+    c["dup_keys"] = int(events.duplicated(key).sum())
     c["upvote_order_conflicts"] = int((events.ts_quality == "order_conflict").sum())
     up = events[events.kind == "upvote"]
     c["upvote_lo_gt_hi"] = int((up.ts_lo > up.ts_hi + pd.Timedelta(minutes=1)).sum())

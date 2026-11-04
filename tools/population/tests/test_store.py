@@ -117,3 +117,25 @@ def test_api_comments_dedupe_and_unresolved(tmp_path):
     assert ev.loc["C1", "first_seen_at"] == pd.Timestamp("2026-11-03T23:00:00Z")
     assert json.loads(ev.loc["C1", "extra"])["votes"] == 3
     assert json.loads(ev.loc["C2", "extra"])["unresolved"] and ev.loc["C2", "person_id"] == IDS("9", "producthunt_uid")
+
+
+def test_full_pull_loader(tmp_path):
+    import full_pull
+    d = {"profile": "https://www.producthunt.com/@alice", "run": {"finished_utc": "2026-11-04T01:00:00Z"},
+         "header": {"upvotes": 2, "followers": 100},
+         "activity": {"count": 1, "items": [{"type": "left a comment", "url": "https://www.producthunt.com/products/x?comment=55",
+                                             "datetime": "2026-11-03T03:00:00-08:00"}]},
+         "upvotes": {"count": 2, "items": [{"url": "https://www.producthunt.com/products/x", "post_id": "9"},
+                                           {"url": "https://www.producthunt.com/products/y/launches/y-2"}]},
+         "followers": {"header": 100, "count": 1, "note": "partial: first 1 loaded", "items": [{"handle": "@bob"}]},
+         "forums": {"count": 0, "items": [], "note": "site lists 0 threads (manual saw 20)"}}
+    p = tmp_path / "alice.json"; p.write_text(json.dumps(d))
+    tabs, ev = full_pull.load_full(str(p), IDS)
+    t = tabs.set_index("tab")
+    assert bool(t.loc["upvotes", "complete"]) and not bool(t.loc["followers", "complete"]) and bool(t.loc["forums", "complete"])
+    assert not bool(t.loc["reviews", "complete"])  # tab absent from the pull
+    c = ev[ev.kind == "comment"].iloc[0]
+    assert c.ts_quality == "exact" and json.loads(c.extra)["comment_id"] == "55" and c.person_id == IDS("alice")
+    assert set(ev[ev.kind == "upvote"].target_id) == {"9", "launch:y-2"}
+    f = ev[ev.kind == "follows"].iloc[0]
+    assert f.person_id == IDS("bob") and f.target_id == IDS("alice")

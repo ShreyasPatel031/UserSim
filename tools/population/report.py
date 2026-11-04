@@ -22,3 +22,25 @@ w = (up.ts_hi - up.ts_lo).dt.total_seconds() / 86400
 print(f"\nUpvotes dated within 1 day: {(w <= 1).mean():.1%}; within 7 days: {(w <= 7).mean():.1%} (window = [lo, first seen]).")
 print(f"People with any event: {e[e.in_pool].person_id.nunique():,} ({e[e.in_pool].person_id.nunique() / n:.1%}). "
       f"Events from people outside the pool: {(~e.in_pool).sum():,} ({e[~e.in_pool].person_id.nunique():,} people; pool-growth candidates).")
+
+# full all-tab pulls, by tier (tier from people_live/have_index.jsonl when present next to the store)
+import json, os
+tp = f"{d}/tabs.parquet"
+if os.path.exists(tp):
+    t = pd.read_parquet(tp)
+    per = t.groupby("person_id").agg(tabs=("tab", "nunique"), complete=("complete", "sum"))
+    tier = {}
+    hi = f"{d}/have_index.jsonl"
+    if os.path.exists(hi):
+        tier = {r["person_id"]: r.get("tier") or "non-pool" for r in map(json.loads, open(hi))}
+    per["tier"] = per.index.map(lambda x: tier.get(x, "unknown"))
+    allt = pd.Series({k: (n if k != "_" else 0) for k, n in [("_", 0)]})
+    print("\n## Full all-tab pulls by tier\n")
+    print("| Tier | People in tier | With a full pull | All 10 tabs complete |")
+    print("|---|---|---|---|")
+    sizes = pd.Series(tier).value_counts() if tier else pd.Series(dtype=int)
+    for tr in ["likely", "active_rest", "other", "non-pool", "unknown"]:
+        g = per[per.tier == tr]
+        print(f"| {tr} | {int(sizes.get(tr, 0)):,} | {len(g):,} | {int((g.complete >= 10).sum()):,} |")
+    inc = t[~t.complete].tab.value_counts().to_dict()
+    print(f"\nIncomplete tabs across full pulls: {inc}")
