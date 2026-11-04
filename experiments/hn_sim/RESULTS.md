@@ -1028,3 +1028,22 @@ Per-post odds: 6,372 live forecasts, none scorable yet (each post needs its 4 li
 Live Caught (hn_minute): no posting day has its 4 list days settled yet (first ~Nov 6). hn_minute minutes read per day
 (front / newest / pool): Oct 31 930 / 306 / 307; Nov 1 1,445 / 606 / 321; Nov 2 3,290 / 1,611 / 152; Nov 3 2,769 /
 1,538 / 194 (two recorders unioned; Nov 3 includes the 19:11-19:14 resize gap).
+
+### Live daily-list forecast vs backtest: diagnosis (diag_live21.py; orchestrator, 2026-11-04)
+Live hourly forecast at 21:05 found 14/30 (Oct 31) and 18/30 (Nov 1) of the settled top 30 (backtest at 21:00: 80.2%).
+Replaying the backtest code path at the same forecast time (daily_v4 series/candidates/features cut at T, same fd_v4
+models, Quality News series fetched now) finds **24/30 and 27/30**: the backtest path is not leaking; live got different
+inputs. The 28 real top-30 posts live missed, by cause:
+| cause | count |
+|---|---|
+| **live input differed** (replay has it in its top 30): slots taken by posts already on the previous day's list | **20** |
+| model miss (replay misses it too) | 4 |
+| posted after the forecast time | 2 |
+| under 5 points at the forecast time (live candidate filter) | 2 |
+Root cause: every wrong live pick sat on the previous day's settled list (Oct 31: 16 of 16 wrong picks on the Oct 30
+list, incl. its #1-#9; Nov 1: 12 of 12 on the Oct 31 list). They should be excluded (`on_earlier_list`), but the live
+exclusion comes from scraping news.ycombinator.com/front?day= for the last 7 days at forecast time with no check for
+empty pages; at :05 the pages evidently came back empty (HN refuses some requests; listwatch reads the same pages on the
+same IP). Live points of the live top 30 equal the replay's at T (no Quality News lag). Fix (forecast_daily.py, live
+from fdloop4): exclusion = listwatch's own reads from the bucket + the scrape with retries on empty pages; the count of
+excluded stories is written into each forecast. Caught headlines do not use the earlier-list input (no change there).
