@@ -1206,3 +1206,17 @@ better at-posting signals (content, history) and new information from outside HN
    that input: not re-run.
 3. **Competition at posting**: already run twice (competition.py +0.0 [-1.0, +1.1]; caught.py comp: rival count,
    strength, rank among rivals, /new traffic +0.4 [-1.3, +2.1]). Closed.
+
+### Checkpoint 1 (1 h): light model with all 2025 rows (WB_AGE=60 wb25_train.py, paired60.py)
+Inputs known at 1 h, no front-page rank (Quality News rank series start June 2026, none for 2025): post features, record,
+embedding, content, honest Wayback /newest votes and comments by 60 min. Within the light model, all 2025 rows + content
+add **+3.9 [+1.9, +6.0]** (Sep 1 - Oct 14; Oct 2-14 +3.1 [+0.5, +5.8]), as at 15 min.
+Paired vs the 1-h headline (identical posts and flags):
+| test | headline | light 60 min | 50/50 blend (fixed in advance) |
+|---|---|---|---|
+| Sep 1 - Oct 14 | 48.4% | 41.7%, -6.7 [-9.2, -4.3] | 45.4%, -3.0 [-4.9, -1.1] |
+| Oct 2 - 14 (daily retrain) | 49.0% | 42.3%, -6.7 [-10.2, -3.1] | 45.6%, -3.4 [-6.2, -0.3] |
+By type, Sep 1 - Oct 14: late risers 56 -> **88** of 461 (light), re-ups 17 -> 19, fast 567 -> 445 of 641. Front-page rank
+is what catches fast posts; 2025 rows + content are what catch late risers. Both together need honest front-page ranks
+for 2025 posts: asked of Data Feeder (to_grokbot/20261104T1715_hn_agent_wayback_front_2025.md: Wayback /news pages 1-3,
+2025). Headline unchanged at 48.5%.
