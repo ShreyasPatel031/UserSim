@@ -1734,3 +1734,17 @@ Nov 2 thin ones (79 people acting). Reported as-if-live (the event happened befo
 - Person top-3 hit unchanged by construction (0.48–0.74): recency reweights people, not their choice of launch.
 - Verdict: recency does not improve per-launch pool turnout over pnx's 30-day activity weight; not the lever. Revisit
   with strict known-before-d data after ~2 weeks of daily first-seen reads.
+
+## Nov 4 daily check (01:07 PT, 09:10-09:40 UTC)
+- Pipeline: usersim-pipeline RUNNING since 00:05 PT; daily_20261104T0806.log has 16 steps, all ok, no Traceback/407/403. Spend $0.63 (Nov 3 $0.65).
+- b9: model.py md5 379ff10a (45 inputs, no llm_full). b8: today_0005.json at 00:07 PT. b6: 35 shadow_honest_a2 rows today (first score tomorrow).
+- Nov 3 forecast vs final daily ranks, top 3/5/10 hits: launch_model 1/3/8 (33/60/80), simulation 1/4/8, shadow_daycal 1/3/8.
+  late_featured 2, late_in_top_k 0, dropped 0. list_check: 0 items (no Grok Bot leaderboard read).
+- Dashboard refreshed (7 datasets). 5 old blobs deleted; the permission check refused deleting 2 (unreferenced, left).
+- Live capture: Nov 4 FAIL (14 start-up rows > 5 min late; 138 launch-snapshots with no board position: only the 00:01 PT
+  box_browser snapshot has page views, route 4 is under STOP). Nov 3 FAIL as before (114 late rows, 20:15-20:45Z gap, no page views).
+  Babysitter per-tier P0-P6: no verdict posted for Nov 4 yet.
+- At-launch capture (posts/products/makers/external) for Nov 4: NOT landed by 01:30 PT (due ~00:20 PT); only API snapshots.
+- pool_timing (Nov 3 only; Nov 1-2 lack API comments / posts_ts): 36 launches, 24/25/30 with a pool comment by 1/2/4 h;
+  pool comments vs shock rho 0.28 / 0.33 / 0.31 at 1/2/4 h vs 0.42 whole day (one day, no CI).
+- Intraday tool test on Nov 3: top 3 100% vs 33% pre-launch from h4 (tool, not north star). Nov 4 live loop running on exp-1.
