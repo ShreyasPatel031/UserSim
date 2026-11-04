@@ -129,6 +129,12 @@ def main():
         m = tr & (np.ones(len(Q), bool) if with25 else ~is25)
         sc2[a][te] = lgb.LGBMClassifier(**PRM).fit(Q.loc[m, cols], y[m]).predict_proba(Q.loc[te, cols])[:, 1]
     report("Sep 1 - Oct 14, fit on days <= Aug 31", Q, te, sc2, kind)
+    # per-post scores for the paired headline test (paired15.py)
+    sel1 = Q.day.isin(days).to_numpy()
+    out = pd.concat([pd.DataFrame({"post_id": Q.post_id[sel1].to_numpy(), "test": "oct2_14", **{a: v[sel1] for a, v in sc.items()}}),
+                     pd.DataFrame({"post_id": Q.post_id[te].to_numpy(), "test": "sep1_oct14", **{a: v[te] for a, v in sc2.items()}})])
+    out.to_parquet(os.path.join(H.CACHE, "wb25_scores.parquet"), index=False)
+    print("saved wb25_scores.parquet", flush=True)
 
 
 def report(title, Q, sel, sc, kind):
