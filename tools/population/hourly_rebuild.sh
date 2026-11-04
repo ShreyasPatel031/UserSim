@@ -21,6 +21,7 @@ for d in $(gsutil ls -d "$B/raw/ph_at_launch/2026-1*/api_comments/" "$B/raw/ph_a
 done
 gsutil -q -m rsync -r $B/raw/population_data/ $R/population_data/ 2>/dev/null
 gsutil -q cp $B/raw/ph_population/people_live/have_index.jsonl $W/have_index.jsonl
+mkdir -p $R/people_live/deep_list && gsutil -q -m rsync -d $B/raw/ph_population/people_live/vm/deep_list/ $R/people_live/deep_list/
 
 log "build"
 rm -rf $W/store_tmp; mkdir -p $W/store_tmp
@@ -30,6 +31,7 @@ PASS=$(echo "$OUT" | grep -cE '^ "pass": true')
 EVENTS=$(echo "$OUT" | grep -E '^ "events": ' | head -1 | grep -o '[0-9]*')
 if [ "$PASS" -ge 1 ]; then
   cp $W/have_index.jsonl $W/store_tmp/
+  cat $R/people_live/deep_list/*.json 2>/dev/null | python3 -c "import sys,json; [print(json.dumps(json.loads(l))) for l in sys.stdin.read().replace('}{','}\n{').splitlines() if l.strip()]" > $W/store_tmp/df_deep_list.jsonl
   (cd "$REPO" && python3 tools/population/report.py $W/store_tmp $DAY) > $W/store_tmp/coverage.md
   gsutil -q -m cp $W/store_tmp/events.parquet $W/store_tmp/persons.parquet $W/store_tmp/tabs.parquet $B/raw/population/store_v3/
   gsutil -q cp $W/store_tmp/coverage.md $B/raw/population/reports/$DAY/coverage.md

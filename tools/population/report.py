@@ -56,19 +56,38 @@ if os.path.exists(tp):
     per = t.groupby("person_id").state.agg(lambda s: "FAIL" if (s == "FAIL").any() else ("server_ended" if s.isin(["server_ended", "server_ended_signed_out"]).any() else "complete"))
     ntabs = t.groupby("person_id").tab.nunique()
     per = per[ntabs.reindex(per.index) >= 10]
+    # Data Feeder's own deep_list (vm/deep_list/<handle>.<tag>.json): an entry newer than the person's latest full pull means
+    # a re-pull is pending (e.g. pgql_lists_only: no collection items / product pages / forum threads yet) -> not complete.
+    pending = {}
+    dl = f"{d}/df_deep_list.jsonl"
+    if os.path.exists(dl) and os.path.exists(f"{d}/have_index.jsonl"):
+        pid_of = {(r.get("handle") or "").lower(): r["person_id"] for r in map(json.loads, open(f"{d}/have_index.jsonl"))}
+        last = t.groupby("person_id").fetched_at.max()
+        for e in map(json.loads, open(dl)):
+            pid_ = pid_of.get((e.get("handle") or "").lower())
+            if pid_ is None or pid_ not in last.index:
+                continue
+            if pd.Timestamp(e.get("utc")) > last[pid_]:
+                pending.setdefault(pid_, []).append(e.get("reason"))
+    per = per.where(~per.index.isin(list(pending)), "pending_repull")
     perdf = pd.DataFrame({"state": per, "tier": per.index.map(lambda x: tier.get(x, "non-pool" if x not in pool else "unknown"))})
     strict = int((perdf.state == "complete").sum()); se = int((perdf.state == "server_ended").sum()); fail = int((perdf.state == "FAIL").sum())
+    pend = int((perdf.state == "pending_repull").sum())
     print(f"\n## HEADLINE: people with every tab complete or server-ended: {strict + se:,} "
-          f"(pool {int(((perdf.state != 'FAIL') & perdf.index.isin(pool)).sum()):,}); strict complete {strict:,}; "
-          f"server-ended (PH hid items) {se:,}; FAIL (our code stopped) {fail:,}; people with any full pull {t.person_id.nunique():,}\n")
+          f"(pool {int((perdf.state.isin(['complete', 'server_ended']) & perdf.index.isin(pool)).sum()):,}); strict complete {strict:,}; "
+          f"server-ended (PH hid items) {se:,}; FAIL (our code stopped) {fail:,}; pending re-pull on Data Feeder's deep_list {pend:,}; "
+          f"people with any full pull {t.person_id.nunique():,}\n")
+    if pending:
+        from collections import Counter
+        print(f"Pending re-pull reasons (people): {dict(Counter(r for v in pending.values() for r in set(v)).most_common())}\n")
     print("## Full all-tab pulls by tier\n")
-    print("| Tier | People in tier | With a full pull | All tabs complete | + server-ended | FAIL (our code stopped) |")
-    print("|---|---|---|---|---|---|")
+    print("| Tier | People in tier | With a full pull | All tabs complete | + server-ended | FAIL (our code stopped) | Pending re-pull |")
+    print("|---|---|---|---|---|---|---|")
     sizes = pd.Series(tier).value_counts() if tier else pd.Series(dtype=int)
     for tr in ["likely", "active_rest", "other", "non-pool", "unknown"]:
         g = perdf[perdf.tier == tr]
         anyp = len(set(t.person_id) & {k for k, v in tier.items() if v == tr}) if tier else 0
-        print(f"| {tr} | {int(sizes.get(tr, 0)):,} | {anyp:,} | {int((g.state == 'complete').sum()):,} | {int((g.state == 'server_ended').sum()):,} | {int((g.state == 'FAIL').sum()):,} |")
+        print(f"| {tr} | {int(sizes.get(tr, 0)):,} | {anyp:,} | {int((g.state == 'complete').sum()):,} | {int((g.state == 'server_ended').sum()):,} | {int((g.state == 'FAIL').sum()):,} | {int((g.state == 'pending_repull').sum()):,} |")
     ft = t[t.state == "FAIL"]
     print(f"\nFAIL tabs (our code stopped): {ft.tab.value_counts().to_dict()}; of which capped_large: {int(ft.capped_large.sum())}")
     print(f"Server-ended tabs (PH hid items signed-out): {t[t.state == 'server_ended'].tab.value_counts().to_dict()}; "
