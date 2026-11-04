@@ -45,10 +45,11 @@ def main(out):
         for tb in TABS:
             x = tabs.get(tb) or {}; n = x.get("n") or 0
             if n > 0: tab_cov[tb][t] += 1; tab_cov[tb]["all"] += 1
-            if (x.get("status") or "") == "complete": tab_cov[tb + "_complete"]["all"] += 1
+            if (x.get("status") or "") in ("complete", "complete_not_visible", "capped_large"): tab_cov[tb + "_complete"]["all"] += 1
             if n <= 0 and tb != "made": ok = False
             lp = x.get("last_pulled_at")
             if lp and (last is None or lp > last): last = lp
+        if "complete" in r: ok = bool(r["complete"])  # have_index rule since Nov 4: every list tab >= 98% of header
         if ok: full[t] += 1; full["all"] += 1
         if last:
             d = (now - parse(last)).total_seconds() / 86400
