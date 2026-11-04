@@ -61,7 +61,7 @@ def load_full(path, ids, upload_time=None, source=None, filled=None):
         if v is None:
             tabs.append(dict(person_id=pid, tab=t, header=hdr.get(t), count=None, complete=False, stopped_early=None,
                              fetched_at=f, fetched_quality=f_quality, source=source, pull_type=pull_type,
-                             complete_not_visible=False, capped_large=False))
+                             complete_not_visible=False, capped_large=False, signed_out_cap=False))
             continue
         items = v.get("items") or []
         ft = _ts(v.get("fetched_at")) if v.get("fetched_at") else f   # per-tab fetch time when the pull records it
@@ -77,7 +77,8 @@ def load_full(path, ids, upload_time=None, source=None, filled=None):
         tabs.append(dict(person_id=pid, tab=t, header=h, count=n, complete=not stopped, stopped_early=stopped,
                          fetched_at=ft, fetched_quality=fq, source=source, pull_type=pull_type,
                          complete_not_visible=bool(v.get("complete_not_visible")) and not v.get("capped_large"),
-                         capped_large=bool(v.get("capped_large") or v.get("status") == "capped_large")))
+                         capped_large=bool(v.get("capped_large") or v.get("status") == "capped_large"),
+                         signed_out_cap=bool(t == "upvotes" and (v.get("upvotes_capped") or (v.get("complete_not_visible") and 190 <= n <= 210)))))
         for i, it in enumerate(items, 1):
             url = it.get("url") or ""
             prod = PRODUCT.search(url)
