@@ -32,3 +32,6 @@ Package: vm/_code/reuse.tgz md5 KSkCQvRomzj6fzif1u001g== (Data Feeder "nocap" bu
   `exh is True` (count==0 shortcut gone). **No caps found.** Still a lists-only pull by design; complete only after its deep pass.
 - People pulled by the earlier pgql builds (LPOvYGl8, RFL2X9rl) 20:21–20:33Z: capped; must all be on deep_list.
 - Orchestrator 20:32Z: pgql_test.py retired from production; only the nocap2 reuse driver may pull people.
+- 20:36Z: reuse.tgz and pgql.tgz are the same tarball, md5 T7ToP4aB… (20:32Z). ph_batch.py in it audited: **clean** (diff vs xLi/wR7D:
+  activity moved last in the budget order, mislabel fixed). Open risk: deep resumes only followers/following by cursor; activity
+  restarts from page 1. VM-2's status log has no package md5, so what it unpacked can't be verified yet.
