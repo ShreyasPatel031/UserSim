@@ -65,3 +65,18 @@ Log every route-4 page with `session_id`, `session_age_s`, `nav_index` (1 = firs
   19:52 by Grok Bot/Data Feeder on the orchestrator's decision; one probe every 10 min. Recovery: pending.
 - 2026-11-03 20:01 UTC: fresh GCP VM in us-east1 (usersim-babysitter-probe, e2-micro, IP 104.196.53.204): Wayback CDX 3/3 HTTP 200 (0.5–2.7 s), captures 3/3 HTTP 302 to the nearest timestamp (0.2–0.9 s), no timeouts. So the timeouts are per-IP (hn-sim-1, the cloud session's egress), not all of GCP: a second polite worker set on a fresh GCP IP is possible.
 - 2026-11-03 ~04:00 UTC: Wayback from hn-sim-1 (GCP) TCP timeouts; moved to the box. Cloud-session egress shows the same signature at 19:52 UTC.
+
+## PH person pulls from a VM (Data Feeder results, Nov 3; babysitter recipe check Nov 4)
+- **Recipe that works** (from_grokbot/20261104T0125_HOWTO_ph_vm_residential_proxy.md): Camoufox humanize + geoip through one DataImpulse
+  sticky port, signed out; first load is a 403 challenge that clears in ~15–42 s (wait for `ApolloSSRDataTransport`, not for the challenge
+  text to vanish); then pages and same-origin `/frontend/graphql` calls return 200. Babysitter check Nov 4 01:56 UTC: cleared in 14.9 s,
+  /@user, activity, upvotes, followers, following all 200 with page data (200–530 KB per page).
+- **Per-VM limit (Data Feeder, Nov 3):** anonymous /@user/upvotes, one sticky port, 1–2 browsers: **no 403/429 at any steady pace up to
+  80 pages/min per IP.** The only blocks were each browser's cold first page before Cloudflare clearance. Warm in-page fetch ~31 KB
+  (~$0.03 per 1,000). **The edge is cold starts, not rate:** keep sessions warm; never restart a session to "retry".
+- Browsers per VM: Data Feeder's capacity test on feeder-phpeople-1 (port 10002, 02:05–~02:50 UTC Nov 4) sets the number; operating
+  point from it, not re-measured. Babysitter's own 10002 test was stopped at 02:16 UTC after the warm-up (port belongs to feeder-phpeople-1).
+- **Ports:** 10001 = daily at-launch capture; 10002–10004 = feeder-phpeople-1/2/3 (Shreyas approved Nov 3). Any other port needs sign-off.
+  Two VMs on one sticky port share one exit IP and corrupt both tests. Nobody moves a blocked job to another port.
+- Exit network check: port 10500 exited from a hosting AS (Ashburn) on Nov 3 while 10001/10002 exited residential/business ISPs;
+  every job should log its exit IP's AS before use.
