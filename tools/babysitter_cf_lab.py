@@ -169,6 +169,8 @@ def worker(idx, ppl, conc, step_s, q):
 
 def main():
     ppl = people()
+    if os.environ.get("LAB_PHASE") == "3":
+        return ramp(ppl)
     if os.environ.get("LAB_PHASE") == "2":
         emit("run", run=RUN, phase=2, port=PORT, people=len(ppl), **sysinfo()); upload()
         return p5_p6(ppl)
@@ -204,6 +206,23 @@ def main():
             emit("stop", why=f"P4 edge at concurrency {conc}"); upload(); return
     cm.__exit__(None, None, None)
     p5_p6(ppl)
+
+
+def ramp(ppl):
+    """Phase 3: one warm browser, raise in-page GraphQL concurrency until a step has >=2 blocks."""
+    emit("run", run=RUN, phase=3, port=PORT, people=len(ppl), **sysinfo()); upload()
+    cm, page, ok = open_browser("/root/prof_ramp", label="R_cold")
+    upload()
+    if not ok:
+        emit("stop", why="ramp cold open not cleared"); upload(); return
+    for conc in (8, 16, 32, 64, 128, 256):
+        s = gql_step(page, ppl[(conc * 7) % len(ppl):] + ppl, conc, f"R_c{conc}")
+        upload()
+        if s["blocked"] >= 2:
+            emit("stop", why=f"edge at concurrency {conc}"); upload(); break
+    else:
+        emit("done", why="no edge up to 256")
+    cm.__exit__(None, None, None); upload()
 
 
 def p5_worker(q):
