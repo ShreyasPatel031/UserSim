@@ -115,6 +115,10 @@ a target out of reach. No agent writes or repeats a limiting statement about the
   x1.5 and the per-minute cap one step on alternate days; at the first block, back off to the last clean level x0.8, record the
   edge in docs/babysitter/limits.md, resume after 2 clean days. Same for every source. Extra pages fund the next forward tier, then
   the history pass. Every raw row keeps the username (GCS only) so repeats are caught; models read a deterministic salted id.
+- **Full all-tab person pulls are the standard (Shreyas, Nov 4, 01:45 UTC).** Every PH person job pulls every tab (about, upvotes,
+  activity, forums, reviews, collections + each collection, stacks, hunted/made, followers, following), scrolled to the end, with
+  items vs header per tab and raw page JSON saved. raw/ph_population/people_live/have_index.jsonl + need_list.jsonl are the single
+  queue. Page-1 reads are only the daily recency refresh. Before Nov 3 no person had a full pull; all earlier person data is partial.
 - Never commit files with Product Hunt usernames.
 - Never state that a data source is unavailable until Grok Bot / Data Feeder have checked it in the signed-in user
   view and reported what is visible (user, Nov 2).
